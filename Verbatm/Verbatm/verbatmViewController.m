@@ -12,7 +12,8 @@
 #import "Article.h"
 #import <AVFoundation/AVFoundation.h>
 #import <ImageIO/ImageIO.h>
-
+#import <MediaPlayer/MediaPlayer.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 @interface verbatmViewController () <UITextFieldDelegate, AVCaptureFileOutputRecordingDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *verbatmCameraView;
@@ -124,7 +125,7 @@
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
 //    longPress.numberOfTapsRequired = 1;
-//    longPress.minimumPressDuration = 2;
+    longPress.minimumPressDuration = 2;
     [self.verbatmCameraView addGestureRecognizer:longPress];
 }
 
@@ -290,7 +291,8 @@
     NSLog(@"Video has started recording");
     if([self.session canAddOutput:self.movieOutputFile]){
         [self.session addOutput: self.movieOutputFile];
-        [self.movieOutputFile startRecordingToOutputFileURL: self.verbatmFolderURL recordingDelegate:self];
+        NSURL* destinationURL = [[NSURL alloc] initFileURLWithPath:[[self.verbatmFolderURL absoluteString] stringByAppendingPathComponent:@"outputVideo.mp4"] ];
+        [self.movieOutputFile startRecordingToOutputFileURL: destinationURL recordingDelegate:self];
     }
 }
 
@@ -315,5 +317,12 @@
     }
     return _movieOutputFile;
 }
+
+//-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
+//{
+//    NSLog(@"%@", @"HERE ");
+//    MPMoviePlayerViewController* mediaPlayer = [[MPMoviePlayerViewController alloc] initWithContentURL:outputFileURL];
+//    [self presentMoviePlayerViewControllerAnimated:mediaPlayer];
+//}
 
 @end

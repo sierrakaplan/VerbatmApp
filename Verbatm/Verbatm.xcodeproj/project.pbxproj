@@ -39,6 +39,7 @@
 		C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BA199EC6A2004B91A1 /* StoreKit.framework */; };
 		C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */; };
 		C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC43BF199F7427004B91A1 /* VerbatmUser.m */; };
+		C7C35E3219B320C600F9A99B /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7C35E3119B320C600F9A99B /* MediaPlayer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -94,6 +95,7 @@
 		C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C7BC43BE199F7427004B91A1 /* VerbatmUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmUser.h; sourceTree = "<group>"; };
 		C7BC43BF199F7427004B91A1 /* VerbatmUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmUser.m; sourceTree = "<group>"; };
+		C7C35E3119B320C600F9A99B /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7C35E3219B320C600F9A99B /* MediaPlayer.framework in Frameworks */,
 				C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */,
 				C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */,
 				C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */,
@@ -156,6 +159,7 @@
 		C7BC4374199D97F5004B91A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C7C35E3119B320C600F9A99B /* MediaPlayer.framework */,
 				C734FD9819B13D8600B2C370 /* CoreMedia.framework */,
 				C734FD9619B13D7700B2C370 /* CoreVideo.framework */,
 				C734FD9419B13D5F00B2C370 /* ImageIO.framework */,
