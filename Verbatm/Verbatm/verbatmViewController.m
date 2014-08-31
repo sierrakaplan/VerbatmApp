@@ -306,4 +306,17 @@
     return _movieOutputFile;
 }
 
+///Required protocol methods for AVCapture
+//Lucio
+
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
+{
+    
+}
+
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
+{
+    
+}
+
 @end
