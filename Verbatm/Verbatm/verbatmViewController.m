@@ -28,6 +28,8 @@
 
 #define SWITCH_ICON_SIZE 60
 #define CAMERA_ICON @"switch_b"
+#define MAX_VIDEO_LENGTH 30
+#define VIDEO_FRAMES_PER_SECOND 32
 @end
 
 @implementation verbatmViewController
@@ -114,14 +116,15 @@
 {
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
     tap.numberOfTapsRequired = 1;
+    
     [self.verbatmCameraView addGestureRecognizer:tap];
 }
 
 -(void) createLongPressGesture
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
-    longPress.numberOfTapsRequired = 1;
-    longPress.minimumPressDuration = 2;
+//    longPress.numberOfTapsRequired = 1;
+//    longPress.minimumPressDuration = 2;
     [self.verbatmCameraView addGestureRecognizer:longPress];
 }
 
@@ -143,14 +146,12 @@
 	
 	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
-    AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
     
 	
 	NSError *errorVideo = nil;
 	AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&errorVideo];
     
     NSError* error = nil;
-    AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
     
 	if (!input) {
 		// Handle the error appropriately.
@@ -168,24 +169,28 @@
     [self createVerbatmDirectory];
     
 	[self.session addInput:input];
-    [self.session addInput:audioInput];
-	
 	[self.session startRunning];
 }
 
+//by-Lucio
 -(void)createVerbatmDirectory
 {
-    BOOL isDirectory;
+
+    NSArray* pathOptions = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString* documentPath = [pathOptions firstObject];
+    NSString* verbatmDir = [documentPath stringByAppendingPathComponent: @"/Verbatm"];
     NSFileManager* fileManager = [NSFileManager defaultManager];
-    NSString* verbatmDir = [NSHomeDirectory() stringByAppendingPathComponent:@"Verbatm"];
-    if([fileManager fileExistsAtPath:verbatmDir isDirectory:&isDirectory] || !isDirectory){
-        NSError* error = nil;
-        NSDictionary* attr = [NSDictionary dictionaryWithObject: NSFileProtectionComplete forKey:NSFileProtectionKey];
-        [fileManager createDirectoryAtPath:verbatmDir withIntermediateDirectories:YES attributes:attr error:&error];
+    if(![fileManager fileExistsAtPath:verbatmDir])
+    {
+         NSError* error = nil;
+        [fileManager createDirectoryAtPath:verbatmDir withIntermediateDirectories:NO attributes:NO error:&error];
         if (error) NSLog(@"Error creating directory path: %@", [error localizedDescription]);
     }
+    NSLog(@"%@", verbatmDir);
     self.verbatmFolderURL = [[NSURL alloc] initFileURLWithPath:verbatmDir];
 }
+
+
 
 -(BOOL) textFieldShouldReturn:(UITextField *)theTextField {
 	if(theTextField == self.whereTextView)
@@ -267,7 +272,8 @@
 //Lucio
 -(IBAction)takeVideo:(id)sender
 {
-    UITapGestureRecognizer* recognizer = [self.verbatmCameraView.gestureRecognizers objectAtIndex:1];
+    NSLog(@"take video launched");
+    UILongPressGestureRecognizer* recognizer = [self.verbatmCameraView.gestureRecognizers objectAtIndex:1];
     if(recognizer.state == UIGestureRecognizerStateBegan){
         [self startVideoRecording];
     }else{
@@ -281,6 +287,7 @@
 //Lucio
 -(void)startVideoRecording
 {
+    NSLog(@"Video has started recording");
     if([self.session canAddOutput:self.movieOutputFile]){
         [self.session addOutput: self.movieOutputFile];
         [self.movieOutputFile startRecordingToOutputFileURL: self.verbatmFolderURL recordingDelegate:self];
@@ -290,16 +297,19 @@
 //Lucio
 -(void)stopVideoRecording
 {
+    NSLog(@"Video has stopped recording");
+
     [self.movieOutputFile stopRecording];
 }
 
 //Lucio
+//Lazy instantiation
 -(AVCaptureMovieFileOutput*)movieOutputFile
 {
     if(!_movieOutputFile){
         _movieOutputFile = [[AVCaptureMovieFileOutput alloc]init];
-        int64_t numSeconds = 30;
-        int32_t framesPerSecond = 32;
+        int64_t numSeconds = MAX_VIDEO_LENGTH;
+        int32_t framesPerSecond = VIDEO_FRAMES_PER_SECOND;
         CMTime maxDuration = CMTimeMake(numSeconds, framesPerSecond);
         _movieOutputFile.maxRecordedDuration = maxDuration;
     }
