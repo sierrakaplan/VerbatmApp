@@ -13,7 +13,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <ImageIO/ImageIO.h>
 
-@interface verbatmViewController () <UITextFieldDelegate>
+@interface verbatmViewController () <UITextFieldDelegate, AVCaptureFileOutputRecordingDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *verbatmCameraView;
 @property (weak, nonatomic) IBOutlet UILabel *testingLabel;
@@ -24,6 +24,7 @@
 @property (strong) AVCaptureStillImageOutput* stillImageOutput;
 @property (nonatomic, strong)UIImage* stillImage;
 @property (strong, nonatomic) AVCaptureMovieFileOutput * movieOutputFile;
+@property (strong, nonatomic) NSURL* verbatmFolderURL;
 
 #define SWITCH_ICON_SIZE 60
 #define CAMERA_ICON @"switch_b"
@@ -33,6 +34,7 @@
 
 @synthesize stillImageOutput = _stillImageOutput;
 @synthesize stillImage = _stillImage;
+@synthesize verbatmFolderURL = _verbatmFolderURL;
 
 
 - (IBAction)switch:(id)sender
@@ -129,45 +131,60 @@
     [super viewDidAppear:animated];
 	
 	
-//	//----- SHOW LIVE CAMERA PREVIEW -----
-//	self.session = [[AVCaptureSession alloc] init];
-//	self.session.sessionPreset = AVCaptureSessionPresetMedium;
-//    [self addStillImageOutput];
-//	
-//	AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
-//	
-//	captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
-//	[self.verbatmCameraView.layer addSublayer:captureVideoPreviewLayer];
-//	
-//	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-//    
-//    AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-//    
-//	
-//	NSError *errorVideo = nil;
-//	AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&errorVideo];
-//    
-//    NSError* error = nil;
-//    AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
-//    
-//	if (!input) {
-//		// Handle the error appropriately.
-//		NSLog(@"ERROR: trying to open camera: %@", error);
-//	}
-//    
-//    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.whiteBackgroundUIView.bounds];
-//    self.whiteBackgroundUIView.layer.masksToBounds = YES;
-//    self.whiteBackgroundUIView.layer.shadowColor = [UIColor blackColor].CGColor;
-//    self.whiteBackgroundUIView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
-//    self.whiteBackgroundUIView.layer.shadowOpacity = 0.5f;
-//    self.whiteBackgroundUIView.layer.shadowPath = shadowPath.CGPath;
-//    
-//    
-//    
-//	[self.session addInput:input];
-//    [self.session addInput:audioInput];
-//	
-//	[self.session startRunning];
+	//----- SHOW LIVE CAMERA PREVIEW -----
+	self.session = [[AVCaptureSession alloc] init];
+	self.session.sessionPreset = AVCaptureSessionPresetMedium;
+    [self addStillImageOutput];
+	
+	AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
+	
+	captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
+	[self.verbatmCameraView.layer addSublayer:captureVideoPreviewLayer];
+	
+	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    
+    AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+    
+	
+	NSError *errorVideo = nil;
+	AVCaptureDeviceInput *input = [AVCaptureDeviceInput deviceInputWithDevice:device error:&errorVideo];
+    
+    NSError* error = nil;
+    AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
+    
+	if (!input) {
+		// Handle the error appropriately.
+		NSLog(@"ERROR: trying to open camera: %@", error);
+	}
+    
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.whiteBackgroundUIView.bounds];
+    self.whiteBackgroundUIView.layer.masksToBounds = YES;
+    self.whiteBackgroundUIView.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.whiteBackgroundUIView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
+    self.whiteBackgroundUIView.layer.shadowOpacity = 0.5f;
+    self.whiteBackgroundUIView.layer.shadowPath = shadowPath.CGPath;
+    
+    
+    [self createVerbatmDirectory];
+    
+	[self.session addInput:input];
+    [self.session addInput:audioInput];
+	
+	[self.session startRunning];
+}
+
+-(void)createVerbatmDirectory
+{
+    BOOL isDirectory;
+    NSFileManager* fileManager = [NSFileManager defaultManager];
+    NSString* verbatmDir = [NSHomeDirectory() stringByAppendingPathComponent:@"Verbatm"];
+    if([fileManager fileExistsAtPath:verbatmDir isDirectory:&isDirectory] || !isDirectory){
+        NSError* error = nil;
+        NSDictionary* attr = [NSDictionary dictionaryWithObject: NSFileProtectionComplete forKey:NSFileProtectionKey];
+        [fileManager createDirectoryAtPath:verbatmDir withIntermediateDirectories:YES attributes:attr error:&error];
+        if (error) NSLog(@"Error creating directory path: %@", [error localizedDescription]);
+    }
+    self.verbatmFolderURL = [[NSURL alloc] initFileURLWithPath:verbatmDir];
 }
 
 -(BOOL) textFieldShouldReturn:(UITextField *)theTextField {
@@ -235,18 +252,7 @@
     UIImageWriteToSavedPhotosAlbum(self.stillImage, self, nil, nil);
 }
 
-//- (IBAction)takePhoto:(UITapGestureRecognizer *)sender
-//{
-//    //NSLog(@"%@",self.stillImage);
-//    [self captureImage];
-//    [self saveImageToVerbatmFolder];
-//    if(self.stillImage){
-//        NSLog(@"Photo taken");
-//    }else{
-//        NSLog(@"Photo not taken");
-//    }
-//}
-
+//Lucio
 - (IBAction)takePhoto:(id)sender
 {
     [self captureImage];
@@ -258,6 +264,7 @@
     }
 }
 
+//Lucio
 -(IBAction)takeVideo:(id)sender
 {
     UITapGestureRecognizer* recognizer = [self.verbatmCameraView.gestureRecognizers objectAtIndex:1];
@@ -271,19 +278,22 @@
     }
 }
 
+//Lucio
 -(void)startVideoRecording
 {
-//    if([self.session canAddOutput:self.movieOutputFile]){
-//        [self.session addOutput: self.movieOutputFile];
-//        NSString* documentsDirPath = 
-//    }
+    if([self.session canAddOutput:self.movieOutputFile]){
+        [self.session addOutput: self.movieOutputFile];
+        [self.movieOutputFile startRecordingToOutputFileURL: self.verbatmFolderURL recordingDelegate:self];
+    }
 }
 
+//Lucio
 -(void)stopVideoRecording
 {
-    
+    [self.movieOutputFile stopRecording];
 }
 
+//Lucio
 -(AVCaptureMovieFileOutput*)movieOutputFile
 {
     if(!_movieOutputFile){
