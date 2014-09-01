@@ -102,23 +102,6 @@
                                     }];
 }
 
--(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
-{
-    if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
-        
-        [self.assetLibrary assetForURL:outputFileURL
-                 resultBlock:^(ALAsset *asset) {
-                     // assign the photo to the album
-                     [self.verbatmAlbum addAsset:asset];
-                     NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-                 }
-                failureBlock:^(NSError* error) {
-                    NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-                }];
-    }else{
-        NSLog(@"wrong output location");
-    }
-}
 
 
 #pragma mark - touch gesture selectors
@@ -196,6 +179,8 @@
     [self createVerbatmDirectory];
 }
 
+#pragma mark -creating gestures
+
 -(void) createTapGesture
 {
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
@@ -206,7 +191,6 @@
 -(void) createLongPressGesture
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
-    longPress.numberOfTapsRequired = 1;
     longPress.minimumPressDuration = 2;
     [self.verbatmCameraView addGestureRecognizer:longPress];
 }
@@ -319,10 +303,10 @@
     }
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-        NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         [self setStillImage:[[UIImage alloc] initWithData: dataForImage]];
+        [self saveImageToVerbatmFolder];
     }];
-    
 }
 
 
@@ -332,12 +316,6 @@
 - (IBAction)takePhoto:(id)sender
 {
     [self captureImage];
-    [self saveImageToVerbatmFolder];
-    if(self.stillImage){
-        NSLog(@"Photo taken");
-    }else{
-        NSLog(@"Photo not taken");
-    }
 }
 
 
@@ -359,7 +337,7 @@
 //Lucio
 -(void)startVideoRecording
 {
-    
+    NSLog(@"video is recording");
     NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
     NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -368,7 +346,7 @@
         NSError *error;
         if ([fileManager removeItemAtPath:movieOutput error:&error] == NO)
         {
-            //Error - handle if requried
+            NSLog(@"output path  is wrong");
         }
     }
     //Start recording
@@ -378,7 +356,24 @@
 //Lucio
 -(void)stopVideoRecording
 {
+    NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
+    NSURL *outputFileURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
     [self.movieOutputFile stopRecording];
+    if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
+        [self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
+            [self.assetLibrary assetForURL:assetURL
+                               resultBlock:^(ALAsset *asset) {
+                                   // assign the photo to the album
+                                   [self.verbatmAlbum addAsset:asset];
+                                   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+                               }
+                              failureBlock:^(NSError* error) {
+                                  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+                              }];
+        }];
+    }else{
+        NSLog(@"wrong output location");
+    }
 }
 
 //Lucio
@@ -386,7 +381,7 @@
 {
     if(!_movieOutputFile){
         _movieOutputFile = [[AVCaptureMovieFileOutput alloc]init];
-        int64_t numSeconds = 30;
+        int64_t numSeconds = 960;
         int32_t framesPerSecond = 32;
         CMTime maxDuration = CMTimeMake(numSeconds, framesPerSecond);
         _movieOutputFile.maxRecordedDuration = maxDuration;
@@ -400,6 +395,10 @@
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
 {
     
+}
+
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
+{
 }
 
 
