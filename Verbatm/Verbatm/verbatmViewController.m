@@ -28,7 +28,8 @@
 @property (strong, nonatomic) NSURL* verbatmFolderURL;
 @property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
 @property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
-@property ( strong, nonatomic) UIDynamicAnimator* animator;
+@property (nonatomic, weak) CAShapeLayer *pathLayer;
+
 
 #define SWITCH_ICON_SIZE 60
 #define CAMERA_ICON @"switch_b"
@@ -41,7 +42,6 @@
 @synthesize verbatmFolderURL = _verbatmFolderURL;
 @synthesize assetLibrary = _assetLibrary;
 @synthesize verbatmAlbum = _verbatmAlbum;
-@synthesize animator = _animator;
 
 
 
@@ -80,7 +80,11 @@
 -(void)saveImageToVerbatmFolder
 {
     //    UIImageWriteToSavedPhotosAlbum(self.stillImage, self, nil, nil);
-    CGImageRef img = [self.stillImage CGImage];
+    //[[UIImage alloc] initWithCGImage:self.stillImage.CGImage scale:1 orientation:UIImageOrientationLeft];
+    UIImage* image = [self imageByRotatingImage:self.stillImage fromImageOrientation: self.stillImage.imageOrientation];
+    if(image) NSLog(@"image is not null");
+    CGImageRef img = [image CGImage];
+    
     [self.assetLibrary writeImageToSavedPhotosAlbum:img
                                            metadata:nil
                                     completionBlock:^(NSURL* assetURL, NSError* error) {
@@ -215,7 +219,7 @@
 	
 	captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
 	[self.verbatmCameraView.layer addSublayer:captureVideoPreviewLayer];
-	
+	   
 	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
     AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
@@ -227,23 +231,24 @@
     NSError* error = nil;
     AVCaptureDeviceInput *audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
     
-	if (!input) {
+	if (!input || !audioInput) {
 		// Handle the error appropriately.
 		NSLog(@"ERROR: trying to open camera: %@", error);
 	}
     
-    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.whiteBackgroundUIView.bounds];
-    self.whiteBackgroundUIView.layer.masksToBounds = YES;
-    self.whiteBackgroundUIView.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.whiteBackgroundUIView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
-    self.whiteBackgroundUIView.layer.shadowOpacity = 0.5f;
-    self.whiteBackgroundUIView.layer.shadowPath = shadowPath.CGPath;
+//    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.whiteBackgroundUIView.bounds];
+//    self.whiteBackgroundUIView.layer.masksToBounds = YES;
+//    self.whiteBackgroundUIView.layer.shadowColor = [UIColor blackColor].CGColor;
+//    self.whiteBackgroundUIView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
+//    self.whiteBackgroundUIView.layer.shadowOpacity = 0.5f;
+//    self.whiteBackgroundUIView.layer.shadowPath = shadowPath.CGPath;
     
     
     [self createVerbatmDirectory];
     
 	[self.session addInput:input];
     [self.session addInput:audioInput];
+    
     if([self.session canAddOutput:self.movieOutputFile]){
         [self.session addOutput: self.movieOutputFile];   //need to check if it cant
     }else{
@@ -306,9 +311,11 @@
             break;
         }
     }
+    //AVCaptureConnection *conn = [self.videoCaptureOutput connectionWithMediaType:AVMediaTypeVideo];
+    [videoConnection setVideoOrientation:AVCaptureVideoOrientationPortrait];
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+        NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         [self setStillImage:[[UIImage alloc] initWithData: dataForImage]];
         [self saveImageToVerbatmFolder];
     }];
@@ -343,8 +350,26 @@
 -(void)createBezierPath
 {
     UIBezierPath* path = [UIBezierPath bezierPathWithRect: self.verbatmCameraView.frame];
-    
-    
+    //[path closePath];
+    if (self.pathLayer == nil)
+    {
+        CAShapeLayer *shapeLayer = [CAShapeLayer layer];
+        
+        shapeLayer.path = [path CGPath];
+        shapeLayer.strokeColor = [[UIColor redColor] CGColor];
+        shapeLayer.fillColor = nil;
+        shapeLayer.lineWidth = 1.5f;
+        shapeLayer.lineJoin = kCALineJoinBevel;
+        
+        [self.verbatmCameraView.layer addSublayer: shapeLayer];
+        
+        self.pathLayer = shapeLayer;
+    }
+    CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    pathAnimation.duration = 30.0;
+    pathAnimation.fromValue = @(0.0f);
+    pathAnimation.toValue = @(1.0f);
+    [self.pathLayer addAnimation:pathAnimation forKey:@"strokeEnd"];
 }
 
 //Lucio
@@ -369,24 +394,7 @@
 //Lucio
 -(void)stopVideoRecording
 {
-    NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
-    NSURL *outputFileURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
     [self.movieOutputFile stopRecording];
-    if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
-        [self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
-            [self.assetLibrary assetForURL:assetURL
-                               resultBlock:^(ALAsset *asset) {
-                                   // assign the photo to the album
-                                   [self.verbatmAlbum addAsset:asset];
-                                   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-                               }
-                              failureBlock:^(NSError* error) {
-                                  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-                              }];
-        }];
-    }else{
-        NSLog(@"wrong output location");
-    }
 }
 
 //Lucio
@@ -412,7 +420,142 @@
 
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
 {
+    if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
+        [self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
+            [self.assetLibrary assetForURL:assetURL
+                               resultBlock:^(ALAsset *asset) {
+                                   // assign the photo to the album
+                                   [self.verbatmAlbum addAsset:asset];
+                                   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+                               }
+                              failureBlock:^(NSError* error) {
+                                  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+                              }];
+        }];
+    }else{
+        NSLog(@"wrong output location");
+    }
 }
 
+
+
+//Lucio
+//Directly from stack overflow
+-(UIImage*)imageByRotatingImage:(UIImage*)initImage fromImageOrientation:(UIImageOrientation)orientation
+{
+    CGImageRef imgRef = initImage.CGImage;
+    
+    CGFloat width = CGImageGetWidth(imgRef);
+    CGFloat height = CGImageGetHeight(imgRef);
+    
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    CGRect bounds = CGRectMake(0, 0, width, height);
+    CGSize imageSize = CGSizeMake(CGImageGetWidth(imgRef), CGImageGetHeight(imgRef));
+    CGFloat boundHeight;
+    UIImageOrientation orient = orientation;
+    switch(orient) {
+            
+        case UIImageOrientationUp: //EXIF = 1
+            return initImage;
+            break;
+            
+        case UIImageOrientationUpMirrored: //EXIF = 2
+            transform = CGAffineTransformMakeTranslation(imageSize.width, 0.0);
+            transform = CGAffineTransformScale(transform, -1.0, 1.0);
+            break;
+            
+        case UIImageOrientationDown: //EXIF = 3
+            transform = CGAffineTransformMakeTranslation(imageSize.width, imageSize.height);
+            transform = CGAffineTransformRotate(transform, M_PI);
+            break;
+            
+        case UIImageOrientationDownMirrored: //EXIF = 4
+            transform = CGAffineTransformMakeTranslation(0.0, imageSize.height);
+            transform = CGAffineTransformScale(transform, 1.0, -1.0);
+            break;
+            
+        case UIImageOrientationLeftMirrored: //EXIF = 5
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(imageSize.height, imageSize.width);
+            transform = CGAffineTransformScale(transform, -1.0, 1.0);
+            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationLeft: //EXIF = 6
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(0.0, imageSize.width);
+            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationRightMirrored: //EXIF = 7
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
+            break;
+            
+        case UIImageOrientationRight: //EXIF = 8
+            boundHeight = bounds.size.height;
+            bounds.size.height = bounds.size.width;
+            bounds.size.width = boundHeight;
+            transform = CGAffineTransformMakeTranslation(imageSize.height, 0.0);
+            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
+            break;
+            
+        default:
+            [NSException raise:NSInternalInconsistencyException format:@"Invalid image orientation"];
+            
+    }
+    // Create the bitmap context
+    CGContextRef    context = NULL;
+    void *          bitmapData;
+    int             bitmapByteCount;
+    int             bitmapBytesPerRow;
+    
+    // Declare the number of bytes per row. Each pixel in the bitmap in this
+    // example is represented by 4 bytes; 8 bits each of red, green, blue, and
+    // alpha.
+    bitmapBytesPerRow   = (bounds.size.width * 4);
+    bitmapByteCount     = (bitmapBytesPerRow * bounds.size.height);
+    bitmapData = malloc( bitmapByteCount );
+    if (bitmapData == NULL)
+    {
+        return nil;
+    }
+    
+    // Create the bitmap context. We want pre-multiplied ARGB, 8-bits
+    // per component. Regardless of what the source image format is
+    // (CMYK, Grayscale, and so on) it will be converted over to the format
+    // specified here by CGBitmapContextCreate.
+    CGColorSpaceRef colorspace = CGImageGetColorSpace(imgRef);
+    context = CGBitmapContextCreate (bitmapData,bounds.size.width,bounds.size.height,8,bitmapBytesPerRow,
+                                     colorspace, kCGBitmapAlphaInfoMask & kCGImageAlphaPremultipliedLast);
+    
+    if (context == NULL)
+        // error creating context
+        return nil;
+    
+    CGContextScaleCTM(context, -1.0, -1.0);
+    CGContextTranslateCTM(context, -bounds.size.width, -bounds.size.height);
+    
+    CGContextConcatCTM(context, transform);
+    
+    // Draw the image to the bitmap context. Once we draw, the memory
+    // allocated for the context for rendering will then contain the
+    // raw image data in the specified color space.
+    CGContextDrawImage(context, CGRectMake(0,0,width, height), imgRef);
+    
+    CGImageRef imgRef2 = CGBitmapContextCreateImage(context);
+    CGContextRelease(context);
+    free(bitmapData);
+    UIImage * image = [UIImage imageWithCGImage:imgRef2 scale:initImage.scale orientation:UIImageOrientationUp];
+    CGImageRelease(imgRef2);
+    return image;
+}
 
 @end
