@@ -12,6 +12,7 @@
 #import "Article.h"
 #import <AVFoundation/AVFoundation.h>
 #import <ImageIO/ImageIO.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 @interface verbatmViewController () <UITextFieldDelegate, AVCaptureFileOutputRecordingDelegate>
 
@@ -25,6 +26,8 @@
 @property (nonatomic, strong)UIImage* stillImage;
 @property (strong, nonatomic) AVCaptureMovieFileOutput * movieOutputFile;
 @property (strong, nonatomic) NSURL* verbatmFolderURL;
+@property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
+@property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
 
 #define SWITCH_ICON_SIZE 60
 #define CAMERA_ICON @"switch_b"
@@ -35,7 +38,90 @@
 @synthesize stillImageOutput = _stillImageOutput;
 @synthesize stillImage = _stillImage;
 @synthesize verbatmFolderURL = _verbatmFolderURL;
+@synthesize assetLibrary = _assetLibrary;
+@synthesize verbatmAlbum = _verbatmAlbum;
 
+
+
+#pragma mark - creating album for verbatm
+
+//Lucio
+-(void)createVerbatmDirectory
+{
+    NSString* albumName = @"Verbatm";
+    [self.assetLibrary addAssetsGroupAlbumWithName:albumName
+                                       resultBlock:^(ALAssetsGroup *group) {
+                                           NSLog(@"added album:%@", albumName);
+                                       }
+                                      failureBlock:^(NSError *error) {
+                                          NSLog(@"error adding album");
+                                      }];
+    
+    //gets the album once ints created.
+    __weak verbatmViewController* weakSelf = self;
+    [self.assetLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum
+                                usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                                    if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:albumName]) {
+                                        NSLog(@"found album %@", albumName);
+                                        weakSelf.verbatmAlbum = group;
+                                    }
+                                }
+                              failureBlock:^(NSError* error) {
+                                  NSLog(@"failed to enumerate albums:\nError: %@", [error localizedDescription]);
+                              }];
+}
+
+
+#pragma mark - saving photos and videos
+
+//Lucio
+-(void)saveImageToVerbatmFolder
+{
+    //    UIImageWriteToSavedPhotosAlbum(self.stillImage, self, nil, nil);
+    CGImageRef img = [self.stillImage CGImage];
+    [self.assetLibrary writeImageToSavedPhotosAlbum:img
+                                           metadata:nil
+                                    completionBlock:^(NSURL* assetURL, NSError* error) {
+                                        if (error.code == 0) {
+                                            NSLog(@"saved image completed:\nurl: %@", assetURL);
+                                            
+                                            // try to get the asset
+                                            [self.assetLibrary assetForURL:assetURL
+                                                               resultBlock:^(ALAsset *asset) {
+                                                                   // assign the photo to the album
+                                                                   [self.verbatmAlbum addAsset:asset];
+                                                                   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+                                                               }
+                                                              failureBlock:^(NSError* error) {
+                                                                  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+                                                              }];
+                                        }
+                                        else {
+                                            NSLog(@"saved image failed.\nerror code %i\n%@", error.code, [error localizedDescription]);
+                                        }
+                                    }];
+}
+
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
+{
+    if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
+        
+        [self.assetLibrary assetForURL:outputFileURL
+                 resultBlock:^(ALAsset *asset) {
+                     // assign the photo to the album
+                     [self.verbatmAlbum addAsset:asset];
+                     NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+                 }
+                failureBlock:^(NSError* error) {
+                    NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+                }];
+    }else{
+        NSLog(@"wrong output location");
+    }
+}
+
+
+#pragma mark - touch gesture selectors
 
 - (IBAction)switch:(id)sender
 {
@@ -106,8 +192,13 @@
  
     [self createTapGesture];
     [self createLongPressGesture];
-    
-    
+    self.assetLibrary = [[ALAssetsLibrary alloc] init];
+    [self createVerbatmDirectory];
+    if([self.session canAddOutput:self.movieOutputFile]){
+        [self.session addOutput: self.movieOutputFile];   //need to check if it cant
+    }else{
+        NSLog(@"couldn't add output");
+    }
 }
 
 -(void) createTapGesture
@@ -173,19 +264,6 @@
 	[self.session startRunning];
 }
 
--(void)createVerbatmDirectory
-{
-    BOOL isDirectory;
-    NSFileManager* fileManager = [NSFileManager defaultManager];
-    NSString* verbatmDir = [NSHomeDirectory() stringByAppendingPathComponent:@"Verbatm"];
-    if([fileManager fileExistsAtPath:verbatmDir isDirectory:&isDirectory] || !isDirectory){
-        NSError* error = nil;
-        NSDictionary* attr = [NSDictionary dictionaryWithObject: NSFileProtectionComplete forKey:NSFileProtectionKey];
-        [fileManager createDirectoryAtPath:verbatmDir withIntermediateDirectories:YES attributes:attr error:&error];
-        if (error) NSLog(@"Error creating directory path: %@", [error localizedDescription]);
-    }
-    self.verbatmFolderURL = [[NSURL alloc] initFileURLWithPath:verbatmDir];
-}
 
 -(BOOL) textFieldShouldReturn:(UITextField *)theTextField {
 	if(theTextField == self.whereTextView)
@@ -247,10 +325,8 @@
     
 }
 
--(void)saveImageToVerbatmFolder
-{
-    UIImageWriteToSavedPhotosAlbum(self.stillImage, self, nil, nil);
-}
+
+
 
 //Lucio
 - (IBAction)takePhoto:(id)sender
@@ -264,6 +340,8 @@
     }
 }
 
+
+#pragma mark - video recording
 //Lucio
 -(IBAction)takeVideo:(id)sender
 {
@@ -281,10 +359,20 @@
 //Lucio
 -(void)startVideoRecording
 {
-    if([self.session canAddOutput:self.movieOutputFile]){
-        [self.session addOutput: self.movieOutputFile];
-        [self.movieOutputFile startRecordingToOutputFileURL: self.verbatmFolderURL recordingDelegate:self];
+    
+    NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
+    NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:movieOutput])
+    {
+        NSError *error;
+        if ([fileManager removeItemAtPath:movieOutput error:&error] == NO)
+        {
+            //Error - handle if requried
+        }
     }
+    //Start recording
+    [self.movieOutputFile startRecordingToOutputFileURL:outputURL recordingDelegate:self];
 }
 
 //Lucio
@@ -306,7 +394,7 @@
     return _movieOutputFile;
 }
 
-///Required protocol methods for AVCapture
+#pragma mark Required protocol methods for AVCapture
 //Lucio
 
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
@@ -314,9 +402,5 @@
     
 }
 
--(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
-{
-    
-}
 
 @end
