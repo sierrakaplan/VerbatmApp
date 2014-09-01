@@ -28,6 +28,7 @@
 @property (strong, nonatomic) NSURL* verbatmFolderURL;
 @property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
 @property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
+@property ( strong, nonatomic) UIDynamicAnimator* animator;
 
 #define SWITCH_ICON_SIZE 60
 #define CAMERA_ICON @"switch_b"
@@ -40,6 +41,7 @@
 @synthesize verbatmFolderURL = _verbatmFolderURL;
 @synthesize assetLibrary = _assetLibrary;
 @synthesize verbatmAlbum = _verbatmAlbum;
+@synthesize animator = _animator;
 
 
 
@@ -115,6 +117,7 @@
         
         //remove existing input
         AVCaptureInput* currentInput = [self.session.inputs firstObject];
+        currentInput = ([((AVCaptureDeviceInput*)currentInput).device hasMediaType:AVMediaTypeVideo])? currentInput : [self.session.inputs lastObject];
         [self.session removeInput:  currentInput];
         
         //get a new input
@@ -326,12 +329,20 @@
     UITapGestureRecognizer* recognizer = [self.verbatmCameraView.gestureRecognizers objectAtIndex:1];
     if(recognizer.state == UIGestureRecognizerStateBegan){
         [self startVideoRecording];
+        [self createBezierPath];
     }else{
         if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateFailed ||
            recognizer.state == UIGestureRecognizerStateCancelled){
             [self stopVideoRecording];
         }
     }
+}
+
+-(void)createBezierPath
+{
+    UIBezierPath* path = [UIBezierPath bezierPathWithRect: self.verbatmCameraView.frame];
+    
+    
 }
 
 //Lucio
