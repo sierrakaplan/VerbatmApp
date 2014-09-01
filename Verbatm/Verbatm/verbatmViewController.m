@@ -194,11 +194,6 @@
     [self createLongPressGesture];
     self.assetLibrary = [[ALAssetsLibrary alloc] init];
     [self createVerbatmDirectory];
-    if([self.session canAddOutput:self.movieOutputFile]){
-        [self.session addOutput: self.movieOutputFile];   //need to check if it cant
-    }else{
-        NSLog(@"couldn't add output");
-    }
 }
 
 -(void) createTapGesture
@@ -260,6 +255,11 @@
     
 	[self.session addInput:input];
     [self.session addInput:audioInput];
+    if([self.session canAddOutput:self.movieOutputFile]){
+        [self.session addOutput: self.movieOutputFile];   //need to check if it cant
+    }else{
+        NSLog(@"couldn't add output");
+    }
 	
 	[self.session startRunning];
 }
