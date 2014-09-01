@@ -97,7 +97,7 @@
                                                               }];
                                         }
                                         else {
-                                            NSLog(@"saved image failed.\nerror code %i\n%@", error.code, [error localizedDescription]);
+                                            NSLog(@"saved image failed.\nerror code %li\n%@", (long)error.code, [error localizedDescription]);
                                         }
                                     }];
 }
@@ -126,8 +126,10 @@
         }
         
         AVCaptureDeviceInput* newInput = [[AVCaptureDeviceInput alloc] initWithDevice:newCamera error:nil];
+        AVCaptureInput* currentAudioInput = [self.session.inputs firstObject];
+        [self.session removeInput:  currentAudioInput];
         [self.session addInput:newInput];
-        
+        [self.session addInput:currentAudioInput];
         //commit the changes made
         
         [self.session commitConfiguration];
