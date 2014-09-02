@@ -354,6 +354,7 @@
     layer.path = [path CGPath];
     layer.strokeColor = [[UIColor redColor]CGColor];
     layer.lineWidth = 10.0;
+    [layer setZPosition:5.0];
     [self.verbatmCameraView.layer addSublayer:layer];
     CABasicAnimation* pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
     pathAnimation.duration = 30.0;
