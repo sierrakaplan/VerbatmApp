@@ -32,7 +32,7 @@
 
 
 #define SWITCH_ICON_SIZE 60
-#define CAMERA_ICON @"switch_b"
+#define CAMERA_ICON @"flash_off2"
 @end
 
 @implementation verbatmViewController
@@ -349,18 +349,27 @@
 
 -(void)createBezierPath
 {
-    UIBezierPath* path = [UIBezierPath bezierPathWithRect: self.verbatmCameraView.frame];
+    
+    CGRect rect = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - self.whiteBackgroundUIView.bounds.size.height + 10);
     CAShapeLayer* layer = [CAShapeLayer layer];
+    UIBezierPath* path = [UIBezierPath bezierPathWithRect: rect];
     layer.path = [path CGPath];
-    layer.strokeColor = [[UIColor redColor]CGColor];
+    layer.strokeColor = [[UIColor blueColor]CGColor];
     layer.lineWidth = 10.0;
+<<<<<<< HEAD
     [layer setZPosition:5.0];
+=======
+    [layer setZPosition: 0.0];
+    [layer setFillColor:[[UIColor clearColor]CGColor]];
+    //layer.opacity = 0.5;
+>>>>>>> 1482c11ca7699db5e2dff8d46d370667220b6f8c
     [self.verbatmCameraView.layer addSublayer:layer];
-    CABasicAnimation* pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-    pathAnimation.duration = 30.0;
-    pathAnimation.fromValue = @(0.0f);
-    pathAnimation.fromValue = @(1.0f);
-    [layer addAnimation:pathAnimation forKey:@"strokeEnd"];
+//    CABasicAnimation* pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+//    pathAnimation.duration = 30.0;
+//    pathAnimation.fromValue = @(0.0f);
+//    pathAnimation.fromValue = @(2.0f);
+//    [layer addAnimation:pathAnimation forKey:@"strokeEnd"];
+    
 }
 
 //Lucio
