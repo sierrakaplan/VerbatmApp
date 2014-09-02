@@ -350,26 +350,16 @@
 -(void)createBezierPath
 {
     UIBezierPath* path = [UIBezierPath bezierPathWithRect: self.verbatmCameraView.frame];
-    //[path closePath];
-    if (self.pathLayer == nil)
-    {
-        CAShapeLayer *shapeLayer = [CAShapeLayer layer];
-        
-        shapeLayer.path = [path CGPath];
-        shapeLayer.strokeColor = [[UIColor redColor] CGColor];
-        shapeLayer.fillColor = nil;
-        shapeLayer.lineWidth = 1.5f;
-        shapeLayer.lineJoin = kCALineJoinBevel;
-        
-        [self.verbatmCameraView.layer addSublayer: shapeLayer];
-        
-        self.pathLayer = shapeLayer;
-    }
-    CABasicAnimation *pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+    CAShapeLayer* layer = [CAShapeLayer layer];
+    layer.path = [path CGPath];
+    layer.strokeColor = [[UIColor redColor]CGColor];
+    layer.lineWidth = 10.0;
+    [self.verbatmCameraView.layer addSublayer:layer];
+    CABasicAnimation* pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
     pathAnimation.duration = 30.0;
     pathAnimation.fromValue = @(0.0f);
-    pathAnimation.toValue = @(1.0f);
-    [self.pathLayer addAnimation:pathAnimation forKey:@"strokeEnd"];
+    pathAnimation.fromValue = @(1.0f);
+    [layer addAnimation:pathAnimation forKey:@"strokeEnd"];
 }
 
 //Lucio
