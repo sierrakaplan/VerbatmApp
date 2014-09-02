@@ -29,10 +29,14 @@
 @property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
 @property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
 @property (nonatomic, weak) CAShapeLayer *pathLayer;
+@property (strong, nonatomic) UIImageView* videoProgressImageView;
+@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic) int counter;
 
 
 #define SWITCH_ICON_SIZE 60
 #define CAMERA_ICON @"flash_off2"
+#define MAX_VIDEO_LENGTH 30
 @end
 
 @implementation verbatmViewController
@@ -42,7 +46,8 @@
 @synthesize verbatmFolderURL = _verbatmFolderURL;
 @synthesize assetLibrary = _assetLibrary;
 @synthesize verbatmAlbum = _verbatmAlbum;
-
+@synthesize videoProgressImageView= _videoProgressImageView;
+@synthesize timer = _timer;
 
 
 #pragma mark - creating album for verbatm
@@ -181,11 +186,21 @@
 //    
 //    [self.view addSubview:overlayTakePhoto];
 //    
- 
+    [self createVideoProgressView];
     [self createTapGesture];
     [self createLongPressGesture];
     self.assetLibrary = [[ALAssetsLibrary alloc] init];
     [self createVerbatmDirectory];
+}
+
+#pragma mark -create video progess bar
+
+-(void)createVideoProgressView
+{
+    self.videoProgressImageView =  [[UIImageView alloc] initWithImage:nil];
+    self.videoProgressImageView.backgroundColor = [UIColor clearColor];
+    self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width); //look for a better way than using magic number.
+    [self.view addSubview: self.videoProgressImageView];
 }
 
 #pragma mark -creating gestures
@@ -338,34 +353,71 @@
     UITapGestureRecognizer* recognizer = [self.verbatmCameraView.gestureRecognizers objectAtIndex:1];
     if(recognizer.state == UIGestureRecognizerStateBegan){
         [self startVideoRecording];
-        [self createBezierPath];
+        self.counter = 0;
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(createProgressPath) userInfo:nil repeats:YES];
     }else{
         if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateFailed ||
            recognizer.state == UIGestureRecognizerStateCancelled){
             [self stopVideoRecording];
+            [self clearVideoProgressImage];
+            [self.timer invalidate];
+            self.counter = 0;
         }
     }
 }
 
--(void)createBezierPath
+//Lucio
+-(void)clearVideoProgressImage
 {
-    
-    CGRect rect = CGRectMake(0, 0, self.view.bounds.size.width, self.view.bounds.size.height - self.whiteBackgroundUIView.bounds.size.height + 10);
-    CAShapeLayer* layer = [CAShapeLayer layer];
-    UIBezierPath* path = [UIBezierPath bezierPathWithRect: rect];
-    layer.path = [path CGPath];
-    layer.strokeColor = [[UIColor blueColor]CGColor];
-    layer.lineWidth = 10.0;
-    [layer setZPosition: 0.0];
-    [layer setFillColor:[[UIColor clearColor]CGColor]];
-    //layer.opacity = 0.5;
-    [self.verbatmCameraView.layer addSublayer:layer];
-//    CABasicAnimation* pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-//    pathAnimation.duration = 30.0;
-//    pathAnimation.fromValue = @(0.0f);
-//    pathAnimation.fromValue = @(2.0f);
-//    [layer addAnimation:pathAnimation forKey:@"strokeEnd"];
-    
+    self.videoProgressImageView.image = nil;
+}
+
+-(void)createProgressPath
+{
+    self.counter++;
+    UIGraphicsBeginImageContext(self.videoProgressImageView.frame.size);
+    [self.videoProgressImageView.image drawInRect:self.videoProgressImageView.frame];
+    CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
+    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 3.0);
+    if(self.counter < MAX_VIDEO_LENGTH/8){
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 181, 197, 1);
+        CGContextBeginPath(UIGraphicsGetCurrentContext());
+        CGPoint start = CGPointMake(self.videoProgressImageView.frame.size.width/2, self.videoProgressImageView.frame.size.height);
+        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
+        CGPoint end = CGPointMake((self.videoProgressImageView.frame.size.width/2)*(1 - (self.counter/ (MAX_VIDEO_LENGTH/8))), self.videoProgressImageView.frame.size.height);
+        CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
+    }else if (self.counter >= MAX_VIDEO_LENGTH/8 && self.counter < (MAX_VIDEO_LENGTH*3)/8){
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(),0, 0,1,1);
+        CGContextBeginPath(UIGraphicsGetCurrentContext());
+        CGPoint start = CGPointMake(0, self.videoProgressImageView.frame.size.height);
+        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
+        CGPoint end = CGPointMake(0, self.videoProgressImageView.frame.size.height*(1 - (self.counter - (MAX_VIDEO_LENGTH/8)/ (MAX_VIDEO_LENGTH*2/8))));
+        CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
+    }else if (self.counter >= (MAX_VIDEO_LENGTH*3)/8  && self.counter < (MAX_VIDEO_LENGTH*5)/8 ){
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 0, 0 ,0,1);
+        CGContextBeginPath(UIGraphicsGetCurrentContext());
+        CGPoint start = CGPointMake(0, 0);
+        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
+        CGPoint end = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH*3/8))/ (MAX_VIDEO_LENGTH*2/8)), 0);
+        CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
+    }else if (self.counter >= (MAX_VIDEO_LENGTH*5)/8  && self.counter < (MAX_VIDEO_LENGTH*7)/8){
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 215, 0, 1);
+        CGContextBeginPath(UIGraphicsGetCurrentContext());
+        CGPoint start = CGPointMake(self.videoProgressImageView.frame.size.width, 0);
+        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
+        CGPoint end = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH*5)/8)/ (MAX_VIDEO_LENGTH*2/8)));
+        CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
+    }else{
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 181, 197, 1);
+        CGContextBeginPath(UIGraphicsGetCurrentContext());
+        CGPoint start = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height);
+        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
+        CGPoint end = CGPointMake(self.videoProgressImageView.frame.size.width - ((self.videoProgressImageView.frame.size.width/2)*(self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8)), self.videoProgressImageView.frame.size.height);
+         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
+    }
+    CGContextStrokePath(UIGraphicsGetCurrentContext());
+    self.videoProgressImageView.image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
 }
 
 //Lucio
