@@ -35,7 +35,7 @@
 
 
 #define SWITCH_ICON_SIZE 60
-#define CAMERA_ICON @"flash_off2"
+#define CAMERA_ICON @"switch_back3"
 #define MAX_VIDEO_LENGTH 30
 @end
 
@@ -48,6 +48,20 @@
 @synthesize verbatmAlbum = _verbatmAlbum;
 @synthesize videoProgressImageView= _videoProgressImageView;
 @synthesize timer = _timer;
+
+
+//Test function for top shadow
+//Iain
+-(void) addTopShadowToView: (UIView *) view
+{
+    
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
+    view.layer.masksToBounds = NO;
+    view.layer.shadowColor = [UIColor blackColor].CGColor;
+    view.layer.shadowOffset = CGSizeMake(0.0f, -5.0f);
+    view.layer.shadowOpacity = 0.4f;
+    view.layer.shadowPath = shadowPath.CGPath;
+}
 
 
 #pragma mark - creating album for verbatm
@@ -191,6 +205,8 @@
     [self createLongPressGesture];
     self.assetLibrary = [[ALAssetsLibrary alloc] init];
     [self createVerbatmDirectory];
+    
+    //[self addTopShadowToView:self.whiteBackgroundUIView];
 }
 
 #pragma mark -create video progess bar
