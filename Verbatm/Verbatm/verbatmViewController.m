@@ -32,7 +32,7 @@
 
 
 #define SWITCH_ICON_SIZE 60
-#define CAMERA_ICON @"switch_b"
+#define CAMERA_ICON @"flash_off2"
 @end
 
 @implementation verbatmViewController
