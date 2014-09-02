@@ -31,7 +31,7 @@
 @property (nonatomic, weak) CAShapeLayer *pathLayer;
 @property (strong, nonatomic) UIImageView* videoProgressImageView;
 @property (nonatomic, strong) NSTimer *timer;
-@property (nonatomic) int counter;
+@property (nonatomic) CGFloat counter;
 
 
 #define SWITCH_ICON_SIZE 60
@@ -199,7 +199,7 @@
 {
     self.videoProgressImageView =  [[UIImageView alloc] initWithImage:nil];
     self.videoProgressImageView.backgroundColor = [UIColor clearColor];
-    self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width); //look for a better way than using magic number.
+    self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width*2/3); //look for a better way than using magic number.
     [self.view addSubview: self.videoProgressImageView];
 }
 
@@ -354,7 +354,7 @@
     if(recognizer.state == UIGestureRecognizerStateBegan){
         [self startVideoRecording];
         self.counter = 0;
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(createProgressPath) userInfo:nil repeats:YES];
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(createProgressPath) userInfo:nil repeats:YES];
     }else{
         if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateFailed ||
            recognizer.state == UIGestureRecognizerStateCancelled){
@@ -374,13 +374,13 @@
 
 -(void)createProgressPath
 {
-    self.counter++;
+    self.counter += 0.1;
     UIGraphicsBeginImageContext(self.videoProgressImageView.frame.size);
     [self.videoProgressImageView.image drawInRect:self.videoProgressImageView.frame];
     CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
-    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 3.0);
+    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 5.0);
     if(self.counter < MAX_VIDEO_LENGTH/8){
-        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 181, 197, 1);
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 1, 0, 0, 1);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGPoint start = CGPointMake(self.videoProgressImageView.frame.size.width/2, self.videoProgressImageView.frame.size.height);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
@@ -418,6 +418,7 @@
     CGContextStrokePath(UIGraphicsGetCurrentContext());
     self.videoProgressImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+//    [self.view addSubview: self.videoProgressImageView];
 }
 
 //Lucio
