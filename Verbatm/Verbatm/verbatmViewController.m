@@ -352,13 +352,16 @@
     UIBezierPath* path = [UIBezierPath bezierPathWithRect: self.verbatmCameraView.frame];
     CAShapeLayer* layer = [CAShapeLayer layer];
     layer.path = [path CGPath];
-    layer.strokeColor = [[UIColor redColor]CGColor];
+    layer.strokeColor = [[UIColor whiteColor]CGColor];
     layer.lineWidth = 10.0;
+    [layer setZPosition: 1.0];
+    [layer setFillColor:[[UIColor clearColor]CGColor]];
+    //layer.opacity = 0.5;
     [self.verbatmCameraView.layer addSublayer:layer];
     CABasicAnimation* pathAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-    pathAnimation.duration = 30.0;
+    pathAnimation.duration = 300.0;
     pathAnimation.fromValue = @(0.0f);
-    pathAnimation.fromValue = @(1.0f);
+    pathAnimation.fromValue = @(2.0f);
     [layer addAnimation:pathAnimation forKey:@"strokeEnd"];
 }
 
