@@ -32,6 +32,7 @@
 @property (strong, nonatomic) UIImageView* videoProgressImageView;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic) CGFloat counter;
+@property (strong, nonatomic) AVCaptureVideoPreviewLayer *captureVideoPreviewLayer;
 
 
 #define SWITCH_ICON_SIZE 60
@@ -54,6 +55,7 @@
 @synthesize videoProgressImageView= _videoProgressImageView;
 @synthesize timer = _timer;
 @synthesize verbatmCameraView =_verbatmCameraView;
+@synthesize captureVideoPreviewLayer = _captureVideoPreviewLayer;
 
 
 //Test function for top shadow
@@ -137,6 +139,7 @@
 
 #pragma mark - touch gesture selectors
 
+//Lucio
 - (IBAction)switch:(id)sender
 {
     if(self.session)
@@ -169,9 +172,6 @@
 
 }
 
-
-
-
 //by Lucio Dery
 //changes the camera orientation to front
 -(AVCaptureDevice*)getCameraWithOrientation: (NSInteger)orientation
@@ -183,6 +183,30 @@
         }
     }
     return nil;
+}
+
+//by Lucio
+-(IBAction)extendScreen:(id)sender
+{
+    BOOL canExtend = self.verbatmCameraView.frame.size.height != self.view.frame.size.height;
+    if(canExtend){
+        [UIView animateWithDuration:0.5 animations:^{
+            self.verbatmCameraView.frame = self.view.frame;
+            self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
+        }];
+    }
+}
+
+//by Lucio
+-(IBAction)raiseScreen:(id)sender
+{
+    BOOL canRaise = self.verbatmCameraView.frame.size.height == self.view.frame.size.height;
+    if(canRaise){
+        [UIView animateWithDuration:0.5 animations:^{
+            self.verbatmCameraView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2);
+            self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
+        }];
+    }
 }
 
 - (void)viewDidLoad
@@ -213,6 +237,8 @@
     [self createVideoProgressView];
     [self createTapGesture];
     [self createLongPressGesture];
+    [self createSlideDownGesture];
+    [self createSlideUpGesture];
     //[self addTopShadowToView:self.whiteBackgroundUIView];
 }
 
@@ -244,6 +270,20 @@
     [self.verbatmCameraView addGestureRecognizer:longPress];
 }
 
+-(void)createSlideDownGesture
+{
+    UISwipeGestureRecognizer* swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(extendScreen:)];
+    swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
+    [self.verbatmCameraView addGestureRecognizer:swipeDownGesture];
+}
+
+-(void)createSlideUpGesture
+{
+    UISwipeGestureRecognizer* swipeUpGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseScreen:)];
+    swipeUpGesture.direction = UISwipeGestureRecognizerDirectionUp;
+    [self.verbatmCameraView addGestureRecognizer:swipeUpGesture];
+}
+
 #pragma mark - view did appear and did load
 
 -(void) viewDidAppear:(BOOL)animated
@@ -257,11 +297,11 @@
 	self.session.sessionPreset = AVCaptureSessionPresetMedium;
     [self addStillImageOutput];
 	
-	AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
+	self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
 	
-	captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
-    captureVideoPreviewLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-	[self.verbatmCameraView.layer addSublayer:captureVideoPreviewLayer];
+	self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
+    self.captureVideoPreviewLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+	[self.verbatmCameraView.layer addSublayer:self.captureVideoPreviewLayer];
 	   
 	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
     
@@ -355,13 +395,24 @@
 
 //Lucio
 //Found online ....made my own modifications to start at a particular location
--(void)createRippleEffect:(CGPoint)location
+-(void)createSlideAndVibrate
 {
     CATransition *animation = [CATransition animation];
     [animation setDelegate:self];
     [animation setDuration:2.0f];
-    [animation setTimingFunction:UIViewAnimationCurveEaseInOut];
-    [animation setType:@"rippleEffect" ];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFromLeft];
+    
+    CABasicAnimation* shakeAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
+    [shakeAnimation setDuration:0.1];
+    [shakeAnimation setRepeatCount:5];
+    [shakeAnimation setAutoreverses: YES];
+    [shakeAnimation setFromValue:[NSValue valueWithCGPoint:
+                             CGPointMake([self.verbatmCameraView center].x - 20.0f, [self.verbatmCameraView center].y)]];
+    [shakeAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake([self.verbatmCameraView center].x + 20.0f, [self.verbatmCameraView center].y + 20.0f)]];
+    
+    [self.verbatmCameraView.layer addAnimation:shakeAnimation forKey:@"postion"];
+    
     [self.verbatmCameraView.layer addAnimation:animation forKey:NULL];
 }
 
@@ -369,8 +420,8 @@
 //Lucio
 - (IBAction)takePhoto:(id)sender
 {
-    [self createRippleEffect:[(UITapGestureRecognizer*)sender locationInView:self.verbatmCameraView]];
     [self captureImage];
+    [self createSlideAndVibrate];
 }
 
 
