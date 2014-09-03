@@ -47,8 +47,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "286"
             endingLineNumber = "286"
-            landmarkName = "-viewDidAppear:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -58,12 +58,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmViewController.m"
-            timestampString = "431467947.623322"
+            timestampString = "431473065.033412"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "405"
-            endingLineNumber = "405"
-            landmarkName = "-createProgressPath"
+            startingLineNumber = "398"
+            endingLineNumber = "398"
+            landmarkName = "-createVibrate"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

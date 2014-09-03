@@ -394,15 +394,8 @@
 
 
 //Lucio
-//Found online ....made my own modifications to start at a particular location
--(void)createSlideAndVibrate
+-(void)createVibrate
 {
-    CATransition *animation = [CATransition animation];
-    [animation setDelegate:self];
-    [animation setDuration:2.0f];
-    [animation setType:kCATransitionPush];
-    [animation setSubtype:kCATransitionFromLeft];
-    
     CABasicAnimation* shakeAnimation = [CABasicAnimation animationWithKeyPath:@"position"];
     [shakeAnimation setDuration:0.1];
     [shakeAnimation setRepeatCount:5];
@@ -410,9 +403,17 @@
     [shakeAnimation setFromValue:[NSValue valueWithCGPoint:
                              CGPointMake([self.verbatmCameraView center].x - 20.0f, [self.verbatmCameraView center].y)]];
     [shakeAnimation setToValue:[NSValue valueWithCGPoint:CGPointMake([self.verbatmCameraView center].x + 20.0f, [self.verbatmCameraView center].y + 20.0f)]];
-    
     [self.verbatmCameraView.layer addAnimation:shakeAnimation forKey:@"postion"];
-    
+}
+
+//Lucio
+-(void)slidePictureOut
+{
+    CATransition *animation = [CATransition animation];
+    [animation setDelegate:self];
+    [animation setDuration:1.0f];
+    [animation setType:kCATransitionPush];
+    [animation setSubtype:kCATransitionFromLeft];
     [self.verbatmCameraView.layer addAnimation:animation forKey:NULL];
 }
 
@@ -421,7 +422,8 @@
 - (IBAction)takePhoto:(id)sender
 {
     [self captureImage];
-    [self createSlideAndVibrate];
+    //[self createVibrate];
+    [self slidePictureOut];
 }
 
 
