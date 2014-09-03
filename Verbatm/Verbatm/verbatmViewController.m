@@ -16,7 +16,7 @@
 
 @interface verbatmViewController () <UITextFieldDelegate, AVCaptureFileOutputRecordingDelegate>
 
-@property (weak, nonatomic) IBOutlet UIView *verbatmCameraView;
+@property (strong, nonatomic) IBOutlet UIView *verbatmCameraView;
 @property (weak, nonatomic) IBOutlet UILabel *testingLabel;
 @property (weak, nonatomic) IBOutlet UIView *whiteBackgroundUIView;
 @property (weak, nonatomic) IBOutlet UITextField *whereTextView;
@@ -48,6 +48,7 @@
 @synthesize verbatmAlbum = _verbatmAlbum;
 @synthesize videoProgressImageView= _videoProgressImageView;
 @synthesize timer = _timer;
+@synthesize verbatmCameraView =_verbatmCameraView;
 
 
 //Test function for top shadow
@@ -199,16 +200,15 @@
 //    [overlayTakePhoto addTarget:self action:@selector(takePhoto:) forControlEvents:UIControlEventTouchUpInside];
 //    
 //    [self.view addSubview:overlayTakePhoto];
-//    
+//
+    self.assetLibrary = [[ALAssetsLibrary alloc] init];
+    [self createVerbatmDirectory];
+    self.verbatmCameraView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2)];
+    [self.view addSubview:self.verbatmCameraView];
     [self createVideoProgressView];
     [self createTapGesture];
     [self createLongPressGesture];
-    self.assetLibrary = [[ALAssetsLibrary alloc] init];
-    [self createVerbatmDirectory];
-    
     //[self addTopShadowToView:self.whiteBackgroundUIView];
-    CGRect frame =  CGRectMake(0, self.view.frame.size.height/2 - 30, self.view.frame.size.width, self.view.frame.size.height/2 + 30); //magic number
-    self.whiteBackgroundUIView.frame = frame;
 }
 
 #pragma mark -create video progess bar
@@ -217,13 +217,10 @@
 {
     self.videoProgressImageView =  [[UIImageView alloc] initWithImage:nil];
     self.videoProgressImageView.backgroundColor = [UIColor clearColor];
-    self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2); //look for a better way than using magic number.
+    self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2);
     [self.view addSubview: self.videoProgressImageView];
-    
-    
     CGRect frame =  CGRectMake(0, self.view.frame.size.height/2, self.view.frame.size.width, self.view.frame.size.height/2);
     self.whiteBackgroundUIView.frame = frame;
-    
 }
 
 #pragma mark -creating gestures
@@ -238,9 +235,11 @@
 -(void) createLongPressGesture
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
-    longPress.minimumPressDuration = 2;
+    longPress.minimumPressDuration = 1;
     [self.verbatmCameraView addGestureRecognizer:longPress];
 }
+
+#pragma mark - view did appear and did load
 
 -(void) viewDidAppear:(BOOL)animated
 {
@@ -256,6 +255,7 @@
 	AVCaptureVideoPreviewLayer *captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
 	
 	captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
+    captureVideoPreviewLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
 	[self.verbatmCameraView.layer addSublayer:captureVideoPreviewLayer];
 	   
 	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
@@ -273,26 +273,14 @@
 		// Handle the error appropriately.
 		NSLog(@"ERROR: trying to open camera: %@", error);
 	}
-    
-//    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:self.whiteBackgroundUIView.bounds];
-//    self.whiteBackgroundUIView.layer.masksToBounds = YES;
-//    self.whiteBackgroundUIView.layer.shadowColor = [UIColor blackColor].CGColor;
-//    self.whiteBackgroundUIView.layer.shadowOffset = CGSizeMake(0.0f, 5.0f);
-//    self.whiteBackgroundUIView.layer.shadowOpacity = 0.5f;
-//    self.whiteBackgroundUIView.layer.shadowPath = shadowPath.CGPath;
-    
-    
     [self createVerbatmDirectory];
-    
 	[self.session addInput:input];
     [self.session addInput:audioInput];
-    
     if([self.session canAddOutput:self.movieOutputFile]){
         [self.session addOutput: self.movieOutputFile];   //need to check if it cant
     }else{
         NSLog(@"couldn't add output");
     }
-	
 	[self.session startRunning];
 }
 
@@ -360,11 +348,23 @@
 }
 
 
+//Lucio
+//Found online ....made my own modifications to start at a particular location
+-(void)createRippleEffect:(CGPoint)location
+{
+    CATransition *animation = [CATransition animation];
+    [animation setDelegate:self];
+    [animation setDuration:2.0f];
+    [animation setTimingFunction:UIViewAnimationCurveEaseInOut];
+    [animation setType:@"rippleEffect" ];
+    [self.verbatmCameraView.layer addAnimation:animation forKey:NULL];
+}
 
 
 //Lucio
 - (IBAction)takePhoto:(id)sender
 {
+    [self createRippleEffect:[(UITapGestureRecognizer*)sender locationInView:self.verbatmCameraView]];
     [self captureImage];
 }
 
@@ -395,6 +395,7 @@
     self.videoProgressImageView.image = nil;
 }
 
+//Lucio
 -(void)createProgressPath
 {
     self.counter += 0.05;
@@ -403,25 +404,28 @@
     CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
     CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 12.0);
     if(self.counter < MAX_VIDEO_LENGTH/8){
-        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 246, 0, 99, 1);
+        //CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 246, 0, 99, 1);
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 215, 0, 0.5);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGPoint start = CGPointMake(self.videoProgressImageView.frame.size.width/2, self.videoProgressImageView.frame.size.height);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
         CGPoint end = CGPointMake((self.videoProgressImageView.frame.size.width/2)*(1 - (self.counter/ (MAX_VIDEO_LENGTH/8))), self.videoProgressImageView.frame.size.height);
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
     }else if (self.counter >= MAX_VIDEO_LENGTH/8 && self.counter < (MAX_VIDEO_LENGTH*3)/8){
-        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(),0, 0,1,1);
+        //CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(),0, 0,1,1);
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 215, 0, 1);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGPoint start = CGPointMake(0, self.videoProgressImageView.frame.size.height);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
         CGPoint end = CGPointMake(0, self.videoProgressImageView.frame.size.height - (self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH/8))/(MAX_VIDEO_LENGTH*2/8))));
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
     }else if (self.counter >= (MAX_VIDEO_LENGTH*3)/8  && self.counter < (MAX_VIDEO_LENGTH*5)/8 ){
-        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 0, 0 ,0,1);
+        //CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 0, 0 ,1,1);
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 215, 0, 1);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGPoint start = CGPointMake(0, 0);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
-        CGPoint end = CGPointMake(self.videoProgressImageView.frame.size.width*(1 - (self.counter - (MAX_VIDEO_LENGTH*3/8))/ (MAX_VIDEO_LENGTH*2/8)), 0);
+        CGPoint end = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH*3/8))/ (MAX_VIDEO_LENGTH*2/8)), 0);
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
     }else if (self.counter >= (MAX_VIDEO_LENGTH*5)/8  && self.counter < (MAX_VIDEO_LENGTH*7)/8){
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 215, 0, 1);
@@ -431,7 +435,8 @@
         CGPoint end = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH*5)/8)/ (MAX_VIDEO_LENGTH*2/8)));
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
     }else{
-        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 246, 0, 99, 1);
+        //CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 246, 0, 99, 1);
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 215, 0, 1);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGPoint start = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);

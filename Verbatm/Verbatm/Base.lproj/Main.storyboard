@@ -17,36 +17,31 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ks7-ZZ-99t">
-                                <rect key="frame" x="0.0" y="-15" width="320" height="438"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                            </view>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nXK-co-oav">
-                                <rect key="frame" x="0.0" y="292" width="320" height="276"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="nXK-co-oav">
+                                <rect key="frame" x="0.0" y="306" width="320" height="262"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="@" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fHA-6F-FHO">
-                                        <rect key="frame" x="143" y="33" width="34" height="39"/>
+                                        <rect key="frame" x="143" y="19" width="34" height="39"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="35"/>
                                         <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Where" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="U9b-9T-fuj">
-                                        <rect key="frame" x="179" y="38" width="97" height="30"/>
+                                        <rect key="frame" x="179" y="24" width="97" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="What" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ff6-E7-Ro4">
-                                        <rect key="frame" x="38" y="38" width="97" height="30"/>
+                                        <rect key="frame" x="38" y="24" width="97" height="30"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" adjustsImageWhenHighlighted="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="S2X-eq-rr3">
-                                        <rect key="frame" x="59" y="76" width="203" height="193"/>
+                                        <rect key="frame" x="59" y="62" width="203" height="193"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" backgroundImage="typewriter-grey">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -60,10 +55,15 @@
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="nXK-co-oav" firstAttribute="leading" secondItem="rWO-ax-CE2" secondAttribute="leading" id="2gI-c1-4ed"/>
+                            <constraint firstAttribute="trailing" secondItem="nXK-co-oav" secondAttribute="trailing" id="8gu-3u-DUf"/>
+                            <constraint firstItem="nXK-co-oav" firstAttribute="top" secondItem="TZb-DQ-qFu" secondAttribute="bottom" constant="286" id="otA-CT-gJS"/>
+                            <constraint firstAttribute="bottom" secondItem="nXK-co-oav" secondAttribute="bottom" id="qTl-ya-IUc"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="76F-zj-l9s"/>
                     <connections>
-                        <outlet property="verbatmCameraView" destination="Ks7-ZZ-99t" id="Zbg-v8-E0J"/>
                         <outlet property="whatTextView" destination="ff6-E7-Ro4" id="gvF-Ro-exC"/>
                         <outlet property="whereTextView" destination="U9b-9T-fuj" id="KR6-Pn-JZV"/>
                         <outlet property="whiteBackgroundUIView" destination="nXK-co-oav" id="R2l-Gn-aUN"/>
