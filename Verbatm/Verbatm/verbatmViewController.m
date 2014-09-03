@@ -207,6 +207,8 @@
     [self createVerbatmDirectory];
     
     //[self addTopShadowToView:self.whiteBackgroundUIView];
+    CGRect frame =  CGRectMake(0, self.view.frame.size.height/2 - 30, self.view.frame.size.width, self.view.frame.size.height/2 + 30); //magic number
+    self.whiteBackgroundUIView.frame = frame;
 }
 
 #pragma mark -create video progess bar
@@ -215,8 +217,13 @@
 {
     self.videoProgressImageView =  [[UIImageView alloc] initWithImage:nil];
     self.videoProgressImageView.backgroundColor = [UIColor clearColor];
-    self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width*2/3); //look for a better way than using magic number.
+    self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2); //look for a better way than using magic number.
     [self.view addSubview: self.videoProgressImageView];
+    
+    
+    CGRect frame =  CGRectMake(0, self.view.frame.size.height/2, self.view.frame.size.width, self.view.frame.size.height/2);
+    self.whiteBackgroundUIView.frame = frame;
+    
 }
 
 #pragma mark -creating gestures
@@ -390,13 +397,13 @@
 
 -(void)createProgressPath
 {
-    self.counter += 0.1;
+    self.counter += 0.05;
     UIGraphicsBeginImageContext(self.videoProgressImageView.frame.size);
     [self.videoProgressImageView.image drawInRect:self.videoProgressImageView.frame];
     CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
-    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 5.0);
+    CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 12.0);
     if(self.counter < MAX_VIDEO_LENGTH/8){
-        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 1, 0, 0, 1);
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 246, 0, 99, 1);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGPoint start = CGPointMake(self.videoProgressImageView.frame.size.width/2, self.videoProgressImageView.frame.size.height);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
@@ -407,14 +414,14 @@
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGPoint start = CGPointMake(0, self.videoProgressImageView.frame.size.height);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
-        CGPoint end = CGPointMake(0, self.videoProgressImageView.frame.size.height*(1 - (self.counter - (MAX_VIDEO_LENGTH/8)/ (MAX_VIDEO_LENGTH*2/8))));
+        CGPoint end = CGPointMake(0, self.videoProgressImageView.frame.size.height - (self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH/8))/(MAX_VIDEO_LENGTH*2/8))));
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
     }else if (self.counter >= (MAX_VIDEO_LENGTH*3)/8  && self.counter < (MAX_VIDEO_LENGTH*5)/8 ){
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 0, 0 ,0,1);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGPoint start = CGPointMake(0, 0);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
-        CGPoint end = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH*3/8))/ (MAX_VIDEO_LENGTH*2/8)), 0);
+        CGPoint end = CGPointMake(self.videoProgressImageView.frame.size.width*(1 - (self.counter - (MAX_VIDEO_LENGTH*3/8))/ (MAX_VIDEO_LENGTH*2/8)), 0);
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
     }else if (self.counter >= (MAX_VIDEO_LENGTH*5)/8  && self.counter < (MAX_VIDEO_LENGTH*7)/8){
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 215, 0, 1);
@@ -424,7 +431,7 @@
         CGPoint end = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH*5)/8)/ (MAX_VIDEO_LENGTH*2/8)));
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), end.x, end.y);
     }else{
-        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 255, 181, 197, 1);
+        CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), 246, 0, 99, 1);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGPoint start = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height);
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), start.x , start.y);
