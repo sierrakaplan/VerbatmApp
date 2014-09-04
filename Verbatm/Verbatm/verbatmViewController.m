@@ -195,9 +195,9 @@
         if(currentDevice.orientation == UIDeviceOrientationLandscapeRight|| [[UIDevice currentDevice]orientation] == UIDeviceOrientationLandscapeLeft){
             self.verbatmCameraView.frame = CGRectMake(0, 0, self.view.frame.size.height, self.view.frame.size.width);
         }
-        [self setCorrectVideoOrientaion:currentDevice.orientation];
+        //[self setCorrectVideoOrientaion:currentDevice.orientation];
         self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
-        self.captureVideoPreviewLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+        //self.captureVideoPreviewLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     }];
 }
 
@@ -223,8 +223,8 @@
         [UIView animateWithDuration:0.5 animations:^{
             self.verbatmCameraView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2);
             self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
-            [self setCorrectVideoOrientaion:[UIDevice currentDevice].orientation];
-            self.captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+            //[self setCorrectVideoOrientaion:[UIDevice currentDevice].orientation];
+           //self.captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
         }];
     }
 }
@@ -314,7 +314,7 @@
 	
 	//----- SHOW LIVE CAMERA PREVIEW -----
 	self.session = [[AVCaptureSession alloc] init];
-	self.session.sessionPreset = AVCaptureSessionPresetMedium;
+	self.session.sessionPreset = AVCaptureSessionPresetPhoto;           //mayfix aspect ratio
     [self addStillImageOutput];
 	
 	self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
@@ -324,6 +324,8 @@
 	[self.verbatmCameraView.layer addSublayer:self.captureVideoPreviewLayer];
 	   
 	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+    [device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];  //added
+    [device unlockForConfiguration];                        ///added
     
     AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
     
