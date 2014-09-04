@@ -42,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmViewController.m"
-            timestampString = "431467947.623322"
+            timestampString = "431485422.809753"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "286"
-            endingLineNumber = "286"
+            startingLineNumber = "306"
+            endingLineNumber = "306"
             landmarkName = "@implementation verbatmViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -58,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmViewController.m"
-            timestampString = "431473065.033412"
+            timestampString = "431485422.809753"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "398"
-            endingLineNumber = "398"
+            startingLineNumber = "418"
+            endingLineNumber = "418"
             landmarkName = "-createVibrate"
             landmarkType = "5">
          </BreakpointContent>

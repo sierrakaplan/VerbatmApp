@@ -62,7 +62,6 @@
 //Iain
 -(void) addTopShadowToView: (UIView *) view
 {
-    
     UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
     view.layer.masksToBounds = NO;
     view.layer.shadowColor = [UIColor blackColor].CGColor;
@@ -108,9 +107,8 @@
 {
     //    UIImageWriteToSavedPhotosAlbum(self.stillImage, self, nil, nil);
     //[[UIImage alloc] initWithCGImage:self.stillImage.CGImage scale:1 orientation:UIImageOrientationLeft];
-    UIImage* image = [self imageByRotatingImage:self.stillImage fromImageOrientation: self.stillImage.imageOrientation];
-    if(image) NSLog(@"image is not null");
-    CGImageRef img = [image CGImage];
+    //UIImage* image = [self imageByRotatingImage:self.stillImage fromImageOrientation: self.stillImage.imageOrientation];
+    CGImageRef img = [self.stillImage CGImage];
     
     [self.assetLibrary writeImageToSavedPhotosAlbum:img
                                            metadata:nil
@@ -161,10 +159,7 @@
         }
         
         AVCaptureDeviceInput* newInput = [[AVCaptureDeviceInput alloc] initWithDevice:newCamera error:nil];
-        AVCaptureInput* currentAudioInput = [self.session.inputs firstObject];
-        [self.session removeInput:  currentAudioInput];
         [self.session addInput:newInput];
-        [self.session addInput:currentAudioInput];
         //commit the changes made
         
         [self.session commitConfiguration];
@@ -188,12 +183,35 @@
 //by Lucio
 -(IBAction)extendScreen:(id)sender
 {
-    BOOL canExtend = self.verbatmCameraView.frame.size.height != self.view.frame.size.height;
-    if(canExtend){
-        [UIView animateWithDuration:0.5 animations:^{
-            self.verbatmCameraView.frame = self.view.frame;
-            self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
-        }];
+    [self changeImageScreenBounds];
+}
+
+//Lucio
+-(void) changeImageScreenBounds
+{
+    [UIView animateWithDuration:0.5 animations:^{
+        self.verbatmCameraView.frame = self.view.frame;
+        UIDevice* currentDevice = [UIDevice currentDevice];
+        if(currentDevice.orientation == UIDeviceOrientationLandscapeRight|| [[UIDevice currentDevice]orientation] == UIDeviceOrientationLandscapeLeft){
+            self.verbatmCameraView.frame = CGRectMake(0, 0, self.view.frame.size.height, self.view.frame.size.width);
+        }
+        [self setCorrectVideoOrientaion:currentDevice.orientation];
+        self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
+        self.captureVideoPreviewLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+    }];
+}
+
+//by Lucio
+-(void)setCorrectVideoOrientaion:(UIDeviceOrientation)orientation
+{
+    if(orientation == UIDeviceOrientationLandscapeLeft){
+        self.captureVideoPreviewLayer.connection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+    }else if (orientation == UIDeviceOrientationLandscapeRight){
+        self.captureVideoPreviewLayer.connection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
+    }else if (orientation == UIDeviceOrientationPortraitUpsideDown){
+        self.captureVideoPreviewLayer.connection.videoOrientation = AVCaptureVideoOrientationPortraitUpsideDown;
+    }else{
+        self.captureVideoPreviewLayer.connection.videoOrientation = AVCaptureVideoOrientationPortrait;
     }
 }
 
@@ -205,6 +223,8 @@
         [UIView animateWithDuration:0.5 animations:^{
             self.verbatmCameraView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2);
             self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
+            [self setCorrectVideoOrientaion:[UIDevice currentDevice].orientation];
+            self.captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
         }];
     }
 }
@@ -383,7 +403,7 @@
         }
     }
     //AVCaptureConnection *conn = [self.videoCaptureOutput connectionWithMediaType:AVMediaTypeVideo];
-    [videoConnection setVideoOrientation:AVCaptureVideoOrientationPortrait];
+    //[videoConnection setVideoOrientation:AVCaptureVideoOrientationPortrait];
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
@@ -411,7 +431,7 @@
 {
     CATransition *animation = [CATransition animation];
     [animation setDelegate:self];
-    [animation setDuration:1.0f];
+    [animation setDuration:0.5f];
     [animation setType:kCATransitionPush];
     [animation setSubtype:kCATransitionFromLeft];
     [self.verbatmCameraView.layer addAnimation:animation forKey:NULL];
@@ -459,6 +479,7 @@
     self.counter += 0.05;
     UIGraphicsBeginImageContext(self.videoProgressImageView.frame.size);
     [self.videoProgressImageView.image drawInRect:self.videoProgressImageView.frame];
+    self.videoProgressImageView.frame = self.verbatmCameraView.frame;
     CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
     CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 12.0);
     if(self.counter < MAX_VIDEO_LENGTH/8){
@@ -600,6 +621,7 @@
             break;
             
         case UIImageOrientationDown: //EXIF = 3
+            
             transform = CGAffineTransformMakeTranslation(imageSize.width, imageSize.height);
             transform = CGAffineTransformRotate(transform, M_PI);
             break;
@@ -619,6 +641,7 @@
             break;
             
         case UIImageOrientationLeft: //EXIF = 6
+            
             boundHeight = bounds.size.height;
             bounds.size.height = bounds.size.width;
             bounds.size.width = boundHeight;
@@ -627,6 +650,7 @@
             break;
             
         case UIImageOrientationRightMirrored: //EXIF = 7
+            
             boundHeight = bounds.size.height;
             bounds.size.height = bounds.size.width;
             bounds.size.width = boundHeight;
@@ -636,7 +660,7 @@
             
         case UIImageOrientationRight: //EXIF = 8
             boundHeight = bounds.size.height;
-            bounds.size.height = bounds.size.width;
+            bounds.size.height = bounds.size.width;      //for the upright position
             bounds.size.width = boundHeight;
             transform = CGAffineTransformMakeTranslation(imageSize.height, 0.0);
             transform = CGAffineTransformRotate(transform, M_PI / 2.0);
@@ -692,5 +716,15 @@
     CGImageRelease(imgRef2);
     return image;
 }
+
+-(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
+{
+    [self changeImageScreenBounds];
+}
+
+//- (NSUInteger)supportedInterfaceOrientations
+//{
+//    return UIInterfaceOrientationMaskPortrait;
+//}
 
 @end
