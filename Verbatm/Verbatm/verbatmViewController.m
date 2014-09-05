@@ -15,6 +15,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 @interface verbatmViewController () <UITextFieldDelegate, AVCaptureFileOutputRecordingDelegate>
+@property (weak, nonatomic) IBOutlet UIView *baseView;
 
 @property (strong, nonatomic) IBOutlet UIView *verbatmCameraView;
 @property (weak, nonatomic) IBOutlet UILabel *testingLabel;
@@ -42,6 +43,8 @@
 #define RGB_RIGHT_SIDE 247, 0, 99, 1
 #define RGB_BOTTOM_SIDE 247, 0, 99, 1
 #define RGB_TOP_SIDE 247, 0, 99, 1
+
+#define Y_OFFSET 80
 
 @end
 
@@ -107,9 +110,7 @@
 {
     //    UIImageWriteToSavedPhotosAlbum(self.stillImage, self, nil, nil);
     //[[UIImage alloc] initWithCGImage:self.stillImage.CGImage scale:1 orientation:UIImageOrientationLeft];
-    //UIImage* image = [self imageByRotatingImage:self.stillImage fromImageOrientation: self.stillImage.imageOrientation];
     CGImageRef img = [self.stillImage CGImage];
-    
     [self.assetLibrary writeImageToSavedPhotosAlbum:img
                                            metadata:nil
                                     completionBlock:^(NSURL* assetURL, NSError* error) {
@@ -190,12 +191,12 @@
 -(void) changeImageScreenBounds
 {
     [UIView animateWithDuration:0.5 animations:^{
-        self.verbatmCameraView.frame = self.view.frame;
+        self.verbatmCameraView.frame = self.baseView.frame;
         UIDevice* currentDevice = [UIDevice currentDevice];
         if(currentDevice.orientation == UIDeviceOrientationLandscapeRight|| [[UIDevice currentDevice]orientation] == UIDeviceOrientationLandscapeLeft){
-            self.verbatmCameraView.frame = CGRectMake(0, 0, self.view.frame.size.height, self.view.frame.size.width);
+            self.verbatmCameraView.frame = CGRectMake(self.baseView.frame.origin.x, self.baseView.frame.origin.y, self.baseView.frame.size.height, self.baseView.frame.size.width);
         }
-        //[self setCorrectVideoOrientaion:currentDevice.orientation];
+        [self setCorrectVideoOrientaion:currentDevice.orientation];
         self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
         //self.captureVideoPreviewLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     }];
@@ -218,12 +219,12 @@
 //by Lucio
 -(IBAction)raiseScreen:(id)sender
 {
-    BOOL canRaise = self.verbatmCameraView.frame.size.height == self.view.frame.size.height;
+    BOOL canRaise = self.verbatmCameraView.frame.size.height == self.baseView.frame.size.height;
     if(canRaise){
         [UIView animateWithDuration:0.5 animations:^{
-            self.verbatmCameraView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2);
+            self.verbatmCameraView.frame = CGRectMake(self.baseView.frame.origin.x, self.baseView.frame.origin.y, self.baseView.frame.size.width, self.baseView.frame.size.height/2);
             self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
-            //[self setCorrectVideoOrientaion:[UIDevice currentDevice].orientation];
+            [self setCorrectVideoOrientaion:[UIDevice currentDevice].orientation];
            //self.captureVideoPreviewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
         }];
     }
@@ -252,7 +253,7 @@
 //
     self.assetLibrary = [[ALAssetsLibrary alloc] init];
     [self createVerbatmDirectory];
-    self.verbatmCameraView = [[UIView alloc]initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2)];
+    self.verbatmCameraView = [[UIView alloc]initWithFrame:CGRectMake(self.baseView.frame.origin.x, self.baseView.frame.origin.y, self.baseView.frame.size.width, self.baseView.frame.size.height/2)];
     [self.view addSubview:self.verbatmCameraView];
     [self createVideoProgressView];
     [self createTapGesture];
@@ -268,9 +269,9 @@
 {
     self.videoProgressImageView =  [[UIImageView alloc] initWithImage:nil];
     self.videoProgressImageView.backgroundColor = [UIColor clearColor];
-    self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2);
+    self.videoProgressImageView.frame = CGRectMake(self.baseView.frame.origin.x, self.baseView.frame.origin.y, self.baseView.frame.size.width, self.baseView.frame.size.height/2);
     [self.view addSubview: self.videoProgressImageView];
-    CGRect frame =  CGRectMake(0, self.view.frame.size.height/2, self.view.frame.size.width, self.view.frame.size.height/2);
+    CGRect frame =  CGRectMake(self.baseView.frame.origin.x, self.baseView.frame.origin.y + self.baseView.frame.size.height/2, self.baseView.frame.size.width, self.baseView.frame.size.height/2);
     self.whiteBackgroundUIView.frame = frame;
 }
 
@@ -314,7 +315,7 @@
 	
 	//----- SHOW LIVE CAMERA PREVIEW -----
 	self.session = [[AVCaptureSession alloc] init];
-	self.session.sessionPreset = AVCaptureSessionPresetPhoto;           //mayfix aspect ratio
+	self.session.sessionPreset = AVCaptureSessionPresetMedium;           //mayfix aspect ratio
     [self addStillImageOutput];
 	
 	self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
@@ -324,8 +325,10 @@
 	[self.verbatmCameraView.layer addSublayer:self.captureVideoPreviewLayer];
 	   
 	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    [device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];  //added
-    [device unlockForConfiguration];                        ///added
+    if([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus] && [device lockForConfiguration:nil]){
+        [device setFocusMode:AVCaptureFocusModeContinuousAutoFocus];  //added
+        [device unlockForConfiguration];
+    }
     
     AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
     
@@ -409,7 +412,7 @@
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        [self setStillImage:[[UIImage alloc] initWithData: dataForImage]];
+        [self processImage:[[UIImage alloc] initWithData:dataForImage ]];
         [self saveImageToVerbatmFolder];
     }];
 }
@@ -599,124 +602,34 @@
 
 //Lucio
 //Directly from stack overflow
--(UIImage*)imageByRotatingImage:(UIImage*)initImage fromImageOrientation:(UIImageOrientation)orientation
+-(void)processImage:(UIImage*)image
 {
-    CGImageRef imgRef = initImage.CGImage;
     
-    CGFloat width = CGImageGetWidth(imgRef);
-    CGFloat height = CGImageGetHeight(imgRef);
-    
-    CGAffineTransform transform = CGAffineTransformIdentity;
-    CGRect bounds = CGRectMake(0, 0, width, height);
-    CGSize imageSize = CGSizeMake(CGImageGetWidth(imgRef), CGImageGetHeight(imgRef));
-    CGFloat boundHeight;
-    UIImageOrientation orient = orientation;
-    switch(orient) {
-            
-        case UIImageOrientationUp: //EXIF = 1
-            return initImage;
-            break;
-            
-        case UIImageOrientationUpMirrored: //EXIF = 2
-            transform = CGAffineTransformMakeTranslation(imageSize.width, 0.0);
-            transform = CGAffineTransformScale(transform, -1.0, 1.0);
-            break;
-            
-        case UIImageOrientationDown: //EXIF = 3
-            
-            transform = CGAffineTransformMakeTranslation(imageSize.width, imageSize.height);
-            transform = CGAffineTransformRotate(transform, M_PI);
-            break;
-            
-        case UIImageOrientationDownMirrored: //EXIF = 4
-            transform = CGAffineTransformMakeTranslation(0.0, imageSize.height);
-            transform = CGAffineTransformScale(transform, 1.0, -1.0);
-            break;
-            
-        case UIImageOrientationLeftMirrored: //EXIF = 5
-            boundHeight = bounds.size.height;
-            bounds.size.height = bounds.size.width;
-            bounds.size.width = boundHeight;
-            transform = CGAffineTransformMakeTranslation(imageSize.height, imageSize.width);
-            transform = CGAffineTransformScale(transform, -1.0, 1.0);
-            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
-            break;
-            
-        case UIImageOrientationLeft: //EXIF = 6
-            
-            boundHeight = bounds.size.height;
-            bounds.size.height = bounds.size.width;
-            bounds.size.width = boundHeight;
-            transform = CGAffineTransformMakeTranslation(0.0, imageSize.width);
-            transform = CGAffineTransformRotate(transform, 3.0 * M_PI / 2.0);
-            break;
-            
-        case UIImageOrientationRightMirrored: //EXIF = 7
-            
-            boundHeight = bounds.size.height;
-            bounds.size.height = bounds.size.width;
-            bounds.size.width = boundHeight;
-            transform = CGAffineTransformMakeScale(-1.0, 1.0);
-            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
-            break;
-            
-        case UIImageOrientationRight: //EXIF = 8
-            boundHeight = bounds.size.height;
-            bounds.size.height = bounds.size.width;      //for the upright position
-            bounds.size.width = boundHeight;
-            transform = CGAffineTransformMakeTranslation(imageSize.height, 0.0);
-            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
-            break;
-            
-        default:
-            [NSException raise:NSInternalInconsistencyException format:@"Invalid image orientation"];
-            
+    self.stillImage = [self rotateImageToRightOrientation:image withPreviousOrientation:image.imageOrientation];
+    if([UIDevice currentDevice].userInterfaceIdiom ==UIUserInterfaceIdiomPad) { //Device is ipad
+        // Resize image
+        UIGraphicsBeginImageContext(CGSizeMake(image.size.width, image.size.height));
+        [image drawInRect: CGRectMake(self.baseView.frame.origin.x,self.baseView.frame.origin.y, image.size.width, image.size.height )];
+        UIImage *smallImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        CGRect cropRect = self.captureVideoPreviewLayer.frame;
+        CGImageRef imageRef = CGImageCreateWithImageInRect([smallImage CGImage], cropRect);
+        self.stillImage = [UIImage imageWithCGImage:imageRef];
+        CGImageRelease(imageRef);
+    }else{ //Device is iphone
+        // Resize image
+        NSLog(@"was here");
+        UIGraphicsBeginImageContext(CGSizeMake(image.size.width, image.size.height));
+        NSLog(@"image dimensions %f, %f",image.size.width, image.size.height);
+        [image drawInRect: CGRectMake(self.baseView.frame.origin.x,self.baseView.frame.origin.y,  image.size.width, image.size.height )];
+        UIImage *smallImage = UIGraphicsGetImageFromCurrentImageContext();
+        UIGraphicsEndImageContext();
+        CGRect cropRect = ([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait || [UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp)? CGRectMake(0, Y_OFFSET, self.view.frame.size.width,(self.view.frame.size.height/2)): CGRectMake(self.verbatmCameraView.frame.origin.x,self.verbatmCameraView.frame.origin.y,  self.verbatmCameraView.frame.size.height - 80, self.verbatmCameraView.frame.size.width - 150);
+        CGImageRef imageRef = CGImageCreateWithImageInRect([smallImage CGImage], cropRect);
+        self.stillImage = [UIImage imageWithCGImage:imageRef];
+        NSLog(@"cropped image dimensions %f, %f",cropRect.size.width, cropRect.size.height);
+        CGImageRelease(imageRef);
     }
-    // Create the bitmap context
-    CGContextRef    context = NULL;
-    void *          bitmapData;
-    int             bitmapByteCount;
-    int             bitmapBytesPerRow;
-    
-    // Declare the number of bytes per row. Each pixel in the bitmap in this
-    // example is represented by 4 bytes; 8 bits each of red, green, blue, and
-    // alpha.
-    bitmapBytesPerRow   = (bounds.size.width * 4);
-    bitmapByteCount     = (bitmapBytesPerRow * bounds.size.height);
-    bitmapData = malloc( bitmapByteCount );
-    if (bitmapData == NULL)
-    {
-        return nil;
-    }
-    
-    // Create the bitmap context. We want pre-multiplied ARGB, 8-bits
-    // per component. Regardless of what the source image format is
-    // (CMYK, Grayscale, and so on) it will be converted over to the format
-    // specified here by CGBitmapContextCreate.
-    CGColorSpaceRef colorspace = CGImageGetColorSpace(imgRef);
-    context = CGBitmapContextCreate (bitmapData,bounds.size.width,bounds.size.height,8,bitmapBytesPerRow,
-                                     colorspace, kCGBitmapAlphaInfoMask & kCGImageAlphaPremultipliedLast);
-    
-    if (context == NULL)
-        // error creating context
-        return nil;
-    
-    CGContextScaleCTM(context, -1.0, -1.0);
-    CGContextTranslateCTM(context, -bounds.size.width, -bounds.size.height);
-    
-    CGContextConcatCTM(context, transform);
-    
-    // Draw the image to the bitmap context. Once we draw, the memory
-    // allocated for the context for rendering will then contain the
-    // raw image data in the specified color space.
-    CGContextDrawImage(context, CGRectMake(0,0,width, height), imgRef);
-    
-    CGImageRef imgRef2 = CGBitmapContextCreateImage(context);
-    CGContextRelease(context);
-    free(bitmapData);
-    UIImage * image = [UIImage imageWithCGImage:imgRef2 scale:initImage.scale orientation:UIImageOrientationUp];
-    CGImageRelease(imgRef2);
-    return image;
 }
 
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
@@ -724,9 +637,35 @@
     [self changeImageScreenBounds];
 }
 
-//- (NSUInteger)supportedInterfaceOrientations
-//{
-//    return UIInterfaceOrientationMaskPortrait;
-//}
+-(UIImage*)rotateImageToRightOrientation:(UIImage*)initImage withPreviousOrientation:(UIImageOrientation)orientation
+{
+    if([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait || [UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp ){
+        NSLog(@"hEREE 1");
+        initImage= [self rotateUIImage:initImage clockwise:YES];
+    }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
+        NSLog(@"hEREE 2");
+        initImage = [self rotateUIImage:initImage clockwise:NO];
+        initImage = [self rotateUIImage:initImage clockwise:NO];
+        initImage = [self rotateUIImage:initImage clockwise:NO];
+        initImage = [self rotateUIImage:initImage clockwise:NO];
+    }else{
+        NSLog(@"hEREE 3");
+        initImage = [self rotateUIImage:initImage clockwise:YES];
+        initImage = [self rotateUIImage:initImage clockwise:YES];
+        
+    }
+    return initImage;
+}
+
+- (UIImage*)rotateUIImage:(UIImage*)sourceImage clockwise:(BOOL)clockwise
+{
+    CGSize size = sourceImage.size;
+    UIGraphicsBeginImageContext(CGSizeMake(size.height, size.width));
+    [[UIImage imageWithCGImage:[sourceImage CGImage] scale:1.0 orientation:clockwise ? UIImageOrientationRight : UIImageOrientationLeft] drawInRect:CGRectMake(0,0,size.height ,size.width)];
+    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 
 @end
