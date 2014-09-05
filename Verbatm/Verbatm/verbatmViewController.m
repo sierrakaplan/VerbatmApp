@@ -408,11 +408,12 @@
         }
     }
     //AVCaptureConnection *conn = [self.videoCaptureOutput connectionWithMediaType:AVMediaTypeVideo];
-    //[videoConnection setVideoOrientation:AVCaptureVideoOrientationPortrait];
+    [videoConnection setVideoOrientation:self.captureVideoPreviewLayer.connection.videoOrientation];
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        [self processImage:[[UIImage alloc] initWithData:dataForImage ]];
+        //[self processImage:[[UIImage alloc] initWithData:dataForImage ]];
+        self.stillImage = [[UIImage alloc]initWithData:dataForImage];
         [self saveImageToVerbatmFolder];
     }];
 }
@@ -549,6 +550,24 @@
         }
     }
     //Start recording
+    AVCaptureConnection *videoConnection = nil;
+    for ( AVCaptureConnection *connection in [self.movieOutputFile connections] )
+    {
+        NSLog(@"%@", connection);
+        for ( AVCaptureInputPort *port in [connection inputPorts] )
+        {
+            NSLog(@"%@", port);
+            if ( [[port mediaType] isEqual:AVMediaTypeVideo] )
+            {
+                videoConnection = connection;
+            }
+        }
+    }
+    if([videoConnection isVideoOrientationSupported]) // **Here it is, its always false**
+    {
+        [videoConnection setVideoOrientation:self.captureVideoPreviewLayer.connection.videoOrientation];
+    }
+    //
     [self.movieOutputFile startRecordingToOutputFileURL:outputURL recordingDelegate:self];
 }
 
