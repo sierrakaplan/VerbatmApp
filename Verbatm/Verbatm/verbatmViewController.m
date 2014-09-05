@@ -321,7 +321,7 @@
 	self.captureVideoPreviewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.session];
 	
 	self.captureVideoPreviewLayer.frame = self.verbatmCameraView.frame;
-    self.captureVideoPreviewLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+    self.captureVideoPreviewLayer.videoGravity =  AVLayerVideoGravityResize;
 	[self.verbatmCameraView.layer addSublayer:self.captureVideoPreviewLayer];
 	   
 	AVCaptureDevice *device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
@@ -549,7 +549,7 @@
             NSLog(@"output path  is wrong");
         }
     }
-    //Start recording
+    //Start recording with right orientation
     AVCaptureConnection *videoConnection = nil;
     for ( AVCaptureConnection *connection in [self.movieOutputFile connections] )
     {
