@@ -13,21 +13,28 @@
 @interface verbatmMediaPageViewController ()
 
 @property (strong, nonatomic) UIView *verbatmCameraView;
-@property (strong, nonatomic) UIView *whiteLowerView;
 @property (strong, nonatomic) verbatmMediaSessionManager* sessionManager;
 @property (strong, nonatomic) UIImageView* videoProgressImageView;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic) CGFloat counter;
+@property (strong, nonatomic)UIButton* switchCameraButton;
+@property (strong, nonatomic)UIButton* switchFlashButton;
+@property (nonatomic) BOOL cameraFront;
+@property (nonatomic) BOOL flashOn;
 
 #define ALBUM_NAME @"Verbatm"
-#define ASPECT_RATIO 4/3
+#define ASPECT_RATIO 1
 #define RGB_LEFT_SIDE 247, 0, 99, 1
 #define RGB_RIGHT_SIDE 247, 0, 99, 1
 #define RGB_BOTTOM_SIDE 247, 0, 99, 1
 #define RGB_TOP_SIDE 247, 0, 99, 1
 #define MAX_VIDEO_LENGTH 30
-#define CAMERA_ICON @"switch_b"
+#define CAMERA_ICON_FRONT @"switch_b"
+#define CAMERA_ICON_BACK @"switch_w"
 #define SWITCH_ICON_SIZE 60
+#define FLASH_ICON_SIZE 40
+#define FLASH_ICON_ON @"lightbulb_final_white"
+#define FLASH_ICON_OFF @"lightbulb_final_OFF(white)"
 @end
 
 @implementation verbatmMediaPageViewController
@@ -35,7 +42,8 @@
 @synthesize sessionManager = _sessionManager;
 @synthesize videoProgressImageView = _videoProgressImageView;
 @synthesize timer = _timer;
-@synthesize whiteLowerView = _whiteLowerView;
+@synthesize switchCameraButton = _switchCameraButton;
+//@synthesize whiteLowerView = _whiteLowerView;
 
 - (void)viewDidLoad
 {
@@ -47,12 +55,8 @@
     [self createSlideUpGesture];
     [self createTapGesture];
     [self createVideoProgressView];
-    UIButton* overlayButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [overlayButton setImage:[UIImage imageNamed:CAMERA_ICON] forState:UIControlStateNormal];
-    [overlayButton setFrame:CGRectMake(250, 10, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
-    [overlayButton addTarget:self action:@selector(switchFaces:) forControlEvents:UIControlEventTouchUpInside];
-    
-    [self.view addSubview:overlayButton];
+    [self createSwitchCameraButton];
+    [self createSwitchFlashButton];
 }
 
 - (void)didReceiveMemoryWarning
@@ -80,10 +84,28 @@
     CGRect frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.width*ASPECT_RATIO);
     self.verbatmCameraView = [[UIView alloc]initWithFrame: frame];
     [self.view addSubview:self.verbatmCameraView];
-    //extra to be taken out
-    CGRect whiteViewFrame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y + self.verbatmCameraView.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - self.verbatmCameraView.frame.size.height);
-    self.whiteLowerView = [[UIView alloc] initWithFrame:whiteViewFrame];
-    [self.view addSubview: self.whiteLowerView];
+}
+
+//By Lucio
+-(void)createSwitchCameraButton
+{
+    self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.switchCameraButton setImage:[UIImage imageNamed:CAMERA_ICON_FRONT] forState:UIControlStateNormal];
+    [self.switchCameraButton setFrame:CGRectMake(250, 10, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+    [self.switchCameraButton addTarget:self action:@selector(switchFaces:) forControlEvents:UIControlEventTouchUpInside];
+    self.cameraFront = YES;
+    [self.view addSubview: self.switchCameraButton];
+}
+
+//By Lucio
+-(void)createSwitchFlashButton
+{
+    self.switchFlashButton= [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_ON] forState:UIControlStateNormal];
+    [self.switchFlashButton setFrame:CGRectMake(20, 20, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+    [self.switchFlashButton addTarget:self action:@selector(switchFlash:) forControlEvents:UIControlEventTouchUpInside];
+    self.flashOn = YES;
+    [self.view addSubview: self.switchFlashButton];
 }
 
 
@@ -163,6 +185,23 @@
 -(IBAction)switchFaces:(id)sender
 {
     [self.sessionManager switchVideoFace];
+    if(self.cameraFront){
+        [self.switchCameraButton setImage: [UIImage imageNamed:CAMERA_ICON_BACK]forState:UIControlStateNormal];
+    }else{
+        [self.switchCameraButton setImage: [UIImage imageNamed:CAMERA_ICON_FRONT] forState:UIControlStateNormal];
+    }
+    self.cameraFront = !self.cameraFront;
+}
+
+-(IBAction)switchFlash:(id)sender
+{
+    [self.sessionManager switchFlash];
+    if(self.flashOn){
+        [self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_OFF]forState:UIControlStateNormal];
+    }else{
+        [self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_ON] forState:UIControlStateNormal];
+    }
+    self.flashOn = !self.flashOn;
 }
 
 //Lucio
@@ -179,6 +218,11 @@
         UIDevice* currentDevice = [UIDevice currentDevice];
         if(currentDevice.orientation == UIDeviceOrientationLandscapeRight|| [[UIDevice currentDevice]orientation] == UIDeviceOrientationLandscapeLeft){
             self.verbatmCameraView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.height, self.view.frame.size.width);
+            [self.switchCameraButton setFrame:CGRectMake(400, 10, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+            [self.switchFlashButton setFrame: CGRectMake(20, 20, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+        }else{
+            [self.switchCameraButton setFrame:CGRectMake(250, 10, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+            [self.switchFlashButton setFrame: CGRectMake(20, 20, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
         }
         [self.sessionManager setSessionOrientationToDeviceOrientation];
         [self.sessionManager setToFrameOfView:self.verbatmCameraView];

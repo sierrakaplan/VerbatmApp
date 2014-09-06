@@ -19,4 +19,5 @@
 -(void)setSessionOrientationToDeviceOrientation;
 -(void)setToFrameOfView:(UIView*)containerView;
 -(void)switchVideoFace;
+-(void)switchFlash;
 @end
