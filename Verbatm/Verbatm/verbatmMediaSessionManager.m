@@ -46,7 +46,7 @@
         
         self.videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session];
         self.videoPreview.frame = containerView.frame;
-         self.videoPreview.videoGravity =  AVLayerVideoGravityResize;
+         self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;
         [containerView.layer addSublayer: self.videoPreview];
         
         //start the session running

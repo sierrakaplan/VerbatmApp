@@ -42,8 +42,8 @@
     [super viewDidLoad];
 	[self createCameraView ];
     self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-    [self createLongPressGesture];
     [self createSlideDownGesture];
+    [self createLongPressGesture];
     [self createSlideUpGesture];
     [self createTapGesture];
     [self createVideoProgressView];
@@ -100,6 +100,7 @@
 //by Lucio
 -(void) createLongPressGesture
 {
+    NSLog(@"HERE long press");
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
     longPress.minimumPressDuration = 1;
     [self.verbatmCameraView addGestureRecognizer:longPress];
@@ -187,7 +188,7 @@
 //by Lucio
 -(IBAction)raiseVideoPreviewScreen:(id)sender
 {
-     NSLog(@"here");
+    NSLog(@"here raise camera");
     BOOL canRaise = self.verbatmCameraView.frame.size.height == self.view.frame.size.height;
     if(canRaise){
         NSLog(@"hrehrjeh");
