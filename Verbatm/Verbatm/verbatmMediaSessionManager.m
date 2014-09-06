@@ -46,6 +46,7 @@
         
         self.videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session];
         self.videoPreview.frame = containerView.frame;
+         self.videoPreview.videoGravity =  AVLayerVideoGravityResize;
         [containerView.layer addSublayer: self.videoPreview];
         
         //start the session running
@@ -344,7 +345,7 @@
 //Lucio
 -(void)processImage:(UIImage*)image
 {
-    self.stillImage = [self rotateImageToRightOrientation:image withPreviousOrientation:image.imageOrientation];
+    self.stillImage = image;//[self rotateImageToRightOrientation:image withPreviousOrientation:image.imageOrientation];
 }
 
 //Lucio

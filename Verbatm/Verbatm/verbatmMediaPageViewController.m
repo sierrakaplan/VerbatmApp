@@ -7,6 +7,8 @@
 //
 
 #import "verbatmMediaPageViewController.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+#import "verbatmMediaSessionManager.h"
 
 @interface verbatmMediaPageViewController ()
 
@@ -39,6 +41,7 @@
 {
     [super viewDidLoad];
 	[self createCameraView ];
+    self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
     [self createLongPressGesture];
     [self createSlideDownGesture];
     [self createSlideUpGesture];
@@ -76,9 +79,11 @@
 {
     CGRect frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.width*ASPECT_RATIO);
     self.verbatmCameraView = [[UIView alloc]initWithFrame: frame];
+    [self.view addSubview:self.verbatmCameraView];
     //extra to be taken out
     CGRect whiteViewFrame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y + self.verbatmCameraView.frame.size.height, self.view.frame.size.width, self.view.frame.size.height - self.verbatmCameraView.frame.size.height);
     self.whiteLowerView = [[UIView alloc] initWithFrame:whiteViewFrame];
+    [self.view addSubview: self.whiteLowerView];
 }
 
 
@@ -111,7 +116,8 @@
 //by Lucio
 -(void)createSlideUpGesture
 {
-    UISwipeGestureRecognizer* swipeUpGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseScreen:)];
+    NSLog(@"HERE");
+    UISwipeGestureRecognizer* swipeUpGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseVideoPreviewScreen:)];
     swipeUpGesture.direction = UISwipeGestureRecognizerDirectionUp;
     [self.verbatmCameraView addGestureRecognizer:swipeUpGesture];
 }
@@ -171,7 +177,7 @@
         self.verbatmCameraView.frame = self.view.frame;
         UIDevice* currentDevice = [UIDevice currentDevice];
         if(currentDevice.orientation == UIDeviceOrientationLandscapeRight|| [[UIDevice currentDevice]orientation] == UIDeviceOrientationLandscapeLeft){
-            self.verbatmCameraView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.height, self.view.frame.size.width);  //check this ...could just set to the bounds and leave it to be?
+            self.verbatmCameraView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.height, self.view.frame.size.width);
         }
         [self.sessionManager setSessionOrientationToDeviceOrientation];
         [self.sessionManager setToFrameOfView:self.verbatmCameraView];
@@ -179,10 +185,12 @@
 }
 
 //by Lucio
--(IBAction)raiseScreen:(id)sender
+-(IBAction)raiseVideoPreviewScreen:(id)sender
 {
+     NSLog(@"here");
     BOOL canRaise = self.verbatmCameraView.frame.size.height == self.view.frame.size.height;
     if(canRaise){
+        NSLog(@"hrehrjeh");
         [UIView animateWithDuration:0.5 animations:^{
             self.verbatmCameraView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.width*ASPECT_RATIO);
             [self.sessionManager setSessionOrientationToDeviceOrientation];
