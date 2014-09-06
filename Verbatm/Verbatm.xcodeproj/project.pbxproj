@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */; };
+		9D29995B19BA9042005EBC8A /* verbatmMediaPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995A19BA9042005EBC8A /* verbatmMediaPageViewController.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
@@ -52,6 +54,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9D29995619BA7EBD005EBC8A /* verbatmMediaSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmMediaSessionManager.h; sourceTree = "<group>"; };
+		9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmMediaSessionManager.m; sourceTree = "<group>"; };
+		9D29995919BA9042005EBC8A /* verbatmMediaPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmMediaPageViewController.h; sourceTree = "<group>"; };
+		9D29995A19BA9042005EBC8A /* verbatmMediaPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmMediaPageViewController.m; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		C734FD9619B13D7700B2C370 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -183,8 +189,12 @@
 				C7BC4387199D97F5004B91A1 /* Main.storyboard */,
 				C734FD9A19B14B8D00B2C370 /* verbatmContentPageViewController.h */,
 				C734FD9B19B14B8D00B2C370 /* verbatmContentPageViewController.m */,
+				9D29995619BA7EBD005EBC8A /* verbatmMediaSessionManager.h */,
+				9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */,
 				C7BC438A199D97F5004B91A1 /* verbatmViewController.h */,
 				C7BC438B199D97F5004B91A1 /* verbatmViewController.m */,
+				9D29995919BA9042005EBC8A /* verbatmMediaPageViewController.h */,
+				9D29995A19BA9042005EBC8A /* verbatmMediaPageViewController.m */,
 				C7BC438D199D97F5004B91A1 /* Images.xcassets */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 			);
@@ -335,6 +345,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D29995B19BA9042005EBC8A /* verbatmMediaPageViewController.m in Sources */,
+				9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */,
 				C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */,
 				C734FD9C19B14B8D00B2C370 /* verbatmContentPageViewController.m in Sources */,
 				C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */,

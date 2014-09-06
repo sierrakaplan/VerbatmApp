@@ -26,10 +26,8 @@
 @property (strong) AVCaptureStillImageOutput* stillImageOutput;
 @property (nonatomic, strong)UIImage* stillImage;
 @property (strong, nonatomic) AVCaptureMovieFileOutput * movieOutputFile;
-@property (strong, nonatomic) NSURL* verbatmFolderURL;
 @property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
 @property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
-@property (nonatomic, weak) CAShapeLayer *pathLayer;
 @property (strong, nonatomic) UIImageView* videoProgressImageView;
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic) CGFloat counter;
@@ -52,7 +50,6 @@
 
 @synthesize stillImageOutput = _stillImageOutput;
 @synthesize stillImage = _stillImage;
-@synthesize verbatmFolderURL = _verbatmFolderURL;
 @synthesize assetLibrary = _assetLibrary;
 @synthesize verbatmAlbum = _verbatmAlbum;
 @synthesize videoProgressImageView= _videoProgressImageView;
@@ -592,7 +589,6 @@
 
 #pragma mark Required protocol methods for AVCapture
 //Lucio
-
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
 {
     
@@ -620,7 +616,6 @@
 
 
 //Lucio
-//Directly from stack overflow
 -(void)processImage:(UIImage*)image
 {
     
@@ -656,6 +651,8 @@
     [self changeImageScreenBounds];
 }
 
+//Lucio
+//This method feels more like a hack to me . Investigate whether it works on all iphone and pad devices
 -(UIImage*)rotateImageToRightOrientation:(UIImage*)initImage withPreviousOrientation:(UIImageOrientation)orientation
 {
     if([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait || [UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp ){
@@ -671,11 +668,12 @@
         NSLog(@"hEREE 3");
         initImage = [self rotateUIImage:initImage clockwise:YES];
         initImage = [self rotateUIImage:initImage clockwise:YES];
-        
     }
     return initImage;
 }
 
+//Lucio
+//Rotates the image captured
 - (UIImage*)rotateUIImage:(UIImage*)sourceImage clockwise:(BOOL)clockwise
 {
     CGSize size = sourceImage.size;
