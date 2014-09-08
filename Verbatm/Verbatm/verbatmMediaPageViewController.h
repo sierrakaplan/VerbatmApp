@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AssetsLibrary/AssetsLibrary.h>
-#import "verbatmMediaSessionManager.h"
+
 
 @interface verbatmMediaPageViewController : UIViewController
 
