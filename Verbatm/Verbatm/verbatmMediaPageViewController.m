@@ -175,13 +175,14 @@
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
     [self.sessionManager captureImage];
-    NSTimer* timer1 = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(settingImage) userInfo:nil repeats:NO];
+    [self.sessionManager stopSession];
     NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(slidePictureOut) userInfo:nil repeats:NO];
+    NSTimer* timer1 = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(settingImage) userInfo:nil repeats:NO];
 }
 
 -(void)settingImage
 {
-    self.imageSlider = [self.verbatmCameraView snapshotViewAfterScreenUpdates:YES];
+    [self.sessionManager startSession];
 }
 
 //Lucio
@@ -280,7 +281,7 @@
     [animation setDuration:0.5f];
     [animation setType:kCATransitionPush];
     [animation setSubtype:kCATransitionFromLeft];
-    [self.imageSlider.layer addAnimation:animation forKey:NULL];
+    [self.verbatmCameraView.layer addAnimation:animation forKey:NULL];
 }
 
 //Lucio
