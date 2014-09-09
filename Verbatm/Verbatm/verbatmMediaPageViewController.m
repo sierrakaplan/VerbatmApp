@@ -28,10 +28,10 @@
 
 #define ALBUM_NAME @"Verbatm"
 #define ASPECT_RATIO 1               
-#define RGB_LEFT_SIDE 1, 0, 0, 1     //247, 0, 99, 1
-#define RGB_RIGHT_SIDE 1, 0, 0, 1
-#define RGB_BOTTOM_SIDE 1, 0, 0, 1
-#define RGB_TOP_SIDE 1, 0, 0, 1
+#define RGB_LEFT_SIDE 255,223,0, 0.7     //247, 0, 99, 1
+#define RGB_RIGHT_SIDE 255,223,0, 0.7
+#define RGB_BOTTOM_SIDE 255,223,0, 0.7
+#define RGB_TOP_SIDE 255,223,0, 0.7
 #define MAX_VIDEO_LENGTH 30
 #define CAMERA_ICON_FRONT @"camera_final_consolidated"
 #define SWITCH_ICON_SIZE 60
@@ -126,7 +126,6 @@
 //by Lucio
 -(void) createLongPressGesture
 {
-    NSLog(@"HERE long press");
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
     longPress.minimumPressDuration = 1;
     [self.verbatmCameraView addGestureRecognizer:longPress];
@@ -143,7 +142,6 @@
 //by Lucio
 -(void)createSlideUpGesture
 {
-    NSLog(@"HERE");
     UISwipeGestureRecognizer* swipeUpGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseVideoPreviewScreen:)];
     swipeUpGesture.direction = UISwipeGestureRecognizerDirectionUp;
     [self.verbatmCameraView addGestureRecognizer:swipeUpGesture];
@@ -166,14 +164,14 @@
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
     [self.sessionManager captureImage];
-    
-    AVCaptureVideoPreviewLayer* videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:[[AVCaptureSession alloc] init]];
-    videoPreview.frame = self.videoProgressImageView.frame;
-    videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;  //was originally resizeaspectfill
+//    [self.sessionManager stopSession];
+    NSTimer* timer1 = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(settingImage) userInfo:nil repeats:NO];
+    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(slidePictureOut) userInfo:nil repeats:NO];
+}
 
-    [self.videoProgressImageView.layer addSublayer: videoPreview];
-    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(slidePictureOut) userInfo:nil repeats:NO];
-    //[self createSpringEffect];
+-(void)settingImage
+{
+    self.videoProgressImageView.image = self.sessionManager.secondStillImage;
 }
 
 //Lucio
@@ -267,15 +265,14 @@
 //by Lucio
 -(void)slidePictureOut
 {
-//    for (CALayer* layer in self.videoProgressImageView.layer.sublayers){
-//        [layer removeFromSuperlayer];
-//    }
     CATransition *animation = [CATransition animation];
     [animation setDelegate:self];
     [animation setDuration:0.5f];
     [animation setType:kCATransitionPush];
     [animation setSubtype:kCATransitionFromLeft];
     [self.videoProgressImageView.layer addAnimation:animation forKey:NULL];
+    [self clearVideoProgressImage];
+//    [self.sessionManager startSession];
 }
 
 //Lucio
@@ -292,7 +289,7 @@
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
         self.currentPoint = CGPointMake((self.videoProgressImageView.frame.size.width/2)*(1 - (self.counter/ (MAX_VIDEO_LENGTH/8))), self.videoProgressImageView.frame.size.height);
-        CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.lastPoint.y);
+        CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }else if (self.counter >= MAX_VIDEO_LENGTH/8 && self.counter < (MAX_VIDEO_LENGTH*3)/8){
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(),RGB_LEFT_SIDE);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
@@ -302,19 +299,19 @@
     }else if (self.counter >= (MAX_VIDEO_LENGTH*3)/8  && self.counter < (MAX_VIDEO_LENGTH*5)/8 ){
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_TOP_SIDE);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
-        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.currentPoint.y);
+        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
         self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH*3/8))/ (MAX_VIDEO_LENGTH*2/8)), 0);
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }else if (self.counter >= (MAX_VIDEO_LENGTH*5)/8  && self.counter < (MAX_VIDEO_LENGTH*7)/8){
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_RIGHT_SIDE);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
-        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.currentPoint.y);
+        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
         self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH*5)/8)/ (MAX_VIDEO_LENGTH*2/8)));
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }else{
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_BOTTOM_SIDE);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
-        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.currentPoint.y);
+        CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
         self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width - ((self.videoProgressImageView.frame.size.width/2)*(self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8)), self.videoProgressImageView.frame.size.height);
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }

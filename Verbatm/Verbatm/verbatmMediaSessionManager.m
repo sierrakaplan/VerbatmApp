@@ -233,6 +233,17 @@
     }
 }
 
+//by Lucio
+-(void)startSession
+{
+    [self.session startRunning];
+}
+
+-(void)stopSession
+{
+    [self.session stopRunning];
+}
+
 #pragma mark - video recording 
 
 //by Lucio
@@ -364,8 +375,9 @@
 -(void)processImage:(UIImage*)image
 {
     self.stillImage = image;
-    [self cropImage];
     self.secondStillImage = image;
+    [self cropImage];
+    
 }
 
 -(void)cropImage
