@@ -11,12 +11,11 @@
 @interface verbatmMediaSessionManager() <AVCaptureFileOutputRecordingDelegate>
 
 @property (strong, nonatomic)AVCaptureSession* session;
-@property (strong, nonatomic)AVCaptureVideoPreviewLayer* videoPreview;
 @property (strong, nonatomic) AVCaptureMovieFileOutput * movieOutputFile;
 @property (strong) AVCaptureStillImageOutput* stillImageOutput;
-@property (nonatomic, strong)UIImage* stillImage;
 @property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
 @property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
+@property (nonatomic, strong)UIImage* stillImage;
 
 #define N_FRAMES_PER_SECOND 32
 #define NUM_SECONDS 30
@@ -24,7 +23,6 @@
 
 @end
 
-CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 
 @implementation verbatmMediaSessionManager
 @synthesize session = _session;
@@ -49,7 +47,7 @@ CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
         
         self.videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session];
         self.videoPreview.frame = containerView.frame;
-         self.videoPreview.videoGravity =  AVLayerVideoGravityResize;  //was originally resizeaspectfill
+         self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;  //was originally resizeaspectfill
         [containerView.layer addSublayer: self.videoPreview];
         
         //start the session running
@@ -185,8 +183,9 @@ CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
     
     AVCaptureInput* currentVideoInput = [self.session.inputs firstObject];
     currentVideoInput = ([((AVCaptureDeviceInput*)currentVideoInput).device hasMediaType:AVMediaTypeVideo])? currentVideoInput : [self.session.inputs lastObject];
-    if(((AVCaptureDeviceInput*)currentVideoInput).device.hasFlash){
+    if(((AVCaptureDeviceInput*)currentVideoInput).device.hasFlash && [((AVCaptureDeviceInput*)currentVideoInput).device lockForConfiguration:nil] ){
         ((AVCaptureDeviceInput*)currentVideoInput).device.flashMode = (((AVCaptureDeviceInput*)currentVideoInput).device.flashActive)? AVCaptureFlashModeOff : AVCaptureFlashModeOn;
+        [((AVCaptureDeviceInput*)currentVideoInput).device unlockForConfiguration];
     }else{
         NSLog(@"Video device does not have flash settings");
     }
@@ -228,8 +227,6 @@ CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 -(void)setToFrameOfView:(UIView*)containerView
 {
     if([containerView.layer.sublayers containsObject: self.videoPreview]){
-        
-        self.videoPreview.videoGravity = (self.videoPreview.frame.size.height < containerView.frame.size.height || self.videoPreview.frame.size.width < containerView.frame.size.width)? AVLayerVideoGravityResizeAspectFill : AVLayerVideoGravityResize;   //see how this could fix the aspect ratio issues.
         self.videoPreview.frame = containerView.frame;
     }else{
         NSLog(@"Wrong container view");
@@ -367,83 +364,20 @@ CGFloat DegreesToRadians(CGFloat degrees) {return degrees * M_PI / 180;};
 -(void)processImage:(UIImage*)image
 {
     self.stillImage = image;
-    if([UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp || [UIDevice currentDevice].orientation == UIDeviceOrientationPortrait){
-        [self cropImage];
-    }
-    //self.stillImage =  [self imageRotatedByDegrees:90];
-    //[self rotateImageToRightOrientation:image withPreviousOrientation:image.imageOrientation];
-}
-
-//Lucio
-//This method feels more like a hack to me . Investigate whether it works on all iphone and pad devices
--(UIImage*)rotateImageToRightOrientation:(UIImage*)initImage withPreviousOrientation:(UIImageOrientation)orientation
-{
-    if([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait || [UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp ){
-        NSLog(@"hEREE 1");
-        initImage= [self rotateUIImage:initImage clockwise:YES];
-    }else if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
-        NSLog(@"hEREE 2");
-        for(int i = 0; i < 4; i++)initImage = [self rotateUIImage:initImage clockwise:NO];
-    }else{
-        NSLog(@"hEREE 3");
-        for(int i = 0; i < 2; i++)initImage = [self rotateUIImage:initImage clockwise:YES];
-    }
-    return initImage;
-}
-
-//Lucio
-//Rotates the image captured
-- (UIImage*)rotateUIImage:(UIImage*)sourceImage clockwise:(BOOL)clockwise
-{
-    CGSize size = sourceImage.size;
-    UIGraphicsBeginImageContext(CGSizeMake(size.height, size.width));
-    [[UIImage imageWithCGImage:[sourceImage CGImage] scale:1.0 orientation:clockwise ? UIImageOrientationRight : UIImageOrientationLeft] drawInRect:CGRectMake(0,0,size.height ,size.width)];
-    UIImage* newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newImage;
-}
-
-- (UIImage *)imageRotatedByDegrees:(CGFloat)degrees
-{
-    NSLog(@"HERE");
-    // calculate the size of the rotated view's containing box for our drawing space
-    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,self.stillImage.size.width, self.stillImage.size.height)];
-    CGAffineTransform t = CGAffineTransformMakeRotation(DegreesToRadians(degrees));
-    rotatedViewBox.transform = t;
-    CGSize rotatedSize = rotatedViewBox.frame.size;
-    
-    // Create the bitmap context
-    UIGraphicsBeginImageContext(rotatedSize);
-    CGContextRef bitmap = UIGraphicsGetCurrentContext();
-    
-    // Move the origin to the middle of the image so we will rotate and scale around the center.
-    CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
-    
-    //   // Rotate the image context
-    CGContextRotateCTM(bitmap, DegreesToRadians(degrees));
-    
-    // Now, draw the rotated/scaled image into the context
-    CGContextScaleCTM(bitmap, 1.0, -1.0);
-    CGContextDrawImage(bitmap, CGRectMake(-self.stillImage.size.width / 2, -self.stillImage.size.height / 2, self.stillImage.size.width, self.stillImage.size.height), [self.stillImage CGImage]);
-    
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newImage;
-    
+    [self cropImage];
+    self.secondStillImage = image;
 }
 
 -(void)cropImage
 {
     UIImage *newImage = self.stillImage;
     
-    CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height);
+    CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height - 100);  //these magic numbers need to be tested on other devices
     UIGraphicsBeginImageContext(itemSize);
-    CGRect imageRect = CGRectMake(0.0, 0.0, self.videoPreview.frame.size.width, self.videoPreview.frame.size.height);
+    CGRect imageRect = CGRectMake(0.0, -45.0, self.stillImage.size.width, self.stillImage.size.height);
     [self.stillImage drawInRect:imageRect];
-    
     newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
     self.stillImage = newImage;
 }
 

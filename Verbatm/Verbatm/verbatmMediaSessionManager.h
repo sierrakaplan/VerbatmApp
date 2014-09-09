@@ -20,4 +20,6 @@
 -(void)setToFrameOfView:(UIView*)containerView;
 -(void)switchVideoFace;
 -(void)switchFlash;
+@property (nonatomic, strong)UIImage* secondStillImage;
+@property (strong, nonatomic)AVCaptureVideoPreviewLayer* videoPreview;
 @end

@@ -14,6 +14,7 @@
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
 		C734FD9C19B14B8D00B2C370 /* verbatmContentPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* verbatmContentPageViewController.m */; };
 		C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = C7360E4E19A46D4E002B2DE5 /* Article.m */; };
+		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F219A96E0B00CE861F /* Photo.m */; };
 		C7A8A7F619A96E1B00CE861F /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F519A96E1B00CE861F /* Video.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
@@ -24,7 +25,6 @@
 		C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC4385199D97F5004B91A1 /* verbatmAppDelegate.m */; };
 		C7BC4389199D97F5004B91A1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7BC4387199D97F5004B91A1 /* Main.storyboard */; };
 		C7BC438C199D97F5004B91A1 /* verbatmViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC438B199D97F5004B91A1 /* verbatmViewController.m */; };
-		C7BC438E199D97F5004B91A1 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7BC438D199D97F5004B91A1 /* Images.xcassets */; };
 		C7BC4395199D97F6004B91A1 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4394199D97F6004B91A1 /* XCTest.framework */; };
 		C7BC4396199D97F6004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4397199D97F6004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
@@ -65,6 +65,7 @@
 		C734FD9B19B14B8D00B2C370 /* verbatmContentPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmContentPageViewController.m; sourceTree = "<group>"; };
 		C7360E4D19A46D4E002B2DE5 /* Article.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Article.h; sourceTree = "<group>"; };
 		C7360E4E19A46D4E002B2DE5 /* Article.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Article.m; sourceTree = "<group>"; };
+		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C7A8A7F119A96E0B00CE861F /* Photo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Photo.h; sourceTree = "<group>"; };
 		C7A8A7F219A96E0B00CE861F /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Photo.m; sourceTree = "<group>"; };
 		C7A8A7F419A96E1B00CE861F /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
@@ -82,7 +83,6 @@
 		C7BC4388199D97F5004B91A1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C7BC438A199D97F5004B91A1 /* verbatmViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = verbatmViewController.h; sourceTree = "<group>"; };
 		C7BC438B199D97F5004B91A1 /* verbatmViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = verbatmViewController.m; sourceTree = "<group>"; };
-		C7BC438D199D97F5004B91A1 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C7BC4393199D97F6004B91A1 /* VerbatmTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VerbatmTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BC4394199D97F6004B91A1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		C7BC439C199D97F6004B91A1 /* VerbatmTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "VerbatmTests-Info.plist"; sourceTree = "<group>"; };
@@ -185,6 +185,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				C774040E19BE6538004C50EA /* Images.xcassets */,
 				C7BC43C1199F75D0004B91A1 /* Backend Model */,
 				C7BC4387199D97F5004B91A1 /* Main.storyboard */,
 				C734FD9A19B14B8D00B2C370 /* verbatmContentPageViewController.h */,
@@ -195,7 +196,6 @@
 				C7BC438B199D97F5004B91A1 /* verbatmViewController.m */,
 				9D29995919BA9042005EBC8A /* verbatmMediaPageViewController.h */,
 				9D29995A19BA9042005EBC8A /* verbatmMediaPageViewController.m */,
-				C7BC438D199D97F5004B91A1 /* Images.xcassets */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 			);
 			path = Verbatm;
@@ -324,7 +324,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7BC438E199D97F5004B91A1 /* Images.xcassets in Resources */,
+				C774040F19BE6538004C50EA /* Images.xcassets in Resources */,
 				C7BC4380199D97F5004B91A1 /* InfoPlist.strings in Resources */,
 				C7BC4389199D97F5004B91A1 /* Main.storyboard in Resources */,
 			);
