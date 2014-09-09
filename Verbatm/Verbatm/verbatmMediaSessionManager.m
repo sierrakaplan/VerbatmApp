@@ -233,6 +233,17 @@
     }
 }
 
+//by Lucio
+-(void)startSession
+{
+    [self.session startRunning];
+}
+
+-(void)stopSession
+{
+    [self.session stopRunning];
+}
+
 #pragma mark - video recording 
 
 //by Lucio
