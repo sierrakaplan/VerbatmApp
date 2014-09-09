@@ -165,16 +165,15 @@
     CGPoint point = [self.tap locationInView:self.verbatmCameraView];
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
-    self.sessionManager.videoPreview.videoGravity = AVLayerVideoGravityResize;
     [self.sessionManager captureImage];
-    NSTimer* timer1 = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(settingImage) userInfo:nil repeats:NO];
+    
+    AVCaptureVideoPreviewLayer* videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:[[AVCaptureSession alloc] init]];
+    videoPreview.frame = self.videoProgressImageView.frame;
+    videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;  //was originally resizeaspectfill
+
+    [self.videoProgressImageView.layer addSublayer: videoPreview];
     NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(slidePictureOut) userInfo:nil repeats:NO];
     //[self createSpringEffect];
-}
-
--(void)settingImage
-{
-    self.videoProgressImageView.image = self.sessionManager.secondStillImage;
 }
 
 //Lucio
@@ -268,14 +267,15 @@
 //by Lucio
 -(void)slidePictureOut
 {
+//    for (CALayer* layer in self.videoProgressImageView.layer.sublayers){
+//        [layer removeFromSuperlayer];
+//    }
     CATransition *animation = [CATransition animation];
     [animation setDelegate:self];
     [animation setDuration:0.5f];
     [animation setType:kCATransitionPush];
     [animation setSubtype:kCATransitionFromLeft];
     [self.videoProgressImageView.layer addAnimation:animation forKey:NULL];
-    [self.videoProgressImageView setImage:nil];
-    self.sessionManager.videoPreview.videoGravity = AVLayerVideoGravityResizeAspectFill;
 }
 
 //Lucio
