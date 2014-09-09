@@ -53,6 +53,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self createImageSlider];
 	[self createCameraView ];
     self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
     [self createSlideDownGesture];
@@ -63,14 +64,6 @@
     [self createSwitchCameraButton];
     [self createSwitchFlashButton];
     self.extended = NO;
-}
-
--(UIView*)imageSlider
-{
-    if(!_imageSlider){
-        _imageSlider = [[UIView alloc]init];
-    }
-    return _imageSlider;
 }
 
 - (void)didReceiveMemoryWarning
@@ -91,13 +84,21 @@
 
 #pragma mark - creating views
 
+
+//by Lucio
+//creates the imageSlider
+-(void)createImageSlider
+{
+    self.imageSlider = [[UIView alloc] init];
+    [self.view addSubview: self.imageSlider];
+}
 //by Lucio
 //creates the camera view with the preview session
 -(void)createCameraView
 {
     CGRect frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.width*ASPECT_RATIO);
     self.verbatmCameraView = [[UIView alloc]initWithFrame: frame];
-    self.verbatmCameraView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
+    self.verbatmCameraView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
     [self.view addSubview:self.verbatmCameraView];
 }
 
@@ -174,13 +175,13 @@
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
     [self.sessionManager captureImage];
-    NSTimer* timer1 = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(settingImage) userInfo:nil repeats:NO];
-    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(slidePictureOut) userInfo:nil repeats:NO];
+    NSTimer* timer1 = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(settingImage) userInfo:nil repeats:NO];
+    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(slidePictureOut) userInfo:nil repeats:NO];
 }
 
 -(void)settingImage
 {
-    self.imageSlider = [self.verbatmCameraView snapshotViewAfterScreenUpdates:NO];
+    self.imageSlider = [self.verbatmCameraView snapshotViewAfterScreenUpdates:YES];
 }
 
 //Lucio
@@ -280,7 +281,6 @@
     [animation setType:kCATransitionPush];
     [animation setSubtype:kCATransitionFromLeft];
     [self.imageSlider.layer addAnimation:animation forKey:NULL];
-//    [self clearVideoProgressImage];
 }
 
 //Lucio
@@ -334,7 +334,8 @@
 //Lucio
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    [self changeImageScreenBounds];
+
+        [self changeImageScreenBounds];
 }
 
 @end

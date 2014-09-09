@@ -22,5 +22,4 @@
 -(void)switchFlash;
 -(void)startSession;
 -(void)stopSession;
-
 @end
