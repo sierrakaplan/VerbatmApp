@@ -23,6 +23,7 @@
 @property (nonatomic) BOOL extended;
 @property (nonatomic) CGPoint lastPoint;
 @property (nonatomic)CGPoint currentPoint;
+@property (nonatomic, strong) UIView* imageSlider;
 
 @property (strong, nonatomic) UITapGestureRecognizer * tap;
 
@@ -64,6 +65,14 @@
     self.extended = NO;
 }
 
+-(UIView*)imageSlider
+{
+    if(!_imageSlider){
+        _imageSlider = [[UIView alloc]init];
+    }
+    return _imageSlider;
+}
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -88,6 +97,7 @@
 {
     CGRect frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.width*ASPECT_RATIO);
     self.verbatmCameraView = [[UIView alloc]initWithFrame: frame];
+    self.verbatmCameraView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;
     [self.view addSubview:self.verbatmCameraView];
 }
 
@@ -164,14 +174,13 @@
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
     [self.sessionManager captureImage];
-//    [self.sessionManager stopSession];
     NSTimer* timer1 = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(settingImage) userInfo:nil repeats:NO];
     NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(slidePictureOut) userInfo:nil repeats:NO];
 }
 
 -(void)settingImage
 {
-    self.videoProgressImageView.image = self.sessionManager.secondStillImage;
+    self.imageSlider = [self.verbatmCameraView snapshotViewAfterScreenUpdates:NO];
 }
 
 //Lucio
@@ -270,9 +279,8 @@
     [animation setDuration:0.5f];
     [animation setType:kCATransitionPush];
     [animation setSubtype:kCATransitionFromLeft];
-    [self.videoProgressImageView.layer addAnimation:animation forKey:NULL];
-    [self clearVideoProgressImage];
-//    [self.sessionManager startSession];
+    [self.imageSlider.layer addAnimation:animation forKey:NULL];
+//    [self clearVideoProgressImage];
 }
 
 //Lucio
@@ -315,7 +323,7 @@
         self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width - ((self.videoProgressImageView.frame.size.width/2)*(self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8)), self.videoProgressImageView.frame.size.height);
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }
-    CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 4.0), 20.0 , [UIColor redColor].CGColor);
+    CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 4.0), 20.0 , [UIColor yellowColor].CGColor);
     CGContextStrokePath(UIGraphicsGetCurrentContext());
     self.videoProgressImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     self.lastPoint = self.currentPoint;

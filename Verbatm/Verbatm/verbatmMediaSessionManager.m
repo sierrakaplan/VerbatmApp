@@ -16,6 +16,7 @@
 @property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
 @property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
 @property (nonatomic, strong)UIImage* stillImage;
+@property (strong, nonatomic)AVCaptureVideoPreviewLayer* videoPreview;
 
 #define N_FRAMES_PER_SECOND 32
 #define NUM_SECONDS 30
@@ -375,7 +376,6 @@
 -(void)processImage:(UIImage*)image
 {
     self.stillImage = image;
-    self.secondStillImage = image;
     [self cropImage];
     
 }

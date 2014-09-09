@@ -22,6 +22,5 @@
 -(void)switchFlash;
 -(void)startSession;
 -(void)stopSession;
-@property (nonatomic, strong)UIImage* secondStillImage;
-@property (strong, nonatomic)AVCaptureVideoPreviewLayer* videoPreview;
+
 @end
