@@ -175,7 +175,19 @@
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
     [self.sessionManager captureImage];
+    //[self.sessionManager stopSession];
+    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(freezeFrame) userInfo:nil repeats:NO];
+}
+
+-(void)freezeFrame
+{
     [self.sessionManager stopSession];
+    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
+}
+
+-(void)resumeSession
+{
+    [self.sessionManager startSession];
 }
 
 -(void)settingImage
