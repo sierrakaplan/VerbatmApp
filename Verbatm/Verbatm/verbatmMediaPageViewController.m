@@ -176,8 +176,6 @@
     
     [self.sessionManager captureImage];
     [self.sessionManager stopSession];
-    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(slidePictureOut) userInfo:nil repeats:NO];
-    NSTimer* timer1 = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(settingImage) userInfo:nil repeats:NO];
 }
 
 -(void)settingImage
