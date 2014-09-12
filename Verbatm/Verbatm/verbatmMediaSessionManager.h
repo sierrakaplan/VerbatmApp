@@ -22,4 +22,5 @@
 -(void)switchFlash;
 -(void)startSession;
 -(void)stopSession;
+@property (strong, nonatomic)AVCaptureVideoPreviewLayer* videoPreview;
 @end
