@@ -23,7 +23,8 @@
 @property (nonatomic) BOOL extended;
 @property (nonatomic) CGPoint lastPoint;
 @property (nonatomic)CGPoint currentPoint;
-@property (nonatomic, strong) UIView* imageSlider;
+@property (strong, nonatomic) UIView* blurrFilter;
+
 
 @property (strong, nonatomic) UITapGestureRecognizer * tap;
 
@@ -39,7 +40,10 @@
 #define FLASH_ICON_SIZE 60
 #define FLASH_ICON_ON @"bulb_FINALANDFORALL_registered_ON(17pt)_one.bar.png"
 #define FLASH_ICON_OFF @"bulb_FINALANDFORALL_registered_OFF(17pt)_one.bar.png"
-
+#define FLASH_START_POSITION  10, 12
+#define FLASH_ROTATED_POSITION 20, 8
+#define SWITCH_CAMERA_START_POSITION 260, 20
+#define SWITCH_CAMERA_ROTATED_POSITION 480, 22
 @end
 
 @implementation verbatmMediaPageViewController
@@ -53,14 +57,14 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self createImageSlider];
-	[self createCameraView ];
+    [self.view addSubview: self.verbatmCameraView];
+    [self.verbatmCameraView addSubview: self.blurrFilter];
     self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
     [self createSlideDownGesture];
     [self createSlideUpGesture];
     [self createTapGesture];
     [self createLongPressGesture];
-    [self createVideoProgressView];
+    [self.view addSubview: self.videoProgressImageView];
     [self createSwitchCameraButton];
     [self createSwitchFlashButton];
     self.extended = NO;
@@ -84,22 +88,30 @@
 
 #pragma mark - creating views
 
-
-//by Lucio
-//creates the imageSlider
--(void)createImageSlider
-{
-    self.imageSlider = [[UIView alloc] init];
-    [self.view addSubview: self.imageSlider];
-}
 //by Lucio
 //creates the camera view with the preview session
--(void)createCameraView
+-(UIView*)verbatmCameraView
 {
-    CGRect frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.width*ASPECT_RATIO);
-    self.verbatmCameraView = [[UIView alloc]initWithFrame: frame];
-    self.verbatmCameraView.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;
-    [self.view addSubview:self.verbatmCameraView];
+    if(!_verbatmCameraView){
+        _verbatmCameraView = [[UIView alloc]initWithFrame:  self.view.frame];
+        _verbatmCameraView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;  //check this please!
+    }
+    return _verbatmCameraView;
+}
+
+-(UIView*)blurrFilter
+{
+    if(!_blurrFilter){
+        CGRect frame = CGRectMake(0, self.view.frame.size.height - self.view.frame.size.width, self.view.frame.size.width, self.view.frame.size.width);
+        _blurrFilter = [[UIView alloc] initWithFrame:frame];
+        CALayer* blurrLayer = [[CALayer alloc] init];
+        CIFilter* blurFilter = [CIFilter filterWithName: @"CIGaussianBlur"];
+        [blurFilter setValue: [NSNumber numberWithFloat: 15.0f] forKey:@"inputRadius"];
+        blurrLayer.filters = @[blurFilter];
+        [_blurrFilter.layer addSublayer: blurrLayer];
+        
+    }
+    return _blurrFilter;
 }
 
 //By Lucio
@@ -107,7 +119,7 @@
 {
     self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
     [self.switchCameraButton setImage:[UIImage imageNamed:CAMERA_ICON_FRONT] forState:UIControlStateNormal];
-    [self.switchCameraButton setFrame:CGRectMake(260, 20, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+    [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
     [self.switchCameraButton addTarget:self action:@selector(switchFaces:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview: self.switchCameraButton];
 }
@@ -117,7 +129,7 @@
 {
     self.switchFlashButton= [UIButton buttonWithType:UIButtonTypeCustom];
     [self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_OFF] forState:UIControlStateNormal];
-    [self.switchFlashButton setFrame:CGRectMake(10, 12, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+    [self.switchFlashButton setFrame:CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
     [self.switchFlashButton addTarget:self action:@selector(switchFlash:) forControlEvents:UIControlEventTouchUpInside];
     self.flashOn = NO;
     [self.view addSubview: self.switchFlashButton];
@@ -131,7 +143,7 @@
 {
     self.tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
     self.tap.numberOfTapsRequired = 1;
-    [self.verbatmCameraView addGestureRecognizer:self.tap];
+    [self.videoProgressImageView addGestureRecognizer:self.tap];
 }
 
 //by Lucio
@@ -139,7 +151,7 @@
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
     longPress.minimumPressDuration = 1;
-    [self.verbatmCameraView addGestureRecognizer:longPress];
+    [self.videoProgressImageView addGestureRecognizer:longPress];
 }
 
 //by Lucio
@@ -147,7 +159,7 @@
 {
     UISwipeGestureRecognizer* swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(extendScreen:)];
     swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
-    [self.verbatmCameraView addGestureRecognizer:swipeDownGesture];
+    [self.blurrFilter addGestureRecognizer:swipeDownGesture];
 }
 
 //by Lucio
@@ -159,12 +171,14 @@
 }
 
 //by Lucio
--(void)createVideoProgressView
+-(UIView*)videoProgressImageView
 {
-    self.videoProgressImageView =  [[UIImageView alloc] initWithImage:nil];
-    self.videoProgressImageView.backgroundColor = [UIColor clearColor];
-    self.videoProgressImageView.frame = self.verbatmCameraView.frame;
-    [self.view addSubview: self.videoProgressImageView];
+    if(_videoProgressImageView){
+        _videoProgressImageView =  [[UIImageView alloc] initWithImage:nil];
+        _videoProgressImageView.backgroundColor = [UIColor clearColor];
+        _videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width);
+    }
+    return _videoProgressImageView;
 }
 
 #pragma mark -touch gesture selectors
@@ -175,7 +189,6 @@
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
     [self.sessionManager captureImage];
-    //[self.sessionManager stopSession];
     NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(freezeFrame) userInfo:nil repeats:NO];
 }
 
@@ -190,11 +203,6 @@
     [self.sessionManager startSession];
 }
 
--(void)settingImage
-{
-    [self.sessionManager startSession];
-}
-
 //Lucio
 -(IBAction)takeVideo:(id)sender
 {
@@ -202,7 +210,7 @@
     if(recognizer.state == UIGestureRecognizerStateBegan){
         [self.sessionManager startVideoRecording];
         self.counter = 0;
-        self.lastPoint = CGPointMake(self.verbatmCameraView.frame.size.width/2, self.verbatmCameraView.frame.size.height);
+        self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width/2, self.videoProgressImageView.frame.size.height);
         self.timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(createProgressPath) userInfo:nil repeats:YES];
     }else{
         if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateFailed ||
@@ -246,30 +254,32 @@
         UIDevice* currentDevice = [UIDevice currentDevice];
         if(currentDevice.orientation == UIDeviceOrientationLandscapeRight|| [[UIDevice currentDevice]orientation] == UIDeviceOrientationLandscapeLeft){
             self.verbatmCameraView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.height, self.view.frame.size.width);
-            [self.switchCameraButton setFrame:CGRectMake(480, 22, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
-            [self.switchFlashButton setFrame: CGRectMake(20, 8, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+            [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_ROTATED_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+            [self.switchFlashButton setFrame: CGRectMake(FLASH_ROTATED_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
         }else{
             if(self.extended)self.verbatmCameraView.frame = self.view.frame;
-            [self.switchCameraButton setFrame:CGRectMake(260, 20, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
-            [self.switchFlashButton setFrame: CGRectMake(10, 8, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+            [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+            [self.switchFlashButton setFrame: CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
         }
         [self.sessionManager setSessionOrientationToDeviceOrientation];
         [self.sessionManager setToFrameOfView:self.verbatmCameraView];
         self.videoProgressImageView.frame = self.verbatmCameraView.frame;
+        [self.blurrFilter removeFromSuperview];
     }];
 }
 
 //by Lucio
 -(IBAction)raiseVideoPreviewScreen:(id)sender
 {
-    BOOL canRaise = self.verbatmCameraView.frame.size.height == self.view.frame.size.height;
+    BOOL canRaise = self.videoProgressImageView.frame.size.height < self.verbatmCameraView.frame.size.height;
     self.extended = NO;
     if(canRaise){
         [UIView animateWithDuration:0.05 animations:^{
-            self.verbatmCameraView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.width*ASPECT_RATIO);
+            self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width);
+            self.blurrFilter.frame = CGRectMake(0, self.view.frame.size.height - self.view.frame.size.width, self.view.frame.size.width, self.view.frame.size.width);
+            [self.verbatmCameraView addSubview:self.blurrFilter];
             [self.sessionManager setSessionOrientationToDeviceOrientation];
             [self.sessionManager setToFrameOfView:self.verbatmCameraView];
-            self.videoProgressImageView.frame = self.verbatmCameraView.frame;
         }];
     }
 }
@@ -281,17 +291,6 @@
 -(void)clearVideoProgressImage
 {
     self.videoProgressImageView.image = nil;
-}
-
-//by Lucio
--(void)slidePictureOut
-{
-    CATransition *animation = [CATransition animation];
-    [animation setDelegate:self];
-    [animation setDuration:0.5f];
-    [animation setType:kCATransitionPush];
-    [animation setSubtype:kCATransitionFromLeft];
-    [self.verbatmCameraView.layer addAnimation:animation forKey:NULL];
 }
 
 //Lucio
