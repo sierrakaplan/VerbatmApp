@@ -20,7 +20,6 @@
 @property (strong, nonatomic)UIButton* switchCameraButton;
 @property (strong, nonatomic)UIButton* switchFlashButton;
 @property (nonatomic) BOOL flashOn;
-@property (nonatomic) BOOL extended;
 @property (nonatomic) CGPoint lastPoint;
 @property (nonatomic)CGPoint currentPoint;
 @property (strong, nonatomic) UIImageView* blurrFilter;
@@ -69,7 +68,8 @@
     [self createLongPressGesture];
     [self createSwitchCameraButton];
     [self createSwitchFlashButton];
-    self.extended = NO;
+    
+   
 }
 
 - (void)didReceiveMemoryWarning
@@ -158,7 +158,7 @@
 {
     UISwipeGestureRecognizer* swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(extendScreen:)];
     swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
-    [self.blurrFilter addGestureRecognizer:swipeDownGesture];
+    [self.verbatmCameraView addGestureRecognizer:swipeDownGesture];
 }
 
 //by Lucio
@@ -175,7 +175,7 @@
     if(!_videoProgressImageView){
         _videoProgressImageView =  [[UIImageView alloc] init];
         _videoProgressImageView.backgroundColor = [UIColor clearColor];
-        _videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width);
+        _videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - self.view.frame.size.height - self.view.frame.size.width);
     }
     return _videoProgressImageView;
 }
@@ -242,7 +242,6 @@
 //Lucio
 -(IBAction)extendScreen:(id)sender
 {
-    self.extended = YES;
     [self changeImageScreenBounds];
 }
 
@@ -252,18 +251,18 @@
     [UIView animateWithDuration:0.5 animations:^{
         UIDevice* currentDevice = [UIDevice currentDevice];
         if(currentDevice.orientation == UIDeviceOrientationLandscapeRight|| [[UIDevice currentDevice]orientation] == UIDeviceOrientationLandscapeLeft){
-            self.verbatmCameraView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.height, self.view.frame.size.width);
+            self.videoProgressImageView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.height, self.view.frame.size.width);
             [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_ROTATED_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
             [self.switchFlashButton setFrame: CGRectMake(FLASH_ROTATED_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
         }else{
-            if(self.extended)self.verbatmCameraView.frame = self.view.frame;
+            self.videoProgressImageView.frame = self.view.frame;
             [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
             [self.switchFlashButton setFrame: CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+            [self.blurrFilter removeFromSuperview];
         }
         [self.sessionManager setSessionOrientationToDeviceOrientation];
-        [self.sessionManager setToFrameOfView:self.verbatmCameraView];
-        self.videoProgressImageView.frame = self.verbatmCameraView.frame;
-        [self.blurrFilter removeFromSuperview];
+        //[self.sessionManager setToFrameOfView:self.verbatmCameraView]; check whether this is necessary
+        //self.videoProgressImageView.frame = self.verbatmCameraView.frame;
     }];
 }
 
@@ -271,10 +270,9 @@
 -(IBAction)raiseVideoPreviewScreen:(id)sender
 {
     BOOL canRaise = self.videoProgressImageView.frame.size.height < self.verbatmCameraView.frame.size.height;
-    self.extended = NO;
     if(canRaise){
         [UIView animateWithDuration:0.05 animations:^{
-            self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width);
+            self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - self.view.frame.size.width);
             self.blurrFilter.frame = CGRectMake(0, self.view.frame.size.height - self.view.frame.size.width, self.view.frame.size.width, self.view.frame.size.width);
             [self.verbatmCameraView addSubview:self.blurrFilter];
             [self.sessionManager setSessionOrientationToDeviceOrientation];
