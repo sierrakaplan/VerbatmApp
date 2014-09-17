@@ -23,13 +23,13 @@
 @property (nonatomic) BOOL extended;
 @property (nonatomic) CGPoint lastPoint;
 @property (nonatomic)CGPoint currentPoint;
-@property (strong, nonatomic) UIView* blurrFilter;
+@property (strong, nonatomic) UIImageView* blurrFilter;
 
 
 @property (strong, nonatomic) UITapGestureRecognizer * tap;
 
 #define ALBUM_NAME @"Verbatm"
-#define ASPECT_RATIO 1               
+#define ASPECT_RATIO 1
 #define RGB_LEFT_SIDE 255,223,0, 0.7     //247, 0, 99, 1
 #define RGB_RIGHT_SIDE 255,223,0, 0.7
 #define RGB_BOTTOM_SIDE 255,223,0, 0.7
@@ -58,13 +58,15 @@
 {
     [super viewDidLoad];
     [self.view addSubview: self.verbatmCameraView];
-    [self.verbatmCameraView addSubview: self.blurrFilter];
     self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-    [self createSlideDownGesture];
-    [self createSlideUpGesture];
+    [self.view addSubview: self.videoProgressImageView];
+    [self blurrView: self.blurrFilter];
+    [self.view addSubview:self.blurrFilter];
+    [self.view addSubview: self.blurrFilter];
+    //[self createSlideDownGesture];
+    //[self createSlideUpGesture];
     [self createTapGesture];
     [self createLongPressGesture];
-    [self.view addSubview: self.videoProgressImageView];
     [self createSwitchCameraButton];
     [self createSwitchFlashButton];
     self.extended = NO;
@@ -102,14 +104,9 @@
 -(UIView*)blurrFilter
 {
     if(!_blurrFilter){
-        CGRect frame = CGRectMake(0, self.view.frame.size.height - self.view.frame.size.width, self.view.frame.size.width, self.view.frame.size.width);
-        _blurrFilter = [[UIView alloc] initWithFrame:frame];
-        CALayer* blurrLayer = [[CALayer alloc] init];
-        CIFilter* blurFilter = [CIFilter filterWithName: @"CIGaussianBlur"];
-        [blurFilter setValue: [NSNumber numberWithFloat: 15.0f] forKey:@"inputRadius"];
-        blurrLayer.filters = @[blurFilter];
-        [_blurrFilter.layer addSublayer: blurrLayer];
-        
+        CGRect frame = CGRectMake(0, self.view.frame.size.height/2, self.view.frame.size.width, self.view.frame.size.height/2);
+        _blurrFilter = [[UIImageView alloc] initWithFrame:frame];
+        _blurrFilter.backgroundColor = [UIColor clearColor];
     }
     return _blurrFilter;
 }
@@ -143,6 +140,7 @@
 {
     self.tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
     self.tap.numberOfTapsRequired = 1;
+    self.tap.cancelsTouchesInView =  NO;
     [self.videoProgressImageView addGestureRecognizer:self.tap];
 }
 
@@ -151,6 +149,7 @@
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
     longPress.minimumPressDuration = 1;
+    longPress.cancelsTouchesInView = NO;
     [self.videoProgressImageView addGestureRecognizer:longPress];
 }
 
@@ -173,8 +172,8 @@
 //by Lucio
 -(UIView*)videoProgressImageView
 {
-    if(_videoProgressImageView){
-        _videoProgressImageView =  [[UIImageView alloc] initWithImage:nil];
+    if(!_videoProgressImageView){
+        _videoProgressImageView =  [[UIImageView alloc] init];
         _videoProgressImageView.backgroundColor = [UIColor clearColor];
         _videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.width);
     }
@@ -285,7 +284,7 @@
 }
 
 
-#pragma mark - supporting methods for media 
+#pragma mark - supporting methods for media
 
 //Lucio
 -(void)clearVideoProgressImage
@@ -344,8 +343,38 @@
 //Lucio
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-
-        [self changeImageScreenBounds];
+    
+    [self changeImageScreenBounds];
 }
+
+-(void)blurrView:(UIImageView*)myView
+{
+    CGRect boundary = myView.bounds;
+    UIGraphicsBeginImageContextWithOptions(boundary.size, YES, [UIScreen mainScreen]);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [self.sessionManager.videoPreview renderInContext:context];
+    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    
+    //Blur the image
+    CIImage *blurImg = [CIImage imageWithCGImage:capturedImage.CGImage];
+    
+    CGAffineTransform transform = CGAffineTransformIdentity;
+    CIFilter *clampFilter = [CIFilter filterWithName:@"CIAffineClamp"];
+    [clampFilter setValue:blurImg forKey:@"inputImage"];
+    [clampFilter setValue:[NSValue valueWithBytes:&transform objCType:@encode(CGAffineTransform)] forKey:@"inputTransform"];
+    
+    CIFilter *gaussianBlurFilter = [CIFilter filterWithName: @"CIGaussianBlur"];
+    [gaussianBlurFilter setValue:clampFilter.outputImage forKey: @"inputImage"];
+    [gaussianBlurFilter setValue:[NSNumber numberWithFloat:5.0f] forKey:@"inputRadius"];
+    
+    CIContext* acontext = [CIContext contextWithOptions:nil];
+    CGImageRef cgImg = [acontext createCGImage:gaussianBlurFilter.outputImage fromRect:[blurImg extent]];
+    UIImage *outputImg = [UIImage imageWithCGImage:cgImg];
+
+    [myView setImage:outputImg];
+}
+
 
 @end

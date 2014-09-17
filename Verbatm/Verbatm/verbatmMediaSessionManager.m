@@ -393,5 +393,4 @@
     self.stillImage = newImage;
 }
 
-
 @end
