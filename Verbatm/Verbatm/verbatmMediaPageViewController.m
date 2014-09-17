@@ -9,9 +9,11 @@
 #import "verbatmMediaPageViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "verbatmMediaSessionManager.h"
+#import "ILTranslucentView.h"
 
 @interface verbatmMediaPageViewController ()
 
+@property (weak, nonatomic) IBOutlet ILTranslucentView *blurView;
 @property (strong, nonatomic) UIView *verbatmCameraView;
 @property (strong, nonatomic) verbatmMediaSessionManager* sessionManager;
 @property (strong, nonatomic) UIImageView* videoProgressImageView;
@@ -22,7 +24,10 @@
 @property (nonatomic) BOOL flashOn;
 @property (nonatomic) CGPoint lastPoint;
 @property (nonatomic)CGPoint currentPoint;
-@property (strong, nonatomic) UIImageView* blurrFilter;
+@property (nonatomic) BOOL canRaise;
+@property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
+@property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
+
 
 
 @property (strong, nonatomic) UITapGestureRecognizer * tap;
@@ -56,20 +61,37 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.view addSubview: self.verbatmCameraView];
+    [self.view insertSubview: self.verbatmCameraView atIndex:0];
     self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-    [self.view addSubview: self.videoProgressImageView];
-    [self blurrView: self.blurrFilter];
-    [self.view addSubview:self.blurrFilter];
-    [self.view addSubview: self.blurrFilter];
-    //[self createSlideDownGesture];
-    //[self createSlideUpGesture];
+    self.blurView.translucentStyle = UIBarStyleBlack;
+    [self createSlideDownGesture];
+    [self createSlideUpGesture];
     [self createTapGesture];
     [self createLongPressGesture];
     [self createSwitchCameraButton];
     [self createSwitchFlashButton];
-    
-   
+    [self setPlaceholderColors];
+    self.canRaise = NO;
+}
+
+
+//gives the placeholders a white color
+-(void) setPlaceholderColors
+{
+    if ([self.whatSandwich respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        UIColor *color = [UIColor whiteColor];
+        self.whatSandwich.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.whatSandwich.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
+    }
+    if ([self.whereSandwich respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        UIColor *color = [UIColor whiteColor];
+        self.whereSandwich.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.whereSandwich.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -96,19 +118,9 @@
 {
     if(!_verbatmCameraView){
         _verbatmCameraView = [[UIView alloc]initWithFrame:  self.view.frame];
-        _verbatmCameraView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;  //check this please!
+//        _verbatmCameraView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;  //check this please!
     }
     return _verbatmCameraView;
-}
-
--(UIView*)blurrFilter
-{
-    if(!_blurrFilter){
-        CGRect frame = CGRectMake(0, self.view.frame.size.height/2, self.view.frame.size.width, self.view.frame.size.height/2);
-        _blurrFilter = [[UIImageView alloc] initWithFrame:frame];
-        _blurrFilter.backgroundColor = [UIColor clearColor];
-    }
-    return _blurrFilter;
 }
 
 //By Lucio
@@ -141,7 +153,7 @@
     self.tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
     self.tap.numberOfTapsRequired = 1;
     self.tap.cancelsTouchesInView =  NO;
-    [self.videoProgressImageView addGestureRecognizer:self.tap];
+    [self.verbatmCameraView addGestureRecognizer:self.tap];
 }
 
 //by Lucio
@@ -149,8 +161,8 @@
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
     longPress.minimumPressDuration = 1;
-    longPress.cancelsTouchesInView = NO;
-    [self.videoProgressImageView addGestureRecognizer:longPress];
+    //longPress.cancelsTouchesInView = YES;
+    [self.verbatmCameraView addGestureRecognizer:longPress];
 }
 
 //by Lucio
@@ -175,7 +187,7 @@
     if(!_videoProgressImageView){
         _videoProgressImageView =  [[UIImageView alloc] init];
         _videoProgressImageView.backgroundColor = [UIColor clearColor];
-        _videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - self.view.frame.size.height - self.view.frame.size.width);
+        _videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/2);
     }
     return _videoProgressImageView;
 }
@@ -187,14 +199,14 @@
     CGPoint point = [self.tap locationInView:self.verbatmCameraView];
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
-    [self.sessionManager captureImage];
-    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(freezeFrame) userInfo:nil repeats:NO];
+    [self.sessionManager captureImageUsingFrame:self.videoProgressImageView.frame];
+    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
 }
 
 -(void)freezeFrame
 {
     [self.sessionManager stopSession];
-    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
+
 }
 
 -(void)resumeSession
@@ -202,11 +214,22 @@
     [self.sessionManager startSession];
 }
 
+-(void)prepareVideoProgressView
+{
+    if(!self.canRaise){
+        self.videoProgressImageView.frame = CGRectMake(0,0,  self.view.frame.size.width, self.view.frame.size.height - self.blurView.frame.origin.y);
+    }else{
+        self.videoProgressImageView.frame = self.verbatmCameraView.frame;
+    }
+    [self.verbatmCameraView addSubview: self.videoProgressImageView];
+}
+
 //Lucio
 -(IBAction)takeVideo:(id)sender
 {
     UILongPressGestureRecognizer* recognizer = (UILongPressGestureRecognizer*)sender;
     if(recognizer.state == UIGestureRecognizerStateBegan){
+        [self prepareVideoProgressView];
         [self.sessionManager startVideoRecording];
         self.counter = 0;
         self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width/2, self.videoProgressImageView.frame.size.height);
@@ -218,6 +241,7 @@
             [self clearVideoProgressImage];  //removes the video progress bar
             [self.timer invalidate];
             self.counter = 0;
+            [self.videoProgressImageView removeFromSuperview];
         }
     }
 }
@@ -251,34 +275,34 @@
     [UIView animateWithDuration:0.5 animations:^{
         UIDevice* currentDevice = [UIDevice currentDevice];
         if(currentDevice.orientation == UIDeviceOrientationLandscapeRight|| [[UIDevice currentDevice]orientation] == UIDeviceOrientationLandscapeLeft){
-            self.videoProgressImageView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.height, self.view.frame.size.width);
+            self.verbatmCameraView.frame = CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.height, self.view.frame.size.width);
             [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_ROTATED_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
             [self.switchFlashButton setFrame: CGRectMake(FLASH_ROTATED_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+            self.blurView.hidden = YES;
         }else{
-            self.videoProgressImageView.frame = self.view.frame;
+            self.verbatmCameraView.frame = self.view.frame;
+            self.blurView.frame = CGRectMake(0, self.view.frame.size.height, self.blurView.frame.size.width, 0);
             [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
             [self.switchFlashButton setFrame: CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
-            [self.blurrFilter removeFromSuperview];
         }
+        [self.sessionManager setToFrameOfView:self.verbatmCameraView];
         [self.sessionManager setSessionOrientationToDeviceOrientation];
-        //[self.sessionManager setToFrameOfView:self.verbatmCameraView]; check whether this is necessary
-        //self.videoProgressImageView.frame = self.verbatmCameraView.frame;
     }];
+    self.canRaise = YES;
 }
 
 //by Lucio
 -(IBAction)raiseVideoPreviewScreen:(id)sender
 {
-    BOOL canRaise = self.videoProgressImageView.frame.size.height < self.verbatmCameraView.frame.size.height;
-    if(canRaise){
-        [UIView animateWithDuration:0.05 animations:^{
-            self.videoProgressImageView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - self.view.frame.size.width);
-            self.blurrFilter.frame = CGRectMake(0, self.view.frame.size.height - self.view.frame.size.width, self.view.frame.size.width, self.view.frame.size.width);
-            [self.verbatmCameraView addSubview:self.blurrFilter];
+    if(self.canRaise){
+        if(self.blurView.hidden) self.blurView.hidden = NO;
+        NSLog(@"here");
+        [UIView animateWithDuration:0.5 animations:^{
+            self.blurView.frame =  CGRectMake(0, self.view.frame.size.height/2, self.blurView.frame.size.width, self.view.frame.size.height/2);
             [self.sessionManager setSessionOrientationToDeviceOrientation];
-            [self.sessionManager setToFrameOfView:self.verbatmCameraView];
         }];
     }
+    self.canRaise = NO;
 }
 
 
@@ -296,7 +320,6 @@
     self.counter += 0.05;
     UIGraphicsBeginImageContext(self.videoProgressImageView.frame.size);
     [self.videoProgressImageView.image drawInRect:self.videoProgressImageView.frame];
-    self.videoProgressImageView.frame = self.verbatmCameraView.frame;
     CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
     CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 10.0);
     if(self.counter < MAX_VIDEO_LENGTH/8){
@@ -341,38 +364,12 @@
 //Lucio
 -(void)didRotateFromInterfaceOrientation:(UIInterfaceOrientation)fromInterfaceOrientation
 {
-    
     [self changeImageScreenBounds];
 }
 
--(void)blurrView:(UIImageView*)myView
+-(NSUInteger)supportedInterfaceOrientations
 {
-    CGRect boundary = myView.bounds;
-    UIGraphicsBeginImageContextWithOptions(boundary.size, YES, [UIScreen mainScreen]);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    [self.sessionManager.videoPreview renderInContext:context];
-    UIImage *capturedImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    
-    //Blur the image
-    CIImage *blurImg = [CIImage imageWithCGImage:capturedImage.CGImage];
-    
-    CGAffineTransform transform = CGAffineTransformIdentity;
-    CIFilter *clampFilter = [CIFilter filterWithName:@"CIAffineClamp"];
-    [clampFilter setValue:blurImg forKey:@"inputImage"];
-    [clampFilter setValue:[NSValue valueWithBytes:&transform objCType:@encode(CGAffineTransform)] forKey:@"inputTransform"];
-    
-    CIFilter *gaussianBlurFilter = [CIFilter filterWithName: @"CIGaussianBlur"];
-    [gaussianBlurFilter setValue:clampFilter.outputImage forKey: @"inputImage"];
-    [gaussianBlurFilter setValue:[NSNumber numberWithFloat:5.0f] forKey:@"inputRadius"];
-    
-    CIContext* acontext = [CIContext contextWithOptions:nil];
-    CGImageRef cgImg = [acontext createCGImage:gaussianBlurFilter.outputImage fromRect:[blurImg extent]];
-    UIImage *outputImg = [UIImage imageWithCGImage:cgImg];
-
-    [myView setImage:outputImg];
+    return UIInterfaceOrientationMaskPortrait;
 }
-
 
 @end

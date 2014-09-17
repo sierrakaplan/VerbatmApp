@@ -13,7 +13,7 @@
 @interface verbatmMediaSessionManager : NSObject
 
 -(instancetype)initSessionWithView:(UIView*)containerView;
--(void)captureImage;
+-(void)captureImageUsingFrame:(CGRect)frame;
 -(void)startVideoRecording;
 -(void)stopVideoRecording;
 -(void)setSessionOrientationToDeviceOrientation;

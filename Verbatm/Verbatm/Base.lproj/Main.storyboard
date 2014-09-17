@@ -16,13 +16,85 @@
                     <view key="view" contentMode="scaleToFill" id="rWO-ax-CE2">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oZq-xx-4fZ" customClass="ILTranslucentView">
+                                <rect key="frame" x="0.0" y="284" width="320" height="284"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <subviews>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="what" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Ju7-pe-nuq">
+                                        <rect key="frame" x="13" y="20" width="115" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="115" id="aub-9L-II9"/>
+                                        </constraints>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="where" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="97o-gp-8sa">
+                                        <rect key="frame" x="186" y="20" width="120" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                    </textField>
+                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="@" lineBreakMode="tailTruncation" numberOfLines="9" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="28" translatesAutoresizingMaskIntoConstraints="NO" id="GII-MF-BMY">
+                                        <rect key="frame" x="146" y="18" width="28" height="34"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nxu-lG-fe3">
+                                        <rect key="frame" x="49" y="53" width="222" height="226"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="226" id="aTp-Bl-GEF"/>
+                                        </constraints>
+                                        <state key="normal" image="typewriter_custom">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="97o-gp-8sa" secondAttribute="trailing" constant="14" id="78x-nq-gs6"/>
+                                    <constraint firstItem="nxu-lG-fe3" firstAttribute="centerX" secondItem="GII-MF-BMY" secondAttribute="centerX" id="891-cK-ADd"/>
+                                    <constraint firstItem="97o-gp-8sa" firstAttribute="bottom" secondItem="Ju7-pe-nuq" secondAttribute="bottom" id="BTs-fe-3JS"/>
+                                    <constraint firstItem="nxu-lG-fe3" firstAttribute="leading" secondItem="oZq-xx-4fZ" secondAttribute="leading" constant="49" id="HJg-g0-upq"/>
+                                    <constraint firstItem="97o-gp-8sa" firstAttribute="leading" secondItem="GII-MF-BMY" secondAttribute="trailing" constant="12" id="MIx-zm-exl"/>
+                                    <constraint firstAttribute="bottom" secondItem="nxu-lG-fe3" secondAttribute="bottom" constant="5" id="PnR-B1-19a"/>
+                                    <constraint firstItem="nxu-lG-fe3" firstAttribute="top" secondItem="Ju7-pe-nuq" secondAttribute="bottom" constant="3" id="QKi-4I-3Zb"/>
+                                    <constraint firstItem="nxu-lG-fe3" firstAttribute="top" secondItem="GII-MF-BMY" secondAttribute="bottom" constant="1" id="ZLz-TK-eeF"/>
+                                    <constraint firstItem="97o-gp-8sa" firstAttribute="baseline" secondItem="Ju7-pe-nuq" secondAttribute="baseline" id="a2E-6E-e3E"/>
+                                    <constraint firstItem="nxu-lG-fe3" firstAttribute="centerX" secondItem="oZq-xx-4fZ" secondAttribute="centerX" id="jEn-6v-vMs"/>
+                                    <constraint firstItem="Ju7-pe-nuq" firstAttribute="leading" secondItem="oZq-xx-4fZ" secondAttribute="leading" constant="13" id="jF2-2P-FGT"/>
+                                    <constraint firstItem="GII-MF-BMY" firstAttribute="leading" secondItem="Ju7-pe-nuq" secondAttribute="trailing" constant="18" id="rDQ-aY-Jk5"/>
+                                    <constraint firstItem="Ju7-pe-nuq" firstAttribute="top" secondItem="oZq-xx-4fZ" secondAttribute="top" constant="20" symbolic="YES" id="tPK-HZ-xDC"/>
+                                    <constraint firstItem="Ju7-pe-nuq" firstAttribute="centerY" secondItem="GII-MF-BMY" secondAttribute="centerY" id="xHb-Jm-2DY"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="oZq-xx-4fZ" secondAttribute="bottom" id="2eD-RK-2lN"/>
+                            <constraint firstAttribute="trailing" secondItem="oZq-xx-4fZ" secondAttribute="trailing" id="eBJ-88-JU3"/>
+                            <constraint firstItem="oZq-xx-4fZ" firstAttribute="top" secondItem="TZb-DQ-qFu" secondAttribute="bottom" constant="264" id="m2a-iQ-Jcs"/>
+                            <constraint firstItem="oZq-xx-4fZ" firstAttribute="leading" secondItem="rWO-ax-CE2" secondAttribute="leading" id="v25-yC-SDN"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="76F-zj-l9s"/>
+                    <connections>
+                        <outlet property="blurView" destination="oZq-xx-4fZ" id="o7d-de-2fN"/>
+                        <outlet property="whatSandwich" destination="Ju7-pe-nuq" id="k5M-Qv-OvJ"/>
+                        <outlet property="whereSandwich" destination="97o-gp-8sa" id="DX1-DW-Xty"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPQ-fx-ob9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-412" y="126"/>
+            <point key="canvasLocation" x="-416" y="124"/>
         </scene>
         <!--Verbatm Content Page View Controller-->
         <scene sceneID="v8W-43-UwE">
@@ -90,6 +162,9 @@
             <point key="canvasLocation" x="179" y="158"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="typewriter_custom" width="500" height="500"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

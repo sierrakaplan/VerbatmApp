@@ -50,8 +50,7 @@
         self.videoPreview.frame = containerView.frame;
          self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;  //was originally resizeaspectfill
         [containerView.layer addSublayer: self.videoPreview];
-        
-        //start the session running
+            //start the session running
         [self.session startRunning];
     }
     return self;
@@ -319,7 +318,7 @@
 
 #pragma mark - for photo capturing and processing
 //by Lucio
--(void)captureImage
+-(void)captureImageUsingFrame:(CGRect)frame
 {
     AVCaptureConnection* videoConnection = nil;
     for(AVCaptureConnection* connection in self.stillImageOutput.connections){
@@ -338,8 +337,9 @@
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        [self processImage:[[UIImage alloc] initWithData:dataForImage ]];
+        [self processImage:[[UIImage alloc] initWithData:dataForImage] usingFrame:frame];
         [self saveImageToVerbatmAlbum];
+        [self.session stopRunning];
     }];
 }
 
@@ -373,24 +373,30 @@
 }
 
 //Lucio
--(void)processImage:(UIImage*)image
+-(void)processImage:(UIImage*)image usingFrame:(CGRect)frame
 {
     self.stillImage = image;
-    [self cropImage];
+    [self cropImageToFrame:frame];
     
 }
 
--(void)cropImage
+-(void)cropImageToFrame:(CGRect)frame
 {
-    UIImage *newImage = self.stillImage;
+//    UIImage *newImage = self.stillImage;
+//    
+//    CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height);  //these magic numbers need to be tested on other devices
+//    UIGraphicsBeginImageContext(itemSize);
+//    CGRect imageRect = CGRectMake(0.0, 0, self.stillImage.size.width, self.stillImage.size.height/2);
+//    [self.stillImage drawInRect:imageRect];
+//    newImage = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//    self.stillImage = newImage;
     
-    CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height - 100);  //these magic numbers need to be tested on other devices
-    UIGraphicsBeginImageContext(itemSize);
-    CGRect imageRect = CGRectMake(0.0, -45.0, self.stillImage.size.width, self.stillImage.size.height);
-    [self.stillImage drawInRect:imageRect];
-    newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    self.stillImage = newImage;
+    CGImageRef imageRef = CGImageCreateWithImageInRect([self.stillImage CGImage], frame);
+    // or use the UIImage wherever you like
+    self.stillImage = [UIImage imageWithCGImage:imageRef];
+    CGImageRelease(imageRef);
+
 }
 
 @end
