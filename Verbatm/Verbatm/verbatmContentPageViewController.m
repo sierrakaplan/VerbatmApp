@@ -96,6 +96,8 @@
 
 #define TOP_LAYER_BOTTOM_APPEAR_TIME_secs 4
 
+#define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
+
 @end
 
 /*
@@ -1438,7 +1440,7 @@
 //Iain
 -(void) addMultiMediaButtonPressedAsBaseView:(BOOL)isBaseView
 {
-    //[self.gallery presentGallery];
+    [self.gallery presentGallery];
 }
 
 //Iain
@@ -1528,6 +1530,7 @@
 
 -(void)didSelectImageView:(UIImageView *)imageView ofAsset:(ALAsset *)asset
 {
+    [self.view addSubview:imageView];
     [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
 }
 
@@ -1538,7 +1541,7 @@
     
     CGRect  frame = CGRectOffset(topView.superview.frame, 0, topView.superview.frame.size.height);
     
-    [UIView animateWithDuration:1 animations:^{
+    [UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
         view.frame = frame;
     } completion:^(BOOL finished) {
         if(finished)

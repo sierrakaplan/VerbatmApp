@@ -62,7 +62,7 @@
 -(void)createScrollView
 {
     self.scrollView = [[UIScrollView alloc] initWithFrame: CGRectMake(DROP_FROM_COORDINATES)];
-    self.scrollView.backgroundColor = [UIColor  colorWithPatternImage:[UIImage imageNamed:BACKGROUND]];
+    self.scrollView.backgroundColor = [UIColor  yellowColor];
     self.scrollView.pagingEnabled = NO;
     self.scrollView.clipsToBounds = NO;
     self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;

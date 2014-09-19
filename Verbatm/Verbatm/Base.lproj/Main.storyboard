@@ -46,6 +46,9 @@
                                         <state key="normal" image="typewriter_custom">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <segue destination="0lh-hP-Opv" kind="modal" identifier="moveToContenPage" id="Pd1-Hf-Njm"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -56,6 +59,7 @@
                     <navigationItem key="navigationItem" id="76F-zj-l9s"/>
                     <connections>
                         <outlet property="blurView" destination="oZq-xx-4fZ" id="o7d-de-2fN"/>
+                        <outlet property="toContentPageSegue" destination="nxu-lG-fe3" id="tEq-yG-A8j"/>
                         <outlet property="whatSandwich" destination="Ju7-pe-nuq" id="k5M-Qv-OvJ"/>
                         <outlet property="whereSandwich" destination="97o-gp-8sa" id="DX1-DW-Xty"/>
                     </connections>

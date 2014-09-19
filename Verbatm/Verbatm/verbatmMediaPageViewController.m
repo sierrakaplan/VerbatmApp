@@ -9,8 +9,9 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "verbatmMediaSessionManager.h"
 #import "ILTranslucentView.h"
+#import "verbatmContentPageViewController.h"
 
-@interface verbatmMediaPageViewController ()
+@interface verbatmMediaPageViewController () <UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet ILTranslucentView *blurView;
 @property (strong, nonatomic) UIView *verbatmCameraView;
@@ -28,16 +29,17 @@
 @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
 @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
 
+@property (weak, nonatomic) IBOutlet UIButton *toContentPageSegue;
 
 
 @property (strong, nonatomic) UITapGestureRecognizer * tap;
 
 #define ALBUM_NAME @"Verbatm"
 #define ASPECT_RATIO 1
-#define RGB_LEFT_SIDE 255,223,0, 0.7     //247, 0, 99, 1
-#define RGB_RIGHT_SIDE 255,223,0, 0.7
-#define RGB_BOTTOM_SIDE 255,223,0, 0.7
-#define RGB_TOP_SIDE 255,223,0, 0.7
+#define RGB_LEFT_SIDE 255,225,255, 0.7     //247, 0, 99, 1
+#define RGB_RIGHT_SIDE 255,225,255, 0.7
+#define RGB_BOTTOM_SIDE 255,225,255, 0.7
+#define RGB_TOP_SIDE 255,225,255, 0.7
 #define MAX_VIDEO_LENGTH 30
 #define CAMERA_ICON_FRONT @"camera_final_consolidated"
 #define SWITCH_ICON_SIZE 60
@@ -48,6 +50,9 @@
 #define FLASH_ROTATED_POSITION 20, 8
 #define SWITCH_CAMERA_START_POSITION 260, 20
 #define SWITCH_CAMERA_ROTATED_POSITION 480, 22
+
+#pragma mark Navigation property
+#define CONTENT_PAGE_SEGUE @"moveToContenPage"
 @end
 
 @implementation verbatmMediaPageViewController
@@ -73,8 +78,23 @@
     [self createSwitchFlashButton];
     [self setPlaceholderColors];
     self.canRaise = NO;
+    
+    //updated by Iain
+    [self setDelegates];
+    self.whatSandwich.keyboardAppearance = UIKeyboardAppearanceDark;
+    self.whereSandwich.keyboardAppearance = UIKeyboardAppearanceDark;
+    
+    
+    
 }
 
+//Iain
+-(void) setDelegates
+{
+    //set yourself as the delegate for textfields
+    self.whatSandwich.delegate = self;
+    self.whereSandwich.delegate = self;
+}
 
 //gives the placeholders a white color
 -(void) setPlaceholderColors
@@ -334,7 +354,7 @@
         self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width - ((self.videoProgressImageView.frame.size.width/2)*(self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8)), self.videoProgressImageView.frame.size.height);
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }
-    CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 4.0), 20.0 , [UIColor yellowColor].CGColor);
+    //CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 4.0), 20.0 , [UIColor yellowColor].CGColor);
     CGContextStrokePath(UIGraphicsGetCurrentContext());
     self.videoProgressImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     self.lastPoint = self.currentPoint;
@@ -371,6 +391,83 @@
     return UIInterfaceOrientationMaskPortrait;
     
 }
+
+
+#pragma mark - *Navigation
+//Returning
+//Iain
+- (IBAction) goToRoot: (UIStoryboardSegue*) segue
+{
+    //set the s@andwhich to what was added in the screen before
+    if(self.sandwhichWhat) self.whatSandwich.text = self.sandwhichWhat;
+    if(self.sandwichWhere) self.whereSandwich.text = self.sandwichWhere;
+    
+    NSLog(@"Called goToRoot: unwind action");
+}
+
+//Leaving the split page
+//Iain
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:CONTENT_PAGE_SEGUE])
+    {
+        verbatmContentPageViewController * vc = (verbatmContentPageViewController *) segue.destinationViewController;
+        vc.sandWhichWhatString = self.whatSandwich.text;
+        vc.sandWhichWhereString = self.whereSandwich.text;
+        if(self.articleContent)vc.articleContentString = self.articleContent;
+        if(self.articleTitle)vc.articleTitleString = self.articleTitle;
+        if(self.contentPageElements) vc.pageElements = self.contentPageElements;
+    }
+}
+
+//Iain
+//Move to content page OR remove bottom of dual page
+- (IBAction)swipeUpSegueToContentPage:(UISwipeGestureRecognizer *)sender
+{
+    if(sender.direction == UISwipeGestureRecognizerDirectionUp){
+        //acts like the button has been pressed- so calls a modal segue
+        [self.toContentPageSegue sendActionsForControlEvents: UIControlEventTouchUpInside];
+    }
+}
+
+
+#pragma mark - UI technicalities
+//To be edited- adds a top shadow to the view that is sent
+//Iain
+-(void) addTopShadowToView: (UIView *) view
+{
+    
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
+    view.layer.masksToBounds = NO;
+    view.layer.shadowColor = [UIColor blackColor].CGColor;
+    view.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
+    view.layer.shadowOpacity = 0.2f;
+    view.layer.shadowPath = shadowPath.CGPath;
+}
+
+#pragma mark - Keyboard
+//Iain
+-(BOOL) textFieldShouldReturn:(UITextField *)textField{
+	if(textField == self.whereSandwich)
+    {
+        [self.whereSandwich resignFirstResponder];
+        
+    }else if(textField == self.whatSandwich)
+    {
+        [self.whatSandwich resignFirstResponder];
+    }
+	return YES;
+}
+
+#pragma mark - Textfields
+//Iain
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    //S@nwiches shouldn't have any spaces between them
+    if([string isEqualToString:@" "]) return NO;
+    return YES;
+}
+
 
 @end
 
