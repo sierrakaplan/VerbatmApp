@@ -16,6 +16,7 @@
 @property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
 @property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
 @property (nonatomic, strong)UIImage* stillImage;
+@property (strong, nonatomic)AVCaptureVideoPreviewLayer* videoPreview;
 
 
 #define N_FRAMES_PER_SECOND 32
@@ -49,6 +50,7 @@
         self.videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session];
         self.videoPreview.frame = containerView.frame;
          self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;  //was originally resizeaspectfill
+        
         [containerView.layer addSublayer: self.videoPreview];
             //start the session running
         [self.session startRunning];
@@ -208,9 +210,8 @@
 //by Lucio
 //sets the session orientation to the device orientation
 //it seems that left for the device corresponds to right for the session
--(void)setSessionOrientationToDeviceOrientation
+-(void)setSessionOrientationToOrientation:(UIDeviceOrientation)orientation
 {
-    UIDeviceOrientation orientation = [UIDevice currentDevice].orientation;
     if(orientation == UIDeviceOrientationLandscapeLeft){
         self.videoPreview.connection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
     }else if (orientation == UIDeviceOrientationLandscapeRight){
@@ -318,7 +319,7 @@
 
 #pragma mark - for photo capturing and processing
 //by Lucio
--(void)captureImageUsingFrame:(CGRect)frame
+-(void)captureImage:(BOOL)halfScreen
 {
     AVCaptureConnection* videoConnection = nil;
     for(AVCaptureConnection* connection in self.stillImageOutput.connections){
@@ -337,7 +338,7 @@
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        [self processImage:[[UIImage alloc] initWithData:dataForImage] usingFrame:frame];
+        [self processImage:[[UIImage alloc] initWithData:dataForImage] isHalfScreen: halfScreen];
         [self saveImageToVerbatmAlbum];
         [self.session stopRunning];
     }];
@@ -373,30 +374,86 @@
 }
 
 //Lucio
--(void)processImage:(UIImage*)image usingFrame:(CGRect)frame
+-(void)processImage:(UIImage*)image isHalfScreen:(BOOL)halfScreen
 {
     self.stillImage = image;
-    [self cropImageToFrame:frame];
+    [self cropImage:(BOOL)halfScreen];
     
 }
 
--(void)cropImageToFrame:(CGRect)frame
+-(void)cropImage:(BOOL)halfScreen
 {
+   
+    if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight){
+        [self rotateImage];
+        
+        //additional rotation required
+        CGSize size = CGSizeMake(self.stillImage.size.width*4/3, self.stillImage.size.height);
+        UIGraphicsBeginImageContext(size);
+        [[UIImage imageWithCGImage: self.stillImage.CGImage scale:1.0 orientation:UIImageOrientationRight] drawInRect: CGRectMake(0, 0, self.stillImage.size.height, self.stillImage.size.width)];
+        self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
+    }else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait || [UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp){
+        NSLog(@"was here for rotation");
+        [self rotateImage];
+        if(halfScreen){
+            CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height/2);
+            //these magic numbers need to be tested on other devices
+            UIGraphicsBeginImageContext(itemSize);
+            CGRect imageRect = CGRectMake(0, 0, self.stillImage.size.width, self.stillImage.size.height);
+            [self.stillImage drawInRect:imageRect];
+            self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
+            UIGraphicsEndImageContext();
+        }
+    }
+
+}
+
+-(void)rotateImage
+{
+    CGSize size = self.stillImage.size;
+    UIGraphicsBeginImageContext(size);
+    [self.stillImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
+}
+
+
+/*
+UIImage *newImage = self.stillImage;
+
+CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height/2);  //these magic numbers need to be tested on other devices
+UIGraphicsBeginImageContext(itemSize);
+CGRect imageRect = CGRectMake(0, 0, self.stillImage.size.width, self.stillImage.size.height);
+[self.stillImage drawInRect:imageRect];
+newImage = UIGraphicsGetImageFromCurrentImageContext();
+UIGraphicsEndImageContext();
+self.stillImage = newImage;
+*/
+
 //    UIImage *newImage = self.stillImage;
-//    
-//    CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height);  //these magic numbers need to be tested on other devices
+//
+//    CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height - 100);  //these magic numbers need to be tested on other devices
 //    UIGraphicsBeginImageContext(itemSize);
-//    CGRect imageRect = CGRectMake(0.0, 0, self.stillImage.size.width, self.stillImage.size.height/2);
+//    CGRect imageRect = CGRectMake(0.0, -45.0, self.stillImage.size.width, self.stillImage.size.height);
 //    [self.stillImage drawInRect:imageRect];
 //    newImage = UIGraphicsGetImageFromCurrentImageContext();
 //    UIGraphicsEndImageContext();
 //    self.stillImage = newImage;
-    
-    CGImageRef imageRef = CGImageCreateWithImageInRect([self.stillImage CGImage], frame);
-    // or use the UIImage wherever you like
-    self.stillImage = [UIImage imageWithCGImage:imageRef];
-    CGImageRelease(imageRef);
 
-}
+//for half screen
+//UIImage *newImage = self.stillImage;
+//
+//CGSize itemSize;
+//if([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait){
+//    itemSize = frame.size;
+//}else{
+//    itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height - 100);
+//}
+////these magic numbers need to be tested on other devices
+//UIGraphicsBeginImageContext(itemSize);
+//CGRect imageRect = CGRectMake(0, 0, self.stillImage.size.width, self.stillImage.size.height);
+//[self.stillImage drawInRect:imageRect];
+//newImage = UIGraphicsGetImageFromCurrentImageContext();
+//UIGraphicsEndImageContext();
+//self.stillImage = newImage;
 
 @end

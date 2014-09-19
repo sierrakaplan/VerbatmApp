@@ -16,6 +16,10 @@
 		C734FD9C19B14B8D00B2C370 /* verbatmContentPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* verbatmContentPageViewController.m */; };
 		C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = C7360E4E19A46D4E002B2DE5 /* Article.m */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
+		C78B682419CA6C01003D0AC5 /* verbatmUITextView.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B681F19CA6C01003D0AC5 /* verbatmUITextView.m */; };
+		C78B682519CA6C01003D0AC5 /* verbatmCustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682119CA6C01003D0AC5 /* verbatmCustomScrollView.m */; };
+		C78B682619CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m */; };
+		C78B682A19CA6C22003D0AC5 /* verbatmGalleryHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */; };
 		C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F219A96E0B00CE861F /* Photo.m */; };
 		C7A8A7F619A96E1B00CE861F /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F519A96E1B00CE861F /* Video.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
@@ -25,7 +29,6 @@
 		C7BC4382199D97F5004B91A1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC4381199D97F5004B91A1 /* main.m */; };
 		C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC4385199D97F5004B91A1 /* verbatmAppDelegate.m */; };
 		C7BC4389199D97F5004B91A1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7BC4387199D97F5004B91A1 /* Main.storyboard */; };
-		C7BC438C199D97F5004B91A1 /* verbatmViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC438B199D97F5004B91A1 /* verbatmViewController.m */; };
 		C7BC4395199D97F6004B91A1 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4394199D97F6004B91A1 /* XCTest.framework */; };
 		C7BC4396199D97F6004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4397199D97F6004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
@@ -69,6 +72,14 @@
 		C7360E4D19A46D4E002B2DE5 /* Article.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Article.h; sourceTree = "<group>"; };
 		C7360E4E19A46D4E002B2DE5 /* Article.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Article.m; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		C78B681E19CA6C01003D0AC5 /* verbatmUITextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmUITextView.h; sourceTree = "<group>"; };
+		C78B681F19CA6C01003D0AC5 /* verbatmUITextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmUITextView.m; sourceTree = "<group>"; };
+		C78B682019CA6C01003D0AC5 /* verbatmCustomScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmCustomScrollView.h; sourceTree = "<group>"; };
+		C78B682119CA6C01003D0AC5 /* verbatmCustomScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmCustomScrollView.m; sourceTree = "<group>"; };
+		C78B682219CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmCustomMediaSelectTile.h; sourceTree = "<group>"; };
+		C78B682319CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmCustomMediaSelectTile.m; sourceTree = "<group>"; };
+		C78B682819CA6C22003D0AC5 /* verbatmGalleryHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmGalleryHandler.h; sourceTree = "<group>"; };
+		C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmGalleryHandler.m; sourceTree = "<group>"; };
 		C7A8A7F119A96E0B00CE861F /* Photo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Photo.h; sourceTree = "<group>"; };
 		C7A8A7F219A96E0B00CE861F /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Photo.m; sourceTree = "<group>"; };
 		C7A8A7F419A96E1B00CE861F /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
@@ -84,8 +95,6 @@
 		C7BC4384199D97F5004B91A1 /* verbatmAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = verbatmAppDelegate.h; sourceTree = "<group>"; };
 		C7BC4385199D97F5004B91A1 /* verbatmAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = verbatmAppDelegate.m; sourceTree = "<group>"; };
 		C7BC4388199D97F5004B91A1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C7BC438A199D97F5004B91A1 /* verbatmViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = verbatmViewController.h; sourceTree = "<group>"; };
-		C7BC438B199D97F5004B91A1 /* verbatmViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = verbatmViewController.m; sourceTree = "<group>"; };
 		C7BC4393199D97F6004B91A1 /* VerbatmTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VerbatmTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BC4394199D97F6004B91A1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		C7BC439C199D97F6004B91A1 /* VerbatmTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "VerbatmTests-Info.plist"; sourceTree = "<group>"; };
@@ -142,6 +151,32 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C78B681119CA6914003D0AC5 /* View Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				C734FD9A19B14B8D00B2C370 /* verbatmContentPageViewController.h */,
+				C734FD9B19B14B8D00B2C370 /* verbatmContentPageViewController.m */,
+				9D29995919BA9042005EBC8A /* verbatmMediaPageViewController.h */,
+				9D29995A19BA9042005EBC8A /* verbatmMediaPageViewController.m */,
+			);
+			name = "View Controllers";
+			sourceTree = "<group>";
+		};
+		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
+			isa = PBXGroup;
+			children = (
+				C78B681E19CA6C01003D0AC5 /* verbatmUITextView.h */,
+				C78B681F19CA6C01003D0AC5 /* verbatmUITextView.m */,
+				C78B682019CA6C01003D0AC5 /* verbatmCustomScrollView.h */,
+				C78B682119CA6C01003D0AC5 /* verbatmCustomScrollView.m */,
+				C78B682219CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.h */,
+				C78B682319CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m */,
+				C78B682819CA6C22003D0AC5 /* verbatmGalleryHandler.h */,
+				C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */,
+			);
+			name = "Custom Views";
+			sourceTree = "<group>";
+		};
 		C7BC4369199D97F5004B91A1 = {
 			isa = PBXGroup;
 			children = (
@@ -188,17 +223,13 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				C78B682719CA6C0A003D0AC5 /* Custom Views */,
+				C78B681119CA6914003D0AC5 /* View Controllers */,
 				C774040E19BE6538004C50EA /* Images.xcassets */,
 				C7BC43C1199F75D0004B91A1 /* Backend Model */,
 				C7BC4387199D97F5004B91A1 /* Main.storyboard */,
-				C734FD9A19B14B8D00B2C370 /* verbatmContentPageViewController.h */,
-				C734FD9B19B14B8D00B2C370 /* verbatmContentPageViewController.m */,
 				9D29995619BA7EBD005EBC8A /* verbatmMediaSessionManager.h */,
 				9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */,
-				C7BC438A199D97F5004B91A1 /* verbatmViewController.h */,
-				C7BC438B199D97F5004B91A1 /* verbatmViewController.m */,
-				9D29995919BA9042005EBC8A /* verbatmMediaPageViewController.h */,
-				9D29995A19BA9042005EBC8A /* verbatmMediaPageViewController.m */,
 				C7174E0C19CA159D006C982D /* ILTranslucentView.h */,
 				C7174E0D19CA159D006C982D /* ILTranslucentView.m */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
@@ -353,13 +384,16 @@
 				9D29995B19BA9042005EBC8A /* verbatmMediaPageViewController.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */,
 				C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */,
+				C78B682A19CA6C22003D0AC5 /* verbatmGalleryHandler.m in Sources */,
 				C7174E0E19CA159D006C982D /* ILTranslucentView.m in Sources */,
 				C734FD9C19B14B8D00B2C370 /* verbatmContentPageViewController.m in Sources */,
 				C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */,
 				C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */,
+				C78B682419CA6C01003D0AC5 /* verbatmUITextView.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
-				C7BC438C199D97F5004B91A1 /* verbatmViewController.m in Sources */,
+				C78B682619CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m in Sources */,
+				C78B682519CA6C01003D0AC5 /* verbatmCustomScrollView.m in Sources */,
 				C7A8A7F619A96E1B00CE861F /* Video.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

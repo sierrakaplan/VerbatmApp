@@ -13,14 +13,13 @@
 @interface verbatmMediaSessionManager : NSObject
 
 -(instancetype)initSessionWithView:(UIView*)containerView;
--(void)captureImageUsingFrame:(CGRect)frame;
+-(void)captureImage:(BOOL)halfScreen;
 -(void)startVideoRecording;
 -(void)stopVideoRecording;
--(void)setSessionOrientationToDeviceOrientation;
+-(void)setSessionOrientationToOrientation:(UIDeviceOrientation)orientation;
 -(void)setToFrameOfView:(UIView*)containerView;
 -(void)switchVideoFace;
 -(void)switchFlash;
 -(void)startSession;
 -(void)stopSession;
-@property (strong, nonatomic)AVCaptureVideoPreviewLayer* videoPreview;
 @end
