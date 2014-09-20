@@ -10,6 +10,7 @@
 #import "verbatmMediaSessionManager.h"
 #import "ILTranslucentView.h"
 #import "verbatmContentPageViewController.h"
+#import <MediaPlayer/MediaPlayer.h>
 
 @interface verbatmMediaPageViewController () <UITextFieldDelegate>
 
@@ -50,7 +51,7 @@
 #define FLASH_ROTATED_POSITION 20, 8
 #define SWITCH_CAMERA_START_POSITION 260, 20
 #define SWITCH_CAMERA_ROTATED_POSITION 480, 22
-
+#define TIME_FOR_SESSION_TO_RESUME 0.6
 #pragma mark Navigation property
 #define CONTENT_PAGE_SEGUE @"moveToContenPage"
 @end
@@ -70,6 +71,7 @@
     [self.view insertSubview: self.verbatmCameraView atIndex:0];
     self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
     self.blurView.translucentStyle = UIBarStyleBlack;
+    self.blurView.translucentAlpha = 1;
     [self createSlideDownGesture];
     [self createSlideUpGesture];
     [self createTapGesture];
@@ -191,7 +193,7 @@
 {
     UISwipeGestureRecognizer* swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(extendScreen:)];
     swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
-    [self.verbatmCameraView addGestureRecognizer:swipeDownGesture];
+    [self.blurView addGestureRecognizer:swipeDownGesture];
 }
 
 //by Lucio
@@ -221,7 +223,7 @@
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
     [self.sessionManager captureImage: !self.canRaise];
-    NSTimer* timer = [NSTimer scheduledTimerWithTimeInterval:0.6 target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
 }
 
 -(void)freezeFrame

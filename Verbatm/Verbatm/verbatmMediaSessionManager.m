@@ -8,6 +8,7 @@
 
 #import "verbatmMediaSessionManager.h"
 
+
 @interface verbatmMediaSessionManager() <AVCaptureFileOutputRecordingDelegate>
 
 @property (strong, nonatomic)AVCaptureSession* session;
@@ -286,6 +287,72 @@
     [self.movieOutputFile startRecordingToOutputFileURL:outputURL recordingDelegate:self];
 }
 
+
+-(void)fixVideoOrientationOfAssetAtUrl:(NSURL *)outputFileURL
+{
+    //create the mutable composition object. This will hold the multiple tracks
+    AVMutableComposition* fixedComposition = [[AVMutableComposition alloc]init];
+    
+    //get the video and audio tracks for the composition from the asset
+    AVMutableCompositionTrack* videoTrack = [fixedComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    AVMutableCompositionTrack* audioTrack = [fixedComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    AVAsset* videoAsset = [AVAsset assetWithURL: outputFileURL]; //could use valueForKey method in the asset class.
+    [videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
+    [audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
+    
+    //create the instruction that fixes the orientation of the asset.
+    AVMutableVideoCompositionInstruction* instructions = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
+    instructions.timeRange = CMTimeRangeMake(kCMTimeZero, videoAsset.duration);
+    
+    //fixing the orientation of the video
+    AVMutableVideoCompositionLayerInstruction* layerInstructions = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+    AVAssetTrack* assetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
+    UIImageOrientation assetOrientation = UIImageOrientationUp;
+    BOOL isAssetPortrait = NO;
+    CGAffineTransform transform = assetTrack.preferredTransform;
+    if(transform.a == 0 && transform.b == 1.0 && transform.c == -1.0 && transform.d == 0)
+    {
+        assetOrientation = UIImageOrientationRight;
+        isAssetPortrait = YES;
+    }
+    if(transform.a == 0 && transform.b == -1.0 && transform.c == 1.0 && transform.d == 0)
+    {
+        assetOrientation =  UIImageOrientationLeft;
+        isAssetPortrait  = YES;
+    }
+    if(transform.a == 1.0 && transform.b == 0 && transform.c == 0 && transform.d == 1.0)
+    {
+        assetOrientation =  UIImageOrientationUp;
+    }
+    if(transform.a == -1.0 && transform.b == 0 && transform.c == 0 && transform.d == -1.0)
+    {
+       assetOrientation = UIImageOrientationDown;
+    }
+    
+    //adding instructions
+    [layerInstructions setTransform:assetTrack.preferredTransform atTime:kCMTimeZero];
+    [layerInstructions setOpacity:0.0 atTime:videoAsset.duration];
+    instructions.layerInstructions = @[layerInstructions];
+    AVMutableVideoComposition* mainCompositionInst = [AVMutableVideoComposition videoComposition];
+    mainCompositionInst.instructions = @[instructions];
+    mainCompositionInst.frameDuration = CMTimeMake(1, 32);
+    
+    CGSize assetNaturalSize = (isAssetPortrait)? CGSizeMake(assetTrack.naturalSize.height, assetTrack.naturalSize.width): assetTrack.naturalSize;
+    mainCompositionInst.renderSize = assetNaturalSize;
+    
+    
+    AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:fixedComposition presetName:AVAssetExportPresetHighestQuality];
+    
+    //[[NSFileManager defaultManager] removeItemAtURL:outputFileURL error:nil];
+    exporter.outputURL = outputFileURL;
+    exporter.outputFileType = AVFileTypeQuickTimeMovie;
+    exporter.videoComposition = mainCompositionInst;
+    exporter.shouldOptimizeForNetworkUse = YES;
+    
+    [exporter exportAsynchronouslyWithCompletionHandler:^{
+    }];
+}
+
 //Lucio
 -(void)stopVideoRecording
 {
@@ -295,11 +362,11 @@
 #pragma mark -delegate methods AVCaptureFileOutputRecordingDelegate
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
 {
+    //[self fixVideoOrientationOfAssetAtUrl:outputFileURL];
     if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
         [self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
             [self.assetLibrary assetForURL:assetURL
                                resultBlock:^(ALAsset *asset) {
-                                   // assign the photo to the album
                                    [self.verbatmAlbum addAsset:asset];
                                    NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
                                }
@@ -310,6 +377,7 @@
     }else{
         NSLog(@"wrong output location");
     }
+
 }
 
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections

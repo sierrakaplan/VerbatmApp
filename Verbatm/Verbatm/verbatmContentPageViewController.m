@@ -16,6 +16,7 @@
 #import "verbatmCustomMediaSelectTile.h"
 #import "verbatmCustomScrollView.h"
 
+
 @interface verbatmContentPageViewController () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,verbatmGalleryHandlerDelegate>
 
 #pragma mark - *Text input outlets
@@ -462,18 +463,25 @@
     return YES;
 }
 
--(void) undoTextChange:(NSString *) pastText
-{
-    self.activeTextView.text = pastText;
-}
 
-#pragma mark Undo button pressed
+
+#pragma mark Undo feature implementation
+//Iain
 - (IBAction)undoButton:(UIButton *)sender
 {
     [self.activeTextView.undoManager undo];
     self.isUndoInProgress =YES;
 }
+//Iain
+-(void) undoTextChangeInView:(UITextView *) textView withString:(NSString *) pastText
+{
+    textView.text = pastText;
+}
 
+-(void)UndoElementDelete
+{
+    
+}
 
 
 #pragma mark scroll positioning of the screen
@@ -880,7 +888,8 @@
         if(number < self.numberOfWordsLeft && !self.isUndoInProgress)//check if there is a new word added if so then save the state to the undo manager
         {
             NSString * currentText = self.activeTextView.text;
-            [self.activeTextView.undoManager registerUndoWithTarget:self selector:@selector(undoTextChange:) object:currentText];
+            //to be implemented
+          //  [self.activeTextView.undoManager registerUndoWithTarget:self selector:@selector(undoTextChangeInView:withString:) object:<#(id)#>];
         }else if(self.isUndoInProgress)
         {
             self.isUndoInProgress =NO;
@@ -1306,14 +1315,6 @@
             gesture.enabled = NO;
             gesture.enabled = YES;
             self.pinching = NO;
-            
-            for (UIView * new_view in self.mainScrollView.pageElements)
-            {
-                if([new_view isKindOfClass:[UITextView class]])
-                {
-                    ((UITextView *)new_view).selectable = YES;
-                }
-            }
             
         }];
     }

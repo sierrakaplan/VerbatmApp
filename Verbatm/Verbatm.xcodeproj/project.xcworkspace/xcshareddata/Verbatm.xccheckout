@@ -12,22 +12,34 @@
 	<dict>
 		<key>7BEBB6BD-5E2F-4C17-9FFB-20A935C8B83E</key>
 		<string>https://bitbucket.org/verbatmTeam/verbatmapp.git</string>
+		<key>963C2CBC742CE3303B15E880AC51408370113EA4</key>
+		<string>https://bitbucket.org/verbatmTeam/verbatmapp.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Verbatm/Verbatm.xcodeproj/project.xcworkspace</string>
+	<string>Verbatm/Verbatm.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>7BEBB6BD-5E2F-4C17-9FFB-20A935C8B83E</key>
+		<string>../../../../verbatmapp</string>
+		<key>963C2CBC742CE3303B15E880AC51408370113EA4</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://bitbucket.org/verbatmTeam/verbatmapp.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>7BEBB6BD-5E2F-4C17-9FFB-20A935C8B83E</string>
+	<string>963C2CBC742CE3303B15E880AC51408370113EA4</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>963C2CBC742CE3303B15E880AC51408370113EA4</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Verabtm%20Project</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
