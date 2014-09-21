@@ -291,14 +291,17 @@
 -(void)fixVideoOrientationOfAssetAtUrl:(NSURL *)outputFileURL
 {
     //create the mutable composition object. This will hold the multiple tracks
-    AVMutableComposition* fixedComposition = [[AVMutableComposition alloc]init];
+    AVMutableComposition* fixedComposition = [AVMutableComposition composition];
     
     //get the video and audio tracks for the composition from the asset
     AVMutableCompositionTrack* videoTrack = [fixedComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    
     AVMutableCompositionTrack* audioTrack = [fixedComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     AVAsset* videoAsset = [AVAsset assetWithURL: outputFileURL]; //could use valueForKey method in the asset class.
     [videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
     [audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
+    
+    NSLog(@"video composition track time range: %lld, %lld", videoTrack.timeRange.start.value, videoTrack.timeRange.duration.value);
     
     //create the instruction that fixes the orientation of the asset.
     AVMutableVideoCompositionInstruction* instructions = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
@@ -306,7 +309,12 @@
     
     //fixing the orientation of the video
     AVMutableVideoCompositionLayerInstruction* layerInstructions = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+    
+    //making video and audio assets
     AVAssetTrack* assetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
+    AVAssetTrack* audioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+    NSLog(@"%@, %@, %@", videoAsset, assetTrack, audioAssetTrack);
+    
     UIImageOrientation assetOrientation = UIImageOrientationUp;
     BOOL isAssetPortrait = NO;
     CGAffineTransform transform = assetTrack.preferredTransform;
@@ -329,6 +337,7 @@
        assetOrientation = UIImageOrientationDown;
     }
     
+    NSLog(@"%d is the asset orientation", assetOrientation);
     //adding instructions
     [layerInstructions setTransform:assetTrack.preferredTransform atTime:kCMTimeZero];
     [layerInstructions setOpacity:0.0 atTime:videoAsset.duration];
@@ -336,20 +345,32 @@
     AVMutableVideoComposition* mainCompositionInst = [AVMutableVideoComposition videoComposition];
     mainCompositionInst.instructions = @[instructions];
     mainCompositionInst.frameDuration = CMTimeMake(1, 32);
+    mainCompositionInst.renderScale = 1;
+    
     
     CGSize assetNaturalSize = (isAssetPortrait)? CGSizeMake(assetTrack.naturalSize.height, assetTrack.naturalSize.width): assetTrack.naturalSize;
     mainCompositionInst.renderSize = assetNaturalSize;
     
+    NSString* filePath = [outputFileURL path];
+    NSError* error;
+    [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
     
     AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:fixedComposition presetName:AVAssetExportPresetHighestQuality];
-    
-    //[[NSFileManager defaultManager] removeItemAtURL:outputFileURL error:nil];
     exporter.outputURL = outputFileURL;
     exporter.outputFileType = AVFileTypeQuickTimeMovie;
     exporter.videoComposition = mainCompositionInst;
     exporter.shouldOptimizeForNetworkUse = YES;
-    
     [exporter exportAsynchronouslyWithCompletionHandler:^{
+        switch ([exporter status]) {
+            case AVAssetExportSessionStatusCompleted:
+                NSLog(@"Export done successfully");
+                break;
+            case AVAssetExportSessionStatusFailed:
+                NSLog(@"Export Session failed: %@", exporter.error.description);
+                break;
+            default:
+                break;
+        }
     }];
 }
 
@@ -362,7 +383,7 @@
 #pragma mark -delegate methods AVCaptureFileOutputRecordingDelegate
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
 {
-    //[self fixVideoOrientationOfAssetAtUrl:outputFileURL];
+    [self fixVideoOrientationOfAssetAtUrl:outputFileURL];
     if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
         [self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
             [self.assetLibrary assetForURL:assetURL
@@ -483,45 +504,4 @@
     [self.stillImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
     self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
 }
-
-
-/*
-UIImage *newImage = self.stillImage;
-
-CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height/2);  //these magic numbers need to be tested on other devices
-UIGraphicsBeginImageContext(itemSize);
-CGRect imageRect = CGRectMake(0, 0, self.stillImage.size.width, self.stillImage.size.height);
-[self.stillImage drawInRect:imageRect];
-newImage = UIGraphicsGetImageFromCurrentImageContext();
-UIGraphicsEndImageContext();
-self.stillImage = newImage;
-*/
-
-//    UIImage *newImage = self.stillImage;
-//
-//    CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height - 100);  //these magic numbers need to be tested on other devices
-//    UIGraphicsBeginImageContext(itemSize);
-//    CGRect imageRect = CGRectMake(0.0, -45.0, self.stillImage.size.width, self.stillImage.size.height);
-//    [self.stillImage drawInRect:imageRect];
-//    newImage = UIGraphicsGetImageFromCurrentImageContext();
-//    UIGraphicsEndImageContext();
-//    self.stillImage = newImage;
-
-//for half screen
-//UIImage *newImage = self.stillImage;
-//
-//CGSize itemSize;
-//if([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait){
-//    itemSize = frame.size;
-//}else{
-//    itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height - 100);
-//}
-////these magic numbers need to be tested on other devices
-//UIGraphicsBeginImageContext(itemSize);
-//CGRect imageRect = CGRectMake(0, 0, self.stillImage.size.width, self.stillImage.size.height);
-//[self.stillImage drawInRect:imageRect];
-//newImage = UIGraphicsGetImageFromCurrentImageContext();
-//UIGraphicsEndImageContext();
-//self.stillImage = newImage;
-
 @end

@@ -1135,8 +1135,6 @@
 //Iain
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender
 {
-    //[self clearNewMediaView];//remove the old media view
-    
     CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
     CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
     
