@@ -18,11 +18,15 @@
 @property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
 @property (nonatomic, strong)UIImage* stillImage;
 @property (strong, nonatomic)AVCaptureVideoPreviewLayer* videoPreview;
+@property (nonatomic)UIDeviceOrientation deviceStartOrientation;
+@property (nonatomic) BOOL isHalfScreen;
+@property (strong, nonatomic) UIView* previewContainerView;
 
 
 #define N_FRAMES_PER_SECOND 32
 #define NUM_SECONDS 30
 #define ALBUM_NAME @"Verbatm"
+#define ASPECT_RATIO 4/3
 
 @end
 
@@ -37,6 +41,9 @@
 -(instancetype)initSessionWithView:(UIView*)containerView
 {
     if((self = [super init])){
+        //set the container view
+        self.previewContainerView = containerView;
+        
         //create the assetLibrary
         self.assetLibrary = [[ALAssetsLibrary alloc] init];
         [self createVerbatmDirectory];
@@ -249,8 +256,11 @@
 #pragma mark - video recording 
 
 //by Lucio
--(void)startVideoRecording
+-(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation isHalScreen:(BOOL)halfScreen
 {
+    //set the variables
+    self.deviceStartOrientation = startOrientation;
+    self.isHalfScreen = halfScreen;
     //Get the right output path for the video
     NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
     NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
@@ -299,7 +309,7 @@
     AVMutableCompositionTrack* audioTrack = [fixedComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     AVAsset* videoAsset = [AVAsset assetWithURL: outputFileURL]; //could use valueForKey method in the asset class.
     [videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
-    //[audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
+    [audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0] atTime:kCMTimeZero error:nil];
     
     NSLog(@"video composition track time range: %lld, %lld", videoTrack.timeRange.start.value, videoTrack.timeRange.duration.value);
     
@@ -315,39 +325,29 @@
     AVAssetTrack* audioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
     NSLog(@"%@, %@, %@", videoAsset, assetTrack, audioAssetTrack);
     
-    UIImageOrientation assetOrientation = UIImageOrientationUp;
-    BOOL isAssetPortrait = NO;
-    CGAffineTransform transform = assetTrack.preferredTransform;
-    if(transform.a == 0 && transform.b == 1.0 && transform.c == -1.0 && transform.d == 0)
-    {
-        assetOrientation = UIImageOrientationRight;
-        
-    }
-    if(transform.a == 0 && transform.b == -1.0 && transform.c == 1.0 && transform.d == 0)
-    {
-        assetOrientation =  UIImageOrientationLeft;
-        
-    }
-    if(transform.a == 1.0 && transform.b == 0 && transform.c == 0 && transform.d == 1.0)
-    {
-        assetOrientation =  UIImageOrientationUp;
-        isAssetPortrait = YES;
-    }
-    if(transform.a == -1.0 && transform.b == 0 && transform.c == 0 && transform.d == -1.0)
-    {
-       assetOrientation = UIImageOrientationDown;
-        isAssetPortrait  = YES;
-    }
     
-    NSLog(@"%d is the asset orientation", assetOrientation);
-    //adding instructions
-
-    //test transforms
-    CGAffineTransform t1 = CGAffineTransformMakeTranslation(assetTrack.naturalSize.width/2, assetTrack.naturalSize.height/2);
-
-    CGAffineTransform t2 = CGAffineTransformRotate(t1,M_PI);
-    CGAffineTransform finalTransform = CGAffineTransformTranslate(t2, -assetTrack.naturalSize.width/2, -assetTrack.naturalSize.height/2);
-
+    
+    CGAffineTransform finalTransform;// = CGAffineTransformTranslate(t2, -assetTrack.naturalSize.width/2, -assetTrack.naturalSize.height/2);
+    CGSize assetNaturalSize =  assetTrack.naturalSize;
+    if(UIDeviceOrientationIsLandscape(self.deviceStartOrientation)){
+        CGAffineTransform t1 = CGAffineTransformMakeTranslation(assetTrack.naturalSize.width/2, assetTrack.naturalSize.height/2);
+        CGAffineTransform t2;
+        if(self.deviceStartOrientation == UIDeviceOrientationLandscapeLeft){
+            NSLog(@"this is the orientation corresponding to lands left");
+            t2 = CGAffineTransformRotate(t1,0);
+        }else{
+            NSLog(@"this is the orientation corresponding to lands right");
+             t2 = CGAffineTransformRotate(t1, M_PI);
+        }
+        finalTransform =  CGAffineTransformTranslate(t2, -assetTrack.naturalSize.width/2, -assetTrack.naturalSize.height/2);
+    }else{
+        NSLog(@"this is the orientation corresponding to portraits");
+        //check for cropping . will fix this later
+        CGAffineTransform t1 = CGAffineTransformMakeTranslation(assetNaturalSize.width/2, 0);
+        finalTransform = CGAffineTransformRotate(t1, M_PI_2);
+        CGSize size = self.previewContainerView.frame.size;
+        assetNaturalSize = CGSizeMake(assetNaturalSize.width/2,self.previewContainerView.frame.size.height);
+    }
     
     AVMutableVideoCompositionLayerInstruction* layerInstructions2 = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
     [layerInstructions2 setTransform:finalTransform atTime:kCMTimeZero];
@@ -362,7 +362,7 @@
     mainCompositionInst.renderScale = 1;
     
     
-    CGSize assetNaturalSize = assetTrack.naturalSize;
+    
     mainCompositionInst.renderSize = assetNaturalSize;
     
     NSString* filePath = [outputFileURL path];
@@ -494,7 +494,7 @@
         [self rotateImage];
         
         //additional rotation required
-        CGSize size = CGSizeMake(self.stillImage.size.width*4/3, self.stillImage.size.height);
+        CGSize size = CGSizeMake(self.stillImage.size.width*ASPECT_RATIO, self.stillImage.size.height);  //watch this ..use aspect ratio
         UIGraphicsBeginImageContext(size);
         [[UIImage imageWithCGImage: self.stillImage.CGImage scale:1.0 orientation:UIImageOrientationRight] drawInRect: CGRectMake(0, 0, self.stillImage.size.height, self.stillImage.size.width)];
         self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -502,7 +502,7 @@
         NSLog(@"was here for rotation");
         [self rotateImage];
         if(halfScreen){
-            CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height/2);
+            CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.previewContainerView.frame.size.height);
             //these magic numbers need to be tested on other devices
             UIGraphicsBeginImageContext(itemSize);
             CGRect imageRect = CGRectMake(0, 0, self.stillImage.size.width, self.stillImage.size.height);
