@@ -11,6 +11,7 @@
 #import "ILTranslucentView.h"
 #import "verbatmContentPageViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
+#import "testerTransitionDelegate.h"
 
 @interface verbatmMediaPageViewController () <UITextFieldDelegate>
 
@@ -34,6 +35,11 @@
 
 
 @property (strong, nonatomic) UITapGestureRecognizer * tap;
+
+
+@property (strong, nonatomic) testerTransitionDelegate * testerTransitionDelegate;
+
+
 
 #define ALBUM_NAME @"Verbatm"
 #define ASPECT_RATIO 1
@@ -419,6 +425,8 @@
         if(self.articleContent)vc.articleContentString = self.articleContent;
         if(self.articleTitle)vc.articleTitleString = self.articleTitle;
         if(self.contentPageElements) vc.pageElements = self.contentPageElements;
+        vc.transitioningDelegate = self.testerTransitionDelegate;
+        self.transitioningDelegate = self.testerTransitionDelegate;
     }
 }
 
@@ -469,6 +477,15 @@
     if([string isEqualToString:@" "]) return NO;
     return YES;
 }
+
+
+
+-(testerTransitionDelegate *) testerTransitionDelegate
+{
+    if(!_testerTransitionDelegate)_testerTransitionDelegate = [testerTransitionDelegate new];
+    return _testerTransitionDelegate;
+}
+
 
 
 @end
