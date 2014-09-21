@@ -27,7 +27,6 @@
 @property (nonatomic) CGPoint lastPoint;
 @property (nonatomic)CGPoint currentPoint;
 @property (nonatomic) BOOL canRaise;
-@property (nonatomic) int count;
 @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
 @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
 
@@ -57,7 +56,7 @@
 #define FLASH_ROTATED_POSITION 20, 8
 #define SWITCH_CAMERA_START_POSITION 260, 20
 #define SWITCH_CAMERA_ROTATED_POSITION 480, 22
-#define TIME_FOR_SESSION_TO_RESUME 0.6
+#define TIME_FOR_SESSION_TO_RESUME 1
 #pragma mark Navigation property
 #define CONTENT_PAGE_SEGUE @"moveToContenPage"
 @end
@@ -72,7 +71,6 @@
 
 - (void)viewDidLoad
 {
-    self.count = 0;
     [super viewDidLoad];
     [self.view insertSubview: self.verbatmCameraView atIndex:0];
     self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
@@ -92,8 +90,9 @@
     self.whatSandwich.keyboardAppearance = UIKeyboardAppearanceDark;
     self.whereSandwich.keyboardAppearance = UIKeyboardAppearanceDark;
     
-    
-    
+    //for postitioning the blurView when the orientation of the device changes
+    [[UIDevice currentDevice]beginGeneratingDeviceOrientationNotifications];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(positionBlurView) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
 }
 
 //Iain
@@ -235,7 +234,7 @@
 -(void)freezeFrame
 {
     [self.sessionManager stopSession];
-    
+    [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
 }
 
 -(void)resumeSession
@@ -245,7 +244,7 @@
 
 -(void)prepareVideoProgressView
 {
-    if(!self.canRaise){
+    if(!self.canRaise && !UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
         self.videoProgressImageView.frame = CGRectMake(0,0,  self.view.frame.size.width, self.view.frame.size.height - self.blurView.frame.origin.y);
     }else{
         self.videoProgressImageView.frame = self.verbatmCameraView.frame;
@@ -261,16 +260,22 @@
         [self prepareVideoProgressView];
         [self.sessionManager startVideoRecording];
         self.counter = 0;
-        self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width/2, self.videoProgressImageView.frame.size.height);
+        switch ([UIDevice currentDevice].orientation) {
+            case UIDeviceOrientationLandscapeRight:
+                self.lastPoint = CGPointMake(0, self.videoProgressImageView.frame.size.height/2);
+                break;
+            case UIDeviceOrientationLandscapeLeft:
+                self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height/2);
+                break;
+            default:
+                self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width/2, self.videoProgressImageView.frame.size.height);
+                break;
+        }
         self.timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(createProgressPath) userInfo:nil repeats:YES];
     }else{
         if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateFailed ||
            recognizer.state == UIGestureRecognizerStateCancelled){
-            [self.sessionManager stopVideoRecording];
-            [self clearVideoProgressImage];  //removes the video progress bar
-            [self.timer invalidate];
-            self.counter = 0;
-            [self.videoProgressImageView removeFromSuperview];
+            if(self.counter < MAX_VIDEO_LENGTH)[self endVideoRecordingSession];
         }
     }
 }
@@ -335,31 +340,81 @@
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_BOTTOM_SIDE);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
-        self.currentPoint = CGPointMake((self.videoProgressImageView.frame.size.width/2)*(1 - (self.counter/ (MAX_VIDEO_LENGTH/8))), self.videoProgressImageView.frame.size.height);
+        switch ([UIDevice currentDevice].orientation) {
+            case UIDeviceOrientationLandscapeRight:
+                self.currentPoint = CGPointMake(0, (self.videoProgressImageView.frame.size.height/2)*(1 - (self.counter/ (MAX_VIDEO_LENGTH/8))) );
+                break;
+            case UIDeviceOrientationLandscapeLeft:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, (self.videoProgressImageView.frame.size.height/2)*(1 + self.counter/(MAX_VIDEO_LENGTH/8)));
+                break;
+            default:
+                self.currentPoint = CGPointMake((self.videoProgressImageView.frame.size.width/2)*(1 - (self.counter/ (MAX_VIDEO_LENGTH/8))), self.videoProgressImageView.frame.size.height);
+                break;
+        }
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }else if (self.counter >= MAX_VIDEO_LENGTH/8 && self.counter < (MAX_VIDEO_LENGTH*3)/8){
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(),RGB_LEFT_SIDE);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
-        self.currentPoint = CGPointMake(0, self.videoProgressImageView.frame.size.height - (self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH/8))/(MAX_VIDEO_LENGTH*2/8))));
+        switch ([UIDevice currentDevice].orientation) {
+            case UIDeviceOrientationLandscapeRight:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH/8))/(MAX_VIDEO_LENGTH*2/8)),0);
+                break;
+            case UIDeviceOrientationLandscapeLeft:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*(1 - (self.counter - (MAX_VIDEO_LENGTH/8))/(MAX_VIDEO_LENGTH*2/8)),self.videoProgressImageView.frame.size.height);
+                break;
+            default:
+                self.currentPoint = CGPointMake(0, self.videoProgressImageView.frame.size.height - (self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH/8))/(MAX_VIDEO_LENGTH*2/8))));
+                break;
+        }
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }else if (self.counter >= (MAX_VIDEO_LENGTH*3)/8  && self.counter < (MAX_VIDEO_LENGTH*5)/8 ){
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_TOP_SIDE);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
-        self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH*3/8))/ (MAX_VIDEO_LENGTH*2/8)), 0);
+        switch ([UIDevice currentDevice].orientation) {
+            case UIDeviceOrientationLandscapeRight:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH*3/8))/(MAX_VIDEO_LENGTH*2/8)));
+                break;
+            case UIDeviceOrientationLandscapeLeft:
+                self.currentPoint = CGPointMake(0, self.verbatmCameraView.frame.size.height*(1 - (self.counter - (MAX_VIDEO_LENGTH*3/8))/(MAX_VIDEO_LENGTH*2/8)));
+                break;
+            default:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH*3/8))/ (MAX_VIDEO_LENGTH*2/8)), 0);
+                break;
+        }
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }else if (self.counter >= (MAX_VIDEO_LENGTH*5)/8  && self.counter < (MAX_VIDEO_LENGTH*7)/8){
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_RIGHT_SIDE);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
-        self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH*5)/8)/ (MAX_VIDEO_LENGTH*2/8)));
+        switch ([UIDevice currentDevice].orientation) {
+            case UIDeviceOrientationLandscapeRight:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*(1 - (self.counter - (MAX_VIDEO_LENGTH*5/8))/(MAX_VIDEO_LENGTH*2/8) ),self.videoProgressImageView.frame.size.height);
+                break;
+            case UIDeviceOrientationLandscapeLeft:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH*5)/8)/ (MAX_VIDEO_LENGTH*2/8)),0);
+                break;
+            default:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH*5)/8)/ (MAX_VIDEO_LENGTH*2/8)));
+                break;
+        }
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }else{
         CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_BOTTOM_SIDE);
         CGContextBeginPath(UIGraphicsGetCurrentContext());
         CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
-        self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width - ((self.videoProgressImageView.frame.size.width/2)*(self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8)), self.videoProgressImageView.frame.size.height);
+        switch ([UIDevice currentDevice].orientation) {
+            case UIDeviceOrientationLandscapeRight:
+                self.currentPoint = CGPointMake(0,self.videoProgressImageView.frame.size.height*(1 - (self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8)));
+                break;
+            case UIDeviceOrientationLandscapeLeft:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8)));
+                break;
+            default:
+                self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width - ((self.videoProgressImageView.frame.size.width/2)*(self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8)), self.videoProgressImageView.frame.size.height);
+                break;
+        }
         CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
     }
     //CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 4.0), 20.0 , [UIColor yellowColor].CGColor);
@@ -367,6 +422,18 @@
     self.videoProgressImageView.image = UIGraphicsGetImageFromCurrentImageContext();
     self.lastPoint = self.currentPoint;
     UIGraphicsEndImageContext();
+    if(self.counter >= MAX_VIDEO_LENGTH) [self endVideoRecordingSession];
+}
+
+
+-(void)endVideoRecordingSession
+{
+    [self.sessionManager stopVideoRecording];
+    [self clearVideoProgressImage];  //removes the video progress bar
+    [self.timer invalidate];
+    self.counter = 0;
+    [self freezeFrame];
+    [self.videoProgressImageView removeFromSuperview];
 }
 
 #pragma mark -on device orientation
@@ -374,30 +441,44 @@
 
 -(NSUInteger)supportedInterfaceOrientations
 {
-    if(self.count >= 8){
-        if([UIDevice currentDevice].orientation != UIDeviceOrientationPortrait){
-            if(!self.blurView.isHidden && !self.canRaise){
-                [UIView animateWithDuration:0.5 animations:^{
-                    self.blurView.frame = CGRectMake(0, self.view.frame.size.height, self.blurView.frame.size.width, 0);
-                } completion:^(BOOL finished) {
-                    if(finished) self.blurView.hidden = YES;
-                }];
-                
-            }
-        }else{
-            if(self.blurView.hidden && !self.canRaise){
-                self.blurView.hidden = NO;
-                [UIView animateWithDuration:0.5 animations:^{
-                    self.blurView.frame =  CGRectMake(0, self.view.frame.size.height/2, self.blurView.frame.size.width, self.view.frame.size.height/2);
-                    [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
-                    [self.switchFlashButton setFrame: CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
-                }];
-            }
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+
+-(void)positionBlurView
+{
+    if([UIDevice currentDevice].orientation != UIDeviceOrientationPortrait || [UIDevice currentDevice].orientation != UIDeviceOrientationFaceUp){
+        if(!self.blurView.isHidden && !self.canRaise){
+            [UIView animateWithDuration:0.5 animations:^{
+                self.blurView.frame = CGRectMake(0, self.view.frame.size.height, self.blurView.frame.size.width, 0);
+                //preferably use autolayout
+//                if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
+//                    [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_ROTATED_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+//                    [self.switchFlashButton setFrame: CGRectMake(FLASH_ROTATED_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+//                }else{
+//                    [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_ROTATED_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+//                    [self.switchFlashButton setFrame: CGRectMake(FLASH_ROTATED_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+//                }
+            } completion:^(BOOL finished) {
+                if(finished) self.blurView.hidden = YES;
+            }];
+        }
+    }else{
+        if(self.blurView.hidden && !self.canRaise){
+            self.blurView.hidden = NO;
+            [UIView animateWithDuration:0.5 animations:^{
+                self.blurView.frame =  CGRectMake(0, self.view.frame.size.height/2, self.blurView.frame.size.width, self.view.frame.size.height/2);
+                [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+                [self.switchFlashButton setFrame: CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+            }];
         }
     }
-    self.count++;
-    return UIInterfaceOrientationMaskPortrait;
-    
+
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    [self positionBlurView];
 }
 
 

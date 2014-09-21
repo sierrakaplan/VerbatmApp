@@ -11,7 +11,7 @@
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 @interface ILTranslucentView () {
-    UIView *nonexistentSubview; //this is first child view of ILTranslucentView. It is not available trough "Managing the View Hierarchy" methods.
+    UIView *nonexistentSubview; //this is first child view of ILTranslucentView. It is not available through "Managing the View Hierarchy" methods.
     UIView *toolbarContainerClipView; //view which contain UIToolbar as child subview
     UIToolbar *toolBarBG; //this is empty toolbar which we use to produce blur (translucent) effect
     UIView *overlayBackgroundView; //view over toolbar that is responsive to backgroundColor property
