@@ -31,6 +31,7 @@
 #define CONTENT_SIZE self.scrollView.frame.size.width*self.media.count/2 -  2*OFFSET, self.view.frame.size.height/3
 #define START_POSITION_FOR_MEDIA2   (self.scrollView.frame.size.width + OFFSET)/2, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2  , self.scrollView.frame.size.height - 2*OFFSET
 #define BACKGROUND @"background"
+#define SCROLLVIEW_ALPHA 0.8;
 @end
 
 @implementation verbatmGalleryHandler
@@ -62,13 +63,15 @@
 -(void)createScrollView
 {
     self.scrollView = [[UIScrollView alloc] initWithFrame: CGRectMake(DROP_FROM_COORDINATES)];
-    self.scrollView.backgroundColor = [UIColor  yellowColor];
+    self.scrollView.backgroundColor = [UIColor  blackColor];
+    self.scrollView.alpha= SCROLLVIEW_ALPHA;
     self.scrollView.pagingEnabled = NO;
     self.scrollView.clipsToBounds = NO;
     self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
     self.scrollView.showsHorizontalScrollIndicator = YES;
     self.scrollView.delegate = self;
     self.scrollView.alwaysBounceHorizontal = YES;
+    
 }
 
 //by Lucio
