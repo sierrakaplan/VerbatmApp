@@ -299,7 +299,7 @@
     AVMutableCompositionTrack* audioTrack = [fixedComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     AVAsset* videoAsset = [AVAsset assetWithURL: outputFileURL]; //could use valueForKey method in the asset class.
     [videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
-    [audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
+    //[audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
     
     NSLog(@"video composition track time range: %lld, %lld", videoTrack.timeRange.start.value, videoTrack.timeRange.duration.value);
     
@@ -321,41 +321,59 @@
     if(transform.a == 0 && transform.b == 1.0 && transform.c == -1.0 && transform.d == 0)
     {
         assetOrientation = UIImageOrientationRight;
-        isAssetPortrait = YES;
+        
     }
     if(transform.a == 0 && transform.b == -1.0 && transform.c == 1.0 && transform.d == 0)
     {
         assetOrientation =  UIImageOrientationLeft;
-        isAssetPortrait  = YES;
+        
     }
     if(transform.a == 1.0 && transform.b == 0 && transform.c == 0 && transform.d == 1.0)
     {
         assetOrientation =  UIImageOrientationUp;
+        isAssetPortrait = YES;
     }
     if(transform.a == -1.0 && transform.b == 0 && transform.c == 0 && transform.d == -1.0)
     {
        assetOrientation = UIImageOrientationDown;
+        isAssetPortrait  = YES;
     }
     
     NSLog(@"%d is the asset orientation", assetOrientation);
     //adding instructions
-    [layerInstructions setTransform:assetTrack.preferredTransform atTime:kCMTimeZero];
+
+    //test transforms
+    CGAffineTransform t1 = CGAffineTransformMakeTranslation(assetTrack.naturalSize.width/2, assetTrack.naturalSize.height/2);
+
+    CGAffineTransform t2 = CGAffineTransformRotate(t1,M_PI);
+    CGAffineTransform finalTransform = CGAffineTransformTranslate(t2, -assetTrack.naturalSize.width/2, -assetTrack.naturalSize.height/2);
+
+    
+    AVMutableVideoCompositionLayerInstruction* layerInstructions2 = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
+    [layerInstructions2 setTransform:finalTransform atTime:kCMTimeZero];
+    [layerInstructions2 setOpacity:0.0 atTime:videoAsset.duration];
+    
+    [layerInstructions setTransform:finalTransform atTime:kCMTimeZero];
     [layerInstructions setOpacity:0.0 atTime:videoAsset.duration];
-    instructions.layerInstructions = @[layerInstructions];
+    instructions.layerInstructions = @[layerInstructions, layerInstructions2];
     AVMutableVideoComposition* mainCompositionInst = [AVMutableVideoComposition videoComposition];
     mainCompositionInst.instructions = @[instructions];
     mainCompositionInst.frameDuration = CMTimeMake(1, 32);
     mainCompositionInst.renderScale = 1;
     
     
-    CGSize assetNaturalSize = (isAssetPortrait)? CGSizeMake(assetTrack.naturalSize.height, assetTrack.naturalSize.width): assetTrack.naturalSize;
+    CGSize assetNaturalSize = assetTrack.naturalSize;
     mainCompositionInst.renderSize = assetNaturalSize;
     
     NSString* filePath = [outputFileURL path];
     NSError* error;
     [[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
     
-    AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:fixedComposition presetName:AVAssetExportPresetHighestQuality];
+    if(error){
+        NSLog(@"error %@", error.description);
+    }
+    
+    AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:fixedComposition presetName:AVAssetExportPresetMediumQuality];
     exporter.outputURL = outputFileURL;
     exporter.outputFileType = AVFileTypeQuickTimeMovie;
     exporter.videoComposition = mainCompositionInst;
@@ -364,6 +382,20 @@
         switch ([exporter status]) {
             case AVAssetExportSessionStatusCompleted:
                 NSLog(@"Export done successfully");
+                if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
+                    [self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
+                        [self.assetLibrary assetForURL:assetURL
+                                           resultBlock:^(ALAsset *asset) {
+                                               [self.verbatmAlbum addAsset:asset];
+                                               NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+                                           }
+                                          failureBlock:^(NSError* error) {
+                                              NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+                                          }];
+                    }];
+                }else{
+                    NSLog(@"wrong output location");
+                }
                 break;
             case AVAssetExportSessionStatusFailed:
                 NSLog(@"Export Session failed: %@", exporter.error.description);
@@ -384,21 +416,6 @@
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
 {
     [self fixVideoOrientationOfAssetAtUrl:outputFileURL];
-    if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
-        [self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
-            [self.assetLibrary assetForURL:assetURL
-                               resultBlock:^(ALAsset *asset) {
-                                   [self.verbatmAlbum addAsset:asset];
-                                   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-                               }
-                              failureBlock:^(NSError* error) {
-                                  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-                              }];
-        }];
-    }else{
-        NSLog(@"wrong output location");
-    }
-
 }
 
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
