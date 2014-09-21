@@ -57,7 +57,7 @@
 #define FLASH_ROTATED_POSITION 20, 8
 #define SWITCH_CAMERA_START_POSITION 260, 20
 #define SWITCH_CAMERA_ROTATED_POSITION 480, 22
-#define TIME_FOR_SESSION_TO_RESUME 0.6
+#define TIME_FOR_SESSION_TO_RESUME 1
 #pragma mark Navigation property
 #define CONTENT_PAGE_SEGUE @"moveToContenPage"
 @end
@@ -91,10 +91,9 @@
     [self setDelegates];
     self.whatSandwich.keyboardAppearance = UIKeyboardAppearanceDark;
     self.whereSandwich.keyboardAppearance = UIKeyboardAppearanceDark;
-    
-    
-    
 }
+
+
 
 //Iain
 -(void) setDelegates

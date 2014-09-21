@@ -229,6 +229,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */,
 				C78B682719CA6C0A003D0AC5 /* Custom Views */,
 				C78B681119CA6914003D0AC5 /* View Controllers */,
 				C774040E19BE6538004C50EA /* Images.xcassets */,
@@ -239,10 +240,6 @@
 				C7174E0C19CA159D006C982D /* ILTranslucentView.h */,
 				C7174E0D19CA159D006C982D /* ILTranslucentView.m */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
-				C7CCFF3A19CE63A800E90080 /* testerAnimation.h */,
-				C7CCFF3B19CE63A800E90080 /* testerAnimation.m */,
-				C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */,
-				C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */,
 			);
 			path = Verbatm;
 			sourceTree = "<group>";
@@ -291,6 +288,17 @@
 				C7A8A7F519A96E1B00CE861F /* Video.m */,
 			);
 			name = "Backend Model";
+			sourceTree = "<group>";
+		};
+		C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */ = {
+			isa = PBXGroup;
+			children = (
+				C7CCFF3A19CE63A800E90080 /* testerAnimation.h */,
+				C7CCFF3B19CE63A800E90080 /* testerAnimation.m */,
+				C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */,
+				C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */,
+			);
+			name = "Transition Animation Managers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
