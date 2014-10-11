@@ -7,11 +7,13 @@
 //
 
 #import "verbatmCustomMediaSelectTile.h"
+#import "verbatmDashLineView.h"
 
 @interface verbatmCustomMediaSelectTile ()
     @property(nonatomic ,strong) UIButton * selectMedia;
     @property (nonatomic ,strong) UIButton * selectText;
-
+@property (nonatomic, strong) verbatmDashLineView * dashedView;
+    @property (nonatomic, strong) CAShapeLayer * border;
 #define BUTTON_OFFSET 5
 @end
 
@@ -27,9 +29,8 @@
         [self addButtonsAsSubviews];
         
         [self setBackgroundColor:[UIColor clearColor]];
-        [self.selectText setBackgroundColor:[UIColor greenColor]];
-        [self.selectMedia setBackgroundColor:[UIColor yellowColor]];
-        
+        [self.selectText setBackgroundImage:[UIImage imageNamed:@"photo_button"] forState: UIControlStateNormal];
+        [self.selectMedia setBackgroundImage:[UIImage imageNamed:@"text_button"] forState: UIControlStateNormal];
     }
     return self;
 }
@@ -55,16 +56,10 @@
 
 -(void) addMedia
 {
+    [self addDashedBorder];
     [self.customDelegate addMultiMediaButtonPressedAsBaseView:self.baseSelector];
 }
-//Iain
-//Set the background images for the button views
-//To be implemented
--(void) addImagesToButtons
-{
-    //self.selectMedia.imageView.image = ;
-    //self.selectText.imageView.image = ;
-}
+
 
 #pragma mark - *Lazy Instantiation
 -(UIButton *) selectMedia
@@ -72,7 +67,7 @@
     if(!_selectMedia)
     {
         _selectMedia = [[UIButton alloc]init];
-        [_selectMedia addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
+        [_selectMedia addTarget:self action:@selector(addText) forControlEvents:UIControlEventTouchUpInside];
     }
     
     return _selectMedia;
@@ -81,19 +76,19 @@
 -(UIButton *) selectText
 {
     if(!_selectText) _selectText = [[UIButton alloc]init];
-    [_selectText addTarget:self action:@selector(addText) forControlEvents:UIControlEventTouchUpInside];
+    [_selectText addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
 
     return _selectText;
 }
 
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect
+-(void)addDashedBorder
 {
-    // Drawing code
+    self.dashedView = [[verbatmDashLineView alloc]initWithFrame:self.bounds];
+    [self.selectText removeFromSuperview];
+    [self.selectMedia removeFromSuperview];
+    [self.dashedView setBackgroundColor:[UIColor clearColor]];
+    [self addSubview:self.dashedView];
+    
 }
-*/
 
 @end

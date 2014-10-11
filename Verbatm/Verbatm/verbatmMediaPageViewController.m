@@ -12,81 +12,109 @@
 #import "verbatmContentPageViewController.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "testerTransitionDelegate.h"
+#import "verbatmContentPageViewController.h"
+#import "verbatmBlurBaseViewController.h"
 
-@interface verbatmMediaPageViewController () <UITextFieldDelegate>
+@interface verbatmMediaPageViewController () <UITextFieldDelegate, verbatmContentPageVCDelegate>
+#pragma mark - Saving edited content for navigation -
+#pragma mark contentPage content
+    @property (strong, nonatomic) NSString *contentPageSandwichWhere;
+    @property (strong, nonatomic) NSString *contentPageSandwhichWhat;
+    @property (strong, nonatomic) NSString *contentPageArticleTitle;
+    @property (strong, nonatomic) NSMutableArray * contentPageElements;
+#pragma mark blurBaseView content
+    @property (strong, nonatomic) NSString *blurBaseSandwichWhere;
+    @property (strong, nonatomic) NSString *blurBaseSandwhichWhat;
 
-@property (weak, nonatomic) IBOutlet ILTranslucentView *blurView;
-@property (strong, nonatomic) UIView *verbatmCameraView;
-@property (strong, nonatomic) verbatmMediaSessionManager* sessionManager;
-@property (strong, nonatomic) UIImageView* videoProgressImageView;
-@property (nonatomic, strong) NSTimer *timer;
-@property (nonatomic) CGFloat counter;
-@property (strong, nonatomic)UIButton* switchCameraButton;
-@property (strong, nonatomic)UIButton* switchFlashButton;
-@property (nonatomic) BOOL flashOn;
-@property(nonatomic) CGRect blurViewInitialFrame;
-@property (nonatomic) CGPoint lastPoint;
-@property (nonatomic)CGPoint currentPoint;
-@property (nonatomic) BOOL canRaise;
-@property (nonatomic) UIDeviceOrientation startOrientation;
-@property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
-@property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
-@property (nonatomic) CGAffineTransform flashTransform;
-@property (nonatomic) CGAffineTransform switchTransform;
+    //the outlets
+    @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
+    @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
 
-@property (weak, nonatomic) IBOutlet UIButton *toContentPageSegue;
+#pragma mark - SubViews of screen-
+    @property (weak, nonatomic) IBOutlet UIView *containerView;
+    @property (strong, nonatomic) UIView *verbatmCameraView;
+    @property (strong, nonatomic) verbatmMediaSessionManager* sessionManager;
+    @property (strong, nonatomic) UIImageView* videoProgressImageView;
+
+    @property(nonatomic) CGRect containerViewInitialFrame;
+
+#pragma mark -Camera properties-
+#pragma mark buttons
+    @property (strong, nonatomic)UIButton* switchCameraButton;
+    @property (strong, nonatomic)UIButton* switchFlashButton;
+    @property (nonatomic) CGAffineTransform flashTransform;
+    @property (nonatomic) CGAffineTransform switchTransform;
 
 
-@property (strong, nonatomic) UITapGestureRecognizer * tap;
+#pragma mark taking the photo
+    @property (strong, nonatomic) UITapGestureRecognizer * takePhotoGesture;
 
 
-@property (strong, nonatomic) testerTransitionDelegate * testerTransitionDelegate;
+#pragma mark -Child views - blurView and contenPage
+    @property (strong, nonatomic) UIViewController  * blurViewVc;
+    @property (strong, nonatomic) UIViewController * contentPageVc;
 
 
 
-#define ALBUM_NAME @"Verbatm"
-#define ASPECT_RATIO 1
-#define RGB_LEFT_SIDE 255,225,255, 0.7     //247, 0, 99, 1
-#define RGB_RIGHT_SIDE 255,225,255, 0.7
-#define RGB_BOTTOM_SIDE 255,225,255, 0.7
-#define RGB_TOP_SIDE 255,225,255, 0.7
-#define MAX_VIDEO_LENGTH 30
-#define CAMERA_ICON_FRONT @"camera_final_consolidated"
-#define SWITCH_ICON_SIZE 60
-#define FLASH_ICON_SIZE 60
-#define FLASH_ICON_ON @"bulb_FINALANDFORALL_registered_ON(17pt)_one.bar.png"
-#define FLASH_ICON_OFF @"bulb_FINALANDFORALL_registered_OFF(17pt)_one.bar.png"
-#define FLASH_START_POSITION  10, 12
-#define FLASH_ROTATED_POSITION 20, 8
-#define SWITCH_CAMERA_START_POSITION 260, 20
-#define SWITCH_CAMERA_ROTATED_POSITION 480, 22
-#define TIME_FOR_SESSION_TO_RESUME 1
-#pragma mark Navigation property
-#define CONTENT_PAGE_SEGUE @"moveToContenPage"
+    @property (nonatomic, strong) NSTimer *timer;
+    @property (nonatomic) CGFloat counter;
+    @property (nonatomic) BOOL flashOn;
+    @property (nonatomic) CGPoint lastPoint;
+    @property (nonatomic)CGPoint currentPoint;
+    @property (nonatomic) BOOL canRaise;
+    @property (nonatomic) UIDeviceOrientation startOrientation;
+
+
+#pragma mark helpers for VCs
+    #define ID_FOR_CONTENTPAGEVC @"contentPage"
+    #define ID_FOR_BOTTOM_SPLITSCREENVC @"splitScreenBottomView"
+    #define NUMBER_OF_VCS 2
+    #define VC_TRANSITION_ANIMATION_TIME 0.3
+
+
+
+    #define ALBUM_NAME @"Verbatm"
+    #define ASPECT_RATIO 1
+    #define RGB_LEFT_SIDE 255,225,255, 0.7     //247, 0, 99, 1
+    #define RGB_RIGHT_SIDE 255,225,255, 0.7
+    #define RGB_BOTTOM_SIDE 255,225,255, 0.7
+    #define RGB_TOP_SIDE 255,225,255, 0.7
+    #define MAX_VIDEO_LENGTH 30
+    #define CAMERA_ICON_FRONT @"camera_back"
+    #define SWITCH_ICON_SIZE 50
+    #define FLASH_ICON_SIZE 50
+    #define FLASH_ICON_ON @"lightbulb_final_OFF(white)"
+    #define FLASH_ICON_OFF @"lightbulb_final_OFF(white)"
+    #define FLASH_START_POSITION  10, 0
+    #define FLASH_ROTATED_POSITION 20, 0
+    #define SWITCH_CAMERA_START_POSITION 260, 5
+    #define SWITCH_CAMERA_ROTATED_POSITION 480, 22
+    #define TIME_FOR_SESSION_TO_RESUME 0.5
+    #pragma mark Navigation property
+    #define CONTENT_PAGE_SEGUE @"moveToContenPage"
 @end
 
 @implementation verbatmMediaPageViewController
+
+#pragma mark - Synthesize-
 @synthesize verbatmCameraView = _verbatmCameraView;
 @synthesize sessionManager = _sessionManager;
 @synthesize videoProgressImageView = _videoProgressImageView;
 @synthesize timer = _timer;
 @synthesize switchCameraButton = _switchCameraButton;
-//@synthesize whiteLowerView = _whiteLowerView;
 
+
+#pragma mark - Preparing View-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [self.view insertSubview: self.verbatmCameraView atIndex:0];
-    self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-    self.blurView.translucentStyle = UIBarStyleBlack;
-    self.blurView.translucentAlpha = 1;
-    self.blurViewInitialFrame = self.blurView.frame;
-    [self createSlideDownGesture];
-    [self createSlideUpGesture];
-    [self createTapGesture];
-    [self createLongPressGesture];
-    [self createSwitchCameraButton];
-    [self createSwitchFlashButton];
+    
+    [self prepareCameraView];
+    [self createAndInstantiateCameraButtons];
+    self.containerViewInitialFrame = self.containerView.frame;
+    
+    [self createAndInstantiateGestures];
+    
     [self setPlaceholderColors];
     self.canRaise = NO;
     
@@ -97,10 +125,60 @@
     
     //for postitioning the blurView when the orientation of the device changes
     [[UIDevice currentDevice]beginGeneratingDeviceOrientationNotifications];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(positionBlurView) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(positionContainerView) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
+    
+    
+    //remove the status bar
+    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        // iOS 7
+        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+    } else {
+        // iOS 6
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    }
+    
+    //register for keyboard events
+    [self registerForKeyboardNotifications];
 }
 
+//Iain
+-(void) prepareCameraView
+{
+    [self.view insertSubview: self.verbatmCameraView atIndex:0];
+    self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
+}
 
+//Iain
+-(void) createAndInstantiateGestures
+{
+    [self createSlideDownGesture];
+    [self createSlideUpGesture];
+    [self createTapGesture];
+    [self createLongPressGesture];
+    [self creatSlideUpGestureForContainerView];
+}
+
+//Iain
+-(void) createAndInstantiateCameraButtons
+{
+    [self createSwitchCameraButton];
+    [self createSwitchFlashButton];
+}
+
+//Iain
+//Tells the screen to hide the status bar
+- (BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
+//Iain
+-(void) viewDidLayoutSubviews
+{
+    [super viewDidLayoutSubviews];
+    //get the view controllers in the storyboard and store them
+    [self storeIndependentViewControllers];
+}
 
 //Iain
 -(void) setDelegates
@@ -118,14 +196,12 @@
         self.whatSandwich.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.whatSandwich.placeholder attributes:@{NSForegroundColorAttributeName: color}];
     } else {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-        // TODO: Add fall-back code to set placeholder color.
     }
     if ([self.whereSandwich respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         UIColor *color = [UIColor whiteColor];
         self.whereSandwich.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.whereSandwich.placeholder attributes:@{NSForegroundColorAttributeName: color}];
     } else {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-        // TODO: Add fall-back code to set placeholder color.
     }
 }
 
@@ -135,17 +211,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark -initializing properties
-
--(verbatmMediaSessionManager*)sessionManager
-{
-    if(!_sessionManager){
-        _sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-    }
-    return _sessionManager;
-}
-
-#pragma mark - creating views
+#pragma mark  creating views
 
 //by Lucio
 //creates the camera view with the preview session
@@ -182,15 +248,15 @@
 }
 
 
-#pragma mark -creating gestures
+#pragma mark creating gestures
 
 //by Lucio
 -(void) createTapGesture
 {
-    self.tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
-    self.tap.numberOfTapsRequired = 1;
-    self.tap.cancelsTouchesInView =  NO;
-    [self.verbatmCameraView addGestureRecognizer:self.tap];
+    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
+    self.takePhotoGesture.numberOfTapsRequired = 1;
+    self.takePhotoGesture.cancelsTouchesInView =  NO;
+    [self.verbatmCameraView addGestureRecognizer:self.takePhotoGesture];
 }
 
 //by Lucio
@@ -207,7 +273,16 @@
 {
     UISwipeGestureRecognizer* swipeDownGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(extendScreen:)];
     swipeDownGesture.direction = UISwipeGestureRecognizerDirectionDown;
-    [self.blurView addGestureRecognizer:swipeDownGesture];
+    [self.containerView addGestureRecognizer:swipeDownGesture];
+   
+}
+
+//Iain
+-(void) creatSlideUpGestureForContainerView
+{
+    UISwipeGestureRecognizer* swipeUpGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(transition)];
+    swipeUpGesture.direction = UISwipeGestureRecognizerDirectionUp;
+    [self.containerView addGestureRecognizer:swipeUpGesture];
 }
 
 //by Lucio
@@ -233,28 +308,31 @@
 //Lucio
 - (IBAction)takePhoto:(id)sender
 {
-    CGPoint point = [self.tap locationInView:self.verbatmCameraView];
+    CGPoint point = [self.takePhotoGesture locationInView:self.verbatmCameraView];
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
     [self.sessionManager captureImage: !self.canRaise];
     [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
 }
 
+//Lucio
 -(void)freezeFrame
 {
     [self.sessionManager stopSession];
     [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
 }
 
+//Lucio
 -(void)resumeSession
 {
     [self.sessionManager startSession];
 }
 
+//Lucio
 -(void)prepareVideoProgressView
 {
     if(!self.canRaise && !UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
-        self.videoProgressImageView.frame = CGRectMake(0,0,  self.view.frame.size.width, self.view.frame.size.height - self.blurViewInitialFrame.size.height);
+        self.videoProgressImageView.frame = CGRectMake(0,0,  self.view.frame.size.width, self.view.frame.size.height - self.containerViewInitialFrame.size.height);
     }else{
         self.videoProgressImageView.frame = self.verbatmCameraView.frame;
     }
@@ -311,7 +389,7 @@
 -(IBAction)extendScreen:(id)sender
 {
     [UIView animateWithDuration:0.5 animations:^{
-        self.blurView.frame = CGRectMake(0, self.view.frame.size.height, self.blurView.frame.size.width, 0);
+        self.containerView.frame = CGRectMake(0, self.view.frame.size.height, self.containerView.frame.size.width, 0);
     }];
     self.canRaise = YES;
     
@@ -322,7 +400,7 @@
 {
     if(self.canRaise && !UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
         [UIView animateWithDuration:0.5 animations:^{
-            self.blurView.frame =  self.blurViewInitialFrame;
+            self.containerView.frame =  self.containerViewInitialFrame;
             [self.sessionManager setSessionOrientationToOrientation:[UIDevice currentDevice].orientation];
         }];
         self.canRaise = NO;
@@ -435,7 +513,7 @@
     if(self.counter >= MAX_VIDEO_LENGTH) [self endVideoRecordingSession];
 }
 
-
+//Lucio
 -(void)endVideoRecordingSession
 {
     [self.sessionManager stopVideoRecording];
@@ -448,19 +526,24 @@
 
 #pragma mark -on device orientation
 
-
 -(NSUInteger)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskPortrait;
 }
 
 
--(void)positionBlurView
+-(void)positionContainerView
 {
     if( UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
-        if(!self.blurView.isHidden && !self.canRaise){
+        
+        if(self.containerView.frame.size.height == self.view.frame.size.height)//if you are on the content page
+        {
+            [self transition];
+        }
+        
+        if(!self.containerView.isHidden && !self.canRaise){
             [UIView animateWithDuration:0.5 animations:^{
-                self.blurView.frame = CGRectMake(0, self.view.frame.size.height, self.blurView.frame.size.width, 0);
+                self.containerView.frame = CGRectMake(0, self.view.frame.size.height, self.containerView.frame.size.width, 0);
                 //preferably use autolayout
                 if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
                     NSLog(@"was here");
@@ -471,14 +554,14 @@
                     self.switchFlashButton.transform = CGAffineTransformMakeRotation(-M_PI_2);
                 }
             } completion:^(BOOL finished) {
-                if(finished) self.blurView.hidden = YES;
+                if(finished) self.containerView.hidden = YES;
             }];
         }
     }else{
-        if(self.blurView.hidden && !self.canRaise){
-            self.blurView.hidden = NO;
+        if(self.containerView.hidden && !self.canRaise){
+            self.containerView.hidden = NO;
             [UIView animateWithDuration:0.5 animations:^{
-                self.blurView.frame =  self.blurViewInitialFrame;
+                self.containerView.frame =  self.containerViewInitialFrame;
                 self.switchCameraButton.transform = self.switchTransform;
                 self.switchFlashButton.transform = self.flashTransform;
             }];
@@ -489,77 +572,176 @@
 
 -(void)viewWillLayoutSubviews
 {
-    [self positionBlurView];
+    [self positionContainerView];
 }
 
 
-#pragma mark - *Navigation
-//Returning
+#pragma mark New Navigation
 //Iain
-- (IBAction) goToRoot: (UIStoryboardSegue*) segue
+//transitions between the split screen view and the content page and visa versa
+-(void) transition
 {
-    //set the s@andwhich to what was added in the screen before
-    if(self.sandwhichWhat) self.whatSandwich.text = self.sandwhichWhat;
-    if(self.sandwichWhere) self.whereSandwich.text = self.sandwichWhere;
+    UIView * subView = [[self.containerView subviews] firstObject];
     
-    NSLog(@"Called goToRoot: unwind action");
-}
-
-//Leaving the split page
-//Iain
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if([segue.identifier isEqualToString:CONTENT_PAGE_SEGUE])
+    [self.view insertSubview:self.containerView aboveSubview:self.switchFlashButton];//bring container view to the front
+    
+    
+    if(self.containerView.frame.size.height != self.view.frame.size.height)//if we have the split screen on the page
     {
-        verbatmContentPageViewController * vc = (verbatmContentPageViewController *) segue.destinationViewController;
-        vc.sandWhichWhatString = self.whatSandwich.text;
-        vc.sandWhichWhereString = self.whereSandwich.text;
-        if(self.articleContent)vc.articleContentString = self.articleContent;
-        if(self.articleTitle)vc.articleTitleString = self.articleTitle;
-        if(self.contentPageElements) vc.pageElements = self.contentPageElements;
-        vc.transitioningDelegate = self.testerTransitionDelegate;
-        self.transitioningDelegate = self.testerTransitionDelegate;
-    }
-}
-
-//Iain
-//Move to content page OR remove bottom of dual page
-- (IBAction)swipeUpSegueToContentPage:(UISwipeGestureRecognizer *)sender
-{
-    if(sender.direction == UISwipeGestureRecognizerDirectionUp){
-        //acts like the button has been pressed- so calls a modal segue
-        [self.toContentPageSegue sendActionsForControlEvents: UIControlEventTouchUpInside];
-    }
-}
-
-
-#pragma mark - UI technicalities
-//To be edited- adds a top shadow to the view that is sent
-//Iain
--(void) addTopShadowToView: (UIView *) view
-{
+        
+        
+        [subView removeFromSuperview];
+        [self.containerView addSubview:self.contentPageVc.view];
+        
+        [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
+         {
+             self.containerView.frame= self.view.frame;
+         }];
+    }else
+    {
     
-    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
-    view.layer.masksToBounds = NO;
-    view.layer.shadowColor = [UIColor blackColor].CGColor;
-    view.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
-    view.layer.shadowOpacity = 0.2f;
-    view.layer.shadowPath = shadowPath.CGPath;
+        [self storeInformationBeforeLeavingVC:self.contentPageVc];
+        
+        [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
+         {
+             self.containerView.frame= self.containerViewInitialFrame;
+         }completion:^(BOOL finished)
+         {
+             //when moving up we want the content page to appear until the transition is over
+             [subView removeFromSuperview];
+             [self.containerView addSubview:self.blurViewVc.view];
+         }];
+    }
 }
+
+//Iain
+//Saves data before the VC transfers and sets it in the upcoming vc
+-(void) storeInformationBeforeLeavingVC: (UIViewController *) VC
+{
+    if([VC isKindOfClass:[verbatmBlurBaseViewController class]])
+    {
+        verbatmBlurBaseViewController * VC1 = (verbatmBlurBaseViewController *) VC;
+       
+        self.contentPageSandwhichWhat = VC1.sandwhichWhat.text;
+        self.contentPageSandwichWhere = VC1.sandwichWhere.text;
+        
+    }else //transitioning from the contentPage
+    {
+        verbatmContentPageViewController * VC1 = (verbatmContentPageViewController *) VC;
+        
+        self.blurBaseSandwhichWhat = VC1.sandwhichWhat.text;
+        self.blurBaseSandwichWhere = VC1.sandwichWhere.text;
+        
+        self.contentPageArticleTitle = VC1.articleTitleField.text;
+        self.contentPageElements = VC1.pageElements;
+    }
+}
+
+//Iain
+//Transfer the stored information to the appropriate VC
+-(void) transferInformationToVc: (UIViewController *) VC
+{
+    if([VC isKindOfClass:[verbatmBlurBaseViewController class]]) //transitioning to the blurView
+    {
+        verbatmBlurBaseViewController * VC1 = (verbatmBlurBaseViewController *) VC;
+        VC1.sandwhichWhat.text = self.blurBaseSandwhichWhat;
+        VC1.sandwichWhere.text = self.blurBaseSandwichWhere;
+    }else //transitioning to the contentPage
+    {
+        verbatmContentPageViewController * VC1 = (verbatmContentPageViewController *) VC;
+        VC1.pageElements = self.contentPageElements;
+        VC1.sandwhichWhat.text = self.contentPageSandwhichWhat;
+        VC1.sandwichWhere.text = self.contentPageSandwichWhere;
+        VC1.articleTitleField.text = self.contentPageArticleTitle;
+    }
+
+}
+
+-(void) reachedViewDidLoad
+{
+    [self transferInformationToVc:self.contentPageVc];
+}
+
+//get the two independent controllers and save them
+-(void) storeIndependentViewControllers
+{
+    self.blurViewVc = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_BOTTOM_SPLITSCREENVC];
+
+    self.contentPageVc= [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTPAGEVC];
+    ((verbatmContentPageViewController *)self.contentPageVc).customDelegate = self;
+    
+}
+
+
+//Iain
+-(void) leaveContentPage
+{
+    [self transition];
+}
+
+
+#pragma mark -Lazy instantiation-
+
+-(verbatmMediaSessionManager*)sessionManager
+{
+    if(!_sessionManager){
+        _sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
+    }
+    return _sessionManager;
+}
+
+
+
 
 #pragma mark - Keyboard
 //Iain
 -(BOOL) textFieldShouldReturn:(UITextField *)textField{
 	if(textField == self.whereSandwich)
     {
+
         [self.whereSandwich resignFirstResponder];
         
     }else if(textField == self.whatSandwich)
     {
+
         [self.whatSandwich resignFirstResponder];
     }
 	return YES;
 }
+
+//Lucio
+//This method registers the application for keyboard notifications. UIKeyboardWillShowNotification and UIKeyboardWillHideNotification are listened for.
+-(void)registerForKeyboardNotifications
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeShown:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeWithdrawn:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+//Lucio
+//moves the transparent view up when the keyboard is about to appear
+-(void)keyboardWillBeShown:(NSNotification*)aNotification
+{
+    if(self.containerView.frame.size.height != self.view.frame.size.height){ //this makes sure you are in the intro page
+        [UIView animateWithDuration:0.5 animations:^{
+            self.containerView.frame = CGRectOffset(self.containerViewInitialFrame, 0, -[[[aNotification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size.height/4);
+            //preferably use autolayout
+        }];
+    }
+}
+
+//Lucio
+//moves the transparent view up when the keyboard is about to appear
+-(void)keyboardWillBeWithdrawn:(NSNotification*)aNotification
+{
+    if(self.containerView.frame.size.height != self.view.frame.size.height){ //this makes sure you are in the intro page
+        [UIView animateWithDuration:0.3 animations:^{
+            self.containerView.frame =  self.containerViewInitialFrame;
+        }];
+    }
+}
+
+
+
 
 #pragma mark - Textfields
 //Iain
@@ -569,17 +751,6 @@
     if([string isEqualToString:@" "]) return NO;
     return YES;
 }
-
-
-
--(testerTransitionDelegate *) testerTransitionDelegate
-{
-    if(!_testerTransitionDelegate)_testerTransitionDelegate = [testerTransitionDelegate new];
-    return _testerTransitionDelegate;
-}
-
-
-
 @end
 
 

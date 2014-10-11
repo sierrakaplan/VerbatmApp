@@ -10,9 +10,4 @@
 
 
 @interface verbatmMediaPageViewController : UIViewController
-@property (strong, nonatomic) NSString *sandwichWhere;
-@property (strong, nonatomic) NSString *sandwhichWhat;
-@property (strong, nonatomic) NSString *articleContent;
-@property (strong, nonatomic) NSString *articleTitle;
-@property (strong, nonatomic) NSMutableArray * contentPageElements;
 @end

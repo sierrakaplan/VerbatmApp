@@ -502,7 +502,7 @@
         NSLog(@"was here for rotation");
         [self rotateImage];
         if(halfScreen){
-            CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.previewContainerView.frame.size.height);
+            CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.previewContainerView.frame.size.height/2);
             //these magic numbers need to be tested on other devices
             UIGraphicsBeginImageContext(itemSize);
             CGRect imageRect = CGRectMake(0, 0, self.stillImage.size.width, self.stillImage.size.height);

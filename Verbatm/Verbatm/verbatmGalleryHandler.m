@@ -31,7 +31,7 @@
 #define CONTENT_SIZE self.scrollView.frame.size.width*self.media.count/2 -  2*OFFSET, self.view.frame.size.height/3
 #define START_POSITION_FOR_MEDIA2   (self.scrollView.frame.size.width + OFFSET)/2, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2  , self.scrollView.frame.size.height - 2*OFFSET
 #define BACKGROUND @"background"
-#define SCROLLVIEW_ALPHA 0.8;
+#define SCROLLVIEW_ALPHA 1;
 @end
 
 @implementation verbatmGalleryHandler
@@ -63,7 +63,7 @@
 -(void)createScrollView
 {
     self.scrollView = [[UIScrollView alloc] initWithFrame: CGRectMake(DROP_FROM_COORDINATES)];
-    self.scrollView.backgroundColor = [UIColor  blackColor];
+    self.scrollView.backgroundColor = [UIColor  grayColor];
     self.scrollView.alpha= SCROLLVIEW_ALPHA;
     self.scrollView.pagingEnabled = NO;
     self.scrollView.clipsToBounds = NO;
@@ -99,7 +99,10 @@
 
 - (void)presentGallery
 {
-    if(!self.mediaIsLoaded)[self loadMediaUntoScrollView];
+    //try to do this in a new queue in order not to block the main queue
+    if(!self.mediaIsLoaded){
+            [self loadMediaUntoScrollView];
+    }
     [self lowerScrollView];
    // [self.customDelegate didPresentGallery];
 }
@@ -125,17 +128,18 @@
                                        orientation:UIImageOrientationUp];
         UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
         imageView.frame = viewSize;
-        //        if( [[asset valueForProperty:@"ALAssetPropertyType"] isEqualToString:@"ALAssetTypeVideo"]){
-        //            CALayer* playIconLayer = [[CALayer alloc] init];
-        //            playIconLayer.backgroundColor = [[UIColor clearColor]CGColor];
-        //            playIconLayer.bounds = imageView.frame;
-        //            [playIconLayer setContents: (__bridge id)[UIImage imageNamed:PLAY_VIDEO_ICON].CGImage];
-        //            [imageView.layer addSublayer:playIconLayer];
-        //        }
+        
         viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
     }
+    //Add swipe up gesture to dismiss gallery
+    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseScrollView)];
+    swipeUp.direction  = UISwipeGestureRecognizerDirectionUp;
+    swipeUp.cancelsTouchesInView = NO;
+    swipeUp.delegate = self;
+    [self.scrollView addGestureRecognizer: swipeUp];
+    
     UISwipeGestureRecognizer* swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(selectMedia:)];
     swipeDown.direction  = UISwipeGestureRecognizerDirectionDown;
     swipeDown.cancelsTouchesInView = NO;
@@ -146,8 +150,8 @@
         NSLog(@"%@",gesture);
     }
     [self.view bringSubviewToFront:self.scrollView];
-}
 
+}
 
 //by Lucio
 //takes the scrollView away by pushing it up
@@ -179,6 +183,7 @@
                                               NSLog(@"found album %@", ALBUM_NAME);
                                               weakSelf.verbatmFolder = group;
                                               [self fillArrayWithMedia];
+                                              [self loadMediaUntoScrollView];
                                               return;
                                           }
                                       }
@@ -191,14 +196,20 @@
 //Fills array with the media gotte from the verbatm folder
 -(void)fillArrayWithMedia
 {
+//    dispatch_queue_t otherQ = dispatch_queue_create("Load media queue", NULL);
+//    dispatch_async(otherQ, ^{
+//       
+//    });
+    
     __weak verbatmGalleryHandler* weakSelf = self;
     [self.verbatmFolder enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
         if(result){
-            [weakSelf.media addObject: result];
+            [weakSelf.media insertObject:result atIndex:0] ;
         }else{
             *stop = YES;
         }
     }];
+    
 }
 
 //delegate methods

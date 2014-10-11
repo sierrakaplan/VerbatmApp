@@ -29,3 +29,4 @@
 
 @end
 
+//to do : gallery has to be updated during multiple usage

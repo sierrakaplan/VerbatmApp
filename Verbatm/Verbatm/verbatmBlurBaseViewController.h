@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface verbatmContainerViewController : UIViewController
-
+@interface verbatmBlurBaseViewController : UIViewController
+    @property (weak, nonatomic) IBOutlet UITextField *sandwichWhere;
+    @property (weak, nonatomic) IBOutlet UITextField *sandwhichWhat;
 @end

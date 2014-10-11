@@ -9,7 +9,6 @@
 #import "testerAnimation.h"
 
 static NSTimeInterval const DETAnimatedTransitionDuration = 0.5f;
-static NSTimeInterval const DETAnimatedTransitionDurationForMarco = 0.15f;
 
 @implementation testerAnimation
 

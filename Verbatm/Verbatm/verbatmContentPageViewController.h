@@ -8,10 +8,21 @@
 
 #import <UIKit/UIKit.h>
 
-@interface verbatmContentPageViewController : UIViewController
-@property(nonatomic,strong) NSString * sandWhichWhereString;
-@property(nonatomic,strong) NSString * sandWhichWhatString;
-@property(nonatomic,strong) NSString * articleContentString;
-@property(nonatomic,strong) NSString * articleTitleString;
-@property (strong, nonatomic) NSMutableArray * pageElements; //elements added to the scrollview- excludes uitextfields
+@protocol verbatmContentPageVCDelegate <NSObject>
+@required
+-(void) leaveContentPage; //tells the delegate that they should dismiss this view controller
+-(void) reachedViewDidLoad;
 @end
+
+
+@interface verbatmContentPageViewController : UIViewController
+
+@property (weak, nonatomic) IBOutlet UITextField *articleTitleField;
+@property (weak, nonatomic) IBOutlet UITextField *sandwichWhere;
+@property (weak, nonatomic) IBOutlet UITextField *sandwhichWhat;
+@property (strong, nonatomic) NSMutableArray * pageElements; //elements added to the scrollview- excludes uitextfields
+
+@property (strong, nonatomic) id<verbatmContentPageVCDelegate> customDelegate;//delegate reacts to the navigation 
+@end
+
+

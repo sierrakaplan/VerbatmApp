@@ -15,20 +15,17 @@
 #import "verbatmGalleryHandler.h"
 #import "verbatmCustomMediaSelectTile.h"
 #import "verbatmCustomScrollView.h"
-
+#import "ILTranslucentView.h"
 
 @interface verbatmContentPageViewController () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,verbatmGalleryHandlerDelegate>
 
 #pragma mark - *Text input outlets
-@property (weak, nonatomic) IBOutlet UITextField *sandwichWhere;
-@property (weak, nonatomic) IBOutlet UITextField *sandwhichWhat;
-@property (weak, nonatomic) IBOutlet UITextField *articleTitleField;
+
 @property (weak, nonatomic) IBOutlet verbatmUITextView *firstContentPageTextBox;
 @property (strong, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
 @property (strong, nonatomic) verbatmCustomMediaSelectTile * baseMediaTileSelector;
 
 #pragma mark - *Stylistic subviews
-@property (weak, nonatomic) IBOutlet UIView *topLayerViewTop;
 @property (weak, nonatomic) IBOutlet UIView *topLayerViewBottom;
 
 #pragma mark - *Display manipulation outlets
@@ -59,8 +56,11 @@
 #pragma mark Helpful integer stores
 @property (nonatomic) NSInteger numberOfWordsLeft;//number of words left in the article
 @property (nonatomic) NSInteger index; //the index of the first view that is pushed up/down by the pinch/stretch gesture
+@property (nonatomic, strong) NSString * textBeforeNavigationLabel;
 
-#pragma pich gesture related Properties
+
+
+#pragma mark pich gesture related Properties
 @property(nonatomic) CGPoint startLocationOfLowerTouchPoint;
 @property (nonatomic) CGPoint startLocationOfUpperTouchPoint;
 @property (nonatomic) NSInteger changeInTopViewPosition;
@@ -98,7 +98,7 @@
 #define TOP_LAYER_BOTTOM_APPEAR_TIME_secs 4
 
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
-
+#define MIN_OFFSET_FOR_NAVIGATION -100 //how far the user has to pull the scrollview in order to leave the page
 @end
 
 /*
@@ -115,11 +115,15 @@
 {
     [super viewDidLoad];
     
+    [self.customDelegate reachedViewDidLoad]; //call delegate
+    
+    
     //Give custom scroll view access to our page elements
     ((verbatmCustomScrollView *) self.mainScrollView).pageElements = self.pageElements;
     
     //initialise the verbatmGallery early so that it has time to load
     self.gallery = [[verbatmGalleryHandler alloc]initWithView:self.view];
+    
     //set up values for use later- standard frames, content offset and content seize
     [self createAndRecordDefaultScrollviewAndTextViewFrames];
     [self recordStandardOffsetAndStandardContentsizeForPersonalScrollviewsAndFormatAppropriately];
@@ -129,6 +133,48 @@
     
     //make sure bar for keyboard is not visible
     self.topLayerViewBottom.hidden=YES;
+    
+    [self addBlurView];
+    [self setPlaceholderColors];
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    
+}
+-(void)viewWillDisappear:(BOOL)animated
+{
+    
+}
+
+
+
+//gives the placeholders a white color
+-(void) setPlaceholderColors
+{
+    if ([self.sandwhichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        UIColor *color = [UIColor whiteColor];
+        self.sandwhichWhat.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwhichWhat.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
+    }
+    if ([self.sandwichWhere respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        UIColor *color = [UIColor whiteColor];
+        self.sandwichWhere.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwichWhere.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
+    }
+}
+
+-(void) addBlurView
+{
+    ILTranslucentView * blurView = [[ILTranslucentView alloc] init];
+    blurView.frame = self.view.frame;
+    blurView.translucentStyle = UIBarStyleBlack;
+    blurView.translucentAlpha = 1;
+    [self.view insertSubview:blurView atIndex:0];
 }
 
 //Adds the two views the user gets the first time the open the app
@@ -136,13 +182,17 @@
 {
     
     //checks to see if the new text view has been added by the storyboard and removes it
-    if(self.pageElements.count >0){
+    if(self.pageElements.count >0)
+    {
         [self.firstContentPageTextBox.superview removeFromSuperview];
         self.firstContentPageTextBox = self.pageElements[0];
     }
     
     //add first page element to array and first media tile element
-    if(self.pageElements.count == 0)[self storeView:self.firstContentPageTextBox inArrayAsBelowView:Nil];
+    if(self.pageElements.count == 0)
+    {
+        [self storeView:self.firstContentPageTextBox inArrayAsBelowView:Nil];
+    }
     
     //make sure there is only one element on the page- this ensures that we add our media button only at the beginning of the
     //app cycle
@@ -159,10 +209,7 @@
         [self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
         if(self.pageElements.count ==1) [self addView:self.baseMediaTileSelector underView:self.firstContentPageTextBox];
     }
-    
-    
-    
-    
+
     //record the mainview of the first text view
     self.firstContentPageTextBox.mainScrollView = self.mainScrollView;
 }
@@ -178,7 +225,6 @@
     //create appropriate frame for personal scrollview and save as default
     self.defaultPersonalScrollViewFrame = CGRectMake(self.personalScrollViewOfFirstContentPageTextBox.frame.origin.x, self.personalScrollViewOfFirstContentPageTextBox.frame.origin.y, self.view.frame.size.width, self.defaultTextBoxFrame.size.height+ELEMENT_OFFSET_DISTANCE);
     self.personalScrollViewOfFirstContentPageTextBox.frame = self.defaultPersonalScrollViewFrame;
-    
 }
 
 //Iain
@@ -322,11 +368,6 @@
 //If the user has entered text at any point- reset it when they return
 -(void) setTextEdits
 {
-    if(self.articleTitleString) self.articleTitleField.text = self.articleTitleString;
-    if(self.articleContentString) self.firstContentPageTextBox.text = self.articleContentString;
-    self.sandwhichWhat.text= self.sandWhichWhatString;
-    self.sandwichWhere.text= self.sandWhichWhereString;
-    // if(self.pageElements.count >1)[self.firstContentPageTextBox removeFromSuperview];
     for(UIView * view in self.pageElements)
     {
         [self.mainScrollView addSubview:view.superview];
@@ -357,46 +398,53 @@
 
 
 #pragma mark - *Navigation-
+- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
+                     withVelocity:(CGPoint)velocity
+              targetContentOffset:(inout CGPoint *)targetContentOffset
+{
+    [self shouldTransitionWithScrollViewOffset:self.mainScrollView.contentOffset];
+}
+
+-(void) shouldTransitionWithScrollViewOffset: (CGPoint) contentOffset
+{
+    if(contentOffset.y <= MIN_OFFSET_FOR_NAVIGATION)
+    {
+        [self.customDelegate leaveContentPage];
+        
+    }
+}
+
+//Iain
+-(void) editTransitionLabelWithScrollViewOffset: (CGPoint) contentOffset
+{
+    if(contentOffset.y <= MIN_OFFSET_FOR_NAVIGATION)
+    {
+        if(![self.articleTitleField.text isEqualToString:@"RELEASE TO LEAVE!"])
+        {
+            self.textBeforeNavigationLabel = self.articleTitleField.text;
+        }
+        
+        self.articleTitleField.text =@"RELEASE TO LEAVE!";
+        self.articleTitleField.textColor = [UIColor whiteColor];
+        self.articleTitleField.backgroundColor = [UIColor redColor];
+        
+    }else
+    {
+        if([self.articleTitleField.text isEqualToString:@"RELEASE TO LEAVE!"])self.articleTitleField.text =self.textBeforeNavigationLabel;
+        self.articleTitleField.textColor = [UIColor blackColor];
+        self.articleTitleField.backgroundColor = [UIColor whiteColor];
+    }
+}
+
+
 //By Iain
 - (IBAction)removeViewSwipeGesture:(UISwipeGestureRecognizer *)sender
 {
-    //disable scroll - so that it doesn't move. Aesthetic setting
-    self.mainScrollView.contentOffset = CGPointMake(0, 0);
-    
-    //screen has been dismissed segue to the dual screen view
-    [self performSegueWithIdentifier:UNWIND_SEGUE_IDENTIFIER sender:self];
+   
 }
 
-//By Iain
-//Prepare to go back to the dual screen page
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    if([segue.identifier isEqualToString:UNWIND_SEGUE_IDENTIFIER]){
-        verbatmMediaPageViewController * dualView = (verbatmMediaPageViewController *)segue.destinationViewController;
-        [self saveUserInputTextToViewController:dualView];
-    }
-}
 
-//Save the text inputs the user has made before they leave the page
-//By Iain
--(void) saveUserInputTextToViewController: (verbatmMediaPageViewController *) dualView
-{
-    //If the user has typed anything in we want to save it for when they return
-    dualView.sandwhichWhat = self.sandwhichWhat.text;
-    dualView.sandwichWhere = self.sandwichWhere.text;
-    
-    
-    if([self.firstContentPageTextBox.text length]!=0)
-    {
-        dualView.articleContent = self.firstContentPageTextBox.text;
-    }
-    if([self.articleTitleField.text length] !=0)
-    {
-        dualView.articleTitle= self.articleTitleField.text;
-    }
-    
-    dualView.contentPageElements = self.pageElements;
-}
+
 
 #pragma mark - Shadow for ScrollView Subviews
 
@@ -404,6 +452,8 @@
 //Iain
 -(void) addShadowToView: (UIView *) view
 {
+    return;//for now no shadow
+    
     if(![view isKindOfClass:[UITextView class]]) return; //make sure we don't add shadow to media views
     
     UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
@@ -443,7 +493,6 @@
 //Called when user types an input into the textview
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-    self.topLayerViewTop.hidden = YES;
     //If the user has written the max number of words then no more are allowed.
     if(self.numberOfWordsLeft ==0 && [text isEqualToString:@" "])return NO;
     
@@ -833,7 +882,8 @@
         {
             ((verbatmUITextView *)[scrollView.subviews firstObject]).text = @"";
         }
-        [UIView animateWithDuration:0.7 animations:^{
+        [UIView animateWithDuration:0.7 animations:^
+        {
             scrollView.contentOffset = self.standardContentOffsetForPersonalView;
         }];
     }
@@ -873,6 +923,9 @@
         }
         
     }
+    
+    [self editTransitionLabelWithScrollViewOffset:self.mainScrollView.contentOffset];
+  
 }
 
 #pragma mark- *Add image/video views to scrollview
@@ -887,9 +940,9 @@
         NSInteger number = MAX_WORD_LIMIT - [self countWordsInPage];
         if(number < self.numberOfWordsLeft && !self.isUndoInProgress)//check if there is a new word added if so then save the state to the undo manager
         {
-            NSString * currentText = self.activeTextView.text;
+            //NSString * currentText = self.activeTextView.text;
             //to be implemented
-          //  [self.activeTextView.undoManager registerUndoWithTarget:self selector:@selector(undoTextChangeInView:withString:) object:<#(id)#>];
+          //  [self.activeTextView.undoManager registerUndoWithTarget:self selector:@selector(undoTextChangeInView:withString:) object:(id)];
         }else if(self.isUndoInProgress)
         {
             self.isUndoInProgress =NO;
@@ -905,7 +958,6 @@
     NSUInteger words =0;
     for(id object in self.pageElements)
     {
-        
         if([object isKindOfClass:[UITextView class]])
         {
             NSString * string = ((UITextView *) object).text;
@@ -956,7 +1008,6 @@
 //Iain
 -(void) removeKeyboardFromScreen
 {
-    self.topLayerViewTop.hidden =NO; //show the s@ndwich
     [self.sandwhichWhat resignFirstResponder];
     [self.sandwichWhere resignFirstResponder];
     [self.articleTitleField resignFirstResponder];
@@ -990,7 +1041,6 @@
     //store the keyboard heigh for further use
     if(!self.keyboardHeight)  self.keyboardHeight = height;
     
-    
     [self updateScrollViewPosition];
 }
 
@@ -1018,7 +1068,6 @@
 
 -(void) keyboardWillDisappear: (NSNotification *)notification
 {
-    self.topLayerViewTop.hidden =NO; //show the s@ndwich
     self.topLayerViewBottom.hidden = YES;
 }
 
@@ -1506,12 +1555,6 @@
     return _pageElements;
 }
 
-//Iain
--(verbatmGalleryHandler *) gallery
-{
-    if(!_gallery) _gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
-    return _gallery;
-}
 
 //Iain
 -(NSInteger) totalChangeInViewPositions
