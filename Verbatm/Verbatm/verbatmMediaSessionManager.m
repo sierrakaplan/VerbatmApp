@@ -345,7 +345,6 @@
         //check for cropping . will fix this later
         CGAffineTransform t1 = CGAffineTransformMakeTranslation(assetNaturalSize.width/2, 0);
         finalTransform = CGAffineTransformRotate(t1, M_PI_2);
-        CGSize size = self.previewContainerView.frame.size;
         assetNaturalSize = CGSizeMake(assetNaturalSize.width/2,self.previewContainerView.frame.size.height);
     }
     

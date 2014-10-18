@@ -87,7 +87,7 @@
 #define ELEMENT_OFFSET_DISTANCE 20
 
 
-#define TEXT_BOX_FONT_SIZE 20
+#define TEXT_BOX_FONT_SIZE 15
 #define VIEW_WALL_OFFSET 20
 #define ANIMATION_DURATION 0.5
 #define PINCH_DISTANCE_FOR_ANIMATION 100
@@ -99,6 +99,11 @@
 
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
 #define MIN_OFFSET_FOR_NAVIGATION -100 //how far the user has to pull the scrollview in order to leave the page
+
+#pragma mark container view transitions
+    #define CONTENT_PAGE_MINI_SCREEN @"contentPageMiniMode"
+    #define CONTENT_PAGE_FULL_SCREEN @"contentPageFullMode"
+
 @end
 
 /*
@@ -136,6 +141,16 @@
     
     [self addBlurView];
     [self setPlaceholderColors];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(prepareForMiniScreenMode:)
+                                                 name:CONTENT_PAGE_MINI_SCREEN
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(prepareForFullScreenMode:)
+                                                 name:CONTENT_PAGE_FULL_SCREEN
+                                               object:nil];
+
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -551,29 +566,42 @@
     NSInteger screenHeight =self.view.frame.size.height;
     NSInteger keyboardHeight = self.keyboardHeight;
     NSInteger keyboardBarHeight = self.topLayerViewBottom.frame.size.height;
-    NSInteger keyboardYCoordinate = contentOffSet + (screenHeight - (keyboardHeight+ keyboardBarHeight));
+    NSInteger keyboardYCoordinate= (screenHeight - (keyboardHeight+ keyboardBarHeight)) ;
+    
+    if(self.containerViewFrame.size.height != self.view.frame.size.height)
+    {
+        
+        keyboardYCoordinate =self.containerViewFrame.size.height;//((UITextView*)self.pageElements.lastObject).frame.size.height + ELEMENT_OFFSET_DISTANCE;
+    }
+    
     NSInteger activeViewYOrigin = ((UIScrollView *)(self.activeTextView.superview)).frame.origin.y;
-    NSInteger yCoordinateOfCaretRelativeToMainView= activeViewYOrigin + self.caretPosition.origin.y + self.caretPosition.size.height;
+    NSInteger yCoordinateOfCaretRelativeToMainView= activeViewYOrigin +self.activeTextView.frame.origin.y + self.caretPosition.origin.y + self.caretPosition.size.height - contentOffSet;
     
     //If our cursor is inline with or below the keyboard, adjust the scrollview
     if(yCoordinateOfCaretRelativeToMainView > keyboardYCoordinate)
     {
-        NSInteger differenceBTWNKeyboardAndTextView = yCoordinateOfCaretRelativeToMainView-(keyboardYCoordinate-self.topLayerViewBottom.frame.size.height);
+        NSInteger differenceBTWNKeyboardAndTextView = yCoordinateOfCaretRelativeToMainView-(keyboardYCoordinate/*-self.topLayerViewBottom.frame.size.height*/);
         
         CGPoint newScrollViewOffset = CGPointMake(self.mainScrollView.contentOffset.x, (contentOffSet + differenceBTWNKeyboardAndTextView +CENTERING_OFFSET_FOR_TEXT_VIEW));
         
         [self.mainScrollView setContentOffset:newScrollViewOffset animated:YES];
         
-    }else if (yCoordinateOfCaretRelativeToMainView-CURSOR_BASE_GAP <= contentOffSet) //Checking if the cursor is past the top
+    }else if (yCoordinateOfCaretRelativeToMainView-CURSOR_BASE_GAP <= /*contentOffSet*/0) //Checking if the cursor is past the top
     {
-        NSInteger differenceBTWNScreenTopAndTextView = contentOffSet-(yCoordinateOfCaretRelativeToMainView - self.caretPosition.size.height);
+        NSInteger differenceBTWNScreenTopAndTextView = yCoordinateOfCaretRelativeToMainView;
         
-        CGPoint newScrollViewOffset = CGPointMake(self.mainScrollView.contentOffset.x, (contentOffSet - differenceBTWNScreenTopAndTextView - CENTERING_OFFSET_FOR_TEXT_VIEW*2));
+        CGPoint newScrollViewOffset = CGPointMake(self.mainScrollView.contentOffset.x, (contentOffSet + differenceBTWNScreenTopAndTextView - CENTERING_OFFSET_FOR_TEXT_VIEW*3));
         
         [self.mainScrollView setContentOffset:newScrollViewOffset animated:YES];
     }
     [self shiftElementsBelowView:self.activeTextView];
 }
+
+-(void)setScrollingOfScrollView:(BOOL)shouldScroll
+{
+    self.mainScrollView.scrollEnabled = shouldScroll;
+}
+
 
 //Iain
 //Make sure whatever text field is selected is recorded as the active text view
@@ -1605,5 +1633,18 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark Full scree and mini screeen notifications
+
+-(void)prepareForMiniScreenMode:(NSNotification*)aNotification
+{
+    [self updateScrollViewPosition];
+    [self setScrollingOfScrollView: NO];
+}
+
+-(void)prepareForFullScreenMode:(NSNotification*)aNotification
+{
+    [self setScrollingOfScrollView:YES];
 }
 @end

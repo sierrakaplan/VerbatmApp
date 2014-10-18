@@ -21,8 +21,11 @@
 @property (weak, nonatomic) IBOutlet UITextField *sandwichWhere;
 @property (weak, nonatomic) IBOutlet UITextField *sandwhichWhat;
 @property (strong, nonatomic) NSMutableArray * pageElements; //elements added to the scrollview- excludes uitextfields
+@property (nonatomic) CGRect containerViewFrame;
+@property (strong, nonatomic) id<verbatmContentPageVCDelegate> customDelegate;//delegate reacts to the navigation
 
-@property (strong, nonatomic) id<verbatmContentPageVCDelegate> customDelegate;//delegate reacts to the navigation 
+-(void)createNewTextViewBelowView: (UIView *) topView;
+
 @end
 
 
