@@ -11,7 +11,6 @@
 @protocol verbatmContentPageVCDelegate <NSObject>
 @required
 -(void) leaveContentPage; //tells the delegate that they should dismiss this view controller
--(void) reachedViewDidLoad;
 @end
 
 

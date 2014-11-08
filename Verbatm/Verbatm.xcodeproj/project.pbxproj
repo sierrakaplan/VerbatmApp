@@ -50,6 +50,7 @@
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
 		C7CCFFAB19CFA74D00E90080 /* verbatmBlurBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFFAA19CFA74D00E90080 /* verbatmBlurBaseViewController.m */; };
+		C7F18D851A05C0EE0002255B /* verbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* verbatmTextField.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +128,8 @@
 		C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerTransitionDelegate.m; sourceTree = "<group>"; };
 		C7CCFFA919CFA74D00E90080 /* verbatmBlurBaseViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmBlurBaseViewController.h; sourceTree = "<group>"; };
 		C7CCFFAA19CFA74D00E90080 /* verbatmBlurBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmBlurBaseViewController.m; sourceTree = "<group>"; };
+		C7F18D831A05C0EE0002255B /* verbatmTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmTextField.h; sourceTree = "<group>"; };
+		C7F18D841A05C0EE0002255B /* verbatmTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmTextField.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +197,8 @@
 				C734FD9B19B14B8D00B2C370 /* verbatmContentPageViewController.m */,
 				9D29995919BA9042005EBC8A /* verbatmMediaPageViewController.h */,
 				9D29995A19BA9042005EBC8A /* verbatmMediaPageViewController.m */,
+				C7F18D831A05C0EE0002255B /* verbatmTextField.h */,
+				C7F18D841A05C0EE0002255B /* verbatmTextField.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -445,6 +450,7 @@
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m in Sources */,
+				C7F18D851A05C0EE0002255B /* verbatmTextField.m in Sources */,
 				C7CCFFAB19CFA74D00E90080 /* verbatmBlurBaseViewController.m in Sources */,
 				C7BB0B9E19E2189000C6A750 /* verbatmPinchPageViewController.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* verbatmCustomScrollView.m in Sources */,
@@ -572,7 +578,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-3";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -590,7 +596,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "LaunchImage-3";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

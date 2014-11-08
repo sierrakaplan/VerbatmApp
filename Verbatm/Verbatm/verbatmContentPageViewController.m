@@ -34,8 +34,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *wordsLeftLabel;
 @property (strong, nonatomic) verbatmGalleryHandler * gallery;
 
-@property (weak, nonatomic) IBOutlet UIButton *undoButton;
-
 #pragma mark - *Helper properties
 
 #pragma mark TextView related properties
@@ -73,6 +71,7 @@
 
 #pragma mark undo related properties
 @property (nonatomic) BOOL isUndoInProgress;
+@property (nonatomic, strong) NSUndoManager * tileSwipeViewUndoManager;
 
 #pragma mark - Navigation constants
 #define UNWIND_SEGUE_IDENTIFIER @"returnFromContentPage"
@@ -119,9 +118,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    [self.customDelegate reachedViewDidLoad]; //call delegate
-    
     
     //Give custom scroll view access to our page elements
     ((verbatmCustomScrollView *) self.mainScrollView).pageElements = self.pageElements;
@@ -185,6 +181,7 @@
 
 -(void) addBlurView
 {
+    return;//to be removed
     ILTranslucentView * blurView = [[ILTranslucentView alloc] init];
     blurView.frame = self.view.frame;
     blurView.translucentStyle = UIBarStyleBlack;
@@ -420,12 +417,12 @@
     [self shouldTransitionWithScrollViewOffset:self.mainScrollView.contentOffset];
 }
 
+
 -(void) shouldTransitionWithScrollViewOffset: (CGPoint) contentOffset
 {
     if(contentOffset.y <= MIN_OFFSET_FOR_NAVIGATION)
     {
         [self.customDelegate leaveContentPage];
-        
     }
 }
 
@@ -529,23 +526,6 @@
 
 
 
-#pragma mark Undo feature implementation
-//Iain
-- (IBAction)undoButton:(UIButton *)sender
-{
-    [self.activeTextView.undoManager undo];
-    self.isUndoInProgress =YES;
-}
-//Iain
--(void) undoTextChangeInView:(UITextView *) textView withString:(NSString *) pastText
-{
-    textView.text = pastText;
-}
-
--(void)UndoElementDelete
-{
-    
-}
 
 
 #pragma mark scroll positioning of the screen
@@ -561,6 +541,8 @@
 //Moves the scrollview to keep the cursor in view - To be fixed
 -(void) updateScrollViewPosition
 {
+    if(self.sandwhichWhat.editing || self.sandwichWhere.editing) return; //if it is the s@andwiches that are set then
+    
     //get y-position of caret relative to main view
     NSInteger contentOffSet = self.mainScrollView.contentOffset.y ;
     NSInteger screenHeight =self.view.frame.size.height;
@@ -570,7 +552,6 @@
     
     if(self.containerViewFrame.size.height != self.view.frame.size.height)
     {
-        
         keyboardYCoordinate =self.containerViewFrame.size.height;//((UITextView*)self.pageElements.lastObject).frame.size.height + ELEMENT_OFFSET_DISTANCE;
     }
     
@@ -597,10 +578,7 @@
     [self shiftElementsBelowView:self.activeTextView];
 }
 
--(void)setScrollingOfScrollView:(BOOL)shouldScroll
-{
-    self.mainScrollView.scrollEnabled = shouldScroll;
-}
+
 
 
 //Iain
@@ -639,8 +617,6 @@
     {
         newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultPersonalScrollViewFrame.size.width,self.defaultPersonalScrollViewFrame.size.height);
     }
-    
-    
     
     //set scrollview delegate
     newPersonalScrollView.delegate = self;
@@ -747,9 +723,9 @@
             
             firstYCoordinate+= frame.size.height;
         }
-        
     }
 }
+
 
 //Iain
 //Shifts elements above a certain view up by the given difference
@@ -762,12 +738,10 @@
         
         CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, curr_view.superview.frame.origin.y + difference, self.defaultPersonalScrollViewFrame.size.width,view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
         
-        
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
             curr_view.superview.frame = frame;
         }];
     }
-    
 }
 
 
@@ -791,7 +765,6 @@
             if(!self.pageElements.count) [self.pageElements addObject:view];
         }
     }
-    
 }
 
 //Iain
@@ -882,20 +855,28 @@
     {
         if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x)//If the view is scrolled left/right and not centered
         {
+            //remove swiped view from mainscrollview
             UIView * view = [scrollView.subviews firstObject]; //it is the only subview in this scrollview
             NSInteger index = [self.pageElements indexOfObject:view];
             [scrollView removeFromSuperview];
             [self.pageElements removeObject:view];
+            
+            
+            //reposition views on screen
             if(index) [self shiftElementsBelowView:self.pageElements[index-1]]; //if it's a middle element shift everything below
             [self shiftElementsBelowView:self.articleTitleField]; //if it was the top element then shift everything below
+            
+            
+            [self deletedTile:view withIndex:[NSNumber numberWithInt:index]]; //register deleted tile - register in undo stack
+            
             //show undo button on the bottom of the top layer
             //make sure the view is on the bottom before it is shown
             self.topLayerViewBottom.frame = CGRectMake(0, self.view.frame.size.height - self.topLayerViewBottom.frame.size.height, self.topLayerViewBottom.frame.size.width, self.topLayerViewBottom.frame.size.height);
             
+            
             [UIView animateWithDuration:0.5 animations:^
              {
                  self.topLayerViewBottom.hidden= NO;
-                 self.undoButton.hidden=NO;
                  [self editWordCountForTextView:self.activeTextView];
                  
              } completion:^(BOOL finished)
@@ -1075,9 +1056,7 @@
 
 -(void)keyboardWillShow: (NSNotification *)notification
 {
-    //make sure undo button is not visible
-    self.undoButton.hidden=YES;
-    
+    //make sure undo button is not visible    
     [self keyboardUpHandleTopLayerTop];//tester
     
     CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
@@ -1590,11 +1569,22 @@
     return self.changeInBottomViewPostion - self.changeInTopViewPosition;
 }
 
+
 -(verbatmCustomMediaSelectTile *) baseMediaTileSelector
 {
     if(!_baseMediaTileSelector) _baseMediaTileSelector = [[verbatmCustomMediaSelectTile alloc]init];
     return _baseMediaTileSelector;
 }
+
+
+//get the undomanager for the main window- use this for the tiles
+-(NSUndoManager *) tileSwipeViewUndoManager
+{
+    if(!_tileSwipeViewUndoManager) _tileSwipeViewUndoManager = [self.view.window undoManager];
+    return _tileSwipeViewUndoManager;
+}
+
+
 
 #pragma mark- MIC
 
@@ -1623,7 +1613,8 @@
 
 #pragma mark Orientation
 
-- (NSUInteger)supportedInterfaceOrientations{
+- (NSUInteger)supportedInterfaceOrientations
+{
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
 }
@@ -1640,11 +1631,48 @@
 -(void)prepareForMiniScreenMode:(NSNotification*)aNotification
 {
     [self updateScrollViewPosition];
-    [self setScrollingOfScrollView: NO];
 }
 
 -(void)prepareForFullScreenMode:(NSNotification*)aNotification
 {
-    [self setScrollingOfScrollView:YES];
+    
 }
+
+
+#pragma mark -Undo implementation-
+
+-(void)deletedTile: (UIView *) tile withIndex: (NSNumber *) index
+{
+    [tile removeFromSuperview];
+    [self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
+    
+}
+
+
+//User pressed undo button- so call call undo stack
+- (IBAction)undoTileSwipe:(UIButton *)sender
+{
+    [self.tileSwipeViewUndoManager undo];
+}
+
+#pragma mark Undo tile swipe
+
+-(void) undoTileDelete: (NSArray *) tileAndInfo
+{
+    UIView * view = tileAndInfo[0];
+    NSNumber * index = tileAndInfo[1];
+    
+    if([view isKindOfClass:[UITextView class]])
+    {
+        view.backgroundColor = [UIColor whiteColor];
+    }else
+    {
+        view.backgroundColor = [UIColor clearColor];
+    }
+    
+    if(index.intValue) [self addView:view underView:self.pageElements[index.intValue -1]];
+    if(!index.intValue) [self addView:view underView:self.pageElements[index.intValue]];
+
+}
+
 @end

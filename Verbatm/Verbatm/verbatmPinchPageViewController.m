@@ -30,6 +30,4 @@
     self.blurView.translucentStyle = UIBarStyleBlack;
     self.blurView.translucentAlpha = 1;
 }
-
-
 @end

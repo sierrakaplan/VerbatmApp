@@ -15,11 +15,9 @@
 #import "verbatmContentPageViewController.h"
 #import "verbatmBlurBaseViewController.h"
 
-@interface verbatmMediaPageViewController () <UITextFieldDelegate>
+@interface verbatmMediaPageViewController () <UITextFieldDelegate, verbatmContentPageVCDelegate>
 #pragma mark - Outlets -
-@property (weak, nonatomic) IBOutlet UIView *cover_containerView; //the cover view for the container view that prevents any events from being sensed.
-
-
+    @property (weak, nonatomic) IBOutlet UIView *pullBar;
     //the outlets
     @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
     @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
@@ -92,10 +90,6 @@
 #pragma mark Session timer time
     #define TIME_FOR_SESSION_TO_RESUME 0.5
 
-#pragma mark container view transitions
-    #define CONTENT_PAGE_MINI_SCREEN @"contentPageMiniMode"
-    #define CONTENT_PAGE_FULL_SCREEN @"contentPageFullMode"
-
 @end
 
 @implementation verbatmMediaPageViewController
@@ -116,8 +110,8 @@
     [self prepareCameraView];
     //[self createAndInstantiateCameraButtons];
     self.containerViewInitialFrame = self.containerView.frame;
-    self.containerView.alpha=0;
-    self.cover_containerView.alpha=0;
+    //self.containerView.alpha=0;
+    //self.cover_containerView.alpha=0;
     [self createAndInstantiateGestures];
     
     [self setPlaceholderColors];
@@ -147,6 +141,9 @@
     
     //setting contentPage view controllers
     [self setContentPage_vc];
+    
+    
+    [[UITextView appearance] setTintColor:[UIColor whiteColor]];
 }
 
 //Iain
@@ -161,6 +158,7 @@
     [self getContentPagevc];
     [self.containerView addSubview: self.vc_contentPage.view];
     self.vc_contentPage.containerViewFrame = self.containerView.frame;
+    
 }
 
 
@@ -207,6 +205,7 @@
     //set yourself as the delegate for textfields
     self.whatSandwich.delegate = self;
     self.whereSandwich.delegate = self;
+    self.vc_contentPage.customDelegate = self;
 }
 
 //gives the placeholders a white color
@@ -488,6 +487,8 @@
     if(self.counter >= MAX_VIDEO_LENGTH) [self endVideoRecordingSession];
 }
 
+
+
 //Lucio
 -(void)endVideoRecordingSession
 {
@@ -561,7 +562,8 @@
 
 #pragma mark - Keyboard
 //Iain
--(BOOL) textFieldShouldReturn:(UITextField *)textField{
+-(BOOL) textFieldShouldReturn:(UITextField *)textField
+{
 	if(textField == self.whereSandwich)
     {
 
@@ -574,11 +576,12 @@
     }
 	return YES;
 }
+
 - (IBAction)revealKeyboard:(id)sender
 {
     [UIView animateWithDuration:0.5 animations:^{
         self.containerView.alpha = 1;
-        self.cover_containerView.alpha=1;
+       // self.cover_containerView.alpha=1;
     }];
     if(![[self.vc_contentPage.pageElements lastObject] isKindOfClass: [UITextView class]]){
         [self.vc_contentPage createNewTextViewBelowView: [self.vc_contentPage.pageElements lastObject]];
@@ -586,7 +589,7 @@
     UITextView* lastTextView = [self.vc_contentPage.pageElements lastObject];
     [lastTextView becomeFirstResponder];
     lastTextView.returnKeyType = UIReturnKeyDone;   //adds a d one button to the keyboard
-    [[NSNotificationCenter defaultCenter] postNotificationName: CONTENT_PAGE_MINI_SCREEN object: self];
+    //make the scrolling lock
 }
 
 //Lucio
@@ -602,12 +605,53 @@
 //moves the transparent view up when the keyboard is about to appear
 -(void)keyboardWillBeWithdrawn:(NSNotification*)aNotification
 {
-    self.containerView.alpha = 0;
-    self.cover_containerView.alpha=0;
-    [[NSNotificationCenter defaultCenter] postNotificationName: CONTENT_PAGE_FULL_SCREEN object: self];
+    
 }
 
 
+
+
+#pragma mark - Transition 
+- (IBAction)undo:(UIButton *)sender
+{
+   
+}
+
+//delegate of the contentPage- tells you when you should close the contentpage
+-(void)leaveContentPage
+{
+    //call some transition function
+    //post notification
+}
+
+
+- (IBAction)expandContentPage:(UISwipeGestureRecognizer *)sender
+{
+    [self transitionContentPage];
+}
+
+
+//Iain
+-(void) transitionContentPage
+{
+    self.pullBar.alpha = 0;
+    if(self.containerView.frame.size.height != self.view.frame.size.height)//if mini-screen make it full screen
+    {
+       [UIView animateWithDuration:0.3 animations:^{
+              self.containerView.frame = self.view.frame;
+       }];
+     
+        //self.cover_containerView.hidden =YES;
+        //post notification
+    }else //coming from full screen back to mini screen
+    {
+     if([self.whatSandwich.text isEqualToString:@""] && [self.whereSandwich.text isEqualToString:@""])
+         [UIView animateWithDuration:1 animations:^{
+             self.containerView.frame = self.containerViewInitialFrame;
+         }];
+        //post notification
+    }
+}
 
 
 #pragma mark - Textfields
