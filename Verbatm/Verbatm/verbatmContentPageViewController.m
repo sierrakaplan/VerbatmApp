@@ -25,8 +25,6 @@
 @property (strong, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
 @property (strong, nonatomic) verbatmCustomMediaSelectTile * baseMediaTileSelector;
 
-#pragma mark - *Stylistic subviews
-@property (weak, nonatomic) IBOutlet UIView *topLayerViewBottom;
 
 #pragma mark - *Display manipulation outlets
 @property (weak, nonatomic) IBOutlet verbatmCustomScrollView *mainScrollView;
@@ -104,6 +102,7 @@
 #pragma TextView properties
 #define BACKGROUND_COLOR clearColor
 #define FONT_COLOR whiteColor
+#define PINCH_VIEW_RADIUS self.view.frame.size.height - 2*
 
 
 @end
@@ -130,16 +129,17 @@
     
     //set up values for use later- standard frames, content offset and content seize
     [self createAndRecordDefaultScrollviewAndTextViewFrames];
+    
     [self recordStandardOffsetAndStandardContentsizeForPersonalScrollviewsAndFormatAppropriately];
     
     //done after the recording functions because we rely on default sizes that are set there
     [self addOriginalViews];
     
-    //make sure bar for keyboard is not visible
-    self.topLayerViewBottom.hidden=YES;
-    
     [self addBlurView];
     [self setPlaceholderColors];
+    
+    
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(prepareForMiniScreenMode:)
@@ -151,6 +151,9 @@
                                                object:nil];
 
 }
+
+
+
 
 -(void)viewDidAppear:(BOOL)animated
 {
@@ -1159,7 +1162,7 @@
 //Iain
 -(void) createNewViewToRevealBetweenPinchViews
 {
-    CGRect frame =  CGRectMake(self.firstContentPageTextBox.frame.origin.x + (self.firstContentPageTextBox.frame.size.width/2),/*0*/self.createdMediaView.frame.origin.y , 0, 0);
+    CGRect frame =  CGRectMake(self.firstContentPageTextBox.frame.origin.x + (self.firstContentPageTextBox.frame.size.width/2), self.createdMediaView.frame.origin.y , 0, 0);
     verbatmCustomMediaSelectTile * mediaTile = [[verbatmCustomMediaSelectTile alloc]initWithFrame:frame];
     mediaTile.customDelegate = self;
     mediaTile.alpha = 0;//start it off as invisible
@@ -1690,6 +1693,21 @@
 }
 
 
+#pragma mark -convert to pinch circles-
+
+-(void)turnPageElementsToPinchCircles
+{
+    
+    for(id element in self.pageElements)
+    {
+        if (![element isKindOfClass:[verbatmCustomPinchView class]]) {
+            verbatmCustomPinchView* pinchView = [verbatmCustomPinchView alloc] initWithRadius:<#(float)#> withCenter:<#(CGPoint)#> andMedia:<#(id)#>
+        }
+    }
+    
+    
+    
+}
 
 
 

@@ -91,7 +91,7 @@
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
                                     </textField>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" id="hrf-2m-k0c">
-                                        <rect key="frame" x="0.0" y="127" width="320" height="426"/>
+                                        <rect key="frame" x="0.0" y="127" width="320" height="441"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <subviews>
                                             <textView autoresizesSubviews="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" canCancelContentTouches="NO" id="t6p-yU-Gy1" customClass="verbatmUITextView">
@@ -146,31 +146,6 @@
                                     <outletCollection property="gestureRecognizers" destination="WDj-eM-uvF" appends="YES" id="qqz-CK-rEn"/>
                                 </connections>
                             </scrollView>
-                            <view contentMode="scaleToFill" id="UpF-OZ-Wq8">
-                                <rect key="frame" x="0.0" y="530" width="320" height="38"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Words: 350" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EJK-CZ-q7b">
-                                        <rect key="frame" x="11" y="10" width="130" height="21"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                        <nil key="highlightedColor"/>
-                                    </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="G1E-eC-wKP">
-                                        <rect key="frame" x="251" y="2" width="47" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Undo">
-                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="undoTileSwipe:" destination="0lh-hP-Opv" eventType="touchUpInside" id="cMz-GX-n98"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" red="0.40000000000000002" green="0.40000000000000002" blue="0.40000000000000002" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
                         </subviews>
                         <gestureRecognizers/>
                     </view>
@@ -182,8 +157,6 @@
                         <outlet property="personalScrollViewOfFirstContentPageTextBox" destination="hrf-2m-k0c" id="kvp-5l-r4a"/>
                         <outlet property="sandwhichWhat" destination="YCU-uA-aOw" id="N06-x5-toF"/>
                         <outlet property="sandwichWhere" destination="TpH-VB-f5i" id="pWg-Zs-X2s"/>
-                        <outlet property="topLayerViewBottom" destination="UpF-OZ-Wq8" id="TBJ-Nn-LJ1"/>
-                        <outlet property="wordsLeftLabel" destination="EJK-CZ-q7b" id="awX-QO-r4K"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
