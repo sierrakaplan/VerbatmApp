@@ -17,10 +17,10 @@
 
 @interface verbatmMediaPageViewController () <UITextFieldDelegate, verbatmContentPageVCDelegate>
 #pragma mark - Outlets -
-    @property (weak, nonatomic) IBOutlet UIView *pullBar;
-    //the outlets
+    @property (weak, nonatomic) IBOutlet UIView *pullBar;//the outlets
     @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
     @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
+    @property (weak, nonatomic) IBOutlet UIButton *raiseKeyboardButton;
 
 #pragma mark - SubViews of screen-
     @property (weak, nonatomic) IBOutlet UIView *containerView;
@@ -28,7 +28,10 @@
     @property (strong, nonatomic) verbatmMediaSessionManager* sessionManager;
     @property (strong, nonatomic) UIImageView* videoProgressImageView;
 
-    @property(nonatomic) CGRect containerViewInitialFrame;
+    @property(nonatomic) CGRect containerViewNoMSAVFrame;
+    @property (nonatomic) CGRect containerViewMSAVFrame;
+    @property (nonatomic) CGRect pullBarNoMSAVFrame;
+    @property (nonatomic) CGRect pullBarMSAVFrame;
 
 #pragma mark -Camera properties-
 #pragma mark buttons
@@ -54,12 +57,22 @@
     @property (nonatomic)CGPoint currentPoint;
     @property (nonatomic) UIDeviceOrientation startOrientation;
 
+#pragma mark  pulldown 
+    @property (nonatomic) CGPoint panStartPoint;
+    @property (nonatomic) CGPoint previousTranslation;
+    @property (nonatomic) BOOL containerViewFullScreen;
+    @property (nonatomic) BOOL containerViewMSAVMode;
+
+#pragma mark keyboard properties
+    @property (nonatomic) NSInteger keyboardHeight;
+
+
 
 #pragma mark helpers for VCs
     #define ID_FOR_CONTENTPAGEVC @"contentPage"
     #define ID_FOR_BOTTOM_SPLITSCREENVC @"splitScreenBottomView"
     #define NUMBER_OF_VCS 2
-    #define VC_TRANSITION_ANIMATION_TIME 0.3
+    #define VC_TRANSITION_ANIMATION_TIME 0.5
 
 
 #pragma mark helpers for VCs
@@ -90,6 +103,8 @@
 #pragma mark Session timer time
     #define TIME_FOR_SESSION_TO_RESUME 0.5
 
+#pragma Transtition helpers
+    #define TRANSITION_MARGIN_OFFSET 50
 @end
 
 @implementation verbatmMediaPageViewController
@@ -109,9 +124,8 @@
     
     [self prepareCameraView];
     //[self createAndInstantiateCameraButtons];
-    self.containerViewInitialFrame = self.containerView.frame;
-    //self.containerView.alpha=0;
-    //self.cover_containerView.alpha=0;
+    
+    
     [self createAndInstantiateGestures];
     
     [self setPlaceholderColors];
@@ -127,6 +141,21 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(positionContainerView) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
     
     
+    //register for keyboard events
+    [self registerForKeyboardNotifications];
+    
+    //setting contentPage view controllers
+    [self setContentPage_vc];
+    [[UITextView appearance] setTintColor:[UIColor whiteColor]];
+    
+    [self saveDefaultFrames];
+    [self.vc_contentPage freeMainScrollView:NO];//makes sure the contentpage isn't scrolling
+
+}
+
+
+-(void) removeStatusBar
+{
     //remove the status bar
     if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
         // iOS 7
@@ -135,16 +164,18 @@
         // iOS 6
         [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
     }
-    
-    //register for keyboard events
-    [self registerForKeyboardNotifications];
-    
-    //setting contentPage view controllers
-    [self setContentPage_vc];
-    
-    
-    [[UITextView appearance] setTintColor:[UIColor whiteColor]];
 }
+
+
+//saves the intitial frames for the pulldown bar and the container view
+-(void)saveDefaultFrames
+{
+    self.containerViewNoMSAVFrame = self.containerView.frame;
+    self.containerViewMSAVFrame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/6);
+    self.pullBarNoMSAVFrame = self.pullBar.frame;
+    self.pullBarMSAVFrame = CGRectMake(0, self.containerViewMSAVFrame.size.height , self.view.frame.size.width, self.pullBar.frame.size.height);
+}
+
 
 //Iain
 -(void) prepareCameraView
@@ -328,7 +359,7 @@
 -(void)prepareVideoProgressView
 {
     if(!self.canRaise && !UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
-        self.videoProgressImageView.frame = CGRectMake(0,0,  self.view.frame.size.width, self.view.frame.size.height - self.containerViewInitialFrame.size.height);
+        self.videoProgressImageView.frame = CGRectMake(0,0,  self.view.frame.size.width, self.view.frame.size.height - self.containerViewNoMSAVFrame.size.height);
     }else{
         self.videoProgressImageView.frame = self.verbatmCameraView.frame;
     }
@@ -510,7 +541,7 @@
 
 -(void)positionContainerView
 {
-    if( UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
+    if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
         if(!self.containerView.isHidden && !self.canRaise){
             [UIView animateWithDuration:0.5 animations:^{
                 self.containerView.frame = CGRectMake(0, self.view.frame.size.height, self.containerView.frame.size.width, 0);
@@ -531,7 +562,7 @@
         if(self.containerView.hidden && !self.canRaise){
             self.containerView.hidden = NO;
             [UIView animateWithDuration:0.5 animations:^{
-                self.containerView.frame =  self.containerViewInitialFrame;
+                self.containerView.frame =  self.containerViewNoMSAVFrame;
                 self.switchCameraButton.transform = self.switchTransform;
                 self.switchFlashButton.transform = self.flashTransform;
             }];
@@ -557,65 +588,7 @@
     return _sessionManager;
 }
 
-
-
-
-#pragma mark - Keyboard
-//Iain
--(BOOL) textFieldShouldReturn:(UITextField *)textField
-{
-	if(textField == self.whereSandwich)
-    {
-
-        [self.whereSandwich resignFirstResponder];
-        
-    }else if(textField == self.whatSandwich)
-    {
-
-        [self.whatSandwich resignFirstResponder];
-    }
-	return YES;
-}
-
-- (IBAction)revealKeyboard:(id)sender
-{
-    [UIView animateWithDuration:0.5 animations:^{
-        self.containerView.alpha = 1;
-       // self.cover_containerView.alpha=1;
-    }];
-    if(![[self.vc_contentPage.pageElements lastObject] isKindOfClass: [UITextView class]]){
-        [self.vc_contentPage createNewTextViewBelowView: [self.vc_contentPage.pageElements lastObject]];
-    }
-    UITextView* lastTextView = [self.vc_contentPage.pageElements lastObject];
-    [lastTextView becomeFirstResponder];
-    lastTextView.returnKeyType = UIReturnKeyDone;   //adds a d one button to the keyboard
-    //make the scrolling lock
-}
-
-//Lucio
-//This method registers the application for keyboard notifications. UIKeyboardWillShowNotification and UIKeyboardWillHideNotification are listened for.
--(void)registerForKeyboardNotifications
-{
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillBeWithdrawn:) name:UIKeyboardWillHideNotification object:nil];
-}
-
-
-
-//Lucio
-//moves the transparent view up when the keyboard is about to appear
--(void)keyboardWillBeWithdrawn:(NSNotification*)aNotification
-{
-    
-}
-
-
-
-
 #pragma mark - Transition 
-- (IBAction)undo:(UIButton *)sender
-{
-   
-}
 
 //delegate of the contentPage- tells you when you should close the contentpage
 -(void)leaveContentPage
@@ -625,32 +598,117 @@
 }
 
 
-- (IBAction)expandContentPage:(UISwipeGestureRecognizer *)sender
+
+//Move the pull bar down- gestures sensed
+- (IBAction)expandContentPage:(UIPanGestureRecognizer *)sender
 {
-    [self transitionContentPage];
+    
+    if (sender.state==UIGestureRecognizerStateChanged)//finger is dragging
+    {
+        [self expandContentPage_Began:sender];
+    }
+    
+    if(sender.state==UIGestureRecognizerStateEnded)
+    {
+        [self expandContentPage_Changed:sender];
+       
+    }
+}
+//undles the first instance the an gesture is recognised
+-(void)expandContentPage_Began:(UIPanGestureRecognizer *)sender
+{
+    CGPoint translation = [sender translationInView:self.pullBar.superview]; //how far the transisiton has come
+    
+    int newtranslation = translation.y-self.previousTranslation.y;
+    
+    CGRect newFrame = CGRectMake(self.containerView.frame.origin.x, self.containerView.frame.origin.y, self.containerView.frame.size.width, self.containerView.frame.size.height + newtranslation);
+    
+    CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y + newtranslation, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+    
+    //set frames of bar and
+    self.pullBar.frame = newPullBarFrame;
+    self.containerView.frame = newFrame;
+    
+    self.previousTranslation = translation;
+}
+
+//handles the user continuing to pull the pull bar
+-(void) expandContentPage_Changed :(UIPanGestureRecognizer *)sender
+{
+    if(self.containerView.frame.size.height >= self.view.frame.size.height/4 + TRANSITION_MARGIN_OFFSET) //snap the container view to full screen
+    {
+        [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
+         {
+             [self positionContainerViewTo:YES orTo:NO orTo:NO];//Positions the container view to the right frame
+             [self positionPullBarTransitionDown:YES];//psotions the pullbar to the right frame
+             
+         }];
+    }else //snap the container view back up to no MSAV
+    {
+        [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
+         {
+             [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base mode
+             [self positionPullBarTransitionDown:NO];
+
+         }];
+    }
+    self.previousTranslation = CGPointMake(0, 0);//sanitize the translation difference so that the next round is sent back up
+}
+
+//sets the postion of the pull bar depending on what's happening on the screen
+-(void) positionPullBarTransitionDown: (BOOL) transitionDown
+{
+
+    [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
+     {
+         if(transitionDown)
+         {
+             CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - (self.pullBar.frame.size.height+self.keyboardHeight), self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+             self.pullBar.frame = newPullBarFrame;
+         }else
+         {
+             if(self.containerViewMSAVMode)
+             {
+                 self.pullBar.frame = self.pullBarMSAVFrame;
+                 
+             }else
+             {
+                 self.pullBar.frame = self.pullBarNoMSAVFrame;
+             }
+             
+         }
+         
+     }];
+    
 }
 
 
-//Iain
--(void) transitionContentPage
+//Sets the container view to the appropriate frame
+-(void) positionContainerViewTo:(BOOL) fullScreen orTo:(BOOL) MSAV orTo: (BOOL) Base
 {
-    self.pullBar.alpha = 0;
-    if(self.containerView.frame.size.height != self.view.frame.size.height)//if mini-screen make it full screen
-    {
-       [UIView animateWithDuration:0.3 animations:^{
-              self.containerView.frame = self.view.frame;
-       }];
-     
-        //self.cover_containerView.hidden =YES;
-        //post notification
-    }else //coming from full screen back to mini screen
-    {
-     if([self.whatSandwich.text isEqualToString:@""] && [self.whereSandwich.text isEqualToString:@""])
-         [UIView animateWithDuration:1 animations:^{
-             self.containerView.frame = self.containerViewInitialFrame;
-         }];
-        //post notification
-    }
+    [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
+     {
+        if(fullScreen)
+        {
+            CGRect newContainerFrame = CGRectMake(self.containerView.frame.origin.x, self.containerView.frame.origin.y, self.containerView.frame.size.width, self.view.frame.size.height-self.pullBarNoMSAVFrame.size.height);//subtract the pullbar height so the container view is never behind it
+            
+            self.containerViewFullScreen = YES;
+            self.containerViewMSAVMode = NO;
+            [self.vc_contentPage freeMainScrollView:YES]; //makes sure it's scrollable
+            self.containerView.frame = newContainerFrame;
+        }else if (MSAV)
+        {
+            self.containerViewMSAVMode = YES;
+            self.containerViewFullScreen = NO;
+            self.containerView.frame= self.containerViewMSAVFrame;
+        }else if (Base)
+        {
+            self.containerViewMSAVMode = NO;
+            self.containerViewFullScreen = NO;
+            self.containerView.frame = self.containerViewNoMSAVFrame;
+            [self.vc_contentPage freeMainScrollView:NO]; //makes sure it's not scrollable and resets to offset 0
+        }
+    }];
 }
 
 
@@ -662,6 +720,147 @@
     if([string isEqualToString:@" "]) return NO;
     return YES;
 }
+
+
+#pragma mark - Keyboard-
+
+- (IBAction)revealKeyboard:(id)sender
+{
+    if(!self.containerViewMSAVMode)
+    {
+        UITextView* lastTextView = [self findLastTextViewInPageElements];
+        [lastTextView becomeFirstResponder];
+        if(!self.containerViewFullScreen && !self.containerViewMSAVMode) self.containerViewMSAVMode=YES;
+        [self positionPullBarTransitionDown:NO];
+    }else if (self.containerViewMSAVMode)
+    {
+        [self.vc_contentPage.activeTextView resignFirstResponder];//get rid of the keyboard
+        [self positionContainerViewTo:NO orTo:NO  orTo:YES];
+        [self positionPullBarTransitionDown:NO];
+    }
+}
+
+//Iain
+-(BOOL) textFieldShouldReturn:(UITextField *)textField
+{
+    if(textField == self.whereSandwich)
+    {
+        
+        [self.whereSandwich resignFirstResponder];
+        
+    }else if(textField == self.whatSandwich)
+    {
+        
+        [self.whatSandwich resignFirstResponder];
+    }
+    return YES;
+}
+
+
+//finds the last
+-(UITextView *) findLastTextViewInPageElements
+{
+    UITextView * last_textView;
+    
+    for(int i = (self.vc_contentPage.pageElements.count -1); i>=0; i--)
+    {
+        if([self.vc_contentPage.pageElements[i]  isKindOfClass: [UITextView class]])
+        {
+            last_textView = self.vc_contentPage.pageElements[i];
+            break;
+        }
+    }
+    
+    if(!last_textView || ![last_textView.text isEqualToString:@""])
+    {
+        [self.vc_contentPage createNewTextViewBelowView: self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2]];//subtract 2 becuase you want the object above the last object
+        last_textView=self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2];
+    }
+    return last_textView;
+}
+
+
+//Lucio
+//moves the transparent view up when the keyboard is about to appear
+-(void)keyboardWillBeWithdrawn:(NSNotification*)aNotification
+{
+    
+}
+
+
+//Iain
+//When keyboard appears get its height. This is only neccessary when the keyboard first appears
+- (void)keyboardWasShown:(NSNotification *)notification
+{
+    self.raiseKeyboardButton.imageView.image = [UIImage imageNamed:@"key_trans"];//set keyboard button to transparent
+}
+
+
+-(void)keyboardWillShow: (NSNotification *)notification
+{
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    
+    //Given size may not account for screen rotation
+     self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
+    
+    //if it's not in fullscreen mode it's in MSAV mode
+    if(self.containerViewFullScreen){
+        [self positionPullBarTransitionDown:YES];
+    }else
+    {
+        self.containerView.frame = self.containerViewMSAVFrame;
+        self.pullBar.frame =self.pullBarMSAVFrame;
+    }
+}
+
+
+-(void) keyboardWillDisappear: (NSNotification *)notification
+{
+    self.keyboardHeight = 0;//sanitize keyboard height marker
+    if(self.containerViewFullScreen)
+    {
+        [self positionPullBarTransitionDown:YES];//send the pull bar down now that the keyboard is leaving
+    }else if(self.containerViewMSAVMode)
+    {
+        //now that the keyboard is leaving we should leave MSAV mode
+        self.containerViewMSAVMode = NO;
+        [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base
+        [self positionPullBarTransitionDown:NO];
+    }
+    self.raiseKeyboardButton.imageView.image = [UIImage imageNamed:@"key_whole"];//set the keyboard button to opaque
+}
+
+
+
+//Lucio
+//This method registers the application for keyboard notifications. UIKeyboardWillShowNotification and UIKeyboardWillHideNotification are listened for.
+-(void)registerForKeyboardNotifications
+{
+    
+    //Tune in to get notifications of keyboard behavior
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWasShown:)
+                                                 name:UIKeyboardDidShowNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    //Listen for when the keyboard is about to disappear
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillDisappear:)
+                                                 name:UIKeyboardWillHideNotification
+                                               object:nil];
+    
+}
+
+
+
+
+
+
+
 @end
 
 

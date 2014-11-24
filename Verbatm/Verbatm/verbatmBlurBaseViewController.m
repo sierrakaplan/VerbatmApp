@@ -21,7 +21,6 @@
 
 -(void) viewDidLoad
 {
-    
     //format the blurview
     [self formatBlurView];
     //make placeholders white
@@ -33,9 +32,11 @@
 //removes the keyboard if present
 -(void)removeKeyboard
 {
-    if([self.sandwhichWhat isFirstResponder]){
+    if([self.sandwhichWhat isFirstResponder])
+    {
         [self.view endEditing:YES];
-    }else if([self.sandwichWhere isFirstResponder]){
+    }else if([self.sandwichWhere isFirstResponder])
+    {
         [self.view endEditing:YES];
     }
 }
@@ -69,9 +70,5 @@
     }
 }
 
--(void) checker
-{
-    
-}
 
 @end

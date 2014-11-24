@@ -16,11 +16,11 @@
 #import "verbatmCustomMediaSelectTile.h"
 #import "verbatmCustomScrollView.h"
 #import "ILTranslucentView.h"
+#import "verbatmCustomPinchView.h"
 
 @interface verbatmContentPageViewController () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,verbatmGalleryHandlerDelegate>
 
 #pragma mark - *Text input outlets
-
 @property (weak, nonatomic) IBOutlet verbatmUITextView *firstContentPageTextBox;
 @property (strong, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
 @property (strong, nonatomic) verbatmCustomMediaSelectTile * baseMediaTileSelector;
@@ -36,8 +36,8 @@
 
 #pragma mark - *Helper properties
 
+
 #pragma mark TextView related properties
-@property (strong, nonatomic) verbatmUITextView * activeTextView; //view that is currently being filled in
 @property (nonatomic) CGRect caretPosition;//position of caret on screen relative to scrollview origin
 
 #pragma mark Keyboard related properties
@@ -55,8 +55,6 @@
 @property (nonatomic) NSInteger numberOfWordsLeft;//number of words left in the article
 @property (nonatomic) NSInteger index; //the index of the first view that is pushed up/down by the pinch/stretch gesture
 @property (nonatomic, strong) NSString * textBeforeNavigationLabel;
-
-
 
 #pragma mark pich gesture related Properties
 @property(nonatomic) CGPoint startLocationOfLowerTouchPoint;
@@ -81,9 +79,9 @@
 
 #define MAX_WORD_LIMIT 350
 
-#define CENTERING_OFFSET_FOR_TEXT_VIEW 10
+#define CENTERING_OFFSET_FOR_TEXT_VIEW 30 //the gap between the bottom of the screen and the cursor
 #define CURSOR_BASE_GAP 10
-#define ELEMENT_OFFSET_DISTANCE 20
+#define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
 
 
 #define TEXT_BOX_FONT_SIZE 15
@@ -102,6 +100,11 @@
 #pragma mark container view transitions
     #define CONTENT_PAGE_MINI_SCREEN @"contentPageMiniMode"
     #define CONTENT_PAGE_FULL_SCREEN @"contentPageFullMode"
+
+#pragma TextView properties
+#define BACKGROUND_COLOR clearColor
+#define FONT_COLOR whiteColor
+
 
 @end
 
@@ -181,7 +184,7 @@
 
 -(void) addBlurView
 {
-    return;//to be removed
+    //return;//to be removed
     ILTranslucentView * blurView = [[ILTranslucentView alloc] init];
     blurView.frame = self.view.frame;
     blurView.translucentStyle = UIBarStyleBlack;
@@ -625,6 +628,8 @@
     verbatmUITextView * newTextView = [[verbatmUITextView alloc]init];
     newTextView.mainScrollView = self.mainScrollView;
     newTextView.delegate = self;
+    newTextView.backgroundColor = [UIColor BACKGROUND_COLOR];//sets the background as clear
+    newTextView.textColor = [UIColor FONT_COLOR];
     
     //format scrollview and text view
     [self setUpParametersForView:newTextView andScrollView: newPersonalScrollView];
@@ -887,10 +892,7 @@
         
     }else if(scrollView != self.mainScrollView) //return the view to it's old position
     {
-        if([[scrollView.subviews firstObject] isKindOfClass:[UITextView class]])
-        {
-            ((verbatmUITextView *)[scrollView.subviews firstObject]).text = @"";
-        }
+        
         [UIView animateWithDuration:0.7 animations:^
         {
             scrollView.contentOffset = self.standardContentOffsetForPersonalView;
@@ -909,7 +911,6 @@
 {
     if(scrollView != self.mainScrollView)
     {
-        // scrollView.alpha = scrollView.contentOffset.x/self.standardContentOffsetForPersonalView.x;
         if(scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x + 80 || scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x - 80)
         {
             
@@ -923,10 +924,10 @@
                  
                  if([[scrollView.subviews firstObject] isKindOfClass:[UITextView class]])
                  {
-                     ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor whiteColor];
+                     ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor BACKGROUND_COLOR];
                  }else
                  {
-                     ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor clearColor];
+                     ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor clearColor];//for all objects not text views
                  }
              }];
         }
@@ -1164,6 +1165,7 @@
     mediaTile.alpha = 0;//start it off as invisible
     mediaTile.baseSelector=NO;
     [self addMediaView: mediaTile underView: self.upperPinchView];
+    mediaTile.backgroundColor = [UIColor clearColor];
     self.createdMediaView = mediaTile;
 }
 
@@ -1274,7 +1276,6 @@
     NSInteger distanceTraveled = 0;
     UIView * wantedView;
     
-    
     //Runs through the view positions to find the first one that passes the midpoint- we assume the midpoint is
     for (UIView * view in self.pageElements)
     {
@@ -1293,7 +1294,6 @@
             }
         }
     }
-    
     return wantedView;
 }
 
@@ -1594,7 +1594,7 @@
     [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
 }
 
--(void) animateView:(UIView *) view InToPositionUnder: (UIView *) topView
+-(void) animateView:(UIView                 *) view InToPositionUnder: (UIView *) topView
 {
     
     [self.view bringSubviewToFront:view];
@@ -1674,5 +1674,27 @@
     if(!index.intValue) [self addView:view underView:self.pageElements[index.intValue]];
 
 }
+
+
+
+#pragma -mainScrollView handler-
+-(void)freeMainScrollView:(BOOL) isFree
+{
+    if(isFree)
+    {
+        self.mainScrollView.scrollEnabled = isFree;
+    }else{
+        self.mainScrollView.contentOffset = CGPointMake(0, 0);
+        self.mainScrollView.scrollEnabled = isFree;
+    }
+}
+
+
+
+
+
+
+
+
 
 @end
