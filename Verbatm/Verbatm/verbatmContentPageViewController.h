@@ -28,7 +28,7 @@
 
 -(void)createNewTextViewBelowView: (UIView *) topView;
 -(void)freeMainScrollView:(BOOL) isFree; // either locks the scroll view or frees it
-
+@property(nonatomic) NSInteger pullBarHeight;
 
 
 

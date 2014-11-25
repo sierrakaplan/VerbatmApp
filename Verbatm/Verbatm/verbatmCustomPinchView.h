@@ -54,6 +54,10 @@
 +(NSMutableArray*)openCollection:(verbatmCustomPinchView*)to_be_seperated;
 
 
+//returns all the strings of the media in the media array which are textfields.
+-(NSString*)getTextFromPinchObject;
+
+
 
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;

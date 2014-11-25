@@ -227,4 +227,12 @@
     [arr addObject: result];
     return arr;
 }
+
+
+#pragma mark - necessary info to return -
+//returns all the strings of the media in the media array which are textfields.
+-(NSString*)getTextFromPinchObject
+{
+    return self.textField.text;
+}
 @end

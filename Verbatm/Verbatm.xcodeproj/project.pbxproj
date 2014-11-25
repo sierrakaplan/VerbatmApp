@@ -193,9 +193,6 @@
 		C78B681119CA6914003D0AC5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				C77C7D361A22E9FC00694B20 /* verbatmCustomPinchView.h */,
-				C77C7D371A22E9FC00694B20 /* verbatmCustomPinchView.m */,
-				C77C7D381A22E9FC00694B20 /* verbatmCustomPinchView.xib */,
 				C7BC4387199D97F5004B91A1 /* Main.storyboard */,
 				C7BB0B9C19E2189000C6A750 /* verbatmPinchPageViewController.h */,
 				C7BB0B9D19E2189000C6A750 /* verbatmPinchPageViewController.m */,
@@ -214,6 +211,9 @@
 		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				C77C7D361A22E9FC00694B20 /* verbatmCustomPinchView.h */,
+				C77C7D371A22E9FC00694B20 /* verbatmCustomPinchView.m */,
+				C77C7D381A22E9FC00694B20 /* verbatmCustomPinchView.xib */,
 				C7174E0C19CA159D006C982D /* ILTranslucentView.h */,
 				C7174E0D19CA159D006C982D /* ILTranslucentView.m */,
 				C78B681E19CA6C01003D0AC5 /* verbatmUITextView.h */,

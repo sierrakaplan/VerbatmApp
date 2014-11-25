@@ -20,37 +20,19 @@
 
 @interface verbatmContentPageViewController () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,verbatmGalleryHandlerDelegate>
 
-#pragma mark - *Text input outlets
-@property (weak, nonatomic) IBOutlet verbatmUITextView *firstContentPageTextBox;
-@property (strong, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
-@property (strong, nonatomic) verbatmCustomMediaSelectTile * baseMediaTileSelector;
 
-
-#pragma mark - *Display manipulation outlets
-@property (weak, nonatomic) IBOutlet verbatmCustomScrollView *mainScrollView;
-@property (weak, nonatomic) IBOutlet UIScrollView *personalScrollViewOfFirstContentPageTextBox;
-@property (weak, nonatomic) IBOutlet UILabel *wordsLeftLabel;
-@property (strong, nonatomic) verbatmGalleryHandler * gallery;
 
 #pragma mark - *Helper properties
 
 
-#pragma mark TextView related properties
-@property (nonatomic) CGRect caretPosition;//position of caret on screen relative to scrollview origin
 
 #pragma mark Keyboard related properties
 @property (nonatomic) NSInteger keyboardHeight;
 
-#pragma mark Default frame properties
-@property (nonatomic) CGRect defaultTextBoxFrame;
-@property (nonatomic) CGRect defaultPersonalScrollViewFrame;
 
-#pragma mark Standard offset and content size properties
-@property (nonatomic) CGPoint standardContentOffsetForPersonalView;// gives the standard content offset for each personalScrollview.
-@property (nonatomic) CGSize standardContentSizeForPersonalView; //gives the standard content size for each personal Scrollview
+
 
 #pragma mark Helpful integer stores
-@property (nonatomic) NSInteger numberOfWordsLeft;//number of words left in the article
 @property (nonatomic) NSInteger index; //the index of the first view that is pushed up/down by the pinch/stretch gesture
 @property (nonatomic, strong) NSString * textBeforeNavigationLabel;
 
@@ -66,12 +48,9 @@
 @property (nonatomic) BOOL pinching; //tells if pinching is occurring
 
 #pragma mark undo related properties
-@property (nonatomic) BOOL isUndoInProgress;
 @property (nonatomic, strong) NSUndoManager * tileSwipeViewUndoManager;
 
-#pragma mark - Navigation constants
-#define UNWIND_SEGUE_IDENTIFIER @"returnFromContentPage"
-#define UNWIND_SEGUE_SELECTOR goToRoot:
+
 
 #pragma mark - Parameters to function within
 
@@ -79,7 +58,7 @@
 
 #define CENTERING_OFFSET_FOR_TEXT_VIEW 30 //the gap between the bottom of the screen and the cursor
 #define CURSOR_BASE_GAP 10
-#define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
+
 
 
 #define TEXT_BOX_FONT_SIZE 15
@@ -102,8 +81,51 @@
 #pragma TextView properties
 #define BACKGROUND_COLOR clearColor
 #define FONT_COLOR whiteColor
-#define PINCH_VIEW_RADIUS self.view.frame.size.height - 2*
 
+
+
+
+
+
+#pragma mark - used_properties -
+
+#define CLOSED_ELEMENT_FACTOR (2/5)
+
+#define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
+#define CLOSED_ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
+
+#pragma mark Default frame properties
+@property (nonatomic) CGRect defaultOpenElementFrame;
+@property (nonatomic) CGSize defaultPersonalScrollViewFrameSize_openElement;
+@property (nonatomic) CGSize defaultPersonalScrollViewFrameSize_closedElement;
+
+
+#pragma mark Display manipulation outlets
+@property (weak, nonatomic) IBOutlet verbatmCustomScrollView *mainScrollView;
+@property (weak, nonatomic) IBOutlet UIScrollView *personalScrollViewOfFirstContentPageTextBox;
+@property (weak, nonatomic) IBOutlet UILabel *wordsLeftLabel;
+@property (strong, nonatomic) verbatmGalleryHandler * gallery;
+
+#pragma mark Closed Element properties
+@property (nonatomic) CGPoint closedElement_Center;
+@property (strong, nonatomic) NSNumber * closedElement_Radius;
+
+
+#pragma mark TextView related properties
+@property (nonatomic) CGRect caretPosition;//position of caret on screen relative to scrollview origin
+
+#pragma mark Helpful integer stores
+@property (nonatomic) NSInteger numberOfWordsLeft;//number of words left in the article
+
+
+#pragma mark Standard offset and content size properties
+@property (nonatomic) CGPoint standardContentOffsetForPersonalView;// gives the standard content offset for each personalScrollview.
+@property (nonatomic) CGSize standardContentSizeForPersonalView; //gives the standard content size for each personal Scrollview
+
+#pragma mark - *Text input outlets
+@property (weak, nonatomic) IBOutlet verbatmUITextView *firstContentPageTextBox;
+@property (strong, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
+@property (strong, nonatomic) verbatmCustomMediaSelectTile * baseMediaTileSelector;
 
 @end
 
@@ -115,55 +137,22 @@
 
 @implementation verbatmContentPageViewController
 
-#pragma mark - Prepare view
+#pragma mark - Prepare ContentPage -
 //By Iain
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    //Give custom scroll view access to our page elements
-    ((verbatmCustomScrollView *) self.mainScrollView).pageElements = self.pageElements;
+    //set up gallery
+    self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
     
-    //initialise the verbatmGallery early so that it has time to load
-    self.gallery = [[verbatmGalleryHandler alloc]initWithView:self.view];
-    
-    //set up values for use later- standard frames, content offset and content seize
-    [self createAndRecordDefaultScrollviewAndTextViewFrames];
-    
-    [self recordStandardOffsetAndStandardContentsizeForPersonalScrollviewsAndFormatAppropriately];
-    
-    //done after the recording functions because we rely on default sizes that are set there
-    [self addOriginalViews];
-    
+    //add blurview
     [self addBlurView];
     [self setPlaceholderColors];
-    
-    
-    
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(prepareForMiniScreenMode:)
-                                                 name:CONTENT_PAGE_MINI_SCREEN
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(prepareForFullScreenMode:)
-                                                 name:CONTENT_PAGE_FULL_SCREEN
-                                               object:nil];
-
+    [self set_PersonalScrollView_ContentSizeandOffset];
+    [self set_openElement_defaultframe];
+    [self addOriginalViewsToPageElementsArray];
 }
-
-
-
-
--(void)viewDidAppear:(BOOL)animated
-{
-    
-}
--(void)viewWillDisappear:(BOOL)animated
-{
-    
-}
-
 
 
 //gives the placeholders a white color
@@ -187,8 +176,8 @@
 
 -(void) addBlurView
 {
-    //return;//to be removed
-    ILTranslucentView * blurView = [[ILTranslucentView alloc] init];
+
+    ILTranslucentView* blurView = [[ILTranslucentView alloc]init];
     blurView.frame = self.view.frame;
     blurView.translucentStyle = UIBarStyleBlack;
     blurView.translucentAlpha = 1;
@@ -196,9 +185,8 @@
 }
 
 //Adds the two views the user gets the first time the open the app
--(void) addOriginalViews
+-(void) addOriginalViewsToPageElementsArray
 {
-    
     //checks to see if the new text view has been added by the storyboard and removes it
     if(self.pageElements.count >0)
     {
@@ -216,10 +204,10 @@
     //app cycle
     if(self.pageElements.count==1 && [[self.pageElements firstObject] isKindOfClass:[UITextView class]])
     {
-        CGRect frame = CGRectMake(self.defaultTextBoxFrame.origin.x,
+        CGRect frame = CGRectMake(self.defaultOpenElementFrame.origin.x,
                                   ELEMENT_OFFSET_DISTANCE/2,
-                                  self.defaultTextBoxFrame.size.width,
-                                  self.defaultTextBoxFrame.size.width/2);
+                                  self.defaultOpenElementFrame.size.width,
+                                  self.defaultOpenElementFrame.size.width/2);
         
         self.baseMediaTileSelector.frame = frame;
         self.baseMediaTileSelector.baseSelector =YES;
@@ -227,27 +215,37 @@
         [self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
         if(self.pageElements.count ==1) [self addView:self.baseMediaTileSelector underView:self.firstContentPageTextBox];
     }
-
+    
     //record the mainview of the first text view
     self.firstContentPageTextBox.mainScrollView = self.mainScrollView;
 }
 
+
+
 //Iain
--(void) createAndRecordDefaultScrollviewAndTextViewFrames
+//records the generic frame for any element that is a square and not a pinch view circle
+//and its personal scrollview.
+-(void)set_openElement_defaultframe
 {
-    
     //create appropriate generic frame for new textview and save as default
-    self.defaultTextBoxFrame  = CGRectMake(self.view.frame.size.width+VIEW_WALL_OFFSET, ELEMENT_OFFSET_DISTANCE/2, self.articleTitleField.frame.size.width, self.firstContentPageTextBox.frame.size.height);
-    self.firstContentPageTextBox.frame = self.defaultTextBoxFrame ;
+    self.defaultOpenElementFrame  = CGRectMake(self.view.frame.size.width+VIEW_WALL_OFFSET, ELEMENT_OFFSET_DISTANCE/2, self.articleTitleField.frame.size.width, self.firstContentPageTextBox.frame.size.height);
+    self.firstContentPageTextBox.frame = self.defaultOpenElementFrame ;
     
     //create appropriate frame for personal scrollview and save as default
-    self.defaultPersonalScrollViewFrame = CGRectMake(self.personalScrollViewOfFirstContentPageTextBox.frame.origin.x, self.personalScrollViewOfFirstContentPageTextBox.frame.origin.y, self.view.frame.size.width, self.defaultTextBoxFrame.size.height+ELEMENT_OFFSET_DISTANCE);
-    self.personalScrollViewOfFirstContentPageTextBox.frame = self.defaultPersonalScrollViewFrame;
+    self.defaultPersonalScrollViewFrameSize_openElement = CGSizeMake(self.view.frame.size.width, self.defaultOpenElementFrame.size.height+ELEMENT_OFFSET_DISTANCE);
+    
+    self.personalScrollViewOfFirstContentPageTextBox.frame = CGRectMake(self.personalScrollViewOfFirstContentPageTextBox.frame.origin.x, self.personalScrollViewOfFirstContentPageTextBox.frame.origin.y, self.defaultPersonalScrollViewFrameSize_openElement.width, self.defaultPersonalScrollViewFrameSize_openElement.height);
+    
+    self.defaultPersonalScrollViewFrameSize_closedElement = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height*CLOSED_ELEMENT_FACTOR);
+    
+    self.closedElement_Center = CGPointMake((self.view.frame.size.width * 1.5), self.defaultPersonalScrollViewFrameSize_closedElement.height/2);
+    
+    self.closedElement_Radius = [NSNumber numberWithDouble:(self.defaultPersonalScrollViewFrameSize_closedElement.height - CLOSED_ELEMENT_OFFSET_DISTANCE)/2];
 }
 
 //Iain
 //save these offset and contentside values for use later
--(void) recordStandardOffsetAndStandardContentsizeForPersonalScrollviewsAndFormatAppropriately
+-(void)set_PersonalScrollView_ContentSizeandOffset
 {
     //set the content offset for the personal scrollview
     self.standardContentOffsetForPersonalView = CGPointMake(self.view.frame.size.width, 0);
@@ -262,34 +260,22 @@
     //Remove scroll indicators
     self.personalScrollViewOfFirstContentPageTextBox.showsHorizontalScrollIndicator = NO;
     self.personalScrollViewOfFirstContentPageTextBox.showsVerticalScrollIndicator = NO;
+
 }
 
 //Iain
 -(void) viewWillAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
-    
-    //configure views appropriately
-    [self configureViews];
-    
-    //set Scroll View content size
-    self.mainScrollView.contentSize = CGSizeMake(self.view.frame.size.width, 3000.0f);
-    
-    //make sure bar for keyboard is not visible
-    self.topLayerViewBottom.hidden=YES;
-    
-    self.pinching =NO;//initialise pinching property so that we can check it free
+
 }
 
 //Iain
 //Set up views
 -(void) configureViews
 {
-    //set frame for top layer bottom view
-    self.topLayerViewBottom.frame = CGRectMake(0, self.view.frame.size.height - self.topLayerViewBottom.frame.size.height, self.topLayerViewBottom.frame.size.width, self.topLayerViewBottom.frame.size.height);
     [self setUpKeyboardNotifications];
     //insert any text that was added in previous scenes
-    [self setTextEdits];//to be edited
     [self setUpKeyboardPrefferedColors];
     [self setDelegates];
     [self setTextViewFormats];
@@ -318,9 +304,6 @@
         {
             ((verbatmUITextView *)view).keyboardAppearance = UIKeyboardAppearanceDark;
         }
-        
-        //add shadow feature to the text views on the screen
-        [self addShadowToView:view];
     }
 }
 
@@ -333,30 +316,9 @@
                                              selector:@selector(keyboardWasShown:)
                                                  name:UIKeyboardDidShowNotification
                                                object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-    //Listen for when the keyboard is about to disappear
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillDisappear:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
 }
 
-//Iain
--(void)setTextViewFormats
-{
-    //Set format textviews
-    for(id view in self.pageElements)
-    {
-        if([view isKindOfClass:[UITextView class]])
-        {
-            [self formatTextViewAppropriately:view];
-        }
-    }
-}
+
 
 //Iain
 //set appropriate delegates for views on page
@@ -379,150 +341,97 @@
             ((UIScrollView *)((verbatmUITextView *)view).superview).delegate = self;
         }
     }
-    
 }
 
-//Iain - to be edited
-//If the user has entered text at any point- reset it when they return
--(void) setTextEdits
+#pragma mark - TextFields -
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    for(UIView * view in self.pageElements)
-    {
-        [self.mainScrollView addSubview:view.superview];
-    }
+    //S@nwiches shouldn't have any spaces between them
+    if([string isEqualToString:@" "]  && textField != self.articleTitleField) return NO;
+    return YES;
 }
-
-
-//Figure out which field to start the keyboard on
 //Iain
--(void) setFirstResponder
+-(BOOL) textFieldShouldReturn:(UITextField *)textField
 {
-    if([self.sandwhichWhat.text length]== 0)
+    if(textField == self.sandwhichWhat)
     {
-        [self.sandwhichWhat becomeFirstResponder];
-    }else if([self.sandwichWhere.text length]==0)
+        [self.sandwhichWhat resignFirstResponder];
+        
+    }else if(textField == self.sandwichWhere)
     {
-        [self.sandwichWhere becomeFirstResponder];
-    }else if([self.articleTitleField.text length]==0)
+        [self.sandwichWhere resignFirstResponder];
+        
+    }else if(textField == self.articleTitleField)
     {
-        [self.articleTitleField becomeFirstResponder];
-    }else
-    {
-        [self.firstContentPageTextBox becomeFirstResponder];
-        self.activeTextView = self.firstContentPageTextBox;
+        [self.articleTitleField resignFirstResponder];
     }
+    return YES;
 }
 
 
+#pragma mark - Open Elements -
 
-#pragma mark - *Navigation-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView
-                     withVelocity:(CGPoint)velocity
-              targetContentOffset:(inout CGPoint *)targetContentOffset
+#pragma mark  TextViews
+#pragma mark Format TextViews
+//Iain
+//Formats a textview to the appropriate settings
+-(void) formatTextViewAppropriately: (verbatmUITextView *) textView
 {
-    [self shouldTransitionWithScrollViewOffset:self.mainScrollView.contentOffset];
-}
-
-
--(void) shouldTransitionWithScrollViewOffset: (CGPoint) contentOffset
-{
-    if(contentOffset.y <= MIN_OFFSET_FOR_NAVIGATION)
-    {
-        [self.customDelegate leaveContentPage];
-    }
+    //Set delegate for text new view
+    [textView setDelegate:self];
+    [textView setFont:[[UIFont preferredFontForTextStyle:UIFontTextStyleBody] fontWithSize:TEXT_BOX_FONT_SIZE]];
+    //ensure keyboard is black
+    textView.keyboardAppearance = UIKeyboardAppearanceDark;
 }
 
 //Iain
--(void) editTransitionLabelWithScrollViewOffset: (CGPoint) contentOffset
+//Runs through the page elements and formats all the textviews appropriately
+-(void)setTextViewFormats
 {
-    if(contentOffset.y <= MIN_OFFSET_FOR_NAVIGATION)
+    //Set format textviews
+    for(id view in self.pageElements)
     {
-        if(![self.articleTitleField.text isEqualToString:@"RELEASE TO LEAVE!"])
+        if([view isKindOfClass:[UITextView class]])
         {
-            self.textBeforeNavigationLabel = self.articleTitleField.text;
+            [self formatTextViewAppropriately:view];
         }
-        
-        self.articleTitleField.text =@"RELEASE TO LEAVE!";
-        self.articleTitleField.textColor = [UIColor whiteColor];
-        self.articleTitleField.backgroundColor = [UIColor redColor];
-        
-    }else
-    {
-        if([self.articleTitleField.text isEqualToString:@"RELEASE TO LEAVE!"])self.articleTitleField.text =self.textBeforeNavigationLabel;
-        self.articleTitleField.textColor = [UIColor blackColor];
-        self.articleTitleField.backgroundColor = [UIColor whiteColor];
     }
 }
 
 
-//By Iain
-- (IBAction)removeViewSwipeGesture:(UISwipeGestureRecognizer *)sender
-{
-   
-}
-
-
-
-
-#pragma mark - Shadow for ScrollView Subviews
-
-//Adds a shadow to whatever view is sent
+#pragma mark Text Entered
 //Iain
--(void) addShadowToView: (UIView *) view
+//Make sure whatever text field is selected is recorded as the active text view
+- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
 {
-    return;//for now no shadow
-    
-    if(![view isKindOfClass:[UITextView class]]) return; //make sure we don't add shadow to media views
-    
-    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
-    view.layer.masksToBounds = NO;
-    view.layer.shadowColor = [UIColor blackColor].CGColor;
-    view.layer.shadowOffset = CGSizeMake(0.0f, 2.0f);
-    view.layer.shadowOpacity = 0.5f;
-    view.layer.shadowPath = shadowPath.CGPath;
+    self.activeTextView = (verbatmUITextView *)textView;
+    return true;
 }
 
-
-
-#pragma mark - *Handling Content TextViews and TextFields for Title and S@ndwich
-
-#pragma mark dismissing the keyboard
-//Iain
-//Remove keyboard when scrolling page
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
-{
-    if(scrollView == self.mainScrollView)self.mainScrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;//not sure if keeping
-}
-
-#pragma mark text views - reacting to content typed in
 //Iain
 //User has edited the text view somehow so we recount the words in the view. And adjust its size
 - (void)textViewDidChange:(UITextView *)textView
 {
     //Adjust the bounds of the text view
-    [self adjustBoundsOfTextView:(verbatmUITextView *)textView doneEditing:NO updateSCandSE:YES];
+    [self adjustBoundsOfTextView:(verbatmUITextView *)textView updateSCandSE:YES];
+    
     //Edit word count
-    [self editWordCountForTextView:(verbatmUITextView *)textView];
-    //make sure caret psotion is updated
-    [self updateCaretForView:(verbatmUITextView *)textView];
+    [self editWordCount];
+    
 }
+
 
 //Iain
 //Called when user types an input into the textview
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
-    //If the user has written the max number of words then no more are allowed.
-    if(self.numberOfWordsLeft ==0 && [text isEqualToString:@" "])return NO;
-    
-    //register the stored position of the caret
-    [self updateCaretForView: (verbatmUITextView *)textView];
-    
-    
     //If the user clicked enter add a textview
     if([text isEqualToString:@"\n"])
     {
-        [self adjustBoundsOfTextView:(verbatmUITextView *)textView doneEditing:YES updateSCandSE:YES];//resize the textview
+        [self adjustBoundsOfTextView:(verbatmUITextView *)textView updateSCandSE:YES];//resize the textview
+        
         [self createNewTextViewBelowView:textView]; //add a new text view below this one
+        
         return NO;
     }
     
@@ -530,18 +439,122 @@
     return YES;
 }
 
-
-
-
-
-#pragma mark scroll positioning of the screen
+#pragma mark Bounds for TextViews
 
 //Iain
+//Adjust the bounds of the tex views the user is typing in
+-(void) adjustBoundsOfTextView: (verbatmUITextView *) textView updateSCandSE:(BOOL) update /*should the scrollview and elements below be shifted*/
+{
+    //get position of caret relative to bounds
+    NSInteger yCoordinateOfCaretRelativeToMainView= textView.frame.origin.y+ self.caretPosition.origin.y + self.caretPosition.size.height+textView.superview.frame.origin.y;
+    NSInteger yCordinateOfBaseOfActiveView = textView.superview.frame.origin.y + textView.superview.frame.size.height;
+    
+    //adjust bounds of textView to best size for it with respect to the content inside
+    if((yCordinateOfBaseOfActiveView - yCoordinateOfCaretRelativeToMainView)< CURSOR_BASE_GAP)
+    {
+        
+        textView.frame = [self calculateBoundsForOpenTextView:textView];
+        textView.superview.frame = [self calculateBoundsForScrollViewForView:textView];
+        ((UIScrollView *)(textView.superview)).contentSize = self.standardContentSizeForPersonalView;
+        if(update)[self shiftElementsBelowView:textView]; //make sure this isn't being called rapidly
+    }
+    //make sure scroll is appropriately positioned
+    if(update)[self updateScrollViewPosition]; //make sure this isn't happening rapidly
+}
+
+//Iain
+//Calculate the appropriate bounds for the text view
+//We only return a frame that is larger than the default frame size
+-(CGRect) calculateBoundsForOpenTextView: (UIView *) view
+{
+    CGSize  tightbounds = [view sizeThatFits:view.bounds.size];
+    if(tightbounds.height >= self.defaultOpenElementFrame.size.height)//only adjust the size if the frame size is larger than the extended page size
+    {
+        return CGRectMake(self.defaultOpenElementFrame.origin.x, ELEMENT_OFFSET_DISTANCE/2, view.bounds.size.width, tightbounds.height);
+    }
+    return view.frame; //if we reach here the bounds of the view are just fine
+}
+
+
+#pragma mark Caret within TextView
+//Iain
 //Update the stored position of the carret within the textview it's in
--(void) updateCaretForView: (verbatmUITextView *) view
+-(void) updateCaretPositionInView: (verbatmUITextView *) view
 {
     self.caretPosition = [view caretRectForPosition:view.selectedTextRange.end];
 }
+
+#pragma mark Word Count - to be implemented
+//Iain
+//Counts the words in the content page
+-(void) editWordCount
+{
+        self.numberOfWordsLeft = MAX_WORD_LIMIT - [self countWordsInContentPage];
+        self.wordsLeftLabel.text = [NSString stringWithFormat:@"Words: %ld ", (long)self.numberOfWordsLeft];
+}
+
+
+//To be implemented
+//Counts the number of words that are in the page
+-(NSInteger) countWordsInContentPage
+{
+    NSUInteger words = 0;
+    for(id object in self.pageElements)
+    {
+        if([object isKindOfClass:[UITextView class]])
+        {
+            NSString * string = ((UITextView *) object).text;
+            NSArray * string_array = [string componentsSeparatedByString: @" "];
+            words += [string_array count];
+            
+            //Make sure to discount blanks in the array
+            for (NSString * string in string_array)
+            {
+                if([string isEqualToString:@""] && words != 0) words--;
+            }
+            //make sure that the last word is complete by having a space after it
+            if(![[string_array lastObject] isEqualToString:@""]) words --;
+        }else if([object isKindOfClass:[verbatmCustomPinchView class]]&& ((verbatmCustomPinchView *)object).there_is_text)
+        {
+            NSString * string = [((verbatmCustomPinchView *) object) getTextFromPinchObject];
+            NSArray * string_array = [string componentsSeparatedByString: @" "];
+            words += [string_array count];
+            
+            //Make sure to discount blanks in the array
+            for (NSString * string in string_array)
+            {
+                if([string isEqualToString:@""] && words != 0) words--;
+            }
+            //make sure that the last word is complete by having a space after it
+            if(![[string_array lastObject] isEqualToString:@""]) words --;
+        }
+    }
+    return words;
+}
+
+
+#pragma mark - ScrollViews -
+#pragma mark Personal ScrollViews
+#pragma mark Bounds
+//Iain
+-(CGRect) calculateBoundsForScrollViewForView: (UIView *) view
+{
+    CGRect frameToSet = CGRectMake(view.superview.frame.origin.x, view.superview.frame.origin.y, view.superview.bounds.size.width, view.frame.size.height + ELEMENT_OFFSET_DISTANCE);
+    return frameToSet;
+}
+
+
+
+#pragma mark Main ScrollView
+#pragma mark ContentSize
+//adjusts the contentsize of the main view to the last element
+-(void) adjustMainScrollViewContentSize
+{
+    UIScrollView * Sv = (UIScrollView *)[[self.pageElements lastObject] superview];
+    self.mainScrollView.contentSize = CGSizeMake(0, Sv.frame.origin.y + Sv.frame.size.height);
+}
+
+#pragma mark scroll positioning of the screen
 
 //Iain
 //Moves the scrollview to keep the cursor in view - To be fixed
@@ -549,18 +562,16 @@
 {
     if(self.sandwhichWhat.editing || self.sandwichWhere.editing) return; //if it is the s@andwiches that are set then
     
+    [self updateCaretPositionInView:self.activeTextView];//ensure that the caret is up to date
+    
     //get y-position of caret relative to main view
     NSInteger contentOffSet = self.mainScrollView.contentOffset.y ;
     NSInteger screenHeight =self.view.frame.size.height;
     NSInteger keyboardHeight = self.keyboardHeight;
-    NSInteger keyboardBarHeight = self.topLayerViewBottom.frame.size.height;
+    NSInteger keyboardBarHeight = self.pullBarHeight;
     NSInteger keyboardYCoordinate= (screenHeight - (keyboardHeight+ keyboardBarHeight)) ;
     
-    if(self.containerViewFrame.size.height != self.view.frame.size.height)
-    {
-        keyboardYCoordinate =self.containerViewFrame.size.height;//((UITextView*)self.pageElements.lastObject).frame.size.height + ELEMENT_OFFSET_DISTANCE;
-    }
-    
+    if(self.containerViewFrame.size.height != self.view.frame.size.height) keyboardYCoordinate =self.containerViewFrame.size.height;//((UITextView*)self.pageElements.lastObject).frame.size.height + ELEMENT_OFFSET_DISTANCE;
     NSInteger activeViewYOrigin = ((UIScrollView *)(self.activeTextView.superview)).frame.origin.y;
     NSInteger yCoordinateOfCaretRelativeToMainView= activeViewYOrigin +self.activeTextView.frame.origin.y + self.caretPosition.origin.y + self.caretPosition.size.height - contentOffSet;
     
@@ -573,7 +584,7 @@
         
         [self.mainScrollView setContentOffset:newScrollViewOffset animated:YES];
         
-    }else if (yCoordinateOfCaretRelativeToMainView-CURSOR_BASE_GAP <= /*contentOffSet*/0) //Checking if the cursor is past the top
+    }else if (yCoordinateOfCaretRelativeToMainView-CURSOR_BASE_GAP <= 0) //Checking if the cursor is past the top
     {
         NSInteger differenceBTWNScreenTopAndTextView = yCoordinateOfCaretRelativeToMainView;
         
@@ -586,28 +597,19 @@
 
 
 
+#pragma mark - Creating New Views -
 
-//Iain
-//Make sure whatever text field is selected is recorded as the active text view
-- (BOOL)textViewShouldBeginEditing:(UITextView *)textView
+#pragma mark New TextView
+
+-(verbatmUITextView *) newTextView
 {
-    self.activeTextView = (verbatmUITextView *)textView;
-    return true;
+    verbatmUITextView * newTextView =[[verbatmUITextView alloc]init];
+    newTextView.mainScrollView = self.mainScrollView;
+    newTextView.delegate = self;
+    newTextView.backgroundColor = [UIColor BACKGROUND_COLOR];//sets the background as clear
+    newTextView.textColor = [UIColor FONT_COLOR];
+    return newTextView;
 }
-
-
-//Iain
-//Gives you the frame for the scrollview to be put under this textview
--(CGRect) personalScrollViewFrameFromTextView:(UITextView *) oldTextView
-{
-    if(oldTextView){
-        CGRect frame =CGRectMake(((UIScrollView *)(oldTextView.superview)).frame.origin.x, (((UIScrollView *)(oldTextView.superview)).frame.origin.y + ((UIScrollView *)(oldTextView.superview)).frame.size.height), ((UIScrollView *)(oldTextView.superview)).frame.size.width, self.defaultTextBoxFrame.size.height + ELEMENT_OFFSET_DISTANCE);
-        return frame;
-    }
-    return CGRectMake(0, 0, 0, 0); //our equivalent of null
-}
-
-
 
 //Iain
 //When prompted it adds a new textview below the one specified
@@ -618,24 +620,20 @@
     //create frame for the personal scrollview of the new text view
     if(topView == self.articleTitleField)
     {
-        newPersonalScrollView.frame = CGRectMake(self.defaultPersonalScrollViewFrame.origin.x, self.defaultPersonalScrollViewFrame.origin.y, self.defaultPersonalScrollViewFrame.size.width,self.defaultPersonalScrollViewFrame.size.height);
+        newPersonalScrollView.frame = self.defaultOpenElementFrame;
     }else
     {
-        newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultPersonalScrollViewFrame.size.width,self.defaultPersonalScrollViewFrame.size.height);
+        newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultOpenElementFrame.size.width,self.defaultOpenElementFrame.size.height);
     }
     
     //set scrollview delegate
     newPersonalScrollView.delegate = self;
     
     //new textview
-    verbatmUITextView * newTextView = [[verbatmUITextView alloc]init];
-    newTextView.mainScrollView = self.mainScrollView;
-    newTextView.delegate = self;
-    newTextView.backgroundColor = [UIColor BACKGROUND_COLOR];//sets the background as clear
-    newTextView.textColor = [UIColor FONT_COLOR];
+    verbatmUITextView * newTextView = [self newTextView];
     
     //format scrollview and text view
-    [self setUpParametersForView:newTextView andScrollView: newPersonalScrollView];
+    [self formatView:newTextView andScrollView: newPersonalScrollView];
     
     //Add new views as subviews
     if(newPersonalScrollView)[self.mainScrollView addSubview:newPersonalScrollView];
@@ -643,30 +641,22 @@
     
     //store the new view in our array
     [self storeView:newTextView inArrayAsBelowView:topView];
-    
-    //add aesthetic touch
-    [self addShadowToView:newTextView];
-    
     //format the text as needed
     [self formatTextViewAppropriately:newTextView];
     
     //initialise the keyboard to this responder
     [newTextView becomeFirstResponder];
     
-    //register as the active field
-    self.activeTextView = newTextView;
-    
     //reposition views on screen
     [self shiftElementsBelowView:newTextView];
-    
     //ensure the the screen is scrolled in order for view to appear
-    [self updateCaretForView:newTextView];
     [self updateScrollViewPosition];
 }
 
+
 //Iain
 //Format a default scrollView and view
--(void) setUpParametersForView: (UIView *) view andScrollView: (UIScrollView *) scrollView
+-(void) formatView: (UIView *) view andScrollView: (UIScrollView *) scrollView
 {
     scrollView.pagingEnabled = YES;
     scrollView.bounces = NO;
@@ -675,23 +665,25 @@
     scrollView.showsHorizontalScrollIndicator = NO;
     scrollView.showsVerticalScrollIndicator = NO;
     
-    
     if([view isKindOfClass:[UITextView class]])
     {
-        ((UITextView *)view).frame = self.defaultTextBoxFrame;
         ((UITextView *)view).bounces= NO;
         ((UITextView *)view).scrollEnabled = NO;
-    }else if (![view isMemberOfClass:[verbatmCustomMediaSelectTile class]])
+    }
+    if (![view isMemberOfClass:[verbatmCustomMediaSelectTile class]])
     {
-        //testing
-        view.frame = self.defaultTextBoxFrame;
+        view.frame = self.defaultOpenElementFrame;
     }
 }
 
-//Iain
+
+
+#pragma mark -Shift Positions of Elements-
+
 //Once view is added- we make sure the views below it are appropriately adjusted
 //in position
--(void)shiftElementsBelowView: (UIView *) view{
+-(void)shiftElementsBelowView: (UIView *) view
+{
     if(!view) return; //makes sure the view is not nil
     
     if([self.pageElements containsObject:view])//if we are shifting things from somewhere in the middle of the scroll view
@@ -704,8 +696,7 @@
         {
             UIView * curr_view = self.pageElements[i];
             
-            CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, firstYCoordinate, self.defaultPersonalScrollViewFrame.size.width,curr_view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
-            
+            CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, firstYCoordinate, self.defaultPersonalScrollViewFrameSize_openElement.width,curr_view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
             
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 curr_view.superview.frame = frame;
@@ -719,23 +710,21 @@
         
         for(NSInteger i = 0; i < [self.pageElements count]; i++)
         {
-            
             UIView * curr_view = self.pageElements[i];
             
-            CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, firstYCoordinate, self.defaultPersonalScrollViewFrame.size.width,curr_view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
-            
+            CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, firstYCoordinate, self.defaultPersonalScrollViewFrameSize_openElement.width,curr_view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
             
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 curr_view.superview.frame = frame;
             }];
-            
             firstYCoordinate+= frame.size.height;
         }
     }
+    
+    [self adjustMainScrollViewContentSize];//make sure the main scroll view can show everything
 }
 
 
-//Iain
 //Shifts elements above a certain view up by the given difference
 -(void) shiftElementsAboveView: (UIView *) view withDifference: (NSInteger) difference
 {
@@ -744,15 +733,16 @@
     {
         UIView * curr_view = self.pageElements[i];
         
-        CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, curr_view.superview.frame.origin.y + difference, self.defaultPersonalScrollViewFrame.size.width,view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
+        CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, curr_view.superview.frame.origin.y + difference, self.defaultPersonalScrollViewFrameSize_openElement.width,view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
         
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
             curr_view.superview.frame = frame;
         }];
     }
+
 }
 
-
+#pragma mark - Add Elements to PageElements Array -
 //Iain
 //Storing new view to our array of elements
 -(void) storeView: (UIView*) view inArrayAsBelowView: (UIView*) topView
@@ -766,95 +756,18 @@
         {
             NSInteger index = [self.pageElements indexOfObject:topView];
             [self.pageElements insertObject:view atIndex:(index+1)];
-            
         }else
         {
-            if(self.pageElements.count)[self.pageElements insertObject:view atIndex:(self.pageElements.count-1)];
-            if(!self.pageElements.count) [self.pageElements addObject:view];
+            if(self.pageElements.count){[self.pageElements insertObject:view atIndex:(self.pageElements.count-1)];
+            }else{[self.pageElements addObject:view];}
         }
     }
-}
-
-//Iain
-//Formats a textview to the appropriate settings
--(void) formatTextViewAppropriately: (verbatmUITextView *) textView
-{
-    //Set delegate for text new view
-    [textView setDelegate:self];
-    [textView setFont:[[UIFont preferredFontForTextStyle:UIFontTextStyleBody] fontWithSize:TEXT_BOX_FONT_SIZE]];
-    //ensure keyboard is black
-    textView.keyboardAppearance = UIKeyboardAppearanceDark;
-}
-
-//Iain
-//Adjust the bounds of the tex views the user is typing in
--(void) adjustBoundsOfTextView: (verbatmUITextView *) textView doneEditing: (BOOL) doneEditing updateSCandSE:(BOOL) update /*should the scrollview and elements below be shifted*/
-{
-    //get position of caret relative to bounds
-    NSInteger yCoordinateOfCaretRelativeToMainView= textView.frame.origin.y+ self.caretPosition.origin.y + self.caretPosition.size.height+textView.superview.frame.origin.y;
-    NSInteger yCordinateOfBaseOfActiveView = textView.superview.frame.origin.y + textView.superview.frame.size.height;
-    NSInteger numberOfLinesInTextView = textView.contentSize.height/textView.font.lineHeight;
     
-    //adjust bounds of textView to best size for it with respect to the content inside
-    if(numberOfLinesInTextView> NUMBER_OF_LINES_BEFORE_BOUNDS_ADJUST || doneEditing|| (yCordinateOfBaseOfActiveView - yCoordinateOfCaretRelativeToMainView)< CURSOR_BASE_GAP)
-    {
-        
-        textView.frame = [self calculateBoundsForView:textView];
-        textView.superview.frame = [self calculateBoundsForScrollViewForView:textView];
-        ((UIScrollView *)(textView.superview)).contentSize = [self contentSizeForScrollViewOfView:textView];
-        if(update)[self shiftElementsBelowView:textView]; //make sure this isn't being called rapidly
-    }
-    //Make sure the shadow is reset for the view
-    [self addShadowToView:textView];
-    
-    //make sure scroll is appropriately positioned
-    if(update)[self updateScrollViewPosition]; //make sure this isn't happening rapidly
+    [self adjustMainScrollViewContentSize];//make sure the main scroll view can show everything
 }
 
-//Iain
-//Calculate the appropriate boonds for the text view
--(CGRect) calculateBoundsForView: (UIView *) view
-{
-    CGSize  tightbounds = [view sizeThatFits:view.bounds.size];
-    CGRect frameToSet;
-    if(tightbounds.height >= SIZE_REQUIRED_MIN)
-    {
-        frameToSet = CGRectMake(self.defaultTextBoxFrame.origin.x, ELEMENT_OFFSET_DISTANCE/2, view.bounds.size.width, tightbounds.height);
-    }else
-    {
-        frameToSet = CGRectMake(self.defaultTextBoxFrame.origin.x, ELEMENT_OFFSET_DISTANCE/2, view.bounds.size.width, SIZE_REQUIRED_MIN);
-    }
-    
-    return frameToSet;
-}
-
-//Iain
--(CGSize) contentSizeForScrollViewOfView: (UIView *) view
-{
-    CGSize size = CGSizeMake(self.standardContentSizeForPersonalView.width, 0);
-    return size;
-}
-
-//Iain
--(CGRect) calculateBoundsForScrollViewForView: (UIView *) view
-{
-    CGRect frameToSet = CGRectMake(view.superview.frame.origin.x, view.superview.frame.origin.y, view.superview.bounds.size.width, view.frame.size.height + ELEMENT_OFFSET_DISTANCE);
-    return frameToSet;
-}
-
-
-//Iain
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    //S@nwiches shouldn't have any spaces between them
-    if([string isEqualToString:@" "]  && textField != self.articleTitleField) return NO;
-    return YES;
-}
 
 #pragma mark - *Deleting views with swipe-
-
-#pragma mark checking to see if new media view should auto-delete
-//Iain
 //called when the view is scrolled - we see if the offset has changed
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
@@ -874,231 +787,87 @@
             if(index) [self shiftElementsBelowView:self.pageElements[index-1]]; //if it's a middle element shift everything below
             [self shiftElementsBelowView:self.articleTitleField]; //if it was the top element then shift everything below
             
-            
             [self deletedTile:view withIndex:[NSNumber numberWithInt:index]]; //register deleted tile - register in undo stack
-            
-            //show undo button on the bottom of the top layer
-            //make sure the view is on the bottom before it is shown
-            self.topLayerViewBottom.frame = CGRectMake(0, self.view.frame.size.height - self.topLayerViewBottom.frame.size.height, self.topLayerViewBottom.frame.size.width, self.topLayerViewBottom.frame.size.height);
-            
-            
-            [UIView animateWithDuration:0.5 animations:^
-             {
-                 self.topLayerViewBottom.hidden= NO;
-                 [self editWordCountForTextView:self.activeTextView];
-                 
-             } completion:^(BOOL finished)
-             {
-                 [NSTimer scheduledTimerWithTimeInterval:TOP_LAYER_BOTTOM_APPEAR_TIME_secs target:self selector:@selector(timerFireMethod:) userInfo:Nil repeats:(BOOL)NO];
-             }];
         }
         
     }else if(scrollView != self.mainScrollView) //return the view to it's old position
     {
-        
         [UIView animateWithDuration:0.7 animations:^
-        {
-            scrollView.contentOffset = self.standardContentOffsetForPersonalView;
-        }];
+         {
+             scrollView.contentOffset = self.standardContentOffsetForPersonalView;
+         }];
     }
 }
 
-- (void)timerFireMethod:(NSTimer *)timer
-{
-    self.topLayerViewBottom.hidden=YES;
-}
 
-#pragma mark changing transparency of personal scroll view
+#pragma mark Color of Tiles being deleted
 //Iain
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    
+    //change the background color of the element being deleted to highlight that it's being deleted
     if(scrollView != self.mainScrollView)
     {
         if(scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x + 80 || scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x - 80)
         {
+            if(scrollView.contentOffset.x >3)((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor redColor];
             
-            if(scrollView.contentOffset.x >3)((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor colorWithRed: scrollView.contentOffset.x green:0 blue:0 alpha:1];
-            
-        }else if(scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x +80 || scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x -80 )
-        {
+        }else{
             
             [UIView animateWithDuration:0.4 animations:^
              {
-                 
                  if([[scrollView.subviews firstObject] isKindOfClass:[UITextView class]])
                  {
                      ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor BACKGROUND_COLOR];
                  }else
                  {
-                     ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor clearColor];//for all objects not text views
+                     ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor BACKGROUND_COLOR];//for all objects not text views
                  }
              }];
         }
-        
-    }
-    
-    [self editTransitionLabelWithScrollViewOffset:self.mainScrollView.contentOffset];
-  
-}
-
-#pragma mark- *Add image/video views to scrollview
-
-
-#pragma mark - *Word count for Article and Undo implementation-
-//Iain
--(void) editWordCountForTextView: (verbatmUITextView *)textView
-{
-    if([self.pageElements containsObject:textView])
-    {
-        NSInteger number = MAX_WORD_LIMIT - [self countWordsInPage];
-        if(number < self.numberOfWordsLeft && !self.isUndoInProgress)//check if there is a new word added if so then save the state to the undo manager
-        {
-            //NSString * currentText = self.activeTextView.text;
-            //to be implemented
-          //  [self.activeTextView.undoManager registerUndoWithTarget:self selector:@selector(undoTextChangeInView:withString:) object:(id)];
-        }else if(self.isUndoInProgress)
-        {
-            self.isUndoInProgress =NO;
-        }
-        self.numberOfWordsLeft = number;
-        self.wordsLeftLabel.text = [NSString stringWithFormat:@"Words: %ld ", (long)number];
     }
 }
 
-//Iain
--(NSInteger) countWordsInPage
-{
-    NSUInteger words =0;
-    for(id object in self.pageElements)
-    {
-        if([object isKindOfClass:[UITextView class]])
-        {
-            NSString * string = ((UITextView *) object).text;
-            NSArray * string_array = [string componentsSeparatedByString: @" "];
-            words += [string_array count];
-            
-            //Make sure to discount blanks in the array
-            for (NSString * string in string_array)
-            {
-                if([string isEqualToString:@""] && words != 0) words--;
-            }
-            //make sure that the last word is complete by having a space after it
-            if(![[string_array lastObject] isEqualToString:@""]) words --;
-        }
-    }
-    return words;
-}
 
-#pragma  mark - Handling the KeyBoard
-//Iain
--(BOOL) textFieldShouldReturn:(UITextField *)textField
-{
-    if(textField == self.sandwhichWhat)
-    {
-        [self.sandwhichWhat resignFirstResponder];
-        
-    }else if(textField == self.sandwichWhere)
-    {
-        [self.sandwichWhere resignFirstResponder];
-        
-    }else if(textField == self.articleTitleField)
-    {
-        [self.articleTitleField resignFirstResponder];
-    }
-    self.topLayerViewBottom.hidden = YES;
-	return YES;
-}
+#pragma  mark - Handling the KeyBoard -
+
+#pragma Remove Keyboard From Screen
 
 //Iain
 //If user touches in empty space remove the keyboard no matter what field is being edited
-- (IBAction)touchOutsideTextViews:(UITapGestureRecognizer *)sender {
-    //Might have to be an array in the future
+- (IBAction)touchOutsideTextViews:(UITapGestureRecognizer *)sender
+{
     [self removeKeyboardFromScreen];
-    
-    self.topLayerViewBottom.hidden=YES;
 }
 
 //Iain
 -(void) removeKeyboardFromScreen
 {
-    [self.sandwhichWhat resignFirstResponder];
-    [self.sandwichWhere resignFirstResponder];
-    [self.articleTitleField resignFirstResponder];
-    
-    for(UIView * tv in self.pageElements)
-    {
-        if([tv isKindOfClass:[UITextView class]])
-        {
-            //run through all of the text views and remove them as responders
-            [tv resignFirstResponder];
-            //Handle boundary drawing
-            [self adjustBoundsOfTextView:(verbatmUITextView *)tv doneEditing:YES updateSCandSE:NO];
-        }
-    }
-    [self shiftElementsBelowView:self.articleTitleField];
-    //[self updateScrollViewPosition];
-    self.topLayerViewBottom.hidden = YES;
+    if(self.sandwhichWhat.isEditing)[self.sandwhichWhat resignFirstResponder];
+    if(self.sandwichWhere.isEditing)[self.sandwichWhere resignFirstResponder];
+    if(self.articleTitleField.isEditing)[self.articleTitleField resignFirstResponder];
+    [self.activeTextView resignFirstResponder];
 }
 
+//Remove keyboard when scrolling page
+- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
+{
+    if(scrollView == self.mainScrollView)self.mainScrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+}
 
-//Iain
+#pragma mark Keyboard Notifications
 //When keyboard appears get its height. This is only neccessary when the keyboard first appears
 - (void)keyboardWasShown:(NSNotification *)notification
 {
     // Get the size of the keyboard.
     CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    
-    //Given size may not account for screen rotation
-    int height = MIN(keyboardSize.height,keyboardSize.width);
-    
-    //store the keyboard heigh for further use
-    if(!self.keyboardHeight)  self.keyboardHeight = height;
-    
+    //store the keyboard height for further use
+    self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
     [self updateScrollViewPosition];
 }
 
-
--(void)keyboardWillShow: (NSNotification *)notification
-{
-    //make sure undo button is not visible    
-    [self keyboardUpHandleTopLayerTop];//tester
-    
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    
-    //Given size may not account for screen rotation
-    int height = MIN(keyboardSize.height,keyboardSize.width);
-    CGRect newFrame = CGRectMake(0, (self.view.frame.size.height - (self.topLayerViewBottom.frame.size.height+height)) ,  self.topLayerViewBottom.frame.size.width, self.topLayerViewBottom.frame.size.height);
-    self.topLayerViewBottom.hidden = NO;
-    
-    [UIView animateWithDuration:0.0f animations:^{
-        
-        self.topLayerViewBottom.frame = newFrame;
-    }];
-}
-
-
--(void) keyboardWillDisappear: (NSNotification *)notification
-{
-    self.topLayerViewBottom.hidden = YES;
-}
-
-//To be implemented
--(void) keyboardUpHandleTopLayerTop
-{
-}
-
-#pragma mark- custom getter
-//Iain
-//To be edited
--(void) setmainScrollView: (verbatmCustomScrollView *) scrollView
-{
-    if(!_mainScrollView) _mainScrollView = scrollView;
-    _mainScrollView.contentSize = CGSizeMake(30000, 30000);
-}
-
-#pragma mark - *Handling pinch -
+#pragma mark - Pinch Gesture -
 #pragma mark  sensing pinch
-//Iain
 //pinch open to add new element
 - (IBAction)addElementPinchGesture:(UIPinchGestureRecognizer *)sender
 {
@@ -1106,8 +875,8 @@
     if (sender.state == UIGestureRecognizerStateBegan)
     {
         self.pinching = YES;
-        [self shiftElementsBelowView:self.articleTitleField];
         
+        //sometimes people will rest their hands on the screen so make sure the textviews are selectable
         for (UIView * new_view in self.mainScrollView.pageElements)
         {
             if([new_view isKindOfClass:[UITextView class]])
@@ -1115,7 +884,7 @@
                 ((UITextView *)new_view).selectable = YES;
             }
         }
-        if([sender numberOfTouches] == 2 && sender.scale >1) //make sure there are only 2 touches and that it's a stretch gesture
+        if([sender numberOfTouches] == 2 ) //make sure there are only 2 touches
         {
             [self handlePinchGestureBegan:sender];
         }
@@ -1127,6 +896,10 @@
         if(self.lowerPinchView && sender.scale >1 && self.upperPinchView && [sender numberOfTouches] == 2 )
         {
             [self handlePinchGestureChanged:sender];
+        }else if (self.lowerPinchView && self.upperPinchView && [sender numberOfTouches] == 2 && sender.scale <1)
+        {
+            //it's a pinch together
+            //to be implemented
         }
     }
     
@@ -1137,58 +910,48 @@
         {
             if(self.createdMediaView.superview.frame.size.height < PINCH_DISTANCE_FOR_ANIMATION)
             {
-                [self clearNewMediaView];
+                [self clearNewMediaView]; //new media creation has failed
             }
         }
     }
+
+    
 }
 
-#pragma deleting new mdeia view
+#pragma mark Pinch Apart/Add a media tile
 
-//Iain
-//Removes the new view being made and resets page
--(void) clearNewMediaView
-{
-    [UIView animateWithDuration:0.5f animations:^{
-        self.createdMediaView.frame = CGRectMake(0, self.createdMediaView.frame.origin.y, self.createdMediaView.frame.size.width, self.createdMediaView.frame.size.height);
-    } completion:^(BOOL finished) {
-        [self.createdMediaView.superview removeFromSuperview];
-        [self.pageElements removeObject:self.createdMediaView];
-        [self shiftElementsBelowView:self.articleTitleField];
-    }];
-}
 
-#pragma mark Create new view to reveal
+#pragma mark Create New Tile
 //Iain
 -(void) createNewViewToRevealBetweenPinchViews
 {
-    CGRect frame =  CGRectMake(self.firstContentPageTextBox.frame.origin.x + (self.firstContentPageTextBox.frame.size.width/2), self.createdMediaView.frame.origin.y , 0, 0);
+    CGRect frame =  CGRectMake(self.firstContentPageTextBox.frame.origin.x + (self.firstContentPageTextBox.frame.size.width/2),self.createdMediaView.frame.origin.y , 0, 0);
     verbatmCustomMediaSelectTile * mediaTile = [[verbatmCustomMediaSelectTile alloc]initWithFrame:frame];
     mediaTile.customDelegate = self;
     mediaTile.alpha = 0;//start it off as invisible
     mediaTile.baseSelector=NO;
-    [self addMediaView: mediaTile underView: self.upperPinchView];
+    [self addMediaTile: mediaTile underView: self.upperPinchView];
     mediaTile.backgroundColor = [UIColor clearColor];
     self.createdMediaView = mediaTile;
+
 }
 
 //Iain
--(void) addMediaView: (verbatmCustomMediaSelectTile *) mediaView underView: (UIView *) topView
+-(void) addMediaTile: (verbatmCustomMediaSelectTile *) mediaView underView: (UIView *) topView
 {
     //create frame for the personal scrollview of the new text view
     UIScrollView * newPersonalScrollView = [[UIScrollView alloc]init];
-    newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultPersonalScrollViewFrame.size.width,0);
+    newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultPersonalScrollViewFrameSize_openElement.width,0);
+    
     //set scrollview delegate
     newPersonalScrollView.delegate = self;
     //Add new views as subviews
     if(newPersonalScrollView)[self.mainScrollView addSubview:newPersonalScrollView];
     if(mediaView) [newPersonalScrollView addSubview:mediaView]; //textview is subview of scroll view
     //format scrollview and text view
-    [self setUpParametersForView:mediaView andScrollView: newPersonalScrollView];
+    [self formatView:mediaView andScrollView: newPersonalScrollView];
     //store the new view in our array
     [self storeView:mediaView inArrayAsBelowView:topView];
-    //add aesthetic touch
-    [self addShadowToView:mediaView];
 }
 
 
@@ -1196,6 +959,7 @@
 //Iain
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender
 {
+ 
     CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
     CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
     
@@ -1213,7 +977,8 @@
         self.startLocationOfUpperTouchPoint = touch1;
     }
     
-    [self createNewViewToRevealBetweenPinchViews];
+    if(sender.scale >1) [self createNewViewToRevealBetweenPinchViews]; //if it's a pinch apart then create the media tile
+
 }
 
 //Iain
@@ -1231,7 +996,6 @@
 //Takes a midpoint and a lower touch point and finds the two views that were being interacted with
 -(void) findElementsFromPinchPoint: (CGPoint) pinchPoint andLowerTouchPoint: (CGPoint) lowerTouchPoint
 {
-    
     UIView * wantedView = [self findFirstPinchViewFromPinchPoint:pinchPoint];
     
     if(wantedView)//make sure we have a view
@@ -1307,6 +1071,7 @@
     return (lowerTouchPoint.y > wantedView.superview.frame.origin.y && lowerTouchPoint.y < (wantedView.superview.frame.origin.y + wantedView.superview.frame.size.height));
 }
 
+
 #pragma mark Handle movement of pinched views
 
 //Iain
@@ -1314,69 +1079,15 @@
 {
     [self handleUpperViewWithGesture:gesture]; //handle view of the top finger and views above it
     [self handleLowerViewWithGesture:gesture]; //handle view of the bottom finger and views below it
-    if([gesture numberOfTouches] ==2)
+    
+    if([gesture numberOfTouches] ==2 && gesture.scale >1)
     {
         [self handleRevealOfNewMediaViewWithGesture:gesture]; //reveal the new mediaimageview
-    }else if ([gesture numberOfTouches]<=1 || self.changeInBottomViewPostion ==0 || self.changeInTopViewPosition ==0)
+    }else if([gesture numberOfTouches] ==2 && gesture.scale <1)
     {
-        [self clearNewMediaView];
+        //to implement
     }
 }
-
-
-
-//Iain
--(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture
-{
-    //note that the personal scroll view of the new media view will not have the element offset in the begining- this is to be added here
-    if(self.createdMediaView.superview.frame.size.height< PINCH_DISTANCE_FOR_ANIMATION)
-    {
-        
-        //construct new frames for view and personal scroll view
-        self.createdMediaView.frame = CGRectMake(self.createdMediaView.frame.origin.x- ((ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition))/2),
-                                                 self.createdMediaView.frame.origin.y,
-                                                 self.createdMediaView.frame.size.width+(ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)),
-                                                 self.createdMediaView.frame.size.height + (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)));
-        self.createdMediaView.alpha = self.createdMediaView.frame.size.width/self.defaultTextBoxFrame.size.width; //have it gain visibility as it grows
-        
-        
-        self.createdMediaView.superview.frame = CGRectMake(self.createdMediaView.superview.frame.origin.x,
-                                                           self.createdMediaView.superview.frame.origin.y+self.changeInTopViewPosition,
-                                                           self.createdMediaView.superview.frame.size.width,
-                                                           self.createdMediaView.superview.frame.size.height + (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)));
-        
-        [(verbatmCustomMediaSelectTile *)self.createdMediaView createFramesForButtonsWithFrame: self.createdMediaView.frame];
-        // [self.createdMediaView setNeedsDisplay];
-    }else if(self.createdMediaView.superview.frame.size.height>=PINCH_DISTANCE_FOR_ANIMATION)
-    {
-        
-        [UIView animateWithDuration:1.0f animations:^{
-            
-            self.createdMediaView.frame = CGRectMake(self.defaultTextBoxFrame.origin.x,
-                                                     ELEMENT_OFFSET_DISTANCE/2,
-                                                     self.defaultTextBoxFrame.size.width,
-                                                     self.defaultTextBoxFrame.size.width/2);
-            self.createdMediaView.alpha = 1; //make it fully visible
-            
-            self.createdMediaView.superview.frame = CGRectMake(self.createdMediaView.superview.frame.origin.x,
-                                                               self.createdMediaView.superview.frame.origin.y+self.changeInTopViewPosition,
-                                                               self.createdMediaView.superview.frame.size.width,
-                                                               self.defaultTextBoxFrame.size.width/2 +ELEMENT_OFFSET_DISTANCE);
-            
-            [(verbatmCustomMediaSelectTile *)self.createdMediaView createFramesForButtonsWithFrame: self.createdMediaView.frame];
-            // [self.createdMediaView setNeedsDisplay];
-            [self shiftElementsBelowView:self.articleTitleField];
-        } completion:^(BOOL finished) {
-            [self shiftElementsBelowView:self.articleTitleField];
-            //methods not quite working-I think
-            gesture.enabled = NO;
-            gesture.enabled = YES;
-            self.pinching = NO;
-            
-        }];
-    }
-}
-
 
 //Iain
 //handle the translation of the upper view
@@ -1385,33 +1096,27 @@
     CGPoint touch1;
     CGPoint touch2;
     NSInteger changeInPosition;
-    if([gesture numberOfTouches]==2)
-    {
+    if([gesture numberOfTouches]==2){
         touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
         touch2 = [gesture locationOfTouch:1 inView:self.mainScrollView];
         
-        if((touch1.y<touch2.y) && (touch1.y < self.startLocationOfUpperTouchPoint.y))
-        {
+        if((touch1.y<touch2.y) && (touch1.y < self.startLocationOfUpperTouchPoint.y)){
             changeInPosition = touch1.y - self.startLocationOfUpperTouchPoint.y;
             self.startLocationOfUpperTouchPoint = touch1;
             self.upperPinchView.superview.frame = [self newTranslationForUpperPinchViewFrameWithChange:changeInPosition];
             self.changeInTopViewPosition = changeInPosition;
             [self shiftElementsAboveView:self.upperPinchView withDifference:changeInPosition];
             
-        }else if (touch2.y < self.startLocationOfUpperTouchPoint.y && touch2.y < touch1.y)
-        {
+        }else if (touch2.y < self.startLocationOfUpperTouchPoint.y && touch2.y < touch1.y){
             changeInPosition = touch2.y - self.startLocationOfUpperTouchPoint.y;
             self.startLocationOfUpperTouchPoint = touch2;
             self.upperPinchView.superview.frame = [self newTranslationForUpperPinchViewFrameWithChange:changeInPosition];
             self.changeInTopViewPosition = changeInPosition;
             [self shiftElementsAboveView:self.upperPinchView withDifference:changeInPosition];
         }
-    }else if ([gesture numberOfTouches]==1)
-    {
+    }else if ([gesture numberOfTouches]==1){
         touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
-        
-        if(touch1.y < self.startLocationOfUpperTouchPoint.y)
-        {
+        if(touch1.y < self.startLocationOfUpperTouchPoint.y){
             changeInPosition = touch1.y - self.startLocationOfLowerTouchPoint.y;
             self.startLocationOfUpperTouchPoint = touch1;
             self.upperPinchView.superview.frame = [self newTranslationForUpperPinchViewFrameWithChange:changeInPosition];
@@ -1425,7 +1130,6 @@
 //Handle the translation of the lower view
 -(void) handleLowerViewWithGesture: (UIPinchGestureRecognizer *)gesture
 {
-    
     CGPoint touch1;
     CGPoint touch2;
     NSInteger changeInPosition;
@@ -1466,9 +1170,7 @@
             self.changeInBottomViewPostion = changeInPosition;
             [self shiftElementsBelowView:self.lowerPinchView];
         }
-        
     }
-    
 }
 
 //Iain
@@ -1487,7 +1189,90 @@
     return frame;
 }
 
+//Iain
+-(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture
+{
+    //note that the personal scroll view of the new media view will not have the element offset in the begining- this is to be added here
+    if(self.createdMediaView.superview.frame.size.height< PINCH_DISTANCE_FOR_ANIMATION)
+    {
+        
+        //construct new frames for view and personal scroll view
+        self.createdMediaView.frame = CGRectMake(self.createdMediaView.frame.origin.x- ((ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition))/2),
+                                                 self.createdMediaView.frame.origin.y,
+                                                 self.createdMediaView.frame.size.width+(ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)),
+                                                 self.createdMediaView.frame.size.height + (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)));
+        self.createdMediaView.alpha = self.createdMediaView.frame.size.width/self.defaultPersonalScrollViewFrameSize_openElement.width; //have it gain visibility as it grows
+        
+        
+        self.createdMediaView.superview.frame = CGRectMake(self.createdMediaView.superview.frame.origin.x,
+                                                           self.createdMediaView.superview.frame.origin.y+self.changeInTopViewPosition,
+                                                           self.createdMediaView.superview.frame.size.width,
+                                                           self.createdMediaView.superview.frame.size.height + (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)));
+        
+        [(verbatmCustomMediaSelectTile *)self.createdMediaView createFramesForButtonsWithFrame: self.createdMediaView.frame];
+        // [self.createdMediaView setNeedsDisplay];
+    }else if(self.createdMediaView.superview.frame.size.height>=PINCH_DISTANCE_FOR_ANIMATION)
+    {
+        
+        [UIView animateWithDuration:1.0f animations:^{
+            
+            self.createdMediaView.frame = CGRectMake(self.defaultOpenElementFrame.origin.x,
+                                                     ELEMENT_OFFSET_DISTANCE/2,
+                                                     self.defaultOpenElementFrame.size.width,
+                                                     self.defaultOpenElementFrame.size.width/2);
+            self.createdMediaView.alpha = 1; //make it fully visible
+            
+            self.createdMediaView.superview.frame = CGRectMake(self.createdMediaView.superview.frame.origin.x,
+                                                               self.createdMediaView.superview.frame.origin.y+self.changeInTopViewPosition,
+                                                               self.createdMediaView.superview.frame.size.width,
+                                                               self.defaultOpenElementFrame.size.width/2 +ELEMENT_OFFSET_DISTANCE);
+            
+            [(verbatmCustomMediaSelectTile *)self.createdMediaView createFramesForButtonsWithFrame: self.createdMediaView.frame];
+            // [self.createdMediaView setNeedsDisplay];
+            [self shiftElementsBelowView:self.articleTitleField];
+        } completion:^(BOOL finished) {
+            [self shiftElementsBelowView:self.articleTitleField];
+            //methods not quite working-I think
+            gesture.enabled = NO;
+            gesture.enabled = YES;
+            self.pinching = NO;
+            
+        }];
+    }
+}
 
+
+
+
+
+
+#pragma mark Pinch Apart Failed
+
+
+#pragma deleting new mdeia view
+
+//Iain
+//Removes the new view being made and resets page
+-(void) clearNewMediaView
+{
+    [self.createdMediaView.superview removeFromSuperview];
+    [self.pageElements removeObject:self.createdMediaView];
+    [self shiftElementsBelowView:self.articleTitleField];
+}
+
+
+#pragma mark - Clear Element From The Record -
+-(void) clearElementFromTheRecord:(UIView *) view
+{
+    
+}
+
+#pragma mark Pinch Together
+
+
+
+
+#pragma - Media Tile Options -
 #pragma mark Reacting To User MediaView Choice
 //Iain
 -(void) addTextViewButtonPressedAsBaseView: (BOOL) isBaseView
@@ -1495,10 +1280,11 @@
     if(!isBaseView)[self replaceNewMediaViewWithTextView];
     if(isBaseView) [self createNewTextViewBelowView:self.articleTitleField];
 }
+
 //Iain
 -(void) addMultiMediaButtonPressedAsBaseView:(BOOL)isBaseView
 {
-    [self.gallery presentGallery];
+     [self.gallery presentGallery];
 }
 
 //Iain
@@ -1509,9 +1295,8 @@
     if(!index) [self createNewTextViewBelowView:self.articleTitleField];
     if(index) [self createNewTextViewBelowView:self.pageElements[index-1]];
     [self shiftElementsBelowView:self.articleTitleField];//reset the scrollview
+   
 }
-
-
 
 
 #pragma mark Enter new view in page
@@ -1522,13 +1307,13 @@
 {
     //create frame for the personal scrollview of the new text view
     UIScrollView * newPersonalScrollView = [[UIScrollView alloc]init];
-    newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultPersonalScrollViewFrame.size.width,self.defaultPersonalScrollViewFrame.size.height/*for now-might need changing*/);
+    newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultPersonalScrollViewFrameSize_openElement.width,self.defaultPersonalScrollViewFrameSize_openElement.height);
     //set scrollview delegate
     newPersonalScrollView.delegate = self;
     
     //new textview
     //format scrollview and text view
-    [self setUpParametersForView:view andScrollView: newPersonalScrollView];
+    [self formatView: view andScrollView: newPersonalScrollView];
     
     //Add new views as subviews
     if(newPersonalScrollView)[self.mainScrollView addSubview:newPersonalScrollView];
@@ -1537,16 +1322,15 @@
     //store the new view in our array
     [self storeView:view inArrayAsBelowView:topView];
     
-    //add aesthetic touch
-    [self addShadowToView:view];
     //reposition views on screen
     [self shiftElementsBelowView:view];
     //ensure the the screen is scrolled in order for view to appear
     [self updateScrollViewPosition];
+
 }
 
 #pragma mark - lazy instantiation
-//Iain
+///Iain
 -(NSInteger) numberOfWordsLeft
 {
     if(!_numberOfWordsLeft) _numberOfWordsLeft = MAX_WORD_LIMIT;
@@ -1566,13 +1350,6 @@
 }
 
 
-//Iain
--(NSInteger) totalChangeInViewPositions
-{
-    return self.changeInBottomViewPostion - self.changeInTopViewPosition;
-}
-
-
 -(verbatmCustomMediaSelectTile *) baseMediaTileSelector
 {
     if(!_baseMediaTileSelector) _baseMediaTileSelector = [[verbatmCustomMediaSelectTile alloc]init];
@@ -1589,17 +1366,24 @@
 
 
 
+
 #pragma mark- MIC
+
+-(NSInteger) totalChangeInViewPositions
+{
+    return self.changeInBottomViewPostion - self.changeInTopViewPosition;
+}
+
 
 -(void)didSelectImageView:(UIImageView *)imageView ofAsset:(ALAsset *)asset
 {
     [self.view addSubview:imageView];
     [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
+
 }
 
--(void) animateView:(UIView                 *) view InToPositionUnder: (UIView *) topView
+-(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView
 {
-    
     [self.view bringSubviewToFront:view];
     
     CGRect  frame = CGRectOffset(topView.superview.frame, 0, topView.superview.frame.size.height);
@@ -1612,6 +1396,7 @@
             [self addView:view underView:self.pageElements[self.index]];
         }
     }];
+
 }
 
 #pragma mark Orientation
@@ -1629,17 +1414,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark Full scree and mini screeen notifications
 
--(void)prepareForMiniScreenMode:(NSNotification*)aNotification
-{
-    [self updateScrollViewPosition];
-}
-
--(void)prepareForFullScreenMode:(NSNotification*)aNotification
-{
-    
-}
 
 
 #pragma mark -Undo implementation-
@@ -1648,7 +1423,6 @@
 {
     [tile removeFromSuperview];
     [self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
-    
 }
 
 
@@ -1675,7 +1449,6 @@
     
     if(index.intValue) [self addView:view underView:self.pageElements[index.intValue -1]];
     if(!index.intValue) [self addView:view underView:self.pageElements[index.intValue]];
-
 }
 
 
@@ -1690,6 +1463,7 @@
         self.mainScrollView.contentOffset = CGPointMake(0, 0);
         self.mainScrollView.scrollEnabled = isFree;
     }
+
 }
 
 
@@ -1697,15 +1471,6 @@
 
 -(void)turnPageElementsToPinchCircles
 {
-    
-    for(id element in self.pageElements)
-    {
-        if (![element isKindOfClass:[verbatmCustomPinchView class]]) {
-            verbatmCustomPinchView* pinchView = [verbatmCustomPinchView alloc] initWithRadius:<#(float)#> withCenter:<#(CGPoint)#> andMedia:<#(id)#>
-        }
-    }
-    
-    
     
 }
 

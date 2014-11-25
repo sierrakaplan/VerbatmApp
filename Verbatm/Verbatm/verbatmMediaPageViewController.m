@@ -151,6 +151,7 @@
     [self saveDefaultFrames];
     [self.vc_contentPage freeMainScrollView:NO];//makes sure the contentpage isn't scrolling
 
+
 }
 
 
@@ -189,6 +190,7 @@
     [self getContentPagevc];
     [self.containerView addSubview: self.vc_contentPage.view];
     self.vc_contentPage.containerViewFrame = self.containerView.frame;
+    self.vc_contentPage.pullBarHeight = self.pullBar.frame.size.height; // Sending the pullbar height over to
     
 }
 
@@ -708,6 +710,7 @@
             self.containerView.frame = self.containerViewNoMSAVFrame;
             [self.vc_contentPage freeMainScrollView:NO]; //makes sure it's not scrollable and resets to offset 0
         }
+         self.vc_contentPage.containerViewFrame = self.containerView.frame;
     }];
 }
 
