@@ -17,6 +17,7 @@
 #import "verbatmCustomScrollView.h"
 #import "ILTranslucentView.h"
 #import "verbatmCustomPinchView.h"
+#import "verbatmCustomImageView.h"
 
 @interface verbatmContentPageViewController () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,verbatmGalleryHandlerDelegate>
 
@@ -74,9 +75,6 @@
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
 #define MIN_OFFSET_FOR_NAVIGATION -100 //how far the user has to pull the scrollview in order to leave the page
 
-#pragma mark container view transitions
-    #define CONTENT_PAGE_MINI_SCREEN @"contentPageMiniMode"
-    #define CONTENT_PAGE_FULL_SCREEN @"contentPageFullMode"
 
 #pragma TextView properties
 #define BACKGROUND_COLOR clearColor
@@ -236,9 +234,9 @@
     
     self.personalScrollViewOfFirstContentPageTextBox.frame = CGRectMake(self.personalScrollViewOfFirstContentPageTextBox.frame.origin.x, self.personalScrollViewOfFirstContentPageTextBox.frame.origin.y, self.defaultPersonalScrollViewFrameSize_openElement.width, self.defaultPersonalScrollViewFrameSize_openElement.height);
     
-    self.defaultPersonalScrollViewFrameSize_closedElement = CGSizeMake(self.view.frame.size.width, self.view.frame.size.height*CLOSED_ELEMENT_FACTOR);
+    self.defaultPersonalScrollViewFrameSize_closedElement = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2)/5));
     
-    self.closedElement_Center = CGPointMake((self.view.frame.size.width * 1.5), self.defaultPersonalScrollViewFrameSize_closedElement.height/2);
+    self.closedElement_Center = CGPointMake((self.standardContentSizeForPersonalView.width/2), self.defaultPersonalScrollViewFrameSize_closedElement.height/2);
     
     self.closedElement_Radius = [NSNumber numberWithDouble:(self.defaultPersonalScrollViewFrameSize_closedElement.height - CLOSED_ELEMENT_OFFSET_DISTANCE)/2];
 }
@@ -267,7 +265,8 @@
 -(void) viewWillAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
-
+    [self configureViews];
+    self.pinching = NO;//initialise pinching to no
 }
 
 //Iain
@@ -325,6 +324,9 @@
 -(void) setDelegates
 {
     self.firstContentPageTextBox.delegate = self;
+    
+    //self.personalScrollViewOfFirstContentPageTextBox.delegate = self;
+    
     self.gallery.customDelegate = self;
     
     //Set delgates for textviews
@@ -551,7 +553,7 @@
 -(void) adjustMainScrollViewContentSize
 {
     UIScrollView * Sv = (UIScrollView *)[[self.pageElements lastObject] superview];
-    self.mainScrollView.contentSize = CGSizeMake(0, Sv.frame.origin.y + Sv.frame.size.height);
+    self.mainScrollView.contentSize = CGSizeMake(0, 30000.0f);//CGSizeMake(0, Sv.frame.origin.y + Sv.frame.size.height);
 }
 
 #pragma mark scroll positioning of the screen
@@ -620,7 +622,7 @@
     //create frame for the personal scrollview of the new text view
     if(topView == self.articleTitleField)
     {
-        newPersonalScrollView.frame = self.defaultOpenElementFrame;
+        newPersonalScrollView.frame = ((UIScrollView *)(((UIView *)[self.pageElements firstObject]).superview)).frame;
     }else
     {
         newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultOpenElementFrame.size.width,self.defaultOpenElementFrame.size.height);
@@ -756,10 +758,12 @@
         {
             NSInteger index = [self.pageElements indexOfObject:topView];
             [self.pageElements insertObject:view atIndex:(index+1)];
+        }else if(topView == self.articleTitleField)
+        {
+            [self.pageElements insertObject:view atIndex:0];
         }else
         {
-            if(self.pageElements.count){[self.pageElements insertObject:view atIndex:(self.pageElements.count-1)];
-            }else{[self.pageElements addObject:view];}
+            [self.pageElements addObject:view];
         }
     }
     
@@ -767,7 +771,7 @@
 }
 
 
-#pragma mark - *Deleting views with swipe-
+#pragma mark - Deleting views with swipe -
 //called when the view is scrolled - we see if the offset has changed
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
@@ -838,6 +842,8 @@
 - (IBAction)touchOutsideTextViews:(UITapGestureRecognizer *)sender
 {
     [self removeKeyboardFromScreen];
+    [self convertToPincheableObjects];
+    
 }
 
 //Iain
@@ -867,11 +873,13 @@
 }
 
 #pragma mark - Pinch Gesture -
-#pragma mark  sensing pinch
+#pragma mark  Sensing Pinch
 //pinch open to add new element
 - (IBAction)addElementPinchGesture:(UIPinchGestureRecognizer *)sender
 {
     
+    //if(self.createdMediaView && (((verbatmCustomMediaSelectTile *)self.createdMediaView).optionSelected)) return; //no pinching unless the one that was pinched before has been used.
+
     if (sender.state == UIGestureRecognizerStateBegan)
     {
         self.pinching = YES;
@@ -893,13 +901,9 @@
     if(sender.state == UIGestureRecognizerStateChanged)
     {
         
-        if(self.lowerPinchView && sender.scale >1 && self.upperPinchView && [sender numberOfTouches] == 2 )
+        if(self.lowerPinchView && self.upperPinchView && [sender numberOfTouches] == 2 && self.pinching)
         {
             [self handlePinchGestureChanged:sender];
-        }else if (self.lowerPinchView && self.upperPinchView && [sender numberOfTouches] == 2 && sender.scale <1)
-        {
-            //it's a pinch together
-            //to be implemented
         }
     }
     
@@ -913,6 +917,8 @@
                 [self clearNewMediaView]; //new media creation has failed
             }
         }
+        
+        [self shiftElementsBelowView:self.articleTitleField];
     }
 
     
@@ -976,7 +982,6 @@
         self.startLocationOfLowerTouchPoint = touch2;
         self.startLocationOfUpperTouchPoint = touch1;
     }
-    
     if(sender.scale >1) [self createNewViewToRevealBetweenPinchViews]; //if it's a pinch apart then create the media tile
 
 }
@@ -1085,8 +1090,42 @@
         [self handleRevealOfNewMediaViewWithGesture:gesture]; //reveal the new mediaimageview
     }else if([gesture numberOfTouches] ==2 && gesture.scale <1)
     {
-        //to implement
+        if([self sufficienOverlapBetweenPinchedObjects])
+        {
+            if(![self tilesOkToPinch] || ![self.upperPinchView isKindOfClass:[verbatmCustomPinchView class]] || ![self.lowerPinchView isKindOfClass:[verbatmCustomPinchView class]]) return;//checks of the tiles are both collections. If so then no pinching together
+            
+            UIScrollView * keeping_scrollView = (UIScrollView *)self.upperPinchView.superview;
+            int index_to_insert = [self.pageElements indexOfObject:self.upperPinchView];
+            
+            [self.upperPinchView removeFromSuperview];
+            [self.pageElements removeObject:self.upperPinchView];
+            
+            [self.lowerPinchView.superview removeFromSuperview];
+            [self.pageElements removeObject:self.lowerPinchView];
+            
+            NSMutableArray* array_of_objects = [[NSMutableArray alloc] initWithObjects:self.upperPinchView,self.lowerPinchView, nil];
+            verbatmCustomPinchView * pinchView = [verbatmCustomPinchView pinchTogether:array_of_objects];
+            
+            //format your scrollView and add pinch view
+            [keeping_scrollView addSubview:pinchView];
+            [self.pageElements insertObject:pinchView atIndex:index_to_insert];
+            self.pinching = NO;
+            [self shiftElementsBelowView:self.articleTitleField];
+        }
     }
+}
+
+-(BOOL) tilesOkToPinch
+{
+    if([(verbatmCustomPinchView *)self.upperPinchView isCollection] && [(verbatmCustomPinchView *)self.lowerPinchView isCollection]) return false;
+    return true;
+}
+
+-(BOOL)sufficienOverlapBetweenPinchedObjects
+{
+    if(self.upperPinchView.superview.frame.origin.y+(self.upperPinchView.superview.frame.size.height/2)>= self.lowerPinchView.superview.frame.origin.y)
+        return true;
+    return false;
 }
 
 //Iain
@@ -1100,14 +1139,14 @@
         touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
         touch2 = [gesture locationOfTouch:1 inView:self.mainScrollView];
         
-        if((touch1.y<touch2.y) && (touch1.y < self.startLocationOfUpperTouchPoint.y)){
+        if((touch1.y<touch2.y)){
             changeInPosition = touch1.y - self.startLocationOfUpperTouchPoint.y;
             self.startLocationOfUpperTouchPoint = touch1;
             self.upperPinchView.superview.frame = [self newTranslationForUpperPinchViewFrameWithChange:changeInPosition];
             self.changeInTopViewPosition = changeInPosition;
             [self shiftElementsAboveView:self.upperPinchView withDifference:changeInPosition];
             
-        }else if (touch2.y < self.startLocationOfUpperTouchPoint.y && touch2.y < touch1.y){
+        }else if ( touch2.y < touch1.y){
             changeInPosition = touch2.y - self.startLocationOfUpperTouchPoint.y;
             self.startLocationOfUpperTouchPoint = touch2;
             self.upperPinchView.superview.frame = [self newTranslationForUpperPinchViewFrameWithChange:changeInPosition];
@@ -1140,14 +1179,14 @@
         touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
         touch2 = [gesture locationOfTouch:1 inView:self.mainScrollView];
         
-        if((touch1.y>touch2.y) && (touch1.y > self.startLocationOfLowerTouchPoint.y))
+        if((touch1.y>touch2.y) /*&& (touch1.y > self.startLocationOfLowerTouchPoint.y)*/)
         {
             changeInPosition = touch1.y - self.startLocationOfLowerTouchPoint.y;
             self.startLocationOfLowerTouchPoint = touch1;
             self.lowerPinchView.superview.frame = [self newTranslationFrameForLowerPinchFrameWithChange:changeInPosition];
             self.changeInBottomViewPostion = changeInPosition;
             [self shiftElementsBelowView:self.lowerPinchView];
-        }else if (touch2.y > self.startLocationOfLowerTouchPoint.y && touch2.y > touch1.y)
+        }else if (/*touch2.y > self.startLocationOfLowerTouchPoint.y &&*/ touch2.y > touch1.y)
         {
             changeInPosition = touch2.y - self.startLocationOfLowerTouchPoint.y;
             self.startLocationOfLowerTouchPoint = touch2;
@@ -1232,7 +1271,6 @@
             [self shiftElementsBelowView:self.articleTitleField];
         } completion:^(BOOL finished) {
             [self shiftElementsBelowView:self.articleTitleField];
-            //methods not quite working-I think
             gesture.enabled = NO;
             gesture.enabled = YES;
             self.pinching = NO;
@@ -1272,7 +1310,7 @@
 
 
 
-#pragma - Media Tile Options -
+#pragma mark - Media Tile Options -
 #pragma mark Reacting To User MediaView Choice
 //Iain
 -(void) addTextViewButtonPressedAsBaseView: (BOOL) isBaseView
@@ -1375,7 +1413,7 @@
 }
 
 
--(void)didSelectImageView:(UIImageView *)imageView ofAsset:(ALAsset *)asset
+-(void)didSelectImageView:(verbatmCustomImageView*)imageView
 {
     [self.view addSubview:imageView];
     [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
@@ -1469,6 +1507,24 @@
 
 
 #pragma mark -convert to pinch circles-
+
+
+-(void)convertToPincheableObjects
+{
+    for(int i = 0; i < [self.pageElements count]; i++){
+        id object = [self.pageElements objectAtIndex: i];
+        if(![object isKindOfClass:[verbatmCustomMediaSelectTile class]] && ![object isKindOfClass:[verbatmCustomPinchView class]]){
+            UIScrollView* superView = (UIScrollView*)[(UIView*)object superview];
+            superView.frame = CGRectMake(superView.frame.origin.x, superView.frame.origin.y, self.view.frame.size.width, self.defaultPersonalScrollViewFrameSize_closedElement.height);
+            verbatmCustomPinchView* pinch = [[verbatmCustomPinchView alloc] initWithRadius: [self.closedElement_Radius floatValue] withCenter: self.closedElement_Center  andMedia:object];
+            [(UIView*)object removeFromSuperview];
+            [superView addSubview:pinch];
+            [self.pageElements replaceObjectAtIndex:i withObject:pinch];
+            [self shiftElementsBelowView:pinch];
+        }
+    }
+    
+}
 
 -(void)turnPageElementsToPinchCircles
 {

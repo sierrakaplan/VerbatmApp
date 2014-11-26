@@ -14,6 +14,8 @@
     @property (nonatomic ,strong) UIButton * selectText;
 @property (nonatomic, strong) verbatmDashLineView * dashedView;
     @property (nonatomic, strong) CAShapeLayer * border;
+@property (readwrite, nonatomic) BOOL optionSelected;
+
 #define BUTTON_OFFSET 5
 @end
 
@@ -33,6 +35,7 @@
         [self.selectMedia setBackgroundImage:[UIImage imageNamed:@"text_button"] forState: UIControlStateNormal];
     }
     return self;
+    self.optionSelected = NO;
 }
 
 //Iain
@@ -51,11 +54,13 @@
 
 -(void) addText
 {
+    self.optionSelected =YES;
     [self.customDelegate addTextViewButtonPressedAsBaseView:self.baseSelector];
 }
 
 -(void) addMedia
 {
+    self.optionSelected = YES;
     [self addDashedBorder];
     [self.customDelegate addMultiMediaButtonPressedAsBaseView:self.baseSelector];
 }

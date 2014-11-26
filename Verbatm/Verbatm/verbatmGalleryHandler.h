@@ -11,10 +11,11 @@
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "verbatmCustomImageView.h"
 
 @protocol verbatmGalleryHandlerDelegate <NSObject>
 //Called when image is swiped down. delegate handles animation
--(void)didSelectImageView:(UIImageView*)imageView ofAsset:(ALAsset*)asset;
+-(void)didSelectImageView:(verbatmCustomImageView*)imageView ;
 //-(void)didPresentGallery;
 //-(void)didDismissGallery;
 

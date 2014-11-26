@@ -7,6 +7,7 @@
 //
 
 #import "verbatmGalleryHandler.h"
+#import "verbatmCustomImageView.h"
 
 
 @interface verbatmGalleryHandler ()
@@ -101,7 +102,7 @@
 {
     //try to do this in a new queue in order not to block the main queue
     if(!self.mediaIsLoaded){
-            [self loadMediaUntoScrollView];
+        [self loadMediaUntoScrollView];
     }
     [self lowerScrollView];
    // [self.customDelegate didPresentGallery];
@@ -126,9 +127,14 @@
         UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
                                              scale:[assetRepresentation scale]
                                        orientation:UIImageOrientationUp];
-        UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
+        verbatmCustomImageView* imageView = [[verbatmCustomImageView alloc] initWithImage:image];
+        imageView.asset = asset;
+        if([[asset valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
+            imageView.isVideo = true;
+        }else{
+            imageView.isVideo = false;
+        }
         imageView.frame = viewSize;
-        
         viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
@@ -218,7 +224,7 @@
     UISwipeGestureRecognizer* swiper = (UISwipeGestureRecognizer*)sender;
     __block CGPoint location = [swiper locationInView: self.view];
     __block int indexa = ceil((self.scrollView.contentOffset.x + location.x)/((self.scrollView.frame.size.width - OFFSET)/2)) - 1;
-    UIImageView* selectedImageView ;
+    verbatmCustomImageView* selectedImageView ;
     if(self.mediaImageViews.count >= 1)selectedImageView = [self.mediaImageViews objectAtIndex:indexa];
     if(selectedImageView){
         [UIView animateWithDuration:0.8 animations:^{
@@ -237,7 +243,7 @@
             self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
         }];
         [selectedImageView removeFromSuperview];
-        [self.customDelegate didSelectImageView:selectedImageView ofAsset: [self.media objectAtIndex:indexa]];
+        [self.customDelegate didSelectImageView:selectedImageView];
         [self.media removeObjectAtIndex:indexa];
     }
 }

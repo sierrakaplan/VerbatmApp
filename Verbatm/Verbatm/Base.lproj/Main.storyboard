@@ -154,7 +154,7 @@
                         <outlet property="articleTitleField" destination="xnF-wL-Coq" id="bNm-zY-Jjo"/>
                         <outlet property="firstContentPageTextBox" destination="t6p-yU-Gy1" id="km1-mT-Wal"/>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="0kA-R8-XoB"/>
-                        <outlet property="personalScrollViewOfFirstContentPageTextBox" destination="hrf-2m-k0c" id="kvp-5l-r4a"/>
+                        <outlet property="personalScrollViewOfFirstContentPageTextBox" destination="hrf-2m-k0c" id="jlP-IO-tjg"/>
                         <outlet property="sandwhichWhat" destination="YCU-uA-aOw" id="N06-x5-toF"/>
                         <outlet property="sandwichWhere" destination="TpH-VB-f5i" id="pWg-Zs-X2s"/>
                     </connections>

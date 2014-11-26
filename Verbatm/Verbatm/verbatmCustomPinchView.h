@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface verbatmCustomPinchView : UIView
 
@@ -56,6 +57,9 @@
 
 //returns all the strings of the media in the media array which are textfields.
 -(NSString*)getTextFromPinchObject;
+
+//Tells whether it is a collection consisting of more than one type of media
+-(BOOL)isCollection;
 
 
 

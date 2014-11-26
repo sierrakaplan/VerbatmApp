@@ -16,9 +16,10 @@
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
 		C734FD9C19B14B8D00B2C370 /* verbatmContentPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* verbatmContentPageViewController.m */; };
 		C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = C7360E4E19A46D4E002B2DE5 /* Article.m */; };
+		C7614F421A247BD100E6AB24 /* verbatmCustomImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7614F411A247BD100E6AB24 /* verbatmCustomImageView.m */; };
+		C7614F441A24993200E6AB24 /* verbatmCustomPinchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7614F431A24993200E6AB24 /* verbatmCustomPinchView.xib */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C77C7D391A22E9FC00694B20 /* verbatmCustomPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77C7D371A22E9FC00694B20 /* verbatmCustomPinchView.m */; };
-		C77C7D3A1A22E9FC00694B20 /* verbatmCustomPinchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C77C7D381A22E9FC00694B20 /* verbatmCustomPinchView.xib */; };
 		C78B682419CA6C01003D0AC5 /* verbatmUITextView.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B681F19CA6C01003D0AC5 /* verbatmUITextView.m */; };
 		C78B682519CA6C01003D0AC5 /* verbatmCustomScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682119CA6C01003D0AC5 /* verbatmCustomScrollView.m */; };
 		C78B682619CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m */; };
@@ -81,10 +82,12 @@
 		C734FD9B19B14B8D00B2C370 /* verbatmContentPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmContentPageViewController.m; sourceTree = "<group>"; };
 		C7360E4D19A46D4E002B2DE5 /* Article.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Article.h; sourceTree = "<group>"; };
 		C7360E4E19A46D4E002B2DE5 /* Article.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Article.m; sourceTree = "<group>"; };
+		C7614F401A247BD100E6AB24 /* verbatmCustomImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmCustomImageView.h; sourceTree = "<group>"; };
+		C7614F411A247BD100E6AB24 /* verbatmCustomImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmCustomImageView.m; sourceTree = "<group>"; };
+		C7614F431A24993200E6AB24 /* verbatmCustomPinchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = verbatmCustomPinchView.xib; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C77C7D361A22E9FC00694B20 /* verbatmCustomPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmCustomPinchView.h; sourceTree = "<group>"; };
 		C77C7D371A22E9FC00694B20 /* verbatmCustomPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmCustomPinchView.m; sourceTree = "<group>"; };
-		C77C7D381A22E9FC00694B20 /* verbatmCustomPinchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = verbatmCustomPinchView.xib; sourceTree = "<group>"; };
 		C78B681E19CA6C01003D0AC5 /* verbatmUITextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmUITextView.h; sourceTree = "<group>"; };
 		C78B681F19CA6C01003D0AC5 /* verbatmUITextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmUITextView.m; sourceTree = "<group>"; };
 		C78B682019CA6C01003D0AC5 /* verbatmCustomScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmCustomScrollView.h; sourceTree = "<group>"; };
@@ -211,9 +214,11 @@
 		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				C7614F431A24993200E6AB24 /* verbatmCustomPinchView.xib */,
+				C7614F401A247BD100E6AB24 /* verbatmCustomImageView.h */,
+				C7614F411A247BD100E6AB24 /* verbatmCustomImageView.m */,
 				C77C7D361A22E9FC00694B20 /* verbatmCustomPinchView.h */,
 				C77C7D371A22E9FC00694B20 /* verbatmCustomPinchView.m */,
-				C77C7D381A22E9FC00694B20 /* verbatmCustomPinchView.xib */,
 				C7174E0C19CA159D006C982D /* ILTranslucentView.h */,
 				C7174E0D19CA159D006C982D /* ILTranslucentView.m */,
 				C78B681E19CA6C01003D0AC5 /* verbatmUITextView.h */,
@@ -422,7 +427,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C77C7D3A1A22E9FC00694B20 /* verbatmCustomPinchView.xib in Resources */,
+				C7614F441A24993200E6AB24 /* verbatmCustomPinchView.xib in Resources */,
 				C774040F19BE6538004C50EA /* Images.xcassets in Resources */,
 				C7BC4380199D97F5004B91A1 /* InfoPlist.strings in Resources */,
 				C7BC4389199D97F5004B91A1 /* Main.storyboard in Resources */,
@@ -455,6 +460,7 @@
 				C734FD9C19B14B8D00B2C370 /* verbatmContentPageViewController.m in Sources */,
 				C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */,
 				C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */,
+				C7614F421A247BD100E6AB24 /* verbatmCustomImageView.m in Sources */,
 				C78B682419CA6C01003D0AC5 /* verbatmUITextView.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,

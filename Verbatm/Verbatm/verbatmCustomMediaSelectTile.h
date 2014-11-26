@@ -19,4 +19,5 @@
     -(void) createFramesForButtonsWithFrame: (CGRect) frame; //edit the frames of buttons in the views
     @property (strong, nonatomic) id<verbatmCustomMediaSelectTileDelegate> customDelegate;
     @property (nonatomic) BOOL baseSelector; //tells if it is the last view in the scrollview
+    @property (readonly, nonatomic) BOOL optionSelected;
 @end
