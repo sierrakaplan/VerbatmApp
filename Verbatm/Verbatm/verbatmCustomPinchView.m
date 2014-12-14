@@ -147,11 +147,10 @@
     CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO , self.background.frame.size.height);
     CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height);
     if(self.there_is_text){
+        self.textField.frame = frame1;
         if(self.there_is_picture){
-            self.textField.frame = frame1;
             self.imageViewer.frame = frame2;
         }else{
-            self.textField.frame = frame1;
             self.videoView.frame = frame2;
         }
     }else{
@@ -268,7 +267,7 @@
 {
     NSMutableArray* arr = [[NSMutableArray alloc] init];
     for(id object in to_be_seperated.media){
-        verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: to_be_seperated.background.frame.size.width withCenter:to_be_seperated.center andMedia:object];
+        verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: to_be_seperated.background.frame.size.width/2 withCenter:to_be_seperated.center andMedia:object];
         [arr addObject: result];
     }
     return arr;
