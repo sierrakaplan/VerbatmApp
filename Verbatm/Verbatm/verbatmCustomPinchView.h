@@ -62,6 +62,10 @@
 //Tells whether it is a collection consisting of more than one type of media
 -(BOOL)isCollection;
 
+//tells you if the pinch object has multiple media objects in its array.
+//This applies, whether it is a collection or not.
+-(BOOL)hasMultipleMedia;
+
 
 
 @property (readonly,nonatomic) BOOL there_is_text;

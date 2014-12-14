@@ -47,14 +47,7 @@
         //set up the properties
         CGRect frame = CGRectMake(center.x - radius, center.y - radius, radius*2, radius*2);
         [self specifyFrame:frame];
-        self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
-        //create the shadow or lensing effect
-        self.layer.shadowOffset = CGSizeMake(radius/SHADOW_OFFSET_FACTOR, radius/SHADOW_OFFSET_FACTOR);
-        self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.masksToBounds = NO;
-        self.layer.shadowOpacity = 0.5f;
-        self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:radius].CGPath;
-        self.background.layer.masksToBounds = YES;
+        [self createLensingEffect:radius];
         
         //initialize arrays
         self.media = [[NSMutableArray alloc]init];
@@ -109,6 +102,21 @@
     self.background.frame = self.bounds;
     self.background.layer.cornerRadius = frame.size.width/2;
     self.layer.cornerRadius = frame.size.width/2;
+    self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
+    [self createLensingEffect:frame.size.width/2];
+}
+
+-(void)createLensingEffect:(float)radius
+{
+    //remove previous shadows
+    self.layer.shadowPath = nil;
+    //create the shadow or lensing effect
+    self.layer.shadowOffset = CGSizeMake(radius/SHADOW_OFFSET_FACTOR, radius/SHADOW_OFFSET_FACTOR);
+    self.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.layer.masksToBounds = NO;
+    self.layer.shadowOpacity = 0.5f;
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:radius].CGPath;
+    self.background.layer.masksToBounds = YES;
 }
 
 
@@ -274,6 +282,7 @@
 }
 
 //Pinches apart two media that were previously pinched together.
+//Undoes a pinch apart
 //The function returns null if the object to be pinched apart does not actually consist
 //of more than one media object.
 +(NSMutableArray*)pinchApart:(verbatmCustomPinchView*)to_be_pinched_apart
@@ -312,5 +321,12 @@
 -(BOOL)isCollection
 {
     return ![self thereIsOnlyOneMedium];
+}
+
+//tells you if the pinch object has multiple media objects in its array.
+//This applies, whether it is a collection or not.
+-(BOOL)hasMultipleMedia
+{
+    return self.media.count > 1;
 }
 @end

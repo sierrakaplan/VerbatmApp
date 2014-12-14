@@ -769,7 +769,7 @@
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    //return;
+    return;//for now
     if(scrollView != self.mainScrollView && !self.pinching && [self.pageElements count] >1 && scrollView != ((UIView *)[self.pageElements lastObject]).superview  )//make sure you are not mixing it up with the virtical scroll of the main scroll view
     {
         if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x)//If the view is scrolled left/right and not centered
@@ -918,7 +918,12 @@
     
 }
 
-#pragma mark Pinch Apart/Add a media tile
+#pragma mark *Pinch Collection Closed
+
+
+
+
+#pragma mark *Pinch Apart/Add a media tile
 
 
 #pragma mark Create New Tile
@@ -1527,7 +1532,7 @@
 }
 
 
-#pragma mark - Open Element -
+#pragma mark - Open Element Collection -
 
 #pragma mark Sense Tap
 -(void)addTapGestureToView: (verbatmCustomPinchView *) pinchView
@@ -1541,7 +1546,7 @@
     if(![sender.view isKindOfClass:[verbatmCustomPinchView class]]) return; //only accept touches from pinch objects
 
     verbatmCustomPinchView * pinch_object = (verbatmCustomPinchView *)sender.view;
-    if(pinch_object.isCollection)[self openCollection:pinch_object];
+    if(pinch_object.hasMultipleMedia)[self openCollection:pinch_object];
     else [self openElement: pinch_object];
 }
 
@@ -1559,19 +1564,22 @@
 
 -(void) addPinchObjects:(NSMutableArray *) array toScrollView: (UIScrollView *) sv
 {
-    int x_position = ELEMENT_OFFSET_DISTANCE;
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        int x_position = ELEMENT_OFFSET_DISTANCE;
+        for(int i = 0; i< array.count; i++)
+        {
+            verbatmCustomPinchView * pinch_view = array[i];
+            CGRect new_frame =CGRectMake(x_position, ELEMENT_OFFSET_DISTANCE/2, [self.closedElement_Radius intValue] *2, [self.closedElement_Radius intValue] * 2);
+            [pinch_view specifyFrame:new_frame];
+            [sv addSubview:pinch_view];
+            x_position += pinch_view.frame.size.width + ELEMENT_OFFSET_DISTANCE;
+        }
+        sv.contentSize = CGSizeMake(x_position, sv.contentSize.height);
+        sv.pagingEnabled = YES;
+    }];
     
-    for(int i = 0; i< array.count; i++)
-    {
-        verbatmCustomPinchView * pinch_view = array[i];
-        CGRect new_frame =CGRectMake(x_position, ELEMENT_OFFSET_DISTANCE/2, pinch_view.frame.size.width, self.defaultPersonalScrollViewFrameSize_closedElement.height-(ELEMENT_OFFSET_DISTANCE/2));
-        
-        pinch_view.frame = new_frame;
-        
-        [sv addSubview:pinch_view];
-        x_position += pinch_view.frame.size.width + ELEMENT_OFFSET_DISTANCE;
-    }
-    sv.contentSize = CGSizeMake(x_position, sv.contentSize.height);
+    
+    
 }
 
 
