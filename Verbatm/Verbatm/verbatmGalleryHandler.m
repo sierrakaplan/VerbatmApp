@@ -184,10 +184,10 @@
     
     // Create an AVPlayerLayer using the player
     AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = self.view.bounds;
+    playerLayer.frame = view.bounds;
     playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     // Add it to your view's sublayers
-    [self.view.layer addSublayer:playerLayer];
+    [view.layer addSublayer:playerLayer];
     // You can play/pause using the AVPlayer object
     [player play];
 }
