@@ -242,7 +242,6 @@
                                               NSLog(@"found album %@", ALBUM_NAME);
                                               weakSelf.verbatmFolder = group;
                                               [self fillArrayWithMedia];
-                                              [self loadMediaUntoScrollView];
                                               return;
                                           }
                                       }

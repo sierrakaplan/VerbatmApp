@@ -529,7 +529,7 @@
     [self clearVideoProgressImage];  //removes the video progress bar
     [self.timer invalidate];
     self.counter = 0;
-    [self freezeFrame];
+//    [self freezeFrame];
     [self.videoProgressImageView removeFromSuperview];
 }
 
