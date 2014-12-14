@@ -21,7 +21,7 @@
 @property (strong, nonatomic) UICollisionBehavior* collider;
 @property (strong, nonatomic) UIDynamicItemBehavior* elasticityBehavior;
 @property (strong, nonatomic) UIView* view;
-@property( nonatomic) BOOL mediaIsLoaded;
+@property (strong, nonatomic) UIActivityIndicatorView* activityIndicator;
 #define ALBUM_NAME @"Verbatm"
 #define OFFSET 15
 #define PLAY_VIDEO_ICON @"videoPreview_play_icon"
@@ -32,7 +32,8 @@
 #define CONTENT_SIZE self.scrollView.frame.size.width*self.media.count/2 -  2*OFFSET, self.view.frame.size.height/3
 #define START_POSITION_FOR_MEDIA2   (self.scrollView.frame.size.width + OFFSET)/2, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2  , self.scrollView.frame.size.height - 2*OFFSET
 #define BACKGROUND @"background"
-#define SCROLLVIEW_ALPHA 1;
+#define SCROLLVIEW_ALPHA 0.5
+#define ACTIVITY_INDICATOR_SIZE 30
 @end
 
 @implementation verbatmGalleryHandler
@@ -54,9 +55,13 @@
         self.media = [[NSMutableArray alloc] init];
         self.mediaImageViews = [[NSMutableArray alloc] init];
         self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+        //set up the activity indicator
+        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhite];
+        self.activityIndicator.frame = CGRectMake(self.view.frame.origin.x + (self.view.frame.size.width/2 - ACTIVITY_INDICATOR_SIZE/2), self.view.frame.origin.y + ACTIVITY_INDICATOR_SIZE, ACTIVITY_INDICATOR_SIZE, ACTIVITY_INDICATOR_SIZE);
+        [self.view addSubview:self.activityIndicator];
+        //get the verbatm folder
         [self getVerbatmMediaFolder];
         [self createScrollView];
-        self.mediaIsLoaded = NO;
     }
     return  self;
 }
@@ -64,8 +69,7 @@
 -(void)createScrollView
 {
     self.scrollView = [[UIScrollView alloc] initWithFrame: CGRectMake(DROP_FROM_COORDINATES)];
-    self.scrollView.backgroundColor = [UIColor  grayColor];
-    self.scrollView.alpha= SCROLLVIEW_ALPHA;
+    self.scrollView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha: SCROLLVIEW_ALPHA];
     self.scrollView.pagingEnabled = NO;
     self.scrollView.clipsToBounds = NO;
     self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
@@ -100,10 +104,9 @@
 
 - (void)presentGallery
 {
-    //try to do this in a new queue in order not to block the main queue
-    if(!self.mediaIsLoaded){
-        [self loadMediaUntoScrollView];
-    }
+    [self.activityIndicator startAnimating];
+    [self loadMediaUntoScrollView];
+    [self.activityIndicator stopAnimating];
     [self lowerScrollView];
    // [self.customDelegate didPresentGallery];
 }
@@ -119,7 +122,6 @@
 //loads the images unto the scrollView
 -(void)loadMediaUntoScrollView
 {
-    self.mediaIsLoaded = YES;
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
     for(ALAsset* asset in self.media){
@@ -129,12 +131,14 @@
                                        orientation:UIImageOrientationUp];
         verbatmCustomImageView* imageView = [[verbatmCustomImageView alloc] initWithImage:image];
         imageView.asset = asset;
+        imageView.frame = viewSize;
         if([[asset valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
             imageView.isVideo = true;
+            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
+            [self playVideo:avurlAsset forView:imageView];
         }else{
             imageView.isVideo = false;
         }
-        imageView.frame = viewSize;
         viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
@@ -159,6 +163,56 @@
     }
     [self.view bringSubviewToFront:self.scrollView];
 
+}
+
+
+#pragma mark - video playing methods -
+
+-(void)playVideo:(AVURLAsset*)asset forView:(UIImageView*)view
+{
+    // Create an AVPlayerItem using the asset
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
+    // Create the AVPlayer using the playeritem
+    AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+    //MUTE THE PLAYER
+    [self mutePlayer:player forAsset:asset];
+    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:[player currentItem]];
+    
+    // Create an AVPlayerLayer using the player
+    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+    playerLayer.frame = self.view.bounds;
+    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+    // Add it to your view's sublayers
+    [self.view.layer addSublayer:playerLayer];
+    // You can play/pause using the AVPlayer object
+    [player play];
+}
+
+//mutes the player
+-(void)mutePlayer:(AVPlayer*)avPlayer forAsset:(AVURLAsset*)asset
+{
+    NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
+    // Mute all the audio tracks
+    NSMutableArray *allAudioParams = [NSMutableArray array];
+    for (AVAssetTrack *track in audioTracks) {
+        AVMutableAudioMixInputParameters *audioInputParams =  [AVMutableAudioMixInputParameters audioMixInputParameters];
+        [audioInputParams setVolume:0.0 atTime:kCMTimeZero];
+        [audioInputParams setTrackID:[track trackID]];
+        [allAudioParams addObject:audioInputParams];
+    }
+    AVMutableAudioMix *audioZeroMix = [AVMutableAudioMix audioMix];
+    [audioZeroMix setInputParameters:allAudioParams];
+    [[avPlayer currentItem] setAudioMix:audioZeroMix];
+}
+
+//tells me when the video ends so that I can rewind
+-(void)playerItemDidReachEnd:(NSNotification *)notification {
+    AVPlayerItem *p = [notification object];
+    [p seekToTime:kCMTimeZero];
 }
 
 //by Lucio

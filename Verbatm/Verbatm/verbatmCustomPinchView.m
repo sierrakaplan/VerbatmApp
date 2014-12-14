@@ -191,35 +191,40 @@
             [self.imageViewer setImage:image];
         }else{
             AVURLAsset *asset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
-            // Create an AVPlayerItem using the asset
-            AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-            // Create the AVPlayer using the playeritem
-            AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
-            //MUTE THE PLAYER
-            [self mutePlayer:player forAsset:asset];
-            player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(playerItemDidReachEnd:)
-                                                         name:AVPlayerItemDidPlayToEndTimeNotification
-                                                       object:[player currentItem]];
-            
-            // Create an AVPlayerLayer using the player
-            AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-            playerLayer.frame = self.bounds;
-            playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-            // Add it to your view's sublayers
-            [self.videoView.layer addSublayer:playerLayer];
-            // You can play/pause using the AVPlayer object
-            [player play];
+            [self playVideo:asset];
         }
     }
+}
+
+
+-(void)playVideo:(AVURLAsset*)asset
+{
+    // Create an AVPlayerItem using the asset
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
+    // Create the AVPlayer using the playeritem
+    AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+    //MUTE THE PLAYER
+    [self mutePlayer:player forAsset:asset];
+    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:[player currentItem]];
+    
+    // Create an AVPlayerLayer using the player
+    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+    playerLayer.frame = self.bounds;
+    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+    // Add it to your view's sublayers
+    [self.videoView.layer addSublayer:playerLayer];
+    // You can play/pause using the AVPlayer object
+    [player play];
 }
 
 //mutes the player
 -(void)mutePlayer:(AVPlayer*)avPlayer forAsset:(AVURLAsset*)asset
 {
     NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
-    
     // Mute all the audio tracks
     NSMutableArray *allAudioParams = [NSMutableArray array];
     for (AVAssetTrack *track in audioTracks) {
@@ -230,7 +235,6 @@
     }
     AVMutableAudioMix *audioZeroMix = [AVMutableAudioMix audioMix];
     [audioZeroMix setInputParameters:allAudioParams];
-    
     [[avPlayer currentItem] setAudioMix:audioZeroMix];
 }
 
