@@ -106,7 +106,7 @@
 
 //Lucio.
 //moves the view by a delta relative to the center.
--(void)setCenter:(CGPoint)center
+-(void)setNewCenter:(CGPoint)center
 {
     self.center = center;
 }

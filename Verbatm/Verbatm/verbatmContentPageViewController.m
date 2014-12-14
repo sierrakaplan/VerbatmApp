@@ -769,7 +769,7 @@
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    //return;
+    return;//for now
     if(scrollView != self.mainScrollView && !self.pinching && [self.pageElements count] >1 && scrollView != ((UIView *)[self.pageElements lastObject]).superview  )//make sure you are not mixing it up with the virtical scroll of the main scroll view
     {
         if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x)//If the view is scrolled left/right and not centered
@@ -1564,9 +1564,13 @@
     for(int i = 0; i< array.count; i++)
     {
         verbatmCustomPinchView * pinch_view = array[i];
-        CGRect new_frame =CGRectMake(x_position, ELEMENT_OFFSET_DISTANCE/2, pinch_view.frame.size.width, self.defaultPersonalScrollViewFrameSize_closedElement.height-(ELEMENT_OFFSET_DISTANCE/2));
+        CGRect new_frame =CGRectMake(x_position, ELEMENT_OFFSET_DISTANCE/2, self.defaultPersonalScrollViewFrameSize_closedElement.height-(ELEMENT_OFFSET_DISTANCE/2), self.defaultPersonalScrollViewFrameSize_closedElement.height-(ELEMENT_OFFSET_DISTANCE/2));
         
         pinch_view.frame = new_frame;
+        
+        CGPoint  centerPoint = CGPointMake(new_frame.origin.x + new_frame.size.width/2, new_frame.origin.y+new_frame.size.height/2);
+        
+       // [pinch_view setNewCenter:centerPoint];
         
         [sv addSubview:pinch_view];
         x_position += pinch_view.frame.size.width + ELEMENT_OFFSET_DISTANCE;

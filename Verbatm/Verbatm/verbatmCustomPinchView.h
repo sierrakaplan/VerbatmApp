@@ -32,7 +32,7 @@
  *This sets the center of the pinch object
  *
  */
--(void)setCenter:(CGPoint)center;
+-(void)setNewCenter:(CGPoint)center;
 
 /*This creates a new pinch object with a particular radius, superview and a center
  *as specified by the passed parameters
