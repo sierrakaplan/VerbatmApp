@@ -45,13 +45,8 @@
         [[NSBundle mainBundle] loadNibNamed:@"verbatmCustomPinchView" owner:self options:nil];
         
         //set up the properties
-        self.center = center;
         CGRect frame = CGRectMake(center.x - radius, center.y - radius, radius*2, radius*2);
-        self.frame = frame;
-      
-        self.background.frame = self.bounds;
-        self.background.layer.cornerRadius = radius;
-        self.layer.cornerRadius = radius;
+        [self specifyFrame:frame];
         self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
         //create the shadow or lensing effect
         self.layer.shadowOffset = CGSizeMake(radius/SHADOW_OFFSET_FACTOR, radius/SHADOW_OFFSET_FACTOR);
@@ -106,9 +101,14 @@
 
 //Lucio.
 //moves the view by a delta relative to the center.
--(void)setCenter:(CGPoint)center
+-(void)specifyFrame:(CGRect)frame
 {
+    CGPoint center = CGPointMake(frame.origin.x + frame.size.width/2 , frame.origin.y + frame.size.height/2);
     self.center = center;
+    self.frame = frame;
+    self.background.frame = self.bounds;
+    self.background.layer.cornerRadius = frame.size.width/2;
+    self.layer.cornerRadius = frame.size.width/2;
 }
 
 
