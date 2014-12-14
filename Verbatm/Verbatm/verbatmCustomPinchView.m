@@ -281,6 +281,7 @@
 }
 
 //Pinches apart two media that were previously pinched together.
+//Undoes a pinch apart
 //The function returns null if the object to be pinched apart does not actually consist
 //of more than one media object.
 +(NSMutableArray*)pinchApart:(verbatmCustomPinchView*)to_be_pinched_apart

@@ -1527,7 +1527,7 @@
 }
 
 
-#pragma mark - Open Element -
+#pragma mark - Open Element Collection -
 
 #pragma mark Sense Tap
 -(void)addTapGestureToView: (verbatmCustomPinchView *) pinchView
