@@ -106,15 +106,9 @@
 
 //Lucio.
 //moves the view by a delta relative to the center.
--(void)move:(CGPoint)delta
+-(void)setCenter:(CGPoint)center
 {
-    __weak verbatmCustomPinchView* weak_self = self;
-    [UIView animateWithDuration:TIME_TO_ANIMATE animations:^{
-        CGPoint currentCenter = weak_self.background.center;
-        weak_self.background.center = CGPointMake(currentCenter.x + delta.x, currentCenter.y + delta.y);
-    } completion:^(BOOL finished) {
-        weak_self.center = self.background.center;
-    }];
+    self.center = center;
 }
 
 

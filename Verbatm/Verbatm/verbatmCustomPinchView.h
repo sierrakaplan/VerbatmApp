@@ -28,10 +28,11 @@
  */
 -(void)addPictureToCurrentMedia:(UIImageView*)imageview;
 
-/*This moves the pinch object by a displacement delta. The delta is specified 
- *relative to the center of the object.
+/*
+ *This sets the center of the pinch object
+ *
  */
--(void)move:(CGPoint)delta;
+-(void)setCenter:(CGPoint)center;
 
 /*This creates a new pinch object with a particular radius, superview and a center
  *as specified by the passed parameters
