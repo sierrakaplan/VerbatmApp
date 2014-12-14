@@ -29,10 +29,10 @@
 -(void)addPictureToCurrentMedia:(UIImageView*)imageview;
 
 /*
- *This sets the center of the pinch object
+ *This sets the frame of the pinch object
  *
  */
--(void)setNewCenter:(CGPoint)center;
+-(void)specifyFrame:(CGRect)frame;
 
 /*This creates a new pinch object with a particular radius, superview and a center
  *as specified by the passed parameters
@@ -61,6 +61,10 @@
 
 //Tells whether it is a collection consisting of more than one type of media
 -(BOOL)isCollection;
+
+//tells you if the pinch object has multiple media objects in its array.
+//This applies, whether it is a collection or not.
+-(BOOL)hasMultipleMedia;
 
 
 

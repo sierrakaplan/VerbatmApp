@@ -45,21 +45,9 @@
         [[NSBundle mainBundle] loadNibNamed:@"verbatmCustomPinchView" owner:self options:nil];
         
         //set up the properties
-        self.center = center;
         CGRect frame = CGRectMake(center.x - radius, center.y - radius, radius*2, radius*2);
-        self.frame = frame;
-      
-        self.background.frame = self.bounds;
-        self.background.layer.cornerRadius = radius;
-        self.layer.cornerRadius = radius;
-        self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
-        //create the shadow or lensing effect
-        self.layer.shadowOffset = CGSizeMake(radius/SHADOW_OFFSET_FACTOR, radius/SHADOW_OFFSET_FACTOR);
-        self.layer.shadowColor = [UIColor blackColor].CGColor;
-        self.layer.masksToBounds = NO;
-        self.layer.shadowOpacity = 0.5f;
-        self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:radius].CGPath;
-        self.background.layer.masksToBounds = YES;
+        [self specifyFrame:frame];
+        [self createLensingEffect:radius];
         
         //initialize arrays
         self.media = [[NSMutableArray alloc]init];
@@ -106,9 +94,29 @@
 
 //Lucio.
 //moves the view by a delta relative to the center.
--(void)setNewCenter:(CGPoint)center
+-(void)specifyFrame:(CGRect)frame
 {
+    CGPoint center = CGPointMake(frame.origin.x + frame.size.width/2 , frame.origin.y + frame.size.height/2);
     self.center = center;
+    self.frame = frame;
+    self.background.frame = self.bounds;
+    self.background.layer.cornerRadius = frame.size.width/2;
+    self.layer.cornerRadius = frame.size.width/2;
+    self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
+    [self createLensingEffect:frame.size.width/2];
+}
+
+-(void)createLensingEffect:(float)radius
+{
+    //remove previous shadows
+    self.layer.shadowPath = nil;
+    //create the shadow or lensing effect
+    self.layer.shadowOffset = CGSizeMake(radius/SHADOW_OFFSET_FACTOR, radius/SHADOW_OFFSET_FACTOR);
+    self.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.layer.masksToBounds = NO;
+    self.layer.shadowOpacity = 0.5f;
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:radius].CGPath;
+    self.background.layer.masksToBounds = YES;
 }
 
 
@@ -268,7 +276,7 @@
 {
     NSMutableArray* arr = [[NSMutableArray alloc] init];
     for(id object in to_be_seperated.media){
-        verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: to_be_seperated.background.frame.size.width withCenter:to_be_seperated.center andMedia:object];
+        verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: to_be_seperated.background.frame.size.width/2 withCenter:to_be_seperated.center andMedia:object];
         [arr addObject: result];
     }
     return arr;
@@ -314,5 +322,12 @@
 -(BOOL)isCollection
 {
     return ![self thereIsOnlyOneMedium];
+}
+
+//tells you if the pinch object has multiple media objects in its array.
+//This applies, whether it is a collection or not.
+-(BOOL)hasMultipleMedia
+{
+    return self.media.count > 1;
 }
 @end

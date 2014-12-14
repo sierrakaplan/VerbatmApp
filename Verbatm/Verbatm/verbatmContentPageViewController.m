@@ -918,7 +918,12 @@
     
 }
 
-#pragma mark Pinch Apart/Add a media tile
+#pragma mark *Pinch Collection Closed
+
+
+
+
+#pragma mark *Pinch Apart/Add a media tile
 
 
 #pragma mark Create New Tile
@@ -1541,7 +1546,7 @@
     if(![sender.view isKindOfClass:[verbatmCustomPinchView class]]) return; //only accept touches from pinch objects
 
     verbatmCustomPinchView * pinch_object = (verbatmCustomPinchView *)sender.view;
-    if(pinch_object.isCollection)[self openCollection:pinch_object];
+    if(pinch_object.hasMultipleMedia)[self openCollection:pinch_object];
     else [self openElement: pinch_object];
 }
 
@@ -1559,23 +1564,22 @@
 
 -(void) addPinchObjects:(NSMutableArray *) array toScrollView: (UIScrollView *) sv
 {
-    int x_position = ELEMENT_OFFSET_DISTANCE;
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        int x_position = ELEMENT_OFFSET_DISTANCE;
+        for(int i = 0; i< array.count; i++)
+        {
+            verbatmCustomPinchView * pinch_view = array[i];
+            CGRect new_frame =CGRectMake(x_position, ELEMENT_OFFSET_DISTANCE/2, [self.closedElement_Radius intValue] *2, [self.closedElement_Radius intValue] * 2);
+            [pinch_view specifyFrame:new_frame];
+            [sv addSubview:pinch_view];
+            x_position += pinch_view.frame.size.width + ELEMENT_OFFSET_DISTANCE;
+        }
+        sv.contentSize = CGSizeMake(x_position, sv.contentSize.height);
+        sv.pagingEnabled = YES;
+    }];
     
-    for(int i = 0; i< array.count; i++)
-    {
-        verbatmCustomPinchView * pinch_view = array[i];
-        CGRect new_frame =CGRectMake(x_position, ELEMENT_OFFSET_DISTANCE/2, self.defaultPersonalScrollViewFrameSize_closedElement.height-(ELEMENT_OFFSET_DISTANCE/2), self.defaultPersonalScrollViewFrameSize_closedElement.height-(ELEMENT_OFFSET_DISTANCE/2));
-        
-        pinch_view.frame = new_frame;
-        
-        CGPoint  centerPoint = CGPointMake(new_frame.origin.x + new_frame.size.width/2, new_frame.origin.y+new_frame.size.height/2);
-        
-       // [pinch_view setNewCenter:centerPoint];
-        
-        [sv addSubview:pinch_view];
-        x_position += pinch_view.frame.size.width + ELEMENT_OFFSET_DISTANCE;
-    }
-    sv.contentSize = CGSizeMake(x_position, sv.contentSize.height);
+    
+    
 }
 
 
