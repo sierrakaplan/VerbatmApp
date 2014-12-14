@@ -139,12 +139,14 @@
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
     }
+    
     //Add swipe up gesture to dismiss gallery
     UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseScrollView)];
     swipeUp.direction  = UISwipeGestureRecognizerDirectionUp;
     swipeUp.cancelsTouchesInView = NO;
     swipeUp.delegate = self;
     [self.scrollView addGestureRecognizer: swipeUp];
+    
     
     UISwipeGestureRecognizer* swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(selectMedia:)];
     swipeDown.direction  = UISwipeGestureRecognizerDirectionDown;

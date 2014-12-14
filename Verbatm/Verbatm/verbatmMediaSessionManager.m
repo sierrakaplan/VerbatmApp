@@ -47,6 +47,7 @@
         //create the assetLibrary
         self.assetLibrary = [[ALAssetsLibrary alloc] init];
         [self createVerbatmDirectory];
+        
         //Create the session and set its properties.
         self.session = [[AVCaptureSession alloc]init];
         self.session.sessionPreset = AVCaptureSessionPresetMedium;
