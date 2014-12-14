@@ -1660,6 +1660,14 @@
 }
 
 
+#pragma mark - alert the gallery -
+
+-(void)alertGallery
+{
+    [self.gallery fillArrayWithMedia];
+}
+
+
 
 
 

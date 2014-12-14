@@ -592,13 +592,6 @@
 
 #pragma mark - Transition 
 
-//delegate of the contentPage- tells you when you should close the contentpage
--(void)leaveContentPage
-{
-    //call some transition function
-    //post notification
-}
-
 
 
 //Move the pull bar down- gestures sensed
@@ -645,6 +638,7 @@
              [self positionPullBarTransitionDown:YES];//psotions the pullbar to the right frame
              
          }];
+        [self.vc_contentPage alertGallery];
     }else //snap the container view back up to no MSAV
     {
         [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
