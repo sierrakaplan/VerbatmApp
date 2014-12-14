@@ -964,7 +964,80 @@
 //Iain
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender
 {
+    CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
+    CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
+    
+    
+    if(touch1.y>touch2.y)
+    {
+            if(touch1.x >touch2.x)
+            {
+                int x_difference = touch1.x -touch2.x;
+                int y_difference =touch1.y -touch2.y;
+                
+                if(x_difference > y_difference)
+                {
+                    
+                }else
+                {
+                    [self verticlePinchWithGesture:sender];
+                }
+                
+            }else
+            {
+                int x_difference = touch2.x -touch1.x;
+                int y_difference =touch1.y -touch2.y;
+                if(x_difference > y_difference)
+                {
+                    
+                }else
+                {
+                    [self verticlePinchWithGesture:sender];
+                }
+            }
+    }else
+    {
+        if(touch1.x >touch2.x)
+        {
+            int x_difference = touch1.x -touch2.x;
+            int y_difference =touch2.y -touch1.y;
+            
+            if(x_difference > y_difference)
+            {
+                
+            }else
+            {
+                [self verticlePinchWithGesture:sender];
+            }
+            
+        }else
+        {
+            int x_difference = touch2.x -touch1.x;
+            int y_difference =touch2.y -touch1.y;
+            if(x_difference > y_difference)
+            {
+                
+            }else
+            {
+                [self verticlePinchWithGesture:sender];
+            }
+        }
+    }
+    
+    
+    
+    
+    [self verticlePinchWithGesture:sender];
+    
+    
+    
  
+
+}
+
+
+-(void)verticlePinchWithGesture: (UIPinchGestureRecognizer *)sender
+{
     CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
     CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
     
@@ -982,7 +1055,6 @@
         self.startLocationOfUpperTouchPoint = touch1;
     }
     if(sender.scale >1) [self createNewViewToRevealBetweenPinchViews]; //if it's a pinch apart then create the media tile
-
 }
 
 //Iain
