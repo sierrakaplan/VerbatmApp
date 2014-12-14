@@ -184,10 +184,10 @@
     
     // Create an AVPlayerLayer using the player
     AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = self.view.bounds;
+    playerLayer.frame = view.bounds;
     playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     // Add it to your view's sublayers
-    [self.view.layer addSublayer:playerLayer];
+    [view.layer addSublayer:playerLayer];
     // You can play/pause using the AVPlayer object
     [player play];
 }
@@ -286,11 +286,6 @@
         [UIView animateWithDuration:0.8 animations:^{
             CGRect viewSize = selectedImageView.frame;
             selectedImageView.frame = (location.x < self.view.frame.size.width/ 2)? CGRectMake(START_POSITION_FOR_MEDIA) : CGRectMake(START_POSITION_FOR_MEDIA2);
-            //            [UIView animateWithDuration: 0.1 animations:^{
-            //                [selectedImageView removeFromSuperview];
-            //                selectedImageView.frame = CGRectMake(POSITION_TO_SWIPE_TO);
-            //                [self.view addSubview: selectedImageView];
-            //            }];
             [self.mediaImageViews removeObject: selectedImageView];
             for(; indexa < self.mediaImageViews.count; indexa++){
                 ((UIImageView*)[self.mediaImageViews objectAtIndex:indexa]).frame = viewSize;
@@ -314,13 +309,6 @@
     UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
     CGRect viewSize = CGRectOffset(((UIImageView*)[self.media lastObject]).frame, (self.scrollView.frame.size.width - OFFSET)/2, 0);
     imageView.frame = viewSize;
-    //        if( [[asset valueForProperty:@"ALAssetPropertyType"] isEqualToString:@"ALAssetTypeVideo"]){
-    //            CALayer* playIconLayer = [[CALayer alloc] init];
-    //            playIconLayer.backgroundColor = [[UIColor clearColor]CGColor];
-    //            playIconLayer.bounds = imageView.frame;
-    //            [playIconLayer setContents: (__bridge id)[UIImage imageNamed:PLAY_VIDEO_ICON].CGImage];
-    //            [imageView.layer addSublayer:playIconLayer];
-    //        }
     viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
     [self.mediaImageViews addObject: imageView];
     [self.scrollView addSubview: imageView];
