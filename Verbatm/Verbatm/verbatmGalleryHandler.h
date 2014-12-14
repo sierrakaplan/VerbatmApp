@@ -11,6 +11,7 @@
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <AVFoundation/AVFoundation.h>
 #import "verbatmCustomImageView.h"
 
 @protocol verbatmGalleryHandlerDelegate <NSObject>
