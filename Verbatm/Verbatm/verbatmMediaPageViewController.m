@@ -591,16 +591,6 @@
 }
 
 #pragma mark - Transition 
-
-//delegate of the contentPage- tells you when you should close the contentpage
--(void)leaveContentPage
-{
-    //call some transition function
-    //post notification
-}
-
-
-
 //Move the pull bar down- gestures sensed
 - (IBAction)expandContentPage:(UIPanGestureRecognizer *)sender
 {
@@ -613,9 +603,9 @@
     if(sender.state==UIGestureRecognizerStateEnded)
     {
         [self expandContentPage_Changed:sender];
-       
     }
 }
+
 //undles the first instance the an gesture is recognised
 -(void)expandContentPage_Began:(UIPanGestureRecognizer *)sender
 {
@@ -765,7 +755,7 @@
 {
     UITextView * last_textView;
     
-    for(int i = (self.vc_contentPage.pageElements.count -1); i>=0; i--)
+    for(long i = (self.vc_contentPage.pageElements.count -1); i>=0; i--)
     {
         if([self.vc_contentPage.pageElements[i]  isKindOfClass: [UITextView class]])
         {

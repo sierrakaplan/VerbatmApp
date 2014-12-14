@@ -37,16 +37,6 @@
 @property (nonatomic) NSInteger index; //the index of the first view that is pushed up/down by the pinch/stretch gesture
 @property (nonatomic, strong) NSString * textBeforeNavigationLabel;
 
-#pragma mark pich gesture related Properties
-@property(nonatomic) CGPoint startLocationOfLowerTouchPoint;
-@property (nonatomic) CGPoint startLocationOfUpperTouchPoint;
-@property (nonatomic) NSInteger changeInTopViewPosition;
-@property (nonatomic) NSInteger changeInBottomViewPostion;
-@property (nonatomic) NSInteger totalChangeInViewPositions;
-@property (nonatomic,strong) UIView * lowerPinchView;
-@property (nonatomic,strong) UIView * upperPinchView;
-@property (nonatomic,strong) UIView * createdMediaView;
-@property (nonatomic) BOOL pinching; //tells if pinching is occurring
 
 #pragma mark undo related properties
 @property (nonatomic, strong) NSUndoManager * tileSwipeViewUndoManager;
@@ -81,7 +71,7 @@
 
 
 
-#pragma mark - used_properties -
+#pragma mark - Used_properties -
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define MAX_WORD_LIMIT 350
@@ -116,10 +106,29 @@
 @property (nonatomic) CGPoint standardContentOffsetForPersonalView;// gives the standard content offset for each personalScrollview.
 @property (nonatomic) CGSize standardContentSizeForPersonalView; //gives the standard content size for each personal Scrollview
 
-#pragma mark - *Text input outlets
+#pragma mark Text input outlets
 @property (weak, nonatomic) IBOutlet verbatmUITextView *firstContentPageTextBox;
 @property (strong, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
 @property (strong, nonatomic) verbatmCustomMediaSelectTile * baseMediaTileSelector;
+
+
+#pragma mark Horizontal Pinch Gesture Properties
+@property(nonatomic) CGPoint startLocationOfLeftestTouchPoint;
+@property (nonatomic) CGPoint startLocationOfRightestTouchPoint;
+@property (nonatomic, strong) UIScrollView * scrollViewForHorizontalPinchView;
+
+
+#pragma mark Vertical Pinch Gesture Related Properties
+@property (nonatomic) BOOL VerticalPinch;
+@property(nonatomic) CGPoint startLocationOfLowerTouchPoint;
+@property (nonatomic) CGPoint startLocationOfUpperTouchPoint;
+@property (nonatomic) NSInteger changeInTopViewPosition;
+@property (nonatomic) NSInteger changeInBottomViewPostion;
+@property (nonatomic) NSInteger totalChangeInViewPositions;
+@property (nonatomic,strong) UIView * lowerPinchView;
+@property (nonatomic,strong) UIView * upperPinchView;
+@property (nonatomic,strong) UIView * createdMediaView;
+@property (nonatomic) BOOL pinching; //tells if pinching is occurring
 
 @end
 
@@ -895,9 +904,12 @@
     if(sender.state == UIGestureRecognizerStateChanged)
     {
         
-        if(self.lowerPinchView && self.upperPinchView && [sender numberOfTouches] == 2 && self.pinching)
+        if(self.VerticalPinch && self.scrollViewForHorizontalPinchView)
         {
-            [self handlePinchGestureChanged:sender];
+            [self handleHorizontalPincheGestureChanged:sender];
+        }else if (self.lowerPinchView && self.upperPinchView && [sender numberOfTouches] == 2 && self.pinching)
+        {
+            [self handleVerticlePinchGestureChanged:sender];
         }
     }
     
@@ -910,6 +922,12 @@
             {
                 [self clearNewMediaView]; //new media creation has failed
             }
+        }else
+        {
+            if(!self.VerticalPinch && (self.scrollViewForHorizontalPinchView.subviews.count >1))//still needs work
+            {
+                [self joinOpenElementsToOne];
+            }
         }
         
         [self shiftElementsBelowView:self.articleTitleField];
@@ -920,8 +938,85 @@
 
 #pragma mark *Pinch Collection Closed
 
+-(void)handleHorizontalPincheGestureChanged:(UIGestureRecognizer *) sender
+{
+    
+    CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
+    CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
+    
+    if(touch1.x >touch2.x)
+    {
+        int left_most_difference = touch2.x- self.startLocationOfLeftestTouchPoint.x;
+        int right_most_difference = touch1.x - self.startLocationOfRightestTouchPoint.x;//this will be negative
+        self.startLocationOfRightestTouchPoint = touch1;
+        self.startLocationOfLeftestTouchPoint = touch2;
+        [self moveViewsWithLeftDifference:left_most_difference andRightDifference:right_most_difference];
+    }else
+    {
+        int left_most_difference = touch1.x- self.startLocationOfLeftestTouchPoint.x;
+        int right_most_difference = touch2.x - self.startLocationOfRightestTouchPoint.x;//this will be negative
+        self.startLocationOfRightestTouchPoint = touch2;
+        self.startLocationOfLeftestTouchPoint = touch1;
+        [self moveViewsWithLeftDifference:left_most_difference andRightDifference:right_most_difference];
+    }
+}
 
 
+//moves the views in the scrollview of the opened collection
+-(void) moveViewsWithLeftDifference: (int) left_difference andRightDifference: (int) right_difference
+{
+    NSArray * pinchViews = self.scrollViewForHorizontalPinchView.subviews;
+    
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        for(int i = 0; i < pinchViews.count; i++)
+        {
+            CGRect oldFrame = ((verbatmCustomPinchView *)pinchViews[i]).frame;
+            
+            if(oldFrame.origin.x < self.startLocationOfLeftestTouchPoint.x)
+            {
+                CGRect newFrame = CGRectMake(oldFrame.origin.x + left_difference , oldFrame.origin.y, oldFrame.size.width, oldFrame.size.height);
+                ((verbatmCustomPinchView *)pinchViews[i]).frame = newFrame;
+            }else
+            {
+                CGRect newFrame = CGRectMake(oldFrame.origin.x + right_difference , oldFrame.origin.y, oldFrame.size.width, oldFrame.size.height);
+                ((verbatmCustomPinchView *)pinchViews[i]).frame = newFrame;
+            }
+        }
+    }];
+}
+
+-(void)joinOpenElementsToOne
+{
+    NSUInteger index =0;
+    NSArray * pinch_views = self.scrollViewForHorizontalPinchView.subviews;
+    
+    //find the object that is in the pageElements array and remove it.
+    //Save the index though so you can insert something in there
+    //Also remove from the scrollview
+    for(int i=0; i<pinch_views.count; i++)
+    {
+        index = [self.pageElements indexOfObject:pinch_views[i]];
+        if(index != NSNotFound){
+            [self.pageElements removeObject:pinch_views[i]];
+        }
+        [(UIView *)pinch_views[i] removeFromSuperview];
+    }
+    
+    
+    verbatmCustomPinchView * newView = [verbatmCustomPinchView pinchTogether:[NSMutableArray arrayWithArray:pinch_views]];
+    
+    self.scrollViewForHorizontalPinchView.contentSize = self.standardContentSizeForPersonalView;
+    self.scrollViewForHorizontalPinchView.contentOffset = self.standardContentOffsetForPersonalView;
+    
+    CGRect newFrame = CGRectMake(self.closedElement_Center.x - [self.closedElement_Radius intValue], self.closedElement_Center.y + [self.closedElement_Radius intValue], [self.closedElement_Radius intValue]*2, [self.closedElement_Radius intValue]*2);
+    [newView specifyFrame:newFrame];
+    
+    [self.pageElements insertObject:newView atIndex:index];
+    
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        [self.scrollViewForHorizontalPinchView addSubview:newView];
+    }];
+}
 
 #pragma mark *Pinch Apart/Add a media tile
 
@@ -967,19 +1062,19 @@
     CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
     CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
     
-    
     if(touch1.y>touch2.y)
     {
             if(touch1.x >touch2.x)
             {
                 int x_difference = touch1.x -touch2.x;
                 int y_difference =touch1.y -touch2.y;
-                
                 if(x_difference > y_difference)
                 {
-                    
+                    self.VerticalPinch = NO;
+                    [self horitzontalPinchWithGesture:sender];
                 }else
                 {
+                    self.VerticalPinch = YES;
                     [self verticlePinchWithGesture:sender];
                 }
                 
@@ -989,9 +1084,11 @@
                 int y_difference =touch1.y -touch2.y;
                 if(x_difference > y_difference)
                 {
-                    
+                    self.VerticalPinch = NO;
+                    [self horitzontalPinchWithGesture:sender];
                 }else
                 {
+                    self.VerticalPinch = YES;
                     [self verticlePinchWithGesture:sender];
                 }
             }
@@ -1004,10 +1101,13 @@
             
             if(x_difference > y_difference)
             {
-                
+                self.VerticalPinch = NO;
+                [self horitzontalPinchWithGesture:sender];
             }else
             {
+                self.VerticalPinch = YES;
                 [self verticlePinchWithGesture:sender];
+                [self horitzontalPinchWithGesture:sender];
             }
             
         }else
@@ -1016,24 +1116,76 @@
             int y_difference =touch2.y -touch1.y;
             if(x_difference > y_difference)
             {
-                
+                self.VerticalPinch = NO;
+                [self horitzontalPinchWithGesture:sender];
             }else
             {
+                self.VerticalPinch = YES;
                 [self verticlePinchWithGesture:sender];
             }
         }
     }
-    
-    
     [self verticlePinchWithGesture:sender];
-    
-    
-    
- 
-
 }
 
 
+
+//The gesture is horizontal. Get the scrollView for the list of pinch views open
+-(void)horitzontalPinchWithGesture: (UIPinchGestureRecognizer *)sender
+{
+    if(sender.scale >1) return;
+    CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
+    CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
+    if(touch1.x>touch2.x)
+    {
+        self.scrollViewForHorizontalPinchView = [self findCollectionScrollViewFromTouchPoint:touch1];
+        if(self.scrollViewForHorizontalPinchView)
+        {
+            self.startLocationOfLeftestTouchPoint = touch1;
+            self.startLocationOfRightestTouchPoint = touch2;
+        }
+    }else
+    {
+        self.scrollViewForHorizontalPinchView = [self findCollectionScrollViewFromTouchPoint:touch1];
+        if(self.scrollViewForHorizontalPinchView)
+        {
+            self.startLocationOfLeftestTouchPoint = touch2;
+            self.startLocationOfRightestTouchPoint = touch1;
+        }
+    }
+}
+
+-(UIScrollView *)findCollectionScrollViewFromTouchPoint: (CGPoint) touch
+{
+    NSInteger distanceTraveled = 0;
+    UIScrollView * wantedView;
+    
+    //Runs through the view positions to find the first one that passes the touch point
+    for (UIView * view in self.pageElements)
+    {
+        UIView * superview = view.superview;//should be a scrollview
+        
+        if([superview isKindOfClass:[UIScrollView class]])
+        {
+            if(!distanceTraveled) distanceTraveled =superview.frame.origin.y;
+            
+            distanceTraveled += superview.frame.size.height;
+            
+            if(distanceTraveled > touch.y)
+            {
+                wantedView = (UIScrollView *)view.superview;
+                break;
+            }
+        }
+    }
+    
+    if(wantedView.subviews.count <2) return Nil;//If they are trying to close a closed element
+    return wantedView;
+}
+
+
+
+//If it's a verticle pinch- find which media you're pinching together or apart
 -(void)verticlePinchWithGesture: (UIPinchGestureRecognizer *)sender
 {
     CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
@@ -1081,12 +1233,10 @@
             
             if(self.pageElements.count>(self.index) && self.index != NSNotFound)/*make sure the indexes are in range*/
             {
-                //((UIView *)(self.pageElements[self.index])).backgroundColor = [UIColor blueColor];
                 self.lowerPinchView = wantedView;
             }
             if(self.pageElements.count>(self.index-1) && self.index != NSNotFound)
             {
-                //((UIView *)(self.pageElements[self.index - 1])).backgroundColor = [UIColor blueColor];
                 self.upperPinchView = self.pageElements[self.index -1];
             }
         }else
@@ -1096,13 +1246,10 @@
             
             if(self.pageElements.count>(self.index) && self.index != NSNotFound)/*make sure the indexes are in range*/
             {
-                // ((UIView *)(self.pageElements[self.index])).backgroundColor = [UIColor blueColor];
                 self.upperPinchView = self.pageElements[self.index];
             }
             if(self.pageElements.count>(self.index+1)&& self.index != NSNotFound)
             {
-                // ((UIView *)(self.pageElements[self.index + 1])).backgroundColor = [UIColor blueColor];
-                
                 self.lowerPinchView = self.pageElements[self.index+1];
             }
         }
@@ -1149,7 +1296,7 @@
 #pragma mark Handle movement of pinched views
 
 //Iain
--(void) handlePinchGestureChanged: (UIPinchGestureRecognizer *)gesture
+-(void) handleVerticlePinchGestureChanged: (UIPinchGestureRecognizer *)gesture
 {
     [self handleUpperViewWithGesture:gesture]; //handle view of the top finger and views above it
     [self handleLowerViewWithGesture:gesture]; //handle view of the bottom finger and views below it
@@ -1164,7 +1311,7 @@
             if(![self tilesOkToPinch] || ![self.upperPinchView isKindOfClass:[verbatmCustomPinchView class]] || ![self.lowerPinchView isKindOfClass:[verbatmCustomPinchView class]]) return;//checks of the tiles are both collections. If so then no pinching together
             
             UIScrollView * keeping_scrollView = (UIScrollView *)self.upperPinchView.superview;
-            int index_to_insert = [self.pageElements indexOfObject:self.upperPinchView];
+            long index_to_insert = [self.pageElements indexOfObject:self.upperPinchView];
             
             [self.upperPinchView removeFromSuperview];
             [self.pageElements removeObject:self.upperPinchView];
@@ -1388,7 +1535,7 @@
     
     if(!self.pageElements.count) return nil;
     
-    int last_index =  self.pageElements.count -1;
+    unsigned long last_index =  self.pageElements.count -1;
     
     if(last_index) return self.pageElements[last_index -1];
     return nil;
@@ -1581,7 +1728,7 @@
 }
 
 
-#pragma mark -convert to pinch circles-
+#pragma mark - Convert to pinch circles -
 
 
 -(void)convertToPincheableObjects
@@ -1616,8 +1763,7 @@
     if(![sender.view isKindOfClass:[verbatmCustomPinchView class]]) return; //only accept touches from pinch objects
 
     verbatmCustomPinchView * pinch_object = (verbatmCustomPinchView *)sender.view;
-    if(pinch_object.hasMultipleMedia)[self openCollection:pinch_object];
-    else [self openElement: pinch_object];
+    if(pinch_object.hasMultipleMedia)[self openCollection:pinch_object];//checks if there is anything to open by telling you if the element has multiple things in it
 }
 
 #pragma mark Open Collection
@@ -1629,7 +1775,7 @@
     
     [collection removeFromSuperview];//clear the scroll view. It's about to be filled by the array's elements
     [self addPinchObjects:element_array toScrollView: scroll_view];
-    [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:collection] withObject:element_array[0]];//check if this breaks anything
+    [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:collection] withObject:element_array[0]];
 }
 
 -(void) addPinchObjects:(NSMutableArray *) array toScrollView: (UIScrollView *) sv
@@ -1651,15 +1797,6 @@
     
     
 }
-
-
-#pragma mark Open element
--(void) openElement: (verbatmCustomPinchView *) view
-{
-    
-}
-
-
 
 
 
