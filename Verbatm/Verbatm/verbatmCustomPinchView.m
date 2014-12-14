@@ -162,8 +162,8 @@
             self.videoView.frame = frame2;
         }
     }else{
-        self.imageViewer.frame = frame1;
-        self.videoView.frame = frame2;
+        self.videoView.frame = frame1;
+        self.imageViewer.frame = frame2;
     }
 }
        
