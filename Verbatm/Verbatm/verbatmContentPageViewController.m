@@ -77,7 +77,7 @@
 #define MAX_WORD_LIMIT 350
 #define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
-#define HORIZONTAL_PINCH_THRESHOLD 20 //distance two fingers must travel for the horizontal pinch to be accepted
+#define HORIZONTAL_PINCH_THRESHOLD 100 //distance two fingers must travel for the horizontal pinch to be accepted
 
 
 
@@ -535,6 +535,7 @@
             {
                 if([string isEqualToString:@""] && words != 0) words--;
             }
+            
             //make sure that the last word is complete by having a space after it
             if(![[string_array lastObject] isEqualToString:@""]) words --;
         }
@@ -892,7 +893,6 @@
         if([sender numberOfTouches] == 2 ) //make sure there are only 2 touches
         {
             self.pinching = YES;
-            
             //sometimes people will rest their hands on the screen so make sure the textviews are selectable
             for (UIView * new_view in self.mainScrollView.pageElements)
             {
@@ -901,14 +901,13 @@
                     ((UITextView *)new_view).selectable = YES;
                 }
             }
-            
             [self handlePinchGestureBegan:sender];
         }
     }
     
     if(sender.state == UIGestureRecognizerStateChanged)
     {
-        if(self.VerticalPinch && self.scrollViewForHorizontalPinchView && [sender numberOfTouches] == 2 && self.pinching)
+        if(!self.VerticalPinch && self.scrollViewForHorizontalPinchView && [sender numberOfTouches] == 2 && self.pinching)
         {
             [self handleHorizontalPincheGestureChanged:sender];
             
@@ -921,6 +920,9 @@
     if(sender.state == UIGestureRecognizerStateEnded)
     {
         self.pinching = NO;
+        self.horizontalPinchDistance =0;//Sanitize the figure
+        self.startLocationOfLeftestTouchPoint = CGPointMake(0, 0);
+        self.startLocationOfRightestTouchPoint = CGPointMake(0, 0);
         if(sender.scale > 1 )
         {
             if(self.createdMediaView.superview.frame.size.height < PINCH_DISTANCE_FOR_ANIMATION)
@@ -929,14 +931,25 @@
             }
         }
         
+        if(self.scrollViewForHorizontalPinchView.subviews.count >1)//check if the stuff was turned into one. If not rearrange
+        {
+            
+            NSArray * array = self.scrollViewForHorizontalPinchView.subviews;
+            //remove the objects fromt their super views so that they can be readded with correct frames
+            for (int i=0; i<array.count; i++) {
+                [(UIView *)array[i] removeFromSuperview];
+            }
+            
+            [self addPinchObjects: [NSMutableArray arrayWithArray:array] toScrollView: self.scrollViewForHorizontalPinchView];
+        }
+        
+        
+        
         [self shiftElementsBelowView:self.articleTitleField];
     }
-
-    
 }
 
 #pragma mark *Pinch Collection Closed
-
 -(void)handleHorizontalPincheGestureChanged:(UIGestureRecognizer *) sender
 {
     
@@ -992,6 +1005,7 @@
     }];
 }
 
+
 -(void)joinOpenElementsToOne
 {
     NSUInteger index =0;
@@ -1002,23 +1016,25 @@
     //Also remove from the scrollview
     for(int i=0; i<pinch_views.count; i++)
     {
-        index = [self.pageElements indexOfObject:pinch_views[i]];
-        if(index != NSNotFound){
+      NSUInteger test_index = [self.pageElements indexOfObject:pinch_views[i]];
+        if(test_index != NSNotFound){
+            index=test_index;
             [self.pageElements removeObject:pinch_views[i]];
         }
         [(UIView *)pinch_views[i] removeFromSuperview];
     }
-    
     
     verbatmCustomPinchView * newView = [verbatmCustomPinchView pinchTogether:[NSMutableArray arrayWithArray:pinch_views]];
     
     self.scrollViewForHorizontalPinchView.contentSize = self.standardContentSizeForPersonalView;
     self.scrollViewForHorizontalPinchView.contentOffset = self.standardContentOffsetForPersonalView;
     
-    CGRect newFrame = CGRectMake(self.closedElement_Center.x - [self.closedElement_Radius intValue], self.closedElement_Center.y + [self.closedElement_Radius intValue], [self.closedElement_Radius intValue]*2, [self.closedElement_Radius intValue]*2);
+    CGRect newFrame = CGRectMake(self.closedElement_Center.x - [self.closedElement_Radius intValue], self.closedElement_Center.y - [self.closedElement_Radius intValue], [self.closedElement_Radius intValue]*2, [self.closedElement_Radius intValue]*2);
+    
     [newView specifyFrame:newFrame];
     
     [self.pageElements insertObject:newView atIndex:index];
+    [self addTapGestureToView:newView];
     
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         [self.scrollViewForHorizontalPinchView addSubview:newView];
@@ -1040,7 +1056,6 @@
     [self addMediaTile: mediaTile underView: self.upperPinchView];
     mediaTile.backgroundColor = [UIColor clearColor];
     self.createdMediaView = mediaTile;
-
 }
 
 //Iain
@@ -1150,6 +1165,7 @@
         {
             self.startLocationOfLeftestTouchPoint = touch1;
             self.startLocationOfRightestTouchPoint = touch2;
+            self.scrollViewForHorizontalPinchView.pagingEnabled =NO;
         }
     }else
     {
@@ -1158,6 +1174,8 @@
         {
             self.startLocationOfLeftestTouchPoint = touch2;
             self.startLocationOfRightestTouchPoint = touch1;
+            self.scrollViewForHorizontalPinchView.pagingEnabled =NO;
+
         }
     }
 }
@@ -1803,7 +1821,6 @@
             x_position += pinch_view.frame.size.width + ELEMENT_OFFSET_DISTANCE;
         }
         sv.contentSize = CGSizeMake(x_position, sv.contentSize.height);
-        sv.pagingEnabled = YES;
     }];
     
     
