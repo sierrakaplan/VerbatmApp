@@ -1017,9 +1017,7 @@
     
     CGRect newFrame = CGRectMake(self.closedElement_Center.x - [self.closedElement_Radius intValue], self.closedElement_Center.y + [self.closedElement_Radius intValue], [self.closedElement_Radius intValue]*2, [self.closedElement_Radius intValue]*2);
     [newView specifyFrame:newFrame];
-    
     [self.pageElements insertObject:newView atIndex:index];
-    
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         [self.scrollViewForHorizontalPinchView addSubview:newView];
     }];
