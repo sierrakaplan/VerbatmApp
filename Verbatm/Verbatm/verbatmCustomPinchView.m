@@ -248,8 +248,9 @@
 //This merges two verbatm pinch objects into one. 
 +(verbatmCustomPinchView*)pinchTogether:(NSMutableArray*)to_be_merged
 {
-    if(to_be_merged.count < 2) return nil;
+    if(to_be_merged.count == 0) return nil;
     verbatmCustomPinchView* result = (verbatmCustomPinchView*)[to_be_merged firstObject];
+    if(to_be_merged.count == 1) return result;
     for(int i = 1; i < to_be_merged.count; i++){
         verbatmCustomPinchView* pinchObject = (verbatmCustomPinchView*)[to_be_merged objectAtIndex:i];
         [result.media addObjectsFromArray: pinchObject.media];

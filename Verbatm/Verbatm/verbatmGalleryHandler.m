@@ -55,10 +55,10 @@
         self.media = [[NSMutableArray alloc] init];
         self.mediaImageViews = [[NSMutableArray alloc] init];
         self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
-        //set up the activity indicator
-        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhite];
-        self.activityIndicator.frame = CGRectMake(self.view.frame.origin.x + (self.view.frame.size.width/2 - ACTIVITY_INDICATOR_SIZE/2), self.view.frame.origin.y + ACTIVITY_INDICATOR_SIZE, ACTIVITY_INDICATOR_SIZE, ACTIVITY_INDICATOR_SIZE);
-        [self.view addSubview:self.activityIndicator];
+//        //set up the activity indicator
+//        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhite];
+//        self.activityIndicator.frame = CGRectMake(self.view.frame.origin.x + (self.view.frame.size.width/2 - ACTIVITY_INDICATOR_SIZE/2), self.view.frame.origin.y + ACTIVITY_INDICATOR_SIZE, ACTIVITY_INDICATOR_SIZE, ACTIVITY_INDICATOR_SIZE);
+//        [self.view addSubview:self.activityIndicator];
         //get the verbatm folder
         [self getVerbatmMediaFolder];
         [self createScrollView];
@@ -104,9 +104,6 @@
 
 - (void)presentGallery
 {
-    [self.activityIndicator startAnimating];
-    [self loadMediaUntoScrollView];
-    [self.activityIndicator stopAnimating];
     [self lowerScrollView];
    // [self.customDelegate didPresentGallery];
 }
@@ -245,7 +242,6 @@
                                               NSLog(@"found album %@", ALBUM_NAME);
                                               weakSelf.verbatmFolder = group;
                                               [self fillArrayWithMedia];
-                                              [self loadMediaUntoScrollView];
                                               return;
                                           }
                                       }
@@ -255,22 +251,22 @@
 }
 
 //by Lucio
-//Fills array with the media gotte from the verbatm folder
+//Fills array with the media gotten from the verbatm folder
+//this is done on another queue so as not to block the main queue
 -(void)fillArrayWithMedia
 {
-//    dispatch_queue_t otherQ = dispatch_queue_create("Load media queue", NULL);
-//    dispatch_async(otherQ, ^{
-//       
-//    });
-    
+    dispatch_queue_t otherQ = dispatch_queue_create("Load media queue", NULL);
     __weak verbatmGalleryHandler* weakSelf = self;
-    [self.verbatmFolder enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-        if(result){
-            [weakSelf.media insertObject:result atIndex:0] ;
-        }else{
-            *stop = YES;
-        }
-    }];
+    dispatch_async(otherQ, ^{
+        [self.verbatmFolder enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+            if(result){
+                [weakSelf.media insertObject:result atIndex:0] ;
+            }else{
+                *stop = YES;
+            }
+        }];
+        [self loadMediaUntoScrollView];
+    });
     
 }
 
@@ -286,11 +282,6 @@
         [UIView animateWithDuration:0.8 animations:^{
             CGRect viewSize = selectedImageView.frame;
             selectedImageView.frame = (location.x < self.view.frame.size.width/ 2)? CGRectMake(START_POSITION_FOR_MEDIA) : CGRectMake(START_POSITION_FOR_MEDIA2);
-            //            [UIView animateWithDuration: 0.1 animations:^{
-            //                [selectedImageView removeFromSuperview];
-            //                selectedImageView.frame = CGRectMake(POSITION_TO_SWIPE_TO);
-            //                [self.view addSubview: selectedImageView];
-            //            }];
             [self.mediaImageViews removeObject: selectedImageView];
             for(; indexa < self.mediaImageViews.count; indexa++){
                 ((UIImageView*)[self.mediaImageViews objectAtIndex:indexa]).frame = viewSize;
@@ -314,13 +305,6 @@
     UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
     CGRect viewSize = CGRectOffset(((UIImageView*)[self.media lastObject]).frame, (self.scrollView.frame.size.width - OFFSET)/2, 0);
     imageView.frame = viewSize;
-    //        if( [[asset valueForProperty:@"ALAssetPropertyType"] isEqualToString:@"ALAssetTypeVideo"]){
-    //            CALayer* playIconLayer = [[CALayer alloc] init];
-    //            playIconLayer.backgroundColor = [[UIColor clearColor]CGColor];
-    //            playIconLayer.bounds = imageView.frame;
-    //            [playIconLayer setContents: (__bridge id)[UIImage imageNamed:PLAY_VIDEO_ICON].CGImage];
-    //            [imageView.layer addSublayer:playIconLayer];
-    //        }
     viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
     [self.mediaImageViews addObject: imageView];
     [self.scrollView addSubview: imageView];

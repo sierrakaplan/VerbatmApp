@@ -15,7 +15,7 @@
 #import "verbatmContentPageViewController.h"
 #import "verbatmBlurBaseViewController.h"
 
-@interface verbatmMediaPageViewController () <UITextFieldDelegate, verbatmContentPageVCDelegate>
+@interface verbatmMediaPageViewController () <UITextFieldDelegate>
 #pragma mark - Outlets -
     @property (weak, nonatomic) IBOutlet UIView *pullBar;//the outlets
     @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
@@ -238,7 +238,6 @@
     //set yourself as the delegate for textfields
     self.whatSandwich.delegate = self;
     self.whereSandwich.delegate = self;
-    self.vc_contentPage.customDelegate = self;
 }
 
 //gives the placeholders a white color
@@ -529,7 +528,7 @@
     [self clearVideoProgressImage];  //removes the video progress bar
     [self.timer invalidate];
     self.counter = 0;
-    [self freezeFrame];
+//    [self freezeFrame];
     [self.videoProgressImageView removeFromSuperview];
 }
 
@@ -591,6 +590,7 @@
 }
 
 #pragma mark - Transition 
+
 //Move the pull bar down- gestures sensed
 - (IBAction)expandContentPage:(UIPanGestureRecognizer *)sender
 {
@@ -635,6 +635,7 @@
              [self positionPullBarTransitionDown:YES];//psotions the pullbar to the right frame
              
          }];
+        [self.vc_contentPage alertGallery];
     }else //snap the container view back up to no MSAV
     {
         [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^

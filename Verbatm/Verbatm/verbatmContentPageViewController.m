@@ -1798,6 +1798,19 @@
     
 }
 
+#pragma mark Open element
+-(void) openElement: (verbatmCustomPinchView *) view
+{
+    
+}
+
+
+#pragma mark - alert the gallery -
+
+-(void)alertGallery
+{
+    [self.gallery fillArrayWithMedia];
+}
 
 
 
