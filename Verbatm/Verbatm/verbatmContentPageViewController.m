@@ -179,19 +179,18 @@
         // TODO: Add fall-back code to set placeholder color.
     }
     
-//    if ([self.articleTitleField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-//        UIColor *color = [UIColor whiteColor];
-//        self.articleTitleField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.articleTitleField.placeholder attributes:@{NSForegroundColorAttributeName: color}];
-//    } else {
-//        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-//        // TODO: Add fall-back code to set placeholder color.
-//    }
+    if ([self.articleTitleField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+        UIColor *color = [UIColor whiteColor];
+        self.articleTitleField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.articleTitleField.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+    } else {
+        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+        // TODO: Add fall-back code to set placeholder color.
+    }
 
 }
 
 -(void) addBlurView
 {
-
     ILTranslucentView* blurView = [[ILTranslucentView alloc]init];
     blurView.frame = self.view.frame;
     blurView.translucentStyle = UIBarStyleBlack;
@@ -219,22 +218,26 @@
     //app cycle
     if(self.pageElements.count==1 && [[self.pageElements firstObject] isKindOfClass:[UITextView class]])
     {
-        CGRect frame = CGRectMake(self.defaultOpenElementFrame.origin.x,
-                                  ELEMENT_OFFSET_DISTANCE/2,
-                                  self.defaultOpenElementFrame.size.width,
-                                  self.defaultOpenElementFrame.size.width/2);
-        
-        self.baseMediaTileSelector.frame = frame;
-        self.baseMediaTileSelector.baseSelector =YES;
-        self.baseMediaTileSelector.customDelegate = self;
-        [self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
-        if(self.pageElements.count ==1) [self addView:self.baseMediaTileSelector underView:self.firstContentPageTextBox];
+        [self creatBaseSelector];
     }
     
     //record the mainview of the first text view
     self.firstContentPageTextBox.mainScrollView = self.mainScrollView;
 }
 
+-(void) creatBaseSelector
+{
+    CGRect frame = CGRectMake(self.defaultOpenElementFrame.origin.x,
+                              ELEMENT_OFFSET_DISTANCE/2,
+                              self.defaultOpenElementFrame.size.width,
+                              self.defaultOpenElementFrame.size.width/2);
+    
+    self.baseMediaTileSelector.frame = frame;
+    self.baseMediaTileSelector.baseSelector =YES;
+    self.baseMediaTileSelector.customDelegate = self;
+    [self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
+    if(self.pageElements.count ==1) [self addView:self.baseMediaTileSelector underView:self.firstContentPageTextBox];
+}
 
 
 //Iain
@@ -243,8 +246,8 @@
 -(void)set_openElement_defaultframe
 {
     //create appropriate generic frame for new textview and save as default
-    self.defaultOpenElementFrame  = CGRectMake(self.view.frame.size.width+VIEW_WALL_OFFSET, ELEMENT_OFFSET_DISTANCE/2, self.articleTitleField.frame.size.width, self.firstContentPageTextBox.frame.size.height);
-    self.firstContentPageTextBox.frame = self.defaultOpenElementFrame ;
+    self.defaultOpenElementFrame  = CGRectMake(self.view.frame.size.width+VIEW_WALL_OFFSET, ELEMENT_OFFSET_DISTANCE/2, self.firstContentPageTextBox.frame.size.width, self.firstContentPageTextBox.frame.size.height);
+    self.firstContentPageTextBox.frame = self.defaultOpenElementFrame;
     
     //create appropriate frame for personal scrollview and save as default
     self.defaultPersonalScrollViewFrameSize_openElement = CGSizeMake(self.view.frame.size.width, self.defaultOpenElementFrame.size.height+ELEMENT_OFFSET_DISTANCE);
@@ -369,6 +372,7 @@
     if([string isEqualToString:@" "]  && textField != self.articleTitleField) return NO;
     return YES;
 }
+
 //Iain
 -(BOOL) textFieldShouldReturn:(UITextField *)textField
 {
@@ -433,12 +437,9 @@
 {
     //Adjust the bounds of the text view
     [self adjustBoundsOfTextView:(verbatmUITextView *)textView updateSCandSE:YES];
-    
     //Edit word count
     [self editWordCount];
-    
 }
-
 
 //Iain
 //Called when user types an input into the textview
@@ -448,7 +449,6 @@
     if([text isEqualToString:@"\n"])
     {
         [self adjustBoundsOfTextView:(verbatmUITextView *)textView updateSCandSE:YES];//resize the textview
-        
         [self createNewTextViewBelowView:textView]; //add a new text view below this one
         [self updateScrollViewPosition]; //make sure we scroll to the new textview
         return NO;
@@ -471,7 +471,6 @@
     //adjust bounds of textView to best size for it with respect to the content inside
     if((yCordinateOfBaseOfActiveView - yCoordinateOfCaretRelativeToMainView)< CURSOR_BASE_GAP)
     {
-        
         textView.frame = [self calculateBoundsForOpenTextView:textView];
         textView.superview.frame = [self calculateBoundsForScrollViewForView:textView];
         ((UIScrollView *)(textView.superview)).contentSize = self.standardContentSizeForPersonalView;
@@ -480,6 +479,7 @@
     //make sure scroll is appropriately positioned
     if(update)[self updateScrollViewPosition]; //make sure this isn't happening rapidly
 }
+
 
 //Iain
 //Calculate the appropriate bounds for the text view
@@ -496,7 +496,6 @@
 
 
 #pragma mark Caret within TextView
-//Iain
 //Update the stored position of the carret within the textview it's in
 -(void) updateCaretPositionInView: (verbatmUITextView *) view
 {
