@@ -178,6 +178,15 @@
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
     }
+    
+//    if ([self.articleTitleField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+//        UIColor *color = [UIColor whiteColor];
+//        self.articleTitleField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.articleTitleField.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+//    } else {
+//        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
+//        // TODO: Add fall-back code to set placeholder color.
+//    }
+
 }
 
 -(void) addBlurView

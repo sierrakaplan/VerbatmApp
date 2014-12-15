@@ -101,11 +101,10 @@
                             <scrollView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ChT-rO-Rpn" customClass="verbatmCustomScrollView">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <subviews>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" placeholder="Title" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xnF-wL-Coq">
-                                        <rect key="frame" x="20" y="88" width="280" height="38"/>
-                                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Title" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xnF-wL-Coq">
+                                        <rect key="frame" x="20" y="82" width="280" height="30"/>
                                         <color key="tintColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
                                     </textField>
@@ -185,26 +184,6 @@
                 </pinchGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-1344" y="-994"/>
-        </scene>
-        <!--Pinch Page-->
-        <scene sceneID="VaF-WL-Mu1">
-            <objects>
-                <viewController title="Pinch Page" id="1gf-PD-cun" customClass="verbatmPinchPageViewController" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="6fk-hJ-kkW"/>
-                        <viewControllerLayoutGuide type="bottom" id="IHd-u9-pND"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="yoA-Mm-JtV" customClass="ILTranslucentView">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    </view>
-                    <connections>
-                        <outlet property="blurView" destination="yoA-Mm-JtV" id="jlW-at-RFB"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="f60-WU-Dmt" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-1344" y="-333"/>
         </scene>
     </scenes>
     <resources>

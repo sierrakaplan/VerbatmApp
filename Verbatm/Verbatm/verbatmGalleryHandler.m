@@ -316,7 +316,7 @@
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     view.frame = viewSize;
     for(verbatmCustomImageView* otherView in self.mediaImageViews){
-        otherView.frame = CGRectOffset(view.frame,  (self.scrollView.frame.size.width - OFFSET)/2, 0);
+        otherView.frame = CGRectOffset(otherView.frame,  (self.scrollView.frame.size.width - OFFSET)/2, 0);
     }
     [self.mediaImageViews addObject: view];
     [self.scrollView addSubview: view];

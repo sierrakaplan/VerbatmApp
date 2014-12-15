@@ -26,7 +26,6 @@
 		C78B682A19CA6C22003D0AC5 /* verbatmGalleryHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */; };
 		C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F219A96E0B00CE861F /* Photo.m */; };
 		C7A8A7F619A96E1B00CE861F /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F519A96E1B00CE861F /* Video.m */; };
-		C7BB0B9E19E2189000C6A750 /* verbatmPinchPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BB0B9D19E2189000C6A750 /* verbatmPinchPageViewController.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */; };
 		C7BC437A199D97F5004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
@@ -100,8 +99,6 @@
 		C7A8A7F219A96E0B00CE861F /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Photo.m; sourceTree = "<group>"; };
 		C7A8A7F419A96E1B00CE861F /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
 		C7A8A7F519A96E1B00CE861F /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Video.m; sourceTree = "<group>"; };
-		C7BB0B9C19E2189000C6A750 /* verbatmPinchPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmPinchPageViewController.h; sourceTree = "<group>"; };
-		C7BB0B9D19E2189000C6A750 /* verbatmPinchPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmPinchPageViewController.m; sourceTree = "<group>"; };
 		C7BC4372199D97F5004B91A1 /* Verbatm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Verbatm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BC4375199D97F5004B91A1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -197,8 +194,6 @@
 			isa = PBXGroup;
 			children = (
 				C7BC4387199D97F5004B91A1 /* Main.storyboard */,
-				C7BB0B9C19E2189000C6A750 /* verbatmPinchPageViewController.h */,
-				C7BB0B9D19E2189000C6A750 /* verbatmPinchPageViewController.m */,
 				C7CCFFA919CFA74D00E90080 /* verbatmBlurBaseViewController.h */,
 				C7CCFFAA19CFA74D00E90080 /* verbatmBlurBaseViewController.m */,
 				C734FD9A19B14B8D00B2C370 /* verbatmContentPageViewController.h */,
@@ -470,7 +465,6 @@
 				C78B682619CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m in Sources */,
 				C7F18D851A05C0EE0002255B /* verbatmTextField.m in Sources */,
 				C7CCFFAB19CFA74D00E90080 /* verbatmBlurBaseViewController.m in Sources */,
-				C7BB0B9E19E2189000C6A750 /* verbatmPinchPageViewController.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* verbatmCustomScrollView.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* verbatmCustomPinchView.m in Sources */,
 				C7A8A7F619A96E1B00CE861F /* Video.m in Sources */,
