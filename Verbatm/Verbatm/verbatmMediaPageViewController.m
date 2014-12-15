@@ -336,9 +336,6 @@
 //Lucio
 - (IBAction)takePhoto:(id)sender
 {
-    CGPoint point = [self.takePhotoGesture locationInView:self.verbatmCameraView];
-    if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
-    
     [self.sessionManager captureImage: !self.canRaise];
     dispatch_queue_t loadMediaQueue = dispatch_queue_create("load media queue", NULL);
     dispatch_async(loadMediaQueue, ^{
