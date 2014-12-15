@@ -1658,6 +1658,7 @@
         if( [view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo){
             AVPlayerLayer* playerLayer = [view.layer.sublayers lastObject];
             playerLayer.frame = view.bounds;
+            view.layer.masksToBounds = YES;
         }
     } completion:^(BOOL finished) {
         if(finished)
