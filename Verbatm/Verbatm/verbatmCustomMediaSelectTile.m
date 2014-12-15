@@ -88,6 +88,7 @@
 
 -(void)addDashedBorder
 {
+    self.dashed = YES;
     self.dashedView = [[verbatmDashLineView alloc]initWithFrame:self.bounds];
     [self.selectText removeFromSuperview];
     [self.selectMedia removeFromSuperview];
@@ -95,5 +96,17 @@
     [self addSubview:self.dashedView];
     
 }
+
+//get rid of the dashed lines and return the options
+-(void) returnToButtonView
+{
+    [self.dashedView removeFromSuperview];
+    [self addSubview:self.selectMedia];
+    [self addSubview:self.selectText];
+    self.dashed = NO;
+    
+}
+
+
 
 @end

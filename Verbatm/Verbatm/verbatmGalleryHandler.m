@@ -25,14 +25,13 @@
 #define OFFSET 15
 #define PLAY_VIDEO_ICON @"videoPreview_play_icon"
 #define POSITION_TO_SWIPE_TO 50, self.view.frame.size.height/2 + 50, selectedImageView.frame.size.width -50, selectedImageView.frame.size.height - 50
-#define DROP_FROM_COORDINATES 0,-400, self.view.frame.size.width, self.view.frame.size.height/3
+#define DROP_FROM_COORDINATES 0,-400, self.view.frame.size.width, (self.view.frame.size.width*2/3)//self.view.frame.size.height/3
 #define VERTICAL_OFFSET 400
-#define START_POSITION_FOR_MEDIA OFFSET, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2  , self.scrollView.frame.size.height - 2*OFFSET
-#define CONTENT_SIZE self.scrollView.frame.size.width*self.media.count/2 -  2*OFFSET, self.view.frame.size.height/3
+#define START_POSITION_FOR_MEDIA OFFSET, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2, self.scrollView.frame.size.height - 2*OFFSET
+#define CONTENT_SIZE self.scrollView.frame.size.width*self.media.count/2 -  2*OFFSET, (self.view.frame.size.width*2/3)//self.view.frame.size.height/3
 #define START_POSITION_FOR_MEDIA2   (self.scrollView.frame.size.width + OFFSET)/2, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2  , self.scrollView.frame.size.height - 2*OFFSET
 #define BACKGROUND @"background"
 #define SCROLLVIEW_ALPHA 0.5
-#define ACTIVITY_INDICATOR_SIZE 30
 @end
 
 @implementation verbatmGalleryHandler
@@ -308,6 +307,7 @@
 
 -(void)returnToGallery:(verbatmCustomImageView*)view
 {
+    [view removeFromSuperview];
     [self.media addObject: view.asset];
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     view.frame = viewSize;

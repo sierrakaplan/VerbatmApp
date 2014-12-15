@@ -1697,9 +1697,9 @@
 
 -(void)didSelectImageView:(verbatmCustomImageView*)imageView
 {
+    if(self.baseMediaTileSelector.dashed) [self.baseMediaTileSelector returnToButtonView];
     [self.view addSubview:imageView];
     [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
-
 }
 
 -(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView
