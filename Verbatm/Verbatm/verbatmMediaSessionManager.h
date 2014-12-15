@@ -10,7 +10,13 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
+@protocol verbatmMediaSessionManagerDelegate<NSObject>
+@required
+//notifies any one conforming to the protocol that an asset has been saved.
+-(void)didFinishSavingMediaToAsset:(ALAsset*)asset;
+@end
 @interface verbatmMediaSessionManager : NSObject
+
 
 -(instancetype)initSessionWithView:(UIView*)containerView;
 -(void)captureImage:(BOOL)halfScreen;
@@ -23,4 +29,5 @@
 -(void)startSession;
 -(void)stopSession;
 @property(strong, nonatomic) NSURL* outputurl;
+@property (nonatomic, strong) id<verbatmMediaSessionManagerDelegate> delegate;
 @end

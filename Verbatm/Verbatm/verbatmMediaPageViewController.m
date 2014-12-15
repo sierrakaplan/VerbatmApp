@@ -238,6 +238,7 @@
     //set yourself as the delegate for textfields
     self.whatSandwich.delegate = self;
     self.whereSandwich.delegate = self;
+    self.sessionManager.delegate = self;
 }
 
 //gives the placeholders a white color
@@ -336,15 +337,7 @@
 //Lucio
 - (IBAction)takePhoto:(id)sender
 {
-    CGPoint point = [self.takePhotoGesture locationInView:self.verbatmCameraView];
-    if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
-    
     [self.sessionManager captureImage: !self.canRaise];
-    dispatch_queue_t loadMediaQueue = dispatch_queue_create("load media queue", NULL);
-    dispatch_async(loadMediaQueue, ^{
-        [self.vc_contentPage alertGallery];
-    });
-    //[NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
 }
 
 //Lucio
@@ -854,10 +847,11 @@
 
 
 
-
-
-
-
+#pragma mark - delegate method for media session class -
+-(void)didFinishSavingMediaToAsset:(ALAsset*)asset
+{
+    [self.vc_contentPage alertGallery: asset];
+}
 @end
 
 

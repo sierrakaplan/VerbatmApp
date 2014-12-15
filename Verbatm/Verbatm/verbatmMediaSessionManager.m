@@ -388,6 +388,7 @@
                                            resultBlock:^(ALAsset *asset) {
                                                [self.verbatmAlbum addAsset:asset];
                                                NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+                                               [self.delegate didFinishSavingMediaToAsset:asset];
                                            }
                                           failureBlock:^(NSError* error) {
                                               NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
@@ -446,7 +447,6 @@
         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
         [self processImage:[[UIImage alloc] initWithData:dataForImage] isHalfScreen: halfScreen];
         [self saveImageToVerbatmAlbum];
-        [self.session stopRunning];
     }];
 }
 
@@ -468,6 +468,7 @@
                                                                    // assign the photo to the album
                                                                    [self.verbatmAlbum addAsset:asset];
                                                                    NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+                                                                   [self.delegate didFinishSavingMediaToAsset:asset];
                                                                }
                                                               failureBlock:^(NSError* error) {
                                                                   NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);

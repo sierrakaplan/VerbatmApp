@@ -1844,9 +1844,9 @@
 
 #pragma mark - alert the gallery -
 
--(void)alertGallery
+-(void)alertGallery:(ALAsset*)asset
 {
-    [self.gallery fillArrayWithMedia];
+    [self.gallery addMediaToGallery:asset];
 }
 
 
