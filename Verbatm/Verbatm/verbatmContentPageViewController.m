@@ -77,6 +77,9 @@
 #define MAX_WORD_LIMIT 350
 #define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
+#define HORIZONTAL_PINCH_THRESHOLD 20 //distance two fingers must travel for the horizontal pinch to be accepted
+
+
 
 #pragma mark Default frame properties
 @property (nonatomic) CGRect defaultOpenElementFrame;
@@ -116,7 +119,7 @@
 @property(nonatomic) CGPoint startLocationOfLeftestTouchPoint;
 @property (nonatomic) CGPoint startLocationOfRightestTouchPoint;
 @property (nonatomic, strong) UIScrollView * scrollViewForHorizontalPinchView;
-
+@property (nonatomic) NSInteger horizontalPinchDistance;
 
 #pragma mark Vertical Pinch Gesture Related Properties
 @property (nonatomic) BOOL VerticalPinch;
@@ -886,27 +889,29 @@
 
     if (sender.state == UIGestureRecognizerStateBegan)
     {
-        self.pinching = YES;
-        
-        //sometimes people will rest their hands on the screen so make sure the textviews are selectable
-        for (UIView * new_view in self.mainScrollView.pageElements)
-        {
-            if([new_view isKindOfClass:[UITextView class]])
-            {
-                ((UITextView *)new_view).selectable = YES;
-            }
-        }
         if([sender numberOfTouches] == 2 ) //make sure there are only 2 touches
         {
+            self.pinching = YES;
+            
+            //sometimes people will rest their hands on the screen so make sure the textviews are selectable
+            for (UIView * new_view in self.mainScrollView.pageElements)
+            {
+                if([new_view isKindOfClass:[UITextView class]])
+                {
+                    ((UITextView *)new_view).selectable = YES;
+                }
+            }
+            
             [self handlePinchGestureBegan:sender];
         }
     }
     
     if(sender.state == UIGestureRecognizerStateChanged)
     {
-        if(self.VerticalPinch && self.scrollViewForHorizontalPinchView)
+        if(self.VerticalPinch && self.scrollViewForHorizontalPinchView && [sender numberOfTouches] == 2 && self.pinching)
         {
             [self handleHorizontalPincheGestureChanged:sender];
+            
         }else if (self.lowerPinchView && self.upperPinchView && [sender numberOfTouches] == 2 && self.pinching)
         {
             [self handleVerticlePinchGestureChanged:sender];
@@ -921,12 +926,6 @@
             if(self.createdMediaView.superview.frame.size.height < PINCH_DISTANCE_FOR_ANIMATION)
             {
                 [self clearNewMediaView]; //new media creation has failed
-            }
-        }else
-        {
-            if(!self.VerticalPinch && (self.scrollViewForHorizontalPinchView.subviews.count >1))//still needs work
-            {
-                [self joinOpenElementsToOne];
             }
         }
         
@@ -951,6 +950,7 @@
         self.startLocationOfRightestTouchPoint = touch1;
         self.startLocationOfLeftestTouchPoint = touch2;
         [self moveViewsWithLeftDifference:left_most_difference andRightDifference:right_most_difference];
+        self.horizontalPinchDistance += (left_most_difference + abs(right_most_difference));
     }else
     {
         int left_most_difference = touch1.x- self.startLocationOfLeftestTouchPoint.x;
@@ -958,6 +958,13 @@
         self.startLocationOfRightestTouchPoint = touch2;
         self.startLocationOfLeftestTouchPoint = touch1;
         [self moveViewsWithLeftDifference:left_most_difference andRightDifference:right_most_difference];
+        self.horizontalPinchDistance += (left_most_difference + abs(right_most_difference));
+    }
+    
+    if(self.horizontalPinchDistance > HORIZONTAL_PINCH_THRESHOLD)//they have pinched enough to join the objects
+    {
+        [self joinOpenElementsToOne];
+        self.pinching = NO;//not that pinching should be done now
     }
 }
 
