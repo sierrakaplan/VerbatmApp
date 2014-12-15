@@ -303,8 +303,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1719"
             endingLineNumber = "1719"
-            landmarkName = "-undoTileSwipe:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1005,8 +1005,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1243"
             endingLineNumber = "1243"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-findMidPointBetween:and:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1209,8 +1209,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1248"
             endingLineNumber = "1248"
-            landmarkName = "-findElementsFromPinchPoint:andLowerTouchPoint:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2025,8 +2025,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1619"
             endingLineNumber = "1619"
-            landmarkName = "-numberOfWordsLeft"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2041,8 +2041,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1711"
             endingLineNumber = "1711"
-            landmarkName = "-deletedTile:withIndex:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2089,8 +2089,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1619"
             endingLineNumber = "1619"
-            landmarkName = "-numberOfWordsLeft"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2185,8 +2185,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1048"
             endingLineNumber = "1048"
-            landmarkName = "-createNewViewToRevealBetweenPinchViews"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2517,7 +2517,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1630"
             endingLineNumber = "1630"
-            landmarkName = "-pageElements"
+            landmarkName = "-activeTextView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

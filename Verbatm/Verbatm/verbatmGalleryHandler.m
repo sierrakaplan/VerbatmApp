@@ -21,7 +21,6 @@
 @property (strong, nonatomic) UICollisionBehavior* collider;
 @property (strong, nonatomic) UIDynamicItemBehavior* elasticityBehavior;
 @property (strong, nonatomic) UIView* view;
-@property (strong, nonatomic) UIActivityIndicatorView* activityIndicator;
 #define ALBUM_NAME @"Verbatm"
 #define OFFSET 15
 #define PLAY_VIDEO_ICON @"videoPreview_play_icon"
@@ -55,10 +54,6 @@
         self.media = [[NSMutableArray alloc] init];
         self.mediaImageViews = [[NSMutableArray alloc] init];
         self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
-//        //set up the activity indicator
-//        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhite];
-//        self.activityIndicator.frame = CGRectMake(self.view.frame.origin.x + (self.view.frame.size.width/2 - ACTIVITY_INDICATOR_SIZE/2), self.view.frame.origin.y + ACTIVITY_INDICATOR_SIZE, ACTIVITY_INDICATOR_SIZE, ACTIVITY_INDICATOR_SIZE);
-//        [self.view addSubview:self.activityIndicator];
         //get the verbatm folder
         [self getVerbatmMediaFolder];
         [self createScrollView];
@@ -258,10 +253,6 @@
 //this is done on another queue so as not to block the main queue
 -(void)fillArrayWithMedia
 {
-//    dispatch_queue_t otherQ = dispatch_queue_create("Load media queue", NULL);
-//    dispatch_async(otherQ, ^{
-//        
-//    });
     __weak verbatmGalleryHandler* weakSelf = self;
     [self.verbatmFolder enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
         if(result){
