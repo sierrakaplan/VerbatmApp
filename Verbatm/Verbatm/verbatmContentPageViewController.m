@@ -876,6 +876,7 @@
 }
 
 #pragma mark - Pinch Gesture -
+
 #pragma mark  Sensing Pinch
 //pinch open to add new element
 - (IBAction)addElementPinchGesture:(UIPinchGestureRecognizer *)sender
@@ -903,7 +904,6 @@
     
     if(sender.state == UIGestureRecognizerStateChanged)
     {
-        
         if(self.VerticalPinch && self.scrollViewForHorizontalPinchView)
         {
             [self handleHorizontalPincheGestureChanged:sender];
@@ -1650,6 +1650,10 @@
     
     [UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
         view.frame = frame;
+        if( [view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo){
+            AVPlayerLayer* playerLayer = [view.layer.sublayers lastObject];
+            playerLayer.frame = view.bounds;
+        }
     } completion:^(BOOL finished) {
         if(finished)
         {

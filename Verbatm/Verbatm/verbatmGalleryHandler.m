@@ -263,9 +263,9 @@
                 [weakSelf.media insertObject:result atIndex:0] ;
             }else{
                 *stop = YES;
+                [weakSelf loadMediaUntoScrollView];
             }
         }];
-        [self loadMediaUntoScrollView];
     });
     
 }
@@ -278,6 +278,7 @@
     __block int indexa = ceil((self.scrollView.contentOffset.x + location.x)/((self.scrollView.frame.size.width - OFFSET)/2)) - 1;
     verbatmCustomImageView* selectedImageView ;
     if(self.mediaImageViews.count >= 1)selectedImageView = [self.mediaImageViews objectAtIndex:indexa];
+    int temp = indexa;
     if(selectedImageView){
         [UIView animateWithDuration:0.8 animations:^{
             CGRect viewSize = selectedImageView.frame;
@@ -291,7 +292,7 @@
         }];
         [selectedImageView removeFromSuperview];
         [self.customDelegate didSelectImageView:selectedImageView];
-        [self.media removeObjectAtIndex:indexa];
+        [self.media removeObjectAtIndex:temp];
     }
 }
 
