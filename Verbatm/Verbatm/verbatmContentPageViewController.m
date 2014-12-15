@@ -152,12 +152,24 @@
     //set up gallery
     self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
     
+    
+}
+
+
+//Iain
+-(void) viewWillAppear:(BOOL)animated
+{
+    
     //add blurview
     [self addBlurView];
     [self setPlaceholderColors];
     [self set_PersonalScrollView_ContentSizeandOffset];
     [self set_openElement_defaultframe];
     [self addOriginalViewsToPageElementsArray];
+    
+    [super viewDidAppear:YES];
+    [self configureViews];
+    self.pinching = NO;//initialise pinching to no
 }
 
 
@@ -281,13 +293,6 @@
 
 }
 
-//Iain
--(void) viewWillAppear:(BOOL)animated
-{
-    [super viewDidAppear:YES];
-    [self configureViews];
-    self.pinching = NO;//initialise pinching to no
-}
 
 //Iain
 //Set up views
@@ -583,6 +588,7 @@
     
     [self updateCaretPositionInView:self.activeTextView];//ensure that the caret is up to date
     
+    
     //get y-position of caret relative to main view
     NSInteger contentOffSet = self.mainScrollView.contentOffset.y ;
     NSInteger screenHeight =self.view.frame.size.height;
@@ -694,7 +700,7 @@
 
 
 
-#pragma mark -Shift Positions of Elements-
+#pragma mark - Shift Positions of Elements -
 
 //Once view is added- we make sure the views below it are appropriately adjusted
 //in position
@@ -790,6 +796,8 @@
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
+    if(scrollView.subviews.count >1) return; /* this is a scrollview with an open collection so you can swipe away anything*/
+    
     if(scrollView != self.mainScrollView && !self.pinching && [self.pageElements count] >1 && scrollView != ((UIView *)[self.pageElements lastObject]).superview  )//make sure you are not mixing it up with the virtical scroll of the main scroll view
     {
         if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x)//If the view is scrolled left/right and not centered
@@ -840,6 +848,11 @@
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
     
+    if(scrollView == self.mainScrollView)
+    {
+        
+    }
+    
     //change the background color of the element being deleted to highlight that it's being deleted
     if(scrollView != self.mainScrollView)
     {
@@ -874,7 +887,6 @@
 {
     [self removeKeyboardFromScreen];
     [self convertToPincheableObjects];
-    
 }
 
 //Iain
@@ -902,6 +914,7 @@
     self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
     [self updateScrollViewPosition];
 }
+
 
 #pragma mark - Pinch Gesture -
 
@@ -965,6 +978,7 @@
         [self shiftElementsBelowView:self.articleTitleField];
     }
 }
+
 
 #pragma mark *Pinch Collection Closed
 -(void)handleHorizontalPincheGestureChanged:(UIGestureRecognizer *) sender
@@ -1055,8 +1069,8 @@
     }];
 }
 
-#pragma mark *Pinch Apart/Add a media tile
 
+#pragma mark *Pinch Apart/Add a media tile
 
 #pragma mark Create New Tile
 //Iain
