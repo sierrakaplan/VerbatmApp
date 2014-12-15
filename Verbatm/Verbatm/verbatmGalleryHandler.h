@@ -26,7 +26,7 @@
 - (verbatmGalleryHandler *)initWithView:(UIView*)view;
 - (void)presentGallery;
 -(void)dismissGallery;
--(void)returnToGallery:(ALAsset*)asset;
+-(void)returnToGallery:(verbatmCustomImageView*)view;
 -(void)fillArrayWithMedia;
 @property (nonatomic, strong) id<verbatmGalleryHandlerDelegate> customDelegate;
 

@@ -333,4 +333,9 @@
 {
     return self.media.count > 1;
 }
+
+-(NSMutableArray*)mediaObjects
+{
+    return self.media;
+}
 @end

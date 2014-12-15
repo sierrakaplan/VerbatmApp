@@ -292,10 +292,10 @@
     }
 }
 
--(void)returnToGallery:(ALAsset*)asset
+-(void)returnToGallery:(verbatmCustomImageView*)view
 {
-    [self.media addObject:asset];
-    ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
+    [self.media addObject: view.asset];
+    ALAssetRepresentation *assetRepresentation = [view.asset defaultRepresentation];
     UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
                                          scale:[assetRepresentation scale]
                                    orientation:UIImageOrientationUp];

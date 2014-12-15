@@ -66,6 +66,10 @@
 //This applies, whether it is a collection or not.
 -(BOOL)hasMultipleMedia;
 
+//returns all the verbatmCustomImageViews that make up the media of the pinch
+//object.
+-(NSMutableArray*)mediaObjects;
+
 
 
 @property (readonly,nonatomic) BOOL there_is_text;
