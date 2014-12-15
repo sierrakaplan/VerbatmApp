@@ -27,7 +27,7 @@
 - (void)presentGallery;
 -(void)dismissGallery;
 -(void)returnToGallery:(verbatmCustomImageView*)view;
--(void)fillArrayWithMedia;
+-(void)addMediaToGallery:(ALAsset*)asset;
 @property (nonatomic, strong) id<verbatmGalleryHandlerDelegate> customDelegate;
 
 @end

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "verbatmUITextView.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 
 
 @interface verbatmContentPageViewController : UIViewController
@@ -23,7 +24,7 @@
 
 -(void)createNewTextViewBelowView: (UIView *) topView;
 -(void)freeMainScrollView:(BOOL) isFree; // either locks the scroll view or frees it
--(void)alertGallery;
+-(void)alertGallery:(ALAsset*)asset;
 @property(nonatomic) NSInteger pullBarHeight;
 
 

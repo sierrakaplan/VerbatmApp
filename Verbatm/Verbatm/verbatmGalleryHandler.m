@@ -140,24 +140,42 @@
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
     for(ALAsset* asset in self.media){
-        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-        UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
-                                             scale:[assetRepresentation scale]
-                                       orientation:UIImageOrientationUp];
-        verbatmCustomImageView* imageView = [[verbatmCustomImageView alloc] initWithImage:image];
-        imageView.asset = asset;
+        verbatmCustomImageView* imageView = [self imageViewFromAsset:asset];
         imageView.frame = viewSize;
-        if([[asset valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
-            imageView.isVideo = true;
+        if(imageView.isVideo){
             AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
             [self playVideo:avurlAsset forView:imageView];
-        }else{
-            imageView.isVideo = false;
         }
         viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
     }
+}
+
+-(verbatmCustomImageView*)imageViewFromAsset:(ALAsset*)asset
+{
+    ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
+    UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
+                                         scale:[assetRepresentation scale]
+                                   orientation:UIImageOrientationUp];
+    verbatmCustomImageView* imageView = [[verbatmCustomImageView alloc] initWithImage:image];
+    imageView.asset = asset;
+    if([[asset valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
+        imageView.isVideo = true;
+    }else{
+        imageView.isVideo = false;
+    }
+    return imageView;
+}
+
+-(void)addMediaToGallery:(ALAsset*)asset
+{
+    verbatmCustomImageView* view = [self imageViewFromAsset:asset];
+    if(view.isVideo){
+        AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
+        [self playVideo:avurlAsset forView:view];
+    }
+    [self returnToGallery:view];
 }
 
 
@@ -295,16 +313,13 @@
 -(void)returnToGallery:(verbatmCustomImageView*)view
 {
     [self.media addObject: view.asset];
-    ALAssetRepresentation *assetRepresentation = [view.asset defaultRepresentation];
-    UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
-                                         scale:[assetRepresentation scale]
-                                   orientation:UIImageOrientationUp];
-    UIImageView* imageView = [[UIImageView alloc] initWithImage:image];
-    CGRect viewSize = CGRectOffset(((UIImageView*)[self.media lastObject]).frame, (self.scrollView.frame.size.width - OFFSET)/2, 0);
-    imageView.frame = viewSize;
-    viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
-    [self.mediaImageViews addObject: imageView];
-    [self.scrollView addSubview: imageView];
+    CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
+    view.frame = viewSize;
+    for(verbatmCustomImageView* otherView in self.mediaImageViews){
+        otherView.frame = CGRectOffset(otherView.frame,  (self.scrollView.frame.size.width - OFFSET)/2, 0);
+    }
+    [self.mediaImageViews addObject: view];
+    [self.scrollView addSubview: view];
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
 }
 @end
