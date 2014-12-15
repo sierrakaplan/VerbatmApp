@@ -20,4 +20,6 @@
     @property (strong, nonatomic) id<verbatmCustomMediaSelectTileDelegate> customDelegate;
     @property (nonatomic) BOOL baseSelector; //tells if it is the last view in the scrollview
     @property (readonly, nonatomic) BOOL optionSelected;
+    @property (nonatomic)   BOOL dashed;//tells you if the view is in dashed mode
+    -(void) returnToButtonView;// brings back the buttons from the dashed view
 @end
