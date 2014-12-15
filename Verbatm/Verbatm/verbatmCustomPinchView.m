@@ -162,8 +162,8 @@
             self.videoView.frame = frame2;
         }
     }else{
-        self.videoView.frame = frame1;
-        self.imageViewer.frame = frame2;
+        self.videoView.frame = frame2;
+        self.imageViewer.frame = frame1;
     }
 }
        
@@ -190,9 +190,9 @@
             UIImage* image = [(verbatmCustomImageView*)object image];
             [self.imageViewer setImage:image];
         }else{
-            AVPlayerLayer* playerLayer = [((verbatmCustomImageView*)object).layer.sublayers lastObject];
-            playerLayer.frame = ((verbatmCustomImageView*)object).bounds;
-            [self.videoView.layer addSublayer:playerLayer];
+            [self.videoView.layer.sublayers.lastObject removeFromSuperlayer];
+            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
+            [self playVideo: avurlAsset];
         }
     }
 }

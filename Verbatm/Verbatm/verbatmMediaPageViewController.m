@@ -340,7 +340,11 @@
     if(point.y < (self.switchCameraButton.frame.origin.y+self.switchCameraButton.frame.size.height))return;
     
     [self.sessionManager captureImage: !self.canRaise];
-    [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
+    dispatch_queue_t loadMediaQueue = dispatch_queue_create("load media queue", NULL);
+    dispatch_async(loadMediaQueue, ^{
+        [self.vc_contentPage alertGallery];
+    });
+    //[NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
 }
 
 //Lucio
