@@ -62,6 +62,7 @@
         //get the verbatm folder
         [self getVerbatmMediaFolder];
         [self createScrollView];
+        [self addScrollViewGestures];
     }
     return  self;
 }
@@ -77,6 +78,27 @@
     self.scrollView.delegate = self;
     self.scrollView.alwaysBounceHorizontal = YES;
     
+}
+
+-(void)addScrollViewGestures
+{
+    //Add swipe up gesture to dismiss gallery
+    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseScrollView)];
+    swipeUp.direction  = UISwipeGestureRecognizerDirectionUp;
+    swipeUp.cancelsTouchesInView = NO;
+    swipeUp.delegate = self;
+    [self.scrollView addGestureRecognizer: swipeUp];
+    
+    
+    UISwipeGestureRecognizer* swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(selectMedia:)];
+    swipeDown.direction  = UISwipeGestureRecognizerDirectionDown;
+    swipeDown.cancelsTouchesInView = NO;
+    swipeDown.delegate = self;
+    [self.scrollView addGestureRecognizer: swipeDown];
+    for(UIGestureRecognizer*gesture in self.scrollView.gestureRecognizers){
+        [gesture requireGestureRecognizerToFail:swipeDown];
+        NSLog(@"%@",gesture);
+    }
 }
 
 //by Lucio
@@ -100,6 +122,7 @@
         self.gravity = [[UIGravityBehavior alloc]initWithItems:@[self.scrollView]];
     }
     [self.animator addBehavior:self.gravity];
+    [self.view bringSubviewToFront:self.scrollView];
 }
 
 - (void)presentGallery
@@ -140,26 +163,6 @@
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
     }
-    
-    //Add swipe up gesture to dismiss gallery
-    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseScrollView)];
-    swipeUp.direction  = UISwipeGestureRecognizerDirectionUp;
-    swipeUp.cancelsTouchesInView = NO;
-    swipeUp.delegate = self;
-    [self.scrollView addGestureRecognizer: swipeUp];
-    
-    
-    UISwipeGestureRecognizer* swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(selectMedia:)];
-    swipeDown.direction  = UISwipeGestureRecognizerDirectionDown;
-    swipeDown.cancelsTouchesInView = NO;
-    swipeDown.delegate = self;
-    [self.scrollView addGestureRecognizer: swipeDown];
-    for(UIGestureRecognizer*gesture in self.scrollView.gestureRecognizers){
-        [gesture requireGestureRecognizerToFail:swipeDown];
-        NSLog(@"%@",gesture);
-    }
-    [self.view bringSubviewToFront:self.scrollView];
-
 }
 
 
@@ -255,21 +258,21 @@
 //this is done on another queue so as not to block the main queue
 -(void)fillArrayWithMedia
 {
-    dispatch_queue_t otherQ = dispatch_queue_create("Load media queue", NULL);
+//    dispatch_queue_t otherQ = dispatch_queue_create("Load media queue", NULL);
+//    dispatch_async(otherQ, ^{
+//        
+//    });
     __weak verbatmGalleryHandler* weakSelf = self;
-    dispatch_async(otherQ, ^{
-        [self.verbatmFolder enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
-            if(result){
-                [weakSelf.media insertObject:result atIndex:0] ;
-            }else{
-                *stop = YES;
+    [self.verbatmFolder enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
+        if(result){
+            if(![weakSelf.media containsObject:result]){
+                [weakSelf.media insertObject:result atIndex:0];
             }
-        }];
-    });
-    dispatch_async(otherQ, ^{
-        [self loadMediaUntoScrollView];
-    });
-    
+        }else{
+            *stop = YES;
+            [weakSelf loadMediaUntoScrollView];
+        }
+    }];
 }
 
 //delegate methods

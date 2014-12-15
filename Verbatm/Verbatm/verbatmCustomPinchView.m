@@ -190,8 +190,9 @@
             UIImage* image = [(verbatmCustomImageView*)object image];
             [self.imageViewer setImage:image];
         }else{
-            AVURLAsset *asset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
-            [self playVideo:asset];
+            AVPlayerLayer* playerLayer = [((verbatmCustomImageView*)object).layer.sublayers lastObject];
+            playerLayer.frame = ((verbatmCustomImageView*)object).bounds;
+            [self.videoView.layer addSublayer:playerLayer];
         }
     }
 }
