@@ -54,7 +54,7 @@
 
 #define TEXT_BOX_FONT_SIZE 15
 #define VIEW_WALL_OFFSET 20
-#define ANIMATION_DURATION 0.3
+#define ANIMATION_DURATION 0.5
 #define PINCH_DISTANCE_FOR_ANIMATION 100
 
 #define SIZE_REQUIRED_MIN 100 //size for text tiles
@@ -77,7 +77,7 @@
 #define MAX_WORD_LIMIT 350
 #define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
-#define HORIZONTAL_PINCH_THRESHOLD 150 //distance two fingers must travel for the horizontal pinch to be accepted
+#define HORIZONTAL_PINCH_THRESHOLD 100 //distance two fingers must travel for the horizontal pinch to be accepted
 
 
 
@@ -695,7 +695,7 @@
         ((UITextView *)view).bounces= NO;
         ((UITextView *)view).scrollEnabled = NO;
     }
-    view.frame = self.defaultOpenElementFrame;//every view should have this frame
+   if(![view isKindOfClass:[verbatmCustomMediaSelectTile class]]) view.frame = self.defaultOpenElementFrame;//every view should have this frame
     if( [view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo){
         for(id layer in view.layer.sublayers){
             if([layer isKindOfClass:[AVPlayerLayer class]]){
@@ -794,7 +794,7 @@
             [self.pageElements addObject:view];
         }
     }
-    
+    [self shiftElementsBelowView:topView];
     [self adjustMainScrollViewContentSize];//make sure the main scroll view can show everything
 }
 
@@ -1002,7 +1002,7 @@
         self.startLocationOfRightestTouchPoint = touch1;
         self.startLocationOfLeftestTouchPoint = touch2;
         [self moveViewsWithLeftDifference:left_most_difference andRightDifference:right_most_difference];
-        self.horizontalPinchDistance += (left_most_difference + abs(right_most_difference));
+        self.horizontalPinchDistance += (left_most_difference - right_most_difference);
     }else
     {
         int left_most_difference = touch1.x- self.startLocationOfLeftestTouchPoint.x;
@@ -1010,14 +1010,14 @@
         self.startLocationOfRightestTouchPoint = touch2;
         self.startLocationOfLeftestTouchPoint = touch1;
         [self moveViewsWithLeftDifference:left_most_difference andRightDifference:right_most_difference];
-        self.horizontalPinchDistance += (left_most_difference + abs(right_most_difference));
+        self.horizontalPinchDistance += (left_most_difference - right_most_difference);
     }
     
-    if(self.horizontalPinchDistance > HORIZONTAL_PINCH_THRESHOLD)//they have pinched enough to join the objects
-    {
-        [self joinOpenElementsToOne];
-        self.pinching = NO;//not that pinching should be done now
-    }
+//    if(self.horizontalPinchDistance > HORIZONTAL_PINCH_THRESHOLD)//they have pinched enough to join the objects
+//    {
+//        [self joinOpenElementsToOne];
+//        self.pinching = NO;//not that pinching should be done now
+//    }
 }
 
 
@@ -1084,7 +1084,7 @@
 //Iain
 -(void) createNewViewToRevealBetweenPinchViews
 {
-    CGRect frame =  CGRectMake(self.firstContentPageTextBox.frame.origin.x + (self.firstContentPageTextBox.frame.size.width/2),0/*self.firstContentPageTextBox.frame.origin.y */, 0, 0);
+    CGRect frame =  CGRectMake(self.defaultOpenElementFrame.origin.x + (self.firstContentPageTextBox.frame.size.width/2),0/*self.firstContentPageTextBox.frame.origin.y */, 0, 0);
     verbatmCustomMediaSelectTile * mediaTile = [[verbatmCustomMediaSelectTile alloc]initWithFrame:frame];
     mediaTile.customDelegate = self;
     mediaTile.alpha = 0;//start it off as invisible
@@ -1110,6 +1110,7 @@
     [self formatView:mediaView andScrollView: newPersonalScrollView];
     //store the new view in our array
     [self storeView:mediaView inArrayAsBelowView:topView];
+    
 }
 
 
@@ -1126,7 +1127,7 @@
             {
                 int x_difference = touch1.x -touch2.x;
                 int y_difference =touch1.y -touch2.y;
-                if(x_difference > y_difference)
+                if(x_difference > y_difference)//figure out if it's a horizontal pinch or vertical pinch
                 {
                     self.VerticalPinch = NO;
                     [self horitzontalPinchWithGesture:sender];
@@ -1140,7 +1141,7 @@
             {
                 int x_difference = touch2.x -touch1.x;
                 int y_difference =touch1.y -touch2.y;
-                if(x_difference > y_difference)
+                if(x_difference > y_difference)//figure out if it's a horizontal pinch or vertical pinch
                 {
                     self.VerticalPinch = NO;
                     [self horitzontalPinchWithGesture:sender];
@@ -1157,7 +1158,7 @@
             int x_difference = touch1.x -touch2.x;
             int y_difference =touch2.y -touch1.y;
             
-            if(x_difference > y_difference)
+            if(x_difference > y_difference)//figure out if it's a horizontal pinch or vertical pinch
             {
                 self.VerticalPinch = NO;
                 [self horitzontalPinchWithGesture:sender];
@@ -1165,14 +1166,13 @@
             {
                 self.VerticalPinch = YES;
                 [self verticlePinchWithGesture:sender];
-                [self horitzontalPinchWithGesture:sender];
             }
             
         }else
         {
             int x_difference = touch2.x -touch1.x;
             int y_difference =touch2.y -touch1.y;
-            if(x_difference > y_difference)
+            if(x_difference > y_difference)//figure out if it's a horizontal pinch or vertical pinch
             {
                 self.VerticalPinch = NO;
                 [self horitzontalPinchWithGesture:sender];
@@ -1183,7 +1183,6 @@
             }
         }
     }
-    [self verticlePinchWithGesture:sender];
 }
 
 
@@ -1367,6 +1366,7 @@
     if([gesture numberOfTouches] ==2 && gesture.scale >1)//objects are being pinched apart
     {
         [self handleRevealOfNewMediaViewWithGesture:gesture]; //reveal the new mediaimageview
+        
     }else if([gesture numberOfTouches] ==2 && gesture.scale <1)//objects are being pinched together
     {
         if([self sufficienOverlapBetweenPinchedObjects])
@@ -1444,7 +1444,6 @@
     }
 }
 
-//Iain
 //Handle the translation of the lower view
 -(void) handleLowerViewWithGesture: (UIPinchGestureRecognizer *)gesture
 {
@@ -1474,8 +1473,6 @@
             self.changeInBottomViewPostion = changeInPosition;
             
         }
-        
-        
     }else if ([gesture numberOfTouches]==1)
     {
         touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
@@ -1491,7 +1488,7 @@
     }
 }
 
-//Iain
+
 //Takes a change in position and constructs the frame for the views new position
 -(CGRect) newTranslationFrameForLowerPinchFrameWithChange: (NSInteger) changeInPosition
 {
@@ -1499,7 +1496,6 @@
     return frame;
 }
 
-//Iain
 //Takes a change in position and constructs the frame for the views new position
 -(CGRect) newTranslationForUpperPinchViewFrameWithChange: (NSInteger) changeInPosition
 {
@@ -1515,11 +1511,12 @@
     {
         
         //construct new frames for view and personal scroll view
-        self.createdMediaView.frame = CGRectMake(self.createdMediaView.frame.origin.x- ((ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition))/2),
-                                                 self.createdMediaView.frame.origin.y,
-                                                 self.createdMediaView.frame.size.width+(ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)),
-                                                 self.createdMediaView.frame.size.height + (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)));
-        self.createdMediaView.alpha = self.createdMediaView.frame.size.width/self.defaultPersonalScrollViewFrameSize_openElement.width; //have it gain visibility as it grows
+        self.createdMediaView.frame = CGRectMake(self.createdMediaView.frame.origin.x- (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)),
+                                                   self.createdMediaView.frame.origin.y,
+                                                   self.createdMediaView.frame.size.width+(ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition))/2,
+                                                   self.createdMediaView.frame.size.height + (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition))/2);
+        self.createdMediaView.alpha =self.createdMediaView.frame.size.width/self.defaultPersonalScrollViewFrameSize_openElement.width;
+ //have it gain visibility as it grows
         
         
         self.createdMediaView.superview.frame = CGRectMake(self.createdMediaView.superview.frame.origin.x,
@@ -1529,7 +1526,7 @@
         
         [(verbatmCustomMediaSelectTile *)self.createdMediaView createFramesForButtonsWithFrame: self.createdMediaView.frame];
         [self.createdMediaView setNeedsDisplay];
-    }else if(self.createdMediaView.superview.frame.size.height>=PINCH_DISTANCE_FOR_ANIMATION)
+    }else if(self.createdMediaView.superview.frame.size.height>PINCH_DISTANCE_FOR_ANIMATION)//the distance is enough that we can just animate the rest
     {
         
         [UIView animateWithDuration:1.0f animations:^{
@@ -1730,7 +1727,7 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
-#pragma mark- memory handling
+#pragma mark- memory handling -
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -1740,7 +1737,7 @@
 
 
 
-#pragma mark -Undo implementation-
+#pragma mark - Undo implementation -
 
 -(void)deletedTile: (UIView *) tile withIndex: (NSNumber *) index
 {
@@ -1776,7 +1773,7 @@
 
 
 
-#pragma -mainScrollView handler-
+#pragma - mainScrollView handler -
 -(void)freeMainScrollView:(BOOL) isFree
 {
     if(isFree)
