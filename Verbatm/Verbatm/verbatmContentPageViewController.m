@@ -690,6 +690,14 @@
         ((UITextView *)view).scrollEnabled = NO;
     }
     view.frame = self.defaultOpenElementFrame;//every view should have this frame
+    if( [view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo){
+        for(id layer in view.layer.sublayers){
+            if([layer isKindOfClass:[AVPlayerLayer class]]){
+                ((AVPlayerLayer*)layer).frame = view.bounds;
+                view.layer.masksToBounds = YES;
+            }
+        }
+    }
 }
 
 
@@ -1691,11 +1699,6 @@
     
     [UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
         view.frame = frame;
-        if( [view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo){
-            AVPlayerLayer* playerLayer = [view.layer.sublayers lastObject];
-            playerLayer.frame = view.bounds;
-            view.layer.masksToBounds = YES;
-        }
     } completion:^(BOOL finished) {
         if(finished)
         {
