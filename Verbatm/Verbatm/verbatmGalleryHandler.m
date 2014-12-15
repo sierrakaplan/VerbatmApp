@@ -263,9 +263,11 @@
                 [weakSelf.media insertObject:result atIndex:0] ;
             }else{
                 *stop = YES;
-                [weakSelf loadMediaUntoScrollView];
             }
         }];
+    });
+    dispatch_async(otherQ, ^{
+        [self loadMediaUntoScrollView];
     });
     
 }
