@@ -17,9 +17,6 @@
 @protocol verbatmGalleryHandlerDelegate <NSObject>
 //Called when image is swiped down. delegate handles animation
 -(void)didSelectImageView:(verbatmCustomImageView*)imageView ;
-//-(void)didPresentGallery;
-//-(void)didDismissGallery;
-
 @end
 
 @interface verbatmGalleryHandler: NSObject <UIScrollViewDelegate, UIGestureRecognizerDelegate>
