@@ -142,10 +142,6 @@
     for(ALAsset* asset in self.media){
         verbatmCustomImageView* imageView = [self imageViewFromAsset:asset];
         imageView.frame = viewSize;
-        if(imageView.isVideo){
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
-            [self playVideo:avurlAsset forView:imageView];
-        }
         viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
@@ -154,15 +150,18 @@
 
 -(verbatmCustomImageView*)imageViewFromAsset:(ALAsset*)asset
 {
-    ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-    UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
-                                         scale:[assetRepresentation scale]
-                                   orientation:UIImageOrientationUp];
-    verbatmCustomImageView* imageView = [[verbatmCustomImageView alloc] initWithImage:image];
+    verbatmCustomImageView* imageView = [[verbatmCustomImageView alloc] init];
     imageView.asset = asset;
     if([[asset valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
         imageView.isVideo = true;
+        AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
+        [self playVideo:avurlAsset forView:imageView];
     }else{
+        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
+        UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
+                                             scale:[assetRepresentation scale]
+                                       orientation:UIImageOrientationUp];
+        [imageView setImage:image];
         imageView.isVideo = false;
     }
     return imageView;
@@ -171,10 +170,6 @@
 -(void)addMediaToGallery:(ALAsset*)asset
 {
     verbatmCustomImageView* view = [self imageViewFromAsset:asset];
-    if(view.isVideo){
-        AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
-        [self playVideo:avurlAsset forView:view];
-    }
     [self returnToGallery:view];
 }
 
@@ -292,27 +287,27 @@
     __block int indexa = ceil((self.scrollView.contentOffset.x + location.x)/((self.scrollView.frame.size.width - OFFSET)/2)) - 1;
     verbatmCustomImageView* selectedImageView ;
     if(self.mediaImageViews.count >= 1)selectedImageView = [self.mediaImageViews objectAtIndex:indexa];
-    int temp = indexa;
     if(selectedImageView){
         [UIView animateWithDuration:0.8 animations:^{
+            [self.media removeObjectAtIndex:indexa];
             CGRect viewSize = selectedImageView.frame;
             selectedImageView.frame = (location.x < self.view.frame.size.width/ 2)? CGRectMake(START_POSITION_FOR_MEDIA) : CGRectMake(START_POSITION_FOR_MEDIA2);
+            self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
             [self.mediaImageViews removeObject: selectedImageView];
             for(; indexa < self.mediaImageViews.count; indexa++){
                 ((UIImageView*)[self.mediaImageViews objectAtIndex:indexa]).frame = viewSize;
                 viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2, 0);
             }
-            self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
         }];
         [selectedImageView removeFromSuperview];
         [self.customDelegate didSelectImageView:selectedImageView];
-        [self.media removeObjectAtIndex:temp];
     }
 }
 
 -(void)returnToGallery:(verbatmCustomImageView*)view
 {
     [self.media addObject: view.asset];
+    self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     view.frame = viewSize;
     for(verbatmCustomImageView* otherView in self.mediaImageViews){
@@ -320,6 +315,5 @@
     }
     [self.mediaImageViews addObject: view];
     [self.scrollView addSubview: view];
-    self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
 }
 @end
