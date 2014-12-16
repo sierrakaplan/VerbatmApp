@@ -155,6 +155,7 @@
     CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO , self.background.frame.size.height);
     CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height);
     if(self.there_is_text){
+        if(self.textField.superview != self.background)[self.background addSubview:self.textField];
         self.textField.frame = frame1;
         if(self.there_is_picture){
             self.imageViewer.frame = frame2;
@@ -163,8 +164,9 @@
         }
     }else
     {
-        self.videoView.frame = CGRectMake(0, 0, self.background.frame.size.width/2, self.background.frame.size.height);
-        self.imageViewer.frame = CGRectMake(self.background.frame.size.width/2, 0, self.background.frame.size.width/2 ,self.background.frame.size.height);
+        [self.textField removeFromSuperview];
+        self.videoView.frame = frame1;
+        self.imageViewer.frame = frame2;
     }
 }
        
@@ -189,9 +191,9 @@
             UIImage* image = [(verbatmCustomImageView*)object image];
             [self.imageViewer setImage:image];
         }else{
-//            [self.videoView.layer.sublayers.lastObject removeFromSuperlayer];
-//            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
-//            [self playVideo: avurlAsset];
+            [self.videoView.layer.sublayers.lastObject removeFromSuperlayer];
+            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
+            [self playVideo: avurlAsset];
         }
     }
 }
