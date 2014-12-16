@@ -115,6 +115,8 @@
 
 #pragma mark PanGesture Properties
 @property(nonatomic) CGPoint startLocationOfTouchPoint_PAN;
+@property (nonatomic) CGRect originalFrame;//keep track of the starting from of the selected view so that you can easily shift things around
+@property (nonatomic) CGRect potentialFrame;//keep track of the frame the selected view could take so that we can easily shift
 
 
 #pragma mark Vertical Pinch Gesture Related Properties
@@ -1755,27 +1757,128 @@
 //element has been pressed and held
 -(void) pressAndHold:(UIPanGestureRecognizer *) sender
 {
+    
+    //make sure it's a single finger touch and that there are multiple elements on the screen
+    if(self.pageElements.count==0 || [sender numberOfTouches] != 1) return;
+    
+    
     //first lets assume that this is an element in the regular stream
     if(sender.state == UIGestureRecognizerStateBegan)
     {
+        
         UIView * view = sender.view;
         UIScrollView * scrollview = (UIScrollView *)view.superview;
         [self.mainScrollView bringSubviewToFront:scrollview];
+        self.startLocationOfTouchPoint_PAN = [sender locationOfTouch:0 inView:self.mainScrollView];
+        self.originalFrame = view.superview.frame;
         
+        view.superview.backgroundColor = [UIColor blueColor];//for debugging
         
     }else if(sender.state == UIGestureRecognizerStateChanged)
     {
         
         UIView * view = sender.view;
-        UIScrollView * scrollview = (UIScrollView *)view.superview;
+        CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
+        NSInteger y_differrence  = touch1.y - self.startLocationOfTouchPoint_PAN.y;
+        self.startLocationOfTouchPoint_PAN = touch1;
         
+        //ok so move the view up or down by the amount the finger has moved
+        CGRect newFrame = CGRectMake(view.superview.frame.origin.x, view.superview.frame.origin.y + y_differrence, view.superview.frame.size.width, view.superview.frame.size.height);
+        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+            view.superview.frame = newFrame;
+        }] ;
+        
+        //first assuming it's somewhere in the middle
+        NSInteger view_index = [self.pageElements indexOfObject:view];
+        UIView * topView=Nil;
+        UIView * bottomView=Nil;
+        
+        if(view_index !=0)
+        {
+           topView  = self.pageElements[view_index-1];
+            if(view != [self.pageElements lastObject])
+            {
+                bottomView = self.pageElements[view_index +1];
+            }
+        }else if (view_index==0)
+        {
+            bottomView = self.pageElements[view_index +1];
+        }else if (view == [self.pageElements lastObject])
+        {
+            topView  = self.pageElements[view_index-1];
+        }
+        
+        
+        if(topView && bottomView)
+        {
+            if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
+            {
+                [self swapObject:view andObject:topView];//exchange their positions in page elements array
+                
+                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                    self.potentialFrame = topView.superview.frame;
+                    topView.superview.frame = self.originalFrame;
+                    self.originalFrame = self.potentialFrame;
+                }];
+                
+            }else if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
+            {
+                [self swapObject:view andObject:bottomView];//exchange their positions in page elements array
+                
+                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                    self.potentialFrame = bottomView.superview.frame;
+                    bottomView.superview.frame = self.originalFrame;
+                    self.originalFrame = self.potentialFrame;
+                }];
+            }
+        }else if(view_index ==0)
+        {
+            if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
+            {
+                [self swapObject:view andObject:bottomView];//exchange their positions in page elements array
+                
+                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                    self.potentialFrame = bottomView.superview.frame;
+                    bottomView.superview.frame = self.originalFrame;
+                    self.originalFrame = self.potentialFrame;
+                }];
+            }
+        }else if (view == [self.pageElements lastObject])
+        {
+            if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
+            {
+                [self swapObject:view andObject:topView];//exchange their positions in page elements array
+                
+                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                    self.potentialFrame = topView.superview.frame;
+                    topView.superview.frame = self.originalFrame;
+                    self.originalFrame = self.potentialFrame;
+                }];
+                
+            }
+
+        }
         
         
     }else if (sender.state == UIGestureRecognizerStateEnded)
     {
-        
+        UIView * view = sender.view;
+        view.frame = self.originalFrame;
+        view.superview.backgroundColor = [UIColor clearColor];//for debugging
     }
 }
+
+
+//swaps to objects in the page elements array
+-(void)swapObject: (UIView *) obj1 andObject: (UIView *) obj2
+{
+    
+    NSInteger index1 = [self.pageElements indexOfObject:obj1];
+    NSInteger index2 = [self.pageElements indexOfObject:obj2];
+    [self.pageElements replaceObjectAtIndex:index1 withObject:obj2];
+    [self.pageElements replaceObjectAtIndex:index2 withObject:obj1];
+}
+
 
 
 #pragma mark - Lazy Instantiation -
