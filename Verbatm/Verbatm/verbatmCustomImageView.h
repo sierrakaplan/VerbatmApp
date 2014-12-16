@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <AVFoundation/AVFoundation.h>
 
 @interface verbatmCustomImageView : UIImageView
 @property(strong, nonatomic) ALAsset* asset;

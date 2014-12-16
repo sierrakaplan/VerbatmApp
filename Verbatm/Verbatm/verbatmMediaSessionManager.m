@@ -136,15 +136,25 @@
 -(void)createVerbatmDirectory
 {
     NSString* albumName = ALBUM_NAME;
-    __weak verbatmMediaSessionManager* weakSelf = self;
     [self.assetLibrary addAssetsGroupAlbumWithName:albumName
                                   resultBlock:^(ALAssetsGroup *group) {
                                       NSLog(@"added album:%@", albumName);
-                                      weakSelf.verbatmAlbum = group;
                                   }
                                  failureBlock:^(NSError *error) {
                                      NSLog(@"error adding album");
                                  }];
+    __weak verbatmMediaSessionManager* weakSelf = self;
+    [self.assetLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum
+                                     usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                                         if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:albumName]) {
+                                             NSLog(@"found album %@", albumName);
+                                             weakSelf.verbatmAlbum = group;
+                                             return;   //add this
+                                         }
+                                     }
+                                   failureBlock:^(NSError* error) {
+                                       NSLog(@"failed to enumerate albums:\nError: %@", [error localizedDescription]);
+                                   }];
 }
 
 

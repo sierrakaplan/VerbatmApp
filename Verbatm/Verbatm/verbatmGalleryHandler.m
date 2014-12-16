@@ -118,12 +118,20 @@
         self.gravity = [[UIGravityBehavior alloc]initWithItems:@[self.scrollView]];
     }
     [self.animator addBehavior:self.gravity];
+    for(verbatmCustomImageView* view in self.mediaImageViews){
+        if(!self.numVideosReadded) break;
+        if(view.isVideo){
+            self.numVideosReadded--;
+            //((AVPlayerLayer*)[view.layer.sublayers lastObject]).frame = view.frame;
+            [view setNeedsLayout];
+        }
+    }
 }
 
 - (void)presentGallery
 {
     [self lowerScrollView];
-   // [self.customDelegate didPresentGallery];
+    
 }
 
 -(void)dismissGallery
@@ -151,14 +159,6 @@
         [self.scrollView addSubview: imageView];
     }
     [self.view bringSubviewToFront:self.scrollView];
-    //repostion the layers of the videos
-    for(verbatmCustomImageView* view in self.mediaImageViews){
-        if(!self.numVideosReadded) break;
-        if(view.isVideo){
-            self.numVideosReadded--;
-            ((AVPlayerLayer*)[view.layer.sublayers lastObject]).frame = view.bounds;
-        }
-    }
 }
 
 -(verbatmCustomImageView*)imageViewFromAsset:(ALAsset*)asset

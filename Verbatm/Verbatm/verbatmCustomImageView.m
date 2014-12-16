@@ -10,4 +10,10 @@
 
 @implementation verbatmCustomImageView
 
+-(void)layoutSubviews
+{
+    if(self.isVideo){
+        ((AVPlayerLayer*)[self.layer.sublayers firstObject]).frame = self.bounds;
+    }
+}
 @end
