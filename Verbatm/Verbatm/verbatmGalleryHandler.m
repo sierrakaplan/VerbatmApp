@@ -21,14 +21,15 @@
 @property (strong, nonatomic) UICollisionBehavior* collider;
 @property (strong, nonatomic) UIDynamicItemBehavior* elasticityBehavior;
 @property (strong, nonatomic) UIView* view;
+@property (nonatomic) int numVideosReadded;
 #define ALBUM_NAME @"Verbatm"
 #define OFFSET 15
 #define PLAY_VIDEO_ICON @"videoPreview_play_icon"
 #define POSITION_TO_SWIPE_TO 50, self.view.frame.size.height/2 + 50, selectedImageView.frame.size.width -50, selectedImageView.frame.size.height - 50
-#define DROP_FROM_COORDINATES 0,-400, self.view.frame.size.width, (self.view.frame.size.width*2/3)//self.view.frame.size.height/3
+#define DROP_FROM_COORDINATES 0,-400, self.view.frame.size.width, (self.view.frame.size.width*2/3)
 #define VERTICAL_OFFSET 400
 #define START_POSITION_FOR_MEDIA OFFSET, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2, self.scrollView.frame.size.height - 2*OFFSET
-#define CONTENT_SIZE /*self.scrollView.frame.size.width*self.media.count/2 -  2*OFFSET*/(self.scrollView.frame.size.width - OFFSET)*self.media.count/2 , (self.view.frame.size.width*2/3)//self.view.frame.size.height/3
+#define CONTENT_SIZE (self.scrollView.frame.size.width - OFFSET)*self.media.count/2 , (self.view.frame.size.width*2/3)
 #define START_POSITION_FOR_MEDIA2   (self.scrollView.frame.size.width + OFFSET)/2, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2  , self.scrollView.frame.size.height - 2*OFFSET
 #define BACKGROUND @"background"
 #define SCROLLVIEW_ALPHA 0.5
@@ -54,6 +55,7 @@
         self.mediaImageViews = [[NSMutableArray alloc] init];
         self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
         //get the verbatm folder
+        self.numVideosReadded = 0;
         [self getVerbatmMediaFolder];
         [self createScrollView];
         [self addScrollViewGestures];
@@ -149,6 +151,14 @@
         [self.scrollView addSubview: imageView];
     }
     [self.view bringSubviewToFront:self.scrollView];
+    //repostion the layers of the videos
+    for(verbatmCustomImageView* view in self.mediaImageViews){
+        if(!self.numVideosReadded) break;
+        if(view.isVideo){
+            self.numVideosReadded--;
+            ((AVPlayerLayer*)[view.layer.sublayers lastObject]).frame = view.bounds;
+        }
+    }
 }
 
 -(verbatmCustomImageView*)imageViewFromAsset:(ALAsset*)asset
@@ -319,6 +329,7 @@
     if(view.isVideo){
         AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
         [self playVideo:avurlAsset forView:view];
+        self.numVideosReadded++;
     }
     [self.mediaImageViews insertObject:view atIndex:0];
     [self.scrollView addSubview: view];

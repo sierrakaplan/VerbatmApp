@@ -2105,7 +2105,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1051"
             endingLineNumber = "1051"
-            landmarkName = "-joinOpenElementsToOne"
+            landmarkName = "-joinOpenCollectionToOne"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2448,11 +2448,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmGalleryHandler.m"
-            timestampString = "440363775.846207"
+            timestampString = "440405735.676764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
             landmarkName = "-loadMediaUntoScrollView"
             landmarkType = "5">
          </BreakpointContent>
@@ -2464,11 +2464,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmGalleryHandler.m"
-            timestampString = "440366135.04181"
+            timestampString = "440405735.676764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "183"
-            endingLineNumber = "183"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
             landmarkName = "-playVideo:forView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2560,11 +2560,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmGalleryHandler.m"
-            timestampString = "440377595.857508"
+            timestampString = "440405735.676764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "294"
-            endingLineNumber = "294"
+            startingLineNumber = "304"
+            endingLineNumber = "304"
             landmarkName = "-selectMedia:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2741,7 +2741,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1036"
             endingLineNumber = "1036"
-            landmarkName = "-joinOpenElementsToOne"
+            landmarkName = "-joinOpenCollectionToOne"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2832,11 +2832,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmGalleryHandler.m"
-            timestampString = "440366135.04181"
+            timestampString = "440405735.676764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "176"
-            endingLineNumber = "176"
+            startingLineNumber = "186"
+            endingLineNumber = "186"
             landmarkName = "@implementation verbatmGalleryHandler"
             landmarkType = "3">
          </BreakpointContent>
@@ -2848,11 +2848,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmGalleryHandler.m"
-            timestampString = "440366135.04181"
+            timestampString = "440405735.676764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
+            startingLineNumber = "185"
+            endingLineNumber = "185"
             landmarkName = "-addMediaToGallery:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2976,11 +2976,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmGalleryHandler.m"
-            timestampString = "440366135.04181"
+            timestampString = "440405735.676764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "288"
-            endingLineNumber = "288"
+            startingLineNumber = "298"
+            endingLineNumber = "298"
             landmarkName = "-selectMedia:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3302,7 +3302,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1040"
             endingLineNumber = "1040"
-            landmarkName = "-joinOpenElementsToOne"
+            landmarkName = "-joinOpenCollectionToOne"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3318,7 +3318,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1041"
             endingLineNumber = "1041"
-            landmarkName = "-joinOpenElementsToOne"
+            landmarkName = "-joinOpenCollectionToOne"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3334,7 +3334,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1056"
             endingLineNumber = "1056"
-            landmarkName = "-joinOpenElementsToOne"
+            landmarkName = "-joinOpenCollectionToOne"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3451,11 +3451,27 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmGalleryHandler.m"
-            timestampString = "440399180.826407"
+            timestampString = "440405735.676764"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "320"
-            endingLineNumber = "320"
+            startingLineNumber = "330"
+            endingLineNumber = "330"
+            landmarkName = "-returnToGallery:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmGalleryHandler.m"
+            timestampString = "440405735.676764"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "332"
+            endingLineNumber = "332"
             landmarkName = "-returnToGallery:"
             landmarkType = "5">
          </BreakpointContent>
