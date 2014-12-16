@@ -1031,7 +1031,7 @@
 
 -(void)joinOpenElementsToOne
 {
-    NSUInteger index =0;
+    verbatmCustomPinchView * placeHolder = [[verbatmCustomPinchView alloc]init];//just holds the place inorder to be replaced
     NSArray * pinch_views = self.scrollViewForHorizontalPinchView.subviews;
     
     //find the object that is in the pageElements array and remove it.
@@ -1039,12 +1039,10 @@
     //Also remove from the scrollview
     for(int i=0; i<pinch_views.count; i++)
     {
-      NSUInteger test_index = [self.pageElements indexOfObject:pinch_views[i]];
-        if(test_index != NSNotFound){
-            index=test_index;
-            [self.pageElements removeObject:pinch_views[i]];
+        if([self.pageElements containsObject:pinch_views[i]]){
+            [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:pinch_views[i]] withObject:placeHolder];
         }
-        [(UIView *)pinch_views[i] removeFromSuperview];
+        [((UIView *)pinch_views[i]) removeFromSuperview];
     }
     
     verbatmCustomPinchView * newView = [verbatmCustomPinchView pinchTogether:[NSMutableArray arrayWithArray:pinch_views]];
@@ -1055,9 +1053,7 @@
     CGRect newFrame = CGRectMake(self.closedElement_Center.x - [self.closedElement_Radius intValue], self.closedElement_Center.y - [self.closedElement_Radius intValue], [self.closedElement_Radius intValue]*2, [self.closedElement_Radius intValue]*2);
     
     [newView specifyFrame:newFrame];
-    NSLog(@"it's here");
-    [self.pageElements insertObject:newView atIndex:index];
-    NSLog(@"or nah");
+    [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:newView];
     [self addTapGestureToView:newView];
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         [self.scrollViewForHorizontalPinchView addSubview:newView];
@@ -1361,12 +1357,15 @@
             if(![self tilesOkToPinch] || ![self.upperPinchView isKindOfClass:[verbatmCustomPinchView class]] || ![self.lowerPinchView isKindOfClass:[verbatmCustomPinchView class]]) return;//checks of the tiles are both collections. If so then no pinching together
             
             UIScrollView * keeping_scrollView = (UIScrollView *)self.upperPinchView.superview;
-            NSUInteger index_to_insert = [self.pageElements indexOfObject:self.upperPinchView];
+            verbatmCustomPinchView * placeHolder = [[verbatmCustomPinchView alloc]init];
+            
+            [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:self.upperPinchView] withObject:placeHolder];
             
             [self.upperPinchView removeFromSuperview];
             [self.pageElements removeObject:self.upperPinchView];
             
             [self.lowerPinchView.superview removeFromSuperview];
+            [self.lowerPinchView removeFromSuperview];
             [self.pageElements removeObject:self.lowerPinchView];
             
             NSMutableArray* array_of_objects = [[NSMutableArray alloc] initWithObjects:self.upperPinchView,self.lowerPinchView, nil];
@@ -1374,7 +1373,7 @@
             
             //format your scrollView and add pinch view
             [keeping_scrollView addSubview:pinchView];
-            if(index_to_insert < self.pageElements.count)[self.pageElements insertObject:pinchView atIndex:index_to_insert];
+            [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:pinchView];
             self.pinching = NO;
             [self shiftElementsBelowView:self.articleTitleField];
         }
@@ -1383,10 +1382,9 @@
 
 -(BOOL) tilesOkToPinch
 {
-    
     if([self.upperPinchView isKindOfClass:[verbatmCustomPinchView class]]  && [self.lowerPinchView isKindOfClass:[verbatmCustomPinchView class]])
     {
-        if(((verbatmCustomPinchView *)self.upperPinchView).isCollection && ((verbatmCustomPinchView *)self.lowerPinchView).isCollection)
+        if(!((verbatmCustomPinchView *)self.upperPinchView).isCollection && !((verbatmCustomPinchView *)self.lowerPinchView).isCollection)
         {
             return true;
         }
