@@ -801,9 +801,9 @@
             [scrollView removeFromSuperview];
             [self.pageElements removeObject:view];
             
-            //reposition views on screen
-            if(index) [self shiftElementsBelowView:self.pageElements[index-1]]; //if it's a middle element shift everything below
-            [self shiftElementsBelowView:self.articleTitleField]; //if it was the top element then shift everything below
+//            //reposition views on screen
+//            if(index) [self shiftElementsBelowView:self.pageElements[index-1]]; //if it's a middle element shift everything below
+             [self shiftElementsBelowView:self.articleTitleField]; //if it was the top element then shift everything below
             
             if([view isKindOfClass:[verbatmCustomPinchView class]])
             {
@@ -997,7 +997,7 @@
     
     if(self.horizontalPinchDistance > HORIZONTAL_PINCH_THRESHOLD)//they have pinched enough to join the objects
     {
-        [self joinOpenElementsToOne];
+        [self joinOpenCollectionToOne];
         self.pinching = NO;//not that pinching should be done now
     }
 }
@@ -1029,7 +1029,7 @@
 }
 
 
--(void)joinOpenElementsToOne
+-(void)joinOpenCollectionToOne
 {
     verbatmCustomPinchView * placeHolder = [[verbatmCustomPinchView alloc]init];//just holds the place inorder to be replaced
     NSArray * pinch_views = self.scrollViewForHorizontalPinchView.subviews;
@@ -1354,15 +1354,14 @@
     {
         if([self sufficientOverlapBetweenPinchedObjects])
         {
-            if(![self tilesOkToPinch] || ![self.upperPinchView isKindOfClass:[verbatmCustomPinchView class]] || ![self.lowerPinchView isKindOfClass:[verbatmCustomPinchView class]]) return;//checks of the tiles are both collections. If so then no pinching together
+            //checks of the tiles are both collections. If so then no pinching together
+            if(![self tilesOkToPinch] || ![self.upperPinchView isKindOfClass:[verbatmCustomPinchView class]] || ![self.lowerPinchView isKindOfClass:[verbatmCustomPinchView class]]) return;
             
             UIScrollView * keeping_scrollView = (UIScrollView *)self.upperPinchView.superview;
             verbatmCustomPinchView * placeHolder = [[verbatmCustomPinchView alloc]init];
             
             [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:self.upperPinchView] withObject:placeHolder];
-            
             [self.upperPinchView removeFromSuperview];
-            [self.pageElements removeObject:self.upperPinchView];
             
             [self.lowerPinchView.superview removeFromSuperview];
             [self.lowerPinchView removeFromSuperview];
@@ -1380,11 +1379,12 @@
     }
 }
 
+//checks if the two selected tiles should be pinched together
 -(BOOL) tilesOkToPinch
 {
     if([self.upperPinchView isKindOfClass:[verbatmCustomPinchView class]]  && [self.lowerPinchView isKindOfClass:[verbatmCustomPinchView class]])
     {
-        if(!((verbatmCustomPinchView *)self.upperPinchView).isCollection && !((verbatmCustomPinchView *)self.lowerPinchView).isCollection)
+        if(!((verbatmCustomPinchView *)self.upperPinchView).isCollection || !((verbatmCustomPinchView *)self.lowerPinchView).isCollection)
         {
             return true;
         }

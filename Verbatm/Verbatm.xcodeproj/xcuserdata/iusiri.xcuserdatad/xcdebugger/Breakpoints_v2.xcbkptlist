@@ -2164,12 +2164,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440398649.779331"
+            timestampString = "440399506.28782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "252"
-            endingLineNumber = "252"
-            landmarkName = "+pinchTogether:"
+            startingLineNumber = "245"
+            endingLineNumber = "245"
+            landmarkName = "-playerItemDidReachEnd:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2180,11 +2180,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440398649.779331"
+            timestampString = "440399506.28782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "261"
-            endingLineNumber = "261"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
             landmarkName = "+pinchTogether:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3361,12 +3361,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440398649.779331"
+            timestampString = "440399506.28782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "186"
-            endingLineNumber = "186"
-            landmarkName = "-displayMedia"
+            startingLineNumber = "179"
+            endingLineNumber = "179"
+            landmarkName = "-renderThreeViews"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

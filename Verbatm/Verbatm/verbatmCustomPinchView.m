@@ -162,8 +162,7 @@
         }else{
             self.videoView.frame = frame2;
         }
-    }else
-    {
+    }else{
         [self.textField removeFromSuperview];
         self.videoView.frame = frame1;
         self.imageViewer.frame = frame2;
@@ -256,9 +255,9 @@
     for(int i = 1; i < to_be_merged.count; i++){
         verbatmCustomPinchView* pinchObject = (verbatmCustomPinchView*)[to_be_merged objectAtIndex:i];
         [result.media addObjectsFromArray: pinchObject.media];
-        result.there_is_picture = (result.there_is_picture)? result.there_is_picture : pinchObject.there_is_picture;
-        result.there_is_text = (result.there_is_text)? result.there_is_text : pinchObject.there_is_text;
-        result.there_is_video = (result.there_is_video)? result.there_is_video : pinchObject.there_is_video;
+        result.there_is_picture =  result.there_is_picture || pinchObject.there_is_picture;
+        result.there_is_text =  result.there_is_text || pinchObject.there_is_text;
+        result.there_is_video = result.there_is_video || pinchObject.there_is_video;
     }
     to_be_merged = nil;
     [result renderMedia];

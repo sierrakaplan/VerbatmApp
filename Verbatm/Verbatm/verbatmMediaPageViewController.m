@@ -769,13 +769,6 @@
 }
 
 
-//Lucio
-//moves the transparent view up when the keyboard is about to appear
--(void)keyboardWillBeWithdrawn:(NSNotification*)aNotification
-{
-    
-}
-
 
 //Iain
 //When keyboard appears get its height. This is only neccessary when the keyboard first appears
