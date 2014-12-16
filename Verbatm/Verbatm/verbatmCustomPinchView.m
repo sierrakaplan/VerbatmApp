@@ -164,6 +164,8 @@
     }else{
         self.videoView.frame = frame2;
         self.imageViewer.frame = frame1;
+        self.imageViewer.contentMode = UIViewContentModeScaleAspectFill;
+        self.videoView.contentMode =    UIViewContentModeScaleAspectFill;
     }
 }
        
