@@ -22,6 +22,7 @@
 @property (strong, nonatomic) UIDynamicItemBehavior* elasticityBehavior;
 @property (strong, nonatomic) UIView* view;
 @property (nonatomic) int numVideosReadded;
+@property (nonatomic) BOOL isRaised;
 #define ALBUM_NAME @"Verbatm"
 #define OFFSET 15
 #define PLAY_VIDEO_ICON @"videoPreview_play_icon"
@@ -56,6 +57,7 @@
         self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
         //get the verbatm folder
         self.numVideosReadded = 0;
+        self.isRaised = YES;
         [self getVerbatmMediaFolder];
         [self createScrollView];
         [self addScrollViewGestures];
@@ -101,6 +103,15 @@
 //sets the scrollView and presents it lowering from the top
 -(void)lowerScrollView
 {
+    for(verbatmCustomImageView* view in self.mediaImageViews){
+        if(self.numVideosReadded == 0) break;
+        if(view.isVideo){
+            AVPlayerLayer* pLayer = [view.layer.sublayers firstObject];
+            self.numVideosReadded--;
+            pLayer.frame = view.bounds;
+            [self.scrollView addSubview: view];
+        }
+    }
     [self.view addSubview: self.scrollView];
     if(!self.collider){
         self.collider = [[UICollisionBehavior alloc]initWithItems:@[self.scrollView]];
@@ -118,26 +129,19 @@
         self.gravity = [[UIGravityBehavior alloc]initWithItems:@[self.scrollView]];
     }
     [self.animator addBehavior:self.gravity];
-    for(verbatmCustomImageView* view in self.mediaImageViews){
-        if(!self.numVideosReadded) break;
-        if(view.isVideo){
-            self.numVideosReadded--;
-            //((AVPlayerLayer*)[view.layer.sublayers lastObject]).frame = view.frame;
-            [view setNeedsLayout];
-        }
-    }
 }
 
 - (void)presentGallery
 {
     [self lowerScrollView];
-    
+    self.isRaised = NO;
 }
 
 -(void)dismissGallery
 {
     [self raiseScrollView];
     [self.animator removeAllBehaviors];
+    self.isRaised = YES;
     //[self.customDelegate didDismissGallery];
 }
 
@@ -244,6 +248,7 @@
         if(finished)
         {
            [self.scrollView removeFromSuperview];
+            self.isRaised = YES;
         }
     }];
 
@@ -329,10 +334,15 @@
     if(view.isVideo){
         AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
         [self playVideo:avurlAsset forView:view];
-        self.numVideosReadded++;
+        if(self.isRaised){
+             self.numVideosReadded++;
+        }else{
+            [self.scrollView addSubview: view];
+        }
+    }else{
+        [self.scrollView addSubview: view];
     }
     [self.mediaImageViews insertObject:view atIndex:0];
-    [self.scrollView addSubview: view];
     [self.view bringSubviewToFront:self.scrollView];
     [self.scrollView bringSubviewToFront:view];
 }

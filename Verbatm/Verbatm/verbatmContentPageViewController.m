@@ -1138,6 +1138,7 @@
     [newView specifyFrame:newFrame];
     [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:newView];
     [self addTapGestureToView:newView];
+    [self addPanGestureToView: newView];
     
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         [self.scrollViewForHorizontalPinchView addSubview:newView];
@@ -1757,6 +1758,12 @@
 //element has been pressed and held
 -(void) pressAndHold:(UIPanGestureRecognizer *) sender
 {
+    if (sender.state == UIGestureRecognizerStateEnded)
+    {
+        UIView * view = sender.view;
+        view.superview.frame = self.originalFrame;
+        view.superview.backgroundColor = [UIColor clearColor];//for debugging
+    }
     
     //make sure it's a single finger touch and that there are multiple elements on the screen
     if(self.pageElements.count==0 || [sender numberOfTouches] != 1) return;
@@ -1774,7 +1781,12 @@
         
         view.superview.backgroundColor = [UIColor blueColor];//for debugging
         
-    }else if(sender.state == UIGestureRecognizerStateChanged)
+    }
+    
+   
+
+    
+    if(sender.state == UIGestureRecognizerStateChanged)
     {
         
         UIView * view = sender.view;
@@ -1860,12 +1872,8 @@
         }
         
         
-    }else if (sender.state == UIGestureRecognizerStateEnded)
-    {
-        UIView * view = sender.view;
-        view.frame = self.originalFrame;
-        view.superview.backgroundColor = [UIColor clearColor];//for debugging
     }
+    
 }
 
 
@@ -2054,6 +2062,7 @@
             [superView addSubview:pinch];
             [self.pageElements replaceObjectAtIndex:i withObject:pinch];
             [self addTapGestureToView:pinch];//add tap gesture to the newly created pinch object
+            [self addPanGestureToView:pinch];//add pan gesture to the view
             [self shiftElementsBelowView:pinch];
         }
     }
