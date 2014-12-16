@@ -19,9 +19,9 @@
 #import "verbatmCustomPinchView.h"
 #import "verbatmCustomImageView.h"
 
+
+
 @interface verbatmContentPageViewController () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,verbatmGalleryHandlerDelegate>
-
-
 
 #pragma mark - *Helper properties
 
@@ -47,7 +47,7 @@
 
 
 
-#define CENTERING_OFFSET_FOR_TEXT_VIEW 30 //the gap between the bottom of the screen and the cursor
+#define CENTERING_OFFSET_FOR_TEXT_VIEW 60 //the gap between the bottom of the screen and the cursor
 #define CURSOR_BASE_GAP 10
 
 
@@ -69,8 +69,8 @@
 #define MAX_WORD_LIMIT 350
 #define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
-#define HORIZONTAL_PINCH_THRESHOLD 100 //distance two fingers must travel for the horizontal pinch to be accepted
-
+#define HORIZONTAL_PINCH_THRESHOLD 150 //distance two fingers must travel for the horizontal pinch to be accepted
+#define TEXTFIELD_BORDER_WIDTH 1.0f
 
 
 #pragma mark Default frame properties
@@ -143,21 +143,19 @@
     //set up gallery
     self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
     
-    
-}
-
-
-//Iain
--(void) viewWillAppear:(BOOL)animated
-{
-    
     //add blurview
     [self addBlurView];
     [self setPlaceholderColors];
     [self set_PersonalScrollView_ContentSizeandOffset];
     [self set_openElement_defaultframe];
     [self addOriginalViewsToPageElementsArray];
-    
+    [self setTextViewBorderColors];
+}
+
+
+//Iain
+-(void) viewWillAppear:(BOOL)animated
+{
     [super viewDidAppear:YES];
     [self configureViews];
     self.pinching = NO;//initialise pinching to no
@@ -189,7 +187,28 @@
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
     }
+    
+    
+   
 
+}
+
+-(void) setTextViewBorderColors
+{
+    self.articleTitleField.layer.cornerRadius=8.0f;
+    self.articleTitleField.layer.masksToBounds=YES;
+    self.articleTitleField.layer.borderColor=[[UIColor whiteColor]CGColor];
+    self.articleTitleField.layer.borderWidth= TEXTFIELD_BORDER_WIDTH;
+    
+    self.sandwhichWhat.layer.cornerRadius=8.0f;
+    self.sandwhichWhat.layer.masksToBounds=YES;
+    self.sandwhichWhat.layer.borderColor=[[UIColor whiteColor]CGColor];
+    self.sandwhichWhat.layer.borderWidth= TEXTFIELD_BORDER_WIDTH;
+    
+    self.sandwichWhere.layer.cornerRadius=8.0f;
+    self.sandwichWhere.layer.masksToBounds=YES;
+    self.sandwichWhere.layer.borderColor=[[UIColor whiteColor]CGColor];
+    self.sandwichWhere.layer.borderWidth= TEXTFIELD_BORDER_WIDTH;
 }
 
 -(void) addBlurView
@@ -292,15 +311,15 @@
     [self setUpKeyboardPrefferedColors];
     [self setDelegates];
     [self setTextViewFormats];
-    [self blackenCursors];
+    [self whitenCursors];
 }
 
 //Iain
--(void) blackenCursors
+-(void) whitenCursors
 {
     //make cursor black on textfields and textviews
-    [[UITextView appearance] setTintColor:[UIColor blackColor]];
-    [[UITextField appearance] setTintColor:[UIColor blackColor]];
+    [[UITextView appearance] setTintColor:[UIColor whiteColor]];
+    [[UITextField appearance] setTintColor:[UIColor whiteColor]];
 }
 
 //Iain
@@ -399,7 +418,12 @@
     [textView setFont:[[UIFont preferredFontForTextStyle:UIFontTextStyleBody] fontWithSize:TEXT_BOX_FONT_SIZE]];
     //ensure keyboard is black
     textView.keyboardAppearance = UIKeyboardAppearanceDark;
+    [self setDashedBorderToView:textView];
 }
+
+
+
+
 
 //Iain
 //Runs through the page elements and formats all the textviews appropriately
@@ -585,7 +609,10 @@
     NSInteger keyboardBarHeight = self.pullBarHeight;
     NSInteger keyboardYCoordinate= (screenHeight - (keyboardHeight+ keyboardBarHeight)) ;
     
-    if(self.containerViewFrame.size.height != self.view.frame.size.height) keyboardYCoordinate =self.containerViewFrame.size.height;//((UITextView*)self.pageElements.lastObject).frame.size.height + ELEMENT_OFFSET_DISTANCE;
+    if((self.containerViewFrame.size.height + self.pullBarHeight) < self.view.frame.size.height )
+    {
+        keyboardYCoordinate =self.containerViewFrame.size.height;
+    }
     NSInteger activeViewYOrigin = ((UIScrollView *)(self.activeTextView.superview)).frame.origin.y;
     NSInteger yCoordinateOfCaretRelativeToMainView= activeViewYOrigin +self.activeTextView.frame.origin.y + self.caretPosition.origin.y + self.caretPosition.size.height - contentOffSet;
     
@@ -680,6 +707,7 @@
     {
         ((UITextView *)view).bounces= NO;
         ((UITextView *)view).scrollEnabled = NO;
+        [self setDashedBorderToView:view];
     }
    if(![view isKindOfClass:[verbatmCustomMediaSelectTile class]]) view.frame = self.defaultOpenElementFrame;//every view should have this frame
     if( [view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo){
@@ -692,7 +720,54 @@
     }
 }
 
+#pragma mark - UI details
 
+-(void) setDashedBorderToView: (UIView *) view
+{
+    
+        //border definitions
+        CGFloat cornerRadius = 0;
+        CGFloat borderWidth = 3;
+        NSInteger dashPattern1 = 10;
+        NSInteger dashPattern2 = 10;
+        UIColor *lineColor = [UIColor whiteColor];
+    
+        //drawing boundary
+        CGRect frame = view.bounds;
+    
+        CAShapeLayer *_shapeLayer = [CAShapeLayer layer];
+    
+        //creating a path
+        CGMutablePathRef path = CGPathCreateMutable();
+    
+        //drawing a border around a view
+        CGPathMoveToPoint(path, NULL, 0, frame.size.height - cornerRadius);
+        CGPathAddLineToPoint(path, NULL, 0, cornerRadius);
+        CGPathAddArc(path, NULL, cornerRadius, cornerRadius, cornerRadius, M_PI, -M_PI_2, NO);
+        CGPathAddLineToPoint(path, NULL, frame.size.width - cornerRadius, 0);
+        CGPathAddArc(path, NULL, frame.size.width - cornerRadius, cornerRadius, cornerRadius, -M_PI_2, 0, NO);
+        CGPathAddLineToPoint(path, NULL, frame.size.width, frame.size.height - cornerRadius);
+        CGPathAddArc(path, NULL, frame.size.width - cornerRadius, frame.size.height - cornerRadius, cornerRadius, 0, M_PI_2, NO);
+        CGPathAddLineToPoint(path, NULL, cornerRadius, frame.size.height);
+        CGPathAddArc(path, NULL, cornerRadius, frame.size.height - cornerRadius, cornerRadius, M_PI_2, M_PI, NO);
+    
+        //path is set as the _shapeLayer object's path
+        _shapeLayer.path = path;
+        CGPathRelease(path);
+    
+        _shapeLayer.backgroundColor = [[UIColor clearColor] CGColor];
+        _shapeLayer.frame = frame;
+        _shapeLayer.masksToBounds = NO;
+        [_shapeLayer setValue:[NSNumber numberWithBool:NO] forKey:@"isCircle"];
+        _shapeLayer.fillColor = [[UIColor clearColor] CGColor];
+        _shapeLayer.strokeColor = [lineColor CGColor];
+        _shapeLayer.lineWidth = borderWidth;
+        _shapeLayer.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInt:dashPattern1], [NSNumber numberWithInt:dashPattern2], nil];
+        _shapeLayer.lineCap = kCALineCapRound;
+        //_shapeLayer is added as a sublayer of the view, the border is visible
+        [view.layer addSublayer:_shapeLayer];
+        view.layer.cornerRadius = cornerRadius;
+}
 
 #pragma mark - Shift Positions of Elements -
 
@@ -820,6 +895,9 @@
             {
                 [self.gallery returnToGallery: (verbatmCustomImageView *)view];
             }
+            
+            if(self.upperPinchView == view) self.upperPinchView = Nil;//sanitize the pointers so the objects don't stay in memory
+            if(self.lowerPinchView ==view) self.lowerPinchView =Nil;//sanitize these pointers so that the objects don't stay in memory
             
             [self deletedTile:view withIndex:[NSNumber numberWithInt:index]]; //register deleted tile - register in undo stack
         }
@@ -1007,7 +1085,6 @@
 -(void) moveViewsWithLeftDifference: (int) left_difference andRightDifference: (int) right_difference
 {
     
-    NSLog(@"it's here 2");
     NSArray * pinchViews = self.scrollViewForHorizontalPinchView.subviews;
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         for(int i = 0; i < pinchViews.count; i++)
@@ -1025,7 +1102,6 @@
             }
         }
     }];
-    NSLog(@"nope 2");
 }
 
 
@@ -1055,8 +1131,10 @@
     [newView specifyFrame:newFrame];
     [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:newView];
     [self addTapGestureToView:newView];
+    
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         [self.scrollViewForHorizontalPinchView addSubview:newView];
+        self.scrollViewForHorizontalPinchView.pagingEnabled =YES;//Turn paging back on because now it's one element
     }];
 }
 
@@ -1184,7 +1262,7 @@
             self.startLocationOfLeftestTouchPoint = touch2;
             self.startLocationOfRightestTouchPoint = touch1;
             self.scrollViewForHorizontalPinchView.pagingEnabled =NO;
-            self.scrollViewForHorizontalPinchView.scrollEnabled = NO;
+            self.scrollViewForHorizontalPinchView.scrollEnabled= NO;
         }
     }else
     {
@@ -1274,6 +1352,7 @@
         //heuristic to more accurately identify which views we want
         if([self point: lowerTouchPoint isInRangeOfView:wantedView]) //checks to see if we have got the top textview or the lower textview -improves accuracy
         {
+            NSLog(@"4");
             self.index = [self.pageElements indexOfObject:wantedView];
             
             if(self.pageElements.count>(self.index) && self.index != NSNotFound)/*make sure the indexes are in range*/
@@ -1282,6 +1361,7 @@
             }
             if(self.pageElements.count>(self.index-1) && self.index != NSNotFound)
             {
+                NSLog(@"3");
                 self.upperPinchView = self.pageElements[self.index -1];
             }
         }else
@@ -1291,10 +1371,12 @@
             
             if(self.pageElements.count>(self.index) && self.index != NSNotFound)/*make sure the indexes are in range*/
             {
+                NSLog(@"2");
                 self.upperPinchView = self.pageElements[self.index];
             }
             if(self.pageElements.count>(self.index+1)&& self.index != NSNotFound)
             {
+                NSLog(@"1");
                 self.lowerPinchView = self.pageElements[self.index+1];
             }
         }
@@ -1308,7 +1390,7 @@
 {
     NSInteger distanceTraveled = 0;
     UIView * wantedView;
-    
+    NSLog(@"6");
     //Runs through the view positions to find the first one that passes the midpoint- we assume the midpoint is
     for (UIView * view in self.pageElements)
     {
@@ -1327,6 +1409,7 @@
             }
         }
     }
+    NSLog(@"5");
     return wantedView;
 }
 
@@ -1367,6 +1450,7 @@
             [self.lowerPinchView removeFromSuperview];
             [self.pageElements removeObject:self.lowerPinchView];
             
+            NSLog(@"1");
             NSMutableArray* array_of_objects = [[NSMutableArray alloc] initWithObjects:self.upperPinchView,self.lowerPinchView, nil];
             verbatmCustomPinchView * pinchView = [verbatmCustomPinchView pinchTogether:array_of_objects];
             
@@ -1416,13 +1500,11 @@
             self.upperPinchView.superview.frame = [self newTranslationForUpperPinchViewFrameWithChange:changeInPosition];
             self.changeInTopViewPosition = changeInPosition;
             [self shiftElementsAboveView:self.upperPinchView withDifference:changeInPosition];
-            NSLog(@"first");
         }else if ( touch2.y < touch1.y){
             changeInPosition = touch2.y - self.startLocationOfUpperTouchPoint.y;
             self.startLocationOfUpperTouchPoint = touch2;
             self.upperPinchView.superview.frame = [self newTranslationForUpperPinchViewFrameWithChange:changeInPosition];
             self.changeInTopViewPosition = changeInPosition;
-            NSLog(@"second");
             [self shiftElementsAboveView:self.upperPinchView withDifference:changeInPosition];
             
         }
@@ -1433,7 +1515,7 @@
             self.startLocationOfUpperTouchPoint = touch1;
             self.upperPinchView.superview.frame = [self newTranslationForUpperPinchViewFrameWithChange:changeInPosition];
             self.changeInTopViewPosition = changeInPosition;
-            NSLog(@"third");
+
             [self shiftElementsAboveView:self.upperPinchView withDifference:changeInPosition];
             
         }
@@ -1507,7 +1589,7 @@
     {
         
         //construct new frames for view and personal scroll view
-        self.createdMediaView.frame = CGRectMake(self.createdMediaView.frame.origin.x- (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)),
+        self.createdMediaView.frame = CGRectMake(self.createdMediaView.frame.origin.x- (ABS(self.changeInBottomViewPostion) /*+  ABS(self.changeInTopViewPosition)*/),
                                                    self.createdMediaView.frame.origin.y,
                                                    self.createdMediaView.frame.size.width+(ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition))/2,
                                                    self.createdMediaView.frame.size.height + (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition))/2);
@@ -1601,7 +1683,11 @@
 
 -(void) addMultiMediaButtonPressedAsBaseView:(BOOL)isBaseView
 {
-     [self.gallery presentGallery];
+    if(isBaseView && self.pageElements.count >1)
+    {
+        self.index = [self.pageElements indexOfObject:self.baseMediaTileSelector]-1;
+    }else self.index =0;
+    [self.gallery presentGallery];
 }
 
 -(void) replaceNewMediaViewWithTextView
@@ -1623,8 +1709,17 @@
 {
     //create frame for the personal scrollview of the new text view
     UIScrollView * newPersonalScrollView = [[UIScrollView alloc]init];
-    newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultPersonalScrollViewFrameSize_openElement.width,self.defaultPersonalScrollViewFrameSize_openElement.height);
+    
+    
+    if(topView ==self.articleTitleField)
+    {
+    //note that this depends on the fact that the first personal scrollview is still being pointed to by the iboulet even if the object was deleted.
+        newPersonalScrollView.frame =  CGRectMake(self.personalScrollViewOfFirstContentPageTextBox.frame.origin.x, self.personalScrollViewOfFirstContentPageTextBox.frame.origin.y, self.defaultPersonalScrollViewFrameSize_openElement.width,self.defaultPersonalScrollViewFrameSize_openElement.height);
+    }else
+    {
+        newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultPersonalScrollViewFrameSize_openElement.width,self.defaultPersonalScrollViewFrameSize_openElement.height);
     //set scrollview delegate
+    }
     newPersonalScrollView.delegate = self;
     
     //new textview
@@ -1640,10 +1735,46 @@
     
     //reposition views on screen
     [self shiftElementsBelowView:view];
+    
     //ensure the the screen is scrolled in order for view to appear
-    [self updateScrollViewPosition];
+    if([view isKindOfClass:[UITextView class]])[self updateScrollViewPosition];
 
 }
+
+#pragma mark - Change position of elements -
+
+//add the pan gesture to an object
+-(void) addPanGestureToView: (UIView *) view
+{
+    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pressAndHold:)];
+    [view addGestureRecognizer:pan];
+}
+
+//element has been pressed and held
+-(void) pressAndHold:(UIPanGestureRecognizer *) sender
+{
+    //first lets assume that this is an element in the regular stream
+    if(sender.state == UIGestureRecognizerStateBegan)
+    {
+        UIView * view = sender.view;
+        UIScrollView * scrollview = (UIScrollView *)view.superview;
+        [self.mainScrollView bringSubviewToFront:scrollview];
+        
+        
+    }else if(sender.state == UIGestureRecognizerStateChanged)
+    {
+        
+        UIView * view = sender.view;
+        UIScrollView * scrollview = (UIScrollView *)view.superview;
+        
+        
+        
+    }else if (sender.state == UIGestureRecognizerStateEnded)
+    {
+        
+    }
+}
+
 
 #pragma mark - Lazy Instantiation -
 ///Iain
@@ -1692,22 +1823,45 @@
 -(void)didSelectImageView:(verbatmCustomImageView*)imageView
 {
     if(self.baseMediaTileSelector.dashed) [self.baseMediaTileSelector returnToButtonView];
+    
     [self.view addSubview:imageView];
-    [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
+    if(self.index==0 && self.pageElements.count==1)
+    {
+        [self animateView:imageView InToPositionUnder:self.articleTitleField];
+    }else
+    {
+        [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
+    }
 }
 
 -(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView
 {
     [self.view bringSubviewToFront:view];
     
-    CGRect  frame = CGRectOffset(topView.superview.frame, 0, topView.superview.frame.size.height);
+    CGRect frame;
+    if(topView == self.articleTitleField)
+    {
+        
+         frame  = CGRectMake(self.personalScrollViewOfFirstContentPageTextBox.frame.origin.x, self.personalScrollViewOfFirstContentPageTextBox.frame.origin.y, self.defaultOpenElementFrame.size.width, self.defaultOpenElementFrame.size.height);
+    }else
+    {
+    
+        frame = CGRectOffset(topView.superview.frame, 0, topView.superview.frame.size.height);
+    }
+    
     
     [UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
         view.frame = frame;
     } completion:^(BOOL finished) {
         if(finished)
         {
-            [self addView:view underView:self.pageElements[self.index]];
+            if(topView == self.articleTitleField)
+            {
+                [self addView:view underView:self.articleTitleField];
+            }else
+            {
+                [self addView:view underView:self.pageElements[self.index]];
+            }
         }
     }];
 }
@@ -1816,6 +1970,31 @@
 
     verbatmCustomPinchView * pinch_object = (verbatmCustomPinchView *)sender.view;
     if(pinch_object.hasMultipleMedia)[self openCollection:pinch_object];//checks if there is anything to open by telling you if the element has multiple things in it
+    
+    if(!pinch_object.isCollection && !pinch_object.hasMultipleMedia)//tap to open an element for viewing or editing
+    {
+        
+        NSMutableArray * array = [pinch_object mediaObjects];
+        
+        if([self.pageElements indexOfObject:pinch_object]!= 0)
+        {
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                 [self addView:[array firstObject] underView:self.pageElements[[self.pageElements indexOfObject:pinch_object]-1]];
+            }];
+           
+        }else
+        {
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                [self addView:[array firstObject] underView:self.articleTitleField];
+            }];
+            
+        }
+        [pinch_object.superview removeFromSuperview];
+        [self.pageElements removeObject:pinch_object];
+        [self shiftElementsBelowView:self.articleTitleField];//make sure the gap is closed no that the old view is removed
+    }
+    
+    
 }
 
 #pragma mark Open Collection
