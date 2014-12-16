@@ -164,8 +164,6 @@
     }else{
         self.videoView.frame = frame2;
         self.imageViewer.frame = frame1;
-        self.imageViewer.contentMode = UIViewContentModeScaleAspectFill;
-        self.videoView.contentMode =    UIViewContentModeScaleAspectFill;
     }
 }
        
@@ -214,7 +212,7 @@
     
     // Create an AVPlayerLayer using the player
     AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = self.bounds;
+    playerLayer.frame = self.videoView.layer.bounds;
     playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     // Add it to your view's sublayers
     [self.videoView.layer addSublayer:playerLayer];
