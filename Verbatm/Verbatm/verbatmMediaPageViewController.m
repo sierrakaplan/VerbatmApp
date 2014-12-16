@@ -317,7 +317,6 @@
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
     longPress.minimumPressDuration = 1;
-    //longPress.cancelsTouchesInView = YES;
     [self.verbatmCameraView addGestureRecognizer:longPress];
 }
 
