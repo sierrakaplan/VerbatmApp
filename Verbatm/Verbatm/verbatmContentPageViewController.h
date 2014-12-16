@@ -27,9 +27,6 @@
 -(void)alertGallery:(ALAsset*)asset;
 @property(nonatomic) NSInteger pullBarHeight;
 
-
-
-
 @end
 
 

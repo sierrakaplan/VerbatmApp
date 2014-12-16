@@ -161,11 +161,10 @@
         }else{
             self.videoView.frame = frame2;
         }
-    }else{
-        self.videoView.frame = frame2;
-        self.imageViewer.frame = frame1;
-        self.imageViewer.contentMode = UIViewContentModeScaleAspectFill;
-        self.videoView.contentMode =    UIViewContentModeScaleAspectFill;
+    }else
+    {
+        self.videoView.frame = CGRectMake(0, 0, self.background.frame.size.width/2, self.background.frame.size.height);
+        self.imageViewer.frame = CGRectMake(self.background.frame.size.width/2, 0, self.background.frame.size.width/2 ,self.background.frame.size.height);
     }
 }
        
@@ -190,9 +189,9 @@
             UIImage* image = [(verbatmCustomImageView*)object image];
             [self.imageViewer setImage:image];
         }else{
-            [self.videoView.layer.sublayers.lastObject removeFromSuperlayer];
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
-            [self playVideo: avurlAsset];
+//            [self.videoView.layer.sublayers.lastObject removeFromSuperlayer];
+//            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
+//            [self playVideo: avurlAsset];
         }
     }
 }
@@ -214,7 +213,7 @@
     
     // Create an AVPlayerLayer using the player
     AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = self.bounds;
+    playerLayer.frame = self.videoView.bounds;
     playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     // Add it to your view's sublayers
     [self.videoView.layer addSublayer:playerLayer];
