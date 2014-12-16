@@ -28,7 +28,7 @@
 #define DROP_FROM_COORDINATES 0,-400, self.view.frame.size.width, (self.view.frame.size.width*2/3)//self.view.frame.size.height/3
 #define VERTICAL_OFFSET 400
 #define START_POSITION_FOR_MEDIA OFFSET, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2, self.scrollView.frame.size.height - 2*OFFSET
-#define CONTENT_SIZE self.scrollView.frame.size.width*self.media.count/2 -  2*OFFSET, (self.view.frame.size.width*2/3)//self.view.frame.size.height/3
+#define CONTENT_SIZE /*self.scrollView.frame.size.width*self.media.count/2 -  2*OFFSET*/(self.scrollView.frame.size.width - OFFSET)*self.media.count/2 , (self.view.frame.size.width*2/3)//self.view.frame.size.height/3
 #define START_POSITION_FOR_MEDIA2   (self.scrollView.frame.size.width + OFFSET)/2, OFFSET, (self.scrollView.frame.size.width - 3*OFFSET)/2  , self.scrollView.frame.size.height - 2*OFFSET
 #define BACKGROUND @"background"
 #define SCROLLVIEW_ALPHA 0.5
@@ -288,6 +288,7 @@
     __block int indexa = ceil((self.scrollView.contentOffset.x + location.x)/((self.scrollView.frame.size.width - OFFSET)/2)) - 1;
     verbatmCustomImageView* selectedImageView ;
     if(self.mediaImageViews.count >= 1)selectedImageView = [self.mediaImageViews objectAtIndex:indexa];
+    int temp = indexa;
     if(selectedImageView){
         [UIView animateWithDuration:0.8 animations:^{
             CGRect viewSize = selectedImageView.frame;
@@ -301,35 +302,27 @@
         }];
         [selectedImageView removeFromSuperview];
         [self.customDelegate didSelectImageView:selectedImageView];
-        [self.media removeObjectAtIndex:indexa];
+        [self.media removeObjectAtIndex:temp];
     }
 }
 
 -(void)returnToGallery:(verbatmCustomImageView*)view
 {
-    [view removeFromSuperview];
-    [self.media addObject: view.asset];
+    view = [self imageViewFromAsset:view.asset];
+    [self.media insertObject: view.asset atIndex:0];
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
-    view.frame = viewSize;
-    if(view.isVideo){
-        BOOL hasVideoLayer = NO;
-        for(id layer in view.layer.sublayers){
-            if([layer isKindOfClass:[AVPlayerLayer class]]){
-                hasVideoLayer = YES;
-                ((AVPlayerLayer*)layer).frame = view.bounds;
-                view.layer.masksToBounds = YES;
-            }
-        }
-        if(!hasVideoLayer){
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
-            [self playVideo:avurlAsset forView:view];
-        }
-    }
+    self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
     for(verbatmCustomImageView* otherView in self.mediaImageViews){
         otherView.frame = CGRectOffset(otherView.frame,  (self.scrollView.frame.size.width - OFFSET)/2, 0);
     }
-    [self.mediaImageViews addObject: view];
+    view.frame = viewSize;
+    if(view.isVideo){
+        AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
+        [self playVideo:avurlAsset forView:view];
+    }
+    [self.mediaImageViews insertObject:view atIndex:0];
     [self.scrollView addSubview: view];
-    self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
+    [self.view bringSubviewToFront:self.scrollView];
+    [self.scrollView bringSubviewToFront:view];
 }
 @end
