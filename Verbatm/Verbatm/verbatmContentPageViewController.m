@@ -108,10 +108,14 @@
 
 
 #pragma mark Horizontal Pinch Gesture Properties
-@property(nonatomic) CGPoint startLocationOfLeftestTouchPoint;
-@property (nonatomic) CGPoint startLocationOfRightestTouchPoint;
+@property(nonatomic) CGPoint startLocationOfLeftestTouchPoint_PINCH;
+@property (nonatomic) CGPoint startLocationOfRightestTouchPoint_PINCH;
 @property (nonatomic, strong) UIScrollView * scrollViewForHorizontalPinchView;
 @property (nonatomic) NSInteger horizontalPinchDistance;
+
+#pragma mark PanGesture Properties
+@property(nonatomic) CGPoint startLocationOfTouchPoint_PAN;
+
 
 #pragma mark Vertical Pinch Gesture Related Properties
 @property (nonatomic) BOOL VerticalPinch;
@@ -1021,8 +1025,8 @@
     {
         self.pinching = NO;
         self.horizontalPinchDistance =0;//Sanitize the figure
-        self.startLocationOfLeftestTouchPoint = CGPointMake(0, 0);
-        self.startLocationOfRightestTouchPoint = CGPointMake(0, 0);
+        self.startLocationOfLeftestTouchPoint_PINCH = CGPointMake(0, 0);
+        self.startLocationOfRightestTouchPoint_PINCH = CGPointMake(0, 0);
         self.scrollViewForHorizontalPinchView.scrollEnabled = YES;
         if(sender.scale > 1 )
         {
@@ -1052,23 +1056,24 @@
 -(void)handleHorizontalPincheGestureChanged:(UIGestureRecognizer *) sender
 {
     
+    
     CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
     CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
     
     if(touch1.x >touch2.x)
     {
-        int left_most_difference = touch2.x- self.startLocationOfLeftestTouchPoint.x;
-        int right_most_difference = touch1.x - self.startLocationOfRightestTouchPoint.x;//this will be negative
-        self.startLocationOfRightestTouchPoint = touch1;
-        self.startLocationOfLeftestTouchPoint = touch2;
+        int left_most_difference = touch2.x- self.startLocationOfLeftestTouchPoint_PINCH.x;
+        int right_most_difference = touch1.x - self.startLocationOfRightestTouchPoint_PINCH.x;//this will be negative
+        self.startLocationOfRightestTouchPoint_PINCH = touch1;
+        self.startLocationOfLeftestTouchPoint_PINCH = touch2;
         [self moveViewsWithLeftDifference:left_most_difference andRightDifference:right_most_difference];
         self.horizontalPinchDistance += (left_most_difference - right_most_difference);
     }else
     {
-        int left_most_difference = touch1.x- self.startLocationOfLeftestTouchPoint.x;
-        int right_most_difference = touch2.x - self.startLocationOfRightestTouchPoint.x;//this will be negative
-        self.startLocationOfRightestTouchPoint = touch2;
-        self.startLocationOfLeftestTouchPoint = touch1;
+        int left_most_difference = touch1.x- self.startLocationOfLeftestTouchPoint_PINCH.x;
+        int right_most_difference = touch2.x - self.startLocationOfRightestTouchPoint_PINCH.x;//this will be negative
+        self.startLocationOfRightestTouchPoint_PINCH = touch2;
+        self.startLocationOfLeftestTouchPoint_PINCH = touch1;
         [self moveViewsWithLeftDifference:left_most_difference andRightDifference:right_most_difference];
         self.horizontalPinchDistance += (left_most_difference - right_most_difference);
     }
@@ -1091,7 +1096,7 @@
         {
             CGRect oldFrame = ((verbatmCustomPinchView *)pinchViews[i]).frame;
             
-            if(oldFrame.origin.x < self.startLocationOfLeftestTouchPoint.x+ self.scrollViewForHorizontalPinchView.contentOffset.x)
+            if(oldFrame.origin.x < self.startLocationOfLeftestTouchPoint_PINCH.x+ self.scrollViewForHorizontalPinchView.contentOffset.x)
             {
                 CGRect newFrame = CGRectMake(oldFrame.origin.x + left_difference , oldFrame.origin.y, oldFrame.size.width, oldFrame.size.height);
                 ((verbatmCustomPinchView *)pinchViews[i]).frame = newFrame;
@@ -1259,8 +1264,8 @@
         self.scrollViewForHorizontalPinchView = [self findCollectionScrollViewFromTouchPoint:touch1];
         if(self.scrollViewForHorizontalPinchView)
         {
-            self.startLocationOfLeftestTouchPoint = touch2;
-            self.startLocationOfRightestTouchPoint = touch1;
+            self.startLocationOfLeftestTouchPoint_PINCH = touch2;
+            self.startLocationOfRightestTouchPoint_PINCH = touch1;
             self.scrollViewForHorizontalPinchView.pagingEnabled =NO;
             self.scrollViewForHorizontalPinchView.scrollEnabled= NO;
         }
@@ -1269,8 +1274,8 @@
         self.scrollViewForHorizontalPinchView = [self findCollectionScrollViewFromTouchPoint:touch1];
         if(self.scrollViewForHorizontalPinchView)
         {
-            self.startLocationOfLeftestTouchPoint = touch1;
-            self.startLocationOfRightestTouchPoint = touch2;
+            self.startLocationOfLeftestTouchPoint_PINCH = touch1;
+            self.startLocationOfRightestTouchPoint_PINCH = touch2;
             self.scrollViewForHorizontalPinchView.pagingEnabled =NO;
             self.scrollViewForHorizontalPinchView.scrollEnabled = NO;
 
@@ -1287,13 +1292,11 @@
     for (UIView * view in self.pageElements)
     {
         UIView * superview = view.superview;//should be a scrollview
-        
         if([superview isKindOfClass:[UIScrollView class]])
         {
             if(!distanceTraveled) distanceTraveled =superview.frame.origin.y;
             
             distanceTraveled += superview.frame.size.height;
-            
             if(distanceTraveled > touch.y)
             {
                 wantedView = (UIScrollView *)view.superview;
@@ -1301,7 +1304,6 @@
             }
         }
     }
-    
     if(wantedView.subviews.count <2) return Nil;//If they are trying to close a closed element
     return wantedView;
 }
