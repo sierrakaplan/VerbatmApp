@@ -58,7 +58,7 @@
         
         self.videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session];
         self.videoPreview.frame = containerView.frame;
-         self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;  //was originally resizeaspectfill
+         self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;
         
         [containerView.layer addSublayer: self.videoPreview];
             //start the session running
@@ -67,7 +67,9 @@
     return self;
 }
 
-//Lucio
+/*Directs the output of the still image of the session to the stillImageOutput file
+ *By Lucio.
+ */
 -(void)addStillImageOutput
 {
     [self setStillImageOutput:[[AVCaptureStillImageOutput alloc] init]];
@@ -90,6 +92,7 @@
     AVCaptureInput* videoInput = [AVCaptureDeviceInput deviceInputWithDevice: videoDevice error:&error];
     if(error){
         NSLog(@"video input not  available");
+        return;
     }
     
     //Getting audio
@@ -98,6 +101,7 @@
     if (!videoInput || !audioInput) {
 		// Handle the error appropriately.
 		NSLog(@"ERROR: trying to open camera: %@", error);
+        return;
 	}
     
     //adding video and audio inputs
@@ -132,31 +136,19 @@
 -(void)createVerbatmDirectory
 {
     NSString* albumName = ALBUM_NAME;
+    __weak verbatmMediaSessionManager* weakSelf = self;
     [self.assetLibrary addAssetsGroupAlbumWithName:albumName
                                   resultBlock:^(ALAssetsGroup *group) {
                                       NSLog(@"added album:%@", albumName);
-                                      
+                                      weakSelf.verbatmAlbum = group;
                                   }
                                  failureBlock:^(NSError *error) {
                                      NSLog(@"error adding album");
                                  }];
-    //get the album
-    __weak verbatmMediaSessionManager* weakSelf = self;
-    [self.assetLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum
-                                usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-                                    if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:albumName]) {
-                                        NSLog(@"found album %@", albumName);
-                                        weakSelf.verbatmAlbum = group;
-                                        return;   //add this
-                                    }
-                                }
-                              failureBlock:^(NSError* error) {
-                                  NSLog(@"failed to enumerate albums:\nError: %@", [error localizedDescription]);
-                              }];
 }
 
 
-#pragma mark - customize session
+#pragma mark - customize session -
 
 //By Lucio
 //Switch the video prosition: front to back and vice versa
@@ -178,6 +170,10 @@
         newCamera = [self getCameraWithOrientation:AVCaptureDevicePositionFront];
     }
     
+    if(newCamera == nil){
+        [self.session addInput:currentVideoInput];
+        return;
+    }
     //add the new video
     AVCaptureDeviceInput* newInput = [[AVCaptureDeviceInput alloc] initWithDevice:newCamera error:nil];
     [self.session addInput:newInput];
@@ -272,6 +268,7 @@
         if ([fileManager removeItemAtPath:movieOutput error:&error] == NO)
         {
             NSLog(@"output path  is wrong");
+            return;
         }
     }
 
@@ -279,10 +276,8 @@
     AVCaptureConnection *videoConnection = nil;
     for ( AVCaptureConnection *connection in [self.movieOutputFile connections] )
     {
-        NSLog(@"%@", connection);
         for ( AVCaptureInputPort *port in [connection inputPorts] )
         {
-            NSLog(@"%@", port);
             if ( [[port mediaType] isEqual:AVMediaTypeVideo] )
             {
                 videoConnection = connection;
@@ -293,6 +288,7 @@
     {
         [videoConnection setVideoOrientation:self.videoPreview.connection.videoOrientation];
     }
+    
     
     //start recording to file
     [self.movieOutputFile startRecordingToOutputFileURL:outputURL recordingDelegate:self];
