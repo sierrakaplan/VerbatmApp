@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Qxg-C2-1Oh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6250" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Qxg-C2-1Oh">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
     </dependencies>
     <scenes>
         <!--Verbatm Media Page View Controller-->
@@ -146,7 +146,6 @@
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="dK5-d0-qyg" appends="YES" id="Ex7-UR-RJB"/>
                                     <outletCollection property="gestureRecognizers" destination="WDj-eM-uvF" appends="YES" id="qqz-CK-rEn"/>
-                                    <outletCollection property="gestureRecognizers" destination="LVg-Oo-P4S" appends="YES" id="M5C-zC-fFS"/>
                                 </connections>
                             </scrollView>
                         </subviews>
@@ -173,11 +172,7 @@
                         <action selector="addElementPinchGesture:" destination="0lh-hP-Opv" id="93r-9H-LPJ"/>
                     </connections>
                 </pinchGestureRecognizer>
-                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="LVg-Oo-P4S">
-                    <connections>
-                        <action selector="pressAndHoldPinchObjects:" destination="0lh-hP-Opv" id="ACE-51-yvV"/>
-                    </connections>
-                </panGestureRecognizer>
+                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="LVg-Oo-P4S"/>
             </objects>
             <point key="canvasLocation" x="-1538" y="-1061"/>
         </scene>
