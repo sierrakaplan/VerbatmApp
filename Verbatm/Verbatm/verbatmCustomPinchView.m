@@ -20,12 +20,7 @@
 @property (readwrite,nonatomic) BOOL there_is_text;
 @property (readwrite, nonatomic) BOOL there_is_video;
 @property (readwrite, nonatomic) BOOL there_is_picture;
-@property (strong, nonatomic) MPMoviePlayerController *mp;
 
-
-#define MEDIA_TYPE_TEXT @"TEXT"
-#define MEDIA_TYPE_VIDEO @"VIDEO"
-#define MEDIA_TYPE_PHOTO @"PHOTO"
 #define TIME_TO_ANIMATE 0.01
 #define SHADOW_OFFSET_FACTOR 25
 #define DIVISION_FACTOR_FOR_THREE 2
@@ -194,7 +189,7 @@
         }else{
             AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
             [self playVideo: avurlAsset];
-           // self.videoView.layer.masksToBounds = YES;
+             self.videoView.layer.masksToBounds = YES;
         }
     }
 }

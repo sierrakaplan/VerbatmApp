@@ -539,10 +539,13 @@
     if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
         if(!self.containerView.isHidden && !self.canRaise){
             [UIView animateWithDuration:0.5 animations:^{
-                self.containerView.frame = CGRectMake(0, self.view.frame.size.height, self.containerView.frame.size.width, 0);
+                self.containerView.frame = CGRectMake(0, 0, self.containerView.frame.size.width, 0);
+                self.pullBar.frame = CGRectMake(0, 0, self.pullBar.frame.size.width, 0);;
+                for(UIView* view in self.pullBar.subviews){
+                    view.hidden = YES;
+                }
                 //preferably use autolayout
                 if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
-                    NSLog(@"was here");
                     self.switchCameraButton.transform  = CGAffineTransformMakeRotation(M_PI_2);
                     self.switchFlashButton.transform = CGAffineTransformMakeRotation(M_PI_2);
                 }else{
@@ -550,7 +553,9 @@
                     self.switchFlashButton.transform = CGAffineTransformMakeRotation(-M_PI_2);
                 }
             } completion:^(BOOL finished) {
-                if(finished) self.containerView.hidden = YES;
+                if(finished){
+                    self.containerView.hidden = YES;
+                }
             }];
         }
     }else{
@@ -558,8 +563,12 @@
             self.containerView.hidden = NO;
             [UIView animateWithDuration:0.5 animations:^{
                 self.containerView.frame =  self.containerViewNoMSAVFrame;
-                self.switchCameraButton.transform = self.switchTransform;
-                self.switchFlashButton.transform = self.flashTransform;
+                self.pullBar.frame = self.pullBarNoMSAVFrame;
+                for(UIView* view in self.pullBar.subviews){
+                    view.hidden = NO;
+                }
+//                self.switchCameraButton.transform = self.switchTransform;
+//                self.switchFlashButton.transform = self.flashTransform;
             }];
         }
     }
