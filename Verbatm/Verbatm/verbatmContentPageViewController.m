@@ -105,6 +105,7 @@
 @property (nonatomic) NSInteger horizontalPinchDistance;
 
 #pragma mark PanGesture Properties
+@property (nonatomic, strong) UIView * selectedView_Pan;
 @property(nonatomic) CGPoint startLocationOfTouchPoint_PAN;
 @property (nonatomic) CGRect originalFrame;//keep track of the starting from of the selected view so that you can easily shift things around
 @property (nonatomic) CGRect potentialFrame;//keep track of the frame the selected view could take so that we can easily shift
@@ -1125,7 +1126,6 @@
     [newView specifyFrame:newFrame];
     [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:newView];
     [self addTapGestureToView:newView];
-    [self addPanGestureToView: newView];
     
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         [self.scrollViewForHorizontalPinchView addSubview:newView];
@@ -1189,6 +1189,7 @@
                     [self horitzontalPinchWithGesture:sender];
                 }else
                 {
+                    if(self.pageElements.count==0) return;//you can pinch together two things when there's only one
                     self.VerticalPinch = YES;
                     [self verticlePinchWithGesture:sender];
                 }
@@ -1203,6 +1204,7 @@
                     [self horitzontalPinchWithGesture:sender];
                 }else
                 {
+                    if(self.pageElements.count==0) return;//you can pinch together two things when there's only one
                     self.VerticalPinch = YES;
                     [self verticlePinchWithGesture:sender];
                 }
@@ -1220,6 +1222,7 @@
                 [self horitzontalPinchWithGesture:sender];
             }else
             {
+                if(self.pageElements.count==0) return;//you can pinch together two things when there's only one
                 self.VerticalPinch = YES;
                 [self verticlePinchWithGesture:sender];
             }
@@ -1234,6 +1237,7 @@
                 [self horitzontalPinchWithGesture:sender];
             }else
             {
+                if(self.pageElements.count==0) return;//you can pinch together two things when there's only one
                 self.VerticalPinch = YES;
                 [self verticlePinchWithGesture:sender];
             }
@@ -1628,8 +1632,6 @@
 
 
 
-
-
 #pragma mark Pinch Apart Failed
 
 
@@ -1662,7 +1664,6 @@
 
 -(UIView *) findSecondToLastElementInPageElements
 {
-    
     if(!self.pageElements.count) return nil;
     
     unsigned long last_index =  self.pageElements.count -1;
@@ -1671,14 +1672,15 @@
     return nil;
 }
 
-
-
 -(void) addMultiMediaButtonPressedAsBaseView:(BOOL)isBaseView
 {
-    if(isBaseView && self.pageElements.count >1)
+    if((self.baseMediaTileSelector != [self.pageElements firstObject]))
     {
-        self.index = [self.pageElements indexOfObject:self.baseMediaTileSelector]-1;
-    }else self.index =0;
+        self.index = ([self.pageElements indexOfObject:self.baseMediaTileSelector]-1);
+    }else
+    {
+        self.index =0;
+    }
     [self.gallery presentGallery];
 }
 
@@ -1733,25 +1735,50 @@
 
 }
 
+
+
 #pragma mark - Change position of elements -
 
-//add the pan gesture to an object
--(void) addPanGestureToView: (UIView *) view
+////add the pan gesture to an object
+//-(void) addPanGestureToView: (UIView *) view
+//{
+//    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pressAndHold:)];
+//    [view addGestureRecognizer:pan];
+//}
+//
+
+
+-(void) findSelectedViewFromSender:(UIPanGestureRecognizer *)sender
 {
-    return; //debug
-    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pressAndHold:)];
-    [view addGestureRecognizer:pan];
+     CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
+    
+    for (int i=0; i<self.pageElements.count; i++)
+    {
+        UIView * view = ((UIView *)self.pageElements[i]).superview;
+        UIView * first_view = ((UIView *)self.pageElements[0]).superview;
+        
+        if (touch1.y >= first_view.frame.origin.y )//make sure touch is not above the first view
+        {
+            if((view.frame.origin.y+view.frame.size.height)>touch1.y)//we stop when we find the first one
+            {
+                self.selectedView_Pan = self.pageElements[i];
+                return;
+            }
+        }
+    }
+    self.selectedView_Pan = Nil;
 }
 
-//element has been pressed and held
--(void) pressAndHold:(UIPanGestureRecognizer *) sender
+- (IBAction)pressAndHoldPinchObjects:(UIPanGestureRecognizer *)sender
 {
     if (sender.state == UIGestureRecognizerStateEnded)
     {
-        UIView * view = sender.view;
-        view.superview.frame = self.originalFrame;
-        view.superview.backgroundColor = [UIColor clearColor];//for debugging
+        if (!self.selectedView_Pan) return;//if we didn't find the view then leave
+        self.selectedView_Pan.superview.frame = self.originalFrame;
+        self.selectedView_Pan.superview.backgroundColor = [UIColor clearColor];//for debugging
+        self.selectedView_Pan = Nil;//sanitize for next run
     }
+    
     
     //make sure it's a single finger touch and that there are multiple elements on the screen
     if(self.pageElements.count==0 || [sender numberOfTouches] != 1) return;
@@ -1760,50 +1787,46 @@
     //first lets assume that this is an element in the regular stream
     if(sender.state == UIGestureRecognizerStateBegan)
     {
-        
-        UIView * view = sender.view;
-        UIScrollView * scrollview = (UIScrollView *)view.superview;
+        [self findSelectedViewFromSender:sender];
+        if (!self.selectedView_Pan) return;//if we didn't find the view then leave
+        UIScrollView * scrollview = (UIScrollView *)self.selectedView_Pan;
         [self.mainScrollView bringSubviewToFront:scrollview];
         self.startLocationOfTouchPoint_PAN = [sender locationOfTouch:0 inView:self.mainScrollView];
-        self.originalFrame = view.superview.frame;
+        self.originalFrame =self.selectedView_Pan.superview.frame;
         
-        view.superview.backgroundColor = [UIColor blueColor];//for debugging
+        self.selectedView_Pan.superview.backgroundColor = [UIColor blueColor];//for debugging
         
     }
     
-   
-
-    
     if(sender.state == UIGestureRecognizerStateChanged)
     {
-        
-        UIView * view = sender.view;
+        if (!self.selectedView_Pan) return;//if we didn't find the view then leave
         CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
         NSInteger y_differrence  = touch1.y - self.startLocationOfTouchPoint_PAN.y;
         self.startLocationOfTouchPoint_PAN = touch1;
         
         //ok so move the view up or down by the amount the finger has moved
-        CGRect newFrame = CGRectMake(view.superview.frame.origin.x, view.superview.frame.origin.y + y_differrence, view.superview.frame.size.width, view.superview.frame.size.height);
+        CGRect newFrame = CGRectMake(self.selectedView_Pan.superview.frame.origin.x, self.selectedView_Pan.superview.frame.origin.y + y_differrence, self.selectedView_Pan.superview.frame.size.width, self.selectedView_Pan.superview.frame.size.height);
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-            view.superview.frame = newFrame;
+            self.selectedView_Pan.superview.frame = newFrame;
         }] ;
         
         //first assuming it's somewhere in the middle
-        NSInteger view_index = [self.pageElements indexOfObject:view];
+        NSInteger view_index = [self.pageElements indexOfObject:self.selectedView_Pan];
         UIView * topView=Nil;
         UIView * bottomView=Nil;
         
         if(view_index !=0)
         {
-           topView  = self.pageElements[view_index-1];
-            if(view != [self.pageElements lastObject])
+            topView  = self.pageElements[view_index-1];
+            if(self.selectedView_Pan != [self.pageElements lastObject])
             {
                 bottomView = self.pageElements[view_index +1];
             }
         }else if (view_index==0)
         {
             bottomView = self.pageElements[view_index +1];
-        }else if (view == [self.pageElements lastObject])
+        }else if (self.selectedView_Pan == [self.pageElements lastObject])
         {
             topView  = self.pageElements[view_index-1];
         }
@@ -1813,7 +1836,7 @@
         {
             if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
             {
-                [self swapObject:view andObject:topView];//exchange their positions in page elements array
+                [self swapObject:self.selectedView_Pan andObject:topView];//exchange their positions in page elements array
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = topView.superview.frame;
@@ -1823,7 +1846,7 @@
                 
             }else if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
             {
-                [self swapObject:view andObject:bottomView];//exchange their positions in page elements array
+                [self swapObject:self.selectedView_Pan andObject:bottomView];//exchange their positions in page elements array
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = bottomView.superview.frame;
@@ -1835,7 +1858,7 @@
         {
             if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
             {
-                [self swapObject:view andObject:bottomView];//exchange their positions in page elements array
+                [self swapObject:self.selectedView_Pan andObject:bottomView];//exchange their positions in page elements array
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = bottomView.superview.frame;
@@ -1843,11 +1866,11 @@
                     self.originalFrame = self.potentialFrame;
                 }];
             }
-        }else if (view == [self.pageElements lastObject])
+        }else if (self.selectedView_Pan == [self.pageElements lastObject])
         {
             if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
             {
-                [self swapObject:view andObject:topView];//exchange their positions in page elements array
+                [self swapObject:self.selectedView_Pan andObject:topView];//exchange their positions in page elements array
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = topView.superview.frame;
@@ -1856,14 +1879,13 @@
                 }];
                 
             }
-
+            
         }
         
         
     }
-    
-}
 
+}
 
 //swaps to objects in the page elements array
 -(void)swapObject: (UIView *) obj1 andObject: (UIView *) obj2
@@ -1873,7 +1895,6 @@
     [self.pageElements replaceObjectAtIndex:index1 withObject:obj2];
     [self.pageElements replaceObjectAtIndex:index2 withObject:obj1];
 }
-
 
 
 #pragma mark - Lazy Instantiation -
@@ -1889,6 +1910,7 @@
     if(!_activeTextView)_activeTextView = self.firstContentPageTextBox;
     return _activeTextView;
 }
+
 //Iain
 -(NSMutableArray *) pageElements
 {
@@ -2030,8 +2052,6 @@
         self.mainScrollView.contentOffset = CGPointMake(0, 0);
         self.mainScrollView.scrollEnabled = isFree;
     }
-
-    
 }
 
 
@@ -2049,7 +2069,6 @@
             [superView addSubview:pinch];
             [self.pageElements replaceObjectAtIndex:i withObject:pinch];
             [self addTapGestureToView:pinch];//add tap gesture to the newly created pinch object
-            [self addPanGestureToView:pinch];//add pan gesture to the view
             [self shiftElementsBelowView:pinch];
         }
     }

@@ -143,7 +143,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1874"
             endingLineNumber = "1874"
-            landmarkName = "-swapObject:andObject:"
+            landmarkName = "-pressAndHoldPinchObjects:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -303,8 +303,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1878"
             endingLineNumber = "1878"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-pressAndHoldPinchObjects:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -717,8 +717,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "939"
             endingLineNumber = "939"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-scrollViewDidScroll:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1241,8 +1241,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1412"
             endingLineNumber = "1412"
-            landmarkName = "-point:isInRangeOfView:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1273,7 +1273,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1479"
             endingLineNumber = "1479"
-            landmarkName = "-handleUpperViewWithGesture:"
+            landmarkName = "-sufficientOverlapBetweenPinchedObjects"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1337,7 +1337,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1917"
             endingLineNumber = "1917"
-            landmarkName = "-totalChangeInViewPositions"
+            landmarkName = "-activeTextView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1529,8 +1529,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "438"
             endingLineNumber = "438"
-            landmarkName = "-textViewShouldBeginEditing:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1625,8 +1625,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2064"
             endingLineNumber = "2064"
-            landmarkName = "-addTapGestureToView:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1641,8 +1641,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2059"
             endingLineNumber = "2059"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-freeMainScrollView:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1753,8 +1753,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1481"
             endingLineNumber = "1481"
-            landmarkName = "-handleUpperViewWithGesture:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1769,8 +1769,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "631"
             endingLineNumber = "631"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-updateScrollViewPosition"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1913,8 +1913,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1699"
             endingLineNumber = "1699"
-            landmarkName = "-addView:underView:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1945,7 +1945,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1870"
             endingLineNumber = "1870"
-            landmarkName = "-swapObject:andObject:"
+            landmarkName = "-pressAndHoldPinchObjects:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2073,8 +2073,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1243"
             endingLineNumber = "1243"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-handlePinchGestureBegan:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2105,8 +2105,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "961"
             endingLineNumber = "961"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-removeKeyboardFromScreen"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2281,8 +2281,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "446"
             endingLineNumber = "446"
-            landmarkName = "-textViewDidChange:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2405,7 +2405,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1781"
             endingLineNumber = "1781"
-            landmarkName = "-pressAndHold:"
+            landmarkName = "-pressAndHoldPinchObjects:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2533,8 +2533,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "113"
             endingLineNumber = "113"
-            landmarkName = "VerticalPinch"
-            landmarkType = "19">
+            landmarkName = "@interface verbatmContentPageViewController()"
+            landmarkType = "2">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2917,7 +2917,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "207"
             endingLineNumber = "207"
-            landmarkName = "-addBlurView"
+            landmarkName = "-setTextViewBorderColors"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3089,8 +3089,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1575"
             endingLineNumber = "1575"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-newTranslationForUpperPinchViewFrameWithChange:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3105,7 +3105,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1578"
             endingLineNumber = "1578"
-            landmarkName = "-handleRevealOfNewMediaViewWithGesture:"
+            landmarkName = "-newTranslationForUpperPinchViewFrameWithChange:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3422,7 +3422,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1459"
             endingLineNumber = "1459"
-            landmarkName = "-tilesOkToPinch"
+            landmarkName = "-handleVerticlePinchGestureChanged:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3582,7 +3582,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1835"
             endingLineNumber = "1835"
-            landmarkName = "-pressAndHold:"
+            landmarkName = "-pressAndHoldPinchObjects:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3598,7 +3598,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1826"
             endingLineNumber = "1826"
-            landmarkName = "-pressAndHold:"
+            landmarkName = "-pressAndHoldPinchObjects:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3614,7 +3614,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1825"
             endingLineNumber = "1825"
-            landmarkName = "-pressAndHold:"
+            landmarkName = "-pressAndHoldPinchObjects:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3630,7 +3630,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1827"
             endingLineNumber = "1827"
-            landmarkName = "-pressAndHold:"
+            landmarkName = "-pressAndHoldPinchObjects:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3646,7 +3646,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1960"
             endingLineNumber = "1960"
-            landmarkName = "-animateView:InToPositionUnder:"
+            landmarkName = "-didSelectImageView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3662,7 +3662,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1964"
             endingLineNumber = "1964"
-            landmarkName = "-animateView:InToPositionUnder:"
+            landmarkName = "-didSelectImageView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3678,7 +3678,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1981"
             endingLineNumber = "1981"
-            landmarkName = "-didReceiveMemoryWarning"
+            landmarkName = "-animateView:InToPositionUnder:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3694,8 +3694,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1987"
             endingLineNumber = "1987"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-animateView:InToPositionUnder:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3784,7 +3784,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1865"
             endingLineNumber = "1865"
-            landmarkName = "-pressAndHold:"
+            landmarkName = "-pressAndHoldPinchObjects:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3800,7 +3800,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1777"
             endingLineNumber = "1777"
-            landmarkName = "-pressAndHold:"
+            landmarkName = "-findSelectedViewFromSender:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3816,7 +3816,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1774"
             endingLineNumber = "1774"
-            landmarkName = "-pressAndHold:"
+            landmarkName = "-findSelectedViewFromSender:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
