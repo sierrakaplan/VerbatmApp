@@ -186,13 +186,16 @@
     for(id object in self.media){
         if([object isKindOfClass: [UITextView class]]){
             self.textField.text = [self.textField.text stringByAppendingString: ((UITextView*)object).text];
+            //[self.background bringSubviewToFront: self.textField];
         }else if(!((verbatmCustomImageView*)object).isVideo){
             UIImage* image = [(verbatmCustomImageView*)object image];
             [self.imageViewer setImage:image];
+            //[self.background bringSubviewToFront: self.imageViewer];
         }else{
             [self.videoView.layer.sublayers.lastObject removeFromSuperlayer];
             AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
             [self playVideo: avurlAsset];
+            self.videoView.layer.masksToBounds = YES;
         }
     }
 }
