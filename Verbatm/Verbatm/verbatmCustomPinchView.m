@@ -140,6 +140,7 @@
     if(self.there_is_text){
         self.textField.frame = self.background.frame;
     }else if(self.there_is_video){
+        self.textField.frame = CGRectMake(0, 0, 0, 0);
         self.videoView.frame = self.background.frame;
         [self.background bringSubviewToFront:self.videoView];
     }else{

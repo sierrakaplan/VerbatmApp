@@ -1601,7 +1601,7 @@
         
         [(verbatmCustomMediaSelectTile *)self.createdMediaView createFramesForButtonsWithFrame: self.createdMediaView.frame];
         [self.createdMediaView setNeedsDisplay];
-    }else if(self.createdMediaView.superview.frame.size.height>PINCH_DISTANCE_FOR_ANIMATION)//the distance is enough that we can just animate the rest
+    }else if(self.createdMediaView.superview.frame.size.height > PINCH_DISTANCE_FOR_ANIMATION)//the distance is enough that we can just animate the rest
     {
         
         [UIView animateWithDuration:1.0f animations:^{
