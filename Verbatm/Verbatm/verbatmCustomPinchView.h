@@ -70,8 +70,7 @@
 //object.
 -(NSMutableArray*)mediaObjects;
 
-
-
+@property (nonatomic) BOOL selected;//tells you if the object is selected for panning
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;
 @property (readonly, nonatomic) BOOL there_is_picture;

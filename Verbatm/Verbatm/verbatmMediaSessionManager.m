@@ -58,7 +58,7 @@
         
         self.videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session];
         self.videoPreview.frame = containerView.frame;
-         self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+        self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;
         
         [containerView.layer addSublayer: self.videoPreview];
             //start the session running
@@ -305,6 +305,7 @@
 }
 
 
+/*fixing video orientation seems to be working fine when tested*/
 -(void)fixVideoOrientationOfAssetAtUrl:(NSURL *)outputFileURL
 {
     //create the mutable composition object. This will hold the multiple tracks
@@ -501,22 +502,13 @@
         [self rotateImage];
         
         //additional rotation required
-        CGSize size = CGSizeMake(self.stillImage.size.width*ASPECT_RATIO, self.stillImage.size.height);  //watch this ..use aspect ratio
+        CGSize size = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height);  //watch this ..use aspect ratio
         UIGraphicsBeginImageContext(size);
         [[UIImage imageWithCGImage: self.stillImage.CGImage scale:1.0 orientation:UIImageOrientationRight] drawInRect: CGRectMake(0, 0, self.stillImage.size.height, self.stillImage.size.width)];
         self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
     }else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait || [UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp){
         NSLog(@"was here for rotation");
         [self rotateImage];
-        if(halfScreen){
-            CGSize itemSize = CGSizeMake(self.stillImage.size.width, self.previewContainerView.frame.size.height/2);
-            //these magic numbers need to be tested on other devices
-            UIGraphicsBeginImageContext(itemSize);
-            CGRect imageRect = CGRectMake(0, 0, self.stillImage.size.width, self.stillImage.size.height);
-            [self.stillImage drawInRect:imageRect];
-            self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-        }
     }
 
 }

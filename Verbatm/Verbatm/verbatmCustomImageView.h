@@ -13,4 +13,5 @@
 @interface verbatmCustomImageView : UIImageView
 @property(strong, nonatomic) ALAsset* asset;
 @property (nonatomic)BOOL isVideo;
+@property (nonatomic) BOOL selected;
 @end
