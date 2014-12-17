@@ -316,10 +316,6 @@
             self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
         }];
         [selectedImageView removeFromSuperview];
-        /*makes sure that the view appears to be coming from the position it was pulled from*/
-        BOOL isSecond = location.x/selectedImageView.frame.size.width;
-        selectedImageView.frame = CGRectMake((!isSecond)? START_POSITION_FOR_MEDIA : START_POSITION_FOR_MEDIA2);
-        /*end of new stuff*/
         [self.customDelegate didSelectImageView:selectedImageView];
         [self.media removeObjectAtIndex:temp];
     }

@@ -139,13 +139,12 @@
 {
     if(self.there_is_text){
         self.textField.frame = self.background.frame;
-        [self.background bringSubviewToFront:self.textField];
     }else if(self.there_is_video){
         self.videoView.frame = self.background.frame;
         [self.background bringSubviewToFront:self.videoView];
     }else{
        self.imageViewer.frame = self.background.frame;
-        [self.background bringSubviewToFront:self.imageViewer];
+       [self.background bringSubviewToFront:self.imageViewer];
     }
 }
 
@@ -155,7 +154,6 @@
     CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO , self.background.frame.size.height);
     CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height);
     if(self.there_is_text){
-        if(self.textField.superview != self.background)[self.background addSubview:self.textField];
         self.textField.frame = frame1;
         if(self.there_is_picture){
             self.imageViewer.frame = frame2;
@@ -163,9 +161,10 @@
             self.videoView.frame = frame2;
         }
     }else{
-        [self.textField removeFromSuperview];
         self.videoView.frame = frame1;
         self.imageViewer.frame = frame2;
+        [self.background bringSubviewToFront:self.videoView];
+        [self.background bringSubviewToFront:self.imageViewer];
     }
 }
        
@@ -192,10 +191,9 @@
             [self.imageViewer setImage:image];
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
-            [self.videoView.layer.sublayers.lastObject removeFromSuperlayer];
             AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
             [self playVideo: avurlAsset];
-            self.videoView.layer.masksToBounds = YES;
+           // self.videoView.layer.masksToBounds = YES;
         }
     }
 }

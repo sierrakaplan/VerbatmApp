@@ -1738,6 +1738,7 @@
 //add the pan gesture to an object
 -(void) addPanGestureToView: (UIView *) view
 {
+    return; //debug
     UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pressAndHold:)];
     [view addGestureRecognizer:pan];
 }
