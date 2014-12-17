@@ -25,13 +25,8 @@
 
 #pragma mark - *Helper properties
 
-
-
 #pragma mark Keyboard related properties
 @property (nonatomic) NSInteger keyboardHeight;
-
-
-
 
 #pragma mark Helpful integer stores
 @property (nonatomic) NSInteger index; //the index of the first view that is pushed up/down by the pinch/stretch gesture
@@ -41,11 +36,7 @@
 #pragma mark undo related properties
 @property (nonatomic, strong) NSUndoManager * tileSwipeViewUndoManager;
 
-
-
 #pragma mark - Parameters to function within
-
-
 
 #define CENTERING_OFFSET_FOR_TEXT_VIEW 60 //the gap between the bottom of the screen and the cursor
 #define CURSOR_BASE_GAP 10
@@ -152,10 +143,10 @@
     //add blurview
     [self addBlurView];
     [self setPlaceholderColors];
-    [self set_PersonalScrollView_ContentSizeandOffset];
+    //[self set_PersonalScrollView_ContentSizeandOffset];
     [self set_openElement_defaultframe];
+    //[self setTextViewBorderColors];
     [self addOriginalViewsToPageElementsArray];
-    [self setTextViewBorderColors];
 }
 
 
@@ -163,8 +154,10 @@
 -(void) viewWillAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
-    [self configureViews];
+   // [self configureViews];
     self.pinching = NO;//initialise pinching to no
+    
+    
 }
 
 

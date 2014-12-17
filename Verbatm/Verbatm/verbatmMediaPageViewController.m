@@ -515,8 +515,6 @@
     if(self.counter >= MAX_VIDEO_LENGTH) [self endVideoRecordingSession];
 }
 
-
-
 //Lucio
 -(void)endVideoRecordingSession
 {
@@ -574,8 +572,7 @@
 }
 
 
-
-#pragma mark -Lazy instantiation-
+#pragma mark - Lazy instantiation -
 
 -(verbatmMediaSessionManager*)sessionManager
 {
