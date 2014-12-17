@@ -143,9 +143,9 @@
     //add blurview
     [self addBlurView];
     [self setPlaceholderColors];
-    //[self set_PersonalScrollView_ContentSizeandOffset];
+    [self set_PersonalScrollView_ContentSizeandOffset];
     [self set_openElement_defaultframe];
-    //[self setTextViewBorderColors];
+    [self setTextViewBorderColors];
     [self addOriginalViewsToPageElementsArray];
 }
 
@@ -154,9 +154,8 @@
 -(void) viewWillAppear:(BOOL)animated
 {
     [super viewDidAppear:YES];
-   // [self configureViews];
+    [self configureViews];
     self.pinching = NO;//initialise pinching to no
-    
     
 }
 
@@ -186,10 +185,6 @@
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
     }
-    
-    
-   
-
 }
 
 -(void) setTextViewBorderColors
@@ -241,7 +236,6 @@
     {
         [self creatBaseSelector];
     }
-    
     //record the mainview of the first text view
     self.firstContentPageTextBox.mainScrollView = self.mainScrollView;
 }
@@ -1873,7 +1867,6 @@
 //swaps to objects in the page elements array
 -(void)swapObject: (UIView *) obj1 andObject: (UIView *) obj2
 {
-    
     NSInteger index1 = [self.pageElements indexOfObject:obj1];
     NSInteger index2 = [self.pageElements indexOfObject:obj2];
     [self.pageElements replaceObjectAtIndex:index1 withObject:obj2];
