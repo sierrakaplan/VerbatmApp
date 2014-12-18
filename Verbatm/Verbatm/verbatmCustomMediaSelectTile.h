@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class verbatmCustomMediaSelectTile;
+
 @protocol verbatmCustomMediaSelectTileDelegate <NSObject>
 @required
 -(void) addTextViewButtonPressedAsBaseView: (BOOL) isBaseView; //tells the delegate that the add text button is clicked
--(void) addMultiMediaButtonPressedAsBaseView: (BOOL) isBaseView;//tells the delgate that the add media button is clicked
+-(void) addMultiMediaButtonPressedAsBaseView: (BOOL) isBaseView fromView: (verbatmCustomMediaSelectTile *) tile;//tells the delgate that the add media button is clicked
 @end
 
 @interface verbatmCustomMediaSelectTile : UIView

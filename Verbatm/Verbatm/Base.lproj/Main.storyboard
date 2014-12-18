@@ -146,6 +146,7 @@
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="dK5-d0-qyg" appends="YES" id="Ex7-UR-RJB"/>
                                     <outletCollection property="gestureRecognizers" destination="WDj-eM-uvF" appends="YES" id="qqz-CK-rEn"/>
+                                    <outletCollection property="gestureRecognizers" destination="33n-Bh-1X3" appends="YES" id="8s6-31-bFc"/>
                                 </connections>
                             </scrollView>
                         </subviews>
@@ -172,7 +173,11 @@
                         <action selector="addElementPinchGesture:" destination="0lh-hP-Opv" id="93r-9H-LPJ"/>
                     </connections>
                 </pinchGestureRecognizer>
-                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="LVg-Oo-P4S"/>
+                <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.20000000000000004" id="33n-Bh-1X3">
+                    <connections>
+                        <action selector="longPressSensed:" destination="0lh-hP-Opv" id="cAV-T5-CEW"/>
+                    </connections>
+                </pongPressGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-1538" y="-1061"/>
         </scene>

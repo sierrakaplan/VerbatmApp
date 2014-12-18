@@ -105,6 +105,8 @@
 
 #pragma Transtition helpers
     #define TRANSITION_MARGIN_OFFSET 50
+#define TRANSLATION_THRESHOLD 70
+
 @end
 
 @implementation verbatmMediaPageViewController
@@ -562,8 +564,8 @@
         if(self.containerView.hidden && !self.canRaise){
             self.containerView.hidden = NO;
             [UIView animateWithDuration:0.5 animations:^{
-                self.containerView.frame =  self.containerViewNoMSAVFrame;
-                self.pullBar.frame = self.pullBarNoMSAVFrame;
+                [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
+                [self positionPullBarTransitionDown:NO];//positions the pullbar to the right frame
                 for(UIView* view in self.pullBar.subviews){
                     view.hidden = NO;
                 }
@@ -629,22 +631,38 @@
 //handles the user continuing to pull the pull bar
 -(void) expandContentPage_Changed :(UIPanGestureRecognizer *)sender
 {
-    if(self.containerView.frame.size.height >= self.view.frame.size.height/4 + TRANSITION_MARGIN_OFFSET) //snap the container view to full screen
+    CGPoint translation = [sender translationInView:self.pullBar.superview]; //how far the transisiton has come
+
+    if( translation.y > TRANSITION_MARGIN_OFFSET) //snap the container view to full screen
     {
         [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
          {
              [self positionContainerViewTo:YES orTo:NO orTo:NO];//Positions the container view to the right frame
-             [self positionPullBarTransitionDown:YES];//psotions the pullbar to the right frame
+             [self positionPullBarTransitionDown:YES];//positions the pullbar to the right frame
              
          }];
-    }else //snap the container view back up to no MSAV
+    }else
     {
-        [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
-         {
-             [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base mode
-             [self positionPullBarTransitionDown:NO];
+        float fl = translation.y;
+        if(/*gets the abs for a float*/fabsf(fl) > TRANSITION_MARGIN_OFFSET) //snap the container view back up to no MSAV
+        {
+            
+            [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
+             {
+                 [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base mode
+                 [self positionPullBarTransitionDown:NO];
 
-         }];
+             }];
+        }else
+        {
+            
+            [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
+             {
+                 [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base mode
+                 [self positionPullBarTransitionDown:NO];
+                 
+             }];
+        }
     }
     self.previousTranslation = CGPointMake(0, 0);//sanitize the translation difference so that the next round is sent back up
 }
@@ -727,12 +745,16 @@
         [lastTextView becomeFirstResponder];
         if(!self.containerViewFullScreen && !self.containerViewMSAVMode) self.containerViewMSAVMode=YES;
         [self positionPullBarTransitionDown:NO];
+        //adjust the frame
+        [self positionContainerViewTo:NO orTo:YES  orTo:NO];
+        [self positionPullBarTransitionDown:NO];
     }else if (self.containerViewMSAVMode)
     {
         [self.vc_contentPage.activeTextView resignFirstResponder];//get rid of the keyboard
         [self positionContainerViewTo:NO orTo:NO  orTo:YES];
         [self positionPullBarTransitionDown:NO];
     }
+    
 }
 
 //Iain
@@ -790,15 +812,6 @@
     
     //Given size may not account for screen rotation
      self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
-    
-    //if it's not in fullscreen mode it's in MSAV mode
-    if(self.containerViewFullScreen){
-        [self positionPullBarTransitionDown:YES];
-    }else
-    {
-        self.containerView.frame = self.containerViewMSAVFrame;
-        self.pullBar.frame =self.pullBarMSAVFrame;
-    }
 }
 
 

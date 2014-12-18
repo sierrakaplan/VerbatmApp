@@ -22,7 +22,6 @@
 @property (strong, nonatomic) UIDynamicItemBehavior* elasticityBehavior;
 @property (strong, nonatomic) UIView* view;
 @property (nonatomic) int numVideosReadded;
-@property (nonatomic) BOOL isRaised;
 #define ALBUM_NAME @"Verbatm"
 #define OFFSET 15
 #define PLAY_VIDEO_ICON @"videoPreview_play_icon"

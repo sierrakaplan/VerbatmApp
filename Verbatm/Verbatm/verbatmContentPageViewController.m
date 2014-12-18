@@ -38,7 +38,6 @@
 
 #pragma mark - Parameters to function within
 
-#define CENTERING_OFFSET_FOR_TEXT_VIEW 60 //the gap between the bottom of the screen and the cursor
 #define CURSOR_BASE_GAP 10
 
 
@@ -55,6 +54,7 @@
 
 
 #pragma mark - Used_properties -
+#define CENTERING_OFFSET_FOR_TEXT_VIEW 30 //the gap between the bottom of the screen and the cursor
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define MAX_WORD_LIMIT 350
@@ -62,7 +62,8 @@
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
 #define HORIZONTAL_PINCH_THRESHOLD 150 //distance two fingers must travel for the horizontal pinch to be accepted
 #define TEXTFIELD_BORDER_WIDTH 1.0f
-
+#define AUTO_SCROLL_OFFSET 10
+#define CONTENT_SIZE_OFFSET 20
 
 #pragma mark Default frame properties
 @property (nonatomic) CGRect defaultOpenElementFrame;
@@ -300,7 +301,7 @@
 //Set up views
 -(void) configureViews
 {
-    [self setUpKeyboardNotifications];
+    [self setUpNotifications];
     //insert any text that was added in previous scenes
     [self setUpKeyboardPrefferedColors];
     [self setDelegates];
@@ -335,13 +336,15 @@
 
 
 //Iain
--(void) setUpKeyboardNotifications
+-(void) setUpNotifications
 {
     //Tune in to get notifications of keyboard behavior
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWasShown:)
                                                  name:UIKeyboardDidShowNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeKeyboardFromScreen) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
 }
 
 
@@ -582,7 +585,7 @@
 -(void) adjustMainScrollViewContentSize
 {
     UIScrollView * Sv = (UIScrollView *)[[self.pageElements lastObject] superview];
-    self.mainScrollView.contentSize = CGSizeMake(0, Sv.frame.origin.y + Sv.frame.size.height);
+    self.mainScrollView.contentSize = CGSizeMake(0, Sv.frame.origin.y + Sv.frame.size.height + CONTENT_SIZE_OFFSET);
 }
 
 #pragma mark scroll positioning of the screen
@@ -860,7 +863,14 @@
 {
     if(scrollView.subviews.count >1) return; /* this is a scrollview with an open collection so you can swipe away anything*/
     
-    if(scrollView != self.mainScrollView && !self.pinching && [self.pageElements count] >1 && scrollView != ((UIView *)[self.pageElements lastObject]).superview  )//make sure you are not mixing it up with the virtical scroll of the main scroll view
+    verbatmCustomMediaSelectTile * tile= Nil;
+    
+    if([[scrollView.subviews firstObject] isKindOfClass:[verbatmCustomMediaSelectTile class]])
+    {
+        tile = [scrollView.subviews firstObject];
+    }
+    
+    if((!tile || !tile.baseSelector) && scrollView != self.mainScrollView && !self.pinching && [self.pageElements count] >1 )//make sure you are not mixing it up with the virtical scroll of the main scroll view
     {
         if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x)//If the view is scrolled left/right and not centered
         {
@@ -1004,12 +1014,18 @@
     
     if(sender.state == UIGestureRecognizerStateChanged)
     {
+        
         if(!self.VerticalPinch && self.scrollViewForHorizontalPinchView && [sender numberOfTouches] == 2 && self.pinching && sender.scale <1)
         {
             [self handleHorizontalPincheGestureChanged:sender];
             
         }else if (self.lowerPinchView && self.upperPinchView && [sender numberOfTouches] == 2 && self.pinching)
         {
+            //makes no sense to pinch apart where there is alrady a tile
+            if([self.upperPinchView isKindOfClass:[verbatmCustomMediaSelectTile class]] ||
+               [self.lowerPinchView isKindOfClass:[verbatmCustomMediaSelectTile class]]
+               )return;
+
             [self handleVerticlePinchGestureChanged:sender];
         }
     }
@@ -1126,9 +1142,6 @@
     [newView specifyFrame:newFrame];
     [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:newView];
     [self addTapGestureToView:newView];
-   // [self addPanGestureToView:newView];
-    [self addLongPressGestureToView:newView];
-    
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         [self.scrollViewForHorizontalPinchView addSubview:newView];
         self.scrollViewForHorizontalPinchView.pagingEnabled =YES;//Turn paging back on because now it's one element
@@ -1654,6 +1667,7 @@
 //Iain
 -(void) addTextViewButtonPressedAsBaseView: (BOOL) isBaseView
 {
+    if(self.baseMediaTileSelector.dashed) [self.baseMediaTileSelector returnToButtonView];
     if(!isBaseView)[self replaceNewMediaViewWithTextView];
     if(isBaseView)
     {
@@ -1673,11 +1687,11 @@
     return nil;
 }
 
--(void) addMultiMediaButtonPressedAsBaseView:(BOOL)isBaseView
+-(void) addMultiMediaButtonPressedAsBaseView:(BOOL)isBaseView fromView: (verbatmCustomMediaSelectTile *) tile
 {
     if((self.baseMediaTileSelector != [self.pageElements firstObject]))
     {
-        self.index = ([self.pageElements indexOfObject:self.baseMediaTileSelector]-1);
+        self.index = ([self.pageElements indexOfObject:tile]-1);
     }else
     {
         self.index =0;
@@ -1737,104 +1751,125 @@
 }
 
 
-
 #pragma mark - Change position of elements -
-
--(void) addLongPressGestureToView: (UIView *) view
+//attempt 1
+-(void) findSelectedViewFromSender:(UILongPressGestureRecognizer *)sender
 {
-    UILongPressGestureRecognizer * longGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGesture:)];
-    //longGesture.numberOfTapsRequired=1;
-    //longGesture.minimumPressDuration=0.01;
-    [view addGestureRecognizer:longGesture];
+    
+    CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
+    
+    for (int i=0; i<self.pageElements.count; i++)
+    {
+        UIView * view = ((UIView *)self.pageElements[i]).superview;
+        UIView * first_view = ((UIView *)self.pageElements[0]).superview;
+        
+        if (touch1.y >= first_view.frame.origin.y )//make sure touch is not above the first view
+        {
+            if((view.frame.origin.y+view.frame.size.height)>touch1.y)//we stop when we find the first one
+            {
+                self.selectedView_Pan = self.pageElements[i];
+                [self.mainScrollView bringSubviewToFront:self.selectedView_Pan.superview];
+                return;
+            }
+        }
+    }
+    self.selectedView_Pan = Nil;
 }
 
 
--(void) longPressGesture: (UILongPressGestureRecognizer *) sender
+
+- (IBAction)longPressSensed:(UILongPressGestureRecognizer *)sender
 {
     
     if (sender.state == UIGestureRecognizerStateEnded)
     {
-        UIView * view = sender.view;
-        CGRect newFrame = CGRectMake(self.originalFrame.origin.x, self.originalFrame.origin.y, view.superview.frame.size.width, view.superview.frame.size.height);
-        view.superview.frame = newFrame;//created a new frame becase not all the views have the same size
-        view.superview.backgroundColor = [UIColor clearColor];//for debugging
+        if (!self.selectedView_Pan) return;//if we didn't find the view then leave
         
-        if([view isKindOfClass:[verbatmCustomImageView class]])
-        {
-            ((verbatmCustomImageView *)view).selected = NO;
-            
-            
-        }else if ([view isKindOfClass:[verbatmCustomPinchView class]])
-        {
-            ((verbatmCustomPinchView *)view).selected = NO;
-        }
+        if([self.selectedView_Pan isKindOfClass:[verbatmCustomMediaSelectTile class]] && ((verbatmCustomMediaSelectTile *)self.selectedView_Pan).baseSelector) return;
+        
+        CGRect newFrame = CGRectMake(self.originalFrame.origin.x, self.originalFrame.origin.y, self.selectedView_Pan.superview.frame.size.width, self.selectedView_Pan.superview.frame.size.height);
+        self.selectedView_Pan.superview.frame = newFrame;
+        self.selectedView_Pan.superview.backgroundColor = [UIColor clearColor];//for debugging
+        self.selectedView_Pan = Nil;//sanitize for next run
+        
+        [self shiftElementsBelowView:self.articleTitleField];
         [self adjustMainScrollViewContentSize];
     }
+    
     
     //make sure it's a single finger touch and that there are multiple elements on the screen
     if(self.pageElements.count==0 || [sender numberOfTouches] != 1) return;
     
+    
     //first lets assume that this is an element in the regular stream
     if(sender.state == UIGestureRecognizerStateBegan)
     {
-        UIView * view = sender.view;
-        UIScrollView * scrollview = (UIScrollView *)view.superview;
-        [self.mainScrollView bringSubviewToFront:scrollview];
-        self.startLocationOfTouchPoint_PAN = [sender locationOfTouch:0 inView:self.mainScrollView];
-        self.originalFrame = view.superview.frame;
+        [self findSelectedViewFromSender:sender];
+        if (!self.selectedView_Pan) return;//if we didn't find the view then leave
         
-        view.superview.backgroundColor = [UIColor blueColor];//for debugging
+        if([self.selectedView_Pan isKindOfClass:[verbatmCustomMediaSelectTile class]] && ((verbatmCustomMediaSelectTile *)self.selectedView_Pan).baseSelector) return;
+        
+        self.startLocationOfTouchPoint_PAN = [sender locationOfTouch:0 inView:self.mainScrollView];
+        self.originalFrame =self.selectedView_Pan.superview.frame;
+        self.selectedView_Pan.superview.backgroundColor = [UIColor blueColor];//for debugging
         
     }
     
     if(sender.state == UIGestureRecognizerStateChanged)
     {
-        UIView * view = sender.view;
+        
+        if (!self.selectedView_Pan || ([self.selectedView_Pan isKindOfClass:[verbatmCustomMediaSelectTile class]] && ((verbatmCustomMediaSelectTile *)self.selectedView_Pan).baseSelector)) return;//if we didn't find the view then leave
+        
         CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
         NSInteger y_differrence  = touch1.y - self.startLocationOfTouchPoint_PAN.y;
         self.startLocationOfTouchPoint_PAN = touch1;
         
         //ok so move the view up or down by the amount the finger has moved
-        CGRect newFrame = CGRectMake(view.superview.frame.origin.x, view.superview.frame.origin.y + y_differrence, view.superview.frame.size.width, view.superview.frame.size.height);
+        CGRect newFrame = CGRectMake(self.selectedView_Pan.superview.frame.origin.x, self.selectedView_Pan.superview.frame.origin.y + y_differrence, self.selectedView_Pan.superview.frame.size.width, self.selectedView_Pan.superview.frame.size.height);
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-            view.superview.frame = newFrame;
+            self.selectedView_Pan.superview.frame = newFrame;
         }] ;
         
         //first assuming it's somewhere in the middle
-        NSInteger view_index = [self.pageElements indexOfObject:view];
+        NSInteger view_index = [self.pageElements indexOfObject:self.selectedView_Pan];
         UIView * topView=Nil;
         UIView * bottomView=Nil;
         
         if(view_index !=0)
         {
             topView  = self.pageElements[view_index-1];
-            if(view != [self.pageElements lastObject])
+            if(self.selectedView_Pan != [self.pageElements lastObject])
             {
                 bottomView = self.pageElements[view_index +1];
             }
         }else if (view_index==0)
         {
             bottomView = self.pageElements[view_index +1];
-        }else if (view == [self.pageElements lastObject])
+        }else if (self.selectedView_Pan == [self.pageElements lastObject])
         {
             topView  = self.pageElements[view_index-1];
         }
         
         if(topView && bottomView)
         {
+            //moving up
             if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
             {
-                [self swapObject:view andObject:topView];//exchange their positions in page elements array
+                [self swapObject:self.selectedView_Pan andObject:topView];//exchange their positions in page elements array
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = topView.superview.frame;
                     topView.superview.frame = self.originalFrame;
                     self.originalFrame = self.potentialFrame;
                 }];
-                
+             
+                //moving down
             }else if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
             {
-                [self swapObject:view andObject:bottomView];//exchange their positions in page elements array
+                
+                if(bottomView == self.baseMediaTileSelector) return;
+                
+                [self swapObject:self.selectedView_Pan andObject:bottomView];//exchange their positions in page elements array
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = bottomView.superview.frame;
@@ -1842,11 +1877,30 @@
                     self.originalFrame = self.potentialFrame;
                 }];
             }
-        }else if(view_index ==0)
+            
+            //move the offest of the main scroll view
+            if(self.mainScrollView.contentOffset.y > self.selectedView_Pan.superview.frame.origin.y -(self.selectedView_Pan.superview.frame.size.height/2) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0))
+            {
+                CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET);
+                
+                [UIView animateWithDuration:0.2 animations:^{
+                    self.mainScrollView.contentOffset = newOffset;
+                }];
+                
+            } else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_Pan.superview.frame.origin.y + self.selectedView_Pan.superview.frame.size.height) && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height)
+            {
+                CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET);
+                
+                [UIView animateWithDuration:0.2 animations:^{
+                    self.mainScrollView.contentOffset = newOffset;
+                }];
+            }
+
+        }else if(view_index ==0 && bottomView != self.baseMediaTileSelector)
         {
             if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
             {
-                [self swapObject:view andObject:bottomView];//exchange their positions in page elements array
+                [self swapObject:self.selectedView_Pan andObject:bottomView];//exchange their positions in page elements array
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = bottomView.superview.frame;
@@ -1854,11 +1908,30 @@
                     self.originalFrame = self.potentialFrame;
                 }];
             }
-        }else if (view == [self.pageElements lastObject])
+            
+            //move the offest of the main scroll view
+            if(self.mainScrollView.contentOffset.y > self.selectedView_Pan.superview.frame.origin.y -(self.selectedView_Pan.superview.frame.size.height/2) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0))
+            {
+                CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET);
+                
+                [UIView animateWithDuration:0.2 animations:^{
+                    self.mainScrollView.contentOffset = newOffset;
+                }];
+                
+            } else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_Pan.superview.frame.origin.y + self.selectedView_Pan.superview.frame.size.height) && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height)
+            {
+                CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET);
+                
+                [UIView animateWithDuration:0.2 animations:^{
+                    self.mainScrollView.contentOffset = newOffset;
+                }];
+            }
+
+        }else if (self.selectedView_Pan == [self.pageElements lastObject])
         {
             if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
             {
-                [self swapObject:view andObject:topView];//exchange their positions in page elements array
+                [self swapObject:self.selectedView_Pan andObject:topView];//exchange their positions in page elements array
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = topView.superview.frame;
@@ -1867,21 +1940,209 @@
                 }];
                 
             }
+         
+            //move the offest of the main scroll view
+            if(self.mainScrollView.contentOffset.y > self.selectedView_Pan.superview.frame.origin.y -(self.selectedView_Pan.superview.frame.size.height/2) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0))
+            {
+                CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET);
+                
+                [UIView animateWithDuration:0.2 animations:^{
+                    self.mainScrollView.contentOffset = newOffset;
+                }];
+                
+            } else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_Pan.superview.frame.origin.y + self.selectedView_Pan.superview.frame.size.height) && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height)
+            {
+                CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET);
+                
+                [UIView animateWithDuration:0.2 animations:^{
+                    self.mainScrollView.contentOffset = newOffset;
+                }];
+            }
+
         }
         
-        if(self.mainScrollView.contentOffset.y > view.frame.origin.y -(view.frame.size.height/2) || self.mainScrollView.contentOffset.y + self.view.frame.size.height < (view.frame.origin.y + view.frame.size.height))
-        {
-            CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + y_differrence);
-            
-            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-               // self.mainScrollView.contentOffset = newOffset;
-            }];
-        }
     }
-
+    
 }
 
 
+
+
+////attempt 2
+//-(void) addLongPressGestureToView: (UIView *) view
+//{
+//    return;
+//    UILongPressGestureRecognizer * longGesture = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPressGesture:)];
+//    //longGesture.numberOfTapsRequired=1;
+//    longGesture.minimumPressDuration=0.02;
+//    
+////    
+////    UIPinchGestureRecognizer * pinch;
+////    
+////    for(int i =0; i<gestures.count; i++)
+////    {
+////        if([gestures[i] isKindOfClass:[UIPinchGestureRecognizer class]])
+////        {
+////            pinch = gestures[i];
+////        }
+////    }
+////    
+////    if(pinch)[longGesture requireGestureRecognizerToFail:pinch];
+//    [view addGestureRecognizer:longGesture];
+//}
+//
+//
+//-(void) longPressGesture: (UILongPressGestureRecognizer *) sender
+//{
+//    
+//    if([sender numberOfTouches] >1) return;//make sure it's only one finger
+//    
+//    if (sender.state == UIGestureRecognizerStateEnded)
+//    {
+//        UIView * view = sender.view;
+//        CGRect newFrame = CGRectMake(self.originalFrame.origin.x, self.originalFrame.origin.y, view.superview.frame.size.width, view.superview.frame.size.height);
+//        view.superview.frame = newFrame;//created a new frame becase not all the views have the same size
+//        view.superview.backgroundColor = [UIColor clearColor];//for debugging
+//        
+//        if([view isKindOfClass:[verbatmCustomImageView class]])
+//        {
+//            ((verbatmCustomImageView *)view).selected = NO;
+//            
+//            
+//        }else if ([view isKindOfClass:[verbatmCustomPinchView class]])
+//        {
+//            ((verbatmCustomPinchView *)view).selected = NO;
+//        }
+//        [self adjustMainScrollViewContentSize];
+//        [self shiftElementsBelowView:self.articleTitleField];
+//    }
+//    
+//    //make sure it's a single finger touch and that there are multiple elements on the screen
+//    if(self.pageElements.count==0 || [sender numberOfTouches] != 1) return;
+//    
+//    //first lets assume that this is an element in the regular stream
+//    if(sender.state == UIGestureRecognizerStateBegan)
+//    {
+//        UIView * view = sender.view;
+//        UIScrollView * scrollview = (UIScrollView *)view.superview;
+//        [self.mainScrollView bringSubviewToFront:scrollview];
+//        self.startLocationOfTouchPoint_PAN = [sender locationOfTouch:0 inView:self.mainScrollView];
+//        self.originalFrame = view.superview.frame;
+//        
+//        view.superview.backgroundColor = [UIColor blueColor];//for debugging
+//        
+//    }
+//    
+//    if(sender.state == UIGestureRecognizerStateChanged)
+//    {
+//        UIView * view = sender.view;
+//        CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
+//        NSInteger y_differrence  = touch1.y - self.startLocationOfTouchPoint_PAN.y;
+//        self.startLocationOfTouchPoint_PAN = touch1;
+//        
+//        //ok so move the view up or down by the amount the finger has moved
+//        CGRect newFrame = CGRectMake(view.superview.frame.origin.x, view.superview.frame.origin.y + y_differrence, view.superview.frame.size.width, view.superview.frame.size.height);
+//        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+//            view.superview.frame = newFrame;
+//        }] ;
+//        
+//        //first assuming it's somewhere in the middle
+//        NSInteger view_index = [self.pageElements indexOfObject:view];
+//        UIView * topView=Nil;
+//        UIView * bottomView=Nil;
+//        
+//        if(view_index !=0)
+//        {
+//            topView  = self.pageElements[view_index-1];
+//            if(view != [self.pageElements lastObject])
+//            {
+//                bottomView = self.pageElements[view_index +1];
+//            }
+//        }else if (view_index==0)
+//        {
+//            bottomView = self.pageElements[view_index +1];
+//        }else if (view == [self.pageElements lastObject])
+//        {
+//            topView  = self.pageElements[view_index-1];
+//        }
+//        
+//        if(topView && bottomView)
+//        {
+//            if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
+//            {
+//                [self swapObject:view andObject:topView];//exchange their positions in page elements array
+//                
+//                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+//                    self.potentialFrame = topView.superview.frame;
+//                    topView.superview.frame = self.originalFrame;
+//                    self.originalFrame = self.potentialFrame;
+//                }];
+//                
+//            }else if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
+//            {
+//                [self swapObject:view andObject:bottomView];//exchange their positions in page elements array
+//                
+//                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+//                    self.potentialFrame = bottomView.superview.frame;
+//                    bottomView.superview.frame = self.originalFrame;
+//                    self.originalFrame = self.potentialFrame;
+//                }];
+//            }
+//        }else if(view_index ==0)
+//        {
+//            
+//            if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
+//            {
+//                [self swapObject:view andObject:bottomView];//exchange their positions in page elements array
+//                
+//                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+//                    self.potentialFrame = bottomView.superview.frame;
+//                    bottomView.superview.frame = self.originalFrame;
+//                    self.originalFrame = self.potentialFrame;
+//                }];
+//                
+//            }
+//        }else if (view == [self.pageElements lastObject])
+//        {
+//            if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
+//            {
+//                [self swapObject:view andObject:topView];//exchange their positions in page elements array
+//                
+//                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+//                    self.potentialFrame = topView.superview.frame;
+//                    topView.superview.frame = self.originalFrame;
+//                    self.originalFrame = self.potentialFrame;
+//                }];
+//                
+//                
+//                
+//            }
+//            
+//            
+//        }
+//        
+//        //move the offest of the main scroll view
+//        if(self.mainScrollView.contentOffset.y > view.superview.frame.origin.y -(view.superview.frame.size.height/2) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0))
+//        {
+//            CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET);
+//            
+//            [UIView animateWithDuration:0.2 animations:^{
+//                self.mainScrollView.contentOffset = newOffset;
+//            }];
+//            
+//        } else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (view.superview.frame.origin.y + view.superview.frame.size.height) && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height)
+//        {
+//            CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET);
+//            
+//            [UIView animateWithDuration:0.2 animations:^{
+//                self.mainScrollView.contentOffset = newOffset;
+//            }];
+//        }
+//    }
+//
+//}
+//
+//
 
 
 //swaps to objects in the page elements array
@@ -1951,6 +2212,7 @@
     {
         [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
     }
+    [(verbatmCustomMediaSelectTile *)self.createdMediaView returnToButtonView];
 }
 
 -(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView
@@ -2007,6 +2269,7 @@
 
 -(void)deletedTile: (UIView *) tile withIndex: (NSNumber *) index
 {
+    if(!tile) return;//make sure there is something to delete
     [tile removeFromSuperview];
     [self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
 }
@@ -2066,8 +2329,6 @@
             [superView addSubview:pinch];
             [self.pageElements replaceObjectAtIndex:i withObject:pinch];
             [self addTapGestureToView:pinch];//add tap gesture to the newly created pinch object
-            //[self addPanGestureToView:pinch];
-            [self addLongPressGestureToView:pinch];
             [self shiftElementsBelowView:pinch];
         }
     }
