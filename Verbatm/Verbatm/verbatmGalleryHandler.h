@@ -26,6 +26,7 @@
 -(void)returnToGallery:(verbatmCustomImageView*)view;
 -(void)addMediaToGallery:(ALAsset*)asset;
 @property (nonatomic, strong) id<verbatmGalleryHandlerDelegate> customDelegate;
+@property (nonatomic) BOOL isRaised;
 
 @end
 

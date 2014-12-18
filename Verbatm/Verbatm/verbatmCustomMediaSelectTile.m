@@ -62,7 +62,7 @@
 {
     self.optionSelected = YES;
     [self addDashedBorder];
-    [self.customDelegate addMultiMediaButtonPressedAsBaseView:self.baseSelector];
+    [self.customDelegate addMultiMediaButtonPressedAsBaseView:self.baseSelector fromView: self];
 }
 
 
