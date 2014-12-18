@@ -179,6 +179,7 @@
         [imageView setImage:image];
         imageView.isVideo = NO;
     }
+    imageView.autoresizingMask = YES;
     return imageView;
 }
 
@@ -323,7 +324,7 @@
             self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
         }];
         [self.scrollView.superview addSubview:selectedImageView];
-        selectedImageView.frame = CGRectOffset(selectedImageView.frame, -(self.scrollView.contentOffset.x), 0);//(location.x < self.view.frame.size.width/ 2)? CGRectMake(START_POSITION_FOR_MEDIA) : CGRectMake(START_POSITION_FOR_MEDIA2);
+        selectedImageView.frame = CGRectOffset(selectedImageView.frame, -(self.scrollView.contentOffset.x), 0);
         [selectedImageView removeFromSuperview];
         [self.customDelegate didSelectImageView:selectedImageView];
         

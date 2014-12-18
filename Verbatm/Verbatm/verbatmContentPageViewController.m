@@ -2233,6 +2233,10 @@
     
     [UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
         view.frame = frame;
+        if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo){
+            AVPlayerLayer* layer = [view.layer.sublayers firstObject];
+            layer.frame = view.bounds;
+        }
     } completion:^(BOOL finished) {
         if(finished)
         {

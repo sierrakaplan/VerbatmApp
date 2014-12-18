@@ -70,6 +70,13 @@
 //object.
 -(NSMutableArray*)mediaObjects;
 
+//Pauses the video if the pinch object has a video playing.
+-(void)pauseVideo;
+
+
+//restarts a paused video, continuing from where it was paused
+-(void)continueVideo;
+
 @property (nonatomic) BOOL selected;//tells you if the object is selected for panning
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;
