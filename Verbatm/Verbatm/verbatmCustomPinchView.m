@@ -98,7 +98,6 @@
     self.background.layer.cornerRadius = frame.size.width/2;
     self.layer.cornerRadius = frame.size.width/2;
     self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
-    [self createLensingEffect:frame.size.width/2];
 }
 
 -(void)createLensingEffect:(float)radius
@@ -135,12 +134,12 @@
     if(self.there_is_text){
         self.textField.frame = self.background.frame;
     }else if(self.there_is_video){
-        self.textField.frame = CGRectMake(0, 0, 0, 0);
+        self.textField.frame = CGRectMake(0, 0, 0, 0); //prevents the little part of the  texfield from showing
         self.videoView.frame = self.background.frame;
         [self.background bringSubviewToFront:self.videoView];
     }else{
-       self.imageViewer.frame = self.background.frame;
-       [self.background bringSubviewToFront:self.imageViewer];
+        self.imageViewer.frame = self.background.frame;
+        [self.background bringSubviewToFront:self.imageViewer];
     }
 }
 
@@ -187,11 +186,24 @@
             [self.imageViewer setImage:image];
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView*)object).asset.defaultRepresentation.url options:nil];
-            [self playVideo: avurlAsset];
-             self.videoView.layer.masksToBounds = YES;
+            ALAsset* asset = ((verbatmCustomImageView*)object).asset;
+            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
+            [self playVideo:avurlAsset];
+            if(self.there_is_video && [self thereIsOnlyOneMedium]){
+                verbatmCustomImageView* view = [self.media firstObject];
+                AVPlayerLayer* layer = [view.layer.sublayers firstObject];
+                if(layer == nil){
+                    ALAsset* asset = ((verbatmCustomImageView*)object).asset;
+                    AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
+                    [self playVideo:avurlAsset];
+                }else{
+                    [layer removeFromSuperlayer];
+                    layer.frame = self.bounds;
+                    [self.videoView.layer addSublayer:layer];
+                }
+            }
         }
-    }
+    } 
 }
 
 
@@ -335,6 +347,9 @@
 
 -(NSMutableArray*)mediaObjects
 {
-    return self.media;
+    NSMutableArray* arr = [[NSMutableArray alloc]initWithArray: self.media];
+    return arr;
 }
+
 @end
+

@@ -884,7 +884,6 @@
                         [self.gallery returnToGallery:(verbatmCustomImageView *)array[i]];
                     }
                 }
-                
             }else if ([view isKindOfClass:[verbatmCustomImageView class]])
             {
                 [self.gallery returnToGallery: (verbatmCustomImageView *)view];

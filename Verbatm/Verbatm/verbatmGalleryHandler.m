@@ -154,10 +154,10 @@
     for(ALAsset* asset in self.media){
         verbatmCustomImageView* imageView = [self imageViewFromAsset:asset];
         imageView.frame = viewSize;
-        /*if(imageView.isVideo){
+        if(imageView.isVideo){
             AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
             [self playVideo:avurlAsset forView:imageView];
-        }*/
+        }
         viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
@@ -171,14 +171,14 @@
     imageView.asset = asset;
     if([[asset valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
         imageView.isVideo = YES;
-    }/*else{*/
+    }else{
         ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
         UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
                                              scale:[assetRepresentation scale]
                                        orientation:UIImageOrientationUp];
         [imageView setImage:image];
         imageView.isVideo = NO;
-    /*}*/
+    }
     return imageView;
 }
 
