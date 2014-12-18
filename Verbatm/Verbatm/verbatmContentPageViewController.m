@@ -2123,8 +2123,8 @@
     scroll_view.pagingEnabled = NO;
     [collection removeFromSuperview];//clear the scroll view. It's about to be filled by the array's elements
     [self addPinchObjects:element_array toScrollView: scroll_view];
-    
     [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:collection] withObject:element_array[0]];
+    
 }
 
 

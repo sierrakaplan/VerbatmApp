@@ -192,19 +192,20 @@
                 if(layer == nil){   //view does not have a layer.......make a new layer.
                     BOOL hasPlayer = [[self.videoView.layer.sublayers firstObject]isKindOfClass:[AVPlayerLayer class]];
                     if(hasPlayer){
-                        [[self.videoView.layer.sublayers firstObject] removeFromSuperlayer];
+                        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject] removeFromSuperlayer];
                     }
-                    ALAsset* asset = ((verbatmCustomImageView*)object).asset;
-                    AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
-                    [self playVideo:avurlAsset];
                 }else{  //view has a layer. Use the old one.
                     [layer removeFromSuperlayer];
                     layer.frame = self.bounds;
                     [self.videoView.layer addSublayer:layer];
+                    continue;
                 }
             }
+            ALAsset* asset = ((verbatmCustomImageView*)object).asset;
+            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
+            [self playVideo:avurlAsset];
         }
-    } 
+    }
 }
 
 
@@ -265,6 +266,7 @@
     for(int i = 1; i < to_be_merged.count; i++){
         verbatmCustomPinchView* pinchObject = (verbatmCustomPinchView*)[to_be_merged objectAtIndex:i];
         [result.media addObjectsFromArray: pinchObject.media];
+        [[pinchObject.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
         result.there_is_picture =  result.there_is_picture || pinchObject.there_is_picture;
         result.there_is_text =  result.there_is_text || pinchObject.there_is_text;
         result.there_is_video = result.there_is_video || pinchObject.there_is_video;
@@ -290,6 +292,7 @@
 +(NSMutableArray*)openCollection:(verbatmCustomPinchView*)to_be_seperated
 {
     NSMutableArray* arr = [[NSMutableArray alloc] init];
+    [(AVPlayerLayer*)[to_be_seperated.layer.sublayers firstObject]removeFromSuperlayer];
     for(id object in to_be_seperated.media){
         verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: to_be_seperated.background.frame.size.width/2 withCenter:to_be_seperated.center andMedia:object];
         [arr addObject: result];

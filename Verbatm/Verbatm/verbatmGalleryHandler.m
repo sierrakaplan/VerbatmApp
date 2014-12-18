@@ -159,6 +159,7 @@
             [self playVideo:avurlAsset forView:imageView];
         }
         viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2 , 0);
+        [self addBorder: imageView];
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
     }
@@ -186,6 +187,14 @@
 {
     verbatmCustomImageView* view = [self imageViewFromAsset:asset];
     [self returnToGallery:view];
+}
+
+-(void)addBorder:(verbatmCustomImageView*)view
+{
+    view.layer.cornerRadius = 8.0f;
+    view.layer.masksToBounds = YES;
+    view.layer.borderColor = [UIColor grayColor].CGColor;
+    view.layer.borderWidth = 2.0f;
 }
 
 
@@ -305,16 +314,17 @@
     if(self.mediaImageViews.count >= 1)selectedImageView = [self.mediaImageViews objectAtIndex:indexa];
     if(selectedImageView){
         [self.media removeObjectAtIndex:indexa];
+        __block CGRect viewSize = selectedImageView.frame;
+        [self.mediaImageViews removeObject: selectedImageView];
         [UIView animateWithDuration:0.8 animations:^{
-            CGRect viewSize = selectedImageView.frame;
-            selectedImageView.frame = (location.x < self.view.frame.size.width/ 2)? CGRectMake(START_POSITION_FOR_MEDIA) : CGRectMake(START_POSITION_FOR_MEDIA2);
-            [self.mediaImageViews removeObject: selectedImageView];
             for(; indexa < self.mediaImageViews.count; indexa++){
                 ((UIImageView*)[self.mediaImageViews objectAtIndex:indexa]).frame = viewSize;
                 viewSize = CGRectOffset(viewSize, (self.scrollView.frame.size.width - OFFSET)/2, 0);
             }
             self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
         }];
+        [self.scrollView.superview addSubview:selectedImageView];
+        selectedImageView.frame = CGRectOffset(selectedImageView.frame, -(self.scrollView.contentOffset.x), 0);//(location.x < self.view.frame.size.width/ 2)? CGRectMake(START_POSITION_FOR_MEDIA) : CGRectMake(START_POSITION_FOR_MEDIA2);
         [selectedImageView removeFromSuperview];
         [self.customDelegate didSelectImageView:selectedImageView];
         
@@ -331,6 +341,7 @@
         otherView.frame = CGRectOffset(otherView.frame,  (self.scrollView.frame.size.width - OFFSET)/2, 0);
     }
     view.frame = viewSize;
+    [self addBorder: view];
     if(view.isVideo){
         AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
         [self playVideo:avurlAsset forView:view];
