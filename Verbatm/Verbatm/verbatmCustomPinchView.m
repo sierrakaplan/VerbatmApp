@@ -361,6 +361,22 @@
     return self.media;
 }
 
+#pragma mark - manipulating playing of videos -
+-(void)pauseVideo
+{
+    if(!self.there_is_video) return;
+    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+    AVPlayer* player = playerLayer.player;
+    [player pause];
+}
+
+-(void)continueVideo
+{
+    if(!self.there_is_video) return;
+    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+    AVPlayer* player = playerLayer.player;
+    [player play];
+}
 @end
 
 
