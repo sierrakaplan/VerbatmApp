@@ -186,17 +186,18 @@
             [self.imageViewer setImage:image];
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
-            ALAsset* asset = ((verbatmCustomImageView*)object).asset;
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
-            [self playVideo:avurlAsset];
             if(self.there_is_video && [self thereIsOnlyOneMedium]){
                 verbatmCustomImageView* view = [self.media firstObject];
                 AVPlayerLayer* layer = [view.layer.sublayers firstObject];
-                if(layer == nil){
+                if(layer == nil){   //view does not have a layer.......make a new layer.
+                    BOOL hasPlayer = [[self.videoView.layer.sublayers firstObject]isKindOfClass:[AVPlayerLayer class]];
+                    if(hasPlayer){
+                        [[self.videoView.layer.sublayers firstObject] removeFromSuperlayer];
+                    }
                     ALAsset* asset = ((verbatmCustomImageView*)object).asset;
                     AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
                     [self playVideo:avurlAsset];
-                }else{
+                }else{  //view has a layer. Use the old one.
                     [layer removeFromSuperlayer];
                     layer.frame = self.bounds;
                     [self.videoView.layer addSublayer:layer];
@@ -347,9 +348,9 @@
 
 -(NSMutableArray*)mediaObjects
 {
-    NSMutableArray* arr = [[NSMutableArray alloc]initWithArray: self.media];
-    return arr;
+    return self.media;
 }
 
 @end
+
 

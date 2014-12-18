@@ -2087,13 +2087,15 @@
     if(![sender.view isKindOfClass:[verbatmCustomPinchView class]]) return; //only accept touches from pinch objects
 
     verbatmCustomPinchView * pinch_object = (verbatmCustomPinchView *)sender.view;
-    if(pinch_object.hasMultipleMedia)[self openCollection:pinch_object];//checks if there is anything to open by telling you if the element has multiple things in it
-    
+    if(pinch_object.hasMultipleMedia){
+        [self openCollection:pinch_object];//checks if there is anything to open by telling you if the element has multiple things in it
+    }
     if(!pinch_object.isCollection && !pinch_object.hasMultipleMedia)//tap to open an element for viewing or editing
     {
         
         NSMutableArray * array = [pinch_object mediaObjects];
-        
+        [pinch_object.superview removeFromSuperview];
+        [self.pageElements removeObject:pinch_object];
         if([self.pageElements indexOfObject:pinch_object]!= 0)
         {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
@@ -2107,12 +2109,9 @@
             }];
             
         }
-        [pinch_object.superview removeFromSuperview];
-        [self.pageElements removeObject:pinch_object];
         [self shiftElementsBelowView:self.articleTitleField];//make sure the gap is closed no that the old view is removed
     }
-    
-    
+    //pinch_object = nil;
 }
 
 #pragma mark Open Collection
