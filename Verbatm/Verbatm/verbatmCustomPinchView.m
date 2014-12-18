@@ -266,7 +266,9 @@
     for(int i = 1; i < to_be_merged.count; i++){
         verbatmCustomPinchView* pinchObject = (verbatmCustomPinchView*)[to_be_merged objectAtIndex:i];
         [result.media addObjectsFromArray: pinchObject.media];
-        [[pinchObject.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
+        if([pinchObject.videoView.layer.sublayers firstObject]){
+            [(AVPlayerLayer*)[pinchObject.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
+        }
         result.there_is_picture =  result.there_is_picture || pinchObject.there_is_picture;
         result.there_is_text =  result.there_is_text || pinchObject.there_is_text;
         result.there_is_video = result.there_is_video || pinchObject.there_is_video;
@@ -292,7 +294,9 @@
 +(NSMutableArray*)openCollection:(verbatmCustomPinchView*)to_be_seperated
 {
     NSMutableArray* arr = [[NSMutableArray alloc] init];
-    [(AVPlayerLayer*)[to_be_seperated.layer.sublayers firstObject]removeFromSuperlayer];
+    if([to_be_seperated.videoView.layer.sublayers firstObject]){
+        [(AVPlayerLayer*)[to_be_seperated.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
+    }
     for(id object in to_be_seperated.media){
         verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: to_be_seperated.background.frame.size.width/2 withCenter:to_be_seperated.center andMedia:object];
         [arr addObject: result];
@@ -351,6 +355,9 @@
 
 -(NSMutableArray*)mediaObjects
 {
+    if([self.videoView.layer.sublayers firstObject]){
+        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
+    }
     return self.media;
 }
 

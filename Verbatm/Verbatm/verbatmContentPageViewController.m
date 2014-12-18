@@ -60,7 +60,7 @@
 #define MAX_WORD_LIMIT 350
 #define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
-#define HORIZONTAL_PINCH_THRESHOLD 150 //distance two fingers must travel for the horizontal pinch to be accepted
+#define HORIZONTAL_PINCH_THRESHOLD 100 //distance two fingers must travel for the horizontal pinch to be accepted
 #define TEXTFIELD_BORDER_WIDTH 1.0f
 #define AUTO_SCROLL_OFFSET 10
 #define CONTENT_SIZE_OFFSET 20
@@ -1354,6 +1354,7 @@
 //Takes a midpoint and a lower touch point and finds the two views that were being interacted with
 -(void) findElementsFromPinchPoint: (CGPoint) pinchPoint andLowerTouchPoint: (CGPoint) lowerTouchPoint
 {
+    
     UIView * wantedView = [self findFirstPinchViewFromPinchPoint:pinchPoint];
     
     if(wantedView)//make sure we have a view
@@ -2345,6 +2346,7 @@
 
 -(void) pinchObjectTaped:(UITapGestureRecognizer *) sender
 {
+    
     if(![sender.view isKindOfClass:[verbatmCustomPinchView class]]) return; //only accept touches from pinch objects
 
     verbatmCustomPinchView * pinch_object = (verbatmCustomPinchView *)sender.view;
@@ -2355,8 +2357,11 @@
     {
         
         NSMutableArray * array = [pinch_object mediaObjects];
-        [pinch_object.superview removeFromSuperview];
-        [self.pageElements removeObject:pinch_object];
+        verbatmCustomImageView* mediaView = [array firstObject];
+        if(mediaView.isVideo){
+            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: mediaView.asset.defaultRepresentation.url options:nil];
+            [self playVideo: avurlAsset forView:mediaView];
+        }
         if([self.pageElements indexOfObject:pinch_object]!= 0)
         {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
@@ -2368,12 +2373,15 @@
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 [self addView:[array firstObject] underView:self.articleTitleField];
             }];
-            
         }
+        
+        [pinch_object.superview removeFromSuperview];
+        [self.pageElements removeObject:pinch_object];
         [self shiftElementsBelowView:self.articleTitleField];//make sure the gap is closed no that the old view is removed
     }
     //pinch_object = nil;
 }
+
 
 #pragma mark Open Collection
 -(void)openCollection: (verbatmCustomPinchView *) collection
@@ -2419,4 +2427,54 @@
 {
     [self.gallery addMediaToGallery:asset];
 }
+
+#pragma mark - video playing methods -
+
+-(void)playVideo:(AVURLAsset*)asset forView:(UIImageView*)view
+{
+    // Create an AVPlayerItem using the asset
+    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
+    // Create the AVPlayer using the playeritem
+    AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+    //MUTE THE PLAYER
+    [self mutePlayer:player forAsset:asset];
+    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:[player currentItem]];
+    
+    // Create an AVPlayerLayer using the player
+    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+    playerLayer.frame = view.bounds;
+    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+    // Add it to your view's sublayers
+    [view.layer addSublayer:playerLayer];
+    // You can play/pause using the AVPlayer object
+    [player play];
+}
+
+//mutes the player
+-(void)mutePlayer:(AVPlayer*)avPlayer forAsset:(AVURLAsset*)asset
+{
+    NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
+    // Mute all the audio tracks
+    NSMutableArray *allAudioParams = [NSMutableArray array];
+    for (AVAssetTrack *track in audioTracks) {
+        AVMutableAudioMixInputParameters *audioInputParams =  [AVMutableAudioMixInputParameters audioMixInputParameters];
+        [audioInputParams setVolume:0.0 atTime:kCMTimeZero];
+        [audioInputParams setTrackID:[track trackID]];
+        [allAudioParams addObject:audioInputParams];
+    }
+    AVMutableAudioMix *audioZeroMix = [AVMutableAudioMix audioMix];
+    [audioZeroMix setInputParameters:allAudioParams];
+    [[avPlayer currentItem] setAudioMix:audioZeroMix];
+}
+
+//tells me when the video ends so that I can rewind
+-(void)playerItemDidReachEnd:(NSNotification *)notification {
+    AVPlayerItem *p = [notification object];
+    [p seekToTime:kCMTimeZero];
+}
+
 @end

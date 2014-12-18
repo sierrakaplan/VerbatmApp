@@ -332,6 +332,7 @@
 
 -(void)returnToGallery:(verbatmCustomImageView*)view
 {
+    [[view.layer.sublayers firstObject]removeFromSuperlayer];
     view = [self imageViewFromAsset:view.asset];
     [self.media insertObject: view.asset atIndex:0];
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
