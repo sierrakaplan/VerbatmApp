@@ -388,7 +388,13 @@
 {
     if(textField == self.sandwhichWhat)
     {
-        [self.sandwhichWhat resignFirstResponder];
+        if([self.sandwichWhere.text isEqualToString:@""])
+        {
+            [self.sandwichWhere becomeFirstResponder];
+        }else
+        {
+            [self.sandwhichWhat resignFirstResponder];
+        }
         
     }else if(textField == self.sandwichWhere)
     {
@@ -1667,7 +1673,7 @@
 //Iain
 -(void) addTextViewButtonPressedAsBaseView: (BOOL) isBaseView
 {
-    if(self.baseMediaTileSelector.dashed) [self.baseMediaTileSelector returnToButtonView];
+    
     if(!isBaseView)[self replaceNewMediaViewWithTextView];
     if(isBaseView)
     {
@@ -1689,6 +1695,8 @@
 
 -(void) addMultiMediaButtonPressedAsBaseView:(BOOL)isBaseView fromView: (verbatmCustomMediaSelectTile *) tile
 {
+    if(self.baseMediaTileSelector.dashed) [self.baseMediaTileSelector returnToButtonView];
+
     if((self.baseMediaTileSelector != [self.pageElements firstObject]))
     {
         self.index = ([self.pageElements indexOfObject:tile]-1);
@@ -1696,6 +1704,7 @@
     {
         self.index =0;
     }
+    
     [self.gallery presentGallery];
 }
 
@@ -2357,10 +2366,10 @@
     {
         
         NSMutableArray * array = [pinch_object mediaObjects];
-        verbatmCustomImageView* mediaView = [array firstObject];
-        if(mediaView.isVideo){
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: mediaView.asset.defaultRepresentation.url options:nil];
-            [self playVideo: avurlAsset forView:mediaView];
+        UIView* mediaView = [array firstObject];
+        if([mediaView isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView *)mediaView).isVideo){
+            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView *)mediaView).asset.defaultRepresentation.url options:nil];
+            [self playVideo: avurlAsset forView:((verbatmCustomImageView *)mediaView)];
         }
         if([self.pageElements indexOfObject:pinch_object]!= 0)
         {

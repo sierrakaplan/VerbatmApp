@@ -40,14 +40,12 @@
     @property (nonatomic) CGAffineTransform flashTransform;
     @property (nonatomic) CGAffineTransform switchTransform;
 
-
 #pragma mark - view controllers
     @property (strong,nonatomic) verbatmContentPageViewController* vc_contentPage;
 
 
 #pragma mark taking the photo
     @property (strong, nonatomic) UITapGestureRecognizer * takePhotoGesture;
-
 
     @property (nonatomic, strong) NSTimer *timer;
     @property (nonatomic) CGFloat counter;
@@ -790,12 +788,17 @@
     
     if(!last_textView || ![last_textView.text isEqualToString:@""])
     {
-        [self.vc_contentPage createNewTextViewBelowView: self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2]];//subtract 2 becuase you want the object above the last object
+       if(self.vc_contentPage.pageElements.count >1)
+       {[self.vc_contentPage createNewTextViewBelowView: self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2]];//subtract 2 becuase you want the object above the last object
+       }else
+       {
+           [self.vc_contentPage createNewTextViewBelowView: self.vc_contentPage.articleTitleField];//subtract 2 becuase you want the object above the last object
+
+       }
         last_textView=self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2];
     }
     return last_textView;
 }
-
 
 
 //Iain
