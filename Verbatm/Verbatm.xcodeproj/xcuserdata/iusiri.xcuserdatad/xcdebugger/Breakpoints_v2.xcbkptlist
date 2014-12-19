@@ -1892,11 +1892,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440712685.113235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
+            startingLineNumber = "56"
+            endingLineNumber = "56"
             landmarkName = "-initWithRadius:withCenter:andMedia:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1908,11 +1908,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440712685.113235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
+            startingLineNumber = "63"
+            endingLineNumber = "63"
             landmarkName = "-initWithRadius:withCenter:andMedia:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1940,12 +1940,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440711891.960024"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "152"
-            endingLineNumber = "152"
-            landmarkName = "-renderTwoMedia"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
+            landmarkName = "-renderSingleView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2036,12 +2036,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440712209.095339"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "238"
-            endingLineNumber = "238"
-            landmarkName = "-mutePlayer:forAsset:"
+            startingLineNumber = "242"
+            endingLineNumber = "242"
+            landmarkName = "-playVideo:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2052,11 +2052,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440712209.095339"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "247"
-            endingLineNumber = "247"
+            startingLineNumber = "251"
+            endingLineNumber = "251"
             landmarkName = "-mutePlayer:forAsset:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3185,12 +3185,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440711891.960024"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150"
-            landmarkName = "-renderTwoMedia"
+            startingLineNumber = "151"
+            endingLineNumber = "151"
+            landmarkName = "-renderSingleView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3201,12 +3201,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440711891.960024"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "173"
-            endingLineNumber = "173"
-            landmarkName = "-renderThreeViews"
+            startingLineNumber = "174"
+            endingLineNumber = "174"
+            landmarkName = "-renderTwoMedia"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3275,12 +3275,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440712685.113235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "122"
-            endingLineNumber = "122"
-            landmarkName = "-renderMedia"
+            startingLineNumber = "123"
+            endingLineNumber = "123"
+            landmarkName = "-createLensingEffect:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3653,12 +3653,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440712685.113235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "120"
-            endingLineNumber = "120"
-            landmarkName = "-renderMedia"
+            startingLineNumber = "121"
+            endingLineNumber = "121"
+            landmarkName = "-createLensingEffect:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3669,12 +3669,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440488670.81312"
+            timestampString = "440712685.113235"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "121"
-            endingLineNumber = "121"
-            landmarkName = "-renderMedia"
+            startingLineNumber = "122"
+            endingLineNumber = "122"
+            landmarkName = "-createLensingEffect:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3690,7 +3690,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "135"
             endingLineNumber = "135"
-            landmarkName = "-renderSingleView"
+            landmarkName = "-renderMedia"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4037,12 +4037,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "440585971.014118"
+            timestampString = "440712209.095339"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "389"
-            endingLineNumber = "389"
-            landmarkName = "-unmarkAsSelected"
+            startingLineNumber = "393"
+            endingLineNumber = "393"
+            landmarkName = "-continueVideo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

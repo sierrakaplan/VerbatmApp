@@ -964,7 +964,7 @@
     }
     
     //change the background color of the element being deleted to highlight that it's being deleted
-    if(scrollView != self.mainScrollView)
+    if(scrollView != self.mainScrollView && scrollView.subviews.count <2)//makes sure it's only one element on the view
     {
         if(scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x + 80 || scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x - 80)
         {

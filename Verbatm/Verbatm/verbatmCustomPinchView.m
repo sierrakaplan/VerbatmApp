@@ -42,7 +42,8 @@
         //set up the properties
         CGRect frame = CGRectMake(center.x - radius, center.y - radius, radius*2, radius*2);
         [self specifyFrame:frame];
-        [self createLensingEffect:radius];
+        //[self createLensingEffect:radius];
+        self.background.layer.masksToBounds = YES;
         
         //initialize arrays
         self.media = [[NSMutableArray alloc]init];
@@ -57,11 +58,21 @@
         //add background as a subview
         [self addSubview: self.background];
         [self.media addObject: medium];
+        self.background.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor clearColor];
+        self.textField.backgroundColor = [UIColor clearColor];
         [self renderMedia];
+        [self addBorder];
     }
     return self;
 }
 
+
+-(void)addBorder
+{
+    self.layer.borderColor = [UIColor grayColor].CGColor;
+    self.layer.borderWidth = 2.0f;
+}
 
 //Lucio
 //adds a text to the custom view
@@ -110,7 +121,6 @@
     self.layer.masksToBounds = NO;
     self.layer.shadowOpacity = 0.5f;
     self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:radius].CGPath;
-    self.background.layer.masksToBounds = YES;
 }
 
 
@@ -133,6 +143,7 @@
 {
     if(self.there_is_text){
         self.textField.frame = self.background.frame;
+        self.videoView.frame =  CGRectMake(0, 0, 0, 0);
     }else if(self.there_is_video){
         self.textField.frame = CGRectMake(0, 0, 0, 0); //prevents the little part of the  texfield from showing
         self.videoView.frame = self.background.frame;
@@ -176,6 +187,7 @@
 //This function displays the media on the view.
 -(void)displayMedia
 {
+    
     self.textField.text = @"";
     for(id object in self.media){
         if([object isKindOfClass: [UITextView class]]){
@@ -206,6 +218,8 @@
             [self playVideo:avurlAsset];
         }
     }
+    self.textField.textColor = [UIColor whiteColor];
+    self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
 }
 
 
@@ -383,12 +397,13 @@
 -(void)markAsSelected
 {
     self.layer.borderColor = [UIColor blueColor].CGColor;
-    self.layer.borderWidth = 4.0f;
+    self.layer.borderWidth = 2.0f;
 }
 
 -(void)unmarkAsSelected
 {
-    self.layer.borderWidth = 0.0f;
+    
+    [self addBorder];
 }
 @end
 
