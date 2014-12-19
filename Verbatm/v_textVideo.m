@@ -1,33 +1,35 @@
 //
-//  v_textPhoto.m
+//  v_textVideo.m
 //  Verbatm
 //
 //  Created by Lucio Dery Jnr Mwinmaarong on 12/18/14.
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "v_textPhoto.h"
+#import "v_textVideo.h"
+#import "v_textview.h"
 
-@interface v_textPhoto()
-@property (strong, nonatomic) v_textview* textLayer;
+
+@interface v_textVideo()
+@property (strong, nonatomic) v_textview* textView;
 @end
-@implementation v_textPhoto
+@implementation v_textVideo
 
--(id)initWithImage:(UIImage *)image andText:(NSString*)text
+-(id)initWithFrame:(CGRect)frame andAssets:(NSArray *)assetList andText:(NSString*)text
 {
-    if((self = [super initWithImage:image])){
-        self.contentMode = UIViewContentModeScaleAspectFit;
-        self.textLayer = [[v_textview alloc]initWithFrame: self.bounds];
-        self.textLayer.backgroundColor = [UIColor clearColor];
+    if((self = [super initWithFrame:frame andAssets:assetList])){
+        self.textView = [[v_textview alloc]initWithFrame:self.bounds];
         NSMutableAttributedString* attributedText = [[NSMutableAttributedString alloc]initWithString: text];
         [attributedText setAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], NSStrokeWidthAttributeName : @-2, NSStrokeColorAttributeName : [UIColor blackColor],  } range: NSMakeRange(0, [attributedText length])];
         [attributedText addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"Helvetica" size:11] range:NSMakeRange(0, [attributedText length])];
-        [self.textLayer setAttributedText:attributedText];
-        [self addSubview: self.textLayer];
+        [self.textView setAttributedText:attributedText];
+        self.textView.backgroundColor = [UIColor clearColor];
+        [self addSubview: self.textView];
         [self addSwipeGesture];
     }
     return self;
 }
+
 
 -(void)addSwipeGesture
 {
@@ -48,13 +50,14 @@
     [animation setType:kCATransitionPush];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     if(sender.direction == UISwipeGestureRecognizerDirectionRight){
-        if(!self.textLayer.hidden) return;
+        if(!self.textView.hidden) return;
         [animation setSubtype:kCATransitionFromRight];
     }else{
-        if(self.textLayer.hidden)return;
+        if(self.textView.hidden)return;
         [animation setSubtype:kCATransitionFromLeft];
     }
-    self.textLayer.hidden = !self.textLayer.hidden;
-    [self.textLayer.layer addAnimation:animation forKey: @"transition"];
+    self.textView.hidden = !self.textView.hidden;
+    [self.textView.layer addAnimation:animation forKey: @"transition"];
 }
+
 @end

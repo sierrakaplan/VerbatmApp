@@ -27,7 +27,6 @@
         AVMutableComposition* mix =  [self fuseAssets:assetList];
         [self setUpPlayer:mix];
         [self setUpPlayAndPauseButtons];
-        
     }
     return self;
 }

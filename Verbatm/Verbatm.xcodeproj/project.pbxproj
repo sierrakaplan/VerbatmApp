@@ -56,6 +56,7 @@
 		F26894471A43650B00B1D4DB /* v_textview.m in Sources */ = {isa = PBXBuildFile; fileRef = F26894461A43650B00B1D4DB /* v_textview.m */; };
 		F268944A1A436E1700B1D4DB /* v_videoview.m in Sources */ = {isa = PBXBuildFile; fileRef = F26894491A436E1700B1D4DB /* v_videoview.m */; };
 		F268944D1A43A84900B1D4DB /* v_textPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = F268944C1A43A84900B1D4DB /* v_textPhoto.m */; };
+		F26894531A43E2AE00B1D4DB /* v_textVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = F26894521A43E2AE00B1D4DB /* v_textVideo.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +145,8 @@
 		F26894491A436E1700B1D4DB /* v_videoview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_videoview.m; sourceTree = "<group>"; };
 		F268944B1A43A84900B1D4DB /* v_textPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_textPhoto.h; sourceTree = "<group>"; };
 		F268944C1A43A84900B1D4DB /* v_textPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_textPhoto.m; sourceTree = "<group>"; };
+		F26894511A43E2AE00B1D4DB /* v_textVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = v_textVideo.h; path = ../v_textVideo.h; sourceTree = "<group>"; };
+		F26894521A43E2AE00B1D4DB /* v_textVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = v_textVideo.m; path = ../v_textVideo.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -364,6 +367,8 @@
 				F26894491A436E1700B1D4DB /* v_videoview.m */,
 				F268944B1A43A84900B1D4DB /* v_textPhoto.h */,
 				F268944C1A43A84900B1D4DB /* v_textPhoto.m */,
+				F26894511A43E2AE00B1D4DB /* v_textVideo.h */,
+				F26894521A43E2AE00B1D4DB /* v_textVideo.m */,
 			);
 			name = "Article Custom Views";
 			sourceTree = "<group>";
@@ -485,6 +490,7 @@
 				C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */,
 				C7614F421A247BD100E6AB24 /* verbatmCustomImageView.m in Sources */,
 				C78B682419CA6C01003D0AC5 /* verbatmUITextView.m in Sources */,
+				F26894531A43E2AE00B1D4DB /* v_textVideo.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				F268944A1A436E1700B1D4DB /* v_videoview.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
