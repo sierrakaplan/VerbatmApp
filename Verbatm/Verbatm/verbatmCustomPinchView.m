@@ -57,11 +57,21 @@
         //add background as a subview
         [self addSubview: self.background];
         [self.media addObject: medium];
+        self.background.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor clearColor];
+        self.textField.backgroundColor = [UIColor clearColor];
         [self renderMedia];
+        [self addBorder];
     }
     return self;
 }
 
+
+-(void)addBorder
+{
+    self.layer.borderColor = [UIColor grayColor].CGColor;
+    self.layer.borderWidth = 2.0f;
+}
 
 //Lucio
 //adds a text to the custom view
