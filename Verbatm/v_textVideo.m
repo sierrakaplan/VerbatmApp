@@ -24,6 +24,7 @@
         [attributedText addAttribute:NSFontAttributeName value:[UIFont fontWithName:@"Helvetica" size:11] range:NSMakeRange(0, [attributedText length])];
         [self.textView setAttributedText:attributedText];
         self.textView.backgroundColor = [UIColor clearColor];
+        self.showProgressBar = NO;
         [self addSubview: self.textView];
         [self addSwipeGesture];
     }
