@@ -21,6 +21,7 @@
     @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
     @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
     @property (weak, nonatomic) IBOutlet UIButton *raiseKeyboardButton;
+@property (weak, nonatomic) IBOutlet UIButton *undoButton;
 
 #pragma mark - SubViews of screen-
     @property (weak, nonatomic) IBOutlet UIView *containerView;
@@ -65,6 +66,11 @@
     @property (nonatomic) NSInteger keyboardHeight;
 
 
+
+#pragma mark Filter helpers
+#define FILTER_NOTIFICATION_ORIGINAL @"addOriginalFilter"
+#define FILTER_NOTIFICATION_BW @"addBlackAndWhiteFilter"
+#define FILTER_NOTIFICATION_WARM @"addWarmFilter"
 
 #pragma mark helpers for VCs
     #define ID_FOR_CONTENTPAGEVC @"contentPage"
@@ -815,6 +821,9 @@
     
     //Given size may not account for screen rotation
      self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
+    
+    //Make sure the pullbar is in line with the keyboard
+    if (self.containerViewFullScreen)[self positionPullBarTransitionDown:YES];
 }
 
 
@@ -861,10 +870,22 @@
 
 
 
+
+
+
 #pragma mark - delegate method for media session class -
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset
 {
     [self.vc_contentPage alertGallery: asset];
+}
+
+
+
+
+- (void)dealloc
+{
+    //tune out of nsnotification
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end
 

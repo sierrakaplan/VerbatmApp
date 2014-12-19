@@ -180,6 +180,7 @@
         imageView.isVideo = NO;
     }
     imageView.autoresizingMask = YES;
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
     return imageView;
 }
 

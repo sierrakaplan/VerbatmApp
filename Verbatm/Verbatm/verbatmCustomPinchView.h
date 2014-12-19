@@ -77,6 +77,13 @@
 //restarts a paused video, continuing from where it was paused
 -(void)continueVideo;
 
+
+//marks the video as selected
+-(void)markAsSelected;
+
+//mark as unselected
+-(void)unmarkAsSelected;
+
 @property (nonatomic) BOOL selected;//tells you if the object is selected for panning
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;

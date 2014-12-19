@@ -60,6 +60,7 @@
                         <outlet property="containerView" destination="yYu-am-nhj" id="oIm-VS-BBM"/>
                         <outlet property="pullBar" destination="kfm-fE-qmH" id="8De-OD-XYm"/>
                         <outlet property="raiseKeyboardButton" destination="2En-WX-DuJ" id="6PJ-me-Gpx"/>
+                        <outlet property="undoButton" destination="P77-2T-ypm" id="Qm0-va-Rzv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPQ-fx-ob9" userLabel="First Responder" sceneMemberID="firstResponder"/>

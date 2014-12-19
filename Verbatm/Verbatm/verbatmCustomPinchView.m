@@ -377,6 +377,19 @@
     AVPlayer* player = playerLayer.player;
     [player play];
 }
+
+#pragma mark - selection interface -
+
+-(void)markAsSelected
+{
+    self.layer.borderColor = [UIColor blueColor].CGColor;
+    self.layer.borderWidth = 4.0f;
+}
+
+-(void)unmarkAsSelected
+{
+    self.layer.borderWidth = 0.0f;
+}
 @end
 
 
