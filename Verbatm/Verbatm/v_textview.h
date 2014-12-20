@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface v_textview : UITextView
--(void)setText:(NSString*)text;
--(void)setAttributedText:(NSMutableAttributedString*)text;
+-(void)setTextViewText:(NSString*)text;
+-(void)setTextViewAttributedText:(NSMutableAttributedString*)text;
 
 @end

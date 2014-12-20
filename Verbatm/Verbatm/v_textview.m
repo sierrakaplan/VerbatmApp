@@ -16,17 +16,20 @@
     if((self = [super initWithFrame:frame])){
         self.editable = NO;
         self.textAlignment = NSTextAlignmentCenter;
+        self.backgroundColor = [UIColor blackColor];
         [self addObserver:self forKeyPath: @"contentSize" options: (NSKeyValueObservingOptionNew) context:NULL];
     }
     return self;
 }
 
--(void)setText:(NSString*)text
+-(void)setTextViewText:(NSString*)text
 {
     self.text = text;
+    self.textColor = [UIColor whiteColor];
+    [self setFont:[UIFont fontWithName:@"ArialMT" size:17]];
 }
 
--(void)setAttributedText:(NSMutableAttributedString*)text
+-(void)setTextViewAttributedText:(NSMutableAttributedString*)text
 {
     self.attributedText = text;
 }

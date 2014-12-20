@@ -9,5 +9,5 @@
 #import "v_videoview.h"
 
 @interface v_textVideo : v_videoview
-
+-(id)initWithFrame:(CGRect)frame andAssets:(NSArray *)assetList andText:(NSString*)text;
 @end

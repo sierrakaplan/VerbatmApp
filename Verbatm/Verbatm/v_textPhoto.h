@@ -12,5 +12,7 @@
 
 
 @interface v_textPhoto : UIImageView
--(id)initWithImage:(UIImage *)image andText:(NSString*)text;
+-(id)initWithFrame:(CGRect)frame andImage:(UIImage *)image andText:(NSString*)text;
+//must be added after the supet view is set
+-(void)addSwipeGesture;
 @end
