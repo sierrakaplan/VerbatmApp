@@ -12,6 +12,8 @@
 @property (strong, nonatomic) UIImageView* videoProgressImageView;
 @property (strong, nonatomic) NSTimer* timer;
 @property (strong, nonatomic) UIButton* play_pauseBtn;
+@property (strong, nonatomic) AVMutableComposition* mix;
+@property (nonatomic) BOOL showProgressBar;
 #define RGB 255,225,255, 0.7
 #define PROGR_VIEW_HEIGHT 60
 #define PLAY_ICON @"play-button-overlay"
@@ -24,9 +26,8 @@
 -(id)initWithFrame:(CGRect)frame andAssets:(NSArray*)assetList
 {
     if((self = [super initWithFrame:frame])){
-        AVMutableComposition* mix =  [self fuseAssets:assetList];
-        [self setUpPlayer:mix];
-        [self setUpPlayAndPauseButtons];
+        [self fuseAssets:assetList];
+        [self setUpPlayer:self.mix];
     }
     return self;
 }
@@ -50,7 +51,8 @@
     [self.layer addSublayer:playerLayer];
     // You can play/pause using the AVPlayer object
     [player play];
-    if(self.showProgressBar)self.timer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(createVideoProgressLine) userInfo:nil repeats:YES];
+    player.muted = NO;
+    player.volume = 1.0;
 }
 
 //tells me when the video ends so that I can rewind
@@ -59,26 +61,34 @@
     [p seekToTime:kCMTimeZero];
 }
 
--(AVMutableComposition*)fuseAssets:(NSArray*)assetList
+-(void)fuseAssets:(NSArray*)assetList
 {
-    AVMutableComposition* mixComp = [AVMutableComposition composition];
-    AVMutableCompositionTrack* videoTrack = [mixComp addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVMutableCompositionTrack* audioTrack = [mixComp addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    self.mix = [AVMutableComposition composition];
+    AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     CMTime nextClipStartTime = kCMTimeZero;
     NSError* error;
     for(ALAsset* asset in assetList){
         AVURLAsset* assetClip = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
         AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error];
-        AVAssetTrack* this_audio_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
-        if( this_audio_track!= 0){
+        AVAssetTrack* this_audio_track = [[assetClip tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+        if(this_audio_track != nil){
             [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
         }
+        NSLog(@"%@ error", error);
         nextClipStartTime = CMTimeAdd(nextClipStartTime, assetClip.duration);
     }
-    return mixComp;
 }
 
+#pragma mark - showing the progess bar-
+
+-(void)showVideoProgressBar
+{
+    self.showProgressBar = YES;
+    [self setUpPlayAndPauseButtons];
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(createVideoProgressLine) userInfo:nil repeats:YES];
+}
 
 #pragma mark - manipulating playing of videos -
 
@@ -92,6 +102,7 @@
     [self.play_pauseBtn setImage:[UIImage imageNamed:PAUSE_ICON] forState:UIControlStateNormal];
     [self.play_pauseBtn setFrame:CGRectMake(ICON_SIZE/2,(PROGR_VIEW_HEIGHT-ICON_SIZE)/2,ICON_SIZE, ICON_SIZE)];
     [self.play_pauseBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
+    self.videoProgressImageView.userInteractionEnabled = YES;
     [self.videoProgressImageView addSubview: self.play_pauseBtn];
 }
 
@@ -101,8 +112,7 @@
     AVPlayer* player = playerLayer.player;
     [player pause];
     if(self.showProgressBar)[self.timer invalidate];
-    [self.play_pauseBtn setImage:[UIImage imageNamed:PAUSE_ICON] forState:UIControlStateNormal];
-    [self.play_pauseBtn removeTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
+    [self.play_pauseBtn setImage:[UIImage imageNamed:PLAY_ICON] forState:UIControlStateNormal];
     [self.play_pauseBtn addTarget:self action:@selector(continueVideo) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -111,9 +121,8 @@
     AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
     AVPlayer* player = playerLayer.player;
     [player play];
-    if(self.showProgressBar)[self.timer fire];
-    [self.play_pauseBtn setImage:[UIImage imageNamed:PLAY_ICON] forState:UIControlStateNormal];
-    [self.play_pauseBtn removeTarget:self action:@selector(continueVideo) forControlEvents:UIControlEventTouchUpInside];
+    if(self.showProgressBar)[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(createVideoProgressLine) userInfo:nil repeats:YES];
+    [self.play_pauseBtn setImage:[UIImage imageNamed:PAUSE_ICON] forState:UIControlStateNormal];
     [self.play_pauseBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
 }
 

@@ -12,6 +12,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 
 @interface v_videoview : UIView
-@property (nonatomic) BOOL showProgressBar;
+-(void)showVideoProgressBar;
 -(id)initWithFrame:(CGRect)frame andAssets:(NSArray*)assetList;
 @end

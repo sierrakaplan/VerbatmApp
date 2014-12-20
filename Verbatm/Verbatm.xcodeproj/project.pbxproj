@@ -281,10 +281,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
-
 				F26894441A43641C00B1D4DB /* Article Custom Views */,
-				C7811ED419DA573B00C72214 /* JPEG images */,
-
 				C750A35919D768BD0006FA88 /* Video Capture Classes */,
 				C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */,
 				C78B682719CA6C0A003D0AC5 /* Custom Views */,
