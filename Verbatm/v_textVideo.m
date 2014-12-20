@@ -28,7 +28,6 @@
         [self.textView setAttributedText:attributedText];
         self.textView.textAlignment = NSTextAlignmentCenter;
         self.textView.backgroundColor = [UIColor clearColor];
-        self.showProgressBar = NO;
         [self addSubview: self.textView];
         self.userInteractionEnabled = YES;
         [self addSwipeGesture];

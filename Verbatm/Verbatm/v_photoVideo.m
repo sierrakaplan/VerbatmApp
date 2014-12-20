@@ -19,8 +19,7 @@
     if((self = [super initWithFrame:frame])){
         [self setImage:image];
         self.videoView = [[v_videoview alloc]initWithFrame:self.bounds andAssets:assetList];
-        self.videoView.showProgressBar = NO;
-        [self createLongPressGesture];
+        //[self createLongPressGesture];
     }
     return self;
 }
@@ -29,13 +28,14 @@
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(showVideo:)];
     longPress.minimumPressDuration = 0.5;
-    [self addGestureRecognizer:longPress];
+    [self.superview addGestureRecognizer:longPress];
 }
 
 -(void)showVideo:(UILongPressGestureRecognizer*)sender
 {
+    if(sender.state != UIGestureRecognizerStateBegan && sender.state != UIGestureRecognizerStateEnded) return;
     CATransition *animation = [CATransition animation];
-    [animation setDuration:0.3];
+    [animation setDuration:0.6];
     [animation setType:kCATransitionFade];
     [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
     if(sender.state == UIGestureRecognizerStateBegan){
@@ -44,7 +44,6 @@
     }else{
         [self.videoView removeFromSuperview];
     }
-    [animation setSubtype:kCATransitionFromTop];
     [self.layer addAnimation:animation forKey: @"transition"];
 }
 @end
