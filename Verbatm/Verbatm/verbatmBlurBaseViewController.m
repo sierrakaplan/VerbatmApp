@@ -45,7 +45,7 @@
 -(void) formatBlurView
 {
     self.blurView.translucentStyle = UIBarStyleBlack;
-    self.blurView.translucentAlpha = 1;
+    self.blurView.translucentAlpha = 2;
     self.blurViewInitialFrame = self.blurView.frame;
 }
 

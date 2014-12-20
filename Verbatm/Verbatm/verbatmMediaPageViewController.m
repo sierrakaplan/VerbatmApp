@@ -146,6 +146,20 @@
     [[UIDevice currentDevice]beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(positionContainerView) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
     
+    //Register for notifications to show and remove the pullbar
+    //Listen for when the keyboard is about to disappear
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(hidePullBar)
+                                                 name:@"Notification_shouldHidePullBar"
+                                               object:nil];
+    //Register for notifications to show and remove the pullbar
+    //Listen for when the keyboard is about to disappear
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(showPullBar)
+                                                 name:@"Notification_shouldShowPullBar"
+                                               object:nil];
+    
+    
     
     //register for keyboard events
     [self registerForKeyboardNotifications];
@@ -614,7 +628,6 @@
     }
 }
 
-//undles the first instance the an gesture is recognised
 -(void)expandContentPage_Began:(UIPanGestureRecognizer *)sender
 {
     CGPoint translation = [sender translationInView:self.pullBar.superview]; //how far the transisiton has come
@@ -880,7 +893,27 @@
 }
 
 
+-(void)hidePullBar
+{
+    if(!self.pullBar.hidden)
+    {
+        [UIView animateWithDuration:0.4 animations:^{
+            self.containerView.frame = self.view.frame;
+            self.pullBar.hidden = YES;
+        }];
+    }
+}
 
+-(void) showPullBar
+{
+    if(self.pullBar.hidden)
+    {
+       [UIView animateWithDuration:0.4 animations:^{
+           self.pullBar.hidden = NO;
+           [self positionContainerViewTo:YES orTo:NO orTo:NO];
+       }];
+    }
+}
 
 - (void)dealloc
 {

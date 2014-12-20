@@ -57,6 +57,11 @@
         }
         //add background as a subview
         [self addSubview: self.background];
+        //set frames
+        self.videoView.frame =  CGRectZero;
+        self.textField.frame = CGRectZero; //prevents the little part of the  texfield from showing
+        self.imageViewer.frame = CGRectZero;
+        
         [self.media addObject: medium];
         self.background.backgroundColor = [UIColor clearColor];
         self.backgroundColor = [UIColor clearColor];
@@ -70,8 +75,8 @@
 
 -(void)addBorder
 {
-    self.layer.borderColor = [UIColor grayColor].CGColor;
-    self.layer.borderWidth = 2.0f;
+    self.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.layer.borderWidth = 1.0f;
 }
 
 //Lucio
@@ -143,9 +148,7 @@
 {
     if(self.there_is_text){
         self.textField.frame = self.background.frame;
-        self.videoView.frame =  CGRectMake(0, 0, 0, 0);
     }else if(self.there_is_video){
-        self.textField.frame = CGRectMake(0, 0, 0, 0); //prevents the little part of the  texfield from showing
         self.videoView.frame = self.background.frame;
         [self.background bringSubviewToFront:self.videoView];
     }else{
@@ -195,6 +198,7 @@
             //[self.background bringSubviewToFront: self.textField];
         }else if(!((verbatmCustomImageView*)object).isVideo){
             UIImage* image = [(verbatmCustomImageView*)object image];
+            
             [self.imageViewer setImage:image];
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{

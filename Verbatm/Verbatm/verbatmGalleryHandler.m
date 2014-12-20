@@ -192,10 +192,11 @@
 
 -(void)addBorder:(verbatmCustomImageView*)view
 {
+    //return;
     view.layer.cornerRadius = 8.0f;
     view.layer.masksToBounds = YES;
-    view.layer.borderColor = [UIColor grayColor].CGColor;
-    view.layer.borderWidth = 2.0f;
+    view.layer.borderColor = [UIColor whiteColor].CGColor;
+    view.layer.borderWidth = 0.0f;
 }
 
 
