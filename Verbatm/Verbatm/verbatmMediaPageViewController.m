@@ -21,6 +21,7 @@
     @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
     @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
     @property (weak, nonatomic) IBOutlet UIButton *raiseKeyboardButton;
+@property (weak, nonatomic) IBOutlet UIButton *undoButton;
 
 #pragma mark - SubViews of screen-
     @property (weak, nonatomic) IBOutlet UIView *containerView;
@@ -40,14 +41,12 @@
     @property (nonatomic) CGAffineTransform flashTransform;
     @property (nonatomic) CGAffineTransform switchTransform;
 
-
 #pragma mark - view controllers
     @property (strong,nonatomic) verbatmContentPageViewController* vc_contentPage;
 
 
 #pragma mark taking the photo
     @property (strong, nonatomic) UITapGestureRecognizer * takePhotoGesture;
-
 
     @property (nonatomic, strong) NSTimer *timer;
     @property (nonatomic) CGFloat counter;
@@ -67,6 +66,11 @@
     @property (nonatomic) NSInteger keyboardHeight;
 
 
+
+#pragma mark Filter helpers
+#define FILTER_NOTIFICATION_ORIGINAL @"addOriginalFilter"
+#define FILTER_NOTIFICATION_BW @"addBlackAndWhiteFilter"
+#define FILTER_NOTIFICATION_WARM @"addWarmFilter"
 
 #pragma mark helpers for VCs
     #define ID_FOR_CONTENTPAGEVC @"contentPage"
@@ -141,6 +145,20 @@
     //for postitioning the blurView when the orientation of the device changes
     [[UIDevice currentDevice]beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(positionContainerView) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
+    
+    //Register for notifications to show and remove the pullbar
+    //Listen for when the keyboard is about to disappear
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(hidePullBar)
+                                                 name:@"Notification_shouldHidePullBar"
+                                               object:nil];
+    //Register for notifications to show and remove the pullbar
+    //Listen for when the keyboard is about to disappear
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(showPullBar)
+                                                 name:@"Notification_shouldShowPullBar"
+                                               object:nil];
+    
     
     
     //register for keyboard events
@@ -610,7 +628,6 @@
     }
 }
 
-//undles the first instance the an gesture is recognised
 -(void)expandContentPage_Began:(UIPanGestureRecognizer *)sender
 {
     CGPoint translation = [sender translationInView:self.pullBar.superview]; //how far the transisiton has come
@@ -790,12 +807,17 @@
     
     if(!last_textView || ![last_textView.text isEqualToString:@""])
     {
-        [self.vc_contentPage createNewTextViewBelowView: self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2]];//subtract 2 becuase you want the object above the last object
+       if(self.vc_contentPage.pageElements.count >1)
+       {[self.vc_contentPage createNewTextViewBelowView: self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2]];//subtract 2 becuase you want the object above the last object
+       }else
+       {
+           [self.vc_contentPage createNewTextViewBelowView: self.vc_contentPage.articleTitleField];//subtract 2 becuase you want the object above the last object
+
+       }
         last_textView=self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2];
     }
     return last_textView;
 }
-
 
 
 //Iain
@@ -812,6 +834,9 @@
     
     //Given size may not account for screen rotation
      self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
+    
+    //Make sure the pullbar is in line with the keyboard
+    if (self.containerViewFullScreen)[self positionPullBarTransitionDown:YES];
 }
 
 
@@ -858,10 +883,42 @@
 
 
 
+
+
+
 #pragma mark - delegate method for media session class -
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset
 {
     [self.vc_contentPage alertGallery: asset];
+}
+
+
+-(void)hidePullBar
+{
+    if(!self.pullBar.hidden)
+    {
+        [UIView animateWithDuration:0.4 animations:^{
+            self.containerView.frame = self.view.frame;
+            self.pullBar.hidden = YES;
+        }];
+    }
+}
+
+-(void) showPullBar
+{
+    if(self.pullBar.hidden)
+    {
+       [UIView animateWithDuration:0.4 animations:^{
+           self.pullBar.hidden = NO;
+           [self positionContainerViewTo:YES orTo:NO orTo:NO];
+       }];
+    }
+}
+
+- (void)dealloc
+{
+    //tune out of nsnotification
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end
 

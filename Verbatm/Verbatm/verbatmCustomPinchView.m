@@ -42,7 +42,8 @@
         //set up the properties
         CGRect frame = CGRectMake(center.x - radius, center.y - radius, radius*2, radius*2);
         [self specifyFrame:frame];
-        [self createLensingEffect:radius];
+        //[self createLensingEffect:radius];
+        self.background.layer.masksToBounds = YES;
         
         //initialize arrays
         self.media = [[NSMutableArray alloc]init];
@@ -56,6 +57,11 @@
         }
         //add background as a subview
         [self addSubview: self.background];
+        //set frames
+        self.videoView.frame =  CGRectZero;
+        self.textField.frame = CGRectZero; //prevents the little part of the  texfield from showing
+        self.imageViewer.frame = CGRectZero;
+        
         [self.media addObject: medium];
         self.background.backgroundColor = [UIColor clearColor];
         self.backgroundColor = [UIColor clearColor];
@@ -69,8 +75,8 @@
 
 -(void)addBorder
 {
-    self.layer.borderColor = [UIColor grayColor].CGColor;
-    self.layer.borderWidth = 2.0f;
+    self.layer.borderColor = [UIColor whiteColor].CGColor;
+    self.layer.borderWidth = 1.0f;
 }
 
 //Lucio
@@ -120,7 +126,6 @@
     self.layer.masksToBounds = NO;
     self.layer.shadowOpacity = 0.5f;
     self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:radius].CGPath;
-    self.background.layer.masksToBounds = YES;
 }
 
 
@@ -144,7 +149,6 @@
     if(self.there_is_text){
         self.textField.frame = self.background.frame;
     }else if(self.there_is_video){
-        self.textField.frame = CGRectMake(0, 0, 0, 0); //prevents the little part of the  texfield from showing
         self.videoView.frame = self.background.frame;
         [self.background bringSubviewToFront:self.videoView];
     }else{
@@ -186,6 +190,7 @@
 //This function displays the media on the view.
 -(void)displayMedia
 {
+    
     self.textField.text = @"";
     for(id object in self.media){
         if([object isKindOfClass: [UITextView class]]){
@@ -193,6 +198,7 @@
             //[self.background bringSubviewToFront: self.textField];
         }else if(!((verbatmCustomImageView*)object).isVideo){
             UIImage* image = [(verbatmCustomImageView*)object image];
+            
             [self.imageViewer setImage:image];
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
@@ -216,6 +222,8 @@
             [self playVideo:avurlAsset];
         }
     }
+    self.textField.textColor = [UIColor whiteColor];
+    self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
 }
 
 
@@ -386,6 +394,20 @@
     AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
     AVPlayer* player = playerLayer.player;
     [player play];
+}
+
+#pragma mark - selection interface -
+
+-(void)markAsSelected
+{
+    self.layer.borderColor = [UIColor blueColor].CGColor;
+    self.layer.borderWidth = 2.0f;
+}
+
+-(void)unmarkAsSelected
+{
+    
+    [self addBorder];
 }
 @end
 
