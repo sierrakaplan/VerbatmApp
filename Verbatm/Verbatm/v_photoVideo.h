@@ -10,5 +10,6 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 @interface v_photoVideo : UIImageView
-
+-(id)initWithFrame:(CGRect)frame Assets:(NSArray*)assetList andImage:(UIImage*)image;
+-(void)createLongPressGesture;
 @end
