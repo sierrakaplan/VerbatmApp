@@ -198,8 +198,8 @@
             //[self.background bringSubviewToFront: self.textField];
         }else if(!((verbatmCustomImageView*)object).isVideo){
             UIImage* image = [(verbatmCustomImageView*)object image];
-            
             [self.imageViewer setImage:image];
+            self.imageViewer.contentMode = UIViewContentModeCenter;
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
             if(self.there_is_video && [self thereIsOnlyOneMedium]){
