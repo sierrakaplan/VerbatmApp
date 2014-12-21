@@ -67,13 +67,13 @@
         self.backgroundColor = [UIColor clearColor];
         self.textField.backgroundColor = [UIColor clearColor];
         [self renderMedia];
-        [self addBorder];
+        [self addGrayBorder];
     }
     return self;
 }
 
 
--(void)addBorder
+-(void)addGrayBorder
 {
     self.layer.borderColor = [UIColor whiteColor].CGColor;
     self.layer.borderWidth = 1.0f;
@@ -398,6 +398,16 @@
 
 #pragma mark - selection interface -
 
+-(void)markAsDeleting
+{
+    self.layer.borderColor = [UIColor redColor].CGColor;
+    self.layer.borderWidth = 2.0f;
+}
+
+-(void)unmarkAsDeleting
+{
+    [self addGrayBorder];
+}
 -(void)markAsSelected
 {
     self.layer.borderColor = [UIColor blueColor].CGColor;
@@ -407,7 +417,7 @@
 -(void)unmarkAsSelected
 {
     
-    [self addBorder];
+    [self addGrayBorder];
 }
 @end
 

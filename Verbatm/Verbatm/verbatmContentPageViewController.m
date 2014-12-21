@@ -18,6 +18,7 @@
 #import "ILTranslucentView.h"
 #import "verbatmCustomPinchView.h"
 #import "verbatmCustomImageView.h"
+#import "verbatmCustomImageScrollView.h"
 
 
 
@@ -55,6 +56,10 @@
 
 #pragma mark - Used_properties -
 #define CENTERING_OFFSET_FOR_TEXT_VIEW 30 //the gap between the bottom of the screen and the cursor
+
+
+#define SCROLLDISTANCE_FOR_PINCHVIEW_RETURN 200 //if the image is up- you can scroll up and have it turn to circles. This gives that scrollup distance
+
 
 #pragma mark Notification helper
 #define NOTIFICATION_HIDE_PULLBAR @"Notification_shouldHidePullBar"
@@ -898,9 +903,9 @@
             [scrollView removeFromSuperview];
             [self.pageElements removeObject:view];
             
-//            //reposition views on screen
-//            if(index) [self shiftElementsBelowView:self.pageElements[index-1]]; //if it's a middle element shift everything below
              [self shiftElementsBelowView:self.articleTitleField]; //if it was the top element then shift everything below
+            
+            //recycle the object you just deleted
             
             if([view isKindOfClass:[verbatmCustomPinchView class]])
             {
@@ -917,6 +922,7 @@
                 [self.gallery returnToGallery: (verbatmCustomImageView *)view];
             }
             
+            //sanitize your memory
             if(self.upperPinchView == view) self.upperPinchView = Nil;//sanitize the pointers so the objects don't stay in memory
             if(self.lowerPinchView ==view) self.lowerPinchView =Nil;//sanitize these pointers so that the objects don't stay in memory
             
@@ -950,25 +956,73 @@
         }
     }
     
+    if([scrollView isKindOfClass:[verbatmCustomImageScrollView class]])
+    {
+        CGPoint translation = scrollView.contentOffset;
+        
+        if(translation.y <= self.view.frame.size.height)
+        {
+            float alpha = translation.y/self.view.frame.size.height;
+            
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                scrollView.alpha = alpha;
+            }];
+            
+        }else
+        {
+            
+            
+            float constant = 2*self.view.frame.size.height;
+            float alpha = (constant - translation.y)/constant;
+            
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                scrollView.alpha = alpha;
+            }];
+        }
+        
+        
+        
+    }
+    
+    
     //change the background color of the element being deleted to highlight that it's being deleted
     if(scrollView != self.mainScrollView && scrollView.subviews.count <2)//makes sure it's only one element on the view
     {
         if(scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x + 80 || scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x - 80)
         {
-            if(scrollView.contentOffset.x >3)((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor redColor];
-            
+            if(scrollView.contentOffset.x >3)
+            {
+                if([[scrollView.subviews firstObject] isKindOfClass:[verbatmCustomPinchView class]])
+                {
+                    [((verbatmCustomPinchView *)[scrollView.subviews firstObject]) markAsDeleting];
+                }
+                else
+                {
+                    ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor redColor];
+                }
+            }
         }else{
-            
             [UIView animateWithDuration:0.4 animations:^
              {
                  if([[scrollView.subviews firstObject] isKindOfClass:[UITextView class]])
                  {
                      ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor BACKGROUND_COLOR];
-                 }else
+                 }else if([[scrollView.subviews firstObject] isKindOfClass:[verbatmCustomPinchView class]])
                  {
+                      [((verbatmCustomPinchView *)[scrollView.subviews firstObject]) unmarkAsDeleting];
+                 }else{
                      ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor BACKGROUND_COLOR];//for all objects not text views
                  }
              }];
+        }
+    }
+    
+    if(scrollView == self.mainScrollView)
+    {
+        CGPoint translation = [self.mainScrollView.panGestureRecognizer translationInView:self.mainScrollView];
+        if(translation.y > SCROLLDISTANCE_FOR_PINCHVIEW_RETURN || translation.y < (0 - SCROLLDISTANCE_FOR_PINCHVIEW_RETURN))
+        {
+            [self convertToPincheableObjects];
         }
     }
 }
@@ -2236,15 +2290,18 @@
             [superView addSubview:pinch];//ADDING IT because we need its center
             //pinch.hidden = YES;//but we hide it so that it's not vissible too early
             [self shiftElementsBelowView:pinch];
+            [object removeFromSuperview];
+            object.frame = self.view.bounds;
+            [self.view addSubview:object];
+            [self.view bringSubviewToFront:object];
             //make the old view fade out
-            CGRect new_fade_frame = CGRectMake(pinch.center.x, pinch.center.y, 0, 0);
+            //CGRect new_fade_frame = CGRectMake(pinch.center.x, pinch.center.y, 0, 0);
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 object.alpha = 0.0f;
-                object.frame = new_fade_frame;
                 [self scrollMainScrollViewDownForEffect];//make sure the new object is in the middle
             } completion:^(BOOL finished) {
                 //pinch.hidden = NO;
-                [(UIView*)object removeFromSuperview];
+                [object removeFromSuperview];
                 superView.scrollEnabled = YES;
                 self.mainScrollView.pagingEnabled = NO;
             }];
@@ -2262,7 +2319,7 @@
 {
     UIScrollView * scrollview = (UIScrollView *) view.superview;
     
-    int y_difference = scrollview.frame.origin.y - self.mainScrollView.contentOffset.y;
+    int y_difference = scrollview.frame.origin.y - self.mainScrollView.contentOffset.y + (ELEMENT_OFFSET_DISTANCE/2);//addin the half element offset allows the image to hug the top of the screen
     [UIView animateWithDuration:0.2 animations:^{
          self.mainScrollView.contentOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + y_difference);//not that y_difference could be negative
     }];
@@ -2300,23 +2357,33 @@
         }
         if([self.pageElements indexOfObject:pinch_object]!= 0)
         {
-            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-                mediaView.frame = CGRectMake(pinch_object.center.x, pinch_object.center.y, 0, 0);
-                [self addView:mediaView underView:self.pageElements[[self.pageElements indexOfObject:pinch_object]-1]];
-                //takes the view to the top of the screen
-                [self snapToTopView:mediaView];
-                //if it's a textview make the keyboard come up
-                if([mediaView isKindOfClass:[verbatmUITextView class]]) [mediaView becomeFirstResponder];
-                
-            }];
             
-            if([mediaView isKindOfClass:[verbatmCustomImageView class]])
-            {
-                self.openImage = (verbatmCustomImageView *)mediaView;
-                [self addSwipeToOpenedView];
-                ((UIScrollView *)mediaView.superview).scrollEnabled = NO;
-            }
-            mediaView.alpha = 1;//make sure it's fully visible
+            
+            verbatmCustomImageScrollView * imageScroll = [[verbatmCustomImageScrollView alloc] initWithFrame:self.view.bounds andYOffset:SCROLLDISTANCE_FOR_PINCHVIEW_RETURN];
+            imageScroll.delegate = self;
+            
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                [self.view addSubview:imageScroll];
+            }];
+            [imageScroll addImage:(verbatmCustomImageView *)mediaView withYOffset:SCROLLDISTANCE_FOR_PINCHVIEW_RETURN];
+            
+//            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+//                mediaView.frame = CGRectMake(pinch_object.center.x, pinch_object.center.y, 0, 0);
+//                [self addView:mediaView underView:self.pageElements[[self.pageElements indexOfObject:pinch_object]-1]];
+//                //takes the view to the top of the screen
+//                [self snapToTopView:mediaView];
+//                //if it's a textview make the keyboard come up
+//                if([mediaView isKindOfClass:[verbatmUITextView class]]) [mediaView becomeFirstResponder];
+//                
+//            }];
+//            
+//            if([mediaView isKindOfClass:[verbatmCustomImageView class]])
+//            {
+//                self.openImage = (verbatmCustomImageView *)mediaView;
+//                [self addSwipeToOpenedView];
+//                ((UIScrollView *)mediaView.superview).scrollEnabled = NO;
+//            }
+//            mediaView.alpha = 1;//make sure it's fully visible
         }else
         {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{

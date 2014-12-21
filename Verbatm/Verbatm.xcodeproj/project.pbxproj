@@ -53,6 +53,7 @@
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
 		C7CCFFAB19CFA74D00E90080 /* verbatmBlurBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFFAA19CFA74D00E90080 /* verbatmBlurBaseViewController.m */; };
 		C7F18D851A05C0EE0002255B /* verbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* verbatmTextField.m */; };
+		F20A24FA1A46166100BB77C1 /* verbatmCustomImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */; };
 		F26894471A43650B00B1D4DB /* v_textview.m in Sources */ = {isa = PBXBuildFile; fileRef = F26894461A43650B00B1D4DB /* v_textview.m */; };
 		F268944A1A436E1700B1D4DB /* v_videoview.m in Sources */ = {isa = PBXBuildFile; fileRef = F26894491A436E1700B1D4DB /* v_videoview.m */; };
 		F268944D1A43A84900B1D4DB /* v_textPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = F268944C1A43A84900B1D4DB /* v_textPhoto.m */; };
@@ -140,6 +141,8 @@
 		C7CCFFAA19CFA74D00E90080 /* verbatmBlurBaseViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmBlurBaseViewController.m; sourceTree = "<group>"; };
 		C7F18D831A05C0EE0002255B /* verbatmTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmTextField.h; sourceTree = "<group>"; };
 		C7F18D841A05C0EE0002255B /* verbatmTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmTextField.m; sourceTree = "<group>"; };
+		F20A24F81A46166100BB77C1 /* verbatmCustomImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmCustomImageScrollView.h; sourceTree = "<group>"; };
+		F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmCustomImageScrollView.m; sourceTree = "<group>"; };
 		F26894451A43650B00B1D4DB /* v_textview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_textview.h; sourceTree = "<group>"; };
 		F26894461A43650B00B1D4DB /* v_textview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_textview.m; sourceTree = "<group>"; };
 		F26894481A436E1700B1D4DB /* v_videoview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_videoview.h; sourceTree = "<group>"; };
@@ -234,6 +237,8 @@
 				C716A5B119E0CA3500A5490B /* verbatmDashLineView.m */,
 				C78B682819CA6C22003D0AC5 /* verbatmGalleryHandler.h */,
 				C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */,
+				F20A24F81A46166100BB77C1 /* verbatmCustomImageScrollView.h */,
+				F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -478,6 +483,7 @@
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */,
+				F20A24FA1A46166100BB77C1 /* verbatmCustomImageScrollView.m in Sources */,
 				C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */,
 				C78B682A19CA6C22003D0AC5 /* verbatmGalleryHandler.m in Sources */,
 				C7174E0E19CA159D006C982D /* ILTranslucentView.m in Sources */,
