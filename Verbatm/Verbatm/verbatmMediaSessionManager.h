@@ -29,5 +29,5 @@
 -(void)startSession;
 -(void)stopSession;
 @property(strong, nonatomic) NSURL* outputurl;
-@property (nonatomic, strong) id<verbatmMediaSessionManagerDelegate> delegate;
+@property (nonatomic, strong) id <verbatmMediaSessionManagerDelegate> delegate;
 @end

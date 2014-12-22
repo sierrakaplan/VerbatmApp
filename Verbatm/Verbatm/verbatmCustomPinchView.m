@@ -67,13 +67,13 @@
         self.backgroundColor = [UIColor clearColor];
         self.textField.backgroundColor = [UIColor clearColor];
         [self renderMedia];
-        [self addBorder];
+        [self addGrayBorder];
     }
     return self;
 }
 
 
--(void)addBorder
+-(void)addGrayBorder
 {
     self.layer.borderColor = [UIColor whiteColor].CGColor;
     self.layer.borderWidth = 1.0f;
@@ -97,10 +97,9 @@
 
 //Lucio
 //adds a picture to the custom view
--(void)addPictureToCurrentMedia:(UIImageView*)imageview
+-(void)changePicture:(UIImage*)image
 {
-    [self.media addObject: imageview];
-    self.there_is_picture = YES;
+    //self.imageViewer.image = image;
 }
 
 //Lucio.
@@ -200,6 +199,7 @@
             UIImage* image = [(verbatmCustomImageView*)object image];
             [self.imageViewer setImage:image];
             self.imageViewer.contentMode = UIViewContentModeCenter;
+            self.imageViewer.layer.masksToBounds = YES;
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
             if(self.there_is_video && [self thereIsOnlyOneMedium]){
@@ -269,7 +269,8 @@
 }
 
 //tells me when the video ends so that I can rewind
--(void)playerItemDidReachEnd:(NSNotification *)notification {
+-(void)playerItemDidReachEnd:(NSNotification *)notification
+{
     AVPlayerItem *p = [notification object];
     [p seekToTime:kCMTimeZero];
 }
@@ -373,9 +374,9 @@
 
 -(NSMutableArray*)mediaObjects
 {
-    if([self.videoView.layer.sublayers firstObject]){
-        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
-    }
+//    if([self.videoView.layer.sublayers firstObject]){
+//        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
+//    }
     return self.media;
 }
 
@@ -398,6 +399,16 @@
 
 #pragma mark - selection interface -
 
+-(void)markAsDeleting
+{
+    self.layer.borderColor = [UIColor redColor].CGColor;
+    self.layer.borderWidth = 2.0f;
+}
+
+-(void)unmarkAsDeleting
+{
+    [self addGrayBorder];
+}
 -(void)markAsSelected
 {
     self.layer.borderColor = [UIColor blueColor].CGColor;
@@ -407,7 +418,7 @@
 -(void)unmarkAsSelected
 {
     
-    [self addBorder];
+    [self addGrayBorder];
 }
 @end
 

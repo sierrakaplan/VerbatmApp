@@ -26,7 +26,7 @@
 /*This adds a picture to the pinch object
  *The method return nothing.
  */
--(void)addPictureToCurrentMedia:(UIImageView*)imageview;
+-(void)changePicture:(UIImage*)image;
 
 /*
  *This sets the frame of the pinch object
@@ -83,6 +83,11 @@
 
 //mark as unselected
 -(void)unmarkAsSelected;
+
+//add red ring to show it's about to be deleted
+-(void)markAsDeleting;
+//get rid of red ring when it's not being deleted
+-(void)unmarkAsDeleting;
 
 @property (nonatomic) BOOL selected;//tells you if the object is selected for panning
 @property (readonly,nonatomic) BOOL there_is_text;
