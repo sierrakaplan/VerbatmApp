@@ -13,6 +13,10 @@
 
 @interface verbatmCustomPinchView : UIView
 
+/*This adds a picture to the pinch object
+ *The method return nothing.
+ */
+-(void)changePicture:(UIImage*)image;
 
 /*
  *This sets the frame of the pinch object

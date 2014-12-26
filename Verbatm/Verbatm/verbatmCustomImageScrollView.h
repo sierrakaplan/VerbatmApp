@@ -9,7 +9,12 @@
 #import <UIKit/UIKit.h>
 #import "ILTranslucentView.h"
 #import "verbatmCustomImageView.h"
+#import "verbatmCustomPinchView.h"
+#import  "verbatmUITextView.h"
 @interface verbatmCustomImageScrollView : UIScrollView
 -(instancetype) initWithFrame:(CGRect)frame andYOffset: (NSInteger) yoffset;
--(void)addImage: (verbatmCustomImageView *) givenImageView withYOffset: (NSInteger) yoffset;
+-(void)addImage: (verbatmCustomImageView *) givenImageView withPinchObject: (verbatmCustomPinchView *) pinchObject;
+
+@property (nonatomic, strong) verbatmUITextView * textView;
+@property (nonatomic, strong) verbatmCustomImageView * openImage;
 @end

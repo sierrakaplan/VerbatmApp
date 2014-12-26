@@ -80,6 +80,12 @@
     self.layer.borderWidth = 1.0f;
 }
 
+//Lucio
+//adds a picture to the custom view
+-(void)changePicture:(UIImage*)image
+{
+    //self.imageViewer.image = image;
+}
 
 //Lucio.
 /*This specifies the frame of the background and all the subviews
@@ -181,6 +187,8 @@
         }else if(!((verbatmCustomImageView*)object).isVideo){
             UIImage* image = [(verbatmCustomImageView*)object image];
             [self.imageViewer setImage:image];
+            self.imageViewer.contentMode = UIViewContentModeCenter;
+            self.imageViewer.layer.masksToBounds = YES;
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
             if(self.there_is_video && [self thereIsOnlyOneMedium]){
@@ -233,7 +241,8 @@
 }
 
 //tells me when the video ends so that I can rewind
--(void)playerItemDidReachEnd:(NSNotification *)notification {
+-(void)playerItemDidReachEnd:(NSNotification *)notification
+{
     AVPlayerItem *p = [notification object];
     [p seekToTime:kCMTimeZero];
 }
@@ -337,9 +346,9 @@
 
 -(NSMutableArray*)mediaObjects
 {
-    if([self.videoView.layer.sublayers firstObject]){
-        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
-    }
+//    if([self.videoView.layer.sublayers firstObject]){
+//        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
+//    }
     return self.media;
 }
 

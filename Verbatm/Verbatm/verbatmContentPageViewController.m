@@ -124,7 +124,8 @@
 @property (nonatomic, strong) UIImage * filter_Original;
 @property (nonatomic, strong) UIImage * filter_BW;
 @property (nonatomic, strong) UIImage * filter_WARM;
-@property (nonatomic, strong) verbatmCustomImageView * openImage;
+@property (nonatomic, strong) verbatmCustomImageScrollView * openImageScrollView;//the scrollview presented with the taped pinch object's image
+@property (nonatomic, strong) verbatmCustomPinchView * openImagePinchView; //the pinch view that has been taped
 @property (nonatomic, strong) NSString * filter;
 
 
@@ -884,7 +885,8 @@
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    if(scrollView.subviews.count >1) return; /* this is a scrollview with an open collection so you can swipe away anything*/
+    
+    if(scrollView.subviews.count >1 || scrollView == self.openImageScrollView) return; /* this is a scrollview with an open collection so you can swipe away anything and also it's not an opened image*/
     
     verbatmCustomMediaSelectTile * tile= Nil;
     
@@ -964,29 +966,52 @@
         {
             float alpha = translation.y/self.view.frame.size.height;
             
-            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 scrollView.alpha = alpha;
-            }];
             
+            if(self.openImagePinchView.there_is_picture)
+            {
+                [self.openImagePinchView changePicture:self.openImageScrollView.openImage.image];
+            }
+            if(!alpha)
+            {
+                
+                if(self.openImagePinchView.there_is_video)
+                {
+                    
+                }
+                
+                
+                [scrollView removeFromSuperview];
+            }
         }else
         {
-            
-            
             float constant = 2*self.view.frame.size.height;
-            float alpha = (constant - translation.y)/constant;
+            float alpha = (constant - translation.y)/self.view.frame.size.height;
+            scrollView.alpha = alpha;
             
-            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-                scrollView.alpha = alpha;
-            }];
+            if(self.openImagePinchView.there_is_picture) {
+                [self.openImagePinchView changePicture:self.openImageScrollView.openImage.image];
+            }
+            
+            if(!alpha)
+            {
+                
+                if(self.openImagePinchView.there_is_video)
+                {
+                    
+                    
+                }
+                
+                
+                [scrollView removeFromSuperview];
+            }
         }
-        
-        
-        
+        return;//return here because we are done
     }
     
     
     //change the background color of the element being deleted to highlight that it's being deleted
-    if(scrollView != self.mainScrollView && scrollView.subviews.count <2)//makes sure it's only one element on the view
+    if(scrollView != self.mainScrollView && scrollView.subviews.count <2 && scrollView != self.openImageScrollView )//makes sure it's only one element on the view
     {
         if(scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x + 80 || scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x - 80)
         {
@@ -1610,7 +1635,6 @@
             self.changeInTopViewPosition = changeInPosition;
 
             [self shiftElementsAboveView:self.upperPinchView withDifference:changeInPosition];
-            
         }
     }
 }
@@ -1621,7 +1645,6 @@
     CGPoint touch1;
     CGPoint touch2;
     NSInteger changeInPosition;
-    
     
     if([gesture numberOfTouches]==2)
     {
@@ -1673,6 +1696,7 @@
     CGRect frame= CGRectMake(self.upperPinchView.superview.frame.origin.x,self.upperPinchView.superview.frame.origin.y+changeInPosition, self.upperPinchView.superview.frame.size.width, self.upperPinchView.superview.frame.size.height);
     return frame;
 }
+
 
 //Iain
 -(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture
@@ -1784,7 +1808,6 @@
     {
         self.index =0;
     }
-    
     [self.gallery presentGallery];
 }
 
@@ -1795,7 +1818,6 @@
     if(!index) [self createNewTextViewBelowView:self.articleTitleField];
     if(index) [self createNewTextViewBelowView:self.pageElements[index-1]];
     [self shiftElementsBelowView:self.articleTitleField];//reset the scrollview
-   
 }
 
 
@@ -2152,12 +2174,8 @@
         [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
     }
     [(verbatmCustomMediaSelectTile *)self.createdMediaView returnToButtonView];
-    
-    self.openImage = imageView;
-    [self addSwipeToOpenedView];
-    
-    //((UIScrollView *)imageView.superview).scrollEnabled = NO;
 }
+
 
 -(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView
 {
@@ -2166,14 +2184,12 @@
     CGRect frame;
     if(topView == self.articleTitleField)
     {
-        
          frame  = CGRectMake(self.personalScrollViewOfFirstContentPageTextBox.frame.origin.x, self.personalScrollViewOfFirstContentPageTextBox.frame.origin.y, self.defaultOpenElementFrame.size.width, self.defaultOpenElementFrame.size.height);
     }else
     {
     
         frame = CGRectOffset(topView.superview.frame, 0, topView.superview.frame.size.height);
     }
-    
     
     [UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
         view.frame = frame;
@@ -2195,14 +2211,12 @@
             //let it turn to a circle. we do this here so that we can have the fade away animation
             [self convertToPincheableObjects];
         }
-        
     }];
     
     
 }
 
 #pragma mark Orientation
-
 - (NSUInteger)supportedInterfaceOrientations
 {
     //return supported orientation masks
@@ -2215,6 +2229,7 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 - (void)dealloc
 {
@@ -2283,25 +2298,14 @@
             UIScrollView* superView = (UIScrollView*)[(UIView*)object superview];
             superView.frame = CGRectMake(superView.frame.origin.x, superView.frame.origin.y, self.view.frame.size.width, self.defaultPersonalScrollViewFrameSize_closedElement.height);
             verbatmCustomPinchView* pinch = [[verbatmCustomPinchView alloc] initWithRadius: [self.closedElement_Radius floatValue] withCenter: self.closedElement_Center  andMedia:object];
-            
-            
             [self.pageElements replaceObjectAtIndex:i withObject:pinch];
             [self addTapGestureToView:pinch];//add tap gesture to the newly created pinch object
             [superView addSubview:pinch];//ADDING IT because we need its center
-            //pinch.hidden = YES;//but we hide it so that it's not vissible too early
             [self shiftElementsBelowView:pinch];
             [object removeFromSuperview];
-            object.frame = self.view.bounds;
-            [self.view addSubview:object];
-            [self.view bringSubviewToFront:object];
-            //make the old view fade out
-            //CGRect new_fade_frame = CGRectMake(pinch.center.x, pinch.center.y, 0, 0);
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-                object.alpha = 0.0f;
                 [self scrollMainScrollViewDownForEffect];//make sure the new object is in the middle
             } completion:^(BOOL finished) {
-                //pinch.hidden = NO;
-                [object removeFromSuperview];
                 superView.scrollEnabled = YES;
                 self.mainScrollView.pagingEnabled = NO;
             }];
@@ -2319,7 +2323,8 @@
 {
     UIScrollView * scrollview = (UIScrollView *) view.superview;
     
-    int y_difference = scrollview.frame.origin.y - self.mainScrollView.contentOffset.y + (ELEMENT_OFFSET_DISTANCE/2);//addin the half element offset allows the image to hug the top of the screen
+    int y_difference = scrollview.frame.origin.y - self.mainScrollView.contentOffset.y;
+    
     [UIView animateWithDuration:0.2 animations:^{
          self.mainScrollView.contentOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + y_difference);//not that y_difference could be negative
     }];
@@ -2328,7 +2333,27 @@
 
 
 
+
 #pragma mark Sense Tap
+
+-(void) addTapGestuerToCustomImageScrollView: (verbatmCustomImageScrollView *) isv
+{ 
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeImageScrollview:)];
+    [isv addGestureRecognizer:tap];
+}
+
+-(void) removeImageScrollview: (UITapGestureRecognizer *) sender
+{
+   // verbatmCustomImageScrollView * isv = (verbatmCustomImageScrollView *)sender.view;
+    
+    //[self.openImagePinchView changePicture:self.openImageScrollView.openImage.image];
+    
+//    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+//        [isv removeFromSuperview];
+//    }];
+}
+
+
 -(void)addTapGestureToView: (verbatmCustomPinchView *) pinchView
 {
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectTaped:)];
@@ -2348,57 +2373,54 @@
     }
     if(!pinch_object.isCollection && !pinch_object.hasMultipleMedia)//tap to open an element for viewing or editing
     {
-        
         NSMutableArray * array = [pinch_object mediaObjects];
         UIView* mediaView = [array firstObject];
-        if([mediaView isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView *)mediaView).isVideo){
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: ((verbatmCustomImageView *)mediaView).asset.defaultRepresentation.url options:nil];
-            [self playVideo: avurlAsset forView:((verbatmCustomImageView *)mediaView)];
-        }
-        if([self.pageElements indexOfObject:pinch_object]!= 0)
+
+        
+        if([mediaView isKindOfClass:[verbatmCustomImageView class]])
         {
-            
-            
             verbatmCustomImageScrollView * imageScroll = [[verbatmCustomImageScrollView alloc] initWithFrame:self.view.bounds andYOffset:SCROLLDISTANCE_FOR_PINCHVIEW_RETURN];
             imageScroll.delegate = self;
             
-            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-                [self.view addSubview:imageScroll];
-            }];
-            [imageScroll addImage:(verbatmCustomImageView *)mediaView withYOffset:SCROLLDISTANCE_FOR_PINCHVIEW_RETURN];
+            [self.view addSubview:imageScroll];
+            [imageScroll addImage:(verbatmCustomImageView *)mediaView withPinchObject: pinch_object];
             
-//            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-//                mediaView.frame = CGRectMake(pinch_object.center.x, pinch_object.center.y, 0, 0);
-//                [self addView:mediaView underView:self.pageElements[[self.pageElements indexOfObject:pinch_object]-1]];
-//                //takes the view to the top of the screen
-//                [self snapToTopView:mediaView];
-//                //if it's a textview make the keyboard come up
-//                if([mediaView isKindOfClass:[verbatmUITextView class]]) [mediaView becomeFirstResponder];
-//                
-//            }];
-//            
-//            if([mediaView isKindOfClass:[verbatmCustomImageView class]])
-//            {
-//                self.openImage = (verbatmCustomImageView *)mediaView;
-//                [self addSwipeToOpenedView];
-//                ((UIScrollView *)mediaView.superview).scrollEnabled = NO;
-//            }
-//            mediaView.alpha = 1;//make sure it's fully visible
-        }else
+           
+
+            imageScroll.showsHorizontalScrollIndicator = NO;
+            imageScroll.showsVerticalScrollIndicator = NO;
+            //[self addTapGestuerToCustomImageScrollView:imageScroll];
+            self.openImageScrollView = imageScroll;
+            self.openImagePinchView = pinch_object;
+        }
+            
+        
+        if([mediaView isKindOfClass:[verbatmUITextView class]])
         {
-            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-                [self addView:mediaView underView:self.articleTitleField];
-                //if it's a textview make the keyboard come up
-                if([mediaView isKindOfClass:[verbatmUITextView class]]) [mediaView becomeFirstResponder];
-            }];
-            //takes the view to the top of the screen
-            [self snapToTopView:mediaView];
-            mediaView.alpha = 1;//make sure it's fully visible
+            if([self.pageElements indexOfObject:pinch_object]!= 0)
+            {
+                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                mediaView.frame = CGRectMake(pinch_object.center.x, pinch_object.center.y, 0, 0);
+                    [self addView:mediaView underView:self.pageElements[[self.pageElements indexOfObject:pinch_object]-1]];
+                    
+                    //takes the view to the top of the screen
+                    [self snapToTopView:mediaView];
+                    
+                    //if it's a textview make the keyboard come up
+                    if([mediaView isKindOfClass:[verbatmUITextView class]]) [mediaView becomeFirstResponder];
+                }];
+            }else
+            {
+                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                    [self addView:mediaView underView:self.articleTitleField];
+                    //if it's a textview make the keyboard come up
+                    if([mediaView isKindOfClass:[verbatmUITextView class]]) [mediaView becomeFirstResponder];
+                }];
+            }
+            [pinch_object.superview removeFromSuperview];
+            [self.pageElements removeObject:pinch_object];
         }
         [self hidePullBar];//make sure the pullbar is not available
-        [pinch_object.superview removeFromSuperview];
-        [self.pageElements removeObject:pinch_object];
-        [self shiftElementsBelowView:self.articleTitleField];//make sure the gap is closed no that the old view is removed
     }
 }
 
@@ -2432,91 +2454,6 @@
 }
 
 #pragma mark - Send Picture Notification -
-
--(void)addSwipeToOpenedView
-{
-    UISwipeGestureRecognizer * leftSwipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(filterViewSwipe:)];
-    leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self.openImage.superview addGestureRecognizer:leftSwipe];
-    [self creatFilteredImages];
-
-}
-
--(void)filterViewSwipe: (UISwipeGestureRecognizer *) sender
-{
-    if(self.filter && [self.filter isEqualToString:@"BW"])
-    {
-        self.openImage.image = self.filter_Original;
-        self.filter = @"Original";
-    }else if (self.filter && [self.filter isEqualToString:@"WARM"])
-    {
-        self.openImage.image = self.filter_BW;
-        self.filter = @"BW";
-    }else
-    {
-        self.openImage.image = self.filter_WARM;
-        self.filter = @"WARM";
-    }
-}
-
--(void)creatFilteredImages
-{
-    //original "filter"
-    ALAssetRepresentation *assetRepresentation = [self.openImage.asset defaultRepresentation];
-    self.filter_Original = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
-                                         scale:[assetRepresentation scale]
-                                   orientation:UIImageOrientationUp];
-    
-    
-    
-    NSData * data = UIImagePNGRepresentation(self.openImage.image);
-    
-    
-    
-    //warm filter
-    CIImage *beginImage =  [CIImage imageWithData:data];
-    
-    
-    CIContext *context = [CIContext contextWithOptions:nil];
-    
-    CIFilter *filter = [CIFilter filterWithName:@"CIPhotoEffectProcess" keysAndValues: kCIInputImageKey, beginImage, nil];
-    CIImage *outputImage = [filter outputImage];
-    
-    CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];
-    
-    self.filter_WARM = [UIImage imageWithCGImage:cgimg];
-    
-    //black and white filter
-    //warm filter
-    CIImage *beginImage1 =  [CIImage imageWithData:data];
-    
-    CIFilter *filter1 = [CIFilter filterWithName:@"CIPhotoEffectMono"
-                                  keysAndValues: kCIInputImageKey, beginImage1, nil];
-    
-    CIImage *outputImage1 = [filter1 outputImage];
-    
-    CGImageRef cgimg1 =[context createCGImage:outputImage1 fromRect:[outputImage1 extent]];
-    
-    self.filter_BW = [UIImage imageWithCGImage:cgimg1];
-
-    CGImageRelease(cgimg);
-}
-
-
--(void)makePhotoBW
-{
-    self.openImage.image = self.filter_BW;
-}
-
--(void)makePhotoWarm
-{
-    self.openImage.image = self.filter_WARM;
-}
-
--(void)makePhotoOriginal
-{
-    self.openImage.image = self.filter_Original;
-}
 
 //tells our other class to hide the pullbar or to show it depending on where we are
 -(void) hidePullBar
