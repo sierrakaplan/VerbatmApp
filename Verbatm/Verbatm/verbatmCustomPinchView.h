@@ -13,20 +13,6 @@
 
 @interface verbatmCustomPinchView : UIView
 
-/*This adds a text to the media of the pinch object
- *The method return nothing. 
- */
--(void)addTextToCurrentMedia:(UITextView*)textview;
-
-/*This adds a video object to the pinch object
- *The method return nothing.
- */
--(void)addVideoToCurrentMedia:(MPMoviePlayerController *)video;
-
-/*This adds a picture to the pinch object
- *The method return nothing.
- */
--(void)addPictureToCurrentMedia:(UIImageView*)imageview;
 
 /*
  *This sets the frame of the pinch object
