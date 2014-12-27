@@ -59,6 +59,7 @@
         [_results addObject:textView];
     }else{
         v_videoview* vidView = [[v_videoview alloc]initWithFrame:_preferedFrame andAssets:arr];
+        [vidView showPlayBackIcons];
         [_results addObject:vidView];
     }
 }
@@ -77,6 +78,7 @@
                     }
                 }
                 v_textPhoto* tp = [[v_textPhoto alloc] initWithFrame:_preferedFrame andImage:image andText:text];
+                [tp addSwipeGesture];
                 [_results addObject:tp];
             }else{
                 NSMutableArray* assets = [[NSMutableArray alloc]init];
@@ -85,8 +87,10 @@
                         [assets addObject: ((verbatmCustomImageView*)view).asset];
                     }
                 }
-                v_multiVidTextPhoto* mpt = [[v_multiVidTextPhoto alloc]initWithFrame:_preferedFrame andMedia:assets andText:text];
-                [_results addObject:mpt];
+                v_multiVidTextPhoto* mvpt = [[v_multiVidTextPhoto alloc]initWithFrame:_preferedFrame andMedia:assets andText:text];
+                [mvpt addSwipeGesture];
+                [mvpt addTapGesture];
+                [_results addObject:mvpt];
             }
         }else{
             NSMutableArray* assets = [[NSMutableArray alloc]init];
@@ -110,6 +114,7 @@
                 }
             }
             v_photoVideo* pv = [[v_photoVideo alloc]initWithFrame:_preferedFrame Assets:assets andImage:image];
+            //remember to add the long presss gesture in the supeview part.
             [_results addObject:pv];
         }
         for(verbatmCustomImageView* view in media){
@@ -120,6 +125,7 @@
             }
         }
         v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:_preferedFrame andMedia:assets];
+        [mpv addTapGesture];
         [_results addObject:mpv];
     }
 }
@@ -143,6 +149,7 @@
             }
         }
         v_photoVideoText* pvt = [[v_photoVideoText alloc]initWithFrame:_preferedFrame forImage:image andText:text andAssets:assets];
+        [pvt createGestures];
         [_results addObject:pvt];
     }else{
         int count  = media.count;

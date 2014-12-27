@@ -9,7 +9,7 @@
 #import "v_multiVidTextPhoto.h"
 #import "v_textview.h"
 
-@interface v_multiplePhotoVideo()
+@interface v_multiVidTextPhoto()
 @property (strong, nonatomic)v_textview* textLayer;
 @property (strong, nonatomic) UIView* bgBlur;
 @property (nonatomic) BOOL isTitle;
