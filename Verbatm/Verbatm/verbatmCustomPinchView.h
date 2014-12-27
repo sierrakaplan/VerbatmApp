@@ -28,6 +28,11 @@
  */
 -(void)changePicture:(UIImage*)image;
 
+/*This adds text to the pinch object
+ *The method return nothing.
+ */
+
+-(void) changeText:(UITextView *) textview;
 /*
  *This sets the frame of the pinch object
  *

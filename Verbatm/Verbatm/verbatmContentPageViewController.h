@@ -9,8 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "verbatmUITextView.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-
-
+#import "verbatmCustomPinchView.h"
+#import "verbatmCustomImageView.h"
 @interface verbatmContentPageViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UITextField *articleTitleField;
@@ -21,8 +21,9 @@
 @property (nonatomic) BOOL containerAtHalfScreen;// tells the contentpage if it's in half view
 @property (strong, nonatomic) verbatmUITextView * activeTextView; //view that is currently being filled in
 
-
--(void)createNewTextViewBelowView: (UIView *) topView;
+-(void)newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
+-(void) createCustomImageScrollViewFromPinchView: (verbatmCustomPinchView *) pinchView andImageView: (verbatmCustomImageView *) imageView orTextView: (verbatmUITextView *) textView;
+-(void) removeImageScrollview: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
 -(void)freeMainScrollView:(BOOL) isFree; // either locks the scroll view or frees it
 -(void)alertGallery:(ALAsset*)asset;
 @property(nonatomic) NSInteger pullBarHeight;

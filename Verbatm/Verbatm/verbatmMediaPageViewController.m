@@ -14,6 +14,7 @@
 #import "testerTransitionDelegate.h"
 #import "verbatmContentPageViewController.h"
 #import "verbatmBlurBaseViewController.h"
+#import "verbatmCustomPinchView.h"
 
 @interface verbatmMediaPageViewController () <UITextFieldDelegate>
 #pragma mark - Outlets -
@@ -388,22 +389,23 @@
 {
     UILongPressGestureRecognizer* recognizer = (UILongPressGestureRecognizer*)sender;
     if(recognizer.state == UIGestureRecognizerStateBegan){
-        [self prepareVideoProgressView];
+        //[self prepareVideoProgressView];
+        //just toke out the snake.... if it is required later it will be reset.
         [self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation isHalScreen:!self.canRaise];
-        self.counter = 0;
-        self.startOrientation = [UIDevice currentDevice].orientation;
-        switch (self.startOrientation) {
-            case UIDeviceOrientationLandscapeRight:
-                self.lastPoint = CGPointMake(0, self.videoProgressImageView.frame.size.height/2);
-                break;
-            case UIDeviceOrientationLandscapeLeft:
-                self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height/2);
-                break;
-            default:
-                self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width/2, 0);
-                break;
-        }
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(createProgressPath) userInfo:nil repeats:YES];
+//        self.counter = 0;
+//        self.startOrientation = [UIDevice currentDevice].orientation;
+//        switch (self.startOrientation) {
+//            case UIDeviceOrientationLandscapeRight:
+//                self.lastPoint = CGPointMake(0, self.videoProgressImageView.frame.size.height/2);
+//                break;
+//            case UIDeviceOrientationLandscapeLeft:
+//                self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height/2);
+//                break;
+//            default:
+//                self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width/2, 0);
+//                break;
+//        }
+//        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(createProgressPath) userInfo:nil repeats:YES];
     }else{
         if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateFailed ||
            recognizer.state == UIGestureRecognizerStateCancelled){
@@ -708,7 +710,6 @@
          }
          
      }];
-    
 }
 
 
@@ -758,20 +759,19 @@
 {
     if(!self.containerViewMSAVMode)
     {
-        UITextView* lastTextView = [self findLastTextViewInPageElements];
-        [lastTextView becomeFirstResponder];
+        [self bringUpNewTextForMSAV];//brings up the new text view for the msav
         if(!self.containerViewFullScreen && !self.containerViewMSAVMode) self.containerViewMSAVMode=YES;
         [self positionPullBarTransitionDown:NO];
         //adjust the frame
         [self positionContainerViewTo:NO orTo:YES  orTo:NO];
         [self positionPullBarTransitionDown:NO];
+        
     }else if (self.containerViewMSAVMode)
     {
-        [self.vc_contentPage.activeTextView resignFirstResponder];//get rid of the keyboard
+        [self.vc_contentPage removeImageScrollview:nil];
         [self positionContainerViewTo:NO orTo:NO  orTo:YES];
         [self positionPullBarTransitionDown:NO];
     }
-    
 }
 
 //Iain
@@ -792,31 +792,51 @@
 
 
 //finds the last
--(UITextView *) findLastTextViewInPageElements
+-(void) bringUpNewTextForMSAV
 {
-    UITextView * last_textView;
+    verbatmCustomPinchView * last_textPinchView;
     
+    //function backtracks from the end of the array
     for(long i = (self.vc_contentPage.pageElements.count -1); i>=0; i--)
     {
-        if([self.vc_contentPage.pageElements[i]  isKindOfClass: [UITextView class]])
+        if([self.vc_contentPage.pageElements[i]  isKindOfClass: [verbatmCustomPinchView class]])
         {
-            last_textView = self.vc_contentPage.pageElements[i];
-            break;
+            
+            verbatmCustomPinchView * pinch = (verbatmCustomPinchView *)self.vc_contentPage.pageElements[i];
+            
+            //breaks on the firs textview you find
+            if(pinch.there_is_text && !pinch.there_is_picture && !pinch.there_is_video)
+            {
+                last_textPinchView = (verbatmCustomPinchView *) self.vc_contentPage.pageElements[i];
+                break;
+            }
         }
     }
     
-    if(!last_textView || ![last_textView.text isEqualToString:@""])
+    
+    if(!last_textPinchView || ![[last_textPinchView getTextFromPinchObject] isEqualToString:@""])
     {
-       if(self.vc_contentPage.pageElements.count >1)
-       {[self.vc_contentPage createNewTextViewBelowView: self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2]];//subtract 2 becuase you want the object above the last object
-       }else
-       {
-           [self.vc_contentPage createNewTextViewBelowView: self.vc_contentPage.articleTitleField];//subtract 2 becuase you want the object above the last object
-
-       }
-        last_textView=self.vc_contentPage.pageElements[self.vc_contentPage.pageElements.count -2];
+        
+        int second_to_last_object = self.vc_contentPage.pageElements.count - 2;
+        
+        if(second_to_last_object >=0)
+        {
+            [self.vc_contentPage newPinchObjectBelowView:self.vc_contentPage.pageElements[second_to_last_object] fromView: nil isTextView:YES];
+            
+            [self.vc_contentPage createCustomImageScrollViewFromPinchView:self.vc_contentPage.pageElements[second_to_last_object+1] andImageView:nil orTextView:[[verbatmUITextView alloc]init]];
+        
+        
+        }else if (second_to_last_object <0)
+        {
+            [self.vc_contentPage newPinchObjectBelowView:nil fromView: nil isTextView:YES];
+            
+            [self.vc_contentPage createCustomImageScrollViewFromPinchView:self.vc_contentPage.pageElements[0] andImageView:nil orTextView:[[verbatmUITextView alloc]init]];
+        }
+        
+    }else if (last_textPinchView)
+    {
+        [self.vc_contentPage createCustomImageScrollViewFromPinchView:last_textPinchView andImageView:nil orTextView:[[verbatmUITextView alloc]init]];
     }
-    return last_textView;
 }
 
 

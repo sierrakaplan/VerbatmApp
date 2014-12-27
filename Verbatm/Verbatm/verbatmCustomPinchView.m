@@ -62,12 +62,14 @@
         self.textField.frame = CGRectZero; //prevents the little part of the  texfield from showing
         self.imageViewer.frame = CGRectZero;
         
+        
         [self.media addObject: medium];
         self.background.backgroundColor = [UIColor clearColor];
         self.backgroundColor = [UIColor clearColor];
         self.textField.backgroundColor = [UIColor clearColor];
         [self renderMedia];
         [self addGrayBorder];
+        
     }
     return self;
 }
@@ -99,8 +101,24 @@
 //adds a picture to the custom view
 -(void)changePicture:(UIImage*)image
 {
-    //self.imageViewer.image = image;
+    //only works if we already have a picture
+    if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.there_is_picture) return;
+    verbatmCustomImageView* view = [self.media firstObject];
+    view.image = image;
+    self.imageViewer.image = image;
 }
+-(void) changeText:(UITextView *) textview
+{
+    //should only work if ther is text in the pinchview
+    if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.there_is_text) return;
+    UITextView* view = [self.media firstObject];
+    view.text = textview.text;
+    self.textField.text = textview.text;
+    self.textField.textColor = [UIColor whiteColor];
+    self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
+
+}
+
 
 //Lucio.
 //moves the view by a delta relative to the center.
@@ -222,8 +240,8 @@
             [self playVideo:avurlAsset];
         }
     }
-    self.textField.textColor = [UIColor whiteColor];
     self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
+    self.textField.textColor = [UIColor whiteColor];
 }
 
 
