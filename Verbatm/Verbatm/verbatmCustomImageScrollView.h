@@ -12,9 +12,10 @@
 #import "verbatmCustomPinchView.h"
 #import  "verbatmUITextView.h"
 @interface verbatmCustomImageScrollView : UIScrollView
--(instancetype) initWithFrame:(CGRect)frame andYOffset: (NSInteger) yoffset;
+-(instancetype)initCustomViewWithFrame:(CGRect)frame;
 -(void)addImage: (verbatmCustomImageView *) givenImageView withPinchObject: (verbatmCustomPinchView *) pinchObject;
-
+-(void) createTextViewFromTextView: (UITextView *) textView;
+-(void)adjustImageScrollViewContentSizing;
 @property (nonatomic, strong) verbatmUITextView * textView;
 @property (nonatomic, strong) verbatmCustomImageView * openImage;
 @end

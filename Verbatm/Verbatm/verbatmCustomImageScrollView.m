@@ -9,7 +9,7 @@
 #import "verbatmCustomImageScrollView.h"
 #import "verbatmCustomImageView.h"
 
-@interface verbatmCustomImageScrollView ()
+@interface verbatmCustomImageScrollView () <UITextViewDelegate>
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) UIImage * filter_Original;
@@ -17,42 +17,150 @@
 @property (nonatomic, strong) UIImage * filter_WARM;
 @property (nonatomic, strong) NSString * filter;
 
+
+
+#define TEXT_BOX_FONT_SIZE 20
+#define VIEW_WALL_OFFSET 40
+
+#define BACKGROUND_COLOR clearColor
+#define FONT_COLOR whiteColor
+
 @end
 
 
 @implementation verbatmCustomImageScrollView
 
--(instancetype) initWithFrame:(CGRect)frame andYOffset: (NSInteger) yoffset
+-(instancetype) initCustomViewWithFrame:(CGRect)frame
 {
     self = [super init];
     if(self)
     {
-        self.contentSize =  CGSizeMake(0,3*frame.size.height);//make it up and down swipeable
-        self.contentOffset = CGPointMake(0,frame.size.height);
         self.backgroundColor = [UIColor blackColor];
         self.frame = frame;
-        self.pagingEnabled = YES;
+        self.scrollEnabled = YES;
     }
     return self;
 }
 
+#pragma mark - Text View -
 
-//-(void) createTextView
-//{
-//    verbatmUITextView * textView = [[verbatmUITextView alloc] init];
-//    
-//    
-//}
+-(void) createTextViewFromTextView: (UITextView *) textView
+{
+    if(!textView)
+    {
+        self.textView = [[verbatmUITextView alloc] init];
+        self.textView.backgroundColor = [UIColor clearColor];
+        self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-(VIEW_WALL_OFFSET/2));
+        [self formatTextViewAppropriately:self.textView];
+        [self addSubview:self.textView];
+    }else
+    {
+        self.textView = [[verbatmUITextView alloc] init];
+        self.textView.text = textView.text;
+        self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
+        
+        CGRect newBounds= [self calculateBoundsForOpenTextView: self.textView];
+        [self formatTextViewAppropriately:self.textView];
+        [self addSubview:self.textView];
+    }
+    
+}
 
+//Iain
+//Calculate the appropriate bounds for the text view
+//We only return a frame that is larger than the default frame size
+-(CGRect) calculateBoundsForOpenTextView: (UIView *) view
+{
+    CGSize  tightbounds = [view sizeThatFits:view.bounds.size];
+   
+    return CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, tightbounds.height);
+}
+
+
+
+//makes the cursors white
+-(void)makeCursorWhite
+{
+    [[UITextView appearance] setTintColor:[UIColor whiteColor]];
+}
+
+
+//Iain
+//Formats a textview to the appropriate settings
+-(void) formatTextViewAppropriately: (verbatmUITextView *) textView
+{
+    //Set delegate for text new view
+    [textView setDelegate:self];
+    [textView setFont:[[UIFont preferredFontForTextStyle:UIFontTextStyleBody] fontWithSize:TEXT_BOX_FONT_SIZE]];
+    textView.backgroundColor = [UIColor BACKGROUND_COLOR];//sets the background as clear
+    textView.textColor = [UIColor FONT_COLOR];
+
+    //ensure keyboard is black
+    textView.keyboardAppearance = UIKeyboardAppearanceDark;
+    [self setDashedBorderToView:textView];
+    
+    textView.scrollEnabled = NO;
+    self.scrollEnabled = YES;
+}
+
+
+
+//sets the dashed boder around the text view
+-(void) setDashedBorderToView: (UIView *) view
+{
+    //border definitions
+    float cornerRadius = 0;
+    float borderWidth = 1;
+    int dashPattern1 = 10;
+    int dashPattern2 = 10;
+    UIColor *lineColor = [UIColor whiteColor];
+    
+    //drawing boundary
+    CGRect frame = view.bounds;
+    
+    CAShapeLayer *_shapeLayer = [CAShapeLayer layer];
+    
+    //creating a path
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    //drawing a border around a view
+    CGPathMoveToPoint(path, NULL, 0, frame.size.height - cornerRadius);
+    CGPathAddLineToPoint(path, NULL, 0, cornerRadius);
+    CGPathAddArc(path, NULL, cornerRadius, cornerRadius, cornerRadius, M_PI, -M_PI_2, NO);
+    CGPathAddLineToPoint(path, NULL, frame.size.width - cornerRadius, 0);
+    CGPathAddArc(path, NULL, frame.size.width - cornerRadius, cornerRadius, cornerRadius, -M_PI_2, 0, NO);
+    CGPathAddLineToPoint(path, NULL, frame.size.width, frame.size.height - cornerRadius);
+    CGPathAddArc(path, NULL, frame.size.width - cornerRadius, frame.size.height - cornerRadius, cornerRadius, 0, M_PI_2, NO);
+    CGPathAddLineToPoint(path, NULL, cornerRadius, frame.size.height);
+    CGPathAddArc(path, NULL, cornerRadius, frame.size.height - cornerRadius, cornerRadius, M_PI_2, M_PI, NO);
+    
+    //path is set as the _shapeLayer object's path
+    _shapeLayer.path = path;
+    CGPathRelease(path);
+    
+    _shapeLayer.backgroundColor = [[UIColor clearColor] CGColor];
+    _shapeLayer.frame = frame;
+    _shapeLayer.masksToBounds = NO;
+    [_shapeLayer setValue:[NSNumber numberWithBool:NO] forKey:@"isCircle"];
+    _shapeLayer.fillColor = [[UIColor clearColor] CGColor];
+    _shapeLayer.strokeColor = [lineColor CGColor];
+    _shapeLayer.lineWidth = borderWidth;
+    _shapeLayer.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInt:dashPattern1], [NSNumber numberWithInt:dashPattern2], nil];
+    _shapeLayer.lineCap = kCALineCapRound;
+    //_shapeLayer is added as a sublayer of the view, the border is visible
+    [view.layer addSublayer:_shapeLayer];
+    view.layer.cornerRadius = cornerRadius;
+}
+
+#pragma mark - Image or Video View -
 
 -(void)addImage: (verbatmCustomImageView *) givenImageView withPinchObject: (verbatmCustomPinchView *) pinchObject
 {
-    
     if(givenImageView.isVideo)
     {
         self.openImage = [[verbatmCustomImageView alloc]init];
         [self addSubview:self.openImage];
-        self.openImage.frame = CGRectMake(0,self.frame.size.height, self.frame.size.width, self.frame.size.height);
+        self.openImage.frame = CGRectMake(0,0, self.frame.size.width, self.frame.size.height);
         AVURLAsset* asset = [[AVURLAsset alloc]initWithURL:givenImageView.asset.defaultRepresentation.url options:nil];
         [self playVideo:asset];
         
@@ -66,9 +174,8 @@
         [self addSubview:self.openImage];
         [self creatFilteredImages];
         [self addSwipeToOpenedView];
-        self.openImage.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, self.frame.size.height);
+        self.openImage.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     }
-    
 }
 
 -(void)playVideo:(AVURLAsset*)asset

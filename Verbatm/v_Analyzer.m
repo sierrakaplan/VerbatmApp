@@ -20,14 +20,18 @@
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
 @interface v_Analyzer()
 @property(nonatomic, strong)NSMutableArray* results;
+@property(strong, nonatomic) NSMutableArray* pinchedObjects;
+@property(nonatomic) CGRect preferedFrame;
 @end
 @implementation v_Analyzer
 @synthesize pinchedObjects = _pinchedObjects;
 @synthesize preferedFrame = _preferedFrame;
 @synthesize results = _results;
 
--(NSMutableArray*)processPinchedObjects
+-(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)arr withFrame:(CGRect)frame
 {
+    _pinchedObjects = arr;
+    _preferedFrame = frame;
     _results = [[NSMutableArray alloc]init];
     for(verbatmCustomPinchView* p_obj in _pinchedObjects){
         if(![p_obj isCollection]){
@@ -47,8 +51,10 @@
 {
     NSMutableArray *arr = [[NSMutableArray alloc]init];
     NSMutableArray* mediaArr = [p_obj mediaObjects];
-    for(verbatmCustomImageView* view in mediaArr){
-        [arr addObject:view.asset];
+    for(UIView* view in mediaArr){
+        if([view isKindOfClass:[verbatmCustomImageView class]]){
+            [arr addObject: ((verbatmCustomImageView*)view).asset];
+        }
     }
     if(p_obj.there_is_picture){
         v_multiplePhotoVideo* imageView = [[v_multiplePhotoVideo alloc]initWithFrame:_preferedFrame andMedia:arr];

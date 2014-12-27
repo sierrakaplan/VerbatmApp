@@ -30,6 +30,14 @@
     _animatingView = nil;
 }
 
+-(NSMutableArray*)poppedOffPages
+{
+    if(!_poppedOffPages){
+        _poppedOffPages = [[NSMutableArray alloc]init];
+    }
+    return _poppedOffPages;
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -73,9 +81,13 @@
 //Sets up the gesture recognizer for dragging from the edges.
 -(void)setUpGestureRecognizers
 {
-    UIScreenEdgePanGestureRecognizer* edgePan = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(transitionBtnPinchedViews:)];
-    edgePan.edges = UIRectEdgeLeft | UIRectEdgeRight;
-    [self.view addGestureRecognizer: edgePan];
+    UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(transitionBtnPinchedViews:)];
+    edgePanR.edges =  UIRectEdgeRight;
+    UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(transitionBtnPinchedViews:)];
+    edgePanL.edges =  UIRectEdgeLeft;
+    [self.view addGestureRecognizer: edgePanR];
+    [self.view addGestureRecognizer: edgePanL];
+
 }
 
 
