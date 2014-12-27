@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "v_videoview.h"
 
-@interface v_textVideo : UIView
-
+@interface v_textVideo : v_videoview
+-(id)initWithFrame:(CGRect)frame andAssets:(NSArray *)assetList andText:(NSString*)text;
 @end
