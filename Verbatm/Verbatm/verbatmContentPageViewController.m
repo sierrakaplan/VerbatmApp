@@ -79,7 +79,6 @@
 
 @property (weak, nonatomic) IBOutlet verbatmCustomScrollView *mainScrollView;
 
-
 @property (weak, nonatomic) IBOutlet UIScrollView *personalScrollViewOfFirstContentPageTextBox;
 @property (weak, nonatomic) IBOutlet UILabel *wordsLeftLabel;
 @property (strong, nonatomic) verbatmGalleryHandler * gallery;
@@ -88,13 +87,11 @@
 @property (nonatomic) CGPoint closedElement_Center;
 @property (strong, nonatomic) NSNumber * closedElement_Radius;
 
-
 #pragma mark TextView related properties
 @property (nonatomic) CGRect caretPosition;//position of caret on screen relative to scrollview origin
 
 #pragma mark Helpful integer stores
 @property (nonatomic) NSInteger numberOfWordsLeft;//number of words left in the article
-
 
 #pragma mark Standard offset and content size properties
 @property (nonatomic) CGPoint standardContentOffsetForPersonalView;// gives the standard content offset for each personalScrollview.
@@ -105,12 +102,12 @@
 @property (strong, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
 @property (strong, nonatomic) verbatmCustomMediaSelectTile * baseMediaTileSelector;
 
-
 #pragma mark Horizontal Pinch Gesture Properties
 @property(nonatomic) CGPoint startLocationOfLeftestTouchPoint_PINCH;
 @property (nonatomic) CGPoint startLocationOfRightestTouchPoint_PINCH;
 @property (nonatomic, strong) UIScrollView * scrollViewForHorizontalPinchView;
 @property (nonatomic) NSInteger horizontalPinchDistance;
+
 
 #pragma mark PanGesture Properties
 @property (nonatomic, strong) UIView * selectedView_Pan;
@@ -122,7 +119,6 @@
 @property (nonatomic, strong) verbatmCustomImageScrollView * openImageScrollView;//the scrollview presented with the taped pinch object's image
 @property (nonatomic, strong) verbatmCustomPinchView * openImagePinchView; //the pinch view that has been taped
 @property (nonatomic, strong) NSString * filter;
-
 
 
 #pragma mark Vertical Pinch Gesture Related Properties
@@ -142,8 +138,7 @@
 
 #define OFFSET_BELOW_ARTICLE_TITLE 20
 
-
-
+#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
 
 @end
 
@@ -269,6 +264,7 @@
 -(void) configureViews
 {
     [self setUpNotifications];
+    
     //insert any text that was added in previous scenes
     [self setUpKeyboardPrefferedColors];
     [self setDelegates];
@@ -297,11 +293,21 @@
 {
     //Tune in to get notifications of keyboard behavior
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWasShown:)
-                                                 name:UIKeyboardDidShowNotification
+                                             selector:@selector(keyboardWillShow:)
+                                                 name:UIKeyboardWillShowNotification
+                                               object:nil];
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyboardWillDisappear:)
+                                                 name:UIKeyboardWillHideNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeKeyboardFromScreen) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(undoTileDeleteSwipe:) name:NOTIFICATION_UNDO object: nil];
+    
+    
 }
 
 
@@ -509,7 +515,7 @@
     
     
     //get y-position of caret relative to openimage scrollView
-    NSInteger contentOffSet = self.openImageScrollView.contentOffset.y ;
+    NSInteger contentOffSet = self.openImageScrollView.textView.contentOffset.y ;
     NSInteger screenHeight =self.view.frame.size.height;
     NSInteger keyboardHeight = self.keyboardHeight;
     NSInteger keyboardBarHeight = self.pullBarHeight;
@@ -530,21 +536,27 @@
     NSInteger visibilityRange = keyboardYCoordinate;
     
     //If our cursor is inline with or below the keyboard, adjust the scrollview
-    if(yCoordinateOfCaretRelativeToImageScrollView >= (self.openImageScrollView.contentOffset.y + visibilityRange))
+    if(yCoordinateOfCaretRelativeToImageScrollView >= (self.openImageScrollView.textView.contentOffset.y + visibilityRange))
     {
-        NSInteger differenceBTWNKeyboardAndTextView = yCoordinateOfCaretRelativeToImageScrollView - (self.openImageScrollView.contentOffset.y + visibilityRange);
+        NSInteger differenceBTWNKeyboardAndTextView = yCoordinateOfCaretRelativeToImageScrollView - (self.openImageScrollView.textView.contentOffset.y + visibilityRange);
         
         CGPoint newScrollViewOffset = CGPointMake(self.mainScrollView.contentOffset.x, (contentOffSet + differenceBTWNKeyboardAndTextView +CENTERING_OFFSET_FOR_TEXT_VIEW));
         
-        [self.openImageScrollView.textView setContentOffset:newScrollViewOffset animated:YES];
+        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+            [self.openImageScrollView.textView setContentOffset:newScrollViewOffset animated:YES];
+
+        }];
         
     }else if (yCoordinateOfCaretRelativeToImageScrollView-CURSOR_BASE_GAP <= self.openImageScrollView.contentOffset.y) //Checking if the cursor is past the top
     {
-        NSInteger differenceBTWNScreenTopAndTextView = (yCoordinateOfCaretRelativeToImageScrollView-CURSOR_BASE_GAP)-self.openImageScrollView.contentOffset.y;
-        CGPoint newScrollViewOffset = CGPointMake(self.openImageScrollView.contentOffset.x, (self.openImageScrollView.contentOffset.y + differenceBTWNScreenTopAndTextView - CENTERING_OFFSET_FOR_TEXT_VIEW*3));
-        
-        [self.openImageScrollView.textView setContentOffset:newScrollViewOffset animated:YES];
+        NSInteger differenceBTWNScreenTopAndTextView = (yCoordinateOfCaretRelativeToImageScrollView-CURSOR_BASE_GAP)-self.openImageScrollView.textView.contentOffset.y;
+        CGPoint newScrollViewOffset = CGPointMake(self.openImageScrollView.contentOffset.x, (self.openImageScrollView.textView.contentOffset.y + differenceBTWNScreenTopAndTextView - CENTERING_OFFSET_FOR_TEXT_VIEW*3));
+        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+            [self.openImageScrollView.textView setContentOffset:newScrollViewOffset animated:YES];
+
+        }];
     }
+    //[self.openImageScrollView adjustImageScrollViewContentSizing];
 }
 
 
@@ -603,14 +615,14 @@
     if(view_index != NSNotFound && view_index < self.pageElements.count)
     {
         for(NSInteger i = (view_index-1); i > -1; i--)
-            {
+        {
                 UIView * curr_view = self.pageElements[i];
                 CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, curr_view.superview.frame.origin.y + difference, self.view.frame.size.width,view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     curr_view.superview.frame = frame;
                 }];
-            }
+        }
     }
 }
 
@@ -706,6 +718,8 @@
 //Iain
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    [self.openImageScrollView adjustImageScrollViewContentSizing];
+    
     //show and hide the pullbar depending on the direction of the scroll
     if(scrollView == self.mainScrollView)
     {
@@ -830,15 +844,19 @@
 
 #pragma mark Keyboard Notifications
 //When keyboard appears get its height. This is only neccessary when the keyboard first appears
-- (void)keyboardWasShown:(NSNotification *)notification
+-(void)keyboardWillShow:(NSNotification *) notification
 {
     // Get the size of the keyboard.
     CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
     //store the keyboard height for further use
     self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
-    [self updateScrollViewPosition];
-}
 
+    [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - (self.keyboardHeight + self.pullBarHeight))];
+}
+-(void)keyboardWillDisappear:(NSNotification *) notification
+{
+    [self.openImageScrollView adjustFrameOfTextViewForGap: 0];
+}
 
 #pragma mark - Pinch Gesture -
 
@@ -2071,14 +2089,15 @@
     if(!tile) return;//make sure there is something to delete
     [tile removeFromSuperview];
     [self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
+    [self showPullBar];//show the pullbar so that they can undo
 }
 
 
-//User pressed undo button- so call call undo stack
-- (IBAction)undoTileSwipe:(UIButton *)sender
+-(void)undoTileDeleteSwipe: (NSNotification *) notification
 {
     [self.tileSwipeViewUndoManager undo];
 }
+
 
 #pragma mark Undo tile swipe
 
@@ -2087,18 +2106,44 @@
     UIView * view = tileAndInfo[0];
     NSNumber * index = tileAndInfo[1];
     
-    if([view isKindOfClass:[UITextView class]])
+    if([view isKindOfClass:[verbatmCustomPinchView class]])
     {
-        view.backgroundColor = [UIColor whiteColor];
-    }else
-    {
-        view.backgroundColor = [UIColor clearColor];
+        [((verbatmCustomPinchView *)view) unmarkAsDeleting];
     }
-    
-    if(index.intValue) [self addView:view underView:self.pageElements[index.intValue -1]];
-    if(!index.intValue) [self addView:view underView:self.pageElements[index.intValue]];
+    [self returnObject:view ToDisplayAtIndex:index.integerValue];
 }
 
+-(void)returnObject: (UIView *) view ToDisplayAtIndex:(NSInteger) index
+{
+    
+    UIScrollView * newSV = [[UIScrollView  alloc] init];
+    
+    if(index)
+    {
+        UIScrollView * topSv = (UIScrollView *)((UIView *)self.pageElements[(index -1)]).superview;
+        newSV.frame = CGRectMake(topSv.frame.origin.x, topSv.frame.origin.y+ topSv.frame.size.height, topSv.frame.size.width, topSv.frame.size.height);
+  
+    }else if (!index)
+    {
+          newSV.frame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height, self.defaultPersonalScrollViewFrameSize_closedElement.width, self.defaultPersonalScrollViewFrameSize_closedElement.height);
+    }
+    
+    [self.pageElements insertObject:view atIndex:index];
+    [self formatNewScrollView:newSV];
+    [newSV addSubview:view];//expecting the object to have kept its old frame
+    [self.mainScrollView addSubview:newSV];
+    [self shiftElementsBelowView:self.articleTitleField];
+    
+    //this covers for the bug that adds an imageview when we add a subview to a scrollview.
+    //not sure why this happens- all efforts failed. Bug report to be filed.
+    for (int i=0; i<newSV.subviews.count; i++) {
+        if(![newSV.subviews[i] isKindOfClass:[verbatmCustomPinchView class]])
+        {
+            [newSV.subviews[i] removeFromSuperview];
+        }
+    }
+    
+}
 
 
 #pragma - mainScrollView handler -
@@ -2209,8 +2254,6 @@
         
         [self.view addSubview:imageScroll];
         [imageScroll addImage:imageView withPinchObject: pinchView];
-        
-        
         
         imageScroll.showsHorizontalScrollIndicator = NO;
         imageScroll.showsVerticalScrollIndicator = NO;

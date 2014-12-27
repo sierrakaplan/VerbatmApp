@@ -42,6 +42,9 @@
                                             <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
+                                        <connections>
+                                            <action selector="undo:" destination="Qxg-C2-1Oh" eventType="touchUpInside" id="HDe-Bd-wek"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ae2-fS-kIO">
                                         <rect key="frame" x="117" y="-1" width="71" height="30"/>
@@ -52,7 +55,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <segue destination="K1p-X2-CXo" kind="modal" id="baj-pK-1qb"/>
+                                            <segue destination="K1p-X2-CXo" kind="modal" identifier="previewVerbatmArticle" id="baj-pK-1qb"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -70,7 +73,6 @@
                         <outlet property="containerView" destination="yYu-am-nhj" id="oIm-VS-BBM"/>
                         <outlet property="pullBar" destination="kfm-fE-qmH" id="8De-OD-XYm"/>
                         <outlet property="raiseKeyboardButton" destination="2En-WX-DuJ" id="6PJ-me-Gpx"/>
-                        <outlet property="undoButton" destination="P77-2T-ypm" id="Qm0-va-Rzv"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPQ-fx-ob9" userLabel="First Responder" sceneMemberID="firstResponder"/>
