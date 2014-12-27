@@ -368,6 +368,7 @@
 - (void)textViewDidChange:(UITextView *)textView
 {
     [self editWordCount];
+    [self updateScrollViewPosition];
 }
 
 //Iain
@@ -377,13 +378,13 @@
     //If the user clicked enter add a textview
     if([text isEqualToString:@"\n"])
     {
-        [self adjustBoundsOfTextView:(verbatmUITextView *)textView updateSCandSE:YES];//resize the textview
-        //[self createNewTextViewBelowView:textView]; //add a new text view below this one
-        [self updateScrollViewPosition]; //make sure we scroll to the new textview
+        [self removeImageScrollview:nil];
+        //when enter is clicked we give them a new textview
+        verbatmCustomPinchView * pinchView = [self newPinchObjectBelowView:self.openImagePinchView fromView: nil isTextView:YES];
+        [self createCustomImageScrollViewFromPinchView:pinchView andImageView: nil orTextView:[[verbatmUITextView alloc] init]];
+        
         return NO;
     }
-    
-    [self updateScrollViewPosition]; //ensure that the caret is visible
     return YES;
 }
 
@@ -540,9 +541,9 @@
     {
         NSInteger differenceBTWNKeyboardAndTextView = yCoordinateOfCaretRelativeToImageScrollView - (self.openImageScrollView.textView.contentOffset.y + visibilityRange);
         
-        CGPoint newScrollViewOffset = CGPointMake(self.mainScrollView.contentOffset.x, (contentOffSet + differenceBTWNKeyboardAndTextView +CENTERING_OFFSET_FOR_TEXT_VIEW));
+        CGPoint newScrollViewOffset = CGPointMake(self.mainScrollView.contentOffset.x, (contentOffSet + differenceBTWNKeyboardAndTextView /*+CENTERING_OFFSET_FOR_TEXT_VIEW*/));
         
-        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        [UIView animateWithDuration:ANIMATION_DURATION*2 animations:^{
             [self.openImageScrollView.textView setContentOffset:newScrollViewOffset animated:YES];
 
         }];
@@ -550,8 +551,9 @@
     }else if (yCoordinateOfCaretRelativeToImageScrollView-CURSOR_BASE_GAP <= self.openImageScrollView.contentOffset.y) //Checking if the cursor is past the top
     {
         NSInteger differenceBTWNScreenTopAndTextView = (yCoordinateOfCaretRelativeToImageScrollView-CURSOR_BASE_GAP)-self.openImageScrollView.textView.contentOffset.y;
-        CGPoint newScrollViewOffset = CGPointMake(self.openImageScrollView.contentOffset.x, (self.openImageScrollView.textView.contentOffset.y + differenceBTWNScreenTopAndTextView - CENTERING_OFFSET_FOR_TEXT_VIEW*3));
-        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        CGPoint newScrollViewOffset = CGPointMake(self.openImageScrollView.contentOffset.x, (self.openImageScrollView.textView.contentOffset.y + differenceBTWNScreenTopAndTextView /*-
+        CENTERING_OFFSET_FOR_TEXT_VIEW*/));
+        [UIView animateWithDuration:ANIMATION_DURATION*2 animations:^{
             [self.openImageScrollView.textView setContentOffset:newScrollViewOffset animated:YES];
 
         }];
@@ -851,7 +853,7 @@
     //store the keyboard height for further use
     self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
 
-    [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - (self.keyboardHeight + self.pullBarHeight))];
+    [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( keyboardSize.height + self.pullBarHeight))];
 }
 -(void)keyboardWillDisappear:(NSNotification *) notification
 {
@@ -1664,10 +1666,10 @@
 
 
 
--(void)newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText
+- (verbatmCustomPinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText
 {
     
-    verbatmCustomPinchView * pinchView;
+    verbatmCustomPinchView * pinchView=nil;
     
     if(isText&& !view)
     {
@@ -1720,6 +1722,8 @@
     {
         if(![sv.subviews[i] isKindOfClass:[verbatmCustomPinchView class]])[sv.subviews[i] removeFromSuperview];
     }
+    
+    return pinchView;
 }
 
 #pragma mark Enter new view in page
@@ -1888,7 +1892,7 @@
                 
                 [UIView animateWithDuration:ANIMATION_DURATION/2 animations:^{
                     self.potentialFrame = topView.superview.frame;
-                    topView.superview.frame = self.originalFrame;
+                    topView.superview.frame = CGRectMake(self.originalFrame.origin.x, self.originalFrame.origin.y, topView.superview.frame.size.width, topView.superview.frame.size.height);
                     self.originalFrame = self.potentialFrame;
                 }];
              
@@ -1902,7 +1906,7 @@
                 
                 [UIView animateWithDuration:ANIMATION_DURATION/2 animations:^{
                     self.potentialFrame = bottomView.superview.frame;
-                    bottomView.superview.frame = self.originalFrame;
+                    bottomView.superview.frame = CGRectMake(self.originalFrame.origin.x, self.originalFrame.origin.y, bottomView.superview.frame.size.width, bottomView.superview.frame.size.height);
                     self.originalFrame = self.potentialFrame;
                 }];
             }
@@ -1932,7 +1936,7 @@
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = bottomView.superview.frame;
-                    bottomView.superview.frame = self.originalFrame;
+                    bottomView.superview.frame = CGRectMake(self.originalFrame.origin.x, self.originalFrame.origin.y, bottomView.superview.frame.size.width, bottomView.superview.frame.size.height);
                     self.originalFrame = self.potentialFrame;
                 }];
             }
@@ -1963,7 +1967,8 @@
                 
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = topView.superview.frame;
-                    topView.superview.frame = self.originalFrame;
+                    topView.superview.frame = CGRectMake(self.originalFrame.origin.x, self.originalFrame.origin.y, topView.superview.frame.size.width, topView.superview.frame.size.height);
+
                     self.originalFrame = self.potentialFrame;
                 }];
                 
@@ -2197,6 +2202,8 @@
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         [isv removeFromSuperview];
     }];
+    
+    //[self showPullBar];
 }
 
 #pragma mark ImageScrollView
@@ -2271,7 +2278,7 @@
         textScroll.textView.delegate = self;
         textScroll.showsHorizontalScrollIndicator = NO;
         textScroll.showsVerticalScrollIndicator = NO;
-        //[textScroll.textView becomeFirstResponder];
+        [textScroll.textView becomeFirstResponder];
         [self addTapGestuerToCustomImageScrollView:textScroll];
         self.openImageScrollView = textScroll;
         self.openImagePinchView = pinchView;

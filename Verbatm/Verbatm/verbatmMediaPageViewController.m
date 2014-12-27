@@ -64,7 +64,7 @@
 #pragma mark keyboard properties
     @property (nonatomic) NSInteger keyboardHeight;
 
-
+@property (nonatomic) CGRect oldPullBarFrame; //used when we hide the pullbar so we can restore it to what it was before
 
 #pragma mark Filter helpers
 #define FILTER_NOTIFICATION_ORIGINAL @"addOriginalFilter"
@@ -581,6 +581,8 @@
                  [self positionPullBarTransitionDown:NO];
 
              }];
+            //gets rid of the text if there was typing going on
+            [self.vc_contentPage removeImageScrollview:nil];
         }else
         {
             
@@ -827,6 +829,7 @@
     {
         [UIView animateWithDuration:0.4 animations:^{
             self.containerView.frame = self.view.frame;
+            self.oldPullBarFrame = self.pullBar.frame;
             self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
             
         }];
@@ -838,7 +841,17 @@
        [UIView animateWithDuration:0.4 animations:^{
         
            [self positionContainerViewTo:YES orTo:NO orTo:NO];
-           self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, (self.view.frame.size.height-self.pullBar.frame.size.height), self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+
+           if(self.oldPullBarFrame.origin.y >= self.view.frame.size.height)
+           {
+               self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - self.pullBar.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+   
+           }else
+           {
+               self.pullBar.frame = self.oldPullBarFrame;
+
+           }
+           
        }];
 }
 

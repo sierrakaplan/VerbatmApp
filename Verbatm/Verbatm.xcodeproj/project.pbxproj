@@ -458,7 +458,7 @@
 				ORGANIZATIONNAME = Verbatm;
 				TargetAttributes = {
 					C7BC4371199D97F5004B91A1 = {
-						DevelopmentTeam = FV58CMSUQ8;
+						DevelopmentTeam = GQVN22REYL;
 					};
 					C7BC4392199D97F6004B91A1 = {
 						DevelopmentTeam = FV58CMSUQ8;

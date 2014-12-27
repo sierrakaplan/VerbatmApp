@@ -244,7 +244,12 @@
                                                scale:[assetRepresentation scale]
                                          orientation:UIImageOrientationUp];
     
-    NSData * data = UIImagePNGRepresentation(self.openImage.image);
+    Byte *buffer = (Byte*)malloc(assetRepresentation.size);
+    NSUInteger buffered = [assetRepresentation getBytes:buffer fromOffset:0.0 length:assetRepresentation.size error:nil];
+    NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+    
+    
+    //NSData * data = UIImagePNGRepresentation(self.openImage.image);
     
     //warm filter
     CIImage *beginImage =  [CIImage imageWithData:data];
@@ -258,8 +263,7 @@
     
     self.filter_WARM = [UIImage imageWithCGImage:cgimg];
     
-    //black and white filter
-    //warm filter
+    
     CIImage *beginImage1 =  [CIImage imageWithData:data];
     
     CIFilter *filter1 = [CIFilter filterWithName:@"CIPhotoEffectMono"
@@ -281,8 +285,6 @@
     UISwipeGestureRecognizer * leftSwipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(filterViewSwipe:)];
     leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
     [self addGestureRecognizer:leftSwipe];
-    [self creatFilteredImages];
-    
 }
 
 
