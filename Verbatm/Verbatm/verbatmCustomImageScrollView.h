@@ -16,6 +16,7 @@
 -(void)addImage: (verbatmCustomImageView *) givenImageView withPinchObject: (verbatmCustomPinchView *) pinchObject;
 -(void) createTextViewFromTextView: (UITextView *) textView;
 -(void)adjustImageScrollViewContentSizing;
+-(void)adjustFrameOfTextViewForGap:(NSInteger) gap;
 @property (nonatomic, strong) verbatmUITextView * textView;
 @property (nonatomic, strong) verbatmCustomImageView * openImage;
 @end

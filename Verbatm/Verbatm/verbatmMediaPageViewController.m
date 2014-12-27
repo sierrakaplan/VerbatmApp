@@ -23,7 +23,6 @@
     @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
     @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
     @property (weak, nonatomic) IBOutlet UIButton *raiseKeyboardButton;
-@property (weak, nonatomic) IBOutlet UIButton *undoButton;
 
 #pragma mark - SubViews of screen-
     @property (weak, nonatomic) IBOutlet UIView *containerView;
@@ -113,6 +112,7 @@
 #define TRANSLATION_THRESHOLD 70
 #define CIRCLE_PROGRESSVIEW_SIZE 100
 
+#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
 
 @end
 
@@ -598,7 +598,6 @@
 //sets the postion of the pull bar depending on what's happening on the screen
 -(void) positionPullBarTransitionDown: (BOOL) transitionDown
 {
-
     [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
      {
          if(transitionDown)
@@ -828,23 +827,42 @@
     {
         [UIView animateWithDuration:0.4 animations:^{
             self.containerView.frame = self.view.frame;
-            self.pullBar.hidden = YES;
+            self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+            
         }];
     }
 }
 
 -(void) showPullBar
 {
-    if(self.pullBar.hidden)
-    {
        [UIView animateWithDuration:0.4 animations:^{
-           self.pullBar.hidden = NO;
+        
            [self positionContainerViewTo:YES orTo:NO orTo:NO];
+           self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, (self.view.frame.size.height-self.pullBar.frame.size.height), self.pullBar.frame.size.width, self.pullBar.frame.size.height);
        }];
-    }
 }
 
-
+//this makes sure that there are elements in the pinchview before a preview is called
+- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
+                                  sender:(id)sender
+{
+    
+    if([identifier isEqualToString:@"previewVerbatmArticle"])
+    {
+        int counter=0;
+        for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
+        {
+            if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
+            {
+                counter ++;
+            }
+        }
+        
+        if(!counter) return NO;
+    }
+    
+    return YES;
+}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -862,6 +880,18 @@
     NSMutableArray * presenterViews = [analyser processPinchedObjectsFromArray:pincObjetsArray withFrame:self.view.frame];
     
     ((articleDispalyViewController *)vc).pinchedObjects = presenterViews;
+}
+
+#pragma mark - Undo Button -
+- (IBAction)undo:(UIButton *)sender
+{
+    [self callNotifications];
+}
+
+-(void)callNotifications
+{
+    NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_UNDO object:nil userInfo:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 

@@ -20,7 +20,7 @@
 
 
 #define TEXT_BOX_FONT_SIZE 20
-#define VIEW_WALL_OFFSET 40
+#define VIEW_WALL_OFFSET 20
 
 #define BACKGROUND_COLOR clearColor
 #define FONT_COLOR whiteColor
@@ -44,13 +44,37 @@
 
 #pragma mark - Text View -
 
+-(void)adjustImageScrollViewContentSizing
+{
+    [self setDashedBorderToView:self.textView];
+}
+
+
+//called when the keyboard is up. The Gap gives you the amount if visible space after
+//the keyboard is up
+-(void)adjustFrameOfTextViewForGap:(NSInteger) gap
+{
+    if(gap)
+    {
+    
+        self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, gap - VIEW_WALL_OFFSET);
+    }else
+    {
+         self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
+    }
+    
+    [self adjustImageScrollViewContentSizing];
+    
+}
+
+
 -(void) createTextViewFromTextView: (UITextView *) textView
 {
     if(!textView)
     {
         self.textView = [[verbatmUITextView alloc] init];
         self.textView.backgroundColor = [UIColor clearColor];
-        self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-(VIEW_WALL_OFFSET/2));
+        self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
         [self formatTextViewAppropriately:self.textView];
         [self addSubview:self.textView];
     }else
@@ -59,14 +83,14 @@
         self.textView.text = textView.text;
         self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
         
-        CGRect newBounds= [self calculateBoundsForOpenTextView: self.textView];
+        //adjusts the frame of the textview andthe contentsize of the scrollview if need be
+        [self adjustImageScrollViewContentSizing];
+
         [self formatTextViewAppropriately:self.textView];
         [self addSubview:self.textView];
     }
-    
 }
 
-//Iain
 //Calculate the appropriate bounds for the text view
 //We only return a frame that is larger than the default frame size
 -(CGRect) calculateBoundsForOpenTextView: (UIView *) view
@@ -75,8 +99,6 @@
    
     return CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, tightbounds.height);
 }
-
-
 
 //makes the cursors white
 -(void)makeCursorWhite
@@ -99,7 +121,7 @@
     textView.keyboardAppearance = UIKeyboardAppearanceDark;
     [self setDashedBorderToView:textView];
     
-    textView.scrollEnabled = NO;
+    textView.scrollEnabled = YES;
     self.scrollEnabled = YES;
 }
 
@@ -148,6 +170,14 @@
     _shapeLayer.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInt:dashPattern1], [NSNumber numberWithInt:dashPattern2], nil];
     _shapeLayer.lineCap = kCALineCapRound;
     //_shapeLayer is added as a sublayer of the view, the border is visible
+    
+    for (int i=0; i<view.layer.sublayers.count; i++) {
+        if([view.layer.sublayers[i] isKindOfClass:[CAShapeLayer class]])
+        {
+            [view.layer.sublayers[i] removeFromSuperlayer];
+        }
+    }
+
     [view.layer addSublayer:_shapeLayer];
     view.layer.cornerRadius = cornerRadius;
 }
