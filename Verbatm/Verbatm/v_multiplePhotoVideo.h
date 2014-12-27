@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVFoundation/AVFoundation.h>
-#import "UIImage+Resize.h"
 
 @interface v_multiplePhotoVideo : UIView
 //If there is a video to be added make that the first object of the array.

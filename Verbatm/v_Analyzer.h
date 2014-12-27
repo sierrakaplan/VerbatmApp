@@ -10,7 +10,5 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 @interface v_Analyzer : NSObject
-@property(strong, nonatomic) NSMutableArray* pinchedObjects;
-@property(nonatomic) CGRect preferedFrame;
--(NSMutableArray*)processPinchedObjects;
+-(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)arr withFrame:(CGRect)frame;
 @end

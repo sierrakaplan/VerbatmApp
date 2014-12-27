@@ -263,7 +263,6 @@
 		C7BC4369199D97F5004B91A1 = {
 			isa = PBXGroup;
 			children = (
-				F266F3EE1A4A69F400EA0327 /* Analyzer */,
 				C7BC43AA199EC2C0004B91A1 /* Parse.framework */,
 				C7BC437B199D97F5004B91A1 /* Verbatm */,
 				C7BC439A199D97F6004B91A1 /* VerbatmTests */,
@@ -307,6 +306,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				F266F3EE1A4A69F400EA0327 /* Analyzer */,
 				F26894441A43641C00B1D4DB /* Article Custom Views */,
 				C750A35919D768BD0006FA88 /* Video Capture Classes */,
 				C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */,
@@ -383,6 +383,7 @@
 				F266F3F01A4A6AE200EA0327 /* v_Analyzer.m */,
 			);
 			name = Analyzer;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		F26894441A43641C00B1D4DB /* Article Custom Views */ = {

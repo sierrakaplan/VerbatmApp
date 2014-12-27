@@ -43,6 +43,18 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ae2-fS-kIO">
+                                        <rect key="frame" x="117" y="-1" width="71" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <state key="normal" title="Preview">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <segue destination="K1p-X2-CXo" kind="modal" id="baj-pK-1qb"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.75" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
@@ -69,6 +81,20 @@
                 </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-1888" y="-807"/>
+        </scene>
+        <!--Article Dispaly View Controller-->
+        <scene sceneID="lst-8e-ORz">
+            <objects>
+                <viewController id="K1p-X2-CXo" customClass="articleDispalyViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Jae-KA-Tah">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="M6r-tn-xMe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1888" y="-129"/>
         </scene>
         <!--contentPage-->
         <scene sceneID="8XD-Tr-4db">

@@ -15,7 +15,8 @@
 #import "verbatmContentPageViewController.h"
 #import "verbatmBlurBaseViewController.h"
 #import "verbatmCustomPinchView.h"
-
+#import "v_Analyzer.h"
+#import "articleDispalyViewController.h"
 @interface verbatmMediaPageViewController () <UITextFieldDelegate>
 #pragma mark - Outlets -
     @property (weak, nonatomic) IBOutlet UIView *pullBar;//the outlets
@@ -843,6 +844,27 @@
     }
 }
 
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    UIViewController * vc = [segue destinationViewController];
+    NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
+    
+    for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
+    {
+        if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
+        {
+            [pincObjetsArray addObject:self.vc_contentPage.pageElements[i]];
+        }
+    }
+    v_Analyzer * analyser = [[v_Analyzer alloc]init];
+    NSMutableArray * presenterViews = [analyser processPinchedObjectsFromArray:pincObjetsArray withFrame:self.view.frame];
+    
+    ((articleDispalyViewController *)vc).pinchedObjects = presenterViews;
+}
+
+
 - (void)dealloc
 {
     //tune out of nsnotification
@@ -851,138 +873,6 @@
 
 
 
-/*
- Storage for resuable code.
- The snake!
- 
- //Lucio
- -(void)prepareVideoProgressView
- {
- if(!self.canRaise && !UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
- self.videoProgressImageView.frame = CGRectMake(0,0,  self.view.frame.size.width, self.view.frame.size.height - self.containerViewNoMSAVFrame.size.height);
- }else{
- self.videoProgressImageView.frame = self.verbatmCameraView.frame;
- }
- [self.verbatmCameraView addSubview: self.videoProgressImageView];
- }
- 
- 
- //in uigesturerecognizerstatebegan
- [self prepareVideoProgressView];
- [self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation isHalScreen:!self.canRaise];
- self.counter = 0;
- self.startOrientation = [UIDevice currentDevice].orientation;
- switch (self.startOrientation) {
- case UIDeviceOrientationLandscapeRight:
- self.lastPoint = CGPointMake(0, self.videoProgressImageView.frame.size.height/2);
- break;
- case UIDeviceOrientationLandscapeLeft:
- self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height/2);
- break;
- default:
- self.lastPoint = CGPointMake(self.videoProgressImageView.frame.size.width/2, 0);
- break;
- }
- self.timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(createProgressPath) userInfo:nil repeats:YES];
- 
- //Lucio
- -(void)createProgressPath
- {
- self.counter += 0.05;
- UIGraphicsBeginImageContext(self.videoProgressImageView.frame.size);
- [self.videoProgressImageView.image drawInRect:self.videoProgressImageView.frame];
- CGContextSetLineCap(UIGraphicsGetCurrentContext(), kCGLineCapRound);
- CGContextSetLineWidth(UIGraphicsGetCurrentContext(), 10.0);
- if(self.counter < MAX_VIDEO_LENGTH/8){
- CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_BOTTOM_SIDE);
- CGContextBeginPath(UIGraphicsGetCurrentContext());
- CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
- switch (self.startOrientation) {
- case UIDeviceOrientationLandscapeRight:
- self.currentPoint = CGPointMake(0, (self.videoProgressImageView.frame.size.height/2)*(1 - (self.counter/ (MAX_VIDEO_LENGTH/8))) );
- break;
- case UIDeviceOrientationLandscapeLeft:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, (self.videoProgressImageView.frame.size.height/2)*(1 + self.counter/(MAX_VIDEO_LENGTH/8)));
- break;
- default:
- self.currentPoint = CGPointMake((self.videoProgressImageView.frame.size.width/2)*(1 + self.counter/ (MAX_VIDEO_LENGTH/8)),0);
- break;
- }
- CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
- }else if (self.counter >= MAX_VIDEO_LENGTH/8 && self.counter < (MAX_VIDEO_LENGTH*3)/8){
- CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(),RGB_LEFT_SIDE);
- CGContextBeginPath(UIGraphicsGetCurrentContext());
- CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
- switch (self.startOrientation) {
- case UIDeviceOrientationLandscapeRight:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH/8))/(MAX_VIDEO_LENGTH*2/8)),0);
- break;
- case UIDeviceOrientationLandscapeLeft:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*(1 - (self.counter - (MAX_VIDEO_LENGTH/8))/(MAX_VIDEO_LENGTH*2/8)),self.videoProgressImageView.frame.size.height);
- break;
- default:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH/8))/(MAX_VIDEO_LENGTH*2/8)));
- break;
- }
- CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
- }else if (self.counter >= (MAX_VIDEO_LENGTH*3)/8  && self.counter < (MAX_VIDEO_LENGTH*5)/8 ){
- CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_TOP_SIDE);
- CGContextBeginPath(UIGraphicsGetCurrentContext());
- CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
- switch (self.startOrientation) {
- case UIDeviceOrientationLandscapeRight:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH*3/8))/(MAX_VIDEO_LENGTH*2/8)));
- break;
- case UIDeviceOrientationLandscapeLeft:
- self.currentPoint = CGPointMake(0, self.verbatmCameraView.frame.size.height*(1 - (self.counter - (MAX_VIDEO_LENGTH*3/8))/(MAX_VIDEO_LENGTH*2/8)));
- break;
- default:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*(1 - (self.counter - (MAX_VIDEO_LENGTH*3/8))/ (MAX_VIDEO_LENGTH*2/8)), self.videoProgressImageView.frame.size.height);
- break;
- }
- CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
- }else if (self.counter >= (MAX_VIDEO_LENGTH*5)/8  && self.counter < (MAX_VIDEO_LENGTH*7)/8){
- CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_RIGHT_SIDE);
- CGContextBeginPath(UIGraphicsGetCurrentContext());
- CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
- switch (self.startOrientation) {
- case UIDeviceOrientationLandscapeRight:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*(1 - (self.counter - (MAX_VIDEO_LENGTH*5/8))/(MAX_VIDEO_LENGTH*2/8) ),self.videoProgressImageView.frame.size.height);
- break;
- case UIDeviceOrientationLandscapeLeft:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width*((self.counter - (MAX_VIDEO_LENGTH*5)/8)/ (MAX_VIDEO_LENGTH*2/8)),0);
- break;
- default:
- self.currentPoint = CGPointMake(0, self.videoProgressImageView.frame.size.height - (self.videoProgressImageView.frame.size.height*((self.counter - (MAX_VIDEO_LENGTH*5/8))/(MAX_VIDEO_LENGTH*2/8))));
- break;
- }
- CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
- }else{
- CGContextSetRGBStrokeColor(UIGraphicsGetCurrentContext(), RGB_BOTTOM_SIDE);
- CGContextBeginPath(UIGraphicsGetCurrentContext());
- CGContextMoveToPoint(UIGraphicsGetCurrentContext(), self.lastPoint.x , self.lastPoint.y);
- switch (self.startOrientation) {
- case UIDeviceOrientationLandscapeRight:
- self.currentPoint = CGPointMake(0,self.videoProgressImageView.frame.size.height - ((self.videoProgressImageView.frame.size.height/2)*(self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8)));
- break;
- case UIDeviceOrientationLandscapeLeft:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width, (self.videoProgressImageView.frame.size.height/2)*(self.counter - ((MAX_VIDEO_LENGTH*7)/8))/(MAX_VIDEO_LENGTH/8));
- break;
- default:
- self.currentPoint = CGPointMake(self.videoProgressImageView.frame.size.width/2*(self.counter - (MAX_VIDEO_LENGTH*7/8))/(MAX_VIDEO_LENGTH/8), 0);
- break;
- }
- CGContextAddLineToPoint(UIGraphicsGetCurrentContext(), self.currentPoint.x, self.currentPoint.y);
- }
- //CGContextSetShadowWithColor(UIGraphicsGetCurrentContext(), CGSizeMake(0, 4.0), 20.0 , [UIColor yellowColor].CGColor);
- CGContextStrokePath(UIGraphicsGetCurrentContext());
- self.videoProgressImageView.image = UIGraphicsGetImageFromCurrentImageContext();
- self.lastPoint = self.currentPoint;
- UIGraphicsEndImageContext();
- if(self.counter >= MAX_VIDEO_LENGTH) [self endVideoRecordingSession];
- }
- 
- */
 @end
 
 
