@@ -42,7 +42,6 @@
         //set up the properties
         CGRect frame = CGRectMake(center.x - radius, center.y - radius, radius*2, radius*2);
         [self specifyFrame:frame];
-        //[self createLensingEffect:radius];
         self.background.layer.masksToBounds = YES;
         
         //initialize arrays
@@ -57,6 +56,7 @@
         }
         //add background as a subview
         [self addSubview: self.background];
+        
         //set frames
         self.videoView.frame =  CGRectZero;
         self.textField.frame = CGRectZero; //prevents the little part of the  texfield from showing
@@ -69,7 +69,7 @@
         self.textField.backgroundColor = [UIColor clearColor];
         [self renderMedia];
         [self addGrayBorder];
-        
+
     }
     return self;
 }
@@ -79,22 +79,6 @@
 {
     self.layer.borderColor = [UIColor whiteColor].CGColor;
     self.layer.borderWidth = 1.0f;
-}
-
-//Lucio
-//adds a text to the custom view
--(void)addTextToCurrentMedia:(UITextView*)textview
-{
-    [self.media addObject:textview];
-    self.there_is_text = YES;
-}
-
-//Lucio
-//adds a video to the custom view
--(void)addVideoToCurrentMedia:(ALAsset*)video
-{
-    [self.media addObject: video];
-    self.there_is_video = YES;
 }
 
 //Lucio
@@ -121,10 +105,13 @@
 
 
 //Lucio.
-//moves the view by a delta relative to the center.
+/*This specifies the frame of the background and all the subviews
+ *It modifies the object to have a circular shape by setting the 
+ *corner radius
+ */
 -(void)specifyFrame:(CGRect)frame
 {
-    CGPoint center = CGPointMake(frame.origin.x + frame.size.width/2 , frame.origin.y + frame.size.height/2);
+    CGPoint center = CGPointMake(frame.origin.x + frame.size.width/2, frame.origin.y + frame.size.height/2);
     self.center = center;
     self.frame = frame;
     self.background.frame = self.bounds;
@@ -212,6 +199,7 @@
     for(id object in self.media){
         if([object isKindOfClass: [UITextView class]]){
             self.textField.text = [self.textField.text stringByAppendingString: ((UITextView*)object).text];
+            self.textField.text = [self.textField.text stringByAppendingString:@"\n"];
             //[self.background bringSubviewToFront: self.textField];
         }else if(!((verbatmCustomImageView*)object).isVideo){
             UIImage* image = [(verbatmCustomImageView*)object image];
@@ -252,7 +240,7 @@
     // Create the AVPlayer using the playeritem
     AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
     //MUTE THE PLAYER
-    [self mutePlayer:player forAsset:asset];
+    player.muted = YES;
     player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
@@ -267,23 +255,6 @@
     [self.videoView.layer addSublayer:playerLayer];
     // You can play/pause using the AVPlayer object
     [player play];
-}
-
-//mutes the player
--(void)mutePlayer:(AVPlayer*)avPlayer forAsset:(AVURLAsset*)asset
-{
-    NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
-    // Mute all the audio tracks
-    NSMutableArray *allAudioParams = [NSMutableArray array];
-    for (AVAssetTrack *track in audioTracks) {
-        AVMutableAudioMixInputParameters *audioInputParams =  [AVMutableAudioMixInputParameters audioMixInputParameters];
-        [audioInputParams setVolume:0.0 atTime:kCMTimeZero];
-        [audioInputParams setTrackID:[track trackID]];
-        [allAudioParams addObject:audioInputParams];
-    }
-    AVMutableAudioMix *audioZeroMix = [AVMutableAudioMix audioMix];
-    [audioZeroMix setInputParameters:allAudioParams];
-    [[avPlayer currentItem] setAudioMix:audioZeroMix];
 }
 
 //tells me when the video ends so that I can rewind

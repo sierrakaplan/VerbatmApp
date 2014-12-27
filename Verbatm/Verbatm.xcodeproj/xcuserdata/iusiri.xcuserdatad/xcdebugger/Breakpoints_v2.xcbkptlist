@@ -271,8 +271,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "116"
             endingLineNumber = "116"
-            landmarkName = "@implementation verbatmMediaPageViewController"
-            landmarkType = "3">
+            landmarkName = "@interface verbatmMediaPageViewController()"
+            landmarkType = "2">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -367,7 +367,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "582"
             endingLineNumber = "582"
-            landmarkName = "-positionContainerView"
+            landmarkName = "-expandContentPage_Changed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -383,7 +383,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "563"
             endingLineNumber = "563"
-            landmarkName = "-positionContainerView"
+            landmarkName = "-expandContentPage_Began:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -399,8 +399,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "539"
             endingLineNumber = "539"
-            landmarkName = "@implementation verbatmMediaPageViewController"
-            landmarkType = "3">
+            landmarkName = "-sessionManager"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -415,7 +415,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "538"
             endingLineNumber = "538"
-            landmarkName = "-createProgressPath"
+            landmarkName = "-sessionManager"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1257,7 +1257,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "599"
             endingLineNumber = "599"
-            landmarkName = "-viewWillLayoutSubviews"
+            landmarkName = "-expandContentPage_Changed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1321,7 +1321,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "847"
             endingLineNumber = "847"
-            landmarkName = "-keyboardWasShown:"
+            landmarkName = "-hidePullBar"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1641,7 +1641,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "160"
             endingLineNumber = "160"
-            landmarkName = "-renderMedia"
+            landmarkName = "-renderSingleView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1657,7 +1657,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "170"
             endingLineNumber = "170"
-            landmarkName = "-renderSingleView"
+            landmarkName = "-renderTwoMedia"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1769,7 +1769,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "269"
             endingLineNumber = "269"
-            landmarkName = "-playVideo:"
+            landmarkName = "-playerItemDidReachEnd:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2085,8 +2085,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "617"
             endingLineNumber = "617"
-            landmarkName = "@implementation verbatmMediaPageViewController"
-            landmarkType = "3">
+            landmarkName = "-positionPullBarTransitionDown:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2790,7 +2790,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "168"
             endingLineNumber = "168"
-            landmarkName = "-renderSingleView"
+            landmarkName = "-renderTwoMedia"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2806,7 +2806,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "191"
             endingLineNumber = "191"
-            landmarkName = "-renderTwoMedia"
+            landmarkName = "-renderThreeViews"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2848,8 +2848,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "140"
             endingLineNumber = "140"
-            landmarkName = "-createLensingEffect:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmCustomPinchView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3098,8 +3098,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "138"
             endingLineNumber = "138"
-            landmarkName = "-createLensingEffect:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmCustomPinchView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3114,8 +3114,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "139"
             endingLineNumber = "139"
-            landmarkName = "-createLensingEffect:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmCustomPinchView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3178,7 +3178,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "710"
             endingLineNumber = "710"
-            landmarkName = "-positionPullBarTransitionDown:"
+            landmarkName = "-textFieldShouldReturn:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3194,7 +3194,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "709"
             endingLineNumber = "709"
-            landmarkName = "-positionPullBarTransitionDown:"
+            landmarkName = "-textFieldShouldReturn:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3210,7 +3210,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "547"
             endingLineNumber = "547"
-            landmarkName = "-endVideoRecordingSession"
+            landmarkName = "-expandContentPage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3226,7 +3226,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "548"
             endingLineNumber = "548"
-            landmarkName = "-endVideoRecordingSession"
+            landmarkName = "-expandContentPage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3242,8 +3242,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "550"
             endingLineNumber = "550"
-            landmarkName = "@implementation verbatmMediaPageViewController"
-            landmarkType = "3">
+            landmarkName = "-expandContentPage:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3290,7 +3290,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "624"
             endingLineNumber = "624"
-            landmarkName = "-expandContentPage:"
+            landmarkName = "-positionPullBarTransitionDown:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3306,7 +3306,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "626"
             endingLineNumber = "626"
-            landmarkName = "-expandContentPage:"
+            landmarkName = "-positionPullBarTransitionDown:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3322,7 +3322,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "625"
             endingLineNumber = "625"
-            landmarkName = "-expandContentPage:"
+            landmarkName = "-positionPullBarTransitionDown:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3338,7 +3338,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "651"
             endingLineNumber = "651"
-            landmarkName = "-expandContentPage_Changed:"
+            landmarkName = "-positionContainerViewTo:orTo:orTo:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3354,7 +3354,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "653"
             endingLineNumber = "653"
-            landmarkName = "-expandContentPage_Changed:"
+            landmarkName = "-positionContainerViewTo:orTo:orTo:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3370,7 +3370,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "654"
             endingLineNumber = "654"
-            landmarkName = "-expandContentPage_Changed:"
+            landmarkName = "-positionContainerViewTo:orTo:orTo:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3386,8 +3386,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "642"
             endingLineNumber = "642"
-            landmarkName = "-expandContentPage_Began:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmMediaPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3466,7 +3466,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "798"
             endingLineNumber = "798"
-            landmarkName = "-bringUpNewTextForMSAV"
+            landmarkName = "-keyboardWillDisappear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3482,7 +3482,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "412"
             endingLineNumber = "412"
-            landmarkName = "-continueVideo"
+            landmarkName = "-unmarkAsSelected"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3706,7 +3706,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "102"
             endingLineNumber = "102"
-            landmarkName = "-changePicture:"
+            landmarkName = "-changeText:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -5124,8 +5124,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "114"
             endingLineNumber = "114"
-            landmarkName = "-changeText:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmCustomPinchView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -5140,8 +5140,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "113"
             endingLineNumber = "113"
-            landmarkName = "-changeText:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmCustomPinchView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

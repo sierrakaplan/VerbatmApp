@@ -24,7 +24,7 @@
 
 
 #define N_FRAMES_PER_SECOND 32
-#define NUM_SECONDS 30
+#define NUM_SECONDS 20
 #define ALBUM_NAME @"Verbatm"
 #define ASPECT_RATIO 4/3
 
@@ -452,6 +452,7 @@
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+        [self stopSession];
         [self processImage:[[UIImage alloc] initWithData:dataForImage] isHalfScreen: halfScreen];
         [self saveImageToVerbatmAlbum];
     }];
