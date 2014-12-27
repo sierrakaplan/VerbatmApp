@@ -46,4 +46,14 @@
     }
     [self.layer addAnimation:animation forKey: @"transition"];
 }
+
+-(void)enableSound
+{
+    [self.videoView enableSound];
+}
+
+-(void)mutePlayer
+{
+    [self.videoView mutePlayer];
+}
 @end

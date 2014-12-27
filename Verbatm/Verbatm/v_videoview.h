@@ -14,4 +14,6 @@
 @interface v_videoview : UIView
 -(void)showPlayBackIcons;
 -(id)initWithFrame:(CGRect)frame andAssets:(NSArray*)assetList;
+-(void)mutePlayer;
+-(void)enableSound;
 @end

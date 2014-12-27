@@ -53,7 +53,7 @@
     // Add it to your view's sublayers
     [self.layer addSublayer:playerLayer];
     // You can play/pause using the AVPlayer object
-    player.volume = 1.0;
+    player.muted = YES;
     [player play];
 }
 
@@ -182,5 +182,18 @@
     }else{
         [self rewindVideo];
     }
+}
+
+-(void)mutePlayer
+{
+    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
+    playerLayer.player.muted = YES;
+}
+
+-(void)enableSound
+{
+    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
+    playerLayer.player.muted = NO;
+    playerLayer.player.volume = 0.5;
 }
 @end

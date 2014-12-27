@@ -13,6 +13,7 @@
 @interface v_multiplePhotoVideo()
 @property (strong, nonatomic) NSMutableArray* frames;
 @property (nonatomic) CGRect chosenFrame;
+@property (nonatomic, strong) v_videoview* videoView;
 #define x_ratio 3
 #define y_ratio 4
 @end
@@ -23,7 +24,8 @@
     if((self = [super initWithFrame:frame])){
         self.frames = [[NSMutableArray alloc] init];
         NSMutableArray* vidAssets = [self getVideoAssets:media];
-        [self getMediaFrames: (media.count +  1) andFrame:self.bounds]; //adding one to account for videos
+        int numFrames = (int)media.count + ((vidAssets.count)? 1 : 0);
+        [self getMediaFrames: numFrames andFrame:self.bounds]; //adding one to account for videos
         [self renderPhotos:media andVideos:vidAssets];
     }
     return self;
@@ -50,25 +52,24 @@
 
 -(void)renderPhotos:(NSMutableArray*)media andVideos:(NSMutableArray*)videos
 {
-    CGRect biggestFrame;
-    int largestAreaSoFar = 0;
-    for(id frame in self.frames){
-        CGRect this_frame = [frame CGRectValue];
-        if((this_frame.size.width*this_frame.size.height) > largestAreaSoFar){
-            largestAreaSoFar = (this_frame.size.width*this_frame.size.height);
-            biggestFrame = this_frame;
+    if(videos.count){
+        CGRect biggestFrame;
+        int largestAreaSoFar = 0;
+        for(id frame in self.frames){
+            CGRect this_frame = [frame CGRectValue];
+            if((this_frame.size.width*this_frame.size.height) > largestAreaSoFar){
+                largestAreaSoFar = (this_frame.size.width*this_frame.size.height);
+                biggestFrame = this_frame;
+            }
         }
+        [self.frames removeObject:[NSValue valueWithCGRect:biggestFrame]];
+        self.videoView = [[v_videoview alloc]initWithFrame:biggestFrame andAssets:videos];
+        [self addSubview: self.videoView];
+        [self bringSubviewToFront: self.videoView];
     }
-    [self.frames removeObject:[NSValue valueWithCGRect:biggestFrame]];
-    biggestFrame = [self shrinkFrame:biggestFrame];
-    v_videoview* videoView = [[v_videoview alloc]initWithFrame:biggestFrame andAssets:videos];
-    [self addSubview: videoView];
-    [self bringSubviewToFront:videoView];
-    
     int i = 0;
     for(id frame in self.frames){
         CGRect this_frame = [frame CGRectValue];
-        this_frame = [self shrinkFrame:this_frame];
          ALAssetRepresentation *assetRepresentation = [[media objectAtIndex:i] defaultRepresentation];
         UIImageView* imageview = [[UIImageView alloc] initWithFrame: this_frame];
         UIImage* image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
@@ -151,13 +152,13 @@
     }
 }
 
--(CGRect)shrinkFrame:(CGRect)this_frame
+-(void)enableSound
 {
-    this_frame.origin.x += 1;
-    this_frame.origin.y += 1;
-    this_frame.size.width -= 2;
-    this_frame.size.height -= 2;
-    return this_frame;
+    [self.videoView enableSound];
 }
 
+-(void)mutePlayer
+{
+    [self.videoView mutePlayer];
+}
 @end

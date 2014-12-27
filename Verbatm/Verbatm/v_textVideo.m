@@ -24,7 +24,8 @@
         self.bgBlur.backgroundColor = [UIColor blackColor];
         self.bgBlur.alpha = 0.7;
         [self addSubview:self.bgBlur];
-        self.textView = [[v_textview alloc]initWithFrame:self.bounds];
+        CGRect textFrame = CGRectMake(25, 40, frame.size.width - 50, frame.size.height - 80);
+        self.textView = [[v_textview alloc]initWithFrame:textFrame];
         NSMutableAttributedString* attributedText = [[NSMutableAttributedString alloc]initWithString: text];
         [attributedText setAttributes:@{NSForegroundColorAttributeName : [UIColor whiteColor], /*NSStrokeWidthAttributeName : @-3, NSStrokeColorAttributeName : [UIColor blackColor],*/
                                         NSFontAttributeName :[UIFont fontWithName:@"ArialMT" size:17] } range: NSMakeRange(0, [text length])];
@@ -47,7 +48,7 @@
     [self.textView sizeToFit];
     if(self.textView.frame.size.height > self.frame.size.height){
         CGRect this_frame = self.textView.frame;
-        this_frame.size.height = self.frame.size.height - 32;
+        this_frame.size.height = self.frame.size.height - 80;
         self.textView.frame = this_frame;
     }else{
         int translate = self.frame.size.height/2 - (self.textView.frame.size.height/2 + self.textView.frame.origin.y);

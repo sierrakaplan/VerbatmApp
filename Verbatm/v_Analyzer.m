@@ -65,7 +65,7 @@
         [_results addObject:textView];
     }else{
         v_videoview* vidView = [[v_videoview alloc]initWithFrame:_preferedFrame andAssets:arr];
-        [vidView showPlayBackIcons];
+        //[vidView showPlayBackIcons];
         [_results addObject:vidView];
     }
 }
@@ -122,17 +122,18 @@
             v_photoVideo* pv = [[v_photoVideo alloc]initWithFrame:_preferedFrame Assets:assets andImage:image];
             //remember to add the long presss gesture in the supeview part.
             [_results addObject:pv];
-        }
-        for(verbatmCustomImageView* view in media){
-            if(view.isVideo){
-                [assets insertObject:view.asset atIndex:0];
-            }else{
-                [assets addObject:view.asset];
+        }else{
+            for(verbatmCustomImageView* view in media){
+                if(view.isVideo){
+                    [assets insertObject:view.asset atIndex:0];
+                }else{
+                    [assets addObject:view.asset];
+                }
             }
+            v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:_preferedFrame andMedia:assets];
+            [mpv addTapGesture];
+            [_results addObject:mpv];
         }
-        v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:_preferedFrame andMedia:assets];
-        [mpv addTapGesture];
-        [_results addObject:mpv];
     }
 }
 
@@ -171,6 +172,8 @@
             }
         }
         v_multiVidTextPhoto* mvtp = [[v_multiVidTextPhoto alloc]initWithFrame:_preferedFrame andMedia:assets andText:text];
+        [mvtp addTapGesture];
+        [mvtp addSwipeGesture];
         [_results addObject:mvtp];
     }
 }

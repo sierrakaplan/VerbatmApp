@@ -8,12 +8,15 @@
 
 #import "articleDispalyViewController.h"
 #import "v_textview.h"
+#import "v_photoVideo.h"
+#import "v_videoview.h"
+#import "v_multiplePhotoVideo.h"
 
 @interface articleDispalyViewController ()
 @property (strong, nonatomic) NSMutableArray* poppedOffPages;
 @property (strong, nonatomic) UIView* animatingView;
 @property (nonatomic) CGPoint lastPoint;
-#define BEST_ALPHA_FOR_TEXT 0.5
+#define BEST_ALPHA_FOR_TEXT 0.8
 #define ANIMATION_DURATION 0.4
 @end
 
@@ -28,15 +31,16 @@
     [self renderPinchObjects];
     _latestPoint = CGPointZero;
     _animatingView = nil;
+    _poppedOffPages = [[NSMutableArray alloc]init];
 }
 
--(NSMutableArray*)poppedOffPages
-{
-    if(!_poppedOffPages){
-        _poppedOffPages = [[NSMutableArray alloc]init];
-    }
-    return _poppedOffPages;
-}
+//-(NSMutableArray*)poppedOffPages
+//{
+//    if(!_poppedOffPages){
+//        _poppedOffPages = [[NSMutableArray alloc]init];
+//    }
+//    return _poppedOffPages;
+//}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -55,12 +59,25 @@
 -(void)renderPinchObjects
 {
     for(UIView* view in self.pinchedObjects){
-        view.frame = self.view.bounds;
         if([view isKindOfClass:[v_textview class]]){
-            view.alpha = BEST_ALPHA_FOR_TEXT;   //Apply blur if only text
+            UIView* parentView = [[UIView alloc]initWithFrame:self.view.bounds];
+            view.frame = CGRectMake(25, 40, parentView.frame.size.width - 50, parentView.frame.size.height - 80);
+            [parentView addSubview:view];
+            parentView.backgroundColor = [UIColor blackColor];
+            parentView.alpha = BEST_ALPHA_FOR_TEXT;   //Apply blur if only text
+            [self.view addSubview:parentView];
+            continue;
         }
+        view.frame = self.view.bounds;
         [self.view insertSubview:view atIndex:0];
+        if([view isKindOfClass:[v_photoVideo class]]){
+            [((v_photoVideo*)view) createLongPressGesture];
+        }
     }
+    //This makes sure that if the first object is a video it is playing the sound
+    _animatingView = [self.view.subviews lastObject];
+    [self enableSound];
+    _animatingView = nil;
 }
 
 #pragma mark - sorting out the ui for pinch object -
@@ -98,6 +115,7 @@
         if(translation.x > 0){
             if(_poppedOffPages.count == 0)return;
             _animatingView = (UIView*)[_poppedOffPages lastObject];
+            [_poppedOffPages removeLastObject];
             _animatingView.frame = CGRectOffset(self.view.bounds, -self.view.frame.size.width, 0);
             [self.view addSubview:_animatingView];
         }else{
@@ -106,27 +124,35 @@
         }
         _latestPoint = translation;
         return;
-    }else if (edgePan.state == UIGestureRecognizerStateEnded){
+    }
+    if(!_animatingView) return;
+    if (edgePan.state == UIGestureRecognizerStateEnded){
         _latestPoint = translation;
+        int x_location = _animatingView.frame.origin.x + _animatingView.frame.size.width;
+        int mid_pt = self.view.frame.origin.x + self.view.frame.size.width/2;
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-            int x_location = _animatingView.frame.origin.x + _animatingView.frame.size.width;
-            int mid_pt = self.view.frame.origin.x + self.view.frame.size.width/2;
             if(x_location > mid_pt){
                 _animatingView.frame = self.view.bounds;
             }else{
                 _animatingView.frame = CGRectOffset(self.view.bounds, -self.view.frame.size.width, 0);
             }
         } completion:^(BOOL finished) {
-            if(translation.x < 0){
+            if(x_location <= mid_pt){
                 [_animatingView removeFromSuperview];
                 [_poppedOffPages addObject:_animatingView];
+                [self muteSound];
+                _animatingView = [self.view.subviews lastObject];
+                [self enableSound];
+            }else{
+                [self enableSound];
+                _animatingView = [self.view.subviews objectAtIndex: self.view.subviews.count - 2];//Get previous view and mute it
+                [self muteSound];
             }
             _latestPoint = CGPointZero;
             _animatingView = nil;
         }];
         return;
     }
-    if(!_animatingView) return;
     _animatingView.frame = CGRectOffset(_animatingView.frame, translation.x - _latestPoint.x, 0);
     _latestPoint = translation;
 }
@@ -155,6 +181,28 @@
         }
         group.motionEffects = effects;
         [view addMotionEffect:group];
+    }
+}
+
+-(void)enableSound
+{
+    if([_animatingView isKindOfClass:[v_videoview class]] ){
+        [((v_videoview*)_animatingView) enableSound];
+    }else if([_animatingView isKindOfClass:[v_photoVideo class]]){
+        [((v_photoVideo*)_animatingView) enableSound];
+    }else if([_animatingView isKindOfClass:[v_multiplePhotoVideo class]]){
+        [((v_multiplePhotoVideo*)_animatingView) enableSound];
+    }
+}
+
+-(void)muteSound
+{
+    if([_animatingView isKindOfClass:[v_videoview class]]){
+        [((v_videoview*)_animatingView) mutePlayer];
+    }else if([_animatingView isKindOfClass:[v_photoVideo class]]){
+        [((v_photoVideo*)_animatingView) mutePlayer];
+    }else if([_animatingView isKindOfClass:[v_multiplePhotoVideo class]]){
+        [((v_multiplePhotoVideo*)_animatingView) mutePlayer];
     }
 }
 @end

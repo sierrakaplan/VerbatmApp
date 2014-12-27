@@ -15,4 +15,6 @@
 -(id)initWithFrame:(CGRect)frame andMedia:(NSArray*)media;
 -(void)addTapGesture;
 -(void)enlarge:(UITapGestureRecognizer*)sender;
+-(void)mutePlayer;
+-(void)enableSound;
 @end
