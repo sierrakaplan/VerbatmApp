@@ -61,6 +61,8 @@
 		C7E6C1451A4E394600863893 /* v_textview.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13C1A4E394600863893 /* v_textview.m */; };
 		C7E6C1461A4E394600863893 /* v_videoview.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* v_videoview.m */; };
 		C7F18D851A05C0EE0002255B /* verbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* verbatmTextField.m */; };
+		C7F3D46B1A4F84C000B43238 /* verbatmUserLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* verbatmUserLoginViewController.m */; };
+		C7F3D46E1A4F84DF00B43238 /* verbatmUserSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46D1A4F84DF00B43238 /* verbatmUserSignUpViewController.m */; };
 		F20A24FA1A46166100BB77C1 /* verbatmCustomImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */; };
 		F266F3ED1A4A3ED900EA0327 /* articleDispalyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3EC1A4A3ED900EA0327 /* articleDispalyViewController.m */; };
 		F266F3F11A4A6AE200EA0327 /* v_Analyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* v_Analyzer.m */; };
@@ -162,6 +164,10 @@
 		C7E6C13E1A4E394600863893 /* v_videoview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_videoview.m; sourceTree = "<group>"; };
 		C7F18D831A05C0EE0002255B /* verbatmTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmTextField.h; sourceTree = "<group>"; };
 		C7F18D841A05C0EE0002255B /* verbatmTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmTextField.m; sourceTree = "<group>"; };
+		C7F3D4691A4F84C000B43238 /* verbatmUserLoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmUserLoginViewController.h; sourceTree = "<group>"; };
+		C7F3D46A1A4F84C000B43238 /* verbatmUserLoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmUserLoginViewController.m; sourceTree = "<group>"; };
+		C7F3D46C1A4F84DF00B43238 /* verbatmUserSignUpViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmUserSignUpViewController.h; sourceTree = "<group>"; };
+		C7F3D46D1A4F84DF00B43238 /* verbatmUserSignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmUserSignUpViewController.m; sourceTree = "<group>"; };
 		F20A24F81A46166100BB77C1 /* verbatmCustomImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmCustomImageScrollView.h; sourceTree = "<group>"; };
 		F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmCustomImageScrollView.m; sourceTree = "<group>"; };
 		F266F3EB1A4A3ED900EA0327 /* articleDispalyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = articleDispalyViewController.h; sourceTree = "<group>"; };
@@ -220,6 +226,10 @@
 			isa = PBXGroup;
 			children = (
 				C7BC4387199D97F5004B91A1 /* Main.storyboard */,
+				C7F3D4691A4F84C000B43238 /* verbatmUserLoginViewController.h */,
+				C7F3D46A1A4F84C000B43238 /* verbatmUserLoginViewController.m */,
+				C7F3D46C1A4F84DF00B43238 /* verbatmUserSignUpViewController.h */,
+				C7F3D46D1A4F84DF00B43238 /* verbatmUserSignUpViewController.m */,
 				C7CCFFA919CFA74D00E90080 /* verbatmBlurBaseViewController.h */,
 				C7CCFFAA19CFA74D00E90080 /* verbatmBlurBaseViewController.m */,
 				C734FD9A19B14B8D00B2C370 /* verbatmContentPageViewController.h */,
@@ -525,6 +535,7 @@
 				C78B682A19CA6C22003D0AC5 /* verbatmGalleryHandler.m in Sources */,
 				C7E6C1451A4E394600863893 /* v_textview.m in Sources */,
 				C7E6C13F1A4E394600863893 /* v_multiplePhotoVideo.m in Sources */,
+				C7F3D46B1A4F84C000B43238 /* verbatmUserLoginViewController.m in Sources */,
 				C7174E0E19CA159D006C982D /* ILTranslucentView.m in Sources */,
 				C734FD9C19B14B8D00B2C370 /* verbatmContentPageViewController.m in Sources */,
 				C7E6C1461A4E394600863893 /* v_videoview.m in Sources */,
@@ -538,6 +549,7 @@
 				C78B682619CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m in Sources */,
 				C7F18D851A05C0EE0002255B /* verbatmTextField.m in Sources */,
 				C7CCFFAB19CFA74D00E90080 /* verbatmBlurBaseViewController.m in Sources */,
+				C7F3D46E1A4F84DF00B43238 /* verbatmUserSignUpViewController.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* verbatmCustomScrollView.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* verbatmCustomPinchView.m in Sources */,
 				F266F3ED1A4A3ED900EA0327 /* articleDispalyViewController.m in Sources */,

@@ -891,7 +891,6 @@
     }
     v_Analyzer * analyser = [[v_Analyzer alloc]init];
     NSMutableArray * presenterViews = [analyser processPinchedObjectsFromArray:pincObjetsArray withFrame:self.view.frame];
-    
     ((articleDispalyViewController *)vc).pinchedObjects = presenterViews;
 }
 
