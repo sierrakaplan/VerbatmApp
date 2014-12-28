@@ -21,10 +21,12 @@
 @property (readwrite, nonatomic) BOOL there_is_video;
 @property (readwrite, nonatomic) BOOL there_is_picture;
 
-#define TIME_TO_ANIMATE 0.01
 #define SHADOW_OFFSET_FACTOR 25
-#define DIVISION_FACTOR_FOR_THREE 2
 #define DIVISION_FACTOR_FOR_TWO 2
+#define P_OBJ_THERE_IS_PICTURE @"picture"
+#define P_OBJ_THERE_IS_VIDEO  @"video"
+#define P_OBJ_THERE_IS_TEXT @"text"
+#define P_OBJ_MEDIA @"media"
 
 @end
 
@@ -36,7 +38,7 @@
 {
     if((self = [super init])){
         
-        //load from Nib file
+        //load from Nib file..this initializes the background view and all its subviews
         [[NSBundle mainBundle] loadNibNamed:@"verbatmCustomPinchView" owner:self options:nil];
         
         //set up the properties
@@ -54,24 +56,30 @@
             self.there_is_video = ((verbatmCustomImageView*)medium).isVideo;
             self.there_is_picture = !self.there_is_video;
         }
-        //add background as a subview
-        [self addSubview: self.background];
         
-        //set frames
-        self.videoView.frame =  CGRectZero;
-        self.textField.frame = CGRectZero; //prevents the little part of the  texfield from showing
-        self.imageViewer.frame = CGRectZero;
-        
-        
+        [self initSubviews];
         [self.media addObject: medium];
-        self.background.backgroundColor = [UIColor clearColor];
-        self.backgroundColor = [UIColor clearColor];
-        self.textField.backgroundColor = [UIColor clearColor];
         [self renderMedia];
         [self addGrayBorder];
 
     }
     return self;
+}
+
+-(void)initSubviews
+{
+    //add background as a subview
+    [self addSubview: self.background];
+    
+    //set frames
+    self.videoView.frame =  CGRectZero;
+    self.textField.frame = CGRectZero; //prevents the little part of the  texfield from showing
+    self.imageViewer.frame = CGRectZero;
+    
+    self.background.backgroundColor = [UIColor clearColor];
+    self.backgroundColor = [UIColor clearColor];
+    self.textField.backgroundColor = [UIColor clearColor];
+
 }
 
 
@@ -186,7 +194,7 @@
 -(void)renderThreeViews
 {
     //computation to determine the relative positions of each of the views
-    self.textField.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width, self.background.frame.size.height/DIVISION_FACTOR_FOR_THREE);
+    self.textField.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width, self.background.frame.size.height/DIVISION_FACTOR_FOR_TWO);
     self.imageViewer.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.textField.frame.size.height, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height - self.textField.frame.size.height);
     self.videoView.frame = CGRectMake(self.background.frame.origin.x + self.imageViewer.frame.size.width, self.imageViewer.frame.origin.y , self.background.frame.size.width - self.imageViewer.frame.size.width, self.imageViewer.frame.size.width);
 }
@@ -328,16 +336,32 @@
 }
 
 
-#pragma mark - setup info -
+#pragma mark - NSCoding Protocol -
 
--(id)initWithCoder:(NSCoder *)aDecoder
+- (id)initWithCoder:(NSCoder *)coder
 {
-    self = [super initWithCoder:aDecoder];
+    self = [super initWithCoder:coder];
     if(self){
+        //decode all the ivars of the class
         [[NSBundle mainBundle] loadNibNamed:@"verbatmCustomPinchView" owner:self options:nil];
-        [self addSubview: self.background];
+        self.there_is_picture = (BOOL)[coder decodeObjectForKey:P_OBJ_THERE_IS_PICTURE];
+        self.there_is_text = (BOOL)[coder decodeObjectForKey:P_OBJ_THERE_IS_TEXT];
+        self.there_is_video = (BOOL)[coder decodeObjectForKey:P_OBJ_THERE_IS_VIDEO];
+        self.media = (NSMutableArray*)[coder decodeObjectForKey:P_OBJ_MEDIA];
+        [self initSubviews];
+        [self renderMedia];
+        [self addGrayBorder];
     }
     return self;
+}
+
+
+- (void)encodeWithCoder:(NSCoder *)coder
+{
+    [coder encodeBool:self.there_is_picture forKey:P_OBJ_THERE_IS_PICTURE];
+    [coder encodeBool:self.there_is_video forKey:P_OBJ_THERE_IS_VIDEO];
+    [coder encodeBool:self.there_is_text forKey:P_OBJ_THERE_IS_TEXT];
+    [coder encodeObject:self.media forKey:P_OBJ_MEDIA];
 }
 
 

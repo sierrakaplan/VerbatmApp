@@ -10,7 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface verbatmCustomImageView : UIImageView
+@interface verbatmCustomImageView : UIImageView <NSCoding>
 @property(strong, nonatomic) ALAsset* asset;
 @property (nonatomic)BOOL isVideo;
 @property (nonatomic) BOOL selected;

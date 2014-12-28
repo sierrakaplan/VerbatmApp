@@ -25,6 +25,7 @@
 @property(strong, nonatomic) NSString* sandwich;
 @property (strong, nonatomic) PFRelation * articleVideosRelation;
 @property (strong, nonatomic) PFRelation * articlePhotosRelation;
+@property (strong, nonatomic ) PFFile* pinchObjectFile;
 
 #define ARTICLE_PHOTO_RELATIONSHIP @"articlePhotoRelation"
 #define ARTICLE_VIDEO_RELATIONSHIP @"articleVideoRelation"
@@ -41,6 +42,7 @@
 
 @synthesize articleVideosRelation= _articleVideosRelation;
 @synthesize articlePhotosRelation = _articlePhotosRelation;
+@synthesize pinchObjectFile = _pinchObjectFile;
 
 #pragma mark - initialising an article
 /*by Lucio Dery */
@@ -175,6 +177,21 @@
 
 +(void)load{
     [self registerSubclass];
+}
+
+#pragma mark - adding Pinch Objects -
+
+-(void)setPinchObjects:(NSMutableArray *)p_objs
+{
+    NSData* pObj_Data = [NSKeyedArchiver archivedDataWithRootObject:p_objs];
+    _pinchObjectFile = [PFFile fileWithData:pObj_Data];
+}
+
+-(NSArray*)getPinchObjects
+{
+    NSData* data = [_pinchObjectFile getData];
+    NSArray* to_return = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    return to_return;
 }
 @end
 
