@@ -66,6 +66,7 @@
 		F20A24FA1A46166100BB77C1 /* verbatmCustomImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */; };
 		F266F3ED1A4A3ED900EA0327 /* articleDispalyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3EC1A4A3ED900EA0327 /* articleDispalyViewController.m */; };
 		F266F3F11A4A6AE200EA0327 /* v_Analyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* v_Analyzer.m */; };
+		F2964FA41A4FE43300E1DBEC /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = F2964FA31A4FE43300E1DBEC /* Page.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -174,6 +175,8 @@
 		F266F3EC1A4A3ED900EA0327 /* articleDispalyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = articleDispalyViewController.m; sourceTree = "<group>"; };
 		F266F3EF1A4A6AE200EA0327 /* v_Analyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_Analyzer.h; sourceTree = "<group>"; };
 		F266F3F01A4A6AE200EA0327 /* v_Analyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_Analyzer.m; sourceTree = "<group>"; };
+		F2964FA21A4FE43300E1DBEC /* Page.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page.h; sourceTree = "<group>"; };
+		F2964FA31A4FE43300E1DBEC /* Page.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -371,6 +374,8 @@
 				C7A8A7F219A96E0B00CE861F /* Photo.m */,
 				C7A8A7F419A96E1B00CE861F /* Video.h */,
 				C7A8A7F519A96E1B00CE861F /* Video.m */,
+				F2964FA21A4FE43300E1DBEC /* Page.h */,
+				F2964FA31A4FE43300E1DBEC /* Page.m */,
 			);
 			name = "Backend Model";
 			sourceTree = "<group>";
@@ -547,6 +552,7 @@
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m in Sources */,
+				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
 				C7F18D851A05C0EE0002255B /* verbatmTextField.m in Sources */,
 				C7CCFFAB19CFA74D00E90080 /* verbatmBlurBaseViewController.m in Sources */,
 				C7F3D46E1A4F84DF00B43238 /* verbatmUserSignUpViewController.m in Sources */,

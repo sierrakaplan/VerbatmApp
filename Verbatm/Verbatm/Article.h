@@ -24,7 +24,7 @@
 /*Note that the save call was removed. Call it externally*/
 
 //This creates an article object with a title and a subtitle.
--(instancetype)initWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle;
+-(instancetype)initWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle andPages:(NSArray*)pages;
 
 //sets the content of the Article. The content must correspond to the right format
 -(void) setArticleContent:(NSString *)content;

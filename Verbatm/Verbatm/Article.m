@@ -10,6 +10,7 @@
 #import "Article.h"
 #import "Photo.h"
 #import "Video.h"
+#import "Page.h"
 #import <Parse/PFRelation.h>
 #import <Parse/PFObject+Subclass.h>
 
@@ -26,6 +27,7 @@
 @property (strong, nonatomic) PFRelation * articleVideosRelation;
 @property (strong, nonatomic) PFRelation * articlePhotosRelation;
 @property (strong, nonatomic ) PFFile* pinchObjectFile;
+@property (strong, nonatomic) NSArray* pages;
 
 #define ARTICLE_PHOTO_RELATIONSHIP @"articlePhotoRelation"
 #define ARTICLE_VIDEO_RELATIONSHIP @"articleVideoRelation"
@@ -43,19 +45,21 @@
 @synthesize articleVideosRelation= _articleVideosRelation;
 @synthesize articlePhotosRelation = _articlePhotosRelation;
 @synthesize pinchObjectFile = _pinchObjectFile;
+@synthesize pages = _pages;
 
 #pragma mark - initialising an article
 /*by Lucio Dery */
 //This creates an article object with a title and subtitle
--(instancetype)initWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle
+-(instancetype)initWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle andPages:(NSArray*)pages
 {
     if((self = [super init]))
     {
-        if(title && subtitle)
+        if(title || subtitle)
         {
             self.title = title;
             self.subtitle = subtitle;
         }
+        _pages = pages;
     }
     return self;
 }
