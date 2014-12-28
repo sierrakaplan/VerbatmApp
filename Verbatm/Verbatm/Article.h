@@ -7,6 +7,7 @@
 //
 #import <UIKit/UIKit.h>
 #import <Parse/Parse.h>
+#import <Foundation/Foundation.h>
 @class Photo;
 @class Video;
 @class VerbatmUser;
@@ -36,6 +37,8 @@
 
 //adds a video to the list of videos of the article.
 -(void)addVideo:(Video*)video;
+
+-(void)setPinchObjects:(NSMutableArray*)p_objs;
 
 
 #pragma mark - querry articles for information

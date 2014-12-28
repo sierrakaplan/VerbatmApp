@@ -19,7 +19,6 @@
 @property (nonatomic, strong)UIImage* stillImage;
 @property (strong, nonatomic)AVCaptureVideoPreviewLayer* videoPreview;
 @property (nonatomic)UIDeviceOrientation deviceStartOrientation;
-@property (nonatomic) BOOL isHalfScreen;
 @property (strong, nonatomic) UIView* previewContainerView;
 
 
@@ -263,11 +262,10 @@
 #pragma mark - video recording 
 
 //by Lucio
--(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation isHalScreen:(BOOL)halfScreen
+-(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation
 {
     //set the variables
     self.deviceStartOrientation = startOrientation;
-    self.isHalfScreen = halfScreen;
     //Get the right output path for the video
     NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
     NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];

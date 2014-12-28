@@ -11,7 +11,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 
-@interface verbatmCustomPinchView : UIView
+@interface verbatmCustomPinchView : UIView <NSCoding>
 
 /*This adds a picture to the pinch object
  *The method return nothing.

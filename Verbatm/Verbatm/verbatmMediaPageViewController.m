@@ -371,6 +371,7 @@
 {
     UILongPressGestureRecognizer* recognizer = (UILongPressGestureRecognizer*)sender;
     if(recognizer.state == UIGestureRecognizerStateBegan){
+        [self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
         [self circleProgressViewAt:[sender locationInView: self.view]];
         self.timer = [NSTimer scheduledTimerWithTimeInterval:NUM_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
     }else{
@@ -453,7 +454,6 @@
     if(!self.circle) return;
     [self.sessionManager stopVideoRecording];
     [self clearVideoProgressImage];  //removes the video progress bar
-    [self.timer invalidate];
     [self freezeFrame];
 }
 
@@ -592,6 +592,8 @@
                  [self positionPullBarTransitionDown:NO];
                  
              }];
+            //gets rid of the text if there was typing going on
+            [self.vc_contentPage removeImageScrollview:nil];
         }
     }
     self.previousTranslation = CGPointMake(0, 0);//sanitize the translation difference so that the next round is sent back up

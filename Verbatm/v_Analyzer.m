@@ -56,9 +56,10 @@
             [arr addObject: ((verbatmCustomImageView*)view).asset];
         }
     }
-    if(p_obj.there_is_picture){
-        v_multiplePhotoVideo* imageView = [[v_multiplePhotoVideo alloc]initWithFrame:_preferedFrame andMedia:arr];
-        [imageView addTapGesture];
+    if(p_obj.there_is_picture)
+    {
+        UIImageView* imageView = [[UIImageView alloc]initWithImage:((verbatmCustomImageView*)[mediaArr lastObject]).image];
+        imageView.frame = _preferedFrame;
         [_results addObject:imageView];
     }else if(p_obj.there_is_text){
         v_textview* textView = [[v_textview alloc]initWithFrame:_preferedFrame];
@@ -70,6 +71,7 @@
         [_results addObject:vidView];
     }
 }
+
 
 -(void)handleTwoMedia:(verbatmCustomPinchView*)p_obj
 {

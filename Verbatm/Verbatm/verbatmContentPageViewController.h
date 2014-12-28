@@ -18,7 +18,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *sandwhichWhat;
 @property (strong, nonatomic) NSMutableArray * pageElements; //elements added to the scrollview- excludes uitextfields
 @property (nonatomic) CGRect containerViewFrame;
-@property (nonatomic) BOOL containerAtHalfScreen;// tells the contentpage if it's in half view
 @property (strong, nonatomic) verbatmUITextView * activeTextView; //view that is currently being filled in
 
 -(verbatmCustomPinchView *)newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;

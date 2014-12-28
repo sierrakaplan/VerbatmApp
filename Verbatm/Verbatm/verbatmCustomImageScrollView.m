@@ -274,7 +274,7 @@
     
     CGImageRelease(cgimg);
     //free the buffer after use
-    free(buffer);
+    //free(buffer);
 }
 
 

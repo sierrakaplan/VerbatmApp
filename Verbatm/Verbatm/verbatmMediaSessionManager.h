@@ -20,7 +20,7 @@
 
 -(instancetype)initSessionWithView:(UIView*)containerView;
 -(void)captureImage:(BOOL)halfScreen;
--(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation isHalScreen:(BOOL)halfScreen;
+-(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation;
 -(void)stopVideoRecording;
 -(void)setSessionOrientationToOrientation:(UIDeviceOrientation)orientation;
 -(void)setToFrameOfView:(UIView*)containerView;
