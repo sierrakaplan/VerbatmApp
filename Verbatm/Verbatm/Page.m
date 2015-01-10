@@ -36,7 +36,7 @@
 
 -(void)sortPinchObject:(verbatmCustomPinchView*)pinchObject
 {
-    NSMutableArray* media = [pinchObject mediaObjects];\
+    NSMutableArray* media = [pinchObject mediaObjects];
     if((_there_is_text = pinchObject.there_is_text)){
         _text = [pinchObject getTextFromPinchObject];
     }
@@ -92,8 +92,8 @@
     return @"Page";
 }
 
-+(void)load{
-    [self registerSubclass];
-}
+//+(void)load{
+//    [self registerSubclass];
+//}
 
 @end

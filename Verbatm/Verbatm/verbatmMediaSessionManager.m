@@ -450,7 +450,6 @@
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
         NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        [self stopSession];
         [self processImage:[[UIImage alloc] initWithData:dataForImage] isHalfScreen: halfScreen];
         [self saveImageToVerbatmAlbum];
     }];

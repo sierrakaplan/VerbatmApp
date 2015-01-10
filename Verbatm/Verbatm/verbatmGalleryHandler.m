@@ -102,15 +102,15 @@
 //sets the scrollView and presents it lowering from the top
 -(void)lowerScrollView
 {
-    for(verbatmCustomImageView* view in self.mediaImageViews){
-        if(self.numVideosReadded == 0) break;
-        if(view.isVideo){
-            AVPlayerLayer* pLayer = [view.layer.sublayers firstObject];
-            self.numVideosReadded--;
-            pLayer.frame = view.bounds;
-            [self.scrollView addSubview: view];
-        }
-    }
+//    for(verbatmCustomImageView* view in self.mediaImageViews){
+//        if(self.numVideosReadded == 0) break;
+//        if(view.isVideo){
+//            AVPlayerLayer* pLayer = [view.layer.sublayers firstObject];
+//            self.numVideosReadded--;
+//            pLayer.frame = view.bounds;
+//            [self.scrollView addSubview: view];
+//        }
+//    }
     [self.view addSubview: self.scrollView];
     if(!self.collider){
         self.collider = [[UICollisionBehavior alloc]initWithItems:@[self.scrollView]];
@@ -187,6 +187,10 @@
 -(void)addMediaToGallery:(ALAsset*)asset
 {
     verbatmCustomImageView* view = [self imageViewFromAsset:asset];
+    if(view.isVideo){
+         AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
+        [self playVideo:avurlAsset forView:view];
+    }
     [self returnToGallery:view];
 }
 
@@ -195,8 +199,8 @@
     //return;
     view.layer.cornerRadius = 8.0f;
     view.layer.masksToBounds = YES;
-    view.layer.borderColor = [UIColor whiteColor].CGColor;
-    view.layer.borderWidth = 0.0f;
+    view.layer.borderColor = [UIColor grayColor].CGColor;
+    view.layer.borderWidth = 2.0f;
 }
 
 
@@ -209,7 +213,7 @@
     // Create the AVPlayer using the playeritem
     AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
     //MUTE THE PLAYER
-    [self mutePlayer:player forAsset:asset];
+    player.muted = YES;
     player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
@@ -224,23 +228,6 @@
     [view.layer addSublayer:playerLayer];
     // You can play/pause using the AVPlayer object
     [player play];
-}
-
-//mutes the player
--(void)mutePlayer:(AVPlayer*)avPlayer forAsset:(AVURLAsset*)asset
-{
-    NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
-    // Mute all the audio tracks
-    NSMutableArray *allAudioParams = [NSMutableArray array];
-    for (AVAssetTrack *track in audioTracks) {
-        AVMutableAudioMixInputParameters *audioInputParams =  [AVMutableAudioMixInputParameters audioMixInputParameters];
-        [audioInputParams setVolume:0.0 atTime:kCMTimeZero];
-        [audioInputParams setTrackID:[track trackID]];
-        [allAudioParams addObject:audioInputParams];
-    }
-    AVMutableAudioMix *audioZeroMix = [AVMutableAudioMix audioMix];
-    [audioZeroMix setInputParameters:allAudioParams];
-    [[avPlayer currentItem] setAudioMix:audioZeroMix];
 }
 
 //tells me when the video ends so that I can rewind
@@ -335,8 +322,6 @@
 
 -(void)returnToGallery:(verbatmCustomImageView*)view
 {
-    [[view.layer.sublayers firstObject]removeFromSuperlayer];
-    view = [self imageViewFromAsset:view.asset];
     [self.media insertObject: view.asset atIndex:0];
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
@@ -345,17 +330,7 @@
     }
     view.frame = viewSize;
     [self addBorder: view];
-    if(view.isVideo){
-        AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
-        [self playVideo:avurlAsset forView:view];
-        if(self.isRaised){
-             self.numVideosReadded++;
-        }else{
-            [self.scrollView addSubview: view];
-        }
-    }else{
-        [self.scrollView addSubview: view];
-    }
+    [self.scrollView addSubview: view];
     [self.mediaImageViews insertObject:view atIndex:0];
     [self.view bringSubviewToFront:self.scrollView];
     [self.scrollView bringSubviewToFront:view];

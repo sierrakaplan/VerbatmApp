@@ -216,21 +216,6 @@
             self.imageViewer.layer.masksToBounds = YES;
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
-            if(self.there_is_video && [self thereIsOnlyOneMedium]){
-                verbatmCustomImageView* view = [self.media firstObject];
-                AVPlayerLayer* layer = [view.layer.sublayers firstObject];
-                if(layer == nil){   //view does not have a layer.......make a new layer.
-                    BOOL hasPlayer = [[self.videoView.layer.sublayers firstObject]isKindOfClass:[AVPlayerLayer class]];
-                    if(hasPlayer){
-                        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject] removeFromSuperlayer];
-                    }
-                }else{  //view has a layer. Use the old one.
-                    [layer removeFromSuperlayer];
-                    layer.frame = self.bounds;
-                    [self.videoView.layer addSublayer:layer];
-                    continue;
-                }
-            }
             ALAsset* asset = ((verbatmCustomImageView*)object).asset;
             AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
             [self playVideo:avurlAsset];
