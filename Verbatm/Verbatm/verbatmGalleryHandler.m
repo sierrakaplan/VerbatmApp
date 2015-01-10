@@ -111,6 +111,8 @@
             [self.scrollView addSubview: view];
         }
     }
+    //make the scrollview offset 0 so that it always starts at the beginning
+    self.scrollView.contentOffset = CGPointMake(0, 0);
     [self.view addSubview: self.scrollView];
     if(!self.collider){
         self.collider = [[UICollisionBehavior alloc]initWithItems:@[self.scrollView]];

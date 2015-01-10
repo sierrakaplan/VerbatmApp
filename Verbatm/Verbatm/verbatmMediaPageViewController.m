@@ -19,10 +19,12 @@
 #import "articleDispalyViewController.h"
 @interface verbatmMediaPageViewController () <UITextFieldDelegate>
 #pragma mark - Outlets -
-    @property (weak, nonatomic) IBOutlet UIView *pullBar;//the outlets
+    @property (weak, nonatomic) IBOutlet UIView *pullBar;
     @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
     @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
     @property (weak, nonatomic) IBOutlet UIButton *raiseKeyboardButton;
+@property (weak, nonatomic) IBOutlet UIButton *button_Preview;
+@property (weak, nonatomic) IBOutlet UIButton *button_Undo;
 
 #pragma mark - SubViews of screen-
     @property (weak, nonatomic) IBOutlet UIView *containerView;
@@ -173,8 +175,12 @@
     
     [self saveDefaultFrames];
     [self.vc_contentPage freeMainScrollView:NO];//makes sure the contentpage isn't scrolling
-
-
+    
+    
+    //make sure the frames are correctly centered
+    [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
+    [self positionPullBarTransitionDown:NO];//positions the pullbar to the right frame
+    [self centerPullBarButtons];
 }
 
 
@@ -191,12 +197,23 @@
 }
 
 
+-(void) centerPullBarButtons
+{
+    //get the xoffset for the undo button and ensure the the keyboardbutton has the same offset
+    NSInteger undoXOffset = self.button_Undo.frame.origin.x;
+    self.raiseKeyboardButton.frame = CGRectMake(self.view.frame.size.width - self.raiseKeyboardButton.frame.size.width - undoXOffset, self.raiseKeyboardButton.frame.origin.y, self.raiseKeyboardButton.frame.size.width, self.raiseKeyboardButton.frame.size.height);
+    
+    NSInteger centerPoint = self.view.frame.size.width /2;
+    self.button_Preview.frame = CGRectMake(centerPoint - (self.button_Preview.frame.size.width/2), self.button_Preview.frame.origin.y, self.button_Preview.frame.size.width, self.button_Preview.frame.size.height);
+}
+
 //saves the intitial frames for the pulldown bar and the container view
 -(void)saveDefaultFrames
 {
-    self.containerViewNoMSAVFrame = self.containerView.frame;
+    self.containerViewNoMSAVFrame =CGRectMake(0, 0, self.view.frame.size.width, self.containerView.frame.size.height);
     self.containerViewMSAVFrame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/6);
-    self.pullBarNoMSAVFrame = self.pullBar.frame;
+    self.pullBarNoMSAVFrame =CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y, self.view.frame.size.width, self.pullBar.frame.size.height);
+    
     self.pullBarMSAVFrame = CGRectMake(0, self.containerViewMSAVFrame.size.height , self.view.frame.size.width, self.pullBar.frame.size.height);
 }
 
@@ -545,9 +562,9 @@
     
     int newtranslation = translation.y-self.previousTranslation.y;
     
-    CGRect newFrame = CGRectMake(self.containerView.frame.origin.x, self.containerView.frame.origin.y, self.containerView.frame.size.width, self.containerView.frame.size.height + newtranslation);
+    CGRect newFrame = CGRectMake(self.containerView.frame.origin.x, self.containerView.frame.origin.y, self.view.frame.size.width, self.containerView.frame.size.height + newtranslation);
     
-    CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y + newtranslation, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+    CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y + newtranslation, self.view.frame.size.width, self.pullBar.frame.size.height);
     
     //set frames of bar and
     self.pullBar.frame = newPullBarFrame;
@@ -606,7 +623,7 @@
      {
          if(transitionDown)
          {
-             CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - (self.pullBar.frame.size.height+self.keyboardHeight), self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+             CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - (self.pullBar.frame.size.height+self.keyboardHeight), self.view.frame.size.width, self.pullBar.frame.size.height);
              self.pullBar.frame = newPullBarFrame;
          }else
          {
@@ -632,7 +649,7 @@
      {
         if(fullScreen)
         {
-            CGRect newContainerFrame = CGRectMake(self.containerView.frame.origin.x, self.containerView.frame.origin.y, self.containerView.frame.size.width, self.view.frame.size.height-self.pullBarNoMSAVFrame.size.height);//subtract the pullbar height so the container view is never behind it
+            CGRect newContainerFrame = CGRectMake(self.containerView.frame.origin.x, self.containerView.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height-self.pullBarNoMSAVFrame.size.height);//subtract the pullbar height so the container view is never behind it
             
             self.containerViewFullScreen = YES;
             self.containerViewMSAVMode = NO;
@@ -669,7 +686,12 @@
 
 - (IBAction)revealKeyboard:(id)sender
 {
-    if(!self.containerViewMSAVMode)
+    if(self.containerViewFullScreen)
+    {
+        [self.vc_contentPage removeKeyboardFromScreen];
+        
+    }
+    if(!self.containerViewMSAVMode && !self.containerViewFullScreen)
     {
         [self bringUpNewTextForMSAV];//brings up the new text view for the msav
         if(!self.containerViewFullScreen && !self.containerViewMSAVMode) self.containerViewMSAVMode=YES;
@@ -827,15 +849,12 @@
 
 -(void)hidePullBar
 {
-    if(!self.pullBar.hidden)
-    {
-        [UIView animateWithDuration:0.4 animations:^{
+        [UIView animateWithDuration:0.4 animations:^
+         {
             self.containerView.frame = self.view.frame;
             self.oldPullBarFrame = self.pullBar.frame;
             self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
-            
         }];
-    }
 }
 
 -(void) showPullBar
@@ -848,10 +867,6 @@
            {
                self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - self.pullBar.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
    
-           }else
-           {
-               self.pullBar.frame = self.oldPullBarFrame;
-
            }
            
        }];

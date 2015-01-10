@@ -81,6 +81,7 @@
 
 @property (weak, nonatomic) IBOutlet UIScrollView *personalScrollViewOfFirstContentPageTextBox;
 @property (weak, nonatomic) IBOutlet UILabel *wordsLeftLabel;
+@property (weak, nonatomic) IBOutlet UILabel *label_AT;
 @property (strong, nonatomic) verbatmGalleryHandler * gallery;
 
 #pragma mark Closed Element properties
@@ -164,7 +165,33 @@
     [self setPlaceholderColors];
     [self set_PersonalScrollView_ContentSizeandOffset];
     [self setClosedElementDefaultFrame];
-    [self creatBaseSelector];
+    [self createBaseSelector];
+    [self centerViews];
+    [self sizeMainScrollViewPhoneSize];
+}
+
+-(void) centerViews
+{
+    NSInteger middle = self.view.frame.size.width/2;
+    
+    //@ sign
+    self.label_AT.frame = CGRectMake(middle - self.label_AT.frame.size.width/2, self.label_AT.frame.origin.y, self.label_AT.frame.size.width, self.label_AT.frame.size.height);
+    //the space to the left and to the write of the @ label
+    NSInteger spaceLeft = (self.view.frame.size.width - self.label_AT.frame.size.width)/2;
+    
+    
+    //s@ndwiches
+    self.sandwhichWhat.frame = CGRectMake((spaceLeft/2)-(self.sandwhichWhat.frame.size.width/2), self.sandwhichWhat.frame.origin.y, self.sandwhichWhat.frame.size.width, self.sandwhichWhat.frame.size.height);
+    self.sandwichWhere.frame = CGRectMake(((self.label_AT.frame.origin.x + self.label_AT.frame.size.width)+(spaceLeft/2))-(self.sandwichWhere.frame.size.width/2), self.sandwichWhere.frame.origin.y, self.sandwichWhere.frame.size.width, self.sandwichWhere.frame.size.height);
+    
+    //article titleq
+    self.articleTitleField.frame = CGRectMake(middle - (self.articleTitleField.frame.size.width/2), self.articleTitleField.frame.origin.y, self.articleTitleField.frame.size.width, self.articleTitleField.frame.size.height);
+}
+
+//makes sure the main scrollview is edged to it's superview
+-(void)sizeMainScrollViewPhoneSize
+{
+    self.mainScrollView.frame= self.view.frame;
 }
 
 
@@ -214,7 +241,7 @@
 }
 
 
--(void) creatBaseSelector
+-(void) createBaseSelector
 {
     CGRect frame = CGRectMake(self.view.frame.size.width + ELEMENT_OFFSET_DISTANCE,
                               ELEMENT_OFFSET_DISTANCE/2,
@@ -231,9 +258,17 @@
     scrollview.contentOffset = self.standardContentOffsetForPersonalView;
     scrollview.pagingEnabled = YES;
     scrollview.showsHorizontalScrollIndicator = NO;
+    scrollview.delegate = self;
     [scrollview addSubview:self.baseMediaTileSelector];
     [self.mainScrollView addSubview:scrollview];
     [self.pageElements addObject:self.baseMediaTileSelector];
+    
+    for (int i =0; i< scrollview.subviews.count; i++) {
+        if([scrollview.subviews[i] isMemberOfClass:[UIImageView class]])
+        {
+            [scrollview.subviews[i] removeFromSuperview];
+        }
+    }
    
 }
 
@@ -633,7 +668,15 @@
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    
+    //there is a strange bug that adds imageview's on scrollviews this cleans them out
+    for(int i =0; i<scrollView.subviews.count; i++)
+    {
+        if([scrollView.subviews[i] isMemberOfClass:[UIImageView class]])
+        {
+            [scrollView.subviews[i] removeFromSuperview];
+        }
+    }
+        
     if(scrollView.subviews.count >1 || scrollView == self.openImageScrollView) return; /* this is a scrollview with an open collection so you can swipe away anything and also it's not an opened image*/
     
     verbatmCustomMediaSelectTile * tile= Nil;
@@ -708,6 +751,10 @@
             [self showPullBar];
         }
     }
+    
+    
+    
+    
     
     
 //    //if you have an open element, control it's alpha as it gets swiped away
@@ -807,8 +854,8 @@
         if(self.sandwhichWhat.isEditing)[self.sandwhichWhat resignFirstResponder];
         if(self.sandwichWhere.isEditing)[self.sandwichWhere resignFirstResponder];
         if(self.articleTitleField.isEditing)[self.articleTitleField resignFirstResponder];
-        [self.activeTextView resignFirstResponder];
     }
+    [self.openImageScrollView.textView resignFirstResponder];
 }
 
 //Remove keyboard when scrolling
@@ -1030,6 +1077,15 @@
     //format scrollview and text view
     //store the new view in our array
     [self storeView:mediaView inArrayAsBelowView:topView];
+    
+    
+    for(int i=0; i<newPersonalScrollView.subviews.count;i++)
+    {
+        if([newPersonalScrollView.subviews[i] isMemberOfClass:[UIImageView class]])
+        {
+            [newPersonalScrollView.subviews[i] removeFromSuperview];
+        }
+    }
     
 }
 
@@ -2172,12 +2228,20 @@
     verbatmCustomImageScrollView * isv = self.openImageScrollView;
     
     if(self.openImagePinchView.there_is_picture)[self.openImagePinchView changePicture:self.openImageScrollView.openImage.image];
-    if(self.openImagePinchView.there_is_text)[self.openImagePinchView changeText:self.openImageScrollView.textView];
+    if(self.openImagePinchView.there_is_text)
+    {
+        if([self.openImageScrollView.textView.text isEqualToString:@""])
+        {
+            [self.openImagePinchView.superview removeFromSuperview];
+            [self.pageElements removeObject:self.openImagePinchView];
+            [self shiftElementsBelowView:self.articleTitleField];
+        }else
+        {
+            [self.openImagePinchView changeText:self.openImageScrollView.textView];
+        }
+    }
     [isv.textView resignFirstResponder];
-    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-        [isv removeFromSuperview];
-    }];
-    
+    [isv removeFromSuperview];
     //[self showPullBar];
 }
 

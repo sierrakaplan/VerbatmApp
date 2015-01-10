@@ -26,6 +26,10 @@
 		C78B682A19CA6C22003D0AC5 /* verbatmGalleryHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */; };
 		C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F219A96E0B00CE861F /* Photo.m */; };
 		C7A8A7F619A96E1B00CE861F /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F519A96E1B00CE861F /* Video.m */; };
+		C7A8E3831A61CE1300776BD1 /* customPullBar.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7A8E3821A61CE1300776BD1 /* customPullBar.xib */; };
+		C7A8E3861A61CE4D00776BD1 /* customPullBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8E3851A61CE4D00776BD1 /* customPullBarView.m */; };
+		C7A8E3891A61CE7800776BD1 /* verbatmCustomKeyboardBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8E3881A61CE7800776BD1 /* verbatmCustomKeyboardBarView.m */; };
+		C7A8E38B1A61CE9A00776BD1 /* verbatmCustomKeyboardBard.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7A8E38A1A61CE9A00776BD1 /* verbatmCustomKeyboardBard.xib */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */; };
 		C7BC437A199D97F5004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
@@ -113,6 +117,12 @@
 		C7A8A7F219A96E0B00CE861F /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Photo.m; sourceTree = "<group>"; };
 		C7A8A7F419A96E1B00CE861F /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
 		C7A8A7F519A96E1B00CE861F /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Video.m; sourceTree = "<group>"; };
+		C7A8E3821A61CE1300776BD1 /* customPullBar.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = customPullBar.xib; sourceTree = "<group>"; };
+		C7A8E3841A61CE4D00776BD1 /* customPullBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = customPullBarView.h; path = ../customPullBarView.h; sourceTree = "<group>"; };
+		C7A8E3851A61CE4D00776BD1 /* customPullBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = customPullBarView.m; path = ../customPullBarView.m; sourceTree = "<group>"; };
+		C7A8E3871A61CE7800776BD1 /* verbatmCustomKeyboardBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmCustomKeyboardBarView.h; sourceTree = "<group>"; };
+		C7A8E3881A61CE7800776BD1 /* verbatmCustomKeyboardBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmCustomKeyboardBarView.m; sourceTree = "<group>"; };
+		C7A8E38A1A61CE9A00776BD1 /* verbatmCustomKeyboardBard.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = verbatmCustomKeyboardBard.xib; sourceTree = "<group>"; };
 		C7BC4372199D97F5004B91A1 /* Verbatm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Verbatm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BC4375199D97F5004B91A1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -250,6 +260,12 @@
 		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				C7A8E3821A61CE1300776BD1 /* customPullBar.xib */,
+				C7A8E3841A61CE4D00776BD1 /* customPullBarView.h */,
+				C7A8E3851A61CE4D00776BD1 /* customPullBarView.m */,
+				C7A8E38A1A61CE9A00776BD1 /* verbatmCustomKeyboardBard.xib */,
+				C7A8E3871A61CE7800776BD1 /* verbatmCustomKeyboardBarView.h */,
+				C7A8E3881A61CE7800776BD1 /* verbatmCustomKeyboardBarView.m */,
 				C7614F431A24993200E6AB24 /* verbatmCustomPinchView.xib */,
 				C7614F401A247BD100E6AB24 /* verbatmCustomImageView.h */,
 				C7614F411A247BD100E6AB24 /* verbatmCustomImageView.m */,
@@ -505,10 +521,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7A8E38B1A61CE9A00776BD1 /* verbatmCustomKeyboardBard.xib in Resources */,
 				C7614F441A24993200E6AB24 /* verbatmCustomPinchView.xib in Resources */,
 				C774040F19BE6538004C50EA /* Images.xcassets in Resources */,
 				C7BC4380199D97F5004B91A1 /* InfoPlist.strings in Resources */,
 				C7BC4389199D97F5004B91A1 /* Main.storyboard in Resources */,
+				C7A8E3831A61CE1300776BD1 /* customPullBar.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -529,6 +547,7 @@
 			files = (
 				C716A5B219E0CA3500A5490B /* verbatmDashLineView.m in Sources */,
 				9D29995B19BA9042005EBC8A /* verbatmMediaPageViewController.m in Sources */,
+				C7A8E3861A61CE4D00776BD1 /* customPullBarView.m in Sources */,
 				C7E6C1401A4E394600863893 /* v_multiVidTextPhoto.m in Sources */,
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
@@ -550,6 +569,7 @@
 				C78B682419CA6C01003D0AC5 /* verbatmUITextView.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* v_Analyzer.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
+				C7A8E3891A61CE7800776BD1 /* verbatmCustomKeyboardBarView.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m in Sources */,
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,

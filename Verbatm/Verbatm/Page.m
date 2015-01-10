@@ -93,7 +93,7 @@
 }
 
 +(void)load{
-    [self registerSubclass];
+    //[self registerSubclass];
 }
 
 @end

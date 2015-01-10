@@ -25,6 +25,7 @@
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
 -(void)freeMainScrollView:(BOOL) isFree; // either locks the scroll view or frees it
 -(void)alertGallery:(ALAsset*)asset;
+-(void) removeKeyboardFromScreen;
 @property(nonatomic) NSInteger pullBarHeight;
 
 @end

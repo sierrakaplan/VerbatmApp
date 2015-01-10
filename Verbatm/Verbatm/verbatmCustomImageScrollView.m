@@ -177,7 +177,6 @@
             [view.layer.sublayers[i] removeFromSuperlayer];
         }
     }
-
     [view.layer addSublayer:_shapeLayer];
     view.layer.cornerRadius = cornerRadius;
 }
@@ -221,6 +220,7 @@
     // Create an AVPlayerLayer using the player
     AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
     playerLayer.frame = self.openImage.bounds;
+
     playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     // Add it to your view's sublayers
     [self.openImage.layer addSublayer:playerLayer];
