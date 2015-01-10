@@ -81,6 +81,7 @@
 
 @property (weak, nonatomic) IBOutlet UIScrollView *personalScrollViewOfFirstContentPageTextBox;
 @property (weak, nonatomic) IBOutlet UILabel *wordsLeftLabel;
+@property (weak, nonatomic) IBOutlet UILabel *label_AT;
 @property (strong, nonatomic) verbatmGalleryHandler * gallery;
 
 #pragma mark Closed Element properties
@@ -164,7 +165,33 @@
     [self setPlaceholderColors];
     [self set_PersonalScrollView_ContentSizeandOffset];
     [self setClosedElementDefaultFrame];
-    [self creatBaseSelector];
+    [self createBaseSelector];
+    [self centerViews];
+    [self sizeMainScrollViewPhoneSize];
+}
+
+-(void) centerViews
+{
+    NSInteger middle = self.view.frame.size.width/2;
+    
+    //@ sign
+    self.label_AT.frame = CGRectMake(middle - self.label_AT.frame.size.width/2, self.label_AT.frame.origin.y, self.label_AT.frame.size.width, self.label_AT.frame.size.height);
+    //the space to the left and to the write of the @ label
+    NSInteger spaceLeft = (self.view.frame.size.width - self.label_AT.frame.size.width)/2;
+    
+    
+    //s@ndwiches
+    self.sandwhichWhat.frame = CGRectMake((spaceLeft/2)-(self.sandwhichWhat.frame.size.width/2), self.sandwhichWhat.frame.origin.y, self.sandwhichWhat.frame.size.width, self.sandwhichWhat.frame.size.height);
+    self.sandwichWhere.frame = CGRectMake(((self.label_AT.frame.origin.x + self.label_AT.frame.size.width)+(spaceLeft/2))-(self.sandwichWhere.frame.size.width/2), self.sandwichWhere.frame.origin.y, self.sandwichWhere.frame.size.width, self.sandwichWhere.frame.size.height);
+    
+    //article titleq
+    self.articleTitleField.frame = CGRectMake(middle - (self.articleTitleField.frame.size.width/2), self.articleTitleField.frame.origin.y, self.articleTitleField.frame.size.width, self.articleTitleField.frame.size.height);
+}
+
+//makes sure the main scrollview is edged to it's superview
+-(void)sizeMainScrollViewPhoneSize
+{
+    self.mainScrollView.frame= self.view.frame;
 }
 
 
@@ -214,7 +241,7 @@
 }
 
 
--(void) creatBaseSelector
+-(void) createBaseSelector
 {
     CGRect frame = CGRectMake(self.view.frame.size.width + ELEMENT_OFFSET_DISTANCE,
                               ELEMENT_OFFSET_DISTANCE/2,
@@ -231,9 +258,17 @@
     scrollview.contentOffset = self.standardContentOffsetForPersonalView;
     scrollview.pagingEnabled = YES;
     scrollview.showsHorizontalScrollIndicator = NO;
+    scrollview.delegate = self;
     [scrollview addSubview:self.baseMediaTileSelector];
     [self.mainScrollView addSubview:scrollview];
     [self.pageElements addObject:self.baseMediaTileSelector];
+    
+    for (int i =0; i< scrollview.subviews.count; i++) {
+        if([scrollview.subviews[i] isMemberOfClass:[UIImageView class]])
+        {
+            [scrollview.subviews[i] removeFromSuperview];
+        }
+    }
    
 }
 
@@ -298,9 +333,14 @@
                                                object:nil];
     
     
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(keyboardWillDisappear:)
                                                  name:UIKeyboardWillHideNotification
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyBoardDidShow:)
+                                                 name:UIKeyboardDidShowNotification
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeKeyboardFromScreen) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
@@ -368,7 +408,8 @@
 - (void)textViewDidChange:(UITextView *)textView
 {
     [self editWordCount];
-    [self updateScrollViewPosition];
+    //you only want the scrollview to update if we are in MSAV mode
+    if(((self.containerViewFrame.size.height + self.pullBarHeight) < self.view.frame.size.height)) [self updateScrollViewPosition];
 }
 
 //Iain
@@ -389,40 +430,6 @@
 }
 
 #pragma mark Bounds for TextViews
-
-//Iain
-//Adjust the bounds of the tex views the user is typing in
--(void) adjustBoundsOfTextView: (verbatmUITextView *) textView updateSCandSE:(BOOL) update /*should the scrollview and elements below be shifted*/
-{
-    //get position of caret relative to bounds
-    NSInteger yCoordinateOfCaretRelativeToMainView= textView.frame.origin.y+ self.caretPosition.origin.y + self.caretPosition.size.height+textView.superview.frame.origin.y;
-    NSInteger yCordinateOfBaseOfActiveView = textView.superview.frame.origin.y + textView.superview.frame.size.height;
-    
-    //adjust bounds of textView to best size for it with respect to the content inside
-    if((yCordinateOfBaseOfActiveView - yCoordinateOfCaretRelativeToMainView)< CURSOR_BASE_GAP)
-    {
-        //textView.frame = [self calculateBoundsForOpenTextView:textView];
-        textView.superview.frame = [self calculateBoundsForScrollViewForView:textView];
-        ((UIScrollView *)(textView.superview)).contentSize = self.standardContentSizeForPersonalView;
-        if(update)[self shiftElementsBelowView:textView]; //make sure this isn't being called rapidly
-    }
-    //make sure scroll is appropriately positioned
-    if(update)[self updateScrollViewPosition]; //make sure this isn't happening rapidly
-}
-
-
-////Iain
-////Calculate the appropriate bounds for the text view
-////We only return a frame that is larger than the default frame size
-//-(CGRect) calculateBoundsForOpenTextView: (UIView *) view
-//{
-//    CGSize  tightbounds = [view sizeThatFits:view.bounds.size];
-//    if(tightbounds.height >= self.defaultOpenElementFrame.size.height)//only adjust the size if the frame size is larger than the extended page size
-//    {
-//        return CGRectMake(self.defaultOpenElementFrame.origin.x, ELEMENT_OFFSET_DISTANCE/2, view.bounds.size.width, tightbounds.height);
-//    }
-//    return view.frame; //if we reach here the bounds of the view are just fine
-//}
 
 
 #pragma mark Caret within TextView
@@ -510,6 +517,7 @@
 -(void) updateScrollViewPosition
 {
     
+   
     if(self.sandwhichWhat.editing || self.sandwichWhere.editing) return; //if it is the s@andwiches that are set then
     
     [self updateCaretPositionInView:self.openImageScrollView.textView];//ensure that the caret is up to date
@@ -660,7 +668,15 @@
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    
+    //there is a strange bug that adds imageview's on scrollviews this cleans them out
+    for(int i =0; i<scrollView.subviews.count; i++)
+    {
+        if([scrollView.subviews[i] isMemberOfClass:[UIImageView class]])
+        {
+            [scrollView.subviews[i] removeFromSuperview];
+        }
+    }
+        
     if(scrollView.subviews.count >1 || scrollView == self.openImageScrollView) return; /* this is a scrollview with an open collection so you can swipe away anything and also it's not an opened image*/
     
     verbatmCustomMediaSelectTile * tile= Nil;
@@ -735,6 +751,10 @@
             [self showPullBar];
         }
     }
+    
+    
+    
+    
     
     
 //    //if you have an open element, control it's alpha as it gets swiped away
@@ -834,14 +854,14 @@
         if(self.sandwhichWhat.isEditing)[self.sandwhichWhat resignFirstResponder];
         if(self.sandwichWhere.isEditing)[self.sandwichWhere resignFirstResponder];
         if(self.articleTitleField.isEditing)[self.articleTitleField resignFirstResponder];
-        [self.activeTextView resignFirstResponder];
     }
+    [self.openImageScrollView.textView resignFirstResponder];
 }
 
 //Remove keyboard when scrolling
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
-    if(scrollView == self.openImageScrollView)self.openImageScrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
+    scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 }
 
 #pragma mark Keyboard Notifications
@@ -853,8 +873,14 @@
     //store the keyboard height for further use
     self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
 
-    [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( keyboardSize.height + self.pullBarHeight))];
+   
 }
+
+-(void) keyBoardDidShow:(NSNotification *) notification
+{
+     [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
+}
+
 -(void)keyboardWillDisappear:(NSNotification *) notification
 {
     [self.openImageScrollView adjustFrameOfTextViewForGap: 0];
@@ -1051,6 +1077,15 @@
     //format scrollview and text view
     //store the new view in our array
     [self storeView:mediaView inArrayAsBelowView:topView];
+    
+    
+    for(int i=0; i<newPersonalScrollView.subviews.count;i++)
+    {
+        if([newPersonalScrollView.subviews[i] isMemberOfClass:[UIImageView class]])
+        {
+            [newPersonalScrollView.subviews[i] removeFromSuperview];
+        }
+    }
     
 }
 
@@ -1578,7 +1613,7 @@
         }else
         {
             [self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
-            [self createCustomImageScrollViewFromPinchView:nil andImageView:nil orTextView:[[verbatmUITextView alloc]init]];
+            [self createCustomImageScrollViewFromPinchView:self.pageElements[0] andImageView:nil orTextView:[[verbatmUITextView alloc]init]];
         }
     }
 }
@@ -1763,10 +1798,6 @@
     
     //reposition views on screen
     [self shiftElementsBelowView:view];
-    
-    //ensure the the screen is scrolled in order for view to appear
-    if([view isKindOfClass:[UITextView class]])[self updateScrollViewPosition];
-
 }
 
 
@@ -2197,12 +2228,20 @@
     verbatmCustomImageScrollView * isv = self.openImageScrollView;
     
     if(self.openImagePinchView.there_is_picture)[self.openImagePinchView changePicture:self.openImageScrollView.openImage.image];
-    if(self.openImagePinchView.there_is_text)[self.openImagePinchView changeText:self.openImageScrollView.textView];
+    if(self.openImagePinchView.there_is_text)
+    {
+        if([self.openImageScrollView.textView.text isEqualToString:@""])
+        {
+            [self.openImagePinchView.superview removeFromSuperview];
+            [self.pageElements removeObject:self.openImagePinchView];
+            [self shiftElementsBelowView:self.articleTitleField];
+        }else
+        {
+            [self.openImagePinchView changeText:self.openImageScrollView.textView];
+        }
+    }
     [isv.textView resignFirstResponder];
-    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-        [isv removeFromSuperview];
-    }];
-    
+    [isv removeFromSuperview];
     //[self showPullBar];
 }
 

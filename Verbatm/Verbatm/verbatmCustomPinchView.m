@@ -204,6 +204,7 @@
 {
     
     self.textField.text = @"";
+    verbatmCustomImageView* videoView = nil;
     for(id object in self.media){
         if([object isKindOfClass: [UITextView class]]){
             self.textField.text = [self.textField.text stringByAppendingString: ((UITextView*)object).text];
@@ -216,10 +217,13 @@
             self.imageViewer.layer.masksToBounds = YES;
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
-            ALAsset* asset = ((verbatmCustomImageView*)object).asset;
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
-            [self playVideo:avurlAsset];
+            if(!videoView) videoView = object;
         }
+    }
+    if(videoView){
+        ALAsset* asset = ((verbatmCustomImageView*)videoView).asset;
+        AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
+        [self playVideo:avurlAsset];
     }
     self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
     self.textField.textColor = [UIColor whiteColor];
@@ -372,9 +376,6 @@
 
 -(NSMutableArray*)mediaObjects
 {
-//    if([self.videoView.layer.sublayers firstObject]){
-//        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
-//    }
     return self.media;
 }
 

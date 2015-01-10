@@ -1,4 +1,4 @@
-//
+ //
 //  articleDispalyViewController.m
 //  Verbatm
 //
@@ -34,14 +34,6 @@
     _poppedOffPages = [[NSMutableArray alloc]init];
 }
 
-//-(NSMutableArray*)poppedOffPages
-//{
-//    if(!_poppedOffPages){
-//        _poppedOffPages = [[NSMutableArray alloc]init];
-//    }
-//    return _poppedOffPages;
-//}
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -69,6 +61,9 @@
             continue;
         }
         view.frame = self.view.bounds;
+        
+        [self addShadowToView: view];
+        
         [self.view insertSubview:view atIndex:0];
         if([view isKindOfClass:[v_photoVideo class]]){
             [((v_photoVideo*)view) createLongPressGesture];
@@ -104,7 +99,6 @@
     edgePanL.edges =  UIRectEdgeLeft;
     [self.view addGestureRecognizer: edgePanR];
     [self.view addGestureRecognizer: edgePanL];
-
 }
 
 
@@ -205,4 +199,29 @@
         [((v_multiplePhotoVideo*)_animatingView) mutePlayer];
     }
 }
+
+//Adds a shadow to whatever view is sent
+//Iain
+-(void) addShadowToView: (UIView *) view
+{
+    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
+    view.layer.masksToBounds = NO;
+    view.layer.shadowColor = [UIColor blackColor].CGColor;
+    view.layer.shadowOffset = CGSizeMake(2.0f, 0.3f);
+    view.layer.shadowOpacity = 0.5f;
+    view.layer.shadowPath = shadowPath.CGPath;
+}
+
+-(void) removeStatusBar
+{
+    //remove the status bar
+    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        // iOS 7
+        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+    } else {
+        // iOS 6
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    }
+}
+
 @end

@@ -56,7 +56,8 @@
             [arr addObject: ((verbatmCustomImageView*)view).asset];
         }
     }
-    if(p_obj.there_is_picture){
+    if(p_obj.there_is_picture)
+    {
         UIImageView* imageView = [[UIImageView alloc]initWithImage:((verbatmCustomImageView*)[mediaArr lastObject]).image];
         imageView.frame = _preferedFrame;
         [_results addObject:imageView];
@@ -70,6 +71,7 @@
         [_results addObject:vidView];
     }
 }
+
 
 -(void)handleTwoMedia:(verbatmCustomPinchView*)p_obj
 {

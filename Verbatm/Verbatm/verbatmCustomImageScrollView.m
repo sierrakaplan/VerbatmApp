@@ -177,7 +177,6 @@
             [view.layer.sublayers[i] removeFromSuperlayer];
         }
     }
-
     [view.layer addSublayer:_shapeLayer];
     view.layer.cornerRadius = cornerRadius;
 }
@@ -221,6 +220,7 @@
     // Create an AVPlayerLayer using the player
     AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
     playerLayer.frame = self.openImage.bounds;
+
     playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     // Add it to your view's sublayers
     [self.openImage.layer addSublayer:playerLayer];
@@ -247,10 +247,7 @@
     Byte *buffer = (Byte*)malloc(assetRepresentation.size);
     NSUInteger buffered = [assetRepresentation getBytes:buffer fromOffset:0.0 length:assetRepresentation.size error:nil];
     NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
-    
-    
-    //NSData * data = UIImagePNGRepresentation(self.openImage.image);
-    
+        
     //warm filter
     CIImage *beginImage =  [CIImage imageWithData:data];
     
@@ -276,6 +273,8 @@
     self.filter_BW = [UIImage imageWithCGImage:cgimg1];
     
     CGImageRelease(cgimg);
+    //free the buffer after use
+    //free(buffer);
 }
 
 

@@ -102,6 +102,7 @@
 //sets the scrollView and presents it lowering from the top
 -(void)lowerScrollView
 {
+
 //    for(verbatmCustomImageView* view in self.mediaImageViews){
 //        if(self.numVideosReadded == 0) break;
 //        if(view.isVideo){
@@ -111,6 +112,8 @@
 //            [self.scrollView addSubview: view];
 //        }
 //    }
+//    //make the scrollview offset 0 so that it always starts at the beginning
+//    self.scrollView.contentOffset = CGPointMake(0, 0);
     [self.view addSubview: self.scrollView];
     if(!self.collider){
         self.collider = [[UICollisionBehavior alloc]initWithItems:@[self.scrollView]];
@@ -187,10 +190,6 @@
 -(void)addMediaToGallery:(ALAsset*)asset
 {
     verbatmCustomImageView* view = [self imageViewFromAsset:asset];
-    if(view.isVideo){
-         AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
-        [self playVideo:avurlAsset forView:view];
-    }
     [self returnToGallery:view];
 }
 
@@ -329,6 +328,10 @@
         otherView.frame = CGRectOffset(otherView.frame,  (self.scrollView.frame.size.width - OFFSET)/2, 0);
     }
     view.frame = viewSize;
+    if(view.isVideo && !view.layer.sublayers.count){
+        AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
+        [self playVideo:avurlAsset forView:view];
+    }
     [self addBorder: view];
     [self.scrollView addSubview: view];
     [self.mediaImageViews insertObject:view atIndex:0];

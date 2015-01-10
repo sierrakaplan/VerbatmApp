@@ -45,11 +45,12 @@
         
         //create the assetLibrary
         self.assetLibrary = [[ALAssetsLibrary alloc] init];
-        [self createVerbatmDirectory];
+        
+        [self doInitialSetUps];
         
         //Create the session and set its properties.
         self.session = [[AVCaptureSession alloc]init];
-        self.session.sessionPreset = AVCaptureSessionPresetMedium;
+        self.session.sessionPreset = AVCaptureSessionPresetHigh;
         [self addStillImageOutput];
         
         //add the video and audio devices to the session
@@ -64,6 +65,17 @@
         [self.session startRunning];
     }
     return self;
+}
+
+-(void)doInitialSetUps
+{
+    static NSString* const hasRunAppOnceKey = @"hasRunAppOnceKey";
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults boolForKey:hasRunAppOnceKey] == NO)
+    {
+        [self createVerbatmDirectory];
+        [defaults setBool:YES forKey:hasRunAppOnceKey];
+    }
 }
 
 /*Directs the output of the still image of the session to the stillImageOutput file
@@ -449,9 +461,14 @@
     [videoConnection setVideoOrientation:self.videoPreview.connection.videoOrientation];
     //requesting a capture
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-        NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-        [self processImage:[[UIImage alloc] initWithData:dataForImage] isHalfScreen: halfScreen];
-        [self saveImageToVerbatmAlbum];
+        if(!error)
+        {
+            NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+            [self processImage:[[UIImage alloc] initWithData:dataForImage] isHalfScreen: halfScreen];
+            [self saveImageToVerbatmAlbum];
+        }else{
+            NSLog(@"%@", [error localizedDescription]);
+        }
     }];
 }
 

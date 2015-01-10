@@ -18,7 +18,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *sandwhichWhat;
 @property (strong, nonatomic) NSMutableArray * pageElements; //elements added to the scrollview- excludes uitextfields
 @property (nonatomic) CGRect containerViewFrame;
-@property (nonatomic) BOOL containerAtHalfScreen;// tells the contentpage if it's in half view
 @property (strong, nonatomic) verbatmUITextView * activeTextView; //view that is currently being filled in
 
 -(verbatmCustomPinchView *)newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
@@ -26,6 +25,7 @@
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
 -(void)freeMainScrollView:(BOOL) isFree; // either locks the scroll view or frees it
 -(void)alertGallery:(ALAsset*)asset;
+-(void) removeKeyboardFromScreen;
 @property(nonatomic) NSInteger pullBarHeight;
 
 @end
