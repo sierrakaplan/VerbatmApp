@@ -383,7 +383,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "567"
             endingLineNumber = "567"
-            landmarkName = "-expandContentPage_Began:"
+            landmarkName = "-expandContentPage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -415,8 +415,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "542"
             endingLineNumber = "542"
-            landmarkName = "-sessionManager"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmMediaPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1289,7 +1289,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2267"
             endingLineNumber = "2267"
-            landmarkName = "-addTapGestureToView:"
+            landmarkName = "-removeImageScrollview:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1989,7 +1989,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "199"
             endingLineNumber = "199"
-            landmarkName = "-addBorder:"
+            landmarkName = "-playVideo:forView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2005,6 +2005,22 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "978"
             endingLineNumber = "978"
+            landmarkName = "-addElementPinchGesture:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmContentPageViewController.m"
+            timestampString = "442633556.619571"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "980"
+            endingLineNumber = "980"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -2021,24 +2037,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "980"
             endingLineNumber = "980"
-            landmarkName = "-handleHorizontalPincheGestureChanged:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "442633556.619571"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "980"
-            endingLineNumber = "980"
-            landmarkName = "-handleHorizontalPincheGestureChanged:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2069,7 +2069,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "311"
             endingLineNumber = "311"
-            landmarkName = "-selectMedia:"
+            landmarkName = "-returnToGallery:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2085,7 +2085,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "622"
             endingLineNumber = "622"
-            landmarkName = "-positionPullBarTransitionDown:"
+            landmarkName = "-expandContentPage_Changed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2325,8 +2325,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "192"
             endingLineNumber = "192"
-            landmarkName = "-addMediaToGallery:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmGalleryHandler"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2341,8 +2341,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "191"
             endingLineNumber = "191"
-            landmarkName = "-addMediaToGallery:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmGalleryHandler"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2437,7 +2437,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "305"
             endingLineNumber = "305"
-            landmarkName = "-fillArrayWithMedia"
+            landmarkName = "-selectMedia:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2864,8 +2864,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "335"
             endingLineNumber = "335"
-            landmarkName = "-selectMedia:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmGalleryHandler"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3018,8 +3018,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "338"
             endingLineNumber = "338"
-            landmarkName = "-returnToGallery:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmGalleryHandler"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3034,7 +3034,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "-dismissGallery"
+            landmarkName = "-loadMediaUntoScrollView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3050,8 +3050,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "339"
             endingLineNumber = "339"
-            landmarkName = "-returnToGallery:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmGalleryHandler"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3146,7 +3146,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "328"
             endingLineNumber = "328"
-            landmarkName = "-selectMedia:"
+            landmarkName = "-returnToGallery:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3194,8 +3194,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "551"
             endingLineNumber = "551"
-            landmarkName = "-expandContentPage:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmMediaPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3210,8 +3210,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "552"
             endingLineNumber = "552"
-            landmarkName = "-expandContentPage:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmMediaPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3242,7 +3242,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "329"
             endingLineNumber = "329"
-            landmarkName = "-selectMedia:"
+            landmarkName = "-returnToGallery:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3370,8 +3370,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "645"
             endingLineNumber = "645"
-            landmarkName = "@implementation verbatmMediaPageViewController"
-            landmarkType = "3">
+            landmarkName = "-positionPullBarTransitionDown:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3386,7 +3386,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "245"
             endingLineNumber = "245"
-            landmarkName = "-mutePlayer:forAsset:"
+            landmarkName = "-getVerbatmMediaFolder"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3514,8 +3514,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2362"
             endingLineNumber = "2362"
-            landmarkName = "-addPinchObjects:toScrollView:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -3578,8 +3578,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2426"
             endingLineNumber = "2426"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-playVideo:forView:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4200,8 +4200,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2315"
             endingLineNumber = "2315"
-            landmarkName = "-createCustomImageScrollViewFromPinchView:andImageView:orTextView:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4408,8 +4408,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1083"
             endingLineNumber = "1083"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-createNewViewToRevealBetweenPinchViews"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4628,8 +4628,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1165"
             endingLineNumber = "1165"
-            landmarkName = "-formatNewScrollView:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4868,8 +4868,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2314"
             endingLineNumber = "2314"
-            landmarkName = "-createCustomImageScrollViewFromPinchView:andImageView:orTextView:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -5692,8 +5692,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "872"
             endingLineNumber = "872"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-scrollViewWillBeginDragging:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -5946,8 +5946,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "874"
             endingLineNumber = "874"
-            landmarkName = "-keyboardWillShow:"
-            landmarkType = "5">
+            landmarkName = "@implementation verbatmContentPageViewController"
+            landmarkType = "3">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -6166,8 +6166,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2266"
             endingLineNumber = "2266"
-            landmarkName = "@implementation verbatmContentPageViewController"
-            landmarkType = "3">
+            landmarkName = "-removeImageScrollview:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -6182,7 +6182,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2268"
             endingLineNumber = "2268"
-            landmarkName = "-addTapGestureToView:"
+            landmarkName = "-removeImageScrollview:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6646,7 +6646,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "296"
             endingLineNumber = "296"
-            landmarkName = "-fillArrayWithMedia"
+            landmarkName = "-selectMedia:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6662,7 +6662,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "304"
             endingLineNumber = "304"
-            landmarkName = "-fillArrayWithMedia"
+            landmarkName = "-selectMedia:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6678,7 +6678,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "306"
             endingLineNumber = "306"
-            landmarkName = "-fillArrayWithMedia"
+            landmarkName = "-selectMedia:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -6694,7 +6694,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "167"
             endingLineNumber = "167"
-            landmarkName = "-loadMediaUntoScrollView"
+            landmarkName = "-imageViewFromAsset:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -1444,7 +1444,6 @@
             [self.lowerPinchView removeFromSuperview];
             [self.pageElements removeObject:self.lowerPinchView];
             
-            NSLog(@"1");
             NSMutableArray* array_of_objects = [[NSMutableArray alloc] initWithObjects:self.upperPinchView,self.lowerPinchView, nil];
             verbatmCustomPinchView * pinchView = [verbatmCustomPinchView pinchTogether:array_of_objects];
             

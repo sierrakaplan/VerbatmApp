@@ -212,7 +212,7 @@
     // Add it to your view's sublayers
     [view.layer addSublayer:playerLayer];
     // You can play/pause using the AVPlayer object
-    [player play];
+   // [player play];
 }
 
 //tells me when the video ends so that I can rewind
@@ -265,17 +265,11 @@
 //this is done on another queue so as not to block the main queue
 -(void)fillArrayWithMedia
 {
-    __block int j = 0;
     __weak verbatmGalleryHandler* weakSelf = self;
     [self.verbatmFolder enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
         if(result){
             if(![weakSelf.media containsObject:result]){
-                j++;
                 [weakSelf.media insertObject:result atIndex:0];
-            }
-            if(j > 50){
-                *stop = YES;
-                [weakSelf loadMediaUntoScrollView];
             }
         }else{
             *stop = YES;
