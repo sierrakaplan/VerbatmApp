@@ -204,6 +204,7 @@
 {
     
     self.textField.text = @"";
+    verbatmCustomImageView* videoView = nil;
     for(id object in self.media){
         if([object isKindOfClass: [UITextView class]]){
             self.textField.text = [self.textField.text stringByAppendingString: ((UITextView*)object).text];
@@ -216,22 +217,17 @@
             self.imageViewer.layer.masksToBounds = YES;
             //[self.background bringSubviewToFront: self.imageViewer];
         }else{
-            if(self.there_is_video && [self thereIsOnlyOneMedium]){
-                verbatmCustomImageView* view = [self.media firstObject];
-                AVPlayerLayer* layer = [view.layer.sublayers firstObject];
-                if(layer == nil){   //view does not have a layer.......make a new layer.
-                    BOOL hasPlayer = [[self.videoView.layer.sublayers firstObject]isKindOfClass:[AVPlayerLayer class]];
-                    if(hasPlayer){
-                        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject] removeFromSuperlayer];
-                    }
-                }else{  //view has a layer. Use the old one.
-                    [layer removeFromSuperlayer];
-                    layer.frame = self.bounds;
-                    [self.videoView.layer addSublayer:layer];
-                    continue;
-                }
-            }
-            ALAsset* asset = ((verbatmCustomImageView*)object).asset;
+            if(!videoView) videoView = object;
+        }
+    }
+    if(videoView){
+        AVPlayerLayer* pLayer = [videoView.layer.sublayers firstObject];
+        if(pLayer){
+            [pLayer removeFromSuperlayer];
+            pLayer.frame = self.videoView.bounds;
+            [self.videoView.layer addSublayer:pLayer];
+        }else{
+            ALAsset* asset = ((verbatmCustomImageView*)videoView).asset;
             AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
             [self playVideo:avurlAsset];
         }
@@ -382,14 +378,15 @@
 //This applies, whether it is a collection or not.
 -(BOOL)hasMultipleMedia
 {
+    
     return self.media.count > 1;
 }
 
 -(NSMutableArray*)mediaObjects
 {
-//    if([self.videoView.layer.sublayers firstObject]){
-//        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
-//    }
+    if([self.videoView.layer.sublayers firstObject]){
+        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
+    }
     return self.media;
 }
 

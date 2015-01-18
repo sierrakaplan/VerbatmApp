@@ -45,7 +45,8 @@
         
         //create the assetLibrary
         self.assetLibrary = [[ALAssetsLibrary alloc] init];
-        [self createVerbatmDirectory];
+        
+        [self doInitialSetUps];
         
         //Create the session and set its properties.
         self.session = [[AVCaptureSession alloc]init];
@@ -64,6 +65,18 @@
         [self.session startRunning];
     }
     return self;
+}
+
+-(void)doInitialSetUps
+{
+    static NSString* const hasRunAppOnceKey = @"hasRunAppOnceKey";
+    NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
+    if ([defaults boolForKey:hasRunAppOnceKey] == NO)
+    {
+        [self createVerbatmDirectory];
+        [defaults setBool:YES forKey:hasRunAppOnceKey];
+    }
+    [self getVerbatmDirectory];
 }
 
 /*Directs the output of the still image of the session to the stillImageOutput file
@@ -142,6 +155,12 @@
                                  failureBlock:^(NSError *error) {
                                      NSLog(@"error adding album");
                                  }];
+    
+}
+
+-(void)getVerbatmDirectory
+{
+    NSString* albumName = ALBUM_NAME;
     __weak verbatmMediaSessionManager* weakSelf = self;
     [self.assetLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum
                                      usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
@@ -155,7 +174,6 @@
                                        NSLog(@"failed to enumerate albums:\nError: %@", [error localizedDescription]);
                                    }];
 }
-
 
 #pragma mark - customize session -
 
@@ -452,11 +470,9 @@
         if(!error)
         {
             NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-            [self stopSession];
             [self processImage:[[UIImage alloc] initWithData:dataForImage] isHalfScreen: halfScreen];
             [self saveImageToVerbatmAlbum];
-        }else
-        {
+        }else{
             NSLog(@"%@", [error localizedDescription]);
         }
     }];

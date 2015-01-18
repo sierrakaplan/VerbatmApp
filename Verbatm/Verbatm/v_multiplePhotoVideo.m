@@ -52,8 +52,9 @@
 
 -(void)renderPhotos:(NSMutableArray*)media andVideos:(NSMutableArray*)videos
 {
+    CGRect biggestFrame;
     if(videos.count){
-        CGRect biggestFrame;
+        
         int largestAreaSoFar = 0;
         for(id frame in self.frames){
             CGRect this_frame = [frame CGRectValue];
@@ -63,24 +64,25 @@
             }
         }
         [self.frames removeObject:[NSValue valueWithCGRect:biggestFrame]];
-        self.videoView = [[v_videoview alloc]initWithFrame:biggestFrame andAssets:videos];
-        [self addSubview: self.videoView];
-        [self bringSubviewToFront: self.videoView];
     }
     int i = 0;
     for(id frame in self.frames){
         CGRect this_frame = [frame CGRectValue];
-         ALAssetRepresentation *assetRepresentation = [[media objectAtIndex:i] defaultRepresentation];
+        ALAsset* asset = (ALAsset*)[media objectAtIndex:i];
+        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
         UIImageView* imageview = [[UIImageView alloc] initWithFrame: this_frame];
-        UIImage* image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
-                                              scale:[assetRepresentation scale]
-                                        orientation:UIImageOrientationUp];
+        UIImage* image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage] scale:[assetRepresentation scale] orientation:UIImageOrientationUp];
         imageview.contentMode = UIViewContentModeScaleAspectFill;
         imageview.image = image;
         [self addSubview:imageview];
         imageview.layer.masksToBounds = YES;
         imageview.userInteractionEnabled = YES;
         i++;
+    }
+    if(videos.count){ //another hack......could not immediately figure out why creating video before caused issue.
+        self.videoView = [[v_videoview alloc]initWithFrame:biggestFrame andAssets:videos];
+        [self addSubview: self.videoView];
+        [self bringSubviewToFront: self.videoView];
     }
 }
 

@@ -62,7 +62,7 @@
         }
         view.frame = self.view.bounds;
         
-        [self addShadowToView: view];
+        //[self addShadowToView: view];
         
         [self.view insertSubview:view atIndex:0];
         if([view isKindOfClass:[v_photoVideo class]]){

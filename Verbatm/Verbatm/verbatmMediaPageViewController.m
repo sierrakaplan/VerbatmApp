@@ -108,7 +108,7 @@
     #define SWITCH_CAMERA_START_POSITION 260, 5
 
 #pragma mark Session timer time
-    #define TIME_FOR_SESSION_TO_RESUME 0.5
+    #define TIME_FOR_SESSION_TO_RESUME 0.2
     #define NUM_VID_SECONDS 20
 
 #pragma Transtition helpers
@@ -371,21 +371,25 @@
 //Lucio
 - (IBAction)takePhoto:(id)sender
 {
-    [self.sessionManager captureImage: !self.canRaise]; //this call pauses the session at the right time so as to give user an indication that a photo has been taken.
-    [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
+    [self.sessionManager captureImage: !self.canRaise];
+    [self freezeFrame];
 }
 
 //Lucio
 -(void)freezeFrame
 {
-    [self.sessionManager stopSession];
-    [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession) userInfo:nil repeats:NO];
+    UIView* dummyView = [[UIView alloc]initWithFrame: self.verbatmCameraView.frame];
+    dummyView.backgroundColor = [UIColor blackColor];
+    [self.view insertSubview:dummyView aboveSubview:self.verbatmCameraView];
+    [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession:) userInfo:dummyView repeats:NO];
 }
 
 //Lucio
--(void)resumeSession
+-(void)resumeSession:(NSTimer*)timer
 {
-    [self.sessionManager startSession];
+    UIView* dummyView = (UIView*)timer.userInfo;
+    [dummyView removeFromSuperview];
+    [timer invalidate];
 }
 
 
