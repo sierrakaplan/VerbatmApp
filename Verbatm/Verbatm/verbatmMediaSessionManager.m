@@ -50,7 +50,7 @@
         
         //Create the session and set its properties.
         self.session = [[AVCaptureSession alloc]init];
-        self.session.sessionPreset = AVCaptureSessionPresetHigh;
+        self.session.sessionPreset = AVCaptureSessionPresetMedium;
         [self addStillImageOutput];
         
         //add the video and audio devices to the session

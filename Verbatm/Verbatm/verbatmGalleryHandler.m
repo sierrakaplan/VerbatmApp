@@ -69,7 +69,7 @@
     self.scrollView.pagingEnabled = NO;
     self.scrollView.clipsToBounds = NO;
     self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-    self.scrollView.showsHorizontalScrollIndicator = YES;
+    self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.delegate = self;
     self.scrollView.alwaysBounceHorizontal = YES;
     
@@ -318,7 +318,7 @@
         AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
         [self playVideo:avurlAsset forView:view];
     }
-    if(self.isRaised){ //THIS IS A HACK. I NEED A PERMANENT/BETTER SOLUTION
+    if(self.isRaised && view.isVideo){ //THIS IS A HACK. I NEED A PERMANENT/BETTER SOLUTION
         self.scrollView.hidden = YES;
         [self lowerScrollView];
         [self.scrollView addSubview: view];
