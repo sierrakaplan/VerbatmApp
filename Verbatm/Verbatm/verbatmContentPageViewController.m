@@ -347,6 +347,12 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(undoTileDeleteSwipe:) name:NOTIFICATION_UNDO object: nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(keyBoardWillChangeFrame:)
+                                                 name:UIKeyboardWillChangeFrameNotification
+                                               object:nil];
+    
+    
     
 }
 
@@ -869,17 +875,30 @@
 -(void)keyboardWillShow:(NSNotification *) notification
 {
     // Get the size of the keyboard.
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     //store the keyboard height for further use
     self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
-
-   
 }
+
+
+-(void)keyBoardWillChangeFrame: (NSNotification *) notification
+{
+    // Get the size of the keyboard.
+    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
+    //store the keyboard height for further use
+    self.keyboardHeight = keyboardSize.height;
+    
+    [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
+}
+
+
 
 -(void) keyBoardDidShow:(NSNotification *) notification
 {
-     [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
+    
+   [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
 }
+
 
 -(void)keyboardWillDisappear:(NSNotification *) notification
 {

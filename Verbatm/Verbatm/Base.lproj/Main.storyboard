@@ -179,63 +179,14 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </containerView>
-                            <view contentMode="scaleToFill" id="kfm-fE-qmH">
-                                <rect key="frame" x="0.0" y="65" width="320" height="36"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" adjustsImageWhenHighlighted="NO" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" id="2En-WX-DuJ" userLabel="Key">
-                                        <rect key="frame" x="267" y="0.0" width="41" height="36"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
-                                        <state key="normal" image="key_whole">
-                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" red="0.80000000000000004" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="revealKeyboard:" destination="Qxg-C2-1Oh" eventType="touchUpInside" id="xIa-Cc-5dh"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="P77-2T-ypm">
-                                        <rect key="frame" x="9" y="-2" width="44" height="39"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="18"/>
-                                        <state key="normal" title="Undo">
-                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="undo:" destination="Qxg-C2-1Oh" eventType="touchUpInside" id="HDe-Bd-wek"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="ae2-fS-kIO">
-                                        <rect key="frame" x="122" y="0.0" width="77" height="38"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="20"/>
-                                        <state key="normal" title="Preview">
-                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <segue destination="K1p-X2-CXo" kind="modal" identifier="previewVerbatmArticle" id="baj-pK-1qb"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
-                                <gestureRecognizers/>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="3Xh-4j-hro" appends="YES" id="7ng-WE-wwr"/>
-                                </connections>
-                            </view>
                         </subviews>
                         <gestureRecognizers/>
                     </view>
                     <navigationItem key="navigationItem" id="76F-zj-l9s"/>
                     <connections>
-                        <outlet property="button_Preview" destination="ae2-fS-kIO" id="0J3-Tg-BJs"/>
-                        <outlet property="button_Undo" destination="P77-2T-ypm" id="Ojq-Od-qEZ"/>
                         <outlet property="containerView" destination="yYu-am-nhj" id="oIm-VS-BBM"/>
-                        <outlet property="pullBar" destination="kfm-fE-qmH" id="8De-OD-XYm"/>
-                        <outlet property="raiseKeyboardButton" destination="2En-WX-DuJ" id="6PJ-me-Gpx"/>
+                        <outlet property="panGesture_PullBar" destination="3Xh-4j-hro" id="Izk-kV-xrj"/>
+                        <segue destination="K1p-X2-CXo" kind="modal" identifier="previewArticleSegue" id="I1D-P4-dJH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPQ-fx-ob9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -259,7 +210,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M6r-tn-xMe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1888" y="-129"/>
+            <point key="canvasLocation" x="-2223" y="-129"/>
         </scene>
         <!--contentPage-->
         <scene sceneID="8XD-Tr-4db">
@@ -355,9 +306,6 @@
             <point key="canvasLocation" x="-1526" y="-807"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="key_whole" width="1200" height="1200"/>
-    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

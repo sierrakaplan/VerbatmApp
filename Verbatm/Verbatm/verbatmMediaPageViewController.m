@@ -17,16 +17,18 @@
 #import "verbatmCustomPinchView.h"
 #import "v_Analyzer.h"
 #import "articleDispalyViewController.h"
-@interface verbatmMediaPageViewController () <UITextFieldDelegate>
+#import "customPullBarView.h"
+
+@interface verbatmMediaPageViewController () <UITextFieldDelegate, verbatmMediaSessionManagerDelegate, pullBarDelegate>
 #pragma mark - Outlets -
-    @property (weak, nonatomic) IBOutlet UIView *pullBar;
+    @property (weak, nonatomic) UIView *pullBar;
     @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
     @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
     @property (weak, nonatomic) IBOutlet UIButton *raiseKeyboardButton;
-@property (weak, nonatomic) IBOutlet UIButton *button_Preview;
-@property (weak, nonatomic) IBOutlet UIButton *button_Undo;
+
 
 #pragma mark - SubViews of screen-
+@property (strong, nonatomic) IBOutlet UIPanGestureRecognizer *panGesture_PullBar;
     @property (weak, nonatomic) IBOutlet UIView *containerView;
     @property (strong, nonatomic) UIView *verbatmCameraView;
     @property (strong, nonatomic) verbatmMediaSessionManager* sessionManager;
@@ -116,6 +118,9 @@
 
 #define NOTIFICATION_UNDO @"undoTileDeleteNotification"
 
+#define PULLBAR_HEIGHT 36
+
+
 @end
 
 @implementation verbatmMediaPageViewController
@@ -173,15 +178,28 @@
     [self setContentPage_vc];
     [[UITextView appearance] setTintColor:[UIColor whiteColor]];
     
+    [self createPullBar];
     [self saveDefaultFrames];
     [self.vc_contentPage freeMainScrollView:NO];//makes sure the contentpage isn't scrolling
     
     
     //make sure the frames are correctly centered
     [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
-    [self positionPullBarTransitionDown:NO];//positions the pullbar to the right frame
-    [self centerPullBarButtons];
 }
+
+
+//creates the pullbar object then saves it as a property 
+-(void)createPullBar
+{
+    CGRect pbFrame = CGRectMake(0,self.containerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT);
+    customPullBarView * pullBar = [[customPullBarView alloc] initWithFrame:pbFrame];
+    pullBar.customeDelegate= self;
+    self.pullBar = pullBar;
+    [pullBar addGestureRecognizer:self.panGesture_PullBar];
+    [self.view addSubview:pullBar];
+    [self.view bringSubviewToFront:pullBar];
+}
+
 
 
 -(void) removeStatusBar
@@ -196,16 +214,6 @@
     }
 }
 
-
--(void) centerPullBarButtons
-{
-    //get the xoffset for the undo button and ensure the the keyboardbutton has the same offset
-    NSInteger undoXOffset = self.button_Undo.frame.origin.x;
-    self.raiseKeyboardButton.frame = CGRectMake(self.view.frame.size.width - self.raiseKeyboardButton.frame.size.width - undoXOffset, self.raiseKeyboardButton.frame.origin.y, self.raiseKeyboardButton.frame.size.width, self.raiseKeyboardButton.frame.size.height);
-    
-    NSInteger centerPoint = self.view.frame.size.width /2;
-    self.button_Preview.frame = CGRectMake(centerPoint - (self.button_Preview.frame.size.width/2), self.button_Preview.frame.origin.y, self.button_Preview.frame.size.width, self.button_Preview.frame.size.height);
-}
 
 //saves the intitial frames for the pulldown bar and the container view
 -(void)saveDefaultFrames
@@ -239,7 +247,6 @@
 -(void) getContentPagevc
 {
     self.vc_contentPage = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTPAGEVC];
-
 }
 
 
@@ -511,7 +518,6 @@
             self.containerView.hidden = NO;
             [UIView animateWithDuration:0.5 animations:^{
                 [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
-                [self positionPullBarTransitionDown:NO];//positions the pullbar to the right frame
                 for(UIView* view in self.pullBar.subviews){
                     view.hidden = NO;
                 }
@@ -583,7 +589,6 @@
         [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
          {
              [self positionContainerViewTo:YES orTo:NO orTo:NO];//Positions the container view to the right frame
-             [self positionPullBarTransitionDown:YES];//positions the pullbar to the right frame
              
          }];
     }else
@@ -595,7 +600,6 @@
             [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
              {
                  [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base mode
-                 [self positionPullBarTransitionDown:NO];
 
              }];
             //gets rid of the text if there was typing going on
@@ -606,7 +610,6 @@
             [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
              {
                  [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base mode
-                 [self positionPullBarTransitionDown:NO];
                  
              }];
             //gets rid of the text if there was typing going on
@@ -623,10 +626,9 @@
      {
          if(transitionDown)
          {
-             CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - (self.pullBar.frame.size.height+self.keyboardHeight), self.view.frame.size.width, self.pullBar.frame.size.height);
+             CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - self.pullBar.frame.size.height, self.view.frame.size.width, self.pullBar.frame.size.height);
              self.pullBar.frame = newPullBarFrame;
-         }else
-         {
+         }else{
              if(self.containerViewMSAVMode)
              {
                  self.pullBar.frame = self.pullBarMSAVFrame;
@@ -635,7 +637,6 @@
              {
                  self.pullBar.frame = self.pullBarNoMSAVFrame;
              }
-             
          }
          
      }];
@@ -655,17 +656,19 @@
             self.containerViewMSAVMode = NO;
             [self.vc_contentPage freeMainScrollView:YES]; //makes sure it's scrollable
             self.containerView.frame = newContainerFrame;
+            [self positionPullBarTransitionDown:YES];
         }else if (MSAV)
         {
             self.containerViewMSAVMode = YES;
             self.containerViewFullScreen = NO;
             self.containerView.frame= self.containerViewMSAVFrame;
+            [self positionPullBarTransitionDown:NO];
         }else if (Base)
         {
             self.containerViewMSAVMode = NO;
             self.containerViewFullScreen = NO;
             self.containerView.frame = self.containerViewNoMSAVFrame;
-            [self.vc_contentPage freeMainScrollView:NO]; //makes sure it's not scrollable and resets to offset 0
+            [self positionPullBarTransitionDown:NO];
         }
          self.vc_contentPage.containerViewFrame = self.containerView.frame;
     }];
@@ -684,13 +687,14 @@
 
 #pragma mark - Keyboard-
 
-- (IBAction)revealKeyboard:(id)sender
+-(void)keyboardButtonPressed
 {
     if(self.containerViewFullScreen)
     {
         [self.vc_contentPage removeKeyboardFromScreen];
         
     }
+    
     if(!self.containerViewMSAVMode && !self.containerViewFullScreen)
     {
         [self bringUpNewTextForMSAV];//brings up the new text view for the msav
@@ -751,7 +755,7 @@
     if(!last_textPinchView || ![[last_textPinchView getTextFromPinchObject] isEqualToString:@""])
     {
         
-        int second_to_last_object = self.vc_contentPage.pageElements.count - 2;
+        long  second_to_last_object = self.vc_contentPage.pageElements.count - 2;
         
         if(second_to_last_object >=0)
         {
@@ -789,23 +793,18 @@
     //Given size may not account for screen rotation
      self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
     
-    //Make sure the pullbar is in line with the keyboard
-    if (self.containerViewFullScreen)[self positionPullBarTransitionDown:YES];
 }
 
 
 -(void) keyboardWillDisappear: (NSNotification *)notification
 {
     self.keyboardHeight = 0;//sanitize keyboard height marker
-    if(self.containerViewFullScreen)
-    {
-        [self positionPullBarTransitionDown:YES];//send the pull bar down now that the keyboard is leaving
-    }else if(self.containerViewMSAVMode)
+    
+    if(self.containerViewMSAVMode)
     {
         //now that the keyboard is leaving we should leave MSAV mode
         self.containerViewMSAVMode = NO;
         [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base
-        [self positionPullBarTransitionDown:NO];
     }
     self.raiseKeyboardButton.imageView.image = [UIImage imageNamed:@"key_whole"];//set the keyboard button to opaque
 }
@@ -872,6 +871,15 @@
        }];
 }
 
+
+
+-(void) previewButtonPressed
+{
+    
+    [self performSegueWithIdentifier:@"previewArticleSegue" sender:self];
+}
+
+
 //this makes sure that there are elements in the pinchview before a preview is called
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
                                   sender:(id)sender
@@ -912,7 +920,8 @@
 }
 
 #pragma mark - Undo Button -
-- (IBAction)undo:(UIButton *)sender
+
+-(void)undoButtonPressed
 {
     [self callNotifications];
 }

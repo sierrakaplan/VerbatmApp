@@ -8,8 +8,9 @@
 
 #import "verbatmCustomImageScrollView.h"
 #import "verbatmCustomImageView.h"
+#import "customPullBarView.h"
 
-@interface verbatmCustomImageScrollView () <UITextViewDelegate>
+@interface verbatmCustomImageScrollView () <UITextViewDelegate,pullBarDelegate>
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) UIImage * filter_Original;
@@ -24,6 +25,8 @@
 
 #define BACKGROUND_COLOR clearColor
 #define FONT_COLOR whiteColor
+
+#define PULLBAR_HEIGHT 36
 
 @end
 
@@ -50,7 +53,7 @@
 }
 
 
-//called when the keyboard is up. The Gap gives you the amount if visible space after
+//called when the keyboard is up. The Gap gives you the amount of visible space after
 //the keyboard is up
 -(void)adjustFrameOfTextViewForGap:(NSInteger) gap
 {
@@ -87,9 +90,36 @@
         [self adjustImageScrollViewContentSizing];
 
         [self formatTextViewAppropriately:self.textView];
+        [self addToolBarToView];
         [self addSubview:self.textView];
     }
 }
+
+//creates a toolbar to add onto the keyboard
+-(void)addToolBarToView
+{
+    CGRect frame = CGRectMake(0,0, self.frame.size.width, PULLBAR_HEIGHT);
+    customPullBarView * toolBar = [[customPullBarView alloc] initWithFrame:frame];
+    toolBar.customeDelegate = self;
+    self.textView.inputAccessoryView = toolBar;
+}
+
+
+-(void)undoButtonPressed
+{
+    
+}
+
+-(void)previewButtonPressed
+{
+    
+}
+
+-(void)keyboardButtonPressed
+{
+    [self.textView resignFirstResponder];
+}
+
 
 //Calculate the appropriate bounds for the text view
 //We only return a frame that is larger than the default frame size

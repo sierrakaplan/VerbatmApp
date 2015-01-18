@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface customPullBarView : UIView
+@protocol pullBarDelegate <NSObject>
 
+-(void)undoButtonPressed;
+-(void)previewButtonPressed;
+-(void)keyboardButtonPressed;
+
+@end
+
+@interface customPullBarView : UIView
+    @property (nonatomic, strong) id<pullBarDelegate> customeDelegate;
 @end
