@@ -703,6 +703,7 @@
             if([view isKindOfClass:[verbatmCustomPinchView class]])
             {
                 NSMutableArray *array = [(verbatmCustomPinchView *)view mediaObjects];
+                view = nil; // SETTING IT TO NIL SO THAT THERE IS NO REFERENCE TO IT.
                 for(int i=0; i<array.count;i++)
                 {
                     if([array[i] isKindOfClass:[verbatmCustomImageView class]])
@@ -2242,6 +2243,11 @@
     }
     [isv.textView resignFirstResponder];
     [isv removeFromSuperview];
+    
+    //makes sure the vidoes are playing..may need to make more efficient
+    isv = nil;
+    self.openImageScrollView = nil;
+    [self.openImagePinchView renderMedia];
     //[self showPullBar];
 }
 

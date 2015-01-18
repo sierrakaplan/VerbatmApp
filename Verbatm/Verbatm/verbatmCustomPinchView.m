@@ -221,9 +221,16 @@
         }
     }
     if(videoView){
-        ALAsset* asset = ((verbatmCustomImageView*)videoView).asset;
-        AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
-        [self playVideo:avurlAsset];
+        AVPlayerLayer* pLayer = [videoView.layer.sublayers firstObject];
+        if(pLayer){
+            [pLayer removeFromSuperlayer];
+            pLayer.frame = self.videoView.bounds;
+            [self.videoView.layer addSublayer:pLayer];
+        }else{
+            ALAsset* asset = ((verbatmCustomImageView*)videoView).asset;
+            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
+            [self playVideo:avurlAsset];
+        }
     }
     self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
     self.textField.textColor = [UIColor whiteColor];
@@ -371,11 +378,15 @@
 //This applies, whether it is a collection or not.
 -(BOOL)hasMultipleMedia
 {
+    
     return self.media.count > 1;
 }
 
 -(NSMutableArray*)mediaObjects
 {
+    if([self.videoView.layer.sublayers firstObject]){
+        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
+    }
     return self.media;
 }
 

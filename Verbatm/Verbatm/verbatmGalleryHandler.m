@@ -21,7 +21,6 @@
 @property (strong, nonatomic) UICollisionBehavior* collider;
 @property (strong, nonatomic) UIDynamicItemBehavior* elasticityBehavior;
 @property (strong, nonatomic) UIView* view;
-@property (nonatomic) int numVideosReadded;
 #define ALBUM_NAME @"Verbatm"
 #define OFFSET 15
 #define PLAY_VIDEO_ICON @"videoPreview_play_icon"
@@ -55,7 +54,6 @@
         self.mediaImageViews = [[NSMutableArray alloc] init];
         self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
         //get the verbatm folder
-        self.numVideosReadded = 0;
         self.isRaised = YES;
         [self getVerbatmMediaFolder];
         [self createScrollView];
@@ -80,7 +78,7 @@
 -(void)addScrollViewGestures
 {
     //Add swipe up gesture to dismiss gallery
-    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseScrollView)];
+    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismissGallery)];
     swipeUp.direction  = UISwipeGestureRecognizerDirectionUp;
     swipeUp.cancelsTouchesInView = NO;
     swipeUp.delegate = self;
@@ -102,18 +100,6 @@
 //sets the scrollView and presents it lowering from the top
 -(void)lowerScrollView
 {
-
-//    for(verbatmCustomImageView* view in self.mediaImageViews){
-//        if(self.numVideosReadded == 0) break;
-//        if(view.isVideo){
-//            AVPlayerLayer* pLayer = [view.layer.sublayers firstObject];
-//            self.numVideosReadded--;
-//            pLayer.frame = view.bounds;
-//            [self.scrollView addSubview: view];
-//        }
-//    }
-//    //make the scrollview offset 0 so that it always starts at the beginning
-//    self.scrollView.contentOffset = CGPointMake(0, 0);
     [self.view addSubview: self.scrollView];
     if(!self.collider){
         self.collider = [[UICollisionBehavior alloc]initWithItems:@[self.scrollView]];
@@ -279,11 +265,17 @@
 //this is done on another queue so as not to block the main queue
 -(void)fillArrayWithMedia
 {
+    __block int j = 0;
     __weak verbatmGalleryHandler* weakSelf = self;
     [self.verbatmFolder enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop) {
         if(result){
             if(![weakSelf.media containsObject:result]){
+                j++;
                 [weakSelf.media insertObject:result atIndex:0];
+            }
+            if(j > 50){
+                *stop = YES;
+                [weakSelf loadMediaUntoScrollView];
             }
         }else{
             *stop = YES;
@@ -332,8 +324,16 @@
         AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
         [self playVideo:avurlAsset forView:view];
     }
+    if(self.isRaised){ //THIS IS A HACK. I NEED A PERMANENT/BETTER SOLUTION
+        self.scrollView.hidden = YES;
+        [self lowerScrollView];
+        [self.scrollView addSubview: view];
+        [self raiseScrollView];
+        self.scrollView.hidden = NO;
+    }else{
+        [self.scrollView addSubview: view];
+    }
     [self addBorder: view];
-    [self.scrollView addSubview: view];
     [self.mediaImageViews insertObject:view atIndex:0];
     [self.view bringSubviewToFront:self.scrollView];
     [self.scrollView bringSubviewToFront:view];

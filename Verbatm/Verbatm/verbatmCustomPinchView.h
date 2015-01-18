@@ -84,6 +84,9 @@
 //get rid of red ring when it's not being deleted
 -(void)unmarkAsDeleting;
 
+//for intructing to render media
+-(void)renderMedia;
+
 @property (nonatomic) BOOL selected;//tells you if the object is selected for panning
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;

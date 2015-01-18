@@ -27,6 +27,7 @@
         self.selectable = NO;
         self.backgroundColor = [UIColor blackColor];
         [self addObserver:self forKeyPath: @"contentSize" options: (NSKeyValueObservingOptionNew) context:NULL];
+        self.showsVerticalScrollIndicator = NO;
     }
     return self;
 }
