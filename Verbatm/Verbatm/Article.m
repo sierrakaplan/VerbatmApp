@@ -27,10 +27,10 @@
 @property (strong, nonatomic) PFRelation * articleVideosRelation;
 @property (strong, nonatomic) PFRelation * articlePhotosRelation;
 @property (strong, nonatomic ) PFFile* pinchObjectFile;
-@property (strong, nonatomic) NSArray* pages;
 
-#define ARTICLE_PHOTO_RELATIONSHIP @"articlePhotoRelation"
+#define ARTICLE_PAGE_RELATIONSHIP @"articlePageRelation"
 #define ARTICLE_VIDEO_RELATIONSHIP @"articleVideoRelation"
+#define ARTICLE_PHOTO_RELATIONSHIP @"articlePhotoRelation"
 #define ARTICLES @"articles"
 #define LIKE @"likes"
 #define VERBATM_USER_CLASSNAME @"VerbatmUser"
@@ -45,7 +45,7 @@
 @synthesize articleVideosRelation= _articleVideosRelation;
 @synthesize articlePhotosRelation = _articlePhotosRelation;
 @synthesize pinchObjectFile = _pinchObjectFile;
-@synthesize pages = _pages;
+
 
 #pragma mark - initialising an article
 /*by Lucio Dery */
@@ -59,7 +59,10 @@
             self.title = title;
             self.subtitle = subtitle;
         }
-        _pages = pages;
+        for(Page* page in pages){
+            PFRelation* relation = [self relationForKey:ARTICLE_PAGE_RELATIONSHIP];
+            [relation addObject:page];
+        }
     }
     return self;
 }

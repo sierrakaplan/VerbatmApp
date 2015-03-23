@@ -156,23 +156,9 @@
     [[UIDevice currentDevice]beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(positionContainerView) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
     
-    //Register for notifications to show and remove the pullbar
-    //Listen for when the keyboard is about to disappear
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(hidePullBar)
-                                                 name:@"Notification_shouldHidePullBar"
-                                               object:nil];
-    //Register for notifications to show and remove the pullbar
-    //Listen for when the keyboard is about to disappear
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(showPullBar)
-                                                 name:@"Notification_shouldShowPullBar"
-                                               object:nil];
-    
-    
     
     //register for keyboard events
-    [self registerForKeyboardNotifications];
+    [self registerForNotifications];
     
     //setting contentPage view controllers
     [self setContentPage_vc];
@@ -180,8 +166,6 @@
     
     [self createPullBar];
     [self saveDefaultFrames];
-    [self.vc_contentPage freeMainScrollView:NO];//makes sure the contentpage isn't scrolling
-    
     
     //make sure the frames are correctly centered
     [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
@@ -671,8 +655,10 @@
         {
             self.containerViewMSAVMode = NO;
             self.containerViewFullScreen = NO;
+            [self.vc_contentPage freeMainScrollView:NO]; //makes sure it's scrollable
             self.containerView.frame = self.containerViewNoMSAVFrame;
             [self positionPullBarTransitionDown:NO];
+            
         }
          self.vc_contentPage.containerViewFrame = self.containerView.frame;
     }];
@@ -817,7 +803,7 @@
 
 //Lucio
 //This method registers the application for keyboard notifications. UIKeyboardWillShowNotification and UIKeyboardWillHideNotification are listened for.
--(void)registerForKeyboardNotifications
+-(void)registerForNotifications
 {
     
     //Tune in to get notifications of keyboard behavior
@@ -836,6 +822,19 @@
                                                  name:UIKeyboardWillHideNotification
                                                object:nil];
     
+    
+    //Register for notifications to show and remove the pullbar
+    //Listen for when the keyboard is about to disappear
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(hidePullBar)
+                                                 name:@"Notification_shouldHidePullBar"
+                                               object:nil];
+    //Register for notifications to show and remove the pullbar
+    //Listen for when the keyboard is about to disappear
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(showPullBar)
+                                                 name:@"Notification_shouldShowPullBar"
+                                               object:nil];
 }
 
 

@@ -11,6 +11,7 @@
 #import <Parse/PFObject+Subclass.h>
 @class Article;
 @class VerbatmUser;
+@class Page;
 
 @interface Video : PFObject
 #pragma mark - Required Subclassing methods
@@ -25,7 +26,7 @@
 
 #pragma mark - fetch arguments from video object
 //These get the data from the Photo object
-@property(strong, nonatomic,readonly)NSData* data;//could be nil if it's a URL
+-(NSData*)getVideoData;
 @property(strong, nonatomic, readonly)NSString* caption;
 @property(strong, nonatomic, readonly)NSURL* url;//could be nil if it's a video file data
 @property(strong, nonatomic, readonly)CLLocation* location;

@@ -13,7 +13,7 @@
 
 @interface Photo() <PFSubclassing>
 
-@property(strong, nonatomic, readwrite)NSData* data;
+@property(strong, nonatomic, readwrite)PFFile* photoDataFile;
 @property(strong, nonatomic, readwrite)NSString* caption;
 @property(strong, nonatomic, readwrite)NSString* title;
 @property(strong, nonatomic, readwrite)CLLocation* location;
@@ -23,10 +23,9 @@
 @end
 
 @implementation Photo
-
+@dynamic photoDataFile;
 @dynamic location;
 @dynamic title;
-@dynamic data;
 @dynamic caption;
 @dynamic name;
 
@@ -40,7 +39,7 @@
                  atLocation:(CLLocation*)location
 {
     if((self = [super init])){
-        self.data = data;
+        self.photoDataFile = [PFFile fileWithData:data];
         self.caption = caption;
         self.title = name;
         self.location = location;
@@ -63,6 +62,12 @@
     
 }
 
+#pragma mark - getting photo back -
+-(UIImage*)getPhoto
+{
+    UIImage* image = [UIImage imageWithData: [self.photoDataFile getData]];
+    return image;
+}
 
 #pragma mark - Required Subclassing methods
 

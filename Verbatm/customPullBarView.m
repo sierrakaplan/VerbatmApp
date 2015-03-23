@@ -21,7 +21,7 @@
 
 -(instancetype)initWithFrame:(CGRect)frame
 {
-    
+
     //load from Nib file..this initializes the background view and all its subviews
     self = [[[NSBundle mainBundle] loadNibNamed:@"customPullBar" owner:self options:nil]firstObject];
     if(self)
