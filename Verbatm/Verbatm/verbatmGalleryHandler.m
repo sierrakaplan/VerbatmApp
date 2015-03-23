@@ -96,7 +96,6 @@
     }
 }
 
-//by Lucio
 //sets the scrollView and presents it lowering from the top
 -(void)lowerScrollView
 {
@@ -130,10 +129,8 @@
     [self raiseScrollView];
     [self.animator removeAllBehaviors];
     self.isRaised = YES;
-    //[self.customDelegate didDismissGallery];
 }
 
-//by Lucio
 //loads the images unto the scrollView
 -(void)loadMediaUntoScrollView
 {
@@ -151,8 +148,9 @@
         [self.mediaImageViews addObject: imageView];
         [self.scrollView addSubview: imageView];
     }
-    [self.view bringSubviewToFront:self.scrollView];
+    [self.view.superview bringSubviewToFront:self.scrollView];
 }
+
 
 -(verbatmCustomImageView*)imageViewFromAsset:(ALAsset*)asset
 {
@@ -173,11 +171,13 @@
     return imageView;
 }
 
+
 -(void)addMediaToGallery:(ALAsset*)asset
 {
     verbatmCustomImageView* view = [self imageViewFromAsset:asset];
     [self returnToGallery:view];
 }
+
 
 -(void)addBorder:(verbatmCustomImageView*)view
 {
@@ -212,7 +212,7 @@
     // Add it to your view's sublayers
     [view.layer addSublayer:playerLayer];
     // You can play/pause using the AVPlayer object
-   // [player play];
+   [player play];
 }
 
 //tells me when the video ends so that I can rewind
@@ -238,7 +238,6 @@
 }
 
 
-
 //by Lucio
 //gets the verbatm folder and assigns it to the class's assetsgroup property
 -(void)getVerbatmMediaFolder
@@ -260,6 +259,7 @@
                                     }];
 }
 
+
 //by Lucio
 //Fills array with the media gotten from the verbatm folder
 //this is done on another queue so as not to block the main queue
@@ -278,6 +278,7 @@
     }];
 }
 
+
 //delegate methods
 -(IBAction)selectMedia:(id)sender
 {
@@ -285,6 +286,7 @@
     __block CGPoint location = [swiper locationInView: self.view];
     __block int indexa = ceil((self.scrollView.contentOffset.x + location.x)/((self.scrollView.frame.size.width - OFFSET)/2)) - 1;
     verbatmCustomImageView* selectedImageView ;
+    indexa = (indexa > self.mediaImageViews.count - 1)? self.mediaImageViews.count - 1 : indexa;
     if(self.mediaImageViews.count >= 1)selectedImageView = [self.mediaImageViews objectAtIndex:indexa];
     if(selectedImageView){
         [self.media removeObjectAtIndex:indexa];
@@ -297,6 +299,7 @@
             }
             self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
         }];
+        
         [self.scrollView.superview addSubview:selectedImageView];
         selectedImageView.frame = CGRectOffset(selectedImageView.frame, -(self.scrollView.contentOffset.x), 0);
         [selectedImageView removeFromSuperview];
@@ -305,14 +308,19 @@
     }
 }
 
+
 -(void)returnToGallery:(verbatmCustomImageView*)view
 {
     [self.media insertObject: view.asset atIndex:0];
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
-    for(verbatmCustomImageView* otherView in self.mediaImageViews){
+    
+    
+    for(verbatmCustomImageView* otherView in self.mediaImageViews)
+    {
         otherView.frame = CGRectOffset(otherView.frame,  (self.scrollView.frame.size.width - OFFSET)/2, 0);
     }
+    
     view.frame = viewSize;
     if(view.isVideo && !view.layer.sublayers.count){
         AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];

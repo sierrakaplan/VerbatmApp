@@ -77,7 +77,7 @@
 
 #pragma mark Display manipulation outlets
 
-@property (weak, nonatomic) IBOutlet verbatmCustomScrollView *mainScrollView;
+
 
 @property (weak, nonatomic) IBOutlet UIScrollView *personalScrollViewOfFirstContentPageTextBox;
 @property (weak, nonatomic) IBOutlet UILabel *wordsLeftLabel;
@@ -137,10 +137,11 @@
 
 #pragma mark New Properties and Defines
 
-#define OFFSET_BELOW_ARTICLE_TITLE 20
+#define OFFSET_BELOW_ARTICLE_TITLE 30
 
 #define NOTIFICATION_UNDO @"undoTileDeleteNotification"
-
+#define LEFT_DELETE_OFFSET (self.view.frame.size.width/2)
+#define RIGHT_DELETE_OFFSET (self.view.frame.size.width*(4/3))
 @end
 
 /*
@@ -670,6 +671,28 @@
 
 
 #pragma mark - Deleting views with swipe -
+
+//make sure the object is in the right position
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
+                  willDecelerate:(BOOL)decelerate
+{
+    
+    if(scrollView != self.mainScrollView)
+    {
+        if(scrollView.contentOffset.x > LEFT_DELETE_OFFSET || scrollView.contentOffset.x < RIGHT_DELETE_OFFSET)
+        {
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                scrollView.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+            }];
+            
+        }
+    }
+    
+    
+    
+}
+
+
 //called when the view is scrolled - we see if the offset has changed
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
@@ -709,7 +732,6 @@
             if([view isKindOfClass:[verbatmCustomPinchView class]])
             {
                 NSMutableArray *array = [(verbatmCustomPinchView *)view mediaObjects];
-                view = nil; // SETTING IT TO NIL SO THAT THERE IS NO REFERENCE TO IT.
                 for(int i=0; i<array.count;i++)
                 {
                     if([array[i] isKindOfClass:[verbatmCustomImageView class]])
@@ -845,31 +867,26 @@
 #pragma  mark - Handling the KeyBoard -
 
 #pragma Remove Keyboard From Screen
-
-//Iain
-//If user touches in empty space remove the keyboard no matter what field is being edited
-- (IBAction)touchOutsideTextViews:(UITapGestureRecognizer *)sender
-{
-    [self removeKeyboardFromScreen];
-}
-
 //Iain
 -(void) removeKeyboardFromScreen
 {
     //make sure the device is landscape
-    if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
+    if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
+    {
         if(self.sandwhichWhat.isEditing)[self.sandwhichWhat resignFirstResponder];
         if(self.sandwichWhere.isEditing)[self.sandwichWhere resignFirstResponder];
         if(self.articleTitleField.isEditing)[self.articleTitleField resignFirstResponder];
+        [self.openImageScrollView.textView resignFirstResponder];
     }
-    [self.openImageScrollView.textView resignFirstResponder];
 }
+
 
 //Remove keyboard when scrolling
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView
 {
     scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 }
+
 
 #pragma mark Keyboard Notifications
 //When keyboard appears get its height. This is only neccessary when the keyboard first appears
@@ -1526,14 +1543,14 @@
         touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
         touch2 = [gesture locationOfTouch:1 inView:self.mainScrollView];
         
-        if((touch1.y>touch2.y) /*&& (touch1.y > self.startLocationOfLowerTouchPoint.y)*/)
+        if((touch1.y>touch2.y))
         {
             changeInPosition = touch1.y - self.startLocationOfLowerTouchPoint.y;
             self.startLocationOfLowerTouchPoint = touch1;
             self.lowerPinchView.superview.frame = [self newTranslationFrameForLowerPinchFrameWithChange:changeInPosition];
             self.changeInBottomViewPostion = changeInPosition;
             [self shiftElementsBelowView:self.lowerPinchView];
-        }else if (/*touch2.y > self.startLocationOfLowerTouchPoint.y &&*/ touch2.y > touch1.y)
+        }else if (touch2.y > touch1.y)
         {
             changeInPosition = touch2.y - self.startLocationOfLowerTouchPoint.y;
             self.startLocationOfLowerTouchPoint = touch2;
@@ -2245,7 +2262,6 @@
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender
 {
     verbatmCustomImageScrollView * isv = self.openImageScrollView;
-    
     if(self.openImagePinchView.there_is_picture)[self.openImagePinchView changePicture:self.openImageScrollView.openImage.image];
     if(self.openImagePinchView.there_is_text)
     {
@@ -2393,6 +2409,13 @@
 {
     NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SHOW_PULLBAR object:nil userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
+#pragma mark - close gallery -
+//when the user taps on empty space the gallery leaves
+- (IBAction)closeGallery:(UITapGestureRecognizer *)sender
+{
+    [self.gallery dismissGallery];
 }
 
 

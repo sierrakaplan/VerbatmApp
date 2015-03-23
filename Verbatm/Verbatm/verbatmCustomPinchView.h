@@ -29,6 +29,11 @@
  */
 -(void)specifyFrame:(CGRect)frame;
 
+//lets you specify a center and in turn sets the frame of the pinchview
+//should only be use when panning the object because it relies on the current from of the object which must be set before this is called
+-(void)specifyCenter:(CGPoint) center;
+
+
 /*This creates a new pinch object with a particular radius, superview and a center
  *as specified by the passed parameters
  */
@@ -81,6 +86,7 @@
 
 //add red ring to show it's about to be deleted
 -(void)markAsDeleting;
+
 //get rid of red ring when it's not being deleted
 -(void)unmarkAsDeleting;
 

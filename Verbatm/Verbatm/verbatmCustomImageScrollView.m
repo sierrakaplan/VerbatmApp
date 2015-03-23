@@ -98,7 +98,6 @@
 //creates a toolbar to add onto the keyboard
 -(void)addToolBarToView
 {
-    return;
     CGRect frame = CGRectMake(0,0, self.frame.size.width, PULLBAR_HEIGHT);
     customPullBarView * toolBar = [[customPullBarView alloc] initWithFrame:frame];
     toolBar.customeDelegate = self;
