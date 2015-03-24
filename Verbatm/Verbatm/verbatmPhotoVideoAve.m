@@ -15,9 +15,11 @@
 @property (weak, nonatomic) IBOutlet UIImageView *image;
 //we only use this pinchview to show our video
 @property (strong, nonatomic) IBOutlet verbatmCustomPinchView * videoView;
-@property (nonatomic) CGPoint upperPinchPoint;
-@property (nonatomic) CGPoint lowerPinchPoint;
+@property (nonatomic) CGPoint upper_Left_PinchPoint;//either the upper finger in a y directed pinch or the left finger in an x directed pinch
+@property (nonatomic) CGPoint lower_Right_PinchPoint;//either the lower finger in a y directed pinch or the right finger in a x direct pinch
 @property (nonatomic) bool usingYs;
+
+@property (nonatomic) CGPoint panStartPoint;
 
 
 #define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
@@ -33,10 +35,23 @@
     self = [[[NSBundle mainBundle] loadNibNamed:@"PhotoVideoAve" owner:self options:nil]firstObject];    
     if(self)
     {
-        self.image.image = image.image;
-        self.videoView = [[verbatmCustomPinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]/2,[self getRadius]/2) andMedia:@[video]];
+        
+        
+        
+        
+        ALAssetRepresentation *assetRepresentation = [image.asset defaultRepresentation];
+        UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
+                                             scale:[assetRepresentation scale]
+                                       orientation:UIImageOrientationUp];
+        [self.image setImage:image];
+
+        
+        
+        self.videoView = [[verbatmCustomPinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]/2,[self getRadius]/2) andMedia:video];
         [self addSubview:self.videoView];
             self.frame = frame;
+        [self.videoView unmuteVideo];
+        [self addGesturesToVideoView];
     }
     return self;
 }
@@ -75,6 +90,30 @@
         if(abs(touch1.x -touch2.x) > abs(touch1.y- touch2.y)) self.usingYs = NO;
         else self.usingYs = YES;
         
+        if(self.usingYs)
+        {
+            if(touch1.y > touch2.y)
+            {
+                self.upper_Left_PinchPoint = touch2;
+                self.lower_Right_PinchPoint = touch1;
+            }else
+            {
+                self.upper_Left_PinchPoint = touch1;
+                self.lower_Right_PinchPoint = touch2;
+            }
+            
+        }else
+        {
+            if(touch1.x > touch2.x)
+            {
+                self.upper_Left_PinchPoint = touch2;
+                self.lower_Right_PinchPoint = touch1;
+            }else
+            {
+                self.upper_Left_PinchPoint = touch1;
+                self.lower_Right_PinchPoint =touch2;
+            }
+        }
     }
     
     if(gesture.state == UIGestureRecognizerStateChanged && [gesture numberOfTouches]==2)
@@ -82,9 +121,13 @@
         CGPoint touch1 = [gesture locationOfTouch:0 inView:self];
         CGPoint touch2 = [gesture locationOfTouch:1 inView:self];
         
-        
+        if(self.usingYs)
+        {
+            double diff = ((touch1.y > touch2.y) ? abs(touch2.y-self.upper_Left_PinchPoint.y)/* + abs(touch1.y-self.lower_Right_PinchPoint.y)*/ : abs(touch1.y-self.upper_Left_PinchPoint.y) /*+ abs(touch2.y-self.lower_Right_PinchPoint.y)*/) ;
+            if(gesture.scale > 1) [self.videoView changeWidthTo: (self.videoView.frame.size.width + diff)];
+            else [self.videoView changeWidthTo: (self.videoView.frame.size.width - diff)];
+        }
     }
-    
 }
 
 //should move the video view with the users finger on drag
@@ -92,11 +135,27 @@
 {
  
     //make sure we have one finger only
-    if(gesture.state == UIGestureRecognizerStateChanged && [gesture numberOfTouches]==1)
+    if(gesture.state == UIGestureRecognizerStateBegan && [gesture numberOfTouches]==1)
     {
-        [self.videoView specifyCenter:[gesture locationOfTouch:0 inView:self]];
+        
+        self.panStartPoint = [gesture locationOfTouch:0 inView:self];
     }
     
+    //make sure we have one finger only
+    if(gesture.state == UIGestureRecognizerStateChanged && [gesture numberOfTouches]==1)
+    {
+        CGPoint currentPoint = [gesture locationOfTouch:0 inView:self];
+        
+        int x_diff = currentPoint.x - self.panStartPoint.x;
+        int y_diff = currentPoint.y - self.panStartPoint.y;
+        
+        int x_cord = self.videoView.frame.origin.x + x_diff;
+        int y_cord = self.videoView.frame.origin.y + y_diff;
+        
+        
+        [self.videoView setFrame:CGRectMake(x_cord, y_cord,self.videoView.frame.size.width , self.videoView.frame.size.height)];
+        self.panStartPoint = currentPoint;
+    }
 }
 
 /*

@@ -27,6 +27,8 @@
 #define P_OBJ_THERE_IS_VIDEO  @"video"
 #define P_OBJ_THERE_IS_TEXT @"text"
 #define P_OBJ_MEDIA @"media"
+#define MIN_PINCHVIEW_SIZE 100
+
 
 @end
 
@@ -36,7 +38,8 @@
 //Instantiates an instance of the custom view without any media types inputted
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andMedia:(id)medium
 {
-    if((self = [super init])){
+    if((self = [super init]))
+    {
         
         //load from Nib file..this initializes the background view and all its subviews
         [[NSBundle mainBundle] loadNibNamed:@"verbatmCustomPinchView" owner:self options:nil];
@@ -65,6 +68,9 @@
     }
     return self;
 }
+
+
+
 
 -(void)initSubviews
 {
@@ -138,10 +144,74 @@
     self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
 }
 
+-(void)unmuteVideo
+{
+    AVPlayerLayer * ourPlayerLayer;
+    for (CALayer * obj in self.videoView.layer.sublayers)
+    {
+        if([obj isKindOfClass:[AVPlayerLayer class]])
+        {
+            ourPlayerLayer = (AVPlayerLayer *)obj;
+        }
+    }
+    [ourPlayerLayer.player setMuted:NO];
+}
+-(void)muteVideo
+{
+    AVPlayerLayer * ourPlayerLayer;
+    for (CALayer * obj in self.videoView.layer.sublayers)
+    {
+        if([obj isKindOfClass:[AVPlayerLayer class]])
+        {
+            ourPlayerLayer = (AVPlayerLayer *)obj;
+        }
+    }
+    [ourPlayerLayer.player setMuted:YES];
+}
+
+//allows the user to change the width and height of the frame keeping the same center
+-(void) changeWidthTo: (double) width
+{
+    
+    if(width < MIN_PINCHVIEW_SIZE) return;
+    self.autoresizesSubviews = YES;
+    AVPlayerLayer * ourPlayer;
+    for (CALayer * obj in self.videoView.layer.sublayers)
+    {
+        if([obj isKindOfClass:[AVPlayerLayer class]])
+        {
+            ourPlayer = (AVPlayerLayer *)obj;
+        }
+    }
+    
+    
+    CGPoint center = self.center;
+    CGRect new_frame = CGRectMake(center.x- width/2, center.y - width/2, width, width);
+    CGRect new_bounds_frame =CGRectMake(0, 0, width, width);
+    
+    [CATransaction begin];
+    [CATransaction setAnimationDuration:0];
+    [CATransaction setDisableActions:YES];
+    ourPlayer.frame=new_bounds_frame;
+    [CATransaction commit];
+    
+    self.background.frame = new_bounds_frame;
+    self.videoView.frame = new_bounds_frame;
+    self.frame = new_frame;
+    
+    
+    ourPlayer.cornerRadius = self.frame.size.width/2;
+    self.background.layer.cornerRadius = self.frame.size.width/2;
+    self.layer.cornerRadius = self.frame.size.width/2;
+    self.clipsToBounds = YES;
+}
+
+
 -(void)createLensingEffect:(float)radius
 {
     //remove previous shadows
     self.layer.shadowPath = nil;
+    
     //create the shadow or lensing effect
     self.layer.shadowOffset = CGSizeMake(radius/SHADOW_OFFSET_FACTOR, radius/SHADOW_OFFSET_FACTOR);
     self.layer.shadowColor = [UIColor blackColor].CGColor;
