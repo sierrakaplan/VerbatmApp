@@ -128,6 +128,16 @@
     self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
 }
 
+-(void)specifyCenter:(CGPoint) center
+{
+    self.center = center;
+    self.frame = CGRectMake(center.x - self.frame.size.width/2, center.y - self.frame.size.width/2, self.frame.size.width,self.frame.size.height);
+    self.background.frame = self.bounds;
+    self.background.layer.cornerRadius = self.frame.size.width/2;
+    self.layer.cornerRadius = self.frame.size.width/2;
+    self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
+}
+
 -(void)createLensingEffect:(float)radius
 {
     //remove previous shadows

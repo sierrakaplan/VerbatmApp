@@ -133,6 +133,7 @@
                 }
             }
             v_textVideo* tv = [[v_textVideo alloc]initWithFrame:_preferedFrame andAssets:assets andText:text];
+            [tv addSwipeGesture];
             [_results addObject:tv];
         }
     }else{

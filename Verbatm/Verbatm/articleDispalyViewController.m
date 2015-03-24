@@ -52,12 +52,13 @@
 {
     for(UIView* view in self.pinchedObjects){
         if([view isKindOfClass:[v_textview class]]){
-            UIView* parentView = [[UIView alloc]initWithFrame:self.view.bounds];
-            view.frame = CGRectMake(25, 40, parentView.frame.size.width - 50, parentView.frame.size.height - 80);
-            [parentView addSubview:view];
-            parentView.backgroundColor = [UIColor blackColor];
-            parentView.alpha = BEST_ALPHA_FOR_TEXT;   //Apply blur if only text
-            [self.view addSubview:parentView];
+//            UIView* parentView = [[UIView alloc]initWithFrame:self.view.bounds];
+//            view.frame = CGRectMake(25, 40, parentView.frame.size.width - 50, parentView.frame.size.height - 80);
+//            [parentView addSubview:view];
+//            parentView.backgroundColor = [UIColor blackColor];
+//            parentView.alpha = BEST_ALPHA_FOR_TEXT;   //Apply blur if only text
+            view.frame = self.view.bounds;
+            [self.view addSubview: view];
             continue;
         }
         view.frame = self.view.bounds;

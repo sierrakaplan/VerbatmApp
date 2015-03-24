@@ -11,16 +11,18 @@
 
 @interface v_textPhoto()
 @property (strong, nonatomic) v_textview* textLayer;
-@property (strong, nonatomic) UIView* bgBlur;
 @property (strong, nonatomic) UIVisualEffectView* bgBlurImage;
 @property (nonatomic) CGPoint lastPoint;
+@property (strong, nonatomic) UIView* pullBarView;
 @property (nonatomic) BOOL isTitle;
 @property (nonatomic) CGRect absoluteFrame;
-#define BORDER 20
-#define EXTRA  5
+#define OFFSET_FROM_TOP 80
+#define SIDE_BORDER 30
+#define EXTRA  10
 #define MIN_WORDS 20
 #define DEFAULT_FONT_FAMILY @"ArialMT"
-#define DEFAULT_FONT_SIZE 28
+#define DEFAULT_FONT_SIZE 23
+#define THRESHOLD 1.8
 @end
 @implementation v_textPhoto
 
@@ -28,60 +30,28 @@
 {
     
     if((self = [super initWithImage:image])){
-        //Lay over the text
-        //image = [self blur:image];
         self.frame = frame;
         
-        //UIBlurEffect* blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
-         //self.bgBlurImage = [[UIVisualEffectView  alloc]initWithEffect:blur];
-        self.bgBlurImage.frame = self.frame;
-        //self.bgBlurImage.alpha = 0.8;
-        [self addSubview:self.bgBlurImage];
-        
-        self.textLayer = [[v_textview alloc]initWithFrame: self.bounds];
+        CGRect textFrame = CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
+        self.textLayer = [[v_textview alloc]initWithFrame: textFrame];
         [self.textLayer setTextViewText: text];
+        self.textLayer.textColor = [UIColor whiteColor];
         [self addSubview: self.textLayer];
         
         
         [self checkWordCount:text];
-        [self setSizesToFit];
+        //[self setSizesToFit];
         self.userInteractionEnabled = YES;
         self.textLayer.backgroundColor = [UIColor clearColor];
         self.textLayer.showsVerticalScrollIndicator = NO;
         
-        self.textLayer.textAlignment = NSTextAlignmentJustified;
-        [self bringSubviewToFront:self.textLayer];        
+        self.textLayer.textAlignment = NSTextAlignmentCenter;
+        [self bringSubviewToFront:self.textLayer];
+        [self bringSubviewToFront: self.pullBarView];
     }
     return self;
 }
 
-- (UIImage*) blur:(UIImage*)theImage
-{
-    // ***********If you need re-orienting (e.g. trying to blur a photo taken from the device camera front facing camera in portrait mode)
-    // theImage = [self reOrientIfNeeded:theImage];
-    
-    // create our blurred image
-    CIContext *context = [CIContext contextWithOptions:nil];
-    CIImage *inputImage = [CIImage imageWithCGImage:theImage.CGImage];
-    
-    // setting up Gaussian Blur (we could use one of many filters offered by Core Image)
-    CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
-    [filter setValue:inputImage forKey:kCIInputImageKey];
-    [filter setValue:[NSNumber numberWithFloat:3.0f] forKey:@"inputRadius"];
-    CIImage *result = [filter valueForKey:kCIOutputImageKey];
-    
-    // CIGaussianBlur has a tendency to shrink the image a little,
-    // this ensures it matches up exactly to the bounds of our original image
-    CGImageRef cgImage = [context createCGImage:result fromRect:[inputImage extent]];
-    
-    UIImage *returnImage = [UIImage imageWithCGImage:cgImage];//create a UIImage for this function to "return" so that ARC can manage the memory of the blur... ARC can't manage CGImageRefs so we need to release it before this function "returns" and ends.
-    CGImageRelease(cgImage);//release CGImageRef because ARC doesn't manage this on its own.
-    
-    return returnImage;
-    
-    // *************** if you need scaling
-    // return [[self class] scaleIfNeeded:cgImage];
-}
 
 -(void)checkWordCount:(NSString*)text
 {
@@ -98,101 +68,77 @@
     if(words <= MIN_WORDS){
         self.isTitle = YES;
         [self.textLayer setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
+        [self.textLayer removeTextVerticalCentering];
     }else{
+        //add pullbar
+        self.pullBarView = [[UIView alloc] initWithFrame:CGRectMake(0, OFFSET_FROM_TOP ,self.frame.size.width, 2*EXTRA)];
+        self.pullBarView.backgroundColor = [UIColor grayColor];
+        self.absoluteFrame = self.pullBarView.frame;
+        [self addSubview: self.pullBarView];
+        
         //Add the blur
-        self.bgBlur = [[UIView alloc] initWithFrame: self.bounds];
-        self.bgBlur.backgroundColor = [UIColor blackColor];
-        self.bgBlur.alpha = 0.7;
-        [self insertSubview:self.bgBlur belowSubview:self.textLayer];
+        UIBlurEffect* blur = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+        self.bgBlurImage = [[UIVisualEffectView  alloc]initWithEffect:blur];
+        self.bgBlurImage.frame = CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
+        self.bgBlurImage.alpha = 1.0;
+        [self insertSubview:self.bgBlurImage belowSubview:self.textLayer];        
     }
 }
 
 -(void)addSwipeGesture
 {
     if(self.isTitle)return;
-//    UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(repositionTextLayer:)];
-//    self.lastPoint = CGPointZero;
-//    [self.superview addGestureRecognizer:panGesture];
-    UISwipeGestureRecognizer* swiper = [[UISwipeGestureRecognizer alloc]initWithTarget:self action: @selector(repositionTextLayer:)];
-    swiper.direction = UISwipeGestureRecognizerDirectionRight;
-    [self addGestureRecognizer:swiper];
-    UISwipeGestureRecognizer* swiperL = [[UISwipeGestureRecognizer alloc]initWithTarget:self action: @selector(repositionTextLayer:)];
-    swiper.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self addGestureRecognizer:swiperL];
+    UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget: self action:@selector(repositionTextLayer:)];
+    [self.pullBarView addGestureRecognizer:panGesture];
 }
 
--(void)repositionTextLayer:(UISwipeGestureRecognizer*)sender
+
+//makes text and blur view move up and down as pull bar is pulled up/down.
+-(void)repositionTextLayer:(UIPanGestureRecognizer*)sender
 {
-    CATransition *animation = [CATransition animation];
-    [animation setDuration:0.5];
-    [animation setType:kCATransitionFade];
-    [animation setTimingFunction:[CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
-    if(sender.direction == UISwipeGestureRecognizerDirectionRight){
-        if(!self.textLayer.hidden) return;
-        [animation setSubtype:kCATransitionFromLeft];
-    }else{
-        if(self.textLayer.hidden)return;
-        [animation setSubtype:kCATransitionFromRight];
+    CGPoint translation = [sender translationInView:self];
+    if(sender.state == UIGestureRecognizerStateBegan){
+        BOOL atTopmostLevel = self.pullBarView.frame.origin.y == self.absoluteFrame.origin.y;
+        if(translation.y < 0 && atTopmostLevel){
+            return; //prevent pulling up beyond original position
+        }
+        BOOL atLowestLevel = (self.pullBarView.frame.origin.y + self.pullBarView.frame.size.height) == self.frame.size.height;
+        if(translation.y >  0 && atLowestLevel) return; //prevents pulling down below height of pullbar.
+        self.lastPoint = translation;
+        return;
+    }else if(sender.state == UIGestureRecognizerStateEnded){
+        self.lastPoint = translation;
+        [UIView animateWithDuration:0.2 animations:^{
+            int y_location = self.pullBarView.frame.origin.y + self.pullBarView.frame.size.height;
+            int mid_pt = self.frame.size.height/2;
+            if(y_location < THRESHOLD*mid_pt){
+                [self resetFrames];
+            }else{
+                self.textLayer.frame = CGRectMake(SIDE_BORDER, self.frame.size.height, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA);
+                self.bgBlurImage.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA);
+                self.pullBarView.frame = CGRectMake(0, self.frame.size.height - 3*EXTRA, self.frame.size.width,3*EXTRA);
+            }
+        } completion:^(BOOL finished) {
+             self.lastPoint = CGPointZero;
+        }];
+        return;
     }
-    self.textLayer.hidden = !self.textLayer.hidden;
-    self.bgBlur.hidden = !self.bgBlur.hidden;
-    [self.bgBlur.layer addAnimation:animation forKey: @"transition"];
-    [self.textLayer.layer addAnimation:animation forKey: @"transition"];
+    self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
+    if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
+        [self resetFrames];
+        self.lastPoint = CGPointZero;
+        return;
+    }
+    self.bgBlurImage.frame = CGRectOffset(self.bgBlurImage.frame,  0, translation.y - self.lastPoint.y );
+    self.textLayer.frame = CGRectOffset(self.textLayer.frame,  0, translation.y - self.lastPoint.y );
+    self.lastPoint = translation;
 }
-
-
-////remember to fade as the text is pulled up and down
-//-(void)repositionTextLayer:(UIPanGestureRecognizer*)sender
-//{
-//    CGPoint translation = [sender translationInView:self];
-//    if(sender.state == UIGestureRecognizerStateBegan){
-//        if(translation.x > 0 && !self.textLayer.hidden){
-//            return;
-//        }
-//        if(translation.x <  0 && self.textLayer.hidden) return;
-//        if(translation.x > 0){
-//            self.textLayer.hidden = NO;
-//            self.bgBlur.hidden = NO;
-//            self.bgBlurImage.hidden = NO;
-//        }
-//        self.lastPoint = translation;
-//        return;
-//    }else if(sender.state == UIGestureRecognizerStateEnded){
-//        self.lastPoint = translation;
-//        [UIView animateWithDuration:0.2 animations:^{
-//            int x_location = self.bgBlur.frame.origin.x + self.bgBlur.frame.size.width;
-//            int mid_pt = self.frame.origin.x + (self.frame.size.width)/2;
-//            if(x_location > mid_pt){
-//                [self resetFrames];
-//            }else{
-//                self.textLayer.hidden = YES;
-//                self.bgBlur.hidden = YES;
-//                self.bgBlurImage.hidden = YES;
-//                self.textLayer.frame = CGRectOffset(self.absoluteFrame, - self.frame.size.width, 0);
-//                self.bgBlur.frame = CGRectOffset(self.bounds, - self.frame.size.width, 0);
-//                self.bgBlurImage.frame = CGRectOffset(self.bounds, - self.frame.size.width, 0);
-//            }
-//        } completion:^(BOOL finished) {
-//             self.lastPoint = CGPointZero;
-//        }];
-//        return;
-//    }
-//    self.bgBlur.frame = CGRectOffset(self.bgBlur.frame, translation.x - self.lastPoint.x, 0);
-//    if(self.frame.origin.x < self.bgBlur.frame.origin.x){
-//        [self resetFrames];
-//        self.lastPoint = CGPointZero;
-//        return;
-//    }
-//    self.bgBlurImage.frame = CGRectOffset(self.bgBlurImage.frame, translation.x - self.lastPoint.x, 0);
-//    self.textLayer.frame = CGRectOffset(self.textLayer.frame, translation.x - self.lastPoint.x, 0);
-//    self.lastPoint = translation;
-//}
 
 -(void)resetFrames
 {
-    self.textLayer.frame = self.absoluteFrame;
-    self.bgBlur.frame = self.bounds;
-    self.bgBlurImage.frame = self.bounds;
+    self.pullBarView.frame = self.absoluteFrame;
+    self.textLayer.frame = CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
+    self.bgBlurImage.frame = CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
 }
 
 /*This function sets the textLayer's size to fit superview's frame.
@@ -202,21 +148,6 @@
 -(void)setSizesToFit
 {
     self.textLayer.textAlignment = NSTextAlignmentCenter;
-    CGRect this_frame = self.textLayer.frame;
-    this_frame.origin.y += BORDER;
-    this_frame.origin.x += BORDER;
-    this_frame.size.width -= 2*BORDER;
-    self.textLayer.frame = this_frame;
     [self.textLayer sizeToFit];
-    if(self.textLayer.frame.size.height > self.frame.size.height - 2*BORDER){
-        this_frame.size.height = self.frame.size.height - 2*BORDER;
-        self.textLayer.frame = this_frame;
-        self.absoluteFrame = this_frame;
-    }else if (!self.isTitle){
-        int translate = self.frame.size.height/2 - (self.textLayer.frame.size.height/2 + self.textLayer.frame.origin.y);
-        self.textLayer.frame = CGRectOffset(self.textLayer.frame, 0, translate);
-        self.absoluteFrame = self.textLayer.frame;
-        return;
-    }
 }
 @end

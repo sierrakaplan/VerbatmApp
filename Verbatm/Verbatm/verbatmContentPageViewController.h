@@ -11,6 +11,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "verbatmCustomPinchView.h"
 #import "verbatmCustomImageView.h"
+#import "verbatmCustomScrollView.h"
 @interface verbatmContentPageViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet UITextField *articleTitleField;
@@ -27,7 +28,7 @@
 -(void)alertGallery:(ALAsset*)asset;
 -(void) removeKeyboardFromScreen;
 @property(nonatomic) NSInteger pullBarHeight;
-
+@property (weak, nonatomic) IBOutlet verbatmCustomScrollView *mainScrollView;
 @end
 
 

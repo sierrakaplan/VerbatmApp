@@ -69,6 +69,9 @@
     @property (nonatomic) NSInteger keyboardHeight;
 
 @property (nonatomic) CGRect oldPullBarFrame; //used when we hide the pullbar so we can restore it to what it was before
+//layout of the screen before it was made landscape- MSAV BASE FULLSCREEEN
+@property(nonatomic) NSString * previousLayout;
+
 
 #pragma mark Filter helpers
 #define FILTER_NOTIFICATION_ORIGINAL @"addOriginalFilter"
@@ -102,24 +105,18 @@
 #pragma mark Camera/Flash Icon sizes
     #define SWITCH_ICON_SIZE 50
     #define FLASH_ICON_SIZE 50
-
 #pragma mark Camera/Flash positions
     #define FLASH_START_POSITION  10, 0
     #define SWITCH_CAMERA_START_POSITION 260, 5
-
 #pragma mark Session timer time
     #define TIME_FOR_SESSION_TO_RESUME 0.2
     #define NUM_VID_SECONDS 20
-
 #pragma Transtition helpers
     #define TRANSITION_MARGIN_OFFSET 50
 #define TRANSLATION_THRESHOLD 70
 #define CIRCLE_PROGRESSVIEW_SIZE 100
-
 #define NOTIFICATION_UNDO @"undoTileDeleteNotification"
-
 #define PULLBAR_HEIGHT 36
-
 
 @end
 
@@ -184,8 +181,6 @@
     [self.view bringSubviewToFront:pullBar];
 }
 
-
-
 -(void) removeStatusBar
 {
     //remove the status bar
@@ -208,6 +203,7 @@
     
     self.pullBarMSAVFrame = CGRectMake(0, self.containerViewMSAVFrame.size.height , self.view.frame.size.width, self.pullBar.frame.size.height);
 }
+
 
 
 //Iain
@@ -482,40 +478,60 @@
     if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
         if(!self.containerView.isHidden && !self.canRaise){
             [UIView animateWithDuration:0.5 animations:^{
-                self.containerView.frame = CGRectMake(0, 0, self.containerView.frame.size.width, 0);
-                self.pullBar.frame = CGRectMake(0, 0, self.pullBar.frame.size.width, 0);;
-                for(UIView* view in self.pullBar.subviews){
-                    view.hidden = YES;
+                
+                if(self.containerViewMSAVMode)
+                {
+                    self.previousLayout = @"MSAV";
+                }else if(self.containerViewFullScreen)
+                {
+                    self.previousLayout = @"FULLSCREEN";
+                }else
+                {
+                    self.previousLayout = @"BASE";
                 }
-                //preferably use autolayout
-                if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeLeft){
-                    self.switchCameraButton.transform  = CGAffineTransformMakeRotation(M_PI_2);
-                    self.switchFlashButton.transform = CGAffineTransformMakeRotation(M_PI_2);
-                }else{
-                    self.switchCameraButton.transform  = CGAffineTransformMakeRotation(-M_PI_2);
-                    self.switchFlashButton.transform = CGAffineTransformMakeRotation(-M_PI_2);
-                }
-            } completion:^(BOOL finished) {
-                if(finished){
-                    self.containerView.hidden = YES;
+                
+                int containerY = -1 * self.containerView.frame.size.height;
+                self.containerView.frame = CGRectMake(0, containerY, self.containerView.frame.size.width, self.containerView.frame.size.height);
+                
+                int pullBarY = -1 * self.pullBar.frame.size.height;
+                self.pullBar.frame = CGRectMake(0,pullBarY, self.pullBar.frame.size.width, self.pullBar.frame.size.height);;
+                
+            } completion:^(BOOL finished)
+            {
+                if(finished)
+                {
+                   // self.containerView.hidden = YES;
+                    [self.vc_contentPage removeKeyboardFromScreen];
                 }
             }];
         }
-    }else{
-        if(self.containerView.hidden && !self.canRaise){
+    }else
+    {
+        if(self.containerView.hidden && !self.canRaise)
+        {
             self.containerView.hidden = NO;
             [UIView animateWithDuration:0.5 animations:^{
-                [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
-                for(UIView* view in self.pullBar.subviews){
-                    view.hidden = NO;
+                
+                if([self.previousLayout isEqualToString:@"BASE"])
+                {
+                    [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
                 }
-//                self.switchCameraButton.transform = self.switchTransform;
-//                self.switchFlashButton.transform = self.flashTransform;
+                
+                if([self.previousLayout isEqualToString:@"FULLSCREEN"])
+                {
+                    [self positionContainerViewTo:YES orTo:NO orTo:NO];//Positions the container view to the right frame
+                }
+                
+                if([self.previousLayout isEqualToString:@"MSAV"])
+                {
+                    [self positionContainerViewTo:NO orTo:YES orTo:NO];//Positions the container view to the right framed
+                }
             }];
         }
     }
 
 }
+
 
 -(void)viewWillLayoutSubviews
 {
@@ -582,7 +598,7 @@
     }else
     {
         float fl = translation.y;
-        if(/*gets the abs for a float*/fabsf(fl) > TRANSITION_MARGIN_OFFSET) //snap the container view back up to no MSAV
+        if(fabsf(fl) > TRANSITION_MARGIN_OFFSET) //snap the container view back up to no MSAV
         {
             
             [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
@@ -614,13 +630,15 @@
      {
          if(transitionDown)
          {
-             CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - self.pullBar.frame.size.height, self.view.frame.size.width, self.pullBar.frame.size.height);
+             
+             int frameHeight = self.view.frame.size.height;
+             int pullbarHeight = self.pullBar.frame.size.height;
+             CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x,(frameHeight - pullbarHeight), self.view.frame.size.width, self.pullBar.frame.size.height);
              self.pullBar.frame = newPullBarFrame;
          }else{
              if(self.containerViewMSAVMode)
              {
                  self.pullBar.frame = self.pullBarMSAVFrame;
-                 
              }else
              {
                  self.pullBar.frame = self.pullBarNoMSAVFrame;
@@ -638,7 +656,7 @@
      {
         if(fullScreen)
         {
-            CGRect newContainerFrame = CGRectMake(self.containerView.frame.origin.x, self.containerView.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height-self.pullBarNoMSAVFrame.size.height);//subtract the pullbar height so the container view is never behind it
+            CGRect newContainerFrame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-self.pullBarNoMSAVFrame.size.height);//subtract the pullbar height so the container view is never behind it
             
             self.containerViewFullScreen = YES;
             self.containerViewMSAVMode = NO;
@@ -651,6 +669,7 @@
             self.containerViewFullScreen = NO;
             self.containerView.frame= self.containerViewMSAVFrame;
             [self positionPullBarTransitionDown:NO];
+            
         }else if (Base)
         {
             self.containerViewMSAVMode = NO;
@@ -682,6 +701,7 @@
     if(self.containerViewFullScreen)
     {
         [self.vc_contentPage removeKeyboardFromScreen];
+        [self hidePullBar];
         
     }
     
@@ -700,22 +720,6 @@
         [self positionContainerViewTo:NO orTo:NO  orTo:YES];
         [self positionPullBarTransitionDown:NO];
     }
-}
-
-//Iain
--(BOOL) textFieldShouldReturn:(UITextField *)textField
-{
-    if(textField == self.whereSandwich)
-    {
-        
-        [self.whereSandwich resignFirstResponder];
-        
-    }else if(textField == self.whatSandwich)
-    {
-        
-        [self.whatSandwich resignFirstResponder];
-    }
-    return YES;
 }
 
 
@@ -851,6 +855,7 @@
 
 -(void)hidePullBar
 {
+    if(self.vc_contentPage.mainScrollView.contentSize.height < self.view.frame.size.height) return;
         [UIView animateWithDuration:0.4 animations:^
          {
             self.containerView.frame = self.view.frame;
@@ -878,8 +883,8 @@
 
 -(void) previewButtonPressed
 {
-    
-    [self performSegueWithIdentifier:@"previewArticleSegue" sender:self];
+    //make sure there is at least one pinch object available 
+    if (self.vc_contentPage.pageElements.count >1) [self performSegueWithIdentifier:@"previewArticleSegue" sender:self];
 }
 
 
