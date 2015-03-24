@@ -36,6 +36,7 @@
 }
 
 
+/*This sets up the video player using the fused video assets. The video player is made a sublayer of the videoview*/
 -(void)setUpPlayer:(AVMutableComposition*)mix
 {
     AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:mix];
@@ -57,16 +58,17 @@
     [player play];
 }
 
-//tells me when the video ends so that I can rewind
+/*tells me when the video ends so that I can rewind*/
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
     AVPlayerItem *p = [notification object];
     [p seekToTime:kCMTimeZero];
     [self continueVideo];
 }
 
+/*This code fuses the video assets into a single video that plays the videos one after the other*/
 -(void)fuseAssets:(NSArray*)assetList
 {
-    self.mix = [AVMutableComposition composition];
+    self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
     AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     CMTime nextClipStartTime = kCMTimeZero;
@@ -74,7 +76,7 @@
     for(ALAsset* asset in assetList){
         AVURLAsset* assetClip = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
         AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-        [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error];
+        [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
         AVAssetTrack* this_audio_track = [[assetClip tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
         if(this_audio_track != nil){
             [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
@@ -83,15 +85,14 @@
     }
 }
 
-#pragma mark - showing the progess bar-
-
+#pragma mark - showing the progess bar -
+/*This function shows the play and pause icons*/
 -(void)showPlayBackIcons
 {
     [self setUpPlayAndPauseButtons];
 }
 
 #pragma mark - manipulating playing of videos -
-
 -(void)setUpPlayAndPauseButtons
 {
     self.play_pauseBtn = [UIButton buttonWithType: UIButtonTypeCustom];
@@ -175,6 +176,7 @@
     }
 }
 
+/*this function changes the rate at which the video is played. Based on the direction of first translation of the pan gesture. A right translation ie delta_x > 0 means fast forward and vice versa for the left*/
 -(void)changeRate
 {
     if(self.firstTranslation.x > 0){
@@ -184,12 +186,14 @@
     }
 }
 
+/*Mute the video*/
 -(void)mutePlayer
 {
     AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
     playerLayer.player.muted = YES;
 }
 
+/*Enable's the sound on the video*/
 -(void)enableSound
 {
     AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];

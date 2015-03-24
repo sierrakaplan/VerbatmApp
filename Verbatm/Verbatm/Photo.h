@@ -10,6 +10,7 @@
 #import <Parse/PFObject+Subclass.h>
 @class VerbatmUser;
 @class Article;
+@class Page;
 
 
 @interface Photo : PFObject 
@@ -25,7 +26,7 @@
 
 #pragma mark - get values for photo
 //These get the instance variables from a photo object.
-@property(strong, nonatomic, readonly)NSData* data;
+-(UIImage*)getPhoto;
 @property(strong, nonatomic, readonly)NSString* caption;
 @property(strong, nonatomic, readonly)NSString* title;
 @property(strong, nonatomic, readonly)CLLocation* location;

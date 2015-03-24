@@ -28,6 +28,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+<<<<<<< HEAD
+//    verbatmCustomImageView * IV = [[verbatmCustomImageView alloc] initWithImage:<#(UIImage *)#>];
+//    
+//    
+//    // Do any additional setup after loading the view.
+//    self.pv_ave = [[verbatmPhotoVideoAve alloc]initWithFrame:self.view.frame Image:<#(verbatmCustomImageView *)#> andVideo:<#(verbatmCustomImageView *)#>]
+=======
     [self getVerbatmMediaFolder];
     //sleep(50);
     
@@ -91,6 +98,7 @@
         if(self.imageV && self.videoV) break;
     }
     
+>>>>>>> e4d07997aea8ec211729d2cfa4e82b9a8aad47ac
     
     self.pv_ave = [[verbatmPhotoVideoAve alloc]initWithFrame:self.view.frame Image:self.imageV andVideo:self.videoV];
     [self.view addSubview:self.pv_ave];

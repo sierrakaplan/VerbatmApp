@@ -13,5 +13,5 @@
 @interface v_textview : UITextView
 -(void)setTextViewText:(NSString*)text;
 -(void)setTextViewAttributedText:(NSMutableAttributedString*)text;
-
+-(void)removeTextVerticalCentering;
 @end

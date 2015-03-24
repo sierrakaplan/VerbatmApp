@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 @class Photo;
 @class Video;
+@class Page;
 @class VerbatmUser;
 
 /*Class implemented by Lucio Dery*/

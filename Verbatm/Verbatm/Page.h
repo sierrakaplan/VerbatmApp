@@ -9,6 +9,8 @@
 #import <Parse/Parse.h>
 #import <Parse/PFObject+Subclass.h>
 #import "verbatmCustomPinchView.h"
+@class Photo;
+@class Video;
 
 @interface Page : PFObject
 #pragma mark - required subclassing methods

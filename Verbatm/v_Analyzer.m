@@ -16,6 +16,8 @@
 #import "v_multiVidTextPhoto.h"
 #import "v_textVideo.h"
 #import "v_photoVideo.h"
+#import "Article.h"
+#import "Page.h"
 
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
 @interface v_Analyzer()
@@ -33,7 +35,29 @@
     _pinchedObjects = arr;
     _preferedFrame = frame;
     _results = [[NSMutableArray alloc]init];
+    NSMutableArray* pages = [[NSMutableArray alloc]init];
+    __block int numPages = _pinchedObjects.count;
     for(verbatmCustomPinchView* p_obj in _pinchedObjects){
+        Page* this_page = [[Page alloc]initWithPinchObject:p_obj];
+        [pages addObject:this_page];
+        [this_page saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            numPages--;
+            if(succeeded){
+                NSLog(@"Saved Successfully");
+                if(!numPages){
+                    Article* article = [[Article alloc]initWithTitle:@"This is a great article" andSubtitle:nil andPages:pages];
+                    [article saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+                        if(succeeded){
+                            NSLog(@"SAVED SUCCESSFULLY");
+                        }else{
+                            NSLog(@"%@", [error localizedDescription]);
+                        }
+                    }];
+                }
+            }else{
+                NSLog(@"Could not save page: %@", [error localizedDescription]);
+            }
+        }];
         if(![p_obj isCollection]){
             [self handleSingleMedia:p_obj];
             continue;
@@ -109,6 +133,7 @@
                 }
             }
             v_textVideo* tv = [[v_textVideo alloc]initWithFrame:_preferedFrame andAssets:assets andText:text];
+            [tv addSwipeGesture];
             [_results addObject:tv];
         }
     }else{
@@ -162,7 +187,7 @@
         [pvt createGestures];
         [_results addObject:pvt];
     }else{
-        int count  = media.count;
+        NSUInteger count  = media.count;
         for(int i = 0; i < count; i++){
             if([[media objectAtIndex:i] isKindOfClass:[UITextView class]]){
                 continue;

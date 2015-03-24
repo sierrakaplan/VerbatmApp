@@ -11,20 +11,19 @@
 #import "VerbatmUser.h"
 
 @interface Video() <PFSubclassing>
-@property(strong, nonatomic, readwrite)NSData* data;
 @property(strong, nonatomic, readwrite)NSString* caption;
 @property(strong, nonatomic, readwrite)NSString* name;
 @property(strong, nonatomic, readwrite)NSURL* url;
 @property(strong, nonatomic, readwrite)CLLocation* location;
+@property (strong, nonatomic ) PFFile* videoDataFile;
 
 #define ARTICLE_VIDEO_RELATIONSHIP @"ArticleVideoRelation"
 @end
 
 @implementation Video
-
+@dynamic videoDataFile;
 @dynamic location;
 @dynamic url;
-@dynamic data;
 @dynamic caption;
 @dynamic name;
 
@@ -38,7 +37,7 @@
                  atLocation:(CLLocation*)location
 {
     if((self = [super init])){
-        self.data = data;
+        self.videoDataFile = [PFFile fileWithData:data];
         self.caption = caption;
         self.name = name;
         self.location = location;
@@ -81,6 +80,12 @@
     return queryArticle;
 }
 
+
+#pragma mark - getting data back - 
+-(NSData*)getVideoData
+{
+    return [self.videoDataFile getData];
+}
 
 #pragma mark - Required Subclassing methods
 

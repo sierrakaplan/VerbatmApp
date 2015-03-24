@@ -21,6 +21,7 @@
 @property (strong, nonatomic) UICollisionBehavior* collider;
 @property (strong, nonatomic) UIDynamicItemBehavior* elasticityBehavior;
 @property (strong, nonatomic) UIView* view;
+@property (nonatomic) int numVideosReadded;
 #define ALBUM_NAME @"Verbatm"
 #define OFFSET 15
 #define PLAY_VIDEO_ICON @"videoPreview_play_icon"
@@ -54,6 +55,7 @@
         self.mediaImageViews = [[NSMutableArray alloc] init];
         self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
         //get the verbatm folder
+        self.numVideosReadded = 0;
         self.isRaised = YES;
         [self getVerbatmMediaFolder];
         [self createScrollView];
@@ -69,7 +71,7 @@
     self.scrollView.pagingEnabled = NO;
     self.scrollView.clipsToBounds = NO;
     self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-    self.scrollView.showsHorizontalScrollIndicator = NO;
+    self.scrollView.showsHorizontalScrollIndicator = YES;
     self.scrollView.delegate = self;
     self.scrollView.alwaysBounceHorizontal = YES;
     
@@ -78,7 +80,7 @@
 -(void)addScrollViewGestures
 {
     //Add swipe up gesture to dismiss gallery
-    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismissGallery)];
+    UISwipeGestureRecognizer* swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(raiseScrollView)];
     swipeUp.direction  = UISwipeGestureRecognizerDirectionUp;
     swipeUp.cancelsTouchesInView = NO;
     swipeUp.delegate = self;
@@ -181,7 +183,6 @@
 
 -(void)addBorder:(verbatmCustomImageView*)view
 {
-    //return;
     view.layer.cornerRadius = 8.0f;
     view.layer.masksToBounds = YES;
     view.layer.borderColor = [UIColor grayColor].CGColor;
@@ -198,7 +199,7 @@
     // Create the AVPlayer using the playeritem
     AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
     //MUTE THE PLAYER
-    player.muted = YES;
+    [player setVolume:0.0];
     player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
@@ -207,12 +208,13 @@
     
     // Create an AVPlayerLayer using the player
     AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = view.bounds;
+    
     playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     // Add it to your view's sublayers
     [view.layer addSublayer:playerLayer];
+    playerLayer.frame = view.bounds;
     // You can play/pause using the AVPlayer object
-   [player play];
+    [player play];
 }
 
 //tells me when the video ends so that I can rewind
@@ -230,11 +232,11 @@
     } completion:^(BOOL finished) {
         if(finished)
         {
-           [self.scrollView removeFromSuperview];
+            [self.scrollView removeFromSuperview];
             self.isRaised = YES;
         }
     }];
-
+    
 }
 
 
@@ -282,11 +284,12 @@
 //delegate methods
 -(IBAction)selectMedia:(id)sender
 {
+    if (!self.mediaImageViews.count) return;
     UISwipeGestureRecognizer* swiper = (UISwipeGestureRecognizer*)sender;
     __block CGPoint location = [swiper locationInView: self.view];
-    __block int indexa = ceil((self.scrollView.contentOffset.x + location.x)/((self.scrollView.frame.size.width - OFFSET)/2)) - 1;
+    __block int indexa = (!(self.mediaImageViews.count - 1))? 0 :ceil((self.scrollView.contentOffset.x + location.x)/((self.scrollView.frame.size.width - OFFSET)/2)) - 1;
     verbatmCustomImageView* selectedImageView ;
-    indexa = (indexa > self.mediaImageViews.count - 1)? self.mediaImageViews.count - 1 : indexa;
+    indexa = (indexa > self.mediaImageViews.count - 1)? (int)self.mediaImageViews.count - 1 : indexa;
     if(self.mediaImageViews.count >= 1)selectedImageView = [self.mediaImageViews objectAtIndex:indexa];
     if(selectedImageView){
         [self.media removeObjectAtIndex:indexa];
@@ -311,31 +314,24 @@
 
 -(void)returnToGallery:(verbatmCustomImageView*)view
 {
+    [[view.layer.sublayers firstObject]removeFromSuperlayer];
+    view = [self imageViewFromAsset:view.asset];
     [self.media insertObject: view.asset atIndex:0];
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
-    
-    
+    view.frame = viewSize;
+    [self addBorder: view];
+    [self.scrollView addSubview: view];
+
     for(verbatmCustomImageView* otherView in self.mediaImageViews)
     {
         otherView.frame = CGRectOffset(otherView.frame,  (self.scrollView.frame.size.width - OFFSET)/2, 0);
     }
     
-    view.frame = viewSize;
-    if(view.isVideo && !view.layer.sublayers.count){
+    if(view.isVideo){
         AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:view.asset.defaultRepresentation.url options:nil];
         [self playVideo:avurlAsset forView:view];
     }
-    if(self.isRaised && view.isVideo){ //THIS IS A HACK. I NEED A PERMANENT/BETTER SOLUTION
-        self.scrollView.hidden = YES;
-        [self lowerScrollView];
-        [self.scrollView addSubview: view];
-        [self raiseScrollView];
-        self.scrollView.hidden = NO;
-    }else{
-        [self.scrollView addSubview: view];
-    }
-    [self addBorder: view];
     [self.mediaImageViews insertObject:view atIndex:0];
     [self.view bringSubviewToFront:self.scrollView];
     [self.scrollView bringSubviewToFront:view];
