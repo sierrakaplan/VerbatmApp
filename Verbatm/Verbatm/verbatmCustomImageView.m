@@ -16,26 +16,32 @@
 
 @implementation verbatmCustomImageView
 
--(id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super initWithCoder:aDecoder];
-    if(self){
-        self.isVideo = (BOOL)[aDecoder decodeObjectForKey:IS_VIDEO];
-        NSData* data = (NSData*)[aDecoder decodeObjectForKey:ASSET_DATA];
-        if(self.isVideo){
-            [self saveVideoToVerbatmAlbum:data];
-        }else{
-            [self saveImageToVerbatmAlbum:data];
-        }
-    }
-    return self;
-}
 
--(void)encodeWithCoder:(NSCoder *)aCoder
-{
-    [aCoder encodeBool:self.isVideo forKey:IS_VIDEO];
-    [aCoder encodeObject:[self dataFromAsset] forKey:ASSET_DATA];
-}
+//These two funcitons offer a "freeze dry" feature to store the custom image view in order to push to the cloud
+//this is how you save any custom object
+//note that we are not using this right now we are instead saving media elements individually and reconstructing when needed
+
+
+//-(id)initWithCoder:(NSCoder *)aDecoder
+//{
+//    self = [super initWithCoder:aDecoder];
+//    if(self){
+//        self.isVideo = (BOOL)[aDecoder decodeObjectForKey:IS_VIDEO];
+//        NSData* data = (NSData*)[aDecoder decodeObjectForKey:ASSET_DATA];
+//        if(self.isVideo){
+//            [self saveVideoToVerbatmAlbum:data];
+//        }else{
+//            [self saveImageToVerbatmAlbum:data];
+//        }
+//    }
+//    return self;
+//}
+//
+//-(void)encodeWithCoder:(NSCoder *)aCoder
+//{
+//    [aCoder encodeBool:self.isVideo forKey:IS_VIDEO];
+//    [aCoder encodeObject:[self dataFromAsset] forKey:ASSET_DATA];
+//}
 
 -(NSData*)dataFromAsset
 {

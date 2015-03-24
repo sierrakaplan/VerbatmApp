@@ -9,28 +9,107 @@
 #import "VIEW_TESTERViewController.h"
 #import "verbatmPhotoVideoAve.h"
 #import "verbatmCustomImageView.h"
+#import <AssetsLibrary/AssetsLibrary.h>
+
+#define ALBUM_NAME @"Verbatm"
+
 @interface VIEW_TESTERViewController ()
 @property (strong, nonatomic) verbatmPhotoVideoAve* pv_ave;
-
+@property (strong, nonatomic) verbatmCustomImageView * imageV;
+@property (strong, nonatomic) verbatmCustomImageView * videoV;
+@property (strong, nonatomic) NSMutableArray * media;
+@property (strong, nonatomic) ALAssetsGroup * folder;
 @end
+
+
 
 @implementation VIEW_TESTERViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    verbatmCustomImageView * IV = [[verbatmCustomImageView alloc] initWithImage:<#(UIImage *)#>];
+    [self getVerbatmMediaFolder];
+    //sleep(50);
     
-    
-    // Do any additional setup after loading the view.
-    self.pv_ave = [[verbatmPhotoVideoAve alloc]initWithFrame:self.view.frame Image:<#(verbatmCustomImageView *)#> andVideo:<#(verbatmCustomImageView *)#>]
     
 }
 
-- (void)didReceiveMemoryWarning {
+-(void)getVerbatmMediaFolder
+{
+    //get the album
+    __weak VIEW_TESTERViewController* weakSelf = self;
+    ALAssetsLibrary *  assetsLibrary = [[ALAssetsLibrary alloc] init];
+    
+    [assetsLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum
+                                      usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
+                                          if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString: ALBUM_NAME]) {
+                                              NSLog(@"found album %@", ALBUM_NAME);
+                                              weakSelf.folder = group;
+                                              [self fillArrayWithMedia];
+                                              return;
+                                          }
+                                      }
+                                    failureBlock:^(NSError* error) {
+                                        NSLog(@"failed to enumerate albums:\nError: %@", [error localizedDescription]);
+                                    }];
+}
+
+-(void) fillArrayWithMedia
+{
+    __weak VIEW_TESTERViewController* weakSelf = self;
+    [self.folder enumerateAssetsUsingBlock:^(ALAsset *result, NSUInteger index, BOOL *stop)
+     {
+        if(result)
+        {
+            if(![weakSelf.media containsObject:result])
+            {
+                [weakSelf.media addObject:result];
+            }
+        }else if (!result)
+        {
+            [self dotherest];
+        }
+    }];
+}
+
+-(void) dotherest
+{
+    for (int i=0; i < self.media.count; i++)
+    {
+        
+        if([[self.media[i] valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo])
+        {
+            self.videoV = [[verbatmCustomImageView alloc] init];
+            self.videoV.isVideo = YES;
+            self.videoV.asset = self.media[i];
+        }else{
+            self.imageV = [[verbatmCustomImageView alloc] init];
+            self.imageV.asset = self.media[i];
+            self.imageV.isVideo = NO;
+        }
+        
+        if(self.imageV && self.videoV) break;
+    }
+    
+    
+    self.pv_ave = [[verbatmPhotoVideoAve alloc]initWithFrame:self.view.frame Image:self.imageV andVideo:self.videoV];
+    [self.view addSubview:self.pv_ave];
+}
+
+
+
+-(NSMutableArray *) media
+{
+    if(!_media) _media = [[NSMutableArray alloc] init];
+    return _media;
+}
+
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
 
 /*
 #pragma mark - Navigation

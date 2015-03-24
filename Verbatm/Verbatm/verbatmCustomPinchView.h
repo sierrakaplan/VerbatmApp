@@ -13,6 +13,13 @@
 
 @interface verbatmCustomPinchView : UIView <NSCoding>
 
+/*
+ allows you to change the width and height of the object without changing it's center
+ note that the object frame is a square so width == height
+ */
+-(void) changeWidthTo: (double) width;
+
+
 /*This adds a picture to the pinch object
  *The method return nothing.
  */
@@ -28,6 +35,11 @@
  *
  */
 -(void)specifyFrame:(CGRect)frame;
+
+//funcitons allow you to mute and unmute the video on the pinch object- not if there is no video the
+//result is undefined
+-(void)unmuteVideo;
+-(void)muteVideo;
 
 //lets you specify a center and in turn sets the frame of the pinchview
 //should only be use when panning the object because it relies on the current from of the object which must be set before this is called
