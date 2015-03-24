@@ -73,7 +73,9 @@
     UIPinchGestureRecognizer * pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinch:)];
     [self.videoView addGestureRecognizer:pinch];
     
-    
+    UITapGestureRecognizer * doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    doubleTap.numberOfTapsRequired = 2;//for double tap
+    [self.videoView addGestureRecognizer:doubleTap];
     
 }
 
@@ -129,6 +131,15 @@
         }
     }
 }
+
+
+//sets the size of the video viewer back to default frame
+//function only gets called if there is a double tap
+-(void) doubleTap:(UITapGestureRecognizer *) gesture
+{
+        [self.videoView changeWidthTo:([self getRadius]*2)];//we set the frame back to the original size
+}
+
 
 //should move the video view with the users finger on drag
 -(void)pan:(UIPanGestureRecognizer *) gesture

@@ -63,13 +63,10 @@
         [self initSubviews];
         [self.media addObject: medium];
         [self renderMedia];
-        [self addGrayBorder];
-
+        [self addBorderToPinchView];
     }
     return self;
 }
-
-
 
 
 -(void)initSubviews
@@ -88,8 +85,8 @@
 
 }
 
-
--(void)addGrayBorder
+//adds a thin circular border to the view
+-(void)addBorderToPinchView
 {
     self.layer.borderColor = [UIColor whiteColor].CGColor;
     self.layer.borderWidth = 1.0f;
@@ -114,7 +111,6 @@
     self.textField.text = textview.text;
     self.textField.textColor = [UIColor whiteColor];
     self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
-
 }
 
 
@@ -156,6 +152,7 @@
     }
     [ourPlayerLayer.player setMuted:NO];
 }
+
 -(void)muteVideo
 {
     AVPlayerLayer * ourPlayerLayer;
@@ -181,24 +178,24 @@
         if([obj isKindOfClass:[AVPlayerLayer class]])
         {
             ourPlayer = (AVPlayerLayer *)obj;
+            
         }
     }
-    
     
     CGPoint center = self.center;
     CGRect new_frame = CGRectMake(center.x- width/2, center.y - width/2, width, width);
     CGRect new_bounds_frame =CGRectMake(0, 0, width, width);
     
+   
+    self.frame = new_frame;
+    self.background.frame = new_bounds_frame;
+    self.videoView.frame = new_bounds_frame;
+    
     [CATransaction begin];
     [CATransaction setAnimationDuration:0];
     [CATransaction setDisableActions:YES];
-    ourPlayer.frame=new_bounds_frame;
+    ourPlayer.frame=self.bounds;
     [CATransaction commit];
-    
-    self.background.frame = new_bounds_frame;
-    self.videoView.frame = new_bounds_frame;
-    self.frame = new_frame;
-    
     
     ourPlayer.cornerRadius = self.frame.size.width/2;
     self.background.layer.cornerRadius = self.frame.size.width/2;
@@ -234,6 +231,8 @@
     }
     [self displayMedia];
 }
+
+
 
 //This renders a single view on the pinch object
 -(void)renderSingleView
@@ -426,7 +425,7 @@
         self.media = (NSMutableArray*)[coder decodeObjectForKey:P_OBJ_MEDIA];
         [self initSubviews];
         [self renderMedia];
-        [self addGrayBorder];
+        [self addBorderToPinchView];
     }
     return self;
 }
@@ -497,7 +496,7 @@
 
 -(void)unmarkAsDeleting
 {
-    [self addGrayBorder];
+    [self addBorderToPinchView];
 }
 -(void)markAsSelected
 {
@@ -508,7 +507,7 @@
 -(void)unmarkAsSelected
 {
     
-    [self addGrayBorder];
+    [self addBorderToPinchView];
 }
 @end
 
