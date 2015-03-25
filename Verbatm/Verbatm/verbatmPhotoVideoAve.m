@@ -35,10 +35,7 @@
     self = [[[NSBundle mainBundle] loadNibNamed:@"PhotoVideoAve" owner:self options:nil]firstObject];    
     if(self)
     {
-        
-        
-        
-        
+
         ALAssetRepresentation *assetRepresentation = [image.asset defaultRepresentation];
         UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
                                              scale:[assetRepresentation scale]
@@ -46,13 +43,13 @@
         [self.image setImage:image];
 
         
-        
         self.videoView = [[verbatmCustomPinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]/2,[self getRadius]/2) andMedia:video];
         [self addSubview:self.videoView];
             self.frame = frame;
         [self.videoView unmuteVideo];
         [self addGesturesToVideoView];
     }
+    
     return self;
 }
 
@@ -60,10 +57,9 @@
 //and its personal scrollview.
 -(double)getRadius
 {
-    CGSize defaultPersonalScrollViewFrameSize_closedElement = CGSizeMake(self.frame.size.width, ((self.frame.size.height*2)/5));
-    
-    return (defaultPersonalScrollViewFrameSize_closedElement.height - ELEMENT_OFFSET_DISTANCE)/2;
+    return (((self.frame.size.height*2)/5) - ELEMENT_OFFSET_DISTANCE)/2;
 }
+
 
 -(void)addGesturesToVideoView
 {
@@ -74,9 +70,9 @@
     [self.videoView addGestureRecognizer:pinch];
     
     UITapGestureRecognizer * doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+    
     doubleTap.numberOfTapsRequired = 2;//for double tap
     [self.videoView addGestureRecognizer:doubleTap];
-    
 }
 
 
@@ -87,7 +83,6 @@
     {
         CGPoint touch1 = [gesture locationOfTouch:0 inView:self];
         CGPoint touch2 = [gesture locationOfTouch:1 inView:self];
-        
         
         if(abs(touch1.x -touch2.x) > abs(touch1.y- touch2.y)) self.usingYs = NO;
         else self.usingYs = YES;
@@ -163,11 +158,11 @@
         int x_cord = self.videoView.frame.origin.x + x_diff;
         int y_cord = self.videoView.frame.origin.y + y_diff;
         
-        
         [self.videoView setFrame:CGRectMake(x_cord, y_cord,self.videoView.frame.size.width , self.videoView.frame.size.height)];
         self.panStartPoint = currentPoint;
     }
 }
+
 
 /*
 // Only override drawRect: if you perform custom drawing.
