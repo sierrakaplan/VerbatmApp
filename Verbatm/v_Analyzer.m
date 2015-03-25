@@ -35,29 +35,7 @@
     _pinchedObjects = arr;
     _preferedFrame = frame;
     _results = [[NSMutableArray alloc]init];
-    NSMutableArray* pages = [[NSMutableArray alloc]init];
-    __block int numPages = _pinchedObjects.count;
     for(verbatmCustomPinchView* p_obj in _pinchedObjects){
-        Page* this_page = [[Page alloc]initWithPinchObject:p_obj];
-        [pages addObject:this_page];
-        [this_page saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            numPages--;
-            if(succeeded){
-                NSLog(@"Saved Successfully");
-                if(!numPages){
-                    Article* article = [[Article alloc]initWithTitle:@"This is a great article" andSubtitle:nil andPages:pages];
-                    [article saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                        if(succeeded){
-                            NSLog(@"SAVED SUCCESSFULLY");
-                        }else{
-                            NSLog(@"%@", [error localizedDescription]);
-                        }
-                    }];
-                }
-            }else{
-                NSLog(@"Could not save page: %@", [error localizedDescription]);
-            }
-        }];
         if(![p_obj isCollection]){
             [self handleSingleMedia:p_obj];
             continue;

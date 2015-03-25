@@ -288,7 +288,7 @@
     for(id object in self.media){
         if([object isKindOfClass: [UITextView class]]){
             self.textField.text = [self.textField.text stringByAppendingString: ((UITextView*)object).text];
-            self.textField.text = [self.textField.text stringByAppendingString:@"\n"];
+            self.textField.text = [self.textField.text stringByAppendingString:@"\r\r"];
             //[self.background bringSubviewToFront: self.textField];
         }else if(!((verbatmCustomImageView*)object).isVideo){
             UIImage* image = [(verbatmCustomImageView*)object image];
@@ -510,6 +510,7 @@
     
     [self addGrayBorder];
 }
+
 @end
 
 

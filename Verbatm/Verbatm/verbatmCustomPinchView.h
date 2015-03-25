@@ -109,4 +109,5 @@
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;
 @property (readonly, nonatomic) BOOL there_is_picture;
+
 @end
