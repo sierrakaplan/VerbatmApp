@@ -326,7 +326,7 @@
         }
         if(self.there_is_video){
             NSURL* url;
-            NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"temp",  arc4random_uniform(100)]];
+            NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"pinch",  arc4random_uniform(100)]];
             [[NSFileManager defaultManager] createFileAtPath: filePath contents: (NSData*)[self.videos firstObject] attributes:nil];
             url = [NSURL fileURLWithPath: filePath];
             AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:url options:nil];
@@ -431,36 +431,6 @@
     [arr addObject: result];
     return arr;
 }
-
-
-#pragma mark - NSCoding Protocol -
-
-- (id)initWithCoder:(NSCoder *)coder
-{
-    self = [super initWithCoder:coder];
-    if(self){
-        //decode all the ivars of the class
-        [[NSBundle mainBundle] loadNibNamed:@"verbatmCustomPinchView" owner:self options:nil];
-        self.there_is_picture = (BOOL)[coder decodeObjectForKey:P_OBJ_THERE_IS_PICTURE];
-        self.there_is_text = (BOOL)[coder decodeObjectForKey:P_OBJ_THERE_IS_TEXT];
-        self.there_is_video = (BOOL)[coder decodeObjectForKey:P_OBJ_THERE_IS_VIDEO];
-        self.media = (NSMutableArray*)[coder decodeObjectForKey:P_OBJ_MEDIA];
-        [self initSubviews];
-        [self renderMedia];
-        [self addBorderToPinchView];
-    }
-    return self;
-}
-
-
-- (void)encodeWithCoder:(NSCoder *)coder
-{
-    [coder encodeBool:self.there_is_picture forKey:P_OBJ_THERE_IS_PICTURE];
-    [coder encodeBool:self.there_is_video forKey:P_OBJ_THERE_IS_VIDEO];
-    [coder encodeBool:self.there_is_text forKey:P_OBJ_THERE_IS_TEXT];
-    [coder encodeObject:self.media forKey:P_OBJ_MEDIA];
-}
-
 
 #pragma mark - necessary info to return -
 //returns all the strings of the media in the media array which are textfields.
@@ -568,6 +538,16 @@
     return self;
 }
 
+
+-(NSArray*)getVideos
+{
+    return self.videos;
+}
+
+-(NSArray*)getPhotos
+{
+    return self.photos;
+}
 
 @end
 

@@ -24,7 +24,7 @@
 @end
 @implementation v_multiplePhotoVideo
 
--(id)initWithFrame:(CGRect)frame andMedia:(NSMutableArray*)media
+-(id)initWithFrame:(CGRect)frame Photos:(NSArray*)photos andVideos:(NSArray*)videos
 {
     self = [[[NSBundle mainBundle] loadNibNamed:@"multiplePhotoVideoAve" owner:self options:nil]firstObject];
     if(self)
@@ -32,10 +32,7 @@
         self.frame = frame;
         [self setViewFrames];
         [self formatScrollView];
-        NSMutableArray* vidAssets = [self getVideoAssets:media];
-        [self renderPhotos:media andVideos:vidAssets];
-
-        
+        [self renderPhotos:photos andVideos:videos];
     }
     return self;
 }
@@ -49,26 +46,7 @@
 }
 
 
-/*
- *This function removes the video assets from the provided media array and gives them their own
- */
--(NSMutableArray*)getVideoAssets:(NSMutableArray*)media
-{
-    NSMutableArray* vids = [[NSMutableArray alloc]init];
-    while(YES){
-        ALAsset* asset = (ALAsset*)[media firstObject];
-        if([[asset valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
-            [media removeObject:asset];
-            [vids addObject:asset];
-        }else{
-            break;
-        }
-    }
-    return vids;
-}
-
-
--(void)renderPhotos:(NSMutableArray*)photos andVideos:(NSMutableArray*)videos
+-(void)renderPhotos:(NSArray*)photos andVideos:(NSArray*)videos
 {
     
     

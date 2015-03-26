@@ -28,9 +28,9 @@
 @implementation v_textVideo
 
 //very same as the photo text yeah
--(id)initWithFrame:(CGRect)frame andAssets:(NSArray *)assetList andText:(NSString*)text
+-(id)initWithFrame:(CGRect)frame andAssets:(NSArray *)videoDataList andText:(NSString*)text
 {
-    if((self = [super initWithFrame:frame andAssets:assetList])){
+    if((self = [super initWithFrame:frame andAssets:videoDataList])){
         self.frame = frame;
         
         CGRect textFrame = CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
