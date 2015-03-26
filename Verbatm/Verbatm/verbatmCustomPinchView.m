@@ -17,6 +17,10 @@
 @property (weak, nonatomic) IBOutlet UIView *videoView;
 
 @property (strong, nonatomic) NSMutableArray* media;
+@property (strong, nonatomic) NSMutableArray* photos;
+@property (strong, nonatomic) NSMutableArray* videos;
+@property (strong, nonatomic) NSString* text;
+
 @property (readwrite,nonatomic) BOOL there_is_text;
 @property (readwrite, nonatomic) BOOL there_is_video;
 @property (readwrite, nonatomic) BOOL there_is_picture;
@@ -51,6 +55,7 @@
         
         //initialize arrays
         self.media = [[NSMutableArray alloc]init];
+        self.inDataFormat = NO;
         
         //add Medium to the list of media
         if([medium isKindOfClass: [UITextView class]]){
@@ -284,30 +289,47 @@
     
     self.textField.text = @"";
     verbatmCustomImageView* videoView = nil;
-    for(id object in self.media){
-        if([object isKindOfClass: [UITextView class]]){
-            self.textField.text = [self.textField.text stringByAppendingString: ((UITextView*)object).text];
-            self.textField.text = [self.textField.text stringByAppendingString:@"\n"];
-            //[self.background bringSubviewToFront: self.textField];
-        }else if(!((verbatmCustomImageView*)object).isVideo){
-            UIImage* image = [(verbatmCustomImageView*)object image];
-            [self.imageViewer setImage:image];
+    if(!self.inDataFormat){
+        for(id object in self.media){
+            if([object isKindOfClass: [UITextView class]]){
+                self.textField.text = [self.textField.text stringByAppendingString: ((UITextView*)object).text];
+                self.textField.text = [self.textField.text stringByAppendingString:@"\r\r"];
+                //[self.background bringSubviewToFront: self.textField];
+            }else if(!((verbatmCustomImageView*)object).isVideo){
+                UIImage* image = [(verbatmCustomImageView*)object image];
+                [self.imageViewer setImage:image];
+                self.imageViewer.contentMode = UIViewContentModeCenter;
+                self.imageViewer.layer.masksToBounds = YES;
+                //[self.background bringSubviewToFront: self.imageViewer];
+            }else{
+                if(!videoView) videoView = object;
+            }
+        }
+        if(videoView){
+            AVPlayerLayer* pLayer = [videoView.layer.sublayers firstObject];
+            if(pLayer){
+                [pLayer removeFromSuperlayer];
+                pLayer.frame = self.videoView.bounds;
+                [self.videoView.layer addSublayer:pLayer];
+            }else{
+                ALAsset* asset = ((verbatmCustomImageView*)videoView).asset;
+                AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
+                [self playVideo:avurlAsset];
+            }
+        }
+    }else{ // Added to make class accomodate taking NSData for vidoes instead!
+        self.textField.text = self.text;
+        if(self.there_is_picture){
+            [self.imageViewer setImage: (UIImage*)[self.photos firstObject]];
             self.imageViewer.contentMode = UIViewContentModeCenter;
             self.imageViewer.layer.masksToBounds = YES;
-            //[self.background bringSubviewToFront: self.imageViewer];
-        }else{
-            if(!videoView) videoView = object;
         }
-    }
-    if(videoView){
-        AVPlayerLayer* pLayer = [videoView.layer.sublayers firstObject];
-        if(pLayer){
-            [pLayer removeFromSuperlayer];
-            pLayer.frame = self.videoView.bounds;
-            [self.videoView.layer addSublayer:pLayer];
-        }else{
-            ALAsset* asset = ((verbatmCustomImageView*)videoView).asset;
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
+        if(self.there_is_video){
+            NSURL* url;
+            NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"pinch",  arc4random_uniform(100)]];
+            [[NSFileManager defaultManager] createFileAtPath: filePath contents: (NSData*)[self.videos firstObject] attributes:nil];
+            url = [NSURL fileURLWithPath: filePath];
+            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:url options:nil];
             [self playVideo:avurlAsset];
         }
     }
@@ -410,36 +432,6 @@
     return arr;
 }
 
-
-#pragma mark - NSCoding Protocol -
-
-- (id)initWithCoder:(NSCoder *)coder
-{
-    self = [super initWithCoder:coder];
-    if(self){
-        //decode all the ivars of the class
-        [[NSBundle mainBundle] loadNibNamed:@"verbatmCustomPinchView" owner:self options:nil];
-        self.there_is_picture = (BOOL)[coder decodeObjectForKey:P_OBJ_THERE_IS_PICTURE];
-        self.there_is_text = (BOOL)[coder decodeObjectForKey:P_OBJ_THERE_IS_TEXT];
-        self.there_is_video = (BOOL)[coder decodeObjectForKey:P_OBJ_THERE_IS_VIDEO];
-        self.media = (NSMutableArray*)[coder decodeObjectForKey:P_OBJ_MEDIA];
-        [self initSubviews];
-        [self renderMedia];
-        [self addBorderToPinchView];
-    }
-    return self;
-}
-
-
-- (void)encodeWithCoder:(NSCoder *)coder
-{
-    [coder encodeBool:self.there_is_picture forKey:P_OBJ_THERE_IS_PICTURE];
-    [coder encodeBool:self.there_is_video forKey:P_OBJ_THERE_IS_VIDEO];
-    [coder encodeBool:self.there_is_text forKey:P_OBJ_THERE_IS_TEXT];
-    [coder encodeObject:self.media forKey:P_OBJ_MEDIA];
-}
-
-
 #pragma mark - necessary info to return -
 //returns all the strings of the media in the media array which are textfields.
 -(NSString*)getTextFromPinchObject
@@ -509,6 +501,54 @@
     
     [self addBorderToPinchView];
 }
+
+
+
+# pragma mark - Modified Pinch to take NSData -
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center Images:(NSArray*)images videoData:(NSArray*)videoData andText:(NSString*)text
+{
+    if((self = [super init]))
+    {
+        
+        //load from Nib file..this initializes the background view and all its subviews
+        [[NSBundle mainBundle] loadNibNamed:@"verbatmCustomPinchView" owner:self options:nil];
+        
+        //set up the properties
+        CGRect frame = CGRectMake(center.x - radius, center.y - radius, radius*2, radius*2);
+        [self specifyFrame:frame];
+        self.background.layer.masksToBounds = YES;
+        
+        //initialize arrays
+        self.photos = [[NSMutableArray alloc]initWithArray:images];
+        self.videos = [[NSMutableArray alloc]initWithArray:videoData];
+        self.text = text;
+        self.inDataFormat = YES;
+        
+        //add Medium to the list of media
+        if(text){
+            self.there_is_text = YES;
+        }
+        self.there_is_video = !(videoData == nil);
+        self.there_is_picture = !(images == nil);
+        
+        [self initSubviews];
+        [self renderMedia];
+        [self addBorderToPinchView];
+    }
+    return self;
+}
+
+
+-(NSArray*)getVideos
+{
+    return self.videos;
+}
+
+-(NSArray*)getPhotos
+{
+    return self.photos;
+}
+
 @end
 
 

@@ -8,6 +8,7 @@
 
 #import "Page.h"
 #import "verbatmCustomImageView.h"
+#include "verbatmCustomPinchView+reconstructFromDownload.h"
 #import "Photo.h"
 #import "Video.h"
 
@@ -34,11 +35,6 @@
 {
     if((self = [super init])){
         [self sortPinchObject:p_view];
-        [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if(!succeeded){
-                NSLog(@"Could not save this page");
-            }
-        }];
     }
     return self;
 }
@@ -57,7 +53,7 @@
             if([view isKindOfClass:[verbatmCustomImageView class]]){
                 if(((verbatmCustomImageView*)view).isVideo){
                     Video* video = [[Video alloc]initWithData:[self dataFromAsset:((verbatmCustomImageView*)view).asset] withCaption:nil andName:nil atLocation:nil];
-                    [self setObject:video forKey:PAGE_VIDEO_RELATIONSHIP];
+                    [video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
                     [video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         if(succeeded){
                             NSLog(@"Video for page saved");
@@ -67,7 +63,7 @@
                     }];
                 }else{
                     Photo* photo = [[Photo alloc]initWithData:[self dataFromAsset:((verbatmCustomImageView*)view).asset] withCaption:nil andName:nil atLocation:nil];
-                    [self setObject:photo forKey:PAGE_PHOTO_RELATIONSHIP];
+                    [photo setObject: self forKey:PAGE_PHOTO_RELATIONSHIP];
                     [photo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         if(succeeded){
                             NSLog(@"Photo for page saved");
@@ -81,21 +77,35 @@
     }
 }
 
-//This method should be called on a seperate thread
--(verbatmCustomPinchView*)pinchObjectFromPage:(Page*)page
+//This method blocks//
+/*This method returns the media that make up the page. Index 0 of the array always contains the text of the page: this is nil if the there_is_text boolean of the page is false. Index 1 contains an array of all the videos of the page; the array has the videos as NSData.
+ Index 2 has an array of the photos of the page each of which is a UIImage.
+ */
+-(NSMutableArray*)getMedia
 {
+    NSMutableArray* media = [[NSMutableArray alloc] init];
+    [media addObject:self.text];
     PFQuery* videoQuery = [PFQuery queryWithClassName:@"Video"];
-    [videoQuery whereKey:PAGE_VIDEO_RELATIONSHIP equalTo:page];
+    [videoQuery whereKey:PAGE_VIDEO_RELATIONSHIP equalTo: self];
     NSArray* videos = [videoQuery findObjects];
     
     PFQuery* photoQuery = [PFQuery queryWithClassName:@"Photo"];
-    [photoQuery whereKey:PAGE_PHOTO_RELATIONSHIP equalTo:page];
-    NSArray* photos = [photoQuery findObjects];
+    [photoQuery whereKey:PAGE_PHOTO_RELATIONSHIP equalTo: self];
+    NSArray* photoQueries = [photoQuery findObjects];
     
+    NSMutableArray* videoData = [[NSMutableArray alloc]init];
+    for(Video* vid in videos){
+        [videoData addObject: [vid getVideoData]];
+    }
     
-    //continue to reconstruct the pinch object
-    verbatmCustomPinchView* result;// = (verbatmCustomPinchView*)[NSKeyedUnarchiver unarchiveObjectWithData: [self.pinchObjectFile getData]];
-    return result;
+    NSMutableArray* photos = [[NSMutableArray alloc]init];
+    for(Photo* photo in photoQueries){
+        [photos addObject:[photo getPhoto]];
+    }
+    
+    [media  addObject: videoData];
+    [media addObject: photos];
+    return media;
 }
 
 #pragma mark - getting objects from the page

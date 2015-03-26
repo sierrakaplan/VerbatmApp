@@ -26,10 +26,10 @@
 
 //no seeking. Fast forward and rewind.
 //play and pause button that doesn't move on the side.
--(id)initWithFrame:(CGRect)frame andAssets:(NSArray*)assetList
+-(id)initWithFrame:(CGRect)frame andAssets:(NSArray*)videoDataList
 {
     if((self = [super initWithFrame:frame])){
-        [self fuseAssets:assetList];
+        [self fuseAssets:videoDataList];
         [self setUpPlayer:self.mix];
     }
     return self;
@@ -66,15 +66,19 @@
 }
 
 /*This code fuses the video assets into a single video that plays the videos one after the other*/
--(void)fuseAssets:(NSArray*)assetList
+-(void)fuseAssets:(NSArray*)videoDataList
 {
     self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
     AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     CMTime nextClipStartTime = kCMTimeZero;
     NSError* error;
-    for(ALAsset* asset in assetList){
-        AVURLAsset* assetClip = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
+    for(NSData* data in videoDataList){
+        NSURL* url;
+        NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"vid", arc4random_uniform(100)]];
+        [[NSFileManager defaultManager] createFileAtPath: filePath contents: data attributes:nil];
+        url = [NSURL fileURLWithPath: filePath];
+        AVURLAsset* assetClip = [AVURLAsset URLAssetWithURL: url options:nil];
         AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
         AVAssetTrack* this_audio_track = [[assetClip tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];

@@ -27,7 +27,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self getVerbatmMediaFolder];    
 }
 
 -(void)getVerbatmMediaFolder

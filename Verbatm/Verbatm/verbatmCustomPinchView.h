@@ -68,19 +68,12 @@
 +(NSMutableArray*)openCollection:(verbatmCustomPinchView*)to_be_seperated;
 
 
-//returns all the strings of the media in the media array which are textfields.
--(NSString*)getTextFromPinchObject;
-
 //Tells whether it is a collection consisting of more than one type of media
 -(BOOL)isCollection;
 
 //tells you if the pinch object has multiple media objects in its array.
 //This applies, whether it is a collection or not.
 -(BOOL)hasMultipleMedia;
-
-//returns all the verbatmCustomImageViews that make up the media of the pinch
-//object.
--(NSMutableArray*)mediaObjects;
 
 //Pauses the video if the pinch object has a video playing.
 -(void)pauseVideo;
@@ -109,4 +102,23 @@
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;
 @property (readonly, nonatomic) BOOL there_is_picture;
+@property (nonatomic) BOOL inDataFormat;
+
+
+
+//Modified to take photos as UIImages and vidoes as NSData
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center Images:(NSArray*)images videoData:(NSArray*)videoData andText:(NSString*)text;
+
+
+/*Getting media from the pinch object*/
+-(NSArray*)getVideos;
+-(NSArray*)getPhotos;
+
+//returns all the strings of the media in the media array which are textfields.
+-(NSString*)getTextFromPinchObject;
+
+
+//returns all the verbatmCustomImageViews that make up the media of the pinch
+//object.
+-(NSMutableArray*)mediaObjects;
 @end

@@ -26,6 +26,7 @@
 @property(strong, nonatomic) NSString* sandwich;
 @property (strong, nonatomic) PFRelation * articleVideosRelation;
 @property (strong, nonatomic) PFRelation * articlePhotosRelation;
+@property (strong, nonatomic) PFRelation* article_pageRelationship;
 @property (strong, nonatomic ) PFFile* pinchObjectFile;
 
 #define ARTICLE_PAGE_RELATIONSHIP @"articlePageRelation"
@@ -49,8 +50,9 @@
 
 #pragma mark - initialising an article
 /*by Lucio Dery */
-//This creates an article object with a title and subtitle
--(instancetype)initWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle andPages:(NSArray*)pages
+//This creates an article object with a title and subtitle, and pages as well as saves the article.
+//relations can only be created between saved objects thus the need to save the article and pages before creating the article-page relations.
+-(instancetype)initAndSaveWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle andPinchObjects:(NSArray*)pages
 {
     if((self = [super init]))
     {
@@ -59,12 +61,32 @@
             self.title = title;
             self.subtitle = subtitle;
         }
-        for(Page* page in pages){
-            PFRelation* relation = [self relationForKey:ARTICLE_PAGE_RELATIONSHIP];
-            [relation addObject:page];
-        }
+        self.article_pageRelationship = [self relationForKey:ARTICLE_PAGE_RELATIONSHIP];
+        [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if(succeeded){
+                [self processAndSavePages:pages];
+                NSLog(@"Saved Article Successfully");
+            }
+        }];
     }
     return self;
+}
+
+/*This function takes an array of pinch objects as the only parameter.
+ Each pinch object is converted into a page which is then saved to parse*/
+-(void)processAndSavePages:(NSArray*)pages
+{
+    for(verbatmCustomPinchView* p_obj in pages){
+        Page* this_page = [[Page alloc]initWithPinchObject:p_obj];
+        [this_page saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+            if(succeeded){
+                NSLog(@"Saved Page Successfully");
+                [self.article_pageRelationship addObject: this_page]; //create relation between article and page.
+            }else{
+                NSLog(@"Could not save page: %@", [error localizedDescription]);
+            }
+        }];
+    }
 }
 
 #pragma mark - lazy instantiate the relationships
@@ -186,19 +208,11 @@
     [self registerSubclass];
 }
 
-#pragma mark - adding Pinch Objects -
+#pragma mark - getting the pages -
 
--(void)setPinchObjects:(NSMutableArray *)p_objs
+-(NSArray*)getAllPages
 {
-    NSData* pObj_Data = [NSKeyedArchiver archivedDataWithRootObject:p_objs];
-    _pinchObjectFile = [PFFile fileWithData:pObj_Data];
-}
-
--(NSArray*)getPinchObjects
-{
-    NSData* data = [_pinchObjectFile getData];
-    NSArray* to_return = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    return to_return;
+     return [[self.article_pageRelationship query] findObjects];
 }
 @end
 

@@ -20,8 +20,12 @@
 #pragma mark - methods for getting and setting page properties - 
 -(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view;
 -(NSString*)getText;
--(NSMutableArray*)getMediaObjects;
 
+//This method blocks//
+/*This method returns the media that make up the page. Index 0 of the array always contains the text of the page: this is nil if the there_is_text boolean of the page is false. Index 1 contains an array of all the videos of the page; the array has the videos as NSData.
+ Index 2 has an array of the photos of the page each of which is a UIImage.
+ */
+-(NSMutableArray*)getMedia;
 
 #pragma mark - bools to tell what type of media make up page -
 @property (readonly,nonatomic) BOOL there_is_text;
