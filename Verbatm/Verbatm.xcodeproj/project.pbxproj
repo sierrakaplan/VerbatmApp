@@ -21,6 +21,7 @@
 		C7614F421A247BD100E6AB24 /* verbatmCustomImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7614F411A247BD100E6AB24 /* verbatmCustomImageView.m */; };
 		C7614F441A24993200E6AB24 /* verbatmCustomPinchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7614F431A24993200E6AB24 /* verbatmCustomPinchView.xib */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
+		C777EE9A1AC4B37C003E0633 /* multiVTP_Ave.xib in Resources */ = {isa = PBXBuildFile; fileRef = C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */; };
 		C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */; };
 		C77A68B41AC20AA2000B10E2 /* v_multiplePhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B31AC20AA2000B10E2 /* v_multiplePhoto.m */; };
 		C77A68BC1AC20DD7000B10E2 /* multiplePhotosAve.xib in Resources */ = {isa = PBXBuildFile; fileRef = C77A68BB1AC20DD7000B10E2 /* multiplePhotosAve.xib */; };
@@ -112,6 +113,7 @@
 		C7614F411A247BD100E6AB24 /* verbatmCustomImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmCustomImageView.m; sourceTree = "<group>"; };
 		C7614F431A24993200E6AB24 /* verbatmCustomPinchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = verbatmCustomPinchView.xib; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = multiVTP_Ave.xib; path = ../multiVTP_Ave.xib; sourceTree = "<group>"; };
 		C77A68AF1AC0A49B000B10E2 /* VIEW_TESTERViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VIEW_TESTERViewController.h; sourceTree = "<group>"; };
 		C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VIEW_TESTERViewController.m; sourceTree = "<group>"; };
 		C77A68B21AC20AA2000B10E2 /* v_multiplePhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_multiplePhoto.h; sourceTree = "<group>"; };
@@ -462,6 +464,7 @@
 				C7E6C12F1A4E394600863893 /* v_multiplePhotoVideo.h */,
 				C7E6C1301A4E394600863893 /* v_multiplePhotoVideo.m */,
 				C77A68BD1AC2327A000B10E2 /* multiplePhotoVideoAve.xib */,
+				C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */,
 				C7E6C1311A4E394600863893 /* v_multiVidTextPhoto.h */,
 				C7E6C1321A4E394600863893 /* v_multiVidTextPhoto.m */,
 				C7E6C1331A4E394600863893 /* v_photoVideo.h */,
@@ -568,6 +571,7 @@
 				C77A68BC1AC20DD7000B10E2 /* multiplePhotosAve.xib in Resources */,
 				C774040F19BE6538004C50EA /* Images.xcassets in Resources */,
 				C7BC4380199D97F5004B91A1 /* InfoPlist.strings in Resources */,
+				C777EE9A1AC4B37C003E0633 /* multiVTP_Ave.xib in Resources */,
 				C7BC4389199D97F5004B91A1 /* Main.storyboard in Resources */,
 				C7A8E3831A61CE1300776BD1 /* customPullBar.xib in Resources */,
 			);

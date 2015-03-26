@@ -28,18 +28,13 @@
 @implementation verbatmPhotoVideoAve
 
 
--(instancetype) initWithFrame:(CGRect)frame Image: (verbatmCustomImageView *) image andVideo: (verbatmCustomImageView *) video
+-(instancetype) initWithFrame:(CGRect)frame Image: (UIImage *) image andVideo: (NSData *) video
 {
     
     //load from Nib file...this initializes the background view and all its subviews
     self = [[[NSBundle mainBundle] loadNibNamed:@"PhotoVideoAve" owner:self options:nil]firstObject];    
     if(self)
     {
-
-        ALAssetRepresentation *assetRepresentation = [image.asset defaultRepresentation];
-        UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
-                                             scale:[assetRepresentation scale]
-                                       orientation:UIImageOrientationUp];
         [self.image setImage:image];
 
         

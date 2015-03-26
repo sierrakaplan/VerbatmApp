@@ -8,8 +8,6 @@
 
 #import "v_multiplePhotoVideo.h"
 
-@interface v_multiVidTextPhoto : v_multiplePhotoVideo
+@interface v_multiVidTextPhoto : UIView
 -(id)initWithFrame:(CGRect)frame andMedia:(NSArray *)media andText:(NSString*)text;
--(void)addSwipeGesture;
--(void)addTapGesture;
 @end

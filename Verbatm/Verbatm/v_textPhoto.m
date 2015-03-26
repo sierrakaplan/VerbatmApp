@@ -10,7 +10,7 @@
 #import "ILTranslucentView.h"
 
 @interface v_textPhoto()
-@property (strong, nonatomic) v_textview* textLayer;
+@property (strong, nonatomic) v_textview* textView;
 @property (strong, nonatomic) UIVisualEffectView* bgBlurImage;
 @property (nonatomic) CGPoint lastPoint;
 @property (strong, nonatomic) UIView* pullBarView;
@@ -33,20 +33,20 @@
         self.frame = frame;
         
         CGRect textFrame = CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
-        self.textLayer = [[v_textview alloc]initWithFrame: textFrame];
-        [self.textLayer setTextViewText: text];
-        self.textLayer.textColor = [UIColor whiteColor];
-        [self addSubview: self.textLayer];
+        self.textView = [[v_textview alloc]initWithFrame: textFrame];
+        [self.textView setTextViewText: text];
+        self.textView.textColor = [UIColor whiteColor];
+        [self addSubview: self.textView];
         
         
         [self checkWordCount:text];
         //[self setSizesToFit];
         self.userInteractionEnabled = YES;
-        self.textLayer.backgroundColor = [UIColor clearColor];
-        self.textLayer.showsVerticalScrollIndicator = NO;
+        self.textView.backgroundColor = [UIColor clearColor];
+        self.textView.showsVerticalScrollIndicator = NO;
         
-        self.textLayer.textAlignment = NSTextAlignmentCenter;
-        [self bringSubviewToFront:self.textLayer];
+        self.textView.textAlignment = NSTextAlignmentCenter;
+        [self bringSubviewToFront:self.textView];
         [self bringSubviewToFront: self.pullBarView];
     }
     return self;
@@ -67,8 +67,8 @@
     if(![[string_array lastObject] isEqualToString:@""]) words --;
     if(words <= MIN_WORDS){
         self.isTitle = YES;
-        [self.textLayer setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
-        [self.textLayer removeTextVerticalCentering];
+        [self.textView setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
+        [self.textView removeTextVerticalCentering];
     }else{
         //add pullbar
         self.pullBarView = [[UIView alloc] initWithFrame:CGRectMake(0, OFFSET_FROM_TOP ,self.frame.size.width, 2*EXTRA)];
@@ -81,20 +81,20 @@
         self.bgBlurImage = [[UIVisualEffectView  alloc]initWithEffect:blur];
         self.bgBlurImage.frame = CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
         self.bgBlurImage.alpha = 1.0;
-        [self insertSubview:self.bgBlurImage belowSubview:self.textLayer];        
+        [self insertSubview:self.bgBlurImage belowSubview:self.textView];        
     }
 }
 
 -(void)addSwipeGesture
 {
     if(self.isTitle)return;
-    UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget: self action:@selector(repositionTextLayer:)];
+    UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget: self action:@selector(repositiontextView:)];
     [self.pullBarView addGestureRecognizer:panGesture];
 }
 
 
 //makes text and blur view move up and down as pull bar is pulled up/down.
--(void)repositionTextLayer:(UIPanGestureRecognizer*)sender
+-(void)repositiontextView:(UIPanGestureRecognizer*)sender
 {
     CGPoint translation = [sender translationInView:self];
     if(sender.state == UIGestureRecognizerStateBegan){
@@ -114,7 +114,7 @@
             if(y_location < THRESHOLD*mid_pt){
                 [self resetFrames];
             }else{
-                self.textLayer.frame = CGRectMake(SIDE_BORDER, self.frame.size.height, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA);
+                self.textView.frame = CGRectMake(SIDE_BORDER, self.frame.size.height, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA);
                 self.bgBlurImage.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA);
                 self.pullBarView.frame = CGRectMake(0, self.frame.size.height - 3*EXTRA, self.frame.size.width,3*EXTRA);
             }
@@ -130,24 +130,24 @@
         return;
     }
     self.bgBlurImage.frame = CGRectOffset(self.bgBlurImage.frame,  0, translation.y - self.lastPoint.y );
-    self.textLayer.frame = CGRectOffset(self.textLayer.frame,  0, translation.y - self.lastPoint.y );
+    self.textView.frame = CGRectOffset(self.textView.frame,  0, translation.y - self.lastPoint.y );
     self.lastPoint = translation;
 }
 
 -(void)resetFrames
 {
     self.pullBarView.frame = self.absoluteFrame;
-    self.textLayer.frame = CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
+    self.textView.frame = CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
     self.bgBlurImage.frame = CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA);
 }
 
-/*This function sets the textLayer's size to fit superview's frame.
+/*This function sets the textView's size to fit superview's frame.
  *It ensures that the text layer is always centered in the super view and 
  *it text fits in perfectly.
  */
 -(void)setSizesToFit
 {
-    self.textLayer.textAlignment = NSTextAlignmentCenter;
-    [self.textLayer sizeToFit];
+    self.textView.textAlignment = NSTextAlignmentCenter;
+    [self.textView sizeToFit];
 }
 @end

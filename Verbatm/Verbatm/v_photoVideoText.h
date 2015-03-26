@@ -8,7 +8,6 @@
 
 #import "v_textPhoto.h"
 
-@interface v_photoVideoText : v_textPhoto
--(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andAssets:(NSArray*)assetList;
--(void)createGestures;
+@interface v_photoVideoText : UIView
+-(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andAssets:(NSData*)assetList;
 @end
