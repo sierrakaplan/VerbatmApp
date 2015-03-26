@@ -109,5 +109,11 @@
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;
 @property (readonly, nonatomic) BOOL there_is_picture;
+@property (nonatomic) BOOL inDataFormat;
+
+
+
+//Modified to take photos as UIImages and vidoes as NSData
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center Images:(NSArray*)images videoData:(NSArray*)videoData andText:(NSString*)text;
 
 @end
