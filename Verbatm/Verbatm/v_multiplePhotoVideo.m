@@ -11,28 +11,43 @@
 #import "v_videoview.h"
 
 @interface v_multiplePhotoVideo()
-@property (strong, nonatomic) NSMutableArray* frames;
-@property (nonatomic) CGRect chosenFrame;
-@property (nonatomic, strong) v_videoview* videoView;
+@property (weak, nonatomic) IBOutlet UIView *videoView;
+@property (weak, nonatomic) IBOutlet UIScrollView *photoList;
+@property (strong, nonatomic) AVMutableComposition* mix;
+
 #define x_ratio 3
 #define y_ratio 4
+#define ELEMENT_WALL_OFFSET 10
+#define ANIMATION_DURATION 0.5
+#define VIDEO_VIEW_HEIGHT ((self.frame.size.width*3)/4)
 @end
 @implementation v_multiplePhotoVideo
 
 -(id)initWithFrame:(CGRect)frame andMedia:(NSMutableArray*)media
 {
-    if((self = [super initWithFrame:frame])){
-        self.frames = [[NSMutableArray alloc] init];
+    self = [[[NSBundle mainBundle] loadNibNamed:@"multiplePhotoVideoAve" owner:self options:nil]firstObject];
+    if(self)
+    {
+        self.frame = frame;
         NSMutableArray* vidAssets = [self getVideoAssets:media];
-        int numFrames = (int)media.count + ((vidAssets.count)? 1 : 0);
-        [self getMediaFrames: numFrames andFrame:self.bounds]; //adding one to account for videos
+        [self setViewFrames];
         [self renderPhotos:media andVideos:vidAssets];
+        
+        
     }
     return self;
 }
 
+//sets the frames for the video view and the photo scrollview
+-(void) setViewFrames
+{
+    self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, VIDEO_VIEW_HEIGHT);
+    self.photoList.frame = CGRectMake(0, VIDEO_VIEW_HEIGHT, self.frame.size.width, self.frame.size.height -VIDEO_VIEW_HEIGHT );
+}
+
+
 /*
- *This function returns the number of media counting all videos as one medium
+ *This function removes the video assets from the provided media array and gives them their own
  */
 -(NSMutableArray*)getVideoAssets:(NSMutableArray*)media
 {
@@ -50,117 +65,169 @@
 }
 
 
--(void)renderPhotos:(NSMutableArray*)media andVideos:(NSMutableArray*)videos
+-(void)renderPhotos:(NSMutableArray*)photos andVideos:(NSMutableArray*)videos
 {
-    CGRect biggestFrame;
-    if(videos.count){
-        
-        int largestAreaSoFar = 0;
-        for(id frame in self.frames){
-            CGRect this_frame = [frame CGRectValue];
-            if((this_frame.size.width*this_frame.size.height) > largestAreaSoFar){
-                largestAreaSoFar = (this_frame.size.width*this_frame.size.height);
-                biggestFrame = this_frame;
-            }
-        }
-        [self.frames removeObject:[NSValue valueWithCGRect:biggestFrame]];
-    }
-    int i = 0;
-    for(id frame in self.frames){
-        CGRect this_frame = [frame CGRectValue];
-        ALAsset* asset = (ALAsset*)[media objectAtIndex:i];
+    [self formatScrollView];
+    
+    //set up the video
+    [self fuseAssets:videos];
+    [self setUpPlayer:self.mix];
+    
+    //set up the photos
+    for (ALAsset * asset in photos)
+    {
         ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-        UIImageView* imageview = [[UIImageView alloc] initWithFrame: this_frame];
-        UIImage* image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage] scale:[assetRepresentation scale] orientation:UIImageOrientationUp];
-        imageview.contentMode = UIViewContentModeScaleAspectFill;
+        UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
+                                             scale:[assetRepresentation scale]
+                                       orientation:UIImageOrientationUp];
+        UIImageView * imageview = [[UIImageView alloc] init];
+        CGRect frame = [self getNextFrame];
+        imageview.frame = frame;
         imageview.image = image;
-        [self addSubview:imageview];
-        imageview.layer.masksToBounds = YES;
-        imageview.userInteractionEnabled = YES;
-        i++;
+        [self.photoList addSubview:imageview];
     }
-    if(videos.count){ //another hack......could not immediately figure out why creating video before caused issue.
-        self.videoView = [[v_videoview alloc]initWithFrame:biggestFrame andAssets:videos];
-        [self addSubview: self.videoView];
-        [self bringSubviewToFront: self.videoView];
-    }
+    
+    [self adjustSVContentSize];
+    
 }
 
--(void)addTapGesture
+
+
+-(void) addTapGestureToView:(UIView *)view
 {
-    UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(enlarge:)];
-    [self addGestureRecognizer:tapGesture];
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(elementTaped:)];
+    tap.numberOfTapsRequired =1;
+    [view addGestureRecognizer:tap];
 }
 
+
+-(void) elementTaped:(UITapGestureRecognizer *) gesture
+{
+    UIView * view = gesture.view;
+    if(view == self.photoList)
+    {
+        if(self.photoList.frame.size.height == self.frame.size.height)//it's full screen- take it back down
+        {
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^
+             {
+                 [self setViewFrames];
+                 [self setPLViewsToHeight:(self.frame.size.height -VIDEO_VIEW_HEIGHT)];
+             }];
+            
+        }else
+        {
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^
+            {
+                self.photoList.frame= self.bounds;
+                [self bringSubviewToFront:self.photoList];
+                [self setPLViewsToHeight:self.frame.size.height];
+            }];
+        }
+    }
+}
+
+
+-(void)setPLViewsToHeight:(int) height
+{
+    
+    for(UIView * view in self.photoList.subviews)
+    {
+        view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, height);
+    }
+}
+
+
+-(void)formatScrollView
+{
+    self.photoList.pagingEnabled = YES;
+    self.photoList.showsHorizontalScrollIndicator = NO;
+    self.photoList.showsVerticalScrollIndicator = NO;
+    [self addTapGestureToView: self.photoList];
+}
+
+//gives you the frame for the next iamgeview that you'll add to the end of the list
+-(CGRect) getNextFrame
+{
+    if(!self.photoList.subviews.count) return self.photoList.bounds;
+    
+    UIView * view = self.photoList.subviews.lastObject;
+    return CGRectMake(view.frame.origin.x +view.frame.size.width, 0, self.frame.size.width, (self.frame.size.height -VIDEO_VIEW_HEIGHT));
+}
+
+//resets the content size of the scrollview
+-(void) adjustSVContentSize
+{
+    UIView * view = self.photoList.subviews.lastObject;
+    self.photoList.contentSize = CGSizeMake(view.frame.origin.x + view.frame.size.width, 0);
+}
+
+
+
+/*This code fuses the video assets into a single video that plays the videos one after the other*/
+-(void)fuseAssets:(NSMutableArray*)assetList
+{
+    self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
+    AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    CMTime nextClipStartTime = kCMTimeZero;
+    NSError* error;
+    
+    for(ALAsset* asset in assetList)
+    {
+        AVURLAsset* assetClip = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
+        AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+        [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
+        AVAssetTrack* this_audio_track = [[assetClip tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+        if(this_audio_track != nil)
+        {
+            [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
+        }
+        nextClipStartTime = CMTimeAdd(nextClipStartTime, assetClip.duration);
+    }
+    
+}
+
+
+-(void)setUpPlayer:(AVMutableComposition*)mix
+{
+    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:mix];
+    AVPlayer* player = [AVPlayer playerWithPlayerItem: playerItem];
+    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:[player currentItem]];
+    
+    // Create an AVPlayerLayer using the player
+    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+    playerLayer.frame = self.bounds;
+    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+    // Add it to your view's sublayers
+    [self.videoView.layer addSublayer:playerLayer];
+    // You can play/pause using the AVPlayer object
+    player.muted = NO;
+    [player play];
+}
+
+/*tells me when the video ends so that I can rewind*/
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
     AVPlayerItem *p = [notification object];
     [p seekToTime:kCMTimeZero];
 }
 
-/*
- *sets the image tapped to occupy all of the available screen
- */
--(void)enlarge:(UITapGestureRecognizer*)sender
-{
-    CGPoint point = [sender locationInView:self];
-    UIView* imageView = (UIView*)[self hitTest:point withEvent:nil];
-    if(CGRectEqualToRect(imageView.frame,self.frame)){
-        [UIView animateWithDuration:0.5 animations:^{
-            imageView.frame = self.chosenFrame;
-            AVPlayerLayer* layer = [imageView.layer.sublayers firstObject];
-            if(layer){
-                layer.frame = imageView.bounds;
-            }
-        }];
-    }else{
-        [UIView animateWithDuration:0.5 animations:^{
-            self.chosenFrame = imageView.frame;
-            imageView.frame = self.frame;
-            [self bringSubviewToFront: imageView];
-            AVPlayerLayer* layer = [imageView.layer.sublayers firstObject];
-            if(layer){
-                layer.frame = imageView.bounds;
-            }
-        }];
-    }
-}
-
--(void)getMediaFrames:(int)numMedia andFrame:(CGRect)frame
-{
-    if(numMedia < 2){
-        [self.frames addObject:[NSValue valueWithCGRect:frame]];
-        return;
-    }
-    if(frame.size.width > frame.size.height){  //choose vertical split
-        int randDivisor = (numMedia == 2)? numMedia : x_ratio;
-        int chooseRandomSide = (arc4random() % 2)? 1 : randDivisor - 1;
-        CGRect frame1 = CGRectMake(frame.origin.x, frame.origin.y, (frame.size.width*chooseRandomSide/randDivisor), frame.size.height);
-        CGRect frame2 = CGRectMake(frame.origin.x + frame1.size.width, frame.origin.y, frame.size.width - frame1.size.width, frame.size.height);
-        int firstNumMedia = ceil((float)numMedia/randDivisor);
-        int seconNumMedia = numMedia - firstNumMedia;
-        BOOL frame1Bigger = (frame1.size.width*frame1.size.height) > (frame2.size.width*frame2.size.height);
-        [self getMediaFrames: (frame1Bigger)? seconNumMedia : firstNumMedia andFrame:frame1];
-        [self getMediaFrames:(frame1Bigger)? firstNumMedia  : seconNumMedia andFrame:frame2];
-    }else{
-        int randDivisor = (numMedia == 2)? numMedia : y_ratio;
-        int chooseRandomSide = (arc4random() % 2)? 1 : randDivisor - 1;
-        CGRect frame1 = CGRectMake(frame.origin.x, frame.origin.y, frame.size.width, (frame.size.height*chooseRandomSide/randDivisor));
-        CGRect frame2 = CGRectMake(frame.origin.x, frame.origin.y + frame1.size.height, frame.size.width, frame.size.height - frame1.size.height);
-        int firstNumMedia = ceil((float)numMedia/randDivisor);
-        int seconNumMedia = numMedia - firstNumMedia;
-        BOOL frame1Bigger = (frame1.size.width*frame1.size.height) > (frame2.size.width*frame2.size.height);
-        [self getMediaFrames: (frame1Bigger)? seconNumMedia : firstNumMedia andFrame:frame1];
-        [self getMediaFrames:(frame1Bigger)? firstNumMedia  : seconNumMedia andFrame:frame2];
-    }
-}
-
--(void)enableSound
-{
-    [self.videoView enableSound];
-}
-
+/*Mute the video*/
 -(void)mutePlayer
 {
-    [self.videoView mutePlayer];
+    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+    playerLayer.player.muted = YES;
 }
+
+/*Enable's the sound on the video*/
+-(void)enableSound
+{
+    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+    playerLayer.player.muted = NO;
+    playerLayer.player.volume = 0.5;
+}
+
 @end

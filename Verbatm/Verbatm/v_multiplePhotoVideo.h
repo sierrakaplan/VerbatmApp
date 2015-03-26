@@ -13,8 +13,7 @@
 @interface v_multiplePhotoVideo : UIView
 //If there is a video to be added make that the first object of the array.
 -(id)initWithFrame:(CGRect)frame andMedia:(NSArray*)media;
--(void)addTapGesture;
--(void)enlarge:(UITapGestureRecognizer*)sender;
+//-(void)addTapGesture;
 -(void)mutePlayer;
 -(void)enableSound;
 @end

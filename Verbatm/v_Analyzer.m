@@ -61,7 +61,7 @@
     if(p_obj.there_is_picture)
     {
         v_multiplePhotoVideo* imageView =  [[v_multiplePhotoVideo alloc]initWithFrame:_preferedFrame andMedia:arr];
-        [imageView addTapGesture];
+        //[imageView addTapGesture];
         [_results addObject:imageView];
     }else if(p_obj.there_is_text){
         v_textview* textView = [[v_textview alloc]initWithFrame:_preferedFrame];
@@ -137,7 +137,7 @@
                 }
             }
             v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:_preferedFrame andMedia:assets];
-            [mpv addTapGesture];
+            //[mpv addTapGesture];
             [_results addObject:mpv];
         }
     }

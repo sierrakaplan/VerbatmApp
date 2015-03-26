@@ -114,7 +114,6 @@
 -(void)handleTapGesture:(UITapGestureRecognizer*)tap
 {
     if(!_textLayer.hidden)return;
-    [self enlarge:tap];
 }
 
 -(void)repositionTextLayer:(UISwipeGestureRecognizer*)sender
