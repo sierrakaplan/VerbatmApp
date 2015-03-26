@@ -19,7 +19,8 @@
 #define y_ratio 4
 #define ELEMENT_WALL_OFFSET 10
 #define ANIMATION_DURATION 0.5
-#define VIDEO_VIEW_HEIGHT ((self.frame.size.width*3)/4)
+#define VIDEO_VIEW_HEIGHT (((self.frame.size.width*3)/4))
+#define SV_DEFAULT_HEIGHT (self.frame.size.height - VIDEO_VIEW_HEIGHT)
 @end
 @implementation v_multiplePhotoVideo
 
@@ -29,10 +30,11 @@
     if(self)
     {
         self.frame = frame;
-        NSMutableArray* vidAssets = [self getVideoAssets:media];
         [self setViewFrames];
+        [self formatScrollView];
+        NSMutableArray* vidAssets = [self getVideoAssets:media];
         [self renderPhotos:media andVideos:vidAssets];
-        
+
         
     }
     return self;
@@ -42,7 +44,8 @@
 -(void) setViewFrames
 {
     self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, VIDEO_VIEW_HEIGHT);
-    self.photoList.frame = CGRectMake(0, VIDEO_VIEW_HEIGHT, self.frame.size.width, self.frame.size.height -VIDEO_VIEW_HEIGHT );
+    self.photoList.frame = CGRectMake(0, VIDEO_VIEW_HEIGHT, self.frame.size.width, SV_DEFAULT_HEIGHT);
+    [self bringSubviewToFront:self.photoList];
 }
 
 
@@ -67,7 +70,7 @@
 
 -(void)renderPhotos:(NSMutableArray*)photos andVideos:(NSMutableArray*)videos
 {
-    [self formatScrollView];
+    
     
     //set up the video
     [self fuseAssets:videos];
@@ -81,14 +84,14 @@
                                              scale:[assetRepresentation scale]
                                        orientation:UIImageOrientationUp];
         UIImageView * imageview = [[UIImageView alloc] init];
-        CGRect frame = [self getNextFrame];
-        imageview.frame = frame;
+        imageview.frame = [self getNextFrame];
         imageview.image = image;
+        imageview.clipsToBounds = YES;
+        imageview.contentMode = UIViewContentModeScaleAspectFit;
         [self.photoList addSubview:imageview];
     }
-    
+    //[self setPLViewsToHeight:self.photoList.frame.size.height];//makes sure that our view are correctly aligned
     [self adjustSVContentSize];
-    
 }
 
 
@@ -111,7 +114,8 @@
             [UIView animateWithDuration:ANIMATION_DURATION animations:^
              {
                  [self setViewFrames];
-                 [self setPLViewsToHeight:(self.frame.size.height -VIDEO_VIEW_HEIGHT)];
+             }completion:^(BOOL finished) {
+                 [self setPLViewsToHeight:self.photoList.frame.size.height];
              }];
             
         }else
@@ -119,21 +123,25 @@
             [UIView animateWithDuration:ANIMATION_DURATION animations:^
             {
                 self.photoList.frame= self.bounds;
-                [self bringSubviewToFront:self.photoList];
-                [self setPLViewsToHeight:self.frame.size.height];
+                [self bringSubviewToFront:self.photoList];//Make sure the SV covers the video view
+                [self setPLViewsToHeight:self.photoList.frame.size.height];
             }];
         }
     }
 }
 
 
--(void)setPLViewsToHeight:(int) height
+-(void)setPLViewsToHeight:(CGFloat) height
 {
-    
-    for(UIView * view in self.photoList.subviews)
-    {
-        view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, height);
-    }
+    [UIView animateWithDuration:(height == self.frame.size.height) ? ANIMATION_DURATION : 0.3 animations:^{
+        for(UIView * view in self.photoList.subviews)
+        {
+            
+            if(height == self.frame.size.height)view.contentMode = UIViewContentModeScaleAspectFit;
+            //else view.contentMode = UIViewContentModeScaleAspectFill;
+            view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y, self.frame.size.width, height);
+        }
+    }];
 }
 
 
@@ -149,16 +157,14 @@
 -(CGRect) getNextFrame
 {
     if(!self.photoList.subviews.count) return self.photoList.bounds;
-    
     UIView * view = self.photoList.subviews.lastObject;
-    return CGRectMake(view.frame.origin.x +view.frame.size.width, 0, self.frame.size.width, (self.frame.size.height -VIDEO_VIEW_HEIGHT));
+    return CGRectMake(view.frame.origin.x +view.frame.size.width, 0, self.photoList.frame.size.width, self.photoList.frame.size.height);
 }
 
 //resets the content size of the scrollview
 -(void) adjustSVContentSize
 {
-    UIView * view = self.photoList.subviews.lastObject;
-    self.photoList.contentSize = CGSizeMake(view.frame.origin.x + view.frame.size.width, 0);
+    self.photoList.contentSize = CGSizeMake((self.frame.size.width* self.photoList.subviews.count), 0);
 }
 
 
@@ -210,7 +216,8 @@
 }
 
 /*tells me when the video ends so that I can rewind*/
--(void)playerItemDidReachEnd:(NSNotification *)notification {
+-(void)playerItemDidReachEnd:(NSNotification *)notification
+{
     AVPlayerItem *p = [notification object];
     [p seekToTime:kCMTimeZero];
 }
