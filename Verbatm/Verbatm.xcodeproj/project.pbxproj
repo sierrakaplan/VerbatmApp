@@ -74,6 +74,8 @@
 		C7F3D46B1A4F84C000B43238 /* verbatmUserLoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* verbatmUserLoginViewController.m */; };
 		C7F3D46E1A4F84DF00B43238 /* verbatmUserSignUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46D1A4F84DF00B43238 /* verbatmUserSignUpViewController.m */; };
 		F20A24FA1A46166100BB77C1 /* verbatmCustomImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */; };
+		F257FED01AC6484300964AB5 /* verbatmArticleDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = F257FECF1AC6484300964AB5 /* verbatmArticleDownloader.m */; };
+		F257FED31AC64C6B00964AB5 /* verbatmArticleUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = F257FED21AC64C6B00964AB5 /* verbatmArticleUploader.m */; };
 		F266F3ED1A4A3ED900EA0327 /* articleDispalyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3EC1A4A3ED900EA0327 /* articleDispalyViewController.m */; };
 		F266F3F11A4A6AE200EA0327 /* v_Analyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* v_Analyzer.m */; };
 		F2964FA41A4FE43300E1DBEC /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = F2964FA31A4FE43300E1DBEC /* Page.m */; };
@@ -195,6 +197,10 @@
 		C7F3D46D1A4F84DF00B43238 /* verbatmUserSignUpViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmUserSignUpViewController.m; sourceTree = "<group>"; };
 		F20A24F81A46166100BB77C1 /* verbatmCustomImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmCustomImageScrollView.h; sourceTree = "<group>"; };
 		F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmCustomImageScrollView.m; sourceTree = "<group>"; };
+		F257FECE1AC6484300964AB5 /* verbatmArticleDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmArticleDownloader.h; sourceTree = "<group>"; };
+		F257FECF1AC6484300964AB5 /* verbatmArticleDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmArticleDownloader.m; sourceTree = "<group>"; };
+		F257FED11AC64C6B00964AB5 /* verbatmArticleUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmArticleUploader.h; sourceTree = "<group>"; };
+		F257FED21AC64C6B00964AB5 /* verbatmArticleUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmArticleUploader.m; sourceTree = "<group>"; };
 		F266F3EB1A4A3ED900EA0327 /* articleDispalyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = articleDispalyViewController.h; sourceTree = "<group>"; };
 		F266F3EC1A4A3ED900EA0327 /* articleDispalyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = articleDispalyViewController.m; sourceTree = "<group>"; };
 		F266F3EF1A4A6AE200EA0327 /* v_Analyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_Analyzer.h; sourceTree = "<group>"; };
@@ -442,6 +448,10 @@
 		F257FEC81AC21F8B00964AB5 /* Saving and Downloading */ = {
 			isa = PBXGroup;
 			children = (
+				F257FECE1AC6484300964AB5 /* verbatmArticleDownloader.h */,
+				F257FECF1AC6484300964AB5 /* verbatmArticleDownloader.m */,
+				F257FED11AC64C6B00964AB5 /* verbatmArticleUploader.h */,
+				F257FED21AC64C6B00964AB5 /* verbatmArticleUploader.m */,
 			);
 			name = "Saving and Downloading";
 			sourceTree = "<group>";
@@ -535,7 +545,7 @@
 				ORGANIZATIONNAME = Verbatm;
 				TargetAttributes = {
 					C7BC4371199D97F5004B91A1 = {
-						DevelopmentTeam = GQVN22REYL;
+						DevelopmentTeam = FV58CMSUQ8;
 					};
 					C7BC4392199D97F6004B91A1 = {
 						DevelopmentTeam = FV58CMSUQ8;
@@ -604,8 +614,10 @@
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				C77A68B41AC20AA2000B10E2 /* v_multiplePhoto.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */,
+				F257FED01AC6484300964AB5 /* verbatmArticleDownloader.m in Sources */,
 				F20A24FA1A46166100BB77C1 /* verbatmCustomImageScrollView.m in Sources */,
 				C7E6C1421A4E394600863893 /* v_photoVideoText.m in Sources */,
+				F257FED31AC64C6B00964AB5 /* verbatmArticleUploader.m in Sources */,
 				C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */,
 				C78B682A19CA6C22003D0AC5 /* verbatmGalleryHandler.m in Sources */,
 				C7E6C1451A4E394600863893 /* v_textview.m in Sources */,

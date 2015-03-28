@@ -28,10 +28,11 @@
 //this method blocks
 -(NSArray*)getAllPages;
 
+
 /*Note that the save call was removed. Call it externally*/
 
 //This creates an article object with a title and a subtitle.
--(instancetype)initAndSaveWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle andPinchObjects:(NSArray*)pages;
+-(instancetype)initAndSaveWithTitle:(NSString *)title andPinchObjects:(NSArray*)pages;
 
 //sets the content of the Article. The content must correspond to the right format
 -(void) setArticleContent:(NSString *)content;

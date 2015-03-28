@@ -75,7 +75,6 @@
         [_results addObject:textView];
     }else{
         v_videoview* vidView = [[v_videoview alloc]initWithFrame:_preferedFrame andAssets:arr];
-        //[vidView showPlayBackIcons];
         [_results addObject:vidView];
     }
 }
@@ -208,7 +207,7 @@
         NSMutableArray* videos = [p_obj getVideos];
         NSMutableArray* photos = [p_obj getPhotos];
         if(videos.count + photos.count == 2){
-            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage: (UIImage*)[photos firstObject] andText:text andVideo:nil];
+            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage: (UIImage*)[photos firstObject] andText:text andVideo:[videos firstObject]];
             [_results addObject:pvt];
         }else{
             v_multiVidTextPhoto* mvtp = [[v_multiVidTextPhoto alloc]initWithFrame:_preferedFrame Photos:photos andVideos:videos andText:text];
@@ -230,7 +229,7 @@
                     image = imgView.image;
                 }
             }
-            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage:image andText:text andVideo:nil];
+            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage:image andText:text andVideo:vidData];
             [_results addObject:pvt];
         }else{
             NSMutableArray* photos = [[NSMutableArray alloc]init];

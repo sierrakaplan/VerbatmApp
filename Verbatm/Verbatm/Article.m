@@ -32,6 +32,7 @@
 #define ARTICLE_PAGE_RELATIONSHIP @"articlePageRelation"
 #define ARTICLE_VIDEO_RELATIONSHIP @"articleVideoRelation"
 #define ARTICLE_PHOTO_RELATIONSHIP @"articlePhotoRelation"
+#define ARTICLE_AUTHOR_RELATIONSHIP @"articleAuthorRelation"
 #define ARTICLES @"articles"
 #define LIKE @"likes"
 #define VERBATM_USER_CLASSNAME @"VerbatmUser"
@@ -40,7 +41,6 @@
 @implementation Article
 @dynamic sandwich;
 @dynamic title;
-@dynamic subtitle;
 @dynamic content;
 
 @synthesize articleVideosRelation= _articleVideosRelation;
@@ -52,15 +52,15 @@
 /*by Lucio Dery */
 //This creates an article object with a title and subtitle, and pages as well as saves the article.
 //relations can only be created between saved objects thus the need to save the article and pages before creating the article-page relations.
--(instancetype)initAndSaveWithTitle:(NSString *)title andSubtitle:(NSString*)subtitle andPinchObjects:(NSArray*)pages
+-(instancetype)initAndSaveWithTitle:(NSString *)title andPinchObjects:(NSArray*)pages
 {
     if((self = [super init]))
     {
-        if(title || subtitle)
+        if(title)
         {
             self.title = title;
-            self.subtitle = subtitle;
         }
+        [self setObject:[PFUser currentUser]forKey: ARTICLE_AUTHOR_RELATIONSHIP];
         self.article_pageRelationship = [self relationForKey:ARTICLE_PAGE_RELATIONSHIP];
         [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if(succeeded){
@@ -127,13 +127,6 @@
     if(firstPart && secondPart) self.sandwich = [NSString stringWithFormat:@"%@ @ %@", firstPart, secondPart];
 }
 
-/*by Lucio Dery */
-//sets the content of the Article. The content must correspond to the right format
--(void) setArticleContent:(NSString *)content
-{
-    content = [self formatContent:content];
-    if(content)self.content = content;
-}
 
 
 #pragma mark - content retreival and querrying
@@ -177,23 +170,6 @@
     PFQuery* queryLikes = [PFQuery queryWithClassName:VERBATM_USER_CLASSNAME];
     [queryLikes whereKey:LIKE equalTo:self];
     return queryLikes;
-}
-
-
-#pragma mark - helper methods
-
-/*Author: Lucio*/
--(NSString *)formatContent: (NSString*)contentString
-{
-    //to be implemented when the format for the content is decided
-    //return nil if something goes wrong
-    return contentString;
-}
-
--(bool)isRightUrlFormat:(NSURL*)URL
-{
-    //put in check for any url formats that may be acceptable.
-    return YES;
 }
 
 

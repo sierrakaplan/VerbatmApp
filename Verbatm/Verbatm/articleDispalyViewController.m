@@ -61,11 +61,10 @@
             [self.view addSubview: view];
             continue;
         }
+        [self.view insertSubview:view atIndex:0];
         view.frame = self.view.bounds;
         
         //[self addShadowToView: view];
-        
-        [self.view insertSubview:view atIndex:0];
     }
     //This makes sure that if the first object is a video it is playing the sound
     _animatingView = [self.view.subviews lastObject];
@@ -108,11 +107,12 @@
             if(_poppedOffPages.count == 0)return;
             _animatingView = (UIView*)[_poppedOffPages lastObject];
             [_poppedOffPages removeLastObject];
-            _animatingView.frame = CGRectOffset(self.view.bounds, -self.view.frame.size.width, 0);
             [self.view addSubview:_animatingView];
+            _animatingView.frame = CGRectOffset(self.view.bounds, -self.view.frame.size.width, 0);
         }else{
             if(self.view.subviews.count == 1)return;
             _animatingView = (UIView*)[self.view.subviews lastObject];
+            _animatingView.backgroundColor = [UIColor redColor];
         }
         _latestPoint = translation;
         return;
@@ -200,7 +200,7 @@
 
 //Adds a shadow to whatever view is sent
 //Iain
--(void) addShadowToView: (UIView *) view
+-(void) addShadowToView:     (UIView *) view
 {
     UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
     view.layer.masksToBounds = NO;
