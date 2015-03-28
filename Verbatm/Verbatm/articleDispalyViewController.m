@@ -102,6 +102,7 @@
 
 -(void)transitionBtnPinchedViews:(UIScreenEdgePanGestureRecognizer*)edgePan
 {
+
     CGPoint translation = [edgePan translationInView:self.view];
     if(edgePan.state == UIGestureRecognizerStateBegan){
         if(translation.x > 0){
