@@ -30,11 +30,12 @@
 {
     
     //load from Nib file...this initializes the background view and all its subviews
-    self = [[[NSBundle mainBundle] loadNibNamed:@"v_multiplePhoto" owner:self options:nil]firstObject];
+    self = [[[NSBundle mainBundle] loadNibNamed:@"multiplePhotosAve" owner:self options:nil]firstObject];
     if(self)
     {
         [self setPhotoFrom:photos];
         if(photos.count >1)[self fillScrollView:photos];//if there are many photos then we have a scrollview
+        if(photos.count == 1)self.mainImage.frame = frame;
     }
     
     return self;
