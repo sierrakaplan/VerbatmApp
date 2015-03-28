@@ -210,6 +210,12 @@
     view.layer.shadowPath = shadowPath.CGPath;
 }
 
+//for ios8- To hide the status bar
+-(BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
 -(void) removeStatusBar
 {
     //remove the status bar
@@ -220,6 +226,13 @@
         // iOS 6
         [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
     }
+}
+
+#pragma mark Orientation
+- (NSUInteger)supportedInterfaceOrientations
+{
+    //return supported orientation masks
+    return UIInterfaceOrientationMaskPortrait;
 }
 
 @end
