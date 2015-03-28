@@ -33,12 +33,12 @@
 @end
 @implementation v_multiVidTextPhoto
 
--(id)initWithFrame:(CGRect)frame andMedia:(NSArray *)media andText:(NSString*)text
+-(instancetype)initWithFrame:(CGRect)frame Photos:(NSMutableArray*)photos andVideos:(NSArray*)videos andText:(NSString*)text
 {
     if((self = [super initWithFrame:frame]))
     {
         //init and add photo and video
-        self.photoVideo_view = [[v_multiplePhotoVideo alloc] initWithFrame:frame andMedia:media];
+        self.photoVideo_view = [[v_multiplePhotoVideo alloc]initWithFrame:frame Photos:photos andVideos:videos];
         [self addSubview:self.photoVideo_view];
         [self createTextViewWithText:text];
         [self initPullBarAndBlur];

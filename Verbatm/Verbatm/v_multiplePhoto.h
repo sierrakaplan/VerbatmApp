@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface v_multiplePhoto : UIView
-
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSMutableArray *) photos;
 @end

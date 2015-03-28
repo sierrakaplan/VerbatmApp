@@ -539,12 +539,12 @@
 }
 
 
--(NSArray*)getVideos
+-(NSMutableArray*)getVideos
 {
     return self.videos;
 }
 
--(NSArray*)getPhotos
+-(NSMutableArray*)getPhotos
 {
     return self.photos;
 }

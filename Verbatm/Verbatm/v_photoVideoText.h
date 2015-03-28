@@ -9,5 +9,5 @@
 #import "v_textPhoto.h"
 
 @interface v_photoVideoText : UIView
--(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andAssets:(NSData*)assetList;
+-(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andVideo:(NSData*)assetList;
 @end

@@ -9,5 +9,5 @@
 #import "v_multiplePhotoVideo.h"
 
 @interface v_multiVidTextPhoto : UIView
--(id)initWithFrame:(CGRect)frame andMedia:(NSArray *)media andText:(NSString*)text;
+-(instancetype)initWithFrame:(CGRect)frame Photos:(NSMutableArray*)photos andVideos:(NSArray*)videos andText:(NSString*)text;
 @end

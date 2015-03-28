@@ -55,15 +55,10 @@
     [self setUpPlayer:self.mix];
     
     //set up the photos
-    for (ALAsset * asset in photos)
+    for (UIImage* image in photos)
     {
-        ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-        UIImage *image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
-                                             scale:[assetRepresentation scale]
-                                       orientation:UIImageOrientationUp];
-        UIImageView * imageview = [[UIImageView alloc] init];
+        UIImageView * imageview = [[UIImageView alloc] initWithImage:image];
         imageview.frame = [self getNextFrame];
-        imageview.image = image;
         imageview.clipsToBounds = YES;
         imageview.contentMode = UIViewContentModeScaleAspectFit;
         [self.photoList addSubview:imageview];
@@ -148,18 +143,19 @@
 
 
 /*This code fuses the video assets into a single video that plays the videos one after the other*/
--(void)fuseAssets:(NSMutableArray*)assetList
+-(void)fuseAssets:(NSArray*)videoDataList
 {
     self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
     AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     CMTime nextClipStartTime = kCMTimeZero;
     NSError* error;
-    
-    for(ALAsset* asset in assetList)
-    {
-        AVURLAsset* assetClip = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
-        AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+    for(NSData* data in videoDataList){
+        NSURL* url;
+        NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"multivid", arc4random_uniform(100)]];
+        [[NSFileManager defaultManager] createFileAtPath: filePath contents: data attributes:nil];
+        url = [NSURL fileURLWithPath: filePath];
+        AVURLAsset* assetClip = [AVURLAsset URLAssetWithURL: url options:nil];        AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
         AVAssetTrack* this_audio_track = [[assetClip tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
         if(this_audio_track != nil)

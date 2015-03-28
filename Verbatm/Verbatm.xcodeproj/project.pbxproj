@@ -65,7 +65,6 @@
 		C7CCFFAB19CFA74D00E90080 /* verbatmBlurBaseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFFAA19CFA74D00E90080 /* verbatmBlurBaseViewController.m */; };
 		C7E6C13F1A4E394600863893 /* v_multiplePhotoVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* v_multiplePhotoVideo.m */; };
 		C7E6C1401A4E394600863893 /* v_multiVidTextPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1321A4E394600863893 /* v_multiVidTextPhoto.m */; };
-		C7E6C1411A4E394600863893 /* v_photoVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1341A4E394600863893 /* v_photoVideo.m */; };
 		C7E6C1421A4E394600863893 /* v_photoVideoText.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1361A4E394600863893 /* v_photoVideoText.m */; };
 		C7E6C1431A4E394600863893 /* v_textPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1381A4E394600863893 /* v_textPhoto.m */; };
 		C7E6C1441A4E394600863893 /* v_textVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13A1A4E394600863893 /* v_textVideo.m */; };
@@ -178,8 +177,6 @@
 		C7E6C1301A4E394600863893 /* v_multiplePhotoVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_multiplePhotoVideo.m; sourceTree = "<group>"; };
 		C7E6C1311A4E394600863893 /* v_multiVidTextPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_multiVidTextPhoto.h; sourceTree = "<group>"; };
 		C7E6C1321A4E394600863893 /* v_multiVidTextPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_multiVidTextPhoto.m; sourceTree = "<group>"; };
-		C7E6C1331A4E394600863893 /* v_photoVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_photoVideo.h; sourceTree = "<group>"; };
-		C7E6C1341A4E394600863893 /* v_photoVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_photoVideo.m; sourceTree = "<group>"; };
 		C7E6C1351A4E394600863893 /* v_photoVideoText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_photoVideoText.h; sourceTree = "<group>"; };
 		C7E6C1361A4E394600863893 /* v_photoVideoText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_photoVideoText.m; sourceTree = "<group>"; };
 		C7E6C1371A4E394600863893 /* v_textPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_textPhoto.h; sourceTree = "<group>"; };
@@ -246,12 +243,6 @@
 		C73686E31A9B21B800ADAC90 /* New AVE views */ = {
 			isa = PBXGroup;
 			children = (
-				C73686E41A9B229400ADAC90 /* PhotoVideoAve.xib */,
-				C73686E61A9B22AA00ADAC90 /* verbatmPhotoVideoAve.h */,
-				C73686E71A9B22AA00ADAC90 /* verbatmPhotoVideoAve.m */,
-				C77A68B21AC20AA2000B10E2 /* v_multiplePhoto.h */,
-				C77A68B31AC20AA2000B10E2 /* v_multiplePhoto.m */,
-				C77A68BB1AC20DD7000B10E2 /* multiplePhotosAve.xib */,
 			);
 			name = "New AVE views";
 			sourceTree = "<group>";
@@ -469,14 +460,18 @@
 			isa = PBXGroup;
 			children = (
 				C73686E31A9B21B800ADAC90 /* New AVE views */,
+				C73686E41A9B229400ADAC90 /* PhotoVideoAve.xib */,
+				C73686E61A9B22AA00ADAC90 /* verbatmPhotoVideoAve.h */,
+				C73686E71A9B22AA00ADAC90 /* verbatmPhotoVideoAve.m */,
+				C77A68B21AC20AA2000B10E2 /* v_multiplePhoto.h */,
+				C77A68B31AC20AA2000B10E2 /* v_multiplePhoto.m */,
+				C77A68BB1AC20DD7000B10E2 /* multiplePhotosAve.xib */,
 				C7E6C12F1A4E394600863893 /* v_multiplePhotoVideo.h */,
 				C7E6C1301A4E394600863893 /* v_multiplePhotoVideo.m */,
 				C77A68BD1AC2327A000B10E2 /* multiplePhotoVideoAve.xib */,
 				C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */,
 				C7E6C1311A4E394600863893 /* v_multiVidTextPhoto.h */,
 				C7E6C1321A4E394600863893 /* v_multiVidTextPhoto.m */,
-				C7E6C1331A4E394600863893 /* v_photoVideo.h */,
-				C7E6C1341A4E394600863893 /* v_photoVideo.m */,
 				C7E6C1351A4E394600863893 /* v_photoVideoText.h */,
 				C7E6C1361A4E394600863893 /* v_photoVideoText.m */,
 				C7E6C1371A4E394600863893 /* v_textPhoto.h */,
@@ -608,7 +603,6 @@
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				C77A68B41AC20AA2000B10E2 /* v_multiplePhoto.m in Sources */,
-				C7E6C1411A4E394600863893 /* v_photoVideo.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */,
 				F20A24FA1A46166100BB77C1 /* verbatmCustomImageScrollView.m in Sources */,
 				C7E6C1421A4E394600863893 /* v_photoVideoText.m in Sources */,

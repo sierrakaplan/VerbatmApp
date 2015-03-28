@@ -10,5 +10,7 @@
 #import "verbatmCustomImageView.h"
 
 @interface verbatmPhotoVideoAve : UIView
--(instancetype) initWithFrame:(CGRect)frame Image: (UIImage *) image andVideo: (NSData *) video;
+-(instancetype) initWithFrame:(CGRect)frame Image: (UIImage *) image andVideo: (NSArray *) video;
+-(void) mute;
+-(void) unmute;
 @end

@@ -8,8 +8,8 @@
 
 #import "articleDispalyViewController.h"
 #import "v_textview.h"
-#import "v_photoVideo.h"
 #import "v_videoview.h"
+#import "verbatmPhotoVideoAve.h"
 #import "v_multiplePhotoVideo.h"
 
 @interface articleDispalyViewController ()
@@ -66,9 +66,6 @@
         //[self addShadowToView: view];
         
         [self.view insertSubview:view atIndex:0];
-        if([view isKindOfClass:[v_photoVideo class]]){
-            [((v_photoVideo*)view) createLongPressGesture];
-        }
     }
     //This makes sure that if the first object is a video it is playing the sound
     _animatingView = [self.view.subviews lastObject];
@@ -183,8 +180,8 @@
 {
     if([_animatingView isKindOfClass:[v_videoview class]] ){
         [((v_videoview*)_animatingView) enableSound];
-    }else if([_animatingView isKindOfClass:[v_photoVideo class]]){
-        [((v_photoVideo*)_animatingView) enableSound];
+    }else if([_animatingView isKindOfClass:[verbatmPhotoVideoAve class]]){
+        [((verbatmPhotoVideoAve*)_animatingView) unmute];
     }else if([_animatingView isKindOfClass:[v_multiplePhotoVideo class]]){
         [((v_multiplePhotoVideo*)_animatingView) enableSound];
     }
@@ -194,8 +191,8 @@
 {
     if([_animatingView isKindOfClass:[v_videoview class]]){
         [((v_videoview*)_animatingView) mutePlayer];
-    }else if([_animatingView isKindOfClass:[v_photoVideo class]]){
-        [((v_photoVideo*)_animatingView) mutePlayer];
+    }else if([_animatingView isKindOfClass:[verbatmPhotoVideoAve class]]){
+        [((verbatmPhotoVideoAve *)_animatingView) mute];
     }else if([_animatingView isKindOfClass:[v_multiplePhotoVideo class]]){
         [((v_multiplePhotoVideo*)_animatingView) mutePlayer];
     }

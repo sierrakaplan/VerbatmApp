@@ -30,11 +30,11 @@
 @end
 @implementation v_photoVideoText
 
--(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andAssets:(NSData*)video
+-(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andVideo:(NSData*)video
 {
     if(self = [super initWithFrame:frame])
     {
-        self.photoVideoView = [[verbatmPhotoVideoAve alloc] initWithFrame:frame Image:image andVideo:video];
+        self.photoVideoView = [[verbatmPhotoVideoAve alloc] initWithFrame:frame Image:image andVideo:@[video]];
         [self addSubview:self.photoVideoView];
         [self createTextViewWithText:text];
         [self initPullBarAndBlur];

@@ -30,35 +30,20 @@
 {
     
     //load from Nib file...this initializes the background view and all its subviews
-    self = [[[NSBundle mainBundle] loadNibNamed:@"multiplePhotos" owner:self options:nil]firstObject];
+    self = [[[NSBundle mainBundle] loadNibNamed:@"v_multiplePhoto" owner:self options:nil]firstObject];
     if(self)
     {
         [self setPhotoFrom:photos];
-        [self fillScrollView:photos];
+        if(photos.count >1)[self fillScrollView:photos];//if there are many photos then we have a scrollview
     }
     
     return self;
 }
 
-
--(void) formatViews
+-(void) setPhotoFrom: (NSArray *) photos
 {
-    
-    
-}
-
-
-
-
--(void) setPhotoFrom: (NSMutableArray *) photos
-{
-    ALAsset * asset = photos.firstObject;
-    [photos removeObject:asset];
-    ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-    UIImage* image = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage] scale:[assetRepresentation scale] orientation:UIImageOrientationUp];
     self.mainImage.contentMode = UIViewContentModeScaleAspectFill;
-    self.mainImage.image = image;
-    self.mainImage.asset = asset;
+    self.mainImage.image = (UIImage*)photos.firstObject;
     self.mainImage.layer.masksToBounds = YES;
     self.mainImage.userInteractionEnabled = YES;
 }
@@ -68,9 +53,9 @@
 //fills our scrollview with pinch views of our media list
 -(void) fillScrollView:(NSMutableArray *) photos
 {
-    for (ALAsset * asset in photos)
+    for (UIImage * image in photos)
     {
-        verbatmCustomPinchView * pv = [[verbatmCustomPinchView alloc] initWithRadius:RADIUS withCenter:[self getNextCenter] andMedia:asset];
+        verbatmCustomPinchView * pv = [[verbatmCustomPinchView alloc] initWithRadius:RADIUS withCenter:[self getNextCenter] Images:@[image] videoData:nil andText:nil];
         [self addTapGesture:pv];
         [self.SV_PhotoList addSubview:pv];
     }
@@ -89,12 +74,12 @@
 {
     verbatmCustomPinchView * pv = (verbatmCustomPinchView *) gesture.view;
     
-    verbatmCustomPinchView * new_pv = [[verbatmCustomPinchView alloc] initWithRadius:RADIUS withCenter:pv.center andMedia:self.mainImage.asset];
+    verbatmCustomPinchView * new_pv = [[verbatmCustomPinchView alloc] initWithRadius:RADIUS withCenter:pv.center Images: @[self.mainImage.image] videoData:nil andText:nil];
     [pv removeFromSuperview];
     [self.SV_PhotoList addSubview:new_pv];
     
-    NSMutableArray * assets = [pv mediaObjects];
-    [self setPhotoFrom:assets];
+    NSArray * photos = [pv getPhotos];
+    [self setPhotoFrom: photos];
 }
 
 

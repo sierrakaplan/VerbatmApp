@@ -27,8 +27,8 @@
 
 @implementation verbatmPhotoVideoAve
 
-
--(instancetype) initWithFrame:(CGRect)frame Image: (UIImage *) image andVideo: (NSData *) video
+//note- what if we get multiple videos? - this needs to be corrected
+-(instancetype) initWithFrame:(CGRect)frame Image: (UIImage *) image andVideo: (NSArray *) video
 {
     
     //load from Nib file...this initializes the background view and all its subviews
@@ -38,7 +38,7 @@
         [self.image setImage:image];
 
         
-        self.videoView = [[verbatmCustomPinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]/2,[self getRadius]/2) andMedia:video];
+        self.videoView = [[verbatmCustomPinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]/2,[self getRadius]/2) Images:nil videoData:@[video.firstObject] andText:nil];
         [self addSubview:self.videoView];
             self.frame = frame;
         [self.videoView unmuteVideo];
@@ -158,6 +158,15 @@
     }
 }
 
+-(void) mute
+{
+    [self.videoView muteVideo];
+}
+
+-(void) unmute
+{
+    [self.videoView unmuteVideo];
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.

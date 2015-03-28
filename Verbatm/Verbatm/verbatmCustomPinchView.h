@@ -111,8 +111,8 @@
 
 
 /*Getting media from the pinch object*/
--(NSArray*)getVideos;
--(NSArray*)getPhotos;
+-(NSMutableArray*)getVideos;
+-(NSMutableArray*)getPhotos;
 
 //returns all the strings of the media in the media array which are textfields.
 -(NSString*)getTextFromPinchObject;
