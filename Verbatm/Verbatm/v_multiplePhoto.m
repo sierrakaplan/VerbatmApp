@@ -30,11 +30,17 @@
 {
     
     //load from Nib file...this initializes the background view and all its subviews
-    self = [[[NSBundle mainBundle] loadNibNamed:@"v_multiplePhoto" owner:self options:nil]firstObject];
+    self = [[[NSBundle mainBundle] loadNibNamed:@"multiplePhotosAve" owner:self options:nil]firstObject];
     if(self)
     {
+        self.frame = frame;
         [self setPhotoFrom:photos];
         if(photos.count >1)[self fillScrollView:photos];//if there are many photos then we have a scrollview
+        if(photos.count == 1)
+        {
+            [self bringSubviewToFront:self.mainImage];
+            self.mainImage.frame = frame;
+        }
     }
     
     return self;
@@ -53,14 +59,27 @@
 //fills our scrollview with pinch views of our media list
 -(void) fillScrollView:(NSMutableArray *) photos
 {
+    [self formatSV];
+    
     for (UIImage * image in photos)
     {
         verbatmCustomPinchView * pv = [[verbatmCustomPinchView alloc] initWithRadius:RADIUS withCenter:[self getNextCenter] Images:@[image] videoData:nil andText:nil];
         [self addTapGesture:pv];
         [self.SV_PhotoList addSubview:pv];
     }
+    [self editSVContentSize];
 }
 
+-(void) formatSV
+{
+    self.SV_PhotoList.showsHorizontalScrollIndicator = NO;
+    self.SV_PhotoList.showsVerticalScrollIndicator = NO;
+}
+
+-(void) editSVContentSize
+{
+    self.SV_PhotoList.contentSize = CGSizeMake(((UIView *)self.SV_PhotoList.subviews.lastObject).frame.origin.x +((UIView *)self.SV_PhotoList.subviews.lastObject).frame.size.width , 0);
+}
 
 -(void) addTapGesture: (UIView *)view
 {
@@ -74,9 +93,9 @@
 {
     verbatmCustomPinchView * pv = (verbatmCustomPinchView *) gesture.view;
     
-    verbatmCustomPinchView * new_pv = [[verbatmCustomPinchView alloc] initWithRadius:RADIUS withCenter:pv.center Images: @[self.mainImage.image] videoData:nil andText:nil];
-    [pv removeFromSuperview];
-    [self.SV_PhotoList addSubview:new_pv];
+//    verbatmCustomPinchView * new_pv = [[verbatmCustomPinchView alloc] initWithRadius:RADIUS withCenter:pv.center Images: @[self.mainImage.image] videoData:nil andText:nil];
+//    [pv removeFromSuperview];
+//    [self.SV_PhotoList addSubview:new_pv];
     
     NSArray * photos = [pv getPhotos];
     [self setPhotoFrom: photos];

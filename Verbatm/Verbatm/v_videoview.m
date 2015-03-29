@@ -28,7 +28,8 @@
 //play and pause button that doesn't move on the side.
 -(id)initWithFrame:(CGRect)frame andAssets:(NSArray*)videoDataList
 {
-    if((self = [super initWithFrame:frame])){
+    if((self = [super initWithFrame:frame]))
+    {
         [self fuseAssets:videoDataList];
         [self setUpPlayer:self.mix];
     }

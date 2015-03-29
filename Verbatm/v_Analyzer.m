@@ -86,7 +86,7 @@
     if(p_obj.inDataFormat)
     {
         NSMutableArray * photos = [p_obj getPhotos];
-        NSMutableArray * videos = [p_obj getPhotos];
+        NSMutableArray * videos = [p_obj getVideos];
         if(p_obj.there_is_text)
         {
             if(photos.count)//it's text photo
@@ -144,7 +144,8 @@
                 NSMutableArray* assets = [[NSMutableArray alloc]init];
                 for(id view in media){
                     if([view isKindOfClass:[verbatmCustomImageView class]]){
-                        [assets addObject: ((verbatmCustomImageView*)view).asset];
+                        [assets addObject: [ self getDataFromAsset:((verbatmCustomImageView*)view).asset]
+                         ];
                     }
                 }
                 v_textVideo* tv = [[v_textVideo alloc]initWithFrame:_preferedFrame andAssets:assets andText:text];
