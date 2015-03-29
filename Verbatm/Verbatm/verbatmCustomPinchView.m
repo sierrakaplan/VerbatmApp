@@ -14,7 +14,7 @@
 @property(strong,nonatomic)IBOutlet UIView* background;
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewer;
 @property (weak, nonatomic) IBOutlet UITextView *textField;
-@property (weak, nonatomic) IBOutlet UIView *videoView;
+
 
 @property (strong, nonatomic) NSMutableArray* media;
 @property (strong, nonatomic) NSMutableArray* photos;
@@ -410,7 +410,8 @@
     if([to_be_seperated.videoView.layer.sublayers firstObject]){
         [(AVPlayerLayer*)[to_be_seperated.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
     }
-    for(id object in to_be_seperated.media){
+    for(id object in to_be_seperated.media)
+    {
         verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: to_be_seperated.background.frame.size.width/2 withCenter:to_be_seperated.center andMedia:object];
         [arr addObject: result];
     }

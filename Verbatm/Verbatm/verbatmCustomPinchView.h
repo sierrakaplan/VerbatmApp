@@ -121,4 +121,6 @@
 //returns all the verbatmCustomImageViews that make up the media of the pinch
 //object.
 -(NSMutableArray*)mediaObjects;
+
+@property (weak, nonatomic) IBOutlet UIView *videoView;
 @end

@@ -676,10 +676,36 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
                   willDecelerate:(BOOL)decelerate
 {
+    if((scrollView.subviews.count > 1) && scrollView != self.mainScrollView)
+    {
+        
+        for (verbatmCustomPinchView * pview in scrollView.subviews)
+        {
+            
+            AVPlayerLayer * vid = pview.videoView.layer.sublayers.firstObject;
+            
+            if(vid.player.status ==  AVPlayerStatusFailed)
+            {
+                NSLog(@"%@",[vid.player.error localizedDescription]);
+                
+            } else if (vid.player.status == AVPlayerStatusReadyToPlay)
+            {
+                //[playingLbl setText:@"Playing Audio"];
+                NSLog(@"It works");
+                
+            } else if (vid.player.status == AVPlayerItemStatusUnknown)
+            {
+                NSLog(@"AVPlayer Unknown");
+            }
+
+        }
+    }
+    
     
     if(scrollView != self.mainScrollView)
     {
-        if(scrollView.contentOffset.x > LEFT_DELETE_OFFSET || scrollView.contentOffset.x < RIGHT_DELETE_OFFSET)
+        //if the delete swipe wasn't far enough then return the pinch object to the middle
+        if((scrollView.contentOffset.x > LEFT_DELETE_OFFSET || scrollView.contentOffset.x < RIGHT_DELETE_OFFSET) && scrollView.subviews.count == 1)
         {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 scrollView.contentOffset = CGPointMake(self.view.frame.size.width, 0);
@@ -762,7 +788,7 @@
 //Iain
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    [self.openImageScrollView adjustImageScrollViewContentSizing];
+    if(self.openImageScrollView)[self.openImageScrollView adjustImageScrollViewContentSizing];
     
     //show and hide the pullbar depending on the direction of the scroll
     if(scrollView == self.mainScrollView)
@@ -833,8 +859,7 @@
     //change the background color of the element being deleted to highlight that it's being deleted
     if(scrollView != self.mainScrollView && scrollView.subviews.count <2 && scrollView != self.openImageScrollView )//makes sure it's only one element on the view
     {
-        if(scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x + 80 || scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x - 80)
-        {
+        if(scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x + 80 || scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x - 80){
             if(scrollView.contentOffset.x >3)
             {
                 if([[scrollView.subviews firstObject] isKindOfClass:[verbatmCustomPinchView class]])
@@ -858,6 +883,8 @@
              }];
         }
     }
+    
+    
 }
 
 
@@ -2303,7 +2330,7 @@
     if(!pinch_object.isCollection && !pinch_object.hasMultipleMedia)//tap to open an element for viewing or editing
     {
         NSMutableArray * array = [pinch_object mediaObjects];
-        UIView* mediaView = [array firstObject];
+        UIView* mediaView = [array firstObject]; //could be textview or customimageview
 
         //pinch object was a video or image
         if([mediaView isKindOfClass:[verbatmCustomImageView class]])
@@ -2382,6 +2409,7 @@
         {
             verbatmCustomPinchView * pinch_view = array[i];
             CGRect new_frame =CGRectMake(x_position, ELEMENT_OFFSET_DISTANCE/2, [self.closedElement_Radius intValue] *2, [self.closedElement_Radius intValue] * 2);
+            pinch_view.autoresizesSubviews = YES;
             [pinch_view specifyFrame:new_frame];
             [sv addSubview:pinch_view];
             //now every open pinch collection can have it's objects opened
