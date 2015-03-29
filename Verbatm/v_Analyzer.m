@@ -60,7 +60,7 @@
                 if(p_obj.there_is_picture){
                     [arr addObject:((verbatmCustomImageView*)view).image];
                 }else{
-                    [arr addObject: [self getDataFromAsset:((verbatmCustomImageView*)view).asset]];
+                    [arr addObject: ((verbatmCustomImageView*)view).asset /*[self getDataFromAsset:((verbatmCustomImageView*)view).asset]*/];
                 }
             }
         }
@@ -258,8 +258,8 @@
 -(NSData*)getDataFromAsset:(ALAsset*)asset
 {
     ALAssetRepresentation *rep = [asset defaultRepresentation];
-    Byte *buffer = (Byte*)malloc(rep.size);
-    NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
+    Byte *buffer = (Byte*)malloc((unsigned long)rep.size);
+    NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length: (unsigned long)rep.size error:nil];
     return [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
 }
 @end
