@@ -677,7 +677,7 @@
                   willDecelerate:(BOOL)decelerate
 {
     
-    if(scrollView != self.mainScrollView)
+    if(scrollView != self.mainScrollView && scrollView.subviews.count == 1)
     {
         if(scrollView.contentOffset.x > LEFT_DELETE_OFFSET || scrollView.contentOffset.x < RIGHT_DELETE_OFFSET)
         {
@@ -1065,6 +1065,8 @@
     }
     
     verbatmCustomPinchView * newView = [verbatmCustomPinchView pinchTogether:[NSMutableArray arrayWithArray:pinch_views]];
+    
+    pinch_views = nil;
     
     self.scrollViewForHorizontalPinchView.contentSize = self.standardContentSizeForPersonalView;
     self.scrollViewForHorizontalPinchView.contentOffset = self.standardContentOffsetForPersonalView;
@@ -2302,7 +2304,6 @@
     {
         [self openCollection:pinch_object];//checks if there is anything to open by telling you if the element has multiple things in it
     }
-    
     if(!pinch_object.isCollection && !pinch_object.hasMultipleMedia)//tap to open an element for viewing or editing
     {
         NSMutableArray * array = [pinch_object mediaObjects];

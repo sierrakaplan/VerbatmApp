@@ -36,8 +36,8 @@
     if(self)
     {
         [self.image setImage:image];
+        self.clipsToBounds = YES;
 
-        
         self.videoView = [[verbatmCustomPinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]/2,[self getRadius]/2) Images:nil videoData:@[video.firstObject] andText:nil];
         [self addSubview:self.videoView];
             self.frame = frame;

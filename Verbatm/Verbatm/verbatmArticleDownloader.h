@@ -18,4 +18,8 @@
 -(Article*)downloadArticleWithTitle:(NSString*)title andAuthor:(VerbatmUser*)user;
 
 
+//Returns all the verbatm articles
+//should not be called on main thread.
+-(NSArray*)downloadAllVerbatmArticle;
+
 @end

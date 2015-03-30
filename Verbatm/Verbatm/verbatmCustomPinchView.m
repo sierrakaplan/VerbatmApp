@@ -418,6 +418,7 @@
         verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: to_be_seperated.background.frame.size.width/2 withCenter:to_be_seperated.center andMedia:object];
         [arr addObject: result];
     }
+    to_be_seperated = nil;
     return arr;
 }
 

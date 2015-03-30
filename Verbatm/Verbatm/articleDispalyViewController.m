@@ -12,9 +12,10 @@
 #import "verbatmPhotoVideoAve.h"
 #import "v_multiplePhotoVideo.h"
 
-@interface articleDispalyViewController ()
+@interface articleDispalyViewController () <UIScrollViewDelegate>
 @property (strong, nonatomic) NSMutableArray* poppedOffPages;
 @property (strong, nonatomic) UIView* animatingView;
+@property (strong, nonatomic) UIScrollView* scrollView;
 @property (nonatomic) CGPoint lastPoint;
 #define BEST_ALPHA_FOR_TEXT 0.8
 #define ANIMATION_DURATION 0.4
@@ -26,12 +27,27 @@
 @synthesize lastPoint = _latestPoint;
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
     // Do any additional setup after loading the view.
-    [self setUpGestureRecognizers];
+    //[self setUpGestureRecognizers];
+    [self setUpScrollView];
     [self renderPinchObjects];
     _latestPoint = CGPointZero;
     _animatingView = nil;
     _poppedOffPages = [[NSMutableArray alloc]init];
+}
+
+
+-(void)setUpScrollView
+{
+    self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+    [self.view addSubview: self.scrollView];
+    self.scrollView.pagingEnabled  = YES;
+    self.scrollView.frame = self.view.frame;
+    [self.scrollView setShowsVerticalScrollIndicator:NO];
+    [self.scrollView setShowsHorizontalScrollIndicator:NO];
+    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pinchedObjects count]*self.view.frame.size.height);
+    self.scrollView.delegate = self;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -50,22 +66,28 @@
 
 -(void)renderPinchObjects
 {
+//    for(UIView* view in self.pinchedObjects){
+//        if([view isKindOfClass:[v_textview class]]){
+//            view.frame = self.view.bounds;
+//            [self.view addSubview: view];
+//            continue;
+//        }
+//        [self.view insertSubview:view atIndex:0];
+//        view.frame = self.view.bounds;
+//    }
+    CGRect viewFrame = self.view.bounds;
     for(UIView* view in self.pinchedObjects){
         if([view isKindOfClass:[v_textview class]]){
-//            UIView* parentView = [[UIView alloc]initWithFrame:self.view.bounds];
-//            view.frame = CGRectMake(25, 40, parentView.frame.size.width - 50, parentView.frame.size.height - 80);
-//            [parentView addSubview:view];
-//            parentView.backgroundColor = [UIColor blackColor];
-//            parentView.alpha = BEST_ALPHA_FOR_TEXT;   //Apply blur if only text
-            view.frame = self.view.bounds;
-            [self.view addSubview: view];
+            view.frame = viewFrame;
+            [self.scrollView addSubview: view];
+            viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
             continue;
         }
-        [self.view insertSubview:view atIndex:0];
-        view.frame = self.view.bounds;
-        
-        //[self addShadowToView: view];
+        [self.scrollView insertSubview:view atIndex:0];
+        view.frame = viewFrame;
+        viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
     }
+    
     //This makes sure that if the first object is a video it is playing the sound
     _animatingView = [self.view.subviews lastObject];
     [self enableSound];
@@ -236,4 +258,10 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
+#pragma mark - scrolling -
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    
+}
 @end

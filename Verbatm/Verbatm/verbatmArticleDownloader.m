@@ -22,4 +22,10 @@
     return [[query findObjects]firstObject];
 }
 
+-(NSArray*)downloadAllVerbatmArticle
+{
+    PFQuery* query = [PFQuery queryWithClassName:@"Article"];
+    return [query findObjects];
+}
+
 @end

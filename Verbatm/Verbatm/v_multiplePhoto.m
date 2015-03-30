@@ -52,6 +52,8 @@
     self.mainImage.image = (UIImage*)photos.firstObject;
     self.mainImage.layer.masksToBounds = YES;
     self.mainImage.userInteractionEnabled = YES;
+    self.mainImage.clipsToBounds = YES;
+    self.mainImage.frame = CGRectMake(0, self.SV_PhotoList.frame.size.height, self.frame.size.width, self.frame.size.height - self.SV_PhotoList.frame.size.height);
 }
 
 
