@@ -114,6 +114,7 @@
         }else{
             if(self.view.subviews.count == 1)return;
             _animatingView = (UIView*)[self.view.subviews lastObject];
+            _animatingView.backgroundColor = [UIColor blueColor];
         }
         _latestPoint = translation;
         return;
@@ -145,6 +146,15 @@
             _animatingView = nil;
         }];
         return;
+    }
+    
+    if(translation.x > 0)
+    {
+        if(_animatingView.frame.origin.x + (translation.x - _latestPoint.x) > 0){
+            _animatingView.frame = self.view.bounds;
+            _latestPoint = translation;
+            return;
+        }
     }
     _animatingView.frame = CGRectOffset(_animatingView.frame, translation.x - _latestPoint.x, 0);
     _latestPoint = translation;

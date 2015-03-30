@@ -678,26 +678,28 @@
 {
     if((scrollView.subviews.count > 1) && scrollView != self.mainScrollView)
     {
-        
-        for (verbatmCustomPinchView * pview in scrollView.subviews)
+        if([scrollView.subviews.firstObject isKindOfClass:[verbatmCustomPinchView class]])
         {
-            
-            AVPlayerLayer * vid = pview.videoView.layer.sublayers.firstObject;
-            
-            if(vid.player.status ==  AVPlayerStatusFailed)
+            for (verbatmCustomPinchView * pview in scrollView.subviews)
             {
-                NSLog(@"%@",[vid.player.error localizedDescription]);
                 
-            } else if (vid.player.status == AVPlayerStatusReadyToPlay)
-            {
-                //[playingLbl setText:@"Playing Audio"];
-                NSLog(@"It works");
-                
-            } else if (vid.player.status == AVPlayerItemStatusUnknown)
-            {
-                NSLog(@"AVPlayer Unknown");
-            }
+                AVPlayerLayer * vid = pview.videoView.layer.sublayers.firstObject;
+                if(!vid)continue;
+                if(vid.player.status ==  AVPlayerStatusFailed)
+                {
+                    NSLog(@"%@",[vid.player.error localizedDescription]);
+                    
+                } else if (vid.player.status == AVPlayerStatusReadyToPlay)
+                {
+                    //[playingLbl setText:@"Playing Audio"];
+                    NSLog(@"It works");
+                    
+                } else if (vid.player.status == AVPlayerItemStatusUnknown)
+                {
+                    NSLog(@"AVPlayer Unknown");
+                }
 
+            }
         }
     }
     
@@ -1076,6 +1078,9 @@
 
 -(void)joinOpenCollectionToOne
 {
+    [self showPullBar];//make sure the pullbar is showing when things are pinched together
+    
+    
     verbatmCustomPinchView * placeHolder = [[verbatmCustomPinchView alloc]init];//just holds the place inorder to be replaced
     NSArray * pinch_views = self.scrollViewForHorizontalPinchView.subviews;
     
@@ -1493,6 +1498,7 @@
             [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:pinchView];
             self.pinching = NO;
             [self shiftElementsBelowView:self.articleTitleField];
+            [self showPullBar];//make sure the pullbar is showing when things are pinched together
         }
     }
 }
@@ -1710,6 +1716,7 @@
         [self animateView:imageView InToPositionUnder:self.articleTitleField];
     }else
     {
+        //to fix
         [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
     }
     
@@ -2206,7 +2213,8 @@
     {
         [((verbatmCustomPinchView *)view) unmarkAsDeleting];
     }
-    [self returnObject:view ToDisplayAtIndex:index.integerValue];
+
+    [self returnObject:[verbatmCustomPinchView pinchObjectFromPinchObject:(verbatmCustomPinchView *)view] ToDisplayAtIndex:index.integerValue];
 }
 
 -(void)returnObject: (UIView *) view ToDisplayAtIndex:(NSInteger) index

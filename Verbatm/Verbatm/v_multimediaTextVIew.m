@@ -1,24 +1,25 @@
 //
-//  v_textPhoto.m
+//  v_multimediaTextVIew.m
 //  Verbatm
 //
-//  Created by Lucio Dery Jnr Mwinmaarong on 12/18/14.
-//  Copyright (c) 2014 Verbatm. All rights reserved.
+//  Created by Iain Usiri on 3/29/15.
+//  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "v_textPhoto.h"
-#import "ILTranslucentView.h"
 #import "v_multimediaTextVIew.h"
-@interface v_textPhoto()
+#import "v_textview.h"
+
+@interface v_multimediaTextVIew ()
+
 @property (strong, nonatomic) v_textview* textView;
 @property (strong, nonatomic) UIVisualEffectView* bgBlurImage;
 @property (nonatomic) CGPoint lastPoint;
 @property (strong, nonatomic) UIView* pullBarView;
 @property (strong, nonatomic) UIView* whiteBorderBar;
-
 @property (nonatomic) BOOL isTitle;
 @property (nonatomic) CGRect absoluteFrame;
-#define BORDER_HEIGHT 2
+
+#define BORDER_HEIGHT 5
 #define BORDER_COLOR whiteColor
 #define WHITE_BORDER_FRAME CGRectMake(0, self.pullBarView.frame.size.height - BORDER_HEIGHT, self.frame.size.width, BORDER_HEIGHT)
 #define OFFSET_FROM_TOP 80
@@ -26,27 +27,25 @@
 #define EXTRA  20
 #define TEXT_CONTENT_OFFSET 100
 #define MIN_WORDS 20
-#define DEFAULT_FONT_FAMILY @"AmericanTypewriter-Light"
-#define DEFAULT_FONT_SIZE 20
+#define DEFAULT_FONT_FAMILY @"ArialMT"
+#define DEFAULT_FONT_SIZE 23
 #define THRESHOLD 1.8
 #define PULLBAR_COLOR clearColor
 #define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA)
 #define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP)
-@end
-@implementation v_textPhoto
 
--(id)initWithFrame:(CGRect)frame andImage:(UIImage *)image andText:(NSString*)text
+@end
+@implementation v_multimediaTextVIew
+
+-(id)initWithFrame:(CGRect)frame andText:(NSString*)text
 {
     
-    if((self = [super initWithImage:image]))
+    if((self = [super initWithFrame:frame]))
     {
         
-//        v_multimediaTextVIew * newView = [[v_multimediaTextVIew alloc] initWithFrame:frame];
-//        [self addSubview:newView];
-        self.frame = frame;
         [self formatTextViewWithText: text];
         [self checkWordCount:text];
-        //[self setSizesToFit];
+        [self setSizesToFit];
         self.userInteractionEnabled = YES;
         self.textView.backgroundColor = [UIColor clearColor];
         self.textView.showsVerticalScrollIndicator = NO;
@@ -67,7 +66,7 @@
 //everytime we reset the pullbar frame we call this to reset the white bar
 -(void)setWhiteBarFrame
 {
-     self.whiteBorderBar.frame = WHITE_BORDER_FRAME;
+    self.whiteBorderBar.frame = WHITE_BORDER_FRAME;
 }
 
 -(void)checkWordCount:(NSString*)text
@@ -99,7 +98,6 @@
     [self.textView setTextViewText: text];
     self.textView.textColor = [UIColor whiteColor];
     [self addSubview: self.textView];
-    [self.textView setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
 }
 
 -(void) createPullBar
@@ -165,7 +163,7 @@
                 [self setWhiteBarFrame];
             }
         } completion:^(BOOL finished) {
-             self.lastPoint = CGPointZero;
+            self.lastPoint = CGPointZero;
         }];
         return;
     }
@@ -183,7 +181,7 @@
 
 
 /*This function sets the textView's size to fit superview's frame.
- *It ensures that the text layer is always centered in the super view and 
+ *It ensures that the text layer is always centered in the super view and
  *it text fits in perfectly.
  */
 -(void)setSizesToFit
@@ -191,4 +189,14 @@
     self.textView.textAlignment = NSTextAlignmentCenter;
     [self.textView sizeToFit];
 }
+
+
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect {
+    // Drawing code
+}
+*/
+
 @end

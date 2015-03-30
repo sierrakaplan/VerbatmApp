@@ -500,7 +500,7 @@
             {
                 if(finished)
                 {
-                   // self.containerView.hidden = YES;
+                    self.containerView.hidden = YES;
                     [self.vc_contentPage removeKeyboardFromScreen];
                 }
             }];
@@ -855,7 +855,10 @@
 
 -(void)hidePullBar
 {
-    if(self.vc_contentPage.mainScrollView.contentSize.height < self.view.frame.size.height) return;
+    int vc_cs = self.vc_contentPage.mainScrollView.contentSize.height;
+    int bar = self.view.frame.size.height;
+    if( vc_cs < bar ) return;
+    
         [UIView animateWithDuration:0.4 animations:^
          {
             self.containerView.frame = self.view.frame;

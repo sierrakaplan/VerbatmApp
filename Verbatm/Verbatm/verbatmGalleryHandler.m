@@ -71,7 +71,7 @@
     self.scrollView.pagingEnabled = NO;
     self.scrollView.clipsToBounds = NO;
     self.scrollView.indicatorStyle = UIScrollViewIndicatorStyleWhite;
-    self.scrollView.showsHorizontalScrollIndicator = YES;
+    self.scrollView.showsHorizontalScrollIndicator = NO;
     self.scrollView.delegate = self;
     self.scrollView.alwaysBounceHorizontal = YES;
     

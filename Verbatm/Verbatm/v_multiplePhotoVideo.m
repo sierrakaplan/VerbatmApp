@@ -19,6 +19,7 @@
 #define y_ratio 4
 #define ELEMENT_WALL_OFFSET 10
 #define ANIMATION_DURATION 0.5
+#define  VIDEO_VIEW_HALF_FRAME CGRectMake(0, 0, self.frame.size.width, VIDEO_VIEW_HEIGHT)
 #define VIDEO_VIEW_HEIGHT (((self.frame.size.width*3)/4))
 #define SV_DEFAULT_HEIGHT (self.frame.size.height - VIDEO_VIEW_HEIGHT)
 @end
@@ -40,7 +41,7 @@
 //sets the frames for the video view and the photo scrollview
 -(void) setViewFrames
 {
-    self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, VIDEO_VIEW_HEIGHT);
+    self.videoView.frame = VIDEO_VIEW_HALF_FRAME;
     self.photoList.frame = CGRectMake(0, VIDEO_VIEW_HEIGHT, self.frame.size.width, SV_DEFAULT_HEIGHT);
     [self bringSubviewToFront:self.photoList];
 }
@@ -100,6 +101,22 @@
                 [self setPLViewsToHeight:self.photoList.frame.size.height];
             }];
         }
+    }else if (view== self.videoView)
+    {
+        if(self.videoView.frame.size.height != self.frame.size.height)//video view is in smaller frame
+        {
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                self.videoView.frame = self.frame;
+                [self bringSubviewToFront:self.videoView];
+            }];
+            
+        }else //video view is fullscreen
+        {
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                self.videoView.frame = VIDEO_VIEW_HALF_FRAME;
+                [self bringSubviewToFront:self.photoList];
+            }];
+        }
     }
 }
 
@@ -124,6 +141,7 @@
     self.photoList.showsHorizontalScrollIndicator = NO;
     self.photoList.showsVerticalScrollIndicator = NO;
     [self addTapGestureToView: self.photoList];
+    [self addTapGestureToView:self.videoView];
 }
 
 //gives you the frame for the next iamgeview that you'll add to the end of the list

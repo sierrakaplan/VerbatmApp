@@ -40,6 +40,7 @@
         {
             [self bringSubviewToFront:self.mainImage];
             self.mainImage.frame = frame;
+            self.SV_PhotoList.frame = CGRectZero;//make sure it's zero'd so that it doesnt show at all
         }
     }
     
@@ -51,6 +52,7 @@
     self.mainImage.contentMode = UIViewContentModeScaleAspectFill;
     self.mainImage.image = (UIImage*)photos.firstObject;
     self.mainImage.layer.masksToBounds = YES;
+    self.mainImage.clipsToBounds = YES;
     self.mainImage.userInteractionEnabled = YES;
 }
 
@@ -60,14 +62,25 @@
 -(void) fillScrollView:(NSMutableArray *) photos
 {
     [self formatSV];
+    [self bringSubviewToFront:self.SV_PhotoList];
     
     for (UIImage * image in photos)
     {
         verbatmCustomPinchView * pv = [[verbatmCustomPinchView alloc] initWithRadius:RADIUS withCenter:[self getNextCenter] Images:@[image] videoData:nil andText:nil];
+        [self formatPV:pv];
         [self addTapGesture:pv];
         [self.SV_PhotoList addSubview:pv];
     }
     [self editSVContentSize];
+}
+
+//formats a pinchivew
+-(void)formatPV:(verbatmCustomPinchView *)pv
+{
+    //give it a dorp shadow
+    [pv createLensingEffect:RADIUS];
+    //remove it's border
+    [pv removeBorder];
 }
 
 -(void) formatSV
@@ -78,7 +91,8 @@
 
 -(void) editSVContentSize
 {
-    self.SV_PhotoList.contentSize = CGSizeMake(((UIView *)self.SV_PhotoList.subviews.lastObject).frame.origin.x +((UIView *)self.SV_PhotoList.subviews.lastObject).frame.size.width , 0);
+    UIView * view = self.SV_PhotoList.subviews.lastObject;
+    self.SV_PhotoList.contentSize = CGSizeMake(view.frame.origin.x + view.frame.size.width + BETWEEN_ELEMENT_OFFSET*3 , 0);
 }
 
 -(void) addTapGesture: (UIView *)view
@@ -112,8 +126,6 @@
     int y_cord = RADIUS + ELEMENT_TOP_OFFSET;
     return CGPointMake(x_cord, y_cord);
 }
-
-
 
 
 

@@ -74,6 +74,15 @@
 }
 
 
++(verbatmCustomPinchView *)pinchObjectFromPinchObject: (verbatmCustomPinchView *) pv
+{
+    id media_1 = pv.media.firstObject;
+    [pv.media removeObject:media_1];
+    verbatmCustomPinchView * new_pv = [[verbatmCustomPinchView alloc]initWithRadius:pv.frame.size.width/2 withCenter:pv.center andMedia:media_1];
+    [new_pv.media addObjectsFromArray:pv.media];
+    return new_pv;
+}
+
 -(void)initSubviews
 {
     //add background as a subview
@@ -209,6 +218,11 @@
 }
 
 
+-(void)removeBorder
+{
+    self.layer.borderWidth = 0;
+}
+
 -(void)createLensingEffect:(float)radius
 {
     //remove previous shadows
@@ -216,9 +230,9 @@
     
     //create the shadow or lensing effect
     self.layer.shadowOffset = CGSizeMake(radius/SHADOW_OFFSET_FACTOR, radius/SHADOW_OFFSET_FACTOR);
-    self.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.layer.shadowColor = [UIColor whiteColor].CGColor;
     self.layer.masksToBounds = NO;
-    self.layer.shadowOpacity = 0.5f;
+    self.layer.shadowOpacity = 1;
     self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.bounds cornerRadius:radius].CGPath;
 }
 
@@ -379,7 +393,10 @@
     for(int i = 1; i < to_be_merged.count; i++){
         verbatmCustomPinchView* pinchObject = (verbatmCustomPinchView*)[to_be_merged objectAtIndex:i];
         [result.media addObjectsFromArray: pinchObject.media];
-        if([pinchObject.videoView.layer.sublayers firstObject]){
+        if([pinchObject.videoView.layer.sublayers firstObject])
+        {
+            [((AVPlayerLayer*)[pinchObject.videoView.layer.sublayers firstObject]).player pause];
+            ((AVPlayerLayer*)[pinchObject.videoView.layer.sublayers firstObject]).player = nil;
             [(AVPlayerLayer*)[pinchObject.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
         }
         result.there_is_picture =  result.there_is_picture || pinchObject.there_is_picture;

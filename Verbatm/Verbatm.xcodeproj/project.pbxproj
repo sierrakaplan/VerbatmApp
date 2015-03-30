@@ -22,6 +22,9 @@
 		C7614F441A24993200E6AB24 /* verbatmCustomPinchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7614F431A24993200E6AB24 /* verbatmCustomPinchView.xib */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C777EE9A1AC4B37C003E0633 /* multiVTP_Ave.xib in Resources */ = {isa = PBXBuildFile; fileRef = C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */; };
+		C777EE9D1AC7F54F003E0633 /* verbatmAtilcleList_TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9C1AC7F54F003E0633 /* verbatmAtilcleList_TableViewController.m */; };
+		C777EEA01AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */; };
+		C777EEA31AC8AE9E003E0633 /* v_multimediaTextVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */; };
 		C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */; };
 		C77A68B41AC20AA2000B10E2 /* v_multiplePhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B31AC20AA2000B10E2 /* v_multiplePhoto.m */; };
 		C77A68BC1AC20DD7000B10E2 /* multiplePhotosAve.xib in Resources */ = {isa = PBXBuildFile; fileRef = C77A68BB1AC20DD7000B10E2 /* multiplePhotosAve.xib */; };
@@ -113,6 +116,12 @@
 		C7614F431A24993200E6AB24 /* verbatmCustomPinchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = verbatmCustomPinchView.xib; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = multiVTP_Ave.xib; path = ../multiVTP_Ave.xib; sourceTree = "<group>"; };
+		C777EE9B1AC7F54F003E0633 /* verbatmAtilcleList_TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmAtilcleList_TableViewController.h; sourceTree = "<group>"; };
+		C777EE9C1AC7F54F003E0633 /* verbatmAtilcleList_TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmAtilcleList_TableViewController.m; sourceTree = "<group>"; };
+		C777EE9E1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmArticle_TableViewCell.h; sourceTree = "<group>"; };
+		C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmArticle_TableViewCell.m; sourceTree = "<group>"; };
+		C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_multimediaTextVIew.h; sourceTree = "<group>"; };
+		C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_multimediaTextVIew.m; sourceTree = "<group>"; };
 		C77A68AF1AC0A49B000B10E2 /* VIEW_TESTERViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VIEW_TESTERViewController.h; sourceTree = "<group>"; };
 		C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VIEW_TESTERViewController.m; sourceTree = "<group>"; };
 		C77A68B21AC20AA2000B10E2 /* v_multiplePhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_multiplePhoto.h; sourceTree = "<group>"; };
@@ -240,13 +249,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		C73686E31A9B21B800ADAC90 /* New AVE views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "New AVE views";
-			sourceTree = "<group>";
-		};
 		C750A35919D768BD0006FA88 /* Video Capture Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -270,6 +272,10 @@
 			children = (
 				C77A68AE1AC0A47F000B10E2 /* AVE_TESTER */,
 				C7BC4387199D97F5004B91A1 /* Main.storyboard */,
+				C777EE9E1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.h */,
+				C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */,
+				C777EE9B1AC7F54F003E0633 /* verbatmAtilcleList_TableViewController.h */,
+				C777EE9C1AC7F54F003E0633 /* verbatmAtilcleList_TableViewController.m */,
 				C7F3D4691A4F84C000B43238 /* verbatmUserLoginViewController.h */,
 				C7F3D46A1A4F84C000B43238 /* verbatmUserLoginViewController.m */,
 				C7F3D46C1A4F84DF00B43238 /* verbatmUserSignUpViewController.h */,
@@ -459,7 +465,6 @@
 		F26894441A43641C00B1D4DB /* Article Custom Views */ = {
 			isa = PBXGroup;
 			children = (
-				C73686E31A9B21B800ADAC90 /* New AVE views */,
 				C73686E41A9B229400ADAC90 /* PhotoVideoAve.xib */,
 				C73686E61A9B22AA00ADAC90 /* verbatmPhotoVideoAve.h */,
 				C73686E71A9B22AA00ADAC90 /* verbatmPhotoVideoAve.m */,
@@ -474,6 +479,8 @@
 				C7E6C1321A4E394600863893 /* v_multiVidTextPhoto.m */,
 				C7E6C1351A4E394600863893 /* v_photoVideoText.h */,
 				C7E6C1361A4E394600863893 /* v_photoVideoText.m */,
+				C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */,
+				C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */,
 				C7E6C1371A4E394600863893 /* v_textPhoto.h */,
 				C7E6C1381A4E394600863893 /* v_textPhoto.m */,
 				C7E6C1391A4E394600863893 /* v_textVideo.h */,
@@ -615,6 +622,7 @@
 				C734FD9C19B14B8D00B2C370 /* verbatmContentPageViewController.m in Sources */,
 				C7E6C1461A4E394600863893 /* v_videoview.m in Sources */,
 				C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */,
+				C777EE9D1AC7F54F003E0633 /* verbatmAtilcleList_TableViewController.m in Sources */,
 				C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */,
 				C7614F421A247BD100E6AB24 /* verbatmCustomImageView.m in Sources */,
 				C78B682419CA6C01003D0AC5 /* verbatmUITextView.m in Sources */,
@@ -626,10 +634,12 @@
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
 				C7F18D851A05C0EE0002255B /* verbatmTextField.m in Sources */,
 				C7CCFFAB19CFA74D00E90080 /* verbatmBlurBaseViewController.m in Sources */,
+				C777EEA01AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m in Sources */,
 				C7F3D46E1A4F84DF00B43238 /* verbatmUserSignUpViewController.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* verbatmCustomScrollView.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* verbatmCustomPinchView.m in Sources */,
 				C73686E81A9B22AA00ADAC90 /* verbatmPhotoVideoAve.m in Sources */,
+				C777EEA31AC8AE9E003E0633 /* v_multimediaTextVIew.m in Sources */,
 				F266F3ED1A4A3ED900EA0327 /* articleDispalyViewController.m in Sources */,
 				C7E6C1431A4E394600863893 /* v_textPhoto.m in Sources */,
 				C7A8A7F619A96E1B00CE861F /* Video.m in Sources */,

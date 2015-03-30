@@ -205,11 +205,12 @@
 -(void)handleThreeMedia:(verbatmCustomPinchView*)p_obj
 {
     NSString* text = [p_obj getTextFromPinchObject];
-    if(p_obj.inDataFormat){
+    if(p_obj.inDataFormat)
+    {
         NSMutableArray* videos = [p_obj getVideos];
         NSMutableArray* photos = [p_obj getPhotos];
         if(videos.count + photos.count == 2){
-            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage: (UIImage*)[photos firstObject] andText:text andVideo:nil];
+            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage: (UIImage*)[photos firstObject] andText:text andVideo:[videos firstObject]];
             [_results addObject:pvt];
         }else{
             v_multiVidTextPhoto* mvtp = [[v_multiVidTextPhoto alloc]initWithFrame:_preferedFrame Photos:photos andVideos:videos andText:text];
@@ -217,22 +218,28 @@
         }
     }else{
         NSMutableArray* media = [p_obj mediaObjects];
-        if(media.count == 3){
+        if(media.count == 3)
+        {
             UIImage* image;
             NSData* vidData;
-            for(int i = 0; i < 3; i++){
-                if([[media objectAtIndex:i] isKindOfClass:[UITextView class]]){
-                    continue;
-                }
+        
+            
+            for(int i = 0; i < 3; i++)
+            {
+                if([[media objectAtIndex:i] isKindOfClass:[UITextView class]])continue;
+                
                 verbatmCustomImageView* imgView = [media objectAtIndex:i];
-                if(imgView.isVideo){
+                if(imgView.isVideo)
+                {
                     vidData = [self getDataFromAsset:imgView.asset];
                 }else{
                     image = imgView.image;
                 }
             }
-            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage:image andText:text andVideo:nil];
+            
+            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage:image andText:text andVideo:vidData];
             [_results addObject:pvt];
+            
         }else{
             NSMutableArray* photos = [[NSMutableArray alloc]init];
             NSMutableArray* videos = [[NSMutableArray alloc]init];

@@ -21,7 +21,7 @@
 
 @property (nonatomic) CGPoint panStartPoint;
 
-
+#define VIDEO_START_OFFSET 10
 #define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
 @end
 
@@ -36,9 +36,9 @@
     if(self)
     {
         [self.image setImage:image];
-
+        [self formatImage];
         
-        self.videoView = [[verbatmCustomPinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]/2,[self getRadius]/2) Images:nil videoData:@[video.firstObject] andText:nil];
+        self.videoView = [[verbatmCustomPinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]+VIDEO_START_OFFSET,[self getRadius]+VIDEO_START_OFFSET) Images:nil videoData:@[video.firstObject] andText:nil];
         [self addSubview:self.videoView];
             self.frame = frame;
         [self.videoView unmuteVideo];
@@ -48,11 +48,17 @@
     return self;
 }
 
+-(void) formatImage
+{
+    self.image.contentMode = UIViewContentModeScaleAspectFill;
+    self.image.clipsToBounds = YES;
+}
+
 //records the generic frame for any element that is a square and not a pinch view circle
 //and its personal scrollview.
 -(double)getRadius
 {
-    return (((self.frame.size.height*2)/5) - ELEMENT_OFFSET_DISTANCE)/2;
+    return ((self.frame.size.width/3)/2);
 }
 
 

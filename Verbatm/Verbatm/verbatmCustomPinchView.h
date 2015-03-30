@@ -67,6 +67,10 @@
 //It returns an array of pinch objects
 +(NSMutableArray*)openCollection:(verbatmCustomPinchView*)to_be_seperated;
 
+//creates an identical PV to the one handed to it
++(verbatmCustomPinchView *)pinchObjectFromPinchObject: (verbatmCustomPinchView *) pv;
+
+
 
 //Tells whether it is a collection consisting of more than one type of media
 -(BOOL)isCollection;
@@ -97,6 +101,12 @@
 
 //for intructing to render media
 -(void)renderMedia;
+
+//creates a shadow around the pinch object
+-(void)createLensingEffect:(float)radius;
+
+//zeros out the border for the pinch view
+-(void)removeBorder;
 
 @property (nonatomic) BOOL selected;//tells you if the object is selected for panning
 @property (readonly,nonatomic) BOOL there_is_text;
