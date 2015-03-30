@@ -1018,6 +1018,7 @@
     
     if(self.horizontalPinchDistance > HORIZONTAL_PINCH_THRESHOLD)//they have pinched enough to join the objects
     {
+        self.upperPinchView = self.lowerPinchView = nil;
         [self joinOpenCollectionToOne];
         self.pinching = NO;//not that pinching should be done now
     }
@@ -1466,6 +1467,8 @@
             [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:pinchView];
             self.pinching = NO;
             [self shiftElementsBelowView:self.articleTitleField];
+            
+            self.lowerPinchView = self.upperPinchView = nil;
         }
     }
 }
