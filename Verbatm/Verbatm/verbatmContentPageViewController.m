@@ -1421,6 +1421,7 @@
             [self shiftElementsBelowView:self.articleTitleField];
             [self showPullBar];//make sure the pullbar is showing when things are pinched together
             
+            self.lowerPinchView = self.upperPinchView = nil;
         }
     }
 }
@@ -2335,6 +2336,7 @@
             //now every open pinch collection can have it's objects opened
             [self addTapGestureToView:pinch_view];
             x_position += pinch_view.frame.size.width + ELEMENT_OFFSET_DISTANCE;
+            [pinch_view renderMedia];
         }
         sv.contentSize = CGSizeMake(x_position, sv.contentSize.height);
     }];
