@@ -62,7 +62,8 @@
                 if(p_obj.there_is_picture){
                     [arr addObject:((verbatmCustomImageView*)view).image];
                 }else{
-                    [arr addObject: ((verbatmCustomImageView*)view).asset];
+
+                    [arr addObject:[self getDataFromAsset:((verbatmCustomImageView*)view).asset]];
                 }
             }
         }
