@@ -19,11 +19,10 @@
  Reviewed by: Iain Usiri
  */
 @interface Article() <PFSubclassing>
-
-@property (strong, nonatomic) NSString* title;
-@property (strong, nonatomic) NSString* subtitle;
-@property(strong, nonatomic) NSString* content;
-@property(strong, nonatomic) NSString* sandwich;
+@property (strong,readwrite,nonatomic) NSString* title;
+@property (strong,readwrite, nonatomic) NSString* subtitle;
+@property(strong,readwrite, nonatomic) NSString* content;
+@property(strong, readwrite,nonatomic) NSString* sandwich;
 @property (strong, nonatomic) PFRelation * articleVideosRelation;
 @property (strong, nonatomic) PFRelation * articlePhotosRelation;
 @property (strong, nonatomic) PFRelation* article_pageRelationship;
@@ -70,6 +69,12 @@
         }];
     }
     return self;
+}
+
+-(NSString *)getAuthor
+{
+    VerbatmUser* author = [self objectForKey:ARTICLE_AUTHOR_RELATIONSHIP];
+    return author.username;
 }
 
 /*This function takes an array of pinch objects as the only parameter.

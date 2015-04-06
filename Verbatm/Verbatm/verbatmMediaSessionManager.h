@@ -28,6 +28,7 @@
 -(void)switchFlash;
 -(void)startSession;
 -(void)stopSession;
+-(void) rerunSession;
 @property(strong, nonatomic) NSURL* outputurl;
 @property (nonatomic, strong) id <verbatmMediaSessionManagerDelegate> delegate;
 @end

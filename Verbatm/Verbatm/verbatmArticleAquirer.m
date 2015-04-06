@@ -14,7 +14,7 @@
 @end
 @implementation verbatmArticleAquirer
 
--(Article*)downloadArticleWithTitle:(NSString *)title andAuthor:(VerbatmUser *)user
++(Article*)downloadArticleWithTitle:(NSString *)title andAuthor:(VerbatmUser *)user
 {
     PFQuery* query = [PFQuery queryWithClassName: @"Article"];
     [query whereKey: ARTICLE_AUTHOR_RELATIONSHIP equalTo:user];
@@ -22,11 +22,17 @@
     return [[query findObjects]firstObject];
 }
 
--(BOOL)saveArticleWithPinchObjects:(NSArray *)pinchObjects title:(NSString *)title withSandwichFirst:(NSString *)firstPart andSecond:(NSString*)secondPart
++(BOOL)saveArticleWithPinchObjects:(NSArray *)pinchObjects title:(NSString *)title withSandwichFirst:(NSString *)firstPart andSecond:(NSString*)secondPart
 {
     Article * this_article = [[Article alloc] initAndSaveWithTitle:title andPinchObjects:pinchObjects];
     [this_article setSandwich:firstPart at:secondPart];
     return [this_article save];
+}
+
++(NSArray*)downloadAllArticles
+{
+    PFQuery* query = [PFQuery queryWithClassName: @"Article"];
+    return [query findObjects];
 }
 
 @end

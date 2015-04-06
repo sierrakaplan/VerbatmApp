@@ -356,7 +356,6 @@
     }
 }
 
-
 -(void)playVideo:(AVURLAsset*)asset
 {
     // Create an AVPlayerItem using the asset

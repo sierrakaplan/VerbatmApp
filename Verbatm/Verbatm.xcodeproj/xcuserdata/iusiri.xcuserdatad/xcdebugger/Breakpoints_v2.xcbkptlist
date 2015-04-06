@@ -10,13 +10,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/Article.m"
-            timestampString = "430536049.274797"
+            timestampString = "450001419.001555"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "36"
-            endingLineNumber = "36"
-            landmarkName = "sandwich"
-            landmarkType = "19">
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "@interface Article()"
+            landmarkType = "2">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -218,11 +218,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "441512040.316895"
+            timestampString = "450007555.442937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "505"
-            endingLineNumber = "505"
+            startingLineNumber = "526"
+            endingLineNumber = "526"
             landmarkName = "-saveImageToVerbatmAlbum"
             landmarkType = "5">
          </BreakpointContent>
@@ -234,11 +234,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "441512040.316895"
+            timestampString = "450007555.442937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "508"
-            endingLineNumber = "508"
+            startingLineNumber = "529"
+            endingLineNumber = "529"
             landmarkName = "-saveImageToVerbatmAlbum"
             landmarkType = "5">
          </BreakpointContent>
@@ -250,11 +250,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "441512040.316895"
+            timestampString = "450007555.442937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "506"
-            endingLineNumber = "506"
+            startingLineNumber = "527"
+            endingLineNumber = "527"
             landmarkName = "-saveImageToVerbatmAlbum"
             landmarkType = "5">
          </BreakpointContent>
@@ -282,60 +282,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
+            timestampString = "450007555.442937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "373"
-            endingLineNumber = "373"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "320"
-            endingLineNumber = "320"
+            startingLineNumber = "325"
+            endingLineNumber = "325"
             landmarkName = "-startVideoRecordingInOrientation:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "369"
-            endingLineNumber = "369"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "377"
-            endingLineNumber = "377"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -362,11 +314,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "585"
-            endingLineNumber = "585"
+            startingLineNumber = "592"
+            endingLineNumber = "592"
             landmarkName = "@implementation verbatmMediaPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -378,11 +330,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "566"
-            endingLineNumber = "566"
+            startingLineNumber = "573"
+            endingLineNumber = "573"
             landmarkName = "-expandContentPage:"
             landmarkType = "5">
          </BreakpointContent>
@@ -394,11 +346,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "542"
-            endingLineNumber = "542"
+            startingLineNumber = "549"
+            endingLineNumber = "549"
             landmarkName = "@implementation verbatmMediaPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -410,11 +362,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "541"
-            endingLineNumber = "541"
+            startingLineNumber = "548"
+            endingLineNumber = "548"
             landmarkName = "@implementation verbatmMediaPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -425,250 +377,12 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "389"
-            endingLineNumber = "389"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "390"
-            endingLineNumber = "390"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "397"
-            endingLineNumber = "397"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__62-[verbatmMediaSessionManager fixVideoOrientationOfAssetAtUrl:]_block_invoke"
-                  moduleName = "Verbatm"
-                  urlString = "file:///Users/iusiri/Desktop/Verabtm%20Project/Verbatm/Verbatm/verbatmMediaSessionManager.m"
-                  timestampString = "432979359.642068"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "374"
-                  endingLineNumber = "374"
-                  offsetFromSymbolStart = "202">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__62-[verbatmMediaSessionManager fixVideoOrientationOfAssetAtUrl:]_block_invoke_2"
-                  moduleName = "Verbatm"
-                  urlString = "file:///Users/iusiri/Desktop/Verabtm%20Project/Verbatm/Verbatm/verbatmMediaSessionManager.m"
-                  timestampString = "432979359.642316"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "374"
-                  endingLineNumber = "374"
-                  offsetFromSymbolStart = "72">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "400"
-            endingLineNumber = "400"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "362"
-            endingLineNumber = "362"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "348"
-            endingLineNumber = "348"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "345"
-            endingLineNumber = "345"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "363"
-            endingLineNumber = "363"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "343"
-            endingLineNumber = "343"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "344"
-            endingLineNumber = "344"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "359"
-            endingLineNumber = "359"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "361"
-            endingLineNumber = "361"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440485168.477939"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "360"
-            endingLineNumber = "360"
-            landmarkName = "-fixVideoOrientationOfAssetAtUrl:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443830855.270772"
+            timestampString = "450007666.818765"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -920,11 +634,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1515"
-            endingLineNumber = "1515"
+            startingLineNumber = "1511"
+            endingLineNumber = "1511"
             landmarkName = "-handleLowerViewWithGesture:"
             landmarkType = "5">
             <Locations>
@@ -980,11 +694,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1457"
-            endingLineNumber = "1457"
+            startingLineNumber = "1453"
+            endingLineNumber = "1453"
             landmarkName = "-handleUpperViewWithGesture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1044,11 +758,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1436"
-            endingLineNumber = "1436"
+            startingLineNumber = "1432"
+            endingLineNumber = "1432"
             landmarkName = "-tilesOkToPinch"
             landmarkType = "5">
          </BreakpointContent>
@@ -1060,11 +774,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1460"
-            endingLineNumber = "1460"
+            startingLineNumber = "1456"
+            endingLineNumber = "1456"
             landmarkName = "-handleUpperViewWithGesture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1076,11 +790,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1503"
-            endingLineNumber = "1503"
+            startingLineNumber = "1499"
+            endingLineNumber = "1499"
             landmarkName = "-handleLowerViewWithGesture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1172,11 +886,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443830855.270772"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "301"
-            endingLineNumber = "301"
+            startingLineNumber = "308"
+            endingLineNumber = "308"
             landmarkName = "-verbatmCameraView"
             landmarkType = "5">
          </BreakpointContent>
@@ -1252,11 +966,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "601"
-            endingLineNumber = "601"
+            startingLineNumber = "608"
+            endingLineNumber = "608"
             landmarkName = "-expandContentPage_Changed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1268,11 +982,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443830855.270772"
+            timestampString = "450007666.818765"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
+            startingLineNumber = "173"
+            endingLineNumber = "173"
             landmarkName = "-createPullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -1284,11 +998,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2206"
-            endingLineNumber = "2206"
+            startingLineNumber = "2202"
+            endingLineNumber = "2202"
             landmarkName = "-addTapGestuerToCustomImageScrollView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1300,11 +1014,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2201"
-            endingLineNumber = "2201"
+            startingLineNumber = "2197"
+            endingLineNumber = "2197"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -1316,11 +1030,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "855"
-            endingLineNumber = "855"
+            startingLineNumber = "862"
+            endingLineNumber = "862"
             landmarkName = "-hidePullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -1364,11 +1078,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1505"
-            endingLineNumber = "1505"
+            startingLineNumber = "1501"
+            endingLineNumber = "1501"
             landmarkName = "-handleLowerViewWithGesture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1460,11 +1174,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1824"
-            endingLineNumber = "1824"
+            startingLineNumber = "1820"
+            endingLineNumber = "1820"
             landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1476,11 +1190,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1845"
-            endingLineNumber = "1845"
+            startingLineNumber = "1841"
+            endingLineNumber = "1841"
             landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1492,11 +1206,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1838"
-            endingLineNumber = "1838"
+            startingLineNumber = "1834"
+            endingLineNumber = "1834"
             landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1508,11 +1222,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1838"
-            endingLineNumber = "1838"
+            startingLineNumber = "1834"
+            endingLineNumber = "1834"
             landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1524,11 +1238,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1845"
-            endingLineNumber = "1845"
+            startingLineNumber = "1841"
+            endingLineNumber = "1841"
             landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1716,11 +1430,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "439688528.757262"
+            timestampString = "450007555.442937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "134"
-            endingLineNumber = "134"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
             landmarkName = "-movieOutputFile"
             landmarkType = "5">
          </BreakpointContent>
@@ -1732,11 +1446,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440455790.474108"
+            timestampString = "450007555.442937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "159"
-            endingLineNumber = "159"
+            startingLineNumber = "164"
+            endingLineNumber = "164"
             landmarkName = "-createVerbatmDirectory"
             landmarkType = "5">
          </BreakpointContent>
@@ -1748,43 +1462,43 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440455790.474108"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
-            landmarkName = "-createVerbatmDirectory"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "439688528.757262"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
-            landmarkName = "-movieOutputFile"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440455790.474108"
+            timestampString = "450007555.442937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "163"
             endingLineNumber = "163"
+            landmarkName = "-createVerbatmDirectory"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaSessionManager.m"
+            timestampString = "450007555.442937"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "142"
+            endingLineNumber = "142"
+            landmarkName = "-movieOutputFile"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaSessionManager.m"
+            timestampString = "450007555.442937"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "168"
+            endingLineNumber = "168"
             landmarkName = "-getVerbatmDirectory"
             landmarkType = "5">
          </BreakpointContent>
@@ -1796,11 +1510,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "440455790.474108"
+            timestampString = "450007555.442937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "-movieOutputFile"
             landmarkType = "5">
          </BreakpointContent>
@@ -1828,11 +1542,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1859"
-            endingLineNumber = "1859"
+            startingLineNumber = "1855"
+            endingLineNumber = "1855"
             landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1956,11 +1670,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "621"
-            endingLineNumber = "621"
+            startingLineNumber = "628"
+            endingLineNumber = "628"
             landmarkName = "-expandContentPage_Changed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2324,11 +2038,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1578"
-            endingLineNumber = "1578"
+            startingLineNumber = "1574"
+            endingLineNumber = "1574"
             landmarkName = "-addTextViewButtonPressedAsBaseView:"
             landmarkType = "5">
             <Locations>
@@ -2384,11 +2098,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1578"
-            endingLineNumber = "1578"
+            startingLineNumber = "1574"
+            endingLineNumber = "1574"
             landmarkName = "-addTextViewButtonPressedAsBaseView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2400,11 +2114,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1576"
-            endingLineNumber = "1576"
+            startingLineNumber = "1572"
+            endingLineNumber = "1572"
             landmarkName = "-addTextViewButtonPressedAsBaseView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2416,11 +2130,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1579"
-            endingLineNumber = "1579"
+            startingLineNumber = "1575"
+            endingLineNumber = "1575"
             landmarkName = "-addTextViewButtonPressedAsBaseView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2655,11 +2369,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1483"
-            endingLineNumber = "1483"
+            startingLineNumber = "1479"
+            endingLineNumber = "1479"
             landmarkName = "-handleUpperViewWithGesture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2717,11 +2431,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2094"
-            endingLineNumber = "2094"
+            startingLineNumber = "2090"
+            endingLineNumber = "2090"
             landmarkName = "-supportedInterfaceOrientations"
             landmarkType = "5">
          </BreakpointContent>
@@ -2733,11 +2447,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2146"
-            endingLineNumber = "2146"
+            startingLineNumber = "2142"
+            endingLineNumber = "2142"
             landmarkName = "-returnObject:ToDisplayAtIndex:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2749,11 +2463,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2152"
-            endingLineNumber = "2152"
+            startingLineNumber = "2148"
+            endingLineNumber = "2148"
             landmarkName = "-returnObject:ToDisplayAtIndex:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2765,11 +2479,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1857"
-            endingLineNumber = "1857"
+            startingLineNumber = "1853"
+            endingLineNumber = "1853"
             landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2979,11 +2693,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "550"
-            endingLineNumber = "550"
+            startingLineNumber = "557"
+            endingLineNumber = "557"
             landmarkName = "-sessionManager"
             landmarkType = "5">
          </BreakpointContent>
@@ -2995,11 +2709,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "551"
-            endingLineNumber = "551"
+            startingLineNumber = "558"
+            endingLineNumber = "558"
             landmarkName = "@implementation verbatmMediaPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -3011,11 +2725,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "553"
-            endingLineNumber = "553"
+            startingLineNumber = "560"
+            endingLineNumber = "560"
             landmarkName = "@implementation verbatmMediaPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -3043,11 +2757,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1942"
-            endingLineNumber = "1942"
+            startingLineNumber = "1938"
+            endingLineNumber = "1938"
             landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3059,11 +2773,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "627"
-            endingLineNumber = "627"
+            startingLineNumber = "634"
+            endingLineNumber = "634"
             landmarkName = "-positionPullBarTransitionDown:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3075,11 +2789,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "629"
-            endingLineNumber = "629"
+            startingLineNumber = "636"
+            endingLineNumber = "636"
             landmarkName = "-positionPullBarTransitionDown:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3091,11 +2805,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "628"
-            endingLineNumber = "628"
+            startingLineNumber = "635"
+            endingLineNumber = "635"
             landmarkName = "-positionPullBarTransitionDown:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3107,11 +2821,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "655"
-            endingLineNumber = "655"
+            startingLineNumber = "662"
+            endingLineNumber = "662"
             landmarkName = "-positionContainerViewTo:orTo:orTo:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3123,11 +2837,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "657"
-            endingLineNumber = "657"
+            startingLineNumber = "664"
+            endingLineNumber = "664"
             landmarkName = "-positionContainerViewTo:orTo:orTo:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3139,11 +2853,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "658"
-            endingLineNumber = "658"
+            startingLineNumber = "665"
+            endingLineNumber = "665"
             landmarkName = "-positionContainerViewTo:orTo:orTo:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3155,11 +2869,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "646"
-            endingLineNumber = "646"
+            startingLineNumber = "653"
+            endingLineNumber = "653"
             landmarkName = "-positionPullBarTransitionDown:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3235,11 +2949,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "796"
-            endingLineNumber = "796"
+            startingLineNumber = "803"
+            endingLineNumber = "803"
             landmarkName = "-keyboardWillDisappear:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3251,12 +2965,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "449383779.724446"
+            timestampString = "450001419.001555"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "492"
-            endingLineNumber = "492"
-            landmarkName = "+openCollection:"
+            startingLineNumber = "486"
+            endingLineNumber = "486"
+            landmarkName = "-mediaObjects"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3267,11 +2981,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1909"
-            endingLineNumber = "1909"
+            startingLineNumber = "1905"
+            endingLineNumber = "1905"
             landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3283,11 +2997,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2098"
-            endingLineNumber = "2098"
+            startingLineNumber = "2094"
+            endingLineNumber = "2094"
             landmarkName = "-supportedInterfaceOrientations"
             landmarkType = "5">
          </BreakpointContent>
@@ -3299,11 +3013,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2301"
-            endingLineNumber = "2301"
+            startingLineNumber = "2297"
+            endingLineNumber = "2297"
             landmarkName = "-createCustomImageScrollViewFromPinchView:andImageView:orTextView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3315,11 +3029,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2428"
-            endingLineNumber = "2428"
+            startingLineNumber = "2424"
+            endingLineNumber = "2424"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -3331,11 +3045,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2421"
-            endingLineNumber = "2421"
+            startingLineNumber = "2417"
+            endingLineNumber = "2417"
             landmarkName = "-mutePlayer:forAsset:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3363,11 +3077,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2373"
-            endingLineNumber = "2373"
+            startingLineNumber = "2369"
+            endingLineNumber = "2369"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -3443,11 +3157,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2363"
-            endingLineNumber = "2363"
+            startingLineNumber = "2359"
+            endingLineNumber = "2359"
             landmarkName = "-showPullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -3459,11 +3173,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2360"
-            endingLineNumber = "2360"
+            startingLineNumber = "2356"
+            endingLineNumber = "2356"
             landmarkName = "-showPullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -3921,11 +3635,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2241"
-            endingLineNumber = "2241"
+            startingLineNumber = "2237"
+            endingLineNumber = "2237"
             landmarkName = "-addTapGestureToView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3937,11 +3651,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2254"
-            endingLineNumber = "2254"
+            startingLineNumber = "2250"
+            endingLineNumber = "2250"
             landmarkName = "-pinchObjectTapped:"
             landmarkType = "5">
          </BreakpointContent>
@@ -3953,11 +3667,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2272"
-            endingLineNumber = "2272"
+            startingLineNumber = "2268"
+            endingLineNumber = "2268"
             landmarkName = "-pinchObjectTapped:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4001,11 +3715,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1532"
-            endingLineNumber = "1532"
+            startingLineNumber = "1528"
+            endingLineNumber = "1528"
             landmarkName = "-handleLowerViewWithGesture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4017,11 +3731,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1563"
-            endingLineNumber = "1563"
+            startingLineNumber = "1559"
+            endingLineNumber = "1559"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -4081,11 +3795,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1623"
-            endingLineNumber = "1623"
+            startingLineNumber = "1619"
+            endingLineNumber = "1619"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -4097,11 +3811,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1627"
-            endingLineNumber = "1627"
+            startingLineNumber = "1623"
+            endingLineNumber = "1623"
             landmarkName = "-addMultiMediaButtonPressedAsBaseView:fromView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4113,11 +3827,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1622"
-            endingLineNumber = "1622"
+            startingLineNumber = "1618"
+            endingLineNumber = "1618"
             landmarkName = "-findSecondToLastElementInPageElements"
             landmarkType = "5">
          </BreakpointContent>
@@ -4285,11 +3999,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1604"
-            endingLineNumber = "1604"
+            startingLineNumber = "1600"
+            endingLineNumber = "1600"
             landmarkName = "-addTextViewButtonPressedAsBaseView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4381,11 +4095,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1657"
-            endingLineNumber = "1657"
+            startingLineNumber = "1653"
+            endingLineNumber = "1653"
             landmarkName = "-animateView:InToPositionUnder:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4413,11 +4127,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1735"
-            endingLineNumber = "1735"
+            startingLineNumber = "1731"
+            endingLineNumber = "1731"
             landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4445,11 +4159,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1739"
-            endingLineNumber = "1739"
+            startingLineNumber = "1735"
+            endingLineNumber = "1735"
             landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4461,7 +4175,39 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1718"
+            endingLineNumber = "1718"
+            landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmContentPageViewController.m"
+            timestampString = "449998525.05584"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "1729"
+            endingLineNumber = "1729"
+            landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmContentPageViewController.m"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1722"
@@ -4477,11 +4223,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1733"
-            endingLineNumber = "1733"
+            startingLineNumber = "1714"
+            endingLineNumber = "1714"
             landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4493,11 +4239,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1726"
-            endingLineNumber = "1726"
+            startingLineNumber = "1714"
+            endingLineNumber = "1714"
             landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4509,11 +4255,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1718"
-            endingLineNumber = "1718"
+            startingLineNumber = "1703"
+            endingLineNumber = "1703"
             landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4525,11 +4271,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1718"
-            endingLineNumber = "1718"
+            startingLineNumber = "1712"
+            endingLineNumber = "1712"
             landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4541,11 +4287,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1707"
-            endingLineNumber = "1707"
+            startingLineNumber = "1702"
+            endingLineNumber = "1702"
             landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4557,11 +4303,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1716"
-            endingLineNumber = "1716"
+            startingLineNumber = "1715"
+            endingLineNumber = "1715"
             landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4573,43 +4319,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1706"
-            endingLineNumber = "1706"
-            landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1719"
-            endingLineNumber = "1719"
-            landmarkName = "-newPinchObjectBelowView:fromView:isTextView:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2253"
-            endingLineNumber = "2253"
+            startingLineNumber = "2249"
+            endingLineNumber = "2249"
             landmarkName = "-pinchObjectTapped:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4621,11 +4335,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1686"
-            endingLineNumber = "1686"
+            startingLineNumber = "1682"
+            endingLineNumber = "1682"
             landmarkName = "-animateView:InToPositionUnder:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4637,11 +4351,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1685"
-            endingLineNumber = "1685"
+            startingLineNumber = "1681"
+            endingLineNumber = "1681"
             landmarkName = "-animateView:InToPositionUnder:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4653,11 +4367,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1530"
-            endingLineNumber = "1530"
+            startingLineNumber = "1526"
+            endingLineNumber = "1526"
             landmarkName = "-handleLowerViewWithGesture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4669,11 +4383,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2202"
-            endingLineNumber = "2202"
+            startingLineNumber = "2198"
+            endingLineNumber = "2198"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -4685,11 +4399,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2219"
-            endingLineNumber = "2219"
+            startingLineNumber = "2215"
+            endingLineNumber = "2215"
             landmarkName = "-removeImageScrollview:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4765,11 +4479,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2174"
-            endingLineNumber = "2174"
+            startingLineNumber = "2170"
+            endingLineNumber = "2170"
             landmarkName = "-freeMainScrollView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4909,11 +4623,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2204"
-            endingLineNumber = "2204"
+            startingLineNumber = "2200"
+            endingLineNumber = "2200"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -4925,11 +4639,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "915"
-            endingLineNumber = "915"
+            startingLineNumber = "922"
+            endingLineNumber = "922"
             landmarkName = "-prepareForSegue:sender:"
             landmarkType = "5">
          </BreakpointContent>
@@ -4941,11 +4655,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/articleDispalyViewController.m"
-            timestampString = "449107866.334436"
+            timestampString = "450008362.901126"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "88"
-            endingLineNumber = "88"
+            startingLineNumber = "92"
+            endingLineNumber = "92"
             landmarkName = "-renderPinchObjects"
             landmarkType = "5">
          </BreakpointContent>
@@ -4957,11 +4671,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/articleDispalyViewController.m"
-            timestampString = "449107866.334436"
+            timestampString = "450008362.901126"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
             landmarkName = "-renderPinchObjects"
             landmarkType = "5">
          </BreakpointContent>
@@ -4973,11 +4687,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/articleDispalyViewController.m"
-            timestampString = "441336543.231722"
+            timestampString = "450008362.901126"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
             landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
@@ -5053,11 +4767,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2079"
-            endingLineNumber = "2079"
+            startingLineNumber = "2075"
+            endingLineNumber = "2075"
             landmarkName = "-tileSwipeViewUndoManager"
             landmarkType = "5">
          </BreakpointContent>
@@ -5069,11 +4783,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2088"
-            endingLineNumber = "2088"
+            startingLineNumber = "2084"
+            endingLineNumber = "2084"
             landmarkName = "-totalChangeInViewPositions"
             landmarkType = "5">
          </BreakpointContent>
@@ -5085,11 +4799,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2096"
-            endingLineNumber = "2096"
+            startingLineNumber = "2092"
+            endingLineNumber = "2092"
             landmarkName = "-supportedInterfaceOrientations"
             landmarkType = "5">
          </BreakpointContent>
@@ -5111,11 +4825,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2080"
-            endingLineNumber = "2080"
+            startingLineNumber = "2076"
+            endingLineNumber = "2076"
             landmarkName = "-tileSwipeViewUndoManager"
             landmarkType = "5">
          </BreakpointContent>
@@ -5127,11 +4841,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2078"
-            endingLineNumber = "2078"
+            startingLineNumber = "2074"
+            endingLineNumber = "2074"
             landmarkName = "-tileSwipeViewUndoManager"
             landmarkType = "5">
          </BreakpointContent>
@@ -5143,11 +4857,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "872"
-            endingLineNumber = "872"
+            startingLineNumber = "879"
+            endingLineNumber = "879"
             landmarkName = "-showPullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -5175,11 +4889,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "868"
-            endingLineNumber = "868"
+            startingLineNumber = "875"
+            endingLineNumber = "875"
             landmarkName = "-hidePullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -5207,11 +4921,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2240"
-            endingLineNumber = "2240"
+            startingLineNumber = "2236"
+            endingLineNumber = "2236"
             landmarkName = "-addTapGestureToView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5335,11 +5049,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "870"
-            endingLineNumber = "870"
+            startingLineNumber = "877"
+            endingLineNumber = "877"
             landmarkName = "-showPullBar"
             landmarkType = "5">
             <Locations>
@@ -5381,11 +5095,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "871"
-            endingLineNumber = "871"
+            startingLineNumber = "878"
+            endingLineNumber = "878"
             landmarkName = "-showPullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -5397,11 +5111,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "873"
-            endingLineNumber = "873"
+            startingLineNumber = "880"
+            endingLineNumber = "880"
             landmarkName = "-showPullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -5807,11 +5521,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2203"
-            endingLineNumber = "2203"
+            startingLineNumber = "2199"
+            endingLineNumber = "2199"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -5823,11 +5537,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1529"
-            endingLineNumber = "1529"
+            startingLineNumber = "1525"
+            endingLineNumber = "1525"
             landmarkName = "-handleLowerViewWithGesture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5839,11 +5553,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2269"
-            endingLineNumber = "2269"
+            startingLineNumber = "2265"
+            endingLineNumber = "2265"
             landmarkName = "-pinchObjectTapped:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5855,11 +5569,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1571"
-            endingLineNumber = "1571"
+            startingLineNumber = "1567"
+            endingLineNumber = "1567"
             landmarkName = "-addTextViewButtonPressedAsBaseView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5871,11 +5585,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/articleDispalyViewController.m"
-            timestampString = "449210660.005669"
+            timestampString = "450008362.901126"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
+            startingLineNumber = "110"
+            endingLineNumber = "110"
             landmarkName = "@implementation articleDispalyViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -5887,11 +5601,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2205"
-            endingLineNumber = "2205"
+            startingLineNumber = "2201"
+            endingLineNumber = "2201"
             landmarkName = "-addTapGestuerToCustomImageScrollView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -5903,11 +5617,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2207"
-            endingLineNumber = "2207"
+            startingLineNumber = "2203"
+            endingLineNumber = "2203"
             landmarkName = "-addTapGestuerToCustomImageScrollView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6063,11 +5777,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaSessionManager.m"
-            timestampString = "441512353.362012"
+            timestampString = "450007555.442937"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "460"
-            endingLineNumber = "460"
+            startingLineNumber = "481"
+            endingLineNumber = "481"
             landmarkName = "-captureImage:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6079,11 +5793,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "699"
-            endingLineNumber = "699"
+            startingLineNumber = "706"
+            endingLineNumber = "706"
             landmarkName = "-keyboardButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
@@ -6095,11 +5809,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "698"
-            endingLineNumber = "698"
+            startingLineNumber = "705"
+            endingLineNumber = "705"
             landmarkName = "-keyboardButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
@@ -6111,11 +5825,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "697"
-            endingLineNumber = "697"
+            startingLineNumber = "704"
+            endingLineNumber = "704"
             landmarkName = "@implementation verbatmMediaPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -6127,11 +5841,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/articleDispalyViewController.m"
-            timestampString = "449396498.106309"
+            timestampString = "450008362.901126"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "211"
-            endingLineNumber = "211"
+            startingLineNumber = "214"
+            endingLineNumber = "214"
             landmarkName = "-enableSound"
             landmarkType = "5">
          </BreakpointContent>
@@ -6143,11 +5857,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443830855.270772"
+            timestampString = "450007666.818765"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "177"
-            endingLineNumber = "177"
+            startingLineNumber = "176"
+            endingLineNumber = "176"
             landmarkName = "-createPullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -6319,11 +6033,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "590"
-            endingLineNumber = "590"
+            startingLineNumber = "597"
+            endingLineNumber = "597"
             landmarkName = "-expandContentPage_Changed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6335,11 +6049,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "600"
-            endingLineNumber = "600"
+            startingLineNumber = "607"
+            endingLineNumber = "607"
             landmarkName = "-expandContentPage_Changed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6431,11 +6145,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1607"
-            endingLineNumber = "1607"
+            startingLineNumber = "1603"
+            endingLineNumber = "1603"
             landmarkName = "-addTextViewButtonPressedAsBaseView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6511,11 +6225,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "934"
-            endingLineNumber = "934"
+            startingLineNumber = "941"
+            endingLineNumber = "941"
             landmarkName = "-undoButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
@@ -6527,11 +6241,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "935"
-            endingLineNumber = "935"
+            startingLineNumber = "942"
+            endingLineNumber = "942"
             landmarkName = "-undoButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
@@ -6543,11 +6257,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "936"
-            endingLineNumber = "936"
+            startingLineNumber = "943"
+            endingLineNumber = "943"
             landmarkName = "-undoButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
@@ -6559,11 +6273,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358232.203406"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "938"
-            endingLineNumber = "938"
+            startingLineNumber = "945"
+            endingLineNumber = "945"
             landmarkName = "-undoButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
@@ -6575,11 +6289,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2092"
-            endingLineNumber = "2092"
+            startingLineNumber = "2088"
+            endingLineNumber = "2088"
             landmarkName = "@implementation verbatmContentPageViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -6607,11 +6321,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "635"
-            endingLineNumber = "635"
+            startingLineNumber = "642"
+            endingLineNumber = "642"
             landmarkName = "-positionPullBarTransitionDown:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6623,11 +6337,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "635"
-            endingLineNumber = "635"
+            startingLineNumber = "642"
+            endingLineNumber = "642"
             landmarkName = "-positionPullBarTransitionDown:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6639,11 +6353,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "526"
-            endingLineNumber = "526"
+            startingLineNumber = "533"
+            endingLineNumber = "533"
             landmarkName = "-positionContainerView"
             landmarkType = "5">
          </BreakpointContent>
@@ -6655,39 +6369,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443832891.227503"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "484"
-            endingLineNumber = "484"
-            landmarkName = "-positionContainerView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443832892.437737"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "487"
-            endingLineNumber = "487"
-            landmarkName = "-positionContainerView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443832893.888017"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "491"
@@ -6703,39 +6385,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443832910.006514"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "490"
-            endingLineNumber = "490"
-            landmarkName = "-positionContainerView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443833745.767285"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "482"
-            endingLineNumber = "482"
-            landmarkName = "-positionContainerView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835440.849351"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "494"
@@ -6751,11 +6401,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443834612.340309"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "483"
-            endingLineNumber = "483"
+            startingLineNumber = "498"
+            endingLineNumber = "498"
             landmarkName = "-positionContainerView"
             landmarkType = "5">
          </BreakpointContent>
@@ -6767,7 +6417,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835440.849351"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "497"
@@ -6783,11 +6433,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835917.599169"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "502"
-            endingLineNumber = "502"
+            startingLineNumber = "489"
+            endingLineNumber = "489"
             landmarkName = "-positionContainerView"
             landmarkType = "5">
          </BreakpointContent>
@@ -6799,71 +6449,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835539.705691"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "496"
-            endingLineNumber = "496"
-            landmarkName = "-positionContainerView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835543.368299"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "493"
-            endingLineNumber = "493"
-            landmarkName = "-positionContainerView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443835545.386166"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "478"
-            endingLineNumber = "478"
-            landmarkName = "-positionContainerView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443839476.217957"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "479"
-            endingLineNumber = "479"
-            landmarkName = "-positionContainerView"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443839493.694314"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "501"
@@ -6879,7 +6465,23 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443839505.000224"
+            timestampString = "450008238.107434"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "490"
+            endingLineNumber = "490"
+            landmarkName = "-positionContainerView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "504"
@@ -6895,11 +6497,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443839544.184996"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "507"
-            endingLineNumber = "507"
+            startingLineNumber = "509"
+            endingLineNumber = "509"
             landmarkName = "-positionContainerView"
             landmarkType = "5">
          </BreakpointContent>
@@ -6911,11 +6513,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443839545.423172"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "505"
-            endingLineNumber = "505"
+            startingLineNumber = "503"
+            endingLineNumber = "503"
             landmarkName = "-positionContainerView"
             landmarkType = "5">
          </BreakpointContent>
@@ -6927,11 +6529,123 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "443839643.801149"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "506"
-            endingLineNumber = "506"
+            startingLineNumber = "500"
+            endingLineNumber = "500"
+            landmarkName = "-positionContainerView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450008238.107434"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "485"
+            endingLineNumber = "485"
+            landmarkName = "-positionContainerView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450008238.107434"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "486"
+            endingLineNumber = "486"
+            landmarkName = "-positionContainerView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450008238.107434"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "508"
+            endingLineNumber = "508"
+            landmarkName = "-positionContainerView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450008238.107434"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "511"
+            endingLineNumber = "511"
+            landmarkName = "-positionContainerView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450008238.107434"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "514"
+            endingLineNumber = "514"
+            landmarkName = "-positionContainerView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450008238.107434"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "512"
+            endingLineNumber = "512"
+            landmarkName = "-positionContainerView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450008238.107434"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "513"
+            endingLineNumber = "513"
             landmarkName = "-positionContainerView"
             landmarkType = "5">
          </BreakpointContent>
@@ -7119,11 +6833,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmPhotoVideoAve.m"
-            timestampString = "449836457.972413"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "156"
-            endingLineNumber = "156"
+            startingLineNumber = "153"
+            endingLineNumber = "153"
             landmarkName = "-pan:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7135,11 +6849,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmPhotoVideoAve.m"
-            timestampString = "449836457.972413"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "86"
-            endingLineNumber = "86"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
             landmarkName = "-pinch:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7215,11 +6929,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmPhotoVideoAve.m"
-            timestampString = "449836457.972413"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "129"
-            endingLineNumber = "129"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
             landmarkName = "-pinch:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7231,11 +6945,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmPhotoVideoAve.m"
-            timestampString = "449836457.972413"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "130"
-            endingLineNumber = "130"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
             landmarkName = "-pinch:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7247,11 +6961,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmPhotoVideoAve.m"
-            timestampString = "449836457.972413"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
+            startingLineNumber = "155"
+            endingLineNumber = "155"
             landmarkName = "-pan:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7535,11 +7249,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "v_Analyzer.m"
-            timestampString = "449834464.594709"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "104"
+            endingLineNumber = "104"
             landmarkName = "-handleTwoMedia:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7551,11 +7265,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "v_Analyzer.m"
-            timestampString = "449836457.972413"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "163"
-            endingLineNumber = "163"
+            startingLineNumber = "160"
+            endingLineNumber = "160"
             landmarkName = "-handleTwoMedia:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7583,11 +7297,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/articleDispalyViewController.m"
-            timestampString = "449210660.005669"
+            timestampString = "450008362.901126"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "@implementation articleDispalyViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -7599,11 +7313,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/articleDispalyViewController.m"
-            timestampString = "449396498.106309"
+            timestampString = "450008362.901126"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "131"
-            endingLineNumber = "131"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
             landmarkName = "-transitionBtnPinchedViews:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7631,23 +7345,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "449383779.724446"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "429"
-            endingLineNumber = "429"
-            landmarkName = "@implementation verbatmCustomPinchView"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "449383779.724446"
+            timestampString = "450001419.001555"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "428"
@@ -7662,12 +7360,28 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            filePath = "Verbatm/verbatmCustomPinchView.m"
+            timestampString = "450001419.001555"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2245"
-            endingLineNumber = "2245"
+            startingLineNumber = "427"
+            endingLineNumber = "427"
+            landmarkName = "@implementation verbatmCustomPinchView"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmContentPageViewController.m"
+            timestampString = "449998525.05584"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "2241"
+            endingLineNumber = "2241"
             landmarkName = "-pinchObjectTapped:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7679,11 +7393,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2246"
-            endingLineNumber = "2246"
+            startingLineNumber = "2242"
+            endingLineNumber = "2242"
             landmarkName = "-pinchObjectTapped:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7711,11 +7425,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "449360863.413571"
+            timestampString = "450001419.001555"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "390"
-            endingLineNumber = "390"
+            startingLineNumber = "389"
+            endingLineNumber = "389"
             landmarkName = "@implementation verbatmCustomPinchView"
             landmarkType = "3">
          </BreakpointContent>
@@ -7727,11 +7441,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmCustomPinchView.m"
-            timestampString = "449383779.724446"
+            timestampString = "450001419.001555"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "423"
-            endingLineNumber = "423"
+            startingLineNumber = "422"
+            endingLineNumber = "422"
             landmarkName = "-thereIsOnlyOneMedium"
             landmarkType = "5">
          </BreakpointContent>
@@ -7743,11 +7457,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/articleDispalyViewController.m"
-            timestampString = "449310697.293331"
+            timestampString = "450008362.901126"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "105"
-            endingLineNumber = "105"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
             landmarkName = "@implementation articleDispalyViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -7759,11 +7473,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449314464.461984"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "510"
-            endingLineNumber = "510"
+            startingLineNumber = "517"
+            endingLineNumber = "517"
             landmarkName = "-positionContainerView"
             landmarkType = "5">
          </BreakpointContent>
@@ -7775,11 +7489,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449314466.284685"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "508"
-            endingLineNumber = "508"
+            startingLineNumber = "515"
+            endingLineNumber = "515"
             landmarkName = "-positionContainerView"
             landmarkType = "5">
          </BreakpointContent>
@@ -7791,11 +7505,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmPhotoVideoAve.m"
-            timestampString = "449359952.94627"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "41"
-            endingLineNumber = "41"
+            startingLineNumber = "40"
+            endingLineNumber = "40"
             landmarkName = "-initWithFrame:Image:andVideo:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7839,11 +7553,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmMediaPageViewController.m"
-            timestampString = "449358225.867611"
+            timestampString = "450008238.107434"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "860"
-            endingLineNumber = "860"
+            startingLineNumber = "867"
+            endingLineNumber = "867"
             landmarkName = "-hidePullBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -7871,11 +7585,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395097.996588"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1633"
-            endingLineNumber = "1633"
+            startingLineNumber = "1629"
+            endingLineNumber = "1629"
             landmarkName = "-addMultiMediaButtonPressedAsBaseView:fromView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7919,11 +7633,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/verbatmContentPageViewController.m"
-            timestampString = "449395469.844767"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "2160"
-            endingLineNumber = "2160"
+            startingLineNumber = "2156"
+            endingLineNumber = "2156"
             landmarkName = "-returnObject:ToDisplayAtIndex:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7951,11 +7665,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "v_Analyzer.m"
-            timestampString = "449836457.972413"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
+            startingLineNumber = "159"
+            endingLineNumber = "159"
             landmarkName = "-handleTwoMedia:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7967,11 +7681,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "v_Analyzer.m"
-            timestampString = "449836457.972413"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "277"
-            endingLineNumber = "277"
+            startingLineNumber = "274"
+            endingLineNumber = "274"
             landmarkName = "@implementation v_Analyzer"
             landmarkType = "3">
          </BreakpointContent>
@@ -7983,11 +7697,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "v_Analyzer.m"
-            timestampString = "449836457.972413"
+            timestampString = "449998525.05584"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "151"
-            endingLineNumber = "151"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
             landmarkName = "-handleTwoMedia:"
             landmarkType = "5">
          </BreakpointContent>
@@ -8005,6 +7719,166 @@
             startingLineNumber = "48"
             endingLineNumber = "48"
             landmarkName = "-initWithFrame:andAssets:andText:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmAtilcleList_TableViewController.m"
+            timestampString = "450003297.045055"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "-tableView:didSelectRowAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmAtilcleList_TableViewController.m"
+            timestampString = "450003297.045055"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmAtilcleList_TableViewController.m"
+            timestampString = "450003690.719113"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "-prepareForSegue:sender:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/Article.m"
+            timestampString = "450003869.904295"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "196"
+            endingLineNumber = "196"
+            landmarkName = "-getAllPages"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmArticleListControlerViewController.m"
+            timestampString = "450006854.377439"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
+            landmarkName = "-tableView:numberOfRowsInSection:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmArticleListControlerViewController.m"
+            timestampString = "450006854.377439"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "73"
+            endingLineNumber = "73"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmArticleListControlerViewController.m"
+            timestampString = "450006854.377439"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
+            landmarkName = "-tableView:didSelectRowAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmArticleListControlerViewController.m"
+            timestampString = "450006854.377439"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450006914.372887"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "133"
+            endingLineNumber = "133"
+            landmarkName = "-viewDidLoad"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/verbatmMediaPageViewController.m"
+            timestampString = "450006917.751255"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "135"
+            endingLineNumber = "135"
+            landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

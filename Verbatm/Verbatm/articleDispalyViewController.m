@@ -15,6 +15,7 @@
 @interface articleDispalyViewController () <UIScrollViewDelegate>
 @property (strong, nonatomic) NSMutableArray* poppedOffPages;
 @property (strong, nonatomic) UIView* animatingView;
+@property (weak, nonatomic) IBOutlet UIButton *returnToContent_button;
 @property (strong, nonatomic) UIScrollView* scrollView;
 @property (nonatomic) CGPoint lastPoint;
 #define BEST_ALPHA_FOR_TEXT 0.8
@@ -36,7 +37,16 @@
     _animatingView = nil;
     _poppedOffPages = [[NSMutableArray alloc]init];
 }
+-(void)viewDidAppear:(BOOL)animated
+{
+    [self.view bringSubviewToFront:self.returnToContent_button];
+    [self setReturnFrame];
+}
 
+-(void)setReturnFrame
+{
+    self.returnToContent_button.frame =CGRectMake(0, self.view.frame.size.height - self.returnToContent_button.frame.size.height, self.returnToContent_button.frame.size.width, self.returnToContent_button.frame.size.height);
+}
 
 -(void)setUpScrollView
 {

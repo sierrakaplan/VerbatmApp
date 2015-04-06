@@ -135,8 +135,6 @@
     [super viewDidLoad];
     
     [self prepareCameraView];
-    //[self createAndInstantiateCameraButtons];
-    
     
     [self createAndInstantiateGestures];
     
@@ -167,6 +165,7 @@
     //make sure the frames are correctly centered
     [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
 }
+
 
 
 //creates the pullbar object then saves it as a property 
@@ -256,7 +255,14 @@
 -(void) viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
+    //[self prepareCameraView];
     //get the view controllers in the storyboard and store them
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+    
+    [self.sessionManager startSession];
 }
 
 //Iain
@@ -271,7 +277,8 @@
 //gives the placeholders a white color
 -(void) setPlaceholderColors
 {
-    if ([self.whatSandwich respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+    if ([self.whatSandwich respondsToSelector:@selector(setAttributedPlaceholder:)])
+    {
         UIColor *color = [UIColor whiteColor];
         self.whatSandwich.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.whatSandwich.placeholder attributes:@{NSForegroundColorAttributeName: color}];
     } else {
@@ -950,6 +957,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (IBAction)done:(UIStoryboardSegue *)segue
+MyModalVC *vc = (MyModalVC *)segue.sourceViewController; // get results out of vc, which I presented
+}
 
 
 @end

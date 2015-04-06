@@ -17,6 +17,11 @@
 
 @interface Article : PFObject
 
+@property (strong,readonly, nonatomic) NSString* title;
+@property (strong,readonly, nonatomic) NSString* subtitle;
+@property(strong, readonly,nonatomic) NSString* content;
+@property(strong,readonly, nonatomic) NSString* sandwich;
+
 #pragma mark - Required methods for subclassing PFObject:
 +(NSString*)parseClassName;
 +(void)load;
@@ -27,6 +32,9 @@
 /*Get's all the pages from the Article*/
 //this method blocks
 -(NSArray*)getAllPages;
+
+//get the author of an article
+-(NSString *)getAuthor;
 
 
 /*Note that the save call was removed. Call it externally*/
