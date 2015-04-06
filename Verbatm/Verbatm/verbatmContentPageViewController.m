@@ -676,37 +676,9 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
                   willDecelerate:(BOOL)decelerate
 {
-    if((scrollView.subviews.count > 1) && scrollView != self.mainScrollView)
-    {
-        if([scrollView.subviews.firstObject isKindOfClass:[verbatmCustomPinchView class]])
-        {
-            for (verbatmCustomPinchView * pview in scrollView.subviews)
-            {
-                
-                AVPlayerLayer * vid = pview.videoView.layer.sublayers.firstObject;
-                if(!vid)continue;
-                if(vid.player.status ==  AVPlayerStatusFailed)
-                {
-                    NSLog(@"%@",[vid.player.error localizedDescription]);
-                    
-                } else if (vid.player.status == AVPlayerStatusReadyToPlay)
-                {
-                    //[playingLbl setText:@"Playing Audio"];
-                    NSLog(@"It works");
-                    
-                } else if (vid.player.status == AVPlayerItemStatusUnknown)
-                {
-                    NSLog(@"AVPlayer Unknown");
-                }
-
-            }
-        }
-    }
-    
     
     if(scrollView != self.mainScrollView)
-    {
-        //if the delete swipe wasn't far enough then return the pinch object to the middle
+    {        //if the delete swipe wasn't far enough then return the pinch object to the middle
         if((scrollView.contentOffset.x > LEFT_DELETE_OFFSET || scrollView.contentOffset.x < RIGHT_DELETE_OFFSET) && scrollView.subviews.count == 1)
         {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
@@ -722,15 +694,8 @@
 //if so we remove the view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    //there is a strange bug that adds imageview's on scrollviews this cleans them out
-    for(int i =0; i<scrollView.subviews.count; i++)
-    {
-        if([scrollView.subviews[i] isMemberOfClass:[UIImageView class]])
-        {
-            [scrollView.subviews[i] removeFromSuperview];
-        }
-    }
-        
+    scrollView.showsHorizontalScrollIndicator = NO;
+    scrollView.showsVerticalScrollIndicator = NO;
     if(scrollView.subviews.count >1 || scrollView == self.openImageScrollView) return; /* this is a scrollview with an open collection so you can swipe away anything and also it's not an opened image*/
     
     verbatmCustomMediaSelectTile * tile= Nil;
@@ -744,6 +709,8 @@
     {
         if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x)//If the view is scrolled left/right and not centered
         {
+            [self.gallery dismissGallery];//make sure gallery is closed
+
             //remove swiped view from mainscrollview
             UIView * view = [scrollView.subviews firstObject]; //it is the only subview in this scrollview
             NSInteger index = [self.pageElements indexOfObject:view];
@@ -805,58 +772,6 @@
             [self showPullBar];
         }
     }
-    
-    
-    
-    
-    
-    
-//    //if you have an open element, control it's alpha as it gets swiped away
-//    if([scrollView isKindOfClass:[verbatmCustomImageScrollView class]])
-//    {
-//        CGPoint translation = scrollView.contentOffset;
-//        
-//        if(translation.y <= self.view.frame.size.height)
-//        {
-//            float alpha = translation.y/self.view.frame.size.height;
-//            
-//                scrollView.alpha = alpha;
-//            
-//            if(self.openImagePinchView.there_is_picture)
-//            {
-//                [self.openImagePinchView changePicture:self.openImageScrollView.openImage.image];
-//            }
-//            
-//            if(self.openImagePinchView.there_is_text)
-//            {
-//                [self.openImagePinchView changeText:self.openImageScrollView.textView];
-//            }
-//            if(!alpha)
-//            {
-//                [scrollView removeFromSuperview];
-//            }
-//        }else
-//        {
-//            float constant = 2*self.view.frame.size.height;
-//            float alpha = (constant - translation.y)/self.view.frame.size.height;
-//            scrollView.alpha = alpha;
-//            
-//            if(self.openImagePinchView.there_is_picture) {
-//                [self.openImagePinchView changePicture:self.openImageScrollView.openImage.image];
-//            }else if(self.openImagePinchView.there_is_text)
-//            {
-//             [self.openImagePinchView changeText:self.openImageScrollView.textView];   
-//            }
-//
-//            
-//            if(!alpha)
-//            {
-//                [scrollView removeFromSuperview];
-//            }
-//        }
-//        return;//return here because we are done
-//    }
-    
     
     //change the background color of the element being deleted to highlight that it's being deleted
     if(scrollView != self.mainScrollView && scrollView.subviews.count <2 && scrollView != self.openImageScrollView )//makes sure it's only one element on the view
@@ -957,6 +872,7 @@
 {
     if (sender.state == UIGestureRecognizerStateBegan)
     {
+        [self.gallery dismissGallery];//make sure gallery is closed
         if([sender numberOfTouches] == 2 ) //make sure there are only 2 touches
         {
             self.pinching = YES;
@@ -1047,6 +963,7 @@
     
     if(self.horizontalPinchDistance > HORIZONTAL_PINCH_THRESHOLD)//they have pinched enough to join the objects
     {
+        self.upperPinchView = self.lowerPinchView = nil;
         [self joinOpenCollectionToOne];
         self.pinching = NO;//not that pinching should be done now
     }
@@ -1215,7 +1132,8 @@
     scrollview.scrollEnabled= YES;
     scrollview.delegate = self;
     scrollview.pagingEnabled= YES;
-    scrollview.showsHorizontalScrollIndicator= NO;
+    scrollview.showsHorizontalScrollIndicator = NO;
+    scrollview.showsVerticalScrollIndicator = NO;
     scrollview.contentOffset = CGPointMake(self.standardContentOffsetForPersonalView.x, self.standardContentOffsetForPersonalView.y);
     scrollview.contentSize = self.standardContentSizeForPersonalView;
 }
@@ -1484,21 +1402,23 @@
             verbatmCustomPinchView * placeHolder = [[verbatmCustomPinchView alloc]init];
             
             [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:self.upperPinchView] withObject:placeHolder];
-            [self.upperPinchView removeFromSuperview];
             
+            [self.upperPinchView removeFromSuperview];
             [self.lowerPinchView.superview removeFromSuperview];
             [self.lowerPinchView removeFromSuperview];
             [self.pageElements removeObject:self.lowerPinchView];
             
-            NSMutableArray* array_of_objects = [[NSMutableArray alloc] initWithObjects:self.upperPinchView,self.lowerPinchView, nil];
-            verbatmCustomPinchView * pinchView = [verbatmCustomPinchView pinchTogether:array_of_objects];
             
+            NSMutableArray* array_of_objects = [[NSMutableArray alloc] initWithObjects:self.upperPinchView,self.lowerPinchView, nil];
+            self.lowerPinchView = self.upperPinchView = nil;
+            verbatmCustomPinchView * pinchView = [verbatmCustomPinchView pinchTogether:array_of_objects];
             //format your scrollView and add pinch view
             [keeping_scrollView addSubview:pinchView];
             [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:pinchView];
             self.pinching = NO;
             [self shiftElementsBelowView:self.articleTitleField];
             [self showPullBar];//make sure the pullbar is showing when things are pinched together
+            
         }
     }
 }
@@ -2237,16 +2157,7 @@
     [newSV addSubview:view];//expecting the object to have kept its old frame
     [self.mainScrollView addSubview:newSV];
     [self shiftElementsBelowView:self.articleTitleField];
-    
-    //this covers for the bug that adds an imageview when we add a subview to a scrollview.
-    //not sure why this happens- all efforts failed. Bug report to be filed.
-    for (int i=0; i<newSV.subviews.count; i++) {
-        if(![newSV.subviews[i] isKindOfClass:[verbatmCustomPinchView class]])
-        {
-            [newSV.subviews[i] removeFromSuperview];
-        }
-    }
-    
+    [self addTapGestureToView:(verbatmCustomPinchView *)view];
 }
 
 
@@ -2448,7 +2359,7 @@
 //when the user taps on empty space the gallery leaves
 - (IBAction)closeGallery:(UITapGestureRecognizer *)sender
 {
-    [self.gallery dismissGallery];
+    [self.gallery dismissGallery];//make sure gallery is closed
 }
 
 

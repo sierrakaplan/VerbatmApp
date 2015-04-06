@@ -25,6 +25,8 @@
 		C777EE9D1AC7F54F003E0633 /* verbatmAtilcleList_TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9C1AC7F54F003E0633 /* verbatmAtilcleList_TableViewController.m */; };
 		C777EEA01AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */; };
 		C777EEA31AC8AE9E003E0633 /* v_multimediaTextVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */; };
+		C777EEA61AC90A7A003E0633 /* verbatmArticleAquirer.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA51AC90A7A003E0633 /* verbatmArticleAquirer.m */; };
+		C777EEAA1ACFEC7A003E0633 /* v_MultiplePhotoText.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA91ACFEC7A003E0633 /* v_MultiplePhotoText.m */; };
 		C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */; };
 		C77A68B41AC20AA2000B10E2 /* v_multiplePhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B31AC20AA2000B10E2 /* v_multiplePhoto.m */; };
 		C77A68BC1AC20DD7000B10E2 /* multiplePhotosAve.xib in Resources */ = {isa = PBXBuildFile; fileRef = C77A68BB1AC20DD7000B10E2 /* multiplePhotosAve.xib */; };
@@ -122,6 +124,10 @@
 		C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmArticle_TableViewCell.m; sourceTree = "<group>"; };
 		C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_multimediaTextVIew.h; sourceTree = "<group>"; };
 		C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_multimediaTextVIew.m; sourceTree = "<group>"; };
+		C777EEA41AC90A7A003E0633 /* verbatmArticleAquirer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmArticleAquirer.h; sourceTree = "<group>"; };
+		C777EEA51AC90A7A003E0633 /* verbatmArticleAquirer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmArticleAquirer.m; sourceTree = "<group>"; };
+		C777EEA81ACFEC7A003E0633 /* v_MultiplePhotoText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_MultiplePhotoText.h; sourceTree = "<group>"; };
+		C777EEA91ACFEC7A003E0633 /* v_MultiplePhotoText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_MultiplePhotoText.m; sourceTree = "<group>"; };
 		C77A68AF1AC0A49B000B10E2 /* VIEW_TESTERViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VIEW_TESTERViewController.h; sourceTree = "<group>"; };
 		C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VIEW_TESTERViewController.m; sourceTree = "<group>"; };
 		C77A68B21AC20AA2000B10E2 /* v_multiplePhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_multiplePhoto.h; sourceTree = "<group>"; };
@@ -256,6 +262,24 @@
 				9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */,
 			);
 			name = "Video Capture Classes";
+			sourceTree = "<group>";
+		};
+		C777EEA71AC9180D003E0633 /* AVES that involve text */ = {
+			isa = PBXGroup;
+			children = (
+				C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */,
+				C7E6C1311A4E394600863893 /* v_multiVidTextPhoto.h */,
+				C7E6C1321A4E394600863893 /* v_multiVidTextPhoto.m */,
+				C7E6C1351A4E394600863893 /* v_photoVideoText.h */,
+				C7E6C1361A4E394600863893 /* v_photoVideoText.m */,
+				C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */,
+				C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */,
+				C7E6C1371A4E394600863893 /* v_textPhoto.h */,
+				C7E6C1381A4E394600863893 /* v_textPhoto.m */,
+				C7E6C1391A4E394600863893 /* v_textVideo.h */,
+				C7E6C13A1A4E394600863893 /* v_textVideo.m */,
+			);
+			name = "AVES that involve text";
 			sourceTree = "<group>";
 		};
 		C77A68AE1AC0A47F000B10E2 /* AVE_TESTER */ = {
@@ -448,6 +472,8 @@
 		F257FEC81AC21F8B00964AB5 /* Saving and Downloading */ = {
 			isa = PBXGroup;
 			children = (
+				C777EEA41AC90A7A003E0633 /* verbatmArticleAquirer.h */,
+				C777EEA51AC90A7A003E0633 /* verbatmArticleAquirer.m */,
 			);
 			name = "Saving and Downloading";
 			sourceTree = "<group>";
@@ -465,26 +491,18 @@
 		F26894441A43641C00B1D4DB /* Article Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				C777EEA71AC9180D003E0633 /* AVES that involve text */,
 				C73686E41A9B229400ADAC90 /* PhotoVideoAve.xib */,
 				C73686E61A9B22AA00ADAC90 /* verbatmPhotoVideoAve.h */,
 				C73686E71A9B22AA00ADAC90 /* verbatmPhotoVideoAve.m */,
 				C77A68B21AC20AA2000B10E2 /* v_multiplePhoto.h */,
 				C77A68B31AC20AA2000B10E2 /* v_multiplePhoto.m */,
+				C777EEA81ACFEC7A003E0633 /* v_MultiplePhotoText.h */,
+				C777EEA91ACFEC7A003E0633 /* v_MultiplePhotoText.m */,
 				C77A68BB1AC20DD7000B10E2 /* multiplePhotosAve.xib */,
 				C7E6C12F1A4E394600863893 /* v_multiplePhotoVideo.h */,
 				C7E6C1301A4E394600863893 /* v_multiplePhotoVideo.m */,
 				C77A68BD1AC2327A000B10E2 /* multiplePhotoVideoAve.xib */,
-				C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */,
-				C7E6C1311A4E394600863893 /* v_multiVidTextPhoto.h */,
-				C7E6C1321A4E394600863893 /* v_multiVidTextPhoto.m */,
-				C7E6C1351A4E394600863893 /* v_photoVideoText.h */,
-				C7E6C1361A4E394600863893 /* v_photoVideoText.m */,
-				C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */,
-				C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */,
-				C7E6C1371A4E394600863893 /* v_textPhoto.h */,
-				C7E6C1381A4E394600863893 /* v_textPhoto.m */,
-				C7E6C1391A4E394600863893 /* v_textVideo.h */,
-				C7E6C13A1A4E394600863893 /* v_textVideo.m */,
 				C7E6C13B1A4E394600863893 /* v_textview.h */,
 				C7E6C13C1A4E394600863893 /* v_textview.m */,
 				C7E6C13D1A4E394600863893 /* v_videoview.h */,
@@ -630,6 +648,7 @@
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7A8E3891A61CE7800776BD1 /* verbatmCustomKeyboardBarView.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
+				C777EEA61AC90A7A003E0633 /* verbatmArticleAquirer.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m in Sources */,
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
 				C7F18D851A05C0EE0002255B /* verbatmTextField.m in Sources */,
@@ -637,6 +656,7 @@
 				C777EEA01AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m in Sources */,
 				C7F3D46E1A4F84DF00B43238 /* verbatmUserSignUpViewController.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* verbatmCustomScrollView.m in Sources */,
+				C777EEAA1ACFEC7A003E0633 /* v_MultiplePhotoText.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* verbatmCustomPinchView.m in Sources */,
 				C73686E81A9B22AA00ADAC90 /* verbatmPhotoVideoAve.m in Sources */,
 				C777EEA31AC8AE9E003E0633 /* v_multimediaTextVIew.m in Sources */,

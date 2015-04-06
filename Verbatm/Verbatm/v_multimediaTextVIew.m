@@ -9,6 +9,8 @@
 #import "v_multimediaTextVIew.h"
 #import "v_textview.h"
 
+
+//not being used right now- idk why the class isn't working x_x
 @interface v_multimediaTextVIew ()
 
 @property (strong, nonatomic) v_textview* textView;
@@ -16,10 +18,10 @@
 @property (nonatomic) CGPoint lastPoint;
 @property (strong, nonatomic) UIView* pullBarView;
 @property (strong, nonatomic) UIView* whiteBorderBar;
+
 @property (nonatomic) BOOL isTitle;
 @property (nonatomic) CGRect absoluteFrame;
-
-#define BORDER_HEIGHT 5
+#define BORDER_HEIGHT 2
 #define BORDER_COLOR whiteColor
 #define WHITE_BORDER_FRAME CGRectMake(0, self.pullBarView.frame.size.height - BORDER_HEIGHT, self.frame.size.width, BORDER_HEIGHT)
 #define OFFSET_FROM_TOP 80
@@ -27,8 +29,8 @@
 #define EXTRA  20
 #define TEXT_CONTENT_OFFSET 100
 #define MIN_WORDS 20
-#define DEFAULT_FONT_FAMILY @"ArialMT"
-#define DEFAULT_FONT_SIZE 23
+#define DEFAULT_FONT_FAMILY @"AmericanTypewriter-Light"
+#define DEFAULT_FONT_SIZE 20
 #define THRESHOLD 1.8
 #define PULLBAR_COLOR clearColor
 #define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA)
@@ -37,23 +39,28 @@
 @end
 @implementation v_multimediaTextVIew
 
--(id)initWithFrame:(CGRect)frame andText:(NSString*)text
+-(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text
 {
     
     if((self = [super initWithFrame:frame]))
     {
-        
-        [self formatTextViewWithText: text];
-        [self checkWordCount:text];
-        [self setSizesToFit];
-        self.userInteractionEnabled = YES;
-        self.textView.backgroundColor = [UIColor clearColor];
-        self.textView.showsVerticalScrollIndicator = NO;
-        self.textView.textAlignment = NSTextAlignmentCenter;
-        [self bringSubviewToFront:self.textView];
-        [self bringSubviewToFront: self.pullBarView];
+         [self handleTexViewDetailsFromText:text];
     }
     return self;
+}
+
+
+-(void)handleTexViewDetailsFromText:(NSString *) text
+{
+    [self formatTextViewWithText: text];
+    [self checkWordCount:text];
+    [self setSizesToFit];
+    self.userInteractionEnabled = YES;
+    self.textView.backgroundColor = [UIColor clearColor];
+    self.textView.showsVerticalScrollIndicator = NO;
+    self.textView.textAlignment = NSTextAlignmentCenter;
+    [self bringSubviewToFront:self.textView];
+    [self bringSubviewToFront: self.pullBarView];
 }
 
 -(void)createBorderPath
@@ -98,6 +105,7 @@
     [self.textView setTextViewText: text];
     self.textView.textColor = [UIColor whiteColor];
     [self addSubview: self.textView];
+    [self.textView setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
 }
 
 -(void) createPullBar
@@ -137,7 +145,7 @@
 
 
 //makes text and blur view move up and down as pull bar is pulled up/down.
--(void)repositiontextView:(UIScreenEdgePanGestureRecognizer *)sender
+-(void)repositiontextView:(UIPanGestureRecognizer *)sender
 {
     CGPoint translation = [sender translationInView:self];
     if(sender.state == UIGestureRecognizerStateBegan){
@@ -189,8 +197,6 @@
     self.textView.textAlignment = NSTextAlignmentCenter;
     [self.textView sizeToFit];
 }
-
-
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.

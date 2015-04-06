@@ -85,19 +85,14 @@
 {
     NSMutableArray* media = [[NSMutableArray alloc] init];
     [media addObject:self.text];
-    PFQuery* videoQuery = [PFQuery queryWithClassName:@"Video"];
-    [videoQuery whereKey:PAGE_VIDEO_RELATIONSHIP equalTo: self];
-    NSArray* videos = [videoQuery findObjects];
     
-    PFQuery* photoQuery = [PFQuery queryWithClassName:@"Photo"];
-    [photoQuery whereKey:PAGE_PHOTO_RELATIONSHIP equalTo: self];
-    NSArray* photoQueries = [photoQuery findObjects];
-    
+    NSArray* videos = [self getVideos];
     NSMutableArray* videoData = [[NSMutableArray alloc]init];
     for(Video* vid in videos){
         [videoData addObject: [vid getVideoData]];
     }
     
+    NSArray* photoQueries = [self getPhotos];
     NSMutableArray* photos = [[NSMutableArray alloc]init];
     for(Photo* photo in photoQueries){
         [photos addObject:[photo getPhoto]];
@@ -119,12 +114,43 @@
     NSData* data = nil;
     if(asset){
         ALAssetRepresentation *assetRepresentation = [asset defaultRepresentation];
-        Byte *buffer = (Byte*)malloc(assetRepresentation.size);
+        Byte *buffer = (Byte*)malloc((unsigned long)assetRepresentation.size);
         //do a bit of error checking on this later
-        NSUInteger buffered = [assetRepresentation getBytes:buffer fromOffset:0.0 length:assetRepresentation.size error:nil];
+        NSUInteger buffered = [assetRepresentation getBytes:buffer fromOffset:0.0 length: (unsigned long)assetRepresentation.size error:nil];
         data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
     }
     return data;
+}
+
+-(verbatmCustomPinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center
+{
+    NSArray* videos = [self getVideos];
+    NSMutableArray* videoData = [[NSMutableArray alloc]init];
+    for(Video* vid in videos){
+        [videoData addObject: [vid getVideoData]];
+    }
+    
+    NSArray* photoQueries = [self getPhotos];
+    NSMutableArray* photos = [[NSMutableArray alloc]init];
+    for(Photo* photo in photoQueries){
+        [photos addObject:[photo getPhoto]];
+    }
+    
+    return [[verbatmCustomPinchView alloc] initWithRadius:radius withCenter:center Images:photos videoData:videoData andText:self.text];
+}
+
+-(NSArray*)getVideos
+{
+    PFQuery* videoQuery = [PFQuery queryWithClassName:@"Video"];
+    [videoQuery whereKey:PAGE_VIDEO_RELATIONSHIP equalTo: self];
+    return [videoQuery findObjects];
+}
+
+-(NSArray*)getPhotos
+{
+    PFQuery* photoQuery = [PFQuery queryWithClassName:@"Photo"];
+    [photoQuery whereKey:PAGE_PHOTO_RELATIONSHIP equalTo: self];
+    return [photoQuery findObjects];
 }
 
 #pragma mark - required methods for subclassing PFObject -

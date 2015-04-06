@@ -27,6 +27,10 @@
  */
 -(NSMutableArray*)getMedia;
 
+/*This method blocks*/
+/*Reconstructs a pinch object from a page*/
+-(verbatmCustomPinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center;
+
 #pragma mark - bools to tell what type of media make up page -
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;

@@ -1,18 +1,15 @@
 //
-//  v_photoVideoText.m
-//  tester
+//  v_MultiplePhotoText.m
+//  Verbatm
 //
-//  Created by Iain Usiri on 12/20/14.
-//  Copyright (c) 2014 IainAndLucio. All rights reserved.
+//  Created by Iain Usiri on 4/4/15.
+//  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "v_photoVideoText.h"
-#import "v_videoview.h"
-#import "verbatmPhotoVideoAve.h"
+#import "v_MultiplePhotoText.h"
+#import "v_textview.h"
 
-@interface v_photoVideoText()
-@property (strong, nonatomic) verbatmPhotoVideoAve * photoVideoView;
-
+@interface v_MultiplePhotoText ()
 @property (strong, nonatomic) v_textview* textView;
 @property (strong, nonatomic) UIVisualEffectView* bgBlurImage;
 @property (nonatomic) CGPoint lastPoint;
@@ -35,22 +32,26 @@
 #define PULLBAR_COLOR clearColor
 #define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA)
 #define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP)
-
 @end
-@implementation v_photoVideoText
 
--(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andVideo:(NSData*)video
+
+@implementation v_MultiplePhotoText
+
+//very same as the photo text yeah
+-(id)initWithFrame:(CGRect)frame andAssets:(NSMutableArray *)photoList andText:(NSString*)textUsed
 {
-    if(self = [super initWithFrame:frame])
+    
+    
+    if((self = [super initWithFrame:frame andPhotoArray:photoList]))
     {
-        self.photoVideoView = [[verbatmPhotoVideoAve alloc] initWithFrame:frame Image:image andVideo:@[video]];
-        //[self handleTexViewDetailsFromText:text];
-        
+        //self.frame = frame;
+        [(v_MultiplePhotoText*)self handleTextViewDetailsFromText:textUsed];
     }
     return self;
 }
 
--(void)handleTexViewDetailsFromText:(NSString *) text
+
+-(void)handleTextViewDetailsFromText:(NSString *) text
 {
     [self formatTextViewWithText: text];
     [self checkWordCount:text];
@@ -61,8 +62,8 @@
     self.textView.textAlignment = NSTextAlignmentCenter;
     [self bringSubviewToFront:self.textView];
     [self bringSubviewToFront: self.pullBarView];
-    [self addSwipeGesture];
 }
+
 
 -(void)createBorderPath
 {
@@ -70,6 +71,7 @@
     self.whiteBorderBar.backgroundColor = [UIColor BORDER_COLOR];
     [self.pullBarView addSubview:self.whiteBorderBar];
 }
+
 
 //everytime we reset the pullbar frame we call this to reset the white bar
 -(void)setWhiteBarFrame
@@ -198,5 +200,13 @@
     self.textView.textAlignment = NSTextAlignmentCenter;
     [self.textView sizeToFit];
 }
+
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect {
+    // Drawing code
+}
+*/
 
 @end

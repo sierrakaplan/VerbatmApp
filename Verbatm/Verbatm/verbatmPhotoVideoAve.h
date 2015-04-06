@@ -11,6 +11,7 @@
 
 @interface verbatmPhotoVideoAve : UIView
 -(instancetype) initWithFrame:(CGRect)frame Image: (UIImage *) image andVideo: (NSArray *) video;
+-(void)addGesturesToVideoView;
 -(void) mute;
 -(void) unmute;
 @end

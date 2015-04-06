@@ -9,5 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface v_multiplePhoto : UIView
+//when there is no text
 -(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSMutableArray *) photos;
+//we use this initializer when there is text to be added
+-(id)initWithFrame:(CGRect)frame andAssets:(NSMutableArray *)photoList andText:(NSString*)textUsed;
 @end

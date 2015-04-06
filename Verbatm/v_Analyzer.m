@@ -17,6 +17,7 @@
 #import "v_textVideo.h"
 #import "verbatmPhotoVideoAve.h"
 #import "v_multiplePhoto.h"
+#import "v_MultiplePhotoText.h"
 
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
 @interface v_Analyzer()
@@ -51,7 +52,8 @@
 -(void)handleSingleMedia:(verbatmCustomPinchView*)p_obj
 {
     NSMutableArray *arr = [[NSMutableArray alloc]init];
-    if(p_obj.inDataFormat){
+    if(p_obj.inDataFormat)
+    {
         arr = (p_obj.there_is_picture)? [p_obj getPhotos] : [p_obj getVideos];
     }else{
         NSMutableArray* mediaArr = [p_obj mediaObjects];
@@ -60,22 +62,27 @@
                 if(p_obj.there_is_picture){
                     [arr addObject:((verbatmCustomImageView*)view).image];
                 }else{
-                    [arr addObject: [self getDataFromAsset:((verbatmCustomImageView*)view).asset]];
+                    [arr addObject: ((verbatmCustomImageView*)view).asset];
                 }
             }
         }
     }
+    
     if(p_obj.there_is_picture)
     {
-        v_multiplePhoto* imageView = [[v_multiplePhoto alloc]initWithFrame:_preferedFrame andPhotoArray:arr];       //[imageView addTapGesture];
+        
+        //multiple photo and single photo call the same class
+        v_multiplePhoto* imageView = [[v_multiplePhoto alloc]initWithFrame:_preferedFrame andPhotoArray:arr];
+        
         [_results addObject:imageView];
-    }else if(p_obj.there_is_text){
+        
+    }else if(p_obj.there_is_text)
+    {
         v_textview* textView = [[v_textview alloc]initWithFrame:_preferedFrame];
         [textView setTextViewText: [p_obj getTextFromPinchObject]];
         [_results addObject:textView];
     }else{
         v_videoview* vidView = [[v_videoview alloc]initWithFrame:_preferedFrame andAssets:arr];
-        //[vidView showPlayBackIcons];
         [_results addObject:vidView];
     }
 }
@@ -108,6 +115,7 @@
             }else
             {
                 verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:photos.firstObject andVideo:videos];
+                [pv addGesturesToVideoView];
                 [self.results addObject:pv];
             }
         }
@@ -132,21 +140,23 @@
                 }else
                 {
                     //not sure- what to do with text and multiple photos
-//                    NSMutableArray* assets = [[NSMutableArray alloc]init];
-//                    for(id view in media){
-//                        if([view isKindOfClass:[verbatmCustomImageView class]]){
-//                            [assets addObject: ((verbatmCustomImageView*)view).asset];
-//                        }
-//                    }
-//                    v_multiVidTextPhoto* mvpt = [[v_multiVidTextPhoto alloc]initWithFrame:self.pre Photos:<#(NSMutableArray *)#> andVideos:<#(NSArray *)#> andText:<#(NSString *)#>];
-//                    [_results addObject:mvpt];
+                    NSMutableArray* assets = [[NSMutableArray alloc]init];
+                    for(id view in media){
+                        if([view isKindOfClass:[verbatmCustomImageView class]]){
+                            [assets addObject: ((verbatmCustomImageView*)view).image];
+                        }
+                    }
+                    
+                    //we have compbined multiple photo with multiple photo and text
+                    v_multiplePhoto* mvpt = [[v_multiplePhoto alloc]initWithFrame:self.preferedFrame andAssets:assets andText:text];
+                    [_results addObject:mvpt];
                 }
             }else{
                 NSMutableArray* assets = [[NSMutableArray alloc]init];
                 for(id view in media){
-                    if([view isKindOfClass:[verbatmCustomImageView class]]){
-                        [assets addObject: [ self getDataFromAsset:((verbatmCustomImageView*)view).asset]
-                         ];
+                    if([view isKindOfClass:[verbatmCustomImageView class]])
+                    {
+                        [assets addObject: ((verbatmCustomImageView*)view).asset];
                     }
                 }
                 v_textVideo* tv = [[v_textVideo alloc]initWithFrame:_preferedFrame andAssets:assets andText:text];
@@ -236,7 +246,6 @@
                     image = imgView.image;
                 }
             }
-            
             v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage:image andText:text andVideo:vidData];
             [_results addObject:pvt];
             
@@ -266,8 +275,8 @@
 -(NSData*)getDataFromAsset:(ALAsset*)asset
 {
     ALAssetRepresentation *rep = [asset defaultRepresentation];
-    Byte *buffer = (Byte*)malloc(rep.size);
-    NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length:rep.size error:nil];
+    Byte *buffer = (Byte*)malloc((unsigned long)rep.size);
+    NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length: (unsigned long)rep.size error:nil];
     return [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
 }
 @end

@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface v_multimediaTextVIew : UIView
+-(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text;
+-(void)addSwipeGesture;
 
 @end

@@ -74,11 +74,12 @@
     AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     CMTime nextClipStartTime = kCMTimeZero;
     NSError* error;
-    for(NSData* data in videoDataList){
+    for(NSData* data in videoDataList)
+    {
         NSURL* url;
-        NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"vid", arc4random_uniform(100)]];
-        [[NSFileManager defaultManager] createFileAtPath: filePath contents: data attributes:nil];
-        url = [NSURL fileURLWithPath: filePath];
+//        NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"vid", arc4random_uniform(100)]];
+//        [[NSFileManager defaultManager] createFileAtPath: filePath contents: data attributes:nil];
+        url = ((ALAsset*)[videoDataList firstObject]).defaultRepresentation.url;//[NSURL fileURLWithPath: filePath];
         AVURLAsset* assetClip = [AVURLAsset URLAssetWithURL: url options:nil];
         AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video

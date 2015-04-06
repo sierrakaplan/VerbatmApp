@@ -40,21 +40,24 @@
     
     if((self = [super initWithImage:image]))
     {
-        
-//        v_multimediaTextVIew * newView = [[v_multimediaTextVIew alloc] initWithFrame:frame];
-//        [self addSubview:newView];
+
         self.frame = frame;
-        [self formatTextViewWithText: text];
-        [self checkWordCount:text];
-        //[self setSizesToFit];
-        self.userInteractionEnabled = YES;
-        self.textView.backgroundColor = [UIColor clearColor];
-        self.textView.showsVerticalScrollIndicator = NO;
-        self.textView.textAlignment = NSTextAlignmentCenter;
-        [self bringSubviewToFront:self.textView];
-        [self bringSubviewToFront: self.pullBarView];
+        [self handleTexViewDetailsFromText:text];
     }
     return self;
+}
+
+-(void)handleTexViewDetailsFromText:(NSString *) text
+{
+    [self formatTextViewWithText: text];
+    [self checkWordCount:text];
+    [self setSizesToFit];
+    self.userInteractionEnabled = YES;
+    self.textView.backgroundColor = [UIColor clearColor];
+    self.textView.showsVerticalScrollIndicator = NO;
+    self.textView.textAlignment = NSTextAlignmentCenter;
+    [self bringSubviewToFront:self.textView];
+    [self bringSubviewToFront: self.pullBarView];
 }
 
 -(void)createBorderPath
@@ -139,7 +142,7 @@
 
 
 //makes text and blur view move up and down as pull bar is pulled up/down.
--(void)repositiontextView:(UIScreenEdgePanGestureRecognizer *)sender
+-(void)repositiontextView:(UIPanGestureRecognizer *)sender
 {
     CGPoint translation = [sender translationInView:self];
     if(sender.state == UIGestureRecognizerStateBegan){

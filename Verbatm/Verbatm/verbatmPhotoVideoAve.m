@@ -42,7 +42,6 @@
         [self addSubview:self.videoView];
             self.frame = frame;
         [self.videoView unmuteVideo];
-        [self addGesturesToVideoView];
     }
     
     return self;

@@ -198,6 +198,7 @@
     
     // Create an AVPlayerLayer using the player
     AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+    CGRect frame = self.bounds;
     playerLayer.frame = self.bounds;
     playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     // Add it to your view's sublayers
