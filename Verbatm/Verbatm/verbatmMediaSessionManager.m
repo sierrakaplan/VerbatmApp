@@ -439,7 +439,22 @@
 #pragma mark -delegate methods AVCaptureFileOutputRecordingDelegate
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
 {
-    [self fixVideoOrientationOfAssetAtUrl:outputFileURL];
+    //[self fixVideoOrientationOfAssetAtUrl:outputFileURL];
+    if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
+        [self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
+            [self.assetLibrary assetForURL:assetURL
+                               resultBlock:^(ALAsset *asset) {
+                                   [self.verbatmAlbum addAsset:asset];
+                                   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+                                   [self.delegate didFinishSavingMediaToAsset:asset];
+                               }
+                              failureBlock:^(NSError* error) {
+                                  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+                              }];
+        }];
+    }else{
+        NSLog(@"wrong output location");
+    }
 }
 
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
