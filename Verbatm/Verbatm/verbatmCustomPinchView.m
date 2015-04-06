@@ -335,6 +335,11 @@
     }
     self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
     self.textField.textColor = [UIColor whiteColor];
+    if([[self.videoView.layer.sublayers firstObject] isKindOfClass:[AVPlayerLayer class]]){
+        AVPlayerLayer* PLAYER = (AVPlayerLayer*)[self.videoView.layer.sublayers firstObject];
+        float rate = PLAYER.player.rate;
+        NSLog(@"here is the rate : %f", rate);
+    }
 }
 
 
@@ -388,7 +393,6 @@
         result.there_is_text =  result.there_is_text || pinchObject.there_is_text;
         result.there_is_video = result.there_is_video || pinchObject.there_is_video;
     }
-    to_be_merged = nil;
     [result renderMedia];
     return result;
 }
@@ -412,13 +416,16 @@
     if([to_be_seperated.videoView.layer.sublayers firstObject]){
         AVPlayerLayer* layer = (AVPlayerLayer*)[to_be_seperated.videoView.layer.sublayers firstObject];
         [layer.player replaceCurrentItemWithPlayerItem:nil];
-        [layer removeFromSuperlayer]; //remove the video layer.
+        [layer removeFromSuperlayer]; //remove the video layer
     }
-    for(id object in to_be_seperated.media){
-        verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: to_be_seperated.background.frame.size.width/2 withCenter:to_be_seperated.center andMedia:object];
+    NSArray* media = [[NSArray alloc]initWithArray:to_be_seperated.media];
+    CGPoint center = to_be_seperated.center;
+    float radius = to_be_seperated.frame.size.width/2;
+    to_be_seperated = nil;
+    for(id object in media){
+        verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc]initWithRadius: radius withCenter: center andMedia:object];
         [arr addObject: result];
     }
-    to_be_seperated = nil;
     return arr;
 }
 
