@@ -29,6 +29,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpFailed:) name:SINGUP_FAILED_NOTIFIACTION object: nil];
     self.UserName_TextField.delegate = self;
     self.Password_TextField.delegate = self;
+    //if the user is logged in then lets get outta here!
+    if([VerbatmUser userIsLoggedIn]) [self performSegueWithIdentifier:@"bringUpADK" sender:self];
 }
 
 //Iain
@@ -70,6 +72,12 @@
     }];
 }
 
+//for ios8- To hide the status bar
+-(BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
 -(void) removeStatusBar
 {
     //remove the status bar
@@ -82,6 +90,12 @@
     }
 }
 
+#pragma mark Orientation
+- (NSUInteger)supportedInterfaceOrientations
+{
+    //return supported orientation masks
+    return UIInterfaceOrientationMaskPortrait;
+}
 
 
 - (void)didReceiveMemoryWarning {

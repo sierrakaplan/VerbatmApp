@@ -70,6 +70,11 @@
     return _articles;
 }
 
++(BOOL)userIsLoggedIn
+{
+    //if the user is already logged in then there is no need for the login page
+    return ([PFUser currentUser]).isAuthenticated;
+}
 
 #pragma mark - create new verbatm user
 /*Author: Iain Usiri*/
@@ -90,17 +95,17 @@
         //ensure firstName and lastName are different
         if([firstName isEqualToString:lastName]) return Nil;
         
-        //ensure email contains an @
-        NSRange stringRange = [email rangeOfString:@"@"];
-        if(stringRange.location == NSNotFound) return Nil;
+//        //ensure email contains an @
+//        NSRange stringRange = [email rangeOfString:@"@"];
+//        if(stringRange.location == NSNotFound) return Nil;
         
         //Save User object
-        self.email = email;
+        //self.email = email;
         self.username= userName;
         self.password = password;
         self.firstName = firstName;
         self.lastName= lastName;
-        self.phoneNumber = phoneNumber;
+        //self.phoneNumber = phoneNumber;
         self.advancedUser = YES;//everyone is an advanced user for now (testing)
         [self signUpInBackgroundWithBlock:block];
     }

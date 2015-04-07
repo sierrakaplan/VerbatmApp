@@ -36,14 +36,14 @@
 //get the author of an article
 -(NSString *)getAuthor;
 
+-(instancetype)initAndSaveWithTitle:(NSString *)title  andSandWichWhat:(NSString *)what  Where:(NSString *)where  andPinchObjects:(NSArray*)pages;
 
-/*Note that the save call was removed. Call it externally*/
 
-//This creates an article object with a title and a subtitle.
--(instancetype)initAndSaveWithTitle:(NSString *)title andPinchObjects:(NSArray*)pages;
 
 //sets the content of the Article. The content must correspond to the right format
 -(void) setArticleContent:(NSString *)content;
+
+-(void)setArticleTitle:(NSString *)title;
 
 //creates an s@ndwich given the two component strings in the right order
 -(void)setSandwich:(NSString*)firstPart at: (NSString*)secondPart;

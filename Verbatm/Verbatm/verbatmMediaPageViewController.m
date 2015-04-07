@@ -18,6 +18,8 @@
 #import "v_Analyzer.h"
 #import "articleDispalyViewController.h"
 #import "customPullBarView.h"
+#import "Article.h"
+
 
 @interface verbatmMediaPageViewController () <UITextFieldDelegate, verbatmMediaSessionManagerDelegate, pullBarDelegate>
 #pragma mark - Outlets -
@@ -897,6 +899,30 @@
     if (self.vc_contentPage.pageElements.count >1) [self performSegueWithIdentifier:@"previewArticleSegue" sender:self];
 }
 
+-(void)saveButtonPressed
+{
+    if (self.vc_contentPage.pageElements.count >1) [self saveArticleContent];
+}
+
+-(void)saveArticleContent
+{
+    NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
+    for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
+    {
+        if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
+        {
+            [pincObjetsArray addObject:self.vc_contentPage.pageElements[i]];
+        }
+    }
+    
+    if(!pincObjetsArray.count) return;//if there is not article then exit
+    
+    //this creates and saves an article. the return value is unnecesary 
+  Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwhichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pincObjetsArray];
+
+    
+}
+
 
 //this makes sure that there are elements in the pinchview before a preview is called
 - (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
@@ -957,9 +983,6 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (IBAction)done:(UIStoryboardSegue *)segue
-MyModalVC *vc = (MyModalVC *)segue.sourceViewController; // get results out of vc, which I presented
-}
 
 
 @end

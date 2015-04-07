@@ -28,6 +28,9 @@
                           Password: (NSString *) password
          withSignUpCompletionBlock: (void(^)(BOOL succeeded, NSError *error)) block;
 
+//checks if the current user is logged in 
++(BOOL)userIsLoggedIn;
+
 /*Follow feature.*/
 /*
  completion block should handle errors in saving the relationship

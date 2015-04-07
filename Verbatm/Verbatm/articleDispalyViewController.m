@@ -26,9 +26,14 @@
 @synthesize poppedOffPages = _poppedOffPages;
 @synthesize animatingView = _animatingView;
 @synthesize lastPoint = _latestPoint;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
     // Do any additional setup after loading the view.
     //[self setUpGestureRecognizers];
     [self setUpScrollView];
@@ -106,15 +111,18 @@
 
 #pragma mark - sorting out the ui for pinch object -
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    //We clear these so that the media is released
+    self.scrollView = NULL;
+    self.animatingView = NULL;
+    self.poppedOffPages = NULL;
 }
-*/
+
 
 
 #pragma mark - Gesture recognizers -

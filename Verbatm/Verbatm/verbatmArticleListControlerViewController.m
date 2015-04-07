@@ -72,7 +72,7 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    verbatmArticle_TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"articleView" forIndexPath:indexPath];
+    verbatmArticle_TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"articleListCell" forIndexPath:indexPath];
     
     NSInteger index =indexPath.row;
     Article * article = self.articles[index];
@@ -82,7 +82,7 @@
     else cell.backgroundColor = [UIColor greenColor];
     
     cell.rightSandwich.text = article.sandwich;
-    cell.rightAuthor.text = [article getAuthor];
+    cell.rightAuthor.text = @"Verbatm TEAM"; //This doesn't work-->>//[article getAuthor];
     cell.rightTitle.text = article.title;
     return cell;
 }
@@ -121,10 +121,34 @@
         ((articleDispalyViewController *)vc).pinchedObjects = presenterViews;
     }
 }
+#pragma mark Orientation
+- (NSUInteger)supportedInterfaceOrientations
+{
+    //return supported orientation masks
+    return UIInterfaceOrientationMaskPortrait;
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+//for ios8- To hide the status bar
+-(BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
+-(void) removeStatusBar
+{
+    //remove the status bar
+    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        // iOS 7
+        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+    } else {
+        // iOS 6
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    }
 }
 /*
 #pragma mark - Navigation

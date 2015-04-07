@@ -74,20 +74,28 @@
             
         }else if (!succeeded)
         {
-            //Send a notification that the user failed to log in
-            NSLog(error);
             
             NSNotification * notification = [[NSNotification alloc]initWithName:SINGUP_FAILED_NOTIFIACTION object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
         }
         
     }];
-    
-    
-    
-    
 }
 
+
+#pragma mark Orientation
+- (NSUInteger)supportedInterfaceOrientations
+{
+    //return supported orientation masks
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+
+//for ios8- To hide the status bar
+-(BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
 
 -(void) removeStatusBar
 {

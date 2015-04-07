@@ -103,6 +103,29 @@
     NSMutableArray * presenterViews = [analyser processPinchedObjectsFromArray:pincObjetsArray withFrame:self.view.frame];
     ((articleDispalyViewController *)vc).pinchedObjects = presenterViews;
 }
+#pragma mark Orientation
+- (NSUInteger)supportedInterfaceOrientations
+{
+    //return supported orientation masks
+    return UIInterfaceOrientationMaskPortrait;
+}
+//for ios8- To hide the status bar
+-(BOOL)prefersStatusBarHidden
+{
+    return YES;
+}
+
+-(void) removeStatusBar
+{
+    //remove the status bar
+    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+        // iOS 7
+        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+    } else {
+        // iOS 6
+        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+    }
+}
 
 /*
 // Override to support conditional editing of the table view.

@@ -20,7 +20,6 @@
  */
 @interface Article() <PFSubclassing>
 @property (strong,readwrite,nonatomic) NSString* title;
-@property (strong,readwrite, nonatomic) NSString* subtitle;
 @property(strong,readwrite, nonatomic) NSString* content;
 @property(strong, readwrite,nonatomic) NSString* sandwich;
 @property (strong, nonatomic) PFRelation * articleVideosRelation;
@@ -45,13 +44,13 @@
 @synthesize articleVideosRelation= _articleVideosRelation;
 @synthesize articlePhotosRelation = _articlePhotosRelation;
 @synthesize pinchObjectFile = _pinchObjectFile;
-
+@synthesize article_pageRelationship = _article_pageRelationship;
 
 #pragma mark - initialising an article
 /*by Lucio Dery */
 //This creates an article object with a title and subtitle, and pages as well as saves the article.
 //relations can only be created between saved objects thus the need to save the article and pages before creating the article-page relations.
--(instancetype)initAndSaveWithTitle:(NSString *)title andPinchObjects:(NSArray*)pages
+-(instancetype)initAndSaveWithTitle:(NSString *)title  andSandWichWhat:(NSString *)what  Where:(NSString *)where  andPinchObjects:(NSArray*)pages
 {
     if((self = [super init]))
     {
@@ -59,6 +58,11 @@
         {
             self.title = title;
         }
+        if (what && where)
+        {
+            [self setSandwich:what at:where];
+        }
+        
         [self setObject:[PFUser currentUser]forKey: ARTICLE_AUTHOR_RELATIONSHIP];
         self.article_pageRelationship = [self relationForKey:ARTICLE_PAGE_RELATIONSHIP];
         [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
@@ -71,6 +75,8 @@
     return self;
 }
 
+
+//funciton not working for some reason
 -(NSString *)getAuthor
 {
     VerbatmUser* author = [self objectForKey:ARTICLE_AUTHOR_RELATIONSHIP];
@@ -86,7 +92,9 @@
         [this_page saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if(succeeded){
                 NSLog(@"Saved Page Successfully");
-                [self.article_pageRelationship addObject: this_page]; //create relation between article and page.
+                //[self.article_pageRelationship addObject: this_page]; //create relation between article and page.
+                
+                [self setObject:this_page forKey: ARTICLE_AUTHOR_RELATIONSHIP];
             }else{
                 NSLog(@"Could not save page: %@", [error localizedDescription]);
             }

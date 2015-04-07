@@ -13,6 +13,7 @@
 -(void)undoButtonPressed;
 -(void)previewButtonPressed;
 -(void)keyboardButtonPressed;
+-(void)saveButtonPressed;
 
 @end
 
