@@ -61,6 +61,7 @@
     self.scrollView.frame = self.view.frame;
     [self.scrollView setShowsVerticalScrollIndicator:NO];
     [self.scrollView setShowsHorizontalScrollIndicator:NO];
+    self.scrollView.bounces = NO;
     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pinchedObjects count]*self.view.frame.size.height);
     self.scrollView.delegate = self;
 }
