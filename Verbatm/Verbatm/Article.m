@@ -92,7 +92,6 @@
             if(succeeded){
                 NSLog(@"Saved Page Successfully");
                 //[self.article_pageRelationship addObject: this_page]; //create relation between article and page.
-                
                 [this_page setObject: self forKey: ARTICLE_PAGE_RELATIONSHIP];
             }else{
                 NSLog(@"Could not save page: %@", [error localizedDescription]);

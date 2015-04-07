@@ -24,7 +24,7 @@
 
 +(BOOL)saveArticleWithPinchObjects:(NSArray *)pinchObjects title:(NSString *)title withSandwichFirst:(NSString *)firstPart andSecond:(NSString*)secondPart
 {
-    Article * this_article = [[Article alloc] initAndSaveWithTitle:title andPinchObjects:pinchObjects];
+    Article * this_article = [[Article alloc] initAndSaveWithTitle:title andSandWichWhat:firstPart Where:secondPart andPinchObjects:pinchObjects];
     [this_article setSandwich:firstPart at:secondPart];
     return [this_article save];
 }
