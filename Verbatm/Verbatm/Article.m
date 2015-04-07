@@ -64,7 +64,6 @@
         }
         
         [self setObject:[PFUser currentUser]forKey: ARTICLE_AUTHOR_RELATIONSHIP];
-        self.article_pageRelationship = [self relationForKey:ARTICLE_PAGE_RELATIONSHIP];
         [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if(succeeded){
                 [self processAndSavePages:pages];
@@ -94,7 +93,7 @@
                 NSLog(@"Saved Page Successfully");
                 //[self.article_pageRelationship addObject: this_page]; //create relation between article and page.
                 
-                [self setObject:this_page forKey: ARTICLE_AUTHOR_RELATIONSHIP];
+                [this_page setObject: self forKey: ARTICLE_PAGE_RELATIONSHIP];
             }else{
                 NSLog(@"Could not save page: %@", [error localizedDescription]);
             }
@@ -201,7 +200,9 @@
 
 -(NSArray*)getAllPages
 {
-     return [[self.article_pageRelationship query] findObjects];
+    PFQuery* pageQuery = [PFQuery queryWithClassName:@"Page"];
+    [pageQuery whereKey:ARTICLE_PAGE_RELATIONSHIP equalTo:self];
+    return [pageQuery findObjects];
 }
 @end
 
