@@ -67,8 +67,10 @@
         }
         
         [self initSubviews];
-        [self.media addObject: medium];
-        [self renderMedia];
+        if(medium){
+            [self.media addObject: medium];
+            [self renderMedia];
+        }
         [self addBorderToPinchView];
     }
     return self;
@@ -393,29 +395,30 @@
 +(verbatmCustomPinchView*)pinchTogether:(NSMutableArray*)to_be_merged
 {
     if(to_be_merged.count == 0) return nil;
-    verbatmCustomPinchView* result;
-    for(verbatmCustomPinchView* pinchView in to_be_merged)
-    {
-        if(pinchView.pinched)
-        {
-            result = pinchView;
-        }
-    }
-    if(!result){
-        result = (verbatmCustomPinchView*)[to_be_merged firstObject];
-        result.pinched = [[NSMutableArray alloc] init];
-    }
-    if(to_be_merged.count == 1) return result;
-    for(int i = 1; i < to_be_merged.count; i++){
+    verbatmCustomPinchView* firstObject = (verbatmCustomPinchView*)[to_be_merged firstObject];
+    verbatmCustomPinchView* result = [[verbatmCustomPinchView alloc] initWithRadius:firstObject.frame.size.width/2.0 withCenter:firstObject.center andMedia:nil];
+    result.pinched = [[NSMutableArray alloc] init];
+    for(int i = 0; i < to_be_merged.count; i++){
         verbatmCustomPinchView* pinchObject = (verbatmCustomPinchView*)[to_be_merged objectAtIndex:i];
-        [result.media addObjectsFromArray: pinchObject.media];
-        [result.pinched addObject:pinchObject];
-        result.there_is_picture =  result.there_is_picture || pinchObject.there_is_picture;
-        result.there_is_text =  result.there_is_text || pinchObject.there_is_text;
-        result.there_is_video = result.there_is_video || pinchObject.there_is_video;
+        if(pinchObject.pinched){
+            for(verbatmCustomPinchView* subView in pinchObject.pinched){
+                [verbatmCustomPinchView append:subView toPinchObject:result];
+            }
+        }else{
+            [verbatmCustomPinchView append:pinchObject toPinchObject:result];
+        }
     }
     [result renderMedia];
     return result;
+}
+
++(void)append:(verbatmCustomPinchView*)pinchObject toPinchObject:(verbatmCustomPinchView*)result
+{
+    [result.media addObjectsFromArray: pinchObject.media];
+    [result.pinched addObject:pinchObject];
+    result.there_is_picture =  result.there_is_picture || pinchObject.there_is_picture;
+    result.there_is_text =  result.there_is_text || pinchObject.there_is_text;
+    result.there_is_video = result.there_is_video || pinchObject.there_is_video;
 }
 
 //keeping this just in case
@@ -447,7 +450,7 @@
     for(verbatmCustomPinchView* object in arr){
         object.center = to_be_seperated.center;
     }
-    [arr insertObject:to_be_seperated atIndex: 0];
+    //[arr insertObject:to_be_seperated atIndex: 0];
     return arr;
 }
 

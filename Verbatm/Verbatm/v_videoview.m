@@ -41,34 +41,23 @@
 -(void)setUpPlayer:(AVMutableComposition*)mix
 {
     
+    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:mix];
+    AVPlayer* player = [AVPlayer playerWithPlayerItem: playerItem];
+    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playerItemDidReachEnd:)
+                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+                                               object:[player currentItem]];
     
-    MPMoviePlayerController *player =[[MPMoviePlayerController alloc] init];
-    player.
-    [player prepareToPlay];
-    [player.view setFrame: self.bounds];  // player's frame must match parent's
-    [self addSubview: player.view];
+    // Create an AVPlayerLayer using the player
+    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+    playerLayer.frame = self.bounds;
+    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+    // Add it to your view's sublayers
+    [self.layer addSublayer:playerLayer];
+    // You can play/pause using the AVPlayer object
+    player.muted = YES;
     [player play];
-    
-    
-    
-//    
-//    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:mix];
-//    AVPlayer* player = [AVPlayer playerWithPlayerItem: playerItem];
-//    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(playerItemDidReachEnd:)
-//                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-//                                               object:[player currentItem]];
-//    
-//    // Create an AVPlayerLayer using the player
-//    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-//    playerLayer.frame = self.bounds;
-//    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-//    // Add it to your view's sublayers
-//    [self.layer addSublayer:playerLayer];
-//    // You can play/pause using the AVPlayer object
-//    player.muted = YES;
-//    [player play];
 }
 
 /*tells me when the video ends so that I can rewind*/
