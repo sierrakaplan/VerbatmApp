@@ -1014,7 +1014,7 @@
     
     verbatmCustomPinchView * newView = [verbatmCustomPinchView pinchTogether:[NSMutableArray arrayWithArray:pinch_views]];
     
-    pinch_views = nil;
+    pinch_views = nil;//reduce number of pointers
     
     self.scrollViewForHorizontalPinchView.contentSize = self.standardContentSizeForPersonalView;
     self.scrollViewForHorizontalPinchView.contentOffset = self.standardContentOffsetForPersonalView;

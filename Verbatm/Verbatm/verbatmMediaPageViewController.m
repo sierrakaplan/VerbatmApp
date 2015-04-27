@@ -851,16 +851,11 @@
 }
 
 
-
-
-
-
 #pragma mark - delegate method for media session class -
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset
 {
     [self.vc_contentPage alertGallery: asset];
 }
-
 
 -(void)hidePullBar
 {

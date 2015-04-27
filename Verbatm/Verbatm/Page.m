@@ -126,13 +126,15 @@
 {
     NSArray* videos = [self getVideos];
     NSMutableArray* videoData = [[NSMutableArray alloc]init];
-    for(Video* vid in videos){
+    for(Video* vid in videos)
+    {
         [videoData addObject: [vid getVideoData]];
     }
     
     NSArray* photoQueries = [self getPhotos];
     NSMutableArray* photos = [[NSMutableArray alloc]init];
-    for(Photo* photo in photoQueries){
+    for(Photo* photo in photoQueries)
+    {
         [photos addObject:[photo getPhoto]];
     }
     

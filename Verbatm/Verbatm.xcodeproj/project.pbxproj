@@ -28,7 +28,6 @@
 		C777EEA61AC90A7A003E0633 /* verbatmArticleAquirer.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA51AC90A7A003E0633 /* verbatmArticleAquirer.m */; };
 		C777EEAA1ACFEC7A003E0633 /* v_MultiplePhotoText.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA91ACFEC7A003E0633 /* v_MultiplePhotoText.m */; };
 		C777EEAD1AD288A3003E0633 /* verbatmArticleListControlerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEAC1AD288A3003E0633 /* verbatmArticleListControlerViewController.m */; };
-		C777EEB01AD2AC27003E0633 /* verbatmAppNavigatorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEAF1AD2AC27003E0633 /* verbatmAppNavigatorViewController.m */; };
 		C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */; };
 		C77A68B41AC20AA2000B10E2 /* v_multiplePhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B31AC20AA2000B10E2 /* v_multiplePhoto.m */; };
 		C77A68BC1AC20DD7000B10E2 /* multiplePhotosAve.xib in Resources */ = {isa = PBXBuildFile; fileRef = C77A68BB1AC20DD7000B10E2 /* multiplePhotosAve.xib */; };
@@ -132,8 +131,6 @@
 		C777EEA91ACFEC7A003E0633 /* v_MultiplePhotoText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_MultiplePhotoText.m; sourceTree = "<group>"; };
 		C777EEAB1AD288A3003E0633 /* verbatmArticleListControlerViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmArticleListControlerViewController.h; sourceTree = "<group>"; };
 		C777EEAC1AD288A3003E0633 /* verbatmArticleListControlerViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmArticleListControlerViewController.m; sourceTree = "<group>"; };
-		C777EEAE1AD2AC27003E0633 /* verbatmAppNavigatorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmAppNavigatorViewController.h; sourceTree = "<group>"; };
-		C777EEAF1AD2AC27003E0633 /* verbatmAppNavigatorViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmAppNavigatorViewController.m; sourceTree = "<group>"; };
 		C77A68AF1AC0A49B000B10E2 /* VIEW_TESTERViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VIEW_TESTERViewController.h; sourceTree = "<group>"; };
 		C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VIEW_TESTERViewController.m; sourceTree = "<group>"; };
 		C77A68B21AC20AA2000B10E2 /* v_multiplePhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_multiplePhoto.h; sourceTree = "<group>"; };
@@ -302,8 +299,6 @@
 			children = (
 				C77A68AE1AC0A47F000B10E2 /* AVE_TESTER */,
 				C7BC4387199D97F5004B91A1 /* Main.storyboard */,
-				C777EEAE1AD2AC27003E0633 /* verbatmAppNavigatorViewController.h */,
-				C777EEAF1AD2AC27003E0633 /* verbatmAppNavigatorViewController.m */,
 				C777EEAB1AD288A3003E0633 /* verbatmArticleListControlerViewController.h */,
 				C777EEAC1AD288A3003E0633 /* verbatmArticleListControlerViewController.m */,
 				C777EE9E1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.h */,
@@ -630,7 +625,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C777EEB01AD2AC27003E0633 /* verbatmAppNavigatorViewController.m in Sources */,
 				C716A5B219E0CA3500A5490B /* verbatmDashLineView.m in Sources */,
 				C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */,
 				9D29995B19BA9042005EBC8A /* verbatmMediaPageViewController.m in Sources */,

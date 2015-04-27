@@ -394,8 +394,10 @@
 {
     if(to_be_merged.count == 0) return nil;
     verbatmCustomPinchView* result;
-    for(verbatmCustomPinchView* pinchView in to_be_merged){
-        if(pinchView.pinched){
+    for(verbatmCustomPinchView* pinchView in to_be_merged)
+    {
+        if(pinchView.pinched)
+        {
             result = pinchView;
         }
     }

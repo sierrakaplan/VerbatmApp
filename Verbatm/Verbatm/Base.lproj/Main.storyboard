@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Ve4-Qj-kgj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7531" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="Qxg-C2-1Oh">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7520"/>
     </dependencies>
     <scenes>
         <!--Verbatm Atilcle List Table View Controller-->
@@ -15,8 +15,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="articleView" rowHeight="76" id="anH-yV-dm7" customClass="verbatmArticle_TableViewCell">
+                                <rect key="frame" x="0.0" y="22" width="320" height="76"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="anH-yV-dm7" id="GvD-Dr-z71">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="75"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ahe-6r-1F7">
@@ -76,9 +78,10 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="articleListCell" rowHeight="80" id="O8E-So-dii" userLabel="maybe" customClass="verbatmArticle_TableViewCell">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="22" width="320" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="O8E-So-dii" id="OHX-rm-rv4">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Author" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bpf-ti-zQP">
@@ -344,45 +347,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-2543" y="383"/>
-        </scene>
-        <!--Verbatm App Navigator View Controller-->
-        <scene sceneID="3G7-2I-scB">
-            <objects>
-                <viewController id="P2o-hH-QUV" customClass="verbatmAppNavigatorViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="CEo-Wq-LYq">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <scrollView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" id="cou-x1-Ryw">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <containerView opaque="NO" contentMode="scaleToFill" id="uvo-cf-DUB">
-                                        <rect key="frame" x="13" y="32" width="145" height="84"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <segue destination="1nR-4v-4n3" kind="embed" id="NMd-Qh-wTo"/>
-                                        </connections>
-                                    </containerView>
-                                    <containerView opaque="NO" contentMode="scaleToFill" id="Xak-L0-LK3">
-                                        <rect key="frame" x="166" y="32" width="145" height="84"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    </containerView>
-                                </subviews>
-                            </scrollView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <outlet property="ADK_container" destination="Xak-L0-LK3" id="nwP-Ns-7c9"/>
-                        <outlet property="baseNavigator_SV" destination="cou-x1-Ryw" id="La6-mE-Ob2"/>
-                        <outlet property="listContainer" destination="uvo-cf-DUB" id="HdH-aM-P07"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="BrF-t4-OFg" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3226" y="515"/>
+            <point key="canvasLocation" x="-2635" y="515"/>
         </scene>
         <!--Article Dispaly View Controller-->
         <scene sceneID="lst-8e-ORz">
@@ -414,7 +379,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="M6r-tn-xMe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2123" y="-234"/>
+            <point key="canvasLocation" x="-2165" y="-44"/>
         </scene>
         <!--contentPage-->
         <scene sceneID="8XD-Tr-4db">
@@ -509,20 +474,6 @@
             </objects>
             <point key="canvasLocation" x="-1526" y="-807"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="gnc-5o-tpD">
-            <objects>
-                <viewController automaticallyAdjustsScrollViewInsets="NO" id="1nR-4v-4n3" sceneMemberID="viewController">
-                    <view key="view" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="ucx-h9-T8F">
-                        <rect key="frame" x="0.0" y="0.0" width="145" height="84"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <toolbarItems/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="MKA-es-D8T" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
@@ -530,7 +481,7 @@
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="X2K-SQ-hOa"/>
-        <segue reference="Ehd-MJ-auJ"/>
+        <segue reference="I1D-P4-dJH"/>
+        <segue reference="6UD-X2-JsP"/>
     </inferredMetricsTieBreakers>
 </document>
