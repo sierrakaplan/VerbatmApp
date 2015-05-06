@@ -1415,6 +1415,8 @@
             self.lowerPinchView = self.upperPinchView = nil;
             verbatmCustomPinchView * pinchView = [verbatmCustomPinchView pinchTogether:array_of_objects];
             //format your scrollView and add pinch view
+            [self addTapGestureToView:pinchView];
+            
             [keeping_scrollView addSubview:pinchView];
             [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:pinchView];
             self.pinching = NO;

@@ -389,8 +389,6 @@
     mainCompositionInst.frameDuration = CMTimeMake(1, 32);
     mainCompositionInst.renderScale = 1;
     
-    
-    
     mainCompositionInst.renderSize = assetNaturalSize;
     
     NSString* filePath = [outputFileURL path];
@@ -421,6 +419,7 @@
                                           failureBlock:^(NSError* error) {
                                               NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
                                           }];
+                        
                     }];
                 }else{
                     NSLog(@"wrong output location");
