@@ -59,6 +59,8 @@
 #define BACKGROUND_COLOR clearColor
 
 #pragma mark Notification helper
+
+
 #define NOTIFICATION_HIDE_PULLBAR @"Notification_shouldHidePullBar"
 #define NOTIFICATION_SHOW_PULLBAR @"Notification_shouldShowPullBar"
 #define PICTURE_SELECTED_NOTIFICATION @"pictureObjectSelected"
@@ -1641,7 +1643,6 @@
         [self animateView:imageView InToPositionUnder:self.articleTitleField];
     }else
     {
-        //to fix
         [self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
     }
     
@@ -1649,9 +1650,9 @@
 
 -(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView
 {
+    
     [self.view addSubview:view];
     [self.view bringSubviewToFront:view];
-    
     CGRect frame;
     if(topView == self.articleTitleField)
     {
@@ -1659,8 +1660,10 @@
                             .size.height);
     }else
     {
+        CGFloat x_coord = (self.view.frame.size.width/2) - (view.frame.size.width/2);
         
-        frame = CGRectOffset(topView.superview.frame, 0, topView.superview.frame.size.height);
+        CGFloat y_coord = (topView.superview.frame.origin.y + topView.superview.frame.size.height + ELEMENT_OFFSET_DISTANCE) - self.mainScrollView.contentOffset.y;
+        frame = CGRectMake(x_coord, y_coord,view.frame.size.width, view.frame.size.height);
     }
     
     [UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
@@ -1681,7 +1684,6 @@
             }else
             {
                 [self newPinchObjectBelowView:self.pageElements[self.index] fromView: view isTextView:NO];
-                
                 
             }
             

@@ -10,6 +10,6 @@
 #import "verbatmCustomPinchView.h"
 
 @interface articleDispalyViewController : UIViewController
-//The first object in the list will be the last to be shown in the Article 
-@property (strong, nonatomic) NSMutableArray* pinchedObjects;
+@property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
+-(void) clearArticle;
 @end

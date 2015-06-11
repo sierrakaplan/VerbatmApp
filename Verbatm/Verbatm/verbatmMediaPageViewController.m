@@ -118,6 +118,8 @@
 #define TRANSLATION_THRESHOLD 70
 #define CIRCLE_PROGRESSVIEW_SIZE 100
 #define NOTIFICATION_UNDO @"undoTileDeleteNotification"
+#define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
+
 #define PULLBAR_HEIGHT 36
 
 @end
@@ -890,13 +892,35 @@
 
 -(void) previewButtonPressed
 {
-    //make sure there is at least one pinch object available 
-    if (self.vc_contentPage.pageElements.count >1) [self performSegueWithIdentifier:@"previewArticleSegue" sender:self];
+    //make sure there is at least one pinch object available
+ 
+    //counts up the content in the pinch view and ensures that there are some pinch objects
+    int counter=0;
+    for(int i=0; i < self.vc_contentPage.pageElements.count; i++)if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])counter ++;
+    if(!counter) return;
+    
+    
+    if (self.vc_contentPage.pageElements.count >1)
+    {
+        NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
+        
+        for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
+        {
+            if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
+            {
+                [pincObjetsArray addObject:self.vc_contentPage.pageElements[i]];
+            }
+        }
+        NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pincObjetsArray,@"pinchObjects", nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
+                                                            object:nil
+                                                          userInfo:Info];
+    }
 }
 
 -(void)saveButtonPressed
 {
-    if (self.vc_contentPage.pageElements.count >1) [self saveArticleContent];
+    if (self.vc_contentPage.pageElements.count >1 && ![self.vc_contentPage.articleTitleField.text isEqualToString:@""]) [self saveArticleContent];
 }
 
 -(void)saveArticleContent
@@ -913,50 +937,34 @@
     if(!pincObjetsArray.count) return;//if there is not article then exit
     
     //this creates and saves an article. the return value is unnecesary 
-  Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwhichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pincObjetsArray];
+    Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwhichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pincObjetsArray];
 
     
 }
 
 
-//this makes sure that there are elements in the pinchview before a preview is called
-- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
-                                  sender:(id)sender
-{
-    
-    if([identifier isEqualToString:@"previewVerbatmArticle"])
-    {
-        int counter=0;
-        for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
-        {
-            if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
-            {
-                counter ++;
-            }
-        }
-        
-        if(!counter) return NO;
-    }
-    
-    return YES;
-}
+////this makes sure that there are elements in the pinchview before a preview is called
+//- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
+//                                  sender:(id)sender
+//{
+//    
+//    if([identifier isEqualToString:@"previewVerbatmArticle"])
+//    {
+//        int counter=0;
+//        for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
+//        {
+//            if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
+//            {
+//                counter ++;
+//            }
+//        }
+//        
+//        if(!counter) return NO;
+//    }
+//    
+//    return YES;
+//}
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    UIViewController * vc = [segue destinationViewController];
-    NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
-    
-    for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
-    {
-        if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
-        {
-            [pincObjetsArray addObject:self.vc_contentPage.pageElements[i]];
-        }
-    }
-    v_Analyzer * analyser = [[v_Analyzer alloc]init];
-    NSMutableArray * presenterViews = [analyser processPinchedObjectsFromArray:pincObjetsArray withFrame:self.view.frame];
-    ((articleDispalyViewController *)vc).pinchedObjects = presenterViews;
-}
 
 #pragma mark - Undo Button -
 

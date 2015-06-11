@@ -89,4 +89,13 @@
     }
 }
 
+-(void)dealloc
+{
+    @try{
+        [self removeObserver:self forKeyPath: @"contentSize"];
+    }@catch(id anException){
+        //do nothing, obviously it wasn't attached because an exception was thrown
+    }
+}
+
 @end

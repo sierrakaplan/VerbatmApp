@@ -106,7 +106,7 @@
         if(self.videoView.frame.size.height != self.frame.size.height)//video view is in smaller frame
         {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-                self.videoView.frame = self.frame;
+                self.videoView.frame = self.bounds;
                 [self bringSubviewToFront:self.videoView];
             }];
             

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface verbatmMasterNavigationViewController : UIViewController
-
+    @property(strong, nonatomic) NSMutableArray * pinchObjects;
 @end

@@ -138,7 +138,9 @@
         [photos addObject:[photo getPhoto]];
     }
     
-    return [[verbatmCustomPinchView alloc] initWithRadius:radius withCenter:center Images:photos videoData:videoData andText:self.text];
+    verbatmCustomPinchView * view = [[verbatmCustomPinchView alloc] initWithRadius:radius withCenter:center Images:photos videoData:videoData andText:self.text];
+    
+    return view;
 }
 
 -(NSArray*)getVideos

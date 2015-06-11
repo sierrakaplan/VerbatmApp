@@ -15,10 +15,6 @@
  */
 
 @interface VerbatmUser () <PFSubclassing>
-@property (nonatomic, strong) NSString * firstName;
-@property (nonatomic, strong) NSString *lastName;
-@property (nonatomic, strong) NSNumber * phoneNumber;
-@property (nonatomic, strong) NSString * status;
 @property (nonatomic) BOOL advancedUser;
 @property (nonatomic, strong) PFRelation * followingRelationship;
 @property (nonatomic, strong) PFRelation * endorsingRelationship;
@@ -34,11 +30,6 @@
 @end
 
 @implementation VerbatmUser
-
-@dynamic firstName;
-@dynamic lastName;
-@dynamic phoneNumber;
-@dynamic status;
 @dynamic advancedUser;
 
 /* note: Seems we need to assign them instance variables in order to initialise them.
@@ -80,31 +71,17 @@
 /*Author: Iain Usiri*/
 /*returns nil if something went wrong saving*/
 - (VerbatmUser *) initWithUserName: (NSString *) userName
-                      FirstName: (NSString *) firstName
-                       LastName: (NSString *) lastName
-                          Email: (NSString *) email
-                    PhoneNumber: (NSNumber *) phoneNumber
                        Password: (NSString *) password
          withSignUpCompletionBlock: (void(^)(BOOL succeeded, NSError *error)) block
 
 {
     if((self=[super init])){
-        /*Checking data format validity.
-        Ensure phone number has no letters (Implicit with NSNumber)*/
-        
-        //ensure firstName and lastName are different
-        if([firstName isEqualToString:lastName]) return Nil;
-        
-//        //ensure email contains an @
-//        NSRange stringRange = [email rangeOfString:@"@"];
-//        if(stringRange.location == NSNotFound) return Nil;
+ 
         
         //Save User object
         //self.email = email;
         self.username= userName;
         self.password = password;
-        self.firstName = firstName;
-        self.lastName= lastName;
         //self.phoneNumber = phoneNumber;
         self.advancedUser = YES;//everyone is an advanced user for now (testing)
         [self signUpInBackgroundWithBlock:block];
@@ -136,7 +113,6 @@
     //check character length limit (to be determined)
     
     //set status and save
-    if(!status)self.status = status;
     [self saveInBackgroundWithBlock: block];
 }
 

@@ -11,15 +11,22 @@
 #import "v_videoview.h"
 #import "verbatmPhotoVideoAve.h"
 #import "v_multiplePhotoVideo.h"
+#import "v_Analyzer.h"
+#import "Page.h"
 
 @interface articleDispalyViewController () <UIScrollViewDelegate>
 @property (strong, nonatomic) NSMutableArray* poppedOffPages;
 @property (strong, nonatomic) UIView* animatingView;
-@property (weak, nonatomic) IBOutlet UIButton *returnToContent_button;
 @property (strong, nonatomic) UIScrollView* scrollView;
 @property (nonatomic) CGPoint lastPoint;
+//The first object in the list will be the last to be shown in the Article
+@property (strong, nonatomic) NSMutableArray* pinchedObjects;
+@property (weak, nonatomic) IBOutlet UIButton *exitArticle_Button;
+@property (nonatomic) CGPoint prev_Gesture_Point;//saves the prev point for the exit (pan) gesture
 #define BEST_ALPHA_FOR_TEXT 0.8
 #define ANIMATION_DURATION 0.4
+#define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
+#define EXIT_EPSILON 60 //the amount of space that must be pulled to exit
 @end
 
 @implementation articleDispalyViewController
@@ -27,38 +34,71 @@
 @synthesize animatingView = _animatingView;
 @synthesize lastPoint = _latestPoint;
 
-- (void)viewDidLoad {
+- (void)viewDidLoad
+{
     [super viewDidLoad];
 }
 
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    // Do any additional setup after loading the view.
-    //[self setUpGestureRecognizers];
+    [self presentArticlewithPinchObjects:self.Objects arePinchObjects:![self.Objects.firstObject isKindOfClass:[Page class]]];
+    
+}
+- (IBAction)returnToContent:(id)sender
+{
+}
+
+-(void) clearArticle
+{
+    //We clear these so that the media is released
+    self.scrollView = NULL;
+    self.animatingView = NULL;
+    self.poppedOffPages = NULL;
+    self.pinchedObjects = Nil;//sanitize array so memory is cleared
+}
+
+
+-(void)presentArticlewithPinchObjects: (NSMutableArray *) Objects arePinchObjects: (BOOL) arePO
+{
+    
+    
+    //if they are not pinch objects they are pages that must be converted
+    if(!arePO)
+    {
+        NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
+        //get pinch views for our array
+        for (Page * page in Objects)
+        {
+            //here the radius and the center dont matter because this is just a way to wrap our data for the analyser
+            verbatmCustomPinchView * pv = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
+            [pincObjetsArray addObject:pv];
+        }
+        
+        v_Analyzer * analyser = [[v_Analyzer alloc]init];
+        self.pinchedObjects = [analyser processPinchedObjectsFromArray:pincObjetsArray withFrame:self.view.frame];
+    }else{        
+        v_Analyzer * analyser = [[v_Analyzer alloc]init];
+        self.pinchedObjects = [analyser processPinchedObjectsFromArray:Objects withFrame:self.view.frame];
+    }
+    self.view.backgroundColor = [UIColor redColor];
+    
     [self setUpScrollView];
     [self renderPinchObjects];
     _latestPoint = CGPointZero;
     _animatingView = nil;
-    _poppedOffPages = [[NSMutableArray alloc]init];
-}
--(void)viewDidAppear:(BOOL)animated
-{
-    [self.view bringSubviewToFront:self.returnToContent_button];
-    [self setReturnFrame];
+    
+    
+    
 }
 
--(void)setReturnFrame
-{
-    self.returnToContent_button.frame =CGRectMake(0, self.view.frame.size.height - self.returnToContent_button.frame.size.height, self.returnToContent_button.frame.size.width, self.returnToContent_button.frame.size.height);
-}
+
 
 -(void)setUpScrollView
 {
-    self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.frame];
+    self.scrollView = [[UIScrollView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview: self.scrollView];
     self.scrollView.pagingEnabled  = YES;
-    self.scrollView.frame = self.view.frame;
     [self.scrollView setShowsVerticalScrollIndicator:NO];
     [self.scrollView setShowsHorizontalScrollIndicator:NO];
     self.scrollView.bounces = NO;
@@ -82,15 +122,6 @@
 
 -(void)renderPinchObjects
 {
-//    for(UIView* view in self.pinchedObjects){
-//        if([view isKindOfClass:[v_textview class]]){
-//            view.frame = self.view.bounds;
-//            [self.view addSubview: view];
-//            continue;
-//        }
-//        [self.view insertSubview:view atIndex:0];
-//        view.frame = self.view.bounds;
-//    }
     CGRect viewFrame = self.view.bounds;
     for(UIView* view in self.pinchedObjects){
         if([view isKindOfClass:[v_textview class]]){
@@ -105,10 +136,11 @@
     }
     
     //This makes sure that if the first object is a video it is playing the sound
-    _animatingView = [self.view.subviews lastObject];
-    [self enableSound];
-    _animatingView = nil;
+    [self muteEverything];
+    [self handleSound];
+    [self setUpGestureRecognizers];
 }
+
 
 #pragma mark - sorting out the ui for pinch object -
 
@@ -127,108 +159,50 @@
 
 
 #pragma mark - Gesture recognizers -
-
-//Sets up the gesture recognizer for dragging from the edges.
+//
+////Sets up the gesture recognizer for dragging from the edges.
 -(void)setUpGestureRecognizers
 {
-    UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(transitionBtnPinchedViews:)];
-    edgePanR.edges =  UIRectEdgeRight;
-    UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(transitionBtnPinchedViews:)];
+//    UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(transitionBtnPinchedViews:)];
+//    edgePanR.edges =  UIRectEdgeRight;
+    UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exitDisplay:)];
     edgePanL.edges =  UIRectEdgeLeft;
-    [self.view addGestureRecognizer: edgePanR];
+    //[self.view addGestureRecognizer: edgePanR];
     [self.view addGestureRecognizer: edgePanL];
 }
 
-
--(void)transitionBtnPinchedViews:(UIScreenEdgePanGestureRecognizer*)edgePan
+//to be called when an aritcle is first rendered to unsure all videos are off
+-(void)muteEverything
 {
-    CGPoint translation = [edgePan translationInView:self.view];
-    if(edgePan.state == UIGestureRecognizerStateBegan){
-        if(translation.x > 0){
-            if(_poppedOffPages.count == 0)return;
-            _animatingView = (UIView*)[_poppedOffPages lastObject];
-            [_poppedOffPages removeLastObject];
-            [self.view addSubview:_animatingView];
-            _animatingView.frame = CGRectOffset(self.view.bounds, -self.view.frame.size.width, 0);
-        }else{
-            if(self.view.subviews.count == 1)return;
-            _animatingView = (UIView*)[self.view.subviews lastObject];
-
-        }
-        _latestPoint = translation;
-        return;
-    }
-    if(!_animatingView) return;
-    if (edgePan.state == UIGestureRecognizerStateEnded){
-        _latestPoint = translation;
-        int x_location = _animatingView.frame.origin.x + _animatingView.frame.size.width;
-        int mid_pt = self.view.frame.origin.x + self.view.frame.size.width/2;
-        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-            if(x_location > mid_pt){
-                _animatingView.frame = self.view.bounds;
-            }else{
-                _animatingView.frame = CGRectOffset(self.view.bounds, -self.view.frame.size.width, 0);
-            }
-        } completion:^(BOOL finished) {
-            if(x_location <= mid_pt){
-                [_animatingView removeFromSuperview];
-                [_poppedOffPages addObject:_animatingView];
-                [self muteSound];
-                _animatingView = [self.view.subviews lastObject];
-                [self enableSound];
-            }else{
-                [self enableSound];
-                _animatingView = [self.view.subviews objectAtIndex: self.view.subviews.count - 2];//Get previous view and mute it
-                [self muteSound];
-            }
-            _latestPoint = CGPointZero;
-            _animatingView = nil;
-        }];
-        return;
-    }
-    
-    if(translation.x > 0)
+    for (int i=0; i< self.pinchedObjects.count; i++)
     {
-        if(_animatingView.frame.origin.x + (translation.x - _latestPoint.x) > 0){
-            _animatingView.frame = self.view.bounds;
-            _latestPoint = translation;
-            return;
+        if([self.pinchedObjects[i] isKindOfClass:[v_videoview class]]){
+            [((v_videoview*)self.pinchedObjects[i]) mutePlayer];
+        }else if([self.pinchedObjects[i] isKindOfClass:[verbatmPhotoVideoAve class]]){
+            [((verbatmPhotoVideoAve *)self.pinchedObjects[i]) mute];
+        }else if([self.pinchedObjects[i] isKindOfClass:[v_multiplePhotoVideo class]]){
+            [((v_multiplePhotoVideo*)self.pinchedObjects[i]) mutePlayer];
         }
-    }
-    _animatingView.frame = CGRectOffset(_animatingView.frame, translation.x - _latestPoint.x, 0);
-    _latestPoint = translation;
-}
-
-
-#pragma mark - adding tilt to the objects -
-//Pulled from the web. Adds horizontal tilt to the pich object
-- (void)addHorizontalTilt:(CGFloat)x ToView:(UIView *)view
-{
-    UIInterpolatingMotionEffect *xAxis = nil;
-    if (x != 0.0)
-    {
-        xAxis = [[UIInterpolatingMotionEffect alloc]
-                 initWithKeyPath:@"center.x"
-                 type:UIInterpolatingMotionEffectTypeTiltAlongHorizontalAxis];
-        xAxis.minimumRelativeValue = [NSNumber numberWithFloat:-x];
-        xAxis.maximumRelativeValue = [NSNumber numberWithFloat:x];
-    }
-    if (xAxis)
-    {
-        UIMotionEffectGroup *group = [[UIMotionEffectGroup alloc] init];
-        NSMutableArray *effects = [[NSMutableArray alloc] init];
-        if (xAxis)
-        {
-            [effects addObject:xAxis];
-        }
-        group.motionEffects = effects;
-        [view addMotionEffect:group];
     }
 }
 
+-(void)handleSound//plays sound if first video is
+{
+    if(_animatingView)[self muteSound];
+    else {
+        _animatingView = self.pinchedObjects[0];
+        [self muteSound];
+    }
+    int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
+    _animatingView = self.pinchedObjects[index];
+    [self enableSound];
+}
+
+//call this after changing the animating view to the current view
 -(void)enableSound
 {
-    if([_animatingView isKindOfClass:[v_videoview class]] ){
+    if([_animatingView isKindOfClass:[v_videoview class]] )
+    {
         [((v_videoview*)_animatingView) enableSound];
     }else if([_animatingView isKindOfClass:[verbatmPhotoVideoAve class]]){
         [((verbatmPhotoVideoAve*)_animatingView) unmute];
@@ -237,7 +211,7 @@
     }
 }
 
--(void)muteSound
+-(void)muteSound//call this before changing the nimating view so that we stop the previous thing
 {
     if([_animatingView isKindOfClass:[v_videoview class]]){
         [((v_videoview*)_animatingView) mutePlayer];
@@ -248,17 +222,62 @@
     }
 }
 
-//Adds a shadow to whatever view is sent
-//Iain
--(void) addShadowToView:     (UIView *) view
+- (void)exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender
 {
-    UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
-    view.layer.masksToBounds = NO;
-    view.layer.shadowColor = [UIColor blackColor].CGColor;
-    view.layer.shadowOffset = CGSizeMake(2.0f, 0.3f);
-    view.layer.shadowOpacity = 0.5f;
-    view.layer.shadowPath = shadowPath.CGPath;
+    
+    if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
+    if(sender.state ==UIGestureRecognizerStateBegan)
+    {
+       self.prev_Gesture_Point  = [sender locationOfTouch:0 inView:self.view];
+    }
+    
+    if(sender.state == UIGestureRecognizerStateChanged)
+    {
+        
+        CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
+        
+        int diff = current_point.x - self.prev_Gesture_Point.x;
+        self.prev_Gesture_Point = current_point;
+        self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x +diff, self.scrollView.frame.origin.y,  self.scrollView.frame.size.width,  self.scrollView.frame.size.height);
+    }
+    
+    if(sender.state == UIGestureRecognizerStateEnded)
+    {
+        if(self.scrollView.frame.origin.x > EXIT_EPSILON)
+        {
+            [self exitAritcleDisplay];
+        }else{
+            //return view to original position
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                self.scrollView.frame = self.view.bounds;
+            }];
+        }
+    }
+    
+    
 }
+
+
+
+-(void)exitAritcleDisplay
+{
+    //remove view from the screen
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        self.scrollView.frame = CGRectMake(self.view.frame.size.width, self.scrollView.frame.origin.y,  self.scrollView.frame.size.width, self.scrollView.frame.size.height);
+    }completion:^(BOOL finished) {
+        if(finished)
+        {
+            [self muteEverything];
+            [self clearArticle];
+            //invisible button on the screen that performs segue
+            [self.exitArticle_Button sendActionsForControlEvents:UIControlEventTouchUpInside];
+        }
+    }];
+}
+
+
+
+
 
 //for ios8- To hide the status bar
 -(BOOL)prefersStatusBarHidden
@@ -287,8 +306,18 @@
 
 #pragma mark - scrolling -
 
+-(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView
+{
+}
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    [self handleSound];
+}
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    
 }
+
+
+
+
 @end

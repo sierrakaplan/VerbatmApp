@@ -565,8 +565,8 @@
         if(text){
             self.there_is_text = YES;
         }
-        self.there_is_video = !(videoData == nil);
-        self.there_is_picture = !(images == nil);
+        self.there_is_video = !(videoData == nil || !videoData.count);
+        self.there_is_picture = !(images == nil || !images.count);
         
         [self initSubviews];
         [self renderMedia];

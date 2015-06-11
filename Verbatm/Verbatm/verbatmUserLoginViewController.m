@@ -7,14 +7,20 @@
 //
 
 #import "verbatmUserLoginViewController.h"
+#import "verbatmUserSignUpViewController.h"
 #import "VerbatmUser.h"
 
 @interface verbatmUserLoginViewController () <UITextFieldDelegate>
 #define SINGUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
 #define SINGUP_FAILED_NOTIFIACTION @"userFailedToSignIn"
 #define TOAST_DURATION 1
+
 @property (weak, nonatomic) IBOutlet UITextField *UserName_TextField;
 @property (weak, nonatomic) IBOutlet UITextField *Password_TextField;
+@property (weak, nonatomic) IBOutlet UILabel *verbatmTitle_label;
+
+@property (weak, nonatomic) IBOutlet UIButton *signIn_button;
+@property (weak, nonatomic) IBOutlet UIButton *signUp_button;
 @end
 
 @implementation verbatmUserLoginViewController
@@ -30,7 +36,26 @@
     self.UserName_TextField.delegate = self;
     self.Password_TextField.delegate = self;
     //if the user is logged in then lets get outta here!
-    if([VerbatmUser userIsLoggedIn]) [self performSegueWithIdentifier:@"bringUpADK" sender:self];
+    if([VerbatmUser userIsLoggedIn]) [self performSegueWithIdentifier:@"bringUpMasterNav" sender:self];
+    
+    [self centerAllframes];
+    
+}
+
+
+
+//dynamically centers all our frames depending on phone screen dimensions
+-(void) centerAllframes
+{
+    self.verbatmTitle_label.frame = CGRectMake((self.view.frame.size.width/2 - self.verbatmTitle_label.frame.size.width/2), self.verbatmTitle_label.frame.origin.y, self.verbatmTitle_label.frame.size.width, self.verbatmTitle_label.frame.size.height);
+    
+    self.signIn_button.frame =CGRectMake((self.view.frame.size.width/2 - self.signIn_button.frame.size.width/2), self.signIn_button.frame.origin.y, self.signIn_button.frame.size.width, self.signIn_button.frame.size.height);
+    
+    self.signUp_button.frame= CGRectMake((self.view.frame.size.width/2 - self.signUp_button.frame.size.width/2), self.signUp_button.frame.origin.y, self.signUp_button.frame.size.width, self.signUp_button.frame.size.height);
+    
+    self.UserName_TextField.frame= CGRectMake((self.view.frame.size.width/2 - self.UserName_TextField.frame.size.width/2), self.UserName_TextField.frame.origin.y, self.UserName_TextField.frame.size.width, self.UserName_TextField.frame.size.height);
+    
+    self.Password_TextField.frame = CGRectMake((self.view.frame.size.width/2 - self.Password_TextField.frame.size.width/2), self.Password_TextField.frame.origin.y, self.Password_TextField.frame.size.width, self.Password_TextField.frame.size.height);
 }
 
 //Iain
@@ -45,14 +70,15 @@
 -(void) signUpSuccesful: (NSNotification *) notification
 {
     NSLog(@"Signup Succeeded");
-
+    //Removes the login page
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
+
 
 //not that the signup was succesful - post a notiication
 -(void) signUpFailed: (NSNotification *) notification
 {
     NSLog(@"SignUp failed");
-
 }
 
 - (IBAction)login:(UIButton *)sender
@@ -64,7 +90,7 @@
         if(user)
         {
             //should only call this segue if the user is logged in
-            [self performSegueWithIdentifier:@"bringUpADK" sender:self];
+            [self performSegueWithIdentifier:@"bringUpMasterNav" sender:self];
         }else
         {
             NSLog(@"Login failed");

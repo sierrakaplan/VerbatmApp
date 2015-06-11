@@ -21,10 +21,6 @@
  doesn't signin user- do this externally
  */
 - (VerbatmUser *) initWithUserName: (NSString *) userName
-                         FirstName: (NSString *) firstName
-                          LastName: (NSString *) lastName
-                             Email: (NSString *) email
-                       PhoneNumber: (NSNumber *) phoneNumber
                           Password: (NSString *) password
          withSignUpCompletionBlock: (void(^)(BOOL succeeded, NSError *error)) block;
 
