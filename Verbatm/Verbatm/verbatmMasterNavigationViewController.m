@@ -66,18 +66,55 @@
 
 -(void)setUpGestureRecognizers
 {
-        UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exit_enter_adk:)];
+        UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(enter_adk:)];
         edgePanR.edges =  UIRectEdgeRight;
-    UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exit_enter_adk:)];
+    UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exit_adk:)];
     edgePanL.edges =  UIRectEdgeLeft;
     [self.view addGestureRecognizer: edgePanR];
     [self.view addGestureRecognizer: edgePanL];
 }
 
-- (void)exit_enter_adk:(UIScreenEdgePanGestureRecognizer *)sender
+
+
+//swipping left from right
+-(void)enter_adk:(UIScreenEdgePanGestureRecognizer *)sender
+{
+    if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
+    if(self.masterSV.contentOffset.x == self.view.frame.size.width) return;
+    
+    if(sender.state ==UIGestureRecognizerStateBegan)
+    {
+        self.prev_Gesture_Point  = [sender locationOfTouch:0 inView:self.view];
+    }
+    
+    if(sender.state == UIGestureRecognizerStateChanged)
+    {
+        
+        CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
+        
+        int diff = current_point.x - self.prev_Gesture_Point.x;
+        self.prev_Gesture_Point = current_point;
+        self.masterSV.contentOffset = CGPointMake(self.masterSV.contentOffset.x + (-1 *diff), 0);
+    }
+    
+    if(sender.state == UIGestureRecognizerStateEnded)
+    {
+        [self adjustSV];
+        //            if(self.scrollView.frame.origin.x > EXIT_EPSILON)
+        //                //return view to original position
+        //                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        //                    self.scrollView.frame = self.view.bounds;
+        //                }];
+        //            }
+    }
+
+}
+
+//swipping right from left
+- (void)exit_adk:(UIScreenEdgePanGestureRecognizer *)sender
 {
  
-        
+         if(self.masterSV.contentOffset.x == 0) return;
         if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
         if(sender.state ==UIGestureRecognizerStateBegan)
         {

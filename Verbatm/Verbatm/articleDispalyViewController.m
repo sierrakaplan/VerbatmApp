@@ -81,7 +81,7 @@
         v_Analyzer * analyser = [[v_Analyzer alloc]init];
         self.pinchedObjects = [analyser processPinchedObjectsFromArray:Objects withFrame:self.view.frame];
     }
-    self.view.backgroundColor = [UIColor redColor];
+    self.view.backgroundColor = [UIColor clearColor];
     
     [self setUpScrollView];
     [self renderPinchObjects];

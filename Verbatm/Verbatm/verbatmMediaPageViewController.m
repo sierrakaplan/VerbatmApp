@@ -137,7 +137,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     [self prepareCameraView];
     
     [self createAndInstantiateGestures];
@@ -259,13 +258,15 @@
 -(void) viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
+    
     //[self prepareCameraView];
     //get the view controllers in the storyboard and store them
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    
+    //patch solution to the pullbar being drawn strange
+    self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y, self.pullBar.frame.size.width, PULLBAR_HEIGHT);
     [self.sessionManager startSession];
 }
 
