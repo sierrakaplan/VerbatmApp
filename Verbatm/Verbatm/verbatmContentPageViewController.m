@@ -201,11 +201,24 @@
 //Iain
 -(void) viewWillAppear:(BOOL)animated
 {
-    [super viewDidAppear:YES];
+    [super viewWillAppear:animated];
     [self configureViews];
     self.pinching = NO;//initialise pinching to no
+    for(UIView * view in self.pageElements)
+    {
+        if([view isKindOfClass:[verbatmCustomPinchView class]])
+        {
+            [((verbatmCustomPinchView *)view) restartVideo];
+        }
+    }
+
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+}
 
 //gives the placeholders a white color
 -(void) setPlaceholderColors

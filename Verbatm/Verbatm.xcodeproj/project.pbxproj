@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */; };
 		9D29995B19BA9042005EBC8A /* verbatmMediaPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995A19BA9042005EBC8A /* verbatmMediaPageViewController.m */; };
+		C702DE701B315CDF00EE2B00 /* verbatmArticleDisplayCV.m in Sources */ = {isa = PBXBuildFile; fileRef = C702DE6F1B315CDF00EE2B00 /* verbatmArticleDisplayCV.m */; };
 		C716A5B219E0CA3500A5490B /* verbatmDashLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = C716A5B119E0CA3500A5490B /* verbatmDashLineView.m */; };
 		C7174E0E19CA159D006C982D /* ILTranslucentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7174E0D19CA159D006C982D /* ILTranslucentView.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
@@ -100,6 +101,8 @@
 		9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmMediaSessionManager.m; sourceTree = "<group>"; };
 		9D29995919BA9042005EBC8A /* verbatmMediaPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmMediaPageViewController.h; sourceTree = "<group>"; };
 		9D29995A19BA9042005EBC8A /* verbatmMediaPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmMediaPageViewController.m; sourceTree = "<group>"; };
+		C702DE6E1B315CDF00EE2B00 /* verbatmArticleDisplayCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmArticleDisplayCV.h; sourceTree = "<group>"; };
+		C702DE6F1B315CDF00EE2B00 /* verbatmArticleDisplayCV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmArticleDisplayCV.m; sourceTree = "<group>"; };
 		C716A5B019E0CA3500A5490B /* verbatmDashLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmDashLineView.h; sourceTree = "<group>"; };
 		C716A5B119E0CA3500A5490B /* verbatmDashLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmDashLineView.m; sourceTree = "<group>"; };
 		C7174E0C19CA159D006C982D /* ILTranslucentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILTranslucentView.h; sourceTree = "<group>"; };
@@ -299,6 +302,8 @@
 			children = (
 				C77A68AE1AC0A47F000B10E2 /* AVE_TESTER */,
 				C7BC4387199D97F5004B91A1 /* Main.storyboard */,
+				C702DE6E1B315CDF00EE2B00 /* verbatmArticleDisplayCV.h */,
+				C702DE6F1B315CDF00EE2B00 /* verbatmArticleDisplayCV.m */,
 				C7EF5BB41B0CD5E500E7915B /* verbatmMasterNavigationViewController.h */,
 				C7EF5BB51B0CD5E500E7915B /* verbatmMasterNavigationViewController.m */,
 				C777EEAB1AD288A3003E0633 /* verbatmArticleListControlerViewController.h */,
@@ -669,6 +674,7 @@
 				F266F3ED1A4A3ED900EA0327 /* articleDispalyViewController.m in Sources */,
 				C7E6C1431A4E394600863893 /* v_textPhoto.m in Sources */,
 				C7A8A7F619A96E1B00CE861F /* Video.m in Sources */,
+				C702DE701B315CDF00EE2B00 /* verbatmArticleDisplayCV.m in Sources */,
 				C7E6C1441A4E394600863893 /* v_textVideo.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

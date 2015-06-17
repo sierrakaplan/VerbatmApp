@@ -27,7 +27,6 @@
 
 #define NOTIFICATION_SHOW_ADK @"notification_showADK"
 #define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
-#define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
 @end
 
 @implementation verbatmMasterNavigationViewController
@@ -44,7 +43,7 @@
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(displayArticle:) name:NOTIFICATION_SHOW_ARTICLE object: nil];
+    
 }
 
 
@@ -113,7 +112,14 @@
 //swipping right from left
 - (void)exit_adk:(UIScreenEdgePanGestureRecognizer *)sender
 {
- 
+    
+        //this is here because this sense the left edge pan gesture- so we need to catch it and send it upstream
+        if(super.articleCurrentlyViewing)
+        {
+            //we send the signal back up to it's superview to be handled
+            [super exitDisplay:sender];
+            return;
+        }
          if(self.masterSV.contentOffset.x == 0) return;
         if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
         if(sender.state ==UIGestureRecognizerStateBegan)
@@ -161,22 +167,7 @@
     }
 }
 
--(void)displayArticle: (NSNotification *) notification
-{
-    NSArray  *pages = [[notification userInfo] objectForKey:@"pages"];
-    NSMutableArray  *PO = [[notification userInfo] objectForKey:@"pinchObjects"];
-    if(pages)
-    {
-        self.Display_pages = [NSMutableArray arrayWithArray:pages];
-        self.Display_pinchObjects = Nil;
-    }
-    else if(PO)
-    {
-        self.Display_pages = Nil;
-        self.Display_pinchObjects = PO;
-    }
-    if(pages || PO)[self performSegueWithIdentifier: @"display_articles_segue" sender: self];
-}
+
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender

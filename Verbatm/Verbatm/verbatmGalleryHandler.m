@@ -122,6 +122,7 @@
 
 - (void)presentGallery
 {
+    [self playVideos];
     [self lowerScrollView];
     self.isRaised = NO;
 }
@@ -153,6 +154,24 @@
     [self.view.superview bringSubviewToFront:self.scrollView];
 }
 
+
+-(void)playVideos
+{
+    for(UIView * view in self.mediaImageViews)
+    {
+        if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo)
+        {
+            for(CALayer * layer in self.view.layer.sublayers)
+            {
+                if([layer isKindOfClass:[AVPlayerLayer class]])
+                {
+                    AVPlayer* player = ((AVPlayerLayer*)layer).player;
+                    [player play];
+                }
+            }
+        }
+    }
+}
 
 -(verbatmCustomImageView*)imageViewFromAsset:(ALAsset*)asset
 {

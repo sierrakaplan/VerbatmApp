@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "verbatmArticleDisplayCV.h"
 
-@interface verbatmMasterNavigationViewController : UIViewController
+@interface verbatmMasterNavigationViewController : verbatmArticleDisplayCV
     @property(strong, nonatomic) NSMutableArray * pinchObjects;
 @end

@@ -87,8 +87,7 @@
 //one of the articles in the list have been clicked
 -(void) viewArticle
 {
-    NSArray * pages = [self.articles[self.selectedArticleIndex] getAllPages];
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pages,@"pages", nil];
+    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articles[self.selectedArticleIndex] ,@"article", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
                                                         object:nil
                                                       userInfo:Info];

@@ -359,6 +359,15 @@
     }
 }
 
+//this is only to occur when the player layer has been removed (perhaps due to previewing)
+//and we need to add a new layer and restart the video
+-(void) restartVideo
+{
+    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+    if(playerLayer) return;
+    [self displayMedia];
+}
+
 -(void)playVideo:(AVURLAsset*)asset
 {
     // Create an AVPlayerItem using the asset
