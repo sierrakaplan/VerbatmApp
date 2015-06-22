@@ -20,8 +20,6 @@
 //These two funcitons offer a "freeze dry" feature to store the custom image view in order to push to the cloud
 //this is how you save any custom object
 //note that we are not using this right now we are instead saving media elements individually and reconstructing when needed
-
-
 //-(id)initWithCoder:(NSCoder *)aDecoder
 //{
 //    self = [super initWithCoder:aDecoder];
@@ -42,6 +40,7 @@
 //    [aCoder encodeBool:self.isVideo forKey:IS_VIDEO];
 //    [aCoder encodeObject:[self dataFromAsset] forKey:ASSET_DATA];
 //}
+
 
 -(NSData*)dataFromAsset
 {
@@ -73,8 +72,8 @@
                                                                     NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
                                                                 }];
                                           }];
-    
 }
+
 
 -(void)saveImageToVerbatmAlbum:(NSData*)data
 {
@@ -96,7 +95,6 @@
                                                    else {
                                                        NSLog(@"saved image failed.\nerror code %li\n%@", (long)error.code, [error localizedDescription]);
                                                    }
-
                                                }];
 }
 @end

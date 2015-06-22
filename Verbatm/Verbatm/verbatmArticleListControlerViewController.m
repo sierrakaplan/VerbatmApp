@@ -51,10 +51,10 @@
     self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(BUTTON_HEIGHT));
 }
 
-
+//reloads data into the list view
 - (IBAction)refreshArticleList:(UIButton *)sender
 {
-    [self.articleListView reloadInputViews];
+    [self.articleListView reloadData];
 }
 
 
@@ -93,17 +93,6 @@
                                                       userInfo:Info];
 }
 
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-//{
-//    return;//for debugging
-//    
-//    if([segue.identifier isEqualToString:VIEW_ARTICLE_SEGUE])
-//    {
-//        
-//        UIViewController * vc = [segue destinationViewController];
-//    
-//    }
-//}
 
 #pragma mark Orientation
 - (NSUInteger)supportedInterfaceOrientations
@@ -122,6 +111,8 @@
 {
     return YES;
 }
+
+
 
 -(void) removeStatusBar
 {

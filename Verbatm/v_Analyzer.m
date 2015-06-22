@@ -46,6 +46,8 @@
         }
         [self handleTwoMedia:p_obj];
     }
+
+
     return _results;
 }
 
@@ -84,6 +86,7 @@
         [_results addObject:textView];
     }else{
         v_videoview* vidView = [[v_videoview alloc]initWithFrame:_preferedFrame andAssets:arr];
+        [vidView mutePlayer];
         [_results addObject:vidView];
     }
 }
@@ -105,6 +108,7 @@
             }else//it's text video
             {
                 v_textVideo * tv = [[v_textVideo alloc] initWithFrame:self.preferedFrame andAssets:videos andText:[p_obj getTextFromPinchObject]];
+                [tv mutePlayer];
                 [self.results addObject:tv];
             }
         }else//it's photo video
@@ -112,11 +116,13 @@
             if(photos.count > 1)
             {
                 v_multiplePhotoVideo * pv = [[v_multiplePhotoVideo alloc]initWithFrame:self.preferedFrame Photos:photos andVideos:videos];
+                [pv mutePlayer];
                 [self.results addObject:pv];
             }else
             {
                 verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:photos.firstObject andVideo:videos];
                 [pv addGesturesToVideoView];
+                [pv mute];
                 [self.results addObject:pv];
             }
         }
@@ -126,7 +132,7 @@
         if(p_obj.there_is_text)
         {
             NSString* text = [p_obj getTextFromPinchObject];
-            if(p_obj.there_is_picture)
+            if(p_obj.there_is_picture)//text photo
             {
                 if(media.count == 2){
                     UIImage* image;
@@ -138,7 +144,7 @@
                     v_textPhoto* tp = [[v_textPhoto alloc] initWithFrame:_preferedFrame andImage:image andText:text];
                     [tp addSwipeGesture];
                     [_results addObject:tp];
-                }else
+                }else//multiple photo and text
                 {
                     //not sure- what to do with text and multiple photos
                     NSMutableArray* assets = [[NSMutableArray alloc]init];
@@ -152,7 +158,7 @@
                     v_multiplePhoto* mvpt = [[v_multiplePhoto alloc]initWithFrame:self.preferedFrame andAssets:assets andText:text];
                     [_results addObject:mvpt];
                 }
-            }else{
+            }else{//text video
                 NSMutableArray* assets = [[NSMutableArray alloc]init];
                 for(id view in media){
                     if([view isKindOfClass:[verbatmCustomImageView class]])
@@ -161,6 +167,7 @@
                     }
                 }
                 v_textVideo* tv = [[v_textVideo alloc]initWithFrame:_preferedFrame andAssets:assets andText:text];
+                [tv mutePlayer];
                 [tv addSwipeGesture];
                 [_results addObject:tv];
             }
@@ -178,6 +185,7 @@
                 verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:image andVideo:Vdata];
                 //remember to add the long presss gesture in the supeview part.
                 [_results addObject:pv];
+                [pv mute];
             }else{
                 NSMutableArray * parray= [[NSMutableArray alloc] init];
                 for(verbatmCustomImageView* view in media)
@@ -192,6 +200,7 @@
                     }
                 }
                 v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:self.preferedFrame Photos:[self getUIImage:parray] andVideos:Vdata];
+                [mpv mutePlayer];
                 [_results addObject:mpv];
             }
         }

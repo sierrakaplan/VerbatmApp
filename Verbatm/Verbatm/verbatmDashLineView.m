@@ -29,5 +29,4 @@
     CGContextSetShouldAntialias(context, NO);
     CGContextStrokePath(context);
 }
-
 @end

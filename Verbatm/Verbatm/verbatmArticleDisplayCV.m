@@ -93,7 +93,7 @@
                 
                 v_Analyzer * analyser = [[v_Analyzer alloc]init];
                 self.pinchedObjects = [analyser processPinchedObjectsFromArray:pincObjetsArray withFrame:self.view.frame];
-                [self muteEverything];
+                //[self muteEverything];<--we shouldn't need this anymore becaue we mute each page at it's creation
                 //stop animation indicator
                 [self.activityIndicator stopAnimating];
                 [self renderPinchObjects];

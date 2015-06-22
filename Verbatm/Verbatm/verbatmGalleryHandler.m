@@ -11,6 +11,10 @@
 
 
 @interface verbatmGalleryHandler ()
+@property (nonatomic) BOOL testNewAdd;
+@property (nonatomic) CGRect baseFrame;//for debuggin purposes
+
+
 @property (strong, nonatomic) NSMutableArray* media;
 @property (strong, nonatomic) NSMutableArray* mediaImageViews;
 @property( strong, nonatomic) ALAssetsGroup* verbatmFolder;
@@ -154,7 +158,7 @@
     [self.view.superview bringSubviewToFront:self.scrollView];
 }
 
-
+//quick tester method- Iain
 -(void)playVideos
 {
     for(UIView * view in self.mediaImageViews)
@@ -187,6 +191,7 @@
         [imageView setImage:image];
         imageView.isVideo = NO;
     }
+    
     imageView.autoresizingMask = YES;
     imageView.contentMode = UIViewContentModeScaleAspectFit;
     return imageView;
@@ -227,20 +232,42 @@
     
     // Create an AVPlayerLayer using the player
     AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    
     playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     // Add it to your view's sublayers
     [view.layer addSublayer:playerLayer];
     playerLayer.frame = view.bounds;
+    self.baseFrame = view.bounds;
+    
+    [playerLayer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:NULL];
     // You can play/pause using the AVPlayer object
-    [player play];
+    NSLog(@"is the layer ready for display: %i", playerLayer.readyForDisplay);
+    //[player play];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+                        change:(NSDictionary *)change context:(void *)context {
+    
+    if ([keyPath isEqualToString:@"readyForDisplay"])
+    {
+        
+        [((AVPlayerLayer *)object).player play];
+        ((AVPlayerLayer *)object).frame = self.baseFrame;
+        if(((AVPlayerLayer *)object).isHidden)
+        {
+            ((AVPlayerLayer *)object).hidden = NO;
+        }
+        NSLog(@"there is a key path ready for display");
+    }
 }
 
 //tells me when the video ends so that I can rewind
--(void)playerItemDidReachEnd:(NSNotification *)notification {
+-(void)playerItemDidReachEnd:(NSNotification *)notification
+{
     AVPlayerItem *p = [notification object];
     [p seekToTime:kCMTimeZero];
 }
+
+
 
 //by Lucio
 //takes the scrollView away by pushing it up
@@ -263,6 +290,7 @@
 //gets the verbatm folder and assigns it to the class's assetsgroup property
 -(void)getVerbatmMediaFolder
 {
+    
     //get the album
     __weak verbatmGalleryHandler* weakSelf = self;
     self.assetsLibrary = [[ALAssetsLibrary alloc] init];
@@ -278,6 +306,7 @@
                                     failureBlock:^(NSError* error) {
                                         NSLog(@"failed to enumerate albums:\nError: %@", [error localizedDescription]);
                                     }];
+    
 }
 
 
@@ -331,14 +360,14 @@
 }
 
 
--(void)returnToGallery:(verbatmCustomImageView*)view
+-(void)returnToGallery:(verbatmCustomImageView*)oldview
 {
-    [[view.layer.sublayers firstObject]removeFromSuperlayer];
-    view = [self imageViewFromAsset:view.asset];
+    //self.testNewAdd= YES;
+    [[oldview.layer.sublayers firstObject]removeFromSuperlayer];
+    verbatmCustomImageView * view = [self imageViewFromAsset:oldview.asset];
     [self.media insertObject: view.asset atIndex:0];
-    CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
-    view.frame = viewSize;
+    view.frame = CGRectMake(START_POSITION_FOR_MEDIA);
     [self addBorder: view];
     [self.scrollView addSubview: view];
 
@@ -355,4 +384,5 @@
     [self.view bringSubviewToFront:self.scrollView];
     [self.scrollView bringSubviewToFront:view];
 }
+
 @end

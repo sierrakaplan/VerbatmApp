@@ -92,11 +92,12 @@
                  [self setPLViewsToHeight:self.photoList.frame.size.height];
              }];
             
-        }else
+        }else//if the scrollview is half screen - make it full screen
         {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^
             {
-                self.photoList.frame= self.bounds;
+                CGRect tester = self.bounds;
+                self.photoList.frame= tester;
                 [self bringSubviewToFront:self.photoList];//Make sure the SV covers the video view
                 [self setPLViewsToHeight:self.photoList.frame.size.height];
             }];
@@ -174,8 +175,10 @@
         [[NSFileManager defaultManager] createFileAtPath: filePath contents: data attributes:nil];
         url = [NSURL fileURLWithPath: filePath];
         AVURLAsset* assetClip = [AVURLAsset URLAssetWithURL: url options:nil];        AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+        videoTrack.preferredTransform = this_video_track.preferredTransform;
         [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
         AVAssetTrack* this_audio_track = [[assetClip tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+        
         if(this_audio_track != nil)
         {
             [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];

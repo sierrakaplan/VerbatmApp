@@ -67,10 +67,12 @@
     return self;
 }
 
+
 -(void) rerunSession
 {
     [self.session startRunning];
 }
+
 
 -(void)doInitialSetUps
 {
@@ -83,6 +85,7 @@
     }
     [self getVerbatmDirectory];
 }
+
 
 /*Directs the output of the still image of the session to the stillImageOutput file
  *By Lucio.
@@ -163,6 +166,7 @@
     
 }
 
+
 -(void)getVerbatmDirectory
 {
     NSString* albumName = ALBUM_NAME;
@@ -181,7 +185,6 @@
 }
 
 #pragma mark - customize session -
-
 //By Lucio
 //Switch the video prosition: front to back and vice versa
 -(void)switchVideoFace
@@ -320,7 +323,6 @@
         [videoConnection setVideoOrientation:self.videoPreview.connection.videoOrientation];
     }
     
-    
     //start recording to file
     [self.movieOutputFile startRecordingToOutputFileURL:outputURL recordingDelegate:self];
 }
@@ -433,6 +435,8 @@
         }
     }];
 }
+
+
 
 //Lucio
 -(void)stopVideoRecording

@@ -46,7 +46,6 @@
             self.frame = frame;
         [self.videoView unmuteVideo];
     }
-    
     return self;
 }
 

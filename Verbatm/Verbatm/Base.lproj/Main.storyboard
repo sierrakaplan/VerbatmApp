@@ -74,7 +74,7 @@
                                         <rect key="frame" x="0.0" y="22" width="320" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="O8E-So-dii" id="OHX-rm-rv4">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="80"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="79.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oQD-BK-vfI">
@@ -129,7 +129,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4141.5" y="-430"/>
+            <point key="canvasLocation" x="-3894.5" y="-519"/>
         </scene>
         <!--Item-->
         <scene sceneID="gIN-uk-7gC">
@@ -292,7 +292,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-3729" y="-752"/>
+            <point key="canvasLocation" x="-3679" y="-920"/>
         </scene>
         <!--Article Dispaly View Controller-->
         <scene sceneID="lst-8e-ORz">
@@ -326,7 +326,7 @@
                     <rectEdge key="edges" left="YES"/>
                 </screenEdgePanGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-4777" y="-495"/>
+            <point key="canvasLocation" x="-4469" y="-312"/>
         </scene>
         <!--contentPage-->
         <scene sceneID="8XD-Tr-4db">
