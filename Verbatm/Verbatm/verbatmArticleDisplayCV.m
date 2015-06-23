@@ -30,7 +30,7 @@
 #define ANIMATION_DURATION 0.4
 #define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
 #define EXIT_EPSILON 60 //the amount of space that must be pulled to exit
-#define SV_RESTING_FRAME CGRectMake(self.view.frame.size.width, 0,  self.scrollView.frame.size.width, self.scrollView.frame.size.height);
+#define SV_RESTING_FRAME CGRectMake(self.view.frame.size.width, 0,  self.view.frame.size.width, self.view.frame.size.height);
 #define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
 
 
@@ -62,6 +62,7 @@
 //called when we want to present an article. article should be set with our content
 -(void)showArticle:(NSNotification *) notification
 {
+
     Article *article = [[notification userInfo] objectForKey:@"article"];
     NSMutableArray  *PO = [[notification userInfo] objectForKey:@"pinchObjects"];
     if(article)
@@ -96,7 +97,7 @@
                 //[self muteEverything];<--we shouldn't need this anymore becaue we mute each page at it's creation
                 //stop animation indicator
                 [self.activityIndicator stopAnimating];
-                [self renderPinchObjects];
+                [self renderPinchPages];
                 self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pinchedObjects count]*self.view.frame.size.height); //adjust contentsize to fit
                 _latestPoint = CGPointZero;
                 _animatingView = nil;
@@ -109,7 +110,7 @@
         [self muteEverything];
         self.view.backgroundColor = [UIColor clearColor];
         [self setUpScrollView];
-        [self renderPinchObjects];
+        [self renderPinchPages];
         [self show_remove_ScrollView:YES];
         _latestPoint = CGPointZero;
         _animatingView = nil;
@@ -187,11 +188,13 @@
 }
 
 
-#pragma mark - render pinchObjects -
+#pragma mark - render pinchPages -
 
--(void)renderPinchObjects
+//takes AVE pages and displays them on our scrollview
+-(void)renderPinchPages
 {
     CGRect viewFrame = self.view.bounds;
+    
     for(UIView* view in self.pinchedObjects){
         if([view isKindOfClass:[v_textview class]]){
             view.frame = viewFrame;
@@ -203,6 +206,7 @@
         view.frame = viewFrame;
         viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
     }
+    
     
     //This makes sure that if the first object is a video it is playing the sound
     [self handleSound];
