@@ -49,8 +49,6 @@
 
 -(void)renderPhotos:(NSArray*)photos andVideos:(NSArray*)videos
 {
-    
-    
     //set up the video
     [self fuseAssets:videos];
     [self setUpPlayer:self.mix];
