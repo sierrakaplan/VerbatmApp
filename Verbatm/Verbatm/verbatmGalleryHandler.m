@@ -355,15 +355,22 @@
         selectedImageView.frame = CGRectOffset(selectedImageView.frame, -(self.scrollView.contentOffset.x), 0);
         [selectedImageView removeFromSuperview];
         [self.customDelegate didSelectImageView:selectedImageView];
-        
     }
 }
 
 
 -(void)returnToGallery:(verbatmCustomImageView*)oldview
 {
-    //self.testNewAdd= YES;
     [[oldview.layer.sublayers firstObject]removeFromSuperlayer];
+    
+    CALayer * layer = [oldview.layer.sublayers firstObject];
+    
+    if([layer isKindOfClass:[AVPlayerLayer class]])
+    {
+        [((AVPlayerLayer*)layer).player replaceCurrentItemWithPlayerItem:nil];
+    }
+    [layer removeFromSuperlayer];
+    
     verbatmCustomImageView * view = [self imageViewFromAsset:oldview.asset];
     [self.media insertObject: view.asset atIndex:0];
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);

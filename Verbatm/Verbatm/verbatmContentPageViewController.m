@@ -443,8 +443,8 @@
     {
         [self removeImageScrollview:nil];
         //when enter is clicked we give them a new textview
-        verbatmCustomPinchView * pinchView = [self newPinchObjectBelowView:self.openImagePinchView fromView: nil isTextView:YES];
-        [self createCustomImageScrollViewFromPinchView:pinchView andImageView: nil orTextView:[[verbatmUITextView alloc] init]];
+//        verbatmCustomPinchView * pinchView = [self newPinchObjectBelowView:self.openImagePinchView fromView: nil isTextView:YES];
+//        [self createCustomImageScrollViewFromPinchView:pinchView andImageView: nil orTextView:[[verbatmUITextView alloc] init]];
         
         return NO;
     }
