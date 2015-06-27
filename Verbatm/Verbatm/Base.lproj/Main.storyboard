@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <scenes>
@@ -24,7 +25,7 @@
                                         </connections>
                                     </containerView>
                                     <containerView opaque="NO" contentMode="scaleToFill" id="yxe-c7-aMo">
-                                        <rect key="frame" x="59" y="262" width="240" height="128"/>
+                                        <rect key="frame" x="31" y="261" width="243" height="253"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <connections>
                                             <segue destination="Qxg-C2-1Oh" kind="embed" id="lNo-MU-gAV"/>
@@ -258,14 +259,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eYW-cS-KXq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2890" y="-1424"/>
+            <point key="canvasLocation" x="-3330" y="-1554"/>
         </scene>
         <!--Item-->
         <scene sceneID="74h-C3-U07">
             <objects>
                 <viewController id="Qxg-C2-1Oh" customClass="verbatmMediaPageViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rWO-ax-CE2">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                        <rect key="frame" x="0.0" y="0.0" width="243" height="253"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="yYu-am-nhj">

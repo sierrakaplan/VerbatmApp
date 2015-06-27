@@ -273,17 +273,12 @@
 		C777EEA71AC9180D003E0633 /* AVES that involve text */ = {
 			isa = PBXGroup;
 			children = (
-				C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */,
-				C7E6C1311A4E394600863893 /* v_multiVidTextPhoto.h */,
-				C7E6C1321A4E394600863893 /* v_multiVidTextPhoto.m */,
-				C7E6C1351A4E394600863893 /* v_photoVideoText.h */,
-				C7E6C1361A4E394600863893 /* v_photoVideoText.m */,
-				C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */,
-				C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */,
+				C777EEA81ACFEC7A003E0633 /* v_MultiplePhotoText.h */,
+				C777EEA91ACFEC7A003E0633 /* v_MultiplePhotoText.m */,
+				C7E6C13B1A4E394600863893 /* v_textview.h */,
+				C7E6C13C1A4E394600863893 /* v_textview.m */,
 				C7E6C1371A4E394600863893 /* v_textPhoto.h */,
 				C7E6C1381A4E394600863893 /* v_textPhoto.m */,
-				C7E6C1391A4E394600863893 /* v_textVideo.h */,
-				C7E6C13A1A4E394600863893 /* v_textVideo.m */,
 			);
 			name = "AVES that involve text";
 			sourceTree = "<group>";
@@ -359,6 +354,37 @@
 				F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */,
 			);
 			name = "Custom Views";
+			sourceTree = "<group>";
+		};
+		C7B1EC7B1B39FBBD001A4FFC /* Not in use  */ = {
+			isa = PBXGroup;
+			children = (
+				C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */,
+				C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */,
+			);
+			name = "Not in use ";
+			sourceTree = "<group>";
+		};
+		C7B1EC7C1B3CDF53001A4FFC /* Video Aves */ = {
+			isa = PBXGroup;
+			children = (
+				C7E6C12F1A4E394600863893 /* v_multiplePhotoVideo.h */,
+				C7E6C1301A4E394600863893 /* v_multiplePhotoVideo.m */,
+				C77A68BD1AC2327A000B10E2 /* multiplePhotoVideoAve.xib */,
+				C7E6C13D1A4E394600863893 /* v_videoview.h */,
+				C7E6C13E1A4E394600863893 /* v_videoview.m */,
+				C777EE991AC4B37C003E0633 /* multiVTP_Ave.xib */,
+				C7E6C1311A4E394600863893 /* v_multiVidTextPhoto.h */,
+				C7E6C1321A4E394600863893 /* v_multiVidTextPhoto.m */,
+				C7E6C1351A4E394600863893 /* v_photoVideoText.h */,
+				C7E6C1361A4E394600863893 /* v_photoVideoText.m */,
+				C7E6C1391A4E394600863893 /* v_textVideo.h */,
+				C7E6C13A1A4E394600863893 /* v_textVideo.m */,
+				C73686E41A9B229400ADAC90 /* PhotoVideoAve.xib */,
+				C73686E61A9B22AA00ADAC90 /* verbatmPhotoVideoAve.h */,
+				C73686E71A9B22AA00ADAC90 /* verbatmPhotoVideoAve.m */,
+			);
+			name = "Video Aves";
 			sourceTree = "<group>";
 		};
 		C7BC4369199D97F5004B91A1 = {
@@ -501,22 +527,12 @@
 		F26894441A43641C00B1D4DB /* Article Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				C7B1EC7C1B3CDF53001A4FFC /* Video Aves */,
+				C7B1EC7B1B39FBBD001A4FFC /* Not in use  */,
 				C777EEA71AC9180D003E0633 /* AVES that involve text */,
-				C73686E41A9B229400ADAC90 /* PhotoVideoAve.xib */,
-				C73686E61A9B22AA00ADAC90 /* verbatmPhotoVideoAve.h */,
-				C73686E71A9B22AA00ADAC90 /* verbatmPhotoVideoAve.m */,
 				C77A68B21AC20AA2000B10E2 /* v_multiplePhoto.h */,
 				C77A68B31AC20AA2000B10E2 /* v_multiplePhoto.m */,
-				C777EEA81ACFEC7A003E0633 /* v_MultiplePhotoText.h */,
-				C777EEA91ACFEC7A003E0633 /* v_MultiplePhotoText.m */,
 				C77A68BB1AC20DD7000B10E2 /* multiplePhotosAve.xib */,
-				C7E6C12F1A4E394600863893 /* v_multiplePhotoVideo.h */,
-				C7E6C1301A4E394600863893 /* v_multiplePhotoVideo.m */,
-				C77A68BD1AC2327A000B10E2 /* multiplePhotoVideoAve.xib */,
-				C7E6C13B1A4E394600863893 /* v_textview.h */,
-				C7E6C13C1A4E394600863893 /* v_textview.m */,
-				C7E6C13D1A4E394600863893 /* v_videoview.h */,
-				C7E6C13E1A4E394600863893 /* v_videoview.m */,
 			);
 			name = "Article Custom Views";
 			sourceTree = "<group>";

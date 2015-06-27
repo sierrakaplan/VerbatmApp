@@ -16,4 +16,6 @@
 //-(void)addTapGesture;
 -(void)mutePlayer;
 -(void)enableSound;
+-(void)offScreen;
+-(void)onScreen;
 @end

@@ -585,6 +585,22 @@
     return self;
 }
 
+-(void)offScreen
+{
+    
+    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
+    
+}
+
+-(void)onScreen
+{
+//    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:self.mix];
+//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+//    [playerLayer.player replaceCurrentItemWithPlayerItem:playerItem];
+    [self displayMedia];
+}
+
 
 -(NSMutableArray*)getVideos
 {

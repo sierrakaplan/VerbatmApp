@@ -13,6 +13,9 @@
 
 @interface verbatmCustomPinchView : UIView <NSCoding>
 
+-(void)onScreen;
+-(void)offScreen;
+
 /*
  allows you to change the width and height of the object without changing it's center
  note that the object frame is a square so width == height

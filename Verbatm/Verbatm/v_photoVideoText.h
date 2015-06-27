@@ -10,4 +10,6 @@
 
 @interface v_photoVideoText : UIView
 -(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andVideo:(NSData*)assetList;
+-(void)offScreen;
+-(void)onScreen;
 @end

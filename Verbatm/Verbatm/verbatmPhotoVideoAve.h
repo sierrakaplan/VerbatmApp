@@ -14,4 +14,6 @@
 -(void)addGesturesToVideoView;
 -(void) mute;
 -(void) unmute;
+-(void)offScreen;
+-(void)onScreen;
 @end

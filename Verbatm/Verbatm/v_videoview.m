@@ -96,6 +96,9 @@
         AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
         [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
         AVAssetTrack* this_audio_track = [[assetClip tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+        
+        videoTrack.preferredTransform = this_video_track.preferredTransform;
+
         if(this_audio_track != nil)
         {
             [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
@@ -203,6 +206,21 @@
     }else{
         [self rewindVideo];
     }
+}
+
+-(void)offScreen
+{
+    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
+    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
+}
+
+-(void)onScreen
+{
+//   AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:self.mix];
+//    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
+//    [playerLayer.player replaceCurrentItemWithPlayerItem:playerItem];
+//    [playerLayer.player play];
+    [self setUpPlayer:self.mix];
 }
 
 /*Mute the video*/

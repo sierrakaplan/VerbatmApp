@@ -187,6 +187,15 @@
     self.lastPoint = translation;
 }
 
+-(void)onScreen
+{
+    [self.photoVideoView onScreen];
+}
+
+-(void)offScreen
+{
+    [self.photoVideoView offScreen];
+}
 
 
 /*This function sets the textView's size to fit superview's frame.
