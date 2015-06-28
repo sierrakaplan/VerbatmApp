@@ -204,19 +204,19 @@
     [super viewWillAppear:animated];
     [self configureViews];
     self.pinching = NO;//initialise pinching to no
-    for(UIView * view in self.pageElements)
-    {
-        if([view isKindOfClass:[verbatmCustomPinchView class]])
-        {
-            [((verbatmCustomPinchView *)view) restartVideo];
-        }
-    }
+//    for(UIView * view in self.pageElements)
+//    {
+//        if([view isKindOfClass:[verbatmCustomPinchView class]])
+//        {
+//            [((verbatmCustomPinchView *)view) restartVideo];
+//        }
+//    }
 
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    //[super viewDidAppear:animated];
     
 }
 
@@ -416,6 +416,7 @@
     {
         [self.articleTitleField resignFirstResponder];
     }
+    
     return YES;
 }
 

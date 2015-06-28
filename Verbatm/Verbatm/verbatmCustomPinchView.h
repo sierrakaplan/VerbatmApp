@@ -76,7 +76,7 @@
 //restarts the video playing
 //Should only be called if the player layer of the video has been removed (perhaps due to a preview)
 //and we want to restart the video 
--(void) restartVideo;
+//-(void) restartVideo;
 
 //Tells whether it is a collection consisting of more than one type of media
 -(BOOL)isCollection;

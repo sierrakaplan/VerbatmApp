@@ -219,7 +219,8 @@
     {
         self.openImage = [[verbatmCustomImageView alloc]init];
         [self addSubview:self.openImage];
-        self.openImage.frame = CGRectMake(0,0, self.frame.size.width, self.frame.size.height);
+        CGRect frame = self.bounds;
+        self.openImage.frame = frame;
         AVURLAsset* asset = [[AVURLAsset alloc]initWithURL:givenImageView.asset.defaultRepresentation.url options:nil];
         [self playVideo:asset];
         
