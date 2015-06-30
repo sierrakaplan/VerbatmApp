@@ -10,6 +10,7 @@
 
 @interface v_multiVidTextPhoto : UIView
 -(instancetype)initWithFrame:(CGRect)frame Photos:(NSMutableArray*)photos andVideos:(NSArray*)videos andText:(NSString*)text;
-
+-(void)onScreen;
+-(void)offScreen;
 
 @end

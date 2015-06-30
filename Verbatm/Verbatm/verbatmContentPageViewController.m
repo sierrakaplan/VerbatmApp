@@ -206,19 +206,19 @@
     [super viewWillAppear:animated];
     [self configureViews];
     self.pinching = NO;//initialise pinching to no
-    for(UIView * view in self.pageElements)
-    {
-        if([view isKindOfClass:[verbatmCustomPinchView class]])
-        {
-            [((verbatmCustomPinchView *)view) restartVideo];
-        }
-    }
+//    for(UIView * view in self.pageElements)
+//    {
+//        if([view isKindOfClass:[verbatmCustomPinchView class]])
+//        {
+//            [((verbatmCustomPinchView *)view) restartVideo];
+//        }
+//    }
 
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+    //[super viewDidAppear:animated];
     
 }
 
@@ -447,6 +447,7 @@
     {
         [self.articleTitleField resignFirstResponder];
     }
+    
     return YES;
 }
 
@@ -474,8 +475,8 @@
     {
         [self removeImageScrollview:nil];
         //when enter is clicked we give them a new textview
-        verbatmCustomPinchView * pinchView = [self newPinchObjectBelowView:self.openImagePinchView fromView: nil isTextView:YES];
-        [self createCustomImageScrollViewFromPinchView:pinchView andImageView: nil orTextView:[[verbatmUITextView alloc] init]];
+//        verbatmCustomPinchView * pinchView = [self newPinchObjectBelowView:self.openImagePinchView fromView: nil isTextView:YES];
+//        [self createCustomImageScrollViewFromPinchView:pinchView andImageView: nil orTextView:[[verbatmUITextView alloc] init]];
         
         return NO;
     }

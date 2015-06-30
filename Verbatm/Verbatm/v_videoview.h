@@ -17,4 +17,6 @@
 -(id)initWithFrame:(CGRect)frame andAssets:(NSArray*)videoList;
 -(void)mutePlayer;
 -(void)enableSound;
+-(void)onScreen;
+-(void)offScreen;
 @end

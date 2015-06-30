@@ -13,6 +13,9 @@
 
 @interface verbatmCustomPinchView : UIView <NSCoding>
 
+-(void)onScreen;
+-(void)offScreen;
+
 /*
  allows you to change the width and height of the object without changing it's center
  note that the object frame is a square so width == height
@@ -73,7 +76,7 @@
 //restarts the video playing
 //Should only be called if the player layer of the video has been removed (perhaps due to a preview)
 //and we want to restart the video 
--(void) restartVideo;
+//-(void) restartVideo;
 
 //Tells whether it is a collection consisting of more than one type of media
 -(BOOL)isCollection;

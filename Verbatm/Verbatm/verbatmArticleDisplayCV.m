@@ -209,6 +209,7 @@
     
     
     //This makes sure that if the first object is a video it is playing the sound
+    [self everythingOffScreen];
     [self handleSound];
     [self setUpGestureRecognizers];
 }
@@ -255,6 +256,27 @@
     }
 }
 
+
+//to be called when an aritcle is first rendered to unsure all videos are off
+-(void)everythingOffScreen
+{
+    return;
+    
+    for (int i=0; i< self.pinchedObjects.count; i++)
+    {
+        if(self.pinchedObjects[i] == self.animatingView)continue;
+        
+        if([self.pinchedObjects[i] isKindOfClass:[v_videoview class]]){
+            [((v_videoview*)self.pinchedObjects[i]) offScreen];
+        }else if([self.pinchedObjects[i] isKindOfClass:[verbatmPhotoVideoAve class]]){
+            [((verbatmPhotoVideoAve *)self.pinchedObjects[i]) offScreen];
+        }else if([self.pinchedObjects[i] isKindOfClass:[v_multiplePhotoVideo class]]){
+            [((v_multiplePhotoVideo*)self.pinchedObjects[i]) offScreen];
+        }
+    }
+}
+
+
 -(void)handleSound//plays sound if first video is
 {
     if(_animatingView)[self muteSound];
@@ -273,10 +295,13 @@
     if([_animatingView isKindOfClass:[v_videoview class]] )
     {
         [((v_videoview*)_animatingView) enableSound];
+        //[((v_videoview*)_animatingView) onScreen];
     }else if([_animatingView isKindOfClass:[verbatmPhotoVideoAve class]]){
         [((verbatmPhotoVideoAve*)_animatingView) unmute];
+        //[((verbatmPhotoVideoAve*)_animatingView) onScreen];
     }else if([_animatingView isKindOfClass:[v_multiplePhotoVideo class]]){
         [((v_multiplePhotoVideo*)_animatingView) enableSound];
+       //[((v_multiplePhotoVideo*)_animatingView) onScreen];
     }
 }
 

@@ -503,7 +503,7 @@
 {
     if([self.videoView.layer.sublayers firstObject]){
         //this has been commented out for now- we are not sure if it'll bring issues 
-        //[(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
+        [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
     }
     return self.media;
 }
@@ -596,6 +596,22 @@
         [self addBorderToPinchView];
     }
     return self;
+}
+
+-(void)offScreen
+{
+    
+    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
+    
+}
+
+-(void)onScreen
+{
+//    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:self.mix];
+//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+//    [playerLayer.player replaceCurrentItemWithPlayerItem:playerItem];
+    [self displayMedia];
 }
 
 

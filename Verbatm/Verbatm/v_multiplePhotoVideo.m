@@ -216,6 +216,20 @@
     [p seekToTime:kCMTimeZero];
 }
 
+-(void)offScreen
+{
+    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
+}
+
+-(void)onScreen
+{
+    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:self.mix];
+    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+    [playerLayer.player replaceCurrentItemWithPlayerItem:playerItem];
+    //[self setUpPlayer:self.mix];
+}
+
 /*Mute the video*/
 -(void)mutePlayer
 {

@@ -372,7 +372,6 @@
         //this is so that we aren't indexing past the end of our array just because a media item was removed
         if(self.oldSearch_endIndex >= self.media.count) self.oldSearch_endIndex = (self.media.count -1);
         [self.customDelegate didSelectImageView:selectedImageView];
-        
     }
 }
 
@@ -380,6 +379,15 @@
 -(void)returnToGallery:(verbatmCustomImageView*)oldview
 {
     [[oldview.layer.sublayers firstObject]removeFromSuperlayer];
+    
+    CALayer * layer = [oldview.layer.sublayers firstObject];
+    
+    if([layer isKindOfClass:[AVPlayerLayer class]])
+    {
+        [((AVPlayerLayer*)layer).player replaceCurrentItemWithPlayerItem:nil];
+    }
+    [layer removeFromSuperlayer];
+    
     verbatmCustomImageView * view = [self imageViewFromAsset:oldview.asset];
     [self.media insertObject: view.asset atIndex:0];
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
