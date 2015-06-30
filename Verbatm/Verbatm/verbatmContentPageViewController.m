@@ -140,6 +140,8 @@
 #pragma mark New Properties and Defines
 
 #define OFFSET_BELOW_ARTICLE_TITLE 30
+#define NOTIFICATION_PAUSE_VIDEOS @"pauseContentPageVideosNotification"
+#define NOTIFICATION_PLAY_VIDEOS @"playContentPageVideosNotification"
 
 #define NOTIFICATION_UNDO @"undoTileDeleteNotification"
 #define LEFT_DELETE_OFFSET (self.view.frame.size.width/2)
@@ -219,6 +221,7 @@
     [super viewDidAppear:animated];
     
 }
+
 
 //gives the placeholders a white color
 -(void) setPlaceholderColors
@@ -368,8 +371,36 @@
                                                  name:UIKeyboardWillChangeFrameNotification
                                                object:nil];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(pauseAllVideos)
+                                                 name:NOTIFICATION_PAUSE_VIDEOS
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(playVideos)
+                                                 name:NOTIFICATION_PLAY_VIDEOS
+                                               object:nil];
     
     
+    
+}
+
+//goes through all pinch views and pauses videos
+-(void)pauseAllVideos
+{
+    for (UIView * view in self.pageElements)
+    {
+        if([view isKindOfClass:[verbatmCustomPinchView class]])[((verbatmCustomPinchView *)view) pauseVideo];
+    }
+}
+
+//goes through all pinch views and plays the videos
+-(void)playVideos
+{
+    for (UIView * view in self.pageElements)
+    {
+        if([view isKindOfClass:[verbatmCustomPinchView class]])[((verbatmCustomPinchView *)view) continueVideo];
+    }
+
 }
 
 

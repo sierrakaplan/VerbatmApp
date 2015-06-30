@@ -509,20 +509,33 @@
 }
 
 #pragma mark - manipulating playing of videos -
+//pauses the video for the pinchview if there is one
 -(void)pauseVideo
 {
     if(!self.there_is_video) return;
-    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-    AVPlayer* player = playerLayer.player;
-    [player pause];
+    
+    for(CALayer * layer in self.videoView.layer.sublayers)
+    {
+        if([layer isKindOfClass:[AVPlayerLayer class]])
+        {
+            AVPlayer* player = ((AVPlayerLayer*)layer).player;
+            [player pause];
+        }
+    }
 }
 
+//plays the video of the pinch view if there is one
 -(void)continueVideo
 {
     if(!self.there_is_video) return;
-    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-    AVPlayer* player = playerLayer.player;
-    [player play];
+    for(CALayer * layer in self.videoView.layer.sublayers)
+    {
+        if([layer isKindOfClass:[AVPlayerLayer class]])
+        {
+            AVPlayer* player = ((AVPlayerLayer*)layer).player;
+            [player play];
+        }
+    }
 }
 
 #pragma mark - selection interface -

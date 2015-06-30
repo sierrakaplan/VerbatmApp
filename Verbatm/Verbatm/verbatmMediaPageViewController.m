@@ -368,6 +368,7 @@
 }
 
 //Lucio
+//when a photo is taken- present it ("freeze" it on the screen) for a short period of time before removing it
 -(void)freezeFrame
 {
     UIView* dummyView = [[UIView alloc]initWithFrame: self.verbatmCameraView.frame];
