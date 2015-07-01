@@ -252,7 +252,8 @@
 
 -(void) setPhotoFrom: (NSArray *) photos
 {
-    self.mainImage.contentMode = UIViewContentModeScaleAspectFill;
+    self.mainImage.contentMode = UIViewContentModeScaleAspectFit;
+    self.mainImage.backgroundColor =[UIColor blackColor];
     self.mainImage.image = (UIImage*)photos.firstObject;
     self.mainImage.layer.masksToBounds = YES;
     self.mainImage.clipsToBounds = YES;

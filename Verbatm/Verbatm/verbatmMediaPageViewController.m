@@ -47,6 +47,7 @@
     @property (strong, nonatomic)UIButton* switchFlashButton;
     @property (nonatomic) CGAffineTransform flashTransform;
     @property (nonatomic) CGAffineTransform switchTransform;
+    @property(nonatomic,strong) UIButton * capturePic;
 
 #pragma mark - view controllers
     @property (strong,nonatomic) verbatmContentPageViewController* vc_contentPage;
@@ -73,7 +74,6 @@
 @property (nonatomic) CGRect oldPullBarFrame; //used when we hide the pullbar so we can restore it to what it was before
 //layout of the screen before it was made landscape- MSAV BASE FULLSCREEEN
 @property(nonatomic) NSString * previousLayout;
-
 
 #pragma mark Filter helpers
 #define FILTER_NOTIFICATION_ORIGINAL @"addOriginalFilter"
@@ -121,7 +121,7 @@
 #define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
 
 #define PULLBAR_HEIGHT 36
-
+#define CAMERA_BUTTON_WIDTH_HEIGHT 100
 @end
 
 @implementation verbatmMediaPageViewController
@@ -167,6 +167,7 @@
     
     //make sure the frames are correctly centered
     [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
+    
 }
 
 
@@ -213,6 +214,7 @@
 {
     [self.view insertSubview: self.verbatmCameraView atIndex:0];
     self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
+    [self creatPhotoTakingButton];
 }
 
 -(void)setContentPage_vc
@@ -258,7 +260,6 @@
 -(void) viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    
     //[self prepareCameraView];
     //get the view controllers in the storyboard and store them
 }
@@ -340,11 +341,22 @@
 }
 
 
+-(void)creatPhotoTakingButton
+{
+    self.capturePic = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.capturePic setImage:[UIImage imageNamed:@"camera button4"] forState:UIControlStateNormal];
+    [self.capturePic setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - 3, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
+    [self.capturePic addTarget:self action:@selector(takePhoto:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view insertSubview:self.capturePic belowSubview:self.containerView];
+}
+
+
 #pragma mark creating gestures
 
 //by Lucio
 -(void) createTapGesture
 {
+
     self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
     self.takePhotoGesture.numberOfTapsRequired = 1;
     self.takePhotoGesture.cancelsTouchesInView =  NO;
