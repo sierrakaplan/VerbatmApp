@@ -11,9 +11,9 @@
 #import "VerbatmUser.h"
 
 @interface verbatmUserLoginViewController () <UITextFieldDelegate>
-#define SINGUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
 #define SINGUP_FAILED_NOTIFIACTION @"userFailedToSignIn"
 #define TOAST_DURATION 1
+#define SINGUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
 
 @property (weak, nonatomic) IBOutlet UITextField *UserName_TextField;
 @property (weak, nonatomic) IBOutlet UITextField *Password_TextField;
@@ -29,20 +29,27 @@
 {
     [super viewDidLoad];
 
-    //signup for a notification that tells you the user 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpSuccesful:) name:SINGUP_SUCCEEDED_NOTIFICATION object: nil];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpFailed:) name:SINGUP_FAILED_NOTIFIACTION object: nil];
     self.UserName_TextField.delegate = self;
     self.Password_TextField.delegate = self;
-    //if the user is logged in then lets get outta here!
-    if([VerbatmUser userIsLoggedIn]) [self performSegueWithIdentifier:@"bringUpMasterNav" sender:self];
-    
     [self centerAllframes];
     
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    VerbatmUser * user = [VerbatmUser currentUser];
+    if(user){
+        [self signUpDirect];
+    }
+}
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+}
 
 //dynamically centers all our frames depending on phone screen dimensions
 -(void) centerAllframes
@@ -73,7 +80,13 @@
     //Removes the login page
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
+//If the user had already signed in
+-(void) signUpDirect
+{
+    NSLog(@"User is already signed in");
+    //should only call this segue if the user is logged in
+    [self performSegueWithIdentifier:@"bringUpMasterNav" sender:self];
+}
 
 //not that the signup was succesful - post a notiication
 -(void) signUpFailed: (NSNotification *) notification
@@ -89,8 +102,9 @@
        
         if(user)
         {
-            //should only call this segue if the user is logged in
-            [self performSegueWithIdentifier:@"bringUpMasterNav" sender:self];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SINGUP_SUCCEEDED_NOTIFICATION
+                                                                object:nil
+                                                              userInfo:nil];
         }else
         {
             NSLog(@"Login failed");

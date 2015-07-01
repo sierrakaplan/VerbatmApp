@@ -57,12 +57,12 @@
 
 -(void)displayArticle: (NSNotification *) notification
 {
+    
 }
 
 //called when we want to present an article. article should be set with our content
 -(void)showArticle:(NSNotification *) notification
 {
-
     Article *article = [[notification userInfo] objectForKey:@"article"];
     NSMutableArray  *PO = [[notification userInfo] objectForKey:@"pinchObjects"];
     if(article)
@@ -189,7 +189,6 @@
 
 
 #pragma mark - render pinchPages -
-
 //takes AVE pages and displays them on our scrollview
 -(void)renderPinchPages
 {

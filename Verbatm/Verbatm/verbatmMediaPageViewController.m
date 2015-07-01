@@ -19,6 +19,7 @@
 #import "articleDispalyViewController.h"
 #import "customPullBarView.h"
 #import "Article.h"
+#import "VerbatmUser.h"
 
 
 @interface verbatmMediaPageViewController () <UITextFieldDelegate, verbatmMediaSessionManagerDelegate, pullBarDelegate>
@@ -122,6 +123,8 @@
 
 #define PULLBAR_HEIGHT 36
 #define CAMERA_BUTTON_WIDTH_HEIGHT 100
+
+
 @end
 
 @implementation verbatmMediaPageViewController
@@ -864,6 +867,8 @@
                                              selector:@selector(showPullBar)
                                                  name:@"Notification_shouldShowPullBar"
                                                object:nil];
+    
+    
 }
 
 
@@ -956,28 +961,6 @@
     
 }
 
-
-////this makes sure that there are elements in the pinchview before a preview is called
-//- (BOOL)shouldPerformSegueWithIdentifier:(NSString *)identifier
-//                                  sender:(id)sender
-//{
-//    
-//    if([identifier isEqualToString:@"previewVerbatmArticle"])
-//    {
-//        int counter=0;
-//        for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
-//        {
-//            if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
-//            {
-//                counter ++;
-//            }
-//        }
-//        
-//        if(!counter) return NO;
-//    }
-//    
-//    return YES;
-//}
 
 
 #pragma mark - Undo Button -

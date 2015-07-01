@@ -8,6 +8,8 @@
 
 #import "verbatmMasterNavigationViewController.h"
 #import "articleDispalyViewController.h"
+#import "VerbatmUser.h"
+
 
 @interface verbatmMasterNavigationViewController ()
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
@@ -28,6 +30,8 @@
 #define NOTIFICATION_PLAY_VIDEOS @"playContentPageVideosNotification"
 #define NOTIFICATION_SHOW_ADK @"notification_showADK"
 #define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
+#define SINGUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
+
 @end
 
 @implementation verbatmMasterNavigationViewController
@@ -40,10 +44,18 @@
     [self setUpGestureRecognizers];
 }
 
+-(void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self Login];
+}
+
 -(void)registerForNavNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
+    //signup for a notification that tells you the user has signed in
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpSuccesful:) name:SINGUP_SUCCEEDED_NOTIFICATION object: nil];
     
 }
 
@@ -223,6 +235,27 @@
         [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
     }
 }
+#pragma mark - Handle Login -
+
+//not that the signup was succesful - post a notiication
+-(void) signUpSuccesful: (NSNotification *) notification
+{
+    NSLog(@"Signup Succeeded");
+    //Removes the login page
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(void)Login
+{
+    if(![VerbatmUser currentUser])[self bringUpSignUp];
+}
+
+//brings up the login page if there is no user logged in
+-(void)bringUpSignUp
+{
+    [self performSegueWithIdentifier:@"bringUpSign" sender:self];
+}
+
 
 #pragma mark Orientation
 - (NSUInteger)supportedInterfaceOrientations

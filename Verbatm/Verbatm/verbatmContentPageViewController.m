@@ -454,9 +454,8 @@
 
 #pragma mark - Open Elements -
 
+
 #pragma mark Text Entered
-
-
 //Iain
 //User has edited the text view somehow so we recount the words in the view. And adjust its size
 - (void)textViewDidChange:(UITextView *)textView
