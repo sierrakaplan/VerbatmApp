@@ -40,7 +40,6 @@
     self.articleListView.delegate = self;
     self.articles = [verbatmArticleAquirer downloadAllArticles];
     [self setFrames];
-    // Do any additional setup after loading the view.
 }
 
 -(void)setFrames
@@ -54,9 +53,14 @@
 //reloads data into the list view
 - (IBAction)refreshArticleList:(UIButton *)sender
 {
-    [self.articleListView reloadData];
+    [self refreshFeed];
 }
 
+-(void)refreshFeed
+{
+    self.articles = [verbatmArticleAquirer downloadAllArticles];
+    [self.articleListView reloadData];
+}
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {

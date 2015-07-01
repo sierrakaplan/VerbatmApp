@@ -31,6 +31,8 @@
 #define NOTIFICATION_SHOW_ADK @"notification_showADK"
 #define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
 #define SINGUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
+#define NOTIFICATION_CLEAR_CONTENTPAGE @"Notification_ClearContentPage"
+#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
 
 @end
 
@@ -56,7 +58,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
     //signup for a notification that tells you the user has signed in
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpSuccesful:) name:SINGUP_SUCCEEDED_NOTIFICATION object: nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticleList:) name:NOTIFICATION_EXIT_CONTENTPAGE object: nil];
 }
 
 
@@ -70,6 +72,19 @@
            [self play_CP_Vidoes];
        }
    }];
+}
+
+-(void)showArticleList:(NSNotification *)notification
+{
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        self.masterSV.contentOffset = CGPointMake(0, 0);
+    }completion:^(BOOL finished) {
+        if(finished)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CLEAR_CONTENTPAGE
+ object:nil userInfo:nil];
+        }
+    }];
 }
 
 

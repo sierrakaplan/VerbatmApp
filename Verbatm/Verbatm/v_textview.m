@@ -25,7 +25,8 @@
  */
 -(id)initWithFrame:(CGRect)frame
 {
-    if((self = [super initWithFrame:frame])){
+    if((self = [super initWithFrame:frame]))
+    {
         //prevents editing and selecting the view
         self.editable = NO;
         self.selectable = NO;

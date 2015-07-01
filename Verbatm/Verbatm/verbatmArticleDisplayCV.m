@@ -278,14 +278,14 @@
 
 -(void)handleSound//plays sound if first video is
 {
-    if(_animatingView)[self muteSound];
-    else {
-        _animatingView = self.pinchedObjects[0];
-        [self muteSound];
-    }
-    int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
-    _animatingView = self.pinchedObjects[index];
-    [self enableSound];
+//    if(_animatingView)[self muteSound];
+//    else {
+//        _animatingView = [self.pinchedObjects firstObject];
+//        [self muteSound];
+//    }
+//    int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
+//    _animatingView = [self.pinchedObjects objectAtIndex:index];
+//    [self enableSound];
 }
 
 //call this after changing the animating view to the current view

@@ -75,7 +75,7 @@
 @property (nonatomic) CGRect oldPullBarFrame; //used when we hide the pullbar so we can restore it to what it was before
 //layout of the screen before it was made landscape- MSAV BASE FULLSCREEEN
 @property(nonatomic) NSString * previousLayout;
-
+@property(nonatomic) NSString * articleJustSaved;//this stores the article title that the user just saved. This is in order to prevent saving the same article multiple times
 #pragma mark Filter helpers
 #define FILTER_NOTIFICATION_ORIGINAL @"addOriginalFilter"
 #define FILTER_NOTIFICATION_BW @"addBlackAndWhiteFilter"
@@ -120,9 +120,11 @@
 #define CIRCLE_PROGRESSVIEW_SIZE 100
 #define NOTIFICATION_UNDO @"undoTileDeleteNotification"
 #define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
+#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
 
 #define PULLBAR_HEIGHT 36
-#define CAMERA_BUTTON_WIDTH_HEIGHT 100
+#define CAMERA_BUTTON_WIDTH_HEIGHT 80
+#define CAMERA_BUTTON_Y_OFFSET 20
 
 
 @end
@@ -173,6 +175,11 @@
     
 }
 
+-(NSString *)articleJustSaved
+{
+    if(!_articleJustSaved)_articleJustSaved = @"";
+    return _articleJustSaved;
+}
 
 
 //creates the pullbar object then saves it as a property 
@@ -348,7 +355,7 @@
 {
     self.capturePic = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.capturePic setImage:[UIImage imageNamed:@"camera button4"] forState:UIControlStateNormal];
-    [self.capturePic setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - 3, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
+    [self.capturePic setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
     [self.capturePic addTarget:self action:@selector(takePhoto:) forControlEvents:UIControlEventTouchUpInside];
     [self.view insertSubview:self.capturePic belowSubview:self.containerView];
 }
@@ -939,8 +946,13 @@
 
 -(void)saveButtonPressed
 {
-    if (self.vc_contentPage.pageElements.count >1 && ![self.vc_contentPage.articleTitleField.text isEqualToString:@""]) [self saveArticleContent];
+    //make sure we have an article title, we have multiple pinch elements in the feed and that we
+    //haven't saved this article before
+    if (self.vc_contentPage.pageElements.count >1 && ![self.vc_contentPage.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.vc_contentPage.articleTitleField.text]) [self saveArticleContent];
+    
+    
 }
+
 
 -(void)saveArticleContent
 {
@@ -957,8 +969,11 @@
     
     //this creates and saves an article. the return value is unnecesary 
     Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwhichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pincObjetsArray];
-
-    
+    if(newArticle)
+    {
+        self.articleJustSaved = self.vc_contentPage.articleTitleField.text;
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_CONTENTPAGE object:nil userInfo:nil];
+    }
 }
 
 

@@ -65,6 +65,7 @@
 #define NOTIFICATION_SHOW_PULLBAR @"Notification_shouldShowPullBar"
 #define PICTURE_SELECTED_NOTIFICATION @"pictureObjectSelected"
 #define PICTURE_UNSELECTED_NOTIFICATION @"pictureObjectUnSelected"
+#define NOTIFICATION_CLEAR_CONTENTPAGE @"Notification_ClearContentPage"
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define MAX_WORD_LIMIT 350
 #define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
@@ -379,6 +380,11 @@
                                              selector:@selector(playVideos)
                                                  name:NOTIFICATION_PLAY_VIDEOS
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(cleanUpNotification)
+                                                 name:NOTIFICATION_CLEAR_CONTENTPAGE
+                                               object:nil];
+    
     
     
     
@@ -2469,6 +2475,54 @@
     AVPlayerItem *p = [notification object];
     [p seekToTime:kCMTimeZero];
 }
+
+
+
+
+#pragma mark - Clean up Content Page -
+//we clean up the content page if we press publish or simply want to reset everything
+//all the text views are cleared and all the pinch objects are cleared
+//We also reload the gallery
+
+-(void)cleanUpNotification
+{
+    [self cleanUp];
+}
+
+-(void)cleanUp
+{
+    [self.pageElements removeAllObjects];
+    [self removeCreationObjectsFromScrollview];
+    [self clearTextFields];
+    [self createBaseSelector];
+    
+}
+
+-(void)clearTextFields
+{
+    self.sandwhichWhat.text = @"";
+    self.sandwichWhere.text = @"";
+    self.articleTitleField.text =@"";
+}
+
+-(void)removeCreationObjectsFromScrollview
+{
+    for(UIView * view in self.mainScrollView.subviews)
+    {
+        if([view isKindOfClass:[UIScrollView class]])
+        {
+            [view removeFromSuperview];
+        }
+    }
+}
+
+
+
+
+
+
+
+
 
 
 @end
