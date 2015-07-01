@@ -11,10 +11,7 @@
 
 
 @interface verbatmGalleryHandler ()
-@property (nonatomic) BOOL testNewAdd;
-@property (nonatomic) CGRect baseFrame;//for debuggin purposes
-
-
+@property (nonatomic) CGRect imageView_simpleFrame;//only referenced in one function
 @property (strong, nonatomic) NSMutableArray* media;
 @property (strong, nonatomic) NSMutableArray* mediaImageViews;
 @property( strong, nonatomic) ALAssetsGroup* verbatmFolder;
@@ -25,6 +22,13 @@
 @property (strong, nonatomic) UICollisionBehavior* collider;
 @property (strong, nonatomic) UIDynamicItemBehavior* elasticityBehavior;
 @property (strong, nonatomic) UIView* view;
+
+//these two variables simplify our loop to turn off videos that aren't on screen
+//we store the range for the videos that we played
+@property (nonatomic) NSInteger oldSearch_startIndex;
+@property (nonatomic) NSInteger oldSearch_endIndex;
+
+
 @property (nonatomic) int numVideosReadded;
 #define ALBUM_NAME @"Verbatm"
 #define OFFSET 15
@@ -42,6 +46,17 @@
 @implementation verbatmGalleryHandler
 
 
+-(NSInteger)oldSearch_endIndex
+{
+    if(!_oldSearch_endIndex) _oldSearch_endIndex = 0;
+    return _oldSearch_endIndex;
+}
+
+-(NSInteger)oldSearch_startIndex
+{
+    if(!_oldSearch_startIndex) _oldSearch_startIndex = 0;
+    return _oldSearch_startIndex;
+}
 -(NSMutableArray*)media
 {
     if(!_media){
@@ -126,7 +141,7 @@
 
 - (void)presentGallery
 {
-    [self playVideos];
+    [self handleVideos];
     [self lowerScrollView];
     self.isRaised = NO;
 }
@@ -215,7 +230,6 @@
 
 
 #pragma mark - video playing methods -
-
 -(void)playVideo:(AVURLAsset*)asset forView:(UIImageView*)view
 {
     // Create an AVPlayerItem using the asset
@@ -236,29 +250,28 @@
     // Add it to your view's sublayers
     [view.layer addSublayer:playerLayer];
     playerLayer.frame = view.bounds;
-    self.baseFrame = view.bounds;
     
-    [playerLayer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:NULL];
+    //[playerLayer addObserver:self forKeyPath:@"readyForDisplay" options:0 context:NULL];
     // You can play/pause using the AVPlayer object
-    NSLog(@"is the layer ready for display: %i", playerLayer.readyForDisplay);
-    //[player play];
+    //NSLog(@"is the layer ready for display: %i", playerLayer.readyForDisplay);
+//    [player play];
+//    [player pause];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
-                        change:(NSDictionary *)change context:(void *)context {
-    
-    if ([keyPath isEqualToString:@"readyForDisplay"])
-    {
-        
-        [((AVPlayerLayer *)object).player play];
-        ((AVPlayerLayer *)object).frame = self.baseFrame;
-        if(((AVPlayerLayer *)object).isHidden)
-        {
-            ((AVPlayerLayer *)object).hidden = NO;
-        }
-        NSLog(@"there is a key path ready for display");
-    }
-}
+//- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+//                        change:(NSDictionary *)change context:(void *)context {
+//    
+//    if ([keyPath isEqualToString:@"readyForDisplay"])
+//    {
+//        
+//        //[((AVPlayerLayer *)object).player play];
+//        if(((AVPlayerLayer *)object).isHidden)
+//        {
+//            ((AVPlayerLayer *)object).hidden = NO;
+//        }
+//        NSLog(@"there is a key path ready for display");
+//    }
+//}
 
 //tells me when the video ends so that I can rewind
 -(void)playerItemDidReachEnd:(NSNotification *)notification
@@ -278,6 +291,7 @@
     } completion:^(BOOL finished) {
         if(finished)
         {
+            [self turnOffVideos];//makes sure all videos are turned off
             [self.scrollView removeFromSuperview];
             self.isRaised = YES;
         }
@@ -354,6 +368,9 @@
         [self.scrollView.superview addSubview:selectedImageView];
         selectedImageView.frame = CGRectOffset(selectedImageView.frame, -(self.scrollView.contentOffset.x), 0);
         [selectedImageView removeFromSuperview];
+        
+        //this is so that we aren't indexing past the end of our array just because a media item was removed
+        if(self.oldSearch_endIndex >= self.media.count) self.oldSearch_endIndex = (self.media.count -1);
         [self.customDelegate didSelectImageView:selectedImageView];
     }
 }
@@ -390,6 +407,89 @@
     [self.mediaImageViews insertObject:view atIndex:0];
     [self.view bringSubviewToFront:self.scrollView];
     [self.scrollView bringSubviewToFront:view];
+}
+
+//gives you the lowest index to start looping through in order to reduce the number of screens we consider
+-(int)get_scrollViewIndexToInspect_WithViewWidth:(int) width
+{
+    int start_index = self.scrollView.contentOffset.x/width;
+    return (start_index) ? (start_index -1) : start_index;
+}
+
+-(void)playVideoOnView:(UIView *)view
+{
+    if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo)
+    {
+        for(CALayer * layer in view.layer.sublayers)
+        {
+            if([layer isKindOfClass:[AVPlayerLayer class]])
+            {
+                AVPlayer* player = ((AVPlayerLayer*)layer).player;
+                [player play];
+            }
+        }
+    }
+}
+
+-(void)pauseVideoOnView:(UIView *)view
+{
+    if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo)
+    {
+        for(CALayer * layer in view.layer.sublayers)
+        {
+            if([layer isKindOfClass:[AVPlayerLayer class]])
+            {
+                AVPlayer* player = ((AVPlayerLayer*)layer).player;
+                [player pause];
+            }
+        }
+    }
+}
+
+//pauses videos in the range provided
+-(void)turnOffVideos
+{
+    if(self.oldSearch_startIndex == 0)
+    {
+        UIView * view = [self.scrollView.subviews firstObject];
+        int numFramesOnScreen = self.view.frame.size.width/view.frame.size.width;
+        
+        self.oldSearch_endIndex =((self.oldSearch_startIndex+numFramesOnScreen+3) > (self.mediaImageViews.count)) ? self.mediaImageViews.count: (self.oldSearch_startIndex+numFramesOnScreen+3);
+    }
+    
+    for (NSInteger i=self.oldSearch_startIndex; i<=self.oldSearch_endIndex; i++)
+    {
+        [self pauseVideoOnView:self.scrollView.subviews[i]];
+    }
+}
+
+-(void)playVideosInView
+{
+    UIView * view = [self.scrollView.subviews firstObject];
+    int numFramesOnScreen = self.view.frame.size.width/view.frame.size.width;
+    self.oldSearch_startIndex = [self get_scrollViewIndexToInspect_WithViewWidth:view.frame.size.width];
+    NSUInteger max_index =((self.oldSearch_startIndex+numFramesOnScreen+3) > (self.mediaImageViews.count)) ? self.mediaImageViews.count: (self.oldSearch_startIndex+numFramesOnScreen+3);
+    
+    for (NSInteger i= self.oldSearch_startIndex; i<max_index; i++)
+    {
+        UIView * view = self.mediaImageViews[i];
+        [self playVideoOnView:view];
+        self.oldSearch_endIndex =i;
+    }
+}
+
+//handles the presentation of videos when they come into view
+-(void)handleVideos
+{
+    [self turnOffVideos];
+    [self playVideosInView];
+}
+
+#pragma mark - Manage Scrollview Video Display -
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView * )scrollView
+{
+    [self handleVideos];
 }
 
 @end

@@ -24,7 +24,8 @@
 #define RIGHT_FRAME CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
 
 
-
+#define NOTIFICATION_PAUSE_VIDEOS @"pauseContentPageVideosNotification"
+#define NOTIFICATION_PLAY_VIDEOS @"playContentPageVideosNotification"
 #define NOTIFICATION_SHOW_ADK @"notification_showADK"
 #define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
 @end
@@ -51,6 +52,11 @@
 {
    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
        self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+   }completion:^(BOOL finished) {
+       if(finished)
+       {
+           [self play_CP_Vidoes];
+       }
    }];
 }
 
@@ -73,7 +79,21 @@
     [self.view addGestureRecognizer: edgePanL];
 }
 
+//tells the content page to pause its videos when it's out of view
+-(void)pause_CP_Vidoes
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PAUSE_VIDEOS
+                                                        object:nil
+                                                      userInfo:nil];
+}
 
+//tells the content page to play it's videos when it's in view
+-(void)play_CP_Vidoes
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PLAY_VIDEOS
+                                                        object:nil
+                                                      userInfo:nil];
+}
 
 //swipping left from right
 -(void)enter_adk:(UIScreenEdgePanGestureRecognizer *)sender
@@ -99,12 +119,6 @@
     if(sender.state == UIGestureRecognizerStateEnded)
     {
         [self adjustSV];
-        //            if(self.scrollView.frame.origin.x > EXIT_EPSILON)
-        //                //return view to original position
-        //                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-        //                    self.scrollView.frame = self.view.bounds;
-        //                }];
-        //            }
     }
 
 }
@@ -140,12 +154,6 @@
         if(sender.state == UIGestureRecognizerStateEnded)
         {
             [self adjustSV];
-//            if(self.scrollView.frame.origin.x > EXIT_EPSILON)
-//                //return view to original position
-//                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-//                    self.scrollView.frame = self.view.bounds;
-//                }];
-//            }
         }
 }
 
@@ -157,18 +165,25 @@
             //bring ADK into View
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+            }completion:^(BOOL finished) {
+                if(finished)
+                {
+                    [self play_CP_Vidoes];
+                }
             }];
     }else
     {
         //bring List into View
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
             self.masterSV.contentOffset = CGPointMake(0, 0);
+        }completion:^(BOOL finished) {
+            if(finished)
+            {
+                [self pause_CP_Vidoes];
+            }
         }];
     }
 }
-
-
-
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
