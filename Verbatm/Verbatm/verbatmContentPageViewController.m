@@ -162,17 +162,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    
-    
-    //add blurview
-    [self addBlurView];
-    [self setPlaceholderColors];
-    [self set_PersonalScrollView_ContentSizeandOffset];
-    [self setClosedElementDefaultFrame];
-    [self createBaseSelector];
-    [self centerViews];
-    [self sizeMainScrollViewPhoneSize];
 }
 
 -(void) centerViews
@@ -204,8 +193,6 @@
 -(void) viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    [self configureViews];
-    self.pinching = NO;//initialise pinching to no
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -214,7 +201,18 @@
     //set up gallery
     //after view loads load the gallery
     self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
+    //add blurview
+    [self addBlurView];
+    [self setPlaceholderColors];
+    [self set_PersonalScrollView_ContentSizeandOffset];
+    [self setClosedElementDefaultFrame];
+    [self createBaseSelector];
+    [self centerViews];
+    [self sizeMainScrollViewPhoneSize];
     
+    [self configureViews];
+    self.pinching = NO;//initialise pinching to no
+
 }
 
 

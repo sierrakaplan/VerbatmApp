@@ -15,13 +15,13 @@
 #import "v_Analyzer.h"
 #import "articleDispalyViewController.h"
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
-
 #define NOTIFICATION_SHOW_ADK @"notification_showADK"
 #define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
 
 #define BUTTON_HEIGHT 50
 #define TOP_OFFSET 30
 #define TITLE_LIST_OFFSET 30
+
 @interface verbatmArticleListControlerViewController ()<UITableViewDataSource, UITableViewDelegate>
     @property (weak, nonatomic) IBOutlet UITableView *articleListView;
     @property (strong, nonatomic) NSArray * articles;
@@ -46,8 +46,11 @@
     [super viewDidAppear:animated];
     
     //we want to download the articles again and then load them to the page
-    self.articles = [verbatmArticleAquirer downloadAllArticles];
-    [self.articleListView reloadData];
+    [verbatmArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
+        self.articles = ourObjects;
+        [self.articleListView reloadData];
+    }];
+    
 }
 
 -(void)setFrames
@@ -66,8 +69,11 @@
 
 -(void)refreshFeed
 {
-    self.articles = [verbatmArticleAquirer downloadAllArticles];
-    [self.articleListView reloadData];
+    //we want to download the articles again and then load them to the page
+    [verbatmArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
+        self.articles = ourObjects;
+        [self.articleListView reloadData];
+    }];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
