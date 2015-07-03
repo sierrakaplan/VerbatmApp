@@ -28,6 +28,8 @@
     [self.UserName_TextField setDelegate:self];
     [self.Password_TextField setDelegate:self];
     [self centerAllframes];
+    [self showCursor];
+    [self changeReturnButton];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -49,11 +51,21 @@
     
     self.UserName_TextField.frame= textViewFrame;
     
+    self.Password_TextField.frame = CGRectMake((self.view.frame.size.width/2 - self.Password_TextField.frame.size.width/2), self.Password_TextField.frame.origin.y, self.Password_TextField.frame.size.width, self.Password_TextField.frame.size.height);
+}
+
+-(void) showCursor
+{
     self.UserName_TextField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
     
-    self.Password_TextField.frame = CGRectMake((self.view.frame.size.width/2 - self.Password_TextField.frame.size.width/2), self.Password_TextField.frame.origin.y, self.Password_TextField.frame.size.width, self.Password_TextField.frame.size.height);
-    
     self.Password_TextField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
+    
+}
+
+-(void) changeReturnButton
+{
+    [self.UserName_TextField setReturnKeyType:UIReturnKeyNext];
+    [self.Password_TextField setReturnKeyType:UIReturnKeyNext];
 }
 
 -(CGSize) getContentSize:(UITextView*) myTextView{
@@ -71,7 +83,6 @@
         [self signUpUser:self.signUp_button];
         return YES;
     }
-     
     return NO;
 }
 
