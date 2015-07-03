@@ -45,16 +45,34 @@
     
     self.signUp_button.frame= CGRectMake((self.view.frame.size.width/2 - self.signUp_button.frame.size.width/2), self.signUp_button.frame.origin.y, self.signUp_button.frame.size.width, self.signUp_button.frame.size.height);
     
-    self.UserName_TextField.frame= CGRectMake((self.view.frame.size.width/2 - self.UserName_TextField.frame.size.width/2), self.UserName_TextField.frame.origin.y, self.UserName_TextField.frame.size.width, self.UserName_TextField.frame.size.height);
+    CGRect textViewFrame = CGRectMake((self.view.frame.size.width/2 - self.UserName_TextField.frame.size.width/2), self.UserName_TextField.frame.origin.y, self.UserName_TextField.frame.size.width, self.UserName_TextField.frame.size.height);
+    
+    self.UserName_TextField.frame= textViewFrame;
+    
+    self.UserName_TextField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
     
     self.Password_TextField.frame = CGRectMake((self.view.frame.size.width/2 - self.Password_TextField.frame.size.width/2), self.Password_TextField.frame.origin.y, self.Password_TextField.frame.size.width, self.Password_TextField.frame.size.height);
+    
+    self.Password_TextField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
 }
 
+-(CGSize) getContentSize:(UITextView*) myTextView{
+    return [myTextView sizeThatFits:CGSizeMake(myTextView.frame.size.width, FLT_MAX)];
+}
+
+// Enter button presses login
 -(BOOL) textFieldShouldReturn:(UITextField *)textField
 {
-    [self.UserName_TextField resignFirstResponder];
-    [self.Password_TextField resignFirstResponder];
-    return YES;
+    if (textField == self.UserName_TextField) {
+        [self.Password_TextField becomeFirstResponder];
+        return YES;
+    }
+    if (textField == self.Password_TextField) {
+        [self signUpUser:self.signUp_button];
+        return YES;
+    }
+     
+    return NO;
 }
 
 //signs up the user to parse
