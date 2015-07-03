@@ -174,19 +174,11 @@
         return;
     }
     
-    self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
-    if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
-        [self resetFrames];
-        self.lastPoint = CGPointZero;
-        return;
-    }
-    
-    
     self.bgBlurImage.frame = CGRectOffset(self.bgBlurImage.frame,  0, translation.y - self.lastPoint.y);
-    //self.bgBlurImage.frame = CGRectMake( self.bgBlurImage.frame.origin.x,  self.bgBlurImage.frame.origin.y, self.bgBlurImage.frame.size.width,  self.bgBlurImage.frame.size.height - (translation.y - self.lastPoint.y));
+    self.bgBlurImage.frame = CGRectMake( self.bgBlurImage.frame.origin.x,  self.bgBlurImage.frame.origin.y, self.bgBlurImage.frame.size.width,  self.base_textViewFrame.size.height - (translation.y - self.lastPoint.y));
     
     self.textView.frame = CGRectOffset(self.textView.frame,  0, translation.y - self.lastPoint.y );
-    //self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,self.textView.frame.size.width, self.textView.frame.size.height - (translation.y - self.lastPoint.y));
+    self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,self.textView.frame.size.width, self.base_textViewFrame.size.height - (translation.y - self.lastPoint.y));
     
     self.lastPoint = translation;
 }
