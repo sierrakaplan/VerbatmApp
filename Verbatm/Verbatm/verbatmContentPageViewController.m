@@ -163,8 +163,7 @@
 {
     [super viewDidLoad];
     
-    //set up gallery
-    self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
+    
     
     //add blurview
     [self addBlurView];
@@ -207,19 +206,13 @@
     [super viewWillAppear:animated];
     [self configureViews];
     self.pinching = NO;//initialise pinching to no
-//    for(UIView * view in self.pageElements)
-//    {
-//        if([view isKindOfClass:[verbatmCustomPinchView class]])
-//        {
-//            [((verbatmCustomPinchView *)view) restartVideo];
-//        }
-//    }
-
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    //[super viewDidAppear:animated];
+    [super viewDidAppear:animated];
+    //set up gallery
+    self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
     
 }
 

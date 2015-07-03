@@ -38,8 +38,16 @@
     [super viewDidLoad];
     self.articleListView.dataSource = self;
     self.articleListView.delegate = self;
-    self.articles = [verbatmArticleAquirer downloadAllArticles];
     [self setFrames];
+}
+
+-(void) viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    //we want to download the articles again and then load them to the page
+    self.articles = [verbatmArticleAquirer downloadAllArticles];
+    [self.articleListView reloadData];
 }
 
 -(void)setFrames
