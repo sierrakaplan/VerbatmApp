@@ -212,6 +212,7 @@
 {
     [super viewDidAppear:animated];
     //set up gallery
+    //after view loads load the gallery
     self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
     
 }
@@ -780,7 +781,6 @@
             {
                 [self.gallery returnToGallery: (verbatmCustomImageView *)view];
             }
-            
             //sanitize your memory
             if(self.upperPinchView == view) self.upperPinchView = Nil;//sanitize the pointers so the objects don't stay in memory
             if(self.lowerPinchView ==view) self.lowerPinchView =Nil;//sanitize these pointers so that the objects don't stay in memory
