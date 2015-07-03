@@ -858,7 +858,7 @@
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Verbatm.Verbatm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -882,7 +882,7 @@
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.Verbatm.Verbatm;
+				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
