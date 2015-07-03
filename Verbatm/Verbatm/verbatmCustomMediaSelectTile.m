@@ -78,10 +78,14 @@
     return _selectMedia;
 }
 
+
 -(UIButton *) selectText
 {
-    if(!_selectText) _selectText = [[UIButton alloc]init];
-    [_selectText addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
+    if(!_selectText)
+    {
+        _selectText = [[UIButton alloc]init];
+        [_selectText addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
+    }
 
     return _selectText;
 }
