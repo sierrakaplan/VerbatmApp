@@ -7,6 +7,7 @@
 //
 
 #import "verbatmArticleAquirer.h"
+#import "Article.h"
 
 @interface verbatmArticleAquirer ()
 #define ARTICLE_AUTHOR_RELATIONSHIP @"articleAuthorRelation"
@@ -29,10 +30,13 @@
     return [this_article save];
 }
 
-+(NSArray*)downloadAllArticles
++(void)downloadAllArticlesWithBlock:(void(^)(NSArray *ourObjects))onDownloadBlock
 {
     PFQuery* query = [PFQuery queryWithClassName: @"Article"];
-    return [query findObjects];
+    [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
+    {
+        onDownloadBlock(objects);
+    }];
 }
 
 
