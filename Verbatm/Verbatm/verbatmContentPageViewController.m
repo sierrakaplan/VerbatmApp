@@ -163,8 +163,7 @@
 {
     [super viewDidLoad];
     
-    //set up gallery
-    self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
+    
     
     //add blurview
     [self addBlurView];
@@ -219,7 +218,9 @@
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    //[super viewDidAppear:animated];
+    
+    //after view loads load the gallery
+    self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
     
 }
 
