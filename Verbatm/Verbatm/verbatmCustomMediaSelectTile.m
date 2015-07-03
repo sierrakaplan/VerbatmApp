@@ -82,7 +82,8 @@
 {
     if(!_selectText) _selectText = [[UIButton alloc]init];
     [_selectText addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
-
+    [_selectText addTarget:self action:@selector(buttonHighlight:) forControlEvents:UIControlEventTouchDown];
+    
     return _selectText;
 }
 
