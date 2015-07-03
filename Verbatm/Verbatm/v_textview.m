@@ -9,7 +9,7 @@
 #import "v_textview.h"
 #import "ILTranslucentView.h"
 
-@interface v_textview()
+@interface v_textview() <UITextViewDelegate>
 #define DEFAULT_FONT_FAMILY @"Arial"
 #define DEFAULT_FONT_SIZE 17
 #define DEFAULT_TEXT_COLOR blackColor
@@ -30,8 +30,9 @@
         //prevents editing and selecting the view
         self.editable = NO;
         self.selectable = NO;
+        self.delegate = self;
         self.backgroundColor = [self getColorFromHexString: BACKGRND_COLOR];
-        [self addObserver:self forKeyPath: @"contentSize" options: (NSKeyValueObservingOptionNew) context:NULL];
+        [self addObserver:self forKeyPath:@"contentSize" options:(NSKeyValueObservingOptionNew) context:NULL];
         self.showsVerticalScrollIndicator = NO;
     }
     return self;
@@ -39,7 +40,9 @@
 
 -(void)removeTextVerticalCentering
 {
+    
     [self removeObserver:self forKeyPath: @"contentSize"];
+    
 }
 
 /*This function converts a hex string into a uicolor*/
@@ -89,6 +92,7 @@
         tv.contentOffset = (CGPoint){.x = 0, .y = -topCorrect};
     }
 }
+
 
 -(void)dealloc
 {

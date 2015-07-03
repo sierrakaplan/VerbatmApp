@@ -125,7 +125,9 @@
 #define PULLBAR_HEIGHT 36
 #define CAMERA_BUTTON_WIDTH_HEIGHT 80
 #define CAMERA_BUTTON_Y_OFFSET 20
+#define CAMERA_BUTTON_IMAGE @"camerabutton_1"
 
+#define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
 
 @end
 
@@ -354,7 +356,7 @@
 -(void)creatPhotoTakingButton
 {
     self.capturePic = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.capturePic setImage:[UIImage imageNamed:@"camera button4"] forState:UIControlStateNormal];
+    [self.capturePic setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
     [self.capturePic setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
     [self.capturePic addTarget:self action:@selector(takePhoto:) forControlEvents:UIControlEventTouchUpInside];
     [self.view insertSubview:self.capturePic belowSubview:self.containerView];
@@ -937,6 +939,7 @@
                 [pincObjetsArray addObject:self.vc_contentPage.pageElements[i]];
             }
         }
+        
         NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pincObjetsArray,@"pinchObjects", nil];
         [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
                                                             object:nil
@@ -949,7 +952,9 @@
     //make sure we have an article title, we have multiple pinch elements in the feed and that we
     //haven't saved this article before
     if (self.vc_contentPage.pageElements.count >1 && ![self.vc_contentPage.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.vc_contentPage.articleTitleField.text]) [self saveArticleContent];
-    
+    else if([self.vc_contentPage.articleTitleField.text isEqualToString:@""])[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_TILE_ANIMATION
+                                                                    object:nil
+                                                                    userInfo:nil];
     
 }
 

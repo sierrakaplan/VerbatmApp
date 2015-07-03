@@ -32,6 +32,7 @@
 #define ARTICLE_PHOTO_RELATIONSHIP @"articlePhotoRelation"
 #define ARTICLE_AUTHOR_RELATIONSHIP @"articleAuthorRelation"
 #define ARTICLES @"articles"
+#define ARTICLE_COLUMN @"Article"
 #define LIKE @"likes"
 #define VERBATM_USER_CLASSNAME @"VerbatmUser"
 @end
@@ -86,14 +87,17 @@
  Each pinch object is converted into a page which is then saved to parse*/
 -(void)processAndSavePages:(NSArray*)pages
 {
+    __block Article * me = self;
     for(verbatmCustomPinchView* p_obj in pages){
-        Page* this_page = [[Page alloc]initWithPinchObject:p_obj];
+        Page* this_page = [[Page alloc]initWithPinchObject:p_obj andArticle:self];
         [this_page saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if(succeeded){
+            if(succeeded)
+            {
                 NSLog(@"Saved Page Successfully");
                 //[self.article_pageRelationship addObject: this_page]; //create relation between article and page.
-                [this_page setObject: self forKey: ARTICLE_PAGE_RELATIONSHIP];
-            }else{
+                //[this_page setObject:me forKey:ARTICLE_PAGE_RELATIONSHIP];
+            }else
+            {
                 NSLog(@"Could not save page: %@", [error localizedDescription]);
             }
         }];
@@ -200,7 +204,7 @@
 -(NSArray*)getAllPages
 {
     PFQuery* pageQuery = [PFQuery queryWithClassName:@"Page"];
-    [pageQuery whereKey:ARTICLE_PAGE_RELATIONSHIP equalTo:self];
+    [pageQuery whereKey:ARTICLE_COLUMN equalTo:self];
     return [pageQuery findObjects];
 }
 @end

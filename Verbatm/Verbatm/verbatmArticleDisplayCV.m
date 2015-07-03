@@ -32,7 +32,7 @@
 #define EXIT_EPSILON 60 //the amount of space that must be pulled to exit
 #define SV_RESTING_FRAME CGRectMake(self.view.frame.size.width, 0,  self.view.frame.size.width, self.view.frame.size.height);
 #define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
-
+#define ANIMATION_NOTIFICATION_DURATION 0.4
 
 @end
 
@@ -91,10 +91,10 @@
                     verbatmCustomPinchView * pv = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
                     [pincObjetsArray addObject:pv];
                 }
-                
                 v_Analyzer * analyser = [[v_Analyzer alloc]init];
                 self.pinchedObjects = [analyser processPinchedObjectsFromArray:pincObjetsArray withFrame:self.view.frame];
-                //[self muteEverything];<--we shouldn't need this anymore becaue we mute each page at it's creation
+                
+                if(!self.pinchedObjects.count)return;//for now
                 //stop animation indicator
                 [self.activityIndicator stopAnimating];
                 [self renderPinchPages];
@@ -119,6 +119,7 @@
 
 -(void) clearArticle
 {
+    
     //We clear these so that the media is released
     self.scrollView = NULL;
     self.animatingView = NULL;
@@ -155,10 +156,10 @@
     if(show)//present the scrollview
     {
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-         self.articleCurrentlyViewing= YES;
-         //[self.view bringSubviewToFront:self.scrollView];
-         self.scrollView.frame = self.view.bounds;
-     }];
+             self.articleCurrentlyViewing= YES;
+             //[self.view bringSubviewToFront:self.scrollView];
+             self.scrollView.frame = self.view.bounds;
+        }];
     }else//send the scrollview back to the right
     {
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
@@ -173,8 +174,8 @@
             }
         }];
     }
-    
 }
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -278,14 +279,14 @@
 
 -(void)handleSound//plays sound if first video is
 {
-//    if(_animatingView)[self muteSound];
-//    else {
-//        _animatingView = [self.pinchedObjects firstObject];
-//        [self muteSound];
-//    }
-//    int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
-//    _animatingView = [self.pinchedObjects objectAtIndex:index];
-//    [self enableSound];
+    if(_animatingView)[self muteSound];
+    else {
+        _animatingView = [self.pinchedObjects firstObject];
+        [self muteSound];
+    }
+    int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
+    _animatingView = [self.pinchedObjects objectAtIndex:index];
+    [self enableSound];
 }
 
 //call this after changing the animating view to the current view

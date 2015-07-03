@@ -23,6 +23,9 @@
 
 @property (nonatomic) BOOL isTitle;
 @property (nonatomic) CGRect absoluteFrame;
+
+@property(nonatomic) CGRect base_textViewFrame;
+
 #define BORDER_HEIGHT 2
 #define BORDER_COLOR whiteColor
 #define WHITE_BORDER_FRAME CGRectMake(0, self.pullBarView.frame.size.height - BORDER_HEIGHT, self.frame.size.width, BORDER_HEIGHT)
@@ -58,7 +61,6 @@
 {
     [self formatTextViewWithText: text];
     [self checkWordCount:text];
-    [self setSizesToFit];
     self.userInteractionEnabled = YES;
     self.textView.backgroundColor = [UIColor clearColor];
     self.textView.showsVerticalScrollIndicator = NO;
@@ -170,8 +172,8 @@
             if(y_location < THRESHOLD*mid_pt){
                 [self resetFrames];
             }else{
-                self.textView.frame = CGRectMake(SIDE_BORDER, self.frame.size.height, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA);
-                self.bgBlurImage.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA);
+                self.textView.frame = CGRectMake(SIDE_BORDER, self.frame.size.height, self.frame.size.width - 2*SIDE_BORDER, 0);
+                self.bgBlurImage.frame = CGRectMake(0, self.frame.size.height, self.frame.size.width, 0);
                 self.pullBarView.frame = CGRectMake(0, self.frame.size.height - 3*EXTRA, self.frame.size.width,3*EXTRA);
                 [self setWhiteBarFrame];
             }
@@ -180,14 +182,21 @@
         }];
         return;
     }
+    
     self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
     if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
         [self resetFrames];
         self.lastPoint = CGPointZero;
         return;
     }
-    self.bgBlurImage.frame = CGRectOffset(self.bgBlurImage.frame,  0, translation.y - self.lastPoint.y );
+    
+    
+    self.bgBlurImage.frame = CGRectOffset(self.bgBlurImage.frame,  0, translation.y - self.lastPoint.y);
+    //self.bgBlurImage.frame = CGRectMake( self.bgBlurImage.frame.origin.x,  self.bgBlurImage.frame.origin.y, self.bgBlurImage.frame.size.width,  self.bgBlurImage.frame.size.height - (translation.y - self.lastPoint.y));
+    
     self.textView.frame = CGRectOffset(self.textView.frame,  0, translation.y - self.lastPoint.y );
+    //self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,self.textView.frame.size.width, self.textView.frame.size.height - (translation.y - self.lastPoint.y));
+    
     self.lastPoint = translation;
 }
 
@@ -202,14 +211,5 @@
 }
 
 
-/*This function sets the textView's size to fit superview's frame.
- *It ensures that the text layer is always centered in the super view and
- *it text fits in perfectly.
- */
--(void)setSizesToFit
-{
-    self.textView.textAlignment = NSTextAlignmentCenter;
-    [self.textView sizeToFit];
-}
 
 @end

@@ -9,6 +9,7 @@
 #import <Parse/Parse.h>
 #import <Parse/PFObject+Subclass.h>
 #import "verbatmCustomPinchView.h"
+#import "Article.h"
 @class Photo;
 @class Video;
 
@@ -18,7 +19,7 @@
 +(void)load;
 
 #pragma mark - methods for getting and setting page properties - 
--(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view;
+-(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view andArticle: (Article *) article;
 -(NSString*)getText;
 
 //This method blocks//

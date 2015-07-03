@@ -11,6 +11,7 @@
 #include "verbatmCustomPinchView+reconstructFromDownload.h"
 #import "Photo.h"
 #import "Video.h"
+#import "Article.h"
 
 @interface Page() <PFSubclassing>
 
@@ -21,6 +22,8 @@
 
 #define PAGE_PHOTO_RELATIONSHIP @"pagePhotoRelation"
 #define PAGE_VIDEO_RELATIONSHIP @"pageVideoRelation"
+#define ARTICLE_COLUMN @"Article"
+
 @end
 
 @implementation Page
@@ -31,9 +34,11 @@
 
 #pragma mark - Methods required for subclassing PFObject.
 
--(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view
+-(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view andArticle: (Article *) article
 {
-    if((self = [super init])){
+    if((self = [super init]))
+    {
+        self[ARTICLE_COLUMN] = article;
         [self sortPinchObject:p_view];
     }
     return self;
@@ -48,7 +53,8 @@
     }
     self.there_is_picture = pinchObject.there_is_picture;
     self.there_is_video = pinchObject.there_is_video;
-    if(self.there_is_video || self.there_is_picture){
+    if(self.there_is_video || self.there_is_picture)
+    {
         for(UIView* view in media){
             if([view isKindOfClass:[verbatmCustomImageView class]]){
                 if(((verbatmCustomImageView*)view).isVideo){

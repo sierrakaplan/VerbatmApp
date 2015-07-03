@@ -19,6 +19,9 @@
 @property (nonatomic, strong) NSMutableArray * Display_pages;
 @property (nonatomic, strong) NSMutableArray * Display_pinchObjects;
 @property (nonatomic) CGPoint prev_Gesture_Point;
+    
+@property (strong, nonatomic) NSTimer * animationTimer;
+@property (strong,nonatomic) UIImageView* animationView;
 
 #define ANIMATION_DURATION 0.5
 #define NUMBER_OF_CHILD_VCS 3
@@ -33,7 +36,9 @@
 #define SINGUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
 #define NOTIFICATION_CLEAR_CONTENTPAGE @"Notification_ClearContentPage"
 #define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
-
+#define ANIMATION_NOTIFICATION_DURATION 0.5
+#define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
+#define TIME_UNTIL_ANIMATION_CLEAR 1.5
 @end
 
 @implementation verbatmMasterNavigationViewController
@@ -59,6 +64,7 @@
     //signup for a notification that tells you the user has signed in
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpSuccesful:) name:SINGUP_SUCCEEDED_NOTIFICATION object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticleList:) name:NOTIFICATION_EXIT_CONTENTPAGE object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertTitleAnimation) name:NOTIFICATION_TILE_ANIMATION object: nil];
 }
 
 
@@ -81,6 +87,7 @@
     }completion:^(BOOL finished) {
         if(finished)
         {
+            [self articlePublished];
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CLEAR_CONTENTPAGE
  object:nil userInfo:nil];
         }
@@ -211,6 +218,52 @@
         }];
     }
 }
+
+
+//article publsihed sucessfully
+-(void)articlePublished
+{
+    if(self.animationView.frame.size.width) return;
+    self.animationView.image = [UIImage imageNamed:@"published_icon1"];
+    self.animationView.frame = self.view.bounds;
+    [self.view addSubview:self.animationView];
+    if(!self.animationView.alpha)self.animationView.alpha = 1;
+    self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
+    
+}
+
+-(void)removeAnimationView
+{
+    [UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
+        self.animationView.alpha=0;
+        
+    }completion:^(BOOL finished)
+    {
+        self.animationView.frame = CGRectMake(0, 0, 0, 0);
+        
+    }];
+}
+
+//insert title
+-(void)insertTitleAnimation
+{
+    if(self.animationView.frame.size.width) return;
+    self.animationView.image = [UIImage imageNamed:@"title_notification"];
+    self.animationView.frame = self.view.bounds;
+    if(!self.animationView.alpha)self.animationView.alpha = 1;
+    [self.view addSubview:self.animationView];
+    self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:TIME_UNTIL_ANIMATION_CLEAR target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
+    
+}
+
+
+//lazy instantiation
+-(UIImageView *)animationView
+{
+    if(!_animationView)_animationView = [[UIImageView alloc] init];
+    return _animationView;
+}
+
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
