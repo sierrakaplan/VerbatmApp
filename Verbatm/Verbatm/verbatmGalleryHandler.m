@@ -416,6 +416,7 @@
     return (start_index) ? (start_index -1) : start_index;
 }
 
+
 -(void)playVideoOnView:(UIView *)view
 {
     if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo)

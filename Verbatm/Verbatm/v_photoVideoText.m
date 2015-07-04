@@ -35,8 +35,8 @@
 #define DEFAULT_FONT_SIZE 20
 #define THRESHOLD 1.8
 #define PULLBAR_COLOR clearColor
-#define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA)
-#define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP)
+#define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
+#define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
 
 @end
 @implementation v_photoVideoText
@@ -46,6 +46,8 @@
     if(self = [super initWithFrame:frame])
     {
         self.photoVideoView = [[verbatmPhotoVideoAve alloc] initWithFrame:frame Image:image andVideo:@[video]];
+        self.base_textViewFrame = frame;
+
         //[self handleTexViewDetailsFromText:text];
         
     }
@@ -140,7 +142,6 @@
 -(void)addSwipeGesture
 {
     if(self.isTitle)return;
-    
     UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget: self action:@selector(repositiontextView:)];
     [self.pullBarView addGestureRecognizer:panGesture];
 }
@@ -175,6 +176,20 @@
         } completion:^(BOOL finished) {
             self.lastPoint = CGPointZero;
         }];
+        return;
+    }
+    
+    self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
+    if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
+        [self resetFrames];
+        self.lastPoint = CGPointZero;
+        return;
+    }
+    
+    self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
+    if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
+        [self resetFrames];
+        self.lastPoint = CGPointZero;
         return;
     }
     

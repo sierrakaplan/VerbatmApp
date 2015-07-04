@@ -304,7 +304,6 @@
     }
 }
 #pragma mark - Handle Login -
-
 //not that the signup was succesful - post a notiication
 -(void) signUpSuccesful: (NSNotification *) notification
 {
@@ -332,15 +331,16 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
-- (void)didReceiveMemoryWarning {
+- (void)didReceiveMemoryWarning
+{
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
-
+//catches the unwind segue
 - (IBAction)done:(UIStoryboardSegue *)segue
 {
-    //MyModalVC *vc = (MyModalVC *)segue.sourceViewController; // get results out of vc, which I presented
+    
 }
 
 

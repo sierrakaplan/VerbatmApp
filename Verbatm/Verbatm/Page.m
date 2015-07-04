@@ -19,6 +19,7 @@
 @property (readwrite,nonatomic) BOOL there_is_text;
 @property (readwrite, nonatomic) BOOL there_is_video;
 @property (readwrite, nonatomic) BOOL there_is_picture;
+@property (readwrite,nonatomic) NSInteger pagePosition;//indexed from 0 tells you the position of the page in the article
 
 #define PAGE_PHOTO_RELATIONSHIP @"pagePhotoRelation"
 #define PAGE_VIDEO_RELATIONSHIP @"pageVideoRelation"
@@ -31,14 +32,16 @@
 @dynamic there_is_picture;
 @dynamic there_is_text;
 @dynamic there_is_video;
+@dynamic pagePosition;
 
 #pragma mark - Methods required for subclassing PFObject.
 
--(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view andArticle: (Article *) article
+-(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view Article: (Article *) article andPageNumber:(NSInteger) position
 {
     if((self = [super init]))
     {
         self[ARTICLE_COLUMN] = article;
+        self.pagePosition = position;
         [self sortPinchObject:p_view];
     }
     return self;

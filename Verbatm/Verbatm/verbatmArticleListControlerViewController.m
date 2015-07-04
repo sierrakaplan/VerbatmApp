@@ -143,6 +143,8 @@
         [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
     }
 }
+
+
 /*
 #pragma mark - Navigation
 

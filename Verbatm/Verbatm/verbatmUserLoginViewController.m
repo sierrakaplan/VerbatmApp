@@ -29,7 +29,7 @@
 {
     [super viewDidLoad];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpFailed:) name:SINGUP_FAILED_NOTIFIACTION object: nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpFailed:) name:SINGUP_FAILED_NOTIFIACTION object: nil];
     self.UserName_TextField.delegate = self;
     self.Password_TextField.delegate = self;
     [self centerAllframes];
@@ -41,10 +41,7 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    VerbatmUser * user = [VerbatmUser currentUser];
-    if(user){
-        [self signUpDirect];
-    }
+
 }
 
 -(void)viewDidAppear:(BOOL)animated
@@ -95,36 +92,20 @@
     }
     return NO;
 }
-//not that the signup was succesful - post a notiication
--(void) signUpSuccesful: (NSNotification *) notification
-{
-    NSLog(@"Signup Succeeded");
-    //Removes the login page
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-//If the user had already signed in
--(void) signUpDirect
-{
-    NSLog(@"User is already signed in");
-    //should only call this segue if the user is logged in
-    [self performSegueWithIdentifier:@"bringUpMasterNav" sender:self];
-}
 
-//not that the signup was succesful - post a notiication
--(void) signUpFailed: (NSNotification *) notification
-{
-    NSLog(@"SignUp failed");
-}
 
 - (IBAction)login:(UIButton *)sender
 {
-    [VerbatmUser logInWithUsername:self.UserName_TextField.text password:self.Password_TextField.text];
-    
     [VerbatmUser loginUserWithUserName:self.UserName_TextField.text andPassword:self.Password_TextField.text withCompletionBlock:^(PFUser *user, NSError *error) {
        
         if(user)
         {
-            [[NSNotificationCenter defaultCenter] postNotificationName:SINGUP_SUCCEEDED_NOTIFICATION
+            [self.presentingViewController dismissViewControllerAnimated:NO completion:^{
+                return;
+            }];
+             
+             
+             [[NSNotificationCenter defaultCenter] postNotificationName:SINGUP_SUCCEEDED_NOTIFICATION
                                                                 object:nil
                                                               userInfo:nil];
         }else

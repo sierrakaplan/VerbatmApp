@@ -33,8 +33,8 @@
 #define DEFAULT_FONT_SIZE 20
 #define THRESHOLD 1.8
 #define PULLBAR_COLOR clearColor
-#define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA)
-#define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP)
+#define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
+#define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
 
 @end
 @implementation v_textVideo
@@ -94,21 +94,25 @@
         self.isTitle = YES;
         [self.textView setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
         [self.textView removeTextVerticalCentering];
-    }else{
-        
+    }else
+    {
         [self createPullBar];
         [self createBlur];
     }
 }
 
+
+
 -(void)formatTextViewWithText:(NSString*) text
 {
-    self.textView = [[v_textview alloc]initWithFrame: TEXT_VIEW_DEFAULT_FRAME];
+    self.textView = [[v_textview alloc]initWithFrame:TEXT_VIEW_DEFAULT_FRAME];
     [self.textView setTextViewText: text];
     self.textView.textColor = [UIColor whiteColor];
     [self addSubview: self.textView];
     [self.textView setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
 }
+
+
 
 -(void) createPullBar
 {
@@ -121,6 +125,7 @@
     [self createBorderPath];
 }
 
+
 -(void)createBlur
 {
     //Add the blur
@@ -130,6 +135,7 @@
     self.bgBlurImage.alpha = 1.0;
     [self insertSubview:self.bgBlurImage belowSubview:self.textView];
 }
+
 -(void)resetFrames
 {
     self.pullBarView.frame = self.absoluteFrame;
@@ -137,10 +143,10 @@
     self.bgBlurImage.frame = BLUR_VIEW_FRAME;
     [self setWhiteBarFrame];
 }
+
 -(void)addSwipeGesture
 {
     if(self.isTitle)return;
-    
     UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget: self action:@selector(repositiontextView:)];
     [self.pullBarView addGestureRecognizer:panGesture];
 }

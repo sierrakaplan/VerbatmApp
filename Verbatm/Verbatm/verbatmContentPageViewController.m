@@ -209,7 +209,6 @@
     [self createBaseSelector];
     [self centerViews];
     [self sizeMainScrollViewPhoneSize];
-    
     [self configureViews];
     self.pinching = NO;//initialise pinching to no
 
@@ -311,7 +310,6 @@
 -(void) configureViews
 {
     [self setUpNotifications];
-    
     //insert any text that was added in previous scenes
     [self setUpKeyboardPrefferedColors];
     [self setDelegates];

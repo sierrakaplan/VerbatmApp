@@ -38,8 +38,8 @@
 #define DEFAULT_FONT_SIZE 20
 #define THRESHOLD 1.8
 #define PULLBAR_COLOR clearColor
-#define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA)
-#define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP)
+#define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
+#define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
 
 @end
 @implementation v_multiVidTextPhoto
@@ -52,7 +52,7 @@
         self.photoVideo_view = [[v_multiplePhotoVideo alloc]initWithFrame:frame Photos:photos andVideos:videos];
         [self addSubview:self.photoVideo_view];
         [self handleTexViewDetailsFromText:text];
-
+        self.base_textViewFrame = frame;
     }
     return self;
 }
@@ -182,14 +182,12 @@
         }];
         return;
     }
-    
     self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
     if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
         [self resetFrames];
         self.lastPoint = CGPointZero;
         return;
     }
-    
     
     self.bgBlurImage.frame = CGRectOffset(self.bgBlurImage.frame,  0, translation.y - self.lastPoint.y);
     self.bgBlurImage.frame = CGRectMake( self.bgBlurImage.frame.origin.x,  self.bgBlurImage.frame.origin.y, self.bgBlurImage.frame.size.width,  self.base_textViewFrame.size.height - (translation.y - self.lastPoint.y));

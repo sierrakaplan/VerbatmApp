@@ -501,7 +501,8 @@
 
 -(NSMutableArray*)mediaObjects
 {
-    if([self.videoView.layer.sublayers firstObject]){
+    if([self.videoView.layer.sublayers firstObject])
+    {
         //this has been commented out for now- we are not sure if it'll bring issues 
         [(AVPlayerLayer*)[self.videoView.layer.sublayers firstObject]removeFromSuperlayer]; //remove the video layer.
     }

@@ -19,7 +19,7 @@
 +(void)load;
 
 #pragma mark - methods for getting and setting page properties - 
--(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view andArticle: (Article *) article;
+-(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view Article: (Article *) article andPageNumber:(NSInteger) position;
 -(NSString*)getText;
 
 //This method blocks//
@@ -36,4 +36,6 @@
 @property (readonly,nonatomic) BOOL there_is_text;
 @property (readonly, nonatomic) BOOL there_is_video;
 @property (readonly, nonatomic) BOOL there_is_picture;
+@property (readonly,nonatomic) NSInteger pagePosition;//indexed from 0 tells you the position of the page in the article
+
 @end

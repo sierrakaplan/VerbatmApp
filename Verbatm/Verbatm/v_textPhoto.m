@@ -42,8 +42,8 @@
     
     if((self = [super initWithImage:image]))
     {
-
         self.frame = frame;
+        self.base_textViewFrame = frame;
         [self handleTexViewDetailsFromText:text];
     }
     return self;
@@ -90,8 +90,8 @@
         self.isTitle = YES;
         [self.textView setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
         [self.textView removeTextVerticalCentering];
-    }else{
-        
+    }else
+    {
         [self createPullBar];
         [self createBlur];
     }
@@ -101,6 +101,7 @@
 {
     self.textView = [[v_textview alloc]initWithFrame: TEXT_VIEW_DEFAULT_FRAME];
     [self.textView setTextViewText: text];
+    //self.base_textViewFrame = TEXT_VIEW_DEFAULT_FRAME;
     self.textView.textColor = [UIColor whiteColor];
     [self addSubview: self.textView];
     [self.textView setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
@@ -130,6 +131,7 @@
 {
     self.pullBarView.frame = self.absoluteFrame;
     self.textView.frame = TEXT_VIEW_DEFAULT_FRAME;
+    //self.base_textViewFrame = TEXT_VIEW_DEFAULT_FRAME;
     self.bgBlurImage.frame = BLUR_VIEW_FRAME;
     [self setWhiteBarFrame];
 }
@@ -171,6 +173,13 @@
         } completion:^(BOOL finished) {
              self.lastPoint = CGPointZero;
         }];
+        return;
+    }
+    
+    self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
+    if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
+        [self resetFrames];
+        self.lastPoint = CGPointZero;
         return;
     }
     

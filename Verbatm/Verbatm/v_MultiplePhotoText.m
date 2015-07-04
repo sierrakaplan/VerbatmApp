@@ -32,8 +32,8 @@
 #define DEFAULT_FONT_SIZE 20
 #define THRESHOLD 1.8
 #define PULLBAR_COLOR clearColor
-#define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 3*EXTRA)
-#define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP)
+#define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
+#define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
 @end
 
 
@@ -47,6 +47,7 @@
     if((self = [super initWithFrame:frame andPhotoArray:photoList]))
     {
         //self.frame = frame;
+        self.base_textViewFrame = frame;
         [(v_MultiplePhotoText*)self handleTextViewDetailsFromText:textUsed];
     }
     return self;
@@ -106,7 +107,6 @@
 -(void)formatTextViewWithText:(NSString*) text
 {
     self.textView = [[v_textview alloc]initWithFrame: TEXT_VIEW_DEFAULT_FRAME];
-    self.base_textViewFrame =TEXT_VIEW_DEFAULT_FRAME;
     [self.textView setTextViewText: text];
     self.textView.textColor = [UIColor whiteColor];
     [self addSubview: self.textView];
@@ -137,6 +137,7 @@
 {
     self.pullBarView.frame = self.absoluteFrame;
     self.textView.frame = TEXT_VIEW_DEFAULT_FRAME;
+    self.base_textViewFrame = TEXT_VIEW_DEFAULT_FRAME;
     self.bgBlurImage.frame = BLUR_VIEW_FRAME;
     [self setWhiteBarFrame];
 }
@@ -180,6 +181,19 @@
         }];
         return;
     }
+    self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
+    if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
+        [self resetFrames];
+        self.lastPoint = CGPointZero;
+        return;
+    }
+    
+    self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
+    if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
+        [self resetFrames];
+        self.lastPoint = CGPointZero;
+        return;
+    }
     
     self.bgBlurImage.frame = CGRectOffset(self.bgBlurImage.frame,  0, translation.y - self.lastPoint.y);
     self.bgBlurImage.frame = CGRectMake( self.bgBlurImage.frame.origin.x,  self.bgBlurImage.frame.origin.y, self.bgBlurImage.frame.size.width,  self.base_textViewFrame.size.height - (translation.y - self.lastPoint.y));
@@ -189,14 +203,5 @@
     
     self.lastPoint = translation;
 }
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

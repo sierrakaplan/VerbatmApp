@@ -82,6 +82,17 @@
         dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
         dispatch_async(articleDownload_queue, ^{
             NSArray * pages = [article getAllPages];
+            
+            
+            //we sort the pages by their page numbers to make sure everything is in the right order
+            //O(nlogn) so should be fine in the long-run ;D
+            pages = [pages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                Page * page1 = obj1;
+                Page * page2 = obj2;
+                if(page1.pagePosition < page2.pagePosition)return -1;
+                if(page2.pagePosition > page1.pagePosition) return 1;
+                return 0;
+            }];
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
                 //get pinch views for our array
@@ -119,7 +130,6 @@
 
 -(void) clearArticle
 {
-    
     //We clear these so that the media is released
     self.scrollView = NULL;
     self.animatingView = NULL;
@@ -260,7 +270,7 @@
 //to be called when an aritcle is first rendered to unsure all videos are off
 -(void)everythingOffScreen
 {
-    return;
+    //return;
     
     for (int i=0; i< self.pinchedObjects.count; i++)
     {
@@ -362,31 +372,6 @@
     view.layer.shadowPath = shadowPath.CGPath;
 }
 
-
-////for ios8- To hide the status bar
-//-(BOOL)prefersStatusBarHidden
-//{
-//    return YES;
-//}
-//
-//-(void) removeStatusBar
-//{
-//    //remove the status bar
-//    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-//        // iOS 7
-//        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-//    } else {
-//        // iOS 6
-//        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-//    }
-//}
-//
-//#pragma mark Orientation
-//- (NSUInteger)supportedInterfaceOrientations
-//{
-//    //return supported orientation masks
-//    return UIInterfaceOrientationMaskPortrait;
-//}
 
 #pragma mark - scrolling -
 

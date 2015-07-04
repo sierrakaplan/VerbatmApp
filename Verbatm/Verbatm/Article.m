@@ -87,15 +87,13 @@
  Each pinch object is converted into a page which is then saved to parse*/
 -(void)processAndSavePages:(NSArray*)pages
 {
-    __block Article * me = self;
-    for(verbatmCustomPinchView* p_obj in pages){
-        Page* this_page = [[Page alloc]initWithPinchObject:p_obj andArticle:self];
-        [this_page saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+    for(int i=0; i< pages.count; i++)
+    {
+        Page* this_page = [[Page alloc]initWithPinchObject:pages[i] Article:self andPageNumber:i];
+            [this_page saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if(succeeded)
             {
                 NSLog(@"Saved Page Successfully");
-                //[self.article_pageRelationship addObject: this_page]; //create relation between article and page.
-                //[this_page setObject:me forKey:ARTICLE_PAGE_RELATIONSHIP];
             }else
             {
                 NSLog(@"Could not save page: %@", [error localizedDescription]);
