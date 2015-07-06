@@ -13,4 +13,6 @@
 -(void)offScreen;
 -(void)onScreen;
 -(void)addSwipeGesture;
+-(void)mutePlayer;
+-(void)enableSound;
 @end

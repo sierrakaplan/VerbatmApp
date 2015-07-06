@@ -168,6 +168,12 @@
 -(void) clearArticle
 {
     //We clear these so that the media is released
+    
+    for(UIView *view in self.scrollView.subviews)
+    {
+        [view removeFromSuperview];
+    }
+    
     self.scrollView = NULL;
     self.animatingView = NULL;
     self.poppedOffPages = NULL;

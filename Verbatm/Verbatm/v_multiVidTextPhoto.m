@@ -208,6 +208,16 @@
     [self.photoVideo_view offScreen];
 }
 
+/*Mute the video*/
+-(void)mutePlayer
+{
+    [self.photoVideo_view mutePlayer];
+}
 
+/*Enable's the sound on the video*/
+-(void)enableSound
+{
+    [self.photoVideo_view enableSound];
+}
 
 @end
