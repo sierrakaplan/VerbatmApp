@@ -35,8 +35,12 @@
     _pinchedObjects = arr;
     _preferedFrame = frame;
     _results = [[NSMutableArray alloc]init];
-    for(verbatmCustomPinchView* p_obj in _pinchedObjects){
-        if(![p_obj isCollection]){
+    for(verbatmCustomPinchView* p_obj in _pinchedObjects)
+    {
+        //there are some issue where a messed up p_obj arrives
+        if(!p_obj.there_is_picture && !p_obj.there_is_text && !p_obj.there_is_video)continue;
+        if(![p_obj isCollection])
+        {
             [self handleSingleMedia:p_obj];
             continue;
         }
@@ -46,7 +50,6 @@
         }
         [self handleTwoMedia:p_obj];
     }
-
 
     return _results;
 }
@@ -61,9 +64,11 @@
         NSMutableArray* mediaArr = [p_obj mediaObjects];
         for(UIView* view in mediaArr){
             if([view isKindOfClass:[verbatmCustomImageView class]]){
-                if(p_obj.there_is_picture){
+                if(p_obj.there_is_picture)
+                {
                     [arr addObject:((verbatmCustomImageView*)view).image];
-                }else{
+                }else
+                {
 
                     [arr addObject:[self getDataFromAsset:((verbatmCustomImageView*)view).asset]];
                 }
@@ -73,7 +78,6 @@
     
     if(p_obj.there_is_picture)
     {
-        
         //multiple photo and single photo call the same class
         v_multiplePhoto* imageView = [[v_multiplePhoto alloc]initWithFrame:_preferedFrame andPhotoArray:arr];
         
@@ -104,11 +108,13 @@
             if(photos.count)//it's text photo
             {
                 v_textPhoto * tp = [[v_textPhoto alloc] initWithFrame:self.preferedFrame andImage:photos.firstObject andText:[p_obj getTextFromPinchObject]];
+                [tp addSwipeGesture];
                 [self.results addObject:tp];
             }else//it's text video
             {
                 v_textVideo * tv = [[v_textVideo alloc] initWithFrame:self.preferedFrame andAssets:videos andText:[p_obj getTextFromPinchObject]];
                 [tv mutePlayer];
+                [tv addSwipeGesture];
                 [self.results addObject:tv];
             }
         }else//it's photo video
@@ -156,6 +162,7 @@
                     
                     //we have compbined multiple photo with multiple photo and text
                     v_multiplePhoto* mvpt = [[v_multiplePhoto alloc]initWithFrame:self.preferedFrame andAssets:assets andText:text];
+                    [mvpt addSwipeGesture];
                     [_results addObject:mvpt];
                 }
             }else{//text video
@@ -183,7 +190,6 @@
                     }
                 }
                 verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:image andVideo:Vdata];
-                //remember to add the long presss gesture in the supeview part.
                 [_results addObject:pv];
                 [pv mute];
             }else{
@@ -199,9 +205,20 @@
                         [parray addObject:view];
                     }
                 }
-                v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:self.preferedFrame Photos:[self getUIImage:parray] andVideos:Vdata];
-                [mpv mutePlayer];
-                [_results addObject:mpv];
+                
+                if(parray.count ==1)//there is one photo && many videos
+                {
+                    verbatmCustomImageView * pic = [parray firstObject];
+                    verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:pic.image andVideo:Vdata];
+                    [_results addObject:pv];
+                    [pv mute];
+                }else//there are many photos and some/one video(s)
+                {
+                
+                    v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:self.preferedFrame Photos:[self getUIImage:parray] andVideos:Vdata];
+                    [mpv mutePlayer];
+                    [_results addObject:mpv];
+                }
             }
         }
     }
@@ -231,9 +248,11 @@
         NSMutableArray* photos = [p_obj getPhotos];
         if(videos.count + photos.count == 2){
             v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage: (UIImage*)[photos firstObject] andText:text andVideo:[videos firstObject]];
+            [pvt addSwipeGesture];
             [_results addObject:pvt];
         }else{
             v_multiVidTextPhoto* mvtp = [[v_multiVidTextPhoto alloc]initWithFrame:_preferedFrame Photos:photos andVideos:videos andText:text];
+            [mvtp addSwipeGesture];
             [_results addObject:mvtp];
         }
     }else{
@@ -242,8 +261,6 @@
         {
             UIImage* image;
             NSData* vidData;
-        
-            
             for(int i = 0; i < 3; i++)
             {
                 if([[media objectAtIndex:i] isKindOfClass:[UITextView class]])continue;
@@ -252,11 +269,13 @@
                 if(imgView.isVideo)
                 {
                     vidData = [self getDataFromAsset:imgView.asset];
-                }else{
+                }else
+                {
                     image = imgView.image;
                 }
             }
-            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage:image andText:text andVideo:vidData];
+            v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage:image andText:text andVideo:@[vidData]];
+            [pvt addSwipeGesture];
             [_results addObject:pvt];
             
         }else{
@@ -274,9 +293,18 @@
                     [photos addObject:imgView.image];
                 }
             }
-            v_multiVidTextPhoto* mvtp = [[v_multiVidTextPhoto alloc]initWithFrame:_preferedFrame Photos:photos andVideos:videos andText:text];
-            [_results addObject:mvtp];
-            [_results addObject:mvtp];
+            
+            if(photos.count ==1)//this way we know that we have onepicture but a lot of videos
+            {
+                v_photoVideoText* pvt = [[v_photoVideoText alloc] initWithFrame:_preferedFrame forImage:[photos firstObject] andText:text andVideo:videos];
+                [pvt addSwipeGesture];
+                [_results addObject:pvt];
+            }else
+            {
+                v_multiVidTextPhoto* mvtp = [[v_multiVidTextPhoto alloc]initWithFrame:_preferedFrame Photos:photos andVideos:videos andText:text];
+                [mvtp addSwipeGesture];
+                [_results addObject:mvtp];
+            }
         }
     }
 }

@@ -10,4 +10,5 @@
 
 @interface v_MultiplePhotoText : v_multiplePhoto
 -(id)initWithFrame:(CGRect)frame andAssets:(NSMutableArray *)photoList andText:(NSString*)text;
+-(void)addSwipeGesture;
 @end

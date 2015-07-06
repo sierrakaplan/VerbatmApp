@@ -37,7 +37,6 @@
     {
         [self.image setImage:image];
         [self formatImage];
-        
         self.videoView = [[verbatmCustomPinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]+VIDEO_START_OFFSET,[self getRadius]+VIDEO_START_OFFSET) Images:nil videoData:@[video.firstObject] andText:nil];
 
         self.clipsToBounds = YES;
@@ -52,7 +51,7 @@
 -(void) formatImage
 {
     self.image.contentMode = UIViewContentModeScaleAspectFill;
-    self.image.clipsToBounds = YES;
+    //self.image.clipsToBounds = YES;
 }
 
 //records the generic frame for any element that is a square and not a pinch view circle

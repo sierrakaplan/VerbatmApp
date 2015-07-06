@@ -19,4 +19,7 @@
 -(void)adjustFrameOfTextViewForGap:(NSInteger) gap;
 @property (nonatomic, strong) verbatmUITextView * textView;
 @property (nonatomic, strong) verbatmCustomImageView * openImage;
+//this view is only used if video is playing - it's there so that we can remove the scrollview
+@property (nonatomic, strong)UIView * gestureView;
+-(void)stopVideo;
 @end

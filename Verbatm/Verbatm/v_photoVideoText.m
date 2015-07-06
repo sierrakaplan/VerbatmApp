@@ -41,14 +41,14 @@
 @end
 @implementation v_photoVideoText
 
--(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andVideo:(NSData*)video
+-(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andVideo:(NSArray*)video
 {
     if(self = [super initWithFrame:frame])
     {
-        self.photoVideoView = [[verbatmPhotoVideoAve alloc] initWithFrame:frame Image:image andVideo:@[video]];
+        self.photoVideoView = [[verbatmPhotoVideoAve alloc] initWithFrame:frame Image:image andVideo:video];
+        [self addSubview:self.photoVideoView];
         self.base_textViewFrame = frame;
-
-        //[self handleTexViewDetailsFromText:text];
+        [self handleTexViewDetailsFromText:text];
         
     }
     return self;
@@ -179,12 +179,6 @@
         return;
     }
     
-    self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
-    if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
-        [self resetFrames];
-        self.lastPoint = CGPointZero;
-        return;
-    }
     
     self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
     if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
@@ -193,12 +187,6 @@
         return;
     }
     
-    self.pullBarView.frame = CGRectOffset(self.pullBarView.frame, 0, translation.y - self.lastPoint.y );
-    if(self.absoluteFrame.origin.y > self.pullBarView.frame.origin.y){
-        [self resetFrames];
-        self.lastPoint = CGPointZero;
-        return;
-    }
     
     self.bgBlurImage.frame = CGRectOffset(self.bgBlurImage.frame,  0, translation.y - self.lastPoint.y);
     self.bgBlurImage.frame = CGRectMake( self.bgBlurImage.frame.origin.x,  self.bgBlurImage.frame.origin.y, self.bgBlurImage.frame.size.width,  self.base_textViewFrame.size.height - (translation.y - self.lastPoint.y));

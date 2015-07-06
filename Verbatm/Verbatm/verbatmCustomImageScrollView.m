@@ -17,7 +17,8 @@
 @property (nonatomic, strong) UIImage * filter_BW;
 @property (nonatomic, strong) UIImage * filter_WARM;
 @property (nonatomic, strong) NSString * filter;
-
+@property (nonatomic, strong) AVPlayer  * ourPlayer;
+@property(nonatomic, strong)MPMoviePlayerController *moviePlayer;
 
 
 #define TEXT_BOX_FONT_SIZE 20
@@ -73,6 +74,12 @@
 
 -(void) createTextViewFromTextView: (UITextView *) textView
 {
+    if(self.gestureView)//be sure to remove it
+    {
+        [self.gestureView removeFromSuperview];
+        self.gestureView = nil;
+    }
+    
     if(!textView)
     {
         self.textView = [[verbatmUITextView alloc] init];
@@ -104,13 +111,17 @@
     self.textView.inputAccessoryView = toolBar;
 }
 
-
+/*not to be implemented only to get rid of the protocal warnings*/
 -(void)undoButtonPressed
 {
     
 }
 
 -(void)previewButtonPressed
+{
+    
+}
+-(void)saveButtonPressed
 {
     
 }
@@ -223,9 +234,19 @@
         self.openImage.frame = frame;
         AVURLAsset* asset = [[AVURLAsset alloc]initWithURL:givenImageView.asset.defaultRepresentation.url options:nil];
         [self playVideo:asset];
+
+        self.gestureView =[[UIView alloc] initWithFrame:frame];
+        [self addSubview:self.gestureView];
+        [self bringSubviewToFront:self.gestureView];
         
     }else
     {
+        if(self.gestureView)//be sure to remove it
+        {
+            [self.gestureView removeFromSuperview];
+            self.gestureView = nil;
+        }
+        
         //create a new scrollview to place the images
         self.openImage = [[verbatmCustomImageView alloc]init];
         self.openImage.image = givenImageView.image;
@@ -238,32 +259,52 @@
     }
 }
 
+
+-(void)stopVideo
+{
+    if(self.moviePlayer)[self.moviePlayer stop];
+}
+
+
+
 -(void)playVideo:(AVURLAsset*)asset
 {
-    // Create an AVPlayerItem using the asset
-    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
     
-    // Create the AVPlayer using the playeritem
-    AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
-
-    [player setMuted:YES];//mutes the player
-
-    // Create an AVPlayerLayer using the player
-    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = self.openImage.bounds;
-
-    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-    // Add it to your view's sublayers
-    [self.openImage.layer addSublayer:playerLayer];
-    // You can play/pause using the AVPlayer object
     
-    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-    //register for the notification in order to keep looping the video
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerItemDidReachEnd:)
-                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:[player currentItem]];
-    [player play];
+    self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:asset.URL];
+    [self.moviePlayer prepareToPlay];
+    self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
+    self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
+    self.moviePlayer.controlStyle= MPMovieControlStyleNone;
+    [self.moviePlayer.view setFrame: self.openImage.frame];  // player's frame must match parent's
+    [self addSubview:self.moviePlayer.view];
+    [self.moviePlayer play];
+    
+    
+//    // Create an AVPlayerItem using the asset
+//    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
+//    
+//    // Create the AVPlayer using the playeritem
+//    self.ourPlayer= [AVPlayer playerWithPlayerItem:playerItem];
+//
+//    [self.ourPlayer setMuted:YES];//mutes the player
+//
+//    // Create an AVPlayerLayer using the player
+//    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.ourPlayer];
+//    playerLayer.frame = self.openImage.bounds;
+//
+//    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+//    // Add it to your view's sublayers
+//    [self.openImage.layer addSublayer:playerLayer];
+//    // You can play/pause using the AVPlayer object
+//    
+//    self.ourPlayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+//    //register for the notification in order to keep looping the video
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(playerItemDidReachEnd:)
+//                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+//                                               object:[self.ourPlayer currentItem]];
+//    [self.ourPlayer play];
 }
 
 

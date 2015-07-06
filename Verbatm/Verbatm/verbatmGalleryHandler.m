@@ -378,7 +378,7 @@
 
 -(void)returnToGallery:(verbatmCustomImageView*)oldview
 {
-    [[oldview.layer.sublayers firstObject]removeFromSuperlayer];
+    //[[oldview.layer.sublayers firstObject]removeFromSuperlayer];
     
     CALayer * layer = [oldview.layer.sublayers firstObject];
     

@@ -226,7 +226,7 @@
 {
     [self.view insertSubview: self.verbatmCameraView atIndex:0];
     self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-    [self creatPhotoTakingButton];
+    //[self creatPhotoTakingButton];
 }
 
 -(void)setContentPage_vc
@@ -926,25 +926,21 @@
     int counter=0;
     for(int i=0; i < self.vc_contentPage.pageElements.count; i++)if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])counter ++;
     if(!counter) return;
+
+    NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
     
-    
-    if (self.vc_contentPage.pageElements.count >1)
+    for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
     {
-        NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
-        
-        for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
+        if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
         {
-            if([self.vc_contentPage.pageElements[i] isKindOfClass:[verbatmCustomPinchView class]])
-            {
-                [pincObjetsArray addObject:self.vc_contentPage.pageElements[i]];
-            }
+            [pincObjetsArray addObject:self.vc_contentPage.pageElements[i]];
         }
-        
-        NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pincObjetsArray,@"pinchObjects", nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
-                                                            object:nil
-                                                          userInfo:Info];
     }
+    
+    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pincObjetsArray,@"pinchObjects", nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
+                                                        object:nil
+                                                      userInfo:Info];
 }
 
 -(void)saveButtonPressed

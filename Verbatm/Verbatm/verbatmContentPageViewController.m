@@ -2245,7 +2245,9 @@
 -(void) addTapGestuerToCustomImageScrollView: (verbatmCustomImageScrollView *) isv
 { 
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeImageScrollview:)];
-    [isv addGestureRecognizer:tap];
+    
+    if(isv.gestureView)[isv.gestureView addGestureRecognizer:tap];
+    else [isv addGestureRecognizer:tap];
 }
 
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender
@@ -2265,13 +2267,15 @@
         }
     }
     [isv.textView resignFirstResponder];
+    [isv stopVideo];//if there is a video lets stop it
     [isv removeFromSuperview];
     
     //makes sure the vidoes are playing..may need to make more efficient
     isv = nil;
     self.openImageScrollView = nil;
+    [self playVideos];
     [self.openImagePinchView renderMedia];
-    //[self showPullBar];
+    [self showPullBar];
 }
 
 #pragma mark ImageScrollView
@@ -2285,7 +2289,7 @@
 {
     
     if(![sender.view isKindOfClass:[verbatmCustomPinchView class]]) return; //only accept touches from pinch objects
-
+    
     verbatmCustomPinchView * pinch_object = (verbatmCustomPinchView *)sender.view;
     if(pinch_object.hasMultipleMedia)
     {
@@ -2310,9 +2314,10 @@
         
         }
         
+        [self pauseAllVideos];//when things are offscreen then pause all videos
         
-        [self hidePullBar];//make sure the pullbar is not available
     }
+    [self hidePullBar];//make sure the pullbar is not available
 }
 
 

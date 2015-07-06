@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <AVKit/AVKit.h>
 #import <MediaPlayer/MediaPlayer.h>
 
 @interface v_videoview : UIView
@@ -19,4 +20,5 @@
 -(void)enableSound;
 -(void)onScreen;
 -(void)offScreen;
+-(void)playVideos:(NSArray*)videoList;//for when you want to change the video set
 @end

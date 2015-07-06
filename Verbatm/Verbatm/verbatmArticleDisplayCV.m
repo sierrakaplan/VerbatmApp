@@ -34,6 +34,9 @@
 #define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
 #define ANIMATION_NOTIFICATION_DURATION 0.4
 
+#define NOTIFICATION_PAUSE_VIDEOS @"pauseContentPageVideosNotification"
+#define NOTIFICATION_PLAY_VIDEOS @"playContentPageVideosNotification"
+
 @end
 
 
@@ -60,6 +63,40 @@
     
 }
 
+
+//tells the content page to pause its videos when it's out of view
+-(void)pause_CP_Vidoes
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PAUSE_VIDEOS
+                                                        object:nil
+                                                      userInfo:nil];
+}
+
+//tells the content page to play it's videos when it's in view
+-(void)play_CP_Vidoes
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PLAY_VIDEOS
+                                                        object:nil
+                                                      userInfo:nil];
+}
+
+-(void)startActivityIndicator
+{
+    //add animation indicator here
+    //Create and add the Activity Indicator to splashView
+    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+    self.activityIndicator.alpha = 1.0;
+    self.activityIndicator.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
+    self.activityIndicator.hidesWhenStopped = YES;
+    [self.scrollView addSubview:self.activityIndicator];
+    [self.activityIndicator startAnimating];
+}
+
+-(void)stopActivityIndicator
+{
+    [self.activityIndicator stopAnimating];
+}
+
 //called when we want to present an article. article should be set with our content
 -(void)showArticle:(NSNotification *) notification
 {
@@ -69,20 +106,17 @@
     {
         [self setUpScrollView];
         [self show_remove_ScrollView:YES];
+        [self startActivityIndicator];
         
-        //add animation indicator here
-        //Create and add the Activity Indicator to splashView
-        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-        self.activityIndicator.alpha = 1.0;
-        self.activityIndicator.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
-        self.activityIndicator.hidesWhenStopped = YES;
-        [self.scrollView addSubview:self.activityIndicator];
-        [self.activityIndicator startAnimating];
         
         dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
         dispatch_async(articleDownload_queue, ^{
             NSArray * pages = [article getAllPages];
-            
+            if(!pages.count)//if we have nothing in our article then return to the list view- we shouldn't need this because all downloaded articles should have legit pages
+            {
+                [self show_remove_ScrollView:NO];
+                return;
+            }
             
             //we sort the pages by their page numbers to make sure everything is in the right order
             //O(nlogn) so should be fine in the long-run ;D
@@ -93,6 +127,7 @@
                 if(page2.pagePosition > page1.pagePosition) return 1;
                 return 0;
             }];
+            [self pause_CP_Vidoes];//make sure content page videos are paused so there is no video conflict
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
                 //get pinch views for our array
@@ -107,7 +142,7 @@
                 
                 if(!self.pinchedObjects.count)return;//for now
                 //stop animation indicator
-                [self.activityIndicator stopAnimating];
+                [self stopActivityIndicator];
                 [self renderPinchPages];
                 self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pinchedObjects count]*self.view.frame.size.height); //adjust contentsize to fit
                 _latestPoint = CGPointZero;
@@ -116,6 +151,8 @@
         });
         
     }else{
+        
+        [self pause_CP_Vidoes];//make sure content page videos are paused so there is no video conflict
         v_Analyzer * analyser = [[v_Analyzer alloc]init];
         self.pinchedObjects = [analyser processPinchedObjectsFromArray:PO withFrame:self.view.frame];
         [self muteEverything];
@@ -166,19 +203,19 @@
     if(show)//present the scrollview
     {
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+            [self pause_CP_Vidoes];
              self.articleCurrentlyViewing= YES;
-             //[self.view bringSubviewToFront:self.scrollView];
              self.scrollView.frame = self.view.bounds;
         }];
     }else//send the scrollview back to the right
     {
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
             [self muteEverything];
+            [self play_CP_Vidoes];
             self.scrollView.frame = SV_RESTING_FRAME;
         }completion:^(BOOL finished) {
             if(finished)
             {
-                //[self.view sendSubviewToBack:self.scrollView];
                 self.articleCurrentlyViewing = NO;
                 [self clearArticle];
             }

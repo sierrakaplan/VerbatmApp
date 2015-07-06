@@ -11,9 +11,10 @@
 #import "v_videoview.h"
 
 @interface v_multiplePhotoVideo()
-@property (weak, nonatomic) IBOutlet UIView *videoView;
+@property (weak, nonatomic) IBOutlet v_videoview *videoView;
 @property (weak, nonatomic) IBOutlet UIScrollView *photoList;
 @property (strong, nonatomic) AVMutableComposition* mix;
+@property (strong, nonatomic) UIView * gestureView;//to be placed ontop of video view to sense all gestures
 
 #define x_ratio 3
 #define y_ratio 4
@@ -42,6 +43,7 @@
 -(void) setViewFrames
 {
     self.videoView.frame = VIDEO_VIEW_HALF_FRAME;
+    self.gestureView.frame = self.videoView.frame;
     self.photoList.frame = CGRectMake(0, VIDEO_VIEW_HEIGHT, self.frame.size.width, SV_DEFAULT_HEIGHT);
     [self bringSubviewToFront:self.photoList];
 }
@@ -49,9 +51,12 @@
 
 -(void)renderPhotos:(NSArray*)photos andVideos:(NSArray*)videos
 {
-    //set up the video
-    [self fuseAssets:videos];
-    [self setUpPlayer:self.mix];
+    
+    [self.videoView playVideos:videos];
+    
+//    //set up the video
+//    [self fuseAssets:videos];
+//    [self setUpPlayer:self.mix];
     
     //set up the photos
     for (UIImage* image in photos)
@@ -100,19 +105,22 @@
                 [self setPLViewsToHeight:self.photoList.frame.size.height];
             }];
         }
-    }else if (view== self.videoView)
+    }else if (view== self.gestureView)//this means you have "tapped" the video
     {
         if(self.videoView.frame.size.height != self.frame.size.height)//video view is in smaller frame
         {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 self.videoView.frame = self.bounds;
+                self.gestureView.frame = self.videoView.frame;
                 [self bringSubviewToFront:self.videoView];
+                [self bringSubviewToFront:self.gestureView];
             }];
             
         }else //video view is fullscreen
         {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 self.videoView.frame = VIDEO_VIEW_HALF_FRAME;
+                self.gestureView.frame = self.videoView.frame;
                 [self bringSubviewToFront:self.photoList];
             }];
         }
@@ -140,7 +148,7 @@
     self.photoList.showsHorizontalScrollIndicator = NO;
     self.photoList.showsVerticalScrollIndicator = NO;
     [self addTapGestureToView: self.photoList];
-    [self addTapGestureToView:self.videoView];
+    [self addTapGestureToView:self.gestureView];
 }
 
 //gives you the frame for the next iamgeview that you'll add to the end of the list
@@ -218,31 +226,51 @@
 
 -(void)offScreen
 {
-    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
+    //not needed anymore
+    
+//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+//    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
 }
 
 -(void)onScreen
 {
-    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:self.mix];
-    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-    [playerLayer.player replaceCurrentItemWithPlayerItem:playerItem];
+    
+    //not needed anymore
+//    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:self.mix];
+//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+//    [playerLayer.player replaceCurrentItemWithPlayerItem:playerItem];
     //[self setUpPlayer:self.mix];
 }
 
 /*Mute the video*/
 -(void)mutePlayer
 {
-    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-    playerLayer.player.muted = YES;
+    
+    [self.videoView mutePlayer];
+    
+//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+//    playerLayer.player.muted = YES;
 }
 
 /*Enable's the sound on the video*/
 -(void)enableSound
 {
-    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-    playerLayer.player.muted = NO;
-    playerLayer.player.volume = 0.5;
+    
+    [self.videoView enableSound];
+//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
+//    playerLayer.player.muted = NO;
+//    playerLayer.player.volume = 0.5;
+}
+
+-(UIView *)gestureView
+{
+    if(!_gestureView)
+    {
+        _gestureView =[[UIView alloc] init];
+        [self addSubview:_gestureView];
+        [self bringSubviewToFront:_gestureView];
+    }
+    return _gestureView;
 }
 
 @end

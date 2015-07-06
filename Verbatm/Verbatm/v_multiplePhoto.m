@@ -162,7 +162,7 @@
 }
 -(void)addSwipeGesture
 {
-    if(self.isTitle)return;
+    if(self.isTitle || !self.textView)return;
     
     UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget: self action:@selector(repositiontextView:)];
     [self.pullBarView addGestureRecognizer:panGesture];

@@ -12,6 +12,8 @@
 @property (strong, nonatomic) UIImageView* videoProgressImageView;  //Kept because of the snake....will be implemented soon
 @property (strong, nonatomic) UIButton* play_pauseBtn;
 @property (strong, nonatomic) AVMutableComposition* mix;
+@property(nonatomic, strong)MPMoviePlayerController *moviePlayer;
+@property (nonatomic,strong) AVPlayerViewController * mixPlayer;
 @property (nonatomic) CGPoint firstTranslation;
 #define RGB 255,225,255, 0.7
 #define PROGR_VIEW_HEIGHT 60
@@ -30,42 +32,57 @@
 {
     if((self = [super initWithFrame:frame]))
     {
-        [self fuseAssets:videoList];
-        [self setUpPlayer:self.mix];
+        if(videoList.count)
+        {
+            [self fuseAssets:videoList];
+            [self setUpPlayer:self.mix];
+        }
     }
     return self;
 }
 
 
+
+-(void)playVideos:(NSArray*)videoList
+{
+    [self fuseAssets:videoList];
+    [self setUpPlayer:self.mix];
+}
+
+
 /*This sets up the video player using the fused video assets. The video player is made a sublayer of the videoview*/
 -(void)setUpPlayer:(AVMutableComposition*)mix
-{    
-    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:mix];
-    if(playerItem.status == AVPlayerItemStatusFailed) NSLog(@"Playback has failed");
-    AVPlayer* player = [AVPlayer playerWithPlayerItem: playerItem];
-    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+{
+    self.mixPlayer = [[AVPlayerViewController alloc] init];
+    AVPlayerItem *newplayerItem = [AVPlayerItem playerItemWithAsset:mix];
+    //make an immutable copy of the mutableComposition
+    AVPlayer *newplayer = [AVPlayer playerWithPlayerItem:newplayerItem];
+    
+    newplayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:[player currentItem]];
-    
-    // Create an AVPlayerLayer using the player
-    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = self.bounds;
-    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-    // Add it to your view's sublayers
-    [self.layer addSublayer:playerLayer];
-    // You can play/pause using the AVPlayer object
-    player.muted = YES;
-    [player play];
+                                               object:[newplayer currentItem]];
+    self.mixPlayer.showsPlaybackControls = NO;
+    self.mixPlayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+    [self.mixPlayer setPlayer:newplayer];
+    [self.mixPlayer.view setFrame:self.bounds];
+    [self addSubview:self.mixPlayer.view];
+    [self.mixPlayer.player play];
 }
 
-/*tells me when the video ends so that I can rewind*/
--(void)playerItemDidReachEnd:(NSNotification *)notification {
+
+
+
+
+//tells me when the video ends so that I can rewind
+-(void)playerItemDidReachEnd:(NSNotification *)notification
+{
     AVPlayerItem *p = [notification object];
     [p seekToTime:kCMTimeZero];
-    [self continueVideo];
 }
+
+
 
 /*This code fuses the video assets into a single video that plays the videos one after the other*/
 -(void)fuseAssets:(NSArray*)videoDataList
@@ -129,6 +146,8 @@
 
 -(void)pauseVideo
 {
+    
+    return;//No longer in use
     AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
     AVPlayer* player = playerLayer.player;
     [player pause];
@@ -137,6 +156,8 @@
 
 -(void)continueVideo
 {
+    
+    return;//no longer in use
     AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
     AVPlayer* player = playerLayer.player;
     player.rate = 1;
@@ -211,22 +232,34 @@
 
 -(void)offScreen
 {
-    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
-    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
+    
+//    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
+//    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
 }
 
 -(void)onScreen
 {
+    
+    
+    
 //   AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:self.mix];
 //    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
 //    [playerLayer.player replaceCurrentItemWithPlayerItem:playerItem];
 //    [playerLayer.player play];
-    [self setUpPlayer:self.mix];
+ //   [self setUpPlayer:self.mix];
 }
 
 /*Mute the video*/
 -(void)mutePlayer
 {
+    if(self.mixPlayer)[self.mixPlayer.player pause];
+    return;
+    if(self.moviePlayer)
+    {
+        [self.moviePlayer stop];
+        return;
+    }
+
     AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
     playerLayer.player.muted = YES;
 }
@@ -234,8 +267,38 @@
 /*Enable's the sound on the video*/
 -(void)enableSound
 {
+    if(self.mixPlayer)[self.mixPlayer.player play];
+    return;
+    
+    if(self.moviePlayer)
+    {
+        [self.moviePlayer play];
+        return;
+    }
+    
     AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
     playerLayer.player.muted = NO;
     playerLayer.player.volume = 0.5;
+}
+
+
+-(void)stopVideo
+{
+    if(self.moviePlayer)[self.moviePlayer stop];
+}
+
+
+
+-(void)playVideo:(AVURLAsset*)asset
+{
+    self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:asset.URL];
+    [self.moviePlayer prepareToPlay];
+    self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
+    self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
+    self.moviePlayer.controlStyle= MPMovieControlStyleNone;
+    [self.moviePlayer.view setFrame: self.frame];  // player's frame must match parent's
+    [self addSubview:self.moviePlayer.view];
+    [self.moviePlayer play];
+
 }
 @end

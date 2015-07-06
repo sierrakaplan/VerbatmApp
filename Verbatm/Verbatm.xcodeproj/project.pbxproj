@@ -273,8 +273,7 @@
 				C7614F431A24993200E6AB24 /* verbatmCustomPinchView.xib */,
 				C7614F401A247BD100E6AB24 /* verbatmCustomImageView.h */,
 				C7614F411A247BD100E6AB24 /* verbatmCustomImageView.m */,
-				C77C7D361A22E9FC00694B20 /* verbatmCustomPinchView.h */,
-				C77C7D371A22E9FC00694B20 /* verbatmCustomPinchView.m */,
+				C748836B1B48A9E200E64ED9 /* Pinch Views */,
 				C7174E0C19CA159D006C982D /* ILTranslucentView.h */,
 				C7174E0D19CA159D006C982D /* ILTranslucentView.m */,
 				C78B681E19CA6C01003D0AC5 /* verbatmUITextView.h */,
@@ -285,12 +284,28 @@
 				C78B682319CA6C01003D0AC5 /* verbatmCustomMediaSelectTile.m */,
 				C716A5B019E0CA3500A5490B /* verbatmDashLineView.h */,
 				C716A5B119E0CA3500A5490B /* verbatmDashLineView.m */,
-				C78B682819CA6C22003D0AC5 /* verbatmGalleryHandler.h */,
-				C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */,
 				F20A24F81A46166100BB77C1 /* verbatmCustomImageScrollView.h */,
 				F20A24F91A46166100BB77C1 /* verbatmCustomImageScrollView.m */,
 			);
 			name = "Non AVE Custom Views";
+			sourceTree = "<group>";
+		};
+		C748836A1B489AE300E64ED9 /* Gallery */ = {
+			isa = PBXGroup;
+			children = (
+				C78B682819CA6C22003D0AC5 /* verbatmGalleryHandler.h */,
+				C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */,
+			);
+			name = Gallery;
+			sourceTree = "<group>";
+		};
+		C748836B1B48A9E200E64ED9 /* Pinch Views */ = {
+			isa = PBXGroup;
+			children = (
+				C77C7D361A22E9FC00694B20 /* verbatmCustomPinchView.h */,
+				C77C7D371A22E9FC00694B20 /* verbatmCustomPinchView.m */,
+			);
+			name = "Pinch Views";
 			sourceTree = "<group>";
 		};
 		C750A35919D768BD0006FA88 /* Video Capture Classes */ = {
@@ -365,7 +380,7 @@
 		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
-				F26894441A43641C00B1D4DB /* Article Custom Views */,
+				F26894441A43641C00B1D4DB /* AVEs  */,
 				C74883691B488C5000E64ED9 /* Non AVE Custom Views */,
 			);
 			name = "Custom Views";
@@ -441,6 +456,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				C748836A1B489AE300E64ED9 /* Gallery */,
 				F257FEC81AC21F8B00964AB5 /* Saving and Downloading */,
 				F266F3EE1A4A69F400EA0327 /* Analyzer */,
 				C750A35919D768BD0006FA88 /* Video Capture Classes */,
@@ -532,7 +548,7 @@
 			path = ..;
 			sourceTree = "<group>";
 		};
-		F26894441A43641C00B1D4DB /* Article Custom Views */ = {
+		F26894441A43641C00B1D4DB /* AVEs  */ = {
 			isa = PBXGroup;
 			children = (
 				C7B1EC7C1B3CDF53001A4FFC /* Video Aves */,
@@ -542,7 +558,7 @@
 				C77A68B31AC20AA2000B10E2 /* v_multiplePhoto.m */,
 				C77A68BB1AC20DD7000B10E2 /* multiplePhotosAve.xib */,
 			);
-			name = "Article Custom Views";
+			name = "AVEs ";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -13,4 +13,5 @@
 -(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSMutableArray *) photos;
 //we use this initializer when there is text to be added
 -(id)initWithFrame:(CGRect)frame andAssets:(NSMutableArray *)photoList andText:(NSString*)textUsed;
+-(void)addSwipeGesture;
 @end
