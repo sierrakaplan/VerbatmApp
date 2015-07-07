@@ -340,13 +340,17 @@
             self.imageViewer.contentMode = UIViewContentModeCenter;
             self.imageViewer.layer.masksToBounds = YES;
         }
-        if(self.there_is_video){
-            NSURL* url;
-            NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"pinch",  arc4random_uniform(100)]];
-            [[NSFileManager defaultManager] createFileAtPath: filePath contents: (NSData*)[self.videos firstObject] attributes:nil];
-            url = [NSURL fileURLWithPath: filePath];
-            AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:url options:nil];
-            [self playVideo:avurlAsset];
+        if(self.there_is_video)
+        {
+            if([self.videos.firstObject isKindOfClass:[AVAsset class]])[self playVideo:[self.videos firstObject]];
+            else{
+                NSURL* url;
+                NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"pinch",  arc4random_uniform(100)]];
+                [[NSFileManager defaultManager] createFileAtPath: filePath contents: (NSData*)[self.videos firstObject] attributes:nil];
+                url = [NSURL fileURLWithPath: filePath];
+                AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:url options:nil];
+                [self playVideo:avurlAsset];
+            }
         }
     }
     self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];

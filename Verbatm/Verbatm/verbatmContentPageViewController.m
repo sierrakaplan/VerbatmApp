@@ -19,10 +19,12 @@
 #import "verbatmCustomPinchView.h"
 #import "verbatmCustomImageView.h"
 #import "verbatmCustomImageScrollView.h"
+#import "GMImagePickerController.h"
 
 
 
-@interface verbatmContentPageViewController () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,verbatmGalleryHandlerDelegate>
+
+@interface verbatmContentPageViewController () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,verbatmGalleryHandlerDelegate,GMImagePickerControllerDelegate>
 
 #pragma mark - *Helper properties
 
@@ -200,7 +202,7 @@
     [super viewDidAppear:animated];
     //set up gallery
     //after view loads load the gallery
-    self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
+   // self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
     //add blurview
     [self addBlurView];
     [self setPlaceholderColors];
@@ -254,6 +256,8 @@
 
 -(void) createBaseSelector
 {
+    
+    if(_baseMediaTileSelector)return;//make sure we don't create another one when we return from image picking
     CGRect frame = CGRectMake(self.view.frame.size.width + ELEMENT_OFFSET_DISTANCE,
                               ELEMENT_OFFSET_DISTANCE/2,
                               self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), self.view.frame.size.height/5);
@@ -770,12 +774,12 @@
                 {
                     if([array[i] isKindOfClass:[verbatmCustomImageView class]])
                     {
-                        [self.gallery returnToGallery:(verbatmCustomImageView *)array[i]];
+                        //[self.gallery returnToGallery:(verbatmCustomImageView *)array[i]];
                     }
                 }
             }else if ([view isKindOfClass:[verbatmCustomImageView class]])
             {
-                [self.gallery returnToGallery: (verbatmCustomImageView *)view];
+                //[self.gallery returnToGallery: (verbatmCustomImageView *)view];
             }
             //sanitize your memory
             if(self.upperPinchView == view) self.upperPinchView = Nil;//sanitize the pointers so the objects don't stay in memory
@@ -1670,7 +1674,8 @@
     
     self.index = ([self.pageElements indexOfObject:tile]-1);
     
-    [self.gallery presentGallery];
+    [self presentEfficientGallery];
+    //[self.gallery presentGallery];
 }
 
 -(void)didSelectImageView:(verbatmCustomImageView*)imageView
@@ -1734,27 +1739,34 @@
 
 
 
-- (verbatmCustomPinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText
+- (verbatmCustomPinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view orData: (id) data isTextView: (BOOL) isText
 {
     
     verbatmCustomPinchView * pinchView=nil;
     
     if(isText&& !view)
     {
-        
         UITextView * textView = [[UITextView alloc]init];
         
         pinchView = [[verbatmCustomPinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:textView];
         
         
-    }else if (isText && view)
+    }else if (view)
     {
         
         pinchView = [[verbatmCustomPinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:view];
         
-    }else if (!isText && view)
+    }else if(data)
     {
-        pinchView = [[verbatmCustomPinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:view];
+        
+        if([data isKindOfClass:[NSData class]])//then it's an image
+        {
+            
+            pinchView = [[verbatmCustomPinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center Images:@[data] videoData:nil andText:nil];
+        } else
+        {
+              pinchView = [[verbatmCustomPinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center Images:nil videoData:@[data] andText:nil];
+        }
     }
     
     
@@ -2511,12 +2523,75 @@
 }
 
 
+#pragma mark -New Gallery Implementaiton-
+
+-(void)presentEfficientGallery
+{
+    
+    GMImagePickerController *picker = [[GMImagePickerController alloc] init];
+    picker.delegate = self;
+    //Display or not the selection info Toolbar:
+    picker.displaySelectionInfoToolbar = YES;
+    
+    //Display or not the number of assets in each album:
+    picker.displayAlbumsNumberOfAssets = YES;
+    
+    //Customize the picker title and prompt (helper message over the title)
+    picker.title = @"Verbatm";
+    picker.customNavigationBarPrompt = @"Custom helper message!";
+    
+    //Customize the number of cols depending on orientation and the inter-item spacing
+    picker.colsInPortrait = 3;
+    picker.colsInLandscape = 5;
+    picker.minimumInteritemSpacing = 2.0;
+    [self presentViewController:picker animated:YES completion:nil];
+}
+-(void)addAssetToView:(id)asset
+{
+    UIView * topView;
+    if(self.index==-1 || self.pageElements.count==1)topView = self.articleTitleField;
+    else topView = self.pageElements[self.index];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self newPinchObjectBelowView:topView fromView:nil orData:asset isTextView:NO];
+    });
+    
+    self.index ++;//makes it that the next image is below this image just added
+}
 
 
+//add assets from picker to our scrollview
+-(void)presentAssets:(NSArray *)phassets
+{
+    PHImageManager * iman = [[PHImageManager alloc] init];
+    for(PHAsset * asset in phassets)//store local identifiers so we can querry the nsassets
+    {
+        
+        if(asset.mediaType==PHAssetMediaTypeImage){
+            [iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+                [self addAssetToView: imageData];
+                
+            }];
+        }else
+        {
+            [iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+                [self addAssetToView:asset];
+                
+            }];
+        }
+    }
+}
 
 
-
-
+- (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray
+{
+    
+    
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+        [self presentAssets:assetArray];
+    }];
+    
+    NSLog(@"GMImagePicker: User ended picking assets. Number of selected items is: %lu", (unsigned long)assetArray.count);
+}
 
 
 @end
