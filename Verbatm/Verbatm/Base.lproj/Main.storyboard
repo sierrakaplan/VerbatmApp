@@ -55,7 +55,7 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
-                                            <segue destination="waF-h7-lpu" kind="modal" identifier="bringUpSign" id="pUT-zh-tq2"/>
+                                            <segue destination="waF-h7-lpu" kind="modal" identifier="bringUpSign" id="swG-cZ-OxB"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -82,7 +82,7 @@
                     </connections>
                 </screenEdgePanGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-4315" y="-1180"/>
+            <point key="canvasLocation" x="-4216" y="-1178"/>
         </scene>
         <!--Item-->
         <scene sceneID="wyz-UI-MUa">
@@ -218,6 +218,16 @@
                                     <segue destination="yvg-V2-ceW" kind="modal" id="p44-ek-CRG"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="inB-CY-urt">
+                                <rect key="frame" x="7" y="8" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="x2Q-q6-lhq" kind="unwind" identifier="exitSignInScreen" unwindAction="done:" id="A2r-vF-HzH"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.12156862745098039" green="0.12941176470588237" blue="0.14117647058823529" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
@@ -232,6 +242,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jhx-H8-RPm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="x2Q-q6-lhq" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-3843" y="-1727"/>
         </scene>

@@ -149,8 +149,30 @@
 -(void)dismissGallery
 {
     [self raiseScrollView];
+    [self stopAllVideos];
     [self.animator removeAllBehaviors];
     self.isRaised = YES;
+}
+
+
+-(void)stopAllVideos
+{
+    for(int i=0; i< self.mediaImageViews.count; i++)
+    {
+        UIView * view = self.mediaImageViews[i];
+        if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo)
+        {
+            for(CALayer * layer in view.layer.sublayers)
+            {
+                if([layer isKindOfClass:[AVPlayerLayer class]])
+                {
+                    AVPlayer* player = ((AVPlayerLayer*)layer).player;
+                    [player pause];
+                }
+            }
+        }
+    }
+    
 }
 
 //loads the images unto the scrollView

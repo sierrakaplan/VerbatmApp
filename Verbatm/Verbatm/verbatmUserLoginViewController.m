@@ -81,12 +81,14 @@
 // Enter button presses login
 -(BOOL) textFieldShouldReturn:(UITextField *)textField
 {
-    if (textField == self.UserName_TextField) {
+    if (textField == self.UserName_TextField)
+    {
         [self.Password_TextField becomeFirstResponder];
         return YES;
     }
-    if (textField == self.Password_TextField) {
-        //        [self signUpUser:self.signUp_button];
+    if (textField == self.Password_TextField)
+    {
+        // [self signUpUser:self.signUp_button];
         [self.Password_TextField resignFirstResponder];
         return YES;
     }
@@ -96,18 +98,10 @@
 
 - (IBAction)login:(UIButton *)sender
 {
-    [VerbatmUser loginUserWithUserName:self.UserName_TextField.text andPassword:self.Password_TextField.text withCompletionBlock:^(PFUser *user, NSError *error) {
-       
+    [VerbatmUser loginUserWithUserName:self.UserName_TextField.text andPassword:self.   Password_TextField.text withCompletionBlock:^(PFUser *user, NSError *error){
         if(user)
         {
-            [self.presentingViewController dismissViewControllerAnimated:NO completion:^{
-                return;
-            }];
-             
-             
-             [[NSNotificationCenter defaultCenter] postNotificationName:SINGUP_SUCCEEDED_NOTIFICATION
-                                                                object:nil
-                                                              userInfo:nil];
+            [self performSegueWithIdentifier:@"exitSignInScreen" sender:self];
         }else
         {
             NSLog(@"Login failed");

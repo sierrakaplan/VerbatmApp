@@ -10,6 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
 
 @interface verbatmCustomPinchView : UIView <NSCoding>
 

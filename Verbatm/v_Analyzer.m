@@ -126,10 +126,15 @@
                 [self.results addObject:pv];
             }else
             {
-                verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:photos.firstObject andVideo:videos];
-                [pv addGesturesToVideoView];
-                [pv mute];
-                [self.results addObject:pv];
+                
+                v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:self.preferedFrame Photos:photos andVideos:videos];
+                [mpv mutePlayer];
+                [self.results addObject:mpv];
+                
+//                verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:photos.firstObject andVideo:videos];
+//                [pv addGesturesToVideoView];
+//                [pv mute];
+//                [self.results addObject:pv];
             }
         }
     }else
@@ -180,7 +185,8 @@
             }
         }else{
             NSMutableArray* Vdata = [[NSMutableArray alloc]init];
-            if(media.count == 2){
+            if(media.count == 2)//photo video
+            {
                 UIImage* image;
                 for(verbatmCustomImageView* view in media){
                     if(view.isVideo){
@@ -189,10 +195,15 @@
                         image = view.image;
                     }
                 }
-                verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:image andVideo:Vdata];
-                [_results addObject:pv];
-                [pv mute];
-            }else{
+                
+                v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:self.preferedFrame Photos:@[image] andVideos:Vdata];
+                [mpv mutePlayer];
+                [self.results addObject:mpv];
+                
+//                verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:image andVideo:Vdata];
+//                [_results addObject:pv];
+//                [pv mute];
+            }else{//multiple photo and video
                 NSMutableArray * parray= [[NSMutableArray alloc] init];
                 for(verbatmCustomImageView* view in media)
                 {
@@ -208,10 +219,14 @@
                 
                 if(parray.count ==1)//there is one photo && many videos
                 {
-                    verbatmCustomImageView * pic = [parray firstObject];
-                    verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:pic.image andVideo:Vdata];
-                    [_results addObject:pv];
-                    [pv mute];
+                    v_multiplePhotoVideo* mpv = [[v_multiplePhotoVideo alloc] initWithFrame:self.preferedFrame Photos:parray andVideos:Vdata];
+                    [mpv mutePlayer];
+                    [self.results addObject:mpv];
+                    
+//                    verbatmCustomImageView * pic = [parray firstObject];
+//                    verbatmPhotoVideoAve * pv = [[verbatmPhotoVideoAve alloc] initWithFrame:self.preferedFrame Image:pic.image andVideo:Vdata];
+//                    [_results addObject:pv];
+//                    [pv mute];
                 }else//there are many photos and some/one video(s)
                 {
                 

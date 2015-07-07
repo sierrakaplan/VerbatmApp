@@ -14,7 +14,7 @@
 @property(strong,nonatomic)IBOutlet UIView* background;
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewer;
 @property (weak, nonatomic) IBOutlet UITextView *textField;
-
+@property (nonatomic,strong) AVPlayerViewController * mixPlayer;
 
 @property (strong, nonatomic) NSMutableArray* media;
 @property (strong, nonatomic) NSMutableArray* photos;
@@ -186,7 +186,6 @@
 //allows the user to change the width and height of the frame keeping the same center
 -(void) changeWidthTo: (double) width
 {
-    
     if(width < MIN_PINCHVIEW_SIZE) return;
     self.autoresizesSubviews = YES;
     AVPlayerLayer * ourPlayer;
@@ -390,6 +389,24 @@
     [self.videoView.layer addSublayer:playerLayer];
     // You can play/pause using the AVPlayer object
     [player play];
+    
+    
+//    self.mixPlayer = [[AVPlayerViewController alloc] init];
+//    AVPlayerItem *newplayerItem = [AVPlayerItem playerItemWithAsset:asset];
+//    //make an immutable copy of the mutableComposition
+//    AVPlayer *newplayer = [AVPlayer playerWithPlayerItem:newplayerItem];
+//    
+//    newplayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(playerItemDidReachEnd:)
+//                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+//                                               object:[newplayer currentItem]];
+//    self.mixPlayer.showsPlaybackControls = NO;
+//    self.mixPlayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
+//    [self.mixPlayer setPlayer:newplayer];
+//    [self.mixPlayer.view setFrame:self.videoView.bounds];
+//    [self.videoView addSubview:self.mixPlayer.view];
+//    [self.mixPlayer.player play];
 }
 
 //tells me when the video ends so that I can rewind
@@ -508,8 +525,8 @@
 //pauses the video for the pinchview if there is one
 -(void)pauseVideo
 {
+  
     if(!self.there_is_video) return;
-    
     for(CALayer * layer in self.videoView.layer.sublayers)
     {
         if([layer isKindOfClass:[AVPlayerLayer class]])
@@ -523,6 +540,7 @@
 //plays the video of the pinch view if there is one
 -(void)continueVideo
 {
+
     if(!self.there_is_video) return;
     for(CALayer * layer in self.videoView.layer.sublayers)
     {

@@ -105,6 +105,7 @@
                 [self setPLViewsToHeight:self.photoList.frame.size.height];
             }];
         }
+        
     }else if (view== self.gestureView)//this means you have "tapped" the video
     {
         if(self.videoView.frame.size.height != self.frame.size.height)//video view is in smaller frame

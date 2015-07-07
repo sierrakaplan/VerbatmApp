@@ -308,8 +308,13 @@
 -(void) signUpSuccesful: (NSNotification *) notification
 {
     NSLog(@"Signup Succeeded");
+    
+    //[self performSegueWithIdentifier:@"exitSignInScreen" sender:self];
+    
     //Removes the login page
-    [self dismissViewControllerAnimated:YES completion:nil];
+    //[self dismissViewControllerAnimated:NO completion:^{
+      //  NSLog(@"dismiss Succeeded");
+    //}];
 }
 
 -(void)Login

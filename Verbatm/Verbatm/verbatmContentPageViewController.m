@@ -2275,7 +2275,7 @@
     self.openImageScrollView = nil;
     [self playVideos];
     [self.openImagePinchView renderMedia];
-    [self showPullBar];
+    //[self showPullBar];
 }
 
 #pragma mark ImageScrollView
