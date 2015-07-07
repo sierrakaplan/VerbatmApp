@@ -33,9 +33,43 @@
         [self setBackgroundColor:[UIColor clearColor]];
         [self.selectText setBackgroundImage:[UIImage imageNamed:@"photo_button"] forState: UIControlStateNormal];
         [self.selectMedia setBackgroundImage:[UIImage imageNamed:@"text_button"] forState: UIControlStateNormal];
+        
+        UIImage *highlightedIconText = [self imageWithColorOverlay:[UIColor whiteColor]:[UIImage imageNamed:@"photo_button"]];
+        UIImage *highlightedIconImage = [self imageWithColorOverlay:[UIColor whiteColor]:[UIImage imageNamed:@"text_button"]];
+        [self.selectText setBackgroundImage:highlightedIconText forState:UIControlStateHighlighted];
+        [self.selectMedia setBackgroundImage:highlightedIconImage forState:UIControlStateHighlighted];
     }
     return self;
     self.optionSelected = NO;
+}
+
+
+-(UIImage*) imageWithColorOverlay:(UIColor*)color:(UIImage*)image
+{
+    //create context
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    //drawingcode
+    //bg
+    CGRect rect = CGRectMake(0.0, 0.0, image.size.width, image.size.height);
+    
+    [image drawInRect:rect];
+    
+    //fg
+    CGContextSetBlendMode(context, kCGBlendModeMultiply);
+    
+    CGContextSetFillColorWithColor(context, color.CGColor);
+    CGContextFillRect(context, rect);
+    
+    //mask
+    [image drawInRect:rect blendMode:kCGBlendModeDestinationIn alpha:1.0];
+    
+    //end
+    UIImage *newimage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    
+    return newimage;
 }
 
 //Iain
@@ -65,6 +99,11 @@
     [self.customDelegate addMultiMediaButtonPressedAsBaseView:self.baseSelector fromView: self];
 }
 
+-(void) buttonHighlight: (UIButton*) button
+{
+    [button setBackgroundColor:[UIColor whiteColor]];
+}
+
 
 #pragma mark - *Lazy Instantiation
 -(UIButton *) selectMedia
@@ -85,6 +124,7 @@
     if(!_selectText) _selectText = [[UIButton alloc]init];
     [_selectText addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
 //    [_selectText addTarget:self action:@selector(buttonHighlight:) forControlEvents:UIControlEventTouchDown];
+
     return _selectText;
 }
 
