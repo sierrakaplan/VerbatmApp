@@ -29,15 +29,15 @@
 #pragma mark - *Helper properties
 
 #pragma mark Keyboard related properties
-@property (nonatomic) NSInteger keyboardHeight;
+@property (atomic) NSInteger keyboardHeight;
 
 #pragma mark Helpful integer stores
-@property (nonatomic) NSInteger index; //the index of the first view that is pushed up/down by the pinch/stretch gesture
-@property (nonatomic, strong) NSString * textBeforeNavigationLabel;
+@property (atomic) NSInteger index; //the index of the first view that is pushed up/down by the pinch/stretch gesture
+@property (atomic, strong) NSString * textBeforeNavigationLabel;
 
 
 #pragma mark undo related properties
-@property (nonatomic, strong) NSUndoManager * tileSwipeViewUndoManager;
+@property (atomic, strong) NSUndoManager * tileSwipeViewUndoManager;
 
 #pragma mark - Parameters to function within
 
@@ -104,9 +104,9 @@
 @property (nonatomic) CGSize standardContentSizeForPersonalView; //gives the standard content size for each personal Scrollview
 
 #pragma mark Text input outlets
-@property (weak, nonatomic) IBOutlet verbatmUITextView *firstContentPageTextBox;
-@property (strong, nonatomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
-@property (strong, nonatomic) verbatmCustomMediaSelectTile * baseMediaTileSelector;
+@property (weak, atomic) IBOutlet verbatmUITextView *firstContentPageTextBox;
+@property (strong, atomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
+@property (strong, atomic) verbatmCustomMediaSelectTile * baseMediaTileSelector;
 
 #pragma mark Horizontal Pinch Gesture Properties
 @property(nonatomic) CGPoint startLocationOfLeftestTouchPoint_PINCH;
@@ -116,7 +116,7 @@
 
 
 #pragma mark PanGesture Properties
-@property (nonatomic, strong) UIView * selectedView_Pan;
+@property (atomic, strong) UIView * selectedView_Pan;
 @property(nonatomic) CGPoint startLocationOfTouchPoint_PAN;
 @property (nonatomic) CGRect originalFrame;//keep track of the starting from of the selected view so that you can easily shift things around
 @property (nonatomic) CGRect potentialFrame;//keep track of the frame the selected view could take so that we can easily shift
@@ -1741,7 +1741,9 @@
 
 - (verbatmCustomPinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view orData: (id) data isTextView: (BOOL) isText
 {
-    
+    NSLock  * lock =[[NSLock alloc] init];
+    //thread safety
+    [lock lock];
     verbatmCustomPinchView * pinchView=nil;
     
     if(isText&& !view)
@@ -1791,6 +1793,9 @@
         [self.pageElements insertObject:pinchView atIndex:index+1];
     }
     
+    self.index ++;//makes it that the next image is below this image just added
+
+    [lock unlock];
     [sv addSubview:pinchView];
     [self.mainScrollView addSubview:sv];
     [self shiftElementsBelowView:self.articleTitleField];
@@ -1802,6 +1807,7 @@
     {
         if(![sv.subviews[i] isKindOfClass:[verbatmCustomPinchView class]])[sv.subviews[i] removeFromSuperview];
     }
+    
     
     return pinchView;
 }
@@ -2548,14 +2554,19 @@
 }
 -(void)addAssetToView:(id)asset
 {
-    UIView * topView;
-    if(self.index==-1 || self.pageElements.count==1)topView = self.articleTitleField;
-    else topView = self.pageElements[self.index];
+    NSLock  * lock =[[NSLock alloc] init];
+    //thread safety
+    [lock lock];
+        UIView * topView;
+        if(self.index==-1 || self.pageElements.count==1)topView = nil;
+        else topView = self.pageElements[self.index];
+        //self.index ++;//makes it that the next image is below this image just added
+    [lock unlock];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self newPinchObjectBelowView:topView fromView:nil orData:asset isTextView:NO];
     });
     
-    self.index ++;//makes it that the next image is below this image just added
+    
 }
 
 

@@ -336,9 +336,19 @@
     }else{ // Added to make class accomodate taking NSData for vidoes instead!
         self.textField.text = self.text;
         if(self.there_is_picture){
-            [self.imageViewer setImage: (UIImage*)[self.photos firstObject]];
-            self.imageViewer.contentMode = UIViewContentModeCenter;
-            self.imageViewer.layer.masksToBounds = YES;
+            id imagedata = [self.photos firstObject];
+            
+            if([imagedata isKindOfClass:[UIImage class]])
+            {
+                [self.imageViewer setImage: (UIImage*)imagedata];
+                self.imageViewer.contentMode = UIViewContentModeCenter;
+                self.imageViewer.layer.masksToBounds = YES;
+            }else
+            {
+                [self.imageViewer setImage: [[UIImage alloc] initWithData:imagedata]];
+                self.imageViewer.contentMode = UIViewContentModeCenter;
+                self.imageViewer.layer.masksToBounds = YES;
+            }
         }
         if(self.there_is_video)
         {
@@ -587,7 +597,6 @@
 {
     if((self = [super init]))
     {
-        
         //load from Nib file..this initializes the background view and all its subviews
         [[NSBundle mainBundle] loadNibNamed:@"verbatmCustomPinchView" owner:self options:nil];
         
