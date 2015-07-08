@@ -18,7 +18,7 @@
 @property (nonatomic, strong) UIImage * filter_WARM;
 @property (nonatomic, strong) NSString * filter;
 @property (nonatomic, strong) AVPlayer  * ourPlayer;
-@property(nonatomic, strong)MPMoviePlayerController *moviePlayer;
+@property(nonatomic, strong) MPMoviePlayerController *moviePlayer;
 @property (nonatomic,strong) AVPlayerViewController * mixPlayer;
 
 

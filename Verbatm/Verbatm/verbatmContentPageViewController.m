@@ -2575,7 +2575,8 @@
     for(PHAsset * asset in phassets)//store local identifiers so we can querry the nsassets
     {
         
-        if(asset.mediaType==PHAssetMediaTypeImage){
+        if(asset.mediaType==PHAssetMediaTypeImage)
+        {
             [iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
                 [self addAssetToView: imageData];
                 
