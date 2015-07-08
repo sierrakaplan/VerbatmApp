@@ -532,7 +532,8 @@
 
 -(NSMutableArray*)mediaObjects
 {
-    return self.media;
+    if(_media)return self.media;
+    else return [NSMutableArray arrayWithArray:[self.photos arrayByAddingObjectsFromArray:self.videos]];
 }
 
 #pragma mark - manipulating playing of videos -

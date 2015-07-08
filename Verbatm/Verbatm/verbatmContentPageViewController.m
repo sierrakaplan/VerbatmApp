@@ -2318,19 +2318,17 @@
         NSMutableArray * array = [pinch_object mediaObjects];
         UIView* mediaView = [array firstObject]; //could be textview or customimageview
 
-        //pinch object was a video or image
-        if([mediaView isKindOfClass:[verbatmCustomImageView class]])
-        {
-            [self createCustomImageScrollViewFromPinchView:pinch_object andImageView:(verbatmCustomImageView *)mediaView orTextView:nil];
-        }
-            
-        //pinch object was a textview
         if([mediaView isKindOfClass:[UITextView class]])
         {
             
             [self createCustomImageScrollViewFromPinchView:pinch_object andImageView:nil orTextView:(verbatmUITextView *)mediaView];
-        
+            
+        }else
+        {//pinch object was a video or image
+            [self createCustomImageScrollViewFromPinchView:pinch_object andImageView:mediaView orTextView:nil];
         }
+            
+        //pinch object was a textview
         
         [self pauseAllVideos];//when things are offscreen then pause all videos
         
@@ -2340,8 +2338,8 @@
 
 
 
-
--(void) createCustomImageScrollViewFromPinchView: (verbatmCustomPinchView *) pinchView andImageView: (verbatmCustomImageView *) imageView orTextView: (verbatmUITextView *) textView
+//media view is either photo or video
+-(void) createCustomImageScrollViewFromPinchView: (verbatmCustomPinchView *) pinchView andImageView: (id)imageView orTextView: (verbatmUITextView *) textView
 {
     
     if(imageView)

@@ -19,6 +19,8 @@
 @property (nonatomic, strong) NSString * filter;
 @property (nonatomic, strong) AVPlayer  * ourPlayer;
 @property(nonatomic, strong)MPMoviePlayerController *moviePlayer;
+@property (nonatomic,strong) AVPlayerViewController * mixPlayer;
+
 
 
 #define TEXT_BOX_FONT_SIZE 20
@@ -224,38 +226,69 @@
 
 #pragma mark - Image or Video View -
 
--(void)addImage: (verbatmCustomImageView *) givenImageView withPinchObject: (verbatmCustomPinchView *) pinchObject
+-(void)addImage: (id) givenImageView withPinchObject: (verbatmCustomPinchView *) pinchObject
 {
-    if(givenImageView.isVideo)
+    
+    if([givenImageView isKindOfClass:[verbatmCustomImageView class]])
     {
-        self.openImage = [[verbatmCustomImageView alloc]init];
-        [self addSubview:self.openImage];
-        CGRect frame = self.bounds;
-        self.openImage.frame = frame;
-        AVURLAsset* asset = [[AVURLAsset alloc]initWithURL:givenImageView.asset.defaultRepresentation.url options:nil];
-        [self playVideo:asset];
-
-        self.gestureView =[[UIView alloc] initWithFrame:frame];
-        [self addSubview:self.gestureView];
-        [self bringSubviewToFront:self.gestureView];
-        
-    }else
-    {
-        if(self.gestureView)//be sure to remove it
+        if(((verbatmCustomImageView*)givenImageView).isVideo)
         {
-            [self.gestureView removeFromSuperview];
-            self.gestureView = nil;
+            self.openImage = [[verbatmCustomImageView alloc]init];
+            [self addSubview:self.openImage];
+            CGRect frame = self.bounds;
+            self.openImage.frame = frame;
+            AVURLAsset* asset = [[AVURLAsset alloc]initWithURL:((verbatmCustomImageView*)givenImageView).asset.defaultRepresentation.url options:nil];
+            [self playVideo:asset];
+
+            self.gestureView =[[UIView alloc] initWithFrame:frame];
+            [self addSubview:self.gestureView];
+            [self bringSubviewToFront:self.gestureView];
+            
+        }else
+        {
+            if(self.gestureView)//be sure to remove it
+            {
+                [self.gestureView removeFromSuperview];
+                self.gestureView = nil;
+            }
+            
+            //create a new scrollview to place the images
+            self.openImage = [[verbatmCustomImageView alloc]init];
+            self.openImage.image = ((verbatmCustomImageView*)givenImageView).image;
+            self.openImage.asset = ((verbatmCustomImageView*)givenImageView).asset;
+            self.openImage.contentMode = UIViewContentModeScaleAspectFit;
+            [self addSubview:self.openImage];
+            [self creatFilteredImages];
+            [self addSwipeToOpenedView];
+            self.openImage.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        }
+    }else //now we're using our new nsdata/avasset type stuff
+    {
+        if([givenImageView isKindOfClass:[NSData class]])//it's picture
+        {
+            if(self.gestureView)//be sure to remove it
+            {
+                [self.gestureView removeFromSuperview];
+                self.gestureView = nil;
+            }
+            
+            
+            //create a new scrollview to place the images
+            self.openImage = [[verbatmCustomImageView alloc]init];
+            self.openImage.image = [[UIImage alloc] initWithData:givenImageView];
+            self.openImage.asset =givenImageView;
+            self.openImage.contentMode = UIViewContentModeScaleAspectFit;
+            [self addSubview:self.openImage];
+            [self creatFilteredImages];
+            [self addSwipeToOpenedView];
+            self.openImage.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+            
+            
+        }else //it's a video in avasset form
+        {
+            [self playVideo:givenImageView];
         }
         
-        //create a new scrollview to place the images
-        self.openImage = [[verbatmCustomImageView alloc]init];
-        self.openImage.image = givenImageView.image;
-        self.openImage.asset = givenImageView.asset;
-        self.openImage.contentMode = UIViewContentModeScaleAspectFit;
-        [self addSubview:self.openImage];
-        [self creatFilteredImages];
-        [self addSwipeToOpenedView];
-        self.openImage.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     }
 }
 
@@ -266,21 +299,44 @@
 }
 
 
-
--(void)playVideo:(AVURLAsset*)asset
-{
-    
-    
-    self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:asset.URL];
-    [self.moviePlayer prepareToPlay];
-    self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
-    self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
-    self.moviePlayer.controlStyle= MPMovieControlStyleNone;
-    [self.moviePlayer.view setFrame: self.openImage.frame];  // player's frame must match parent's
-    [self addSubview:self.moviePlayer.view];
-    [self.moviePlayer play];
-    
-    
+//-(void)playVideo:(AVURLAsset*)asset
+//{
+////    
+////    [[MPMoviePlayerController alloc] initWithContentURL:(NSURL *)];
+////    self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:asset.URL];
+////    [self.moviePlayer prepareToPlay];
+////    self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
+////    self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
+////    self.moviePlayer.controlStyle= MPMovieControlStyleNone;
+////    [self.moviePlayer.view setFrame: self.openImage.frame];  // player's frame must match parent's
+////    [self addSubview:self.moviePlayer.view];
+////    [self.moviePlayer play];
+////    
+////    
+////    
+////    
+////    // Create an AVPlayerItem using the asset
+////    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
+////    // Create the AVPlayer using the playeritem
+////    AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+////    //MUTE THE PLAYER
+////    player.muted = YES;
+////    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+////    [[NSNotificationCenter defaultCenter] addObserver:self
+////                                             selector:@selector(playerItemDidReachEnd:)
+////                                                 name:AVPlayerItemDidPlayToEndTimeNotification
+////                                               object:[player currentItem]];
+////    
+////    // Create an AVPlayerLayer using the player
+////    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+////    playerLayer.frame = self.bounds;
+////    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+////    // Add it to your view's sublayers
+////    [self.videoView.layer addSublayer:playerLayer];
+////    // You can play/pause using the AVPlayer object
+////    [player play];
+//    
+//    
 //    // Create an AVPlayerItem using the asset
 //    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
 //    
@@ -295,7 +351,7 @@
 //
 //    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
 //    // Add it to your view's sublayers
-//    [self.openImage.layer addSublayer:playerLayer];
+//    [self.layer addSublayer:playerLayer];
 //    // You can play/pause using the AVPlayer object
 //    
 //    self.ourPlayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
@@ -305,20 +361,45 @@
 //                                                 name:AVPlayerItemDidPlayToEndTimeNotification
 //                                               object:[self.ourPlayer currentItem]];
 //    [self.ourPlayer play];
-}
+//}
 
+
+-(void)playVideo:(AVURLAsset*)asset
+{
+    self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:asset.URL];
+    [self.moviePlayer prepareToPlay];
+    self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
+    self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
+    self.moviePlayer.controlStyle= MPMovieControlStyleNone;
+    [self.moviePlayer.view setFrame: self.bounds];  // player's frame must match parent's
+    [self addSubview:self.moviePlayer.view];
+    self.gestureView =[[UIView alloc] initWithFrame:self.bounds];
+    [self addSubview:self.gestureView];
+    [self bringSubviewToFront:self.gestureView];
+    [self.moviePlayer play];
+}
 
 -(void)creatFilteredImages
 {
     //original "filter"
-    ALAssetRepresentation *assetRepresentation = [self.openImage.asset defaultRepresentation];
-    self.filter_Original = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
-                                               scale:[assetRepresentation scale]
-                                         orientation:UIImageOrientationUp];
+    NSData *data;
+    if([self.openImage.asset isKindOfClass:[NSData class]]){
+        
+        data = (NSData *) self.openImage.asset;
     
-    Byte *buffer = (Byte*)malloc(assetRepresentation.size);
-    NSUInteger buffered = [assetRepresentation getBytes:buffer fromOffset:0.0 length:assetRepresentation.size error:nil];
-    NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+    }else
+    {
+        ALAssetRepresentation *assetRepresentation = [self.openImage.asset defaultRepresentation];
+        self.filter_Original = [UIImage imageWithCGImage:[assetRepresentation fullResolutionImage]
+                                                   scale:[assetRepresentation scale]
+                                             orientation:UIImageOrientationUp];
+        
+        Byte *buffer = (Byte*)malloc(assetRepresentation.size);
+        NSUInteger buffered = [assetRepresentation getBytes:buffer fromOffset:0.0 length:assetRepresentation.size error:nil];
+        
+        data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
+    }
+    
         
     //warm filter
     CIImage *beginImage =  [CIImage imageWithData:data];
