@@ -7,7 +7,7 @@
 //
 
 #import "verbatmGalleryHandler.h"
-#import "verbatmCustomImageView.h"
+#import "VerbatmImageView.h"
 
 
 @interface verbatmGalleryHandler ()
@@ -160,7 +160,7 @@
     for(int i=0; i< self.mediaImageViews.count; i++)
     {
         UIView * view = self.mediaImageViews[i];
-        if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo)
+        if([view isKindOfClass:[VerbatmImageView class]] && ((VerbatmImageView*)view).isVideo)
         {
             for(CALayer * layer in view.layer.sublayers)
             {
@@ -181,7 +181,7 @@
     CGRect viewSize = CGRectMake(START_POSITION_FOR_MEDIA);
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
     for(ALAsset* asset in self.media){
-        verbatmCustomImageView* imageView = [self imageViewFromAsset:asset];
+        VerbatmImageView* imageView = [self imageViewFromAsset:asset];
         imageView.frame = viewSize;
         if(imageView.isVideo){
             AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:asset.defaultRepresentation.url options:nil];
@@ -200,7 +200,7 @@
 {
     for(UIView * view in self.mediaImageViews)
     {
-        if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo)
+        if([view isKindOfClass:[VerbatmImageView class]] && ((VerbatmImageView*)view).isVideo)
         {
             for(CALayer * layer in self.view.layer.sublayers)
             {
@@ -214,9 +214,9 @@
     }
 }
 
--(verbatmCustomImageView*)imageViewFromAsset:(ALAsset*)asset
+-(VerbatmImageView*)imageViewFromAsset:(ALAsset*)asset
 {
-    verbatmCustomImageView* imageView = [[verbatmCustomImageView alloc] init];
+    VerbatmImageView* imageView = [[VerbatmImageView alloc] init];
     imageView.asset = asset;
     if([[asset valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
         imageView.isVideo = YES;
@@ -237,12 +237,12 @@
 
 -(void)addMediaToGallery:(ALAsset*)asset
 {
-    verbatmCustomImageView* view = [self imageViewFromAsset:asset];
+    VerbatmImageView* view = [self imageViewFromAsset:asset];
     [self returnToGallery:view];
 }
 
 
--(void)addBorder:(verbatmCustomImageView*)view
+-(void)addBorder:(VerbatmImageView*)view
 {
     view.layer.cornerRadius = 8.0f;
     view.layer.masksToBounds = YES;
@@ -372,7 +372,7 @@
     UISwipeGestureRecognizer* swiper = (UISwipeGestureRecognizer*)sender;
     __block CGPoint location = [swiper locationInView: self.view];
     __block int indexa = (!(self.mediaImageViews.count - 1))? 0 :ceil((self.scrollView.contentOffset.x + location.x)/((self.scrollView.frame.size.width - OFFSET)/2)) - 1;
-    verbatmCustomImageView* selectedImageView ;
+    VerbatmImageView* selectedImageView ;
     indexa = (indexa > self.mediaImageViews.count - 1)? (int)self.mediaImageViews.count - 1 : indexa;
     if(self.mediaImageViews.count >= 1)selectedImageView = [self.mediaImageViews objectAtIndex:indexa];
     if(selectedImageView){
@@ -398,7 +398,7 @@
 }
 
 
--(void)returnToGallery:(verbatmCustomImageView*)oldview
+-(void)returnToGallery:(VerbatmImageView*)oldview
 {
     //[[oldview.layer.sublayers firstObject]removeFromSuperlayer];
     
@@ -410,14 +410,14 @@
     }
     [layer removeFromSuperlayer];
     
-    verbatmCustomImageView * view = [self imageViewFromAsset:oldview.asset];
+    VerbatmImageView * view = [self imageViewFromAsset:oldview.asset];
     [self.media insertObject: view.asset atIndex:0];
     self.scrollView.contentSize = CGSizeMake(CONTENT_SIZE);
     view.frame = CGRectMake(START_POSITION_FOR_MEDIA);
     [self addBorder: view];
     [self.scrollView addSubview: view];
 
-    for(verbatmCustomImageView* otherView in self.mediaImageViews)
+    for(VerbatmImageView* otherView in self.mediaImageViews)
     {
         otherView.frame = CGRectOffset(otherView.frame,  (self.scrollView.frame.size.width - OFFSET)/2, 0);
     }
@@ -441,7 +441,7 @@
 
 -(void)playVideoOnView:(UIView *)view
 {
-    if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo)
+    if([view isKindOfClass:[VerbatmImageView class]] && ((VerbatmImageView*)view).isVideo)
     {
         for(CALayer * layer in view.layer.sublayers)
         {
@@ -456,7 +456,7 @@
 
 -(void)pauseVideoOnView:(UIView *)view
 {
-    if([view isKindOfClass:[verbatmCustomImageView class]] && ((verbatmCustomImageView*)view).isVideo)
+    if([view isKindOfClass:[VerbatmImageView class]] && ((VerbatmImageView*)view).isVideo)
     {
         for(CALayer * layer in view.layer.sublayers)
         {

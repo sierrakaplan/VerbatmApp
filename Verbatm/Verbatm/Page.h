@@ -8,7 +8,7 @@
 
 #import <Parse/Parse.h>
 #import <Parse/PFObject+Subclass.h>
-#import "verbatmCustomPinchView.h"
+#import "PinchView.h"
 #import "Article.h"
 @class Photo;
 @class Video;
@@ -19,7 +19,7 @@
 +(void)load;
 
 #pragma mark - methods for getting and setting page properties - 
--(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view Article: (Article *) article andPageNumber:(NSInteger) position;
+-(instancetype)initWithPinchObject:(PinchView*)p_view Article: (Article *) article andPageNumber:(NSInteger) position;
 -(NSString*)getText;
 
 //This method blocks//
@@ -30,7 +30,7 @@
 
 /*This method blocks*/
 /*Reconstructs a pinch object from a page*/
--(verbatmCustomPinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center;
+-(PinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center;
 
 #pragma mark - bools to tell what type of media make up page -
 @property (readonly,nonatomic) BOOL there_is_text;

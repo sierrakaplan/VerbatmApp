@@ -7,13 +7,13 @@
 //
 
 #import "v_multimediaTextVIew.h"
-#import "v_textview.h"
+#import "TextAVE.h"
 
 
 //not being used right now- idk why the class isn't working x_x
 @interface v_multimediaTextVIew ()
 
-@property (strong, nonatomic) v_textview* textView;
+@property (strong, nonatomic) TextAVE* textView;
 @property (strong, nonatomic) UIVisualEffectView* bgBlurImage;
 @property (nonatomic) CGPoint lastPoint;
 @property (strong, nonatomic) UIView* pullBarView;
@@ -101,7 +101,7 @@
 
 -(void)formatTextViewWithText:(NSString*) text
 {
-    self.textView = [[v_textview alloc]initWithFrame: TEXT_VIEW_DEFAULT_FRAME];
+    self.textView = [[TextAVE alloc]initWithFrame: TEXT_VIEW_DEFAULT_FRAME];
     [self.textView setTextViewText: text];
     self.textView.textColor = [UIColor whiteColor];
     [self addSubview: self.textView];

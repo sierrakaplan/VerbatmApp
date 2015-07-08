@@ -7,7 +7,7 @@
 //
 
 #import "Page.h"
-#import "verbatmCustomImageView.h"
+#import "VerbatmImageView.h"
 #include "verbatmCustomPinchView+reconstructFromDownload.h"
 #import "Photo.h"
 #import "Video.h"
@@ -36,7 +36,7 @@
 
 #pragma mark - Methods required for subclassing PFObject.
 
--(instancetype)initWithPinchObject:(verbatmCustomPinchView*)p_view Article: (Article *) article andPageNumber:(NSInteger) position
+-(instancetype)initWithPinchObject:(PinchView*)p_view Article: (Article *) article andPageNumber:(NSInteger) position
 {
     if((self = [super init]))
     {
@@ -48,7 +48,7 @@
 }
 
 
--(void)sortPinchObject:(verbatmCustomPinchView*)pinchObject
+-(void)sortPinchObject:(PinchView*)pinchObject
 {
     NSMutableArray* media = [pinchObject mediaObjects];
     if((self.there_is_text = pinchObject.there_is_text)){
@@ -59,9 +59,9 @@
     if(self.there_is_video || self.there_is_picture)
     {
         for(UIView* view in media){
-            if([view isKindOfClass:[verbatmCustomImageView class]]){
-                if(((verbatmCustomImageView*)view).isVideo){
-                    Video* video = [[Video alloc]initWithData:[self dataFromAsset:((verbatmCustomImageView*)view).asset] withCaption:nil andName:nil atLocation:nil];
+            if([view isKindOfClass:[VerbatmImageView class]]){
+                if(((VerbatmImageView*)view).isVideo){
+                    Video* video = [[Video alloc]initWithData:[self dataFromAsset:((VerbatmImageView*)view).asset] withCaption:nil andName:nil atLocation:nil];
                     [video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
                     [video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         if(succeeded){
@@ -71,7 +71,7 @@
                         }
                     }];
                 }else{
-                    Photo* photo = [[Photo alloc]initWithData:[self dataFromAsset:((verbatmCustomImageView*)view).asset] withCaption:nil andName:nil atLocation:nil];
+                    Photo* photo = [[Photo alloc]initWithData:[self dataFromAsset:((VerbatmImageView*)view).asset] withCaption:nil andName:nil atLocation:nil];
                     [photo setObject: self forKey:PAGE_PHOTO_RELATIONSHIP];
                     [photo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         if(succeeded){
@@ -131,7 +131,7 @@
     return data;
 }
 
--(verbatmCustomPinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center
+-(PinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center
 {
     NSArray* videos = [self getVideos];
     NSMutableArray* videoData = [[NSMutableArray alloc]init];
@@ -147,7 +147,7 @@
         [photos addObject:[photo getPhoto]];
     }
     
-    verbatmCustomPinchView * view = [[verbatmCustomPinchView alloc] initWithRadius:radius withCenter:center Images:photos videoData:videoData andText:self.text];
+    PinchView * view = [[PinchView alloc] initWithRadius:radius withCenter:center Images:photos videoData:videoData andText:self.text];
     
     return view;
 }

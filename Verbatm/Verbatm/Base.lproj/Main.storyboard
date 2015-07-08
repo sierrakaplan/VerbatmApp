@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8121.20" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8101.16"/>
     </dependencies>
     <customFonts key="customFonts">
         <mutableArray key="HelveticaNeueLights.ttc">
@@ -22,10 +21,10 @@
         </mutableArray>
     </customFonts>
     <scenes>
-        <!--Verbatm Master Navigation View Controller-->
+        <!--Master NavigationVC-->
         <scene sceneID="IQM-hy-SHi">
             <objects>
-                <viewController id="f1t-Lb-Erp" customClass="verbatmMasterNavigationViewController" sceneMemberID="viewController">
+                <viewController id="f1t-Lb-Erp" customClass="MasterNavigationVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="iqH-CV-UYe">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -87,7 +86,7 @@
         <!--Item-->
         <scene sceneID="wyz-UI-MUa">
             <objects>
-                <viewController wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="verbatmArticleListControlerViewController" sceneMemberID="viewController">
+                <viewController wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="ArticleListVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Yqu-zV-E3L">
                         <rect key="frame" x="0.0" y="0.0" width="205" height="154"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -101,7 +100,7 @@
                                         <rect key="frame" x="0.0" y="22" width="320" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="O8E-So-dii" id="OHX-rm-rv4">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="79.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oQD-BK-vfI">
@@ -161,7 +160,7 @@
         <!--Item-->
         <scene sceneID="gIN-uk-7gC">
             <objects>
-                <viewController id="waF-h7-lpu" customClass="verbatmUserLoginViewController" sceneMemberID="viewController">
+                <viewController id="waF-h7-lpu" customClass="UserLoginVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZWl-f6-r1u">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -246,10 +245,10 @@
             </objects>
             <point key="canvasLocation" x="-3843" y="-1727"/>
         </scene>
-        <!--Verbatm User Sign Up View Controller-->
+        <!--User Sign UpVC-->
         <scene sceneID="reL-bU-Na3">
             <objects>
-                <viewController id="yvg-V2-ceW" customClass="verbatmUserSignUpViewController" sceneMemberID="viewController">
+                <viewController id="yvg-V2-ceW" customClass="UserSignUpVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="6YX-fJ-Ona">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -303,7 +302,7 @@
         <!--Item-->
         <scene sceneID="74h-C3-U07">
             <objects>
-                <viewController id="Qxg-C2-1Oh" customClass="verbatmMediaPageViewController" sceneMemberID="viewController">
+                <viewController id="Qxg-C2-1Oh" customClass="MediaDevVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rWO-ax-CE2">
                         <rect key="frame" x="0.0" y="0.0" width="243" height="253"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -333,10 +332,10 @@
             </objects>
             <point key="canvasLocation" x="-3679" y="-920"/>
         </scene>
-        <!--Article Dispaly View Controller-->
+        <!--Article DisplayVC-->
         <scene sceneID="lst-8e-ORz">
             <objects>
-                <viewController id="K1p-X2-CXo" customClass="articleDispalyViewController" sceneMemberID="viewController">
+                <viewController id="K1p-X2-CXo" customClass="ArticleDisplayVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Jae-KA-Tah">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -370,12 +369,12 @@
         <!--contentPage-->
         <scene sceneID="8XD-Tr-4db">
             <objects>
-                <viewController storyboardIdentifier="contentPage" title="contentPage" id="0lh-hP-Opv" customClass="verbatmContentPageViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="contentPage" title="contentPage" id="0lh-hP-Opv" customClass="ContentDevVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NN2-7a-wCP">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <scrollView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="ChT-rO-Rpn" customClass="verbatmCustomScrollView">
+                            <scrollView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="ChT-rO-Rpn" customClass="VerbatmScrollView">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -461,9 +460,4 @@
             <point key="canvasLocation" x="-3679" y="175"/>
         </scene>
     </scenes>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
-    </simulatedMetricsContainer>
 </document>

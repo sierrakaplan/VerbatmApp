@@ -18,7 +18,7 @@
 @interface Article : PFObject
 
 @property (strong,readonly, nonatomic) NSString* title;
-@property (strong,readonly, nonatomic) NSString* subtitle;
+//@property (strong,readonly, nonatomic) NSString* subtitle;
 @property(strong, readonly,nonatomic) NSString* content;
 @property(strong,readonly, nonatomic) NSString* sandwich;
 
@@ -41,9 +41,9 @@
 
 
 //sets the content of the Article. The content must correspond to the right format
--(void) setArticleContent:(NSString *)content;
+//-(void) setArticleContent:(NSString *)content;
 
--(void)setArticleTitle:(NSString *)title;
+//-(void)setArticleTitle:(NSString *)title;
 
 //creates an s@ndwich given the two component strings in the right order
 -(void)setSandwich:(NSString*)firstPart at: (NSString*)secondPart;
@@ -54,7 +54,7 @@
 //adds a video to the list of videos of the article.
 -(void)addVideo:(Video*)video;
 
--(void)setPinchObjects:(NSMutableArray*)p_objs;
+//-(void)setPinchObjects:(NSMutableArray*)p_objs;
 
 
 #pragma mark - querry articles for information

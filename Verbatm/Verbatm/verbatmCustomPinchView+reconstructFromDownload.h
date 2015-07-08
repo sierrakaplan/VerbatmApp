@@ -1,13 +1,13 @@
 //
-//  verbatmCustomPinchView+reconstructFromDownload.h
+//  PinchView+reconstructFromDownload.h
 //  Verbatm
 //
 //  Created by Lucio Dery Jnr Mwinmaarong on 3/24/15.
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "verbatmCustomPinchView.h"
+#import "PinchView.h"
 
-@interface verbatmCustomPinchView (reconstructFromDownload)
+@interface PinchView (reconstructFromDownload)
 
 @end

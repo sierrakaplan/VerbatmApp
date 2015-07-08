@@ -7,16 +7,16 @@
 //
 
 #import "VIEW_TESTERViewController.h"
-#import "verbatmPhotoVideoAve.h"
-#import "verbatmCustomImageView.h"
+#import "PhotoVideoAVE.h"
+#import "VerbatmImageView.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #define ALBUM_NAME @"Verbatm"
 
 @interface VIEW_TESTERViewController ()
-@property (strong, nonatomic) verbatmPhotoVideoAve* pv_ave;
-@property (strong, nonatomic) verbatmCustomImageView * imageV;
-@property (strong, nonatomic) verbatmCustomImageView * videoV;
+@property (strong, nonatomic) PhotoVideoAVE* pv_ave;
+@property (strong, nonatomic) VerbatmImageView * imageV;
+@property (strong, nonatomic) VerbatmImageView * videoV;
 @property (strong, nonatomic) NSMutableArray * media;
 @property (strong, nonatomic) ALAssetsGroup * folder;
 @end
@@ -74,11 +74,11 @@
         
         if([[self.media[i] valueForProperty: ALAssetPropertyType] isEqualToString:ALAssetTypeVideo])
         {
-            self.videoV = [[verbatmCustomImageView alloc] init];
+            self.videoV = [[VerbatmImageView alloc] init];
             self.videoV.isVideo = YES;
             self.videoV.asset = self.media[i];
         }else{
-            self.imageV = [[verbatmCustomImageView alloc] init];
+            self.imageV = [[VerbatmImageView alloc] init];
             self.imageV.asset = self.media[i];
             self.imageV.isVideo = NO;
         }
@@ -86,7 +86,7 @@
         if(self.imageV && self.videoV) break;
     }
     
-    self.pv_ave = [[verbatmPhotoVideoAve alloc]initWithFrame:self.view.frame Image:self.imageV andVideo:self.videoV];
+    self.pv_ave = [[PhotoVideoAVE alloc]initWithFrame:self.view.frame Image:self.imageV andVideo:self.videoV];
     [self.view addSubview:self.pv_ave];
 }
 
