@@ -759,7 +759,7 @@
 
             //remove swiped view from mainscrollview
             UIView * view = [scrollView.subviews firstObject]; //it is the only subview in this scrollview
-            NSInteger index = [self.pageElements indexOfObject:view];
+            NSUInteger index = [self.pageElements indexOfObject:view];
             [scrollView removeFromSuperview];
             [self.pageElements removeObject:view];
             
@@ -785,7 +785,7 @@
             if(self.upperPinchView == view) self.upperPinchView = Nil;//sanitize the pointers so the objects don't stay in memory
             if(self.lowerPinchView ==view) self.lowerPinchView =Nil;//sanitize these pointers so that the objects don't stay in memory
             
-            [self deletedTile:view withIndex:[NSNumber numberWithInt:index]]; //register deleted tile - register in undo stack
+            [self deletedTile:view withIndex:[NSNumber numberWithUnsignedLong:index]]; //register deleted tile - register in undo stack
         }
         
     }else if(scrollView != self.mainScrollView) //return the view to it's old position
@@ -1713,8 +1713,10 @@
     [UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
         view.frame = frame;
         if([view isKindOfClass:[VerbatmImageView class]] && ((VerbatmImageView*)view).isVideo){
-            AVPlayerLayer* layer = [view.layer.sublayers firstObject];
-            layer.frame = view.bounds;
+            if ([[view.layer.sublayers firstObject] isKindOfClass:[AVPlayerLayer class]]) {
+                AVPlayerLayer* layer = (AVPlayerLayer*)[view.layer.sublayers firstObject];
+                layer.frame = view.bounds;
+            }
         }
     } completion:^(BOOL finished) {
         if(finished)
@@ -1737,47 +1739,16 @@
     }];
 }
 
-
-
-- (PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view orData: (id) data isTextView: (BOOL) isText
-{
+- (void) newPinchObjectBelowView: (UIView *)upperView withPinchView:(PinchView *) pinchView {
     NSLock  * lock =[[NSLock alloc] init];
     //thread safety
     [lock lock];
-    PinchView * pinchView=nil;
-    
-    if(isText&& !view)
-    {
-        UITextView * textView = [[UITextView alloc]init];
-        
-        pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:textView];
-        
-        
-    }else if (view)
-    {
-        
-        pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:view];
-        
-    }else if(data)
-    {
-        
-        if([data isKindOfClass:[NSData class]])//then it's an image
-        {
-            
-            pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center Images:@[data] videoData:nil andText:nil];
-        } else
-        {
-              pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center Images:nil videoData:@[data] andText:nil];
-        }
-    }
-    
     
     [self addTapGestureToView:pinchView];
     
     UIScrollView * sv = [[UIScrollView alloc]init];
     
     [self formatNewScrollView:sv];
-    
     
     if(!upperView)
     {
@@ -1789,17 +1760,17 @@
         NSInteger index = [self.pageElements indexOfObject:upperView];
         UIScrollView * sv_reference = (UIScrollView *)upperView.superview;
         
-       sv.frame = CGRectMake(sv_reference.frame.origin.x, sv_reference.frame.origin.y+sv_reference.frame.size.height, sv_reference.frame.size.width, sv_reference.frame.size.height);
+        sv.frame = CGRectMake(sv_reference.frame.origin.x, sv_reference.frame.origin.y+sv_reference.frame.size.height, sv_reference.frame.size.width, sv_reference.frame.size.height);
         [self.pageElements insertObject:pinchView atIndex:index+1];
     }
     
     self.index ++;//makes it that the next image is below this image just added
-
+    
     [lock unlock];
     [sv addSubview:pinchView];
     [self.mainScrollView addSubview:sv];
     [self shiftElementsBelowView:self.articleTitleField];
-
+    
     
     //imageview's get added for some reason- so this is a quick patch that removes the views
     //don't want. The bug should be reexamined
@@ -1807,8 +1778,41 @@
     {
         if(![sv.subviews[i] isKindOfClass:[PinchView class]])[sv.subviews[i] removeFromSuperview];
     }
+}
+
+- (PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText {
+    PinchView * pinchView=nil;
     
+    if(isText&& !view)
+    {
+        UITextView * textView = [[UITextView alloc]init];
+        
+        pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:textView];
+        
+    }else if (view) {
+        
+        pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:view];
+    }
     
+    [self newPinchObjectBelowView:upperView withPinchView:pinchView];
+    return pinchView;
+}
+
+- (PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data {
+    PinchView * pinchView=nil;
+    if(data)
+    {
+        
+        if([data isKindOfClass:[NSData class]])//then it's an image
+        {
+            
+            pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center Images:@[data] videoData:nil andText:nil];
+        } else
+        {
+            pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center Images:nil videoData:@[data] andText:nil];
+        }
+    }
+    [self newPinchObjectBelowView:upperView withPinchView:pinchView];
     return pinchView;
 }
 
@@ -2117,13 +2121,19 @@
     return _activeTextView;
 }
 
-//Iain
+@synthesize pageElements = _pageElements;
+
 -(NSMutableArray *) pageElements
 {
     if(!_pageElements) _pageElements = [[NSMutableArray alloc] init];
     return _pageElements;
 }
 
+- (void) setPageElements:(NSMutableArray *)pageElements {
+    _pageElements = pageElements;
+}
+
+@synthesize baseMediaTileSelector = _baseMediaTileSelector;
 
 -(MediaSelectTile *) baseMediaTileSelector
 {
@@ -2131,12 +2141,22 @@
     return _baseMediaTileSelector;
 }
 
+- (void) setBaseMediaTileSelector: (MediaSelectTile *) baseMediaTileSelector
+{
+    _baseMediaTileSelector = baseMediaTileSelector;
+}
+
+@synthesize tileSwipeViewUndoManager = _tileSwipeViewUndoManager;
 
 //get the undomanager for the main window- use this for the tiles
 -(NSUndoManager *) tileSwipeViewUndoManager
 {
     if(!_tileSwipeViewUndoManager) _tileSwipeViewUndoManager = [self.view.window undoManager];
     return _tileSwipeViewUndoManager;
+}
+
+- (void) setTileSwipeViewUndoManager:(NSUndoManager *)tileSwipeViewUndoManager {
+    _tileSwipeViewUndoManager = tileSwipeViewUndoManager;
 }
 
 
@@ -2147,8 +2167,7 @@
     return self.changeInBottomViewPostion - self.changeInTopViewPosition;
 }
 
-#pragma mark Orientation
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
@@ -2313,22 +2332,18 @@
     {
         [self openCollection:pinch_object];//checks if there is anything to open by telling you if the element has multiple things in it
     }
-    if(!pinch_object.isCollection && !pinch_object.hasMultipleMedia)//tap to open an element for viewing or editing
-    {
+    if(!pinch_object.isCollection && !pinch_object.hasMultipleMedia) { //tap to open an element for viewing or editing
+        
         NSMutableArray * array = [pinch_object mediaObjects];
         UIView* mediaView = [array firstObject]; //could be textview or customimageview
 
-        if([mediaView isKindOfClass:[UITextView class]])
-        {
+        if([mediaView isKindOfClass:[UITextView class]]) {
             
             [self createCustomImageScrollViewFromPinchView:pinch_object andImageView:nil orTextView:(VerbatmUITextView *)mediaView];
             
-        }else
-        {//pinch object was a video or image
-            [self createCustomImageScrollViewFromPinchView:pinch_object andImageView:mediaView orTextView:nil];
+        } else if([mediaView isKindOfClass:[VerbatmImageView class]]) {
+            [self createCustomImageScrollViewFromPinchView:pinch_object andImageView:(VerbatmImageView*)mediaView orTextView:nil];
         }
-            
-        //pinch object was a textview
         
         [self pauseAllVideos];//when things are offscreen then pause all videos
         
@@ -2561,7 +2576,7 @@
         //self.index ++;//makes it that the next image is below this image just added
     [lock unlock];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self newPinchObjectBelowView:topView fromView:nil orData:asset isTextView:NO];
+        [self newPinchObjectBelowView:topView fromData:asset];
     });
     
     

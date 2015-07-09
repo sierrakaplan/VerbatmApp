@@ -34,8 +34,8 @@
         [self.selectText setBackgroundImage:[UIImage imageNamed:@"photo_button"] forState: UIControlStateNormal];
         [self.selectMedia setBackgroundImage:[UIImage imageNamed:@"text_button"] forState: UIControlStateNormal];
         
-        UIImage *highlightedIconText = [self imageWithColorOverlay:[UIColor whiteColor]:[UIImage imageNamed:@"photo_button"]];
-        UIImage *highlightedIconImage = [self imageWithColorOverlay:[UIColor whiteColor]:[UIImage imageNamed:@"text_button"]];
+        UIImage *highlightedIconText = [self imageOverlayed:[UIImage imageNamed:@"photo_button"] withColor:[UIColor whiteColor]];
+        UIImage *highlightedIconImage = [self imageOverlayed:[UIImage imageNamed:@"text_button"] withColor:[UIColor whiteColor]];
         [self.selectText setBackgroundImage:highlightedIconText forState:UIControlStateHighlighted];
         [self.selectMedia setBackgroundImage:highlightedIconImage forState:UIControlStateHighlighted];
     }
@@ -44,7 +44,7 @@
 }
 
 
--(UIImage*) imageWithColorOverlay:(UIColor*)color:(UIImage*)image
+-(UIImage*) imageOverlayed:(UIImage*)image withColor:(UIColor*)color
 {
     //create context
     UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);

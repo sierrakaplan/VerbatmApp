@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewer;
 @property (weak, nonatomic) IBOutlet UITextView *textField;
 @property (nonatomic,strong) AVPlayerViewController * mixPlayer;
+@property (nonatomic,strong) AVPlayerLayer * playerLayer;
 
 @property (strong, nonatomic) NSMutableArray* media;
 @property (strong, nonatomic) NSMutableArray* photos;
@@ -38,6 +39,20 @@
 @end
 
 @implementation PinchView
+
+
+-(AVPlayerLayer*) playerLayer {
+    if (!_playerLayer) {
+        for (CALayer * obj in self.videoView.layer.sublayers)
+        {
+            if([obj isKindOfClass:[AVPlayerLayer class]])
+            {
+                self.playerLayer = (AVPlayerLayer *)obj;
+            }
+        }
+    }
+    return _playerLayer;
+}
 
 //Lucio
 //Instantiates an instance of the custom view without any media types inputted
@@ -72,10 +87,10 @@
             [self renderMedia];
         }
         [self addBorderToPinchView];
+        
     }
     return self;
 }
-
 
 +(PinchView *)pinchObjectFromPinchObject: (PinchView *) pv
 {
@@ -159,28 +174,16 @@
 
 -(void)unmuteVideo
 {
-    AVPlayerLayer * ourPlayerLayer;
-    for (CALayer * obj in self.videoView.layer.sublayers)
-    {
-        if([obj isKindOfClass:[AVPlayerLayer class]])
-        {
-            ourPlayerLayer = (AVPlayerLayer *)obj;
-        }
+    if(self.playerLayer) {
+        [self.playerLayer.player setMuted:NO];
     }
-    [ourPlayerLayer.player setMuted:NO];
 }
 
 -(void)muteVideo
 {
-    AVPlayerLayer * ourPlayerLayer;
-    for (CALayer * obj in self.videoView.layer.sublayers)
-    {
-        if([obj isKindOfClass:[AVPlayerLayer class]])
-        {
-            ourPlayerLayer = (AVPlayerLayer *)obj;
-        }
+    if(self.playerLayer) {
+        [self.playerLayer.player setMuted:YES];
     }
-    [ourPlayerLayer.player setMuted:YES];
 }
 
 //allows the user to change the width and height of the frame keeping the same center
@@ -188,15 +191,6 @@
 {
     if(width < MIN_PINCHVIEW_SIZE) return;
     self.autoresizesSubviews = YES;
-    AVPlayerLayer * ourPlayer;
-    for (CALayer * obj in self.videoView.layer.sublayers)
-    {
-        if([obj isKindOfClass:[AVPlayerLayer class]])
-        {
-            ourPlayer = (AVPlayerLayer *)obj;
-            
-        }
-    }
     
     CGPoint center = self.center;
     CGRect new_frame = CGRectMake(center.x- width/2, center.y - width/2, width, width);
@@ -207,16 +201,18 @@
     self.background.frame = new_bounds_frame;
     self.videoView.frame = new_bounds_frame;
     
-    [CATransaction begin];
-    [CATransaction setAnimationDuration:0];
-    [CATransaction setDisableActions:YES];
-    ourPlayer.frame=self.bounds;
-    [CATransaction commit];
-    
-    ourPlayer.cornerRadius = self.frame.size.width/2;
-    self.background.layer.cornerRadius = self.frame.size.width/2;
-    self.layer.cornerRadius = self.frame.size.width/2;
-    self.clipsToBounds = YES;
+    if (self.playerLayer) {
+        [CATransaction begin];
+        [CATransaction setAnimationDuration:0];
+        [CATransaction setDisableActions:YES];
+        self.playerLayer.frame=self.bounds;
+        [CATransaction commit];
+        
+        self.playerLayer.cornerRadius = self.frame.size.width/2;
+        self.background.layer.cornerRadius = self.frame.size.width/2;
+        self.layer.cornerRadius = self.frame.size.width/2;
+        self.clipsToBounds = YES;
+    }
 }
 
 
@@ -322,11 +318,10 @@
             }
         }
         if(videoView){
-            AVPlayerLayer* pLayer = [videoView.layer.sublayers firstObject];
-            if(pLayer){
-                [pLayer removeFromSuperlayer];
-                pLayer.frame = self.videoView.bounds;
-                [self.videoView.layer addSublayer:pLayer];
+            if(self.playerLayer){
+                [self.playerLayer removeFromSuperlayer];
+                self.playerLayer.frame = self.videoView.bounds;
+                [self.videoView.layer addSublayer:self.playerLayer];
             }else{
                 ALAsset* asset = ((VerbatmImageView*)videoView).asset;
                 AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
@@ -365,9 +360,8 @@
     }
     self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
     self.textField.textColor = [UIColor whiteColor];
-    if([[self.videoView.layer.sublayers firstObject] isKindOfClass:[AVPlayerLayer class]]){
-        AVPlayerLayer* PLAYER = (AVPlayerLayer*)[self.videoView.layer.sublayers firstObject];
-        float rate = PLAYER.player.rate;
+    if(self.playerLayer){
+        float rate = self.playerLayer.player.rate;
         NSLog(@"here is the rate : %f", rate);
     }
 }
@@ -376,8 +370,9 @@
 //and we need to add a new layer and restart the video
 -(void) restartVideo
 {
-    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-    if(playerLayer) return;
+    if (self.playerLayer) {
+        return;
+    }
     [self displayMedia];
 }
 
@@ -630,9 +625,9 @@
 -(void)offScreen
 {
     
-    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
-    
+    if(self.playerLayer)    {
+        [self.playerLayer.player replaceCurrentItemWithPlayerItem:nil];
+    }
 }
 
 -(void)onScreen

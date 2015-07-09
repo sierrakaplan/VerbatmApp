@@ -16,8 +16,8 @@
 
 
 #define Number_of_Fields 2
-#define SINGUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
-#define SINGUP_FAILED_NOTIFIACTION @"userFailedToSignIn"
+#define SIGNUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
+#define SIGNUP_FAILED_NOTIFIACTION @"userFailedToSignIn"
 @end
 
 @implementation UserSignUpVC
@@ -99,23 +99,23 @@
         if(succeeded)
         {
             //Send a notification that the user is logged in 
-            NSNotification * notification = [[NSNotification alloc]initWithName:SINGUP_SUCCEEDED_NOTIFICATION object:nil userInfo:nil];
+            NSNotification * notification = [[NSNotification alloc]initWithName:SIGNUP_SUCCEEDED_NOTIFICATION object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
             
             
         }else if (!succeeded)
         {
             
-            NSNotification * notification = [[NSNotification alloc]initWithName:SINGUP_FAILED_NOTIFIACTION object:nil userInfo:nil];
+            NSNotification * notification = [[NSNotification alloc]initWithName:SIGNUP_FAILED_NOTIFIACTION object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
         }
         
     }];
+    #pragma unused(newUser)
 }
 
 
-#pragma mark Orientation
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;

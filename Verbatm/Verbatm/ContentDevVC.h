@@ -21,7 +21,8 @@
 @property (nonatomic) CGRect containerViewFrame;
 @property (strong, nonatomic) VerbatmUITextView * activeTextView; //view that is currently being filled in
 
--(PinchView *)newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
+-(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data;
+-(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
 -(void) createCustomImageScrollViewFromPinchView: (PinchView *) pinchView andImageView: (VerbatmImageView *) imageView orTextView: (VerbatmUITextView *) textView;
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
 -(void)freeMainScrollView:(BOOL) isFree; // either locks the scroll view or frees it

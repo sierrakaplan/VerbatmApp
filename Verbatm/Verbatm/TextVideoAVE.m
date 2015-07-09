@@ -46,14 +46,14 @@
     {
         self.frame = frame;
         self.base_textViewFrame = frame;
-        [self handleTexViewDetailsFromText:text];
+        [self handleTextViewDetailsFromText:text];
     }
     return self;
 }
 
 
 
--(void)handleTexViewDetailsFromText:(NSString *) text
+-(void)handleTextViewDetailsFromText:(NSString *) text
 {
     [self formatTextViewWithText: text];
     [self checkWordCount:text];
@@ -114,7 +114,7 @@
 
 
 
--(void) createPullBar
+-(void)createPullBar
 {
     //add pullbar
     self.pullBarView = [[UIView alloc] initWithFrame:CGRectMake(0, OFFSET_FROM_TOP ,self.frame.size.width,EXTRA*2)];

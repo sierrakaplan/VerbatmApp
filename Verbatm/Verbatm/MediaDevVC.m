@@ -501,9 +501,8 @@
     [self freezeFrame];
 }
 
-#pragma mark -on device orientation
 
--(NSUInteger)supportedInterfaceOrientations
+-(UIInterfaceOrientationMask) supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskPortrait;
 }

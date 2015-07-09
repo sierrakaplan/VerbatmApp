@@ -14,6 +14,7 @@
 @property (strong, nonatomic) AVMutableComposition* mix;
 @property(nonatomic, strong)MPMoviePlayerController *moviePlayer;
 @property (nonatomic,strong) AVPlayerViewController * mixPlayer;
+@property (nonatomic,strong) AVPlayerLayer * playerLayer;
 @property (nonatomic) CGPoint firstTranslation;
 #define RGB 255,225,255, 0.7
 #define PROGR_VIEW_HEIGHT 60
@@ -36,6 +37,14 @@
         {
             [self fuseAssets:videoList];
             [self setUpPlayer:self.mix];
+        }
+        self.playerLayer = NULL;
+        for (CALayer * obj in self.layer.sublayers)
+        {
+            if([obj isKindOfClass:[AVPlayerLayer class]])
+            {
+                self.playerLayer = (AVPlayerLayer *)obj;
+            }
         }
     }
     return self;
@@ -148,38 +157,42 @@
 {
     
     return;//No longer in use
-    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
-    AVPlayer* player = playerLayer.player;
-    [player pause];
-    [self showPlayIcon];
+    if(self.playerLayer) {
+        AVPlayer* player = self.playerLayer.player;
+        [player pause];
+        [self showPlayIcon];
+    }
 }
 
 -(void)continueVideo
 {
     
     return;//no longer in use
-    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
-    AVPlayer* player = playerLayer.player;
-    player.rate = 1;
-    [player play];
-    [self.play_pauseBtn setImage:[UIImage imageNamed:PAUSE_ICON] forState:UIControlStateNormal];
-    [self.play_pauseBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
+    if(self.playerLayer) {
+        AVPlayer* player = self.playerLayer.player;
+        player.rate = 1;
+        [player play];
+        [self.play_pauseBtn setImage:[UIImage imageNamed:PAUSE_ICON] forState:UIControlStateNormal];
+        [self.play_pauseBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
+    }
 }
 
 -(void)fastForwardVideo
 {
-    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
-    AVPlayerItem* playerItem = playerLayer.player.currentItem;
-    [self showPlayIcon];
-    if([playerItem canPlayFastForward]) playerLayer.player.rate = MAX_VD_RATE;
+    if(self.playerLayer) {
+        AVPlayerItem* playerItem = self.playerLayer.player.currentItem;
+        if([playerItem canPlayFastForward]) self.playerLayer.player.rate = MAX_VD_RATE;
+        [self showPlayIcon];
+    }
 }
 
 -(void)rewindVideo
 {
-    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
-    AVPlayerItem* playerItem = playerLayer.player.currentItem;
-    [self showPlayIcon];
-    if([playerItem canPlayFastReverse] && playerLayer.player.rate) playerLayer.player.rate = -MAX_VD_RATE;
+    if(self.playerLayer) {
+        AVPlayerItem* playerItem = self.playerLayer.player.currentItem;
+        [self showPlayIcon];
+        if([playerItem canPlayFastReverse] && self.playerLayer.player.rate) self.playerLayer.player.rate = -MAX_VD_RATE;
+    }
 }
 
 -(void)showPlayIcon
@@ -260,8 +273,9 @@
         return;
     }
 
-    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
-    playerLayer.player.muted = YES;
+    if(self.playerLayer) {
+        self.playerLayer.player.muted = YES;
+    }
 }
 
 /*Enable's the sound on the video*/
@@ -276,9 +290,10 @@
         return;
     }
     
-    AVPlayerLayer* playerLayer = [self.layer.sublayers firstObject];
-    playerLayer.player.muted = NO;
-    playerLayer.player.volume = 0.5;
+    if(self.playerLayer) {
+        self.playerLayer.player.muted = NO;
+        self.playerLayer.player.volume = 0.5;
+    }
 }
 
 

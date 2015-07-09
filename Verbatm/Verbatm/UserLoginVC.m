@@ -127,8 +127,7 @@
     }
 }
 
-#pragma mark Orientation
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
