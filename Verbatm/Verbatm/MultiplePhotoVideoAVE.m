@@ -59,8 +59,9 @@
 //    [self setUpPlayer:self.mix];
     
     //set up the photos
-    for (UIImage* image in photos)
+    for (NSData* imageData in photos)
     {
+		UIImage*image = [[UIImage alloc] initWithData: imageData];
         UIImageView * imageview = [[UIImageView alloc] initWithImage:image];
         imageview.frame = [self getNextFrame];
         imageview.clipsToBounds = YES;

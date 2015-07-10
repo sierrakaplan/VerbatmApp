@@ -38,7 +38,7 @@
     for(PinchView* p_obj in _pinchedObjects)
     {
         //there are some issue where a messed up p_obj arrives
-        if(!p_obj.there_is_picture && !p_obj.there_is_text && !p_obj.there_is_video)continue;
+        if(!(p_obj.there_is_picture || p_obj.there_is_text || p_obj.there_is_video))continue;
         if(![p_obj isCollection])
         {
             [self handleSingleMedia:p_obj];
@@ -57,25 +57,25 @@
 -(void)handleSingleMedia:(PinchView*)p_obj
 {
     NSMutableArray *arr = [[NSMutableArray alloc]init];
-    if(p_obj.inDataFormat)
-    {
+//    if(p_obj.inDataFormat)
+//    {
         arr = (p_obj.there_is_picture)? [p_obj getPhotos] : [p_obj getVideos];
-    }else{
-        NSMutableArray* mediaArr = [p_obj mediaObjects];
-        for(UIView* view in mediaArr){
-            if([view isKindOfClass:[VerbatmImageView class]]){
-                if(p_obj.there_is_picture)
-                {
-                    [arr addObject:((VerbatmImageView*)view).image];
-                }else
-                {
+//    }else{
+//        NSMutableArray* mediaArr = [p_obj mediaObjects];
+//        for(UIView* view in mediaArr){
+//            if([view isKindOfClass:[VerbatmImageView class]]){
+//                if(p_obj.there_is_picture)
+//                {
+//                    [arr addObject:((VerbatmImageView*)view).image];
+//                }else
+//                {
+//
+//                    [arr addObject:((VerbatmImageView*)view).asset];
+//                }
+//            }
+//        }
+//    }
 
-                    [arr addObject:((VerbatmImageView*)view).asset];
-                }
-            }
-        }
-    }
-    
     if(p_obj.there_is_picture)
     {
         //multiple photo and single photo call the same class

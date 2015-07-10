@@ -925,17 +925,17 @@
     for(int i=0; i < self.vc_contentPage.pageElements.count; i++)if([self.vc_contentPage.pageElements[i] isKindOfClass:[PinchView class]])counter ++;
     if(!counter) return;
 
-    NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
+    NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
     
     for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
     {
         if([self.vc_contentPage.pageElements[i] isKindOfClass:[PinchView class]])
         {
-            [pincObjetsArray addObject:self.vc_contentPage.pageElements[i]];
+            [pinchObjectsArray addObject:self.vc_contentPage.pageElements[i]];
         }
     }
     
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pincObjetsArray,@"pinchObjects", nil];
+    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pinchObjectsArray,@"pinchObjects", nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
                                                         object:nil
                                                       userInfo:Info];

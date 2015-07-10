@@ -50,7 +50,7 @@
         
         //Create the session and set its properties.
         self.session = [[AVCaptureSession alloc]init];
-        self.session.sessionPreset = AVCaptureSessionPresetMedium;
+        self.session.sessionPreset = AVCaptureSessionPresetHigh;
         [self addStillImageOutput];
         
         //add the video and audio devices to the session
@@ -401,7 +401,7 @@
         NSLog(@"error %@", error.description);
     }
     
-    AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:fixedComposition presetName:AVAssetExportPresetMediumQuality];
+    AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:fixedComposition presetName:AVAssetExportPresetHighestQuality];
     exporter.outputURL = outputFileURL;
     exporter.outputFileType = AVFileTypeQuickTimeMovie;
     exporter.videoComposition = mainCompositionInst;
