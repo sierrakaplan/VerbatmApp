@@ -196,28 +196,6 @@
     
 }
 
-
--(void)setUpPlayer:(AVMutableComposition*)mix
-{
-    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:mix];
-    AVPlayer* player = [AVPlayer playerWithPlayerItem: playerItem];
-    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerItemDidReachEnd:)
-                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:[player currentItem]];
-    
-    // Create an AVPlayerLayer using the player
-    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = self.bounds;
-    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-    // Add it to your view's sublayers
-    [self.videoView.layer addSublayer:playerLayer];
-    // You can play/pause using the AVPlayer object
-    player.muted = NO;
-    [player play];
-}
-
 /*tells me when the video ends so that I can rewind*/
 -(void)playerItemDidReachEnd:(NSNotification *)notification
 {
@@ -247,7 +225,7 @@
 -(void)mutePlayer
 {
     
-    [self.videoView mutePlayer];
+    [self.videoView muteVideo];
     
 //    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
 //    playerLayer.player.muted = YES;
@@ -257,7 +235,7 @@
 -(void)enableSound
 {
     
-    [self.videoView enableSound];
+    [self.videoView unmuteVideo];
 //    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
 //    playerLayer.player.muted = NO;
 //    playerLayer.player.volume = 0.5;

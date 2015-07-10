@@ -307,7 +307,7 @@
     for (int i=0; i< self.pinchedObjects.count; i++)
     {
         if([self.pinchedObjects[i] isKindOfClass:[VideoAVE class]]){
-            [((VideoAVE*)self.pinchedObjects[i]) mutePlayer];
+            [((VideoAVE*)self.pinchedObjects[i]) muteVideo];
         }else if([self.pinchedObjects[i] isKindOfClass:[PhotoVideoAVE class]]){
             [((PhotoVideoAVE *)self.pinchedObjects[i]) mute];
         }else if([self.pinchedObjects[i] isKindOfClass:[MultiplePhotoVideoAVE class]]){
@@ -354,7 +354,7 @@
 {
     if([_animatingView isKindOfClass:[VideoAVE class]] )
     {
-        [((VideoAVE*)_animatingView) enableSound];
+        [((VideoAVE*)_animatingView) unmuteVideo];
         //[((v_videoview*)_animatingView) onScreen];
     }else if([_animatingView isKindOfClass:[PhotoVideoAVE class]]){
         [((PhotoVideoAVE*)_animatingView) unmute];
@@ -368,7 +368,7 @@
 -(void)muteSound//call this before changing the nimating view so that we stop the previous thing
 {
     if([_animatingView isKindOfClass:[VideoAVE class]]){
-        [((VideoAVE*)_animatingView) mutePlayer];
+        [((VideoAVE*)_animatingView) muteVideo];
     }else if([_animatingView isKindOfClass:[PhotoVideoAVE class]]){
         [((PhotoVideoAVE *)_animatingView) mute];
     }else if([_animatingView isKindOfClass:[MultiplePhotoVideoAVE class]]){

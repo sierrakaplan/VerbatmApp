@@ -32,4 +32,8 @@
 
 -(void)muteVideo;
 
+-(void)fastForwardVideoWithRate: (NSInteger) rate;
+
+-(void)rewindVideoWithRate: (NSInteger) rate;
+
 @end

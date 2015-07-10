@@ -74,7 +74,7 @@
 		[_results addObject:textView];
 	}else{
 		VideoAVE* vidView = [[VideoAVE alloc]initWithFrame:_preferredFrame andAssets:arr];
-		[vidView mutePlayer];
+		[vidView muteVideo];
 		[_results addObject:vidView];
 	}
 }
@@ -94,10 +94,10 @@
 			[self.results addObject:tp];
 		}else//it's text video
 		{
-			TextVideoAVE * tv = [[TextVideoAVE alloc] initWithFrame:self.preferredFrame andAssets:videos andText:[p_obj getTextFromPinchObject]];
-			[tv mutePlayer];
-			[tv addSwipeGesture];
-			[self.results addObject:tv];
+			TextVideoAVE * textVideoAVE = [[TextVideoAVE alloc] initWithFrame:self.preferredFrame andAssets:videos andText:[p_obj getTextFromPinchObject]];
+			[textVideoAVE muteVideo];
+			[textVideoAVE addSwipeGesture];
+			[self.results addObject:textVideoAVE];
 		}
 	}else//it's photo video
 	{

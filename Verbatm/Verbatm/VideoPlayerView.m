@@ -99,5 +99,21 @@
 	}
 }
 
+-(void)fastForwardVideoWithRate: (NSInteger) rate
+{
+	if(self.player) {
+		AVPlayerItem* playerItem = self.player.currentItem;
+		if([playerItem canPlayFastForward]) self.playerLayer.player.rate = rate;
+	}
+}
+
+-(void)rewindVideoWithRate: (NSInteger) rate
+{
+	if(self.player) {
+		AVPlayerItem* playerItem = self.player.currentItem;
+		if([playerItem canPlayFastReverse] && self.playerLayer.player.rate) self.playerLayer.player.rate = -rate;
+	}
+}
+
 
 @end

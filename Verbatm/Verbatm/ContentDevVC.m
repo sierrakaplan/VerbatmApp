@@ -2422,58 +2422,6 @@
     [self.gallery addMediaToGallery:asset];
 }
 
-
-#pragma mark - video playing methods -
-
--(void)playVideo:(AVURLAsset*)asset forView:(UIImageView*)view
-{
-    // Create an AVPlayerItem using the asset
-    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-    // Create the AVPlayer using the playeritem
-    AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
-    //MUTE THE PLAYER
-    [self mutePlayer:player forAsset:asset];
-    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerItemDidReachEnd:)
-                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:[player currentItem]];
-    // Create an AVPlayerLayer using the player
-    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = view.bounds;
-    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-    // Add it to your view's sublayers
-    [view.layer addSublayer:playerLayer];
-    // You can play/pause using the AVPlayer object
-    [player play];
-}
-
-//mutes the player
--(void)mutePlayer:(AVPlayer*)avPlayer forAsset:(AVURLAsset*)asset
-{
-    NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
-    // Mute all the audio tracks
-    NSMutableArray *allAudioParams = [NSMutableArray array];
-    for (AVAssetTrack *track in audioTracks) {
-        AVMutableAudioMixInputParameters *audioInputParams =  [AVMutableAudioMixInputParameters audioMixInputParameters];
-        [audioInputParams setVolume:0.0 atTime:kCMTimeZero];
-        [audioInputParams setTrackID:[track trackID]];
-        [allAudioParams addObject:audioInputParams];
-    }
-    AVMutableAudioMix *audioZeroMix = [AVMutableAudioMix audioMix];
-    [audioZeroMix setInputParameters:allAudioParams];
-    [[avPlayer currentItem] setAudioMix:audioZeroMix];
-}
-
-//tells me when the video ends so that I can rewind
--(void)playerItemDidReachEnd:(NSNotification *)notification {
-    AVPlayerItem *p = [notification object];
-    [p seekToTime:kCMTimeZero];
-}
-
-
-
-
 #pragma mark - Clean up Content Page -
 //we clean up the content page if we press publish or simply want to reset everything
 //all the text views are cleared and all the pinch objects are cleared

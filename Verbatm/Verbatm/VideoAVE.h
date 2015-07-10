@@ -11,13 +11,12 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVKit/AVKit.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import "VideoPlayerView.h"
 
-@interface VideoAVE : UIView
+@interface VideoAVE : VideoPlayerView
 -(void)showPlayBackIcons;
 //note that the video list can be alasset or nsdata
 -(id)initWithFrame:(CGRect)frame andAssets:(NSArray*)videoList;
--(void)mutePlayer;
--(void)enableSound;
 -(void)onScreen;
 -(void)offScreen;
 -(void)playVideos:(NSArray*)videoList;//for when you want to change the video set
