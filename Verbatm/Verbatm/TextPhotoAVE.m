@@ -37,9 +37,9 @@
 @end
 @implementation TextPhotoAVE
 
--(id)initWithFrame:(CGRect)frame andImage:(UIImage *)image andText:(NSString*)text
+-(id)initWithFrame:(CGRect)frame andImage:(NSData *)imageData andText:(NSString*)text
 {
-    
+	UIImage* image = [[UIImage alloc] initWithData:imageData];
     if((self = [super initWithImage:image]))
     {
         self.frame = frame;

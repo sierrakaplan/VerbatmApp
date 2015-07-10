@@ -41,11 +41,11 @@
 @end
 @implementation PhotoVideoTextAVE
 
--(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andVideo:(NSArray*)video
+-(id)initWithFrame:(CGRect)frame forImageData:(NSData *)imageData andText:(NSString *)text andVideo:(NSArray*)video
 {
     if(self = [super initWithFrame:frame])
     {
-        self.photoVideoView = [[PhotoVideoAVE alloc] initWithFrame:frame Image:image andVideo:video];
+        self.photoVideoView = [[PhotoVideoAVE alloc] initWithFrame:frame andImageData:imageData andVideo:video];
         [self addSubview:self.photoVideoView];
         self.base_textViewFrame = frame;
         [self handleTexViewDetailsFromText:text];

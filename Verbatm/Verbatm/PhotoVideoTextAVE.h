@@ -9,7 +9,7 @@
 #import "TextPhotoAVE.h"
 
 @interface PhotoVideoTextAVE : UIView
--(id)initWithFrame:(CGRect)frame forImage:(UIImage *)image andText:(NSString *)text andVideo:(NSArray*)assetList;
+-(id)initWithFrame:(CGRect)frame forImageData:(NSData *)imageData andText:(NSString *)text andVideo:(NSArray*)assetList;
 -(void)offScreen;
 -(void)onScreen;
 -(void)addSwipeGesture;

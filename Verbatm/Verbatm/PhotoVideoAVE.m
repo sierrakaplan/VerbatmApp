@@ -28,13 +28,14 @@
 @implementation PhotoVideoAVE
 
 //note- what if we get multiple videos? - this needs to be corrected
--(instancetype) initWithFrame:(CGRect)frame Image: (UIImage *) image andVideo: (NSArray *) video
+-(instancetype) initWithFrame:(CGRect)frame andImageData:(NSData *)imageData andVideo:(NSArray *)video
 {
     
     //load from Nib file...this initializes the background view and all its subviews
     self = [[[NSBundle mainBundle] loadNibNamed:@"PhotoVideoAVE" owner:self options:nil]firstObject];    
     if(self)
     {
+		UIImage* image = [[UIImage alloc] initWithData:imageData];
         [self.image setImage:image];
         [self formatImage];
 		NSMutableArray *media = [[NSMutableArray alloc]init];

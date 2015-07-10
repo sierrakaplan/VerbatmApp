@@ -10,7 +10,7 @@
 #import "VerbatmImageView.h"
 
 @interface PhotoVideoAVE : UIView
--(instancetype) initWithFrame:(CGRect)frame Image: (UIImage *) image andVideo: (NSArray *) video;
+-(instancetype) initWithFrame:(CGRect)frame andImageData: (NSData *) imageData andVideo: (NSArray *) video;
 -(void)addGesturesToVideoView;
 -(void) mute;
 -(void) unmute;
