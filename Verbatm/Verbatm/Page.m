@@ -50,66 +50,89 @@
 
 -(void)sortPinchObject:(PinchView*)pinchObject
 {
-    NSMutableArray* media = [pinchObject mediaObjects];
+//    NSMutableArray* media = [pinchObject mediaObjects];
     if((self.there_is_text = pinchObject.there_is_text)){
         self.text = [pinchObject getTextFromPinchObject];
     }
     self.there_is_picture = pinchObject.there_is_picture;
     self.there_is_video = pinchObject.there_is_video;
-    if(self.there_is_video || self.there_is_picture)
-    {
-        for(UIView* view in media){
-            if([view isKindOfClass:[VerbatmImageView class]]){
-                if(((VerbatmImageView*)view).isVideo){
-                    Video* video = [[Video alloc]initWithData:((VerbatmImageView*)view).asset withCaption:nil andName:nil atLocation:nil];
-                    [video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
-                    [video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                        if(succeeded){
-                            NSLog(@"Video for page saved");
-                        }else{
-                            NSLog(@"Video for page did not save");
-                        }
-                    }];
-                }else{
-                    Photo* photo = [[Photo alloc]initWithData:((VerbatmImageView*)view).asset withCaption:nil andName:nil atLocation:nil];
-                    [photo setObject: self forKey:PAGE_PHOTO_RELATIONSHIP];
-                    [photo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-                        if(succeeded){
-                            NSLog(@"Photo for page saved");
-                        }else{
-                            NSLog(@"Photo for page did not save");
-                        }
-                    }];
-                }
-            }
-        }
-    }
+
+	if(self.there_is_picture) {
+		NSMutableArray* photos = [pinchObject getPhotos];
+		for (NSData* imageData in photos) {
+			Photo* photo = [[Photo alloc]initWithData:imageData withCaption:nil andName:nil atLocation:nil];
+			[photo setObject: self forKey:PAGE_PHOTO_RELATIONSHIP];
+			[photo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+				if(succeeded){
+					NSLog(@"Photo for page saved");
+				}else{
+					NSLog(@"Photo for page did not save");
+				}
+			}];
+		}
+	}
+
+    if(self.there_is_video) {
+		NSMutableArray* videos = [pinchObject getVideos];
+		for (AVURLAsset* videoAsset in videos) {
+			Video* video = [[Video alloc] initWithURL:videoAsset.URL withCaption:nil andName:nil atLocation:nil];
+			[video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
+			[video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+				if(succeeded){
+					NSLog(@"Video for page saved");
+				}else{
+					NSLog(@"Video for page did not save");
+				}
+			}];
+		}
+	}
 }
 
 //This method blocks//
-/*This method returns the media that make up the page. Index 0 of the array always contains the text of the page: this is nil if the there_is_text boolean of the page is false. Index 1 contains an array of all the videos of the page; the array has the videos as NSData.
- Index 2 has an array of the photos of the page each of which is a UIImage.
+/*This method returns the media that make up the page. Index 0 of the array always contains the text of the page: this is nil if the there_is_text boolean of the page is false. Index 1 contains an array of all the videos of the page;
+ Index 2 has an array of the photos of the page.
  */
--(NSMutableArray*)getMedia
-{
-    NSMutableArray* media = [[NSMutableArray alloc] init];
-    [media addObject:self.text];
-    
-    NSArray* videos = [self getVideos];
-    NSMutableArray* videoData = [[NSMutableArray alloc]init];
-    for(Video* vid in videos){
-        [videoData addObject: [vid getVideoData]];
-    }
-    
-    NSArray* photoQueries = [self getPhotos];
-    NSMutableArray* photos = [[NSMutableArray alloc]init];
-    for(Photo* photo in photoQueries){
-        [photos addObject:[photo getPhoto]];
-    }
-    
-    [media  addObject: videoData];
-    [media addObject: photos];
-    return media;
+//-(NSMutableArray*)getMedia
+//{
+//    NSMutableArray* media = [[NSMutableArray alloc] init];
+//    [media addObject:self.text];
+//    
+//    NSArray* videos = [self getVideosQuery];
+//    NSMutableArray* videoData = [[NSMutableArray alloc]init];
+//    for(Video* vid in videos){
+//        [videoData addObject: [vid getVideoData]];
+//    }
+//    
+//    NSArray* photoQueries = [self getPhotosQuery];
+//    NSMutableArray* photos = [[NSMutableArray alloc]init];
+//    for(Photo* photo in photoQueries){
+//        [photos addObject:[photo getPhoto]];
+//    }
+//    
+//    [media addObject: videoData];
+//    [media addObject: photos];
+//    return media;
+//}
+
+//returns mutable array of NSData* objects
+-(NSMutableArray*)getPhotos {
+	NSArray* photoQueries = [self getPhotosQuery];
+	NSMutableArray* photos = [[NSMutableArray alloc]init];
+	for(Photo* photo in photoQueries){
+		[photos addObject:[photo getPhoto]];
+	}
+	return photos;
+}
+
+//returns mutable array of AVURLAsset* objects
+-(NSMutableArray*)getVideos {
+	NSArray* videosQuery = [self getVideosQuery];
+	NSMutableArray* videos = [[NSMutableArray alloc]init];
+	for(Video* vid in videosQuery){
+		AVURLAsset* videoAsset = [[AVURLAsset alloc] initWithURL:[vid getVideoUrl] options:nil];
+		[videos addObject: videoAsset];
+	}
+	return videos;
 }
 
 #pragma mark - getting objects from the page
@@ -134,31 +157,32 @@
 -(PinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center
 {
 	NSMutableArray* media = [[NSMutableArray alloc]init];
-    NSArray* videos = [self getVideos];
-    for(Video* vid in videos)
-    {
-        [media addObject: [vid getVideoData]];
-    }
-    
-    NSArray* photoQueries = [self getPhotos];
-    for(Photo* photo in photoQueries)
-    {
-        [media addObject:[photo getPhoto]];
-    }
-    
-	PinchView * view = [[PinchView alloc] initWithRadius:radius withCenter:center andMedia:media];
+	if (self.there_is_text) {
+		UITextView* textView = [[UITextView alloc] init];
+		[textView setText: self.text];
+		[media addObject: textView];
+	}
 
+	if (self.there_is_picture) {
+		[media addObjectsFromArray: [self getPhotos]];
+	}
+
+	if (self.there_is_video) {
+		[media addObjectsFromArray: [self getVideos]];
+	}
+
+	PinchView * view = [[PinchView alloc] initWithRadius:radius withCenter:center andMedia:media];
     return view;
 }
 
--(NSArray*)getVideos
+-(NSArray*)getVideosQuery
 {
     PFQuery* videoQuery = [PFQuery queryWithClassName:@"Video"];
     [videoQuery whereKey:PAGE_VIDEO_RELATIONSHIP equalTo: self];
     return [videoQuery findObjects];
 }
 
--(NSArray*)getPhotos
+-(NSArray*)getPhotosQuery
 {
     PFQuery* photoQuery = [PFQuery queryWithClassName:@"Photo"];
     [photoQuery whereKey:PAGE_PHOTO_RELATIONSHIP equalTo: self];

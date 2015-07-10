@@ -1736,14 +1736,12 @@
     PinchView * pinchView=nil;
 	NSMutableArray *media = [[NSMutableArray alloc]init];
     
-    if(isText&& !view)
+    if(isText)
     {
         UITextView * textView = [[UITextView alloc]init];
-
 		[media addObject: textView];
         
     } else if (view) {
-        
 		[media addObject: view];
     }
 

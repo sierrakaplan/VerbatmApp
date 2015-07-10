@@ -19,14 +19,13 @@
 +(void)load;
 #pragma mark - create video object
 //Creates an instance of the video class using video file data, article and caption.
--(instancetype)initWithData:(NSData*)data withCaption:(NSString*)caption andName:(NSString*)name atLocation:(CLLocation*)location;
+//-(instancetype)initWithData:(NSData*)data withCaption:(NSString*)caption andName:(NSString*)name atLocation:(CLLocation*)location;
 
 //Creates an instance of the video with a url, article and caption.
 -(instancetype)initWithURL:(NSURL*)url withCaption:(NSString*)caption andName:(NSString*)name atLocation:(CLLocation*)location;
 
 #pragma mark - fetch arguments from video object
-//These get the data from the Photo object
--(NSData*)getVideoData;
+-(NSURL*)getVideoUrl;
 @property(strong, nonatomic, readonly)NSString* caption;
 @property(strong, nonatomic, readonly)NSURL* url;//could be nil if it's a video file data
 @property(strong, nonatomic, readonly)CLLocation* location;

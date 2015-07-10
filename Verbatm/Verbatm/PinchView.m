@@ -19,8 +19,9 @@
 
 //array of videos, photos, and text
 @property (strong, nonatomic) NSMutableArray* media;
-//@property (strong, nonatomic) NSMutableArray* photos;
-//@property (strong, nonatomic) NSMutableArray* videos;
+@property (strong, nonatomic) NSMutableArray* photos;
+@property (strong, nonatomic) NSMutableArray* videos;
+//array of PinchObjects
 @property (strong, nonatomic) NSMutableArray* pinched;
 //@property (strong, nonatomic) NSString* text;
 
@@ -56,12 +57,18 @@
         self.background.layer.masksToBounds = YES;
         
         //initialize arrays
-        self.media = [[NSMutableArray alloc]init];
+        self.media = [[NSMutableArray alloc] init];
+		self.photos = [[NSMutableArray alloc] init];
+		self.videos = [[NSMutableArray alloc] init];
+
+		self.there_is_text = NO;
+		self.there_is_picture = NO;
+		self.there_is_video = NO;
         
         [self initSubviews];
         if(mediaArray){
             [self.media addObjectsFromArray: mediaArray];
-			[self checkDataTypes];
+			[self setDataTypes];
             [self renderMedia];
         }
 
@@ -71,10 +78,9 @@
     return self;
 }
 
--(void)checkDataTypes {
-	self.there_is_text = NO;
-	self.there_is_picture = NO;
-	self.there_is_video = NO;
+// adds photos to photos array and videos to videos array
+// sets if there is text, photos, and videos
+-(void)setDataTypes {
 
 	for(id object in self.media){
 
@@ -82,24 +88,24 @@
 		if([object isKindOfClass: [UITextView class]]){
 			self.there_is_text = YES;
 
-			//photo
+		//photo
 		} else if([object isKindOfClass: [NSData class]]){
 			self.there_is_picture = YES;
+			[self.photos addObject:object];
 
-			//video
+		//video
 		} else if([object isKindOfClass: [AVAsset class]]){
 			self.there_is_video = YES;
+			[self.videos addObject:object];
 		}
 	}
 }
 
 +(PinchView *)pinchObjectFromPinchObject: (PinchView *) pv
 {
-    id media_1 = pv.media.firstObject;
-    [pv.media removeObject:media_1];
-    PinchView * new_pv = [[PinchView alloc]initWithRadius:pv.frame.size.width/2 withCenter:pv.center andMedia:media_1];
-    [new_pv.media addObjectsFromArray:pv.media];
-    return new_pv;
+	NSMutableArray* newMedia = [[NSMutableArray alloc] initWithArray:pv.media copyItems: YES];
+    PinchView * newPinchView = [[PinchView alloc]initWithRadius:pv.frame.size.width/2 withCenter:pv.center andMedia:newMedia];
+    return newPinchView;
 }
 
 -(void)initSubviews
@@ -130,7 +136,7 @@
 {
     //only works if we already have a picture
     if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.there_is_picture) return;
-    NSData* imageData = [self.media firstObject];
+//    NSData* imageData = [self.photos firstObject];
 	//TODO(sierra): confused about this
 //    view.image = image;
     self.imageViewer.image = image;
@@ -342,6 +348,8 @@
 +(void)append:(PinchView*)pinchObject toPinchObject:(PinchView*)result
 {
     [result.media addObjectsFromArray: pinchObject.media];
+	[result.photos addObjectsFromArray: pinchObject.photos];
+	[result.videos addObjectsFromArray: pinchObject.videos];
     [result.pinched addObject:pinchObject];
     result.there_is_picture =  result.there_is_picture || pinchObject.there_is_picture;
     result.there_is_text =  result.there_is_text || pinchObject.there_is_text;
@@ -411,24 +419,15 @@
     return self.media;
 }
 
+//returns mutable array of AVAsset*
 -(NSMutableArray*)getVideos {
-	NSMutableArray* videos = [[NSMutableArray alloc]init];
-	for(id object in self.media){
-		if([object isKindOfClass: [AVAsset class]]){
-			[videos addObject: (AVAsset*)object];
-		}
-	}
-	return videos;
+	return self.videos;
 }
 
--(NSMutableArray*)getPhotos {
-	NSMutableArray* photos = [[NSMutableArray alloc]init];
-	for(id object in self.media){
-		if([object isKindOfClass: [NSData class]]){
-			[photos addObject: (NSData*)object];
-		}
-	}
-	return photos;
+
+//returns mutable array of NSData*
+-(NSMutableArray*) getPhotos {
+	return self.photos;
 }
 
 #pragma mark - manipulating playing of videos -

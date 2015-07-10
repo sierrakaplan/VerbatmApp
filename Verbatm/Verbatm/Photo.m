@@ -63,10 +63,9 @@
 }
 
 #pragma mark - getting photo back -
--(UIImage*)getPhoto
+-(NSData*)getPhoto
 {
-    UIImage* image = [UIImage imageWithData: [self.photoDataFile getData]];
-    return image;
+	return [self.photoDataFile getData];
 }
 
 #pragma mark - Required Subclassing methods

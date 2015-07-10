@@ -100,69 +100,76 @@
 //called when we want to present an article. article should be set with our content
 -(void)showArticle:(NSNotification *) notification
 {
-    Article *article = [[notification userInfo] objectForKey:@"article"];
-    NSMutableArray  *PO = [[notification userInfo] objectForKey:@"pinchObjects"];
+    Article* article = [[notification userInfo] objectForKey:@"article"];
+    NSMutableArray* pinchObjects = [[notification userInfo] objectForKey:@"pinchObjects"];
     if(article)
     {
-        [self setUpScrollView];
-        [self show_remove_ScrollView:YES];
-        [self startActivityIndicator];
-        
-        
-        dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
-        dispatch_async(articleDownload_queue, ^{
-            NSArray * pages = [article getAllPages];
-            if(!pages.count)//if we have nothing in our article then return to the list view- we shouldn't need this because all downloaded articles should have legit pages
-            {
-                [self show_remove_ScrollView:NO];
-                return;
-            }
-            
-            //we sort the pages by their page numbers to make sure everything is in the right order
-            //O(nlogn) so should be fine in the long-run ;D
-            pages = [pages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-                Page * page1 = obj1;
-                Page * page2 = obj2;
-                if(page1.pagePosition < page2.pagePosition)return -1;
-                if(page2.pagePosition > page1.pagePosition) return 1;
-                return 0;
-            }];
-            [self pause_CP_Vidoes];//make sure content page videos are paused so there is no video conflict
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
-                //get pinch views for our array
-                for (Page * page in pages)
-                {
-                    //here the radius and the center dont matter because this is just a way to wrap our data for the analyser
-                    PinchView * pv = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
-                    [pinchObjectsArray addObject:pv];
-                }
-                Analyzer * analyser = [[Analyzer alloc]init];
-                self.pinchedObjects = [analyser processPinchedObjectsFromArray:pinchObjectsArray withFrame:self.view.frame];
-                
-                if(!self.pinchedObjects.count)return;//for now
-                //stop animation indicator
-                [self stopActivityIndicator];
-                [self renderPinchPages];
-                self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pinchedObjects count]*self.view.frame.size.height); //adjust contentsize to fit
-                _latestPoint = CGPointZero;
-                _animatingView = nil;
-            });
-        });
-        
+		[self showArticleFromParse: article];
     }else{
-        
-        [self pause_CP_Vidoes];//make sure content page videos are paused so there is no video conflict
-        Analyzer * analyser = [[Analyzer alloc]init];
-        self.pinchedObjects = [analyser processPinchedObjectsFromArray:PO withFrame:self.view.frame];
-        [self muteEverything];
-        self.view.backgroundColor = [UIColor clearColor];
-        [self setUpScrollView];
-        [self renderPinchPages];
-        [self show_remove_ScrollView:YES];
-        _latestPoint = CGPointZero;
-        _animatingView = nil;
+		[self showArticlePreview: pinchObjects];
     }
+}
+
+-(void) showArticleFromParse:(Article *) article {
+	[self setUpScrollView];
+	[self show_remove_ScrollView:YES];
+	[self startActivityIndicator];
+
+
+	dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
+	dispatch_async(articleDownload_queue, ^{
+		NSArray * pages = [article getAllPages];
+		if(!pages.count)//if we have nothing in our article then return to the list view- we shouldn't need this because all downloaded articles should have legit pages
+		{
+			[self show_remove_ScrollView:NO];
+			return;
+		}
+
+		//we sort the pages by their page numbers to make sure everything is in the right order
+		//O(nlogn) so should be fine in the long-run ;D
+		pages = [pages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+			Page * page1 = obj1;
+			Page * page2 = obj2;
+			if(page1.pagePosition < page2.pagePosition)return -1;
+			if(page2.pagePosition > page1.pagePosition) return 1;
+			return 0;
+		}];
+		[self pause_CP_Vidoes];//make sure content page videos are paused so there is no video conflict
+		dispatch_async(dispatch_get_main_queue(), ^{
+			NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
+			//get pinch views for our array
+			for (Page * page in pages)
+			{
+				//here the radius and the center dont matter because this is just a way to wrap our data for the analyser
+				PinchView * pv = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
+				[pinchObjectsArray addObject:pv];
+			}
+			Analyzer * analyser = [[Analyzer alloc]init];
+			self.pinchedObjects = [analyser processPinchedObjectsFromArray:pinchObjectsArray withFrame:self.view.frame];
+
+			if(!self.pinchedObjects.count)return;//for now
+												 //stop animation indicator
+			[self stopActivityIndicator];
+			[self renderPinchPages];
+			self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pinchedObjects count]*self.view.frame.size.height); //adjust contentsize to fit
+			_latestPoint = CGPointZero;
+			_animatingView = nil;
+		});
+	});
+}
+
+// When preview button clicked
+-(void) showArticlePreview:  (NSMutableArray*) pinchObjects {
+	[self pause_CP_Vidoes];//make sure content page videos are paused so there is no video conflict
+	Analyzer * analyser = [[Analyzer alloc]init];
+	self.pinchedObjects = [analyser processPinchedObjectsFromArray:pinchObjects withFrame:self.view.frame];
+	[self muteEverything];
+	self.view.backgroundColor = [UIColor clearColor];
+	[self setUpScrollView];
+	[self renderPinchPages];
+	[self show_remove_ScrollView:YES];
+	_latestPoint = CGPointZero;
+	_animatingView = nil;
 }
 
 -(void) clearArticle
