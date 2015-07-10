@@ -102,35 +102,20 @@
     AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     CMTime nextClipStartTime = kCMTimeZero;
     NSError* error;
-    for(id data in videoDataList)//we're not sure if we've nbeen given a nsdata or alaasset
+    for(AVAsset* videoAsset in videoDataList)
     {
-        AVURLAsset* assetClip;
-        if([data isKindOfClass:[NSData class]])
-        {
-        
-            NSURL* url;
-            NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"vid", arc4random_uniform(100)]];
-            [[NSFileManager defaultManager] createFileAtPath: filePath contents: data attributes:nil];
-            url = [NSURL fileURLWithPath: filePath];
-            assetClip = [AVURLAsset URLAssetWithURL: url options:nil];
-        }else
-        {
-           assetClip = [AVURLAsset URLAssetWithURL: ((ALAsset *)data).defaultRepresentation.url options:nil];
-        }
-        //up to here - data-
-        
-        AVAssetTrack* this_video_track = [[assetClip tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-        [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
+        AVAssetTrack* this_video_track = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+        [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
         videoTrack.preferredTransform = this_video_track.preferredTransform;
-        AVAssetTrack* this_audio_track = [[assetClip tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+        AVAssetTrack* this_audio_track = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
         
         videoTrack.preferredTransform = this_video_track.preferredTransform;
 
         if(this_audio_track != nil)
         {
-            [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, assetClip.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
+            [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
         }
-        nextClipStartTime = CMTimeAdd(nextClipStartTime, assetClip.duration);
+        nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
     }
 }
 
