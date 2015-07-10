@@ -20,8 +20,7 @@
 -(void)adjustFrameOfTextViewForGap:(NSInteger) gap;
 @property (nonatomic, strong) VerbatmUITextView * textView;
 @property (nonatomic, strong) VerbatmImageView * imageView;
-@property (nonatomic, strong) UIView * videoView;
+@property (nonatomic, strong) VideoPlayerView * videoView;
 //this view is only used if video is playing - it's there so that we can remove the scrollview
 @property (nonatomic, strong)UIView * gestureView;
--(void)pauseVideo;
 @end

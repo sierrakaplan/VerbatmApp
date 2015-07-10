@@ -14,7 +14,7 @@
 //we only have one image on this view
 @property (weak, nonatomic) IBOutlet UIImageView *image;
 //we only use this pinchview to show our video
-@property (strong, nonatomic) IBOutlet PinchView * videoView;
+@property (strong, nonatomic) IBOutlet PinchView * videoPinchView;
 @property (nonatomic) CGPoint upper_Left_PinchPoint;//either the upper finger in a y directed pinch or the left finger in an x directed pinch
 @property (nonatomic) CGPoint lower_Right_PinchPoint;//either the lower finger in a y directed pinch or the right finger in a x direct pinch
 @property (nonatomic) bool usingYs;
@@ -40,13 +40,13 @@
         [self formatImage];
 		NSMutableArray *media = [[NSMutableArray alloc]init];
 		[media addObject: video];
-        self.videoView = [[PinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]+VIDEO_START_OFFSET,[self getRadius]+VIDEO_START_OFFSET) andMedia:media];
+        self.videoPinchView = [[PinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]+VIDEO_START_OFFSET,[self getRadius]+VIDEO_START_OFFSET) andMedia:media];
 
         self.clipsToBounds = YES;
 
-        [self addSubview:self.videoView];
+        [self addSubview:self.videoPinchView];
             self.frame = frame;
-        [self.videoView unmuteVideo];
+        [self.videoPinchView.videoView unmuteVideo];
     }
     return self;
 }
@@ -68,15 +68,15 @@
 -(void)addGesturesToVideoView
 {
     UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
-    [self.videoView addGestureRecognizer:pan];
+    [self.videoPinchView addGestureRecognizer:pan];
     
     UIPinchGestureRecognizer * pinch = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(pinch:)];
-    [self.videoView addGestureRecognizer:pinch];
+    [self.videoPinchView addGestureRecognizer:pinch];
     
     UITapGestureRecognizer * doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
     
     doubleTap.numberOfTapsRequired = 2;//for double tap
-    [self.videoView addGestureRecognizer:doubleTap];
+    [self.videoPinchView addGestureRecognizer:doubleTap];
 }
 
 
@@ -125,8 +125,8 @@
         if(self.usingYs)
         {
             double diff = ((touch1.y > touch2.y) ? fabs(touch2.y-self.upper_Left_PinchPoint.y)/* + fabs(touch1.y-self.lower_Right_PinchPoint.y)*/ : fabs(touch1.y-self.upper_Left_PinchPoint.y) /*+ fabs(touch2.y-self.lower_Right_PinchPoint.y)*/) ;
-            if(gesture.scale > 1) [self.videoView changeWidthTo: (self.videoView.frame.size.width + diff)];
-            else [self.videoView changeWidthTo: (self.videoView.frame.size.width - diff)];
+            if(gesture.scale > 1) [self.videoPinchView changeWidthTo: (self.videoPinchView.frame.size.width + diff)];
+            else [self.videoPinchView changeWidthTo: (self.videoPinchView.frame.size.width - diff)];
         }
     }
 }
@@ -136,7 +136,7 @@
 //function only gets called if there is a double tap
 -(void) doubleTap:(UITapGestureRecognizer *) gesture
 {
-        [self.videoView changeWidthTo:([self getRadius]*2)];//we set the frame back to the original size
+        [self.videoPinchView changeWidthTo:([self getRadius]*2)];//we set the frame back to the original size
 }
 
 
@@ -159,31 +159,31 @@
         int x_diff = currentPoint.x - self.panStartPoint.x;
         int y_diff = currentPoint.y - self.panStartPoint.y;
         
-        int x_cord = self.videoView.frame.origin.x + x_diff;
-        int y_cord = self.videoView.frame.origin.y + y_diff;
+        int x_cord = self.videoPinchView.frame.origin.x + x_diff;
+        int y_cord = self.videoPinchView.frame.origin.y + y_diff;
         
-        [self.videoView setFrame:CGRectMake(x_cord, y_cord,self.videoView.frame.size.width , self.videoView.frame.size.height)];
+        [self.videoPinchView setFrame:CGRectMake(x_cord, y_cord,self.videoPinchView.frame.size.width , self.videoPinchView.frame.size.height)];
         self.panStartPoint = currentPoint;
     }
 }
 
 -(void) mute
 {
-    [self.videoView muteVideo];
+    [self.videoPinchView.videoView muteVideo];
 }
 
 -(void) unmute
 {
-    [self.videoView unmuteVideo];
+    [self.videoPinchView.videoView unmuteVideo];
 }
 
 -(void)onScreen
 {
-    [self.videoView onScreen];
+    [self.videoPinchView onScreen];
 }
 -(void)offScreen
 {
-    [self.videoView offScreen];
+    [self.videoPinchView offScreen];
 }
 
 /*

@@ -17,10 +17,6 @@
 @property (nonatomic, strong) UIImage * filter_BW;
 @property (nonatomic, strong) UIImage * filter_WARM;
 @property (nonatomic, strong) NSString * filter;
-@property (nonatomic,strong) AVPlayerLayer * playerLayer;
-//@property (nonatomic, strong) AVPlayer  * ourPlayer;
-//@property(nonatomic, strong) MPMoviePlayerController *moviePlayer;
-//@property (nonatomic,strong) AVPlayerViewController * mixPlayer;
 
 
 
@@ -63,7 +59,6 @@
 {
 	if(gap)
 	{
-
 		self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, gap - VIEW_WALL_OFFSET);
 	}else
 	{
@@ -227,8 +222,12 @@
 
 #pragma mark - Image or Video View -
 -(void)addVideo: (AVAsset*) video {
-	self.videoView = [[UIView alloc]init];
-	[self playVideo:video];
+	self.videoView = [[VideoPlayerView alloc]init];
+	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+	[self addSubview:self.videoView];
+	[self bringSubviewToFront:self.videoView];
+	[self.videoView playVideoFromAsset:video];
+	[self.videoView repeatVideoOnEnd];
 }
 
 -(void)addImage: (NSData*) image
@@ -249,69 +248,6 @@
 	[self createFilteredImages];
 	[self addSwipeToOpenedView];
 	self.imageView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-}
-
-#pragma mark - manipulating playing of videos -
-
--(void)playVideo:(AVAsset*)asset
-{
-	// Create an AVPlayerItem using the asset
-	AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-	// Create the AVPlayer using the playeritem
-	AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
-
-	player.muted = NO;
-	player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-//	[[NSNotificationCenter defaultCenter] addObserver:self
-//											 selector:@selector(playerItemDidReachEnd:)
-//												 name:AVPlayerItemDidPlayToEndTimeNotification
-//											   object:[player currentItem]];
-
-	// Create an AVPlayerLayer using the player
-	AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-	playerLayer.frame = self.bounds;
-	playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-	// Add it to your view's sublayers
-	[self.videoView.layer addSublayer:playerLayer];
-	self.playerLayer = playerLayer;
-
-	[self addSubview:self.videoView];
-	[self bringSubviewToFront:self.videoView];
-//	self.gestureView =[[UIView alloc] initWithFrame:self.bounds];
-//	[self addSubview:self.gestureView];
-//	[self bringSubviewToFront:self.gestureView];
-
-	// You can play/pause using the AVPlayer object
-	[player play];
-}
-
--(void)pauseVideo
-{
-	if(!self.playerLayer) return;
-	AVPlayer* player = self.playerLayer.player;
-	[player pause];
-}
-
--(void)continueVideo
-{
-
-	if(!self.playerLayer) return;
-	AVPlayer* player = self.playerLayer.player;
-	[player play];
-}
-
--(void)unmuteVideo
-{
-	if(self.playerLayer) {
-		[self.playerLayer.player setMuted:NO];
-	}
-}
-
--(void)muteVideo
-{
-	if(self.playerLayer) {
-		[self.playerLayer.player setMuted:YES];
-	}
 }
 
 -(void)createFilteredImages

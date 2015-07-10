@@ -11,6 +11,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
+#import "VideoPlayerView.h"
 
 @interface PinchView : UIView <NSCoding>
 
@@ -39,11 +40,6 @@
  *
  */
 -(void)specifyFrame:(CGRect)frame;
-
-//funcitons allow you to mute and unmute the video on the pinch object- not if there is no video the
-//result is undefined
--(void)unmuteVideo;
--(void)muteVideo;
 
 //lets you specify a center and in turn sets the frame of the pinchview
 //should only be use when panning the object because it relies on the current from of the object which must be set before this is called
@@ -86,14 +82,6 @@
 //This applies, whether it is a collection or not.
 -(BOOL)hasMultipleMedia;
 
-//Pauses the video if the pinch object has a video playing.
--(void)pauseVideo;
-
-
-//restarts a paused video, continuing from where it was paused
--(void)continueVideo;
-
-
 //marks the video as selected
 -(void)markAsSelected;
 
@@ -133,5 +121,5 @@
 //object.
 -(NSMutableArray*)mediaObjects;
 
-@property (weak, nonatomic) IBOutlet UIView *videoView;
+@property (strong, nonatomic) IBOutlet VideoPlayerView *videoView;
 @end

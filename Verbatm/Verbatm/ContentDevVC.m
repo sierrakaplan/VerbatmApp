@@ -384,7 +384,7 @@
 {
     for (UIView * view in self.pageElements)
     {
-        if([view isKindOfClass:[PinchView class]])[((PinchView *)view) pauseVideo];
+        if([view isKindOfClass:[PinchView class]])[((PinchView *)view).videoView pauseVideo];
     }
 }
 
@@ -393,7 +393,7 @@
 {
     for (UIView * view in self.pageElements)
     {
-        if([view isKindOfClass:[PinchView class]])[((PinchView *)view) continueVideo];
+        if([view isKindOfClass:[PinchView class]])[((PinchView *)view).videoView continueVideo];
     }
     
 }
@@ -2258,7 +2258,11 @@
         }
     }
     [isv.textView resignFirstResponder];
-    [isv pauseVideo];//if there is a video lets stop it
+
+	//if there is a video lets stop it
+	if (isv.videoView) {
+   	 [isv.videoView pauseVideo];
+	}
     [isv removeFromSuperview];
     
     //makes sure the vidoes are playing..may need to make more efficient

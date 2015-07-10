@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */; };
 		9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995A19BA9042005EBC8A /* MediaDevVC.m */; };
+		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A5B344901B4DE18B0074B4AA /* MultiplePhotoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */; };
 		A5B344941B4DE54F0074B4AA /* VerbatmPullBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344931B4DE54F0074B4AA /* VerbatmPullBarView.xib */; };
 		A5B344961B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */; };
@@ -111,6 +112,8 @@
 		9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmMediaSessionManager.m; sourceTree = "<group>"; };
 		9D29995919BA9042005EBC8A /* MediaDevVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaDevVC.h; sourceTree = "<group>"; };
 		9D29995A19BA9042005EBC8A /* MediaDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaDevVC.m; sourceTree = "<group>"; };
+		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
+		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoAVE.xib; sourceTree = "<group>"; };
 		A5B344931B4DE54F0074B4AA /* VerbatmPullBarView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbatmPullBarView.xib; sourceTree = "<group>"; };
 		A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoVideoAVE.xib; sourceTree = "<group>"; };
@@ -295,6 +298,8 @@
 		C74883691B488C5000E64ED9 /* Other Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				A562D50C1B506D2800F566F4 /* VideoPlayerView.m */,
+				A562D50E1B506D4500F566F4 /* VideoPlayerView.h */,
 				A5B344931B4DE54F0074B4AA /* VerbatmPullBarView.xib */,
 				C7A8E3841A61CE4D00776BD1 /* VerbatmPullBarView.h */,
 				C7A8E3851A61CE4D00776BD1 /* VerbatmPullBarView.m */,
@@ -777,6 +782,7 @@
 				C772F2851B4BC13500CEC83D /* GMGridViewController.m in Sources */,
 				C77A68B41AC20AA2000B10E2 /* MultiplePhotoAVE.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */,
+				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */,
 				F20A24FA1A46166100BB77C1 /* VerbatmImageScrollView.m in Sources */,
 				C7E6C1421A4E394600863893 /* PhotoVideoTextAVE.m in Sources */,

@@ -75,7 +75,7 @@
     if(self.there_is_video) {
 		NSMutableArray* videos = [pinchObject getVideos];
 		for (AVURLAsset* videoAsset in videos) {
-			Video* video = [[Video alloc] initWithURL:videoAsset.URL withCaption:nil andName:nil atLocation:nil];
+			Video* video = [[Video alloc] initWithData:videoAsset withCaption:nil andName:nil atLocation:nil];
 			[video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
 			[video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 				if(succeeded){
@@ -87,32 +87,6 @@
 		}
 	}
 }
-
-//This method blocks//
-/*This method returns the media that make up the page. Index 0 of the array always contains the text of the page: this is nil if the there_is_text boolean of the page is false. Index 1 contains an array of all the videos of the page;
- Index 2 has an array of the photos of the page.
- */
-//-(NSMutableArray*)getMedia
-//{
-//    NSMutableArray* media = [[NSMutableArray alloc] init];
-//    [media addObject:self.text];
-//    
-//    NSArray* videos = [self getVideosQuery];
-//    NSMutableArray* videoData = [[NSMutableArray alloc]init];
-//    for(Video* vid in videos){
-//        [videoData addObject: [vid getVideoData]];
-//    }
-//    
-//    NSArray* photoQueries = [self getPhotosQuery];
-//    NSMutableArray* photos = [[NSMutableArray alloc]init];
-//    for(Photo* photo in photoQueries){
-//        [photos addObject:[photo getPhoto]];
-//    }
-//    
-//    [media addObject: videoData];
-//    [media addObject: photos];
-//    return media;
-//}
 
 //returns mutable array of NSData* objects
 -(NSMutableArray*)getPhotos {

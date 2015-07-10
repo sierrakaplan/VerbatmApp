@@ -15,13 +15,13 @@
 @property(strong, nonatomic, readwrite)NSString* name;
 @property(strong, nonatomic, readwrite)NSURL* url;
 @property(strong, nonatomic, readwrite)CLLocation* location;
-//@property (strong, nonatomic ) PFFile* videoDataFile;
+@property (strong, nonatomic ) PFFile* videoDataFile;
 
 #define ARTICLE_VIDEO_RELATIONSHIP @"ArticleVideoRelation"
 @end
 
 @implementation Video
-//@dynamic videoDataFile;
+@dynamic videoDataFile;
 @dynamic location;
 @dynamic url;
 @dynamic caption;
@@ -29,21 +29,21 @@
 
 #pragma  mark - initializers
 
-///*by Lucio Dery*/
-////initialises a Video object using data , a caption and a name.
-//-(instancetype)initWithData:(NSData*)data
-//                withCaption:(NSString*)caption
-//                    andName:(NSString*)name
-//                 atLocation:(CLLocation*)location
-//{
-//    if((self = [super init])){
-//        self.videoDataFile = [PFFile fileWithData:data];
-//        self.caption = caption;
-//        self.name = name;
-//        self.location = location;
-//    }
-//    return self;
-//}
+/*by Lucio Dery*/
+//initialises a Video object using data , a caption and a name.
+-(instancetype)initWithData:(NSData*)data
+                withCaption:(NSString*)caption
+                    andName:(NSString*)name
+                 atLocation:(CLLocation*)location
+{
+    if((self = [super init])){
+        self.videoDataFile = [PFFile fileWithData:data];
+        self.caption = caption;
+        self.name = name;
+        self.location = location;
+    }
+    return self;
+}
 
 /*by Lucio Dery*/
 //Initialises the Video object using a url name and caption
@@ -82,8 +82,19 @@
 
 
 #pragma mark - getting data back - 
+
+-(NSData*) getVideoData {
+	if (self.videoDataFile) {
+		return [self.videoDataFile getData];
+	}
+	return nil;
+}
+
 -(NSURL*)getVideoUrl
 {
+	if (self.videoDataFile) {
+		return [[NSURL alloc] initWithString:self.videoDataFile.url];
+	}
     return self.url;
 }
 

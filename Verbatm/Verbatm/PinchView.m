@@ -14,8 +14,6 @@
 @property(strong,nonatomic)IBOutlet UIView* background;
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewer;
 @property (weak, nonatomic) IBOutlet UITextView *textField;
-@property (nonatomic,strong) AVPlayerViewController * mixPlayer;
-@property (nonatomic,strong) AVPlayerLayer * playerLayer;
 
 //array of videos, photos, and text
 @property (strong, nonatomic) NSMutableArray* media;
@@ -73,7 +71,6 @@
         }
 
         [self addBorderToPinchView];
-        
     }
     return self;
 }
@@ -194,14 +191,14 @@
     self.background.frame = new_bounds_frame;
     self.videoView.frame = new_bounds_frame;
     
-    if (self.playerLayer) {
+    if (self.videoView.playerLayer) {
         [CATransaction begin];
         [CATransaction setAnimationDuration:0];
         [CATransaction setDisableActions:YES];
-        self.playerLayer.frame=self.bounds;
+        self.videoView.playerLayer.frame=self.bounds;
         [CATransaction commit];
         
-        self.playerLayer.cornerRadius = self.frame.size.width/2;
+        self.videoView.playerLayer.cornerRadius = self.frame.size.width/2;
         self.background.layer.cornerRadius = self.frame.size.width/2;
         self.layer.cornerRadius = self.frame.size.width/2;
         self.clipsToBounds = YES;
@@ -310,15 +307,17 @@
 
 		//video
 		} else if([object isKindOfClass: [AVAsset class]]){
-			AVAsset* video = (AVAsset*)object;
-			[self playVideo: video];
+			[self.videoView playVideoFromAsset: object];
+			[self.videoView muteVideo];
+			[self.videoView repeatVideoOnEnd];
 		}
 	}
-	if(self.videoView){
-		if(self.playerLayer){
-			[self.playerLayer removeFromSuperlayer];
-			self.playerLayer.frame = self.videoView.bounds;
-			[self.videoView.layer addSublayer:self.playerLayer];
+	if(self.there_is_video){
+		if(self.videoView.playerLayer){
+			AVPlayerLayer* playerLayer = self.videoView.playerLayer;
+			[playerLayer removeFromSuperlayer];
+			 playerLayer.frame = self.videoView.bounds;
+			[self.videoView.layer addSublayer:playerLayer];
 		}
 	}
 }
@@ -432,77 +431,15 @@
 
 #pragma mark - manipulating playing of videos -
 
--(void)playVideo:(AVAsset*)asset{
-	// Create an AVPlayerItem using the asset
-	AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-	// Create the AVPlayer using the playeritem
-	AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
-	//MUTE THE PLAYER
-	player.muted = YES;
-	player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(playerItemDidReachEnd:)
-												 name:AVPlayerItemDidPlayToEndTimeNotification
-											   object:[player currentItem]];
-
-	// Create an AVPlayerLayer using the player
-	AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-	playerLayer.frame = self.bounds;
-	playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-	// Add it to your view's sublayers
-	[self.videoView.layer addSublayer:playerLayer];
-	self.playerLayer = playerLayer;
-	// You can play/pause using the AVPlayer object
-	[player play];
-}
-
-//tells me when the video ends so that I can rewind
--(void)playerItemDidReachEnd:(NSNotification *)notification
-{
-	AVPlayerItem *p = [notification object];
-	[p seekToTime:kCMTimeZero];
-}
 
 //this is only to occur when the player layer has been removed (perhaps due to previewing)
 //and we need to add a new layer and restart the video
 -(void) restartVideo
 {
-	if (self.playerLayer) {
+	if (self.videoView.playerLayer) {
 		return;
 	}
 	[self displayMedia];
-}
-
-//pauses the video for the pinchview if there is one
--(void)pauseVideo
-{
-
-    if(!self.there_is_video || !self.playerLayer) return;
-	AVPlayer* player = self.playerLayer.player;
-    [player pause];
-}
-
-//plays the video of the pinch view if there is one
--(void)continueVideo
-{
-
-	if(!self.there_is_video || !self.playerLayer) return;
-	AVPlayer* player = self.playerLayer.player;
-	[player play];
-}
-
--(void)unmuteVideo
-{
-	if(self.playerLayer) {
-		[self.playerLayer.player setMuted:NO];
-	}
-}
-
--(void)muteVideo
-{
-	if(self.playerLayer) {
-		[self.playerLayer.player setMuted:YES];
-	}
 }
 
 #pragma mark - selection interface -
@@ -532,16 +469,16 @@
 -(void)offScreen
 {
     
-    if(self.playerLayer)    {
-        [self.playerLayer.player replaceCurrentItemWithPlayerItem:nil];
+    if(self.videoView.playerLayer)    {
+        [self.videoView pauseVideo];
     }
 }
 
 -(void)onScreen
 {
-//    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:self.mix];
-//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-//    [playerLayer.player replaceCurrentItemWithPlayerItem:playerItem];
+	if(self.videoView.playerLayer)    {
+		[self.videoView continueVideo];
+	}
     [self displayMedia];
 }
 
