@@ -61,7 +61,7 @@
         for(UIView* view in media){
             if([view isKindOfClass:[VerbatmImageView class]]){
                 if(((VerbatmImageView*)view).isVideo){
-                    Video* video = [[Video alloc]initWithData:[self dataFromAsset:((VerbatmImageView*)view).asset] withCaption:nil andName:nil atLocation:nil];
+                    Video* video = [[Video alloc]initWithData:((VerbatmImageView*)view).asset withCaption:nil andName:nil atLocation:nil];
                     [video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
                     [video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         if(succeeded){
@@ -71,7 +71,7 @@
                         }
                     }];
                 }else{
-                    Photo* photo = [[Photo alloc]initWithData:[self dataFromAsset:((VerbatmImageView*)view).asset] withCaption:nil andName:nil atLocation:nil];
+                    Photo* photo = [[Photo alloc]initWithData:((VerbatmImageView*)view).asset withCaption:nil andName:nil atLocation:nil];
                     [photo setObject: self forKey:PAGE_PHOTO_RELATIONSHIP];
                     [photo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
                         if(succeeded){

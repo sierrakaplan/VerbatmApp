@@ -13,13 +13,15 @@
 #import  "VerbatmUITextView.h"
 @interface VerbatmImageScrollView : UIScrollView
 -(instancetype)initCustomViewWithFrame:(CGRect)frame;
--(void)addImage: (VerbatmImageView *) givenImageView withPinchObject: (PinchView *) pinchObject;
+-(void) addVideo: (AVAsset*) video;
+-(void) addImage: (NSData*) image;
 -(void) createTextViewFromTextView: (UITextView *) textView;
 -(void)adjustImageScrollViewContentSizing;
 -(void)adjustFrameOfTextViewForGap:(NSInteger) gap;
 @property (nonatomic, strong) VerbatmUITextView * textView;
-@property (nonatomic, strong) VerbatmImageView * openImage;
+@property (nonatomic, strong) VerbatmImageView * imageView;
+@property (nonatomic, strong) UIView * videoView;
 //this view is only used if video is playing - it's there so that we can remove the scrollview
 @property (nonatomic, strong)UIView * gestureView;
--(void)stopVideo;
+-(void)pauseVideo;
 @end

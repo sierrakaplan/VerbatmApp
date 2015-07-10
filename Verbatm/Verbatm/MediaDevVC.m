@@ -790,19 +790,19 @@
         {
             [self.vc_contentPage newPinchObjectBelowView:self.vc_contentPage.pageElements[second_to_last_object] fromView: nil isTextView:YES];
             
-            [self.vc_contentPage createCustomImageScrollViewFromPinchView:self.vc_contentPage.pageElements[second_to_last_object+1] andImageView:nil orTextView:[[VerbatmUITextView alloc]init]];
+            [self.vc_contentPage createVerbatmImageScrollViewFromPinchView:self.vc_contentPage.pageElements[second_to_last_object+1] andTextView:[[VerbatmUITextView alloc]init]];
         
         
         }else if (second_to_last_object <0)
         {
             [self.vc_contentPage newPinchObjectBelowView:nil fromView: nil isTextView:YES];
             
-            [self.vc_contentPage createCustomImageScrollViewFromPinchView:self.vc_contentPage.pageElements[0] andImageView:nil orTextView:[[VerbatmUITextView alloc]init]];
+            [self.vc_contentPage createVerbatmImageScrollViewFromPinchView:self.vc_contentPage.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
         }
         
     }else if (last_textPinchView)
     {
-        [self.vc_contentPage createCustomImageScrollViewFromPinchView:last_textPinchView andImageView:nil orTextView:[[VerbatmUITextView alloc]init]];
+        [self.vc_contentPage createVerbatmImageScrollViewFromPinchView:last_textPinchView andTextView:[[VerbatmUITextView alloc]init]];
     }
 }
 

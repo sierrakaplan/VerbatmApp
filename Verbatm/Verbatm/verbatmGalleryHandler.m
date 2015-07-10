@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
+/* Not being used right now
 #import "verbatmGalleryHandler.h"
 #import "VerbatmImageView.h"
 
@@ -214,7 +215,7 @@
     }
 }
 
--(VerbatmImageView*)imageViewFromAsset:(ALAsset*)asset
+-(VerbatmImageView*)imageViewFromAsset:(NSData*)asset
 {
     VerbatmImageView* imageView = [[VerbatmImageView alloc] init];
     imageView.asset = asset;
@@ -235,7 +236,7 @@
 }
 
 
--(void)addMediaToGallery:(ALAsset*)asset
+-(void)addMediaToGallery:(NSData*)asset
 {
     VerbatmImageView* view = [self imageViewFromAsset:asset];
     [self returnToGallery:view];
@@ -516,3 +517,4 @@
 }
 
 @end
+*/

@@ -70,7 +70,7 @@
                 }else
                 {
 
-                    [arr addObject:[self getDataFromAsset:((VerbatmImageView*)view).asset]];
+                    [arr addObject:((VerbatmImageView*)view).asset];
                 }
             }
         }
@@ -190,7 +190,7 @@
                 UIImage* image;
                 for(VerbatmImageView* view in media){
                     if(view.isVideo){
-                        [Vdata insertObject:[self getDataFromAsset:view.asset] atIndex:0];
+                        [Vdata insertObject:view.asset atIndex:0];
                     }else{
                         image = view.image;
                     }
@@ -209,7 +209,7 @@
                 {
                     if(view.isVideo)
                     {
-                        [Vdata addObject:[self getDataFromAsset:view.asset]];
+                        [Vdata addObject:view.asset];
                         
                     }else
                     {
@@ -283,7 +283,7 @@
                 VerbatmImageView* imgView = [media objectAtIndex:i];
                 if(imgView.isVideo)
                 {
-                    vidData = [self getDataFromAsset:imgView.asset];
+                    vidData = imgView.asset;
                 }else
                 {
                     image = imgView.image;
@@ -303,7 +303,7 @@
                 }
                 VerbatmImageView* imgView = [media objectAtIndex:i];
                 if(imgView.isVideo){
-                    [videos addObject: [self getDataFromAsset:imgView.asset]];
+                    [videos addObject:imgView.asset];
                 }else{
                     [photos addObject:imgView.image];
                 }

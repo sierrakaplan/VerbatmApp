@@ -23,7 +23,9 @@
 
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data;
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
--(void) createCustomImageScrollViewFromPinchView: (PinchView *) pinchView andImageView: (VerbatmImageView *) imageView orTextView: (VerbatmUITextView *) textView;
+-(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset;
+-(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView;
+-(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView;
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
 -(void)freeMainScrollView:(BOOL) isFree; // either locks the scroll view or frees it
 -(void)alertGallery:(ALAsset*)asset;

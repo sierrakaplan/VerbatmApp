@@ -11,7 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface VerbatmImageView : UIImageView <NSCoding>
-@property(strong, nonatomic) ALAsset* asset;
+@property(strong, nonatomic) NSData* asset;
 @property (nonatomic)BOOL isVideo;
 @property (nonatomic) BOOL selected;
 @end

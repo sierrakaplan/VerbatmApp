@@ -166,8 +166,7 @@
     [super viewDidLoad];
 }
 
--(void) centerViews
-{
+-(void) centerViews {
     NSInteger middle = self.view.frame.size.width/2;
     
     //@ sign
@@ -180,29 +179,26 @@
     self.sandwhichWhat.frame = CGRectMake((spaceLeft/2)-(self.sandwhichWhat.frame.size.width/2), self.sandwhichWhat.frame.origin.y, self.sandwhichWhat.frame.size.width, self.sandwhichWhat.frame.size.height);
     self.sandwichWhere.frame = CGRectMake(((self.label_AT.frame.origin.x + self.label_AT.frame.size.width)+(spaceLeft/2))-(self.sandwichWhere.frame.size.width/2), self.sandwichWhere.frame.origin.y, self.sandwichWhere.frame.size.width, self.sandwichWhere.frame.size.height);
     
-    //article titleq
+    //article title
     self.articleTitleField.frame = CGRectMake(middle - (self.articleTitleField.frame.size.width/2), self.articleTitleField.frame.origin.y, self.articleTitleField.frame.size.width, self.articleTitleField.frame.size.height);
 }
 
 //makes sure the main scrollview is edged to it's superview
--(void)sizeMainScrollViewPhoneSize
-{
+-(void)sizeMainScrollViewPhoneSize {
     self.mainScrollView.frame= self.view.frame;
 }
 
 
 //Iain
--(void) viewWillAppear:(BOOL)animated
-{
+-(void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
 }
 
--(void)viewDidAppear:(BOOL)animated
-{
+-(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     //set up gallery
     //after view loads load the gallery
-   // self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
+    // self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
     //add blurview
     [self addBlurView];
     [self setPlaceholderColors];
@@ -213,13 +209,12 @@
     [self sizeMainScrollViewPhoneSize];
     [self configureViews];
     self.pinching = NO;//initialise pinching to no
-
+    
 }
 
 
 //gives the placeholders a white color
--(void) setPlaceholderColors
-{
+-(void) setPlaceholderColors {
     if ([self.sandwhichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         UIColor *color = [UIColor whiteColor];
         self.sandwhichWhat.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwhichWhat.placeholder attributes:@{NSForegroundColorAttributeName: color}];
@@ -284,7 +279,7 @@
             [scrollview.subviews[i] removeFromSuperview];
         }
     }
-   
+    
 }
 
 
@@ -306,7 +301,7 @@
     //set the content offset for the personal scrollview
     self.standardContentOffsetForPersonalView = CGPointMake(self.view.frame.size.width, 0);
     self.standardContentSizeForPersonalView = CGSizeMake(self.view.frame.size.width * 3, 0);
-
+    
 }
 
 
@@ -400,7 +395,7 @@
     {
         if([view isKindOfClass:[PinchView class]])[((PinchView *)view) continueVideo];
     }
-
+    
 }
 
 
@@ -415,7 +410,7 @@
     self.sandwichWhere.delegate = self;
     self.articleTitleField.delegate = self;
     self.mainScrollView.delegate = self;
-
+    
 }
 
 
@@ -474,8 +469,8 @@
     {
         [self removeImageScrollview:nil];
         //when enter is clicked we give them a new textview
-//        verbatmCustomPinchView * pinchView = [self newPinchObjectBelowView:self.openImagePinchView fromView: nil isTextView:YES];
-//        [self createCustomImageScrollViewFromPinchView:pinchView andImageView: nil orTextView:[[verbatmUITextView alloc] init]];
+        //        verbatmCustomPinchView * pinchView = [self newPinchObjectBelowView:self.openImagePinchView fromView: nil isTextView:YES];
+        //        [self createCustomImageScrollViewFromPinchView:pinchView andImageView: nil orTextView:[[verbatmUITextView alloc] init]];
         
         return NO;
     }
@@ -497,8 +492,8 @@
 //Counts the words in the content page
 -(void) editWordCount
 {
-        self.numberOfWordsLeft = MAX_WORD_LIMIT - [self countWordsInContentPage];
-        self.wordsLeftLabel.text = [NSString stringWithFormat:@"Words: %ld ", (long)self.numberOfWordsLeft];
+    self.numberOfWordsLeft = MAX_WORD_LIMIT - [self countWordsInContentPage];
+    self.wordsLeftLabel.text = [NSString stringWithFormat:@"Words: %ld ", (long)self.numberOfWordsLeft];
 }
 
 
@@ -570,7 +565,7 @@
 -(void) updateScrollViewPosition
 {
     
-   
+    
     if(self.sandwhichWhat.editing || self.sandwichWhere.editing) return; //if it is the s@andwiches that are set then
     
     [self updateCaretPositionInView:self.openImageScrollView.textView];//ensure that the caret is up to date
@@ -606,17 +601,17 @@
         
         [UIView animateWithDuration:ANIMATION_DURATION*2 animations:^{
             [self.openImageScrollView.textView setContentOffset:newScrollViewOffset animated:YES];
-
+            
         }];
         
     }else if (yCoordinateOfCaretRelativeToImageScrollView-CURSOR_BASE_GAP <= self.openImageScrollView.contentOffset.y) //Checking if the cursor is past the top
     {
         NSInteger differenceBTWNScreenTopAndTextView = (yCoordinateOfCaretRelativeToImageScrollView-CURSOR_BASE_GAP)-self.openImageScrollView.textView.contentOffset.y;
         CGPoint newScrollViewOffset = CGPointMake(self.openImageScrollView.contentOffset.x, (self.openImageScrollView.textView.contentOffset.y + differenceBTWNScreenTopAndTextView /*-
-        CENTERING_OFFSET_FOR_TEXT_VIEW*/));
+                                                                                                                                                                                     CENTERING_OFFSET_FOR_TEXT_VIEW*/));
         [UIView animateWithDuration:ANIMATION_DURATION*2 animations:^{
             [self.openImageScrollView.textView setContentOffset:newScrollViewOffset animated:YES];
-
+            
         }];
     }
     //[self.openImageScrollView adjustImageScrollViewContentSizing];
@@ -672,42 +667,33 @@
 
 
 //Shifts elements above a certain view up by the given difference
--(void) shiftElementsAboveView: (UIView *) view withDifference: (NSInteger) difference
-{
+-(void) shiftElementsAboveView: (UIView *) view withDifference: (NSInteger) difference {
     NSInteger view_index = [self.pageElements indexOfObject:view];
-    if(view_index != NSNotFound && view_index < self.pageElements.count)
-    {
-        for(NSInteger i = (view_index-1); i > -1; i--)
-        {
-                UIView * curr_view = self.pageElements[i];
-                CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, curr_view.superview.frame.origin.y + difference, self.view.frame.size.width,view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
-                
-                [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-                    curr_view.superview.frame = frame;
-                }];
+    if(view_index != NSNotFound && view_index < self.pageElements.count) {
+        for(NSInteger i = (view_index-1); i > -1; i--) {
+            UIView * curr_view = self.pageElements[i];
+            CGRect frame = CGRectMake(curr_view.superview.frame.origin.x, curr_view.superview.frame.origin.y + difference, self.view.frame.size.width,view.frame.size.height+ELEMENT_OFFSET_DISTANCE);
+            
+            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+                curr_view.superview.frame = frame;
+            }];
         }
     }
 }
 
 #pragma mark - Add Elements to PageElements Array -
-//Iain
 //Storing new view to our array of elements
--(void) storeView: (UIView*) view inArrayAsBelowView: (UIView*) topView
-{
+-(void) storeView: (UIView*) view inArrayAsBelowView: (UIView*) topView {
     //Ensure the view is not Nil- this will cause problems
     if(!view) return;
     
-    if(![self.pageElements containsObject:view])
-    {
-        if(topView && topView != self.articleTitleField)
-        {
+    if(![self.pageElements containsObject:view]) {
+        if(topView && topView != self.articleTitleField) {
             NSInteger index = [self.pageElements indexOfObject:topView];
             [self.pageElements insertObject:view atIndex:(index+1)];
-        }else if(topView == self.articleTitleField)
-        {
+        }else if(topView == self.articleTitleField) {
             [self.pageElements insertObject:view atIndex:0];
-        }else
-        {
+        }else {
             [self.pageElements addObject:view];
         }
     }
@@ -720,17 +706,12 @@
 
 //make sure the object is in the right position
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
-                  willDecelerate:(BOOL)decelerate
-{
-    if(scrollView != self.mainScrollView)
-    {        //if the delete swipe wasn't far enough then return the pinch object to the middle
-        if((scrollView.contentOffset.x > LEFT_DELETE_OFFSET || scrollView.contentOffset.x < RIGHT_DELETE_OFFSET) && scrollView.subviews.count == 1)
-
-        {
+                  willDecelerate:(BOOL)decelerate {
+    if(scrollView != self.mainScrollView) {        //if the delete swipe wasn't far enough then return the pinch object to the middle
+        if((scrollView.contentOffset.x > LEFT_DELETE_OFFSET || scrollView.contentOffset.x < RIGHT_DELETE_OFFSET) && scrollView.subviews.count == 1) {
             [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                 scrollView.contentOffset = CGPointMake(self.view.frame.size.width, 0);
             }];
-            
         }
     }
 }
@@ -756,14 +737,14 @@
         if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x)//If the view is scrolled left/right and not centered
         {
             [self.gallery dismissGallery];//make sure gallery is closed
-
+            
             //remove swiped view from mainscrollview
             UIView * view = [scrollView.subviews firstObject]; //it is the only subview in this scrollview
             NSUInteger index = [self.pageElements indexOfObject:view];
             [scrollView removeFromSuperview];
             [self.pageElements removeObject:view];
             
-             [self shiftElementsBelowView:self.articleTitleField]; //if it was the top element then shift everything below
+            [self shiftElementsBelowView:self.articleTitleField]; //if it was the top element then shift everything below
             
             //recycle the object you just deleted
             
@@ -788,65 +769,51 @@
             [self deletedTile:view withIndex:[NSNumber numberWithUnsignedLong:index]]; //register deleted tile - register in undo stack
         }
         
-    }else if(scrollView != self.mainScrollView) //return the view to it's old position
-    {
-        [UIView animateWithDuration:0.7 animations:^
-         {
-             scrollView.contentOffset = self.standardContentOffsetForPersonalView;
-         }];
+    }else if(scrollView != self.mainScrollView) { //return the view to it's old position
+        [UIView animateWithDuration:0.7 animations:^ {
+            scrollView.contentOffset = self.standardContentOffsetForPersonalView;
+        }];
     }
 }
 
 
 #pragma mark Color of Tiles being deleted
 //Iain
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if(self.openImageScrollView)[self.openImageScrollView adjustImageScrollViewContentSizing];
     
     //show and hide the pullbar depending on the direction of the scroll
-    if(scrollView == self.mainScrollView)
-    {
+    if(scrollView == self.mainScrollView) {
         CGPoint translation = [scrollView.panGestureRecognizer translationInView:self.mainScrollView];
         
-        if(translation.y < 0)
-        {
+        if(translation.y < 0) {
             [self hidePullBar];
-        }else
-        {
+        }else {
             [self showPullBar];
         }
     }
     
     //change the background color of the element being deleted to highlight that it's being deleted
-    if(scrollView != self.mainScrollView && scrollView.subviews.count <2 && scrollView != self.openImageScrollView )//makes sure it's only one element on the view
-    {
+    if(scrollView != self.mainScrollView && scrollView.subviews.count <2 && scrollView != self.openImageScrollView ) { //makes sure it's only one element on the view
+        
         if(scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x + 80 || scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x - 80){
-            if(scrollView.contentOffset.x >3)
-            {
-                if([[scrollView.subviews firstObject] isKindOfClass:[PinchView class]])
-                {
+            if(scrollView.contentOffset.x >3) {
+                if([[scrollView.subviews firstObject] isKindOfClass:[PinchView class]]) {
                     [((PinchView *)[scrollView.subviews firstObject]) markAsDeleting];
-                }
-                else
-                {
+                } else {
                     ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor redColor];
                 }
             }
-        }else{
-            [UIView animateWithDuration:0.4 animations:^
-             {
-                 if([[scrollView.subviews firstObject] isKindOfClass:[PinchView class]])
-                 {
-                      [((PinchView *)[scrollView.subviews firstObject]) unmarkAsDeleting];
-                 }else{
-                     ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor BACKGROUND_COLOR];//for all objects not text views
-                 }
-             }];
+        } else {
+            [UIView animateWithDuration:0.4 animations:^ {
+                if([[scrollView.subviews firstObject] isKindOfClass:[PinchView class]]) {
+                    [((PinchView *)[scrollView.subviews firstObject]) unmarkAsDeleting];
+                } else {
+                    ((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor BACKGROUND_COLOR];//for all objects not text views
+                }
+            }];
         }
     }
-    
-    
 }
 
 
@@ -900,7 +867,7 @@
 -(void) keyBoardDidShow:(NSNotification *) notification
 {
     
-   [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
+    [self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
 }
 
 
@@ -947,7 +914,7 @@
             if([self.upperPinchView isKindOfClass:[MediaSelectTile class]] ||
                [self.lowerPinchView isKindOfClass:[MediaSelectTile class]]
                )return;
-
+            
             [self handleVerticlePinchGestureChanged:sender];
         }
     }
@@ -1108,18 +1075,14 @@
     //store the new view in our array
     [self storeView:mediaView inArrayAsBelowView:topView];
     
-    
-    for(int i=0; i<newPersonalScrollView.subviews.count;i++)
-    {
-        if([newPersonalScrollView.subviews[i] isMemberOfClass:[UIImageView class]])
-        {
+    for(int i=0; i<newPersonalScrollView.subviews.count;i++) {
+        if([newPersonalScrollView.subviews[i] isMemberOfClass:[UIImageView class]]) {
             [newPersonalScrollView.subviews[i] removeFromSuperview];
         }
     }
     
 }
 
-//Iain
 -(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture
 {
     //note that the personal scroll view of the new media view will not have the element offset in the begining- this is to be added here
@@ -1139,15 +1102,14 @@
                                                            self.createdMediaView.superview.frame.origin.y+self.changeInTopViewPosition,
                                                            self.createdMediaView.superview.frame.size.width,
                                                            self.createdMediaView.superview.frame.size.height + (ABS(self.changeInBottomViewPostion) +  ABS(self.changeInTopViewPosition)));
-       
+        
         
         //format the scrollview accordingly
         [self formatNewScrollView:(UIScrollView *)self.createdMediaView.superview];
         
         [(MediaSelectTile *)self.createdMediaView createFramesForButtonsWithFrame: self.createdMediaView.frame];
         [self.createdMediaView setNeedsDisplay];
-    }else if(self.createdMediaView.superview.frame.size.height >= PINCH_DISTANCE_FOR_ANIMATION)//the distance is enough that we can just animate the rest
-    {
+    }else if(self.createdMediaView.superview.frame.size.height >= PINCH_DISTANCE_FOR_ANIMATION) {//the distance is enough that we can just animate the rest
         
         gesture.enabled = NO;
         gesture.enabled = YES;
@@ -1194,36 +1156,36 @@
     
     if(touch1.y>touch2.y)
     {
-            if(touch1.x >touch2.x)
+        if(touch1.x >touch2.x)
+        {
+            int x_difference = touch1.x -touch2.x;
+            int y_difference =touch1.y -touch2.y;
+            if(x_difference > y_difference)//figure out if it's a horizontal pinch or vertical pinch
             {
-                int x_difference = touch1.x -touch2.x;
-                int y_difference =touch1.y -touch2.y;
-                if(x_difference > y_difference)//figure out if it's a horizontal pinch or vertical pinch
-                {
-                    self.VerticalPinch = NO;
-                    [self horitzontalPinchWithGesture:sender];
-                }else
-                {
-                    if(self.pageElements.count==0) return;//you can pinch together two things when there's only one
-                    self.VerticalPinch = YES;
-                    [self verticlePinchWithGesture:sender];
-                }
-                
+                self.VerticalPinch = NO;
+                [self horitzontalPinchWithGesture:sender];
             }else
             {
-                int x_difference = touch2.x -touch1.x;
-                int y_difference =touch1.y -touch2.y;
-                if(x_difference > y_difference)//figure out if it's a horizontal pinch or vertical pinch
-                {
-                    self.VerticalPinch = NO;
-                    [self horitzontalPinchWithGesture:sender];
-                }else
-                {
-                    if(self.pageElements.count==0) return;//you can pinch together two things when there's only one
-                    self.VerticalPinch = YES;
-                    [self verticlePinchWithGesture:sender];
-                }
+                if(self.pageElements.count==0) return;//you can pinch together two things when there's only one
+                self.VerticalPinch = YES;
+                [self verticlePinchWithGesture:sender];
             }
+            
+        }else
+        {
+            int x_difference = touch2.x -touch1.x;
+            int y_difference =touch1.y -touch2.y;
+            if(x_difference > y_difference)//figure out if it's a horizontal pinch or vertical pinch
+            {
+                self.VerticalPinch = NO;
+                [self horitzontalPinchWithGesture:sender];
+            }else
+            {
+                if(self.pageElements.count==0) return;//you can pinch together two things when there's only one
+                self.VerticalPinch = YES;
+                [self verticlePinchWithGesture:sender];
+            }
+        }
     }else
     {
         if(touch1.x >touch2.x)
@@ -1286,7 +1248,7 @@
             self.startLocationOfRightestTouchPoint_PINCH = touch2;
             self.scrollViewForHorizontalPinchView.pagingEnabled =NO;
             self.scrollViewForHorizontalPinchView.scrollEnabled = NO;
-
+            
         }
     }
 }
@@ -1351,6 +1313,7 @@
 
 
 #pragma mark Identify views involved in pinch
+
 //Iain
 //Takes a midpoint and a lower touch point and finds the two views that were being interacted with
 -(void) findElementsFromPinchPoint: (CGPoint) pinchPoint andLowerTouchPoint: (CGPoint) lowerTouchPoint
@@ -1525,7 +1488,7 @@
             self.startLocationOfUpperTouchPoint = touch1;
             self.upperPinchView.superview.frame = [self newTranslationForUpperPinchViewFrameWithChange:changeInPosition];
             self.changeInTopViewPosition = changeInPosition;
-
+            
             [self shiftElementsAboveView:self.upperPinchView withDifference:changeInPosition];
         }
     }
@@ -1615,9 +1578,8 @@
             if(!index)
             {
                 [self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
-                [self createCustomImageScrollViewFromPinchView:self.pageElements[0] andImageView:nil orTextView:[[VerbatmUITextView alloc]init]];
-                
-                
+                [self createVerbatmImageScrollViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
+
                 [self clearNewMediaView];
             }else
             {
@@ -1630,7 +1592,7 @@
                 if(view)
                 {
                     [self newPinchObjectBelowView:view fromView: nil isTextView:YES];
-                    [self createCustomImageScrollViewFromPinchView:self.pageElements[[self.pageElements indexOfObject:view] +1] andImageView:nil orTextView:[[VerbatmUITextView alloc]init]];
+                    [self createVerbatmImageScrollViewFromPinchView:self.pageElements[[self.pageElements indexOfObject:view] +1] andTextView:[[VerbatmUITextView alloc]init]];
                     [self clearNewMediaView];
                 }
             }
@@ -1645,11 +1607,11 @@
         if(view)
         {
             [self newPinchObjectBelowView:view fromView: nil isTextView:YES];
-            [self createCustomImageScrollViewFromPinchView:self.pageElements[[self.pageElements indexOfObject:view] +1] andImageView:nil orTextView:[[VerbatmUITextView alloc]init]];
+            [self createVerbatmImageScrollViewFromPinchView:self.pageElements[[self.pageElements indexOfObject:view] +1] andTextView:[[VerbatmUITextView alloc]init]];
         }else
         {
             [self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
-            [self createCustomImageScrollViewFromPinchView:self.pageElements[0] andImageView:nil orTextView:[[VerbatmUITextView alloc]init]];
+            [self createVerbatmImageScrollViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
         }
     }
 }
@@ -1698,12 +1660,10 @@
     [self.view addSubview:view];
     [self.view bringSubviewToFront:view];
     CGRect frame;
-    if(topView == self.articleTitleField)
-    {
+    if(topView == self.articleTitleField) {
         frame  = CGRectMake((self.view.frame.size.width/2) - (view.frame.size.width/2), self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, view.frame.size.width, view.frame
                             .size.height);
-    }else
-    {
+    }else {
         CGFloat x_coord = (self.view.frame.size.width/2) - (view.frame.size.width/2);
         
         CGFloat y_coord = (topView.superview.frame.origin.y + topView.superview.frame.size.height + ELEMENT_OFFSET_DISTANCE) - self.mainScrollView.contentOffset.y;
@@ -1719,20 +1679,12 @@
             }
         }
     } completion:^(BOOL finished) {
-        if(finished)
-        {
-            if(topView == self.articleTitleField)
-            {
-                
+        if(finished) {
+            if(topView == self.articleTitleField) {
                 [self newPinchObjectBelowView:nil fromView: view isTextView:NO];
-                
-                
-            }else
-            {
+            } else {
                 [self newPinchObjectBelowView:self.pageElements[self.index] fromView: view isTextView:NO];
-                
             }
-            
             [view removeFromSuperview];
             self.index ++;//makes it that the next image is below this image just added
         }
@@ -1794,7 +1746,9 @@
         pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:view];
     }
     
-    [self newPinchObjectBelowView:upperView withPinchView:pinchView];
+    if (pinchView) {
+        [self newPinchObjectBelowView:upperView withPinchView:pinchView];
+    }
     return pinchView;
 }
 
@@ -1812,7 +1766,9 @@
             pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center Images:nil videoData:@[data] andText:nil];
         }
     }
-    [self newPinchObjectBelowView:upperView withPinchView:pinchView];
+    if (pinchView) {
+        [self newPinchObjectBelowView:upperView withPinchView:pinchView];
+    }
     return pinchView;
 }
 
@@ -1827,9 +1783,9 @@
     
     if(topView ==self.articleTitleField)
     {
-    //note that this depends on the fact that the first personal scrollview is still being pointed to by the iboulet even if the object was deleted.
+        //note that this depends on the fact that the first personal scrollview is still being pointed to by the iboulet even if the object was deleted.
         newPersonalScrollView.frame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPersonalScrollViewFrameSize_closedElement.width, self.defaultPersonalScrollViewFrameSize_closedElement.height);
-    
+        
     }else
     {
         newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.defaultPersonalScrollViewFrameSize_closedElement.width, self.defaultPersonalScrollViewFrameSize_closedElement.height);
@@ -1981,7 +1937,7 @@
                     topView.superview.frame = CGRectMake(self.originalFrame.origin.x, self.originalFrame.origin.y, topView.superview.frame.size.width, topView.superview.frame.size.height);
                     self.originalFrame = self.potentialFrame;
                 }];
-             
+                
                 //object moving down
             }else if(newFrame.origin.y + (newFrame.size.height/2) +CENTERING_OFFSET_FOR_TEXT_VIEW > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2)+CENTERING_OFFSET_FOR_TEXT_VIEW < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
             {
@@ -2044,7 +2000,7 @@
                     self.mainScrollView.contentOffset = newOffset;
                 }];
             }
-
+            
         }else if (self.selectedView_Pan == [self.pageElements lastObject])
         {
             if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
@@ -2054,12 +2010,12 @@
                 [UIView animateWithDuration:ANIMATION_DURATION animations:^{
                     self.potentialFrame = topView.superview.frame;
                     topView.superview.frame = CGRectMake(self.originalFrame.origin.x, self.originalFrame.origin.y, topView.superview.frame.size.width, topView.superview.frame.size.height);
-
+                    
                     self.originalFrame = self.potentialFrame;
                 }];
                 
             }
-         
+            
             //move the offest of the main scroll view
             if(self.mainScrollView.contentOffset.y > self.selectedView_Pan.superview.frame.origin.y -(self.selectedView_Pan.superview.frame.size.height/2) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0))
             {
@@ -2079,7 +2035,7 @@
             }
         }
     }
-
+    
 }
 
 
@@ -2216,7 +2172,7 @@
     {
         [((PinchView *)view) unmarkAsDeleting];
     }
-
+    
     [self returnObject:[PinchView pinchObjectFromPinchObject:(PinchView *)view] ToDisplayAtIndex:index.integerValue];
 }
 
@@ -2229,10 +2185,10 @@
     {
         UIScrollView * topSv = (UIScrollView *)((UIView *)self.pageElements[(index -1)]).superview;
         newSV.frame = CGRectMake(topSv.frame.origin.x, topSv.frame.origin.y+ topSv.frame.size.height, topSv.frame.size.width, topSv.frame.size.height);
-  
+        
     }else if (!index)
     {
-          newSV.frame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height, self.defaultPersonalScrollViewFrameSize_closedElement.width, self.defaultPersonalScrollViewFrameSize_closedElement.height);
+        newSV.frame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height, self.defaultPersonalScrollViewFrameSize_closedElement.width, self.defaultPersonalScrollViewFrameSize_closedElement.height);
     }
     
     [self.pageElements insertObject:view atIndex:index];
@@ -2268,9 +2224,9 @@
     int y_difference = scrollview.frame.origin.y - self.mainScrollView.contentOffset.y;
     
     [UIView animateWithDuration:0.2 animations:^{
-         self.mainScrollView.contentOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + y_difference);//not that y_difference could be negative
+        self.mainScrollView.contentOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + y_difference);//not that y_difference could be negative
     }];
-   
+    
 }
 
 
@@ -2279,8 +2235,8 @@
 #pragma mark - Sense Tap Gesture -
 #pragma mark ImageScrollView
 
--(void) addTapGestuerToCustomImageScrollView: (VerbatmImageScrollView *) isv
-{ 
+-(void) addTapGestureToCustomImageScrollView: (VerbatmImageScrollView *) isv
+{
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeImageScrollview:)];
     
     if(isv.gestureView)[isv.gestureView addGestureRecognizer:tap];
@@ -2290,7 +2246,7 @@
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender
 {
     VerbatmImageScrollView * isv = self.openImageScrollView;
-    if(self.openImagePinchView.there_is_picture)[self.openImagePinchView changePicture:self.openImageScrollView.openImage.image];
+    if(self.openImagePinchView.there_is_picture)[self.openImagePinchView changePicture:self.openImageScrollView.imageView.image];
     if(self.openImagePinchView.there_is_text)
     {
         if([self.openImageScrollView.textView.text isEqualToString:@""])
@@ -2304,7 +2260,7 @@
         }
     }
     [isv.textView resignFirstResponder];
-    [isv stopVideo];//if there is a video lets stop it
+    [isv pauseVideo];//if there is a video lets stop it
     [isv removeFromSuperview];
     
     //makes sure the vidoes are playing..may need to make more efficient
@@ -2336,57 +2292,69 @@
         
         NSMutableArray * array = [pinch_object mediaObjects];
         UIView* mediaView = [array firstObject]; //could be textview or customimageview
-
+        
         if([mediaView isKindOfClass:[UITextView class]]) {
             
-            [self createCustomImageScrollViewFromPinchView:pinch_object andImageView:nil orTextView:(VerbatmUITextView *)mediaView];
-            
-        } else if([mediaView isKindOfClass:[VerbatmImageView class]]) {
-            [self createCustomImageScrollViewFromPinchView:pinch_object andImageView:(VerbatmImageView*)mediaView orTextView:nil];
-        }
-        
+            [self createVerbatmImageScrollViewFromPinchView:pinch_object andTextView:(VerbatmUITextView *)mediaView];
+        } else if([mediaView isKindOfClass:[NSData class]]) {
+            [self createVerbatmImageScrollViewFromPinchView:pinch_object andImageView:(NSData *)mediaView];
+		} else if([mediaView isKindOfClass:[AVAsset class]]) {
+			[self createVerbatmImageScrollViewFromPinchView:pinch_object andVideo:(AVAsset *)mediaView];
+		}
+
         [self pauseAllVideos];//when things are offscreen then pause all videos
         
     }
     [self hidePullBar];//make sure the pullbar is not available
 }
 
+-(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset {
+	VerbatmImageScrollView * imageScroll = [[VerbatmImageScrollView alloc] initCustomViewWithFrame:self.view.bounds ];
+	imageScroll.delegate = self;
 
+	[self.view addSubview:imageScroll];
+	[imageScroll addVideo:videoAsset];
 
-//media view is either photo or video
--(void) createCustomImageScrollViewFromPinchView: (PinchView *) pinchView andImageView: (id)imageView orTextView: (VerbatmUITextView *) textView
-{
+	imageScroll.showsHorizontalScrollIndicator = NO;
+	imageScroll.showsVerticalScrollIndicator = NO;
+	[self addTapGestureToCustomImageScrollView:imageScroll];
+	self.openImageScrollView = imageScroll;
+	self.openImagePinchView = pinchView;
+}
+
+-(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView {
     
-    if(imageView)
-    {
-        VerbatmImageScrollView * imageScroll = [[VerbatmImageScrollView alloc] initCustomViewWithFrame:self.view.bounds ];
-        imageScroll.delegate = self;
-        
-        [self.view addSubview:imageScroll];
-        [imageScroll addImage:imageView withPinchObject: pinchView];
-        
-        imageScroll.showsHorizontalScrollIndicator = NO;
-        imageScroll.showsVerticalScrollIndicator = NO;
-        [self addTapGestuerToCustomImageScrollView:imageScroll];
-        self.openImageScrollView = imageScroll;
-        self.openImagePinchView = pinchView;
-    }else if (textView)
-    {
-        VerbatmImageScrollView * textScroll = [[VerbatmImageScrollView alloc ]initCustomViewWithFrame:self.view.bounds];
-        textScroll.delegate = self;
-        
-        
-        [self.view addSubview:textScroll];
-        [textScroll createTextViewFromTextView: textView];
-        textScroll.textView.delegate = self;
-        textScroll.showsHorizontalScrollIndicator = NO;
-        textScroll.showsVerticalScrollIndicator = NO;
-        [textScroll.textView becomeFirstResponder];
-        [self addTapGestuerToCustomImageScrollView:textScroll];
-        self.openImageScrollView = textScroll;
-        self.openImagePinchView = pinchView;
-        
+    VerbatmImageScrollView * imageScroll = [[VerbatmImageScrollView alloc] initCustomViewWithFrame:self.view.bounds ];
+    imageScroll.delegate = self;
+    
+    [self.view addSubview:imageScroll];
+    [imageScroll addImage:imageView];
+    
+    imageScroll.showsHorizontalScrollIndicator = NO;
+    imageScroll.showsVerticalScrollIndicator = NO;
+    [self addTapGestureToCustomImageScrollView:imageScroll];
+    self.openImageScrollView = imageScroll;
+    self.openImagePinchView = pinchView;
+}
+
+-(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView
+{
+    if (!textView) {
+        return; //TODO: error message
     }
+    VerbatmImageScrollView * textScroll = [[VerbatmImageScrollView alloc ]initCustomViewWithFrame:self.view.bounds];
+    textScroll.delegate = self;
+    
+    
+    [self.view addSubview:textScroll];
+    [textScroll createTextViewFromTextView: textView];
+    textScroll.textView.delegate = self;
+    textScroll.showsHorizontalScrollIndicator = NO;
+    textScroll.showsVerticalScrollIndicator = NO;
+    [textScroll.textView becomeFirstResponder];
+    [self addTapGestureToCustomImageScrollView:textScroll];
+    self.openImageScrollView = textScroll;
+    self.openImagePinchView = pinchView;
 }
 
 #pragma mark Open Collection
@@ -2570,10 +2538,10 @@
     NSLock  * lock =[[NSLock alloc] init];
     //thread safety
     [lock lock];
-        UIView * topView;
-        if(self.index==-1 || self.pageElements.count==1)topView = nil;
-        else topView = self.pageElements[self.index];
-        //self.index ++;//makes it that the next image is below this image just added
+    UIView * topView;
+    if(self.index==-1 || self.pageElements.count==1)topView = nil;
+    else topView = self.pageElements[self.index];
+    //self.index ++;//makes it that the next image is below this image just added
     [lock unlock];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self newPinchObjectBelowView:topView fromData:asset];

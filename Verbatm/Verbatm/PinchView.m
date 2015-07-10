@@ -40,21 +40,6 @@
 
 @implementation PinchView
 
-
--(AVPlayerLayer*) playerLayer {
-    if (!_playerLayer) {
-        for (CALayer * obj in self.videoView.layer.sublayers)
-        {
-            if([obj isKindOfClass:[AVPlayerLayer class]])
-            {
-                self.playerLayer = (AVPlayerLayer *)obj;
-            }
-        }
-    }
-    return _playerLayer;
-}
-
-//Lucio
 //Instantiates an instance of the custom view without any media types inputted
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andMedia:(id)medium
 {
@@ -172,20 +157,6 @@
     self.autoresizesSubviews = YES; // This makes sure that moving the background canvas moves all the associated subviews too.
 }
 
--(void)unmuteVideo
-{
-    if(self.playerLayer) {
-        [self.playerLayer.player setMuted:NO];
-    }
-}
-
--(void)muteVideo
-{
-    if(self.playerLayer) {
-        [self.playerLayer.player setMuted:YES];
-    }
-}
-
 //allows the user to change the width and height of the frame keeping the same center
 -(void) changeWidthTo: (double) width
 {
@@ -296,8 +267,7 @@
 }
 
 //This function displays the media on the view.
--(void)displayMedia
-{
+-(void)displayMedia {
     
     self.textField.text = @"";
     VerbatmImageView* videoView = nil;
@@ -322,10 +292,6 @@
                 [self.playerLayer removeFromSuperlayer];
                 self.playerLayer.frame = self.videoView.bounds;
                 [self.videoView.layer addSublayer:self.playerLayer];
-            }else{
-                ALAsset* asset = ((VerbatmImageView*)videoView).asset;
-                AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL: asset.defaultRepresentation.url options:nil];
-                [self playVideo:avurlAsset];
             }
         }
     }else{ // Added to make class accomodate taking NSData for vidoes instead!
@@ -364,65 +330,6 @@
         float rate = self.playerLayer.player.rate;
         NSLog(@"here is the rate : %f", rate);
     }
-}
-
-//this is only to occur when the player layer has been removed (perhaps due to previewing)
-//and we need to add a new layer and restart the video
--(void) restartVideo
-{
-    if (self.playerLayer) {
-        return;
-    }
-    [self displayMedia];
-}
-
--(void)playVideo:(AVURLAsset*)asset
-{
-    // Create an AVPlayerItem using the asset
-    AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
-    // Create the AVPlayer using the playeritem
-    AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
-    //MUTE THE PLAYER
-    player.muted = YES;
-    player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerItemDidReachEnd:)
-                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:[player currentItem]];
-    
-    // Create an AVPlayerLayer using the player
-    AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
-    playerLayer.frame = self.bounds;
-    playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-    // Add it to your view's sublayers
-    [self.videoView.layer addSublayer:playerLayer];
-    // You can play/pause using the AVPlayer object
-    [player play];
-    
-    
-//    self.mixPlayer = [[AVPlayerViewController alloc] init];
-//    AVPlayerItem *newplayerItem = [AVPlayerItem playerItemWithAsset:asset];
-//    //make an immutable copy of the mutableComposition
-//    AVPlayer *newplayer = [AVPlayer playerWithPlayerItem:newplayerItem];
-//    
-//    newplayer.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(playerItemDidReachEnd:)
-//                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-//                                               object:[newplayer currentItem]];
-//    self.mixPlayer.showsPlaybackControls = NO;
-//    self.mixPlayer.videoGravity = AVLayerVideoGravityResizeAspectFill;
-//    [self.mixPlayer setPlayer:newplayer];
-//    [self.mixPlayer.view setFrame:self.videoView.bounds];
-//    [self.videoView addSubview:self.mixPlayer.view];
-//    [self.mixPlayer.player play];
-}
-
-//tells me when the video ends so that I can rewind
--(void)playerItemDidReachEnd:(NSNotification *)notification
-{
-    AVPlayerItem *p = [notification object];
-    [p seekToTime:kCMTimeZero];
 }
        
        
@@ -532,34 +439,78 @@
 }
 
 #pragma mark - manipulating playing of videos -
+
+-(void)playVideo:(AVAsset*)asset{
+	// Create an AVPlayerItem using the asset
+	AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
+	// Create the AVPlayer using the playeritem
+	AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+	//MUTE THE PLAYER
+	player.muted = YES;
+	player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(playerItemDidReachEnd:)
+												 name:AVPlayerItemDidPlayToEndTimeNotification
+											   object:[player currentItem]];
+
+	// Create an AVPlayerLayer using the player
+	AVPlayerLayer *playerLayer = [AVPlayerLayer playerLayerWithPlayer:player];
+	playerLayer.frame = self.bounds;
+	playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+	// Add it to your view's sublayers
+	[self.videoView.layer addSublayer:playerLayer];
+	self.playerLayer = playerLayer;
+	// You can play/pause using the AVPlayer object
+	[player play];
+}
+
+//tells me when the video ends so that I can rewind
+-(void)playerItemDidReachEnd:(NSNotification *)notification
+{
+	AVPlayerItem *p = [notification object];
+	[p seekToTime:kCMTimeZero];
+}
+
+//this is only to occur when the player layer has been removed (perhaps due to previewing)
+//and we need to add a new layer and restart the video
+-(void) restartVideo
+{
+	if (self.playerLayer) {
+		return;
+	}
+	[self displayMedia];
+}
+
 //pauses the video for the pinchview if there is one
 -(void)pauseVideo
 {
-  
-    if(!self.there_is_video) return;
-    for(CALayer * layer in self.videoView.layer.sublayers)
-    {
-        if([layer isKindOfClass:[AVPlayerLayer class]])
-        {
-            AVPlayer* player = ((AVPlayerLayer*)layer).player;
-            [player pause];
-        }
-    }
+
+    if(!self.there_is_video || !self.playerLayer) return;
+	AVPlayer* player = self.playerLayer.player;
+    [player pause];
 }
 
 //plays the video of the pinch view if there is one
 -(void)continueVideo
 {
 
-    if(!self.there_is_video) return;
-    for(CALayer * layer in self.videoView.layer.sublayers)
-    {
-        if([layer isKindOfClass:[AVPlayerLayer class]])
-        {
-            AVPlayer* player = ((AVPlayerLayer*)layer).player;
-            [player play];
-        }
-    }
+	if(!self.there_is_video || !self.playerLayer) return;
+	AVPlayer* player = self.playerLayer.player;
+	[player play];
+}
+
+-(void)unmuteVideo
+{
+	if(self.playerLayer) {
+		[self.playerLayer.player setMuted:NO];
+	}
+}
+
+-(void)muteVideo
+{
+	if(self.playerLayer) {
+		[self.playerLayer.player setMuted:YES];
+	}
 }
 
 #pragma mark - selection interface -
