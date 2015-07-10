@@ -133,22 +133,21 @@
 
 -(PinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center
 {
+	NSMutableArray* media = [[NSMutableArray alloc]init];
     NSArray* videos = [self getVideos];
-    NSMutableArray* videoData = [[NSMutableArray alloc]init];
     for(Video* vid in videos)
     {
-        [videoData addObject: [vid getVideoData]];
+        [media addObject: [vid getVideoData]];
     }
     
     NSArray* photoQueries = [self getPhotos];
-    NSMutableArray* photos = [[NSMutableArray alloc]init];
     for(Photo* photo in photoQueries)
     {
-        [photos addObject:[photo getPhoto]];
+        [media addObject:[photo getPhoto]];
     }
     
-    PinchView * view = [[PinchView alloc] initWithRadius:radius withCenter:center Images:photos videoData:videoData andText:self.text];
-    
+	PinchView * view = [[PinchView alloc] initWithRadius:radius withCenter:center andMedia:media];
+
     return view;
 }
 

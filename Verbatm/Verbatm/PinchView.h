@@ -53,23 +53,23 @@
 /*This creates a new pinch object with a particular radius, superview and a center
  *as specified by the passed parameters
  */
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andMedia:(id)medium;
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andMedia:(NSMutableArray*)mediaArray;
 
 //This merges several pinch objects in the to_be_merged array into a singe verbatmCustomPinchView
 //null is returned if the array has fewer than 2 objects. The array, along with references to the pinch objects
 //is destroyed to avoid memory leaks.
-+(PinchView*)pinchTogether:(NSMutableArray*)to_be_merged;
++(PinchView*)pinchTogether:(NSMutableArray*)toBeMerged;
 
 //Pinches apart two media that were previously pinched together.
 //The function returns null if the object to be pinched apart does not actually consist
 //of more than one media object.
 //The array returned consist of two verbatmCustomPinchViews.
-+(NSMutableArray*)pinchApart:(PinchView*)to_be_pinched_apart;
++(NSMutableArray*)pinchApart:(PinchView*)collection;
 
 
 //this function pulls a pinch object apart into the componenent media.
 //It returns an array of pinch objects
-+(NSMutableArray*)openCollection:(PinchView*)to_be_seperated;
++(NSMutableArray*)openCollection:(PinchView*)collection;
 
 //creates an identical PV to the one handed to it
 +(PinchView *)pinchObjectFromPinchObject: (PinchView *) pv;
@@ -120,12 +120,6 @@
 @property (readonly, nonatomic) BOOL there_is_video;
 @property (readonly, nonatomic) BOOL there_is_picture;
 @property (nonatomic) BOOL inDataFormat;
-
-
-
-//Modified to take photos as UIImages and vidoes as NSData
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center Images:(NSArray*)images videoData:(NSArray*)videoData andText:(NSString*)text;
-
 
 /*Getting media from the pinch object*/
 -(NSMutableArray*)getVideos;

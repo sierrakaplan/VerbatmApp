@@ -1734,17 +1734,20 @@
 
 - (PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText {
     PinchView * pinchView=nil;
+	NSMutableArray *media = [[NSMutableArray alloc]init];
     
     if(isText&& !view)
     {
         UITextView * textView = [[UITextView alloc]init];
+
+		[media addObject: textView];
         
-        pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:textView];
+    } else if (view) {
         
-    }else if (view) {
-        
-        pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:view];
+		[media addObject: view];
     }
+
+	pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:media];
     
     if (pinchView) {
         [self newPinchObjectBelowView:upperView withPinchView:pinchView];
@@ -1753,19 +1756,15 @@
 }
 
 - (PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data {
-    PinchView * pinchView=nil;
-    if(data)
-    {
-        
-        if([data isKindOfClass:[NSData class]])//then it's an image
-        {
-            
-            pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center Images:@[data] videoData:nil andText:nil];
-        } else
-        {
-            pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center Images:nil videoData:@[data] andText:nil];
-        }
-    }
+	PinchView * pinchView=nil;
+	if(data)
+	{
+		NSMutableArray *media = [[NSMutableArray alloc]init];
+		[media addObject: data];
+
+		pinchView = [[PinchView alloc] initWithRadius:[self.closedElement_Radius floatValue] withCenter:self.closedElement_Center andMedia:media];
+
+	}
     if (pinchView) {
         [self newPinchObjectBelowView:upperView withPinchView:pinchView];
     }
@@ -2246,7 +2245,8 @@
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender
 {
     VerbatmImageScrollView * isv = self.openImageScrollView;
-    if(self.openImagePinchView.there_is_picture)[self.openImagePinchView changePicture:self.openImageScrollView.imageView.image];
+	//TODO(sierra): what is this for??
+//    if(self.openImagePinchView.there_is_picture)[self.openImagePinchView changePicture:self.openImageScrollView.imageView.image];
     if(self.openImagePinchView.there_is_text)
     {
         if([self.openImageScrollView.textView.text isEqualToString:@""])
@@ -2360,12 +2360,12 @@
 #pragma mark Open Collection
 -(void)openCollection: (PinchView *) collection
 {
-    NSMutableArray * element_array = [PinchView openCollection:collection];
-    UIScrollView * scroll_view = (UIScrollView *)collection.superview;
-    scroll_view.pagingEnabled = NO;
+    NSMutableArray * elementArray = [PinchView openCollection:collection];
+    UIScrollView * scrollView = (UIScrollView *)collection.superview;
+    scrollView.pagingEnabled = NO;
     [collection removeFromSuperview];//clear the scroll view. It's about to be filled by the array's elements
-    [self addPinchObjects:element_array toScrollView: scroll_view];
-    [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:collection] withObject:element_array[0]];
+    [self addPinchObjects:elementArray toScrollView: scrollView];
+    [self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:collection] withObject:elementArray[0]];
 }
 
 

@@ -17,11 +17,12 @@
 @property (nonatomic,strong) AVPlayerViewController * mixPlayer;
 @property (nonatomic,strong) AVPlayerLayer * playerLayer;
 
+//array of videos, photos, and text
 @property (strong, nonatomic) NSMutableArray* media;
-@property (strong, nonatomic) NSMutableArray* photos;
-@property (strong, nonatomic) NSMutableArray* videos;
+//@property (strong, nonatomic) NSMutableArray* photos;
+//@property (strong, nonatomic) NSMutableArray* videos;
 @property (strong, nonatomic) NSMutableArray* pinched;
-@property (strong, nonatomic) NSString* text;
+//@property (strong, nonatomic) NSString* text;
 
 @property (readwrite,nonatomic) BOOL there_is_text;
 @property (readwrite, nonatomic) BOOL there_is_video;
@@ -40,8 +41,8 @@
 
 @implementation PinchView
 
-//Instantiates an instance of the custom view without any media types inputted
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andMedia:(id)medium
+//Instantiates an instance of the custom view
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andMedia:(NSMutableArray*)mediaArray
 {
     if((self = [super init]))
     {
@@ -56,25 +57,40 @@
         
         //initialize arrays
         self.media = [[NSMutableArray alloc]init];
-        self.inDataFormat = NO;
-        
-        //add Medium to the list of media
-        if([medium isKindOfClass: [UITextView class]]){
-             self.there_is_text = YES;
-        }else if([medium isKindOfClass: [VerbatmImageView class]]){
-            self.there_is_video = ((VerbatmImageView*)medium).isVideo;
-            self.there_is_picture = !self.there_is_video;
-        }
         
         [self initSubviews];
-        if(medium){
-            [self.media addObject: medium];
+        if(mediaArray){
+            [self.media addObjectsFromArray: mediaArray];
+			[self checkDataTypes];
             [self renderMedia];
         }
+
         [self addBorderToPinchView];
         
     }
     return self;
+}
+
+-(void)checkDataTypes {
+	self.there_is_text = NO;
+	self.there_is_picture = NO;
+	self.there_is_video = NO;
+
+	for(id object in self.media){
+
+		//text
+		if([object isKindOfClass: [UITextView class]]){
+			self.there_is_text = YES;
+
+			//photo
+		} else if([object isKindOfClass: [NSData class]]){
+			self.there_is_picture = YES;
+
+			//video
+		} else if([object isKindOfClass: [AVAsset class]]){
+			self.there_is_video = YES;
+		}
+	}
 }
 
 +(PinchView *)pinchObjectFromPinchObject: (PinchView *) pv
@@ -109,14 +125,14 @@
     self.layer.borderWidth = 1.0f;
 }
 
-//Lucio
 //adds a picture to the custom view
 -(void)changePicture:(UIImage*)image
 {
     //only works if we already have a picture
     if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.there_is_picture) return;
-    VerbatmImageView* view = [self.media firstObject];
-    view.image = image;
+    NSData* imageData = [self.media firstObject];
+	//TODO(sierra): confused about this
+//    view.image = image;
     self.imageViewer.image = image;
 }
 -(void) changeText:(UITextView *) textview
@@ -268,80 +284,49 @@
 
 //This function displays the media on the view.
 -(void)displayMedia {
-    
-    self.textField.text = @"";
-    VerbatmImageView* videoView = nil;
-    if(!self.inDataFormat){
-        for(id object in self.media){
-            if([object isKindOfClass: [UITextView class]]){
-                self.textField.text = [self.textField.text stringByAppendingString: ((UITextView*)object).text];
-                self.textField.text = [self.textField.text stringByAppendingString:@"\r\r"];
-                //[self.background bringSubviewToFront: self.textField];
-            }else if(!((VerbatmImageView*)object).isVideo){
-                UIImage* image = [(VerbatmImageView*)object image];
-                [self.imageViewer setImage:image];
-                self.imageViewer.contentMode = UIViewContentModeCenter;
-                self.imageViewer.layer.masksToBounds = YES;
-                //[self.background bringSubviewToFront: self.imageViewer];
-            }else{
-                if(!videoView) videoView = object;
-            }
-        }
-        if(videoView){
-            if(self.playerLayer){
-                [self.playerLayer removeFromSuperlayer];
-                self.playerLayer.frame = self.videoView.bounds;
-                [self.videoView.layer addSublayer:self.playerLayer];
-            }
-        }
-    }else{ // Added to make class accomodate taking NSData for vidoes instead!
-        self.textField.text = self.text;
-        if(self.there_is_picture){
-            id imagedata = [self.photos firstObject];
-            
-            if([imagedata isKindOfClass:[UIImage class]])
-            {
-                [self.imageViewer setImage: (UIImage*)imagedata];
-                self.imageViewer.contentMode = UIViewContentModeCenter;
-                self.imageViewer.layer.masksToBounds = YES;
-            }else
-            {
-                [self.imageViewer setImage: [[UIImage alloc] initWithData:imagedata]];
-                self.imageViewer.contentMode = UIViewContentModeCenter;
-                self.imageViewer.layer.masksToBounds = YES;
-            }
-        }
-        if(self.there_is_video)
-        {
-            if([self.videos.firstObject isKindOfClass:[AVAsset class]])[self playVideo:[self.videos firstObject]];
-            else{
-                NSURL* url;
-                NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"pinch",  arc4random_uniform(100)]];
-                [[NSFileManager defaultManager] createFileAtPath: filePath contents: (NSData*)[self.videos firstObject] attributes:nil];
-                url = [NSURL fileURLWithPath: filePath];
-                AVURLAsset *avurlAsset = [AVURLAsset URLAssetWithURL:url options:nil];
-                [self playVideo:avurlAsset];
-            }
-        }
-    }
-    self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
-    self.textField.textColor = [UIColor whiteColor];
-    if(self.playerLayer){
-        float rate = self.playerLayer.player.rate;
-        NSLog(@"here is the rate : %f", rate);
-    }
+
+	self.textField.text = @"";
+	//	if(!self.inDataFormat){
+	for(id object in self.media){
+
+		//text
+		if([object isKindOfClass: [UITextView class]]){
+			UITextView* textView = (UITextView*)object;
+			self.textField.text = [self.textField.text stringByAppendingString:textView.text];
+			self.textField.text = [self.textField.text stringByAppendingString:@"\r\r"];
+
+		//photo
+		} else if([object isKindOfClass: [NSData class]]){
+			NSData* image = (NSData*)object;
+			[self.imageViewer setImage: [[UIImage alloc] initWithData:image]];
+			self.imageViewer.contentMode = UIViewContentModeCenter;
+			self.imageViewer.layer.masksToBounds = YES;
+
+		//video
+		} else if([object isKindOfClass: [AVAsset class]]){
+			AVAsset* video = (AVAsset*)object;
+			[self playVideo: video];
+		}
+	}
+	if(self.videoView){
+		if(self.playerLayer){
+			[self.playerLayer removeFromSuperlayer];
+			self.playerLayer.frame = self.videoView.bounds;
+			[self.videoView.layer addSublayer:self.playerLayer];
+		}
+	}
 }
-       
-       
-//This merges two verbatm pinch objects into one. 
-+(PinchView*)pinchTogether:(NSMutableArray*)to_be_merged
+
+
+//This merges two verbatm pinch objects into one.
++(PinchView*)pinchTogether:(NSMutableArray*)toBeMerged
 {
-    if(to_be_merged.count == 0) return nil;
-    PinchView* firstObject = (PinchView*)[to_be_merged firstObject];
+    if(toBeMerged.count == 0) return nil;
+    PinchView* firstObject = (PinchView*)[toBeMerged firstObject];
     PinchView* result = [[PinchView alloc] initWithRadius:firstObject.frame.size.width/2.0 withCenter:firstObject.center andMedia:nil];
     result.pinched = [[NSMutableArray alloc] init];
-    for(int i = 0; i < to_be_merged.count; i++){
-        PinchView* pinchObject = (PinchView*)[to_be_merged objectAtIndex:i];
+    for(int i = 0; i < toBeMerged.count; i++){
+        PinchView* pinchObject = (PinchView*)[toBeMerged objectAtIndex:i];
         if(pinchObject.pinched){
             for(PinchView* subView in pinchObject.pinched){
                 [PinchView append:subView toPinchObject:result];
@@ -376,21 +361,11 @@
 
 //this function pulls a pinch object apart into the componenent media.
 //It returns an array of pinch objects
-+(NSMutableArray*)openCollection:(PinchView*)to_be_seperated
++(NSMutableArray*)openCollection:(PinchView*)collection
 {
-    NSMutableArray* arr = [[NSMutableArray alloc] initWithArray: to_be_seperated.pinched];
-//    if([to_be_seperated.videoView.layer.sublayers firstObject]){
-//        AVPlayerLayer* layer = (AVPlayerLayer*)[to_be_seperated.videoView.layer.sublayers firstObject];
-//        [layer.player replaceCurrentItemWithPlayerItem:nil];
-//        [layer removeFromSuperlayer]; //remove the video layer
-//    }
-//
-//    NSArray* media = [[NSArray alloc]initWithArray:to_be_seperated.media];
-//    CGPoint center = to_be_seperated.center;
-//    float radius = to_be_seperated.frame.size.width/2;
-//    to_be_seperated = nil;
+    NSMutableArray* arr = [[NSMutableArray alloc] initWithArray: collection.pinched];
     for(PinchView* object in arr){
-        object.center = to_be_seperated.center;
+        object.center = collection.center;
     }
     //[arr insertObject:to_be_seperated atIndex: 0];
     return arr;
@@ -400,13 +375,13 @@
 //Undoes a pinch apart
 //The function returns null if the object to be pinched apart does not actually consist
 //of more than one media object.
-+(NSMutableArray*)pinchApart:(PinchView*)to_be_pinched_apart
++(NSMutableArray*)pinchApart:(PinchView*)collection
 {
-    if(to_be_pinched_apart.media.count < 2)return nil;
+    if(collection.media.count < 2)return nil;
     NSMutableArray* arr = [[NSMutableArray alloc] init];
-    PinchView* result = [[PinchView alloc]initWithRadius: to_be_pinched_apart.background.frame.size.width withCenter:to_be_pinched_apart.center andMedia: [to_be_pinched_apart.media lastObject]];
-    [to_be_pinched_apart.media removeObject: [to_be_pinched_apart.media lastObject]];
-    [arr addObject:to_be_pinched_apart];
+    PinchView* result = [[PinchView alloc]initWithRadius: collection.background.frame.size.width withCenter:collection.center andMedia: [collection.media lastObject]];
+    [collection.media removeObject: [collection.media lastObject]];
+    [arr addObject:collection];
     [arr addObject: result];
     return arr;
 }
@@ -428,14 +403,32 @@
 //This applies, whether it is a collection or not.
 -(BOOL)hasMultipleMedia
 {
-    
     return self.media.count > 1;
 }
 
 -(NSMutableArray*)mediaObjects
 {
-    if(_media)return self.media;
-    else return [NSMutableArray arrayWithArray:[self.photos arrayByAddingObjectsFromArray:self.videos]];
+    return self.media;
+}
+
+-(NSMutableArray*)getVideos {
+	NSMutableArray* videos = [[NSMutableArray alloc]init];
+	for(id object in self.media){
+		if([object isKindOfClass: [AVAsset class]]){
+			[videos addObject: (AVAsset*)object];
+		}
+	}
+	return videos;
+}
+
+-(NSMutableArray*)getPhotos {
+	NSMutableArray* photos = [[NSMutableArray alloc]init];
+	for(id object in self.media){
+		if([object isKindOfClass: [NSData class]]){
+			[photos addObject: (NSData*)object];
+		}
+	}
+	return photos;
 }
 
 #pragma mark - manipulating playing of videos -
@@ -537,42 +530,6 @@
     [self addBorderToPinchView];
 }
 
-
-
-# pragma mark - Modified Pinch to take NSData -
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center Images:(NSArray*)images videoData:(NSArray*)videoData andText:(NSString*)text
-{
-    if((self = [super init]))
-    {
-        //load from Nib file..this initializes the background view and all its subviews
-        [[NSBundle mainBundle] loadNibNamed:@"PinchView" owner:self options:nil];
-        
-        //set up the properties
-        CGRect frame = CGRectMake(center.x - radius, center.y - radius, radius*2, radius*2);
-        [self specifyFrame:frame];
-        self.background.layer.masksToBounds = YES;
-        
-        //initialize arrays
-        self.photos = [[NSMutableArray alloc]initWithArray:images];
-        // TODO(sierra): Crashing on this line
-        self.videos = [[NSMutableArray alloc]initWithArray:videoData];
-        self.text = text;
-        self.inDataFormat = YES;
-        
-        //add Medium to the list of media
-        if(text){
-            self.there_is_text = YES;
-        }
-        self.there_is_video = !(videoData == nil || !videoData.count);
-        self.there_is_picture = !(images == nil || !images.count);
-        
-        [self initSubviews];
-        [self renderMedia];
-        [self addBorderToPinchView];
-    }
-    return self;
-}
-
 -(void)offScreen
 {
     
@@ -590,15 +547,6 @@
 }
 
 
--(NSMutableArray*)getVideos
-{
-    return self.videos;
-}
-
--(NSMutableArray*)getPhotos
-{
-    return self.photos;
-}
 
 @end
 

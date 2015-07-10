@@ -272,7 +272,10 @@
     
     for (UIImage * image in photos)
     {
-        PinchView * pv = [[PinchView alloc] initWithRadius:RADIUS withCenter:[self getNextCenter] Images:@[image] videoData:nil andText:nil];
+		NSMutableArray *media = [[NSMutableArray alloc]init];
+		[media addObject: image];
+
+        PinchView * pv = [[PinchView alloc] initWithRadius:RADIUS withCenter:[self getNextCenter] andMedia:media];
         [self formatPV:pv];
         [self addTapGesture:pv];
         [self.SV_PhotoList addSubview:pv];

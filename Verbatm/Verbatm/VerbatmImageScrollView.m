@@ -255,15 +255,6 @@
 
 -(void)playVideo:(AVAsset*)asset
 {
-//	self.moviePlayer = [[MPMoviePlayerController alloc] initWithContentURL:asset.URL];
-//	[self.moviePlayer prepareToPlay];
-//	self.moviePlayer.repeatMode = MPMovieRepeatModeOne;
-//	self.moviePlayer.scalingMode = MPMovieScalingModeAspectFill;
-//	self.moviePlayer.controlStyle= MPMovieControlStyleNone;
-//	[self.moviePlayer.view setFrame: self.bounds];  // player's frame must match parent's
-
-//	[self.moviePlayer play];
-
 	// Create an AVPlayerItem using the asset
 	AVPlayerItem *playerItem = [AVPlayerItem playerItemWithAsset:asset];
 	// Create the AVPlayer using the playeritem

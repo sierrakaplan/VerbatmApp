@@ -37,7 +37,9 @@
     {
         [self.image setImage:image];
         [self formatImage];
-        self.videoView = [[PinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]+VIDEO_START_OFFSET,[self getRadius]+VIDEO_START_OFFSET) Images:nil videoData:video andText:nil];
+		NSMutableArray *media = [[NSMutableArray alloc]init];
+		[media addObject: video];
+        self.videoView = [[PinchView alloc] initWithRadius:[self getRadius] withCenter:CGPointMake([self getRadius]+VIDEO_START_OFFSET,[self getRadius]+VIDEO_START_OFFSET) andMedia:media];
 
         self.clipsToBounds = YES;
 
