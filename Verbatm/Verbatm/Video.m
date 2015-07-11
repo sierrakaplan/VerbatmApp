@@ -37,7 +37,9 @@
                  atLocation:(CLLocation*)location
 {
     if((self = [super init])){
-        self.videoDataFile = [PFFile fileWithData:data];
+//		NSString *urlStringWithExtension = [url.absoluteString stringByAppendingString:@".mov"];
+//		NSURL *urlWithExtension = [[NSURL alloc] initWithString:urlStringWithExtension];
+		self.videoDataFile = [PFFile fileWithName:@"video.mov" data:data];
         self.caption = caption;
         self.name = name;
         self.location = location;

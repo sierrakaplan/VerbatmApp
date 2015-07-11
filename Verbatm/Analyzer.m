@@ -134,69 +134,19 @@
 -(void)handleThreeMedia:(PinchView*)p_obj
 {
 	NSString* text = [p_obj getTextFromPinchObject];
-//	if(p_obj.inDataFormat)
-//	{
-		NSMutableArray* videos = [p_obj getVideos];
-		NSMutableArray* photos = [p_obj getPhotos];
-		if(videos.count + photos.count == 2){
-			PhotoVideoTextAVE* pvt = [[PhotoVideoTextAVE alloc] initWithFrame:_preferredFrame forImageData: (NSData*)[photos firstObject] andText:text andVideo:[videos firstObject]];
-			[pvt addSwipeGesture];
-			[_results addObject:pvt];
-		}else{
-			MultiVidTextPhotoAVE* mvtp = [[MultiVidTextPhotoAVE alloc]initWithFrame:_preferredFrame Photos:photos andVideos:videos andText:text];
-			[mvtp addSwipeGesture];
-			[_results addObject:mvtp];
-		}
-//	}else{
-//		NSMutableArray* media = [p_obj mediaObjects];
-//		//		if(media.count == 3)
-//		//		{
-//		//			NSData* vidData;
-//		//			for(int i = 0; i < 3; i++)
-//		//			{
-//		//				if([[media objectAtIndex:i] isKindOfClass:[UITextView class]])continue;
-//		//
-//		//				VerbatmImageView* imgView = [media objectAtIndex:i];
-//		//				if(imgView.isVideo)
-//		//				{
-//		//					vidData = imgView.asset;
-//		//				}else
-//		//				{
-//		//					image = imgView.image;
-//		//				}
-//		//			}
-//		//			PhotoVideoTextAVE* pvt = [[PhotoVideoTextAVE alloc] initWithFrame:_preferredFrame forImageData:image andText:text andVideo:@[vidData]];
-//		//			[pvt addSwipeGesture];
-//		//			[_results addObject:pvt];
-//		//
-//		//		}else{
-//		NSMutableArray* photos = [[NSMutableArray alloc]init];
-//		NSMutableArray* videos = [[NSMutableArray alloc]init];
-//		NSUInteger count  = media.count;
-//		for(int i = 0; i < count; i++){
-//			if([[media objectAtIndex:i] isKindOfClass:[UITextView class]]){
-//				continue;
-//			}
-//			VerbatmImageView* imgView = [media objectAtIndex:i];
-//			if(imgView.isVideo){
-//				[videos addObject:imgView.asset];
-//			}else{
-//				[photos addObject:imgView.image];
-//			}
-//		}
-//
-//		if(photos.count ==1)//this way we know that we have onepicture but a lot of videos
-//		{
-//			PhotoVideoTextAVE* pvt = [[PhotoVideoTextAVE alloc] initWithFrame:_preferredFrame forImageData:[photos firstObject] andText:text andVideo:videos];
-//			[pvt addSwipeGesture];
-//			[_results addObject:pvt];
-//		}else
-//		{
-//			MultiVidTextPhotoAVE* mvtp = [[MultiVidTextPhotoAVE alloc]initWithFrame:_preferredFrame Photos:photos andVideos:videos andText:text];
-//			[mvtp addSwipeGesture];
-//			[_results addObject:mvtp];
-//		}
-//	}
+	//	if(p_obj.inDataFormat)
+	//	{
+	NSMutableArray* videos = [p_obj getVideos];
+	NSMutableArray* photos = [p_obj getPhotos];
+	if(videos.count + photos.count == 2){
+		PhotoVideoTextAVE* pvt = [[PhotoVideoTextAVE alloc] initWithFrame:_preferredFrame forImageData: (NSData*)[photos firstObject] andText:text andVideo:[videos firstObject]];
+		[pvt addSwipeGesture];
+		[_results addObject:pvt];
+	}else{
+		MultiVidTextPhotoAVE* mvtp = [[MultiVidTextPhotoAVE alloc]initWithFrame:_preferredFrame Photos:photos andVideos:videos andText:text];
+		[mvtp addSwipeGesture];
+		[_results addObject:mvtp];
+	}
 
 }
 

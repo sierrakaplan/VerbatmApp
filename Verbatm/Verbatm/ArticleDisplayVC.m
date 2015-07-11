@@ -121,6 +121,7 @@
 		NSArray * pages = [article getAllPages];
 		if(!pages.count)//if we have nothing in our article then return to the list view- we shouldn't need this because all downloaded articles should have legit pages
 		{
+			NSLog(@"No pages in article");
 			[self show_remove_ScrollView:NO];
 			return;
 		}

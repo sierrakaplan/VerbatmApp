@@ -26,7 +26,7 @@
 
 -(void)playVideoFromURL: (NSURL*) url {
 	if (url) {
-		self.playerItem = [AVPlayerItem playerItemWithURL:url];
+		self.player = [AVPlayer playerWithURL:url];
 		[self playVideo];
 	}
 }
@@ -35,13 +35,14 @@
 	if (asset) {
 		// Create an AVPlayerItem using the asset
 		self.playerItem = [AVPlayerItem playerItemWithAsset:asset];
+		self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 		[self playVideo];
 	}
 }
 
 -(void) playVideo {
 	// Create the AVPlayer using the playeritem
-	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 	// Create an AVPlayerLayer using the player
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
@@ -49,8 +50,9 @@
 	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
 	// Add it to your view's sublayers
 	[self.layer addSublayer:self.playerLayer];
-	// You can play/pause using the AVPlayer object
+
 	[self.player play];
+
 }
 
 -(void) repeatVideoOnEnd {
