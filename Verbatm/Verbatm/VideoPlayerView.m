@@ -24,6 +24,14 @@
 	return self;
 }
 
+
+//make sure the sublayer resizes with the view screen
+- (void)layoutSubviews
+{
+  self.playerLayer.frame = self.bounds;
+}
+
+
 -(void)playVideoFromURL: (NSURL*) url {
 	if (url) {
 		self.player = [AVPlayer playerWithURL:url];
@@ -50,7 +58,6 @@
 	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
 	// Add it to your view's sublayers
 	[self.layer addSublayer:self.playerLayer];
-
 	[self.player play];
 
 }
@@ -74,7 +81,8 @@
 //pauses the video for the pinchview if there is one
 -(void)pauseVideo
 {
-	if (self.player) {
+	if (self.player)
+    {
 		[self.player pause];
 	}
 }

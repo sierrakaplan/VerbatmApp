@@ -51,6 +51,7 @@
 		C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682119CA6C01003D0AC5 /* VerbatmScrollView.m */; };
 		C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */; };
 		C78B682A19CA6C22003D0AC5 /* verbatmGalleryHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */; };
+		C79747DA1B50B815009077E3 /* Verbatm-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C79747D91B50B815009077E3 /* Verbatm-Info.plist */; };
 		C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F219A96E0B00CE861F /* Photo.m */; };
 		C7A8A7F619A96E1B00CE861F /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8A7F519A96E1B00CE861F /* Video.m */; };
 		C7A8E3861A61CE4D00776BD1 /* VerbatmPullBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8E3851A61CE4D00776BD1 /* VerbatmPullBarView.m */; };
@@ -186,6 +187,7 @@
 		C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSelectTile.m; sourceTree = "<group>"; };
 		C78B682819CA6C22003D0AC5 /* verbatmGalleryHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmGalleryHandler.h; sourceTree = "<group>"; };
 		C78B682919CA6C22003D0AC5 /* verbatmGalleryHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmGalleryHandler.m; sourceTree = "<group>"; };
+		C79747D91B50B815009077E3 /* Verbatm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
 		C7A8A7F119A96E0B00CE861F /* Photo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Photo.h; sourceTree = "<group>"; };
 		C7A8A7F219A96E0B00CE861F /* Photo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Photo.m; sourceTree = "<group>"; };
 		C7A8A7F419A96E1B00CE861F /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
@@ -199,7 +201,6 @@
 		C7BC4375199D97F5004B91A1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		C7BC4379199D97F5004B91A1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		C7BC437D199D97F5004B91A1 /* Verbatm-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
 		C7BC437F199D97F5004B91A1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C7BC4381199D97F5004B91A1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C7BC4383199D97F5004B91A1 /* Verbatm-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Verbatm-Prefix.pch"; sourceTree = "<group>"; };
@@ -533,7 +534,7 @@
 			children = (
 				C7BC4384199D97F5004B91A1 /* verbatmAppDelegate.h */,
 				C7BC4385199D97F5004B91A1 /* verbatmAppDelegate.m */,
-				C7BC437D199D97F5004B91A1 /* Verbatm-Info.plist */,
+				C79747D91B50B815009077E3 /* Verbatm-Info.plist */,
 				C7BC437E199D97F5004B91A1 /* InfoPlist.strings */,
 				C7BC4381199D97F5004B91A1 /* main.m */,
 				C7BC4383199D97F5004B91A1 /* Verbatm-Prefix.pch */,
@@ -718,6 +719,7 @@
 				C772F2891B4BC13500CEC83D /* GMVideoIcon.png in Resources */,
 				C7614F441A24993200E6AB24 /* PinchView.xib in Resources */,
 				C772F2831B4BC13500CEC83D /* GMEmptyFolder@2x.png in Resources */,
+				C79747DA1B50B815009077E3 /* Verbatm-Info.plist in Resources */,
 				C772F2821B4BC13500CEC83D /* GMEmptyFolder@1x.png in Resources */,
 				C774040F19BE6538004C50EA /* Images.xcassets in Resources */,
 				C7BC4380199D97F5004B91A1 /* InfoPlist.strings in Resources */,
@@ -980,7 +982,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
+				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1005,7 +1007,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
+				PROVISIONING_PROFILE = "";
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
 			};

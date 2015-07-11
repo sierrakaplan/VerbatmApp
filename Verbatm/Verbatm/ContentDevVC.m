@@ -2437,6 +2437,7 @@
     [self.pageElements removeAllObjects];
     [self removeCreationObjectsFromScrollview];
     [self clearTextFields];
+    self.baseMediaTileSelector = nil;//make sure this is set to nil so that we can create a new base selector
     [self createBaseSelector];
     
 }

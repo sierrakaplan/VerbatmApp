@@ -86,7 +86,7 @@
     }completion:^(BOOL finished) {
         if(finished)
         {
-            [self articlePublished];
+            [self articlePublishedAnimation];
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CLEAR_CONTENTPAGE
  object:nil userInfo:nil];
         }
@@ -220,7 +220,7 @@
 
 
 //article publsihed sucessfully
--(void)articlePublished
+-(void)articlePublishedAnimation
 {
     if(self.animationView.frame.size.width) return;
     self.animationView.image = [UIImage imageNamed:@"published_icon1"];
@@ -228,7 +228,6 @@
     [self.view addSubview:self.animationView];
     if(!self.animationView.alpha)self.animationView.alpha = 1;
     self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
-    
 }
 
 -(void)removeAnimationView
