@@ -42,34 +42,44 @@
 
 -(void)playVideos:(NSArray*)videoList
 {
-    [self fuseAssets:videoList];
-    [self playVideoFromAsset:self.mix];
-	[self repeatVideoOnEnd];
+	//comes as avurlasset in preview
+	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
+		[self fuseAssets:videoList];
+		[self playVideoFromAsset:self.mix];
+		[self repeatVideoOnEnd];
+		//comes as NSURL from parse
+	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
+		//TODO(sierra): make sure all videos play sequentially
+		[self playVideoFromURL:[videoList objectAtIndex:0]];
+		[self repeatVideoOnEnd];
+	}
 }
 
 
 /*This code fuses the video assets into a single video that plays the videos one after the other*/
--(void)fuseAssets:(NSArray*)videoDataList
+// videoList may be NSData or AVAsset
+-(void)fuseAssets:(NSArray*)videoList
 {
     self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
     AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
     AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     CMTime nextClipStartTime = kCMTimeZero;
     NSError* error;
-    for(AVAsset* videoAsset in videoDataList)
-    {
-        AVAssetTrack* this_video_track = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-        [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
-        videoTrack.preferredTransform = this_video_track.preferredTransform;
-        AVAssetTrack* this_audio_track = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
-        
-        videoTrack.preferredTransform = this_video_track.preferredTransform;
 
-        if(this_audio_track != nil)
-        {
-            [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
-        }
-        nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
+    for(AVURLAsset* videoAsset in videoList)
+    {
+		AVAssetTrack* this_video_track = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
+		videoTrack.preferredTransform = this_video_track.preferredTransform;
+		AVAssetTrack* this_audio_track = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+
+		videoTrack.preferredTransform = this_video_track.preferredTransform;
+
+		if(this_audio_track != nil)
+		{
+			[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
+		}
+		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
     }
 }
 

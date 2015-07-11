@@ -945,29 +945,32 @@
 {
     //make sure we have an article title, we have multiple pinch elements in the feed and that we
     //haven't saved this article before
-    if (self.vc_contentPage.pageElements.count >1 && ![self.vc_contentPage.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.vc_contentPage.articleTitleField.text]) [self saveArticleContent];
-    else if([self.vc_contentPage.articleTitleField.text isEqualToString:@""])[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_TILE_ANIMATION
-                                                                    object:nil
-                                                                    userInfo:nil];
-    
+    if (self.vc_contentPage.pageElements.count >1 && ![self.vc_contentPage.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.vc_contentPage.articleTitleField.text]) {
+		[self saveArticleContent];
+
+	} else if([self.vc_contentPage.articleTitleField.text isEqualToString:@""]) {
+		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_TILE_ANIMATION
+															object:nil
+														  userInfo:nil];
+	}
 }
 
 
 -(void)saveArticleContent
 {
-    NSMutableArray * pincObjetsArray = [[NSMutableArray alloc]init];
+    NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
     for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
     {
         if([self.vc_contentPage.pageElements[i] isKindOfClass:[PinchView class]])
         {
-            [pincObjetsArray addObject:self.vc_contentPage.pageElements[i]];
+            [pinchObjectsArray addObject:self.vc_contentPage.pageElements[i]];
         }
     }
     
-    if(!pincObjetsArray.count) return;//if there is not article then exit
+    if(!pinchObjectsArray.count) return;//if there is not article then exit
     
     //this creates and saves an article. the return value is unnecesary 
-    Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwhichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pincObjetsArray];
+    Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwhichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pinchObjectsArray];
     if(newArticle)
     {
         self.articleJustSaved = self.vc_contentPage.articleTitleField.text;

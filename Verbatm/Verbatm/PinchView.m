@@ -90,8 +90,8 @@
 			self.there_is_picture = YES;
 			[self.photos addObject:object];
 
-		//video
-		} else if([object isKindOfClass: [AVAsset class]]){
+		//video from preview or parse
+		} else if([object isKindOfClass: [AVAsset class]] || [object isKindOfClass: [NSURL class]]){
 			self.there_is_video = YES;
 			[self.videos addObject:object];
 		}

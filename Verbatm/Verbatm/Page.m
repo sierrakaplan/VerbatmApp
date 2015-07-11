@@ -36,13 +36,13 @@
 
 #pragma mark - Methods required for subclassing PFObject.
 
--(instancetype)initWithPinchObject:(PinchView*)p_view Article: (Article *) article andPageNumber:(NSInteger) position
+-(instancetype)initWithPinchObject:(PinchView*)pinchView Article: (Article *) article andPageNumber:(NSInteger) position
 {
     if((self = [super init]))
     {
         self[ARTICLE_COLUMN] = article;
         self.pagePosition = position;
-        [self sortPinchObject:p_view];
+        [self sortPinchObject:pinchView];
     }
     return self;
 }
@@ -75,7 +75,9 @@
     if(self.there_is_video) {
 		NSMutableArray* videos = [pinchObject getVideos];
 		for (AVURLAsset* videoAsset in videos) {
-			Video* video = [[Video alloc] initWithData:videoAsset withCaption:nil andName:nil atLocation:nil];
+			//TODO(sierra): This should not happen on main thread
+			NSData* videoData = [self dataFromAVURLAsset:videoAsset];
+			Video* video = [[Video alloc] initWithData:videoData withCaption:nil andName:nil atLocation:nil];
 			[video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
 			[video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 				if(succeeded){
@@ -103,8 +105,7 @@
 	NSArray* videosQuery = [self getVideosQuery];
 	NSMutableArray* videos = [[NSMutableArray alloc]init];
 	for(Video* vid in videosQuery){
-		AVURLAsset* videoAsset = [[AVURLAsset alloc] initWithURL:[vid getVideoUrl] options:nil];
-		[videos addObject: videoAsset];
+		[videos addObject: [vid getVideoUrl]];
 	}
 	return videos;
 }
@@ -113,6 +114,10 @@
 -(NSString*)getText
 {
     return self.text;
+}
+
+-(NSData*) dataFromAVURLAsset: (AVURLAsset*) asset {
+	return [NSData dataWithContentsOfURL:asset.URL];
 }
 
 -(NSData*)dataFromAsset:(ALAsset*)asset

@@ -19,7 +19,7 @@
 +(void)load;
 
 #pragma mark - methods for getting and setting page properties - 
--(instancetype)initWithPinchObject:(PinchView*)p_view Article: (Article *) article andPageNumber:(NSInteger) position;
+-(instancetype)initWithPinchObject:(PinchView*)pinchView Article: (Article *) article andPageNumber:(NSInteger) position;
 -(NSString*)getText;
 
 //This method blocks//
