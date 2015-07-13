@@ -16,12 +16,10 @@
 @property (weak, nonatomic) IBOutlet UIButton *save_button;
 
 #define CENTER_BUTTON_GAP 10
-
 @end
 
 
 @implementation VerbatmPullBarView
-
 
 -(instancetype)initWithFrame:(CGRect)frame
 {
@@ -37,6 +35,8 @@
     }
     return self;
 }
+
+
 
 -(void)centerButtons
 {
