@@ -177,7 +177,8 @@
     AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
     CMTime nextClipStartTime = kCMTimeZero;
     NSError* error;
-    for(NSData* data in videoDataList){
+    for(NSData* data in videoDataList)
+    {
         NSURL* url;
         NSString* filePath = [NSTemporaryDirectory() stringByAppendingString:[NSString stringWithFormat:@"%@%u.mov", @"multivid", arc4random_uniform(100)]];
         [[NSFileManager defaultManager] createFileAtPath: filePath contents: data attributes:nil];
@@ -205,20 +206,13 @@
 
 -(void)offScreen
 {
-    //not needed anymore
-    
-//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-//    [playerLayer.player replaceCurrentItemWithPlayerItem:nil];
+    [self.videoView offScreen];
+
 }
 
 -(void)onScreen
 {
-    
-    //not needed anymore
-//    AVPlayerItem* playerItem = [AVPlayerItem playerItemWithAsset:self.mix];
-//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-//    [playerLayer.player replaceCurrentItemWithPlayerItem:playerItem];
-    //[self setUpPlayer:self.mix];
+    [self.videoView onScreen];
 }
 
 /*Mute the video*/
@@ -227,8 +221,6 @@
     
     [self.videoView muteVideo];
     
-//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-//    playerLayer.player.muted = YES;
 }
 
 /*Enable's the sound on the video*/
@@ -236,9 +228,6 @@
 {
     
     [self.videoView unmuteVideo];
-//    AVPlayerLayer* playerLayer = [self.videoView.layer.sublayers firstObject];
-//    playerLayer.player.muted = NO;
-//    playerLayer.player.volume = 0.5;
 }
 
 -(UIView *)gestureView

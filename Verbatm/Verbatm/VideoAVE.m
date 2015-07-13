@@ -153,11 +153,13 @@
 
 -(void)offScreen
 {
-
+    [self pauseVideo];
 }
 
 -(void)onScreen
 {
+    [self continueVideo];
+    [self unmuteVideo];
 
 }
 @end

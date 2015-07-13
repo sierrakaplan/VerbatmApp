@@ -12,13 +12,11 @@
 
 @interface PhotoVideoTextAVE()
 @property (strong, nonatomic) PhotoVideoAVE * photoVideoView;
-
 @property (strong, nonatomic) TextAVE* textView;
 @property (strong, nonatomic) UIVisualEffectView* bgBlurImage;
 @property (nonatomic) CGPoint lastPoint;
 @property (strong, nonatomic) UIView* pullBarView;
 @property (strong, nonatomic) UIView* whiteBorderBar;
-
 @property (nonatomic) BOOL isTitle;
 @property (nonatomic) CGRect absoluteFrame;
 @property(nonatomic) CGRect base_textViewFrame;
@@ -37,7 +35,6 @@
 #define PULLBAR_COLOR clearColor
 #define TEXT_VIEW_DEFAULT_FRAME CGRectMake(SIDE_BORDER, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width - 2*SIDE_BORDER, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
 #define BLUR_VIEW_FRAME CGRectMake(0, OFFSET_FROM_TOP + 2*EXTRA, self.frame.size.width, self.frame.size.height - OFFSET_FROM_TOP - 2*EXTRA)
-
 @end
 @implementation PhotoVideoTextAVE
 
@@ -200,6 +197,7 @@
 -(void)onScreen
 {
     [self.photoVideoView onScreen];
+    [self.photoVideoView unmute];
 }
 
 -(void)offScreen

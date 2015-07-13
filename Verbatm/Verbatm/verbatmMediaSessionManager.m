@@ -21,12 +21,10 @@
 @property (nonatomic)UIDeviceOrientation deviceStartOrientation;
 @property (strong, nonatomic) UIView* previewContainerView;
 
-
 #define N_FRAMES_PER_SECOND 32
 #define NUM_SECONDS 20
 #define ALBUM_NAME @"Verbatm"
 #define ASPECT_RATIO 4/3
-
 @end
 
 

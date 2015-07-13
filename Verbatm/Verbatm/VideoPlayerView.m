@@ -90,21 +90,24 @@
 //plays the video of the pinch view if there is one
 -(void)continueVideo
 {
-	if (self.player) {
+	if (self.player)
+    {
 		[self.player play];
 	}
 }
 
 -(void)unmuteVideo
 {
-	if(self.player) {
+	if(self.player)
+    {
 		[self.player setMuted:NO];
 	}
 }
 
 -(void)muteVideo
 {
-	if(self.player) {
+	if(self.player)
+    {
 		[self.player setMuted:YES];
 	}
 }

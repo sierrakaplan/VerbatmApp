@@ -13,8 +13,6 @@
 @interface MultiVidTextPhotoAVE()
 
 @property (nonatomic, strong) MultiplePhotoVideoAVE * photoVideo_view;
-
-
 @property (strong, nonatomic) TextAVE* textView;
 @property (strong, nonatomic) UIVisualEffectView* bgBlurImage;
 @property (nonatomic) CGPoint lastPoint;
