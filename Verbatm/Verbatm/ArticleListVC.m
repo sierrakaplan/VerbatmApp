@@ -46,12 +46,7 @@
 {
     [super viewDidAppear:animated];
     
-    //we want to download the articles again and then load them to the page
-    [ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
-        self.articles = ourObjects;
-        [self.articleListView reloadData];
-    }];
-    
+	[self refreshFeed];
 }
 
 -(void)setFrames
@@ -76,8 +71,14 @@
 -(void)refreshFeed
 {
     //we want to download the articles again and then load them to the page
-    [ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
-        self.articles = ourObjects;
+    [ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *articles) {
+		NSArray *sortedArticles;
+		sortedArticles = [articles sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+			NSDate *first = ((Article*)a).createdAt;
+			NSDate *second = ((Article*)b).createdAt;
+			return [second compare:first];
+		}];
+		self.articles = sortedArticles;
         [self.articleListView reloadData];
     }];
 }
