@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */; };
+		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
 		9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995A19BA9042005EBC8A /* MediaDevVC.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A5B344901B4DE18B0074B4AA /* MultiplePhotoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */; };
@@ -109,8 +109,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		9D29995619BA7EBD005EBC8A /* verbatmMediaSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmMediaSessionManager.h; sourceTree = "<group>"; };
-		9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmMediaSessionManager.m; sourceTree = "<group>"; };
+		9D29995619BA7EBD005EBC8A /* MediaSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSessionManager.h; sourceTree = "<group>"; };
+		9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSessionManager.m; sourceTree = "<group>"; };
 		9D29995919BA9042005EBC8A /* MediaDevVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaDevVC.h; sourceTree = "<group>"; };
 		9D29995A19BA9042005EBC8A /* MediaDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaDevVC.m; sourceTree = "<group>"; };
 		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
@@ -349,8 +349,8 @@
 		C750A35919D768BD0006FA88 /* Video Capture Classes */ = {
 			isa = PBXGroup;
 			children = (
-				9D29995619BA7EBD005EBC8A /* verbatmMediaSessionManager.h */,
-				9D29995719BA7EBD005EBC8A /* verbatmMediaSessionManager.m */,
+				9D29995619BA7EBD005EBC8A /* MediaSessionManager.h */,
+				9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */,
 			);
 			name = "Video Capture Classes";
 			sourceTree = "<group>";
@@ -783,7 +783,7 @@
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				C772F2851B4BC13500CEC83D /* GMGridViewController.m in Sources */,
 				C77A68B41AC20AA2000B10E2 /* MultiplePhotoAVE.m in Sources */,
-				9D29995819BA7EBD005EBC8A /* verbatmMediaSessionManager.m in Sources */,
+				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */,
 				F20A24FA1A46166100BB77C1 /* VerbatmImageScrollView.m in Sources */,

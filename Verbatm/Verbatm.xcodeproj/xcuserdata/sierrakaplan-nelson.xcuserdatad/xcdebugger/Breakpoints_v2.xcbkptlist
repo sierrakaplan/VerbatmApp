@@ -223,7 +223,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "328"
             endingLineNumber = "328"
-            landmarkName = "+pinchTogether:"
+            landmarkName = "-displayMedia"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -271,7 +271,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2302"
             endingLineNumber = "2302"
-            landmarkName = "-pinchObjectTapped:"
+            landmarkName = "-createVerbatmImageScrollViewFromPinchView:andVideo:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -303,7 +303,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2237"
             endingLineNumber = "2237"
-            landmarkName = "-addTapGestureToCustomImageScrollView:"
+            landmarkName = "-removeImageScrollview:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -319,7 +319,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2304"
             endingLineNumber = "2304"
-            landmarkName = "-pinchObjectTapped:"
+            landmarkName = "-createVerbatmImageScrollViewFromPinchView:andVideo:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -415,7 +415,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "361"
             endingLineNumber = "361"
-            landmarkName = "-thereIsOnlyOneMedium"
+            landmarkName = "+append:toPinchObject:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -442,7 +442,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaDevVC.m"
-            timestampString = "458194032.385401"
+            timestampString = "458596058.697823"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "921"
@@ -960,6 +960,22 @@
             startingLineNumber = "57"
             endingLineNumber = "57"
             landmarkName = "-scrollViewWillBeginDragging:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/MediaSessionManager.m"
+            timestampString = "458595172.415652"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "-focusAtPoint:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

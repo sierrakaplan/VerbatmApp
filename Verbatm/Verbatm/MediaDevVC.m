@@ -7,7 +7,7 @@
 
 #import "MediaDevVC.h"
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "verbatmMediaSessionManager.h"
+#import "MediaSessionManager.h"
 #import "ILTranslucentView.h"
 #import "ContentDevVC.h"
 #import <MediaPlayer/MediaPlayer.h>
@@ -21,7 +21,7 @@
 #import "VerbatmUser.h"
 
 
-@interface MediaDevVC () <UITextFieldDelegate, verbatmMediaSessionManagerDelegate, pullBarDelegate>
+@interface MediaDevVC () <UITextFieldDelegate, MediaSessionManagerDelegate, pullBarDelegate>
 #pragma mark - Outlets -
     @property (weak, nonatomic) UIView *pullBar;
     @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
@@ -33,7 +33,7 @@
 @property (strong, nonatomic) IBOutlet UIPanGestureRecognizer *panGesture_PullBar;
     @property (weak, nonatomic) IBOutlet UIView *containerView;
     @property (strong, nonatomic) UIView *verbatmCameraView;
-    @property (strong, nonatomic) verbatmMediaSessionManager* sessionManager;
+    @property (strong, nonatomic) MediaSessionManager* sessionManager;
     @property (strong, nonatomic) CAShapeLayer* circle;
 
     @property(nonatomic) CGRect containerViewNoMSAVFrame;
@@ -54,8 +54,6 @@
 
 
 #pragma mark taking the photo
-    @property (strong, nonatomic) UITapGestureRecognizer * takePhotoGesture;
-
     @property (nonatomic, strong) NSTimer *timer;
     @property (nonatomic) BOOL flashOn;
     @property (nonatomic) BOOL canRaise;
@@ -224,8 +222,6 @@
 -(void) prepareCameraView
 {
     [self.view insertSubview: self.verbatmCameraView atIndex:0];
-    self.sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-    //[self creatPhotoTakingButton];
 }
 
 -(void)setContentPage_vc
@@ -249,8 +245,8 @@
 //Iain
 -(void) createAndInstantiateGestures
 {
-    [self createTapGesture];
-    [self createLongPressGesture];
+    [self createTapGestureToFocus];
+//    [self createLongPressGesture];
 }
 
 //Iain
@@ -352,7 +348,7 @@
 }
 
 
--(void)creatPhotoTakingButton
+-(void)createPhotoTakingButton
 {
     self.capturePic = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.capturePic setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
@@ -364,22 +360,27 @@
 
 #pragma mark creating gestures
 
-//by Lucio
--(void) createTapGesture
+-(void) createTapGestureToFocus
 {
-
-    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
-    self.takePhotoGesture.numberOfTapsRequired = 1;
-    self.takePhotoGesture.cancelsTouchesInView =  NO;
-    [self.verbatmCameraView addGestureRecognizer:self.takePhotoGesture];
+	UITapGestureRecognizer* focusGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(focusPhoto:)];
+//    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
+    focusGesture.numberOfTapsRequired = 1;
+    focusGesture.cancelsTouchesInView =  NO;
+    [self.verbatmCameraView addGestureRecognizer:focusGesture];
 }
 
-//by Lucio
 -(void) createLongPressGesture
 {
     UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
     longPress.minimumPressDuration = 1;
     [self.verbatmCameraView addGestureRecognizer:longPress];
+}
+
+-(void) focusPhoto: (UITapGestureRecognizer *)sender {
+	if (sender.state == UIGestureRecognizerStateEnded) {
+		CGPoint point = [sender locationInView:self.verbatmCameraView];
+		[self.sessionManager focusAtPoint:point];
+	}
 }
 
 #pragma mark -touch gesture selectors
@@ -564,7 +565,6 @@
             }];
         }
     }
-
 }
 
 
@@ -576,10 +576,10 @@
 
 #pragma mark - Lazy instantiation -
 
--(verbatmMediaSessionManager*)sessionManager
+-(MediaSessionManager*)sessionManager
 {
     if(!_sessionManager){
-        _sessionManager = [[verbatmMediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
+        _sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
     }
     return _sessionManager;
 }
