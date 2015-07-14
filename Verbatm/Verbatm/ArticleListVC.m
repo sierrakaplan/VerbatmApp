@@ -9,13 +9,14 @@
 #import "ArticleListVC.h"
 #import "MasterNavigationVC.h"
 #import "verbatmArticle_TableViewCell.h"
-#import "verbatmArticleAquirer.h"
+#import "ArticleAquirer.h"
 #import "Article.h"
 #import "Page.h"
 #import "Analyzer.h"
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 #define NOTIFICATION_SHOW_ADK @"notification_showADK"
 #define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
+#define NOTIFICATION_REFRESH_FEED @"Notification_RefreshFeed"
 
 #define BUTTON_HEIGHT 50
 #define TOP_OFFSET 30
@@ -38,6 +39,7 @@
     self.articleListView.dataSource = self;
     self.articleListView.delegate = self;
     [self setFrames];
+	[self registerForNavNotifications];
 }
 
 -(void) viewDidAppear:(BOOL)animated
@@ -45,7 +47,7 @@
     [super viewDidAppear:animated];
     
     //we want to download the articles again and then load them to the page
-    [verbatmArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
+    [ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
         self.articles = ourObjects;
         [self.articleListView reloadData];
     }];
@@ -60,6 +62,11 @@
     self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(BUTTON_HEIGHT));
 }
 
+-(void)registerForNavNotifications
+{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshFeed) name:NOTIFICATION_REFRESH_FEED object: nil];
+}
+
 //reloads data into the list view
 - (IBAction)refreshArticleList:(UIButton *)sender
 {
@@ -69,7 +76,7 @@
 -(void)refreshFeed
 {
     //we want to download the articles again and then load them to the page
-    [verbatmArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
+    [ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
         self.articles = ourObjects;
         [self.articleListView reloadData];
     }];

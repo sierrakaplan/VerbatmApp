@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "Article.h"
-@interface verbatmArticleAquirer : NSObject
+@interface ArticleAquirer : NSObject
 +(Article*)downloadArticleWithTitle:(NSString *)title andAuthor:(VerbatmUser *)user;
 +(BOOL)saveArticleWithPinchObjects:(NSArray *)pinchObjects title:(NSString *)title withSandwichFirst:(NSString *)firstPart andSecond:(NSString*)secondPart;
 +(void)downloadAllArticlesWithBlock:(void(^)(NSArray *ourObjects))onDownloadBlock;

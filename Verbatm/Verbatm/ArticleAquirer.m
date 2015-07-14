@@ -6,14 +6,14 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "verbatmArticleAquirer.h"
+#import "ArticleAquirer.h"
 #import "Article.h"
 
-@interface verbatmArticleAquirer ()
+@interface ArticleAquirer ()
 #define ARTICLE_AUTHOR_RELATIONSHIP @"articleAuthorRelation"
 
 @end
-@implementation verbatmArticleAquirer
+@implementation ArticleAquirer
 
 +(Article*)downloadArticleWithTitle:(NSString *)title andAuthor:(VerbatmUser *)user
 {

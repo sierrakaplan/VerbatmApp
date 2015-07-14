@@ -93,18 +93,14 @@
     if([self.UserName_TextField.text isEqualToString:@""]) return;
     if([self.Password_TextField.text isEqualToString:@""])return;
 
-    VerbatmUser * newUser = [[VerbatmUser alloc] initWithUserName:self.UserName_TextField.text Password:self.Password_TextField.text  withSignUpCompletionBlock:^(BOOL succeeded, NSError *error)
-    
-    {
-        if(succeeded)
-        {
+    VerbatmUser * newUser = [[VerbatmUser alloc] initWithUserName:self.UserName_TextField.text Password:self.Password_TextField.text  withSignUpCompletionBlock:^(BOOL succeeded, NSError *error) {
+
+        if(succeeded) {
             //Send a notification that the user is logged in 
             NSNotification * notification = [[NSNotification alloc]initWithName:SIGNUP_SUCCEEDED_NOTIFICATION object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
             
-            
-        }else if (!succeeded)
-        {
+        } else if (!succeeded) {
             
             NSNotification * notification = [[NSNotification alloc]initWithName:SIGNUP_FAILED_NOTIFIACTION object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
