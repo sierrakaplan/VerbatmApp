@@ -14,6 +14,7 @@
 #import "Analyzer.h"
 #import "Page.h"
 #import "Article.h"
+#import "PhotoVideoTextAVE.h"
 
 @interface ArticleDisplayVC () <UIScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
@@ -56,11 +57,6 @@
 -(void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-}
-
--(void)displayArticle: (NSNotification *) notification
-{
-    
 }
 
 
@@ -164,7 +160,6 @@
 	[self pause_CP_Vidoes];//make sure content page videos are paused so there is no video conflict
 	Analyzer * analyser = [[Analyzer alloc]init];
 	self.pinchedObjects = [analyser processPinchedObjectsFromArray:pinchObjects withFrame:self.view.frame];
-	[self muteEverything];
 	self.view.backgroundColor = [UIColor clearColor];
 	[self setUpScrollView];
 	[self renderPinchPages];
@@ -181,7 +176,6 @@
     {
         [view removeFromSuperview];
     }
-    
     self.scrollView = NULL;
     self.animatingView = NULL;
     self.poppedOffPages = NULL;
@@ -224,7 +218,6 @@
     }else//send the scrollview back to the right
     {
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-            [self muteEverything];
             [self play_CP_Vidoes];
             self.scrollView.frame = SV_RESTING_FRAME;
         }completion:^(BOOL finished) {
@@ -271,7 +264,7 @@
     
     //This makes sure that if the first object is a video it is playing the sound
     [self everythingOffScreen];
-    [self handleSound];
+    [self handlePlayBack];
     [self setUpGestureRecognizers];
 }
 
@@ -302,27 +295,11 @@
     [self.scrollView addGestureRecognizer: edgePanL];
 }
 
-//to be called when an aritcle is first rendered to unsure all videos are off
--(void)muteEverything
-{
-    for (int i=0; i< self.pinchedObjects.count; i++)
-    {
-        if([self.pinchedObjects[i] isKindOfClass:[VideoAVE class]]){
-            [((VideoAVE*)self.pinchedObjects[i]) muteVideo];
-        }else if([self.pinchedObjects[i] isKindOfClass:[PhotoVideoAVE class]]){
-            [((PhotoVideoAVE *)self.pinchedObjects[i]) mute];
-        }else if([self.pinchedObjects[i] isKindOfClass:[MultiplePhotoVideoAVE class]]){
-            [((MultiplePhotoVideoAVE*)self.pinchedObjects[i]) mutePlayer];
-        }
-    }
-}
 
 
 //to be called when an aritcle is first rendered to unsure all videos are off
 -(void)everythingOffScreen
-{
-    //return;
-    
+{    
     for (int i=0; i< self.pinchedObjects.count; i++)
     {
         if(self.pinchedObjects[i] == self.animatingView)continue;
@@ -333,47 +310,60 @@
             [((PhotoVideoAVE *)self.pinchedObjects[i]) offScreen];
         }else if([self.pinchedObjects[i] isKindOfClass:[MultiplePhotoVideoAVE class]]){
             [((MultiplePhotoVideoAVE*)self.pinchedObjects[i]) offScreen];
+        }else if([self.pinchedObjects[i] isKindOfClass:[PhotoVideoTextAVE class]]){
+            [((PhotoVideoTextAVE *)self.animatingView) offScreen];
         }
     }
 }
 
 
--(void)handleSound//plays sound if first video is
+-(void)handlePlayBack//plays sound if first video is
 {
-    if(_animatingView)[self muteSound];
-    else {
+    if(_animatingView)
+    {
+        [self stopPlayBack];
+    }else {
         _animatingView = [self.pinchedObjects firstObject];
-        [self muteSound];
+        
+        [self stopPlayBack];
     }
     int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
     _animatingView = [self.pinchedObjects objectAtIndex:index];
-    [self enableSound];
+    [self runPlayBack];
 }
 
-//call this after changing the animating view to the current view
--(void)enableSound
+/*
+ call this after changing the animating view to the current view
+ */
+-(void)runPlayBack
 {
-    if([_animatingView isKindOfClass:[VideoAVE class]] )
+    if([self.animatingView isKindOfClass:[VideoAVE class]])
     {
-        [((VideoAVE*)_animatingView) unmuteVideo];
-        //[((v_videoview*)_animatingView) onScreen];
-    }else if([_animatingView isKindOfClass:[PhotoVideoAVE class]]){
-        [((PhotoVideoAVE*)_animatingView) unmute];
-        //[((verbatmPhotoVideoAve*)_animatingView) onScreen];
-    }else if([_animatingView isKindOfClass:[MultiplePhotoVideoAVE class]]){
-        [((MultiplePhotoVideoAVE*)_animatingView) enableSound];
-       //[((v_multiplePhotoVideo*)_animatingView) onScreen];
+        [((VideoAVE*)self.animatingView) onScreen];
+    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
+    {
+        [((PhotoVideoAVE *)self.animatingView) onScreen];
+    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
+    {
+        [((MultiplePhotoVideoAVE*)self.animatingView) onScreen];
+    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
+    {
+        [((PhotoVideoTextAVE *)self.animatingView) onScreen];
     }
 }
 
--(void)muteSound//call this before changing the nimating view so that we stop the previous thing
+/*call this before changing the nimating view so that we stop the previous thing
+ */
+-(void)stopPlayBack
 {
-    if([_animatingView isKindOfClass:[VideoAVE class]]){
-        [((VideoAVE*)_animatingView) muteVideo];
-    }else if([_animatingView isKindOfClass:[PhotoVideoAVE class]]){
-        [((PhotoVideoAVE *)_animatingView) mute];
-    }else if([_animatingView isKindOfClass:[MultiplePhotoVideoAVE class]]){
-        [((MultiplePhotoVideoAVE*)_animatingView) mutePlayer];
+    if([self.animatingView isKindOfClass:[VideoAVE class]]){
+        [((VideoAVE*)self.animatingView) offScreen];
+    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]]){
+        [((PhotoVideoAVE *)self.animatingView) offScreen];
+    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]]){
+        [((MultiplePhotoVideoAVE*)self.animatingView) offScreen];
+    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]]){
+        [((PhotoVideoTextAVE *)self.animatingView) offScreen];
     }
 }
 
@@ -431,7 +421,7 @@
 }
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    [self handleSound];
+    [self handlePlayBack];
 }
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView
 {

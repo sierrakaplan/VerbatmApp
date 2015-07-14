@@ -286,34 +286,39 @@
 }
 
 //This function displays the media on the view.
--(void)displayMedia {
+-(void)displayMedia
+{
 
 	self.textField.text = @"";
 	//	if(!self.inDataFormat){
-	for(id object in self.media){
-
+	for(id object in self.media)
+    {
 		//text
-		if([object isKindOfClass: [UITextView class]]){
+		if([object isKindOfClass: [UITextView class]])
+        {
 			UITextView* textView = (UITextView*)object;
 			self.textField.text = [self.textField.text stringByAppendingString:textView.text];
 			self.textField.text = [self.textField.text stringByAppendingString:@"\r\r"];
-
+            self.textField.textColor = [UIColor whiteColor];
 		//photo
 		} else if([object isKindOfClass: [NSData class]]){
 			NSData* image = (NSData*)object;
 			[self.imageViewer setImage: [[UIImage alloc] initWithData:image]];
-			self.imageViewer.contentMode = UIViewContentModeCenter;
+			self.imageViewer.contentMode = UIViewContentModeScaleAspectFill;
 			self.imageViewer.layer.masksToBounds = YES;
-
 		//video
-		} else if([object isKindOfClass: [AVAsset class]]){
+		} else if([object isKindOfClass: [AVAsset class]])
+        {
 			[self.videoView playVideoFromAsset: object];
 			[self.videoView muteVideo];
 			[self.videoView repeatVideoOnEnd];
 		}
 	}
-	if(self.there_is_video){
-		if(self.videoView.playerLayer){
+    
+	if(self.there_is_video)
+    {
+		if(self.videoView.playerLayer)
+        {
 			AVPlayerLayer* playerLayer = self.videoView.playerLayer;
 			[playerLayer removeFromSuperlayer];
 			 playerLayer.frame = self.videoView.bounds;
@@ -469,17 +474,19 @@
 -(void)offScreen
 {
     
-    if(self.videoView.playerLayer)    {
+    if(self.videoView.playerLayer)
+    {
         [self.videoView pauseVideo];
     }
 }
 
 -(void)onScreen
 {
-	if(self.videoView.playerLayer)    {
+	if(self.videoView.playerLayer)
+    {
 		[self.videoView continueVideo];
 	}
-    [self displayMedia];
+    //[self displayMedia];
 }
 
 

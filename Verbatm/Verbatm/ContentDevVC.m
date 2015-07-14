@@ -141,7 +141,6 @@
 
 
 #pragma mark New Properties and Defines
-
 #define OFFSET_BELOW_ARTICLE_TITLE 30
 #define NOTIFICATION_PAUSE_VIDEOS @"pauseContentPageVideosNotification"
 #define NOTIFICATION_PLAY_VIDEOS @"playContentPageVideosNotification"
@@ -158,17 +157,25 @@
 
 
 @implementation ContentDevVC
-
 #pragma mark - Prepare ContentPage -
 //By Iain
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self addBlurView];
+    [self setPlaceholderColors];
+    [self set_PersonalScrollView_ContentSizeandOffset];
+    [self setClosedElementDefaultFrame];
+    [self createBaseSelector];
+    [self centerViews];
+    [self sizeMainScrollViewPhoneSize];
+    [self configureViews];
+    self.pinching = NO;//initialise pinching to no
 }
 
--(void) centerViews {
+-(void) centerViews
+{
     NSInteger middle = self.view.frame.size.width/2;
-    
     //@ sign
     self.label_AT.frame = CGRectMake(middle - self.label_AT.frame.size.width/2, self.label_AT.frame.origin.y, self.label_AT.frame.size.width, self.label_AT.frame.size.height);
     //the space to the left and to the write of the @ label
@@ -184,37 +191,16 @@
 }
 
 //makes sure the main scrollview is edged to it's superview
--(void)sizeMainScrollViewPhoneSize {
+-(void)sizeMainScrollViewPhoneSize
+{
     self.mainScrollView.frame= self.view.frame;
 }
 
 
-//Iain
--(void) viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-}
-
--(void)viewDidAppear:(BOOL)animated {
-    [super viewDidAppear:animated];
-    //set up gallery
-    //after view loads load the gallery
-    // self.gallery = [[verbatmGalleryHandler alloc] initWithView:self.view];
-    //add blurview
-    [self addBlurView];
-    [self setPlaceholderColors];
-    [self set_PersonalScrollView_ContentSizeandOffset];
-    [self setClosedElementDefaultFrame];
-    [self createBaseSelector];
-    [self centerViews];
-    [self sizeMainScrollViewPhoneSize];
-    [self configureViews];
-    self.pinching = NO;//initialise pinching to no
-    
-}
-
 
 //gives the placeholders a white color
--(void) setPlaceholderColors {
+-(void) setPlaceholderColors
+{
     if ([self.sandwhichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         UIColor *color = [UIColor whiteColor];
         self.sandwhichWhat.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwhichWhat.placeholder attributes:@{NSForegroundColorAttributeName: color}];
