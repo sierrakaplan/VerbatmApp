@@ -10,6 +10,6 @@
 
 IB_DESIGNABLE
 
-@interface VerbatmCameraView : UIView
+@interface VerbatmCameraView : UIView <UIGestureRecognizerDelegate>
 
 @end

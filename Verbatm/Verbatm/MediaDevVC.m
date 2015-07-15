@@ -47,7 +47,7 @@
     @property (strong, nonatomic)UIButton* switchFlashButton;
     @property (nonatomic) CGAffineTransform flashTransform;
     @property (nonatomic) CGAffineTransform switchTransform;
-    @property(nonatomic,strong) UIButton * capturePic;
+    @property(nonatomic,strong) UIButton * capturePicButton;
 
 #pragma mark - view controllers
     @property (strong,nonatomic) ContentDevVC* vc_contentPage;
@@ -89,7 +89,7 @@
 
     #define ALBUM_NAME @"Verbatm"
     #define ASPECT_RATIO 1
-    #define MAX_VIDEO_LENGTH 20
+    #define MAX_VIDEO_LENGTH 10
 
 #pragma mark snake color
     #define RGB_LEFT_SIDE 255,225,255, 0.7     //247, 0, 99, 1
@@ -109,8 +109,8 @@
     #define FLASH_START_POSITION  10, 0
     #define SWITCH_CAMERA_START_POSITION 260, 5
 #pragma mark Session timer time
-    #define TIME_FOR_SESSION_TO_RESUME 0.2
-    #define NUM_VID_SECONDS 20
+    #define TIME_FOR_SESSION_TO_RESUME 0.5
+    #define NUM_VID_SECONDS 10
 #pragma Transtition helpers
     #define TRANSITION_MARGIN_OFFSET 50
 #define TRANSLATION_THRESHOLD 70
@@ -123,6 +123,8 @@
 #define CAMERA_BUTTON_WIDTH_HEIGHT 80
 #define CAMERA_BUTTON_Y_OFFSET 20
 #define CAMERA_BUTTON_IMAGE @"camera_button"
+#define RECORDING_IMAGE @"recording_button"
+#define RECORDING_DOT @"recording_dot"
 
 #define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
 
@@ -324,11 +326,17 @@
 
 -(void)createPhotoTakingButton
 {
-    self.capturePic = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.capturePic setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
-    [self.capturePic setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
-    [self.capturePic addTarget:self action:@selector(takePhoto:) forControlEvents:UIControlEventTouchUpInside];
-    [self.verbatmCameraView addSubview:self.capturePic];
+    self.capturePicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
+    [self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
+    [self.capturePicButton addTarget:self action:@selector(takePhoto:) forControlEvents:UIControlEventTouchUpInside];
+
+	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(takeVideo:)];
+	longPress.minimumPressDuration = 1;
+	[self.capturePicButton addGestureRecognizer:longPress];
+	[self.verbatmCameraView addGestureRecognizer:longPress];
+
+    [self.verbatmCameraView addSubview:self.capturePicButton];
 }
 
 
@@ -340,15 +348,8 @@
 //    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
     focusGesture.numberOfTapsRequired = 1;
     focusGesture.cancelsTouchesInView =  NO;
-	focusGesture.delegate = self.verbatmCameraView;
+	[focusGesture setDelegate:self.verbatmCameraView];
     [self.verbatmCameraView addGestureRecognizer:focusGesture];
-}
-
--(void) createLongPressGesture
-{
-    UILongPressGestureRecognizer* longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action: @selector(takeVideo:)];
-    longPress.minimumPressDuration = 1;
-    [self.verbatmCameraView addGestureRecognizer:longPress];
 }
 
 -(void) focusPhoto: (UITapGestureRecognizer *)sender {
@@ -381,43 +382,44 @@
     [self freezeFrame];
 }
 
+-(void)takeVideo:(UILongPressGestureRecognizer*)sender
+{
+	if(sender.state == UIGestureRecognizerStateBegan){
+		[self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
+		[self circleProgressViewAt:[sender locationInView: self.view]];
+		self.timer = [NSTimer scheduledTimerWithTimeInterval:NUM_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
+		[self.capturePicButton setImage:[UIImage imageNamed:RECORDING_IMAGE] forState:UIControlStateNormal];
+
+	}else if(sender.state == UIGestureRecognizerStateEnded || sender.state == UIGestureRecognizerStateFailed ||
+			 sender.state == UIGestureRecognizerStateCancelled){
+		[self endVideoRecordingSession];
+		[self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
+	}else{
+		CGPoint center = [sender locationInView:self.view];
+		[self createProgressPath:center];
+	}
+}
+
 //Lucio
 //when a photo is taken- present it ("freeze" it on the screen) for a short period of time before removing it
 -(void)freezeFrame
 {
-    UIView* dummyView = [[UIView alloc]initWithFrame: self.verbatmCameraView.frame];
-    dummyView.backgroundColor = [UIColor blackColor];
-    [self.view insertSubview:dummyView aboveSubview:self.verbatmCameraView];
-    [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession:) userInfo:dummyView repeats:NO];
+//    UIImageView* dummyView = [[UIImageView alloc]initWithFrame: self.verbatmCameraView.frame];
+//    dummyView.backgroundColor = [UIColor blackColor];
+//    [self.view insertSubview:dummyView aboveSubview:self.verbatmCameraView];
+
+	self.sessionManager.videoPreview.connection.enabled = NO;
+    [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession:) userInfo:nil repeats:NO];
 }
 
 //Lucio
 -(void)resumeSession:(NSTimer*)timer
 {
-    UIView* dummyView = (UIView*)timer.userInfo;
-    [dummyView removeFromSuperview];
+//    UIView* dummyView = (UIView*)timer.userInfo;
+//    [dummyView removeFromSuperview];
+
+	self.sessionManager.videoPreview.connection.enabled = YES;
     [timer invalidate];
-}
-
-
-
-//Lucio
--(IBAction)takeVideo:(id)sender
-{
-    UILongPressGestureRecognizer* recognizer = (UILongPressGestureRecognizer*)sender;
-    if(recognizer.state == UIGestureRecognizerStateBegan){
-        [self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
-        [self circleProgressViewAt:[sender locationInView: self.view]];
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:NUM_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
-    }else{
-        if(recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateFailed ||
-           recognizer.state == UIGestureRecognizerStateCancelled){
-            [self endVideoRecordingSession];
-        }else{
-            CGPoint center = [sender locationInView:self.view];
-            [self createProgressPath:center];
-        }
-    }
 }
 
 -(void)circleProgressViewAt:(CGPoint)center

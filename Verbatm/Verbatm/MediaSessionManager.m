@@ -16,8 +16,6 @@
 @property (strong) AVCaptureStillImageOutput* stillImageOutput;
 @property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
 @property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
-@property (nonatomic, strong) UIImage* stillImage;
-@property (strong, nonatomic) AVCaptureVideoPreviewLayer* videoPreview;
 @property (strong, nonatomic) AVCaptureDeviceInput* videoInput;
 @property (strong, nonatomic) AVCaptureDeviceInput* audioInput;
 @property (nonatomic) UIDeviceOrientation deviceStartOrientation;

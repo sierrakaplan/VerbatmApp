@@ -8,7 +8,7 @@
 
 #import "VerbatmCameraView.h"
 
-@interface VerbatmCameraView() <UIGestureRecognizerDelegate>
+@interface VerbatmCameraView() 
 @end
 
 @implementation VerbatmCameraView
