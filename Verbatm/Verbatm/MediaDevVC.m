@@ -20,9 +20,10 @@
 #import "Article.h"
 #import "VerbatmUser.h"
 #import "CameraFocusSquare.h"
+#import "VerbatmCameraView.h"
 
 
-@interface MediaDevVC () <UITextFieldDelegate, MediaSessionManagerDelegate, pullBarDelegate>
+@interface MediaDevVC () <UITextFieldDelegate, MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
     @property (weak, nonatomic) UIView *pullBar;
 
@@ -121,7 +122,7 @@
 #define PULLBAR_HEIGHT 36
 #define CAMERA_BUTTON_WIDTH_HEIGHT 80
 #define CAMERA_BUTTON_Y_OFFSET 20
-#define CAMERA_BUTTON_IMAGE @"camerabutton_1"
+#define CAMERA_BUTTON_IMAGE @"camera_button"
 
 #define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
 
@@ -164,6 +165,7 @@
     
     [self createPullBar];
     [self saveDefaultFrames];
+	[self createPhotoTakingButton];
     
     //make sure the frames are correctly centered
     [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
@@ -181,7 +183,7 @@
 {
     CGRect pbFrame = CGRectMake(0,self.containerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT);
     VerbatmPullBarView * pullBar = [[VerbatmPullBarView alloc] initWithFrame:pbFrame];
-    pullBar.customeDelegate= self;
+    pullBar.customDelegate = self;
     self.pullBar = pullBar;
     [pullBar addGestureRecognizer:self.panGesture_PullBar];
     [self.view addSubview:pullBar];
@@ -262,7 +264,6 @@
 -(void) viewDidLayoutSubviews
 {
     [super viewDidLayoutSubviews];
-    //[self prepareCameraView];
     //get the view controllers in the storyboard and store them
 }
 
@@ -289,10 +290,10 @@
 
 //by Lucio
 //creates the camera view with the preview session
--(UIView*)verbatmCameraView
+-(VerbatmCameraView*)verbatmCameraView
 {
     if(!_verbatmCameraView){
-        _verbatmCameraView = [[UIView alloc]initWithFrame:  self.view.frame];
+        _verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame:  self.view.frame];
     }
     return _verbatmCameraView;
 }
@@ -327,7 +328,7 @@
     [self.capturePic setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
     [self.capturePic setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
     [self.capturePic addTarget:self action:@selector(takePhoto:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view insertSubview:self.capturePic belowSubview:self.containerView];
+    [self.verbatmCameraView addSubview:self.capturePic];
 }
 
 
@@ -339,6 +340,7 @@
 //    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
     focusGesture.numberOfTapsRequired = 1;
     focusGesture.cancelsTouchesInView =  NO;
+	focusGesture.delegate = self.verbatmCameraView;
     [self.verbatmCameraView addGestureRecognizer:focusGesture];
 }
 

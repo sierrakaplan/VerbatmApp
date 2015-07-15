@@ -54,28 +54,28 @@
 - (IBAction)saveButton_Touched:(UIButton *)sender
 {
     //we have issue here when the button is pressed with the text entry up
-    if(![self.customeDelegate isKindOfClass:[VerbatmImageScrollView class]])[self.customeDelegate saveButtonPressed];
+    if(![self.customDelegate isKindOfClass:[VerbatmImageScrollView class]])[self.customDelegate saveButtonPressed];
 }
 
 
 //sends signal to the delegate that the button was pressed
 - (IBAction)previewButtonTouched:(UIButton *)sender
 {
-    [self.customeDelegate previewButtonPressed];
+    [self.customDelegate previewButtonPressed];
     
 }
 //sends signal to the delegate that the button was pressed
 - (IBAction)KeyboardButtonTouched:(UIButton *)sender
 {
     return;//removing this feature for now
-    [self.customeDelegate keyboardButtonPressed];
+    [self.customDelegate keyboardButtonPressed];
 }
 
 
 //sends signal to the delegate that the button was pressed
 - (IBAction)undoBotton:(UIButton *)sender
 {
-    [self.customeDelegate undoButtonPressed];
+    [self.customDelegate undoButtonPressed];
 }
 
 

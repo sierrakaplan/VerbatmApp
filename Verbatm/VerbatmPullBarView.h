@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol pullBarDelegate <NSObject>
+@protocol PullBarDelegate <NSObject>
 
 -(void)undoButtonPressed;
 -(void)previewButtonPressed;
@@ -18,5 +18,5 @@
 @end
 
 @interface VerbatmPullBarView : UIView
-    @property (nonatomic, strong) id<pullBarDelegate> customeDelegate;
+    @property (nonatomic, strong) id<PullBarDelegate> customDelegate;
 @end
