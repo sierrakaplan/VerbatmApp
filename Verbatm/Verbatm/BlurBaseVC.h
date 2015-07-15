@@ -10,5 +10,5 @@
 
 @interface BlurBaseVC : UIViewController
     @property (weak, nonatomic) IBOutlet UITextField *sandwichWhere;
-    @property (weak, nonatomic) IBOutlet UITextField *sandwhichWhat;
+    @property (weak, nonatomic) IBOutlet UITextField *sandwichWhat;
 @end

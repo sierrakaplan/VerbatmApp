@@ -7,6 +7,7 @@
 
 #import "MediaDevVC.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <math.h>
 #import "MediaSessionManager.h"
 #import "ILTranslucentView.h"
 #import "ContentDevVC.h"
@@ -21,6 +22,7 @@
 #import "VerbatmUser.h"
 #import "CameraFocusSquare.h"
 #import "VerbatmCameraView.h"
+#import "MasterNavigationVC.h"
 
 
 @interface MediaDevVC () <UITextFieldDelegate, MediaSessionManagerDelegate, PullBarDelegate>
@@ -48,6 +50,7 @@
     @property (nonatomic) CGAffineTransform flashTransform;
     @property (nonatomic) CGAffineTransform switchTransform;
     @property(nonatomic,strong) UIButton * capturePicButton;
+	@property (nonatomic) BOOL isTakingVideo;
 
 #pragma mark - view controllers
     @property (strong,nonatomic) ContentDevVC* vc_contentPage;
@@ -83,13 +86,8 @@
     #define ID_FOR_BOTTOM_SPLITSCREENVC @"splitScreenBottomView"
     #define NUMBER_OF_VCS 2
     #define VC_TRANSITION_ANIMATION_TIME 0.5
-
-
-#pragma mark helpers for VCs
-
     #define ALBUM_NAME @"Verbatm"
     #define ASPECT_RATIO 1
-    #define MAX_VIDEO_LENGTH 10
 
 #pragma mark snake color
     #define RGB_LEFT_SIDE 255,225,255, 0.7     //247, 0, 99, 1
@@ -97,36 +95,42 @@
     #define RGB_BOTTOM_SIDE 255,225,255, 0.7
     #define RGB_TOP_SIDE 255,225,255, 0.7
 
-#pragma mark Camera/Flash icons
+#pragma mark Camera and Settings Icons
     #define CAMERA_ICON_FRONT @"camera_back"
     #define FLASH_ICON_ON @"lightbulb_final_OFF(white)"
     #define FLASH_ICON_OFF @"lightbulb_final_OFF(white)"
+	#define CAMERA_BUTTON_IMAGE @"camera_button"
+	#define RECORDING_IMAGE @"recording_button"
+	#define RECORDING_DOT @"recording_dot"
 
-#pragma mark Camera/Flash Icon sizes
-    #define SWITCH_ICON_SIZE 50
-    #define FLASH_ICON_SIZE 50
-#pragma mark Camera/Flash positions
-    #define FLASH_START_POSITION  10, 0
-    #define SWITCH_CAMERA_START_POSITION 260, 5
+#pragma mark Camera and Settings Icon Sizes
+    #define SWITCH_ICON_SIZE 50.f
+    #define FLASH_ICON_SIZE 50.f
+	#define PULLBAR_HEIGHT 36.f
+	#define CAMERA_BUTTON_WIDTH_HEIGHT 80.f
+	#define PROGRESS_CIRCLE_SIZE 100.f
+	#define PROGRESS_CIRCLE_WIDTH 10.0f
+	#define PROGRESS_CIRCLE_OPACITY 0.6f
+
+#pragma mark Camera and Settings Icon Positions
+    #define FLASH_START_POSITION  10.f, 0.f
+    #define SWITCH_CAMERA_START_POSITION 260.f, 5.f
+	#define CAMERA_BUTTON_Y_OFFSET 20.f
+
 #pragma mark Session timer time
-    #define TIME_FOR_SESSION_TO_RESUME 0.5
-    #define NUM_VID_SECONDS 10
-#pragma Transtition helpers
-    #define TRANSITION_MARGIN_OFFSET 50
-#define TRANSLATION_THRESHOLD 70
-#define CIRCLE_PROGRESSVIEW_SIZE 100
-#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
-#define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
-#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
+    #define TIME_FOR_SESSION_TO_RESUME 0.5f
+    #define NUM_VID_SECONDS 3
+	#define MINIMUM_PRESS_DURATION_FOR_VIDEO 0.3f
 
-#define PULLBAR_HEIGHT 36
-#define CAMERA_BUTTON_WIDTH_HEIGHT 80
-#define CAMERA_BUTTON_Y_OFFSET 20
-#define CAMERA_BUTTON_IMAGE @"camera_button"
-#define RECORDING_IMAGE @"recording_button"
-#define RECORDING_DOT @"recording_dot"
+#pragma mark Transition helpers
+    #define TRANSITION_MARGIN_OFFSET 50.f
+	#define TRANSLATION_THRESHOLD 70
 
-#define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
+#pragma mark Notifications
+	#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
+	#define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
+	#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
+	#define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
 
 @end
 
@@ -328,19 +332,27 @@
 
 -(void)createPhotoTakingButton
 {
+	self.isTakingVideo = NO;
     self.capturePicButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
-    [self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
-    [self.capturePicButton addTarget:self action:@selector(takePhoto:) forControlEvents:UIControlEventTouchUpInside];
+    [self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2.f, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
+    [self.capturePicButton addTarget:self action:@selector(tappedPhotoButton:) forControlEvents:UIControlEventTouchUpInside];
 
 	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(takeVideo:)];
-	longPress.minimumPressDuration = 1;
+	longPress.minimumPressDuration = MINIMUM_PRESS_DURATION_FOR_VIDEO;
 	[self.capturePicButton addGestureRecognizer:longPress];
 	[self.verbatmCameraView addGestureRecognizer:longPress];
 
     [self.verbatmCameraView addSubview:self.capturePicButton];
 }
 
+- (IBAction)tappedPhotoButton:(id)sender {
+	if(self.isTakingVideo) {
+		[self endVideoRecordingSession];
+	} else {
+		[self takePhoto:sender];
+	}
+}
 
 #pragma mark creating gestures
 
@@ -399,19 +411,13 @@
 
 -(void)takeVideo:(UILongPressGestureRecognizer*)sender
 {
-	if(sender.state == UIGestureRecognizerStateBegan){
+	if(!self.isTakingVideo && sender.state == UIGestureRecognizerStateBegan){
+		self.isTakingVideo = YES;
 		[self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
-		[self circleProgressViewAt:[sender locationInView: self.view]];
+		[self circleProgressView];
 		self.timer = [NSTimer scheduledTimerWithTimeInterval:NUM_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
 		[self.capturePicButton setImage:[UIImage imageNamed:RECORDING_IMAGE] forState:UIControlStateNormal];
 
-	}else if(sender.state == UIGestureRecognizerStateEnded || sender.state == UIGestureRecognizerStateFailed ||
-			 sender.state == UIGestureRecognizerStateCancelled){
-		[self endVideoRecordingSession];
-		[self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
-	}else{
-		CGPoint center = [sender locationInView:self.view];
-		[self createProgressPath:center];
 	}
 }
 
@@ -436,18 +442,18 @@
     [timer invalidate];
 }
 
--(void)circleProgressViewAt:(CGPoint)center
-{
+-(void)circleProgressView {
+
     self.circle = [[CAShapeLayer alloc]init];
-    [self createProgressPath:center];
+    [self createProgressPath];
     self.circle.frame = self.view.bounds;
     self.circle.fillColor = [UIColor clearColor].CGColor;
-    self.circle.strokeColor = [UIColor whiteColor].CGColor;
-    self.circle.lineWidth = 15.0f;
+    self.circle.strokeColor = [UIColor colorWithRed:1.f green:0.f blue:0.f alpha:PROGRESS_CIRCLE_OPACITY].CGColor;
+    self.circle.lineWidth = PROGRESS_CIRCLE_WIDTH;
     [self.view.layer addSublayer:self.circle];
     
     CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-    animation.duration = 20.0f;
+    animation.duration = NUM_VID_SECONDS;
     animation.fromValue = [NSNumber numberWithFloat:0.0f];
     animation.toValue = [NSNumber numberWithFloat:1.0f];
     animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
@@ -456,16 +462,17 @@
 }
 
 // creates circle around touch to show video recording progress
--(void)createProgressPath:(CGPoint)center
-{
+-(void)createProgressPath {
+
     CGMutablePathRef path = CGPathCreateMutable();
-    CGRect frame = CGRectMake(center.x - CIRCLE_PROGRESSVIEW_SIZE/2, center.y -CIRCLE_PROGRESSVIEW_SIZE/2, CIRCLE_PROGRESSVIEW_SIZE, CIRCLE_PROGRESSVIEW_SIZE);
-    float midX = CGRectGetMidX(frame);
-    float midY = CGRectGetMidY(frame);
+	CGPoint center = CGPointMake((self.view.frame.size.width)/2.f, self.view.frame.size.height - CAMERA_BUTTON_Y_OFFSET - CAMERA_BUTTON_WIDTH_HEIGHT/2.f);
+	CGRect frame = CGRectMake(center.x - PROGRESS_CIRCLE_SIZE/2.f, center.y -PROGRESS_CIRCLE_SIZE/2.f, PROGRESS_CIRCLE_SIZE, PROGRESS_CIRCLE_SIZE);
+	float midX = CGRectGetMidX(frame);
+	float midY = CGRectGetMidY(frame);
     CGAffineTransform t = CGAffineTransformConcat(
                                                   CGAffineTransformConcat(
                                                                           CGAffineTransformMakeTranslation(-midX, -midY),
-                                                                          CGAffineTransformMakeRotation(-1.57079633/0.99)),
+                                                                          CGAffineTransformMakeRotation(-(M_PI/2.f))),
                                                   CGAffineTransformMakeTranslation(midX, midY));
     CGPathAddEllipseInRect(path, &t, frame);
     self.circle.path = path;
@@ -499,13 +506,15 @@
 }
 
 
-
-//Lucio
 -(void)endVideoRecordingSession
 {
     if(!self.circle) return;
+	self.isTakingVideo = NO;
     [self.sessionManager stopVideoRecording];
     [self clearVideoProgressImage];  //removes the video progress bar
+	[self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.timer invalidate];
+	self.timer = nil;
     [self freezeFrame];
 }
 
@@ -924,8 +933,9 @@
     
     if(!pinchObjectsArray.count) return;//if there is not article then exit
     
-    //this creates and saves an article. the return value is unnecesary 
-    Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwhichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pinchObjectsArray];
+    //this creates and saves an article. the return value is unnecesary
+	BOOL isTesting = [MasterNavigationVC inTestingMode];
+    Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];
     if(newArticle)
     {
         self.articleJustSaved = self.vc_contentPage.articleTitleField.text;

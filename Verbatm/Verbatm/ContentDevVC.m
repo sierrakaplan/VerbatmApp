@@ -183,7 +183,7 @@
     
     
     //s@ndwiches
-    self.sandwhichWhat.frame = CGRectMake((spaceLeft/2)-(self.sandwhichWhat.frame.size.width/2), self.sandwhichWhat.frame.origin.y, self.sandwhichWhat.frame.size.width, self.sandwhichWhat.frame.size.height);
+    self.sandwichWhat.frame = CGRectMake((spaceLeft/2)-(self.sandwichWhat.frame.size.width/2), self.sandwichWhat.frame.origin.y, self.sandwichWhat.frame.size.width, self.sandwichWhat.frame.size.height);
     self.sandwichWhere.frame = CGRectMake(((self.label_AT.frame.origin.x + self.label_AT.frame.size.width)+(spaceLeft/2))-(self.sandwichWhere.frame.size.width/2), self.sandwichWhere.frame.origin.y, self.sandwichWhere.frame.size.width, self.sandwichWhere.frame.size.height);
     
     //article title
@@ -201,9 +201,9 @@
 //gives the placeholders a white color
 -(void) setPlaceholderColors
 {
-    if ([self.sandwhichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+    if ([self.sandwichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         UIColor *color = [UIColor whiteColor];
-        self.sandwhichWhat.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwhichWhat.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+        self.sandwichWhat.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwichWhat.placeholder attributes:@{NSForegroundColorAttributeName: color}];
     } else {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
@@ -312,7 +312,7 @@
 //makes the keyboard look black for all views present at the start
 -(void) setUpKeyboardPrefferedColors
 {
-    self.sandwhichWhat.keyboardAppearance = UIKeyboardAppearanceDark;
+    self.sandwichWhat.keyboardAppearance = UIKeyboardAppearanceDark;
     self.sandwichWhere.keyboardAppearance = UIKeyboardAppearanceDark;
     self.articleTitleField.keyboardAppearance = UIKeyboardAppearanceDark;
 }
@@ -392,7 +392,7 @@
     self.gallery.customDelegate = self;
     
     //Set delgates for textviews
-    self.sandwhichWhat.delegate = self;
+    self.sandwichWhat.delegate = self;
     self.sandwichWhere.delegate = self;
     self.articleTitleField.delegate = self;
     self.mainScrollView.delegate = self;
@@ -411,14 +411,14 @@
 //Iain
 -(BOOL) textFieldShouldReturn:(UITextField *)textField
 {
-    if(textField == self.sandwhichWhat)
+    if(textField == self.sandwichWhat)
     {
         if([self.sandwichWhere.text isEqualToString:@""])
         {
             [self.sandwichWhere becomeFirstResponder];
         }else
         {
-            [self.sandwhichWhat resignFirstResponder];
+            [self.sandwichWhat resignFirstResponder];
         }
     }else if(textField == self.sandwichWhere)
     {
@@ -552,7 +552,7 @@
 {
     
     
-    if(self.sandwhichWhat.editing || self.sandwichWhere.editing) return; //if it is the s@andwiches that are set then
+    if(self.sandwichWhat.editing || self.sandwichWhere.editing) return; //if it is the s@andwiches that are set then
     
     [self updateCaretPositionInView:self.openImageScrollView.textView];//ensure that the caret is up to date
     
@@ -812,7 +812,7 @@
     //make sure the device is landscape
     if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
     {
-        if(self.sandwhichWhat.isEditing)[self.sandwhichWhat resignFirstResponder];
+        if(self.sandwichWhat.isEditing)[self.sandwichWhat resignFirstResponder];
         if(self.sandwichWhere.isEditing)[self.sandwichWhere resignFirstResponder];
         if(self.articleTitleField.isEditing)[self.articleTitleField resignFirstResponder];
         [self.openImageScrollView.textView resignFirstResponder];
@@ -2430,7 +2430,7 @@
 
 -(void)clearTextFields
 {
-    self.sandwhichWhat.text = @"";
+    self.sandwichWhat.text = @"";
     self.sandwichWhere.text = @"";
     self.articleTitleField.text =@"";
 }

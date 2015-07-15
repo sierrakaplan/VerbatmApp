@@ -11,4 +11,6 @@
 
 @interface MasterNavigationVC : ArticleDisplayVC
     @property(strong, nonatomic) NSMutableArray * pinchObjects;
+
+	+ (BOOL) inTestingMode;
 @end

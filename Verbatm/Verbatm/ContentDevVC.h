@@ -16,7 +16,7 @@
 
 @property (weak, nonatomic) IBOutlet UITextField *articleTitleField;
 @property (weak, nonatomic) IBOutlet UITextField *sandwichWhere;
-@property (weak, nonatomic) IBOutlet UITextField *sandwhichWhat;
+@property (weak, nonatomic) IBOutlet UITextField *sandwichWhat;
 @property (strong, atomic) NSMutableArray * pageElements; //elements added to the scrollview- excludes uitextfields at the top of the screen
 @property (nonatomic) CGRect containerViewFrame;
 @property (strong, nonatomic) VerbatmUITextView * activeTextView; //view that is currently being filled in

@@ -17,7 +17,7 @@
 @property (strong, nonatomic) IBOutlet PinchView * videoPinchView;
 @property (nonatomic) CGPoint upper_Left_PinchPoint;//either the upper finger in a y directed pinch or the left finger in an x directed pinch
 @property (nonatomic) CGPoint lower_Right_PinchPoint;//either the lower finger in a y directed pinch or the right finger in a x direct pinch
-@property (nonatomic) bool usingYs;
+@property (nonatomic) BOOL usingYs;
 
 @property (nonatomic) CGPoint panStartPoint;
 

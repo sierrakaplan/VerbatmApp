@@ -32,7 +32,7 @@
 //removes the keyboard if present
 -(void)removeKeyboard
 {
-    if([self.sandwhichWhat isFirstResponder])
+    if([self.sandwichWhat isFirstResponder])
     {
         [self.view endEditing:YES];
     }else if([self.sandwichWhere isFirstResponder])
@@ -54,9 +54,9 @@
 //gives the placeholders a white color
 -(void) setPlaceholderColors
 {
-    if ([self.sandwhichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+    if ([self.sandwichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]) {
         UIColor *color = [UIColor whiteColor];
-        self.sandwhichWhat.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwhichWhat.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+        self.sandwichWhat.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwichWhat.placeholder attributes:@{NSForegroundColorAttributeName: color}];
     } else {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.

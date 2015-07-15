@@ -8,6 +8,7 @@
 
 #import "ArticleAquirer.h"
 #import "Article.h"
+#import "MasterNavigationVC.h"
 
 @interface ArticleAquirer ()
 #define ARTICLE_AUTHOR_RELATIONSHIP @"articleAuthorRelation"
@@ -25,14 +26,21 @@
 
 +(BOOL)saveArticleWithPinchObjects:(NSArray *)pinchObjects title:(NSString *)title withSandwichFirst:(NSString *)firstPart andSecond:(NSString*)secondPart
 {
-    Article * this_article = [[Article alloc] initAndSaveWithTitle:title andSandWichWhat:firstPart Where:secondPart andPinchObjects:pinchObjects];
+	BOOL isTesting = [MasterNavigationVC inTestingMode];
+    Article * this_article = [[Article alloc] initAndSaveWithTitle:title andSandWichWhat:firstPart Where:secondPart andPinchObjects:pinchObjects andIsTesting:isTesting];
     [this_article setSandwich:firstPart at:secondPart];
     return [this_article save];
 }
 
 +(void)downloadAllArticlesWithBlock:(void(^)(NSArray *ourObjects))onDownloadBlock
 {
-    PFQuery* query = [PFQuery queryWithClassName: @"Article"];
+	PFQuery* query;
+	if ([MasterNavigationVC inTestingMode]) {
+		query = [PFQuery queryWithClassName: @"Article"];
+	} else {
+		query = [PFQuery queryWithClassName: @"Article"];
+		[query whereKey:@"isTestingArticle" equalTo:[NSNumber numberWithBool:NO]];
+	}
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
     {
         onDownloadBlock(objects);
