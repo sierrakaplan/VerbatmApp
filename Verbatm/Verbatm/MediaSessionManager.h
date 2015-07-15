@@ -20,6 +20,7 @@
 
 -(instancetype)initSessionWithView:(UIView*)containerView;
 -(void)focusAtPoint:(CGPoint)viewCoordinates;
+- (void) zoomPreviewWithScale:(float)effectiveScale;
 -(void)captureImage:(BOOL)halfScreen;
 -(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation;
 -(void)stopVideoRecording;

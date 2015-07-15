@@ -171,8 +171,26 @@
     
     //make sure the frames are correctly centered
     [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
-    
 }
+
+//Iain
+-(void) viewDidLayoutSubviews
+{
+	[super viewDidLayoutSubviews];
+	//get the view controllers in the storyboard and store them
+}
+
+-(void)viewDidAppear:(BOOL)animated
+{
+	//patch solution to the pullbar being drawn strange
+	self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y, self.pullBar.frame.size.width, PULLBAR_HEIGHT);
+	[self.sessionManager startSession];
+}
+
+-(void) viewDidDisappear:(BOOL)animated {
+	[self.sessionManager stopSession];
+}
+
 
 -(NSString *)articleJustSaved
 {
@@ -239,13 +257,11 @@
     self.vc_contentPage = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTPAGEVC];
 }
 
-
-
 //Iain
 -(void) createAndInstantiateGestures
 {
     [self createTapGestureToFocus];
-//    [self createLongPressGesture];
+    [self createPinchGestureToZoom];
 }
 
 //Iain
@@ -260,20 +276,6 @@
 - (BOOL)prefersStatusBarHidden
 {
     return YES;
-}
-
-//Iain
--(void) viewDidLayoutSubviews
-{
-    [super viewDidLayoutSubviews];
-    //get the view controllers in the storyboard and store them
-}
-
--(void)viewDidAppear:(BOOL)animated
-{
-    //patch solution to the pullbar being drawn strange
-    self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y, self.pullBar.frame.size.width, PULLBAR_HEIGHT);
-    [self.sessionManager startSession];
 }
 
 //Iain
@@ -344,12 +346,12 @@
 
 -(void) createTapGestureToFocus
 {
-	UITapGestureRecognizer* focusGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(focusPhoto:)];
+	UITapGestureRecognizer* focusRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(focusPhoto:)];
 //    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
-    focusGesture.numberOfTapsRequired = 1;
-    focusGesture.cancelsTouchesInView =  NO;
-	[focusGesture setDelegate:self.verbatmCameraView];
-    [self.verbatmCameraView addGestureRecognizer:focusGesture];
+    focusRecognizer.numberOfTapsRequired = 1;
+    focusRecognizer.cancelsTouchesInView =  NO;
+	[focusRecognizer setDelegate:self.verbatmCameraView];
+    [self.verbatmCameraView addGestureRecognizer:focusRecognizer];
 }
 
 -(void) focusPhoto: (UITapGestureRecognizer *)sender {
@@ -374,11 +376,24 @@
 	}
 }
 
+-(void) createPinchGestureToZoom {
+	UIPinchGestureRecognizer* pinchRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(zoomPreview:)];
+	[pinchRecognizer setDelegate:self.verbatmCameraView];
+	[self.verbatmCameraView addGestureRecognizer:pinchRecognizer];
+}
+
+- (void) zoomPreview:(UIPinchGestureRecognizer *)recognizer {
+
+	float scale = self.verbatmCameraView.beginGestureScale * recognizer.scale;
+	self.verbatmCameraView.effectiveScale = scale > 1.0f ? scale : 1.0f;
+	[self.sessionManager zoomPreviewWithScale:self.verbatmCameraView.effectiveScale];
+}
+
 #pragma mark -touch gesture selectors
 //Lucio
 - (IBAction)takePhoto:(id)sender
 {
-    [self.sessionManager captureImage: !self.canRaise];
+	[self.sessionManager captureImage: !self.canRaise];
     [self freezeFrame];
 }
 
@@ -400,7 +415,6 @@
 	}
 }
 
-//Lucio
 //when a photo is taken- present it ("freeze" it on the screen) for a short period of time before removing it
 -(void)freezeFrame
 {
@@ -441,6 +455,7 @@
 
 }
 
+// creates circle around touch to show video recording progress
 -(void)createProgressPath:(CGPoint)center
 {
     CGMutablePathRef path = CGPathCreateMutable();

@@ -12,4 +12,7 @@ IB_DESIGNABLE
 
 @interface VerbatmCameraView : UIView <UIGestureRecognizerDelegate>
 
+@property (nonatomic) float effectiveScale;
+@property (nonatomic) float beginGestureScale;
+
 @end

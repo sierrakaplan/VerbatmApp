@@ -25,6 +25,7 @@
 #define MAX_VIDEO_LENGTH_SECONDS 10
 #define ALBUM_NAME @"Verbatm"
 #define ASPECT_RATIO 4/3
+#define ZOOM_RATE 0.6
 @end
 
 
@@ -77,6 +78,18 @@
 			[currentDevice setFocusPointOfInterest:point];
 			[currentDevice setFocusMode:AVCaptureFocusModeAutoFocus];
 			[currentDevice unlockForConfiguration];
+		}
+	}
+}
+
+- (void) zoomPreviewWithScale:(float)effectiveScale
+{
+	if ([self.videoInput.device respondsToSelector:@selector(setVideoZoomFactor:)]
+		&& self.videoInput.device.activeFormat.videoMaxZoomFactor >= effectiveScale) {
+  // iOS 7.x with compatible hardware
+		if ([self.videoInput.device lockForConfiguration:nil]) {
+			[self.videoInput.device setVideoZoomFactor:effectiveScale];
+			[self.videoInput.device unlockForConfiguration];
 		}
 	}
 }
@@ -302,6 +315,7 @@
 //by Lucio
 -(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation
 {
+
 	//set the variables
 	self.deviceStartOrientation = startOrientation;
 	//Get the right output path for the video
@@ -484,7 +498,6 @@
 }
 
 #pragma mark - for photo capturing and processing
-//by Lucio
 -(void)captureImage:(BOOL)halfScreen
 {
 	AVCaptureConnection* videoConnection = nil;
@@ -549,7 +562,6 @@
 {
 	self.stillImage = image;
 	[self cropImage:(BOOL)halfScreen];
-
 }
 
 -(void)cropImage:(BOOL)halfScreen

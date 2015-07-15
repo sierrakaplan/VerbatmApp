@@ -17,7 +17,7 @@
 {
 	self = [super initWithFrame:frame];
 	if (self) {
-		// Initialization code
+		self.effectiveScale = 1.0f;
 	}
 	return self;
 }
@@ -28,6 +28,14 @@
 		return NO; // ignore the touch
 	}
 	return YES; // handle the touch
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+	if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
+		self.beginGestureScale = self.effectiveScale;
+	}
+	return YES;
 }
 
 @end
