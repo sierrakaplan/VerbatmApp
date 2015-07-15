@@ -415,8 +415,7 @@
 		NSLog(@"error %@", error.description);
 	}
 
-	//TODO(sierrakn): change this to high quality when possible
-	AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:fixedComposition presetName:AVAssetExportPresetMediumQuality];
+	AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:fixedComposition presetName:AVAssetExportPresetHighestQuality];
 	exporter.outputURL = outputFileURL;
 	exporter.outputFileType = AVFileTypeQuickTimeMovie;
 	exporter.videoComposition = mainCompositionInst;

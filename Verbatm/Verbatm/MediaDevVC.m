@@ -19,22 +19,21 @@
 #import "verbatmPullBarView.h"
 #import "Article.h"
 #import "VerbatmUser.h"
+#import "CameraFocusSquare.h"
 
 
 @interface MediaDevVC () <UITextFieldDelegate, MediaSessionManagerDelegate, pullBarDelegate>
 #pragma mark - Outlets -
     @property (weak, nonatomic) UIView *pullBar;
-    @property (weak, nonatomic) IBOutlet UITextField *whatSandwich;
-    @property (weak, nonatomic) IBOutlet UITextField *whereSandwich;
-    @property (weak, nonatomic) IBOutlet UIButton *raiseKeyboardButton;
 
 
 #pragma mark - SubViews of screen-
 @property (strong, nonatomic) IBOutlet UIPanGestureRecognizer *panGesture_PullBar;
     @property (weak, nonatomic) IBOutlet UIView *containerView;
-    @property (strong, nonatomic) UIView *verbatmCameraView;
+    @property (strong, nonatomic) VerbatmCameraView *verbatmCameraView;
     @property (strong, nonatomic) MediaSessionManager* sessionManager;
     @property (strong, nonatomic) CAShapeLayer* circle;
+	@property (strong, nonatomic) CameraFocusSquare* focusSquare;
 
     @property(nonatomic) CGRect containerViewNoMSAVFrame;
     @property (nonatomic) CGRect containerViewMSAVFrame;
@@ -145,14 +144,11 @@
     
     [self createAndInstantiateGestures];
     
-    [self setPlaceholderColors];
     self.canRaise = NO;
     self.currentPoint = CGPointZero;
     
     //updated by Iain
     [self setDelegates];
-    self.whatSandwich.keyboardAppearance = UIKeyboardAppearanceDark;
-    self.whereSandwich.keyboardAppearance = UIKeyboardAppearanceDark;
     
     //for postitioning the blurView when the orientation of the device changes
     [[UIDevice currentDevice]beginGeneratingDeviceOrientationNotifications];
@@ -179,7 +175,6 @@
     if(!_articleJustSaved)_articleJustSaved = @"";
     return _articleJustSaved;
 }
-
 
 //creates the pullbar object then saves it as a property 
 -(void)createPullBar
@@ -281,28 +276,7 @@
 //Iain
 -(void) setDelegates
 {
-    //set yourself as the delegate for textfields
-    self.whatSandwich.delegate = self;
-    self.whereSandwich.delegate = self;
     self.sessionManager.delegate = self;
-}
-
-//gives the placeholders a white color
--(void) setPlaceholderColors
-{
-    if ([self.whatSandwich respondsToSelector:@selector(setAttributedPlaceholder:)])
-    {
-        UIColor *color = [UIColor whiteColor];
-        self.whatSandwich.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.whatSandwich.placeholder attributes:@{NSForegroundColorAttributeName: color}];
-    } else {
-        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-    }
-    if ([self.whereSandwich respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        UIColor *color = [UIColor whiteColor];
-        self.whereSandwich.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.whereSandwich.placeholder attributes:@{NSForegroundColorAttributeName: color}];
-    } else {
-        NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
-    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -319,7 +293,6 @@
 {
     if(!_verbatmCameraView){
         _verbatmCameraView = [[UIView alloc]initWithFrame:  self.view.frame];
-        //        _verbatmCameraView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin;  //check this please!
     }
     return _verbatmCameraView;
 }
@@ -379,6 +352,21 @@
 -(void) focusPhoto: (UITapGestureRecognizer *)sender {
 	if (sender.state == UIGestureRecognizerStateEnded) {
 		CGPoint point = [sender locationInView:self.verbatmCameraView];
+
+		// focus square animation
+		if (self.focusSquare)
+		{
+			[self.focusSquare removeFromSuperview];
+		}
+		self.focusSquare = [[CameraFocusSquare alloc]initWithFrame:CGRectMake(point.x-40, point.y-40, 80, 80)];
+		[self.focusSquare setBackgroundColor:[UIColor clearColor]];
+		[self.verbatmCameraView addSubview:self.focusSquare];
+		[self.focusSquare setNeedsDisplay];
+		[UIView beginAnimations:nil context:NULL];
+		[UIView setAnimationDuration:1.5];
+		[self.focusSquare setAlpha:0.0];
+		[UIView commitAnimations];
+
 		[self.sessionManager focusAtPoint:point];
 	}
 }
@@ -807,60 +795,10 @@
 }
 
 
-//Iain
-//When keyboard appears get its height. This is only neccessary when the keyboard first appears
-- (void)keyboardWasShown:(NSNotification *)notification
-{
-    self.raiseKeyboardButton.imageView.image = [UIImage imageNamed:@"key_trans"];//set keyboard button to transparent
-}
-
-
--(void)keyboardWillShow: (NSNotification *)notification
-{
-    CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameBeginUserInfoKey] CGRectValue].size;
-    
-    //Given size may not account for screen rotation
-     self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
-    
-}
-
-
--(void) keyboardWillDisappear: (NSNotification *)notification
-{
-    self.keyboardHeight = 0;//sanitize keyboard height marker
-    
-    if(self.containerViewMSAVMode)
-    {
-        //now that the keyboard is leaving we should leave MSAV mode
-        self.containerViewMSAVMode = NO;
-        [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base
-    }
-    self.raiseKeyboardButton.imageView.image = [UIImage imageNamed:@"key_whole"];//set the keyboard button to opaque
-}
-
-
-
 //Lucio
 //This method registers the application for keyboard notifications. UIKeyboardWillShowNotification and UIKeyboardWillHideNotification are listened for.
 -(void)registerForNotifications
 {
-    
-    //Tune in to get notifications of keyboard behavior
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWasShown:)
-                                                 name:UIKeyboardDidShowNotification
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillShow:)
-                                                 name:UIKeyboardWillShowNotification
-                                               object:nil];
-    
-    //Listen for when the keyboard is about to disappear
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(keyboardWillDisappear:)
-                                                 name:UIKeyboardWillHideNotification
-                                               object:nil];
-    
     
     //Register for notifications to show and remove the pullbar
     //Listen for when the keyboard is about to disappear
@@ -874,8 +812,6 @@
                                              selector:@selector(showPullBar)
                                                  name:@"Notification_shouldShowPullBar"
                                                object:nil];
-    
-    
 }
 
 
