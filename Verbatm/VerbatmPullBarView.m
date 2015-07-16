@@ -13,6 +13,7 @@
 @property (strong, nonatomic) UIButton *previewButton;
 @property (strong, nonatomic) UIButton *undoButton;
 @property (strong, nonatomic) UIImageView *pullUpIcon;
+@property (strong, nonatomic) UIImageView *pullDownIcon;
 
 #define CENTER_BUTTON_GAP 20.f
 #define XOFFSET 20.f
@@ -21,6 +22,7 @@
 #define UNDO_BUTTON_IMAGE @"undo_button_icon"
 #define PREVIEW_BUTTON_IMAGE @"preview_button_icon"
 #define PULLUP_ICON_IMAGE @"pullup_icon"
+#define PULLDOWN_ICON_IMAGE @"pulldown_icon"
 
 @end
 
@@ -36,16 +38,33 @@
     {
         self.frame = frame;
         [self createButtons];
+		[self switchToPullDown];
     }
     return self;
 }
 
+-(void)switchToPullUp {
+	[self.pullDownIcon removeFromSuperview];
 
+	[self addSubview:self.undoButton];
+	[self addSubview:self.pullUpIcon];
+	[self addSubview:self.previewButton];
+}
+
+-(void)switchToPullDown {
+	[self.undoButton removeFromSuperview];
+	[self.pullUpIcon removeFromSuperview];
+	[self.previewButton removeFromSuperview];
+
+//	[self setBackgroundColor:[UIColor blackColor]];
+	[self addSubview:self.pullDownIcon];
+}
 
 -(void)createButtons {
 
 	float centerPoint = self.frame.size.width /2.f;
-	float buttonSize = self.frame.size.height - (2.f * YOFFSET);
+	float buttonSize = PULLBAR_HEIGHT_DOWN - (2.f * YOFFSET);
+	float iconSize = PULLBAR_HEIGHT_UP;
 
 	CGRect undoButtonFrame = CGRectMake(XOFFSET, YOFFSET, buttonSize, buttonSize);
 	self.undoButton = [[UIButton alloc] initWithFrame:undoButtonFrame];
@@ -56,15 +75,14 @@
 	self.pullUpIcon = [[UIImageView alloc] initWithFrame:pullUpIconFrame];
 	[self.pullUpIcon setImage:[UIImage imageNamed:PULLUP_ICON_IMAGE]];
 
+	CGRect pullDownIconFrame = CGRectMake(centerPoint-buttonSize/2.f, YOFFSET, iconSize, iconSize);
+	self.pullDownIcon = [[UIImageView alloc] initWithFrame:pullDownIconFrame];
+	[self.pullDownIcon setImage:[UIImage imageNamed:PULLDOWN_ICON_IMAGE]];
 
 	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - buttonSize - XOFFSET, YOFFSET, buttonSize, buttonSize);
 	self.previewButton = [[UIButton alloc] initWithFrame:previewButtonFrame];
 	[self.previewButton setBackgroundImage:[UIImage imageNamed:PREVIEW_BUTTON_IMAGE] forState:UIControlStateNormal];
 	[self.previewButton addTarget:self action:@selector(previewButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-
-	[self addSubview:self.undoButton];
-	[self addSubview:self.pullUpIcon];
-	[self addSubview:self.previewButton];
 }
 
 //- (IBAction)saveButton_Touched:(UIButton *)sender

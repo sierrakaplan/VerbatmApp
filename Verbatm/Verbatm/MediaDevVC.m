@@ -38,10 +38,10 @@
     @property (strong, nonatomic) CAShapeLayer* circle;
 	@property (strong, nonatomic) CameraFocusSquare* focusSquare;
 
-    @property(nonatomic) CGRect containerViewNoMSAVFrame;
-    @property (nonatomic) CGRect containerViewMSAVFrame;
-    @property (nonatomic) CGRect pullBarNoMSAVFrame;
-    @property (nonatomic) CGRect pullBarMSAVFrame;
+    @property(nonatomic) CGRect containerViewFrameTop;
+	@property(nonatomic) CGRect containerViewFrameBottom;
+    @property (nonatomic) CGRect pullBarFrameTop;
+	@property (nonatomic) CGRect pullBarFrameBottom;
 
 #pragma mark -Camera properties-
 #pragma mark buttons
@@ -53,7 +53,7 @@
 	@property (nonatomic) BOOL isTakingVideo;
 
 #pragma mark - view controllers
-    @property (strong,nonatomic) ContentDevVC* vc_contentPage;
+    @property (strong,nonatomic) ContentDevVC* contentDevVC;
 
 
 #pragma mark taking the photo
@@ -66,8 +66,7 @@
 #pragma mark  pulldown 
     @property (nonatomic) CGPoint panStartPoint;
     @property (nonatomic) CGPoint previousTranslation;
-    @property (nonatomic) BOOL containerViewFullScreen;
-    @property (nonatomic) BOOL containerViewMSAVMode;
+	@property (nonatomic) BOOL containerViewFullScreen;
 
 #pragma mark keyboard properties
     @property (nonatomic) NSInteger keyboardHeight;
@@ -106,7 +105,6 @@
 #pragma mark Camera and Settings Icon Sizes
     #define SWITCH_ICON_SIZE 50.f
     #define FLASH_ICON_SIZE 50.f
-	#define PULLBAR_HEIGHT 70.f
 	#define CAMERA_BUTTON_WIDTH_HEIGHT 80.f
 	#define PROGRESS_CIRCLE_SIZE 100.f
 	#define PROGRESS_CIRCLE_WIDTH 10.0f
@@ -147,6 +145,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+	[self setDefaultFrames];
     [self prepareCameraView];
     
     [self createAndInstantiateGestures];
@@ -166,15 +165,14 @@
     [self registerForNotifications];
     
     //setting contentPage view controllers
-    [self setContentPage_vc];
+    [self setContentDevVC];
     [[UITextView appearance] setTintColor:[UIColor whiteColor]];
     
     [self createPullBar];
-    [self saveDefaultFrames];
 	[self createPhotoTakingButton];
     
     //make sure the frames are correctly centered
-    [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
+    [self positionContainerViewToFullScreen:NO orToMSAV:NO orToBase:YES];//Positions the container view to the right frame
 }
 
 //Iain
@@ -187,7 +185,7 @@
 -(void)viewDidAppear:(BOOL)animated
 {
 	//patch solution to the pullbar being drawn strange
-	self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y, self.pullBar.frame.size.width, PULLBAR_HEIGHT);
+	self.pullBar.frame = self.pullBarFrameTop;
 	[self.sessionManager startSession];
 }
 
@@ -205,13 +203,8 @@
 //creates the pullbar object then saves it as a property 
 -(void)createPullBar
 {
-
-    CGRect pbFrame = CGRectMake(0,self.containerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT);
-    VerbatmPullBarView* pullBar = [[VerbatmPullBarView alloc] initWithFrame:pbFrame];
+    VerbatmPullBarView* pullBar = [[VerbatmPullBarView alloc] initWithFrame:self.pullBarFrameTop];
     pullBar.customDelegate = self;
-//	[UIEffects createBlurViewOnView:pullBar];
-//	self.pullBar.translucentStyle = UIBarStyleBlack;
-//	self.pullBar.translucentAlpha = 0.5;
     [pullBar addGestureRecognizer:self.panGesture_PullBar];
     [self.view addSubview:pullBar];
     [self.view bringSubviewToFront:pullBar];
@@ -232,13 +225,14 @@
 
 
 //saves the intitial frames for the pulldown bar and the container view
--(void)saveDefaultFrames
-{
-    self.containerViewNoMSAVFrame =CGRectMake(0, 0, self.view.frame.size.width, self.containerView.frame.size.height + self.pullBar.frame.size.height);
-    self.containerViewMSAVFrame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/6 + self.pullBar.frame.size.height);
-    self.pullBarNoMSAVFrame =CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y, self.view.frame.size.width, self.pullBar.frame.size.height);
-    
-    self.pullBarMSAVFrame = CGRectMake(0, self.containerViewMSAVFrame.size.height , self.view.frame.size.width, self.pullBar.frame.size.height);
+-(void)setDefaultFrames {
+
+    self.containerViewFrameTop = CGRectMake(0, 0, self.view.frame.size.width, self.containerView.frame.size.height + PULLBAR_HEIGHT_UP);
+	self.containerViewFrameBottom = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+
+	int frameHeight = self.view.frame.size.height;
+    self.pullBarFrameTop =CGRectMake(0.f, self.containerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT_UP);
+	self.pullBarFrameBottom =CGRectMake(self.pullBarFrameTop.origin.x, (frameHeight - PULLBAR_HEIGHT_DOWN), self.pullBarFrameTop.size.width, PULLBAR_HEIGHT_DOWN);
 }
 
 
@@ -249,20 +243,20 @@
     [self.view insertSubview: self.verbatmCameraView atIndex:0];
 }
 
--(void)setContentPage_vc
+-(void)setContentDevVC
 {
-    [self getContentPagevc];
-    [self.containerView addSubview: self.vc_contentPage.view];
-    self.vc_contentPage.containerViewFrame = self.containerView.frame;
-    self.vc_contentPage.pullBarHeight = self.pullBar.frame.size.height; // Sending the pullbar height over to
+    [self getContentDevVC];
+    [self.containerView addSubview: self.contentDevVC.view];
+    self.contentDevVC.containerViewFrame = self.containerView.frame;
+    self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height; // Sending the pullbar height over to
     
 }
 
 
 //get the two independent controllers and save them
--(void) getContentPagevc
+-(void) getContentDevVC
 {
-    self.vc_contentPage = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTPAGEVC];
+    self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTPAGEVC];
 }
 
 //Iain
@@ -535,10 +529,7 @@
         if(!self.containerView.isHidden && !self.canRaise){
             [UIView animateWithDuration:0.5 animations:^{
                 
-                if(self.containerViewMSAVMode)
-                {
-                    self.previousLayout = @"MSAV";
-                }else if(self.containerViewFullScreen)
+                if(self.containerViewFullScreen)
                 {
                     self.previousLayout = @"FULLSCREEN";
                 }else
@@ -557,7 +548,7 @@
                 if(finished)
                 {
                     self.containerView.hidden = YES;
-                    [self.vc_contentPage removeKeyboardFromScreen];
+                    [self.contentDevVC removeKeyboardFromScreen];
                 }
             }];
         }
@@ -570,17 +561,17 @@
                 
                 if([self.previousLayout isEqualToString:@"BASE"])
                 {
-                    [self positionContainerViewTo:NO orTo:NO orTo:YES];//Positions the container view to the right frame
+                    [self positionContainerViewToFullScreen:NO orToMSAV:NO orToBase:YES];//Positions the container view to the right frame
                 }
                 
                 if([self.previousLayout isEqualToString:@"FULLSCREEN"])
                 {
-                    [self positionContainerViewTo:YES orTo:NO orTo:NO];//Positions the container view to the right frame
+                    [self positionContainerViewToFullScreen:YES orToMSAV:NO orToBase:NO];//Positions the container view to the right frame
                 }
                 
                 if([self.previousLayout isEqualToString:@"MSAV"])
                 {
-                    [self positionContainerViewTo:NO orTo:YES orTo:NO];//Positions the container view to the right framed
+                    [self positionContainerViewToFullScreen:NO orToMSAV:YES orToBase:NO];//Positions the container view to the right framed
                 }
             }];
         }
@@ -647,7 +638,7 @@
     {
         [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
          {
-             [self positionContainerViewTo:YES orTo:NO orTo:NO];//Positions the container view to the right frame
+             [self positionContainerViewToFullScreen:YES orToMSAV:NO orToBase:NO];//Positions the container view to the right frame
              
          }];
     }else
@@ -658,46 +649,38 @@
             
             [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
              {
-                 [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base mode
+                 [self positionContainerViewToFullScreen:NO orToMSAV:NO orToBase:YES];//Sets the frame to base mode
 
              }];
             //gets rid of the text if there was typing going on
-            [self.vc_contentPage removeImageScrollview:nil];
+            [self.contentDevVC removeImageScrollview:nil];
         }else
         {
             
             [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
              {
-                 [self positionContainerViewTo:NO orTo:NO orTo:YES];//Sets the frame to base mode
+                 [self positionContainerViewToFullScreen:NO orToMSAV:NO orToBase:YES];//Sets the frame to base mode
                  
              }];
             //gets rid of the text if there was typing going on
-            [self.vc_contentPage removeImageScrollview:nil];
+            [self.contentDevVC removeImageScrollview:nil];
         }
     }
     self.previousTranslation = CGPointMake(0, 0);//sanitize the translation difference so that the next round is sent back up
 }
 
-//sets the postion of the pull bar depending on what's happening on the screen
+//sets the position of the pull bar depending on what's happening on the screen
 -(void) positionPullBarTransitionDown: (BOOL) transitionDown
 {
     [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
      {
          if(transitionDown)
          {
-             
-             int frameHeight = self.view.frame.size.height;
-             int pullbarHeight = self.pullBar.frame.size.height;
-             CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x,(frameHeight - pullbarHeight), self.view.frame.size.width, self.pullBar.frame.size.height);
-             self.pullBar.frame = newPullBarFrame;
+             self.pullBar.frame = self.pullBarFrameBottom;
+			 [self.pullBar switchToPullUp];
          }else{
-             if(self.containerViewMSAVMode)
-             {
-                 self.pullBar.frame = self.pullBarMSAVFrame;
-             }else
-             {
-                 self.pullBar.frame = self.pullBarNoMSAVFrame;
-             }
+			 self.pullBar.frame = self.pullBarFrameTop;
+			 [self.pullBar switchToPullDown];
          }
          
      }];
@@ -705,36 +688,25 @@
 
 
 //Sets the container view to the appropriate frame
--(void) positionContainerViewTo:(BOOL) fullScreen orTo:(BOOL) MSAV orTo: (BOOL) Base
+-(void) positionContainerViewToFullScreen:(BOOL) fullScreen orToMSAV:(BOOL) MSAV orToBase: (BOOL) Base
 {
     [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
      {
         if(fullScreen)
         {
-            CGRect newContainerFrame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height-self.pullBarNoMSAVFrame.size.height);//subtract the pullbar height so the container view is never behind it
-            
             self.containerViewFullScreen = YES;
-            self.containerViewMSAVMode = NO;
-            [self.vc_contentPage freeMainScrollView:YES]; //makes sure it's scrollable
-            self.containerView.frame = newContainerFrame;
+            [self.contentDevVC freeMainScrollView:YES]; //makes sure it's scrollable
+            self.containerView.frame = self.containerViewFrameBottom;
             [self positionPullBarTransitionDown:YES];
-        }else if (MSAV)
-        {
-            self.containerViewMSAVMode = YES;
-            self.containerViewFullScreen = NO;
-            self.containerView.frame= self.containerViewMSAVFrame;
-            [self positionPullBarTransitionDown:NO];
-            
         }else if (Base)
         {
-            self.containerViewMSAVMode = NO;
             self.containerViewFullScreen = NO;
-            [self.vc_contentPage freeMainScrollView:NO]; //makes sure it's scrollable
-            self.containerView.frame = self.containerViewNoMSAVFrame;
+            [self.contentDevVC freeMainScrollView:NO]; //makes sure it's scrollable
+            self.containerView.frame = self.containerViewFrameTop;
             [self positionPullBarTransitionDown:NO];
             
         }
-         self.vc_contentPage.containerViewFrame = self.containerView.frame;
+         self.contentDevVC.containerViewFrame = self.containerView.frame;
     }];
 }
 
@@ -749,52 +721,23 @@
 }
 
 
-#pragma mark - Keyboard-
-
--(void)keyboardButtonPressed
-{
-    if(self.containerViewFullScreen)
-    {
-        [self.vc_contentPage removeKeyboardFromScreen];
-        [self hidePullBar];
-        
-    }
-    
-    if(!self.containerViewMSAVMode && !self.containerViewFullScreen)
-    {
-        [self bringUpNewTextForMSAV];//brings up the new text view for the msav
-        if(!self.containerViewFullScreen && !self.containerViewMSAVMode) self.containerViewMSAVMode=YES;
-        [self positionPullBarTransitionDown:NO];
-        //adjust the frame
-        [self positionContainerViewTo:NO orTo:YES  orTo:NO];
-        [self positionPullBarTransitionDown:NO];
-        
-    }else if (self.containerViewMSAVMode)
-    {
-        [self.vc_contentPage removeImageScrollview:nil];
-        [self positionContainerViewTo:NO orTo:NO  orTo:YES];
-        [self positionPullBarTransitionDown:NO];
-    }
-}
-
-
 //finds the last
 -(void) bringUpNewTextForMSAV
 {
     PinchView * last_textPinchView;
     
     //function backtracks from the end of the array
-    for(long i = (self.vc_contentPage.pageElements.count -1); i>=0; i--)
+    for(long i = (self.contentDevVC.pageElements.count -1); i>=0; i--)
     {
-        if([self.vc_contentPage.pageElements[i]  isKindOfClass: [PinchView class]])
+        if([self.contentDevVC.pageElements[i]  isKindOfClass: [PinchView class]])
         {
             
-            PinchView * pinch = (PinchView *)self.vc_contentPage.pageElements[i];
+            PinchView * pinch = (PinchView *)self.contentDevVC.pageElements[i];
             
             //breaks on the firs textview you find
             if(pinch.there_is_text && !pinch.there_is_picture && !pinch.there_is_video)
             {
-                last_textPinchView = (PinchView *) self.vc_contentPage.pageElements[i];
+                last_textPinchView = (PinchView *) self.contentDevVC.pageElements[i];
                 break;
             }
         }
@@ -804,25 +747,25 @@
     if(!last_textPinchView || ![[last_textPinchView getTextFromPinchObject] isEqualToString:@""])
     {
         
-        long  second_to_last_object = self.vc_contentPage.pageElements.count - 2;
+        long  second_to_last_object = self.contentDevVC.pageElements.count - 2;
         
         if(second_to_last_object >=0)
         {
-            [self.vc_contentPage newPinchObjectBelowView:self.vc_contentPage.pageElements[second_to_last_object] fromView: nil isTextView:YES];
+            [self.contentDevVC newPinchObjectBelowView:self.contentDevVC.pageElements[second_to_last_object] fromView: nil isTextView:YES];
             
-            [self.vc_contentPage createVerbatmImageScrollViewFromPinchView:self.vc_contentPage.pageElements[second_to_last_object+1] andTextView:[[VerbatmUITextView alloc]init]];
+            [self.contentDevVC createVerbatmImageScrollViewFromPinchView:self.contentDevVC.pageElements[second_to_last_object+1] andTextView:[[VerbatmUITextView alloc]init]];
         
         
         }else if (second_to_last_object <0)
         {
-            [self.vc_contentPage newPinchObjectBelowView:nil fromView: nil isTextView:YES];
+            [self.contentDevVC newPinchObjectBelowView:nil fromView: nil isTextView:YES];
             
-            [self.vc_contentPage createVerbatmImageScrollViewFromPinchView:self.vc_contentPage.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
+            [self.contentDevVC createVerbatmImageScrollViewFromPinchView:self.contentDevVC.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
         }
         
     }else if (last_textPinchView)
     {
-        [self.vc_contentPage createVerbatmImageScrollViewFromPinchView:last_textPinchView andTextView:[[VerbatmUITextView alloc]init]];
+        [self.contentDevVC createVerbatmImageScrollViewFromPinchView:last_textPinchView andTextView:[[VerbatmUITextView alloc]init]];
     }
 }
 
@@ -850,12 +793,12 @@
 #pragma mark - delegate method for media session class -
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset
 {
-    [self.vc_contentPage alertGallery: asset];
+    [self.contentDevVC alertGallery: asset];
 }
 
 -(void)hidePullBar
 {
-    int vc_cs = self.vc_contentPage.mainScrollView.contentSize.height;
+    int vc_cs = self.contentDevVC.mainScrollView.contentSize.height;
     int bar = self.view.frame.size.height;
     if( vc_cs < bar ) return;
     
@@ -871,7 +814,7 @@
 {
        [UIView animateWithDuration:0.4 animations:^{
         
-           [self positionContainerViewTo:YES orTo:NO orTo:NO];
+           [self positionContainerViewToFullScreen:YES orToMSAV:NO orToBase:NO];
 
            if(self.oldPullBarFrame.origin.y >= self.view.frame.size.height)
            {
@@ -890,16 +833,16 @@
  
     //counts up the content in the pinch view and ensures that there are some pinch objects
     int counter=0;
-    for(int i=0; i < self.vc_contentPage.pageElements.count; i++)if([self.vc_contentPage.pageElements[i] isKindOfClass:[PinchView class]])counter ++;
+    for(int i=0; i < self.contentDevVC.pageElements.count; i++)if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]])counter ++;
     if(!counter) return;
 
     NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
     
-    for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
+    for(int i=0; i < self.contentDevVC.pageElements.count; i++)
     {
-        if([self.vc_contentPage.pageElements[i] isKindOfClass:[PinchView class]])
+        if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]])
         {
-            [pinchObjectsArray addObject:self.vc_contentPage.pageElements[i]];
+            [pinchObjectsArray addObject:self.contentDevVC.pageElements[i]];
         }
     }
     
@@ -913,10 +856,10 @@
 {
     //make sure we have an article title, we have multiple pinch elements in the feed and that we
     //haven't saved this article before
-    if (self.vc_contentPage.pageElements.count >1 && ![self.vc_contentPage.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.vc_contentPage.articleTitleField.text]) {
+    if (self.contentDevVC.pageElements.count >1 && ![self.contentDevVC.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.contentDevVC.articleTitleField.text]) {
 		[self saveArticleContent];
 
-	} else if([self.vc_contentPage.articleTitleField.text isEqualToString:@""]) {
+	} else if([self.contentDevVC.articleTitleField.text isEqualToString:@""]) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_TILE_ANIMATION
 															object:nil
 														  userInfo:nil];
@@ -927,11 +870,11 @@
 -(void)saveArticleContent
 {
     NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
-    for(int i=0; i < self.vc_contentPage.pageElements.count; i++)
+    for(int i=0; i < self.contentDevVC.pageElements.count; i++)
     {
-        if([self.vc_contentPage.pageElements[i] isKindOfClass:[PinchView class]])
+        if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]])
         {
-            [pinchObjectsArray addObject:self.vc_contentPage.pageElements[i]];
+            [pinchObjectsArray addObject:self.contentDevVC.pageElements[i]];
         }
     }
     
@@ -939,10 +882,10 @@
 
 	BOOL isTesting = [MasterNavigationVC inTestingMode];
     //this creates and saves an article. the return value is unnecesary 
-    Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];
+    Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];
     if(newArticle)
     {
-        self.articleJustSaved = self.vc_contentPage.articleTitleField.text;
+        self.articleJustSaved = self.contentDevVC.articleTitleField.text;
         [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_CONTENTPAGE object:nil userInfo:nil];
     }
 }

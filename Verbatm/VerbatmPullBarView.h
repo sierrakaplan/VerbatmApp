@@ -21,4 +21,11 @@
 
 @interface VerbatmPullBarView : UIView
     @property (nonatomic, strong) id<PullBarDelegate> customDelegate;
+
+-(void)switchToPullUp;
+-(void)switchToPullDown;
+
+#define PULLBAR_HEIGHT_DOWN 50.f
+#define PULLBAR_HEIGHT_UP 30.f
+
 @end
