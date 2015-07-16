@@ -11,12 +11,13 @@
 
 @implementation VerbatmTextField
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
+//- (void) drawPlaceholderInRect:(CGRect)rect
+//{
+//	[[UIColor lightGrayColor] setFill];
+//	UIFont* italicFont = [UIFont italicSystemFontOfSize:[UIFont systemFontSize]];
+//	NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObjectsAndKeys: italicFont, NSFontAttributeName,
+//	 [NSNumber numberWithFloat:1.0], NSBaselineOffsetAttributeName, nil];
+//	[[self placeholder] drawInRect:rect withAttributes:attrsDictionary];
+//}
 
 @end

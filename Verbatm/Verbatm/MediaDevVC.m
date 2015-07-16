@@ -209,7 +209,7 @@
     CGRect pbFrame = CGRectMake(0,self.containerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT);
     VerbatmPullBarView* pullBar = [[VerbatmPullBarView alloc] initWithFrame:pbFrame];
     pullBar.customDelegate = self;
-	[UIEffects createBlurViewOnView:pullBar];
+//	[UIEffects createBlurViewOnView:pullBar];
 //	self.pullBar.translucentStyle = UIBarStyleBlack;
 //	self.pullBar.translucentAlpha = 0.5;
     [pullBar addGestureRecognizer:self.panGesture_PullBar];
@@ -234,8 +234,8 @@
 //saves the intitial frames for the pulldown bar and the container view
 -(void)saveDefaultFrames
 {
-    self.containerViewNoMSAVFrame =CGRectMake(0, 0, self.view.frame.size.width, self.containerView.frame.size.height);
-    self.containerViewMSAVFrame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/6);
+    self.containerViewNoMSAVFrame =CGRectMake(0, 0, self.view.frame.size.width, self.containerView.frame.size.height + self.pullBar.frame.size.height);
+    self.containerViewMSAVFrame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/6 + self.pullBar.frame.size.height);
     self.pullBarNoMSAVFrame =CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y, self.view.frame.size.width, self.pullBar.frame.size.height);
     
     self.pullBarMSAVFrame = CGRectMake(0, self.containerViewMSAVFrame.size.height , self.view.frame.size.width, self.pullBar.frame.size.height);

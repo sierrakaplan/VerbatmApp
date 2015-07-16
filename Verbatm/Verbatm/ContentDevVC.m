@@ -77,6 +77,11 @@
 #define AUTO_SCROLL_OFFSET 10
 #define CONTENT_SIZE_OFFSET 20
 
+#define SANDWICH_PLACEHOLDER_SIZE 23.f
+#define TITLE_PLACEHOLDER_SIZE 40.f
+#define SANDWICH_PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
+#define TITLE_PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
+
 #pragma mark Default frame properties
 @property (nonatomic) CGSize defaultPersonalScrollViewFrameSize_closedElement;
 
@@ -180,12 +185,16 @@
     self.label_AT.frame = CGRectMake(middle - self.label_AT.frame.size.width/2, self.label_AT.frame.origin.y, self.label_AT.frame.size.width, self.label_AT.frame.size.height);
     //the space to the left and to the write of the @ label
     NSInteger spaceLeft = (self.view.frame.size.width - self.label_AT.frame.size.width)/2;
-    
-    
+
     //s@ndwiches
     self.sandwichWhat.frame = CGRectMake((spaceLeft/2)-(self.sandwichWhat.frame.size.width/2), self.sandwichWhat.frame.origin.y, self.sandwichWhat.frame.size.width, self.sandwichWhat.frame.size.height);
+	float centerLeft = self.sandwichWhat.frame.origin.x + self.sandwichWhat.frame.size.width/2.0 - self.dotsLeft.frame.size.width/2.0;
+	self.dotsLeft.frame = CGRectMake(centerLeft, self.sandwichWhat.frame.origin.y + self.sandwichWhat.frame.size.height, self.dotsLeft.frame.size.width, self.dotsLeft.frame.size.height);
+
     self.sandwichWhere.frame = CGRectMake(((self.label_AT.frame.origin.x + self.label_AT.frame.size.width)+(spaceLeft/2))-(self.sandwichWhere.frame.size.width/2), self.sandwichWhere.frame.origin.y, self.sandwichWhere.frame.size.width, self.sandwichWhere.frame.size.height);
-    
+	float centerRight = self.sandwichWhere.frame.origin.x + self.sandwichWhere.frame.size.width/2.0 - self.dotsRight.frame.size.width/2.0;
+	self.dotsRight.frame = CGRectMake(centerRight, self.sandwichWhere.frame.origin.y + self.sandwichWhere.frame.size.height, self.dotsRight.frame.size.width, self.dotsRight.frame.size.height);
+
     //article title
     self.articleTitleField.frame = CGRectMake(middle - (self.articleTitleField.frame.size.width/2), self.articleTitleField.frame.origin.y, self.articleTitleField.frame.size.width, self.articleTitleField.frame.size.height);
 }
@@ -201,24 +210,33 @@
 //gives the placeholders a white color
 -(void) setPlaceholderColors
 {
+	UIColor *color = [UIColor whiteColor];
+	UIFont* sandwichPlaceholderFont = [UIFont fontWithName:SANDWICH_PLACEHOLDER_FONT size:SANDWICH_PLACEHOLDER_SIZE];
+	UIFont* titlePlaceholderFont = [UIFont fontWithName:TITLE_PLACEHOLDER_FONT size:TITLE_PLACEHOLDER_SIZE];
     if ([self.sandwichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        UIColor *color = [UIColor whiteColor];
-        self.sandwichWhat.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwichWhat.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+        self.sandwichWhat.attributedPlaceholder = [[NSAttributedString alloc]
+												   initWithString:self.sandwichWhat.placeholder
+												   attributes:@{NSForegroundColorAttributeName: color,
+																NSFontAttributeName : sandwichPlaceholderFont}];
     } else {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
     }
     if ([self.sandwichWhere respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        UIColor *color = [UIColor whiteColor];
-        self.sandwichWhere.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.sandwichWhere.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+		self.sandwichWhere.attributedPlaceholder = [[NSAttributedString alloc]
+													initWithString:self.sandwichWhere.placeholder
+													attributes:@{NSForegroundColorAttributeName: color,
+																 NSFontAttributeName : sandwichPlaceholderFont}];
     } else {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
     }
     
     if ([self.articleTitleField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-        UIColor *color = [UIColor whiteColor];
-        self.articleTitleField.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.articleTitleField.placeholder attributes:@{NSForegroundColorAttributeName: color}];
+		self.articleTitleField.attributedPlaceholder = [[NSAttributedString alloc]
+														initWithString:self.articleTitleField.placeholder
+														attributes:@{NSForegroundColorAttributeName: color,
+																	 NSFontAttributeName : titlePlaceholderFont}];
     } else {
         NSLog(@"Cannot set placeholder text's color, because deployment target is earlier than iOS 6.0");
         // TODO: Add fall-back code to set placeholder color.
