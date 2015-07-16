@@ -15,7 +15,7 @@
 #import "verbatmGalleryHandler.h"
 #import "MediaSelectTile.h"
 #import "VerbatmScrollView.h"
-#import "ILTranslucentView.h"
+#import "UIEffects.h"
 #import "PinchView.h"
 #import "VerbatmImageView.h"
 #import "VerbatmImageScrollView.h"
@@ -227,11 +227,12 @@
 
 -(void) addBlurView
 {
-    ILTranslucentView* blurView = [[ILTranslucentView alloc]init];
-    blurView.frame = self.view.frame;
-    blurView.translucentStyle = UIBarStyleBlack;
-    blurView.translucentAlpha = 2;
-    [self.view insertSubview:blurView atIndex:0];
+//    ILTranslucentView* blurView = [[ILTranslucentView alloc]init];
+//    blurView.frame = self.view.frame;
+//    blurView.translucentStyle = UIBarStyleBlack;
+//    blurView.translucentAlpha = 0.5;
+
+	[UIEffects createBlurViewOnView:self.view];
 }
 
 

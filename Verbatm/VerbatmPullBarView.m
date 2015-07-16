@@ -10,12 +10,18 @@
 #import "VerbatmImageScrollView.h"
 
 @interface VerbatmPullBarView ()
-@property (weak, nonatomic) IBOutlet UIButton *uibutton_Preview;
-@property (weak, nonatomic) IBOutlet UIButton *uibutton_Keyboard;
-@property (weak, nonatomic) IBOutlet UIButton *uibutton_Undo;
-@property (weak, nonatomic) IBOutlet UIButton *save_button;
+@property (strong, nonatomic) UIButton *previewButton;
+@property (strong, nonatomic) UIButton *undoButton;
+@property (strong, nonatomic) UIImageView *pullUpIcon;
 
-#define CENTER_BUTTON_GAP 10
+#define CENTER_BUTTON_GAP 20.f
+#define XOFFSET 20.f
+#define YOFFSET 5.f
+
+#define UNDO_BUTTON_IMAGE @"undo_button_icon"
+#define PREVIEW_BUTTON_IMAGE @"preview_button_icon"
+#define PULLUP_ICON_IMAGE @"pullup_icon"
+
 @end
 
 
@@ -26,54 +32,64 @@
 
     //load from Nib file..this initializes the background view and all its subviews
     self = [super initWithFrame:frame];
-    self = [[[NSBundle mainBundle] loadNibNamed:@"VerbatmPullBarView" owner:self options:nil]firstObject];
     if(self)
     {
-        
         self.frame = frame;
-        [self centerButtons];
+        [self createButtons];
     }
     return self;
 }
 
 
 
--(void)centerButtons
-{
-    //get the xoffset for the undo button and ensure the the keyboardbutton has the same offset
-    NSInteger undoXOffset = self.uibutton_Undo.frame.origin.x;
-     NSInteger centerPoint = self.frame.size.width /2;
-    
-    //self.uibutton_Keyboard.frame = CGRectMake(self.frame.size.width - self.uibutton_Keyboard.frame.size.width - undoXOffset, self.uibutton_Keyboard.frame.origin.y, self.uibutton_Keyboard.frame.size.width, self.uibutton_Keyboard.frame.size.height);
-    //self.uibutton_Preview.frame = CGRectMake(centerPoint - (self.uibutton_Preview.frame.size.width + CENTER_BUTTON_GAP), self.uibutton_Preview.frame.origin.y, self.uibutton_Preview.frame.size.width, self.uibutton_Preview.frame.size.height);
-    //self.save_button.frame =CGRectMake(centerPoint + CENTER_BUTTON_GAP, self.uibutton_Preview.frame.origin.y, self.save_button.frame.size.width, self.uibutton_Preview.frame.size.height);
-    
-     self.uibutton_Preview.frame = CGRectMake(centerPoint - (self.uibutton_Preview.frame.size.width/2), self.uibutton_Preview.frame.origin.y, self.uibutton_Preview.frame.size.width, self.uibutton_Preview.frame.size.height);
-    self.save_button.frame =CGRectMake(self.frame.size.width - self.save_button.frame.size.width - undoXOffset , self.save_button.frame.origin.y, self.save_button.frame.size.width, self.save_button.frame.size.height);
+-(void)createButtons {
+
+	float centerPoint = self.frame.size.width /2.f;
+	float buttonSize = self.frame.size.height - (2.f * YOFFSET);
+
+	CGRect undoButtonFrame = CGRectMake(XOFFSET, YOFFSET, buttonSize, buttonSize);
+	self.undoButton = [[UIButton alloc] initWithFrame:undoButtonFrame];
+	[self.undoButton setBackgroundImage:[UIImage imageNamed:UNDO_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.undoButton addTarget:self action:@selector(undoButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+
+	CGRect pullUpIconFrame = CGRectMake(centerPoint-buttonSize/2.f, YOFFSET, buttonSize, buttonSize);
+	self.pullUpIcon = [[UIImageView alloc] initWithFrame:pullUpIconFrame];
+	[self.pullUpIcon setImage:[UIImage imageNamed:PULLUP_ICON_IMAGE]];
+
+
+	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - buttonSize - XOFFSET, YOFFSET, buttonSize, buttonSize);
+	self.previewButton = [[UIButton alloc] initWithFrame:previewButtonFrame];
+	[self.previewButton setBackgroundImage:[UIImage imageNamed:PREVIEW_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.previewButton addTarget:self action:@selector(previewButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+
+	[self addSubview:self.undoButton];
+	[self addSubview:self.pullUpIcon];
+	[self addSubview:self.previewButton];
 }
-- (IBAction)saveButton_Touched:(UIButton *)sender
-{
-    //we have issue here when the button is pressed with the text entry up
-    if(![self.customDelegate isKindOfClass:[VerbatmImageScrollView class]])[self.customDelegate saveButtonPressed];
-}
+
+//- (IBAction)saveButton_Touched:(UIButton *)sender
+//{
+//    //we have issue here when the button is pressed with the text entry up
+//    if(![self.customDelegate isKindOfClass:[VerbatmImageScrollView class]])[self.customDelegate saveButtonPressed];
+//}
 
 
 //sends signal to the delegate that the button was pressed
-- (IBAction)previewButtonTouched:(UIButton *)sender
+- (IBAction)previewButtonPressed:(UIButton *)sender
 {
     [self.customDelegate previewButtonPressed];
     
 }
-//sends signal to the delegate that the button was pressed
-- (IBAction)KeyboardButtonTouched:(UIButton *)sender
-{
-    return;//removing this feature for now
-    [self.customDelegate keyboardButtonPressed];
-}
+////sends signal to the delegate that the button was pressed
+//- (IBAction)KeyboardButtonTouched:(UIButton *)sender
+//{
+//    return;//removing this feature for now
+//    [self.customDelegate keyboardButtonPressed];
+//}
 
 
 //sends signal to the delegate that the button was pressed
-- (IBAction)undoBotton:(UIButton *)sender
+- (IBAction)undoButtonPressed:(UIButton *)sender
 {
     [self.customDelegate undoButtonPressed];
 }

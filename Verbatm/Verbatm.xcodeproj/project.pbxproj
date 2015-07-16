@@ -14,9 +14,9 @@
 		A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A93041B55E835006C2597 /* VerbatmCameraView.m */; };
 		A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */; };
 		A5B344901B4DE18B0074B4AA /* MultiplePhotoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */; };
-		A5B344941B4DE54F0074B4AA /* VerbatmPullBarView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344931B4DE54F0074B4AA /* VerbatmPullBarView.xib */; };
 		A5B344961B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */; };
 		A5B344981B4DE88F0074B4AA /* PhotoVideoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344971B4DE88F0074B4AA /* PhotoVideoAVE.xib */; };
+		A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CB82A21B5740A000195A2E /* UIEffects.m */; };
 		C702DE701B315CDF00EE2B00 /* ArticleDisplayVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C702DE6F1B315CDF00EE2B00 /* ArticleDisplayVC.m */; };
 		C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = C716A5B119E0CA3500A5490B /* DashLineView.m */; };
 		C7174E0E19CA159D006C982D /* ILTranslucentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7174E0D19CA159D006C982D /* ILTranslucentView.m */; };
@@ -84,7 +84,6 @@
 		C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC43BF199F7427004B91A1 /* VerbatmUser.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
-		C7CCFFAB19CFA74D00E90080 /* BlurBaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFFAA19CFA74D00E90080 /* BlurBaseVC.m */; };
 		C7E6C13F1A4E394600863893 /* MultiplePhotoVideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */; };
 		C7E6C1401A4E394600863893 /* MultiVidTextPhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1321A4E394600863893 /* MultiVidTextPhotoAVE.m */; };
 		C7E6C1421A4E394600863893 /* PhotoVideoTextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1361A4E394600863893 /* PhotoVideoTextAVE.m */; };
@@ -124,9 +123,10 @@
 		A57A93041B55E835006C2597 /* VerbatmCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmCameraView.m; sourceTree = "<group>"; };
 		A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbatmCameraView.xib; sourceTree = "<group>"; };
 		A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoAVE.xib; sourceTree = "<group>"; };
-		A5B344931B4DE54F0074B4AA /* VerbatmPullBarView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbatmPullBarView.xib; sourceTree = "<group>"; };
 		A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoVideoAVE.xib; sourceTree = "<group>"; };
 		A5B344971B4DE88F0074B4AA /* PhotoVideoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhotoVideoAVE.xib; sourceTree = "<group>"; };
+		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
+		A5CB82A21B5740A000195A2E /* UIEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIEffects.m; sourceTree = "<group>"; };
 		C702DE6E1B315CDF00EE2B00 /* ArticleDisplayVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleDisplayVC.h; sourceTree = "<group>"; };
 		C702DE6F1B315CDF00EE2B00 /* ArticleDisplayVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleDisplayVC.m; sourceTree = "<group>"; };
 		C716A5B019E0CA3500A5490B /* DashLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashLineView.h; sourceTree = "<group>"; };
@@ -235,8 +235,6 @@
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
 		C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerTransitionDelegate.m; sourceTree = "<group>"; };
-		C7CCFFA919CFA74D00E90080 /* BlurBaseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlurBaseVC.h; sourceTree = "<group>"; };
-		C7CCFFAA19CFA74D00E90080 /* BlurBaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlurBaseVC.m; sourceTree = "<group>"; };
 		C7E6C12F1A4E394600863893 /* MultiplePhotoVideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiplePhotoVideoAVE.h; sourceTree = "<group>"; };
 		C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiplePhotoVideoAVE.m; sourceTree = "<group>"; };
 		C7E6C1311A4E394600863893 /* MultiVidTextPhotoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiVidTextPhotoAVE.h; sourceTree = "<group>"; };
@@ -304,6 +302,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A5CB82A41B5744B800195A2E /* UI effects */ = {
+			isa = PBXGroup;
+			children = (
+				A5CB82A11B5740A000195A2E /* UIEffects.h */,
+				A5CB82A21B5740A000195A2E /* UIEffects.m */,
+			);
+			name = "UI effects";
+			sourceTree = "<group>";
+		};
 		C74883691B488C5000E64ED9 /* Other Custom Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -314,7 +321,6 @@
 				A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */,
 				A562D50C1B506D2800F566F4 /* VideoPlayerView.m */,
 				A562D50E1B506D4500F566F4 /* VideoPlayerView.h */,
-				A5B344931B4DE54F0074B4AA /* VerbatmPullBarView.xib */,
 				C7A8E3841A61CE4D00776BD1 /* VerbatmPullBarView.h */,
 				C7A8E3851A61CE4D00776BD1 /* VerbatmPullBarView.m */,
 				C7A8E38A1A61CE9A00776BD1 /* verbatmCustomKeyboardBard.xib */,
@@ -437,8 +443,6 @@
 				C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */,
 				C7F3D46C1A4F84DF00B43238 /* UserSignUpVC.h */,
 				C7F3D46D1A4F84DF00B43238 /* UserSignUpVC.m */,
-				C7CCFFA919CFA74D00E90080 /* BlurBaseVC.h */,
-				C7CCFFAA19CFA74D00E90080 /* BlurBaseVC.m */,
 				C734FD9A19B14B8D00B2C370 /* ContentDevVC.h */,
 				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
 				9D29995919BA9042005EBC8A /* MediaDevVC.h */,
@@ -529,6 +533,7 @@
 			isa = PBXGroup;
 			children = (
 				C748836A1B489AE300E64ED9 /* Gallery */,
+				A5CB82A41B5744B800195A2E /* UI effects */,
 				F257FEC81AC21F8B00964AB5 /* Saving and Downloading */,
 				F266F3EE1A4A69F400EA0327 /* Analyzer */,
 				C750A35919D768BD0006FA88 /* Video Capture Classes */,
@@ -725,7 +730,6 @@
 				C772F2871B4BC13500CEC83D /* GMSelected.png in Resources */,
 				C7A8E38B1A61CE9A00776BD1 /* verbatmCustomKeyboardBard.xib in Resources */,
 				C772F2881B4BC13500CEC83D /* GMSelected@2x.png in Resources */,
-				A5B344941B4DE54F0074B4AA /* VerbatmPullBarView.xib in Resources */,
 				C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */,
 				C772F28A1B4BC13500CEC83D /* GMVideoIcon@2x.png in Resources */,
 				C772F27F1B4BC13500CEC83D /* GMImagePicker.strings in Resources */,
@@ -824,11 +828,11 @@
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7A8E3891A61CE7800776BD1 /* VerbatmKeyboardView.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
+				A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */,
 				C777EEA61AC90A7A003E0633 /* ArticleAquirer.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
-				C7CCFFAB19CFA74D00E90080 /* BlurBaseVC.m in Sources */,
 				C777EEA01AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m in Sources */,
 				C7F3D46E1A4F84DF00B43238 /* UserSignUpVC.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
@@ -995,7 +999,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
@@ -1020,7 +1024,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";

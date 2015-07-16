@@ -14,7 +14,6 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import "testerTransitionDelegate.h"
 #import "ContentDevVC.h"
-#import "BlurBaseVC.h"
 #import "PinchView.h"
 #import "Analyzer.h"
 #import "verbatmPullBarView.h"
@@ -23,11 +22,12 @@
 #import "CameraFocusSquare.h"
 #import "VerbatmCameraView.h"
 #import "MasterNavigationVC.h"
+#import "UIEffects.h"
 
 
 @interface MediaDevVC () <UITextFieldDelegate, MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
-    @property (weak, nonatomic) UIView *pullBar;
+    @property (weak, nonatomic) VerbatmPullBarView *pullBar;
 
 
 #pragma mark - SubViews of screen-
@@ -106,7 +106,7 @@
 #pragma mark Camera and Settings Icon Sizes
     #define SWITCH_ICON_SIZE 50.f
     #define FLASH_ICON_SIZE 50.f
-	#define PULLBAR_HEIGHT 36.f
+	#define PULLBAR_HEIGHT 70.f
 	#define CAMERA_BUTTON_WIDTH_HEIGHT 80.f
 	#define PROGRESS_CIRCLE_SIZE 100.f
 	#define PROGRESS_CIRCLE_WIDTH 10.0f
@@ -119,7 +119,7 @@
 
 #pragma mark Session timer time
     #define TIME_FOR_SESSION_TO_RESUME 0.5f
-    #define NUM_VID_SECONDS 3
+    #define NUM_VID_SECONDS 10
 	#define MINIMUM_PRESS_DURATION_FOR_VIDEO 0.3f
 
 #pragma mark Transition helpers
@@ -205,13 +205,17 @@
 //creates the pullbar object then saves it as a property 
 -(void)createPullBar
 {
+
     CGRect pbFrame = CGRectMake(0,self.containerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT);
-    VerbatmPullBarView * pullBar = [[VerbatmPullBarView alloc] initWithFrame:pbFrame];
+    VerbatmPullBarView* pullBar = [[VerbatmPullBarView alloc] initWithFrame:pbFrame];
     pullBar.customDelegate = self;
-    self.pullBar = pullBar;
+	[UIEffects createBlurViewOnView:pullBar];
+//	self.pullBar.translucentStyle = UIBarStyleBlack;
+//	self.pullBar.translucentAlpha = 0.5;
     [pullBar addGestureRecognizer:self.panGesture_PullBar];
     [self.view addSubview:pullBar];
     [self.view bringSubviewToFront:pullBar];
+	self.pullBar = pullBar;
 }
 
 -(void) removeStatusBar
@@ -932,9 +936,9 @@
     }
     
     if(!pinchObjectsArray.count) return;//if there is not article then exit
-    
-    //this creates and saves an article. the return value is unnecesary
+
 	BOOL isTesting = [MasterNavigationVC inTestingMode];
+    //this creates and saves an article. the return value is unnecesary 
     Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.vc_contentPage.articleTitleField.text  andSandWichWhat:self.vc_contentPage.sandwichWhat.text  Where:self.vc_contentPage.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];
     if(newArticle)
     {
