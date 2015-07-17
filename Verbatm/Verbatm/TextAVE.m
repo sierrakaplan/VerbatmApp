@@ -7,7 +7,6 @@
 //
 
 #import "TextAVE.h"
-#import "ILTranslucentView.h"
 
 @interface TextAVE() <UITextViewDelegate>
 #define DEFAULT_FONT_FAMILY @"Arial"

@@ -11,7 +11,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 
 @protocol MediaSessionManagerDelegate<NSObject>
-@required
+@optional
 //notifies any one conforming to the protocol that an asset has been saved.
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset;
 @end

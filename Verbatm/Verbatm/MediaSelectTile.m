@@ -31,13 +31,13 @@
         [self addButtonsAsSubviews];
         
         [self setBackgroundColor:[UIColor clearColor]];
-        [self.selectText setBackgroundImage:[UIImage imageNamed:@"photo_button"] forState: UIControlStateNormal];
-        [self.selectMedia setBackgroundImage:[UIImage imageNamed:@"text_button"] forState: UIControlStateNormal];
+        [self.selectText setImage:[UIImage imageNamed:@"photo_button"] forState: UIControlStateNormal];
+        [self.selectMedia setImage:[UIImage imageNamed:@"text_button"] forState: UIControlStateNormal];
         
         UIImage *highlightedIconText = [self imageOverlayed:[UIImage imageNamed:@"photo_button"] withColor:[UIColor whiteColor]];
         UIImage *highlightedIconImage = [self imageOverlayed:[UIImage imageNamed:@"text_button"] withColor:[UIColor whiteColor]];
-        [self.selectText setBackgroundImage:highlightedIconText forState:UIControlStateHighlighted];
-        [self.selectMedia setBackgroundImage:highlightedIconImage forState:UIControlStateHighlighted];
+        [self.selectText setImage:highlightedIconText forState:UIControlStateSelected | UIControlStateHighlighted];
+        [self.selectMedia setImage:highlightedIconImage forState:UIControlStateSelected | UIControlStateHighlighted];
     }
     return self;
     self.optionSelected = NO;

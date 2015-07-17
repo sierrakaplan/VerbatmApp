@@ -8,7 +8,6 @@
 
 #import "MultiVidTextPhotoAVE.h"
 #import "MultiplePhotoVideoAVE.h"
-#import "ILTranslucentView.h"
 #import "TextAVE.h"
 @interface MultiVidTextPhotoAVE()
 

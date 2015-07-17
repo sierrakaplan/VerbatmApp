@@ -30,8 +30,8 @@
 -(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView;
 -(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView;
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
--(void)freeMainScrollView:(BOOL) isFree; // either locks the scroll view or frees it
--(void)alertGallery:(ALAsset*)asset;
+// either locks the scroll view or frees it
+-(void)setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;
 @property(nonatomic) NSInteger pullBarHeight;
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;

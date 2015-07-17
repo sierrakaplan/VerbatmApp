@@ -9,7 +9,6 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <math.h>
 #import "MediaSessionManager.h"
-#import "ILTranslucentView.h"
 #import "ContentDevVC.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "testerTransitionDelegate.h"
@@ -25,157 +24,144 @@
 #import "UIEffects.h"
 
 
-@interface MediaDevVC () <UITextFieldDelegate, MediaSessionManagerDelegate, PullBarDelegate>
+@interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
-    @property (weak, nonatomic) VerbatmPullBarView *pullBar;
+@property (strong, nonatomic) VerbatmPullBarView *pullBar;
 
-
-#pragma mark - SubViews of screen-
+#pragma mark - SubViews of screen
 @property (strong, nonatomic) IBOutlet UIPanGestureRecognizer *panGesture_PullBar;
-    @property (weak, nonatomic) IBOutlet UIView *containerView;
-    @property (strong, nonatomic) VerbatmCameraView *verbatmCameraView;
-    @property (strong, nonatomic) MediaSessionManager* sessionManager;
-    @property (strong, nonatomic) CAShapeLayer* circle;
-	@property (strong, nonatomic) CameraFocusSquare* focusSquare;
+// view with content development part of ADK
+@property (weak, nonatomic) IBOutlet UIView *contentContainerView;
+@property (strong, nonatomic) VerbatmCameraView *verbatmCameraView;
+@property (strong, nonatomic) MediaSessionManager* sessionManager;
+@property (strong, nonatomic) CAShapeLayer* circle;
+@property (strong, nonatomic) CameraFocusSquare* focusSquare;
 
-    @property(nonatomic) CGRect containerViewFrameTop;
-	@property(nonatomic) CGRect containerViewFrameBottom;
-    @property (nonatomic) CGRect pullBarFrameTop;
-	@property (nonatomic) CGRect pullBarFrameBottom;
+@property(nonatomic) CGRect contentContainerViewFrameTop;
+@property(nonatomic) CGRect contentContainerViewFrameBottom;
+@property (nonatomic) CGRect pullBarFrameTop;
+@property (nonatomic) CGRect pullBarFrameBottom;
 
-#pragma mark -Camera properties-
+#pragma mark - Camera properties
 #pragma mark buttons
-    @property (strong, nonatomic)UIButton* switchCameraButton;
-    @property (strong, nonatomic)UIButton* switchFlashButton;
-    @property (nonatomic) CGAffineTransform flashTransform;
-    @property (nonatomic) CGAffineTransform switchTransform;
-    @property(nonatomic,strong) UIButton * capturePicButton;
-	@property (nonatomic) BOOL isTakingVideo;
+@property (strong, nonatomic)UIButton* switchCameraButton;
+@property (strong, nonatomic)UIButton* switchFlashButton;
+@property (nonatomic) CGAffineTransform flashTransform;
+@property (nonatomic) CGAffineTransform switchTransform;
+@property(nonatomic,strong) UIButton * capturePicButton;
+@property (nonatomic) BOOL isTakingVideo;
 
-#pragma mark - view controllers
-    @property (strong,nonatomic) ContentDevVC* contentDevVC;
+#pragma mark - View controllers
+@property (strong,nonatomic) ContentDevVC* contentDevVC;
 
 
 #pragma mark taking the photo
-    @property (nonatomic, strong) NSTimer *timer;
-    @property (nonatomic) BOOL flashOn;
-    @property (nonatomic) BOOL canRaise;
-    @property (nonatomic)CGPoint currentPoint;
-    @property (nonatomic) UIDeviceOrientation startOrientation;
+@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic) BOOL flashOn;
+@property (nonatomic) BOOL canRaise;
+@property (nonatomic)CGPoint currentPoint;
+@property (nonatomic) UIDeviceOrientation startOrientation;
 
-#pragma mark  pulldown 
-    @property (nonatomic) CGPoint panStartPoint;
-    @property (nonatomic) CGPoint previousTranslation;
-	@property (nonatomic) BOOL containerViewFullScreen;
+#pragma mark  pulldown
+@property (nonatomic) CGPoint panStartPoint;
+@property (nonatomic) CGPoint previousTranslation;
+@property (nonatomic) ContentContainerViewMode contentContainerViewMode;
+//used when we hide the pullbar so we can restore it to what it was before
+@property (nonatomic) CGRect oldPullBarFrame;
+//layout of the screen before it was made landscape
+@property(nonatomic) ContentContainerViewMode previousMode;
 
 #pragma mark keyboard properties
-    @property (nonatomic) NSInteger keyboardHeight;
+@property (nonatomic) NSInteger keyboardHeight;
 
-@property (nonatomic) CGRect oldPullBarFrame; //used when we hide the pullbar so we can restore it to what it was before
-//layout of the screen before it was made landscape- MSAV BASE FULLSCREEEN
-@property(nonatomic) NSString * previousLayout;
-@property(nonatomic) NSString * articleJustSaved;//this stores the article title that the user just saved. This is in order to prevent saving the same article multiple times
+//this stores the article title that the user just saved. This is in order to prevent saving the same article multiple times
+@property(nonatomic) NSString * articleJustSaved;
+
 #pragma mark Filter helpers
 #define FILTER_NOTIFICATION_ORIGINAL @"addOriginalFilter"
 #define FILTER_NOTIFICATION_BW @"addBlackAndWhiteFilter"
 #define FILTER_NOTIFICATION_WARM @"addWarmFilter"
 
-#pragma mark helpers for VCs
-    #define ID_FOR_CONTENTPAGEVC @"contentPage"
-    #define ID_FOR_BOTTOM_SPLITSCREENVC @"splitScreenBottomView"
-    #define NUMBER_OF_VCS 2
-    #define VC_TRANSITION_ANIMATION_TIME 0.5
-    #define ALBUM_NAME @"Verbatm"
-    #define ASPECT_RATIO 1
-
-#pragma mark snake color
-    #define RGB_LEFT_SIDE 255,225,255, 0.7     //247, 0, 99, 1
-    #define RGB_RIGHT_SIDE 255,225,255, 0.7
-    #define RGB_BOTTOM_SIDE 255,225,255, 0.7
-    #define RGB_TOP_SIDE 255,225,255, 0.7
+#pragma mark Helpers for content page container
+#define ID_FOR_CONTENTPAGEVC @"contentPage"
+#define ID_FOR_BOTTOM_SPLITSCREENVC @"splitScreenBottomView"
+#define NUMBER_OF_VCS 2
+#define CONTAINER_VIEW_TRANSITION_ANIMATION_TIME 0.5
+#define PULLBAR_TRANSITION_ANIMATION_TIME 0.3
+#define ALBUM_NAME @"Verbatm"
+#define ASPECT_RATIO 1
 
 #pragma mark Camera and Settings Icons
-    #define CAMERA_ICON_FRONT @"camera_back"
-    #define FLASH_ICON_ON @"lightbulb_final_OFF(white)"
-    #define FLASH_ICON_OFF @"lightbulb_final_OFF(white)"
-	#define CAMERA_BUTTON_IMAGE @"camera_button"
-	#define RECORDING_IMAGE @"recording_button"
-	#define RECORDING_DOT @"recording_dot"
+#define CAMERA_ICON_FRONT @"camera_back"
+#define FLASH_ICON_ON @"lightbulb_final_OFF(white)"
+#define FLASH_ICON_OFF @"lightbulb_final_OFF(white)"
+#define CAMERA_BUTTON_IMAGE @"camera_button"
+#define RECORDING_IMAGE @"recording_button"
+#define RECORDING_DOT @"recording_dot"
 
 #pragma mark Camera and Settings Icon Sizes
-    #define SWITCH_ICON_SIZE 50.f
-    #define FLASH_ICON_SIZE 50.f
-	#define CAMERA_BUTTON_WIDTH_HEIGHT 80.f
-	#define PROGRESS_CIRCLE_SIZE 100.f
-	#define PROGRESS_CIRCLE_WIDTH 10.0f
-	#define PROGRESS_CIRCLE_OPACITY 0.6f
+#define SWITCH_ICON_SIZE 50.f
+#define FLASH_ICON_SIZE 50.f
+#define CAMERA_BUTTON_WIDTH_HEIGHT 80.f
+#define PROGRESS_CIRCLE_SIZE 100.f
+#define PROGRESS_CIRCLE_WIDTH 10.0f
+#define PROGRESS_CIRCLE_OPACITY 0.6f
 
 #pragma mark Camera and Settings Icon Positions
-    #define FLASH_START_POSITION  10.f, 0.f
-    #define SWITCH_CAMERA_START_POSITION 260.f, 5.f
-	#define CAMERA_BUTTON_Y_OFFSET 20.f
+#define FLASH_START_POSITION  10.f, 0.f
+#define SWITCH_CAMERA_START_POSITION 260.f, 5.f
+#define CAMERA_BUTTON_Y_OFFSET 20.f
 
 #pragma mark Session timer time
-    #define TIME_FOR_SESSION_TO_RESUME 0.5f
-    #define NUM_VID_SECONDS 10
-	#define MINIMUM_PRESS_DURATION_FOR_VIDEO 0.3f
+#define TIME_FOR_SESSION_TO_RESUME 0.5f
+#define NUM_VID_SECONDS 10
+#define MINIMUM_PRESS_DURATION_FOR_VIDEO 0.3f
 
 #pragma mark Transition helpers
-    #define TRANSITION_MARGIN_OFFSET 50.f
-	#define TRANSLATION_THRESHOLD 70
+#define TRANSITION_MARGIN_OFFSET 50.f
+#define TRANSLATION_THRESHOLD 70
 
 #pragma mark Notifications
-	#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
-	#define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
-	#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
-	#define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
+#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
+#define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
+#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
+#define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
 
 @end
 
 @implementation MediaDevVC
 
-#pragma mark - Synthesize-
+#pragma mark - Synthesize
+
 @synthesize verbatmCameraView = _verbatmCameraView;
 @synthesize sessionManager = _sessionManager;
 @synthesize timer = _timer;
 @synthesize switchCameraButton = _switchCameraButton;
 
 
-#pragma mark - Preparing View-
+#pragma mark - Preparing View
+
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
+	[super viewDidLoad];
 	[self setDefaultFrames];
-    [self prepareCameraView];
-    
-    [self createAndInstantiateGestures];
-    
-    self.canRaise = NO;
-    self.currentPoint = CGPointZero;
-    
-    //updated by Iain
-    [self setDelegates];
-    
-    //for postitioning the blurView when the orientation of the device changes
-    [[UIDevice currentDevice]beginGeneratingDeviceOrientationNotifications];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(positionContainerView) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
-    
-    
-    //register for keyboard events
-    [self registerForNotifications];
-    
-    //setting contentPage view controllers
-    [self setContentDevVC];
-    [[UITextView appearance] setTintColor:[UIColor whiteColor]];
-    
-    [self createPullBar];
-	[self createPhotoTakingButton];
-    
-    //make sure the frames are correctly centered
-    [self positionContainerViewToFullScreen:NO orToMSAV:NO orToBase:YES];//Positions the container view to the right frame
+	[self createSubViews];
+	[self createAndInstantiateGestures];
+	[self setContentDevVC];
+	[self setDelegates];
+	[self registerForNotifications];
+
+	//make sure the frames are correctly centered
+	self.canRaise = NO;
+	self.currentPoint = CGPointZero;
+	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
 }
 
-//Iain
+-(void)viewWillLayoutSubviews{
+	[super viewWillLayoutSubviews];
+	[self positionContainerView];
+}
+
 -(void) viewDidLayoutSubviews
 {
 	[super viewDidLayoutSubviews];
@@ -193,156 +179,194 @@
 	[self.sessionManager stopSession];
 }
 
+#pragma mark - Initialization and Instantiation
 
--(NSString *)articleJustSaved
+#pragma mark Lazy instantiation
+
+-(MediaSessionManager*)sessionManager
 {
-    if(!_articleJustSaved)_articleJustSaved = @"";
-    return _articleJustSaved;
+	if(!_sessionManager){
+		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
+	}
+	return _sessionManager;
 }
 
-//creates the pullbar object then saves it as a property 
--(void)createPullBar
+-(NSString *) articleJustSaved
 {
-    VerbatmPullBarView* pullBar = [[VerbatmPullBarView alloc] initWithFrame:self.pullBarFrameTop];
-    pullBar.customDelegate = self;
-    [pullBar addGestureRecognizer:self.panGesture_PullBar];
-    [self.view addSubview:pullBar];
-    [self.view bringSubviewToFront:pullBar];
-	self.pullBar = pullBar;
+	if(!_articleJustSaved)_articleJustSaved = @"";
+	return _articleJustSaved;
 }
 
--(void) removeStatusBar
+//creates the camera view with the preview session
+-(VerbatmCameraView*)verbatmCameraView
 {
-    //remove the status bar
-    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-        // iOS 7
-        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-    } else {
-        // iOS 6
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-    }
+	if(!_verbatmCameraView){
+		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame:  self.view.frame];
+	}
+	return _verbatmCameraView;
 }
 
+//get the two independent controllers and save them
+-(void) getContentDevVC {
+	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTPAGEVC];
+}
+
+-(void)setContentDevVC {
+	[self getContentDevVC];
+	[self.contentContainerView addSubview: self.contentDevVC.view];
+	self.contentDevVC.containerViewFrame = self.contentContainerView.frame;
+	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height; // Sending the pullbar height over to
+}
+
+
+#pragma mark Create Sub Views
 
 //saves the intitial frames for the pulldown bar and the container view
 -(void)setDefaultFrames {
 
-    self.containerViewFrameTop = CGRectMake(0, 0, self.view.frame.size.width, self.containerView.frame.size.height + PULLBAR_HEIGHT_UP);
-	self.containerViewFrameBottom = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
+	self.contentContainerViewFrameTop = CGRectMake(0, 0, self.view.frame.size.width, self.contentContainerView.frame.size.height + PULLBAR_HEIGHT_PULLDOWN_MODE);
+	self.contentContainerViewFrameBottom = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
 	int frameHeight = self.view.frame.size.height;
-    self.pullBarFrameTop =CGRectMake(0.f, self.containerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT_UP);
-	self.pullBarFrameBottom =CGRectMake(self.pullBarFrameTop.origin.x, (frameHeight - PULLBAR_HEIGHT_DOWN), self.pullBarFrameTop.size.width, PULLBAR_HEIGHT_DOWN);
+	self.pullBarFrameTop = CGRectMake(0.f, self.contentContainerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT_PULLDOWN_MODE);
+	self.pullBarFrameBottom = CGRectMake(self.pullBarFrameTop.origin.x, (frameHeight - PULLBAR_HEIGHT_MENU_MODE), self.pullBarFrameTop.size.width, PULLBAR_HEIGHT_MENU_MODE);
 }
 
-
-
-//Iain
--(void) prepareCameraView
-{
-    [self.view insertSubview: self.verbatmCameraView atIndex:0];
+-(void) createSubViews {
+	[self prepareCameraView];
+	[self createCapturePicButton];
+	[self createPullBar];
 }
 
--(void)setContentDevVC
-{
-    [self getContentDevVC];
-    [self.containerView addSubview: self.contentDevVC.view];
-    self.contentDevVC.containerViewFrame = self.containerView.frame;
-    self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height; // Sending the pullbar height over to
-    
+-(void) prepareCameraView {
+	[self.view insertSubview: self.verbatmCameraView atIndex:0];
 }
 
-
-//get the two independent controllers and save them
--(void) getContentDevVC
-{
-    self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTPAGEVC];
-}
-
-//Iain
--(void) createAndInstantiateGestures
-{
-    [self createTapGestureToFocus];
-    [self createPinchGestureToZoom];
-}
-
-//Iain
--(void) createAndInstantiateCameraButtons
-{
-    [self createSwitchCameraButton];
-    [self createSwitchFlashButton];
-}
-
-//Iain
-//Tells the screen to hide the status bar
-- (BOOL)prefersStatusBarHidden
-{
-    return YES;
-}
-
-//Iain
--(void) setDelegates
-{
-    self.sessionManager.delegate = self;
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-#pragma mark  creating views
-
-//by Lucio
-//creates the camera view with the preview session
--(VerbatmCameraView*)verbatmCameraView
-{
-    if(!_verbatmCameraView){
-        _verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame:  self.view.frame];
-    }
-    return _verbatmCameraView;
-}
-
-//By Lucio
--(void)createSwitchCameraButton
-{
-    self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.switchCameraButton setImage:[UIImage imageNamed:CAMERA_ICON_FRONT] forState:UIControlStateNormal];
-    [self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
-    [self.switchCameraButton addTarget:self action:@selector(switchFaces:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview: self.switchCameraButton];
-    self.switchTransform = self.switchCameraButton.transform;
-}
-
-//By Lucio
--(void)createSwitchFlashButton
-{
-    self.switchFlashButton= [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_OFF] forState:UIControlStateNormal];
-    [self.switchFlashButton setFrame:CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
-    [self.switchFlashButton addTarget:self action:@selector(switchFlash:) forControlEvents:UIControlEventTouchUpInside];
-    self.flashOn = NO;
-    [self.view addSubview: self.switchFlashButton];
-    self.flashTransform = self.switchFlashButton.transform;
-}
-
-
--(void)createPhotoTakingButton
-{
+-(void)createCapturePicButton {
 	self.isTakingVideo = NO;
-    self.capturePicButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
-    [self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2.f, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
-    [self.capturePicButton addTarget:self action:@selector(tappedPhotoButton:) forControlEvents:UIControlEventTouchUpInside];
+	self.capturePicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2.f, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
+	[self.capturePicButton addTarget:self action:@selector(tappedPhotoButton:) forControlEvents:UIControlEventTouchUpInside];
 
 	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(takeVideo:)];
 	longPress.minimumPressDuration = MINIMUM_PRESS_DURATION_FOR_VIDEO;
 	[self.capturePicButton addGestureRecognizer:longPress];
-	[self.verbatmCameraView addGestureRecognizer:longPress];
 
-    [self.verbatmCameraView addSubview:self.capturePicButton];
+	[self.verbatmCameraView addSubview:self.capturePicButton];
 }
+
+//creates the pullbar object then saves it as a property
+-(void)createPullBar {
+	self.pullBar = [[VerbatmPullBarView alloc] initWithFrame:self.pullBarFrameTop];
+	[self.panGesture_PullBar setDelegate:self.pullBar];
+	[self.pullBar addGestureRecognizer:self.panGesture_PullBar];
+	[self.view addSubview:self.pullBar];
+	[self.view bringSubviewToFront:self.pullBar];
+}
+
+/* NOT IN USE
+-(void)createSwitchCameraButton
+{
+	self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.switchCameraButton setImage:[UIImage imageNamed:CAMERA_ICON_FRONT] forState:UIControlStateNormal];
+	[self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+	[self.switchCameraButton addTarget:self action:@selector(switchFaces:) forControlEvents:UIControlEventTouchUpInside];
+	[self.view addSubview: self.switchCameraButton];
+	self.switchTransform = self.switchCameraButton.transform;
+}
+
+-(void)createSwitchFlashButton
+{
+	self.switchFlashButton= [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_OFF] forState:UIControlStateNormal];
+	[self.switchFlashButton setFrame:CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
+	[self.switchFlashButton addTarget:self action:@selector(switchFlash:) forControlEvents:UIControlEventTouchUpInside];
+	self.flashOn = NO;
+	[self.view addSubview: self.switchFlashButton];
+	self.flashTransform = self.switchFlashButton.transform;
+}
+*/
+
+#pragma mark Create Gestures
+-(void) createAndInstantiateGestures {
+	[self createTapGestureToFocus];
+	[self createPinchGestureToZoom];
+}
+
+-(void) createTapGestureToFocus
+{
+	UITapGestureRecognizer* focusRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(focusPhoto:)];
+	//    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
+	focusRecognizer.numberOfTapsRequired = 1;
+	focusRecognizer.cancelsTouchesInView =  NO;
+	[focusRecognizer setDelegate:self.verbatmCameraView];
+	[self.verbatmCameraView addGestureRecognizer:focusRecognizer];
+}
+
+-(void) createPinchGestureToZoom {
+	UIPinchGestureRecognizer* pinchRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(zoomPreview:)];
+	[pinchRecognizer setDelegate:self.verbatmCameraView];
+	[self.verbatmCameraView addGestureRecognizer:pinchRecognizer];
+}
+
+#pragma mark Other Initialization
+-(void) setDelegates
+{
+	self.sessionManager.delegate = self;
+	self.pullBar.delegate = self;
+}
+
+-(void)registerForNotifications
+{
+
+	//Register for notifications to show and remove the pullbar
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(hidePullBar)
+												 name:@"Notification_shouldHidePullBar"
+											   object:nil];
+	//Register for notifications to show and remove the pullbar
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(showPullBar)
+												 name:@"Notification_shouldShowPullBar"
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(positionContainerView)
+												 name:UIDeviceOrientationDidChangeNotification
+											   object: [UIDevice currentDevice]];
+
+	//for postitioning the blurView when the orientation of the device changes
+	[[UIDevice currentDevice]beginGeneratingDeviceOrientationNotifications];
+}
+
+//Tells the screen to hide the status bar
+- (BOOL)prefersStatusBarHidden
+{
+	return YES;
+}
+
+-(void) removeStatusBar {
+	if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+		// iOS 7
+		[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+	} else {
+		// iOS 6
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+	}
+}
+
+
+#pragma mark Memory management
+
+- (void)didReceiveMemoryWarning
+{
+	// TODO: dispose of any resources that can be recreated
+	[super didReceiveMemoryWarning];
+}
+
+
+#pragma mark - Capture Media
 
 - (IBAction)tappedPhotoButton:(id)sender {
 	if(self.isTakingVideo) {
@@ -352,17 +376,92 @@
 	}
 }
 
-#pragma mark creating gestures
-
--(void) createTapGestureToFocus
+- (IBAction) takePhoto:(id)sender
 {
-	UITapGestureRecognizer* focusRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(focusPhoto:)];
-//    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
-    focusRecognizer.numberOfTapsRequired = 1;
-    focusRecognizer.cancelsTouchesInView =  NO;
-	[focusRecognizer setDelegate:self.verbatmCameraView];
-    [self.verbatmCameraView addGestureRecognizer:focusRecognizer];
+	[self.sessionManager captureImage: !self.canRaise];
+	[self freezeFrame];
 }
+
+-(void) takeVideo:(UILongPressGestureRecognizer*)sender {
+
+	if(!self.isTakingVideo && sender.state == UIGestureRecognizerStateBegan){
+		self.isTakingVideo = YES;
+		[self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
+		[self createCircleVideoProgressView];
+		self.timer = [NSTimer scheduledTimerWithTimeInterval:NUM_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
+		[self.capturePicButton setImage:[UIImage imageNamed:RECORDING_IMAGE] forState:UIControlStateNormal];
+
+	}
+}
+
+-(void) endVideoRecordingSession {
+
+	if(!self.circle) return;
+	self.isTakingVideo = NO;
+	[self.sessionManager stopVideoRecording];
+	[self clearCircleVideoProgressView];  //removes the video progress bar
+	[self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.timer invalidate];
+	self.timer = nil;
+	[self freezeFrame];
+}
+
+// When a photo is taken "freeze" it on the screen) for a short period of time before removing it
+-(void)freezeFrame {
+	self.sessionManager.videoPreview.connection.enabled = NO;
+	[NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession:) userInfo:nil repeats:NO];
+}
+
+// Resume session after freezing frame on taking picture/video
+-(void)resumeSession:(NSTimer*)timer {
+	self.sessionManager.videoPreview.connection.enabled = YES;
+	[timer invalidate];
+}
+
+// Create circle view showing video progress
+-(void) createCircleVideoProgressView {
+
+	self.circle = [[CAShapeLayer alloc]init];
+	[self animateVideoProgressPath];
+	self.circle.frame = self.view.bounds;
+	self.circle.fillColor = [UIColor clearColor].CGColor;
+	self.circle.strokeColor = [UIColor colorWithRed:1.f green:0.f blue:0.f alpha:PROGRESS_CIRCLE_OPACITY].CGColor;
+	self.circle.lineWidth = PROGRESS_CIRCLE_WIDTH;
+	[self.view.layer addSublayer:self.circle];
+
+	CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+	animation.duration = NUM_VID_SECONDS;
+	animation.fromValue = [NSNumber numberWithFloat:0.0f];
+	animation.toValue = [NSNumber numberWithFloat:1.0f];
+	animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+	[self.circle addAnimation:animation forKey:@"strokeEnd"];
+
+}
+
+// Animate circle view showing video progress
+-(void) animateVideoProgressPath {
+
+	CGMutablePathRef path = CGPathCreateMutable();
+	CGPoint center = CGPointMake((self.view.frame.size.width)/2.f, self.view.frame.size.height - CAMERA_BUTTON_Y_OFFSET - CAMERA_BUTTON_WIDTH_HEIGHT/2.f);
+	CGRect frame = CGRectMake(center.x - PROGRESS_CIRCLE_SIZE/2.f, center.y -PROGRESS_CIRCLE_SIZE/2.f, PROGRESS_CIRCLE_SIZE, PROGRESS_CIRCLE_SIZE);
+	float midX = CGRectGetMidX(frame);
+	float midY = CGRectGetMidY(frame);
+	CGAffineTransform t = CGAffineTransformConcat(
+												  CGAffineTransformConcat(
+																		  CGAffineTransformMakeTranslation(-midX, -midY),
+																		  CGAffineTransformMakeRotation(-(M_PI/2.f))),
+												  CGAffineTransformMakeTranslation(midX, midY));
+	CGPathAddEllipseInRect(path, &t, frame);
+	self.circle.path = path;
+}
+
+-(void) clearCircleVideoProgressView {
+	[self.circle removeFromSuperlayer];
+	self.circle = nil;
+}
+
+
+#pragma mark - Actions to enhance the camera view
 
 -(void) focusPhoto: (UITapGestureRecognizer *)sender {
 	if (sender.state == UIGestureRecognizerStateEnded) {
@@ -386,12 +485,6 @@
 	}
 }
 
--(void) createPinchGestureToZoom {
-	UIPinchGestureRecognizer* pinchRecognizer = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(zoomPreview:)];
-	[pinchRecognizer setDelegate:self.verbatmCameraView];
-	[self.verbatmCameraView addGestureRecognizer:pinchRecognizer];
-}
-
 - (void) zoomPreview:(UIPinchGestureRecognizer *)recognizer {
 
 	float scale = self.verbatmCameraView.beginGestureScale * recognizer.scale;
@@ -399,464 +492,227 @@
 	[self.sessionManager zoomPreviewWithScale:self.verbatmCameraView.effectiveScale];
 }
 
-#pragma mark -touch gesture selectors
-//Lucio
-- (IBAction)takePhoto:(id)sender
-{
-	[self.sessionManager captureImage: !self.canRaise];
-    [self freezeFrame];
-}
-
--(void)takeVideo:(UILongPressGestureRecognizer*)sender
-{
-	if(!self.isTakingVideo && sender.state == UIGestureRecognizerStateBegan){
-		self.isTakingVideo = YES;
-		[self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
-		[self circleProgressView];
-		self.timer = [NSTimer scheduledTimerWithTimeInterval:NUM_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
-		[self.capturePicButton setImage:[UIImage imageNamed:RECORDING_IMAGE] forState:UIControlStateNormal];
-
-	}
-}
-
-//when a photo is taken- present it ("freeze" it on the screen) for a short period of time before removing it
--(void)freezeFrame
-{
-//    UIImageView* dummyView = [[UIImageView alloc]initWithFrame: self.verbatmCameraView.frame];
-//    dummyView.backgroundColor = [UIColor blackColor];
-//    [self.view insertSubview:dummyView aboveSubview:self.verbatmCameraView];
-
-	self.sessionManager.videoPreview.connection.enabled = NO;
-    [NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession:) userInfo:nil repeats:NO];
-}
-
-//Lucio
--(void)resumeSession:(NSTimer*)timer
-{
-//    UIView* dummyView = (UIView*)timer.userInfo;
-//    [dummyView removeFromSuperview];
-
-	self.sessionManager.videoPreview.connection.enabled = YES;
-    [timer invalidate];
-}
-
--(void)circleProgressView {
-
-    self.circle = [[CAShapeLayer alloc]init];
-    [self createProgressPath];
-    self.circle.frame = self.view.bounds;
-    self.circle.fillColor = [UIColor clearColor].CGColor;
-    self.circle.strokeColor = [UIColor colorWithRed:1.f green:0.f blue:0.f alpha:PROGRESS_CIRCLE_OPACITY].CGColor;
-    self.circle.lineWidth = PROGRESS_CIRCLE_WIDTH;
-    [self.view.layer addSublayer:self.circle];
-    
-    CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-    animation.duration = NUM_VID_SECONDS;
-    animation.fromValue = [NSNumber numberWithFloat:0.0f];
-    animation.toValue = [NSNumber numberWithFloat:1.0f];
-    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-    [self.circle addAnimation:animation forKey:@"strokeEnd"];
-
-}
-
-// creates circle around touch to show video recording progress
--(void)createProgressPath {
-
-    CGMutablePathRef path = CGPathCreateMutable();
-	CGPoint center = CGPointMake((self.view.frame.size.width)/2.f, self.view.frame.size.height - CAMERA_BUTTON_Y_OFFSET - CAMERA_BUTTON_WIDTH_HEIGHT/2.f);
-	CGRect frame = CGRectMake(center.x - PROGRESS_CIRCLE_SIZE/2.f, center.y -PROGRESS_CIRCLE_SIZE/2.f, PROGRESS_CIRCLE_SIZE, PROGRESS_CIRCLE_SIZE);
-	float midX = CGRectGetMidX(frame);
-	float midY = CGRectGetMidY(frame);
-    CGAffineTransform t = CGAffineTransformConcat(
-                                                  CGAffineTransformConcat(
-                                                                          CGAffineTransformMakeTranslation(-midX, -midY),
-                                                                          CGAffineTransformMakeRotation(-(M_PI/2.f))),
-                                                  CGAffineTransformMakeTranslation(midX, midY));
-    CGPathAddEllipseInRect(path, &t, frame);
-    self.circle.path = path;
-}
-
-//Lucio
+/* NOT IN USE
 -(IBAction)switchFaces:(id)sender
 {
-    [self.sessionManager switchVideoFace];
+	[self.sessionManager switchVideoFace];
 }
 
 -(IBAction)switchFlash:(id)sender
 {
-    [self.sessionManager switchFlash];
-    if(self.flashOn){
-        [self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_OFF]forState:UIControlStateNormal];
-    }else{
-        [self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_ON] forState:UIControlStateNormal];
-    }
-    self.flashOn = !self.flashOn;
+	[self.sessionManager switchFlash];
+	if(self.flashOn){
+		[self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_OFF]forState:UIControlStateNormal];
+	}else{
+		[self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_ON] forState:UIControlStateNormal];
+	}
+	self.flashOn = !self.flashOn;
+}
+*/
+
+
+#pragma mark - Change size of container view based on orientation
+
+-(void)positionContainerView {
+
+	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)
+	   && ![self.contentContainerView isHidden] && !self.canRaise) {
+
+		[self positionContainerViewLandscape];
+
+	} else if([self.contentContainerView isHidden] && !self.canRaise) {
+		self.contentContainerView.hidden = NO;
+
+		[UIView animateWithDuration:0.5 animations:^{
+			[self transitionContentContainerViewToMode:self.previousMode];
+		}];
+	}
+}
+
+-(void) positionContainerViewLandscape {
+	[UIView animateWithDuration:0.5 animations:^{
+
+		self.previousMode = self.contentContainerViewMode;
+
+		int containerY = -1 * self.contentContainerView.frame.size.height;
+		self.contentContainerView.frame = CGRectMake(0, containerY, self.contentContainerView.frame.size.width, self.contentContainerView.frame.size.height);
+
+		int pullBarY = -1 * self.pullBar.frame.size.height;
+		self.pullBar.frame = CGRectMake(0,pullBarY, self.pullBar.frame.size.width, self.pullBar.frame.size.height);;
+
+	} completion:^(BOOL finished) {
+		if(finished)
+		{
+			self.contentContainerView.hidden = YES;
+			[self.contentDevVC removeKeyboardFromScreen];
+		}
+	}];
 }
 
 
-#pragma mark - supporting methods for media
+#pragma mark - Transition container view and pull bar
 
-//Lucio
--(void)clearVideoProgressImage
-{
-    [self.circle removeFromSuperlayer];
-    self.circle = nil;
+//Sets the content container view to the appropriate frame, sets the pull bar mode,
+//and sets whether the content container view is scrollable
+-(void) transitionContentContainerViewToMode: (ContentContainerViewMode) mode {
+
+	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
+		self.contentContainerViewMode = mode;
+		if(mode == ContentContainerViewModeFullScreen) {
+			//makes sure content view is scrollable
+			[self.contentDevVC setMainScrollViewEnabled:YES];
+			self.contentContainerView.frame = self.contentContainerViewFrameBottom;
+			[self pullBarTransitionToMode:PullBarModeMenu];
+
+		}else if (mode == ContentContainerViewModeBase) {
+			//makes sure content view is not scrollable
+			[self.contentDevVC setMainScrollViewEnabled:NO];
+			self.contentContainerView.frame = self.contentContainerViewFrameTop;
+			[self pullBarTransitionToMode:PullBarModePullDown];
+		}
+		self.contentDevVC.containerViewFrame = self.contentContainerView.frame;
+	}];
 }
 
+// Moving pull bar gesture sensed
+- (IBAction)expandContentPage:(UIPanGestureRecognizer *)sender {
 
--(void)endVideoRecordingSession
-{
-    if(!self.circle) return;
-	self.isTakingVideo = NO;
-    [self.sessionManager stopVideoRecording];
-    [self clearVideoProgressImage];  //removes the video progress bar
-	[self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
-	[self.timer invalidate];
-	self.timer = nil;
-    [self freezeFrame];
+	//finger is dragging
+	if (sender.state==UIGestureRecognizerStateChanged){
+		[self expandContentPageChanged:sender];
+	} else if(sender.state==UIGestureRecognizerStateEnded) {
+		[self expandContentPageEnded:sender];
+	}
 }
 
-
--(UIInterfaceOrientationMask) supportedInterfaceOrientations
+// Handles the user continuing to pull the pull bar
+-(void)expandContentPageChanged:(UIPanGestureRecognizer *)sender
 {
-    return UIInterfaceOrientationMaskPortrait;
+	// How far has the transition come
+	CGPoint translation = [sender translationInView:self.pullBar.superview];
+	int newtranslation = translation.y-self.previousTranslation.y;
+	float pullBarHeight = self.pullBar.frame.size.height;
+	float contentViewHeight = self.contentContainerView.frame.size.height + newtranslation;
+
+	//pull bar is being moved up, immediately remove buttons
+	if(translation.y < 0.f && (self.pullBar.mode == PullBarModeMenu)) {
+		[self.pullBar switchToMode:PullBarModePullDown];
+		pullBarHeight = PULLBAR_HEIGHT_PULLDOWN_MODE;
+		contentViewHeight = contentViewHeight - (PULLBAR_HEIGHT_MENU_MODE-PULLBAR_HEIGHT_PULLDOWN_MODE);
+	}
+
+	CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y + newtranslation, self.view.frame.size.width, pullBarHeight);
+	CGRect newContentContainerViewFrame = CGRectMake(self.contentContainerView.frame.origin.x, self.contentContainerView.frame.origin.y, self.view.frame.size.width, contentViewHeight);
+
+	self.pullBar.frame = newPullBarFrame;
+	self.contentContainerView.frame = newContentContainerViewFrame;
+	self.previousTranslation = translation;
 }
 
-
--(void)positionContainerView
+// snaps the content container view into base or full screen
+// (depending on direction of pull and if user has pulled far enough)
+-(void) expandContentPageEnded:(UIPanGestureRecognizer *)sender
 {
-    if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)){
-        if(!self.containerView.isHidden && !self.canRaise){
-            [UIView animateWithDuration:0.5 animations:^{
-                
-                if(self.containerViewFullScreen)
-                {
-                    self.previousLayout = @"FULLSCREEN";
-                }else
-                {
-                    self.previousLayout = @"BASE";
-                }
-                
-                int containerY = -1 * self.containerView.frame.size.height;
-                self.containerView.frame = CGRectMake(0, containerY, self.containerView.frame.size.width, self.containerView.frame.size.height);
-                
-                int pullBarY = -1 * self.pullBar.frame.size.height;
-                self.pullBar.frame = CGRectMake(0,pullBarY, self.pullBar.frame.size.width, self.pullBar.frame.size.height);;
-                
-            } completion:^(BOOL finished)
-            {
-                if(finished)
-                {
-                    self.containerView.hidden = YES;
-                    [self.contentDevVC removeKeyboardFromScreen];
-                }
-            }];
-        }
-    }else
-    {
-        if(self.containerView.hidden && !self.canRaise)
-        {
-            self.containerView.hidden = NO;
-            [UIView animateWithDuration:0.5 animations:^{
-                
-                if([self.previousLayout isEqualToString:@"BASE"])
-                {
-                    [self positionContainerViewToFullScreen:NO orToMSAV:NO orToBase:YES];//Positions the container view to the right frame
-                }
-                
-                if([self.previousLayout isEqualToString:@"FULLSCREEN"])
-                {
-                    [self positionContainerViewToFullScreen:YES orToMSAV:NO orToBase:NO];//Positions the container view to the right frame
-                }
-                
-                if([self.previousLayout isEqualToString:@"MSAV"])
-                {
-                    [self positionContainerViewToFullScreen:NO orToMSAV:YES orToBase:NO];//Positions the container view to the right framed
-                }
-            }];
-        }
-    }
+	//how far has the transition come
+	CGPoint translation = [sender translationInView:self.pullBar.superview];
+
+	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
+		//snap the container view to full screen, else snap back to base
+		if( translation.y > TRANSITION_MARGIN_OFFSET) {
+			[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
+		}else {
+			[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+			[self.contentDevVC removeImageScrollview:nil];
+		}
+	}];
+
+	self.previousTranslation = CGPointMake(0, 0);//sanitize the translation difference so that the next round is sent back up
 }
 
+// Sets pull bar to mode and changes its frame based on mode
+-(void) pullBarTransitionToMode: (PullBarMode) mode {
 
--(void)viewWillLayoutSubviews
-{
-    [self positionContainerView];
-}
-
-
-#pragma mark - Lazy instantiation -
-
--(MediaSessionManager*)sessionManager
-{
-    if(!_sessionManager){
-        _sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-    }
-    return _sessionManager;
-}
-
-#pragma mark - Transition 
-
-//Move the pull bar down- gestures sensed
-- (IBAction)expandContentPage:(UIPanGestureRecognizer *)sender
-{
-    
-    if (sender.state==UIGestureRecognizerStateChanged)//finger is dragging
-    {
-        [self expandContentPage_Began:sender];
-    }
-    
-    if(sender.state==UIGestureRecognizerStateEnded)
-    {
-        [self expandContentPage_Changed:sender];
-    }
-}
-
--(void)expandContentPage_Began:(UIPanGestureRecognizer *)sender
-{
-    CGPoint translation = [sender translationInView:self.pullBar.superview]; //how far the transisiton has come
-    
-    int newtranslation = translation.y-self.previousTranslation.y;
-    
-    CGRect newFrame = CGRectMake(self.containerView.frame.origin.x, self.containerView.frame.origin.y, self.view.frame.size.width, self.containerView.frame.size.height + newtranslation);
-    
-    CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y + newtranslation, self.view.frame.size.width, self.pullBar.frame.size.height);
-    
-    //set frames of bar and
-    self.pullBar.frame = newPullBarFrame;
-    self.containerView.frame = newFrame;
-    
-    self.previousTranslation = translation;
-}
-
-//handles the user continuing to pull the pull bar
--(void) expandContentPage_Changed :(UIPanGestureRecognizer *)sender
-{
-    CGPoint translation = [sender translationInView:self.pullBar.superview]; //how far the transisiton has come
-
-    if( translation.y > TRANSITION_MARGIN_OFFSET) //snap the container view to full screen
-    {
-        [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
-         {
-             [self positionContainerViewToFullScreen:YES orToMSAV:NO orToBase:NO];//Positions the container view to the right frame
-             
-         }];
-    }else
-    {
-        float fl = translation.y;
-        if(fabsf(fl) > TRANSITION_MARGIN_OFFSET) //snap the container view back up to no MSAV
-        {
-            
-            [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
-             {
-                 [self positionContainerViewToFullScreen:NO orToMSAV:NO orToBase:YES];//Sets the frame to base mode
-
-             }];
-            //gets rid of the text if there was typing going on
-            [self.contentDevVC removeImageScrollview:nil];
-        }else
-        {
-            
-            [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
-             {
-                 [self positionContainerViewToFullScreen:NO orToMSAV:NO orToBase:YES];//Sets the frame to base mode
-                 
-             }];
-            //gets rid of the text if there was typing going on
-            [self.contentDevVC removeImageScrollview:nil];
-        }
-    }
-    self.previousTranslation = CGPointMake(0, 0);//sanitize the translation difference so that the next round is sent back up
-}
-
-//sets the position of the pull bar depending on what's happening on the screen
--(void) positionPullBarTransitionDown: (BOOL) transitionDown
-{
-    [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
-     {
-         if(transitionDown)
-         {
-             self.pullBar.frame = self.pullBarFrameBottom;
-			 [self.pullBar switchToPullUp];
-         }else{
+	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^
+	 {
+		 if (mode == PullBarModeMenu) {
+			 self.pullBar.frame = self.pullBarFrameBottom;
+		 } else {
 			 self.pullBar.frame = self.pullBarFrameTop;
-			 [self.pullBar switchToPullDown];
-         }
-         
-     }];
+		 }
+		 [self.pullBar switchToMode:mode];
+	 }];
 }
 
-
-//Sets the container view to the appropriate frame
--(void) positionContainerViewToFullScreen:(BOOL) fullScreen orToMSAV:(BOOL) MSAV orToBase: (BOOL) Base
-{
-    [UIView animateWithDuration:VC_TRANSITION_ANIMATION_TIME animations:^
-     {
-        if(fullScreen)
-        {
-            self.containerViewFullScreen = YES;
-            [self.contentDevVC freeMainScrollView:YES]; //makes sure it's scrollable
-            self.containerView.frame = self.containerViewFrameBottom;
-            [self positionPullBarTransitionDown:YES];
-        }else if (Base)
-        {
-            self.containerViewFullScreen = NO;
-            [self.contentDevVC freeMainScrollView:NO]; //makes sure it's scrollable
-            self.containerView.frame = self.containerViewFrameTop;
-            [self positionPullBarTransitionDown:NO];
-            
-        }
-         self.contentDevVC.containerViewFrame = self.containerView.frame;
-    }];
-}
-
-
-#pragma mark - Textfields
-//Iain
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    //S@nwiches shouldn't have any spaces between them
-    if([string isEqualToString:@" "]) return NO;
-    return YES;
-}
-
-
-//finds the last
--(void) bringUpNewTextForMSAV
-{
-    PinchView * last_textPinchView;
-    
-    //function backtracks from the end of the array
-    for(long i = (self.contentDevVC.pageElements.count -1); i>=0; i--)
-    {
-        if([self.contentDevVC.pageElements[i]  isKindOfClass: [PinchView class]])
-        {
-            
-            PinchView * pinch = (PinchView *)self.contentDevVC.pageElements[i];
-            
-            //breaks on the firs textview you find
-            if(pinch.there_is_text && !pinch.there_is_picture && !pinch.there_is_video)
-            {
-                last_textPinchView = (PinchView *) self.contentDevVC.pageElements[i];
-                break;
-            }
-        }
-    }
-    
-    
-    if(!last_textPinchView || ![[last_textPinchView getTextFromPinchObject] isEqualToString:@""])
-    {
-        
-        long  second_to_last_object = self.contentDevVC.pageElements.count - 2;
-        
-        if(second_to_last_object >=0)
-        {
-            [self.contentDevVC newPinchObjectBelowView:self.contentDevVC.pageElements[second_to_last_object] fromView: nil isTextView:YES];
-            
-            [self.contentDevVC createVerbatmImageScrollViewFromPinchView:self.contentDevVC.pageElements[second_to_last_object+1] andTextView:[[VerbatmUITextView alloc]init]];
-        
-        
-        }else if (second_to_last_object <0)
-        {
-            [self.contentDevVC newPinchObjectBelowView:nil fromView: nil isTextView:YES];
-            
-            [self.contentDevVC createVerbatmImageScrollViewFromPinchView:self.contentDevVC.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
-        }
-        
-    }else if (last_textPinchView)
-    {
-        [self.contentDevVC createVerbatmImageScrollViewFromPinchView:last_textPinchView andTextView:[[VerbatmUITextView alloc]init]];
-    }
-}
-
-
-//Lucio
-//This method registers the application for keyboard notifications. UIKeyboardWillShowNotification and UIKeyboardWillHideNotification are listened for.
--(void)registerForNotifications
-{
-    
-    //Register for notifications to show and remove the pullbar
-    //Listen for when the keyboard is about to disappear
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(hidePullBar)
-                                                 name:@"Notification_shouldHidePullBar"
-                                               object:nil];
-    //Register for notifications to show and remove the pullbar
-    //Listen for when the keyboard is about to disappear
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(showPullBar)
-                                                 name:@"Notification_shouldShowPullBar"
-                                               object:nil];
-}
-
-
-#pragma mark - delegate method for media session class -
--(void)didFinishSavingMediaToAsset:(ALAsset*)asset
-{
-    [self.contentDevVC alertGallery: asset];
-}
+#pragma mark - Hide and Show pull bar
 
 -(void)hidePullBar
 {
-    int vc_cs = self.contentDevVC.mainScrollView.contentSize.height;
-    int bar = self.view.frame.size.height;
-    if( vc_cs < bar ) return;
-    
-        [UIView animateWithDuration:0.4 animations:^
-         {
-            self.containerView.frame = self.view.frame;
-            self.oldPullBarFrame = self.pullBar.frame;
-            self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
-        }];
+	int vc_cs = self.contentDevVC.mainScrollView.contentSize.height;
+	int bar = self.view.frame.size.height;
+	if( vc_cs < bar ) return;
+
+	[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^
+	 {
+		 self.contentContainerView.frame = self.view.frame;
+		 self.oldPullBarFrame = self.pullBar.frame;
+		 self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+	 }];
 }
 
 -(void) showPullBar
 {
-       [UIView animateWithDuration:0.4 animations:^{
-        
-           [self positionContainerViewToFullScreen:YES orToMSAV:NO orToBase:NO];
+	[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
 
-           if(self.oldPullBarFrame.origin.y >= self.view.frame.size.height)
-           {
-               self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - self.pullBar.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
-   
-           }
-           
-       }];
+		[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
+
+		if(self.oldPullBarFrame.origin.y >= self.view.frame.size.height) {
+			self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - self.pullBar.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+		}
+	}];
 }
 
 
+#pragma mark - PullBar Delegate Methods (pullbar button actions)
 
+-(void) undoButtonPressed {
+
+	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_UNDO object:nil userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
+-(void) pullUpButtonPressed {
+	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+}
+
+// Displays article preview from pinch objects
 -(void) previewButtonPressed
 {
-    //make sure there is at least one pinch object available
- 
-    //counts up the content in the pinch view and ensures that there are some pinch objects
-    int counter=0;
-    for(int i=0; i < self.contentDevVC.pageElements.count; i++)if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]])counter ++;
-    if(!counter) return;
+	//counts up the content in the pinch view and ensures that there are some pinch objects
+	int counter=0;
+	for(int i=0; i < self.contentDevVC.pageElements.count; i++) {
+		if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]]) counter++;
+	}
+	if(!counter) return;
 
-    NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
-    
-    for(int i=0; i < self.contentDevVC.pageElements.count; i++)
-    {
-        if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]])
-        {
-            [pinchObjectsArray addObject:self.contentDevVC.pageElements[i]];
-        }
-    }
-    
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pinchObjectsArray,@"pinchObjects", nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
-                                                        object:nil
-                                                      userInfo:Info];
+	NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
+	for(int i=0; i < self.contentDevVC.pageElements.count; i++) {
+		if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]]) {
+			[pinchObjectsArray addObject:self.contentDevVC.pageElements[i]];
+		}
+	}
+
+	NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pinchObjectsArray,@"pinchObjects", nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
+														object:nil
+													  userInfo:Info];
 }
 
+// Publish article
 -(void)saveButtonPressed
 {
-    //make sure we have an article title, we have multiple pinch elements in the feed and that we
-    //haven't saved this article before
-    if (self.contentDevVC.pageElements.count >1 && ![self.contentDevVC.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.contentDevVC.articleTitleField.text]) {
+	//make sure we have an article title, we have multiple pinch elements in the feed and that we
+	//haven't saved this article before
+	if (self.contentDevVC.pageElements.count >1 && ![self.contentDevVC.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.contentDevVC.articleTitleField.text]) {
 		[self saveArticleContent];
 
 	} else if([self.contentDevVC.articleTitleField.text isEqualToString:@""]) {
@@ -866,52 +722,28 @@
 	}
 }
 
-
 -(void)saveArticleContent
 {
-    NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
-    for(int i=0; i < self.contentDevVC.pageElements.count; i++)
-    {
-        if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]])
-        {
-            [pinchObjectsArray addObject:self.contentDevVC.pageElements[i]];
-        }
-    }
-    
-    if(!pinchObjectsArray.count) return;//if there is not article then exit
+	NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
+	for(int i=0; i < self.contentDevVC.pageElements.count; i++)
+	{
+		if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]])
+		{
+			[pinchObjectsArray addObject:self.contentDevVC.pageElements[i]];
+		}
+	}
+
+	if(!pinchObjectsArray.count) return;//if there is not article then exit
 
 	BOOL isTesting = [MasterNavigationVC inTestingMode];
-    //this creates and saves an article. the return value is unnecesary 
-    Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];
-    if(newArticle)
-    {
-        self.articleJustSaved = self.contentDevVC.articleTitleField.text;
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_CONTENTPAGE object:nil userInfo:nil];
-    }
+	//this creates and saves an article. the return value is unnecesary
+	Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];
+	if(newArticle)
+	{
+		self.articleJustSaved = self.contentDevVC.articleTitleField.text;
+		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_CONTENTPAGE object:nil userInfo:nil];
+	}
 }
-
-
-
-#pragma mark - Undo Button -
-
--(void)undoButtonPressed
-{
-    [self callNotifications];
-}
-
--(void)callNotifications
-{
-    NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_UNDO object:nil userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-}
-
-
-- (void)dealloc
-{
-    //tune out of nsnotification
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 
 @end
 

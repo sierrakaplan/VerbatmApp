@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ILTranslucentView.h"
 #import "VerbatmImageView.h"
 #import "PinchView.h"
 #import  "VerbatmUITextView.h"

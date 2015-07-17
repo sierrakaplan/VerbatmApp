@@ -13,19 +13,25 @@
 @protocol PullBarDelegate <NSObject>
 
 -(void)undoButtonPressed;
+-(void)pullUpButtonPressed;
 -(void)previewButtonPressed;
-//-(void)keyboardButtonPressed;
-//-(void)saveButtonPressed;
 
 @end
 
-@interface VerbatmPullBarView : UIView
-    @property (nonatomic, strong) id<PullBarDelegate> customDelegate;
+@interface VerbatmPullBarView : UIView <UIGestureRecognizerDelegate>
 
--(void)switchToPullUp;
--(void)switchToPullDown;
+typedef NS_ENUM(NSInteger, PullBarMode) {
+	PullBarModePullDown,
+	PullBarModeMenu
+};
 
-#define PULLBAR_HEIGHT_DOWN 50.f
-#define PULLBAR_HEIGHT_UP 30.f
+@property (nonatomic, strong) id<PullBarDelegate> delegate;
+// Can be in either pull down mode or menu mode depending on if it's at the top or bottom
+@property (nonatomic) PullBarMode mode;
+
+-(void)switchToMode: (PullBarMode) mode;
+
+#define PULLBAR_HEIGHT_MENU_MODE 70.f
+#define PULLBAR_HEIGHT_PULLDOWN_MODE 30.f
 
 @end
