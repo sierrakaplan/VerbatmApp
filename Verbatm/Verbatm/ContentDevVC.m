@@ -109,8 +109,8 @@
 #define ANIMATION_DURATION 0.5
 #define PINCH_DISTANCE_FOR_ANIMATION 100
 
-#define SIZE_REQUIRED_MIN 100 //size for text tiles
-
+//size for text tiles
+#define SIZE_REQUIRED_MIN 100
 
 //the gap between the bottom of the screen and the cursor
 #define CENTERING_OFFSET_FOR_TEXT_VIEW 30
@@ -192,8 +192,7 @@
 }
 
 //makes sure the main scrollview is edged to it's superview
--(void)sizeMainScrollViewPhoneSize
-{
+-(void)sizeMainScrollViewPhoneSize {
 	self.mainScrollView.frame= self.view.frame;
 }
 
@@ -290,8 +289,7 @@
 
 
 //Set up views
--(void) configureViews
-{
+-(void) configureViews {
 	[self setUpNotifications];
 	//insert any text that was added in previous scenes
 	[self setUpKeyboardPrefferedColors];
@@ -300,8 +298,7 @@
 }
 
 //Iain
--(void) whitenCursors
-{
+-(void) whitenCursors {
 	//make cursor white on textfields and textviews
 	[[UITextField appearance] setTintColor:[UIColor whiteColor]];
 }
@@ -315,7 +312,6 @@
 	self.articleTitleField.keyboardAppearance = UIKeyboardAppearanceDark;
 }
 
-
 //Iain
 -(void) setUpNotifications
 {
@@ -324,8 +320,6 @@
 											 selector:@selector(keyboardWillShow:)
 												 name:UIKeyboardWillShowNotification
 											   object:nil];
-
-
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyboardWillDisappear:)
@@ -357,9 +351,6 @@
 											 selector:@selector(cleanUpNotification)
 												 name:NOTIFICATION_CLEAR_CONTENTPAGE
 											   object:nil];
-
-
-
 
 }
 
@@ -397,31 +388,25 @@
 
 
 #pragma mark - TextFields -
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+
 	//S@nwiches shouldn't have any spaces between them
 	if([string isEqualToString:@" "]  && textField != self.articleTitleField) return NO;
 	return YES;
 }
 
 //Iain
--(BOOL) textFieldShouldReturn:(UITextField *)textField
-{
-	if(textField == self.sandwichWhat)
-	{
-		if([self.sandwichWhere.text isEqualToString:@""])
-		{
+-(BOOL) textFieldShouldReturn:(UITextField *)textField {
+	if(textField == self.sandwichWhat) {
+		if([self.sandwichWhere.text isEqualToString:@""]) {
 			[self.sandwichWhere becomeFirstResponder];
-		}else
-		{
+		}else {
 			[self.sandwichWhat resignFirstResponder];
 		}
-	}else if(textField == self.sandwichWhere)
-	{
+	}else if(textField == self.sandwichWhere) {
 		[self.sandwichWhere resignFirstResponder];
 
-	}else if(textField == self.articleTitleField)
-	{
+	}else if(textField == self.articleTitleField) {
 		[self.articleTitleField resignFirstResponder];
 	}
 
@@ -444,16 +429,10 @@
 
 //Iain
 //Called when user types an input into the textview
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
 	//If the user clicked enter add a textview
-	if([text isEqualToString:@"\n"])
-	{
+	if([text isEqualToString:@"\n"]) {
 		[self removeImageScrollview:nil];
-		//when enter is clicked we give them a new textview
-		//        verbatmCustomPinchView * pinchView = [self newPinchObjectBelowView:self.openImagePinchView fromView: nil isTextView:YES];
-		//        [self createCustomImageScrollViewFromPinchView:pinchView andImageView: nil orTextView:[[verbatmUITextView alloc] init]];
-
 		return NO;
 	}
 	return YES;
@@ -461,53 +440,43 @@
 
 #pragma mark Bounds for TextViews
 
-
 #pragma mark Caret within TextView
 //Update the stored position of the carret within the textview it's in
--(void) updateCaretPositionInView: (VerbatmUITextView *) view
-{
+-(void) updateCaretPositionInView: (VerbatmUITextView *) view {
 	self.caretPosition = [view caretRectForPosition:view.selectedTextRange.end];
 }
 
 #pragma mark Word Count - to be implemented
 //Iain
 //Counts the words in the content page
--(void) editWordCount
-{
+-(void) editWordCount {
 	self.numberOfWordsLeft = MAX_WORD_LIMIT - [self countWordsInContentPage];
 	self.wordsLeftLabel.text = [NSString stringWithFormat:@"Words: %ld ", (long)self.numberOfWordsLeft];
 }
 
-
-//To be implemented
 //Counts the number of words that are in the page
--(NSInteger) countWordsInContentPage
-{
+-(NSInteger) countWordsInContentPage {
 	NSUInteger words = 0;
-	for(id object in self.pageElements)
-	{
-		if([object isKindOfClass:[UITextView class]])
-		{
+	for(id object in self.pageElements) {
+		if([object isKindOfClass:[UITextView class]]) {
+
 			NSString * string = ((UITextView *) object).text;
 			NSArray * string_array = [string componentsSeparatedByString: @" "];
 			words += [string_array count];
 
 			//Make sure to discount blanks in the array
-			for (NSString * string in string_array)
-			{
+			for (NSString * string in string_array) {
 				if([string isEqualToString:@""] && words != 0) words--;
 			}
 			//make sure that the last word is complete by having a space after it
 			if(![[string_array lastObject] isEqualToString:@""]) words --;
-		}else if([object isKindOfClass:[PinchView class]]&& ((PinchView *)object).there_is_text)
-		{
+		} else if([object isKindOfClass:[PinchView class]]&& ((PinchView *)object).there_is_text) {
 			NSString * string = [((PinchView *) object) getTextFromPinchObject];
 			NSArray * string_array = [string componentsSeparatedByString: @" "];
 			words += [string_array count];
 
 			//Make sure to discount blanks in the array
-			for (NSString * string in string_array)
-			{
+			for (NSString * string in string_array) {
 				if([string isEqualToString:@""] && words != 0) words--;
 			}
 
@@ -530,7 +499,6 @@
 }
 
 
-
 #pragma mark Main ScrollView
 #pragma mark ContentSize
 //adjusts the contentsize of the main view to the last element
@@ -544,9 +512,7 @@
 
 //Iain
 //Moves the scrollview to keep the cursor in view - To be fixed
--(void) updateScrollViewPosition
-{
-
+-(void) updateScrollViewPosition {
 
 	if(self.sandwichWhat.editing || self.sandwichWhere.editing) return; //if it is the s@andwiches that are set then
 
