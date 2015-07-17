@@ -10,4 +10,5 @@
 
 @interface UIEffects : NSObject 
 + (UIVisualEffectView*) createBlurViewOnView: (UIView*)view;
++ (void) addShadowToView: (UIView *) view;
 @end

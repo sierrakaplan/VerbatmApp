@@ -87,27 +87,28 @@
 	NSMutableArray * videos = [p_obj getVideos];
 	if(p_obj.there_is_text)
 	{
-		if(photos.count)//it's text photo
+		//it's text photo
+		if(photos.count)
 		{
 			TextPhotoAVE * tp = [[TextPhotoAVE alloc] initWithFrame:self.preferredFrame andImage:photos.firstObject andText:[p_obj getTextFromPinchObject]];
 			[tp addSwipeGesture];
 			[self.results addObject:tp];
-		}else//it's text video
+		//it's text video
+		}else
 		{
 			TextVideoAVE * textVideoAVE = [[TextVideoAVE alloc] initWithFrame:self.preferredFrame andAssets:videos andText:[p_obj getTextFromPinchObject]];
 			[textVideoAVE muteVideo];
 			[textVideoAVE addSwipeGesture];
 			[self.results addObject:textVideoAVE];
 		}
-	}else//it's photo video
-	{
-		if(photos.count > 1)
-		{
+	//it's photo video
+	} else {
+		if(photos.count > 1) {
 			MultiplePhotoVideoAVE * pv = [[MultiplePhotoVideoAVE alloc]initWithFrame:self.preferredFrame Photos:photos andVideos:videos];
 			[pv mutePlayer];
 			[self.results addObject:pv];
-		}else
-		{
+
+		} else {
 
 			MultiplePhotoVideoAVE* mpv = [[MultiplePhotoVideoAVE alloc] initWithFrame:self.preferredFrame Photos:photos andVideos:videos];
 			[mpv mutePlayer];

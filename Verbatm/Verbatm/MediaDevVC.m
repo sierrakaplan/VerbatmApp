@@ -22,7 +22,7 @@
 #import "VerbatmCameraView.h"
 #import "MasterNavigationVC.h"
 #import "UIEffects.h"
-
+#import "Notifications.h"
 
 @interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
@@ -121,12 +121,6 @@
 #define TRANSITION_MARGIN_OFFSET 50.f
 #define TRANSLATION_THRESHOLD 70
 
-#pragma mark Notifications
-#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
-#define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
-#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
-#define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
-
 @end
 
 @implementation MediaDevVC
@@ -157,7 +151,7 @@
 	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
 }
 
--(void)viewWillLayoutSubviews{
+-(void) viewWillLayoutSubviews{
 	[super viewWillLayoutSubviews];
 	[self positionContainerView];
 }
@@ -168,7 +162,7 @@
 	//get the view controllers in the storyboard and store them
 }
 
--(void)viewDidAppear:(BOOL)animated
+-(void) viewDidAppear:(BOOL)animated
 {
 	//patch solution to the pullbar being drawn strange
 	self.pullBar.frame = self.pullBarFrameTop;
@@ -323,12 +317,18 @@
 	//Register for notifications to show and remove the pullbar
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(hidePullBar)
-												 name:@"Notification_shouldHidePullBar"
+												 name:NOTIFICATION_HIDE_PULLBAR
 											   object:nil];
+
 	//Register for notifications to show and remove the pullbar
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(showPullBar)
-												 name:@"Notification_shouldShowPullBar"
+												 name:NOTIFICATION_SHOW_PULLBAR
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(publishArticle)
+												 name:NOTIFICATION_PUBLISH_ARTICLE
 											   object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -707,13 +707,11 @@
 													  userInfo:Info];
 }
 
-// Publish article
--(void)saveButtonPressed
-{
+-(void)publishArticle {
 	//make sure we have an article title, we have multiple pinch elements in the feed and that we
 	//haven't saved this article before
 	if (self.contentDevVC.pageElements.count >1 && ![self.contentDevVC.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.contentDevVC.articleTitleField.text]) {
-		[self saveArticleContent];
+		[self publishArticleContent];
 
 	} else if([self.contentDevVC.articleTitleField.text isEqualToString:@""]) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_TILE_ANIMATION
@@ -722,8 +720,8 @@
 	}
 }
 
--(void)saveArticleContent
-{
+-(void)publishArticleContent {
+
 	NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
 	for(int i=0; i < self.contentDevVC.pageElements.count; i++)
 	{

@@ -41,7 +41,7 @@
 		C772F2891B4BC13500CEC83D /* GMVideoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F27B1B4BC13500CEC83D /* GMVideoIcon.png */; };
 		C772F28A1B4BC13500CEC83D /* GMVideoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F27C1B4BC13500CEC83D /* GMVideoIcon@2x.png */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
-		C777EEA01AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */; };
+		C777EEA01AC7F8B6003E0633 /* ArticleTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* ArticleTableViewCell.m */; };
 		C777EEA31AC8AE9E003E0633 /* v_multimediaTextVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */; };
 		C777EEA61AC90A7A003E0633 /* ArticleAquirer.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA51AC90A7A003E0633 /* ArticleAquirer.m */; };
 		C777EEAA1ACFEC7A003E0633 /* MultiPhotoTextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA91ACFEC7A003E0633 /* MultiPhotoTextAVE.m */; };
@@ -113,6 +113,7 @@
 		9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSessionManager.m; sourceTree = "<group>"; };
 		9D29995919BA9042005EBC8A /* MediaDevVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaDevVC.h; sourceTree = "<group>"; };
 		9D29995A19BA9042005EBC8A /* MediaDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaDevVC.m; sourceTree = "<group>"; };
+		A529196E1B59ADD500233712 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		A57A92FD1B55A551006C2597 /* CameraFocusSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraFocusSquare.h; sourceTree = "<group>"; };
@@ -167,8 +168,8 @@
 		C772F27D1B4BC13500CEC83D /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
 		C772F27E1B4BC13500CEC83D /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		C777EE9E1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmArticle_TableViewCell.h; sourceTree = "<group>"; };
-		C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmArticle_TableViewCell.m; sourceTree = "<group>"; };
+		C777EE9E1AC7F8B6003E0633 /* ArticleTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleTableViewCell.h; sourceTree = "<group>"; };
+		C777EE9F1AC7F8B6003E0633 /* ArticleTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleTableViewCell.m; sourceTree = "<group>"; };
 		C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_multimediaTextVIew.h; sourceTree = "<group>"; };
 		C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_multimediaTextVIew.m; sourceTree = "<group>"; };
 		C777EEA41AC90A7A003E0633 /* ArticleAquirer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleAquirer.h; sourceTree = "<group>"; };
@@ -296,6 +297,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A529196D1B59AD8B00233712 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				A529196E1B59ADD500233712 /* Notifications.h */,
+			);
+			name = Notifications;
+			sourceTree = "<group>";
+		};
 		A5CB82A41B5744B800195A2E /* UI effects */ = {
 			isa = PBXGroup;
 			children = (
@@ -427,8 +436,8 @@
 				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
 				C777EEAB1AD288A3003E0633 /* ArticleListVC.h */,
 				C777EEAC1AD288A3003E0633 /* ArticleListVC.m */,
-				C777EE9E1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.h */,
-				C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */,
+				C777EE9E1AC7F8B6003E0633 /* ArticleTableViewCell.h */,
+				C777EE9F1AC7F8B6003E0633 /* ArticleTableViewCell.m */,
 				C7F3D4691A4F84C000B43238 /* UserLoginVC.h */,
 				C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */,
 				C7F3D46C1A4F84DF00B43238 /* UserSignUpVC.h */,
@@ -522,6 +531,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				A529196D1B59AD8B00233712 /* Notifications */,
 				C748836A1B489AE300E64ED9 /* Gallery */,
 				A5CB82A41B5744B800195A2E /* UI effects */,
 				F257FEC81AC21F8B00964AB5 /* Saving and Downloading */,
@@ -821,7 +831,7 @@
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
-				C777EEA01AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m in Sources */,
+				C777EEA01AC7F8B6003E0633 /* ArticleTableViewCell.m in Sources */,
 				C7F3D46E1A4F84DF00B43238 /* UserSignUpVC.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
 				C777EEAA1ACFEC7A003E0633 /* MultiPhotoTextAVE.m in Sources */,

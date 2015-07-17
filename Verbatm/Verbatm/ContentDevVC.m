@@ -19,9 +19,7 @@
 #import "VerbatmImageView.h"
 #import "VerbatmImageScrollView.h"
 #import "GMImagePickerController.h"
-
-
-
+#import "Notifications.h"
 
 @interface ContentDevVC () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,GMImagePickerControllerDelegate>
 
@@ -119,17 +117,6 @@
 #define SCROLLDISTANCE_FOR_PINCHVIEW_RETURN 200
 
 #define BACKGROUND_COLOR clearColor
-
-#pragma mark Notifications
-
-#define NOTIFICATION_HIDE_PULLBAR @"Notification_shouldHidePullBar"
-#define NOTIFICATION_SHOW_PULLBAR @"Notification_shouldShowPullBar"
-#define NOTIFICATION_PICTURE_SELECTED @"pictureObjectSelected"
-#define NOTIFICATION_PICTURE_UNSELECTED @"pictureObjectUnSelected"
-#define NOTIFICATION_CLEAR_CONTENTPAGE @"Notification_ClearContentPage"
-#define NOTIFICATION_PAUSE_VIDEOS @"pauseContentPageVideosNotification"
-#define NOTIFICATION_PLAY_VIDEOS @"playContentPageVideosNotification"
-#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
 
 #pragma mark TextField settings
 

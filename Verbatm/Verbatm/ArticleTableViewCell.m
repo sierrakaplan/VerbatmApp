@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "verbatmArticle_TableViewCell.h"
+#import "ArticleTableViewCell.h"
 
-@implementation verbatmArticle_TableViewCell
+@implementation ArticleTableViewCell
 
 - (void)awakeFromNib {
     // Initialization code

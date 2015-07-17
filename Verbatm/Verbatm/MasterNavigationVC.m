@@ -8,7 +8,7 @@
 
 #import "MasterNavigationVC.h"
 #import "VerbatmUser.h"
-
+#import "Notifications.h"
 
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
@@ -27,17 +27,7 @@
 #define LEFT_FRAME self.view.bounds
 #define RIGHT_FRAME CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
 
-
-#define NOTIFICATION_PAUSE_VIDEOS @"pauseContentPageVideosNotification"
-#define NOTIFICATION_PLAY_VIDEOS @"playContentPageVideosNotification"
-#define NOTIFICATION_SHOW_ADK @"notification_showADK"
-#define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
-#define SIGNUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
-#define NOTIFICATION_CLEAR_CONTENTPAGE @"Notification_ClearContentPage"
-#define NOTIFICATION_REFRESH_FEED @"Notification_RefreshFeed"
-#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
 #define ANIMATION_NOTIFICATION_DURATION 0.5
-#define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
 @end
 
@@ -66,7 +56,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
     //signup for a notification that tells you the user has signed in
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpSuccesful:) name:SIGNUP_SUCCEEDED_NOTIFICATION object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpSuccesful:) name:NOTIFICATION_SIGNUP_SUCCEEDED object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticleList:) name:NOTIFICATION_EXIT_CONTENTPAGE object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertTitleAnimation) name:NOTIFICATION_TILE_ANIMATION object: nil];
 }
@@ -89,10 +79,8 @@
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         self.masterSV.contentOffset = CGPointMake(0, 0);
     }completion:^(BOOL finished) {
-        if(finished)
-        {
-
-            [self articlePublishedAnimation];
+        if(finished) {
+			[self articlePublishedAnimation];
             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CLEAR_CONTENTPAGE
  object:nil userInfo:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_REFRESH_FEED

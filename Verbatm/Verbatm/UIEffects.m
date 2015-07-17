@@ -32,4 +32,13 @@
 	return blurEffectView;
 }
 
++(void) addShadowToView: (UIView *) view {
+	UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
+	view.layer.masksToBounds = NO;
+	view.layer.shadowColor = [UIColor blackColor].CGColor;
+	view.layer.shadowOffset = CGSizeMake(3.0f, 0.3f);
+	view.layer.shadowOpacity = 0.8f;
+	view.layer.shadowPath = shadowPath.CGPath;
+}
+
 @end
