@@ -214,7 +214,6 @@
     self.containerViewNoMSAVFrame =CGRectMake(0, 0, self.view.frame.size.width, self.containerView.frame.size.height);
     self.containerViewMSAVFrame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height/6);
     self.pullBarNoMSAVFrame =CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y, self.view.frame.size.width, self.pullBar.frame.size.height);
-    
     self.pullBarMSAVFrame = CGRectMake(0, self.containerViewMSAVFrame.size.height , self.view.frame.size.width, self.pullBar.frame.size.height);
 }
 
@@ -665,7 +664,6 @@
      {
          if(transitionDown)
          {
-             
              int frameHeight = self.view.frame.size.height;
              int pullbarHeight = self.pullBar.frame.size.height;
              CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x,(frameHeight - pullbarHeight), self.view.frame.size.width, self.pullBar.frame.size.height);
