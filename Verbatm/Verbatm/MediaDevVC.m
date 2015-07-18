@@ -139,16 +139,19 @@
 {
 	[super viewDidLoad];
 	[self setDefaultFrames];
-	[self createSubViews];
+	[self prepareCameraView];
 	[self createAndInstantiateGestures];
-	[self setContentDevVC];
-	[self setDelegates];
-	[self registerForNotifications];
 
 	//make sure the frames are correctly centered
 	self.canRaise = NO;
 	self.currentPoint = CGPointZero;
+
+	[self setDelegates];
+	[self registerForNotifications];
+	[self setContentDevVC];
+
 	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+	[self createSubViews];
 }
 
 -(void) viewWillLayoutSubviews{
@@ -227,9 +230,8 @@
 }
 
 -(void) createSubViews {
-	[self prepareCameraView];
-	[self createCapturePicButton];
 	[self createPullBar];
+	[self createCapturePicButton];
 }
 
 -(void) prepareCameraView {
@@ -239,7 +241,8 @@
 -(void)createCapturePicButton {
 	self.isTakingVideo = NO;
 	self.capturePicButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
+	UIImage *cameraImage = [UIImage imageNamed:CAMERA_BUTTON_IMAGE];
+	[self.capturePicButton setImage:cameraImage forState:UIControlStateNormal];
 	[self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2.f, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
 	[self.capturePicButton addTarget:self action:@selector(tappedPhotoButton:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -248,11 +251,13 @@
 	[self.capturePicButton addGestureRecognizer:longPress];
 
 	[self.verbatmCameraView addSubview:self.capturePicButton];
+	[self.verbatmCameraView bringSubviewToFront:self.capturePicButton];
 }
 
 //creates the pullbar object then saves it as a property
 -(void)createPullBar {
 	self.pullBar = [[VerbatmPullBarView alloc] initWithFrame:self.pullBarFrameTop];
+	self.pullBar.delegate = self;
 	[self.panGesture_PullBar setDelegate:self.pullBar];
 	[self.pullBar addGestureRecognizer:self.panGesture_PullBar];
 	[self.view addSubview:self.pullBar];
@@ -308,7 +313,6 @@
 -(void) setDelegates
 {
 	self.sessionManager.delegate = self;
-	self.pullBar.delegate = self;
 }
 
 -(void)registerForNotifications
@@ -675,8 +679,7 @@
 #pragma mark - PullBar Delegate Methods (pullbar button actions)
 
 -(void) undoButtonPressed {
-
-	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_UNDO object:nil userInfo:nil];
+	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_UNDO object:nil userInfo:nil];
 	[[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 

@@ -41,4 +41,25 @@
 	view.layer.shadowPath = shadowPath.CGPath;
 }
 
++ (UIImage*) imageOverlayed:(UIImage*)image withColor:(UIColor*)color {
+	//create context
+	UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+	CGContextRef context = UIGraphicsGetCurrentContext();
+
+	//drawingcode
+	CGRect rect = CGRectMake(0.0, 0.0, image.size.width, image.size.height);
+
+	[image drawInRect:rect];
+
+	CGContextSetBlendMode(context, kCGBlendModeMultiply);
+	CGContextSetFillColorWithColor(context, color.CGColor);
+	CGContextFillRect(context, rect);
+
+	[image drawInRect:rect blendMode:kCGBlendModeDestinationIn alpha:1.0];
+	UIImage *newimage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+
+	return newimage;
+}
+
 @end
