@@ -11,13 +11,10 @@
 #import "PinchView.h"
 #import "VideoAVE.h"
 #import "TextAVE.h"
-#import "PhotoVideoTextAVE.h"
 #import "MultiplePhotoVideoAVE.h"
-#import "MultiVidTextPhotoAVE.h"
-#import "TextVideoAVE.h"
-#import "PhotoVideoAVE.h"
 #import "MultiplePhotoAVE.h"
-#import "MultiPhotoTextAVE.h"
+#import "TextAndOtherAves.h"
+#import "constants.h"
 
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
 @interface Analyzer()
@@ -89,15 +86,15 @@
 	{
 		if(photos.count)//it's text photo
 		{
-			TextPhotoAVE * tp = [[TextPhotoAVE alloc] initWithFrame:self.preferredFrame andImage:photos.firstObject andText:[p_obj getTextFromPinchObject]];
-			[tp addSwipeGesture];
-			[self.results addObject:tp];
+            TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:PHOTO_AVE aveMedia:photos];
+            [textViewAndPhoto addGestureToView];
+			[self.results addObject:textViewAndPhoto];
 		}else//it's text video
 		{
-			TextVideoAVE * textVideoAVE = [[TextVideoAVE alloc] initWithFrame:self.preferredFrame andAssets:videos andText:[p_obj getTextFromPinchObject]];
-			[textVideoAVE muteVideo];
-			[textVideoAVE addSwipeGesture];
-			[self.results addObject:textVideoAVE];
+			
+            TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:VIDEO_AVE aveMedia:videos];
+            [textViewAndPhoto addGestureToView];
+            [self.results addObject:textViewAndPhoto];
 		}
 	}else//it's photo video
 	{
@@ -133,21 +130,11 @@
 
 -(void)handleThreeMedia:(PinchView*)p_obj
 {
-	NSString* text = [p_obj getTextFromPinchObject];
-	//	if(p_obj.inDataFormat)
-	//	{
-	NSMutableArray* videos = [p_obj getVideos];
-	NSMutableArray* photos = [p_obj getPhotos];
-	if(videos.count + photos.count == 2){
-		PhotoVideoTextAVE* pvt = [[PhotoVideoTextAVE alloc] initWithFrame:_preferredFrame forImageData: (NSData*)[photos firstObject] andText:text andVideo:[videos firstObject]];
-		[pvt addSwipeGesture];
-		[_results addObject:pvt];
-	}else{
-		MultiVidTextPhotoAVE* mvtp = [[MultiVidTextPhotoAVE alloc]initWithFrame:_preferredFrame Photos:photos andVideos:videos andText:text];
-		[mvtp addSwipeGesture];
-		[_results addObject:mvtp];
-	}
-
+    NSMutableArray * combined = [NSMutableArray arrayWithArray:[p_obj getVideos]];
+    [combined addObjectsFromArray:[p_obj getPhotos]];
+    TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:PHOTO_VIDEO_AVE aveMedia:combined];
+    [textViewAndPhoto addGestureToView];
+    [self.results addObject:textViewAndPhoto];
 }
 
 

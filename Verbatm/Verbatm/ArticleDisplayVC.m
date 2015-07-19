@@ -9,12 +9,10 @@
 #import "ArticleDisplayVC.h"
 #import "TextAVE.h"
 #import "VideoAVE.h"
-#import "PhotoVideoAVE.h"
 #import "MultiplePhotoVideoAVE.h"
 #import "Analyzer.h"
 #import "Page.h"
 #import "Article.h"
-#import "PhotoVideoTextAVE.h"
 
 @interface ArticleDisplayVC () <UIScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
@@ -325,28 +323,25 @@
     for (int i=0; i< self.pinchedObjects.count; i++)
     {
         if(self.pinchedObjects[i] == self.animatingView)continue;
-        
-        if([self.pinchedObjects[i] isKindOfClass:[VideoAVE class]]){
-            [((VideoAVE*)self.pinchedObjects[i]) offScreen];
-        }else if([self.pinchedObjects[i] isKindOfClass:[PhotoVideoAVE class]]){
-            [((PhotoVideoAVE *)self.pinchedObjects[i]) offScreen];
-        }else if([self.pinchedObjects[i] isKindOfClass:[MultiplePhotoVideoAVE class]]){
-            [((MultiplePhotoVideoAVE*)self.pinchedObjects[i]) offScreen];
-        }else if([self.pinchedObjects[i] isKindOfClass:[PhotoVideoTextAVE class]]){
-            [((PhotoVideoTextAVE *)self.animatingView) offScreen];
-        }
+//
+//        if([self.pinchedObjects[i] isKindOfClass:[VideoAVE class]]){
+//            [((VideoAVE*)self.pinchedObjects[i]) offScreen];
+//        }else if([self.pinchedObjects[i] isKindOfClass:[PhotoVideoAVE class]]){
+//            [((PhotoVideoAVE *)self.pinchedObjects[i]) offScreen];
+//        }else if([self.pinchedObjects[i] isKindOfClass:[MultiplePhotoVideoAVE class]]){
+//            [((MultiplePhotoVideoAVE*)self.pinchedObjects[i]) offScreen];
+//        }else if([self.pinchedObjects[i] isKindOfClass:[PhotoVideoTextAVE class]]){
+//            [((PhotoVideoTextAVE *)self.animatingView) offScreen];
+//        }
     }
 }
 
-
 -(void)handlePlayBack//plays sound if first video is
 {
-    if(_animatingView)
-    {
+    if(_animatingView){
         [self stopPlayBack];
     }else {
         _animatingView = [self.pinchedObjects firstObject];
-        
         [self stopPlayBack];
     }
     int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
@@ -359,34 +354,38 @@
  */
 -(void)runPlayBack
 {
-    if([self.animatingView isKindOfClass:[VideoAVE class]])
-    {
-        [((VideoAVE*)self.animatingView) onScreen];
-    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
-    {
-        [((PhotoVideoAVE *)self.animatingView) onScreen];
-    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
-    {
-        [((MultiplePhotoVideoAVE*)self.animatingView) onScreen];
-    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
-    {
-        [((PhotoVideoTextAVE *)self.animatingView) onScreen];
-    }
+//    if([self.animatingView isKindOfClass:[VideoAVE class]])
+//    {
+//        [((VideoAVE*)self.animatingView) onScreen];
+//    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
+//    {
+//        [((PhotoVideoAVE *)self.animatingView) onScreen];
+//    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
+//    {
+//        [((MultiplePhotoVideoAVE*)self.animatingView) onScreen];
+//    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
+//    {
+//        [((PhotoVideoTextAVE *)self.animatingView) onScreen];
+//    }
 }
 
 /*call this before changing the nimating view so that we stop the previous thing
  */
 -(void)stopPlayBack
 {
-    if([self.animatingView isKindOfClass:[VideoAVE class]]){
-        [((VideoAVE*)self.animatingView) offScreen];
-    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]]){
-        [((PhotoVideoAVE *)self.animatingView) offScreen];
-    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]]){
-        [((MultiplePhotoVideoAVE*)self.animatingView) offScreen];
-    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]]){
-        [((PhotoVideoTextAVE *)self.animatingView) offScreen];
-    }
+//    if([self.animatingView isKindOfClass:[VideoAVE class]])
+//    {
+//        [((VideoAVE*)self.animatingView) offScreen];
+//    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
+//    {
+//        [((PhotoVideoAVE *)self.animatingView) offScreen];
+//    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
+//    {
+//        [((MultiplePhotoVideoAVE*)self.animatingView) offScreen];
+//    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
+//    {
+//        [((PhotoVideoTextAVE *)self.animatingView) offScreen];
+//    }
 }
 
 - (void)exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender

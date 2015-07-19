@@ -15,7 +15,6 @@
 		A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */; };
 		A5B344901B4DE18B0074B4AA /* MultiplePhotoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */; };
 		A5B344961B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */; };
-		A5B344981B4DE88F0074B4AA /* PhotoVideoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344971B4DE88F0074B4AA /* PhotoVideoAVE.xib */; };
 		A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CB82A21B5740A000195A2E /* UIEffects.m */; };
 		C702DE701B315CDF00EE2B00 /* ArticleDisplayVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C702DE6F1B315CDF00EE2B00 /* ArticleDisplayVC.m */; };
 		C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = C716A5B119E0CA3500A5490B /* DashLineView.m */; };
@@ -24,7 +23,6 @@
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
 		C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */; };
 		C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = C7360E4E19A46D4E002B2DE5 /* Article.m */; };
-		C73686E81A9B22AA00ADAC90 /* PhotoVideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C73686E71A9B22AA00ADAC90 /* PhotoVideoAVE.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
 		C7614F421A247BD100E6AB24 /* VerbatmImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7614F411A247BD100E6AB24 /* VerbatmImageView.m */; };
 		C7614F441A24993200E6AB24 /* PinchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7614F431A24993200E6AB24 /* PinchView.xib */; };
@@ -42,9 +40,7 @@
 		C772F28A1B4BC13500CEC83D /* GMVideoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F27C1B4BC13500CEC83D /* GMVideoIcon@2x.png */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C777EEA01AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */; };
-		C777EEA31AC8AE9E003E0633 /* v_multimediaTextVIew.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */; };
 		C777EEA61AC90A7A003E0633 /* ArticleAquirer.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA51AC90A7A003E0633 /* ArticleAquirer.m */; };
-		C777EEAA1ACFEC7A003E0633 /* MultiPhotoTextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA91ACFEC7A003E0633 /* MultiPhotoTextAVE.m */; };
 		C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEAC1AD288A3003E0633 /* ArticleListVC.m */; };
 		C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */; };
 		C77A68B41AC20AA2000B10E2 /* MultiplePhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B31AC20AA2000B10E2 /* MultiplePhotoAVE.m */; };
@@ -80,13 +76,12 @@
 		C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BA199EC6A2004B91A1 /* StoreKit.framework */; };
 		C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */; };
 		C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC43BF199F7427004B91A1 /* VerbatmUser.m */; };
+		C7BD53C41B5B73A700EE6241 /* TextAndOtherAves.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD53C31B5B73A700EE6241 /* TextAndOtherAves.m */; };
+		C7BD53C91B5C1A4C00EE6241 /* verbatmAveTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD53C81B5C1A4C00EE6241 /* verbatmAveTextView.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
 		C7E6C13F1A4E394600863893 /* MultiplePhotoVideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */; };
-		C7E6C1401A4E394600863893 /* MultiVidTextPhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1321A4E394600863893 /* MultiVidTextPhotoAVE.m */; };
-		C7E6C1421A4E394600863893 /* PhotoVideoTextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1361A4E394600863893 /* PhotoVideoTextAVE.m */; };
 		C7E6C1431A4E394600863893 /* TextPhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1381A4E394600863893 /* TextPhotoAVE.m */; };
-		C7E6C1441A4E394600863893 /* TextVideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13A1A4E394600863893 /* TextVideoAVE.m */; };
 		C7E6C1451A4E394600863893 /* TextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13C1A4E394600863893 /* TextAVE.m */; };
 		C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* VideoAVE.m */; };
 		C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */; };
@@ -122,7 +117,6 @@
 		A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbatmCameraView.xib; sourceTree = "<group>"; };
 		A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoAVE.xib; sourceTree = "<group>"; };
 		A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoVideoAVE.xib; sourceTree = "<group>"; };
-		A5B344971B4DE88F0074B4AA /* PhotoVideoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PhotoVideoAVE.xib; sourceTree = "<group>"; };
 		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
 		A5CB82A21B5740A000195A2E /* UIEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIEffects.m; sourceTree = "<group>"; };
 		C702DE6E1B315CDF00EE2B00 /* ArticleDisplayVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleDisplayVC.h; sourceTree = "<group>"; };
@@ -136,8 +130,6 @@
 		C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevVC.m; sourceTree = "<group>"; };
 		C7360E4D19A46D4E002B2DE5 /* Article.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Article.h; sourceTree = "<group>"; };
 		C7360E4E19A46D4E002B2DE5 /* Article.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Article.m; sourceTree = "<group>"; };
-		C73686E61A9B22AA00ADAC90 /* PhotoVideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoVideoAVE.h; sourceTree = "<group>"; };
-		C73686E71A9B22AA00ADAC90 /* PhotoVideoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoVideoAVE.m; sourceTree = "<group>"; };
 		C7469BF31B4874A600EA7B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C7614F401A247BD100E6AB24 /* VerbatmImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmImageView.h; sourceTree = "<group>"; };
 		C7614F411A247BD100E6AB24 /* VerbatmImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmImageView.m; sourceTree = "<group>"; };
@@ -169,12 +161,8 @@
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C777EE9E1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmArticle_TableViewCell.h; sourceTree = "<group>"; };
 		C777EE9F1AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmArticle_TableViewCell.m; sourceTree = "<group>"; };
-		C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = v_multimediaTextVIew.h; sourceTree = "<group>"; };
-		C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = v_multimediaTextVIew.m; sourceTree = "<group>"; };
 		C777EEA41AC90A7A003E0633 /* ArticleAquirer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleAquirer.h; sourceTree = "<group>"; };
 		C777EEA51AC90A7A003E0633 /* ArticleAquirer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleAquirer.m; sourceTree = "<group>"; };
-		C777EEA81ACFEC7A003E0633 /* MultiPhotoTextAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiPhotoTextAVE.h; sourceTree = "<group>"; };
-		C777EEA91ACFEC7A003E0633 /* MultiPhotoTextAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiPhotoTextAVE.m; sourceTree = "<group>"; };
 		C777EEAB1AD288A3003E0633 /* ArticleListVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleListVC.h; sourceTree = "<group>"; };
 		C777EEAC1AD288A3003E0633 /* ArticleListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleListVC.m; sourceTree = "<group>"; };
 		C77A68AF1AC0A49B000B10E2 /* VIEW_TESTERViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VIEW_TESTERViewController.h; sourceTree = "<group>"; };
@@ -225,20 +213,19 @@
 		C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C7BC43BE199F7427004B91A1 /* VerbatmUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmUser.h; sourceTree = "<group>"; };
 		C7BC43BF199F7427004B91A1 /* VerbatmUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmUser.m; sourceTree = "<group>"; };
+		C7BD53C21B5B73A700EE6241 /* TextAndOtherAves.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAndOtherAves.h; sourceTree = "<group>"; };
+		C7BD53C31B5B73A700EE6241 /* TextAndOtherAves.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAndOtherAves.m; sourceTree = "<group>"; };
+		C7BD53C51B5B787500EE6241 /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = constants.h; path = ../constants.h; sourceTree = "<group>"; };
+		C7BD53C71B5C1A4C00EE6241 /* verbatmAveTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmAveTextView.h; sourceTree = "<group>"; };
+		C7BD53C81B5C1A4C00EE6241 /* verbatmAveTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmAveTextView.m; sourceTree = "<group>"; };
 		C7CCFF3A19CE63A800E90080 /* testerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerAnimation.h; sourceTree = "<group>"; };
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
 		C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerTransitionDelegate.m; sourceTree = "<group>"; };
 		C7E6C12F1A4E394600863893 /* MultiplePhotoVideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiplePhotoVideoAVE.h; sourceTree = "<group>"; };
 		C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiplePhotoVideoAVE.m; sourceTree = "<group>"; };
-		C7E6C1311A4E394600863893 /* MultiVidTextPhotoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiVidTextPhotoAVE.h; sourceTree = "<group>"; };
-		C7E6C1321A4E394600863893 /* MultiVidTextPhotoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiVidTextPhotoAVE.m; sourceTree = "<group>"; };
-		C7E6C1351A4E394600863893 /* PhotoVideoTextAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoVideoTextAVE.h; sourceTree = "<group>"; };
-		C7E6C1361A4E394600863893 /* PhotoVideoTextAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoVideoTextAVE.m; sourceTree = "<group>"; };
 		C7E6C1371A4E394600863893 /* TextPhotoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextPhotoAVE.h; sourceTree = "<group>"; };
 		C7E6C1381A4E394600863893 /* TextPhotoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextPhotoAVE.m; sourceTree = "<group>"; };
-		C7E6C1391A4E394600863893 /* TextVideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextVideoAVE.h; sourceTree = "<group>"; };
-		C7E6C13A1A4E394600863893 /* TextVideoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextVideoAVE.m; sourceTree = "<group>"; };
 		C7E6C13B1A4E394600863893 /* TextAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAVE.h; sourceTree = "<group>"; };
 		C7E6C13C1A4E394600863893 /* TextAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAVE.m; sourceTree = "<group>"; };
 		C7E6C13D1A4E394600863893 /* VideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoAVE.h; sourceTree = "<group>"; };
@@ -391,18 +378,14 @@
 		C777EEA71AC9180D003E0633 /* AVES that involve text */ = {
 			isa = PBXGroup;
 			children = (
-				C7E6C1311A4E394600863893 /* MultiVidTextPhotoAVE.h */,
-				C7E6C1321A4E394600863893 /* MultiVidTextPhotoAVE.m */,
-				C7E6C1351A4E394600863893 /* PhotoVideoTextAVE.h */,
-				C7E6C1361A4E394600863893 /* PhotoVideoTextAVE.m */,
-				C7E6C1391A4E394600863893 /* TextVideoAVE.h */,
-				C7E6C13A1A4E394600863893 /* TextVideoAVE.m */,
-				C777EEA81ACFEC7A003E0633 /* MultiPhotoTextAVE.h */,
-				C777EEA91ACFEC7A003E0633 /* MultiPhotoTextAVE.m */,
 				C7E6C13B1A4E394600863893 /* TextAVE.h */,
 				C7E6C13C1A4E394600863893 /* TextAVE.m */,
 				C7E6C1371A4E394600863893 /* TextPhotoAVE.h */,
 				C7E6C1381A4E394600863893 /* TextPhotoAVE.m */,
+				C7BD53C21B5B73A700EE6241 /* TextAndOtherAves.h */,
+				C7BD53C31B5B73A700EE6241 /* TextAndOtherAves.m */,
+				C7BD53C71B5C1A4C00EE6241 /* verbatmAveTextView.h */,
+				C7BD53C81B5C1A4C00EE6241 /* verbatmAveTextView.m */,
 			);
 			name = "AVES that involve text";
 			sourceTree = "<group>";
@@ -452,15 +435,6 @@
 			name = "Custom Views";
 			sourceTree = "<group>";
 		};
-		C7B1EC7B1B39FBBD001A4FFC /* Not in use  */ = {
-			isa = PBXGroup;
-			children = (
-				C777EEA11AC8AE9E003E0633 /* v_multimediaTextVIew.h */,
-				C777EEA21AC8AE9E003E0633 /* v_multimediaTextVIew.m */,
-			);
-			name = "Not in use ";
-			sourceTree = "<group>";
-		};
 		C7B1EC7C1B3CDF53001A4FFC /* Video Aves */ = {
 			isa = PBXGroup;
 			children = (
@@ -469,9 +443,6 @@
 				A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */,
 				C7E6C13D1A4E394600863893 /* VideoAVE.h */,
 				C7E6C13E1A4E394600863893 /* VideoAVE.m */,
-				A5B344971B4DE88F0074B4AA /* PhotoVideoAVE.xib */,
-				C73686E61A9B22AA00ADAC90 /* PhotoVideoAVE.h */,
-				C73686E71A9B22AA00ADAC90 /* PhotoVideoAVE.m */,
 			);
 			name = "Video Aves";
 			sourceTree = "<group>";
@@ -522,6 +493,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				C7BD53C61B5B790B00EE6241 /* constants  */,
 				C748836A1B489AE300E64ED9 /* Gallery */,
 				A5CB82A41B5744B800195A2E /* UI effects */,
 				F257FEC81AC21F8B00964AB5 /* Saving and Downloading */,
@@ -585,6 +557,14 @@
 			name = "Backend Model";
 			sourceTree = "<group>";
 		};
+		C7BD53C61B5B790B00EE6241 /* constants  */ = {
+			isa = PBXGroup;
+			children = (
+				C7BD53C51B5B787500EE6241 /* constants.h */,
+			);
+			name = "constants ";
+			sourceTree = "<group>";
+		};
 		C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */ = {
 			isa = PBXGroup;
 			children = (
@@ -619,7 +599,6 @@
 			isa = PBXGroup;
 			children = (
 				C7B1EC7C1B3CDF53001A4FFC /* Video Aves */,
-				C7B1EC7B1B39FBBD001A4FFC /* Not in use  */,
 				C777EEA71AC9180D003E0633 /* AVES that involve text */,
 				C77A68B21AC20AA2000B10E2 /* MultiplePhotoAVE.h */,
 				A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */,
@@ -733,7 +712,6 @@
 				C7BC4380199D97F5004B91A1 /* InfoPlist.strings in Resources */,
 				A5B344901B4DE18B0074B4AA /* MultiplePhotoAVE.xib in Resources */,
 				A5B344961B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib in Resources */,
-				A5B344981B4DE88F0074B4AA /* PhotoVideoAVE.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -788,16 +766,16 @@
 				C772F2801B4BC13500CEC83D /* GMAlbumsViewCell.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
 				C7A8E3861A61CE4D00776BD1 /* VerbatmPullBarView.m in Sources */,
-				C7E6C1401A4E394600863893 /* MultiVidTextPhotoAVE.m in Sources */,
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				C772F2851B4BC13500CEC83D /* GMGridViewController.m in Sources */,
 				C77A68B41AC20AA2000B10E2 /* MultiplePhotoAVE.m in Sources */,
+				C7BD53C91B5C1A4C00EE6241 /* verbatmAveTextView.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */,
+				C7BD53C41B5B73A700EE6241 /* TextAndOtherAves.m in Sources */,
 				F20A24FA1A46166100BB77C1 /* VerbatmImageScrollView.m in Sources */,
-				C7E6C1421A4E394600863893 /* PhotoVideoTextAVE.m in Sources */,
 				C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */,
 				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,
@@ -824,14 +802,10 @@
 				C777EEA01AC7F8B6003E0633 /* verbatmArticle_TableViewCell.m in Sources */,
 				C7F3D46E1A4F84DF00B43238 /* UserSignUpVC.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
-				C777EEAA1ACFEC7A003E0633 /* MultiPhotoTextAVE.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
-				C73686E81A9B22AA00ADAC90 /* PhotoVideoAVE.m in Sources */,
-				C777EEA31AC8AE9E003E0633 /* v_multimediaTextVIew.m in Sources */,
 				C7E6C1431A4E394600863893 /* TextPhotoAVE.m in Sources */,
 				C7A8A7F619A96E1B00CE861F /* Video.m in Sources */,
 				C702DE701B315CDF00EE2B00 /* ArticleDisplayVC.m in Sources */,
-				C7E6C1441A4E394600863893 /* TextVideoAVE.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

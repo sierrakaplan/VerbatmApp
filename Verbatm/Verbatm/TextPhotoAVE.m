@@ -7,7 +7,6 @@
 //
 
 #import "TextPhotoAVE.h"
-#import "v_multimediaTextVIew.h"
 @interface TextPhotoAVE()
 @property (strong, nonatomic) TextAVE* textView;
 @property (strong, nonatomic) UIVisualEffectView* bgBlurImage;
@@ -134,6 +133,8 @@
     self.bgBlurImage.frame = BLUR_VIEW_FRAME;
     [self setWhiteBarFrame];
 }
+
+
 -(void)addSwipeGesture
 {
     if(self.isTitle)return;
