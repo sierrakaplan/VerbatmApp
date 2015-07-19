@@ -7,7 +7,6 @@
 //
 
 #import "TextPhotoAVE.h"
-#import "ILTranslucentView.h"
 #import "v_multimediaTextVIew.h"
 @interface TextPhotoAVE()
 @property (strong, nonatomic) TextAVE* textView;

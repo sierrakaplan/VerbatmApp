@@ -17,4 +17,12 @@
 
 @implementation VerbatmUITextView
 
+- (id)init {
+	self = [super init];
+	if (self) {
+		[self setReturnKeyType:UIReturnKeyDone];
+	}
+	return self;
+}
+
 @end

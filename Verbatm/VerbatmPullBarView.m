@@ -10,72 +10,162 @@
 #import "VerbatmImageScrollView.h"
 
 @interface VerbatmPullBarView ()
-@property (weak, nonatomic) IBOutlet UIButton *uibutton_Preview;
-@property (weak, nonatomic) IBOutlet UIButton *uibutton_Keyboard;
-@property (weak, nonatomic) IBOutlet UIButton *uibutton_Undo;
-@property (weak, nonatomic) IBOutlet UIButton *save_button;
+@property (strong, nonatomic) UIButton *previewButton;
+@property (strong, nonatomic) UIButton *undoButton;
+@property (strong, nonatomic) UIButton *pullUpButton;
+@property (strong, nonatomic) UIImageView *pullDownIcon;
 
-#define CENTER_BUTTON_GAP 10
+# pragma mark Spacing
+#define CENTER_BUTTON_GAP 20.f
+#define XOFFSET 20.f
+#define YOFFSET 15.f
+
+# pragma mark Icons
+#define UNDO_BUTTON_IMAGE @"undo_button_icon"
+#define UNDO_BUTTON_CLICKED @"undo_button_clicked"
+#define PREVIEW_BUTTON_IMAGE @"preview_button_icon"
+#define PREVIEW_BUTTON_CLICKED @"preview_button_clicked"
+#define PULLUP_BUTTON_IMAGE @"pullup_icon"
+#define PULLUP_BUTTON_CLICKED @"pullup_icon_clicked"
+#define PULLDOWN_ICON_IMAGE @"pulldown_icon"
+
 @end
 
 
 @implementation VerbatmPullBarView
+
+# pragma mark Initialization
 
 -(instancetype)initWithFrame:(CGRect)frame
 {
 
     //load from Nib file..this initializes the background view and all its subviews
     self = [super initWithFrame:frame];
-    self = [[[NSBundle mainBundle] loadNibNamed:@"VerbatmPullBarView" owner:self options:nil]firstObject];
     if(self)
     {
-        
         self.frame = frame;
-        [self centerButtons];
+        [self createButtons];
+		[self switchToPullDown];
     }
     return self;
 }
 
+//initialize all buttons, for all modes
+-(void)createButtons {
+
+	float centerPoint = self.frame.size.width /2.f;
+	float buttonSize = PULLBAR_HEIGHT_MENU_MODE - (2.f * YOFFSET);
+	float iconHeight = PULLBAR_HEIGHT_PULLDOWN_MODE;
+	float iconWidth = iconHeight * 3.f;
+
+	CGRect pullDownIconFrame = CGRectMake(centerPoint-iconWidth/2.f, 0, iconWidth, iconHeight);
+	self.pullDownIcon = [[UIImageView alloc] initWithFrame:pullDownIconFrame];
+	[self.pullDownIcon setImage:[UIImage imageNamed:PULLDOWN_ICON_IMAGE]];
+
+	CGRect undoButtonFrame = CGRectMake(XOFFSET, YOFFSET, buttonSize, buttonSize);
+	self.undoButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.undoButton setFrame:undoButtonFrame];
+	[self.undoButton setImage:[UIImage imageNamed:UNDO_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.undoButton setImage:[UIImage imageNamed:UNDO_BUTTON_CLICKED] forState:UIControlStateHighlighted | UIControlStateSelected];
+	[self.undoButton addTarget:self action:@selector(undoButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+//	[self.undoButton addTarget:self action:@selector(undoButtonPressed:) forControlEvents:UIControlEventTouchDown];
+
+	CGRect pullUpButtonFrame = CGRectMake(centerPoint-buttonSize/2.f, YOFFSET, buttonSize, buttonSize);
+	self.pullUpButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.pullUpButton setFrame:pullUpButtonFrame];
+	[self.pullUpButton setImage:[UIImage imageNamed:PULLUP_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.pullUpButton setImage:[UIImage imageNamed:PULLUP_BUTTON_CLICKED] forState:UIControlStateHighlighted | UIControlStateSelected];
+	[self.pullUpButton addTarget:self action:@selector(pullUpButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+//	[self.pullUpButton addTarget:self action:@selector(pullUpButtonPressed:) forControlEvents:UIControlEventTouchDown];
+
+	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - buttonSize - XOFFSET, YOFFSET, buttonSize, buttonSize);
+	self.previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.previewButton setFrame:previewButtonFrame];
+	[self.previewButton setImage:[UIImage imageNamed:PREVIEW_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.previewButton setImage:[UIImage imageNamed:PREVIEW_BUTTON_CLICKED] forState:UIControlStateHighlighted | UIControlStateSelected];
+	[self.previewButton addTarget:self action:@selector(previewButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+//	[self.previewButton addTarget:self action:@selector(previewButtonPressed:) forControlEvents:UIControlEventTouchDown];
+}
 
 
--(void)centerButtons
+# pragma mark Switch PullBar mode
+
+-(void)switchToMode: (PullBarMode) mode {
+	if (mode == PullBarModeMenu) {
+		[self switchToMenu];
+	} else if (mode == PullBarModePullDown) {
+		[self switchToPullDown];
+	}
+}
+
+-(void)switchToMenu {
+	self.mode = PullBarModeMenu;
+
+	[self.pullDownIcon removeFromSuperview];
+
+	[self addSubview:self.undoButton];
+	[self addSubview:self.pullUpButton];
+	[self addSubview:self.previewButton];
+}
+
+-(void)switchToPullDown {
+	self.mode = PullBarModePullDown;
+
+	[self.undoButton removeFromSuperview];
+	[self.pullUpButton removeFromSuperview];
+	[self.previewButton removeFromSuperview];
+
+	[self addSubview:self.pullDownIcon];
+}
+
+
+# pragma mark GestureRecognizer delegate methods
+
+// ignore pan gesture if touching buttons
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	if ([touch.view isKindOfClass:[UIControl class]]) {
+		// we touched our control surface
+		return NO; // ignore the touch
+	}
+	return YES; // handle the touch
+}
+
+
+# pragma mark Button actions on touch up (send message to delegates)
+
+- (IBAction)undoButtonReleased:(UIButton *)sender
 {
-    //get the xoffset for the undo button and ensure the the keyboardbutton has the same offset
-    NSInteger undoXOffset = self.uibutton_Undo.frame.origin.x;
-     NSInteger centerPoint = self.frame.size.width /2;
+	[self.undoButton setImage:[UIImage imageNamed:UNDO_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.delegate undoButtonPressed];
+}
+
+- (IBAction)previewButtonReleased:(UIButton *)sender
+{
+	[self.previewButton setImage:[UIImage imageNamed:PREVIEW_BUTTON_IMAGE] forState:UIControlStateNormal];
+    [self.delegate previewButtonPressed];
     
-    //self.uibutton_Keyboard.frame = CGRectMake(self.frame.size.width - self.uibutton_Keyboard.frame.size.width - undoXOffset, self.uibutton_Keyboard.frame.origin.y, self.uibutton_Keyboard.frame.size.width, self.uibutton_Keyboard.frame.size.height);
-    //self.uibutton_Preview.frame = CGRectMake(centerPoint - (self.uibutton_Preview.frame.size.width + CENTER_BUTTON_GAP), self.uibutton_Preview.frame.origin.y, self.uibutton_Preview.frame.size.width, self.uibutton_Preview.frame.size.height);
-    //self.save_button.frame =CGRectMake(centerPoint + CENTER_BUTTON_GAP, self.uibutton_Preview.frame.origin.y, self.save_button.frame.size.width, self.uibutton_Preview.frame.size.height);
-    
-     self.uibutton_Preview.frame = CGRectMake(centerPoint - (self.uibutton_Preview.frame.size.width/2), self.uibutton_Preview.frame.origin.y, self.uibutton_Preview.frame.size.width, self.uibutton_Preview.frame.size.height);
-    self.save_button.frame =CGRectMake(self.frame.size.width - self.save_button.frame.size.width - undoXOffset , self.save_button.frame.origin.y, self.save_button.frame.size.width, self.save_button.frame.size.height);
-}
-- (IBAction)saveButton_Touched:(UIButton *)sender
-{
-    //we have issue here when the button is pressed with the text entry up
-    if(![self.customeDelegate isKindOfClass:[VerbatmImageScrollView class]])[self.customeDelegate saveButtonPressed];
 }
 
+- (IBAction)pullUpButtonReleased:(UIButton *)sender
+{
+	[self.pullUpButton setImage:[UIImage imageNamed:PULLUP_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.delegate pullUpButtonPressed];
 
-//sends signal to the delegate that the button was pressed
-- (IBAction)previewButtonTouched:(UIButton *)sender
-{
-    [self.customeDelegate previewButtonPressed];
-    
 }
-//sends signal to the delegate that the button was pressed
-- (IBAction)KeyboardButtonTouched:(UIButton *)sender
-{
-    return;//removing this feature for now
-    [self.customeDelegate keyboardButtonPressed];
+
+# pragma mark Button actions on touch down -- NOT IN USE --
+
+- (IBAction)undoButtonPressed:(UIButton *)sender {
+	[self.undoButton setImage:[UIImage imageNamed:UNDO_BUTTON_CLICKED] forState:UIControlStateNormal];
 }
 
 
-//sends signal to the delegate that the button was pressed
-- (IBAction)undoBotton:(UIButton *)sender
-{
-    [self.customeDelegate undoButtonPressed];
+- (IBAction)pullUpButtonPressed:(UIButton *)sender {
+	[self.pullUpButton setImage:[UIImage imageNamed:PULLUP_BUTTON_CLICKED] forState:UIControlStateNormal];
+}
+
+- (IBAction)previewButtonPressed:(UIButton *)sender {
+	[self.previewButton setImage:[UIImage imageNamed:PREVIEW_BUTTON_CLICKED] forState:UIControlStateNormal];
 }
 
 

@@ -21,6 +21,9 @@
 //@property (strong,readonly, nonatomic) NSString* subtitle;
 @property(strong, readonly,nonatomic) NSString* content;
 @property(strong,readonly, nonatomic) NSString* sandwich;
+@property(strong,readonly, nonatomic) NSString* whatSandwich;
+@property(strong,readonly, nonatomic) NSString* whereSandwich;
+@property(readonly, nonatomic) BOOL isTestingArticle;
 
 #pragma mark - Required methods for subclassing PFObject:
 +(NSString*)parseClassName;
@@ -36,9 +39,7 @@
 //get the author of an article
 -(NSString *)getAuthor;
 
--(instancetype)initAndSaveWithTitle:(NSString *)title  andSandWichWhat:(NSString *)what  Where:(NSString *)where  andPinchObjects:(NSArray*)pages;
-
-
+-(instancetype)initAndSaveWithTitle:(NSString *)title  andSandWichWhat:(NSString *)what  Where:(NSString *)where  andPinchObjects:(NSArray*)pages andIsTesting:(BOOL)isTesting;
 
 //sets the content of the Article. The content must correspond to the right format
 //-(void) setArticleContent:(NSString *)content;
@@ -86,7 +87,7 @@
 
 -(PFQuery*)getVideos;
 
-//returns the querry to get the exact information you want. Call as is shown below:
+//returns the query to get the exact information you want. Call as is shown below:
 /*
 e.g:
  [queryLikes findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error) {

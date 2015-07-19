@@ -6,17 +6,32 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <UIKit/UIView.h>
+#import <UIKit/UIKitDefines.h>
 
-@protocol pullBarDelegate <NSObject>
+@protocol PullBarDelegate <NSObject>
 
 -(void)undoButtonPressed;
+-(void)pullUpButtonPressed;
 -(void)previewButtonPressed;
--(void)keyboardButtonPressed;
--(void)saveButtonPressed;
 
 @end
 
-@interface VerbatmPullBarView : UIView
-    @property (nonatomic, strong) id<pullBarDelegate> customeDelegate;
+@interface VerbatmPullBarView : UIView <UIGestureRecognizerDelegate>
+
+typedef NS_ENUM(NSInteger, PullBarMode) {
+	PullBarModePullDown,
+	PullBarModeMenu
+};
+
+@property (nonatomic, strong) id<PullBarDelegate> delegate;
+// Can be in either pull down mode or menu mode depending on if it's at the top or bottom
+@property (nonatomic) PullBarMode mode;
+
+-(void)switchToMode: (PullBarMode) mode;
+
+#define PULLBAR_HEIGHT_MENU_MODE 70.f
+#define PULLBAR_HEIGHT_PULLDOWN_MODE 30.f
+
 @end

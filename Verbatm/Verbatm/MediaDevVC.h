@@ -10,4 +10,10 @@
 
 
 @interface MediaDevVC : UIViewController
+
+typedef NS_ENUM(NSInteger, ContentContainerViewMode) {
+	ContentContainerViewModeFullScreen,
+	ContentContainerViewModeBase
+};
+
 @end

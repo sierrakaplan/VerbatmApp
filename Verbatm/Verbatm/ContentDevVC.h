@@ -16,7 +16,10 @@
 
 @property (weak, nonatomic) IBOutlet UITextField *articleTitleField;
 @property (weak, nonatomic) IBOutlet UITextField *sandwichWhere;
-@property (weak, nonatomic) IBOutlet UITextField *sandwhichWhat;
+@property (weak, nonatomic) IBOutlet UITextField *sandwichWhat;
+@property (weak, nonatomic) IBOutlet UIImageView *dotsRight;
+@property (weak, nonatomic) IBOutlet UIImageView *dotsLeft;
+
 @property (strong, atomic) NSMutableArray * pageElements; //elements added to the scrollview- excludes uitextfields at the top of the screen
 @property (nonatomic) CGRect containerViewFrame;
 @property (strong, nonatomic) VerbatmUITextView * activeTextView; //view that is currently being filled in
@@ -27,8 +30,8 @@
 -(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView;
 -(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView;
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
--(void)freeMainScrollView:(BOOL) isFree; // either locks the scroll view or frees it
--(void)alertGallery:(ALAsset*)asset;
+// either locks the scroll view or frees it
+-(void)setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;
 @property(nonatomic) NSInteger pullBarHeight;
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;

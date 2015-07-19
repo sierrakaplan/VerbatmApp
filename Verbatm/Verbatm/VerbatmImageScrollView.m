@@ -10,7 +10,7 @@
 #import "VerbatmImageView.h"
 #import "verbatmPullBarView.h"
 
-@interface VerbatmImageScrollView () <UITextViewDelegate,pullBarDelegate>
+@interface VerbatmImageScrollView () <UITextViewDelegate>
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) UIImage * filter_Original;
@@ -95,7 +95,6 @@
 		[self adjustImageScrollViewContentSizing];
 
 		[self formatTextViewAppropriately:self.textView];
-		//[self addToolBarToView];
 		[self addSubview:self.textView];
 	}
 }
@@ -105,23 +104,8 @@
 {
 	CGRect frame = CGRectMake(0,0, self.frame.size.width, PULLBAR_HEIGHT);
 	VerbatmPullBarView * toolBar = [[VerbatmPullBarView alloc] initWithFrame:frame];
-	toolBar.customeDelegate = self;
+//	toolBar.customeDelegate = self;
 	self.textView.inputAccessoryView = toolBar;
-}
-
-/*not to be implemented only to get rid of the protocal warnings*/
--(void)undoButtonPressed
-{
-
-}
-
--(void)previewButtonPressed
-{
-
-}
--(void)saveButtonPressed
-{
-
 }
 
 -(void)keyboardButtonPressed

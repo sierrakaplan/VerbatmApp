@@ -22,6 +22,9 @@
 @property (strong,readwrite,nonatomic) NSString* title;
 @property(strong,readwrite, nonatomic) NSString* content;
 @property(strong, readwrite,nonatomic) NSString* sandwich;
+@property(strong,readwrite, nonatomic) NSString* whatSandwich;
+@property(strong,readwrite, nonatomic) NSString* whereSandwich;
+@property(readwrite, nonatomic) BOOL isTestingArticle;
 @property (strong, nonatomic) PFRelation * articleVideosRelation;
 @property (strong, nonatomic) PFRelation * articlePhotosRelation;
 @property (strong, nonatomic) PFRelation* article_pageRelationship;
@@ -39,8 +42,11 @@
 
 @implementation Article
 @dynamic sandwich;
+@dynamic whatSandwich;
+@dynamic whereSandwich;
 @dynamic title;
 @dynamic content;
+@dynamic isTestingArticle;
 
 @synthesize articleVideosRelation= _articleVideosRelation;
 @synthesize articlePhotosRelation = _articlePhotosRelation;
@@ -51,10 +57,11 @@
 /*by Lucio Dery */
 //This creates an article object with a title and subtitle, and pages as well as saves the article.
 //relations can only be created between saved objects thus the need to save the article and pages before creating the article-page relations.
--(instancetype)initAndSaveWithTitle:(NSString *)title  andSandWichWhat:(NSString *)what  Where:(NSString *)where  andPinchObjects:(NSArray*)pages
+-(instancetype)initAndSaveWithTitle:(NSString *)title  andSandWichWhat:(NSString *)what  Where:(NSString *)where  andPinchObjects:(NSArray*)pages andIsTesting:(BOOL)isTesting
 {
     if((self = [super init]))
     {
+		self.isTestingArticle = isTesting;
         if(title)
         {
             self.title = title;
@@ -74,7 +81,6 @@
     }
     return self;
 }
-
 
 //funciton not working for some reason
 -(NSString *)getAuthor
@@ -134,10 +140,14 @@
 
 /*by Lucio Dery */
 //creates an s@ndwich given the two component strings in the right order
--(void)setSandwich:(NSString *)firstPart at:(NSString *)secondPart
+-(void)setSandwich:(NSString *)what at:(NSString *)where
 {
     //need some security code to protect from any code injection.
-    if(firstPart && secondPart) self.sandwich = [NSString stringWithFormat:@"%@ @ %@", firstPart, secondPart];
+    if(what && where) {
+		self.sandwich = [NSString stringWithFormat:@"%@ @ %@", what, where];
+		self.whatSandwich = what;
+		self.whereSandwich = where;
+	}
 }
 
 

@@ -26,6 +26,7 @@
 //The first object in the list will be the last to be shown in the Article
 @property (strong, nonatomic) NSMutableArray* pinchedObjects;
 @property (weak, nonatomic) IBOutlet UIButton *exitArticle_Button;
+@property (strong, nonatomic) UIButton* publishButton;
 @property (nonatomic) CGPoint prev_Gesture_Point;//saves the prev point for the exit (pan) gesture
 #define BEST_ALPHA_FOR_TEXT 0.8
 #define ANIMATION_DURATION 0.4
@@ -37,6 +38,12 @@
 
 #define NOTIFICATION_PAUSE_VIDEOS @"pauseContentPageVideosNotification"
 #define NOTIFICATION_PLAY_VIDEOS @"playContentPageVideosNotification"
+
+#define PUBLISH_BUTTON_IMAGE @"publish_button"
+#define PUBLISH_BUTTON_XOFFSET 20.f
+#define PUBLISH_BUTTON_YOFFSET 20.f
+#define PUBLISH_BUTTON_WIDTH 50.f
+#define PUBLISH_BUTTON_HEIGHT 50.f
 
 @end
 
@@ -164,8 +171,22 @@
 	[self setUpScrollView];
 	[self renderPinchPages];
 	[self show_remove_ScrollView:YES];
+	[self addPublishButton];
 	_latestPoint = CGPointZero;
 	_animatingView = nil;
+}
+
+-(void) addPublishButton {
+	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.publishButton setImage:[UIImage imageNamed:PUBLISH_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.publishButton setFrame:CGRectMake(self.view.frame.size.width - PUBLISH_BUTTON_XOFFSET - PUBLISH_BUTTON_WIDTH, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_WIDTH, PUBLISH_BUTTON_HEIGHT)];
+	[self.publishButton addTarget:self action:@selector(publishArticle:) forControlEvents:UIControlEventTouchUpInside];
+
+	[self.view addSubview:self.publishButton];
+}
+
+-(void) publishArticle: (id)sender {
+
 }
 
 -(void) clearArticle
@@ -217,6 +238,7 @@
         }];
     }else//send the scrollview back to the right
     {
+		[self.publishButton removeFromSuperview];
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
             [self play_CP_Vidoes];
             self.scrollView.frame = SV_RESTING_FRAME;

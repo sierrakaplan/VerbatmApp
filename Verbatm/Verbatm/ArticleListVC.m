@@ -9,13 +9,14 @@
 #import "ArticleListVC.h"
 #import "MasterNavigationVC.h"
 #import "verbatmArticle_TableViewCell.h"
-#import "verbatmArticleAquirer.h"
+#import "ArticleAquirer.h"
 #import "Article.h"
 #import "Page.h"
 #import "Analyzer.h"
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 #define NOTIFICATION_SHOW_ADK @"notification_showADK"
 #define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
+#define NOTIFICATION_REFRESH_FEED @"Notification_RefreshFeed"
 
 #define BUTTON_HEIGHT 50
 #define TOP_OFFSET 30
@@ -28,6 +29,7 @@
     @property (weak, nonatomic) IBOutlet UIButton *refreshArticle_button;
     @property (weak, nonatomic) IBOutlet UILabel *listTitle;
     @property  (nonatomic) NSInteger selectedArticleIndex;
+	@property BOOL pullDownInProgress;
 @end
 
 @implementation ArticleListVC
@@ -38,18 +40,47 @@
     self.articleListView.dataSource = self;
     self.articleListView.delegate = self;
     [self setFrames];
+	[self registerForNavNotifications];
 }
 
 -(void) viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     
-    //we want to download the articles again and then load them to the page
-    [verbatmArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
-        self.articles = ourObjects;
-        [self.articleListView reloadData];
-    }];
-    
+	[self refreshFeed];
+}
+
+-(void) scrollViewWillBeginDragging:(nonnull UIScrollView *)scrollView {
+	NSLog(@"Begin dragging");
+	self.pullDownInProgress = scrollView.contentOffset.y <= 0.0f;
+	NSLog(@"%f", scrollView.contentOffset.y);
+	if (self.pullDownInProgress) {
+		// placeholder cell should appear
+	}
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+
+	if (self.pullDownInProgress && scrollView.contentOffset.y <= 0.0f) {
+		// maintain the location of the placeholder
+//		_placeholderCell.frame = CGRectMake(0, - self.scrollView.contentOffset.y - SHC_ROW_HEIGHT,
+//											self.frame.size.width, SHC_ROW_HEIGHT);
+//		_placeholderCell.label.text = -self.scrollView.contentOffset.y > SHC_ROW_HEIGHT ?
+//		@"Release to Add Item" : @"Pull to Add Item";
+//		_placeholderCell.alpha = MIN(1.0f, - self.scrollView.contentOffset.y / SHC_ROW_HEIGHT);
+	} else {
+		self.pullDownInProgress = false;
+	}
+}
+
+-(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+	// TODO: make this the height of a new row
+	if (self.pullDownInProgress) {
+		[self refreshFeed];
+		NSLog(@"refreshing feed from pull down");
+	}
+	self.pullDownInProgress = false;
+	// remove placeholder cell
 }
 
 -(void)setFrames
@@ -58,6 +89,11 @@
     self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
     self.refreshArticle_button.frame =CGRectMake(0, self.view.frame.size.height - BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
     self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(BUTTON_HEIGHT));
+}
+
+-(void)registerForNavNotifications
+{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshFeed) name:NOTIFICATION_REFRESH_FEED object: nil];
 }
 
 //reloads data into the list view
@@ -69,8 +105,14 @@
 -(void)refreshFeed
 {
     //we want to download the articles again and then load them to the page
-    [verbatmArticleAquirer downloadAllArticlesWithBlock:^(NSArray *ourObjects) {
-        self.articles = ourObjects;
+    [ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *articles) {
+		NSArray *sortedArticles;
+		sortedArticles = [articles sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+			NSDate *first = ((Article*)a).createdAt;
+			NSDate *second = ((Article*)b).createdAt;
+			return [second compare:first];
+		}];
+		self.articles = sortedArticles;
         [self.articleListView reloadData];
     }];
 }
