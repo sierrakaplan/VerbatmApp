@@ -8,16 +8,14 @@
 
 #import "ArticleListVC.h"
 #import "MasterNavigationVC.h"
-#import "verbatmArticle_TableViewCell.h"
+#import "ArticleTableViewCell.h"
 #import "ArticleAquirer.h"
 #import "Article.h"
 #import "Page.h"
 #import "Analyzer.h"
-#define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
-#define NOTIFICATION_SHOW_ADK @"notification_showADK"
-#define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
-#define NOTIFICATION_REFRESH_FEED @"Notification_RefreshFeed"
+#import "Notifications.h"
 
+#define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 #define BUTTON_HEIGHT 50
 #define TOP_OFFSET 30
 #define TITLE_LIST_OFFSET 30
@@ -55,19 +53,13 @@
 	self.pullDownInProgress = scrollView.contentOffset.y <= 0.0f;
 	NSLog(@"%f", scrollView.contentOffset.y);
 	if (self.pullDownInProgress) {
-		// placeholder cell should appear
+		//TODO: placeholder cell should appear
 	}
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-
 	if (self.pullDownInProgress && scrollView.contentOffset.y <= 0.0f) {
-		// maintain the location of the placeholder
-//		_placeholderCell.frame = CGRectMake(0, - self.scrollView.contentOffset.y - SHC_ROW_HEIGHT,
-//											self.frame.size.width, SHC_ROW_HEIGHT);
-//		_placeholderCell.label.text = -self.scrollView.contentOffset.y > SHC_ROW_HEIGHT ?
-//		@"Release to Add Item" : @"Pull to Add Item";
-//		_placeholderCell.alpha = MIN(1.0f, - self.scrollView.contentOffset.y / SHC_ROW_HEIGHT);
+		//TODO: maintain location of placeholder
 	} else {
 		self.pullDownInProgress = false;
 	}
@@ -83,8 +75,7 @@
 	// remove placeholder cell
 }
 
--(void)setFrames
-{
+-(void)setFrames {
     //set button
     self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
     self.refreshArticle_button.frame =CGRectMake(0, self.view.frame.size.height - BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
@@ -130,7 +121,7 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    verbatmArticle_TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"articleListCell" forIndexPath:indexPath];
+    ArticleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"articleListCell" forIndexPath:indexPath];
     
     NSInteger index =indexPath.row;
     Article * article = self.articles[index];

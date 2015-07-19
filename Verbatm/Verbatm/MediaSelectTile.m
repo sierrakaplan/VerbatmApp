@@ -8,6 +8,8 @@
 
 #import "MediaSelectTile.h"
 #import "DashLineView.h"
+#import "UIEffects.h"
+#import "Notifications.h"
 
 @interface MediaSelectTile ()
     @property(nonatomic ,strong) UIButton * selectMedia;
@@ -34,42 +36,13 @@
         [self.selectText setImage:[UIImage imageNamed:@"photo_button"] forState: UIControlStateNormal];
         [self.selectMedia setImage:[UIImage imageNamed:@"text_button"] forState: UIControlStateNormal];
         
-        UIImage *highlightedIconText = [self imageOverlayed:[UIImage imageNamed:@"photo_button"] withColor:[UIColor whiteColor]];
-        UIImage *highlightedIconImage = [self imageOverlayed:[UIImage imageNamed:@"text_button"] withColor:[UIColor whiteColor]];
+        UIImage *highlightedIconText = [UIEffects imageOverlayed:[UIImage imageNamed:@"photo_button"] withColor:[UIColor whiteColor]];
+        UIImage *highlightedIconImage = [UIEffects imageOverlayed:[UIImage imageNamed:@"text_button"] withColor:[UIColor whiteColor]];
         [self.selectText setImage:highlightedIconText forState:UIControlStateSelected | UIControlStateHighlighted];
         [self.selectMedia setImage:highlightedIconImage forState:UIControlStateSelected | UIControlStateHighlighted];
     }
     return self;
     self.optionSelected = NO;
-}
-
-
--(UIImage*) imageOverlayed:(UIImage*)image withColor:(UIColor*)color
-{
-    //create context
-    UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    
-    //drawingcode
-    //bg
-    CGRect rect = CGRectMake(0.0, 0.0, image.size.width, image.size.height);
-    
-    [image drawInRect:rect];
-    
-    //fg
-    CGContextSetBlendMode(context, kCGBlendModeMultiply);
-    
-    CGContextSetFillColorWithColor(context, color.CGColor);
-    CGContextFillRect(context, rect);
-    
-    //mask
-    [image drawInRect:rect blendMode:kCGBlendModeDestinationIn alpha:1.0];
-    
-    //end
-    UIImage *newimage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    return newimage;
 }
 
 //Iain
@@ -85,18 +58,17 @@
     [self addSubview:self.selectMedia];
 }
 
-
--(void) addText
-{
+-(void) addText {
     self.optionSelected =YES;
-    [self.customDelegate addTextViewButtonPressedAsBaseView:self.baseSelector];
+    [self.delegate addTextViewButtonPressedAsBaseView:self.baseSelector];
+//	[self sendAddedMediaNotification];
 }
 
--(void) addMedia
-{
+-(void) addMedia {
     self.optionSelected = YES;
     [self addDashedBorder];
-    [self.customDelegate addMultiMediaButtonPressedAsBaseView:self.baseSelector fromView: self];
+    [self.delegate addMultiMediaButtonPressedAsBaseView:self.baseSelector fromView: self];
+//	[self sendAddedMediaNotification];
 }
 
 -(void) buttonHighlight: (UIButton*) button

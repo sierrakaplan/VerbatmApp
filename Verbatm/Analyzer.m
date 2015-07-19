@@ -84,27 +84,27 @@
 	NSMutableArray * videos = [p_obj getVideos];
 	if(p_obj.there_is_text)
 	{
-		if(photos.count)//it's text photo
+		//it's text photo
+		if(photos.count)
 		{
             TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:PHOTO_AVE aveMedia:photos];
             [textViewAndPhoto addGestureToView];
 			[self.results addObject:textViewAndPhoto];
-		}else//it's text video
-		{
+
+        }else{
 			
-            TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:VIDEO_AVE aveMedia:videos];
-            [textViewAndPhoto addGestureToView];
-            [self.results addObject:textViewAndPhoto];
+            TextAndOtherAves * textViewAndVideo = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:VIDEO_AVE aveMedia:videos];
+            [textViewAndVideo addGestureToView];
+            [self.results addObject:textViewAndVideo];
 		}
-	}else//it's photo video
-	{
-		if(photos.count > 1)
-		{
+	//it's photo video
+	} else {
+		if(photos.count > 1) {
 			MultiplePhotoVideoAVE * pv = [[MultiplePhotoVideoAVE alloc]initWithFrame:self.preferredFrame Photos:photos andVideos:videos];
 			[pv mutePlayer];
 			[self.results addObject:pv];
-		}else
-		{
+
+		} else {
 
 			MultiplePhotoVideoAVE* mpv = [[MultiplePhotoVideoAVE alloc] initWithFrame:self.preferredFrame Photos:photos andVideos:videos];
 			[mpv mutePlayer];

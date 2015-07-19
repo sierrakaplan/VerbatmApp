@@ -480,7 +480,7 @@
 							   resultBlock:^(ALAsset *asset) {
 								   [self.verbatmAlbum addAsset:asset];
 								   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-								   [self.delegate didFinishSavingMediaToAsset:asset];
+//								   [self.delegate didFinishSavingMediaToAsset:asset];
 							   }
 							  failureBlock:^(NSError* error) {
 								  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
@@ -545,7 +545,7 @@
 																   // assign the photo to the album
 																   [self.verbatmAlbum addAsset:asset];
 																   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-																   [self.delegate didFinishSavingMediaToAsset:asset];
+//																   [self.delegate didFinishSavingMediaToAsset:asset];
 															   }
 															  failureBlock:^(NSError* error) {
 																  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);

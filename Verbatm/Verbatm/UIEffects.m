@@ -32,4 +32,34 @@
 	return blurEffectView;
 }
 
++(void) addShadowToView: (UIView *) view {
+	UIBezierPath *shadowPath = [UIBezierPath bezierPathWithRect:view.bounds];
+	view.layer.masksToBounds = NO;
+	view.layer.shadowColor = [UIColor blackColor].CGColor;
+	view.layer.shadowOffset = CGSizeMake(3.0f, 0.3f);
+	view.layer.shadowOpacity = 0.8f;
+	view.layer.shadowPath = shadowPath.CGPath;
+}
+
++ (UIImage*) imageOverlayed:(UIImage*)image withColor:(UIColor*)color {
+	//create context
+	UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
+	CGContextRef context = UIGraphicsGetCurrentContext();
+
+	//drawingcode
+	CGRect rect = CGRectMake(0.0, 0.0, image.size.width, image.size.height);
+
+	[image drawInRect:rect];
+
+	CGContextSetBlendMode(context, kCGBlendModeMultiply);
+	CGContextSetFillColorWithColor(context, color.CGColor);
+	CGContextFillRect(context, rect);
+
+	[image drawInRect:rect blendMode:kCGBlendModeDestinationIn alpha:1.0];
+	UIImage *newimage = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+
+	return newimage;
+}
+
 @end

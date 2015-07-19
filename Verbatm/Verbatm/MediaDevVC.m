@@ -22,7 +22,7 @@
 #import "VerbatmCameraView.h"
 #import "MasterNavigationVC.h"
 #import "UIEffects.h"
-
+#import "Notifications.h"
 
 @interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
@@ -121,12 +121,6 @@
 #define TRANSITION_MARGIN_OFFSET 50.f
 #define TRANSLATION_THRESHOLD 70
 
-#pragma mark Notifications
-#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
-#define NOTIFICATION_SHOW_ARTICLE @"notification_showArticle"
-#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
-#define NOTIFICATION_TILE_ANIMATION @"Notification_Title_Animation"
-
 @end
 
 @implementation MediaDevVC
@@ -145,19 +139,22 @@
 {
 	[super viewDidLoad];
 	[self setDefaultFrames];
-	[self createSubViews];
+	[self prepareCameraView];
 	[self createAndInstantiateGestures];
-	[self setContentDevVC];
-	[self setDelegates];
-	[self registerForNotifications];
 
 	//make sure the frames are correctly centered
 	self.canRaise = NO;
 	self.currentPoint = CGPointZero;
+
+	[self setDelegates];
+	[self registerForNotifications];
+	[self setContentDevVC];
+
 	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+	[self createSubViews];
 }
 
--(void)viewWillLayoutSubviews{
+-(void) viewWillLayoutSubviews{
 	[super viewWillLayoutSubviews];
 	[self positionContainerView];
 }
@@ -168,7 +165,7 @@
 	//get the view controllers in the storyboard and store them
 }
 
--(void)viewDidAppear:(BOOL)animated
+-(void) viewDidAppear:(BOOL)animated
 {
 	//patch solution to the pullbar being drawn strange
 	self.pullBar.frame = self.pullBarFrameTop;
@@ -235,9 +232,8 @@
 }
 
 -(void) createSubViews {
-	[self prepareCameraView];
-	[self createCapturePicButton];
 	[self createPullBar];
+	[self createCapturePicButton];
 }
 
 -(void) prepareCameraView {
@@ -247,7 +243,8 @@
 -(void)createCapturePicButton {
 	self.isTakingVideo = NO;
 	self.capturePicButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
+	UIImage *cameraImage = [UIImage imageNamed:CAMERA_BUTTON_IMAGE];
+	[self.capturePicButton setImage:cameraImage forState:UIControlStateNormal];
 	[self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2.f, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
 	[self.capturePicButton addTarget:self action:@selector(tappedPhotoButton:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -256,11 +253,13 @@
 	[self.capturePicButton addGestureRecognizer:longPress];
 
 	[self.verbatmCameraView addSubview:self.capturePicButton];
+	[self.verbatmCameraView bringSubviewToFront:self.capturePicButton];
 }
 
 //creates the pullbar object then saves it as a property
 -(void)createPullBar {
 	self.pullBar = [[VerbatmPullBarView alloc] initWithFrame:self.pullBarFrameTop];
+	self.pullBar.delegate = self;
 	[self.panGesture_PullBar setDelegate:self.pullBar];
 	[self.pullBar addGestureRecognizer:self.panGesture_PullBar];
 	[self.view addSubview:self.pullBar];
@@ -316,7 +315,6 @@
 -(void) setDelegates
 {
 	self.sessionManager.delegate = self;
-	self.pullBar.delegate = self;
 }
 
 -(void)registerForNotifications
@@ -325,12 +323,18 @@
 	//Register for notifications to show and remove the pullbar
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(hidePullBar)
-												 name:@"Notification_shouldHidePullBar"
+												 name:NOTIFICATION_HIDE_PULLBAR
 											   object:nil];
+
 	//Register for notifications to show and remove the pullbar
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(showPullBar)
-												 name:@"Notification_shouldShowPullBar"
+												 name:NOTIFICATION_SHOW_PULLBAR
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(publishArticle)
+												 name:NOTIFICATION_PUBLISH_ARTICLE
 											   object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -677,8 +681,7 @@
 #pragma mark - PullBar Delegate Methods (pullbar button actions)
 
 -(void) undoButtonPressed {
-
-	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_UNDO object:nil userInfo:nil];
+	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_UNDO object:nil userInfo:nil];
 	[[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
@@ -709,13 +712,11 @@
 													  userInfo:Info];
 }
 
-// Publish article
--(void)saveButtonPressed
-{
+-(void)publishArticle {
 	//make sure we have an article title, we have multiple pinch elements in the feed and that we
 	//haven't saved this article before
 	if (self.contentDevVC.pageElements.count >1 && ![self.contentDevVC.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.contentDevVC.articleTitleField.text]) {
-		[self saveArticleContent];
+		[self publishArticleContent];
 
 	} else if([self.contentDevVC.articleTitleField.text isEqualToString:@""]) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_TILE_ANIMATION
@@ -724,8 +725,8 @@
 	}
 }
 
--(void)saveArticleContent
-{
+-(void)publishArticleContent {
+
 	NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
 	for(int i=0; i < self.contentDevVC.pageElements.count; i++)
 	{

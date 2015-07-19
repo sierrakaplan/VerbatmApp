@@ -10,4 +10,6 @@
 
 @interface UIEffects : NSObject 
 + (UIVisualEffectView*) createBlurViewOnView: (UIView*)view;
++ (void) addShadowToView: (UIView *) view;
++ (UIImage*) imageOverlayed:(UIImage*)image withColor:(UIColor*)color;
 @end

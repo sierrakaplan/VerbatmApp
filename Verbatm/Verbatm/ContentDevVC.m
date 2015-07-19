@@ -19,11 +19,9 @@
 #import "VerbatmImageView.h"
 #import "VerbatmImageScrollView.h"
 #import "GMImagePickerController.h"
+#import "Notifications.h"
 
-
-
-
-@interface ContentDevVC () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,verbatmCustomMediaSelectTileDelegate,GMImagePickerControllerDelegate>
+@interface ContentDevVC () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,MediaSelectTileDelegate,GMImagePickerControllerDelegate>
 
 #pragma mark Keyboard related properties
 @property (atomic) NSInteger keyboardHeight;
@@ -51,16 +49,20 @@
 
 #pragma mark TextView related properties
 
-@property (nonatomic) CGRect caretPosition;//position of caret on screen relative to scrollview origin
+//position of caret on screen relative to scrollview origin
+@property (nonatomic) CGRect caretPosition;
 
 #pragma mark Helpful integer stores
 
-@property (nonatomic) NSInteger numberOfWordsLeft;//number of words left in the article
+//number of words left in the article
+@property (nonatomic) NSInteger numberOfWordsLeft;
 
 #pragma mark Standard offset and content size properties
 
-@property (nonatomic) CGPoint standardContentOffsetForPersonalView;// gives the standard content offset for each personalScrollview.
-@property (nonatomic) CGSize standardContentSizeForPersonalView; //gives the standard content size for each personal Scrollview
+// gives the standard content offset for each personalScrollview.
+@property (nonatomic) CGPoint standardContentOffsetForPersonalView;
+//gives the standard content size for each personal Scrollview
+@property (nonatomic) CGSize standardContentSizeForPersonalView;
 
 #pragma mark Text input outlets
 
@@ -109,8 +111,8 @@
 #define ANIMATION_DURATION 0.5
 #define PINCH_DISTANCE_FOR_ANIMATION 100
 
-#define SIZE_REQUIRED_MIN 100 //size for text tiles
-
+//size for text tiles
+#define SIZE_REQUIRED_MIN 100
 
 //the gap between the bottom of the screen and the cursor
 #define CENTERING_OFFSET_FOR_TEXT_VIEW 30
@@ -119,17 +121,6 @@
 #define SCROLLDISTANCE_FOR_PINCHVIEW_RETURN 200
 
 #define BACKGROUND_COLOR clearColor
-
-#pragma mark Notifications
-
-#define NOTIFICATION_HIDE_PULLBAR @"Notification_shouldHidePullBar"
-#define NOTIFICATION_SHOW_PULLBAR @"Notification_shouldShowPullBar"
-#define NOTIFICATION_PICTURE_SELECTED @"pictureObjectSelected"
-#define NOTIFICATION_PICTURE_UNSELECTED @"pictureObjectUnSelected"
-#define NOTIFICATION_CLEAR_CONTENTPAGE @"Notification_ClearContentPage"
-#define NOTIFICATION_PAUSE_VIDEOS @"pauseContentPageVideosNotification"
-#define NOTIFICATION_PLAY_VIDEOS @"playContentPageVideosNotification"
-#define NOTIFICATION_UNDO @"undoTileDeleteNotification"
 
 #pragma mark TextField settings
 
@@ -149,6 +140,9 @@
 #define OFFSET_BELOW_ARTICLE_TITLE 30
 #define LEFT_DELETE_OFFSET (self.view.frame.size.width/2)
 #define RIGHT_DELETE_OFFSET (self.view.frame.size.width*(4/3))
+
+#define GALLERY_PICKER_TITLE @"Verbatm"
+#define GALLERY_CUSTOM_MESSAGE @"Pick media to add to your story!"
 
 @end
 
@@ -192,8 +186,7 @@
 }
 
 //makes sure the main scrollview is edged to it's superview
--(void)sizeMainScrollViewPhoneSize
-{
+-(void)sizeMainScrollViewPhoneSize {
 	self.mainScrollView.frame= self.view.frame;
 }
 
@@ -242,7 +235,7 @@
 							  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), self.view.frame.size.height/5);
 	self.baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
 	self.baseMediaTileSelector.baseSelector =YES;
-	self.baseMediaTileSelector.customDelegate = self;
+	self.baseMediaTileSelector.delegate = self;
 	[self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
 
 	UIScrollView * scrollview = [[UIScrollView alloc]init];
@@ -290,8 +283,7 @@
 
 
 //Set up views
--(void) configureViews
-{
+-(void) configureViews {
 	[self setUpNotifications];
 	//insert any text that was added in previous scenes
 	[self setUpKeyboardPrefferedColors];
@@ -300,8 +292,7 @@
 }
 
 //Iain
--(void) whitenCursors
-{
+-(void) whitenCursors {
 	//make cursor white on textfields and textviews
 	[[UITextField appearance] setTintColor:[UIColor whiteColor]];
 }
@@ -315,7 +306,6 @@
 	self.articleTitleField.keyboardAppearance = UIKeyboardAppearanceDark;
 }
 
-
 //Iain
 -(void) setUpNotifications
 {
@@ -324,8 +314,6 @@
 											 selector:@selector(keyboardWillShow:)
 												 name:UIKeyboardWillShowNotification
 											   object:nil];
-
-
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyboardWillDisappear:)
@@ -357,9 +345,6 @@
 											 selector:@selector(cleanUpNotification)
 												 name:NOTIFICATION_CLEAR_CONTENTPAGE
 											   object:nil];
-
-
-
 
 }
 
@@ -397,31 +382,25 @@
 
 
 #pragma mark - TextFields -
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+
 	//S@nwiches shouldn't have any spaces between them
 	if([string isEqualToString:@" "]  && textField != self.articleTitleField) return NO;
 	return YES;
 }
 
 //Iain
--(BOOL) textFieldShouldReturn:(UITextField *)textField
-{
-	if(textField == self.sandwichWhat)
-	{
-		if([self.sandwichWhere.text isEqualToString:@""])
-		{
+-(BOOL) textFieldShouldReturn:(UITextField *)textField {
+	if(textField == self.sandwichWhat) {
+		if([self.sandwichWhere.text isEqualToString:@""]) {
 			[self.sandwichWhere becomeFirstResponder];
-		}else
-		{
+		}else {
 			[self.sandwichWhat resignFirstResponder];
 		}
-	}else if(textField == self.sandwichWhere)
-	{
+	}else if(textField == self.sandwichWhere) {
 		[self.sandwichWhere resignFirstResponder];
 
-	}else if(textField == self.articleTitleField)
-	{
+	}else if(textField == self.articleTitleField) {
 		[self.articleTitleField resignFirstResponder];
 	}
 
@@ -444,16 +423,10 @@
 
 //Iain
 //Called when user types an input into the textview
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
-{
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
 	//If the user clicked enter add a textview
-	if([text isEqualToString:@"\n"])
-	{
+	if([text isEqualToString:@"\n"]) {
 		[self removeImageScrollview:nil];
-		//when enter is clicked we give them a new textview
-		//        verbatmCustomPinchView * pinchView = [self newPinchObjectBelowView:self.openImagePinchView fromView: nil isTextView:YES];
-		//        [self createCustomImageScrollViewFromPinchView:pinchView andImageView: nil orTextView:[[verbatmUITextView alloc] init]];
-
 		return NO;
 	}
 	return YES;
@@ -461,53 +434,43 @@
 
 #pragma mark Bounds for TextViews
 
-
 #pragma mark Caret within TextView
 //Update the stored position of the carret within the textview it's in
--(void) updateCaretPositionInView: (VerbatmUITextView *) view
-{
+-(void) updateCaretPositionInView: (VerbatmUITextView *) view {
 	self.caretPosition = [view caretRectForPosition:view.selectedTextRange.end];
 }
 
 #pragma mark Word Count - to be implemented
 //Iain
 //Counts the words in the content page
--(void) editWordCount
-{
+-(void) editWordCount {
 	self.numberOfWordsLeft = MAX_WORD_LIMIT - [self countWordsInContentPage];
 	self.wordsLeftLabel.text = [NSString stringWithFormat:@"Words: %ld ", (long)self.numberOfWordsLeft];
 }
 
-
-//To be implemented
 //Counts the number of words that are in the page
--(NSInteger) countWordsInContentPage
-{
+-(NSInteger) countWordsInContentPage {
 	NSUInteger words = 0;
-	for(id object in self.pageElements)
-	{
-		if([object isKindOfClass:[UITextView class]])
-		{
+	for(id object in self.pageElements) {
+		if([object isKindOfClass:[UITextView class]]) {
+
 			NSString * string = ((UITextView *) object).text;
 			NSArray * string_array = [string componentsSeparatedByString: @" "];
 			words += [string_array count];
 
 			//Make sure to discount blanks in the array
-			for (NSString * string in string_array)
-			{
+			for (NSString * string in string_array) {
 				if([string isEqualToString:@""] && words != 0) words--;
 			}
 			//make sure that the last word is complete by having a space after it
 			if(![[string_array lastObject] isEqualToString:@""]) words --;
-		}else if([object isKindOfClass:[PinchView class]]&& ((PinchView *)object).there_is_text)
-		{
+		} else if([object isKindOfClass:[PinchView class]]&& ((PinchView *)object).there_is_text) {
 			NSString * string = [((PinchView *) object) getTextFromPinchObject];
 			NSArray * string_array = [string componentsSeparatedByString: @" "];
 			words += [string_array count];
 
 			//Make sure to discount blanks in the array
-			for (NSString * string in string_array)
-			{
+			for (NSString * string in string_array) {
 				if([string isEqualToString:@""] && words != 0) words--;
 			}
 
@@ -530,7 +493,6 @@
 }
 
 
-
 #pragma mark Main ScrollView
 #pragma mark ContentSize
 //adjusts the contentsize of the main view to the last element
@@ -544,9 +506,7 @@
 
 //Iain
 //Moves the scrollview to keep the cursor in view - To be fixed
--(void) updateScrollViewPosition
-{
-
+-(void) updateScrollViewPosition {
 
 	if(self.sandwichWhat.editing || self.sandwichWhere.editing) return; //if it is the s@andwiches that are set then
 
@@ -702,8 +662,7 @@
 
 //called when the tile is scrolled - we see if the offset has changed
 //if so we remove the view
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 
 	scrollView.showsHorizontalScrollIndicator = NO;
 	scrollView.showsVerticalScrollIndicator = NO;
@@ -714,24 +673,23 @@
 	if(scrollView.subviews.count >1 || scrollView == self.openImageScrollView) return;
 
 	MediaSelectTile * tile= Nil;
-	if([[scrollView.subviews firstObject] isKindOfClass:[MediaSelectTile class]])
-	{
+	if([[scrollView.subviews firstObject] isKindOfClass:[MediaSelectTile class]]) {
 		tile = [scrollView.subviews firstObject];
 	}
 
 	if((!tile || !tile.baseSelector) && !self.pinching && [self.pageElements count] >1 ) {
 
-		if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x)//If the view is scrolled left/right and not centered
-		{
+		//If the view is scrolled left/right and not centered
+		if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x) {
 			//remove swiped view from mainscrollview
-			UIView * view = [scrollView.subviews firstObject]; //it is the only subview in this scrollview
+			//it is the only subview in this scrollview
+			UIView * view = [scrollView.subviews firstObject];
 			NSUInteger index = [self.pageElements indexOfObject:view];
 			[scrollView removeFromSuperview];
 			[self.pageElements removeObject:view];
 
-			[self shiftElementsBelowView:self.articleTitleField]; //if it was the top element then shift everything below
-
-			//recycle the object you just deleted
+			//if it was the top element then shift everything below
+			[self shiftElementsBelowView:self.articleTitleField];
 
 			//sanitize the pointers so the objects don't stay in memory
 			if(self.upperPinchView == view) self.upperPinchView = Nil;
@@ -1021,7 +979,7 @@
 {
 	CGRect frame =  CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),0, 0, 0);
 	MediaSelectTile * mediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
-	mediaTile.customDelegate = self;
+	mediaTile.delegate = self;
 	mediaTile.alpha = 0; //start it off as invisible
 	mediaTile.baseSelector=NO;
 	[self addMediaTile: mediaTile underView: self.upperPinchView];
@@ -1538,29 +1496,22 @@
 
 #pragma mark - Media Tile Options -
 #pragma mark Text
--(void) addTextViewButtonPressedAsBaseView: (BOOL) isBaseView
-{
-	if(!isBaseView)
-	{
+-(void) addTextViewButtonPressedAsBaseView: (BOOL) isBaseView {
+	if(!isBaseView) {
 		NSInteger index = [self.pageElements indexOfObject:self.createdMediaView];
-		if(index != NSNotFound)
-		{
-			if(!index)
-			{
+		if(index != NSNotFound) {
+			if(!index) {
 				[self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
 				[self createVerbatmImageScrollViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
 
 				[self clearNewMediaView];
-			}else
-			{
+			}else {
 				UIView * view;
-				if(index)
-				{
+				if(index) {
 					view = [self.pageElements objectAtIndex:(index-1)];
 				}
 
-				if(view)
-				{
+				if(view) {
 					[self newPinchObjectBelowView:view fromView: nil isTextView:YES];
 					[self createVerbatmImageScrollViewFromPinchView:self.pageElements[[self.pageElements indexOfObject:view] +1] andTextView:[[VerbatmUITextView alloc]init]];
 					[self clearNewMediaView];
@@ -1569,36 +1520,18 @@
 		}
 	}
 
-
-	if(isBaseView)
-	{
+	if(isBaseView) {
 
 		UIView * view = [self findSecondToLastElementInPageElements]; //returns nil if there are less than two objects in page elements
-		if(view)
-		{
+		if(view) {
 			[self newPinchObjectBelowView:view fromView: nil isTextView:YES];
 			[self createVerbatmImageScrollViewFromPinchView:self.pageElements[[self.pageElements indexOfObject:view] +1] andTextView:[[VerbatmUITextView alloc]init]];
-		}else
-		{
+		}else {
 			[self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
 			[self createVerbatmImageScrollViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
 		}
 	}
 }
-
--(UIView *) findSecondToLastElementInPageElements
-{
-	if(!self.pageElements.count) return nil;
-
-	unsigned long last_index =  self.pageElements.count -1;
-
-	if(last_index) return self.pageElements[last_index -1];
-	return nil;
-}
-
-
-
-#pragma mark Image/Video
 
 -(void) addMultiMediaButtonPressedAsBaseView:(BOOL)isBaseView fromView: (MediaSelectTile *) tile
 {
@@ -1620,11 +1553,22 @@
 	{
 		[self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
 	}
-
+	
 }
 
--(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView
+-(UIView *) findSecondToLastElementInPageElements
 {
+	if(!self.pageElements.count) return nil;
+
+	unsigned long last_index =  self.pageElements.count -1;
+
+	if(last_index) return self.pageElements[last_index -1];
+	return nil;
+}
+
+#pragma mark Image/Video
+
+-(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView {
 
 	[self.view addSubview:view];
 	[self.view bringSubviewToFront:view];
@@ -1802,8 +1746,6 @@
 	}
 	self.selectedView_Pan = Nil;
 }
-
-
 
 - (IBAction)longPressSensed:(UILongPressGestureRecognizer *)sender
 {
@@ -2114,12 +2056,19 @@
 
 -(void)deletedTile: (UIView *) tile withIndex: (NSNumber *) index
 {
+	if ([self.pageElements count] <= 1) {
+		[self sendRemovedAllMediaNotification];
+	}
 	if(!tile) return;//make sure there is something to delete
 	[tile removeFromSuperview];
 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
 	[self showPullBar];//show the pullbar so that they can undo
 }
 
+-(void) sendRemovedAllMediaNotification {
+	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_REMOVED_ALL_MEDIA object:nil userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotification:notification];
+}
 
 -(void)undoTileDeleteSwipe: (NSNotification *) notification
 {
@@ -2426,8 +2375,8 @@
 	picker.displayAlbumsNumberOfAssets = YES;
 
 	//Customize the picker title and prompt (helper message over the title)
-	picker.title = @"Verbatm";
-	picker.customNavigationBarPrompt = @"Custom helper message!";
+	picker.title = GALLERY_PICKER_TITLE;
+	picker.customNavigationBarPrompt = GALLERY_CUSTOM_MESSAGE;
 
 	//Customize the number of cols depending on orientation and the inter-item spacing
 	picker.colsInPortrait = 3;
@@ -2477,15 +2426,25 @@
 }
 
 
-- (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray
-{
-
+- (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
 
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		[self presentAssets:assetArray];
 	}];
 
+	if ([assetArray count] > 0) {
+		[self sendAddedMediaNotification];
+	}
+
 	NSLog(@"GMImagePicker: User ended picking assets. Number of selected items is: %lu", (unsigned long)assetArray.count);
+}
+
+-(void) sendAddedMediaNotification {
+	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_ADDED_MEDIA object:nil userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
+- (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
 }
 
 
