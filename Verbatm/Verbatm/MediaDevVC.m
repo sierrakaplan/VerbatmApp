@@ -23,6 +23,7 @@
 #import "MasterNavigationVC.h"
 #import "UIEffects.h"
 #import "Notifications.h"
+#import "Icons.h"
 
 @interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
@@ -90,14 +91,6 @@
 #define PULLBAR_TRANSITION_ANIMATION_TIME 0.3
 #define ALBUM_NAME @"Verbatm"
 #define ASPECT_RATIO 1
-
-#pragma mark Camera and Settings Icons
-#define CAMERA_ICON_FRONT @"camera_back"
-#define FLASH_ICON_ON @"lightbulb_final_OFF(white)"
-#define FLASH_ICON_OFF @"lightbulb_final_OFF(white)"
-#define CAMERA_BUTTON_IMAGE @"camera_button"
-#define RECORDING_IMAGE @"recording_button"
-#define RECORDING_DOT @"recording_dot"
 
 #pragma mark Camera and Settings Icon Sizes
 #define SWITCH_ICON_SIZE 50.f

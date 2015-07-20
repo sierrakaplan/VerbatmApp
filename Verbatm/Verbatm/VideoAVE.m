@@ -7,6 +7,7 @@
 //
 
 #import "VideoAVE.h"
+#import "Icons.h"
 
 @interface VideoAVE()
 @property (strong, nonatomic) UIImageView* videoProgressImageView;  //Kept because of the snake....will be implemented soon
@@ -15,10 +16,7 @@
 @property (nonatomic) CGPoint firstTranslation;
 #define RGB 255,225,255, 0.7
 #define PROGR_VIEW_HEIGHT 60
-#define PLAY_ICON @"play"
-#define PAUSE_ICON @"pause"
-#define ICON_SIZE 40
-#define LINE_IMAGE @"line"
+#define PLAYBACK_ICON_SIZE 40
 #define MAX_VD_RATE 2
 #define PLY_PSE_FRAME self.frame.origin.x, self.frame.origin.y + self.frame.size.height - 50, 50,50
 @end

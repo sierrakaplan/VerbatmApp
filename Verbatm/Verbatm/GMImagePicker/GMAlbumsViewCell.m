@@ -10,6 +10,7 @@
 #import "GMAlbumsViewController.h"
 #import "GMImagePickerController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "Icons.h"
 
 @implementation GMAlbumsViewCell
 
@@ -88,7 +89,7 @@
         _videoIcon = [UIImageView new];
         _videoIcon.contentMode = UIViewContentModeScaleAspectFill;
         _videoIcon.frame = CGRectMake(3,kAlbumThumbnailSize1.height - 4 - 8, 15, 8 );
-        _videoIcon.image = [UIImage imageNamed:@"GMVideoIcon"];
+        _videoIcon.image = [UIImage imageNamed:GM_VIDEO_ICON];
         _videoIcon.clipsToBounds = YES;
         _videoIcon.translatesAutoresizingMaskIntoConstraints = YES;
         _videoIcon.autoresizingMask = UIViewAutoresizingFlexibleRightMargin;

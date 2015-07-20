@@ -10,6 +10,7 @@
 #import "VerbatmImageScrollView.h"
 #import "UIEffects.h"
 #import "Notifications.h"
+#import "Icons.h"
 
 @interface VerbatmPullBarView ()
 @property (strong, nonatomic) UIButton *previewButton;
@@ -26,15 +27,6 @@
 #define CENTER_BUTTON_GAP 20.f
 #define XOFFSET 20.f
 #define YOFFSET 15.f
-
-# pragma mark Icons
-#define UNDO_BUTTON_IMAGE @"undo_button_icon"
-#define UNDO_BUTTON_CLICKED @"undo_button_clicked"
-#define PREVIEW_BUTTON_IMAGE @"preview_button_icon"
-#define PREVIEW_BUTTON_CLICKED @"preview_button_clicked"
-#define PULLUP_BUTTON_IMAGE @"pullup_icon"
-#define PULLUP_BUTTON_CLICKED @"pullup_icon_clicked"
-#define PULLDOWN_ICON_IMAGE @"pulldown_icon"
 
 @end
 

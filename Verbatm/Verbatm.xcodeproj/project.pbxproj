@@ -108,6 +108,7 @@
 		9D29995919BA9042005EBC8A /* MediaDevVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaDevVC.h; sourceTree = "<group>"; };
 		9D29995A19BA9042005EBC8A /* MediaDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaDevVC.m; sourceTree = "<group>"; };
 		A529196E1B59ADD500233712 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
+		A529196F1B5D86A500233712 /* Icons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Icons.h; sourceTree = "<group>"; };
 		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		A57A92FD1B55A551006C2597 /* CameraFocusSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraFocusSquare.h; sourceTree = "<group>"; };
@@ -215,7 +216,7 @@
 		C7BC43BF199F7427004B91A1 /* VerbatmUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmUser.m; sourceTree = "<group>"; };
 		C7BD53C21B5B73A700EE6241 /* TextAndOtherAves.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAndOtherAves.h; sourceTree = "<group>"; };
 		C7BD53C31B5B73A700EE6241 /* TextAndOtherAves.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAndOtherAves.m; sourceTree = "<group>"; };
-		C7BD53C51B5B787500EE6241 /* constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = constants.h; path = ../constants.h; sourceTree = "<group>"; };
+		C7BD53C51B5B787500EE6241 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../Constants.h; sourceTree = "<group>"; };
 		C7BD53C71B5C1A4C00EE6241 /* verbatmAveTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = verbatmAveTextView.h; sourceTree = "<group>"; };
 		C7BD53C81B5C1A4C00EE6241 /* verbatmAveTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = verbatmAveTextView.m; sourceTree = "<group>"; };
 		C7CCFF3A19CE63A800E90080 /* testerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerAnimation.h; sourceTree = "<group>"; };
@@ -283,14 +284,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A529196D1B59AD8B00233712 /* Notifications */ = {
-			isa = PBXGroup;
-			children = (
-				A529196E1B59ADD500233712 /* Notifications.h */,
-			);
-			name = Notifications;
-			sourceTree = "<group>";
-		};
 		A5CB82A41B5744B800195A2E /* UI effects */ = {
 			isa = PBXGroup;
 			children = (
@@ -502,7 +495,6 @@
 			isa = PBXGroup;
 			children = (
 				C7BD53C61B5B790B00EE6241 /* constants  */,
-				A529196D1B59AD8B00233712 /* Notifications */,
 				C748836A1B489AE300E64ED9 /* Gallery */,
 				A5CB82A41B5744B800195A2E /* UI effects */,
 				F257FEC81AC21F8B00964AB5 /* Saving and Downloading */,
@@ -569,7 +561,9 @@
 		C7BD53C61B5B790B00EE6241 /* constants  */ = {
 			isa = PBXGroup;
 			children = (
-				C7BD53C51B5B787500EE6241 /* constants.h */,
+				C7BD53C51B5B787500EE6241 /* Constants.h */,
+				A529196F1B5D86A500233712 /* Icons.h */,
+				A529196E1B59ADD500233712 /* Notifications.h */,
 			);
 			name = "constants ";
 			sourceTree = "<group>";

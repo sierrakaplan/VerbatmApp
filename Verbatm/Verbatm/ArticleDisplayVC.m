@@ -15,6 +15,7 @@
 #import "Article.h"
 #import "UIEffects.h"
 #import "Notifications.h"
+#import "Icons.h"
 
 @interface ArticleDisplayVC () <UIScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
@@ -40,8 +41,7 @@
 #define EXIT_EPSILON 60
 #define ANIMATION_NOTIFICATION_DURATION 0.4
 
-#pragma mark - Icons
-#define PUBLISH_BUTTON_IMAGE @"publish_button"
+#pragma mark - Offsets
 #define PUBLISH_BUTTON_XOFFSET 20.f
 #define PUBLISH_BUTTON_YOFFSET 20.f
 #define PUBLISH_BUTTON_WIDTH 50.f

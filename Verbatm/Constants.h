@@ -10,8 +10,8 @@
 /*
  Only stores constants that are used between multiple classes
  */
-#ifndef Verbatm_constants_h
-#define Verbatm_constants_h
+#ifndef Constants_h
+#define Constants_h
 
 #define PHOTO_AVE @"PHOTO_AVE"
 #define VIDEO_AVE @"VIDEO_AVE"

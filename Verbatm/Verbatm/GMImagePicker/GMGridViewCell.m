@@ -7,6 +7,7 @@
 //
 
 #import "GMGridViewCell.h"
+#import "Icons.h"
 
 
 @interface GMGridViewCell ()
@@ -27,9 +28,9 @@ static UIColor *disabledColor;
 {
     titleFont       = [UIFont systemFontOfSize:12];
     titleHeight     = 20.0f;
-    videoIcon       = [UIImage imageNamed:@"GMImagePickerVideo"];
+    videoIcon       = [UIImage imageNamed:GM_IMAGE_PICKER_VIDEO];
     titleColor      = [UIColor whiteColor];
-    checkedIcon     = [UIImage imageNamed:@"CTAssetsPickerChecked"];
+    checkedIcon     = [UIImage imageNamed:CT_ASSETS_PICKER_CHECKED];
     selectedColor   = [UIColor colorWithWhite:1 alpha:0.3];
     disabledColor   = [UIColor colorWithWhite:1 alpha:0.9];
 }

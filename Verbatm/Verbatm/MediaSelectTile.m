@@ -10,6 +10,7 @@
 #import "DashLineView.h"
 #import "UIEffects.h"
 #import "Notifications.h"
+#import "Icons.h"
 
 @interface MediaSelectTile ()
     @property(nonatomic ,strong) UIButton * selectMedia;
@@ -31,13 +32,15 @@
         
         [self createFramesForButtonsWithFrame: frame];
         [self addButtonsAsSubviews];
-        
         [self setBackgroundColor:[UIColor clearColor]];
-        [self.selectText setImage:[UIImage imageNamed:@"photo_button"] forState: UIControlStateNormal];
-        [self.selectMedia setImage:[UIImage imageNamed:@"text_button"] forState: UIControlStateNormal];
+
+		UIImage *textButtonImage = [UIImage imageNamed:TEXT_BUTTON];
+		UIImage *photoButtonImage = [UIImage imageNamed:PHOTO_BUTTON];
+        [self.selectText setImage:textButtonImage forState: UIControlStateNormal];
+        [self.selectMedia setImage:photoButtonImage forState: UIControlStateNormal];
         
-        UIImage *highlightedIconText = [UIEffects imageOverlayed:[UIImage imageNamed:@"photo_button"] withColor:[UIColor whiteColor]];
-        UIImage *highlightedIconImage = [UIEffects imageOverlayed:[UIImage imageNamed:@"text_button"] withColor:[UIColor whiteColor]];
+        UIImage *highlightedIconText = [UIEffects imageOverlayed:textButtonImage withColor:[UIColor whiteColor]];
+        UIImage *highlightedIconImage = [UIEffects imageOverlayed:photoButtonImage withColor:[UIColor whiteColor]];
         [self.selectText setImage:highlightedIconText forState:UIControlStateSelected | UIControlStateHighlighted];
         [self.selectMedia setImage:highlightedIconImage forState:UIControlStateSelected | UIControlStateHighlighted];
     }

@@ -1245,7 +1245,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "636"
             endingLineNumber = "636"
-            landmarkName = "-pullBarTransitionToMode:"
+            landmarkName = "-expandContentPageEnded:"
             landmarkType = "5">
             <Locations>
                <Location
