@@ -172,7 +172,9 @@
 	[self.sessionManager startSession];
 }
 
--(void) viewDidDisappear:(BOOL)animated {
+
+-(void) viewDidDisappear:(BOOL)animated
+{
 	[self.sessionManager stopSession];
 }
 

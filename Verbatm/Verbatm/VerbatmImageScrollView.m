@@ -95,7 +95,6 @@
 		[self adjustImageScrollViewContentSizing];
 
 		[self formatTextViewAppropriately:self.textView];
-//		[self addToolBarToView];
 		[self addSubview:self.textView];
 	}
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8121.20" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
+
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8101.16"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -36,14 +37,14 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <containerView opaque="NO" contentMode="scaleToFill" id="BZw-d7-VqY">
-                                        <rect key="frame" x="69" y="74" width="205" height="154"/>
+                                        <rect key="frame" x="18" y="349" width="287" height="157"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <connections>
                                             <segue destination="Ve4-Qj-kgj" kind="embed" id="b7N-73-evc"/>
                                         </connections>
                                     </containerView>
                                     <containerView opaque="NO" contentMode="scaleToFill" id="yxe-c7-aMo">
-                                        <rect key="frame" x="31" y="261" width="243" height="253"/>
+                                        <rect key="frame" x="8" y="64" width="226" height="262"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <connections>
                                             <segue destination="Qxg-C2-1Oh" kind="embed" id="lNo-MU-gAV"/>
@@ -90,7 +91,7 @@
             <objects>
                 <viewController wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="ArticleListVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Yqu-zV-E3L">
-                        <rect key="frame" x="0.0" y="0.0" width="205" height="154"/>
+                        <rect key="frame" x="0.0" y="0.0" width="287" height="157"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="80" sectionHeaderHeight="22" sectionFooterHeight="22" id="ugX-Ro-5HE" userLabel="articleListDisplay">
@@ -306,7 +307,7 @@
             <objects>
                 <viewController id="Qxg-C2-1Oh" customClass="MediaDevVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rWO-ax-CE2">
-                        <rect key="frame" x="0.0" y="0.0" width="243" height="253"/>
+                        <rect key="frame" x="0.0" y="0.0" width="226" height="262"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="yYu-am-nhj" userLabel="Content Container View">
@@ -470,4 +471,9 @@
         <image name="what-at-where-dots-left" width="122" height="36"/>
         <image name="what-at-where-dots-right" width="122" height="36"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>
