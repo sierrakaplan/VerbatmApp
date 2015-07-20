@@ -24,6 +24,7 @@
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
+#import "SizesAndPositions.h"
 
 @interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
@@ -78,11 +79,6 @@
 //this stores the article title that the user just saved. This is in order to prevent saving the same article multiple times
 @property(nonatomic) NSString * articleJustSaved;
 
-#pragma mark Filter helpers
-#define FILTER_NOTIFICATION_ORIGINAL @"addOriginalFilter"
-#define FILTER_NOTIFICATION_BW @"addBlackAndWhiteFilter"
-#define FILTER_NOTIFICATION_WARM @"addWarmFilter"
-
 #pragma mark Helpers for content page container
 #define ID_FOR_CONTENTPAGEVC @"contentPage"
 #define ID_FOR_BOTTOM_SPLITSCREENVC @"splitScreenBottomView"
@@ -91,19 +87,6 @@
 #define PULLBAR_TRANSITION_ANIMATION_TIME 0.3
 #define ALBUM_NAME @"Verbatm"
 #define ASPECT_RATIO 1
-
-#pragma mark Camera and Settings Icon Sizes
-#define SWITCH_ICON_SIZE 50.f
-#define FLASH_ICON_SIZE 50.f
-#define CAMERA_BUTTON_WIDTH_HEIGHT 80.f
-#define PROGRESS_CIRCLE_SIZE 100.f
-#define PROGRESS_CIRCLE_WIDTH 10.0f
-#define PROGRESS_CIRCLE_OPACITY 0.6f
-
-#pragma mark Camera and Settings Icon Positions
-#define FLASH_START_POSITION  10.f, 0.f
-#define SWITCH_CAMERA_START_POSITION 260.f, 5.f
-#define CAMERA_BUTTON_Y_OFFSET 20.f
 
 #pragma mark Session timer time
 #define TIME_FOR_SESSION_TO_RESUME 0.5f
@@ -238,7 +221,7 @@
 	self.capturePicButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	UIImage *cameraImage = [UIImage imageNamed:CAMERA_BUTTON_IMAGE];
 	[self.capturePicButton setImage:cameraImage forState:UIControlStateNormal];
-	[self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_WIDTH_HEIGHT)/2.f, self.view.frame.size.height - CAMERA_BUTTON_WIDTH_HEIGHT - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_WIDTH_HEIGHT, CAMERA_BUTTON_WIDTH_HEIGHT)];
+	[self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_SIZE)/2.f, self.view.frame.size.height - CAMERA_BUTTON_SIZE - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_SIZE, CAMERA_BUTTON_SIZE)];
 	[self.capturePicButton addTarget:self action:@selector(tappedPhotoButton:) forControlEvents:UIControlEventTouchUpInside];
 
 	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(takeVideo:)];
@@ -425,7 +408,7 @@
 	self.circle.frame = self.view.bounds;
 	self.circle.fillColor = [UIColor clearColor].CGColor;
 	self.circle.strokeColor = [UIColor colorWithRed:1.f green:0.f blue:0.f alpha:PROGRESS_CIRCLE_OPACITY].CGColor;
-	self.circle.lineWidth = PROGRESS_CIRCLE_WIDTH;
+	self.circle.lineWidth = PROGRESS_CIRCLE_THICKNESS;
 	[self.view.layer addSublayer:self.circle];
 
 	CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
@@ -441,7 +424,7 @@
 -(void) animateVideoProgressPath {
 
 	CGMutablePathRef path = CGPathCreateMutable();
-	CGPoint center = CGPointMake((self.view.frame.size.width)/2.f, self.view.frame.size.height - CAMERA_BUTTON_Y_OFFSET - CAMERA_BUTTON_WIDTH_HEIGHT/2.f);
+	CGPoint center = CGPointMake((self.view.frame.size.width)/2.f, self.view.frame.size.height - CAMERA_BUTTON_Y_OFFSET - CAMERA_BUTTON_SIZE/2.f);
 	CGRect frame = CGRectMake(center.x - PROGRESS_CIRCLE_SIZE/2.f, center.y -PROGRESS_CIRCLE_SIZE/2.f, PROGRESS_CIRCLE_SIZE, PROGRESS_CIRCLE_SIZE);
 	float midX = CGRectGetMidX(frame);
 	float midY = CGRectGetMidY(frame);

@@ -31,7 +31,4 @@ typedef NS_ENUM(NSInteger, PullBarMode) {
 
 -(void)switchToMode: (PullBarMode) mode;
 
-#define PULLBAR_HEIGHT_MENU_MODE 70.f
-#define PULLBAR_HEIGHT_PULLDOWN_MODE 30.f
-
 @end

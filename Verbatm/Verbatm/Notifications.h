@@ -9,6 +9,10 @@
 #ifndef Notifications_h
 #define Notifications_h
 
+#pragma mark Media Dev VC
+
+#pragma mark Content Dev VC
+
 #define NOTIFICATION_HIDE_PULLBAR @"Notification_shouldHidePullBar"
 #define NOTIFICATION_SHOW_PULLBAR @"Notification_shouldShowPullBar"
 #define NOTIFICATION_PICTURE_SELECTED @"Notification_pictureObjectSelected"
@@ -21,16 +25,22 @@
 #define NOTIFICATION_SHOW_ARTICLE @"Notification_showArticle"
 #define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
 
+#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
+#define NOTIFICATION_TILE_ANIMATION @"Notification_titleAnimation"
+#define NOTIFICATION_PUBLISH_ARTICLE @"Notification_publishArticle"
+#define NOTIFICATION_ADDED_MEDIA @"Notification_addedMedia"
+#define NOTIFICATION_REMOVED_ALL_MEDIA @"Notification_removedAllMedia"
+
+#pragma mark Feed
+
 #define NOTIFICATION_SHOW_ADK @"Notification_showADK"
 #define NOTIFICATION_REFRESH_FEED @"Notification_refreshFeed"
 
+#pragma mark Sign Up / Sign In
+
 #define NOTIFICATION_SIGNUP_SUCCEEDED @"Notification_userSignedIn"
-#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
-#define NOTIFICATION_TILE_ANIMATION @"Notification_titleAnimation"
+#define SIGNUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
+#define SIGNUP_FAILED_NOTIFIACTION @"userFailedToSignIn"
 
-#define NOTIFICATION_PUBLISH_ARTICLE @"Notification_publishArticle"
-
-#define NOTIFICATION_ADDED_MEDIA @"Notification_addedMedia"
-#define NOTIFICATION_REMOVED_ALL_MEDIA @"Notification_removedAllMedia"
 
 #endif /* Header_h */

@@ -16,6 +16,8 @@
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
+#import "SizesAndPositions.h"
+#import "Durations.h"
 
 @interface ArticleDisplayVC () <UIScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
@@ -35,17 +37,10 @@
 @property (nonatomic) CGRect publishButtonFrame;
 
 
-#define BEST_ALPHA_FOR_TEXT 0.8
-#define ANIMATION_DURATION 0.4
+
 //the amount of space that must be pulled to exit
 #define EXIT_EPSILON 60
-#define ANIMATION_NOTIFICATION_DURATION 0.4
 
-#pragma mark - Offsets
-#define PUBLISH_BUTTON_XOFFSET 20.f
-#define PUBLISH_BUTTON_YOFFSET 20.f
-#define PUBLISH_BUTTON_WIDTH 50.f
-#define PUBLISH_BUTTON_HEIGHT 50.f
 
 @end
 
@@ -135,14 +130,14 @@
 // else remove scrollview
 -(void)showScrollView: (BOOL) show {
     if(show)  {
-        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        [UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
             [self pause_CP_Vidoes];
              self.articleCurrentlyViewing= YES;
              self.scrollView.frame = self.view.bounds;
 			 self.publishButton.frame = self.publishButtonFrame;
         }];
     }else {
-        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        [UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
             [self play_CP_Vidoes];
             self.scrollView.frame = self.scrollViewRestingFrame;
 			self.publishButton.frame = self.publishButtonRestingFrame;

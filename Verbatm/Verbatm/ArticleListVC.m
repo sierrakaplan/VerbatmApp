@@ -14,11 +14,9 @@
 #import "Page.h"
 #import "Analyzer.h"
 #import "Notifications.h"
+#import "SizesAndPositions.h"
 
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
-#define BUTTON_HEIGHT 50
-#define TOP_OFFSET 30
-#define TITLE_LIST_OFFSET 30
 
 @interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
     @property (weak, nonatomic) IBOutlet UITableView *articleListView;
@@ -77,9 +75,9 @@
 
 -(void)setFrames {
     //set button
-    self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
-    self.refreshArticle_button.frame =CGRectMake(0, self.view.frame.size.height - BUTTON_HEIGHT, self.view.frame.size.width/2, BUTTON_HEIGHT);
-    self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(BUTTON_HEIGHT));
+    self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - ARTICLE_IN_FEED_BUTTON_HEIGHT, self.view.frame.size.width/2, ARTICLE_IN_FEED_BUTTON_HEIGHT);
+    self.refreshArticle_button.frame =CGRectMake(0, self.view.frame.size.height - ARTICLE_IN_FEED_BUTTON_HEIGHT, self.view.frame.size.width/2, ARTICLE_IN_FEED_BUTTON_HEIGHT);
+    self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(ARTICLE_IN_FEED_BUTTON_HEIGHT));
 }
 
 -(void)registerForNavNotifications

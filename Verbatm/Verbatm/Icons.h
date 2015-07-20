@@ -23,18 +23,18 @@
 #define CAMERA_ICON_FRONT @"camera_back"
 #define FLASH_ICON_ON @"lightbulb_final_OFF(white)"
 #define FLASH_ICON_OFF @"lightbulb_final_OFF(white)"
-#define CAMERA_BUTTON_IMAGE @"camera_button"
-#define RECORDING_IMAGE @"recording_button"
+#define CAMERA_BUTTON_IMAGE @"camera_button_with_dot" //@"camera_button"
+#define RECORDING_IMAGE @"camera_button_recording" //@"recording_button"
 #define RECORDING_DOT @"recording_dot"
 
 #pragma mark Pull Bar
 
 #define UNDO_BUTTON_IMAGE @"undo_button_icon"
-#define UNDO_BUTTON_CLICKED @"undo_button_clicked"
-#define PREVIEW_BUTTON_IMAGE @"preview_button_icon"
-#define PREVIEW_BUTTON_CLICKED @"preview_button_clicked"
-#define PULLUP_BUTTON_IMAGE @"pullup_icon"
-#define PULLUP_BUTTON_CLICKED @"pullup_icon_clicked"
+#define UNDO_BUTTON_CLICKED @"undo_button_icon" //@"undo_button_clicked"
+#define PREVIEW_BUTTON_IMAGE @"preview_button_no_circle" //@"preview_button_icon"
+#define PREVIEW_BUTTON_CLICKED @"preview_button_no_circle" //@"preview_button_clicked"
+#define PULLUP_BUTTON_IMAGE @"pullup_icon_without_circle" //@"pullup_icon"
+#define PULLUP_BUTTON_CLICKED @"pullup_icon_without_circle" //@"pullup_icon_clicked"
 #define PULLDOWN_ICON_IMAGE @"pulldown_icon"
 
 #pragma mark GM Image Picker

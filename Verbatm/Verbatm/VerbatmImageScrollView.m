@@ -8,7 +8,9 @@
 
 #import "VerbatmImageScrollView.h"
 #import "VerbatmImageView.h"
-#import "verbatmPullBarView.h"
+#import "VerbatmPullBarView.h"
+#import "SizesAndPositions.h"
+#import "Styles.h"
 
 @interface VerbatmImageScrollView () <UITextViewDelegate>
 
@@ -17,16 +19,6 @@
 @property (nonatomic, strong) UIImage * filter_BW;
 @property (nonatomic, strong) UIImage * filter_WARM;
 @property (nonatomic, strong) NSString * filter;
-
-
-
-#define TEXT_BOX_FONT_SIZE 20
-#define VIEW_WALL_OFFSET 20
-
-#define BACKGROUND_COLOR clearColor
-#define FONT_COLOR whiteColor
-
-#define PULLBAR_HEIGHT 36
 
 @end
 
@@ -102,10 +94,7 @@
 //creates a toolbar to add onto the keyboard
 -(void)addToolBarToView
 {
-	CGRect frame = CGRectMake(0,0, self.frame.size.width, PULLBAR_HEIGHT);
-	VerbatmPullBarView * toolBar = [[VerbatmPullBarView alloc] initWithFrame:frame];
-//	toolBar.customeDelegate = self;
-	self.textView.inputAccessoryView = toolBar;
+	//TODO
 }
 
 -(void)keyboardButtonPressed

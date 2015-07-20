@@ -8,6 +8,8 @@
 
 #import "UserSignUpVC.h"
 #import "VerbatmUser.h"
+#import "Notifications.h"
+
 @interface UserSignUpVC ()<UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *UserName_TextField;
 @property (weak, nonatomic) IBOutlet UITextField *Password_TextField;
@@ -16,8 +18,7 @@
 
 
 #define Number_of_Fields 2
-#define SIGNUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
-#define SIGNUP_FAILED_NOTIFIACTION @"userFailedToSignIn"
+
 @end
 
 @implementation UserSignUpVC

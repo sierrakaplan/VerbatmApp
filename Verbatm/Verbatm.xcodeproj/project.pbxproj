@@ -109,6 +109,10 @@
 		9D29995A19BA9042005EBC8A /* MediaDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaDevVC.m; sourceTree = "<group>"; };
 		A529196E1B59ADD500233712 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		A529196F1B5D86A500233712 /* Icons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Icons.h; sourceTree = "<group>"; };
+		A52919701B5D8BE800233712 /* SizesAndPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SizesAndPositions.h; sourceTree = "<group>"; };
+		A52919711B5D8E0F00233712 /* Styles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Styles.h; sourceTree = "<group>"; };
+		A52919721B5D921500233712 /* Durations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Durations.h; sourceTree = "<group>"; };
+		A52919731B5DA4C800233712 /* Strings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Strings.h; sourceTree = "<group>"; };
 		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		A57A92FD1B55A551006C2597 /* CameraFocusSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraFocusSquare.h; sourceTree = "<group>"; };
@@ -494,7 +498,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
-				C7BD53C61B5B790B00EE6241 /* constants  */,
+				C7BD53C61B5B790B00EE6241 /* Constants  */,
 				C748836A1B489AE300E64ED9 /* Gallery */,
 				A5CB82A41B5744B800195A2E /* UI effects */,
 				F257FEC81AC21F8B00964AB5 /* Saving and Downloading */,
@@ -558,14 +562,18 @@
 			name = "Backend Model";
 			sourceTree = "<group>";
 		};
-		C7BD53C61B5B790B00EE6241 /* constants  */ = {
+		C7BD53C61B5B790B00EE6241 /* Constants  */ = {
 			isa = PBXGroup;
 			children = (
 				C7BD53C51B5B787500EE6241 /* Constants.h */,
 				A529196F1B5D86A500233712 /* Icons.h */,
 				A529196E1B59ADD500233712 /* Notifications.h */,
+				A52919701B5D8BE800233712 /* SizesAndPositions.h */,
+				A52919711B5D8E0F00233712 /* Styles.h */,
+				A52919721B5D921500233712 /* Durations.h */,
+				A52919731B5DA4C800233712 /* Strings.h */,
 			);
-			name = "constants ";
+			name = "Constants ";
 			sourceTree = "<group>";
 		};
 		C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */ = {

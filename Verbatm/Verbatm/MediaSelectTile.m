@@ -11,6 +11,7 @@
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
+#import "SizesAndPositions.h"
 
 @interface MediaSelectTile ()
     @property(nonatomic ,strong) UIButton * selectMedia;
@@ -19,7 +20,6 @@
     @property (nonatomic, strong) CAShapeLayer * border;
 @property (readwrite, nonatomic) BOOL optionSelected;
 
-#define BUTTON_OFFSET 5
 @end
 
 @implementation MediaSelectTile
@@ -48,17 +48,16 @@
     self.optionSelected = NO;
 }
 
-//Iain
 -(void) createFramesForButtonsWithFrame: (CGRect) frame
 {
-    self.selectText.frame = CGRectMake(BUTTON_OFFSET, BUTTON_OFFSET, frame.size.width/2, frame.size.height-BUTTON_OFFSET*2);
-    self.selectMedia.frame = CGRectMake(frame.size.width/2, BUTTON_OFFSET, frame.size.width/2-BUTTON_OFFSET, frame.size.height-BUTTON_OFFSET*2);
+    self.selectMedia.frame = CGRectMake(ADD_MEDIA_BUTTON_OFFSET, ADD_MEDIA_BUTTON_OFFSET, frame.size.width/2, frame.size.height-ADD_MEDIA_BUTTON_OFFSET*2);
+    self.selectText.frame = CGRectMake(frame.size.width/2, ADD_MEDIA_BUTTON_OFFSET, frame.size.width/2-ADD_MEDIA_BUTTON_OFFSET, frame.size.height-ADD_MEDIA_BUTTON_OFFSET*2);
 }
-//Iain
+
 -(void)addButtonsAsSubviews
 {
+	[self addSubview:self.selectMedia];
     [self addSubview:self.selectText];
-    [self addSubview:self.selectMedia];
 }
 
 -(void) addText {
@@ -86,7 +85,7 @@
     if(!_selectMedia)
     {
         _selectMedia = [[UIButton alloc]init];
-        [_selectMedia addTarget:self action:@selector(addText) forControlEvents:UIControlEventTouchUpInside];
+        [_selectMedia addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
     }
     
     return _selectMedia;
@@ -97,8 +96,7 @@
 {
 
     if(!_selectText) _selectText = [[UIButton alloc]init];
-    [_selectText addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
-//    [_selectText addTarget:self action:@selector(buttonHighlight:) forControlEvents:UIControlEventTouchDown];
+    [_selectText addTarget:self action:@selector(addText) forControlEvents:UIControlEventTouchUpInside];
 
     return _selectText;
 }

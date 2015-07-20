@@ -11,9 +11,7 @@
 #import "VerbatmUser.h"
 
 @interface UserLoginVC () <UITextFieldDelegate>
-#define SINGUP_FAILED_NOTIFIACTION @"userFailedToSignIn"
 #define TOAST_DURATION 1
-#define SINGUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
 
 @property (weak, nonatomic) IBOutlet UITextField *UserName_TextField;
 @property (weak, nonatomic) IBOutlet UITextField *Password_TextField;
@@ -28,6 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+
 
     //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpFailed:) name:SINGUP_FAILED_NOTIFIACTION object: nil];
     self.UserName_TextField.delegate = self;

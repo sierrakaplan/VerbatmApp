@@ -11,6 +11,7 @@
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
+#import "SizesAndPositions.h"
 
 @interface VerbatmPullBarView ()
 @property (strong, nonatomic) UIButton *previewButton;
@@ -22,11 +23,6 @@
 @property (strong, nonatomic) UIImage *previewButtonGrayedOut;
 @property (strong, nonatomic) UIImage *undoButtonImage;
 @property (strong, nonatomic) UIImage *previewButtonImage;
-
-# pragma mark Spacing
-#define CENTER_BUTTON_GAP 20.f
-#define XOFFSET 20.f
-#define YOFFSET 15.f
 
 @end
 
@@ -52,20 +48,18 @@
 -(void)createButtons {
 
 	float centerPoint = self.frame.size.width /2.f;
-	float buttonSize = PULLBAR_HEIGHT_MENU_MODE - (2.f * YOFFSET);
-	float iconHeight = PULLBAR_HEIGHT_PULLDOWN_MODE;
-	float iconWidth = iconHeight * 3.f;
+	float buttonSize = PULLBAR_HEIGHT_MENU_MODE - (2.f * PULLBAR_BUTTON_YOFFSET);
 
 	self.undoButtonImage = [UIImage imageNamed:UNDO_BUTTON_IMAGE];
 	self.undoButtonGrayedOut = [UIEffects imageOverlayed:self.undoButtonImage withColor:[UIColor darkGrayColor]];
 	self.previewButtonImage = [UIImage imageNamed:PREVIEW_BUTTON_IMAGE];
 	self.previewButtonGrayedOut = [UIEffects imageOverlayed:self.previewButtonImage withColor:[UIColor darkGrayColor]];
 
-	CGRect pullDownIconFrame = CGRectMake(centerPoint-iconWidth/2.f, 0, iconWidth, iconHeight);
+	CGRect pullDownIconFrame = CGRectMake(centerPoint-PULLBAR_PULLDOWN_ICON_WIDTH/2.f, 0, PULLBAR_PULLDOWN_ICON_WIDTH, PULLBAR_HEIGHT_PULLDOWN_MODE);
 	self.pullDownIcon = [[UIImageView alloc] initWithFrame:pullDownIconFrame];
 	[self.pullDownIcon setImage:[UIImage imageNamed:PULLDOWN_ICON_IMAGE]];
 
-	CGRect undoButtonFrame = CGRectMake(XOFFSET, YOFFSET, buttonSize, buttonSize);
+	CGRect undoButtonFrame = CGRectMake(PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
 	self.undoButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.undoButton setFrame:undoButtonFrame];
 	[self.undoButton setImage:self.undoButtonGrayedOut forState:UIControlStateNormal];
@@ -73,7 +67,7 @@
 	[self.undoButton addTarget:self action:@selector(undoButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 //	[self.undoButton addTarget:self action:@selector(undoButtonPressed:) forControlEvents:UIControlEventTouchDown];
 
-	CGRect pullUpButtonFrame = CGRectMake(centerPoint-buttonSize/2.f, YOFFSET, buttonSize, buttonSize);
+	CGRect pullUpButtonFrame = CGRectMake(centerPoint-buttonSize/2.f, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
 	self.pullUpButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.pullUpButton setFrame:pullUpButtonFrame];
 	[self.pullUpButton setImage:[UIImage imageNamed:PULLUP_BUTTON_IMAGE] forState:UIControlStateNormal];
@@ -81,7 +75,7 @@
 	[self.pullUpButton addTarget:self action:@selector(pullUpButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 //	[self.pullUpButton addTarget:self action:@selector(pullUpButtonPressed:) forControlEvents:UIControlEventTouchDown];
 
-	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - buttonSize - XOFFSET, YOFFSET, buttonSize, buttonSize);
+	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - buttonSize - PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
 	self.previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.previewButton setFrame:previewButtonFrame];
 	[self.previewButton setImage:self.previewButtonGrayedOut forState:UIControlStateNormal];
