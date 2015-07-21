@@ -16,4 +16,6 @@
 
 #define PLACEHOLDER_SELECTOR_FAILED_ERROR_MESSAGE @"Cannot set placeholder using attributed placeholder selector, because deployment target is earlier than iOS 6.0"
 
+#define PUBLISH_BUTTON_LABEL @"Publish"
+
 #endif /* Strings_h */

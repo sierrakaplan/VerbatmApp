@@ -18,6 +18,8 @@
 #import "Icons.h"
 #import "SizesAndPositions.h"
 #import "Durations.h"
+#import "Strings.h"
+#import "Styles.h"
 #import "UIView+Glow.h"
 
 @interface ArticleDisplayVC () <UIScrollViewDelegate>
@@ -36,6 +38,7 @@
 @property (nonatomic) CGRect scrollViewRestingFrame;
 @property (nonatomic) CGRect publishButtonRestingFrame;
 @property (nonatomic) CGRect publishButtonFrame;
+@property (nonatomic) NSAttributedString *publishButtonTitle;
 
 
 
@@ -116,11 +119,22 @@
 }
 
 -(void) addPublishButton {
-	self.publishButtonFrame = CGRectMake(self.view.frame.size.width - PUBLISH_BUTTON_XOFFSET - PUBLISH_BUTTON_WIDTH, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_WIDTH, PUBLISH_BUTTON_HEIGHT);
-	self.publishButtonRestingFrame = CGRectMake(self.view.frame.size.width, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_WIDTH, PUBLISH_BUTTON_HEIGHT);
+	self.publishButtonFrame = CGRectMake(self.view.frame.size.width - PUBLISH_BUTTON_XOFFSET - PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+	self.publishButtonRestingFrame = CGRectMake(self.view.frame.size.width, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+
 	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.publishButton setImage:[UIImage imageNamed:PUBLISH_BUTTON_IMAGE] forState:UIControlStateNormal];
 	[self.publishButton setFrame:self.publishButtonRestingFrame];
+	[self.publishButton setBackgroundImage:[UIImage imageNamed:PUBLISH_BUTTON_IMAGE] forState:UIControlStateNormal];
+
+	UIColor *labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR];
+	UIFont* labelFont = [UIFont fontWithName:DEFAULT_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
+	NSShadow *shadow = [[NSShadow alloc] init];
+	[shadow setShadowBlurRadius:PUBLISH_BUTTON_LABEL_SHADOW_BLUR_RADIUS];
+	[shadow setShadowColor:labelColor];
+	[shadow setShadowOffset:CGSizeMake(0, PUBLISH_BUTTON_LABEL_SHADOW_YOFFSET)];
+	self.publishButtonTitle = [[NSAttributedString alloc] initWithString:PUBLISH_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont, NSShadowAttributeName : shadow}];
+	[self.publishButton setAttributedTitle:self.publishButtonTitle forState:UIControlStateNormal];
+
 	[self.publishButton addTarget:self action:@selector(publishArticleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:self.publishButton];
 }

@@ -11,7 +11,7 @@
 
 #pragma mark - Content Dev VC -
 
-#define PUBLISH_BUTTON_IMAGE @"publish_button"
+#define PUBLISH_BUTTON_IMAGE @"pulldown_text_icon" //@"publish_button"
 
 #pragma mark Media Picker
 
@@ -44,6 +44,8 @@
 #define CT_ASSETS_PICKER_CHECKED @"CTAssetsPickerChecked"
 
 #pragma mark - AVES -
+
+#define PULLDOWN_TEXT_ICON @"pulldown_text_icon"
 
 #pragma mark Video AVE
 

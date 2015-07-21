@@ -12,7 +12,7 @@
 @property (nonatomic, readonly) UIView* glowView;
 @property (nonatomic, readonly) UIView* secondGlowView;
 
-#define DEFAULT_GLOW_DURATION 1.0
+#define DEFAULT_GLOW_DURATION 1.2
 #define DEFAULT_GLOW_RADIUS_1 8.0
 #define DEFAULT_GLOW_RADIUS_2 12.0
 #define DEFAULT_GLOW_INTENSITY 1.0

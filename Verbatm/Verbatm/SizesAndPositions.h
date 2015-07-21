@@ -27,8 +27,7 @@
 
 #define PUBLISH_BUTTON_XOFFSET 20.f
 #define PUBLISH_BUTTON_YOFFSET 20.f
-#define PUBLISH_BUTTON_WIDTH 50.f
-#define PUBLISH_BUTTON_HEIGHT 50.f
+#define PUBLISH_BUTTON_SIZE 75.f
 
 #pragma mark Pull Bar
 
