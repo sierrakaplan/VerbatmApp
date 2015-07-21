@@ -12,7 +12,7 @@
 #import "ArticleAquirer.h"
 #import "Article.h"
 #import "Page.h"
-#import "Analyzer.h"
+#import "AVETypeAnalyzer.h"
 #import "Notifications.h"
 #import "SizesAndPositions.h"
 

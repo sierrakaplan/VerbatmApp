@@ -10,13 +10,13 @@
 #define Styles_h
 
 
-#define DEFAULT_FONT @"HelveticaNeue-Bold"
+#define DEFAULT_FONT @"HelveticaNeue"
 
 #pragma mark Verbatm Image Scroll View
 
-#define TEXT_BOX_FONT_SIZE 20
-#define BACKGROUND_COLOR clearColor
-#define FONT_COLOR whiteColor
+#define IMAGE_SCROLLVIEW_TEXT_BOX_FONT_SIZE 20
+#define IMAGE_SCROLLVIEW_BACKGROUND_COLOR clearColor
+#define IMAGE_SCROLLVIEW_FONT_COLOR whiteColor
 
 #pragma mark - Content Dev VC -
 
@@ -33,5 +33,19 @@
 #define PUBLISH_BUTTON_LABEL_COLOR darkGrayColor
 #define PUBLISH_BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
 #define PUBLISH_BUTTON_LABEL_SHADOW_YOFFSET 1.5f
+
+#define PUBLISH_BUTTON_FONT @"HelveticaNeue-Bold"
+
+#pragma mark - AVES -
+
+#pragma mark Text
+
+#define TEXT_AVE_FONT @"HelveticaNeue-Light" //@"AmericanTypewriter-Light"
+#define TEXT_AVE_FONT_SIZE 20
+
+#define TEXT_OVER_AVE_BACKGROUND_ALPHA 0.7
+#define TEXT_OVER_AVE_COLOR whiteColor
+#define TEXT_OVER_AVE_PULLBAR_COLOR clearColor
+
 
 #endif /* Styles_h */

@@ -7,27 +7,17 @@
 //
 
 #import "TextAndOtherAves.h"
-#import "constants.h"
 #import "MultiplePhotoAVE.h"
+#import "Styles.h"
+#import "SizesAndPositions.h"
 
-#pragma mark -constants-
-#define TEXT_TOP_OFFSET 40
-#define TEXTVIEW_STARTING_HEIGHT 20 //This is supposed to be enough for two lines
-#define TEXTVIEW_STARTFRAME CGRectMake(0,TEXT_TOP_OFFSET,self.frame.size.width,TEXTVIEW_STARTING_HEIGHT)
-#define DEFAULT_FONT_FAMILY @"AmericanTypewriter-Light"
-#define DEFAULT_FONT_SIZE 20
-#define DEFAULT_LINE_NUMBER 2
-#define MIN_WORDS 20
-#define PULL_BAR_HEIGHT 20
-#define PULLBAR_COLOR clearColor
 //just a ratio from the midpoint that the gesture should be past before we go to auto adjust
 #define THRESHOLD 1.8
-#define TEXTVIEW_BACKGROUND_ALPHA 0.8
-#define TEXT_COLOR [UIColor whiteColor]
+
 
 @interface TextAndOtherAves()
 //an invisible bar that sits on the edge of the textview to catch gestures
-@property (strong,nonatomic)UIView * pullBar;
+@property (strong,nonatomic) UIView* pullBar;
 //the view that's showing the dark text
 @property (strong,nonatomic) UITextView * textView;
 @property (nonatomic)CGRect pullBarStartFrame;
@@ -47,22 +37,26 @@
  -PHOTOVIDEO
  from this string we create and place the appropriate ave as a subview
  */
--(instancetype)initWithFrame:(CGRect) frame text:(NSString*)text aveType:(NSString*)AVE aveMedia: (NSArray *)media
-{
+-(instancetype)initWithFrame:(CGRect) frame text:(NSString*)text aveType:(AVEType)aveType aveMedia: (NSArray *)media {
+
     self = [super initWithFrame:frame];
-    if(self)
-    {
-       if([AVE isEqualToString:PHOTO_AVE])
-       {
-           MultiplePhotoAVE * photoAve = [[MultiplePhotoAVE alloc] initWithFrame:frame andPhotoArray:[NSMutableArray arrayWithArray:media]];
-           [self addSubview:photoAve];
-       }else if([AVE isEqualToString:VIDEO_AVE])
-       {
-           
-       }else if ([AVE isEqualToString:PHOTO_VIDEO_AVE])
-       {
-           
-       }
+    if(self) {
+		switch (aveType) {
+			case AVETypePhoto: {
+				MultiplePhotoAVE *photoAve = [[MultiplePhotoAVE alloc] initWithFrame:frame andPhotoArray:[NSMutableArray arrayWithArray:media]];
+				[self addSubview: photoAve];
+				break;
+			}
+			case AVETypeVideo: {
+				break;
+			}
+			case AVETypePhotoVideo: {
+				break;
+			}
+			default: {
+				break;
+			}
+		}
         [self setUpTextViewWithString:text];
     }
     return self;
@@ -70,29 +64,24 @@
 
 -(void)setUpTextViewWithString:(NSString *) text
 {
-    self.textView = [[UITextView alloc] initWithFrame:TEXTVIEW_STARTFRAME];
+	self.textViewStartFrame = CGRectMake(0,TEXT_OVER_AVE_TOP_OFFSET,self.frame.size.width,TEXT_OVER_AVE_STARTING_HEIGHT);
+    self.textView = [[UITextView alloc] initWithFrame:self.textViewStartFrame];
     self.textView.text = text;
-    self.textView.textColor = TEXT_COLOR;
-    self.textViewStartFrame = self.textView.frame;
-    [self formatTextView:self.textView];
+    self.textView.textColor = [UIColor TEXT_OVER_AVE_COLOR];
+
+	self.textView.backgroundColor = [UIColor colorWithWhite:0 alpha:TEXT_OVER_AVE_BACKGROUND_ALPHA];
+	self.textView.userInteractionEnabled = YES;
+	self.textView.showsVerticalScrollIndicator = NO;
+	self.textView.textAlignment = NSTextAlignmentCenter;
+	[self.textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
+	if(self.textView.contentSize.height > TEXT_OVER_AVE_STARTING_HEIGHT) {
+		[self addGestureToView];
+	}
+
     [self addSubview:self.textView];
     [self bringSubviewToFront:self.textView];
 }
 
--(void)formatTextView:(UITextView *)textView
-{
-    self.textView.backgroundColor = [UIColor colorWithWhite:0 alpha:TEXTVIEW_BACKGROUND_ALPHA];
-    self.textView.userInteractionEnabled = YES;
-    
-    
-    self.textView.showsVerticalScrollIndicator = NO;
-    self.textView.textAlignment = NSTextAlignmentCenter;
-    [self.textView setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
-    if([self numberOfLinesInTextView:self.textView]==DEFAULT_LINE_NUMBER)
-    {
-        [self addGestureToView];
-    }
-}
 -(int)numberOfLinesInTextView:(UITextView *)textView
 {
     return textView.contentSize.height/textView.font.lineHeight;
@@ -102,10 +91,11 @@
 -(void)addGestureToView
 {
     self.pullBar =[[UIView alloc] init];
+	// TODO: add icon to pull down text
     self.pullBar.frame = CGRectMake(0,self.textView.frame.origin.y+self.textView.frame.size.height,
-                                    self.frame.size.width, PULL_BAR_HEIGHT);
+									self.frame.size.width, TEXT_OVER_AVE_PULLBAR_HEIGHT);
     self.pullBarStartFrame = self.pullBar.frame;
-    self.pullBar.backgroundColor = [UIColor PULLBAR_COLOR];
+    self.pullBar.backgroundColor = [UIColor TEXT_OVER_AVE_PULLBAR_COLOR];
     [self addSubview: self.pullBar];
     [self bringSubviewToFront:self.pullBar];
     [self addSwipeGestureToView:self.pullBar];
@@ -168,29 +158,5 @@
     self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,self.textView.frame.size.width, self.textView.frame.size.height +(translation.y - self.lastPoint.y));
     self.lastPoint = translation;
 }
-
-
-
-//
-//-(void)wordCount:(NSString*)text
-//{
-//    int words = 0;
-//    NSArray * string_array = [text componentsSeparatedByString: @" "];
-//    words += [string_array count];
-//    //Make sure to discount blanks in the array
-//    for (NSString * string in string_array)
-//    {
-//        if([string isEqualToString:@""] && words != 0) words--;
-//    }
-//}
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

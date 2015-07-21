@@ -11,6 +11,7 @@
 #import "GMImagePickerController.h"
 #import <QuartzCore/QuartzCore.h>
 #import "Icons.h"
+#import "Styles.h"
 
 @implementation GMAlbumsViewCell
 
@@ -98,11 +99,11 @@
 
         
         //TextLabel
-        self.textLabel.font = [UIFont fontWithName:@"Helvetica" size:17.0];
+        self.textLabel.font = [UIFont fontWithName:DEFAULT_FONT size:17.0];
         self.textLabel.numberOfLines = 1;
         self.textLabel.translatesAutoresizingMaskIntoConstraints = NO;
         
-        self.detailTextLabel.font = [UIFont fontWithName:@"Helvetica" size:14.0];
+        self.detailTextLabel.font = [UIFont fontWithName:DEFAULT_FONT size:14.0];
         self.detailTextLabel.numberOfLines = 1;
         self.detailTextLabel.translatesAutoresizingMaskIntoConstraints = NO;
         

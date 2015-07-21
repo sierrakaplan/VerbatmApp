@@ -80,7 +80,6 @@
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
 		C7E6C13F1A4E394600863893 /* MultiplePhotoVideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */; };
-		C7E6C1431A4E394600863893 /* TextPhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1381A4E394600863893 /* TextPhotoAVE.m */; };
 		C7E6C1451A4E394600863893 /* TextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13C1A4E394600863893 /* TextAVE.m */; };
 		C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* VideoAVE.m */; };
 		C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */; };
@@ -88,7 +87,7 @@
 		C7F3D46B1A4F84C000B43238 /* UserLoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */; };
 		C7F3D46E1A4F84DF00B43238 /* UserSignUpVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46D1A4F84DF00B43238 /* UserSignUpVC.m */; };
 		F20A24FA1A46166100BB77C1 /* VerbatmImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* VerbatmImageScrollView.m */; };
-		F266F3F11A4A6AE200EA0327 /* Analyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* Analyzer.m */; };
+		F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */; };
 		F2964FA41A4FE43300E1DBEC /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = F2964FA31A4FE43300E1DBEC /* Page.m */; };
 /* End PBXBuildFile section */
 
@@ -222,15 +221,12 @@
 		C7BC43BF199F7427004B91A1 /* VerbatmUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmUser.m; sourceTree = "<group>"; };
 		C7BD53C21B5B73A700EE6241 /* TextAndOtherAves.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAndOtherAves.h; sourceTree = "<group>"; };
 		C7BD53C31B5B73A700EE6241 /* TextAndOtherAves.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAndOtherAves.m; sourceTree = "<group>"; };
-		C7BD53C51B5B787500EE6241 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Constants.h; path = ../Constants.h; sourceTree = "<group>"; };
 		C7CCFF3A19CE63A800E90080 /* testerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerAnimation.h; sourceTree = "<group>"; };
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
 		C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerTransitionDelegate.m; sourceTree = "<group>"; };
 		C7E6C12F1A4E394600863893 /* MultiplePhotoVideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiplePhotoVideoAVE.h; sourceTree = "<group>"; };
 		C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiplePhotoVideoAVE.m; sourceTree = "<group>"; };
-		C7E6C1371A4E394600863893 /* TextPhotoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextPhotoAVE.h; sourceTree = "<group>"; };
-		C7E6C1381A4E394600863893 /* TextPhotoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextPhotoAVE.m; sourceTree = "<group>"; };
 		C7E6C13B1A4E394600863893 /* TextAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAVE.h; sourceTree = "<group>"; };
 		C7E6C13C1A4E394600863893 /* TextAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAVE.m; sourceTree = "<group>"; };
 		C7E6C13D1A4E394600863893 /* VideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoAVE.h; sourceTree = "<group>"; };
@@ -245,8 +241,8 @@
 		C7F3D46D1A4F84DF00B43238 /* UserSignUpVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSignUpVC.m; sourceTree = "<group>"; };
 		F20A24F81A46166100BB77C1 /* VerbatmImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmImageScrollView.h; sourceTree = "<group>"; };
 		F20A24F91A46166100BB77C1 /* VerbatmImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmImageScrollView.m; sourceTree = "<group>"; };
-		F266F3EF1A4A6AE200EA0327 /* Analyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analyzer.h; sourceTree = "<group>"; };
-		F266F3F01A4A6AE200EA0327 /* Analyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analyzer.m; sourceTree = "<group>"; };
+		F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVETypeAnalyzer.h; path = ../AVETypeAnalyzer.h; sourceTree = "<group>"; };
+		F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AVETypeAnalyzer.m; path = ../AVETypeAnalyzer.m; sourceTree = "<group>"; };
 		F2964FA21A4FE43300E1DBEC /* Page.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page.h; sourceTree = "<group>"; };
 		F2964FA31A4FE43300E1DBEC /* Page.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -387,8 +383,6 @@
 			children = (
 				C7E6C13B1A4E394600863893 /* TextAVE.h */,
 				C7E6C13C1A4E394600863893 /* TextAVE.m */,
-				C7E6C1371A4E394600863893 /* TextPhotoAVE.h */,
-				C7E6C1381A4E394600863893 /* TextPhotoAVE.m */,
 				C7BD53C21B5B73A700EE6241 /* TextAndOtherAves.h */,
 				C7BD53C31B5B73A700EE6241 /* TextAndOtherAves.m */,
 			);
@@ -502,7 +496,6 @@
 				C748836A1B489AE300E64ED9 /* Gallery */,
 				A5CB82A41B5744B800195A2E /* UI effects */,
 				F257FEC81AC21F8B00964AB5 /* Saving and Downloading */,
-				F266F3EE1A4A69F400EA0327 /* Analyzer */,
 				C750A35919D768BD0006FA88 /* Video Capture Classes */,
 				C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */,
 				C78B682719CA6C0A003D0AC5 /* Custom Views */,
@@ -565,7 +558,6 @@
 		C7BD53C61B5B790B00EE6241 /* Constants  */ = {
 			isa = PBXGroup;
 			children = (
-				C7BD53C51B5B787500EE6241 /* Constants.h */,
 				A529196F1B5D86A500233712 /* Icons.h */,
 				A529196E1B59ADD500233712 /* Notifications.h */,
 				A52919701B5D8BE800233712 /* SizesAndPositions.h */,
@@ -596,19 +588,11 @@
 			name = "Saving and Downloading";
 			sourceTree = "<group>";
 		};
-		F266F3EE1A4A69F400EA0327 /* Analyzer */ = {
-			isa = PBXGroup;
-			children = (
-				F266F3EF1A4A6AE200EA0327 /* Analyzer.h */,
-				F266F3F01A4A6AE200EA0327 /* Analyzer.m */,
-			);
-			name = Analyzer;
-			path = ..;
-			sourceTree = "<group>";
-		};
 		F26894441A43641C00B1D4DB /* AVEs  */ = {
 			isa = PBXGroup;
 			children = (
+				F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */,
+				F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */,
 				C7B1EC7C1B3CDF53001A4FFC /* Video Aves */,
 				C777EEA71AC9180D003E0633 /* AVES that involve text */,
 				C77A68B21AC20AA2000B10E2 /* MultiplePhotoAVE.h */,
@@ -799,7 +783,7 @@
 				C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */,
 				C7614F421A247BD100E6AB24 /* VerbatmImageView.m in Sources */,
 				C78B682419CA6C01003D0AC5 /* VerbatmUITextView.m in Sources */,
-				F266F3F11A4A6AE200EA0327 /* Analyzer.m in Sources */,
+				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7A8E3891A61CE7800776BD1 /* VerbatmKeyboardView.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
@@ -813,7 +797,6 @@
 				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,
-				C7E6C1431A4E394600863893 /* TextPhotoAVE.m in Sources */,
 				C7A8A7F619A96E1B00CE861F /* Video.m in Sources */,
 				C702DE701B315CDF00EE2B00 /* ArticleDisplayVC.m in Sources */,
 			);

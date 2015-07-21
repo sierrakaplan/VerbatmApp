@@ -10,7 +10,7 @@
 #import "TextAVE.h"
 #import "VideoAVE.h"
 #import "MultiplePhotoVideoAVE.h"
-#import "Analyzer.h"
+#import "AVETypeAnalyzer.h"
 #import "Page.h"
 #import "Article.h"
 #import "UIEffects.h"
@@ -127,7 +127,7 @@
 	[self.publishButton setBackgroundImage:[UIImage imageNamed:PUBLISH_BUTTON_IMAGE] forState:UIControlStateNormal];
 
 	UIColor *labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR];
-	UIFont* labelFont = [UIFont fontWithName:DEFAULT_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
+	UIFont* labelFont = [UIFont fontWithName:PUBLISH_BUTTON_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
 	NSShadow *shadow = [[NSShadow alloc] init];
 	[shadow setShadowBlurRadius:PUBLISH_BUTTON_LABEL_SHADOW_BLUR_RADIUS];
 	[shadow setShadowColor:labelColor];
@@ -220,7 +220,7 @@
 				PinchView * pv = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
 				[pinchObjectsArray addObject:pv];
 			}
-			Analyzer * analyser = [[Analyzer alloc]init];
+			AVETypeAnalyzer * analyser = [[AVETypeAnalyzer alloc]init];
 			self.pinchedObjects = [analyser processPinchedObjectsFromArray:pinchObjectsArray withFrame:self.view.frame];
 
 			if(!self.pinchedObjects.count)return;//for now
@@ -236,7 +236,7 @@
 
 -(void) showArticlePreview:  (NSMutableArray*) pinchObjects {
 	[self pause_CP_Vidoes];//make sure content page videos are paused so there is no video conflict
-	Analyzer * analyser = [[Analyzer alloc]init];
+	AVETypeAnalyzer * analyser = [[AVETypeAnalyzer alloc]init];
 	self.pinchedObjects = [analyser processPinchedObjectsFromArray:pinchObjects withFrame:self.view.frame];
 	self.view.backgroundColor = [UIColor clearColor];
 	[self setUpScrollView];

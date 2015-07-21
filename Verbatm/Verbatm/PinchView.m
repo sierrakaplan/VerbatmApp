@@ -8,6 +8,7 @@
 
 #import "PinchView.h"
 #import "VerbatmImageView.h"
+#import "Styles.h"
 
 
 @interface PinchView()
@@ -23,15 +24,15 @@
 @property (strong, nonatomic) NSMutableArray* pinched;
 //@property (strong, nonatomic) NSString* text;
 
-@property (readwrite,nonatomic) BOOL there_is_text;
-@property (readwrite, nonatomic) BOOL there_is_video;
-@property (readwrite, nonatomic) BOOL there_is_picture;
+@property (readwrite,nonatomic) BOOL containsText;
+@property (readwrite, nonatomic) BOOL containsVideo;
+@property (readwrite, nonatomic) BOOL containsPicture;
 
 #define SHADOW_OFFSET_FACTOR 25
 #define DIVISION_FACTOR_FOR_TWO 2
-#define P_OBJ_THERE_IS_PICTURE @"picture"
-#define P_OBJ_THERE_IS_VIDEO  @"video"
-#define P_OBJ_THERE_IS_TEXT @"text"
+#define P_OBJ_containsPicture @"picture"
+#define P_OBJ_containsVideo  @"video"
+#define P_OBJ_containsText @"text"
 #define P_OBJ_MEDIA @"media"
 #define MIN_PINCHVIEW_SIZE 100
 
@@ -59,9 +60,9 @@
 		self.photos = [[NSMutableArray alloc] init];
 		self.videos = [[NSMutableArray alloc] init];
 
-		self.there_is_text = NO;
-		self.there_is_picture = NO;
-		self.there_is_video = NO;
+		self.containsText = NO;
+		self.containsPicture = NO;
+		self.containsVideo = NO;
         
         [self initSubviews];
         if(mediaArray){
@@ -83,16 +84,16 @@
 
 		//text
 		if([object isKindOfClass: [UITextView class]]){
-			self.there_is_text = YES;
+			self.containsText = YES;
 
 		//photo
 		} else if([object isKindOfClass: [NSData class]]){
-			self.there_is_picture = YES;
+			self.containsPicture = YES;
 			[self.photos addObject:object];
 
 		//video from preview or parse
 		} else if([object isKindOfClass: [AVAsset class]] || [object isKindOfClass: [NSURL class]]){
-			self.there_is_video = YES;
+			self.containsVideo = YES;
 			[self.videos addObject:object];
 		}
 	}
@@ -132,25 +133,22 @@
 -(void)changePicture:(UIImage*)image
 {
     //only works if we already have a picture
-    if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.there_is_picture) return;
-//    NSData* imageData = [self.photos firstObject];
-	//TODO(sierra): confused about this
-//    view.image = image;
+    if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.containsPicture) return;
     self.imageViewer.image = image;
 }
+
 -(void) changeText:(UITextView *) textview
 {
     //should only work if ther is text in the pinchview
-    if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.there_is_text) return;
+    if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.containsText) return;
     UITextView* view = [self.media firstObject];
     view.text = textview.text;
     self.textField.text = textview.text;
     self.textField.textColor = [UIColor whiteColor];
-    self.textField.font = [UIFont fontWithName:@"Helvetica" size:15];
+    self.textField.font = [UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE];
 }
 
 
-//Lucio.
 /*This specifies the frame of the background and all the subviews
  *It modifies the object to have a circular shape by setting the 
  *corner radius
@@ -229,7 +227,7 @@
 //way it should look
 -(void)renderMedia
 {
-    if(self.there_is_video && self.there_is_text && self.there_is_picture){
+    if(self.containsVideo && self.containsText && self.containsPicture){
         [self renderThreeViews];
     }else if( [self thereIsOnlyOneMedium]){
         [self renderSingleView];
@@ -244,9 +242,9 @@
 //This renders a single view on the pinch object
 -(void)renderSingleView
 {
-    if(self.there_is_text){
+    if(self.containsText){
         self.textField.frame = self.background.frame;
-    }else if(self.there_is_video){
+    }else if(self.containsVideo){
         self.videoView.frame = self.background.frame;
         [self.background bringSubviewToFront:self.videoView];
     }else{
@@ -260,9 +258,9 @@
 {
     CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO , self.background.frame.size.height);
     CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height);
-    if(self.there_is_text){
+    if(self.containsText){
         self.textField.frame = frame1;
-        if(self.there_is_picture){
+        if(self.containsPicture){
             self.imageViewer.frame = frame2;
         }else{
             self.videoView.frame = frame2;
@@ -315,7 +313,7 @@
 		}
 	}
     
-	if(self.there_is_video)
+	if(self.containsVideo)
     {
 		if(self.videoView.playerLayer)
         {
@@ -355,19 +353,19 @@
 	[result.photos addObjectsFromArray: pinchObject.photos];
 	[result.videos addObjectsFromArray: pinchObject.videos];
     [result.pinched addObject:pinchObject];
-    result.there_is_picture =  result.there_is_picture || pinchObject.there_is_picture;
-    result.there_is_text =  result.there_is_text || pinchObject.there_is_text;
-    result.there_is_video = result.there_is_video || pinchObject.there_is_video;
+    result.containsPicture =  result.containsPicture || pinchObject.containsPicture;
+    result.containsText =  result.containsText || pinchObject.containsText;
+    result.containsVideo = result.containsVideo || pinchObject.containsVideo;
 }
 
 //keeping this just in case
 -(BOOL)thereIsOnlyOneMedium
 {
-    if(self.there_is_text && self.there_is_video && self.there_is_picture) return false;
-    if(self.there_is_picture && self.there_is_text)return false;
-    if(self.there_is_text && self.there_is_video) return false;
-    if(self.there_is_video && self.there_is_picture) return false;
-    return  self.there_is_picture || self.there_is_text || self.there_is_video;
+    if(self.containsText && self.containsVideo && self.containsPicture) return false;
+    if(self.containsPicture && self.containsText)return false;
+    if(self.containsText && self.containsVideo) return false;
+    if(self.containsVideo && self.containsPicture) return false;
+    return  self.containsPicture || self.containsText || self.containsVideo;
 }
 
 

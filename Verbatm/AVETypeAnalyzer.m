@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "Analyzer.h"
+#import "AVETypeAnalyzer.h"
 #import "VerbatmImageView.h"
 #import "PinchView.h"
 #import "VideoAVE.h"
@@ -14,15 +14,14 @@
 #import "MultiplePhotoVideoAVE.h"
 #import "MultiplePhotoAVE.h"
 #import "TextAndOtherAves.h"
-#import "constants.h"
 
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
-@interface Analyzer()
+@interface AVETypeAnalyzer()
 @property(nonatomic, strong)NSMutableArray* results;
 @property(strong, nonatomic) NSMutableArray* pinchedObjects;
 @property(nonatomic) CGRect preferredFrame;
 @end
-@implementation Analyzer
+@implementation AVETypeAnalyzer
 @synthesize pinchedObjects = _pinchedObjects;
 @synthesize preferredFrame = _preferredFrame;
 @synthesize results = _results;
@@ -32,20 +31,20 @@
 	_pinchedObjects = arr;
 	_preferredFrame = frame;
 	_results = [[NSMutableArray alloc]init];
-	for(PinchView* p_obj in _pinchedObjects)
+	for(PinchView* pinchView in _pinchedObjects)
 	{
 		//there are some issue where a messed up p_obj arrives
-		if(!(p_obj.there_is_picture || p_obj.there_is_text || p_obj.there_is_video))continue;
-		if(![p_obj isCollection])
+		if(!(pinchView.containsPicture || pinchView.containsText || pinchView.containsVideo))continue;
+		if(![pinchView isCollection])
 		{
-			[self handleSingleMedia:p_obj];
+			[self handleSingleMedia:pinchView];
 			continue;
 		}
-		if(p_obj.there_is_picture && p_obj.there_is_text && p_obj.there_is_video){
-			[self handleThreeMedia:p_obj];
+		if(pinchView.containsPicture && pinchView.containsText && pinchView.containsVideo){
+			[self handleThreeMedia:pinchView];
 			continue;
 		}
-		[self handleTwoMedia:p_obj];
+		[self handleTwoMedia:pinchView];
 	}
 
 	return _results;
@@ -55,16 +54,16 @@
 {
 	NSMutableArray *arr = [[NSMutableArray alloc]init];
 
-	arr = (p_obj.there_is_picture)? [p_obj getPhotos] : [p_obj getVideos];
+	arr = (p_obj.containsPicture)? [p_obj getPhotos] : [p_obj getVideos];
 
-	if(p_obj.there_is_picture)
+	if(p_obj.containsPicture)
 	{
 		//multiple photo and single photo call the same class
 		MultiplePhotoAVE* imageView = [[MultiplePhotoAVE alloc]initWithFrame:_preferredFrame andPhotoArray:arr];
 
 		[_results addObject:imageView];
 
-	}else if(p_obj.there_is_text)
+	}else if(p_obj.containsText)
 	{
 		TextAVE* textView = [[TextAVE alloc]initWithFrame:_preferredFrame];
 		[textView setTextViewText: [p_obj getTextFromPinchObject]];
@@ -77,23 +76,22 @@
 }
 
 
--(void)handleTwoMedia:(PinchView*)p_obj
-{
+-(void)handleTwoMedia:(PinchView*)p_obj {
 
 	NSMutableArray * photos = [p_obj getPhotos];
 	NSMutableArray * videos = [p_obj getVideos];
-	if(p_obj.there_is_text)
+	if(p_obj.containsText)
 	{
 		//it's text photo
 		if(photos.count)
 		{
-            TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:PHOTO_AVE aveMedia:photos];
+            TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:AVETypePhoto aveMedia:photos];
             [textViewAndPhoto addGestureToView];
 			[self.results addObject:textViewAndPhoto];
 
         }else{
 			
-            TextAndOtherAves * textViewAndVideo = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:VIDEO_AVE aveMedia:videos];
+            TextAndOtherAves * textViewAndVideo = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:AVETypeVideo aveMedia:videos];
             [textViewAndVideo addGestureToView];
             [self.results addObject:textViewAndVideo];
 		}
@@ -132,7 +130,7 @@
 {
     NSMutableArray * combined = [NSMutableArray arrayWithArray:[p_obj getVideos]];
     [combined addObjectsFromArray:[p_obj getPhotos]];
-    TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:PHOTO_VIDEO_AVE aveMedia:combined];
+    TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:AVETypePhotoVideo aveMedia:combined];
     [textViewAndPhoto addGestureToView];
     [self.results addObject:textViewAndPhoto];
 }

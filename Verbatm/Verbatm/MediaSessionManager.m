@@ -434,7 +434,7 @@
 	exporter.shouldOptimizeForNetworkUse = YES;
 	[exporter exportAsynchronouslyWithCompletionHandler:^{
 		switch ([exporter status]) {
-			case AVAssetExportSessionStatusCompleted:
+			case AVAssetExportSessionStatusCompleted: {
 				NSLog(@"Export done successfully");
 				if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
 					[self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
@@ -453,11 +453,14 @@
 					NSLog(@"wrong output location");
 				}
 				break;
-			case AVAssetExportSessionStatusFailed:
+			}
+			case AVAssetExportSessionStatusFailed: {
 				NSLog(@"Export Session failed: %@", exporter.error.description);
 				break;
-			default:
+			}
+			default: {
 				break;
+			}
 		}
 	}];
 }

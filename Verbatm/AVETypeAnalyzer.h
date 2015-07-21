@@ -9,6 +9,13 @@
 #import <Foundation/Foundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
-@interface Analyzer : NSObject
+@interface AVETypeAnalyzer : NSObject
+
+typedef NS_ENUM(NSInteger, AVEType) {
+	AVETypeVideo,
+	AVETypePhoto,
+	AVETypePhotoVideo
+};
+
 -(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)arr withFrame:(CGRect)frame;
 @end

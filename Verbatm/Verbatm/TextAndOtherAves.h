@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AVETypeAnalyzer.h"
 
 @interface TextAndOtherAves : UIView
--(instancetype)initWithFrame:(CGRect) frame text:(NSString*)text aveType:(NSString*)AVE aveMedia: (NSArray *)media;
+-(instancetype)initWithFrame:(CGRect) frame text:(NSString*)text aveType:(AVEType)aveType aveMedia: (NSArray *)media;
 -(void)addGestureToView;
 @end

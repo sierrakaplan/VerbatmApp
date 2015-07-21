@@ -420,7 +420,7 @@
 			}
 			//make sure that the last word is complete by having a space after it
 			if(![[string_array lastObject] isEqualToString:@""]) words --;
-		} else if([object isKindOfClass:[PinchView class]]&& ((PinchView *)object).there_is_text) {
+		} else if([object isKindOfClass:[PinchView class]]&& ((PinchView *)object).containsText) {
 			NSString * string = [((PinchView *) object) getTextFromPinchObject];
 			NSArray * string_array = [string componentsSeparatedByString: @" "];
 			words += [string_array count];
@@ -702,7 +702,7 @@
 - (IBAction)addElementPinchGesture:(UIPinchGestureRecognizer *)sender {
 
 	switch (sender.state) {
-		case UIGestureRecognizerStateBegan:
+		case UIGestureRecognizerStateBegan: {
 			if([sender numberOfTouches] != 2 ) {
 				return;
 			}
@@ -714,9 +714,9 @@
 				}
 			}
 			[self handlePinchGestureBegan:sender];
-
 			break;
-		case UIGestureRecognizerStateChanged:
+		}
+		case UIGestureRecognizerStateChanged: {
 			if(!self.VerticalPinch && self.scrollViewForHorizontalPinchView && [sender numberOfTouches] == 2 && self.pinching && sender.scale <1)
 			{
 				[self handleHorizontalPinchGestureChanged:sender];
@@ -730,7 +730,8 @@
 				[self handleVerticlePinchGestureChanged:sender];
 			}
 			break;
-		case UIGestureRecognizerStateEnded:
+		}
+		case UIGestureRecognizerStateEnded: {
 			self.pinching = NO;
 			self.horizontalPinchDistance =0;//Sanitize the figure
 			self.startLocationOfLeftestTouchPoint_PINCH = CGPointMake(0, 0);
@@ -756,8 +757,10 @@
 			}
 			[self shiftElementsBelowView:self.articleTitleField];
 			break;
-		default:
+		}
+		default: {
 			return;
+		}
 	}
 }
 
@@ -1579,21 +1582,25 @@
 - (IBAction)longPressSensed:(UILongPressGestureRecognizer *)sender {
 
 	switch (sender.state) {
-		case UIGestureRecognizerStateEnded:
+		case UIGestureRecognizerStateEnded: {
 			[self finishMovingSelectedItem];
 			break;
-		case UIGestureRecognizerStateBegan:
+		}
+		case UIGestureRecognizerStateBegan: {
 			//make sure it's a single finger touch and that there are multiple elements on the screen
 			if(self.pageElements.count==0 || [sender numberOfTouches] != 1) {
 				return;
 			}
 			[self selectItem:sender];
 			break;
-		case UIGestureRecognizerStateChanged:
+		}
+		case UIGestureRecognizerStateChanged: {
 			[self moveItem:sender];
 			break;
-		default:
+		}
+		default: {
 			return;
+		}
 	}
 }
 
@@ -2001,8 +2008,8 @@
 {
 	VerbatmImageScrollView * isv = self.openImageScrollView;
 	//TODO(sierra): what is this for??
-	//    if(self.openImagePinchView.there_is_picture)[self.openImagePinchView changePicture:self.openImageScrollView.imageView.image];
-	if(self.openImagePinchView.there_is_text)
+	//    if(self.openImagePinchView.containsPicture)[self.openImagePinchView changePicture:self.openImageScrollView.imageView.image];
+	if(self.openImagePinchView.containsText)
 	{
 		if([self.openImageScrollView.textView.text isEqualToString:@""])
 		{

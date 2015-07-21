@@ -14,7 +14,7 @@
 #import "testerTransitionDelegate.h"
 #import "ContentDevVC.h"
 #import "PinchView.h"
-#import "Analyzer.h"
+#import "AVETypeAnalyzer.h"
 #import "verbatmPullBarView.h"
 #import "Article.h"
 #import "VerbatmUser.h"

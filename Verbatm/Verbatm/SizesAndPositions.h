@@ -69,4 +69,12 @@
 #define FEED_TOP_OFFSET 30
 #define FEED_TITLE_LIST_OFFSET 30
 
+#pragma mark - AVES -
+
+#pragma mark Text
+
+#define TEXT_OVER_AVE_TOP_OFFSET 80
+#define TEXT_OVER_AVE_STARTING_HEIGHT 100
+#define TEXT_OVER_AVE_PULLBAR_HEIGHT 40
+
 #endif

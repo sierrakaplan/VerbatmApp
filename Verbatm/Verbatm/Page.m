@@ -16,9 +16,9 @@
 @interface Page() <PFSubclassing>
 
 @property(strong, nonatomic) NSString* text;
-@property (readwrite,nonatomic) BOOL there_is_text;
-@property (readwrite, nonatomic) BOOL there_is_video;
-@property (readwrite, nonatomic) BOOL there_is_picture;
+@property (readwrite,nonatomic) BOOL containsText;
+@property (readwrite, nonatomic) BOOL containsVideo;
+@property (readwrite, nonatomic) BOOL containsPicture;
 @property (readwrite,nonatomic) NSInteger pagePosition;//indexed from 0 tells you the position of the page in the article
 
 #define PAGE_PHOTO_RELATIONSHIP @"pagePhotoRelation"
@@ -29,9 +29,9 @@
 
 @implementation Page
 @dynamic text;
-@dynamic there_is_picture;
-@dynamic there_is_text;
-@dynamic there_is_video;
+@dynamic containsPicture;
+@dynamic containsText;
+@dynamic containsVideo;
 @dynamic pagePosition;
 
 #pragma mark - Methods required for subclassing PFObject.
@@ -51,13 +51,13 @@
 -(void)sortPinchObject:(PinchView*)pinchObject
 {
 //    NSMutableArray* media = [pinchObject mediaObjects];
-    if((self.there_is_text = pinchObject.there_is_text)){
+    if((self.containsText = pinchObject.containsText)){
         self.text = [pinchObject getTextFromPinchObject];
     }
-    self.there_is_picture = pinchObject.there_is_picture;
-    self.there_is_video = pinchObject.there_is_video;
+    self.containsPicture = pinchObject.containsPicture;
+    self.containsVideo = pinchObject.containsVideo;
 
-	if(self.there_is_picture) {
+	if(self.containsPicture) {
 		NSMutableArray* photos = [pinchObject getPhotos];
 		for (NSData* imageData in photos) {
 			Photo* photo = [[Photo alloc]initWithData:imageData withCaption:nil andName:nil atLocation:nil];
@@ -72,7 +72,7 @@
 		}
 	}
 
-    if(self.there_is_video) {
+    if(self.containsVideo) {
 		NSMutableArray* videos = [pinchObject getVideos];
 		for (AVURLAsset* videoAsset in videos) {
 			//TODO(sierra): This should not happen on main thread
@@ -136,17 +136,17 @@
 -(PinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center
 {
 	NSMutableArray* media = [[NSMutableArray alloc]init];
-	if (self.there_is_text) {
+	if (self.containsText) {
 		UITextView* textView = [[UITextView alloc] init];
 		[textView setText: self.text];
 		[media addObject: textView];
 	}
 
-	if (self.there_is_picture) {
+	if (self.containsPicture) {
 		[media addObjectsFromArray: [self getPhotos]];
 	}
 
-	if (self.there_is_video) {
+	if (self.containsVideo) {
 		[media addObjectsFromArray: [self getVideos]];
 	}
 

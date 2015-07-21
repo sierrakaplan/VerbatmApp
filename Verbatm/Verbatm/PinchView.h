@@ -104,9 +104,9 @@
 -(void)removeBorder;
 
 @property (nonatomic) BOOL selected;//tells you if the object is selected for panning
-@property (readonly,nonatomic) BOOL there_is_text;
-@property (readonly, nonatomic) BOOL there_is_video;
-@property (readonly, nonatomic) BOOL there_is_picture;
+@property (readonly,nonatomic) BOOL containsText;
+@property (readonly, nonatomic) BOOL containsVideo;
+@property (readonly, nonatomic) BOOL containsPicture;
 @property (nonatomic) BOOL inDataFormat;
 
 /*Getting media from the pinch object*/
