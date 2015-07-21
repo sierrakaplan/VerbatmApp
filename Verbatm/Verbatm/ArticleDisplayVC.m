@@ -18,6 +18,7 @@
 #import "Icons.h"
 #import "SizesAndPositions.h"
 #import "Durations.h"
+#import "UIView+Glow.h"
 
 @interface ArticleDisplayVC () <UIScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
@@ -121,7 +122,6 @@
 	[self.publishButton setImage:[UIImage imageNamed:PUBLISH_BUTTON_IMAGE] forState:UIControlStateNormal];
 	[self.publishButton setFrame:self.publishButtonRestingFrame];
 	[self.publishButton addTarget:self action:@selector(publishArticleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-
 	[self.view addSubview:self.publishButton];
 }
 
@@ -135,8 +135,11 @@
              self.articleCurrentlyViewing= YES;
              self.scrollView.frame = self.view.bounds;
 			 self.publishButton.frame = self.publishButtonFrame;
-        }];
+        } completion:^(BOOL finished) {
+			[self.publishButton startGlowing];
+		}];
     }else {
+		[self.publishButton stopGlowing];
         [UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
             [self play_CP_Vidoes];
             self.scrollView.frame = self.scrollViewRestingFrame;
@@ -282,6 +285,10 @@
 	if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
 	if(sender.state ==UIGestureRecognizerStateBegan) {
 		self.prev_Gesture_Point  = [sender locationOfTouch:0 inView:self.view];
+	}
+
+	if(sender.state == UIGestureRecognizerStateBegan) {
+		[self.publishButton stopGlowing];
 	}
 
 	if(sender.state == UIGestureRecognizerStateChanged) {

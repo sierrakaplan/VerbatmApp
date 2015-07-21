@@ -9,7 +9,7 @@
 #import "TextAndOtherAves.h"
 #import "constants.h"
 #import "MultiplePhotoAVE.h"
-#import "verbatmAveTextView.h"
+
 #pragma mark -constants-
 #define TEXT_TOP_OFFSET 40
 #define TEXTVIEW_STARTING_HEIGHT 20 //This is supposed to be enough for two lines
@@ -29,7 +29,7 @@
 //an invisible bar that sits on the edge of the textview to catch gestures
 @property (strong,nonatomic)UIView * pullBar;
 //the view that's showing the dark text
-@property (strong,nonatomic) verbatmAveTextView * textView;
+@property (strong,nonatomic) UITextView * textView;
 @property (nonatomic)CGRect pullBarStartFrame;
 @property (nonatomic)CGRect textViewStartFrame;
 
@@ -70,7 +70,7 @@
 
 -(void)setUpTextViewWithString:(NSString *) text
 {
-    self.textView = [[verbatmAveTextView alloc] initWithFrame:TEXTVIEW_STARTFRAME];
+    self.textView = [[UITextView alloc] initWithFrame:TEXTVIEW_STARTFRAME];
     self.textView.text = text;
     self.textView.textColor = TEXT_COLOR;
     self.textViewStartFrame = self.textView.frame;

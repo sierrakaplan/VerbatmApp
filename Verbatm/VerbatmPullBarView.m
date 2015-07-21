@@ -49,6 +49,7 @@
 
 	float centerPoint = self.frame.size.width /2.f;
 	float buttonSize = PULLBAR_HEIGHT_MENU_MODE - (2.f * PULLBAR_BUTTON_YOFFSET);
+	float previewButtonWidth = buttonSize*1.5;
 
 	self.undoButtonImage = [UIImage imageNamed:UNDO_BUTTON_IMAGE];
 	self.undoButtonGrayedOut = [UIEffects imageOverlayed:self.undoButtonImage withColor:[UIColor darkGrayColor]];
@@ -75,7 +76,7 @@
 	[self.pullUpButton addTarget:self action:@selector(pullUpButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 //	[self.pullUpButton addTarget:self action:@selector(pullUpButtonPressed:) forControlEvents:UIControlEventTouchDown];
 
-	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - buttonSize - PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
+	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - previewButtonWidth - PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, previewButtonWidth, buttonSize);
 	self.previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.previewButton setFrame:previewButtonFrame];
 	[self.previewButton setImage:self.previewButtonGrayedOut forState:UIControlStateNormal];
