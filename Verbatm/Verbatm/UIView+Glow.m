@@ -11,6 +11,7 @@
 
 // Used to identify the associating glowing view
 static char* GLOWVIEW_KEY = "GLOWVIEW";
+static char* SECOND_GLOWVIEW_KEY = "SECOND_GLOWVIEW";
 
 @implementation UIView (Glow)
 
@@ -19,20 +20,28 @@ static char* GLOWVIEW_KEY = "GLOWVIEW";
     return objc_getAssociatedObject(self, GLOWVIEW_KEY);
 }
 
+- (UIView*) secondGlowView {
+	return objc_getAssociatedObject(self, SECOND_GLOWVIEW_KEY);
+}
+
 // Attach a view to this one, which we'll use as the glowing view.
 - (void) setGlowView:(UIView*)glowView {
     objc_setAssociatedObject(self, GLOWVIEW_KEY, glowView, OBJC_ASSOCIATION_RETAIN);
 }
 
-- (void)startGlowingWithColor:(UIColor *)color intensity:(CGFloat)intensity {
-    [self startGlowingWithColor:color fromIntensity:0.1 toIntensity:intensity repeat:YES];
+- (void) setSecondGlowView:(UIView*)glowView {
+	objc_setAssociatedObject(self, SECOND_GLOWVIEW_KEY, glowView, OBJC_ASSOCIATION_RETAIN);
 }
 
-- (void) startGlowingWithColor:(UIColor*)color fromIntensity:(CGFloat)fromIntensity toIntensity:(CGFloat)toIntensity repeat:(BOOL)repeat {
+- (void)startGlowingWithColor:(UIColor*)color withIntensity:(CGFloat)intensity andDuration:(float)duration {
+	[self startGlowingWithColor:color fromIntensity:0.1 toIntensity:intensity withDuration:duration repeat:YES];
+}
+
+- (void) startGlowingWithColor:(UIColor*)color fromIntensity:(CGFloat)fromIntensity toIntensity:(CGFloat)toIntensity withDuration:(float)duration repeat:(BOOL)repeat {
     
     // If we're already glowing, don't bother
-    if ([self glowView])
-        return;
+    if ([self glowView] && [self secondGlowView])
+        [self stopGlowing];
     
     // The glow image is taken from the current view's appearance.
     // As a side effect, if the view's content, size or shape changes, 
@@ -51,38 +60,46 @@ static char* GLOWVIEW_KEY = "GLOWVIEW";
         image = UIGraphicsGetImageFromCurrentImageContext();
     } UIGraphicsEndImageContext();
     
-    // Make the glowing view itself, and position it at the same
-    // point as ourself. Overlay it over ourself.
-    UIView* glowView = [[UIImageView alloc] initWithImage:image];
-    glowView.center = self.center;
-    [self.superview insertSubview:glowView belowSubview:self];
-    
-    // We don't want to show the image, but rather a shadow created by
-    // Core Animation. By setting the shadow to white and the shadow radius to 
-    // something large, we get a pleasing glow.
-    glowView.alpha = 0;
-    glowView.layer.shadowColor = color.CGColor;
-    glowView.layer.shadowOffset = CGSizeZero;
-    glowView.layer.shadowRadius = 10;
-    glowView.layer.shadowOpacity = 1.0;
-    
-    // Create an animation that slowly fades the glow view in and out forever.
-    CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    animation.fromValue = @(fromIntensity);
-    animation.toValue = @(toIntensity);
-    animation.repeatCount = repeat ? HUGE_VAL : 0;
-    animation.duration = 1.0;
-    animation.autoreverses = YES;
-    animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    
-    [glowView.layer addAnimation:animation forKey:@"pulse"];
-    
+	UIImageView *glowView = [self createGlowViewFromImage:image withColor:color andRadius:DEFAULT_GLOW_RADIUS_1 fromIntensity:fromIntensity toIntensity:toIntensity withDuration:duration repeat:YES];
+
+	UIImageView *secondGlowView = [self createGlowViewFromImage:image withColor:color andRadius:DEFAULT_GLOW_RADIUS_2 fromIntensity:fromIntensity toIntensity:toIntensity withDuration:duration repeat:YES];
+
     // Finally, keep a reference to this around so it can be removed later
     [self setGlowView:glowView];
+	[self setSecondGlowView:secondGlowView];
+}
+
+-(UIImageView*) createGlowViewFromImage:(UIImage*)image withColor:(UIColor*)color andRadius:(float)radius fromIntensity:(CGFloat)fromIntensity toIntensity:(CGFloat)toIntensity withDuration:(float)duration repeat:(BOOL)repeat {
+	// Make the glowing view itself, and position it at the same
+	// point as ourself. Overlay it over ourself.
+	UIImageView* glowView = [[UIImageView alloc] initWithImage:image];
+	glowView.center = self.center;
+	[self.superview insertSubview:glowView belowSubview:self];
+
+	// We don't want to show the image, but rather a shadow created by
+	// Core Animation. By setting the shadow to white and the shadow radius to
+	// something large, we get a pleasing glow.
+	glowView.alpha = 0;
+	glowView.layer.shadowColor = color.CGColor;
+	glowView.layer.shadowOffset = CGSizeZero;
+	glowView.layer.shadowRadius = radius;
+	glowView.layer.shadowOpacity = 1.0;
+
+	// Create an animation that slowly fades the glow view in and out forever.
+	CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"opacity"];
+	animation.fromValue = @(fromIntensity);
+	animation.toValue = @(toIntensity);
+	animation.repeatCount = repeat ? HUGE_VAL : 0;
+	animation.duration = duration;
+	animation.autoreverses = YES;
+	animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+
+	[glowView.layer addAnimation:animation forKey:@"pulse"];
+	return glowView;
 }
 
 - (void) glowOnceAtLocation:(CGPoint)point inView:(UIView*)view {
-    [self startGlowingWithColor:[UIColor whiteColor] fromIntensity:0 toIntensity:0.6 repeat:NO];
+	[self startGlowingWithColor:[UIColor whiteColor] fromIntensity:0 toIntensity:DEFAULT_GLOW_INTENSITY withDuration:DEFAULT_GLOW_DURATION repeat:NO];
     
     [self glowView].center = point;
     [view addSubview:[self glowView]];
@@ -107,7 +124,7 @@ static char* GLOWVIEW_KEY = "GLOWVIEW";
 
 // Create a pulsing, glowing view based on this one.
 - (void) startGlowing {
-    [self startGlowingWithColor:[UIColor whiteColor] intensity:1.0];
+    [self startGlowingWithColor:[UIColor whiteColor] withIntensity:DEFAULT_GLOW_INTENSITY andDuration: DEFAULT_GLOW_DURATION];
 }
 
 // Stop glowing by removing the glowing view from the superview 
@@ -115,6 +132,8 @@ static char* GLOWVIEW_KEY = "GLOWVIEW";
 - (void) stopGlowing {
     [[self glowView] removeFromSuperview];
     [self setGlowView:nil];
+	[[self secondGlowView] removeFromSuperview];
+	[self setSecondGlowView:nil];
 }
 
 @end
