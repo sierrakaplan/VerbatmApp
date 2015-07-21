@@ -31,7 +31,8 @@
 @property (atomic) NSInteger keyboardHeight;
 
 #pragma mark Helpful integer stores
-@property (atomic) NSInteger index; //the index of the first view that is pushed up/down by the pinch/stretch gesture
+//the index of the first view that is pushed up/down by the pinch/stretch gesture
+@property (atomic) NSInteger index;
 @property (atomic, strong) NSString * textBeforeNavigationLabel;
 
 #pragma mark undo related properties
@@ -111,36 +112,10 @@
 @property (nonatomic,strong) UIView * createdMediaView;
 @property (nonatomic) BOOL pinching; //tells if pinching is occurring
 
-#pragma mark - Parameters to function within
-
-#define CURSOR_BASE_GAP 10
-#define PINCH_DISTANCE_FOR_ANIMATION 100
-
-//size for text tiles
-#define SIZE_REQUIRED_MIN 100
-
-//the gap between the bottom of the screen and the cursor
-#define CENTERING_OFFSET_FOR_TEXT_VIEW 30
-
-//if the image is up- you can scroll up and have it turn to circles. This gives that scrollup distance
-#define SCROLLDISTANCE_FOR_PINCHVIEW_RETURN 200
-
-#pragma mark TextField settings
-
-#define SANDWICH_PLACEHOLDER_SIZE 23.f
-#define TITLE_PLACEHOLDER_SIZE 40.f
-#define SANDWICH_PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
-#define TITLE_PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define MAX_WORD_LIMIT 350
-#define ELEMENT_OFFSET_DISTANCE 20 //distance between elements on the page
-#define IMAGE_SWIPE_ANIMATION_TIME 0.5 //time it takes to animate a image from the top scroll view into position
-#define HORIZONTAL_PINCH_THRESHOLD 100 //distance two fingers must travel for the horizontal pinch to be accepted
-#define TEXTFIELD_BORDER_WIDTH 0.8f
-#define AUTO_SCROLL_OFFSET 10
-#define CONTENT_SIZE_OFFSET 20
-#define OFFSET_BELOW_ARTICLE_TITLE 30
+
 #define LEFT_DELETE_OFFSET (self.view.frame.size.width/2)
 #define RIGHT_DELETE_OFFSET (self.view.frame.size.width*(4/3))
 
@@ -194,8 +169,8 @@
 -(void) setPlaceholderColors {
 
 	UIColor *color = [UIColor whiteColor];
-	UIFont* sandwichPlaceholderFont = [UIFont fontWithName:SANDWICH_PLACEHOLDER_FONT size:SANDWICH_PLACEHOLDER_SIZE];
-	UIFont* titlePlaceholderFont = [UIFont fontWithName:TITLE_PLACEHOLDER_FONT size:TITLE_PLACEHOLDER_SIZE];
+	UIFont* sandwichPlaceholderFont = [UIFont fontWithName:PLACEHOLDER_FONT size:SANDWICH_PLACEHOLDER_SIZE];
+	UIFont* titlePlaceholderFont = [UIFont fontWithName:PLACEHOLDER_FONT size:TITLE_PLACEHOLDER_SIZE];
 
 	// attempt to set placeholder using attributed placeholder selector
 	if ([self.sandwichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]
@@ -217,7 +192,7 @@
 														attributes:@{NSForegroundColorAttributeName: color,
 																	 NSFontAttributeName : titlePlaceholderFont}];
 	} else {
-		NSLog(@"Cannot set placeholder using attributed placeholder selector, because deployment target is earlier than iOS 6.0");
+		NSLog(PLACEHOLDER_SELECTOR_FAILED_ERROR_MESSAGE);
 		// TODO: Add fall-back code to set placeholder color.
 	}
 }
@@ -229,12 +204,13 @@
 
 -(void) createBaseSelector {
 
-	if(_baseMediaTileSelector)return;//make sure we don't create another one when we return from image picking
+	//make sure we don't create another one when we return from image picking
+	if(_baseMediaTileSelector)return;
 	CGRect frame = CGRectMake(self.view.frame.size.width + ELEMENT_OFFSET_DISTANCE,
 							  ELEMENT_OFFSET_DISTANCE/2,
-							  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), self.view.frame.size.height/5);
+							  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
 	self.baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
-	self.baseMediaTileSelector.baseSelector =YES;
+	self.baseMediaTileSelector.isBaseSelector =YES;
 	self.baseMediaTileSelector.delegate = self;
 	[self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
 
@@ -599,7 +575,7 @@
 		tile = [scrollView.subviews firstObject];
 	}
 
-	if((!tile || !tile.baseSelector) && !self.pinching && [self.pageElements count] >1 ) {
+	if((!tile || !tile.isBaseSelector) && !self.pinching && [self.pageElements count] >1 ) {
 
 		//If the view is scrolled left/right and not centered
 		if(scrollView.contentOffset.x != self.standardContentOffsetForPersonalView.x) {
@@ -889,14 +865,13 @@
 	MediaSelectTile * mediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
 	mediaTile.delegate = self;
 	mediaTile.alpha = 0; //start it off as invisible
-	mediaTile.baseSelector=NO;
+	mediaTile.isBaseSelector = NO;
 	[self addMediaTile: mediaTile underView: self.upperPinchView];
 	mediaTile.backgroundColor = [UIColor clearColor];
 	self.createdMediaView = mediaTile;
 }
 
--(void) addMediaTile: (MediaSelectTile *) mediaView underView: (UIView *) topView
-{
+-(void) addMediaTile: (MediaSelectTile *) mediaView underView: (UIView *) topView {
 	//create frame for the personal scrollview of the new text view
 	UIScrollView * newPersonalScrollView = [[UIScrollView alloc]init];
 	newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.view.frame.size.width,0);
@@ -905,9 +880,8 @@
 	newPersonalScrollView.delegate = self;
 	//Add new views as subviews
 	if(newPersonalScrollView)[self.mainScrollView addSubview:newPersonalScrollView];
-	if(mediaView) [newPersonalScrollView addSubview:mediaView]; //textview is subview of scroll view
-																//format scrollview and text view
-																//store the new view in our array
+
+	if(mediaView) [newPersonalScrollView addSubview:mediaView];
 	[self storeView:mediaView inArrayAsBelowView:topView];
 
 	for(int i=0; i<newPersonalScrollView.subviews.count;i++) {
@@ -918,8 +892,8 @@
 
 }
 
--(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture
-{
+-(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture {
+
 	//note that the personal scroll view of the new media view will not have the element offset in the begining- this is to be added here
 	if(self.createdMediaView.superview.frame.size.height< PINCH_DISTANCE_FOR_ANIMATION)
 	{
@@ -1398,70 +1372,37 @@
 	[self.createdMediaView.superview removeFromSuperview];
 	[self.pageElements removeObject:self.createdMediaView];
 	[self shiftElementsBelowView:self.articleTitleField];
-	self.createdMediaView = nil;//stop pointing to the object so it is freed from memory
+	//stop pointing to the object so it is freed from memory
+	self.createdMediaView = nil;
 }
 
 
 #pragma mark - Media Tile Options -
 #pragma mark Text
--(void) addTextViewButtonPressedAsBaseView: (BOOL) isBaseView {
-	if(!isBaseView) {
-		NSInteger index = [self.pageElements indexOfObject:self.createdMediaView];
-		if(index != NSNotFound) {
-			if(!index) {
-				[self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
-				[self createVerbatmImageScrollViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
-
-				[self clearNewMediaView];
-			}else {
-				UIView * view;
-				if(index) {
-					view = [self.pageElements objectAtIndex:(index-1)];
-				}
-
-				if(view) {
-					[self newPinchObjectBelowView:view fromView: nil isTextView:YES];
-					[self createVerbatmImageScrollViewFromPinchView:self.pageElements[[self.pageElements indexOfObject:view] +1] andTextView:[[VerbatmUITextView alloc]init]];
-					[self clearNewMediaView];
-				}
-			}
-		}
+-(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
+	NSInteger index = [self.pageElements indexOfObject:tile];
+	self.index = (index-1);
+	if (self.index >= 0) {
+		//TODO this should only be created if user enters text before pressing done
+		UIView *upperView = [self.pageElements objectAtIndex:(self.index)];
+		[self newPinchObjectBelowView:upperView fromView: nil isTextView:YES];
+		[self createVerbatmImageScrollViewFromPinchView:self.pageElements[index] andTextView:[[VerbatmUITextView alloc]init]];
+	}else {
+		[self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
+		[self createVerbatmImageScrollViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
 	}
-
-	if(isBaseView) {
-
-		UIView * view = [self findSecondToLastElementInPageElements]; //returns nil if there are less than two objects in page elements
-		if(view) {
-			[self newPinchObjectBelowView:view fromView: nil isTextView:YES];
-			[self createVerbatmImageScrollViewFromPinchView:self.pageElements[[self.pageElements indexOfObject:view] +1] andTextView:[[VerbatmUITextView alloc]init]];
-		}else {
-			[self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
-			[self createVerbatmImageScrollViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
-		}
+	if (!tile.isBaseSelector) {
+		[self clearNewMediaView];
 	}
 }
 
--(void) addMultiMediaButtonPressedAsBaseView:(BOOL)isBaseView fromView: (MediaSelectTile *) tile
-{
-	if(self.baseMediaTileSelector.dashed) [self.baseMediaTileSelector returnToButtonView];
-
-	self.index = ([self.pageElements indexOfObject:tile]-1);
-
+-(void) multiMediaButtonPressedOnTile: (MediaSelectTile*) tile {
+	NSInteger index = [self.pageElements indexOfObject:tile];
+	self.index = (index-1);
 	[self presentEfficientGallery];
-}
-
--(void)didSelectImageView:(VerbatmImageView*)imageView
-{
-	[(MediaSelectTile *)self.createdMediaView returnToButtonView];
-
-	if(self.index==-1 || self.pageElements.count==1)
-	{
-		[self animateView:imageView InToPositionUnder:self.articleTitleField];
-	}else
-	{
-		[self animateView:imageView InToPositionUnder:self.pageElements[self.index]];
+	if (!tile.isBaseSelector) {
+		[self clearNewMediaView];
 	}
-	
 }
 
 -(UIView *) findSecondToLastElementInPageElements
@@ -1476,41 +1417,41 @@
 
 #pragma mark Image/Video
 
--(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView {
-
-	[self.view addSubview:view];
-	[self.view bringSubviewToFront:view];
-	CGRect frame;
-	if(topView == self.articleTitleField) {
-		frame  = CGRectMake((self.view.frame.size.width/2) - (view.frame.size.width/2), self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, view.frame.size.width, view.frame
-							.size.height);
-	}else {
-		CGFloat x_coord = (self.view.frame.size.width/2) - (view.frame.size.width/2);
-
-		CGFloat y_coord = (topView.superview.frame.origin.y + topView.superview.frame.size.height + ELEMENT_OFFSET_DISTANCE) - self.mainScrollView.contentOffset.y;
-		frame = CGRectMake(x_coord, y_coord,view.frame.size.width, view.frame.size.height);
-	}
-
-	[UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
-		view.frame = frame;
-		if([view isKindOfClass:[VerbatmImageView class]] && ((VerbatmImageView*)view).isVideo){
-			if ([[view.layer.sublayers firstObject] isKindOfClass:[AVPlayerLayer class]]) {
-				AVPlayerLayer* layer = (AVPlayerLayer*)[view.layer.sublayers firstObject];
-				layer.frame = view.bounds;
-			}
-		}
-	} completion:^(BOOL finished) {
-		if(finished) {
-			if(topView == self.articleTitleField) {
-				[self newPinchObjectBelowView:nil fromView: view isTextView:NO];
-			} else {
-				[self newPinchObjectBelowView:self.pageElements[self.index] fromView: view isTextView:NO];
-			}
-			[view removeFromSuperview];
-			self.index ++;//makes it that the next image is below this image just added
-		}
-	}];
-}
+//-(void) animateView:(UIView*) view InToPositionUnder: (UIView *) topView {
+//
+//	[self.view addSubview:view];
+//	[self.view bringSubviewToFront:view];
+//	CGRect frame;
+//	if(topView == self.articleTitleField) {
+//		frame  = CGRectMake((self.view.frame.size.width/2) - (view.frame.size.width/2), self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, view.frame.size.width, view.frame
+//							.size.height);
+//	}else {
+//		CGFloat x_coord = (self.view.frame.size.width/2) - (view.frame.size.width/2);
+//
+//		CGFloat y_coord = (topView.superview.frame.origin.y + topView.superview.frame.size.height + ELEMENT_OFFSET_DISTANCE) - self.mainScrollView.contentOffset.y;
+//		frame = CGRectMake(x_coord, y_coord,view.frame.size.width, view.frame.size.height);
+//	}
+//
+//	[UIView animateWithDuration:IMAGE_SWIPE_ANIMATION_TIME animations:^{
+//		view.frame = frame;
+//		if([view isKindOfClass:[VerbatmImageView class]] && ((VerbatmImageView*)view).isVideo){
+//			if ([[view.layer.sublayers firstObject] isKindOfClass:[AVPlayerLayer class]]) {
+//				AVPlayerLayer* layer = (AVPlayerLayer*)[view.layer.sublayers firstObject];
+//				layer.frame = view.bounds;
+//			}
+//		}
+//	} completion:^(BOOL finished) {
+//		if(finished) {
+//			if(topView == self.articleTitleField) {
+//				[self newPinchObjectBelowView:nil fromView: view isTextView:NO];
+//			} else {
+//				[self newPinchObjectBelowView:self.pageElements[self.index] fromView: view isTextView:NO];
+//			}
+//			[view removeFromSuperview];
+//			self.index ++;//makes it that the next image is below this image just added
+//		}
+//	}];
+//}
 
 - (void) newPinchObjectBelowView: (UIView *)upperView withPinchView:(PinchView *) pinchView {
 	NSLock  * lock =[[NSLock alloc] init];
@@ -1681,7 +1622,7 @@
 	[self findSelectedViewFromSender:sender];
 	if (!self.selectedView_PAN) return;//if we didn't find the view then leave
 
-	if([self.selectedView_PAN isKindOfClass:[MediaSelectTile class]] && ((MediaSelectTile *)self.selectedView_PAN).baseSelector) return;
+	if([self.selectedView_PAN isKindOfClass:[MediaSelectTile class]] && ((MediaSelectTile *)self.selectedView_PAN).isBaseSelector) return;
 
 	self.startLocationOfTouchPoint_PAN = [sender locationOfTouch:0 inView:self.mainScrollView];
 	self.originalFrameBeforeLongPress = self.selectedView_PAN.superview.frame;
@@ -1690,7 +1631,7 @@
 }
 
 -(void) moveItem:(UILongPressGestureRecognizer *)sender {
-	if (!self.selectedView_PAN || ([self.selectedView_PAN isKindOfClass:[MediaSelectTile class]] && ((MediaSelectTile *)self.selectedView_PAN).baseSelector)) return;//if we didn't find the view then leave
+	if (!self.selectedView_PAN || ([self.selectedView_PAN isKindOfClass:[MediaSelectTile class]] && ((MediaSelectTile *)self.selectedView_PAN).isBaseSelector)) return;//if we didn't find the view then leave
 
 	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
 	NSInteger y_differrence  = touch1.y - self.startLocationOfTouchPoint_PAN.y;
@@ -1838,7 +1779,7 @@
 	//if we didn't find the view then leave
 	if (!self.selectedView_PAN) return;
 
-	if([self.selectedView_PAN isKindOfClass:[MediaSelectTile class]] && ((MediaSelectTile *)self.selectedView_PAN).baseSelector) {
+	if([self.selectedView_PAN isKindOfClass:[MediaSelectTile class]] && ((MediaSelectTile *)self.selectedView_PAN).isBaseSelector) {
 		//sanitize for next run
 		self.selectedView_PAN = Nil;
 		return;
@@ -2281,6 +2222,7 @@
 	picker.minimumInteritemSpacing = 2.0;
 	[self presentViewController:picker animated:YES completion:nil];
 }
+
 -(void)addAssetToView:(id)asset
 {
 	NSLock  * lock =[[NSLock alloc] init];

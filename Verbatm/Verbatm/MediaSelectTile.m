@@ -16,7 +16,6 @@
 @interface MediaSelectTile ()
     @property(nonatomic ,strong) UIButton * selectMedia;
     @property (nonatomic ,strong) UIButton * selectText;
-@property (nonatomic, strong) DashLineView * dashedView;
     @property (nonatomic, strong) CAShapeLayer * border;
 @property (readwrite, nonatomic) BOOL optionSelected;
 
@@ -36,13 +35,14 @@
 
 		UIImage *textButtonImage = [UIImage imageNamed:TEXT_BUTTON];
 		UIImage *photoButtonImage = [UIImage imageNamed:PHOTO_BUTTON];
-        [self.selectText setImage:textButtonImage forState: UIControlStateNormal];
-        [self.selectMedia setImage:photoButtonImage forState: UIControlStateNormal];
-        
-        UIImage *highlightedIconText = [UIEffects imageOverlayed:textButtonImage withColor:[UIColor whiteColor]];
-        UIImage *highlightedIconImage = [UIEffects imageOverlayed:photoButtonImage withColor:[UIColor whiteColor]];
-        [self.selectText setImage:highlightedIconText forState:UIControlStateSelected | UIControlStateHighlighted];
-        [self.selectMedia setImage:highlightedIconImage forState:UIControlStateSelected | UIControlStateHighlighted];
+		UIImage *grayedOutIconText = [UIEffects imageOverlayed:textButtonImage withColor:[UIColor lightGrayColor]];
+		UIImage *grayedOutIconImage = [UIEffects imageOverlayed:photoButtonImage withColor:[UIColor lightGrayColor]];
+
+		[self.selectMedia setImage:grayedOutIconImage forState: UIControlStateNormal];
+		[self.selectText setImage:grayedOutIconText forState: UIControlStateNormal];
+
+        [self.selectText setImage:textButtonImage forState:UIControlStateSelected | UIControlStateHighlighted];
+        [self.selectMedia setImage:photoButtonImage forState:UIControlStateSelected | UIControlStateHighlighted];
     }
     return self;
     self.optionSelected = NO;
@@ -62,15 +62,12 @@
 
 -(void) addText {
     self.optionSelected =YES;
-    [self.delegate addTextViewButtonPressedAsBaseView:self.baseSelector];
-//	[self sendAddedMediaNotification];
+	[self.delegate textButtonPressedOnTile:self];
 }
 
 -(void) addMedia {
     self.optionSelected = YES;
-    [self addDashedBorder];
-    [self.delegate addMultiMediaButtonPressedAsBaseView:self.baseSelector fromView: self];
-//	[self sendAddedMediaNotification];
+	[self.delegate multiMediaButtonPressedOnTile:self];
 }
 
 -(void) buttonHighlight: (UIButton*) button
@@ -99,27 +96,6 @@
     [_selectText addTarget:self action:@selector(addText) forControlEvents:UIControlEventTouchUpInside];
 
     return _selectText;
-}
-
--(void)addDashedBorder
-{
-    self.dashed = YES;
-    self.dashedView = [[DashLineView alloc]initWithFrame:self.bounds];
-    [self.selectText removeFromSuperview];
-    [self.selectMedia removeFromSuperview];
-    [self.dashedView setBackgroundColor:[UIColor clearColor]];
-    [self addSubview:self.dashedView];
-    
-}
-
-//get rid of the dashed lines and return the options
--(void) returnToButtonView
-{
-    [self.dashedView removeFromSuperview];
-    [self addSubview:self.selectMedia];
-    [self addSubview:self.selectText];
-    self.dashed = NO;
-    
 }
 
 

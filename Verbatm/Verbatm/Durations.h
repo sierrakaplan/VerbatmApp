@@ -14,5 +14,7 @@
 #pragma mark Content Dev VC
 
 #define PINCHVIEW_ANIMATION_DURATION 0.5
+//time it takes to animate a image from the top scroll view into position
+#define IMAGE_SWIPE_ANIMATION_TIME 0.5
 
 #endif /* Durations_h */

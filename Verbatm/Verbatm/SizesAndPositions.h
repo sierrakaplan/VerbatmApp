@@ -23,10 +23,6 @@
 #define SWITCH_CAMERA_START_POSITION 260.f, 5.f
 #define CAMERA_BUTTON_Y_OFFSET 20.f
 
-#pragma mark Media Select Tile
-
-#define ADD_MEDIA_BUTTON_OFFSET 5
-
 #pragma mark Preview
 
 #define PUBLISH_BUTTON_XOFFSET 20.f
@@ -45,6 +41,28 @@
 
 #pragma mark Verbatm Image Scroll View
 #define VIEW_WALL_OFFSET 20
+
+#pragma mark - Content Dev VC -
+
+//distance two fingers must travel for the horizontal pinch to be accepted
+#define HORIZONTAL_PINCH_THRESHOLD 100
+#define TEXTFIELD_BORDER_WIDTH 0.8f
+#define AUTO_SCROLL_OFFSET 10
+#define CONTENT_SIZE_OFFSET 20
+#define OFFSET_BELOW_ARTICLE_TITLE 30
+//distance between elements on the page
+#define ELEMENT_OFFSET_DISTANCE 20
+#define CURSOR_BASE_GAP 10
+#define PINCH_DISTANCE_FOR_ANIMATION 100
+//the gap between the bottom of the screen and the cursor
+#define CENTERING_OFFSET_FOR_TEXT_VIEW 30
+//if the image is up- you can scroll up and have it turn to circles. This gives that scrollup distance
+#define SCROLLDISTANCE_FOR_PINCHVIEW_RETURN 200
+
+#pragma mark Media Select Tile
+
+#define MEDIA_TILE_SELECTOR_HEIGHT 100.f
+#define ADD_MEDIA_BUTTON_OFFSET 5
 
 #pragma mark - Feed -
 

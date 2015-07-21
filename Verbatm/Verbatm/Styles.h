@@ -21,4 +21,8 @@
 #define DELETED_ITEM_BACKGROUND_COLOR clearColor
 #define CONTENT_DEV_CURSOR_COLOR whiteColor
 
+#define SANDWICH_PLACEHOLDER_SIZE 23.f
+#define TITLE_PLACEHOLDER_SIZE 40.f
+#define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
+
 #endif /* Styles_h */
