@@ -24,6 +24,7 @@
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
+#import "Strings.h"
 #import "SizesAndPositions.h"
 
 @interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
@@ -43,6 +44,7 @@
 @property(nonatomic) CGRect contentContainerViewFrameBottom;
 @property (nonatomic) CGRect pullBarFrameTop;
 @property (nonatomic) CGRect pullBarFrameBottom;
+@property (nonatomic) CGRect pullBarFrameOffScreen;
 
 #pragma mark - Camera properties
 #pragma mark buttons
@@ -68,8 +70,6 @@
 @property (nonatomic) CGPoint panStartPoint;
 @property (nonatomic) CGPoint previousTranslation;
 @property (nonatomic) ContentContainerViewMode contentContainerViewMode;
-//used when we hide the pullbar so we can restore it to what it was before
-@property (nonatomic) CGRect oldPullBarFrame;
 //layout of the screen before it was made landscape
 @property(nonatomic) ContentContainerViewMode previousMode;
 
@@ -205,6 +205,7 @@
 	int frameHeight = self.view.frame.size.height;
 	self.pullBarFrameTop = CGRectMake(0.f, self.contentContainerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT_PULLDOWN_MODE);
 	self.pullBarFrameBottom = CGRectMake(self.pullBarFrameTop.origin.x, (frameHeight - PULLBAR_HEIGHT_MENU_MODE), self.pullBarFrameTop.size.width, PULLBAR_HEIGHT_MENU_MODE);
+	self.pullBarFrameOffScreen = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
 }
 
 -(void) createSubViews {
@@ -298,13 +299,13 @@
 
 	//Register for notifications to show and remove the pullbar
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(hidePullBar)
+											 selector:@selector(hidePullBar:)
 												 name:NOTIFICATION_HIDE_PULLBAR
 											   object:nil];
 
 	//Register for notifications to show and remove the pullbar
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(showPullBar)
+											 selector:@selector(showPullBar:)
 												 name:NOTIFICATION_SHOW_PULLBAR
 											   object:nil];
 
@@ -627,30 +628,39 @@
 
 #pragma mark - Hide and Show pull bar
 
--(void)hidePullBar
-{
-	int vc_cs = self.contentDevVC.mainScrollView.contentSize.height;
-	int bar = self.view.frame.size.height;
-	if( vc_cs < bar ) return;
+//hiding with animation is the default
+-(void)hidePullBar:(NSNotification*)notification {
+	if (self.pullBar.mode != PullBarModeMenu) {
+		return;
+	}
 
-	[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^
-	 {
-		 self.contentContainerView.frame = self.view.frame;
-		 self.oldPullBarFrame = self.pullBar.frame;
-		 self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
-	 }];
+	if(notification.userInfo && ![notification.userInfo[WITH_TRANSITION] boolValue]) {
+		[self hidePullBarNoAnimation];
+	} else {
+		[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
+			[self hidePullBarNoAnimation];
+		}];
+	}
 }
 
--(void) showPullBar
-{
-	[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
+-(void) hidePullBarNoAnimation {
+	self.pullBar.frame = self.pullBarFrameOffScreen;
+}
 
-		[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
+//showing with animation is the default
+-(void) showPullBar:(NSNotification*)notification {
 
-		if(self.oldPullBarFrame.origin.y >= self.view.frame.size.height) {
-			self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height - self.pullBar.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
-		}
-	}];
+	if(notification.userInfo && ![notification.userInfo[WITH_TRANSITION] boolValue]) {
+		[self showPullBarNoAnimation];
+	} else {
+		[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
+			[self showPullBarNoAnimation];
+		}];
+	}
+}
+
+-(void) showPullBarNoAnimation {
+	self.pullBar.frame = self.pullBarFrameBottom;
 }
 
 

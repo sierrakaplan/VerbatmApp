@@ -611,9 +611,9 @@
 		CGPoint translation = [scrollView.panGestureRecognizer translationInView:self.mainScrollView];
 
 		if(translation.y < 0) {
-			[self hidePullBar];
+			[self hidePullBarWithTransition:YES];
 		}else {
-			[self showPullBar];
+			[self showPullBarWithTransition:YES];
 		}
 	}
 
@@ -819,9 +819,11 @@
 
 
 -(void)joinOpenCollectionToOne {
-	[self showPullBar];//make sure the pullbar is showing when things are pinched together
+	//make sure the pullbar is showing when things are pinched together
+	[self showPullBarWithTransition:YES];
 
-	PinchView * placeHolder = [[PinchView alloc]init];//just holds the place inorder to be replaced
+	//just holds the place inorder to be replaced
+	PinchView * placeHolder = [[PinchView alloc]init];
 	NSArray * pinch_views = self.scrollViewForHorizontalPinchView.subviews;
 
 	//find the object that is in the pageElements array and remove it.
@@ -1239,7 +1241,7 @@
 			[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:pinchView];
 			self.pinching = NO;
 			[self shiftElementsBelowView:self.articleTitleField];
-			[self showPullBar];//make sure the pullbar is showing when things are pinched together
+			[self showPullBarWithTransition:YES];//make sure the pullbar is showing when things are pinched together
 
 			self.lowerPinchView = self.upperPinchView = nil;
 		}
@@ -1900,7 +1902,7 @@
 	if(!tile) return;//make sure there is something to delete
 	[tile removeFromSuperview];
 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
-	[self showPullBar];//show the pullbar so that they can undo
+	[self showPullBarWithTransition:YES];//show the pullbar so that they can undo
 }
 
 -(void) sendRemovedAllMediaNotification {
@@ -2019,13 +2021,12 @@
 		[isv.videoView pauseVideo];
 	}
 	[isv removeFromSuperview];
-
+	[self showPullBarWithTransition:NO];
 	//makes sure the vidoes are playing..may need to make more efficient
 	isv = nil;
 	self.openImageScrollView = nil;
 	[self playVideos];
 	[self.openImagePinchView renderMedia];
-	//[self showPullBar];
 }
 
 #pragma mark ImageScrollView
@@ -2062,7 +2063,8 @@
 		[self pauseAllVideos];//when things are offscreen then pause all videos
 
 	}
-	[self hidePullBar];//make sure the pullbar is not available
+	//make sure the pullbar is not available
+	[self hidePullBarWithTransition:NO];
 }
 
 -(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset {
@@ -2149,16 +2151,14 @@
 #pragma mark - Send Picture Notification -
 
 //tells our other class to hide the pullbar or to show it depending on where we are
--(void) hidePullBar
-{
-	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_HIDE_PULLBAR object:nil userInfo:nil];
+-(void) hidePullBarWithTransition: (BOOL) withTransition {
+	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_HIDE_PULLBAR object:nil userInfo:@{WITH_TRANSITION: @(withTransition)}];
 	[[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 
--(void)showPullBar
-{
-	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SHOW_PULLBAR object:nil userInfo:nil];
+-(void)showPullBarWithTransition: (BOOL) withTransition {
+	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SHOW_PULLBAR object:nil userInfo:@{WITH_TRANSITION: @(withTransition)}];
 	[[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 

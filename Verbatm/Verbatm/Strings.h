@@ -18,4 +18,6 @@
 
 #define PUBLISH_BUTTON_LABEL @"Publish"
 
+#define WITH_TRANSITION @"with_transition"
+
 #endif /* Strings_h */

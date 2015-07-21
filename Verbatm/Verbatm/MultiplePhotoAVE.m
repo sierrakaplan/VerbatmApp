@@ -320,11 +320,6 @@
 -(void) pinchObjectTapped:(UITapGestureRecognizer *) gesture
 {
     PinchView * pv = (PinchView *) gesture.view;
-    
-//    verbatmCustomPinchView * new_pv = [[verbatmCustomPinchView alloc] initWithRadius:RADIUS withCenter:pv.center Images: @[self.mainImage.image] videoData:nil andText:nil];
-//    [pv removeFromSuperview];
-//    [self.SV_PhotoList addSubview:new_pv];
-    
     NSArray * photos = [pv getPhotos];
     [self setPhotoFrom: photos];
 }
