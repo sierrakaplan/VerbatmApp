@@ -18,7 +18,7 @@
 @property(strong, nonatomic) NSString* text;
 @property (readwrite,nonatomic) BOOL containsText;
 @property (readwrite, nonatomic) BOOL containsVideo;
-@property (readwrite, nonatomic) BOOL containsPicture;
+@property (readwrite, nonatomic) BOOL containsPhoto;
 @property (readwrite,nonatomic) NSInteger pagePosition;//indexed from 0 tells you the position of the page in the article
 
 #define PAGE_PHOTO_RELATIONSHIP @"pagePhotoRelation"
@@ -29,7 +29,7 @@
 
 @implementation Page
 @dynamic text;
-@dynamic containsPicture;
+@dynamic containsPhoto;
 @dynamic containsText;
 @dynamic containsVideo;
 @dynamic pagePosition;
@@ -52,12 +52,12 @@
 {
 //    NSMutableArray* media = [pinchObject mediaObjects];
     if((self.containsText = pinchObject.containsText)){
-        self.text = [pinchObject getTextFromPinchObject];
+        self.text = [pinchObject getText];
     }
-    self.containsPicture = pinchObject.containsPicture;
+    self.containsPhoto = pinchObject.containsPhoto;
     self.containsVideo = pinchObject.containsVideo;
 
-	if(self.containsPicture) {
+	if(self.containsPhoto) {
 		NSMutableArray* photos = [pinchObject getPhotos];
 		for (NSData* imageData in photos) {
 			Photo* photo = [[Photo alloc]initWithData:imageData withCaption:nil andName:nil atLocation:nil];
@@ -142,7 +142,7 @@
 		[media addObject: textView];
 	}
 
-	if (self.containsPicture) {
+	if (self.containsPhoto) {
 		[media addObjectsFromArray: [self getPhotos]];
 	}
 

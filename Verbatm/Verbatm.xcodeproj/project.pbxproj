@@ -14,7 +14,7 @@
 		A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */; };
 		A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A93041B55E835006C2597 /* VerbatmCameraView.m */; };
 		A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */; };
-		A58656621B602038008E358C /* TextViewOverAve.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656611B602038008E358C /* TextViewOverAve.m */; };
+		A58656621B602038008E358C /* TextOverAVEView.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656611B602038008E358C /* TextOverAVEView.m */; };
 		A5B344901B4DE18B0074B4AA /* MultiplePhotoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */; };
 		A5B344961B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */; };
 		A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CB82A21B5740A000195A2E /* UIEffects.m */; };
@@ -77,7 +77,7 @@
 		C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BA199EC6A2004B91A1 /* StoreKit.framework */; };
 		C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */; };
 		C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC43BF199F7427004B91A1 /* VerbatmUser.m */; };
-		C7BD53C41B5B73A700EE6241 /* TextAndOtherAves.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD53C31B5B73A700EE6241 /* TextAndOtherAves.m */; };
+		C7BD53C41B5B73A700EE6241 /* TextAndOtherMediaAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD53C31B5B73A700EE6241 /* TextAndOtherMediaAVE.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
 		C7E6C13F1A4E394600863893 /* MultiplePhotoVideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */; };
@@ -122,8 +122,8 @@
 		A57A93031B55E835006C2597 /* VerbatmCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmCameraView.h; sourceTree = "<group>"; };
 		A57A93041B55E835006C2597 /* VerbatmCameraView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmCameraView.m; sourceTree = "<group>"; };
 		A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = VerbatmCameraView.xib; sourceTree = "<group>"; };
-		A58656601B602038008E358C /* TextViewOverAve.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextViewOverAve.h; sourceTree = "<group>"; };
-		A58656611B602038008E358C /* TextViewOverAve.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextViewOverAve.m; sourceTree = "<group>"; };
+		A58656601B602038008E358C /* TextOverAVEView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextOverAVEView.h; sourceTree = "<group>"; };
+		A58656611B602038008E358C /* TextOverAVEView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextOverAVEView.m; sourceTree = "<group>"; };
 		A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoAVE.xib; sourceTree = "<group>"; };
 		A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoVideoAVE.xib; sourceTree = "<group>"; };
 		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
@@ -222,8 +222,8 @@
 		C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C7BC43BE199F7427004B91A1 /* VerbatmUser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmUser.h; sourceTree = "<group>"; };
 		C7BC43BF199F7427004B91A1 /* VerbatmUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmUser.m; sourceTree = "<group>"; };
-		C7BD53C21B5B73A700EE6241 /* TextAndOtherAves.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAndOtherAves.h; sourceTree = "<group>"; };
-		C7BD53C31B5B73A700EE6241 /* TextAndOtherAves.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAndOtherAves.m; sourceTree = "<group>"; };
+		C7BD53C21B5B73A700EE6241 /* TextAndOtherMediaAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAndOtherMediaAVE.h; sourceTree = "<group>"; };
+		C7BD53C31B5B73A700EE6241 /* TextAndOtherMediaAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextAndOtherMediaAVE.m; sourceTree = "<group>"; };
 		C7CCFF3A19CE63A800E90080 /* testerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerAnimation.h; sourceTree = "<group>"; };
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
@@ -386,10 +386,10 @@
 			children = (
 				C7E6C13B1A4E394600863893 /* TextAVE.h */,
 				C7E6C13C1A4E394600863893 /* TextAVE.m */,
-				C7BD53C21B5B73A700EE6241 /* TextAndOtherAves.h */,
-				C7BD53C31B5B73A700EE6241 /* TextAndOtherAves.m */,
-				A58656601B602038008E358C /* TextViewOverAve.h */,
-				A58656611B602038008E358C /* TextViewOverAve.m */,
+				C7BD53C21B5B73A700EE6241 /* TextAndOtherMediaAVE.h */,
+				C7BD53C31B5B73A700EE6241 /* TextAndOtherMediaAVE.m */,
+				A58656601B602038008E358C /* TextOverAVEView.h */,
+				A58656611B602038008E358C /* TextOverAVEView.m */,
 			);
 			name = "AVES that involve text";
 			sourceTree = "<group>";
@@ -437,18 +437,6 @@
 				C74883691B488C5000E64ED9 /* Other Custom Views */,
 			);
 			name = "Custom Views";
-			sourceTree = "<group>";
-		};
-		C7B1EC7C1B3CDF53001A4FFC /* Video Aves */ = {
-			isa = PBXGroup;
-			children = (
-				C7E6C12F1A4E394600863893 /* MultiplePhotoVideoAVE.h */,
-				C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */,
-				A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */,
-				C7E6C13D1A4E394600863893 /* VideoAVE.h */,
-				C7E6C13E1A4E394600863893 /* VideoAVE.m */,
-			);
-			name = "Video Aves";
 			sourceTree = "<group>";
 		};
 		C7BC4369199D97F5004B91A1 = {
@@ -598,11 +586,15 @@
 			children = (
 				F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */,
 				F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */,
-				C7B1EC7C1B3CDF53001A4FFC /* Video Aves */,
 				C777EEA71AC9180D003E0633 /* AVES that involve text */,
 				C77A68B21AC20AA2000B10E2 /* MultiplePhotoAVE.h */,
 				A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */,
 				C77A68B31AC20AA2000B10E2 /* MultiplePhotoAVE.m */,
+				C7E6C12F1A4E394600863893 /* MultiplePhotoVideoAVE.h */,
+				C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */,
+				A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */,
+				C7E6C13D1A4E394600863893 /* VideoAVE.h */,
+				C7E6C13E1A4E394600863893 /* VideoAVE.m */,
 			);
 			name = "AVEs ";
 			sourceTree = "<group>";
@@ -759,7 +751,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */,
-				A58656621B602038008E358C /* TextViewOverAve.m in Sources */,
+				A58656621B602038008E358C /* TextOverAVEView.m in Sources */,
 				C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */,
 				C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */,
 				9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */,
@@ -773,7 +765,7 @@
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */,
-				C7BD53C41B5B73A700EE6241 /* TextAndOtherAves.m in Sources */,
+				C7BD53C41B5B73A700EE6241 /* TextAndOtherMediaAVE.m in Sources */,
 				F20A24FA1A46166100BB77C1 /* EditContentScrollView.m in Sources */,
 				C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */,
 				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,

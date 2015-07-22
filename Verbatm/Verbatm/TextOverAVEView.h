@@ -8,10 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@interface TextViewOverAve : UITextView
+@interface TextOverAVEView : UIView
 
 //allows scrolling to be enabled and disabled on textview while running
-//-(void) enableScrollingWithIndicator:(BOOL)showsIndicator;
-//-(void) disableScrolling;
+//Scrolling disabled by default
+-(void) enableScrollingWithIndicator:(BOOL)showsIndicator;
+-(void) disableScrolling;
+-(BOOL) scrollingAllowed;
+
+-(float) getHeightOfText;
+-(void) setText:(NSString*)text;
 
 @end

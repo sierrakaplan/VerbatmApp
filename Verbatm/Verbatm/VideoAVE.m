@@ -23,8 +23,8 @@
 @implementation VideoAVE
 
 //no seeking. Fast forward and rewind.
-//play and pause button that doesn't move on the side.
--(id)initWithFrame:(CGRect)frame andAssets:(NSArray*)videoList
+//play and pause button that doesn't move on the side.s
+-(id)initWithFrame:(CGRect)frame andVideoAssetArray:(NSArray*)videoList
 {
     if((self = [super initWithFrame:frame]))
     {

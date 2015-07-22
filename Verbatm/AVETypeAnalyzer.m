@@ -13,7 +13,7 @@
 #import "TextAVE.h"
 #import "MultiplePhotoVideoAVE.h"
 #import "MultiplePhotoAVE.h"
-#import "TextAndOtherAves.h"
+#import "TextAndOtherMediaAVE.h"
 
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
 @interface AVETypeAnalyzer()
@@ -28,85 +28,62 @@
 
 -(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)arr withFrame:(CGRect)frame
 {
-	_pinchedObjects = arr;
-	_preferredFrame = frame;
-	_results = [[NSMutableArray alloc]init];
-	for(PinchView* pinchView in _pinchedObjects)
+	self.pinchedObjects = arr;
+	self.preferredFrame = frame;
+	self.results = [[NSMutableArray alloc]init];
+	for(PinchView* pinchView in self.pinchedObjects)
 	{
 		//there are some issue where a messed up p_obj arrives
-		if(!(pinchView.containsPicture || pinchView.containsText || pinchView.containsVideo))continue;
-		if(![pinchView isCollection])
-		{
-			[self handleSingleMedia:pinchView];
+		if(!(pinchView.containsPhoto || pinchView.containsText || pinchView.containsVideo)) {
+			NSLog(@"Pinch view says it has no type of media in it.");
 			continue;
 		}
-		if(pinchView.containsPicture && pinchView.containsText && pinchView.containsVideo){
-			[self handleThreeMedia:pinchView];
-			continue;
+
+		if (pinchView.containsText) {
+			[self handleTextAVES:pinchView];
+		} else if (pinchView.containsPhoto && pinchView.containsVideo) {
+			[self handlePhotoVideo:pinchView];
+		} else if (pinchView.containsPhoto) {
+			MultiplePhotoAVE* photoAVE = [[MultiplePhotoAVE alloc]initWithFrame:self.preferredFrame andPhotoArray:[pinchView getPhotos]];
+			[self.results addObject:photoAVE];
+		} else if (pinchView.containsVideo) {
+			VideoAVE* videoAVE = [[VideoAVE alloc]initWithFrame:self.preferredFrame andVideoAssetArray:[pinchView getVideos]];
+			[videoAVE muteVideo];
+			[self.results addObject:videoAVE];
 		}
-		[self handleTwoMedia:pinchView];
 	}
 
-	return _results;
+	return self.results;
 }
 
--(void)handleSingleMedia:(PinchView*)p_obj
-{
-	NSMutableArray *arr = [[NSMutableArray alloc]init];
+-(void) handleTextAVES: (PinchView*) pinchView {
+	NSString* text = [pinchView getText];
+	AVEType type;
 
-	arr = (p_obj.containsPicture)? [p_obj getPhotos] : [p_obj getVideos];
+	if (pinchView.containsPhoto && pinchView.containsVideo) {
+		type = AVETypePhotoVideo;
 
-	if(p_obj.containsPicture)
-	{
-		//multiple photo and single photo call the same class
-		MultiplePhotoAVE* imageView = [[MultiplePhotoAVE alloc]initWithFrame:_preferredFrame andPhotoArray:arr];
+	} else if (pinchView.containsPhoto) {
+		type = AVETypePhoto;
 
-		[_results addObject:imageView];
+	} else if(pinchView.containsVideo) {
+		type = AVETypeVideo;
 
-	}else if(p_obj.containsText)
-	{
-		TextAVE* textView = [[TextAVE alloc]initWithFrame:_preferredFrame];
-		[textView setTextViewText: [p_obj getTextFromPinchObject]];
-		[_results addObject:textView];
-	}else{
-		VideoAVE* vidView = [[VideoAVE alloc]initWithFrame:_preferredFrame andAssets:arr];
-		[vidView muteVideo];
-		[_results addObject:vidView];
-	}
-}
-
-
--(void)handleTwoMedia:(PinchView*)p_obj {
-
-	NSMutableArray * photos = [p_obj getPhotos];
-	NSMutableArray * videos = [p_obj getVideos];
-	if(p_obj.containsText)
-	{
-		//it's text photo
-		if(photos.count)
-		{
-            TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:AVETypePhoto aveMedia:photos];
-			[self.results addObject:textViewAndPhoto];
-
-        }else{
-			
-            TextAndOtherAves * textViewAndVideo = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:AVETypeVideo aveMedia:videos];
-            [self.results addObject:textViewAndVideo];
-		}
-	//it's photo video
 	} else {
-		if(photos.count > 1) {
-			MultiplePhotoVideoAVE * pv = [[MultiplePhotoVideoAVE alloc]initWithFrame:self.preferredFrame Photos:photos andVideos:videos];
-			[pv mutePlayer];
-			[self.results addObject:pv];
-
-		} else {
-
-			MultiplePhotoVideoAVE* mpv = [[MultiplePhotoVideoAVE alloc] initWithFrame:self.preferredFrame Photos:photos andVideos:videos];
-			[mpv mutePlayer];
-			[self.results addObject:mpv];
-		}
+		TextAVE* textAVE = [[TextAVE alloc]initWithFrame:self.preferredFrame];
+		[textAVE setTextViewText: text];
+		[self.results addObject:textAVE];
+		return;
 	}
+	TextAndOtherMediaAVE * textAndOtherMediaAVE = [[TextAndOtherMediaAVE alloc] initWithFrame:self.preferredFrame andText:text andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos] andAVEType:type];
+	[self.results addObject:textAndOtherMediaAVE];
+}
+
+-(void) handlePhotoVideo:(PinchView*)pinchView {
+
+	MultiplePhotoVideoAVE* multiPhotoVideoAVE = [[MultiplePhotoVideoAVE alloc] initWithFrame:self.preferredFrame andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos]];
+	[multiPhotoVideoAVE mutePlayer];
+	[self.results addObject:multiPhotoVideoAVE];
 }
 
 
@@ -122,14 +99,6 @@
 	}
 
 	return parray;
-}
-
--(void)handleThreeMedia:(PinchView*)p_obj
-{
-    NSMutableArray * combined = [NSMutableArray arrayWithArray:[p_obj getVideos]];
-    [combined addObjectsFromArray:[p_obj getPhotos]];
-    TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:AVETypePhotoVideo aveMedia:combined];
-    [self.results addObject:textViewAndPhoto];
 }
 
 

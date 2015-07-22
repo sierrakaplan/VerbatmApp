@@ -28,7 +28,7 @@
 
 @property (readwrite,nonatomic) BOOL containsText;
 @property (readwrite, nonatomic) BOOL containsVideo;
-@property (readwrite, nonatomic) BOOL containsPicture;
+@property (readwrite, nonatomic) BOOL containsPhoto;
 
 #define SHADOW_OFFSET_FACTOR 25
 #define DIVISION_FACTOR_FOR_TWO 2
@@ -57,7 +57,7 @@
 		self.videos = [[NSMutableArray alloc] init];
 
 		self.containsText = NO;
-		self.containsPicture = NO;
+		self.containsPhoto = NO;
 		self.containsVideo = NO;
         
         [self initSubviews];
@@ -84,7 +84,7 @@
 
 		//photo
 		} else if([object isKindOfClass: [NSData class]]){
-			self.containsPicture = YES;
+			self.containsPhoto = YES;
 			[self.photos addObject:object];
 
 		//video from preview or parse
@@ -147,7 +147,7 @@
 -(void)changePicture:(UIImage*)image
 {
     //only works if we already have a picture
-    if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.containsPicture) return;
+    if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.containsPhoto) return;
     self.imageViewer.image = image;
 }
 
@@ -239,7 +239,7 @@
 //way it should look
 -(void)renderMedia
 {
-    if(self.containsVideo && self.containsText && self.containsPicture){
+    if(self.containsVideo && self.containsText && self.containsPhoto){
         [self renderThreeViews];
     }else if( [self thereIsOnlyOneMedium]){
         [self renderSingleView];
@@ -272,7 +272,7 @@
     CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height);
     if(self.containsText){
         self.textView.frame = frame1;
-        if(self.containsPicture){
+        if(self.containsPhoto){
             self.imageViewer.frame = frame2;
         }else{
             self.videoView.frame = frame2;
@@ -368,7 +368,7 @@
 	[result.photos addObjectsFromArray: pinchObject.photos];
 	[result.videos addObjectsFromArray: pinchObject.videos];
     [result.pinched addObject:pinchObject];
-    result.containsPicture =  result.containsPicture || pinchObject.containsPicture;
+    result.containsPhoto =  result.containsPhoto || pinchObject.containsPhoto;
     result.containsText =  result.containsText || pinchObject.containsText;
     result.containsVideo = result.containsVideo || pinchObject.containsVideo;
 }
@@ -376,11 +376,11 @@
 //keeping this just in case
 -(BOOL)thereIsOnlyOneMedium
 {
-    if(self.containsText && self.containsVideo && self.containsPicture) return false;
-    if(self.containsPicture && self.containsText)return false;
+    if(self.containsText && self.containsVideo && self.containsPhoto) return false;
+    if(self.containsPhoto && self.containsText)return false;
     if(self.containsText && self.containsVideo) return false;
-    if(self.containsVideo && self.containsPicture) return false;
-    return  self.containsPicture || self.containsText || self.containsVideo;
+    if(self.containsVideo && self.containsPhoto) return false;
+    return  self.containsPhoto || self.containsText || self.containsVideo;
 }
 
 
@@ -413,7 +413,7 @@
 
 #pragma mark - necessary info to return -
 //returns all the strings of the media in the media array which are textViews.
--(NSString*)getTextFromPinchObject
+-(NSString*)getText
 {
     return self.textView.text;
 }

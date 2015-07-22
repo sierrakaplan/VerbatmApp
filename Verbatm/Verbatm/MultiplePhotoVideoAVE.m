@@ -26,7 +26,7 @@
 @end
 @implementation MultiplePhotoVideoAVE
 
--(id)initWithFrame:(CGRect)frame Photos:(NSArray*)photos andVideos:(NSArray*)videos
+-(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos
 {
     self = [[[NSBundle mainBundle] loadNibNamed:@"MultiplePhotoVideoAVE" owner:self options:nil]firstObject];
     if(self)

@@ -410,7 +410,7 @@
 			//make sure that the last word is complete by having a space after it
 			if(![[string_array lastObject] isEqualToString:@""]) words --;
 		} else if([object isKindOfClass:[PinchView class]]&& ((PinchView *)object).containsText) {
-			NSString * string = [((PinchView *) object) getTextFromPinchObject];
+			NSString * string = [((PinchView *) object) getText];
 			NSArray * string_array = [string componentsSeparatedByString: @" "];
 			words += [string_array count];
 

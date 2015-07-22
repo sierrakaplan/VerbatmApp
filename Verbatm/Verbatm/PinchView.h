@@ -106,15 +106,14 @@
 @property (nonatomic) BOOL selected;//tells you if the object is selected for panning
 @property (readonly,nonatomic) BOOL containsText;
 @property (readonly, nonatomic) BOOL containsVideo;
-@property (readonly, nonatomic) BOOL containsPicture;
+@property (readonly, nonatomic) BOOL containsPhoto;
 @property (nonatomic) BOOL inDataFormat;
 
 /*Getting media from the pinch object*/
 -(NSMutableArray*)getVideos;
 -(NSMutableArray*)getPhotos;
-
 //returns all the strings of the media in the media array which are textfields.
--(NSString*)getTextFromPinchObject;
+-(NSString*)getText;
 
 
 //returns all the verbatmCustomImageViews that make up the media of the pinch

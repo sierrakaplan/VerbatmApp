@@ -37,7 +37,7 @@
 #pragma mark - bools to tell what type of media make up page -
 @property (readonly,nonatomic) BOOL containsText;
 @property (readonly, nonatomic) BOOL containsVideo;
-@property (readonly, nonatomic) BOOL containsPicture;
+@property (readonly, nonatomic) BOOL containsPhoto;
 @property (readonly,nonatomic) NSInteger pagePosition;//indexed from 0 tells you the position of the page in the article
 
 @end
