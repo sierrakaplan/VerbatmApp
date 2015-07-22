@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "AVETypeAnalyzer.h"
+#import "TextViewOverAve.h"
 
 @interface TextAndOtherAves : UIView
 -(instancetype)initWithFrame:(CGRect) frame text:(NSString*)text aveType:(AVEType)aveType aveMedia: (NSArray *)media;
--(void)addGestureToView;
+-(void)addPullDownBarToText;
 @end

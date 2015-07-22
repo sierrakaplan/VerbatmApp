@@ -48,7 +48,7 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [self Login];
+	//TODO:[self Login];
 }
 
 -(void)registerForNavNotifications

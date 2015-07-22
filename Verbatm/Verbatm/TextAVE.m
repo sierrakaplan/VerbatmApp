@@ -7,9 +7,9 @@
 //
 
 #import "TextAVE.h"
+#import "Styles.h"
 
 @interface TextAVE() <UITextViewDelegate>
-#define DEFAULT_FONT_FAMILY @"Arial"
 #define DEFAULT_FONT_SIZE 17
 #define DEFAULT_TEXT_COLOR blackColor
 #define BACKGRND_COLOR @"D6CEC3"
@@ -76,7 +76,7 @@
     self.attributedText = text;
     self.textAlignment = NSTextAlignmentCenter;
     self.textColor = [UIColor DEFAULT_TEXT_COLOR];
-    [self setFont:[UIFont fontWithName:DEFAULT_FONT_FAMILY size:DEFAULT_FONT_SIZE]];
+    [self setFont:[UIFont fontWithName:TEXT_AVE_FONT size:DEFAULT_FONT_SIZE]];
 }
 
 

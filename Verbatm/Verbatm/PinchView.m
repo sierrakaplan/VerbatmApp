@@ -9,12 +9,14 @@
 #import "PinchView.h"
 #import "VerbatmImageView.h"
 #import "Styles.h"
+#import "SizesAndPositions.h"
+#import "UIEffects.h"
 
 
 @interface PinchView()
 @property(strong,nonatomic)IBOutlet UIView* background;
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewer;
-@property (weak, nonatomic) IBOutlet UITextView *textField;
+@property (weak, nonatomic) IBOutlet UITextView *textView;
 
 //array of videos, photos, and text
 @property (strong, nonatomic) NSMutableArray* media;
@@ -30,12 +32,6 @@
 
 #define SHADOW_OFFSET_FACTOR 25
 #define DIVISION_FACTOR_FOR_TWO 2
-#define P_OBJ_containsPicture @"picture"
-#define P_OBJ_containsVideo  @"video"
-#define P_OBJ_containsText @"text"
-#define P_OBJ_MEDIA @"media"
-#define MIN_PINCHVIEW_SIZE 100
-
 
 @end
 
@@ -113,13 +109,31 @@
     
     //set frames
     self.videoView.frame =  CGRectZero;
-    self.textField.frame = CGRectZero; //prevents the little part of the  texfield from showing
+    self.textView.frame = CGRectZero;
     self.imageViewer.frame = CGRectZero;
-    
-    self.background.backgroundColor = [UIColor clearColor];
-    self.backgroundColor = [UIColor clearColor];
-    self.textField.backgroundColor = [UIColor clearColor];
 
+    self.background.backgroundColor = [UIColor PINCHVIEW_BACKGROUND_COLOR];
+    self.backgroundColor = [UIColor PINCHVIEW_BACKGROUND_COLOR];
+    self.textView.backgroundColor = [UIColor PINCHVIEW_BACKGROUND_COLOR];
+
+}
+
+-(void) formatTextView {
+	[self.textView setScrollEnabled:NO];
+	self.textView.textColor = [UIColor TEXT_AVE_COLOR];
+	//must be editable to change font
+	[self.textView setEditable:YES];
+	self.textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE];
+	[self.textView setEditable:NO];
+	float textViewContentSize = [UIEffects measureHeightOfUITextView:self.textView];
+	NSLog(@"%f", self.textView.frame.size.height);
+	if (textViewContentSize < self.textView.frame.size.height/3.f) {
+		self.textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE_REALLY_REALLY_BIG];
+	} else if (textViewContentSize < self.textView.frame.size.height/2.f) {
+		self.textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE_REALLY_BIG];
+	} else if (textViewContentSize < self.textView.frame.size.height*(3.f/4.f)) {
+		self.textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE_BIG];
+	}
 }
 
 //adds a thin circular border to the view
@@ -139,13 +153,11 @@
 
 -(void) changeText:(UITextView *) textview
 {
-    //should only work if ther is text in the pinchview
+    //should only work if there is text in the pinchview
     if(![self thereIsOnlyOneMedium] || [self hasMultipleMedia] || !self.containsText) return;
     UITextView* view = [self.media firstObject];
     view.text = textview.text;
-    self.textField.text = textview.text;
-    self.textField.textColor = [UIColor whiteColor];
-    self.textField.font = [UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE];
+    self.textView.text = textview.text;
 }
 
 
@@ -243,7 +255,7 @@
 -(void)renderSingleView
 {
     if(self.containsText){
-        self.textField.frame = self.background.frame;
+        self.textView.frame = self.background.frame;
     }else if(self.containsVideo){
         self.videoView.frame = self.background.frame;
         [self.background bringSubviewToFront:self.videoView];
@@ -259,7 +271,7 @@
     CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO , self.background.frame.size.height);
     CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height);
     if(self.containsText){
-        self.textField.frame = frame1;
+        self.textView.frame = frame1;
         if(self.containsPicture){
             self.imageViewer.frame = frame2;
         }else{
@@ -278,8 +290,8 @@
 -(void)renderThreeViews
 {
     //computation to determine the relative positions of each of the views
-    self.textField.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width, self.background.frame.size.height/DIVISION_FACTOR_FOR_TWO);
-    self.imageViewer.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.textField.frame.size.height, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height - self.textField.frame.size.height);
+    self.textView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width, self.background.frame.size.height/DIVISION_FACTOR_FOR_TWO);
+    self.imageViewer.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.textView.frame.size.height, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height - self.textView.frame.size.height);
     self.videoView.frame = CGRectMake(self.background.frame.origin.x + self.imageViewer.frame.size.width, self.imageViewer.frame.origin.y , self.background.frame.size.width - self.imageViewer.frame.size.width, self.imageViewer.frame.size.width);
 }
 
@@ -287,7 +299,7 @@
 -(void)displayMedia
 {
 
-	self.textField.text = @"";
+	self.textView.text = @"";
 	//	if(!self.inDataFormat){
 	for(id object in self.media)
     {
@@ -295,9 +307,8 @@
 		if([object isKindOfClass: [UITextView class]])
         {
 			UITextView* textView = (UITextView*)object;
-			self.textField.text = [self.textField.text stringByAppendingString:textView.text];
-			self.textField.text = [self.textField.text stringByAppendingString:@"\r\r"];
-            self.textField.textColor = [UIColor whiteColor];
+			self.textView.text = [self.textView.text stringByAppendingString:textView.text];
+			self.textView.text = [self.textView.text stringByAppendingString:@"\r\r"];
 		//photo
 		} else if([object isKindOfClass: [NSData class]]){
 			NSData* image = (NSData*)object;
@@ -312,7 +323,11 @@
 			[self.videoView repeatVideoOnEnd];
 		}
 	}
-    
+
+	if (self.containsText) {
+		[self formatTextView];
+	}
+
 	if(self.containsVideo)
     {
 		if(self.videoView.playerLayer)
@@ -397,10 +412,10 @@
 }
 
 #pragma mark - necessary info to return -
-//returns all the strings of the media in the media array which are textfields.
+//returns all the strings of the media in the media array which are textViews.
 -(NSString*)getTextFromPinchObject
 {
-    return self.textField.text;
+    return self.textView.text;
 }
 
 //Tells whether it is a collection consisting of more than one type of media

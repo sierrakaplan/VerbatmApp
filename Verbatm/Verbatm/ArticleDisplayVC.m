@@ -127,7 +127,7 @@
 	[self.publishButton setBackgroundImage:[UIImage imageNamed:PUBLISH_BUTTON_IMAGE] forState:UIControlStateNormal];
 
 	UIColor *labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR];
-	UIFont* labelFont = [UIFont fontWithName:PUBLISH_BUTTON_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
+	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
 	NSShadow *shadow = [[NSShadow alloc] init];
 	[shadow setShadowBlurRadius:PUBLISH_BUTTON_LABEL_SHADOW_BLUR_RADIUS];
 	[shadow setShadowColor:labelColor];

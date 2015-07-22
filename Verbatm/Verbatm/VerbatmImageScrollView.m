@@ -125,9 +125,10 @@
 {
 	//Set delegate for text new view
 	[textView setDelegate:self];
-	[textView setFont:[[UIFont preferredFontForTextStyle:UIFontTextStyleBody] fontWithSize:IMAGE_SCROLLVIEW_TEXT_BOX_FONT_SIZE]];
-	textView.backgroundColor = [UIColor IMAGE_SCROLLVIEW_BACKGROUND_COLOR];//sets the background as clear
-	textView.textColor = [UIColor IMAGE_SCROLLVIEW_FONT_COLOR];
+	[textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
+	textView.backgroundColor = [UIColor TEXT_SCROLLVIEW_BACKGROUND_COLOR];//sets the background as clear
+	textView.textColor = [UIColor TEXT_AVE_COLOR];
+	textView.tintColor = [UIColor TEXT_AVE_COLOR];
 
 	//ensure keyboard is black
 	textView.keyboardAppearance = UIKeyboardAppearanceDark;

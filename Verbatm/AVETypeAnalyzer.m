@@ -86,13 +86,11 @@
 		if(photos.count)
 		{
             TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:AVETypePhoto aveMedia:photos];
-            [textViewAndPhoto addGestureToView];
 			[self.results addObject:textViewAndPhoto];
 
         }else{
 			
             TextAndOtherAves * textViewAndVideo = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:AVETypeVideo aveMedia:videos];
-            [textViewAndVideo addGestureToView];
             [self.results addObject:textViewAndVideo];
 		}
 	//it's photo video
@@ -131,7 +129,6 @@
     NSMutableArray * combined = [NSMutableArray arrayWithArray:[p_obj getVideos]];
     [combined addObjectsFromArray:[p_obj getPhotos]];
     TextAndOtherAves * textViewAndPhoto = [[TextAndOtherAves alloc] initWithFrame:self.preferredFrame text:[p_obj getTextFromPinchObject] aveType:AVETypePhotoVideo aveMedia:combined];
-    [textViewAndPhoto addGestureToView];
     [self.results addObject:textViewAndPhoto];
 }
 

@@ -11,13 +11,5 @@
 
 @implementation VerbatmTextField
 
-//- (void) drawPlaceholderInRect:(CGRect)rect
-//{
-//	[[UIColor lightGrayColor] setFill];
-//	UIFont* italicFont = [UIFont italicSystemFontOfSize:[UIFont systemFontSize]];
-//	NSDictionary *attrsDictionary = [NSDictionary dictionaryWithObjectsAndKeys: italicFont, NSFontAttributeName,
-//	 [NSNumber numberWithFloat:1.0], NSBaselineOffsetAttributeName, nil];
-//	[[self placeholder] drawInRect:rect withAttributes:attrsDictionary];
-//}
 
 @end

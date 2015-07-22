@@ -43,6 +43,7 @@
 
 #pragma mark - Content Dev VC -
 
+#define MIN_PINCHVIEW_SIZE 100
 //distance two fingers must travel for the horizontal pinch to be accepted
 #define HORIZONTAL_PINCH_THRESHOLD 100
 #define TEXTFIELD_BORDER_WIDTH 0.8f
@@ -76,5 +77,7 @@
 #define TEXT_OVER_AVE_TOP_OFFSET 80.f
 #define TEXT_OVER_AVE_STARTING_HEIGHT 100.f
 #define TEXT_OVER_AVE_PULLBAR_HEIGHT 40.f
+#define TEXT_OVER_AVE_ANIMATION_THRESHOLD 30.f
+#define TEXT_OVER_AVE_BORDER 30.f
 
 #endif
