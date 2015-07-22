@@ -7,7 +7,7 @@
 //
 
 #import "VerbatmPullBarView.h"
-#import "VerbatmImageScrollView.h"
+#import "EditContentScrollView.h"
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"

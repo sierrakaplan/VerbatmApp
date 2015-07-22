@@ -193,12 +193,12 @@
 	float newYPos = self.pullBar.frame.origin.y + translation.y;
 	//only change frames if pull bar is being pulled within acceptable range
 	if (newYPos < self.pullBarBottomFrame.origin.y && newYPos > self.pullBarStartFrame.origin.y) {
-		[UIView animateWithDuration:TEXT_OVER_AVE_ANIMATION_DURATION animations:^ {
+//		[UIView animateWithDuration:TEXT_OVER_AVE_ANIMATION_DURATION animations:^ {
 
 			self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, newYPos, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
 			self.textViewContainer.frame = CGRectMake(self.textViewContainer.frame.origin.x, self.textViewContainer.frame.origin.y,self.textViewContainer.frame.size.width, self.textViewContainer.frame.size.height + translation.y);
 			[self setTextViewFrame];
-		}];
+//		}];
 		[gesture setTranslation:CGPointZero inView:self.pullBar];
 	}
 }

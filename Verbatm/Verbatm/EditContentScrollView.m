@@ -6,13 +6,14 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "VerbatmImageScrollView.h"
+#import "EditContentScrollView.h"
 #import "VerbatmImageView.h"
 #import "VerbatmPullBarView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "UIEffects.h"
 
-@interface VerbatmImageScrollView () <UITextViewDelegate>
+@interface EditContentScrollView () <UITextViewDelegate>
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) UIImage * filter_Original;
@@ -20,10 +21,12 @@
 @property (nonatomic, strong) UIImage * filter_WARM;
 @property (nonatomic, strong) NSString * filter;
 
+@property (strong, nonatomic) UIButton* publishButton;
+
 @end
 
 
-@implementation VerbatmImageScrollView
+@implementation EditContentScrollView
 
 -(instancetype) initCustomViewWithFrame:(CGRect)frame
 {
@@ -39,11 +42,13 @@
 
 #pragma mark - Text View -
 
--(void)adjustImageScrollViewContentSizing
-{
-	[self setDashedBorderToView:self.textView];
+-(void)adjustContentSizing {
+	[UIEffects addDashedBorderToView:self.textView];
 }
 
+-(void)addDoneButton {
+	
+}
 
 //called when the keyboard is up. The Gap gives you the amount of visible space after
 //the keyboard is up
@@ -57,37 +62,28 @@
 		self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
 	}
 
-	[self adjustImageScrollViewContentSizing];
+	[self adjustContentSizing];
 
 }
 
 
--(void) createTextViewFromTextView: (UITextView *) textView
-{
-	if(self.gestureView)//be sure to remove it
-	{
+-(void) createTextViewFromTextView: (UITextView *) textView {
+
+	//be sure to remove it
+	if(self.gestureView) {
 		[self.gestureView removeFromSuperview];
 		self.gestureView = nil;
 	}
 
-	if(!textView)
-	{
-		self.textView = [[VerbatmUITextView alloc] init];
-		self.textView.backgroundColor = [UIColor clearColor];
-		self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
-		[self formatTextViewAppropriately:self.textView];
-		[self addSubview:self.textView];
-	}else
-	{
-		self.textView = [[VerbatmUITextView alloc] init];
-		self.textView.text = textView.text;
-		self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
+	self.textView = [[VerbatmUITextView alloc] init];
+	self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
+	[self formatTextViewAppropriately:self.textView];
+	[self addSubview:self.textView];
 
+	if(textView) {
 		//adjusts the frame of the textview andthe contentsize of the scrollview if need be
-		[self adjustImageScrollViewContentSizing];
-
-		[self formatTextViewAppropriately:self.textView];
-		[self addSubview:self.textView];
+		[self adjustContentSizing];
+		self.textView.text = textView.text;
 	}
 }
 
@@ -96,12 +92,6 @@
 {
 	//TODO
 }
-
--(void)keyboardButtonPressed
-{
-	[self.textView resignFirstResponder];
-}
-
 
 //Calculate the appropriate bounds for the text view
 //We only return a frame that is larger than the default frame size
@@ -112,14 +102,7 @@
 	return CGRectMake(view.frame.origin.x, view.frame.origin.y, view.frame.size.width, tightbounds.height);
 }
 
-//makes the cursors white
--(void)makeCursorWhite
-{
-	[[UITextView appearance] setTintColor:[UIColor whiteColor]];
-}
 
-
-//Iain
 //Formats a textview to the appropriate settings
 -(void) formatTextViewAppropriately: (VerbatmUITextView *) textView
 {
@@ -132,66 +115,10 @@
 
 	//ensure keyboard is black
 	textView.keyboardAppearance = UIKeyboardAppearanceDark;
-	[self setDashedBorderToView:textView];
+	[UIEffects addDashedBorderToView:textView];
 
 	textView.scrollEnabled = YES;
 	self.scrollEnabled = YES;
-}
-
-
-
-//sets the dashed boder around the text view
--(void) setDashedBorderToView: (UIView *) view
-{
-	//border definitions
-	float cornerRadius = 0;
-	float borderWidth = 1;
-	int dashPattern1 = 10;
-	int dashPattern2 = 10;
-	UIColor *lineColor = [UIColor whiteColor];
-
-	//drawing boundary
-	CGRect frame = view.bounds;
-
-	CAShapeLayer *_shapeLayer = [CAShapeLayer layer];
-
-	//creating a path
-	CGMutablePathRef path = CGPathCreateMutable();
-
-	//drawing a border around a view
-	CGPathMoveToPoint(path, NULL, 0, frame.size.height - cornerRadius);
-	CGPathAddLineToPoint(path, NULL, 0, cornerRadius);
-	CGPathAddArc(path, NULL, cornerRadius, cornerRadius, cornerRadius, M_PI, -M_PI_2, NO);
-	CGPathAddLineToPoint(path, NULL, frame.size.width - cornerRadius, 0);
-	CGPathAddArc(path, NULL, frame.size.width - cornerRadius, cornerRadius, cornerRadius, -M_PI_2, 0, NO);
-	CGPathAddLineToPoint(path, NULL, frame.size.width, frame.size.height - cornerRadius);
-	CGPathAddArc(path, NULL, frame.size.width - cornerRadius, frame.size.height - cornerRadius, cornerRadius, 0, M_PI_2, NO);
-	CGPathAddLineToPoint(path, NULL, cornerRadius, frame.size.height);
-	CGPathAddArc(path, NULL, cornerRadius, frame.size.height - cornerRadius, cornerRadius, M_PI_2, M_PI, NO);
-
-	//path is set as the _shapeLayer object's path
-	_shapeLayer.path = path;
-	CGPathRelease(path);
-
-	_shapeLayer.backgroundColor = [[UIColor clearColor] CGColor];
-	_shapeLayer.frame = frame;
-	_shapeLayer.masksToBounds = NO;
-	[_shapeLayer setValue:[NSNumber numberWithBool:NO] forKey:@"isCircle"];
-	_shapeLayer.fillColor = [[UIColor clearColor] CGColor];
-	_shapeLayer.strokeColor = [lineColor CGColor];
-	_shapeLayer.lineWidth = borderWidth;
-	_shapeLayer.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInt:dashPattern1], [NSNumber numberWithInt:dashPattern2], nil];
-	_shapeLayer.lineCap = kCALineCapRound;
-	//_shapeLayer is added as a sublayer of the view, the border is visible
-
-	for (int i=0; i<view.layer.sublayers.count; i++) {
-		if([view.layer.sublayers[i] isKindOfClass:[CAShapeLayer class]])
-		{
-			[view.layer.sublayers[i] removeFromSuperlayer];
-		}
-	}
-	[view.layer addSublayer:_shapeLayer];
-	view.layer.cornerRadius = cornerRadius;
 }
 
 #pragma mark - Image or Video View -

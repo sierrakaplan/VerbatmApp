@@ -17,7 +17,7 @@
 #import "UIEffects.h"
 #import "PinchView.h"
 #import "VerbatmImageView.h"
-#import "VerbatmImageScrollView.h"
+#import "EditContentScrollView.h"
 #import "GMImagePickerController.h"
 #import "Notifications.h"
 #import "SizesAndPositions.h"
@@ -94,7 +94,7 @@
 
 #pragma mark FilteredPhotos
 
-@property (nonatomic, strong) VerbatmImageScrollView * openImageScrollView;//the scrollview presented with the taped pinch object's image
+@property (nonatomic, strong) EditContentScrollView * openEditContentScrollView;//the scrollview presented with the taped pinch object's image
 @property (nonatomic, strong) PinchView * openImagePinchView; //the pinch view that has been taped
 @property (nonatomic, strong) NSString * filter;
 
@@ -377,17 +377,6 @@
 	[self editWordCount];
 }
 
-//Iain
-//Called when user types an input into the textview
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
-	//If the user clicked enter add a textview
-	if([text isEqualToString:@"\n"]) {
-		[self removeImageScrollview:nil];
-		return NO;
-	}
-	return YES;
-}
-
 #pragma mark Bounds for TextViews
 
 #pragma mark Caret within TextView
@@ -568,7 +557,7 @@
 	// not the main vertical scrollbar
 	if (scrollView == self.mainScrollView) return;
 	//this is a scrollview with an open collection so you can swipe away anything and also it's not an opened image
-	if(scrollView.subviews.count >1 || scrollView == self.openImageScrollView) return;
+	if(scrollView.subviews.count >1 || scrollView == self.openEditContentScrollView) return;
 
 	MediaSelectTile * tile= Nil;
 	if([[scrollView.subviews firstObject] isKindOfClass:[MediaSelectTile class]]) {
@@ -604,7 +593,7 @@
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	if(self.openImageScrollView)[self.openImageScrollView adjustImageScrollViewContentSizing];
+	if(self.openEditContentScrollView)[self.openEditContentScrollView adjustContentSizing];
 
 	//show and hide the pullbar depending on the direction of the scroll
 	if(scrollView == self.mainScrollView) {
@@ -618,7 +607,7 @@
 	}
 
 	//change the background color of the element being deleted to highlight that it's being deleted
-	if(scrollView != self.mainScrollView && scrollView.subviews.count <2 && scrollView != self.openImageScrollView ) { //makes sure it's only one element on the view
+	if(scrollView != self.mainScrollView && scrollView.subviews.count <2 && scrollView != self.openEditContentScrollView ) { //makes sure it's only one element on the view
 
 		if(scrollView.contentOffset.x > self.standardContentOffsetForPersonalView.x + 80 || scrollView.contentOffset.x < self.standardContentOffsetForPersonalView.x - 80){
 			if(scrollView.contentOffset.x >3) {
@@ -654,7 +643,7 @@
 		if(self.sandwichWhat.isEditing)[self.sandwichWhat resignFirstResponder];
 		if(self.sandwichWhere.isEditing)[self.sandwichWhere resignFirstResponder];
 		if(self.articleTitleField.isEditing)[self.articleTitleField resignFirstResponder];
-		[self.openImageScrollView.textView resignFirstResponder];
+		[self.openEditContentScrollView.textView resignFirstResponder];
 	}
 }
 
@@ -680,18 +669,18 @@
 	//store the keyboard height for further use
 	self.keyboardHeight = keyboardSize.height;
 
-	[self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
+	[self.openEditContentScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
 }
 
 
 -(void) keyBoardDidShow:(NSNotification *) notification {
 
-	[self.openImageScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
+	[self.openEditContentScrollView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
 }
 
 
 -(void)keyboardWillDisappear:(NSNotification *) notification {
-	[self.openImageScrollView adjustFrameOfTextViewForGap: 0];
+	[self.openEditContentScrollView adjustFrameOfTextViewForGap: 0];
 }
 
 #pragma mark - Pinch Gesture -
@@ -1392,10 +1381,10 @@
 		//TODO this should only be created if user enters text before pressing done
 		UIView *upperView = [self.pageElements objectAtIndex:(self.index)];
 		[self newPinchObjectBelowView:upperView fromView: nil isTextView:YES];
-		[self createVerbatmImageScrollViewFromPinchView:self.pageElements[index] andTextView:[[VerbatmUITextView alloc]init]];
+		[self createEditContentScrollViewFromPinchView:self.pageElements[index] andTextView:[[VerbatmUITextView alloc]init]];
 	}else {
 		[self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
-		[self createVerbatmImageScrollViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
+		[self createEditContentScrollViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
 	}
 	if (!tile.isBaseSelector) {
 		[self clearNewMediaView];
@@ -1995,32 +1984,32 @@
 
 
 #pragma mark - Sense Tap Gesture -
-#pragma mark ImageScrollView
+#pragma mark EditContentScrollView
 
--(void) addTapGestureToCustomImageScrollView: (VerbatmImageScrollView *) isv
+-(void) addTapGestureToEditContentScrollView: (EditContentScrollView *) isv
 {
-	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeImageScrollview:)];
+	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeEditContentScrollView:)];
 
 	if(isv.gestureView)[isv.gestureView addGestureRecognizer:tap];
 	else [isv addGestureRecognizer:tap];
 }
 
--(void) removeImageScrollview: (UITapGestureRecognizer *) sender
+-(void) removeEditContentScrollView: (UITapGestureRecognizer *) sender
 {
-	VerbatmImageScrollView * isv = self.openImageScrollView;
+	EditContentScrollView * isv = self.openEditContentScrollView;
 	if (!isv) {
 		return;
 	}
 	if(self.openImagePinchView.containsText)
 	{
-		if([self.openImageScrollView.textView.text isEqualToString:@""])
+		if([self.openEditContentScrollView.textView.text isEqualToString:@""])
 		{
 			[self.openImagePinchView.superview removeFromSuperview];
 			[self.pageElements removeObject:self.openImagePinchView];
 			[self shiftElementsBelowView:self.articleTitleField];
 		}else
 		{
-			[self.openImagePinchView changeText:self.openImageScrollView.textView];
+			[self.openImagePinchView changeText:self.openEditContentScrollView.textView];
 		}
 	}
 	[isv.textView resignFirstResponder];
@@ -2033,12 +2022,12 @@
 	[self showPullBarWithTransition:NO];
 	//makes sure the vidoes are playing..may need to make more efficient
 	isv = nil;
-	self.openImageScrollView = nil;
+	self.openEditContentScrollView = nil;
 	[self playVideos];
 	[self.openImagePinchView renderMedia];
 }
 
-#pragma mark ImageScrollView
+#pragma mark EditContentScrollView
 -(void)addTapGestureToView: (PinchView *) pinchView
 {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectTapped:)];
@@ -2062,11 +2051,11 @@
 
 		if([mediaView isKindOfClass:[UITextView class]]) {
 
-			[self createVerbatmImageScrollViewFromPinchView:pinch_object andTextView:(VerbatmUITextView *)mediaView];
+			[self createEditContentScrollViewFromPinchView:pinch_object andTextView:(VerbatmUITextView *)mediaView];
 		} else if([mediaView isKindOfClass:[NSData class]]) {
-			[self createVerbatmImageScrollViewFromPinchView:pinch_object andImageView:(NSData *)mediaView];
+			[self createEditContentScrollViewFromPinchView:pinch_object andImageView:(NSData *)mediaView];
 		} else if([mediaView isKindOfClass:[AVAsset class]]) {
-			[self createVerbatmImageScrollViewFromPinchView:pinch_object andVideo:(AVAsset *)mediaView];
+			[self createEditContentScrollViewFromPinchView:pinch_object andVideo:(AVAsset *)mediaView];
 		}
 
 		[self pauseAllVideos];//when things are offscreen then pause all videos
@@ -2076,8 +2065,8 @@
 	[self hidePullBarWithTransition:NO];
 }
 
--(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset {
-	VerbatmImageScrollView * imageScroll = [[VerbatmImageScrollView alloc] initCustomViewWithFrame:self.view.bounds ];
+-(void) createEditContentScrollViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset {
+	EditContentScrollView * imageScroll = [[EditContentScrollView alloc] initCustomViewWithFrame:self.view.bounds ];
 	imageScroll.delegate = self;
 
 	[self.view addSubview:imageScroll];
@@ -2085,14 +2074,14 @@
 
 	imageScroll.showsHorizontalScrollIndicator = NO;
 	imageScroll.showsVerticalScrollIndicator = NO;
-	[self addTapGestureToCustomImageScrollView:imageScroll];
-	self.openImageScrollView = imageScroll;
+	[self addTapGestureToEditContentScrollView:imageScroll];
+	self.openEditContentScrollView = imageScroll;
 	self.openImagePinchView = pinchView;
 }
 
--(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView {
+-(void) createEditContentScrollViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView {
 
-	VerbatmImageScrollView * imageScroll = [[VerbatmImageScrollView alloc] initCustomViewWithFrame:self.view.bounds ];
+	EditContentScrollView * imageScroll = [[EditContentScrollView alloc] initCustomViewWithFrame:self.view.bounds ];
 	imageScroll.delegate = self;
 
 	[self.view addSubview:imageScroll];
@@ -2100,17 +2089,17 @@
 
 	imageScroll.showsHorizontalScrollIndicator = NO;
 	imageScroll.showsVerticalScrollIndicator = NO;
-	[self addTapGestureToCustomImageScrollView:imageScroll];
-	self.openImageScrollView = imageScroll;
+	[self addTapGestureToEditContentScrollView:imageScroll];
+	self.openEditContentScrollView = imageScroll;
 	self.openImagePinchView = pinchView;
 }
 
--(void) createVerbatmImageScrollViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView
+-(void) createEditContentScrollViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView
 {
 	if (!textView) {
 		return; //TODO: error message
 	}
-	VerbatmImageScrollView * textScroll = [[VerbatmImageScrollView alloc ]initCustomViewWithFrame:self.view.bounds];
+	EditContentScrollView * textScroll = [[EditContentScrollView alloc ]initCustomViewWithFrame:self.view.bounds];
 	textScroll.delegate = self;
 
 
@@ -2120,8 +2109,8 @@
 	textScroll.showsHorizontalScrollIndicator = NO;
 	textScroll.showsVerticalScrollIndicator = NO;
 	[textScroll.textView becomeFirstResponder];
-	[self addTapGestureToCustomImageScrollView:textScroll];
-	self.openImageScrollView = textScroll;
+	[self addTapGestureToEditContentScrollView:textScroll];
+	self.openEditContentScrollView = textScroll;
 	self.openImagePinchView = pinchView;
 }
 

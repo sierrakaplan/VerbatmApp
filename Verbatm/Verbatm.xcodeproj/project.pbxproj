@@ -87,7 +87,7 @@
 		C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* VerbatmTextField.m */; };
 		C7F3D46B1A4F84C000B43238 /* UserLoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */; };
 		C7F3D46E1A4F84DF00B43238 /* UserSignUpVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46D1A4F84DF00B43238 /* UserSignUpVC.m */; };
-		F20A24FA1A46166100BB77C1 /* VerbatmImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* VerbatmImageScrollView.m */; };
+		F20A24FA1A46166100BB77C1 /* EditContentScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* EditContentScrollView.m */; };
 		F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */; };
 		F2964FA41A4FE43300E1DBEC /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = F2964FA31A4FE43300E1DBEC /* Page.m */; };
 /* End PBXBuildFile section */
@@ -242,8 +242,8 @@
 		C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginVC.m; sourceTree = "<group>"; };
 		C7F3D46C1A4F84DF00B43238 /* UserSignUpVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSignUpVC.h; sourceTree = "<group>"; };
 		C7F3D46D1A4F84DF00B43238 /* UserSignUpVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSignUpVC.m; sourceTree = "<group>"; };
-		F20A24F81A46166100BB77C1 /* VerbatmImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmImageScrollView.h; sourceTree = "<group>"; };
-		F20A24F91A46166100BB77C1 /* VerbatmImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmImageScrollView.m; sourceTree = "<group>"; };
+		F20A24F81A46166100BB77C1 /* EditContentScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditContentScrollView.h; sourceTree = "<group>"; };
+		F20A24F91A46166100BB77C1 /* EditContentScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditContentScrollView.m; sourceTree = "<group>"; };
 		F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVETypeAnalyzer.h; path = ../AVETypeAnalyzer.h; sourceTree = "<group>"; };
 		F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AVETypeAnalyzer.m; path = ../AVETypeAnalyzer.m; sourceTree = "<group>"; };
 		F2964FA21A4FE43300E1DBEC /* Page.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page.h; sourceTree = "<group>"; };
@@ -324,8 +324,8 @@
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
 				C716A5B019E0CA3500A5490B /* DashLineView.h */,
 				C716A5B119E0CA3500A5490B /* DashLineView.m */,
-				F20A24F81A46166100BB77C1 /* VerbatmImageScrollView.h */,
-				F20A24F91A46166100BB77C1 /* VerbatmImageScrollView.m */,
+				F20A24F81A46166100BB77C1 /* EditContentScrollView.h */,
+				F20A24F91A46166100BB77C1 /* EditContentScrollView.m */,
 			);
 			name = "Other Custom Views";
 			sourceTree = "<group>";
@@ -774,7 +774,7 @@
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */,
 				C7BD53C41B5B73A700EE6241 /* TextAndOtherAves.m in Sources */,
-				F20A24FA1A46166100BB77C1 /* VerbatmImageScrollView.m in Sources */,
+				F20A24FA1A46166100BB77C1 /* EditContentScrollView.m in Sources */,
 				C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */,
 				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,

@@ -62,6 +62,59 @@
 	return newimage;
 }
 
++(void) addDashedBorderToView: (UIView *) view
+{
+	//border definitions
+	float cornerRadius = 0;
+	float borderWidth = 1;
+	int dashPattern1 = 10;
+	int dashPattern2 = 10;
+	UIColor *lineColor = [UIColor whiteColor];
+
+	//drawing boundary
+	CGRect frame = view.bounds;
+
+	CAShapeLayer *_shapeLayer = [CAShapeLayer layer];
+
+	//creating a path
+	CGMutablePathRef path = CGPathCreateMutable();
+
+	//drawing a border around a view
+	CGPathMoveToPoint(path, NULL, 0, frame.size.height - cornerRadius);
+	CGPathAddLineToPoint(path, NULL, 0, cornerRadius);
+	CGPathAddArc(path, NULL, cornerRadius, cornerRadius, cornerRadius, M_PI, -M_PI_2, NO);
+	CGPathAddLineToPoint(path, NULL, frame.size.width - cornerRadius, 0);
+	CGPathAddArc(path, NULL, frame.size.width - cornerRadius, cornerRadius, cornerRadius, -M_PI_2, 0, NO);
+	CGPathAddLineToPoint(path, NULL, frame.size.width, frame.size.height - cornerRadius);
+	CGPathAddArc(path, NULL, frame.size.width - cornerRadius, frame.size.height - cornerRadius, cornerRadius, 0, M_PI_2, NO);
+	CGPathAddLineToPoint(path, NULL, cornerRadius, frame.size.height);
+	CGPathAddArc(path, NULL, cornerRadius, frame.size.height - cornerRadius, cornerRadius, M_PI_2, M_PI, NO);
+
+	//path is set as the _shapeLayer object's path
+	_shapeLayer.path = path;
+	CGPathRelease(path);
+
+	_shapeLayer.backgroundColor = [[UIColor clearColor] CGColor];
+	_shapeLayer.frame = frame;
+	_shapeLayer.masksToBounds = NO;
+	[_shapeLayer setValue:[NSNumber numberWithBool:NO] forKey:@"isCircle"];
+	_shapeLayer.fillColor = [[UIColor clearColor] CGColor];
+	_shapeLayer.strokeColor = [lineColor CGColor];
+	_shapeLayer.lineWidth = borderWidth;
+	_shapeLayer.lineDashPattern = [NSArray arrayWithObjects:[NSNumber numberWithInt:dashPattern1], [NSNumber numberWithInt:dashPattern2], nil];
+	_shapeLayer.lineCap = kCALineCapRound;
+	//_shapeLayer is added as a sublayer of the view, the border is visible
+
+	for (int i=0; i<view.layer.sublayers.count; i++) {
+		if([view.layer.sublayers[i] isKindOfClass:[CAShapeLayer class]])
+		{
+			[view.layer.sublayers[i] removeFromSuperlayer];
+		}
+	}
+	[view.layer addSublayer:_shapeLayer];
+	view.layer.cornerRadius = cornerRadius;
+}
+
 + (CGFloat)measureHeightOfUITextView:(UITextView *)textView
 {
 	if (floor(NSFoundationVersionNumber) > NSFoundationVersionNumber_iOS_6_1)

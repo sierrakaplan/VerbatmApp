@@ -10,12 +10,12 @@
 #import "VerbatmImageView.h"
 #import "PinchView.h"
 #import  "VerbatmUITextView.h"
-@interface VerbatmImageScrollView : UIScrollView
+@interface EditContentScrollView : UIScrollView
 -(instancetype)initCustomViewWithFrame:(CGRect)frame;
 -(void) addVideo: (AVAsset*) video;
 -(void) addImage: (NSData*) image;
 -(void) createTextViewFromTextView: (UITextView *) textView;
--(void)adjustImageScrollViewContentSizing;
+-(void)adjustContentSizing;
 -(void)adjustFrameOfTextViewForGap:(NSInteger) gap;
 @property (nonatomic, strong) VerbatmUITextView * textView;
 @property (nonatomic, strong) VerbatmImageView * imageView;

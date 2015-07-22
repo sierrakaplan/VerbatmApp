@@ -10,7 +10,6 @@
 @class VerbatmUITextView;
 
 
-//Iain
 @interface VerbatmUITextView : UITextView
-    @property (strong, nonatomic) UIScrollView * mainScrollView; //expecting the view to be on a scroll view
+
 @end
