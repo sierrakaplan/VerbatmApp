@@ -605,7 +605,6 @@
 			[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 		}else {
 			[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
-			[self.contentDevVC removeImageScrollview:nil];
 		}
 	}];
 
@@ -630,6 +629,7 @@
 
 //hiding with animation is the default
 -(void)hidePullBar:(NSNotification*)notification {
+
 	if (self.pullBar.mode != PullBarModeMenu) {
 		return;
 	}
@@ -649,6 +649,10 @@
 
 //showing with animation is the default
 -(void) showPullBar:(NSNotification*)notification {
+
+	if (self.pullBar.mode != PullBarModeMenu) {
+		return;
+	}
 
 	if(notification.userInfo && ![notification.userInfo[WITH_TRANSITION] boolValue]) {
 		[self showPullBarNoAnimation];

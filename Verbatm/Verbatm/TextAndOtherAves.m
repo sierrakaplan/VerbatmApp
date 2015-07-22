@@ -10,6 +10,7 @@
 #import "MultiplePhotoAVE.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
+#import "Icons.h"
 
 //just a ratio from the midpoint that the gesture should be past before we go to auto adjust
 #define THRESHOLD 1.8
@@ -31,11 +32,7 @@
 
 @implementation TextAndOtherAves
 
-/*we pass in the text for the text view and also the AVE type. The Ave can be one of 3
- -PHOTO
- -VIDEO
- -PHOTOVIDEO
- from this string we create and place the appropriate ave as a subview
+/*we pass in the text for the text view and also the AVE type.
  */
 -(instancetype)initWithFrame:(CGRect) frame text:(NSString*)text aveType:(AVEType)aveType aveMedia: (NSArray *)media {
 
@@ -91,11 +88,20 @@
 -(void)addGestureToView
 {
     self.pullBar =[[UIView alloc] init];
-	// TODO: add icon to pull down text
-    self.pullBar.frame = CGRectMake(0,self.textView.frame.origin.y+self.textView.frame.size.height,
+
+
+
+    self.pullBarStartFrame = CGRectMake(0,self.textView.frame.origin.y+self.textView.frame.size.height - TEXT_OVER_AVE_PULLBAR_HEIGHT/2.f,
 									self.frame.size.width, TEXT_OVER_AVE_PULLBAR_HEIGHT);
-    self.pullBarStartFrame = self.pullBar.frame;
-    self.pullBar.backgroundColor = [UIColor TEXT_OVER_AVE_PULLBAR_COLOR];
+
+	float iconSize = TEXT_OVER_AVE_PULLBAR_HEIGHT;
+	UIImageView *pullBarIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:PULLDOWN_TEXT_ICON]];
+	float iconXposition = self.pullBarStartFrame.size.width/2.f - iconSize/2.f;
+	pullBarIcon.frame = CGRectMake(iconXposition, self.pullBarStartFrame.origin.y, iconSize, iconSize);
+
+	[self.pullBar addSubview:pullBarIcon];
+	self.pullBar.frame = self.pullBarStartFrame;
+	self.pullBar.backgroundColor = [UIColor TEXT_OVER_AVE_PULLBAR_COLOR];
     [self addSubview: self.pullBar];
     [self bringSubviewToFront:self.pullBar];
     [self addSwipeGestureToView:self.pullBar];

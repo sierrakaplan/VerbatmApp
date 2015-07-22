@@ -1029,7 +1029,8 @@
 				[self horitzontalPinchWithGesture:sender];
 			}else
 			{
-				if(self.pageElements.count==0) return;//you can pinch together two things when there's only one
+				//you can pinch together two things when there's only one
+				if(self.pageElements.count==0) return;
 				self.VerticalPinch = YES;
 				[self verticlePinchWithGesture:sender];
 			}
@@ -2007,8 +2008,9 @@
 -(void) removeImageScrollview: (UITapGestureRecognizer *) sender
 {
 	VerbatmImageScrollView * isv = self.openImageScrollView;
-	//TODO(sierra): what is this for??
-	//    if(self.openImagePinchView.containsPicture)[self.openImagePinchView changePicture:self.openImageScrollView.imageView.image];
+	if (!isv) {
+		return;
+	}
 	if(self.openImagePinchView.containsText)
 	{
 		if([self.openImageScrollView.textView.text isEqualToString:@""])
