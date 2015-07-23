@@ -43,7 +43,7 @@
 {
 	if(!self.subviews.count) return self.bounds;
 	UIView * view = self.subviews.lastObject;
-	return CGRectMake(view.frame.origin.x +view.frame.size.width, 0, self.frame.size.width, self.frame.size.height);
+	return CGRectMake(view.frame.origin.x +view.frame.size.width, 0, self.bounds.size.width, self.bounds.size.height);
 }
 
 //resets the content size of the scrollview
@@ -51,7 +51,7 @@
 	self.contentSize = CGSizeMake((self.frame.size.width* self.subviews.count), 0);
 }
 
--(void)setImagesToFullScreen {
+-(void)setImageHeights {
 	for(UIView * view in self.subviews) {
 		view.contentMode = UIViewContentModeScaleAspectFit;
 		view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y, self.bounds.size.width, self.bounds.size.height);

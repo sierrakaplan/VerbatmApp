@@ -10,6 +10,7 @@
 #import "MultiplePhotoAVE.h"
 #import "VideoAVE.h"
 #import "MultiplePhotoVideoAVE.h"
+#import "VerbatmImageScrollView.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "Icons.h"
@@ -191,8 +192,13 @@
 
 	[self.mainContentView removeFromSuperview];
 	[self addSubview:self.mainContentView];
+
 	[UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
 		view.frame = self.bounds;
+		if ([view isKindOfClass: VerbatmImageScrollView.class]) {
+			[(VerbatmImageScrollView*)view setImageHeights];
+		}
+	} completion:^(BOOL finished) {
 	}];
 }
 
@@ -200,10 +206,14 @@
 	if (self.mainContentView) {
 		[UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
 			self.mainContentView.frame = self.oldMainContentViewFrame;
+			if ([self.mainContentView isKindOfClass: VerbatmImageScrollView.class]) {
+				[(VerbatmImageScrollView*)self.mainContentView setImageHeights];
+			}
+		}  completion:^(BOOL finished) {
+			[self.mainContentView removeFromSuperview];
+			[self.oldMainContentViewSuperview addSubview:self.mainContentView];
+			self.mainContentView = nil;
 		}];
-		[self.mainContentView removeFromSuperview];
-		[self.oldMainContentViewSuperview addSubview:self.mainContentView];
-		self.mainContentView = nil;
 	}
 }
 

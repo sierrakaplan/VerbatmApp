@@ -40,6 +40,8 @@
 
 #pragma mark - AVES -
 
+#define AVE_BACKGROUND_COLOR blackColor
+
 #pragma mark Text
 
 #define TEXT_AVE_FONT @"HelveticaNeue-Light"

@@ -11,31 +11,25 @@
 #import "VideoAVE.h"
 #import "Notifications.h"
 #import "Durations.h"
+#import "Styles.h"
 #import "BaseArticleViewingExperience.h"
 #import "VerbatmImageScrollView.h"
 
 @interface MultiplePhotoVideoAVE()
-@property (weak, nonatomic) IBOutlet VideoAVE *videoView;
-@property (weak, nonatomic) IBOutlet VerbatmImageScrollView *photoListScrollView;
+@property (strong, nonatomic) VideoAVE *videoView;
+@property (strong, nonatomic) VerbatmImageScrollView *photoListScrollView;
 @property (strong, nonatomic) AVMutableComposition* mix;
-//@property (strong, nonatomic) UIView * gestureView;//to be placed ontop of video view to sense all gestures
 
-#define x_ratio 3
-#define y_ratio 4
-#define ELEMENT_WALL_OFFSET 10
-#define  VIDEO_VIEW_HALF_FRAME CGRectMake(0, 0, self.frame.size.width, VIDEO_VIEW_HEIGHT)
-#define VIDEO_VIEW_HEIGHT (((self.frame.size.width*3)/4))
-#define SV_DEFAULT_HEIGHT (self.frame.size.height - VIDEO_VIEW_HEIGHT)
 @end
 @implementation MultiplePhotoVideoAVE
 
 -(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos
 {
-    self = [[[NSBundle mainBundle] loadNibNamed:@"MultiplePhotoVideoAVE" owner:self options:nil]firstObject];
+    self = [super initWithFrame:frame];
     if(self)
     {
-        self.frame = frame;
-        [self setViewFrames];
+		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+        [self setSubViews];
         [self.photoListScrollView renderPhotos:photos];
 		[self.videoView playVideos:videos];
     }
@@ -43,11 +37,18 @@
 }
 
 //sets the frames for the video view and the photo scrollview
--(void) setViewFrames {
-    self.videoView.frame = VIDEO_VIEW_HALF_FRAME;
-//    self.gestureView.frame = self.videoView.frame;
-    self.photoListScrollView.frame = CGRectMake(0, VIDEO_VIEW_HEIGHT, self.frame.size.width, SV_DEFAULT_HEIGHT);
-    [self bringSubviewToFront:self.photoListScrollView];
+-(void) setSubViews {
+
+	float videoViewHeight = ((self.frame.size.width*3)/4);
+	float photoListScrollViewHeight = (self.frame.size.height - videoViewHeight);
+
+    CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
+    CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photoListScrollViewHeight);
+	self.photoListScrollView = [[VerbatmImageScrollView alloc] initWithFrame:photoListFrame];
+	self.videoView = [[VideoAVE alloc] initWithFrame:videoViewFrame];
+
+	[self addSubview:self.videoView];
+	[self addSubview:self.photoListScrollView];
 
 	[self addTapGestureToView: self.photoListScrollView];
 	[self addTapGestureToView: self.videoView];
@@ -71,11 +72,6 @@
 		[superview removeMainView];
 	} else {
 		[superview setViewAsMainView:view];
-		if (view == self.photoListScrollView) {
-			[UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
-				[self.photoListScrollView setImagesToFullScreen];
-			}];
-		}
 	}
 }
 
