@@ -17,6 +17,8 @@
 //time it takes to animate a image from the top scroll view into position
 #define IMAGE_SWIPE_ANIMATION_TIME 0.5
 
-#define TEXT_OVER_AVE_ANIMATION_DURATION 0.1
+#pragma mark - AVES -
+
+#define AVE_VIEW_FILLS_SCREEN_DURATION 0.5
 
 #endif /* Durations_h */

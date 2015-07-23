@@ -10,7 +10,7 @@
 #import "VerbatmImageView.h"
 #import "PinchView.h"
 #import  "VerbatmUITextView.h"
-@interface EditContentScrollView : UIScrollView
+@interface EditContentView : UIView
 -(instancetype)initCustomViewWithFrame:(CGRect)frame;
 -(void) addVideo: (AVAsset*) video;
 -(void) addImage: (NSData*) image;

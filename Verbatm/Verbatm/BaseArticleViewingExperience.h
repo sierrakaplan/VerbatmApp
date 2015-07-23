@@ -10,7 +10,14 @@
 #import "AVETypeAnalyzer.h"
 #import "TextOverAVEView.h"
 
-@interface TextAndOtherMediaAVE : UIView
+@interface BaseArticleViewingExperience : UIView
 -(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text andPhotos: (NSMutableArray *)photos andVideos: (NSMutableArray *)videos andAVEType:(AVEType)aveType;
--(void)addPullDownBarForText;
+
+-(int)numberOfLinesInTextView:(UITextView *)textView;
+-(void) showText:(BOOL)show;
+
+//set a view to animate to fill the screen
+-(void) setViewAsMainView: (UIView*) view;
+-(void) removeMainView;
+-(BOOL) mainViewIsFullScreen;
 @end

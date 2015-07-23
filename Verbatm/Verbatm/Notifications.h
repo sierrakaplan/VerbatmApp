@@ -11,7 +11,7 @@
 
 #pragma mark Media Dev VC
 
-#pragma mark Content Dev VC
+#pragma mark - Content Dev VC -
 
 #define NOTIFICATION_HIDE_PULLBAR @"Notification_shouldHidePullBar"
 #define NOTIFICATION_SHOW_PULLBAR @"Notification_shouldShowPullBar"
@@ -31,16 +31,20 @@
 #define NOTIFICATION_ADDED_MEDIA @"Notification_addedMedia"
 #define NOTIFICATION_REMOVED_ALL_MEDIA @"Notification_removedAllMedia"
 
-#pragma mark Feed
+#pragma mark - Feed -
 
 #define NOTIFICATION_SHOW_ADK @"Notification_showADK"
 #define NOTIFICATION_REFRESH_FEED @"Notification_refreshFeed"
 
-#pragma mark Sign Up / Sign In
+#pragma mark - Sign Up / Sign In -
 
 #define NOTIFICATION_SIGNUP_SUCCEEDED @"Notification_userSignedIn"
-#define SIGNUP_SUCCEEDED_NOTIFICATION @"userSignedIn"
-#define SIGNUP_FAILED_NOTIFIACTION @"userFailedToSignIn"
+#define NOTIFICATION_SIGNUP_FAILED @"Notification_userFailedToSignIn"
+
+#pragma mark - AVES -
+
+#define NOTIFICATION_HIDE_TEXT @"Notification_hideText"
+#define NOTIFICATION_SHOW_TEXT @"Notification_showText"
 
 
 #endif /* Header_h */

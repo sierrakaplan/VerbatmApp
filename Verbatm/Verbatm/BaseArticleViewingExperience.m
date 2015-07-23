@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "TextAndOtherMediaAVE.h"
+#import "BaseArticleViewingExperience.h"
 #import "MultiplePhotoAVE.h"
 #import "VideoAVE.h"
 #import "MultiplePhotoVideoAVE.h"
@@ -19,12 +19,16 @@
 #define THRESHOLD 1.8
 
 
-@interface TextAndOtherMediaAVE()
+@interface BaseArticleViewingExperience()
 //an invisible bar that sits on the edge of the textview to catch gestures
 @property (strong,nonatomic) UIView* pullBar;
 //the view that's showing the dark text
 
 @property (strong,nonatomic) TextOverAVEView * textViewContainer;
+@property (strong,nonatomic) UIView* mainContentView;
+@property (nonatomic)CGRect oldMainContentViewFrame;
+@property (strong, nonatomic) UIView* oldMainContentViewSuperview;
+
 @property (nonatomic)CGRect pullBarStartFrame;
 @property (nonatomic)CGRect pullBarBottomFrame;
 @property (nonatomic)CGRect textViewStartFrame;
@@ -37,7 +41,7 @@
 @end
 
 
-@implementation TextAndOtherMediaAVE
+@implementation BaseArticleViewingExperience
 
 /*we pass in the text for the text view and also the AVE type.
  */
@@ -60,13 +64,14 @@
 				MultiplePhotoVideoAVE *photoVideoAVE = [[MultiplePhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos];
 				[self addSubview: photoVideoAVE];
 				break;
-				break;
 			}
 			default: {
 				break;
 			}
 		}
-        [self setUpTextViewWithText:text];
+		if (text) {
+			[self setUpTextViewWithText:text];
+		}
     }
     return self;
 }
@@ -176,6 +181,59 @@
 		self.pullBar.frame = CGRectMake(self.pullBar.frame.origin.x, newYPos, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
 		self.textViewContainer.frame = CGRectMake(self.textViewContainer.frame.origin.x, self.textViewContainer.frame.origin.y,self.textViewContainer.frame.size.width, self.textViewContainer.frame.size.height + translation.y);
 		[gesture setTranslation:CGPointZero inView:self.pullBar];
+	}
+}
+
+-(void) setViewAsMainView: (UIView*) view{
+	self.mainContentView = view;
+	self.oldMainContentViewFrame = view.frame;
+	self.oldMainContentViewSuperview = view.superview;
+
+	[self.mainContentView removeFromSuperview];
+	[self addSubview:self.mainContentView];
+	[UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
+		view.frame = self.bounds;
+	}];
+}
+
+-(void) removeMainView {
+	if (self.mainContentView) {
+		[UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
+			self.mainContentView.frame = self.oldMainContentViewFrame;
+		}];
+		[self.mainContentView removeFromSuperview];
+		[self.oldMainContentViewSuperview addSubview:self.mainContentView];
+		self.mainContentView = nil;
+	}
+}
+
+-(BOOL) mainViewIsFullScreen {
+	return (BOOL) self.mainContentView;
+}
+
+-(void) showText:(BOOL)show {
+	if(show) {
+		[self showText];
+	} else {
+		[self hideText];
+	}
+}
+
+-(void) hideText {
+	if (self.textViewContainer) {
+		[self.textViewContainer removeFromSuperview];
+	}
+	if (self.pullBar) {
+		[self.pullBar removeFromSuperview];
+	}
+}
+
+-(void) showText {
+	if (self.textViewContainer) {
+		[self addSubview:self.textViewContainer];
+	}
+	if (self.pullBar) {
+		[self addSubview:self.pullBar];
 	}
 }
 

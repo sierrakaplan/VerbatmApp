@@ -13,7 +13,7 @@
 #import "TextAVE.h"
 #import "MultiplePhotoVideoAVE.h"
 #import "MultiplePhotoAVE.h"
-#import "TextAndOtherMediaAVE.h"
+#import "BaseArticleViewingExperience.h"
 
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
 @interface AVETypeAnalyzer()
@@ -39,25 +39,17 @@
 			continue;
 		}
 
-		if (pinchView.containsText) {
-			[self handleTextAVES:pinchView];
-		} else if (pinchView.containsPhoto && pinchView.containsVideo) {
-			[self handlePhotoVideo:pinchView];
-		} else if (pinchView.containsPhoto) {
-			MultiplePhotoAVE* photoAVE = [[MultiplePhotoAVE alloc]initWithFrame:self.preferredFrame andPhotoArray:[pinchView getPhotos]];
-			[self.results addObject:photoAVE];
-		} else if (pinchView.containsVideo) {
-			VideoAVE* videoAVE = [[VideoAVE alloc]initWithFrame:self.preferredFrame andVideoAssetArray:[pinchView getVideos]];
-			[videoAVE muteVideo];
-			[self.results addObject:videoAVE];
-		}
+		[self handleAVES:pinchView];
 	}
 
 	return self.results;
 }
 
--(void) handleTextAVES: (PinchView*) pinchView {
+-(void) handleAVES: (PinchView*) pinchView {
 	NSString* text = [pinchView getText];
+	if ([text length] == 0) {
+		text = nil;
+	}
 	AVEType type;
 
 	if (pinchView.containsPhoto && pinchView.containsVideo) {
@@ -75,7 +67,7 @@
 		[self.results addObject:textAVE];
 		return;
 	}
-	TextAndOtherMediaAVE * textAndOtherMediaAVE = [[TextAndOtherMediaAVE alloc] initWithFrame:self.preferredFrame andText:text andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos] andAVEType:type];
+	BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:text andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos] andAVEType:type];
 	[self.results addObject:textAndOtherMediaAVE];
 }
 

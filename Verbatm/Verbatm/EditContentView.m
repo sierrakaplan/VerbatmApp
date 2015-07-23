@@ -6,14 +6,14 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "EditContentScrollView.h"
+#import "EditContentView.h"
 #import "VerbatmImageView.h"
 #import "VerbatmPullBarView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "UIEffects.h"
 
-@interface EditContentScrollView () <UITextViewDelegate>
+@interface EditContentView () <UITextViewDelegate>
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) UIImage * filter_Original;
@@ -26,7 +26,7 @@
 @end
 
 
-@implementation EditContentScrollView
+@implementation EditContentView
 
 -(instancetype) initCustomViewWithFrame:(CGRect)frame
 {
@@ -35,7 +35,6 @@
 	{
 		self.backgroundColor = [UIColor blackColor];
 		self.frame = frame;
-		self.scrollEnabled = YES;
 	}
 	return self;
 }
@@ -118,7 +117,6 @@
 	[UIEffects addDashedBorderToView:textView];
 
 	textView.scrollEnabled = YES;
-	self.scrollEnabled = YES;
 }
 
 #pragma mark - Image or Video View -
@@ -128,7 +126,7 @@
 	[self addSubview:self.videoView];
 	[self bringSubviewToFront:self.videoView];
 	[self.videoView playVideoFromAsset:video];
-	[self.videoView repeatVideoOnEnd];
+	[self.videoView repeatVideoOnEnd:YES];
 }
 
 -(void)addImage: (NSData*) image
@@ -212,18 +210,4 @@
 	}
 }
 
-//tells me when the video ends so that I can rewind
--(void)playerItemDidReachEnd:(NSNotification *)notification {
-	AVPlayerItem *p = [notification object];
-	[p seekToTime:kCMTimeZero];
-}
-
-
-/*
- // Only override drawRect: if you perform custom drawing.
- // An empty implementation adversely affects performance during animation.
- - (void)drawRect:(CGRect)rect {
- // Drawing code
- }
- */
 @end

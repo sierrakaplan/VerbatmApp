@@ -10,6 +10,7 @@
 #import "PinchView.h"
 #import "VerbatmImageView.h"
 #import "TextAVE.h"
+#import "BaseArticleViewingExperience.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 
 #define ELEMENT_TOP_OFFSET 10 //the gap between pinvhviews and the top of the screen
@@ -19,7 +20,6 @@
 @interface MultiplePhotoAVE ()
 
 #pragma mark - textview properties -
-@property (strong, nonatomic) TextAVE* textView;
 @property (strong, nonatomic) UIVisualEffectView* bgBlurImage;
 @property (nonatomic) CGPoint lastPoint;
 @property (strong, nonatomic) UIView* pullBarView;
@@ -27,6 +27,8 @@
 
 @property (nonatomic) BOOL isTitle;
 @property (nonatomic) CGRect absoluteFrame;
+
+@property (nonatomic) BOOL textShowing;
 
 #pragma mark - photoview properties-
 
@@ -55,6 +57,8 @@
             self.mainImage.frame = frame;
             self.SV_PhotoList.frame = CGRectZero;//make sure it's zero'd so that it doesnt show at all
         }
+		self.textShowing = YES;
+		[self addTapGestureToMainView];
     }
     
     return self;
@@ -127,13 +131,25 @@
 
 
 //when a pv is tapped we swap it's image for the one on display
--(void) pinchObjectTapped:(UITapGestureRecognizer *) gesture
-{
+-(void) pinchObjectTapped:(UITapGestureRecognizer *) gesture {
     PinchView * pv = (PinchView *) gesture.view;
     NSArray * photos = [pv getPhotos];
     [self setPhotoFrom: photos];
 }
 
+-(void) addTapGestureToMainView {
+	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mainViewTapped:)];
+	[self addGestureRecognizer:tap];
+}
+
+-(void) mainViewTapped:(UITapGestureRecognizer *) gesture {
+	self.textShowing = !self.textShowing;
+	[self showText:self.textShowing];
+}
+
+-(void) showText:(BOOL)show {
+	[(BaseArticleViewingExperience*)self.superview showText:show];
+}
 
 //calculates the next center point for the next pinch view using the last pinch view
 -(CGPoint) getNextCenter
@@ -141,7 +157,8 @@
     if(!self.SV_PhotoList.subviews.count)return CGPointMake((BETWEEN_ELEMENT_OFFSET+RADIUS), (RADIUS + ELEMENT_TOP_OFFSET));
     
     UIView * pv = self.SV_PhotoList.subviews.lastObject;
-    int x_cord = pv.frame.origin.x+ RADIUS*3 + BETWEEN_ELEMENT_OFFSET;//we multiply the radius by 3 because the next center is a diameter and a half (plus offset) from the x origin of the last
+	//we multiply the radius by 3 because the next center is a diameter and a half (plus offset) from the x origin of the last
+    int x_cord = pv.frame.origin.x+ RADIUS*3 + BETWEEN_ELEMENT_OFFSET;
     int y_cord = RADIUS + ELEMENT_TOP_OFFSET;
     return CGPointMake(x_cord, y_cord);
 }

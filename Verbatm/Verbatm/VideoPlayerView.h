@@ -22,7 +22,7 @@
 
 //following methods will only execute if playVideo was called first
 
--(void) repeatVideoOnEnd;
+-(void)repeatVideoOnEnd:(BOOL)repeat;
 
 -(void)pauseVideo;
 

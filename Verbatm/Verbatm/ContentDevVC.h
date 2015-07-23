@@ -26,10 +26,10 @@
 
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data;
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
--(void) createEditContentScrollViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset;
--(void) createEditContentScrollViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView;
--(void) createEditContentScrollViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView;
--(void) removeEditContentScrollView: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
+-(void) createEditContentViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset;
+-(void) createEditContentViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView;
+-(void) createEditContentViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView;
+-(void) removeEditContentView: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
 // either locks the scroll view or frees it
 -(void)setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;

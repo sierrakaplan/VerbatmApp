@@ -44,12 +44,12 @@
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
 		[self fuseAssets:videoList];
 		[self playVideoFromAsset:self.mix];
-		[self repeatVideoOnEnd];
+		[self repeatVideoOnEnd:YES];
 		//comes as NSURL from parse
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
 		//TODO(sierra): make sure all videos play sequentially
 		[self playVideoFromURL:[videoList objectAtIndex:0]];
-		[self repeatVideoOnEnd];
+		[self repeatVideoOnEnd:YES];
 	}
 }
 

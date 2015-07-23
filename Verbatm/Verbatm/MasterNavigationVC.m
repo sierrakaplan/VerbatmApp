@@ -48,15 +48,18 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-	//TODO:[self Login];
+	//TODO:
+//	[self Login];
 }
 
 -(void)registerForNavNotifications
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
-    //signup for a notification that tells you the user has signed in
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpSuccesful:) name:NOTIFICATION_SIGNUP_SUCCEEDED object: nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpFailed:) name:NOTIFICATION_SIGNUP_FAILED object: nil];
+
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticleList:) name:NOTIFICATION_EXIT_CONTENTPAGE object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertTitleAnimation) name:NOTIFICATION_TILE_ANIMATION object: nil];
 }
@@ -288,16 +291,19 @@
 }
 #pragma mark - Handle Login -
 //not that the signup was succesful - post a notiication
--(void) signUpSuccesful: (NSNotification *) notification
-{
+-(void) signUpSuccesful: (NSNotification *) notification {
     NSLog(@"Signup Succeeded");
     
-    //[self performSegueWithIdentifier:@"exitSignInScreen" sender:self];
+    [self performSegueWithIdentifier:@"exitSignInScreen" sender:self];
     
-    //Removes the login page
-    //[self dismissViewControllerAnimated:NO completion:^{
-      //  NSLog(@"dismiss Succeeded");
-    //}];
+//    Removes the login page
+    [self dismissViewControllerAnimated:NO completion:^{
+        NSLog(@"dismiss Succeeded");
+    }];
+}
+
+-(void) signUpFailed: (NSNotification *) notification {
+
 }
 
 -(void)Login

@@ -98,12 +98,12 @@
 
         if(succeeded) {
             //Send a notification that the user is logged in 
-            NSNotification * notification = [[NSNotification alloc]initWithName:SIGNUP_SUCCEEDED_NOTIFICATION object:nil userInfo:nil];
+            NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SIGNUP_SUCCEEDED object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
             
         } else if (!succeeded) {
             
-            NSNotification * notification = [[NSNotification alloc]initWithName:SIGNUP_FAILED_NOTIFIACTION object:nil userInfo:nil];
+            NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SIGNUP_FAILED object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter] postNotification:notification];
         }
         

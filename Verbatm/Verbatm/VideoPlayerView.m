@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) AVPlayer* player;
 @property (nonatomic, strong) AVPlayerItem* playerItem;
+@property (nonatomic) BOOL repeatsVideo;
 
 @end
 
@@ -19,7 +20,7 @@
 
 -(instancetype)init {
 	if((self  = [super init])) {
-
+		self.repeatsVideo = NO;
 	}
 	return self;
 }
@@ -52,6 +53,12 @@
 	// Create the AVPlayer using the playeritem
 
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(playerItemDidReachEnd:)
+												 name:AVPlayerItemDidPlayToEndTimeNotification
+											   object:[self.player currentItem]];
+
 	// Create an AVPlayerLayer using the player
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
 	self.playerLayer.frame = self.bounds;
@@ -62,20 +69,17 @@
 
 }
 
--(void) repeatVideoOnEnd {
-	if (self.player) {
-		[[NSNotificationCenter defaultCenter] addObserver:self
-												 selector:@selector(playerItemDidReachEnd:)
-													 name:AVPlayerItemDidPlayToEndTimeNotification
-												   object:[self.player currentItem]];
-	}
+-(void) repeatVideoOnEnd:(BOOL)repeat {
+	self.repeatsVideo = repeat;
 }
 
 //tells me when the video ends so that I can rewind
 -(void)playerItemDidReachEnd:(NSNotification *)notification
 {
-	AVPlayerItem *p = [notification object];
-	[p seekToTime:kCMTimeZero];
+	AVPlayerItem *playerItem = [notification object];
+	if (self.repeatsVideo) {
+		[playerItem seekToTime:kCMTimeZero];
+	}
 }
 
 //pauses the video for the pinchview if there is one

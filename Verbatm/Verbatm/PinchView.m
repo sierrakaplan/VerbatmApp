@@ -320,7 +320,7 @@
         {
 			[self.videoView playVideoFromAsset: object];
 			[self.videoView muteVideo];
-			[self.videoView repeatVideoOnEnd];
+			[self.videoView repeatVideoOnEnd:YES];
 		}
 	}
 

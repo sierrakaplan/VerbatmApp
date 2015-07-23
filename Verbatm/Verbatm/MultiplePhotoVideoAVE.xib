@@ -16,7 +16,7 @@
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" bounces="NO" id="rO2-pA-NQE">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" bounces="NO" id="rO2-pA-NQE" customClass="VerbatmImageScrollView">
                     <rect key="frame" x="0.0" y="179" width="384" height="488"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -25,7 +25,7 @@
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina55"/>
             <connections>
-                <outlet property="photoList" destination="rO2-pA-NQE" id="bGI-CL-XbB"/>
+                <outlet property="photoListScrollView" destination="rO2-pA-NQE" id="bGI-CL-XbB"/>
                 <outlet property="videoView" destination="hm5-cb-q6j" id="2Uy-ap-JtW"/>
             </connections>
             <point key="canvasLocation" x="400.5" y="204.5"/>
