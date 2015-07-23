@@ -338,6 +338,20 @@
 	_pageElements = pageElements;
 }
 
+
+@synthesize pinchViewScrollViews = _pinchViewScrollViews;
+
+-(NSMutableArray *) pinchViewScrollViews
+{
+	if(!_pinchViewScrollViews) _pinchViewScrollViews = [[NSMutableArray alloc] init];
+	return _pinchViewScrollViews;
+}
+
+- (void) setPinchViewScrollViews:(NSMutableArray *)pinchViewScrollViews {
+	_pinchViewScrollViews = pinchViewScrollViews;
+}
+
+
 @synthesize baseMediaTileSelector = _baseMediaTileSelector;
 
 -(MediaSelectTile *) baseMediaTileSelector
@@ -631,6 +645,7 @@
 	[lock unlock];
 	[newElementScrollView addSubview:pinchView];
 	[self.mainScrollView addSubview:newElementScrollView];
+	[self.pinchViewScrollViews addObject:newElementScrollView];
 	[self shiftElementsBelowView:self.articleTitleField];
 
 
@@ -967,7 +982,7 @@
 	//they have pinched enough to join the objects
 	if(self.horizontalPinchDistance > HORIZONTAL_PINCH_THRESHOLD) {
 		self.upperPinchView = self.lowerPinchView = nil;
-		[self joinOpenCollectionToOne];
+		[self joinOpenCollectionToOne:self.scrollViewOfHorizontalPinching];
 		self.pinchingMode = PinchingModeNone;
 	}
 }
@@ -994,44 +1009,42 @@
 	}];
 }
 
+-(void) closeAllOpenCollections {
+	for (UIScrollView* scrollView in self.pinchViewScrollViews) {
+		[self joinOpenCollectionToOne:scrollView];
+	}
+}
 
--(void)joinOpenCollectionToOne {
+-(void)joinOpenCollectionToOne:(UIScrollView*)openCollectionScrollView {
+
+	NSArray * pinchViews = openCollectionScrollView.subviews;
+	if ([pinchViews count] < 2) return;
 
 	//make sure the pullbar is showing when things are pinched together
 	[self showPullBarWithTransition:YES];
 
-	//just holds the place inorder to be replaced
-	PinchView * placeHolder = [[PinchView alloc]init];
-	NSArray * pinch_views = self.scrollViewOfHorizontalPinching.subviews;
-
-	//find the object that is in the pageElements array and remove it.
-	//Save the index though so you can insert something in there
-	//Also remove from the scrollview
-	for(int i=0; i<pinch_views.count; i++)
-	{
-		if([self.pageElements containsObject:pinch_views[i]]){
-			[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:pinch_views[i]] withObject:placeHolder];
-		}
-		[((UIView *)pinch_views[i]) removeFromSuperview];
-	}
-
-	PinchView * newView = [PinchView pinchTogether:[NSMutableArray arrayWithArray:pinch_views]];
-
-	//reduce number of pointers
-	pinch_views = nil;
-
-	self.scrollViewOfHorizontalPinching.contentSize = self.defaultElementPersonalScrollViewContentSize;
-	self.scrollViewOfHorizontalPinching.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
+	PinchView* placeholder = [[PinchView alloc] init];
+	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:pinchViews[0]] withObject:placeholder];
 
 	CGRect newFrame = CGRectMake(self.defaultElementCenter.x - self.defaultElementRadius, self.defaultElementCenter.y - self.defaultElementRadius, self.defaultElementRadius*2.f, self.defaultElementRadius*2.f);
+	PinchView * collectionPinchView = [PinchView pinchTogether:[NSMutableArray arrayWithArray:pinchViews]];
+	[collectionPinchView specifyFrame:newFrame];
+	[self addTapGestureToView:collectionPinchView];
 
-	[newView specifyFrame:newFrame];
-	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeHolder] withObject:newView];
-	[self addTapGestureToView:newView];
+	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeholder] withObject:collectionPinchView];
+
+	for(int i=0; i<pinchViews.count; i++) {
+		[((UIView *)pinchViews[i]) removeFromSuperview];
+	}
+	pinchViews = nil;
+
+	openCollectionScrollView.contentSize = self.defaultElementPersonalScrollViewContentSize;
+	openCollectionScrollView.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
+
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-		[self.scrollViewOfHorizontalPinching addSubview:newView];
+		[openCollectionScrollView addSubview:collectionPinchView];
 		//Turn paging back on because now it's one element
-		self.scrollViewOfHorizontalPinching.pagingEnabled =YES;
+		openCollectionScrollView.pagingEnabled =YES;
 	}];
 }
 
@@ -1127,13 +1140,11 @@
 -(void) createNewViewToRevealBetweenPinchViews
 {
 	CGRect frame =  CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),0, 0, 0);
-	MediaSelectTile * mediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
-	mediaTile.delegate = self;
-	mediaTile.alpha = 0; //start it off as invisible
-	mediaTile.isBaseSelector = NO;
-	[self addMediaTile: mediaTile underView: self.upperPinchView];
-	mediaTile.backgroundColor = [UIColor clearColor];
-	self.newlyCreatedMediaTile = mediaTile;
+	self.newlyCreatedMediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
+	self.newlyCreatedMediaTile.delegate = self;
+	self.newlyCreatedMediaTile.alpha = 0; //start it off as invisible
+	self.newlyCreatedMediaTile.isBaseSelector = NO;
+	[self addMediaTile: self.newlyCreatedMediaTile underView: self.upperPinchView];
 }
 
 -(void) addMediaTile: (MediaSelectTile *) mediaView underView: (UIView *) topView {
@@ -1158,8 +1169,6 @@
 	float absChangeInTopViewPosition = fabs(changeInTopViewPosition);
 	float absChangeInBottomViewPosition = fabs(changeInBottomViewPosition);
 	float totalChange = absChangeInBottomViewPosition + absChangeInTopViewPosition;
-	float ratioBetweenWidthAndHeight = self.baseMediaTileSelector.frame.size.width / self.baseMediaTileSelector.frame.size.height;
-	float changeInWidth = totalChange * ratioBetweenWidthAndHeight;
 
 	if(self.newlyCreatedMediaTile.superview.frame.size.height < PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION) {
 
@@ -1294,7 +1303,7 @@
 		}
 	}
 	//Cannot pinch a single pinch view open or close
-	if(wantedView.subviews.count <2) return Nil;
+	if(wantedView.subviews.count < 2) return Nil;
 	return wantedView;
 }
 
@@ -1789,8 +1798,6 @@
 }
 
 
-
-
 #pragma mark - Sense Tap Gesture -
 #pragma mark EditContentView
 
@@ -1841,10 +1848,12 @@
 	[pinchView addGestureRecognizer:tap];
 }
 
--(void) pinchObjectTapped:(UITapGestureRecognizer *) sender
-{
+-(void) pinchObjectTapped:(UITapGestureRecognizer *) sender {
 
-	if(![sender.view isKindOfClass:[PinchView class]]) return; //only accept touches from pinch objects
+	//only accept touches from pinch objects
+	if(![sender.view isKindOfClass:[PinchView class]]) {
+		return;
+	}
 
 	PinchView * pinch_object = (PinchView *)sender.view;
 
@@ -1854,7 +1863,7 @@
 		[self openCollection:pinch_object];
 	}
 	//tap to open an element for viewing or editing
-	if(!pinch_object.isCollection && !pinch_object.hasMultipleMedia) {
+	else if(!pinch_object.isCollection) {
 
 		NSMutableArray * array = [pinch_object mediaObjects];
 		//could be textview or customimageview
@@ -1871,10 +1880,9 @@
 
 		//when things are offscreen then pause all videos
 		[self pauseAllVideos];
-
+		//make sure the pullbar is not available
+		[self hidePullBarWithTransition:NO];
 	}
-	//make sure the pullbar is not available
-	[self hidePullBarWithTransition:NO];
 }
 
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset {

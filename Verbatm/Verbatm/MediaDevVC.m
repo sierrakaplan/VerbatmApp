@@ -682,7 +682,7 @@
 // Displays article preview from pinch objects
 -(void) previewButtonPressed
 {
-	[self.contentDevVC joinOpenCollectionToOne];
+	[self.contentDevVC closeAllOpenCollections];
 	//counts up the content in the pinch view and ensures that there are some pinch objects
 	int counter=0;
 	for(int i=0; i < self.contentDevVC.pageElements.count; i++) {

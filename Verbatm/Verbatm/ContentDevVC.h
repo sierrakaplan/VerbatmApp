@@ -33,6 +33,8 @@
 
 //elements added to the scrollview- excludes uitextfields at the top of the screen
 @property (strong, atomic) NSMutableArray * pageElements;
+//keeps track of horizontal scroll views containing pinch views added to screen
+@property (strong, atomic) NSMutableArray * pinchViewScrollViews;
 @property (nonatomic) CGRect containerViewFrame;
 //view that is currently being filled in
 @property (strong, nonatomic) VerbatmUITextView * activeTextView;
@@ -47,7 +49,7 @@
 // either locks the scroll view or frees it
 -(void)setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;
--(void)joinOpenCollectionToOne;
+-(void) closeAllOpenCollections;
 
 
 typedef NS_ENUM(NSInteger, PinchingMode) {
