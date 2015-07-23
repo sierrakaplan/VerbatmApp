@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="8121.20" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
-
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="8101.16"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -103,7 +103,7 @@
                                         <rect key="frame" x="0.0" y="22" width="320" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="O8E-So-dii" id="OHX-rm-rv4">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="79"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="79.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="oQD-BK-vfI">
@@ -446,8 +446,8 @@
                         <outlet property="articleTitleField" destination="xnF-wL-Coq" id="bNm-zY-Jjo"/>
                         <outlet property="dotsLeft" destination="zzK-aV-BVh" id="Uwe-dB-iOR"/>
                         <outlet property="dotsRight" destination="7uk-0b-k3C" id="3gR-g1-iBv"/>
-                        <outlet property="label_AT" destination="p85-e9-abw" id="pbI-PE-ldM"/>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
+                        <outlet property="sandwichAtLabel" destination="p85-e9-abw" id="pbI-PE-ldM"/>
                         <outlet property="sandwichWhat" destination="YCU-uA-aOw" id="N06-x5-toF"/>
                         <outlet property="sandwichWhere" destination="TpH-VB-f5i" id="pWg-Zs-X2s"/>
                     </connections>
@@ -455,7 +455,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <pinchGestureRecognizer id="WDj-eM-uvF">
                     <connections>
-                        <action selector="addElementPinchGesture:" destination="0lh-hP-Opv" id="93r-9H-LPJ"/>
+                        <action selector="handlePinchGesture:" destination="0lh-hP-Opv" id="93r-9H-LPJ"/>
                     </connections>
                 </pinchGestureRecognizer>
                 <pongPressGestureRecognizer allowableMovement="10" minimumPressDuration="0.20000000000000004" id="33n-Bh-1X3">
@@ -471,9 +471,4 @@
         <image name="what-at-where-dots-left" width="122" height="36"/>
         <image name="what-at-where-dots-right" width="122" height="36"/>
     </resources>
-    <simulatedMetricsContainer key="defaultSimulatedMetrics">
-        <simulatedStatusBarMetrics key="statusBar"/>
-        <simulatedOrientationMetrics key="orientation"/>
-        <simulatedScreenMetrics key="destination" type="retina4"/>
-    </simulatedMetricsContainer>
 </document>

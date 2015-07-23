@@ -14,15 +14,21 @@
 #import "VerbatmScrollView.h"
 @interface ContentDevVC : UIViewController
 
+@property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
+
 @property (weak, nonatomic) IBOutlet UITextField *articleTitleField;
 @property (weak, nonatomic) IBOutlet UITextField *sandwichWhere;
 @property (weak, nonatomic) IBOutlet UITextField *sandwichWhat;
+@property (weak, nonatomic) IBOutlet UILabel *sandwichAtLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *dotsRight;
 @property (weak, nonatomic) IBOutlet UIImageView *dotsLeft;
 
-@property (strong, atomic) NSMutableArray * pageElements; //elements added to the scrollview- excludes uitextfields at the top of the screen
+//elements added to the scrollview- excludes uitextfields at the top of the screen
+@property (strong, atomic) NSMutableArray * pageElements;
 @property (nonatomic) CGRect containerViewFrame;
-@property (strong, nonatomic) VerbatmUITextView * activeTextView; //view that is currently being filled in
+//view that is currently being filled in
+@property (strong, nonatomic) VerbatmUITextView * activeTextView;
+@property(nonatomic) NSInteger pullBarHeight;
 
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data;
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
@@ -33,8 +39,15 @@
 // either locks the scroll view or frees it
 -(void)setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;
-@property(nonatomic) NSInteger pullBarHeight;
-@property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
+-(void)joinOpenCollectionToOne;
+
+
+typedef NS_ENUM(NSInteger, PinchingMode) {
+	PinchingModeNone,
+	PinchingModeVertical,
+	PinchingModeHorizontal
+};
+
 @end
 
 

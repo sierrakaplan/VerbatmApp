@@ -103,7 +103,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
         
         self.collectionView.allowsMultipleSelection = YES;
         
-        [self.collectionView registerClass:GMGridViewCell.class
+        [self.collectionView registerClass:[GMGridViewCell class]
                 forCellWithReuseIdentifier:GMGridViewCellIdentifier];
         
         self.preferredContentSize = kPopoverContentSize;

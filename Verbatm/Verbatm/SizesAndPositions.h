@@ -46,6 +46,9 @@
 #define MIN_PINCHVIEW_SIZE 100
 //distance two fingers must travel for the horizontal pinch to be accepted
 #define HORIZONTAL_PINCH_THRESHOLD 100
+#define PINCH_VIEW_DELETING_THRESHOLD 80
+#define PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION 100
+
 #define TEXTFIELD_BORDER_WIDTH 0.8f
 #define AUTO_SCROLL_OFFSET 10
 #define CONTENT_SIZE_OFFSET 20
@@ -53,7 +56,6 @@
 //distance between elements on the page
 #define ELEMENT_OFFSET_DISTANCE 20
 #define CURSOR_BASE_GAP 10
-#define PINCH_DISTANCE_FOR_ANIMATION 100
 //the gap between the bottom of the screen and the cursor
 #define CENTERING_OFFSET_FOR_TEXT_VIEW 30
 //if the image is up- you can scroll up and have it turn to circles. This gives that scrollup distance

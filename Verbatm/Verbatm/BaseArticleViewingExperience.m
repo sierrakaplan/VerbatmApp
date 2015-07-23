@@ -195,7 +195,7 @@
 
 	[UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
 		view.frame = self.bounds;
-		if ([view isKindOfClass: VerbatmImageScrollView.class]) {
+		if ([view isKindOfClass: [VerbatmImageScrollView class]]) {
 			[(VerbatmImageScrollView*)view setImageHeights];
 		}
 	} completion:^(BOOL finished) {
@@ -206,7 +206,7 @@
 	if (self.mainContentView) {
 		[UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
 			self.mainContentView.frame = self.oldMainContentViewFrame;
-			if ([self.mainContentView isKindOfClass: VerbatmImageScrollView.class]) {
+			if ([self.mainContentView isKindOfClass: [VerbatmImageScrollView class]]) {
 				[(VerbatmImageScrollView*)self.mainContentView setImageHeights];
 			}
 		}  completion:^(BOOL finished) {
