@@ -12,6 +12,14 @@
 #import "PinchView.h"
 #import "VerbatmImageView.h"
 #import "VerbatmScrollView.h"
+
+@protocol ContentDevElementDelegate <NSObject>
+
+-(void)markAsSelected: (BOOL) selected;
+-(void)markAsDeleting: (BOOL) deleting;
+
+@end
+
 @interface ContentDevVC : UIViewController
 
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
@@ -49,5 +57,3 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 };
 
 @end
-
-

@@ -11,9 +11,10 @@
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "UIEffects.h"
+#import "ContentDevVC.h"
 
 
-@interface PinchView()
+@interface PinchView() <ContentDevElementDelegate>
 @property(strong,nonatomic)IBOutlet UIView* background;
 @property (weak, nonatomic) IBOutlet UIImageView *imageViewer;
 @property (weak, nonatomic) IBOutlet UITextView *textView;
@@ -139,8 +140,8 @@
 //adds a thin circular border to the view
 -(void)addBorderToPinchView
 {
-    self.layer.borderColor = [UIColor whiteColor].CGColor;
-    self.layer.borderWidth = 1.0f;
+    self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+    self.layer.borderWidth = PINCHVIEW_BORDER_WIDTH;
 }
 
 //adds a picture to the custom view
@@ -216,13 +217,11 @@
 }
 
 
--(void)removeBorder
-{
+-(void)removeBorder {
     self.layer.borderWidth = 0;
 }
 
--(void)createLensingEffect:(float)radius
-{
+-(void)createLensingEffect:(float)radius {
     //remove previous shadows
     self.layer.shadowPath = nil;
     
@@ -237,8 +236,7 @@
 
 //This renders the pinch object unto the screen in terms of the dynamics of the
 //way it should look
--(void)renderMedia
-{
+-(void)renderMedia {
     if(self.containsVideo && self.containsText && self.containsPhoto){
         [self renderThreeViews];
     }else if( [self thereIsOnlyOneMedium]){
@@ -252,8 +250,7 @@
 
 
 //This renders a single view on the pinch object
--(void)renderSingleView
-{
+-(void)renderSingleView {
     if(self.containsText){
         self.textView.frame = self.background.frame;
     }else if(self.containsVideo){
@@ -266,8 +263,7 @@
 }
 
 //this renders two media in a vertical split view kind of way on the pinch object.
--(void)renderTwoMedia
-{
+-(void)renderTwoMedia {
     CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO , self.background.frame.size.height);
     CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.origin.y, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height);
     if(self.containsText){
@@ -287,8 +283,7 @@
        
 
 //This renders three views on the pinch view object.
--(void)renderThreeViews
-{
+-(void)renderThreeViews {
     //computation to determine the relative positions of each of the views
     self.textView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width, self.background.frame.size.height/DIVISION_FACTOR_FOR_TWO);
     self.imageViewer.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.textView.frame.size.height, self.background.frame.size.width/DIVISION_FACTOR_FOR_TWO, self.background.frame.size.height - self.textView.frame.size.height);
@@ -296,8 +291,7 @@
 }
 
 //This function displays the media on the view.
--(void)displayMedia
-{
+-(void)displayMedia {
 
 	self.textView.text = @"";
 	//	if(!self.inDataFormat){
@@ -462,41 +456,31 @@
 
 #pragma mark - selection interface -
 
--(void)markAsDeleting
-{
-    self.layer.borderColor = [UIColor redColor].CGColor;
-    self.layer.borderWidth = 2.0f;
+-(void)markAsDeleting: (BOOL) deleting {
+	if (deleting) {
+		self.layer.borderColor = [UIColor DELETING_ITEM_COLOR].CGColor;
+	} else {
+		[self addBorderToPinchView];
+	}
 }
 
--(void)unmarkAsDeleting
-{
-    [self addBorderToPinchView];
-}
--(void)markAsSelected
-{
-    self.layer.borderColor = [UIColor blueColor].CGColor;
-    self.layer.borderWidth = 2.0f;
+-(void)markAsSelected: (BOOL) selected {
+	if (selected) {
+		self.layer.borderColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
+	} else {
+		[self addBorderToPinchView];
+	}
 }
 
--(void)unmarkAsSelected
-{
+-(void)offScreen {
     
-    [self addBorderToPinchView];
-}
-
--(void)offScreen
-{
-    
-    if(self.videoView.playerLayer)
-    {
+    if(self.videoView.playerLayer) {
         [self.videoView pauseVideo];
     }
 }
 
--(void)onScreen
-{
-	if(self.videoView.playerLayer)
-    {
+-(void)onScreen {
+	if(self.videoView.playerLayer) {
 		[self.videoView continueVideo];
 	}
     //[self displayMedia];

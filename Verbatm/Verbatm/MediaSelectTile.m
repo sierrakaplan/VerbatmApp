@@ -11,9 +11,11 @@
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
+#import "Styles.h"
 #import "SizesAndPositions.h"
+#import "ContentDevVC.h"
 
-@interface MediaSelectTile ()
+@interface MediaSelectTile () <ContentDevElementDelegate>
     @property(nonatomic ,strong) UIButton * selectMedia;
     @property (nonatomic ,strong) UIButton * selectText;
     @property (nonatomic, strong) CAShapeLayer * border;
@@ -73,6 +75,23 @@
 -(void) buttonHighlight: (UIButton*) button
 {
     [button setBackgroundColor:[UIColor whiteColor]];
+}
+
+-(void)markAsSelected: (BOOL) selected {
+	if (selected) {
+		self.layer.borderColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
+		self.layer.borderWidth = 2.0f;
+	} else {
+		self.layer.borderWidth = 0.f;
+	}
+}
+
+-(void)markAsDeleting: (BOOL) deleting {
+	if (deleting) {
+		self.backgroundColor = [UIColor DELETING_ITEM_COLOR];
+	} else {
+		self.backgroundColor = [UIColor clearColor];
+	}
 }
 
 

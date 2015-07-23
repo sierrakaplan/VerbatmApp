@@ -14,6 +14,7 @@
 @required
 -(void) textButtonPressedOnTile: (MediaSelectTile*) tile;
 -(void) multiMediaButtonPressedOnTile: (MediaSelectTile*) tile;
+
 @end
 
 @interface MediaSelectTile : UIView

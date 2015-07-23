@@ -82,18 +82,6 @@
 //This applies, whether it is a collection or not.
 -(BOOL)hasMultipleMedia;
 
-//marks the video as selected
--(void)markAsSelected;
-
-//mark as unselected
--(void)unmarkAsSelected;
-
-//add red ring to show it's about to be deleted
--(void)markAsDeleting;
-
-//get rid of red ring when it's not being deleted
--(void)unmarkAsDeleting;
-
 //for intructing to render media
 -(void)renderMedia;
 

@@ -75,7 +75,7 @@
 
 #pragma mark PanGesture Properties
 
-@property (atomic, strong) UIView * selectedView_PAN;
+@property (atomic, strong) UIView<ContentDevElementDelegate>* selectedView_PAN;
 @property(nonatomic) CGPoint startLocationOfTouchPoint_PAN;
 //keep track of the starting from of the selected view so that you can easily shift things around
 @property (nonatomic) CGRect originalFrameBeforeLongPress;
@@ -468,23 +468,17 @@
 
 	// scrollView has a pinch view or a media tile
 
-	if(scrollView.contentOffset.x > self.defaultElementPersonalScrollViewContentOffset.x + PINCH_VIEW_DELETING_THRESHOLD || scrollView.contentOffset.x < self.defaultElementPersonalScrollViewContentOffset.x - PINCH_VIEW_DELETING_THRESHOLD){
-		if(scrollView.contentOffset.x >3) {
-			if([[scrollView.subviews firstObject] isKindOfClass:[PinchView class]]) {
-				[((PinchView *)[scrollView.subviews firstObject]) markAsDeleting];
-			} else {
-				((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor redColor];
+	if([[scrollView.subviews firstObject] conformsToProtocol:@protocol(ContentDevElementDelegate)]) {
+
+		if(scrollView.contentOffset.x > self.defaultElementPersonalScrollViewContentOffset.x + PINCH_VIEW_DELETING_THRESHOLD || scrollView.contentOffset.x < self.defaultElementPersonalScrollViewContentOffset.x - PINCH_VIEW_DELETING_THRESHOLD){
+			if(scrollView.contentOffset.x >3) {
+				[(UIView<ContentDevElementDelegate>*)[scrollView.subviews firstObject] markAsDeleting:YES];
 			}
+		} else {
+			[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^ {
+				[(UIView<ContentDevElementDelegate>*)[scrollView.subviews firstObject] markAsDeleting:NO];
+			}];
 		}
-	} else {
-		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^ {
-			if([[scrollView.subviews firstObject] isKindOfClass:[PinchView class]]) {
-				[((PinchView *)[scrollView.subviews firstObject]) unmarkAsDeleting];
-			} else {
-				//for all objects not text views
-				((UIView *)[scrollView.subviews firstObject]).backgroundColor = [UIColor DELETED_ITEM_BACKGROUND_COLOR];
-			}
-		}];
 	}
 
 }
@@ -1477,8 +1471,11 @@
 		if (touch1.y >= first_view.frame.origin.y ) {
 			//we stop when we find the first one
 			if((view.frame.origin.y+view.frame.size.height)>touch1.y) {
-				self.selectedView_PAN = self.pageElements[i];
-				[self.mainScrollView bringSubviewToFront:self.selectedView_PAN.superview];
+				if([self.pageElements[i] isKindOfClass:[UIView class]]
+				   && [self.pageElements[i] conformsToProtocol:@protocol(ContentDevElementDelegate)]) {
+					self.selectedView_PAN = self.pageElements[i];
+					[self.mainScrollView bringSubviewToFront:self.selectedView_PAN.superview];
+				}
 				return;
 			}
 		}
@@ -1498,7 +1495,7 @@
 	self.startLocationOfTouchPoint_PAN = [sender locationOfTouch:0 inView:self.mainScrollView];
 	self.originalFrameBeforeLongPress = self.selectedView_PAN.superview.frame;
 
-	[((PinchView *)self.selectedView_PAN) markAsSelected];
+	[self.selectedView_PAN markAsSelected:YES];
 }
 
 -(void) moveItem:(UILongPressGestureRecognizer *)sender {
@@ -1659,9 +1656,7 @@
 	CGRect newFrame = CGRectMake(self.originalFrameBeforeLongPress.origin.x, self.originalFrameBeforeLongPress.origin.y, self.selectedView_PAN.superview.frame.size.width, self.selectedView_PAN.superview.frame.size.height);
 	self.selectedView_PAN.superview.frame = newFrame;
 
-	if([self.selectedView_PAN isKindOfClass:[PinchView class]]) {
-		[((PinchView *)self.selectedView_PAN) unmarkAsSelected];
-	}
+	[self.selectedView_PAN markAsSelected:NO];
 
 	//sanitize for next run
 	self.selectedView_PAN = Nil;
@@ -1734,9 +1729,8 @@
 	UIView * view = tileAndInfo[0];
 	NSNumber * index = tileAndInfo[1];
 
-	if([view isKindOfClass:[PinchView class]])
-	{
-		[((PinchView *)view) unmarkAsDeleting];
+	if([view isKindOfClass:[PinchView class]]) {
+		[((PinchView<ContentDevElementDelegate>*)view) markAsDeleting:NO];
 	}
 
 	[self returnObject:[PinchView pinchObjectFromPinchObject:(PinchView *)view] ToDisplayAtIndex:index.integerValue];
