@@ -228,7 +228,8 @@
 
 	scrollview.contentSize = self.defaultElementPersonalScrollViewContentSize;
 	scrollview.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
-	scrollview.pagingEnabled = YES;
+	scrollview.pagingEnabled = NO;
+	scrollview.scrollEnabled = NO;
 	scrollview.showsHorizontalScrollIndicator = NO;
 	scrollview.delegate = self;
 	[scrollview addSubview:self.baseMediaTileSelector];
