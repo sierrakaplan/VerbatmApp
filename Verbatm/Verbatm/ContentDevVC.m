@@ -1158,22 +1158,23 @@
 	float absChangeInTopViewPosition = fabs(changeInTopViewPosition);
 	float absChangeInBottomViewPosition = fabs(changeInBottomViewPosition);
 	float totalChange = absChangeInBottomViewPosition + absChangeInTopViewPosition;
+	float ratioBetweenWidthAndHeight = self.baseMediaTileSelector.frame.size.width / self.baseMediaTileSelector.frame.size.height;
+	float changeInWidth = totalChange * ratioBetweenWidthAndHeight;
 
 	if(self.newlyCreatedMediaTile.superview.frame.size.height < PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION) {
 
 		//construct new frames for view and personal scroll view
-		self.newlyCreatedMediaTile.frame = CGRectMake(self.newlyCreatedMediaTile.frame.origin.x- totalChange/2.f,
+		self.newlyCreatedMediaTile.frame = CGRectMake(self.baseMediaTileSelector.frame.origin.x,
 												 self.newlyCreatedMediaTile.frame.origin.y,
-												 self.newlyCreatedMediaTile.frame.size.width + totalChange,
+												 self.baseMediaTileSelector.frame.size.width,
 												 self.newlyCreatedMediaTile.frame.size.height + totalChange);
 
 		//have it gain visibility as it grows
-		//self.newlyCreatedMediaTile.frame.size.width/self.baseMediaTileSelector.frame.size.width;
-		self.newlyCreatedMediaTile.alpha =1;
+		self.newlyCreatedMediaTile.alpha = self.newlyCreatedMediaTile.frame.size.height/self.baseMediaTileSelector.frame.size.height;
 
 		self.newlyCreatedMediaTile.superview.frame = CGRectMake(self.newlyCreatedMediaTile.superview.frame.origin.x,
 														   self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
-														   self.newlyCreatedMediaTile.superview.frame.size.width,
+														   self.baseMediaTileSelector.frame.size.width,
 														   self.newlyCreatedMediaTile.superview.frame.size.height + totalChange);
 
 
