@@ -1349,7 +1349,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/Verbatm/Verbatm/MasterNavigationVC.m"
-                  timestampString = "459418006.311206"
+                  timestampString = "459461992.50089"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "82"
@@ -1364,7 +1364,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/Verbatm/Verbatm/MasterNavigationVC.m"
-                  timestampString = "459418006.311359"
+                  timestampString = "459461992.501221"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "83"
@@ -2354,22 +2354,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "459417384.247583"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
-            landmarkName = "-touchesBegan:withEvent:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
             timestampString = "459411412.466463"
             startingColumnNumber = "9223372036854775807"
@@ -2387,43 +2371,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "459417384.247583"
+            timestampString = "459458711.116052"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150"
-            landmarkName = "-touchesMoved:withEvent:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "459417384.247583"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
-            landmarkName = "-touchesBegan:withEvent:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "459417384.247583"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
+            startingLineNumber = "198"
+            endingLineNumber = "198"
             landmarkName = "-getPointIndexFromLocation:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2435,11 +2387,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "459417384.247583"
+            timestampString = "459458711.116052"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "139"
-            endingLineNumber = "139"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
             landmarkName = "-getPointIndexFromLocation:"
             landmarkType = "5">
          </BreakpointContent>
@@ -2450,29 +2402,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "459417384.247583"
+            filePath = "Verbatm/MathOperations.m"
+            timestampString = "459461928.563862"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "127"
-            endingLineNumber = "127"
-            landmarkName = "-touchesBegan:withEvent:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "459417384.247583"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
-            landmarkName = "-touchesMoved:withEvent:"
+            startingLineNumber = "61"
+            endingLineNumber = "61"
+            landmarkName = "+distanceClockwiseBetweenTwoPoints:and:onCircleWithRadius:andOrigin:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2483,12 +2419,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MathOperations.m"
-            timestampString = "459416992.043121"
+            timestampString = "459461875.228827"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "51"
-            endingLineNumber = "51"
-            landmarkName = "+distanceBetweenTwoPoints:and:onCircleWithRadius:andOrigin:"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
+            landmarkName = "+calculateAngleClockwiseBetweenTwoPoints:and:onCircleWithOrigin:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
