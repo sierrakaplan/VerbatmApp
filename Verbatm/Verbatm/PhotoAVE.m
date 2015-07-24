@@ -75,8 +75,11 @@
 		UIImage* photo = [[UIImage alloc] initWithData:photoData];
 		UIImageView* photoView = [[UIImageView alloc] initWithImage:photo];
 		photoView.frame = self.bounds;
-		[self addSubview:photoView];
 		[self.imageViews addObject:photoView];
+	}
+	//adding subviews in reverse order so that imageview at index 0 on top
+	for (int i = (int)[self.imageViews count]-1; i >= 0; i--) {
+		[self addSubview:[self.imageViews objectAtIndex:i]];
 	}
 }
 
