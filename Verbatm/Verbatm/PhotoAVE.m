@@ -1,0 +1,159 @@
+//
+//  PhotoAVE.m
+//  Verbatm
+//
+//  Created by Sierra Kaplan-Nelson on 7/23/15.
+//  Copyright © 2015 Verbatm. All rights reserved.
+//
+
+#import "PhotoAVE.h"
+#import "SizesAndPositions.h"
+#import "Styles.h"
+#import "PointObject.h"
+
+@interface PhotoAVE()
+
+//contains PointObjects showing dots on circle
+@property (strong, nonatomic) NSMutableArray* pointsOnCircle;
+//contains the UIImageViews
+@property (strong, nonatomic) NSMutableArray* imageViews;
+@property (strong, nonatomic) UIView* circleView;
+
+@end
+
+@implementation PhotoAVE
+
+//TODO: limit on how many photos can be pinched together?
+//TODO: allow users to arrange order of pinched photos?
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSMutableArray *) photos {
+
+	self = [super initWithFrame:frame];
+	if (self) {
+		[self addPhotos:photos];
+		[self createCircleViewAndPoints];
+	}
+	return self;
+}
+
+#pragma mark - Lazy Instantiation
+
+@synthesize pointsOnCircle = _pointsOnCircle;
+
+-(NSMutableArray *) pointsOnCircle {
+	if(!_pointsOnCircle) _pointsOnCircle = [[NSMutableArray alloc] init];
+	return _pointsOnCircle;
+}
+
+- (void) setPointsOnCircle:(NSMutableArray *)pointsOnCircle {
+	_pointsOnCircle = pointsOnCircle;
+}
+
+@synthesize imageViews = _imageViews;
+
+-(NSMutableArray*) imageViews {
+	if(!_imageViews) _imageViews = [[NSMutableArray alloc] init];
+	return _imageViews;
+}
+
+-(void) setImageViews:(NSMutableArray *)imageViews {
+	_imageViews = imageViews;
+}
+
+#pragma mark - Sub Views -
+
+-(void) addPhotos:(NSMutableArray*)photos {
+	for (NSData* photoData in photos) {
+		UIImage* photo = [[UIImage alloc] initWithData:photoData];
+		UIImageView* photoView = [[UIImageView alloc] initWithImage:photo];
+		photoView.frame = self.bounds;
+		[self addSubview:photoView];
+		[self.imageViews addObject:photoView];
+	}
+}
+
+-(void) createCircleViewAndPoints {
+
+	[self createMainCircleView];
+	NSUInteger numCircles = [self.imageViews count];
+	for (int i = 1; i <= numCircles; i++) {
+		PointObject *point = [self getPointFromCircleRadius:CIRCLE_OVER_IMAGES_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
+		//set relative to the center of the circle
+		point.x = point.x + self.frame.size.width/2.f;
+		point.y = point.y + self.frame.size.height/2.f;
+		[self.pointsOnCircle addObject:point];
+		[self createDotViewFromPoint:point];
+	}
+}
+
+-(void) createMainCircleView {
+	CGRect frame = CGRectMake(self.frame.size.width/2.f-CIRCLE_OVER_IMAGES_RADIUS,
+							  self.frame.size.height/2.f-CIRCLE_OVER_IMAGES_RADIUS,
+							  CIRCLE_OVER_IMAGES_RADIUS*2, CIRCLE_OVER_IMAGES_RADIUS*2);
+
+	self.circleView = [[UIView alloc] initWithFrame:frame];
+ 	self.circleView.backgroundColor = [UIColor clearColor];
+	self.circleView.layer.cornerRadius = frame.size.width/2.f;
+ 	self.circleView.layer.borderWidth = CIRCLE_OVER_IMAGES_BORDER_WIDTH;
+ 	self.circleView.layer.borderColor = [UIColor CIRCLE_OVER_IMAGES_COLOR].CGColor;
+ 	[self addSubview:self.circleView];
+}
+
+-(void) createDotViewFromPoint:(PointObject*)point {
+	CGRect frame = CGRectMake(point.x-POINTS_ON_CIRCLE_RADIUS,
+							  point.y-POINTS_ON_CIRCLE_RADIUS,
+							  POINTS_ON_CIRCLE_RADIUS*2, POINTS_ON_CIRCLE_RADIUS*2);
+
+	UIView* dot = self.circleView = [[UIView alloc] initWithFrame:frame];
+	dot.backgroundColor = [UIColor CIRCLE_OVER_IMAGES_COLOR];
+	self.circleView.layer.cornerRadius = frame.size.width/2.f;
+	dot.layer.borderColor = [UIColor CIRCLE_OVER_IMAGES_COLOR].CGColor;
+	[self addSubview:dot];
+}
+
+//Returns point with x and y relative to center of a circle
+-(PointObject*) getPointFromCircleRadius:(float)radius andCurrentPointIndex:(NSInteger)index withTotalPoints:(NSUInteger)total {
+
+	float theta = ((M_PI*2.f) / (float)total);
+	float angle = (theta * index);
+
+	PointObject* point = [[PointObject alloc] init];
+
+	point.x = (radius * cos(angle));
+	point.y = (radius * sin(angle));
+
+	return point;
+}
+
+
+#pragma mark - Touch Events -
+
+//touches are array of UITouch
+-(void) touchesBegan:(NSSet*)touches withEvent:(UIEvent *)event {
+	if ([touches count] != 1) {
+		return;
+	}
+
+	UITouch*touch = [touches anyObject];
+	CGPoint touchLocation = [touch locationInView:self];
+
+}
+
+- (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent *)event {
+	if ([touches count] != 1) {
+		return;
+	}
+
+}
+
+-(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
+	if ([touches count] != 1) {
+		return;
+	}
+
+}
+
+-(void)touchesCancelled:(NSSet*)touches withEvent:(UIEvent *)event {
+	//TODO: clean up all state data created in touchesBegan
+}
+
+@end

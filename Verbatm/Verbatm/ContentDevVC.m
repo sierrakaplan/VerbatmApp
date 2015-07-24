@@ -476,7 +476,7 @@
 	if(scrollView == self.mainScrollView) {
 		[self showOrHidePullBarBasedOnMainScrollViewScroll];
 		return;
-		// open collection
+		// is open collection
 	} else if(scrollView.subviews.count > 1) {
 		return;
 	}
@@ -607,7 +607,6 @@
 		[media addObject: data];
 
 		pinchView = [[PinchView alloc] initWithRadius:self.defaultElementRadius withCenter:self.defaultElementCenter andMedia:media];
-		NSLog(@"Radius: %f", self.defaultElementRadius);
 
 	}
 	if (pinchView) {
@@ -628,8 +627,6 @@
 
 	if(!upperView) {
 		newElementScrollView.frame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height, self.defaultElementFrame.width, self.defaultElementFrame.height);
-		NSLog(@"Width: %f", self.defaultElementFrame.width);
-		NSLog(@"Height: %f", self.defaultElementFrame.height);
 		[self.pageElements insertObject:pinchView atIndex:0];
 
 	}else{
@@ -1000,7 +997,7 @@
 	//they have pinched enough to join the objects
 	if(self.horizontalPinchDistance > HORIZONTAL_PINCH_THRESHOLD) {
 		self.upperPinchView = self.lowerPinchView = nil;
-		[self joinOpenCollectionToOne:self.scrollViewOfHorizontalPinching];
+		[self closeOpenCollectionInScrollView:self.scrollViewOfHorizontalPinching];
 		self.pinchingMode = PinchingModeNone;
 	}
 }
@@ -1029,11 +1026,11 @@
 
 -(void) closeAllOpenCollections {
 	for (UIScrollView* scrollView in self.pinchViewScrollViews) {
-		[self joinOpenCollectionToOne:scrollView];
+		[self closeOpenCollectionInScrollView:scrollView];
 	}
 }
 
--(void)joinOpenCollectionToOne:(UIScrollView*)openCollectionScrollView {
+-(void)closeOpenCollectionInScrollView:(UIScrollView*)openCollectionScrollView {
 
 	NSArray * pinchViews = openCollectionScrollView.subviews;
 	if ([pinchViews count] < 2) return;
@@ -1041,25 +1038,28 @@
 	//make sure the pullbar is showing when things are pinched together
 	[self showPullBarWithTransition:YES];
 
-	PinchView* placeholder = [[PinchView alloc] init];
-	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:pinchViews[0]] withObject:placeholder];
-
 	CGRect newFrame = CGRectMake(self.defaultElementCenter.x - self.defaultElementRadius, self.defaultElementCenter.y - self.defaultElementRadius, self.defaultElementRadius*2.f, self.defaultElementRadius*2.f);
-	PinchView * collectionPinchView = [PinchView pinchTogether:[NSMutableArray arrayWithArray:pinchViews]];
-	[collectionPinchView specifyFrame:newFrame];
-	[self addTapGestureToView:collectionPinchView];
 
-	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeholder] withObject:collectionPinchView];
-
-	for(int i=0; i<pinchViews.count; i++) {
-		[((UIView *)pinchViews[i]) removeFromSuperview];
-	}
-	pinchViews = nil;
-
-	openCollectionScrollView.contentSize = self.defaultElementPersonalScrollViewContentSize;
-	openCollectionScrollView.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
-
+	// animate all pinch views towards each other
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+		for(PinchView* pinchView in pinchViews) {
+			[pinchView specifyFrame:newFrame];
+		}
+	} completion:^(BOOL finished) {
+		PinchView* placeholder = [[PinchView alloc] init];
+		[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:pinchViews[0]] withObject:placeholder];
+
+		PinchView * collectionPinchView = [PinchView pinchTogether:[NSMutableArray arrayWithArray:pinchViews]];
+		[collectionPinchView specifyFrame:newFrame];
+		[self addTapGestureToView:collectionPinchView];
+
+		[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeholder] withObject:collectionPinchView];
+
+		for(PinchView* pinchView in pinchViews) {
+			[pinchView removeFromSuperview];
+		}
+		openCollectionScrollView.contentSize = self.defaultElementPersonalScrollViewContentSize;
+		openCollectionScrollView.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
 		[openCollectionScrollView addSubview:collectionPinchView];
 		//Turn paging back on because now it's one element
 		openCollectionScrollView.pagingEnabled =YES;
@@ -1963,7 +1963,6 @@
 	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:collection] withObject:elementArray[0]];
 }
 
-//TODO close collection
 
 -(void) addPinchObjects:(NSMutableArray *) array toScrollView: (UIScrollView *) sv
 {
@@ -2068,7 +2067,6 @@
 	UIView * topView;
 	if(self.index==-1 || self.pageElements.count==1)topView = nil;
 	else topView = self.pageElements[self.index];
-	//self.index ++;//makes it that the next image is below this image just added
 	[lock unlock];
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[self newPinchObjectBelowView:topView fromData:asset];
@@ -2088,14 +2086,18 @@
 		if(asset.mediaType==PHAssetMediaTypeImage)
 		{
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-				[self addAssetToView: imageData];
-
+				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[self addAssetToView: imageData];
+				});
 			}];
 		}else
 		{
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
-				[self addAssetToView:asset];
-
+				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[self addAssetToView:asset];
+				});
 			}];
 		}
 	}

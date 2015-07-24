@@ -176,13 +176,17 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
                                         options:nil
                                   resultHandler:^(UIImage *result, NSDictionary *info)
                                     {
-                                        // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                                        if (cell.tag == currentTag) {
-                                            [cell.imageView setImage:result];
-                                        }
+										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+										dispatch_async(dispatch_get_main_queue(), ^{
+											// Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
+											if (cell.tag == currentTag) {
+												[cell.imageView setImage:result];
+											}
+										});
+
                                     }];
     }
-    
+
     [self.collectionView setCollectionViewLayout:layout animated:YES];
 }
 
@@ -288,23 +292,6 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     cell.tag = currentTag;
     
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
-    
-    /*if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-    {
-        NSLog(@"Image manager: Requesting FIT image for iPad");
-        [self.imageManager requestImageForAsset:asset
-                                     targetSize:AssetGridThumbnailSize
-                                    contentMode:PHImageContentModeAspectFit
-                                        options:nil
-                                  resultHandler:^(UIImage *result, NSDictionary *info) {
-                                      
-                                      // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                                      if (cell.tag == currentTag) {
-                                          [cell.imageView setImage:result];
-                                      }
-                                  }];
-    }
-    else*/
     {
         //NSLog(@"Image manager: Requesting FILL image for iPhone");
         [self.imageManager requestImageForAsset:asset
@@ -312,11 +299,13 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
                                     contentMode:PHImageContentModeAspectFill
                                         options:nil
                                   resultHandler:^(UIImage *result, NSDictionary *info) {
-                                      
-                                      // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
-                                      if (cell.tag == currentTag) {
-                                          [cell.imageView setImage:result];
-                                      }
+									  // RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+									  dispatch_async(dispatch_get_main_queue(), ^{
+										  // Only update the thumbnail if the cell tag hasn't changed. Otherwise, the cell has been re-used.
+										  if (cell.tag == currentTag) {
+											  [cell.imageView setImage:result];
+										  }
+									  });
                                   }];
     }
     

@@ -559,12 +559,24 @@
 
 // Moving pull bar gesture sensed
 - (IBAction)expandContentPage:(UIPanGestureRecognizer *)sender {
-
-	//finger is dragging
-	if (sender.state==UIGestureRecognizerStateChanged){
-		[self expandContentPageChanged:sender];
-	} else if(sender.state==UIGestureRecognizerStateEnded) {
-		[self expandContentPageEnded:sender];
+	switch(sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			if (self.isTakingVideo) {
+				[self endVideoRecordingSession];
+			}
+			break;
+		}
+		case UIGestureRecognizerStateChanged: {
+			[self expandContentPageChanged:sender];
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+			[self expandContentPageEnded:sender];
+			break;
+		}
+		default: {
+			return;
+		}
 	}
 }
 

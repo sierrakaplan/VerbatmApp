@@ -16,6 +16,8 @@
 		A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */; };
 		A58656621B602038008E358C /* TextOverAVEView.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656611B602038008E358C /* TextOverAVEView.m */; };
 		A58656651B607EF7008E358C /* VerbatmImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656641B607EF7008E358C /* VerbatmImageScrollView.m */; };
+		A58656681B61FD99008E358C /* PhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656671B61FD99008E358C /* PhotoAVE.m */; };
+		A586566D1B620E60008E358C /* PointObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A586566C1B620E60008E358C /* PointObject.m */; };
 		A5B344901B4DE18B0074B4AA /* MultiplePhotoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */; };
 		A5B344961B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */; };
 		A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CB82A21B5740A000195A2E /* UIEffects.m */; };
@@ -127,6 +129,10 @@
 		A58656611B602038008E358C /* TextOverAVEView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextOverAVEView.m; sourceTree = "<group>"; };
 		A58656631B607EF7008E358C /* VerbatmImageScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmImageScrollView.h; sourceTree = "<group>"; };
 		A58656641B607EF7008E358C /* VerbatmImageScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmImageScrollView.m; sourceTree = "<group>"; };
+		A58656661B61FD99008E358C /* PhotoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoAVE.h; sourceTree = "<group>"; };
+		A58656671B61FD99008E358C /* PhotoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoAVE.m; sourceTree = "<group>"; };
+		A58656691B620951008E358C /* PointObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointObject.h; sourceTree = "<group>"; };
+		A586566C1B620E60008E358C /* PointObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PointObject.m; sourceTree = "<group>"; };
 		A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoAVE.xib; sourceTree = "<group>"; };
 		A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoVideoAVE.xib; sourceTree = "<group>"; };
 		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
@@ -297,6 +303,8 @@
 				A52919751B5DD24F00233712 /* UIView+Glow.m */,
 				A5CB82A11B5740A000195A2E /* UIEffects.h */,
 				A5CB82A21B5740A000195A2E /* UIEffects.m */,
+				A58656691B620951008E358C /* PointObject.h */,
+				A586566C1B620E60008E358C /* PointObject.m */,
 			);
 			name = "UI effects";
 			sourceTree = "<group>";
@@ -597,6 +605,8 @@
 				C77A68B31AC20AA2000B10E2 /* MultiplePhotoAVE.m */,
 				C7E6C12F1A4E394600863893 /* MultiplePhotoVideoAVE.h */,
 				C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */,
+				A58656661B61FD99008E358C /* PhotoAVE.h */,
+				A58656671B61FD99008E358C /* PhotoAVE.m */,
 				A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */,
 				C7E6C13D1A4E394600863893 /* VideoAVE.h */,
 				C7E6C13E1A4E394600863893 /* VideoAVE.m */,
@@ -778,6 +788,7 @@
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,
 				C7E6C13F1A4E394600863893 /* MultiplePhotoVideoAVE.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* UserLoginVC.m in Sources */,
+				A58656681B61FD99008E358C /* PhotoAVE.m in Sources */,
 				C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */,
 				C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */,
 				C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */,
@@ -793,6 +804,7 @@
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */,
 				C777EEA61AC90A7A003E0633 /* ArticleAquirer.m in Sources */,
+				A586566D1B620E60008E358C /* PointObject.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,

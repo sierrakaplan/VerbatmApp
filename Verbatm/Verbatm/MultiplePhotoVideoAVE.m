@@ -67,7 +67,6 @@
 
 	UIView * view = gesture.view;
 	BaseArticleViewingExperience* superview = (BaseArticleViewingExperience*)self.superview;
-
 	if(superview.mainViewIsFullScreen) {
 		[superview removeMainView];
 	} else {

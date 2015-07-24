@@ -58,5 +58,10 @@
 #define TEXT_OVER_AVE_BACKGROUND_ALPHA 0.7
 #define TEXT_OVER_AVE_PULLBAR_COLOR clearColor
 
+#pragma mark Images
+
+#define CIRCLE_OVER_IMAGES_BORDER_WIDTH 5.f
+#define CIRCLE_OVER_IMAGES_COLOR whiteColor
+
 
 #endif /* Styles_h */

@@ -82,4 +82,9 @@
 #define TEXT_OVER_AVE_ANIMATION_THRESHOLD 30.f
 #define TEXT_OVER_AVE_BORDER 30.f
 
+#pragma mark Images
+
+#define CIRCLE_OVER_IMAGES_RADIUS 100.f
+#define POINTS_ON_CIRCLE_RADIUS 10.f
+
 #endif

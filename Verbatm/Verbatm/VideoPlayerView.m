@@ -63,6 +63,7 @@
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
 	self.playerLayer.frame = self.bounds;
 	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+	[self.playerLayer removeAllAnimations];
 	// Add it to your view's sublayers
 	[self.layer addSublayer:self.playerLayer];
 	[self.player play];

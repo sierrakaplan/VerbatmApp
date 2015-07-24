@@ -9,6 +9,7 @@
 #import "BaseArticleViewingExperience.h"
 #import "MultiplePhotoAVE.h"
 #import "VideoAVE.h"
+#import "PhotoAVE.h"
 #import "MultiplePhotoVideoAVE.h"
 #import "VerbatmImageScrollView.h"
 #import "Styles.h"
@@ -52,7 +53,8 @@
     if(self) {
 		switch (aveType) {
 			case AVETypePhoto: {
-				MultiplePhotoAVE *photoAve = [[MultiplePhotoAVE alloc] initWithFrame:frame andPhotoArray:photos];
+//				MultiplePhotoAVE *photoAve = [[MultiplePhotoAVE alloc] initWithFrame:frame andPhotoArray:photos];
+				PhotoAVE* photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:photos];
 				[self addSubview: photoAve];
 				break;
 			}
@@ -195,6 +197,7 @@
 
 	[UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
 		view.frame = self.bounds;
+		[view layoutIfNeeded];
 		if ([view isKindOfClass: [VerbatmImageScrollView class]]) {
 			[(VerbatmImageScrollView*)view setImageHeights];
 		}

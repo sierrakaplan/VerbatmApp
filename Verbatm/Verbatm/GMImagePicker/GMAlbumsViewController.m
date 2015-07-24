@@ -258,12 +258,15 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                                         options:nil
                                   resultHandler:^(UIImage *result, NSDictionary *info)
          {
-             if (cell.tag == currentTag)
-             {
-                 cell.imageView1.image = result;
-             }
+			 // RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+				dispatch_async(dispatch_get_main_queue(), ^{
+					if (cell.tag == currentTag)
+					{
+						cell.imageView1.image = result;
+					}
+				});
          }];
-        
+
         //Second & third images:
         // TO DO: Only preload the 3pixels height visible frame!
         if([assetsFetchResult count]>1)
@@ -277,10 +280,12 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                                             options:nil
                                       resultHandler:^(UIImage *result, NSDictionary *info)
              {
-                 if (cell.tag == currentTag)
-                 {
-                     cell.imageView2.image = result;
-                 }
+				 dispatch_async(dispatch_get_main_queue(), ^{
+					 if (cell.tag == currentTag)
+					 {
+						 cell.imageView2.image = result;
+					 }
+				 });
              }];
         }
         else
@@ -297,10 +302,13 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
                                             options:nil
                                       resultHandler:^(UIImage *result, NSDictionary *info)
              {
-                 if (cell.tag == currentTag)
-                 {
-                     cell.imageView3.image = result;
-                 }
+				 // RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+				 dispatch_async(dispatch_get_main_queue(), ^{
+					 if (cell.tag == currentTag)
+					 {
+						 cell.imageView3.image = result;
+					 }
+				 });
              }];
         }
         else
