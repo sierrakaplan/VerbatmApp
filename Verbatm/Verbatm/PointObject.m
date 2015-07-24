@@ -10,5 +10,9 @@
 
 @implementation PointObject
 
+-(CGPoint) getCGPoint {
+	return CGPointMake(self.x, self.y);
+}
+
 @end
 

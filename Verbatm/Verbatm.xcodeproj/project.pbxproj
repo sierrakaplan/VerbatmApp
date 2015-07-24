@@ -18,6 +18,7 @@
 		A58656651B607EF7008E358C /* VerbatmImageScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656641B607EF7008E358C /* VerbatmImageScrollView.m */; };
 		A58656681B61FD99008E358C /* PhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656671B61FD99008E358C /* PhotoAVE.m */; };
 		A586566D1B620E60008E358C /* PointObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A586566C1B620E60008E358C /* PointObject.m */; };
+		A58656711B621CA4008E358C /* MathOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656701B621CA4008E358C /* MathOperations.m */; };
 		A5B344901B4DE18B0074B4AA /* MultiplePhotoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */; };
 		A5B344961B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */; };
 		A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CB82A21B5740A000195A2E /* UIEffects.m */; };
@@ -133,6 +134,8 @@
 		A58656671B61FD99008E358C /* PhotoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoAVE.m; sourceTree = "<group>"; };
 		A58656691B620951008E358C /* PointObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PointObject.h; sourceTree = "<group>"; };
 		A586566C1B620E60008E358C /* PointObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PointObject.m; sourceTree = "<group>"; };
+		A586566F1B621CA4008E358C /* MathOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathOperations.h; sourceTree = "<group>"; };
+		A58656701B621CA4008E358C /* MathOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MathOperations.m; sourceTree = "<group>"; };
 		A5B3448F1B4DE18B0074B4AA /* MultiplePhotoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoAVE.xib; sourceTree = "<group>"; };
 		A5B344951B4DE72F0074B4AA /* MultiplePhotoVideoAVE.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MultiplePhotoVideoAVE.xib; sourceTree = "<group>"; };
 		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
@@ -296,6 +299,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A586566E1B621C7E008E358C /* MathOps */ = {
+			isa = PBXGroup;
+			children = (
+				A586566F1B621CA4008E358C /* MathOperations.h */,
+				A58656701B621CA4008E358C /* MathOperations.m */,
+			);
+			name = MathOps;
+			sourceTree = "<group>";
+		};
 		A5CB82A41B5744B800195A2E /* UI effects */ = {
 			isa = PBXGroup;
 			children = (
@@ -496,6 +508,7 @@
 			children = (
 				C7BD53C61B5B790B00EE6241 /* Constants  */,
 				C748836A1B489AE300E64ED9 /* Gallery */,
+				A586566E1B621C7E008E358C /* MathOps */,
 				A5CB82A41B5744B800195A2E /* UI effects */,
 				F257FEC81AC21F8B00964AB5 /* Saving and Downloading */,
 				C750A35919D768BD0006FA88 /* Video Capture Classes */,
@@ -782,6 +795,7 @@
 				C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */,
 				C7BD53C41B5B73A700EE6241 /* BaseArticleViewingExperience.m in Sources */,
 				F20A24FA1A46166100BB77C1 /* EditContentView.m in Sources */,
+				A58656711B621CA4008E358C /* MathOperations.m in Sources */,
 				A58656651B607EF7008E358C /* VerbatmImageScrollView.m in Sources */,
 				C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */,
 				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,

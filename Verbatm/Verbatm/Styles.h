@@ -60,7 +60,7 @@
 
 #pragma mark Images
 
-#define CIRCLE_OVER_IMAGES_BORDER_WIDTH 5.f
+#define CIRCLE_OVER_IMAGES_BORDER_WIDTH 3.f
 #define CIRCLE_OVER_IMAGES_COLOR whiteColor
 
 

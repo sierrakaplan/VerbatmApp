@@ -1041,29 +1041,24 @@
 	CGRect newFrame = CGRectMake(self.defaultElementCenter.x - self.defaultElementRadius, self.defaultElementCenter.y - self.defaultElementRadius, self.defaultElementRadius*2.f, self.defaultElementRadius*2.f);
 
 	// animate all pinch views towards each other
-	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-		for(PinchView* pinchView in pinchViews) {
-			[pinchView specifyFrame:newFrame];
-		}
-	} completion:^(BOOL finished) {
-		PinchView* placeholder = [[PinchView alloc] init];
-		[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:pinchViews[0]] withObject:placeholder];
 
-		PinchView * collectionPinchView = [PinchView pinchTogether:[NSMutableArray arrayWithArray:pinchViews]];
-		[collectionPinchView specifyFrame:newFrame];
-		[self addTapGestureToView:collectionPinchView];
+	PinchView* placeholder = [[PinchView alloc] init];
+	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:pinchViews[0]] withObject:placeholder];
 
-		[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeholder] withObject:collectionPinchView];
+	PinchView * collectionPinchView = [PinchView pinchTogether:[NSMutableArray arrayWithArray:pinchViews]];
+	[collectionPinchView specifyFrame:newFrame];
+	[self addTapGestureToView:collectionPinchView];
 
-		for(PinchView* pinchView in pinchViews) {
-			[pinchView removeFromSuperview];
-		}
-		openCollectionScrollView.contentSize = self.defaultElementPersonalScrollViewContentSize;
-		openCollectionScrollView.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
-		[openCollectionScrollView addSubview:collectionPinchView];
-		//Turn paging back on because now it's one element
-		openCollectionScrollView.pagingEnabled =YES;
-	}];
+	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:placeholder] withObject:collectionPinchView];
+
+	for(PinchView* pinchView in pinchViews) {
+		[pinchView removeFromSuperview];
+	}
+	openCollectionScrollView.contentSize = self.defaultElementPersonalScrollViewContentSize;
+	openCollectionScrollView.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
+	[openCollectionScrollView addSubview:collectionPinchView];
+	//Turn paging back on because now it's one element
+	openCollectionScrollView.pagingEnabled =YES;
 }
 
 #pragma mark - Vertical Pinching

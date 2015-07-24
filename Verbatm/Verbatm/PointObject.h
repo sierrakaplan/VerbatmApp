@@ -13,4 +13,6 @@
 @property (nonatomic) float x;
 @property (nonatomic) float y;
 
+-(CGPoint) getCGPoint;
+
 @end

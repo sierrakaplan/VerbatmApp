@@ -10,14 +10,20 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "PointObject.h"
+#import "MathOperations.h"
+#import "UIEffects.h"
 
 @interface PhotoAVE()
 
+@property (nonatomic) CGPoint originPoint;
 //contains PointObjects showing dots on circle
 @property (strong, nonatomic) NSMutableArray* pointsOnCircle;
 //contains the UIImageViews
 @property (strong, nonatomic) NSMutableArray* imageViews;
 @property (strong, nonatomic) UIView* circleView;
+
+@property (nonatomic) NSInteger currentPhotoIndex;
+@property (nonatomic) NSInteger draggingFromPointIndex;
 
 @end
 
@@ -30,7 +36,10 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		[self addPhotos:photos];
-		[self createCircleViewAndPoints];
+		if ([photos count] > 1) {
+			[self createCircleViewAndPoints];
+		}
+		self.currentPhotoIndex = 0;
 	}
 	return self;
 }
@@ -76,7 +85,7 @@
 	[self createMainCircleView];
 	NSUInteger numCircles = [self.imageViews count];
 	for (int i = 1; i <= numCircles; i++) {
-		PointObject *point = [self getPointFromCircleRadius:CIRCLE_OVER_IMAGES_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
+		PointObject *point = [MathOperations getPointFromCircleRadius:CIRCLE_OVER_IMAGES_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
 		//set relative to the center of the circle
 		point.x = point.x + self.frame.size.width/2.f;
 		point.y = point.y + self.frame.size.height/2.f;
@@ -86,9 +95,10 @@
 }
 
 -(void) createMainCircleView {
-	CGRect frame = CGRectMake(self.frame.size.width/2.f-CIRCLE_OVER_IMAGES_RADIUS,
-							  self.frame.size.height/2.f-CIRCLE_OVER_IMAGES_RADIUS,
-							  CIRCLE_OVER_IMAGES_RADIUS*2, CIRCLE_OVER_IMAGES_RADIUS*2);
+	self.originPoint = CGPointMake(self.frame.size.width/2.f, self.frame.size.height/2.f);
+	CGRect frame = CGRectMake(self.originPoint.x-CIRCLE_OVER_IMAGES_RADIUS-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
+							  self.originPoint.y-CIRCLE_OVER_IMAGES_RADIUS,
+							  CIRCLE_OVER_IMAGES_RADIUS*2 + CIRCLE_OVER_IMAGES_BORDER_WIDTH, CIRCLE_OVER_IMAGES_RADIUS*2);
 
 	self.circleView = [[UIView alloc] initWithFrame:frame];
  	self.circleView.backgroundColor = [UIColor clearColor];
@@ -110,20 +120,6 @@
 	[self addSubview:dot];
 }
 
-//Returns point with x and y relative to center of a circle
--(PointObject*) getPointFromCircleRadius:(float)radius andCurrentPointIndex:(NSInteger)index withTotalPoints:(NSUInteger)total {
-
-	float theta = ((M_PI*2.f) / (float)total);
-	float angle = (theta * index);
-
-	PointObject* point = [[PointObject alloc] init];
-
-	point.x = (radius * cos(angle));
-	point.y = (radius * sin(angle));
-
-	return point;
-}
-
 
 #pragma mark - Touch Events -
 
@@ -135,7 +131,19 @@
 
 	UITouch*touch = [touches anyObject];
 	CGPoint touchLocation = [touch locationInView:self];
+	self.draggingFromPointIndex = [self getPointIndexFromLocation:touchLocation];
+}
 
+-(NSInteger) getPointIndexFromLocation:(CGPoint)touchLocation {
+
+	for (int i = 0; i < [self.pointsOnCircle count]; i++) {
+		PointObject* point = [self.pointsOnCircle objectAtIndex:i];
+		if(fabs(point.x - touchLocation.x) <= TOUCH_THRESHOLD
+		   && fabs(point.y - touchLocation.y) <= TOUCH_THRESHOLD) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 - (void)touchesMoved:(NSSet*)touches withEvent:(UIEvent *)event {
@@ -143,6 +151,23 @@
 		return;
 	}
 
+	if (self.draggingFromPointIndex >= 0) {
+		UITouch*touch = [touches anyObject];
+		CGPoint touchLocation = [touch locationInView:self];
+
+		if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_OVER_IMAGES_RADIUS andOrigin:self.originPoint withThreshold:TOUCH_THRESHOLD]) {
+			return;
+		}
+		PointObject * point = [self.pointsOnCircle objectAtIndex:self.draggingFromPointIndex];
+		float totalDistanceToTravel = (2.f * M_PI * CIRCLE_OVER_IMAGES_RADIUS)/[self.pointsOnCircle count];
+		float distanceFromStartingTouch = [MathOperations distanceBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:CIRCLE_OVER_IMAGES_RADIUS andOrigin:self.originPoint];
+		float fractionOfDistance = distanceFromStartingTouch / totalDistanceToTravel;
+
+		UIImageView* currentImageView = [self.imageViews objectAtIndex:self.currentPhotoIndex];
+		float alpha = 1.f-fractionOfDistance;
+		NSLog(@"Alpha:%f", alpha);
+		[currentImageView setAlpha:alpha];
+	}
 }
 
 -(void)touchesEnded:(NSSet*)touches withEvent:(UIEvent*)event {
