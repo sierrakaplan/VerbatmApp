@@ -52,8 +52,10 @@
 
 -(void) createFramesForButtonsWithFrame: (CGRect) frame
 {
-    self.selectMedia.frame = CGRectMake(ADD_MEDIA_BUTTON_OFFSET, ADD_MEDIA_BUTTON_OFFSET, frame.size.width/2, frame.size.height-ADD_MEDIA_BUTTON_OFFSET*2);
-    self.selectText.frame = CGRectMake(frame.size.width/2, ADD_MEDIA_BUTTON_OFFSET, frame.size.width/2-ADD_MEDIA_BUTTON_OFFSET, frame.size.height-ADD_MEDIA_BUTTON_OFFSET*2);
+	float size = frame.size.height-ADD_MEDIA_BUTTON_OFFSET*2;
+	float xDifference = frame.size.width/4.f - size/2.f;
+    self.selectMedia.frame = CGRectMake(ADD_MEDIA_BUTTON_OFFSET + xDifference, ADD_MEDIA_BUTTON_OFFSET, size, size);
+    self.selectText.frame = CGRectMake(frame.size.width/2.f + xDifference, ADD_MEDIA_BUTTON_OFFSET, size, size);
 }
 
 -(void)addButtonsAsSubviews

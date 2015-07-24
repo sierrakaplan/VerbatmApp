@@ -902,13 +902,31 @@
 
 		//new media creation has failed
 		if(self.newlyCreatedMediaTile.superview.frame.size.height < PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION){
-			[self clearNewMediaView];
+			[self animateRemoveNewMediaTile];
+			return;
 		}
 		self.newlyCreatedMediaTile = Nil;
 	}
 
 	[self shiftElementsBelowView:self.articleTitleField];
 	self.pinchingMode = PinchingModeNone;
+}
+
+-(void) animateRemoveNewMediaTile {
+	float originalHeight = self.newlyCreatedMediaTile.frame.size.height;
+	[self.pageElements removeObject:self.newlyCreatedMediaTile];
+	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION/2.f animations:^{
+		self.newlyCreatedMediaTile.alpha = 0.f;
+		self.newlyCreatedMediaTile.frame = [self getStartFrameForNewMediaTile];
+		self.newlyCreatedMediaTile.superview.frame = CGRectMake(0,self.newlyCreatedMediaTile.superview.frame.origin.y + originalHeight/2.f,0,0);
+		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+		[self shiftElementsBelowView:self.articleTitleField];
+
+	} completion:^(BOOL finished) {
+		[self.newlyCreatedMediaTile.superview removeFromSuperview];
+		self.newlyCreatedMediaTile = Nil;
+		self.pinchingMode = PinchingModeNone;
+	}];
 }
 
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
@@ -1139,7 +1157,7 @@
 
 -(void) createNewViewToRevealBetweenPinchViews
 {
-	CGRect frame =  CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),0, 0, 0);
+	CGRect frame = [self getStartFrameForNewMediaTile];
 	self.newlyCreatedMediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
 	self.newlyCreatedMediaTile.delegate = self;
 	self.newlyCreatedMediaTile.alpha = 0; //start it off as invisible
@@ -1147,10 +1165,14 @@
 	[self addMediaTile: self.newlyCreatedMediaTile underView: self.upperPinchView];
 }
 
+-(CGRect) getStartFrameForNewMediaTile {
+	return CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),0, 0, 0);
+}
+
 -(void) addMediaTile: (MediaSelectTile *) mediaView underView: (UIView *) topView {
 	//create frame for the personal scrollview of the new text view
 	UIScrollView * newPersonalScrollView = [[UIScrollView alloc]init];
-	newPersonalScrollView.frame = CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.view.frame.size.width,0);
+	newPersonalScrollView.frame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
 
 	newPersonalScrollView.delegate = self;
 	if(newPersonalScrollView)[self.mainScrollView addSubview:newPersonalScrollView];
@@ -1164,18 +1186,24 @@
 	}
 }
 
+-(CGRect) getStartFrameForNewMediaTileScrollViewUnderView: (UIView *) topView  {
+	return CGRectMake(topView.superview.frame.origin.x, topView.superview.frame.origin.y +topView.superview.frame.size.height, self.view.frame.size.width,0);
+}
+
 -(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture andChangeInTopViewPosition:(float)changeInTopViewPosition andChangeInBottomViewPosition:(float) changeInBottomViewPosition {
 
 	float absChangeInTopViewPosition = fabs(changeInTopViewPosition);
 	float absChangeInBottomViewPosition = fabs(changeInBottomViewPosition);
 	float totalChange = absChangeInBottomViewPosition + absChangeInTopViewPosition;
+	float widthToHeightRatio = self.baseMediaTileSelector.frame.size.width/self.baseMediaTileSelector.frame.size.height;
+	float changeInWidth = widthToHeightRatio * totalChange;
 
 	if(self.newlyCreatedMediaTile.superview.frame.size.height < PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION) {
 
 		//construct new frames for view and personal scroll view
-		self.newlyCreatedMediaTile.frame = CGRectMake(self.baseMediaTileSelector.frame.origin.x,
+		self.newlyCreatedMediaTile.frame = CGRectMake(self.newlyCreatedMediaTile.frame.origin.x - changeInWidth/2.f,
 												 self.newlyCreatedMediaTile.frame.origin.y,
-												 self.baseMediaTileSelector.frame.size.width,
+												 self.newlyCreatedMediaTile.frame.size.width + changeInWidth,
 												 self.newlyCreatedMediaTile.frame.size.height + totalChange);
 
 		//have it gain visibility as it grows
@@ -1183,7 +1211,7 @@
 
 		self.newlyCreatedMediaTile.superview.frame = CGRectMake(self.newlyCreatedMediaTile.superview.frame.origin.x,
 														   self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
-														   self.baseMediaTileSelector.frame.size.width,
+														   self.newlyCreatedMediaTile.superview.frame.size.width + changeInWidth,
 														   self.newlyCreatedMediaTile.superview.frame.size.height + totalChange);
 
 
