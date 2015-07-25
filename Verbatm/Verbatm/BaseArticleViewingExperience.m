@@ -119,7 +119,7 @@
 	float iconSize = TEXT_OVER_AVE_PULLBAR_HEIGHT;
 	UIImageView *pullBarIcon = [[UIImageView alloc] initWithImage:[UIImage imageNamed:PULLDOWN_TEXT_ICON]];
 	float iconXposition = self.pullBar.bounds.size.width/2.f - iconSize/2.f;
-	pullBarIcon.frame = CGRectMake(iconXposition, self.pullBar.bounds.origin.y, iconSize, iconSize);
+	pullBarIcon.frame = CGRectMake(iconXposition, self.pullBar.bounds.origin.y, iconSize, iconSize/2.f);
 	[self.pullBar addSubview:pullBarIcon];
 
     [self addSubview: self.pullBar];

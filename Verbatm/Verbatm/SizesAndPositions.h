@@ -9,6 +9,10 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
+#pragma mark - Sign In -
+
+#define SIGN_IN_ERROR_VIEW_HEIGHT 100.f
+#define SIGNIN_ERROR_LABEL_PADDING 30.f
 
 #pragma mark - Media Dev VC -
 

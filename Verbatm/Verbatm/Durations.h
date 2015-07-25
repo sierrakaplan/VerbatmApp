@@ -9,8 +9,12 @@
 #ifndef Durations_h
 #define Durations_h
 
+#pragma mark - Sign In -
 
-#pragma mark Media Dev VC
+#define ERROR_MESSAGE_ANIMATION_TIME 1.f
+#define REMOVE_SIGNIN_ERROR_VIEW_ANIMATION_DURATION 1.f
+
+#pragma mark - Media Dev VC -
 
 #define PUBLISH_ANIMATION_DURATION 0.4
 
@@ -20,7 +24,7 @@
 #define NUM_VID_SECONDS 10
 #define TIME_FOR_SESSION_TO_RESUME_POST_MEDIA_CAPTURE 0.5f
 
-#pragma mark Content Dev VC
+#pragma mark - Content Dev VC -
 
 #define REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION 1.f
 #define PINCHVIEW_ANIMATION_DURATION 0.5

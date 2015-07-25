@@ -708,7 +708,7 @@
 		[self publishArticleContent];
 
 	} else if([self.contentDevVC.articleTitleField.text isEqualToString:@""]) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_TILE_ANIMATION
+		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_INFO_IS_BLANK_ANIMATION
 															object:nil
 														  userInfo:nil];
 	}

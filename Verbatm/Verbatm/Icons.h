@@ -23,9 +23,11 @@
 #define CAMERA_ICON_FRONT @"camera_back"
 #define FLASH_ICON_ON @"lightbulb_final_OFF(white)"
 #define FLASH_ICON_OFF @"lightbulb_final_OFF(white)"
-#define CAMERA_BUTTON_IMAGE @"camera_button"
-#define RECORDING_IMAGE @"recording_button"
+#define CAMERA_BUTTON_IMAGE @"camera_button_with_dot"
+#define RECORDING_IMAGE @"camera_button_recording"
 #define RECORDING_DOT @"recording_dot"
+
+#define TITLE_NOTIFICATION_ANIMATION @"title_notification"
 
 #pragma mark Pull Bar
 
@@ -56,6 +58,9 @@
 #pragma mark Images AVE
 
 #define CIRCLE_OVER_IMAGES_ICON @"multiphoto_circle"
-#pragma 
+
+#pragma mark - Feed -
+
+#define PUBLISHED_ANIMATION_ICON @"published_icon1"
 
 #endif /* Icons_h */

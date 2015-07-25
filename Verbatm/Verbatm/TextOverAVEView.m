@@ -67,9 +67,11 @@
 }
 
 -(void) setTextViewFrame {
-	//	CGRect frameWithTopBottomBorder = CGRectMake(self.textViewContainer.bounds.origin.x + TEXT_OVER_AVE_BORDER, self.textViewContainer.bounds.origin.y + TEXT_OVER_AVE_BORDER, self.textViewContainer.bounds.size.width - TEXT_OVER_AVE_BORDER*2, self.textViewContainer.bounds.size.height - TEXT_OVER_AVE_BORDER - TEXT_OVER_AVE_PULLBAR_HEIGHT/2.f);
+	CGRect frameWithTopBottomBorder = CGRectMake(self.bounds.origin.x + TEXT_OVER_AVE_BORDER, self.bounds.origin.y + TEXT_OVER_AVE_BORDER, self.bounds.size.width - TEXT_OVER_AVE_BORDER*2, self.bounds.size.height - TEXT_OVER_AVE_BORDER - TEXT_OVER_AVE_PULLBAR_HEIGHT/2.f);
 
-	self.textView.frame = CGRectMake(self.bounds.origin.x + TEXT_OVER_AVE_BORDER, self.bounds.origin.y, self.bounds.size.width - TEXT_OVER_AVE_BORDER*2, self.bounds.size.height);
+	self.textView.frame = frameWithTopBottomBorder;
+
+//	self.textView.frame = CGRectMake(self.bounds.origin.x + TEXT_OVER_AVE_BORDER, self.bounds.origin.y, self.bounds.size.width - TEXT_OVER_AVE_BORDER*2, self.bounds.size.height);
 }
 
 -(void) enableScrollingWithIndicator:(BOOL)showsIndicator {

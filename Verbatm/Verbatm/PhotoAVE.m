@@ -50,6 +50,9 @@
 			self.draggingFromPointIndex = -1;
 			self.currentPhotoIndex = 0;
 			[self highlightDot];
+			//show users it's there
+			[self displayCircle:YES];
+			[self displayCircle:NO];
 		}
 		[self addTapGestureToView:self];
 	}

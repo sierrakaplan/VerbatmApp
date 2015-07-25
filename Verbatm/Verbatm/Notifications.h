@@ -26,7 +26,7 @@
 #define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
 
 #define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
-#define NOTIFICATION_TILE_ANIMATION @"Notification_titleAnimation"
+#define NOTIFICATION_INFO_IS_BLANK_ANIMATION @"Notification_titleAnimation"
 #define NOTIFICATION_PUBLISH_ARTICLE @"Notification_publishArticle"
 #define NOTIFICATION_ADDED_MEDIA @"Notification_addedMedia"
 #define NOTIFICATION_REMOVED_ALL_MEDIA @"Notification_removedAllMedia"

@@ -17,4 +17,5 @@
 // Contains code for iOS 7+. contentSize no longer returns the correct value, so
 // we have to calculate it.
 + (CGFloat)measureHeightOfUITextView:(UITextView *)textView;
++ (void) disableSpellCheckOnTextField: (UITextField*)textView;
 @end

@@ -10,13 +10,14 @@
 #define Styles_h
 
 
-#define DEFAULT_FONT @"HelveticaNeue"
+#define DEFAULT_FONT @"HelveticaNeue-Light"
 #define BUTTON_FONT @"HelveticaNeue-Light"
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 
-#pragma mark Verbatm Image Scroll View
+#pragma mark - Sign In -
 
-#define TEXT_SCROLLVIEW_BACKGROUND_COLOR clearColor
+#define ERROR_ANIMATION_TEXT_COLOR whiteColor
+#define ERROR_ANIMATION_FONT_SIZE 30
 
 #pragma mark - Content Dev VC -
 
@@ -37,6 +38,10 @@
 
 #define SANDWICH_PLACEHOLDER_SIZE 23.f
 #define TITLE_PLACEHOLDER_SIZE 40.f
+
+#pragma mark Content Editing View
+
+#define TEXT_SCROLLVIEW_BACKGROUND_COLOR clearColor
 
 #pragma mark Preview
 

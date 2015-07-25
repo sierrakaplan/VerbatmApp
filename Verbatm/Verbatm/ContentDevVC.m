@@ -123,7 +123,7 @@
 {
 	[super viewDidLoad];
 	[self addBlurView];
-	[self setPlaceholderColors];
+	[self formatTextFields];
 
 	[self setElementDefaultFrames];
 
@@ -165,7 +165,7 @@
 }
 
 //sets the textview placeholders' color and text
--(void) setPlaceholderColors {
+-(void) formatTextFields {
 
 	UIColor *color = [UIColor whiteColor];
 	UIFont* sandwichPlaceholderFont = [UIFont fontWithName:PLACEHOLDER_FONT size:SANDWICH_PLACEHOLDER_SIZE];
@@ -194,6 +194,12 @@
 		NSLog(PLACEHOLDER_SELECTOR_FAILED_ERROR_MESSAGE);
 		// TODO: Add fall-back code to set placeholder color.
 	}
+	[self.sandwichWhat resignFirstResponder];
+	[self.sandwichWhere resignFirstResponder];
+	[self.articleTitleField resignFirstResponder];
+	self.sandwichWhat.autocorrectionType = UITextAutocorrectionTypeNo;
+	self.sandwichWhere.autocorrectionType = UITextAutocorrectionTypeNo;
+	self.articleTitleField.autocorrectionType = UITextAutocorrectionTypeNo;
 }
 
 //records the generic frame for any element that is a square and not a pinch view circle

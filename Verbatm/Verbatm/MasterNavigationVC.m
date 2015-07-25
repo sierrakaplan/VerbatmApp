@@ -10,6 +10,7 @@
 #import "VerbatmUser.h"
 #import "Notifications.h"
 #import "Identifiers.h"
+#import "Icons.h"
 
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
@@ -49,8 +50,7 @@
 -(void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-	//TODO:
-	[self Login];
+	[self login];
 }
 
 -(void)registerForNavNotifications
@@ -58,11 +58,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpSuccesful:) name:NOTIFICATION_SIGNUP_SUCCEEDED object: nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(signUpFailed:) name:NOTIFICATION_SIGNUP_FAILED object: nil];
-
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticleList:) name:NOTIFICATION_EXIT_CONTENTPAGE object: nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertTitleAnimation) name:NOTIFICATION_TILE_ANIMATION object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertTitleAnimation) name:NOTIFICATION_INFO_IS_BLANK_ANIMATION object: nil];
 }
 
 
@@ -224,7 +221,7 @@
 -(void)articlePublishedAnimation
 {
     if(self.animationView.frame.size.width) return;
-    self.animationView.image = [UIImage imageNamed:@"published_icon1"];
+    self.animationView.image = [UIImage imageNamed:PUBLISHED_ANIMATION_ICON];
     self.animationView.frame = self.view.bounds;
     [self.view addSubview:self.animationView];
     if(!self.animationView.alpha)self.animationView.alpha = 1;
@@ -247,7 +244,7 @@
 -(void)insertTitleAnimation
 {
     if(self.animationView.frame.size.width) return;
-    self.animationView.image = [UIImage imageNamed:@"title_notification"];
+    self.animationView.image = [UIImage imageNamed:TITLE_NOTIFICATION_ANIMATION];
     self.animationView.frame = self.view.bounds;
     if(!self.animationView.alpha)self.animationView.alpha = 1;
     [self.view addSubview:self.animationView];
@@ -291,24 +288,12 @@
     }
 }
 #pragma mark - Handle Login -
--(void) signUpSuccesful: (NSNotification *) notification {
-    NSLog(@"Signup Succeeded");
-    
-    
-    
-//    Removes the login page
-    [self dismissViewControllerAnimated:NO completion:^{
-        NSLog(@"dismiss Succeeded");
-    }];
-}
 
--(void) signUpFailed: (NSNotification *) notification {
 
-}
-
--(void)Login
-{
-    if(![VerbatmUser currentUser])[self bringUpSignUp];
+-(void) login {
+    if(![VerbatmUser currentUser]) {
+		[self bringUpSignUp];
+	}
 }
 
 //brings up the login page if there is no user logged in

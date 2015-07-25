@@ -190,4 +190,10 @@
 	return newImage;
 }
 
++ (void) disableSpellCheckOnTextField: (UITextField*)textField {
+	[textField resignFirstResponder];
+	textField.autocorrectionType = UITextAutocorrectionTypeNo;
+	[textField becomeFirstResponder];
+}
+
 @end
