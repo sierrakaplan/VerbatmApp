@@ -12,8 +12,9 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "UIEffects.h"
+#import "ContentDevVC.h"
 
-@interface EditContentView () <UITextViewDelegate>
+@interface EditContentView ()
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) UIImage * filter_Original;
@@ -35,6 +36,7 @@
 	{
 		self.backgroundColor = [UIColor blackColor];
 		self.frame = frame;
+
 	}
 	return self;
 }
@@ -42,11 +44,8 @@
 #pragma mark - Text View -
 
 -(void)adjustContentSizing {
+	[self.textView adjustToolBarFrame];
 	[UIEffects addDashedBorderToView:self.textView];
-}
-
--(void)addDoneButton {
-	
 }
 
 //called when the keyboard is up. The Gap gives you the amount of visible space after
@@ -65,7 +64,6 @@
 
 }
 
-
 -(void) createTextViewFromTextView: (UITextView *) textView {
 
 	//be sure to remove it
@@ -74,8 +72,8 @@
 		self.gestureView = nil;
 	}
 
-	self.textView = [[VerbatmUITextView alloc] init];
-	self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
+	CGRect textViewFrame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
+	self.textView = [[VerbatmUITextView alloc] initWithFrame:textViewFrame];
 	[self formatTextViewAppropriately:self.textView];
 	[self addSubview:self.textView];
 
@@ -84,12 +82,6 @@
 		[self adjustContentSizing];
 		self.textView.text = textView.text;
 	}
-}
-
-//creates a toolbar to add onto the keyboard
--(void)addToolBarToView
-{
-	//TODO
 }
 
 //Calculate the appropriate bounds for the text view
@@ -103,10 +95,9 @@
 
 
 //Formats a textview to the appropriate settings
--(void) formatTextViewAppropriately: (VerbatmUITextView *) textView
+-(void) formatTextViewAppropriately: (UITextView *) textView
 {
 	//Set delegate for text new view
-	[textView setDelegate:self];
 	[textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
 	textView.backgroundColor = [UIColor TEXT_SCROLLVIEW_BACKGROUND_COLOR];//sets the background as clear
 	textView.textColor = [UIColor TEXT_AVE_COLOR];
@@ -114,7 +105,6 @@
 
 	//ensure keyboard is black
 	textView.keyboardAppearance = UIKeyboardAppearanceDark;
-	[UIEffects addDashedBorderToView:textView];
 
 	textView.scrollEnabled = YES;
 }

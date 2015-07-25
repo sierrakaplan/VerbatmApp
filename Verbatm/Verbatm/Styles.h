@@ -42,6 +42,7 @@
 #pragma mark Content Editing View
 
 #define TEXT_SCROLLVIEW_BACKGROUND_COLOR clearColor
+#define DONE_BUTTON_COLOR blueColor
 
 #pragma mark Preview
 

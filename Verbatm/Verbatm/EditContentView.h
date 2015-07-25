@@ -14,7 +14,7 @@
 -(instancetype)initCustomViewWithFrame:(CGRect)frame;
 -(void) addVideo: (AVAsset*) video;
 -(void) addImage: (NSData*) image;
--(void) createTextViewFromTextView: (UITextView *) textView;
+-(void) createTextViewFromTextView: (VerbatmUITextView *) textView;
 -(void)adjustContentSizing;
 -(void)adjustFrameOfTextViewForGap:(NSInteger) gap;
 @property (nonatomic, strong) VerbatmUITextView * textView;

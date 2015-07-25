@@ -29,6 +29,12 @@
 
 #define TRANSLATION_CONTENT_DEV_CONTAINER_VIEW_THRESHOLD 50.f
 
+#pragma mark Editing Content View
+
+#define TEXT_TOOLBAR_HEIGHT 30.f
+#define TEXT_TOOLBAR_BUTTON_OFFSET 5.f
+#define TEXT_TOOLBAR_BUTTON_SIZE 50.f
+
 #pragma mark Preview
 
 #define PUBLISH_BUTTON_XOFFSET 20.f

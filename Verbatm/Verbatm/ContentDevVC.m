@@ -11,7 +11,6 @@
 #import "ContentDevVC.h"
 #import "MediaDevVC.h"
 #import <QuartzCore/QuartzCore.h>
-#import "VerbatmUITextView.h"
 #import "MediaSelectTile.h"
 #import "VerbatmScrollView.h"
 #import "UIEffects.h"
@@ -68,7 +67,7 @@
 
 #pragma mark Text input outlets
 
-@property (weak, atomic) IBOutlet VerbatmUITextView *firstContentPageTextBox;
+@property (weak, atomic) IBOutlet UITextView *firstContentPageTextBox;
 @property (strong, atomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
 @property (strong, atomic) MediaSelectTile * baseMediaTileSelector;
 
@@ -305,6 +304,11 @@
 											 selector:@selector(cleanUpNotification)
 												 name:NOTIFICATION_CLEAR_CONTENTPAGE
 											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(removeEditContentView)
+												 name:NOTIFICATION_EXIT_EDIT_CONTENT_VIEW
+											   object:nil];
 }
 
 
@@ -326,7 +330,7 @@
 	return  _numberOfWordsLeft;
 }
 
--(VerbatmUITextView *) activeTextView
+-(UITextView *) activeTextView
 {
 	if(!_activeTextView)_activeTextView = self.firstContentPageTextBox;
 	return _activeTextView;
@@ -419,10 +423,18 @@
 //User has edited the text view somehow so we recount the words in the view. And adjust its size
 - (void)textViewDidChange:(UITextView *)textView {
 	[self editWordCount];
+
+//	CGFloat fixedWidth = textView.frame.size.width;
+//	CGSize newSize = [textView sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
+//	CGRect newFrame = textView.frame;
+//	newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
+//	textView.frame = newFrame;
+
+	[self.openEditContentView adjustContentSizing];
 }
 
 //Update the stored position of the carret within the textview it's in
--(void) updateCaretPositionInView: (VerbatmUITextView *) view {
+-(void) updateCaretPositionInView: (UITextView *) view {
 	self.caretPosition = [view caretRectForPosition:view.selectedTextRange.end];
 }
 
@@ -1439,10 +1451,10 @@
 		//TODO this should only be created if user enters text before pressing done
 		UIView *upperView = [self.pageElements objectAtIndex:(self.index)];
 		[self newPinchObjectBelowView:upperView fromView: nil isTextView:YES];
-		[self createEditContentViewFromPinchView:self.pageElements[index] andTextView:[[VerbatmUITextView alloc]init]];
+		[self createEditContentViewFromPinchView:self.pageElements[index] andTextView:[[UITextView alloc]init]];
 	}else {
 		[self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
-		[self createEditContentViewFromPinchView:self.pageElements[0] andTextView:[[VerbatmUITextView alloc]init]];
+		[self createEditContentViewFromPinchView:self.pageElements[0] andTextView:[[UITextView alloc]init]];
 	}
 	if (!tile.isBaseSelector) {
 		[self clearNewMediaView];
@@ -1832,14 +1844,13 @@
 
 -(void) addTapGestureToEditContentView: (EditContentView *) isv
 {
-	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeEditContentView:)];
+	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeEditContentView)];
 
 	if(isv.gestureView)[isv.gestureView addGestureRecognizer:tap];
 	else [isv addGestureRecognizer:tap];
 }
 
--(void) removeEditContentView: (UITapGestureRecognizer *) sender
-{
+-(void) removeEditContentView {
 	if (!self.openEditContentView) {
 		return;
 	}
@@ -1900,7 +1911,7 @@
 
 		if([mediaView isKindOfClass:[UITextView class]]) {
 
-			[self createEditContentViewFromPinchView:pinch_object andTextView:(VerbatmUITextView *)mediaView];
+			[self createEditContentViewFromPinchView:pinch_object andTextView:(UITextView *)mediaView];
 		} else if([mediaView isKindOfClass:[NSData class]]) {
 			[self createEditContentViewFromPinchView:pinch_object andImageView:(NSData *)mediaView];
 		} else if([mediaView isKindOfClass:[AVAsset class]]) {
@@ -1937,7 +1948,7 @@
 	self.openImagePinchView = pinchView;
 }
 
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView
+-(void) createEditContentViewFromPinchView: (PinchView *) pinchView andTextView: (UITextView *) textView
 {
 	if (!textView) {
 		return; //TODO: error message

@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "VerbatmUITextView.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "PinchView.h"
 #import "VerbatmImageView.h"
@@ -37,15 +36,15 @@
 @property (strong, atomic) NSMutableArray * pinchViewScrollViews;
 @property (nonatomic) CGRect containerViewFrame;
 //view that is currently being filled in
-@property (strong, nonatomic) VerbatmUITextView * activeTextView;
+@property (strong, nonatomic) UITextView * activeTextView;
 @property(nonatomic) NSInteger pullBarHeight;
 
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data;
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset;
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView;
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView andTextView: (VerbatmUITextView *) textView;
--(void) removeEditContentView: (UITapGestureRecognizer *) sender;//allows you to remove the image scrollview
+-(void) createEditContentViewFromPinchView: (PinchView *) pinchView andTextView: (UITextView *) textView;
+-(void) removeEditContentView;//allows you to remove the image scrollview
 // either locks the scroll view or frees it
 -(void)setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;

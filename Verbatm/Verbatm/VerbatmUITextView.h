@@ -12,4 +12,5 @@
 
 @interface VerbatmUITextView : UITextView
 
+-(void)adjustToolBarFrame;
 @end

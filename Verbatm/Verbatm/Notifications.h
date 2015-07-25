@@ -30,6 +30,7 @@
 #define NOTIFICATION_PUBLISH_ARTICLE @"Notification_publishArticle"
 #define NOTIFICATION_ADDED_MEDIA @"Notification_addedMedia"
 #define NOTIFICATION_REMOVED_ALL_MEDIA @"Notification_removedAllMedia"
+#define NOTIFICATION_EXIT_EDIT_CONTENT_VIEW @"Notification_exitEditContentView"
 
 #pragma mark - Feed -
 
