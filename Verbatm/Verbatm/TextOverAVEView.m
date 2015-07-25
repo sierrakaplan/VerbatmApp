@@ -24,7 +24,8 @@
 
 -(id)initWithFrame:(CGRect)frame {
 	if((self = [super initWithFrame:frame])) {
-		[UIEffects createBlurViewOnView:self];
+//		[UIEffects createBlurViewOnView:self];
+		self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.6];
 
 		self.textView = [[UITextView alloc] init];
 		[self setTextViewFrame];

@@ -15,7 +15,10 @@
 + (BOOL) point:(CGPoint)point onCircleWithRadius:(float)radius andOrigin:(CGPoint)origin withThreshold:(float)threshold;
 + (float) distanceBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo;
 
-+ (float) calculateAngleClockwiseBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo onCircleWithOrigin: (CGPoint) origin;
+// angle and distance can be negative
++ (float) calculateAngleBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo onCircleWithOrigin: (CGPoint) origin;
++ (float) distanceBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo onCircleWithRadius:(float) radius andOrigin: (CGPoint) origin;
 
++ (float) calculateAngleClockwiseBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo onCircleWithOrigin: (CGPoint) origin;
 + (float) distanceClockwiseBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo onCircleWithRadius:(float) radius andOrigin: (CGPoint) origin;
 @end

@@ -21,5 +21,6 @@
 #pragma mark - AVES -
 
 #define AVE_VIEW_FILLS_SCREEN_DURATION 0.5
+#define CIRCLE_FADE_DURATION 0.5
 
 #endif /* Durations_h */

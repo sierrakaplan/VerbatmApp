@@ -44,19 +44,22 @@
 // in radians from top of circle (so 90 degrees)
 + (float) calculateAngleClockwiseBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo onCircleWithOrigin: (CGPoint) origin {
 
-	float angleOne = (M_PI/2.f) + atan2f((pointOne.y - origin.y),(pointOne.x - origin.x));
-	float angleTwo = (M_PI/2.f) + atan2f((pointTwo.y - origin.y),(pointTwo.x - origin.x));
-
-	NSLog(@"Angle One: %f and Angle Two: %f", angleOne, angleTwo);
-	float angle = (angleTwo - angleOne);
+	float angle = [self calculateAngleBetweenTwoPoints:pointOne and:pointTwo onCircleWithOrigin:origin];
 	if (angle < 0) {
 		angle = angle + (2*M_PI);
 	}
 
-	NSLog(@"Angle: %f", angle);
+	return angle;
+}
 
-	float angleDeg = angle * (180/M_PI);
-	NSLog(@"Degrees between points: %f", angleDeg);
+// in radians from top of circle (so 90 degrees)
++ (float) calculateAngleBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo onCircleWithOrigin: (CGPoint) origin {
+
+	float angleOne = (M_PI/2.f) + atan2f((pointOne.y - origin.y),(pointOne.x - origin.x));
+	float angleTwo = (M_PI/2.f) + atan2f((pointTwo.y - origin.y),(pointTwo.x - origin.x));
+
+	float angle = (angleTwo - angleOne);
+
 	return angle;
 }
 
@@ -64,7 +67,13 @@
 
 	float angle = [self calculateAngleClockwiseBetweenTwoPoints:pointOne and:pointTwo onCircleWithOrigin:origin];
 	float fractionOfCircle = angle / (2*M_PI);
-	NSLog(@"Fraction of circle: %f", fractionOfCircle);
+	return fractionOfCircle * 2* M_PI *radius;
+}
+
++ (float) distanceBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo onCircleWithRadius:(float) radius andOrigin: (CGPoint) origin{
+
+	float angle = [self calculateAngleBetweenTwoPoints:pointOne and:pointTwo onCircleWithOrigin:origin];
+	float fractionOfCircle = angle / (2*M_PI);
 	return fractionOfCircle * 2* M_PI *radius;
 }
 

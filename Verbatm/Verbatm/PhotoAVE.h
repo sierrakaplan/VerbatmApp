@@ -11,6 +11,6 @@
 @interface PhotoAVE : UIView
 
 //photos are NSData*
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSMutableArray *) photos;
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos;
 
 @end

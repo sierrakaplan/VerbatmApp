@@ -11,7 +11,7 @@
 
 
 #define DEFAULT_FONT @"HelveticaNeue"
-#define BUTTON_FONT @"HelveticaNeue-Bold"
+#define BUTTON_FONT @"HelveticaNeue-Light"
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 
 #pragma mark Verbatm Image Scroll View
@@ -41,7 +41,7 @@
 #pragma mark Preview
 
 #define PUBLISH_BUTTON_LABEL_FONT_SIZE 16.f
-#define PUBLISH_BUTTON_LABEL_COLOR darkGrayColor
+#define PUBLISH_BUTTON_LABEL_COLOR blackColor
 #define PUBLISH_BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
 #define PUBLISH_BUTTON_LABEL_SHADOW_YOFFSET 1.5f
 
@@ -62,6 +62,10 @@
 
 #define CIRCLE_OVER_IMAGES_BORDER_WIDTH 3.f
 #define CIRCLE_OVER_IMAGES_COLOR whiteColor
+#define CIRCLE_OVER_IMAGES_HIGHLIGHT_COLOR blueColor
+
+#define CIRCLE_OVER_IMAGES_ALPHA 0.1
+#define POINTS_ON_CIRCLE_ALPHA 0.3
 
 
 #endif /* Styles_h */
