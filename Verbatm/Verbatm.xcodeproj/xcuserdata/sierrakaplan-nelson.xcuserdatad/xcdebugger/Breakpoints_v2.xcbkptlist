@@ -2375,7 +2375,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "234"
-            endingLineNumber = "234">
+            endingLineNumber = "234"
+            landmarkName = "-fadeForwardsWithDistance:andTotalDistance:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2389,7 +2391,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "233"
-            endingLineNumber = "233">
+            endingLineNumber = "233"
+            landmarkName = "-fadeForwardsWithDistance:andTotalDistance:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2436,8 +2440,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "183"
             endingLineNumber = "183"
-            landmarkName = "@implementation PhotoAVE"
-            landmarkType = "3">
+            landmarkName = "-handleCircleGestureBegan:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2467,7 +2471,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "277"
-            endingLineNumber = "277">
+            endingLineNumber = "277"
+            landmarkName = "-setImageViewsToLocation:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2482,7 +2488,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "154"
             endingLineNumber = "154"
-            landmarkName = "-touchesMoved:withEvent:"
+            landmarkName = "-goToPhoto:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2497,7 +2503,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "206"
-            endingLineNumber = "206">
+            endingLineNumber = "206"
+            landmarkName = "-handleCircleGestureChanged:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2511,7 +2519,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "211"
-            endingLineNumber = "211">
+            endingLineNumber = "211"
+            landmarkName = "-handleCircleGestureChanged:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2525,7 +2535,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "241"
-            endingLineNumber = "241">
+            endingLineNumber = "241"
+            landmarkName = "-fadeBackwardsWithDistance:andTotalDistance:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2539,7 +2551,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "220"
-            endingLineNumber = "220">
+            endingLineNumber = "220"
+            landmarkName = "-fadeForwardsWithDistance:andTotalDistance:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2553,7 +2567,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "205"
-            endingLineNumber = "205">
+            endingLineNumber = "205"
+            landmarkName = "-handleCircleGestureChanged:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2567,7 +2583,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "197"
-            endingLineNumber = "197">
+            endingLineNumber = "197"
+            landmarkName = "-handleCircleGestureChanged:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2581,7 +2599,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "225"
-            endingLineNumber = "225">
+            endingLineNumber = "225"
+            landmarkName = "-fadeForwardsWithDistance:andTotalDistance:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2595,7 +2615,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "222"
-            endingLineNumber = "222">
+            endingLineNumber = "222"
+            landmarkName = "-fadeForwardsWithDistance:andTotalDistance:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2609,7 +2631,9 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "290"
-            endingLineNumber = "290">
+            endingLineNumber = "290"
+            landmarkName = "-reloadImages"
+            landmarkType = "5">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
