@@ -7,8 +7,9 @@
 //
 
 #import "UserLoginVC.h"
-#import "UserSignUpVC.h"
 #import "VerbatmUser.h"
+#import "Notifications.h"
+#import "Identifiers.h"
 
 @interface UserLoginVC () <UITextFieldDelegate>
 #define TOAST_DURATION 1
@@ -100,12 +101,34 @@
     [VerbatmUser loginUserWithUserName:self.UserName_TextField.text andPassword:self.   Password_TextField.text withCompletionBlock:^(PFUser *user, NSError *error){
         if(user)
         {
-            [self performSegueWithIdentifier:@"exitSignInScreen" sender:self];
+            [self performSegueWithIdentifier:EXIT_SIGNIN_SEGUE sender:self];
         }else
         {
             NSLog(@"Login failed");
         }
     }];
+}
+
+- (IBAction)signUp:(UIButton *)sender {
+	//make sure all the textfields are entered in correctly
+	if([self.UserName_TextField.text isEqualToString:@""]) return;
+	if([self.Password_TextField.text isEqualToString:@""])return;
+
+	VerbatmUser * newUser = [[VerbatmUser alloc] initWithUserName:self.UserName_TextField.text Password:self.Password_TextField.text  withSignUpCompletionBlock:^(BOOL succeeded, NSError *error) {
+
+		if(succeeded) {
+			//Send a notification that the user is logged in
+			[self performSegueWithIdentifier:EXIT_SIGNIN_SEGUE sender:self];
+			NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SIGNUP_SUCCEEDED object:nil userInfo:nil];
+			[[NSNotificationCenter defaultCenter] postNotification:notification];
+
+		} else if (!succeeded) {
+
+			NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SIGNUP_FAILED object:nil userInfo:nil];
+			[[NSNotificationCenter defaultCenter] postNotification:notification];
+		}
+
+	}];
 }
 
 //for ios8- To hide the status bar

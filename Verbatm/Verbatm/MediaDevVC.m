@@ -26,6 +26,8 @@
 #import "Icons.h"
 #import "Strings.h"
 #import "SizesAndPositions.h"
+#import "Identifiers.h"
+#import "Durations.h"
 
 @interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
@@ -79,23 +81,7 @@
 //this stores the article title that the user just saved. This is in order to prevent saving the same article multiple times
 @property(nonatomic) NSString * articleJustSaved;
 
-#pragma mark Helpers for content page container
-#define ID_FOR_CONTENTPAGEVC @"contentPage"
-#define ID_FOR_BOTTOM_SPLITSCREENVC @"splitScreenBottomView"
-#define NUMBER_OF_VCS 2
-#define CONTAINER_VIEW_TRANSITION_ANIMATION_TIME 0.5
-#define PULLBAR_TRANSITION_ANIMATION_TIME 0.3
-#define ALBUM_NAME @"Verbatm"
-#define ASPECT_RATIO 1
 
-#pragma mark Session timer time
-#define TIME_FOR_SESSION_TO_RESUME 0.5f
-#define NUM_VID_SECONDS 10
-#define MINIMUM_PRESS_DURATION_FOR_VIDEO 0.3f
-
-#pragma mark Transition helpers
-#define TRANSITION_MARGIN_OFFSET 50.f
-#define TRANSLATION_THRESHOLD 70
 
 @end
 
@@ -392,7 +378,7 @@
 // When a photo is taken "freeze" it on the screen) for a short period of time before removing it
 -(void)freezeFrame {
 	self.sessionManager.videoPreview.connection.enabled = NO;
-	[NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME target:self selector:@selector(resumeSession:) userInfo:nil repeats:NO];
+	[NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME_POST_MEDIA_CAPTURE target:self selector:@selector(resumeSession:) userInfo:nil repeats:NO];
 }
 
 // Resume session after freezing frame on taking picture/video
@@ -613,7 +599,7 @@
 
 	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
 		//snap the container view to full screen, else snap back to base
-		if( translation.y > TRANSITION_MARGIN_OFFSET) {
+		if( translation.y > TRANSLATION_CONTENT_DEV_CONTAINER_VIEW_THRESHOLD) {
 			[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 		}else {
 			[self transitionContentContainerViewToMode:ContentContainerViewModeBase];

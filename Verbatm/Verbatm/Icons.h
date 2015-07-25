@@ -45,7 +45,7 @@
 
 #pragma mark - AVES -
 
-#define PULLDOWN_TEXT_ICON @"pulldown_text_icon"
+#define PULLDOWN_TEXT_ICON @"pulldown_icon"//@"pulldown_text_icon"
 
 #pragma mark Video AVE
 

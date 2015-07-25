@@ -17,10 +17,6 @@
             <string>HelveticaNeue-Thin</string>
             <string>HelveticaNeue-Thin</string>
             <string>HelveticaNeue-Thin</string>
-            <string>HelveticaNeue-Thin</string>
-            <string>HelveticaNeue-Thin</string>
-            <string>HelveticaNeue-Thin</string>
-            <string>HelveticaNeue-Thin</string>
         </mutableArray>
     </customFonts>
     <scenes>
@@ -217,7 +213,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="yvg-V2-ceW" kind="modal" id="p44-ek-CRG"/>
+                                    <action selector="signUp:" destination="waF-h7-lpu" eventType="touchUpInside" id="wTK-92-2bf"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="inB-CY-urt">
@@ -247,60 +243,6 @@
                 <exit id="x2Q-q6-lhq" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-3843" y="-1727"/>
-        </scene>
-        <!--User Sign UpVC-->
-        <scene sceneID="reL-bU-Na3">
-            <objects>
-                <viewController id="yvg-V2-ceW" customClass="UserSignUpVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="6YX-fJ-Ona">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" id="vmn-UN-XBn">
-                                <rect key="frame" x="35" y="280" width="251" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="24"/>
-                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
-                            </textField>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="VERBATM" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Rmw-GA-whd">
-                                <rect key="frame" x="17" y="75" width="288" height="93"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="59"/>
-                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="center" minimumFontSize="17" id="d3u-fP-biV">
-                                <rect key="frame" x="35" y="211" width="251" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="24"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="K5u-cA-6Lc">
-                                <rect key="frame" x="71" y="393" width="181" height="83"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="48"/>
-                                <state key="normal" title="Sign Up">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="signUpUser:" destination="yvg-V2-ceW" eventType="touchUpInside" id="2W3-gO-Bp0"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" red="0.12156862745098039" green="0.12941176470588237" blue="0.14117647058823529" alpha="1" colorSpace="calibratedRGB"/>
-                    </view>
-                    <navigationItem key="navigationItem" id="CeN-vd-0mj"/>
-                    <connections>
-                        <outlet property="Password_TextField" destination="vmn-UN-XBn" id="KhC-Il-9Zp"/>
-                        <outlet property="UserName_TextField" destination="d3u-fP-biV" id="HXQ-7t-Ii6"/>
-                        <outlet property="signUp_button" destination="K5u-cA-6Lc" id="5jv-x5-4nY"/>
-                        <outlet property="verbatmTitle_label" destination="Rmw-GA-whd" id="q3Y-pf-Oru"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="eYW-cS-KXq" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3330" y="-1554"/>
         </scene>
         <!--Item-->
         <scene sceneID="74h-C3-U07">

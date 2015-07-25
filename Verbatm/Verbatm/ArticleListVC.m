@@ -15,6 +15,7 @@
 #import "AVETypeAnalyzer.h"
 #import "Notifications.h"
 #import "SizesAndPositions.h"
+#import "Identifiers.h"
 
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
@@ -119,7 +120,7 @@
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ArticleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"articleListCell" forIndexPath:indexPath];
+    ArticleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ARTICLE_LIST_CELL forIndexPath:indexPath];
     
     NSInteger index =indexPath.row;
     Article * article = self.articles[index];

@@ -90,7 +90,6 @@
 		C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */; };
 		C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* VerbatmTextField.m */; };
 		C7F3D46B1A4F84C000B43238 /* UserLoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */; };
-		C7F3D46E1A4F84DF00B43238 /* UserSignUpVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46D1A4F84DF00B43238 /* UserSignUpVC.m */; };
 		F20A24FA1A46166100BB77C1 /* EditContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* EditContentView.m */; };
 		F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */; };
 		F2964FA41A4FE43300E1DBEC /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = F2964FA31A4FE43300E1DBEC /* Page.m */; };
@@ -121,6 +120,7 @@
 		A52919751B5DD24F00233712 /* UIView+Glow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Glow.m"; sourceTree = "<group>"; };
 		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
+		A56434B91B636FEA0075F568 /* Identifiers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Identifiers.h; sourceTree = "<group>"; };
 		A57A92FD1B55A551006C2597 /* CameraFocusSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraFocusSquare.h; sourceTree = "<group>"; };
 		A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraFocusSquare.m; sourceTree = "<group>"; };
 		A57A93031B55E835006C2597 /* VerbatmCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmCameraView.h; sourceTree = "<group>"; };
@@ -252,8 +252,6 @@
 		C7F18D841A05C0EE0002255B /* VerbatmTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmTextField.m; sourceTree = "<group>"; };
 		C7F3D4691A4F84C000B43238 /* UserLoginVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLoginVC.h; sourceTree = "<group>"; };
 		C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginVC.m; sourceTree = "<group>"; };
-		C7F3D46C1A4F84DF00B43238 /* UserSignUpVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSignUpVC.h; sourceTree = "<group>"; };
-		C7F3D46D1A4F84DF00B43238 /* UserSignUpVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSignUpVC.m; sourceTree = "<group>"; };
 		F20A24F81A46166100BB77C1 /* EditContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditContentView.h; sourceTree = "<group>"; };
 		F20A24F91A46166100BB77C1 /* EditContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditContentView.m; sourceTree = "<group>"; };
 		F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVETypeAnalyzer.h; path = ../AVETypeAnalyzer.h; sourceTree = "<group>"; };
@@ -439,8 +437,6 @@
 				C777EE9F1AC7F8B6003E0633 /* ArticleTableViewCell.m */,
 				C7F3D4691A4F84C000B43238 /* UserLoginVC.h */,
 				C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */,
-				C7F3D46C1A4F84DF00B43238 /* UserSignUpVC.h */,
-				C7F3D46D1A4F84DF00B43238 /* UserSignUpVC.m */,
 				C734FD9A19B14B8D00B2C370 /* ContentDevVC.h */,
 				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
 				9D29995919BA9042005EBC8A /* MediaDevVC.h */,
@@ -575,6 +571,7 @@
 			children = (
 				A529196F1B5D86A500233712 /* Icons.h */,
 				A529196E1B59ADD500233712 /* Notifications.h */,
+				A56434B91B636FEA0075F568 /* Identifiers.h */,
 				A52919701B5D8BE800233712 /* SizesAndPositions.h */,
 				A52919711B5D8E0F00233712 /* Styles.h */,
 				A52919721B5D921500233712 /* Durations.h */,
@@ -823,7 +820,6 @@
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
 				C777EEA01AC7F8B6003E0633 /* ArticleTableViewCell.m in Sources */,
-				C7F3D46E1A4F84DF00B43238 /* UserSignUpVC.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,

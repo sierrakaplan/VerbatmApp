@@ -47,10 +47,10 @@
 		[self addPhotos:photos];
 		if ([photos count] > 1) {
 			[self createCircleViewAndPoints];
+			self.draggingFromPointIndex = -1;
+			self.currentPhotoIndex = 0;
+			[self highlightDot];
 		}
-		self.draggingFromPointIndex = -1;
-		self.currentPhotoIndex = 0;
-		[self highlightDot];
 		[self addTapGestureToView:self];
 	}
 	return self;
@@ -173,16 +173,12 @@
 	[view addGestureRecognizer:panGesture];
 }
 
--(void)addTapGestureToView:(UIView*)view {
-	UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:view action:@selector(mainViewTapped:)];
-	[view addGestureRecognizer:tapGesture];
-}
 
 #pragma mark - Tap Gesture -
 
--(void) addTapGestureToMainView {
-	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(mainViewTapped:)];
-	[self addGestureRecognizer:tap];
+-(void)addTapGestureToView:(UIView*)view {
+	UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:view action:@selector(mainViewTapped:)];
+	[view addGestureRecognizer:tapGesture];
 }
 
 -(void) mainViewTapped:(UITapGestureRecognizer *) gesture {

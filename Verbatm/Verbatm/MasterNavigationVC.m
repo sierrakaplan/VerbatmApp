@@ -9,6 +9,7 @@
 #import "MasterNavigationVC.h"
 #import "VerbatmUser.h"
 #import "Notifications.h"
+#import "Identifiers.h"
 
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
@@ -34,7 +35,7 @@
 @implementation MasterNavigationVC
 
 + (BOOL) inTestingMode {
-	return YES;
+	return NO;
 }
 
 - (void)viewDidLoad {
@@ -49,7 +50,7 @@
 {
     [super viewDidAppear:animated];
 	//TODO:
-//	[self Login];
+	[self Login];
 }
 
 -(void)registerForNavNotifications
@@ -290,11 +291,10 @@
     }
 }
 #pragma mark - Handle Login -
-//not that the signup was succesful - post a notiication
 -(void) signUpSuccesful: (NSNotification *) notification {
     NSLog(@"Signup Succeeded");
     
-    [self performSegueWithIdentifier:@"exitSignInScreen" sender:self];
+    
     
 //    Removes the login page
     [self dismissViewControllerAnimated:NO completion:^{
@@ -314,7 +314,7 @@
 //brings up the login page if there is no user logged in
 -(void)bringUpSignUp
 {
-    [self performSegueWithIdentifier:@"bringUpSign" sender:self];
+    [self performSegueWithIdentifier:BRING_UP_SIGNIN_SEGUE sender:self];
 }
 
 

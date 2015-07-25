@@ -11,6 +11,7 @@
 #import "GMGridViewCell.h"
 #import "GMGridViewController.h"
 #import "GMAlbumsViewCell.h"
+#import "Identifiers.h"
 
 @import Photos;
 
@@ -37,9 +38,6 @@
     
     return self;
 }
-
-static NSString * const AllPhotosReuseIdentifier = @"AllPhotosCell";
-static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 
 - (void)viewDidLoad
 {
@@ -219,11 +217,10 @@ static NSString * const CollectionCellReuseIdentifier = @"CollectionCell";
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
     
-    GMAlbumsViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    GMAlbumsViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CELL_ID];
     if (cell == nil) {
-        cell = [[GMAlbumsViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        cell = [[GMAlbumsViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CELL_ID];
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     }
     
