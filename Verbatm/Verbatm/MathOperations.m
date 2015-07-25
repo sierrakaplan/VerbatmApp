@@ -10,11 +10,11 @@
 
 @implementation MathOperations
 
-//Returns point with x and y relative to center of a circle
+//Returns point with x and y relative to center of a circle, starting at top
 +(PointObject*) getPointFromCircleRadius:(float)radius andCurrentPointIndex:(NSInteger)index withTotalPoints:(NSUInteger)total {
 
 	float theta = ((M_PI*2.f) / (float)total);
-	float angle = (theta * index);
+	float angle = (theta * index) - (M_PI/2.f);
 
 	PointObject* point = [[PointObject alloc] init];
 
@@ -41,12 +41,12 @@
 	return sqrt(fabs(pointOne.x - pointTwo.x) + fabs(pointOne.y - pointTwo.y));
 }
 
-// in radians
+// in radians from top of circle (so 90 degrees)
 + (float) calculateAngleClockwiseBetweenTwoPoints:(CGPoint)pointOne and:(CGPoint)pointTwo onCircleWithOrigin: (CGPoint) origin {
 
-	float angleOne = atan2f((pointOne.y - origin.y),(pointOne.x - origin.x));
-	float angleTwo = atan2f((pointTwo.y - origin.y),(pointTwo.x - origin.x));
-	float angle = (2*M_PI) - (angleOne - angleTwo);
+	float angleOne = (M_PI/2.f) + atan2f((pointOne.y - origin.y),(pointOne.x - origin.x));
+	float angleTwo = (M_PI/2.f) + atan2f((pointTwo.y - origin.y),(pointTwo.x - origin.x));
+	float angle = (angleTwo - angleOne);
 
 	float angleDeg = angle * (180/M_PI);
 	NSLog(@"Degrees between points: %f", angleDeg);
