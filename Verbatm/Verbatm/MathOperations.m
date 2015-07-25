@@ -46,7 +46,14 @@
 
 	float angleOne = (M_PI/2.f) + atan2f((pointOne.y - origin.y),(pointOne.x - origin.x));
 	float angleTwo = (M_PI/2.f) + atan2f((pointTwo.y - origin.y),(pointTwo.x - origin.x));
+
+	NSLog(@"Angle One: %f and Angle Two: %f", angleOne, angleTwo);
 	float angle = (angleTwo - angleOne);
+	if (angle < 0) {
+		angle = angle + (2*M_PI);
+	}
+
+	NSLog(@"Angle: %f", angle);
 
 	float angleDeg = angle * (180/M_PI);
 	NSLog(@"Degrees between points: %f", angleDeg);

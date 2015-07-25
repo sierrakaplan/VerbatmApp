@@ -73,12 +73,20 @@
 #pragma mark - Sub Views -
 
 -(void) addPhotos:(NSMutableArray*)photos {
+
 	for (NSData* photoData in photos) {
 		UIImage* photo = [[UIImage alloc] initWithData:photoData];
 		UIImageView* photoView = [[UIImageView alloc] initWithImage:photo];
 		photoView.frame = self.bounds;
 		[self.imageViews addObject:photoView];
 	}
+
+	//add extra copy of photo 1 at bottom for easy transitioning
+	UIImage* photoOne = [[UIImage alloc] initWithData:(NSData*)photos[0]];
+	UIImageView* photoOneView = [[UIImageView alloc] initWithImage:photoOne];
+	photoOneView.frame = self.bounds;
+	[self addSubview:photoOneView];
+
 	//adding subviews in reverse order so that imageview at index 0 on top
 	for (int i = (int)[self.imageViews count]-1; i >= 0; i--) {
 		[self addSubview:[self.imageViews objectAtIndex:i]];
@@ -194,7 +202,7 @@
 	if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_OVER_IMAGES_RADIUS andOrigin:self.originPoint withThreshold:TOUCH_THRESHOLD]) {
 		return;
 	}
-	PointObject * point = [self.pointsOnCircle objectAtIndex:self.draggingFromPointIndex];
+	PointObject * point = self.pointsOnCircle [self.draggingFromPointIndex];
 	float totalDistanceToTravel = (2.f * M_PI * CIRCLE_OVER_IMAGES_RADIUS)/[self.pointsOnCircle count];
 	float distanceFromStartingTouch = [MathOperations distanceClockwiseBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:CIRCLE_OVER_IMAGES_RADIUS andOrigin:self.originPoint];
 	float distanceFromLastTouch = [MathOperations distanceClockwiseBetweenTwoPoints:self.lastTouch and:touchLocation onCircleWithRadius:CIRCLE_OVER_IMAGES_RADIUS andOrigin:self.originPoint];
@@ -216,13 +224,13 @@
 		if (self.currentPhotoIndex >= [self.imageViews count]) {
 			self.currentPhotoIndex = 0;
 			self.draggingFromPointIndex = 0;
+			[self reloadImages];
 		}
-		[self checkPhotoViewLocations];
 		return;
 	}
 	float fractionOfDistance = distanceFromStartingTouch / totalDistanceToTravel;
 
-	UIImageView* currentImageView = [self.imageViews objectAtIndex:self.currentPhotoIndex];
+	UIImageView* currentImageView = self.imageViews[self.currentPhotoIndex];
 	float alpha = 1.f-fractionOfDistance;
 	NSLog(@"Alpha:%f", alpha);
 	[currentImageView setAlpha:alpha];
@@ -238,7 +246,7 @@
 		return;
 	}
 	float fractionOfDistance = distanceFromStartingTouch / totalDistanceToTravel;
-	UIImageView* previousImageView = [self.imageViews objectAtIndex:(self.currentPhotoIndex-1)];
+	UIImageView* previousImageView = self.imageViews[(self.currentPhotoIndex-1)];
 	[previousImageView setAlpha: fractionOfDistance];
 }
 
@@ -252,7 +260,7 @@
 -(NSInteger) getPointIndexFromLocation:(CGPoint)touchLocation {
 
 	for (int i = 0; i < [self.pointsOnCircle count]; i++) {
-		PointObject* point = [self.pointsOnCircle objectAtIndex:i];
+		PointObject* point = self.pointsOnCircle[i];
 		if(fabs(point.x - touchLocation.x) <= TOUCH_THRESHOLD
 		   && fabs(point.y - touchLocation.y) <= TOUCH_THRESHOLD) {
 			return i;
@@ -264,47 +272,24 @@
 #pragma mark Change image views locations and visibility
 
 //sets image at given index to front by setting the opacity of all those in front of it to 0
+//and those behind it to 1
 -(void) setImageViewsToLocation:(NSInteger)index {
 	self.currentPhotoIndex = index;
 	for (int i = 0; i < [self.imageViews count]; i++) {
-		UIImageView* imageView = [self.imageViews objectAtIndex:i];
-		imageView.alpha = 0;
-	}
-
-	UIImageView* currentImage = [self.imageViews objectAtIndex:index];
-	currentImage.alpha = 1.f;
-
-
-	[self checkPhotoViewLocations];
-}
-
-//makes sure all photo views are loaded where they should be
--(void) checkPhotoViewLocations {
-	if (self.currentPhotoIndex == ([self.imageViews count]-1)) {
-		[self reloadImageViews];
-	} else if (self.currentPhotoIndex == 0) {
-		[self reloadLastImage];
+		UIImageView* imageView = self.imageViews[i];
+		if (i < index) {
+			imageView.alpha = 0.f;
+		} else {
+			imageView.alpha = 1.f;
+		}
 	}
 }
 
-// reloads photo views so that you can keep swiping around circle forever
--(void) reloadImageViews {
-
-	UIImageView* precedingImage = [self.imageViews objectAtIndex:([self.imageViews count]-1)];
-	for (int i = 0; i < (int)[self.imageViews count]-1; i++) {
-		UIImageView* imageView = [self.imageViews objectAtIndex:i];
-		[imageView removeFromSuperview];
-		imageView.alpha = 1.0;
-		[self insertSubview:imageView belowSubview:precedingImage];
-		precedingImage = imageView;
+//sets all views to opaque again
+-(void) reloadImages {
+	for (UIImageView* imageView in self.imageViews) {
+		imageView.alpha = 1.f;
 	}
-}
-
--(void) reloadLastImage {
-	UIImageView* lastImage = [self.imageViews objectAtIndex:([self.imageViews count]-1)];
-	[lastImage removeFromSuperview];
-	lastImage.alpha = 1.0;
-	[self insertSubview:lastImage belowSubview:[self.imageViews objectAtIndex:([self.imageViews count]-2)]];
 }
 
 #pragma mark - Gesture Recognizer Delegate methods -
