@@ -16,7 +16,7 @@
 #import "UIEffects.h"
 #import "BaseArticleViewingExperience.h"
 
-@interface PhotoAVE() <UIGestureRecognizerDelegate>
+@interface PhotoAVE() <UIGestureRecognizerDelegate, AVEDelegate>
 
 @property (nonatomic) CGPoint originPoint;
 //contains PointObjects showing dots on circle
@@ -30,6 +30,7 @@
 @property (nonatomic) NSInteger draggingFromPointIndex;
 @property (nonatomic) float lastDistanceFromStartingPoint;
 @property (nonatomic) float circleRadius;
+@property (strong, nonatomic) NSTimer * showCircleTimer;
 
 @property (nonatomic) BOOL textShowing;
 
@@ -50,13 +51,18 @@
 			self.draggingFromPointIndex = -1;
 			self.currentPhotoIndex = 0;
 			[self highlightDot];
-			//show users it's there
 			[self displayCircle:YES];
-			[self displayCircle:NO];
+			self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
 		}
+		self.textShowing = YES;
 		[self addTapGestureToView:self];
 	}
 	return self;
+}
+
+-(void) viewDidAppear {
+//	[self displayCircle:YES];
+//	[self displayCircle: NO];
 }
 
 #pragma mark - Lazy Instantiation
@@ -184,20 +190,32 @@
 	[view addGestureRecognizer:tapGesture];
 }
 
--(void) mainViewTapped:(UITapGestureRecognizer *) gesture {
-
-	if (![self goToPhoto:gesture]) {
+-(void) mainViewTapped:(UITapGestureRecognizer *) sender {
+	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
+	if ([self circleTapped:touchLocation]) {
+		[self displayCircle:YES];
+		self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_TAPPED_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+	} else {
 		self.textShowing = !self.textShowing;
 		[self showText:self.textShowing];
 	}
+}
+
+//check if tap is within radius of circle
+-(BOOL) circleTapped:(CGPoint) touchLocation {
+	if ((touchLocation.x - self.originPoint.x) < (self.circleRadius + TOUCH_THRESHOLD)
+		&&	(touchLocation.y - self.originPoint.y) < (self.circleRadius + TOUCH_THRESHOLD)) {
+		[self goToPhoto:touchLocation];
+		return YES;
+	}
+	return NO;
 }
 
 -(void) showText:(BOOL)show {
 	[(BaseArticleViewingExperience*)self.superview showText:show];
 }
 
--(BOOL) goToPhoto:(UITapGestureRecognizer*) sender {
-	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
+-(BOOL) goToPhoto:(CGPoint) touchLocation {
 	NSInteger indexOfPoint = [self getPointIndexFromLocation:touchLocation];
 	if (indexOfPoint >= 0) {
 		[self setImageViewsToLocation:indexOfPoint];
@@ -303,6 +321,26 @@
 }
 
 -(void) displayCircle:(BOOL)display {
+	if (self.showCircleTimer) {
+		[self.showCircleTimer invalidate];
+		self.showCircleTimer = nil;
+	}
+	if(!display) {
+		 self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+	} else {
+		[self animateFadeCircleDisplay:YES];
+	}
+}
+
+-(void) removeCircle {
+	if (self.showCircleTimer) {
+		[self.showCircleTimer invalidate];
+		self.showCircleTimer = nil;
+	}
+	[self animateFadeCircleDisplay:NO];
+}
+
+-(void) animateFadeCircleDisplay:(BOOL) display {
 	[UIView animateWithDuration:CIRCLE_FADE_DURATION animations:^{
 		[self.circleView setAlpha: display ? CIRCLE_OVER_IMAGES_ALPHA : 0.f];
 		for (UIView* dotView in self.dotViewsOnCircle) {

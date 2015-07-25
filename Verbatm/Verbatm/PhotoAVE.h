@@ -13,4 +13,5 @@
 //photos are NSData*
 -(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos;
 
+-(void) displayCircle:(BOOL)display;
 @end

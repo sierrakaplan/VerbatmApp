@@ -7,7 +7,6 @@
 //
 
 #import "BaseArticleViewingExperience.h"
-#import "MultiplePhotoAVE.h"
 #import "VideoAVE.h"
 #import "PhotoAVE.h"
 #import "MultiplePhotoVideoAVE.h"
@@ -249,5 +248,12 @@
 	}
 }
 
+-(void) viewDidAppear {
+	for (UIView* subview in self.subviews) {
+		if([subview conformsToProtocol:@protocol(AVEDelegate)]) {
+			[(UIView<AVEDelegate>*) subview viewDidAppear];
+		}
+	}
+}
 
 @end

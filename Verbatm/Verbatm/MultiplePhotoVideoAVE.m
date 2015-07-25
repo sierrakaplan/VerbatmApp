@@ -15,7 +15,8 @@
 #import "BaseArticleViewingExperience.h"
 #import "VerbatmImageScrollView.h"
 
-@interface MultiplePhotoVideoAVE()
+@interface MultiplePhotoVideoAVE() <AVEDelegate>
+
 @property (strong, nonatomic) VideoAVE *videoView;
 @property (strong, nonatomic) VerbatmImageScrollView *photoListScrollView;
 @property (strong, nonatomic) AVMutableComposition* mix;
@@ -99,6 +100,10 @@
 {
     
     [self.videoView unmuteVideo];
+}
+
+-(void) viewDidAppear {
+	//TODO
 }
 
 @end

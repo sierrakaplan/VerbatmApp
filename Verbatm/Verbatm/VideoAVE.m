@@ -8,8 +8,10 @@
 
 #import "VideoAVE.h"
 #import "Icons.h"
+#import "BaseArticleViewingExperience.h"
 
-@interface VideoAVE()
+@interface VideoAVE() <AVEDelegate>
+
 @property (strong, nonatomic) UIImageView* videoProgressImageView;  //Kept because of the snake....will be implemented soon
 @property (strong, nonatomic) UIButton* play_pauseBtn;
 @property (strong, nonatomic) AVMutableComposition* mix;
@@ -20,6 +22,8 @@
 #define MAX_VD_RATE 2
 #define PLY_PSE_FRAME self.frame.origin.x, self.frame.origin.y + self.frame.size.height - 50, 50,50
 @end
+
+
 @implementation VideoAVE
 
 //no seeking. Fast forward and rewind.
@@ -159,5 +163,9 @@
     [self continueVideo];
     [self unmuteVideo];
 
+}
+
+-(void) viewDidAppear {
+	//TODO
 }
 @end

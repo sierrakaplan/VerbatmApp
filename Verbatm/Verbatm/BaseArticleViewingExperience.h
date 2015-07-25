@@ -10,7 +10,20 @@
 #import "AVETypeAnalyzer.h"
 #import "TextOverAVEView.h"
 
+@protocol AVEDelegate <NSObject>
+
+-(void)viewDidAppear;
+
+@end
+
 @interface BaseArticleViewingExperience : UIView
+
+typedef NS_ENUM(NSInteger, AVEType) {
+	AVETypeVideo,
+	AVETypePhoto,
+	AVETypePhotoVideo
+};
+
 -(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text andPhotos: (NSMutableArray *)photos andVideos: (NSMutableArray *)videos andAVEType:(AVEType)aveType;
 
 -(int)numberOfLinesInTextView:(UITextView *)textView;
@@ -20,4 +33,5 @@
 -(void) setViewAsMainView: (UIView*) view;
 -(void) removeMainView;
 -(BOOL) mainViewIsFullScreen;
+-(void) viewDidAppear;
 @end

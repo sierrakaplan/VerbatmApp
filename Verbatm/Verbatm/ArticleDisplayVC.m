@@ -8,8 +8,7 @@
 
 #import "ArticleDisplayVC.h"
 #import "TextAVE.h"
-#import "VideoAVE.h"
-#import "MultiplePhotoVideoAVE.h"
+#import "BaseArticleViewingExperience.h"
 #import "AVETypeAnalyzer.h"
 #import "Page.h"
 #import "Article.h"
@@ -271,7 +270,9 @@
             [self.scrollView addSubview: view];
             viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
             continue;
-        }
+        } else if ([view isKindOfClass:[BaseArticleViewingExperience class]]) {
+			[(BaseArticleViewingExperience*)view viewDidAppear];
+		}
         [self.scrollView insertSubview:view atIndex:0];
         view.frame = viewFrame;
         viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);

@@ -12,7 +12,6 @@
 #import "VideoAVE.h"
 #import "TextAVE.h"
 #import "MultiplePhotoVideoAVE.h"
-#import "MultiplePhotoAVE.h"
 #import "BaseArticleViewingExperience.h"
 
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
