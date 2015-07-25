@@ -135,7 +135,7 @@
 }
 
 -(void) addBlurView {
-	[UIEffects createBlurViewOnView:self.view];
+	[UIEffects createBlurViewOnView:self.view withStyle:UIBlurEffectStyleDark];
 }
 
 -(void) centerViews

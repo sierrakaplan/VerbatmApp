@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 
 @interface UIEffects : NSObject 
-+ (UIVisualEffectView*) createBlurViewOnView: (UIView*)view;
++ (UIVisualEffectView*) createBlurViewOnView: (UIView*)view withStyle:(UIBlurEffectStyle) blurStyle;
++ (UIImage *)blurredImageWithImage:(UIImage *)sourceImage andFilterLevel: (float) filterValue;
 + (void) addShadowToView: (UIView *) view;
 + (void) addDashedBorderToView: (UIView *) view;
 + (UIImage*) imageOverlayed:(UIImage*)image withColor:(UIColor*)color;

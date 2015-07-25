@@ -7,12 +7,20 @@
 //
 
 #import "VerbatmImageScrollView.h"
+#import "UIEffects.h"
+
+@interface VerbatmImageScrollView()
+
+@property (nonatomic) BOOL hasBlurBackground;
+
+@end
 
 @implementation VerbatmImageScrollView
 
 -(id) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if(self) {
+		self.hasBlurBackground = NO;
 		[self format];
 	}
 	return self;
@@ -24,17 +32,28 @@
 	self.showsVerticalScrollIndicator = NO;
 }
 
--(void)renderPhotos:(NSArray*)photos {
+-(void)renderPhotos:(NSArray*)photos withBlurBackground:(BOOL)withBackground {
 
 	for (NSData* imageData in photos)
 	{
 		UIImage*image = [[UIImage alloc] initWithData: imageData];
 		UIImageView * imageview = [[UIImageView alloc] initWithImage:image];
-		imageview.frame = [self getNextFrame];
+		CGRect imageViewFrame = [self getNextFrame];
+		imageview.frame = imageViewFrame;
 		imageview.clipsToBounds = YES;
 		imageview.contentMode = UIViewContentModeScaleAspectFit;
+
+		if (withBackground) {
+			UIImage* blurImage = [UIEffects blurredImageWithImage:image andFilterLevel:30];
+			UIImageView* blurBackground = [[UIImageView alloc] initWithImage:blurImage];
+			blurBackground.frame = imageViewFrame;
+			blurBackground.clipsToBounds = YES;
+			blurBackground.contentMode = UIViewContentModeScaleAspectFill;
+			[self addSubview:blurBackground];
+		}
 		[self addSubview:imageview];
 	}
+	self.hasBlurBackground = withBackground;
 	[self adjustContentSize];
 }
 
@@ -48,12 +67,12 @@
 
 //resets the content size of the scrollview
 -(void) adjustContentSize {
-	self.contentSize = CGSizeMake((self.frame.size.width* self.subviews.count), 0);
+	NSInteger numImages = self.hasBlurBackground ? self.subviews.count/2 : self.subviews.count;
+	self.contentSize = CGSizeMake((self.frame.size.width* numImages), 0);
 }
 
 -(void)setImageHeights {
-	for(UIView * view in self.subviews) {
-		view.contentMode = UIViewContentModeScaleAspectFit;
+	for(UIImageView * view in self.subviews) {
 		view.frame = CGRectMake(view.frame.origin.x, view.frame.origin.y, self.bounds.size.width, self.bounds.size.height);
 	}
 }

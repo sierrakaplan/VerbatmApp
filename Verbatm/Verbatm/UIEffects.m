@@ -17,9 +17,9 @@
 @implementation UIEffects
 
 
-+ (UIVisualEffectView*) createBlurViewOnView: (UIView*)view {
++ (UIVisualEffectView*) createBlurViewOnView: (UIView*)view withStyle:(UIBlurEffectStyle) blurStyle {
 	view.backgroundColor = [UIColor clearColor];
-	UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleDark];
+	UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:blurStyle];
 	UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
 	blurEffectView.frame = view.frame;
 	[view insertSubview:blurEffectView atIndex:0];
@@ -30,6 +30,26 @@
 	[view addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeLeading relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeLeading multiplier:1 constant:0]];
 	[view addConstraint:[NSLayoutConstraint constraintWithItem:blurEffectView attribute:NSLayoutAttributeTrailing relatedBy:NSLayoutRelationEqual toItem:view attribute:NSLayoutAttributeTrailing multiplier:1 constant:0]];
 	return blurEffectView;
+}
+
++ (UIImage *)blurredImageWithImage:(UIImage *)sourceImage andFilterLevel: (float) filterValue{
+
+	//  Create our blurred image
+	CIContext *context = [CIContext contextWithOptions:nil];
+	CIImage *inputImage = [CIImage imageWithCGImage:sourceImage.CGImage];
+
+	//  Setting up Gaussian Blur
+	CIFilter *filter = [CIFilter filterWithName:@"CIGaussianBlur"];
+	[filter setValue:inputImage forKey:kCIInputImageKey];
+	[filter setValue:[NSNumber numberWithFloat:filterValue] forKey:@"inputRadius"];
+	CIImage *result = [filter valueForKey:kCIOutputImageKey];
+
+	/*  CIGaussianBlur has a tendency to shrink the image a little, this ensures it matches
+	 *  up exactly to the bounds of our original image */
+	CGImageRef cgImage = [context createCGImage:result fromRect:[inputImage extent]];
+
+	UIImage *retVal = [UIImage imageWithCGImage:cgImage];
+	return retVal;
 }
 
 +(void) addShadowToView: (UIView *) view {

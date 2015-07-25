@@ -10,7 +10,7 @@
 
 @interface VerbatmImageScrollView : UIScrollView
 
--(void) renderPhotos:(NSArray*)photos;
+-(void)renderPhotos:(NSArray*)photos withBlurBackground:(BOOL)withBackground;
 -(void) adjustContentSize;
 -(void) setImageHeights;
 

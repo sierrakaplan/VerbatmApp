@@ -31,7 +31,7 @@
     {
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
         [self setSubViews];
-        [self.photoListScrollView renderPhotos:photos];
+        [self.photoListScrollView renderPhotos:photos withBlurBackground:YES];
 		[self.videoView playVideos:videos];
     }
     return self;
