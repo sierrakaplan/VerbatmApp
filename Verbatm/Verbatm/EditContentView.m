@@ -12,9 +12,11 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "UIEffects.h"
+#import "Notifications.h"
 #import "ContentDevVC.h"
+#import "VerbatmKeyboardToolBar.h"
 
-@interface EditContentView ()
+@interface EditContentView () <KeyboardToolBarDelegate>
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) UIImage * filter_Original;
@@ -32,11 +34,9 @@
 -(instancetype) initCustomViewWithFrame:(CGRect)frame
 {
 	self = [super init];
-	if(self)
-	{
+	if(self) {
 		self.backgroundColor = [UIColor blackColor];
 		self.frame = frame;
-
 	}
 	return self;
 }
@@ -44,7 +44,6 @@
 #pragma mark - Text View -
 
 -(void)adjustContentSizing {
-	[self.textView adjustToolBarFrame];
 	[UIEffects addDashedBorderToView:self.textView];
 }
 
@@ -66,12 +65,6 @@
 
 -(void) createTextViewFromTextView: (UITextView *) textView {
 
-	//be sure to remove it
-	if(self.gestureView) {
-		[self.gestureView removeFromSuperview];
-		self.gestureView = nil;
-	}
-
 	CGRect textViewFrame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
 	self.textView = [[VerbatmUITextView alloc] initWithFrame:textViewFrame];
 	[self formatTextViewAppropriately:self.textView];
@@ -82,6 +75,17 @@
 		[self adjustContentSizing];
 		self.textView.text = textView.text;
 	}
+	[self addToolBarToView];
+}
+
+//creates a toolbar to add onto the keyboard
+-(void)addToolBarToView {
+	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
+	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame];
+	[toolBar setBackgroundColor:[UIColor colorWithWhite:0 alpha:1]];
+	[toolBar setDelegate:self];
+
+	self.textView.inputAccessoryView = toolBar;
 }
 
 //Calculate the appropriate bounds for the text view
@@ -110,6 +114,7 @@
 }
 
 #pragma mark - Image or Video View -
+
 -(void)addVideo: (AVAsset*) video {
 	self.videoView = [[VideoPlayerView alloc]init];
 	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
@@ -117,16 +122,12 @@
 	[self bringSubviewToFront:self.videoView];
 	[self.videoView playVideoFromAsset:video];
 	[self.videoView repeatVideoOnEnd:YES];
+
+	[self addTapGestureToMainView];
 }
 
 -(void)addImage: (NSData*) image
 {
-
-	if(self.gestureView)//be sure to remove it
-	{
-		[self.gestureView removeFromSuperview];
-		self.gestureView = nil;
-	}
 
 	//create a new scrollview to place the images
 	self.imageView = [[VerbatmImageView alloc]init];
@@ -137,7 +138,11 @@
 	[self createFilteredImages];
 	[self addSwipeToOpenedView];
 	self.imageView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+
+	[self addTapGestureToMainView];
 }
+
+#pragma mark Filters
 
 -(void)createFilteredImages
 {
@@ -173,8 +178,6 @@
 	//free(buffer);
 }
 
-
-
 -(void)addSwipeToOpenedView
 {
 	UISwipeGestureRecognizer * leftSwipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(filterViewSwipe:)];
@@ -198,6 +201,22 @@
 		self.imageView.image = self.filter_WARM;
 		self.filter = @"WARM";
 	}
+}
+
+#pragma mark - Exit view
+
+-(void) addTapGestureToMainView {
+	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitEditContentView)];
+
+	[self addGestureRecognizer:tap];
+}
+
+-(void) doneButtonPressed {
+	[self exitEditContentView];
+}
+
+-(void) exitEditContentView {
+	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_EDIT_CONTENT_VIEW object:nil userInfo:nil];
 }
 
 @end

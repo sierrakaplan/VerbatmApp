@@ -13,6 +13,9 @@
 
 #pragma mark - Content Dev VC -
 
+#define NOTIFICATION_HIDE_KEYBOARD @"Notification_hideKeyboard"
+#define NOTIFICATION_SHOW_KEYBOARD @"Notification_showKeyboard"
+
 #define NOTIFICATION_HIDE_PULLBAR @"Notification_shouldHidePullBar"
 #define NOTIFICATION_SHOW_PULLBAR @"Notification_shouldShowPullBar"
 #define NOTIFICATION_PICTURE_SELECTED @"Notification_pictureObjectSelected"

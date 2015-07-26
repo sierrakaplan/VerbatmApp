@@ -156,19 +156,24 @@
 
 - (IBAction)undoButtonReleased:(UIButton *)sender
 {
-	[self.delegate undoButtonPressed];
+	if (self.delegate) {
+		[self.delegate undoButtonPressed];
+	}
 }
 
 - (IBAction)previewButtonReleased:(UIButton *)sender
 {
-    [self.delegate previewButtonPressed];
-    
+	if (self.delegate) {
+    	[self.delegate previewButtonPressed];
+	}
+
 }
 
 - (IBAction)pullUpButtonReleased:(UIButton *)sender
 {
-	[self.delegate pullUpButtonPressed];
-
+	if (self.delegate) {
+		[self.delegate pullUpButtonPressed];
+	}
 }
 
 # pragma mark Button actions on touch down -- NOT IN USE --

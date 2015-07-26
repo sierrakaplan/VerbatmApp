@@ -81,7 +81,6 @@
 //keep track of the frame the selected view could take so that we can easily shift
 @property (nonatomic) CGRect potentialFrameAfterLongPress;
 
-@property (nonatomic, strong) EditContentView * openEditContentView;
 @property (nonatomic, strong) PinchView * openImagePinchView;
 @property (nonatomic, strong) NSString * filter;
 
@@ -227,6 +226,7 @@
 	self.baseMediaTileSelector.isBaseSelector =YES;
 	self.baseMediaTileSelector.delegate = self;
 	[self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
+	[self.baseMediaTileSelector formatButtons];
 
 	UIScrollView * scrollview = [[UIScrollView alloc]init];
 	scrollview.frame = CGRectMake(0, self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.view.frame.size.width, (self.view.frame.size.height/5)+ELEMENT_OFFSET_DISTANCE);
@@ -283,7 +283,10 @@
 												 name:UIKeyboardDidShowNotification
 											   object:nil];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeKeyboardFromScreen) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeKeyboardFromScreen) name:NOTIFICATION_HIDE_KEYBOARD object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showKeyboard) name:NOTIFICATION_SHOW_KEYBOARD object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(undoTileDeleteSwipe:) name:NOTIFICATION_UNDO object: nil];
 
@@ -423,13 +426,6 @@
 //User has edited the text view somehow so we recount the words in the view. And adjust its size
 - (void)textViewDidChange:(UITextView *)textView {
 	[self editWordCount];
-
-//	CGFloat fixedWidth = textView.frame.size.width;
-//	CGSize newSize = [textView sizeThatFits:CGSizeMake(fixedWidth, MAXFLOAT)];
-//	CGRect newFrame = textView.frame;
-//	newFrame.size = CGSizeMake(fmaxf(newSize.width, fixedWidth), newSize.height);
-//	textView.frame = newFrame;
-
 	[self.openEditContentView adjustContentSizing];
 }
 
@@ -791,17 +787,32 @@
 
 #pragma  mark - Handling the KeyBoard -
 
+-(void) orientationChanged {
+	//make sure the device is landscape
+	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)) {
+		[self removeKeyboardFromScreen];
+	} else {
+		[self showKeyboard];
+	}
+}
 #pragma Remove Keyboard From Screen
 //Iain
 -(void) removeKeyboardFromScreen
 {
-	//make sure the device is landscape
-	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation))
-	{
-		if(self.sandwichWhat.isEditing)[self.sandwichWhat resignFirstResponder];
-		if(self.sandwichWhere.isEditing)[self.sandwichWhere resignFirstResponder];
-		if(self.articleTitleField.isEditing)[self.articleTitleField resignFirstResponder];
+	if(self.sandwichWhat.isEditing)[self.sandwichWhat resignFirstResponder];
+	if(self.sandwichWhere.isEditing)[self.sandwichWhere resignFirstResponder];
+	if(self.articleTitleField.isEditing)[self.articleTitleField resignFirstResponder];
+	if (self.openEditContentView) {
 		[self.openEditContentView.textView resignFirstResponder];
+	}
+}
+
+-(void) showKeyboard {
+	if(self.sandwichWhat.isEditing)[self.sandwichWhat becomeFirstResponder];
+	if(self.sandwichWhere.isEditing)[self.sandwichWhere becomeFirstResponder];
+	if(self.articleTitleField.isEditing)[self.articleTitleField becomeFirstResponder];
+	if (self.openEditContentView) {
+		[self.openEditContentView.textView becomeFirstResponder];
 	}
 }
 
@@ -1179,13 +1190,15 @@
 }
 
 -(CGRect) getStartFrameForNewMediaTile {
-	return CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),0, 0, 0);
+	return CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),ELEMENT_OFFSET_DISTANCE/2, 0, 0);
 }
 
 -(void) addMediaTile: (MediaSelectTile *) mediaView underView: (UIView *) topView {
 	//create frame for the personal scrollview of the new text view
 	UIScrollView * newPersonalScrollView = [[UIScrollView alloc]init];
 	newPersonalScrollView.frame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
+	//format the scrollview accordingly
+	[self formatNewElementScrollView:(UIScrollView *)newPersonalScrollView];
 
 	newPersonalScrollView.delegate = self;
 	if(newPersonalScrollView)[self.mainScrollView addSubview:newPersonalScrollView];
@@ -1210,6 +1223,7 @@
 	float totalChange = absChangeInBottomViewPosition + absChangeInTopViewPosition;
 	float widthToHeightRatio = self.baseMediaTileSelector.frame.size.width/self.baseMediaTileSelector.frame.size.height;
 	float changeInWidth = widthToHeightRatio * totalChange;
+	float superviewToMediaTileRatio = (self.baseMediaTileSelector.superview.frame.size.height/self.baseMediaTileSelector.frame.size.height);
 
 	if(self.newlyCreatedMediaTile.superview.frame.size.height < PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION) {
 
@@ -1225,11 +1239,9 @@
 		self.newlyCreatedMediaTile.superview.frame = CGRectMake(self.newlyCreatedMediaTile.superview.frame.origin.x,
 														   self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
 														   self.newlyCreatedMediaTile.superview.frame.size.width + changeInWidth,
-														   self.newlyCreatedMediaTile.superview.frame.size.height + totalChange);
+														   self.newlyCreatedMediaTile.superview.frame.size.height + totalChange * superviewToMediaTileRatio);
 
 
-		//format the scrollview accordingly
-		[self formatNewElementScrollView:(UIScrollView *)self.newlyCreatedMediaTile.superview];
 		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
 		[self.newlyCreatedMediaTile setNeedsDisplay];
 
@@ -1256,7 +1268,8 @@
 			gesture.enabled = NO;
 			gesture.enabled = YES;
 			self.pinchingMode = PinchingModeNone;
-
+			[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+			[self.newlyCreatedMediaTile formatButtons];
 		}];
 	}
 }
@@ -1842,27 +1855,16 @@
 #pragma mark - Sense Tap Gesture -
 #pragma mark EditContentView
 
--(void) addTapGestureToEditContentView: (EditContentView *) isv
-{
-	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeEditContentView)];
-
-	if(isv.gestureView)[isv.gestureView addGestureRecognizer:tap];
-	else [isv addGestureRecognizer:tap];
-}
-
 -(void) removeEditContentView {
 	if (!self.openEditContentView) {
 		return;
 	}
-	if(self.openImagePinchView.containsText)
-	{
-		if([self.openEditContentView.textView.text isEqualToString:@""])
-		{
+	if(self.openImagePinchView.containsText) {
+		if([self.openEditContentView.textView.text isEqualToString:@""]) {
 			[self.openImagePinchView.superview removeFromSuperview];
 			[self.pageElements removeObject:self.openImagePinchView];
 			[self shiftElementsBelowView:self.articleTitleField];
-		}else
-		{
+		}else {
 			[self.openImagePinchView changeText:self.openEditContentView.textView];
 		}
 	}
@@ -1881,7 +1883,6 @@
 	[self.openImagePinchView renderMedia];
 }
 
-#pragma mark EditContentView
 -(void)addTapGestureToView: (PinchView *) pinchView
 {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectTapped:)];
@@ -1930,8 +1931,6 @@
 
 	[self.view addSubview:editContentView];
 	[editContentView addVideo:videoAsset];
-
-	[self addTapGestureToEditContentView:editContentView];
 	self.openEditContentView = editContentView;
 	self.openImagePinchView = pinchView;
 }
@@ -1942,8 +1941,6 @@
 
 	[self.view addSubview:editContentView];
 	[editContentView addImage:imageView];
-
-	[self addTapGestureToEditContentView:editContentView];
 	self.openEditContentView = editContentView;
 	self.openImagePinchView = pinchView;
 }
@@ -1959,7 +1956,6 @@
 	[textScroll createTextViewFromTextView: textView];
 	textScroll.textView.delegate = self;
 	[textScroll.textView becomeFirstResponder];
-	[self addTapGestureToEditContentView:textScroll];
 	self.openEditContentView = textScroll;
 	self.openImagePinchView = pinchView;
 }

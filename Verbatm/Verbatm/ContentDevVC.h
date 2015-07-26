@@ -11,6 +11,7 @@
 #import "PinchView.h"
 #import "VerbatmImageView.h"
 #import "VerbatmScrollView.h"
+#import "EditContentView.h"
 
 @protocol ContentDevElementDelegate <NSObject>
 
@@ -38,6 +39,7 @@
 //view that is currently being filled in
 @property (strong, nonatomic) UITextView * activeTextView;
 @property(nonatomic) NSInteger pullBarHeight;
+@property (nonatomic, strong) EditContentView * openEditContentView;
 
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data;
 -(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
@@ -45,6 +47,7 @@
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView;
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView andTextView: (UITextView *) textView;
 -(void) removeEditContentView;//allows you to remove the image scrollview
+
 // either locks the scroll view or frees it
 -(void)setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;

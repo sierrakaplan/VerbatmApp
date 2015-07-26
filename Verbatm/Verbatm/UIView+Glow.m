@@ -8,6 +8,7 @@
 #import "UIView+Glow.h"
 #import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
+#import "UIEffects.h"
 
 // Used to identify the associating glowing view
 static char* GLOWVIEW_KEY = "GLOWVIEW";
@@ -43,22 +44,7 @@ static char* SECOND_GLOWVIEW_KEY = "SECOND_GLOWVIEW";
     if ([self glowView] && [self secondGlowView])
         [self stopGlowing];
     
-    // The glow image is taken from the current view's appearance.
-    // As a side effect, if the view's content, size or shape changes, 
-    // the glow won't update.
-    UIImage* image;
-    
-    UIGraphicsBeginImageContextWithOptions(self.bounds.size, NO, [UIScreen mainScreen].scale); {
-        [self.layer renderInContext:UIGraphicsGetCurrentContext()];
-        
-        UIBezierPath* path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, self.bounds.size.width, self.bounds.size.height)];
-        
-        [color setFill];
-        
-        [path fillWithBlendMode:kCGBlendModeSourceAtop alpha:1.0];
-
-        image = UIGraphicsGetImageFromCurrentImageContext();
-    } UIGraphicsEndImageContext();
+	UIImage* image = [UIEffects getGlowImageFromView:self andColor:color];
     
 	UIImageView *glowView = [self createGlowViewFromImage:image withColor:color andRadius:DEFAULT_GLOW_RADIUS_1 fromIntensity:fromIntensity toIntensity:toIntensity withDuration:duration repeat:YES];
 

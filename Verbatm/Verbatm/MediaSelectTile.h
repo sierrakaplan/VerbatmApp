@@ -19,7 +19,8 @@
 
 @interface MediaSelectTile : UIView
     @property (strong, nonatomic) UIScrollView * mainScrollView;
-    -(void) createFramesForButtonsWithFrame: (CGRect) frame;
+-(void) createFramesForButtonsWithFrame: (CGRect) frame;
+-(void) formatButtons;
     @property (strong, nonatomic) id<MediaSelectTileDelegate> delegate;
 	// Tells if it is the base media selector tile (last in scroll view)
     @property (nonatomic) BOOL isBaseSelector;

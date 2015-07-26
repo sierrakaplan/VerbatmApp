@@ -32,8 +32,8 @@
 #pragma mark Editing Content View
 
 #define TEXT_TOOLBAR_HEIGHT 30.f
-#define TEXT_TOOLBAR_BUTTON_OFFSET 5.f
-#define TEXT_TOOLBAR_BUTTON_SIZE 50.f
+#define TEXT_TOOLBAR_BUTTON_OFFSET 9.f
+#define TEXT_TOOLBAR_BUTTON_WIDTH 70.f
 
 #pragma mark Preview
 
@@ -76,7 +76,7 @@
 #pragma mark Media Select Tile
 
 #define MEDIA_TILE_SELECTOR_HEIGHT 100.f
-#define ADD_MEDIA_BUTTON_OFFSET 5
+#define ADD_MEDIA_BUTTON_OFFSET 10
 
 #pragma mark - Feed -
 

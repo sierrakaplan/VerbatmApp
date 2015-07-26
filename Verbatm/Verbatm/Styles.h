@@ -14,6 +14,9 @@
 #define BUTTON_FONT @"HelveticaNeue-Light"
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 
+
+#define FILTER_LEVEL_BLUR 30
+
 #pragma mark - Sign In -
 
 #define ERROR_ANIMATION_TEXT_COLOR whiteColor
@@ -42,7 +45,11 @@
 #pragma mark Content Editing View
 
 #define TEXT_SCROLLVIEW_BACKGROUND_COLOR clearColor
-#define DONE_BUTTON_COLOR blueColor
+
+#pragma mark Verbatm Keyboard Toolbar
+
+#define DONE_BUTTON_COLOR clearColor
+#define KEYBOARD_TOOLBAR_FONT_SIZE 22.f
 
 #pragma mark Preview
 

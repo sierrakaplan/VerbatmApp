@@ -2,8 +2,8 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "insert_photo_button.png",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "insert_photo_button (1).png"
     },
     {
       "idiom" : "universal",

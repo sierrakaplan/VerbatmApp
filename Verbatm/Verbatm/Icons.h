@@ -15,8 +15,8 @@
 
 #pragma mark Media Picker
 
-#define PHOTO_BUTTON @"photo_button"
-#define TEXT_BUTTON @"text_button"
+#define INSERT_MEDIA_BUTTON @"insert_media_button"
+#define INSERT_TEXT_BUTTON @"insert_text_button"
 
 #pragma mark - Media Dev VC -
 

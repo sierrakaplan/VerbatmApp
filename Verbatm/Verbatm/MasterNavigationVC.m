@@ -20,7 +20,7 @@
 @property (nonatomic, strong) NSMutableArray * Display_pages;
 @property (nonatomic, strong) NSMutableArray * Display_pinchObjects;
 @property (nonatomic) CGPoint prev_Gesture_Point;
-    
+
 @property (strong, nonatomic) NSTimer * animationTimer;
 @property (strong,nonatomic) UIImageView* animationView;
 
@@ -40,258 +40,261 @@
 }
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    [self formatVCS];
-    [self registerForNavNotifications];
-    [self setUpGestureRecognizers];
+	[super viewDidLoad];
+	// Do any additional setup after loading the view.
+	[self formatVCS];
+	[self registerForNavNotifications];
+	[self setUpGestureRecognizers];
 }
 
 -(void)viewDidAppear:(BOOL)animated
 {
-    [super viewDidAppear:animated];
+	[super viewDidAppear:animated];
 	[self login];
 }
 
 -(void)registerForNavNotifications
 {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticleList:) name:NOTIFICATION_EXIT_CONTENTPAGE object: nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertTitleAnimation) name:NOTIFICATION_INFO_IS_BLANK_ANIMATION object: nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticleList:) name:NOTIFICATION_EXIT_CONTENTPAGE object: nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertTitleAnimation) name:NOTIFICATION_INFO_IS_BLANK_ANIMATION object: nil];
 }
 
 
 -(void) showADK: (NSNotification *) notification
 {
-   [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-       self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
-   }completion:^(BOOL finished) {
-       if(finished)
-       {
-           [self play_CP_Vidoes];
-       }
-   }];
+	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+	}completion:^(BOOL finished) {
+		if(finished)
+		{
+			[self play_CP_Vidoes];
+		}
+	}];
 }
 
 -(void)showArticleList:(NSNotification *)notification
 {
-    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-        self.masterSV.contentOffset = CGPointMake(0, 0);
-    }completion:^(BOOL finished) {
-        if(finished) {
+	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+		self.masterSV.contentOffset = CGPointMake(0, 0);
+	}completion:^(BOOL finished) {
+		if(finished) {
 			[self articlePublishedAnimation];
-            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CLEAR_CONTENTPAGE
- object:nil userInfo:nil];
+			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CLEAR_CONTENTPAGE
+																object:nil userInfo:nil];
 			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_REFRESH_FEED
 																object:nil
 															  userInfo:nil];
-        }
-    }];
+		}
+	}];
 }
 
 
 //no longer being done
 -(void)leaveArticleDisplay: (NSNotification *) notification
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self dismissViewControllerAnimated:YES completion:nil];
-    
+	[[NSNotificationCenter defaultCenter] removeObserver:self];
+	[self dismissViewControllerAnimated:YES completion:nil];
+
 }
 
 -(void)setUpGestureRecognizers
 {
-        UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(enter_adk:)];
-        edgePanR.edges =  UIRectEdgeRight;
-    UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exit_adk:)];
-    edgePanL.edges =  UIRectEdgeLeft;
-    [self.view addGestureRecognizer: edgePanR];
-    [self.view addGestureRecognizer: edgePanL];
+	UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(enter_adk:)];
+	edgePanR.edges =  UIRectEdgeRight;
+	UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exit_adk:)];
+	edgePanL.edges =  UIRectEdgeLeft;
+	[self.view addGestureRecognizer: edgePanR];
+	[self.view addGestureRecognizer: edgePanL];
 }
 
 //tells the content page to pause its videos when it's out of view
 -(void)pause_CP_Vidoes
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PAUSE_VIDEOS
-                                                        object:nil
-                                                      userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PAUSE_VIDEOS
+														object:nil
+													  userInfo:nil];
 }
 
 //tells the content page to play it's videos when it's in view
 -(void)play_CP_Vidoes
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PLAY_VIDEOS
-                                                        object:nil
-                                                      userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PLAY_VIDEOS
+														object:nil
+													  userInfo:nil];
 }
 
 //swipping left from right
 -(void)enter_adk:(UIScreenEdgePanGestureRecognizer *)sender
 {
-    if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
-    if(self.masterSV.contentOffset.x == self.view.frame.size.width) return;
-    
-    if(sender.state ==UIGestureRecognizerStateBegan)
-    {
-        self.prev_Gesture_Point  = [sender locationOfTouch:0 inView:self.view];
-    }
-    
-    if(sender.state == UIGestureRecognizerStateChanged)
-    {
-        
-        CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
-        
-        int diff = current_point.x - self.prev_Gesture_Point.x;
-        self.prev_Gesture_Point = current_point;
-        self.masterSV.contentOffset = CGPointMake(self.masterSV.contentOffset.x + (-1 *diff), 0);
-    }
-    
-    if(sender.state == UIGestureRecognizerStateEnded)
-    {
-        [self adjustSV];
-    }
+	if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
+	if(self.masterSV.contentOffset.x == self.view.frame.size.width) return;
 
+	switch(sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			self.prev_Gesture_Point  = [sender locationOfTouch:0 inView:self.view];
+			break;
+		}
+		case UIGestureRecognizerStateChanged: {
+			CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
+
+			int diff = current_point.x - self.prev_Gesture_Point.x;
+			self.prev_Gesture_Point = current_point;
+			self.masterSV.contentOffset = CGPointMake(self.masterSV.contentOffset.x + (-1 *diff), 0);
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+			[self adjustSV];
+			break;
+		}
+		default:
+			return;
+	}
 }
 
 //swipping right from left
-- (void)exit_adk:(UIScreenEdgePanGestureRecognizer *)sender
-{
-    
-        //this is here because this sense the left edge pan gesture- so we need to catch it and send it upstream
-        if(super.articleCurrentlyViewing)
-        {
-            //we send the signal back up to it's superview to be handled
-            [super exitDisplay:sender];
-            return;
-        }
-         if(self.masterSV.contentOffset.x == 0) return;
-        if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
-        if(sender.state ==UIGestureRecognizerStateBegan)
-        {
-            self.prev_Gesture_Point  = [sender locationOfTouch:0 inView:self.view];
-        }
-        
-        if(sender.state == UIGestureRecognizerStateChanged)
-        {
-            
-            CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
-            
-            int diff = current_point.x - self.prev_Gesture_Point.x;
-            self.prev_Gesture_Point = current_point;
-            self.masterSV.contentOffset = CGPointMake(self.masterSV.contentOffset.x + (-1 *diff), 0);
-        }
-        
-        if(sender.state == UIGestureRecognizerStateEnded)
-        {
-            [self adjustSV];
-        }
+- (void)exit_adk:(UIScreenEdgePanGestureRecognizer *)sender {
+
+	//this is here because this sense the left edge pan gesture- so we need to catch it and send it upstream
+	if(super.articleCurrentlyViewing) {
+		//we send the signal back up to it's superview to be handled
+		[super exitDisplay:sender];
+		return;
+	}
+	if(self.masterSV.contentOffset.x == 0) return;
+	//we want only one finger doing anything when exiting
+	if([sender numberOfTouches] >1) return;
+
+	switch(sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_HIDE_KEYBOARD
+																object:nil
+															  userInfo:nil];
+			self.prev_Gesture_Point  = [sender locationOfTouch:0 inView:self.view];
+			break;
+		}
+		case UIGestureRecognizerStateChanged: {
+			CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
+
+			int diff = current_point.x - self.prev_Gesture_Point.x;
+			self.prev_Gesture_Point = current_point;
+			self.masterSV.contentOffset = CGPointMake(self.masterSV.contentOffset.x + (-1 *diff), 0);
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+			[self adjustSV];
+			break;
+		}
+		default:
+			return;
+	}
 }
 
 
--(void)adjustSV
-{
-    if(self.masterSV.contentOffset.x > (self.view.frame.size.width/2))
-    {
-            //bring ADK into View
-            [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-                self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
-            }completion:^(BOOL finished) {
-                if(finished)
-                {
-                    [self play_CP_Vidoes];
-                }
-            }];
-    }else
-    {
-        //bring List into View
-        [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-            self.masterSV.contentOffset = CGPointMake(0, 0);
-        }completion:^(BOOL finished) {
-            if(finished)
-            {
-                [self pause_CP_Vidoes];
-            }
-        }];
-    }
+-(void)adjustSV {
+	if(self.masterSV.contentOffset.x > (self.view.frame.size.width/2))
+	{
+		//bring ADK into View
+		[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+			self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+		}completion:^(BOOL finished) {
+			if(finished) {
+				[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_KEYBOARD
+																	object:nil
+																  userInfo:nil];
+				[self play_CP_Vidoes];
+			}
+		}];
+	}else {
+		//bring List into View
+		[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+			self.masterSV.contentOffset = CGPointMake(0, 0);
+		}completion:^(BOOL finished) {
+			if(finished)
+			{
+				[self pause_CP_Vidoes];
+			}
+		}];
+	}
 }
 
 
 //article publsihed sucessfully
 -(void)articlePublishedAnimation
 {
-    if(self.animationView.frame.size.width) return;
-    self.animationView.image = [UIImage imageNamed:PUBLISHED_ANIMATION_ICON];
-    self.animationView.frame = self.view.bounds;
-    [self.view addSubview:self.animationView];
-    if(!self.animationView.alpha)self.animationView.alpha = 1;
-    self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
+	if(self.animationView.frame.size.width) return;
+	self.animationView.image = [UIImage imageNamed:PUBLISHED_ANIMATION_ICON];
+	self.animationView.frame = self.view.bounds;
+	[self.view addSubview:self.animationView];
+	if(!self.animationView.alpha)self.animationView.alpha = 1;
+	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
 }
 
 -(void)removeAnimationView
 {
-    [UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
-        self.animationView.alpha=0;
-        
-    }completion:^(BOOL finished)
-    {
-        self.animationView.frame = CGRectMake(0, 0, 0, 0);
-        
-    }];
+	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
+		self.animationView.alpha=0;
+
+	}completion:^(BOOL finished) {
+		self.animationView.frame = CGRectMake(0, 0, 0, 0);
+
+	}];
 }
 
 //insert title
 -(void)insertTitleAnimation
 {
-    if(self.animationView.frame.size.width) return;
-    self.animationView.image = [UIImage imageNamed:TITLE_NOTIFICATION_ANIMATION];
-    self.animationView.frame = self.view.bounds;
-    if(!self.animationView.alpha)self.animationView.alpha = 1;
-    [self.view addSubview:self.animationView];
-    self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:TIME_UNTIL_ANIMATION_CLEAR target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
-    
+	if(self.animationView.frame.size.width) return;
+	self.animationView.image = [UIImage imageNamed:TITLE_NOTIFICATION_ANIMATION];
+	self.animationView.frame = self.view.bounds;
+	if(!self.animationView.alpha)self.animationView.alpha = 1;
+	[self.view addSubview:self.animationView];
+	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:TIME_UNTIL_ANIMATION_CLEAR target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
+
 }
 
 
 //lazy instantiation
 -(UIImageView *)animationView
 {
-    if(!_animationView)_animationView = [[UIImageView alloc] init];
-    return _animationView;
+	if(!_animationView)_animationView = [[UIImageView alloc] init];
+	return _animationView;
 }
 
 
 -(void)formatVCS
 {
-    self.masterSV.frame = self.view.bounds;
-    self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width*2, 0);//enable horizontal scroll
-    self.masterSV.contentOffset = CGPointMake(0, 0);//start at the left
-    self.articleList_container.frame = LEFT_FRAME ;
-    self.adk_contatiner.frame = RIGHT_FRAME;
+	self.masterSV.frame = self.view.bounds;
+	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width*2, 0);//enable horizontal scroll
+	self.masterSV.contentOffset = CGPointMake(0, 0);//start at the left
+	self.articleList_container.frame = LEFT_FRAME ;
+	self.adk_contatiner.frame = RIGHT_FRAME;
 }
 
 //for ios8- To hide the status bar
 -(BOOL)prefersStatusBarHidden
 {
-    return YES;
+	return YES;
 }
 
 -(void) removeStatusBar
 {
-    //remove the status bar
-    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-        // iOS 7
-        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-    } else {
-        // iOS 6
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-    }
+	//remove the status bar
+	if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+		// iOS 7
+		[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
+	} else {
+		// iOS 6
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+	}
 }
 #pragma mark - Handle Login -
 
 
 -(void) login {
-    if(![VerbatmUser currentUser]) {
+	if(![VerbatmUser currentUser]) {
 		[self bringUpSignUp];
 	}
 }
@@ -299,37 +302,28 @@
 //brings up the login page if there is no user logged in
 -(void)bringUpSignUp
 {
-    [self performSegueWithIdentifier:BRING_UP_SIGNIN_SEGUE sender:self];
+	[self performSegueWithIdentifier:BRING_UP_SIGNIN_SEGUE sender:self];
 }
 
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-    //return supported orientation masks
-    return UIInterfaceOrientationMaskPortrait;
+	//return supported orientation masks
+	return UIInterfaceOrientationMaskPortrait;
 }
 
 - (void)didReceiveMemoryWarning
 {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
 }
 
 //catches the unwind segue
 - (IBAction)done:(UIStoryboardSegue *)segue
 {
-    
+
 }
 
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

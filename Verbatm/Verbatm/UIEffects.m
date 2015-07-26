@@ -82,6 +82,26 @@
 	return newimage;
 }
 
++(UIImage*) getGlowImageFromView:(UIView*)view andColor:(UIColor*)color {
+	// The glow image is taken from the current view's appearance.
+	// As a side effect, if the view's content, size or shape changes,
+	// the glow won't update.
+	UIImage* image;
+
+	UIGraphicsBeginImageContextWithOptions(view.bounds.size, NO, [UIScreen mainScreen].scale); {
+		[view.layer renderInContext:UIGraphicsGetCurrentContext()];
+
+		UIBezierPath* path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, view.bounds.size.width, view.bounds.size.height)];
+
+		[color setFill];
+
+		[path fillWithBlendMode:kCGBlendModeSourceAtop alpha:1.0];
+
+		image = UIGraphicsGetImageFromCurrentImageContext();
+	} UIGraphicsEndImageContext();
+	return image;
+}
+
 +(void) addDashedBorderToView: (UIView *) view
 {
 	//border definitions
@@ -208,6 +228,33 @@
 	UIGraphicsEndImageContext();
 
 	return newImage;
+}
+
++ (UIImage*)scaleImage:(UIImage*)image toSize:(CGSize)size {
+	UIGraphicsBeginImageContext(size);
+
+	CGContextRef context = UIGraphicsGetCurrentContext();
+	CGContextTranslateCTM(context, 0.0, size.height);
+	CGContextScaleCTM(context, 1.0, -1.0);
+
+	CGContextDrawImage(context, CGRectMake(0.0f, 0.0f, size.width, size.height), image.CGImage);
+
+	UIImage* scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+
+	UIGraphicsEndImageContext();
+
+	return scaledImage;
+}
+
++(CGSize) getSizeForImage:(UIImage*)image andBounds:(CGRect)bounds {
+	CGSize currentSize = image.size;
+	CGSize newSize;
+	if (currentSize.height > currentSize.width) {
+		newSize = CGSizeMake(bounds.size.height*(currentSize.width/currentSize.height), bounds.size.height);
+	} else {
+		newSize = CGSizeMake(bounds.size.width, bounds.size.width * (currentSize.height/currentSize.width));
+	}
+	return newSize;
 }
 
 + (void) disableSpellCheckOnTextField: (UITextField*)textField {

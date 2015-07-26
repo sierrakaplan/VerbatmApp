@@ -23,7 +23,7 @@
 @property (strong, nonatomic) NSMutableArray* pointsOnCircle;
 @property (strong, nonatomic) NSMutableArray* dotViewsOnCircle;
 //contains the UIImageViews
-@property (strong, nonatomic) NSMutableArray* imageViews;
+@property (strong, nonatomic) NSMutableArray* imageContainerViews;
 @property (strong, nonatomic) UIImageView* circleView;
 
 @property (nonatomic) NSInteger currentPhotoIndex;
@@ -89,15 +89,15 @@
 	_dotViewsOnCircle = dotViewsOnCircle;
 }
 
-@synthesize imageViews = _imageViews;
+@synthesize imageContainerViews = _imageContainerViews;
 
--(NSMutableArray*) imageViews {
-	if(!_imageViews) _imageViews = [[NSMutableArray alloc] init];
-	return _imageViews;
+-(NSMutableArray*) imageContainerViews {
+	if(!_imageContainerViews) _imageContainerViews = [[NSMutableArray alloc] init];
+	return _imageContainerViews;
 }
 
--(void) setImageViews:(NSMutableArray *)imageViews {
-	_imageViews = imageViews;
+-(void) setImageContainerViews:(NSMutableArray *)imageContainerViews {
+	_imageContainerViews = imageContainerViews;
 }
 
 #pragma mark - Sub Views -
@@ -105,19 +105,29 @@
 -(void) addPhotos:(NSArray*)photos {
 
 	for (NSData* photoData in photos) {
+		UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
 		UIImage* photo = [[UIImage alloc] initWithData:photoData];
+		photo = [UIEffects scaleImage:photo toSize:[UIEffects getSizeForImage:photo andBounds:self.bounds]];
 		UIImageView* photoView = [self getImageViewForImage:photo];
-		[self.imageViews addObject:photoView];
+		UIImageView* blurPhotoView = [self getBlurImageViewForImage:photo];
+		[imageContainerView addSubview:blurPhotoView];
+		[imageContainerView addSubview:photoView];
+		[self.imageContainerViews addObject:imageContainerView];
 	}
 
 	//add extra copy of photo 1 at bottom for easy transitioning
+	UIView* imageOneContainerView = [[UIView alloc] initWithFrame:self.bounds];
 	UIImage* photoOne = [[UIImage alloc] initWithData:(NSData*)photos[0]];
+	photoOne = [UIEffects scaleImage:photoOne toSize:[UIEffects getSizeForImage:photoOne andBounds:self.bounds]];
 	UIImageView* photoOneView = [self getImageViewForImage:photoOne];
+	UIImageView* blurPhotoOneView = [self getBlurImageViewForImage:photoOne];
+	[imageOneContainerView addSubview:blurPhotoOneView];
+	[imageOneContainerView addSubview:photoOneView];
 	[self addSubview:photoOneView];
 
 	//adding subviews in reverse order so that imageview at index 0 on top
-	for (int i = (int)[self.imageViews count]-1; i >= 0; i--) {
-		[self addSubview:[self.imageViews objectAtIndex:i]];
+	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
+		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
 	}
 }
 
@@ -125,13 +135,22 @@
 	UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
 	photoView.frame = self.bounds;
 	photoView.clipsToBounds = YES;
-	photoView.contentMode = UIViewContentModeScaleAspectFit;
+	photoView.contentMode = UIViewContentModeCenter;
+	return photoView;
+}
+
+-(UIImageView*) getBlurImageViewForImage:(UIImage*) image {
+	UIImage* blurImage = [UIEffects blurredImageWithImage:image andFilterLevel:FILTER_LEVEL_BLUR];
+	UIImageView* photoView = [[UIImageView alloc] initWithImage:blurImage];
+	photoView.frame = self.bounds;
+	photoView.clipsToBounds = YES;
+	photoView.contentMode = UIViewContentModeScaleAspectFill;
 	return photoView;
 }
 
 -(void) createCircleViewAndPoints {
 
-	NSUInteger numCircles = [self.imageViews count];
+	NSUInteger numCircles = [self.imageContainerViews count];
 	for (int i = 0; i < numCircles; i++) {
 		PointObject *point = [MathOperations getPointFromCircleRadius:self.circleRadius andCurrentPointIndex:i withTotalPoints:numCircles];
 		//set relative to the center of the circle
@@ -288,7 +307,7 @@
 		self.currentPhotoIndex = self.currentPhotoIndex + 1;
 		self.lastDistanceFromStartingPoint = 0;
 		// if we're at the last photo reload photos behind it
-		if (self.currentPhotoIndex >= [self.imageViews count]) {
+		if (self.currentPhotoIndex >= [self.imageContainerViews count]) {
 			self.currentPhotoIndex = 0;
 			self.draggingFromPointIndex = 0;
 			[self reloadImages];
@@ -309,7 +328,7 @@
 //	}
 	float fractionOfDistance = distanceFromStartingTouch / totalDistanceToTravel;
 
-	UIImageView* currentImageView = self.imageViews[self.currentPhotoIndex];
+	UIView* currentImageView = self.imageContainerViews[self.currentPhotoIndex];
 	float alpha = 1.f-fractionOfDistance;
 	NSLog(@"Alpha:%f", alpha);
 	[currentImageView setAlpha:alpha];
@@ -378,8 +397,8 @@
 //and those behind it to 1
 -(void) setImageViewsToLocation:(NSInteger)index {
 	self.currentPhotoIndex = index;
-	for (int i = 0; i < [self.imageViews count]; i++) {
-		UIImageView* imageView = self.imageViews[i];
+	for (int i = 0; i < [self.imageContainerViews count]; i++) {
+		UIView* imageView = self.imageContainerViews[i];
 		if (i < index) {
 			imageView.alpha = 0.f;
 		} else {
@@ -391,7 +410,7 @@
 
 //sets all views to opaque again
 -(void) reloadImages {
-	for (UIImageView* imageView in self.imageViews) {
+	for (UIView* imageView in self.imageContainerViews) {
 		imageView.alpha = 1.f;
 	}
 }

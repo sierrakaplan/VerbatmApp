@@ -12,6 +12,7 @@
 #import "Notifications.h"
 #import "Icons.h"
 #import "Styles.h"
+#import "Durations.h"
 #import "SizesAndPositions.h"
 #import "ContentDevVC.h"
 
@@ -32,30 +33,54 @@
     if (self) {
         
         [self createFramesForButtonsWithFrame: frame];
+		[self createImagesForButtons];
         [self addButtonsAsSubviews];
         [self setBackgroundColor:[UIColor clearColor]];
-
-		UIImage *textButtonImage = [UIImage imageNamed:TEXT_BUTTON];
-		UIImage *photoButtonImage = [UIImage imageNamed:PHOTO_BUTTON];
-		UIImage *grayedOutIconText = [UIEffects imageOverlayed:textButtonImage withColor:[UIColor lightGrayColor]];
-		UIImage *grayedOutIconImage = [UIEffects imageOverlayed:photoButtonImage withColor:[UIColor lightGrayColor]];
-
-		[self.selectMedia setImage:grayedOutIconImage forState: UIControlStateNormal];
-		[self.selectText setImage:grayedOutIconText forState: UIControlStateNormal];
-
-        [self.selectText setImage:textButtonImage forState:UIControlStateSelected | UIControlStateHighlighted];
-        [self.selectMedia setImage:photoButtonImage forState:UIControlStateSelected | UIControlStateHighlighted];
     }
     return self;
     self.optionSelected = NO;
 }
 
--(void) createFramesForButtonsWithFrame: (CGRect) frame
-{
-	float size = frame.size.height-ADD_MEDIA_BUTTON_OFFSET*2;
+-(void) createFramesForButtonsWithFrame: (CGRect) frame {
+	float buttonOffset = frame.size.height/10.f;
+	float size = frame.size.height-buttonOffset*2;
 	float xDifference = frame.size.width/4.f - size/2.f;
-    self.selectMedia.frame = CGRectMake(ADD_MEDIA_BUTTON_OFFSET + xDifference, ADD_MEDIA_BUTTON_OFFSET, size, size);
-    self.selectText.frame = CGRectMake(frame.size.width/2.f + xDifference, ADD_MEDIA_BUTTON_OFFSET, size, size);
+    self.selectMedia.frame = CGRectMake(buttonOffset + xDifference, buttonOffset, size, size);
+    self.selectText.frame = CGRectMake(frame.size.width/2.f + xDifference, buttonOffset, size, size);
+	self.selectMedia.layer.cornerRadius = self.selectMedia.frame.size.width/2;
+	self.selectText.layer.cornerRadius = self.selectText.frame.size.width/2;
+	self.selectMedia.layer.shadowRadius = buttonOffset;
+	self.selectText.layer.shadowRadius = buttonOffset;
+}
+
+-(void) createImagesForButtons {
+	UIImage *textButtonImage = [UIImage imageNamed:INSERT_TEXT_BUTTON];
+	UIImage *photoButtonImage = [UIImage imageNamed:INSERT_MEDIA_BUTTON];
+	UIImage *grayedOutIconText = [UIEffects imageOverlayed:textButtonImage withColor:[UIColor lightGrayColor]];
+	UIImage *grayedOutIconImage = [UIEffects imageOverlayed:photoButtonImage withColor:[UIColor lightGrayColor]];
+
+	[self.selectText setImage:grayedOutIconText forState:UIControlStateSelected | UIControlStateHighlighted];
+	[self.selectMedia setImage:grayedOutIconImage forState:UIControlStateSelected | UIControlStateHighlighted];
+
+	[self.selectMedia setImage:photoButtonImage forState: UIControlStateNormal];
+	[self.selectText setImage:textButtonImage forState: UIControlStateNormal];
+}
+
+-(void) formatButtons {
+	[self.selectText.layer setBackgroundColor:[UIColor clearColor].CGColor];
+	[self.selectMedia.layer setBackgroundColor:[UIColor clearColor].CGColor];
+
+	UIColor* buttonBackgroundColor = [UIColor darkGrayColor];
+
+	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
+		self.selectMedia.layer.shadowColor = buttonBackgroundColor.CGColor;
+		self.selectText.layer.shadowColor = buttonBackgroundColor.CGColor;
+		self.selectMedia.layer.shadowOpacity = 1;
+		self.selectText.layer.shadowOpacity = 1;
+		[self.selectText.layer setBackgroundColor:buttonBackgroundColor.CGColor];
+		[self.selectMedia.layer setBackgroundColor:buttonBackgroundColor.CGColor];
+	} completion:^(BOOL finished) {
+	}];
 }
 
 -(void)addButtonsAsSubviews

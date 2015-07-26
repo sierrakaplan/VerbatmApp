@@ -487,6 +487,10 @@
 	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)
 	   && ![self.contentContainerView isHidden] && !self.canRaise) {
 
+		if (self.contentDevVC.openEditContentView && self.contentDevVC.openEditContentView.textView) {
+			return;
+		}
+
 		[self positionContainerViewLandscape];
 
 	} else if([self.contentContainerView isHidden] && !self.canRaise) {
