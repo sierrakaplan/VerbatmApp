@@ -63,7 +63,7 @@
 }
 
 -(float) getHeightOfText {
-	return [UIEffects measureHeightOfUITextView:self.textView];
+	return [UIEffects measureContentHeightOfUITextView:self.textView];
 }
 
 -(void) setTextViewFrame {

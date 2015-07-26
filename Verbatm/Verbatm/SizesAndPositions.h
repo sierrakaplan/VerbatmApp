@@ -29,19 +29,23 @@
 
 #define TRANSLATION_CONTENT_DEV_CONTAINER_VIEW_THRESHOLD 50.f
 
-#pragma mark Editing Content View
+#pragma mark - Editing Content View
+
+#define TEXT_VIEW_BOTTOM_PADDING 15.f
+
+#pragma mark Toolbar
 
 #define TEXT_TOOLBAR_HEIGHT 30.f
 #define TEXT_TOOLBAR_BUTTON_OFFSET 9.f
 #define TEXT_TOOLBAR_BUTTON_WIDTH 70.f
 
-#pragma mark Preview
+#pragma mark - Preview
 
 #define PUBLISH_BUTTON_XOFFSET 20.f
 #define PUBLISH_BUTTON_YOFFSET 20.f
 #define PUBLISH_BUTTON_SIZE 75.f
 
-#pragma mark Pull Bar
+#pragma mark - Pull Bar
 
 #define PULLBAR_BUTTON_XOFFSET 20.f
 #define PULLBAR_BUTTON_YOFFSET 15.f

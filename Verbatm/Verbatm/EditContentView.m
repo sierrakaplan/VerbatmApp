@@ -16,7 +16,8 @@
 #import "ContentDevVC.h"
 #import "VerbatmKeyboardToolBar.h"
 
-@interface EditContentView () <KeyboardToolBarDelegate>
+
+@interface EditContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) UIImage * filter_Original;
@@ -43,39 +44,21 @@
 
 #pragma mark - Text View -
 
--(void)adjustContentSizing {
-	[UIEffects addDashedBorderToView:self.textView];
-}
-
-//called when the keyboard is up. The Gap gives you the amount of visible space after
-//the keyboard is up
--(void)adjustFrameOfTextViewForGap:(NSInteger) gap
-{
-	if(gap)
-	{
-		self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, gap - VIEW_WALL_OFFSET);
-	}else
-	{
-		self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
-	}
-
-	[self adjustContentSizing];
-
-}
-
 -(void) createTextViewFromTextView: (UITextView *) textView {
 
 	CGRect textViewFrame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
 	self.textView = [[VerbatmUITextView alloc] initWithFrame:textViewFrame];
-	[self formatTextViewAppropriately:self.textView];
+	[self formatTextView:self.textView];
 	[self addSubview:self.textView];
+	[self.textView setDelegate:self];
 
 	if(textView) {
-		//adjusts the frame of the textview andthe contentsize of the scrollview if need be
-		[self adjustContentSizing];
 		self.textView.text = textView.text;
 	}
+
 	[self addToolBarToView];
+	[self adjustContentSizing];
+	[self.textView becomeFirstResponder];
 }
 
 //creates a toolbar to add onto the keyboard
@@ -99,18 +82,53 @@
 
 
 //Formats a textview to the appropriate settings
--(void) formatTextViewAppropriately: (UITextView *) textView
+-(void) formatTextView: (UITextView *) textView
 {
-	//Set delegate for text new view
 	[textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
-	textView.backgroundColor = [UIColor TEXT_SCROLLVIEW_BACKGROUND_COLOR];//sets the background as clear
+	textView.backgroundColor = [UIColor TEXT_SCROLLVIEW_BACKGROUND_COLOR];
 	textView.textColor = [UIColor TEXT_AVE_COLOR];
 	textView.tintColor = [UIColor TEXT_AVE_COLOR];
 
 	//ensure keyboard is black
 	textView.keyboardAppearance = UIKeyboardAppearanceDark;
-
 	textView.scrollEnabled = YES;
+}
+
+#pragma mark Text view content changed
+-(void)adjustContentSizing {
+	if (self.textView) {
+		//drawing boundary
+		CGRect frame = self.textView.bounds;
+		NSLog(@"Frame origin: %f Frame height: %f", frame.origin.y, frame.size.height);
+
+		CGSize size = CGSizeMake(frame.size.width, [UIEffects measureContentHeightOfUITextView:self.textView] + TEXT_VIEW_BOTTOM_PADDING);
+		if (size.height > frame.size.height) {
+			frame.size = size;
+		}
+		frame.origin = CGPointMake(frame.origin.x, 0);
+		[UIEffects addDashedBorderToView:self.textView withFrame:frame];
+	}
+}
+
+//User has edited the text view somehow so we recount the words in the view. And adjust its size
+- (void)textViewDidChange:(UITextView *)textView {
+	[self adjustContentSizing];
+}
+
+#pragma mark Adjust text view frame to keyboard
+
+//called when the keyboard is up. The Gap gives you the amount of visible space after
+//the keyboard is up
+-(void)adjustFrameOfTextViewForGap:(NSInteger) gap {
+	if(gap) {
+		self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
+										 self.textView.frame.size.width, gap - VIEW_WALL_OFFSET);
+	}else {
+		self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2,
+										 self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
+	}
+
+	[self adjustContentSizing];
 }
 
 #pragma mark - Image or Video View -

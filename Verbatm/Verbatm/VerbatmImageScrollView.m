@@ -28,6 +28,7 @@
 }
 
 -(void)format {
+	[self setBackgroundColor:[UIColor blackColor]];
 	self.pagingEnabled = YES;
 	self.showsHorizontalScrollIndicator = NO;
 	self.showsVerticalScrollIndicator = NO;

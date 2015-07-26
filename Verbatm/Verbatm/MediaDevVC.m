@@ -487,7 +487,8 @@
 	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)
 	   && ![self.contentContainerView isHidden] && !self.canRaise) {
 
-		if (self.contentDevVC.openEditContentView && self.contentDevVC.openEditContentView.textView) {
+		if (self.contentDevVC.openEditContentView && self.contentDevVC.openEditContentView.textView
+			&& self.contentContainerViewMode == ContentContainerViewModeFullScreen) {
 			return;
 		}
 

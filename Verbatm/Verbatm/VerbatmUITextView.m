@@ -24,7 +24,6 @@
 - (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-//		[UIEffects addDashedBorderToView:self.textView];
 	}
 	return self;
 }

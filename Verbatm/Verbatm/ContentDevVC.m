@@ -24,7 +24,7 @@
 #import "Strings.h"
 #import "Styles.h"
 
-@interface ContentDevVC () < UITextFieldDelegate, UITextViewDelegate, UIScrollViewDelegate,MediaSelectTileDelegate,GMImagePickerControllerDelegate>
+@interface ContentDevVC () < UITextFieldDelegate, UIScrollViewDelegate,MediaSelectTileDelegate,GMImagePickerControllerDelegate>
 
 #pragma mark Keyboard related properties
 @property (atomic) NSInteger keyboardHeight;
@@ -46,24 +46,9 @@
 @property (nonatomic) CGPoint defaultElementCenter;
 @property (nonatomic) float defaultElementRadius;
 
-//@property (nonatomic) CGPoint defaultElementCenter;
-//@property (strong, nonatomic) NSNumber * defaultElementRadius;
-//@property (nonatomic) CGSize defaultElementFrame;
-
 #pragma mark Display manipulation outlets
 
 @property (weak, nonatomic) IBOutlet UIScrollView *personalScrollViewOfFirstContentPageTextBox;
-@property (weak, nonatomic) IBOutlet UILabel *wordsLeftLabel;
-
-#pragma mark TextView related properties
-
-//position of caret on screen relative to scrollview origin
-@property (nonatomic) CGRect caretPosition;
-
-#pragma mark Helpful integer stores
-
-//number of words left in the article
-@property (nonatomic) NSInteger numberOfWordsLeft;
 
 #pragma mark Text input outlets
 
@@ -105,7 +90,6 @@
 
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
-#define MAX_WORD_LIMIT 350
 
 #define LEFT_DELETE_OFFSET (self.view.frame.size.width/2)
 #define RIGHT_DELETE_OFFSET (self.view.frame.size.width*(4/3))
@@ -327,12 +311,6 @@
 
 #pragma mark - Lazy Instantiation
 
--(NSInteger) numberOfWordsLeft
-{
-	if(!_numberOfWordsLeft) _numberOfWordsLeft = MAX_WORD_LIMIT;
-	return  _numberOfWordsLeft;
-}
-
 -(UITextView *) activeTextView
 {
 	if(!_activeTextView)_activeTextView = self.firstContentPageTextBox;
@@ -418,59 +396,6 @@
 	}
 
 	return YES;
-}
-
-
-#pragma mark Text Entered
-
-//User has edited the text view somehow so we recount the words in the view. And adjust its size
-- (void)textViewDidChange:(UITextView *)textView {
-	[self editWordCount];
-	[self.openEditContentView adjustContentSizing];
-}
-
-//Update the stored position of the carret within the textview it's in
--(void) updateCaretPositionInView: (UITextView *) view {
-	self.caretPosition = [view caretRectForPosition:view.selectedTextRange.end];
-}
-
-//Counts the words in the content page
--(void) editWordCount {
-	self.numberOfWordsLeft = MAX_WORD_LIMIT - [self countWordsInContentPage];
-	self.wordsLeftLabel.text = [NSString stringWithFormat:@"Words: %ld ", (long)self.numberOfWordsLeft];
-}
-
-//Counts the number of words that are in the page
--(NSInteger) countWordsInContentPage {
-	NSUInteger words = 0;
-	for(id object in self.pageElements) {
-		if([object isKindOfClass:[UITextView class]]) {
-
-			NSString * string = ((UITextView *) object).text;
-			NSArray * string_array = [string componentsSeparatedByString: @" "];
-			words += [string_array count];
-
-			//Make sure to discount blanks in the array
-			for (NSString * string in string_array) {
-				if([string isEqualToString:@""] && words != 0) words--;
-			}
-			//make sure that the last word is complete by having a space after it
-			if(![[string_array lastObject] isEqualToString:@""]) words --;
-		} else if([object isKindOfClass:[PinchView class]]&& ((PinchView *)object).containsText) {
-			NSString * string = [((PinchView *) object) getText];
-			NSArray * string_array = [string componentsSeparatedByString: @" "];
-			words += [string_array count];
-
-			//Make sure to discount blanks in the array
-			for (NSString * string in string_array) {
-				if([string isEqualToString:@""] && words != 0) words--;
-			}
-
-			//make sure that the last word is complete by having a space after it
-			if(![[string_array lastObject] isEqualToString:@""]) words --;
-		}
-	}
-	return words;
 }
 
 
@@ -1458,6 +1383,7 @@
 
 #pragma mark Text
 -(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
+	[self hidePullBarWithTransition:NO];
 	NSInteger index = [self.pageElements indexOfObject:tile];
 	self.index = (index-1);
 	if (self.index >= 0) {
@@ -1475,6 +1401,7 @@
 }
 
 -(void) multiMediaButtonPressedOnTile: (MediaSelectTile*) tile {
+	[self hidePullBarWithTransition:NO];
 	NSInteger index = [self.pageElements indexOfObject:tile];
 	self.index = (index-1);
 	[self presentEfficientGallery];
@@ -1564,7 +1491,8 @@
 }
 
 -(void) moveItem:(UILongPressGestureRecognizer *)sender {
-	if (!self.selectedView_PAN || ([self.selectedView_PAN isKindOfClass:[MediaSelectTile class]] && ((MediaSelectTile *)self.selectedView_PAN).isBaseSelector)) return;//if we didn't find the view then leave
+	//if we didn't find the view then leave
+	if (!self.selectedView_PAN || ([self.selectedView_PAN isKindOfClass:[MediaSelectTile class]] && ((MediaSelectTile *)self.selectedView_PAN).isBaseSelector)) return;
 
 	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
 	NSInteger y_differrence  = touch1.y - self.startLocationOfTouchPoint_PAN.y;
@@ -1580,26 +1508,19 @@
 	UIView * topView=Nil;
 	UIView * bottomView=Nil;
 
-	if(view_index !=0)
-	{
+	if(view_index !=0) {
 		topView  = self.pageElements[view_index-1];
-		if(self.selectedView_PAN != [self.pageElements lastObject])
-		{
+		if(self.selectedView_PAN != [self.pageElements lastObject]) {
 			bottomView = self.pageElements[view_index +1];
 		}
-	}else if (view_index==0)
-	{
+	} else if (view_index==0) {
 		bottomView = self.pageElements[view_index +1];
-	}else if (self.selectedView_PAN == [self.pageElements lastObject])
-	{
+	} else if (self.selectedView_PAN == [self.pageElements lastObject]) {
 		topView  = self.pageElements[view_index-1];
 	}
-
-	if(topView && bottomView)
-	{
+	if(topView && bottomView) {
 		//object moving up
-		if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height))
-		{
+		if(newFrame.origin.y +(newFrame.size.height/2) > topView.superview.frame.origin.y && newFrame.origin.y+(newFrame.size.height/2) < (topView.superview.frame.origin.y + topView.superview.frame.size.height)) {
 			[self swapObject:self.selectedView_PAN andObject:topView];//exchange their positions in page elements array
 
 			[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
@@ -1609,8 +1530,7 @@
 			}];
 
 			//object moving down
-		}else if(newFrame.origin.y + (newFrame.size.height/2) +CENTERING_OFFSET_FOR_TEXT_VIEW > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2)+CENTERING_OFFSET_FOR_TEXT_VIEW < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
-		{
+		}else if(newFrame.origin.y + (newFrame.size.height/2) +CENTERING_OFFSET_FOR_TEXT_VIEW > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2)+CENTERING_OFFSET_FOR_TEXT_VIEW < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height)) {
 
 			if(bottomView == self.baseMediaTileSelector) return;
 
@@ -1624,26 +1544,22 @@
 		}
 
 		//move the offest of the main scroll view
-		if(self.mainScrollView.contentOffset.y > self.selectedView_PAN.superview.frame.origin.y -(self.selectedView_PAN.superview.frame.size.height/2) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0))
-		{
+		if(self.mainScrollView.contentOffset.y > self.selectedView_PAN.superview.frame.origin.y -(self.selectedView_PAN.superview.frame.size.height/2) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0)) {
 			CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET);
 
 			[UIView animateWithDuration:0.2 animations:^{
 				self.mainScrollView.contentOffset = newOffset;
 			}];
 
-		} else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_PAN.superview.frame.origin.y + self.selectedView_PAN.superview.frame.size.height) && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height)
-		{
+		} else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_PAN.superview.frame.origin.y + self.selectedView_PAN.superview.frame.size.height) && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height) {
 			CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET);
 
 			[UIView animateWithDuration:0.2 animations:^{
 				self.mainScrollView.contentOffset = newOffset;
 			}];
 		}
-	}else if(view_index ==0 && bottomView != self.baseMediaTileSelector)
-	{
-		if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height))
-		{
+	}else if(view_index ==0 && bottomView != self.baseMediaTileSelector) {
+		if(newFrame.origin.y + (newFrame.size.height/2) > bottomView.superview.frame.origin.y && newFrame.origin.y+ (newFrame.size.height/2) < (bottomView.superview.frame.origin.y + bottomView.superview.frame.size.height)) {
 			[self swapObject:self.selectedView_PAN andObject:bottomView];//exchange their positions in page elements array
 
 			[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
@@ -1948,14 +1864,14 @@
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView andTextView: (UITextView *) textView
 {
 	if (!textView) {
-		return; //TODO: error message
+		NSLog(@"Text view does not exist to create edit content view from");
+		return;
 	}
 	EditContentView * textScroll = [[EditContentView alloc ]initCustomViewWithFrame:self.view.bounds];
 
 	[self.view addSubview:textScroll];
 	[textScroll createTextViewFromTextView: textView];
-	textScroll.textView.delegate = self;
-	[textScroll.textView becomeFirstResponder];
+	
 	self.openEditContentView = textScroll;
 	self.openImagePinchView = pinchView;
 }

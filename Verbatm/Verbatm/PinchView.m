@@ -126,7 +126,7 @@
 	[self.textView setEditable:YES];
 	self.textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE];
 	[self.textView setEditable:NO];
-	float textViewContentSize = [UIEffects measureHeightOfUITextView:self.textView];
+	float textViewContentSize = [UIEffects measureContentHeightOfUITextView:self.textView];
 	NSLog(@"%f", self.textView.frame.size.height);
 	if (textViewContentSize < self.textView.frame.size.height/3.f) {
 		self.textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE_REALLY_REALLY_BIG];

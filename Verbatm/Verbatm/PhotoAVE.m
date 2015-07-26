@@ -126,7 +126,7 @@
 	//scale image
 	image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.bounds]];
 	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
-	[imageContainerView setBackgroundColor:[UIColor whiteColor]];
+	[imageContainerView setBackgroundColor:[UIColor blackColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];
 	UIImageView* blurPhotoView = [self getBlurImageViewForImage:image];
 	[imageContainerView addSubview:blurPhotoView];
