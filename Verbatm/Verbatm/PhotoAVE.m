@@ -104,26 +104,17 @@
 
 -(void) addPhotos:(NSArray*)photos {
 
-	for (NSData* photoData in photos) {
-		UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
-		UIImage* photo = [[UIImage alloc] initWithData:photoData];
-		photo = [UIEffects scaleImage:photo toSize:[UIEffects getSizeForImage:photo andBounds:self.bounds]];
-		UIImageView* photoView = [self getImageViewForImage:photo];
-		UIImageView* blurPhotoView = [self getBlurImageViewForImage:photo];
-		[imageContainerView addSubview:blurPhotoView];
-		[imageContainerView addSubview:photoView];
+	for (NSData* imageData in photos) {
+		UIImage* image = [[UIImage alloc] initWithData:imageData];
+		//add container view with blur photo and regular photo
+		UIView* imageContainerView = [self getImageViewContainerForImage:image];
 		[self.imageContainerViews addObject:imageContainerView];
 	}
 
-	//add extra copy of photo 1 at bottom for easy transitioning
-	UIView* imageOneContainerView = [[UIView alloc] initWithFrame:self.bounds];
+	//add extra copy of photo 1 at bottom for last arc of circle transition
 	UIImage* photoOne = [[UIImage alloc] initWithData:(NSData*)photos[0]];
-	photoOne = [UIEffects scaleImage:photoOne toSize:[UIEffects getSizeForImage:photoOne andBounds:self.bounds]];
-	UIImageView* photoOneView = [self getImageViewForImage:photoOne];
-	UIImageView* blurPhotoOneView = [self getBlurImageViewForImage:photoOne];
-	[imageOneContainerView addSubview:blurPhotoOneView];
-	[imageOneContainerView addSubview:photoOneView];
-	[self addSubview:photoOneView];
+	UIView* imageOneContainerView = [self getImageViewContainerForImage:photoOne];
+	[self addSubview:imageOneContainerView];
 
 	//adding subviews in reverse order so that imageview at index 0 on top
 	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
@@ -131,6 +122,19 @@
 	}
 }
 
+-(UIView*) getImageViewContainerForImage:(UIImage*) image {
+	//scale image
+	image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.bounds]];
+	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
+	[imageContainerView setBackgroundColor:[UIColor whiteColor]];
+	UIImageView* photoView = [self getImageViewForImage:image];
+	UIImageView* blurPhotoView = [self getBlurImageViewForImage:image];
+	[imageContainerView addSubview:blurPhotoView];
+	[imageContainerView addSubview:photoView];
+	return imageContainerView;
+}
+
+// returns image view with image centered
 -(UIImageView*) getImageViewForImage:(UIImage*) image {
 	UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
 	photoView.frame = self.bounds;
@@ -139,6 +143,7 @@
 	return photoView;
 }
 
+// returns image view with image stretched to fill bounds and blurry
 -(UIImageView*) getBlurImageViewForImage:(UIImage*) image {
 	UIImage* blurImage = [UIEffects blurredImageWithImage:image andFilterLevel:FILTER_LEVEL_BLUR];
 	UIImageView* photoView = [[UIImageView alloc] initWithImage:blurImage];
