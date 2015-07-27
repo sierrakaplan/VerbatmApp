@@ -486,6 +486,11 @@
 -(void) deleteScrollView:(UIScrollView*)scrollView {
 	//remove swiped view from mainscrollview
 	//it is the only subview in this scrollview
+	CGPoint newContentOffset = CGPointMake(0, self.defaultElementPersonalScrollViewContentOffset.y);
+	if (scrollView.contentOffset.x > self.defaultElementPersonalScrollViewContentOffset.x) {
+		newContentOffset.x = self.defaultElementPersonalScrollViewContentSize.width;
+	}
+	[scrollView setContentOffset:newContentOffset animated:YES];
 	UIView * view = [scrollView.subviews firstObject];
 	NSUInteger index = [self.pageElements indexOfObject:view];
 	[scrollView removeFromSuperview];
