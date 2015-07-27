@@ -87,13 +87,22 @@
 
 -(void) registerForNotifications {
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(unGrayOutButtons)
+											 selector:@selector(unGrayOutPreview)
 												 name:NOTIFICATION_ADDED_MEDIA
 											   object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(grayOutButtons)
+											 selector:@selector(grayOutPreview)
 												 name:NOTIFICATION_REMOVED_ALL_MEDIA
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(unGrayOutUndo)
+												 name:NOTIFICATION_CAN_UNDO
+											   object:nil];
+
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(grayOutUndo)
+												 name:NOTIFICATION_CAN_NOT_UNDO
 											   object:nil];
 }
 
@@ -141,13 +150,19 @@
 
 # pragma mark - Un and gray out buttons
 
--(void) grayOutButtons {
+-(void) grayOutUndo {
 	[self.undoButton setImage:self.undoButtonGrayedOut forState:UIControlStateNormal];
+}
+
+-(void) grayOutPreview {
 	[self.previewButton setImage:self.previewButtonGrayedOut forState:UIControlStateNormal];
 }
 
--(void) unGrayOutButtons {
+-(void) unGrayOutUndo {
 	[self.undoButton setImage:self.undoButtonImage forState:UIControlStateNormal];
+}
+
+-(void) unGrayOutPreview {
 	[self.previewButton setImage:self.previewButtonImage forState:UIControlStateNormal];
 }
 

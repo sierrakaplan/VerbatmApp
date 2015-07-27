@@ -115,9 +115,10 @@
 
 -(void)markAsDeleting: (BOOL) deleting {
 	if (deleting) {
-		self.backgroundColor = [UIColor DELETING_ITEM_COLOR];
+		self.layer.borderColor = [UIColor DELETING_ITEM_COLOR].CGColor;
+		self.layer.borderWidth = 2.0f;
 	} else {
-		self.backgroundColor = [UIColor clearColor];
+		self.layer.borderWidth = 0.f;
 	}
 }
 

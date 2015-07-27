@@ -444,6 +444,8 @@
 	return;
 }
 
+#pragma mark Deleting scrollview and element
+
 //make sure the object is in the right position
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
 				  willDecelerate:(BOOL)decelerate {
@@ -470,8 +472,7 @@
 	}
 }
 
-//if the delete swipe wasn't far enough then return the pinch object to the middle
-//pinch view must have gone over 3/4 off the edge
+//Returns if delete swipe is far enough
 -(BOOL) isDeleting:(UIScrollView*)scrollView {
 	float deleteThreshold = self.view.frame.size.width/2.f;
 	if(fabs(scrollView.contentOffset.x - self.defaultElementPersonalScrollViewContentOffset.x) < deleteThreshold
@@ -481,6 +482,7 @@
 	return YES;
 }
 
+//Deletes scroll view and the element it contained
 -(void) deleteScrollView:(UIScrollView*)scrollView {
 	//remove swiped view from mainscrollview
 	//it is the only subview in this scrollview
@@ -1597,15 +1599,29 @@
 
 #pragma mark - Undo implementation -
 
--(void)deletedTile: (UIView *) tile withIndex: (NSNumber *) index
-{
+-(void)deletedTile: (UIView *) tile withIndex: (NSNumber *) index {
 	if ([self.pageElements count] <= 1) {
 		[self sendRemovedAllMediaNotification];
 	}
-	if(!tile) return;//make sure there is something to delete
+	//make sure there is something to delete
+	if(!tile) return;
 	[tile removeFromSuperview];
+	//ungray out undo if previously was grayed out
+	if (![self.tileSwipeViewUndoManager canUndo]) {
+		[self sendCanUndoNotification];
+	}
 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
 	[self showPullBarWithTransition:YES];//show the pullbar so that they can undo
+}
+
+-(void) sendCanUndoNotification {
+	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_CAN_UNDO object:nil userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotification:notification];
+}
+
+-(void) sendCanNotUndoNotification {
+	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_CAN_NOT_UNDO object:nil userInfo:nil];
+	[[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
 -(void) sendRemovedAllMediaNotification {
@@ -1613,9 +1629,12 @@
 	[[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
--(void)undoTileDeleteSwipe: (NSNotification *) notification
-{
+-(void)undoTileDeleteSwipe: (NSNotification *) notification {
 	[self.tileSwipeViewUndoManager undo];
+	if(![self.tileSwipeViewUndoManager canUndo]) {
+		[self sendCanNotUndoNotification];
+	}
+	[self sendAddedMediaNotification];
 }
 
 
@@ -1625,33 +1644,34 @@
 	UIView * view = tileAndInfo[0];
 	NSNumber * index = tileAndInfo[1];
 
-	if([view isKindOfClass:[PinchView class]]) {
-		[((PinchView<ContentDevElementDelegate>*)view) markAsDeleting:NO];
+	if([view conformsToProtocol:@protocol(ContentDevElementDelegate)]) {
+		[((UIView<ContentDevElementDelegate>*)view) markAsDeleting:NO];
 	}
 
-	[self returnObject:(PinchView *)view ToDisplayAtIndex:index.integerValue];
+	[self returnView:view ToDisplayAtIndex:index.integerValue];
 }
 
--(void)returnObject: (UIView *) view ToDisplayAtIndex:(NSInteger) index{
+-(void)returnView: (UIView *) view ToDisplayAtIndex:(NSInteger) index{
 
 	UIScrollView * newSV = [[UIScrollView  alloc] init];
 
-	if(index)
-	{
+	if(index) {
 		UIScrollView * topSv = (UIScrollView *)((UIView *)self.pageElements[(index -1)]).superview;
-		newSV.frame = CGRectMake(topSv.frame.origin.x, topSv.frame.origin.y+ topSv.frame.size.height, topSv.frame.size.width, topSv.frame.size.height);
+		newSV.frame = CGRectMake(topSv.frame.origin.x, topSv.frame.origin.y+ topSv.frame.size.height,
+								 topSv.frame.size.width, topSv.frame.size.height);
 
-	}else if (!index)
-	{
+	}else {
 		newSV.frame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height, self.defaultElementFrame.width, self.defaultElementFrame.height);
 	}
 
 	[self.pageElements insertObject:view atIndex:index];
 	[self formatNewElementScrollView:newSV];
-	[newSV addSubview:view];//expecting the object to have kept its old frame
+	[newSV addSubview:view];
+	if ([view isKindOfClass:[PinchView class]]) {
+		[self addTapGestureToView:(PinchView *)view];
+	}
 	[self.mainScrollView addSubview:newSV];
 	[self shiftElementsBelowView:self.articleTitleField];
-	[self addTapGestureToView:(PinchView *)view];
 }
 
 
@@ -1697,6 +1717,7 @@
 			UIView *upperView = [self getUpperView];
 			TextPinchView* textPinchView = [[TextPinchView alloc] initWithRadius:self.defaultElementRadius
 																	  withCenter:self.defaultElementCenter andText:text];
+			[self sendAddedMediaNotification];
 			[self newPinchView:textPinchView belowView:upperView];
 		}
 	} else if(self.openPinchView.containsText) {
@@ -1872,9 +1893,12 @@
 		image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.view.bounds]];
 		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultElementRadius withCenter:self.defaultElementCenter andImage:image];
 	}
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[self newPinchView:newPinchView belowView:upperView];
-	});
+	if (newPinchView) {
+		[self sendAddedMediaNotification];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self newPinchView:newPinchView belowView:upperView];
+		});
+	}
 }
 
 
@@ -1922,11 +1946,8 @@
 		[self presentAssets:assetArray];
 	}];
 
-	if ([assetArray count] > 0) {
-		[self sendAddedMediaNotification];
-	}
-
 	NSLog(@"GMImagePicker: User ended picking assets. Number of selected items is: %lu", (unsigned long)assetArray.count);
+	[self showPullBarWithTransition:NO];
 }
 
 -(void) sendAddedMediaNotification {

@@ -31,9 +31,14 @@
 #define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
 #define NOTIFICATION_INFO_IS_BLANK_ANIMATION @"Notification_titleAnimation"
 #define NOTIFICATION_PUBLISH_ARTICLE @"Notification_publishArticle"
+#define NOTIFICATION_EXIT_EDIT_CONTENT_VIEW @"Notification_exitEditContentView"
+
+
+#define NOTIFICATION_CAN_UNDO @"Notification_canUndo"
+#define NOTIFICATION_CAN_NOT_UNDO @"Notification_cannotUndo"
 #define NOTIFICATION_ADDED_MEDIA @"Notification_addedMedia"
 #define NOTIFICATION_REMOVED_ALL_MEDIA @"Notification_removedAllMedia"
-#define NOTIFICATION_EXIT_EDIT_CONTENT_VIEW @"Notification_exitEditContentView"
+
 
 #pragma mark - Feed -
 
