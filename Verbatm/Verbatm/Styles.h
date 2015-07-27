@@ -29,6 +29,13 @@
 
 #define SELECTED_ITEM_COLOR blueColor
 
+#define CONTENT_DEV_CURSOR_COLOR whiteColor
+
+#define SANDWICH_PLACEHOLDER_SIZE 23.f
+#define TITLE_PLACEHOLDER_SIZE 40.f
+
+#pragma mark - PinchViews
+
 #define PINCHVIEW_FONT_SIZE 14
 #define PINCHVIEW_FONT_SIZE_BIG 20
 #define PINCHVIEW_FONT_SIZE_REALLY_BIG 30
@@ -36,11 +43,6 @@
 #define PINCHVIEW_BACKGROUND_COLOR clearColor
 #define PINCHVIEW_BORDER_COLOR whiteColor
 #define PINCHVIEW_BORDER_WIDTH 1.f
-
-#define CONTENT_DEV_CURSOR_COLOR whiteColor
-
-#define SANDWICH_PLACEHOLDER_SIZE 23.f
-#define TITLE_PLACEHOLDER_SIZE 40.f
 
 #pragma mark Content Editing View
 

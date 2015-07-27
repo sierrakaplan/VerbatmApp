@@ -15,7 +15,10 @@
 #import "VerbatmScrollView.h"
 #import "UIEffects.h"
 #import "PinchView.h"
-#import "VerbatmImageView.h"
+#import "TextPinchView.h"
+#import "ImagePinchView.h"
+#import "VideoPinchView.h"
+#import "CollectionPinchView.h"
 #import "EditContentView.h"
 #import "GMImagePickerController.h"
 #import "Notifications.h"
@@ -54,19 +57,19 @@
 
 @property (weak, atomic) IBOutlet UITextView *firstContentPageTextBox;
 @property (strong, atomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
-@property (strong, atomic) MediaSelectTile * baseMediaTileSelector;
+@property (strong, nonatomic) MediaSelectTile * baseMediaTileSelector;
 
 
 #pragma mark PanGesture Properties
 
-@property (atomic, strong) UIView<ContentDevElementDelegate>* selectedView_PAN;
+@property (nonatomic, weak) UIView<ContentDevElementDelegate>* selectedView_PAN;
 @property(nonatomic) CGPoint startLocationOfTouchPoint_PAN;
 //keep track of the starting from of the selected view so that you can easily shift things around
 @property (nonatomic) CGRect originalFrameBeforeLongPress;
 //keep track of the frame the selected view could take so that we can easily shift
 @property (nonatomic) CGRect potentialFrameAfterLongPress;
 
-@property (nonatomic, strong) PinchView * openImagePinchView;
+@property (nonatomic, strong) PinchView * openPinchView;
 @property (nonatomic, strong) NSString * filter;
 
 
@@ -76,17 +79,17 @@
 @property (nonatomic) PinchingMode pinchingMode;
 
 #pragma mark Horizontal pinching
-@property (nonatomic, strong) UIScrollView * scrollViewOfHorizontalPinching;
+@property (nonatomic, weak) UIScrollView * scrollViewOfHorizontalPinching;
 @property (nonatomic) NSInteger horizontalPinchDistance;
 @property(nonatomic) CGPoint leftTouchPointInHorizontalPinch;
 @property (nonatomic) CGPoint rightTouchPointInHorizontalPinch;
 
 #pragma mark Vertical pinching
-@property (nonatomic,strong) UIView * upperPinchView;
-@property (nonatomic,strong) UIView * lowerPinchView;
+@property (nonatomic,weak) PinchView * upperPinchView;
+@property (nonatomic,weak) PinchView * lowerPinchView;
 @property (nonatomic) CGPoint upperTouchPointInVerticalPinch;
 @property(nonatomic) CGPoint lowerTouchPointInVerticalPinch;
-@property (nonatomic,strong) MediaSelectTile* newlyCreatedMediaTile;
+@property (nonatomic,weak) MediaSelectTile* newlyCreatedMediaTile;
 
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
@@ -284,7 +287,7 @@
 												 name:NOTIFICATION_PAUSE_VIDEOS
 											   object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(playVideos)
+											 selector:@selector(playAllVideos)
 												 name:NOTIFICATION_PLAY_VIDEOS
 											   object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -518,44 +521,14 @@
 
 #pragma mark - Creating New Views -
 
-- (PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText {
-	PinchView * pinchView=nil;
-	NSMutableArray *media = [[NSMutableArray alloc]init];
-
-	if(isText) {
-		UITextView * textView = [[UITextView alloc]init];
-		[media addObject: textView];
-
-	} else if (view) {
-		[media addObject: view];
-	}
-
-	pinchView = [[PinchView alloc] initWithRadius:self.defaultElementRadius withCenter:self.defaultElementCenter andMedia:media];
-
-	if (pinchView) {
-		[self newPinchObjectBelowView:upperView withPinchView:pinchView];
-	}
-	return pinchView;
-}
-
-
-- (PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data {
-	PinchView * pinchView=nil;
-	if(data) {
-		NSMutableArray *media = [[NSMutableArray alloc]init];
-		[media addObject: data];
-
-		pinchView = [[PinchView alloc] initWithRadius:self.defaultElementRadius withCenter:self.defaultElementCenter andMedia:media];
-
-	}
-	if (pinchView) {
-		[self newPinchObjectBelowView:upperView withPinchView:pinchView];
-	}
-	return pinchView;
-}
 
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
-- (void) newPinchObjectBelowView:(UIView *)upperView withPinchView: (PinchView *) pinchView {
+- (void) newPinchView:(PinchView *) pinchView belowView:(UIView *)upperView {
+
+	if(!pinchView) {
+		NSLog(@"Attempting to add Nil pinch view");
+		return;
+	}
 	//thread safety
 	NSLock  * lock =[[NSLock alloc] init];
 	[lock lock];
@@ -576,7 +549,8 @@
 		[self.pageElements insertObject:pinchView atIndex:index+1];
 	}
 
-	self.index ++;//makes it that the next image is below this image just added
+	//makes it that the next image is below this image just added
+	self.index ++;
 
 	[lock unlock];
 	[newElementScrollView addSubview:pinchView];
@@ -584,12 +558,6 @@
 	[self.pinchViewScrollViews addObject:newElementScrollView];
 	[self shiftElementsBelowView:self.articleTitleField];
 
-
-	//TODO: imageview's get added for some reason- so this is a quick patch that removes the views
-	//don't want. The bug should be reexamined
-	for (int i = 0; i < newElementScrollView.subviews.count; i++) {
-		if(![newElementScrollView.subviews[i] isKindOfClass:[PinchView class]])[newElementScrollView.subviews[i] removeFromSuperview];
-	}
 }
 
 
@@ -849,7 +817,7 @@
 		}
 		self.scrollViewOfHorizontalPinching = Nil;
 
-	} else if (self.newlyCreatedMediaTile && (sender.scale > 1 )) {
+	} else if (self.newlyCreatedMediaTile) {
 
 		//new media creation has failed
 		if(self.newlyCreatedMediaTile.superview.frame.size.height < PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION){
@@ -1023,19 +991,14 @@
 	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
 	CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
 
-	CGPoint midPoint = [self findMidPointBetween:touch1 and:touch2];
-
-	if(touch1.y>touch2.y)
-	{
-		[self findElementsFromPinchPoint:midPoint andLowerTouchPoint: touch1];
+	if(touch1.y>touch2.y) {
 		self.upperTouchPointInVerticalPinch = touch2;
 		self.lowerTouchPointInVerticalPinch = touch1;
-	}else
-	{
-		[self findElementsFromPinchPoint:midPoint andLowerTouchPoint:touch2];
+	}else {
 		self.lowerTouchPointInVerticalPinch = touch2;
 		self.upperTouchPointInVerticalPinch = touch1;
 	}
+	[self findElementsFromPinchPoint];
 
 	//if it's a pinch apart then create the media tile
 	if(sender.scale > 1) [self createNewViewToRevealBetweenPinchViews];
@@ -1107,11 +1070,12 @@
 -(void) createNewViewToRevealBetweenPinchViews
 {
 	CGRect frame = [self getStartFrameForNewMediaTile];
-	self.newlyCreatedMediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
-	self.newlyCreatedMediaTile.delegate = self;
-	self.newlyCreatedMediaTile.alpha = 0; //start it off as invisible
-	self.newlyCreatedMediaTile.isBaseSelector = NO;
-	[self addMediaTile: self.newlyCreatedMediaTile underView: self.upperPinchView];
+	MediaSelectTile* newMediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
+	newMediaTile.delegate = self;
+	newMediaTile.alpha = 0; //start it off as invisible
+	newMediaTile.isBaseSelector = NO;
+	[self addMediaTile: newMediaTile underView: self.upperPinchView];
+	self.newlyCreatedMediaTile = newMediaTile;
 }
 
 -(CGRect) getStartFrameForNewMediaTile {
@@ -1214,26 +1178,34 @@
 #pragma mark Pinch Apart Failed
 
 //Removes the new view being made and resets page
--(void) clearNewMediaView
-{
-	[self.newlyCreatedMediaTile.superview removeFromSuperview];
-	[self.pageElements removeObject:self.newlyCreatedMediaTile];
+-(void) clearMediaTile:(MediaSelectTile*)mediaTile {
+	[mediaTile.superview removeFromSuperview];
+	[self.pageElements removeObject:mediaTile];
 	[self shiftElementsBelowView:self.articleTitleField];
-	//stop pointing to the object so it is freed from memory
-	self.newlyCreatedMediaTile = nil;
 }
 
 #pragma mark Pinching Views together
 
 -(void) pinchObjectsTogether {
-	if(![self sufficientOverlapBetweenPinchedObjects]
+	if(!self.upperPinchView || !self.lowerPinchView
+	   || ![self sufficientOverlapBetweenPinchedObjects]
 	   || ![self tilesOkToPinch]) {
 		return;
 	}
 
 	UIScrollView * newCollectionScrollView = (UIScrollView *)self.upperPinchView.superview;
-	NSMutableArray* pinchViewArray = [[NSMutableArray alloc] initWithObjects:self.upperPinchView,self.lowerPinchView, nil];
-	PinchView * pinchView = [PinchView pinchTogether:pinchViewArray];
+
+	PinchView * pinchView;
+	if([self.upperPinchView isKindOfClass:[CollectionPinchView class]]) {
+		[(CollectionPinchView*)self.upperPinchView pinchAndAdd:self.lowerPinchView];
+		pinchView = self.upperPinchView;
+	} else if([self.lowerPinchView isKindOfClass:[CollectionPinchView class]]) {
+		[(CollectionPinchView*)self.lowerPinchView pinchAndAdd:self.upperPinchView];
+		pinchView = self.lowerPinchView;
+	} else {
+		NSMutableArray* pinchViewArray = [[NSMutableArray alloc] initWithObjects:self.upperPinchView,self.lowerPinchView, nil];
+		pinchView = [PinchView pinchTogether:pinchViewArray];
+	}
 
 	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:self.upperPinchView] withObject:pinchView];
 	[self.pageElements removeObject:self.lowerPinchView];
@@ -1287,64 +1259,33 @@
 }
 
 //Takes a midpoint and a lower touch point and finds the two views that were being interacted with
--(void) findElementsFromPinchPoint: (CGPoint) pinchPoint andLowerTouchPoint: (CGPoint) lowerTouchPoint
-{
+-(void) findElementsFromPinchPoint {
 
-	UIView * wantedView = [self findFirstPinchViewFromPinchPoint:pinchPoint];
+	PinchView * upperPinchView = [self findPinchViewFromPinchPoint:self.upperTouchPointInVerticalPinch];
+	if(!upperPinchView) return;
 
-	if(wantedView)//make sure we have a view
-	{
-		//heuristic to more accurately identify which views we want
-		if([self point: lowerTouchPoint isInRangeOfView:wantedView]) //checks to see if we have got the top textview or the lower textview -improves accuracy
-		{
-			self.index = [self.pageElements indexOfObject:wantedView];
+	self.upperPinchView = upperPinchView;
+	self.index = [self.pageElements indexOfObject:upperPinchView];
 
-			if(self.pageElements.count>(self.index) && self.index != NSNotFound)/*make sure the indexes are in range*/
-			{
-				self.lowerPinchView = wantedView;
-			}
-			if(self.pageElements.count>(self.index-1) && self.index != NSNotFound)
-			{
-				self.upperPinchView = self.pageElements[self.index -1];
-			}
-		}else
-		{
-			self.index = [self.pageElements indexOfObject:wantedView];
-			if(self.index != NSNotFound)self.lowerPinchView = self.pageElements[self.index+1];
-
-			if(self.pageElements.count>(self.index) && self.index != NSNotFound)/*make sure the indexes are in range*/
-			{
-				self.upperPinchView = self.pageElements[self.index];
-			}
-			if(self.pageElements.count>(self.index+1)&& self.index != NSNotFound)
-			{
-				self.lowerPinchView = self.pageElements[self.index+1];
-			}
-		}
+	if(self.pageElements.count>(self.index+1)&& self.index != NSNotFound
+	   && [self.pageElements[self.index+1] isKindOfClass:[PinchView class]]) {
+		self.lowerPinchView = self.pageElements[self.index+1];
 	}
 }
 
 
-//Iain
-//Runs through and identifies the first view involved in teh pinch gesture
--(UIView *) findFirstPinchViewFromPinchPoint: (CGPoint) pinchPoint
-{
+//Runs through and identifies the pinch view at that point
+-(PinchView *) findPinchViewFromPinchPoint: (CGPoint) pinchPoint {
 	NSInteger distanceTraveled = 0;
-	UIView * wantedView;
+	PinchView * wantedView;
 	//Runs through the view positions to find the first one that passes the midpoint- we assume the midpoint is
-	for (UIView * view in self.pageElements)
-	{
-		UIView * superview = view.superview;//should be a scrollview
-
-		if([superview isKindOfClass:[UIScrollView class]])
-		{
+	for (UIView * view in self.pageElements) {
+		UIView * superview = view.superview;
+		if([superview isKindOfClass:[UIScrollView class]]) {
 			if(distanceTraveled == 0) distanceTraveled =superview.frame.origin.y;
-
 			distanceTraveled += superview.frame.size.height;
-
-			if(distanceTraveled > pinchPoint.y)
-			{
-				wantedView = view;
+			if(distanceTraveled > pinchPoint.y && [view isKindOfClass:[PinchView class]]) {
+				wantedView = (PinchView*)view;
 				break;
 			}
 		}
@@ -1362,10 +1303,9 @@
 
 //checks if the two selected tiles should be pinched together
 -(BOOL) tilesOkToPinch {
-	if([self.upperPinchView isKindOfClass:[PinchView class]]  && [self.lowerPinchView isKindOfClass:[PinchView class]]) {
-		if(!((PinchView *)self.upperPinchView).isCollection || !((PinchView *)self.lowerPinchView).isCollection) {
-			return true;
-		}
+	if([self.upperPinchView isKindOfClass:[PinchView class]]  && [self.lowerPinchView isKindOfClass:[PinchView class]]
+	   && (![self.upperPinchView isKindOfClass:[CollectionPinchView class]] || ![self.lowerPinchView isKindOfClass:[CollectionPinchView class]])) {
+		return true;
 	}
 	return false;
 }
@@ -1386,17 +1326,9 @@
 	[self hidePullBarWithTransition:NO];
 	NSInteger index = [self.pageElements indexOfObject:tile];
 	self.index = (index-1);
-	if (self.index >= 0) {
-		//TODO this should only be created if user enters text before pressing done
-		UIView *upperView = [self.pageElements objectAtIndex:(self.index)];
-		[self newPinchObjectBelowView:upperView fromView: nil isTextView:YES];
-		[self createEditContentViewFromPinchView:self.pageElements[index] andTextView:[[UITextView alloc]init]];
-	}else {
-		[self newPinchObjectBelowView:nil fromView: nil isTextView:YES];
-		[self createEditContentViewFromPinchView:self.pageElements[0] andTextView:[[UITextView alloc]init]];
-	}
+	[self createEditContentViewFromPinchView:Nil];
 	if (!tile.isBaseSelector) {
-		[self clearNewMediaView];
+		[self clearMediaTile:tile];
 	}
 }
 
@@ -1406,7 +1338,7 @@
 	self.index = (index-1);
 	[self presentEfficientGallery];
 	if (!tile.isBaseSelector) {
-		[self clearNewMediaView];
+		[self clearMediaTile:tile];
 	}
 }
 
@@ -1705,8 +1637,7 @@
 
 #pragma mark Undo tile swipe
 
--(void) undoTileDelete: (NSArray *) tileAndInfo
-{
+-(void) undoTileDelete: (NSArray *) tileAndInfo {
 	UIView * view = tileAndInfo[0];
 	NSNumber * index = tileAndInfo[1];
 
@@ -1714,7 +1645,7 @@
 		[((PinchView<ContentDevElementDelegate>*)view) markAsDeleting:NO];
 	}
 
-	[self returnObject:[PinchView pinchObjectFromPinchObject:(PinchView *)view] ToDisplayAtIndex:index.integerValue];
+	[self returnObject:(PinchView *)view ToDisplayAtIndex:index.integerValue];
 }
 
 -(void)returnObject: (UIView *) view ToDisplayAtIndex:(NSInteger) index{
@@ -1775,28 +1706,29 @@
 	if (!self.openEditContentView) {
 		return;
 	}
-	if(self.openImagePinchView.containsText) {
-		if([self.openEditContentView.textView.text isEqualToString:@""]) {
-			[self.openImagePinchView.superview removeFromSuperview];
-			[self.pageElements removeObject:self.openImagePinchView];
-			[self shiftElementsBelowView:self.articleTitleField];
-		}else {
-			[self.openImagePinchView changeText:self.openEditContentView.textView];
+	//Creating text
+	if(!self.openPinchView) {
+		NSString* text = [self.openEditContentView getText];
+		if ([text length]) {
+			UIView *upperView = [self getUpperView];
+			TextPinchView* textPinchView = [[TextPinchView alloc] initWithRadius:self.defaultElementRadius
+																	  withCenter:self.defaultElementCenter andText:text];
+			[self newPinchView:textPinchView belowView:upperView];
 		}
+	} else if(self.openPinchView.containsText) {
+		[(TextPinchView*)self.openPinchView changeText:[self.openEditContentView getText]];
+	} else if(self.openPinchView.containsImage) {
+		NSInteger filterImageIndex = [self.openEditContentView getFilteredImageIndex];
+		[(ImagePinchView*)self.openPinchView changeImageToFilterIndex:filterImageIndex];
 	}
-	[self.openEditContentView.textView resignFirstResponder];
 
-	//if there is a video lets stop it
-	if (self.openEditContentView.videoView) {
-		[self.openEditContentView.videoView pauseVideo];
-	}
 	[self.openEditContentView removeFromSuperview];
-	[self showPullBarWithTransition:NO];
 	self.openEditContentView = nil;
-
+	[self showPullBarWithTransition:NO];
 	//makes sure the vidoes are playing..may need to make more efficient
-	[self playVideos];
-	[self.openImagePinchView renderMedia];
+	[self playAllVideos];
+	[self.openPinchView renderMedia];
+	self.openPinchView = Nil;
 }
 
 -(void)addTapGestureToView: (PinchView *) pinchView
@@ -1812,29 +1744,13 @@
 		return;
 	}
 
-	PinchView * pinch_object = (PinchView *)sender.view;
-
-	//checks if there is anything to open by telling you if the element has multiple things in it
-	if(pinch_object.hasMultipleMedia)
-	{
-		[self openCollection:pinch_object];
+	PinchView * pinchView = (PinchView *)sender.view;
+	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
+		[self openCollection:(CollectionPinchView*)pinchView];
 	}
 	//tap to open an element for viewing or editing
-	else if(!pinch_object.isCollection) {
-
-		NSMutableArray * array = [pinch_object mediaObjects];
-		//could be textview or customimageview
-		UIView* mediaView = [array firstObject];
-
-		if([mediaView isKindOfClass:[UITextView class]]) {
-
-			[self createEditContentViewFromPinchView:pinch_object andTextView:(UITextView *)mediaView];
-		} else if([mediaView isKindOfClass:[NSData class]]) {
-			[self createEditContentViewFromPinchView:pinch_object andImageView:(NSData *)mediaView];
-		} else if([mediaView isKindOfClass:[AVAsset class]]) {
-			[self createEditContentViewFromPinchView:pinch_object andVideo:(AVAsset *)mediaView];
-		}
-
+	else {
+		[self createEditContentViewFromPinchView:pinchView];
 		//when things are offscreen then pause all videos
 		[self pauseAllVideos];
 		//make sure the pullbar is not available
@@ -1842,69 +1758,54 @@
 	}
 }
 
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset {
-	EditContentView * editContentView = [[EditContentView alloc] initCustomViewWithFrame:self.view.bounds ];
-
-	[self.view addSubview:editContentView];
-	[editContentView addVideo:videoAsset];
-	self.openEditContentView = editContentView;
-	self.openImagePinchView = pinchView;
-}
-
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView {
-
-	EditContentView * editContentView = [[EditContentView alloc] initCustomViewWithFrame:self.view.bounds ];
-
-	[self.view addSubview:editContentView];
-	[editContentView addImage:imageView];
-	self.openEditContentView = editContentView;
-	self.openImagePinchView = pinchView;
-}
-
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView andTextView: (UITextView *) textView
-{
-	if (!textView) {
-		NSLog(@"Text view does not exist to create edit content view from");
-		return;
+// This should never be called on a collection pinch view, only on text, image, or video
+-(void) createEditContentViewFromPinchView: (PinchView *) pinchView {
+	self.openEditContentView = [[EditContentView alloc] initCustomViewWithFrame:self.view.bounds];
+	//adding text
+	if(pinchView == Nil) {
+		[self.openEditContentView editText:@""];
+	} else {
+		self.openPinchView = pinchView;
+		if (pinchView.containsText) {
+			[self.openEditContentView editText:[pinchView getText]];
+		} else if(pinchView.containsImage) {
+			ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
+			[self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
+		} else if(pinchView.containsVideo) {
+			[self.openEditContentView displayVideo:[(VideoPinchView*)pinchView video]];
+		}
 	}
-	EditContentView * textScroll = [[EditContentView alloc ]initCustomViewWithFrame:self.view.bounds];
 
-	[self.view addSubview:textScroll];
-	[textScroll createTextViewFromTextView: textView];
-	
-	self.openEditContentView = textScroll;
-	self.openImagePinchView = pinchView;
+	[self.view addSubview:self.openEditContentView];
 }
 
 #pragma mark Open Collection
--(void)openCollection: (PinchView *) collection
-{
-	NSMutableArray * elementArray = [PinchView openCollection:collection];
+-(void)openCollection: (CollectionPinchView *) collection {
 	UIScrollView * scrollView = (UIScrollView *)collection.superview;
 	scrollView.pagingEnabled = NO;
 	[collection removeFromSuperview];//clear the scroll view. It's about to be filled by the array's elements
-	[self addPinchObjects:elementArray toScrollView: scrollView];
-	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:collection] withObject:elementArray[0]];
+	[self addPinchObjects:[collection pinchedObjects] toScrollView: scrollView];
+	//TODO
+	[self.pageElements replaceObjectAtIndex:[self.pageElements indexOfObject:collection] withObject:[collection pinchedObjects][0]];
 }
 
 
--(void) addPinchObjects:(NSMutableArray *) array toScrollView: (UIScrollView *) sv
-{
+-(void) addPinchObjects:(NSMutableArray *) pinchViews toScrollView: (UIScrollView *) scrollView {
+
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-		int x_position = ELEMENT_OFFSET_DISTANCE;
-		for(int i = 0; i< array.count; i++)
-		{
-			PinchView * pinch_view = array[i];
-			CGRect new_frame =CGRectMake(x_position, ELEMENT_OFFSET_DISTANCE/2, self.defaultElementRadius*2.f, self.defaultElementRadius*2.f);
-			pinch_view.autoresizesSubviews = YES;
-			[pinch_view specifyFrame:new_frame];
-			[sv addSubview:pinch_view];
+		int xPosition = ELEMENT_OFFSET_DISTANCE;
+
+		for(PinchView* pinchView in pinchViews) {
+			CGRect newFrame =CGRectMake(xPosition, ELEMENT_OFFSET_DISTANCE/2, self.defaultElementRadius*2.f, self.defaultElementRadius*2.f);
+			pinchView.autoresizesSubviews = YES;
+			[pinchView specifyFrame:newFrame];
+			[scrollView addSubview:pinchView];
 			//now every open pinch collection can have it's objects opened
-			[self addTapGestureToView:pinch_view];
-			x_position += pinch_view.frame.size.width + ELEMENT_OFFSET_DISTANCE;
-			[pinch_view renderMedia];
+			[self addTapGestureToView:pinchView];
+			xPosition += pinchView.frame.size.width + ELEMENT_OFFSET_DISTANCE;
+			[pinchView renderMedia];
 		}
-		sv.contentSize = CGSizeMake(x_position, sv.contentSize.height);
+		scrollView.contentSize = CGSizeMake(xPosition, scrollView.contentSize.height);
 	}];
 }
 
@@ -1925,34 +1826,28 @@
 #pragma mark - Clean up Content Page -
 //we clean up the content page if we press publish or simply want to reset everything
 //all the text views are cleared and all the pinch objects are cleared
--(void)cleanUpNotification
-{
+-(void)cleanUpNotification {
 	[self cleanUp];
 }
 
--(void)cleanUp
-{
+-(void)cleanUp {
+	[self pauseAllVideos];
 	[self.pageElements removeAllObjects];
 	[self removeCreationObjectsFromScrollview];
 	[self clearTextFields];
 	self.baseMediaTileSelector = nil;//make sure this is set to nil so that we can create a new base selector
 	[self createBaseSelector];
-
 }
 
--(void)clearTextFields
-{
+-(void)clearTextFields {
 	self.sandwichWhat.text = @"";
 	self.sandwichWhere.text = @"";
 	self.articleTitleField.text =@"";
 }
 
--(void)removeCreationObjectsFromScrollview
-{
-	for(UIView * view in self.mainScrollView.subviews)
-	{
-		if([view isKindOfClass:[UIScrollView class]])
-		{
+-(void)removeCreationObjectsFromScrollview {
+	for(UIView * view in self.mainScrollView.subviews) {
+		if([view isKindOfClass:[UIScrollView class]]) {
 			[view removeFromSuperview];
 		}
 	}
@@ -1961,8 +1856,7 @@
 
 #pragma mark -New Gallery Implementaiton-
 
--(void)presentEfficientGallery
-{
+-(void)presentEfficientGallery {
 
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
 	picker.delegate = self;
@@ -1983,40 +1877,50 @@
 	[self presentViewController:picker animated:YES completion:nil];
 }
 
--(void)addAssetToView:(id)asset
-{
-	NSLock  * lock =[[NSLock alloc] init];
-	//thread safety
-	[lock lock];
-	UIView * topView;
-	if(self.index==-1 || self.pageElements.count==1)topView = nil;
-	else topView = self.pageElements[self.index];
-	[lock unlock];
+-(void)addAssetToView:(id)asset {
+
+	UIView* upperView = [self getUpperView];
+	PinchView* newPinchView;
+	if([asset isKindOfClass:[AVAsset class]] || [asset isKindOfClass:[NSURL class]]) {
+		newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultElementRadius withCenter:self.defaultElementCenter andVideo:asset];
+	} else if([asset isKindOfClass:[NSData class]]) {
+		UIImage* image = [[UIImage alloc] initWithData:(NSData*)asset];
+		image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.view.bounds]];
+		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultElementRadius withCenter:self.defaultElementCenter andImage:image];
+	}
 	dispatch_async(dispatch_get_main_queue(), ^{
-		[self newPinchObjectBelowView:topView fromData:asset];
+		[self newPinchView:newPinchView belowView:upperView];
 	});
-
-
 }
 
 
-//add assets from picker to our scrollview
--(void)presentAssets:(NSArray *)phassets
-{
-	PHImageManager * iman = [[PHImageManager alloc] init];
-	for(PHAsset * asset in phassets)//store local identifiers so we can querry the nsassets
-	{
+-(UIView*) getUpperView {
+	NSLock  * lock =[[NSLock alloc] init];
+	[lock lock];
+	UIView * topView;
+	if(self.index==-1 || self.pageElements.count==1){
+		topView = nil;
+	} else {
+		topView = self.pageElements[self.index];
+	}
+	[lock unlock];
+	return topView;
+}
 
-		if(asset.mediaType==PHAssetMediaTypeImage)
-		{
+//add assets from picker to our scrollview
+-(void)presentAssets:(NSArray *)phassets {
+	PHImageManager * iman = [[PHImageManager alloc] init];
+	//store local identifiers so we can querry the nsassets
+	for(PHAsset * asset in phassets) {
+
+		if(asset.mediaType==PHAssetMediaTypeImage) {
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 				dispatch_async(dispatch_get_main_queue(), ^{
 					[self addAssetToView: imageData];
 				});
 			}];
-		}else
-		{
+		}else {
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 				dispatch_async(dispatch_get_main_queue(), ^{
@@ -2055,14 +1959,22 @@
 //goes through all pinch views and pauses videos
 -(void)pauseAllVideos {
 	for (UIView * view in self.pageElements) {
-		if([view isKindOfClass:[PinchView class]])[((PinchView *)view).videoView pauseVideo];
+		if([view isKindOfClass:[VideoPinchView class]]) {
+			[((VideoPinchView *)view).videoView pauseVideo];
+		} else if([view isKindOfClass:[CollectionPinchView class]]) {
+			[((CollectionPinchView *)view).videoView pauseVideo];
+		}
 	}
 }
 
 //goes through all pinch views and plays the videos
--(void)playVideos {
+-(void)playAllVideos {
 	for (UIView * view in self.pageElements) {
-		if([view isKindOfClass:[PinchView class]])[((PinchView *)view).videoView continueVideo];
+		if([view isKindOfClass:[VideoPinchView class]]) {
+			[((VideoPinchView *)view).videoView continueVideo];
+		} else if([view isKindOfClass:[CollectionPinchView class]]) {
+			[((CollectionPinchView *)view).videoView continueVideo];
+		}
 	}
 }
 

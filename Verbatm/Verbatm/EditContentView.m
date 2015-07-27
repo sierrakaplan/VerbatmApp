@@ -7,7 +7,7 @@
 //
 
 #import "EditContentView.h"
-#import "VerbatmImageView.h"
+#import "VerbatmImageScrollView.h"
 #import "VerbatmPullBarView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -19,13 +19,10 @@
 
 @interface EditContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
 
+@property (nonatomic, strong) UIImageView * imageView;
 #pragma mark FilteredPhotos
-@property (nonatomic, strong) UIImage * filter_Original;
-@property (nonatomic, strong) UIImage * filter_BW;
-@property (nonatomic, strong) UIImage * filter_WARM;
-@property (nonatomic, strong) NSString * filter;
-
-@property (strong, nonatomic) UIButton* publishButton;
+@property (nonatomic, weak) NSArray * filteredImages;
+@property (nonatomic) int imageIndex;
 
 @end
 
@@ -44,18 +41,14 @@
 
 #pragma mark - Text View -
 
--(void) createTextViewFromTextView: (UITextView *) textView {
+-(void) editText: (NSString *) text {
 
 	CGRect textViewFrame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
 	self.textView = [[VerbatmUITextView alloc] initWithFrame:textViewFrame];
 	[self formatTextView:self.textView];
 	[self addSubview:self.textView];
 	[self.textView setDelegate:self];
-
-	if(textView) {
-		self.textView.text = textView.text;
-	}
-
+	self.textView.text = text;
 	[self addToolBarToView];
 	[self adjustContentSizing];
 	[self.textView becomeFirstResponder];
@@ -92,6 +85,10 @@
 	//ensure keyboard is black
 	textView.keyboardAppearance = UIKeyboardAppearanceDark;
 	textView.scrollEnabled = YES;
+}
+
+-(NSString*) getText {
+	return [self.textView text];
 }
 
 #pragma mark Text view content changed
@@ -131,94 +128,61 @@
 	[self adjustContentSizing];
 }
 
+
 #pragma mark - Image or Video View -
 
--(void)addVideo: (AVAsset*) video {
+-(void) displayVideo: (AVAsset*) videoAsset {
 	self.videoView = [[VideoPlayerView alloc]init];
 	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
 	[self addSubview:self.videoView];
 	[self bringSubviewToFront:self.videoView];
-	[self.videoView playVideoFromAsset:video];
+	[self.videoView playVideoFromAsset:videoAsset];
 	[self.videoView repeatVideoOnEnd:YES];
 
 	[self addTapGestureToMainView];
 }
 
--(void)addImage: (NSData*) image
-{
+-(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index {
 
-	//create a new scrollview to place the images
-	self.imageView = [[VerbatmImageView alloc]init];
-	self.imageView.image = [[UIImage alloc] initWithData:image];
-	self.imageView.asset = image;
-	self.imageView.contentMode = UIViewContentModeScaleAspectFit;
+	self.filteredImages = filteredImages;
+	self.imageIndex = index;
+	self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
+	[self.imageView setImage:self.filteredImages[self.imageIndex]];
+	self.imageView.clipsToBounds = YES;
+	self.imageView.contentMode = UIViewContentModeCenter;
 	[self addSubview:self.imageView];
-	[self createFilteredImages];
-	[self addSwipeToOpenedView];
-	self.imageView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
-
 	[self addTapGestureToMainView];
+	[self addSwipeGestureToImageView];
 }
 
 #pragma mark Filters
 
--(void)createFilteredImages
-{
-	//original "filter"
-	NSData *data = (NSData *) self.imageView.asset;
-
-	//warm filter
-	CIImage *beginImage =  [CIImage imageWithData:data];
-
-	CIContext *context = [CIContext contextWithOptions:nil];
-
-	CIFilter *filter = [CIFilter filterWithName:@"CIPhotoEffectProcess" keysAndValues: kCIInputImageKey, beginImage, nil];
-	CIImage *outputImage = [filter outputImage];
-
-	CGImageRef cgimg = [context createCGImage:outputImage fromRect:[outputImage extent]];
-
-	self.filter_WARM = [UIImage imageWithCGImage:cgimg];
-
-
-	CIImage *beginImage1 =  [CIImage imageWithData:data];
-
-	CIFilter *filter1 = [CIFilter filterWithName:@"CIPhotoEffectMono"
-								   keysAndValues: kCIInputImageKey, beginImage1, nil];
-
-	CIImage *outputImage1 = [filter1 outputImage];
-
-	CGImageRef cgimg1 =[context createCGImage:outputImage1 fromRect:[outputImage1 extent]];
-
-	self.filter_BW = [UIImage imageWithCGImage:cgimg1];
-
-	CGImageRelease(cgimg);
-	//free the buffer after use
-	//free(buffer);
-}
-
--(void)addSwipeToOpenedView
-{
-	UISwipeGestureRecognizer * leftSwipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(filterViewSwipe:)];
-	leftSwipe.direction = UISwipeGestureRecognizerDirectionLeft;
-	[self addGestureRecognizer:leftSwipe];
+-(void)addSwipeGestureToImageView {
+	UISwipeGestureRecognizer *leftSwipeRecognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(filterViewSwipeLeft:)];
+	leftSwipeRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
+	UISwipeGestureRecognizer *rightSwipeRecognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(filterViewSwipeRight:)];
+	rightSwipeRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
+	[self addGestureRecognizer:leftSwipeRecognizer];
+	[self addGestureRecognizer:rightSwipeRecognizer];
 }
 
 
--(void)filterViewSwipe: (UISwipeGestureRecognizer *) sender
-{
-	if(self.filter && [self.filter isEqualToString:@"BW"])
-	{
-		self.imageView.image = self.filter_Original;
-		self.filter = @"Original";
-	}else if (self.filter && [self.filter isEqualToString:@"WARM"])
-	{
-		self.imageView.image = self.filter_BW;
-		self.filter = @"BW";
-	}else
-	{
-		self.imageView.image = self.filter_WARM;
-		self.filter = @"WARM";
+-(void)filterViewSwipeRight: (UISwipeGestureRecognizer *) sender {
+	if (self.imageIndex > 0) {
+		self.imageIndex = self.imageIndex -1;
+		[self.imageView setImage:self.filteredImages[self.imageIndex]];
 	}
+}
+
+-(void)filterViewSwipeLeft: (UISwipeGestureRecognizer *) sender {
+	if (self.imageIndex < ([self.filteredImages count]-1)) {
+		self.imageIndex = self.imageIndex +1;
+		[self.imageView setImage:self.filteredImages[self.imageIndex]];
+	}
+}
+
+-(NSInteger) getFilteredImageIndex {
+	return self.imageIndex;
 }
 
 #pragma mark - Exit view

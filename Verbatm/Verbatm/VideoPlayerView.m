@@ -13,6 +13,7 @@
 @property (nonatomic, strong) AVPlayer* player;
 @property (nonatomic, strong) AVPlayerItem* playerItem;
 @property (nonatomic) BOOL repeatsVideo;
+@property (strong, nonatomic) AVMutableComposition* mix;
 
 @end
 
@@ -46,6 +47,35 @@
 		self.playerItem = [AVPlayerItem playerItemWithAsset:asset];
 		self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 		[self playVideo];
+	}
+}
+
+-(void) playVideoFromArray: (NSArray*)videoList {
+	[self fuseAssets:videoList];
+	[self playVideoFromAsset:self.mix];
+}
+
+/*This code fuses the video assets into a single video that plays the videos one after the other*/
+-(void)fuseAssets:(NSArray*)videoList {
+
+	self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
+	AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+	AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+	CMTime nextClipStartTime = kCMTimeZero;
+	NSError* error;
+
+	for(AVURLAsset* videoAsset in videoList) {
+		AVAssetTrack* this_video_track = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
+		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
+		videoTrack.preferredTransform = this_video_track.preferredTransform;
+		AVAssetTrack* this_audio_track = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
+
+		videoTrack.preferredTransform = this_video_track.preferredTransform;
+
+		if(this_audio_track != nil) {
+			[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
+		}
+		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
 	}
 }
 
@@ -84,35 +114,27 @@
 }
 
 //pauses the video for the pinchview if there is one
--(void)pauseVideo
-{
-	if (self.player)
-    {
+-(void)pauseVideo {
+	if (self.player) {
 		[self.player pause];
 	}
 }
 
 //plays the video of the pinch view if there is one
--(void)continueVideo
-{
-	if (self.player)
-    {
+-(void)continueVideo {
+	if (self.player) {
 		[self.player play];
 	}
 }
 
--(void)unmuteVideo
-{
-	if(self.player)
-    {
+-(void)unmuteVideo {
+	if(self.player) {
 		[self.player setMuted:NO];
 	}
 }
 
--(void)muteVideo
-{
-	if(self.player)
-    {
+-(void)muteVideo {
+	if(self.player) {
 		[self.player setMuted:YES];
 	}
 }

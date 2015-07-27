@@ -12,6 +12,10 @@
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
+		A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687A1B65B25700CE5744 /* CollectionPinchView.m */; };
+		A56F687E1B65B42B00CE5744 /* TextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687D1B65B42B00CE5744 /* TextPinchView.m */; };
+		A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68801B65B43D00CE5744 /* ImagePinchView.m */; };
+		A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68831B65B44C00CE5744 /* VideoPinchView.m */; };
 		A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */; };
 		A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A93041B55E835006C2597 /* VerbatmCameraView.m */; };
 		A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */; };
@@ -29,8 +33,6 @@
 		C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */; };
 		C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */ = {isa = PBXBuildFile; fileRef = C7360E4E19A46D4E002B2DE5 /* Article.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
-		C7614F421A247BD100E6AB24 /* VerbatmImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7614F411A247BD100E6AB24 /* VerbatmImageView.m */; };
-		C7614F441A24993200E6AB24 /* PinchView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C7614F431A24993200E6AB24 /* PinchView.xib */; };
 		C772F27F1B4BC13500CEC83D /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = C772F2661B4BC13500CEC83D /* GMImagePicker.strings */; };
 		C772F2801B4BC13500CEC83D /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C772F26E1B4BC13500CEC83D /* GMAlbumsViewCell.m */; };
 		C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C772F2701B4BC13500CEC83D /* GMAlbumsViewController.m */; };
@@ -119,6 +121,15 @@
 		A56434B91B636FEA0075F568 /* Identifiers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Identifiers.h; sourceTree = "<group>"; };
 		A56F68701B643B1400CE5744 /* VerbatmKeyboardToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmKeyboardToolBar.h; sourceTree = "<group>"; };
 		A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmKeyboardToolBar.m; sourceTree = "<group>"; };
+		A56F68781B6592C400CE5744 /* PhotoFilters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoFilters.h; sourceTree = "<group>"; };
+		A56F68791B65B25700CE5744 /* CollectionPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionPinchView.h; sourceTree = "<group>"; };
+		A56F687A1B65B25700CE5744 /* CollectionPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionPinchView.m; sourceTree = "<group>"; };
+		A56F687C1B65B42B00CE5744 /* TextPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextPinchView.h; sourceTree = "<group>"; };
+		A56F687D1B65B42B00CE5744 /* TextPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextPinchView.m; sourceTree = "<group>"; };
+		A56F687F1B65B43D00CE5744 /* ImagePinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePinchView.h; sourceTree = "<group>"; };
+		A56F68801B65B43D00CE5744 /* ImagePinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePinchView.m; sourceTree = "<group>"; };
+		A56F68821B65B44C00CE5744 /* VideoPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPinchView.h; sourceTree = "<group>"; };
+		A56F68831B65B44C00CE5744 /* VideoPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPinchView.m; sourceTree = "<group>"; };
 		A57A92FD1B55A551006C2597 /* CameraFocusSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraFocusSquare.h; sourceTree = "<group>"; };
 		A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraFocusSquare.m; sourceTree = "<group>"; };
 		A57A93031B55E835006C2597 /* VerbatmCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmCameraView.h; sourceTree = "<group>"; };
@@ -148,9 +159,6 @@
 		C7360E4D19A46D4E002B2DE5 /* Article.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Article.h; sourceTree = "<group>"; };
 		C7360E4E19A46D4E002B2DE5 /* Article.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Article.m; sourceTree = "<group>"; };
 		C7469BF31B4874A600EA7B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		C7614F401A247BD100E6AB24 /* VerbatmImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmImageView.h; sourceTree = "<group>"; };
-		C7614F411A247BD100E6AB24 /* VerbatmImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmImageView.m; sourceTree = "<group>"; };
-		C7614F431A24993200E6AB24 /* PinchView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PinchView.xib; sourceTree = "<group>"; };
 		C772F2671B4BC13500CEC83D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
 		C772F2681B4BC13500CEC83D /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = ca.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
 		C772F2691B4BC13500CEC83D /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
@@ -302,10 +310,6 @@
 		A56F68731B643C2600CE5744 /* Related to Images */ = {
 			isa = PBXGroup;
 			children = (
-				A58656631B607EF7008E358C /* VerbatmImageScrollView.h */,
-				A58656641B607EF7008E358C /* VerbatmImageScrollView.m */,
-				C7614F401A247BD100E6AB24 /* VerbatmImageView.h */,
-				C7614F411A247BD100E6AB24 /* VerbatmImageView.m */,
 			);
 			name = "Related to Images";
 			sourceTree = "<group>";
@@ -345,6 +349,8 @@
 		A56F68771B643EB200CE5744 /* Scroll Views */ = {
 			isa = PBXGroup;
 			children = (
+				A58656631B607EF7008E358C /* VerbatmImageScrollView.h */,
+				A58656641B607EF7008E358C /* VerbatmImageScrollView.m */,
 				C78B682019CA6C01003D0AC5 /* VerbatmScrollView.h */,
 				C78B682119CA6C01003D0AC5 /* VerbatmScrollView.m */,
 			);
@@ -384,9 +390,16 @@
 		C748836B1B48A9E200E64ED9 /* Pinch Views */ = {
 			isa = PBXGroup;
 			children = (
-				C7614F431A24993200E6AB24 /* PinchView.xib */,
 				C77C7D361A22E9FC00694B20 /* PinchView.h */,
 				C77C7D371A22E9FC00694B20 /* PinchView.m */,
+				A56F687C1B65B42B00CE5744 /* TextPinchView.h */,
+				A56F687D1B65B42B00CE5744 /* TextPinchView.m */,
+				A56F68791B65B25700CE5744 /* CollectionPinchView.h */,
+				A56F687A1B65B25700CE5744 /* CollectionPinchView.m */,
+				A56F687F1B65B43D00CE5744 /* ImagePinchView.h */,
+				A56F68801B65B43D00CE5744 /* ImagePinchView.m */,
+				A56F68821B65B44C00CE5744 /* VideoPinchView.h */,
+				A56F68831B65B44C00CE5744 /* VideoPinchView.m */,
 			);
 			name = "Pinch Views";
 			sourceTree = "<group>";
@@ -599,6 +612,7 @@
 				A52919711B5D8E0F00233712 /* Styles.h */,
 				A52919721B5D921500233712 /* Durations.h */,
 				A52919731B5DA4C800233712 /* Strings.h */,
+				A56F68781B6592C400CE5744 /* PhotoFilters.h */,
 			);
 			name = "Constants ";
 			sourceTree = "<group>";
@@ -737,7 +751,6 @@
 				C772F28A1B4BC13500CEC83D /* GMVideoIcon@2x.png in Resources */,
 				C772F27F1B4BC13500CEC83D /* GMImagePicker.strings in Resources */,
 				C772F2891B4BC13500CEC83D /* GMVideoIcon.png in Resources */,
-				C7614F441A24993200E6AB24 /* PinchView.xib in Resources */,
 				A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */,
 				C772F2831B4BC13500CEC83D /* GMEmptyFolder@2x.png in Resources */,
 				C772F2821B4BC13500CEC83D /* GMEmptyFolder@1x.png in Resources */,
@@ -798,6 +811,7 @@
 				C772F2801B4BC13500CEC83D /* GMAlbumsViewCell.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
 				C7A8E3861A61CE4D00776BD1 /* VerbatmPullBarView.m in Sources */,
+				A56F687E1B65B42B00CE5744 /* TextPinchView.m in Sources */,
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				C772F2851B4BC13500CEC83D /* GMGridViewController.m in Sources */,
@@ -822,7 +836,6 @@
 				C772F2861B4BC13500CEC83D /* GMImagePickerController.m in Sources */,
 				C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */,
 				C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */,
-				C7614F421A247BD100E6AB24 /* VerbatmImageView.m in Sources */,
 				C78B682419CA6C01003D0AC5 /* VerbatmUITextView.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
@@ -831,9 +844,12 @@
 				C777EEA61AC90A7A003E0633 /* ArticleAquirer.m in Sources */,
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
+				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
+				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
 				C777EEA01AC7F8B6003E0633 /* ArticleTableViewCell.m in Sources */,
+				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,

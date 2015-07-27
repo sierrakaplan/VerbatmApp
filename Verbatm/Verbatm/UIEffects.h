@@ -24,4 +24,7 @@
 // we have to calculate it.
 + (CGFloat)measureContentHeightOfUITextView:(UITextView *)textView;
 + (void) disableSpellCheckOnTextField: (UITextField*)textView;
+
+//Returns list of photo filter names to use
++ (NSArray*) getPhotoFilters;
 @end

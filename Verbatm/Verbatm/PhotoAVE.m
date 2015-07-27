@@ -104,15 +104,14 @@
 
 -(void) addPhotos:(NSArray*)photos {
 
-	for (NSData* imageData in photos) {
-		UIImage* image = [[UIImage alloc] initWithData:imageData];
+	for (UIImage* image in photos) {
 		//add container view with blur photo and regular photo
 		UIView* imageContainerView = [self getImageViewContainerForImage:image];
 		[self.imageContainerViews addObject:imageContainerView];
 	}
 
 	//add extra copy of photo 1 at bottom for last arc of circle transition
-	UIImage* photoOne = [[UIImage alloc] initWithData:(NSData*)photos[0]];
+	UIImage* photoOne = photos[0];
 	UIView* imageOneContainerView = [self getImageViewContainerForImage:photoOne];
 	[self addSubview:imageOneContainerView];
 
@@ -124,7 +123,9 @@
 
 -(UIView*) getImageViewContainerForImage:(UIImage*) image {
 	//scale image
-	image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.bounds]];
+	CGSize imageSize = [UIEffects getSizeForImage:image andBounds:self.bounds];
+	image = [UIEffects scaleImage:image toSize:imageSize];
+
 	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
 	[imageContainerView setBackgroundColor:[UIColor blackColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];

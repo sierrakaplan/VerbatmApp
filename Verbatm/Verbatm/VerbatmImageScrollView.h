@@ -10,6 +10,7 @@
 
 @interface VerbatmImageScrollView : UIScrollView
 
+//can pass in array of NSData or UIImage to render photos
 -(void)renderPhotos:(NSArray*)photos withBlurBackground:(BOOL)withBackground;
 -(void) adjustContentSize;
 -(void) setImageHeights;

@@ -59,12 +59,6 @@
 
 #pragma mark - Content Dev VC -
 
-#define MIN_PINCHVIEW_SIZE 100
-//distance two fingers must travel for the horizontal pinch to be accepted
-#define HORIZONTAL_PINCH_THRESHOLD 100
-#define PINCH_VIEW_DELETING_THRESHOLD 80
-#define PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION 100
-
 #define TEXTFIELD_BORDER_WIDTH 0.8f
 #define AUTO_SCROLL_OFFSET 10
 #define CONTENT_SIZE_OFFSET 20
@@ -76,6 +70,15 @@
 #define CENTERING_OFFSET_FOR_TEXT_VIEW 30
 //if the image is up- you can scroll up and have it turn to circles. This gives that scrollup distance
 #define SCROLLDISTANCE_FOR_PINCHVIEW_RETURN 200
+
+#pragma mark PinchViews
+
+#define PINCHVIEW_DIVISION_FACTOR_FOR_TWO 2
+#define MIN_PINCHVIEW_SIZE 100
+//distance two fingers must travel for the horizontal pinch to be accepted
+#define HORIZONTAL_PINCH_THRESHOLD 100
+#define PINCH_VIEW_DELETING_THRESHOLD 80
+#define PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION 100
 
 #pragma mark Media Select Tile
 

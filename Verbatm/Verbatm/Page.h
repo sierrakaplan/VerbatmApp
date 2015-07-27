@@ -30,6 +30,8 @@
 -(NSMutableArray*)getPhotos;
 -(NSMutableArray*)getVideos;
 
+-(NSInteger) numTypesOfMedia;
+
 /*This method blocks*/
 /*Reconstructs a pinch object from a page*/
 -(PinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center;
@@ -37,7 +39,7 @@
 #pragma mark - bools to tell what type of media make up page -
 @property (readonly,nonatomic) BOOL containsText;
 @property (readonly, nonatomic) BOOL containsVideo;
-@property (readonly, nonatomic) BOOL containsPhoto;
+@property (readonly, nonatomic) BOOL containsImage;
 @property (readonly,nonatomic) NSInteger pagePosition;//indexed from 0 tells you the position of the page in the article
 
 @end

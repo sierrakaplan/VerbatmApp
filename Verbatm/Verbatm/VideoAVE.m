@@ -14,7 +14,6 @@
 
 @property (strong, nonatomic) UIImageView* videoProgressImageView;  //Kept because of the snake....will be implemented soon
 @property (strong, nonatomic) UIButton* play_pauseBtn;
-@property (strong, nonatomic) AVMutableComposition* mix;
 @property (nonatomic) CGPoint firstTranslation;
 #define RGB 255,225,255, 0.7
 #define PROGR_VIEW_HEIGHT 60
@@ -28,12 +27,9 @@
 
 //no seeking. Fast forward and rewind.
 //play and pause button that doesn't move on the side.s
--(id)initWithFrame:(CGRect)frame andVideoAssetArray:(NSArray*)videoList
-{
-    if((self = [super initWithFrame:frame]))
-    {
-        if(videoList.count)
-        {
+-(id)initWithFrame:(CGRect)frame andVideoAssetArray:(NSArray*)videoList {
+    if((self = [super initWithFrame:frame])) {
+        if(videoList.count) {
             [self playVideos:videoList];
         }
     }
@@ -46,8 +42,7 @@
 {
 	//comes as avurlasset in preview
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
-		[self fuseAssets:videoList];
-		[self playVideoFromAsset:self.mix];
+		[self playVideoFromArray:videoList];
 		[self repeatVideoOnEnd:YES];
 		//comes as NSURL from parse
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
@@ -55,34 +50,6 @@
 		[self playVideoFromURL:[videoList objectAtIndex:0]];
 		[self repeatVideoOnEnd:YES];
 	}
-}
-
-
-/*This code fuses the video assets into a single video that plays the videos one after the other*/
-// videoList may be NSData or AVAsset
--(void)fuseAssets:(NSArray*)videoList
-{
-    self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
-    AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    CMTime nextClipStartTime = kCMTimeZero;
-    NSError* error;
-
-    for(AVURLAsset* videoAsset in videoList)
-    {
-		AVAssetTrack* this_video_track = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
-		videoTrack.preferredTransform = this_video_track.preferredTransform;
-		AVAssetTrack* this_audio_track = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
-
-		videoTrack.preferredTransform = this_video_track.preferredTransform;
-
-		if(this_audio_track != nil)
-		{
-			[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
-		}
-		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
-    }
 }
 
 #pragma mark - showing the progess bar -
@@ -109,8 +76,6 @@
     [self.play_pauseBtn setImage:[UIImage imageNamed:PLAY_ICON] forState:UIControlStateNormal];
     [self.play_pauseBtn addTarget:self action:@selector(continueVideo) forControlEvents:UIControlEventTouchUpInside];
 }
-
-
 
 /*Allows the user to use a pan gesture to determine rewind or fast forward 
  *Right now just the act of panning causes this. This function does not modify the rate as more panning 

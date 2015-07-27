@@ -46,7 +46,7 @@
 
 /*we pass in the text for the text view and also the AVE type.
  */
--(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text andPhotos: (NSMutableArray *)photos andVideos: (NSMutableArray *)videos andAVEType:(AVEType)aveType {
+-(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text andPhotos: (NSArray *)photos andVideos: (NSArray *)videos andAVEType:(AVEType)aveType {
 
     self = [super initWithFrame:frame];
     if(self) {

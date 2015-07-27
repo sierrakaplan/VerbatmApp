@@ -11,7 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 
 @interface MultiplePhotoVideoAVE : UIView
-//If there is a video to be added make that the first object of the array.
+//Photos are array of UIImage and videos are array of AVassets or NSURl
 -(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos;
 //-(void)addTapGesture;
 -(void)mutePlayer;

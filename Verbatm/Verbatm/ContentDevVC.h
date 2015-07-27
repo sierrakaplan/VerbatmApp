@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "PinchView.h"
-#import "VerbatmImageView.h"
 #import "VerbatmScrollView.h"
 #import "EditContentView.h"
 
@@ -21,6 +20,12 @@
 @end
 
 @interface ContentDevVC : UIViewController
+
+typedef NS_ENUM(NSInteger, PinchingMode) {
+	PinchingModeNone,
+	PinchingModeVertical,
+	PinchingModeHorizontal
+};
 
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
 
@@ -37,27 +42,18 @@
 @property (strong, atomic) NSMutableArray * pinchViewScrollViews;
 @property (nonatomic) CGRect containerViewFrame;
 //view that is currently being filled in
-@property (strong, nonatomic) UITextView * activeTextView;
+@property (weak, nonatomic) UITextView * activeTextView;
 @property(nonatomic) NSInteger pullBarHeight;
 @property (nonatomic, strong) EditContentView * openEditContentView;
 
--(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromData: (id) data;
--(PinchView *) newPinchObjectBelowView:(UIView *)upperView fromView: (UIView *) view isTextView: (BOOL) isText;
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView andVideo: (AVAsset*) videoAsset;
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView andImageView: (NSData*)imageView;
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView andTextView: (UITextView *) textView;
--(void) removeEditContentView;//allows you to remove the image scrollview
+- (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
+
+-(void) createEditContentViewFromPinchView: (PinchView *) pinchView;
+-(void) removeEditContentView;
 
 // either locks the scroll view or frees it
--(void)setMainScrollViewEnabled:(BOOL) enabled;
+-(void) setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;
 -(void) closeAllOpenCollections;
-
-
-typedef NS_ENUM(NSInteger, PinchingMode) {
-	PinchingModeNone,
-	PinchingModeVertical,
-	PinchingModeHorizontal
-};
 
 @end

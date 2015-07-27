@@ -17,8 +17,8 @@
 @property (nonatomic,strong) AVPlayerLayer* playerLayer;
 
 -(void)playVideoFromURL: (NSURL*) url;
-
 -(void)playVideoFromAsset: (AVAsset*) asset;
+-(void) playVideoFromArray: (NSArray*)videoList;
 
 //following methods will only execute if playVideo was called first
 

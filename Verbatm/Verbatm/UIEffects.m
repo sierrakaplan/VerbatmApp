@@ -186,6 +186,11 @@
 }
 
 + (UIImage*)scaleImage:(UIImage*)image toSize:(CGSize)size {
+
+	if (image.size.height == size.height && image.size.width == size.width) {
+		return image;
+	}
+
 	UIGraphicsBeginImageContext(size);
 
 	CGContextRef context = UIGraphicsGetCurrentContext();
@@ -216,6 +221,22 @@
 	[textField resignFirstResponder];
 	textField.autocorrectionType = UITextAutocorrectionTypeNo;
 	[textField becomeFirstResponder];
+}
+
++ (NSArray*) getPhotoFilters {
+	NSArray* filters = @[@"CIPhotoEffectChrome",
+						 @"CIPhotoEffectMono",
+//						 @"CIPhotoEffectNoir",
+						 @"CIPhotoEffectProcess",
+//						 @"CIPhotoEffecxtFade",
+						 @"CIPhotoEffectInstant",
+						 @"CIPhotoEffectTransfer",
+						 @"CISepiaTone",
+//						 @"CIVignette",
+						 @"CIColorPosterize"
+//						 @"CIMotionBlur"
+						];
+	return filters;
 }
 
 @end

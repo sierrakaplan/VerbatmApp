@@ -36,9 +36,17 @@
 
 -(void)renderPhotos:(NSArray*)photos withBlurBackground:(BOOL)withBackground {
 
-	for (NSData* imageData in photos)
-	{
-		UIImage*image = [[UIImage alloc] initWithData: imageData];
+	for (id imageInfo in photos) {
+		UIImage*image;
+		if ([imageInfo isKindOfClass:[NSData class]]) {
+			image = [[UIImage alloc] initWithData: imageInfo];
+		} else if([imageInfo isKindOfClass:[UIImage class]]) {
+			image = imageInfo;
+		} else {
+			NSLog(@"Trying to pass array of something to render photos in verbam image scrollview that is not NSData or UIImage");
+			return;
+		}
+
 		UIImageView * imageview = [[UIImageView alloc] initWithImage:image];
 		CGRect imageViewFrame = [self getNextFrame];
 		imageview.frame = imageViewFrame;

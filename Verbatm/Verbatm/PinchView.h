@@ -11,12 +11,21 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
-#import "VideoPlayerView.h"
+
+@class CollectionPinchView;
 
 @interface PinchView : UIView <NSCoding>
 
--(void)onScreen;
--(void)offScreen;
+@property(strong,nonatomic) UIView* background;
+//tells you if the object is selected for panning
+@property (nonatomic) BOOL selected;
+
+@property (nonatomic) BOOL containsText;
+@property (nonatomic) BOOL containsImage;
+@property (nonatomic) BOOL containsVideo;
+
+//This creates a new pinch object with a particular radius and a center
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center;
 
 /*
  allows you to change the width and height of the object without changing it's center
@@ -24,89 +33,31 @@
  */
 -(void) changeWidthTo: (double) width;
 
-
-/*This adds a picture to the pinch object
- *The method return nothing.
- */
--(void)changePicture:(UIImage*)image;
-
-/*This adds text to the pinch object
- *The method return nothing.
- */
-
--(void) changeText:(UITextView *) textview;
 /*
  *This sets the frame of the pinch object
- *
- */
+*/
 -(void)specifyFrame:(CGRect)frame;
 
-//lets you specify a center and in turn sets the frame of the pinchview
-//should only be use when panning the object because it relies on the current from of the object which must be set before this is called
--(void)specifyCenter:(CGPoint) center;
+-(NSInteger) numTypesOfMedia;
 
-
-/*This creates a new pinch object with a particular radius, superview and a center
- *as specified by the passed parameters
- */
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andMedia:(NSMutableArray*)mediaArray;
-
-//This merges several pinch objects in the to_be_merged array into a singe verbatmCustomPinchView
-//null is returned if the array has fewer than 2 objects. The array, along with references to the pinch objects
-//is destroyed to avoid memory leaks.
-+(PinchView*)pinchTogether:(NSMutableArray*)toBeMerged;
-
-//Pinches apart two media that were previously pinched together.
-//The function returns null if the object to be pinched apart does not actually consist
-//of more than one media object.
-//The array returned consist of two verbatmCustomPinchViews.
-+(NSMutableArray*)pinchApart:(PinchView*)collection;
-
-
-//this function pulls a pinch object apart into the componenent media.
-//It returns an array of pinch objects
-+(NSMutableArray*)openCollection:(PinchView*)collection;
-
-//creates an identical PV to the one handed to it
-+(PinchView *)pinchObjectFromPinchObject: (PinchView *) pv;
-
-//restarts the video playing
-//Should only be called if the player layer of the video has been removed (perhaps due to a preview)
-//and we want to restart the video 
-//-(void) restartVideo;
-
-//Tells whether it is a collection consisting of more than one type of media
--(BOOL)isCollection;
-
-//tells you if the pinch object has multiple media objects in its array.
-//This applies, whether it is a collection or not.
--(BOOL)hasMultipleMedia;
+//This merges two verbatm pinch objects into one.
+// Unless they are both text, the result will be a collection
++(PinchView*) pinchTogether:(NSArray*) pinchViews;
 
 //for intructing to render media
 -(void)renderMedia;
 
-//creates a shadow around the pinch object
--(void)createLensingEffect:(float)radius;
-
 //zeros out the border for the pinch view
 -(void)removeBorder;
 
-@property (nonatomic) BOOL selected;//tells you if the object is selected for panning
-@property (readonly,nonatomic) BOOL containsText;
-@property (readonly, nonatomic) BOOL containsVideo;
-@property (readonly, nonatomic) BOOL containsPhoto;
-@property (nonatomic) BOOL inDataFormat;
 
-/*Getting media from the pinch object*/
--(NSMutableArray*)getVideos;
--(NSMutableArray*)getPhotos;
-//returns all the strings of the media in the media array which are textfields.
--(NSString*)getText;
+#pragma mark Should be overriden in subclasses
+-(NSString*) getText;
+-(NSArray*) getPhotos;
+-(NSArray*) getVideos;
+
+-(void)onScreen;
+-(void)offScreen;
 
 
-//returns all the verbatmCustomImageViews that make up the media of the pinch
-//object.
--(NSMutableArray*)mediaObjects;
-
-@property (strong, nonatomic) IBOutlet VideoPlayerView *videoView;
 @end

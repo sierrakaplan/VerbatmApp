@@ -7,8 +7,11 @@
 //
 
 #import "AVETypeAnalyzer.h"
-#import "VerbatmImageView.h"
 #import "PinchView.h"
+#import "CollectionPinchView.h"
+#import "TextPinchView.h"
+#import "ImagePinchView.h"
+#import "VideoPinchView.h"
 #import "VideoAVE.h"
 #import "TextAVE.h"
 #import "MultiplePhotoVideoAVE.h"
@@ -16,24 +19,22 @@
 
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
 @interface AVETypeAnalyzer()
-@property(nonatomic, strong)NSMutableArray* results;
-@property(strong, nonatomic) NSMutableArray* pinchedObjects;
+
+@property(nonatomic, strong) NSMutableArray* results;
 @property(nonatomic) CGRect preferredFrame;
 @end
 @implementation AVETypeAnalyzer
-@synthesize pinchedObjects = _pinchedObjects;
 @synthesize preferredFrame = _preferredFrame;
 @synthesize results = _results;
 
--(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)arr withFrame:(CGRect)frame
-{
-	self.pinchedObjects = arr;
+-(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)pinchedObjects withFrame:(CGRect)frame {
+
 	self.preferredFrame = frame;
 	self.results = [[NSMutableArray alloc]init];
-	for(PinchView* pinchView in self.pinchedObjects)
-	{
+	for(PinchView* pinchView in pinchedObjects) {
+
 		//there are some issue where a messed up p_obj arrives
-		if(!(pinchView.containsPhoto || pinchView.containsText || pinchView.containsVideo)) {
+		if(!(pinchView.containsImage || pinchView.containsText || pinchView.containsVideo)) {
 			NSLog(@"Pinch view says it has no type of media in it.");
 			continue;
 		}
@@ -45,28 +46,26 @@
 }
 
 -(void) handleAVES: (PinchView*) pinchView {
-	NSString* text = [pinchView getText];
-	if ([text length] == 0) {
-		text = nil;
-	}
-	AVEType type;
 
-	if (pinchView.containsPhoto && pinchView.containsVideo) {
-		type = AVETypePhotoVideo;
 
-	} else if (pinchView.containsPhoto) {
-		type = AVETypePhoto;
-
-	} else if(pinchView.containsVideo) {
-		type = AVETypeVideo;
-
-	} else {
+	if([pinchView isKindOfClass:[TextPinchView class]]) {
 		TextAVE* textAVE = [[TextAVE alloc]initWithFrame:self.preferredFrame];
-		[textAVE setTextViewText: text];
+		[textAVE setTextViewText: [pinchView getText]];
 		[self.results addObject:textAVE];
 		return;
 	}
-	BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:text andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos] andAVEType:type];
+
+	AVEType type;
+
+	if (pinchView.containsImage && pinchView.containsVideo) {
+		type = AVETypePhotoVideo;
+	} else if (pinchView.containsImage) {
+		type = AVETypePhoto;
+	} else if(pinchView.containsVideo) {
+		type = AVETypeVideo;
+	}
+
+	BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:[pinchView getText] andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos] andAVEType:type];
 	[self.results addObject:textAndOtherMediaAVE];
 }
 
@@ -78,15 +77,13 @@
 }
 
 
-//give it an array of custom image views it gives you back uiimages
--(NSMutableArray *) getUIImage: (NSMutableArray *) array
-{
+//give it an array of image views it gives you back uiimages
+-(NSMutableArray *) getUIImage: (NSMutableArray *) array {
 
 	NSMutableArray * parray = [[NSMutableArray alloc] init];
 
-	for(VerbatmImageView * imageV  in array)
-	{
-		[parray addObject:imageV.image];
+	for(UIImageView * imageView  in array) {
+		[parray addObject:imageView.image];
 	}
 
 	return parray;

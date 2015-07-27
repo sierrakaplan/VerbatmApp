@@ -10,7 +10,7 @@
 
 @interface PhotoAVE : UIView
 
-//photos are NSData*
+//photos are UIImage*
 -(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos;
 
 -(void) displayCircle:(BOOL)display;

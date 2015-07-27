@@ -7,8 +7,11 @@
 //
 
 #import "Page.h"
-#import "VerbatmImageView.h"
 #include "verbatmCustomPinchView+reconstructFromDownload.h"
+#import "TextPinchView.h"
+#import "ImagePinchView.h"
+#import "VideoPinchView.h"
+#import "CollectionPinchView.h"
 #import "Photo.h"
 #import "Video.h"
 #import "Article.h"
@@ -18,7 +21,7 @@
 @property(strong, nonatomic) NSString* text;
 @property (readwrite,nonatomic) BOOL containsText;
 @property (readwrite, nonatomic) BOOL containsVideo;
-@property (readwrite, nonatomic) BOOL containsPhoto;
+@property (readwrite, nonatomic) BOOL containsImage;
 @property (readwrite,nonatomic) NSInteger pagePosition;//indexed from 0 tells you the position of the page in the article
 
 #define PAGE_PHOTO_RELATIONSHIP @"pagePhotoRelation"
@@ -29,7 +32,7 @@
 
 @implementation Page
 @dynamic text;
-@dynamic containsPhoto;
+@dynamic containsImage;
 @dynamic containsText;
 @dynamic containsVideo;
 @dynamic pagePosition;
@@ -48,19 +51,18 @@
 }
 
 
--(void)sortPinchObject:(PinchView*)pinchObject
-{
-//    NSMutableArray* media = [pinchObject mediaObjects];
+-(void)sortPinchObject:(PinchView*)pinchObject {
+
     if((self.containsText = pinchObject.containsText)){
         self.text = [pinchObject getText];
     }
-    self.containsPhoto = pinchObject.containsPhoto;
+    self.containsImage = pinchObject.containsImage;
     self.containsVideo = pinchObject.containsVideo;
 
-	if(self.containsPhoto) {
-		NSMutableArray* photos = [pinchObject getPhotos];
-		for (NSData* imageData in photos) {
-			Photo* photo = [[Photo alloc]initWithData:imageData withCaption:nil andName:nil atLocation:nil];
+	if(self.containsImage) {
+		NSArray* photos = [pinchObject getPhotos];
+		for (UIImage* image in photos) {
+			Photo* photo = [[Photo alloc]initWithData:UIImagePNGRepresentation(image) withCaption:nil andName:nil atLocation:nil];
 			[photo setObject: self forKey:PAGE_PHOTO_RELATIONSHIP];
 			[photo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
 				if(succeeded){
@@ -73,7 +75,7 @@
 	}
 
     if(self.containsVideo) {
-		NSMutableArray* videos = [pinchObject getVideos];
+		NSArray* videos = [pinchObject getVideos];
 		for (AVURLAsset* videoAsset in videos) {
 			//TODO(sierra): This should not happen on main thread
 			NSData* videoData = [self dataFromAVURLAsset:videoAsset];
@@ -88,6 +90,12 @@
 			}];
 		}
 	}
+}
+
+-(NSInteger) numTypesOfMedia {
+	return (self.containsText ? 1 : 0)
+	+ (self.containsImage ? 1 : 0)
+	+ (self.containsVideo ? 1 : 0);
 }
 
 //returns mutable array of NSData* objects
@@ -111,8 +119,7 @@
 }
 
 #pragma mark - getting objects from the page
--(NSString*)getText
-{
+-(NSString*)getText {
     return self.text;
 }
 
@@ -133,25 +140,35 @@
     return data;
 }
 
--(PinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center
-{
-	NSMutableArray* media = [[NSMutableArray alloc]init];
+-(PinchView*)getPinchObjectWithRadius:(float)radius andCenter:(CGPoint)center {
+
+	NSMutableArray* pinchViews = [[NSMutableArray alloc] init];
+
 	if (self.containsText) {
-		UITextView* textView = [[UITextView alloc] init];
-		[textView setText: self.text];
-		[media addObject: textView];
+		TextPinchView* textPinchView = [[TextPinchView alloc] initWithRadius:radius withCenter:center andText:self.text];
+		[pinchViews addObject:textPinchView];
 	}
 
-	if (self.containsPhoto) {
-		[media addObjectsFromArray: [self getPhotos]];
+	if (self.containsImage) {
+		for (NSData* imageData in [self getPhotos]) {
+			UIImage* image = [UIImage imageWithData:imageData];
+			ImagePinchView* imagePinchView = [[ImagePinchView alloc] initWithRadius:radius withCenter:center andImage:image];
+			[pinchViews addObject:imagePinchView];
+		}
 	}
 
 	if (self.containsVideo) {
-		[media addObjectsFromArray: [self getVideos]];
+		for (id video in [self getVideos]) {
+			VideoPinchView* videoPinchView = [[VideoPinchView alloc] initWithRadius:radius withCenter:center andVideo:video];
+			[pinchViews addObject:videoPinchView];
+		}
 	}
 
-	PinchView * view = [[PinchView alloc] initWithRadius:radius withCenter:center andMedia:media];
-    return view;
+	if ([pinchViews count] > 1) {
+		return [[CollectionPinchView alloc] initWithRadius:radius withCenter:center andPinchViews:pinchViews];
+	}
+
+	return [pinchViews firstObject];
 }
 
 -(NSArray*)getVideosQuery

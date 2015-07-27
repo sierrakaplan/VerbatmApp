@@ -76,34 +76,24 @@
 }
 
 
--(void)offScreen
-{
+-(void)offScreen {
     [self.videoView offScreen];
 
 }
 
--(void)onScreen
-{
+-(void)onScreen {
     [self.videoView onScreen];
 }
 
 /*Mute the video*/
--(void)mutePlayer
-{
-    
-    [self.videoView muteVideo];
-    
+-(void)mutePlayer {
+	[self.videoView muteVideo];
 }
 
 /*Enable's the sound on the video*/
--(void)enableSound
-{
-    
+-(void)enableSound{
     [self.videoView unmuteVideo];
 }
 
--(void) viewDidAppear {
-	//TODO
-}
 
 @end

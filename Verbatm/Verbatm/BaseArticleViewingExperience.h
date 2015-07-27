@@ -24,7 +24,7 @@ typedef NS_ENUM(NSInteger, AVEType) {
 	AVETypePhotoVideo
 };
 
--(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text andPhotos: (NSMutableArray *)photos andVideos: (NSMutableArray *)videos andAVEType:(AVEType)aveType;
+-(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text andPhotos: (NSArray *)photos andVideos: (NSArray *)videos andAVEType:(AVEType)aveType;
 
 -(int)numberOfLinesInTextView:(UITextView *)textView;
 -(void) showText:(BOOL)show;
