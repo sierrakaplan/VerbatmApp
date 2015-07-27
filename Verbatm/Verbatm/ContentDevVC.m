@@ -188,8 +188,9 @@
 //and its scrollview.
 -(void)setElementDefaultFrames {
 	//set the content offset for the personal scrollview
-	self.defaultElementPersonalScrollViewContentOffset = CGPointMake(self.view.frame.size.width, 0);
-	self.defaultElementPersonalScrollViewContentSize = CGSizeMake(self.view.frame.size.width * 3, 0);
+	float contentWidth = self.view.frame.size.width * 3;
+	self.defaultElementPersonalScrollViewContentOffset = CGPointMake(contentWidth/3.f, 0);
+	self.defaultElementPersonalScrollViewContentSize = CGSizeMake(contentWidth, 0);
 
 	self.defaultElementFrame = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
 
@@ -421,7 +422,6 @@
 	}
 
 	// scrollView has a pinch view or a media tile
-
 	if([[scrollView.subviews firstObject] conformsToProtocol:@protocol(ContentDevElementDelegate)]) {
 
 		if([self isDeleting:scrollView]){
@@ -448,13 +448,17 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
 				  willDecelerate:(BOOL)decelerate {
 
-	if (scrollView == self.mainScrollView || scrollView.subviews.count > 1 || self.pinchingMode != PinchingModeNone){
-		return;
-	}
+	[self deleteOrAnimateBackScrollView:scrollView];
+}
 
-	//was swiped away
-	if(decelerate) {
-		[self deleteScrollView:scrollView];
+-(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+	[self deleteOrAnimateBackScrollView:scrollView];
+}
+
+//check if scroll view has been scrolled enough to delete, and if so delete.
+//Otherwise scroll it back
+-(void) deleteOrAnimateBackScrollView:(UIScrollView*)scrollView {
+	if (scrollView == self.mainScrollView || scrollView.subviews.count > 1 || self.pinchingMode != PinchingModeNone){
 		return;
 	}
 
@@ -462,14 +466,15 @@
 		[self deleteScrollView:scrollView];
 	} else {
 		[scrollView setContentOffset:self.defaultElementPersonalScrollViewContentOffset animated:YES];
+
 	}
 }
 
 //if the delete swipe wasn't far enough then return the pinch object to the middle
 //pinch view must have gone over 3/4 off the edge
 -(BOOL) isDeleting:(UIScrollView*)scrollView {
-	float deleteThreshold = self.defaultElementRadius * 1.f/2.f;
-	if(fabs(scrollView.contentOffset.x - self.defaultElementPersonalScrollViewContentOffset.x) < (self.view.frame.size.width/2.f + deleteThreshold)
+	float deleteThreshold = self.view.frame.size.width/2.f;
+	if(fabs(scrollView.contentOffset.x - self.defaultElementPersonalScrollViewContentOffset.x) < deleteThreshold
 	   && scrollView.subviews.count == 1) {
 		return NO;
 	}
@@ -798,7 +803,7 @@
 	} else if (self.newlyCreatedMediaTile) {
 
 		//new media creation has failed
-		if(self.newlyCreatedMediaTile.superview.frame.size.height < PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION){
+		if(self.newlyCreatedMediaTile.frame.size.height != self.baseMediaTileSelector.frame.size.height){
 			[self animateRemoveNewMediaTile];
 			return;
 		}
