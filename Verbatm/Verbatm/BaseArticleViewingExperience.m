@@ -70,7 +70,7 @@
 				break;
 			}
 		}
-		if (text) {
+		if (text && [text length]) {
 			[self setUpTextViewWithText:text];
 		}
     }
