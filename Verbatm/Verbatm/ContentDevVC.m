@@ -94,9 +94,6 @@
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 
-#define LEFT_DELETE_OFFSET (self.view.frame.size.width/2)
-#define RIGHT_DELETE_OFFSET (self.view.frame.size.width*(4/3))
-
 @end
 
 
@@ -427,14 +424,10 @@
 
 	if([[scrollView.subviews firstObject] conformsToProtocol:@protocol(ContentDevElementDelegate)]) {
 
-		if(scrollView.contentOffset.x > self.defaultElementPersonalScrollViewContentOffset.x + PINCH_VIEW_DELETING_THRESHOLD || scrollView.contentOffset.x < self.defaultElementPersonalScrollViewContentOffset.x - PINCH_VIEW_DELETING_THRESHOLD){
-			if(scrollView.contentOffset.x >3) {
-				[(UIView<ContentDevElementDelegate>*)[scrollView.subviews firstObject] markAsDeleting:YES];
-			}
+		if([self isDeleting:scrollView]){
+			[(UIView<ContentDevElementDelegate>*)[scrollView.subviews firstObject] markAsDeleting:YES];
 		} else {
-			[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^ {
-				[(UIView<ContentDevElementDelegate>*)[scrollView.subviews firstObject] markAsDeleting:NO];
-			}];
+			[(UIView<ContentDevElementDelegate>*)[scrollView.subviews firstObject] markAsDeleting:NO];
 		}
 	}
 
@@ -455,64 +448,49 @@
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
 				  willDecelerate:(BOOL)decelerate {
 
-	if(scrollView == self.mainScrollView) {
+	if (scrollView == self.mainScrollView || scrollView.subviews.count > 1 || self.pinchingMode != PinchingModeNone){
 		return;
 	}
 
-	//if the delete swipe wasn't far enough then return the pinch object to the middle
-	if((scrollView.contentOffset.x > LEFT_DELETE_OFFSET || scrollView.contentOffset.x < RIGHT_DELETE_OFFSET) && scrollView.subviews.count == 1) {
-		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-			scrollView.contentOffset = CGPointMake(self.view.frame.size.width, 0);
-		}];
-	}
-
-}
-
-
-//called when the tile is scrolled - we see if the offset has changed
-//if so we remove the view
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-
-	scrollView.showsHorizontalScrollIndicator = NO;
-	scrollView.showsVerticalScrollIndicator = NO;
-
-	// not the main vertical scrollbar,
-	//or a scrollview with an open collection (can't swipe away anything)
-	if (scrollView == self.mainScrollView || scrollView.subviews.count > 1){
+	//was swiped away
+	if(decelerate) {
+		[self deleteScrollView:scrollView];
 		return;
 	}
 
-	MediaSelectTile * tile= Nil;
-	if([[scrollView.subviews firstObject] isKindOfClass:[MediaSelectTile class]]) {
-		tile = [scrollView.subviews firstObject];
-	}
-
-	if((!tile || !tile.isBaseSelector) &&
-	   (self.pinchingMode == PinchingModeNone) && [self.pageElements count] >1 ) {
-
-		//If the view is scrolled left/right and not centered
-		if(scrollView.contentOffset.x != self.defaultElementPersonalScrollViewContentOffset.x) {
-
-			//remove swiped view from mainscrollview
-			//it is the only subview in this scrollview
-			UIView * view = [scrollView.subviews firstObject];
-			NSUInteger index = [self.pageElements indexOfObject:view];
-			[scrollView removeFromSuperview];
-			[self.pageElements removeObject:view];
-
-			//if it was the top element then shift everything below
-			[self shiftElementsBelowView:self.articleTitleField];
-
-			//register deleted tile
-			[self deletedTile:view withIndex:[NSNumber numberWithUnsignedLong:index]];
-		}
-
-	}else { //return the view to it's old position
-		[UIView animateWithDuration:0.7 animations:^ {
-			scrollView.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
-		}];
+	if([self isDeleting:scrollView]) {
+		[self deleteScrollView:scrollView];
+	} else {
+		[scrollView setContentOffset:self.defaultElementPersonalScrollViewContentOffset animated:YES];
 	}
 }
+
+//if the delete swipe wasn't far enough then return the pinch object to the middle
+//pinch view must have gone over 3/4 off the edge
+-(BOOL) isDeleting:(UIScrollView*)scrollView {
+	float deleteThreshold = self.defaultElementRadius * 1.f/2.f;
+	if(fabs(scrollView.contentOffset.x - self.defaultElementPersonalScrollViewContentOffset.x) < (self.view.frame.size.width/2.f + deleteThreshold)
+	   && scrollView.subviews.count == 1) {
+		return NO;
+	}
+	return YES;
+}
+
+-(void) deleteScrollView:(UIScrollView*)scrollView {
+	//remove swiped view from mainscrollview
+	//it is the only subview in this scrollview
+	UIView * view = [scrollView.subviews firstObject];
+	NSUInteger index = [self.pageElements indexOfObject:view];
+	[scrollView removeFromSuperview];
+	[self.pageElements removeObject:view];
+
+	//if it was the top element then shift everything below
+	[self shiftElementsBelowView:self.articleTitleField];
+
+	//register deleted tile
+	[self deletedTile:view withIndex:[NSNumber numberWithUnsignedLong:index]];
+}
+
 
 //Remove keyboard when scrolling
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
@@ -979,8 +957,6 @@
 	openCollectionScrollView.contentSize = self.defaultElementPersonalScrollViewContentSize;
 	openCollectionScrollView.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
 	[openCollectionScrollView addSubview:collectionPinchView];
-	//Turn paging back on because now it's one element
-	openCollectionScrollView.pagingEnabled =YES;
 }
 
 #pragma mark - Vertical Pinching
@@ -1164,15 +1140,18 @@
 }
 
 //adds the appropriate parameters to a generic scrollview
--(void)formatNewElementScrollView:(UIScrollView *) scrollview {
+-(void)formatNewElementScrollView:(UIScrollView *) scrollView {
 
-	scrollview.scrollEnabled= YES;
-	scrollview.delegate = self;
-	scrollview.pagingEnabled= YES;
-	scrollview.showsHorizontalScrollIndicator = NO;
-	scrollview.showsVerticalScrollIndicator = NO;
-	scrollview.contentOffset = CGPointMake(self.defaultElementPersonalScrollViewContentOffset.x, self.defaultElementPersonalScrollViewContentOffset.y);
-	scrollview.contentSize = self.defaultElementPersonalScrollViewContentSize;
+	scrollView.scrollEnabled= YES;
+	scrollView.delegate = self;
+	scrollView.pagingEnabled= NO;
+	scrollView.maximumZoomScale = 1.0;
+	scrollView.minimumZoomScale = 1.0;
+	scrollView.panGestureRecognizer.enabled = NO;
+	scrollView.showsHorizontalScrollIndicator = NO;
+	scrollView.showsVerticalScrollIndicator = NO;
+	scrollView.contentOffset = self.defaultElementPersonalScrollViewContentOffset;
+	scrollView.contentSize = self.defaultElementPersonalScrollViewContentSize;
 }
 
 #pragma mark Pinch Apart Failed
