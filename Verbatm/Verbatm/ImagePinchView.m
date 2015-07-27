@@ -79,24 +79,28 @@
 	self.filteredImages = [[NSMutableArray alloc] initWithCapacity:[filterNames count]+1];
 	//original photo
 	[self.filteredImages addObject:self.image];
-	dispatch_async(dispatch_get_main_queue(), ^{
-		[self createFilteredImagesFromImageData:UIImagePNGRepresentation(self.image) andFilterNames:filterNames];
-	});
+	[self createFilteredImagesFromImageData:UIImagePNGRepresentation(self.image) andFilterNames:filterNames];
 }
 
 //return array of uiimage with filter from image
 -(void)createFilteredImagesFromImageData:(NSData*)imageData andFilterNames:(NSArray*)filterNames{
 
-	for (NSString* filterName in filterNames) {
-		CIImage *beginImage =  [CIImage imageWithData: imageData];
-		CIContext *context = [CIContext contextWithOptions:nil];
-		CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues: kCIInputImageKey, beginImage, nil];
-		CIImage *outputImage = [filter outputImage];
-		CGImageRef cgImg = [context createCGImage:outputImage fromRect:[outputImage extent]];
-		UIImage* imageWithFilter = [UIImage imageWithCGImage:cgImg];
-		CGImageRelease(cgImg);
-		[self.filteredImages addObject:imageWithFilter];
-	}
+	dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+		//Background Thread
+		for (NSString* filterName in filterNames) {
+			CIImage *beginImage =  [CIImage imageWithData: imageData];
+			CIContext *context = [CIContext contextWithOptions:nil];
+			CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues: kCIInputImageKey, beginImage, nil];
+			CIImage *outputImage = [filter outputImage];
+			CGImageRef cgImg = [context createCGImage:outputImage fromRect:[outputImage extent]];
+			UIImage* imageWithFilter = [UIImage imageWithCGImage:cgImg];
+			CGImageRelease(cgImg);
+			[self.filteredImages addObject:imageWithFilter];
+		}
+		dispatch_async(dispatch_get_main_queue(), ^(void){
+			//Run UI Updates
+		});
+	});
 }
 
 @end
