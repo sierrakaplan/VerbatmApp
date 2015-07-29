@@ -32,7 +32,7 @@
 		[self.background addSubview:self.imageView];
 		[self.background addSubview:self.videoView];
 		[self.pinchedObjects addObjectsFromArray:pinchViews];
-		[self changeTypesOfMedia];
+		[self updateMedia];
 		[self renderMedia];
 	}
 	return self;
@@ -165,7 +165,10 @@
 	return [self.pinchedObjects count];
 }
 
--(void) changeTypesOfMedia {
+-(void) updateMedia {
+	self.text = @"";
+	self.image = Nil;
+	self.video = Nil;
 	for (PinchView* pinchView in self.pinchedObjects) {
 		[self changeTypesOfMediaFromPinchView:pinchView];
 	}
@@ -202,10 +205,7 @@
 -(CollectionPinchView*) unPinchAndRemove:(PinchView*)pinchView {
 	if ([self.pinchedObjects containsObject:pinchView]) {
 		[self.pinchedObjects removeObject:pinchView];
-		self.video = Nil;
-		self.image = Nil;
-		self.text = @"";
-		[self changeTypesOfMedia];
+		[self updateMedia];
 	}
 	[self renderMedia];
 	return self;

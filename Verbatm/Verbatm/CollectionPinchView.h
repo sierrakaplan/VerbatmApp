@@ -31,4 +31,7 @@
 //returns self for chaining purposes
 -(CollectionPinchView*) unPinchAndRemove:(PinchView*)pinchView;
 
+//updates all the media stored in the collection view
+-(void) updateMedia;
+
 @end

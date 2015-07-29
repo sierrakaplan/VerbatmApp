@@ -171,6 +171,7 @@
 	self.contentSize = self.initialContentSize;
 	self.contentOffset = self.initialContentOffset;
 	[self addSubview:self.pageElement];
+	[(CollectionPinchView*)self.pageElement updateMedia];
 	[(CollectionPinchView*)self.pageElement renderMedia];
 	return YES;
 }
