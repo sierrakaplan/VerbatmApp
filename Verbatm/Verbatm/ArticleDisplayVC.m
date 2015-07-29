@@ -298,9 +298,13 @@
 
 //Sets up the gesture recognizer for dragging from the edges.
 -(void) setUpGestureRecognizers {
-	self.panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollView:)];
-	self.panGesture.delegate = self;
+//	self.panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollView:)];
+//	self.panGesture.delegate = self;
 //	[self.scrollView addGestureRecognizer:self.panGesture];
+}
+
+-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+	return YES;
 }
 
 //-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {

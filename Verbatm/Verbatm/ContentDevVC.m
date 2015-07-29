@@ -1661,6 +1661,7 @@
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
+	[self showPullBarWithTransition:NO];
 }
 
 

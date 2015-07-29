@@ -92,9 +92,9 @@
 }
 
 -(void)setUpEdgePanGestureRecognizers {
-	UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(enter_adk:)];
+	UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(enterADK:)];
 	edgePanR.edges =  UIRectEdgeRight;
-	UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exit_adk:)];
+	UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exitADK:)];
 	edgePanL.edges =  UIRectEdgeLeft;
 	[self.view addGestureRecognizer: edgePanR];
 	[self.view addGestureRecognizer: edgePanL];
