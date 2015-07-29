@@ -291,25 +291,21 @@
         viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
     }
 
-    [self setUpEdgePanGestureRecognizers];
+    [self setUpGestureRecognizers];
 }
 
 #pragma mark - Gesture recognizers
--(void)setUpEdgePanGestureRecognizers {
-	UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exitDisplay:)];
-	edgePanL.edges =  UIRectEdgeLeft;
-	[self.scrollView addGestureRecognizer: edgePanL];
-}
+
 //Sets up the gesture recognizer for dragging from the edges.
 -(void) setUpGestureRecognizers {
-//	self.panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollView:)];
-//	self.panGesture.delegate = self;
-//	[self.scrollView addGestureRecognizer:self.panGesture];
+	self.panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollView:)];
+	self.panGesture.delegate = self;
+	[self.scrollView addGestureRecognizer:self.panGesture];
 }
 
-//-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-//	return YES;
-//}
+-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+	return YES;
+}
 
 //-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
 //	if (gestureRecognizer == self.panGesture) {
@@ -322,43 +318,44 @@
 //}
 
 
-//-(void) scrollView:(UIPanGestureRecognizer*) sender {
-//	if ([sender numberOfTouches] != 1) return;
-//	CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
-//	switch (sender.state) {
-//		case UIGestureRecognizerStateBegan: {
-//			if (touchLocation.y < (self.view.frame.size.height - PAGE_SCROLL_TOPBOTTOM_AREA)) {
-////				self.scrollView.scrollEnabled = NO;
-//			}
-//			break;
-//		}
-//		case UIGestureRecognizerStateChanged: {
-//			break;
-//		}
-//		case UIGestureRecognizerStateEnded: {
-////			self.scrollView.scrollEnabled = YES;
-//			break;
-//		}
-//		default:
-//			break;
-//	}
-//}
+-(void) scrollView:(UIPanGestureRecognizer*) sender {
+	if ([sender numberOfTouches] != 1) return;
+	CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
+	switch (sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			if (touchLocation.y < (self.view.frame.size.height - PAGE_SCROLL_TOPBOTTOM_AREA)) {
+				self.scrollView.scrollEnabled = NO;
+			}
+			break;
+		}
+		case UIGestureRecognizerStateChanged: {
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+			self.scrollView.scrollEnabled = YES;
+			break;
+		}
+		default:
+			break;
+	}
+}
 
 //called from left edge pan in master navigation vc
 - (void)exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender {
 
-	//we want only one finger doing anything when exiting
-	if([sender numberOfTouches] != 1) {
-		return;
-	}
-	CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
+			//we want only one finger doing anything when exiting
+			if([sender numberOfTouches] != 1) {
+				return;
+			}
+			CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
 			self.previousGesturePoint  = touchLocation;
 			[self.publishButton stopGlowing];
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
+			CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
 			CGPoint currentPoint = touchLocation;
 			int diff = currentPoint.x - self.previousGesturePoint.x;
 			self.previousGesturePoint = currentPoint;

@@ -65,8 +65,8 @@
                         </connections>
                     </view>
                     <connections>
-                        <outlet property="adk_contatiner" destination="yxe-c7-aMo" id="QIx-i8-eZK"/>
-                        <outlet property="articleList_container" destination="BZw-d7-VqY" id="5wp-CG-fOg"/>
+                        <outlet property="adkContainer" destination="yxe-c7-aMo" id="QIx-i8-eZK"/>
+                        <outlet property="articleListContainer" destination="BZw-d7-VqY" id="5wp-CG-fOg"/>
                         <outlet property="masterSV" destination="Rve-tc-g3P" id="038-Bi-DAq"/>
                         <segue destination="K1p-X2-CXo" kind="modal" identifier="display_articles_segue" modalTransitionStyle="coverVertical" id="Bhb-UK-wiL"/>
                     </connections>
