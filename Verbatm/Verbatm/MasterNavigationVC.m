@@ -14,12 +14,12 @@
 
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
-@property (weak, nonatomic) IBOutlet UIView *adk_contatiner;
-@property (weak, nonatomic) IBOutlet UIView *articleList_container;
-@property (nonatomic) NSInteger last_View_Index;//stores the index of the view that brings up the article display in order to aid our return
-@property (nonatomic, strong) NSMutableArray * Display_pages;
-@property (nonatomic, strong) NSMutableArray * Display_pinchObjects;
-@property (nonatomic) CGPoint prev_Gesture_Point;
+@property (weak, nonatomic) IBOutlet UIView *adkContainer;
+@property (weak, nonatomic) IBOutlet UIView *articleListContainer;
+@property (nonatomic) NSInteger lastViewIndex;//stores the index of the view that brings up the article display in order to aid our return
+@property (nonatomic, strong) NSMutableArray * pagesToDisplay;
+@property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
+@property (nonatomic) CGPoint previousGesturePoint;
 
 @property (strong, nonatomic) NSTimer * animationTimer;
 @property (strong,nonatomic) UIImageView* animationView;
@@ -109,14 +109,13 @@
 
 	switch(sender.state) {
 		case UIGestureRecognizerStateBegan: {
-			self.prev_Gesture_Point  = [sender locationOfTouch:0 inView:self.view];
+			self.previousGesturePoint  = [sender locationOfTouch:0 inView:self.view];
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
 			CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
-
-			int diff = current_point.x - self.prev_Gesture_Point.x;
-			self.prev_Gesture_Point = current_point;
+			int diff = current_point.x - self.previousGesturePoint.x;
+			self.previousGesturePoint = current_point;
 			self.masterSV.contentOffset = CGPointMake(self.masterSV.contentOffset.x + (-1 *diff), 0);
 			break;
 		}
@@ -147,14 +146,14 @@
 			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_HIDE_KEYBOARD
 																object:nil
 															  userInfo:nil];
-			self.prev_Gesture_Point  = [sender locationOfTouch:0 inView:self.view];
+			self.previousGesturePoint  = [sender locationOfTouch:0 inView:self.view];
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
-			CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
+			CGPoint currentPoint = [sender locationOfTouch:0 inView:self.view];;
 
-			int diff = current_point.x - self.prev_Gesture_Point.x;
-			self.prev_Gesture_Point = current_point;
+			int diff = currentPoint.x - self.previousGesturePoint.x;
+			self.previousGesturePoint = currentPoint;
 			self.masterSV.contentOffset = CGPointMake(self.masterSV.contentOffset.x + (-1 *diff), 0);
 			break;
 		}
@@ -233,8 +232,8 @@
 	self.masterSV.frame = self.view.bounds;
 	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width*2, 0);//enable horizontal scroll
 	self.masterSV.contentOffset = CGPointMake(0, 0);//start at the left
-	self.articleList_container.frame = LEFT_FRAME ;
-	self.adk_contatiner.frame = RIGHT_FRAME;
+	self.articleListContainer.frame = LEFT_FRAME ;
+	self.adkContainer.frame = RIGHT_FRAME;
 }
 
 //for ios8- To hide the status bar
