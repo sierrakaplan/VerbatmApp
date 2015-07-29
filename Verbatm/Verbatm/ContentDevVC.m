@@ -426,6 +426,9 @@
 //Deletes scroll view and the element it contained
 -(void) deleteScrollView:(ContentPageElementScrollView*)scrollView {
 
+	if (![self.pageElementScrollViews containsObject:scrollView]) {
+		return;
+	}
 	NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
 	[scrollView removeFromSuperview];
 	[self.pageElementScrollViews removeObject:scrollView];
@@ -1362,7 +1365,7 @@
 
 #pragma mark - Undo implementation -
 
--(void)deletedTile: (UIView *) tile withIndex: (NSNumber *) index {
+-(void)deletedTile: (ContentPageElementScrollView *) tile withIndex: (NSNumber *) index {
 	if ([self.pageElementScrollViews count] <= 1) {
 		[self sendRemovedAllMediaNotification];
 	}
@@ -1424,6 +1427,7 @@
 	}
 
 	[self.pageElementScrollViews insertObject:scrollView atIndex:index];
+	[scrollView animateBackToInitialPosition];
 	if ([scrollView.pageElement isKindOfClass:[PinchView class]]) {
 		[self addTapGestureToPinchView:(PinchView *)[scrollView pageElement]];
 	}
