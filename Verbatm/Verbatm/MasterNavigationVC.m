@@ -44,17 +44,15 @@
 	// Do any additional setup after loading the view.
 	[self formatVCS];
 	[self registerForNavNotifications];
-	[self setUpGestureRecognizers];
+	[self setUpEdgePanGestureRecognizers];
 }
 
--(void)viewDidAppear:(BOOL)animated
-{
+-(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self login];
 }
 
--(void)registerForNavNotifications
-{
+-(void)registerForNavNotifications {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
 
@@ -63,16 +61,14 @@
 }
 
 
--(void) showADK: (NSNotification *) notification
-{
+-(void) showADK: (NSNotification *) notification {
 	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	}completion:^(BOOL finished) {
 	}];
 }
 
--(void)showArticleList:(NSNotification *)notification
-{
+-(void)showArticleList:(NSNotification *)notification {
 	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(0, 0);
 	}completion:^(BOOL finished) {
@@ -89,15 +85,13 @@
 
 
 //no longer being done
--(void)leaveArticleDisplay: (NSNotification *) notification
-{
+-(void)leaveArticleDisplay: (NSNotification *) notification {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[self dismissViewControllerAnimated:YES completion:nil];
 
 }
 
--(void)setUpGestureRecognizers
-{
+-(void)setUpEdgePanGestureRecognizers {
 	UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(enter_adk:)];
 	edgePanR.edges =  UIRectEdgeRight;
 	UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exit_adk:)];
@@ -106,10 +100,11 @@
 	[self.view addGestureRecognizer: edgePanL];
 }
 
+
 //swipping left from right
--(void)enter_adk:(UIScreenEdgePanGestureRecognizer *)sender
-{
-	if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
+-(void) enterADK:(UIScreenEdgePanGestureRecognizer *)sender {
+	//we want only one finger doing anything when exiting
+	if([sender numberOfTouches] >1) return;
 	if(self.masterSV.contentOffset.x == self.view.frame.size.width) return;
 
 	switch(sender.state) {
@@ -135,7 +130,7 @@
 }
 
 //swipping right from left
-- (void)exit_adk:(UIScreenEdgePanGestureRecognizer *)sender {
+- (void)exitADK:(UIScreenEdgePanGestureRecognizer *)sender {
 
 	//this is here because this sense the left edge pan gesture- so we need to catch it and send it upstream
 	if(super.articleCurrentlyViewing) {
@@ -174,8 +169,7 @@
 
 
 -(void)adjustSV {
-	if(self.masterSV.contentOffset.x > (self.view.frame.size.width/2))
-	{
+	if(self.masterSV.contentOffset.x > (self.view.frame.size.width/2)) {
 		//bring ADK into View
 		[UIView animateWithDuration:ANIMATION_DURATION animations:^{
 			self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
@@ -197,8 +191,7 @@
 
 
 //article publsihed sucessfully
--(void)articlePublishedAnimation
-{
+-(void)articlePublishedAnimation {
 	if(self.animationView.frame.size.width) return;
 	self.animationView.image = [UIImage imageNamed:PUBLISHED_ANIMATION_ICON];
 	self.animationView.frame = self.view.bounds;
@@ -207,8 +200,7 @@
 	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
 }
 
--(void)removeAnimationView
-{
+-(void)removeAnimationView {
 	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
 		self.animationView.alpha=0;
 
@@ -219,8 +211,7 @@
 }
 
 //insert title
--(void)insertTitleAnimation
-{
+-(void)insertTitleAnimation {
 	if(self.animationView.frame.size.width) return;
 	self.animationView.image = [UIImage imageNamed:TITLE_NOTIFICATION_ANIMATION];
 	self.animationView.frame = self.view.bounds;
@@ -232,15 +223,13 @@
 
 
 //lazy instantiation
--(UIImageView *)animationView
-{
+-(UIImageView *)animationView {
 	if(!_animationView)_animationView = [[UIImageView alloc] init];
 	return _animationView;
 }
 
 
--(void)formatVCS
-{
+-(void)formatVCS {
 	self.masterSV.frame = self.view.bounds;
 	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width*2, 0);//enable horizontal scroll
 	self.masterSV.contentOffset = CGPointMake(0, 0);//start at the left
@@ -249,13 +238,11 @@
 }
 
 //for ios8- To hide the status bar
--(BOOL)prefersStatusBarHidden
-{
+-(BOOL)prefersStatusBarHidden {
 	return YES;
 }
 
--(void) removeStatusBar
-{
+-(void) removeStatusBar {
 	//remove the status bar
 	if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
 		// iOS 7
@@ -275,28 +262,23 @@
 }
 
 //brings up the login page if there is no user logged in
--(void)bringUpSignUp
-{
+-(void)bringUpSignUp {
 	[self performSegueWithIdentifier:BRING_UP_SIGNIN_SEGUE sender:self];
 }
 
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
 	//return supported orientation masks
 	return UIInterfaceOrientationMaskPortrait;
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.
 }
 
 //catches the unwind segue
-- (IBAction)done:(UIStoryboardSegue *)segue
-{
-
+- (IBAction)done:(UIStoryboardSegue *)segue{
 }
 
 

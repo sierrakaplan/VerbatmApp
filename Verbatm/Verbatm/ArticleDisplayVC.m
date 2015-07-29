@@ -18,17 +18,18 @@
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
-#import "SizesAndPositions.h"
 #import "Durations.h"
 #import "Strings.h"
 #import "Styles.h"
+#import "SizesAndPositions.h"
 #import "UIView+Glow.h"
 
-@interface ArticleDisplayVC () <UIScrollViewDelegate>
+@interface ArticleDisplayVC () <UIGestureRecognizerDelegate>
 @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
 @property (strong, nonatomic) NSMutableArray* poppedOffPages;
 @property (strong, nonatomic) UIView* animatingView;
 @property (strong, nonatomic) UIScrollView* scrollView;
+@property (strong, nonatomic) UIPanGestureRecognizer* panGesture;
 @property (nonatomic) CGPoint lastPoint;
 @property (atomic, strong) UIActivityIndicatorView *activityIndicator;
 
@@ -69,7 +70,6 @@
 
 //make sure to stop all videos
 -(void)cleanUp {
-	[self showScrollView:NO];
 	if (!self.pageAVEs) return;
 	for (UIView* ave in self.pageAVEs) {
 		if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
@@ -105,6 +105,7 @@
 
 
 -(void) publishArticleButtonPressed: (UIButton*)sender {
+	[self showScrollView:NO];
 	[self cleanUp];
 	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PUBLISH_ARTICLE
 														object:nil
@@ -121,7 +122,8 @@
         self.scrollView = [[UIScrollView alloc] init];
         self.scrollView.frame = self.scrollViewRestingFrame;
         [self.view addSubview: self.scrollView];
-        self.scrollView.pagingEnabled  = YES;
+        self.scrollView.pagingEnabled = YES;
+		self.scrollView.scrollEnabled = YES;
         [self.scrollView setShowsVerticalScrollIndicator:NO];
         [self.scrollView setShowsHorizontalScrollIndicator:NO];
         self.scrollView.bounces = NO;
@@ -130,7 +132,6 @@
     }
     
     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pageAVEs count]*self.view.frame.size.height);
-    self.scrollView.delegate = self;
 }
 
 -(void) addPublishButton {
@@ -290,135 +291,89 @@
         viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
     }
 
-    //This makes sure that if the first object is a video it is playing the sound
-    [self everythingOffScreen];
-    [self handlePlayBack];
     [self setUpGestureRecognizers];
 }
 
 #pragma mark - Gesture recognizers
 
 //Sets up the gesture recognizer for dragging from the edges.
--(void)setUpGestureRecognizers {
-    UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exitDisplay:)];
-    edgePanL.edges =  UIRectEdgeLeft;
-    [self.scrollView addGestureRecognizer: edgePanL];
+-(void) setUpGestureRecognizers {
+	self.panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollView:)];
+	self.panGesture.delegate = self;
+//	[self.scrollView addGestureRecognizer:self.panGesture];
 }
 
+//-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+//	if (gestureRecognizer == self.panGesture) {
+//		if([touch locationInView:self.scrollView].x > 20) {
+//			return YES;
+//		}
+//		return NO;
+//	}
+//	return YES;
+//}
+
+
+-(void) scrollView:(UIPanGestureRecognizer*) sender {
+	if ([sender numberOfTouches] != 1) return;
+	CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
+	switch (sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			if (touchLocation.y < (self.view.frame.size.height - PAGE_SCROLL_TOPBOTTOM_AREA)) {
+//				self.scrollView.scrollEnabled = NO;
+			}
+			break;
+		}
+		case UIGestureRecognizerStateChanged: {
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+//			self.scrollView.scrollEnabled = YES;
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+//called from left edge pan in master navigation vc
 - (void)exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender {
 
 	//we want only one finger doing anything when exiting
-	if([sender numberOfTouches] >1) return;
-	if(sender.state ==UIGestureRecognizerStateBegan) {
-		self.previousGesturePoint  = [sender locationOfTouch:0 inView:self.view];
-	}
-
-	if(sender.state == UIGestureRecognizerStateBegan) {
-		[self.publishButton stopGlowing];
-	}
-
-	if(sender.state == UIGestureRecognizerStateChanged) {
-
-		CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
-		int diff = current_point.x - self.previousGesturePoint.x;
-		self.previousGesturePoint = current_point;
-		self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x +diff, self.scrollView.frame.origin.y,  self.scrollView.frame.size.width,  self.scrollView.frame.size.height);
-		self.publishButton.frame = CGRectMake(self.publishButton.frame.origin.x +diff, self.publishButton.frame.origin.y,  self.publishButton.frame.size.width,  self.publishButton.frame.size.height);
-	}
-
-	if(sender.state == UIGestureRecognizerStateEnded) {
-		if(self.scrollView.frame.origin.x > EXIT_EPSILON) {
-			//exit article
-			[self cleanUp];
-		}else{
-			//return view to original position
-			[self showScrollView:YES];
+	if([sender numberOfTouches] != 1) return;
+	CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
+	switch (sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			self.previousGesturePoint  = touchLocation;
+			[self.publishButton stopGlowing];
+			break;
 		}
+		case UIGestureRecognizerStateChanged: {
+			CGPoint currentPoint = touchLocation;
+			int diff = currentPoint.x - self.previousGesturePoint.x;
+			self.previousGesturePoint = currentPoint;
+			self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x +diff, self.scrollView.frame.origin.y,  self.scrollView.frame.size.width,  self.scrollView.frame.size.height);
+			self.publishButton.frame = CGRectMake(self.publishButton.frame.origin.x +diff, self.publishButton.frame.origin.y,  self.publishButton.frame.size.width,  self.publishButton.frame.size.height);
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+			if(self.scrollView.frame.origin.x > EXIT_EPSILON) {
+				//exit article
+				[self showScrollView:NO];
+				[self cleanUp];
+			}else{
+				//return view to original position
+				[self showScrollView:YES];
+			}
+			break;
+		}
+		default:
+			break;
 	}
+
 }
 
-//to be called when an aritcle is first rendered to unsure all videos are off
--(void)everythingOffScreen
-{
-    for (int i=0; i< self.pageAVEs.count; i++)
-    {
-        if(self.pageAVEs[i] == self.animatingView)continue;
-//
-//        if([self.pageAVEs[i] isKindOfClass:[VideoAVE class]]){
-//            [((VideoAVE*)self.pageAVEs[i]) offScreen];
-//        }else if([self.pageAVEs[i] isKindOfClass:[PhotoVideoAVE class]]){
-//            [((PhotoVideoAVE *)self.pageAVEs[i]) offScreen];
-//        }else if([self.pageAVEs[i] isKindOfClass:[MultiplePhotoVideoAVE class]]){
-//            [((MultiplePhotoVideoAVE*)self.pageAVEs[i]) offScreen];
-//        }else if([self.pageAVEs[i] isKindOfClass:[PhotoVideoTextAVE class]]){
-//            [((PhotoVideoTextAVE *)self.animatingView) offScreen];
-//        }
-    }
-}
 
-#pragma mark - Video Playing
--(void)handlePlayBack//plays sound if first video is
-{
-    if(_animatingView){
-        [self stopPlayBack];
-    }else {
-        _animatingView = [self.pageAVEs firstObject];
-        [self stopPlayBack];
-    }
-    int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
-    _animatingView = [self.pageAVEs objectAtIndex:index];
-    [self runPlayBack];
-}
 
-/*
- call this after changing the animating view to the current view
- */
--(void)runPlayBack
-{
-//    if([self.animatingView isKindOfClass:[VideoAVE class]])
-//    {
-//        [((VideoAVE*)self.animatingView) onScreen];
-//    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
-//    {
-//        [((PhotoVideoAVE *)self.animatingView) onScreen];
-//    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
-//    {
-//        [((MultiplePhotoVideoAVE*)self.animatingView) onScreen];
-//    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
-//    {
-//        [((PhotoVideoTextAVE *)self.animatingView) onScreen];
-//    }
-}
-
-/*call this before changing the nimating view so that we stop the previous thing
- */
--(void)stopPlayBack
-{
-//    if([self.animatingView isKindOfClass:[VideoAVE class]])
-//    {
-//        [((VideoAVE*)self.animatingView) offScreen];
-//    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
-//    {
-//        [((PhotoVideoAVE *)self.animatingView) offScreen];
-//    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
-//    {
-//        [((MultiplePhotoVideoAVE*)self.animatingView) offScreen];
-//    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
-//    {
-//        [((PhotoVideoTextAVE *)self.animatingView) offScreen];
-//    }
-}
-
-#pragma mark - ScrollView Callbacks
-
--(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
-}
-
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    [self handlePlayBack];
-}
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-}
 
 @end

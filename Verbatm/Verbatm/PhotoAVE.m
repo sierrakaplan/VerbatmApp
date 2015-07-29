@@ -166,7 +166,7 @@
 		[self createDotViewFromPoint:point];
 	}
 	[self createMainCircleView];
-	[self addSwipeGestureToView:self];
+	[self addPanGestureToView:self];
 }
 
 
@@ -200,7 +200,7 @@
 	[self addSubview:dot];
 }
 
--(void)addSwipeGestureToView:(UIView *) view
+-(void)addPanGestureToView:(UIView *) view
 {
 	UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:view action:@selector(trackMovementOnCircle:)];
 	panGesture.delegate = self;

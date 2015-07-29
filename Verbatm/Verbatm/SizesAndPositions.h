@@ -93,6 +93,8 @@
 
 #pragma mark - AVES -
 
+#define PAGE_SCROLL_TOPBOTTOM_AREA 50.f
+
 #pragma mark Text
 
 #define TEXT_OVER_AVE_TOP_OFFSET 80.f
