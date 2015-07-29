@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PinchView.h"
 #import  "VerbatmUITextView.h"
 #import "VideoPlayerView.h"
 

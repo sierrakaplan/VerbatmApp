@@ -19,5 +19,6 @@
 -(id)initWithFrame:(CGRect)frame andVideoAssetArray:(NSArray*)videoList;
 -(void)onScreen;
 -(void)offScreen;
--(void)playVideos:(NSArray*)videoList;//for when you want to change the video set
+//for when you want to change the video set
+-(void)playVideos:(NSArray*)videoList;
 @end

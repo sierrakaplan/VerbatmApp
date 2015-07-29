@@ -166,9 +166,12 @@
 
 	if ([pinchViews count] > 1) {
 		return [[CollectionPinchView alloc] initWithRadius:radius withCenter:center andPinchViews:pinchViews];
+	} else if([pinchViews count] > 0) {
+		return [pinchViews firstObject];
+	} else {
+		NSLog(@"Error: This page contains no pinch views");
+		return Nil;
 	}
-
-	return [pinchViews firstObject];
 }
 
 -(NSArray*)getVideosQuery

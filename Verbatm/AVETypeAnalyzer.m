@@ -47,10 +47,8 @@
 
 -(void) handleAVES: (PinchView*) pinchView {
 
-
 	if([pinchView isKindOfClass:[TextPinchView class]]) {
-		TextAVE* textAVE = [[TextAVE alloc]initWithFrame:self.preferredFrame];
-		[textAVE setTextViewText: [pinchView getText]];
+		TextAVE* textAVE = [[TextAVE alloc]initWithFrame:self.preferredFrame andText:[pinchView getText]];
 		[self.results addObject:textAVE];
 		return;
 	}

@@ -36,4 +36,8 @@
 
 -(void)rewindVideoWithRate: (NSInteger) rate;
 
+-(void) stopVideo;
+
+-(BOOL) isPlaying;
+
 @end

@@ -10,7 +10,7 @@
 #import "Icons.h"
 #import "BaseArticleViewingExperience.h"
 
-@interface VideoAVE() <AVEDelegate>
+@interface VideoAVE()
 
 @property (strong, nonatomic) UIImageView* videoProgressImageView;  //Kept because of the snake....will be implemented soon
 @property (strong, nonatomic) UIButton* play_pauseBtn;

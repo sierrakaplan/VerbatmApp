@@ -10,6 +10,7 @@
 #import <math.h>
 #import "MediaSessionManager.h"
 #import "ContentDevVC.h"
+#import "ContentPageElementScrollView.h"
 #import <MediaPlayer/MediaPlayer.h>
 #import "testerTransitionDelegate.h"
 #import "ContentDevVC.h"
@@ -683,21 +684,14 @@
 }
 
 // Displays article preview from pinch objects
--(void) previewButtonPressed
-{
+-(void) previewButtonPressed {
 	[self.contentDevVC closeAllOpenCollections];
-	//counts up the content in the pinch view and ensures that there are some pinch objects
-	int counter=0;
-	for(int i=0; i < self.contentDevVC.pageElements.count; i++) {
-		if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]]) counter++;
-	}
-	if(!counter) return;
 
-	NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
-	for(int i=0; i < self.contentDevVC.pageElements.count; i++) {
-		if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]]) {
-			[pinchObjectsArray addObject:self.contentDevVC.pageElements[i]];
-		}
+	NSArray *pinchObjectsArray = [self getPinchObjectsFromContentDev];
+
+	if(![pinchObjectsArray count]) {
+		NSLog(@"Can't preview with no pinch objects");
+		return;
 	}
 
 	NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pinchObjectsArray,@"pinchObjects", nil];
@@ -709,10 +703,11 @@
 -(void)publishArticle {
 	//make sure we have an article title, we have multiple pinch elements in the feed and that we
 	//haven't saved this article before
-	if (self.contentDevVC.pageElements.count >1 && ![self.contentDevVC.articleTitleField.text isEqualToString:@""] && ![self.articleJustSaved isEqualToString:self.contentDevVC.articleTitleField.text]) {
+	if ([self.contentDevVC.articleTitleField.text length]
+		&& ![self.articleJustSaved isEqualToString:self.contentDevVC.articleTitleField.text]) {
 		[self publishArticleContent];
 
-	} else if([self.contentDevVC.articleTitleField.text isEqualToString:@""]) {
+	} else if(![self.contentDevVC.articleTitleField.text length]) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_INFO_IS_BLANK_ANIMATION
 															object:nil
 														  userInfo:nil];
@@ -721,25 +716,30 @@
 
 -(void)publishArticleContent {
 
-	NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
-	for(int i=0; i < self.contentDevVC.pageElements.count; i++)
-	{
-		if([self.contentDevVC.pageElements[i] isKindOfClass:[PinchView class]])
-		{
-			[pinchObjectsArray addObject:self.contentDevVC.pageElements[i]];
-		}
-	}
+	NSArray *pinchObjectsArray = [self getPinchObjectsFromContentDev];
 
-	if(!pinchObjectsArray.count) return;//if there is not article then exit
+	if(![pinchObjectsArray count]) {
+		NSLog(@"Can't publish with no pinch objects");
+		return;
+	}
 
 	BOOL isTesting = [MasterNavigationVC inTestingMode];
 	//this creates and saves an article. the return value is unnecesary
 	Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];
-	if(newArticle)
-	{
+	if(newArticle) {
 		self.articleJustSaved = self.contentDevVC.articleTitleField.text;
 		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_CONTENTPAGE object:nil userInfo:nil];
 	}
+}
+
+-(NSArray*) getPinchObjectsFromContentDev {
+	NSMutableArray *pinchObjectsArray = [[NSMutableArray alloc]init];
+	for(ContentPageElementScrollView* elementScrollView in [self.contentDevVC pageElementScrollViews]) {
+		if ([elementScrollView.pageElement isKindOfClass:[PinchView class]]) {
+			[pinchObjectsArray addObject:[elementScrollView pageElement]];
+		}
+	}
+	return pinchObjectsArray;
 }
 
 @end

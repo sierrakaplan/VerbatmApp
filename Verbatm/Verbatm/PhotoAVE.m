@@ -16,7 +16,7 @@
 #import "UIEffects.h"
 #import "BaseArticleViewingExperience.h"
 
-@interface PhotoAVE() <UIGestureRecognizerDelegate, AVEDelegate>
+@interface PhotoAVE() <UIGestureRecognizerDelegate>
 
 @property (nonatomic) CGPoint originPoint;
 //contains PointObjects showing dots on circle

@@ -142,17 +142,20 @@
 		[self.imageView setImage:self.image];
 	}
 	if (self.containsVideo) {
-		switch (self.videoFormat) {
-			case VideoFormatAsset:
-				[self.videoView playVideoFromAsset: self.video];
-				break;
-			case VideoFormatURL:
-				[self.videoView playVideoFromURL: self.video];
-				break;
-			default:
-				break;
+		if (![self.videoView isPlaying]) {
+			switch (self.videoFormat) {
+				case VideoFormatAsset:
+					[self.videoView playVideoFromAsset: self.video];
+					break;
+				case VideoFormatURL:
+					[self.videoView playVideoFromURL: self.video];
+					break;
+				default:
+					break;
+			}
+			[self.videoView pauseVideo];
+			[self.videoView muteVideo];
 		}
-		[self.videoView muteVideo];
 	}
 }
 
@@ -186,13 +189,17 @@
 	}
 }
 
--(void) pinchAndAdd:(PinchView*)pinchView {
+-(CollectionPinchView*) pinchAndAdd:(PinchView*)pinchView {
+	if ([pinchView isKindOfClass:[VideoPinchView class]]) {
+		[[(VideoPinchView*)pinchView videoView] stopVideo];
+	}
 	[self.pinchedObjects addObject:pinchView];
 	[self changeTypesOfMediaFromPinchView:pinchView];
 	[self renderMedia];
+	return self;
 }
 
--(void) unPinchAndRemove:(PinchView*)pinchView {
+-(CollectionPinchView*) unPinchAndRemove:(PinchView*)pinchView {
 	if ([self.pinchedObjects containsObject:pinchView]) {
 		[self.pinchedObjects removeObject:pinchView];
 		self.video = Nil;
@@ -201,6 +208,7 @@
 		[self changeTypesOfMedia];
 	}
 	[self renderMedia];
+	return self;
 }
 
 -(NSString*) getText {

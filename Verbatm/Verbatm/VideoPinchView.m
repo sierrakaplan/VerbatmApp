@@ -17,6 +17,7 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andVideo:(id)video {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
+		self.videoView.frame = self.background.frame;
 		[self.background addSubview:self.videoView];
 		self.containsVideo = YES;
 		if ([video isKindOfClass:[AVAsset class]]) {
@@ -50,23 +51,25 @@
 
 //This should be overriden in subclasses
 -(void)renderMedia {
-	self.videoView.frame = self.background.frame;
 	[self displayMedia];
 }
 
 //This function displays the media on the view.
 -(void)displayMedia {
-	switch (self.videoFormat) {
-		case VideoFormatAsset:
-			[self.videoView playVideoFromAsset: self.video];
-			break;
-		case VideoFormatURL:
-			[self.videoView playVideoFromURL: self.video];
-			break;
-		default:
-			break;
+	if (![self.videoView isPlaying]) {
+		switch (self.videoFormat) {
+			case VideoFormatAsset:
+				[self.videoView playVideoFromAsset: self.video];
+				break;
+			case VideoFormatURL:
+				[self.videoView playVideoFromURL: self.video];
+				break;
+			default:
+				break;
+		}
+		[self.videoView pauseVideo];
+		[self.videoView muteVideo];
 	}
-	[self.videoView muteVideo];
 }
 
 #pragma mark - When pinch view goes on and off screen

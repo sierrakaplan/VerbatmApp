@@ -54,16 +54,19 @@
 			case AVETypePhoto: {
 				PhotoAVE* photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:photos];
 				[self addSubview: photoAve];
+				self.subAVE = photoAve;
 				break;
 			}
 			case AVETypeVideo: {
 				VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoAssetArray:videos];
 				[self addSubview: videoAve];
+				self.subAVE = videoAve;
 				break;
 			}
 			case AVETypePhotoVideo: {
 				MultiplePhotoVideoAVE *photoVideoAVE = [[MultiplePhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos];
 				[self addSubview: photoVideoAVE];
+				self.subAVE = photoVideoAVE;
 				break;
 			}
 			default: {
@@ -245,14 +248,6 @@
 	}
 	if (self.pullBar) {
 		[self addSubview:self.pullBar];
-	}
-}
-
--(void) viewDidAppear {
-	for (UIView* subview in self.subviews) {
-		if([subview conformsToProtocol:@protocol(AVEDelegate)]) {
-			[(UIView<AVEDelegate>*) subview viewDidAppear];
-		}
 	}
 }
 

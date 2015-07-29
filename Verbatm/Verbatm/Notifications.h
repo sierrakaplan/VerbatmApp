@@ -23,8 +23,6 @@
 #define NOTIFICATION_CLEAR_CONTENTPAGE @"Notification_ClearContentPage"
 
 #define NOTIFICATION_UNDO @"Notification_undoTileDelete"
-#define NOTIFICATION_PAUSE_VIDEOS @"Notification_pauseContentPageVideos"
-#define NOTIFICATION_PLAY_VIDEOS @"Notification_playContentPageVideos"
 #define NOTIFICATION_SHOW_ARTICLE @"Notification_showArticle"
 #define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
 

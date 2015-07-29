@@ -15,10 +15,10 @@
 #import "TextPinchView.h"
 
 
-@interface PinchView() <ContentDevElementDelegate>
+@interface PinchView()
 
-@property (nonatomic) float radius;
-@property (nonatomic) CGPoint center;
+@property (nonatomic, readwrite) float radius;
+@property (nonatomic, readwrite) CGPoint center;
 
 @end
 
@@ -121,6 +121,9 @@
 			pinchedText = [pinchedText stringByAppendingString:[pinchView getText]];
 		} else {
 			allTextPinchViews = NO;
+		}
+		if ([pinchView isKindOfClass:[VideoPinchView class]]) {
+			[[(VideoPinchView*)pinchView videoView] stopVideo];
 		}
 	}
 

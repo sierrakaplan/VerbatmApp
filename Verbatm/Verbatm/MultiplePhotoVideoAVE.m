@@ -15,9 +15,8 @@
 #import "BaseArticleViewingExperience.h"
 #import "VerbatmImageScrollView.h"
 
-@interface MultiplePhotoVideoAVE() <AVEDelegate>
+@interface MultiplePhotoVideoAVE()
 
-@property (strong, nonatomic) VideoAVE *videoView;
 @property (strong, nonatomic) VerbatmImageScrollView *photoListScrollView;
 @property (strong, nonatomic) AVMutableComposition* mix;
 

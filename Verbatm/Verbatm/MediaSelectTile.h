@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ContentDevVC.h"
 
 @class MediaSelectTile;
 
@@ -17,7 +18,8 @@
 
 @end
 
-@interface MediaSelectTile : UIView
+@interface MediaSelectTile : UIView<ContentDevElementDelegate>
+
     @property (strong, nonatomic) UIScrollView * mainScrollView;
 -(void) createFramesForButtonsWithFrame: (CGRect) frame;
 -(void) formatButtons;

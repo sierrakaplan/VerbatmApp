@@ -22,7 +22,7 @@
 @property (nonatomic, strong) UIImageView * imageView;
 #pragma mark FilteredPhotos
 @property (nonatomic, weak) NSArray * filteredImages;
-@property (nonatomic) int imageIndex;
+@property (nonatomic) NSInteger imageIndex;
 
 @end
 

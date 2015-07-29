@@ -59,15 +59,12 @@
 //relations can only be created between saved objects thus the need to save the article and pages before creating the article-page relations.
 -(instancetype)initAndSaveWithTitle:(NSString *)title  andSandWichWhat:(NSString *)what  Where:(NSString *)where  andPinchObjects:(NSArray*)pages andIsTesting:(BOOL)isTesting
 {
-    if((self = [super init]))
-    {
+    if((self = [super init])) {
 		self.isTestingArticle = isTesting;
-        if(title)
-        {
+        if(title) {
             self.title = title;
         }
-        if (what && where)
-        {
+        if (what && where) {
             [self setSandwich:what at:where];
         }
         
@@ -91,17 +88,13 @@
 
 /*This function takes an array of pinch objects as the only parameter.
  Each pinch object is converted into a page which is then saved to parse*/
--(void)processAndSavePages:(NSArray*)pages
-{
-    for(int i=0; i< pages.count; i++)
-    {
+-(void)processAndSavePages:(NSArray*)pages {
+    for(int i=0; i< pages.count; i++) {
         Page* this_page = [[Page alloc]initWithPinchObject:pages[i] Article:self andPageNumber:i];
             [this_page saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-            if(succeeded)
-            {
+            if(succeeded) {
                 NSLog(@"Saved Page Successfully");
-            }else
-            {
+            }else {
                 NSLog(@"Could not save page: %@", [error localizedDescription]);
             }
         }];

@@ -28,13 +28,17 @@
 
 
 //make sure the sublayer resizes with the view screen
-- (void)layoutSubviews
-{
-  self.playerLayer.frame = self.bounds;
+- (void)layoutSubviews {
+	if (self.playerLayer) {
+		self.playerLayer.frame = self.bounds;
+	}
 }
 
 
 -(void)playVideoFromURL: (NSURL*) url {
+	if(self.isPlaying) {
+		[self stopVideo];
+	}
 	if (url) {
 		self.player = [AVPlayer playerWithURL:url];
 		[self playVideo];
@@ -42,6 +46,9 @@
 }
 
 -(void)playVideoFromAsset: (AVAsset*) asset{
+	if (self.isPlaying) {
+		[self stopVideo];
+	}
 	if (asset) {
 		// Create an AVPlayerItem using the asset
 		self.playerItem = [AVPlayerItem playerItemWithAsset:asset];
@@ -153,6 +160,23 @@
 		AVPlayerItem* playerItem = self.player.currentItem;
 		if([playerItem canPlayFastReverse] && self.playerLayer.player.rate) self.playerLayer.player.rate = -rate;
 	}
+}
+
+-(BOOL) isPlaying {
+	if(self.player) {
+		return YES;
+	} else {
+		return NO;
+	}
+}
+
+//cleans up video
+-(void) stopVideo {
+	self.layer.sublayers = nil;
+	self.playerItem = nil;
+	self.player = nil;
+	self.playerLayer = nil;
+	self.mix = nil;
 }
 
 

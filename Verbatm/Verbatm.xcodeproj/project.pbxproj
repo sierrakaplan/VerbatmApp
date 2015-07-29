@@ -16,6 +16,7 @@
 		A56F687E1B65B42B00CE5744 /* TextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687D1B65B42B00CE5744 /* TextPinchView.m */; };
 		A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68801B65B43D00CE5744 /* ImagePinchView.m */; };
 		A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68831B65B44C00CE5744 /* VideoPinchView.m */; };
+		A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68861B66FED900CE5744 /* ContentPageElementScrollView.m */; };
 		A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */; };
 		A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */ = {isa = PBXBuildFile; fileRef = A57A93041B55E835006C2597 /* VerbatmCameraView.m */; };
 		A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */ = {isa = PBXBuildFile; fileRef = A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */; };
@@ -130,6 +131,8 @@
 		A56F68801B65B43D00CE5744 /* ImagePinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePinchView.m; sourceTree = "<group>"; };
 		A56F68821B65B44C00CE5744 /* VideoPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPinchView.h; sourceTree = "<group>"; };
 		A56F68831B65B44C00CE5744 /* VideoPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPinchView.m; sourceTree = "<group>"; };
+		A56F68851B66FED900CE5744 /* ContentPageElementScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentPageElementScrollView.h; sourceTree = "<group>"; };
+		A56F68861B66FED900CE5744 /* ContentPageElementScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentPageElementScrollView.m; sourceTree = "<group>"; };
 		A57A92FD1B55A551006C2597 /* CameraFocusSquare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraFocusSquare.h; sourceTree = "<group>"; };
 		A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraFocusSquare.m; sourceTree = "<group>"; };
 		A57A93031B55E835006C2597 /* VerbatmCameraView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmCameraView.h; sourceTree = "<group>"; };
@@ -353,6 +356,8 @@
 				A58656641B607EF7008E358C /* VerbatmImageScrollView.m */,
 				C78B682019CA6C01003D0AC5 /* VerbatmScrollView.h */,
 				C78B682119CA6C01003D0AC5 /* VerbatmScrollView.m */,
+				A56F68851B66FED900CE5744 /* ContentPageElementScrollView.h */,
+				A56F68861B66FED900CE5744 /* ContentPageElementScrollView.m */,
 			);
 			name = "Scroll Views";
 			sourceTree = "<group>";
@@ -842,6 +847,7 @@
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */,
 				C777EEA61AC90A7A003E0633 /* ArticleAquirer.m in Sources */,
+				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,

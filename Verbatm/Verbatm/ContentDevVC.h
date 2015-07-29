@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "PinchView.h"
 #import "VerbatmScrollView.h"
 #import "EditContentView.h"
+
+@class PinchView;
 
 @protocol ContentDevElementDelegate <NSObject>
 
@@ -36,15 +37,15 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 @property (weak, nonatomic) IBOutlet UIImageView *dotsRight;
 @property (weak, nonatomic) IBOutlet UIImageView *dotsLeft;
 
-//elements added to the scrollview- excludes uitextfields at the top of the screen
-@property (strong, atomic) NSMutableArray * pageElements;
-//keeps track of horizontal scroll views containing pinch views added to screen
-@property (strong, atomic) NSMutableArray * pinchViewScrollViews;
+//keeps track of ContentPageElementScrollViews
+@property (strong, nonatomic, readonly) NSMutableArray * pageElementScrollViews;
+
 @property (nonatomic) CGRect containerViewFrame;
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;
 @property(nonatomic) NSInteger pullBarHeight;
 @property (nonatomic, strong) EditContentView * openEditContentView;
+@property (nonatomic, strong) PinchView * openPinchView;
 
 - (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
 

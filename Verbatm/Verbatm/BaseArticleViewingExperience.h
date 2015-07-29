@@ -10,11 +10,6 @@
 #import "AVETypeAnalyzer.h"
 #import "TextOverAVEView.h"
 
-@protocol AVEDelegate <NSObject>
-
--(void)viewDidAppear;
-
-@end
 
 @interface BaseArticleViewingExperience : UIView
 
@@ -23,6 +18,8 @@ typedef NS_ENUM(NSInteger, AVEType) {
 	AVETypePhoto,
 	AVETypePhotoVideo
 };
+
+@property (weak, nonatomic) UIView* subAVE;
 
 -(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text andPhotos: (NSArray *)photos andVideos: (NSArray *)videos andAVEType:(AVEType)aveType;
 
@@ -33,5 +30,4 @@ typedef NS_ENUM(NSInteger, AVEType) {
 -(void) setViewAsMainView: (UIView*) view;
 -(void) removeMainView;
 -(BOOL) mainViewIsFullScreen;
--(void) viewDidAppear;
 @end

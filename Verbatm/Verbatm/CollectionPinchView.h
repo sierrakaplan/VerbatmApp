@@ -24,8 +24,11 @@
 -(NSInteger) getNumPinchViews;
 
 //Pinches the given pinch view onto the collection
--(void) pinchAndAdd:(PinchView*)pinchView;
+//returns self for chaining purposes
+-(CollectionPinchView*) pinchAndAdd:(PinchView*)pinchView;
+
 //Unpinches the given pinch view from the collection
--(void) unPinchAndRemove:(PinchView*)pinchView;
+//returns self for chaining purposes
+-(CollectionPinchView*) unPinchAndRemove:(PinchView*)pinchView;
 
 @end

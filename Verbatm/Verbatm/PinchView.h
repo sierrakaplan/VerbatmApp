@@ -11,10 +11,14 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
+#import "ContentDevVC.h"
 
 @class CollectionPinchView;
 
-@interface PinchView : UIView <NSCoding>
+@interface PinchView : UIView <NSCoding,ContentDevElementDelegate>
+
+@property (nonatomic,readonly) float radius;
+@property (nonatomic,readonly) CGPoint center;
 
 @property(strong,nonatomic) UIView* background;
 //tells you if the object is selected for panning
@@ -53,7 +57,9 @@
 
 #pragma mark Should be overriden in subclasses
 -(NSString*) getText;
+//array of UIImage*
 -(NSArray*) getPhotos;
+//array of AVasset or NSURl
 -(NSArray*) getVideos;
 
 -(void)onScreen;

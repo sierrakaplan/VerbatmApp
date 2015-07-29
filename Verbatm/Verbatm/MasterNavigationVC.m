@@ -68,10 +68,6 @@
 	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	}completion:^(BOOL finished) {
-		if(finished)
-		{
-			[self play_CP_Vidoes];
-		}
 	}];
 }
 
@@ -108,22 +104,6 @@
 	edgePanL.edges =  UIRectEdgeLeft;
 	[self.view addGestureRecognizer: edgePanR];
 	[self.view addGestureRecognizer: edgePanL];
-}
-
-//tells the content page to pause its videos when it's out of view
--(void)pause_CP_Vidoes
-{
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PAUSE_VIDEOS
-														object:nil
-													  userInfo:nil];
-}
-
-//tells the content page to play it's videos when it's in view
--(void)play_CP_Vidoes
-{
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PLAY_VIDEOS
-														object:nil
-													  userInfo:nil];
 }
 
 //swipping left from right
@@ -204,7 +184,6 @@
 				[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_KEYBOARD
 																	object:nil
 																  userInfo:nil];
-				[self play_CP_Vidoes];
 			}
 		}];
 	}else {
@@ -212,10 +191,6 @@
 		[UIView animateWithDuration:ANIMATION_DURATION animations:^{
 			self.masterSV.contentOffset = CGPointMake(0, 0);
 		}completion:^(BOOL finished) {
-			if(finished)
-			{
-				[self pause_CP_Vidoes];
-			}
 		}];
 	}
 }

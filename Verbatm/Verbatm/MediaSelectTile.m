@@ -16,7 +16,7 @@
 #import "SizesAndPositions.h"
 #import "ContentDevVC.h"
 
-@interface MediaSelectTile () <ContentDevElementDelegate>
+@interface MediaSelectTile ()
     @property(nonatomic ,strong) UIButton * selectMedia;
     @property (nonatomic ,strong) UIButton * selectText;
     @property (nonatomic, strong) CAShapeLayer * border;
