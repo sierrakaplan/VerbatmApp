@@ -1552,6 +1552,7 @@
 		} else if([scrollView.pageElement isKindOfClass:[CollectionPinchView class]]) {
 			[[(CollectionPinchView*)scrollView.pageElement videoView] stopVideo];
 		}
+		[scrollView removeFromSuperview];
 	}
 	[self.pageElementScrollViews removeAllObjects];
 	[self clearTextFields];
