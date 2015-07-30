@@ -19,7 +19,7 @@
 @property (strong, nonatomic) NSString* text;
 @property (strong, nonatomic) UITextView *textView;
 @property (strong, nonatomic) UIImageView *imageView;
-@property (strong, nonatomic) UIImageView *playImageView;
+@property (strong, nonatomic) UIImageView *playVideoImageView;
 @property (weak, nonatomic) UIImage* image;
 //Can be AVAsset or NSURL
 @property (weak, nonatomic) id video;
@@ -50,10 +50,10 @@
 
 -(void) addPlayIcon {
 	UIImage* playIconImage = [UIImage imageNamed: PLAY_VIDEO_ICON];
-	self.playImageView = [[UIImageView alloc] initWithImage:playIconImage];
-	self.playImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
-	self.playImageView.frame = self.videoView.bounds;
-	[self.videoView addSubview:self.playImageView];
+	self.playVideoImageView = [[UIImageView alloc] initWithImage:playIconImage];
+	self.playVideoImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
+	self.playVideoImageView.frame = self.videoView.bounds;
+	[self.videoView addSubview:self.playVideoImageView];
 }
 
 #pragma mark - Collection View Border - 
@@ -103,7 +103,7 @@
 
 -(UIImageView*)imageView {
 	if(!_imageView) _imageView = [[UIImageView alloc] init];
-	_imageView.contentMode = UIViewContentModeScaleAspectFill;
+	_imageView.contentMode = UIViewContentModeCenter;
 	_imageView.layer.masksToBounds = YES;
 	return _imageView;
 }
@@ -136,10 +136,8 @@
 		self.textView.frame = self.background.frame;
 	}else if(self.containsVideo){
 		self.videoView.frame = self.background.frame;
-		[self.background bringSubviewToFront:self.videoView];
-	}else{
+	}else {
 		self.imageView.frame = self.background.frame;
-		[self.background bringSubviewToFront:self.imageView];
 	}
 }
 
@@ -147,18 +145,17 @@
 -(void)renderTwoMedia {
 	CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/2.f , self.background.frame.size.height);
 	CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/2.f, self.background.frame.origin.y, self.background.frame.size.width/2.f, self.background.frame.size.height);
-	if(self.containsText){
-		self.textView.frame = frame1;
-		if(self.containsImage){
-			self.imageView.frame = frame2;
-		}else{
-			self.videoView.frame = frame2;
+	if(self.containsText) {
+		self.textView.frame = frame2;
+		if (self.containsImage){
+			self.imageView.frame = frame1;
+			self.videoView.frame = CGRectMake(0,0,0,0);
+		} else {
+			self.videoView.frame = frame1;
 		}
-	}else{
+	} else {
 		self.videoView.frame = frame1;
 		self.imageView.frame = frame2;
-		[self.background bringSubviewToFront:self.videoView];
-		[self.background bringSubviewToFront:self.imageView];
 	}
 }
 
@@ -174,16 +171,18 @@
 
 //This function displays the media on the view.
 -(void)displayMedia {
-	self.playImageView.frame = self.videoView.frame;
-	self.videoView.videoPlayerView.frame = self.videoView.frame;
 	if (self.containsText) {
 		self.textView.text = self.text;
 		[TextPinchView formatTextView:self.textView];
+		[self.background bringSubviewToFront:self.textView];
 	}
 	if (self.containsImage) {
 		[self.imageView setImage:self.image];
+		[self.background bringSubviewToFront:self.imageView];
 	}
 	if (self.containsVideo) {
+		self.playVideoImageView.frame = self.videoView.frame;
+		self.videoView.videoPlayerView.frame = self.videoView.frame;
 		if (![self.videoView isPlaying]) {
 			switch (self.videoFormat) {
 				case VideoFormatAsset:
@@ -198,6 +197,7 @@
 			[self.videoView pauseVideo];
 			[self.videoView muteVideo];
 		}
+		[self.background bringSubviewToFront:self.videoView];
 	}
 }
 

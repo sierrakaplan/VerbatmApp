@@ -31,8 +31,7 @@
 
 @implementation ArticleListVC
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     self.articleListView.dataSource = self;
     self.articleListView.delegate = self;
@@ -40,10 +39,8 @@
 	[self registerForNavNotifications];
 }
 
--(void) viewDidAppear:(BOOL)animated
-{
+-(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
 	[self refreshFeed];
 }
 

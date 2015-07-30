@@ -209,11 +209,13 @@
 +(CGSize) getSizeForImage:(UIImage*)image andBounds:(CGRect)bounds {
 	CGSize currentSize = image.size;
 	CGSize newSize;
-	if (currentSize.height > currentSize.width) {
+
+	if ((currentSize.height/bounds.size.height) > (currentSize.width/bounds.size.width)) {
 		newSize = CGSizeMake(bounds.size.height*(currentSize.width/currentSize.height), bounds.size.height);
 	} else {
 		newSize = CGSizeMake(bounds.size.width, bounds.size.width * (currentSize.height/currentSize.width));
 	}
+
 	return newSize;
 }
 
@@ -228,7 +230,7 @@
 						 @"CIPhotoEffectMono",
 //						 @"CIPhotoEffectNoir",
 						 @"CIPhotoEffectProcess",
-//						 @"CIPhotoEffecxtFade",
+//						 @"CIPhotoEffectFade",
 						 @"CIPhotoEffectInstant",
 						 @"CIPhotoEffectTransfer",
 						 @"CISepiaTone",

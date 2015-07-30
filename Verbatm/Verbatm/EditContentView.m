@@ -147,7 +147,7 @@
 	self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
 	[self.imageView setImage:self.filteredImages[self.imageIndex]];
 	self.imageView.clipsToBounds = YES;
-	self.imageView.contentMode = UIViewContentModeCenter;
+	self.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self addSubview:self.imageView];
 	[self addTapGestureToMainView];
 	[self addSwipeGestureToImageView];

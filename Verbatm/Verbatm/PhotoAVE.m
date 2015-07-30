@@ -133,7 +133,7 @@
 	UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
 	photoView.frame = self.bounds;
 	photoView.clipsToBounds = YES;
-	photoView.contentMode = UIViewContentModeCenter;
+	photoView.contentMode = UIViewContentModeScaleAspectFit;
 	return photoView;
 }
 

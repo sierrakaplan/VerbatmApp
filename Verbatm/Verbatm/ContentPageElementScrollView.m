@@ -140,6 +140,8 @@
 -(void) displayCollectionPinchViews:(NSMutableArray *) pinchViews {
 
 	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
+	self.contentSize = CGSizeMake((ELEMENT_OFFSET_DISTANCE + pinchViewSize)*[pinchViews count],
+								  self.contentSize.height);
 
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 		int xPosition = ELEMENT_OFFSET_DISTANCE;
@@ -151,7 +153,7 @@
 			xPosition += pinchView.frame.size.width + ELEMENT_OFFSET_DISTANCE;
 			[pinchView renderMedia];
 		}
-		self.contentSize = CGSizeMake(xPosition, self.contentSize.height);
+
 	}];
 }
 
