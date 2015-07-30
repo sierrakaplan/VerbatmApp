@@ -61,7 +61,7 @@
 @property (nonatomic, weak) ContentPageElementScrollView* selectedView_PAN;
 @property(nonatomic) CGPoint previousLocationOfTouchPoint_PAN;
 //keep track of the starting from of the selected view so that you can easily shift things around
-@property (nonatomic) CGRect originalFrameBeforeLongPress;
+@property (nonatomic) CGRect previousFrameInLongPress;
 //keep track of the frame the selected view could take so that we can easily shift
 @property (nonatomic) CGRect potentialFrameAfterLongPress;
 
@@ -355,8 +355,10 @@
 
 //adjusts the contentsize of the main view to the last element
 -(void) adjustMainScrollViewContentSize {
-	ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
-	self.mainScrollView.contentSize = CGSizeMake(0, lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET);
+	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+		ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
+		self.mainScrollView.contentSize = CGSizeMake(0, lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET);
+	}];
 }
 
 #pragma mark Scroll View actions
@@ -432,11 +434,9 @@
 	NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
 	[scrollView removeFromSuperview];
 	[self.pageElementScrollViews removeObject:scrollView];
-	//if it was the top element then shift everything below
 	[self shiftElementsBelowView:self.articleTitleField];
-
 	//register deleted tile
-	[self deletedTile:scrollView withIndex:[NSNumber numberWithUnsignedLong:index]];
+	[self registerDeletedTile:scrollView withIndex:[NSNumber numberWithUnsignedLong:index]];
 }
 
 
@@ -567,7 +567,6 @@
 		}
 	}
 	[self shiftElementsBelowView:topView];
-	[self adjustMainScrollViewContentSize];
 }
 
 
@@ -1185,7 +1184,7 @@
 	}
 
 	self.previousLocationOfTouchPoint_PAN = [sender locationOfTouch:0 inView:self.mainScrollView];
-	self.originalFrameBeforeLongPress = self.selectedView_PAN.frame;
+	self.previousFrameInLongPress = self.selectedView_PAN.frame;
 
 	[self.selectedView_PAN.pageElement markAsSelected:YES];
 }
@@ -1229,17 +1228,6 @@
 		return;
 	}
 
-	//move item
-	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
-
-	NSInteger yDifference  = touch1.y - self.previousLocationOfTouchPoint_PAN.y;
-	CGRect newFrame = [self newVerticalTranslationFrameForView:self.selectedView_PAN andChange:yDifference];
-
-	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
-		self.selectedView_PAN.frame = newFrame;
-	}];
-
-	//swap item if necessary
 	NSInteger viewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN];
 	ContentPageElementScrollView* topView = Nil;
 	ContentPageElementScrollView* bottomView = Nil;
@@ -1249,69 +1237,97 @@
 	}
 	if (viewIndex+1 < [self.pageElementScrollViews count]) {
 		bottomView = self.pageElementScrollViews[viewIndex+1];
-		if(bottomView.pageElement == self.baseMediaTileSelector) {
-			bottomView = Nil;
-		}
 	}
+
+	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
+	NSInteger yDifference  = touch1.y - self.previousLocationOfTouchPoint_PAN.y;
+	CGRect newFrame = [self newVerticalTranslationFrameForView:self.selectedView_PAN andChange:yDifference];
+
+	//view can't move below bottom media tile
+	if(bottomView && bottomView.pageElement == self.baseMediaTileSelector
+	   &&  ((newFrame.origin.y + newFrame.size.height) >= bottomView.frame.origin.y)) {
+		return;
+	}
+
+	//move item
+	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
+		self.selectedView_PAN.frame = newFrame;
+	}];
+
+	//swap item if necessary
 
 	//check if object has moved up the halfway mark of the view above it, if so swap them
 	if(topView && (newFrame.origin.y + newFrame.size.height/2.f)
 	   < (topView.frame.origin.y + topView.frame.size.height)) {
-
-		[self swapScrollView:self.selectedView_PAN andScrollView: topView];
-
-		//important that objects may not be the same height
-		float heightDiff = self.originalFrameBeforeLongPress.size.height - topView.frame.size.height;
-		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
-
-			self.potentialFrameAfterLongPress = CGRectMake(topView.frame.origin.x, topView.frame.origin.y,
-														   self.originalFrameBeforeLongPress.size.width,
-														   self.originalFrameBeforeLongPress.size.height);
-
-			topView.frame = CGRectMake(self.originalFrameBeforeLongPress.origin.x,
-									   self.originalFrameBeforeLongPress.origin.y + heightDiff,
-									   topView.frame.size.width, topView.frame.size.height);
-			self.originalFrameBeforeLongPress = self.potentialFrameAfterLongPress;
-		}];
+		[self swapWithTopView: topView];
 	}
 	//check if object has moved down the halfway mark of the view below it, if so swap them
 	else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) +CENTERING_OFFSET_FOR_TEXT_VIEW
 	   > bottomView.frame.origin.y) {
-
-		[self swapScrollView: self.selectedView_PAN andScrollView: bottomView];
-
-		//important that objects may not be the same height
-		float heightDiff = bottomView.frame.size.height - self.originalFrameBeforeLongPress.size.height;
-		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
-
-			self.potentialFrameAfterLongPress = CGRectMake(bottomView.frame.origin.x,
-														   bottomView.frame.origin.y + heightDiff,
-														   self.originalFrameBeforeLongPress.size.width,
-														   self.originalFrameBeforeLongPress.size.height);
-
-			bottomView.frame = CGRectMake(self.originalFrameBeforeLongPress.origin.x,
-										  self.originalFrameBeforeLongPress.origin.y,
-										  bottomView.frame.size.width, bottomView.frame.size.height);
-			self.originalFrameBeforeLongPress = self.potentialFrameAfterLongPress;
-		}];
+		[self swapWithBottomView: bottomView];
 	}
 
 	//move the offest of the main scroll view
+	[self moveOffsetOfMainScrollViewBasedOnSelectedItem];
+	self.previousLocationOfTouchPoint_PAN = touch1;
+}
+
+//swap currently selected item's frame with view above it
+-(void) swapWithTopView: (ContentPageElementScrollView*) topView {
+	[self swapScrollView:self.selectedView_PAN andScrollView: topView];
+
+	//important that objects may not be the same height
+	float heightDiff = self.previousFrameInLongPress.size.height - topView.frame.size.height;
+	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
+
+		self.potentialFrameAfterLongPress = CGRectMake(topView.frame.origin.x, topView.frame.origin.y,
+													   self.previousFrameInLongPress.size.width,
+													   self.previousFrameInLongPress.size.height);
+
+		topView.frame = CGRectMake(self.previousFrameInLongPress.origin.x,
+								   self.previousFrameInLongPress.origin.y + heightDiff,
+								   topView.frame.size.width, topView.frame.size.height);
+		self.previousFrameInLongPress = self.potentialFrameAfterLongPress;
+	}];
+}
+
+//swap currently selected item's frame with view below it
+-(void) swapWithBottomView: (ContentPageElementScrollView*) bottomView {
+	[self swapScrollView: self.selectedView_PAN andScrollView: bottomView];
+
+	//important that objects may not be the same height
+	float heightDiff = bottomView.frame.size.height - self.previousFrameInLongPress.size.height;
+	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
+
+		self.potentialFrameAfterLongPress = CGRectMake(bottomView.frame.origin.x,
+													   bottomView.frame.origin.y + heightDiff,
+													   self.previousFrameInLongPress.size.width,
+													   self.previousFrameInLongPress.size.height);
+
+		bottomView.frame = CGRectMake(self.previousFrameInLongPress.origin.x,
+									  self.previousFrameInLongPress.origin.y,
+									  bottomView.frame.size.width, bottomView.frame.size.height);
+		self.previousFrameInLongPress = self.potentialFrameAfterLongPress;
+	}];
+}
+
+//adjusts offset of main scroll view so selected item is in focus
+-(void) moveOffsetOfMainScrollViewBasedOnSelectedItem {
+	float newYOffset = 0;
 	if (self.mainScrollView.contentOffset.y > self.selectedView_PAN.frame.origin.y - (self.selectedView_PAN.frame.size.height/2.f) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0)) {
 
-		CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET);
-		[UIView animateWithDuration:0.2 animations:^{
-			self.mainScrollView.contentOffset = newOffset;
-		}];
-
+		newYOffset = -AUTO_SCROLL_OFFSET;
 	} else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_PAN.frame.origin.y + self.selectedView_PAN.frame.size.height) && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height) {
 
-		CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET);
-		[UIView animateWithDuration:0.2 animations:^{
+		newYOffset = AUTO_SCROLL_OFFSET;
+	}
+
+	if (newYOffset != 0) {
+		CGPoint newOffset = CGPointMake(self.mainScrollView.contentOffset.x, self.mainScrollView.contentOffset.y + newYOffset);
+		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 			self.mainScrollView.contentOffset = newOffset;
 		}];
 	}
-	self.previousLocationOfTouchPoint_PAN = touch1;
 }
 
 // If the selected item was a pinch view, deselect it and set its final position in relation to other views
@@ -1320,7 +1336,7 @@
 	//if we didn't find the view then leave
 	if (!self.selectedView_PAN) return;
 
-	self.selectedView_PAN.frame = self.originalFrameBeforeLongPress;
+	self.selectedView_PAN.frame = self.previousFrameInLongPress;
 
 	[self.selectedView_PAN.pageElement markAsSelected:NO];
 
@@ -1328,7 +1344,6 @@
 	self.selectedView_PAN = Nil;
 
 	[self shiftElementsBelowView:self.articleTitleField];
-	[self adjustMainScrollViewContentSize];
 }
 
 //swaps scroll views int he pageElementScrollView array
@@ -1375,7 +1390,7 @@
 
 #pragma mark - Undo implementation -
 
--(void)deletedTile: (ContentPageElementScrollView *) tile withIndex: (NSNumber *) index {
+-(void) registerDeletedTile: (ContentPageElementScrollView *) tile withIndex: (NSNumber *) index {
 	if ([self.pageElementScrollViews count] <= 1) {
 		[self sendRemovedAllMediaNotification];
 	}
@@ -1609,6 +1624,7 @@
 		newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andVideo:asset];
 	} else if([asset isKindOfClass:[NSData class]]) {
 		UIImage* image = [[UIImage alloc] initWithData:(NSData*)asset];
+		image = [UIEffects fixOrientation:image];
 		image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.view.bounds]];
 		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
 	}
