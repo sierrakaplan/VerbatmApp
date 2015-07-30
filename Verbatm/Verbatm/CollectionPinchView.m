@@ -171,6 +171,8 @@
 
 //This function displays the media on the view.
 -(void)displayMedia {
+	self.playVideoImageView.frame = self.videoView.bounds;
+	self.videoView.videoPlayerView.frame = self.videoView.bounds;
 	if (self.containsText) {
 		self.textView.text = self.text;
 		[TextPinchView formatTextView:self.textView];
@@ -181,8 +183,6 @@
 		[self.background bringSubviewToFront:self.imageView];
 	}
 	if (self.containsVideo) {
-		self.playVideoImageView.frame = self.videoView.frame;
-		self.videoView.videoPlayerView.frame = self.videoView.frame;
 		if (![self.videoView isPlaying]) {
 			switch (self.videoFormat) {
 				case VideoFormatAsset:
