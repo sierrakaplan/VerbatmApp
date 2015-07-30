@@ -51,18 +51,11 @@
 			self.draggingFromPointIndex = -1;
 			self.currentPhotoIndex = 0;
 			[self highlightDot];
-			[self displayCircle:YES];
-			self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
 		}
 		self.textShowing = YES;
 		[self addTapGestureToView:self];
 	}
 	return self;
-}
-
--(void) viewDidAppear {
-//	[self displayCircle:YES];
-//	[self displayCircle: NO];
 }
 
 #pragma mark - Lazy Instantiation
@@ -343,6 +336,11 @@
 -(void) handleCircleGestureEnded:(UIPanGestureRecognizer*) sender {
 	self.draggingFromPointIndex = -1;
 	[self displayCircle:NO];
+}
+
+-(void) showAndRemoveCircle {
+	[self displayCircle:YES];
+	self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
 }
 
 -(void) displayCircle:(BOOL)display {

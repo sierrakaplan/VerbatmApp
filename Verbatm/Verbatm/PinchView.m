@@ -61,8 +61,7 @@
 
 
 //adds a thin circular border to the view
--(void)addBorderToPinchView
-{
+-(void)addBorderToPinchView {
     self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
     self.layer.borderWidth = PINCHVIEW_BORDER_WIDTH;
 }

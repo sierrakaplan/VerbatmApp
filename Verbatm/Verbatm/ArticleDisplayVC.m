@@ -13,6 +13,7 @@
 #import "Page.h"
 #import "Article.h"
 #import "VideoAVE.h"
+#import "PhotoAVE.h"
 #import "BaseArticleViewingExperience.h"
 #import "MultiplePhotoVideoAVE.h"
 #import "UIEffects.h"
@@ -24,11 +25,12 @@
 #import "SizesAndPositions.h"
 #import "UIView+Glow.h"
 
-@interface ArticleDisplayVC () <UIGestureRecognizerDelegate>
+@interface ArticleDisplayVC () <UIGestureRecognizerDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
 @property (strong, nonatomic) NSMutableArray* poppedOffPages;
 @property (strong, nonatomic) UIView* animatingView;
 @property (strong, nonatomic) UIScrollView* scrollView;
+@property (nonatomic) NSInteger currentPageIndex;
 @property (strong, nonatomic) UIPanGestureRecognizer* panGesture;
 @property (nonatomic) CGPoint lastPoint;
 @property (atomic, strong) UIActivityIndicatorView *activityIndicator;
@@ -71,26 +73,6 @@
 	_pageAVEs = pageAVEs;
 }
 
-//make sure to stop all videos
--(void)cleanUp {
-	if (!self.pageAVEs) return;
-	for (UIView* ave in self.pageAVEs) {
-		if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-			[self stopVideosInView:[(BaseArticleViewingExperience*)ave subAVE]];
-		} else {
-			[self stopVideosInView:ave];
-		}
-	}
-}
-
--(void) stopVideosInView:(UIView*) view {
-	if ([view isKindOfClass:[VideoAVE class]]) {
-		[(VideoAVE*)view stopVideo];
-	} else if([view isKindOfClass:[MultiplePhotoVideoAVE class]]) {
-		[[(MultiplePhotoVideoAVE*)view videoView] stopVideo];
-	}
-}
-
 -(void)startActivityIndicator {
     //add animation indicator here
     //Create and add the Activity Indicator to splashView
@@ -104,15 +86,6 @@
 
 -(void)stopActivityIndicator {
     [self.activityIndicator stopAnimating];
-}
-
-
--(void) publishArticleButtonPressed: (UIButton*)sender {
-	[self showScrollView:NO];
-	[self cleanUp];
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PUBLISH_ARTICLE
-														object:nil
-													  userInfo:nil];
 }
 
 -(void)setUpScrollView {
@@ -131,10 +104,12 @@
         [self.scrollView setShowsHorizontalScrollIndicator:NO];
         self.scrollView.bounces = NO;
         self.scrollView.backgroundColor = [UIColor whiteColor];
+		self.scrollView.delegate = self;
         [UIEffects addShadowToView:self.scrollView];
     }
     
     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pageAVEs count]*self.view.frame.size.height);
+	self.currentPageIndex = 0;
 }
 
 -(void) addPublishButton {
@@ -184,12 +159,6 @@
     }
 }
 
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    //TODO: Dispose of any resources that can be recreated.
-}
-
 #pragma mark - Rendering article
 
 //called when we want to present an article. article should be set with our content
@@ -202,6 +171,8 @@
 	}else{
 		[self showArticlePreview: pinchObjects];
 	}
+	UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
+	[self displayMediaOnAVE:currentAVE];
 }
 
 -(void) showArticleFromParse:(Article *) article {
@@ -243,8 +214,7 @@
 			AVETypeAnalyzer * analyser = [[AVETypeAnalyzer alloc]init];
 			self.pageAVEs = [analyser processPinchedObjectsFromArray:pinchObjectsArray withFrame:self.view.frame];
 
-			if(!self.pageAVEs.count)return;//for now
-												 //stop animation indicator
+			if(!self.pageAVEs.count)return;
 			[self stopActivityIndicator];
 			[self renderPinchPages];
 			self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pageAVEs count]*self.view.frame.size.height); //adjust contentsize to fit
@@ -264,18 +234,6 @@
 	[self showScrollView:YES];
 	self.lastPoint = CGPointZero;
 	self.animatingView = nil;
-}
-
--(void) clearArticle {
-	//We clear these so that the media is released
-
-	for(UIView *view in self.scrollView.subviews) {
-		[view removeFromSuperview];
-	}
-	self.scrollView = NULL;
-	self.animatingView = NULL;
-	self.poppedOffPages = NULL;
-	self.pageAVEs = Nil;//sanitize array so memory is cleared
 }
 
 //takes AVE pages and displays them on our scrollview
@@ -301,7 +259,7 @@
 
 //Sets up the gesture recognizer for dragging from the edges.
 -(void) setUpGestureRecognizers {
-	self.panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollView:)];
+	self.panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollPage:)];
 	self.panGesture.delegate = self;
 	[self.scrollView addGestureRecognizer:self.panGesture];
 }
@@ -310,7 +268,7 @@
 	return YES;
 }
 
--(void) scrollView:(UIPanGestureRecognizer*) sender {
+-(void) scrollPage:(UIPanGestureRecognizer*) sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
 			if ([sender numberOfTouches] != 1) return;
@@ -318,6 +276,10 @@
 			if (touchLocation.y < (self.view.frame.size.height - self.pageScrollTopBottomArea)
 				&& touchLocation.y > self.pageScrollTopBottomArea) {
 				self.scrollView.scrollEnabled = NO;
+			} else {
+				//pause video when scroll view is about to scroll
+				UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
+				[self pauseVideosInAVE:currentAVE];
 			}
 			break;
 		}
@@ -332,6 +294,8 @@
 			break;
 	}
 }
+
+#pragma mark - Exit Display -
 
 //called from left edge pan in master navigation vc
 - (void)exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender {
@@ -360,7 +324,6 @@
 			if(self.scrollView.frame.origin.x > EXIT_EPSILON) {
 				//exit article
 				[self showScrollView:NO];
-				[self cleanUp];
 			}else{
 				//return view to original position
 				[self showScrollView:YES];
@@ -373,7 +336,99 @@
 
 }
 
+#pragma mark - Publish button pressed -
+
+-(void) publishArticleButtonPressed: (UIButton*)sender {
+	[self showScrollView:NO];
+	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PUBLISH_ARTICLE
+														object:nil
+													  userInfo:nil];
+}
+
+#pragma mark - Scroll view methods -
+
+//scroll view is on new page
+-(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	self.currentPageIndex = scrollView.contentOffset.y/self.view.frame.size.height;
+	UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
+	[self displayMediaOnAVE:currentAVE];
+}
 
 
+#pragma mark - Display Media on AVE
+
+//takes care of playing video if necessary
+//or showing circle if multiple photo ave
+-(void) displayMediaOnAVE:(UIView*) ave {
+	[self displayCircleOnAVE:ave];
+	[self playVideosInAVE:ave];
+}
+
+-(void) displayCircleOnAVE:(UIView*) ave {
+	if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self displayCircleOnAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[PhotoAVE class]]) {
+		[(PhotoAVE*)ave showAndRemoveCircle];
+	}
+}
+
+#pragma mark - Video playback
+
+-(void) stopVideosInAVE:(UIView*) ave {
+	if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self stopVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[VideoAVE class]]) {
+		[(VideoAVE*)ave stopVideo];
+	} else if([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
+		[[(MultiplePhotoVideoAVE*)ave videoView] stopVideo];
+	}
+}
+
+-(void) pauseVideosInAVE:(UIView*) ave {
+	if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self pauseVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[VideoAVE class]]) {
+		[(VideoAVE*)ave pauseVideo];
+	} else if([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
+		[[(MultiplePhotoVideoAVE*)ave videoView] pauseVideo];
+	}
+}
+
+-(void) playVideosInAVE:(UIView*) ave {
+	if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self playVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[VideoAVE class]]) {
+		[(VideoAVE*)ave continueVideo];
+	} else if([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
+		[[(MultiplePhotoVideoAVE*)ave videoView] continueVideo];
+	}
+}
+
+#pragma mark - Clean up -
+
+- (void)didReceiveMemoryWarning {
+	[super didReceiveMemoryWarning];
+	[self stopAllVideos];
+}
+
+-(void) clearArticle {
+	//We clear these so that the media is released
+	[self stopAllVideos];
+	for(UIView *view in self.scrollView.subviews) {
+		[view removeFromSuperview];
+	}
+	self.scrollView = Nil;
+	self.animatingView = Nil;
+	self.poppedOffPages = Nil;
+	self.pageAVEs = Nil;//sanitize array so memory is cleared
+}
+
+//make sure to stop all videos
+-(void) stopAllVideos {
+	if (!self.pageAVEs) return;
+	for (UIView* ave in self.pageAVEs) {
+		[self stopVideosInAVE:ave];
+	}
+}
 
 @end

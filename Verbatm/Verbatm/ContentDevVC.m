@@ -1348,11 +1348,21 @@
 	return UIInterfaceOrientationMaskPortrait;
 }
 
-#pragma mark- memory handling -
-- (void)didReceiveMemoryWarning
-{
+#pragma mark- memory handling & stopping all videos -
+
+- (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
+	[self stopAllVideos];
+}
+
+-(void) stopAllVideos {
+	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
+		if([scrollView.pageElement isKindOfClass:[VideoPinchView class]]) {
+			[[(VideoPinchView*)scrollView.pageElement videoView] stopVideo];
+		} else if([scrollView.pageElement isKindOfClass:[CollectionPinchView class]]) {
+			[[(CollectionPinchView*)scrollView.pageElement videoView] stopVideo];
+		}
+	}
 }
 
 

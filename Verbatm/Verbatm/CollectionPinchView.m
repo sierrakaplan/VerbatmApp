@@ -8,6 +8,7 @@
 
 #import "CollectionPinchView.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 #import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
@@ -28,6 +29,7 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
+		[self addCollectionViewBorder];
 		[self.background addSubview:self.textView];
 		[self.background addSubview:self.imageView];
 		[self.background addSubview:self.videoView];
@@ -36,6 +38,34 @@
 		[self renderMedia];
 	}
 	return self;
+}
+
+#pragma mark - Collection View Border - 
+
+-(void) addCollectionViewBorder {
+	self.layer.borderWidth = COLLECTION_PINCHVIEW_BORDER_WIDTH;
+	self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+	self.layer.shadowColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+	self.layer.shadowRadius = COLLECTION_PINCHVIEW_SHADOW_RADIUS;
+	self.layer.shadowOpacity = 1;
+}
+
+-(void)markAsDeleting: (BOOL) deleting {
+	if (deleting) {
+		self.layer.borderColor = [UIColor DELETING_ITEM_COLOR].CGColor;
+		self.layer.shadowColor = [UIColor DELETING_ITEM_COLOR].CGColor;
+	} else {
+		[self addCollectionViewBorder];
+	}
+}
+
+-(void)markAsSelected: (BOOL) selected {
+	if (selected) {
+		self.layer.borderColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
+		self.layer.shadowColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
+	} else {
+		[self addCollectionViewBorder];
+	}
 }
 
 #pragma mark - Lazy Instantiation -

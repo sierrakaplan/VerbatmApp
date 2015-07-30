@@ -50,6 +50,7 @@
 		[self playVideoFromURL:[videoList objectAtIndex:0]];
 		[self repeatVideoOnEnd:YES];
 	}
+	[self pauseVideo];
 }
 
 #pragma mark - showing the progess bar -

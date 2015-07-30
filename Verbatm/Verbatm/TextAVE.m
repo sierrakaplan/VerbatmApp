@@ -47,7 +47,7 @@
 			float blurViewYPos = TEXT_OVER_AVE_STARTING_HEIGHT + self.textViewContainer.frame.origin.y;
 			CGRect blurViewFrame = CGRectMake(self.bounds.origin.x, blurViewYPos, self.bounds.size.width, self.bounds.size.height - blurViewYPos);
 			self.blurView = [[UIView alloc] initWithFrame:blurViewFrame];
-			[self.blurView setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.8]];
+			[self.blurView setBackgroundColor:[UIColor colorWithWhite:0 alpha:0.9]];
 			[self addSubview:self.blurView];
 
 			[self addPullDownBarForText];
