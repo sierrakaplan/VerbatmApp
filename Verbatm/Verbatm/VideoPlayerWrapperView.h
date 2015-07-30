@@ -1,20 +1,18 @@
 //
-//  VideoPlayer.h
+//  VideoPlayerWrapperView.h
 //  Verbatm
 //
-//  Created by Sierra Kaplan-Nelson on 7/10/15.
-//  Copyright © 2015 Verbatm. All rights reserved.
+//  Created by Sierra Kaplan-Nelson on 7/29/15.
+//  Copyright (c) 2015 Verbatm. All rights reserved.
 //
+// Contains a video player view and matches all its methods but allows other subviews to be added to it
 
 #import <UIKit/UIKit.h>
-#import <AssetsLibrary/AssetsLibrary.h>
-#import <MediaPlayer/MediaPlayer.h>
-#import <AVFoundation/AVFoundation.h>
-#import <AVKit/AVKit.h>
+#import "VideoPlayerView.h"
 
-@interface VideoPlayerView: UIView <NSCoding>
+@interface VideoPlayerWrapperView : UIView
 
-
+@property (strong, nonatomic) VideoPlayerView* videoPlayerView;
 
 -(void)playVideoFromURL: (NSURL*) url;
 -(void)playVideoFromAsset: (AVAsset*) asset;

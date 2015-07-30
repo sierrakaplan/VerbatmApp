@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
 		9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995A19BA9042005EBC8A /* MediaDevVC.m */; };
+		A504ECE51B69D5E20076F9D0 /* VideoPlayerWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = A504ECE41B69D5E20076F9D0 /* VideoPlayerWrapperView.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
@@ -109,6 +110,8 @@
 		9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSessionManager.m; sourceTree = "<group>"; };
 		9D29995919BA9042005EBC8A /* MediaDevVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaDevVC.h; sourceTree = "<group>"; };
 		9D29995A19BA9042005EBC8A /* MediaDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaDevVC.m; sourceTree = "<group>"; };
+		A504ECE31B69D5E20076F9D0 /* VideoPlayerWrapperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlayerWrapperView.h; sourceTree = "<group>"; };
+		A504ECE41B69D5E20076F9D0 /* VideoPlayerWrapperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerWrapperView.m; sourceTree = "<group>"; };
 		A529196E1B59ADD500233712 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		A529196F1B5D86A500233712 /* Icons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Icons.h; sourceTree = "<group>"; };
 		A52919701B5D8BE800233712 /* SizesAndPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SizesAndPositions.h; sourceTree = "<group>"; };
@@ -343,8 +346,10 @@
 		A56F68761B643D4B00CE5744 /* Related to Video */ = {
 			isa = PBXGroup;
 			children = (
-				A562D50C1B506D2800F566F4 /* VideoPlayerView.m */,
 				A562D50E1B506D4500F566F4 /* VideoPlayerView.h */,
+				A562D50C1B506D2800F566F4 /* VideoPlayerView.m */,
+				A504ECE31B69D5E20076F9D0 /* VideoPlayerWrapperView.h */,
+				A504ECE41B69D5E20076F9D0 /* VideoPlayerWrapperView.m */,
 			);
 			name = "Related to Video";
 			sourceTree = "<group>";
@@ -841,6 +846,7 @@
 				C772F2861B4BC13500CEC83D /* GMImagePickerController.m in Sources */,
 				C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */,
 				C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */,
+				A504ECE51B69D5E20076F9D0 /* VideoPlayerWrapperView.m in Sources */,
 				C78B682419CA6C01003D0AC5 /* VerbatmUITextView.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,

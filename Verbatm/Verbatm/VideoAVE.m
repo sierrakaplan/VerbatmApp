@@ -55,69 +55,23 @@
 
 #pragma mark - showing the progess bar -
 /*This function shows the play and pause icons*/
--(void)showPlayBackIcons
-{
-    [self setUpPlayAndPauseButtons];
-}
+//-(void)showPlayBackIcons
+//{
+//    [self setUpPlayAndPauseButtons];
+//}
+//
+//#pragma mark - manipulating playing of videos -
+//-(void)setUpPlayAndPauseButtons
+//{
+//    self.play_pauseBtn = [UIButton buttonWithType: UIButtonTypeCustom];
+//    [self.play_pauseBtn setImage:[UIImage imageNamed:PAUSE_ICON] forState:UIControlStateNormal];
+//    [self.play_pauseBtn setFrame:CGRectMake(PLY_PSE_FRAME)];
+//    [self.play_pauseBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
+//    UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(modifyPlayback:)];
+//    [self addGestureRecognizer:panGesture];
+//    [self addSubview: self.play_pauseBtn];
+//}
 
-#pragma mark - manipulating playing of videos -
--(void)setUpPlayAndPauseButtons
-{
-    self.play_pauseBtn = [UIButton buttonWithType: UIButtonTypeCustom];
-    [self.play_pauseBtn setImage:[UIImage imageNamed:PAUSE_ICON] forState:UIControlStateNormal];
-    [self.play_pauseBtn setFrame:CGRectMake(PLY_PSE_FRAME)];
-    [self.play_pauseBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
-    UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(modifyPlayback:)];
-    [self addGestureRecognizer:panGesture];
-    [self addSubview: self.play_pauseBtn];
-}
-
--(void)showPlayIcon
-{
-    [self.play_pauseBtn setImage:[UIImage imageNamed:PLAY_ICON] forState:UIControlStateNormal];
-    [self.play_pauseBtn addTarget:self action:@selector(continueVideo) forControlEvents:UIControlEventTouchUpInside];
-}
-
-/*Allows the user to use a pan gesture to determine rewind or fast forward 
- *Right now just the act of panning causes this. This function does not modify the rate as more panning 
- *occurs. Changes could easily be made to take care of this if that turns out to be what the designers want
- */
--(void)modifyPlayback:(UIPanGestureRecognizer*)sender
-{
-    CGPoint location = [sender locationInView:self];
-    CGRect viableRegion = CGRectMake(self.frame.origin.x + self.frame.size.width/4, self.frame.origin.y, self.frame.size.width/2, self.frame.size.height);
-    if(!CGRectContainsPoint(viableRegion, location))return;
-    CGPoint translation = [sender translationInView: self];
-    if(sender.state == UIGestureRecognizerStateBegan){
-        self.firstTranslation = translation;
-        [self changeRate];
-    }else if(sender.state == UIGestureRecognizerStateEnded){
-        self.firstTranslation = CGPointZero;
-        [self continueVideo];
-    }else{
-        if(CGPointEqualToPoint(CGPointZero, self.firstTranslation)){
-            self.firstTranslation = translation;
-            [self changeRate];
-            return;
-        }
-        BOOL shouldPlayAtNormalRate = (translation.x < 0 &&  self.firstTranslation.x > 0) || (translation.x > 0 &&  self.firstTranslation.x < 0);
-        if(shouldPlayAtNormalRate){
-            self.firstTranslation = CGPointZero;
-            [self continueVideo];
-        }
-    }
-}
-
-/*this function changes the rate at which the video is played. Based on the direction of first translation of the pan gesture. A right translation ie delta_x > 0 means fast forward and vice versa for the left*/
--(void)changeRate
-{
-    if(self.firstTranslation.x > 0){
-        [self fastForwardVideoWithRate:MAX_VD_RATE];
-    }else{
-        [self rewindVideoWithRate:MAX_VD_RATE];
-    }
-	[self showPlayIcon];
-}
 
 -(void)offScreen
 {
@@ -131,7 +85,4 @@
 
 }
 
--(void) viewDidAppear {
-	//TODO
-}
 @end

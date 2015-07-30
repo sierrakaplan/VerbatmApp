@@ -14,7 +14,6 @@
 #import "VideoPlayerView.h"
 
 @interface VideoAVE : VideoPlayerView
--(void)showPlayBackIcons;
 //note that the video list can be alasset or nsdata
 -(id)initWithFrame:(CGRect)frame andVideoAssetArray:(NSArray*)videoList;
 -(void)onScreen;

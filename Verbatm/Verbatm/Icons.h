@@ -13,6 +13,8 @@
 
 #define PUBLISH_BUTTON_IMAGE @"pulldown_text_icon" //@"publish_button"
 
+#define PLAY_VIDEO_ICON @"play_video_icon"
+
 #pragma mark Media Picker
 
 #define INSERT_MEDIA_BUTTON @"insert_media_button"
@@ -51,9 +53,8 @@
 
 #pragma mark Video AVE
 
-#define PLAY_ICON @"play"
-#define PAUSE_ICON @"pause"
-#define LINE_IMAGE @"line"
+#define MUTE_BUTTON_ICON @"mute_button_icon"
+#define UNMUTE_BUTTON_ICON @"unmute_button_icon"
 
 #pragma mark Images AVE
 

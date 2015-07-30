@@ -7,7 +7,7 @@
 //
 
 #import "PinchView.h"
-#import "VideoPlayerView.h"
+#import "VideoPlayerWrapperView.h"
 
 @interface VideoPinchView : PinchView
 
@@ -17,7 +17,7 @@ typedef NS_ENUM(NSInteger, VideoFormat) {
 };
 
 @property (nonatomic) VideoFormat videoFormat;
-@property (strong, nonatomic) VideoPlayerView *videoView;
+@property (strong, nonatomic) VideoPlayerWrapperView *videoView;
 //Can be AVAsset or NSURL
 @property (strong, nonatomic) id video;
 

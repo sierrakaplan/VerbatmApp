@@ -12,6 +12,7 @@
 
 @property (nonatomic, strong) AVPlayer* player;
 @property (nonatomic, strong) AVPlayerItem* playerItem;
+@property (nonatomic,strong) AVPlayerLayer* playerLayer;
 @property (nonatomic) BOOL repeatsVideo;
 @property (strong, nonatomic) AVMutableComposition* mix;
 

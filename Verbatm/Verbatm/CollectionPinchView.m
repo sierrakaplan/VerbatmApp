@@ -9,6 +9,7 @@
 #import "CollectionPinchView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "Icons.h"
 #import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
@@ -18,6 +19,7 @@
 @property (strong, nonatomic) NSString* text;
 @property (strong, nonatomic) UITextView *textView;
 @property (strong, nonatomic) UIImageView *imageView;
+@property (strong, nonatomic) UIImageView *playImageView;
 @property (weak, nonatomic) UIImage* image;
 //Can be AVAsset or NSURL
 @property (weak, nonatomic) id video;
@@ -29,6 +31,10 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
+		self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
+		[self.videoView repeatVideoOnEnd:YES];
+		[self.background addSubview:self.videoView];
+		[self addPlayIcon];
 		[self addCollectionViewBorder];
 		[self.background addSubview:self.textView];
 		[self.background addSubview:self.imageView];
@@ -38,6 +44,16 @@
 		[self renderMedia];
 	}
 	return self;
+}
+
+#pragma mark - Adding play button
+
+-(void) addPlayIcon {
+	UIImage* playIconImage = [UIImage imageNamed: PLAY_VIDEO_ICON];
+	self.playImageView = [[UIImageView alloc] initWithImage:playIconImage];
+	self.playImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
+	self.playImageView.frame = self.videoView.bounds;
+	[self.videoView addSubview:self.playImageView];
 }
 
 #pragma mark - Collection View Border - 
@@ -90,12 +106,6 @@
 	_imageView.contentMode = UIViewContentModeScaleAspectFill;
 	_imageView.layer.masksToBounds = YES;
 	return _imageView;
-}
-
--(VideoPlayerView*)videoView {
-	if(!_videoView) _videoView = [[VideoPlayerView alloc] init];
-	[_videoView repeatVideoOnEnd:YES];
-	return _videoView;
 }
 
 #pragma mark - Render Media -
@@ -164,6 +174,8 @@
 
 //This function displays the media on the view.
 -(void)displayMedia {
+	self.playImageView.frame = self.videoView.frame;
+	self.videoView.videoPlayerView.frame = self.videoView.frame;
 	if (self.containsText) {
 		self.textView.text = self.text;
 		[TextPinchView formatTextView:self.textView];
@@ -267,6 +279,16 @@
 		}
 	}
 	return videos;
+}
+
+#pragma mark - When pinch view goes on and off screen
+
+-(void)offScreen {
+	[self.videoView stopVideo];
+}
+
+-(void)onScreen {
+	[self displayMedia];
 }
 
 

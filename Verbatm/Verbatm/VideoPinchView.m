@@ -7,6 +7,8 @@
 //
 
 #import "VideoPinchView.h"
+#import "Icons.h"
+#import "Styles.h"
 
 @interface VideoPinchView()
 
@@ -17,8 +19,10 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andVideo:(id)video {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-		self.videoView.frame = self.background.frame;
+		self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
+		[self.videoView repeatVideoOnEnd:YES];
 		[self.background addSubview:self.videoView];
+		[self addPlayIcon];
 		self.containsVideo = YES;
 		if ([video isKindOfClass:[AVAsset class]]) {
 			self.videoFormat = VideoFormatAsset;
@@ -34,17 +38,14 @@
 	return self;
 }
 
-//overriding
--(NSArray*) getVideos {
-	return @[self.video];
-}
+#pragma mark - Adding play button
 
-#pragma mark - Lazy Instantiation
-
--(VideoPlayerView*)videoView {
-	if(!_videoView) _videoView = [[VideoPlayerView alloc] init];
-	[_videoView repeatVideoOnEnd:YES];
-	return _videoView;
+-(void) addPlayIcon {
+	UIImage* playIconImage = [UIImage imageNamed: PLAY_VIDEO_ICON];
+	UIImageView* playImageView = [[UIImageView alloc] initWithImage:playIconImage];
+	playImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
+	playImageView.frame = self.videoView.bounds;
+	[self.videoView addSubview:playImageView];
 }
 
 #pragma mark - Render Media -
@@ -75,14 +76,18 @@
 #pragma mark - When pinch view goes on and off screen
 
 -(void)offScreen {
-	if(self.videoView.playerLayer) {
-		[self.videoView pauseVideo];
-	}
+	[self.videoView stopVideo];
 }
 
 -(void)onScreen {
-	if(self.videoView.playerLayer) {
-		[self.videoView continueVideo];
-	}
+	[self displayMedia];
 }
+
+#pragma mark - Overriding get videos
+
+//overriding
+-(NSArray*) getVideos {
+	return @[self.video];
+}
+
 @end
