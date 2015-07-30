@@ -310,17 +310,6 @@
 	return YES;
 }
 
-//-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-//	if (gestureRecognizer == self.panGesture) {
-//		if([touch locationInView:self.scrollView].x > 20) {
-//			return YES;
-//		}
-//		return NO;
-//	}
-//	return YES;
-//}
-
-
 -(void) scrollView:(UIPanGestureRecognizer*) sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {

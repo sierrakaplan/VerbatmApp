@@ -83,8 +83,7 @@
 	}];
 }
 
--(void)addButtonsAsSubviews
-{
+-(void)addButtonsAsSubviews {
 	[self addSubview:self.selectMedia];
     [self addSubview:self.selectText];
 }
