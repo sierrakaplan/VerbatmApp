@@ -64,7 +64,7 @@
 
 -(float) getHeightOfText {
 	float heightWithoutBorder = [UIEffects measureContentHeightOfUITextView:self.textView];
-	return heightWithoutBorder + TEXT_OVER_AVE_BORDER + TEXT_OVER_AVE_PULLBAR_HEIGHT/2.f;
+	return heightWithoutBorder + TEXT_OVER_AVE_BORDER*2;
 }
 
 -(void) setTextViewFrame {

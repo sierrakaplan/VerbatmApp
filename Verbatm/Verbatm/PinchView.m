@@ -118,7 +118,11 @@
 	BOOL allTextPinchViews = YES;
 	for (PinchView* pinchView in pinchViews) {
 		if ([pinchView isKindOfClass:[TextPinchView class]]) {
-			pinchedText = [pinchedText stringByAppendingString:[pinchView getText]];
+			if ([pinchedText length]) {
+				pinchedText = [NSString stringWithFormat:@"%@\r\r%@", pinchedText, [pinchView getText]];
+			} else {
+				pinchedText = [pinchedText stringByAppendingString:[pinchView getText]];
+			}
 		} else {
 			allTextPinchViews = NO;
 		}

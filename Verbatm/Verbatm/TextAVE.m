@@ -26,11 +26,13 @@
  */
 -(id)initWithFrame:(CGRect)frame andText:(NSString*) text{
     if((self = [super initWithFrame:frame])) {
+		[self setBackgroundColor:[UIColor blackColor]];
 		self.textViewContainer = [[TextOverAVEView alloc] initWithFrame:self.bounds];
 		[self.textViewContainer setText:text];
 
 		CGRect blurViewFrame = CGRectMake(self.bounds.origin.x, TEXT_OVER_AVE_STARTING_HEIGHT, self.bounds.size.width, self.bounds.size.height - TEXT_OVER_AVE_STARTING_HEIGHT);
 		self.blurView = [[UIView alloc] initWithFrame:blurViewFrame];
+		[self.blurView setBackgroundColor:[UIColor clearColor]];
 		[UIEffects createBlurViewOnView:self.blurView withStyle:UIBlurEffectStyleDark];
 		[self addSubview:self.textViewContainer];
 		[self addSubview:self.blurView];

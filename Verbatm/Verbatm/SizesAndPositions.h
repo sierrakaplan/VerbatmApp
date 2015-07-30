@@ -93,8 +93,6 @@
 
 #pragma mark - AVES -
 
-#define PAGE_SCROLL_TOPBOTTOM_AREA 50.f
-
 #pragma mark Text
 
 #define TEXT_OVER_AVE_TOP_OFFSET 80.f
@@ -105,7 +103,8 @@
 
 #pragma mark Images
 
-#define CIRCLE_OVER_IMAGES_RADIUS 100.f
+#define CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT 6.f
+
 #define POINTS_ON_CIRCLE_RADIUS 10.f
 #define TOUCH_THRESHOLD 40.f
 

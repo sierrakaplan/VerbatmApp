@@ -44,7 +44,7 @@
 
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.circleRadius = self.frame.size.height/6.f;
+		self.circleRadius = self.frame.size.height / CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT;
 		[self addPhotos:photos];
 		if ([photos count] > 1) {
 			[self createCircleViewAndPoints];

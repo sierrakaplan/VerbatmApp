@@ -43,6 +43,7 @@
 @property (nonatomic) CGRect publishButtonRestingFrame;
 @property (nonatomic) CGRect publishButtonFrame;
 @property (nonatomic) NSAttributedString *publishButtonTitle;
+@property (nonatomic) float pageScrollTopBottomArea;
 
 //the amount of space that must be pulled to exit
 #define EXIT_EPSILON 60
@@ -58,6 +59,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticle:) name:NOTIFICATION_SHOW_ARTICLE object: nil];
+	float middleScreenSize = (self.view.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
+	self.pageScrollTopBottomArea = (self.view.frame.size.height - middleScreenSize)/2.f;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -319,11 +322,12 @@
 
 
 -(void) scrollView:(UIPanGestureRecognizer*) sender {
-	if ([sender numberOfTouches] != 1) return;
-	CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
-			if (touchLocation.y < (self.view.frame.size.height - PAGE_SCROLL_TOPBOTTOM_AREA)) {
+			if ([sender numberOfTouches] != 1) return;
+			CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
+			if (touchLocation.y < (self.view.frame.size.height - self.pageScrollTopBottomArea)
+				&& touchLocation.y > self.pageScrollTopBottomArea) {
 				self.scrollView.scrollEnabled = NO;
 			}
 			break;

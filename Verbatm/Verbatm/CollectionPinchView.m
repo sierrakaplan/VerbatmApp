@@ -177,7 +177,11 @@
 -(void) changeTypesOfMediaFromPinchView:(PinchView*) pinchView {
 	if (pinchView.containsText) {
 		self.containsText = YES;
-		self.text = [self.text stringByAppendingString:[pinchView getText]];
+		if ([self.text length]) {
+			self.text = [NSString stringWithFormat:@"%@\r\r%@", self.text, [pinchView getText]];
+		} else {
+			self.text = [self.text stringByAppendingString:[pinchView getText]];
+		}
 	} else if(pinchView.containsImage) {
 		self.containsImage = YES;
 		if(!self.image) {
