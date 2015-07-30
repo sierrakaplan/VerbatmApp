@@ -726,11 +726,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaSessionManager.m"
-            timestampString = "458642071.687676"
+            timestampString = "459909517.720871"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "347"
-            endingLineNumber = "347"
+            startingLineNumber = "344"
+            endingLineNumber = "344"
             landmarkName = "-startVideoRecordingInOrientation:"
             landmarkType = "5">
          </BreakpointContent>

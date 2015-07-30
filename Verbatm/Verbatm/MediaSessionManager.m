@@ -49,7 +49,7 @@
 
 		//Create the session and set its properties.
 		self.session = [[AVCaptureSession alloc]init];
-		self.session.sessionPreset = AVCaptureSessionPresetHigh;
+		self.session.sessionPreset = AVCaptureSessionPresetMedium;
 		[self addStillImageOutput];
 
 		//add the video and audio devices to the session
@@ -334,18 +334,14 @@
 
 	//get the right orientation
 	AVCaptureConnection *videoConnection = nil;
-	for ( AVCaptureConnection *connection in [self.movieOutputFile connections] )
-	{
-		for ( AVCaptureInputPort *port in [connection inputPorts] )
-		{
-			if ( [[port mediaType] isEqual:AVMediaTypeVideo] )
-			{
+	for ( AVCaptureConnection *connection in [self.movieOutputFile connections] ) {
+		for ( AVCaptureInputPort *port in [connection inputPorts] ) {
+			if ( [[port mediaType] isEqual:AVMediaTypeVideo] ) {
 				videoConnection = connection;
 			}
 		}
 	}
-	if([videoConnection isVideoOrientationSupported])
-	{
+	if([videoConnection isVideoOrientationSupported]) {
 		[videoConnection setVideoOrientation:self.videoPreview.connection.videoOrientation];
 	}
 
@@ -355,8 +351,7 @@
 
 
 /*fixing video orientation seems to be working fine when tested*/
--(void)fixVideoOrientationOfAssetAtUrl:(NSURL *)outputFileURL
-{
+-(void)fixVideoOrientationOfAssetAtUrl:(NSURL *)outputFileURL {
 	//create the mutable composition object. This will hold the multiple tracks
 	AVMutableComposition* fixedComposition = [AVMutableComposition composition];
 

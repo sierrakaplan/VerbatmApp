@@ -1555,6 +1555,7 @@
 		[scrollView removeFromSuperview];
 	}
 	[self.pageElementScrollViews removeAllObjects];
+	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self clearTextFields];
 	self.baseMediaTileSelector = nil;
 	[self createBaseSelector];
