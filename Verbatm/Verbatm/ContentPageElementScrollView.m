@@ -49,10 +49,8 @@
 
 -(void) formatScrollView {
 	float contentWidth = self.frame.size.width*3;
-	self.initialContentSize = CGSizeMake(contentWidth, 0);
-	self.contentSize = self.initialContentSize;
-	self.initialContentOffset = CGPointMake(contentWidth/3.f, 0);
-	self.contentOffset = self.initialContentOffset;
+	self.contentSize = self.initialContentSize = CGSizeMake(contentWidth, 0);
+	self.contentOffset = self.initialContentOffset = CGPointMake(contentWidth/3.f, 0);
 	self.pagingEnabled = NO;
 	self.showsHorizontalScrollIndicator = NO;
 	self.showsVerticalScrollIndicator = NO;

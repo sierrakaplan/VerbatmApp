@@ -77,9 +77,17 @@
     self.layer.borderWidth = PINCHVIEW_BORDER_WIDTH;
 }
 
-/* It modifies the object to have a circular shape by setting the
- *corner radius
- */
+
+-(void) specifyRadius:(float)radius andCenter:(CGPoint)center {
+	self.radius = radius;
+	self.center = center;
+	self.frame = CGRectMake(self.center.x - self.radius,
+							self.center.y - self.radius,
+							self.radius*2, self.radius*2);
+	[self setBackgroundFrames];
+}
+
+
 -(void)specifyFrame:(CGRect)frame {
 	self.radius = frame.size.width/2;
     self.center = CGPointMake(frame.origin.x + self.radius, frame.origin.y + self.radius);

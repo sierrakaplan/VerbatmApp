@@ -38,9 +38,13 @@
 -(void) changeWidthTo: (double) width;
 
 /*
- *This sets the frame of the pinch object
+ *This sets the frame of the pinch object, updating
+ its radius and center properties
 */
 -(void)specifyFrame:(CGRect)frame;
+
+//Updats the radius and center and resets the frame based on these
+-(void) specifyRadius:(float)radius andCenter:(CGPoint)center;
 
 //This reverts to the center and radius specified
 //for the pinch view during initialization
