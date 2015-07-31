@@ -18,11 +18,15 @@
 
 @property (strong, nonatomic) NSString* text;
 @property (strong, nonatomic) UITextView *textView;
-@property (strong, nonatomic) UIImageView *imageView;
-@property (strong, nonatomic) UIImageView *playVideoImageView;
+
 @property (weak, nonatomic) UIImage* image;
+@property (strong, nonatomic) UIImageView *imageView;
+
 //Can be AVAsset or NSURL
 @property (weak, nonatomic) id video;
+@property (strong, nonatomic) UIImageView *playVideoImageView;
+@property (strong, nonatomic) UIImage* playVideoIconHalf;
+@property (strong, nonatomic) UIImage* playVideoIconQuarter;
 
 #pragma mark Encoding Keys
 
@@ -57,8 +61,9 @@
 #pragma mark - Adding play button
 
 -(void) addPlayIcon {
-	UIImage* playIconImage = [UIImage imageNamed: PLAY_VIDEO_ICON];
-	self.playVideoImageView = [[UIImageView alloc] initWithImage:playIconImage];
+	self.playVideoIconHalf = [UIImage imageNamed: PLAY_VIDEO_ICON_HALF_CIRCLE];
+	self.playVideoIconQuarter = [UIImage imageNamed: PLAY_VIDEO_ICON_QUARTER_CIRCLE];
+	self.playVideoImageView = [[UIImageView alloc] initWithImage: self.playVideoIconHalf];
 	self.playVideoImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
 	self.playVideoImageView.frame = self.videoView.bounds;
 	[self.videoView addSubview:self.playVideoImageView];
@@ -162,9 +167,11 @@
 			self.videoView.frame = CGRectMake(0,0,0,0);
 		} else {
 			self.videoView.frame = frame1;
+			self.playVideoImageView.image = self.playVideoIconHalf;
 		}
 	} else {
 		self.videoView.frame = frame1;
+		self.playVideoImageView.image = self.playVideoIconHalf;
 		self.imageView.frame = frame2;
 	}
 }
@@ -174,8 +181,10 @@
 -(void)renderThreeMedia {
 	//computation to determine the relative positions of each of the views
 	self.textView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width, self.background.frame.size.height/2.f);
-	self.imageView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.textView.frame.size.height, self.background.frame.size.width/2.f, self.background.frame.size.height - self.textView.frame.size.height);
-	self.videoView.frame = CGRectMake(self.background.frame.origin.x + self.imageView.frame.size.width, self.imageView.frame.origin.y , self.background.frame.size.width - self.imageView.frame.size.width, self.imageView.frame.size.width);
+	self.videoView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.textView.frame.size.height, self.background.frame.size.width/2.f, self.background.frame.size.height - self.textView.frame.size.height);
+	self.imageView.frame = CGRectMake(self.background.frame.origin.x + self.videoView.frame.size.width, self.videoView.frame.origin.y , self.background.frame.size.width - self.videoView.frame.size.width, self.videoView.frame.size.width);
+
+	self.playVideoImageView.image = self.playVideoIconQuarter;
 }
 
 

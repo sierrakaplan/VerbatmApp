@@ -64,9 +64,6 @@
 @property(nonatomic) CGPoint previousLocationOfTouchPoint_PAN;
 //keep track of the starting from of the selected view so that you can easily shift things around
 @property (nonatomic) CGRect previousFrameInLongPress;
-//keep track of the frame the selected view could take so that we can easily shift
-@property (nonatomic) CGRect potentialFrameAfterLongPress;
-
 
 #pragma mark - Pinch Gesture Related Properties
 
@@ -926,7 +923,7 @@
 
 
 //Takes a change in vertical position and constructs the frame for the views new position
--(CGRect) newVerticalTranslationFrameForView: (ContentPageElementScrollView*)view andChange: (float) changeInPosition {
+-(CGRect) newVerticalTranslationFrameForView: (UIView*)view andChange: (float) changeInPosition {
 	CGRect frame= CGRectMake(view.frame.origin.x, view.frame.origin.y+changeInPosition, view.frame.size.width, view.frame.size.height);
 	return frame;
 }
@@ -1191,31 +1188,36 @@
 }
 
 -(void) selectItem:(UILongPressGestureRecognizer *)sender {
-	[self findSelectedViewFromSender:sender];
+	CGPoint touch = [sender locationOfTouch:0 inView:self.mainScrollView];
+	[self findSelectedViewFromTouch:touch];
 
 	//if we didn't find the view then leave
 	if (!self.selectedView_PAN) {
 		return;
 	} else if (self.selectedView_PAN.collectionIsOpen) {
-		//TODO
+//		[self.selectedView_PAN selectItemInOpenCollectionFromTouch:touch];
+//		if (!self.selectedView_PAN.selectedItem) {
+//			self.selectedView_PAN = Nil;
+//		}
+		//TODO: comment this out and fix it
+		self.selectedView_PAN = Nil;
 		return;
 	}
 
-	self.previousLocationOfTouchPoint_PAN = [sender locationOfTouch:0 inView:self.mainScrollView];
+	self.previousLocationOfTouchPoint_PAN = touch;
 	self.previousFrameInLongPress = self.selectedView_PAN.frame;
 
 	[self.selectedView_PAN.pageElement markAsSelected:YES];
 }
 
 // Finds first view that contains location of press and sets it as the selectedView
--(void) findSelectedViewFromSender:(UILongPressGestureRecognizer *)sender {
+-(void) findSelectedViewFromTouch:(CGPoint) touch {
 
-	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
 	self.selectedView_PAN = Nil;
 
 	//make sure touch is not above the first view
 	ContentPageElementScrollView * firstView = self.pageElementScrollViews[0];
-	if(touch1.y < firstView.frame.origin.y) {
+	if(touch.y < firstView.frame.origin.y) {
 		return;
 	}
 
@@ -1223,7 +1225,7 @@
 		ContentPageElementScrollView * view = self.pageElementScrollViews[i];
 
 		//we stop when we find the first one
-		if((view.frame.origin.y + view.frame.size.height) > touch1.y) {
+		if((view.frame.origin.y + view.frame.size.height) > touch.y) {
 			self.selectedView_PAN = self.pageElementScrollViews[i];
 
 			//can't select the base tile selector
@@ -1241,8 +1243,35 @@
 //Then checks if it has moved far enough to be swapped with the object above or below it
 -(void) moveItem:(UILongPressGestureRecognizer *)sender {
 
+	CGPoint touch = [sender locationOfTouch:0 inView:self.mainScrollView];
+
 	//if there is no selected item don't do anything
 	if (!self.selectedView_PAN) {
+		return;
+	}
+	if (self.selectedView_PAN.collectionIsOpen) {
+		PinchView* unPinched = [self.selectedView_PAN moveSelectedItemFromTouch:touch];
+		if (unPinched) {
+			UIView* upperView;
+			NSInteger upperViewIndex = 0;
+			if (unPinched.frame.origin.y > self.selectedView_PAN.frame.origin.y) {
+				upperView = self.selectedView_PAN;
+				upperViewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN];
+			} else {
+				upperViewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN]-1;
+				if (upperViewIndex >= 0) {
+					upperView = self.pageElementScrollViews[upperViewIndex];
+				} else {
+					upperView = self.articleTitleField;
+				}
+			}
+			unPinched.frame = CGRectMake(unPinched.frame.origin.x - self.selectedView_PAN.frame.origin.x,
+										 unPinched.frame.origin.y - self.selectedView_PAN.frame.origin.y,
+										 unPinched.frame.size.width, unPinched.frame.size.height);
+			[unPinched removeFromSuperview];
+			[self newPinchView:unPinched belowView:upperView];
+			self.selectedView_PAN = self.pageElementScrollViews[upperViewIndex+1];
+		}
 		return;
 	}
 
@@ -1257,8 +1286,7 @@
 		bottomView = self.pageElementScrollViews[viewIndex+1];
 	}
 
-	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
-	NSInteger yDifference  = touch1.y - self.previousLocationOfTouchPoint_PAN.y;
+	NSInteger yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
 	CGRect newFrame = [self newVerticalTranslationFrameForView:self.selectedView_PAN andChange:yDifference];
 
 	//view can't move below bottom media tile
@@ -1287,7 +1315,7 @@
 
 	//move the offest of the main scroll view
 	[self moveOffsetOfMainScrollViewBasedOnSelectedItem];
-	self.previousLocationOfTouchPoint_PAN = touch1;
+	self.previousLocationOfTouchPoint_PAN = touch;
 }
 
 //swap currently selected item's frame with view above it
@@ -1298,14 +1326,13 @@
 	float heightDiff = self.previousFrameInLongPress.size.height - topView.frame.size.height;
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
-		self.potentialFrameAfterLongPress = CGRectMake(topView.frame.origin.x, topView.frame.origin.y,
+		self.previousFrameInLongPress = CGRectMake(topView.frame.origin.x, topView.frame.origin.y,
 													   self.previousFrameInLongPress.size.width,
 													   self.previousFrameInLongPress.size.height);
 
 		topView.frame = CGRectMake(self.previousFrameInLongPress.origin.x,
 								   self.previousFrameInLongPress.origin.y + heightDiff,
 								   topView.frame.size.width, topView.frame.size.height);
-		self.previousFrameInLongPress = self.potentialFrameAfterLongPress;
 	}];
 }
 
@@ -1317,7 +1344,7 @@
 	float heightDiff = bottomView.frame.size.height - self.previousFrameInLongPress.size.height;
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
-		self.potentialFrameAfterLongPress = CGRectMake(bottomView.frame.origin.x,
+		self.previousFrameInLongPress = CGRectMake(bottomView.frame.origin.x,
 													   bottomView.frame.origin.y + heightDiff,
 													   self.previousFrameInLongPress.size.width,
 													   self.previousFrameInLongPress.size.height);
@@ -1325,7 +1352,6 @@
 		bottomView.frame = CGRectMake(self.previousFrameInLongPress.origin.x,
 									  self.previousFrameInLongPress.origin.y,
 									  bottomView.frame.size.width, bottomView.frame.size.height);
-		self.previousFrameInLongPress = self.potentialFrameAfterLongPress;
 	}];
 }
 
@@ -1353,6 +1379,10 @@
 
 	//if we didn't find the view then leave
 	if (!self.selectedView_PAN) return;
+	if (self.selectedView_PAN.collectionIsOpen) {
+		[self.selectedView_PAN finishMovingSelectedItem];
+		return;
+	}
 
 	self.selectedView_PAN.frame = self.previousFrameInLongPress;
 
@@ -1364,7 +1394,7 @@
 	[self shiftElementsBelowView:self.articleTitleField];
 }
 
-//swaps scroll views int he pageElementScrollView array
+//swaps scroll views in the pageElementScrollView array
 -(void) swapScrollView: (ContentPageElementScrollView *) scrollView1 andScrollView: (ContentPageElementScrollView *) scrollView2 {
 	NSInteger index1 = [self.pageElementScrollViews indexOfObject: scrollView1];
 	NSInteger index2 = [self.pageElementScrollViews indexOfObject: scrollView2];
@@ -1606,6 +1636,7 @@
 }
 
 #pragma mark - Clean up Content Page -
+
 //we clean up the content page if we press publish or simply want to reset everything
 //all the text views are cleared and all the pinch objects are cleared
 //all videos in pinch views are stopped
