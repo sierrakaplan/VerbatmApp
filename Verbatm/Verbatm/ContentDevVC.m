@@ -1248,6 +1248,9 @@
 		PinchView* unPinched = [self.selectedView_PAN moveSelectedItemFromTouch:touch];
 		if (unPinched) {
 			[self addUnpinchedItem:unPinched];
+			self.previousLocationOfTouchPoint_PAN = touch;
+			self.previousFrameInLongPress = self.selectedView_PAN.frame;
+			[self.selectedView_PAN.pageElement markAsSelected:YES];
 		}
 		return;
 	}
@@ -1366,7 +1369,7 @@
 		if (upperViewIndex >= 0) {
 			upperView = self.pageElementScrollViews[upperViewIndex];
 		} else {
-			upperView = self.articleTitleField;
+			upperView = Nil;
 		}
 	}
 	[unPinched revertToInitialFrame];
