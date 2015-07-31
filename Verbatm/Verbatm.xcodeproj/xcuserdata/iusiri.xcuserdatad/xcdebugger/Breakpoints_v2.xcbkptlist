@@ -1871,8 +1871,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2274"
             endingLineNumber = "2274"
-            landmarkName = "-pinchObjectTapped:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1887,8 +1887,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "2351"
             endingLineNumber = "2351"
-            landmarkName = "-openCollection:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1898,13 +1898,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PinchView.m"
-            timestampString = "458283399.189622"
+            timestampString = "459664712.918564"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "379"
-            endingLineNumber = "379"
-            landmarkName = "+openCollection:"
-            landmarkType = "5">
+            startingLineNumber = "378"
+            endingLineNumber = "378">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1914,12 +1912,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/VideoPlayerView.m"
-            timestampString = "458277809.671024"
+            timestampString = "459664916.576915"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "29"
-            endingLineNumber = "29"
-            landmarkName = "-layoutSubviews"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "-playVideoFromAsset:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1935,7 +1933,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "241"
             endingLineNumber = "241"
-            landmarkName = "-createBaseSelector"
+            landmarkName = "-configureViews"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1946,12 +1944,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/VideoPlayerView.m"
-            timestampString = "458280013.851597"
+            timestampString = "459664916.576915"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "82"
-            endingLineNumber = "82"
-            landmarkName = "-pauseVideo"
+            startingLineNumber = "102"
+            endingLineNumber = "102"
+            landmarkName = "-playVideo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1962,12 +1960,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/VideoPlayerView.m"
-            timestampString = "458280015.043654"
+            timestampString = "459664916.576915"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
-            landmarkName = "-continueVideo"
+            startingLineNumber = "111"
+            endingLineNumber = "111"
+            landmarkName = "-repeatVideoOnEnd:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1978,12 +1976,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/VideoPlayerView.m"
-            timestampString = "458280059.05758"
+            timestampString = "459664916.576915"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "83"
-            endingLineNumber = "83"
-            landmarkName = "-pauseVideo"
+            startingLineNumber = "103"
+            endingLineNumber = "103"
+            landmarkName = "-playVideo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2010,13 +2008,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MultiplePhotoVideoAVE.m"
-            timestampString = "458284215.814462"
+            timestampString = "459664712.918564"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
-            landmarkName = "-offScreen"
-            landmarkType = "5">
+            startingLineNumber = "206"
+            endingLineNumber = "206">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2049,6 +2045,22 @@
             endingLineNumber = "44"
             landmarkName = "@implementation TextAndOtherAves"
             landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/VideoPlayerView.m"
+            timestampString = "459664916.576915"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "35"
+            endingLineNumber = "35"
+            landmarkName = "-layoutSubviews"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
