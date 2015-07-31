@@ -303,13 +303,13 @@
 	if (viewIndex+1 < [self.collectionPinchViews count]) {
 		rightView = self.collectionPinchViews[viewIndex+1];
 	}
-	//check if object has moved to the halfway mark of the view next to it, if so swap them
-	if(leftView && (newFrame.origin.x - self.frame.origin.x + newFrame.size.width/2.f)
+	//check if object has moved to the 3/4 mark of the view next to it, if so swap them
+	if(leftView && (newFrame.origin.x - self.frame.origin.x + newFrame.size.width*3/4.f)
 	   < (leftView.frame.origin.x + leftView.frame.size.width)) {
 		[self swapWithLeftView: leftView];
 	}
-	//check if object has moved down the halfway mark of the view below it, if so swap them
-	else if(rightView && (newFrame.origin.x - self.frame.origin.x + newFrame.size.width/2.f)
+	//check if object has moved down the 3/4 mark of the view below it, if so swap them
+	else if(rightView && (newFrame.origin.x - self.frame.origin.x + newFrame.size.width/4.f)
 			> rightView.frame.origin.x) {
 		[self swapWithRightView: rightView];
 	}

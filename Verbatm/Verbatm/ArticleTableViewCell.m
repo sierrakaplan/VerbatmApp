@@ -12,6 +12,7 @@
 
 - (void)awakeFromNib {
     [self setBackgroundColor:[UIColor clearColor]];
+	[self.textLabel setTextColor:[UIColor whiteColor]];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

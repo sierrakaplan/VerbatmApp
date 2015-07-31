@@ -25,7 +25,7 @@
     @property (weak, nonatomic) IBOutlet UITableView *articleListView;
     @property (strong, nonatomic) NSArray * articles;
 	@property (strong, nonatomic) VerbatmCameraView* verbatmCameraView;
-    @property (weak, nonatomic) IBOutlet UIButton *createArticle_button;
+//    @property (weak, nonatomic) IBOutlet UIButton *createArticle_button;
     @property (weak, nonatomic) IBOutlet UILabel *listTitle;
     @property  (nonatomic) NSInteger selectedArticleIndex;
 	@property BOOL pullDownInProgress;
@@ -57,7 +57,7 @@
 }
 
 -(void) addBlurView {
-	[self.view insertSubview: self.verbatmCameraView atIndex:0];
+	[self.view addSubview:self.verbatmCameraView];
 	[UIEffects createBlurViewOnView:self.view withStyle:UIBlurEffectStyleDark];
 }
 
@@ -92,7 +92,7 @@
 	self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(ARTICLE_IN_FEED_BUTTON_HEIGHT));
 	[self.articleListView setBackgroundColor:[UIColor clearColor]];
     //set button
-    self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - ARTICLE_IN_FEED_BUTTON_HEIGHT, self.view.frame.size.width/2, ARTICLE_IN_FEED_BUTTON_HEIGHT);
+//    self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - ARTICLE_IN_FEED_BUTTON_HEIGHT, self.view.frame.size.width/2, ARTICLE_IN_FEED_BUTTON_HEIGHT);
 }
 
 -(void)registerForNavNotifications
