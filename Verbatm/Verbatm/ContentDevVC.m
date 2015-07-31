@@ -1195,12 +1195,10 @@
 	if (!self.selectedView_PAN) {
 		return;
 	} else if (self.selectedView_PAN.collectionIsOpen) {
-//		[self.selectedView_PAN selectItemInOpenCollectionFromTouch:touch];
-//		if (!self.selectedView_PAN.selectedItem) {
-//			self.selectedView_PAN = Nil;
-//		}
-		//TODO: comment this out and fix it
-		self.selectedView_PAN = Nil;
+		[self.selectedView_PAN selectItemInOpenCollectionFromTouch:touch];
+		if (!self.selectedView_PAN.selectedItem) {
+			self.selectedView_PAN = Nil;
+		}
 		return;
 	}
 
@@ -1326,13 +1324,14 @@
 	float heightDiff = self.previousFrameInLongPress.size.height - topView.frame.size.height;
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
-		self.previousFrameInLongPress = CGRectMake(topView.frame.origin.x, topView.frame.origin.y,
+		CGRect potentialFrame = CGRectMake(topView.frame.origin.x, topView.frame.origin.y,
 													   self.previousFrameInLongPress.size.width,
 													   self.previousFrameInLongPress.size.height);
 
 		topView.frame = CGRectMake(self.previousFrameInLongPress.origin.x,
 								   self.previousFrameInLongPress.origin.y + heightDiff,
 								   topView.frame.size.width, topView.frame.size.height);
+		self.previousFrameInLongPress = potentialFrame;
 	}];
 }
 
@@ -1344,7 +1343,7 @@
 	float heightDiff = bottomView.frame.size.height - self.previousFrameInLongPress.size.height;
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
-		self.previousFrameInLongPress = CGRectMake(bottomView.frame.origin.x,
+		CGRect potentialFrame = CGRectMake(bottomView.frame.origin.x,
 													   bottomView.frame.origin.y + heightDiff,
 													   self.previousFrameInLongPress.size.width,
 													   self.previousFrameInLongPress.size.height);
@@ -1352,6 +1351,7 @@
 		bottomView.frame = CGRectMake(self.previousFrameInLongPress.origin.x,
 									  self.previousFrameInLongPress.origin.y,
 									  bottomView.frame.size.width, bottomView.frame.size.height);
+		self.previousFrameInLongPress = potentialFrame;
 	}];
 }
 

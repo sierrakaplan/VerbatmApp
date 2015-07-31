@@ -52,8 +52,14 @@
 	UIImage* playIconImage = [UIImage imageNamed: PLAY_VIDEO_ICON];
 	UIImageView* playImageView = [[UIImageView alloc] initWithImage:playIconImage];
 	playImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
-	playImageView.frame = self.videoView.bounds;
+	playImageView.frame = [self getCenterFrameForVideoView];
 	[self.videoView addSubview:playImageView];
+}
+
+-(CGRect) getCenterFrameForVideoView {
+	return CGRectMake(self.videoView.bounds.origin.x + self.videoView.bounds.size.width/4,
+					  self.videoView.bounds.origin.y + self.videoView.bounds.size.height/4,
+					  self.videoView.bounds.size.width/2, self.videoView.bounds.size.height/2);
 }
 
 #pragma mark - Render Media -

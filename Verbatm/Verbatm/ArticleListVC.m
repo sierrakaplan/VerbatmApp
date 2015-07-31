@@ -17,12 +17,14 @@
 #import "SizesAndPositions.h"
 #import "Identifiers.h"
 #import "UIEffects.h"
+#import "VerbatmCameraView.h"
 
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
 @interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
     @property (weak, nonatomic) IBOutlet UITableView *articleListView;
     @property (strong, nonatomic) NSArray * articles;
+	@property (strong, nonatomic) VerbatmCameraView* verbatmCameraView;
     @property (weak, nonatomic) IBOutlet UIButton *createArticle_button;
     @property (weak, nonatomic) IBOutlet UILabel *listTitle;
     @property  (nonatomic) NSInteger selectedArticleIndex;
@@ -30,6 +32,15 @@
 @end
 
 @implementation ArticleListVC
+
+//creates the camera view with the preview session
+-(VerbatmCameraView*)verbatmCameraView
+{
+	if(!_verbatmCameraView){
+		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame:  self.view.frame];
+	}
+	return _verbatmCameraView;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -46,6 +57,7 @@
 }
 
 -(void) addBlurView {
+	[self.view insertSubview: self.verbatmCameraView atIndex:0];
 	[UIEffects createBlurViewOnView:self.view withStyle:UIBlurEffectStyleDark];
 }
 
@@ -78,6 +90,7 @@
 
 -(void)setFrames {
 	self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(ARTICLE_IN_FEED_BUTTON_HEIGHT));
+	[self.articleListView setBackgroundColor:[UIColor clearColor]];
     //set button
     self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - ARTICLE_IN_FEED_BUTTON_HEIGHT, self.view.frame.size.width/2, ARTICLE_IN_FEED_BUTTON_HEIGHT);
 }

@@ -116,18 +116,6 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="hQd-Eg-nK1">
-                                <rect key="frame" x="0.0" y="529" width="157" height="39"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.80000000000000004" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="Refresh">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="refreshArticleList:" destination="Ve4-Qj-kgj" eventType="touchUpInside" id="F2Z-HN-ijl"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="VQh-Eg-Ig3">
                                 <rect key="frame" x="157" y="529" width="163" height="41"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -148,7 +136,6 @@
                     <connections>
                         <outlet property="articleListView" destination="ugX-Ro-5HE" id="ngz-aI-ZoZ"/>
                         <outlet property="createArticle_button" destination="VQh-Eg-Ig3" id="xmb-hq-lkm"/>
-                        <outlet property="refreshArticle_button" destination="hQd-Eg-nK1" id="RYi-GN-5an"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -190,7 +190,7 @@
 
 //This function displays the media on the view.
 -(void)displayMedia {
-	self.playVideoImageView.frame = self.videoView.bounds;
+	self.playVideoImageView.frame = [self getCenterFrameForVideoView];
 	self.videoView.videoPlayerView.frame = self.videoView.bounds;
 	if (self.containsText) {
 		self.textView.text = self.text;
@@ -218,6 +218,12 @@
 		}
 		[self.background bringSubviewToFront:self.videoView];
 	}
+}
+
+-(CGRect) getCenterFrameForVideoView {
+	return CGRectMake(self.videoView.bounds.origin.x + self.videoView.bounds.size.width/4,
+					  self.videoView.bounds.origin.y + self.videoView.bounds.size.height/4,
+					  self.videoView.bounds.size.width/2, self.videoView.bounds.size.height/2);
 }
 
 #pragma mark - Add and return pinch views -
