@@ -25,6 +25,7 @@
 //if page element is a CollectionPinchView
 @property (nonatomic, readwrite) BOOL isCollection;
 @property (nonatomic, readwrite) BOOL collectionIsOpen;
+//reference to the array of pinch views also contained in the collection view
 @property (strong, nonatomic) NSMutableArray* collectionPinchViews;
 
 //long press selecting item
@@ -275,16 +276,7 @@
 	//the selected view and return it so it can be re placed
 	if (newFrame.origin.y > (self.frame.origin.y + self.frame.size.height)
 		|| (newFrame.origin.y + newFrame.size.height) < self.frame.origin.y) {
-		PinchView* unPinched = self.selectedItem;
-		self.selectedItem = Nil;
-		NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
-		if (index < 0) index = 0;
-		[self.collectionPinchViews removeObject:unPinched];
-		[[UserPinchViews sharedInstance] removePinchView:(CollectionPinchView*)self.pageElement];
-		[(CollectionPinchView*)self.pageElement unPinchAndRemove:unPinched];
-		[[UserPinchViews sharedInstance] addPinchView:(CollectionPinchView*)self.pageElement];
-		[self shiftPinchViewsAfterIndex:index];
-		return unPinched;
+		return [self unPinchObject];
 	}
 
 	//move item
@@ -303,13 +295,13 @@
 	if (viewIndex+1 < [self.collectionPinchViews count]) {
 		rightView = self.collectionPinchViews[viewIndex+1];
 	}
-	//check if object has moved to the 3/4 mark of the view next to it, if so swap them
-	if(leftView && (newFrame.origin.x - self.frame.origin.x + newFrame.size.width*3/4.f)
+	//check if object has moved to the 1/2 mark of the view next to it, if so swap them
+	if(leftView && (newFrame.origin.x - self.frame.origin.x + newFrame.size.width/2.f)
 	   < (leftView.frame.origin.x + leftView.frame.size.width)) {
 		[self swapWithLeftView: leftView];
 	}
-	//check if object has moved down the 3/4 mark of the view below it, if so swap them
-	else if(rightView && (newFrame.origin.x - self.frame.origin.x + newFrame.size.width/4.f)
+	//check if object has moved down the 1/2 mark of the view below it, if so swap them
+	else if(rightView && (newFrame.origin.x - self.frame.origin.x + newFrame.size.width/2.f)
 			> rightView.frame.origin.x) {
 		[self swapWithRightView: rightView];
 	}
@@ -426,6 +418,35 @@
 
 	//sanitize for next run
 	self.selectedItem = Nil;
+}
+
+//returns the unpinched PinchView
+-(PinchView*) unPinchObject {
+	CollectionPinchView* currentPinchView = (CollectionPinchView*)self.pageElement;
+	PinchView* unPinched = self.selectedItem;
+	self.selectedItem = Nil;
+	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
+	if (index < 0) index = 0;
+	[[UserPinchViews sharedInstance] removePinchView:currentPinchView];
+	[(CollectionPinchView*)self.pageElement unPinchAndRemove:unPinched];
+
+	//check if there is now only one element in the collection, and if so
+	//this should not be collection anymore
+	if ([currentPinchView.pinchedObjects count] < 2) {
+		self.pageElement = currentPinchView.pinchedObjects[0];
+		[(PinchView*)self.pageElement revertToInitialFrame];
+		self.isCollection = NO;
+		self.collectionIsOpen = NO;
+		self.contentSize = self.initialContentSize;
+		self.contentOffset = self.initialContentOffset;
+		self.collectionPinchViews = Nil;
+	} else {
+		[self shiftPinchViewsAfterIndex:index];
+	}
+
+	self.selectedItem = Nil;
+	[[UserPinchViews sharedInstance] addPinchView:(PinchView*)self.pageElement];
+	return unPinched;
 }
 
 @end

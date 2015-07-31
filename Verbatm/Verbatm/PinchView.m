@@ -19,6 +19,8 @@
 
 @property (nonatomic, readwrite) float radius;
 @property (nonatomic, readwrite) CGPoint center;
+@property (nonatomic) float initialRadius;
+@property (nonatomic) CGPoint initialCenter;
 
 #pragma mark Encoding Keys
 
@@ -40,14 +42,14 @@
 
     if((self = [super init])) {
         //set up the properties
-		self.center = center;
-		self.radius = radius;
+		self.initialCenter = self.center = center;
+		self.initialRadius = self.radius = radius;
+        self.frame = CGRectMake(self.center.x - self.radius,
+								  self.center.y - self.radius,
+								  self.radius*2, self.radius*2);
+        [self setBackgroundFrames];
 		[self formatBackground];
-		self.backgroundColor = [UIColor PINCHVIEW_BACKGROUND_COLOR];
-        CGRect frame = CGRectMake(center.x - radius, center.y - radius, radius*2, radius*2);
-        [self specifyFrame:frame];
         [self addBorderToPinchView];
-
 		self.containsText = NO;
 		self.containsImage = NO;
 		self.containsVideo = NO;
@@ -79,15 +81,28 @@
  *corner radius
  */
 -(void)specifyFrame:(CGRect)frame {
-    CGPoint center = CGPointMake(frame.origin.x + frame.size.width/2, frame.origin.y + frame.size.height/2);
-    self.center = center;
-    self.frame = frame;
+	self.radius = frame.size.width/2;
+    self.center = CGPointMake(frame.origin.x + self.radius, frame.origin.y + self.radius);
+	self.frame = frame;
+	[self setBackgroundFrames];
+}
+
+-(void) setBackgroundFrames {
 	self.background.frame = self.bounds;
-	self.background.layer.cornerRadius = frame.size.width/2;
-    self.layer.cornerRadius = frame.size.width/2;
+	self.background.layer.cornerRadius = self.frame.size.width/2;
+	self.layer.cornerRadius = self.frame.size.width/2;
 	// This makes sure that moving the background canvas moves all the associated subviews too.
-    self.autoresizesSubviews = YES;
+	self.autoresizesSubviews = YES;
 	self.background.autoresizesSubviews = YES;
+}
+
+-(void)revertToInitialFrame {
+	self.center = self.initialCenter;
+	self.radius = self.initialRadius;
+	self.frame = CGRectMake(self.center.x - self.radius,
+							  self.center.y - self.radius,
+							  self.radius*2, self.radius*2);
+	[self setBackgroundFrames];
 }
 
 //allows the user to change the width and height of the frame keeping the same center

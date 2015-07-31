@@ -82,20 +82,20 @@
 -(void)markAsDeleting: (BOOL) deleting {
 	if (deleting) {
 		self.layer.borderColor = [UIColor DELETING_ITEM_COLOR].CGColor;
-		self.layer.shadowColor = [UIColor DELETING_ITEM_COLOR].CGColor;
+		self.layer.shadowOpacity = 0;
 	} else {
 		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
-		self.layer.shadowColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+		self.layer.shadowOpacity = 1;
 	}
 }
 
 -(void)markAsSelected: (BOOL) selected {
 	if (selected) {
 		self.layer.borderColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
-		self.layer.shadowColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
+		self.layer.shadowOpacity = 0;
 	} else {
 		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
-		self.layer.shadowColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+		self.layer.shadowOpacity = 1;
 	}
 }
 
@@ -236,6 +236,9 @@
 	self.text = @"";
 	self.image = Nil;
 	self.video = Nil;
+	self.containsText = NO;
+	self.containsImage = NO;
+	self.containsVideo = NO;
 	for (PinchView* pinchView in self.pinchedObjects) {
 		[self changeTypesOfMediaFromPinchView:pinchView];
 	}

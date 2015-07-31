@@ -12,6 +12,7 @@
 
 //array of NSData convertible to PinchView
 @property (strong, nonatomic) NSMutableArray* pinchViewsAsData;
+@property (strong) dispatch_queue_t convertPinchViewQueue;
 
 #define PINCHVIEWS_KEY @"user_pinch_views"
 #define CONVERTING_PINCHVIEW_DISPATCH_KEY "converting_pinchviews"
@@ -23,6 +24,7 @@
 - (id) init {
 	self = [super init];
 	if (self) {
+		self.convertPinchViewQueue = dispatch_queue_create(CONVERTING_PINCHVIEW_DISPATCH_KEY, NULL);
 	}
 	return self;
 }
@@ -30,10 +32,9 @@
 + (UserPinchViews *)sharedInstance {
 	static UserPinchViews *_sharedInstance = nil;
 	static dispatch_once_t onceSecurePredicate;
-	dispatch_once(&onceSecurePredicate,^
-				  {
-					  _sharedInstance = [[self alloc] init];
-				  });
+	dispatch_once(&onceSecurePredicate,^{
+		_sharedInstance = [[self alloc] init];
+	});
 
 	return _sharedInstance;
 }
@@ -60,55 +61,45 @@
 
 //adds pinch view and automatically saves pinchViews
 -(void) addPinchView:(PinchView*)pinchView {
-	dispatch_queue_t convertPinchViewQueue = dispatch_queue_create(CONVERTING_PINCHVIEW_DISPATCH_KEY, NULL);
-	dispatch_async(convertPinchViewQueue, ^{
-		NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
-
-		//thread safety
-		@synchronized(self) {
-
-			if (![self.pinchViewsAsData containsObject:pinchViewData]) {
-				[self.pinchViewsAsData addObject:pinchViewData];
-
-				[[NSUserDefaults standardUserDefaults]
-				 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
-			}
-			
+	@synchronized(self) {
+		if ([self.pinchViews containsObject:pinchView]) {
+			return;
 		}
-	});
+		[self.pinchViews addObject:pinchView];
+		dispatch_async(self.convertPinchViewQueue, ^{
+			NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
+			[self.pinchViewsAsData addObject:pinchViewData];
+			[[NSUserDefaults standardUserDefaults]
+			 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+		});
+	}
 }
 
 //removes pinch view and automatically saves pinchViews
 -(void) removePinchView:(PinchView*)pinchView {
-	dispatch_queue_t convertPinchViewQueue = dispatch_queue_create(CONVERTING_PINCHVIEW_DISPATCH_KEY, NULL);
-	dispatch_async(convertPinchViewQueue, ^{
-		NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
-
-		//thread safety
-		@synchronized(self) {
-
-			if ([self.pinchViewsAsData containsObject:pinchViewData]) {
-				[self.pinchViewsAsData removeObject:pinchViewData];
-
-				[[NSUserDefaults standardUserDefaults]
-				 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
-			}
-			
+	@synchronized(self) {
+		if (![self.pinchViews containsObject: pinchView]) {
+			return;
 		}
-	});
+		NSInteger pinchViewIndex = [self.pinchViews indexOfObject:pinchView];
+		[self.pinchViews removeObjectAtIndex:pinchViewIndex];
+		[self.pinchViewsAsData removeObjectAtIndex:pinchViewIndex];
+		[[NSUserDefaults standardUserDefaults]
+		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+	}
 }
 
 //loads pinchviews from user defaults
 -(void) loadPinchViewsFromUserDefaults {
-//	[[NSUserDefaults standardUserDefaults] removeObjectForKey:PINCHVIEWS_KEY];
-	self.pinchViewsAsData = [[NSUserDefaults standardUserDefaults]
-					   objectForKey:PINCHVIEWS_KEY];
-	for (NSData* data in self.pinchViewsAsData) {
-		PinchView* pinchView = [self convertNSDataToPinchView:data];
-		[self.pinchViews addObject:pinchView];
+	@synchronized(self) {
+		self.pinchViewsAsData = [[NSUserDefaults standardUserDefaults]
+								 objectForKey:PINCHVIEWS_KEY];
+		for (NSData* data in self.pinchViewsAsData) {
+			PinchView* pinchView = [self convertNSDataToPinchView:data];
+			[self.pinchViews addObject:pinchView];
+		}
+		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:self.pinchViewsAsData copyItems:YES];
 	}
-	NSMutableArray* mutablePinchViews = [[NSMutableArray alloc] initWithArray:self.pinchViewsAsData copyItems:YES];
-	self.pinchViewsAsData = mutablePinchViews;
 }
 
 //removes all pinch views

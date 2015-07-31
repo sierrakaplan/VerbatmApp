@@ -487,14 +487,11 @@
 
 	//thread safety
 	@synchronized(self) {
-
 		[self.pageElementScrollViews insertObject:newElementScrollView atIndex:self.index];
-
 	}
 
 	[self.mainScrollView addSubview:newElementScrollView];
 	[self shiftElementsBelowView:self.articleTitleField];
-
 }
 
 
@@ -1250,25 +1247,7 @@
 	if (self.selectedView_PAN.collectionIsOpen) {
 		PinchView* unPinched = [self.selectedView_PAN moveSelectedItemFromTouch:touch];
 		if (unPinched) {
-			UIView* upperView;
-			NSInteger upperViewIndex = 0;
-			if (unPinched.frame.origin.y > self.selectedView_PAN.frame.origin.y) {
-				upperView = self.selectedView_PAN;
-				upperViewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN];
-			} else {
-				upperViewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN]-1;
-				if (upperViewIndex >= 0) {
-					upperView = self.pageElementScrollViews[upperViewIndex];
-				} else {
-					upperView = self.articleTitleField;
-				}
-			}
-			unPinched.frame = CGRectMake(unPinched.frame.origin.x - self.selectedView_PAN.frame.origin.x,
-										 unPinched.frame.origin.y - self.selectedView_PAN.frame.origin.y,
-										 unPinched.frame.size.width, unPinched.frame.size.height);
-			[unPinched removeFromSuperview];
-			[self newPinchView:unPinched belowView:upperView];
-			self.selectedView_PAN = self.pageElementScrollViews[upperViewIndex+1];
+			[self addUnpinchedItem:unPinched];
 		}
 		return;
 	}
@@ -1372,6 +1351,28 @@
 			self.mainScrollView.contentOffset = newOffset;
 		}];
 	}
+}
+
+//takes a PinchView that has recently been unpinched and resets its frame
+//then adds it to a scroll view either above or below where it was unpinched from
+-(void) addUnpinchedItem:(PinchView*)unPinched {
+	UIView* upperView;
+	NSInteger upperViewIndex = 0;
+	if (unPinched.frame.origin.y > self.selectedView_PAN.frame.origin.y) {
+		upperView = self.selectedView_PAN;
+		upperViewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN];
+	} else {
+		upperViewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN]-1;
+		if (upperViewIndex >= 0) {
+			upperView = self.pageElementScrollViews[upperViewIndex];
+		} else {
+			upperView = self.articleTitleField;
+		}
+	}
+	[unPinched revertToInitialFrame];
+	[unPinched removeFromSuperview];
+	[self newPinchView:unPinched belowView:upperView];
+	self.selectedView_PAN = self.pageElementScrollViews[upperViewIndex+1];
 }
 
 // If the selected item was a pinch view, deselect it and set its final position in relation to other views
