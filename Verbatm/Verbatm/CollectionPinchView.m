@@ -24,6 +24,10 @@
 //Can be AVAsset or NSURL
 @property (weak, nonatomic) id video;
 
+#pragma mark Encoding Keys
+
+#define PINCHVIEWS_KEY @"child_pinchviews"
+
 @end
 
 @implementation CollectionPinchView
@@ -31,19 +35,23 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-		self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
-		[self.videoView repeatVideoOnEnd:YES];
-		[self.background addSubview:self.videoView];
-		[self addPlayIcon];
-		[self addCollectionViewBorder];
-		[self.background addSubview:self.textView];
-		[self.background addSubview:self.imageView];
-		[self.background addSubview:self.videoView];
-		[self.pinchedObjects addObjectsFromArray:pinchViews];
-		[self updateMedia];
-		[self renderMedia];
+		[self initWithPinchViews:pinchViews];
 	}
 	return self;
+}
+
+-(void) initWithPinchViews:(NSArray*)pinchViews {
+	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
+	[self.videoView repeatVideoOnEnd:YES];
+	[self.background addSubview:self.videoView];
+	[self addPlayIcon];
+	[self addCollectionViewBorder];
+	[self.background addSubview:self.textView];
+	[self.background addSubview:self.imageView];
+	[self.background addSubview:self.videoView];
+	[self.pinchedObjects addObjectsFromArray:pinchViews];
+	[self updateMedia];
+	[self renderMedia];
 }
 
 #pragma mark - Adding play button
@@ -71,7 +79,8 @@
 		self.layer.borderColor = [UIColor DELETING_ITEM_COLOR].CGColor;
 		self.layer.shadowColor = [UIColor DELETING_ITEM_COLOR].CGColor;
 	} else {
-		[self addCollectionViewBorder];
+		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+		self.layer.shadowColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
 	}
 }
 
@@ -80,7 +89,8 @@
 		self.layer.borderColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
 		self.layer.shadowColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
 	} else {
-		[self addCollectionViewBorder];
+		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+		self.layer.shadowColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
 	}
 }
 
@@ -291,5 +301,21 @@
 	[self displayMedia];
 }
 
+#pragma mark - Encoding -
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+	[super encodeWithCoder:coder];
+	NSData* pinchViewsData = [NSKeyedArchiver archivedDataWithRootObject:self.pinchedObjects];
+	[coder encodeObject:pinchViewsData forKey:PINCHVIEWS_KEY];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+		NSData* pinchViewsData = [decoder decodeObjectForKey:PINCHVIEWS_KEY];
+		NSArray* pinchViews = [NSKeyedUnarchiver unarchiveObjectWithData:pinchViewsData];
+		[self initWithPinchViews:pinchViews];
+	}
+	return self;
+}
 
 @end

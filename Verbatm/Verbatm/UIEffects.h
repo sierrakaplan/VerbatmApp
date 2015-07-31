@@ -41,4 +41,5 @@
 
 //Returns list of photo filter names to use
 + (NSArray*) getPhotoFilters;
+
 @end

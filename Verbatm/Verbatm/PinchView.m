@@ -20,6 +20,15 @@
 @property (nonatomic, readwrite) float radius;
 @property (nonatomic, readwrite) CGPoint center;
 
+#pragma mark Encoding Keys
+
+#define CONTAINS_TEXT_KEY @"contains_text"
+#define CONTAINS_IMAGE_KEY @"contains_image"
+#define CONTAINS_VIDEO_KEY @"contains_video"
+#define RADIUS_KEY @"radius"
+#define CENTER_X_KEY @"center_x"
+#define CENTER_Y_KEY @"center_y"
+
 @end
 
 @implementation PinchView
@@ -175,6 +184,32 @@
 -(void)onScreen {}
 
 -(void)renderMedia {}
+
+#pragma mark - Encoding -
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+
+	[coder encodeObject:[NSNumber numberWithBool:self.containsText] forKey:CONTAINS_TEXT_KEY];
+	[coder encodeObject:[NSNumber numberWithBool:self.containsImage] forKey:CONTAINS_IMAGE_KEY];
+	[coder encodeObject:[NSNumber numberWithBool:self.containsVideo] forKey:CONTAINS_VIDEO_KEY];
+	[coder encodeObject:[NSNumber numberWithFloat:self.center.x] forKey:CENTER_X_KEY];
+	[coder encodeObject:[NSNumber numberWithFloat:self.center.y] forKey:CENTER_Y_KEY];
+	[coder encodeObject:[NSNumber numberWithFloat:self.radius] forKey:RADIUS_KEY];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super init]) {
+		float radius = [(NSNumber*)[decoder decodeObjectForKey:RADIUS_KEY] floatValue];
+		float centerX = [(NSNumber*)[decoder decodeObjectForKey:CENTER_X_KEY] floatValue];
+		float centerY = [(NSNumber*)[decoder decodeObjectForKey:CENTER_Y_KEY] floatValue];
+		CGPoint center = CGPointMake(centerX, centerY);
+		self = [self initWithRadius:radius withCenter:center];
+		self.containsText = [(NSNumber*)[decoder decodeObjectForKey:CONTAINS_TEXT_KEY] boolValue];
+		self.containsImage = [(NSNumber*)[decoder decodeObjectForKey:CONTAINS_IMAGE_KEY] boolValue];
+		self.containsVideo = [(NSNumber*)[decoder decodeObjectForKey:CONTAINS_VIDEO_KEY] boolValue];
+	}
+	return self;
+}
 
 @end
 

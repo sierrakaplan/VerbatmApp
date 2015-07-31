@@ -14,6 +14,7 @@
 #import "CollectionPinchView.h"
 #import "Durations.h"
 #import "SizesAndPositions.h"
+#import "UserPinchViews.h"
 
 @interface ContentPageElementScrollView()
 @property (nonatomic, readwrite) BOOL collectionIsOpen;
@@ -60,6 +61,9 @@
 -(PinchView*) pinchWith:(ContentPageElementScrollView*)otherScrollView {
 	PinchView* newPinchView;
 
+	[[UserPinchViews sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
+	[[UserPinchViews sharedInstance] removePinchView:(PinchView*)self.pageElement];
+
 	if(self.isCollection) {
 		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(PinchView*)otherScrollView.pageElement];
 	} else if(otherScrollView.isCollection){
@@ -69,6 +73,7 @@
 		newPinchView = [PinchView pinchTogether:pinchViewArray];
 		pinchViewArray = nil;
 	}
+	[[UserPinchViews sharedInstance] addPinchView:(PinchView*)newPinchView];
 	[self changePageElement:newPinchView];
 	[otherScrollView removeFromSuperview];
 	return newPinchView;

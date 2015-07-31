@@ -8,6 +8,7 @@
 
 #import "verbatmAppDelegate.h"
 #import <Parse/Parse.h>
+#import "UserPinchViews.h"
 
 @implementation verbatmAppDelegate
 
@@ -19,7 +20,9 @@
     
     //when app is opened this tracks it in parse
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
-    
+
+	[[UserPinchViews sharedInstance] loadPinchViewsFromUserDefaults];
+
     return YES;
 }
 							

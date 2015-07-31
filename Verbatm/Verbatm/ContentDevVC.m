@@ -27,10 +27,12 @@
 #import "Strings.h"
 #import "Styles.h"
 #import "ContentPageElementScrollView.h"
+#import "UserPinchViews.h"
 
 @interface ContentDevVC () < UITextFieldDelegate, UIScrollViewDelegate,MediaSelectTileDelegate,GMImagePickerControllerDelegate>
 
 @property (strong, nonatomic, readwrite) NSMutableArray * pageElementScrollViews;
+@property (nonatomic) NSInteger numPinchViews;
 
 #pragma mark Keyboard related properties
 @property (atomic) NSInteger keyboardHeight;
@@ -106,8 +108,11 @@
 	[self configureViews];
 	[self setUpNotifications];
 	[self setDelegates];
+
 	self.pinchingMode = PinchingModeNone;
 	self.index = 0;
+	self.numPinchViews = 0;
+	[self loadPinchViews];
 }
 
 -(void) addBlurView {
@@ -275,6 +280,13 @@
 	self.sandwichWhere.delegate = self;
 	self.articleTitleField.delegate = self;
 	self.mainScrollView.delegate = self;
+}
+
+-(void) loadPinchViews {
+	NSArray* savedPinchViews = [[UserPinchViews sharedInstance] pinchViews];
+	for (PinchView* pinchView in savedPinchViews) {
+		[self newPinchView:pinchView belowView:[self getUpperView]];
+	}
 }
 
 #pragma mark - Lazy Instantiation
@@ -455,10 +467,8 @@
 		NSLog(@"Attempting to add Nil pinch view");
 		return;
 	}
-	//thread safety
-	NSLock  * lock =[[NSLock alloc] init];
-	[lock lock];
 
+	[[UserPinchViews sharedInstance] addPinchView:pinchView];
 	[self addTapGestureToPinchView:pinchView];
 
 	CGRect newElementScrollViewFrame;
@@ -473,9 +483,17 @@
 	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
 	newElementScrollView.delegate = self;
 
-	[self.pageElementScrollViews insertObject:newElementScrollView atIndex:self.index];
+	if (self.numPinchViews < 1) {
+		[self sendAddedMediaNotification];
+	}
+	self.numPinchViews++;
 
-	[lock unlock];
+	//thread safety
+	@synchronized(self) {
+
+		[self.pageElementScrollViews insertObject:newElementScrollView atIndex:self.index];
+
+	}
 
 	[self.mainScrollView addSubview:newElementScrollView];
 	[self shiftElementsBelowView:self.articleTitleField];
@@ -1028,7 +1046,7 @@
 	   || ![self.upperPinchScrollView okToPinchWith:self.lowerPinchScrollView]) {
 		return;
 	}
-
+	self.numPinchViews--;
 	PinchView* pinched = [self.upperPinchScrollView pinchWith:self.lowerPinchScrollView];
 	[self addTapGestureToPinchView:pinched];
 	[self.pageElementScrollViews removeObject:self.lowerPinchScrollView];
@@ -1391,12 +1409,19 @@
 #pragma mark - Undo implementation -
 
 -(void) registerDeletedTile: (ContentPageElementScrollView *) tile withIndex: (NSNumber *) index {
-	if ([self.pageElementScrollViews count] <= 1) {
-		[self sendRemovedAllMediaNotification];
-	}
 	//make sure there is something to delete
 	if(!tile) return;
 	[tile removeFromSuperview];
+
+	//update user defaults if was pinch view
+	if ([tile.pageElement isKindOfClass:[PinchView class]]) {
+		[[UserPinchViews sharedInstance] removePinchView:(PinchView*)tile.pageElement];
+		self.numPinchViews--;
+		if (self.numPinchViews < 1) {
+			[self sendRemovedAllMediaNotification];
+		}
+	}
+
 	//ungray out undo if previously was grayed out
 	if (![self.tileSwipeViewUndoManager canUndo]) {
 		[self sendCanUndoNotification];
@@ -1425,19 +1450,27 @@
 	if(![self.tileSwipeViewUndoManager canUndo]) {
 		[self sendCanNotUndoNotification];
 	}
-	[self sendAddedMediaNotification];
 }
 
 
 #pragma mark Undo tile swipe
 
 -(void) undoTileDelete: (NSArray *) tileAndInfo {
-	ContentPageElementScrollView * view = tileAndInfo[0];
+	ContentPageElementScrollView * tile = tileAndInfo[0];
 	NSNumber * index = tileAndInfo[1];
 
-	[view.pageElement markAsDeleting:NO];
+	//update user defaults if was pinch view
+	if ([tile.pageElement isKindOfClass:[PinchView class]]) {
+		[[UserPinchViews sharedInstance] addPinchView:(PinchView*)tile.pageElement];
+		if (self.numPinchViews < 1) {
+			[self sendAddedMediaNotification];
+		}
+		self.numPinchViews++;
+	}
 
-	[self returnView:view toDisplayAtIndex:index.integerValue];
+	[tile.pageElement markAsDeleting:NO];
+
+	[self returnView:tile toDisplayAtIndex:index.integerValue];
 }
 
 -(void)returnView: (ContentPageElementScrollView *) scrollView toDisplayAtIndex:(NSInteger) index{
@@ -1487,7 +1520,6 @@
 			UIView *upperView = [self getUpperView];
 			TextPinchView* textPinchView = [[TextPinchView alloc] initWithRadius:self.defaultPinchViewRadius
 																	  withCenter:self.defaultPinchViewCenter andText:text];
-			[self sendAddedMediaNotification];
 			[self newPinchView:textPinchView belowView:upperView];
 		}
 	} else if(self.openPinchView.containsText) {
@@ -1509,6 +1541,11 @@
 -(void)addTapGestureToPinchView: (PinchView *) pinchView {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectTapped:)];
 	[pinchView addGestureRecognizer:tap];
+	if ([pinchView isKindOfClass:[CollectionPinchView class]]) {
+		for (PinchView* childPinchView in [(CollectionPinchView*)pinchView pinchedObjects]) {
+			[self addTapGestureToPinchView:childPinchView];
+		}
+	}
 }
 
 -(void) pinchObjectTapped:(UITapGestureRecognizer *) sender {
@@ -1538,7 +1575,6 @@
 	if(pinchView == Nil) {
 		[self.openEditContentView editText:@""];
 	} else {
-		self.openPinchView = pinchView;
 		if (pinchView.containsText) {
 			[self.openEditContentView editText:[pinchView getText]];
 		} else if(pinchView.containsImage) {
@@ -1546,7 +1582,10 @@
 			[self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
 		} else if(pinchView.containsVideo) {
 			[self.openEditContentView displayVideo:[(VideoPinchView*)pinchView video]];
+		} else {
+			return;
 		}
+		self.openPinchView = pinchView;
 	}
 
 	[self.view addSubview:self.openEditContentView];
@@ -1580,7 +1619,10 @@
 		[scrollView removeFromSuperview];
 	}
 	[self.pageElementScrollViews removeAllObjects];
+	[self sendRemovedAllMediaNotification];
+	[self sendCanNotUndoNotification];
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
+	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
 	self.baseMediaTileSelector = nil;
 	[self createBaseSelector];
@@ -1629,23 +1671,21 @@
 		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
 	}
 	if (newPinchView) {
-		[self sendAddedMediaNotification];
 		[self newPinchView:newPinchView belowView:upperView];
 	}
 }
 
 
 -(ContentPageElementScrollView*) getUpperView {
-	NSLock  * lock =[[NSLock alloc] init];
-	[lock lock];
-	ContentPageElementScrollView * topView;
-	if(self.index==-1 || self.pageElementScrollViews.count==1){
-		topView = nil;
-	} else {
-		topView = self.pageElementScrollViews[self.index];
+	@synchronized(self) {
+		ContentPageElementScrollView * topView;
+		if(self.index==-1 || self.pageElementScrollViews.count==1){
+			topView = nil;
+		} else {
+			topView = self.pageElementScrollViews[self.index];
+		}
+		return topView;
 	}
-	[lock unlock];
-	return topView;
 }
 
 //add assets from picker to our scrollview

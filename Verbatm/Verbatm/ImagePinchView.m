@@ -14,6 +14,10 @@
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
 
+#pragma mark Encoding Keys
+
+#define IMAGE_KEY @"image"
+
 @end
 
 @implementation ImagePinchView
@@ -21,13 +25,17 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-		[self.background addSubview:self.imageView];
-		self.containsImage = YES;
-		self.image = image;
-		[self setFilteredPhotos];
-		[self renderMedia];
+		[self initWithImage:image];
 	}
 	return self;
+}
+
+-(void) initWithImage:(UIImage*)image {
+	[self.background addSubview:self.imageView];
+	self.containsImage = YES;
+	self.image = image;
+	[self setFilteredPhotos];
+	[self renderMedia];
 }
 
 #pragma mark - Lazy Instantiation
@@ -101,6 +109,22 @@
 			//Run UI Updates
 		});
 	});
+}
+
+#pragma mark - Encoding -
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+	[super encodeWithCoder:coder];
+	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+		NSData* imageData = [decoder decodeObjectForKey:IMAGE_KEY];
+		UIImage* image = [UIImage imageWithData:imageData];
+		[self initWithImage:image];
+	}
+	return self;
 }
 
 @end

@@ -10,6 +10,7 @@
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
 		9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995A19BA9042005EBC8A /* MediaDevVC.m */; };
 		A504ECE51B69D5E20076F9D0 /* VideoPlayerWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = A504ECE41B69D5E20076F9D0 /* VideoPlayerWrapperView.m */; };
+		A504ECE81B6AF4A00076F9D0 /* UserPinchViews.m in Sources */ = {isa = PBXBuildFile; fileRef = A504ECE71B6AF4A00076F9D0 /* UserPinchViews.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
@@ -112,6 +113,8 @@
 		9D29995A19BA9042005EBC8A /* MediaDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaDevVC.m; sourceTree = "<group>"; };
 		A504ECE31B69D5E20076F9D0 /* VideoPlayerWrapperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlayerWrapperView.h; sourceTree = "<group>"; };
 		A504ECE41B69D5E20076F9D0 /* VideoPlayerWrapperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerWrapperView.m; sourceTree = "<group>"; };
+		A504ECE61B6AF4A00076F9D0 /* UserPinchViews.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPinchViews.h; sourceTree = "<group>"; };
+		A504ECE71B6AF4A00076F9D0 /* UserPinchViews.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPinchViews.m; sourceTree = "<group>"; };
 		A529196E1B59ADD500233712 /* Notifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Notifications.h; sourceTree = "<group>"; };
 		A529196F1B5D86A500233712 /* Icons.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Icons.h; sourceTree = "<group>"; };
 		A52919701B5D8BE800233712 /* SizesAndPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SizesAndPositions.h; sourceTree = "<group>"; };
@@ -410,6 +413,8 @@
 				A56F68801B65B43D00CE5744 /* ImagePinchView.m */,
 				A56F68821B65B44C00CE5744 /* VideoPinchView.h */,
 				A56F68831B65B44C00CE5744 /* VideoPinchView.m */,
+				A504ECE61B6AF4A00076F9D0 /* UserPinchViews.h */,
+				A504ECE71B6AF4A00076F9D0 /* UserPinchViews.m */,
 			);
 			name = "Pinch Views";
 			sourceTree = "<group>";
@@ -839,6 +844,7 @@
 				C7E6C13F1A4E394600863893 /* MultiplePhotoVideoAVE.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* UserLoginVC.m in Sources */,
 				A58656681B61FD99008E358C /* PhotoAVE.m in Sources */,
+				A504ECE81B6AF4A00076F9D0 /* UserPinchViews.m in Sources */,
 				C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */,
 				C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */,
 				C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */,
