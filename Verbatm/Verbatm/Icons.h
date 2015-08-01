@@ -13,6 +13,10 @@
 
 #define PUBLISH_BUTTON_IMAGE @"pulldown_text_icon" //@"publish_button"
 
+#define PLAY_VIDEO_ICON @"play_video_icon"
+#define PLAY_VIDEO_ICON_HALF_CIRCLE @"play_video_icon_half_circle"
+#define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
+
 #pragma mark Media Picker
 
 #define INSERT_MEDIA_BUTTON @"insert_media_button"
@@ -51,9 +55,8 @@
 
 #pragma mark Video AVE
 
-#define PLAY_ICON @"play"
-#define PAUSE_ICON @"pause"
-#define LINE_IMAGE @"line"
+#define MUTE_BUTTON_ICON @"mute_button_icon"
+#define UNMUTE_BUTTON_ICON @"unmute_button_icon"
 
 #pragma mark Images AVE
 
@@ -61,6 +64,7 @@
 
 #pragma mark - Feed -
 
+#define NO_NETWORK_IMAGE @"no_network_image"
 #define PUBLISHED_ANIMATION_ICON @"published_icon1"
 
 #endif /* Icons_h */

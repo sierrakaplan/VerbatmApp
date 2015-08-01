@@ -11,7 +11,8 @@
 @implementation ArticleTableViewCell
 
 - (void)awakeFromNib {
-    // Initialization code
+    [self setBackgroundColor:[UIColor clearColor]];
+	[self.textLabel setTextColor:[UIColor whiteColor]];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

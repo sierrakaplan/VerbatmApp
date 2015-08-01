@@ -16,14 +16,16 @@
 #import "Notifications.h"
 #import "SizesAndPositions.h"
 #import "Identifiers.h"
+#import "UIEffects.h"
+#import "VerbatmCameraView.h"
 
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
 @interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
     @property (weak, nonatomic) IBOutlet UITableView *articleListView;
     @property (strong, nonatomic) NSArray * articles;
-    @property (weak, nonatomic) IBOutlet UIButton *createArticle_button;
-    @property (weak, nonatomic) IBOutlet UIButton *refreshArticle_button;
+	@property (strong, nonatomic) VerbatmCameraView* verbatmCameraView;
+//    @property (weak, nonatomic) IBOutlet UIButton *createArticle_button;
     @property (weak, nonatomic) IBOutlet UILabel *listTitle;
     @property  (nonatomic) NSInteger selectedArticleIndex;
 	@property BOOL pullDownInProgress;
@@ -31,20 +33,32 @@
 
 @implementation ArticleListVC
 
-- (void)viewDidLoad
+//creates the camera view with the preview session
+-(VerbatmCameraView*)verbatmCameraView
 {
+	if(!_verbatmCameraView){
+		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame:  self.view.frame];
+	}
+	return _verbatmCameraView;
+}
+
+- (void)viewDidLoad {
     [super viewDidLoad];
     self.articleListView.dataSource = self;
     self.articleListView.delegate = self;
     [self setFrames];
+	[self addBlurView];
 	[self registerForNavNotifications];
 }
 
--(void) viewDidAppear:(BOOL)animated
-{
+-(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
 	[self refreshFeed];
+}
+
+-(void) addBlurView {
+	[self.view addSubview:self.verbatmCameraView];
+	[UIEffects createBlurViewOnView:self.view withStyle:UIBlurEffectStyleDark];
 }
 
 -(void) scrollViewWillBeginDragging:(nonnull UIScrollView *)scrollView {
@@ -75,10 +89,10 @@
 }
 
 -(void)setFrames {
+	self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(ARTICLE_IN_FEED_BUTTON_HEIGHT));
+	[self.articleListView setBackgroundColor:[UIColor clearColor]];
     //set button
-    self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - ARTICLE_IN_FEED_BUTTON_HEIGHT, self.view.frame.size.width/2, ARTICLE_IN_FEED_BUTTON_HEIGHT);
-    self.refreshArticle_button.frame =CGRectMake(0, self.view.frame.size.height - ARTICLE_IN_FEED_BUTTON_HEIGHT, self.view.frame.size.width/2, ARTICLE_IN_FEED_BUTTON_HEIGHT);
-    self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(ARTICLE_IN_FEED_BUTTON_HEIGHT));
+//    self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - ARTICLE_IN_FEED_BUTTON_HEIGHT, self.view.frame.size.width/2, ARTICLE_IN_FEED_BUTTON_HEIGHT);
 }
 
 -(void)registerForNavNotifications
@@ -107,19 +121,17 @@
     }];
 }
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
     return self.articles.count;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     self.selectedArticleIndex = indexPath.row;
     [self viewArticle];
 }
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ArticleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ARTICLE_LIST_CELL forIndexPath:indexPath];
     
     NSInteger index =indexPath.row;

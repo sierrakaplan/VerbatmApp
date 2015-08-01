@@ -8,6 +8,9 @@
 
 #import "GMImagePickerController.h"
 #import "GMAlbumsViewController.h"
+#import "SizesAndPositions.h"
+
+
 @import Photos;
 
 @interface GMImagePickerController () <UINavigationControllerDelegate>
@@ -27,8 +30,8 @@
         _displayAlbumsNumberOfAssets = YES;
         
         //Grid configuration:
-        _colsInPortrait = 3;
-        _colsInLandscape = 5;
+        _colsInPortrait = GALLERY_COLUMNS_PORTRAIT;
+        _colsInLandscape = GALLERY_COLUMNS_LANDSCAPE;
         _minimumInteritemSpacing = 2.0;
         
         //Sample of how to select the collections you want to display:

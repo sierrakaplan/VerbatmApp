@@ -96,8 +96,6 @@
 	if (self.textView) {
 		//drawing boundary
 		CGRect frame = self.textView.bounds;
-		NSLog(@"Frame origin: %f Frame height: %f", frame.origin.y, frame.size.height);
-
 		CGSize size = CGSizeMake(frame.size.width, [UIEffects measureContentHeightOfUITextView:self.textView] + TEXT_VIEW_BOTTOM_PADDING);
 		if (size.height > frame.size.height) {
 			frame.size = size;
@@ -149,7 +147,7 @@
 	self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
 	[self.imageView setImage:self.filteredImages[self.imageIndex]];
 	self.imageView.clipsToBounds = YES;
-	self.imageView.contentMode = UIViewContentModeCenter;
+	self.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self addSubview:self.imageView];
 	[self addTapGestureToMainView];
 	[self addSwipeGestureToImageView];

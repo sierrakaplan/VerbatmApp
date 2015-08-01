@@ -65,8 +65,8 @@
                         </connections>
                     </view>
                     <connections>
-                        <outlet property="adk_contatiner" destination="yxe-c7-aMo" id="QIx-i8-eZK"/>
-                        <outlet property="articleList_container" destination="BZw-d7-VqY" id="5wp-CG-fOg"/>
+                        <outlet property="adkContainer" destination="yxe-c7-aMo" id="QIx-i8-eZK"/>
+                        <outlet property="articleListContainer" destination="BZw-d7-VqY" id="5wp-CG-fOg"/>
                         <outlet property="masterSV" destination="Rve-tc-g3P" id="038-Bi-DAq"/>
                         <segue destination="K1p-X2-CXo" kind="modal" identifier="display_articles_segue" modalTransitionStyle="coverVertical" id="Bhb-UK-wiL"/>
                     </connections>
@@ -81,7 +81,7 @@
             </objects>
             <point key="canvasLocation" x="-4216" y="-1178"/>
         </scene>
-        <!--Item-->
+        <!--Article ListVC-->
         <scene sceneID="wyz-UI-MUa">
             <objects>
                 <viewController wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="ArticleListVC" sceneMemberID="viewController">
@@ -116,39 +116,12 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="hQd-Eg-nK1">
-                                <rect key="frame" x="0.0" y="529" width="157" height="39"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.80000000000000004" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="Refresh">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="refreshArticleList:" destination="Ve4-Qj-kgj" eventType="touchUpInside" id="F2Z-HN-ijl"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="VQh-Eg-Ig3">
-                                <rect key="frame" x="157" y="529" width="163" height="41"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.80000000000000004" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <state key="normal" title="Create Article">
-                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="createArticle:" destination="Ve4-Qj-kgj" eventType="touchUpInside" id="Gte-Vk-1gc"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
-                    <tabBarItem key="tabBarItem" title="Item" id="lOQ-bb-rpV"/>
                     <connections>
                         <outlet property="articleListView" destination="ugX-Ro-5HE" id="ngz-aI-ZoZ"/>
-                        <outlet property="createArticle_button" destination="VQh-Eg-Ig3" id="xmb-hq-lkm"/>
-                        <outlet property="refreshArticle_button" destination="hQd-Eg-nK1" id="RYi-GN-5an"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>

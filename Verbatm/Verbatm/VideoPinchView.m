@@ -7,8 +7,14 @@
 //
 
 #import "VideoPinchView.h"
+#import "Icons.h"
+#import "Styles.h"
 
 @interface VideoPinchView()
+
+#pragma mark Encoding Keys
+
+#define VIDEO_KEY @"video"
 
 @end
 
@@ -17,34 +23,43 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andVideo:(id)video {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-		self.videoView.frame = self.background.frame;
-		[self.background addSubview:self.videoView];
-		self.containsVideo = YES;
-		if ([video isKindOfClass:[AVAsset class]]) {
-			self.videoFormat = VideoFormatAsset;
-		} else if ([video isKindOfClass:[NSURL class]]) {
-			self.videoFormat = VideoFormatURL;
-		} else {
-			NSLog(@"Video passed in is not asset or url format");
-			return self;
-		}
-		self.video = video;
-		[self renderMedia];
+		[self initWithVideo:video];
 	}
 	return self;
 }
 
-//overriding
--(NSArray*) getVideos {
-	return @[self.video];
+-(void) initWithVideo:(id)video {
+	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
+	[self.videoView repeatVideoOnEnd:YES];
+	[self.background addSubview:self.videoView];
+	[self addPlayIcon];
+	self.containsVideo = YES;
+	if ([video isKindOfClass:[AVAsset class]]) {
+		self.videoFormat = VideoFormatAsset;
+	} else if ([video isKindOfClass:[NSURL class]]) {
+		self.videoFormat = VideoFormatURL;
+	} else {
+		NSLog(@"Video passed in is not asset or url format");
+		return;
+	}
+	self.video = video;
+	[self renderMedia];
 }
 
-#pragma mark - Lazy Instantiation
+#pragma mark - Adding play button
 
--(VideoPlayerView*)videoView {
-	if(!_videoView) _videoView = [[VideoPlayerView alloc] init];
-	[_videoView repeatVideoOnEnd:YES];
-	return _videoView;
+-(void) addPlayIcon {
+	UIImage* playIconImage = [UIImage imageNamed: PLAY_VIDEO_ICON];
+	UIImageView* playImageView = [[UIImageView alloc] initWithImage:playIconImage];
+	playImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
+	playImageView.frame = [self getCenterFrameForVideoView];
+	[self.videoView addSubview:playImageView];
+}
+
+-(CGRect) getCenterFrameForVideoView {
+	return CGRectMake(self.videoView.bounds.origin.x + self.videoView.bounds.size.width/4,
+					  self.videoView.bounds.origin.y + self.videoView.bounds.size.height/4,
+					  self.videoView.bounds.size.width/2, self.videoView.bounds.size.height/2);
 }
 
 #pragma mark - Render Media -
@@ -75,14 +90,38 @@
 #pragma mark - When pinch view goes on and off screen
 
 -(void)offScreen {
-	if(self.videoView.playerLayer) {
-		[self.videoView pauseVideo];
-	}
+	[self.videoView stopVideo];
 }
 
 -(void)onScreen {
-	if(self.videoView.playerLayer) {
-		[self.videoView continueVideo];
-	}
+	[self displayMedia];
 }
+
+#pragma mark - Overriding get videos
+
+//overriding
+-(NSArray*) getVideos {
+	return @[self.video];
+}
+
+#pragma mark - Encoding -
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+	[super encodeWithCoder:coder];
+	NSURL* videoURL = self.video;
+	if(self.videoFormat == VideoFormatAsset) {
+		videoURL = [(AVURLAsset*)self.video URL];
+	}
+	[coder encodeObject:videoURL forKey:VIDEO_KEY];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+		NSURL* videoURL = [decoder decodeObjectForKey:VIDEO_KEY];
+		AVURLAsset* video = [AVURLAsset assetWithURL:videoURL];
+		[self initWithVideo:video];
+	}
+	return self;
+}
+
 @end

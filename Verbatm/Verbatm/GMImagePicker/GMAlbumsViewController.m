@@ -192,8 +192,7 @@
 
 #pragma mark - Rotation
 
-- (BOOL)shouldAutorotate
-{
+- (BOOL)shouldAutorotate {
     return YES;
 }
 

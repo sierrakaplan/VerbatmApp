@@ -29,6 +29,15 @@
 
 #define TRANSLATION_CONTENT_DEV_CONTAINER_VIEW_THRESHOLD 50.f
 
+
+#pragma mark - Content Dev VC -
+
+#pragma mark - Gallery
+
+#define GALLERY_COLUMNS_PORTRAIT 3
+#define GALLERY_COLUMNS_LANDSCAPE 5
+
+
 #pragma mark - Editing Content View
 
 #define TEXT_VIEW_BOTTOM_PADDING 15.f
@@ -103,7 +112,8 @@
 
 #pragma mark Images
 
-#define CIRCLE_OVER_IMAGES_RADIUS 100.f
+#define CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT 6.f
+
 #define POINTS_ON_CIRCLE_RADIUS 10.f
 #define TOUCH_THRESHOLD 40.f
 

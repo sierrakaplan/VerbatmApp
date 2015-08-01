@@ -8,6 +8,8 @@
 
 #import "CollectionPinchView.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
+#import "Icons.h"
 #import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
@@ -16,10 +18,19 @@
 
 @property (strong, nonatomic) NSString* text;
 @property (strong, nonatomic) UITextView *textView;
-@property (strong, nonatomic) UIImageView *imageView;
+
 @property (weak, nonatomic) UIImage* image;
+@property (strong, nonatomic) UIImageView *imageView;
+
 //Can be AVAsset or NSURL
 @property (weak, nonatomic) id video;
+@property (strong, nonatomic) UIImageView *playVideoImageView;
+@property (strong, nonatomic) UIImage* playVideoIconHalf;
+@property (strong, nonatomic) UIImage* playVideoIconQuarter;
+
+#pragma mark Encoding Keys
+
+#define PINCHVIEWS_KEY @"child_pinchviews"
 
 @end
 
@@ -28,14 +39,64 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-		[self.background addSubview:self.textView];
-		[self.background addSubview:self.imageView];
-		[self.background addSubview:self.videoView];
-		[self.pinchedObjects addObjectsFromArray:pinchViews];
-		[self changeTypesOfMedia];
-		[self renderMedia];
+		[self initWithPinchViews:pinchViews];
 	}
 	return self;
+}
+
+-(void) initWithPinchViews:(NSArray*)pinchViews {
+	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
+	[self.videoView repeatVideoOnEnd:YES];
+	[self.background addSubview:self.videoView];
+	[self addPlayIcon];
+	[self addCollectionViewBorder];
+	[self.background addSubview:self.textView];
+	[self.background addSubview:self.imageView];
+	[self.background addSubview:self.videoView];
+	[self.pinchedObjects addObjectsFromArray:pinchViews];
+	[self updateMedia];
+	[self renderMedia];
+}
+
+#pragma mark - Adding play button
+
+-(void) addPlayIcon {
+	self.playVideoIconHalf = [UIImage imageNamed: PLAY_VIDEO_ICON_HALF_CIRCLE];
+	self.playVideoIconQuarter = [UIImage imageNamed: PLAY_VIDEO_ICON_QUARTER_CIRCLE];
+	self.playVideoImageView = [[UIImageView alloc] initWithImage: self.playVideoIconHalf];
+	self.playVideoImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
+	self.playVideoImageView.frame = self.videoView.bounds;
+	[self.videoView addSubview:self.playVideoImageView];
+}
+
+#pragma mark - Collection View Border - 
+
+-(void) addCollectionViewBorder {
+	self.layer.borderWidth = COLLECTION_PINCHVIEW_BORDER_WIDTH;
+	self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+	self.layer.shadowColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+	self.layer.shadowRadius = COLLECTION_PINCHVIEW_SHADOW_RADIUS;
+	self.layer.shadowOpacity = 1;
+}
+
+-(void)markAsDeleting: (BOOL) deleting {
+	if (deleting) {
+		self.layer.borderColor = [UIColor DELETING_ITEM_COLOR].CGColor;
+		self.layer.shadowOpacity = 0;
+	} else {
+		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+		self.layer.shadowOpacity = 1;
+	}
+}
+
+-(void)markAsSelected: (BOOL) selected {
+	if (selected) {
+		self.layer.borderColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
+		self.layer.shadowOpacity = 0;
+	} else {
+		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+		self.layer.shadowOpacity = 1;
+	}
 }
 
 #pragma mark - Lazy Instantiation -
@@ -57,15 +118,9 @@
 
 -(UIImageView*)imageView {
 	if(!_imageView) _imageView = [[UIImageView alloc] init];
-	_imageView.contentMode = UIViewContentModeScaleAspectFill;
+	_imageView.contentMode = UIViewContentModeCenter;
 	_imageView.layer.masksToBounds = YES;
 	return _imageView;
-}
-
--(VideoPlayerView*)videoView {
-	if(!_videoView) _videoView = [[VideoPlayerView alloc] init];
-	[_videoView repeatVideoOnEnd:YES];
-	return _videoView;
 }
 
 #pragma mark - Render Media -
@@ -96,10 +151,8 @@
 		self.textView.frame = self.background.frame;
 	}else if(self.containsVideo){
 		self.videoView.frame = self.background.frame;
-		[self.background bringSubviewToFront:self.videoView];
-	}else{
+	}else {
 		self.imageView.frame = self.background.frame;
-		[self.background bringSubviewToFront:self.imageView];
 	}
 }
 
@@ -107,18 +160,19 @@
 -(void)renderTwoMedia {
 	CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/2.f , self.background.frame.size.height);
 	CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/2.f, self.background.frame.origin.y, self.background.frame.size.width/2.f, self.background.frame.size.height);
-	if(self.containsText){
-		self.textView.frame = frame1;
-		if(self.containsImage){
-			self.imageView.frame = frame2;
-		}else{
-			self.videoView.frame = frame2;
+	if(self.containsText) {
+		self.textView.frame = frame2;
+		if (self.containsImage){
+			self.imageView.frame = frame1;
+			self.videoView.frame = CGRectMake(0,0,0,0);
+		} else {
+			self.videoView.frame = frame1;
+			self.playVideoImageView.image = self.playVideoIconHalf;
 		}
-	}else{
+	} else {
 		self.videoView.frame = frame1;
+		self.playVideoImageView.image = self.playVideoIconHalf;
 		self.imageView.frame = frame2;
-		[self.background bringSubviewToFront:self.videoView];
-		[self.background bringSubviewToFront:self.imageView];
 	}
 }
 
@@ -127,19 +181,25 @@
 -(void)renderThreeMedia {
 	//computation to determine the relative positions of each of the views
 	self.textView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width, self.background.frame.size.height/2.f);
-	self.imageView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.textView.frame.size.height, self.background.frame.size.width/2.f, self.background.frame.size.height - self.textView.frame.size.height);
-	self.videoView.frame = CGRectMake(self.background.frame.origin.x + self.imageView.frame.size.width, self.imageView.frame.origin.y , self.background.frame.size.width - self.imageView.frame.size.width, self.imageView.frame.size.width);
+	self.videoView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.textView.frame.size.height, self.background.frame.size.width/2.f, self.background.frame.size.height - self.textView.frame.size.height);
+	self.imageView.frame = CGRectMake(self.background.frame.origin.x + self.videoView.frame.size.width, self.videoView.frame.origin.y , self.background.frame.size.width - self.videoView.frame.size.width, self.videoView.frame.size.width);
+
+	self.playVideoImageView.image = self.playVideoIconQuarter;
 }
 
 
 //This function displays the media on the view.
 -(void)displayMedia {
+	self.playVideoImageView.frame = [self getCenterFrameForVideoView];
+	self.videoView.videoPlayerView.frame = self.videoView.bounds;
 	if (self.containsText) {
 		self.textView.text = self.text;
 		[TextPinchView formatTextView:self.textView];
+		[self.background bringSubviewToFront:self.textView];
 	}
 	if (self.containsImage) {
 		[self.imageView setImage:self.image];
+		[self.background bringSubviewToFront:self.imageView];
 	}
 	if (self.containsVideo) {
 		if (![self.videoView isPlaying]) {
@@ -156,7 +216,14 @@
 			[self.videoView pauseVideo];
 			[self.videoView muteVideo];
 		}
+		[self.background bringSubviewToFront:self.videoView];
 	}
+}
+
+-(CGRect) getCenterFrameForVideoView {
+	return CGRectMake(self.videoView.bounds.origin.x + self.videoView.bounds.size.width/4,
+					  self.videoView.bounds.origin.y + self.videoView.bounds.size.height/4,
+					  self.videoView.bounds.size.width/2, self.videoView.bounds.size.height/2);
 }
 
 #pragma mark - Add and return pinch views -
@@ -165,7 +232,13 @@
 	return [self.pinchedObjects count];
 }
 
--(void) changeTypesOfMedia {
+-(void) updateMedia {
+	self.text = @"";
+	self.image = Nil;
+	self.video = Nil;
+	self.containsText = NO;
+	self.containsImage = NO;
+	self.containsVideo = NO;
 	for (PinchView* pinchView in self.pinchedObjects) {
 		[self changeTypesOfMediaFromPinchView:pinchView];
 	}
@@ -174,7 +247,11 @@
 -(void) changeTypesOfMediaFromPinchView:(PinchView*) pinchView {
 	if (pinchView.containsText) {
 		self.containsText = YES;
-		self.text = [self.text stringByAppendingString:[pinchView getText]];
+		if ([self.text length]) {
+			self.text = [NSString stringWithFormat:@"%@\r\r%@", self.text, [pinchView getText]];
+		} else {
+			self.text = [self.text stringByAppendingString:[pinchView getText]];
+		}
 	} else if(pinchView.containsImage) {
 		self.containsImage = YES;
 		if(!self.image) {
@@ -202,10 +279,7 @@
 -(CollectionPinchView*) unPinchAndRemove:(PinchView*)pinchView {
 	if ([self.pinchedObjects containsObject:pinchView]) {
 		[self.pinchedObjects removeObject:pinchView];
-		self.video = Nil;
-		self.image = Nil;
-		self.text = @"";
-		[self changeTypesOfMedia];
+		[self updateMedia];
 	}
 	[self renderMedia];
 	return self;
@@ -235,5 +309,31 @@
 	return videos;
 }
 
+#pragma mark - When pinch view goes on and off screen
+
+-(void)offScreen {
+	[self.videoView stopVideo];
+}
+
+-(void)onScreen {
+	[self displayMedia];
+}
+
+#pragma mark - Encoding -
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+	[super encodeWithCoder:coder];
+	NSData* pinchViewsData = [NSKeyedArchiver archivedDataWithRootObject:self.pinchedObjects];
+	[coder encodeObject:pinchViewsData forKey:PINCHVIEWS_KEY];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+		NSData* pinchViewsData = [decoder decodeObjectForKey:PINCHVIEWS_KEY];
+		NSArray* pinchViews = [NSKeyedUnarchiver unarchiveObjectWithData:pinchViewsData];
+		[self initWithPinchViews:pinchViews];
+	}
+	return self;
+}
 
 @end

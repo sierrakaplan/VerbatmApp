@@ -18,6 +18,8 @@
 
 @property (strong, nonatomic, readonly) UIView<ContentDevElementDelegate>* pageElement;
 
+@property (strong, nonatomic, readonly) PinchView* selectedItem;
+
 -(id) initWithFrame:(CGRect)frame andElement:(UIView<ContentDevElementDelegate>*) element;
 
 #pragma mark Deleting
@@ -62,6 +64,16 @@
 
 //moves pinch views in open collection back to their starting locations
 -(void) moveOpenCollectionViewsBack;
+
+//marks the pinch view being touched as selected (if there is any)
+-(void) selectItemInOpenCollectionFromTouch:(CGPoint) touch;
+
+//moves the selected pinch view to new location horizontally in collection
+//if it was moved vertically far enough from collection it is unpinched
+//from collection and returned
+-(PinchView*) moveSelectedItemFromTouch:(CGPoint) touch;
+
+-(void) finishMovingSelectedItem;
 
 @end
 

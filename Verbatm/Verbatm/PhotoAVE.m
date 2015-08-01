@@ -44,25 +44,18 @@
 
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.circleRadius = self.frame.size.height/6.f;
+		self.circleRadius = self.frame.size.height / CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT;
 		[self addPhotos:photos];
 		if ([photos count] > 1) {
 			[self createCircleViewAndPoints];
 			self.draggingFromPointIndex = -1;
 			self.currentPhotoIndex = 0;
 			[self highlightDot];
-			[self displayCircle:YES];
-			self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
 		}
 		self.textShowing = YES;
 		[self addTapGestureToView:self];
 	}
 	return self;
-}
-
--(void) viewDidAppear {
-//	[self displayCircle:YES];
-//	[self displayCircle: NO];
 }
 
 #pragma mark - Lazy Instantiation
@@ -140,7 +133,7 @@
 	UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
 	photoView.frame = self.bounds;
 	photoView.clipsToBounds = YES;
-	photoView.contentMode = UIViewContentModeCenter;
+	photoView.contentMode = UIViewContentModeScaleAspectFit;
 	return photoView;
 }
 
@@ -166,7 +159,7 @@
 		[self createDotViewFromPoint:point];
 	}
 	[self createMainCircleView];
-	[self addSwipeGestureToView:self];
+	[self addPanGestureToView:self];
 }
 
 
@@ -200,7 +193,7 @@
 	[self addSubview:dot];
 }
 
--(void)addSwipeGestureToView:(UIView *) view
+-(void)addPanGestureToView:(UIView *) view
 {
 	UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:view action:@selector(trackMovementOnCircle:)];
 	panGesture.delegate = self;
@@ -343,6 +336,11 @@
 -(void) handleCircleGestureEnded:(UIPanGestureRecognizer*) sender {
 	self.draggingFromPointIndex = -1;
 	[self displayCircle:NO];
+}
+
+-(void) showAndRemoveCircle {
+	[self displayCircle:YES];
+	self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
 }
 
 -(void) displayCircle:(BOOL)display {

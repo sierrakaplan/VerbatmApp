@@ -42,6 +42,10 @@
 */
 -(void)specifyFrame:(CGRect)frame;
 
+//This reverts to the center and radius specified
+//for the pinch view during initialization
+-(void)revertToInitialFrame;
+
 -(NSInteger) numTypesOfMedia;
 
 //This merges two verbatm pinch objects into one.

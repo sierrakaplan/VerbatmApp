@@ -94,16 +94,14 @@
 	}
 	self.textViewBottomFrame = CGRectMake(0,TEXT_OVER_AVE_TOP_OFFSET,self.frame.size.width, heightForTextView);
 	[self addSubview:self.textViewContainer];
-	[self bringSubviewToFront:self.textViewContainer];
 
-	if(self.textViewContentSize > TEXT_OVER_AVE_STARTING_HEIGHT) {
+	if(self.textViewContentSize > (TEXT_OVER_AVE_STARTING_HEIGHT + TEXT_OVER_AVE_PULLBAR_HEIGHT/2.f)) {
 		[self addPullDownBarForText];
 	}
 }
 
--(int)numberOfLinesInTextView:(UITextView *)textView
-{
-    return textView.contentSize.height/textView.font.lineHeight;
+-(int)numberOfLinesInTextView:(UITextView *)textView {
+    return [self.textViewContainer getHeightOfText]/textView.font.lineHeight;
 }
 
 

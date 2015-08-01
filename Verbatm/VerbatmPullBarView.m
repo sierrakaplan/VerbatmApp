@@ -63,7 +63,7 @@
 	CGRect undoButtonFrame = CGRectMake(PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
 	self.undoButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.undoButton setFrame:undoButtonFrame];
-	[self.undoButton setImage:self.undoButtonGrayedOut forState:UIControlStateNormal];
+	[self grayOutUndo];
 	[self.undoButton setImage:[UIImage imageNamed:UNDO_BUTTON_CLICKED] forState:UIControlStateHighlighted | UIControlStateSelected];
 	[self.undoButton addTarget:self action:@selector(undoButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 //	[self.undoButton addTarget:self action:@selector(undoButtonPressed:) forControlEvents:UIControlEventTouchDown];
@@ -79,7 +79,7 @@
 	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - previewButtonWidth - PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, previewButtonWidth, buttonSize);
 	self.previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.previewButton setFrame:previewButtonFrame];
-	[self.previewButton setImage:self.previewButtonGrayedOut forState:UIControlStateNormal];
+	[self grayOutPreview];
 	[self.previewButton setImage:[UIImage imageNamed:PREVIEW_BUTTON_CLICKED] forState:UIControlStateHighlighted | UIControlStateSelected];
 	[self.previewButton addTarget:self action:@selector(previewButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 //	[self.previewButton addTarget:self action:@selector(previewButtonPressed:) forControlEvents:UIControlEventTouchDown];
@@ -151,18 +151,22 @@
 # pragma mark - Un and gray out buttons
 
 -(void) grayOutUndo {
+	[self.undoButton setEnabled:NO];
 	[self.undoButton setImage:self.undoButtonGrayedOut forState:UIControlStateNormal];
 }
 
 -(void) grayOutPreview {
+	[self.previewButton setEnabled:NO];
 	[self.previewButton setImage:self.previewButtonGrayedOut forState:UIControlStateNormal];
 }
 
 -(void) unGrayOutUndo {
+	[self.undoButton setEnabled:YES];
 	[self.undoButton setImage:self.undoButtonImage forState:UIControlStateNormal];
 }
 
 -(void) unGrayOutPreview {
+	[self.previewButton setEnabled:YES];
 	[self.previewButton setImage:self.previewButtonImage forState:UIControlStateNormal];
 }
 

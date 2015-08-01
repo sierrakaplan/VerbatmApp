@@ -13,22 +13,25 @@
 #import "Page.h"
 #import "Article.h"
 #import "VideoAVE.h"
+#import "PhotoAVE.h"
 #import "BaseArticleViewingExperience.h"
 #import "MultiplePhotoVideoAVE.h"
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
-#import "SizesAndPositions.h"
 #import "Durations.h"
 #import "Strings.h"
 #import "Styles.h"
+#import "SizesAndPositions.h"
 #import "UIView+Glow.h"
 
-@interface ArticleDisplayVC () <UIScrollViewDelegate>
+@interface ArticleDisplayVC () <UIGestureRecognizerDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
 @property (strong, nonatomic) NSMutableArray* poppedOffPages;
 @property (strong, nonatomic) UIView* animatingView;
 @property (strong, nonatomic) UIScrollView* scrollView;
+@property (nonatomic) NSInteger currentPageIndex;
+@property (strong, nonatomic) UIPanGestureRecognizer* panGesture;
 @property (nonatomic) CGPoint lastPoint;
 @property (atomic, strong) UIActivityIndicatorView *activityIndicator;
 
@@ -42,6 +45,7 @@
 @property (nonatomic) CGRect publishButtonRestingFrame;
 @property (nonatomic) CGRect publishButtonFrame;
 @property (nonatomic) NSAttributedString *publishButtonTitle;
+@property (nonatomic) float pageScrollTopBottomArea;
 
 //the amount of space that must be pulled to exit
 #define EXIT_EPSILON 60
@@ -57,6 +61,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticle:) name:NOTIFICATION_SHOW_ARTICLE object: nil];
+	float middleScreenSize = (self.view.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
+	self.pageScrollTopBottomArea = (self.view.frame.size.height - middleScreenSize)/2.f;
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -65,27 +71,6 @@
 
 -(void)setpageAVEs:(NSMutableArray *)pageAVEs {
 	_pageAVEs = pageAVEs;
-}
-
-//make sure to stop all videos
--(void)cleanUp {
-	[self showScrollView:NO];
-	if (!self.pageAVEs) return;
-	for (UIView* ave in self.pageAVEs) {
-		if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-			[self stopVideosInView:[(BaseArticleViewingExperience*)ave subAVE]];
-		} else {
-			[self stopVideosInView:ave];
-		}
-	}
-}
-
--(void) stopVideosInView:(UIView*) view {
-	if ([view isKindOfClass:[VideoAVE class]]) {
-		[(VideoAVE*)view stopVideo];
-	} else if([view isKindOfClass:[MultiplePhotoVideoAVE class]]) {
-		[[(MultiplePhotoVideoAVE*)view videoView] stopVideo];
-	}
 }
 
 -(void)startActivityIndicator {
@@ -103,14 +88,6 @@
     [self.activityIndicator stopAnimating];
 }
 
-
--(void) publishArticleButtonPressed: (UIButton*)sender {
-	[self cleanUp];
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PUBLISH_ARTICLE
-														object:nil
-													  userInfo:nil];
-}
-
 -(void)setUpScrollView {
 	self.scrollViewRestingFrame = CGRectMake(self.view.frame.size.width, 0,  self.view.frame.size.width, self.view.frame.size.height);
     if(self.scrollView) {
@@ -121,16 +98,18 @@
         self.scrollView = [[UIScrollView alloc] init];
         self.scrollView.frame = self.scrollViewRestingFrame;
         [self.view addSubview: self.scrollView];
-        self.scrollView.pagingEnabled  = YES;
+        self.scrollView.pagingEnabled = YES;
+		self.scrollView.scrollEnabled = YES;
         [self.scrollView setShowsVerticalScrollIndicator:NO];
         [self.scrollView setShowsHorizontalScrollIndicator:NO];
         self.scrollView.bounces = NO;
         self.scrollView.backgroundColor = [UIColor whiteColor];
+		self.scrollView.delegate = self;
         [UIEffects addShadowToView:self.scrollView];
     }
     
     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pageAVEs count]*self.view.frame.size.height);
-    self.scrollView.delegate = self;
+	self.currentPageIndex = 0;
 }
 
 -(void) addPublishButton {
@@ -180,12 +159,6 @@
     }
 }
 
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    //TODO: Dispose of any resources that can be recreated.
-}
-
 #pragma mark - Rendering article
 
 //called when we want to present an article. article should be set with our content
@@ -198,6 +171,8 @@
 	}else{
 		[self showArticlePreview: pinchObjects];
 	}
+	UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
+	[self displayMediaOnAVE:currentAVE];
 }
 
 -(void) showArticleFromParse:(Article *) article {
@@ -239,8 +214,7 @@
 			AVETypeAnalyzer * analyser = [[AVETypeAnalyzer alloc]init];
 			self.pageAVEs = [analyser processPinchedObjectsFromArray:pinchObjectsArray withFrame:self.view.frame];
 
-			if(!self.pageAVEs.count)return;//for now
-												 //stop animation indicator
+			if(!self.pageAVEs.count)return;
 			[self stopActivityIndicator];
 			[self renderPinchPages];
 			self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pageAVEs count]*self.view.frame.size.height); //adjust contentsize to fit
@@ -262,18 +236,6 @@
 	self.animatingView = nil;
 }
 
--(void) clearArticle {
-	//We clear these so that the media is released
-
-	for(UIView *view in self.scrollView.subviews) {
-		[view removeFromSuperview];
-	}
-	self.scrollView = NULL;
-	self.animatingView = NULL;
-	self.poppedOffPages = NULL;
-	self.pageAVEs = Nil;//sanitize array so memory is cleared
-}
-
 //takes AVE pages and displays them on our scrollview
 -(void)renderPinchPages {
     CGRect viewFrame = self.view.bounds;
@@ -290,135 +252,183 @@
         viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
     }
 
-    //This makes sure that if the first object is a video it is playing the sound
-    [self everythingOffScreen];
-    [self handlePlayBack];
     [self setUpGestureRecognizers];
 }
 
 #pragma mark - Gesture recognizers
 
 //Sets up the gesture recognizer for dragging from the edges.
--(void)setUpGestureRecognizers {
-    UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exitDisplay:)];
-    edgePanL.edges =  UIRectEdgeLeft;
-    [self.scrollView addGestureRecognizer: edgePanL];
+-(void) setUpGestureRecognizers {
+	self.panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollPage:)];
+	self.panGesture.delegate = self;
+	[self.scrollView addGestureRecognizer:self.panGesture];
 }
 
+-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+	return YES;
+}
+
+-(void) scrollPage:(UIPanGestureRecognizer*) sender {
+	switch (sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			if ([sender numberOfTouches] != 1) return;
+			CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
+			if (touchLocation.y < (self.view.frame.size.height - self.pageScrollTopBottomArea)
+				&& touchLocation.y > self.pageScrollTopBottomArea) {
+				self.scrollView.scrollEnabled = NO;
+			} else {
+				//pause video when scroll view is about to scroll
+				UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
+				[self pauseVideosInAVE:currentAVE];
+			}
+			break;
+		}
+		case UIGestureRecognizerStateChanged: {
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+			self.scrollView.scrollEnabled = YES;
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+#pragma mark - Exit Display -
+
+//called from left edge pan in master navigation vc
 - (void)exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender {
 
-	//we want only one finger doing anything when exiting
-	if([sender numberOfTouches] >1) return;
-	if(sender.state ==UIGestureRecognizerStateBegan) {
-		self.previousGesturePoint  = [sender locationOfTouch:0 inView:self.view];
-	}
-
-	if(sender.state == UIGestureRecognizerStateBegan) {
-		[self.publishButton stopGlowing];
-	}
-
-	if(sender.state == UIGestureRecognizerStateChanged) {
-
-		CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
-		int diff = current_point.x - self.previousGesturePoint.x;
-		self.previousGesturePoint = current_point;
-		self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x +diff, self.scrollView.frame.origin.y,  self.scrollView.frame.size.width,  self.scrollView.frame.size.height);
-		self.publishButton.frame = CGRectMake(self.publishButton.frame.origin.x +diff, self.publishButton.frame.origin.y,  self.publishButton.frame.size.width,  self.publishButton.frame.size.height);
-	}
-
-	if(sender.state == UIGestureRecognizerStateEnded) {
-		if(self.scrollView.frame.origin.x > EXIT_EPSILON) {
-			//exit article
-			[self cleanUp];
-		}else{
-			//return view to original position
-			[self showScrollView:YES];
+	switch (sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			//we want only one finger doing anything when exiting
+			if([sender numberOfTouches] != 1) {
+				return;
+			}
+			CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
+			self.previousGesturePoint  = touchLocation;
+			[self.publishButton stopGlowing];
+			break;
 		}
+		case UIGestureRecognizerStateChanged: {
+			CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
+			CGPoint currentPoint = touchLocation;
+			int diff = currentPoint.x - self.previousGesturePoint.x;
+			self.previousGesturePoint = currentPoint;
+			self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x +diff, self.scrollView.frame.origin.y,  self.scrollView.frame.size.width,  self.scrollView.frame.size.height);
+			self.publishButton.frame = CGRectMake(self.publishButton.frame.origin.x +diff, self.publishButton.frame.origin.y,  self.publishButton.frame.size.width,  self.publishButton.frame.size.height);
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+			if(self.scrollView.frame.origin.x > EXIT_EPSILON) {
+				//exit article
+				[self showScrollView:NO];
+			}else{
+				//return view to original position
+				[self showScrollView:YES];
+			}
+			break;
+		}
+		default:
+			break;
+	}
+
+}
+
+#pragma mark - Publish button pressed -
+
+-(void) publishArticleButtonPressed: (UIButton*)sender {
+	[self showScrollView:NO];
+	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PUBLISH_ARTICLE
+														object:nil
+													  userInfo:nil];
+}
+
+#pragma mark - Scroll view methods -
+
+//scroll view is on new page
+-(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	self.currentPageIndex = scrollView.contentOffset.y/self.view.frame.size.height;
+	UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
+	[self displayMediaOnAVE:currentAVE];
+}
+
+
+#pragma mark - Display Media on AVE
+
+//takes care of playing video if necessary
+//or showing circle if multiple photo ave
+-(void) displayMediaOnAVE:(UIView*) ave {
+	[self displayCircleOnAVE:ave];
+	[self playVideosInAVE:ave];
+}
+
+-(void) displayCircleOnAVE:(UIView*) ave {
+	if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self displayCircleOnAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[PhotoAVE class]]) {
+		[(PhotoAVE*)ave showAndRemoveCircle];
 	}
 }
 
-//to be called when an aritcle is first rendered to unsure all videos are off
--(void)everythingOffScreen
-{
-    for (int i=0; i< self.pageAVEs.count; i++)
-    {
-        if(self.pageAVEs[i] == self.animatingView)continue;
-//
-//        if([self.pageAVEs[i] isKindOfClass:[VideoAVE class]]){
-//            [((VideoAVE*)self.pageAVEs[i]) offScreen];
-//        }else if([self.pageAVEs[i] isKindOfClass:[PhotoVideoAVE class]]){
-//            [((PhotoVideoAVE *)self.pageAVEs[i]) offScreen];
-//        }else if([self.pageAVEs[i] isKindOfClass:[MultiplePhotoVideoAVE class]]){
-//            [((MultiplePhotoVideoAVE*)self.pageAVEs[i]) offScreen];
-//        }else if([self.pageAVEs[i] isKindOfClass:[PhotoVideoTextAVE class]]){
-//            [((PhotoVideoTextAVE *)self.animatingView) offScreen];
-//        }
-    }
+#pragma mark - Video playback
+
+-(void) stopVideosInAVE:(UIView*) ave {
+	if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self stopVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[VideoAVE class]]) {
+		[(VideoAVE*)ave stopVideo];
+	} else if([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
+		[[(MultiplePhotoVideoAVE*)ave videoView] stopVideo];
+	}
 }
 
-#pragma mark - Video Playing
--(void)handlePlayBack//plays sound if first video is
-{
-    if(_animatingView){
-        [self stopPlayBack];
-    }else {
-        _animatingView = [self.pageAVEs firstObject];
-        [self stopPlayBack];
-    }
-    int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
-    _animatingView = [self.pageAVEs objectAtIndex:index];
-    [self runPlayBack];
+-(void) pauseVideosInAVE:(UIView*) ave {
+	if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self pauseVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[VideoAVE class]]) {
+		[(VideoAVE*)ave pauseVideo];
+	} else if([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
+		[[(MultiplePhotoVideoAVE*)ave videoView] pauseVideo];
+	}
 }
 
-/*
- call this after changing the animating view to the current view
- */
--(void)runPlayBack
-{
-//    if([self.animatingView isKindOfClass:[VideoAVE class]])
-//    {
-//        [((VideoAVE*)self.animatingView) onScreen];
-//    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
-//    {
-//        [((PhotoVideoAVE *)self.animatingView) onScreen];
-//    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
-//    {
-//        [((MultiplePhotoVideoAVE*)self.animatingView) onScreen];
-//    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
-//    {
-//        [((PhotoVideoTextAVE *)self.animatingView) onScreen];
-//    }
+-(void) playVideosInAVE:(UIView*) ave {
+	if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self playVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[VideoAVE class]]) {
+		[(VideoAVE*)ave continueVideo];
+	} else if([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
+		[[(MultiplePhotoVideoAVE*)ave videoView] continueVideo];
+	}
 }
 
-/*call this before changing the nimating view so that we stop the previous thing
- */
--(void)stopPlayBack
-{
-//    if([self.animatingView isKindOfClass:[VideoAVE class]])
-//    {
-//        [((VideoAVE*)self.animatingView) offScreen];
-//    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
-//    {
-//        [((PhotoVideoAVE *)self.animatingView) offScreen];
-//    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
-//    {
-//        [((MultiplePhotoVideoAVE*)self.animatingView) offScreen];
-//    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
-//    {
-//        [((PhotoVideoTextAVE *)self.animatingView) offScreen];
-//    }
+#pragma mark - Clean up -
+
+- (void)didReceiveMemoryWarning {
+	[super didReceiveMemoryWarning];
+	[self stopAllVideos];
 }
 
-#pragma mark - ScrollView Callbacks
-
--(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
+-(void) clearArticle {
+	//We clear these so that the media is released
+	[self stopAllVideos];
+	for(UIView *view in self.scrollView.subviews) {
+		[view removeFromSuperview];
+	}
+	self.scrollView = Nil;
+	self.animatingView = Nil;
+	self.poppedOffPages = Nil;
+	self.pageAVEs = Nil;//sanitize array so memory is cleared
 }
 
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    [self handlePlayBack];
-}
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//make sure to stop all videos
+-(void) stopAllVideos {
+	if (!self.pageAVEs) return;
+	for (UIView* ave in self.pageAVEs) {
+		[self stopVideosInAVE:ave];
+	}
 }
 
 @end

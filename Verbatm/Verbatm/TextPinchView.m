@@ -16,6 +16,10 @@
 @property (strong, nonatomic) NSString* text;
 @property (strong, nonatomic) UITextView *textView;
 
+#pragma mark Encoding Keys
+
+#define TEXT_KEY @"text"
+
 @end
 
 @implementation TextPinchView
@@ -23,12 +27,16 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andText:(NSString*)text {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-		self.containsText = YES;
-		self.text = text;
-		[self.background addSubview:self.textView];
-		[self renderMedia];
+		[self initWithText:text];
 	}
 	return self;
+}
+
+-(void) initWithText:(NSString*)text {
+	self.containsText = YES;
+	self.text = text;
+	[self.background addSubview:self.textView];
+	[self renderMedia];
 }
 
 #pragma mark - Lazy Instantiation -
@@ -48,6 +56,7 @@
 +(void) formatTextView:(UITextView*)textView {
 	[textView setScrollEnabled:NO];
 	textView.textColor = [UIColor TEXT_AVE_COLOR];
+//	textView.backgroundColor = [UIColor colorWithWhite:0 alpha:0.5];
 	textView.backgroundColor = [UIColor PINCHVIEW_BACKGROUND_COLOR];
 	//must be editable to change font
 	[textView setEditable:YES];
@@ -87,6 +96,21 @@
 -(void) changeText:(NSString *) text {
 	self.text = text;
 	[self renderMedia];
+}
+
+#pragma mark - Encoding -
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+	[super encodeWithCoder:coder];
+	[coder encodeObject:self.text forKey:TEXT_KEY];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+		NSString* text = [decoder decodeObjectForKey:TEXT_KEY];
+		[self initWithText:text];
+	}
+	return self;
 }
 
 @end

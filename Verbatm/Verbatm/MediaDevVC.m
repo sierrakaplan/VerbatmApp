@@ -29,6 +29,7 @@
 #import "SizesAndPositions.h"
 #import "Identifiers.h"
 #import "Durations.h"
+#import "UserPinchViews.h"
 
 @interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
@@ -111,10 +112,10 @@
 
 	[self setDelegates];
 	[self registerForNotifications];
-	[self setContentDevVC];
-
-	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
 	[self createSubViews];
+	[self setContentDevVC];
+	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+
 }
 
 -(void) viewWillLayoutSubviews{
@@ -723,6 +724,7 @@
 		return;
 	}
 
+	[[UserPinchViews sharedInstance] clearPinchViews];
 	BOOL isTesting = [MasterNavigationVC inTestingMode];
 	//this creates and saves an article. the return value is unnecesary
 	Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];

@@ -14,7 +14,7 @@
 
 @interface VideoPlayerView: UIView <NSCoding>
 
-@property (nonatomic,strong) AVPlayerLayer* playerLayer;
+
 
 -(void)playVideoFromURL: (NSURL*) url;
 -(void)playVideoFromAsset: (AVAsset*) asset;
