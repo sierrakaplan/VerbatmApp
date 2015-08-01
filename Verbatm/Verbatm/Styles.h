@@ -16,11 +16,21 @@
 
 
 #define FILTER_LEVEL_BLUR 30
+#define BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
+#define BUTTON_LABEL_SHADOW_YOFFSET 1.5f
 
 #pragma mark - Sign In -
 
 #define ERROR_ANIMATION_TEXT_COLOR whiteColor
 #define ERROR_ANIMATION_FONT_SIZE 30
+
+
+#pragma mark - Feed -
+
+#define COMPOSE_STORY_BUTTON_LABEL_COLOR blackColor
+#define COMPOSE_STORY_BUTTON_LABEL_FONT_SIZE 16.f
+#define COMPOSE_STORY_OUTER_CIRCLE_BORDER_WIDTH 2.f
+
 
 #pragma mark - Content Dev VC -
 
@@ -60,8 +70,7 @@
 
 #define PUBLISH_BUTTON_LABEL_FONT_SIZE 16.f
 #define PUBLISH_BUTTON_LABEL_COLOR blackColor
-#define PUBLISH_BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
-#define PUBLISH_BUTTON_LABEL_SHADOW_YOFFSET 1.5f
+
 
 #pragma mark - AVES -
 

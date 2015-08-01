@@ -11,6 +11,8 @@
 #import "Notifications.h"
 #import "Identifiers.h"
 #import "Icons.h"
+#import "VerbatmCameraView.h"
+#import "MediaSessionManager.h"
 
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
@@ -41,6 +43,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	[self.view insertSubview: self.verbatmCameraView atIndex:0];
 	// Do any additional setup after loading the view.
 	[self formatVCS];
 	[self registerForNavNotifications];
@@ -50,6 +53,27 @@
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self login];
+}
+
+-(void)viewDidDisappear:(BOOL)animated {
+	[super viewDidDisappear:animated];
+}
+
+//creates the camera view with the preview session
+-(VerbatmCameraView*)verbatmCameraView
+{
+	if(!_verbatmCameraView){
+		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame: self.view.bounds];
+	}
+	return _verbatmCameraView;
+}
+
+-(MediaSessionManager*)sessionManager
+{
+	if(!_sessionManager){
+		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
+	}
+	return _sessionManager;
 }
 
 -(void)registerForNavNotifications {
@@ -189,7 +213,7 @@
 }
 
 
-//article publsihed sucessfully
+//article published sucessfully
 -(void)articlePublishedAnimation {
 	if(self.animationView.frame.size.width) return;
 	self.animationView.image = [UIImage imageNamed:PUBLISHED_ANIMATION_ICON];
@@ -232,7 +256,7 @@
 	self.masterSV.frame = self.view.bounds;
 	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width*2, 0);//enable horizontal scroll
 	self.masterSV.contentOffset = CGPointMake(0, 0);//start at the left
-	self.articleListContainer.frame = LEFT_FRAME ;
+	self.articleListContainer.frame = LEFT_FRAME;
 	self.adkContainer.frame = RIGHT_FRAME;
 }
 

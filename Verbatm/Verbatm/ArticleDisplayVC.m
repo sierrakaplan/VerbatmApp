@@ -102,8 +102,8 @@
 		self.scrollView.scrollEnabled = YES;
         [self.scrollView setShowsVerticalScrollIndicator:NO];
         [self.scrollView setShowsHorizontalScrollIndicator:NO];
-        self.scrollView.bounces = NO;
-        self.scrollView.backgroundColor = [UIColor whiteColor];
+        self.scrollView.bounces = YES;
+        self.scrollView.backgroundColor = [UIColor blackColor];
 		self.scrollView.delegate = self;
         [UIEffects addShadowToView:self.scrollView];
     }
@@ -123,9 +123,9 @@
 	UIColor *labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR];
 	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
 	NSShadow *shadow = [[NSShadow alloc] init];
-	[shadow setShadowBlurRadius:PUBLISH_BUTTON_LABEL_SHADOW_BLUR_RADIUS];
+	[shadow setShadowBlurRadius:BUTTON_LABEL_SHADOW_BLUR_RADIUS];
 	[shadow setShadowColor:labelColor];
-	[shadow setShadowOffset:CGSizeMake(0, PUBLISH_BUTTON_LABEL_SHADOW_YOFFSET)];
+	[shadow setShadowOffset:CGSizeMake(0, BUTTON_LABEL_SHADOW_YOFFSET)];
 	self.publishButtonTitle = [[NSAttributedString alloc] initWithString:PUBLISH_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont, NSShadowAttributeName : shadow}];
 	[self.publishButton setAttributedTitle:self.publishButtonTitle forState:UIControlStateNormal];
 
@@ -232,8 +232,25 @@
 	[self renderPinchPages];
 	[self addPublishButton];
 	[self showScrollView:YES];
+	[self scrollViewNotificationBounce];
 	self.lastPoint = CGPointZero;
 	self.animatingView = nil;
+}
+
+//let users know there is another page by bouncing a tiny bit
+-(void) scrollViewNotificationBounce {
+	if ([self.pageAVEs count] > 1) {
+		[self.publishButton stopGlowing];
+		[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION animations:^{
+			self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x,
+														self.scrollView.contentOffset.y + SCROLLVIEW_BOUNCE_OFFSET);
+			self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x,
+														self.scrollView.contentOffset.y - SCROLLVIEW_BOUNCE_OFFSET);
+		}completion:^(BOOL finished) {
+			if(finished) {
+			}
+		}];
+	}
 }
 
 //takes AVE pages and displays them on our scrollview

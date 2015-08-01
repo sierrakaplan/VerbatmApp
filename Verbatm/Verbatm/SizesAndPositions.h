@@ -9,10 +9,25 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
+
 #pragma mark - Sign In -
 
 #define SIGN_IN_ERROR_VIEW_HEIGHT 100.f
 #define SIGNIN_ERROR_LABEL_PADDING 30.f
+
+
+#pragma mark - Feed -
+
+#define ARTICLE_IN_FEED_BUTTON_HEIGHT 50
+#define FEED_TOP_OFFSET 30
+#define FEED_TITLE_LIST_OFFSET 30
+
+#pragma mark Compose Story Button
+
+#define COMPOSE_STORY_BUTTON_SIZE 90.f
+#define COMPOSE_STORY_BUTTON_OFFSET 20.f
+#define COMPOSE_STORY_OUTER_CIRCLE_SIZE 110.f
+
 
 #pragma mark - Media Dev VC -
 
@@ -36,7 +51,6 @@
 
 #define GALLERY_COLUMNS_PORTRAIT 3
 #define GALLERY_COLUMNS_LANDSCAPE 5
-
 
 #pragma mark - Editing Content View
 
@@ -66,8 +80,6 @@
 #pragma mark Verbatm Image Scroll View
 #define VIEW_WALL_OFFSET 20
 
-#pragma mark - Content Dev VC -
-
 #define TEXTFIELD_BORDER_WIDTH 0.8f
 #define AUTO_SCROLL_OFFSET 10
 #define CONTENT_SIZE_OFFSET 20
@@ -94,11 +106,7 @@
 #define MEDIA_TILE_SELECTOR_HEIGHT 100.f
 #define ADD_MEDIA_BUTTON_OFFSET 10
 
-#pragma mark - Feed -
 
-#define ARTICLE_IN_FEED_BUTTON_HEIGHT 50
-#define FEED_TOP_OFFSET 30
-#define FEED_TITLE_LIST_OFFSET 30
 
 #pragma mark - AVES -
 
@@ -116,5 +124,6 @@
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
 #define TOUCH_THRESHOLD 40.f
+
 
 #endif

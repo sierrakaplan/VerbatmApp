@@ -9,6 +9,9 @@
 #ifndef Durations_h
 #define Durations_h
 
+#define SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION 1.f
+#define SCROLLVIEW_BOUNCE_OFFSET 20.f
+
 #pragma mark - Sign In -
 
 #define ERROR_MESSAGE_ANIMATION_TIME 1.f

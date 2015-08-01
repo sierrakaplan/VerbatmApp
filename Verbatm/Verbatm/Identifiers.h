@@ -9,13 +9,16 @@
 #ifndef Identifiers_h
 #define Identifiers_h
 
-#pragma mark Sign In
+#pragma mark - Sign In -
 
 #define BRING_UP_SIGNIN_SEGUE @"bringUpSign"
 #define EXIT_SIGNIN_SEGUE @"exitSignInScreen"
-#define ARTICLE_LIST_CELL @"articleListCell"
 
-#pragma mark Content Dev VC
+#pragma mark - Feed -
+
+#define FEED_CELL_ID @"feedStoryCell"
+
+#pragma mark - Content Dev VC -
 
 #define ID_FOR_CONTENTPAGEVC @"contentPage"
 

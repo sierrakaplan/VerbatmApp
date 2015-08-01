@@ -7,6 +7,7 @@
 //
 
 #import "MediaSessionManager.h"
+#import "Strings.h"
 
 
 @interface MediaSessionManager() <AVCaptureFileOutputRecordingDelegate>
@@ -23,7 +24,6 @@
 
 #define N_FRAMES_PER_SECOND 32
 #define MAX_VIDEO_LENGTH_SECONDS 10
-#define ALBUM_NAME @"Verbatm"
 #define ASPECT_RATIO 4/3
 #define ZOOM_RATE 0.6
 @end
@@ -180,7 +180,7 @@
 //create the verbatm Folder in the photo album if it doesn't already exist
 -(void)createVerbatmDirectory
 {
-	NSString* albumName = ALBUM_NAME;
+	NSString* albumName = VERBATM_ALBUM_NAME;
 	[self.assetLibrary addAssetsGroupAlbumWithName:albumName
 									   resultBlock:^(ALAssetsGroup *group) {
 										   NSLog(@"added album:%@", albumName);
@@ -194,7 +194,7 @@
 
 -(void)getVerbatmDirectory
 {
-	NSString* albumName = ALBUM_NAME;
+	NSString* albumName = VERBATM_ALBUM_NAME;
 	__weak MediaSessionManager* weakSelf = self;
 	[self.assetLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum
 									 usingBlock:^(ALAssetsGroup *group, BOOL *stop) {

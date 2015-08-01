@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ArticleTableViewCell : UITableViewCell
+@interface FeedTableViewCell : UITableViewCell
 @property (weak, nonatomic) IBOutlet UILabel *articleTitle;
 @property (weak, nonatomic) IBOutlet UILabel *sandwich;
 @property (weak, nonatomic) IBOutlet UILabel *author;
