@@ -73,43 +73,141 @@
 	_pageAVEs = pageAVEs;
 }
 
+#pragma mark - Rendering article
+
+//called when we want to present an article. article should be set with our content
+-(void)showArticle:(NSNotification *) notification {
+
+	[self setUpScrollView];
+	Article* article = [[notification userInfo] objectForKey:ARTICLE_KEY_FOR_NOTIFICATION];
+	if(article) {
+		[self getPinchViewsFromArticle: article];
+	} else {
+		NSMutableArray* pinchViews = [[notification userInfo] objectForKey:PINCHVIEWS_KEY_FOR_NOTIFICATION];
+		[self showArticleFromPinchViews:pinchViews];
+	}
+}
+
+-(void) showArticleFromPinchViews: (NSMutableArray*)pinchViews {
+
+	//if we have nothing in our article then return to the list view-
+	//we shouldn't need this because all downloaded articles should have legit pages
+	if(![pinchViews count]) {
+		NSLog(@"No pages in article");
+		[self showScrollView:NO];
+		return;
+	}
+
+	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
+	self.pageAVEs = [analyzer processPinchedObjectsFromArray:pinchViews withFrame:self.view.frame];
+	[self addPublishButton];
+	[self renderPinchPages];
+	[self showScrollView:YES];
+	self.lastPoint = CGPointZero;
+	self.animatingView = nil;
+}
+
+//takes AVE pages and displays them on our scrollview
+-(void)renderPinchPages {
+
+	self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pageAVEs count]*self.view.frame.size.height);
+	self.currentPageIndex = 0;
+	CGRect viewFrame = self.view.bounds;
+
+	for(UIView* view in self.pageAVEs){
+		if([view isKindOfClass:[TextAVE class]]){
+			view.frame = viewFrame;
+			[self.scrollView addSubview: view];
+			viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
+			continue;
+		}
+		[self.scrollView insertSubview:view atIndex:0];
+		view.frame = viewFrame;
+		viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
+	}
+
+	[self setUpGestureRecognizers];
+}
+
+-(void) getPinchViewsFromArticle:(Article *)article {
+
+	[UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
+		self.articleCurrentlyViewing= YES;
+		self.scrollView.frame = self.view.bounds;
+	}];
+
+	[self startActivityIndicator];
+
+	dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
+	dispatch_async(articleDownload_queue, ^{
+		NSArray* pages = [article getAllPages];
+
+		//we sort the pages by their page numbers to make sure everything is in the right order
+		//O(nlogn) so should be fine in the long-run ;D
+		pages = [pages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+			Page * page1 = obj1;
+			Page * page2 = obj2;
+			if(page1.pagePosition < page2.pagePosition) return -1;
+			if(page2.pagePosition > page1.pagePosition) return 1;
+			return 0;
+		}];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
+			//get pinch views for our array
+			for (Page * page in pages) {
+				//here the radius and the center dont matter because this is just a way to wrap our data for the analyser
+				PinchView * pinchView = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
+				if (!pinchView) {
+					NSLog(@"Pinch view from parse should not be Nil.");
+					return;
+				}
+				[pinchObjectsArray addObject:pinchView];
+			}
+
+			[self stopActivityIndicator];
+			[self showArticleFromPinchViews:pinchObjectsArray];
+		});
+	});
+}
+
+#pragma mark Activity Indicator
+
 -(void)startActivityIndicator {
-    //add animation indicator here
-    //Create and add the Activity Indicator to splashView
-    self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    self.activityIndicator.alpha = 1.0;
-    self.activityIndicator.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
-    self.activityIndicator.hidesWhenStopped = YES;
-    [self.scrollView addSubview:self.activityIndicator];
-    [self.activityIndicator startAnimating];
+	//add animation indicator here
+	//Create and add the Activity Indicator to splashView
+	self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+	self.activityIndicator.alpha = 1.0;
+	self.activityIndicator.center = CGPointMake(self.view.frame.size.width/2, self.view.frame.size.height/2);
+	self.activityIndicator.hidesWhenStopped = YES;
+	[self.scrollView addSubview:self.activityIndicator];
+	[self.activityIndicator startAnimating];
 }
 
 -(void)stopActivityIndicator {
-    [self.activityIndicator stopAnimating];
+	[self.activityIndicator stopAnimating];
 }
+
+#pragma mark - Set Up Views -
 
 -(void)setUpScrollView {
 	self.scrollViewRestingFrame = CGRectMake(self.view.frame.size.width, 0,  self.view.frame.size.width, self.view.frame.size.height);
-    if(self.scrollView) {
-        //this means that we have already used this scrollview to present another article
-        //so we want to clear it and then exit
-        for(UIView * page in self.scrollView.subviews) [page removeFromSuperview];
-    }else{
-        self.scrollView = [[UIScrollView alloc] init];
-        self.scrollView.frame = self.scrollViewRestingFrame;
-        [self.view addSubview: self.scrollView];
-        self.scrollView.pagingEnabled = YES;
+	if(self.scrollView) {
+		//this means that we have already used this scrollview to present another article
+		//so we want to clear it and then exit
+		for(UIView * page in self.scrollView.subviews) [page removeFromSuperview];
+	}else{
+		self.scrollView = [[UIScrollView alloc] init];
+		self.scrollView.frame = self.scrollViewRestingFrame;
+		[self.view addSubview: self.scrollView];
+		self.scrollView.pagingEnabled = YES;
 		self.scrollView.scrollEnabled = YES;
-        [self.scrollView setShowsVerticalScrollIndicator:NO];
-        [self.scrollView setShowsHorizontalScrollIndicator:NO];
-        self.scrollView.bounces = YES;
-        self.scrollView.backgroundColor = [UIColor blackColor];
+		[self.scrollView setShowsVerticalScrollIndicator:NO];
+		[self.scrollView setShowsHorizontalScrollIndicator:NO];
+		self.scrollView.bounces = YES;
+		self.scrollView.backgroundColor = [UIColor blackColor];
 		self.scrollView.delegate = self;
-        [UIEffects addShadowToView:self.scrollView];
-    }
-    
-    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pageAVEs count]*self.view.frame.size.height);
-	self.currentPageIndex = 0;
+		[UIEffects addShadowToView:self.scrollView];
+	}
 }
 
 -(void) addPublishButton {
@@ -137,139 +235,33 @@
 // if show, return scrollView to its previous position
 // else remove scrollview
 -(void)showScrollView: (BOOL) show {
-    if(show)  {
-        [UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
-             self.articleCurrentlyViewing= YES;
-             self.scrollView.frame = self.view.bounds;
-			 self.publishButton.frame = self.publishButtonFrame;
-        } completion:^(BOOL finished) {
+	if(show)  {
+		[UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
+			self.articleCurrentlyViewing= YES;
+			self.scrollView.frame = self.view.bounds;
+			self.publishButton.frame = self.publishButtonFrame;
+		} completion:^(BOOL finished) {
 			[self.publishButton startGlowing];
-		}];
-    }else {
-		[self.publishButton stopGlowing];
-        [UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
-            self.scrollView.frame = self.scrollViewRestingFrame;
-			self.publishButton.frame = self.publishButtonRestingFrame;
-        }completion:^(BOOL finished) {
-            if(finished) {
-                self.articleCurrentlyViewing = NO;
-                [self clearArticle];
-            }
-        }];
-    }
-}
-
-#pragma mark - Rendering article
-
-//called when we want to present an article. article should be set with our content
--(void)showArticle:(NSNotification *) notification
-{
-	Article* article = [[notification userInfo] objectForKey:@"article"];
-	NSMutableArray* pinchObjects = [[notification userInfo] objectForKey:@"pinchObjects"];
-	if(article) {
-		[self showArticleFromParse: article];
-	}else{
-		[self showArticlePreview: pinchObjects];
-	}
-	UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
-	[self displayMediaOnAVE:currentAVE];
-}
-
--(void) showArticleFromParse:(Article *) article {
-	[self setUpScrollView];
-	[self showScrollView:YES];
-	[self startActivityIndicator];
-
-	dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
-	dispatch_async(articleDownload_queue, ^{
-		NSArray * pages = [article getAllPages];
-		//if we have nothing in our article then return to the list view- we shouldn't need this because all downloaded articles should have legit pages
-		if(!pages.count) {
-			NSLog(@"No pages in article");
-			[self showScrollView:NO];
-			return;
-		}
-
-		//we sort the pages by their page numbers to make sure everything is in the right order
-		//O(nlogn) so should be fine in the long-run ;D
-		pages = [pages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-			Page * page1 = obj1;
-			Page * page2 = obj2;
-			if(page1.pagePosition < page2.pagePosition)return -1;
-			if(page2.pagePosition > page1.pagePosition) return 1;
-			return 0;
-		}];
-		dispatch_async(dispatch_get_main_queue(), ^{
-			NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
-			//get pinch views for our array
-			for (Page * page in pages) {
-				//here the radius and the center dont matter because this is just a way to wrap our data for the analyser
-				PinchView * pinchView = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
-				if (!pinchView) {
-					NSLog(@"Pinch view from parse should not be Nil.");
-					return;
-				}
-				[pinchObjectsArray addObject:pinchView];
+			if ([self.pageAVEs count] > 1) {
+				[self scrollViewNotificationBounce:self.scrollView forNextPage:YES inYDirection:YES];
+			} else {
+				UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
+				[self displayMediaOnAVE:currentAVE];
 			}
-			AVETypeAnalyzer * analyser = [[AVETypeAnalyzer alloc]init];
-			self.pageAVEs = [analyser processPinchedObjectsFromArray:pinchObjectsArray withFrame:self.view.frame];
-
-			if(!self.pageAVEs.count)return;
-			[self stopActivityIndicator];
-			[self renderPinchPages];
-			self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pageAVEs count]*self.view.frame.size.height); //adjust contentsize to fit
-			self.lastPoint = CGPointZero;
-			self.animatingView = nil;
-		});
-	});
-}
-
--(void) showArticlePreview:  (NSMutableArray*) pinchObjects {
-	AVETypeAnalyzer * analyser = [[AVETypeAnalyzer alloc]init];
-	self.pageAVEs = [analyser processPinchedObjectsFromArray:pinchObjects withFrame:self.view.frame];
-	self.view.backgroundColor = [UIColor clearColor];
-	[self setUpScrollView];
-	[self renderPinchPages];
-	[self addPublishButton];
-	[self showScrollView:YES];
-	[self scrollViewNotificationBounce];
-	self.lastPoint = CGPointZero;
-	self.animatingView = nil;
-}
-
-//let users know there is another page by bouncing a tiny bit
--(void) scrollViewNotificationBounce {
-	if ([self.pageAVEs count] > 1) {
+		}];
+	}else {
 		[self.publishButton stopGlowing];
-		[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION animations:^{
-			self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x,
-														self.scrollView.contentOffset.y + SCROLLVIEW_BOUNCE_OFFSET);
-			self.scrollView.contentOffset = CGPointMake(self.scrollView.contentOffset.x,
-														self.scrollView.contentOffset.y - SCROLLVIEW_BOUNCE_OFFSET);
+		[UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
+			self.scrollView.frame = self.scrollViewRestingFrame;
+			self.publishButton.frame = self.publishButtonRestingFrame;
 		}completion:^(BOOL finished) {
 			if(finished) {
+				self.articleCurrentlyViewing = NO;
+				[self clearArticle];
+				//TODO if loaded from parse needs to tell feed this article isn't selected anymore
 			}
 		}];
 	}
-}
-
-//takes AVE pages and displays them on our scrollview
--(void)renderPinchPages {
-    CGRect viewFrame = self.view.bounds;
-    
-    for(UIView* view in self.pageAVEs){
-        if([view isKindOfClass:[TextAVE class]]){
-            view.frame = viewFrame;
-            [self.scrollView addSubview: view];
-            viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
-            continue;
-        }
-        [self.scrollView insertSubview:view atIndex:0];
-        view.frame = viewFrame;
-        viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
-    }
-
-    [self setUpGestureRecognizers];
 }
 
 #pragma mark - Gesture recognizers
@@ -366,11 +358,36 @@
 
 //scroll view is on new page
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	self.currentPageIndex = scrollView.contentOffset.y/self.view.frame.size.height;
-	UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
-	[self displayMediaOnAVE:currentAVE];
+	NSInteger newPageIndex = scrollView.contentOffset.y/scrollView.frame.size.height;
+	BOOL nextPage = newPageIndex >= self.currentPageIndex ? YES : NO;
+	self.currentPageIndex = newPageIndex;
+	if (self.currentPageIndex < [self.pageAVEs count]-1 && self.currentPageIndex > 0) {
+		[self scrollViewNotificationBounce: scrollView forNextPage:nextPage inYDirection:YES];
+	} else {
+		UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
+		[self displayMediaOnAVE:currentAVE];
+	}
 }
 
+- (void) scrollViewNotificationBounce:(UIScrollView*)scrollView forNextPage:(BOOL)nextPage inYDirection:(BOOL)yDirection {
+	float bounceOffset = nextPage ? SCROLLVIEW_BOUNCE_OFFSET : -SCROLLVIEW_BOUNCE_OFFSET;
+	[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION/2.f animations:^{
+		CGPoint newContentOffset = yDirection ? CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y + bounceOffset) : CGPointMake(scrollView.contentOffset.x + bounceOffset, scrollView.contentOffset.y);
+		scrollView.contentOffset = newContentOffset;
+	}completion:^(BOOL finished) {
+		if(finished) {
+			[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION/2.f animations:^{
+				CGPoint newContentOffset = yDirection ? CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y - bounceOffset) : CGPointMake(scrollView.contentOffset.x - bounceOffset, scrollView.contentOffset.y);
+				scrollView.contentOffset = newContentOffset;
+			}completion:^(BOOL finished) {
+				if(finished) {
+					UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
+					[self displayMediaOnAVE:currentAVE];
+				}
+			}];
+		}
+	}];
+}
 
 #pragma mark - Display Media on AVE
 
@@ -379,6 +396,7 @@
 -(void) displayMediaOnAVE:(UIView*) ave {
 	[self displayCircleOnAVE:ave];
 	[self playVideosInAVE:ave];
+	[self showImageScrollViewBounceInAVE:ave];
 }
 
 -(void) displayCircleOnAVE:(UIView*) ave {
@@ -386,6 +404,14 @@
 		[self displayCircleOnAVE:[(BaseArticleViewingExperience*)ave subAVE]];
 	} else if ([ave isKindOfClass:[PhotoAVE class]]) {
 		[(PhotoAVE*)ave showAndRemoveCircle];
+	}
+}
+
+-(void) showImageScrollViewBounceInAVE:(UIView*) ave {
+	if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self showImageScrollViewBounceInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
+		[(MultiplePhotoVideoAVE*)ave imageScrollViewBounce];
 	}
 }
 
@@ -434,10 +460,11 @@
 	for(UIView *view in self.scrollView.subviews) {
 		[view removeFromSuperview];
 	}
+	//sanitize array so memory is cleared
 	self.scrollView = Nil;
 	self.animatingView = Nil;
 	self.poppedOffPages = Nil;
-	self.pageAVEs = Nil;//sanitize array so memory is cleared
+	self.pageAVEs = Nil;
 }
 
 //make sure to stop all videos

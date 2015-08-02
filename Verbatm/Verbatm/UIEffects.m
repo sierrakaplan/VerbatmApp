@@ -8,6 +8,7 @@
 
 #import "UIEffects.h"
 #import "SizesAndPositions.h"
+#import "Durations.h"
 
 @interface UIEffects () {
 
@@ -319,6 +320,25 @@
 //						 @"CIMotionBlur"
 						];
 	return filters;
+}
+
+//let users know there is another page by bouncing a tiny bit and then bouncing back
++ (void) scrollViewNotificationBounce:(UIScrollView*)scrollView forNextPage:(BOOL)nextPage inYDirection:(BOOL)yDirection {
+	float bounceOffset = nextPage ? SCROLLVIEW_BOUNCE_OFFSET : -SCROLLVIEW_BOUNCE_OFFSET;
+	[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION/2.f animations:^{
+		CGPoint newContentOffset = yDirection ? CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y + bounceOffset) : CGPointMake(scrollView.contentOffset.x + bounceOffset, scrollView.contentOffset.y);
+		scrollView.contentOffset = newContentOffset;
+	}completion:^(BOOL finished) {
+		if(finished) {
+			[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION/2.f animations:^{
+				CGPoint newContentOffset = yDirection ? CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y - bounceOffset) : CGPointMake(scrollView.contentOffset.x - bounceOffset, scrollView.contentOffset.y);
+				scrollView.contentOffset = newContentOffset;
+			}completion:^(BOOL finished) {
+				if(finished) {
+				}
+			}];
+		}
+	}];
 }
 
 

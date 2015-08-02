@@ -14,11 +14,16 @@
 #import "Styles.h"
 #import "BaseArticleViewingExperience.h"
 #import "VerbatmImageScrollView.h"
+#import "UIEffects.h"
 
-@interface MultiplePhotoVideoAVE()
+@interface MultiplePhotoVideoAVE() <UIScrollViewDelegate>
 
 @property (strong, nonatomic) VerbatmImageScrollView *photoListScrollView;
 @property (strong, nonatomic) AVMutableComposition* mix;
+
+@property (nonatomic) NSInteger numImages;
+@property (nonatomic) NSInteger currentImageIndex;
+
 
 @end
 @implementation MultiplePhotoVideoAVE
@@ -30,10 +35,17 @@
     {
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
         [self setSubViews];
+		self.numImages = [photos count];
         [self.photoListScrollView renderPhotos:photos withBlurBackground:YES];
 		[self.videoView playVideos:videos];
     }
     return self;
+}
+
+-(void) imageScrollViewBounce {
+	if (self.numImages > 0) {
+		[UIEffects scrollViewNotificationBounce:self.photoListScrollView forNextPage:YES inYDirection:NO];
+	}
 }
 
 //sets the frames for the video view and the photo scrollview
@@ -45,6 +57,8 @@
     CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
     CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photoListScrollViewHeight);
 	self.photoListScrollView = [[VerbatmImageScrollView alloc] initWithFrame:photoListFrame];
+	self.photoListScrollView.delegate = self;
+	self.currentImageIndex = 0;
 	self.videoView = [[VideoAVE alloc] initWithFrame:videoViewFrame];
 
 	[self addSubview:self.videoView];
@@ -74,6 +88,15 @@
 	}
 }
 
+//image scroll view is on new page
+-(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	NSInteger newPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
+	BOOL nextPage = newPageIndex >= self.currentImageIndex ? YES : NO;
+	self.currentImageIndex = newPageIndex;
+	if (self.currentImageIndex < self.numImages-1 && self.currentImageIndex > 0) {
+		[UIEffects scrollViewNotificationBounce: scrollView forNextPage:nextPage inYDirection:NO];
+	}
+}
 
 -(void)offScreen {
     [self.videoView offScreen];

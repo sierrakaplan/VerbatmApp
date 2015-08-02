@@ -695,7 +695,7 @@
 		return;
 	}
 
-	NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pinchObjectsArray,@"pinchObjects", nil];
+	NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pinchObjectsArray,PINCHVIEWS_KEY_FOR_NOTIFICATION, nil];
 	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
 														object:nil
 													  userInfo:Info];

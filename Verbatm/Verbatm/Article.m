@@ -202,8 +202,7 @@
 
 #pragma mark - getting the pages -
 
--(NSArray*)getAllPages
-{
+-(NSArray*)getAllPages {
     PFQuery* pageQuery = [PFQuery queryWithClassName:@"Page"];
     [pageQuery whereKey:ARTICLE_COLUMN equalTo:self];
     return [pageQuery findObjects];

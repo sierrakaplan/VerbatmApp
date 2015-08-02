@@ -222,9 +222,8 @@
 }
 
 //one of the articles in the list have been clicked
--(void) viewArticle
-{
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articles[self.selectedArticleIndex] ,@"article", nil];
+-(void) viewArticle {
+    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articles[self.selectedArticleIndex], ARTICLE_KEY_FOR_NOTIFICATION, nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
                                                         object:nil
                                                       userInfo:Info];
