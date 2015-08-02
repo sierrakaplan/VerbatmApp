@@ -12,6 +12,7 @@
 #import "GMGridViewController.h"
 #import "GMAlbumsViewCell.h"
 #import "Identifiers.h"
+#import "Strings.h"
 
 @import Photos;
 
@@ -137,23 +138,24 @@
     //User albums:
     NSMutableArray *userFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *userFetchResultLabel = [[NSMutableArray alloc] init];
-    for(PHCollection *collection in topLevelUserCollections)
-    {
-        if ([collection isKindOfClass:[PHAssetCollection class]])
-        {
-            //PHFetchOptions *options = [[PHFetchOptions alloc] init];
-            //options.predicate = predicatePHAsset;
-            PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
-            
-            //Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
-            
-            PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
-            [userFetchResultArray addObject:assetsFetchResult];
-            [userFetchResultLabel addObject:collection.localizedTitle];
+    for(PHCollection *collection in topLevelUserCollections) {
+        if ([collection isKindOfClass:[PHAssetCollection class]]) {
+			//TODO: comment this out or make just make sure Verbatm is first or something
+			if ([collection.localizedTitle isEqualToString:VERBATM_ALBUM_NAME]) {
+				//PHFetchOptions *options = [[PHFetchOptions alloc] init];
+				//options.predicate = predicatePHAsset;
+				PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
+
+				//Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
+
+				PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:nil];
+				[userFetchResultArray addObject:assetsFetchResult];
+				[userFetchResultLabel addObject:collection.localizedTitle];
+			}
         }
     }
-    
-                                  
+
+
     //Smart albums: Sorted by descending creation date.
     NSMutableArray *smartFetchResultArray = [[NSMutableArray alloc] init];
     NSMutableArray *smartFetchResultLabel = [[NSMutableArray alloc] init];
@@ -178,9 +180,11 @@
             }
         }
     }
-    
-    self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,smartFetchResultArray];
-    self.collectionsFetchResultsTitles= @[allFetchResultLabel,userFetchResultLabel,smartFetchResultLabel];
+
+	self.collectionsFetchResultsAssets= @[userFetchResultArray];
+	self.collectionsFetchResultsTitles= @[userFetchResultLabel];
+//    self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,smartFetchResultArray];
+//    self.collectionsFetchResultsTitles= @[allFetchResultLabel,userFetchResultLabel,smartFetchResultLabel];
 }
 #pragma mark - Accessors
 

@@ -27,6 +27,7 @@
 		A58656681B61FD99008E358C /* PhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656671B61FD99008E358C /* PhotoAVE.m */; };
 		A586566D1B620E60008E358C /* PointObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A586566C1B620E60008E358C /* PointObject.m */; };
 		A58656711B621CA4008E358C /* MathOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656701B621CA4008E358C /* MathOperations.m */; };
+		A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A59CC2881B6C2E6400B4907C /* FeedTableView.m */; };
 		A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CB82A21B5740A000195A2E /* UIEffects.m */; };
 		C702DE701B315CDF00EE2B00 /* ArticleDisplayVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C702DE6F1B315CDF00EE2B00 /* ArticleDisplayVC.m */; };
 		C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = C716A5B119E0CA3500A5490B /* DashLineView.m */; };
@@ -49,7 +50,7 @@
 		C772F2891B4BC13500CEC83D /* GMVideoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F27B1B4BC13500CEC83D /* GMVideoIcon.png */; };
 		C772F28A1B4BC13500CEC83D /* GMVideoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F27C1B4BC13500CEC83D /* GMVideoIcon@2x.png */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
-		C777EEA01AC7F8B6003E0633 /* ArticleTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* ArticleTableViewCell.m */; };
+		C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */; };
 		C777EEA61AC90A7A003E0633 /* ArticleAquirer.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEA51AC90A7A003E0633 /* ArticleAquirer.m */; };
 		C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEAC1AD288A3003E0633 /* ArticleListVC.m */; };
 		C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A68B01AC0A49B000B10E2 /* VIEW_TESTERViewController.m */; };
@@ -155,6 +156,8 @@
 		A586566C1B620E60008E358C /* PointObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PointObject.m; sourceTree = "<group>"; };
 		A586566F1B621CA4008E358C /* MathOperations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MathOperations.h; sourceTree = "<group>"; };
 		A58656701B621CA4008E358C /* MathOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MathOperations.m; sourceTree = "<group>"; };
+		A59CC2871B6C2E6400B4907C /* FeedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedTableView.h; sourceTree = "<group>"; };
+		A59CC2881B6C2E6400B4907C /* FeedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableView.m; sourceTree = "<group>"; };
 		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
 		A5CB82A21B5740A000195A2E /* UIEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIEffects.m; sourceTree = "<group>"; };
 		C702DE6E1B315CDF00EE2B00 /* ArticleDisplayVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleDisplayVC.h; sourceTree = "<group>"; };
@@ -194,8 +197,8 @@
 		C772F27D1B4BC13500CEC83D /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
 		C772F27E1B4BC13500CEC83D /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		C777EE9E1AC7F8B6003E0633 /* ArticleTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleTableViewCell.h; sourceTree = "<group>"; };
-		C777EE9F1AC7F8B6003E0633 /* ArticleTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleTableViewCell.m; sourceTree = "<group>"; };
+		C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedTableViewCell.h; sourceTree = "<group>"; };
+		C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableViewCell.m; sourceTree = "<group>"; };
 		C777EEA41AC90A7A003E0633 /* ArticleAquirer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleAquirer.h; sourceTree = "<group>"; };
 		C777EEA51AC90A7A003E0633 /* ArticleAquirer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleAquirer.m; sourceTree = "<group>"; };
 		C777EEAB1AD288A3003E0633 /* ArticleListVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleListVC.h; sourceTree = "<group>"; };
@@ -382,6 +385,17 @@
 			name = MathOps;
 			sourceTree = "<group>";
 		};
+		A59CC2861B6C2E2F00B4907C /* Table Views */ = {
+			isa = PBXGroup;
+			children = (
+				C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */,
+				C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */,
+				A59CC2871B6C2E6400B4907C /* FeedTableView.h */,
+				A59CC2881B6C2E6400B4907C /* FeedTableView.m */,
+			);
+			name = "Table Views";
+			sourceTree = "<group>";
+		};
 		A5CB82A41B5744B800195A2E /* UI effects */ = {
 			isa = PBXGroup;
 			children = (
@@ -477,8 +491,6 @@
 				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
 				C777EEAB1AD288A3003E0633 /* ArticleListVC.h */,
 				C777EEAC1AD288A3003E0633 /* ArticleListVC.m */,
-				C777EE9E1AC7F8B6003E0633 /* ArticleTableViewCell.h */,
-				C777EE9F1AC7F8B6003E0633 /* ArticleTableViewCell.m */,
 				C7F3D4691A4F84C000B43238 /* UserLoginVC.h */,
 				C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */,
 				C734FD9A19B14B8D00B2C370 /* ContentDevVC.h */,
@@ -502,6 +514,7 @@
 				A56F68731B643C2600CE5744 /* Related to Images */,
 				A56F68761B643D4B00CE5744 /* Related to Video */,
 				A56F686F1B643ADE00CE5744 /* PullBars/ToolBars */,
+				A59CC2861B6C2E2F00B4907C /* Table Views */,
 				C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */,
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
 				C716A5B019E0CA3500A5490B /* DashLineView.h */,
@@ -824,6 +837,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */,
+				A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */,
 				A58656621B602038008E358C /* TextOverAVEView.m in Sources */,
 				C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */,
 				C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */,
@@ -872,7 +886,7 @@
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
-				C777EEA01AC7F8B6003E0633 /* ArticleTableViewCell.m in Sources */,
+				C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,

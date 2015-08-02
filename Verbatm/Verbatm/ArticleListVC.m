@@ -8,7 +8,8 @@
 
 #import "ArticleListVC.h"
 #import "MasterNavigationVC.h"
-#import "ArticleTableViewCell.h"
+#import "FeedTableViewCell.h"
+#import "FeedTableView.h"
 #import "ArticleAquirer.h"
 #import "Article.h"
 #import "Page.h"
@@ -17,97 +18,166 @@
 #import "SizesAndPositions.h"
 #import "Identifiers.h"
 #import "UIEffects.h"
+#import "SizesAndPositions.h"
+#import "Styles.h"
+#import "Strings.h"
 #import "VerbatmCameraView.h"
+#import "MediaSessionManager.h"
 
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
 @interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
-    @property (weak, nonatomic) IBOutlet UITableView *articleListView;
-    @property (strong, nonatomic) NSArray * articles;
+
 	@property (strong, nonatomic) VerbatmCameraView* verbatmCameraView;
-//    @property (weak, nonatomic) IBOutlet UIButton *createArticle_button;
+	@property (strong, nonatomic) MediaSessionManager* sessionManager;
+    @property (strong, nonatomic) FeedTableView *storyListView;
+	@property (strong,nonatomic) FeedTableViewCell* placeholderCell;
+    @property (strong, nonatomic) NSArray * articles;
+    @property (strong, nonatomic) UIButton *composeStoryButton;
     @property (weak, nonatomic) IBOutlet UILabel *listTitle;
     @property  (nonatomic) NSInteger selectedArticleIndex;
 	@property BOOL pullDownInProgress;
+
+#define SHC_ROW_HEIGHT 20.f
 @end
 
 @implementation ArticleListVC
 
+//TODO get camera view and media session manager from master navigation vc
 //creates the camera view with the preview session
--(VerbatmCameraView*)verbatmCameraView
-{
-	if(!_verbatmCameraView){
-		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame:  self.view.frame];
-	}
-	return _verbatmCameraView;
-}
+//-(VerbatmCameraView*)verbatmCameraView
+//{
+//	if(!_verbatmCameraView){
+//		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame: self.view.bounds];
+//	}
+//	return _verbatmCameraView;
+//}
+//
+//-(MediaSessionManager*)sessionManager
+//{
+//	if(!_sessionManager){
+//		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
+//	}
+//	return _sessionManager;
+//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.articleListView.dataSource = self;
-    self.articleListView.delegate = self;
-    [self setFrames];
 	[self addBlurView];
+	[self initStoryListView];
+	[self addComposeStoryButton];
 	[self registerForNavNotifications];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+	[self.sessionManager startSession];
 	[self refreshFeed];
 }
 
+-(void) viewDidDisappear:(BOOL)animated {
+	[super viewDidDisappear:animated];
+	[self.sessionManager stopSession];
+}
+
+-(void) initStoryListView {
+	self.storyListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+	[self.storyListView setBackgroundColor:[UIColor clearColor]];
+	self.storyListView.dataSource = self;
+	self.storyListView.delegate = self;
+	self.placeholderCell = [[FeedTableViewCell alloc] init];
+	[self.view addSubview:self.storyListView];
+}
+
 -(void) addBlurView {
-	[self.view addSubview:self.verbatmCameraView];
-	[UIEffects createBlurViewOnView:self.view withStyle:UIBlurEffectStyleDark];
+//	[self.view insertSubview: self.verbatmCameraView atIndex:0];
+	UIImageView* backgroundImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+	UIImage* backgroundImage = [UIImage imageNamed:@"placeholder_background_image"];
+	backgroundImageView.image = backgroundImage;
+	[backgroundImageView setContentMode:UIViewContentModeScaleAspectFill];
+	[self.view insertSubview:backgroundImageView atIndex:0];
+
+	UIView* blurView = [[UIView alloc] initWithFrame:self.view.bounds];
+	[UIEffects createBlurViewOnView:blurView withStyle:UIBlurEffectStyleDark];
+	[self.view addSubview:blurView];
+}
+
+-(void) addComposeStoryButton {
+	UIColor* buttonColor = [UIColor colorWithWhite:1 alpha:0.6];
+	self.composeStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	CGRect composeStoryButtonFrame = CGRectMake(self.view.bounds.size.width - COMPOSE_STORY_BUTTON_SIZE - COMPOSE_STORY_BUTTON_OFFSET,
+												self.view.bounds.size.height - COMPOSE_STORY_BUTTON_SIZE - COMPOSE_STORY_BUTTON_OFFSET,
+												COMPOSE_STORY_BUTTON_SIZE, COMPOSE_STORY_BUTTON_SIZE);
+	[self.composeStoryButton setFrame: composeStoryButtonFrame];
+	self.composeStoryButton.backgroundColor = buttonColor;
+	self.composeStoryButton.layer.cornerRadius = COMPOSE_STORY_BUTTON_SIZE/2.f;
+
+	//set attributed title
+	UIColor *labelColor = [UIColor COMPOSE_STORY_BUTTON_LABEL_COLOR];
+	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:COMPOSE_STORY_BUTTON_LABEL_FONT_SIZE];
+//	NSShadow *shadow = [[NSShadow alloc] init];
+//	[shadow setShadowBlurRadius: BUTTON_LABEL_SHADOW_BLUR_RADIUS];
+//	[shadow setShadowColor:labelColor];
+//	[shadow setShadowOffset:CGSizeMake(0, BUTTON_LABEL_SHADOW_YOFFSET)];
+//	NSAttributedString* composeStoryButtonTitle = [[NSAttributedString alloc] initWithString:COMPOSE_STORY_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont, NSShadowAttributeName : shadow}];
+//	[self.composeStoryButton setAttributedTitle:composeStoryButtonTitle forState:UIControlStateNormal];
+	[self.composeStoryButton setTitle:COMPOSE_STORY_BUTTON_LABEL forState:UIControlStateNormal];
+	[self.composeStoryButton setTitleColor:labelColor forState:UIControlStateNormal];
+
+	self.composeStoryButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+	self.composeStoryButton.titleLabel.numberOfLines = 2;
+	self.composeStoryButton.titleLabel.textColor = labelColor;
+//	self.composeStoryButton.titleLabel.text = COMPOSE_STORY_BUTTON_LABEL;
+	self.composeStoryButton.titleLabel.font = labelFont;
+
+	[self.composeStoryButton addTarget:self action:@selector(composeStory:) forControlEvents:UIControlEventTouchUpInside];
+
+	float originDiff = (COMPOSE_STORY_OUTER_CIRCLE_SIZE - COMPOSE_STORY_BUTTON_SIZE)/2.f;
+	CGRect outerCircleViewFrame = CGRectMake(composeStoryButtonFrame.origin.x - originDiff, composeStoryButtonFrame.origin.y - originDiff, COMPOSE_STORY_OUTER_CIRCLE_SIZE, COMPOSE_STORY_OUTER_CIRCLE_SIZE);
+	UIView* outerCircleView = [[UIView alloc] initWithFrame:outerCircleViewFrame];
+	outerCircleView.backgroundColor = [UIColor clearColor];
+	outerCircleView.layer.cornerRadius = COMPOSE_STORY_OUTER_CIRCLE_SIZE/2.f;
+	outerCircleView.layer.borderColor = [UIColor whiteColor].CGColor;
+	outerCircleView.layer.borderWidth = COMPOSE_STORY_OUTER_CIRCLE_BORDER_WIDTH;
+
+	[self.view addSubview: outerCircleView];
+	[self.view addSubview:self.composeStoryButton];
 }
 
 -(void) scrollViewWillBeginDragging:(nonnull UIScrollView *)scrollView {
 	NSLog(@"Begin dragging");
 	self.pullDownInProgress = scrollView.contentOffset.y <= 0.0f;
-	NSLog(@"%f", scrollView.contentOffset.y);
 	if (self.pullDownInProgress) {
-		//TODO: placeholder cell should appear
+		[self.storyListView insertSubview:self.placeholderCell atIndex:0];
 	}
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if (self.pullDownInProgress && scrollView.contentOffset.y <= 0.0f) {
-		//TODO: maintain location of placeholder
+		//maintain location of placeholder
+		self.placeholderCell.frame = CGRectMake(0, - scrollView.contentOffset.y - SHC_ROW_HEIGHT,
+											self.storyListView.frame.size.width, SHC_ROW_HEIGHT);
+		//TODO: add spinning thing
+		self.placeholderCell.alpha = MIN(1.0f, - scrollView.contentOffset.y / SHC_ROW_HEIGHT);
 	} else {
 		self.pullDownInProgress = false;
 	}
 }
 
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-	// TODO: make this the height of a new row
-	if (self.pullDownInProgress) {
+	if (self.pullDownInProgress && - scrollView.contentOffset.y > SHC_ROW_HEIGHT) {
 		[self refreshFeed];
 		NSLog(@"refreshing feed from pull down");
 	}
 	self.pullDownInProgress = false;
-	// remove placeholder cell
+	[self.placeholderCell removeFromSuperview];
 }
 
--(void)setFrames {
-	self.articleListView.frame = CGRectMake(0,0,self.view.frame.size.width ,self.view.frame.size.height-(ARTICLE_IN_FEED_BUTTON_HEIGHT));
-	[self.articleListView setBackgroundColor:[UIColor clearColor]];
-    //set button
-//    self.createArticle_button.frame = CGRectMake(self.view.frame.size.width/2, self.view.frame.size.height - ARTICLE_IN_FEED_BUTTON_HEIGHT, self.view.frame.size.width/2, ARTICLE_IN_FEED_BUTTON_HEIGHT);
-}
-
--(void)registerForNavNotifications
-{
+-(void)registerForNavNotifications {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshFeed) name:NOTIFICATION_REFRESH_FEED object: nil];
 }
 
-//reloads data into the list view
-- (IBAction)refreshArticleList:(UIButton *)sender
-{
-    [self refreshFeed];
-}
-
--(void)refreshFeed
-{
+-(void)refreshFeed {
     //we want to download the articles again and then load them to the page
     [ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *articles) {
 		NSArray *sortedArticles;
@@ -117,7 +187,7 @@
 			return [second compare:first];
 		}];
 		self.articles = sortedArticles;
-        [self.articleListView reloadData];
+        [self.storyListView reloadData];
     }];
 }
 
@@ -132,15 +202,21 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ArticleTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:ARTICLE_LIST_CELL forIndexPath:indexPath];
-    
-    NSInteger index =indexPath.row;
+
+	FeedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FEED_CELL_ID];
+
+	if (cell == nil) {
+		cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
+	}
+
+	//configure cell
+    NSInteger index = indexPath.row;
     Article * article = self.articles[index];
-    cell.rightTitle.text = article.title;
+    cell.textLabel.text = article.title;
     return cell;
 }
-- (IBAction)createArticle:(id)sender
-{
+
+- (void) composeStory: (id)sender {
     NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SHOW_ADK object:nil userInfo:nil];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
 }

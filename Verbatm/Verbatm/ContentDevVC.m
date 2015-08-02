@@ -47,7 +47,7 @@
 
 #pragma mark Default frame properties
 
-@property (nonatomic) CGSize defaultElementFrame;
+@property (nonatomic) CGSize defaultPageElementScrollViewSize;
 @property (nonatomic) CGPoint defaultPinchViewCenter;
 @property (nonatomic) float defaultPinchViewRadius;
 
@@ -182,9 +182,9 @@
 //records the generic frame for any element that is a square and not a pinch view circle,
 // as well as the pinch view center and radius
 -(void)setElementDefaultFrames {
-	self.defaultElementFrame = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
-	self.defaultPinchViewCenter = CGPointMake(((self.view.frame.size.width*3)/2.f), self.defaultElementFrame.height/2);
-	self.defaultPinchViewRadius = (self.defaultElementFrame.height - ELEMENT_OFFSET_DISTANCE)/2.f;
+	self.defaultPageElementScrollViewSize = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
+	self.defaultPinchViewCenter = CGPointMake(((self.view.frame.size.width*3)/2.f), self.defaultPageElementScrollViewSize.height/2);
+	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
 }
 
 -(void) createBaseSelector {
@@ -282,6 +282,7 @@
 -(void) loadPinchViews {
 	NSArray* savedPinchViews = [[UserPinchViews sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
+		[pinchView specifyRadius:self.defaultPinchViewRadius andCenter:self.defaultPinchViewCenter];
 		[self newPinchView:pinchView belowView:[self getUpperView]];
 	}
 }
@@ -470,7 +471,7 @@
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
-		newElementScrollViewFrame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultElementFrame.width, self.defaultElementFrame.height);
+		newElementScrollViewFrame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		self.index = 0;
 	} else {
 		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, upperScrollView.frame.size.width, upperScrollView.frame.size.height);
@@ -1515,7 +1516,7 @@
 								 upperScrollView.frame.size.width, upperScrollView.frame.size.height);
 
 	} else {
-		scrollView.frame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height, self.defaultElementFrame.width, self.defaultElementFrame.height);
+		scrollView.frame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 	}
 
 	[self.pageElementScrollViews insertObject:scrollView atIndex:index];

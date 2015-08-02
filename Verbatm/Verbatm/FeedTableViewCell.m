@@ -6,12 +6,24 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "ArticleTableViewCell.h"
+#import "FeedTableViewCell.h"
 
-@implementation ArticleTableViewCell
+@implementation FeedTableViewCell
+
+-(id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString*)reuseIdentifier {
+	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
+	if (self) {
+		[self formatCell];
+	}
+	return self;
+}
 
 - (void)awakeFromNib {
-    [self setBackgroundColor:[UIColor clearColor]];
+	[self formatCell];
+}
+
+-(void) formatCell {
+	[self setBackgroundColor:[UIColor clearColor]];
 	[self.textLabel setTextColor:[UIColor whiteColor]];
 }
 
