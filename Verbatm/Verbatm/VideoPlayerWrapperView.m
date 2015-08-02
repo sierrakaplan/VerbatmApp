@@ -31,10 +31,6 @@
 	[self.videoPlayerView playVideoFromArray:videoList];
 }
 
--(void) playVideoFromURLList: (NSArray*) urlList {
-	[self.videoPlayerView playVideoFromURLList:urlList];
-}
-
 -(void)repeatVideoOnEnd:(BOOL)repeat {
 	[self.videoPlayerView repeatVideoOnEnd:repeat];
 }

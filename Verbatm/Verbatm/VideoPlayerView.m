@@ -16,10 +16,6 @@
 @property (nonatomic) BOOL repeatsVideo;
 @property (strong, nonatomic) AVMutableComposition* mix;
 
-//If videos are list of urls from parse
-@property (strong, nonatomic) NSMutableArray* playerItemsFromURL;
-@property (nonatomic) NSInteger urlIndex;
-
 @end
 
 @implementation VideoPlayerView
@@ -74,18 +70,6 @@
 		} else if (self.playerItem.status == AVPlayerStatusFailed) {
 			// something went wrong. player.error should contain some information
 		}
-	}
-}
-
--(void) playVideoFromURLList: (NSArray*) urlList {
-	if (urlList && [urlList count]) {
-		self.playerItemsFromURL = [[NSMutableArray alloc] init];
-		for (NSURL* url in urlList) {
-			AVPlayerItem* playerItem = [AVPlayerItem playerItemWithURL:url];
-			[self.playerItemsFromURL addObject:playerItem];
-		}
-		self.urlIndex = 0;
-		[self playVideoFromURL:urlList[self.urlIndex]];
 	}
 }
 
@@ -145,20 +129,8 @@
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
 
 	AVPlayerItem *playerItem = [notification object];
-//	if (self.playerItemsFromURL) {
-//		self.urlIndex++;
-//		if (self.urlIndex >= [self.playerItemsFromURL count]) {
-//			self.urlIndex = 0;
-//			if (!self.repeatsVideo) {
-//				return;
-//			}
-//		}
-//		[self setPlayerItemFromPlayerItem:self.playerItemsFromURL[self.urlIndex]];
-//		[self.player replaceCurrentItemWithPlayerItem:self.playerItem];
-//	} else
     if (self.repeatsVideo) {
 		[playerItem seekToTime:kCMTimeZero];
-
 	}
 }
 
@@ -213,7 +185,6 @@
 //cleans up video
 -(void) stopVideo {
 	self.layer.sublayers = nil;
-	self.playerItemsFromURL = nil;
 	[self removePlayerItemObserver];
 	self.playerItem = nil;
 	self.player = nil;

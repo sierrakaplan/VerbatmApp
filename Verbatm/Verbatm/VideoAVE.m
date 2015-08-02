@@ -46,7 +46,7 @@
 		[self playVideoFromArray:videoList];
 		//comes as NSURL from parse
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
-		[self playVideoFromURLList:videoList];
+		[self playVideoFromURL:videoList[0]];
 	}
 	[self pauseVideo];
 }

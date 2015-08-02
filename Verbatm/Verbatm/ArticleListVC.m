@@ -28,8 +28,6 @@
 
 @interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
 
-	@property (strong, nonatomic) VerbatmCameraView* verbatmCameraView;
-	@property (strong, nonatomic) MediaSessionManager* sessionManager;
     @property (strong, nonatomic) FeedTableView *storyListView;
 	@property (strong,nonatomic) FeedTableViewCell* placeholderCell;
     @property (strong, nonatomic) NSArray * articles;
@@ -43,24 +41,6 @@
 
 @implementation ArticleListVC
 
-//TODO get camera view and media session manager from master navigation vc
-//creates the camera view with the preview session
-//-(VerbatmCameraView*)verbatmCameraView
-//{
-//	if(!_verbatmCameraView){
-//		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame: self.view.bounds];
-//	}
-//	return _verbatmCameraView;
-//}
-//
-//-(MediaSessionManager*)sessionManager
-//{
-//	if(!_sessionManager){
-//		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-//	}
-//	return _sessionManager;
-//}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self addBlurView];
@@ -71,13 +51,11 @@
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	[self.sessionManager startSession];
 	[self refreshFeed];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-	[self.sessionManager stopSession];
 }
 
 -(void) initStoryListView {
