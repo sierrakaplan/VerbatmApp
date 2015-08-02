@@ -16,6 +16,10 @@
 @property (nonatomic) BOOL repeatsVideo;
 @property (strong, nonatomic) AVMutableComposition* mix;
 
+//If videos are list of urls from parse
+@property (strong, nonatomic) NSMutableArray* playerItemsFromURL;
+@property (nonatomic) NSInteger urlIndex;
+
 @end
 
 @implementation VideoPlayerView
@@ -37,32 +41,31 @@
 
 
 -(void)playVideoFromURL: (NSURL*) url {
-	if(self.isPlaying) {
-		[self stopVideo];
-	}
 	if (url) {
-		if (self.playerItem) {
-			[self removePlayerItemObserver];
-		}
-		self.playerItem = [AVPlayerItem playerItemWithURL:url];
-		[self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL:url]];
 		[self playVideo];
 	}
 }
 
 -(void)playVideoFromAsset: (AVAsset*) asset{
-	if (self.isPlaying) {
-		[self stopVideo];
-	}
 	if (asset) {
-		if (self.playerItem) {
-			[self removePlayerItemObserver];
-		}
-		self.playerItem = [AVPlayerItem playerItemWithAsset:asset];
-		[self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
 		[self playVideo];
 	}
 }
+
+-(void) setPlayerItemFromPlayerItem:(AVPlayerItem*)playerItem {
+	if (self.playerItem) {
+		[self removePlayerItemObserver];
+	}
+	self.playerItem = playerItem;
+	[self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(playerItemDidReachEnd:)
+												 name:AVPlayerItemDidPlayToEndTimeNotification
+											   object:self.playerItem];
+}
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
 						change:(NSDictionary *)change context:(void *)context {
 	if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
@@ -71,6 +74,18 @@
 		} else if (self.playerItem.status == AVPlayerStatusFailed) {
 			// something went wrong. player.error should contain some information
 		}
+	}
+}
+
+-(void) playVideoFromURLList: (NSArray*) urlList {
+	if (urlList && [urlList count]) {
+		self.playerItemsFromURL = [[NSMutableArray alloc] init];
+		for (NSURL* url in urlList) {
+			AVPlayerItem* playerItem = [AVPlayerItem playerItemWithURL:url];
+			[self.playerItemsFromURL addObject:playerItem];
+		}
+		self.urlIndex = 0;
+		[self playVideoFromURL:urlList[self.urlIndex]];
 	}
 }
 
@@ -104,13 +119,12 @@
 }
 
 -(void) playVideo {
+	if (self.isPlaying) {
+		[self stopVideo];
+	}
+
 	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(playerItemDidReachEnd:)
-												 name:AVPlayerItemDidPlayToEndTimeNotification
-											   object:[self.player currentItem]];
 
 	// Create an AVPlayerLayer using the player
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
@@ -131,8 +145,20 @@
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
 
 	AVPlayerItem *playerItem = [notification object];
-	if (self.repeatsVideo) {
+//	if (self.playerItemsFromURL) {
+//		self.urlIndex++;
+//		if (self.urlIndex >= [self.playerItemsFromURL count]) {
+//			self.urlIndex = 0;
+//			if (!self.repeatsVideo) {
+//				return;
+//			}
+//		}
+//		[self setPlayerItemFromPlayerItem:self.playerItemsFromURL[self.urlIndex]];
+//		[self.player replaceCurrentItemWithPlayerItem:self.playerItem];
+//	} else
+    if (self.repeatsVideo) {
 		[playerItem seekToTime:kCMTimeZero];
+
 	}
 }
 
@@ -187,6 +213,7 @@
 //cleans up video
 -(void) stopVideo {
 	self.layer.sublayers = nil;
+	self.playerItemsFromURL = nil;
 	[self removePlayerItemObserver];
 	self.playerItem = nil;
 	self.player = nil;

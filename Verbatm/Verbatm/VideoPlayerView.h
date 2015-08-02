@@ -19,6 +19,7 @@
 -(void)playVideoFromURL: (NSURL*) url;
 -(void)playVideoFromAsset: (AVAsset*) asset;
 -(void) playVideoFromArray: (NSArray*)videoList;
+-(void) playVideoFromURLList: (NSArray*) urlList;
 
 //following methods will only execute if playVideo was called first
 

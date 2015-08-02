@@ -27,6 +27,7 @@
 @property (strong, nonatomic) UIImageView *playVideoImageView;
 @property (strong, nonatomic) UIImage* playVideoIconHalf;
 @property (strong, nonatomic) UIImage* playVideoIconQuarter;
+@property (strong, nonatomic) UIImage* playVideoIconFull;
 
 #pragma mark Encoding Keys
 
@@ -61,9 +62,10 @@
 #pragma mark - Adding play button
 
 -(void) addPlayIcon {
+	self.playVideoIconFull = [UIImage imageNamed: PLAY_VIDEO_ICON];
 	self.playVideoIconHalf = [UIImage imageNamed: PLAY_VIDEO_ICON_HALF_CIRCLE];
 	self.playVideoIconQuarter = [UIImage imageNamed: PLAY_VIDEO_ICON_QUARTER_CIRCLE];
-	self.playVideoImageView = [[UIImageView alloc] initWithImage: self.playVideoIconHalf];
+	self.playVideoImageView = [[UIImageView alloc] initWithImage: self.playVideoIconFull];
 	self.playVideoImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
 	self.playVideoImageView.frame = self.videoView.bounds;
 	[self.videoView addSubview:self.playVideoImageView];
@@ -151,6 +153,7 @@
 		self.textView.frame = self.background.frame;
 	}else if(self.containsVideo){
 		self.videoView.frame = self.background.frame;
+		self.playVideoImageView.image = self.playVideoIconFull;
 	}else {
 		self.imageView.frame = self.background.frame;
 	}

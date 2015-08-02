@@ -115,19 +115,12 @@
 	//set attributed title
 	UIColor *labelColor = [UIColor COMPOSE_STORY_BUTTON_LABEL_COLOR];
 	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:COMPOSE_STORY_BUTTON_LABEL_FONT_SIZE];
-//	NSShadow *shadow = [[NSShadow alloc] init];
-//	[shadow setShadowBlurRadius: BUTTON_LABEL_SHADOW_BLUR_RADIUS];
-//	[shadow setShadowColor:labelColor];
-//	[shadow setShadowOffset:CGSizeMake(0, BUTTON_LABEL_SHADOW_YOFFSET)];
-//	NSAttributedString* composeStoryButtonTitle = [[NSAttributedString alloc] initWithString:COMPOSE_STORY_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont, NSShadowAttributeName : shadow}];
-//	[self.composeStoryButton setAttributedTitle:composeStoryButtonTitle forState:UIControlStateNormal];
 	[self.composeStoryButton setTitle:COMPOSE_STORY_BUTTON_LABEL forState:UIControlStateNormal];
 	[self.composeStoryButton setTitleColor:labelColor forState:UIControlStateNormal];
 
 	self.composeStoryButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	self.composeStoryButton.titleLabel.numberOfLines = 2;
 	self.composeStoryButton.titleLabel.textColor = labelColor;
-//	self.composeStoryButton.titleLabel.text = COMPOSE_STORY_BUTTON_LABEL;
 	self.composeStoryButton.titleLabel.font = labelFont;
 
 	[self.composeStoryButton addTarget:self action:@selector(composeStory:) forControlEvents:UIControlEventTouchUpInside];
