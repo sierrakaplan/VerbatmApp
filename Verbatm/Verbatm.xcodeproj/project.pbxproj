@@ -436,13 +436,13 @@
 			name = "Pinch Views";
 			sourceTree = "<group>";
 		};
-		C750A35919D768BD0006FA88 /* Video Capture Classes */ = {
+		C750A35919D768BD0006FA88 /* Media Capture Classes */ = {
 			isa = PBXGroup;
 			children = (
 				9D29995619BA7EBD005EBC8A /* MediaSessionManager.h */,
 				9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */,
 			);
-			name = "Video Capture Classes";
+			name = "Media Capture Classes";
 			sourceTree = "<group>";
 		};
 		C772F2651B4BC13500CEC83D /* GMImagePicker */ = {
@@ -576,7 +576,7 @@
 				A586566E1B621C7E008E358C /* MathOps */,
 				A5CB82A41B5744B800195A2E /* UI effects */,
 				F257FEC81AC21F8B00964AB5 /* Saving and Downloading */,
-				C750A35919D768BD0006FA88 /* Video Capture Classes */,
+				C750A35919D768BD0006FA88 /* Media Capture Classes */,
 				C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */,
 				C78B682719CA6C0A003D0AC5 /* Custom Views */,
 				C78B681119CA6914003D0AC5 /* View Controllers */,

@@ -37,24 +37,39 @@
 
 
 -(void)playVideoFromURL: (NSURL*) url {
-	if(self.isPlaying) {
-		[self stopVideo];
-	}
 	if (url) {
-		self.player = [AVPlayer playerWithURL:url];
+		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL:url]];
 		[self playVideo];
 	}
 }
 
 -(void)playVideoFromAsset: (AVAsset*) asset{
-	if (self.isPlaying) {
-		[self stopVideo];
-	}
 	if (asset) {
-		// Create an AVPlayerItem using the asset
-		self.playerItem = [AVPlayerItem playerItemWithAsset:asset];
-		self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
 		[self playVideo];
+	}
+}
+
+-(void) setPlayerItemFromPlayerItem:(AVPlayerItem*)playerItem {
+	if (self.playerItem) {
+		[self removePlayerItemObserver];
+	}
+	self.playerItem = playerItem;
+	[self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(playerItemDidReachEnd:)
+												 name:AVPlayerItemDidPlayToEndTimeNotification
+											   object:self.playerItem];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
+						change:(NSDictionary *)change context:(void *)context {
+	if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
+		if (self.playerItem.status == AVPlayerStatusReadyToPlay) {
+			//DISABLE THE UIACTIVITY INDICATOR HERE
+		} else if (self.playerItem.status == AVPlayerStatusFailed) {
+			// something went wrong. player.error should contain some information
+		}
 	}
 }
 
@@ -88,14 +103,12 @@
 }
 
 -(void) playVideo {
-	// Create the AVPlayer using the playeritem
+	if (self.isPlaying) {
+		[self stopVideo];
+	}
 
+	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(playerItemDidReachEnd:)
-												 name:AVPlayerItemDidPlayToEndTimeNotification
-											   object:[self.player currentItem]];
 
 	// Create an AVPlayerLayer using the player
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
@@ -113,16 +126,17 @@
 }
 
 //tells me when the video ends so that I can rewind
--(void)playerItemDidReachEnd:(NSNotification *)notification
-{
+-(void)playerItemDidReachEnd:(NSNotification *)notification {
+
 	AVPlayerItem *playerItem = [notification object];
-	if (self.repeatsVideo) {
+    if (self.repeatsVideo) {
 		[playerItem seekToTime:kCMTimeZero];
 	}
 }
 
 //pauses the video for the pinchview if there is one
 -(void)pauseVideo {
+	[self removePlayerItemObserver];
 	if (self.player) {
 		[self.player pause];
 	}
@@ -149,17 +163,14 @@
 
 -(void)fastForwardVideoWithRate: (NSInteger) rate
 {
-	if(self.player) {
-		AVPlayerItem* playerItem = self.player.currentItem;
-		if([playerItem canPlayFastForward]) self.playerLayer.player.rate = rate;
+	if(self.playerItem) {
+		if([self.playerItem canPlayFastForward]) self.playerLayer.player.rate = rate;
 	}
 }
 
--(void)rewindVideoWithRate: (NSInteger) rate
-{
-	if(self.player) {
-		AVPlayerItem* playerItem = self.player.currentItem;
-		if([playerItem canPlayFastReverse] && self.playerLayer.player.rate) self.playerLayer.player.rate = -rate;
+-(void)rewindVideoWithRate: (NSInteger) rate {
+	if(self.playerItem) {
+		if([self.playerItem canPlayFastReverse] && self.playerLayer.player.rate) self.playerLayer.player.rate = -rate;
 	}
 }
 
@@ -174,11 +185,19 @@
 //cleans up video
 -(void) stopVideo {
 	self.layer.sublayers = nil;
+	[self removePlayerItemObserver];
 	self.playerItem = nil;
 	self.player = nil;
 	self.playerLayer = nil;
 	self.mix = nil;
 }
 
+-(void) removePlayerItemObserver {
+	@try{
+		[self.playerItem removeObserver:self forKeyPath:@"status"];
+	}@catch(id anException){
+		//do nothing, obviously it wasn't attached because an exception was thrown
+	}
+}
 
 @end

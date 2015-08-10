@@ -29,6 +29,7 @@
 //play and pause button that doesn't move on the side.s
 -(id)initWithFrame:(CGRect)frame andVideoAssetArray:(NSArray*)videoList {
     if((self = [super initWithFrame:frame])) {
+		[self repeatVideoOnEnd:YES];
         if(videoList.count) {
             [self playVideos:videoList];
         }
@@ -43,12 +44,9 @@
 	//comes as avurlasset in preview
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
 		[self playVideoFromArray:videoList];
-		[self repeatVideoOnEnd:YES];
 		//comes as NSURL from parse
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
-		//TODO(sierra): make sure all videos play sequentially
-		[self playVideoFromURL:[videoList objectAtIndex:0]];
-		[self repeatVideoOnEnd:YES];
+		[self playVideoFromURL:videoList[0]];
 	}
 	[self pauseVideo];
 }

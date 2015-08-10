@@ -18,7 +18,8 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
 @property (weak, nonatomic) IBOutlet UIView *adkContainer;
 @property (weak, nonatomic) IBOutlet UIView *articleListContainer;
-@property (nonatomic) NSInteger lastViewIndex;//stores the index of the view that brings up the article display in order to aid our return
+//stores the index of the view that brings up the article display in order to aid our return
+@property (nonatomic) NSInteger lastViewIndex;
 @property (nonatomic, strong) NSMutableArray * pagesToDisplay;
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
 @property (nonatomic) CGPoint previousGesturePoint;
@@ -38,7 +39,7 @@
 @implementation MasterNavigationVC
 
 + (BOOL) inTestingMode {
-	return NO;
+	return YES;
 }
 
 - (void)viewDidLoad {

@@ -26,6 +26,7 @@
 #define MAX_VIDEO_LENGTH_SECONDS 10
 #define ASPECT_RATIO 4/3
 #define ZOOM_RATE 0.6
+
 @end
 
 
@@ -36,9 +37,9 @@
 #pragma mark - initialization
 //By Lucio
 //initialises the session
--(instancetype)initSessionWithView:(UIView*)containerView
-{
-	if((self = [super init])){
+-(instancetype)initSessionWithView:(UIView*)containerView {
+
+	if((self = [super init])) {
 		//set the container view
 		self.previewContainerView = containerView;
 

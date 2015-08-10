@@ -28,8 +28,6 @@
 
 @interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
 
-	@property (strong, nonatomic) VerbatmCameraView* verbatmCameraView;
-	@property (strong, nonatomic) MediaSessionManager* sessionManager;
     @property (strong, nonatomic) FeedTableView *storyListView;
 	@property (strong,nonatomic) FeedTableViewCell* placeholderCell;
     @property (strong, nonatomic) NSArray * articles;
@@ -43,24 +41,6 @@
 
 @implementation ArticleListVC
 
-//TODO get camera view and media session manager from master navigation vc
-//creates the camera view with the preview session
-//-(VerbatmCameraView*)verbatmCameraView
-//{
-//	if(!_verbatmCameraView){
-//		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame: self.view.bounds];
-//	}
-//	return _verbatmCameraView;
-//}
-//
-//-(MediaSessionManager*)sessionManager
-//{
-//	if(!_sessionManager){
-//		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-//	}
-//	return _sessionManager;
-//}
-
 - (void)viewDidLoad {
     [super viewDidLoad];
 	[self addBlurView];
@@ -71,13 +51,11 @@
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	[self.sessionManager startSession];
 	[self refreshFeed];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-	[self.sessionManager stopSession];
 }
 
 -(void) initStoryListView {
@@ -115,19 +93,12 @@
 	//set attributed title
 	UIColor *labelColor = [UIColor COMPOSE_STORY_BUTTON_LABEL_COLOR];
 	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:COMPOSE_STORY_BUTTON_LABEL_FONT_SIZE];
-//	NSShadow *shadow = [[NSShadow alloc] init];
-//	[shadow setShadowBlurRadius: BUTTON_LABEL_SHADOW_BLUR_RADIUS];
-//	[shadow setShadowColor:labelColor];
-//	[shadow setShadowOffset:CGSizeMake(0, BUTTON_LABEL_SHADOW_YOFFSET)];
-//	NSAttributedString* composeStoryButtonTitle = [[NSAttributedString alloc] initWithString:COMPOSE_STORY_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont, NSShadowAttributeName : shadow}];
-//	[self.composeStoryButton setAttributedTitle:composeStoryButtonTitle forState:UIControlStateNormal];
 	[self.composeStoryButton setTitle:COMPOSE_STORY_BUTTON_LABEL forState:UIControlStateNormal];
 	[self.composeStoryButton setTitleColor:labelColor forState:UIControlStateNormal];
 
 	self.composeStoryButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	self.composeStoryButton.titleLabel.numberOfLines = 2;
 	self.composeStoryButton.titleLabel.textColor = labelColor;
-//	self.composeStoryButton.titleLabel.text = COMPOSE_STORY_BUTTON_LABEL;
 	self.composeStoryButton.titleLabel.font = labelFont;
 
 	[self.composeStoryButton addTarget:self action:@selector(composeStory:) forControlEvents:UIControlEventTouchUpInside];
@@ -222,9 +193,8 @@
 }
 
 //one of the articles in the list have been clicked
--(void) viewArticle
-{
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articles[self.selectedArticleIndex] ,@"article", nil];
+-(void) viewArticle {
+    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articles[self.selectedArticleIndex], ARTICLE_KEY_FOR_NOTIFICATION, nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
                                                         object:nil
                                                       userInfo:Info];

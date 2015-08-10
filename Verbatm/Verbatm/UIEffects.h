@@ -42,4 +42,9 @@
 //Returns list of photo filter names to use
 + (NSArray*) getPhotoFilters;
 
+//let users know there is another page by bouncing a tiny bit and then bouncing back
+//Takes a bool letting it know which direction the scrollview should bounce
+//Also takes a bool letting it know if bounce should be in y or x direction
++ (void) scrollViewNotificationBounce:(UIScrollView*)scrollView forNextPage:(BOOL)nextPage inYDirection:(BOOL)yDirection;
+
 @end

@@ -13,6 +13,9 @@
 
 #pragma mark - Content Dev VC -
 
+#define ARTICLE_KEY_FOR_NOTIFICATION @"article"
+#define PINCHVIEWS_KEY_FOR_NOTIFICATION @"pinchObjects"
+
 #define NOTIFICATION_HIDE_KEYBOARD @"Notification_hideKeyboard"
 #define NOTIFICATION_SHOW_KEYBOARD @"Notification_showKeyboard"
 
