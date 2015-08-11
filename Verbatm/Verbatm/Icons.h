@@ -55,6 +55,7 @@
 
 #pragma mark Video AVE
 
+#define VIDEO_LOADING_ICON @"video_loading_icon"
 #define MUTE_BUTTON_ICON @"mute_button_icon"
 #define UNMUTE_BUTTON_ICON @"unmute_button_icon"
 

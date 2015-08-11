@@ -7,6 +7,7 @@
 //
 
 #import "VideoPlayerView.h"
+#import "Icons.h"
 
 @interface VideoPlayerView()
 
@@ -15,14 +16,20 @@
 @property (nonatomic,strong) AVPlayerLayer* playerLayer;
 @property (nonatomic) BOOL repeatsVideo;
 @property (strong, nonatomic) AVMutableComposition* mix;
+@property (strong, nonatomic) UIImageView* videoLoadingView;
+@property (nonatomic) BOOL videoLoading;
 
 @end
 
 @implementation VideoPlayerView
 
--(instancetype)init {
-	if((self  = [super init])) {
+-(instancetype)initWithFrame:(CGRect)frame {
+	if((self  = [super initWithFrame:frame])) {
 		self.repeatsVideo = NO;
+		UIImage* videoLoadingImage = [UIImage imageNamed:VIDEO_LOADING_ICON];
+		self.videoLoadingView = [[UIImageView alloc] initWithImage: videoLoadingImage];
+		self.videoLoadingView.frame = self.bounds;
+		self.videoLoading = NO;
 	}
 	return self;
 }
@@ -38,8 +45,10 @@
 
 -(void)playVideoFromURL: (NSURL*) url {
 	if (url) {
+		self.videoLoading = YES;
 		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL:url]];
 		[self playVideo];
+		[self addSubview:self.videoLoadingView];
 	}
 }
 
@@ -66,7 +75,10 @@
 						change:(NSDictionary *)change context:(void *)context {
 	if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
 		if (self.playerItem.status == AVPlayerStatusReadyToPlay) {
-			//DISABLE THE UIACTIVITY INDICATOR HERE
+			if (self.videoLoading) {
+				[self.videoLoadingView removeFromSuperview];
+				self.videoLoading = NO;
+			}
 		} else if (self.playerItem.status == AVPlayerStatusFailed) {
 			// something went wrong. player.error should contain some information
 		}
@@ -184,6 +196,10 @@
 
 //cleans up video
 -(void) stopVideo {
+	if (self.videoLoading) {
+		[self.videoLoadingView removeFromSuperview];
+		self.videoLoading = NO;
+	}
 	self.layer.sublayers = nil;
 	[self removePlayerItemObserver];
 	self.playerItem = nil;

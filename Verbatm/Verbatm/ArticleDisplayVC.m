@@ -370,13 +370,16 @@
 }
 
 - (void) scrollViewNotificationBounce:(UIScrollView*)scrollView forNextPage:(BOOL)nextPage inYDirection:(BOOL)yDirection {
+//	float velocity =
 	float bounceOffset = nextPage ? SCROLLVIEW_BOUNCE_OFFSET : -SCROLLVIEW_BOUNCE_OFFSET;
-	[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION/2.f animations:^{
+	[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION delay:0
+		 usingSpringWithDamping:0.5 initialSpringVelocity:1.f options:0 animations:^{
 		CGPoint newContentOffset = yDirection ? CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y + bounceOffset) : CGPointMake(scrollView.contentOffset.x + bounceOffset, scrollView.contentOffset.y);
 		scrollView.contentOffset = newContentOffset;
 	}completion:^(BOOL finished) {
 		if(finished) {
-			[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION/2.f animations:^{
+			[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION delay:0
+				 usingSpringWithDamping:0.5 initialSpringVelocity:1.f options:0 animations:^{
 				CGPoint newContentOffset = yDirection ? CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y - bounceOffset) : CGPointMake(scrollView.contentOffset.x - bounceOffset, scrollView.contentOffset.y);
 				scrollView.contentOffset = newContentOffset;
 			}completion:^(BOOL finished) {
