@@ -25,6 +25,7 @@
 @property(strong,readwrite, nonatomic) NSString* whatSandwich;
 @property(strong,readwrite, nonatomic) NSString* whereSandwich;
 @property(readwrite, nonatomic) BOOL isTestingArticle;
+@property (strong, nonatomic) NSString * username;
 @property (strong, nonatomic) PFRelation * articleVideosRelation;
 @property (strong, nonatomic) PFRelation * articlePhotosRelation;
 @property (strong, nonatomic) PFRelation* article_pageRelationship;
@@ -67,7 +68,8 @@
         if (what && where) {
             [self setSandwich:what at:where];
         }
-        
+        PFUser * currentUser = [PFUser currentUser];
+        self.username = currentUser.username;
         [self setObject:[PFUser currentUser]forKey: ARTICLE_AUTHOR_RELATIONSHIP];
         [self saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             if(succeeded){
@@ -79,11 +81,10 @@
     return self;
 }
 
-//funciton not working for some reason
--(NSString *)getAuthor
-{
-    VerbatmUser* author = [self objectForKey:ARTICLE_AUTHOR_RELATIONSHIP];
-    return author.username;
+/*returns the user that created the article*/
+-(NSString *)getAuthorUsername{
+    NSString * userName = self.username;
+    return @"user name";
 }
 
 /*This function takes an array of pinch objects as the only parameter.
@@ -191,8 +192,7 @@
 
 #pragma mark - Methods required for subclassing PFObject.
 
-+(NSString *)parseClassName
-{
++(NSString *)parseClassName{
     return @"Article";
 }
 

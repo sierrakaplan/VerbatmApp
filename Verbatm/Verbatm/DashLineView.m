@@ -14,8 +14,7 @@
 
 @implementation DashLineView
 
--(void)drawRect:(CGRect)rect
-{
+-(void)drawRect:(CGRect)rect {
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextSetStrokeColorWithColor(context, [UIColor grayColor].CGColor);
     CGFloat dashes[] = {6,6};
@@ -29,4 +28,5 @@
     CGContextSetShouldAntialias(context, NO);
     CGContextStrokePath(context);
 }
+
 @end

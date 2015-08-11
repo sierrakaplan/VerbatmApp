@@ -207,8 +207,7 @@
     return YES;
 }
 
--(void) removeStatusBar
-{
+-(void) removeStatusBar{
     //remove the status bar
     if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
         // iOS 7
@@ -219,8 +218,8 @@
     }
 }
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations{
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
 }

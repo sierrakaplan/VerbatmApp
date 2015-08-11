@@ -20,12 +20,10 @@
     @property(nonatomic ,strong) UIButton * selectMedia;
     @property (nonatomic ,strong) UIButton * selectText;
     @property (nonatomic, strong) CAShapeLayer * border;
-@property (readwrite, nonatomic) BOOL optionSelected;
-
+    @property (readwrite, nonatomic) BOOL optionSelected;
 @end
 
 @implementation MediaSelectTile
-
 #pragma mark - initialize view
 - (id)initWithFrame:(CGRect)frame
 {
@@ -38,7 +36,6 @@
         [self setBackgroundColor:[UIColor clearColor]];
     }
     return self;
-    self.optionSelected = NO;
 }
 
 -(void) createFramesForButtonsWithFrame: (CGRect) frame {

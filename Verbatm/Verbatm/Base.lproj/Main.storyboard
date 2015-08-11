@@ -31,13 +31,6 @@
                                 <rect key="frame" x="0.0" y="-48" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <containerView opaque="NO" contentMode="scaleToFill" id="BZw-d7-VqY">
-                                        <rect key="frame" x="18" y="349" width="287" height="157"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <segue destination="Ve4-Qj-kgj" kind="embed" id="b7N-73-evc"/>
-                                        </connections>
-                                    </containerView>
                                     <containerView opaque="NO" contentMode="scaleToFill" id="yxe-c7-aMo">
                                         <rect key="frame" x="8" y="64" width="226" height="262"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -55,6 +48,13 @@
                                             <segue destination="waF-h7-lpu" kind="modal" identifier="bringUpSign" id="swG-cZ-OxB"/>
                                         </connections>
                                     </button>
+                                    <containerView opaque="NO" contentMode="scaleToFill" id="BZw-d7-VqY">
+                                        <rect key="frame" x="0.0" y="48" width="320" height="520"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <connections>
+                                            <segue destination="Ve4-Qj-kgj" kind="embed" id="b7N-73-evc"/>
+                                        </connections>
+                                    </containerView>
                                 </subviews>
                             </scrollView>
                         </subviews>
@@ -86,7 +86,7 @@
             <objects>
                 <viewController wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="ArticleListVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Yqu-zV-E3L">
-                        <rect key="frame" x="0.0" y="0.0" width="287" height="157"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="520"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -94,7 +94,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3748.5" y="-640.5"/>
+            <point key="canvasLocation" x="-3530" y="-731"/>
         </scene>
         <!--Item-->
         <scene sceneID="gIN-uk-7gC">
@@ -215,7 +215,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-3679" y="-920"/>
+            <point key="canvasLocation" x="-3530" y="-1255"/>
         </scene>
         <!--Article DisplayVC-->
         <scene sceneID="lst-8e-ORz">
@@ -263,21 +263,21 @@
                                 <rect key="frame" x="91" y="36" width="138" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Describe the bug:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="giZ-KB-k3R">
                                 <rect key="frame" x="16" y="84" width="171" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Actions that caused the bug:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="bqI-7r-GOB">
                                 <rect key="frame" x="16" y="176" width="274" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="e.g &quot;The app crashed after taking a photo&quot;" minimumFontSize="17" id="iWm-oN-sa0">
@@ -290,7 +290,7 @@
                                 <rect key="frame" x="16" y="310" width="330" height="55"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="e.g 4 videos, 1 text pinched with a photo" minimumFontSize="17" id="PA7-kq-Bh1">
@@ -420,7 +420,7 @@
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-4131" y="367"/>
+            <point key="canvasLocation" x="-4116" y="356"/>
         </scene>
     </scenes>
     <resources>
