@@ -60,4 +60,6 @@
 Article should already be saved, have all content added to it and correctly formatted 
  */
 - (void) saveNewArticle:(Article *)article withCompletionBlock: (void(^)(BOOL succeeded, NSError * error)) block;
+
+
 @end

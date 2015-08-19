@@ -141,7 +141,6 @@
 }
 
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index {
-
 	self.filteredImages = filteredImages;
 	self.imageIndex = index;
 	self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
@@ -163,7 +162,6 @@
 	[self addGestureRecognizer:leftSwipeRecognizer];
 	[self addGestureRecognizer:rightSwipeRecognizer];
 }
-
 
 -(void)filterViewSwipeRight: (UISwipeGestureRecognizer *) sender {
 	if (self.imageIndex > 0) {

@@ -37,7 +37,7 @@
 -(NSArray*)getAllPages;
 
 //get the author of an article
--(NSString *)getAuthor;
+-(NSString *)getAuthorUsername;
 
 -(instancetype)initAndSaveWithTitle:(NSString *)title  andSandWichWhat:(NSString *)what  Where:(NSString *)where  andPinchObjects:(NSArray*)pages andIsTesting:(BOOL)isTesting;
 

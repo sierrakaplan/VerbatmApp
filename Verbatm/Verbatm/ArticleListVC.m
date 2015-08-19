@@ -36,7 +36,7 @@
     @property  (nonatomic) NSInteger selectedArticleIndex;
 	@property BOOL pullDownInProgress;
 
-#define SHC_ROW_HEIGHT 20.f
+    #define SHC_ROW_HEIGHT 20.f
 @end
 
 @implementation ArticleListVC
@@ -72,6 +72,7 @@
 	UIImageView* backgroundImageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
 	UIImage* backgroundImage = [UIImage imageNamed:@"placeholder_background_image"];
 	backgroundImageView.image = backgroundImage;
+    backgroundImageView.clipsToBounds = YES;
 	[backgroundImageView setContentMode:UIViewContentModeScaleAspectFill];
 	[self.view insertSubview:backgroundImageView atIndex:0];
 
@@ -172,18 +173,21 @@
     [self viewArticle];
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return TITLE_LABLE_HEIGHT +4*FEED_TEXT_GAP +USERNAME_LABLE_HEIGHT;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
 	FeedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FEED_CELL_ID];
-
 	if (cell == nil) {
 		cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
 	}
-
+    
 	//configure cell
     NSInteger index = indexPath.row;
     Article * article = self.articles[index];
-    cell.textLabel.text = article.title;
+    [cell setContentWithUsername:[article getAuthorUsername] andTitle:article.title];
     return cell;
 }
 
@@ -201,8 +205,7 @@
 }
 
 
-- (UIInterfaceOrientationMask) supportedInterfaceOrientations
-{
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
 }
@@ -213,15 +216,11 @@
 }
 
 //for ios8- To hide the status bar
--(BOOL)prefersStatusBarHidden
-{
+-(BOOL)prefersStatusBarHidden{
     return YES;
 }
 
-
-
--(void) removeStatusBar
-{
+-(void) removeStatusBar{
     //remove the status bar
     if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
         // iOS 7

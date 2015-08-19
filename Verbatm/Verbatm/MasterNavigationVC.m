@@ -155,7 +155,6 @@
 
 //swipping right from left
 - (void)exitADK:(UIScreenEdgePanGestureRecognizer *)sender {
-
 	//this is here because this sense the left edge pan gesture- so we need to catch it and send it upstream
 	if(super.articleCurrentlyViewing) {
 		//we send the signal back up to it's superview to be handled
@@ -224,6 +223,7 @@
 	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
 }
 
+
 -(void)removeAnimationView {
 	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
 		self.animationView.alpha=0;
@@ -291,7 +291,7 @@
 }
 
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations {
 	//return supported orientation masks
 	return UIInterfaceOrientationMaskPortrait;
 }
@@ -301,7 +301,7 @@
 	// Dispose of any resources that can be recreated.
 }
 
-//catches the unwind segue
+//catches the unwind segue - do nothing
 - (IBAction)done:(UIStoryboardSegue *)segue{
 }
 

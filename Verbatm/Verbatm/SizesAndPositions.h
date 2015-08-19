@@ -19,8 +19,17 @@
 #pragma mark - Feed -
 
 #define ARTICLE_IN_FEED_BUTTON_HEIGHT 50
-#define FEED_TOP_OFFSET 30
-#define FEED_TITLE_LIST_OFFSET 30
+
+//verticle distance between text on the
+#define FEED_TEXT_GAP 5
+
+
+//sets the distance between a label and the left of the screen
+#define FEED_TEXT_X_OFFSET 30
+
+
+#define TITLE_LABLE_HEIGHT 35
+#define USERNAME_LABLE_HEIGHT 25
 
 #pragma mark Compose Story Button
 
@@ -84,10 +93,12 @@
 #define AUTO_SCROLL_OFFSET 10
 #define CONTENT_SIZE_OFFSET 20
 #define OFFSET_BELOW_ARTICLE_TITLE 30
-//distance between elements on the page
+//distance between elements on the content view page
 #define ELEMENT_OFFSET_DISTANCE 20
+//the distance we want the cursor from the base of the view at all times. When the
+//cursor is below this threshold we scroll the view down
 #define CURSOR_BASE_GAP 10
-//the gap between the bottom of the screen and the cursor
+
 #define CENTERING_OFFSET_FOR_TEXT_VIEW 30
 //if the image is up- you can scroll up and have it turn to circles. This gives that scrollup distance
 #define SCROLLDISTANCE_FOR_PINCHVIEW_RETURN 200
