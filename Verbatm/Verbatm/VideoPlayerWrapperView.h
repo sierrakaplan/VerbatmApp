@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "VideoPlayerView.h"
 
-@interface VideoPlayerWrapperView : UIView
+@interface VideoPlayerWrapperView : UIImageView
 
 @property (strong, nonatomic) VideoPlayerView* videoPlayerView;
 

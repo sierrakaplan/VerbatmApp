@@ -7,25 +7,41 @@
 //
 
 #import "VideoPlayerWrapperView.h"
+#import <MediaPlayer/MediaPlayer.h>
+
 
 @implementation VideoPlayerWrapperView
 
 -(instancetype)initWithFrame:(CGRect)frame {
 	if((self  = [super initWithFrame:frame])) {
-		self.videoPlayerView = [[VideoPlayerView alloc] initWithFrame:self.bounds];
-		[self addSubview:self.videoPlayerView];
-		self.autoresizesSubviews = YES;
-	}
+        [self formatImagePresentation];
+    }
 	return self;
 }
 
+-(void)formatImagePresentation{
+      self.contentMode = UIViewContentModeScaleAspectFill;
+}
+
 -(void)playVideoFromURL: (NSURL*) url {
-	[self.videoPlayerView playVideoFromURL:url];
+    self.image = [self getThumbnailFromAsset:[AVAsset assetWithURL:url]];
 }
 
 -(void)playVideoFromAsset: (AVAsset*) asset {
-	[self.videoPlayerView playVideoFromAsset:asset];
+    self.image = [self getThumbnailFromAsset:asset];
 }
+
+//takes an asset and gets the first frame of the video
+-(UIImage *)getThumbnailFromAsset:(AVAsset *)asset{
+        AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc]initWithAsset:asset];
+        imageGenerator.appliesPreferredTrackTransform = YES;
+        CMTime time = [asset duration];
+        time.value = 0;
+        CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
+        UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
+        return thumbnail;
+}
+
 
 -(void) playVideoFromArray: (NSArray*)videoList {
 	[self.videoPlayerView playVideoFromArray:videoList];

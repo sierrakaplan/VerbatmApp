@@ -18,6 +18,7 @@ typedef NS_ENUM(NSInteger, VideoFormat) {
 
 @property (nonatomic) VideoFormat videoFormat;
 @property (strong, nonatomic) VideoPlayerWrapperView *videoView;
+
 //Can be AVAsset or NSURL
 @property (strong, nonatomic) id video;
 

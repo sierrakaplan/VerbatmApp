@@ -1729,7 +1729,6 @@
 	PHImageManager * iman = [[PHImageManager alloc] init];
 	//store local identifiers so we can querry the nsassets
 	for(PHAsset * asset in phassets) {
-
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
@@ -1750,12 +1749,9 @@
 
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
-
-	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
-		[self presentAssets:assetArray];
+    [picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+        [self presentAssets:assetArray];
 	}];
-
-	NSLog(@"GMImagePicker: User ended picking assets. Number of selected items is: %lu", (unsigned long)assetArray.count);
 	[self showPullBarWithTransition:NO];
 }
 
