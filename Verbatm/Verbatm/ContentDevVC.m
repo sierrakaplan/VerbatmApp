@@ -1622,7 +1622,7 @@
 		}
 		self.openPinchView = pinchView;
 	}
-
+    
 	[self.view addSubview:self.openEditContentView];
 }
 

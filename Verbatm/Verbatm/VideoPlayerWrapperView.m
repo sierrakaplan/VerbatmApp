@@ -21,6 +21,7 @@
 
 -(void)formatImagePresentation{
       self.contentMode = UIViewContentModeScaleAspectFill;
+      self.clipsToBounds = YES;
 }
 
 -(void)playVideoFromURL: (NSURL*) url {

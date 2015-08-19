@@ -187,15 +187,17 @@
 
 -(void) addTapGestureToMainView {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitEditContentView)];
-
 	[self addGestureRecognizer:tap];
 }
 
 -(void) doneButtonPressed {
 	[self exitEditContentView];
+
 }
 
 -(void) exitEditContentView {
+    
+    
 	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_EDIT_CONTENT_VIEW object:nil userInfo:nil];
 }
 
