@@ -188,6 +188,7 @@
     NSInteger index = indexPath.row;
     Article * article = self.articles[index];
     [cell setContentWithUsername:[article getAuthorUsername] andTitle:article.title];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     return cell;
 }
 
