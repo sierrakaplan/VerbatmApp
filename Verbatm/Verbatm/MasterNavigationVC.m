@@ -13,7 +13,7 @@
 #import "Icons.h"
 #import "VerbatmCameraView.h"
 #import "MediaSessionManager.h"
-
+#import "internetConnectionMonitor.h"
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
 @property (weak, nonatomic) IBOutlet UIView *adkContainer;
@@ -26,6 +26,9 @@
 
 @property (strong, nonatomic) NSTimer * animationTimer;
 @property (strong,nonatomic) UIImageView* animationView;
+
+@property (strong, nonatomic) internetConnectionMonitor * connnectionMinitor;
+
 
 #define ANIMATION_DURATION 0.5
 #define NUMBER_OF_CHILD_VCS 3
@@ -49,6 +52,9 @@
 	[self formatVCS];
 	[self registerForNavNotifications];
 	[self setUpEdgePanGestureRecognizers];
+    
+    self.connnectionMinitor = [[internetConnectionMonitor alloc] init];
+    
 }
 
 -(void)viewDidAppear:(BOOL)animated {

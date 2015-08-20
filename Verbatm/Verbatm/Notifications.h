@@ -9,6 +9,12 @@
 #ifndef Notifications_h
 #define Notifications_h
 
+
+#pragma mark - Networking -
+#define INTERNET_CONNECTION_NOTIFICATION @"InternetConnectionNotification"
+#define INTERNET_CONNECTION_KEY @"ick" //this key gives you access to a string that tells you if the connetion is established or not
+
+
 #pragma mark Media Dev VC
 
 #pragma mark - Content Dev VC -
