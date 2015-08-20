@@ -27,7 +27,6 @@
 
 @interface ArticleDisplayVC () <UIGestureRecognizerDelegate, UIScrollViewDelegate>
 @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
-@property (strong, nonatomic) NSMutableArray* poppedOffPages;
 @property (strong, nonatomic) UIView* animatingView;
 @property (strong, nonatomic) UIScrollView* scrollView;
 @property (nonatomic) NSInteger currentPageIndex;
@@ -52,7 +51,6 @@
 @end
 
 @implementation ArticleDisplayVC
-@synthesize poppedOffPages = _poppedOffPages;
 @synthesize animatingView = _animatingView;
 @synthesize lastPoint = _lastPoint;
 
@@ -84,11 +82,11 @@
 		[self getPinchViewsFromArticle: article];
 	} else {
 		NSMutableArray* pinchViews = [[notification userInfo] objectForKey:PINCHVIEWS_KEY_FOR_NOTIFICATION];
-		[self showArticleFromPinchViews:pinchViews];
+		[self showArticleFromPinchViews:pinchViews isPreview:YES];
 	}
 }
 
--(void) showArticleFromPinchViews: (NSMutableArray*)pinchViews {
+-(void) showArticleFromPinchViews: (NSMutableArray*)pinchViews isPreview:(BOOL) isPreview {
 
 	//if we have nothing in our article then return to the list view-
 	//we shouldn't need this because all downloaded articles should have legit pages
@@ -100,7 +98,7 @@
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
 	self.pageAVEs = [analyzer processPinchedObjectsFromArray:pinchViews withFrame:self.view.frame];
-	[self addPublishButton];
+	if(isPreview)[self addPublishButton];
 	[self renderPinchPages];
 	[self showScrollView:YES];
 	self.lastPoint = CGPointZero;
@@ -165,7 +163,7 @@
 			}
 
 			[self stopActivityIndicator];
-			[self showArticleFromPinchViews:pinchObjectsArray];
+            [self showArticleFromPinchViews:pinchObjectsArray isPreview:NO];
 		});
 	});
 }
@@ -188,7 +186,7 @@
 }
 
 #pragma mark - Set Up Views -
-
+//prepares the scrollview for the article pages
 -(void)setUpScrollView {
 	self.scrollViewRestingFrame = CGRectMake(self.view.frame.size.width, 0,  self.view.frame.size.width, self.view.frame.size.height);
 	if(self.scrollView) {
@@ -241,13 +239,9 @@
 			self.scrollView.frame = self.view.bounds;
 			self.publishButton.frame = self.publishButtonFrame;
 		} completion:^(BOOL finished) {
-			[self.publishButton startGlowing];
-			if ([self.pageAVEs count] > 1) {
-				[self scrollViewNotificationBounce:self.scrollView forNextPage:YES inYDirection:YES];
-			} else {
-				UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
-				[self displayMediaOnAVE:currentAVE];
-			}
+			if(self.publishButton)[self.publishButton startGlowing];
+            self.animatingView = self.pageAVEs[0];
+            [self displayMediaOnAVE:self.animatingView];
 		}];
 	}else {
 		[self.publishButton stopGlowing];
@@ -281,14 +275,11 @@
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
 			if ([sender numberOfTouches] != 1) return;
-			CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
+			
+            CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
 			if (touchLocation.y < (self.view.frame.size.height - self.pageScrollTopBottomArea)
 				&& touchLocation.y > self.pageScrollTopBottomArea) {
 				self.scrollView.scrollEnabled = NO;
-			} else {
-				//pause video when scroll view is about to scroll
-				UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
-				[self pauseVideosInAVE:currentAVE];
 			}
 			break;
 		}
@@ -354,40 +345,6 @@
 													  userInfo:nil];
 }
 
-#pragma mark - Scroll view methods -
-
-//scroll view is on new page
--(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	NSInteger newPageIndex = scrollView.contentOffset.y/scrollView.frame.size.height;
-	BOOL nextPage = newPageIndex >= self.currentPageIndex ? YES : NO;
-	self.currentPageIndex = newPageIndex;
-	if (self.currentPageIndex < [self.pageAVEs count]-1 && self.currentPageIndex > 0) {
-		[self scrollViewNotificationBounce: scrollView forNextPage:nextPage inYDirection:YES];
-	} else {
-		UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
-		[self displayMediaOnAVE:currentAVE];
-	}
-}
-
-- (void) scrollViewNotificationBounce:(UIScrollView*)scrollView forNextPage:(BOOL)nextPage inYDirection:(BOOL)yDirection {
-	float bounceOffset = nextPage ? SCROLLVIEW_BOUNCE_OFFSET : -SCROLLVIEW_BOUNCE_OFFSET;
-	[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION/2.f animations:^{
-		CGPoint newContentOffset = yDirection ? CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y + bounceOffset) : CGPointMake(scrollView.contentOffset.x + bounceOffset, scrollView.contentOffset.y);
-		scrollView.contentOffset = newContentOffset;
-	}completion:^(BOOL finished) {
-		if(finished) {
-			[UIView animateWithDuration:SCROLLVIEW_BOUNCE_NOTIFICATION_DURATION/2.f animations:^{
-				CGPoint newContentOffset = yDirection ? CGPointMake(scrollView.contentOffset.x, scrollView.contentOffset.y - bounceOffset) : CGPointMake(scrollView.contentOffset.x - bounceOffset, scrollView.contentOffset.y);
-				scrollView.contentOffset = newContentOffset;
-			}completion:^(BOOL finished) {
-				if(finished) {
-					UIView* currentAVE = self.pageAVEs[self.currentPageIndex];
-					[self displayMediaOnAVE:currentAVE];
-				}
-			}];
-		}
-	}];
-}
 
 #pragma mark - Display Media on AVE
 
@@ -447,6 +404,21 @@
 	}
 }
 
+#pragma mark - Playing/Pause Video -
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+    if(scrollView == self.scrollView){
+        int nextIndex = (self.scrollView.contentOffset.y/self.scrollView.frame.size.height);
+        UIView * currentView = self.pageAVEs[nextIndex];
+        if(self.animatingView != currentView){
+            [self pauseVideosInAVE:self.animatingView];
+            [self displayMediaOnAVE:currentView];
+            self.animatingView = currentView;
+        }
+    }
+}
+
+
 #pragma mark - Clean up -
 
 - (void)didReceiveMemoryWarning {
@@ -463,7 +435,6 @@
 	//sanitize array so memory is cleared
 	self.scrollView = Nil;
 	self.animatingView = Nil;
-	self.poppedOffPages = Nil;
 	self.pageAVEs = Nil;
 }
 
