@@ -32,7 +32,6 @@
 	self.preferredFrame = frame;
 	self.results = [[NSMutableArray alloc]init];
 	for(PinchView* pinchView in pinchedObjects) {
-
 		//there are some issue where a messed up p_obj arrives
 		if(!(pinchView.containsImage || pinchView.containsText || pinchView.containsVideo)) {
 			NSLog(@"Pinch view says it has no type of media in it.");

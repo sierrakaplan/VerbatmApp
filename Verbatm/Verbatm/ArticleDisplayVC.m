@@ -353,7 +353,7 @@
 -(void) displayMediaOnAVE:(UIView*) ave {
 	[self displayCircleOnAVE:ave];
 	[self playVideosInAVE:ave];
-	[self showImageScrollViewBounceInAVE:ave];
+	//[self showImageScrollViewBounceInAVE:ave];
 }
 
 -(void) displayCircleOnAVE:(UIView*) ave {

@@ -38,6 +38,8 @@
 		self.numImages = [photos count];
         [self.photoListScrollView renderPhotos:photos withBlurBackground:YES];
 		[self.videoView playVideos:videos];
+        //make sure the video is on repeat
+        [self.videoView repeatVideoOnEnd:YES];
     }
     return self;
 }
