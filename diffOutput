@@ -1,0 +1,940 @@
+diff --git a/Verbatm/.DS_Store b/Verbatm/.DS_Store
+index 1886dfe..2a84d70 100644
+Binary files a/Verbatm/.DS_Store and b/Verbatm/.DS_Store differ
+diff --git a/Verbatm/Verbatm.xcodeproj/project.xcworkspace/xcuserdata/sierrakaplan-nelson.xcuserdatad/UserInterfaceState.xcuserstate b/Verbatm/Verbatm.xcodeproj/project.xcworkspace/xcuserdata/sierrakaplan-nelson.xcuserdatad/UserInterfaceState.xcuserstate
+index d6dfbd4..4ad500a 100644
+Binary files a/Verbatm/Verbatm.xcodeproj/project.xcworkspace/xcuserdata/sierrakaplan-nelson.xcuserdatad/UserInterfaceState.xcuserstate and b/Verbatm/Verbatm.xcodeproj/project.xcworkspace/xcuserdata/sierrakaplan-nelson.xcuserdatad/UserInterfaceState.xcuserstate differ
+diff --git a/Verbatm/Verbatm.xcodeproj/xcuserdata/sierrakaplan-nelson.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist b/Verbatm/Verbatm.xcodeproj/xcuserdata/sierrakaplan-nelson.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
+index c0cef53..c749469 100644
+--- a/Verbatm/Verbatm.xcodeproj/xcuserdata/sierrakaplan-nelson.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
++++ b/Verbatm/Verbatm.xcodeproj/xcuserdata/sierrakaplan-nelson.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist
+@@ -1013,11 +1013,11 @@
+             ignoreCount = "0"
+             continueAfterRunningActions = "No"
+             filePath = "Verbatm/ArticleDisplayVC.m"
+-            timestampString = "459851508.897318"
++            timestampString = "459899024.664533"
+             startingColumnNumber = "9223372036854775807"
+             endingColumnNumber = "9223372036854775807"
+-            startingLineNumber = "164"
+-            endingLineNumber = "164"
++            startingLineNumber = "165"
++            endingLineNumber = "165"
+             landmarkName = "-showScrollView:"
+             landmarkType = "5">
+          </BreakpointContent>
+@@ -1029,11 +1029,11 @@
+             ignoreCount = "0"
+             continueAfterRunningActions = "No"
+             filePath = "Verbatm/ArticleDisplayVC.m"
+-            timestampString = "459851508.897318"
++            timestampString = "459899024.664533"
+             startingColumnNumber = "9223372036854775807"
+             endingColumnNumber = "9223372036854775807"
+-            startingLineNumber = "196"
+-            endingLineNumber = "196"
++            startingLineNumber = "197"
++            endingLineNumber = "197"
+             landmarkName = "-showArticle:"
+             landmarkType = "5">
+          </BreakpointContent>
+@@ -1061,11 +1061,11 @@
+             ignoreCount = "0"
+             continueAfterRunningActions = "No"
+             filePath = "Verbatm/MasterNavigationVC.m"
+-            timestampString = "459846078.599899"
++            timestampString = "459900730.59912"
+             startingColumnNumber = "9223372036854775807"
+             endingColumnNumber = "9223372036854775807"
+-            startingLineNumber = "76"
+-            endingLineNumber = "76"
++            startingLineNumber = "72"
++            endingLineNumber = "72"
+             landmarkName = "-showArticleList:"
+             landmarkType = "5">
+             <Locations>
+@@ -1269,11 +1269,11 @@
+             ignoreCount = "0"
+             continueAfterRunningActions = "No"
+             filePath = "Verbatm/ArticleDisplayVC.m"
+-            timestampString = "459851508.897318"
++            timestampString = "459899024.664533"
+             startingColumnNumber = "9223372036854775807"
+             endingColumnNumber = "9223372036854775807"
+-            startingLineNumber = "195"
+-            endingLineNumber = "195"
++            startingLineNumber = "196"
++            endingLineNumber = "196"
+             landmarkName = "-showArticle:"
+             landmarkType = "5">
+          </BreakpointContent>
+@@ -1285,11 +1285,11 @@
+             ignoreCount = "0"
+             continueAfterRunningActions = "No"
+             filePath = "Verbatm/ArticleDisplayVC.m"
+-            timestampString = "459851508.897318"
++            timestampString = "459899024.664533"
+             startingColumnNumber = "9223372036854775807"
+             endingColumnNumber = "9223372036854775807"
+-            startingLineNumber = "142"
+-            endingLineNumber = "142"
++            startingLineNumber = "143"
++            endingLineNumber = "143"
+             landmarkName = "-addPublishButton"
+             landmarkType = "5">
+          </BreakpointContent>
+@@ -1301,11 +1301,11 @@
+             ignoreCount = "0"
+             continueAfterRunningActions = "No"
+             filePath = "Verbatm/ArticleDisplayVC.m"
+-            timestampString = "459851508.897318"
++            timestampString = "459899024.664533"
+             startingColumnNumber = "9223372036854775807"
+             endingColumnNumber = "9223372036854775807"
+-            startingLineNumber = "152"
+-            endingLineNumber = "152"
++            startingLineNumber = "153"
++            endingLineNumber = "153"
+             landmarkName = "-addPublishButton"
+             landmarkType = "5">
+          </BreakpointContent>
+@@ -2147,11 +2147,11 @@
+             ignoreCount = "0"
+             continueAfterRunningActions = "No"
+             filePath = "Verbatm/MasterNavigationVC.m"
+-            timestampString = "459846078.599899"
++            timestampString = "459900730.59912"
+             startingColumnNumber = "9223372036854775807"
+             endingColumnNumber = "9223372036854775807"
+-            startingLineNumber = "299"
+-            endingLineNumber = "299"
++            startingLineNumber = "281"
++            endingLineNumber = "281"
+             landmarkName = "-done:"
+             landmarkType = "5">
+          </BreakpointContent>
+@@ -2195,7 +2195,7 @@
+                   moduleName = "Verbatm"
+                   usesParentBreakpointCondition = "Yes"
+                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/Verbatm/Verbatm/UserLoginVC.m"
+-                  timestampString = "459854766.52168"
++                  timestampString = "459901002.095402"
+                   startingColumnNumber = "9223372036854775807"
+                   endingColumnNumber = "9223372036854775807"
+                   startingLineNumber = "170"
+@@ -2210,7 +2210,7 @@
+                   moduleName = "Verbatm"
+                   usesParentBreakpointCondition = "Yes"
+                   urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/Verbatm/Verbatm/UserLoginVC.m"
+-                  timestampString = "459854766.521861"
++                  timestampString = "459901002.095553"
+                   startingColumnNumber = "9223372036854775807"
+                   endingColumnNumber = "9223372036854775807"
+                   startingLineNumber = "170"
+@@ -3187,7 +3187,7 @@
+             ignoreCount = "0"
+             continueAfterRunningActions = "No"
+             filePath = "Verbatm/ArticleDisplayVC.m"
+-            timestampString = "459852282.516528"
++            timestampString = "459899125.863673"
+             startingColumnNumber = "9223372036854775807"
+             endingColumnNumber = "9223372036854775807"
+             startingLineNumber = "72"
+@@ -3356,5 +3356,277 @@
+             landmarkType = "5">
+          </BreakpointContent>
+       </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459900730.59912"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "346"
++            endingLineNumber = "346"
++            landmarkName = "-exitDisplay:"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/MasterNavigationVC.m"
++            timestampString = "459900730.59912"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "134"
++            endingLineNumber = "134"
++            landmarkName = "-exitADK:"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459899024.664533"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "300"
++            endingLineNumber = "300"
++            landmarkName = "-setUpGestureRecognizers"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459899024.664533"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "280"
++            endingLineNumber = "280"
++            landmarkName = "-renderPinchPages"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459899410.131517"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "301"
++            endingLineNumber = "301"
++            landmarkName = "-setUpGestureRecognizers"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459899024.664533"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "294"
++            endingLineNumber = "294"
++            landmarkName = "-renderPinchPages"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459899024.664533"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "279"
++            endingLineNumber = "279"
++            landmarkName = "-renderPinchPages"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "Yes"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459900730.59912"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "323"
++            endingLineNumber = "323"
++            landmarkName = "-scrollView:"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459899119.690971"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "163"
++            endingLineNumber = "163"
++            landmarkName = "-showScrollView:"
++            landmarkType = "5">
++            <Locations>
++               <Location
++                  shouldBeEnabled = "No"
++                  ignoreCount = "0"
++                  continueAfterRunningActions = "No"
++                  symbolName = "-[ArticleDisplayVC showScrollView:]"
++                  moduleName = "Verbatm"
++                  usesParentBreakpointCondition = "Yes"
++                  urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/Verbatm/Verbatm/ArticleDisplayVC.m"
++                  timestampString = "459899125.965034"
++                  startingColumnNumber = "9223372036854775807"
++                  endingColumnNumber = "9223372036854775807"
++                  startingLineNumber = "163"
++                  endingLineNumber = "163"
++                  offsetFromSymbolStart = "88">
++               </Location>
++               <Location
++                  shouldBeEnabled = "No"
++                  ignoreCount = "0"
++                  continueAfterRunningActions = "No"
++                  symbolName = "__35-[ArticleDisplayVC showScrollView:]_block_invoke"
++                  moduleName = "Verbatm"
++                  usesParentBreakpointCondition = "Yes"
++                  urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/Verbatm/Verbatm/ArticleDisplayVC.m"
++                  timestampString = "459899125.965144"
++                  startingColumnNumber = "9223372036854775807"
++                  endingColumnNumber = "9223372036854775807"
++                  startingLineNumber = "164"
++                  endingLineNumber = "164"
++                  offsetFromSymbolStart = "28">
++               </Location>
++            </Locations>
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "Yes"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459899138.610561"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "171"
++            endingLineNumber = "171"
++            landmarkName = "-showScrollView:"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459900730.59912"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "322"
++            endingLineNumber = "322"
++            landmarkName = "-scrollView:"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459900730.59912"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "327"
++            endingLineNumber = "327"
++            landmarkName = "-scrollView:"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459900730.59912"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "366"
++            endingLineNumber = "366"
++            landmarkName = "-exitDisplay:"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "Yes"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/ArticleDisplayVC.m"
++            timestampString = "459900730.59912"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "364"
++            endingLineNumber = "364"
++            landmarkName = "-exitDisplay:"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
++      <BreakpointProxy
++         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
++         <BreakpointContent
++            shouldBeEnabled = "No"
++            ignoreCount = "0"
++            continueAfterRunningActions = "No"
++            filePath = "Verbatm/MasterNavigationVC.m"
++            timestampString = "459900995.347454"
++            startingColumnNumber = "9223372036854775807"
++            endingColumnNumber = "9223372036854775807"
++            startingLineNumber = "137"
++            endingLineNumber = "137"
++            landmarkName = "-exitADK:"
++            landmarkType = "5">
++         </BreakpointContent>
++      </BreakpointProxy>
+    </Breakpoints>
+ </Bucket>
+diff --git a/Verbatm/Verbatm/ArticleDisplayVC.m b/Verbatm/Verbatm/ArticleDisplayVC.m
+index c71ac29..24fb23b 100644
+--- a/Verbatm/Verbatm/ArticleDisplayVC.m
++++ b/Verbatm/Verbatm/ArticleDisplayVC.m
+@@ -18,17 +18,18 @@
+ #import "UIEffects.h"
+ #import "Notifications.h"
+ #import "Icons.h"
+-#import "SizesAndPositions.h"
+ #import "Durations.h"
+ #import "Strings.h"
+ #import "Styles.h"
++#import "SizesAndPositions.h"
+ #import "UIView+Glow.h"
+ 
+-@interface ArticleDisplayVC () <UIScrollViewDelegate>
++@interface ArticleDisplayVC () <UIGestureRecognizerDelegate>
+ @property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
+ @property (strong, nonatomic) NSMutableArray* poppedOffPages;
+ @property (strong, nonatomic) UIView* animatingView;
+ @property (strong, nonatomic) UIScrollView* scrollView;
++@property (strong, nonatomic) UIPanGestureRecognizer* panGesture;
+ @property (nonatomic) CGPoint lastPoint;
+ @property (atomic, strong) UIActivityIndicatorView *activityIndicator;
+ 
+@@ -69,7 +70,6 @@
+ 
+ //make sure to stop all videos
+ -(void)cleanUp {
+-	[self showScrollView:NO];
+ 	if (!self.pageAVEs) return;
+ 	for (UIView* ave in self.pageAVEs) {
+ 		if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+@@ -105,6 +105,7 @@
+ 
+ 
+ -(void) publishArticleButtonPressed: (UIButton*)sender {
++	[self showScrollView:NO];
+ 	[self cleanUp];
+ 	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PUBLISH_ARTICLE
+ 														object:nil
+@@ -121,7 +122,8 @@
+         self.scrollView = [[UIScrollView alloc] init];
+         self.scrollView.frame = self.scrollViewRestingFrame;
+         [self.view addSubview: self.scrollView];
+-        self.scrollView.pagingEnabled  = YES;
++        self.scrollView.pagingEnabled = YES;
++		self.scrollView.scrollEnabled = YES;
+         [self.scrollView setShowsVerticalScrollIndicator:NO];
+         [self.scrollView setShowsHorizontalScrollIndicator:NO];
+         self.scrollView.bounces = NO;
+@@ -130,7 +132,6 @@
+     }
+     
+     self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width, [self.pageAVEs count]*self.view.frame.size.height);
+-    self.scrollView.delegate = self;
+ }
+ 
+ -(void) addPublishButton {
+@@ -290,135 +291,93 @@
+         viewFrame = CGRectOffset(viewFrame, 0, self.view.frame.size.height);
+     }
+ 
+-    //This makes sure that if the first object is a video it is playing the sound
+-    [self everythingOffScreen];
+-    [self handlePlayBack];
+     [self setUpGestureRecognizers];
+ }
+ 
+ #pragma mark - Gesture recognizers
+ 
+ //Sets up the gesture recognizer for dragging from the edges.
+--(void)setUpGestureRecognizers {
+-    UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exitDisplay:)];
+-    edgePanL.edges =  UIRectEdgeLeft;
+-    [self.scrollView addGestureRecognizer: edgePanL];
++-(void) setUpGestureRecognizers {
++//	self.panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollView:)];
++//	self.panGesture.delegate = self;
++//	[self.scrollView addGestureRecognizer:self.panGesture];
+ }
+ 
+-- (void)exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender {
+-
+-	//we want only one finger doing anything when exiting
+-	if([sender numberOfTouches] >1) return;
+-	if(sender.state ==UIGestureRecognizerStateBegan) {
+-		self.previousGesturePoint  = [sender locationOfTouch:0 inView:self.view];
+-	}
+-
+-	if(sender.state == UIGestureRecognizerStateBegan) {
+-		[self.publishButton stopGlowing];
+-	}
+-
+-	if(sender.state == UIGestureRecognizerStateChanged) {
+-
+-		CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
+-		int diff = current_point.x - self.previousGesturePoint.x;
+-		self.previousGesturePoint = current_point;
+-		self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x +diff, self.scrollView.frame.origin.y,  self.scrollView.frame.size.width,  self.scrollView.frame.size.height);
+-		self.publishButton.frame = CGRectMake(self.publishButton.frame.origin.x +diff, self.publishButton.frame.origin.y,  self.publishButton.frame.size.width,  self.publishButton.frame.size.height);
+-	}
++-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
++	return YES;
++}
+ 
+-	if(sender.state == UIGestureRecognizerStateEnded) {
+-		if(self.scrollView.frame.origin.x > EXIT_EPSILON) {
+-			//exit article
+-			[self cleanUp];
+-		}else{
+-			//return view to original position
+-			[self showScrollView:YES];
++//-(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
++//	if (gestureRecognizer == self.panGesture) {
++//		if([touch locationInView:self.scrollView].x > 20) {
++//			return YES;
++//		}
++//		return NO;
++//	}
++//	return YES;
++//}
++
++
++-(void) scrollView:(UIPanGestureRecognizer*) sender {
++	if ([sender numberOfTouches] != 1) return;
++	CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
++	switch (sender.state) {
++		case UIGestureRecognizerStateBegan: {
++			if (touchLocation.y < (self.view.frame.size.height - PAGE_SCROLL_TOPBOTTOM_AREA)) {
++//				self.scrollView.scrollEnabled = NO;
++			}
++			break;
+ 		}
++		case UIGestureRecognizerStateChanged: {
++			break;
++		}
++		case UIGestureRecognizerStateEnded: {
++//			self.scrollView.scrollEnabled = YES;
++			break;
++		}
++		default:
++			break;
+ 	}
+ }
+ 
+-//to be called when an aritcle is first rendered to unsure all videos are off
+--(void)everythingOffScreen
+-{
+-    for (int i=0; i< self.pageAVEs.count; i++)
+-    {
+-        if(self.pageAVEs[i] == self.animatingView)continue;
+-//
+-//        if([self.pageAVEs[i] isKindOfClass:[VideoAVE class]]){
+-//            [((VideoAVE*)self.pageAVEs[i]) offScreen];
+-//        }else if([self.pageAVEs[i] isKindOfClass:[PhotoVideoAVE class]]){
+-//            [((PhotoVideoAVE *)self.pageAVEs[i]) offScreen];
+-//        }else if([self.pageAVEs[i] isKindOfClass:[MultiplePhotoVideoAVE class]]){
+-//            [((MultiplePhotoVideoAVE*)self.pageAVEs[i]) offScreen];
+-//        }else if([self.pageAVEs[i] isKindOfClass:[PhotoVideoTextAVE class]]){
+-//            [((PhotoVideoTextAVE *)self.animatingView) offScreen];
+-//        }
+-    }
+-}
+-
+-#pragma mark - Video Playing
+--(void)handlePlayBack//plays sound if first video is
+-{
+-    if(_animatingView){
+-        [self stopPlayBack];
+-    }else {
+-        _animatingView = [self.pageAVEs firstObject];
+-        [self stopPlayBack];
+-    }
+-    int index = (self.scrollView.contentOffset.y/self.view.frame.size.height);
+-    _animatingView = [self.pageAVEs objectAtIndex:index];
+-    [self runPlayBack];
+-}
++//called from left edge pan in master navigation vc
++- (void)exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender {
+ 
+-/*
+- call this after changing the animating view to the current view
+- */
+--(void)runPlayBack
+-{
+-//    if([self.animatingView isKindOfClass:[VideoAVE class]])
+-//    {
+-//        [((VideoAVE*)self.animatingView) onScreen];
+-//    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
+-//    {
+-//        [((PhotoVideoAVE *)self.animatingView) onScreen];
+-//    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
+-//    {
+-//        [((MultiplePhotoVideoAVE*)self.animatingView) onScreen];
+-//    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
+-//    {
+-//        [((PhotoVideoTextAVE *)self.animatingView) onScreen];
+-//    }
+-}
++	//we want only one finger doing anything when exiting
++	if([sender numberOfTouches] != 1) return;
++	CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
++	switch (sender.state) {
++		case UIGestureRecognizerStateBegan: {
++			self.previousGesturePoint  = touchLocation;
++			[self.publishButton stopGlowing];
++			break;
++		}
++		case UIGestureRecognizerStateChanged: {
++			CGPoint currentPoint = touchLocation;
++			int diff = currentPoint.x - self.previousGesturePoint.x;
++			self.previousGesturePoint = currentPoint;
++			self.scrollView.frame = CGRectMake(self.scrollView.frame.origin.x +diff, self.scrollView.frame.origin.y,  self.scrollView.frame.size.width,  self.scrollView.frame.size.height);
++			self.publishButton.frame = CGRectMake(self.publishButton.frame.origin.x +diff, self.publishButton.frame.origin.y,  self.publishButton.frame.size.width,  self.publishButton.frame.size.height);
++			break;
++		}
++		case UIGestureRecognizerStateEnded: {
++			if(self.scrollView.frame.origin.x > EXIT_EPSILON) {
++				//exit article
++				[self showScrollView:NO];
++				[self cleanUp];
++			}else{
++				//return view to original position
++				[self showScrollView:YES];
++			}
++			break;
++		}
++		default:
++			break;
++	}
+ 
+-/*call this before changing the nimating view so that we stop the previous thing
+- */
+--(void)stopPlayBack
+-{
+-//    if([self.animatingView isKindOfClass:[VideoAVE class]])
+-//    {
+-//        [((VideoAVE*)self.animatingView) offScreen];
+-//    }else if([self.animatingView isKindOfClass:[PhotoVideoAVE class]])
+-//    {
+-//        [((PhotoVideoAVE *)self.animatingView) offScreen];
+-//    }else if([self.animatingView isKindOfClass:[MultiplePhotoVideoAVE class]])
+-//    {
+-//        [((MultiplePhotoVideoAVE*)self.animatingView) offScreen];
+-//    }else if([self.animatingView isKindOfClass:[PhotoVideoTextAVE class]])
+-//    {
+-//        [((PhotoVideoTextAVE *)self.animatingView) offScreen];
+-//    }
+ }
+ 
+-#pragma mark - ScrollView Callbacks
+ 
+--(void)scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView{
+-}
+ 
+--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+-    [self handlePlayBack];
+-}
+-
+--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+-}
+ 
+ @end
+diff --git a/Verbatm/Verbatm/ContentDevVC.m b/Verbatm/Verbatm/ContentDevVC.m
+index d293656..ba5060e 100644
+--- a/Verbatm/Verbatm/ContentDevVC.m
++++ b/Verbatm/Verbatm/ContentDevVC.m
+@@ -1661,6 +1661,7 @@
+ }
+ 
+ - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
++	[self showPullBarWithTransition:NO];
+ }
+ 
+ 
+diff --git a/Verbatm/Verbatm/MasterNavigationVC.m b/Verbatm/Verbatm/MasterNavigationVC.m
+index 8482e12..d17fd29 100644
+--- a/Verbatm/Verbatm/MasterNavigationVC.m
++++ b/Verbatm/Verbatm/MasterNavigationVC.m
+@@ -44,17 +44,15 @@
+ 	// Do any additional setup after loading the view.
+ 	[self formatVCS];
+ 	[self registerForNavNotifications];
+-	[self setUpGestureRecognizers];
++	[self setUpEdgePanGestureRecognizers];
+ }
+ 
+--(void)viewDidAppear:(BOOL)animated
+-{
++-(void)viewDidAppear:(BOOL)animated {
+ 	[super viewDidAppear:animated];
+ 	[self login];
+ }
+ 
+--(void)registerForNavNotifications
+-{
++-(void)registerForNavNotifications {
+ 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
+ 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
+ 
+@@ -63,16 +61,14 @@
+ }
+ 
+ 
+--(void) showADK: (NSNotification *) notification
+-{
++-(void) showADK: (NSNotification *) notification {
+ 	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+ 		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+ 	}completion:^(BOOL finished) {
+ 	}];
+ }
+ 
+--(void)showArticleList:(NSNotification *)notification
+-{
++-(void)showArticleList:(NSNotification *)notification {
+ 	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+ 		self.masterSV.contentOffset = CGPointMake(0, 0);
+ 	}completion:^(BOOL finished) {
+@@ -89,27 +85,26 @@
+ 
+ 
+ //no longer being done
+--(void)leaveArticleDisplay: (NSNotification *) notification
+-{
++-(void)leaveArticleDisplay: (NSNotification *) notification {
+ 	[[NSNotificationCenter defaultCenter] removeObserver:self];
+ 	[self dismissViewControllerAnimated:YES completion:nil];
+ 
+ }
+ 
+--(void)setUpGestureRecognizers
+-{
+-	UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(enter_adk:)];
++-(void)setUpEdgePanGestureRecognizers {
++	UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(enterADK:)];
+ 	edgePanR.edges =  UIRectEdgeRight;
+-	UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exit_adk:)];
++	UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exitADK:)];
+ 	edgePanL.edges =  UIRectEdgeLeft;
+ 	[self.view addGestureRecognizer: edgePanR];
+ 	[self.view addGestureRecognizer: edgePanL];
+ }
+ 
++
+ //swipping left from right
+--(void)enter_adk:(UIScreenEdgePanGestureRecognizer *)sender
+-{
+-	if([sender numberOfTouches] >1) return;//we want only one finger doing anything when exiting
++-(void) enterADK:(UIScreenEdgePanGestureRecognizer *)sender {
++	//we want only one finger doing anything when exiting
++	if([sender numberOfTouches] >1) return;
+ 	if(self.masterSV.contentOffset.x == self.view.frame.size.width) return;
+ 
+ 	switch(sender.state) {
+@@ -135,7 +130,7 @@
+ }
+ 
+ //swipping right from left
+-- (void)exit_adk:(UIScreenEdgePanGestureRecognizer *)sender {
++- (void)exitADK:(UIScreenEdgePanGestureRecognizer *)sender {
+ 
+ 	//this is here because this sense the left edge pan gesture- so we need to catch it and send it upstream
+ 	if(super.articleCurrentlyViewing) {
+@@ -174,8 +169,7 @@
+ 
+ 
+ -(void)adjustSV {
+-	if(self.masterSV.contentOffset.x > (self.view.frame.size.width/2))
+-	{
++	if(self.masterSV.contentOffset.x > (self.view.frame.size.width/2)) {
+ 		//bring ADK into View
+ 		[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+ 			self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+@@ -197,8 +191,7 @@
+ 
+ 
+ //article publsihed sucessfully
+--(void)articlePublishedAnimation
+-{
++-(void)articlePublishedAnimation {
+ 	if(self.animationView.frame.size.width) return;
+ 	self.animationView.image = [UIImage imageNamed:PUBLISHED_ANIMATION_ICON];
+ 	self.animationView.frame = self.view.bounds;
+@@ -207,8 +200,7 @@
+ 	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
+ }
+ 
+--(void)removeAnimationView
+-{
++-(void)removeAnimationView {
+ 	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
+ 		self.animationView.alpha=0;
+ 
+@@ -219,8 +211,7 @@
+ }
+ 
+ //insert title
+--(void)insertTitleAnimation
+-{
++-(void)insertTitleAnimation {
+ 	if(self.animationView.frame.size.width) return;
+ 	self.animationView.image = [UIImage imageNamed:TITLE_NOTIFICATION_ANIMATION];
+ 	self.animationView.frame = self.view.bounds;
+@@ -232,15 +223,13 @@
+ 
+ 
+ //lazy instantiation
+--(UIImageView *)animationView
+-{
++-(UIImageView *)animationView {
+ 	if(!_animationView)_animationView = [[UIImageView alloc] init];
+ 	return _animationView;
+ }
+ 
+ 
+--(void)formatVCS
+-{
++-(void)formatVCS {
+ 	self.masterSV.frame = self.view.bounds;
+ 	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width*2, 0);//enable horizontal scroll
+ 	self.masterSV.contentOffset = CGPointMake(0, 0);//start at the left
+@@ -249,13 +238,11 @@
+ }
+ 
+ //for ios8- To hide the status bar
+--(BOOL)prefersStatusBarHidden
+-{
++-(BOOL)prefersStatusBarHidden {
+ 	return YES;
+ }
+ 
+--(void) removeStatusBar
+-{
++-(void) removeStatusBar {
+ 	//remove the status bar
+ 	if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
+ 		// iOS 7
+@@ -275,28 +262,23 @@
+ }
+ 
+ //brings up the login page if there is no user logged in
+--(void)bringUpSignUp
+-{
++-(void)bringUpSignUp {
+ 	[self performSegueWithIdentifier:BRING_UP_SIGNIN_SEGUE sender:self];
+ }
+ 
+ 
+-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+-{
++- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+ 	//return supported orientation masks
+ 	return UIInterfaceOrientationMaskPortrait;
+ }
+ 
+-- (void)didReceiveMemoryWarning
+-{
++- (void)didReceiveMemoryWarning{
+ 	[super didReceiveMemoryWarning];
+ 	// Dispose of any resources that can be recreated.
+ }
+ 
+ //catches the unwind segue
+-- (IBAction)done:(UIStoryboardSegue *)segue
+-{
+-
++- (IBAction)done:(UIStoryboardSegue *)segue{
+ }
+ 
+ 
+diff --git a/Verbatm/Verbatm/PhotoAVE.m b/Verbatm/Verbatm/PhotoAVE.m
+index dc23e3c..3b4e784 100644
+--- a/Verbatm/Verbatm/PhotoAVE.m
++++ b/Verbatm/Verbatm/PhotoAVE.m
+@@ -166,7 +166,7 @@
+ 		[self createDotViewFromPoint:point];
+ 	}
+ 	[self createMainCircleView];
+-	[self addSwipeGestureToView:self];
++	[self addPanGestureToView:self];
+ }
+ 
+ 
+@@ -200,7 +200,7 @@
+ 	[self addSubview:dot];
+ }
+ 
+--(void)addSwipeGestureToView:(UIView *) view
++-(void)addPanGestureToView:(UIView *) view
+ {
+ 	UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:view action:@selector(trackMovementOnCircle:)];
+ 	panGesture.delegate = self;
+diff --git a/Verbatm/Verbatm/SizesAndPositions.h b/Verbatm/Verbatm/SizesAndPositions.h
+index b672765..03877a8 100644
+--- a/Verbatm/Verbatm/SizesAndPositions.h
++++ b/Verbatm/Verbatm/SizesAndPositions.h
+@@ -93,6 +93,8 @@
+ 
+ #pragma mark - AVES -
+ 
++#define PAGE_SCROLL_TOPBOTTOM_AREA 50.f
++
+ #pragma mark Text
+ 
+ #define TEXT_OVER_AVE_TOP_OFFSET 80.f
+diff --git a/Verbatm/Verbatm/Verbatm-Info.plist b/Verbatm/Verbatm/Verbatm-Info.plist
+index d9b46c0..6c6df98 100644
+--- a/Verbatm/Verbatm/Verbatm-Info.plist
++++ b/Verbatm/Verbatm/Verbatm-Info.plist
+@@ -19,7 +19,7 @@
+ 	<key>CFBundleSignature</key>
+ 	<string>????</string>
+ 	<key>CFBundleVersion</key>
+-	<string>1662</string>
++	<string>1705</string>
+ 	<key>LSApplicationCategoryType</key>
+ 	<string></string>
+ 	<key>LSRequiresIPhoneOS</key>
