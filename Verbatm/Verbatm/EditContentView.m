@@ -33,7 +33,7 @@
 {
 	self = [super init];
 	if(self) {
-		self.backgroundColor = [UIColor blackColor];
+		self.backgroundColor = [UIColor clearColor];
 		self.frame = frame;
 	}
 	return self;
@@ -58,7 +58,7 @@
 -(void)addToolBarToView {
 	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame];
-	[toolBar setBackgroundColor:[UIColor colorWithWhite:0 alpha:1]];
+	//[toolBar setBackgroundColor:[UIColor colorWithWhite:0 alpha:1]];
 	[toolBar setDelegate:self];
 
 	self.textView.inputAccessoryView = toolBar;

@@ -21,6 +21,7 @@
 	{
 		self.frame = frame;
 		[self createButtons];
+        self.backgroundColor = [UIColor clearColor];
 	}
 	return self;
 }

@@ -275,7 +275,7 @@
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
 			if ([sender numberOfTouches] != 1) return;
-			
+            
             CGPoint touchLocation = [sender locationOfTouch:0 inView:self.view];
 			if (touchLocation.y < (self.view.frame.size.height - self.pageScrollTopBottomArea)
 				&& touchLocation.y > self.pageScrollTopBottomArea) {

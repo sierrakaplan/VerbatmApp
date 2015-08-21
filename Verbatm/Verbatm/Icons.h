@@ -25,8 +25,8 @@
 #pragma mark - Media Dev VC -
 
 #define CAMERA_ICON_FRONT @"camera_back"
-#define FLASH_ICON_ON @"lightbulb_final_OFF(white)"
-#define FLASH_ICON_OFF @"lightbulb_final_OFF(white)"
+#define FLASH_ICON_ON @"lightbulb_final_OFF"
+#define FLASH_ICON_OFF @"lightbulb_final_OFF"
 #define CAMERA_BUTTON_IMAGE @"camera_button_with_dot"
 #define RECORDING_IMAGE @"camera_button_recording"
 #define RECORDING_DOT @"recording_dot"

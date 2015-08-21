@@ -127,10 +127,10 @@
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	if (self.pullDownInProgress && scrollView.contentOffset.y <= 0.0f) {
 		//maintain location of placeholder
-		self.placeholderCell.frame = CGRectMake(0, - scrollView.contentOffset.y - SHC_ROW_HEIGHT,
-											self.storyListView.frame.size.width, SHC_ROW_HEIGHT);
+		self.placeholderCell.frame = CGRectMake(0, scrollView.contentOffset.y,self.storyListView.frame.size.width, SHC_ROW_HEIGHT);
+        self.placeholderCell.backgroundColor = [UIColor redColor];
 		//TODO: add spinning thing
-		self.placeholderCell.alpha = MIN(1.0f, - scrollView.contentOffset.y / SHC_ROW_HEIGHT);
+		//self.placeholderCell.alpha = MIN(1.0f, - scrollView.contentOffset.y / SHC_ROW_HEIGHT);
 	} else {
 		self.pullDownInProgress = false;
 	}
@@ -142,7 +142,7 @@
 		NSLog(@"refreshing feed from pull down");
 	}
 	self.pullDownInProgress = false;
-	[self.placeholderCell removeFromSuperview];
+	//[self.placeholderCell removeFromSuperview];
 }
 
 -(void)registerForNavNotifications {

@@ -1138,6 +1138,7 @@
 #pragma mark Text
 -(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
 	[self hidePullBarWithTransition:NO];
+    [self moveAllViewsOffScreen];
 	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
 	self.index = (index-1);
 	[self createEditContentViewFromPinchView:Nil];
@@ -1565,7 +1566,7 @@
 	} else if(self.openPinchView.containsVideo) {
 		[self.openEditContentView.videoView stopVideo];
 	}
-
+    [self moveAllViewsBackOnScreen];
 	[self.openEditContentView removeFromSuperview];
 	self.openEditContentView = nil;
 	[self showPullBarWithTransition:NO];
@@ -1584,7 +1585,6 @@
 }
 
 -(void) pinchObjectTapped:(UITapGestureRecognizer *) sender {
-
 	//only accept touches from pinch objects
 	if(![sender.view isKindOfClass:[PinchView class]]) {
 		return;
@@ -1594,14 +1594,15 @@
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
-		return;
-	}
-
-	//tap to open an element for viewing or editing
-	[self createEditContentViewFromPinchView:pinchView];
-	//make sure the pullbar is not available
-	[self hidePullBarWithTransition:NO];
+    }else{
+        [self moveAllViewsOffScreen];
+        //tap to open an element for viewing or editing
+        [self createEditContentViewFromPinchView:pinchView];
+        //make sure the pullbar is not available
+        [self hidePullBarWithTransition:NO];
+    }
 }
+
 
 // This should never be called on a collection pinch view, only on text, image, or video
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView {
@@ -1622,7 +1623,6 @@
 		}
 		self.openPinchView = pinchView;
 	}
-    
 	[self.view addSubview:self.openEditContentView];
 }
 
@@ -1762,6 +1762,23 @@
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
 	[self showPullBarWithTransition:NO];
+}
+
+//this shifts everything off the screen by
+//shifting the x position by the size of the screen
+-(void)moveAllViewsOffScreen{
+    for(UIView * view in self.mainScrollView .subviews){
+        view.frame = CGRectMake(view.frame.origin.x + self.view.frame.size.width, view.frame.origin.y, view.frame.size.width, view.frame.size.height);
+    }
+}
+
+//this moves everything off the screen back on
+//by moving the frame back by the size of the width of the screen
+//this should only be called if moveAllViewsOffScreen is called
+-(void)moveAllViewsBackOnScreen{
+    for(UIView * view in self.mainScrollView.subviews){
+        view.frame = CGRectMake(view.frame.origin.x - self.view.frame.size.width, view.frame.origin.y, view.frame.size.width, view.frame.size.height);
+    }
 }
 
 

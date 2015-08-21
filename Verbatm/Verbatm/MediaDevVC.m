@@ -199,6 +199,7 @@
 -(void) createSubViews {
 	[self createPullBar];
 	[self createCapturePicButton];
+    [self createSwitchFlashButton];
 }
 
 -(void) prepareCameraView {
@@ -231,9 +232,9 @@
 	[self.view bringSubviewToFront:self.pullBar];
 }
 
-/* NOT IN USE
--(void)createSwitchCameraButton
-{
+#pragma mark -Flash Button-
+
+-(void)createSwitchCameraButton {
 	self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.switchCameraButton setImage:[UIImage imageNamed:CAMERA_ICON_FRONT] forState:UIControlStateNormal];
 	[self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
@@ -242,17 +243,30 @@
 	self.switchTransform = self.switchCameraButton.transform;
 }
 
--(void)createSwitchFlashButton
-{
+-(void)createSwitchFlashButton {
 	self.switchFlashButton= [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_OFF] forState:UIControlStateNormal];
+	[self.switchFlashButton setImage:[UIImage imageNamed: @"lightbulb_final_OFF" /*FLASH_ICON_OFF*/] forState:UIControlStateNormal];
 	[self.switchFlashButton setFrame:CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
 	[self.switchFlashButton addTarget:self action:@selector(switchFlash:) forControlEvents:UIControlEventTouchUpInside];
 	self.flashOn = NO;
-	[self.view addSubview: self.switchFlashButton];
+	[self.view insertSubview:self.switchFlashButton belowSubview:self.contentContainerView];
 	self.flashTransform = self.switchFlashButton.transform;
 }
-*/
+
+-(IBAction)switchFaces:(id)sender {
+    [self.sessionManager switchVideoFace];
+}
+
+-(IBAction)switchFlash:(id)sender {
+    [self.sessionManager switchFlash];
+    if(self.flashOn) {
+        [self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_OFF]forState:UIControlStateNormal];
+    }else{
+        [self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_ON] forState:UIControlStateNormal];
+    }
+    self.flashOn = !self.flashOn;
+}
+
 
 #pragma mark Create Gestures
 -(void) createAndInstantiateGestures {
@@ -260,8 +274,7 @@
 	[self createPinchGestureToZoom];
 }
 
--(void) createTapGestureToFocus
-{
+-(void) createTapGestureToFocus {
 	UITapGestureRecognizer* focusRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(focusPhoto:)];
 	//    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
 	focusRecognizer.numberOfTapsRequired = 1;
@@ -462,24 +475,6 @@
 	self.verbatmCameraView.effectiveScale = scale > 1.0f ? scale : 1.0f;
 	[self.sessionManager zoomPreviewWithScale:self.verbatmCameraView.effectiveScale];
 }
-
-/* NOT IN USE
--(IBAction)switchFaces:(id)sender
-{
-	[self.sessionManager switchVideoFace];
-}
-
--(IBAction)switchFlash:(id)sender
-{
-	[self.sessionManager switchFlash];
-	if(self.flashOn){
-		[self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_OFF]forState:UIControlStateNormal];
-	}else{
-		[self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_ON] forState:UIControlStateNormal];
-	}
-	self.flashOn = !self.flashOn;
-}
-*/
 
 
 #pragma mark - Change size of container view based on orientation
