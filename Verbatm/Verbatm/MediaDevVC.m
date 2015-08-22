@@ -253,7 +253,9 @@
 	self.flashTransform = self.switchFlashButton.transform;
 }
 
--(IBAction)switchFaces:(id)sender {
+
+
+-(void)switchFaces:(UITapGestureRecognizer *)sender {
     [self.sessionManager switchVideoFace];
 }
 
@@ -272,12 +274,22 @@
 -(void) createAndInstantiateGestures {
 	[self createTapGestureToFocus];
 	[self createPinchGestureToZoom];
+    [self createDoubleTapToSwitchCamera];
+}
+
+
+-(void)createDoubleTapToSwitchCamera{
+    UITapGestureRecognizer* cameraFace = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(switchFaces:)];
+    cameraFace.numberOfTapsRequired = 2;
+    cameraFace.cancelsTouchesInView =  NO;
+    [cameraFace setDelegate:self.verbatmCameraView];
+    [self.verbatmCameraView addGestureRecognizer:cameraFace];
 }
 
 -(void) createTapGestureToFocus {
 	UITapGestureRecognizer* focusRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(focusPhoto:)];
 	//    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
-	focusRecognizer.numberOfTapsRequired = 1;
+	//focusRecognizer.numberOfTapsRequired = 2;
 	focusRecognizer.cancelsTouchesInView =  NO;
 	[focusRecognizer setDelegate:self.verbatmCameraView];
 	[self.verbatmCameraView addGestureRecognizer:focusRecognizer];
@@ -446,6 +458,8 @@
 
 
 #pragma mark - Actions to enhance the camera view
+
+
 
 -(void) focusPhoto: (UITapGestureRecognizer *)sender {
 	if (sender.state == UIGestureRecognizerStateEnded) {

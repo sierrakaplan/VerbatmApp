@@ -563,6 +563,8 @@
 	[self cropImage:(BOOL)halfScreen];
 }
 
+
+
 -(void)cropImage:(BOOL)halfScreen
 {
 
