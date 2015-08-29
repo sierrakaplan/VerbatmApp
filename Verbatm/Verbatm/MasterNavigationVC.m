@@ -15,6 +15,8 @@
 #import "MediaSessionManager.h"
 #import "internetConnectionMonitor.h"
 @interface MasterNavigationVC ()
+@property (weak, nonatomic) IBOutlet UIView *profileVcContainer;
+
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
 @property (weak, nonatomic) IBOutlet UIView *adkContainer;
 @property (weak, nonatomic) IBOutlet UIView *articleListContainer;
@@ -33,7 +35,9 @@
 #define ANIMATION_DURATION 0.5
 #define NUMBER_OF_CHILD_VCS 3
 #define LEFT_FRAME self.view.bounds
-#define RIGHT_FRAME CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
+#define CENTER_FRAME CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
+#define RIGHT_FRAME CGRectMake(self.view.frame.size.width * 2, 0, self.view.frame.size.width, self.view.frame.size.height)
+
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
@@ -50,9 +54,7 @@
 	[self.view insertSubview: self.verbatmCameraView atIndex:0];
 	// Do any additional setup after loading the view.
 	[self formatVCS];
-	[self registerForNavNotifications];
-	[self setUpEdgePanGestureRecognizers];
-    
+	[self registerForNavNotifications];    
     self.connnectionMinitor = [[internetConnectionMonitor alloc] init];
     
 }
@@ -67,8 +69,7 @@
 }
 
 //creates the camera view with the preview session
--(VerbatmCameraView*)verbatmCameraView
-{
+-(VerbatmCameraView*)verbatmCameraView{
 	if(!_verbatmCameraView){
 		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame: self.view.bounds];
 	}
@@ -119,105 +120,7 @@
 -(void)leaveArticleDisplay: (NSNotification *) notification {
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 	[self dismissViewControllerAnimated:YES completion:nil];
-
 }
-
--(void)setUpEdgePanGestureRecognizers {
-	UIScreenEdgePanGestureRecognizer* edgePanR = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(enterADK:)];
-	edgePanR.edges =  UIRectEdgeRight;
-	UIScreenEdgePanGestureRecognizer* edgePanL = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(exitADK:)];
-	edgePanL.edges =  UIRectEdgeLeft;
-	[self.view addGestureRecognizer: edgePanR];
-	[self.view addGestureRecognizer: edgePanL];
-}
-
-
-//swipping left from right
--(void) enterADK:(UIScreenEdgePanGestureRecognizer *)sender {
-	//we want only one finger doing anything when exiting
-	if([sender numberOfTouches] >1) return;
-	if(self.masterSV.contentOffset.x == self.view.frame.size.width) return;
-
-	switch(sender.state) {
-		case UIGestureRecognizerStateBegan: {
-			self.previousGesturePoint  = [sender locationOfTouch:0 inView:self.view];
-			break;
-		}
-		case UIGestureRecognizerStateChanged: {
-			CGPoint current_point= [sender locationOfTouch:0 inView:self.view];;
-			int diff = current_point.x - self.previousGesturePoint.x;
-			self.previousGesturePoint = current_point;
-			self.masterSV.contentOffset = CGPointMake(self.masterSV.contentOffset.x + (-1 *diff), 0);
-			break;
-		}
-		case UIGestureRecognizerStateEnded: {
-			[self adjustSV];
-			break;
-		}
-		default:
-			return;
-	}
-}
-
-//swipping right from left
-- (void)exitADK:(UIScreenEdgePanGestureRecognizer *)sender {
-	//this is here because this sense the left edge pan gesture- so we need to catch it and send it upstream
-	if(super.articleCurrentlyViewing) {
-		//we send the signal back up to it's superview to be handled
-		[super exitDisplay:sender];
-		return;
-	}
-	if(self.masterSV.contentOffset.x == 0) return;
-	//we want only one finger doing anything when exiting
-	if([sender numberOfTouches] >1) return;
-
-	switch(sender.state) {
-		case UIGestureRecognizerStateBegan: {
-			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_HIDE_KEYBOARD
-																object:nil
-															  userInfo:nil];
-			self.previousGesturePoint  = [sender locationOfTouch:0 inView:self.view];
-			break;
-		}
-		case UIGestureRecognizerStateChanged: {
-			CGPoint currentPoint = [sender locationOfTouch:0 inView:self.view];;
-
-			int diff = currentPoint.x - self.previousGesturePoint.x;
-			self.previousGesturePoint = currentPoint;
-			self.masterSV.contentOffset = CGPointMake(self.masterSV.contentOffset.x + (-1 *diff), 0);
-			break;
-		}
-		case UIGestureRecognizerStateEnded: {
-			[self adjustSV];
-			break;
-		}
-		default:
-			return;
-	}
-}
-
-
--(void)adjustSV {
-	if(self.masterSV.contentOffset.x > (self.view.frame.size.width/2)) {
-		//bring ADK into View
-		[UIView animateWithDuration:ANIMATION_DURATION animations:^{
-			self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
-		}completion:^(BOOL finished) {
-			if(finished) {
-				[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_KEYBOARD
-																	object:nil
-																  userInfo:nil];
-			}
-		}];
-	}else {
-		//bring List into View
-		[UIView animateWithDuration:ANIMATION_DURATION animations:^{
-			self.masterSV.contentOffset = CGPointMake(0, 0);
-		}completion:^(BOOL finished) {
-		}];
-	}
-}
-
 
 //article published sucessfully
 -(void)articlePublishedAnimation {
@@ -258,12 +161,14 @@
 	return _animationView;
 }
 
-
+//lays out all the containers in the right position and also sets the appropriate
+//offset for the master SV
 -(void)formatVCS {
 	self.masterSV.frame = self.view.bounds;
-	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width*2, 0);//enable horizontal scroll
-	self.masterSV.contentOffset = CGPointMake(0, 0);//start at the left
-	self.articleListContainer.frame = LEFT_FRAME;
+	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);//enable horizontal scroll
+	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);//start at the center
+    self.profileVcContainer.frame = LEFT_FRAME;
+	self.articleListContainer.frame = CENTER_FRAME;
 	self.adkContainer.frame = RIGHT_FRAME;
 }
 

@@ -128,7 +128,6 @@
 
 
 #pragma mark - Image or Video View -
-
 -(void) displayVideo: (AVAsset*) videoAsset {
 	self.videoView = [[VideoPlayerView alloc]init];
 	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);

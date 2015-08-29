@@ -27,12 +27,12 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="Rve-tc-g3P">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="Rve-tc-g3P">
                                 <rect key="frame" x="0.0" y="-48" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <containerView opaque="NO" contentMode="scaleToFill" id="yxe-c7-aMo">
-                                        <rect key="frame" x="8" y="64" width="226" height="262"/>
+                                        <rect key="frame" x="8" y="64" width="135" height="132"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <connections>
                                             <segue destination="Qxg-C2-1Oh" kind="embed" id="lNo-MU-gAV"/>
@@ -49,10 +49,17 @@
                                         </connections>
                                     </button>
                                     <containerView opaque="NO" contentMode="scaleToFill" id="BZw-d7-VqY">
-                                        <rect key="frame" x="0.0" y="48" width="320" height="520"/>
+                                        <rect key="frame" x="67" y="366" width="223" height="176"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <connections>
-                                            <segue destination="Ve4-Qj-kgj" kind="embed" id="b7N-73-evc"/>
+                                            <segue destination="lY0-w6-fRI" kind="embed" id="nBF-i7-L9n"/>
+                                        </connections>
+                                    </containerView>
+                                    <containerView opaque="NO" contentMode="scaleToFill" id="eFn-WD-HK1">
+                                        <rect key="frame" x="6" y="134" width="306" height="292"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <connections>
+                                            <segue destination="3TM-NK-3ij" kind="embed" id="FgB-fu-KIk"/>
                                         </connections>
                                     </containerView>
                                 </subviews>
@@ -68,7 +75,7 @@
                         <outlet property="adkContainer" destination="yxe-c7-aMo" id="QIx-i8-eZK"/>
                         <outlet property="articleListContainer" destination="BZw-d7-VqY" id="5wp-CG-fOg"/>
                         <outlet property="masterSV" destination="Rve-tc-g3P" id="038-Bi-DAq"/>
-                        <segue destination="K1p-X2-CXo" kind="modal" identifier="display_articles_segue" modalTransitionStyle="coverVertical" id="Bhb-UK-wiL"/>
+                        <outlet property="profileVcContainer" destination="eFn-WD-HK1" id="n4x-T6-9bG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AxA-gZ-qvU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -86,7 +93,7 @@
             <objects>
                 <viewController wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="ArticleListVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Yqu-zV-E3L">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="520"/>
+                        <rect key="frame" x="0.0" y="0.0" width="165" height="339"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -94,7 +101,45 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3530" y="-731"/>
+            <point key="canvasLocation" x="-2783" y="65.5"/>
+        </scene>
+        <!--Feed DisplayTVC-->
+        <scene sceneID="LSe-v6-SsT">
+            <objects>
+                <viewController id="lY0-w6-fRI" customClass="feedDisplayTVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Clv-OZ-JXA">
+                        <rect key="frame" x="0.0" y="0.0" width="223" height="176"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" id="GtQ-te-Ltn" customClass="userFeedCategorySwitch">
+                                <rect key="frame" x="33" y="26" width="158" height="0.0"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" id="Tmt-ZN-v1L">
+                                <rect key="frame" x="16" y="484" width="0.0" height="0.0"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <view contentMode="scaleToFill" id="Ik0-dO-nPw">
+                                <rect key="frame" x="259" y="484" width="0.0" height="0.0"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF">
+                                <rect key="frame" x="33" y="-230" width="165" height="339"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <segue destination="Ve4-Qj-kgj" kind="embed" id="5JZ-lL-lAB"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="V0g-tI-HpL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2801" y="-670"/>
         </scene>
         <!--Item-->
         <scene sceneID="gIN-uk-7gC">
@@ -182,14 +227,14 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jhx-H8-RPm" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="x2Q-q6-lhq" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-3843" y="-1727"/>
+            <point key="canvasLocation" x="-2869" y="-2061"/>
         </scene>
         <!--Item-->
         <scene sceneID="74h-C3-U07">
             <objects>
                 <viewController id="Qxg-C2-1Oh" customClass="MediaDevVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rWO-ax-CE2">
-                        <rect key="frame" x="0.0" y="0.0" width="226" height="262"/>
+                        <rect key="frame" x="0.0" y="0.0" width="135" height="132"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="yYu-am-nhj" userLabel="Content Container View">
@@ -215,41 +260,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-3530" y="-1255"/>
-        </scene>
-        <!--Article DisplayVC-->
-        <scene sceneID="lst-8e-ORz">
-            <objects>
-                <viewController id="K1p-X2-CXo" customClass="ArticleDisplayVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Jae-KA-Tah">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="BEX-fC-JZk">
-                                <rect key="frame" x="35" y="525" width="30" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <segue destination="bvK-is-K9T" kind="unwind" unwindAction="done:" id="oYB-iN-KFK"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                        <gestureRecognizers/>
-                    </view>
-                    <connections>
-                        <outlet property="exitArticle_Button" destination="BEX-fC-JZk" id="m7c-xo-2mz"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="M6r-tn-xMe" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="bvK-is-K9T" userLabel="Exit" sceneMemberID="exit"/>
-                <screenEdgePanGestureRecognizer minimumNumberOfTouches="1" id="iZ9-na-ep7">
-                    <rectEdge key="edges" left="YES"/>
-                </screenEdgePanGestureRecognizer>
-            </objects>
-            <point key="canvasLocation" x="-4469" y="-312"/>
+            <point key="canvasLocation" x="-2558" y="-1255"/>
         </scene>
         <!--Bug Submission FormVC-->
         <scene sceneID="5tH-V0-Rug">
@@ -323,7 +334,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uMw-ms-eMh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4116" y="-312"/>
+            <point key="canvasLocation" x="-4747" y="391"/>
         </scene>
         <!--contentPage-->
         <scene sceneID="8XD-Tr-4db">
@@ -420,7 +431,30 @@
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-4116" y="356"/>
+            <point key="canvasLocation" x="-3806" y="-374"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="Apv-cW-9iI">
+            <objects>
+                <viewController id="3TM-NK-3ij" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="yT8-e9-31R">
+                        <rect key="frame" x="0.0" y="0.0" width="306" height="292"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Profile" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="drM-L1-cqF">
+                                <rect key="frame" x="123" y="52" width="49" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kfn-r7-rVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4655" y="-491"/>
         </scene>
     </scenes>
     <resources>

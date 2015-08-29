@@ -38,7 +38,9 @@
 	return self;
 }
 
-
+-(void)removeMuteButtonFromView{
+    [self.muteButton removeFromSuperview];
+}
 
 
 //lazy instantiation of mute button
@@ -211,7 +213,7 @@
 	}
 }
 
--(void)rewindVideoWithRate: (NSInteger) rate {
+-(void)rewindVideoWithRate:(NSInteger) rate {
 	if(self.playerItem) {
 		if([self.playerItem canPlayFastReverse] && self.playerLayer.player.rate) self.playerLayer.player.rate = -rate;
 	}

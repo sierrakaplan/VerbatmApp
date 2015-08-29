@@ -19,7 +19,6 @@
 -(void) playVideoFromArray: (NSArray*)videoList;
 
 //following methods will only execute if playVideo was called first
-
 -(void)repeatVideoOnEnd:(BOOL)repeat;
 
 -(void)pauseVideo;

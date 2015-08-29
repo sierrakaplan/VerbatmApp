@@ -37,5 +37,6 @@
 
 -(BOOL) isPlaying;
 
+-(void)removeMuteButtonFromView;
 
 @end
