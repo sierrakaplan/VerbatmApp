@@ -30,9 +30,9 @@
 #pragma mark - Content Dev VC -
 
 #define REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION 1.f
+//time it takes to animate a pinch
 #define PINCHVIEW_ANIMATION_DURATION 0.5
-//time it takes to animate a image from the gallery into position
-#define IMAGE_SWIPE_ANIMATION_TIME 0.5
+
 
 #pragma mark - AVES -
 

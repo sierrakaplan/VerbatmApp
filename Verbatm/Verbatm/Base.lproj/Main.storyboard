@@ -38,6 +38,13 @@
                                             <segue destination="Qxg-C2-1Oh" kind="embed" id="lNo-MU-gAV"/>
                                         </connections>
                                     </containerView>
+                                    <containerView opaque="NO" contentMode="scaleToFill" id="eFn-WD-HK1">
+                                        <rect key="frame" x="6" y="134" width="306" height="292"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <connections>
+                                            <segue destination="3TM-NK-3ij" kind="embed" id="FgB-fu-KIk"/>
+                                        </connections>
+                                    </containerView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="r0I-8Z-4Cn">
                                         <rect key="frame" x="6" y="53" width="9" height="3"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -49,21 +56,36 @@
                                         </connections>
                                     </button>
                                     <containerView opaque="NO" contentMode="scaleToFill" id="BZw-d7-VqY">
-                                        <rect key="frame" x="67" y="366" width="223" height="176"/>
+                                        <rect key="frame" x="0.0" y="39" width="320" height="577"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <connections>
                                             <segue destination="lY0-w6-fRI" kind="embed" id="nBF-i7-L9n"/>
                                         </connections>
                                     </containerView>
-                                    <containerView opaque="NO" contentMode="scaleToFill" id="eFn-WD-HK1">
-                                        <rect key="frame" x="6" y="134" width="306" height="292"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <segue destination="3TM-NK-3ij" kind="embed" id="FgB-fu-KIk"/>
-                                        </connections>
-                                    </containerView>
                                 </subviews>
                             </scrollView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="5rs-HF-tPO">
+                                <rect key="frame" x="16" y="523" width="44" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Profile">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="moveToProfile:" destination="f1t-Lb-Erp" eventType="touchUpInside" id="kth-d2-uD8"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Li9-no-7Vk">
+                                <rect key="frame" x="264" y="523" width="31" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="ADK">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="moveToAdk:" destination="f1t-Lb-Erp" eventType="touchUpInside" id="Hpc-2R-P6W"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -73,8 +95,10 @@
                     </view>
                     <connections>
                         <outlet property="adkContainer" destination="yxe-c7-aMo" id="QIx-i8-eZK"/>
+                        <outlet property="adkNavButton" destination="Li9-no-7Vk" id="aza-ho-dBT"/>
                         <outlet property="articleListContainer" destination="BZw-d7-VqY" id="5wp-CG-fOg"/>
                         <outlet property="masterSV" destination="Rve-tc-g3P" id="038-Bi-DAq"/>
+                        <outlet property="profileNavButton" destination="5rs-HF-tPO" id="M7e-RG-2Oc"/>
                         <outlet property="profileVcContainer" destination="eFn-WD-HK1" id="n4x-T6-9bG"/>
                     </connections>
                 </viewController>
@@ -93,7 +117,7 @@
             <objects>
                 <viewController wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="ArticleListVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Yqu-zV-E3L">
-                        <rect key="frame" x="0.0" y="0.0" width="165" height="339"/>
+                        <rect key="frame" x="0.0" y="0.0" width="262" height="339"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -101,33 +125,23 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2783" y="65.5"/>
+            <point key="canvasLocation" x="-3313.5" y="-204.5"/>
         </scene>
         <!--Feed DisplayTVC-->
         <scene sceneID="LSe-v6-SsT">
             <objects>
                 <viewController id="lY0-w6-fRI" customClass="feedDisplayTVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Clv-OZ-JXA">
-                        <rect key="frame" x="0.0" y="0.0" width="223" height="176"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="577"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" id="GtQ-te-Ltn" customClass="userFeedCategorySwitch">
-                                <rect key="frame" x="33" y="26" width="158" height="0.0"/>
+                                <rect key="frame" x="33" y="26" width="255" height="95"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
-                            <view contentMode="scaleToFill" id="Tmt-ZN-v1L">
-                                <rect key="frame" x="16" y="484" width="0.0" height="0.0"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
-                            <view contentMode="scaleToFill" id="Ik0-dO-nPw">
-                                <rect key="frame" x="259" y="484" width="0.0" height="0.0"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF">
-                                <rect key="frame" x="33" y="-230" width="165" height="339"/>
+                                <rect key="frame" x="33" y="155" width="262" height="339"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <connections>
                                     <segue destination="Ve4-Qj-kgj" kind="embed" id="5JZ-lL-lAB"/>
@@ -136,10 +150,14 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="articleListContainer" destination="jLa-zk-lWF" id="PLP-RZ-Vxs"/>
+                        <outlet property="categorySwitch" destination="GtQ-te-Ltn" id="9Sd-eb-qiz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V0g-tI-HpL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2801" y="-670"/>
+            <point key="canvasLocation" x="-3434" y="-732.5"/>
         </scene>
         <!--Item-->
         <scene sceneID="gIN-uk-7gC">
@@ -433,10 +451,10 @@
             </objects>
             <point key="canvasLocation" x="-3806" y="-374"/>
         </scene>
-        <!--View Controller-->
+        <!--ProfileVC-->
         <scene sceneID="Apv-cW-9iI">
             <objects>
-                <viewController id="3TM-NK-3ij" sceneMemberID="viewController">
+                <viewController id="3TM-NK-3ij" customClass="profileVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yT8-e9-31R">
                         <rect key="frame" x="0.0" y="0.0" width="306" height="292"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -454,7 +472,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kfn-r7-rVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4655" y="-491"/>
+            <point key="canvasLocation" x="-4475" y="-559"/>
         </scene>
     </scenes>
     <resources>

@@ -21,6 +21,8 @@
 @property (weak, nonatomic) IBOutlet UIView *adkContainer;
 @property (weak, nonatomic) IBOutlet UIView *articleListContainer;
 //stores the index of the view that brings up the article display in order to aid our return
+@property (weak, nonatomic) IBOutlet UIButton *profileNavButton;
+@property (weak, nonatomic) IBOutlet UIButton *adkNavButton;
 @property (nonatomic) NSInteger lastViewIndex;
 @property (nonatomic, strong) NSMutableArray * pagesToDisplay;
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
@@ -41,6 +43,10 @@
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
+
+#define NAVICON_WALL_OFFSET 10 //distance between icons and the side of the screen
+#define NAVICON_WIDTH 75 //frame width
+#define NAVICON_HEIGHT 100 //frame height
 @end
 
 @implementation MasterNavigationVC
@@ -56,7 +62,7 @@
 	[self formatVCS];
 	[self registerForNavNotifications];    
     self.connnectionMinitor = [[internetConnectionMonitor alloc] init];
-    
+    [self positionNavViews];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -68,6 +74,22 @@
 	[super viewDidDisappear:animated];
 }
 
+//position the nav views in appropriate places and set frames
+-(void)positionNavViews {
+    self.profileNavButton.frame = CGRectMake(self.view.frame.size.width + NAVICON_WALL_OFFSET, self.view.frame.size.height - NAVICON_WALL_OFFSET -
+                                    NAVICON_HEIGHT, NAVICON_WIDTH, NAVICON_HEIGHT);
+    self.adkNavButton.frame = CGRectMake((self.view.frame.size.width*2) - NAVICON_WALL_OFFSET - NAVICON_WIDTH, self.profileNavButton.frame.origin.y, NAVICON_WIDTH, NAVICON_HEIGHT);
+    
+    [self.profileNavButton removeFromSuperview];
+    [self.adkNavButton removeFromSuperview];
+    
+    [self.masterSV addSubview:self.profileNavButton];
+    [self.masterSV addSubview:self.adkNavButton];
+    [self.masterSV bringSubviewToFront:self.profileNavButton];
+    [self.masterSV bringSubviewToFront:self.adkNavButton];
+}
+
+
 //creates the camera view with the preview session
 -(VerbatmCameraView*)verbatmCameraView{
 	if(!_verbatmCameraView){
@@ -76,8 +98,7 @@
 	return _verbatmCameraView;
 }
 
--(MediaSessionManager*)sessionManager
-{
+-(MediaSessionManager*)sessionManager {
 	if(!_sessionManager){
 		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
 	}
@@ -136,12 +157,12 @@
 -(void)removeAnimationView {
 	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
 		self.animationView.alpha=0;
-
 	}completion:^(BOOL finished) {
 		self.animationView.frame = CGRectMake(0, 0, 0, 0);
-
 	}];
 }
+
+
 
 //insert title
 -(void)insertTitleAnimation {
@@ -151,15 +172,16 @@
 	if(!self.animationView.alpha)self.animationView.alpha = 1;
 	[self.view addSubview:self.animationView];
 	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:TIME_UNTIL_ANIMATION_CLEAR target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
-
 }
+
 
 
 //lazy instantiation
 -(UIImageView *)animationView {
-	if(!_animationView)_animationView = [[UIImageView alloc] init];
+    if(!_animationView)_animationView = [[UIImageView alloc] init];
 	return _animationView;
 }
+
 
 //lays out all the containers in the right position and also sets the appropriate
 //offset for the master SV
@@ -187,8 +209,26 @@
 		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	}
 }
-#pragma mark - Handle Login -
 
+#pragma mark - Nav Buttons Pressed -
+//nav button is pressed so we move the SV right to the ADK
+- (IBAction)moveToAdk:(UIButton *)sender {
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width * 2, 0);
+    }];
+    
+}
+
+//nav button is pressed - so we move the SV left to the profile
+- (IBAction)moveToProfile:(id)sender {
+    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
+        self.masterSV.contentOffset = CGPointMake(0, 0);
+    }];
+}
+
+
+
+#pragma mark - Handle Login -
 
 -(void) login {
 	if(![VerbatmUser currentUser]) {
@@ -201,8 +241,8 @@
 	[self performSegueWithIdentifier:BRING_UP_SIGNIN_SEGUE sender:self];
 }
 
-
--(UIInterfaceOrientationMask)supportedInterfaceOrientations {
+#pragma mark - handle
+-(UIInterfaceOrientationMask) supportedInterfaceOrientations {
 	//return supported orientation masks
 	return UIInterfaceOrientationMaskPortrait;
 }

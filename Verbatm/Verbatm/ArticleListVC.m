@@ -27,7 +27,6 @@
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
 @interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
-
     @property (strong, nonatomic) FeedTableView *storyListView;
     //this cell is inserted in the top of the listview
 	@property (strong,nonatomic) FeedTableViewCell* placeholderCell;
@@ -51,7 +50,7 @@
     [super viewDidLoad];
 	[self addBlurView];
 	[self initStoryListView];
-	[self addComposeStoryButton];
+	//[self addComposeStoryButton];
 	[self registerForNavNotifications];
 }
 

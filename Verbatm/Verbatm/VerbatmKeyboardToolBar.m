@@ -14,11 +14,9 @@
 
 # pragma mark Initialization
 -(instancetype)initWithFrame:(CGRect)frame {
-
 	//load from Nib file..this initializes the background view and all its subviews
 	self = [super initWithFrame:frame];
-	if(self)
-	{
+	if(self) {
 		self.frame = frame;
 		[self createButtons];
         self.backgroundColor = [UIColor clearColor];
