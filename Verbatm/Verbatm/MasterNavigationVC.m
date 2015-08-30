@@ -14,6 +14,7 @@
 #import "VerbatmCameraView.h"
 #import "MediaSessionManager.h"
 #import "internetConnectionMonitor.h"
+#import <AVFoundation/AVAudioSession.h>
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIView *profileVcContainer;
 
@@ -63,6 +64,7 @@
 	[self registerForNavNotifications];    
     self.connnectionMinitor = [[internetConnectionMonitor alloc] init];
     [self positionNavViews];
+   
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -78,7 +80,8 @@
 -(void)positionNavViews {
     self.profileNavButton.frame = CGRectMake(self.view.frame.size.width + NAVICON_WALL_OFFSET, self.view.frame.size.height - NAVICON_WALL_OFFSET -
                                     NAVICON_HEIGHT, NAVICON_WIDTH, NAVICON_HEIGHT);
-    self.adkNavButton.frame = CGRectMake((self.view.frame.size.width*2) - NAVICON_WALL_OFFSET - NAVICON_WIDTH, self.profileNavButton.frame.origin.y, NAVICON_WIDTH, NAVICON_HEIGHT);
+    self.adkNavButton.frame = CGRectMake((self.view.frame.size.width*2) - NAVICON_WALL_OFFSET - NAVICON_WIDTH,
+                                         self.profileNavButton.frame.origin.y, NAVICON_WIDTH, NAVICON_HEIGHT);
     
     [self.profileNavButton removeFromSuperview];
     [self.adkNavButton removeFromSuperview];
@@ -92,14 +95,14 @@
 
 //creates the camera view with the preview session
 -(VerbatmCameraView*)verbatmCameraView{
-	if(!_verbatmCameraView){
+	if(!_verbatmCameraView) {
 		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame: self.view.bounds];
 	}
 	return _verbatmCameraView;
 }
 
 -(MediaSessionManager*)sessionManager {
-	if(!_sessionManager){
+	if(!_sessionManager) {
 		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
 	}
 	return _sessionManager;
@@ -158,7 +161,7 @@
 	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
 		self.animationView.alpha=0;
 	}completion:^(BOOL finished) {
-		self.animationView.frame = CGRectMake(0, 0, 0, 0);
+		self.animationView.frame = CGRectMake(0,0,0,0);
 	}];
 }
 
@@ -253,9 +256,8 @@
 }
 
 //catches the unwind segue - do nothing
-- (IBAction)done:(UIStoryboardSegue *)segue{
+- (IBAction)done:(UIStoryboardSegue *)segue {
+    
 }
-
-
 
 @end

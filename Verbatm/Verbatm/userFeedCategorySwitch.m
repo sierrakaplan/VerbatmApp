@@ -86,7 +86,9 @@
             self.trendingLabel.frame = CGRectMake(0, 0,self.pullCircle.frame.origin.x, self.trendingLabel.frame.size.height);
             self.lastPoint = touch;
             //noitify delegat that we have panned our pullCircle
-            [self.categorySwitchDelegate pullCircleDidPan:self.pullCircle];
+        
+            CGFloat centerX=  self.pullCircle.frame.origin.x;
+            [self.categorySwitchDelegate pullCircleDidPan:(centerX / (self.frame.size.width - self.pullCircle.frame.size.width) )];
             break;
         }
         case UIGestureRecognizerStateEnded: {

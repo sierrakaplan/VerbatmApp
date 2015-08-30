@@ -93,6 +93,8 @@
 		C7E65F5C1B911A470042AD99 /* feedDisplayTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5B1B911A470042AD99 /* feedDisplayTVC.m */; };
 		C7E65F5F1B911BA90042AD99 /* userFeedCategorySwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5E1B911BA90042AD99 /* userFeedCategorySwitch.m */; };
 		C7E65F691B9245200042AD99 /* profileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F681B9245200042AD99 /* profileVC.m */; };
+		C7E65F6C1B92E5830042AD99 /* topicsViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6B1B92E5830042AD99 /* topicsViewVC.m */; };
+		C7E65F6F1B92EB650042AD99 /* singleArticlePresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6E1B92EB650042AD99 /* singleArticlePresenter.m */; };
 		C7E6C13F1A4E394600863893 /* MultiplePhotoVideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */; };
 		C7E6C1451A4E394600863893 /* TextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13C1A4E394600863893 /* TextAVE.m */; };
 		C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* VideoAVE.m */; };
@@ -272,6 +274,10 @@
 		C7E65F5E1B911BA90042AD99 /* userFeedCategorySwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userFeedCategorySwitch.m; sourceTree = "<group>"; };
 		C7E65F671B9245200042AD99 /* profileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = profileVC.h; sourceTree = "<group>"; };
 		C7E65F681B9245200042AD99 /* profileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = profileVC.m; sourceTree = "<group>"; };
+		C7E65F6A1B92E5830042AD99 /* topicsViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = topicsViewVC.h; sourceTree = "<group>"; };
+		C7E65F6B1B92E5830042AD99 /* topicsViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = topicsViewVC.m; sourceTree = "<group>"; };
+		C7E65F6D1B92EB650042AD99 /* singleArticlePresenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleArticlePresenter.h; sourceTree = "<group>"; };
+		C7E65F6E1B92EB650042AD99 /* singleArticlePresenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = singleArticlePresenter.m; sourceTree = "<group>"; };
 		C7E6C12F1A4E394600863893 /* MultiplePhotoVideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiplePhotoVideoAVE.h; sourceTree = "<group>"; };
 		C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiplePhotoVideoAVE.m; sourceTree = "<group>"; };
 		C7E6C13B1A4E394600863893 /* TextAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAVE.h; sourceTree = "<group>"; };
@@ -514,6 +520,8 @@
 			isa = PBXGroup;
 			children = (
 				C7469BF21B4874A600EA7B10 /* Main.storyboard */,
+				C7E65F6A1B92E5830042AD99 /* topicsViewVC.h */,
+				C7E65F6B1B92E5830042AD99 /* topicsViewVC.m */,
 				C7E65F671B9245200042AD99 /* profileVC.h */,
 				C7E65F681B9245200042AD99 /* profileVC.m */,
 				C7E65F641B92449E0042AD99 /* bug submission VC */,
@@ -549,6 +557,8 @@
 				A59CC2861B6C2E2F00B4907C /* Table Views */,
 				C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */,
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
+				C7E65F6D1B92EB650042AD99 /* singleArticlePresenter.h */,
+				C7E65F6E1B92EB650042AD99 /* singleArticlePresenter.m */,
 				C716A5B019E0CA3500A5490B /* DashLineView.h */,
 				C716A5B119E0CA3500A5490B /* DashLineView.m */,
 				F20A24F81A46166100BB77C1 /* EditContentView.h */,
@@ -947,6 +957,7 @@
 				C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */,
 				C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */,
 				C772F2861B4BC13500CEC83D /* GMImagePickerController.m in Sources */,
+				C7E65F6F1B92EB650042AD99 /* singleArticlePresenter.m in Sources */,
 				C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */,
 				C7BC43C0199F7427004B91A1 /* VerbatmUser.m in Sources */,
 				A504ECE51B69D5E20076F9D0 /* VideoPlayerWrapperView.m in Sources */,
@@ -954,6 +965,7 @@
 				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
+				C7E65F6C1B92E5830042AD99 /* topicsViewVC.m in Sources */,
 				A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */,
 				C777EEA61AC90A7A003E0633 /* ArticleAquirer.m in Sources */,
 				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,
