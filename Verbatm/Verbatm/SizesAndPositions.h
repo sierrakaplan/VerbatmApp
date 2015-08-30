@@ -136,5 +136,7 @@
 #define POINTS_ON_CIRCLE_RADIUS 10.f
 #define TOUCH_THRESHOLD 40.f
 
+#define NAVICON_WALL_OFFSET 10
+
 
 #endif
