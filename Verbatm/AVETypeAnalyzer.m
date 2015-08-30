@@ -28,7 +28,6 @@
 @synthesize results = _results;
 
 -(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)pinchedObjects withFrame:(CGRect)frame {
-
 	self.preferredFrame = frame;
 	self.results = [[NSMutableArray alloc]init];
 	for(PinchView* pinchView in pinchedObjects) {
@@ -87,8 +86,7 @@
 }
 
 
--(NSData*)getDataFromAsset:(ALAsset*)asset
-{
+-(NSData*)getDataFromAsset:(ALAsset*)asset {
 	ALAssetRepresentation *rep = [asset defaultRepresentation];
 	Byte *buffer = (Byte*)malloc((unsigned long)rep.size);
 	NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length: (unsigned long)rep.size error:nil];

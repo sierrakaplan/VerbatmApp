@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "ArticleDisplayVC.h"
+#import "ArticleDisplaySV.h"
 #import "AVETypeAnalyzer.h"
 #import "BaseArticleViewingExperience.h"
 #import "Durations.h"
@@ -21,26 +21,11 @@
 #import "UIView+Glow.h"
 #import "UIEffects.h"
 
-@interface ArticleDisplayVC () <UIGestureRecognizerDelegate, UIScrollViewDelegate>
-@property (nonatomic, strong) NSMutableArray * Objects;//either pinchObjects or Pages
-@property (strong, nonatomic) UIPanGestureRecognizer* panGesture;
+@interface ArticleDisplaySV ()
 @property (atomic, strong) UIActivityIndicatorView *activityIndicator;
-
-//The first object in the list will be the last to be shown in the Article
-@property (weak, nonatomic) IBOutlet UIButton *exitArticleButton;
-@property (strong, nonatomic) UIButton* publishButton;
-//saves the prev point for the exit (pan) gesture
-@property (nonatomic) CGPoint previousGesturePoint;
-@property (nonatomic) CGRect scrollViewRestingFrame;
-@property (nonatomic) CGRect publishButtonRestingFrame;
-@property (nonatomic) CGRect publishButtonFrame;
-@property (nonatomic) NSAttributedString *publishButtonTitle;
-
-//the amount of space that must be pulled to exit
-#define EXIT_EPSILON 60
 @end
 
-@implementation ArticleDisplayVC
+@implementation ArticleDisplaySV
 
 #pragma mark - View loading
 
@@ -59,60 +44,11 @@
 //	}
 }
 
--(void) showArticleFromPinchViews: (NSMutableArray*)pinchViews isPreview:(BOOL) isPreview {
-
-	//if we have nothing in our article then return to the list view-
-	//we shouldn't need this because all downloaded articles should have legit pages
-	if(![pinchViews count]) {
-		NSLog(@"No pages in article");
-		//[self showScrollView:NO];
-		return;
-	}
-
-	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
-	//self.pageAVEs = [analyzer processPinchedObjectsFromArray:pinchViews withFrame:self.view.frame];
-	if(isPreview)[self addPublishButton];
-	//[self showScrollView:YES];
-}
 
 
 
-//-(void) getPinchViewsFromArticle:(Article *)article {
-//
-//
-//	[self startActivityIndicator];
-//
-//	dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
-//	dispatch_async(articleDownload_queue, ^{
-//		NSArray* pages = [article getAllPages];
-//
-//		//we sort the pages by their page numbers to make sure everything is in the right order
-//		//O(nlogn) so should be fine in the long-run ;D
-//		pages = [pages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-//			Page * page1 = obj1;
-//			Page * page2 = obj2;
-//			if(page1.pagePosition < page2.pagePosition) return -1;
-//			if(page2.pagePosition > page1.pagePosition) return 1;
-//			return 0;
-//		}];
-//		dispatch_async(dispatch_get_main_queue(), ^{
-//			NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
-//			//get pinch views for our array
-//			for (Page * page in pages) {
-//				//here the radius and the center dont matter because this is just a way to wrap our data for the analyser
-//				PinchView * pinchView = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
-//				if (!pinchView) {
-//					NSLog(@"Pinch view from parse should not be Nil.");
-//					return;
-//				}
-//				[pinchObjectsArray addObject:pinchView];
-//			}
-//
-//			[self stopActivityIndicator];
-//            [self showArticleFromPinchViews:pinchObjectsArray isPreview:NO];
-//		});
-//	});
-//}
+
+
 
 #pragma mark Activity Indicator
 
@@ -135,26 +71,26 @@
 #pragma mark - Set Up Views -
 
 
--(void) addPublishButton {
-	self.publishButtonFrame = CGRectMake(self.frame.size.width - PUBLISH_BUTTON_XOFFSET - PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
-	self.publishButtonRestingFrame = CGRectMake(self.frame.size.width, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
-
-	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.publishButton setFrame:self.publishButtonRestingFrame];
-	[self.publishButton setBackgroundImage:[UIImage imageNamed:PUBLISH_BUTTON_IMAGE] forState:UIControlStateNormal];
-
-	UIColor *labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR];
-	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
-	NSShadow *shadow = [[NSShadow alloc] init];
-	[shadow setShadowBlurRadius:BUTTON_LABEL_SHADOW_BLUR_RADIUS];
-	[shadow setShadowColor:labelColor];
-	[shadow setShadowOffset:CGSizeMake(0, BUTTON_LABEL_SHADOW_YOFFSET)];
-	self.publishButtonTitle = [[NSAttributedString alloc] initWithString:PUBLISH_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont, NSShadowAttributeName : shadow}];
-	[self.publishButton setAttributedTitle:self.publishButtonTitle forState:UIControlStateNormal];
-
-	[self.publishButton addTarget:self action:@selector(publishArticleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-	[self addSubview:self.publishButton];
-}
+//-(void) addPublishButton {
+//	self.publishButtonFrame = CGRectMake(self.frame.size.width - PUBLISH_BUTTON_XOFFSET - PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+//	self.publishButtonRestingFrame = CGRectMake(self.frame.size.width, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+//
+//	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//	[self.publishButton setFrame:self.publishButtonRestingFrame];
+//	[self.publishButton setBackgroundImage:[UIImage imageNamed:PUBLISH_BUTTON_IMAGE] forState:UIControlStateNormal];
+//
+//	UIColor *labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR];
+//	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
+//	NSShadow *shadow = [[NSShadow alloc] init];
+//	[shadow setShadowBlurRadius:BUTTON_LABEL_SHADOW_BLUR_RADIUS];
+//	[shadow setShadowColor:labelColor];
+//	[shadow setShadowOffset:CGSizeMake(0, BUTTON_LABEL_SHADOW_YOFFSET)];
+//	self.publishButtonTitle = [[NSAttributedString alloc] initWithString:PUBLISH_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont, NSShadowAttributeName : shadow}];
+//	[self.publishButton setAttributedTitle:self.publishButtonTitle forState:UIControlStateNormal];
+//
+//	[self.publishButton addTarget:self action:@selector(publishArticleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+//	[self addSubview:self.publishButton];
+//}
 
 
 // if show, return scrollView to its previous position

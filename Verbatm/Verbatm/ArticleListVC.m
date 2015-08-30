@@ -66,6 +66,7 @@
 -(void) initStoryListView {
 	self.storyListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
 	[self.storyListView setBackgroundColor:[UIColor clearColor]];
+    self.storyListView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
 	self.storyListView.dataSource = self;
 	self.storyListView.delegate = self;
 	self.placeholderCell = [[FeedTableViewCell alloc] init];
@@ -125,7 +126,6 @@
 -(void)registerForNavNotifications {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshFeed) name:NOTIFICATION_REFRESH_FEED object: nil];
 }
-
 
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

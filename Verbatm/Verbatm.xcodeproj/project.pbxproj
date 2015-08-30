@@ -29,8 +29,9 @@
 		A58656711B621CA4008E358C /* MathOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656701B621CA4008E358C /* MathOperations.m */; };
 		A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A59CC2881B6C2E6400B4907C /* FeedTableView.m */; };
 		A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CB82A21B5740A000195A2E /* UIEffects.m */; };
-		C702DE701B315CDF00EE2B00 /* ArticleDisplayVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C702DE6F1B315CDF00EE2B00 /* ArticleDisplayVC.m */; };
+		C702DE701B315CDF00EE2B00 /* ArticleDisplaySV.m in Sources */ = {isa = PBXBuildFile; fileRef = C702DE6F1B315CDF00EE2B00 /* ArticleDisplaySV.m */; };
 		C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = C716A5B119E0CA3500A5490B /* DashLineView.m */; };
+		C72E51841B9312F200330706 /* articleLoadAndDisplayManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C72E51831B9312F200330706 /* articleLoadAndDisplayManager.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
@@ -168,10 +169,12 @@
 		A59CC2881B6C2E6400B4907C /* FeedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableView.m; sourceTree = "<group>"; };
 		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
 		A5CB82A21B5740A000195A2E /* UIEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIEffects.m; sourceTree = "<group>"; };
-		C702DE6E1B315CDF00EE2B00 /* ArticleDisplayVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleDisplayVC.h; sourceTree = "<group>"; };
-		C702DE6F1B315CDF00EE2B00 /* ArticleDisplayVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleDisplayVC.m; sourceTree = "<group>"; };
+		C702DE6E1B315CDF00EE2B00 /* ArticleDisplaySV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleDisplaySV.h; sourceTree = "<group>"; };
+		C702DE6F1B315CDF00EE2B00 /* ArticleDisplaySV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleDisplaySV.m; sourceTree = "<group>"; };
 		C716A5B019E0CA3500A5490B /* DashLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashLineView.h; sourceTree = "<group>"; };
 		C716A5B119E0CA3500A5490B /* DashLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashLineView.m; sourceTree = "<group>"; };
+		C72E51821B9312F200330706 /* articleLoadAndDisplayManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = articleLoadAndDisplayManager.h; sourceTree = "<group>"; };
+		C72E51831B9312F200330706 /* articleLoadAndDisplayManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = articleLoadAndDisplayManager.m; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		C734FD9619B13D7700B2C370 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -563,6 +566,8 @@
 				C716A5B119E0CA3500A5490B /* DashLineView.m */,
 				F20A24F81A46166100BB77C1 /* EditContentView.h */,
 				F20A24F91A46166100BB77C1 /* EditContentView.m */,
+				C702DE6E1B315CDF00EE2B00 /* ArticleDisplaySV.h */,
+				C702DE6F1B315CDF00EE2B00 /* ArticleDisplaySV.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -664,6 +669,8 @@
 		C7BC43C1199F75D0004B91A1 /* Backend Model */ = {
 			isa = PBXGroup;
 			children = (
+				C72E51821B9312F200330706 /* articleLoadAndDisplayManager.h */,
+				C72E51831B9312F200330706 /* articleLoadAndDisplayManager.m */,
 				C7BC43BE199F7427004B91A1 /* VerbatmUser.h */,
 				C7BC43BF199F7427004B91A1 /* VerbatmUser.m */,
 				C7360E4D19A46D4E002B2DE5 /* Article.h */,
@@ -725,8 +732,6 @@
 		C7E65F651B9244AD0042AD99 /* Master Nav and article display VC */ = {
 			isa = PBXGroup;
 			children = (
-				C702DE6E1B315CDF00EE2B00 /* ArticleDisplayVC.h */,
-				C702DE6F1B315CDF00EE2B00 /* ArticleDisplayVC.m */,
 				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
 				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
 			);
@@ -928,6 +933,7 @@
 				9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */,
 				C772F2801B4BC13500CEC83D /* GMAlbumsViewCell.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
+				C72E51841B9312F200330706 /* articleLoadAndDisplayManager.m in Sources */,
 				C77F321E1B6D5D1800E87C25 /* bugSubmissionFormVC.m in Sources */,
 				C7A8E3861A61CE4D00776BD1 /* VerbatmPullBarView.m in Sources */,
 				A56F687E1B65B42B00CE5744 /* TextPinchView.m in Sources */,
@@ -981,7 +987,7 @@
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,
 				C7A8A7F619A96E1B00CE861F /* Video.m in Sources */,
-				C702DE701B315CDF00EE2B00 /* ArticleDisplayVC.m in Sources */,
+				C702DE701B315CDF00EE2B00 /* ArticleDisplaySV.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
