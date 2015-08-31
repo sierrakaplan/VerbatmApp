@@ -14,6 +14,7 @@
 #import "VerbatmCameraView.h"
 #import "MediaSessionManager.h"
 
+
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
 @property (weak, nonatomic) IBOutlet UIView *adkContainer;

@@ -79,7 +79,7 @@
     return self;
 }
 
-//funciton not working for some reason
+//function not working for some reason
 -(NSString *)getAuthor
 {
     VerbatmUser* author = [self objectForKey:ARTICLE_AUTHOR_RELATIONSHIP];
