@@ -14,8 +14,10 @@
 #define INTERNET_CONNECTION_NOTIFICATION @"InternetConnectionNotification"
 #define INTERNET_CONNECTION_KEY @"ick" //this key gives you access to a string that tells you if the connetion is established or not
 
+#define NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER @"NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER"
+#define KEY_ARTICLELOAGMANAGER  @"KEY_ARTICLELOAGMANAGER"
 
-#pragma mark Media Dev VC
+#pragma mark - Media Dev VC -
 
 #pragma mark - Content Dev VC -
 

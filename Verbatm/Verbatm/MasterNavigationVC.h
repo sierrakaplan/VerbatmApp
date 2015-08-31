@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ArticleDisplayVC.h"
 
 @class VerbatmCameraView;
 @class MediaSessionManager;
@@ -16,6 +15,5 @@
     @property(strong, nonatomic) NSMutableArray * pinchObjects;
 	@property (strong, nonatomic) VerbatmCameraView* verbatmCameraView;
 	@property (strong, nonatomic) MediaSessionManager* sessionManager;
-
 	+ (BOOL) inTestingMode;
 @end

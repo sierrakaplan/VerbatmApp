@@ -7,9 +7,7 @@
 //
 
 #import "ArticleListVC.h"
-#import "MasterNavigationVC.h"
-#import "FeedTableViewCell.h"
-#import "FeedTableView.h"
+#import "articleLoadAndDisplayManager.h"
 #import "ArticleAquirer.h"
 #import "Article.h"
 #import "Page.h"
@@ -23,24 +21,27 @@
 #import "Strings.h"
 #import "VerbatmCameraView.h"
 #import "MediaSessionManager.h"
+#import "MasterNavigationVC.h"
+#import "FeedTableViewCell.h"
+#import "FeedTableView.h"
 
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
 @interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
+    @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+    @property (strong, nonatomic) UIButton *composeStoryButton;
+    @property (nonatomic) BOOL cellSet;
+    //we maintain the cell height so that we can set the height of the placeholderCell
+    @property (nonatomic) CGFloat cellHeight;
+    @property (weak, nonatomic) IBOutlet UILabel *listTitle;
     @property (strong, nonatomic) FeedTableView *storyListView;
     //this cell is inserted in the top of the listview
 	@property (strong,nonatomic) FeedTableViewCell* placeholderCell;
-    @property (strong, nonatomic) NSArray * articles;
-    @property (strong, nonatomic) UIButton *composeStoryButton;
-    @property (weak, nonatomic) IBOutlet UILabel *listTitle;
-    @property  (nonatomic) NSInteger selectedArticleIndex;
-	@property BOOL pullDownInProgress;
-    //we maintain the cell height so that we can set the height of the placeholderCell
-    @property (nonatomic) CGFloat cellHeight;
-    @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+    @property BOOL pullDownInProgress;
     //tells you wether or not we have started a timer to animate
     @property (atomic) BOOL refreshInProgress;
-    @property (nonatomic) BOOL cellSet;
+    @property  (nonatomic) NSInteger selectedArticleIndex;
+    @property (strong, nonatomic) articleLoadAndDisplayManager * articleLoadManger;
     #define SHC_ROW_HEIGHT 20.f
 @end
 
@@ -66,6 +67,7 @@
 -(void) initStoryListView {
 	self.storyListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
 	[self.storyListView setBackgroundColor:[UIColor clearColor]];
+    self.storyListView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.storyListView.dataSource = self;
 	self.storyListView.delegate = self;
 	self.placeholderCell = [[FeedTableViewCell alloc] init];
@@ -124,6 +126,14 @@
 
 -(void)registerForNavNotifications {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshFeed) name:NOTIFICATION_REFRESH_FEED object: nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setLoadManger:) name:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER object: nil];
+}
+
+
+-(void)setLoadManger:(NSNotification *)notification{
+    NSDictionary * dict = [notification userInfo];
+    self.articleLoadManger = dict[KEY_ARTICLELOAGMANAGER];
+    
 }
 
 
@@ -134,8 +144,10 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(!self.cellHeight)self.cellHeight =TITLE_LABLE_HEIGHT +4*FEED_TEXT_GAP +USERNAME_LABLE_HEIGHT;
-    return self.cellHeight;
+//    if(!self.cellHeight)self.cellHeight =TITLE_LABLE_HEIGHT +4*FEED_TEXT_GAP +USERNAME_LABLE_HEIGHT;
+//    return self.cellHeight;
+    return 100;
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -147,7 +159,7 @@
     NSInteger index = indexPath.row;
     if(!self.pullDownInProgress){
         //configure cell
-        Article * article = self.articles[index];
+        Article * article = self.articleLoadManger.articleList[index];
         [cell setContentWithUsername:[article getAuthorUsername] andTitle:article.title];
         cell.selectionStyle = UITableViewCellSelectionStyleNone;
     }else if(self.refreshInProgress && index ==0){
@@ -166,7 +178,7 @@
 
 //one of the articles in the list have been clicked
 -(void) viewArticle {
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articles[self.selectedArticleIndex], ARTICLE_KEY_FOR_NOTIFICATION, nil];
+    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articleLoadManger.articleList[self.selectedArticleIndex], ARTICLE_KEY_FOR_NOTIFICATION, nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
                                                         object:nil
                                                       userInfo:Info];
@@ -224,24 +236,7 @@
 
 
 -(void)refreshFeed {
-    //we want to download the articles again and then load them to the page
-    [ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *articles) {
-        NSArray *sortedArticles;
-        sortedArticles = [articles sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
-            NSDate *first = ((Article*)a).createdAt;
-            NSDate *second = ((Article*)b).createdAt;
-            return [second compare:first];
-        }];
-        
-        [NSTimer scheduledTimerWithTimeInterval:1.0
-                                         target:self
-                                       selector:@selector(loadContentIntoView)
-                                       userInfo:nil
-                                        repeats:NO];
-        
-        self.articles = sortedArticles;
-        
-    }];
+    
 }
 
 -(void)loadContentIntoView{
@@ -252,7 +247,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    NSUInteger count = self.articles.count;
+    NSUInteger count = self.articleLoadManger.articleList.count;
     count += (self.pullDownInProgress) ? 1 : 0;
     return count;
 }
