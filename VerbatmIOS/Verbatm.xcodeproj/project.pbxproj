@@ -133,7 +133,6 @@
 		C7E6C1451A4E394600863893 /* TextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13C1A4E394600863893 /* TextAVE.m */; };
 		C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* VideoAVE.m */; };
 		C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */; };
-		C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* VerbatmTextField.m */; };
 		C7F3D46B1A4F84C000B43238 /* UserLoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */; };
 		F20A24FA1A46166100BB77C1 /* EditContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* EditContentView.m */; };
 		F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */; };
@@ -384,8 +383,6 @@
 		C7E6C13E1A4E394600863893 /* VideoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoAVE.m; sourceTree = "<group>"; };
 		C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MasterNavigationVC.h; sourceTree = "<group>"; };
 		C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterNavigationVC.m; sourceTree = "<group>"; };
-		C7F18D831A05C0EE0002255B /* VerbatmTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmTextField.h; sourceTree = "<group>"; };
-		C7F18D841A05C0EE0002255B /* VerbatmTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmTextField.m; sourceTree = "<group>"; };
 		C7F3D4691A4F84C000B43238 /* UserLoginVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLoginVC.h; sourceTree = "<group>"; };
 		C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginVC.m; sourceTree = "<group>"; };
 		F20A24F81A46166100BB77C1 /* EditContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditContentView.h; sourceTree = "<group>"; };
@@ -753,8 +750,6 @@
 				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
 				9D29995919BA9042005EBC8A /* MediaDevVC.h */,
 				9D29995A19BA9042005EBC8A /* MediaDevVC.m */,
-				C7F18D831A05C0EE0002255B /* VerbatmTextField.h */,
-				C7F18D841A05C0EE0002255B /* VerbatmTextField.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1183,7 +1178,6 @@
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A5E85FA11B911DA900E148D0 /* GTLFramework.m in Sources */,
-				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
 				A5E85FAB1B911DA900E148D0 /* GTMMIMEDocument.m in Sources */,
 				A5E85F9D1B911DA900E148D0 /* GTLUploadParameters.m in Sources */,
 				C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */,
