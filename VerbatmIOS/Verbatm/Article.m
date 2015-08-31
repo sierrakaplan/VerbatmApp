@@ -87,6 +87,7 @@
     return @"user name";
 }
 
+
 /*This function takes an array of pinch objects as the only parameter.
  Each pinch object is converted into a page which is then saved to parse*/
 -(void)processAndSavePages:(NSArray*)pages {

@@ -9,6 +9,10 @@
 #import <UIKit/UIKit.h>
 
 @interface FeedTableViewCell : UITableViewCell
-/*sets the text and username for the cell*/
--(void)setContentWithUsername:(NSString *) username andTitle: (NSString *) title;
+@property (weak, nonatomic) IBOutlet UILabel *articleTitle;
+@property (weak, nonatomic) IBOutlet UILabel *sandwich;
+@property (weak, nonatomic) IBOutlet UILabel *author;
+@property (weak, nonatomic) IBOutlet UILabel *rightTitle;
+@property (weak, nonatomic) IBOutlet UILabel *rightSandwich;
+@property (weak, nonatomic) IBOutlet UILabel *rightAuthor;
 @end

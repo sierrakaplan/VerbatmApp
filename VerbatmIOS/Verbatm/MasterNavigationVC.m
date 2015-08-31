@@ -17,6 +17,7 @@
 #import "VerbatmUser.h"
 #import "VerbatmCameraView.h"
 
+
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIView *profileVcContainer;
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
