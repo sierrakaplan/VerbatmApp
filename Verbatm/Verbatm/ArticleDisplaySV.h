@@ -10,6 +10,5 @@
 #import "PinchView.h"
 
 @interface ArticleDisplaySV : UIScrollView
-@property (atomic) BOOL articleCurrentlyViewing;//tells you if an article is currently being presented
-- (void)exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender;
+-(void)presentArticleWithStartingIndex:(NSUInteger) index;
 @end

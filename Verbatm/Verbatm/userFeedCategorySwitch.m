@@ -49,7 +49,9 @@
 
 //tbd - set the image for the pull circle
 -(void) initPullCircle {
-    self.pullCircle.frame = CGRectMake(self.frame.size.width - pullCircleWidth, 0, pullCircleWidth, pullCircleWidth);
+    //we get the device bounds because self hasn't gotten it's frame size yet
+    CGRect deviceBounds = [[UIScreen mainScreen] bounds];
+    self.pullCircle.frame = CGRectMake(deviceBounds.size.width - pullCircleWidth, 0, pullCircleWidth, pullCircleWidth);
     [self addPanGestureToView:self.pullCircle];
     [self addSubview:self.pullCircle];
 }
@@ -148,7 +150,9 @@
 }
 
 -(UIImageView *)pullCircle{
-    if(!_pullCircle)_pullCircle =[[UIImageView alloc] init];
+    if(!_pullCircle){
+        _pullCircle =[[UIImageView alloc] init];
+    }
     return _pullCircle;
 }
 

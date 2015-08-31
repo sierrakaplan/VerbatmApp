@@ -8,6 +8,7 @@
 
 #import "ArticleDisplaySV.h"
 #import "AVETypeAnalyzer.h"
+#import "articleLoadAndDisplayManager.h"
 #import "BaseArticleViewingExperience.h"
 #import "Durations.h"
 #import "Icons.h"
@@ -23,32 +24,24 @@
 
 @interface ArticleDisplaySV ()
 @property (atomic, strong) UIActivityIndicatorView *activityIndicator;
+@property (strong, nonatomic) articleLoadAndDisplayManager * articleManager;
 @end
 
 @implementation ArticleDisplaySV
 
-#pragma mark - View loading
-
-
-#pragma mark - Rendering article
-
-//called when we want to present an article. article should be set with our content
--(void)showArticle:(NSNotification *) notification {
-
-//	Article* article = [[notification userInfo] objectForKey:ARTICLE_KEY_FOR_NOTIFICATION];
-//	if(article) {
-//		[self getPinchViewsFromArticle: article];
-//	} else {
-//		NSMutableArray* pinchViews = [[notification userInfo] objectForKey:PINCHVIEWS_KEY_FOR_NOTIFICATION];
-//		[self showArticleFromPinchViews:pinchViews isPreview:YES];
-//	}
+-(instancetype)initWithFrame:(CGRect)frame andArticleLoadManager:
+                            (articleLoadAndDisplayManager *) articleManager {
+    self = [super initWithFrame:frame];
+    if(self){
+        self.articleManager = articleManager;
+    }
+    return self;
 }
 
-
-
-
-
-
+//called when the Article Display SV is brought onto the screen- every time it appears
+-(void)presentArticleWithStartingIndex:(NSUInteger) index {
+    
+}
 
 #pragma mark Activity Indicator
 

@@ -66,7 +66,7 @@
 -(void) initStoryListView {
 	self.storyListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
 	[self.storyListView setBackgroundColor:[UIColor clearColor]];
-    self.storyListView.separatorInset = UIEdgeInsetsMake(0, 0, 0, 0);
+    self.storyListView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	self.storyListView.dataSource = self;
 	self.storyListView.delegate = self;
 	self.placeholderCell = [[FeedTableViewCell alloc] init];
@@ -134,8 +134,10 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(!self.cellHeight)self.cellHeight =TITLE_LABLE_HEIGHT +4*FEED_TEXT_GAP +USERNAME_LABLE_HEIGHT;
-    return self.cellHeight;
+//    if(!self.cellHeight)self.cellHeight =TITLE_LABLE_HEIGHT +4*FEED_TEXT_GAP +USERNAME_LABLE_HEIGHT;
+//    return self.cellHeight;
+    return 100;
+
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

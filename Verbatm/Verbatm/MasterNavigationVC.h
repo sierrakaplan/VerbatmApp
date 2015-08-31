@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ArticleDisplayVC.h"
 
 @class VerbatmCameraView;
 @class MediaSessionManager;

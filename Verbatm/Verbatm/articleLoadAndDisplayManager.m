@@ -62,8 +62,9 @@
 }
 
 -(NSMutableArray *)getPagesFromPinchViews: (NSMutableArray *) pinchViews forRight:(BOOL) isRight{
-    AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
-    return [analyzer processPinchedObjectsFromArray:pinchViews withFrame:self.view.frame];
+    return pinchViews;
+    //AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
+    //return [analyzer processPinchedObjectsFromArray:pinchViews withFrame:self.view.frame];
 }
 
 
