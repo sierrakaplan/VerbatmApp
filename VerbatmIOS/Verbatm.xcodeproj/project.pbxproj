@@ -213,7 +213,6 @@
 		A59CC2881B6C2E6400B4907C /* FeedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableView.m; sourceTree = "<group>"; };
 		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
 		A5CB82A21B5740A000195A2E /* UIEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIEffects.m; sourceTree = "<group>"; };
-VerbatmIOS/Verbatm.xcodeproj/project.pbxproj
 		C702DE6E1B315CDF00EE2B00 /* ArticleDisplaySV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArticleDisplaySV.h; sourceTree = "<group>"; };
 		C702DE6F1B315CDF00EE2B00 /* ArticleDisplaySV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArticleDisplaySV.m; sourceTree = "<group>"; };
 		A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKStrings.bundle; sourceTree = "<group>"; };
