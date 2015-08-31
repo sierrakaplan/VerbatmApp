@@ -94,5 +94,14 @@
 #define CIRCLE_OVER_IMAGES_ALPHA 0.4
 #define POINTS_ON_CIRCLE_ALPHA 0.5
 
+#pragma mark - Feed -
+#define TITLE_FONT_TYPE @"HelveticaNeue-Light"
+#define USERNAME_FONT_TYPE @"HelveticaNeue-Light"
+#define USERNAME_FONT_SIZE 25
+#define TITLE_FONT_SIZE 30
+#define USERNAME_TEXT_COLOR whiteColor
+#define TITLE_TEXT_COLOR whiteColor
+
+
 
 #endif /* Styles_h */

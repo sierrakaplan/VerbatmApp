@@ -52,32 +52,11 @@
 }
 
 #pragma mark - showing the progess bar -
-/*This function shows the play and pause icons*/
-//-(void)showPlayBackIcons
-//{
-//    [self setUpPlayAndPauseButtons];
-//}
-//
-//#pragma mark - manipulating playing of videos -
-//-(void)setUpPlayAndPauseButtons
-//{
-//    self.play_pauseBtn = [UIButton buttonWithType: UIButtonTypeCustom];
-//    [self.play_pauseBtn setImage:[UIImage imageNamed:PAUSE_ICON] forState:UIControlStateNormal];
-//    [self.play_pauseBtn setFrame:CGRectMake(PLY_PSE_FRAME)];
-//    [self.play_pauseBtn addTarget:self action:@selector(pauseVideo) forControlEvents:UIControlEventTouchUpInside];
-//    UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(modifyPlayback:)];
-//    [self addGestureRecognizer:panGesture];
-//    [self addSubview: self.play_pauseBtn];
-//}
-
-
--(void)offScreen
-{
+-(void)offScreen{
     [self pauseVideo];
 }
 
--(void)onScreen
-{
+-(void)onScreen {
     [self continueVideo];
     [self unmuteVideo];
 

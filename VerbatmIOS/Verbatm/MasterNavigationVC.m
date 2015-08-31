@@ -7,7 +7,6 @@
 //
 
 #import "MasterNavigationVC.h"
-#import "VerbatmUser.h"
 #import "Notifications.h"
 #import "Identifiers.h"
 #import "Icons.h"

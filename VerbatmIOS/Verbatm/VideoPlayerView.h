@@ -13,9 +13,6 @@
 #import <AVKit/AVKit.h>
 
 @interface VideoPlayerView: UIView <NSCoding>
-
-
-
 -(void)playVideoFromURL: (NSURL*) url;
 -(void)playVideoFromAsset: (AVAsset*) asset;
 -(void) playVideoFromArray: (NSArray*)videoList;
@@ -40,5 +37,6 @@
 
 -(BOOL) isPlaying;
 
+-(void)removeMuteButtonFromView;
 
 @end

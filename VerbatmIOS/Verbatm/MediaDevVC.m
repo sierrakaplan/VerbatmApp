@@ -5,31 +5,43 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "MediaDevVC.h"
+
 #import <AssetsLibrary/AssetsLibrary.h>
-#import <math.h>
-#import "MediaSessionManager.h"
+#import "Article.h"
+#import "AVETypeAnalyzer.h"
+
 #import "ContentDevVC.h"
 #import "ContentPageElementScrollView.h"
-#import <MediaPlayer/MediaPlayer.h>
-#import "testerTransitionDelegate.h"
 #import "ContentDevVC.h"
-#import "PinchView.h"
-#import "AVETypeAnalyzer.h"
-#import "verbatmPullBarView.h"
-#import "Article.h"
-#import "VerbatmUser.h"
 #import "CameraFocusSquare.h"
-#import "VerbatmCameraView.h"
-#import "MasterNavigationVC.h"
-#import "UIEffects.h"
-#import "Notifications.h"
+
 #import "Icons.h"
-#import "Strings.h"
-#import "SizesAndPositions.h"
 #import "Identifiers.h"
 #import "Durations.h"
 #import "UserPinchViews.h"
+
+#import "MasterNavigationVC.h"
+#import "mediaPreview.h"
+#import "MediaDevVC.h"
+#import <math.h>
+#import "MediaSessionManager.h"
+#import <MediaPlayer/MediaPlayer.h>
+
+#import "Notifications.h"
+
+#import "PinchView.h"
+
+#import "Strings.h"
+#import "SizesAndPositions.h"
+
+#import "testerTransitionDelegate.h"
+
+#import "verbatmPullBarView.h"
+#import "VerbatmUser.h"
+#import "VerbatmCameraView.h"
+
+#import "UIEffects.h"
+
 
 @interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
 #pragma mark - Outlets -
@@ -43,6 +55,7 @@
 @property (strong, nonatomic) MediaSessionManager* sessionManager;
 @property (strong, nonatomic) CAShapeLayer* circle;
 @property (strong, nonatomic) CameraFocusSquare* focusSquare;
+@property (strong, nonatomic) mediaPreview * mediaPreviewView;
 
 @property(nonatomic) CGRect contentContainerViewFrameTop;
 @property(nonatomic) CGRect contentContainerViewFrameBottom;
@@ -83,7 +96,10 @@
 //this stores the article title that the user just saved. This is in order to prevent saving the same article multiple times
 @property(nonatomic) NSString * articleJustSaved;
 
-
+#define Preview_X_offset 10
+#define Preview_Y_offset 20
+#define Preview_Width 75
+#define Preview_Height 100
 
 @end
 
@@ -99,8 +115,7 @@
 
 #pragma mark - Preparing View
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad{
 	[super viewDidLoad];
 	[self setDefaultFrames];
 	[self prepareCameraView];
@@ -115,10 +130,11 @@
 	[self createSubViews];
 	[self setContentDevVC];
 	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
-
+    
 }
 
--(void) viewWillLayoutSubviews{
+
+-(void)viewWillLayoutSubviews{
 	[super viewWillLayoutSubviews];
 	[self positionContainerView];
 }
@@ -134,6 +150,15 @@
 	//patch solution to the pullbar being drawn strange
 	self.pullBar.frame = self.pullBarFrameTop;
 	[self.sessionManager startSession];
+    [self prepareCameraCapturePreview];
+}
+
+//prepares the view that will show camera content that's caputered
+-(void)prepareCameraCapturePreview {
+    self.mediaPreviewView = [[mediaPreview alloc] initWithFrame:CGRectMake(Preview_X_offset, self.view.frame.size.height - Preview_Y_offset - Preview_Height,
+                                                                            Preview_Width,Preview_Height)];
+    //self.mediaPreviewView.backgroundColor = [UIColor redColor];
+    [self.view insertSubview:self.mediaPreviewView  aboveSubview:self.verbatmCameraView];
 }
 
 
@@ -146,23 +171,20 @@
 
 #pragma mark Lazy instantiation
 
--(MediaSessionManager*)sessionManager
-{
+-(MediaSessionManager*)sessionManager{
 	if(!_sessionManager){
 		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
 	}
 	return _sessionManager;
 }
 
--(NSString *) articleJustSaved
-{
+-(NSString *) articleJustSaved{
 	if(!_articleJustSaved)_articleJustSaved = @"";
 	return _articleJustSaved;
 }
 
 //creates the camera view with the preview session
--(VerbatmCameraView*)verbatmCameraView
-{
+-(VerbatmCameraView*)verbatmCameraView{
 	if(!_verbatmCameraView){
 		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame:  self.view.frame];
 	}
@@ -199,6 +221,7 @@
 -(void) createSubViews {
 	[self createPullBar];
 	[self createCapturePicButton];
+    [self createSwitchFlashButton];
 }
 
 -(void) prepareCameraView {
@@ -231,9 +254,9 @@
 	[self.view bringSubviewToFront:self.pullBar];
 }
 
-/* NOT IN USE
--(void)createSwitchCameraButton
-{
+#pragma mark -Flash Button-
+
+-(void)createSwitchCameraButton {
 	self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.switchCameraButton setImage:[UIImage imageNamed:CAMERA_ICON_FRONT] forState:UIControlStateNormal];
 	[self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
@@ -242,29 +265,57 @@
 	self.switchTransform = self.switchCameraButton.transform;
 }
 
--(void)createSwitchFlashButton
-{
+-(void)createSwitchFlashButton {
 	self.switchFlashButton= [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_OFF] forState:UIControlStateNormal];
+	[self.switchFlashButton setImage:[UIImage imageNamed: @"lightbulb_final_OFF" /*FLASH_ICON_OFF*/] forState:UIControlStateNormal];
 	[self.switchFlashButton setFrame:CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
 	[self.switchFlashButton addTarget:self action:@selector(switchFlash:) forControlEvents:UIControlEventTouchUpInside];
 	self.flashOn = NO;
-	[self.view addSubview: self.switchFlashButton];
+	[self.view insertSubview:self.switchFlashButton belowSubview:self.contentContainerView];
 	self.flashTransform = self.switchFlashButton.transform;
 }
-*/
+
+
+-(void)didFinishSavingMediaToAsset:(ALAsset*)asset {
+    [self.mediaPreviewView setAsset:asset];
+}
+
+
+-(void)switchFaces:(UITapGestureRecognizer *)sender {
+    [self.sessionManager switchVideoFace];
+}
+
+-(IBAction)switchFlash:(id)sender {
+    [self.sessionManager switchFlash];
+    if(self.flashOn) {
+        [self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_OFF]forState:UIControlStateNormal];
+    }else{
+        [self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_ON] forState:UIControlStateNormal];
+    }
+    self.flashOn = !self.flashOn;
+}
+
 
 #pragma mark Create Gestures
 -(void) createAndInstantiateGestures {
 	[self createTapGestureToFocus];
 	[self createPinchGestureToZoom];
+    [self createDoubleTapToSwitchCamera];
 }
 
--(void) createTapGestureToFocus
-{
+
+-(void)createDoubleTapToSwitchCamera{
+    UITapGestureRecognizer* cameraFace = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(switchFaces:)];
+    cameraFace.numberOfTapsRequired = 2;
+    cameraFace.cancelsTouchesInView =  NO;
+    [cameraFace setDelegate:self.verbatmCameraView];
+    [self.verbatmCameraView addGestureRecognizer:cameraFace];
+}
+
+-(void) createTapGestureToFocus {
 	UITapGestureRecognizer* focusRecognizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(focusPhoto:)];
 	//    self.takePhotoGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(takePhoto:)];
-	focusRecognizer.numberOfTapsRequired = 1;
+	//focusRecognizer.numberOfTapsRequired = 2;
 	focusRecognizer.cancelsTouchesInView =  NO;
 	[focusRecognizer setDelegate:self.verbatmCameraView];
 	[self.verbatmCameraView addGestureRecognizer:focusRecognizer];
@@ -457,35 +508,15 @@
 }
 
 - (void) zoomPreview:(UIPinchGestureRecognizer *)recognizer {
-
 	float scale = self.verbatmCameraView.beginGestureScale * recognizer.scale;
 	self.verbatmCameraView.effectiveScale = scale > 1.0f ? scale : 1.0f;
 	[self.sessionManager zoomPreviewWithScale:self.verbatmCameraView.effectiveScale];
 }
 
-/* NOT IN USE
--(IBAction)switchFaces:(id)sender
-{
-	[self.sessionManager switchVideoFace];
-}
-
--(IBAction)switchFlash:(id)sender
-{
-	[self.sessionManager switchFlash];
-	if(self.flashOn){
-		[self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_OFF]forState:UIControlStateNormal];
-	}else{
-		[self.switchFlashButton setImage: [UIImage imageNamed:FLASH_ICON_ON] forState:UIControlStateNormal];
-	}
-	self.flashOn = !self.flashOn;
-}
-*/
-
 
 #pragma mark - Change size of container view based on orientation
 
 -(void)positionContainerView {
-
 	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)
 	   && ![self.contentContainerView isHidden] && !self.canRaise) {
 
@@ -574,8 +605,7 @@
 }
 
 // Handles the user continuing to pull the pull bar
--(void)expandContentPageChanged:(UIPanGestureRecognizer *)sender
-{
+-(void)expandContentPageChanged:(UIPanGestureRecognizer *)sender{
 	// How far has the transition come
 	CGPoint translation = [sender translationInView:self.pullBar.superview];
 	int newtranslation = translation.y-self.previousTranslation.y;
@@ -599,8 +629,7 @@
 
 // snaps the content container view into base or full screen
 // (depending on direction of pull and if user has pulled far enough)
--(void) expandContentPageEnded:(UIPanGestureRecognizer *)sender
-{
+-(void) expandContentPageEnded:(UIPanGestureRecognizer *)sender{
 	//how far has the transition come
 	CGPoint translation = [sender translationInView:self.pullBar.superview];
 
@@ -634,7 +663,6 @@
 
 //hiding with animation is the default
 -(void)hidePullBar:(NSNotification*)notification {
-
 	if (self.pullBar.mode != PullBarModeMenu) {
 		return;
 	}
@@ -654,7 +682,6 @@
 
 //showing with animation is the default
 -(void) showPullBar:(NSNotification*)notification {
-
 	if (self.pullBar.mode != PullBarModeMenu) {
 		return;
 	}

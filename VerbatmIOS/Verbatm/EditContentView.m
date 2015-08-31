@@ -33,7 +33,7 @@
 {
 	self = [super init];
 	if(self) {
-		self.backgroundColor = [UIColor blackColor];
+		self.backgroundColor = [UIColor clearColor];
 		self.frame = frame;
 	}
 	return self;
@@ -58,7 +58,7 @@
 -(void)addToolBarToView {
 	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame];
-	[toolBar setBackgroundColor:[UIColor colorWithWhite:0 alpha:1]];
+	//[toolBar setBackgroundColor:[UIColor colorWithWhite:0 alpha:1]];
 	[toolBar setDelegate:self];
 
 	self.textView.inputAccessoryView = toolBar;
@@ -128,7 +128,6 @@
 
 
 #pragma mark - Image or Video View -
-
 -(void) displayVideo: (AVAsset*) videoAsset {
 	self.videoView = [[VideoPlayerView alloc]init];
 	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
@@ -141,7 +140,6 @@
 }
 
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index {
-
 	self.filteredImages = filteredImages;
 	self.imageIndex = index;
 	self.imageView = [[UIImageView alloc] initWithFrame:self.bounds];
@@ -163,7 +161,6 @@
 	[self addGestureRecognizer:leftSwipeRecognizer];
 	[self addGestureRecognizer:rightSwipeRecognizer];
 }
-
 
 -(void)filterViewSwipeRight: (UISwipeGestureRecognizer *) sender {
 	if (self.imageIndex > 0) {
@@ -187,15 +184,17 @@
 
 -(void) addTapGestureToMainView {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitEditContentView)];
-
 	[self addGestureRecognizer:tap];
 }
 
 -(void) doneButtonPressed {
 	[self exitEditContentView];
+
 }
 
 -(void) exitEditContentView {
+    
+    
 	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_EDIT_CONTENT_VIEW object:nil userInfo:nil];
 }
 

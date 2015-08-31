@@ -9,6 +9,4 @@
 #ifndef Verbatm_PhotoFilters_h
 #define Verbatm_PhotoFilters_h
 
-
-
 #endif

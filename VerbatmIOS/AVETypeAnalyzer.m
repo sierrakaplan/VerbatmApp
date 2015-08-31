@@ -28,11 +28,9 @@
 @synthesize results = _results;
 
 -(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)pinchedObjects withFrame:(CGRect)frame {
-
 	self.preferredFrame = frame;
 	self.results = [[NSMutableArray alloc]init];
 	for(PinchView* pinchView in pinchedObjects) {
-
 		//there are some issue where a messed up p_obj arrives
 		if(!(pinchView.containsImage || pinchView.containsText || pinchView.containsVideo)) {
 			NSLog(@"Pinch view says it has no type of media in it.");
@@ -88,8 +86,7 @@
 }
 
 
--(NSData*)getDataFromAsset:(ALAsset*)asset
-{
+-(NSData*)getDataFromAsset:(ALAsset*)asset {
 	ALAssetRepresentation *rep = [asset defaultRepresentation];
 	Byte *buffer = (Byte*)malloc((unsigned long)rep.size);
 	NSUInteger buffered = [rep getBytes:buffer fromOffset:0.0 length: (unsigned long)rep.size error:nil];

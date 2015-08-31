@@ -438,12 +438,11 @@
 										   resultBlock:^(ALAsset *asset) {
 											   [self.verbatmAlbum addAsset:asset];
 											   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-											   [self.delegate didFinishSavingMediaToAsset:asset];
+											  // [self.delegate didFinishSavingMediaToAsset:asset];
 										   }
 										  failureBlock:^(NSError* error) {
 											  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-										  }];
-
+										  } ];
 					}];
 				}else{
 					NSLog(@"wrong output location");
@@ -464,14 +463,12 @@
 
 
 //Lucio
--(void)stopVideoRecording
-{
+-(void)stopVideoRecording {
 	[self.movieOutputFile stopRecording];
 }
 
 #pragma mark -delegate methods AVCaptureFileOutputRecordingDelegate
--(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error
-{
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
 	//[self fixVideoOrientationOfAssetAtUrl:outputFileURL];
 	if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
 		[self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
@@ -479,7 +476,7 @@
 							   resultBlock:^(ALAsset *asset) {
 								   [self.verbatmAlbum addAsset:asset];
 								   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-//								   [self.delegate didFinishSavingMediaToAsset:asset];
+								   [self.delegate didFinishSavingMediaToAsset:asset];
 							   }
 							  failureBlock:^(NSError* error) {
 								  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
@@ -491,14 +488,12 @@
 
 }
 
--(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections
-{
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections {
 
 }
 
 #pragma mark - for photo capturing and processing
--(void)captureImage:(BOOL)halfScreen
-{
+-(void)captureImage:(BOOL)halfScreen {
 	AVCaptureConnection* videoConnection = nil;
 	for(AVCaptureConnection* connection in self.stillImageOutput.connections){
 		for(AVCaptureInputPort* port in connection.inputPorts){
@@ -544,7 +539,7 @@
 																   // assign the photo to the album
 																   [self.verbatmAlbum addAsset:asset];
 																   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-//																   [self.delegate didFinishSavingMediaToAsset:asset];
+																   [self.delegate didFinishSavingMediaToAsset:asset];
 															   }
 															  failureBlock:^(NSError* error) {
 																  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
@@ -557,11 +552,12 @@
 }
 
 //Lucio
--(void)processImage:(UIImage*)image isHalfScreen:(BOOL)halfScreen
-{
+-(void)processImage:(UIImage*)image isHalfScreen:(BOOL)halfScreen {
 	self.stillImage = image;
 	[self cropImage:(BOOL)halfScreen];
 }
+
+
 
 -(void)cropImage:(BOOL)halfScreen
 {

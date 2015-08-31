@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 #import "VideoPlayerView.h"
 
-@interface VideoPlayerWrapperView : UIView
+@interface VideoPlayerWrapperView : UIImageView
 
 @property (strong, nonatomic) VideoPlayerView* videoPlayerView;
 
@@ -19,7 +19,6 @@
 -(void) playVideoFromArray: (NSArray*)videoList;
 
 //following methods will only execute if playVideo was called first
-
 -(void)repeatVideoOnEnd:(BOOL)repeat;
 
 -(void)pauseVideo;
