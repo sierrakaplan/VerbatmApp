@@ -89,14 +89,21 @@
     }];
 }
 
-
-
 -(NSMutableArray *)getPagesFromPinchViews: (NSMutableArray *) pinchViews {
     return pinchViews;
     //AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
     //return [analyzer processPinchedObjectsFromArray:pinchViews withFrame:self.view.frame];
 }
 
+
+
+-(NSArray *)articleList{
+    if (!_articleList) {
+        _articleList = @[];
+    }
+    return _articleList;
+    
+}
 
 
 

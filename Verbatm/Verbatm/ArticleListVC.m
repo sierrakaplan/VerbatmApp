@@ -132,8 +132,8 @@
 
 -(void)setLoadManger:(NSNotification *)notification{
     NSDictionary * dict = [notification userInfo];
-    self.articleLoadManger = dict[KEY_ARTICLELOAGMANAGER];
-    
+    id am = [dict get];
+    self.articleLoadManger =
 }
 
 
@@ -295,8 +295,6 @@
 
 
 #pragma mark - Miscellaneous -
-
-
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
