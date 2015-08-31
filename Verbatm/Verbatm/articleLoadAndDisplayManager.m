@@ -9,29 +9,30 @@
 #import "articleLoadAndDisplayManager.h"
 #import "Article.h"
 #import "AVETypeAnalyzer.h"
+#import "ArticleAquirer.h"
 #import "Page.h"
 
 @interface articleLoadAndDisplayManager()
-@property (strong, nonatomic) NSMutableArray * articleList;
+@property (strong, nonatomic, readwrite) NSArray * articleList;
 //always 3 large. The present one is always the middle one
 @property (strong, nonatomic) NSMutableArray * fullDownloadedArticleList;
 @property (nonatomic) NSInteger currentPresentingIndex;
 @end
 @implementation articleLoadAndDisplayManager
 
-//the starting index should be the index of the view that was just tapped first
-//it tells us what is being presented first
--(instancetype)initWithArticleList: (NSMutableArray *) articleList andStartingIndex: (NSInteger) startingIndex{
-    self = [super init];
-    if(self){
-        self.articleList = articleList;
-        self.currentPresentingIndex = startingIndex;
-    }
-    return self;
-}
+////the starting index should be the index of the view that was just tapped first
+////it tells us what is being presented first
+//-(instancetype)initWithArticleList: (NSArray *) articleList andStartingIndex: (NSInteger) startingIndex{
+//    self = [super init];
+//    if(self){
+//        self.articleList = articleList;
+//        self.currentPresentingIndex = startingIndex;
+//    }
+//    return self;
+//}
 
 
--(void) getPinchViewsFromArticle:(Article *)article forRight:(BOOL) isRight {
+-(void) getPinchViewsFromArticle:(Article *)article withFrame:(CGRect)frame onCompletion:(void(^)(singleArticlePresenter *))completionBlock {
 	dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
 	dispatch_async(articleDownload_queue, ^{
 		NSArray* pages = [article getAllPages];
@@ -44,8 +45,9 @@
 			if(page2.pagePosition > page1.pagePosition) return 1;
 			return 0;
 		}];
+        
 		dispatch_async(dispatch_get_main_queue(), ^{
-			NSMutableArray * pinchObjectsArray = [[NSMutableArray alloc]init];
+			NSMutableArray * pageArray = [[NSMutableArray alloc]init];
 			//get pinch views for our array
 			for (Page * page in pages) {
 				//here the radius and the center dont matter because this is just a way to wrap our data for the analyser
@@ -54,24 +56,48 @@
 					NSLog(@"Pinch view from parse should not be Nil.");
 					return;
 				}
-                [pinchObjectsArray addObject:pinchView];
+                [pageArray addObject:pinchView];
 			}
-            [self getPagesFromPinchViews:pinchObjectsArray forRight:isRight];
+            
+            singleArticlePresenter * presenter = [[singleArticlePresenter alloc] initWithFrame:frame andArticleList:pageArray];
+            completionBlock(presenter);
 		});
 	});
 }
 
--(NSMutableArray *)getPagesFromPinchViews: (NSMutableArray *) pinchViews forRight:(BOOL) isRight{
+-(BOOL)fetchArticleWithIndex:(NSInteger) index withFrame:(CGRect)frame onCompletion:(void(^)(singleArticlePresenter *))completionBlock {
+    
+    //if the index is out of bounds then we exit without downloading
+    if(index < 0 || index >= self.articleList.count) return false;
+    [self getPinchViewsFromArticle:self.articleList[index] withFrame:frame onCompletion:completionBlock];
+    return true;
+}
+
+
+-(void)reloadArticleListWithCompletionBlock:(void (^)(void))onCompletion {
+    //we want to download the articles again and then load them to the page
+    [ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *articles){
+        NSArray *sortedArticles;
+        sortedArticles = [articles sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
+            NSDate *first = ((Article*)a).createdAt;
+            NSDate *second = ((Article*)b).createdAt;
+            return [second compare:first];
+        }];
+        self.articleList = sortedArticles;
+        
+        onCompletion();
+    }];
+}
+
+
+
+-(NSMutableArray *)getPagesFromPinchViews: (NSMutableArray *) pinchViews {
     return pinchViews;
     //AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
     //return [analyzer processPinchedObjectsFromArray:pinchViews withFrame:self.view.frame];
 }
 
 
--(NSMutableArray *) fullDownloadedArticleList{
-    if(!_fullDownloadedArticleList)_fullDownloadedArticleList = [[NSMutableArray alloc] init];
-    return _fullDownloadedArticleList;
-}
 
 
 @end

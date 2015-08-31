@@ -6,18 +6,20 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "MasterNavigationVC.h"
-#import "VerbatmUser.h"
-#import "Notifications.h"
+#import "articleLoadAndDisplayManager.h"
+#import "ArticleDisplayScrollView.h"
+#import <AVFoundation/AVAudioSession.h>
 #import "Identifiers.h"
 #import "Icons.h"
-#import "VerbatmCameraView.h"
-#import "MediaSessionManager.h"
 #import "internetConnectionMonitor.h"
-#import <AVFoundation/AVAudioSession.h>
+#import "MasterNavigationVC.h"
+#import "MediaSessionManager.h"
+#import "Notifications.h"
+#import "VerbatmUser.h"
+#import "VerbatmCameraView.h"
+
 @interface MasterNavigationVC ()
 @property (weak, nonatomic) IBOutlet UIView *profileVcContainer;
-
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
 @property (weak, nonatomic) IBOutlet UIView *adkContainer;
 @property (weak, nonatomic) IBOutlet UIView *articleListContainer;
@@ -33,7 +35,8 @@
 @property (strong,nonatomic) UIImageView* animationView;
 
 @property (strong, nonatomic) internetConnectionMonitor * connnectionMinitor;
-
+@property (strong, nonatomic) articleLoadAndDisplayManager * articleLoadManger;
+@property (strong,nonatomic)ArticleDisplayScrollView * articleDisplaySV;
 
 #define ANIMATION_DURATION 0.5
 #define NUMBER_OF_CHILD_VCS 3
@@ -63,6 +66,8 @@
 	[self formatVCS];
 	[self registerForNavNotifications];    
     self.connnectionMinitor = [[internetConnectionMonitor alloc] init];
+    self.articleLoadManger = [[articleLoadAndDisplayManager alloc] init];
+    [self propogateArticleLoadManager];
     [self positionNavViews];
    
 }
@@ -114,6 +119,7 @@
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticleList:) name:NOTIFICATION_EXIT_CONTENTPAGE object: nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertTitleAnimation) name:NOTIFICATION_INFO_IS_BLANK_ANIMATION object: nil];
+
 }
 
 
@@ -179,11 +185,6 @@
 
 
 
-//lazy instantiation
--(UIImageView *)animationView {
-    if(!_animationView)_animationView = [[UIImageView alloc] init];
-	return _animationView;
-}
 
 
 //lays out all the containers in the right position and also sets the appropriate
@@ -219,7 +220,6 @@
     [UIView animateWithDuration:ANIMATION_DURATION animations:^{
         self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width * 2, 0);
     }];
-    
 }
 
 //nav button is pressed - so we move the SV left to the profile
@@ -229,6 +229,22 @@
     }];
 }
 
+
+
+#pragma mark - Article Presentation - 
+//this function is called by our listView and it passes a block for us to handle the reload
+-(void)reloadArticleList: (NSNotification *) notification{
+}
+
+
+/*we send a copy of this instance to the different classes that need to reference it in order to process
+ articles. Right now it's ArticleListVC*/
+-(void)propogateArticleLoadManager{
+    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:@[self.articleLoadManger],KEY_ARTICLELOAGMANAGER, nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER
+                                                        object:nil
+                                                      userInfo:Info];
+}
 
 
 #pragma mark - Handle Login -
@@ -258,6 +274,20 @@
 //catches the unwind segue - do nothing
 - (IBAction)done:(UIStoryboardSegue *)segue {
     
+}
+
+
+#pragma mark - Lazy Instantiation -
+-(ArticleDisplayScrollView *)articleDisplaySV{
+    if(!_articleDisplaySV)_articleDisplaySV =
+        [[ArticleDisplayScrollView alloc] initWithFrame:self.view.bounds];
+    return _articleDisplaySV;
+}
+
+//lazy instantiation
+-(UIImageView *)animationView {
+    if(!_animationView)_animationView = [[UIImageView alloc] init];
+    return _animationView;
 }
 
 @end

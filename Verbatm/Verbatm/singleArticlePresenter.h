@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface singleArticlePresenter : UIScrollView
-
+-(instancetype)initWithFrame:(CGRect)frame andArticleList: (NSMutableArray *) articlePages;
 @end

@@ -34,14 +34,28 @@
     self = [super initWithFrame:frame];
     if(self){
         self.articleManager = articleManager;
+        [self formatSelf];
     }
     return self;
 }
 
-//called when the Article Display SV is brought onto the screen- every time it appears
--(void)presentArticleWithStartingIndex:(NSUInteger) index {
-    
+
+
+
+-(void)formatSelf{
+    self.contentSize = CGSizeMake(self.frame.size.width *3, self.frame.size.height);
 }
+
+//called when the Article Display SV is brought onto the screen- every time it appears
+-(void)presentArticleWithStartingIndex:(NSInteger) index {
+    [self startActivityIndicator];
+    ArticleDisplaySV * __weak  weakSelf = self;
+    [self.articleManager fetchArticleWithIndex:index withFrame:self.bounds onCompletion:^(singleArticlePresenter * articleView){
+        [weakSelf stopActivityIndicator];
+        [weakSelf addSubview:articleView];
+    }];
+}
+
 
 #pragma mark Activity Indicator
 
@@ -50,7 +64,7 @@
 	//Create and add the Activity Indicator to splashView
 	self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 	self.activityIndicator.alpha = 1.0;
-	self.activityIndicator.center = CGPointMake(self.frame.size.width/2, self.frame.size.height/2);
+	self.activityIndicator.center = CGPointMake(self.contentOffset.x + self.frame.size.width/2, self.frame.size.height/2);
 	self.activityIndicator.hidesWhenStopped = YES;
 	[self addSubview:self.activityIndicator];
     [self bringSubviewToFront:self.activityIndicator];

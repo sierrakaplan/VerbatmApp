@@ -8,7 +8,13 @@
 
 #import <UIKit/UIKit.h>
 #import "PinchView.h"
-
+#import "articleLoadAndDisplayManager.h"
 @interface ArticleDisplaySV : UIScrollView
--(void)presentArticleWithStartingIndex:(NSUInteger) index;
+-(void)presentArticleWithStartingIndex:(NSInteger) index;
+//these two are here so the functions can be called in a block
+-(void)startActivityIndicator;
+-(void)stopActivityIndicator;
+
+-(instancetype)initWithFrame:(CGRect)frame andArticleLoadManager:
+(articleLoadAndDisplayManager *) articleManager;
 @end
