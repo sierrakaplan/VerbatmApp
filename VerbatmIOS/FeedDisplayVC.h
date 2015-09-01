@@ -7,7 +7,7 @@
 //
 
 /*
- Handles the display of the trending/topics label as well as the article/topics feed. 
+ Handles the display of the trending/topics label as well as the article/topics feed.
  */
 
 #import <UIKit/UIKit.h>
