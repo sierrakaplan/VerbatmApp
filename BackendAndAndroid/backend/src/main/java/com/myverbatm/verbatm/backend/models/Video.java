@@ -15,6 +15,16 @@ public class Video {
     @Id
     private Long key;
 
+    /**
+     * The key of the user who uploaded this video
+     */
+    private Long userKey;
+
+    /**
+     * The url of this video in the BlobStore
+     */
+    private String servingUrl;
+
 
     /**
      *
@@ -29,5 +39,37 @@ public class Video {
      */
     public final void clearKey() {
         key = null;
+    }
+
+    /**
+     * Gets the key of the user who uploaded this video
+     * @return the key of the user who uploaded this video
+     */
+    public final Long getUserKey() {
+        return userKey;
+    }
+
+    /**
+     * Sets the key of the user who uploaded this video
+     * @param userKey the key of the user who uploaded this video
+     */
+    public final void setUserKey(Long userKey) {
+        this.userKey = userKey;
+    }
+
+    /**
+     * Gets the url of this video in the BlobStore
+     * @return The url of this video in the BlobStore
+     */
+    public final String getServingUrl() {
+        return servingUrl;
+    }
+
+    /**
+     * Sets the url of this video in the BlobStore
+     * @param servingUrl The url of this video in the BlobStore
+     */
+    public final void setServingUrl(String servingUrl) {
+        this.servingUrl = servingUrl;
     }
 }

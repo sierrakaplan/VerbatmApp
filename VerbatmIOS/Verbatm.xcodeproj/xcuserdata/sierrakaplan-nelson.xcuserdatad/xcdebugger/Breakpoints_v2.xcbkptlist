@@ -509,7 +509,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "60"
             endingLineNumber = "60"
-            landmarkName = "-initStoryListView"
+            landmarkName = "-viewDidAppear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -540,9 +540,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "34"
-            endingLineNumber = "34"
-            landmarkName = "@interface MediaDevVC()"
-            landmarkType = "2">
+            endingLineNumber = "34">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -875,7 +873,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "553"
             endingLineNumber = "553"
-            landmarkName = "-expandContentPage:"
+            landmarkName = "-positionContainerViewLandscape"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -891,7 +889,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "617"
             endingLineNumber = "617"
-            landmarkName = "-expandContentPageEnded:"
+            landmarkName = "-expandContentPageChanged:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -954,8 +952,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "583"
             endingLineNumber = "583"
-            landmarkName = "-expandContentPageChanged:"
-            landmarkType = "5">
+            landmarkName = "@implementation MediaDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -970,7 +968,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "589"
             endingLineNumber = "589"
-            landmarkName = "-expandContentPageChanged:"
+            landmarkName = "-expandContentPage:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1002,7 +1000,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "688"
             endingLineNumber = "688"
-            landmarkName = "-previewButtonPressed"
+            landmarkName = "-showPullBar:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1018,7 +1016,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "97"
             endingLineNumber = "97"
-            landmarkName = "-showArticleList:"
+            landmarkName = "-positionNavViews"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1082,8 +1080,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "207"
             endingLineNumber = "207"
-            landmarkName = "-createCapturePicButton"
-            landmarkType = "5">
+            landmarkName = "@implementation MediaDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1098,7 +1096,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "341"
             endingLineNumber = "341"
-            landmarkName = "-tappedPhotoButton:"
+            landmarkName = "-registerForNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1114,7 +1112,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "350"
             endingLineNumber = "350"
-            landmarkName = "-takePhoto:"
+            landmarkName = "-registerForNotifications"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1130,8 +1128,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "682"
             endingLineNumber = "682"
-            landmarkName = "-pullUpButtonPressed"
-            landmarkType = "5">
+            landmarkName = "@implementation MediaDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1242,7 +1240,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1585"
             endingLineNumber = "1585"
-            landmarkName = "-pinchObjectTapped:"
+            landmarkName = "-addTapGestureToPinchView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1258,7 +1256,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "641"
             endingLineNumber = "641"
-            landmarkName = "-hidePullBar:"
+            landmarkName = "-expandContentPageEnded:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1640,8 +1638,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1162"
             endingLineNumber = "1162"
-            landmarkName = "-longPressSensed:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1656,7 +1654,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1187"
             endingLineNumber = "1187"
-            landmarkName = "-selectItem:"
+            landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2055,9 +2053,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "305"
-            endingLineNumber = "305"
-            landmarkName = "-done:"
-            landmarkType = "5">
+            endingLineNumber = "305">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2072,7 +2068,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "157"
             endingLineNumber = "157"
-            landmarkName = "-errorInSignInAnimation:"
+            landmarkName = "-unAuthenticateUser"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2088,7 +2084,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "170"
             endingLineNumber = "170"
-            landmarkName = "-showAnimationView:"
+            landmarkName = "-addFacebookLoginButton"
             landmarkType = "5">
             <Locations>
                <Location
@@ -2152,8 +2148,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1546"
             endingLineNumber = "1546"
-            landmarkName = "-removeEditContentView"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2168,7 +2164,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "637"
             endingLineNumber = "637"
-            landmarkName = "-hidePullBar:"
+            landmarkName = "-expandContentPageEnded:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2184,7 +2180,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "657"
             endingLineNumber = "657"
-            landmarkName = "-showPullBar:"
+            landmarkName = "-pullBarTransitionToMode:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2200,7 +2196,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "52"
             endingLineNumber = "52"
-            landmarkName = "-viewDidAppear:"
+            landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2280,7 +2276,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "171"
             endingLineNumber = "171"
-            landmarkName = "-filterViewSwipeRight:"
+            landmarkName = "-filterViewSwipeLeft:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2712,7 +2708,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "53"
             endingLineNumber = "53"
-            landmarkName = "-viewDidAppear:"
+            landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2728,7 +2724,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "51"
             endingLineNumber = "51"
-            landmarkName = "-viewDidAppear:"
+            landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3192,7 +3188,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "158"
             endingLineNumber = "158"
-            landmarkName = "-exitADK:"
+            landmarkName = "-articlePublishedAnimation"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3240,7 +3236,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "161"
             endingLineNumber = "161"
-            landmarkName = "-exitADK:"
+            landmarkName = "-articlePublishedAnimation"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4056,8 +4052,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "397"
             endingLineNumber = "397"
-            landmarkName = "-displayMediaOnAVE:"
-            landmarkType = "5">
+            landmarkName = "@implementation ArticleDisplayVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

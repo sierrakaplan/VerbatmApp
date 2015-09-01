@@ -750,10 +750,65 @@
 		NSLog(@"Can't publish with no pinch objects");
 		return;
 	}
-
 	[[UserPinchViews sharedInstance] clearPinchViews];
+
+	[self publishArticleContentToGAE:pinchObjectsArray];
+}
+
+-(void) publishArticleContentToGAE:(NSArray*)pinchObjectsArray {
+	//Make Verbatm POV object, store all pages in it
+
+	//TODO: Go through pinch objects and save each image and video! (Get url from server and upload it to that url)
+	for (PinchView* pinchView in pinchObjectsArray) {
+		[self sortPinchObject:pinchView];
+	}
+	
+}
+
+-(void)sortPinchObject:(PinchView*)pinchObject {
+
+	if(pinchObject.containsText){
+//		self.text = [pinchObject getText];
+	}
+
+	if(pinchObject.containsImage) {
+		NSArray* photos = [pinchObject getPhotos];
+		for (UIImage* image in photos) {
+			Photo* photo = [[Photo alloc]initWithData:UIImagePNGRepresentation(image) withCaption:nil andName:nil atLocation:nil];
+			[photo setObject: self forKey:PAGE_PHOTO_RELATIONSHIP];
+			[photo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+				if(succeeded){
+					NSLog(@"Photo for page saved");
+				}else{
+					NSLog(@"Photo for page did not save");
+				}
+			}];
+		}
+	}
+
+	if(pinchObject.containsVideo) {
+		NSArray* videos = [pinchObject getVideos];
+		for (AVURLAsset* videoAsset in videos) {
+			//TODO(sierra): This should not happen on main thread
+			NSData* videoData = [self dataFromAVURLAsset:videoAsset];
+			Video* video = [[Video alloc] initWithData:videoData withCaption:nil andName:nil atLocation:nil];
+			[video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
+			[video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
+				if(succeeded){
+					NSLog(@"Video for page saved");
+				}else{
+					NSLog(@"Video for page did not save");
+				}
+			}];
+		}
+	}
+}
+
+// NOT IN USE
+-(void) publishArticleContentToParse:(NSArray*)pinchObjectsArray {
 	BOOL isTesting = [MasterNavigationVC inTestingMode];
 	//this creates and saves an article. the return value is unnecesary
+
 	Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];
 	if(newArticle) {
 		self.articleJustSaved = self.contentDevVC.articleTitleField.text;

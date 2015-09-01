@@ -15,6 +15,16 @@ public class Image {
     @Id
     private Long key;
 
+    /**
+     * The key of the user who uploaded this image
+     */
+    private Long userKey;
+
+    /**
+     * The url of this image in the BlobStore
+     */
+    private String servingUrl;
+
 
     /**
      *
@@ -29,5 +39,37 @@ public class Image {
      */
     public final void clearKey() {
         key = null;
+    }
+
+    /**
+     * Gets the key of the user who uploaded this image
+     * @return the key of the user who uploaded this image
+     */
+    public final Long getUserKey() {
+        return userKey;
+    }
+
+    /**
+     * Sets the key of the user who uploaded this image
+     * @param userKey the key of the user who uploaded this image
+     */
+    public final void setUserKey(Long userKey) {
+        this.userKey = userKey;
+    }
+
+    /**
+     * Gets the url of this image in the BlobStore
+     * @return The url of this image in the BlobStore
+     */
+    public final String getServingUrl() {
+        return servingUrl;
+    }
+
+    /**
+     * Sets the url of this image in the BlobStore
+     * @param servingUrl The url of this image in the BlobStore
+     */
+    public final void setServingUrl(String servingUrl) {
+        this.servingUrl = servingUrl;
     }
 }
