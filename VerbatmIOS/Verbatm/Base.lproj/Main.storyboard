@@ -64,28 +64,6 @@
                                     </containerView>
                                 </subviews>
                             </scrollView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="5rs-HF-tPO">
-                                <rect key="frame" x="16" y="523" width="44" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Profile">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="moveToProfile:" destination="f1t-Lb-Erp" eventType="touchUpInside" id="kth-d2-uD8"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Li9-no-7Vk">
-                                <rect key="frame" x="264" y="523" width="31" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="ADK">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="moveToAdk:" destination="f1t-Lb-Erp" eventType="touchUpInside" id="Hpc-2R-P6W"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -95,10 +73,8 @@
                     </view>
                     <connections>
                         <outlet property="adkContainer" destination="yxe-c7-aMo" id="QIx-i8-eZK"/>
-                        <outlet property="adkNavButton" destination="Li9-no-7Vk" id="aza-ho-dBT"/>
                         <outlet property="articleListContainer" destination="BZw-d7-VqY" id="5wp-CG-fOg"/>
                         <outlet property="masterSV" destination="Rve-tc-g3P" id="038-Bi-DAq"/>
-                        <outlet property="profileNavButton" destination="5rs-HF-tPO" id="M7e-RG-2Oc"/>
                         <outlet property="profileVcContainer" destination="eFn-WD-HK1" id="n4x-T6-9bG"/>
                     </connections>
                 </viewController>
@@ -198,6 +174,28 @@
                                     <segue destination="icb-0n-CtC" kind="embed" id="e2Z-TA-waB"/>
                                 </connections>
                             </containerView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="BA2-fC-iQg">
+                                <rect key="frame" x="16" y="533" width="44" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="Profile">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="moveToProfile:" destination="f1t-Lb-Erp" eventType="touchUpInside" id="Dn5-K3-CA0"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="bjN-Da-bfs">
+                                <rect key="frame" x="273" y="533" width="31" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                <state key="normal" title="ADK">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="moveToAdk:" destination="f1t-Lb-Erp" eventType="touchUpInside" id="XYQ-Rs-jdg"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>

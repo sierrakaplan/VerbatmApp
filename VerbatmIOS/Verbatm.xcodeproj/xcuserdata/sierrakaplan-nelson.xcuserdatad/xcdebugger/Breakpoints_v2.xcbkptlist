@@ -1010,54 +1010,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "460248925.136197"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
-            landmarkName = "-positionNavViews"
-            landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[MasterNavigationVC showArticleList:]"
-                  moduleName = "Verbatm"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/Verbatm/Verbatm/MasterNavigationVC.m"
-                  timestampString = "459732734.133732"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "80"
-                  endingLineNumber = "80"
-                  offsetFromSymbolStart = "88">
-               </Location>
-               <Location
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__38-[MasterNavigationVC showArticleList:]_block_invoke"
-                  moduleName = "Verbatm"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/Verbatm/Verbatm/MasterNavigationVC.m"
-                  timestampString = "459732734.133868"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "80"
-                  endingLineNumber = "80"
-                  offsetFromSymbolStart = "24">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "VerbatmPullBarView.m"
             timestampString = "459133035.893249"
             startingColumnNumber = "9223372036854775807"
@@ -3044,7 +2996,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1484"
             endingLineNumber = "1484"
-            landmarkName = "-undoTileDeleteSwipe:"
+            landmarkName = "-undoTileDeleteSwipe"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3076,7 +3028,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1483"
             endingLineNumber = "1483"
-            landmarkName = "-undoTileDeleteSwipe:"
+            landmarkName = "-undoTileDeleteSwipe"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3182,22 +3134,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "460248925.136197"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
-            landmarkName = "-articlePublishedAnimation"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleDisplayVC.m"
             timestampString = "460237523.230119"
             startingColumnNumber = "9223372036854775807"
@@ -3221,22 +3157,6 @@
             startingLineNumber = "316"
             endingLineNumber = "316"
             landmarkName = "-exitDisplay:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "460248925.136197"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "161"
-            endingLineNumber = "161"
-            landmarkName = "-articlePublishedAnimation"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4086,6 +4006,22 @@
             endingLineNumber = "383"
             landmarkName = "-scrollViewNotificationBounce:forNextPage:inYDirection:"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "feedDisplayTVC.h"
+            timestampString = "462828781.271189"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "18"
+            endingLineNumber = "18"
+            landmarkName = "navButtonsDelegate"
+            landmarkType = "19">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

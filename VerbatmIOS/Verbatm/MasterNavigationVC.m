@@ -23,10 +23,6 @@
 @property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
 @property (weak, nonatomic) IBOutlet UIView *adkContainer;
 @property (weak, nonatomic) IBOutlet UIView *articleListContainer;
-//stores the index of the view that brings up the article display in order to aid our return
-@property (weak, nonatomic) IBOutlet UIButton *profileNavButton;
-@property (weak, nonatomic) IBOutlet UIButton *adkNavButton;
-@property (nonatomic) NSInteger lastViewIndex;
 @property (nonatomic, strong) NSMutableArray * pagesToDisplay;
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
 @property (nonatomic) CGPoint previousGesturePoint;
@@ -34,8 +30,8 @@
 @property (strong, nonatomic) NSTimer * animationTimer;
 @property (strong,nonatomic) UIImageView* animationView;
 
-@property (strong, nonatomic) internetConnectionMonitor * connnectionMinitor;
-@property (strong, nonatomic) articleLoadAndDisplayManager * articleLoadManger;
+@property (strong, nonatomic) internetConnectionMonitor * connectionMonitor;
+@property (strong, nonatomic) articleLoadAndDisplayManager * articleLoadManager;
 
 #define ANIMATION_DURATION 0.5
 #define NUMBER_OF_CHILD_VCS 3
@@ -47,9 +43,6 @@
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
 
-#define NAVICON_WALL_OFFSET 10 //distance between icons and the side of the screen
-#define NAVICON_WIDTH 75 //frame width
-#define NAVICON_HEIGHT 100 //frame height
 @end
 
 @implementation MasterNavigationVC
@@ -63,11 +56,10 @@
 	[self.view insertSubview: self.verbatmCameraView atIndex:0];
 	// Do any additional setup after loading the view.
 	[self formatVCS];
-	[self registerForNavNotifications];    
-    self.connnectionMinitor = [[internetConnectionMonitor alloc] init];
-    self.articleLoadManger = [[articleLoadAndDisplayManager alloc] init];
+    self.connectionMonitor = [[internetConnectionMonitor alloc] init];
+    self.articleLoadManager = [[articleLoadAndDisplayManager alloc] init];
     [self propogateArticleLoadManager];
-    [self positionNavViews];
+    
    
 }
 
@@ -78,22 +70,6 @@
 
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-}
-
-//position the nav views in appropriate places and set frames
--(void)positionNavViews {
-    self.profileNavButton.frame = CGRectMake(self.view.frame.size.width + NAVICON_WALL_OFFSET, self.view.frame.size.height - NAVICON_WALL_OFFSET -
-                                    NAVICON_HEIGHT, NAVICON_WIDTH, NAVICON_HEIGHT);
-    self.adkNavButton.frame = CGRectMake((self.view.frame.size.width*2) - NAVICON_WALL_OFFSET - NAVICON_WIDTH,
-                                         self.profileNavButton.frame.origin.y, NAVICON_WIDTH, NAVICON_HEIGHT);
-    
-    [self.profileNavButton removeFromSuperview];
-    [self.adkNavButton removeFromSuperview];
-    
-    [self.masterSV addSubview:self.profileNavButton];
-    [self.masterSV addSubview:self.adkNavButton];
-    [self.masterSV bringSubviewToFront:self.profileNavButton];
-    [self.masterSV bringSubviewToFront:self.adkNavButton];
 }
 
 
@@ -110,15 +86,6 @@
 		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
 	}
 	return _sessionManager;
-}
-
--(void)registerForNavNotifications {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showADK:) name:NOTIFICATION_SHOW_ADK object: nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(leaveArticleDisplay:) name:NOTIFICATION_EXIT_ARTICLE_DISPLAY object: nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showArticleList:) name:NOTIFICATION_EXIT_CONTENTPAGE object: nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertTitleAnimation) name:NOTIFICATION_INFO_IS_BLANK_ANIMATION object: nil];
-
 }
 
 
@@ -239,7 +206,7 @@
 /*we send a copy of this instance to the different classes that need to reference it in order to process
  articles. Right now it's ArticleListVC*/
 -(void)propogateArticleLoadManager{
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:@[self.articleLoadManger],KEY_ARTICLELOAGMANAGER, nil];
+    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:@[self.articleLoadManager],KEY_ARTICLELOAGMANAGER, nil];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER
                                                         object:nil
                                                       userInfo:Info];

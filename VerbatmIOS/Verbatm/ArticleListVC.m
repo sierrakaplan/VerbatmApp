@@ -170,19 +170,20 @@
     return cell;
 }
 
-//compose story button has been clicked - sending this to the master navigator
-- (void) composeStory: (id)sender {
-    NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SHOW_ADK object:nil userInfo:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
-}
 
-//one of the articles in the list have been clicked
--(void) viewArticle {
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articleLoadManger.articleList[self.selectedArticleIndex], ARTICLE_KEY_FOR_NOTIFICATION, nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
-                                                        object:nil
-                                                      userInfo:Info];
-}
+//compose story button has been clicked - sending this to the master navigator
+//- (void) composeStory: (id)sender {
+//    NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SHOW_ADK object:nil userInfo:nil];
+//    [[NSNotificationCenter defaultCenter] postNotification:notification];
+//}
+//
+////one of the articles in the list have been clicked
+//-(void) viewArticle {
+//    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articleLoadManger.articleList[self.selectedArticleIndex], ARTICLE_KEY_FOR_NOTIFICATION, nil];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
+//                                                        object:nil
+//                                                      userInfo:Info];
+//}
 
 
 

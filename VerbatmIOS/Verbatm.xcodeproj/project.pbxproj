@@ -796,7 +796,6 @@
 			isa = PBXGroup;
 			children = (
 				C7E65F651B9244AD0042AD99 /* Master Nav and article display VC */,
-				C7469BF21B4874A600EA7B10 /* Main.storyboard */,
 				C7E65F6A1B92E5830042AD99 /* topicsViewVC.h */,
 				C7E65F6B1B92E5830042AD99 /* topicsViewVC.m */,
 				C7E65F671B9245200042AD99 /* profileVC.h */,
@@ -908,6 +907,7 @@
 				C78B682719CA6C0A003D0AC5 /* Custom Views */,
 				C78B681119CA6914003D0AC5 /* View Controllers */,
 				C774040E19BE6538004C50EA /* Images.xcassets */,
+				C7469BF21B4874A600EA7B10 /* Main.storyboard */,
 				C7BC43C1199F75D0004B91A1 /* Backend Parse Model */,
 				A5E85FFE1B96233D00E148D0 /* Backend Model */,
 				A5E85FB71B91217F00E148D0 /* GAE API */,

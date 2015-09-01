@@ -703,8 +703,7 @@
 #pragma mark - PullBar Delegate Methods (pullbar button actions)
 
 -(void) undoButtonPressed {
-	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_UNDO object:nil userInfo:nil];
-	[[NSNotificationCenter defaultCenter] postNotification:notification];
+	[self.contentDevVC undoTileDeleteSwipe];
 }
 
 -(void) pullUpButtonPressed {
@@ -736,9 +735,10 @@
 		[self publishArticleContent];
 
 	} else if(![self.contentDevVC.articleTitleField.text length]) {
-		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_INFO_IS_BLANK_ANIMATION
-															object:nil
-														  userInfo:nil];
+		//TODO: something (maybe delegate)
+//		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_INFO_IS_BLANK_ANIMATION
+//															object:nil
+//														  userInfo:nil];
 	}
 }
 

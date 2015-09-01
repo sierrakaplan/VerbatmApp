@@ -57,4 +57,7 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 -(void) removeKeyboardFromScreen;
 -(void) closeAllOpenCollections;
 
+// Interacting with media dev vc
+-(void)undoTileDeleteSwipe;
+
 @end

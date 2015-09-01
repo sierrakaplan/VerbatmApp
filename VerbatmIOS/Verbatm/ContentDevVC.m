@@ -250,11 +250,6 @@
 
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(removeKeyboardFromScreen) name:NOTIFICATION_HIDE_KEYBOARD object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showKeyboard) name:NOTIFICATION_SHOW_KEYBOARD object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(undoTileDeleteSwipe:) name:NOTIFICATION_UNDO object: nil];
-
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyBoardWillChangeFrame:)
 												 name:UIKeyboardWillChangeFrameNotification
@@ -1481,7 +1476,7 @@
 	[[NSNotificationCenter defaultCenter] postNotification:notification];
 }
 
--(void)undoTileDeleteSwipe: (NSNotification *) notification {
+-(void)undoTileDeleteSwipe {
 	[self.tileSwipeViewUndoManager undo];
 	if(![self.tileSwipeViewUndoManager canUndo]) {
 		[self sendCanNotUndoNotification];

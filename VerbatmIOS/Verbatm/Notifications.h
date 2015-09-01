@@ -11,58 +11,58 @@
 
 
 #pragma mark - Networking -
-#define INTERNET_CONNECTION_NOTIFICATION @"InternetConnectionNotification"
-#define INTERNET_CONNECTION_KEY @"ick" //this key gives you access to a string that tells you if the connetion is established or not
-
-#define NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER @"NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER"
-#define KEY_ARTICLELOAGMANAGER  @"KEY_ARTICLELOAGMANAGER"
-
-#pragma mark - Media Dev VC -
-
-#pragma mark - Content Dev VC -
-
-#define ARTICLE_KEY_FOR_NOTIFICATION @"article"
-#define PINCHVIEWS_KEY_FOR_NOTIFICATION @"pinchObjects"
-
-#define NOTIFICATION_HIDE_KEYBOARD @"Notification_hideKeyboard"
-#define NOTIFICATION_SHOW_KEYBOARD @"Notification_showKeyboard"
-
-#define NOTIFICATION_HIDE_PULLBAR @"Notification_shouldHidePullBar"
-#define NOTIFICATION_SHOW_PULLBAR @"Notification_shouldShowPullBar"
-#define NOTIFICATION_PICTURE_SELECTED @"Notification_pictureObjectSelected"
-#define NOTIFICATION_PICTURE_UNSELECTED @"Notification_pictureObjectUnSelected"
-#define NOTIFICATION_CLEAR_CONTENTPAGE @"Notification_ClearContentPage"
-
-#define NOTIFICATION_UNDO @"Notification_undoTileDelete"
-#define NOTIFICATION_SHOW_ARTICLE @"Notification_showArticle"
-#define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
-
-#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
-#define NOTIFICATION_INFO_IS_BLANK_ANIMATION @"Notification_titleAnimation"
-#define NOTIFICATION_PUBLISH_ARTICLE @"Notification_publishArticle"
-#define NOTIFICATION_EXIT_EDIT_CONTENT_VIEW @"Notification_exitEditContentView"
-
-
-#define NOTIFICATION_CAN_UNDO @"Notification_canUndo"
-#define NOTIFICATION_CAN_NOT_UNDO @"Notification_cannotUndo"
-#define NOTIFICATION_ADDED_MEDIA @"Notification_addedMedia"
-#define NOTIFICATION_REMOVED_ALL_MEDIA @"Notification_removedAllMedia"
-
-
-#pragma mark - Feed -
-
-#define NOTIFICATION_SHOW_ADK @"Notification_showADK"
-#define NOTIFICATION_REFRESH_FEED @"Notification_refreshFeed"
-
-#pragma mark - Sign Up / Sign In -
-
-#define NOTIFICATION_SIGNUP_SUCCEEDED @"Notification_userSignedIn"
-#define NOTIFICATION_SIGNUP_FAILED @"Notification_userFailedToSignIn"
-
-#pragma mark - AVES -
-
-#define NOTIFICATION_HIDE_TEXT @"Notification_hideText"
-#define NOTIFICATION_SHOW_TEXT @"Notification_showText"
+//#define INTERNET_CONNECTION_NOTIFICATION @"InternetConnectionNotification"
+//#define INTERNET_CONNECTION_KEY @"ick" //this key gives you access to a string that tells you if the connetion is established or not
+//
+//#define NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER @"NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER"
+//#define KEY_ARTICLELOAGMANAGER  @"KEY_ARTICLELOAGMANAGER"
+//
+//#pragma mark - Media Dev VC -
+//
+//#pragma mark - Content Dev VC -
+//
+//#define ARTICLE_KEY_FOR_NOTIFICATION @"article"
+//#define PINCHVIEWS_KEY_FOR_NOTIFICATION @"pinchObjects"
+//
+//#define NOTIFICATION_HIDE_KEYBOARD @"Notification_hideKeyboard"
+//#define NOTIFICATION_SHOW_KEYBOARD @"Notification_showKeyboard"
+//
+//#define NOTIFICATION_HIDE_PULLBAR @"Notification_shouldHidePullBar"
+//#define NOTIFICATION_SHOW_PULLBAR @"Notification_shouldShowPullBar"
+//#define NOTIFICATION_PICTURE_SELECTED @"Notification_pictureObjectSelected"
+//#define NOTIFICATION_PICTURE_UNSELECTED @"Notification_pictureObjectUnSelected"
+//#define NOTIFICATION_CLEAR_CONTENTPAGE @"Notification_ClearContentPage"
+//
+//#define NOTIFICATION_UNDO @"Notification_undoTileDelete"
+//#define NOTIFICATION_SHOW_ARTICLE @"Notification_showArticle"
+//#define NOTIFICATION_EXIT_ARTICLE_DISPLAY @"Notification_exitArticleDisplay"
+//
+//#define NOTIFICATION_EXIT_CONTENTPAGE @"Notification_exitContentPage"
+//#define NOTIFICATION_INFO_IS_BLANK_ANIMATION @"Notification_titleAnimation"
+//#define NOTIFICATION_PUBLISH_ARTICLE @"Notification_publishArticle"
+//#define NOTIFICATION_EXIT_EDIT_CONTENT_VIEW @"Notification_exitEditContentView"
+//
+//
+//#define NOTIFICATION_CAN_UNDO @"Notification_canUndo"
+//#define NOTIFICATION_CAN_NOT_UNDO @"Notification_cannotUndo"
+//#define NOTIFICATION_ADDED_MEDIA @"Notification_addedMedia"
+//#define NOTIFICATION_REMOVED_ALL_MEDIA @"Notification_removedAllMedia"
+//
+//
+//#pragma mark - Feed -
+//
+//#define NOTIFICATION_SHOW_ADK @"Notification_showADK"
+//#define NOTIFICATION_REFRESH_FEED @"Notification_refreshFeed"
+//
+//#pragma mark - Sign Up / Sign In -
+//
+//#define NOTIFICATION_SIGNUP_SUCCEEDED @"Notification_userSignedIn"
+//#define NOTIFICATION_SIGNUP_FAILED @"Notification_userFailedToSignIn"
+//
+//#pragma mark - AVES -
+//
+//#define NOTIFICATION_HIDE_TEXT @"Notification_hideText"
+//#define NOTIFICATION_SHOW_TEXT @"Notification_showText"
 
 
 #endif /* Header_h */
