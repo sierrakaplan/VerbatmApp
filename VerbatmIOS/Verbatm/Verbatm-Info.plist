@@ -28,15 +28,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-<<<<<<< HEAD:VerbatmIOS/Verbatm/Verbatm-Info.plist
-	<string>2511</string>
-=======
-	<string>2146</string>
+	<string>2149</string>
 	<key>FacebookAppID</key>
 	<string>1476890692612143</string>
 	<key>FacebookDisplayName</key>
 	<string>Verbatm</string>
->>>>>>> ca26f1db688dacb9e8ad0a70255226ee6fa532d7:VerbatmIOS/Verbatm/Verbatm-Info.plist
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>

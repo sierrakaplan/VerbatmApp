@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
@@ -145,12 +145,19 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3272" y="-108.5"/>
+            <point key="canvasLocation" x="-3434" y="-72.5"/>
         </scene>
+<<<<<<< HEAD
         <!--Feed-->
         <scene sceneID="LSe-v6-SsT">
             <objects>
                 <viewController storyboardIdentifier="feed_vc" title="Feed" id="lY0-w6-fRI" customClass="FeedVC" sceneMemberID="viewController">
+=======
+        <!--Feed DisplayVC-->
+        <scene sceneID="LSe-v6-SsT">
+            <objects>
+                <viewController id="lY0-w6-fRI" customClass="FeedDisplayVC" sceneMemberID="viewController">
+>>>>>>> e0c9c17ca1e6094ae4e1c44f6c55916fe4f45b1c
                     <view key="view" contentMode="scaleToFill" id="Clv-OZ-JXA">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="577"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

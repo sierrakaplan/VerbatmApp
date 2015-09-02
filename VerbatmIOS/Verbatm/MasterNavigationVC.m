@@ -33,6 +33,7 @@
 @property (strong,nonatomic) MediaDevVC* mediaDevVC;
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
+
 @property (nonatomic, strong) NSMutableArray * pagesToDisplay;
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
 @property (nonatomic) CGPoint previousGesturePoint;
@@ -240,6 +241,15 @@
 
 //catches the unwind segue - do nothing
 - (IBAction)done:(UIStoryboardSegue *)segue {
+}
+
+
+#pragma mark - Lazy Instantiation -
+
+//lazy instantiation
+-(UIImageView *)animationView {
+    if(!_animationView)_animationView = [[UIImageView alloc] init];
+    return _animationView;
 }
 
 @end

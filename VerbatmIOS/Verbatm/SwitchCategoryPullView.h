@@ -6,6 +6,11 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+/*
+ Simple view that lets the user switch between a trending and topics label. Any delegate is informed
+ as this switch takes place and at its end.
+ */
+
 #import <UIKit/UIKit.h>
 
 @protocol SwitchCategoryDelegate <NSObject>
