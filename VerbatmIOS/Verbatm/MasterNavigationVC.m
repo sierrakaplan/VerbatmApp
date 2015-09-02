@@ -279,7 +279,6 @@
 
 #pragma mark - Lazy Instantiation -
 
-
 //lazy instantiation
 -(UIImageView *)animationView {
     if(!_animationView)_animationView = [[UIImageView alloc] init];

@@ -131,9 +131,9 @@
 
 
 -(void)setLoadManger:(NSNotification *)notification{
-    NSDictionary * dict = [notification userInfo];
-    id am = [dict get];
-    self.articleLoadManger =
+//    NSDictionary * dict = [notification userInfo];
+//    id am = [dict get];
+//    self.articleLoadManger =
 }
 
 
@@ -157,16 +157,16 @@
 		cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
 	}
     NSInteger index = indexPath.row;
-    if(!self.pullDownInProgress){
-        //configure cell
-        Article * article = self.articleLoadManger.articleList[index];
-        [cell setContentWithUsername:[article getAuthorUsername] andTitle:article.title];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }else if(self.refreshInProgress && index ==0){
-        //this means that the cell is an animation place-holder
-        [cell setContentWithUsername:@"" andTitle:@""];
-        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
+//    if(!self.pullDownInProgress){
+//        //configure cell
+//        Article * article = self.articleLoadManger.articleList[index];
+//        //[cell setContentWithUsername:[article getAuthorUsername] andTitle:article.title];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    }else if(self.refreshInProgress && index ==0){
+//        //this means that the cell is an animation place-holder
+//       // [cell setContentWithUsername:@"" andTitle:@""];
+//        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+//    }
     return cell;
 }
 
