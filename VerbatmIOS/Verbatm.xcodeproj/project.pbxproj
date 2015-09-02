@@ -135,11 +135,11 @@
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
 		C7E65F561B8992710042AD99 /* mediaPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F551B8992710042AD99 /* mediaPreview.m */; };
-		C7E65F5C1B911A470042AD99 /* feedDisplayTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5B1B911A470042AD99 /* feedDisplayTVC.m */; };
-		C7E65F5F1B911BA90042AD99 /* userFeedCategorySwitch.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5E1B911BA90042AD99 /* userFeedCategorySwitch.m */; };
-		C7E65F691B9245200042AD99 /* profileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F681B9245200042AD99 /* profileVC.m */; };
-		C7E65F6C1B92E5830042AD99 /* topicsViewVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6B1B92E5830042AD99 /* topicsViewVC.m */; };
-		C7E65F6F1B92EB650042AD99 /* singleArticlePresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6E1B92EB650042AD99 /* singleArticlePresenter.m */; };
+		C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5B1B911A470042AD99 /* FeedVC.m */; };
+		C7E65F5F1B911BA90042AD99 /* SwitchCategoryPullView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5E1B911BA90042AD99 /* SwitchCategoryPullView.m */; };
+		C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F681B9245200042AD99 /* ProfileVC.m */; };
+		C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6B1B92E5830042AD99 /* TopicsFeedVC.m */; };
+		C7E65F6F1B92EB650042AD99 /* POVView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6E1B92EB650042AD99 /* POVView.m */; };
 		C7E6C13F1A4E394600863893 /* MultiplePhotoVideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */; };
 		C7E6C1451A4E394600863893 /* TextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13C1A4E394600863893 /* TextAVE.m */; };
 		C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* VideoAVE.m */; };
@@ -399,16 +399,16 @@
 		C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerTransitionDelegate.m; sourceTree = "<group>"; };
 		C7E65F541B8992710042AD99 /* mediaPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mediaPreview.h; sourceTree = "<group>"; };
 		C7E65F551B8992710042AD99 /* mediaPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = mediaPreview.m; sourceTree = "<group>"; };
-		C7E65F5A1B911A470042AD99 /* feedDisplayTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = feedDisplayTVC.h; path = ../feedDisplayTVC.h; sourceTree = "<group>"; };
-		C7E65F5B1B911A470042AD99 /* feedDisplayTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = feedDisplayTVC.m; path = ../feedDisplayTVC.m; sourceTree = "<group>"; };
-		C7E65F5D1B911BA90042AD99 /* userFeedCategorySwitch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = userFeedCategorySwitch.h; sourceTree = "<group>"; };
-		C7E65F5E1B911BA90042AD99 /* userFeedCategorySwitch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = userFeedCategorySwitch.m; sourceTree = "<group>"; };
-		C7E65F671B9245200042AD99 /* profileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = profileVC.h; sourceTree = "<group>"; };
-		C7E65F681B9245200042AD99 /* profileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = profileVC.m; sourceTree = "<group>"; };
-		C7E65F6A1B92E5830042AD99 /* topicsViewVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = topicsViewVC.h; sourceTree = "<group>"; };
-		C7E65F6B1B92E5830042AD99 /* topicsViewVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = topicsViewVC.m; sourceTree = "<group>"; };
-		C7E65F6D1B92EB650042AD99 /* singleArticlePresenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = singleArticlePresenter.h; sourceTree = "<group>"; };
-		C7E65F6E1B92EB650042AD99 /* singleArticlePresenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = singleArticlePresenter.m; sourceTree = "<group>"; };
+		C7E65F5A1B911A470042AD99 /* FeedVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedVC.h; path = ../FeedVC.h; sourceTree = "<group>"; };
+		C7E65F5B1B911A470042AD99 /* FeedVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FeedVC.m; path = ../FeedVC.m; sourceTree = "<group>"; };
+		C7E65F5D1B911BA90042AD99 /* SwitchCategoryPullView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchCategoryPullView.h; sourceTree = "<group>"; };
+		C7E65F5E1B911BA90042AD99 /* SwitchCategoryPullView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwitchCategoryPullView.m; sourceTree = "<group>"; };
+		C7E65F671B9245200042AD99 /* ProfileVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileVC.h; sourceTree = "<group>"; };
+		C7E65F681B9245200042AD99 /* ProfileVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileVC.m; sourceTree = "<group>"; };
+		C7E65F6A1B92E5830042AD99 /* TopicsFeedVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicsFeedVC.h; sourceTree = "<group>"; };
+		C7E65F6B1B92E5830042AD99 /* TopicsFeedVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicsFeedVC.m; sourceTree = "<group>"; };
+		C7E65F6D1B92EB650042AD99 /* POVView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POVView.h; sourceTree = "<group>"; };
+		C7E65F6E1B92EB650042AD99 /* POVView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POVView.m; sourceTree = "<group>"; };
 		C7E6C12F1A4E394600863893 /* MultiplePhotoVideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiplePhotoVideoAVE.h; sourceTree = "<group>"; };
 		C7E6C1301A4E394600863893 /* MultiplePhotoVideoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiplePhotoVideoAVE.m; sourceTree = "<group>"; };
 		C7E6C13B1A4E394600863893 /* TextAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAVE.h; sourceTree = "<group>"; };
@@ -796,10 +796,10 @@
 			isa = PBXGroup;
 			children = (
 				C7E65F651B9244AD0042AD99 /* Master Nav and article display VC */,
-				C7E65F6A1B92E5830042AD99 /* topicsViewVC.h */,
-				C7E65F6B1B92E5830042AD99 /* topicsViewVC.m */,
-				C7E65F671B9245200042AD99 /* profileVC.h */,
-				C7E65F681B9245200042AD99 /* profileVC.m */,
+				C7E65F6A1B92E5830042AD99 /* TopicsFeedVC.h */,
+				C7E65F6B1B92E5830042AD99 /* TopicsFeedVC.m */,
+				C7E65F671B9245200042AD99 /* ProfileVC.h */,
+				C7E65F681B9245200042AD99 /* ProfileVC.m */,
 				C777EEAB1AD288A3003E0633 /* ArticleListVC.h */,
 				C777EEAC1AD288A3003E0633 /* ArticleListVC.m */,
 				C702DE6E1B315CDF00EE2B00 /* ArticleDisplayVC.h */,
@@ -810,8 +810,8 @@
 				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
 				9D29995919BA9042005EBC8A /* MediaDevVC.h */,
 				9D29995A19BA9042005EBC8A /* MediaDevVC.m */,
-				C7E65F5A1B911A470042AD99 /* feedDisplayTVC.h */,
-				C7E65F5B1B911A470042AD99 /* feedDisplayTVC.m */,
+				C7E65F5A1B911A470042AD99 /* FeedVC.h */,
+				C7E65F5B1B911A470042AD99 /* FeedVC.m */,
 				C7E65F641B92449E0042AD99 /* bug submission VC */,
 				C77A68AE1AC0A47F000B10E2 /* AVE_TESTER */,
 			);
@@ -822,7 +822,6 @@
 			isa = PBXGroup;
 			children = (
 				C7E65F661B9244E90042AD99 /* Verbatm text field */,
-				C7E65F601B911BC00042AD99 /* category switch views */,
 				F26894441A43641C00B1D4DB /* AVEs  */,
 				C748836B1B48A9E200E64ED9 /* Pinch Views */,
 				A56F68771B643EB200CE5744 /* Scroll Views */,
@@ -834,12 +833,14 @@
 				A59CC2861B6C2E2F00B4907C /* Table Views */,
 				C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */,
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
-				C7E65F6D1B92EB650042AD99 /* singleArticlePresenter.h */,
-				C7E65F6E1B92EB650042AD99 /* singleArticlePresenter.m */,
+				C7E65F6D1B92EB650042AD99 /* POVView.h */,
+				C7E65F6E1B92EB650042AD99 /* POVView.m */,
 				C716A5B019E0CA3500A5490B /* DashLineView.h */,
 				C716A5B119E0CA3500A5490B /* DashLineView.m */,
 				F20A24F81A46166100BB77C1 /* EditContentView.h */,
 				F20A24F91A46166100BB77C1 /* EditContentView.m */,
+				C7E65F5D1B911BA90042AD99 /* SwitchCategoryPullView.h */,
+				C7E65F5E1B911BA90042AD99 /* SwitchCategoryPullView.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -991,15 +992,6 @@
 				C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */,
 			);
 			name = "Transition Animation Managers";
-			sourceTree = "<group>";
-		};
-		C7E65F601B911BC00042AD99 /* category switch views */ = {
-			isa = PBXGroup;
-			children = (
-				C7E65F5D1B911BA90042AD99 /* userFeedCategorySwitch.h */,
-				C7E65F5E1B911BA90042AD99 /* userFeedCategorySwitch.m */,
-			);
-			name = "category switch views";
 			sourceTree = "<group>";
 		};
 		C7E65F641B92449E0042AD99 /* bug submission VC */ = {
@@ -1209,8 +1201,8 @@
 				A5E85FAC1B911DA900E148D0 /* GTMReadMonitorInputStream.m in Sources */,
 				A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */,
 				A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */,
-				C7E65F5F1B911BA90042AD99 /* userFeedCategorySwitch.m in Sources */,
-				C7E65F5C1B911A470042AD99 /* feedDisplayTVC.m in Sources */,
+				C7E65F5F1B911BA90042AD99 /* SwitchCategoryPullView.m in Sources */,
+				C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */,
 				A58656621B602038008E358C /* TextOverAVEView.m in Sources */,
 				C7E65F561B8992710042AD99 /* mediaPreview.m in Sources */,
 				C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */,
@@ -1249,7 +1241,7 @@
 				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,
 				C7E6C13F1A4E394600863893 /* MultiplePhotoVideoAVE.m in Sources */,
-				C7E65F691B9245200042AD99 /* profileVC.m in Sources */,
+				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* UserLoginVC.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
 				A5E85FF41B924C9600E148D0 /* GTLVerbatmAppConstants.m in Sources */,
@@ -1267,7 +1259,7 @@
 				C7360E4F19A46D4E002B2DE5 /* Article.m in Sources */,
 				A5E85FF31B924C9600E148D0 /* GTLServiceVerbatmApp.m in Sources */,
 				C772F2861B4BC13500CEC83D /* GMImagePickerController.m in Sources */,
-				C7E65F6F1B92EB650042AD99 /* singleArticlePresenter.m in Sources */,
+				C7E65F6F1B92EB650042AD99 /* POVView.m in Sources */,
 				C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */,
 				A5E85FF81B924C9600E148D0 /* GTLVerbatmAppPageCollection.m in Sources */,
 				A5E85FA31B911DA900E148D0 /* GTLUtilities.m in Sources */,
@@ -1278,7 +1270,7 @@
 				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
-				C7E65F6C1B92E5830042AD99 /* topicsViewVC.m in Sources */,
+				C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */,
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				A5E85FAE1B911DA900E148D0 /* GTMOAuth2SignIn.m in Sources */,
 				A5E85FA71B911DA900E148D0 /* GTMHTTPFetcherLogging.m in Sources */,

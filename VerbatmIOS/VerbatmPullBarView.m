@@ -85,27 +85,6 @@
 //	[self.previewButton addTarget:self action:@selector(previewButtonPressed:) forControlEvents:UIControlEventTouchDown];
 }
 
--(void) registerForNotifications {
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(unGrayOutPreview)
-												 name:NOTIFICATION_ADDED_MEDIA
-											   object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(grayOutPreview)
-												 name:NOTIFICATION_REMOVED_ALL_MEDIA
-											   object:nil];
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(unGrayOutUndo)
-												 name:NOTIFICATION_CAN_UNDO
-											   object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(grayOutUndo)
-												 name:NOTIFICATION_CAN_NOT_UNDO
-											   object:nil];
-}
-
 # pragma mark - Switch PullBar mode
 
 -(void)switchToMode: (PullBarMode) mode {

@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "userFeedCategorySwitch.h"
+#import "SwitchCategoryPullView.h"
 
-@interface userFeedCategorySwitch()
+@interface SwitchCategoryPullView()
 @property (strong, nonatomic) UILabel * trendingLabel;
 @property (strong, nonatomic) UILabel * topicsLabel;
 @property (strong, nonatomic) UIImageView * pullCircle;//The circle icon that we move left/right to reveal the text
@@ -19,7 +19,7 @@
 #define SNAP_ANIMATION_DURATION 0.3
 @end
 
-@implementation userFeedCategorySwitch
+@implementation SwitchCategoryPullView
 
 - (id)initWithCoder:(NSCoder *)decoder{
     

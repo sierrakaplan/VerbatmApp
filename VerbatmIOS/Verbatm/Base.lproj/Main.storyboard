@@ -73,9 +73,9 @@
                     </view>
                     <connections>
                         <outlet property="adkContainer" destination="yxe-c7-aMo" id="QIx-i8-eZK"/>
-                        <outlet property="articleListContainer" destination="BZw-d7-VqY" id="5wp-CG-fOg"/>
+                        <outlet property="feedContainer" destination="BZw-d7-VqY" id="ZeZ-Vt-wFY"/>
                         <outlet property="masterSV" destination="Rve-tc-g3P" id="038-Bi-DAq"/>
-                        <outlet property="profileVcContainer" destination="eFn-WD-HK1" id="n4x-T6-9bG"/>
+                        <outlet property="profileContainer" destination="eFn-WD-HK1" id="yV9-aB-TGG"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AxA-gZ-qvU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -88,10 +88,10 @@
             </objects>
             <point key="canvasLocation" x="-4216" y="-1178"/>
         </scene>
-        <!--Topics ViewVC-->
+        <!--Topics FeedVC-->
         <scene sceneID="A4H-1v-HNX">
             <objects>
-                <viewController id="icb-0n-CtC" customClass="topicsViewVC" sceneMemberID="viewController">
+                <viewController id="icb-0n-CtC" customClass="TopicsFeedVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="voT-er-27b">
                         <rect key="frame" x="0.0" y="0.0" width="325" height="300"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -147,26 +147,19 @@
             </objects>
             <point key="canvasLocation" x="-3272" y="-108.5"/>
         </scene>
-        <!--Feed DisplayTVC-->
+        <!--Feed-->
         <scene sceneID="LSe-v6-SsT">
             <objects>
-                <viewController id="lY0-w6-fRI" customClass="feedDisplayTVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="feed_vc" title="Feed" id="lY0-w6-fRI" customClass="FeedVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Clv-OZ-JXA">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="577"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" id="GtQ-te-Ltn" customClass="userFeedCategorySwitch">
+                            <view contentMode="scaleToFill" id="GtQ-te-Ltn" customClass="SwitchCategoryPullView">
                                 <rect key="frame" x="33" y="13" width="255" height="95"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF">
-                                <rect key="frame" x="26" y="224" width="262" height="339"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <segue destination="Ve4-Qj-kgj" kind="embed" id="5JZ-lL-lAB"/>
-                                </connections>
-                            </containerView>
                             <containerView opaque="NO" contentMode="scaleToFill" id="j2U-9B-X6v">
                                 <rect key="frame" x="0.0" y="116" width="325" height="300"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -196,6 +189,13 @@
                                     <action selector="moveToAdk:" destination="f1t-Lb-Erp" eventType="touchUpInside" id="XYQ-Rs-jdg"/>
                                 </connections>
                             </button>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF">
+                                <rect key="frame" x="26" y="224" width="262" height="339"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <segue destination="Ve4-Qj-kgj" kind="embed" id="5JZ-lL-lAB"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -209,10 +209,10 @@
             </objects>
             <point key="canvasLocation" x="-3434" y="-732.5"/>
         </scene>
-        <!--Item-->
+        <!--Login-->
         <scene sceneID="gIN-uk-7gC">
             <objects>
-                <viewController id="waF-h7-lpu" customClass="UserLoginVC" sceneMemberID="viewController">
+                <viewController title="Login" id="waF-h7-lpu" customClass="UserLoginVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ZWl-f6-r1u">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -297,10 +297,10 @@
             </objects>
             <point key="canvasLocation" x="-2869" y="-2061"/>
         </scene>
-        <!--Item-->
+        <!--Media Dev-->
         <scene sceneID="74h-C3-U07">
             <objects>
-                <viewController id="Qxg-C2-1Oh" customClass="MediaDevVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="media_dev_vc" title="Media Dev" id="Qxg-C2-1Oh" customClass="MediaDevVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rWO-ax-CE2">
                         <rect key="frame" x="0.0" y="0.0" width="135" height="132"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -328,7 +328,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-2558" y="-1255"/>
+            <point key="canvasLocation" x="-3130.5" y="-1309"/>
         </scene>
         <!--Bug Submission FormVC-->
         <scene sceneID="5tH-V0-Rug">
@@ -404,16 +404,16 @@
             </objects>
             <point key="canvasLocation" x="-4747" y="391"/>
         </scene>
-        <!--contentPage-->
+        <!--Content Dev-->
         <scene sceneID="8XD-Tr-4db">
             <objects>
-                <viewController storyboardIdentifier="contentPage" title="contentPage" id="0lh-hP-Opv" customClass="ContentDevVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="content_dev_vc" title="Content Dev" id="0lh-hP-Opv" customClass="ContentDevVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NN2-7a-wCP">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="ChT-rO-Rpn" customClass="VerbatmScrollView">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="36" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" id="Wh2-yT-n78">
@@ -501,10 +501,10 @@
             </objects>
             <point key="canvasLocation" x="-3806" y="-374"/>
         </scene>
-        <!--ProfileVC-->
+        <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
             <objects>
-                <viewController id="3TM-NK-3ij" customClass="profileVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="profile_vc" title="Profile" id="3TM-NK-3ij" customClass="ProfileVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yT8-e9-31R">
                         <rect key="frame" x="0.0" y="0.0" width="306" height="292"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -513,7 +513,7 @@
                                 <rect key="frame" x="123" y="52" width="49" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>

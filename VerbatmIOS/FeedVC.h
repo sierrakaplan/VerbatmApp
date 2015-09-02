@@ -13,8 +13,10 @@
 -(void) adkButtonPressed;
 @end
 
-@interface feedDisplayTVC : UIViewController
+@interface FeedVC : UIViewController
 
 @property(strong, nonatomic) id<NavButtonsDelegate> navButtonsDelegate;
+
+-(void) refreshFeed;
 
 @end

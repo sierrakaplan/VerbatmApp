@@ -1,13 +1,13 @@
 //
-//  profileVC.m
+//  profileVC.h
 //  Verbatm
 //
 //  Created by Iain Usiri on 8/29/15.
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "profileVC.h"
+#import <UIKit/UIKit.h>
 
-@implementation profileVC
+@interface ProfileVC : UIViewController
 
 @end

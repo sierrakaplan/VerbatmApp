@@ -6,13 +6,13 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "feedDisplayTVC.h"
-#import "userFeedCategorySwitch.h"
+#import "FeedVC.h"
+#import "SwitchCategoryPullView.h"
 #import "SizesAndPositions.h"
 
-@interface feedDisplayTVC ()<userFeedCategorySwitchProtocal>
+@interface FeedVC ()<SwitchCategoryDelegate>
 
-@property (weak, nonatomic) IBOutlet userFeedCategorySwitch *categorySwitch;
+@property (weak, nonatomic) IBOutlet SwitchCategoryPullView *categorySwitch;
 @property (weak, nonatomic) IBOutlet UIButton *profileNavButton;
 @property (weak, nonatomic) IBOutlet UIButton *adkNavButton;
 
@@ -25,11 +25,21 @@
 @end
 
 
-@implementation feedDisplayTVC
+@implementation FeedVC
 
 -(void)viewDidLoad {
+	[super viewDidLoad];
     self.categorySwitch.categorySwitchDelegate = self;
 	[self setUpNavButtons];
+}
+
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+	[self positionViews];
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
 }
 
 //position the nav views in appropriate places and set frames
@@ -79,14 +89,10 @@
     self.topicsListContainer.alpha = 0;
 }
 
-
--(void) viewWillAppear:(BOOL)animated {
-    [self positionViews];
+-(void) refreshFeed {
+	//TODO: refresh whatever feed is in view
 }
 
--(void) viewDidAppear:(BOOL)animated {
-    
-}
 
 
 

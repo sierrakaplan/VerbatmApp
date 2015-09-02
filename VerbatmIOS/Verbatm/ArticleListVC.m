@@ -125,7 +125,6 @@
 
 
 -(void)registerForNavNotifications {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshFeed) name:NOTIFICATION_REFRESH_FEED object: nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setLoadManger:) name:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER object: nil];
 }
 
@@ -237,7 +236,7 @@
 
 
 -(void)refreshFeed {
-    
+	//TODO: refresh feed
 }
 
 -(void)loadContentIntoView{

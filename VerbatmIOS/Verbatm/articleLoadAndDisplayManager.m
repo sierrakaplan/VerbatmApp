@@ -32,7 +32,7 @@
 //}
 
 
--(void) getPinchViewsFromArticle:(Article *)article withFrame:(CGRect)frame onCompletion:(void(^)(singleArticlePresenter *))completionBlock {
+-(void) getPinchViewsFromArticle:(Article *)article withFrame:(CGRect)frame onCompletion:(void(^)(POVView *))completionBlock {
 	dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
 	dispatch_async(articleDownload_queue, ^{
 		NSArray* pages = [article getAllPages];
@@ -59,13 +59,13 @@
                 [pageArray addObject:pinchView];
 			}
             
-            singleArticlePresenter * presenter = [[singleArticlePresenter alloc] initWithFrame:frame andArticleList:pageArray];
+            POVView * presenter = [[POVView alloc] initWithFrame:frame andArticleList:pageArray];
             completionBlock(presenter);
 		});
 	});
 }
 
--(BOOL)fetchArticleWithIndex:(NSInteger) index withFrame:(CGRect)frame onCompletion:(void(^)(singleArticlePresenter *))completionBlock {
+-(BOOL)fetchArticleWithIndex:(NSInteger) index withFrame:(CGRect)frame onCompletion:(void(^)(POVView *))completionBlock {
     
     //if the index is out of bounds then we exit without downloading
     if(index < 0 || index >= self.articleList.count) return false;

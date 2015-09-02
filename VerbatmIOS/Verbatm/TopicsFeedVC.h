@@ -1,13 +1,13 @@
 //
-//  topicsViewVC.m
+//  topicsViewVC.h
 //  Verbatm
 //
 //  Created by Iain Usiri on 8/30/15.
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "topicsViewVC.h"
+#import <UIKit/UIKit.h>
 
-@implementation topicsViewVC
+@interface TopicsFeedVC : UIViewController
 
 @end

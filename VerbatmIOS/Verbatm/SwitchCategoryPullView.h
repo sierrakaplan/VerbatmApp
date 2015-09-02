@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol userFeedCategorySwitchProtocal <NSObject>
+@protocol SwitchCategoryDelegate <NSObject>
 //called when the pullCircle is being panned
 //the positionRatio gives you the postion of the xOrigin of the Pan Circle
 //normalized by the total width of the view. In turn it ranges from 0-1
@@ -20,6 +20,6 @@
 -(void)switchedToTopics;
 @end
 
-@interface userFeedCategorySwitch : UIView
-@property (strong, nonatomic) id<userFeedCategorySwitchProtocal> categorySwitchDelegate;
+@interface SwitchCategoryPullView : UIView
+@property (strong, nonatomic) id<SwitchCategoryDelegate> categorySwitchDelegate;
 @end

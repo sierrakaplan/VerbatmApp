@@ -17,12 +17,22 @@
 #import "VerbatmUser.h"
 #import "VerbatmCameraView.h"
 
+#import "ProfileVC.h"
+#import "FeedVC.h"
+#import "MediaDevVC.h"
 
-@interface MasterNavigationVC ()
-@property (weak, nonatomic) IBOutlet UIView *profileVcContainer;
-@property (weak, nonatomic) IBOutlet UIScrollView *masterSV;
-@property (weak, nonatomic) IBOutlet UIView *adkContainer;
-@property (weak, nonatomic) IBOutlet UIView *articleListContainer;
+
+@interface MasterNavigationVC () <NavButtonsDelegate>
+@property (weak, nonatomic) IBOutlet UIView * profileContainer;
+@property (weak, nonatomic) IBOutlet UIView * adkContainer;
+@property (weak, nonatomic) IBOutlet UIView * feedContainer;
+
+//Child view controllers
+@property (strong,nonatomic) ProfileVC* profileVC;
+@property (strong,nonatomic) FeedVC* feedVC;
+@property (strong,nonatomic) MediaDevVC* mediaDevVC;
+
+@property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 @property (nonatomic, strong) NSMutableArray * pagesToDisplay;
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
 @property (nonatomic) CGPoint previousGesturePoint;
@@ -38,29 +48,27 @@
 #define LEFT_FRAME self.view.bounds
 #define CENTER_FRAME CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
 #define RIGHT_FRAME CGRectMake(self.view.frame.size.width * 2, 0, self.view.frame.size.width, self.view.frame.size.height)
-
-
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
+
+#define ID_FOR_FEEDVC @"feed_vc"
+#define ID_FOR_MEDIADEVVC @"media_dev_vc"
+#define ID_FOR_PROFILEVC @"profile_vc"
 
 @end
 
 @implementation MasterNavigationVC
 
-+ (BOOL) inTestingMode {
-	return YES;
-}
-
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	[self.view insertSubview: self.verbatmCameraView atIndex:0];
+
 	// Do any additional setup after loading the view.
-	[self formatVCS];
+	[self getAndFormatVCs];
+	[self formatMainScrollView];
+
     self.connectionMonitor = [[internetConnectionMonitor alloc] init];
     self.articleLoadManager = [[articleLoadAndDisplayManager alloc] init];
     [self propogateArticleLoadManager];
-    
-   
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -73,50 +81,75 @@
 }
 
 
-//creates the camera view with the preview session
--(VerbatmCameraView*)verbatmCameraView{
-	if(!_verbatmCameraView) {
-		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame: self.view.bounds];
-	}
-	return _verbatmCameraView;
-}
+#pragma mark - Lazy Instantiation -
 
--(MediaSessionManager*)sessionManager {
-	if(!_sessionManager) {
-		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-	}
-	return _sessionManager;
+//lazy instantiation
+-(UIImageView *)animationView {
+	if(!_animationView)_animationView = [[UIImageView alloc] init];
+	return _animationView;
 }
 
 
--(void) showADK: (NSNotification *) notification {
+#pragma mark - Getting and formatting child view controllers -
+
+//lays out all the containers in the right position and also sets the appropriate
+//offset for the master SV
+-(void) getAndFormatVCs {
+	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
+	self.feedVC.navButtonsDelegate = self;
+	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
+	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_PROFILEVC];
+
+	self.profileContainer.frame = LEFT_FRAME;
+	self.feedContainer.frame = CENTER_FRAME;
+	self.adkContainer.frame = RIGHT_FRAME;
+}
+
+-(void) formatMainScrollView {
+	self.masterSV.frame = self.view.bounds;
+	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);
+	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+}
+
+#pragma mark - Nav Buttons Pressed Delegate -
+
+//nav button is pressed - so we move the SV left to the profile
+-(void) profileButtonPressed {
+	[self showProfile];
+}
+
+//nav button is pressed so we move the SV right to the ADK
+-(void) adkButtonPressed {
+	[self showADK];
+}
+
+// Scrolls the main scroll view over to reveal the ADK
+-(void) showADK {
 	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
-		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
-	}completion:^(BOOL finished) {
+		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width * 2, 0);
 	}];
 }
 
--(void)showArticleList:(NSNotification *)notification {
+-(void) showProfile {
+	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+		self.masterSV.contentOffset = CGPointMake(0, 0);
+	}];
+}
+
+// Scrolls the main scroll view over to reveal the feed
+-(void) showFeed {
 	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(0, 0);
 	}completion:^(BOOL finished) {
 		if(finished) {
-			[self articlePublishedAnimation];
-			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_CLEAR_CONTENTPAGE
-																object:nil userInfo:nil];
-			[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_REFRESH_FEED
-																object:nil
-															  userInfo:nil];
+			//TODO: set article published animation only when article actually publishes
+//			[self articlePublishedAnimation];
+			[self.feedVC refreshFeed];
 		}
 	}];
 }
 
-
-//no longer being done
--(void)leaveArticleDisplay: (NSNotification *) notification {
-	[[NSNotificationCenter defaultCenter] removeObserver:self];
-	[self dismissViewControllerAnimated:YES completion:nil];
-}
+#pragma mark - Animations - 
 
 //article published sucessfully
 -(void)articlePublishedAnimation {
@@ -128,18 +161,8 @@
 	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
 }
 
-
--(void)removeAnimationView {
-	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
-		self.animationView.alpha=0;
-	}completion:^(BOOL finished) {
-		self.animationView.frame = CGRectMake(0,0,0,0);
-	}];
-}
-
-
-
 //insert title
+//TODO: Move this to the ContentDevVC
 -(void)insertTitleAnimation {
 	if(self.animationView.frame.size.width) return;
 	self.animationView.image = [UIImage imageNamed:TITLE_NOTIFICATION_ANIMATION];
@@ -149,20 +172,14 @@
 	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:TIME_UNTIL_ANIMATION_CLEAR target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
 }
 
-
-
-
-
-//lays out all the containers in the right position and also sets the appropriate
-//offset for the master SV
--(void)formatVCS {
-	self.masterSV.frame = self.view.bounds;
-	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);//enable horizontal scroll
-	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);//start at the center
-    self.profileVcContainer.frame = LEFT_FRAME;
-	self.articleListContainer.frame = CENTER_FRAME;
-	self.adkContainer.frame = RIGHT_FRAME;
+-(void) removeAnimationView {
+	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
+		self.animationView.alpha=0;
+	}completion:^(BOOL finished) {
+		self.animationView.frame = CGRectMake(0,0,0,0);
+	}];
 }
+
 
 //for ios8- To hide the status bar
 -(BOOL)prefersStatusBarHidden {
@@ -180,24 +197,8 @@
 	}
 }
 
-#pragma mark - Nav Buttons Pressed -
-//nav button is pressed so we move the SV right to the ADK
-- (IBAction)moveToAdk:(UIButton *)sender {
-    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-        self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width * 2, 0);
-    }];
-}
-
-//nav button is pressed - so we move the SV left to the profile
-- (IBAction)moveToProfile:(id)sender {
-    [UIView animateWithDuration:ANIMATION_DURATION animations:^{
-        self.masterSV.contentOffset = CGPointMake(0, 0);
-    }];
-}
-
-
-
 #pragma mark - Article Presentation - 
+
 //this function is called by our listView and it passes a block for us to handle the reload
 -(void)reloadArticleList: (NSNotification *) notification{
 }
@@ -239,17 +240,6 @@
 
 //catches the unwind segue - do nothing
 - (IBAction)done:(UIStoryboardSegue *)segue {
-    
-}
-
-
-#pragma mark - Lazy Instantiation -
-
-
-//lazy instantiation
--(UIImageView *)animationView {
-    if(!_animationView)_animationView = [[UIImageView alloc] init];
-    return _animationView;
 }
 
 @end

@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "singleArticlePresenter.h"
+#import "POVView.h"
 
 #import "Article.h"
 #import "BaseArticleViewingExperience.h"
@@ -17,14 +17,14 @@
 #import "TextAVE.h"
 #import "VideoAVE.h"
 
-@interface singleArticlePresenter ()<UIGestureRecognizerDelegate>
+@interface POVView ()<UIGestureRecognizerDelegate>
 @property (strong, nonatomic) UIView* animatingView;
 @property (strong, nonatomic) NSMutableArray * pageAves;
 @property (nonatomic) float pageScrollTopBottomArea;
 
 @end
 
-@implementation singleArticlePresenter
+@implementation POVView
 
 -(instancetype)initWithFrame:(CGRect)frame andArticleList: (NSMutableArray *) articlePages {
     

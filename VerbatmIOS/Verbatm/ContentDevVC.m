@@ -256,11 +256,6 @@
 											   object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(cleanUp)
-												 name:NOTIFICATION_CLEAR_CONTENTPAGE
-											   object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(removeEditContentView)
 												 name:NOTIFICATION_EXIT_EDIT_CONTENT_VIEW
 											   object:nil];

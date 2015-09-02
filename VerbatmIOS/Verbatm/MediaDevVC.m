@@ -100,6 +100,7 @@
 #define Preview_Y_offset 20
 #define Preview_Width 75
 #define Preview_Height 100
+#define ID_FOR_CONTENTDEVVC @"content_dev_vc"
 
 @end
 
@@ -191,9 +192,9 @@
 	return _verbatmCameraView;
 }
 
-//get the two independent controllers and save them
+//get the content dev vc from the storyboard and save reference to it
 -(void) getContentDevVC {
-	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTPAGEVC];
+	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTDEVVC];
 }
 
 -(void)setContentDevVC {
@@ -743,6 +744,7 @@
 }
 
 -(void)publishArticleContent {
+	//TODO: Call cleanup on content dev vc
 
 	NSArray *pinchObjectsArray = [self getPinchObjectsFromContentDev];
 

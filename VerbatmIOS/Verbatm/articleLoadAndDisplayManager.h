@@ -7,13 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "singleArticlePresenter.h"
+#import "POVView.h"
 
 /*This class manages the entire article stream as well as turning them into presentable views*/
 
 @protocol articleLoadAndDisplayProtocol <NSObject>
--(void)rightArticleDidLoad:(singleArticlePresenter *) articleView;
--(void)leftArticleDidLoad:(singleArticlePresenter *) articleView;
+-(void)rightArticleDidLoad:(POVView *) articleView;
+-(void)leftArticleDidLoad:(POVView *) articleView;
 @end
 
 @interface articleLoadAndDisplayManager : NSObject
@@ -25,6 +25,6 @@
  */
 -(void)getRightArticle;
 -(void)getLeftArticle;
--(BOOL)fetchArticleWithIndex:(NSInteger) index withFrame:(CGRect)frame onCompletion:(void(^)(singleArticlePresenter *))completionBlock;
+-(BOOL)fetchArticleWithIndex:(NSInteger) index withFrame:(CGRect)frame onCompletion:(void(^)(POVView *))completionBlock;
 -(void)reloadArticleListWithCompletionBlock:(void (^)(void))onCompletion;
 @end

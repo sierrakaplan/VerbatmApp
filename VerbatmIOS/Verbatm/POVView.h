@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface singleArticlePresenter : UIScrollView
+@interface POVView : UIScrollView
 -(instancetype)initWithFrame:(CGRect)frame andArticleList: (NSMutableArray *) articlePages;
 @end

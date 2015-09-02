@@ -18,9 +18,10 @@
 
 #define FEED_CELL_ID @"feedStoryCell"
 
-#pragma mark - Content Dev VC -
+#pragma mark - VC's-
 
-#define ID_FOR_CONTENTPAGEVC @"contentPage"
+
+
 
 #pragma mark Gallery
 
