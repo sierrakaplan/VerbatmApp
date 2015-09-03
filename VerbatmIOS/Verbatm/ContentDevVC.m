@@ -29,7 +29,7 @@
 #import "ContentPageElementScrollView.h"
 #import "UserPinchViews.h"
 
-@interface ContentDevVC () < UITextFieldDelegate, UIScrollViewDelegate,MediaSelectTileDelegate,GMImagePickerControllerDelegate>
+@interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,MediaSelectTileDelegate,GMImagePickerControllerDelegate,EditContentViewDelegate>
 
 @property (strong, nonatomic, readwrite) NSMutableArray * pageElementScrollViews;
 @property (nonatomic) NSInteger numPinchViews;
@@ -243,22 +243,18 @@
 											 selector:@selector(keyboardWillDisappear:)
 												 name:UIKeyboardWillHideNotification
 											   object:nil];
+
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyBoardDidShow:)
 												 name:UIKeyboardDidShowNotification
 											   object:nil];
-
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyBoardWillChangeFrame:)
 												 name:UIKeyboardWillChangeFrameNotification
 											   object:nil];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(removeEditContentView)
-												 name:NOTIFICATION_EXIT_EDIT_CONTENT_VIEW
-											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
 }
 
 
@@ -387,9 +383,9 @@
 	CGPoint translation = [self.mainScrollView.panGestureRecognizer translationInView:self.mainScrollView];
 
 	if(translation.y < 0) {
-		[self hidePullBarWithTransition:YES];
+		[self.changePullBarDelegate showPullBar:NO withTransition:YES];
 	}else {
-		[self showPullBarWithTransition:YES];
+		[self.changePullBarDelegate showPullBar:YES withTransition:YES];
 	}
 	return;
 }
@@ -472,7 +468,7 @@
 	newElementScrollView.delegate = self;
 
 	if (self.numPinchViews < 1) {
-		[self sendAddedMediaNotification];
+		[self.changePullBarDelegate canPreview:YES];
 	}
 	self.numPinchViews++;
 
@@ -829,7 +825,7 @@
 		return;
 	}
 	//make sure the pullbar is showing when things are pinched together
-	[self showPullBarWithTransition:YES];
+	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
 	[openCollectionScrollView closeCollection];
 }
 
@@ -1039,7 +1035,7 @@
 	self.pinchingMode = PinchingModeNone;
 	[self shiftElementsBelowView:self.articleTitleField];
 	//make sure the pullbar is showing when things are pinched together
-	[self showPullBarWithTransition:YES];
+	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
 }
 
 
@@ -1127,7 +1123,7 @@
 
 #pragma mark Text
 -(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
-	[self hidePullBarWithTransition:NO];
+	[self.changePullBarDelegate showPullBar:NO withTransition:NO];
     [self moveAllViewsOffScreen];
 	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
 	self.index = (index-1);
@@ -1138,7 +1134,7 @@
 }
 
 -(void) multiMediaButtonPressedOnTile: (MediaSelectTile*) tile {
-	[self hidePullBarWithTransition:NO];
+	[self.changePullBarDelegate showPullBar:NO withTransition:NO];
 	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
 	self.index = (index-1);
 	[self presentEfficientGallery];
@@ -1444,37 +1440,23 @@
 		[[UserPinchViews sharedInstance] removePinchView:(PinchView*)tile.pageElement];
 		self.numPinchViews--;
 		if (self.numPinchViews < 1) {
-			[self sendRemovedAllMediaNotification];
+			[self.changePullBarDelegate canPreview:NO];
 		}
 	}
 
 	//ungray out undo if previously was grayed out
 	if (![self.tileSwipeViewUndoManager canUndo]) {
-		[self sendCanUndoNotification];
+		[self.changePullBarDelegate canUndo:YES];
 	}
 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
-	[self showPullBarWithTransition:YES];//show the pullbar so that they can undo
-}
-
--(void) sendCanUndoNotification {
-	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_CAN_UNDO object:nil userInfo:nil];
-	[[NSNotificationCenter defaultCenter] postNotification:notification];
-}
-
--(void) sendCanNotUndoNotification {
-	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_CAN_NOT_UNDO object:nil userInfo:nil];
-	[[NSNotificationCenter defaultCenter] postNotification:notification];
-}
-
--(void) sendRemovedAllMediaNotification {
-	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_REMOVED_ALL_MEDIA object:nil userInfo:nil];
-	[[NSNotificationCenter defaultCenter] postNotification:notification];
+	//show the pullbar so that they can undo
+	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
 }
 
 -(void)undoTileDeleteSwipe {
 	[self.tileSwipeViewUndoManager undo];
 	if(![self.tileSwipeViewUndoManager canUndo]) {
-		[self sendCanNotUndoNotification];
+		[self.changePullBarDelegate canUndo:NO];
 	}
 }
 
@@ -1489,7 +1471,7 @@
 	if ([tile.pageElement isKindOfClass:[PinchView class]]) {
 		[[UserPinchViews sharedInstance] addPinchView:(PinchView*)tile.pageElement];
 		if (self.numPinchViews < 1) {
-			[self sendAddedMediaNotification];
+			[self.changePullBarDelegate canPreview:YES];
 		}
 		self.numPinchViews++;
 	}
@@ -1535,7 +1517,8 @@
 #pragma mark - Sense Tap Gesture -
 #pragma mark EditContentView
 
--(void) removeEditContentView {
+//Delegate method for EditContentView
+-(void) exitEditContentView {
 	if (!self.openEditContentView) {
 		return;
 	}
@@ -1559,7 +1542,7 @@
     [self moveAllViewsBackOnScreen];
 	[self.openEditContentView removeFromSuperview];
 	self.openEditContentView = nil;
-	[self showPullBarWithTransition:NO];
+	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[self.openPinchView renderMedia];
 	self.openPinchView = Nil;
 }
@@ -1589,7 +1572,7 @@
         //tap to open an element for viewing or editing
         [self createEditContentViewFromPinchView:pinchView];
         //make sure the pullbar is not available
-        [self hidePullBarWithTransition:NO];
+        [self.changePullBarDelegate showPullBar:NO withTransition:NO];
     }
 }
 
@@ -1597,6 +1580,7 @@
 // This should never be called on a collection pinch view, only on text, image, or video
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView {
 	self.openEditContentView = [[EditContentView alloc] initCustomViewWithFrame:self.view.bounds];
+	self.openEditContentView.delegate = self;
 	//adding text
 	if(pinchView == Nil) {
 		[self.openEditContentView editText:@""];
@@ -1616,19 +1600,6 @@
 	[self.view addSubview:self.openEditContentView];
 }
 
-#pragma mark - Send Picture Notification -
-
-//tells our other class to hide the pullbar or to show it depending on where we are
--(void) hidePullBarWithTransition: (BOOL) withTransition {
-	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_HIDE_PULLBAR object:nil userInfo:@{WITH_TRANSITION: @(withTransition)}];
-	[[NSNotificationCenter defaultCenter] postNotification:notification];
-}
-
-
--(void)showPullBarWithTransition: (BOOL) withTransition {
-	NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SHOW_PULLBAR object:nil userInfo:@{WITH_TRANSITION: @(withTransition)}];
-	[[NSNotificationCenter defaultCenter] postNotification:notification];
-}
 
 #pragma mark - Clean up Content Page -
 
@@ -1645,8 +1616,8 @@
 		[scrollView removeFromSuperview];
 	}
 	[self.pageElementScrollViews removeAllObjects];
-	[self sendRemovedAllMediaNotification];
-	[self sendCanNotUndoNotification];
+	[self.changePullBarDelegate canPreview:NO];
+	[self.changePullBarDelegate canUndo:NO];
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
@@ -1742,16 +1713,11 @@
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
         [self presentAssets:assetArray];
 	}];
-	[self showPullBarWithTransition:NO];
-}
-
--(void) sendAddedMediaNotification {
-	NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_ADDED_MEDIA object:nil userInfo:nil];
-	[[NSNotificationCenter defaultCenter] postNotification:notification];
+	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
-	[self showPullBarWithTransition:NO];
+	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 }
 
 //this shifts everything off the screen by

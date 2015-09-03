@@ -30,5 +30,9 @@ typedef NS_ENUM(NSInteger, PullBarMode) {
 @property (nonatomic) PullBarMode mode;
 
 -(void)switchToMode: (PullBarMode) mode;
+-(void) grayOutUndo;
+-(void) grayOutPreview;
+-(void) unGrayOutUndo;
+-(void) unGrayOutPreview;
 
 @end

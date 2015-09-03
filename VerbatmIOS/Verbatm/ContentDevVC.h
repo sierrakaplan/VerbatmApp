@@ -15,8 +15,18 @@
 
 @protocol ContentDevElementDelegate <NSObject>
 
--(void)markAsSelected: (BOOL) selected;
--(void)markAsDeleting: (BOOL) deleting;
+-(void) markAsSelected: (BOOL) selected;
+-(void) markAsDeleting: (BOOL) deleting;
+
+@end
+
+// Delegate tells when pull bar should be shown, hidden,
+//or when undo and preview are/n't possible
+@protocol ChangePullBarDelegate <NSObject>
+
+-(void) showPullBar: (BOOL) showPullBar withTransition: (BOOL) withTransition;
+-(void) canUndo: (BOOL) canUndo;
+-(void) canPreview: (BOOL) canPreview;
 
 @end
 
@@ -40,6 +50,9 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 //keeps track of ContentPageElementScrollViews
 @property (strong, nonatomic, readonly) NSMutableArray * pageElementScrollViews;
 
+//Delegate in order to tell parent view controller when pull bar should be changed
+@property (strong, nonatomic) id<ChangePullBarDelegate> changePullBarDelegate;
+
 @property (nonatomic) CGRect containerViewFrame;
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;
@@ -50,7 +63,6 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 - (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
 
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView;
--(void) removeEditContentView;
 
 // either locks the scroll view or frees it
 -(void) setMainScrollViewEnabled:(BOOL) enabled;

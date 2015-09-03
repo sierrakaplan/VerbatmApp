@@ -43,7 +43,8 @@
 #import "UIEffects.h"
 
 
-@interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate>
+@interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate, ChangePullBarDelegate>
+
 #pragma mark - Outlets -
 @property (strong, nonatomic) VerbatmPullBarView *pullBar;
 
@@ -201,7 +202,8 @@
 	[self getContentDevVC];
 	[self.contentContainerView addSubview: self.contentDevVC.view];
 	self.contentDevVC.containerViewFrame = self.contentContainerView.frame;
-	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height; // Sending the pullbar height over to
+	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height;
+	self.contentDevVC.changePullBarDelegate = self;
 }
 
 
@@ -336,18 +338,6 @@
 
 -(void)registerForNotifications
 {
-
-	//Register for notifications to show and remove the pullbar
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(hidePullBar:)
-												 name:NOTIFICATION_HIDE_PULLBAR
-											   object:nil];
-
-	//Register for notifications to show and remove the pullbar
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(showPullBar:)
-												 name:NOTIFICATION_SHOW_PULLBAR
-											   object:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(publishArticle)
@@ -660,48 +650,45 @@
 	 }];
 }
 
-#pragma mark - Hide and Show pull bar
+#pragma mark - Change pull bar Delegate Methods (for pullbar) -
 
-//hiding with animation is the default
--(void)hidePullBar:(NSNotification*)notification {
-	if (self.pullBar.mode != PullBarModeMenu) {
-		return;
-	}
 
-	if(notification.userInfo && ![notification.userInfo[WITH_TRANSITION] boolValue]) {
-		[self hidePullBarNoAnimation];
+
+-(void)canUndo:(BOOL)canUndo {
+	if (canUndo) {
+		[self.pullBar unGrayOutUndo];
 	} else {
-		[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
-			[self hidePullBarNoAnimation];
-		}];
+		[self.pullBar grayOutUndo];
 	}
 }
 
--(void) hidePullBarNoAnimation {
-	self.pullBar.frame = self.pullBarFrameOffScreen;
-}
-
-//showing with animation is the default
--(void) showPullBar:(NSNotification*)notification {
-	if (self.pullBar.mode != PullBarModeMenu) {
-		return;
-	}
-
-	if(notification.userInfo && ![notification.userInfo[WITH_TRANSITION] boolValue]) {
-		[self showPullBarNoAnimation];
+-(void)canPreview:(BOOL)canPreview {
+	if (canPreview) {
+		[self.pullBar unGrayOutPreview];
 	} else {
-		[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
-			[self showPullBarNoAnimation];
-		}];
+		[self.pullBar grayOutPreview];
 	}
 }
-
--(void) showPullBarNoAnimation {
-	self.pullBar.frame = self.pullBarFrameBottom;
-}
-
 
 #pragma mark - PullBar Delegate Methods (pullbar button actions)
+
+-(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {
+	if (!withTransition) {
+		[self showPullBar:showPullBar];
+	} else {
+		[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
+			[self showPullBar:showPullBar];
+		}];
+	}
+}
+
+-(void) showPullBar:(BOOL)showPullBar {
+	if (showPullBar) {
+		self.pullBar.frame = self.pullBarFrameBottom;
+	} else {
+		self.pullBar.frame = self.pullBarFrameOffScreen;
+	}
+}
 
 -(void) undoButtonPressed {
 	[self.contentDevVC undoTileDeleteSwipe];

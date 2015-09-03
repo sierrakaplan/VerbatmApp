@@ -795,7 +795,8 @@
 		C78B681119CA6914003D0AC5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				C7E65F651B9244AD0042AD99 /* Master Nav and article display VC */,
+				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
+				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
 				C7E65F6A1B92E5830042AD99 /* TopicsFeedVC.h */,
 				C7E65F6B1B92E5830042AD99 /* TopicsFeedVC.m */,
 				C7E65F671B9245200042AD99 /* ProfileVC.h */,
@@ -841,8 +842,6 @@
 				F20A24F91A46166100BB77C1 /* EditContentView.m */,
 				C7E65F5D1B911BA90042AD99 /* SwitchCategoryPullView.h */,
 				C7E65F5E1B911BA90042AD99 /* SwitchCategoryPullView.m */,
-				C702DE6E1B315CDF00EE2B00 /* ArticleDisplayVC.h */,
-				C702DE6F1B315CDF00EE2B00 /* ArticleDisplayVC.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1003,15 +1002,6 @@
 				C77F321D1B6D5D1800E87C25 /* bugSubmissionFormVC.m */,
 			);
 			name = "bug submission VC";
-			sourceTree = "<group>";
-		};
-		C7E65F651B9244AD0042AD99 /* Master Nav and article display VC */ = {
-			isa = PBXGroup;
-			children = (
-				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
-				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
-			);
-			name = "Master Nav and article display VC";
 			sourceTree = "<group>";
 		};
 		C7E65F661B9244E90042AD99 /* Verbatm text field */ = {

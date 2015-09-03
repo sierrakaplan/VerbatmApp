@@ -187,15 +187,8 @@
 	[self addGestureRecognizer:tap];
 }
 
--(void) doneButtonPressed {
-	[self exitEditContentView];
-
-}
-
 -(void) exitEditContentView {
-    
-    
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_EDIT_CONTENT_VIEW object:nil userInfo:nil];
+	[self.delegate exitEditContentView];
 }
 
 @end

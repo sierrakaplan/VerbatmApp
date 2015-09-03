@@ -81,16 +81,6 @@
 	[super viewDidDisappear:animated];
 }
 
-
-#pragma mark - Lazy Instantiation -
-
-//lazy instantiation
--(UIImageView *)animationView {
-	if(!_animationView)_animationView = [[UIImageView alloc] init];
-	return _animationView;
-}
-
-
 #pragma mark - Getting and formatting child view controllers -
 
 //lays out all the containers in the right position and also sets the appropriate

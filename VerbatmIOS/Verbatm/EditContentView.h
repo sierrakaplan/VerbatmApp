@@ -10,7 +10,15 @@
 #import  "VerbatmUITextView.h"
 #import "VideoPlayerView.h"
 
+@protocol EditContentViewDelegate <NSObject>
+
+//Tells parent view controller that edit content view should exit
+-(void) exitEditContentView;
+
+@end
+
 @interface EditContentView : UIView
+
 -(instancetype)initCustomViewWithFrame:(CGRect)frame;
 -(void) displayVideo: (AVAsset*) videoAsset;
 //passes it an array of UIImages to display
@@ -23,5 +31,6 @@
 
 @property (nonatomic, strong) VerbatmUITextView * textView;
 @property (nonatomic, strong) VideoPlayerView * videoView;
+@property (nonatomic, strong) id<EditContentViewDelegate> delegate;
 
 @end

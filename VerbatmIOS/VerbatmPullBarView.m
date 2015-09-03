@@ -39,7 +39,6 @@
         self.frame = frame;
         [self createButtons];
 		[self switchToPullDown];
-		[self registerForNotifications];
     }
     return self;
 }
