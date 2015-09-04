@@ -42,7 +42,6 @@
     [self formatCell];
     [self setViewFrames];
     [self addPinchGestureToSelf];
-    //self.backgroundColor = [UIColor redColor];
 }
 
 

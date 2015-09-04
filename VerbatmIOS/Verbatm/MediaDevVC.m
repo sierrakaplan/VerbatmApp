@@ -31,7 +31,6 @@
 
 #import "PinchView.h"
 #import "POVPublisher.h"
-#import "PreviewDisplayView.h"
 
 #import "Strings.h"
 #import "SizesAndPositions.h"
@@ -45,9 +44,10 @@
 #import "UIEffects.h"
 
 
-@interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate, ChangePullBarDelegate, PreviewDisplayDelegate>
+@interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate, ChangePullBarDelegate>
 
 #pragma mark - Outlets -
+
 @property (strong, nonatomic) VerbatmPullBarView *pullBar;
 
 #pragma mark - SubViews of screen
@@ -93,9 +93,6 @@
 //layout of the screen before it was made landscape
 @property(nonatomic) ContentContainerViewMode previousMode;
 
-#pragma mark - Preview -
-@property (nonatomic) PreviewDisplayView* previewDisplayView;
-
 #pragma mark keyboard properties
 @property (nonatomic) NSInteger keyboardHeight;
 
@@ -137,14 +134,12 @@
     
 }
 
-
--(void)viewWillLayoutSubviews{
+-(void)viewWillLayoutSubviews {
 	[super viewWillLayoutSubviews];
 	[self positionContainerView];
 }
 
--(void) viewDidLayoutSubviews
-{
+-(void) viewDidLayoutSubviews {
 	[super viewDidLayoutSubviews];
 	//get the view controllers in the storyboard and store them
 }
@@ -161,13 +156,11 @@
 -(void)prepareCameraCapturePreview {
     self.mediaPreviewView = [[MediaPreview alloc] initWithFrame:CGRectMake(Preview_X_offset, self.view.frame.size.height - Preview_Y_offset - Preview_Height,
                                                                             Preview_Width,Preview_Height)];
-    //self.mediaPreviewView.backgroundColor = [UIColor redColor];
     [self.view insertSubview:self.mediaPreviewView  aboveSubview:self.verbatmCameraView];
 }
 
 
--(void) viewDidDisappear:(BOOL)animated
-{
+-(void) viewDidDisappear:(BOOL)animated {
 	[self.sessionManager stopSession];
 }
 
@@ -176,7 +169,6 @@
 -(void)setContentDevVC {
 	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTDEVVC];
 	[self.contentContainerView addSubview: self.contentDevVC.view];
-	self.contentDevVC.containerViewFrame = self.contentContainerView.frame;
 	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height;
 	self.contentDevVC.changePullBarDelegate = self;
 	[self.contentDevVC loadPinchViews];
@@ -538,7 +530,6 @@
 			self.contentContainerView.frame = self.contentContainerViewFrameTop;
 			[self pullBarTransitionToMode:PullBarModePullDown];
 		}
-		self.contentDevVC.containerViewFrame = self.contentContainerView.frame;
 	}];
 }
 
@@ -672,20 +663,29 @@
 -(void) previewButtonPressed {
 	[self.contentDevVC closeAllOpenCollections];
 
-	NSArray *pinchObjectsArray = [self getPinchObjectsFromContentDev];
+	NSArray *pinchViews = [self getPinchViewsFromContentDev];
 
-	if(![pinchObjectsArray count]) {
-		NSLog(@"Can't preview with no pinch objects");
+	if(![pinchViews count]) {
+		NSLog(@"Can't preview with no pinch views");
 		return;
 	}
 
-	[self.view bringSubviewToFront:self.previewDisplayView];
-	[self.previewDisplayView displayPreviewPOVFromPinchViews: pinchObjectsArray];
+	[self.delegate previewPOVFromPinchViews: pinchViews];
 }
 
-#pragma mark - PreviewDisplay delegate Methods (publish button pressed)
+-(NSArray*) getPinchViewsFromContentDev {
+	NSMutableArray *pinchViews = [[NSMutableArray alloc]init];
+	for(ContentPageElementScrollView* elementScrollView in [self.contentDevVC pageElementScrollViews]) {
+		if ([elementScrollView.pageElement isKindOfClass:[PinchView class]]) {
+			[pinchViews addObject:[elementScrollView pageElement]];
+		}
+	}
+	return pinchViews;
+}
 
--(void) publishButtonPressed {
+#pragma mark - Publishing POV -
+
+-(void) publishPOV {
 
 	//make sure we have an article title, and that we have multiple pinch elements in the deck
 
@@ -693,7 +693,7 @@
 		//TODO: animation telling them to enter a title
 
 	} else {
-		NSArray *pinchViewsArray = [self getPinchObjectsFromContentDev];
+		NSArray *pinchViewsArray = [self getPinchViewsFromContentDev];
 
 		if(![pinchViewsArray count]) {
 			NSLog(@"Can't publish with no pinch objects");
@@ -705,16 +705,6 @@
 		[[UserPinchViews sharedInstance] clearPinchViews];
 		[self.contentDevVC cleanUp];
 	}
-}
-
--(NSArray*) getPinchObjectsFromContentDev {
-	NSMutableArray *pinchObjectsArray = [[NSMutableArray alloc]init];
-	for(ContentPageElementScrollView* elementScrollView in [self.contentDevVC pageElementScrollViews]) {
-		if ([elementScrollView.pageElement isKindOfClass:[PinchView class]]) {
-			[pinchObjectsArray addObject:[elementScrollView pageElement]];
-		}
-	}
-	return pinchObjectsArray;
 }
 
 // NOT IN USE
@@ -741,15 +731,6 @@
 		_verbatmCameraView = [[VerbatmCameraView alloc] initWithFrame: self.view.frame];
 	}
 	return _verbatmCameraView;
-}
-
--(PreviewDisplayView*) previewDisplayView {
-	if(!_previewDisplayView){
-		_previewDisplayView = [[PreviewDisplayView alloc] initWithFrame: self.view.frame];
-		_previewDisplayView.delegate = self;
-		[self.view addSubview:_previewDisplayView];
-	}
-	return _previewDisplayView;
 }
 
 @end

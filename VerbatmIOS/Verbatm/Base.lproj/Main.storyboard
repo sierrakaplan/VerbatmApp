@@ -34,16 +34,10 @@
                                     <containerView opaque="NO" contentMode="scaleToFill" id="yxe-c7-aMo">
                                         <rect key="frame" x="8" y="64" width="135" height="132"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <segue destination="Qxg-C2-1Oh" kind="embed" id="lNo-MU-gAV"/>
-                                        </connections>
                                     </containerView>
                                     <containerView opaque="NO" contentMode="scaleToFill" id="eFn-WD-HK1">
                                         <rect key="frame" x="6" y="134" width="306" height="292"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <segue destination="3TM-NK-3ij" kind="embed" id="FgB-fu-KIk"/>
-                                        </connections>
                                     </containerView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="r0I-8Z-4Cn">
                                         <rect key="frame" x="6" y="53" width="9" height="3"/>
@@ -58,9 +52,6 @@
                                     <containerView opaque="NO" contentMode="scaleToFill" id="BZw-d7-VqY">
                                         <rect key="frame" x="0.0" y="39" width="320" height="577"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <segue destination="lY0-w6-fRI" kind="embed" id="nBF-i7-L9n"/>
-                                        </connections>
                                     </containerView>
                                 </subviews>
                             </scrollView>
@@ -152,16 +143,16 @@
             <objects>
                 <viewController storyboardIdentifier="feed_vc" title="Feed" id="lY0-w6-fRI" customClass="FeedVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Clv-OZ-JXA">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="577"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" id="GtQ-te-Ltn" customClass="SwitchCategoryPullView">
-                                <rect key="frame" x="33" y="13" width="255" height="95"/>
+                                <rect key="frame" x="33" y="13" width="255" height="86"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <containerView opaque="NO" contentMode="scaleToFill" id="j2U-9B-X6v">
-                                <rect key="frame" x="0.0" y="116" width="325" height="300"/>
+                                <rect key="frame" x="0.0" y="107" width="325" height="300"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <connections>
                                     <segue destination="icb-0n-CtC" kind="embed" id="e2Z-TA-waB"/>
@@ -190,7 +181,7 @@
                                 </connections>
                             </button>
                             <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF">
-                                <rect key="frame" x="26" y="224" width="262" height="339"/>
+                                <rect key="frame" x="26" y="215" width="262" height="339"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <connections>
                                     <segue destination="Ve4-Qj-kgj" kind="embed" id="5JZ-lL-lAB"/>
@@ -302,7 +293,7 @@
             <objects>
                 <viewController storyboardIdentifier="media_dev_vc" title="Media Dev" id="Qxg-C2-1Oh" customClass="MediaDevVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rWO-ax-CE2">
-                        <rect key="frame" x="0.0" y="0.0" width="135" height="132"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="yYu-am-nhj" userLabel="Content Container View">
@@ -506,7 +497,7 @@
             <objects>
                 <viewController storyboardIdentifier="profile_vc" title="Profile" id="3TM-NK-3ij" customClass="ProfileVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="yT8-e9-31R">
-                        <rect key="frame" x="0.0" y="0.0" width="306" height="292"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Profile" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="drM-L1-cqF">

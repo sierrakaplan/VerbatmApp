@@ -53,7 +53,6 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 //Delegate in order to tell parent view controller when pull bar should be changed
 @property (strong, nonatomic) id<ChangePullBarDelegate> changePullBarDelegate;
 
-@property (nonatomic) CGRect containerViewFrame;
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;
 @property(nonatomic) NSInteger pullBarHeight;

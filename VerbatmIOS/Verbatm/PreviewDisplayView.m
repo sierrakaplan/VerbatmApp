@@ -53,6 +53,7 @@
 		[self setUpPublishButton];
 		[self setUpBackButton];
 
+		[self setBackgroundColor:[UIColor blackColor]];
 		[UIEffects addShadowToView:self];
 		[self setUpGestureRecognizers];
 	}
@@ -72,7 +73,7 @@
 	}
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
-	NSArray* aves = [analyzer processPinchedObjectsFromArray:pinchViews withFrame: self.frame];
+	NSArray* aves = [analyzer processPinchedObjectsFromArray:pinchViews withFrame: self.viewingFrame];
 	self.povView = [[POVView alloc] initWithFrame:self.bounds andAVES:aves];
 	[self addSubview: self.povView];
 	[self addSubview: self.publishButton];
@@ -85,7 +86,7 @@
 #pragma mark - Set Up Views -
 
 -(void) setUpPublishButton {
-	CGRect publishButtonFrame = CGRectMake(self.frame.size.width - PUBLISH_BUTTON_XOFFSET - PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+	CGRect publishButtonFrame = CGRectMake(self.viewingFrame.size.width - PUBLISH_BUTTON_XOFFSET - PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
 
 	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.publishButton setFrame: publishButtonFrame];
@@ -94,9 +95,9 @@
 	UIColor *labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR];
 	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
 	NSShadow *shadow = [[NSShadow alloc] init];
-	[shadow setShadowBlurRadius:BUTTON_LABEL_SHADOW_BLUR_RADIUS];
-	[shadow setShadowColor:labelColor];
-	[shadow setShadowOffset:CGSizeMake(0, BUTTON_LABEL_SHADOW_YOFFSET)];
+	[shadow setShadowBlurRadius: BUTTON_LABEL_SHADOW_BLUR_RADIUS];
+	[shadow setShadowColor: labelColor];
+	[shadow setShadowOffset: CGSizeMake(0, BUTTON_LABEL_SHADOW_YOFFSET)];
 	self.publishButtonTitle = [[NSAttributedString alloc] initWithString:PUBLISH_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont, NSShadowAttributeName : shadow}];
 	[self.publishButton setAttributedTitle:self.publishButtonTitle forState:UIControlStateNormal];
 
@@ -104,7 +105,7 @@
 }
 
 -(void) setUpBackButton {
-	CGRect backButtonFrame = CGRectMake(0 + PUBLISH_BUTTON_XOFFSET, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+	CGRect backButtonFrame = CGRectMake(self.viewingFrame.origin.x + PUBLISH_BUTTON_XOFFSET, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
 
 	self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.backButton setFrame: backButtonFrame];
@@ -132,6 +133,7 @@
 		[UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
 			self.frame = self.viewingFrame;
 		} completion:^(BOOL finished) {
+			[self.publishButton startGlowing];
 			[self.povView displayMediaOnCurrentAVE];
 		}];
 	}else {
@@ -182,7 +184,6 @@
 			int diff = currentPoint.x - self.previousGesturePoint.x;
 			self.previousGesturePoint = currentPoint;
 			self.frame = CGRectMake(self.frame.origin.x + diff, self.frame.origin.y,  self.frame.size.width,  self.frame.size.height);
-			self.publishButton.frame = CGRectMake(self.publishButton.frame.origin.x +diff, self.publishButton.frame.origin.y,  self.publishButton.frame.size.width,  self.publishButton.frame.size.height);
 			break;
 		}
 		case UIGestureRecognizerStateEnded: {

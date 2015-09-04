@@ -43,7 +43,6 @@
 	[self setShowsVerticalScrollIndicator:NO];
 	[self setShowsHorizontalScrollIndicator:NO];
 	self.bounces = YES;
-	self.backgroundColor = [UIColor blueColor];
 	//scroll view delegate
 	self.delegate = self;
 }
@@ -52,7 +51,8 @@
 -(void)renderPages: (NSArray *) povPages {
 	self.pageAves = povPages;
 	
-    self.contentSize = CGSizeMake(self.frame.size.width, [povPages count]*self.frame.size.height);
+    self.contentSize = CGSizeMake(self.frame.size.width, [self.pageAves count] * self.frame.size.height);
+	self.contentOffset = CGPointMake(0, 0);
     
     CGRect viewFrame = self.bounds;
     for(UIView* view in povPages){

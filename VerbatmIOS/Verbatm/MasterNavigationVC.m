@@ -13,6 +13,7 @@
 #import "internetConnectionMonitor.h"
 #import "MasterNavigationVC.h"
 #import "MediaSessionManager.h"
+#import "PreviewDisplayView.h"
 #import "Notifications.h"
 #import "VerbatmUser.h"
 #import "VerbatmCameraView.h"
@@ -22,15 +23,18 @@
 #import "MediaDevVC.h"
 
 
-@interface MasterNavigationVC () <NavButtonsDelegate>
+@interface MasterNavigationVC () <NavButtonsDelegate, MediaDevDelegate, PreviewDisplayDelegate>
 @property (weak, nonatomic) IBOutlet UIView * profileContainer;
 @property (weak, nonatomic) IBOutlet UIView * adkContainer;
 @property (weak, nonatomic) IBOutlet UIView * feedContainer;
 
-//Child view controllers
+#pragma mark - Child View Controllers - 
 @property (strong,nonatomic) ProfileVC* profileVC;
 @property (strong,nonatomic) FeedVC* feedVC;
 @property (strong,nonatomic) MediaDevVC* mediaDevVC;
+
+#pragma mark - Preview -
+@property (nonatomic) PreviewDisplayView* previewDisplayView;
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 
@@ -87,9 +91,18 @@
 //offset for the master SV
 -(void) getAndFormatVCs {
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
+	self.feedContainer.frame = self.view.bounds;
+	[self.feedContainer addSubview: self.feedVC.view];
 	self.feedVC.navButtonsDelegate = self;
+
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
+	self.adkContainer.frame = self.view.bounds;
+	[self.adkContainer addSubview: self.mediaDevVC.view];
+	self.mediaDevVC.delegate = self;
+
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_PROFILEVC];
+	self.profileContainer.frame = self.view.bounds;
+	[self.profileContainer addSubview: self.profileVC.view];
 
 	self.profileContainer.frame = LEFT_FRAME;
 	self.feedContainer.frame = CENTER_FRAME;
@@ -100,6 +113,7 @@
 	self.masterSV.frame = self.view.bounds;
 	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);
 	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+	self.masterSV.pagingEnabled = YES;
 }
 
 #pragma mark - Nav Buttons Pressed Delegate -
@@ -138,6 +152,19 @@
 			[self.feedVC refreshFeed];
 		}
 	}];
+}
+
+#pragma mark - Media dev delegate methods -
+
+-(void) previewPOVFromPinchViews:(NSArray *)pinchViews {
+	[self.view bringSubviewToFront:self.previewDisplayView];
+	[self.previewDisplayView displayPreviewPOVFromPinchViews: pinchViews];
+}
+
+#pragma mark - PreviewDisplay delegate Methods (publish button pressed)
+
+-(void) publishButtonPressed {
+	[self.mediaDevVC publishPOV];
 }
 
 #pragma mark - Animations - 
@@ -236,10 +263,18 @@
 
 #pragma mark - Lazy Instantiation -
 
-//lazy instantiation
 -(UIImageView *)animationView {
     if(!_animationView)_animationView = [[UIImageView alloc] init];
     return _animationView;
+}
+
+-(PreviewDisplayView*) previewDisplayView {
+	if(!_previewDisplayView){
+		_previewDisplayView = [[PreviewDisplayView alloc] initWithFrame: self.view.frame];
+		_previewDisplayView.delegate = self;
+		[self.view addSubview:_previewDisplayView];
+	}
+	return _previewDisplayView;
 }
 
 @end
