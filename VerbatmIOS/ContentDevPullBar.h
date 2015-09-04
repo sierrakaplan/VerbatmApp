@@ -10,7 +10,7 @@
 #import <UIKit/UIView.h>
 #import <UIKit/UIKitDefines.h>
 
-@protocol PullBarDelegate <NSObject>
+@protocol ContentDevPullBarDelegate <NSObject>
 
 -(void)undoButtonPressed;
 -(void)pullUpButtonPressed;
@@ -18,14 +18,14 @@
 
 @end
 
-@interface VerbatmPullBarView : UIView <UIGestureRecognizerDelegate>
+@interface ContentDevPullBar : UIView <UIGestureRecognizerDelegate>
 
 typedef NS_ENUM(NSInteger, PullBarMode) {
 	PullBarModePullDown,
 	PullBarModeMenu
 };
 
-@property (nonatomic, strong) id<PullBarDelegate> delegate;
+@property (nonatomic, strong) id<ContentDevPullBarDelegate> delegate;
 // Can be in either pull down mode or menu mode depending on if it's at the top or bottom
 @property (nonatomic) PullBarMode mode;
 

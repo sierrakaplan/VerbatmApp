@@ -20,12 +20,13 @@
 
 #define ARTICLE_IN_FEED_BUTTON_HEIGHT 50
 
+#define HOME_NAV_HEIGHT 55
 //distance between icons and the side of the screen
-#define NAVICON_WALL_OFFSET 10
+#define HOME_NAV_ICON_OFFSET 7
 //frame width
-#define NAVICON_WIDTH 75
-//frame height
-#define NAVICON_HEIGHT 100
+
+#define CATEGORY_SWITCH_HEIGHT 80
+#define CATEGORY_SWITCH_OFFSET 30
 
 //verticle distance between text on the
 #define FEED_TEXT_GAP 5
@@ -143,7 +144,6 @@
 #define POINTS_ON_CIRCLE_RADIUS 10.f
 #define TOUCH_THRESHOLD 40.f
 
-#define NAVICON_WALL_OFFSET 10
 
 
 #endif

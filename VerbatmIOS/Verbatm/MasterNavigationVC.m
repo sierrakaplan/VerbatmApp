@@ -23,7 +23,7 @@
 #import "MediaDevVC.h"
 
 
-@interface MasterNavigationVC () <NavButtonsDelegate, MediaDevDelegate, PreviewDisplayDelegate>
+@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate>
 @property (weak, nonatomic) IBOutlet UIView * profileContainer;
 @property (weak, nonatomic) IBOutlet UIView * adkContainer;
 @property (weak, nonatomic) IBOutlet UIView * feedContainer;
@@ -93,7 +93,7 @@
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
 	self.feedContainer.frame = self.view.bounds;
 	[self.feedContainer addSubview: self.feedVC.view];
-	self.feedVC.navButtonsDelegate = self;
+	self.feedVC.delegate = self;
 
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
 	self.adkContainer.frame = self.view.bounds;

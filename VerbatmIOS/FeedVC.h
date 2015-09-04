@@ -8,14 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol NavButtonsDelegate <NSObject>
+@protocol FeedVCDelegate <NSObject>
 -(void) profileButtonPressed;
 -(void) adkButtonPressed;
 @end
 
 @interface FeedVC : UIViewController
 
-@property(strong, nonatomic) id<NavButtonsDelegate> navButtonsDelegate;
+@property(strong, nonatomic) id<FeedVCDelegate> delegate;
 
 -(void) refreshFeed;
 

@@ -10,12 +10,19 @@
 
 @implementation FeedTableView
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+-(id) initWithFrame:(CGRect)frame style:(UITableViewStyle)style {
+	self = [super initWithFrame:frame style:style];
+	if (self) {
+		[self formatSelf];
+	}
+	return self;
 }
-*/
+
+-(void) formatSelf {
+	[self setBackgroundColor:[UIColor clearColor]];
+	self.separatorStyle = UITableViewCellSeparatorStyleNone;
+	self.showsHorizontalScrollIndicator = NO;
+	self.showsVerticalScrollIndicator = NO;
+}
 
 @end

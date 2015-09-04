@@ -113,10 +113,11 @@
                                         </state>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" red="0.59999999999999998" green="1" blue="0.59999999999999998" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                             </scrollView>
                         </subviews>
-                        <color key="backgroundColor" red="0.51362995730000005" green="0.69277968010000002" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
+                        <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P70-Wg-8bT" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -130,7 +131,7 @@
                     <view key="view" contentMode="scaleToFill" id="Yqu-zV-E3L">
                         <rect key="frame" x="0.0" y="0.0" width="262" height="339"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
                 </viewController>
@@ -146,11 +147,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" id="GtQ-te-Ltn" customClass="SwitchCategoryPullView">
-                                <rect key="frame" x="33" y="13" width="255" height="86"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
                             <containerView opaque="NO" contentMode="scaleToFill" id="j2U-9B-X6v">
                                 <rect key="frame" x="0.0" y="107" width="325" height="300"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -158,28 +154,6 @@
                                     <segue destination="icb-0n-CtC" kind="embed" id="e2Z-TA-waB"/>
                                 </connections>
                             </containerView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="BA2-fC-iQg">
-                                <rect key="frame" x="16" y="533" width="44" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Profile">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="moveToProfile:" destination="f1t-Lb-Erp" eventType="touchUpInside" id="Dn5-K3-CA0"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="bjN-Da-bfs">
-                                <rect key="frame" x="273" y="533" width="31" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="ADK">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="moveToAdk:" destination="f1t-Lb-Erp" eventType="touchUpInside" id="XYQ-Rs-jdg"/>
-                                </connections>
-                            </button>
                             <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF">
                                 <rect key="frame" x="26" y="215" width="262" height="339"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -192,7 +166,6 @@
                     </view>
                     <connections>
                         <outlet property="articleListContainer" destination="jLa-zk-lWF" id="PLP-RZ-Vxs"/>
-                        <outlet property="categorySwitch" destination="GtQ-te-Ltn" id="9Sd-eb-qiz"/>
                         <outlet property="topicsListContainer" destination="j2U-9B-X6v" id="4kc-Ck-Shg"/>
                     </connections>
                 </viewController>

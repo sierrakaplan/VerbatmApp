@@ -27,9 +27,20 @@
 
 #pragma mark - Feed -
 
+#define FEED_BACKGROUND_COLOR 0.918
+#define STORY_BACKGROUND_COLOR 0.827
 #define COMPOSE_STORY_BUTTON_LABEL_COLOR blackColor
 #define COMPOSE_STORY_BUTTON_LABEL_FONT_SIZE 16.f
 #define COMPOSE_STORY_OUTER_CIRCLE_BORDER_WIDTH 2.f
+
+#define FEED_SLIDE_BAR_FONT_SIZE 30
+
+#define USERNAME_FONT_SIZE 20
+#define TITLE_FONT_SIZE 25
+#define USERNAME_TEXT_COLOR blackColor
+#define TITLE_TEXT_COLOR blackColor
+#define USERNAME_FONT @"HelveticaNeue-Medium"
+#define TITLE_FONT @"HelveticaNeue-LightItalic"
 
 
 #pragma mark - Content Dev VC -
@@ -78,7 +89,6 @@
 
 #pragma mark Text
 
-#define TEXT_AVE_FONT @"HelveticaNeue-Light"
 #define TEXT_AVE_FONT_SIZE 20
 #define TEXT_AVE_COLOR whiteColor
 
@@ -94,13 +104,6 @@
 #define CIRCLE_OVER_IMAGES_ALPHA 0.4
 #define POINTS_ON_CIRCLE_ALPHA 0.5
 
-#pragma mark - Feed -
-#define TITLE_FONT_TYPE @"HelveticaNeue-Light"
-#define USERNAME_FONT_TYPE @"HelveticaNeue-Light"
-#define USERNAME_FONT_SIZE 25
-#define TITLE_FONT_SIZE 30
-#define USERNAME_TEXT_COLOR whiteColor
-#define TITLE_TEXT_COLOR whiteColor
 
 
 

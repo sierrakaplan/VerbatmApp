@@ -20,8 +20,8 @@
 
 @interface FeedTableViewCell()
 
-@property (strong, nonatomic) UILabel * articleTitle;
-@property (strong, nonatomic) UILabel * artileAuthorUsername;
+@property (strong, nonatomic) UILabel * povTitle;
+@property (strong, nonatomic) UILabel * povCreatorUsername;
 @property (strong, nonatomic) UIImageView * leftSemiCircle;
 @property (strong, nonatomic) UIImageView * rightSemiCircle;
 
@@ -47,28 +47,28 @@
 
 
 -(void)setContentWithUsername:(NSString *) username andTitle: (NSString *) title {
-    self.articleTitle.text = title;
-    self.artileAuthorUsername.text = username;
-    [self addSubview:self.articleTitle];
-    [self addSubview:self.artileAuthorUsername];
+    self.povTitle.text = title;
+    self.povCreatorUsername.text = username;
+    [self addSubview:self.povTitle];
+    [self addSubview:self.povCreatorUsername];
 }
 
 
 
 -(void)setViewFrames{
     //set frames
-    [self.articleTitle setFrame:CGRectMake(FEED_TEXT_X_OFFSET, FEED_TEXT_GAP, self.frame.size.width, TITLE_LABLE_HEIGHT)];
-    [self.artileAuthorUsername setFrame:CGRectMake(FEED_TEXT_X_OFFSET, TITLE_LABLE_HEIGHT + 2*FEED_TEXT_GAP, self.frame.size.width, USERNAME_LABLE_HEIGHT)];
+    [self.povTitle setFrame:CGRectMake(FEED_TEXT_X_OFFSET, FEED_TEXT_GAP, self.frame.size.width, TITLE_LABLE_HEIGHT)];
+    [self.povCreatorUsername setFrame:CGRectMake(FEED_TEXT_X_OFFSET, TITLE_LABLE_HEIGHT + 2*FEED_TEXT_GAP, self.frame.size.width, USERNAME_LABLE_HEIGHT)];
     
     //set text font formating
-    [self.articleTitle setFont:[UIFont fontWithName:USERNAME_FONT_TYPE size:TITLE_FONT_SIZE]];
-    [self.articleTitle setTextColor:[UIColor USERNAME_TEXT_COLOR]];
-    self.articleTitle.backgroundColor = [UIColor clearColor];
+    [self.povTitle setFont:[UIFont fontWithName:TITLE_FONT size:TITLE_FONT_SIZE]];
+    [self.povTitle setTextColor:[UIColor TITLE_TEXT_COLOR]];
+    self.povTitle.backgroundColor = [UIColor clearColor];
     
     
-    [self.artileAuthorUsername setFont:[UIFont fontWithName:USERNAME_FONT_TYPE size:USERNAME_FONT_SIZE]];
-    [self.artileAuthorUsername setTextColor:[UIColor TITLE_TEXT_COLOR]];
-    self.artileAuthorUsername.backgroundColor = [UIColor clearColor];
+    [self.povCreatorUsername setFont:[UIFont fontWithName:USERNAME_FONT size:USERNAME_FONT_SIZE]];
+    [self.povCreatorUsername setTextColor:[UIColor USERNAME_TEXT_COLOR]];
+    self.povCreatorUsername.backgroundColor = [UIColor clearColor];
     self.leftSemiCircle.backgroundColor = [UIColor clearColor];
     self.rightSemiCircle.backgroundColor = [UIColor clearColor];
 }
@@ -160,7 +160,7 @@
 -(UIImageView *)leftSemiCircle {
     if(!_leftSemiCircle) {
         _leftSemiCircle = [[UIImageView alloc] init];
-        _leftSemiCircle.frame = CGRectMake(NAVICON_WALL_OFFSET, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
+        _leftSemiCircle.frame = CGRectMake(HOME_NAV_ICON_OFFSET, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
         _leftSemiCircle.image = [UIImage imageNamed:@"half_photo_left"];
         [self addSubview:_leftSemiCircle];
         [self bringSubviewToFront:_leftSemiCircle];
@@ -177,7 +177,7 @@
         
         _rightSemiCircle = [[UIImageView alloc] init];
         
-        _rightSemiCircle.frame = CGRectMake(self.frame.size.width - SEMI_CIRCLE_DIAMETER/2 - NAVICON_WALL_OFFSET , SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
+        _rightSemiCircle.frame = CGRectMake(self.frame.size.width - SEMI_CIRCLE_DIAMETER/2 - HOME_NAV_ICON_OFFSET , SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
         _rightSemiCircle.image = [UIImage imageNamed:@"half_photo_right"];
         [self addSubview:_rightSemiCircle];
         [self addSubview:_rightSemiCircle];
@@ -187,19 +187,19 @@
 
 
 
--(UILabel *) articleTitle {
+-(UILabel *) povTitle {
     
-    if(!_articleTitle)_articleTitle = [[UILabel alloc]init];
+    if(!_povTitle)_povTitle = [[UILabel alloc]init];
     
-    return _articleTitle;
+    return _povTitle;
     
 }
 
--(UILabel *) artileAuthorUsername{
+-(UILabel *) povCreatorUsername{
     
-    if(!_artileAuthorUsername)_artileAuthorUsername = [[UILabel alloc]init];
+    if(!_povCreatorUsername)_povCreatorUsername = [[UILabel alloc]init];
     
-    return _artileAuthorUsername;
+    return _povCreatorUsername;
     
 }
 

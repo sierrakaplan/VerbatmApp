@@ -37,18 +37,18 @@
 
 #import "testerTransitionDelegate.h"
 
-#import "verbatmPullBarView.h"
+#import "ContentDevPullBar.h"
 #import "VerbatmUser.h"
 #import "VerbatmCameraView.h"
 
 #import "UIEffects.h"
 
 
-@interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate, ChangePullBarDelegate>
+@interface MediaDevVC () <MediaSessionManagerDelegate, ContentDevPullBarDelegate, ChangePullBarDelegate>
 
 #pragma mark - Outlets -
 
-@property (strong, nonatomic) VerbatmPullBarView *pullBar;
+@property (strong, nonatomic) ContentDevPullBar *pullBar;
 
 #pragma mark - SubViews of screen
 @property (strong, nonatomic) IBOutlet UIPanGestureRecognizer *panGesture_PullBar;
@@ -217,7 +217,7 @@
 
 //creates the pullbar object then saves it as a property
 -(void)createPullBar {
-	self.pullBar = [[VerbatmPullBarView alloc] initWithFrame:self.pullBarFrameTop];
+	self.pullBar = [[ContentDevPullBar alloc] initWithFrame:self.pullBarFrameTop];
 	self.pullBar.delegate = self;
 	[self.panGesture_PullBar setDelegate:self.pullBar];
 	[self.pullBar addGestureRecognizer:self.panGesture_PullBar];

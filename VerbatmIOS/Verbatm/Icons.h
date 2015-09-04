@@ -13,6 +13,7 @@
 
 #define PUBLISH_BUTTON_IMAGE @"pulldown_text_icon" //@"publish_button"
 #define BACK_BUTTON_IMAGE @"pullup_icon_without_circle"
+#define HOME_BUTTON_ICON @"home"
 
 #define PLAY_VIDEO_ICON @"play_video_icon"
 #define PLAY_VIDEO_ICON_HALF_CIRCLE @"play_video_icon_half_circle"
@@ -68,5 +69,9 @@
 
 #define NO_NETWORK_IMAGE @"no_network_image"
 #define PUBLISHED_ANIMATION_ICON @"published_icon1"
+
+#define ADK_ICON @"camera"
+#define PROFILE_ICON @"profile"
+#define PULLCIRCLE_ICON @"pullCircle"
 
 #endif /* Icons_h */

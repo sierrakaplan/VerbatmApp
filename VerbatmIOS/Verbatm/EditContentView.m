@@ -8,7 +8,7 @@
 
 #import "EditContentView.h"
 #import "VerbatmImageScrollView.h"
-#import "VerbatmPullBarView.h"
+#import "ContentDevPullBar.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "UIEffects.h"
@@ -77,7 +77,7 @@
 //Formats a textview to the appropriate settings
 -(void) formatTextView: (UITextView *) textView
 {
-	[textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
+	[textView setFont:[UIFont fontWithName:DEFAULT_FONT size:TEXT_AVE_FONT_SIZE]];
 	textView.backgroundColor = [UIColor TEXT_SCROLLVIEW_BACKGROUND_COLOR];
 	textView.textColor = [UIColor TEXT_AVE_COLOR];
 	textView.tintColor = [UIColor TEXT_AVE_COLOR];

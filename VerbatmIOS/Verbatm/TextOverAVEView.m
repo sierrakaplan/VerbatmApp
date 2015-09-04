@@ -48,7 +48,7 @@
 
 -(void)formatTextView {
 	self.textView.textColor = [UIColor TEXT_AVE_COLOR];
-	[self.textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
+	[self.textView setFont:[UIFont fontWithName:DEFAULT_FONT size:TEXT_AVE_FONT_SIZE]];
 	self.textView.backgroundColor = [UIColor clearColor];
 	self.textView.userInteractionEnabled = YES;
 	[self.textView setEditable:NO];

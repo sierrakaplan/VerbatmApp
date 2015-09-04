@@ -60,16 +60,16 @@
 	textView.backgroundColor = [UIColor PINCHVIEW_BACKGROUND_COLOR];
 	//must be editable to change font
 	[textView setEditable:YES];
-	textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE];
+	textView.font = [UIFont fontWithName:DEFAULT_FONT size:PINCHVIEW_FONT_SIZE];
 	[textView setEditable:NO];
 	float textViewContentSize = [UIEffects measureContentHeightOfUITextView:textView];
 	NSLog(@"%f", textView.frame.size.height);
 	if (textViewContentSize < textView.frame.size.height/3.f) {
-		textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE_REALLY_REALLY_BIG];
+		textView.font = [UIFont fontWithName:DEFAULT_FONT size:PINCHVIEW_FONT_SIZE_REALLY_REALLY_BIG];
 	} else if (textViewContentSize < textView.frame.size.height/2.f) {
-		textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE_REALLY_BIG];
+		textView.font = [UIFont fontWithName:DEFAULT_FONT size:PINCHVIEW_FONT_SIZE_REALLY_BIG];
 	} else if (textViewContentSize < textView.frame.size.height*(3.f/4.f)) {
-		textView.font = [UIFont fontWithName:TEXT_AVE_FONT size:PINCHVIEW_FONT_SIZE_BIG];
+		textView.font = [UIFont fontWithName:DEFAULT_FONT size:PINCHVIEW_FONT_SIZE_BIG];
 	}
 }
 

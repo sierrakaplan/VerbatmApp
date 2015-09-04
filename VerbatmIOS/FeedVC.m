@@ -6,21 +6,20 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "HomeNavPullBar.h"
+#import "Icons.h"
 #import "FeedVC.h"
 #import "SwitchCategoryPullView.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 
-@interface FeedVC ()<SwitchCategoryDelegate>
+@interface FeedVC ()<SwitchCategoryDelegate, HomeNavPullBarDelegate>
 
-@property (weak, nonatomic) IBOutlet SwitchCategoryPullView *categorySwitch;
-@property (weak, nonatomic) IBOutlet UIButton *profileNavButton;
-@property (weak, nonatomic) IBOutlet UIButton *adkNavButton;
+@property (strong, nonatomic) SwitchCategoryPullView *categorySwitch;
+@property (strong, nonatomic) HomeNavPullBar* navPullBar;
 
 @property (weak, nonatomic) IBOutlet UIView *articleListContainer;
 @property (weak, nonatomic) IBOutlet UIView *topicsListContainer;
-
-
-#define CATEGORY_SWITCH_HEIGHT 80 //frame height
 
 @end
 
@@ -29,42 +28,48 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    self.categorySwitch.categorySwitchDelegate = self;
-	[self setUpNavButtons];
+	[self.view setBackgroundColor:[UIColor colorWithRed:FEED_BACKGROUND_COLOR green:FEED_BACKGROUND_COLOR blue:FEED_BACKGROUND_COLOR alpha:1.f]];
+
+	[self positionViews];
+	[self setUpNavPullBar];
+	[self setUpCategorySwitcher];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-	[self positionViews];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 }
 
-//position the nav views in appropriate places and set frames
--(void)setUpNavButtons {
-	self.profileNavButton.frame = CGRectMake(self.view.frame.size.width + NAVICON_WALL_OFFSET, self.view.frame.size.height - NAVICON_WALL_OFFSET -
-											 NAVICON_HEIGHT, NAVICON_WIDTH, NAVICON_HEIGHT);
-	self.adkNavButton.frame = CGRectMake((self.view.frame.size.width*2) - NAVICON_WALL_OFFSET - NAVICON_WIDTH,
-										 self.profileNavButton.frame.origin.y, NAVICON_WIDTH, NAVICON_HEIGHT);
-
-	[self.profileNavButton addTarget:self action:@selector(profileButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-	[self.adkNavButton addTarget:self action:@selector(adkButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-
-	[self.view bringSubviewToFront:self.profileNavButton];
-	[self.view bringSubviewToFront:self.adkNavButton];
+-(void) setUpNavPullBar {
+	CGRect navPullBarFrame = CGRectMake(self.view.frame.origin.x,
+										self.view.frame.size.height - HOME_NAV_HEIGHT,
+										self.view.frame.size.width, HOME_NAV_HEIGHT);
+	self.navPullBar = [[HomeNavPullBar alloc] initWithFrame:navPullBarFrame];
+	self.navPullBar.delegate = self;
+	[self.view addSubview:self.navPullBar];
 }
 
--(void) profileButtonPressed:(UIButton*) sender {
-	[self.navButtonsDelegate profileButtonPressed];
+-(void) setUpCategorySwitcher {
+	float categorySwitchWidth = self.view.frame.size.width * 4.f/5.f;
+	CGRect categorySwitchFrame = CGRectMake(self.view.frame.origin.x + categorySwitchWidth/2.f,
+											CATEGORY_SWITCH_OFFSET, categorySwitchWidth, CATEGORY_SWITCH_HEIGHT);
+	self.categorySwitch = [[SwitchCategoryPullView alloc] initWithFrame:categorySwitchFrame];
+	self.categorySwitch.categorySwitchDelegate = self;
+	[self.view addSubview:self.categorySwitch];
 }
 
--(void) adkButtonPressed:(UIButton*) sender {
-	[self.navButtonsDelegate adkButtonPressed];
+-(void) profileButtonPressed {
+	[self.delegate profileButtonPressed];
 }
 
--(void)pullCircleDidPan:(CGFloat) pullCirclePositionRatio {
+-(void) adkButtonPressed {
+	[self.delegate adkButtonPressed];
+}
+
+-(void) pullCircleDidPan:(CGFloat) pullCirclePositionRatio {
     self.articleListContainer.alpha = pullCirclePositionRatio;
     self.topicsListContainer.alpha = 1 - pullCirclePositionRatio;
 }
@@ -83,8 +88,10 @@
 
 //position the views in appropriate places and set frames
 -(void) positionViews {
-    self.articleListContainer.frame = CGRectMake(0, CATEGORY_SWITCH_HEIGHT, self.view.frame.size.width, self.view.frame.size.height - CATEGORY_SWITCH_HEIGHT);
-    self.categorySwitch.frame = CGRectMake(0, 0, self.view.frame.size.width,CATEGORY_SWITCH_HEIGHT);
+	float listContainerY = CATEGORY_SWITCH_HEIGHT + CATEGORY_SWITCH_OFFSET/2.f;
+    self.articleListContainer.frame = CGRectMake(0, listContainerY,
+												 self.view.frame.size.width,
+												 self.view.frame.size.height - listContainerY);
     self.topicsListContainer.frame = self.articleListContainer.frame;
     self.topicsListContainer.alpha = 0;
 }

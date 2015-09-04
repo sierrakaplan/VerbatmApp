@@ -9,6 +9,7 @@
 #import "UIEffects.h"
 #import "SizesAndPositions.h"
 #import "Durations.h"
+#import "AdjustableBlurEffect.h"
 
 @interface UIEffects () {
 
@@ -19,11 +20,19 @@
 @implementation UIEffects
 
 
++ (UIVisualEffectView*) createLessBlurViewOnView: (UIView*)view withStyle:(UIBlurEffectStyle) blurStyle {
+	UIBlurEffect *blurEffect = [AdjustableBlurEffect effectWithStyle:blurStyle];
+	return [self createBlurViewOnView:view fromEffect:blurEffect];
+}
+
 + (UIVisualEffectView*) createBlurViewOnView: (UIView*)view withStyle:(UIBlurEffectStyle) blurStyle {
-	view.backgroundColor = [UIColor clearColor];
 	UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:blurStyle];
+	return [self createBlurViewOnView:view fromEffect:blurEffect];
+}
+
++ (UIVisualEffectView*) createBlurViewOnView:(UIView *)view fromEffect:(UIBlurEffect*)blurEffect {
+	view.backgroundColor = [UIColor clearColor];
 	UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
-	blurEffectView.frame = view.frame;
 	[view insertSubview:blurEffectView atIndex:0];
 
 	[blurEffectView setTranslatesAutoresizingMaskIntoConstraints:NO];

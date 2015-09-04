@@ -6,14 +6,14 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "VerbatmPullBarView.h"
+#import "ContentDevPullBar.h"
 #import "EditContentView.h"
 #import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
 #import "SizesAndPositions.h"
 
-@interface VerbatmPullBarView ()
+@interface ContentDevPullBar ()
 @property (strong, nonatomic) UIButton *previewButton;
 @property (strong, nonatomic) UIButton *undoButton;
 @property (strong, nonatomic) UIButton *pullUpButton;
@@ -27,16 +27,14 @@
 @end
 
 
-@implementation VerbatmPullBarView
+@implementation ContentDevPullBar
 
 # pragma mark Initialization
 -(instancetype)initWithFrame:(CGRect)frame {
 
     //load from Nib file..this initializes the background view and all its subviews
     self = [super initWithFrame:frame];
-    if(self)
-    {
-        self.frame = frame;
+    if(self) {
         [self createButtons];
 		[self switchToPullDown];
     }

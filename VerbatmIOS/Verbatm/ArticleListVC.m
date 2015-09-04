@@ -49,8 +49,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self initStoryListView];
-    [self registerForNavNotifications];
+	[self initStoryListView];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -60,66 +59,20 @@
 }
 
 -(void) initStoryListView {
-    self.storyListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-    [self.storyListView setBackgroundColor:[UIColor clearColor]];
-    self.storyListView.separatorStyle = UITableViewCellSeparatorStyleNone;
-    self.storyListView.dataSource = self;
-    self.storyListView.delegate = self;
+	self.storyListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+	self.storyListView.dataSource = self;
+	self.storyListView.delegate = self;
     [self.view addSubview:self.storyListView];
 }
-
-
-//-(void) addComposeStoryButton {
-//	UIColor* buttonColor = [UIColor colorWithWhite:1 alpha:0.6];
-//	self.composeStoryButton = [UIButton buttonWithType:UIButtonTypeCustom];
-//	CGRect composeStoryButtonFrame = CGRectMake(self.view.bounds.size.width - COMPOSE_STORY_BUTTON_SIZE - COMPOSE_STORY_BUTTON_OFFSET,
-//												self.view.bounds.size.height - COMPOSE_STORY_BUTTON_SIZE - COMPOSE_STORY_BUTTON_OFFSET,
-//												COMPOSE_STORY_BUTTON_SIZE, COMPOSE_STORY_BUTTON_SIZE);
-//	[self.composeStoryButton setFrame: composeStoryButtonFrame];
-//	self.composeStoryButton.backgroundColor = buttonColor;
-//	self.composeStoryButton.layer.cornerRadius = COMPOSE_STORY_BUTTON_SIZE/2.f;
-//
-//	//set attributed title
-//	UIColor *labelColor = [UIColor COMPOSE_STORY_BUTTON_LABEL_COLOR];
-//	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:COMPOSE_STORY_BUTTON_LABEL_FONT_SIZE];
-//	[self.composeStoryButton setTitle:COMPOSE_STORY_BUTTON_LABEL forState:UIControlStateNormal];
-//	[self.composeStoryButton setTitleColor:labelColor forState:UIControlStateNormal];
-//
-//	self.composeStoryButton.titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
-//	self.composeStoryButton.titleLabel.numberOfLines = 2;
-//	self.composeStoryButton.titleLabel.textColor = labelColor;
-//	self.composeStoryButton.titleLabel.font = labelFont;
-//
-//	[self.composeStoryButton addTarget:self action:@selector(composeStory:) forControlEvents:UIControlEventTouchUpInside];
-//
-//	float originDiff = (COMPOSE_STORY_OUTER_CIRCLE_SIZE - COMPOSE_STORY_BUTTON_SIZE)/2.f;
-//	CGRect outerCircleViewFrame = CGRectMake(composeStoryButtonFrame.origin.x - originDiff, composeStoryButtonFrame.origin.y - originDiff, COMPOSE_STORY_OUTER_CIRCLE_SIZE, COMPOSE_STORY_OUTER_CIRCLE_SIZE);
-//	UIView* outerCircleView = [[UIView alloc] initWithFrame:outerCircleViewFrame];
-//	outerCircleView.backgroundColor = [UIColor clearColor];
-//	outerCircleView.layer.cornerRadius = COMPOSE_STORY_OUTER_CIRCLE_SIZE/2.f;
-//	outerCircleView.layer.borderColor = [UIColor whiteColor].CGColor;
-//	outerCircleView.layer.borderWidth = COMPOSE_STORY_OUTER_CIRCLE_BORDER_WIDTH;
-//
-//	[self.view addSubview: outerCircleView];
-//	[self.view addSubview:self.composeStoryButton];
-//}
-
-
--(void)registerForNavNotifications {
-//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setLoadManger:) name:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER object: nil];
-}
-
 
 -(void)setLoadManger:(NSNotification *)notification{
     NSDictionary * dict = [notification userInfo];
     self.articleLoadManger = [dict valueForKey:ARTICLE_LOAD_MANAGER_KEY];
 }
 
-
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //    self.selectedArticleIndex = indexPath.row;
-    //    [self viewArticle];
+        self.selectedArticleIndex = indexPath.row;
+        [self viewPOV];
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -149,20 +102,10 @@
     return cell;
 }
 
-
-//compose story button has been clicked - sending this to the master navigator
-//- (void) composeStory: (id)sender {
-//    NSNotification * notification = [[NSNotification alloc]initWithName:NOTIFICATION_SHOW_ADK object:nil userInfo:nil];
-//    [[NSNotificationCenter defaultCenter] postNotification:notification];
-//}
-//
-////one of the articles in the list have been clicked
-//-(void) viewArticle {
-//    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:self.articleLoadManger.articleList[self.selectedArticleIndex], ARTICLE_KEY_FOR_NOTIFICATION, nil];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
-//                                                        object:nil
-//                                                      userInfo:Info];
-//}
+//one of the POV's in the list have been clicked
+-(void) viewPOV {
+	// TODO: enter POV viewing list
+}
 
 
 
@@ -288,20 +231,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-//for ios8- To hide the status bar
+//for ios8+ To hide the status bar
 -(BOOL)prefersStatusBarHidden{
     return YES;
-}
-
--(void) removeStatusBar{
-    //remove the status bar
-    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-        // iOS 7
-        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-    } else {
-        // iOS 6
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-    }
 }
 
 

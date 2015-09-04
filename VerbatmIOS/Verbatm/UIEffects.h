@@ -10,7 +10,10 @@
 
 @interface UIEffects : NSObject
 
++ (UIVisualEffectView*) createLessBlurViewOnView: (UIView*)view withStyle:(UIBlurEffectStyle) blurStyle;
 + (UIVisualEffectView*) createBlurViewOnView: (UIView*)view withStyle:(UIBlurEffectStyle) blurStyle;
++ (UIVisualEffectView*) createBlurViewOnView:(UIView *)view fromEffect:(UIBlurEffect*) blurEffect;
+
 
 + (UIImage *)blurredImageWithImage:(UIImage *)sourceImage andFilterLevel: (float) filterValue;
 
@@ -21,7 +24,7 @@
 // adds dashed border to view using view.bounds as frame
 + (void) addDashedBorderToView: (UIView *) view;
 
-+(void) addDashedBorderToView:(UIView *)view withFrame:(CGRect) frame;
++ (void) addDashedBorderToView:(UIView *)view withFrame:(CGRect) frame;
 
 + (UIImage*) imageOverlayed:(UIImage*)image withColor:(UIColor*)color;
 
