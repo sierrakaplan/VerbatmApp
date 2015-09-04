@@ -26,21 +26,15 @@
 
 +(BOOL)saveArticleWithPinchObjects:(NSArray *)pinchObjects title:(NSString *)title withSandwichFirst:(NSString *)firstPart andSecond:(NSString*)secondPart
 {
-	BOOL isTesting = [MasterNavigationVC inTestingMode];
-    Article * this_article = [[Article alloc] initAndSaveWithTitle:title andSandWichWhat:firstPart Where:secondPart andPinchObjects:pinchObjects andIsTesting:isTesting];
+    Article * this_article = [[Article alloc] initAndSaveWithTitle:title andSandWichWhat:firstPart Where:secondPart andPinchObjects:pinchObjects andIsTesting:NO];
     [this_article setSandwich:firstPart at:secondPart];
     return [this_article save];
 }
 
 +(void)downloadAllArticlesWithBlock:(void(^)(NSArray *ourObjects))onDownloadBlock
 {
-	PFQuery* query;
-	if ([MasterNavigationVC inTestingMode]) {
-		query = [PFQuery queryWithClassName: @"Article"];
-	} else {
-		query = [PFQuery queryWithClassName: @"Article"];
-		[query whereKey:@"isTestingArticle" equalTo:[NSNumber numberWithBool:NO]];
-	}
+	PFQuery* query = [PFQuery queryWithClassName: @"Article"];
+
     [query findObjectsInBackgroundWithBlock:^(NSArray *objects, NSError *error)
     {
         onDownloadBlock(objects);

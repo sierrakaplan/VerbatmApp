@@ -27,7 +27,7 @@
 @synthesize preferredFrame = _preferredFrame;
 @synthesize results = _results;
 
--(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)pinchedObjects withFrame:(CGRect)frame {
+-(NSMutableArray*)processPinchedObjectsFromArray:(NSArray*)pinchedObjects withFrame:(CGRect)frame {
 	self.preferredFrame = frame;
 	self.results = [[NSMutableArray alloc]init];
 	for(PinchView* pinchView in pinchedObjects) {

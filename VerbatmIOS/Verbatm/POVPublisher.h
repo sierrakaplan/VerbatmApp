@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Uploader : NSObject
+@interface POVPublisher : NSObject
+
++(void) publishPOVFromPinchViews: (NSArray*) pinchViews;
 
 @end

@@ -12,6 +12,7 @@
 #pragma mark - Content Dev VC -
 
 #define PUBLISH_BUTTON_IMAGE @"pulldown_text_icon" //@"publish_button"
+#define BACK_BUTTON_IMAGE @"pullup_icon_without_circle"
 
 #define PLAY_VIDEO_ICON @"play_video_icon"
 #define PLAY_VIDEO_ICON_HALF_CIRCLE @"play_video_icon_half_circle"

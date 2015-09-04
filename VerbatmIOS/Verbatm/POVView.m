@@ -17,64 +17,78 @@
 #import "TextAVE.h"
 #import "VideoAVE.h"
 
-@interface POVView ()<UIGestureRecognizerDelegate>
-@property (strong, nonatomic) UIView* animatingView;
-@property (strong, nonatomic) NSMutableArray * pageAves;
+@interface POVView ()<UIGestureRecognizerDelegate, UIScrollViewDelegate>
+@property (nonatomic) NSInteger currentPageIndex;
+@property (strong, nonatomic) NSArray * pageAves;
 @property (nonatomic) float pageScrollTopBottomArea;
 
 @end
 
 @implementation POVView
 
--(instancetype)initWithFrame:(CGRect)frame andArticleList: (NSMutableArray *) articlePages {
+-(instancetype)initWithFrame:(CGRect)frame andAVES:(NSArray *)povPages {
     
     self = [super initWithFrame:frame];
     if (self) {
         [self formatSelf];
-        [self layArticlePages:articlePages];
+        [self renderPages: povPages];
+		self.currentPageIndex = -1;
     }
     return self;
 }
 
-//lays out the article pages onto the view
--(void)layArticlePages: (NSMutableArray *) articlePages {
-    self.contentSize = CGSizeMake(self.frame.size.width, [articlePages count]*self.frame.size.height);
+-(void) formatSelf {
+	self.pagingEnabled = YES;
+	self.scrollEnabled = YES;
+	[self setShowsVerticalScrollIndicator:NO];
+	[self setShowsHorizontalScrollIndicator:NO];
+	self.bounces = YES;
+	self.backgroundColor = [UIColor blueColor];
+	//scroll view delegate
+	self.delegate = self;
+}
+
+//renders POV pages onto the view
+-(void)renderPages: (NSArray *) povPages {
+	self.pageAves = povPages;
+	
+    self.contentSize = CGSizeMake(self.frame.size.width, [povPages count]*self.frame.size.height);
     
     CGRect viewFrame = self.bounds;
-    for(UIView* view in articlePages){
-        if([view isKindOfClass:[TextAVE class]]){
-            view.frame = viewFrame;
-            [self addSubview: view];
-            viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
-            continue;
-        }
-        [self insertSubview:view atIndex:0];
-        view.frame = viewFrame;
-        viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
+    for(UIView* view in povPages){
+		view.frame = viewFrame;
+		[self addSubview: view];
+		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
     }
     float middleScreenSize = (self.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
     self.pageScrollTopBottomArea = (self.frame.size.height - middleScreenSize)/2.f;
-    self.pageAves = articlePages;
+
     [self setUpGestureRecognizers];
 }
 
--(void) formatSelf {
-    self.pagingEnabled = YES;
-    self.scrollEnabled = YES;
-    [self setShowsVerticalScrollIndicator:NO];
-    [self setShowsHorizontalScrollIndicator:NO];
-    self.bounces = NO;
-    self.backgroundColor = [UIColor blackColor];
+#pragma mark - Scroll view delegate -
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	[self displayMediaOnCurrentAVE];
 }
 
-
 #pragma mark - Handle Display Media on AVE -
+
 //takes care of playing video if necessary
 //or showing circle if multiple photo ave
--(void) displayMediaOnAVE:(UIView*) ave {
-    [self displayCircleOnAVE:ave];
-    [self playVideosInAVE:ave];
-    //[self showImageScrollViewBounceInAVE:ave];
+-(void) displayMediaOnCurrentAVE {
+	int nextIndex = (self.contentOffset.y/self.frame.size.height);
+	UIView *currentPage = self.pageAves[nextIndex];
+	if(self.currentPageIndex != nextIndex){
+		if (self.currentPageIndex >= 0) {
+			[self pauseVideosInAVE: self.pageAves[self.currentPageIndex]];
+		}
+
+		[self displayCircleOnAVE: currentPage];
+		[self playVideosInAVE: currentPage];
+		//[self showImageScrollViewBounceInAVE: self.currentPage];
+		self.currentPageIndex = nextIndex;
+	}
 }
 
 -(void) displayCircleOnAVE:(UIView*) ave {
@@ -125,17 +139,6 @@
     }
 }
 
-#pragma mark - Playing/Pause Video -
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    int nextIndex = (self.contentOffset.y/self.frame.size.height);
-    UIView * currentView = self.pageAves[nextIndex];
-    if(self.animatingView != currentView){
-        [self pauseVideosInAVE:self.animatingView];
-        [self displayMediaOnAVE:currentView];
-        self.animatingView = currentView;
-    }
-}
 #pragma mark - Gesture recognizers
 
 //Sets up the gesture recognizer for dragging from the edges.
@@ -182,7 +185,7 @@
     for(UIView *view in self.subviews) {
         [view removeFromSuperview];
     }
-    self.animatingView = Nil;
+    self.currentPageIndex = -1;
     self.pageAves = Nil;
 }
 

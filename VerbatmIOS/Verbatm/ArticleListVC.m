@@ -106,13 +106,13 @@
 
 
 -(void)registerForNavNotifications {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setLoadManger:) name:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER object: nil];
+//        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setLoadManger:) name:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER object: nil];
 }
 
 
 -(void)setLoadManger:(NSNotification *)notification{
     NSDictionary * dict = [notification userInfo];
-    self.articleLoadManger = [dict valueForKey:KEY_ARTICLELOAGMANAGER];
+    self.articleLoadManger = [dict valueForKey:ARTICLE_LOAD_MANAGER_KEY];
 }
 
 

@@ -11,5 +11,5 @@
 
 @interface AVETypeAnalyzer : NSObject
 
--(NSMutableArray*)processPinchedObjectsFromArray:(NSMutableArray*)pinchedObjects withFrame:(CGRect)frame;
+-(NSMutableArray*)processPinchedObjectsFromArray:(NSArray*)pinchedObjects withFrame:(CGRect)frame;
 @end

@@ -9,5 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface POVView : UIScrollView
--(instancetype)initWithFrame:(CGRect)frame andArticleList: (NSMutableArray *) articlePages;
+
+// Takes array of AVES (pages)
+-(instancetype)initWithFrame:(CGRect)frame andAVES: (NSArray *) povPages;
+
+-(void) displayMediaOnCurrentAVE;
+-(void) clearArticle;
+
 @end

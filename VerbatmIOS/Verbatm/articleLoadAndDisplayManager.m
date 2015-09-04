@@ -59,7 +59,7 @@
                 [pageArray addObject:pinchView];
 			}
             
-            POVView * presenter = [[POVView alloc] initWithFrame:frame andArticleList:pageArray];
+            POVView * presenter = [[POVView alloc] initWithFrame:frame andAVES:pageArray];
             completionBlock(presenter);
 		});
 	});

@@ -6,18 +6,18 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "mediaPreview.h"
+#import "MediaPreview.h"
 #import "VideoPlayerView.h"
 #import "UIEffects.h"
 
 
-@interface mediaPreview()
+@interface MediaPreview()
 @property (nonatomic, strong) UIImageView * imageView;
 @property (nonatomic, strong) VideoPlayerView * videoPlayer;
 #define  TIME_TO_FADEOUT 5 //how long it takes for this view to fade out in seconds
 @end
 
-@implementation mediaPreview
+@implementation MediaPreview
 
 
 -(instancetype)initWithFrame:(CGRect)frame{

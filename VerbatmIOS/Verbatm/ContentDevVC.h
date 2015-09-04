@@ -60,14 +60,19 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 @property (nonatomic, strong) EditContentView * openEditContentView;
 @property (nonatomic, strong) PinchView * openPinchView;
 
+// Loads pinch views from saved settings
+-(void) loadPinchViews;
+
 - (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
 
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView;
+- (void) createEditContentViewFromPinchView: (PinchView *) pinchView;
 
 // either locks the scroll view or frees it
 -(void) setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;
 -(void) closeAllOpenCollections;
+
+-(void)cleanUp;
 
 // Interacting with media dev vc
 -(void)undoTileDeleteSwipe;

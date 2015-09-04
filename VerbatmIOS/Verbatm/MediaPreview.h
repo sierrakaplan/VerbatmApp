@@ -11,6 +11,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
-@interface mediaPreview : UIView
+@interface MediaPreview : UIView
 -(void)setAsset:(ALAsset *) asset;
 @end

@@ -198,10 +198,10 @@
 /*we send a copy of this instance to the different classes that need to reference it in order to process
  articles. Right now it's ArticleListVC*/
 -(void)propogateArticleLoadManager{
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:@[self.articleLoadManager],KEY_ARTICLELOAGMANAGER, nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER
-                                                        object:nil
-                                                      userInfo:Info];
+//    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:@[self.articleLoadManager],KEY_ARTICLELOAGMANAGER, nil];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER
+//                                                        object:nil
+//                                                      userInfo:Info];
 }
 
 

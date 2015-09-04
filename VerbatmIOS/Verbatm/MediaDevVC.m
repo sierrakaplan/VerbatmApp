@@ -21,7 +21,7 @@
 #import "UserPinchViews.h"
 
 #import "MasterNavigationVC.h"
-#import "mediaPreview.h"
+#import "MediaPreview.h"
 #import "MediaDevVC.h"
 #import <math.h>
 #import "MediaSessionManager.h"
@@ -30,6 +30,8 @@
 #import "Notifications.h"
 
 #import "PinchView.h"
+#import "POVPublisher.h"
+#import "PreviewDisplayView.h"
 
 #import "Strings.h"
 #import "SizesAndPositions.h"
@@ -43,7 +45,7 @@
 #import "UIEffects.h"
 
 
-@interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate, ChangePullBarDelegate>
+@interface MediaDevVC () <MediaSessionManagerDelegate, PullBarDelegate, ChangePullBarDelegate, PreviewDisplayDelegate>
 
 #pragma mark - Outlets -
 @property (strong, nonatomic) VerbatmPullBarView *pullBar;
@@ -53,10 +55,6 @@
 // view with content development part of ADK
 @property (weak, nonatomic) IBOutlet UIView *contentContainerView;
 @property (strong, nonatomic) VerbatmCameraView *verbatmCameraView;
-@property (strong, nonatomic) MediaSessionManager* sessionManager;
-@property (strong, nonatomic) CAShapeLayer* circle;
-@property (strong, nonatomic) CameraFocusSquare* focusSquare;
-@property (strong, nonatomic) mediaPreview * mediaPreviewView;
 
 @property(nonatomic) CGRect contentContainerViewFrameTop;
 @property(nonatomic) CGRect contentContainerViewFrameBottom;
@@ -66,6 +64,11 @@
 
 #pragma mark - Camera properties
 #pragma mark buttons
+@property (strong, nonatomic) MediaSessionManager* sessionManager;
+@property (strong, nonatomic) CAShapeLayer* circle;
+@property (strong, nonatomic) CameraFocusSquare* focusSquare;
+@property (strong, nonatomic) MediaPreview * mediaPreviewView;
+
 @property (strong, nonatomic)UIButton* switchCameraButton;
 @property (strong, nonatomic)UIButton* switchFlashButton;
 @property (nonatomic) CGAffineTransform flashTransform;
@@ -75,7 +78,6 @@
 
 #pragma mark - View controllers
 @property (strong,nonatomic) ContentDevVC* contentDevVC;
-
 
 #pragma mark taking the photo
 @property (nonatomic, strong) NSTimer *timer;
@@ -91,11 +93,11 @@
 //layout of the screen before it was made landscape
 @property(nonatomic) ContentContainerViewMode previousMode;
 
+#pragma mark - Preview -
+@property (nonatomic) PreviewDisplayView* previewDisplayView;
+
 #pragma mark keyboard properties
 @property (nonatomic) NSInteger keyboardHeight;
-
-//this stores the article title that the user just saved. This is in order to prevent saving the same article multiple times
-@property(nonatomic) NSString * articleJustSaved;
 
 #define Preview_X_offset 10
 #define Preview_Y_offset 20
@@ -157,7 +159,7 @@
 
 //prepares the view that will show camera content that's caputered
 -(void)prepareCameraCapturePreview {
-    self.mediaPreviewView = [[mediaPreview alloc] initWithFrame:CGRectMake(Preview_X_offset, self.view.frame.size.height - Preview_Y_offset - Preview_Height,
+    self.mediaPreviewView = [[MediaPreview alloc] initWithFrame:CGRectMake(Preview_X_offset, self.view.frame.size.height - Preview_Y_offset - Preview_Height,
                                                                             Preview_Width,Preview_Height)];
     //self.mediaPreviewView.backgroundColor = [UIColor redColor];
     [self.view insertSubview:self.mediaPreviewView  aboveSubview:self.verbatmCameraView];
@@ -169,41 +171,15 @@
 	[self.sessionManager stopSession];
 }
 
-#pragma mark - Initialization and Instantiation
-
-#pragma mark Lazy instantiation
-
--(MediaSessionManager*)sessionManager{
-	if(!_sessionManager){
-		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-	}
-	return _sessionManager;
-}
-
--(NSString *) articleJustSaved{
-	if(!_articleJustSaved)_articleJustSaved = @"";
-	return _articleJustSaved;
-}
-
-//creates the camera view with the preview session
--(VerbatmCameraView*)verbatmCameraView{
-	if(!_verbatmCameraView){
-		_verbatmCameraView = [[VerbatmCameraView alloc]initWithFrame:  self.view.frame];
-	}
-	return _verbatmCameraView;
-}
-
-//get the content dev vc from the storyboard and save reference to it
--(void) getContentDevVC {
-	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTDEVVC];
-}
+#pragma mark - Initialization
 
 -(void)setContentDevVC {
-	[self getContentDevVC];
+	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTDEVVC];
 	[self.contentContainerView addSubview: self.contentDevVC.view];
 	self.contentDevVC.containerViewFrame = self.contentContainerView.frame;
 	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height;
 	self.contentDevVC.changePullBarDelegate = self;
+	[self.contentDevVC loadPinchViews];
 }
 
 
@@ -336,13 +312,7 @@
 	self.sessionManager.delegate = self;
 }
 
--(void)registerForNotifications
-{
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(publishArticle)
-												 name:NOTIFICATION_PUBLISH_ARTICLE
-											   object:nil];
+-(void)registerForNotifications {
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(positionContainerView)
@@ -350,7 +320,7 @@
 											   object: [UIDevice currentDevice]];
 
 	//for postitioning the blurView when the orientation of the device changes
-	[[UIDevice currentDevice]beginGeneratingDeviceOrientationNotifications];
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 }
 
 //Tells the screen to hide the status bar
@@ -709,99 +679,31 @@
 		return;
 	}
 
-	NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:pinchObjectsArray,PINCHVIEWS_KEY_FOR_NOTIFICATION, nil];
-	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_SHOW_ARTICLE
-														object:nil
-													  userInfo:Info];
+	[self.view bringSubviewToFront:self.previewDisplayView];
+	[self.previewDisplayView displayPreviewPOVFromPinchViews: pinchObjectsArray];
 }
 
--(void)publishArticle {
-	//make sure we have an article title, we have multiple pinch elements in the feed and that we
-	//haven't saved this article before
-	if ([self.contentDevVC.articleTitleField.text length]
-		&& ![self.articleJustSaved isEqualToString:self.contentDevVC.articleTitleField.text]) {
-		[self publishArticleContent];
+#pragma mark - PreviewDisplay delegate Methods (publish button pressed)
 
-	} else if(![self.contentDevVC.articleTitleField.text length]) {
-		//TODO: something (maybe delegate)
-//		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_INFO_IS_BLANK_ANIMATION
-//															object:nil
-//														  userInfo:nil];
-	}
-}
+-(void) publishButtonPressed {
 
--(void)publishArticleContent {
-	//TODO: Call cleanup on content dev vc
+	//make sure we have an article title, and that we have multiple pinch elements in the deck
 
-	NSArray *pinchObjectsArray = [self getPinchObjectsFromContentDev];
+	if (![self.contentDevVC.articleTitleField.text length]) {
+		//TODO: animation telling them to enter a title
 
-	if(![pinchObjectsArray count]) {
-		NSLog(@"Can't publish with no pinch objects");
-		return;
-	}
-	[[UserPinchViews sharedInstance] clearPinchViews];
+	} else {
+		NSArray *pinchViewsArray = [self getPinchObjectsFromContentDev];
 
-	[self publishArticleContentToGAE:pinchObjectsArray];
-}
-
--(void) publishArticleContentToGAE:(NSArray*)pinchObjectsArray {
-	//Make Verbatm POV object, store all pages in it
-
-	//TODO: Go through pinch objects and save each image and video! (Get url from server and upload it to that url)
-	for (PinchView* pinchView in pinchObjectsArray) {
-		[self sortPinchObject:pinchView];
-	}
-	
-}
-
--(void)sortPinchObject:(PinchView*)pinchObject {
-
-	if(pinchObject.containsText){
-//		self.text = [pinchObject getText];
-	}
-
-	if(pinchObject.containsImage) {
-		NSArray* photos = [pinchObject getPhotos];
-		for (UIImage* image in photos) {
-			Photo* photo = [[Photo alloc]initWithData:UIImagePNGRepresentation(image) withCaption:nil andName:nil atLocation:nil];
-			[photo setObject: self forKey:PAGE_PHOTO_RELATIONSHIP];
-			[photo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-				if(succeeded){
-					NSLog(@"Photo for page saved");
-				}else{
-					NSLog(@"Photo for page did not save");
-				}
-			}];
+		if(![pinchViewsArray count]) {
+			NSLog(@"Can't publish with no pinch objects");
+			return;
 		}
-	}
+		[POVPublisher publishPOVFromPinchViews: pinchViewsArray];
+		//TODO: Transition to feed
 
-	if(pinchObject.containsVideo) {
-		NSArray* videos = [pinchObject getVideos];
-		for (AVURLAsset* videoAsset in videos) {
-			//TODO(sierra): This should not happen on main thread
-			NSData* videoData = [self dataFromAVURLAsset:videoAsset];
-			Video* video = [[Video alloc] initWithData:videoData withCaption:nil andName:nil atLocation:nil];
-			[video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
-			[video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-				if(succeeded){
-					NSLog(@"Video for page saved");
-				}else{
-					NSLog(@"Video for page did not save");
-				}
-			}];
-		}
-	}
-}
-
-// NOT IN USE
--(void) publishArticleContentToParse:(NSArray*)pinchObjectsArray {
-	BOOL isTesting = [MasterNavigationVC inTestingMode];
-	//this creates and saves an article. the return value is unnecesary
-
-	Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:isTesting];
-	if(newArticle) {
-		self.articleJustSaved = self.contentDevVC.articleTitleField.text;
-		[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_EXIT_CONTENTPAGE object:nil userInfo:nil];
+		[[UserPinchViews sharedInstance] clearPinchViews];
+		[self.contentDevVC cleanUp];
 	}
 }
 
@@ -813,6 +715,41 @@
 		}
 	}
 	return pinchObjectsArray;
+}
+
+// NOT IN USE
+-(void) publishArticleContentToParse:(NSArray*)pinchObjectsArray {
+	//this creates and saves an article. the return value is unnecesary
+	Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:NO];
+	if(newArticle) {
+		//TODO: exit content page
+	}
+}
+
+#pragma mark - Lazy Instantiation -
+
+-(MediaSessionManager*)sessionManager{
+	if(!_sessionManager){
+		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
+	}
+	return _sessionManager;
+}
+
+//creates the camera view with the preview session
+-(VerbatmCameraView*) verbatmCameraView {
+	if(!_verbatmCameraView){
+		_verbatmCameraView = [[VerbatmCameraView alloc] initWithFrame: self.view.frame];
+	}
+	return _verbatmCameraView;
+}
+
+-(PreviewDisplayView*) previewDisplayView {
+	if(!_previewDisplayView){
+		_previewDisplayView = [[PreviewDisplayView alloc] initWithFrame: self.view.frame];
+		_previewDisplayView.delegate = self;
+		[self.view addSubview:_previewDisplayView];
+	}
+	return _previewDisplayView;
 }
 
 @end

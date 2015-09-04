@@ -109,7 +109,6 @@
 	self.pinchingMode = PinchingModeNone;
 	self.index = 0;
 	self.numPinchViews = 0;
-	[self loadPinchViews];
 }
 
 -(void) addBlurView {
@@ -272,52 +271,6 @@
 		[self newPinchView:pinchView belowView:[self getUpperView]];
 	}
 }
-
-#pragma mark - Lazy Instantiation
-
--(UITextView *) activeTextView
-{
-	if(!_activeTextView)_activeTextView = self.firstContentPageTextBox;
-	return _activeTextView;
-}
-
-@synthesize pageElementScrollViews = _pageElementScrollViews;
-
--(NSMutableArray *) pageElementScrollViews {
-	if(!_pageElementScrollViews) _pageElementScrollViews = [[NSMutableArray alloc] init];
-	return _pageElementScrollViews;
-}
-
--(void) setPageElementScrollViews:(NSMutableArray *)pageElementScrollViews {
-	_pageElementScrollViews = pageElementScrollViews;
-}
-
-
-@synthesize baseMediaTileSelector = _baseMediaTileSelector;
-
--(MediaSelectTile *) baseMediaTileSelector {
-	if(!_baseMediaTileSelector) _baseMediaTileSelector = [[MediaSelectTile alloc]init];
-	return _baseMediaTileSelector;
-}
-
-- (void) setBaseMediaTileSelector: (MediaSelectTile *) baseMediaTileSelector {
-	_baseMediaTileSelector = baseMediaTileSelector;
-}
-
-@synthesize tileSwipeViewUndoManager = _tileSwipeViewUndoManager;
-
-//get the undomanager for the main window- use this for the tiles
--(NSUndoManager *) tileSwipeViewUndoManager
-{
-	if(!_tileSwipeViewUndoManager) _tileSwipeViewUndoManager = [self.view.window undoManager];
-	return _tileSwipeViewUndoManager;
-}
-
-- (void) setTileSwipeViewUndoManager:(NSUndoManager *)tileSwipeViewUndoManager {
-	_tileSwipeViewUndoManager = tileSwipeViewUndoManager;
-}
-
-
 
 #pragma mark - Configure Text Fields -
 
@@ -1737,5 +1690,49 @@
     }
 }
 
+
+#pragma mark - Lazy Instantiation
+
+-(UITextView *) activeTextView
+{
+	if(!_activeTextView)_activeTextView = self.firstContentPageTextBox;
+	return _activeTextView;
+}
+
+@synthesize pageElementScrollViews = _pageElementScrollViews;
+
+-(NSMutableArray *) pageElementScrollViews {
+	if(!_pageElementScrollViews) _pageElementScrollViews = [[NSMutableArray alloc] init];
+	return _pageElementScrollViews;
+}
+
+-(void) setPageElementScrollViews:(NSMutableArray *)pageElementScrollViews {
+	_pageElementScrollViews = pageElementScrollViews;
+}
+
+
+@synthesize baseMediaTileSelector = _baseMediaTileSelector;
+
+-(MediaSelectTile *) baseMediaTileSelector {
+	if(!_baseMediaTileSelector) _baseMediaTileSelector = [[MediaSelectTile alloc]init];
+	return _baseMediaTileSelector;
+}
+
+- (void) setBaseMediaTileSelector: (MediaSelectTile *) baseMediaTileSelector {
+	_baseMediaTileSelector = baseMediaTileSelector;
+}
+
+@synthesize tileSwipeViewUndoManager = _tileSwipeViewUndoManager;
+
+//get the undomanager for the main window- use this for the tiles
+-(NSUndoManager *) tileSwipeViewUndoManager
+{
+	if(!_tileSwipeViewUndoManager) _tileSwipeViewUndoManager = [self.view.window undoManager];
+	return _tileSwipeViewUndoManager;
+}
+
+- (void) setTileSwipeViewUndoManager:(NSUndoManager *)tileSwipeViewUndoManager {
+	_tileSwipeViewUndoManager = tileSwipeViewUndoManager;
+}
 
 @end
