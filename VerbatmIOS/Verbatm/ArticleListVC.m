@@ -7,10 +7,6 @@
 //
 
 #import "ArticleListVC.h"
-#import "articleLoadAndDisplayManager.h"
-#import "ArticleAquirer.h"
-#import "Article.h"
-#import "Page.h"
 #import "AVETypeAnalyzer.h"
 #import "Notifications.h"
 #import "SizesAndPositions.h"
@@ -27,7 +23,7 @@
 
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
-@interface ArticleListVC () <UITableViewDataSource, UITableViewDelegate>
+@interface ArticleListVC () <UITableViewDelegate>
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) BOOL cellSet;
@@ -41,7 +37,6 @@
 //tells you wether or not we have started a timer to animate
 @property (atomic) BOOL refreshInProgress;
 @property  (nonatomic) NSInteger selectedArticleIndex;
-@property (strong, nonatomic) articleLoadAndDisplayManager * articleLoadManger;
 
 #define SHC_ROW_HEIGHT 20.f
 #define FEED_CELL_ID @"feedStoryCellID"
@@ -63,14 +58,12 @@
 
 -(void) initStoryListView {
 	self.storyListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-	self.storyListView.dataSource = self;
 	self.storyListView.delegate = self;
     [self.view addSubview:self.storyListView];
 }
 
--(void)setLoadManger:(NSNotification *)notification{
-    NSDictionary * dict = [notification userInfo];
-    self.articleLoadManger = [dict valueForKey:ARTICLE_LOAD_MANAGER_KEY];
+-(void) setTableViewDataSource: (id<UITableViewDataSource>) dataSource {
+	self.storyListView.dataSource = dataSource;
 }
 
 #pragma mark - Table View Delegate methods (view customization) -

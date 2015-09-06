@@ -80,7 +80,7 @@
 
 	//TODO: change this to trending + topics?
 	[self.topListContainer addSubview: self.trendingVC.view];
-	[self.bottomListContainer addSubview: self.topicsVC.view];
+	[self.bottomListContainer addSubview: self.mostRecentVC.view];
 }
 
 #pragma mark - Formatting sub views -
