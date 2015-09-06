@@ -140,8 +140,7 @@
     NSMutableArray *userFetchResultLabel = [[NSMutableArray alloc] init];
     for(PHCollection *collection in topLevelUserCollections) {
         if ([collection isKindOfClass:[PHAssetCollection class]]) {
-			//TODO: comment this out or make just make sure Verbatm is first or something
-			if ([collection.localizedTitle isEqualToString:VERBATM_ALBUM_NAME]) {
+
 				//PHFetchOptions *options = [[PHFetchOptions alloc] init];
 				//options.predicate = predicatePHAsset;
 				PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
@@ -149,6 +148,11 @@
 				//Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
 
 				PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
+
+			if ([collection.localizedTitle isEqualToString:VERBATM_ALBUM_NAME]) {
+				[userFetchResultArray insertObject:assetsFetchResult atIndex:0];
+				[userFetchResultLabel insertObject:collection.localizedTitle atIndex:0];
+			} else {
 				[userFetchResultArray addObject:assetsFetchResult];
 				[userFetchResultLabel addObject:collection.localizedTitle];
 			}
@@ -179,10 +183,8 @@
         }
     }
 
-	self.collectionsFetchResultsAssets= @[userFetchResultArray];
-	self.collectionsFetchResultsTitles= @[userFetchResultLabel];
-//    self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,smartFetchResultArray];
-//    self.collectionsFetchResultsTitles= @[allFetchResultLabel,userFetchResultLabel,smartFetchResultLabel];
+    self.collectionsFetchResultsAssets= @[allFetchResultArray,userFetchResultArray,smartFetchResultArray];
+    self.collectionsFetchResultsTitles= @[allFetchResultLabel,userFetchResultLabel,smartFetchResultLabel];
 }
 #pragma mark - Accessors
 
