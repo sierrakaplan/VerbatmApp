@@ -22,8 +22,6 @@
 - (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle: style reuseIdentifier: reuseIdentifier];
 	if (self) {
-		[self formatSelf];
-		[self formatTextSubview];
 	}
 	return self;
 }
@@ -39,6 +37,8 @@
 
 -(void) layoutSubviews {
 	[super layoutSubviews];
+	[self formatSelf];
+	[self formatTextSubview];
 }
 
 -(void) formatSelf {
@@ -47,8 +47,14 @@
 
 -(void) formatTextSubview {
 	CGRect topicTextViewFrame = CGRectMake(TOPIC_CELL_PADDING, TOPIC_CELL_PADDING,
-										   self.frame.size.width - TOPIC_CELL_PADDING, self.frame.size.height - TOPIC_CELL_PADDING);
+										   self.frame.size.width - TOPIC_CELL_PADDING*2, self.frame.size.height - TOPIC_CELL_PADDING);
 	self.topicTextView = [[UIView alloc] initWithFrame:topicTextViewFrame];
+	[self.topicTextView setBackgroundColor:[UIColor colorWithRed: STORY_BACKGROUND_COLOR green:STORY_BACKGROUND_COLOR blue:STORY_BACKGROUND_COLOR alpha:1]];
+
+	[self.topicTitle setFrame: CGRectMake(FEED_TEXT_X_OFFSET,
+										   FEED_TEXT_GAP,
+										   topicTextViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
+										   TITLE_LABEL_HEIGHT)];
 
 	[self formatUILabel:self.topicTitle
 			   withFont: [UIFont fontWithName:TITLE_FONT size:TITLE_FONT_SIZE]
@@ -78,6 +84,13 @@
 
 -(void) setContentWithTitle:(NSString*) title {
 	self.topicTitle.text = title;
+}
+
+#pragma mark - Lazy Instantiation -
+
+-(UILabel *) topicTitle {
+	if(!_topicTitle) _topicTitle = [[UILabel alloc]init];
+	return _topicTitle;
 }
 
 @end

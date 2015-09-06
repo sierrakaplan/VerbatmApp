@@ -90,23 +90,20 @@
 //lays out all the containers in the right position and also sets the appropriate
 //offset for the master SV
 -(void) getAndFormatVCs {
+	self.profileContainer.frame = LEFT_FRAME;
+	self.feedContainer.frame = CENTER_FRAME;
+	self.adkContainer.frame = RIGHT_FRAME;
+
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
-	self.feedContainer.frame = self.view.bounds;
 	[self.feedContainer addSubview: self.feedVC.view];
 	self.feedVC.delegate = self;
 
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
-	self.adkContainer.frame = self.view.bounds;
 	[self.adkContainer addSubview: self.mediaDevVC.view];
 	self.mediaDevVC.delegate = self;
 
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_PROFILEVC];
-	self.profileContainer.frame = self.view.bounds;
 	[self.profileContainer addSubview: self.profileVC.view];
-
-	self.profileContainer.frame = LEFT_FRAME;
-	self.feedContainer.frame = CENTER_FRAME;
-	self.adkContainer.frame = RIGHT_FRAME;
 }
 
 -(void) formatMainScrollView {

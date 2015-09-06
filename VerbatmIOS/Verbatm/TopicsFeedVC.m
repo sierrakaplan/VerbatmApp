@@ -53,7 +53,7 @@
 
 //one of the topics in the list has been clicked
 -(void) viewTopicAtIndex: (NSInteger) index {
-	// TODO: enter topic viewing list
+	// TODO: enter specific topic at that index (create Article List VC)
 }
 
 #pragma mark - Table View Data Source methods (model) -

@@ -43,10 +43,6 @@
 - (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle: style reuseIdentifier: reuseIdentifier];
 	if (self) {
-		[self formatSelf];
-		[self formatTextSubview];
-		[self formatImagePinchViews];
-		[self addPinchGestureToSelf];
 	}
 	return self;
 }
@@ -62,6 +58,10 @@
 
 -(void)layoutSubviews {
 	[super layoutSubviews];
+	[self formatSelf];
+	[self formatTextSubview];
+	[self formatImagePinchViews];
+	[self addPinchGestureToSelf];
 }
 
 -(void) formatSelf {

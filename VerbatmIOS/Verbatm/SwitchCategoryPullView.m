@@ -27,7 +27,7 @@
 
 
 #define TRENDING_LABEL_TEXT @"TRENDING"
-#define TOPICS_LABEL_TEXT @"TOPICS"
+#define TOPICS_LABEL_TEXT @"RECENT"
 
 @end
 

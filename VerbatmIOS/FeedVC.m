@@ -6,12 +6,14 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "ArticleListVC.h"
 #import "HomeNavPullBar.h"
 #import "Icons.h"
 #import "FeedVC.h"
 #import "SwitchCategoryPullView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "TopicsFeedVC.h"
 #import "Durations.h"
 
 @interface FeedVC ()<SwitchCategoryDelegate, HomeNavPullBarDelegate>
@@ -19,8 +21,18 @@
 @property (strong, nonatomic) SwitchCategoryPullView *categorySwitch;
 @property (strong, nonatomic) HomeNavPullBar* navPullBar;
 
-@property (weak, nonatomic) IBOutlet UIView *articleListContainer;
-@property (weak, nonatomic) IBOutlet UIView *topicsListContainer;
+#pragma mark - Child View Controllers -
+// There are two article list views faded between by the category switcher at the top
+@property (weak, nonatomic) IBOutlet UIView *topListContainer;
+@property (weak, nonatomic) IBOutlet UIView *bottomListContainer;
+
+@property (strong,nonatomic) ArticleListVC* trendingVC;
+@property (strong,nonatomic) ArticleListVC* mostRecentVC;
+@property (strong,nonatomic) TopicsFeedVC* topicsVC;
+
+#define ID_FOR_TOPICS_VC @"topics_feed_vc"
+#define ID_FOR_RECENT_VC @"most_recent_vc"
+#define ID_FOR_TRENDING_VC @"trending_vc"
 
 @end
 
@@ -31,7 +43,9 @@
 	[super viewDidLoad];
 	[self.view setBackgroundColor:[UIColor colorWithRed:FEED_BACKGROUND_COLOR green:FEED_BACKGROUND_COLOR blue:FEED_BACKGROUND_COLOR alpha:1.f]];
 
-	[self positionViews];
+	[self positionContainerViews];
+	[self getAndFormatVCs];
+
 	[self setUpNavPullBar];
 	[self setUpCategorySwitcher];
 }
@@ -43,6 +57,33 @@
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 }
+
+#pragma mark - Getting and formatting child view controllers -
+
+
+//position the container views in appropriate places and set frames
+-(void) positionContainerViews {
+	float listContainerY = CATEGORY_SWITCH_HEIGHT + CATEGORY_SWITCH_OFFSET*2;
+	self.topListContainer.frame = CGRectMake(0, listContainerY,
+											 self.view.frame.size.width,
+											 self.view.frame.size.height - listContainerY);
+	self.bottomListContainer.frame = self.topListContainer.frame;
+	self.bottomListContainer.alpha = 0;
+}
+
+//lays out all the containers in the right position and also sets the appropriate
+//offset for the master SV
+-(void) getAndFormatVCs {
+	self.trendingVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TRENDING_VC];
+	self.mostRecentVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_RECENT_VC];
+	self.topicsVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TOPICS_VC];
+
+	//TODO: change this to trending + topics?
+	[self.topListContainer addSubview: self.trendingVC.view];
+	[self.bottomListContainer addSubview: self.topicsVC.view];
+}
+
+#pragma mark - Formatting sub views -
 
 -(void) setUpNavPullBar {
 	CGRect navPullBarFrame = CGRectMake(self.view.frame.origin.x,
@@ -75,8 +116,8 @@
 
 // pull circle was panned ratio of the total distance
 -(void) pullCircleDidPan: (CGFloat)ratio {
-    self.articleListContainer.alpha = ratio;
-    self.topicsListContainer.alpha = 1 - ratio;
+    self.topListContainer.alpha = ratio;
+    self.bottomListContainer.alpha = 1 - ratio;
 }
 
 // pull circle was released and snapped to one edge or the other
@@ -84,24 +125,16 @@
 
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION animations: ^ {
 		if (snappedLeft) {
-			self.articleListContainer.alpha = 0;
-			self.topicsListContainer.alpha = 1;
+			self.topListContainer.alpha = 0;
+			self.bottomListContainer.alpha = 1;
 		} else {
-			self.articleListContainer.alpha = 1;
-			self.topicsListContainer.alpha = 0;
+			self.topListContainer.alpha = 1;
+			self.bottomListContainer.alpha = 0;
 		}
 	}];
 }
 
-//position the views in appropriate places and set frames
--(void) positionViews {
-	float listContainerY = CATEGORY_SWITCH_HEIGHT + CATEGORY_SWITCH_OFFSET*2;
-    self.articleListContainer.frame = CGRectMake(0, listContainerY,
-												 self.view.frame.size.width,
-												 self.view.frame.size.height - listContainerY);
-    self.topicsListContainer.frame = self.articleListContainer.frame;
-    self.topicsListContainer.alpha = 0;
-}
+#pragma mark - Refresh ? -
 
 -(void) refreshFeed {
 	//TODO: refresh whatever feed is in view

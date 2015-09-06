@@ -79,12 +79,12 @@
             </objects>
             <point key="canvasLocation" x="-4216" y="-1178"/>
         </scene>
-        <!--Topics FeedVC-->
+        <!--Topics-->
         <scene sceneID="A4H-1v-HNX">
             <objects>
-                <viewController id="icb-0n-CtC" customClass="TopicsFeedVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="topics_feed_vc" title="Topics" id="icb-0n-CtC" customClass="TopicsFeedVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="voT-er-27b">
-                        <rect key="frame" x="0.0" y="0.0" width="325" height="300"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -92,14 +92,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P70-Wg-8bT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3083" y="-928"/>
+            <point key="canvasLocation" x="-2708" y="-78"/>
         </scene>
-        <!--Article ListVC-->
+        <!--Trending-->
         <scene sceneID="wyz-UI-MUa">
             <objects>
-                <viewController wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="ArticleListVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="trending_vc" title="Trending" wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="ArticleListVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Yqu-zV-E3L">
-                        <rect key="frame" x="0.0" y="0.0" width="262" height="339"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
@@ -108,6 +108,20 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3434" y="-72.5"/>
+        </scene>
+        <!--Most Recent-->
+        <scene sceneID="gf5-8u-ULb">
+            <objects>
+                <viewController storyboardIdentifier="most_recent_vc" title="Most Recent" id="cjn-wD-zXD" customClass="ArticleListVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="vQZ-dJ-PYL">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="SqR-00-svU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3083" y="-67"/>
         </scene>
         <!--Feed-->
         <scene sceneID="LSe-v6-SsT">
@@ -120,23 +134,17 @@
                             <containerView opaque="NO" contentMode="scaleToFill" id="j2U-9B-X6v">
                                 <rect key="frame" x="0.0" y="107" width="325" height="300"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <segue destination="icb-0n-CtC" kind="embed" id="e2Z-TA-waB"/>
-                                </connections>
                             </containerView>
                             <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF">
                                 <rect key="frame" x="26" y="215" width="262" height="339"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <segue destination="Ve4-Qj-kgj" kind="embed" id="5JZ-lL-lAB"/>
-                                </connections>
                             </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="articleListContainer" destination="jLa-zk-lWF" id="PLP-RZ-Vxs"/>
-                        <outlet property="topicsListContainer" destination="j2U-9B-X6v" id="4kc-Ck-Shg"/>
+                        <outlet property="bottomListContainer" destination="j2U-9B-X6v" id="Kku-ME-qKO"/>
+                        <outlet property="topListContainer" destination="jLa-zk-lWF" id="sgL-hh-qR6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V0g-tI-HpL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -433,7 +441,7 @@
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-3806" y="-374"/>
+            <point key="canvasLocation" x="-2726" y="-1302"/>
         </scene>
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
