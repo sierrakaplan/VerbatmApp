@@ -33,12 +33,23 @@
 @property (nonatomic) CGPoint lastLeftmostPoint;
 @property (nonatomic) CGPoint lastRightmostPoint;
 
-#define CELL_PADDING 10
-#define CIRCLE_DIAMETER (self.frame.size.height - CELL_PADDING*2)
+
+#define CIRCLE_DIAMETER (self.frame.size.height - STORY_CELL_PADDING*2)
 
 @end
 
 @implementation FeedTableViewCell
+
+- (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
+	self = [super initWithStyle: style reuseIdentifier: reuseIdentifier];
+	if (self) {
+		[self formatSelf];
+		[self formatTextSubview];
+		[self formatImagePinchViews];
+		[self addPinchGestureToSelf];
+	}
+	return self;
+}
 
 - (void)awakeFromNib {
 	// Initialize code if made in storyboard
@@ -51,10 +62,6 @@
 
 -(void)layoutSubviews {
 	[super layoutSubviews];
-	[self formatSelf];
-    [self formatTextSubview];
-	[self formatImagePinchViews];
-    [self addPinchGestureToSelf];
 }
 
 -(void) formatSelf {
@@ -63,9 +70,9 @@
 
 -(void) formatTextSubview {
 
-	CGRect textViewFrame = CGRectMake(CELL_PADDING + CIRCLE_DIAMETER/2.f, CELL_PADDING,
-									  self.frame.size.width - CELL_PADDING*2 - CIRCLE_DIAMETER,
-									  self.frame.size.height - CELL_PADDING*2);
+	CGRect textViewFrame = CGRectMake(STORY_CELL_PADDING + CIRCLE_DIAMETER/2.f, STORY_CELL_PADDING,
+									  self.frame.size.width - STORY_CELL_PADDING*2 - CIRCLE_DIAMETER,
+									  self.frame.size.height - STORY_CELL_PADDING*2);
 	self.storyTextView = [[UIView alloc] initWithFrame: textViewFrame];
 	[self.storyTextView setBackgroundColor:[UIColor colorWithRed: STORY_BACKGROUND_COLOR green:STORY_BACKGROUND_COLOR blue:STORY_BACKGROUND_COLOR alpha:1]];
 
@@ -81,15 +88,17 @@
 
 	[self formatUILabel:self.povTitle
 			   withFont: [UIFont fontWithName:TITLE_FONT size:TITLE_FONT_SIZE]
-		   andTextColor:[UIColor TITLE_TEXT_COLOR] andNumberOfLines:4];
+		   andTextColor: [UIColor TITLE_TEXT_COLOR]
+	   andNumberOfLines: 4];
 
-	[self formatUILabel:self.povCreatorUsername
+	[self formatUILabel: self.povCreatorUsername
 			   withFont: [UIFont fontWithName:USERNAME_FONT size:USERNAME_FONT_SIZE]
-		   andTextColor:[UIColor USERNAME_TEXT_COLOR] andNumberOfLines:1];
+		   andTextColor: [UIColor USERNAME_TEXT_COLOR]
+	   andNumberOfLines: 1];
 
-	[self.storyTextView addSubview:self.povTitle];
-	[self.storyTextView addSubview:self.povCreatorUsername];
-	[self addSubview:self.storyTextView];
+	[self.storyTextView addSubview: self.povTitle];
+	[self.storyTextView addSubview: self.povCreatorUsername];
+	[self addSubview: self.storyTextView];
 }
 
 -(void) formatUILabel: (UILabel*)label withFont: (UIFont*)font andTextColor: (UIColor*) textColor
@@ -110,9 +119,9 @@
 //half the width of their backgrounds so that they appear as half circles
 -(void) formatImagePinchViews {
 
-	CGRect leftCircleFrame = CGRectMake(CELL_PADDING, CELL_PADDING,
+	CGRect leftCircleFrame = CGRectMake(STORY_CELL_PADDING, STORY_CELL_PADDING,
 										CIRCLE_DIAMETER, CIRCLE_DIAMETER);
-	CGRect rightCircleFrame = CGRectMake(self.frame.size.width - CELL_PADDING - CIRCLE_DIAMETER, CELL_PADDING,
+	CGRect rightCircleFrame = CGRectMake(self.frame.size.width - STORY_CELL_PADDING - CIRCLE_DIAMETER, STORY_CELL_PADDING,
 										 CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 
 	UIView* leftBackground = [self getBackgroundCircleWithFrame: leftCircleFrame];

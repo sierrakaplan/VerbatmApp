@@ -27,7 +27,7 @@
 
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
-@interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
+@interface ArticleListVC () <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 @property (nonatomic) BOOL cellSet;
@@ -42,7 +42,10 @@
 @property (atomic) BOOL refreshInProgress;
 @property  (nonatomic) NSInteger selectedArticleIndex;
 @property (strong, nonatomic) articleLoadAndDisplayManager * articleLoadManger;
+
 #define SHC_ROW_HEIGHT 20.f
+#define FEED_CELL_ID @"feedStoryCellID"
+
 @end
 
 @implementation ArticleListVC
@@ -70,17 +73,34 @@
     self.articleLoadManger = [dict valueForKey:ARTICLE_LOAD_MANAGER_KEY];
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-        self.selectedArticleIndex = indexPath.row;
-        [self viewPOV];
-}
+#pragma mark - Table View Delegate methods (view customization) -
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return FEED_STORY_HEIGHT;
+	return STORY_CELL_HEIGHT;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+        self.selectedArticleIndex = indexPath.row;
+        [self viewPOVAtIndex: indexPath.row];
+}
+
+//one of the POV's in the list has been clicked
+-(void) viewPOVAtIndex: (NSInteger) index {
+	// TODO: enter POV viewing list
+}
+
+#pragma mark - Table View Data Source methods (model) -
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+	// Return the number of rows in the section.
+	//    NSUInteger count = self.articleLoadManger.articleList.count;
+	//    count += (self.pullDownInProgress) ? 1 : 0;
+	//    return count;
+	return 10;
+}
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+
     FeedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FEED_CELL_ID];
     if (cell == nil) {
         cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
@@ -98,13 +118,6 @@
     //}
     return cell;
 }
-
-//one of the POV's in the list have been clicked
--(void) viewPOV {
-	// TODO: enter POV viewing list
-}
-
-
 
 #pragma mark - Refresh Feed Animation -
 
@@ -164,14 +177,6 @@
     if(self.refreshInProgress)[self removeAnimatingView];
     //if the refresh is in progress we call this in removeAnimatingView
     if(!self.refreshInProgress)[self.storyListView reloadData];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Return the number of rows in the section.
-    //    NSUInteger count = self.articleLoadManger.articleList.count;
-    //    count += (self.pullDownInProgress) ? 1 : 0;
-    //    return count;
-    return 10;
 }
 
 

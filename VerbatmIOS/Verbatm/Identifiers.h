@@ -16,8 +16,6 @@
 
 #pragma mark - Feed -
 
-#define FEED_CELL_ID @"feedStoryCell"
-
 #pragma mark - VC's-
 
 

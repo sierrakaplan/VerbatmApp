@@ -26,15 +26,23 @@
 #define CATEGORY_SWITCH_HEIGHT 60
 #define CATEGORY_SWITCH_OFFSET 10
 
-#define FEED_STORY_HEIGHT 160
+
+#pragma mark Story table view cell
+
+#define STORY_CELL_PADDING 10
+#define STORY_CELL_HEIGHT 160
 //verticle distance between text on the
 #define FEED_TEXT_GAP 15
 //sets the distance between a label and the left of the screen
 #define FEED_TEXT_X_OFFSET 10
 
-
 #define TITLE_LABEL_HEIGHT 35
 #define USERNAME_LABEL_HEIGHT 25
+
+#pragma mark Topics table view cell
+
+#define TOPIC_CELL_PADDING 10
+#define TOPIC_CELL_HEIGHT 80
 
 #pragma mark Compose Story Button
 
