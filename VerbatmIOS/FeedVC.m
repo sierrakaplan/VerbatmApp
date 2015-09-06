@@ -12,6 +12,7 @@
 #import "SwitchCategoryPullView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "Durations.h"
 
 @interface FeedVC ()<SwitchCategoryDelegate, HomeNavPullBarDelegate>
 
@@ -53,10 +54,10 @@
 }
 
 -(void) setUpCategorySwitcher {
-	float categorySwitchWidth = self.view.frame.size.width * 4.f/5.f;
-	CGRect categorySwitchFrame = CGRectMake(self.view.frame.origin.x + categorySwitchWidth/2.f,
+	float categorySwitchWidth = self.view.frame.size.width * 3.f/4.f;
+	CGRect categorySwitchFrame = CGRectMake((self.view.frame.size.width - categorySwitchWidth)/2.f,
 											CATEGORY_SWITCH_OFFSET, categorySwitchWidth, CATEGORY_SWITCH_HEIGHT);
-	self.categorySwitch = [[SwitchCategoryPullView alloc] initWithFrame:categorySwitchFrame];
+	self.categorySwitch = [[SwitchCategoryPullView alloc] initWithFrame:categorySwitchFrame andBackgroundColor:self.view.backgroundColor];
 	self.categorySwitch.categorySwitchDelegate = self;
 	[self.view addSubview:self.categorySwitch];
 }
@@ -69,26 +70,32 @@
 	[self.delegate adkButtonPressed];
 }
 
--(void) pullCircleDidPan:(CGFloat) pullCirclePositionRatio {
-    self.articleListContainer.alpha = pullCirclePositionRatio;
-    self.topicsListContainer.alpha = 1 - pullCirclePositionRatio;
+
+#pragma mark - Switch Category Pull View delegate methods -
+
+// pull circle was panned ratio of the total distance
+-(void) pullCircleDidPan: (CGFloat)ratio {
+    self.articleListContainer.alpha = ratio;
+    self.topicsListContainer.alpha = 1 - ratio;
 }
 
-//tells a delegate object that the user just switched to trending content
--(void) switchedToTrending {
-    self.articleListContainer.alpha = 1;
-    self.topicsListContainer.alpha = 0;
-}
+// pull circle was released and snapped to one edge or the other
+-(void) snapped: (BOOL)snappedLeft {
 
-//tells a delegate object that the user just switched to topics content
--(void) switchedToTopics {
-    self.articleListContainer.alpha = 0;
-    self.topicsListContainer.alpha = 1;
+	[UIView animateWithDuration:SNAP_ANIMATION_DURATION animations: ^ {
+		if (snappedLeft) {
+			self.articleListContainer.alpha = 0;
+			self.topicsListContainer.alpha = 1;
+		} else {
+			self.articleListContainer.alpha = 1;
+			self.topicsListContainer.alpha = 0;
+		}
+	}];
 }
 
 //position the views in appropriate places and set frames
 -(void) positionViews {
-	float listContainerY = CATEGORY_SWITCH_HEIGHT + CATEGORY_SWITCH_OFFSET/2.f;
+	float listContainerY = CATEGORY_SWITCH_HEIGHT + CATEGORY_SWITCH_OFFSET*2;
     self.articleListContainer.frame = CGRectMake(0, listContainerY,
 												 self.view.frame.size.width,
 												 self.view.frame.size.height - listContainerY);

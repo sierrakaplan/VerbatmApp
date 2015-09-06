@@ -28,8 +28,8 @@
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
 @interface ArticleListVC ()<UITableViewDataSource, UITableViewDelegate>
+
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
-@property (strong, nonatomic) UIButton *composeStoryButton;
 @property (nonatomic) BOOL cellSet;
 //we maintain the cell height so that we can set the height of the placeholderCell
 @property (nonatomic) CGFloat cellHeight;
@@ -76,10 +76,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    //    if(!self.cellHeight)self.cellHeight =TITLE_LABLE_HEIGHT +4*FEED_TEXT_GAP +USERNAME_LABLE_HEIGHT;
-    //    return self.cellHeight;
-    return 150;
-    
+    return FEED_STORY_HEIGHT;
 }
 
 
@@ -96,7 +93,7 @@
     //        cell.selectionStyle = UITableViewCellSelectionStyleNone;
     //    }else if(self.refreshInProgress && index ==0){
     //this means that the cell is an animation place-holder
-    [cell setContentWithUsername:@"Iain Usiri" andTitle:@"A night in an underwater hotel in Zanzibar"];
+    [cell setContentWithUsername:@"Iain Usiri" andTitle:@"A night in an underwater hotel in Zanzibar" andCoverImage:[UIImage imageNamed:@"demo_image"]];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     //}
     return cell;

@@ -35,12 +35,12 @@
 
 #define FEED_SLIDE_BAR_FONT_SIZE 30
 
-#define USERNAME_FONT_SIZE 20
-#define TITLE_FONT_SIZE 25
+#define USERNAME_FONT_SIZE 18
+#define TITLE_FONT_SIZE 20
 #define USERNAME_TEXT_COLOR blackColor
 #define TITLE_TEXT_COLOR blackColor
-#define USERNAME_FONT @"HelveticaNeue-Medium"
-#define TITLE_FONT @"HelveticaNeue-LightItalic"
+#define USERNAME_FONT @"HelveticaNeue-Bold"
+#define TITLE_FONT @"HelveticaNeue-Italic"
 
 
 #pragma mark - Content Dev VC -
@@ -70,7 +70,7 @@
 
 #pragma mark Content Editing View
 
-#define TEXT_SCROLLVIEW_BACKGROUND_COLOR clearColor
+#define TEXT_SCROLLVIEW_BACKGROUND_COLOR blackColor
 
 #pragma mark Verbatm Keyboard Toolbar
 

@@ -1077,7 +1077,6 @@
 #pragma mark Text
 -(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
 	[self.changePullBarDelegate showPullBar:NO withTransition:NO];
-    [self moveAllViewsOffScreen];
 	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
 	self.index = (index-1);
 	[self createEditContentViewFromPinchView:Nil];
@@ -1480,8 +1479,8 @@
 		NSString* text = [self.openEditContentView getText];
 		if ([text length]) {
 			UIView *upperView = [self getUpperView];
-			TextPinchView* textPinchView = [[TextPinchView alloc] initWithRadius:self.defaultPinchViewRadius
-																	  withCenter:self.defaultPinchViewCenter andText:text];
+			TextPinchView* textPinchView = [[TextPinchView alloc] initWithRadius: self.defaultPinchViewRadius
+																	  withCenter: self.defaultPinchViewCenter andText:text];
 			[self newPinchView:textPinchView belowView:upperView];
 		}
 	} else if(self.openPinchView.containsText) {
@@ -1492,7 +1491,6 @@
 	} else if(self.openPinchView.containsVideo) {
 		[self.openEditContentView.videoView stopVideo];
 	}
-    [self moveAllViewsBackOnScreen];
 	[self.openEditContentView removeFromSuperview];
 	self.openEditContentView = nil;
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
@@ -1521,7 +1519,6 @@
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
     }else{
-        [self moveAllViewsOffScreen];
         //tap to open an element for viewing or editing
         [self createEditContentViewFromPinchView:pinchView];
         //make sure the pullbar is not available
@@ -1672,24 +1669,6 @@
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 }
-
-//this shifts everything off the screen by
-//shifting the x position by the size of the screen
--(void)moveAllViewsOffScreen{
-    for(UIView * view in self.mainScrollView .subviews){
-        view.frame = CGRectMake(view.frame.origin.x + self.view.frame.size.width, view.frame.origin.y, view.frame.size.width, view.frame.size.height);
-    }
-}
-
-//this moves everything off the screen back on
-//by moving the frame back by the size of the width of the screen
-//this should only be called if moveAllViewsOffScreen is called
--(void)moveAllViewsBackOnScreen{
-    for(UIView * view in self.mainScrollView.subviews){
-        view.frame = CGRectMake(view.frame.origin.x - self.view.frame.size.width, view.frame.origin.y, view.frame.size.width, view.frame.size.height);
-    }
-}
-
 
 #pragma mark - Lazy Instantiation
 

@@ -9,83 +9,97 @@
 #import "Icons.h"
 #import "Styles.h"
 #import "SwitchCategoryPullView.h"
+#import "Durations.h"
 
 @interface SwitchCategoryPullView()
+
 @property (strong, nonatomic) UIView * trendingLabelContainerView;
 @property (strong, nonatomic) UIView * topicsLabelContainerView;
 @property (strong, nonatomic) UILabel * trendingLabel;
 @property (strong, nonatomic) UILabel * topicsLabel;
+
+@property (nonatomic) CGRect topicsContainerInitialFrame;
 //The circle icon that we move left/right to reveal the text
 @property (strong, nonatomic) UIImageView * pullCircle;
 @property (nonatomic) float pullCircleSize;
 @property (nonatomic) BOOL isRight;
-@property (nonatomic) CGPoint lastPoint;//keeps the last recorded point of a touch on the pull cirlce
+@property (nonatomic) CGPoint lastPoint;//keeps the last recorded point of a touch on the pull circle
 
-#define SNAP_ANIMATION_DURATION 0.3
+
+#define TRENDING_LABEL_TEXT @"TRENDING"
+#define TOPICS_LABEL_TEXT @"TOPICS"
+
 @end
 
 @implementation SwitchCategoryPullView
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)initWithFrame:(CGRect)frame andBackgroundColor:(UIColor*)backgroundColor {
     
    self =  [super initWithFrame:frame];
     if(self){
         self.isRight = YES;
+		[self setBackgroundColor:backgroundColor];
         [self initializeSubviews];
-        [self initPullCircle];
     }
     return self;
 }
 
 
-//we start with the trending label showing and the topics label not visible
+// The trending label is on a container view by itself
+// The topics label is on a container view with the pull circle in order to cover the trending view when pulled
 -(void) initializeSubviews {
-
 	self.pullCircleSize = self.frame.size.height;
+	[self initLabelContainers];
+	[self initPullCircle];
+}
 
-	self.trendingLabelContainerView = [[UIView alloc] initWithFrame:self.frame];
-	self.topicsLabelContainerView = [[UIView alloc] initWithFrame:self.frame];
+-(void) initLabelContainers {
+	self.trendingLabelContainerView = [[UIView alloc] initWithFrame: self.bounds];
+	self.topicsContainerInitialFrame = CGRectMake(self.frame.size.width - self.pullCircleSize,
+												  0, self.frame.size.width, self.frame.size.height);
 
-    self.trendingLabel.text = @"TRENDING";
-	self.trendingLabel.font = [UIFont fontWithName:DEFAULT_FONT size:FEED_SLIDE_BAR_FONT_SIZE];
-    self.topicsLabel.text = @"TOPICS";
-	self.topicsLabel.font = [UIFont fontWithName:DEFAULT_FONT size:FEED_SLIDE_BAR_FONT_SIZE];
+	self.topicsLabelContainerView = [[UIView alloc] initWithFrame: self.topicsContainerInitialFrame];
+	[self.topicsLabelContainerView setBackgroundColor:self.backgroundColor];
 
-	// Labels must be centered taking into account circle size on either side
-	CGRect labelFrame = CGRectMake(self.pullCircleSize,
-								   0, self.frame.size.width - self.pullCircleSize*2, self.frame.size.height);
-    self.trendingLabel.frame = labelFrame;
-    self.topicsLabel.frame = labelFrame;
+	[self formatLabel: self.trendingLabel];
+	[self formatLabel: self.topicsLabel];
 
 	[self.trendingLabelContainerView addSubview:self.trendingLabel];
 	[self.topicsLabelContainerView addSubview:self.topicsLabel];
 
-    [self addSubview:self.trendingLabelContainerView];
-    [self addSubview:self.topicsLabelContainerView];
-    self.clipsToBounds = YES;
+	[self addSubview:self.trendingLabelContainerView];
+	[self addSubview:self.topicsLabelContainerView];
+	self.clipsToBounds = YES;
+}
+
+-(void) formatLabel: (UILabel*) label {
+	label.font = [UIFont fontWithName:DEFAULT_FONT size:FEED_SLIDE_BAR_FONT_SIZE];
+	label.textAlignment = NSTextAlignmentCenter;
+	label.frame = self.bounds;
 }
 
 //tbd - set the image for the pull circle
 -(void) initPullCircle {
-
-    self.pullCircle.frame = CGRectMake(self.frame.size.width - self.pullCircleSize,
-									   self.frame.origin.y,
-									   self.pullCircleSize, self.pullCircleSize);
-	self.pullCircle.image = [UIImage imageNamed:PULLCIRCLE_ICON];
+    self.pullCircle.frame = CGRectMake(0, 0, self.pullCircleSize, self.pullCircleSize);
+	self.pullCircle.image = [UIImage imageNamed: PULLCIRCLE_ICON];
 	self.pullCircle.backgroundColor = [UIColor clearColor];
     [self addPanGestureToView:self.pullCircle];
-    [self.topicsLabelContainerView addSubview:self.pullCircle];
+    [self.topicsLabelContainerView addSubview: self.pullCircle];
 }
 
 -(void) addPanGestureToView: (UIView *) view {
     UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pullCirclePan:)];
-    pan.maximumNumberOfTouches = 1;//make sure it's only one finger
+    pan.maximumNumberOfTouches = 1; //make sure it's only one finger
     view.userInteractionEnabled = YES;
     [view addGestureRecognizer:pan];
 }
 
 //Deals with pan gesture on circle
 -(void) pullCirclePan:(UITapGestureRecognizer *) sender {
+
+	CGFloat leastX = 0;
+	CGFloat maxX = self.topicsLabelContainerView.frame.size.width - self.pullCircleSize;
+
     switch(sender.state) {
         case UIGestureRecognizerStateBegan: {
             self.lastPoint = [sender locationOfTouch:0 inView:self];
@@ -94,29 +108,25 @@
         case UIGestureRecognizerStateChanged: {
             CGPoint touch = [sender locationOfTouch:0 inView:self];
             CGFloat newXOffset = touch.x - self.lastPoint.x;
-            CGFloat newX = self.pullCircle.frame.origin.x + newXOffset;
-            if ((self.pullCircle.frame.origin.x + newXOffset) <= 0){
-                newX = 0;
-            }else if ((self.pullCircle.frame.origin.x + newXOffset) >=
-                      self.frame.size.width - (self.pullCircle.frame.size.width)){
-                
-                newX =  self.frame.size.width - (self.pullCircle.frame.size.width);
+            CGFloat newX = self.topicsLabelContainerView.frame.origin.x + newXOffset;
+
+            if (newX < leastX){
+                newX = leastX;
+            } else if (newX > maxX) {
+                newX = maxX;
             }
             
-            self.pullCircle.frame = CGRectMake(newX, 0, self.pullCircle.frame.size.width,
-                                               self.pullCircle.frame.size.height);
-            self.topicsLabel.frame = CGRectMake(self.pullCircle.frame.origin.x + self.pullCircle.frame.size.width,
-												0, self.frame.size.width - touch.x , self.topicsLabel.frame.size.height);
-            self.trendingLabel.frame = CGRectMake(0, 0, self.pullCircle.frame.origin.x, self.trendingLabel.frame.size.height);
+            self.topicsLabelContainerView.frame = CGRectMake(newX,
+															 self.topicsLabelContainerView.frame.origin.y,
+															 self.topicsLabelContainerView.frame.size.width,
+															 self.topicsLabelContainerView.frame.size.height);
             self.lastPoint = touch;
-            CGFloat centerX=  self.pullCircle.frame.origin.x;
-
-			//noitify delegate that we have panned our pullCircle
-            [self.categorySwitchDelegate pullCircleDidPan:(centerX / (self.frame.size.width - self.pullCircle.frame.size.width))];
+			// notify delegate that we have panned our pullCircle
+            [self.categorySwitchDelegate pullCircleDidPan:(newX / (maxX - leastX))];
             break;
         }
         case UIGestureRecognizerStateEnded: {
-            [self snapToEdge];
+            [self snapToEdgeWithLeastX: leastX andMaxX: maxX];
             break;
         }
         default: {
@@ -127,30 +137,29 @@
 
 
 //snaps the pull circle to an edge after a pan
--(void)snapToEdge{
-        [UIView animateWithDuration:SNAP_ANIMATION_DURATION animations: ^ {
-            //snap left
-            if(self.pullCircle.frame.origin.x <= (self.frame.size.width/2)){
-               
-                self.pullCircle.frame = CGRectMake(0, 0, self.pullCircle.frame.size.width,
-                                                   self.pullCircle.frame.size.height);
-                self.topicsLabel.frame = CGRectMake(self.pullCircle.frame.origin.x + self.pullCircle.frame.size.width, 0,self.frame.size.width - self.pullCircle.frame.size.width, self.topicsLabel.frame.size.height);
-                //tbd
-                self.trendingLabel.frame = CGRectMake(0,0,0, self.topicsLabel.frame.size.height);
-                //inform the delegate that we have completed a switch to topics
-                [self.categorySwitchDelegate switchedToTopics];
-            //snap right
-            }else{
-                self.pullCircle.frame = CGRectMake(self.frame.size.width - (self.pullCircle.frame.size.width),
-                                                   0, self.pullCircle.frame.size.width,
-                                                   self.pullCircle.frame.size.height);
-                
-                self.topicsLabel.frame = CGRectMake(self.pullCircle.frame.origin.x + self.pullCircle.frame.size.width, 0,self.frame.size.width - self.pullCircle.frame.size.width, self.topicsLabel.frame.size.height);
-                self.trendingLabel.frame = CGRectMake(0, 0,self.pullCircle.frame.origin.x, self.trendingLabel.frame.size.height);
-                //inform the delegate that we have completed a switch to topics
-                [self.categorySwitchDelegate switchedToTrending];
-            }
-        }];
+-(void) snapToEdgeWithLeastX: (CGFloat) leastX andMaxX: (CGFloat) maxX {
+
+	float midX = (maxX - leastX)/2.f;
+	float newX;
+	BOOL snapLeft;
+
+	//snap left else right
+	if (self.topicsLabelContainerView.frame.origin.x <= midX) {
+		newX = leastX;
+		snapLeft = YES;
+	} else {
+		newX = maxX;
+		snapLeft = NO;
+	}
+
+	[self.categorySwitchDelegate snapped: snapLeft];
+	[UIView animateWithDuration:SNAP_ANIMATION_DURATION animations: ^ {
+		self.topicsLabelContainerView.frame = CGRectMake(newX,
+														 self.topicsLabelContainerView.frame.origin.y,
+														 self.topicsLabelContainerView.frame.size.width,
+														 self.topicsLabelContainerView.frame.size.height);
+
+	}];
 }
 
 
@@ -158,6 +167,7 @@
 -(UILabel *)trendingLabel {
     if(!_trendingLabel){
         _trendingLabel = [[UILabel alloc]init];
+		_trendingLabel.text = TRENDING_LABEL_TEXT;
     }
     return _trendingLabel;
 }
@@ -165,6 +175,7 @@
 -(UILabel *)topicsLabel{
     if(!_topicsLabel){
         _topicsLabel = [[UILabel alloc] init];
+		_topicsLabel.text = TOPICS_LABEL_TEXT;
     }
     return _topicsLabel;
 }

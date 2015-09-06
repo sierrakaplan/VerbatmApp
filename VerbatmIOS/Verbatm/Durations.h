@@ -17,6 +17,10 @@
 #define ERROR_MESSAGE_ANIMATION_TIME 1.f
 #define REMOVE_SIGNIN_ERROR_VIEW_ANIMATION_DURATION 1.f
 
+#pragma mark - Feed -
+
+#define SNAP_ANIMATION_DURATION 0.1
+
 #pragma mark - Media Dev VC -
 
 #define PUBLISH_ANIMATION_DURATION 0.4

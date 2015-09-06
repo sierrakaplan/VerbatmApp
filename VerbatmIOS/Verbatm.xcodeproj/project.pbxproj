@@ -29,6 +29,8 @@
 		A58656711B621CA4008E358C /* MathOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656701B621CA4008E358C /* MathOperations.m */; };
 		A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A59CC2881B6C2E6400B4907C /* FeedTableView.m */; };
 		A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */; };
+		A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61171B9CC40F009D9D11 /* TopicsTableView.m */; };
+		A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */; };
 		A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CB82A21B5740A000195A2E /* UIEffects.m */; };
 		A5E3CDA81B881B0C0065C8E5 /* FacebookSDKStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */; };
 		A5E3CDA91B881B0C0065C8E5 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5E3CDA61B881B0C0065C8E5 /* FBSDKCoreKit.framework */; };
@@ -215,6 +217,10 @@
 		A59CC2881B6C2E6400B4907C /* FeedTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableView.m; sourceTree = "<group>"; };
 		A5CA61131B9A013E009D9D11 /* AdjustableBlurEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustableBlurEffect.h; sourceTree = "<group>"; };
 		A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustableBlurEffect.m; sourceTree = "<group>"; };
+		A5CA61161B9CC40F009D9D11 /* TopicsTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicsTableView.h; sourceTree = "<group>"; };
+		A5CA61171B9CC40F009D9D11 /* TopicsTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicsTableView.m; sourceTree = "<group>"; };
+		A5CA61191B9CC41F009D9D11 /* TopicsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicsTableViewCell.h; sourceTree = "<group>"; };
+		A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicsTableViewCell.m; sourceTree = "<group>"; };
 		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
 		A5CB82A21B5740A000195A2E /* UIEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIEffects.m; sourceTree = "<group>"; };
 		A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKStrings.bundle; sourceTree = "<group>"; };
@@ -562,6 +568,10 @@
 				C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */,
 				A59CC2871B6C2E6400B4907C /* FeedTableView.h */,
 				A59CC2881B6C2E6400B4907C /* FeedTableView.m */,
+				A5CA61161B9CC40F009D9D11 /* TopicsTableView.h */,
+				A5CA61171B9CC40F009D9D11 /* TopicsTableView.m */,
+				A5CA61191B9CC41F009D9D11 /* TopicsTableViewCell.h */,
+				A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */,
 			);
 			name = "Table Views";
 			sourceTree = "<group>";
@@ -1232,6 +1242,7 @@
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				A5E85FFC1B924C9600E148D0 /* GTLVerbatmAppVerbatmUser.m in Sources */,
 				C772F2851B4BC13500CEC83D /* GMGridViewController.m in Sources */,
+				A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A5E85F991B911DA900E148D0 /* GTLQuery.m in Sources */,
 				A5E85FA01B911DA900E148D0 /* GTLRuntimeCommon.m in Sources */,
@@ -1249,6 +1260,7 @@
 				A58656651B607EF7008E358C /* VerbatmImageScrollView.m in Sources */,
 				C7A8A7F319A96E0B00CE861F /* Photo.m in Sources */,
 				C75985F51B8553DF00FE77F7 /* internetConnectionMonitor.m in Sources */,
+				A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */,
 				A5E85F9E1B911DA900E148D0 /* GTLDateTime.m in Sources */,
 				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,

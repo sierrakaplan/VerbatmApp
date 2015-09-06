@@ -18,26 +18,23 @@
 
 #pragma mark - Feed -
 
-#define ARTICLE_IN_FEED_BUTTON_HEIGHT 50
-
 #define HOME_NAV_HEIGHT 55
 //distance between icons and the side of the screen
 #define HOME_NAV_ICON_OFFSET 7
 //frame width
 
-#define CATEGORY_SWITCH_HEIGHT 80
-#define CATEGORY_SWITCH_OFFSET 30
+#define CATEGORY_SWITCH_HEIGHT 60
+#define CATEGORY_SWITCH_OFFSET 10
 
+#define FEED_STORY_HEIGHT 160
 //verticle distance between text on the
-#define FEED_TEXT_GAP 5
-
-
+#define FEED_TEXT_GAP 15
 //sets the distance between a label and the left of the screen
-#define FEED_TEXT_X_OFFSET 30
+#define FEED_TEXT_X_OFFSET 10
 
 
-#define TITLE_LABLE_HEIGHT 35
-#define USERNAME_LABLE_HEIGHT 25
+#define TITLE_LABEL_HEIGHT 35
+#define USERNAME_LABEL_HEIGHT 25
 
 #pragma mark Compose Story Button
 

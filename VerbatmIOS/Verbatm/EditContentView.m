@@ -33,7 +33,7 @@
 {
 	self = [super init];
 	if(self) {
-		self.backgroundColor = [UIColor clearColor];
+		self.backgroundColor = [UIColor blackColor];
 		self.frame = frame;
 	}
 	return self;
@@ -185,6 +185,10 @@
 -(void) addTapGestureToMainView {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitEditContentView)];
 	[self addGestureRecognizer:tap];
+}
+
+-(void) doneButtonPressed {
+	[self exitEditContentView];
 }
 
 -(void) exitEditContentView {
