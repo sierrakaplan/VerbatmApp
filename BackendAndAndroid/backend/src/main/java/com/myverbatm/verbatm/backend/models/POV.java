@@ -22,27 +22,24 @@ public class POV {
     private String title;
 
     /**
+     * The url of the cover picture in the blobstore
+     */
+    private String coverPicUrl;
+
+    /**
      * Date the POV was published
      */
     private Date datePublished;
 
     /**
+     * Number of up votes this POV has received
+     */
+    private Integer numUpVotes;
+
+    /**
      * POV's creator's user key
      */
     private Long creatorUserKey;
-
-    /**
-     * Array of what labels associated with the POV (given by user)
-     * These are the topics of the POV
-     */
-    private String[] whats;
-
-    /**
-     * Where label associated with the POV (given by user)
-     * This is the location of the POV
-     */
-    //TODO: will probably have to change this to a location object
-    private String where;
 
     /**
      * Array of pages in the POV
@@ -81,6 +78,22 @@ public class POV {
     }
 
     /**
+     * Returns the url of the cover picture from the blobstore
+     * @return the url of the cover picture from the blobstore
+     */
+    public final String getCoverPicUrl() {
+        return coverPicUrl;
+    }
+
+    /**
+     * Sets the url of the cover picture from the blobstore
+     * @param coverPicUrl the url of the cover picture from the blobstore
+     */
+    public final void setCoverPicUrl(String coverPicUrl) {
+        this.coverPicUrl = coverPicUrl;
+    }
+
+    /**
      * Returns the date the POV was published
      * @return the date the POV was published
      */
@@ -97,6 +110,22 @@ public class POV {
     }
 
     /**
+     * Returns the number of up votes this POV has received
+     * @return the number of up votes this POV has received
+     */
+    public Integer getNumUpVotes() {
+        return numUpVotes;
+    }
+
+    /**
+     * Sets the number of up votes this POV has received
+     * @param numUpVotes the number of up votes this POV has received
+     */
+    public void setNumUpVotes(Integer numUpVotes) {
+        this.numUpVotes = numUpVotes;
+    }
+
+    /**
      * Returns the user key for this POV's creator
      * @return the user key for this POV's creator
      */
@@ -110,38 +139,6 @@ public class POV {
      */
     public final void setCreatorUserKey(Long creatorUserKey) {
         this.creatorUserKey = creatorUserKey;
-    }
-
-    /**
-     * Returns the what tags associated with the POV
-     * @return the what tags
-     */
-    public final String[] getWhats() {
-        return whats;
-    }
-
-    /**
-     * Sets the what tags associated with the POV
-     * @param whats the what tags to be set associated with this POV
-     */
-    public final void setWhats(String[] whats) {
-        this.whats = whats;
-    }
-
-    /**
-     * Returns the where tag associated with this POV
-     * @return the where tag
-     */
-    public final String getWhere() {
-        return where;
-    }
-
-    /**
-     * Sets the where tag associated with this POV
-     * @param where the where tag to be set
-     */
-    public final void setWhere(String where) {
-        this.where = where;
     }
 
     /**

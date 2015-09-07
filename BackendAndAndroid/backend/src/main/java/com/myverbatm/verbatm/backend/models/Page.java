@@ -15,11 +15,6 @@ public class Page {
     private Long key;
 
     /**
-     * Text in page
-     */
-    private String text;
-
-    /**
      * Array of images in page
      */
     private Image[] images;
@@ -42,22 +37,6 @@ public class Page {
      */
     public final void clearKey() {
         key = null;
-    }
-
-    /**
-     * Returns text from the Page
-     * @return text from the Page
-     */
-    public final String getText() {
-        return text;
-    }
-
-    /**
-     * Sets this page's text
-     * @param text to set this Page's text to
-     */
-    public final void setText(String text) {
-        this.text = text;
     }
 
     /**

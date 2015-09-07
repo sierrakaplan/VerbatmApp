@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppPage (0 custom class methods, 4 custom properties)
+//   GTLVerbatmAppPage (0 custom class methods, 3 custom properties)
 
 #import "GTLVerbatmAppPage.h"
 
@@ -26,7 +26,7 @@
 //
 
 @implementation GTLVerbatmAppPage
-@dynamic images, key, text, videos;
+@dynamic images, key, videos;
 
 + (NSDictionary *)arrayPropertyToClassMap {
   NSDictionary *map = @{

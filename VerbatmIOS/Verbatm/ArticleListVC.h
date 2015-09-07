@@ -10,6 +10,6 @@
 
 @interface ArticleListVC : UIViewController
 
--(void) setTableViewDataSource: (id<UITableViewDataSource>) dataSource;
+//-(void) setTableViewData: (NSArray*) povData;
 
 @end

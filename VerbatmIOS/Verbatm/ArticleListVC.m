@@ -23,23 +23,24 @@
 
 #define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
 
-@interface ArticleListVC () <UITableViewDelegate>
+@interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic) BOOL cellSet;
-//we maintain the cell height so that we can set the height of the placeholderCell
-@property (nonatomic) CGFloat cellHeight;
-@property (weak, nonatomic) IBOutlet UILabel *listTitle;
-@property (strong, nonatomic) FeedTableView *storyListView;
+
+#pragma mark - Table View + data -
+
+@property (strong, nonatomic) FeedTableView *povListView;
+@property (strong, nonatomic) NSArray *povData;
+
+#pragma mark - Refresh -
+
 //this cell is inserted in the top of the listview
 @property (strong,nonatomic) FeedTableViewCell* placeholderCell;
-@property BOOL pullDownInProgress;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 //tells you wether or not we have started a timer to animate
 @property (atomic) BOOL refreshInProgress;
-@property  (nonatomic) NSInteger selectedArticleIndex;
 
 #define SHC_ROW_HEIGHT 20.f
-#define FEED_CELL_ID @"feedStoryCellID"
+#define FEED_CELL_ID @"feed_cell_id"
 
 @end
 
@@ -52,18 +53,18 @@
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    //[self refreshFeed];
-    [self.storyListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+    // TODO: [self refreshFeed];
+    [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 -(void) initStoryListView {
-	self.storyListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
-	self.storyListView.delegate = self;
-    [self.view addSubview:self.storyListView];
+	self.povListView.delegate = self;
+	self.povListView.dataSource = self;
+    [self.view addSubview:self.povListView];
 }
 
--(void) setTableViewDataSource: (id<UITableViewDataSource>) dataSource {
-	self.storyListView.dataSource = dataSource;
+-(void) setTableViewData: (NSArray*) povData {
+	self.povData = povData;
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
@@ -73,7 +74,6 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-        self.selectedArticleIndex = indexPath.row;
         [self viewPOVAtIndex: indexPath.row];
 }
 
@@ -119,7 +119,7 @@
     NSLog(@"Begin dragging");
     self.pullDownInProgress = scrollView.contentOffset.y <= 0.0f;
     if (self.pullDownInProgress) {
-        [self.storyListView insertSubview:self.placeholderCell atIndex:0];
+        [self.povListView insertSubview:self.placeholderCell atIndex:0];
     }
 }
 
@@ -136,7 +136,7 @@
     //maintain location of placeholder
     float heightToUse = (fabs(scrollView.contentOffset.y)< self.cellHeight && self.pullDownInProgress) ? fabs(scrollView.contentOffset.y) : self.cellHeight;
     float y_cord = (self.pullDownInProgress) ? scrollView.contentOffset.y : 0;
-    self.placeholderCell.frame = CGRectMake(0,y_cord ,self.storyListView.frame.size.width, heightToUse);
+    self.placeholderCell.frame = CGRectMake(0,y_cord ,self.povListView.frame.size.width, heightToUse);
     [self startActivityIndicator];
 }
 
@@ -169,7 +169,7 @@
 -(void)loadContentIntoView{
     if(self.refreshInProgress)[self removeAnimatingView];
     //if the refresh is in progress we call this in removeAnimatingView
-    if(!self.refreshInProgress)[self.storyListView reloadData];
+    if(!self.refreshInProgress)[self.povListView reloadData];
 }
 
 
@@ -193,7 +193,7 @@
     if(!self.refreshInProgress){
         self.refreshInProgress = YES;
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-        [self.storyListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
+        [self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
         [self refreshFeed];
     }
 }
@@ -201,16 +201,16 @@
 -(void)removeAnimatingView{
     
     [UIView animateWithDuration:0.5 animations:^{
-        self.storyListView.contentOffset = CGPointMake(0,self.cellHeight);
+        self.povListView.contentOffset = CGPointMake(0,self.cellHeight);
         self.placeholderCell.frame = CGRectMake(self.placeholderCell.frame.origin.x, (-1 * self.cellHeight), self.placeholderCell.frame.size.width, self.placeholderCell.frame.size.height);
     }completion:^(BOOL finished) {
         [self.placeholderCell removeFromSuperview];
         self.refreshInProgress = NO;
-        self.storyListView.contentOffset = CGPointMake(0,0);
+        self.povListView.contentOffset = CGPointMake(0,0);
         NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-        [self.storyListView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        [self.povListView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
         [self stopActivityIndicator];
-        [self.storyListView reloadSectionIndexTitles];
+        [self.povListView reloadSectionIndexTitles];
     }];
 }
 
@@ -231,6 +231,13 @@
     return YES;
 }
 
+#pragma mark - Lazy Instantiation -
 
+-(FeedTableView*) povListView {
+	if (!_povListView) {
+		_povListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+	}
+	return _povListView;
+}
 
 @end

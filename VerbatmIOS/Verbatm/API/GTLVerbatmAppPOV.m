@@ -25,12 +25,12 @@
 //
 
 @implementation GTLVerbatmAppPOV
-@dynamic creatorUserKey, datePublished, key, pages, title, whats, where;
+@dynamic coverPicUrl, creatorUserKey, datePublished, key, numUpVotes, pages,
+         title;
 
 + (NSDictionary *)arrayPropertyToClassMap {
   NSDictionary *map = @{
-    @"pages" : [GTLVerbatmAppPage class],
-    @"whats" : [NSString class]
+    @"pages" : [GTLVerbatmAppPage class]
   };
   return map;
 }

@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppVideo (0 custom class methods, 1 custom properties)
+//   GTLVerbatmAppVideo (0 custom class methods, 4 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLObject.h"
@@ -28,4 +28,7 @@
 
 @interface GTLVerbatmAppVideo : GTLObject
 @property (nonatomic, retain) NSNumber *key;  // longLongValue
+@property (nonatomic, copy) NSString *servingUrl;
+@property (nonatomic, copy) NSString *text;
+@property (nonatomic, retain) NSNumber *userKey;  // longLongValue
 @end

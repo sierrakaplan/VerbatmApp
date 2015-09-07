@@ -25,6 +25,10 @@ public class Image {
      */
     private String servingUrl;
 
+    /**
+     * Text caption to an image
+     */
+    private String text;
 
     /**
      *
@@ -71,5 +75,21 @@ public class Image {
      */
     public final void setServingUrl(String servingUrl) {
         this.servingUrl = servingUrl;
+    }
+
+    /**
+     * Returns the text caption of this video
+     * @return the text caption of this video
+     */
+    public final String getText() {
+        return text;
+    }
+
+    /**
+     * Sets the text caption of this video
+     * @param text the text caption of this video
+     */
+    public final void setText(String text) {
+        this.text = text;
     }
 }

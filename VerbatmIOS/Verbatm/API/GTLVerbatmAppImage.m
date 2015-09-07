@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppImage (0 custom class methods, 1 custom properties)
+//   GTLVerbatmAppImage (0 custom class methods, 4 custom properties)
 
 #import "GTLVerbatmAppImage.h"
 
@@ -23,5 +23,5 @@
 //
 
 @implementation GTLVerbatmAppImage
-@dynamic key;
+@dynamic key, servingUrl, text, userKey;
 @end

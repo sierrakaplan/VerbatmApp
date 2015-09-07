@@ -75,7 +75,11 @@
 //offset for the master SV
 -(void) getAndFormatVCs {
 	self.trendingVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TRENDING_VC];
+	[self.trendingVC setTableViewDataSource:[TrendingDataSource alloc]];
+
 	self.mostRecentVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_RECENT_VC];
+	[self.mostRecentVC setTableViewDataSource:[TrendingDataSource alloc]];
+
 	self.topicsVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TOPICS_VC];
 
 	//TODO: change this to trending + topics?

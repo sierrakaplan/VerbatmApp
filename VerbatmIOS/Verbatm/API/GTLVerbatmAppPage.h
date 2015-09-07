@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppPage (0 custom class methods, 4 custom properties)
+//   GTLVerbatmAppPage (0 custom class methods, 3 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLObject.h"
@@ -32,6 +32,5 @@
 @interface GTLVerbatmAppPage : GTLObject
 @property (nonatomic, retain) NSArray *images;  // of GTLVerbatmAppImage
 @property (nonatomic, retain) NSNumber *key;  // longLongValue
-@property (nonatomic, copy) NSString *text;
 @property (nonatomic, retain) NSArray *videos;  // of GTLVerbatmAppVideo
 @end

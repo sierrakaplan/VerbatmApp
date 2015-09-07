@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppVideo (0 custom class methods, 1 custom properties)
+//   GTLVerbatmAppVideo (0 custom class methods, 4 custom properties)
 
 #import "GTLVerbatmAppVideo.h"
 
@@ -23,5 +23,5 @@
 //
 
 @implementation GTLVerbatmAppVideo
-@dynamic key;
+@dynamic key, servingUrl, text, userKey;
 @end

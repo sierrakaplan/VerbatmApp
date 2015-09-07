@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/M4U2gcm6lBoISf_xeOvFulFwI6U\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/9sSN5dD7g9EbdBawGhkqP-da0no\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -90,6 +90,16 @@
     "key": {
      "type": "string",
      "format": "int64"
+    },
+    "servingUrl": {
+     "type": "string"
+    },
+    "text": {
+     "type": "string"
+    },
+    "userKey": {
+     "type": "string",
+     "format": "int64"
     }
    }
   },
@@ -97,6 +107,9 @@
    "id": "POV",
    "type": "object",
    "properties": {
+    "coverPicUrl": {
+     "type": "string"
+    },
     "creatorUserKey": {
      "type": "string",
      "format": "int64"
@@ -109,6 +122,10 @@
      "type": "string",
      "format": "int64"
     },
+    "numUpVotes": {
+     "type": "integer",
+     "format": "int32"
+    },
     "pages": {
      "type": "array",
      "items": {
@@ -116,15 +133,6 @@
      }
     },
     "title": {
-     "type": "string"
-    },
-    "whats": {
-     "type": "array",
-     "items": {
-      "type": "string"
-     }
-    },
-    "where": {
      "type": "string"
     }
    }
@@ -154,9 +162,6 @@
     "key": {
      "type": "string",
      "format": "int64"
-    },
-    "text": {
-     "type": "string"
     },
     "videos": {
      "type": "array",
@@ -214,6 +219,16 @@
    "type": "object",
    "properties": {
     "key": {
+     "type": "string",
+     "format": "int64"
+    },
+    "servingUrl": {
+     "type": "string"
+    },
+    "text": {
+     "type": "string"
+    },
+    "userKey": {
      "type": "string",
      "format": "int64"
     }

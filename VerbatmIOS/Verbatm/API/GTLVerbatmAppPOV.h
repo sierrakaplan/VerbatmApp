@@ -29,11 +29,11 @@
 //
 
 @interface GTLVerbatmAppPOV : GTLObject
+@property (nonatomic, copy) NSString *coverPicUrl;
 @property (nonatomic, retain) NSNumber *creatorUserKey;  // longLongValue
 @property (nonatomic, retain) GTLDateTime *datePublished;
 @property (nonatomic, retain) NSNumber *key;  // longLongValue
+@property (nonatomic, retain) NSNumber *numUpVotes;  // intValue
 @property (nonatomic, retain) NSArray *pages;  // of GTLVerbatmAppPage
 @property (nonatomic, copy) NSString *title;
-@property (nonatomic, retain) NSArray *whats;  // of NSString
-@property (nonatomic, copy) NSString *where;
 @end
