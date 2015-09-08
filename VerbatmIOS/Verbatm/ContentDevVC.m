@@ -401,7 +401,7 @@
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView {
 
 	if(!pinchView) {
-		NSLog(@"Attempting to add Nil pinch view");
+		NSLog(@"Attempting to add nil pinch view");
 		return;
 	}
 
@@ -646,7 +646,7 @@
 			[self.scrollViewOfHorizontalPinching moveOpenCollectionViewsBack];
 		}
 		self.scrollViewOfHorizontalPinching.scrollEnabled = YES;
-		self.scrollViewOfHorizontalPinching = Nil;
+		self.scrollViewOfHorizontalPinching = nil;
 
 	} else if (self.newlyCreatedMediaTile) {
 
@@ -655,7 +655,7 @@
 			[self animateRemoveNewMediaTile];
 			return;
 		}
-		self.newlyCreatedMediaTile = Nil;
+		self.newlyCreatedMediaTile = nil;
 	}
 
 	[self shiftElementsBelowView:self.articleTitleField];
@@ -675,7 +675,7 @@
 
 	} completion:^(BOOL finished) {
 		[self.newlyCreatedMediaTile.superview removeFromSuperview];
-		self.newlyCreatedMediaTile = Nil;
+		self.newlyCreatedMediaTile = nil;
 		self.pinchingMode = PinchingModeNone;
 	}];
 }
@@ -879,7 +879,7 @@
 
 -(void) addMediaTile: (MediaSelectTile *) mediaTile underView: (ContentPageElementScrollView *) topView {
 	if(!mediaTile) {
-		NSLog(@"Can't add Nil media tile");
+		NSLog(@"Can't add nil media tile");
 		return;
 	}
 
@@ -1018,7 +1018,7 @@
 	}
 	//Cannot pinch a single pinch view open or close
 	if(!wantedView.collectionIsOpen) {
-		return Nil;
+		return nil;
 	}
 	return wantedView;
 }
@@ -1031,7 +1031,7 @@
 		return;
 	}
 	if([self.upperPinchScrollView.pageElement isKindOfClass:[MediaSelectTile class]]) {
-		self.upperPinchScrollView = Nil;
+		self.upperPinchScrollView = nil;
 		return;
 	}
 
@@ -1042,7 +1042,7 @@
 	}
 
 	if([self.lowerPinchScrollView.pageElement isKindOfClass:[MediaSelectTile class]]) {
-		self.lowerPinchScrollView = Nil;
+		self.lowerPinchScrollView = nil;
 		return;
 	}
 }
@@ -1079,7 +1079,7 @@
 	[self.changePullBarDelegate showPullBar:NO withTransition:NO];
 	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
 	self.index = (index-1);
-	[self createEditContentViewFromPinchView:Nil];
+	[self createEditContentViewFromPinchView:nil];
 	if (!tile.isBaseSelector) {
 		[self clearMediaTile:tile];
 	}
@@ -1134,7 +1134,7 @@
 	} else if (self.selectedView_PAN.collectionIsOpen) {
 		[self.selectedView_PAN selectItemInOpenCollectionFromTouch:touch];
 		if (!self.selectedView_PAN.selectedItem) {
-			self.selectedView_PAN = Nil;
+			self.selectedView_PAN = nil;
 		}
 		return;
 	}
@@ -1148,7 +1148,7 @@
 // Finds first view that contains location of press and sets it as the selectedView
 -(void) findSelectedViewFromTouch:(CGPoint) touch {
 
-	self.selectedView_PAN = Nil;
+	self.selectedView_PAN = nil;
 
 	//make sure touch is not above the first view
 	ContentPageElementScrollView * firstView = self.pageElementScrollViews[0];
@@ -1165,7 +1165,7 @@
 
 			//can't select the base tile selector
 			if (self.selectedView_PAN.pageElement == self.baseMediaTileSelector) {
-				self.selectedView_PAN = Nil;
+				self.selectedView_PAN = nil;
 				return;
 			}
 			[self.mainScrollView bringSubviewToFront:self.selectedView_PAN];
@@ -1196,8 +1196,8 @@
 	}
 
 	NSInteger viewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN];
-	ContentPageElementScrollView* topView = Nil;
-	ContentPageElementScrollView* bottomView = Nil;
+	ContentPageElementScrollView* topView = nil;
+	ContentPageElementScrollView* bottomView = nil;
 
 	if(viewIndex !=0) {
 		topView  = self.pageElementScrollViews[viewIndex-1];
@@ -1309,7 +1309,7 @@
 		if (upperViewIndex >= 0) {
 			upperView = self.pageElementScrollViews[upperViewIndex];
 		} else {
-			upperView = Nil;
+			upperView = nil;
 		}
 	}
 	[unPinched revertToInitialFrame];
@@ -1333,7 +1333,7 @@
 	[self.selectedView_PAN.pageElement markAsSelected:NO];
 
 	//sanitize for next run
-	self.selectedView_PAN = Nil;
+	self.selectedView_PAN = nil;
 
 	[self shiftElementsBelowView:self.articleTitleField];
 }
@@ -1349,8 +1349,7 @@
 
 #pragma mark- MIC
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations
-{
+- (NSUInteger) supportedInterfaceOrientations {
 	//return supported orientation masks
 	return UIInterfaceOrientationMaskPortrait;
 }
@@ -1495,7 +1494,7 @@
 	self.openEditContentView = nil;
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[self.openPinchView renderMedia];
-	self.openPinchView = Nil;
+	self.openPinchView = nil;
 }
 
 -(void)addTapGestureToPinchView: (PinchView *) pinchView {
@@ -1532,7 +1531,7 @@
 	self.openEditContentView = [[EditContentView alloc] initCustomViewWithFrame:self.view.bounds];
 	self.openEditContentView.delegate = self;
 	//adding text
-	if(pinchView == Nil) {
+	if(pinchView == nil) {
 		[self.openEditContentView editText:@""];
 	} else {
 		if (pinchView.containsText) {
@@ -1651,7 +1650,7 @@
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 				dispatch_async(dispatch_get_main_queue(), ^{
-					[self addAssetToView:asset];
+					[self addAssetToView: asset];
 				});
 			}];
 		}

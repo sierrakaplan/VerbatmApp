@@ -170,7 +170,7 @@
 		return [pinchViews firstObject];
 	} else {
 		NSLog(@"Error: This page contains no pinch views");
-		return Nil;
+		return nil;
 	}
 }
 

@@ -186,7 +186,7 @@
         [view removeFromSuperview];
     }
     self.currentPageIndex = -1;
-    self.pageAves = Nil;
+    self.pageAves = nil;
 }
 
 //make sure to stop all videos

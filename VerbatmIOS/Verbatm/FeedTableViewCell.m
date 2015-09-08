@@ -182,8 +182,8 @@
 
 -(void)addPinchGestureToSelf{
 
-	UIPinchGestureRecognizer * pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:
-											   @selector(pinchingSemiCirclesTogether:)];
+//	UIPinchGestureRecognizer * pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:
+//											   @selector(pinchingSemiCirclesTogether:)];
 	//TODO: [self addGestureRecognizer: pinchGesture];
 }
 
@@ -242,7 +242,7 @@
 
 	if(toCenter){
 		[UIView animateWithDuration:0.8 animations:^{
-			CGPoint  myCenter = self.center;
+//			CGPoint  myCenter = self.center;
 
 			//            self.leftSemiCircle.frame = CGRectMake(myCenter.x - ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
 			//            self.rightSemiCircle.frame = CGRectMake(myCenter.x +((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
@@ -250,7 +250,7 @@
 
 	}else{
 		[UIView animateWithDuration:0.8 animations:^{
-			CGPoint  myCenter = self.center;
+//			CGPoint  myCenter = self.center;
 			//
 			//            self.leftSemiCircle.frame = CGRectMake(myCenter.x - ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
 			//            self.rightSemiCircle.frame = CGRectMake(myCenter.x +((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));

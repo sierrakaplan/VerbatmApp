@@ -45,7 +45,7 @@
   if ([json isKindOfClass:[NSDictionary class]]) {
     // If no default, or the default was any object, then default to base
     // object here (and hope there is a kind to get the right thing).
-    if ((defaultClass == Nil) || [defaultClass isEqual:[NSObject class]]) {
+    if ((defaultClass == nil) || [defaultClass isEqual:[NSObject class]]) {
       defaultClass = [GTLObject class];
     }
     result = [GTLObject objectForJSON:json
@@ -94,7 +94,7 @@
             isCacheable:(BOOL*)isCacheable {
   id result = nil;
   BOOL canBeCached = YES;
-  BOOL checkExpected = (expectedClass != Nil);
+  BOOL checkExpected = (expectedClass != nil);
 
   if ([obj isKindOfClass:[NSString class]]) {
     result = [[obj copy] autorelease];
@@ -611,7 +611,7 @@ static IMP GTLRuntimeGetterIMP(SEL sel,
 
     case GTLPropertyTypeGTLObject:
       // Default return calss to GTLObject if it wasn't found.
-      if (returnClass == Nil) {
+      if (returnClass == nil) {
         returnClass = [GTLObject class];
       }
       resultIMP = imp_implementationWithBlock(^GTLObject *(GTLObject<GTLRuntimeCommon> *obj) {
@@ -836,7 +836,7 @@ static IMP GTLRuntimeSetterIMP(SEL sel,
                                                 id val) {
         BOOL shouldCache = NO;
         id json = [GTLRuntimeCommon jsonFromAPIObject:val
-                                        expectedClass:Nil
+                                        expectedClass:nil
                                           isCacheable:&shouldCache];
         [obj setJSONValue:json forKey:jsonKey];
         [obj setCacheChild:(shouldCache ? val : nil)
@@ -905,7 +905,7 @@ static IMP GTLRuntimeSetterIMP(SEL sel,
     NSDictionary *classMap =
       [[foundClass ancestorClass] arrayPropertyToClassMapForClass:foundClass];
     containedClass = [classMap objectForKey:jsonKey];
-    if (containedClass == Nil) {
+    if (containedClass == nil) {
       GTL_DEBUG_LOG(@"GTLRuntimeCommon: expected array item class for "
                     "property \"%s\" of class \"%s\"",
                     property_getName(prop), class_getName(foundClass));

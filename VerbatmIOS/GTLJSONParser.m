@@ -51,8 +51,8 @@
   Class writer = NSClassFromString(@"SBJsonWriter");
   Class parser = NSClassFromString(@"SBJsonParser");
   Class oldParser = NSClassFromString(@"SBJSON");
-  GTL_ASSERT((oldParser != Nil)
-             || (writer != Nil && parser != Nil),
+  GTL_ASSERT((oldParser != nil)
+             || (writer != nil && parser != nil),
              @"No parsing class found");
 }
 #endif // DEBUG && !GTL_REQUIRES_NSJSONSERIALIZATION

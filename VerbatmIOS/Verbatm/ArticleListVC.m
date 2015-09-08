@@ -35,9 +35,11 @@
 
 //this cell is inserted in the top of the listview
 @property (strong,nonatomic) FeedTableViewCell* placeholderCell;
+@property (atomic) BOOL pullDownInProgress;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
-//tells you wether or not we have started a timer to animate
+//tells you whether or not we have started a timer to animate
 @property (atomic) BOOL refreshInProgress;
+
 
 #define SHC_ROW_HEIGHT 20.f
 #define FEED_CELL_ID @"feed_cell_id"
@@ -126,7 +128,7 @@
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     float offset_y =scrollView.contentOffset.y ;
-    if (offset_y <=  (-1 * self.cellHeight)) {
+    if (offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
         [self createRefreshAnimationOnScrollview:scrollView];
     }
 }
@@ -134,7 +136,7 @@
 //sets the frame of the placeholder cell and also adjusts the frame of the placeholder cell
 -(void)createRefreshAnimationOnScrollview:(UIScrollView *)scrollView {
     //maintain location of placeholder
-    float heightToUse = (fabs(scrollView.contentOffset.y)< self.cellHeight && self.pullDownInProgress) ? fabs(scrollView.contentOffset.y) : self.cellHeight;
+    float heightToUse = (fabs(scrollView.contentOffset.y) < STORY_CELL_HEIGHT && self.pullDownInProgress) ? fabs(scrollView.contentOffset.y) : STORY_CELL_HEIGHT;
     float y_cord = (self.pullDownInProgress) ? scrollView.contentOffset.y : 0;
     self.placeholderCell.frame = CGRectMake(0,y_cord ,self.povListView.frame.size.width, heightToUse);
     [self startActivityIndicator];
@@ -176,7 +178,7 @@
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     
     float offset_y =scrollView.contentOffset.y ;
-    if (self.pullDownInProgress &&  offset_y <=  (-1 * self.cellHeight)) {
+    if (self.pullDownInProgress &&  offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
         // [self addFinalAnimationTile];
     }
     
@@ -201,8 +203,10 @@
 -(void)removeAnimatingView{
     
     [UIView animateWithDuration:0.5 animations:^{
-        self.povListView.contentOffset = CGPointMake(0,self.cellHeight);
-        self.placeholderCell.frame = CGRectMake(self.placeholderCell.frame.origin.x, (-1 * self.cellHeight), self.placeholderCell.frame.size.width, self.placeholderCell.frame.size.height);
+        self.povListView.contentOffset = CGPointMake(0, STORY_CELL_HEIGHT);
+        self.placeholderCell.frame = CGRectMake(self.placeholderCell.frame.origin.x, (-1 * STORY_CELL_HEIGHT),
+												self.placeholderCell.frame.size.width,
+												self.placeholderCell.frame.size.height);
     }completion:^(BOOL finished) {
         [self.placeholderCell removeFromSuperview];
         self.refreshInProgress = NO;
@@ -216,7 +220,7 @@
 
 
 #pragma mark - Miscellaneous -
-- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
+- (NSUInteger) supportedInterfaceOrientations {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
 }

@@ -144,7 +144,7 @@
 			if(finished) {
 				[self.povView clearArticle];
 				[self.povView removeFromSuperview];
-				self.povView = Nil;
+				self.povView = nil;
 				[self.publishButton removeFromSuperview];
 			}
 		}];

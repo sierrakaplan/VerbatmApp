@@ -10,6 +10,6 @@
 
 @interface POVPublisher : NSObject
 
-+(void) publishPOVFromPinchViews: (NSArray*) pinchViews;
+- (void) publishPOVFromPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title;
 
 @end

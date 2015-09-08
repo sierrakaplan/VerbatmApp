@@ -11,18 +11,11 @@
 
 @interface VideoPinchView : PinchView
 
-typedef NS_ENUM(NSInteger, VideoFormat) {
-	VideoFormatAsset,
-	VideoFormatURL
-};
-
-@property (nonatomic) VideoFormat videoFormat;
 @property (strong, nonatomic) VideoPlayerWrapperView *videoView;
 
-//Can be AVAsset or NSURL
-@property (strong, nonatomic) id video;
+@property (strong, nonatomic) AVURLAsset* video;
 
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andVideo:(id)video;
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andVideo: (AVURLAsset*)video;
 
 
 @end

@@ -2,16 +2,8 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "camera button_with_circle.png",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "universal",
-      "scale" : "1x"
+      "scale" : "1x",
+      "filename" : "camera button_with_circle.png"
     },
     {
       "idiom" : "universal",

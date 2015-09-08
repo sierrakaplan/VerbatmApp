@@ -59,7 +59,9 @@
     ALAssetRepresentation *representation = [asset defaultRepresentation];
     CGImageRef imageRef = [representation fullResolutionImage];
     if (imageRef) {
-        self.imageView.image = [UIImage imageWithCGImage:imageRef scale:representation.scale orientation:representation.orientation];
+        self.imageView.image = [UIImage imageWithCGImage:imageRef
+												   scale:representation.scale
+											 orientation:(UIImageOrientation)representation.orientation];
     }
 }
 

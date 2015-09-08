@@ -20,7 +20,7 @@
 
 @implementation VideoPinchView
 
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andVideo:(id)video {
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andVideo: (AVURLAsset*)video {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
 		[self initWithVideo:video];
@@ -28,20 +28,12 @@
 	return self;
 }
 
--(void) initWithVideo:(id)video {
+-(void) initWithVideo: (AVURLAsset*)video {
 	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
 	[self.videoView repeatVideoOnEnd:YES];
 	[self.background addSubview:self.videoView];
 	[self addPlayIcon];
 	self.containsVideo = YES;
-	if ([video isKindOfClass:[AVAsset class]]) {
-		self.videoFormat = VideoFormatAsset;
-	} else if ([video isKindOfClass:[NSURL class]]) {
-		self.videoFormat = VideoFormatURL;
-	} else {
-		NSLog(@"Video passed in is not asset or url format");
-		return;
-	}
 	self.video = video;
 	[self renderMedia];
 }
@@ -72,16 +64,7 @@
 //This function displays the media on the view.
 -(void)displayMedia {
 	if (![self.videoView isPlaying]) {
-		switch (self.videoFormat) {
-			case VideoFormatAsset:
-				[self.videoView playVideoFromAsset: self.video];
-				break;
-			case VideoFormatURL:
-				[self.videoView playVideoFromURL: self.video];
-				break;
-			default:
-				break;
-		}
+		[self.videoView playVideoFromAsset: self.video];
 		[self.videoView pauseVideo];
 		[self.videoView muteVideo];
 	}
@@ -108,10 +91,7 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	NSURL* videoURL = self.video;
-	if(self.videoFormat == VideoFormatAsset) {
-		videoURL = [(AVURLAsset*)self.video URL];
-	}
+	NSURL* videoURL = [self.video URL];;
 	[coder encodeObject:videoURL forKey:VIDEO_KEY];
 }
 

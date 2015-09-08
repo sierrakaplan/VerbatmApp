@@ -53,7 +53,7 @@
 				//here the radius and the center dont matter because this is just a way to wrap our data for the analyser
 				PinchView * pinchView = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
 				if (!pinchView) {
-					NSLog(@"Pinch view from parse should not be Nil.");
+					NSLog(@"Pinch view from parse should not be nil.");
 					return;
 				}
                 [pageArray addObject:pinchView];

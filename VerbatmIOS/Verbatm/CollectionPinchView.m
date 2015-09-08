@@ -206,16 +206,7 @@
 	}
 	if (self.containsVideo) {
 		if (![self.videoView isPlaying]) {
-			switch (self.videoFormat) {
-				case VideoFormatAsset:
-					[self.videoView playVideoFromAsset: self.video];
-					break;
-				case VideoFormatURL:
-					[self.videoView playVideoFromURL: self.video];
-					break;
-				default:
-					break;
-			}
+			[self.videoView playVideoFromAsset: self.video];
 			[self.videoView pauseVideo];
 			[self.videoView muteVideo];
 		}
@@ -237,8 +228,8 @@
 
 -(void) updateMedia {
 	self.text = @"";
-	self.image = Nil;
-	self.video = Nil;
+	self.image = nil;
+	self.video = nil;
 	self.containsText = NO;
 	self.containsImage = NO;
 	self.containsVideo = NO;
@@ -264,7 +255,6 @@
 		self.containsVideo = YES;
 		if(!self.video) {
 			self.video = [(VideoPinchView*)pinchView video];
-			self.videoFormat = [(VideoPinchView*)pinchView videoFormat];
 		}
 	}
 }

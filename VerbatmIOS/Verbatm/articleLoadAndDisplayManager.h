@@ -25,8 +25,8 @@
 /*These two functions instruct our model to load and provide the next article to the left or right of the one presented
  They do not return anything and are reacted to through the protocol described above
  */
--(void)getRightArticle;
--(void)getLeftArticle;
--(BOOL)fetchArticleWithIndex:(NSInteger) index withFrame:(CGRect)frame onCompletion:(void(^)(POVView *))completionBlock;
--(void)reloadArticleListWithCompletionBlock:(void (^)(void))onCompletion;
+//-(void)getRightArticle;
+//-(void)getLeftArticle;
+//-(BOOL)fetchArticleWithIndex:(NSInteger) index withFrame:(CGRect)frame onCompletion:(void(^)(POVView *))completionBlock;
+//-(void)reloadArticleListWithCompletionBlock:(void (^)(void))onCompletion;
 @end

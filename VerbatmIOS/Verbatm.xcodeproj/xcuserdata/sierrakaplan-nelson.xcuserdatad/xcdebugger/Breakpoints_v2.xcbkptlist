@@ -3565,7 +3565,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "19"
             endingLineNumber = "19"
-            landmarkName = "+publishPOVFromPinchViews:"
+            landmarkName = "-publishPOVFromPinchViews:andTitle:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

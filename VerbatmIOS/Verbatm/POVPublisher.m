@@ -6,58 +6,117 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "GTLDateTime.h"
+#import "GTLQueryVerbatmApp.h"
+
+#import "GTLServiceVerbatmApp.h"
+
+#import "GTLVerbatmAppPOV.h"
+#import "GTLVerbatmAppPage.h"
+#import "GTLVerbatmAppImage.h"
+#import "GTLVerbatmAppVideo.h"
+#import "GTLVerbatmAppVerbatmUser.h"
+
+#import "GTMHTTPFetcherLogging.h"
+
 #import "POVPublisher.h"
 #import "PinchView.h"
 
+@interface POVPublisher()
+
+@property(nonatomic, strong) GTLServiceVerbatmApp *service;
+
+@end
+
 @implementation POVPublisher
 
-+(void) publishPOVFromPinchViews: (NSArray*) pinchViews {
-	//Make Verbatm POV object, store all pages in it
+- (void) publishPOVFromPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title {
 
-	//TODO: Go through pinch objects and save each image and video! (Get url from server and upload it to that url)
+	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
+	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
+	povObject.numUpVotes = 0;
+	povObject.title = title;
+
+	NSMutableArray* pages = [[NSMutableArray alloc] init];
 	for (PinchView* pinchView in pinchViews) {
-		[self sortPinchView:pinchView];
+		GTLVerbatmAppPage* page = [self sortPinchView:pinchView];
+		[pages addObject: page];
 	}
+	povObject.pages = pages;
+
+	GTLQuery* insertPOVQuery = [GTLQueryVerbatmApp queryForPovInsertPOVWithObject: povObject];
+
+	[self.service executeQuery:insertPOVQuery
+			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* object, NSError *error) {
+				if (error) {
+					NSLog(@"Error uploading POV: %@", error);
+				} else {
+					NSLog(@"Successfully uploaded POV!");
+					//TODO: Show POV in feed
+				}
+			 }];
 }
 
-+(void)sortPinchView:(PinchView*)pinchView {
+//TODO: Go through pinch objects and save each image and video! (Get url from server and upload it to that url)
+- (GTLVerbatmAppPage*) sortPinchView:(PinchView*)pinchView {
 
-	if(pinchView.containsText){
-		//		TODO: self.text = [pinchObject getText];
-	}
-
+	GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
 	if(pinchView.containsImage) {
-		NSArray* photos = [pinchView getPhotos];
-//		for (UIImage* image in photos) {
-//			Photo* photo = [[Photo alloc]initWithData:UIImagePNGRepresentation(image) withCaption:nil andName:nil atLocation:nil];
-//			[photo setObject: self forKey:PAGE_PHOTO_RELATIONSHIP];
-//			[photo saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//				if(succeeded){
-//					NSLog(@"Photo for page saved");
-//				}else{
-//					NSLog(@"Photo for page did not save");
-//				}
-//			}];
-//		}
 
+		NSMutableArray* gtlImages = [[NSMutableArray alloc] init];
+		for (UIImage* uiimage in [pinchView getPhotos]) {
+			// Store image in server and
+			GTLVerbatmAppImage* gtlImage = [self getGTLImageFromUIImage: uiimage];
+			[gtlImages addObject: gtlImage];
+		}
+		page.images = [[NSArray alloc] initWithArray:gtlImages copyItems:YES];
+
+	} else {
+		page.images = nil;
 	}
 
 	if(pinchView.containsVideo) {
-		NSArray* videos = [pinchView getVideos];
-//		for (AVURLAsset* videoAsset in videos) {
-//			//TODO(sierra): This should not happen on main thread
-//			NSData* videoData = [self dataFromAVURLAsset:videoAsset];
-//			Video* video = [[Video alloc] initWithData:videoData withCaption:nil andName:nil atLocation:nil];
-//			[video setObject:self forKey:PAGE_VIDEO_RELATIONSHIP];
-//			[video saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
-//				if(succeeded){
-//					NSLog(@"Video for page saved");
-//				}else{
-//					NSLog(@"Video for page did not save");
-//				}
-//			}];
-//		}
+
+		NSMutableArray* gtlVideos = [[NSMutableArray alloc] init];
+		for (AVAsset* videoAsset in [pinchView getVideos]) {
+			GTLVerbatmAppVideo* gtlVideo = [self getGTLVideoFromAVAsset:videoAsset];
+			[gtlVideos addObject: gtlVideo];
+		}
+		page.videos = [[NSArray alloc] initWithArray:gtlVideos copyItems:YES];
+
+	} else {
+		page.videos = nil;
 	}
+
+	return page;
+}
+
+- (GTLVerbatmAppImage*) getGTLImageFromUIImage: (UIImage*) uiImage {
+	GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
+	// TODO store image in blobstore and get url
+	return gtlImage;
+}
+
+- (GTLVerbatmAppVideo*) getGTLVideoFromAVAsset: (AVAsset*) videoAsset {
+	GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
+	// TODO store video in blobstore and get url
+	return gtlVideo;
+}
+
+
+#pragma mark - Lazy Instantiation -
+
+- (GTLServiceVerbatmApp *)service {
+	if (!_service) {
+		_service = [[GTLServiceVerbatmApp alloc] init];
+
+		_service.retryEnabled = YES;
+
+		// Development only
+		[GTMHTTPFetcher setLoggingEnabled:YES];
+	}
+
+	return _service;
 }
 
 @end

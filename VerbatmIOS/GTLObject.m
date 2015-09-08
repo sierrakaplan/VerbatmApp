@@ -63,7 +63,7 @@ static NSString *const kGTLObjectJSONCoderKey = @"json";
 }
 
 + (Class)classForAdditionalProperties {
-  return Nil;
+  return nil;
 }
 
 - (BOOL)isEqual:(GTLObject *)other {
@@ -532,7 +532,7 @@ static NSMutableDictionary *gKindMap = nil;
                   surrogates:(NSDictionary *)surrogates
                batchClassMap:(NSDictionary *)batchClassMap {
   if ([json isEqual:[NSNull null]] || [json count] == 0) {
-    if (json != nil && defaultClass != Nil) {
+    if (json != nil && defaultClass != nil) {
       // The JSON included an empty dictionary, and a return class
       // was specified.
       return [defaultClass object];

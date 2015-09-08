@@ -137,7 +137,7 @@
 
 +(PinchView*) pinchTogether:(NSArray*) pinchViews {
 	if (!pinchViews || ([pinchViews count] < 1)) {
-		return Nil;
+		return nil;
 	}
 	PinchView* firstPinchView = [pinchViews firstObject];
 	if ([pinchViews count] < 2) {
@@ -191,15 +191,15 @@
 #pragma mark - Should be overriden by subclasses -
 
 -(NSString*) getText {
-	return Nil;
+	return nil;
 }
 
 -(NSArray*) getPhotos {
-	return Nil;
+	return nil;
 }
 
 -(NSArray*) getVideos {
-	return Nil;
+	return nil;
 }
 
 -(void)offScreen {}

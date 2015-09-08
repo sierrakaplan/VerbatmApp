@@ -190,7 +190,7 @@
 	[self addSubview:self.pageElement];
 	[(CollectionPinchView*)self.pageElement updateMedia];
 	[(CollectionPinchView*)self.pageElement renderMedia];
-	self.collectionPinchViews = Nil;
+	self.collectionPinchViews = nil;
 	return YES;
 }
 
@@ -263,7 +263,7 @@
 
 -(PinchView*) moveSelectedItemFromTouch:(CGPoint) touch {
 	if (!self.collectionIsOpen || !self.selectedItem) {
-		return Nil;
+		return nil;
 	}
 
 	float xDifference  = touch.x - self.previousLocationOfTouchPoint_PAN.x;
@@ -284,8 +284,8 @@
 
 	//swap item if necessary
 	NSInteger viewIndex = [self.collectionPinchViews indexOfObject:self.selectedItem];
-	PinchView* leftView = Nil;
-	PinchView* rightView = Nil;
+	PinchView* leftView = nil;
+	PinchView* rightView = nil;
 
 	if(viewIndex !=0) {
 		leftView = self.collectionPinchViews[viewIndex-1];
@@ -308,7 +308,7 @@
 	[self moveOffsetBasedOnSelectedItem];
 	self.previousLocationOfTouchPoint_PAN = touch;
 
-	return Nil;
+	return nil;
 }
 
 -(void) shiftPinchViewsAfterIndex:(NSInteger) index {
@@ -415,14 +415,14 @@
 	[self.selectedItem markAsSelected:NO];
 
 	//sanitize for next run
-	self.selectedItem = Nil;
+	self.selectedItem = nil;
 }
 
 //returns the unpinched PinchView
 -(PinchView*) unPinchObject {
 	CollectionPinchView* currentPinchView = (CollectionPinchView*)self.pageElement;
 	PinchView* unPinched = self.selectedItem;
-	self.selectedItem = Nil;
+	self.selectedItem = nil;
 	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
 	if (index < 0) index = 0;
 	[[UserPinchViews sharedInstance] removePinchView:currentPinchView];
@@ -437,12 +437,12 @@
 		self.collectionIsOpen = NO;
 		self.contentSize = self.initialContentSize;
 		self.contentOffset = self.initialContentOffset;
-		self.collectionPinchViews = Nil;
+		self.collectionPinchViews = nil;
 	} else {
 		[self shiftPinchViewsAfterIndex:index];
 	}
 
-	self.selectedItem = Nil;
+	self.selectedItem = nil;
 	[[UserPinchViews sharedInstance] addPinchView:(PinchView*)self.pageElement];
 	return unPinched;
 }

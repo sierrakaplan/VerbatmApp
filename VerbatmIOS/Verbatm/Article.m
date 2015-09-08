@@ -48,6 +48,7 @@
 @dynamic title;
 @dynamic content;
 @dynamic isTestingArticle;
+@dynamic username;
 
 @synthesize articleVideosRelation= _articleVideosRelation;
 @synthesize articlePhotosRelation = _articlePhotosRelation;
@@ -84,7 +85,7 @@
 /*returns the user that created the article*/
 -(NSString *)getAuthorUsername{
     NSString * userName = self.username;
-    return @"user name";
+    return userName;
 }
 
 

@@ -46,11 +46,9 @@
 
 @interface MediaDevVC () <MediaSessionManagerDelegate, ContentDevPullBarDelegate, ChangePullBarDelegate>
 
-#pragma mark - Outlets -
+#pragma mark - SubViews of screen
 
 @property (strong, nonatomic) ContentDevPullBar *pullBar;
-
-#pragma mark - SubViews of screen
 @property (strong, nonatomic) IBOutlet UIPanGestureRecognizer *panGesture_PullBar;
 // view with content development part of ADK
 @property (weak, nonatomic) IBOutlet UIView *contentContainerView;
@@ -69,8 +67,8 @@
 @property (strong, nonatomic) CameraFocusSquare* focusSquare;
 @property (strong, nonatomic) MediaPreview * mediaPreviewView;
 
-@property (strong, nonatomic)UIButton* switchCameraButton;
-@property (strong, nonatomic)UIButton* switchFlashButton;
+@property (strong, nonatomic) UIButton* switchCameraButton;
+@property (strong, nonatomic) UIButton* switchFlashButton;
 @property (nonatomic) CGAffineTransform flashTransform;
 @property (nonatomic) CGAffineTransform switchTransform;
 @property(nonatomic,strong) UIButton * capturePicButton;
@@ -79,14 +77,14 @@
 #pragma mark - View controllers
 @property (strong,nonatomic) ContentDevVC* contentDevVC;
 
-#pragma mark taking the photo
+#pragma mark - Capturing Media -
 @property (nonatomic, strong) NSTimer *timer;
 @property (nonatomic) BOOL flashOn;
 @property (nonatomic) BOOL canRaise;
 @property (nonatomic)CGPoint currentPoint;
 @property (nonatomic) UIDeviceOrientation startOrientation;
 
-#pragma mark  pulldown
+#pragma mark - Pull down to content dev -
 @property (nonatomic) CGPoint panStartPoint;
 @property (nonatomic) CGPoint previousTranslation;
 @property (nonatomic) ContentContainerViewMode contentContainerViewMode;
@@ -95,6 +93,9 @@
 
 #pragma mark keyboard properties
 @property (nonatomic) NSInteger keyboardHeight;
+
+#pragma mark - Publishing -
+@property (strong, nonatomic) POVPublisher* publisher;
 
 #define Preview_X_offset 10
 #define Preview_Y_offset 20
@@ -699,8 +700,8 @@
 			NSLog(@"Can't publish with no pinch objects");
 			return;
 		}
-		[POVPublisher publishPOVFromPinchViews: pinchViewsArray];
-		//TODO: Transition to feed
+		[self.publisher publishPOVFromPinchViews: pinchViewsArray andTitle: self.contentDevVC.articleTitleField.text];
+		//TODO: Transition to most recent in feed
 
 		[[UserPinchViews sharedInstance] clearPinchViews];
 		[self.contentDevVC cleanUp];
@@ -712,7 +713,7 @@
 	//this creates and saves an article. the return value is unnecesary
 	Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:NO];
 	if(newArticle) {
-		//TODO: exit content page
+		//exit content page
 	}
 }
 
@@ -731,6 +732,13 @@
 		_verbatmCameraView = [[VerbatmCameraView alloc] initWithFrame: self.view.frame];
 	}
 	return _verbatmCameraView;
+}
+
+-(POVPublisher*) publisher {
+	if (!_publisher) {
+		_publisher = [[POVPublisher alloc] init];
+	}
+	return _publisher;
 }
 
 @end

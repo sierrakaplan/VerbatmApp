@@ -243,7 +243,7 @@
 }
 
 #pragma mark - handle
--(UIInterfaceOrientationMask) supportedInterfaceOrientations {
+-(NSUInteger) supportedInterfaceOrientations {
 	//return supported orientation masks
 	return UIInterfaceOrientationMaskPortrait;
 }

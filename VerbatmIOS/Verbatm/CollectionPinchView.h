@@ -15,7 +15,6 @@
 //array of PinchViews
 @property (strong, nonatomic) NSMutableArray* pinchedObjects;
 
-@property (nonatomic) VideoFormat videoFormat;
 @property (strong, nonatomic) VideoPlayerWrapperView *videoView;
 
 //inits with an array of pinchviews

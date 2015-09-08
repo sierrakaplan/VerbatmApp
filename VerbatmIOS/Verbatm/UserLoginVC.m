@@ -184,7 +184,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 	//TODO(sierrakn): If any declined permissions are essential (like email)
 	//explain to user why and ask them to agree to each individually
-	NSSet* declinedPermissions = result.declinedPermissions;
+//	NSSet* declinedPermissions = result.declinedPermissions;
 
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
@@ -201,7 +201,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 					 NSString* name = result[@"name"];
 					 NSString* email = result[@"email"];
-					 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+					 //TODO: NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 					 //will only show friends who have signed up for the app with fb
 					 NSArray* friends = nil;
 					 if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
@@ -413,7 +413,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 
--(UIInterfaceOrientationMask)supportedInterfaceOrientations{
+-(NSUInteger)supportedInterfaceOrientations{
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
 }

@@ -459,10 +459,10 @@ static GTMOAuth2Keychain* gGTMOAuth2DefaultKeychain = nil;
   hasDoneFinalRedirect_ = YES;
 }
 
-static Class gSignInClass = Nil;
+static Class gSignInClass = nil;
 
 + (Class)signInClass {
-  if (gSignInClass == Nil) {
+  if (gSignInClass == nil) {
     gSignInClass = [GTMOAuth2SignIn class];
   }
   return gSignInClass;
