@@ -692,7 +692,7 @@
 
 	if (![self.contentDevVC.articleTitleField.text length]) {
 		//TODO: animation telling them to enter a title
-
+		NSLog(@"Must enter a title to publish!");
 	} else {
 		NSArray *pinchViewsArray = [self getPinchViewsFromContentDev];
 

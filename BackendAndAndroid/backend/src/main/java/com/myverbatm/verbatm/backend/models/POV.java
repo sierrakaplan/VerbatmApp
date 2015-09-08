@@ -1,6 +1,8 @@
 package com.myverbatm.verbatm.backend.models;
 
+import com.google.appengine.api.datastore.*;
 import com.googlecode.objectify.annotation.*;
+import com.googlecode.objectify.annotation.Entity;
 
 import java.util.Date;
 
@@ -45,6 +47,20 @@ public class POV {
      * Array of pages in the POV
      */
     private Page[] pages;
+
+    /**
+     * Creates a POV instance from an entity of POV type
+     * @param entity
+     */
+    public POV(com.google.appengine.api.datastore.Entity entity) {
+        this.key = entity.getKey().getId();
+        this.title = (String) entity.getProperty("title");
+        this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
+        this.datePublished = (Date) entity.getProperty("datePublished");
+        this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
+        this.creatorUserKey = (Long) entity.getProperty("creatorUserKey");
+        this.pages = (Page[]) entity.getProperty("pages");
+    }
 
     /**
      *

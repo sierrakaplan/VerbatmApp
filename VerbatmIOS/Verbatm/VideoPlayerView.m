@@ -245,11 +245,14 @@
 		[self.videoLoadingView removeFromSuperview];
 		self.videoLoading = NO;
 	}
+	for (UIView* view in self.subviews) {
+		[view removeFromSuperview];
+	}
 	self.layer.sublayers = nil;
 	[self removePlayerItemObserver];
-    [self.muteButton removeFromSuperview];
     [self.playerLayer removeFromSuperlayer];
     self.layer.sublayers = nil;
+	self.muteButton = nil;
     self.playerItem = nil;
     self.player = nil;
     self.playerLayer = nil;

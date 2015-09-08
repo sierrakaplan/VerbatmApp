@@ -13,12 +13,11 @@
 
 @interface SwitchCategoryPullView()
 
-@property (strong, nonatomic) UIView * trendingLabelContainerView;
-@property (strong, nonatomic) UIView * topicsLabelContainerView;
 @property (strong, nonatomic) UILabel * trendingLabel;
 @property (strong, nonatomic) UILabel * topicsLabel;
+@property (nonatomic) CGFloat maxTrendingWidth;
 
-@property (nonatomic) CGRect topicsContainerInitialFrame;
+//@property (nonatomic) CGRect topicsContainerInitialFrame;
 //The circle icon that we move left/right to reveal the text
 @property (strong, nonatomic) UIImageView * pullCircle;
 @property (nonatomic) float pullCircleSize;
@@ -54,37 +53,38 @@
 }
 
 -(void) initLabelContainers {
-	self.trendingLabelContainerView = [[UIView alloc] initWithFrame: self.bounds];
-	self.topicsContainerInitialFrame = CGRectMake(self.frame.size.width - self.pullCircleSize,
-												  0, self.frame.size.width, self.frame.size.height);
-
-	self.topicsLabelContainerView = [[UIView alloc] initWithFrame: self.topicsContainerInitialFrame];
-	[self.topicsLabelContainerView setBackgroundColor:self.backgroundColor];
 
 	[self formatLabel: self.trendingLabel];
+	self.trendingLabel.backgroundColor = self.backgroundColor;
+	self.maxTrendingWidth = self.trendingLabel.frame.size.width;
 	[self formatLabel: self.topicsLabel];
 
-	[self.trendingLabelContainerView addSubview:self.trendingLabel];
-	[self.topicsLabelContainerView addSubview:self.topicsLabel];
+	[self addSubview:self.topicsLabel];
+	[self addSubview:self.trendingLabel];
 
-	[self addSubview:self.trendingLabelContainerView];
-	[self addSubview:self.topicsLabelContainerView];
 	self.clipsToBounds = YES;
 }
 
 -(void) formatLabel: (UILabel*) label {
 	label.font = [UIFont fontWithName:DEFAULT_FONT size:FEED_SLIDE_BAR_FONT_SIZE];
 	label.textAlignment = NSTextAlignmentCenter;
-	label.frame = self.bounds;
+	label.lineBreakMode = NSLineBreakByClipping;
+
+	CGRect expectedLabelSize = [label.text boundingRectWithSize: self.bounds.size
+														options: NSStringDrawingUsesLineFragmentOrigin
+													 attributes: @{NSFontAttributeName: label.font}
+														context: nil];
+	label.frame = CGRectMake(self.bounds.size.width/2.f - expectedLabelSize.size.width/2.f,
+							 self.bounds.origin.y, expectedLabelSize.size.width, self.bounds.size.height);
 }
 
 //tbd - set the image for the pull circle
 -(void) initPullCircle {
-    self.pullCircle.frame = CGRectMake(0, 0, self.pullCircleSize, self.pullCircleSize);
+    self.pullCircle.frame = CGRectMake(self.frame.size.width - self.pullCircleSize, 0, self.pullCircleSize, self.pullCircleSize);
 	self.pullCircle.image = [UIImage imageNamed: PULLCIRCLE_ICON];
-	self.pullCircle.backgroundColor = [UIColor clearColor];
+	self.pullCircle.backgroundColor = self.backgroundColor;
     [self addPanGestureToView:self.pullCircle];
-    [self.topicsLabelContainerView addSubview: self.pullCircle];
+    [self addSubview: self.pullCircle];
 }
 
 -(void) addPanGestureToView: (UIView *) view {
@@ -98,7 +98,7 @@
 -(void) pullCirclePan:(UITapGestureRecognizer *) sender {
 
 	CGFloat leastX = 0;
-	CGFloat maxX = self.topicsLabelContainerView.frame.size.width - self.pullCircleSize;
+	CGFloat maxX = self.frame.size.width - self.pullCircleSize;
 
     switch(sender.state) {
         case UIGestureRecognizerStateBegan: {
@@ -107,19 +107,19 @@
         }
         case UIGestureRecognizerStateChanged: {
             CGPoint touch = [sender locationOfTouch:0 inView:self];
+			if (touch.y > self.pullCircle.frame.origin.y + self.pullCircle.frame.size.height) {
+				return;
+			}
             CGFloat newXOffset = touch.x - self.lastPoint.x;
-            CGFloat newX = self.topicsLabelContainerView.frame.origin.x + newXOffset;
+            CGFloat newX = self.pullCircle.frame.origin.x + newXOffset;
 
-            if (newX < leastX){
-                newX = leastX;
-            } else if (newX > maxX) {
-                newX = maxX;
-            }
-            
-            self.topicsLabelContainerView.frame = CGRectMake(newX,
-															 self.topicsLabelContainerView.frame.origin.y,
-															 self.topicsLabelContainerView.frame.size.width,
-															 self.topicsLabelContainerView.frame.size.height);
+            if (newX < leastX) newX = leastX;
+            if (newX > maxX) newX = maxX;
+
+			newXOffset = newX - self.pullCircle.frame.origin.x;
+			self.pullCircle.frame = CGRectOffset(self.pullCircle.frame, newXOffset, 0);
+			[self resizeTrendingLabel];
+
             self.lastPoint = touch;
 			// notify delegate that we have panned our pullCircle
             [self.categorySwitchDelegate pullCircleDidPan:(newX / (maxX - leastX))];
@@ -135,6 +135,18 @@
     }
 }
 
+-(void) resizeTrendingLabel {
+	float newWidth = self.pullCircle.frame.origin.x - self.trendingLabel.frame.origin.x;
+	if (newWidth < 0) newWidth = 0;
+	if (newWidth > self.maxTrendingWidth) newWidth = self.maxTrendingWidth;
+
+	self.trendingLabel.frame = CGRectMake(self.trendingLabel.frame.origin.x,
+										  self.trendingLabel.frame.origin.y,
+										  newWidth,
+										  self.trendingLabel.frame.size.height);
+
+}
+
 
 //snaps the pull circle to an edge after a pan
 -(void) snapToEdgeWithLeastX: (CGFloat) leastX andMaxX: (CGFloat) maxX {
@@ -144,7 +156,7 @@
 	BOOL snapLeft;
 
 	//snap left else right
-	if (self.topicsLabelContainerView.frame.origin.x <= midX) {
+	if (self.pullCircle.frame.origin.x <= midX) {
 		newX = leastX;
 		snapLeft = YES;
 	} else {
@@ -154,10 +166,11 @@
 
 	[self.categorySwitchDelegate snapped: snapLeft];
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION animations: ^ {
-		self.topicsLabelContainerView.frame = CGRectMake(newX,
-														 self.topicsLabelContainerView.frame.origin.y,
-														 self.topicsLabelContainerView.frame.size.width,
-														 self.topicsLabelContainerView.frame.size.height);
+		self.pullCircle.frame = CGRectMake(newX,
+														 self.pullCircle.frame.origin.y,
+														 self.pullCircle.frame.size.width,
+														 self.pullCircle.frame.size.height);
+		[self resizeTrendingLabel];
 
 	}];
 }

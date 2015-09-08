@@ -19,6 +19,7 @@
 
 @implementation POVLoadManager
 
+
 ////the starting index should be the index of the view that was just tapped first
 ////it tells us what is being presented first
 //-(instancetype)initWithArticleList: (NSArray *) articleList andStartingIndex: (NSInteger) startingIndex{

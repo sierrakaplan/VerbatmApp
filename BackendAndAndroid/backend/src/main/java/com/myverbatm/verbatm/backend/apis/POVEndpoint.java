@@ -6,15 +6,22 @@ import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.response.BadRequestException;
+import com.google.appengine.api.datastore.Cursor;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.PropertyProjection;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.api.users.User;
-import com.googlecode.objectify.Objectify;
 import com.myverbatm.verbatm.backend.Constants;
-import com.myverbatm.verbatm.backend.OfyService;
 import com.myverbatm.verbatm.backend.models.POV;
-import com.myverbatm.verbatm.backend.models.Page;
-import com.myverbatm.verbatm.backend.models.VerbatmUser;
-import com.myverbatm.verbatm.backend.utils.EndpointUtil;
+import com.myverbatm.verbatm.backend.models.POVInfo;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -50,20 +57,66 @@ public class POVEndpoint {
     private static final Logger LOG =
         Logger.getLogger(POVEndpoint.class.getName());
 
-    /**
-     * Lists all the entities inserted in datastore.
-     *
-     * @param user the user requesting the entities.
-     * @return the list of all entities persisted.
-     * @throws com.google.api.server.spi.ServiceException if user is not
-     *                                                    authorized
-     */
-    @SuppressWarnings({"cast", "unchecked"})
-    public final List<POV> listPOV(final User user) throws
-        ServiceException {
-//        EndpointUtil.throwIfNotAdmin(user);
+    private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-        return ofy().load().type(POV.class).list();
+    /**
+     * Maximum number of povs to return.
+     */
+    private static final int MAXIMUM_NUMBER_POVS = 100;
+
+    /**
+     * Lists most recent POV info (info to be displayed in feed).
+     * @param pCount          the maximum number of pov's returned.
+     * @param cursorString    the cursor from the last recents query (can be null)
+     * @param user            the user that requested the entities.
+     * @return List of recent POV info (info to be displayed in feed).
+     * @throws com.google.api.server.spi.ServiceException if user is not
+     * authorized
+     */
+    @ApiMethod(path="get_recent_povs", httpMethod = "GET")
+    public final List<POVInfo> getRecentPOVsInfo(@Named("count") final int pCount,
+                                                 @Named("cursor_string") final String cursorString,
+                                                 final User user) throws
+        ServiceException {
+
+        int count = pCount;
+
+        // limit the result set to up to MAXIMUM_NUMBER_PLACES places within
+        // up to MAXIMUM_DISTANCE km
+        if (count > MAXIMUM_NUMBER_POVS) {
+            count = MAXIMUM_NUMBER_POVS;
+        } else if (count <= 0) {
+            throw new BadRequestException("Invalid value of 'count' argument");
+        }
+
+        // Search POV's with dates from latest to earliest (descending)
+        // Can also add filter
+        Query recentPOVQuery = new Query("POV")
+            .addSort("datePublished", Query.SortDirection.DESCENDING)
+            .addProjection(new PropertyProjection("title", String.class))
+            .addProjection(new PropertyProjection("coverPicUrl", String.class))
+            .addProjection(new PropertyProjection("datePublished", Date.class))
+            .addProjection(new PropertyProjection("numUpVotes", Integer.class))
+            .addProjection(new PropertyProjection("creatorUserKey", Long.class));
+
+        PreparedQuery preparedQuery = datastore.prepare(recentPOVQuery);
+        FetchOptions fetchOptions = FetchOptions.Builder.withLimit(count);
+
+        if (cursorString != null) {
+            fetchOptions.startCursor(Cursor.fromWebSafeString(cursorString));
+        }
+
+        List<POVInfo> results = new ArrayList<>();
+        QueryResultList<Entity> entities = preparedQuery.asQueryResultList(fetchOptions);
+
+        for (Entity entity : entities) {
+            results.add(new POVInfo(entity));
+        }
+
+        Cursor recentCursor = entities.getCursor();
+        String recentCursorString = recentCursor.toWebSafeString();
+
+        return results;
     }
 
     /**
@@ -75,7 +128,7 @@ public class POVEndpoint {
      * @throws com.google.api.server.spi.ServiceException if user is not
      *                                                    authorized
      */
-    @ApiMethod(httpMethod = "GET")
+    @ApiMethod(path="get_pov_from_id", httpMethod = "GET")
     public final POV getPOV(@Named("id") final Long id, final User user)
         throws ServiceException {
 //        EndpointUtil.throwIfNotAdmin(user);

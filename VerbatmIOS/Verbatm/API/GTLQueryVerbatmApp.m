@@ -150,7 +150,7 @@
   return query;
 }
 
-+ (instancetype)queryForPovListPOV {
++ (instancetype) queryForPovListPOV {
   NSString *methodName = @"verbatmApp.pov.listPOV";
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.expectedObjectClass = [GTLVerbatmAppPOVCollection class];
