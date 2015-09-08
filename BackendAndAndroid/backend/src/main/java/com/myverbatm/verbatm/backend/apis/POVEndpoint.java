@@ -20,6 +20,7 @@ import com.google.appengine.api.users.User;
 import com.myverbatm.verbatm.backend.Constants;
 import com.myverbatm.verbatm.backend.models.POV;
 import com.myverbatm.verbatm.backend.models.POVInfo;
+import com.myverbatm.verbatm.backend.models.ResultsWithCursor;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -65,16 +66,17 @@ public class POVEndpoint {
     private static final int MAXIMUM_NUMBER_POVS = 100;
 
     /**
-     * Lists most recent POV info (info to be displayed in feed).
+     * Lists most recent POV info (info to be displayed in feed) as well
+     * as cursor so that the client can query from the place they left off.
      * @param pCount          the maximum number of pov's returned.
      * @param cursorString    the cursor from the last recents query (can be null)
      * @param user            the user that requested the entities.
-     * @return List of recent POV info (info to be displayed in feed).
+     * @return List of recent POV info (info to be displayed in feed) and cursor.
      * @throws com.google.api.server.spi.ServiceException if user is not
      * authorized
      */
     @ApiMethod(path="get_recent_povs", httpMethod = "GET")
-    public final List<POVInfo> getRecentPOVsInfo(@Named("count") final int pCount,
+    public final ResultsWithCursor<POVInfo> getRecentPOVsInfo(@Named("count") final int pCount,
                                                  @Named("cursor_string") final String cursorString,
                                                  final User user) throws
         ServiceException {
@@ -113,10 +115,8 @@ public class POVEndpoint {
             results.add(new POVInfo(entity));
         }
 
-        Cursor recentCursor = entities.getCursor();
-        String recentCursorString = recentCursor.toWebSafeString();
-
-        return results;
+        String recentsCursorString = entities.getCursor().toWebSafeString();
+        return new ResultsWithCursor<>(results, recentsCursorString);
     }
 
     /**

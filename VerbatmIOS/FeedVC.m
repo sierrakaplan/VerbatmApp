@@ -99,7 +99,7 @@
 }
 
 -(void) setUpCategorySwitcher {
-	float categorySwitchWidth = self.view.frame.size.width * 3.f/4.f;
+	float categorySwitchWidth = self.view.frame.size.width;
 	CGRect categorySwitchFrame = CGRectMake((self.view.frame.size.width - categorySwitchWidth)/2.f,
 											CATEGORY_SWITCH_OFFSET, categorySwitchWidth, CATEGORY_SWITCH_HEIGHT);
 	self.categorySwitch = [[SwitchCategoryPullView alloc] initWithFrame:categorySwitchFrame andBackgroundColor:self.view.backgroundColor];

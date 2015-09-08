@@ -16,6 +16,8 @@
 @property (strong, nonatomic) UILabel * trendingLabel;
 @property (strong, nonatomic) UILabel * topicsLabel;
 @property (nonatomic) CGFloat maxTrendingWidth;
+@property (nonatomic) CGFloat leastPullCircleX;
+@property (nonatomic) CGFloat maxPullCircleX;
 
 //@property (nonatomic) CGRect topicsContainerInitialFrame;
 //The circle icon that we move left/right to reveal the text
@@ -27,6 +29,7 @@
 
 #define TRENDING_LABEL_TEXT @"TRENDING"
 #define TOPICS_LABEL_TEXT @"RECENT"
+#define PULLCIRCLE_OFFSET 10
 
 @end
 
@@ -59,6 +62,13 @@
 	self.maxTrendingWidth = self.trendingLabel.frame.size.width;
 	[self formatLabel: self.topicsLabel];
 
+	self.leastPullCircleX = self.topicsLabel.frame.origin.x - self.pullCircleSize - PULLCIRCLE_OFFSET;
+	if (self.leastPullCircleX < 0) { self.leastPullCircleX = PULLCIRCLE_OFFSET; }
+	self.maxPullCircleX = self.trendingLabel.frame.origin.x + self.trendingLabel.frame.size.width + PULLCIRCLE_OFFSET;
+	if (self.maxPullCircleX > self.frame.size.width - self.pullCircleSize) {
+		self.maxPullCircleX = self.frame.size.width - self.pullCircleSize - PULLCIRCLE_OFFSET;
+	}
+
 	[self addSubview:self.topicsLabel];
 	[self addSubview:self.trendingLabel];
 
@@ -80,7 +90,7 @@
 
 //tbd - set the image for the pull circle
 -(void) initPullCircle {
-    self.pullCircle.frame = CGRectMake(self.frame.size.width - self.pullCircleSize, 0, self.pullCircleSize, self.pullCircleSize);
+    self.pullCircle.frame = CGRectMake(self.maxPullCircleX, 0, self.pullCircleSize, self.pullCircleSize);
 	self.pullCircle.image = [UIImage imageNamed: PULLCIRCLE_ICON];
 	self.pullCircle.backgroundColor = self.backgroundColor;
     [self addPanGestureToView:self.pullCircle];
@@ -97,10 +107,7 @@
 //Deals with pan gesture on circle
 -(void) pullCirclePan:(UITapGestureRecognizer *) sender {
 
-	CGFloat leastX = 0;
-	CGFloat maxX = self.frame.size.width - self.pullCircleSize;
-
-    switch(sender.state) {
+	    switch(sender.state) {
         case UIGestureRecognizerStateBegan: {
             self.lastPoint = [sender locationOfTouch:0 inView:self];
             break;
@@ -113,8 +120,8 @@
             CGFloat newXOffset = touch.x - self.lastPoint.x;
             CGFloat newX = self.pullCircle.frame.origin.x + newXOffset;
 
-            if (newX < leastX) newX = leastX;
-            if (newX > maxX) newX = maxX;
+            if (newX < self.leastPullCircleX) newX = self.leastPullCircleX;
+            if (newX > self.maxPullCircleX) newX = self.maxPullCircleX;
 
 			newXOffset = newX - self.pullCircle.frame.origin.x;
 			self.pullCircle.frame = CGRectOffset(self.pullCircle.frame, newXOffset, 0);
@@ -122,11 +129,11 @@
 
             self.lastPoint = touch;
 			// notify delegate that we have panned our pullCircle
-            [self.categorySwitchDelegate pullCircleDidPan:(newX / (maxX - leastX))];
+            [self.categorySwitchDelegate pullCircleDidPan:((newX - self.leastPullCircleX) / (self.maxPullCircleX - self.leastPullCircleX))];
             break;
         }
         case UIGestureRecognizerStateEnded: {
-            [self snapToEdgeWithLeastX: leastX andMaxX: maxX];
+            [self snapToEdgeWithLeastX: self.leastPullCircleX andMaxX: self.maxPullCircleX];
             break;
         }
         default: {
@@ -137,8 +144,8 @@
 
 -(void) resizeTrendingLabel {
 	float newWidth = self.pullCircle.frame.origin.x - self.trendingLabel.frame.origin.x;
-	if (newWidth < 0) newWidth = 0;
-	if (newWidth > self.maxTrendingWidth) newWidth = self.maxTrendingWidth;
+	if (newWidth < 0) { newWidth = 0; }
+	if (newWidth > self.maxTrendingWidth) { newWidth = self.maxTrendingWidth; }
 
 	self.trendingLabel.frame = CGRectMake(self.trendingLabel.frame.origin.x,
 										  self.trendingLabel.frame.origin.y,
