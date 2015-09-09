@@ -8,6 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
+@class GTLVerbatmAppPOVInfo;
+
 @interface POVLoadManager : NSObject
+
+typedef NS_ENUM(NSInteger, POVType) {
+	POVTypeTrending,
+	POVTypeRecent
+};
+
+-(id) initWithType: (POVType) type;
+
+-(void) loadPOVs: (NSInteger) numToLoad;
+
+- (GTLVerbatmAppPOVInfo*) getPOVInfoAtIndex: (NSInteger) index;
+
+-(NSInteger) getNumberOfPOVsLoaded;
 
 @end

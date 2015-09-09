@@ -21,7 +21,8 @@
 #import "FeedTableViewCell.h"
 #import "FeedTableView.h"
 
-#define VIEW_ARTICLE_SEGUE @"viewArticleSegue"
+#import "POVLoadManager.h"
+#import "GTLVerbatmAppPOVInfo.h"
 
 @interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource>
 
@@ -29,7 +30,7 @@
 #pragma mark - Table View + data -
 
 @property (strong, nonatomic) FeedTableView *povListView;
-@property (strong, nonatomic) NSArray *povData;
+@property (strong, nonatomic) POVLoadManager *povLoader;
 
 #pragma mark - Refresh -
 
@@ -41,14 +42,14 @@
 @property (atomic) BOOL refreshInProgress;
 
 
-#define SHC_ROW_HEIGHT 20.f
 #define FEED_CELL_ID @"feed_cell_id"
+#define NUM_POVS_IN_SECTION 6
 
 @end
 
 @implementation ArticleListVC
 
-- (void)viewDidLoad {
+- (void) viewDidLoad {
     [super viewDidLoad];
 	[self initStoryListView];
 }
@@ -65,8 +66,9 @@
     [self.view addSubview:self.povListView];
 }
 
--(void) setTableViewData: (NSArray*) povData {
-	self.povData = povData;
+-(void) setPovLoadManager:(POVLoadManager *) povLoader {
+	self.povLoader = povLoader;
+	[self.povLoader loadPOVs: NUM_POVS_IN_SECTION];
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
@@ -87,27 +89,29 @@
 #pragma mark - Table View Data Source methods (model) -
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	// Return the number of rows in the section.
-	//    NSUInteger count = self.articleLoadManger.articleList.count;
-	//    count += (self.pullDownInProgress) ? 1 : 0;
-	//    return count;
-	return 10;
+	NSUInteger count = [self.povLoader getNumberOfPOVsLoaded];
+	count += (self.pullDownInProgress) ? 1 : 0;
+	return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 
     FeedTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:FEED_CELL_ID];
     if (cell == nil) {
-        cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
-    }
-    //    NSInteger index = indexPath.row;
-    //    if(!self.pullDownInProgress){
-    //        //configure cell
-    //        Article * article = self.articleLoadManger.articleList[index];
-    //        [cell setContentWithUsername:[article getAuthorUsername] andTitle:article.title];
-    //        cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    //    }else if(self.refreshInProgress && index ==0){
-    //this means that the cell is an animation place-holder
+		cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
+	}
+
+	NSInteger index = indexPath.row;
+
+	//configure cell
+	if (self.refreshInProgress && index ==0 ){
+		//TODO: animation placeholder
+	} else {
+
+		Article * article = self.articleLoadManger.articleList[index];
+		[cell setContentWithUsername:[article getAuthorUsername] andTitle:article.title];
+		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+	}
     [cell setContentWithUsername:@"Iain Usiri" andTitle:@"A night in an underwater hotel in Zanzibar" andCoverImage:[UIImage imageNamed:@"demo_image"]];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     //}
@@ -164,7 +168,7 @@
 
 
 -(void)refreshFeed {
-	//TODO: refresh feed
+	//TODO: refresh feed (for now just reload the top 10 povs or figure out end cursor)
     [self loadContentIntoView];
 }
 

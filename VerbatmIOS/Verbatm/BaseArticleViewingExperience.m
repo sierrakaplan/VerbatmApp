@@ -9,7 +9,7 @@
 #import "BaseArticleViewingExperience.h"
 #import "VideoAVE.h"
 #import "PhotoAVE.h"
-#import "MultiplePhotoVideoAVE.h"
+#import "PhotoVideoAVE.h"
 #import "VerbatmImageScrollView.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
@@ -64,7 +64,7 @@
 				break;
 			}
 			case AVETypePhotoVideo: {
-				MultiplePhotoVideoAVE *photoVideoAVE = [[MultiplePhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos];
+				PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos];
 				[self addSubview: photoVideoAVE];
 				self.subAVE = photoVideoAVE;
 				break;

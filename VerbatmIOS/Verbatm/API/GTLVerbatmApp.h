@@ -17,11 +17,11 @@
 
 #import "GTLVerbatmAppEmail.h"
 #import "GTLVerbatmAppImage.h"
-#import "GTLVerbatmAppList.h"
 #import "GTLVerbatmAppPage.h"
 #import "GTLVerbatmAppPageCollection.h"
 #import "GTLVerbatmAppPhoneNumber.h"
 #import "GTLVerbatmAppPOV.h"
+#import "GTLVerbatmAppPOVInfo.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppVideo.h"

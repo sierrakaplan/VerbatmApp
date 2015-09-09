@@ -90,19 +90,21 @@
 #pragma mark - Formatting sub views -
 
 -(void) setUpNavPullBar {
+
 	CGRect navPullBarFrame = CGRectMake(self.view.frame.origin.x,
 										self.view.frame.size.height - HOME_NAV_HEIGHT,
 										self.view.frame.size.width, HOME_NAV_HEIGHT);
 	self.navPullBar = [[HomeNavPullBar alloc] initWithFrame:navPullBarFrame];
 	self.navPullBar.delegate = self;
-	[self.view addSubview:self.navPullBar];
+	[self.view addSubview: self.navPullBar];
 }
 
 -(void) setUpCategorySwitcher {
+
 	float categorySwitchWidth = self.view.frame.size.width;
 	CGRect categorySwitchFrame = CGRectMake((self.view.frame.size.width - categorySwitchWidth)/2.f,
 											CATEGORY_SWITCH_OFFSET, categorySwitchWidth, CATEGORY_SWITCH_HEIGHT);
-	self.categorySwitch = [[SwitchCategoryPullView alloc] initWithFrame:categorySwitchFrame andBackgroundColor:self.view.backgroundColor];
+	self.categorySwitch = [[SwitchCategoryPullView alloc] initWithFrame:categorySwitchFrame andBackgroundColor: self.view.backgroundColor];
 	self.categorySwitch.categorySwitchDelegate = self;
 	[self.view addSubview:self.categorySwitch];
 }

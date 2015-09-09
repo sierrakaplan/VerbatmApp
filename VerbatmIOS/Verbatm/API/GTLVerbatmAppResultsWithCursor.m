@@ -17,7 +17,7 @@
 
 #import "GTLVerbatmAppResultsWithCursor.h"
 
-#import "GTLVerbatmAppList.h"
+#import "GTLVerbatmAppPOVInfo.h"
 
 // ----------------------------------------------------------------------------
 //
@@ -26,4 +26,12 @@
 
 @implementation GTLVerbatmAppResultsWithCursor
 @dynamic cursorString, results;
+
++ (NSDictionary *)arrayPropertyToClassMap {
+  NSDictionary *map = @{
+    @"results" : [GTLVerbatmAppPOVInfo class]
+  };
+  return map;
+}
+
 @end

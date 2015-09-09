@@ -8,12 +8,12 @@ import java.util.Date;
 /**
  * Information about the POV needed to display in the feed
  */
+@com.googlecode.objectify.annotation.Entity
 public class POVInfo {
 
     /**
      * Unique identifier of this POV Entity in the database.
      */
-    @Id
     private Long id;
 
     /**

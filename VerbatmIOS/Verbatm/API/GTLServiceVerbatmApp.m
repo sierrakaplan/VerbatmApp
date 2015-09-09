@@ -27,11 +27,11 @@
     [GTLQueryVerbatmApp class],
     [GTLVerbatmAppEmail class],
     [GTLVerbatmAppImage class],
-    [GTLVerbatmAppList class],
     [GTLVerbatmAppPage class],
     [GTLVerbatmAppPageCollection class],
     [GTLVerbatmAppPhoneNumber class],
     [GTLVerbatmAppPOV class],
+    [GTLVerbatmAppPOVInfo class],
     [GTLVerbatmAppResultsWithCursor class],
     [GTLVerbatmAppVerbatmUser class],
     [GTLVerbatmAppVideo class]

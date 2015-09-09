@@ -249,7 +249,7 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/MultiplePhotoVideoAVE.m"
+            filePath = "Verbatm/PhotoVideoAVE.m"
             timestampString = "460223051.454735"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
@@ -1841,22 +1841,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "AVETypeAnalyzer.m"
-            timestampString = "459668587.220425"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
-            landmarkName = "-handlePhotoVideo:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Verbatm/EditContentView.m"
             timestampString = "459669755.04521"
             startingColumnNumber = "9223372036854775807"
@@ -2072,22 +2056,6 @@
             startingLineNumber = "132"
             endingLineNumber = "132"
             landmarkName = "-renderMedia"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AVETypeAnalyzer.m"
-            timestampString = "459674279.991328"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "-handleAVES:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4252,6 +4220,22 @@
             startingLineNumber = "66"
             endingLineNumber = "66"
             landmarkName = "-initLabelContainers"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/POVLoadManager.m"
+            timestampString = "463471284.600516"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "-getPOVPagesAtIndex:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

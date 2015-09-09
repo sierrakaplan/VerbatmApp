@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+@class POVLoadManager;
+
 @interface ArticleListVC : UIViewController
 
-//-(void) setTableViewData: (NSArray*) povData;
+-(void) setPovLoadManager:(POVLoadManager *)povLoader;
 
 @end

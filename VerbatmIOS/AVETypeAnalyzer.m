@@ -14,7 +14,7 @@
 #import "VideoPinchView.h"
 #import "VideoAVE.h"
 #import "TextAVE.h"
-#import "MultiplePhotoVideoAVE.h"
+#import "PhotoVideoAVE.h"
 #import "BaseArticleViewingExperience.h"
 
 //PS REMEMBER TO SET AUTO RESIZING SUBVIEWS FOR THE CLASSES OF PINCHED OBJECTS
@@ -67,7 +67,7 @@
 
 -(void) handlePhotoVideo:(PinchView*)pinchView {
 
-	MultiplePhotoVideoAVE* multiPhotoVideoAVE = [[MultiplePhotoVideoAVE alloc] initWithFrame:self.preferredFrame andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos]];
+	PhotoVideoAVE* multiPhotoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:self.preferredFrame andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos]];
 	[multiPhotoVideoAVE mutePlayer];
 	[self.results addObject:multiPhotoVideoAVE];
 }

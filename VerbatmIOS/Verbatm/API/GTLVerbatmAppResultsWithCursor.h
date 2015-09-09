@@ -21,7 +21,7 @@
   #import "GTLObject.h"
 #endif
 
-@class GTLVerbatmAppList;
+@class GTLVerbatmAppPOVInfo;
 
 // ----------------------------------------------------------------------------
 //
@@ -30,5 +30,5 @@
 
 @interface GTLVerbatmAppResultsWithCursor : GTLObject
 @property (nonatomic, copy) NSString *cursorString;
-@property (nonatomic, retain) GTLVerbatmAppList *results;
+@property (nonatomic, retain) NSArray *results;  // of GTLVerbatmAppPOVInfo
 @end

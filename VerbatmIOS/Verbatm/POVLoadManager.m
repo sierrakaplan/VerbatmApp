@@ -7,102 +7,114 @@
 //
 
 #import "POVLoadManager.h"
+#import "GTLVerbatmAppPOVInfo.h"
+#import "GTLVerbatmAppPOV.h"
+#import "GTLServiceVerbatmApp.h"
+#import "GTMHTTPFetcherLogging.h"
+#import "GTLQueryVerbatmApp.h"
+#import "GTLVerbatmAppPageCollection.h"
+#import "GTLVerbatmAppResultsWithCursor.h"
 
 @interface POVLoadManager()
 
-@property (strong, nonatomic, readwrite) NSArray * articleList;
-//always 3 large. The present one is always the middle one
-@property (strong, nonatomic) NSMutableArray * fullDownloadedArticleList;
-@property (nonatomic) NSInteger currentPresentingIndex;
+@property(nonatomic, strong) GTLServiceVerbatmApp *service;
+
+@property (nonatomic) POVType povType;
+@property (nonatomic, strong) NSArray* povInfos;
+
+@property (nonatomic, strong) NSString* cursorString;
 
 @end
 
 @implementation POVLoadManager
 
-
-////the starting index should be the index of the view that was just tapped first
-////it tells us what is being presented first
-//-(instancetype)initWithArticleList: (NSArray *) articleList andStartingIndex: (NSInteger) startingIndex{
-//    self = [super init];
-//    if(self){
-//        self.articleList = articleList;
-//        self.currentPresentingIndex = startingIndex;
-//    }
-//    return self;
-//}
-/*
-
--(void) getPinchViewsFromArticle:(Article *)article withFrame:(CGRect)frame onCompletion:(void(^)(POVView *))completionBlock {
-	dispatch_queue_t articleDownload_queue = dispatch_queue_create("articleDisplay", NULL);
-	dispatch_async(articleDownload_queue, ^{
-		NSArray* pages = [article getAllPages];
-		//we sort the pages by their page numbers to make sure everything is in the right order
-		//O(nlogn) so should be fine in the long-run ;D
-		pages = [pages sortedArrayUsingComparator:^NSComparisonResult(id obj1, id obj2) {
-			Page * page1 = obj1;
-			Page * page2 = obj2;
-			if(page1.pagePosition < page2.pagePosition) return -1;
-			if(page2.pagePosition > page1.pagePosition) return 1;
-			return 0;
-		}];
-
-		dispatch_async(dispatch_get_main_queue(), ^{
-			NSMutableArray * pageArray = [[NSMutableArray alloc]init];
-			//get pinch views for our array
-			for (Page * page in pages) {
-				//here the radius and the center dont matter because this is just a way to wrap our data for the analyser
-				PinchView * pinchView = [page getPinchObjectWithRadius:0 andCenter:CGPointMake(0, 0)];
-				if (!pinchView) {
-					NSLog(@"Pinch view from parse should not be nil.");
-					return;
-				}
-				[pageArray addObject:pinchView];
-			}
-
-			POVView * presenter = [[POVView alloc] initWithFrame:frame andAVES:pageArray];
-			completionBlock(presenter);
-		});
-	});
-}
-
--(BOOL)fetchArticleWithIndex:(NSInteger) index withFrame:(CGRect)frame onCompletion:(void(^)(POVView *))completionBlock {
-
-	//if the index is out of bounds then we exit without downloading
-	if(index < 0 || index >= self.articleList.count) return false;
-	[self getPinchViewsFromArticle:self.articleList[index] withFrame:frame onCompletion:completionBlock];
-	return true;
-}
-
-
--(void)reloadArticleListWithCompletionBlock:(void (^)(void))onCompletion {
-	//we want to download the articles again and then load them to the page
-	[ArticleAquirer downloadAllArticlesWithBlock:^(NSArray *articles){
-		NSArray *sortedArticles;
-		sortedArticles = [articles sortedArrayUsingComparator:^NSComparisonResult(id a, id b) {
-			NSDate *first = ((Article*)a).createdAt;
-			NSDate *second = ((Article*)b).createdAt;
-			return [second compare:first];
-		}];
-		self.articleList = sortedArticles;
-
-		onCompletion();
-	}];
-}
-
--(NSMutableArray *)getPagesFromPinchViews: (NSMutableArray *) pinchViews {
-	return pinchViews;
-	//AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
-	//return [analyzer processPinchedObjectsFromArray:pinchViews withFrame:self.view.frame];
-}
-
-*/
-
--(NSArray *)articleList{
-	if (!_articleList) {
-		_articleList = @[];
+-(id) initWithType: (POVType) type {
+	self = [super init];
+	if (self) {
+		self.povType = type;
 	}
-	return _articleList;
+	return self;
+}
 
+-(void) loadPOVs: (NSInteger) numToLoad {
+	GTLQuery* loadQuery;
+
+	switch (self.povType) {
+		case POVTypeRecent: {
+			loadQuery = [GTLQueryVerbatmApp queryForPovGetRecentPOVsInfoWithCount: numToLoad
+																	   cursorString: self.cursorString];
+		}
+		case POVTypeTrending: {
+			loadQuery = [GTLQueryVerbatmApp queryForPovGetTrendingPOVsInfoWithCount:numToLoad
+																	   cursorString: self.cursorString];
+		}
+		default:
+			return;
+	}
+
+	[self.service executeQuery:loadQuery
+			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
+				 if (error) {
+					 NSLog(@"Error loading POVs: %@", error);
+				 } else {
+					 NSLog(@"Successfully loaded POVs!");
+					 self.povInfos = results.results;
+					 self.cursorString = results.cursorString;
+					 //TODO: notification to update
+				 }
+			 }];
+}
+
+// Returns POVInfo at that index
+- (GTLVerbatmAppPOVInfo*) getPOVInfoAtIndex: (NSInteger) index {
+	if (index >= 0 && index < [self.povInfos count]) {
+		return self.povInfos[index];
+	} else {
+		return nil;
+	}
+}
+
+//Returns the pages for a POV at a given index
+- (void) loadPOVPagesAtIndex: (NSInteger) index {
+	NSNumber* povId = ((GTLVerbatmAppPOVInfo*)self.povInfos[index]).identifier;
+	GTLQuery *pagesQuery = [GTLQueryVerbatmApp queryForPovGetPagesFromPOVWithIdentifier: povId.longLongValue];
+
+	[self.service executeQuery:pagesQuery
+			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPageCollection* result, NSError *error) {
+				 if (error) {
+
+				 } else {
+					 //TODO: notification to update
+				 }
+			 }];
+}
+
+
+- (NSInteger) getNumberOfPOVsLoaded {
+	return [self.povInfos count];
+}
+
+
+#pragma mark - Lazy Instantiation -
+
+- (GTLServiceVerbatmApp *)service {
+	if (!_service) {
+		_service = [[GTLServiceVerbatmApp alloc] init];
+
+		_service.retryEnabled = YES;
+
+		// Development only
+		[GTMHTTPFetcher setLoggingEnabled:YES];
+	}
+
+	return _service;
+}
+
+- (NSArray*) povs {
+	if (!_povs) {
+		_povs = [[NSArray alloc] init];
+	}
+	return _povs;
 }
 
 @end

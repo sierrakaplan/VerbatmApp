@@ -10,7 +10,7 @@
 
 #import "Article.h"
 #import "BaseArticleViewingExperience.h"
-#import "MultiplePhotoVideoAVE.h"
+#import "PhotoVideoAVE.h"
 #import "Page.h"
 #import "PhotoAVE.h"
 #import "SizesAndPositions.h"
@@ -102,8 +102,8 @@
 -(void) showImageScrollViewBounceInAVE:(UIView*) ave {
     if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
         [self showImageScrollViewBounceInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
-        [(MultiplePhotoVideoAVE*)ave imageScrollViewBounce];
+    } else if ([ave isKindOfClass:[PhotoVideoAVE class]]) {
+        [(PhotoVideoAVE*)ave imageScrollViewBounce];
     }
 }
 
@@ -114,8 +114,8 @@
         [self stopVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[VideoAVE class]]) {
         [(VideoAVE*)ave stopVideo];
-    } else if([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
-        [[(MultiplePhotoVideoAVE*)ave videoView] stopVideo];
+    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
+        [[(PhotoVideoAVE*)ave videoView] stopVideo];
     }
 }
 
@@ -124,8 +124,8 @@
         [self pauseVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[VideoAVE class]]) {
         [(VideoAVE*)ave pauseVideo];
-    } else if([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
-        [[(MultiplePhotoVideoAVE*)ave videoView] pauseVideo];
+    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
+        [[(PhotoVideoAVE*)ave videoView] pauseVideo];
     }
 }
 
@@ -134,8 +134,8 @@
         [self playVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[VideoAVE class]]) {
         [(VideoAVE*)ave continueVideo];
-    } else if([ave isKindOfClass:[MultiplePhotoVideoAVE class]]) {
-        [[(MultiplePhotoVideoAVE*)ave videoView] continueVideo];
+    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
+        [[(PhotoVideoAVE*)ave videoView] continueVideo];
     }
 }
 

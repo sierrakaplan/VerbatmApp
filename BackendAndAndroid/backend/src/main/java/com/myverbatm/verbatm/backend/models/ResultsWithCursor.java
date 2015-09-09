@@ -4,12 +4,12 @@ import java.util.List;
 
 /**
  * ResultsWithCursor class is a helper class, useful for queries that return a list
- * of instances of model classes (the results)
+ * of POVInfos (the results)
  * as well as a cursorString so that the client can query where they left off
  */
 public class ResultsWithCursor {
 
-    public final List results;
+    public final List<POVInfo> results;
     public final String cursorString;
 
     public ResultsWithCursor(List results, String cursorString) {

@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/G8rmqC6CkrkxWDzbqIyZuoa0gVE\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/6qraBYFLm3mce0AqeE9hNkanHIY\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -101,15 +101,6 @@
     }
    }
   },
-  "List": {
-   "id": "List",
-   "type": "object",
-   "properties": {
-    "empty": {
-     "type": "boolean"
-    }
-   }
-  },
   "POV": {
    "id": "POV",
    "type": "object",
@@ -138,6 +129,34 @@
      "items": {
       "$ref": "Page"
      }
+    },
+    "title": {
+     "type": "string"
+    }
+   }
+  },
+  "POVInfo": {
+   "id": "POVInfo",
+   "type": "object",
+   "properties": {
+    "coverPicUrl": {
+     "type": "string"
+    },
+    "creatorUserId": {
+     "type": "string",
+     "format": "int64"
+    },
+    "datePublished": {
+     "type": "string",
+     "format": "date-time"
+    },
+    "id": {
+     "type": "string",
+     "format": "int64"
+    },
+    "numUpVotes": {
+     "type": "integer",
+     "format": "int32"
     },
     "title": {
      "type": "string"
@@ -195,7 +214,10 @@
      "type": "string"
     },
     "results": {
-     "$ref": "List"
+     "type": "array",
+     "items": {
+      "$ref": "POVInfo"
+     }
     }
    }
   },
