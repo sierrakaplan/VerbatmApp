@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/VAmViIkGlE4QIaqHB1-bWVE184Y\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/VULiQdQ6-Vt8lf8wNPK8Qyvncwk\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -123,8 +123,8 @@
      "format": "int64"
     },
     "numUpVotes": {
-     "type": "integer",
-     "format": "int32"
+     "type": "string",
+     "format": "int64"
     },
     "pageIds": {
      "type": "array",
@@ -158,8 +158,8 @@
      "format": "int64"
     },
     "numUpVotes": {
-     "type": "integer",
-     "format": "int32"
+     "type": "string",
+     "format": "int64"
     },
     "title": {
      "type": "string"
@@ -498,13 +498,11 @@
       },
       "cursor_string": {
        "type": "string",
-       "required": true,
        "location": "query"
       }
      },
      "parameterOrder": [
-      "count",
-      "cursor_string"
+      "count"
      ],
      "response": {
       "$ref": "ResultsWithCursor"
@@ -526,13 +524,11 @@
       },
       "cursor_string": {
        "type": "string",
-       "required": true,
        "location": "query"
       }
      },
      "parameterOrder": [
-      "count",
-      "cursor_string"
+      "count"
      ],
      "response": {
       "$ref": "ResultsWithCursor"

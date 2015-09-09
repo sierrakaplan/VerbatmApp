@@ -11,12 +11,20 @@
 @class GTLVerbatmAppPOVInfo;
 @class GTLVerbatmAppPageCollection;
 
+@protocol POVLoadManagerDelegate <NSObject>
+
+-(void) morePOVsLoaded;
+
+@end
+
 @interface POVLoadManager : NSObject
 
 typedef NS_ENUM(NSInteger, POVType) {
 	POVTypeTrending,
 	POVTypeRecent
 };
+
+@property (strong, nonatomic) id<POVLoadManagerDelegate> delegate;
 
 // Initialize with the type of POV's to load (trending, recent, etc.)
 -(id) initWithType: (POVType) type;

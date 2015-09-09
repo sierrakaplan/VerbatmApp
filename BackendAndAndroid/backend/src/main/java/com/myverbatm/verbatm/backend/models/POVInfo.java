@@ -34,7 +34,7 @@ public class POVInfo {
     /**
      * Number of up votes this POV has received
      */
-    private Integer numUpVotes;
+    private Long numUpVotes;
 
     /**
      * POV's creator's user key
@@ -55,7 +55,7 @@ public class POVInfo {
         this.title = (String) entity.getProperty("title");
         this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
         this.datePublished = (Date) entity.getProperty("datePublished");
-        this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
+        this.numUpVotes = (Long) entity.getProperty("numUpVotes");
         this.creatorUserId = (Long) entity.getProperty("creatorUserId");
     }
 
@@ -91,11 +91,11 @@ public class POVInfo {
         this.datePublished = datePublished;
     }
 
-    public Integer getNumUpVotes() {
+    public Long getNumUpVotes() {
         return numUpVotes;
     }
 
-    public void setNumUpVotes(Integer numUpVotes) {
+    public void setNumUpVotes(Long numUpVotes) {
         this.numUpVotes = numUpVotes;
     }
 

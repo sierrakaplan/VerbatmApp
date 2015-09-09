@@ -27,7 +27,12 @@ import com.myverbatm.verbatm.backend.models.ResultsWithCursor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.annotation.Nullable;
+
+import sun.util.logging.resources.logging;
 
 import static com.myverbatm.verbatm.backend.OfyService.*;
 
@@ -57,7 +62,7 @@ public class POVEndpoint {
     /**
      * Log output.
      */
-    private static final Logger LOG =
+    private static final Logger log =
         Logger.getLogger(POVEndpoint.class.getName());
 
     private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -79,7 +84,7 @@ public class POVEndpoint {
      */
     @ApiMethod(path="get_recent_povs", httpMethod = "GET")
     public final ResultsWithCursor getRecentPOVsInfo(@Named("count") final int pCount,
-                                                 @Named("cursor_string") final String cursorString,
+                                                 @Named("cursor_string") @Nullable final String cursorString,
                                                  final User user) throws
         ServiceException {
 
@@ -99,8 +104,8 @@ public class POVEndpoint {
             .addProjection(new PropertyProjection("title", String.class))
             .addProjection(new PropertyProjection("coverPicUrl", String.class))
             .addProjection(new PropertyProjection("datePublished", Date.class))
-            .addProjection(new PropertyProjection("numUpVotes", Integer.class))
-            .addProjection(new PropertyProjection("creatorUserKey", Long.class))
+            .addProjection(new PropertyProjection("numUpVotes", Long.class))
+            .addProjection(new PropertyProjection("creatorUserId", Long.class))
             // Sorting by date published
             .addSort("datePublished", Query.SortDirection.DESCENDING);
 
@@ -119,6 +124,10 @@ public class POVEndpoint {
         }
 
         String recentsCursorString = entities.getCursor().toWebSafeString();
+
+        log.info("Recent POVInfos: " + results.toString());
+        log.info("Recent cursor string: " + recentsCursorString);
+
         return new ResultsWithCursor(results, recentsCursorString);
     }
 
@@ -134,7 +143,7 @@ public class POVEndpoint {
      */
     @ApiMethod(path="get_trending_povs", httpMethod = "GET")
     public final ResultsWithCursor getTrendingPOVsInfo(@Named("count") final int pCount,
-                                                              @Named("cursor_string") final String cursorString,
+                                                              @Named("cursor_string") @Nullable final String cursorString,
                                                               final User user) throws
         ServiceException {
 
@@ -154,8 +163,8 @@ public class POVEndpoint {
             .addProjection(new PropertyProjection("title", String.class))
             .addProjection(new PropertyProjection("coverPicUrl", String.class))
             .addProjection(new PropertyProjection("datePublished", Date.class))
-            .addProjection(new PropertyProjection("numUpVotes", Integer.class))
-            .addProjection(new PropertyProjection("creatorUserKey", Long.class))
+            .addProjection(new PropertyProjection("numUpVotes", Long.class))
+            .addProjection(new PropertyProjection("creatorUserId", Long.class))
             // Sorting by upvotes
             .addSort("numUpVotes", Query.SortDirection.DESCENDING);
 
@@ -163,17 +172,23 @@ public class POVEndpoint {
         FetchOptions fetchOptions = FetchOptions.Builder.withLimit(count);
 
         if (cursorString != null) {
+            log.info("Using cursor string: " + cursorString);
             fetchOptions.startCursor(Cursor.fromWebSafeString(cursorString));
         }
 
         List<POVInfo> results = new ArrayList<>();
         QueryResultList<Entity> entities = preparedQuery.asQueryResultList(fetchOptions);
+        log.info("Trending query contains " + preparedQuery.countEntities(fetchOptions) + " items.");
 
         for (Entity entity : entities) {
             results.add(new POVInfo(entity));
         }
 
         String recentsCursorString = entities.getCursor().toWebSafeString();
+
+        log.info("Trending POVInfos: " + results.toString());
+        log.info("Trending cursor string: " + recentsCursorString);
+
         return new ResultsWithCursor(results, recentsCursorString);
     }
 
@@ -280,7 +295,7 @@ public class POVEndpoint {
 
         POV pov = findPOV(id);
         if (pov == null) {
-            LOG.info(
+            log.info(
                 "POV " + id + " not found, skipping deletion.");
             return;
         }

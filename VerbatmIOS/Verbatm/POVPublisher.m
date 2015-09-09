@@ -35,16 +35,22 @@
 
 	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
 	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
-	povObject.numUpVotes = 0;
+	povObject.numUpVotes = [NSNumber numberWithInt: 0];
 	povObject.title = title;
 
+	//TODO: change these
+	povObject.coverPicUrl = @"coverPicUrl";
+	povObject.creatorUserId = [NSNumber numberWithLongLong:1];
 
 	GTLVerbatmAppPageListWrapper* pageListWrapper =  [[GTLVerbatmAppPageListWrapper alloc] init];
 	NSMutableArray* pages = [[NSMutableArray alloc] init];
-	for (PinchView* pinchView in pinchViews) {
+	for (int i = 0; i < [pinchViews count]; i++) {
+		PinchView* pinchView = pinchViews[i];
 		GTLVerbatmAppPage* page = [self sortPinchView:pinchView];
+		page.indexInPOV = [NSNumber numberWithInt:i];
 		[pages addObject: page];
 	}
+
 	pageListWrapper.pages = pages;
 	GTLQuery* insertPagesQuery = [GTLQueryVerbatmApp queryForPageInsertPagesWithObject: pageListWrapper];
 

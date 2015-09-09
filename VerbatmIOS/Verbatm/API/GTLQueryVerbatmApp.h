@@ -119,18 +119,20 @@
 + (instancetype)queryForPovGetPOVWithIdentifier:(long long)identifier;
 
 // Method: verbatmApp.pov.getRecentPOVsInfo
+//  Optional:
+//   cursorString: NSString
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppResultsWithCursor.
-+ (instancetype)queryForPovGetRecentPOVsInfoWithCount:(NSInteger)count
-                                         cursorString:(NSString *)cursorString;
++ (instancetype)queryForPovGetRecentPOVsInfoWithCount:(NSInteger)count;
 
 // Method: verbatmApp.pov.getTrendingPOVsInfo
+//  Optional:
+//   cursorString: NSString
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppResultsWithCursor.
-+ (instancetype)queryForPovGetTrendingPOVsInfoWithCount:(NSInteger)count
-                                           cursorString:(NSString *)cursorString;
++ (instancetype)queryForPovGetTrendingPOVsInfoWithCount:(NSInteger)count;
 
 // Method: verbatmApp.pov.insertPOV
 //  Authorization scope(s):

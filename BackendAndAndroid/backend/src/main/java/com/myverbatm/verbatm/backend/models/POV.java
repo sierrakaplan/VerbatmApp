@@ -3,6 +3,7 @@ package com.myverbatm.verbatm.backend.models;
 import com.google.appengine.api.datastore.*;
 import com.googlecode.objectify.annotation.*;
 import com.googlecode.objectify.annotation.Entity;
+import com.googlecode.objectify.annotation.Index;
 
 import java.util.Date;
 import java.util.List;
@@ -22,31 +23,37 @@ public class POV {
     /**
      * VerbatmUser given title for the POV
      */
+    @Index
     private String title;
 
     /**
      * The url of the cover picture in the blobstore
      */
+    @Index
     private String coverPicUrl;
 
     /**
      * Date the POV was published
      */
+    @Index
     private Date datePublished;
 
     /**
      * Number of up votes this POV has received
      */
-    private Integer numUpVotes;
+    @Index
+    private Long numUpVotes;
 
     /**
      * POV's creator's user id
      */
+    @Index
     private Long creatorUserId;
 
     /**
      * Array of page keys in the POV
      */
+    @Index
     private List<Long> pageIds;
 
 
@@ -135,7 +142,7 @@ public class POV {
      * Returns the number of up votes this POV has received
      * @return the number of up votes this POV has received
      */
-    public Integer getNumUpVotes() {
+    public Long getNumUpVotes() {
         return numUpVotes;
     }
 
@@ -143,7 +150,7 @@ public class POV {
      * Sets the number of up votes this POV has received
      * @param numUpVotes the number of up votes this POV has received
      */
-    public void setNumUpVotes(Integer numUpVotes) {
+    public void setNumUpVotes(Long numUpVotes) {
         this.numUpVotes = numUpVotes;
     }
 

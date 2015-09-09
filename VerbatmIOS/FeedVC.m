@@ -79,7 +79,7 @@
 	[self.trendingVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeTrending]];
 
 	self.mostRecentVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_RECENT_VC];
-	[self.trendingVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeRecent]];
+	[self.mostRecentVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeRecent]];
 
 	// NOT IN USE RIGHT NOW
 	self.topicsVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TOPICS_VC];

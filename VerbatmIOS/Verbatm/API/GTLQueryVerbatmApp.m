@@ -152,22 +152,18 @@
   return query;
 }
 
-+ (instancetype)queryForPovGetRecentPOVsInfoWithCount:(NSInteger)count
-                                         cursorString:(NSString *)cursorString {
++ (instancetype)queryForPovGetRecentPOVsInfoWithCount:(NSInteger)count {
   NSString *methodName = @"verbatmApp.pov.getRecentPOVsInfo";
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.count = count;
-  query.cursorString = cursorString;
   query.expectedObjectClass = [GTLVerbatmAppResultsWithCursor class];
   return query;
 }
 
-+ (instancetype)queryForPovGetTrendingPOVsInfoWithCount:(NSInteger)count
-                                           cursorString:(NSString *)cursorString {
++ (instancetype)queryForPovGetTrendingPOVsInfoWithCount:(NSInteger)count {
   NSString *methodName = @"verbatmApp.pov.getTrendingPOVsInfo";
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.count = count;
-  query.cursorString = cursorString;
   query.expectedObjectClass = [GTLVerbatmAppResultsWithCursor class];
   return query;
 }

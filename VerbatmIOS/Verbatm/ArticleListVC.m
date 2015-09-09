@@ -24,7 +24,7 @@
 #import "POVLoadManager.h"
 #import "GTLVerbatmAppPOVInfo.h"
 
-@interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource>
+@interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource, POVLoadManagerDelegate>
 
 
 #pragma mark - Table View + data -
@@ -52,11 +52,14 @@
 - (void) viewDidLoad {
     [super viewDidLoad];
 	[self initStoryListView];
+	[self registerForNotifications];
+}
+
+-(void) registerForNotifications {
 }
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-	// TODO: [self refreshFeed];
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
@@ -68,9 +71,8 @@
 
 -(void) setPovLoadManager:(POVLoadManager *) povLoader {
 	self.povLoader = povLoader;
+	self.povLoader.delegate = self;
 	[self.povLoader loadPOVs: NUM_POVS_IN_SECTION];
-	// TODO: [self refreshFeed];
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
@@ -167,14 +169,18 @@
 
 
 -(void)refreshFeed {
-	//TODO: refresh feed (for now just reload the top 10 povs or figure out end cursor)
-    [self loadContentIntoView];
+	[self loadContentIntoView];
+}
+
+-(void) morePOVsLoaded {
+	[self loadContentIntoView];
 }
 
 -(void)loadContentIntoView{
-    if(self.refreshInProgress)[self removeAnimatingView];
-    //if the refresh is in progress we call this in removeAnimatingView
-    if(!self.refreshInProgress)[self.povListView reloadData];
+    if(self.refreshInProgress) {
+		[self removeAnimatingView];
+	}
+	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 

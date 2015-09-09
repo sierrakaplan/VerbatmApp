@@ -46,14 +46,18 @@
 -(void) loadPOVs: (NSInteger) numToLoad {
 	GTLQuery* loadQuery;
 
+	// Note: cursor string will be nil if this is the first query.
+	// That's ok on the backend.
 	switch (self.povType) {
 		case POVTypeRecent: {
-			loadQuery = [GTLQueryVerbatmApp queryForPovGetRecentPOVsInfoWithCount: numToLoad
-																	   cursorString: self.cursorString];
+			loadQuery = [GTLQueryVerbatmApp queryForPovGetRecentPOVsInfoWithCount: numToLoad];
+			[loadQuery setValue: self.cursorString forKey:@"cursorString"];
+			break;
 		}
 		case POVTypeTrending: {
-			loadQuery = [GTLQueryVerbatmApp queryForPovGetTrendingPOVsInfoWithCount:numToLoad
-																	   cursorString: self.cursorString];
+			loadQuery = [GTLQueryVerbatmApp queryForPovGetTrendingPOVsInfoWithCount:numToLoad];
+			[loadQuery setValue: self.cursorString forKey:@"cursorString"];
+			break;
 		}
 		default:
 			return;
@@ -67,7 +71,8 @@
 					 NSLog(@"Successfully loaded POVs!");
 					 [self.povInfos addObjectsFromArray: results.results];
 					 self.cursorString = results.cursorString;
-					 //TODO: notification to update
+
+					 [self.delegate morePOVsLoaded];
 				 }
 			 }];
 }
