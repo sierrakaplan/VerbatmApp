@@ -17,8 +17,6 @@
 
 #import "GTLVerbatmAppPOV.h"
 
-#import "GTLVerbatmAppPage.h"
-
 // ----------------------------------------------------------------------------
 //
 //   GTLVerbatmAppPOV
@@ -26,7 +24,7 @@
 
 @implementation GTLVerbatmAppPOV
 @dynamic coverPicUrl, creatorUserId, datePublished, identifier, numUpVotes,
-         pages, title;
+         pageIds, title;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{
@@ -37,7 +35,7 @@
 
 + (NSDictionary *)arrayPropertyToClassMap {
   NSDictionary *map = @{
-    @"pages" : [GTLVerbatmAppPage class]
+    @"pageIds" : [NSNumber class]
   };
   return map;
 }

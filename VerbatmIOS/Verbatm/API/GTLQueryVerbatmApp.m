@@ -19,7 +19,7 @@
 
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppPage.h"
-#import "GTLVerbatmAppPageCollection.h"
+#import "GTLVerbatmAppPageListWrapper.h"
 #import "GTLVerbatmAppPOV.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
 #import "GTLVerbatmAppVerbatmUser.h"
@@ -102,10 +102,15 @@
   return query;
 }
 
-+ (instancetype)queryForPageListpage {
-  NSString *methodName = @"verbatmApp.page.listpage";
++ (instancetype)queryForPageInsertPagesWithObject:(GTLVerbatmAppPageListWrapper *)object {
+  if (object == nil) {
+    GTL_DEBUG_ASSERT(object != nil, @"%@ got a nil object", NSStringFromSelector(_cmd));
+    return nil;
+  }
+  NSString *methodName = @"verbatmApp.page.insertPages";
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
-  query.expectedObjectClass = [GTLVerbatmAppPageCollection class];
+  query.bodyObject = object;
+  query.expectedObjectClass = [GTLVerbatmAppPageListWrapper class];
   return query;
 }
 
@@ -135,7 +140,7 @@
   NSString *methodName = @"verbatmApp.pov.getPagesFromPOV";
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.identifier = identifier;
-  query.expectedObjectClass = [GTLVerbatmAppPageCollection class];
+  query.expectedObjectClass = [GTLVerbatmAppPageListWrapper class];
   return query;
 }
 

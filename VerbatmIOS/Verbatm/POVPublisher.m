@@ -16,6 +16,7 @@
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppVideo.h"
 #import "GTLVerbatmAppVerbatmUser.h"
+#import "GTLVerbatmAppPageListWrapper.h"
 
 #import "GTMHTTPFetcherLogging.h"
 
@@ -37,23 +38,42 @@
 	povObject.numUpVotes = 0;
 	povObject.title = title;
 
+
+	GTLVerbatmAppPageListWrapper* pageListWrapper =  [[GTLVerbatmAppPageListWrapper alloc] init];
 	NSMutableArray* pages = [[NSMutableArray alloc] init];
 	for (PinchView* pinchView in pinchViews) {
 		GTLVerbatmAppPage* page = [self sortPinchView:pinchView];
 		[pages addObject: page];
 	}
-	povObject.pages = pages;
+	pageListWrapper.pages = pages;
+	GTLQuery* insertPagesQuery = [GTLQueryVerbatmApp queryForPageInsertPagesWithObject: pageListWrapper];
 
+	[self.service executeQuery:insertPagesQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPageListWrapper* pageListWrapper, NSError *error) {
+		if (error) {
+			NSLog(@"Error uploading Pages: %@", error.description);
+		} else {
+			NSMutableArray* pageIds = [[NSMutableArray alloc] init];
+			for (GTLVerbatmAppPage* page in pageListWrapper.pages) {
+				NSNumber* pageId = page.identifier;
+				[pageIds addObject: pageId];
+			}
+			povObject.pageIds = pageIds;
+			[self insertPOV: povObject];
+		}
+	}];
+}
+
+-(void) insertPOV: (GTLVerbatmAppPOV*) povObject {
 	GTLQuery* insertPOVQuery = [GTLQueryVerbatmApp queryForPovInsertPOVWithObject: povObject];
 
 	[self.service executeQuery:insertPOVQuery
 			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* object, NSError *error) {
-				if (error) {
-					NSLog(@"Error uploading POV: %@", error);
-				} else {
-					NSLog(@"Successfully uploaded POV!");
-					//TODO: Show POV in feed
-				}
+				 if (error) {
+					 NSLog(@"Error uploading POV: %@", error.description);
+				 } else {
+					 NSLog(@"Successfully uploaded POV!");
+					 //TODO: Show POV in feed
+				 }
 			 }];
 }
 
@@ -69,10 +89,10 @@
 			GTLVerbatmAppImage* gtlImage = [self getGTLImageFromUIImage: uiimage];
 			[gtlImages addObject: gtlImage];
 		}
-		page.images = [[NSArray alloc] initWithArray:gtlImages copyItems:YES];
+//		page.imageIDs = ;
 
 	} else {
-		page.images = nil;
+		page.imageIds = nil;
 	}
 
 	if(pinchView.containsVideo) {
@@ -82,10 +102,10 @@
 			GTLVerbatmAppVideo* gtlVideo = [self getGTLVideoFromAVAsset:videoAsset];
 			[gtlVideos addObject: gtlVideo];
 		}
-		page.videos = [[NSArray alloc] initWithArray:gtlVideos copyItems:YES];
+//		page.videos = [[NSArray alloc] initWithArray:gtlVideos copyItems:YES];
 
 	} else {
-		page.videos = nil;
+		page.videoIds = nil;
 	}
 
 	return page;

@@ -28,7 +28,7 @@
     [GTLVerbatmAppEmail class],
     [GTLVerbatmAppImage class],
     [GTLVerbatmAppPage class],
-    [GTLVerbatmAppPageCollection class],
+    [GTLVerbatmAppPageListWrapper class],
     [GTLVerbatmAppPhoneNumber class],
     [GTLVerbatmAppPOV class],
     [GTLVerbatmAppPOVInfo class],

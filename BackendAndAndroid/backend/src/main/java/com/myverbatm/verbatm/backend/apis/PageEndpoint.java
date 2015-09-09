@@ -9,6 +9,7 @@ import com.google.api.server.spi.config.Named;
 import com.google.appengine.api.users.User;
 import com.myverbatm.verbatm.backend.Constants;
 import com.myverbatm.verbatm.backend.models.Page;
+import com.myverbatm.verbatm.backend.models.PageListWrapper;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -43,21 +44,6 @@ public class PageEndpoint {
     private static final Logger LOG =
         Logger.getLogger(PageEndpoint.class.getName());
 
-    /**
-     * Lists all the entities inserted in datastore.
-     *
-     * @param user the user requesting the entities.
-     * @return the list of all entities persisted.
-     * @throws com.google.api.server.spi.ServiceException if user is not
-     *                                                    authorized
-     */
-    @SuppressWarnings({"cast", "unchecked"})
-    public final List<Page> listpage(final User user) throws
-        ServiceException {
-//        EndpointUtil.throwIfNotAdmin(user);
-
-        return ofy().load().type(Page.class).list();
-    }
 
     /**
      * Gets the entity having primary key id.
@@ -96,6 +82,25 @@ public class PageEndpoint {
         ofy().save().entity(page).now();
 
         return page;
+    }
+
+    /**
+     * Method that saves a list of pages at once
+     * @param pagesWrapper a wrapper for a list of Pages to be inserted
+     * @param user The user trying to insert a list of pages
+     * @return The list of pages inserted
+     * @throws ServiceException
+     */
+    @ApiMethod(path="insert_pages", httpMethod = "POST")
+    public final PageListWrapper insertPages(final PageListWrapper pagesWrapper, final User user)
+        throws ServiceException {
+//        EndpointUtil.throwIfNotAuthenticated(user);
+
+        for (Page page : pagesWrapper.pages) {
+            page.clearId();
+            ofy().save().entity(page).now();
+        }
+        return pagesWrapper;
     }
 
     /**

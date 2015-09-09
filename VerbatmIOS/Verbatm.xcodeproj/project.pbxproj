@@ -31,20 +31,17 @@
 		A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A59CC2881B6C2E6400B4907C /* FeedTableView.m */; };
 		A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA319B1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m */; };
 		A5AA31BB1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA319D1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m */; };
-		A5AA31BC1B9FCDDC00D8D20C /* GTLVerbatmApp_Sources.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA319E1B9FCDDC00D8D20C /* GTLVerbatmApp_Sources.m */; };
 		A5AA31BD1B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31A11B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m */; };
 		A5AA31BE1B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31A31B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m */; };
 		A5AA31BF1B9FCDDC00D8D20C /* GTLVerbatmAppImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31A51B9FCDDC00D8D20C /* GTLVerbatmAppImage.m */; };
-		A5AA31C01B9FCDDC00D8D20C /* GTLVerbatmAppList.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31A71B9FCDDC00D8D20C /* GTLVerbatmAppList.m */; };
 		A5AA31C11B9FCDDC00D8D20C /* GTLVerbatmAppPage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31A91B9FCDDC00D8D20C /* GTLVerbatmAppPage.m */; };
-		A5AA31C21B9FCDDC00D8D20C /* GTLVerbatmAppPageCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31AB1B9FCDDC00D8D20C /* GTLVerbatmAppPageCollection.m */; };
 		A5AA31C31B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31AD1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m */; };
 		A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31AF1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m */; };
-		A5AA31C51B9FCDDC00D8D20C /* GTLVerbatmAppPOVCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B11B9FCDDC00D8D20C /* GTLVerbatmAppPOVCollection.m */; };
 		A5AA31C61B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B31B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m */; };
 		A5AA31C71B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B51B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.m */; };
 		A5AA31C81B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B71B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m */; };
 		A5AA31C91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m */; };
+		A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */; };
 		A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */; };
 		A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61171B9CC40F009D9D11 /* TopicsTableView.m */; };
 		A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */; };
@@ -226,7 +223,6 @@
 		A5AA319B1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLQueryVerbatmApp.m; path = API/GTLQueryVerbatmApp.m; sourceTree = "<group>"; };
 		A5AA319C1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLServiceVerbatmApp.h; path = API/GTLServiceVerbatmApp.h; sourceTree = "<group>"; };
 		A5AA319D1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLServiceVerbatmApp.m; path = API/GTLServiceVerbatmApp.m; sourceTree = "<group>"; };
-		A5AA319E1B9FCDDC00D8D20C /* GTLVerbatmApp_Sources.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmApp_Sources.m; path = API/GTLVerbatmApp_Sources.m; sourceTree = "<group>"; };
 		A5AA319F1B9FCDDC00D8D20C /* GTLVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmApp.h; path = API/GTLVerbatmApp.h; sourceTree = "<group>"; };
 		A5AA31A01B9FCDDC00D8D20C /* GTLVerbatmAppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppConstants.h; path = API/GTLVerbatmAppConstants.h; sourceTree = "<group>"; };
 		A5AA31A11B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppConstants.m; path = API/GTLVerbatmAppConstants.m; sourceTree = "<group>"; };
@@ -234,18 +230,12 @@
 		A5AA31A31B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppEmail.m; path = API/GTLVerbatmAppEmail.m; sourceTree = "<group>"; };
 		A5AA31A41B9FCDDC00D8D20C /* GTLVerbatmAppImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppImage.h; path = API/GTLVerbatmAppImage.h; sourceTree = "<group>"; };
 		A5AA31A51B9FCDDC00D8D20C /* GTLVerbatmAppImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppImage.m; path = API/GTLVerbatmAppImage.m; sourceTree = "<group>"; };
-		A5AA31A61B9FCDDC00D8D20C /* GTLVerbatmAppList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppList.h; path = API/GTLVerbatmAppList.h; sourceTree = "<group>"; };
-		A5AA31A71B9FCDDC00D8D20C /* GTLVerbatmAppList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppList.m; path = API/GTLVerbatmAppList.m; sourceTree = "<group>"; };
 		A5AA31A81B9FCDDC00D8D20C /* GTLVerbatmAppPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPage.h; path = API/GTLVerbatmAppPage.h; sourceTree = "<group>"; };
 		A5AA31A91B9FCDDC00D8D20C /* GTLVerbatmAppPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPage.m; path = API/GTLVerbatmAppPage.m; sourceTree = "<group>"; };
-		A5AA31AA1B9FCDDC00D8D20C /* GTLVerbatmAppPageCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPageCollection.h; path = API/GTLVerbatmAppPageCollection.h; sourceTree = "<group>"; };
-		A5AA31AB1B9FCDDC00D8D20C /* GTLVerbatmAppPageCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPageCollection.m; path = API/GTLVerbatmAppPageCollection.m; sourceTree = "<group>"; };
 		A5AA31AC1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPhoneNumber.h; path = API/GTLVerbatmAppPhoneNumber.h; sourceTree = "<group>"; };
 		A5AA31AD1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPhoneNumber.m; path = API/GTLVerbatmAppPhoneNumber.m; sourceTree = "<group>"; };
 		A5AA31AE1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPOV.h; path = API/GTLVerbatmAppPOV.h; sourceTree = "<group>"; };
 		A5AA31AF1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPOV.m; path = API/GTLVerbatmAppPOV.m; sourceTree = "<group>"; };
-		A5AA31B01B9FCDDC00D8D20C /* GTLVerbatmAppPOVCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPOVCollection.h; path = API/GTLVerbatmAppPOVCollection.h; sourceTree = "<group>"; };
-		A5AA31B11B9FCDDC00D8D20C /* GTLVerbatmAppPOVCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPOVCollection.m; path = API/GTLVerbatmAppPOVCollection.m; sourceTree = "<group>"; };
 		A5AA31B21B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPOVInfo.h; path = API/GTLVerbatmAppPOVInfo.h; sourceTree = "<group>"; };
 		A5AA31B31B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPOVInfo.m; path = API/GTLVerbatmAppPOVInfo.m; sourceTree = "<group>"; };
 		A5AA31B41B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppResultsWithCursor.h; path = API/GTLVerbatmAppResultsWithCursor.h; sourceTree = "<group>"; };
@@ -254,6 +244,8 @@
 		A5AA31B71B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVerbatmUser.m; path = API/GTLVerbatmAppVerbatmUser.m; sourceTree = "<group>"; };
 		A5AA31B81B9FCDDC00D8D20C /* GTLVerbatmAppVideo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppVideo.h; path = API/GTLVerbatmAppVideo.h; sourceTree = "<group>"; };
 		A5AA31B91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVideo.m; path = API/GTLVerbatmAppVideo.m; sourceTree = "<group>"; };
+		A5AA31CA1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPageListWrapper.h; path = API/GTLVerbatmAppPageListWrapper.h; sourceTree = "<group>"; };
+		A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPageListWrapper.m; path = API/GTLVerbatmAppPageListWrapper.m; sourceTree = "<group>"; };
 		A5CA61131B9A013E009D9D11 /* AdjustableBlurEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustableBlurEffect.h; sourceTree = "<group>"; };
 		A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustableBlurEffect.m; sourceTree = "<group>"; };
 		A5CA61161B9CC40F009D9D11 /* TopicsTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicsTableView.h; sourceTree = "<group>"; };
@@ -711,7 +703,6 @@
 				A5AA319B1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m */,
 				A5AA319C1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.h */,
 				A5AA319D1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m */,
-				A5AA319E1B9FCDDC00D8D20C /* GTLVerbatmApp_Sources.m */,
 				A5AA319F1B9FCDDC00D8D20C /* GTLVerbatmApp.h */,
 				A5AA31A01B9FCDDC00D8D20C /* GTLVerbatmAppConstants.h */,
 				A5AA31A11B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m */,
@@ -719,18 +710,14 @@
 				A5AA31A31B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m */,
 				A5AA31A41B9FCDDC00D8D20C /* GTLVerbatmAppImage.h */,
 				A5AA31A51B9FCDDC00D8D20C /* GTLVerbatmAppImage.m */,
-				A5AA31A61B9FCDDC00D8D20C /* GTLVerbatmAppList.h */,
-				A5AA31A71B9FCDDC00D8D20C /* GTLVerbatmAppList.m */,
 				A5AA31A81B9FCDDC00D8D20C /* GTLVerbatmAppPage.h */,
 				A5AA31A91B9FCDDC00D8D20C /* GTLVerbatmAppPage.m */,
-				A5AA31AA1B9FCDDC00D8D20C /* GTLVerbatmAppPageCollection.h */,
-				A5AA31AB1B9FCDDC00D8D20C /* GTLVerbatmAppPageCollection.m */,
+				A5AA31CA1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.h */,
+				A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */,
 				A5AA31AC1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.h */,
 				A5AA31AD1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m */,
 				A5AA31AE1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.h */,
 				A5AA31AF1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m */,
-				A5AA31B01B9FCDDC00D8D20C /* GTLVerbatmAppPOVCollection.h */,
-				A5AA31B11B9FCDDC00D8D20C /* GTLVerbatmAppPOVCollection.m */,
 				A5AA31B21B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.h */,
 				A5AA31B31B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m */,
 				A5AA31B41B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.h */,
@@ -1316,9 +1303,7 @@
 				A59C19721B9E1DFF00EBA60E /* POVLoadManager.m in Sources */,
 				C78B682419CA6C01003D0AC5 /* VerbatmUITextView.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,
-				A5AA31BC1B9FCDDC00D8D20C /* GTLVerbatmApp_Sources.m in Sources */,
 				A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */,
-				A5AA31C21B9FCDDC00D8D20C /* GTLVerbatmAppPageCollection.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */,
@@ -1334,7 +1319,7 @@
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				A5E85F9F1B911DA900E148D0 /* GTLErrorObject.m in Sources */,
-				A5AA31C01B9FCDDC00D8D20C /* GTLVerbatmAppList.m in Sources */,
+				A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				F2964FA41A4FE43300E1DBEC /* Page.m in Sources */,
@@ -1346,7 +1331,6 @@
 				A5E85F9D1B911DA900E148D0 /* GTLUploadParameters.m in Sources */,
 				A5AA31BD1B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m in Sources */,
 				C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */,
-				A5AA31C51B9FCDDC00D8D20C /* GTLVerbatmAppPOVCollection.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,

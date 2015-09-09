@@ -10,6 +10,7 @@
 #import "HomeNavPullBar.h"
 #import "Icons.h"
 #import "FeedVC.h"
+#import "POVLoadManager.h"
 #import "SwitchCategoryPullView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -75,14 +76,14 @@
 //offset for the master SV
 -(void) getAndFormatVCs {
 	self.trendingVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TRENDING_VC];
-//	TODO: [self.trendingVC setTableViewDataSource:[TrendingDataSource alloc]];
+	[self.trendingVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeTrending]];
 
 	self.mostRecentVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_RECENT_VC];
-//	TODO: [self.mostRecentVC setTableViewDataSource:[TrendingDataSource alloc]];
+	[self.trendingVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeRecent]];
 
+	// NOT IN USE RIGHT NOW
 	self.topicsVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TOPICS_VC];
 
-	//TODO: change this to trending + topics?
 	[self.topListContainer addSubview: self.trendingVC.view];
 	[self.bottomListContainer addSubview: self.mostRecentVC.view];
 }

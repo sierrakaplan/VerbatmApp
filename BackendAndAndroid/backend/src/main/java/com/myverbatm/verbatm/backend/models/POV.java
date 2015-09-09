@@ -45,23 +45,28 @@ public class POV {
     private Long creatorUserId;
 
     /**
-     * Array of pages in the POV
+     * Array of page keys in the POV
      */
-    private List<Page> pages;
+    private List<Long> pageIds;
 
-    /**
-     * Creates a POV instance from an entity of POV type
-     * @param entity
-     */
-    public POV(com.google.appengine.api.datastore.Entity entity) {
-        this.id = entity.getKey().getId();
-        this.title = (String) entity.getProperty("title");
-        this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
-        this.datePublished = (Date) entity.getProperty("datePublished");
-        this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
-        this.creatorUserId = (Long) entity.getProperty("creatorUserId");
-        this.pages = (List<Page>) entity.getProperty("pages");
+
+    public POV() {
+
     }
+
+//    /**
+//     * Creates a POV instance from an entity of POV type
+//     * @param entity
+//     */
+//    public POV(com.google.appengine.api.datastore.Entity entity) {
+//        this.id = entity.getKey().getId();
+//        this.title = (String) entity.getProperty("title");
+//        this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
+//        this.datePublished = (Date) entity.getProperty("datePublished");
+//        this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
+//        this.creatorUserId = (Long) entity.getProperty("creatorUserId");
+//        this.pages = (List<Page>) entity.getProperty("pages");
+//    }
 
     /**
      *
@@ -159,18 +164,18 @@ public class POV {
     }
 
     /**
-     * Returns the pages within this POV
-     * @return the pages within this POV
+     * Returns the list of Page IDs for this POV
+     * @return the list of Page IDs for this POV
      */
-    public final List<Page> getPages() {
-        return pages;
+    public List<Long> getPageIds() {
+        return pageIds;
     }
 
     /**
-     * Sets the pages within this POV
-     * @param pages The pages to be set for this POV
+     * Sets the list of Page IDs for this POV
+     * @param pageIds the list of Page IDs for this POV
      */
-    public final void setPages(List<Page> pages) {
-        this.pages = pages;
+    public void setPageIds(List<Long> pageIds) {
+        this.pageIds = pageIds;
     }
 }

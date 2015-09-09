@@ -13,12 +13,9 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppPage (0 custom class methods, 3 custom properties)
+//   GTLVerbatmAppPage (0 custom class methods, 4 custom properties)
 
 #import "GTLVerbatmAppPage.h"
-
-#import "GTLVerbatmAppImage.h"
-#import "GTLVerbatmAppVideo.h"
 
 // ----------------------------------------------------------------------------
 //
@@ -26,7 +23,7 @@
 //
 
 @implementation GTLVerbatmAppPage
-@dynamic identifier, images, videos;
+@dynamic identifier, imageIds, indexInPOV, videoIds;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{
@@ -37,8 +34,8 @@
 
 + (NSDictionary *)arrayPropertyToClassMap {
   NSDictionary *map = @{
-    @"images" : [GTLVerbatmAppImage class],
-    @"videos" : [GTLVerbatmAppVideo class]
+    @"imageIds" : [NSNumber class],
+    @"videoIds" : [NSNumber class]
   };
   return map;
 }

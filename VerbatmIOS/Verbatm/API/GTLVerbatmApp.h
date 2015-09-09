@@ -18,7 +18,7 @@
 #import "GTLVerbatmAppEmail.h"
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppPage.h"
-#import "GTLVerbatmAppPageCollection.h"
+#import "GTLVerbatmAppPageListWrapper.h"
 #import "GTLVerbatmAppPhoneNumber.h"
 #import "GTLVerbatmAppPOV.h"
 #import "GTLVerbatmAppPOVInfo.h"

@@ -56,8 +56,8 @@
 
 -(void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    // TODO: [self refreshFeed];
-    [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+	// TODO: [self refreshFeed];
+	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 -(void) initStoryListView {
@@ -69,6 +69,8 @@
 -(void) setPovLoadManager:(POVLoadManager *) povLoader {
 	self.povLoader = povLoader;
 	[self.povLoader loadPOVs: NUM_POVS_IN_SECTION];
+	// TODO: [self refreshFeed];
+	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
@@ -107,12 +109,10 @@
 	if (self.refreshInProgress && index ==0 ){
 		//TODO: animation placeholder
 	} else {
-
-		Article * article = self.articleLoadManger.articleList[index];
-		[cell setContentWithUsername:[article getAuthorUsername] andTitle:article.title];
-		cell.selectionStyle = UITableViewCellSelectionStyleNone;
+		GTLVerbatmAppPOVInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
+		//TODO: set way to get username and cover image from povLoader
+		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage:[UIImage imageNamed:@"demo_image"]];
 	}
-    [cell setContentWithUsername:@"Iain Usiri" andTitle:@"A night in an underwater hotel in Zanzibar" andCoverImage:[UIImage imageNamed:@"demo_image"]];
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
     //}
     return cell;
@@ -128,7 +128,6 @@
         [self.povListView insertSubview:self.placeholderCell atIndex:0];
     }
 }
-
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     float offset_y =scrollView.contentOffset.y ;

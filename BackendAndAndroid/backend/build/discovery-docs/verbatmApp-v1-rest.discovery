@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/6qraBYFLm3mce0AqeE9hNkanHIY\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/VAmViIkGlE4QIaqHB1-bWVE184Y\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -126,10 +126,11 @@
      "type": "integer",
      "format": "int32"
     },
-    "pages": {
+    "pageIds": {
      "type": "array",
      "items": {
-      "$ref": "Page"
+      "type": "string",
+      "format": "int64"
      }
     },
     "title": {
@@ -173,25 +174,31 @@
      "type": "string",
      "format": "int64"
     },
-    "images": {
+    "imageIds": {
      "type": "array",
      "items": {
-      "$ref": "Image"
+      "type": "string",
+      "format": "int64"
      }
     },
-    "videos": {
+    "indexInPOV": {
+     "type": "integer",
+     "format": "int32"
+    },
+    "videoIds": {
      "type": "array",
      "items": {
-      "$ref": "Video"
+      "type": "string",
+      "format": "int64"
      }
     }
    }
   },
-  "PageCollection": {
-   "id": "PageCollection",
+  "PageListWrapper": {
+   "id": "PageListWrapper",
    "type": "object",
    "properties": {
-    "items": {
+    "pages": {
      "type": "array",
      "items": {
       "$ref": "Page"
@@ -381,12 +388,16 @@
       "https://www.googleapis.com/auth/userinfo.email"
      ]
     },
-    "listpage": {
-     "id": "verbatmApp.page.listpage",
-     "path": "page",
-     "httpMethod": "GET",
+    "insertPages": {
+     "id": "verbatmApp.page.insertPages",
+     "path": "insert_pages",
+     "httpMethod": "POST",
+     "request": {
+      "$ref": "PageListWrapper",
+      "parameterName": "resource"
+     },
      "response": {
-      "$ref": "PageCollection"
+      "$ref": "PageListWrapper"
      },
      "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"
@@ -468,7 +479,7 @@
       "id"
      ],
      "response": {
-      "$ref": "PageCollection"
+      "$ref": "PageListWrapper"
      },
      "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"

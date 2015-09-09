@@ -12,7 +12,7 @@
 #import "GTLServiceVerbatmApp.h"
 #import "GTMHTTPFetcherLogging.h"
 #import "GTLQueryVerbatmApp.h"
-#import "GTLVerbatmAppPageCollection.h"
+#import "GTLVerbatmAppPageListWrapper.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
 
 @interface POVLoadManager()
@@ -20,9 +20,16 @@
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
 
 @property (nonatomic) POVType povType;
-@property (nonatomic, strong) NSArray* povInfos;
 
+// Array of GTLVerbatmAppPovInfo objects
+@property (nonatomic, strong) NSMutableArray* povInfos;
+// Cursor string associated with the povInfos (used to query for next batch)
 @property (nonatomic, strong) NSString* cursorString;
+
+// Dictionary of GTLVerbatmAppPageCollection objects associated with their POV id's
+@property (nonatomic, strong) NSMutableDictionary* pageCollections;
+
+
 
 @end
 
@@ -55,14 +62,18 @@
 	[self.service executeQuery:loadQuery
 			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
 				 if (error) {
-					 NSLog(@"Error loading POVs: %@", error);
+					 NSLog(@"Error loading POVs: %@", error.description);
 				 } else {
 					 NSLog(@"Successfully loaded POVs!");
-					 self.povInfos = results.results;
+					 [self.povInfos addObjectsFromArray: results.results];
 					 self.cursorString = results.cursorString;
 					 //TODO: notification to update
 				 }
 			 }];
+}
+
+- (NSInteger) getNumberOfPOVsLoaded {
+	return [self.povInfos count];
 }
 
 // Returns POVInfo at that index
@@ -70,28 +81,46 @@
 	if (index >= 0 && index < [self.povInfos count]) {
 		return self.povInfos[index];
 	} else {
+		NSLog(@"Error: Requesting POV for index not yet loaded");
 		return nil;
 	}
 }
 
 //Returns the pages for a POV at a given index
-- (void) loadPOVPagesAtIndex: (NSInteger) index {
+- (void) loadPOVPagesForPOVAtIndex: (NSInteger) index {
+	if (index < 0 || index >= [self.povInfos count]) {
+		NSLog(@"Error: Requesting pages for POV at index not yet loaded");
+		return;
+	}
 	NSNumber* povId = ((GTLVerbatmAppPOVInfo*)self.povInfos[index]).identifier;
 	GTLQuery *pagesQuery = [GTLQueryVerbatmApp queryForPovGetPagesFromPOVWithIdentifier: povId.longLongValue];
 
 	[self.service executeQuery:pagesQuery
 			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPageCollection* result, NSError *error) {
 				 if (error) {
-
+					 NSLog(@"Error loading pages from POV: %@", error.description);
 				 } else {
+					 [self.pageCollections setObject:result forKey: povId];
 					 //TODO: notification to update
 				 }
 			 }];
 }
 
+-(GTLVerbatmAppPageCollection*) getPageCollectionForPOVAtIndex: (NSInteger) index {
+	if (index < 0 || index >= [self.povInfos count]) {
+		NSLog(@"Error: Requesting pages for POV at index not yet loaded");
+		return nil;
+	}
+	NSNumber* povId = ((GTLVerbatmAppPOVInfo*)self.povInfos[index]).identifier;
+	return [self getPageCollectionForPOV: povId];
+}
 
-- (NSInteger) getNumberOfPOVsLoaded {
-	return [self.povInfos count];
+-(GTLVerbatmAppPageCollection*) getPageCollectionForPOV: (NSNumber*) povID {
+	GTLVerbatmAppPageCollection* pages = self.pageCollections[povID];
+	if (!pages) {
+		NSLog(@"Error: Requesting pages for POV that are not yet loaded");
+	}
+	return pages;
 }
 
 
@@ -110,11 +139,18 @@
 	return _service;
 }
 
-- (NSArray*) povs {
-	if (!_povs) {
-		_povs = [[NSArray alloc] init];
+- (NSMutableArray*) povInfos {
+	if (!_povInfos) {
+		_povInfos = [[NSMutableArray alloc] init];
 	}
-	return _povs;
+	return _povInfos;
+}
+
+- (NSMutableDictionary*) pageCollections {
+	if (!_pageCollections) {
+		_pageCollections = [[NSMutableDictionary alloc] init];
+	}
+	return _pageCollections;
 }
 
 @end

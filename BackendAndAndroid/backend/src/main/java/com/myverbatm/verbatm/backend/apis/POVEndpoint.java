@@ -21,6 +21,7 @@ import com.myverbatm.verbatm.backend.Constants;
 import com.myverbatm.verbatm.backend.models.POV;
 import com.myverbatm.verbatm.backend.models.POVInfo;
 import com.myverbatm.verbatm.backend.models.Page;
+import com.myverbatm.verbatm.backend.models.PageListWrapper;
 import com.myverbatm.verbatm.backend.models.ResultsWithCursor;
 
 import java.util.ArrayList;
@@ -185,19 +186,27 @@ public class POVEndpoint {
      * @throws ServiceException
      */
     @ApiMethod(path="get_pages_from_pov", httpMethod = "GET")
-    public final List<Page> getPagesFromPOV(@Named("id") final Long id, final User user)
+    public final PageListWrapper getPagesFromPOV(@Named("id") final Long id, final User user)
         throws ServiceException {
 
         Query.Filter povIdFilter = new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id);
         Query pagesQuery = new Query("POV")
             .setFilter(povIdFilter)
-            .addProjection(new PropertyProjection("pages", List.class));
+            .addProjection(new PropertyProjection("pageIds", List.class));
 
         PreparedQuery preparedQuery = datastore.prepare(pagesQuery);
         FetchOptions fetchOptions = FetchOptions.Builder.withDefaults();
 
         Entity entity = preparedQuery.asSingleEntity();
-        return (List<Page>) entity.getProperty("pages");
+        List<Long> pageIds = (List<Long>) entity.getProperty("pageIds");
+        List<Page> pages = new ArrayList<>();
+        for (Long pageId : pageIds) {
+            Page page = ofy().load().type(Page.class).id(pageId).now();
+            pages.add(page);
+        }
+        PageListWrapper pageListWrapper = new PageListWrapper();
+        pageListWrapper.pages = pages;
+        return pageListWrapper;
     }
 
     /**

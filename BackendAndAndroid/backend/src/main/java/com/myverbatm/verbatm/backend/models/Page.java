@@ -2,6 +2,8 @@ package com.myverbatm.verbatm.backend.models;
 
 import com.googlecode.objectify.annotation.*;
 
+import java.util.List;
+
 /**
  * Page entity used to represent a page in a user's POV (shown as an AVE)
  */
@@ -15,14 +17,19 @@ public class Page {
     private Long id;
 
     /**
-     * Array of images in page
+     * Stores the index of this page in the POV
      */
-    private Image[] images;
+    private Integer indexInPOV;
 
     /**
-     * Array of videos in page
+     * Array of images ids in page
      */
-    private Video[] videos;
+    private List<Long> imageIds;
+
+    /**
+     * Array of videos ids in page
+     */
+    private List<Long> videoIds ;
 
     /**
      *
@@ -40,34 +47,50 @@ public class Page {
     }
 
     /**
-     * Gets this page's images
-     * @return this page's images
+     * Returns the index of this page in the POV
+     * @return  the index of this page in the POV
      */
-    public final Image[] getImages() {
-        return images;
+    public Integer getIndexInPOV() {
+        return indexInPOV;
     }
 
     /**
-     * Sets this page's images
-     * @param images images for this Page
+     * Sets the index of this page in the POV
+     * @param indexInPOV the index of this page in the POV
      */
-    public final void setImages(Image[] images) {
-        this.images = images;
+    public void setIndexInPOV(Integer indexInPOV) {
+        this.indexInPOV = indexInPOV;
     }
 
     /**
-     * Sets this page's videos
-     * @return this page's videos
+     * Returns the list of Video ids stored in page
+     * @return the list of Video ids stored in page
      */
-    public final Video[] getVideos() {
-        return videos;
+    public List<Long> getVideoIds() {
+        return videoIds;
     }
 
     /**
-     * Sets this page's videos
-     * @param videos videos for this Page
+     * Sets the list of Video ids stored in page
+     * @param videoIds the list of Video ids stored in page
      */
-    public final void setVideos(Video[] videos) {
-        this.videos = videos;
+    public void setVideoIds(List<Long> videoIds) {
+        this.videoIds = videoIds;
+    }
+
+    /**
+     * Returns the list of Image ids stored in page
+     * @return the list of Image ids stored in page
+     */
+    public List<Long> getImageIds() {
+        return imageIds;
+    }
+
+    /**
+     * Sets the list of Image ids stored in page
+     * @param imageIds the list of Image ids stored in page
+     */
+    public void setImageIds(List<Long> imageIds) {
+        this.imageIds = imageIds;
     }
 }

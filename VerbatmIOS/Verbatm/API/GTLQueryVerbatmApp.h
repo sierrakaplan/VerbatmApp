@@ -23,6 +23,7 @@
 
 @class GTLVerbatmAppImage;
 @class GTLVerbatmAppPage;
+@class GTLVerbatmAppPageListWrapper;
 @class GTLVerbatmAppPOV;
 @class GTLVerbatmAppVerbatmUser;
 @class GTLVerbatmAppVideo;
@@ -85,11 +86,11 @@
 // Fetches a GTLVerbatmAppPage.
 + (instancetype)queryForPageInsertPageWithObject:(GTLVerbatmAppPage *)object;
 
-// Method: verbatmApp.page.listpage
+// Method: verbatmApp.page.insertPages
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppPageCollection.
-+ (instancetype)queryForPageListpage;
+// Fetches a GTLVerbatmAppPageListWrapper.
++ (instancetype)queryForPageInsertPagesWithObject:(GTLVerbatmAppPageListWrapper *)object;
 
 // Method: verbatmApp.page.removePage
 //  Authorization scope(s):
@@ -108,7 +109,7 @@
 // Method: verbatmApp.pov.getPagesFromPOV
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppPageCollection.
+// Fetches a GTLVerbatmAppPageListWrapper.
 + (instancetype)queryForPovGetPagesFromPOVWithIdentifier:(long long)identifier;
 
 // Method: verbatmApp.pov.getPOV

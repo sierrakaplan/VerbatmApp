@@ -21,8 +21,6 @@
   #import "GTLObject.h"
 #endif
 
-@class GTLVerbatmAppPage;
-
 // ----------------------------------------------------------------------------
 //
 //   GTLVerbatmAppPOV
@@ -37,6 +35,6 @@
 @property (nonatomic, retain) NSNumber *identifier;  // longLongValue
 
 @property (nonatomic, retain) NSNumber *numUpVotes;  // intValue
-@property (nonatomic, retain) NSArray *pages;  // of GTLVerbatmAppPage
+@property (nonatomic, retain) NSArray *pageIds;  // of NSNumber (longLongValue)
 @property (nonatomic, copy) NSString *title;
 @end
