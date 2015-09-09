@@ -23,5 +23,13 @@
 //
 
 @implementation GTLVerbatmAppVideo
-@dynamic key, servingUrl, text, userKey;
+@dynamic identifier, servingUrl, text, userId;
+
++ (NSDictionary *)propertyToJSONKeyMap {
+  NSDictionary *map = @{
+    @"identifier" : @"id"
+  };
+  return map;
+}
+
 @end

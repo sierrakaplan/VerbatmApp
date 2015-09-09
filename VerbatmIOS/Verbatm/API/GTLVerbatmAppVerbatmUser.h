@@ -32,7 +32,10 @@
 
 @interface GTLVerbatmAppVerbatmUser : GTLObject
 @property (nonatomic, retain) GTLVerbatmAppEmail *email;
-@property (nonatomic, retain) NSNumber *key;  // longLongValue
+
+// identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
+@property (nonatomic, retain) NSNumber *identifier;  // longLongValue
+
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, retain) GTLVerbatmAppPhoneNumber *phoneNumber;
 @property (nonatomic, retain) GTLVerbatmAppImage *profilePhoto;

@@ -91,7 +91,7 @@ public class PageEndpoint {
 //        EndpointUtil.throwIfNotAuthenticated(user);
 
         // Do not use the key provided by the caller; use a generated key.
-        page.clearKey();
+        page.clearId();
 
         ofy().save().entity(page).now();
 
@@ -113,7 +113,6 @@ public class PageEndpoint {
 //        EndpointUtil.throwIfNotAdmin(user);
 
         ofy().save().entity(page).now();
-
         return page;
     }
 

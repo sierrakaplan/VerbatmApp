@@ -12,7 +12,7 @@ public class Page {
      * Unique identifier of this Page Entity in the database.
      */
     @Id
-    private Long key;
+    private Long id;
 
     /**
      * Array of images in page
@@ -28,15 +28,15 @@ public class Page {
      *
      * @return the unique identifier of this Entity.
      */
-    public final Long getKey() {
-        return key;
+    public final Long getId() {
+        return id;
     }
 
     /**
      * Resets the Entity key to null.
      */
-    public final void clearKey() {
-        key = null;
+    public final void clearId() {
+        id = null;
     }
 
     /**

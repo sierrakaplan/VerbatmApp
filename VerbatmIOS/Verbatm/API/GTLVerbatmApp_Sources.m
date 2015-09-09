@@ -20,11 +20,12 @@
 
 #import "GTLVerbatmAppEmail.m"
 #import "GTLVerbatmAppImage.m"
+#import "GTLVerbatmAppList.m"
 #import "GTLVerbatmAppPage.m"
 #import "GTLVerbatmAppPageCollection.m"
 #import "GTLVerbatmAppPhoneNumber.m"
 #import "GTLVerbatmAppPOV.m"
-#import "GTLVerbatmAppPOVCollection.m"
+#import "GTLVerbatmAppResultsWithCursor.m"
 #import "GTLVerbatmAppVerbatmUser.m"
 #import "GTLVerbatmAppVideo.m"
 

@@ -13,12 +13,12 @@ public class Video {
      * Unique identifier of this Page Entity in the database.
      */
     @Id
-    private Long key;
+    private Long id;
 
     /**
      * The key of the user who uploaded this video
      */
-    private Long userKey;
+    private Long userId;
 
     /**
      * The url of this video in the BlobStore
@@ -35,31 +35,31 @@ public class Video {
      *
      * @return the unique identifier of this Entity.
      */
-    public final Long getKey() {
-        return key;
+    public final Long getId() {
+        return id;
     }
 
     /**
      * Resets the Entity key to null.
      */
-    public final void clearKey() {
-        key = null;
+    public final void clearId() {
+        id = null;
     }
 
     /**
      * Gets the key of the user who uploaded this video
      * @return the key of the user who uploaded this video
      */
-    public final Long getUserKey() {
-        return userKey;
+    public final Long getUserId() {
+        return userId;
     }
 
     /**
      * Sets the key of the user who uploaded this video
-     * @param userKey the key of the user who uploaded this video
+     * @param userId the key of the user who uploaded this video
      */
-    public final void setUserKey(Long userKey) {
-        this.userKey = userKey;
+    public final void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     /**

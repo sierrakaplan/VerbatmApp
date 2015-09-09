@@ -27,5 +27,13 @@
 //
 
 @implementation GTLVerbatmAppVerbatmUser
-@dynamic email, key, name, phoneNumber, profilePhoto;
+@dynamic email, identifier, name, phoneNumber, profilePhoto;
+
++ (NSDictionary *)propertyToJSONKeyMap {
+  NSDictionary *map = @{
+    @"identifier" : @"id"
+  };
+  return map;
+}
+
 @end

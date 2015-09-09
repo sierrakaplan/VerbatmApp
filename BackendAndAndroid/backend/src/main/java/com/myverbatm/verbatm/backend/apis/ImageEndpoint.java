@@ -75,7 +75,7 @@ public class ImageEndpoint {
 //        EndpointUtil.throwIfNotAuthenticated(user);
 
         // Do not use the key provided by the caller; use a generated key.
-        image.clearKey();
+        image.clearId();
         ofy().save().entity(image).now();
         return image;
     }

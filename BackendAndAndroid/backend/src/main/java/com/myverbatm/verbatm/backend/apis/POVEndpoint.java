@@ -20,6 +20,7 @@ import com.google.appengine.api.users.User;
 import com.myverbatm.verbatm.backend.Constants;
 import com.myverbatm.verbatm.backend.models.POV;
 import com.myverbatm.verbatm.backend.models.POVInfo;
+import com.myverbatm.verbatm.backend.models.Page;
 import com.myverbatm.verbatm.backend.models.ResultsWithCursor;
 
 import java.util.ArrayList;
@@ -66,8 +67,8 @@ public class POVEndpoint {
     private static final int MAXIMUM_NUMBER_POVS = 100;
 
     /**
-     * Lists most recent POV info (info to be displayed in feed) as well
-     * as cursor so that the client can query from the place they left off.
+     * Lists POV info (info to be displayed in feed) for most recent POV's
+     * Also returns cursor so that the client can query from the place they left off.
      * @param pCount          the maximum number of pov's returned.
      * @param cursorString    the cursor from the last recents query (can be null)
      * @param user            the user that requested the entities.
@@ -76,7 +77,7 @@ public class POVEndpoint {
      * authorized
      */
     @ApiMethod(path="get_recent_povs", httpMethod = "GET")
-    public final ResultsWithCursor<POVInfo> getRecentPOVsInfo(@Named("count") final int pCount,
+    public final ResultsWithCursor getRecentPOVsInfo(@Named("count") final int pCount,
                                                  @Named("cursor_string") final String cursorString,
                                                  final User user) throws
         ServiceException {
@@ -94,12 +95,13 @@ public class POVEndpoint {
         // Search POV's with dates from latest to earliest (descending)
         // Can also add filter
         Query recentPOVQuery = new Query("POV")
-            .addSort("datePublished", Query.SortDirection.DESCENDING)
             .addProjection(new PropertyProjection("title", String.class))
             .addProjection(new PropertyProjection("coverPicUrl", String.class))
             .addProjection(new PropertyProjection("datePublished", Date.class))
             .addProjection(new PropertyProjection("numUpVotes", Integer.class))
-            .addProjection(new PropertyProjection("creatorUserKey", Long.class));
+            .addProjection(new PropertyProjection("creatorUserKey", Long.class))
+            // Sorting by date published
+            .addSort("datePublished", Query.SortDirection.DESCENDING);
 
         PreparedQuery preparedQuery = datastore.prepare(recentPOVQuery);
         FetchOptions fetchOptions = FetchOptions.Builder.withLimit(count);
@@ -116,7 +118,86 @@ public class POVEndpoint {
         }
 
         String recentsCursorString = entities.getCursor().toWebSafeString();
-        return new ResultsWithCursor<>(results, recentsCursorString);
+        return new ResultsWithCursor(results, recentsCursorString);
+    }
+
+    /**
+     * Lists POV info (info to be displayed in feed) for most upvoted POV's
+     * Also returns cursor so that the client can query from the place they left off.
+     * @param pCount          the maximum number of pov's returned.
+     * @param cursorString    the cursor from the last recents query (can be null)
+     * @param user            the user that requested the entities.
+     * @return List of recent POV info (info to be displayed in feed) and cursor.
+     * @throws com.google.api.server.spi.ServiceException if user is not
+     * authorized
+     */
+    @ApiMethod(path="get_trending_povs", httpMethod = "GET")
+    public final ResultsWithCursor getTrendingPOVsInfo(@Named("count") final int pCount,
+                                                              @Named("cursor_string") final String cursorString,
+                                                              final User user) throws
+        ServiceException {
+
+        int count = pCount;
+
+        // limit the result set to up to MAXIMUM_NUMBER_PLACES places within
+        // up to MAXIMUM_DISTANCE km
+        if (count > MAXIMUM_NUMBER_POVS) {
+            count = MAXIMUM_NUMBER_POVS;
+        } else if (count <= 0) {
+            throw new BadRequestException("Invalid value of 'count' argument");
+        }
+
+        // Search POV's with upvotes from most to least (descending)
+        // Can also add filter
+        Query trendingPOVQuery = new Query("POV")
+            .addProjection(new PropertyProjection("title", String.class))
+            .addProjection(new PropertyProjection("coverPicUrl", String.class))
+            .addProjection(new PropertyProjection("datePublished", Date.class))
+            .addProjection(new PropertyProjection("numUpVotes", Integer.class))
+            .addProjection(new PropertyProjection("creatorUserKey", Long.class))
+            // Sorting by upvotes
+            .addSort("numUpVotes", Query.SortDirection.DESCENDING);
+
+        PreparedQuery preparedQuery = datastore.prepare(trendingPOVQuery);
+        FetchOptions fetchOptions = FetchOptions.Builder.withLimit(count);
+
+        if (cursorString != null) {
+            fetchOptions.startCursor(Cursor.fromWebSafeString(cursorString));
+        }
+
+        List<POVInfo> results = new ArrayList<>();
+        QueryResultList<Entity> entities = preparedQuery.asQueryResultList(fetchOptions);
+
+        for (Entity entity : entities) {
+            results.add(new POVInfo(entity));
+        }
+
+        String recentsCursorString = entities.getCursor().toWebSafeString();
+        return new ResultsWithCursor(results, recentsCursorString);
+    }
+
+    /**
+     * Gets the Pages from a POV with given id
+     *
+     * @param id id of the POV
+     * @param user the user that requested the entities.
+     * @return a list of Pages
+     * @throws ServiceException
+     */
+    @ApiMethod(path="get_pages_from_pov", httpMethod = "GET")
+    public final List<Page> getPagesFromPOV(@Named("id") final Long id, final User user)
+        throws ServiceException {
+
+        Query.Filter povIdFilter = new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id);
+        Query pagesQuery = new Query("POV")
+            .setFilter(povIdFilter)
+            .addProjection(new PropertyProjection("pages", List.class));
+
+        PreparedQuery preparedQuery = datastore.prepare(pagesQuery);
+        FetchOptions fetchOptions = FetchOptions.Builder.withDefaults();
+
+        Entity entity = preparedQuery.asSingleEntity();
+        return (List<Page>) entity.getProperty("pages");
     }
 
     /**
@@ -151,7 +232,7 @@ public class POVEndpoint {
 //        EndpointUtil.throwIfNotAuthenticated(user);
 
         // Do not use the key provided by the caller; use a generated key.
-        pov.clearKey();
+        pov.clearId();
         ofy().save().entity(pov).now();
         return pov;
     }

@@ -16,7 +16,7 @@ public class VerbatmUser {
      * Unique identifier of this POV Entity in the database.
      */
     @Id
-    private Long key;
+    private Long id;
 
     /**
      * VerbatmUser name
@@ -55,15 +55,15 @@ public class VerbatmUser {
      *
      * @return the unique identifier of this Entity.
      */
-    public final Long getKey() {
-        return key;
+    public final Long getId() {
+        return id;
     }
 
     /**
      * Resets the Entity key to null.
      */
-    public final void clearKey() {
-        key = null;
+    public final void clearId() {
+        id = null;
     }
 
     /**

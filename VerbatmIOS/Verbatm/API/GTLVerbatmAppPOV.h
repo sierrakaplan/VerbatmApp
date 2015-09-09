@@ -30,9 +30,12 @@
 
 @interface GTLVerbatmAppPOV : GTLObject
 @property (nonatomic, copy) NSString *coverPicUrl;
-@property (nonatomic, retain) NSNumber *creatorUserKey;  // longLongValue
+@property (nonatomic, retain) NSNumber *creatorUserId;  // longLongValue
 @property (nonatomic, retain) GTLDateTime *datePublished;
-@property (nonatomic, retain) NSNumber *key;  // longLongValue
+
+// identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
+@property (nonatomic, retain) NSNumber *identifier;  // longLongValue
+
 @property (nonatomic, retain) NSNumber *numUpVotes;  // intValue
 @property (nonatomic, retain) NSArray *pages;  // of GTLVerbatmAppPage
 @property (nonatomic, copy) NSString *title;

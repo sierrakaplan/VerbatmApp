@@ -75,7 +75,7 @@ public class VideoEndpoint {
 //        EndpointUtil.throwIfNotAuthenticated(user);
 
         // Do not use the key provided by the caller; use a generated key.
-        video.clearKey();
+        video.clearId();
         ofy().save().entity(video).now();
         return video;
     }

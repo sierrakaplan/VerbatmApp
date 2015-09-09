@@ -27,7 +27,10 @@
 //
 
 @interface GTLVerbatmAppImage : GTLObject
-@property (nonatomic, retain) NSNumber *key;  // longLongValue
+
+// identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
+@property (nonatomic, retain) NSNumber *identifier;  // longLongValue
+
 @property (nonatomic, copy) NSString *servingUrl;
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, retain) NSNumber *userKey;  // longLongValue

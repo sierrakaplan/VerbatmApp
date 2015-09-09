@@ -1,6 +1,7 @@
 package com.myverbatm.verbatm.backend.models;
 
 import com.google.appengine.api.datastore.Entity;
+import com.googlecode.objectify.annotation.Id;
 
 import java.util.Date;
 
@@ -8,6 +9,12 @@ import java.util.Date;
  * Information about the POV needed to display in the feed
  */
 public class POVInfo {
+
+    /**
+     * Unique identifier of this POV Entity in the database.
+     */
+    @Id
+    private Long id;
 
     /**
      * VerbatmUser given title for the POV
@@ -32,7 +39,7 @@ public class POVInfo {
     /**
      * POV's creator's user key
      */
-    private Long creatorUserKey;
+    private Long creatorUserId;
 
     /**
      * Creates a POVInfo instance from an Entity containing each property
@@ -40,11 +47,20 @@ public class POVInfo {
      * @param entity
      */
     public POVInfo(Entity entity) {
+        this.id = entity.getKey().getId();
         this.title = (String) entity.getProperty("title");
         this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
         this.datePublished = (Date) entity.getProperty("datePublished");
         this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
-        this.creatorUserKey = (Long) entity.getProperty("creatorUserKey");
+        this.creatorUserId = (Long) entity.getProperty("creatorUserId");
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -79,11 +95,11 @@ public class POVInfo {
         this.numUpVotes = numUpVotes;
     }
 
-    public Long getCreatorUserKey() {
-        return creatorUserKey;
+    public Long getCreatorUserId() {
+        return creatorUserId;
     }
 
-    public void setCreatorUserKey(Long creatorUserKey) {
-        this.creatorUserKey = creatorUserKey;
+    public void setCreatorUserId(Long creatorUserId) {
+        this.creatorUserId = creatorUserId;
     }
 }

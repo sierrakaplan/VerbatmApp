@@ -5,6 +5,7 @@ import com.googlecode.objectify.annotation.*;
 import com.googlecode.objectify.annotation.Entity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * POV entity used to represent what the user posts to Verbatm in full (previously called Article or Story)
@@ -16,7 +17,7 @@ public class POV {
      * Unique identifier of this POV Entity in the database.
      */
     @Id
-    private Long key;
+    private Long id;
 
     /**
      * VerbatmUser given title for the POV
@@ -39,42 +40,42 @@ public class POV {
     private Integer numUpVotes;
 
     /**
-     * POV's creator's user key
+     * POV's creator's user id
      */
-    private Long creatorUserKey;
+    private Long creatorUserId;
 
     /**
      * Array of pages in the POV
      */
-    private Page[] pages;
+    private List<Page> pages;
 
     /**
      * Creates a POV instance from an entity of POV type
      * @param entity
      */
     public POV(com.google.appengine.api.datastore.Entity entity) {
-        this.key = entity.getKey().getId();
+        this.id = entity.getKey().getId();
         this.title = (String) entity.getProperty("title");
         this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
         this.datePublished = (Date) entity.getProperty("datePublished");
         this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
-        this.creatorUserKey = (Long) entity.getProperty("creatorUserKey");
-        this.pages = (Page[]) entity.getProperty("pages");
+        this.creatorUserId = (Long) entity.getProperty("creatorUserId");
+        this.pages = (List<Page>) entity.getProperty("pages");
     }
 
     /**
      *
      * @return the unique identifier of this Entity.
      */
-    public final Long getKey() {
-        return key;
+    public final Long getId() {
+        return id;
     }
 
     /**
-     * Resets the Entity key to null.
+     * Resets the Entity id to null.
      */
-    public final void clearKey() {
-        key = null;
+    public final void clearId() {
+        id = null;
     }
 
     /**
@@ -142,26 +143,26 @@ public class POV {
     }
 
     /**
-     * Returns the user key for this POV's creator
-     * @return the user key for this POV's creator
+     * Returns the user id for this POV's creator
+     * @return the user id for this POV's creator
      */
-    public final Long getCreatorUserKey() {
-        return creatorUserKey;
+    public final Long getCreatorUserId() {
+        return creatorUserId;
     }
 
     /**
-     * Sets the user key of the creator of this POV
-     * @param creatorUserKey the user key of the creator for this POV to be set
+     * Sets the user id of the creator of this POV
+     * @param creatorUserId the user id of the creator for this POV to be set
      */
-    public final void setCreatorUserKey(Long creatorUserKey) {
-        this.creatorUserKey = creatorUserKey;
+    public final void setCreatorUserId(Long creatorUserId) {
+        this.creatorUserId = creatorUserId;
     }
 
     /**
      * Returns the pages within this POV
      * @return the pages within this POV
      */
-    public final Page[] getPages() {
+    public final List<Page> getPages() {
         return pages;
     }
 
@@ -169,7 +170,7 @@ public class POV {
      * Sets the pages within this POV
      * @param pages The pages to be set for this POV
      */
-    public final void setPages(Page[] pages) {
+    public final void setPages(List<Page> pages) {
         this.pages = pages;
     }
 }

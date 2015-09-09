@@ -25,8 +25,15 @@
 //
 
 @implementation GTLVerbatmAppPOV
-@dynamic coverPicUrl, creatorUserKey, datePublished, key, numUpVotes, pages,
-         title;
+@dynamic coverPicUrl, creatorUserId, datePublished, identifier, numUpVotes,
+         pages, title;
+
++ (NSDictionary *)propertyToJSONKeyMap {
+  NSDictionary *map = @{
+    @"identifier" : @"id"
+  };
+  return map;
+}
 
 + (NSDictionary *)arrayPropertyToClassMap {
   NSDictionary *map = @{

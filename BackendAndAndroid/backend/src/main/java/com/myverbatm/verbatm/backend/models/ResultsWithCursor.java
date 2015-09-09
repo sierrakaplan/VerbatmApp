@@ -7,12 +7,12 @@ import java.util.List;
  * of instances of model classes (the results)
  * as well as a cursorString so that the client can query where they left off
  */
-public class ResultsWithCursor<T> {
+public class ResultsWithCursor {
 
-    public final List<T> results;
+    public final List results;
     public final String cursorString;
 
-    public ResultsWithCursor(List<T> results, String cursorString) {
+    public ResultsWithCursor(List results, String cursorString) {
         this.results = results;
         this.cursorString = cursorString;
     }

@@ -26,7 +26,14 @@
 //
 
 @implementation GTLVerbatmAppPage
-@dynamic images, key, videos;
+@dynamic identifier, images, videos;
+
++ (NSDictionary *)propertyToJSONKeyMap {
+  NSDictionary *map = @{
+    @"identifier" : @"id"
+  };
+  return map;
+}
 
 + (NSDictionary *)arrayPropertyToClassMap {
   NSDictionary *map = @{

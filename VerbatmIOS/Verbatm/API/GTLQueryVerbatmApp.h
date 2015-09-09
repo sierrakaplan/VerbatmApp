@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (22 custom class methods, 2 custom properties)
+//   GTLQueryVerbatmApp (24 custom class methods, 4 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -39,6 +39,8 @@
 //
 // Method-specific parameters; see the comments below for more information.
 //
+@property (nonatomic, assign) NSInteger count;
+@property (nonatomic, copy) NSString *cursorString;
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, assign) long long identifier;
 
@@ -103,23 +105,37 @@
 #pragma mark - "pov" methods
 // These create a GTLQueryVerbatmApp object.
 
+// Method: verbatmApp.pov.getPagesFromPOV
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppPageCollection.
++ (instancetype)queryForPovGetPagesFromPOVWithIdentifier:(long long)identifier;
+
 // Method: verbatmApp.pov.getPOV
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppPOV.
 + (instancetype)queryForPovGetPOVWithIdentifier:(long long)identifier;
 
+// Method: verbatmApp.pov.getRecentPOVsInfo
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppResultsWithCursor.
++ (instancetype)queryForPovGetRecentPOVsInfoWithCount:(NSInteger)count
+                                         cursorString:(NSString *)cursorString;
+
+// Method: verbatmApp.pov.getTrendingPOVsInfo
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppResultsWithCursor.
++ (instancetype)queryForPovGetTrendingPOVsInfoWithCount:(NSInteger)count
+                                           cursorString:(NSString *)cursorString;
+
 // Method: verbatmApp.pov.insertPOV
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppPOV.
 + (instancetype)queryForPovInsertPOVWithObject:(GTLVerbatmAppPOV *)object;
-
-// Method: verbatmApp.pov.listPOV
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppPOVCollection.
-+ (instancetype)queryForPovListPOV;
 
 // Method: verbatmApp.pov.removePOV
 //  Authorization scope(s):

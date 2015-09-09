@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (22 custom class methods, 2 custom properties)
+//   GTLQueryVerbatmApp (24 custom class methods, 4 custom properties)
 
 #import "GTLQueryVerbatmApp.h"
 
@@ -21,16 +21,17 @@
 #import "GTLVerbatmAppPage.h"
 #import "GTLVerbatmAppPageCollection.h"
 #import "GTLVerbatmAppPOV.h"
-#import "GTLVerbatmAppPOVCollection.h"
+#import "GTLVerbatmAppResultsWithCursor.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppVideo.h"
 
 @implementation GTLQueryVerbatmApp
 
-@dynamic fields, identifier;
+@dynamic count, cursorString, fields, identifier;
 
 + (NSDictionary *)parameterNameMap {
   NSDictionary *map = @{
+    @"cursorString" : @"cursor_string",
     @"identifier" : @"id"
   };
   return map;
@@ -130,11 +131,39 @@
 #pragma mark - "pov" methods
 // These create a GTLQueryVerbatmApp object.
 
++ (instancetype)queryForPovGetPagesFromPOVWithIdentifier:(long long)identifier {
+  NSString *methodName = @"verbatmApp.pov.getPagesFromPOV";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.identifier = identifier;
+  query.expectedObjectClass = [GTLVerbatmAppPageCollection class];
+  return query;
+}
+
 + (instancetype)queryForPovGetPOVWithIdentifier:(long long)identifier {
   NSString *methodName = @"verbatmApp.pov.getPOV";
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.identifier = identifier;
   query.expectedObjectClass = [GTLVerbatmAppPOV class];
+  return query;
+}
+
++ (instancetype)queryForPovGetRecentPOVsInfoWithCount:(NSInteger)count
+                                         cursorString:(NSString *)cursorString {
+  NSString *methodName = @"verbatmApp.pov.getRecentPOVsInfo";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.count = count;
+  query.cursorString = cursorString;
+  query.expectedObjectClass = [GTLVerbatmAppResultsWithCursor class];
+  return query;
+}
+
++ (instancetype)queryForPovGetTrendingPOVsInfoWithCount:(NSInteger)count
+                                           cursorString:(NSString *)cursorString {
+  NSString *methodName = @"verbatmApp.pov.getTrendingPOVsInfo";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.count = count;
+  query.cursorString = cursorString;
+  query.expectedObjectClass = [GTLVerbatmAppResultsWithCursor class];
   return query;
 }
 
@@ -147,13 +176,6 @@
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.bodyObject = object;
   query.expectedObjectClass = [GTLVerbatmAppPOV class];
-  return query;
-}
-
-+ (instancetype) queryForPovListPOV {
-  NSString *methodName = @"verbatmApp.pov.listPOV";
-  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
-  query.expectedObjectClass = [GTLVerbatmAppPOVCollection class];
   return query;
 }
 
