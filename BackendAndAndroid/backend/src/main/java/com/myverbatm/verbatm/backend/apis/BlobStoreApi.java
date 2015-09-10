@@ -5,6 +5,7 @@ import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.googlecode.objectify.Result;
 import com.myverbatm.verbatm.backend.Constants;
 
 import javax.annotation.Resource;
@@ -29,5 +30,12 @@ public class BlobStoreApi {
 
     private final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
-    private final 
+    private Result result = null;
+
+    public BlobStoreApi() {
+    }
+
+    public BlobStoreApi(Result result) {
+        this.result = result;
+    }
 }
