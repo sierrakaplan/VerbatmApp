@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "articleLoadAndDisplayManager.h"
 #import <AVFoundation/AVAudioSession.h>
 #import "Identifiers.h"
 #import "Icons.h"
@@ -15,7 +14,6 @@
 #import "MediaSessionManager.h"
 #import "PreviewDisplayView.h"
 #import "Notifications.h"
-#import "VerbatmUser.h"
 #import "VerbatmCameraView.h"
 
 #import "ProfileVC.h"
@@ -46,7 +44,6 @@
 @property (strong,nonatomic) UIImageView* animationView;
 
 @property (strong, nonatomic) internetConnectionMonitor * connectionMonitor;
-@property (strong, nonatomic) articleLoadAndDisplayManager * articleLoadManager;
 
 #define ANIMATION_DURATION 0.5
 #define NUMBER_OF_CHILD_VCS 3
@@ -72,7 +69,6 @@
 	[self formatMainScrollView];
 
     self.connectionMonitor = [[internetConnectionMonitor alloc] init];
-    self.articleLoadManager = [[articleLoadAndDisplayManager alloc] init];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -223,9 +219,9 @@
 #pragma mark - Handle Login -
 
 -(void) login {
-	if(![VerbatmUser currentUser]) {
-		[self bringUpSignUp];
-	}
+//	if(![VerbatmUser currentUser]) {
+//		[self bringUpSignUp];
+//	}
 }
 
 //brings up the login page if there is no user logged in

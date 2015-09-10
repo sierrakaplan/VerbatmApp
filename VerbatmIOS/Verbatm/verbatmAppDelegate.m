@@ -7,7 +7,6 @@
 //
 
 #import "verbatmAppDelegate.h"
-#import <Parse/Parse.h>
 #import "UserPinchViews.h"
 #import <AVFoundation/AVFoundation.h>
 
@@ -18,12 +17,7 @@
 @implementation verbatmAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    //verbatm's identifier
-    [Parse setApplicationId:@"rzSvJWHhiN8KUnhDVXTlapJkJ4eCe3xAlmEscSK3"
-                  clientKey:@"qmXzBTKKMNqm5A3eogopkL2ZY6SeKGcWah0zP9kk"];
-    
-    //when app is opened this tracks it in parse
-    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+
 
 	[[UserPinchViews sharedInstance] loadPinchViewsFromUserDefaults];
     [[AVAudioSession sharedInstance] setActive: YES error: nil];

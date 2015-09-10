@@ -7,7 +7,6 @@
 //
 
 #import "UserLoginVC.h"
-#import "VerbatmUser.h"
 #import "Notifications.h"
 #import "Identifiers.h"
 #import "SizesAndPositions.h"
@@ -297,52 +296,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 //}
 
 
-// Oudated Parse code
-
-- (IBAction)login:(UIButton *)sender {
-	//make sure all the textfields are entered in correctly
-	if([self.UserName_TextField.text isEqualToString:@""]) return;
-	if([self.Password_TextField.text isEqualToString:@""]) return;
-
-    [VerbatmUser loginUserWithUserName:self.UserName_TextField.text andPassword:self.Password_TextField.text withCompletionBlock:^(PFUser *user, NSError *error){
-        if(user) {
-            [self performSegueWithIdentifier:EXIT_SIGNIN_SEGUE sender:self];
-        }else {
-			NSString* errorMessage;
-			if([error code] == kPFErrorObjectNotFound) {
-				errorMessage = @"Username or password incorrect.";
-			} else {
-				errorMessage = @"We're sorry, something went wrong!";
-			}
-			[self errorInSignInAnimation:errorMessage];
-        }
-    }];
-}
-
-- (IBAction)signUp:(UIButton *)sender {
-	//make sure all the textfields are entered in correctly
-	if([self.UserName_TextField.text isEqualToString:@""]) return;
-	if([self.Password_TextField.text isEqualToString:@""]) return;
-
-	#pragma GCC diagnostic ignored "-Wunused-variable"
-	VerbatmUser * newUser = [[VerbatmUser alloc] initWithUserName:self.UserName_TextField.text Password:self.Password_TextField.text  withSignUpCompletionBlock:^(BOOL succeeded, NSError *error) {
-
-		if(succeeded) {
-			//Send a notification that the user is logged in
-			[self performSegueWithIdentifier:EXIT_SIGNIN_SEGUE sender:self];
-
-		} else {
-			NSString* errorMessage;
-			if([error code] == kPFErrorUsernameTaken) {
-				errorMessage = @"An account with that username already exists.";
-			} else {
-				errorMessage = @"We're sorry, something went wrong!";
-			}
-			[self errorInSignInAnimation:errorMessage];
-		}
-
-	}];
-}
 
 #pragma mark Error message
 

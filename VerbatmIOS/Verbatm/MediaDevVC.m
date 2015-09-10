@@ -7,7 +7,6 @@
 
 
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "Article.h"
 #import "AVETypeAnalyzer.h"
 
 #import "ContentDevVC.h"
@@ -38,7 +37,6 @@
 #import "testerTransitionDelegate.h"
 
 #import "ContentDevPullBar.h"
-#import "VerbatmUser.h"
 #import "VerbatmCameraView.h"
 
 #import "UIEffects.h"
