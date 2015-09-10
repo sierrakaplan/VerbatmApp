@@ -52,8 +52,8 @@
 
 #define CONTENT_DEV_CURSOR_COLOR whiteColor
 
-#define SANDWICH_PLACEHOLDER_SIZE 23.f
-#define TITLE_PLACEHOLDER_SIZE 40.f
+#define WHAT_IS_IT_LIKE_LABEL_SIZE 23.f
+#define WHAT_IS_IT_LIKE_FIELD_SIZE 23.f
 
 #pragma mark - PinchViews
 

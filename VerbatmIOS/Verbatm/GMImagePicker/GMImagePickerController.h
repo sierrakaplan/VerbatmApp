@@ -9,6 +9,8 @@
 @import UIKit;
 @import Photos;
 
+@class GMAlbumsViewController;
+
 
 //This is the default image picker size!
 //static CGSize const kPopoverContentSize = {320, 480};
@@ -73,8 +75,8 @@ static CGSize const kPopoverContentSize = {480, 720};
 @property (nonatomic) NSInteger colsInLandscape;
 @property (nonatomic) double minimumInteritemSpacing;
 
-
 @property (nonatomic, strong) UINavigationController *navigationController;
+@property (nonatomic, strong) GMAlbumsViewController *albumsViewController;
 
 /**
  *  Managing Asset Selection
@@ -87,6 +89,10 @@ static CGSize const kPopoverContentSize = {480, 720};
  */
 - (void)dismiss:(id)sender;
 - (void)finishPickingAssets:(id)sender;
+
+// If yes, it will only allow you to select a single image
+-(void) setSelectOneImage: (BOOL) selectOneImage;
+
 
 @end
 

@@ -72,7 +72,7 @@
 -(void) setPovLoadManager:(POVLoadManager *) povLoader {
 	self.povLoader = povLoader;
 	self.povLoader.delegate = self;
-	[self.povLoader loadPOVs: NUM_POVS_IN_SECTION];
+	[self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
@@ -127,7 +127,8 @@
     NSLog(@"Begin dragging");
     self.pullDownInProgress = scrollView.contentOffset.y <= 0.0f;
     if (self.pullDownInProgress) {
-        [self.povListView insertSubview:self.placeholderCell atIndex:0];
+//     TODO:   [self.povListView insertSubview:self.placeholderCell atIndex:0];
+		[self refreshFeed];
     }
 }
 
@@ -168,19 +169,18 @@
 }
 
 
--(void)refreshFeed {
-	[self loadContentIntoView];
+-(void) refreshFeed {
+	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
 }
 
 -(void) morePOVsLoaded {
-	[self loadContentIntoView];
+	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
--(void)loadContentIntoView{
-    if(self.refreshInProgress) {
-		[self removeAnimatingView];
-	}
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+-(void) loadMoreContent {
+//    if(self.refreshInProgress) {
+//		[self removeAnimatingView];
+//	}
 }
 
 

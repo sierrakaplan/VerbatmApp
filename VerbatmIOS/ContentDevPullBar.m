@@ -15,13 +15,12 @@
 
 @interface ContentDevPullBar ()
 @property (strong, nonatomic) UIButton *previewButton;
-@property (strong, nonatomic) UIButton *undoButton;
-@property (strong, nonatomic) UIButton *pullUpButton;
+@property (strong, nonatomic) UIButton *cameraButton;
+@property (strong, nonatomic) UIButton *galleryButton;
+
 @property (strong, nonatomic) UIImageView *pullDownIcon;
 
-@property (strong, nonatomic) UIImage *undoButtonGrayedOut;
 @property (strong, nonatomic) UIImage *previewButtonGrayedOut;
-@property (strong, nonatomic) UIImage *undoButtonImage;
 @property (strong, nonatomic) UIImage *previewButtonImage;
 
 @end
@@ -48,8 +47,6 @@
 	float buttonSize = PULLBAR_HEIGHT_MENU_MODE - (2.f * PULLBAR_BUTTON_YOFFSET);
 	float previewButtonWidth = buttonSize*1.5;
 
-	self.undoButtonImage = [UIImage imageNamed:UNDO_BUTTON_IMAGE];
-	self.undoButtonGrayedOut = [UIEffects imageOverlayed:self.undoButtonImage withColor:[UIColor darkGrayColor]];
 	self.previewButtonImage = [UIImage imageNamed:PREVIEW_BUTTON_IMAGE];
 	self.previewButtonGrayedOut = [UIEffects imageOverlayed:self.previewButtonImage withColor:[UIColor darkGrayColor]];
 
@@ -57,29 +54,25 @@
 	self.pullDownIcon = [[UIImageView alloc] initWithFrame:pullDownIconFrame];
 	[self.pullDownIcon setImage:[UIImage imageNamed:PULLDOWN_ICON_IMAGE]];
 
-	CGRect undoButtonFrame = CGRectMake(PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
-	self.undoButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.undoButton setFrame:undoButtonFrame];
-	[self grayOutUndo];
-	[self.undoButton setImage:[UIImage imageNamed:UNDO_BUTTON_CLICKED] forState:UIControlStateHighlighted | UIControlStateSelected];
-	[self.undoButton addTarget:self action:@selector(undoButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
-//	[self.undoButton addTarget:self action:@selector(undoButtonPressed:) forControlEvents:UIControlEventTouchDown];
-
-	CGRect pullUpButtonFrame = CGRectMake(centerPoint-buttonSize/2.f, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
-	self.pullUpButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.pullUpButton setFrame:pullUpButtonFrame];
-	[self.pullUpButton setImage:[UIImage imageNamed:PULLUP_BUTTON_IMAGE] forState:UIControlStateNormal];
-	[self.pullUpButton setImage:[UIImage imageNamed:PULLUP_BUTTON_CLICKED] forState:UIControlStateHighlighted | UIControlStateSelected];
-	[self.pullUpButton addTarget:self action:@selector(pullUpButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
-//	[self.pullUpButton addTarget:self action:@selector(pullUpButtonPressed:) forControlEvents:UIControlEventTouchDown];
-
-	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - previewButtonWidth - PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, previewButtonWidth, buttonSize);
+	CGRect previewButtonFrame = CGRectMake(PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
 	self.previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.previewButton setFrame:previewButtonFrame];
 	[self grayOutPreview];
 	[self.previewButton setImage:[UIImage imageNamed:PREVIEW_BUTTON_CLICKED] forState:UIControlStateHighlighted | UIControlStateSelected];
 	[self.previewButton addTarget:self action:@selector(previewButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
-//	[self.previewButton addTarget:self action:@selector(previewButtonPressed:) forControlEvents:UIControlEventTouchDown];
+
+	CGRect cameraButtonFrame = CGRectMake(centerPoint-buttonSize/2.f, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
+	self.cameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.cameraButton setFrame: cameraButtonFrame];
+	[self.cameraButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateHighlighted | UIControlStateSelected];
+	[self.cameraButton addTarget:self action:@selector(cameraButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+
+	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - previewButtonWidth - PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, previewButtonWidth, buttonSize);
+	self.galleryButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.galleryButton setFrame:galleryButtonFrame];
+	//TODO: changet this to gallery icon
+	[self.galleryButton setImage:[UIImage imageNamed:PULLUP_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 # pragma mark - Switch PullBar mode
@@ -97,17 +90,17 @@
 
 	[self.pullDownIcon removeFromSuperview];
 
-	[self addSubview:self.undoButton];
-	[self addSubview:self.pullUpButton];
 	[self addSubview:self.previewButton];
+	[self addSubview:self.cameraButton];
+	[self addSubview:self.galleryButton];
 }
 
 -(void)switchToPullDown {
 	self.mode = PullBarModePullDown;
 
-	[self.undoButton removeFromSuperview];
-	[self.pullUpButton removeFromSuperview];
 	[self.previewButton removeFromSuperview];
+	[self.cameraButton removeFromSuperview];
+	[self.galleryButton removeFromSuperview];
 
 	[self addSubview:self.pullDownIcon];
 }
@@ -126,19 +119,9 @@
 
 # pragma mark - Un and gray out buttons
 
--(void) grayOutUndo {
-	[self.undoButton setEnabled:NO];
-	[self.undoButton setImage:self.undoButtonGrayedOut forState:UIControlStateNormal];
-}
-
 -(void) grayOutPreview {
 	[self.previewButton setEnabled:NO];
 	[self.previewButton setImage:self.previewButtonGrayedOut forState:UIControlStateNormal];
-}
-
--(void) unGrayOutUndo {
-	[self.undoButton setEnabled:YES];
-	[self.undoButton setImage:self.undoButtonImage forState:UIControlStateNormal];
 }
 
 -(void) unGrayOutPreview {
@@ -149,41 +132,24 @@
 
 # pragma mark - Button actions on touch up (send message to delegates)
 
-- (IBAction)undoButtonReleased:(UIButton *)sender
-{
-	if (self.delegate) {
-		[self.delegate undoButtonPressed];
-	}
-}
 
-- (IBAction)previewButtonReleased:(UIButton *)sender
-{
+- (void) previewButtonReleased:(UIButton *)sender {
 	if (self.delegate) {
     	[self.delegate previewButtonPressed];
 	}
 
 }
 
-- (IBAction)pullUpButtonReleased:(UIButton *)sender
-{
+- (void) cameraButtonReleased:(UIButton *)sender {
 	if (self.delegate) {
-		[self.delegate pullUpButtonPressed];
+		[self.delegate cameraButtonPressed];
 	}
 }
 
-# pragma mark Button actions on touch down -- NOT IN USE --
-
-- (IBAction)undoButtonPressed:(UIButton *)sender {
-	[self.undoButton setImage:[UIImage imageNamed:UNDO_BUTTON_CLICKED] forState:UIControlStateNormal];
-}
-
-
-- (IBAction)pullUpButtonPressed:(UIButton *)sender {
-	[self.pullUpButton setImage:[UIImage imageNamed:PULLUP_BUTTON_CLICKED] forState:UIControlStateNormal];
-}
-
-- (IBAction)previewButtonPressed:(UIButton *)sender {
-	[self.previewButton setImage:[UIImage imageNamed:PREVIEW_BUTTON_CLICKED] forState:UIControlStateNormal];
+-(void) galleryButtonReleased:(UIButton*) sender {
+	if (self.delegate) {
+		[self.delegate galleryButtonPressed];
+	}
 }
 
 

@@ -43,25 +43,9 @@
 	return self;
 }
 
--(void) loadPOVs: (NSInteger) numToLoad {
-	GTLQuery* loadQuery;
+-(void) loadMorePOVs: (NSInteger) numToLoad {
 
-	// Note: cursor string will be nil if this is the first query.
-	// That's ok on the backend.
-	switch (self.povType) {
-		case POVTypeRecent: {
-			loadQuery = [GTLQueryVerbatmApp queryForPovGetRecentPOVsInfoWithCount: numToLoad];
-			[loadQuery setValue: self.cursorString forKey:@"cursorString"];
-			break;
-		}
-		case POVTypeTrending: {
-			loadQuery = [GTLQueryVerbatmApp queryForPovGetTrendingPOVsInfoWithCount:numToLoad];
-			[loadQuery setValue: self.cursorString forKey:@"cursorString"];
-			break;
-		}
-		default:
-			return;
-	}
+	GTLQuery* loadQuery = [self getLoadingQuery: numToLoad withCursor: YES];
 
 	[self.service executeQuery:loadQuery
 			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
@@ -75,6 +59,47 @@
 					 [self.delegate morePOVsLoaded];
 				 }
 			 }];
+}
+
+-(void) reloadPOVs: (NSInteger) numToLoad {
+	GTLQuery* loadQuery = [self getLoadingQuery: numToLoad withCursor: NO];
+
+	[self.service executeQuery:loadQuery
+			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
+				 if (error) {
+					 NSLog(@"Error loading POVs: %@", error.description);
+				 } else {
+					 NSLog(@"Successfully loaded POVs!");
+					 self.povInfos = [[NSMutableArray alloc] init];
+					 [self.povInfos addObjectsFromArray: results.results];
+					 self.cursorString = results.cursorString;
+
+					 [self.delegate morePOVsLoaded];
+				 }
+			 }];
+}
+
+-(GTLQuery*) getLoadingQuery: (NSInteger) numToLoad withCursor: (BOOL) withCursor {
+	GTLQuery* loadQuery;
+
+	// Note: cursor string will be nil if this is the first query.
+	// That's ok on the backend.
+	switch (self.povType) {
+		case POVTypeRecent: {
+			loadQuery = [GTLQueryVerbatmApp queryForPovGetRecentPOVsInfoWithCount: numToLoad];
+			break;
+		}
+		case POVTypeTrending: {
+			loadQuery = [GTLQueryVerbatmApp queryForPovGetTrendingPOVsInfoWithCount:numToLoad];
+						break;
+		}
+		default:
+			return nil;
+	}
+	if (withCursor) {
+		[loadQuery setValue: self.cursorString forKey:@"cursorString"];
+	}
+	return loadQuery;
 }
 
 - (NSInteger) getNumberOfPOVsLoaded {

@@ -38,15 +38,6 @@
 	[self renderMedia];
 }
 
-#pragma mark - Lazy Instantiation
-
--(UIImageView*)imageView {
-	if(!_imageView) _imageView = [[UIImageView alloc] init];
-	_imageView.contentMode = UIViewContentModeCenter;
-	_imageView.layer.masksToBounds = YES;
-	return _imageView;
-}
-
 #pragma mark - Render Media -
 
 //This should be overriden in subclasses
@@ -125,6 +116,15 @@
 		[self initWithImage:image];
 	}
 	return self;
+}
+
+#pragma mark - Lazy Instantiation
+
+-(UIImageView*)imageView {
+	if(!_imageView) _imageView = [[UIImageView alloc] init];
+	_imageView.contentMode = UIViewContentModeCenter;
+	_imageView.layer.masksToBounds = YES;
+	return _imageView;
 }
 
 @end

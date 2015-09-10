@@ -1,0 +1,67 @@
+//
+//  CoverPicturePinchView.m
+//  Verbatm
+//
+//  Created by Sierra Kaplan-Nelson on 9/9/15.
+//  Copyright (c) 2015 Verbatm. All rights reserved.
+//
+
+#import "CoverPicturePinchView.h"
+#import "Styles.h"
+
+@interface CoverPicturePinchView()
+
+@property (strong, nonatomic) UILabel* addCoverPicLabel;
+
+@property (strong, nonatomic) UIImageView *imageView;
+
+@end
+
+@implementation CoverPicturePinchView
+
+-(instancetype) initWithRadius:(float)radius withCenter:(CGPoint)center {
+	self = [super initWithRadius:radius withCenter:center];
+	if (self) {
+		[self setBackgroundColor: [UIColor clearColor]];
+		[self formatAddCoverPicLabel];
+	}
+	return self;
+}
+
+-(void) formatAddCoverPicLabel {
+	self.addCoverPicLabel = [[UILabel alloc] initWithFrame:self.bounds];
+	self.addCoverPicLabel.textAlignment = NSTextAlignmentCenter;
+	self.addCoverPicLabel.lineBreakMode = NSLineBreakByWordWrapping;
+	self.addCoverPicLabel.numberOfLines = 3;
+	self.addCoverPicLabel.text = @"Tap to add cover picture";
+	self.addCoverPicLabel.font = [UIFont fontWithName:TITLE_FONT size: WHAT_IS_IT_LIKE_LABEL_SIZE];
+	self.addCoverPicLabel.textColor = [UIColor whiteColor];
+	[self.background addSubview: self.addCoverPicLabel];
+}
+
+-(void) setImage: (UIImage*) image {
+	[self.imageView setImage:image];
+	[self.background insertSubview:self.imageView atIndex:0];
+}
+
+#pragma mark - Render Media -
+
+//This should be overriden in subclasses
+-(void)renderMedia {
+//	self.imageView.frame = self.background.frame;
+}
+
+//This function displays the media on the view.
+-(void)displayMedia {
+}
+
+#pragma mark - Lazy Instantiation
+
+-(UIImageView*)imageView {
+	if(!_imageView) _imageView = [[UIImageView alloc] initWithFrame: self.background.frame];
+	_imageView.contentMode = UIViewContentModeCenter;
+	_imageView.layer.masksToBounds = YES;
+	return _imageView;
+}
+
+@end

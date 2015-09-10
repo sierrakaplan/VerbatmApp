@@ -124,6 +124,9 @@
     PHFetchResult *smartAlbums = [self.collectionsFetchResults objectAtIndex:1];
 	PHFetchOptions *options = [[PHFetchOptions alloc] init];
 	options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
+	if (self.onlyImages) {
+		options.predicate = [NSPredicate predicateWithFormat:@"mediaType = %d",PHAssetMediaTypeImage];
+	}
 
     //All album: Sorted by descending creation date.
     NSMutableArray *allFetchResultArray = [[NSMutableArray alloc] init];

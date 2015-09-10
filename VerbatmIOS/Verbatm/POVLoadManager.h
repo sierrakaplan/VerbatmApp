@@ -29,8 +29,11 @@ typedef NS_ENUM(NSInteger, POVType) {
 // Initialize with the type of POV's to load (trending, recent, etc.)
 -(id) initWithType: (POVType) type;
 
-// Query for next batch of POVInfos
--(void) loadPOVs: (NSInteger) numToLoad;
+// Query for next batch of POVInfos (when scrolling down)
+-(void) loadMorePOVs: (NSInteger) numToLoad;
+
+// Reloads the POVs
+-(void) reloadPOVs: (NSInteger) numToLoad;
 
 // Returns size of the POVInfo array in memory
 -(NSInteger) getNumberOfPOVsLoaded;

@@ -615,15 +615,6 @@
 #pragma mark - Change pull bar Delegate Methods (for pullbar) -
 
 
-
--(void)canUndo:(BOOL)canUndo {
-	if (canUndo) {
-		[self.pullBar unGrayOutUndo];
-	} else {
-		[self.pullBar grayOutUndo];
-	}
-}
-
 -(void)canPreview:(BOOL)canPreview {
 	if (canPreview) {
 		[self.pullBar unGrayOutPreview];
@@ -632,7 +623,7 @@
 	}
 }
 
-#pragma mark - PullBar Delegate Methods (pullbar button actions)
+#pragma mark - PullBar Delegate Methods (pullbar button actions) -
 
 -(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {
 	if (!withTransition) {
@@ -652,14 +643,6 @@
 	}
 }
 
--(void) undoButtonPressed {
-	[self.contentDevVC undoTileDeleteSwipe];
-}
-
--(void) pullUpButtonPressed {
-	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
-}
-
 // Displays article preview from pinch objects
 -(void) previewButtonPressed {
 	[self.contentDevVC closeAllOpenCollections];
@@ -673,6 +656,16 @@
 
 	[self.delegate previewPOVFromPinchViews: pinchViews];
 }
+
+-(void) cameraButtonPressed {
+	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+}
+
+-(void) galleryButtonPressed {
+	[self.contentDevVC presentEfficientGallery];
+}
+
+#pragma mark - Preview POV -
 
 -(NSArray*) getPinchViewsFromContentDev {
 	NSMutableArray *pinchViews = [[NSMutableArray alloc]init];
@@ -690,7 +683,7 @@
 
 	//make sure we have an article title, and that we have multiple pinch elements in the deck
 
-	if (![self.contentDevVC.articleTitleField.text length]) {
+	if (![self.contentDevVC.whatIsItLikeField.text length]) {
 		//TODO: animation telling them to enter a title
 		NSLog(@"Must enter a title to publish!");
 	} else {
@@ -700,20 +693,11 @@
 			NSLog(@"Can't publish with no pinch objects");
 			return;
 		}
-		[self.publisher publishPOVFromPinchViews: pinchViewsArray andTitle: self.contentDevVC.articleTitleField.text];
+		[self.publisher publishPOVFromPinchViews: pinchViewsArray andTitle: self.contentDevVC.whatIsItLikeField.text];
 		//TODO: Transition to most recent in feed
 
 		[[UserPinchViews sharedInstance] clearPinchViews];
 		[self.contentDevVC cleanUp];
-	}
-}
-
-// NOT IN USE
--(void) publishArticleContentToParse:(NSArray*)pinchObjectsArray {
-	//this creates and saves an article. the return value is unnecesary
-	Article * newArticle = [[Article alloc]initAndSaveWithTitle:self.contentDevVC.articleTitleField.text  andSandWichWhat:self.contentDevVC.sandwichWhat.text  Where:self.contentDevVC.sandwichWhere.text andPinchObjects:pinchObjectsArray andIsTesting:NO];
-	if(newArticle) {
-		//exit content page
 	}
 }
 

@@ -17,6 +17,7 @@
 #import "PinchView.h"
 #import "TextPinchView.h"
 #import "ImagePinchView.h"
+#import "CoverPicturePinchView.h"
 #import "VideoPinchView.h"
 #import "CollectionPinchView.h"
 #import "EditContentView.h"
@@ -29,8 +30,14 @@
 #import "ContentPageElementScrollView.h"
 #import "UserPinchViews.h"
 
-@interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,MediaSelectTileDelegate,GMImagePickerControllerDelegate,EditContentViewDelegate>
+@interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,MediaSelectTileDelegate,
+							GMImagePickerControllerDelegate, EditContentViewDelegate>
 
+
+@property (strong, nonatomic) CoverPicturePinchView* coverPicView;
+// Says whether or not user is currently adding a cover picture
+// (used when returning from adding assets)
+@property (nonatomic) BOOL addingCoverPicture;
 @property (strong, nonatomic, readwrite) NSMutableArray * pageElementScrollViews;
 @property (nonatomic) NSInteger numPinchViews;
 
@@ -85,6 +92,7 @@
 
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
+#define WHAT_IS_IT_LIKE_OFFSET 15
 
 @end
 
@@ -100,11 +108,12 @@
 
 	[self setElementDefaultFrames];
 
-	[self createBaseSelector];
-	[self centerViews];
+//	[self createBaseSelector];
 	[self configureViews];
 	[self setUpNotifications];
 	[self setDelegates];
+
+	[self setAddCoverPictureView];
 
 	self.pinchingMode = PinchingModeNone;
 	self.index = 0;
@@ -112,28 +121,7 @@
 }
 
 -(void) addBlurView {
-	[UIEffects createBlurViewOnView:self.view withStyle:UIBlurEffectStyleDark];
-}
-
--(void) centerViews
-{
-	NSInteger middle = self.view.frame.size.width/2;
-	//@ sign
-	self.sandwichAtLabel.frame = CGRectMake(middle - self.sandwichAtLabel.frame.size.width/2, self.sandwichAtLabel.frame.origin.y, self.sandwichAtLabel.frame.size.width, self.sandwichAtLabel.frame.size.height);
-	//the space to the left and to the write of the @ label
-	NSInteger spaceLeft = (self.view.frame.size.width - self.sandwichAtLabel.frame.size.width)/2;
-
-	//s@ndwiches
-	self.sandwichWhat.frame = CGRectMake((spaceLeft/2)-(self.sandwichWhat.frame.size.width/2), self.sandwichWhat.frame.origin.y, self.sandwichWhat.frame.size.width, self.sandwichWhat.frame.size.height);
-	float centerLeft = self.sandwichWhat.frame.origin.x + self.sandwichWhat.frame.size.width/2.0 - self.dotsLeft.frame.size.width/2.0;
-	self.dotsLeft.frame = CGRectMake(centerLeft, self.sandwichWhat.frame.origin.y + self.sandwichWhat.frame.size.height, self.dotsLeft.frame.size.width, self.dotsLeft.frame.size.height);
-
-	self.sandwichWhere.frame = CGRectMake(((self.sandwichAtLabel.frame.origin.x + self.sandwichAtLabel.frame.size.width)+(spaceLeft/2))-(self.sandwichWhere.frame.size.width/2), self.sandwichWhere.frame.origin.y, self.sandwichWhere.frame.size.width, self.sandwichWhere.frame.size.height);
-	float centerRight = self.sandwichWhere.frame.origin.x + self.sandwichWhere.frame.size.width/2.0 - self.dotsRight.frame.size.width/2.0;
-	self.dotsRight.frame = CGRectMake(centerRight, self.sandwichWhere.frame.origin.y + self.sandwichWhere.frame.size.height, self.dotsRight.frame.size.width, self.dotsRight.frame.size.height);
-
-	//article title
-	self.articleTitleField.frame = CGRectMake(middle - (self.articleTitleField.frame.size.width/2), self.articleTitleField.frame.origin.y, self.articleTitleField.frame.size.width, self.articleTitleField.frame.size.height);
+	[UIEffects createBlurViewOnView:self.view withStyle:UIBlurEffectStyleLight];
 }
 
 -(void) setFrameMainScrollView {
@@ -144,38 +132,34 @@
 -(void) formatTextFields {
 
 	UIColor *color = [UIColor whiteColor];
-	UIFont* sandwichPlaceholderFont = [UIFont fontWithName:PLACEHOLDER_FONT size:SANDWICH_PLACEHOLDER_SIZE];
-	UIFont* titlePlaceholderFont = [UIFont fontWithName:PLACEHOLDER_FONT size:TITLE_PLACEHOLDER_SIZE];
+	UIFont* labelFont = [UIFont fontWithName:DEFAULT_FONT size: WHAT_IS_IT_LIKE_LABEL_SIZE];
+	UIFont* whatIsItLikeFieldFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_SIZE];
 
-	// attempt to set placeholder using attributed placeholder selector
-	if ([self.sandwichWhat respondsToSelector:@selector(setAttributedPlaceholder:)]
-		&& [self.sandwichWhere respondsToSelector:@selector(setAttributedPlaceholder:)]
-		&& [self.articleTitleField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+	//Label
+	self.whatIsItLikeLabel.frame = CGRectMake(0, self.whatIsItLikeLabel.frame.origin.y, self.view.bounds.size.width, self.whatIsItLikeLabel.frame.size.height);
+	self.whatIsItLikeLabel.textAlignment = NSTextAlignmentCenter;
+	self.whatIsItLikeLabel.font = labelFont;
 
-		self.sandwichWhat.attributedPlaceholder = [[NSAttributedString alloc]
-												   initWithString:self.sandwichWhat.placeholder
+	//Field
+	self.whatIsItLikeField.frame = CGRectMake(WHAT_IS_IT_LIKE_OFFSET, self.whatIsItLikeField.frame.origin.y, self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_OFFSET, self.whatIsItLikeField.frame.size.height);
+	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
+	self.whatIsItLikeField.font = whatIsItLikeFieldFont;
+	self.whatIsItLikeField.tintColor = [UIColor whiteColor];
+
+
+	if ([self.whatIsItLikeField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
+
+		self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
+												   initWithString: self.whatIsItLikeField.placeholder
 												   attributes:@{NSForegroundColorAttributeName: color,
-																NSFontAttributeName : sandwichPlaceholderFont}];
-
-		self.sandwichWhere.attributedPlaceholder = [[NSAttributedString alloc]
-													initWithString:self.sandwichWhere.placeholder
-													attributes:@{NSForegroundColorAttributeName: color,
-																 NSFontAttributeName : sandwichPlaceholderFont}];
-
-		self.articleTitleField.attributedPlaceholder = [[NSAttributedString alloc]
-														initWithString:self.articleTitleField.placeholder
-														attributes:@{NSForegroundColorAttributeName: color,
-																	 NSFontAttributeName : titlePlaceholderFont}];
+																NSFontAttributeName : whatIsItLikeFieldFont}];
 	} else {
 		NSLog(PLACEHOLDER_SELECTOR_FAILED_ERROR_MESSAGE);
 	}
 
-	[self.sandwichWhat resignFirstResponder];
-	[self.sandwichWhere resignFirstResponder];
-	[self.articleTitleField resignFirstResponder];
-	self.sandwichWhat.autocorrectionType = UITextAutocorrectionTypeNo;
-	self.sandwichWhere.autocorrectionType = UITextAutocorrectionTypeNo;
-	self.articleTitleField.autocorrectionType = UITextAutocorrectionTypeNo;
+
+	[self.whatIsItLikeField resignFirstResponder];
+	self.whatIsItLikeField.autocorrectionType = UITextAutocorrectionTypeYes;
 }
 
 //records the generic frame for any element that is a square and not a pinch view circle,
@@ -186,6 +170,7 @@
 	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
 }
 
+// NO LONGER IN USE
 -(void) createBaseSelector {
 
 	//make sure we don't create another one when we return from image picking
@@ -200,7 +185,7 @@
 	[self.baseMediaTileSelector formatButtons];
 
 
-	CGRect scrollViewFrame = CGRectMake(0, self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_OFFSET_DISTANCE);
+	CGRect scrollViewFrame = CGRectMake(0, self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_OFFSET_DISTANCE);
 
 	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
 																	  initWithFrame:scrollViewFrame
@@ -253,21 +238,36 @@
 												 name:UIKeyboardWillChangeFrameNotification
 											   object:nil];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged) name:UIDeviceOrientationDidChangeNotification object: [UIDevice currentDevice]];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged)
+												 name:UIDeviceOrientationDidChangeNotification
+											   object: [UIDevice currentDevice]];
 }
 
 
 -(void) setDelegates {
-	self.sandwichWhat.delegate = self;
-	self.sandwichWhere.delegate = self;
-	self.articleTitleField.delegate = self;
+	self.whatIsItLikeField.delegate = self;
 	self.mainScrollView.delegate = self;
+}
+
+-(void) setAddCoverPictureView {
+	self.coverPicView = [[CoverPicturePinchView alloc]
+										   initWithRadius: self.defaultPinchViewRadius * 3.f/4.f
+										   withCenter: self.defaultPinchViewCenter];
+	[self.coverPicView specifyFrame:CGRectMake(self.view.frame.size.width/2.f - self.coverPicView.frame.size.width/2.f,
+										 self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height,
+										 self.coverPicView.frame.size.width,
+										 self.coverPicView.frame.size.height)];
+	UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
+	[self.coverPicView addGestureRecognizer: tapGesture];
+
+	[self.mainScrollView addSubview: self.coverPicView];
 }
 
 -(void) loadPinchViews {
 	NSArray* savedPinchViews = [[UserPinchViews sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
-		[pinchView specifyRadius:self.defaultPinchViewRadius andCenter:self.defaultPinchViewCenter];
+		[pinchView specifyRadius:self.defaultPinchViewRadius
+					   andCenter:self.defaultPinchViewCenter];
 		[self newPinchView:pinchView belowView:[self getUpperView]];
 	}
 }
@@ -277,23 +277,14 @@
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
 
 	//S@nwiches shouldn't have any spaces between them
-	if([string isEqualToString:@" "]  && textField != self.articleTitleField) return NO;
+	if([string isEqualToString:@" "]  && textField != self.whatIsItLikeField) return NO;
 	return YES;
 }
 
 
 -(BOOL) textFieldShouldReturn:(UITextField *)textField {
-	if(textField == self.sandwichWhat) {
-		if([self.sandwichWhere.text isEqualToString:@""]) {
-			[self.sandwichWhere becomeFirstResponder];
-		}else {
-			[self.sandwichWhat resignFirstResponder];
-		}
-	}else if(textField == self.sandwichWhere) {
-		[self.sandwichWhere resignFirstResponder];
-
-	}else if(textField == self.articleTitleField) {
-		[self.articleTitleField resignFirstResponder];
+	if(textField == self.whatIsItLikeField) {
+		[self.whatIsItLikeField resignFirstResponder];
 	}
 
 	return YES;
@@ -383,7 +374,7 @@
 	NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
 	[scrollView removeFromSuperview];
 	[self.pageElementScrollViews removeObject:scrollView];
-	[self shiftElementsBelowView:self.articleTitleField];
+	[self shiftElementsBelowView: self.coverPicView];
 	//register deleted tile
 	[self registerDeletedTile:scrollView withIndex:[NSNumber numberWithUnsignedLong:index]];
 }
@@ -410,7 +401,7 @@
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
-		newElementScrollViewFrame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		newElementScrollViewFrame = CGRectMake(0,self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		self.index = 0;
 	} else {
 		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, upperScrollView.frame.size.width, upperScrollView.frame.size.height);
@@ -430,8 +421,8 @@
 		[self.pageElementScrollViews insertObject:newElementScrollView atIndex:self.index];
 	}
 
-	[self.mainScrollView addSubview:newElementScrollView];
-	[self shiftElementsBelowView:self.articleTitleField];
+	[self.mainScrollView addSubview: newElementScrollView];
+	[self shiftElementsBelowView: self.coverPicView];
 }
 
 
@@ -446,8 +437,8 @@
 		return;
 	}
 	if(![view isKindOfClass:[ContentPageElementScrollView class]]
-				  && ![view isKindOfClass:[UITextField class]]) {
-		NSLog(@"View must be a scroll view or a text field to shift elements below.");
+				  && ![view isKindOfClass:[CoverPicturePinchView class]]) {
+		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
 		return;
 	}
 
@@ -459,8 +450,8 @@
 		viewIndex = [self.pageElementScrollViews indexOfObject:view]+1;
 	}
 
-	//If we must shift everything from the top - we pass in the text field
-	else if ([view isKindOfClass:[UITextField class]]) {
+	//If we must shift everything from the top
+	else if ([view isKindOfClass:[CoverPicturePinchView class]]) {
 		firstYCoordinate  = firstYCoordinate + ELEMENT_OFFSET_DISTANCE;
 	}
 
@@ -509,10 +500,10 @@
 	}
 
 	if(![self.pageElementScrollViews containsObject:view]) {
-		if(topView && topView != self.articleTitleField) {
+		if(topView && topView != self.whatIsItLikeField) {
 			NSInteger index = [self.pageElementScrollViews indexOfObject:topView];
 			[self.pageElementScrollViews insertObject:view atIndex:(index+1)];
-		}else if(topView == self.articleTitleField) {
+		}else if(topView == self.whatIsItLikeField) {
 			[self.pageElementScrollViews insertObject:view atIndex:0];
 		}else {
 			[self.pageElementScrollViews addObject:view];
@@ -536,20 +527,19 @@
 
 #pragma Remove Keyboard From Screen
 //Iain
--(void) removeKeyboardFromScreen
-{
-	if(self.sandwichWhat.isEditing)[self.sandwichWhat resignFirstResponder];
-	if(self.sandwichWhere.isEditing)[self.sandwichWhere resignFirstResponder];
-	if(self.articleTitleField.isEditing)[self.articleTitleField resignFirstResponder];
+-(void) removeKeyboardFromScreen {
+	if (self.whatIsItLikeField.isEditing) {
+		[self.whatIsItLikeField resignFirstResponder];
+	}
 	if (self.openEditContentView) {
 		[self.openEditContentView.textView resignFirstResponder];
 	}
 }
 
 -(void) showKeyboard {
-	if(self.sandwichWhat.isEditing)[self.sandwichWhat becomeFirstResponder];
-	if(self.sandwichWhere.isEditing)[self.sandwichWhere becomeFirstResponder];
-	if(self.articleTitleField.isEditing)[self.articleTitleField becomeFirstResponder];
+	if(self.whatIsItLikeField.isEditing) {
+		[self.whatIsItLikeField becomeFirstResponder];
+	}
 	if (self.openEditContentView) {
 		[self.openEditContentView.textView becomeFirstResponder];
 	}
@@ -658,7 +648,7 @@
 		self.newlyCreatedMediaTile = nil;
 	}
 
-	[self shiftElementsBelowView:self.articleTitleField];
+	[self shiftElementsBelowView: self.coverPicView];
 	self.pinchingMode = PinchingModeNone;
 }
 
@@ -671,7 +661,7 @@
 		self.newlyCreatedMediaTile.superview.frame = CGRectMake(0,self.newlyCreatedMediaTile.superview.frame.origin.y + originalHeight/2.f,
 																self.newlyCreatedMediaTile.superview.frame.size.width, 0);
 		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self shiftElementsBelowView:self.articleTitleField];
+		[self shiftElementsBelowView: self.coverPicView];
 
 	} completion:^(BOOL finished) {
 		[self.newlyCreatedMediaTile.superview removeFromSuperview];
@@ -952,9 +942,9 @@
 																self.baseMediaTileSelector.superview.frame.size.height);
 
 		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self shiftElementsBelowView:self.articleTitleField];
+		[self shiftElementsBelowView: self.coverPicView];
 	} completion:^(BOOL finished) {
-		[self shiftElementsBelowView:self.articleTitleField];
+		[self shiftElementsBelowView: self.coverPicView];
 		gesture.enabled = NO;
 		gesture.enabled = YES;
 		self.pinchingMode = PinchingModeNone;
@@ -969,7 +959,7 @@
 -(void) clearMediaTile:(MediaSelectTile*)mediaTile {
 	[mediaTile.superview removeFromSuperview];
 	[self.pageElementScrollViews removeObject:mediaTile.superview];
-	[self shiftElementsBelowView:self.articleTitleField];
+	[self shiftElementsBelowView: self.coverPicView];
 }
 
 #pragma mark Pinching Views together
@@ -986,7 +976,7 @@
 	[self.pageElementScrollViews removeObject:self.lowerPinchScrollView];
 	self.lowerPinchScrollView = self.upperPinchScrollView = nil;
 	self.pinchingMode = PinchingModeNone;
-	[self shiftElementsBelowView:self.articleTitleField];
+	[self shiftElementsBelowView: self.coverPicView];
 	//make sure the pullbar is showing when things are pinched together
 	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
 }
@@ -1093,6 +1083,14 @@
 	if (!tile.isBaseSelector) {
 		[self clearMediaTile:tile];
 	}
+}
+
+
+#pragma  mark - Add cover picture -
+
+-(void) addCoverPictureTapped {
+	self.addingCoverPicture = YES;
+	[self presentGalleryForCoverPic];
 }
 
 
@@ -1335,7 +1333,7 @@
 	//sanitize for next run
 	self.selectedView_PAN = nil;
 
-	[self shiftElementsBelowView:self.articleTitleField];
+	[self shiftElementsBelowView: self.coverPicView];
 }
 
 //swaps scroll views in the pageElementScrollView array
@@ -1379,7 +1377,7 @@
 }
 
 
-#pragma mark - Undo implementation -
+#pragma mark - NO LONGER IN USE: Undo implementation -
 
 -(void) registerDeletedTile: (ContentPageElementScrollView *) tile withIndex: (NSNumber *) index {
 	//make sure there is something to delete
@@ -1397,7 +1395,7 @@
 
 	//ungray out undo if previously was grayed out
 	if (![self.tileSwipeViewUndoManager canUndo]) {
-		[self.changePullBarDelegate canUndo:YES];
+//		[self.changePullBarDelegate canUndo:YES];
 	}
 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
 	//show the pullbar so that they can undo
@@ -1407,7 +1405,7 @@
 -(void)undoTileDeleteSwipe {
 	[self.tileSwipeViewUndoManager undo];
 	if(![self.tileSwipeViewUndoManager canUndo]) {
-		[self.changePullBarDelegate canUndo:NO];
+//		[self.changePullBarDelegate canUndo:NO];
 	}
 }
 
@@ -1432,7 +1430,7 @@
 	[self returnView:tile toDisplayAtIndex:index.integerValue];
 }
 
--(void)returnView: (ContentPageElementScrollView *) scrollView toDisplayAtIndex:(NSInteger) index{
+-(void)returnView: (ContentPageElementScrollView *) scrollView toDisplayAtIndex:(NSInteger) index {
 
 	if(index) {
 		ContentPageElementScrollView * upperScrollView = self.pageElementScrollViews[(index -1)];
@@ -1440,7 +1438,7 @@
 								 upperScrollView.frame.size.width, upperScrollView.frame.size.height);
 
 	} else {
-		scrollView.frame = CGRectMake(0,self.articleTitleField.frame.origin.y + self.articleTitleField.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		scrollView.frame = CGRectMake(0,self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 	}
 
 	[self.pageElementScrollViews insertObject:scrollView atIndex:index];
@@ -1449,7 +1447,7 @@
 		[self addTapGestureToPinchView:(PinchView *)[scrollView pageElement]];
 	}
 	[self.mainScrollView addSubview:scrollView];
-	[self shiftElementsBelowView:self.articleTitleField];
+	[self shiftElementsBelowView: self.coverPicView];
 }
 
 
@@ -1566,7 +1564,6 @@
 	}
 	[self.pageElementScrollViews removeAllObjects];
 	[self.changePullBarDelegate canPreview:NO];
-	[self.changePullBarDelegate canUndo:NO];
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
@@ -1575,15 +1572,13 @@
 }
 
 -(void)clearTextFields {
-	self.sandwichWhat.text = @"";
-	self.sandwichWhere.text = @"";
-	self.articleTitleField.text =@"";
+	self.whatIsItLikeField.text =@"";
 }
 
 
-#pragma mark -New Gallery Implementaiton-
+#pragma mark - Gallery + Image picker -
 
--(void)presentEfficientGallery {
+-(void) presentEfficientGallery {
 
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
 	picker.delegate = self;
@@ -1604,7 +1599,28 @@
 	[self presentViewController:picker animated:YES completion:nil];
 }
 
--(void)addAssetToView:(id)asset {
+-(void) presentGalleryForCoverPic {
+	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
+	picker.delegate = self;
+	[picker setSelectOneImage: YES];
+	//Display or not the selection info Toolbar:
+	picker.displaySelectionInfoToolbar = YES;
+
+	//Display or not the number of assets in each album:
+	picker.displayAlbumsNumberOfAssets = YES;
+
+	//Customize the picker title and prompt (helper message over the title)
+	picker.title = GALLERY_PICKER_TITLE;
+	picker.customNavigationBarPrompt = COVERPIC_GALLERY_CUSTOM_MESSAGE;
+
+	//Customize the number of cols depending on orientation and the inter-item spacing
+	picker.colsInPortrait = 3;
+	picker.colsInLandscape = 5;
+	picker.minimumInteritemSpacing = 2.0;
+	[self presentViewController:picker animated:YES completion:nil];
+}
+
+-(void) createPinchViewFromAsset:(id)asset {
 
 	UIView* upperView = [self getUpperView];
 	PinchView* newPinchView;
@@ -1635,7 +1651,7 @@
 }
 
 //add assets from picker to our scrollview
--(void)presentAssets:(NSArray *)phassets {
+-(void )presentAssetsAsPinchViews:(NSArray *)phassets {
 	PHImageManager * iman = [[PHImageManager alloc] init];
 	//store local identifiers so we can querry the nsassets
 	for(PHAsset * asset in phassets) {
@@ -1643,14 +1659,14 @@
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 				dispatch_async(dispatch_get_main_queue(), ^{
-					[self addAssetToView: imageData];
+					[self createPinchViewFromAsset: imageData];
 				});
 			}];
 		}else {
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 				dispatch_async(dispatch_get_main_queue(), ^{
-					[self addAssetToView: asset];
+					[self createPinchViewFromAsset: asset];
 				});
 			}];
 		}
@@ -1660,13 +1676,27 @@
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
-        [self presentAssets:assetArray];
+		if (self.addingCoverPicture) {
+//			[self addCoverPicture: assetArray];
+			self.addingCoverPicture = NO;
+		} else {
+        	[self presentAssetsAsPinchViews:assetArray];
+		}
 	}];
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
+}
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+	UIImage* coverPic = info[UIImagePickerControllerOriginalImage];
+	[self.coverPicView setImage: coverPic];
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+
 }
 
 #pragma mark - Lazy Instantiation

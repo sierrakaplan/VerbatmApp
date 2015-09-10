@@ -20,6 +20,7 @@
 #define GALLERY_PICKER_TITLE @"Verbatm"
 #define VERBATM_ALBUM_NAME @"Verbatm"
 #define GALLERY_CUSTOM_MESSAGE @"Pick media to add to your story!"
+#define COVERPIC_GALLERY_CUSTOM_MESSAGE @"Pick a photo as your cover photo!"
 
 #define PLACEHOLDER_SELECTOR_FAILED_ERROR_MESSAGE @"Cannot set placeholder using attributed placeholder selector, because deployment target is earlier than iOS 6.0"
 

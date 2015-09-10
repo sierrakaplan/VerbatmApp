@@ -15,6 +15,8 @@
 
 @interface GMImagePickerController () <UINavigationControllerDelegate>
 
+@property (nonatomic) BOOL selectOneImage;
+
 @end
 
 @implementation GMImagePickerController
@@ -24,6 +26,7 @@
     if (self = [super init])
     {
         _selectedAssets = [[NSMutableArray alloc] init];
+		_selectOneImage = NO;
         
         //Default values:
         _displaySelectionInfoToolbar = YES;
@@ -74,8 +77,8 @@
 
 - (void)setupNavigationController
 {
-    GMAlbumsViewController *albumsViewController = [[GMAlbumsViewController alloc] init];
-    _navigationController = [[UINavigationController alloc] initWithRootViewController:albumsViewController];
+    _albumsViewController = [[GMAlbumsViewController alloc] init];
+    _navigationController = [[UINavigationController alloc] initWithRootViewController:_albumsViewController];
     _navigationController.delegate = self;
     
     [_navigationController willMoveToParentViewController:self];
@@ -85,25 +88,41 @@
     [_navigationController didMoveToParentViewController:self];
 }
 
+
+#pragma mark - Set select one image -
+
+-(void) setSelectOneImage:(BOOL)selectOneImage {
+	self.selectOneImage = selectOneImage;
+	self.albumsViewController.onlyImages = self.selectOneImage;
+}
+
 #pragma mark - Select / Deselect Asset
 
 - (void)selectAsset:(PHAsset *)asset
 {
+	if (self.selectOneImage) {
+		if ([self.selectedAssets count] > 0) {
+			[self deselectAsset:self.selectedAssets[0]];
+		}
+	}
     [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
     [self updateDoneButton];
     
-    if(self.displaySelectionInfoToolbar)
+    if(self.displaySelectionInfoToolbar) {
         [self updateToolbar];
+	}
 }
 
 - (void)deselectAsset:(PHAsset *)asset
 {
     [self.selectedAssets removeObjectAtIndex:[self.selectedAssets indexOfObject:asset]];
-    if(self.selectedAssets.count == 0)
+    if(self.selectedAssets.count == 0) {
         [self updateDoneButton];
-    
-    if(self.displaySelectionInfoToolbar)
+	}
+
+    if(self.displaySelectionInfoToolbar) {
         [self updateToolbar];
+	}
 }
 
 - (void)updateDoneButton

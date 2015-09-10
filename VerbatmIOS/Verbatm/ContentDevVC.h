@@ -25,7 +25,6 @@
 @protocol ChangePullBarDelegate <NSObject>
 
 -(void) showPullBar: (BOOL) showPullBar withTransition: (BOOL) withTransition;
--(void) canUndo: (BOOL) canUndo;
 -(void) canPreview: (BOOL) canPreview;
 
 @end
@@ -40,12 +39,9 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
 
-@property (weak, nonatomic) IBOutlet UITextField *articleTitleField;
-@property (weak, nonatomic) IBOutlet UITextField *sandwichWhere;
-@property (weak, nonatomic) IBOutlet UITextField *sandwichWhat;
-@property (weak, nonatomic) IBOutlet UILabel *sandwichAtLabel;
-@property (weak, nonatomic) IBOutlet UIImageView *dotsRight;
-@property (weak, nonatomic) IBOutlet UIImageView *dotsLeft;
+@property (weak, nonatomic) IBOutlet UILabel *whatIsItLikeLabel;
+@property (weak, nonatomic) IBOutlet UITextField *whatIsItLikeField;
+
 
 //keeps track of ContentPageElementScrollViews
 @property (strong, nonatomic, readonly) NSMutableArray * pageElementScrollViews;
@@ -58,6 +54,10 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 @property(nonatomic) NSInteger pullBarHeight;
 @property (nonatomic, strong) EditContentView * openEditContentView;
 @property (nonatomic, strong) PinchView * openPinchView;
+
+
+//presents gallery so user can pick assets
+-(void) presentEfficientGallery;
 
 // Loads pinch views from saved settings
 -(void) loadPinchViews;
