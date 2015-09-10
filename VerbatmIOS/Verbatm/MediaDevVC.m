@@ -653,8 +653,9 @@
 		NSLog(@"Can't preview with no pinch views");
 		return;
 	}
+	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
-	[self.delegate previewPOVFromPinchViews: pinchViews];
+	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic];
 }
 
 -(void) cameraButtonPressed {
@@ -665,7 +666,37 @@
 	[self.contentDevVC presentEfficientGallery];
 }
 
-#pragma mark - Preview POV -
+#pragma mark - Publishing POV -
+
+-(void) publishPOV {
+
+	//make sure we have an article title, cover pic, and that we have multiple pinch elements in the deck
+	NSString* title = self.contentDevVC.whatIsItLikeField.text;
+	UIImage* coverPic = [self.contentDevVC getCoverPicture];
+
+	if (![title length]) {
+		//TODO: animation telling them to enter a title
+		NSLog(@"Must enter a title to publish!");
+	} else if (!coverPic) {
+		NSLog(@"Must have a cover picture to publish!");
+		//TODO: animation telling them to pick a cover picture
+	} else {
+		NSArray *pinchViewsArray = [self getPinchViewsFromContentDev];
+
+		if(![pinchViewsArray count]) {
+			NSLog(@"Can't publish with no pinch objects");
+			return;
+		}
+
+		[self.publisher publishPOVFromPinchViews: pinchViewsArray andTitle: title
+									 andCoverPic: coverPic];
+		[self.delegate povPublishedWithTitle:title andCoverPic: coverPic];
+
+		[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+		[[UserPinchViews sharedInstance] clearPinchViews];
+		[self.contentDevVC cleanUp];
+	}
+}
 
 -(NSArray*) getPinchViewsFromContentDev {
 	NSMutableArray *pinchViews = [[NSMutableArray alloc]init];
@@ -675,30 +706,6 @@
 		}
 	}
 	return pinchViews;
-}
-
-#pragma mark - Publishing POV -
-
--(void) publishPOV {
-
-	//make sure we have an article title, and that we have multiple pinch elements in the deck
-
-	if (![self.contentDevVC.whatIsItLikeField.text length]) {
-		//TODO: animation telling them to enter a title
-		NSLog(@"Must enter a title to publish!");
-	} else {
-		NSArray *pinchViewsArray = [self getPinchViewsFromContentDev];
-
-		if(![pinchViewsArray count]) {
-			NSLog(@"Can't publish with no pinch objects");
-			return;
-		}
-		[self.publisher publishPOVFromPinchViews: pinchViewsArray andTitle: self.contentDevVC.whatIsItLikeField.text];
-		//TODO: Transition to most recent in feed
-
-		[[UserPinchViews sharedInstance] clearPinchViews];
-		[self.contentDevVC cleanUp];
-	}
 }
 
 #pragma mark - Lazy Instantiation -

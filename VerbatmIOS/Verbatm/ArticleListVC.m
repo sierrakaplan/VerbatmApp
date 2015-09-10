@@ -32,9 +32,14 @@
 @property (strong, nonatomic) FeedTableView *povListView;
 @property (strong, nonatomic) POVLoadManager *povLoader;
 
+#pragma mark - Publishing POV -
+
+@property (strong, nonatomic) FeedTableViewCell* povPublishingPlaceholderCell;
+@property (nonatomic) BOOL povPublishing;
+
 #pragma mark - Refresh -
 
-//this cell is inserted in the top of the listview
+//this cell is inserted in the top of the listview when pull down to refresh
 @property (strong,nonatomic) FeedTableViewCell* placeholderCell;
 @property (atomic) BOOL pullDownInProgress;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
@@ -56,6 +61,10 @@
 }
 
 -(void) registerForNotifications {
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(povPublished)
+												 name:NOTIFICATION_POV_PUBLISHED
+											   object:nil];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -108,7 +117,7 @@
 	NSInteger index = indexPath.row;
 
 	//configure cell
-	if (self.refreshInProgress && index ==0 ){
+	if (self.refreshInProgress && index == 0){
 		//TODO: animation placeholder
 	} else {
 		GTLVerbatmAppPOVInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
@@ -120,7 +129,36 @@
     return cell;
 }
 
-#pragma mark - Refresh Feed Animation -
+#pragma mark - Refresh feed -
+
+-(void) refreshFeed {
+	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
+}
+
+-(void) morePOVsLoaded {
+	if (self.povPublishing) {
+		[self.povPublishingPlaceholderCell removeFromSuperview];
+		self.povPublishingPlaceholderCell = nil;
+	}
+	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+}
+
+#pragma mark - Show POV publishing -
+
+-(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+	self.povPublishing = YES;
+	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
+	[self.povPublishingPlaceholderCell setContentWithUsername:@"User Name" andTitle: title andCoverImage:coverPic];
+	[self.povListView insertSubview:self.povPublishingPlaceholderCell atIndex:0];
+}
+
+-(void) povPublished {
+	if (self.povPublishing) {
+		[self refreshFeed];
+	}
+}
+
+#pragma mark - Pull to refresh Feed Animation -
 
 //when the user starts pulling down the article list we should insert the placeholder with the animating view
 -(void) scrollViewWillBeginDragging:(nonnull UIScrollView *)scrollView {
@@ -167,22 +205,6 @@
     if(!self.activityIndicator.isAnimating) return;
     [self.activityIndicator stopAnimating];
 }
-
-
--(void) refreshFeed {
-	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
-}
-
--(void) morePOVsLoaded {
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-}
-
--(void) loadMoreContent {
-//    if(self.refreshInProgress) {
-//		[self removeAnimatingView];
-//	}
-}
-
 
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     

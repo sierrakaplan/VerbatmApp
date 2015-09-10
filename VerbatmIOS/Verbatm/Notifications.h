@@ -20,6 +20,7 @@
 #define ARTICLE_LOAD_MANAGER_KEY @"article_load_manager_key"
 //
 
+#define NOTIFICATION_POV_PUBLISHED @"notification_pov_published"
 
 
 #endif /* Header_h */

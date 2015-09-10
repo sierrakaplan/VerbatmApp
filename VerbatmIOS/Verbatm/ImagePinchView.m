@@ -122,7 +122,7 @@
 
 -(UIImageView*)imageView {
 	if(!_imageView) _imageView = [[UIImageView alloc] init];
-	_imageView.contentMode = UIViewContentModeCenter;
+	_imageView.contentMode = UIViewContentModeScaleAspectFill;
 	_imageView.layer.masksToBounds = YES;
 	return _imageView;
 }

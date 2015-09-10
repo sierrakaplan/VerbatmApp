@@ -56,6 +56,8 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 @property (nonatomic, strong) PinchView * openPinchView;
 
 
+-(UIImage*) getCoverPicture;
+
 //presents gallery so user can pick assets
 -(void) presentEfficientGallery;
 

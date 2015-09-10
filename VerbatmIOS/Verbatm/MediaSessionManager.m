@@ -551,7 +551,6 @@
 									}];
 }
 
-//Lucio
 -(void)processImage:(UIImage*)image isHalfScreen:(BOOL)halfScreen {
 	self.stillImage = image;
 	[self cropImage:(BOOL)halfScreen];

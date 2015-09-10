@@ -141,6 +141,13 @@
 	}];
 }
 
+#pragma mark - Show recently published POV -
+
+-(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+	[self.categorySwitch snapToEdgeLeft:YES];
+	[self.mostRecentVC showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
+}
+
 #pragma mark - Refresh ? -
 
 -(void) refreshFeed {

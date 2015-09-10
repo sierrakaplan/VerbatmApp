@@ -85,7 +85,7 @@ NSString *kMyClientSecret = @"H4jYylR_xFqh4EyX60wLdS20";
 		_service = [[GTLServiceVerbatmApp alloc] init];
 		_service.retryEnabled = YES;
 		// Development only
-		[GTMHTTPFetcher setLoggingEnabled:YES];
+//		[GTMHTTPFetcher setLoggingEnabled:YES];
 	}
 
 	return _service;

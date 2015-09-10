@@ -17,9 +17,9 @@
 #import "PinchView.h"
 #import "TextPinchView.h"
 #import "ImagePinchView.h"
-#import "CoverPicturePinchView.h"
 #import "VideoPinchView.h"
 #import "CollectionPinchView.h"
+#import "CoverPicturePinchView.h"
 #import "EditContentView.h"
 #import "GMImagePickerController.h"
 #import "Notifications.h"
@@ -34,10 +34,11 @@
 							GMImagePickerControllerDelegate, EditContentViewDelegate>
 
 
-@property (strong, nonatomic) CoverPicturePinchView* coverPicView;
 // Says whether or not user is currently adding a cover picture
 // (used when returning from adding assets)
 @property (nonatomic) BOOL addingCoverPicture;
+@property (strong, nonatomic) CoverPicturePinchView* coverPicView;
+
 @property (strong, nonatomic, readwrite) NSMutableArray * pageElementScrollViews;
 @property (nonatomic) NSInteger numPinchViews;
 
@@ -131,7 +132,7 @@
 //sets the textview placeholders' color and text
 -(void) formatTextFields {
 
-	UIColor *color = [UIColor whiteColor];
+	UIColor *color = [UIColor blackColor];
 	UIFont* labelFont = [UIFont fontWithName:DEFAULT_FONT size: WHAT_IS_IT_LIKE_LABEL_SIZE];
 	UIFont* whatIsItLikeFieldFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_SIZE];
 
@@ -144,7 +145,7 @@
 	self.whatIsItLikeField.frame = CGRectMake(WHAT_IS_IT_LIKE_OFFSET, self.whatIsItLikeField.frame.origin.y, self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_OFFSET, self.whatIsItLikeField.frame.size.height);
 	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
 	self.whatIsItLikeField.font = whatIsItLikeFieldFont;
-	self.whatIsItLikeField.tintColor = [UIColor whiteColor];
+	self.whatIsItLikeField.tintColor = [UIColor blackColor];
 
 
 	if ([self.whatIsItLikeField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
@@ -261,6 +262,10 @@
 	[self.coverPicView addGestureRecognizer: tapGesture];
 
 	[self.mainScrollView addSubview: self.coverPicView];
+}
+
+-(UIImage*) getCoverPicture {
+	return [self.coverPicView getImage];
 }
 
 -(void) loadPinchViews {
@@ -1567,8 +1572,7 @@
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
-	self.baseMediaTileSelector = nil;
-	[self createBaseSelector];
+	[self.coverPicView removeImage];
 }
 
 -(void)clearTextFields {
@@ -1602,7 +1606,7 @@
 -(void) presentGalleryForCoverPic {
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
 	picker.delegate = self;
-	[picker setSelectOneImage: YES];
+	[picker setSelectOnlyOneImage: YES];
 	//Display or not the selection info Toolbar:
 	picker.displaySelectionInfoToolbar = YES;
 
@@ -1641,7 +1645,7 @@
 -(ContentPageElementScrollView*) getUpperView {
 	@synchronized(self) {
 		ContentPageElementScrollView * topView;
-		if(self.index==-1 || self.pageElementScrollViews.count==1){
+		if(self.index==-1 || self.pageElementScrollViews.count < 1){
 			topView = nil;
 		} else {
 			topView = self.pageElementScrollViews[self.index];
@@ -1673,11 +1677,24 @@
 	}
 }
 
+-(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
+	PHAsset* asset = assetArray[0];
+	PHImageManager * iman = [[PHImageManager alloc] init];
+	[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+		// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+		dispatch_async(dispatch_get_main_queue(), ^{
+			UIImage* image = [[UIImage alloc] initWithData: imageData];
+			image = [UIEffects fixOrientation:image];
+			image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds: self.coverPicView.frame]];
+			[self.coverPicView setImage: image];
+		});
+	}];
+}
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		if (self.addingCoverPicture) {
-//			[self addCoverPicture: assetArray];
+			[self addCoverPictureFromAssetArray: assetArray];
 			self.addingCoverPicture = NO;
 		} else {
         	[self presentAssetsAsPinchViews:assetArray];
@@ -1688,15 +1705,6 @@
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
-}
-
-- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
-	UIImage* coverPic = info[UIImagePickerControllerOriginalImage];
-	[self.coverPicView setImage: coverPic];
-}
-
-- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-
 }
 
 #pragma mark - Lazy Instantiation

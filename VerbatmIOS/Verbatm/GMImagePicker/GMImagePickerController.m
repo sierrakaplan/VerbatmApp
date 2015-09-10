@@ -91,7 +91,7 @@
 
 #pragma mark - Set select one image -
 
--(void) setSelectOneImage:(BOOL)selectOneImage {
+-(void) setSelectOnlyOneImage:(BOOL)selectOneImage {
 	self.selectOneImage = selectOneImage;
 	self.albumsViewController.onlyImages = self.selectOneImage;
 }

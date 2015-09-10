@@ -32,6 +32,7 @@
     if (self) {
         [self formatSelf];
         [self renderPages: povPages];
+		[self addLikeButton];
 		self.currentPageIndex = -1;
     }
     return self;
@@ -64,6 +65,10 @@
     self.pageScrollTopBottomArea = (self.frame.size.height - middleScreenSize)/2.f;
 
     [self setUpGestureRecognizers];
+}
+
+-(void) addLikeButton {
+	//TODO: add like button
 }
 
 #pragma mark - Scroll view delegate -

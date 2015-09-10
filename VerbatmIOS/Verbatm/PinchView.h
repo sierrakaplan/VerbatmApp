@@ -11,11 +11,12 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
+
 #import "ContentDevVC.h"
 
 @class CollectionPinchView;
 
-@interface PinchView : UIView <NSCoding,ContentDevElementDelegate>
+@interface PinchView : UIView <NSCoding, ContentDevElementDelegate>
 
 @property (nonatomic,readonly) float radius;
 @property (nonatomic,readonly) CGPoint center;

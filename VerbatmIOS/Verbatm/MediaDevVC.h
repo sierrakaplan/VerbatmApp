@@ -11,7 +11,10 @@
 @protocol MediaDevDelegate <NSObject>
 
 //passes up the method to create a preview view so that preview can come over the whole ADK and main scroll view
--(void) previewPOVFromPinchViews: (NSArray*) pinchViews;
+-(void) previewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*)coverPic;
+
+//Passes up the chain that the pov has published so that can be navigated to the feed
+-(void) povPublishedWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
 
 @end
 

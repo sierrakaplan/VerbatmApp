@@ -91,7 +91,7 @@ static CGSize const kPopoverContentSize = {480, 720};
 - (void)finishPickingAssets:(id)sender;
 
 // If yes, it will only allow you to select a single image
--(void) setSelectOneImage: (BOOL) selectOneImage;
+-(void) setSelectOnlyOneImage:(BOOL)selectOneImage;
 
 
 @end

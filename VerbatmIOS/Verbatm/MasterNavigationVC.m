@@ -73,7 +73,6 @@
 
     self.connectionMonitor = [[internetConnectionMonitor alloc] init];
     self.articleLoadManager = [[articleLoadAndDisplayManager alloc] init];
-    [self propogateArticleLoadManager];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -141,27 +140,32 @@
 // Scrolls the main scroll view over to reveal the feed
 -(void) showFeed {
 	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
-		self.masterSV.contentOffset = CGPointMake(0, 0);
+		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	}completion:^(BOOL finished) {
 		if(finished) {
-			//TODO: set article published animation only when article actually publishes
-//			[self articlePublishedAnimation];
 			[self.feedVC refreshFeed];
 		}
 	}];
 }
 
-#pragma mark - Media dev delegate methods -
-
--(void) previewPOVFromPinchViews:(NSArray *)pinchViews {
-	[self.view bringSubviewToFront:self.previewDisplayView];
-	[self.previewDisplayView displayPreviewPOVFromPinchViews: pinchViews];
-}
 
 #pragma mark - PreviewDisplay delegate Methods (publish button pressed)
 
 -(void) publishButtonPressed {
 	[self.mediaDevVC publishPOV];
+}
+
+
+#pragma mark - Media dev delegate methods -
+
+-(void) previewPOVFromPinchViews:(NSArray *)pinchViews andCoverPic:(UIImage *)coverPic {
+	[self.view bringSubviewToFront:self.previewDisplayView];
+	[self.previewDisplayView displayPreviewPOVFromPinchViews: pinchViews andCoverPic: coverPic];
+}
+
+-(void) povPublishedWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+	[self.feedVC showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
+	[self showFeed];
 }
 
 #pragma mark - Animations - 
@@ -214,20 +218,7 @@
 
 #pragma mark - Article Presentation - 
 
-//this function is called by our listView and it passes a block for us to handle the reload
--(void)reloadArticleList: (NSNotification *) notification{
-}
-
-
-/*we send a copy of this instance to the different classes that need to reference it in order to process
- articles. Right now it's ArticleListVC*/
--(void)propogateArticleLoadManager{
-//    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:@[self.articleLoadManager],KEY_ARTICLELOAGMANAGER, nil];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_PROPOGATE_ARTICLELOAGMANAGER
-//                                                        object:nil
-//                                                      userInfo:Info];
-}
-
+//TODO
 
 #pragma mark - Handle Login -
 

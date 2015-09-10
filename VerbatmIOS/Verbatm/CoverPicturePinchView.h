@@ -11,5 +11,7 @@
 @interface CoverPicturePinchView : PinchView
 
 -(void) setImage: (UIImage*) image;
+-(UIImage*) getImage;
+-(void) removeImage;
 
 @end

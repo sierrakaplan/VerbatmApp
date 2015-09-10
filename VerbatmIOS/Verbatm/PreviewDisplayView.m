@@ -16,6 +16,7 @@
 #import "Durations.h"
 #import "AveTypeAnalyzer.h"
 #import "POVView.h"
+#import "PhotoAVE.h"
 
 @interface PreviewDisplayView() <UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
@@ -36,7 +37,7 @@
 @property (nonatomic) CGPoint previousGesturePoint;
 
 //the amount of space that must be pulled to exit
-#define EXIT_EPSILON 60
+#define EXIT_EPSILON -60
 
 @end
 
@@ -47,7 +48,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.viewingFrame = frame;
-		self.restingFrame = CGRectMake(self.frame.size.width + self.frame.origin.x, self.frame.origin.y,
+		self.restingFrame = CGRectMake(self.frame.origin.x - self.frame.size.width, self.frame.origin.y,
 									   self.frame.size.width, self.frame.size.height);
 		self.frame = self.restingFrame;
 		[self setUpPublishButton];
@@ -62,7 +63,7 @@
 
 #pragma mark - Load & display preview from pinch views -
 
--(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews {
+-(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*) coverPic {
 
 	//if we have nothing in our article then return to the list view-
 	//we shouldn't need this because all downloaded articles should have legit pages
@@ -73,7 +74,22 @@
 	}
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
-	NSArray* aves = [analyzer processPinchedObjectsFromArray:pinchViews withFrame: self.viewingFrame];
+	NSMutableArray* aves = [analyzer processPinchedObjectsFromArray:pinchViews withFrame: self.viewingFrame];
+	if (coverPic) {
+		PhotoAVE* coverAVE = [[PhotoAVE alloc] initWithFrame:self.viewingFrame andPhotoArray:@[coverPic]];
+		[aves insertObject:coverAVE atIndex:0];
+	} else {
+		//put in placeholder black view.
+		UIView* view = [[UIView alloc] initWithFrame:self.viewingFrame];
+		view.backgroundColor = [UIColor blackColor];
+		UILabel* coverPicPlaceholderLabel = [[UILabel alloc] initWithFrame:self.viewingFrame];
+		coverPicPlaceholderLabel.textAlignment = NSTextAlignmentCenter;
+		coverPicPlaceholderLabel.textColor = [UIColor whiteColor];
+		coverPicPlaceholderLabel.text = @"No cover picture yet!";
+		[view addSubview:coverPicPlaceholderLabel];
+		[aves insertObject:view atIndex:0];
+	}
+
 	self.povView = [[POVView alloc] initWithFrame:self.bounds andAVES:aves];
 	[self addSubview: self.povView];
 	[self addSubview: self.publishButton];
@@ -118,10 +134,10 @@
 
 //Sets up the gesture recognizer for dragging from the edges.
 -(void) setUpGestureRecognizers {
-	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitDisplay:)];
-	leftEdgePanGesture.edges = UIRectEdgeLeft;
-	leftEdgePanGesture.delegate = self;
-	[self addGestureRecognizer: leftEdgePanGesture];
+	UIScreenEdgePanGestureRecognizer* rightEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitDisplay:)];
+	rightEdgePanGesture.edges = UIRectEdgeRight;
+	rightEdgePanGesture.delegate = self;
+	[self addGestureRecognizer: rightEdgePanGesture];
 }
 
 #pragma mark - Show the preview or hide it - 
@@ -187,7 +203,7 @@
 			break;
 		}
 		case UIGestureRecognizerStateEnded: {
-			if(self.frame.origin.x > EXIT_EPSILON) {
+			if(self.frame.origin.x < EXIT_EPSILON) {
 				//exit article
 				[self revealPreview:NO];
 			}else{

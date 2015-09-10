@@ -39,13 +39,14 @@
 @implementation PhotoAVE
 
 //TODO: limit on how many photos can be pinched together?
-//TODO: allow users to arrange order of pinched photos?
 -(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos {
 
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.circleRadius = self.frame.size.height / CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT;
-		[self addPhotos:photos];
+		if ([photos count]) {
+			[self addPhotos:photos];
+		}
 		if ([photos count] > 1) {
 			[self createCircleViewAndPoints];
 			self.draggingFromPointIndex = -1;

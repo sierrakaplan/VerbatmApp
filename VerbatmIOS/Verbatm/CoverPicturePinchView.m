@@ -35,31 +35,30 @@
 	self.addCoverPicLabel.numberOfLines = 3;
 	self.addCoverPicLabel.text = @"Tap to add cover picture";
 	self.addCoverPicLabel.font = [UIFont fontWithName:TITLE_FONT size: WHAT_IS_IT_LIKE_LABEL_SIZE];
-	self.addCoverPicLabel.textColor = [UIColor whiteColor];
+	self.addCoverPicLabel.textColor = [UIColor blackColor];
 	[self.background addSubview: self.addCoverPicLabel];
 }
 
 -(void) setImage: (UIImage*) image {
 	[self.imageView setImage:image];
+	[self.addCoverPicLabel removeFromSuperview];
 	[self.background insertSubview:self.imageView atIndex:0];
 }
 
-#pragma mark - Render Media -
-
-//This should be overriden in subclasses
--(void)renderMedia {
-//	self.imageView.frame = self.background.frame;
+-(UIImage*) getImage {
+	return [self.imageView image];
 }
 
-//This function displays the media on the view.
--(void)displayMedia {
+-(void) removeImage {
+	[self.imageView removeFromSuperview];
+	[self.background addSubview: self.addCoverPicLabel];
 }
 
 #pragma mark - Lazy Instantiation
 
 -(UIImageView*)imageView {
 	if(!_imageView) _imageView = [[UIImageView alloc] initWithFrame: self.background.frame];
-	_imageView.contentMode = UIViewContentModeCenter;
+	_imageView.contentMode = UIViewContentModeScaleAspectFill;
 	_imageView.layer.masksToBounds = YES;
 	return _imageView;
 }

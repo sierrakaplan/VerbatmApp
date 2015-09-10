@@ -27,7 +27,9 @@
 
 @interface SwitchCategoryPullView : UIView
 
-- (id)initWithFrame:(CGRect)frame andBackgroundColor:(UIColor*)backgroundColor;
 @property (strong, nonatomic) id<SwitchCategoryDelegate> categorySwitchDelegate;
+
+- (id)initWithFrame:(CGRect)frame andBackgroundColor:(UIColor*)backgroundColor;
+- (void) snapToEdgeLeft: (BOOL) snapLeft;
 
 @end

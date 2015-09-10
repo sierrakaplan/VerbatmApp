@@ -101,30 +101,6 @@
 	}
 }
 
-#pragma mark - Lazy Instantiation -
-
--(NSMutableArray*) pinchedObjects {
-	if(!_pinchedObjects) _pinchedObjects = [[NSMutableArray alloc] init];
-	return _pinchedObjects;
-}
-
--(NSString *) text {
-	if(!_text) _text = @"";
-	return _text;
-}
-
--(UITextView*)textView {
-	if(!_textView) _textView = [[UITextView alloc] init];
-	return _textView;
-}
-
--(UIImageView*)imageView {
-	if(!_imageView) _imageView = [[UIImageView alloc] init];
-	_imageView.contentMode = UIViewContentModeCenter;
-	_imageView.layer.masksToBounds = YES;
-	return _imageView;
-}
-
 #pragma mark - Render Media -
 
 //This should be overriden in subclasses
@@ -327,6 +303,30 @@
 		[self initWithPinchViews:pinchViews];
 	}
 	return self;
+}
+
+#pragma mark - Lazy Instantiation -
+
+-(NSMutableArray*) pinchedObjects {
+	if(!_pinchedObjects) _pinchedObjects = [[NSMutableArray alloc] init];
+	return _pinchedObjects;
+}
+
+-(NSString *) text {
+	if(!_text) _text = @"";
+	return _text;
+}
+
+-(UITextView*)textView {
+	if(!_textView) _textView = [[UITextView alloc] init];
+	return _textView;
+}
+
+-(UIImageView*)imageView {
+	if(!_imageView) _imageView = [[UIImageView alloc] init];
+	_imageView.contentMode = UIViewContentModeScaleAspectFill;
+	_imageView.layer.masksToBounds = YES;
+	return _imageView;
 }
 
 @end

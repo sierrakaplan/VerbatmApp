@@ -20,6 +20,8 @@
 
 #import "GTMHTTPFetcherLogging.h"
 
+#import "Notifications.h"
+
 #import "POVPublisher.h"
 #import "PinchView.h"
 
@@ -31,7 +33,7 @@
 
 @implementation POVPublisher
 
-- (void) publishPOVFromPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title {
+- (void) publishPOVFromPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
 
 	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
 	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
@@ -78,7 +80,8 @@
 					 NSLog(@"Error uploading POV: %@", error.description);
 				 } else {
 					 NSLog(@"Successfully uploaded POV!");
-					 //TODO: Show POV in feed
+					 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
+											  object:ticket];
 				 }
 			 }];
 }

@@ -17,6 +17,9 @@
 
 @property(strong, nonatomic) id<FeedVCDelegate> delegate;
 
+// animates the fact that a recent POV is publishing
+-(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
+
 -(void) refreshFeed;
 
 @end

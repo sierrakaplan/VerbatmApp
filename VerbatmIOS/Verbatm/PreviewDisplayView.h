@@ -22,6 +22,7 @@
 @property (strong, nonatomic) id<PreviewDisplayDelegate> delegate;
 
 -(id) initWithFrame: (CGRect)frame;
--(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews;
+
+-(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*) coverPic;
 
 @end

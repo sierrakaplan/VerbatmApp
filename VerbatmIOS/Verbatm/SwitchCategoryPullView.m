@@ -133,7 +133,16 @@
             break;
         }
         case UIGestureRecognizerStateEnded: {
-            [self snapToEdgeWithLeastX: self.leastPullCircleX andMaxX: self.maxPullCircleX];
+			float midX = (self.maxPullCircleX - self.leastPullCircleX)/2.f;
+			BOOL snapLeft;
+
+			//snap left else right
+			if (self.pullCircle.frame.origin.x <= midX) {
+				snapLeft = YES;
+			} else {
+				snapLeft = NO;
+			}
+			[self snapToEdgeLeft: snapLeft];
             break;
         }
         default: {
@@ -156,19 +165,13 @@
 
 
 //snaps the pull circle to an edge after a pan
--(void) snapToEdgeWithLeastX: (CGFloat) leastX andMaxX: (CGFloat) maxX {
+-(void) snapToEdgeLeft: (BOOL) snapLeft {
 
-	float midX = (maxX - leastX)/2.f;
-	float newX;
-	BOOL snapLeft;
-
-	//snap left else right
-	if (self.pullCircle.frame.origin.x <= midX) {
-		newX = leastX;
-		snapLeft = YES;
+	CGFloat newX;
+	if (snapLeft) {
+		newX = self.leastPullCircleX;
 	} else {
-		newX = maxX;
-		snapLeft = NO;
+		newX = self.maxPullCircleX;
 	}
 
 	[self.categorySwitchDelegate snapped: snapLeft];
