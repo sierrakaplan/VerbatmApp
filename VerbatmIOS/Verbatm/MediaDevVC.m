@@ -143,6 +143,7 @@
 	//patch solution to the pullbar being drawn strange
 	self.pullBar.frame = self.pullBarFrameTop;
 	[self.sessionManager startSession];
+	[self.pullBar pulsePullDown];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {

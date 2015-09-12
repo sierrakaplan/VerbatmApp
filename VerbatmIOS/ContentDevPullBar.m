@@ -25,6 +25,8 @@
 
 // This button switches modes (can be the camera or the pull down)
 @property (strong, nonatomic) UIButton *switchModeButton;
+@property (nonatomic) CGRect switchModeButtonFrame;
+@property (nonatomic) BOOL pullDownPulsing;
 @property (strong, nonatomic) UIView* pullDownBackgroundSquare;
 @property (strong, nonatomic) UIImage* cameraImage;
 @property (strong, nonatomic) UIImage* pullDownImage;
@@ -50,7 +52,6 @@
 		[self setBackgroundColor: [UIColor NAV_BAR_COLOR]];
 		[self createButtons];
 		[self switchToPullDown];
-		[self pulsePullDown];
 	}
 	return self;
 }
@@ -75,11 +76,12 @@
 	[self.previewButton addSubview:self.previewLabel];
 	[self enablePreviewInMenuMode: NO];
 
-	CGRect switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
+	self.switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
 											  NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
-	self.switchModeButton = [self getButtonWithFrame: switchModeButtonFrame];
+	self.switchModeButton = [self getButtonWithFrame: self.switchModeButtonFrame];
 	[self.switchModeButton addTarget:self action:@selector(switchModeButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
-	self.pullDownBackgroundSquare = [[UIView alloc] initWithFrame:CGRectMake(switchModeButtonFrame.origin.x + switchModeButtonFrame.size.width/2.f - NAV_BAR_HEIGHT/2.f,
+	self.pullDownBackgroundSquare = [[UIView alloc] initWithFrame:CGRectMake(self.switchModeButtonFrame.origin.x +
+																			 self.switchModeButtonFrame.size.width/2.f - NAV_BAR_HEIGHT/2.f,
 																			 0, NAV_BAR_HEIGHT, NAV_BAR_HEIGHT)];
 	self.pullDownBackgroundSquare.backgroundColor = [UIColor colorWithRed:0.6 green:0.96 blue:0.96 alpha:1];
 	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
@@ -124,6 +126,7 @@
 					 }
 					 completion:^(BOOL finished) {
 					 }];
+	self.pullDownPulsing = YES;
 }
 
 # pragma mark - Switch PullBar mode
@@ -143,6 +146,10 @@
 	[self enableGallery: YES];
 	if (self.previewEnabledInMenuMode) {
 		[self enablePreview: YES];
+	}
+	if (self.pullDownPulsing) {
+		[self.switchModeButton.layer removeAllAnimations];
+		self.switchModeButton.frame = self.switchModeButtonFrame;
 	}
 }
 
