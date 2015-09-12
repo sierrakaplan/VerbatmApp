@@ -25,6 +25,7 @@
 
 // This button switches modes (can be the camera or the pull down)
 @property (strong, nonatomic) UIButton *switchModeButton;
+@property (strong, nonatomic) UIView* pullDownBackgroundSquare;
 @property (strong, nonatomic) UIImage* cameraImage;
 @property (strong, nonatomic) UIImage* pullDownImage;
 
@@ -32,6 +33,8 @@
 @property (strong, nonatomic) UIImage* galleryImage;
 @property (strong, nonatomic) UIImage* galleryImageGrayedOut;
 
+
+#define PULSE_DURATION 0.2
 
 @end
 
@@ -41,14 +44,15 @@
 # pragma mark Initialization
 -(instancetype)initWithFrame:(CGRect)frame {
 
-    //load from Nib file..this initializes the background view and all its subviews
-    self = [super initWithFrame:frame];
-    if(self) {
+	//load from Nib file..this initializes the background view and all its subviews
+	self = [super initWithFrame:frame];
+	if(self) {
 		[self setBackgroundColor: [UIColor NAV_BAR_COLOR]];
-        [self createButtons];
+		[self createButtons];
 		[self switchToPullDown];
-    }
-    return self;
+		[self pulsePullDown];
+	}
+	return self;
 }
 
 //initialize all buttons, for all modes
@@ -75,11 +79,14 @@
 											  NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
 	self.switchModeButton = [self getButtonWithFrame: switchModeButtonFrame];
 	[self.switchModeButton addTarget:self action:@selector(switchModeButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+	self.pullDownBackgroundSquare = [[UIView alloc] initWithFrame:CGRectMake(switchModeButtonFrame.origin.x + switchModeButtonFrame.size.width/2.f - NAV_BAR_HEIGHT/2.f,
+																			 0, NAV_BAR_HEIGHT, NAV_BAR_HEIGHT)];
+	self.pullDownBackgroundSquare.backgroundColor = [UIColor colorWithRed:0.6 green:0.96 blue:0.96 alpha:1];
 	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
 	self.cameraImage = [UIImage imageNamed: CAMERA_BUTTON_ICON];
 
 	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - navIconSize - NAV_ICON_OFFSET,
-										 NAV_ICON_OFFSET, navIconSize, navIconSize);
+										   NAV_ICON_OFFSET, navIconSize, navIconSize);
 	self.galleryButton = [self getButtonWithFrame:galleryButtonFrame];
 	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
@@ -107,7 +114,16 @@
 #pragma mark - Pulsing pull down -
 
 -(void) pulsePullDown {
-	
+	[UIView animateWithDuration:0.8
+						  delay:0.0f
+						options:UIViewAnimationCurveLinear |
+	 UIViewAnimationOptionRepeat |
+	 UIViewAnimationOptionAutoreverse
+					 animations:^{
+						 self.switchModeButton.frame = CGRectOffset(self.switchModeButton.frame, 0, 7);
+					 }
+					 completion:^(BOOL finished) {
+					 }];
 }
 
 # pragma mark - Switch PullBar mode
@@ -123,6 +139,7 @@
 -(void)switchToMenu {
 	self.mode = PullBarModeMenu;
 	[self.switchModeButton setImage:self.cameraImage forState: UIControlStateNormal];
+//	[self.pullDownBackgroundSquare removeFromSuperview];
 	[self enableGallery: YES];
 	if (self.previewEnabledInMenuMode) {
 		[self enablePreview: YES];
@@ -132,6 +149,7 @@
 -(void)switchToPullDown {
 	self.mode = PullBarModePullDown;
 	[self.switchModeButton setImage:self.pullDownImage forState: UIControlStateNormal];
+//	[self insertSubview:self.pullDownBackgroundSquare belowSubview:self.switchModeButton];
 	[self enableGallery: NO];
 	[self enablePreview: NO];
 }
@@ -191,7 +209,7 @@
 	if (!self.delegate) {
 		NSLog(@"No content dev pull bar delegate set.");
 	}
-    [self.delegate previewButtonPressed];
+	[self.delegate previewButtonPressed];
 }
 
 - (void) switchModeButtonReleased:(UIButton *)sender {
