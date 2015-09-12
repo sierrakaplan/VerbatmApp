@@ -13,10 +13,10 @@
 -(void) backButtonPressed;
 
 //passes up the method to create a preview view so that preview can come over the whole ADK and main scroll view
--(void) previewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*)coverPic;
+-(void) previewPOVFromPinchViews:(NSArray *)pinchViews andCoverPic:(UIImage *)coverPic andTitle: (NSString*) title;
 
 //Passes up the chain that the pov has published so that can be navigated to the feed
--(void) povPublishedWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
+-(void) povPublishedWithCoverPic:(UIImage *)coverPic andTitle: (NSString*) title;
 
 @end
 

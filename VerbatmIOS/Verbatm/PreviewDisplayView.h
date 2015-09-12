@@ -23,6 +23,6 @@
 
 -(id) initWithFrame: (CGRect)frame;
 
--(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*) coverPic;
+-(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*) coverPic andTitle: (NSString*) title;
 
 @end

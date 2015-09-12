@@ -158,12 +158,12 @@
 	[self showFeed];
 }
 
--(void) previewPOVFromPinchViews:(NSArray *)pinchViews andCoverPic:(UIImage *)coverPic {
+-(void) previewPOVFromPinchViews:(NSArray *)pinchViews andCoverPic:(UIImage *)coverPic andTitle: (NSString*) title{
 	[self.view bringSubviewToFront:self.previewDisplayView];
-	[self.previewDisplayView displayPreviewPOVFromPinchViews: pinchViews andCoverPic: coverPic];
+	[self.previewDisplayView displayPreviewPOVFromPinchViews: pinchViews andCoverPic: coverPic andTitle: title];
 }
 
--(void) povPublishedWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+-(void) povPublishedWithCoverPic:(UIImage *)coverPic andTitle: (NSString*) title {
 	[self.feedVC showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
 	[self showFeed];
 }

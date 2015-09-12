@@ -21,7 +21,10 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage*) image andTitle:(NSString*) title {
 	self = [super initWithFrame:frame];
 	if (self) {
-		[self addSubview: [self getImageViewContainerForImage:image]];
+		[self setBackgroundColor:[UIColor whiteColor]];
+		if (image) {
+			[self addSubview: [self getImageViewContainerForImage:image]];
+		} 
 		[self addTitleViewWithTitle: title];
 	}
 	return self;
@@ -51,6 +54,9 @@
 }
 
 -(void) addTitleViewWithTitle:(NSString*) title {
+	if (![title length]) {
+		title = @"No Title Entered";
+	}
 	CGRect titleFrame = CGRectMake(TITLE_OFFSET, TITLE_OFFSET, self.frame.size.width - TITLE_OFFSET*2.f,
 								   self.frame.size.height - TITLE_OFFSET*2.f);
 	UILabel* titleLabel = [[UILabel alloc] initWithFrame: titleFrame];

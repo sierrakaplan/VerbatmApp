@@ -674,9 +674,10 @@
 		NSLog(@"Can't preview with no pinch views");
 		return;
 	}
+	NSString* title = self.contentDevVC.whatIsItLikeField.text;
 	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
-	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic];
+	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic andTitle: title];
 }
 
 -(void) cameraButtonPressed {
@@ -715,7 +716,7 @@
 
 		[self.publisher publishPOVFromPinchViews: pinchViewsArray andTitle: title
 									 andCoverPic: coverPic];
-		[self.delegate povPublishedWithTitle:title andCoverPic: coverPic];
+		[self.delegate povPublishedWithCoverPic:coverPic andTitle:title];
 
 		[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
 		[[UserPinchViews sharedInstance] clearPinchViews];

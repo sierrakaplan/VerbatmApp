@@ -17,6 +17,7 @@
 #import "AveTypeAnalyzer.h"
 #import "POVView.h"
 #import "PhotoAVE.h"
+#import "CoverPhotoAVE.h"
 
 @interface PreviewDisplayView() <UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
@@ -63,7 +64,7 @@
 
 #pragma mark - Load & display preview from pinch views -
 
--(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*) coverPic {
+-(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*) coverPic andTitle: (NSString*) title {
 
 	//if we have nothing in our article then return to the list view-
 	//we shouldn't need this because all downloaded articles should have legit pages
@@ -75,21 +76,8 @@
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
 	NSMutableArray* aves = [analyzer processPinchedObjectsFromArray:pinchViews withFrame: self.viewingFrame];
-	if (coverPic) {
-		PhotoAVE* coverAVE = [[PhotoAVE alloc] initWithFrame:self.viewingFrame andPhotoArray:@[coverPic]];
-		[aves insertObject:coverAVE atIndex:0];
-	} else {
-		//put in placeholder black view.
-		UIView* view = [[UIView alloc] initWithFrame:self.viewingFrame];
-		view.backgroundColor = [UIColor whiteColor];
-		UILabel* coverPicPlaceholderLabel = [[UILabel alloc] initWithFrame:self.viewingFrame];
-		coverPicPlaceholderLabel.textAlignment = NSTextAlignmentCenter;
-		coverPicPlaceholderLabel.textColor = [UIColor blackColor];
-		coverPicPlaceholderLabel.text = @"No cover picture yet!";
-		[view addSubview:coverPicPlaceholderLabel];
-		[aves insertObject:view atIndex:0];
-	}
-
+	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.viewingFrame andImage:coverPic andTitle:title];
+	[aves insertObject:coverAVE atIndex:0];
 	self.povView = [[POVView alloc] initWithFrame:self.bounds andAVES:aves];
 	[self addSubview: self.povView];
 	[self addSubview: self.publishButton];
