@@ -36,7 +36,8 @@
 @property (strong, nonatomic) UIImage* galleryImageGrayedOut;
 
 
-#define PULSE_DURATION 0.2
+#define PULSE_DURATION 0.9
+#define PULSE_DISTANCE 15
 
 @end
 
@@ -83,7 +84,7 @@
 	self.pullDownBackgroundSquare = [[UIView alloc] initWithFrame:CGRectMake(self.switchModeButtonFrame.origin.x +
 																			 self.switchModeButtonFrame.size.width/2.f - NAV_BAR_HEIGHT/2.f,
 																			 0, NAV_BAR_HEIGHT, NAV_BAR_HEIGHT)];
-	self.pullDownBackgroundSquare.backgroundColor = [UIColor colorWithRed:0.6 green:0.96 blue:0.96 alpha:1];
+	self.pullDownBackgroundSquare.backgroundColor = [UIColor blackColor];
 	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
 	self.cameraImage = [UIImage imageNamed: CAMERA_BUTTON_ICON];
 
@@ -116,13 +117,13 @@
 #pragma mark - Pulsing pull down -
 
 -(void) pulsePullDown {
-	[UIView animateWithDuration:0.8
+	[UIView animateWithDuration:PULSE_DURATION
 						  delay:0.0f
 						options:UIViewAnimationCurveLinear |
 	 UIViewAnimationOptionRepeat |
 	 UIViewAnimationOptionAutoreverse
 					 animations:^{
-						 self.switchModeButton.frame = CGRectOffset(self.switchModeButton.frame, 0, 7);
+						 self.switchModeButton.frame = CGRectOffset(self.switchModeButton.frame, 0, PULSE_DISTANCE);
 					 }
 					 completion:^(BOOL finished) {
 					 }];
