@@ -73,6 +73,7 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+    [self alertPullTrendingIcon];
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -248,6 +249,13 @@
 
 //catches the unwind segue - do nothing
 - (IBAction)done:(UIStoryboardSegue *)segue {
+}
+
+
+#pragma mark - Alerts -
+-(void)alertPullTrendingIcon{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
 }
 
 

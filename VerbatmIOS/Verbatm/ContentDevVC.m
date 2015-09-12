@@ -92,6 +92,12 @@
 //@property (nonatomic,weak) MediaSelectTile* newlyCreatedMediaTile;
 
 
+//informs our instruction notification if the user has added
+//pinch views to the article before
+@property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
+@property (nonatomic) BOOL pinchObject_TappedAndClosed_ForTheFirstTime;
+@property (nonatomic) BOOL editContentMode_Photo_TappedOpenForTheFirst;
+
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define WHAT_IS_IT_LIKE_OFFSET 15
 #define WHAT_IS_IT_LIKE_HEIGHT 50
@@ -104,6 +110,7 @@
 #pragma mark - Initialization And Instantiation -
 
 - (void)viewDidLoad{
+    
 	[super viewDidLoad];
 	[self addBlurView];
 	[self setFrameMainScrollView];
@@ -119,6 +126,8 @@
 	self.pinchingMode = PinchingModeNone;
 	self.index = 0;
 	self.numPinchViews = 0;
+    self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
+    self.pinchObject_TappedAndClosed_ForTheFirstTime = NO;
 }
 
 -(void) addBlurView {
@@ -1510,6 +1519,10 @@
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[self.openPinchView renderMedia];
 	self.openPinchView = nil;
+    
+    if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
+        [self alertPinchElementsTogether];
+    }
 }
 
 -(void)addTapGestureToPinchView: (PinchView *) pinchView {
@@ -1562,7 +1575,15 @@
 		self.openPinchView = pinchView;
 	}
 	[self.view addSubview:self.openEditContentView];
+    if(!self.editContentMode_Photo_TappedOpenForTheFirst)[self alertAddFilter];
 }
+
+-(void)alertAddFilter{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    self.editContentMode_Photo_TappedOpenForTheFirst = YES;
+}
+
 
 
 #pragma mark - Clean up Content Page -
@@ -1637,7 +1658,6 @@
 }
 
 -(void) createPinchViewFromAsset:(id)asset {
-
 	UIView* upperView = [self getUpperView];
 	PinchView* newPinchView;
 	if([asset isKindOfClass:[AVAsset class]] || [asset isKindOfClass:[NSURL class]]) {
@@ -1649,10 +1669,27 @@
 		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
 	}
 	if (newPinchView) {
-		[self newPinchView:newPinchView belowView:upperView];
+        if(!upperView && !self.pinchObject_HasBeenAdded_ForTheFirstTime){
+            [self alertEachPVIsPage];
+        }else if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
+            [self alertPinchElementsTogether];
+        }
+        
+        [self newPinchView:newPinchView belowView:upperView];
 	}
 }
 
+-(void)alertEachPVIsPage{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    self.pinchObject_HasBeenAdded_ForTheFirstTime = YES;
+}
+
+-(void)alertPinchElementsTogether{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
+}
 
 -(ContentPageElementScrollView*) getUpperView {
 	@synchronized(self) {
@@ -1679,6 +1716,7 @@
 				});
 			}];
 		}else {
+            
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 				dispatch_async(dispatch_get_main_queue(), ^{
@@ -1739,23 +1777,10 @@
 }
 
 
-/* NO LONGER IN USE
-@synthesize baseMediaTileSelector = _baseMediaTileSelector;
-
--(MediaSelectTile *) baseMediaTileSelector {
-	if(!_baseMediaTileSelector) _baseMediaTileSelector = [[MediaSelectTile alloc]init];
-	return _baseMediaTileSelector;
-}
-
-- (void) setBaseMediaTileSelector: (MediaSelectTile *) baseMediaTileSelector {
-	_baseMediaTileSelector = baseMediaTileSelector;
-} */
-
 @synthesize tileSwipeViewUndoManager = _tileSwipeViewUndoManager;
 
 //get the undomanager for the main window- use this for the tiles
--(NSUndoManager *) tileSwipeViewUndoManager
-{
+-(NSUndoManager *) tileSwipeViewUndoManager{
 	if(!_tileSwipeViewUndoManager) _tileSwipeViewUndoManager = [self.view.window undoManager];
 	return _tileSwipeViewUndoManager;
 }
