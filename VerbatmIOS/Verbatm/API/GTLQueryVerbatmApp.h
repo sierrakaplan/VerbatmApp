@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (26 custom class methods, 4 custom properties)
+//   GTLQueryVerbatmApp (24 custom class methods, 4 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -44,19 +44,6 @@
 @property (nonatomic, copy) NSString *cursorString;
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, assign) long long identifier;
-
-#pragma mark - "blobstore" methods
-// These create a GTLQueryVerbatmApp object.
-
-// Method: verbatmApp.blobstore.uploadImage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-+ (instancetype)queryForBlobstoreUploadImage;
-
-// Method: verbatmApp.blobstore.uploadURI
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-+ (instancetype)queryForBlobstoreUploadURI;
 
 #pragma mark - "image" methods
 // These create a GTLQueryVerbatmApp object.

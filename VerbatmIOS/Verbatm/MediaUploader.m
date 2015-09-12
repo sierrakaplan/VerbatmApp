@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "ImageVideoUpload.h"
+#import "MediaUploader.h"
 
-@implementation ImageVideoUpload
+@implementation MediaUploader
 
 @synthesize formData, progress;
 

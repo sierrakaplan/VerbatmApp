@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/Ay7C3AYvx8X-1epg8_DcdD4jiKQ\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/WCj_pRpfXsBDOsDptrLJnKn5-TA\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -274,26 +274,6 @@
   }
  },
  "resources": {
-  "blobstore": {
-   "methods": {
-    "uploadImage": {
-     "id": "verbatmApp.blobstore.uploadImage",
-     "path": "uploadImage",
-     "httpMethod": "POST",
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "uploadURI": {
-     "id": "verbatmApp.blobstore.uploadURI",
-     "path": "createUploadURI",
-     "httpMethod": "POST",
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    }
-   }
-  },
   "image": {
    "methods": {
     "getImage": {

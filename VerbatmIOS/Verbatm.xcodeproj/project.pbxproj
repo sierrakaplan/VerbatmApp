@@ -53,7 +53,8 @@
 		A5C09BDF1BA1F1D700C0AD86 /* ASIInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BD51BA1F1D700C0AD86 /* ASIInputStream.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5C09BE01BA1F1D700C0AD86 /* ASINetworkQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BD71BA1F1D700C0AD86 /* ASINetworkQueue.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5C09BE31BA1F1F200C0AD86 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BE21BA1F1F200C0AD86 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
-		A5C09BE61BA1F43600C0AD86 /* ImageVideoUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BE51BA1F43600C0AD86 /* ImageVideoUpload.m */; };
+		A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */; };
+		A5C9DA351BA4CA550055DCB2 /* BlobstoreUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C9DA341BA4CA550055DCB2 /* BlobstoreUploader.m */; };
 		A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */; };
 		A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61171B9CC40F009D9D11 /* TopicsTableView.m */; };
 		A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */; };
@@ -276,8 +277,10 @@
 		A5C09BD81BA1F1D700C0AD86 /* ASIProgressDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIProgressDelegate.h; sourceTree = "<group>"; };
 		A5C09BE11BA1F1F200C0AD86 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		A5C09BE21BA1F1F200C0AD86 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
-		A5C09BE41BA1F43600C0AD86 /* ImageVideoUpload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageVideoUpload.h; sourceTree = "<group>"; };
-		A5C09BE51BA1F43600C0AD86 /* ImageVideoUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageVideoUpload.m; sourceTree = "<group>"; };
+		A5C09BE41BA1F43600C0AD86 /* MediaUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaUploader.h; sourceTree = "<group>"; };
+		A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaUploader.m; sourceTree = "<group>"; };
+		A5C9DA331BA4CA550055DCB2 /* BlobstoreUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BlobstoreUploader.h; sourceTree = "<group>"; };
+		A5C9DA341BA4CA550055DCB2 /* BlobstoreUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BlobstoreUploader.m; sourceTree = "<group>"; };
 		A5CA61131B9A013E009D9D11 /* AdjustableBlurEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustableBlurEffect.h; sourceTree = "<group>"; };
 		A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustableBlurEffect.m; sourceTree = "<group>"; };
 		A5CA61161B9CC40F009D9D11 /* TopicsTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicsTableView.h; sourceTree = "<group>"; };
@@ -786,8 +789,10 @@
 				A5E860001B96249900E148D0 /* POVPublisher.m */,
 				A59C19701B9E1DFF00EBA60E /* POVLoadManager.h */,
 				A59C19711B9E1DFF00EBA60E /* POVLoadManager.m */,
-				A5C09BE41BA1F43600C0AD86 /* ImageVideoUpload.h */,
-				A5C09BE51BA1F43600C0AD86 /* ImageVideoUpload.m */,
+				A5C09BE41BA1F43600C0AD86 /* MediaUploader.h */,
+				A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */,
+				A5C9DA331BA4CA550055DCB2 /* BlobstoreUploader.h */,
+				A5C9DA341BA4CA550055DCB2 /* BlobstoreUploader.m */,
 			);
 			name = "Backend Utilities";
 			sourceTree = "<group>";
@@ -1350,6 +1355,7 @@
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				A5E860011B96249900E148D0 /* POVPublisher.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
+				A5C9DA351BA4CA550055DCB2 /* BlobstoreUploader.m in Sources */,
 				A5E85FA11B911DA900E148D0 /* GTLFramework.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
 				A5E85FAB1B911DA900E148D0 /* GTMMIMEDocument.m in Sources */,
@@ -1361,7 +1367,7 @@
 				A5C09BDD1BA1F1D700C0AD86 /* ASIFormDataRequest.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A5C09BDF1BA1F1D700C0AD86 /* ASIInputStream.m in Sources */,
-				A5C09BE61BA1F43600C0AD86 /* ImageVideoUpload.m in Sources */,
+				A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */,
 				A5AA31CF1BA10A6B00D8D20C /* CoverPicturePinchView.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,
 				A5AA31BB1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m in Sources */,

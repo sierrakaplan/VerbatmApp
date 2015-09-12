@@ -6,9 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "ASIHTTPRequest.h"
 
-#import "ImageVideoUpload.h"
 
 #import "GTLDateTime.h"
 #import "GTLQueryVerbatmApp.h"
@@ -90,7 +88,10 @@
 			 }];
 }
 
-//TODO: Go through pinch objects and save each image and video! (Get url from server and upload it to that url)
+/* Creates a page object out of a pinch view.
+ Goes through pinch view and gets the photos and videos contained.
+ For each image
+ */
 - (GTLVerbatmAppPage*) sortPinchView:(PinchView*)pinchView {
 
 	GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
@@ -134,30 +135,6 @@
 	GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
 	// TODO store video in blobstore and get url
 	return gtlVideo;
-}
-
-#pragma mark - Uploading media -
-
--(void) getUploadURI {
-
-	NSURL *uri = [NSURL URLWithString:@"https://verbatmapp.appspot.com/media/createUploadURI"];
-	ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:uri];
-	[request setDelegate:self];
-	[request startAsynchronous];
-}
-
--(void) requestFinished:(ASIHTTPRequest *)request {
-
-	NSString *uri = (NSString*)[request responseData];
-//	ImageVideoUpload * mediaUpload = [[ImageVideoUpload alloc] initWithImage:<#(UIImage *)#>
-//																		 uri: uri];
-//	[mediaUpload startUpload];
-}
-
--(void) requestFailed:(ASIHTTPRequest *)request {
-
-	NSError *error = [request error];
-	NSLog(@"error %@", error.description);
 }
 
 #pragma mark - Lazy Instantiation -
