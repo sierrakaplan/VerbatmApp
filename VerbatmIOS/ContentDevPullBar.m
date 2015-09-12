@@ -60,17 +60,16 @@
 //initialize all buttons, for all modes
 -(void)createButtons {
 
-	float navIconSize = NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2;
-	float middleButtonWidth = (self.frame.size.width - ((navIconSize+NAV_ICON_OFFSET)*2.f))/2.f;
+	float middleButtonWidth = (self.frame.size.width - ((NAV_ICON_SIZE+NAV_ICON_OFFSET)*2.f))/2.f;
 
-	CGRect backButtonFrame = CGRectMake(NAV_ICON_OFFSET,  NAV_ICON_OFFSET, navIconSize, navIconSize);
+	CGRect backButtonFrame = CGRectMake(NAV_ICON_OFFSET,  NAV_ICON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
 	self.backButton = [self getButtonWithFrame: backButtonFrame];
 	[self.backButton setImage:[UIImage imageNamed:BACK_ARROW_LEFT] forState:UIControlStateNormal];
 	[self.backButton addTarget:self action:@selector(backButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 
 
 	CGRect previewButtonFrame = CGRectMake(backButtonFrame.origin.x + backButtonFrame.size.width,
-										   NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
+										   NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
 	self.previewLabel = [self getLabelWithParentFrame:previewButtonFrame andText:@"PREVIEW"];
 	self.previewButton = [self getButtonWithFrame: previewButtonFrame];
 	[self.previewButton addTarget:self action:@selector(previewButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
@@ -78,7 +77,7 @@
 	[self enablePreviewInMenuMode: NO];
 
 	self.switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
-											  NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
+											  NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
 	self.switchModeButton = [self getButtonWithFrame: self.switchModeButtonFrame];
 	[self.switchModeButton addTarget:self action:@selector(switchModeButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 	self.pullDownBackgroundSquare = [[UIView alloc] initWithFrame:CGRectMake(self.switchModeButtonFrame.origin.x +
@@ -88,8 +87,8 @@
 	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
 	self.cameraImage = [UIImage imageNamed: CAMERA_BUTTON_ICON];
 
-	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - navIconSize - NAV_ICON_OFFSET,
-										   NAV_ICON_OFFSET, navIconSize, navIconSize);
+	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - NAV_ICON_SIZE - NAV_ICON_OFFSET,
+										   NAV_ICON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
 	self.galleryButton = [self getButtonWithFrame:galleryButtonFrame];
 	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
