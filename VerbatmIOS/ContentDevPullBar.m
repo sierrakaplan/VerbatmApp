@@ -62,7 +62,7 @@
 	[self.backButton setImage:[UIImage imageNamed:BACK_ARROW_LEFT] forState:UIControlStateNormal];
 	[self.backButton addTarget:self action:@selector(backButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
     
-    [panGesture requireGestureRecognizerToFail:self.backButton.gestureRecognizers.firstObject];
+    //[panGesture requireGestureRecognizerToFail:self.backButton.gestureRecognizers.firstObject];
 
 
 	CGRect previewButtonFrame = CGRectMake(backButtonFrame.origin.x + backButtonFrame.size.width,
@@ -73,7 +73,7 @@
 	[self.previewButton addSubview:self.previewLabel];
 	[self enablePreviewInMenuMode: NO];
     
-    [panGesture requireGestureRecognizerToFail:self.previewButton.gestureRecognizers.firstObject];
+    //[panGesture requireGestureRecognizerToFail:self.previewButton.gestureRecognizers.firstObject];
 
     
 	CGRect switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
@@ -84,7 +84,7 @@
 	self.cameraImage = [UIImage imageNamed: CAMERA_BUTTON_ICON];
 
     
-    [panGesture requireGestureRecognizerToFail:self.switchModeButton.gestureRecognizers.firstObject];
+    //[panGesture requireGestureRecognizerToFail:self.switchModeButton.gestureRecognizers.firstObject];
 
     
     
@@ -92,7 +92,7 @@
 										 NAV_ICON_OFFSET, navIconSize, navIconSize);
 	self.galleryButton = [self getButtonWithFrame:galleryButtonFrame];
 	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
-    [panGesture requireGestureRecognizerToFail:self.galleryButton.gestureRecognizers.firstObject];
+    //[panGesture requireGestureRecognizerToFail:self.galleryButton.gestureRecognizers.firstObject];
 
     
 	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
