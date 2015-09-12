@@ -51,7 +51,7 @@
 
 #pragma mark Pull Bar
 
-#define PULLDOWN_ICON @"pulldown_icon"
+#define PULLDOWN_ICON @"pulldown_arrow"
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"gallery"
 
@@ -69,7 +69,7 @@
 
 #pragma mark - AVES -
 
-#define PULLDOWN_TEXT_ICON @"pulldown_icon"//@"pulldown_text_icon"
+#define PULLDOWN_TEXT_ICON @"pulldown_icon"
 
 #pragma mark Video AVE
 

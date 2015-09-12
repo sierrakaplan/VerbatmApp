@@ -272,8 +272,8 @@
 
 	//check if new location is out of the bounds of the collection view, and if so unpinch
 	//the selected view and return it so it can be re placed
-	if (newFrame.origin.y > (self.frame.origin.y + self.frame.size.height)
-		|| (newFrame.origin.y + newFrame.size.height) < self.frame.origin.y) {
+	if (newFrame.origin.y > (self.frame.origin.y + self.frame.size.height/2.f)
+		|| (newFrame.origin.y + newFrame.size.height) < self.frame.origin.y + self.frame.size.height/2.f) {
 		return [self unPinchObject];
 	}
 

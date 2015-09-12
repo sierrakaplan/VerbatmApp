@@ -55,28 +55,23 @@
     return self;
 }
 
-- (void)dealloc
-{
-    
+- (void)dealloc{
 }
 
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
 }
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Setup Navigation Controller
 
-- (void)setupNavigationController
-{
+- (void)setupNavigationController {
     _albumsViewController = [[GMAlbumsViewController alloc] init];
     _navigationController = [[UINavigationController alloc] initWithRootViewController:_albumsViewController];
     _navigationController.delegate = self;
@@ -93,19 +88,16 @@
 
 -(void) setSelectOnlyOneImage:(BOOL)selectOneImage {
 	self.selectOneImage = selectOneImage;
-	self.albumsViewController.onlyImages = self.selectOneImage;
+	self.albumsViewController.onlyOneImage = self.selectOneImage;
 }
 
 #pragma mark - Select / Deselect Asset
 
-- (void)selectAsset:(PHAsset *)asset
-{
-	if (self.selectOneImage) {
-		if ([self.selectedAssets count] > 0) {
-			[self deselectAsset:self.selectedAssets[0]];
-		}
-	}
+- (void)selectAsset:(PHAsset *)asset {
     [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
+	if (self.selectOneImage) {
+		[self finishPickingAssets:self];
+	}
     [self updateDoneButton];
     
     if(self.displaySelectionInfoToolbar) {
@@ -113,8 +105,7 @@
 	}
 }
 
-- (void)deselectAsset:(PHAsset *)asset
-{
+- (void)deselectAsset:(PHAsset *)asset {
     [self.selectedAssets removeObjectAtIndex:[self.selectedAssets indexOfObject:asset]];
     if(self.selectedAssets.count == 0) {
         [self updateDoneButton];

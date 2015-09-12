@@ -374,8 +374,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
         return YES;
 }
 
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
-{
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath {
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
     
     [self.picker deselectAsset:asset];
@@ -384,8 +383,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
         [self.picker.delegate assetsPickerController:self.picker didDeselectAsset:asset];
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
-{
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath {
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
     
     if ([self.picker.delegate respondsToSelector:@selector(assetsPickerController:shouldHighlightAsset:)])

@@ -58,29 +58,30 @@
 @property (nonatomic) CGRect pullBarFrameBottom;
 @property (nonatomic) CGRect pullBarFrameOffScreen;
 
-#pragma mark - Camera properties
-#pragma mark buttons
-@property (strong, nonatomic) MediaSessionManager* sessionManager;
-@property (strong, nonatomic) CAShapeLayer* circle;
-@property (strong, nonatomic) CameraFocusSquare* focusSquare;
-@property (strong, nonatomic) MediaPreview * mediaPreviewView;
+#pragma mark - Capture Media -
 
+@property (strong, nonatomic) MediaSessionManager* sessionManager;
+@property(nonatomic,strong) UIButton * captureMediaButton;
+@property (strong, nonatomic) CAShapeLayer* videoProgressCircle;
+@property (nonatomic) BOOL isTakingVideo;
+@property (nonatomic, strong) NSTimer *videoTimer;
+@property (nonatomic) UIDeviceOrientation startOrientation;
+
+// Used so after media is captured appears media goes into corner
+@property (strong, nonatomic) UIImageView* previewImageView;
+@property (nonatomic) BOOL mediaPreviewPaused;
+
+#pragma  mark - Camera Customization - 
+
+@property (strong, nonatomic) CameraFocusSquare* focusSquare;
 @property (strong, nonatomic) UIButton* switchCameraButton;
 @property (strong, nonatomic) UIButton* switchFlashButton;
-@property (nonatomic) CGAffineTransform flashTransform;
-@property (nonatomic) CGAffineTransform switchTransform;
-@property(nonatomic,strong) UIButton * capturePicButton;
-@property (nonatomic) BOOL isTakingVideo;
-
-#pragma mark - View controllers
-@property (strong,nonatomic) ContentDevVC* contentDevVC;
-
-#pragma mark - Capturing Media -
-@property (nonatomic, strong) NSTimer *timer;
+@property (strong, nonatomic) UIImage* flashOnIcon;
+@property (strong, nonatomic) UIImage* flashOffIcon;
 @property (nonatomic) BOOL flashOn;
-@property (nonatomic) BOOL canRaise;
-@property (nonatomic)CGPoint currentPoint;
-@property (nonatomic) UIDeviceOrientation startOrientation;
+
+#pragma mark - Content Dev view controller
+@property (strong,nonatomic) ContentDevVC* contentDevVC;
 
 #pragma mark - Pull down to content dev -
 @property (nonatomic) CGPoint panStartPoint;
@@ -109,7 +110,7 @@
 
 @synthesize verbatmCameraView = _verbatmCameraView;
 @synthesize sessionManager = _sessionManager;
-@synthesize timer = _timer;
+@synthesize videoTimer = _videoTimer;
 @synthesize switchCameraButton = _switchCameraButton;
 
 
@@ -120,11 +121,6 @@
 	[self setDefaultFrames];
 	[self prepareCameraView];
 	[self createAndInstantiateGestures];
-
-	//make sure the frames are correctly centered
-	self.canRaise = NO;
-	self.currentPoint = CGPointZero;
-
 	[self setDelegates];
 	[self registerForNotifications];
 	[self createSubViews];
@@ -143,21 +139,11 @@
 	//get the view controllers in the storyboard and store them
 }
 
--(void) viewDidAppear:(BOOL)animated
-{
+-(void) viewDidAppear:(BOOL)animated {
 	//patch solution to the pullbar being drawn strange
 	self.pullBar.frame = self.pullBarFrameTop;
 	[self.sessionManager startSession];
-    [self prepareCameraCapturePreview];
 }
-
-//prepares the view that will show camera content that's caputered
--(void)prepareCameraCapturePreview {
-    self.mediaPreviewView = [[MediaPreview alloc] initWithFrame:CGRectMake(Preview_X_offset, self.view.frame.size.height - Preview_Y_offset - Preview_Height,
-                                                                            Preview_Width,Preview_Height)];
-    [self.view insertSubview:self.mediaPreviewView  aboveSubview:self.verbatmCameraView];
-}
-
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[self.sessionManager stopSession];
@@ -179,11 +165,11 @@
 //saves the intitial frames for the pulldown bar and the container view
 -(void)setDefaultFrames {
 
-	self.contentContainerViewFrameTop = CGRectMake(0, 0, self.view.frame.size.width, self.contentContainerView.frame.size.height + NAV_BAR_HEIGHT);
+	self.contentContainerViewFrameTop = CGRectMake(0, 0, self.view.frame.size.width, NAV_BAR_HEIGHT);
 	self.contentContainerViewFrameBottom = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
 	int frameHeight = self.view.frame.size.height;
-	self.pullBarFrameTop = CGRectMake(0.f, self.contentContainerView.frame.size.height, self.view.frame.size.width, NAV_BAR_HEIGHT);
+	self.pullBarFrameTop = CGRectMake(0.f, 0.f, self.view.frame.size.width, NAV_BAR_HEIGHT);
 	self.pullBarFrameBottom = CGRectMake(self.pullBarFrameTop.origin.x, (frameHeight - NAV_BAR_HEIGHT), self.pullBarFrameTop.size.width, NAV_BAR_HEIGHT);
 	self.pullBarFrameOffScreen = CGRectMake(self.pullBarFrameBottom.origin.x, self.view.frame.size.height, self.pullBarFrameBottom.size.width, self.pullBarFrameBottom.size.height);
 }
@@ -191,7 +177,8 @@
 -(void) createSubViews {
 	[self createPullBar];
 	[self createCapturePicButton];
-    [self createSwitchFlashButton];
+    [self addToggleFlashButton];
+	[self addSwitchCameraOrientationButton];
 }
 
 -(void) prepareCameraView {
@@ -200,23 +187,25 @@
 
 -(void)createCapturePicButton {
 	self.isTakingVideo = NO;
-	self.capturePicButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	self.captureMediaButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	UIImage *cameraImage = [UIImage imageNamed: CAPTURE_IMAGE_ICON];
-	[self.capturePicButton setImage:cameraImage forState:UIControlStateNormal];
-	[self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_SIZE)/2.f, self.view.frame.size.height - CAMERA_BUTTON_SIZE - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_SIZE, CAMERA_BUTTON_SIZE)];
-	[self.capturePicButton addTarget:self action:@selector(tappedPhotoButton:) forControlEvents:UIControlEventTouchUpInside];
+	[self.captureMediaButton setImage:cameraImage forState:UIControlStateNormal];
+	[self.captureMediaButton setFrame:CGRectMake((self.view.frame.size.width - CAPTURE_MEDIA_BUTTON_SIZE)/2.f,
+											   self.view.frame.size.height - CAPTURE_MEDIA_BUTTON_SIZE - CAPTURE_MEDIA_BUTTON_OFFSET,
+											   CAPTURE_MEDIA_BUTTON_SIZE, CAPTURE_MEDIA_BUTTON_SIZE)];
+	[self.captureMediaButton addTarget:self action:@selector(tappedCaptureMediaButton:) forControlEvents:UIControlEventTouchUpInside];
 
 	UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(takeVideo:)];
 	longPress.minimumPressDuration = MINIMUM_PRESS_DURATION_FOR_VIDEO;
-	[self.capturePicButton addGestureRecognizer:longPress];
+	[self.captureMediaButton addGestureRecognizer:longPress];
 
-	[self.verbatmCameraView addSubview:self.capturePicButton];
-	[self.verbatmCameraView bringSubviewToFront:self.capturePicButton];
+	[self.verbatmCameraView addSubview:self.captureMediaButton];
+	[self.verbatmCameraView bringSubviewToFront:self.captureMediaButton];
 }
 
 //creates the pullbar object then saves it as a property
 -(void)createPullBar {
-	self.pullBar = [[ContentDevPullBar alloc] initWithFrame:self.pullBarFrameTop];
+	self.pullBar = [[ContentDevPullBar alloc]initWithFrame:self.pullBarFrameTop andPanGesture:self.panGesture_PullBar];
 	self.pullBar.delegate = self;
 	[self.panGesture_PullBar setDelegate:self.pullBar];
 	[self.pullBar addGestureRecognizer:self.panGesture_PullBar];
@@ -224,56 +213,69 @@
 	[self.view bringSubviewToFront:self.pullBar];
 }
 
-#pragma mark -Flash Button-
-
--(void)createSwitchCameraButton {
+-(void) addSwitchCameraOrientationButton {
 	self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.switchCameraButton setImage:[UIImage imageNamed:SWITCH_CAMERA_ORIENTATION_ICON] forState:UIControlStateNormal];
-	[self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE, SWITCH_ICON_SIZE)];
-	[self.switchCameraButton addTarget:self action:@selector(switchFaces:) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview: self.switchCameraButton];
-	self.switchTransform = self.switchCameraButton.transform;
+	[self.switchCameraButton setFrame:CGRectMake(self.view.bounds.size.width - CAPTURE_MEDIA_BUTTON_OFFSET - SWITCH_ORIENTATION_ICON_SIZE,
+												 self.view.bounds.size.height - FLASH_ICON_SIZE - CAPTURE_MEDIA_BUTTON_OFFSET,
+												 SWITCH_ORIENTATION_ICON_SIZE,
+												 SWITCH_ORIENTATION_ICON_SIZE)];
+	self.switchCameraButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+	[self.switchCameraButton addTarget:self action:@selector(switchCameraOrientation:) forControlEvents:UIControlEventTouchUpInside];
+	[self.view insertSubview:self.switchCameraButton belowSubview:self.contentContainerView];
 }
 
--(void)createSwitchFlashButton {
+-(void) addToggleFlashButton {
 	self.switchFlashButton= [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.switchFlashButton setImage:[UIImage imageNamed: @"lightbulb_final_OFF" /*FLASH_ICON_OFF*/] forState:UIControlStateNormal];
-	[self.switchFlashButton setFrame:CGRectMake(FLASH_START_POSITION, FLASH_ICON_SIZE , FLASH_ICON_SIZE)];
-	[self.switchFlashButton addTarget:self action:@selector(switchFlash:) forControlEvents:UIControlEventTouchUpInside];
-	self.flashOn = NO;
+	[self.switchFlashButton setFrame:CGRectMake(CAPTURE_MEDIA_BUTTON_OFFSET,
+												self.view.bounds.size.height - FLASH_ICON_SIZE - CAPTURE_MEDIA_BUTTON_OFFSET,
+												FLASH_ICON_SIZE, FLASH_ICON_SIZE)];
+	[self.switchFlashButton addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
+	self.flashOffIcon = [UIImage imageNamed:FLASH_ICON_OFF];
+	self.flashOnIcon = [UIImage imageNamed:FLASH_ICON_ON];
+	[self setFlashButtonOn:NO];
 	[self.view insertSubview:self.switchFlashButton belowSubview:self.contentContainerView];
-	self.flashTransform = self.switchFlashButton.transform;
 }
 
+-(void) setFlashButtonOn: (BOOL) on {
+	if (on) {
+		self.flashOn = YES;
+		[self.switchFlashButton setImage:self.flashOnIcon forState:UIControlStateNormal];
+	} else {
+		self.flashOn = NO;
+		[self.switchFlashButton setImage:self.flashOffIcon forState:UIControlStateNormal];
+	}
+}
+
+
+#pragma mark - Saved Media animation -
 
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset {
-//    [self.mediaPreviewView setAsset:asset];
 	ALAssetRepresentation *representation = [asset defaultRepresentation];
 	CGImageRef imageRef = [representation fullResolutionImage];
-	UIImageView* previewImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
-	previewImageView.frame = self.view.bounds;
-	[self.view addSubview:previewImageView];
-	[UIView animateWithDuration:0.5 animations:^{
-		previewImageView.frame = CGRectMake(self.view.bounds.size.width, 0, 0, 0);
-	}];
+	self.previewImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
+	if (!self.mediaPreviewPaused) {
+		[self animatePreviewImage];
+	}
 }
 
--(void)switchFaces:(UITapGestureRecognizer *)sender {
-    [self.sessionManager switchVideoFace];
+#pragma mark - Customize camera -
+
+-(void) switchCameraOrientation:(UITapGestureRecognizer *)sender {
+    [self.sessionManager switchCameraOrientation];
 }
 
--(IBAction)switchFlash:(id)sender {
-    [self.sessionManager switchFlash];
+-(void) toggleFlash:(id)sender {
+    [self.sessionManager toggleFlash];
     if(self.flashOn) {
-        [self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_OFF]forState:UIControlStateNormal];
+		[self setFlashButtonOn:NO];
     }else{
-        [self.switchFlashButton setImage:[UIImage imageNamed:FLASH_ICON_ON] forState:UIControlStateNormal];
+        [self setFlashButtonOn:YES];
     }
-    self.flashOn = !self.flashOn;
 }
 
 
-#pragma mark Create Gestures
+#pragma mark - Create Customize Camera Gestures -
 -(void) createAndInstantiateGestures {
 	[self createTapGestureToFocus];
 	[self createPinchGestureToZoom];
@@ -282,7 +284,7 @@
 
 
 -(void)createDoubleTapToSwitchCamera{
-    UITapGestureRecognizer* cameraFace = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(switchFaces:)];
+    UITapGestureRecognizer* cameraFace = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(switchCameraOrientation:)];
     cameraFace.numberOfTapsRequired = 2;
     cameraFace.cancelsTouchesInView =  NO;
     [cameraFace setDelegate:self.verbatmCameraView];
@@ -349,7 +351,7 @@
 
 #pragma mark - Capture Media
 
-- (IBAction)tappedPhotoButton:(id)sender {
+- (void) tappedCaptureMediaButton:(id)sender {
 	if(self.isTakingVideo) {
 		[self endVideoRecordingSession];
 	} else {
@@ -357,9 +359,8 @@
 	}
 }
 
-- (IBAction) takePhoto:(id)sender
-{
-	[self.sessionManager captureImage: !self.canRaise];
+- (void) takePhoto:(id)sender {
+	[self.sessionManager captureImage];
 	[self freezeFrame];
 }
 
@@ -369,21 +370,21 @@
 		self.isTakingVideo = YES;
 		[self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
 		[self createCircleVideoProgressView];
-		self.timer = [NSTimer scheduledTimerWithTimeInterval:NUM_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
-		[self.capturePicButton setImage:[UIImage imageNamed: CAPTURE_RECORDING_ICON] forState:UIControlStateNormal];
+		self.videoTimer = [NSTimer scheduledTimerWithTimeInterval:MAX_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
+		[self.captureMediaButton setImage:[UIImage imageNamed: CAPTURE_RECORDING_ICON] forState:UIControlStateNormal];
 
 	}
 }
 
 -(void) endVideoRecordingSession {
 
-	if(!self.circle) return;
+	if(!self.videoProgressCircle) return;
 	self.isTakingVideo = NO;
 	[self.sessionManager stopVideoRecording];
 	[self clearCircleVideoProgressView];  //removes the video progress bar
-	[self.capturePicButton setImage:[UIImage imageNamed: CAPTURE_IMAGE_ICON] forState:UIControlStateNormal];
-	[self.timer invalidate];
-	self.timer = nil;
+	[self.captureMediaButton setImage:[UIImage imageNamed: CAPTURE_IMAGE_ICON] forState:UIControlStateNormal];
+	[self.videoTimer invalidate];
+	self.videoTimer = nil;
 	[self freezeFrame];
 }
 
@@ -391,31 +392,48 @@
 -(void)freezeFrame {
 	self.sessionManager.videoPreview.connection.enabled = NO;
 	[NSTimer scheduledTimerWithTimeInterval:TIME_FOR_SESSION_TO_RESUME_POST_MEDIA_CAPTURE target:self selector:@selector(resumeSession:) userInfo:nil repeats:NO];
+	self.mediaPreviewPaused = YES;
 }
 
 // Resume session after freezing frame on taking picture/video
 -(void)resumeSession:(NSTimer*)timer {
+	if (self.previewImageView) {
+		[self animatePreviewImage];
+	}
 	self.sessionManager.videoPreview.connection.enabled = YES;
+	self.mediaPreviewPaused = NO;
 	[timer invalidate];
+}
+
+// Animates appearance of media just captured sliding into the gallery in the corner
+-(void) animatePreviewImage {
+	self.previewImageView.frame = CGRectMake(0, NAV_BAR_HEIGHT, self.view.frame.size.width, self.view.frame.size.height - NAV_BAR_HEIGHT);
+	[self.view addSubview:self.previewImageView];
+	[UIView animateWithDuration:1.f animations:^{
+		self.previewImageView.frame = CGRectMake(self.view.bounds.size.width, 0, 0, 0);
+	} completion:^(BOOL finished) {
+		[self.previewImageView removeFromSuperview];
+		self.previewImageView = nil;
+	}];
 }
 
 // Create circle view showing video progress
 -(void) createCircleVideoProgressView {
 
-	self.circle = [[CAShapeLayer alloc]init];
+	self.videoProgressCircle = [[CAShapeLayer alloc]init];
 	[self animateVideoProgressPath];
-	self.circle.frame = self.view.bounds;
-	self.circle.fillColor = [UIColor clearColor].CGColor;
-	self.circle.strokeColor = [UIColor colorWithRed:1.f green:0.f blue:0.f alpha:PROGRESS_CIRCLE_OPACITY].CGColor;
-	self.circle.lineWidth = PROGRESS_CIRCLE_THICKNESS;
-	[self.view.layer addSublayer:self.circle];
+	self.videoProgressCircle.frame = self.view.bounds;
+	self.videoProgressCircle.fillColor = [UIColor clearColor].CGColor;
+	self.videoProgressCircle.strokeColor = [UIColor colorWithRed:1.f green:0.f blue:0.f alpha:PROGRESS_CIRCLE_OPACITY].CGColor;
+	self.videoProgressCircle.lineWidth = PROGRESS_CIRCLE_THICKNESS;
+	[self.view.layer addSublayer:self.videoProgressCircle];
 
 	CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-	animation.duration = NUM_VID_SECONDS;
+	animation.duration = MAX_VID_SECONDS;
 	animation.fromValue = [NSNumber numberWithFloat:0.0f];
 	animation.toValue = [NSNumber numberWithFloat:1.0f];
 	animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-	[self.circle addAnimation:animation forKey:@"strokeEnd"];
+	[self.videoProgressCircle addAnimation:animation forKey:@"strokeEnd"];
 
 }
 
@@ -423,7 +441,8 @@
 -(void) animateVideoProgressPath {
 
 	CGMutablePathRef path = CGPathCreateMutable();
-	CGPoint center = CGPointMake((self.view.frame.size.width)/2.f, self.view.frame.size.height - CAMERA_BUTTON_Y_OFFSET - CAMERA_BUTTON_SIZE/2.f);
+	CGPoint center = CGPointMake((self.view.frame.size.width)/2.f,
+								 self.view.frame.size.height - CAPTURE_MEDIA_BUTTON_OFFSET - CAPTURE_MEDIA_BUTTON_SIZE/2.f);
 	CGRect frame = CGRectMake(center.x - PROGRESS_CIRCLE_SIZE/2.f, center.y -PROGRESS_CIRCLE_SIZE/2.f, PROGRESS_CIRCLE_SIZE, PROGRESS_CIRCLE_SIZE);
 	float midX = CGRectGetMidX(frame);
 	float midY = CGRectGetMidY(frame);
@@ -433,12 +452,12 @@
 																		  CGAffineTransformMakeRotation(-(M_PI/2.f))),
 												  CGAffineTransformMakeTranslation(midX, midY));
 	CGPathAddEllipseInRect(path, &t, frame);
-	self.circle.path = path;
+	self.videoProgressCircle.path = path;
 }
 
 -(void) clearCircleVideoProgressView {
-	[self.circle removeFromSuperlayer];
-	self.circle = nil;
+	[self.videoProgressCircle removeFromSuperlayer];
+	self.videoProgressCircle = nil;
 }
 
 
@@ -477,7 +496,7 @@
 
 -(void)positionContainerView {
 	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)
-	   && ![self.contentContainerView isHidden] && !self.canRaise) {
+	   && ![self.contentContainerView isHidden]) {
 
 		if (self.contentDevVC.openEditContentView && self.contentDevVC.openEditContentView.textView
 			&& self.contentContainerViewMode == ContentContainerViewModeFullScreen) {
@@ -486,7 +505,7 @@
 
 		[self positionContainerViewLandscape];
 
-	} else if([self.contentContainerView isHidden] && !self.canRaise) {
+	} else if([self.contentContainerView isHidden]) {
 		self.contentContainerView.hidden = NO;
 
 		[UIView animateWithDuration:0.5 animations:^{
@@ -658,9 +677,10 @@
 		NSLog(@"Can't preview with no pinch views");
 		return;
 	}
+	NSString* title = self.contentDevVC.whatIsItLikeField.text;
 	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
-	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic];
+	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic andTitle: title];
 }
 
 -(void) cameraButtonPressed {
@@ -700,7 +720,7 @@
 
 		[self.publisher publishPOVFromPinchViews: pinchViewsArray andTitle: title
 									 andCoverPic: coverPic];
-		[self.delegate povPublishedWithTitle:title andCoverPic: coverPic];
+		[self.delegate povPublishedWithCoverPic:coverPic andTitle:title];
 
 		[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
 		[[UserPinchViews sharedInstance] clearPinchViews];

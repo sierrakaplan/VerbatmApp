@@ -27,6 +27,6 @@ static CGSize const kAlbumThumbnailSize3 = {62.0f , 62.0f};
 
 @interface GMAlbumsViewController : UITableViewController
 
-@property (nonatomic) BOOL onlyImages;
+@property (nonatomic) BOOL onlyOneImage;
 
 @end

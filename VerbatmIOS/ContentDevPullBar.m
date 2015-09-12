@@ -39,28 +39,30 @@
 @implementation ContentDevPullBar
 
 # pragma mark Initialization
--(instancetype)initWithFrame:(CGRect)frame {
+-(instancetype)initWithFrame:(CGRect)frame andPanGesture: (UIPanGestureRecognizer *) gesture {
 
     //load from Nib file..this initializes the background view and all its subviews
     self = [super initWithFrame:frame];
     if(self) {
 		[self setBackgroundColor: [UIColor NAV_BAR_COLOR]];
-        [self createButtons];
+        [self createButtonsIgnoringGesture:gesture];
 		[self switchToPullDown];
     }
     return self;
 }
 
 //initialize all buttons, for all modes
--(void)createButtons {
+-(void)createButtonsIgnoringGesture: (UIPanGestureRecognizer *)panGesture {
 
 	float navIconSize = NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2;
-	float middleButtonWidth = (self.frame.size.width - (navIconSize/2.f))/2.f;
+	float middleButtonWidth = (self.frame.size.width - ((navIconSize+NAV_ICON_OFFSET)*2.f))/2.f;
 
 	CGRect backButtonFrame = CGRectMake(NAV_ICON_OFFSET,  NAV_ICON_OFFSET, navIconSize, navIconSize);
 	self.backButton = [self getButtonWithFrame: backButtonFrame];
 	[self.backButton setImage:[UIImage imageNamed:BACK_ARROW_LEFT] forState:UIControlStateNormal];
 	[self.backButton addTarget:self action:@selector(backButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+    
+    [panGesture requireGestureRecognizerToFail:self.backButton.gestureRecognizers.firstObject];
 
 
 	CGRect previewButtonFrame = CGRectMake(backButtonFrame.origin.x + backButtonFrame.size.width,
@@ -70,17 +72,29 @@
 	[self.previewButton addTarget:self action:@selector(previewButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 	[self.previewButton addSubview:self.previewLabel];
 	[self enablePreviewInMenuMode: NO];
+    
+    [panGesture requireGestureRecognizerToFail:self.previewButton.gestureRecognizers.firstObject];
 
+    
 	CGRect switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
 											  NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
-	self.switchModeButton = [self getButtonWithFrame:switchModeButtonFrame];
+	self.switchModeButton = [self getButtonWithFrame: switchModeButtonFrame];
 	[self.switchModeButton addTarget:self action:@selector(switchModeButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
+	self.cameraImage = [UIImage imageNamed: CAMERA_BUTTON_ICON];
 
+    
+    [panGesture requireGestureRecognizerToFail:self.switchModeButton.gestureRecognizers.firstObject];
+
+    
+    
 	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - navIconSize - NAV_ICON_OFFSET,
 										 NAV_ICON_OFFSET, navIconSize, navIconSize);
 	self.galleryButton = [self getButtonWithFrame:galleryButtonFrame];
 	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+    [panGesture requireGestureRecognizerToFail:self.galleryButton.gestureRecognizers.firstObject];
+
+    
 	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
 	self.galleryImageGrayedOut = [UIEffects imageOverlayed:self.galleryImage withColor:[UIColor lightGrayColor]];
 }
@@ -101,6 +115,12 @@
 	[button.imageView setContentMode: UIViewContentModeScaleAspectFit];
 	[self addSubview: button];
 	return button;
+}
+
+#pragma mark - Pulsing pull down -
+
+-(void) pulsePullDown {
+	
 }
 
 # pragma mark - Switch PullBar mode
@@ -132,14 +152,14 @@
 
 # pragma mark - GestureRecognizer delegate methods
 
-// ignore pan gesture if touching buttons
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-	if ([touch.view isKindOfClass:[UIControl class]]) {
-		// we touched our control surface
-		return NO; // ignore the touch
-	}
-	return YES; // handle the touch
-}
+//// ignore pan gesture if touching buttons
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+//	if ([touch.view isKindOfClass:[UIControl class]]) {
+//		// we touched our control surface
+//		return NO; // ignore the touch
+//	}
+//	return YES; // handle the touch
+//}
 
 # pragma mark - Enable and unEnable Buttons
 

@@ -14,6 +14,7 @@
 + (UIVisualEffectView*) createBlurViewOnView: (UIView*)view withStyle:(UIBlurEffectStyle) blurStyle;
 + (UIVisualEffectView*) createBlurViewOnView:(UIView *)view fromEffect:(UIBlurEffect*) blurEffect;
 
++ (UIImageView*) getBlurImageViewForImage:(UIImage*) image withFrame:(CGRect) frame;
 
 + (UIImage *)blurredImageWithImage:(UIImage *)sourceImage andFilterLevel: (float) filterValue;
 

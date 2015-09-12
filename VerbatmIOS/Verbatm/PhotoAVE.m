@@ -59,41 +59,6 @@
 	return self;
 }
 
-#pragma mark - Lazy Instantiation
-
-@synthesize pointsOnCircle = _pointsOnCircle;
-
--(NSMutableArray *) pointsOnCircle {
-	if(!_pointsOnCircle) _pointsOnCircle = [[NSMutableArray alloc] init];
-	return _pointsOnCircle;
-}
-
-- (void) setPointsOnCircle:(NSMutableArray *)pointsOnCircle {
-	_pointsOnCircle = pointsOnCircle;
-}
-
-@synthesize dotViewsOnCircle = _dotViewsOnCircle;
-
--(NSMutableArray *) dotViewsOnCircle {
-	if(!_dotViewsOnCircle) _dotViewsOnCircle = [[NSMutableArray alloc] init];
-	return _dotViewsOnCircle;
-}
-
-- (void) setDotViewsOnCircle:(NSMutableArray *)dotViewsOnCircle {
-	_dotViewsOnCircle = dotViewsOnCircle;
-}
-
-@synthesize imageContainerViews = _imageContainerViews;
-
--(NSMutableArray*) imageContainerViews {
-	if(!_imageContainerViews) _imageContainerViews = [[NSMutableArray alloc] init];
-	return _imageContainerViews;
-}
-
--(void) setImageContainerViews:(NSMutableArray *)imageContainerViews {
-	_imageContainerViews = imageContainerViews;
-}
-
 #pragma mark - Sub Views -
 
 -(void) addPhotos:(NSArray*)photos {
@@ -123,7 +88,7 @@
 	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
 	[imageContainerView setBackgroundColor:[UIColor blackColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];
-	UIImageView* blurPhotoView = [self getBlurImageViewForImage:image];
+	UIImageView* blurPhotoView = [UIEffects getBlurImageViewForImage:image withFrame:self.bounds];
 	[imageContainerView addSubview:blurPhotoView];
 	[imageContainerView addSubview:photoView];
 	return imageContainerView;
@@ -135,16 +100,6 @@
 	photoView.frame = self.bounds;
 	photoView.clipsToBounds = YES;
 	photoView.contentMode = UIViewContentModeScaleAspectFit;
-	return photoView;
-}
-
-// returns image view with image stretched to fill bounds and blurry
--(UIImageView*) getBlurImageViewForImage:(UIImage*) image {
-	UIImage* blurImage = [UIEffects blurredImageWithImage:image andFilterLevel:FILTER_LEVEL_BLUR];
-	UIImageView* photoView = [[UIImageView alloc] initWithImage:blurImage];
-	photoView.frame = self.bounds;
-	photoView.clipsToBounds = YES;
-	photoView.contentMode = UIViewContentModeScaleAspectFill;
 	return photoView;
 }
 
@@ -426,5 +381,39 @@
 	return YES;
 }
 
+#pragma mark - Lazy Instantiation
+
+@synthesize pointsOnCircle = _pointsOnCircle;
+
+-(NSMutableArray *) pointsOnCircle {
+	if(!_pointsOnCircle) _pointsOnCircle = [[NSMutableArray alloc] init];
+	return _pointsOnCircle;
+}
+
+- (void) setPointsOnCircle:(NSMutableArray *)pointsOnCircle {
+	_pointsOnCircle = pointsOnCircle;
+}
+
+@synthesize dotViewsOnCircle = _dotViewsOnCircle;
+
+-(NSMutableArray *) dotViewsOnCircle {
+	if(!_dotViewsOnCircle) _dotViewsOnCircle = [[NSMutableArray alloc] init];
+	return _dotViewsOnCircle;
+}
+
+- (void) setDotViewsOnCircle:(NSMutableArray *)dotViewsOnCircle {
+	_dotViewsOnCircle = dotViewsOnCircle;
+}
+
+@synthesize imageContainerViews = _imageContainerViews;
+
+-(NSMutableArray*) imageContainerViews {
+	if(!_imageContainerViews) _imageContainerViews = [[NSMutableArray alloc] init];
+	return _imageContainerViews;
+}
+
+-(void) setImageContainerViews:(NSMutableArray *)imageContainerViews {
+	_imageContainerViews = imageContainerViews;
+}
 
 @end

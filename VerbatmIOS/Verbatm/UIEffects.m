@@ -10,6 +10,7 @@
 #import "SizesAndPositions.h"
 #import "Durations.h"
 #import "AdjustableBlurEffect.h"
+#import "Styles.h"
 
 @interface UIEffects () {
 
@@ -61,6 +62,15 @@
 
 	UIImage *retVal = [UIImage imageWithCGImage:cgImage];
 	return retVal;
+}
+
++ (UIImageView*) getBlurImageViewForImage:(UIImage*) image withFrame:(CGRect) frame {
+	UIImage* blurImage = [UIEffects blurredImageWithImage:image andFilterLevel:FILTER_LEVEL_BLUR];
+	UIImageView* photoView = [[UIImageView alloc] initWithImage:blurImage];
+	photoView.frame = frame;
+	photoView.clipsToBounds = YES;
+	photoView.contentMode = UIViewContentModeScaleAspectFill;
+	return photoView;
 }
 
 +(void) addShadowToView: (UIView *) view {

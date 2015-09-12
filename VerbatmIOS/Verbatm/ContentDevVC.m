@@ -48,7 +48,6 @@
 
 #pragma mark Helpful integer stores
 //the index of the first view that is pushed up/down by the pinch/stretch gesture
-@property (atomic) NSInteger index;
 @property (atomic, strong) NSString * textBeforeNavigationLabel;
 
 #pragma mark undo related properties
@@ -124,7 +123,6 @@
 	[self setDelegates];
 
 	self.pinchingMode = PinchingModeNone;
-	self.index = 0;
 	self.numPinchViews = 0;
     self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
     self.pinchObject_TappedAndClosed_ForTheFirstTime = NO;
@@ -175,11 +173,16 @@
 	[self formatWhatIsItLikeFieldFromFrame: CGRectMake(0, 0, whatIsItLikeFieldFrame.size.width, whatIsItLikeFieldFrame.size.height/2.f)];
 
 	//Field border
-	UIImageView* borderView = [[UIImageView alloc] initWithFrame: whatIsItLikeFieldFrame];
-	[borderView setImage:[UIImage imageNamed: WHAT_IS_IT_LIKE_BORDER]];
-	borderView.contentMode = UIViewContentModeScaleAspectFill;
+	UIView* borderView = [[UIView alloc] initWithFrame: whatIsItLikeFieldFrame];
+	UIImageView* borderImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, 0,
+																				  whatIsItLikeFieldFrame.size.width,
+																				  whatIsItLikeFieldFrame.size.height)];
+	[borderImageView setImage:[UIImage imageNamed: WHAT_IS_IT_LIKE_BORDER]];
+	borderImageView.contentMode = UIViewContentModeScaleAspectFill;
 
+	[borderView addSubview:borderImageView];
 	[borderView addSubview:self.whatIsItLikeField];
+	[borderView bringSubviewToFront:self.whatIsItLikeField];
 	[self.mainScrollView addSubview: self.whatIsItLikeLabel];
 	[self.mainScrollView addSubview: borderView];
 
@@ -206,6 +209,7 @@
 													attributes:@{NSForegroundColorAttributeName: [UIColor WHAT_IS_IT_LIKE_COLOR],
 																 NSFontAttributeName : whatIsItLikeFieldFont}];
 	[self.whatIsItLikeField resignFirstResponder];
+	self.whatIsItLikeField.enabled = YES;
 	self.whatIsItLikeField.autocorrectionType = UITextAutocorrectionTypeYes;
 }
 
@@ -288,7 +292,7 @@
 	for (PinchView* pinchView in savedPinchViews) {
 		[pinchView specifyRadius:self.defaultPinchViewRadius
 					   andCenter:self.defaultPinchViewCenter];
-		[self newPinchView:pinchView belowView:[self getUpperView]];
+		[self newPinchView:pinchView belowView: nil];
 	}
 }
 
@@ -407,7 +411,6 @@
 
 #pragma mark - Creating New Views -
 
-
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView {
 
@@ -419,13 +422,14 @@
 	[[UserPinchViews sharedInstance] addPinchView:pinchView];
 	[self addTapGestureToPinchView:pinchView];
 
+	NSInteger index = -1;
+
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
 		newElementScrollViewFrame = CGRectMake(0,self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
-		self.index = 0;
 	} else {
 		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, upperScrollView.frame.size.width, upperScrollView.frame.size.height);
-		self.index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
+		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
 
 	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
@@ -438,7 +442,11 @@
 
 	//thread safety
 	@synchronized(self) {
-		[self.pageElementScrollViews insertObject:newElementScrollView atIndex:self.index];
+		if (index >= 0) {
+			[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+		} else {
+			[self.pageElementScrollViews addObject:newElementScrollView];
+		}
 	}
 
 	[self.mainScrollView addSubview: newElementScrollView];
@@ -797,8 +805,7 @@
 #pragma mark - Vertical Pinching
 
 //If it's a verticle pinch- find which media you're pinching together or apart
--(void) handleVerticlePinchGestureBegan: (UIPinchGestureRecognizer *)sender
-{
+-(void) handleVerticlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
 	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
 	CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
 
@@ -833,10 +840,12 @@
 		touch2 = temp;
 	}
 
+	#pragma GCC diagnostic ignored "-Wunused-variable"
+	float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
+	float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
+
 	/* NO LONGER IN USE - objects are being pinched apart
 	if(gesture.scale > 1) {
-	 float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
-	 float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
 		[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
 					  andChangeInBottomViewPosition:changeInBottomViewPosition];
 
@@ -1051,10 +1060,10 @@
 		return;
 	}
 
-	self.index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
+	NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
 
-	if(self.pageElementScrollViews.count > (self.index+1) && self.index != NSNotFound) {
-		self.lowerPinchScrollView = self.pageElementScrollViews[self.index+1];
+	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound) {
+		self.lowerPinchScrollView = self.pageElementScrollViews[index+1];
 	}
 
 	if([self.lowerPinchScrollView.pageElement isKindOfClass:[MediaSelectTile class]]) {
@@ -1364,8 +1373,8 @@
 
 //swaps scroll views in the pageElementScrollView array
 -(void) swapScrollView: (ContentPageElementScrollView *) scrollView1 andScrollView: (ContentPageElementScrollView *) scrollView2 {
-	NSInteger index1 = [self.pageElementScrollViews indexOfObject: scrollView1];
-	NSInteger index2 = [self.pageElementScrollViews indexOfObject: scrollView2];
+	 NSInteger index1 = [self.pageElementScrollViews indexOfObject: scrollView1];
+	 NSInteger index2 = [self.pageElementScrollViews indexOfObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index1 withObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index2 withObject: scrollView1];
 }
@@ -1497,18 +1506,7 @@
 	if (!self.openEditContentView) {
 		return;
 	}
-	//Creating text
-	if(!self.openPinchView) {
-		NSString* text = [self.openEditContentView getText];
-		if ([text length]) {
-			UIView *upperView = [self getUpperView];
-			TextPinchView* textPinchView = [[TextPinchView alloc] initWithRadius: self.defaultPinchViewRadius
-																	  withCenter: self.defaultPinchViewCenter andText:text];
-			[self newPinchView:textPinchView belowView:upperView];
-		}
-	} else if(self.openPinchView.containsText) {
-		[(TextPinchView*)self.openPinchView changeText:[self.openEditContentView getText]];
-	} else if(self.openPinchView.containsImage) {
+	if(self.openPinchView.containsImage) {
 		NSInteger filterImageIndex = [self.openEditContentView getFilteredImageIndex];
 		[(ImagePinchView*)self.openPinchView changeImageToFilterIndex:filterImageIndex];
 	} else if(self.openPinchView.containsVideo) {
@@ -1658,7 +1656,6 @@
 }
 
 -(void) createPinchViewFromAsset:(id)asset {
-	UIView* upperView = [self getUpperView];
 	PinchView* newPinchView;
 	if([asset isKindOfClass:[AVAsset class]] || [asset isKindOfClass:[NSURL class]]) {
 		newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andVideo:asset];
@@ -1669,13 +1666,13 @@
 		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
 	}
 	if (newPinchView) {
-        if(!upperView && !self.pinchObject_HasBeenAdded_ForTheFirstTime){
+        if(!self.pinchObject_HasBeenAdded_ForTheFirstTime && !self.pageElementScrollViews.count){
             [self alertEachPVIsPage];
         }else if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
             [self alertPinchElementsTogether];
         }
         
-        [self newPinchView:newPinchView belowView:upperView];
+        [self newPinchView:newPinchView belowView:nil];
 	}
 }
 
@@ -1691,17 +1688,6 @@
     self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
 }
 
--(ContentPageElementScrollView*) getUpperView {
-	@synchronized(self) {
-		ContentPageElementScrollView * topView;
-		if(self.index==-1 || self.pageElementScrollViews.count < 1){
-			topView = nil;
-		} else {
-			topView = self.pageElementScrollViews[self.index];
-		}
-		return topView;
-	}
-}
 
 //add assets from picker to our scrollview
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {

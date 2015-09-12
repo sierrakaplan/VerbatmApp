@@ -188,7 +188,21 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="afA-XZ-Jkn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3610" y="-2208"/>
+            <point key="canvasLocation" x="-3514" y="-1581"/>
+        </scene>
+        <!--editContentView-->
+        <scene sceneID="W4f-0L-ZeV">
+            <objects>
+                <viewController title="editContentView" id="x4u-kZ-n9K" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="uFC-Vd-iYm">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AWt-co-EUv" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3571" y="-2404"/>
         </scene>
         <!--Create Account-->
         <scene sceneID="Re1-7h-W5B">

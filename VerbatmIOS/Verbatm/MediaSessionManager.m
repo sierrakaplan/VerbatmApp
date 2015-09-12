@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
+#import "Durations.h"
 #import "MediaSessionManager.h"
 #import "Strings.h"
 
@@ -23,7 +24,6 @@
 @property (strong, nonatomic) UIView* previewContainerView;
 
 #define N_FRAMES_PER_SECOND 32
-#define MAX_VIDEO_LENGTH_SECONDS 10
 #define ASPECT_RATIO 4/3
 #define ZOOM_RATE 0.6
 
@@ -169,7 +169,7 @@
 	if(!_movieOutputFile){
 		_movieOutputFile = [[AVCaptureMovieFileOutput alloc]init];
 		int32_t framesPerSecond = N_FRAMES_PER_SECOND;
-		int64_t numSeconds = MAX_VIDEO_LENGTH_SECONDS * N_FRAMES_PER_SECOND;
+		int64_t numSeconds = MAX_VID_SECONDS * N_FRAMES_PER_SECOND;
 		CMTime maxDuration = CMTimeMake(numSeconds, framesPerSecond);
 		_movieOutputFile.maxRecordedDuration = maxDuration;
 	}
@@ -211,10 +211,8 @@
 }
 
 #pragma mark - customize session -
-//By Lucio
-//Switch the video prosition: front to back and vice versa
--(void)switchVideoFace
-{
+
+-(void) switchCameraOrientation {
 	//indicate that changes will be made to this session
 	[self.session beginConfiguration];
 
@@ -243,9 +241,8 @@
 	[self.session commitConfiguration];
 }
 
-//Lucio
--(void)switchFlash
-{
+-(void) toggleFlash {
+
 	//indicate changes are going to be made
 	[self.session beginConfiguration];
 
@@ -493,7 +490,7 @@
 }
 
 #pragma mark - for photo capturing and processing
--(void)captureImage:(BOOL)halfScreen {
+-(void)captureImage {
 	AVCaptureConnection* videoConnection = nil;
 	for(AVCaptureConnection* connection in self.stillImageOutput.connections){
 		for(AVCaptureInputPort* port in connection.inputPorts){
@@ -513,7 +510,7 @@
 		if(!error)
 		{
 			NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-			[self processImage:[[UIImage alloc] initWithData:dataForImage] isHalfScreen: halfScreen];
+			[self processImage:[[UIImage alloc] initWithData: dataForImage]];
 			[self saveImageToVerbatmAlbum];
 		}else{
 			NSLog(@"%@", [error localizedDescription]);
@@ -551,21 +548,19 @@
 									}];
 }
 
--(void)processImage:(UIImage*)image isHalfScreen:(BOOL)halfScreen {
+-(void)processImage:(UIImage*)image {
 	self.stillImage = image;
-	[self cropImage:(BOOL)halfScreen];
+	[self cropImage];
 }
 
 
-
--(void)cropImage:(BOOL)halfScreen
-{
+-(void) cropImage  {
 
 	if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight){
 		[self rotateImage];
 
 		//additional rotation required
-		CGSize size = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height);  //watch this ..use aspect ratio
+		CGSize size = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height); 
 		UIGraphicsBeginImageContext(size);
 		[[UIImage imageWithCGImage: self.stillImage.CGImage scale:1.0 orientation:UIImageOrientationRight] drawInRect: CGRectMake(0, 0, self.stillImage.size.height, self.stillImage.size.width)];
 		self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
@@ -573,11 +568,9 @@
 		NSLog(@"was here for rotation");
 		[self rotateImage];
 	}
-
 }
 
--(void)rotateImage
-{
+-(void)rotateImage {
 	CGSize size = self.stillImage.size;
 	UIGraphicsBeginImageContext(size);
 	[self.stillImage drawInRect:CGRectMake(0, 0, size.width, size.height)];

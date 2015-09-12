@@ -30,8 +30,7 @@
 
 @implementation GMAlbumsViewController
 
-- (id)init
-{
+- (id)init {
     if (self = [super initWithStyle:UITableViewStylePlain])
     {
         self.preferredContentSize = kPopoverContentSize;
@@ -40,8 +39,7 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     
     //Navigation bar customization_
@@ -105,13 +103,11 @@
     [[PHPhotoLibrary sharedPhotoLibrary] registerChangeObserver:self];
 }
 
-- (void)dealloc
-{
+- (void)dealloc {
     [[PHPhotoLibrary sharedPhotoLibrary] unregisterChangeObserver:self];
 }
 
--(void)updateFetchResults
-{
+-(void)updateFetchResults {
     //What I do here is fetch both the albums list and the assets of each album.
     //This way I have acces to the number of items in each album, I can load the 3
     //thumbnails directly and I can pass the fetched result to the gridViewController.
@@ -124,7 +120,7 @@
     PHFetchResult *smartAlbums = [self.collectionsFetchResults objectAtIndex:1];
 	PHFetchOptions *options = [[PHFetchOptions alloc] init];
 	options.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:NO]];
-	if (self.onlyImages) {
+	if (self.onlyOneImage) {
 		options.predicate = [NSPredicate predicateWithFormat:@"mediaType = %d",PHAssetMediaTypeImage];
 	}
 
@@ -337,6 +333,7 @@
     
     //Init the GMGridViewController
     GMGridViewController *gridViewController = [[GMGridViewController alloc] initWithPicker:[self picker]];
+	gridViewController.onlyOneImage = self.onlyOneImage;
     //Set the title
     gridViewController.title = cell.textLabel.text;
     //Use the prefetched assets!
