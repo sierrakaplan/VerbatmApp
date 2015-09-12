@@ -55,7 +55,7 @@
 -(void)createButtons {
 
 	float navIconSize = NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2;
-	float middleButtonWidth = (self.frame.size.width - (navIconSize/2.f))/2.f;
+	float middleButtonWidth = (self.frame.size.width - ((navIconSize+NAV_ICON_OFFSET)*2.f))/2.f;
 
 	CGRect backButtonFrame = CGRectMake(NAV_ICON_OFFSET,  NAV_ICON_OFFSET, navIconSize, navIconSize);
 	self.backButton = [self getButtonWithFrame: backButtonFrame];
@@ -73,9 +73,10 @@
 
 	CGRect switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
 											  NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
-	self.switchModeButton = [self getButtonWithFrame:switchModeButtonFrame];
+	self.switchModeButton = [self getButtonWithFrame: switchModeButtonFrame];
 	[self.switchModeButton addTarget:self action:@selector(switchModeButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
+	self.cameraImage = [UIImage imageNamed: CAMERA_BUTTON_ICON];
 
 	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - navIconSize - NAV_ICON_OFFSET,
 										 NAV_ICON_OFFSET, navIconSize, navIconSize);

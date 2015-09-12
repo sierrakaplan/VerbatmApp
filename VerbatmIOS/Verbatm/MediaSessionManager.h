@@ -21,13 +21,15 @@
 -(instancetype)initSessionWithView:(UIView*)containerView;
 -(void)focusAtPoint:(CGPoint)viewCoordinates;
 - (void) zoomPreviewWithScale:(float)effectiveScale;
--(void)captureImage:(BOOL)halfScreen;
+-(void)captureImage;
 -(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation;
 -(void)stopVideoRecording;
 -(void)setSessionOrientationToOrientation:(UIDeviceOrientation)orientation;
 -(void)setToFrameOfView:(UIView*)containerView;
--(void)switchVideoFace;
--(void)switchFlash;
+
+-(void) switchCameraOrientation;
+-(void) toggleFlash;
+
 -(void)startSession;
 -(void)stopSession;
 -(void) rerunSession;

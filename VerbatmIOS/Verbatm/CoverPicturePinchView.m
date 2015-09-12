@@ -22,7 +22,7 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-		[self initialize];
+		[self formatSelf];
 	}
 	return self;
 }
@@ -30,14 +30,15 @@
 -(instancetype) initWithRadius:(float)radius withCenter:(CGPoint)center {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-		[self initialize];
+		[self formatSelf];
 	}
 	return self;
 }
 
--(void) initialize {
+-(void) formatSelf {
 	[self setBackgroundColor: [UIColor clearColor]];
 	[self formatAddCoverPicLabel];
+	self.layer.borderColor = [UIColor WHAT_IS_IT_LIKE_COLOR].CGColor;
 }
 
 -(void) formatAddCoverPicLabel {

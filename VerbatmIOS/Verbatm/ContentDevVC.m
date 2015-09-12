@@ -166,11 +166,16 @@
 	[self formatWhatIsItLikeFieldFromFrame: CGRectMake(0, 0, whatIsItLikeFieldFrame.size.width, whatIsItLikeFieldFrame.size.height/2.f)];
 
 	//Field border
-	UIImageView* borderView = [[UIImageView alloc] initWithFrame: whatIsItLikeFieldFrame];
-	[borderView setImage:[UIImage imageNamed: WHAT_IS_IT_LIKE_BORDER]];
-	borderView.contentMode = UIViewContentModeScaleAspectFill;
+	UIView* borderView = [[UIView alloc] initWithFrame: whatIsItLikeFieldFrame];
+	UIImageView* borderImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, 0,
+																				  whatIsItLikeFieldFrame.size.width,
+																				  whatIsItLikeFieldFrame.size.height)];
+	[borderImageView setImage:[UIImage imageNamed: WHAT_IS_IT_LIKE_BORDER]];
+	borderImageView.contentMode = UIViewContentModeScaleAspectFill;
 
+	[borderView addSubview:borderImageView];
 	[borderView addSubview:self.whatIsItLikeField];
+	[borderView bringSubviewToFront:self.whatIsItLikeField];
 	[self.mainScrollView addSubview: self.whatIsItLikeLabel];
 	[self.mainScrollView addSubview: borderView];
 
@@ -197,6 +202,7 @@
 													attributes:@{NSForegroundColorAttributeName: [UIColor WHAT_IS_IT_LIKE_COLOR],
 																 NSFontAttributeName : whatIsItLikeFieldFont}];
 	[self.whatIsItLikeField resignFirstResponder];
+	self.whatIsItLikeField.enabled = YES;
 	self.whatIsItLikeField.autocorrectionType = UITextAutocorrectionTypeYes;
 }
 

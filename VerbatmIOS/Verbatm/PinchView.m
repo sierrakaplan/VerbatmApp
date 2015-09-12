@@ -41,7 +41,7 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	if((self = [super initWithFrame:frame])) {
 		[self specifyFrame: frame];
-		[self formatSelf];
+		[self initialize];
 	}
 	return self;
 }
@@ -56,12 +56,12 @@
         self.frame = CGRectMake(self.center.x - self.radius,
 								  self.center.y - self.radius,
 								  self.radius*2, self.radius*2);
-		[self formatSelf];
+		[self initialize];
     }
     return self;
 }
 
--(void) formatSelf {
+-(void) initialize {
 	[self setBackgroundFrames];
 	[self formatBackground];
 	[self addBorderToPinchView];
