@@ -104,6 +104,12 @@
 	return button;
 }
 
+#pragma mark - Pulsing pull down -
+
+-(void) pulsePullDown {
+	
+}
+
 # pragma mark - Switch PullBar mode
 
 -(void)switchToMode: (PullBarMode) mode {

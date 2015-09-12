@@ -22,10 +22,13 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		[self setBackgroundColor:[UIColor whiteColor]];
+		UIColor* titleTextColor = [UIColor whiteColor];
 		if (image) {
 			[self addSubview: [self getImageViewContainerForImage:image]];
-		} 
-		[self addTitleViewWithTitle: title];
+		} else {
+			titleTextColor = [UIColor blackColor];
+		}
+		[self addTitleViewWithTitle: title andTextColor: titleTextColor];
 	}
 	return self;
 }
@@ -53,16 +56,19 @@
 	return photoView;
 }
 
--(void) addTitleViewWithTitle:(NSString*) title {
-	if (![title length]) {
-		title = @"No Title Entered";
-	}
+-(void) addTitleViewWithTitle:(NSString*) title andTextColor:(UIColor*) textColor {
+
 	CGRect titleFrame = CGRectMake(TITLE_OFFSET, TITLE_OFFSET, self.frame.size.width - TITLE_OFFSET*2.f,
 								   self.frame.size.height - TITLE_OFFSET*2.f);
 	UILabel* titleLabel = [[UILabel alloc] initWithFrame: titleFrame];
-	titleLabel.text = title;
 	titleLabel.textAlignment = NSTextAlignmentCenter;
 	titleLabel.font = [UIFont fontWithName:DEFAULT_FONT size:TITLE_FONT_SIZE];
+	titleLabel.textColor = textColor;
+
+	if (![title length]) {
+		title = @"No Title Entered";
+	}
+	titleLabel.text = title;
 	[self addSubview: titleLabel];
 }
 
