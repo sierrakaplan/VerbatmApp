@@ -15,6 +15,7 @@
 @interface GMGridViewController : UICollectionViewController
 
 @property (strong) PHFetchResult *assetsFetchResults;
+@property (nonatomic) BOOL onlyOneImage;
 
 -(id)initWithPicker:(GMImagePickerController *)picker;
     
