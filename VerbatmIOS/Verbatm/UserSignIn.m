@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "UserLoginVC.h"
+#import "UserSignIn.h"
 #import "Notifications.h"
 #import "Identifiers.h"
 #import "SizesAndPositions.h"
@@ -26,7 +26,7 @@
 #import "GTLVerbatmAppEmail.h"
 #import "GTLVerbatmAppImage.h"
 
-@interface UserLoginVC () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
+@interface UserSignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
 #define TOAST_DURATION 1
 
 @property (weak, nonatomic) IBOutlet UITextField *UserName_TextField;
@@ -34,7 +34,6 @@
 @property (weak, nonatomic) IBOutlet UILabel *verbatmTitle_label;
 
 @property (weak, nonatomic) IBOutlet UIButton *signIn_button;
-@property (weak, nonatomic) IBOutlet UIButton *signUp_button;
 @property (strong, nonatomic) UIView *animationView;
 @property (strong, nonatomic) UILabel* animationLabel;
 @property (strong, nonatomic) NSTimer * animationTimer;
@@ -43,9 +42,10 @@
 @property(nonatomic, strong) GTMOAuth2Authentication *auth;
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
 
+
 @end
 
-@implementation UserLoginVC
+@implementation UserSignIn
 
 @synthesize service = _service;
 
@@ -75,6 +75,8 @@ NSString *kMyClientSecret = @"H4jYylR_xFqh4EyX60wLdS20";
 -(void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 }
+
+
 
 
 #pragma mark - Google Auth -
@@ -161,7 +163,6 @@ NSString *kMyClientSecret = @"H4jYylR_xFqh4EyX60wLdS20";
 
 
 #pragma mark - Facebook Login Delegate Methods -
-
 - (void) addFacebookLoginButton {
 	FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
 	float buttonWidth = loginButton.frame.size.width*1.2;
@@ -235,7 +236,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     
     self.signIn_button.frame =CGRectMake((self.view.frame.size.width/2 - self.signIn_button.frame.size.width/2), self.signIn_button.frame.origin.y, self.signIn_button.frame.size.width, self.signIn_button.frame.size.height);
     
-    self.signUp_button.frame= CGRectMake((self.view.frame.size.width/2 - self.signUp_button.frame.size.width/2), self.signUp_button.frame.origin.y, self.signUp_button.frame.size.width, self.signUp_button.frame.size.height);
     
     self.UserName_TextField.frame= CGRectMake((self.view.frame.size.width/2 - self.UserName_TextField.frame.size.width/2), self.UserName_TextField.frame.origin.y, self.UserName_TextField.frame.size.width, self.UserName_TextField.frame.size.height);
     
@@ -259,16 +259,12 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 // Enter button presses login
--(BOOL) textFieldShouldReturn:(UITextField *)textField
-{
-    if (textField == self.UserName_TextField)
-    {
+-(BOOL) textFieldShouldReturn:(UITextField *)textField{
+    if (textField == self.UserName_TextField){
         [self.Password_TextField becomeFirstResponder];
         return YES;
     }
-    if (textField == self.Password_TextField)
-    {
-        // [self signUpUser:self.signUp_button];
+    if (textField == self.Password_TextField){
         [self.Password_TextField resignFirstResponder];
         return YES;
     }

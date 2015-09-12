@@ -92,6 +92,8 @@
 		A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */; };
 		A5E8600B1B99EF9B00E148D0 /* HomeNavPullBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E8600A1B99EF9B00E148D0 /* HomeNavPullBar.m */; };
 		C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = C716A5B119E0CA3500A5490B /* DashLineView.m */; };
+		C719A4011BA3FB3D0075CA80 /* CreateAccountOrSignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4001BA3FB3D0075CA80 /* CreateAccountOrSignIn.m */; };
+		C719A4041BA3FC020075CA80 /* CreateAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4031BA3FC020075CA80 /* CreateAccount.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
@@ -155,7 +157,7 @@
 		C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* VideoAVE.m */; };
 		C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */; };
 		C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* VerbatmTextField.m */; };
-		C7F3D46B1A4F84C000B43238 /* UserLoginVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */; };
+		C7F3D46B1A4F84C000B43238 /* UserSignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* UserSignIn.m */; };
 		F20A24FA1A46166100BB77C1 /* EditContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* EditContentView.m */; };
 		F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */; };
 /* End PBXBuildFile section */
@@ -348,6 +350,10 @@
 		A5E8600A1B99EF9B00E148D0 /* HomeNavPullBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeNavPullBar.m; sourceTree = "<group>"; };
 		C716A5B019E0CA3500A5490B /* DashLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashLineView.h; sourceTree = "<group>"; };
 		C716A5B119E0CA3500A5490B /* DashLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashLineView.m; sourceTree = "<group>"; };
+		C719A3FF1BA3FB3D0075CA80 /* CreateAccountOrSignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateAccountOrSignIn.h; sourceTree = "<group>"; };
+		C719A4001BA3FB3D0075CA80 /* CreateAccountOrSignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateAccountOrSignIn.m; sourceTree = "<group>"; };
+		C719A4021BA3FC020075CA80 /* CreateAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateAccount.h; sourceTree = "<group>"; };
+		C719A4031BA3FC020075CA80 /* CreateAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateAccount.m; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		C734FD9619B13D7700B2C370 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -454,8 +460,8 @@
 		C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterNavigationVC.m; sourceTree = "<group>"; };
 		C7F18D831A05C0EE0002255B /* VerbatmTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmTextField.h; sourceTree = "<group>"; };
 		C7F18D841A05C0EE0002255B /* VerbatmTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmTextField.m; sourceTree = "<group>"; };
-		C7F3D4691A4F84C000B43238 /* UserLoginVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserLoginVC.h; sourceTree = "<group>"; };
-		C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserLoginVC.m; sourceTree = "<group>"; };
+		C7F3D4691A4F84C000B43238 /* UserSignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSignIn.h; sourceTree = "<group>"; };
+		C7F3D46A1A4F84C000B43238 /* UserSignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSignIn.m; sourceTree = "<group>"; };
 		F20A24F81A46166100BB77C1 /* EditContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditContentView.h; sourceTree = "<group>"; };
 		F20A24F91A46166100BB77C1 /* EditContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditContentView.m; sourceTree = "<group>"; };
 		F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVETypeAnalyzer.h; path = ../AVETypeAnalyzer.h; sourceTree = "<group>"; };
@@ -894,14 +900,18 @@
 				C7E65F681B9245200042AD99 /* ProfileVC.m */,
 				C777EEAB1AD288A3003E0633 /* ArticleListVC.h */,
 				C777EEAC1AD288A3003E0633 /* ArticleListVC.m */,
-				C7F3D4691A4F84C000B43238 /* UserLoginVC.h */,
-				C7F3D46A1A4F84C000B43238 /* UserLoginVC.m */,
+				C7F3D4691A4F84C000B43238 /* UserSignIn.h */,
+				C7F3D46A1A4F84C000B43238 /* UserSignIn.m */,
 				C734FD9A19B14B8D00B2C370 /* ContentDevVC.h */,
 				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
 				9D29995919BA9042005EBC8A /* MediaDevVC.h */,
 				9D29995A19BA9042005EBC8A /* MediaDevVC.m */,
 				C7E65F5A1B911A470042AD99 /* FeedVC.h */,
 				C7E65F5B1B911A470042AD99 /* FeedVC.m */,
+				C719A3FF1BA3FB3D0075CA80 /* CreateAccountOrSignIn.h */,
+				C719A4001BA3FB3D0075CA80 /* CreateAccountOrSignIn.m */,
+				C719A4021BA3FC020075CA80 /* CreateAccount.h */,
+				C719A4031BA3FC020075CA80 /* CreateAccount.m */,
 				C7E65F641B92449E0042AD99 /* bug submission VC */,
 				C77A68AE1AC0A47F000B10E2 /* AVE_TESTER */,
 			);
@@ -1250,11 +1260,13 @@
 				A5E85FAC1B911DA900E148D0 /* GTMReadMonitorInputStream.m in Sources */,
 				A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */,
 				A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */,
+				C719A4041BA3FC020075CA80 /* CreateAccount.m in Sources */,
 				C7E65F5F1B911BA90042AD99 /* SwitchCategoryPullView.m in Sources */,
 				C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */,
 				A58656621B602038008E358C /* TextOverAVEView.m in Sources */,
 				C7E65F561B8992710042AD99 /* MediaPreview.m in Sources */,
 				C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */,
+				C719A4011BA3FB3D0075CA80 /* CreateAccountOrSignIn.m in Sources */,
 				C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */,
 				A5E85FA21B911DA900E148D0 /* GTLJSONParser.m in Sources */,
 				A5C09BE31BA1F1F200C0AD86 /* Reachability.m in Sources */,
@@ -1300,7 +1312,7 @@
 				C7E6C13F1A4E394600863893 /* PhotoVideoAVE.m in Sources */,
 				A5AA31BE1B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m in Sources */,
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
-				C7F3D46B1A4F84C000B43238 /* UserLoginVC.m in Sources */,
+				C7F3D46B1A4F84C000B43238 /* UserSignIn.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
 				A5AA31C71B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.m in Sources */,
 				A5E85F9C1B911DA900E148D0 /* GTLBatchResult.m in Sources */,

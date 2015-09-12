@@ -170,6 +170,10 @@
 #pragma mark - Publish button pressed -
 
 -(void) publishArticleButtonPressed: (UIButton*)sender {
+    
+//    if(){
+//        [];
+//    }
 	[self revealPreview:NO];
 	[self.delegate publishButtonPressed];
 }

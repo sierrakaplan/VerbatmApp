@@ -681,11 +681,12 @@
 	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
 	if (![title length]) {
-		//TODO: animation telling them to enter a title
-		NSLog(@"Must enter a title to publish!");
+        
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story homie" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
 	} else if (!coverPic) {
-		NSLog(@"Must have a cover picture to publish!");
-		//TODO: animation telling them to pick a cover picture
+        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        [alert show];
 	} else {
 		NSArray *pinchViewsArray = [self getPinchViewsFromContentDev];
 
