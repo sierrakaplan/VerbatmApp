@@ -12,9 +12,13 @@
 
 @protocol ContentDevPullBarDelegate <NSObject>
 
--(void)previewButtonPressed;
--(void)cameraButtonPressed;
--(void)galleryButtonPressed;
+-(void) backButtonPressed;
+-(void) previewButtonPressed;
+// If in menu mode
+-(void) cameraButtonPressed;
+// If in pull down mode
+-(void) pullDownButtonPressed;
+-(void) galleryButtonPressed;
 
 @end
 
@@ -30,7 +34,6 @@ typedef NS_ENUM(NSInteger, PullBarMode) {
 @property (nonatomic) PullBarMode mode;
 
 -(void)switchToMode: (PullBarMode) mode;
--(void) grayOutPreview;
--(void) unGrayOutPreview;
+-(void) enablePreviewInMenuMode: (BOOL) enable;
 
 @end

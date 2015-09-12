@@ -37,6 +37,15 @@
 
 @dynamic center;
 
+
+-(instancetype) initWithFrame:(CGRect)frame {
+	if((self = [super initWithFrame:frame])) {
+		[self specifyFrame: frame];
+		[self formatSelf];
+	}
+	return self;
+}
+
 //Instantiates an instance of the custom view
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center {
 
@@ -47,21 +56,18 @@
         self.frame = CGRectMake(self.center.x - self.radius,
 								  self.center.y - self.radius,
 								  self.radius*2, self.radius*2);
-        [self setBackgroundFrames];
-		[self formatBackground];
-        [self addBorderToPinchView];
-		self.containsText = NO;
-		self.containsImage = NO;
-		self.containsVideo = NO;
+		[self formatSelf];
     }
     return self;
 }
 
-#pragma mark Lazy instantiation
-
--(UIView*)background {
-	if(!_background) _background = [[UIView alloc] init];
-	return _background;
+-(void) formatSelf {
+	[self setBackgroundFrames];
+	[self formatBackground];
+	[self addBorderToPinchView];
+	self.containsText = NO;
+	self.containsImage = NO;
+	self.containsVideo = NO;
 }
 
 -(void) formatBackground {
@@ -232,6 +238,13 @@
 		self.containsVideo = [(NSNumber*)[decoder decodeObjectForKey:CONTAINS_VIDEO_KEY] boolValue];
 	}
 	return self;
+}
+
+#pragma mark Lazy instantiation
+
+-(UIView*)background {
+	if(!_background) _background = [[UIView alloc] init];
+	return _background;
 }
 
 @end

@@ -93,8 +93,8 @@
 -(void) setUpNavPullBar {
 
 	CGRect navPullBarFrame = CGRectMake(self.view.frame.origin.x,
-										self.view.frame.size.height - HOME_NAV_HEIGHT,
-										self.view.frame.size.width, HOME_NAV_HEIGHT);
+										self.view.frame.size.height - NAV_BAR_HEIGHT,
+										self.view.frame.size.width, NAV_BAR_HEIGHT);
 	self.navPullBar = [[HomeNavPullBar alloc] initWithFrame:navPullBarFrame];
 	self.navPullBar.delegate = self;
 	[self.view addSubview: self.navPullBar];

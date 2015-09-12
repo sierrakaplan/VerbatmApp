@@ -14,6 +14,7 @@
 #define BUTTON_FONT @"HelveticaNeue"
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 
+#define NAV_BAR_COLOR whiteColor
 
 #define FILTER_LEVEL_BLUR 30
 #define BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
@@ -29,11 +30,7 @@
 
 #define FEED_BACKGROUND_COLOR 0.918
 #define STORY_BACKGROUND_COLOR 0.827
-#define COMPOSE_STORY_BUTTON_LABEL_COLOR blackColor
-#define COMPOSE_STORY_BUTTON_LABEL_FONT_SIZE 16.f
-#define COMPOSE_STORY_OUTER_CIRCLE_BORDER_WIDTH 2.f
-
-#define FEED_SLIDE_BAR_FONT_SIZE 30
+#define SWITCH_CATEGORY_BAR_FONT_SIZE 30
 
 #define USERNAME_FONT_SIZE 18
 #define TITLE_FONT_SIZE 20
@@ -42,20 +39,25 @@
 #define USERNAME_FONT @"HelveticaNeue-Bold"
 #define TITLE_FONT @"HelveticaNeue-Italic"
 
+#pragma mark - ADK -
 
-#pragma mark - Content Dev VC -
+#define WHAT_IS_IT_LIKE_COLOR blackColor
+#define WHAT_IS_IT_LIKE_LABEL_TEXT_SIZE 23.f
+#define WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE 23.f
+
+#define ADD_COVER_PIC_TEXT_SIZE 15.f
+#define ADD_COVER_PIC_FONT @"HelveticaNeue-UltraLight"
+
+#pragma mark PullBar
+
+#define PREVIEW_BUTTON_FONT @"HelveticaNeue-Bold"
+#define PREVIEW_BUTTON_FONT_SIZE 15
+
+#pragma mark PinchViews
 
 #define DELETED_ITEM_BACKGROUND_COLOR clearColor
 #define DELETING_ITEM_COLOR redColor
-
 #define SELECTED_ITEM_COLOR blueColor
-
-#define CONTENT_DEV_CURSOR_COLOR blackColor
-
-#define WHAT_IS_IT_LIKE_LABEL_SIZE 23.f
-#define WHAT_IS_IT_LIKE_FIELD_SIZE 23.f
-
-#pragma mark - PinchViews
 
 #define PLAY_VIDEO_ICON_OPACITY 1.0
 #define PINCHVIEW_FONT_SIZE 14
@@ -63,7 +65,7 @@
 #define PINCHVIEW_FONT_SIZE_REALLY_BIG 30
 #define PINCHVIEW_FONT_SIZE_REALLY_REALLY_BIG 40
 #define PINCHVIEW_BACKGROUND_COLOR clearColor
-#define PINCHVIEW_BORDER_COLOR blackColor
+#define PINCHVIEW_BORDER_COLOR whiteColor
 #define PINCHVIEW_BORDER_WIDTH 1.f
 #define COLLECTION_PINCHVIEW_BORDER_WIDTH 5.f
 #define COLLECTION_PINCHVIEW_SHADOW_RADIUS 5.f

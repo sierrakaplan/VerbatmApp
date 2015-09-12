@@ -18,7 +18,7 @@
 
 #pragma mark - VC's-
 
-
+#define BUG_SUBMISSION_FORM_ID @"bug_submission_form"
 
 
 #pragma mark Gallery

@@ -10,6 +10,8 @@
 
 @protocol MediaDevDelegate <NSObject>
 
+-(void) backButtonPressed;
+
 //passes up the method to create a preview view so that preview can come over the whole ADK and main scroll view
 -(void) previewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*)coverPic;
 

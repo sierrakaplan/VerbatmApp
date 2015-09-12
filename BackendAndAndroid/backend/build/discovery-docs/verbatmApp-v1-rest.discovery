@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/VULiQdQ6-Vt8lf8wNPK8Qyvncwk\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/Ay7C3AYvx8X-1epg8_DcdD4jiKQ\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -14,10 +14,10 @@
   "x32": "http://www.google.com/images/icons/product/search-32.gif"
  },
  "protocol": "rest",
- "baseUrl": "https://verbatmapp.appspot.com/_ah/api/verbatmApp/v1/",
- "basePath": "/_ah/api/verbatmApp/v1/",
+ "baseUrl": "https://verbatmapp.appspot.com/_ah/api/",
+ "basePath": "/_ah/api/",
  "rootUrl": "https://verbatmapp.appspot.com/_ah/api/",
- "servicePath": "verbatmApp/v1/",
+ "servicePath": "",
  "batchPath": "batch",
  "parameters": {
   "alt": {
@@ -274,11 +274,31 @@
   }
  },
  "resources": {
+  "blobstore": {
+   "methods": {
+    "uploadImage": {
+     "id": "verbatmApp.blobstore.uploadImage",
+     "path": "uploadImage",
+     "httpMethod": "POST",
+     "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+     ]
+    },
+    "uploadURI": {
+     "id": "verbatmApp.blobstore.uploadURI",
+     "path": "createUploadURI",
+     "httpMethod": "POST",
+     "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+     ]
+    }
+   }
+  },
   "image": {
    "methods": {
     "getImage": {
      "id": "verbatmApp.image.getImage",
-     "path": "image/{id}",
+     "path": "verbatmApp/v1/image/{id}",
      "httpMethod": "GET",
      "parameters": {
       "id": {
@@ -300,7 +320,7 @@
     },
     "insertImage": {
      "id": "verbatmApp.image.insertImage",
-     "path": "image",
+     "path": "verbatmApp/v1/image",
      "httpMethod": "POST",
      "request": {
       "$ref": "Image",
@@ -315,7 +335,7 @@
     },
     "removeImage": {
      "id": "verbatmApp.image.removeImage",
-     "path": "image/{id}",
+     "path": "verbatmApp/v1/image/{id}",
      "httpMethod": "DELETE",
      "parameters": {
       "id": {
@@ -334,7 +354,7 @@
     },
     "updateImage": {
      "id": "verbatmApp.image.updateImage",
-     "path": "image",
+     "path": "verbatmApp/v1/image",
      "httpMethod": "PUT",
      "request": {
       "$ref": "Image",
@@ -353,7 +373,7 @@
    "methods": {
     "getPage": {
      "id": "verbatmApp.page.getPage",
-     "path": "page/{id}",
+     "path": "verbatmApp/v1/page/{id}",
      "httpMethod": "GET",
      "parameters": {
       "id": {
@@ -375,7 +395,7 @@
     },
     "insertPage": {
      "id": "verbatmApp.page.insertPage",
-     "path": "page",
+     "path": "verbatmApp/v1/page",
      "httpMethod": "POST",
      "request": {
       "$ref": "Page",
@@ -390,7 +410,7 @@
     },
     "insertPages": {
      "id": "verbatmApp.page.insertPages",
-     "path": "insert_pages",
+     "path": "insertPages",
      "httpMethod": "POST",
      "request": {
       "$ref": "PageListWrapper",
@@ -405,7 +425,7 @@
     },
     "removePage": {
      "id": "verbatmApp.page.removePage",
-     "path": "page/{id}",
+     "path": "verbatmApp/v1/page/{id}",
      "httpMethod": "DELETE",
      "parameters": {
       "id": {
@@ -424,7 +444,7 @@
     },
     "updatePage": {
      "id": "verbatmApp.page.updatePage",
-     "path": "page",
+     "path": "verbatmApp/v1/page",
      "httpMethod": "PUT",
      "request": {
       "$ref": "Page",
@@ -443,7 +463,7 @@
    "methods": {
     "getPOV": {
      "id": "verbatmApp.pov.getPOV",
-     "path": "get_pov_from_id",
+     "path": "getPOVFromID",
      "httpMethod": "GET",
      "parameters": {
       "id": {
@@ -465,7 +485,7 @@
     },
     "getPagesFromPOV": {
      "id": "verbatmApp.pov.getPagesFromPOV",
-     "path": "get_pages_from_pov",
+     "path": "getPagesFromPOV",
      "httpMethod": "GET",
      "parameters": {
       "id": {
@@ -487,7 +507,7 @@
     },
     "getRecentPOVsInfo": {
      "id": "verbatmApp.pov.getRecentPOVsInfo",
-     "path": "get_recent_povs",
+     "path": "getRecentPOVs",
      "httpMethod": "GET",
      "parameters": {
       "count": {
@@ -513,7 +533,7 @@
     },
     "getTrendingPOVsInfo": {
      "id": "verbatmApp.pov.getTrendingPOVsInfo",
-     "path": "get_trending_povs",
+     "path": "getTrendingPOVs",
      "httpMethod": "GET",
      "parameters": {
       "count": {
@@ -539,7 +559,7 @@
     },
     "insertPOV": {
      "id": "verbatmApp.pov.insertPOV",
-     "path": "pov",
+     "path": "verbatmApp/v1/pov",
      "httpMethod": "POST",
      "request": {
       "$ref": "POV",
@@ -554,7 +574,7 @@
     },
     "removePOV": {
      "id": "verbatmApp.pov.removePOV",
-     "path": "pov/{id}",
+     "path": "verbatmApp/v1/pov/{id}",
      "httpMethod": "DELETE",
      "parameters": {
       "id": {
@@ -573,7 +593,7 @@
     },
     "updatePOV": {
      "id": "verbatmApp.pov.updatePOV",
-     "path": "pov",
+     "path": "verbatmApp/v1/pov",
      "httpMethod": "PUT",
      "request": {
       "$ref": "POV",
@@ -592,7 +612,7 @@
    "methods": {
     "getUser": {
      "id": "verbatmApp.verbatmuser.getUser",
-     "path": "verbatmuser/{id}",
+     "path": "verbatmApp/v1/verbatmuser/{id}",
      "httpMethod": "GET",
      "parameters": {
       "id": {
@@ -614,7 +634,7 @@
     },
     "insertUser": {
      "id": "verbatmApp.verbatmuser.insertUser",
-     "path": "verbatmuser",
+     "path": "verbatmApp/v1/verbatmuser",
      "httpMethod": "POST",
      "request": {
       "$ref": "VerbatmUser",
@@ -629,7 +649,7 @@
     },
     "removeUser": {
      "id": "verbatmApp.verbatmuser.removeUser",
-     "path": "verbatmuser/{id}",
+     "path": "verbatmApp/v1/verbatmuser/{id}",
      "httpMethod": "DELETE",
      "parameters": {
       "id": {
@@ -648,7 +668,7 @@
     },
     "updateUser": {
      "id": "verbatmApp.verbatmuser.updateUser",
-     "path": "verbatmuser",
+     "path": "verbatmApp/v1/verbatmuser",
      "httpMethod": "PUT",
      "request": {
       "$ref": "VerbatmUser",
@@ -667,7 +687,7 @@
    "methods": {
     "getVideo": {
      "id": "verbatmApp.video.getVideo",
-     "path": "video/{id}",
+     "path": "verbatmApp/v1/video/{id}",
      "httpMethod": "GET",
      "parameters": {
       "id": {
@@ -689,7 +709,7 @@
     },
     "insertVideo": {
      "id": "verbatmApp.video.insertVideo",
-     "path": "video",
+     "path": "verbatmApp/v1/video",
      "httpMethod": "POST",
      "request": {
       "$ref": "Video",
@@ -704,7 +724,7 @@
     },
     "removeVideo": {
      "id": "verbatmApp.video.removeVideo",
-     "path": "video/{id}",
+     "path": "verbatmApp/v1/video/{id}",
      "httpMethod": "DELETE",
      "parameters": {
       "id": {
@@ -723,7 +743,7 @@
     },
     "updateVideo": {
      "id": "verbatmApp.video.updateVideo",
-     "path": "video",
+     "path": "verbatmApp/v1/video",
      "httpMethod": "PUT",
      "request": {
       "$ref": "Video",

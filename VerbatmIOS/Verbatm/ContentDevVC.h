@@ -39,8 +39,8 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
 
-@property (weak, nonatomic) IBOutlet UILabel *whatIsItLikeLabel;
-@property (weak, nonatomic) IBOutlet UITextField *whatIsItLikeField;
+@property (strong, nonatomic) UILabel *whatIsItLikeLabel;
+@property (strong, nonatomic) UITextField *whatIsItLikeField;
 
 
 //keeps track of ContentPageElementScrollViews

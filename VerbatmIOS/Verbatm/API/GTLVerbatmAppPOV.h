@@ -34,7 +34,7 @@
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, retain) NSNumber *identifier;  // longLongValue
 
-@property (nonatomic, retain) NSNumber *numUpVotes;  // intValue
+@property (nonatomic, retain) NSNumber *numUpVotes;  // longLongValue
 @property (nonatomic, retain) NSArray *pageIds;  // of NSNumber (longLongValue)
 @property (nonatomic, copy) NSString *title;
 @end

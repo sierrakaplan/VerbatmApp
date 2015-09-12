@@ -27,12 +27,9 @@ import com.myverbatm.verbatm.backend.models.ResultsWithCursor;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.annotation.Nullable;
-
-import sun.util.logging.resources.logging;
 
 import static com.myverbatm.verbatm.backend.OfyService.*;
 
@@ -82,7 +79,7 @@ public class POVEndpoint {
      * @throws com.google.api.server.spi.ServiceException if user is not
      * authorized
      */
-    @ApiMethod(path="get_recent_povs", httpMethod = "GET")
+    @ApiMethod(path="/getRecentPOVs", httpMethod = "GET")
     public final ResultsWithCursor getRecentPOVsInfo(@Named("count") final int pCount,
                                                  @Named("cursor_string") @Nullable final String cursorString,
                                                  final User user) throws
@@ -141,7 +138,7 @@ public class POVEndpoint {
      * @throws com.google.api.server.spi.ServiceException if user is not
      * authorized
      */
-    @ApiMethod(path="get_trending_povs", httpMethod = "GET")
+    @ApiMethod(path="/getTrendingPOVs", httpMethod = "GET")
     public final ResultsWithCursor getTrendingPOVsInfo(@Named("count") final int pCount,
                                                               @Named("cursor_string") @Nullable final String cursorString,
                                                               final User user) throws
@@ -200,7 +197,7 @@ public class POVEndpoint {
      * @return a list of Pages
      * @throws ServiceException
      */
-    @ApiMethod(path="get_pages_from_pov", httpMethod = "GET")
+    @ApiMethod(path="/getPagesFromPOV", httpMethod = "GET")
     public final PageListWrapper getPagesFromPOV(@Named("id") final Long id, final User user)
         throws ServiceException {
 
@@ -233,7 +230,7 @@ public class POVEndpoint {
      * @throws com.google.api.server.spi.ServiceException if user is not
      *                                                    authorized
      */
-    @ApiMethod(path="get_pov_from_id", httpMethod = "GET")
+    @ApiMethod(path="/getPOVFromID", httpMethod = "GET")
     public final POV getPOV(@Named("id") final Long id, final User user)
         throws ServiceException {
 //        EndpointUtil.throwIfNotAdmin(user);

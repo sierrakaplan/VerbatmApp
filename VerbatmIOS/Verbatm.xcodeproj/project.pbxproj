@@ -43,6 +43,16 @@
 		A5AA31C91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m */; };
 		A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */; };
 		A5AA31CF1BA10A6B00D8D20C /* CoverPicturePinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31CE1BA10A6B00D8D20C /* CoverPicturePinchView.m */; };
+		A5C09BD91BA1F1D700C0AD86 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BC61BA1F1D700C0AD86 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5C09BDA1BA1F1D700C0AD86 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BC91BA1F1D700C0AD86 /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5C09BDB1BA1F1D700C0AD86 /* ASIDataDecompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BCB1BA1F1D700C0AD86 /* ASIDataDecompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5C09BDC1BA1F1D700C0AD86 /* ASIDownloadCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BCD1BA1F1D700C0AD86 /* ASIDownloadCache.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5C09BDD1BA1F1D700C0AD86 /* ASIFormDataRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BCF1BA1F1D700C0AD86 /* ASIFormDataRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5C09BDE1BA1F1D700C0AD86 /* ASIHTTPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BD11BA1F1D700C0AD86 /* ASIHTTPRequest.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5C09BDF1BA1F1D700C0AD86 /* ASIInputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BD51BA1F1D700C0AD86 /* ASIInputStream.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5C09BE01BA1F1D700C0AD86 /* ASINetworkQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BD71BA1F1D700C0AD86 /* ASINetworkQueue.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5C09BE31BA1F1F200C0AD86 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BE21BA1F1F200C0AD86 /* Reachability.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		A5C09BE61BA1F43600C0AD86 /* ImageVideoUpload.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BE51BA1F43600C0AD86 /* ImageVideoUpload.m */; };
 		A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */; };
 		A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61171B9CC40F009D9D11 /* TopicsTableView.m */; };
 		A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */; };
@@ -88,7 +98,6 @@
 		C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
 		C75985F51B8553DF00FE77F7 /* internetConnectionMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C75985F41B8553DF00FE77F7 /* internetConnectionMonitor.m */; };
-		C75985F81B85575900FE77F7 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = C75985F71B85575900FE77F7 /* Reachability.m */; };
 		C772F27F1B4BC13500CEC83D /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = C772F2661B4BC13500CEC83D /* GMImagePicker.strings */; };
 		C772F2801B4BC13500CEC83D /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C772F26E1B4BC13500CEC83D /* GMAlbumsViewCell.m */; };
 		C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C772F2701B4BC13500CEC83D /* GMAlbumsViewController.m */; };
@@ -242,6 +251,30 @@
 		A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPageListWrapper.m; path = API/GTLVerbatmAppPageListWrapper.m; sourceTree = "<group>"; };
 		A5AA31CD1BA10A6B00D8D20C /* CoverPicturePinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPicturePinchView.h; sourceTree = "<group>"; };
 		A5AA31CE1BA10A6B00D8D20C /* CoverPicturePinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPicturePinchView.m; sourceTree = "<group>"; };
+		A5C09BC51BA1F1D700C0AD86 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
+		A5C09BC61BA1F1D700C0AD86 /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIAuthenticationDialog.m; sourceTree = "<group>"; };
+		A5C09BC71BA1F1D700C0AD86 /* ASICacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASICacheDelegate.h; sourceTree = "<group>"; };
+		A5C09BC81BA1F1D700C0AD86 /* ASIDataCompressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIDataCompressor.h; sourceTree = "<group>"; };
+		A5C09BC91BA1F1D700C0AD86 /* ASIDataCompressor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIDataCompressor.m; sourceTree = "<group>"; };
+		A5C09BCA1BA1F1D700C0AD86 /* ASIDataDecompressor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIDataDecompressor.h; sourceTree = "<group>"; };
+		A5C09BCB1BA1F1D700C0AD86 /* ASIDataDecompressor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIDataDecompressor.m; sourceTree = "<group>"; };
+		A5C09BCC1BA1F1D700C0AD86 /* ASIDownloadCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIDownloadCache.h; sourceTree = "<group>"; };
+		A5C09BCD1BA1F1D700C0AD86 /* ASIDownloadCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIDownloadCache.m; sourceTree = "<group>"; };
+		A5C09BCE1BA1F1D700C0AD86 /* ASIFormDataRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIFormDataRequest.h; sourceTree = "<group>"; };
+		A5C09BCF1BA1F1D700C0AD86 /* ASIFormDataRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIFormDataRequest.m; sourceTree = "<group>"; };
+		A5C09BD01BA1F1D700C0AD86 /* ASIHTTPRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIHTTPRequest.h; sourceTree = "<group>"; };
+		A5C09BD11BA1F1D700C0AD86 /* ASIHTTPRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIHTTPRequest.m; sourceTree = "<group>"; };
+		A5C09BD21BA1F1D700C0AD86 /* ASIHTTPRequestConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIHTTPRequestConfig.h; sourceTree = "<group>"; };
+		A5C09BD31BA1F1D700C0AD86 /* ASIHTTPRequestDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIHTTPRequestDelegate.h; sourceTree = "<group>"; };
+		A5C09BD41BA1F1D700C0AD86 /* ASIInputStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIInputStream.h; sourceTree = "<group>"; };
+		A5C09BD51BA1F1D700C0AD86 /* ASIInputStream.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIInputStream.m; sourceTree = "<group>"; };
+		A5C09BD61BA1F1D700C0AD86 /* ASINetworkQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASINetworkQueue.h; sourceTree = "<group>"; };
+		A5C09BD71BA1F1D700C0AD86 /* ASINetworkQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASINetworkQueue.m; sourceTree = "<group>"; };
+		A5C09BD81BA1F1D700C0AD86 /* ASIProgressDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIProgressDelegate.h; sourceTree = "<group>"; };
+		A5C09BE11BA1F1F200C0AD86 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		A5C09BE21BA1F1F200C0AD86 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		A5C09BE41BA1F43600C0AD86 /* ImageVideoUpload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageVideoUpload.h; sourceTree = "<group>"; };
+		A5C09BE51BA1F43600C0AD86 /* ImageVideoUpload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageVideoUpload.m; sourceTree = "<group>"; };
 		A5CA61131B9A013E009D9D11 /* AdjustableBlurEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustableBlurEffect.h; sourceTree = "<group>"; };
 		A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdjustableBlurEffect.m; sourceTree = "<group>"; };
 		A5CA61161B9CC40F009D9D11 /* TopicsTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicsTableView.h; sourceTree = "<group>"; };
@@ -512,6 +545,8 @@
 				A57A93061B55E95B006C2597 /* VerbatmCameraView.xib */,
 				A57A92FD1B55A551006C2597 /* CameraFocusSquare.h */,
 				A57A92FE1B55A551006C2597 /* CameraFocusSquare.m */,
+				C7E65F541B8992710042AD99 /* MediaPreview.h */,
+				C7E65F551B8992710042AD99 /* MediaPreview.m */,
 			);
 			name = "Camera Views";
 			sourceTree = "<group>";
@@ -562,6 +597,35 @@
 				A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */,
 			);
 			name = "Table Views";
+			sourceTree = "<group>";
+		};
+		A5C09BA01BA1F0BF00C0AD86 /* ASI HTTP Request */ = {
+			isa = PBXGroup;
+			children = (
+				A5C09BC51BA1F1D700C0AD86 /* ASIAuthenticationDialog.h */,
+				A5C09BC61BA1F1D700C0AD86 /* ASIAuthenticationDialog.m */,
+				A5C09BC71BA1F1D700C0AD86 /* ASICacheDelegate.h */,
+				A5C09BC81BA1F1D700C0AD86 /* ASIDataCompressor.h */,
+				A5C09BC91BA1F1D700C0AD86 /* ASIDataCompressor.m */,
+				A5C09BCA1BA1F1D700C0AD86 /* ASIDataDecompressor.h */,
+				A5C09BCB1BA1F1D700C0AD86 /* ASIDataDecompressor.m */,
+				A5C09BCC1BA1F1D700C0AD86 /* ASIDownloadCache.h */,
+				A5C09BCD1BA1F1D700C0AD86 /* ASIDownloadCache.m */,
+				A5C09BCE1BA1F1D700C0AD86 /* ASIFormDataRequest.h */,
+				A5C09BCF1BA1F1D700C0AD86 /* ASIFormDataRequest.m */,
+				A5C09BD01BA1F1D700C0AD86 /* ASIHTTPRequest.h */,
+				A5C09BD11BA1F1D700C0AD86 /* ASIHTTPRequest.m */,
+				A5C09BD21BA1F1D700C0AD86 /* ASIHTTPRequestConfig.h */,
+				A5C09BD31BA1F1D700C0AD86 /* ASIHTTPRequestDelegate.h */,
+				A5C09BD41BA1F1D700C0AD86 /* ASIInputStream.h */,
+				A5C09BD51BA1F1D700C0AD86 /* ASIInputStream.m */,
+				A5C09BD61BA1F1D700C0AD86 /* ASINetworkQueue.h */,
+				A5C09BD71BA1F1D700C0AD86 /* ASINetworkQueue.m */,
+				A5C09BD81BA1F1D700C0AD86 /* ASIProgressDelegate.h */,
+				A5C09BE11BA1F1F200C0AD86 /* Reachability.h */,
+				A5C09BE21BA1F1F200C0AD86 /* Reachability.m */,
+			);
+			name = "ASI HTTP Request";
 			sourceTree = "<group>";
 		};
 		A5CB82A41B5744B800195A2E /* UI effects */ = {
@@ -719,6 +783,8 @@
 				A5E860001B96249900E148D0 /* POVPublisher.m */,
 				A59C19701B9E1DFF00EBA60E /* POVLoadManager.h */,
 				A59C19711B9E1DFF00EBA60E /* POVLoadManager.m */,
+				A5C09BE41BA1F43600C0AD86 /* ImageVideoUpload.h */,
+				A5C09BE51BA1F43600C0AD86 /* ImageVideoUpload.m */,
 			);
 			name = "Backend Utilities";
 			sourceTree = "<group>";
@@ -768,8 +834,6 @@
 			children = (
 				9D29995619BA7EBD005EBC8A /* MediaSessionManager.h */,
 				9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */,
-				C7E65F541B8992710042AD99 /* MediaPreview.h */,
-				C7E65F551B8992710042AD99 /* MediaPreview.m */,
 			);
 			name = "Media Capture Classes";
 			sourceTree = "<group>";
@@ -920,6 +984,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				A5C09BA01BA1F0BF00C0AD86 /* ASI HTTP Request */,
 				C75985F91B85577900FE77F7 /* Internet Connectivity Monitor */,
 				C7BD53C61B5B790B00EE6241 /* Constants  */,
 				C748836A1B489AE300E64ED9 /* Gallery */,
@@ -1087,7 +1152,7 @@
 						DevelopmentTeam = 4ZZL8FZ858;
 					};
 					C7BC4392199D97F6004B91A1 = {
-						DevelopmentTeam = FV58CMSUQ8;
+						DevelopmentTeam = 4ZZL8FZ858;
 						TestTargetID = C7BC4371199D97F5004B91A1;
 					};
 				};
@@ -1192,7 +1257,9 @@
 				C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */,
 				C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */,
 				A5E85FA21B911DA900E148D0 /* GTLJSONParser.m in Sources */,
+				A5C09BE31BA1F1F200C0AD86 /* Reachability.m in Sources */,
 				9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */,
+				A5C09BDE1BA1F1D700C0AD86 /* ASIHTTPRequest.m in Sources */,
 				A5AA31C91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m in Sources */,
 				A5AA31C81B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m in Sources */,
 				C772F2801B4BC13500CEC83D /* GMAlbumsViewCell.m in Sources */,
@@ -1210,13 +1277,15 @@
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A5E85F991B911DA900E148D0 /* GTLQuery.m in Sources */,
 				A5E85FA01B911DA900E148D0 /* GTLRuntimeCommon.m in Sources */,
+				A5C09BE01BA1F1D700C0AD86 /* ASINetworkQueue.m in Sources */,
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				A5E85FA91B911DA900E148D0 /* GTMHTTPUploadFetcher.m in Sources */,
+				A5C09BDA1BA1F1D700C0AD86 /* ASIDataCompressor.m in Sources */,
 				C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */,
 				C7BD53C41B5B73A700EE6241 /* BaseArticleViewingExperience.m in Sources */,
 				F20A24FA1A46166100BB77C1 /* EditContentView.m in Sources */,
+				A5C09BD91BA1F1D700C0AD86 /* ASIAuthenticationDialog.m in Sources */,
 				A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */,
-				C75985F81B85575900FE77F7 /* Reachability.m in Sources */,
 				A5E8600B1B99EF9B00E148D0 /* HomeNavPullBar.m in Sources */,
 				A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */,
 				A5AA31C31B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m in Sources */,
@@ -1237,6 +1306,7 @@
 				A5E85F9C1B911DA900E148D0 /* GTLBatchResult.m in Sources */,
 				A5E85FA41B911DA900E148D0 /* GTLBase64.m in Sources */,
 				A58656681B61FD99008E358C /* PhotoAVE.m in Sources */,
+				A5C09BDB1BA1F1D700C0AD86 /* ASIDataDecompressor.m in Sources */,
 				A5E85FA61B911DA900E148D0 /* GTMHTTPFetcher.m in Sources */,
 				A504ECE81B6AF4A00076F9D0 /* UserPinchViews.m in Sources */,
 				C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */,
@@ -1263,6 +1333,7 @@
 				A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */,
 				A5E85F9B1B911DA900E148D0 /* GTLService.m in Sources */,
 				A5E85FAD1B911DA900E148D0 /* GTMOAuth2Authentication.m in Sources */,
+				A5C09BDC1BA1F1D700C0AD86 /* ASIDownloadCache.m in Sources */,
 				A5E85F9A1B911DA900E148D0 /* GTLBatchQuery.m in Sources */,
 				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
@@ -1281,7 +1352,10 @@
 				C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
 				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
+				A5C09BDD1BA1F1D700C0AD86 /* ASIFormDataRequest.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
+				A5C09BDF1BA1F1D700C0AD86 /* ASIInputStream.m in Sources */,
+				A5C09BE61BA1F43600C0AD86 /* ImageVideoUpload.m in Sources */,
 				A5AA31CF1BA10A6B00D8D20C /* CoverPicturePinchView.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,
 				A5AA31BB1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m in Sources */,
@@ -1478,6 +1552,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -1493,6 +1569,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "verbatm.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Verbatm.app/Verbatm";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -1502,6 +1579,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -1513,6 +1592,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "verbatm.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Verbatm.app/Verbatm";
 				WRAPPER_EXTENSION = xctest;
 			};

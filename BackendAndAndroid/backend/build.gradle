@@ -28,6 +28,7 @@ dependencies {
     compile 'javax.servlet:servlet-api:2.5'
     compile 'com.googlecode.objectify:objectify:4.0b3'
     compile 'com.ganyo:gcm-server:1.0.2'
+    compile 'br.com.caelum.vraptor:vraptor-jpa:4.0.4'
     //Forces creation of discovery docs (needed for iOS) with every build
     appengineEndpointsGetClientLibs.dependsOn appengineEndpointsGetDiscoveryDocs
 }

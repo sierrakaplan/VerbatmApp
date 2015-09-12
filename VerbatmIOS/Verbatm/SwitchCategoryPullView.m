@@ -76,7 +76,7 @@
 }
 
 -(void) formatLabel: (UILabel*) label {
-	label.font = [UIFont fontWithName:DEFAULT_FONT size:FEED_SLIDE_BAR_FONT_SIZE];
+	label.font = [UIFont fontWithName:DEFAULT_FONT size:SWITCH_CATEGORY_BAR_FONT_SIZE];
 	label.textAlignment = NSTextAlignmentCenter;
 	label.lineBreakMode = NSLineBreakByClipping;
 
@@ -91,7 +91,7 @@
 //tbd - set the image for the pull circle
 -(void) initPullCircle {
     self.pullCircle.frame = CGRectMake(self.maxPullCircleX, 0, self.pullCircleSize, self.pullCircleSize);
-	self.pullCircle.image = [UIImage imageNamed: PULLCIRCLE_ICON];
+	self.pullCircle.image = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE];
 	self.pullCircle.backgroundColor = self.backgroundColor;
     [self addPanGestureToView:self.pullCircle];
     [self addSubview: self.pullCircle];

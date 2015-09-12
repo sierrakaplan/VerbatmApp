@@ -51,16 +51,16 @@
 }
 
 -(void) createImagesForButtons {
-	UIImage *textButtonImage = [UIImage imageNamed:INSERT_TEXT_BUTTON];
-	UIImage *photoButtonImage = [UIImage imageNamed:INSERT_MEDIA_BUTTON];
-	UIImage *grayedOutIconText = [UIEffects imageOverlayed:textButtonImage withColor:[UIColor lightGrayColor]];
-	UIImage *grayedOutIconImage = [UIEffects imageOverlayed:photoButtonImage withColor:[UIColor lightGrayColor]];
+//	UIImage *textButtonImage = [UIImage imageNamed:INSERT_TEXT_BUTTON];
+//	UIImage *photoButtonImage = [UIImage imageNamed:INSERT_MEDIA_BUTTON];
+//	UIImage *grayedOutIconText = [UIEffects imageOverlayed:textButtonImage withColor:[UIColor lightGrayColor]];
+//	UIImage *grayedOutIconImage = [UIEffects imageOverlayed:photoButtonImage withColor:[UIColor lightGrayColor]];
 
-	[self.selectText setImage:grayedOutIconText forState:UIControlStateSelected | UIControlStateHighlighted];
-	[self.selectMedia setImage:grayedOutIconImage forState:UIControlStateSelected | UIControlStateHighlighted];
+//	[self.selectText setImage:grayedOutIconText forState:UIControlStateSelected | UIControlStateHighlighted];
+//	[self.selectMedia setImage:grayedOutIconImage forState:UIControlStateSelected | UIControlStateHighlighted];
 
-	[self.selectMedia setImage:photoButtonImage forState: UIControlStateNormal];
-	[self.selectText setImage:textButtonImage forState: UIControlStateNormal];
+//	[self.selectMedia setImage:photoButtonImage forState: UIControlStateNormal];
+//	[self.selectText setImage:textButtonImage forState: UIControlStateNormal];
 }
 
 -(void) formatButtons {

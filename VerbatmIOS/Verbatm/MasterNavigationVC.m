@@ -154,6 +154,10 @@
 
 #pragma mark - Media dev delegate methods -
 
+-(void) backButtonPressed {
+	[self showFeed];
+}
+
 -(void) previewPOVFromPinchViews:(NSArray *)pinchViews andCoverPic:(UIImage *)coverPic {
 	[self.view bringSubviewToFront:self.previewDisplayView];
 	[self.previewDisplayView displayPreviewPOVFromPinchViews: pinchViews andCoverPic: coverPic];

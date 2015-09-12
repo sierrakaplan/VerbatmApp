@@ -10,6 +10,10 @@
 #define SizesAndPositions_h
 
 
+#define NAV_BAR_HEIGHT 40.f
+#define NAV_ICON_OFFSET 7
+
+
 #pragma mark - Sign In -
 
 #define SIGN_IN_ERROR_VIEW_HEIGHT 100.f
@@ -17,11 +21,6 @@
 
 
 #pragma mark - Feed -
-
-#define HOME_NAV_HEIGHT 55
-//distance between icons and the side of the screen
-#define HOME_NAV_ICON_OFFSET 7
-//frame width
 
 #define CATEGORY_SWITCH_HEIGHT 60
 #define CATEGORY_SWITCH_OFFSET 10
@@ -90,14 +89,9 @@
 #define PUBLISH_BUTTON_YOFFSET 20.f
 #define PUBLISH_BUTTON_SIZE 75.f
 
-#pragma mark - Pull Bar
+#define BACK_BUTTON_SIZE 20.f
 
-#define PULLBAR_BUTTON_XOFFSET 20.f
-#define PULLBAR_BUTTON_YOFFSET 15.f
-#define PULLBAR_PULLDOWN_ICON_WIDTH 60.f
-#define PULLBAR_HEIGHT_MENU_MODE 60.f
-#define PULLBAR_HEIGHT_PULLDOWN_MODE 30.f
-
+#pragma mark - Content Dev Pull Bar
 
 #pragma mark Verbatm Image Scroll View
 #define VIEW_WALL_OFFSET 20

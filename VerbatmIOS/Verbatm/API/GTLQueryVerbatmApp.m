@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (24 custom class methods, 4 custom properties)
+//   GTLQueryVerbatmApp (26 custom class methods, 4 custom properties)
 
 #import "GTLQueryVerbatmApp.h"
 
@@ -35,6 +35,21 @@
     @"identifier" : @"id"
   };
   return map;
+}
+
+#pragma mark - "blobstore" methods
+// These create a GTLQueryVerbatmApp object.
+
++ (instancetype)queryForBlobstoreUploadImage {
+  NSString *methodName = @"verbatmApp.blobstore.uploadImage";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  return query;
+}
+
++ (instancetype)queryForBlobstoreUploadURI {
+  NSString *methodName = @"verbatmApp.blobstore.uploadURI";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  return query;
 }
 
 #pragma mark - "image" methods

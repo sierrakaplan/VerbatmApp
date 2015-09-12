@@ -21,6 +21,7 @@
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
 #import "EditContentView.h"
+#import "Icons.h"
 #import "GMImagePickerController.h"
 #import "Notifications.h"
 #import "SizesAndPositions.h"
@@ -30,7 +31,7 @@
 #import "ContentPageElementScrollView.h"
 #import "UserPinchViews.h"
 
-@interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,MediaSelectTileDelegate,
+@interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,
 							GMImagePickerControllerDelegate, EditContentViewDelegate>
 
 
@@ -63,7 +64,6 @@
 
 @property (weak, atomic) IBOutlet UITextView *firstContentPageTextBox;
 @property (strong, atomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
-@property (strong, nonatomic) MediaSelectTile * baseMediaTileSelector;
 
 
 #pragma mark PanGesture Properties
@@ -89,11 +89,12 @@
 @property (nonatomic,weak) ContentPageElementScrollView * lowerPinchScrollView;
 @property (nonatomic) CGPoint upperTouchPointInVerticalPinch;
 @property(nonatomic) CGPoint lowerTouchPointInVerticalPinch;
-@property (nonatomic,weak) MediaSelectTile* newlyCreatedMediaTile;
+//@property (nonatomic,weak) MediaSelectTile* newlyCreatedMediaTile;
 
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define WHAT_IS_IT_LIKE_OFFSET 15
+#define WHAT_IS_IT_LIKE_HEIGHT 50
 
 @end
 
@@ -105,16 +106,15 @@
 - (void)viewDidLoad{
 	[super viewDidLoad];
 	[self addBlurView];
-	[self formatTextFields];
-
+	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
+	[self setKeyboardAppearance];
+	[self setCursorColor];
 
+	[self formatTitleAndCoverPicture];
 //	[self createBaseSelector];
-	[self configureViews];
 	[self setUpNotifications];
 	[self setDelegates];
-
-	[self setAddCoverPictureView];
 
 	self.pinchingMode = PinchingModeNone;
 	self.index = 0;
@@ -129,40 +129,6 @@
 	self.mainScrollView.frame= self.view.frame;
 }
 
-//sets the textview placeholders' color and text
--(void) formatTextFields {
-
-	UIColor *color = [UIColor blackColor];
-	UIFont* labelFont = [UIFont fontWithName:DEFAULT_FONT size: WHAT_IS_IT_LIKE_LABEL_SIZE];
-	UIFont* whatIsItLikeFieldFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_SIZE];
-
-	//Label
-	self.whatIsItLikeLabel.frame = CGRectMake(0, self.whatIsItLikeLabel.frame.origin.y, self.view.bounds.size.width, self.whatIsItLikeLabel.frame.size.height);
-	self.whatIsItLikeLabel.textAlignment = NSTextAlignmentCenter;
-	self.whatIsItLikeLabel.font = labelFont;
-
-	//Field
-	self.whatIsItLikeField.frame = CGRectMake(WHAT_IS_IT_LIKE_OFFSET, self.whatIsItLikeField.frame.origin.y, self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_OFFSET, self.whatIsItLikeField.frame.size.height);
-	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
-	self.whatIsItLikeField.font = whatIsItLikeFieldFont;
-	self.whatIsItLikeField.tintColor = [UIColor blackColor];
-
-
-	if ([self.whatIsItLikeField respondsToSelector:@selector(setAttributedPlaceholder:)]) {
-
-		self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
-												   initWithString: self.whatIsItLikeField.placeholder
-												   attributes:@{NSForegroundColorAttributeName: color,
-																NSFontAttributeName : whatIsItLikeFieldFont}];
-	} else {
-		NSLog(PLACEHOLDER_SELECTOR_FAILED_ERROR_MESSAGE);
-	}
-
-
-	[self.whatIsItLikeField resignFirstResponder];
-	self.whatIsItLikeField.autocorrectionType = UITextAutocorrectionTypeYes;
-}
-
 //records the generic frame for any element that is a square and not a pinch view circle,
 // as well as the pinch view center and radius
 -(void)setElementDefaultFrames {
@@ -171,7 +137,77 @@
 	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
 }
 
-// NO LONGER IN USE
+// set keyboard appearance color on all textfields and textviews
+-(void) setKeyboardAppearance {
+	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
+}
+
+// set cursor color on all textfields and textviews
+-(void) setCursorColor {
+	[[UITextField appearance] setTintColor:[UIColor WHAT_IS_IT_LIKE_COLOR]];
+}
+
+//sets the textview placeholders' color and text
+-(void) formatTitleAndCoverPicture {
+
+	CGRect whatIsItLikeLabelFrame = CGRectMake(WHAT_IS_IT_LIKE_OFFSET, WHAT_IS_IT_LIKE_OFFSET,
+											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_OFFSET,
+											   WHAT_IS_IT_LIKE_HEIGHT);
+	CGRect whatIsItLikeFieldFrame = CGRectMake(WHAT_IS_IT_LIKE_OFFSET, whatIsItLikeLabelFrame.origin.y + whatIsItLikeLabelFrame.size.height,
+											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_OFFSET,
+											   WHAT_IS_IT_LIKE_HEIGHT*2);
+
+	CGFloat coverPicRadius = self.defaultPinchViewRadius * 3.f/4.f;
+	CGRect addCoverPicFrame = CGRectMake(self.view.frame.size.width/2.f - coverPicRadius,
+										 whatIsItLikeFieldFrame.origin.y + whatIsItLikeFieldFrame.size.height,
+										 coverPicRadius*2, coverPicRadius*2);
+
+	[self formatWhatIsItLikeLabelFromFrame: whatIsItLikeLabelFrame];
+	[self formatWhatIsItLikeFieldFromFrame: CGRectMake(0, 0, whatIsItLikeFieldFrame.size.width, whatIsItLikeFieldFrame.size.height/2.f)];
+
+	//Field border
+	UIImageView* borderView = [[UIImageView alloc] initWithFrame: whatIsItLikeFieldFrame];
+	[borderView setImage:[UIImage imageNamed: WHAT_IS_IT_LIKE_BORDER]];
+	borderView.contentMode = UIViewContentModeScaleAspectFill;
+
+	[borderView addSubview:self.whatIsItLikeField];
+	[self.mainScrollView addSubview: self.whatIsItLikeLabel];
+	[self.mainScrollView addSubview: borderView];
+
+	[self setAddCoverPictureViewWithFrame: addCoverPicFrame];
+}
+
+-(void) formatWhatIsItLikeLabelFromFrame: (CGRect) frame {
+	UIFont* labelFont = [UIFont fontWithName:DEFAULT_FONT size: WHAT_IS_IT_LIKE_LABEL_TEXT_SIZE];
+	self.whatIsItLikeLabel = [[UILabel alloc] initWithFrame: frame];
+	self.whatIsItLikeLabel.text = @"what is it like to be ...";
+	self.whatIsItLikeLabel.textAlignment = NSTextAlignmentLeft;
+	self.whatIsItLikeLabel.font = labelFont;
+	self.whatIsItLikeLabel.textColor = [UIColor WHAT_IS_IT_LIKE_COLOR];
+}
+
+-(void) formatWhatIsItLikeFieldFromFrame: (CGRect) frame {
+	UIFont* whatIsItLikeFieldFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
+	self.whatIsItLikeField = [[UITextField alloc] initWithFrame: frame];
+	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
+	self.whatIsItLikeField.font = whatIsItLikeFieldFont;
+	self.whatIsItLikeField.tintColor = [UIColor WHAT_IS_IT_LIKE_COLOR];
+	self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
+													initWithString: @"tell your story"
+													attributes:@{NSForegroundColorAttributeName: [UIColor WHAT_IS_IT_LIKE_COLOR],
+																 NSFontAttributeName : whatIsItLikeFieldFont}];
+	[self.whatIsItLikeField resignFirstResponder];
+	self.whatIsItLikeField.autocorrectionType = UITextAutocorrectionTypeYes;
+}
+
+-(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
+	self.coverPicView = [[CoverPicturePinchView alloc] initWithFrame:frame];
+	UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
+	[self.coverPicView addGestureRecognizer: tapGesture];
+	[self.mainScrollView addSubview: self.coverPicView];
+}
+
+/* NO LONGER IN USE
 -(void) createBaseSelector {
 
 	//make sure we don't create another one when we return from image picking
@@ -197,24 +233,8 @@
 
 	[self.mainScrollView addSubview:baseMediaTileSelectorScrollView];
 	[self.pageElementScrollViews addObject:baseMediaTileSelectorScrollView];
-}
+} */
 
-//Set up views
--(void) configureViews {
-	[self setFrameMainScrollView];
-	[self setKeyboardAppearance];
-	[self setCursorColor];
-}
-
-// set cursor color on all textfields and textviews
--(void) setCursorColor {
-	[[UITextField appearance] setTintColor:[UIColor CONTENT_DEV_CURSOR_COLOR]];
-}
-
-// set keyboard appearance color on all textfields and textviews
--(void) setKeyboardAppearance {
-	[[UITextField appearance] setKeyboardAppearance:UIKeyboardAppearanceDark];
-}
 
 -(void) setUpNotifications
 {
@@ -248,20 +268,6 @@
 -(void) setDelegates {
 	self.whatIsItLikeField.delegate = self;
 	self.mainScrollView.delegate = self;
-}
-
--(void) setAddCoverPictureView {
-	self.coverPicView = [[CoverPicturePinchView alloc]
-										   initWithRadius: self.defaultPinchViewRadius * 3.f/4.f
-										   withCenter: self.defaultPinchViewCenter];
-	[self.coverPicView specifyFrame:CGRectMake(self.view.frame.size.width/2.f - self.coverPicView.frame.size.width/2.f,
-										 self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height,
-										 self.coverPicView.frame.size.width,
-										 self.coverPicView.frame.size.height)];
-	UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
-	[self.coverPicView addGestureRecognizer: tapGesture];
-
-	[self.mainScrollView addSubview: self.coverPicView];
 }
 
 -(UIImage*) getCoverPicture {
@@ -643,7 +649,7 @@
 		self.scrollViewOfHorizontalPinching.scrollEnabled = YES;
 		self.scrollViewOfHorizontalPinching = nil;
 
-	} else if (self.newlyCreatedMediaTile) {
+	} /* else if (self.newlyCreatedMediaTile) {
 
 		//new media creation has failed
 		if(self.newlyCreatedMediaTile.frame.size.height != self.baseMediaTileSelector.frame.size.height){
@@ -651,12 +657,13 @@
 			return;
 		}
 		self.newlyCreatedMediaTile = nil;
-	}
+	} */
 
 	[self shiftElementsBelowView: self.coverPicView];
 	self.pinchingMode = PinchingModeNone;
 }
 
+/* NO LONGER IN USE
 -(void) animateRemoveNewMediaTile {
 	float originalHeight = self.newlyCreatedMediaTile.frame.size.height;
 	[self.pageElementScrollViews removeObject:self.newlyCreatedMediaTile.superview];
@@ -674,6 +681,7 @@
 		self.pinchingMode = PinchingModeNone;
 	}];
 }
+ */
 
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
 
@@ -794,10 +802,11 @@
 	}
 	[self findElementsFromPinchPoint];
 
-	//if it's a pinch apart then create the media tile
+	/* NO LONGER IN USE - if it's a pinch apart then create the media tile
 	if(self.upperPinchScrollView && self.lowerPinchScrollView && sender.scale > 1) {
 		[self createNewMediaTileBetweenPinchViews];
 	}
+	 */
 }
 
 -(void) handleVerticlePinchGestureChanged: (UIPinchGestureRecognizer *)gesture {
@@ -815,17 +824,17 @@
 		touch2 = temp;
 	}
 
-	float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
-	float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
-
-	//objects are being pinched apart
+	/* NO LONGER IN USE - objects are being pinched apart
 	if(gesture.scale > 1) {
+	 float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
+	 float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
 		[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
 					  andChangeInBottomViewPosition:changeInBottomViewPosition];
 
-	}
+	} */
+
 	//objects are being pinched together
-	else {
+	if (gesture.scale < 1) {
 		[self pinchObjectsTogether];
 	}
 }
@@ -860,8 +869,9 @@
 	return frame;
 }
 
-#pragma mark Pinching Apart two Pinch views, Adding media tile
+#pragma mark Pinching Apart two Pinch views, Adding media tile - NO LONGER IN USE -
 
+/* NO LONGER IN USE
 -(void) createNewMediaTileBetweenPinchViews {
 	CGRect frame = [self getStartFrameForNewMediaTile];
 	MediaSelectTile* newMediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
@@ -966,6 +976,8 @@
 	[self.pageElementScrollViews removeObject:mediaTile.superview];
 	[self shiftElementsBelowView: self.coverPicView];
 }
+ 
+*/
 
 #pragma mark Pinching Views together
 
@@ -1067,8 +1079,8 @@
 
 
 
-#pragma mark - Media Tile Options -
-
+#pragma mark - Media Tile Options NO LONGER IN USE -
+/* NO LONGER IN USE
 #pragma mark Text
 -(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
 	[self.changePullBarDelegate showPullBar:NO withTransition:NO];
@@ -1089,7 +1101,7 @@
 		[self clearMediaTile:tile];
 	}
 }
-
+*/
 
 #pragma  mark - Add cover picture -
 
@@ -1166,11 +1178,11 @@
 		if((view.frame.origin.y + view.frame.size.height) > touch.y) {
 			self.selectedView_PAN = self.pageElementScrollViews[i];
 
-			//can't select the base tile selector
+			/* NO LONGER IN USE can't select the base tile selector
 			if (self.selectedView_PAN.pageElement == self.baseMediaTileSelector) {
 				self.selectedView_PAN = nil;
 				return;
-			}
+			} */
 			[self.mainScrollView bringSubviewToFront:self.selectedView_PAN];
 			return;
 		}
@@ -1212,11 +1224,11 @@
 	NSInteger yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
 	CGRect newFrame = [self newVerticalTranslationFrameForView:self.selectedView_PAN andChange:yDifference];
 
-	//view can't move below bottom media tile
+	/* NO LONGER IN USE view can't move below bottom media tile
 	if(bottomView && bottomView.pageElement == self.baseMediaTileSelector
 	   &&  ((newFrame.origin.y + newFrame.size.height) >= bottomView.frame.origin.y)) {
 		return;
-	}
+	} */
 
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
@@ -1692,6 +1704,7 @@
 }
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
+	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		if (self.addingCoverPicture) {
 			[self addCoverPictureFromAssetArray: assetArray];
@@ -1700,7 +1713,6 @@
         	[self presentAssetsAsPinchViews:assetArray];
 		}
 	}];
-	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
@@ -1727,6 +1739,7 @@
 }
 
 
+/* NO LONGER IN USE
 @synthesize baseMediaTileSelector = _baseMediaTileSelector;
 
 -(MediaSelectTile *) baseMediaTileSelector {
@@ -1736,7 +1749,7 @@
 
 - (void) setBaseMediaTileSelector: (MediaSelectTile *) baseMediaTileSelector {
 	_baseMediaTileSelector = baseMediaTileSelector;
-}
+} */
 
 @synthesize tileSwipeViewUndoManager = _tileSwipeViewUndoManager;
 

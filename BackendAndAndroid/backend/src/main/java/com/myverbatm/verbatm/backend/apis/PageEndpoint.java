@@ -91,7 +91,7 @@ public class PageEndpoint {
      * @return The list of pages inserted
      * @throws ServiceException
      */
-    @ApiMethod(path="insert_pages", httpMethod = "POST")
+    @ApiMethod(path="/insertPages", httpMethod = "POST")
     public final PageListWrapper insertPages(final PageListWrapper pagesWrapper, final User user)
         throws ServiceException {
 //        EndpointUtil.throwIfNotAuthenticated(user);

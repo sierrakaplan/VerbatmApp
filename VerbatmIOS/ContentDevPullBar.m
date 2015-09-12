@@ -12,16 +12,26 @@
 #import "Notifications.h"
 #import "Icons.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 
 @interface ContentDevPullBar ()
+
+
+@property (strong, nonatomic) UIButton *backButton;
+
 @property (strong, nonatomic) UIButton *previewButton;
-@property (strong, nonatomic) UIButton *cameraButton;
+@property (strong, nonatomic) UILabel *previewLabel;
+@property (nonatomic) BOOL previewEnabledInMenuMode;
+
+// This button switches modes (can be the camera or the pull down)
+@property (strong, nonatomic) UIButton *switchModeButton;
+@property (strong, nonatomic) UIImage* cameraImage;
+@property (strong, nonatomic) UIImage* pullDownImage;
+
 @property (strong, nonatomic) UIButton *galleryButton;
+@property (strong, nonatomic) UIImage* galleryImage;
+@property (strong, nonatomic) UIImage* galleryImageGrayedOut;
 
-@property (strong, nonatomic) UIImageView *pullDownIcon;
-
-@property (strong, nonatomic) UIImage *previewButtonGrayedOut;
-@property (strong, nonatomic) UIImage *previewButtonImage;
 
 @end
 
@@ -34,6 +44,7 @@
     //load from Nib file..this initializes the background view and all its subviews
     self = [super initWithFrame:frame];
     if(self) {
+		[self setBackgroundColor: [UIColor NAV_BAR_COLOR]];
         [self createButtons];
 		[self switchToPullDown];
     }
@@ -43,36 +54,53 @@
 //initialize all buttons, for all modes
 -(void)createButtons {
 
-	float centerPoint = self.frame.size.width /2.f;
-	float buttonSize = PULLBAR_HEIGHT_MENU_MODE - (2.f * PULLBAR_BUTTON_YOFFSET);
-	float previewButtonWidth = buttonSize*1.5;
+	float navIconSize = NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2;
+	float middleButtonWidth = (self.frame.size.width - (navIconSize/2.f))/2.f;
 
-	self.previewButtonImage = [UIImage imageNamed:PREVIEW_BUTTON_IMAGE];
-	self.previewButtonGrayedOut = [UIEffects imageOverlayed:self.previewButtonImage withColor:[UIColor darkGrayColor]];
+	CGRect backButtonFrame = CGRectMake(NAV_ICON_OFFSET,  NAV_ICON_OFFSET, navIconSize, navIconSize);
+	self.backButton = [self getButtonWithFrame: backButtonFrame];
+	[self.backButton setImage:[UIImage imageNamed:BACK_ARROW_LEFT] forState:UIControlStateNormal];
+	[self.backButton addTarget:self action:@selector(backButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 
-	CGRect pullDownIconFrame = CGRectMake(centerPoint-PULLBAR_PULLDOWN_ICON_WIDTH/2.f, 0, PULLBAR_PULLDOWN_ICON_WIDTH, PULLBAR_HEIGHT_PULLDOWN_MODE);
-	self.pullDownIcon = [[UIImageView alloc] initWithFrame:pullDownIconFrame];
-	[self.pullDownIcon setImage:[UIImage imageNamed:PULLDOWN_ICON_IMAGE]];
 
-	CGRect previewButtonFrame = CGRectMake(PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
-	self.previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.previewButton setFrame:previewButtonFrame];
-	[self grayOutPreview];
-	[self.previewButton setImage:[UIImage imageNamed:PREVIEW_BUTTON_CLICKED] forState:UIControlStateHighlighted | UIControlStateSelected];
+	CGRect previewButtonFrame = CGRectMake(backButtonFrame.origin.x + backButtonFrame.size.width,
+										   NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
+	self.previewLabel = [self getLabelWithParentFrame:previewButtonFrame andText:@"PREVIEW"];
+	self.previewButton = [self getButtonWithFrame: previewButtonFrame];
 	[self.previewButton addTarget:self action:@selector(previewButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+	[self.previewButton addSubview:self.previewLabel];
+	[self enablePreviewInMenuMode: NO];
 
-	CGRect cameraButtonFrame = CGRectMake(centerPoint-buttonSize/2.f, PULLBAR_BUTTON_YOFFSET, buttonSize, buttonSize);
-	self.cameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.cameraButton setFrame: cameraButtonFrame];
-	[self.cameraButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateHighlighted | UIControlStateSelected];
-	[self.cameraButton addTarget:self action:@selector(cameraButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+	CGRect switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
+											  NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
+	self.switchModeButton = [self getButtonWithFrame:switchModeButtonFrame];
+	[self.switchModeButton addTarget:self action:@selector(switchModeButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
 
-	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - previewButtonWidth - PULLBAR_BUTTON_XOFFSET, PULLBAR_BUTTON_YOFFSET, previewButtonWidth, buttonSize);
-	self.galleryButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.galleryButton setFrame:galleryButtonFrame];
-	//TODO: changet this to gallery icon
-	[self.galleryButton setImage:[UIImage imageNamed:PULLUP_BUTTON_IMAGE] forState:UIControlStateNormal];
+	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - navIconSize - NAV_ICON_OFFSET,
+										 NAV_ICON_OFFSET, navIconSize, navIconSize);
+	self.galleryButton = [self getButtonWithFrame:galleryButtonFrame];
 	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
+	self.galleryImageGrayedOut = [UIEffects imageOverlayed:self.galleryImage withColor:[UIColor lightGrayColor]];
+}
+
+
+-(UILabel*) getLabelWithParentFrame: (CGRect) parentFrame andText:(NSString*) text {
+	UILabel* label = [[UILabel alloc] initWithFrame: CGRectMake(0.f, 0.f,
+																parentFrame.size.width, parentFrame.size.height)];
+	label.text = text;
+	label.font = [UIFont fontWithName:PREVIEW_BUTTON_FONT size:PREVIEW_BUTTON_FONT_SIZE];
+	label.textAlignment = NSTextAlignmentCenter;
+	return label;
+}
+
+-(UIButton*) getButtonWithFrame: (CGRect)frame  {
+	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+	[button setFrame: frame];
+	[button.imageView setContentMode: UIViewContentModeScaleAspectFit];
+	[self addSubview: button];
+	return button;
 }
 
 # pragma mark - Switch PullBar mode
@@ -87,22 +115,18 @@
 
 -(void)switchToMenu {
 	self.mode = PullBarModeMenu;
-
-	[self.pullDownIcon removeFromSuperview];
-
-	[self addSubview:self.previewButton];
-	[self addSubview:self.cameraButton];
-	[self addSubview:self.galleryButton];
+	[self.switchModeButton setImage:self.cameraImage forState: UIControlStateNormal];
+	[self enableGallery: YES];
+	if (self.previewEnabledInMenuMode) {
+		[self enablePreview: YES];
+	}
 }
 
 -(void)switchToPullDown {
 	self.mode = PullBarModePullDown;
-
-	[self.previewButton removeFromSuperview];
-	[self.cameraButton removeFromSuperview];
-	[self.galleryButton removeFromSuperview];
-
-	[self addSubview:self.pullDownIcon];
+	[self.switchModeButton setImage:self.pullDownImage forState: UIControlStateNormal];
+	[self enableGallery: NO];
+	[self enablePreview: NO];
 }
 
 
@@ -117,39 +141,73 @@
 	return YES; // handle the touch
 }
 
-# pragma mark - Un and gray out buttons
+# pragma mark - Enable and unEnable Buttons
 
--(void) grayOutPreview {
-	[self.previewButton setEnabled:NO];
-	[self.previewButton setImage:self.previewButtonGrayedOut forState:UIControlStateNormal];
+// (Preview is always unenabled in pull down mode)
+
+-(void) enablePreviewInMenuMode: (BOOL) enable {
+	self.previewEnabledInMenuMode = enable;
+	if (self.mode == PullBarModeMenu) {
+		[self enablePreview: enable];
+	}
 }
 
--(void) unGrayOutPreview {
-	[self.previewButton setEnabled:YES];
-	[self.previewButton setImage:self.previewButtonImage forState:UIControlStateNormal];
+-(void) enablePreview: (BOOL) enable {
+	if (enable) {
+		[self.previewLabel setTextColor: [UIColor blackColor]];
+	} else {
+		[self.previewLabel setTextColor: [UIColor lightGrayColor]];
+	}
+	[self.previewButton setEnabled: enable];
+}
+
+-(void) enableGallery: (BOOL) enable {
+	if (enable) {
+		[self.galleryButton setImage:self.galleryImage forState: UIControlStateNormal];
+	} else {
+		[self.galleryButton setImage:self.galleryImageGrayedOut forState: UIControlStateNormal];
+	}
+	[self.galleryButton setEnabled: enable];
 }
 
 
 # pragma mark - Button actions on touch up (send message to delegates)
 
-
-- (void) previewButtonReleased:(UIButton *)sender {
-	if (self.delegate) {
-    	[self.delegate previewButtonPressed];
+-(void) backButtonReleased:(UIButton*) sender {
+	if (!self.delegate) {
+		NSLog(@"No content dev pull bar delegate set.");
 	}
-
+	[self.delegate backButtonPressed];
 }
 
-- (void) cameraButtonReleased:(UIButton *)sender {
-	if (self.delegate) {
-		[self.delegate cameraButtonPressed];
+- (void) previewButtonReleased:(UIButton *)sender {
+	if (!self.delegate) {
+		NSLog(@"No content dev pull bar delegate set.");
+	}
+    [self.delegate previewButtonPressed];
+}
+
+- (void) switchModeButtonReleased:(UIButton *)sender {
+	if (!self.delegate) {
+		NSLog(@"No content dev pull bar delegate set.");
+	}
+	switch(self.mode) {
+		case PullBarModeMenu: {
+			[self.delegate cameraButtonPressed];
+			break;
+		}
+		case PullBarModePullDown: {
+			[self.delegate pullDownButtonPressed];
+			break;
+		}
 	}
 }
 
 -(void) galleryButtonReleased:(UIButton*) sender {
-	if (self.delegate) {
-		[self.delegate galleryButtonPressed];
+	if (!self.delegate) {
+		NSLog(@"No content dev pull bar delegate set.");
 	}
+	[self.delegate galleryButtonPressed];
 }
 
 

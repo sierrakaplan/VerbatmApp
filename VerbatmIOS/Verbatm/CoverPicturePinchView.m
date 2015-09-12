@@ -19,13 +19,25 @@
 
 @implementation CoverPicturePinchView
 
+-(instancetype) initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+	if (self) {
+		[self initialize];
+	}
+	return self;
+}
+
 -(instancetype) initWithRadius:(float)radius withCenter:(CGPoint)center {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-		[self setBackgroundColor: [UIColor clearColor]];
-		[self formatAddCoverPicLabel];
+		[self initialize];
 	}
 	return self;
+}
+
+-(void) initialize {
+	[self setBackgroundColor: [UIColor clearColor]];
+	[self formatAddCoverPicLabel];
 }
 
 -(void) formatAddCoverPicLabel {
@@ -33,8 +45,8 @@
 	self.addCoverPicLabel.textAlignment = NSTextAlignmentCenter;
 	self.addCoverPicLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	self.addCoverPicLabel.numberOfLines = 3;
-	self.addCoverPicLabel.text = @"Tap to add cover picture";
-	self.addCoverPicLabel.font = [UIFont fontWithName:TITLE_FONT size: WHAT_IS_IT_LIKE_LABEL_SIZE];
+	self.addCoverPicLabel.text = @"Cover Picture";
+	self.addCoverPicLabel.font = [UIFont fontWithName:ADD_COVER_PIC_FONT size: ADD_COVER_PIC_TEXT_SIZE];
 	self.addCoverPicLabel.textColor = [UIColor blackColor];
 	[self.background addSubview: self.addCoverPicLabel];
 }

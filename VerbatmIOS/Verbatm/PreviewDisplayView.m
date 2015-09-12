@@ -81,10 +81,10 @@
 	} else {
 		//put in placeholder black view.
 		UIView* view = [[UIView alloc] initWithFrame:self.viewingFrame];
-		view.backgroundColor = [UIColor blackColor];
+		view.backgroundColor = [UIColor whiteColor];
 		UILabel* coverPicPlaceholderLabel = [[UILabel alloc] initWithFrame:self.viewingFrame];
 		coverPicPlaceholderLabel.textAlignment = NSTextAlignmentCenter;
-		coverPicPlaceholderLabel.textColor = [UIColor whiteColor];
+		coverPicPlaceholderLabel.textColor = [UIColor blackColor];
 		coverPicPlaceholderLabel.text = @"No cover picture yet!";
 		[view addSubview:coverPicPlaceholderLabel];
 		[aves insertObject:view atIndex:0];
@@ -102,7 +102,7 @@
 #pragma mark - Set Up Views -
 
 -(void) setUpPublishButton {
-	CGRect publishButtonFrame = CGRectMake(self.viewingFrame.size.width - PUBLISH_BUTTON_XOFFSET - PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+	CGRect publishButtonFrame = CGRectMake(self.viewingFrame.origin.x + PUBLISH_BUTTON_XOFFSET, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
 
 	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.publishButton setFrame: publishButtonFrame];
@@ -121,12 +121,12 @@
 }
 
 -(void) setUpBackButton {
-	CGRect backButtonFrame = CGRectMake(self.viewingFrame.origin.x + PUBLISH_BUTTON_XOFFSET, PUBLISH_BUTTON_YOFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+	CGRect backButtonFrame = CGRectMake(self.viewingFrame.size.width - PUBLISH_BUTTON_XOFFSET - BACK_BUTTON_SIZE,
+										PUBLISH_BUTTON_YOFFSET, BACK_BUTTON_SIZE, BACK_BUTTON_SIZE);
 
 	self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.backButton setFrame: backButtonFrame];
-	[self.backButton setBackgroundImage:[UIImage imageNamed:BACK_BUTTON_IMAGE] forState:UIControlStateNormal];
-
+	[self.backButton setBackgroundImage:[UIImage imageNamed:BACK_ARROW_RIGHT] forState:UIControlStateNormal];
 	[self.backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
 

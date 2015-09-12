@@ -9,6 +9,7 @@
 #import "HomeNavPullBar.h"
 #import "Icons.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 #import "UIEffects.h"
 
 @interface HomeNavPullBar()
@@ -33,7 +34,8 @@
 }
 
 -(void) formatSelf {
-	[UIEffects createLessBlurViewOnView:self withStyle:UIBlurEffectStyleLight];
+//	[UIEffects createLessBlurViewOnView:self withStyle:UIBlurEffectStyleLight];
+	[self setBackgroundColor:[UIColor NAV_BAR_COLOR]];
 }
 
 //position the nav views in appropriate places and set frames
@@ -41,15 +43,15 @@
 	self.profileNavButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	self.adkNavButton = [UIButton buttonWithType:UIButtonTypeCustom];
 
-	float navIconSize = HOME_NAV_HEIGHT - HOME_NAV_ICON_OFFSET*2;
-	self.profileNavButton.frame = CGRectMake(HOME_NAV_ICON_OFFSET, HOME_NAV_ICON_OFFSET,
+	float navIconSize = NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2;
+	self.profileNavButton.frame = CGRectMake(NAV_ICON_OFFSET, NAV_ICON_OFFSET,
 											 navIconSize, navIconSize);
-	self.adkNavButton.frame = CGRectMake(self.frame.size.width - navIconSize - HOME_NAV_ICON_OFFSET,
-										 HOME_NAV_ICON_OFFSET,
+	self.adkNavButton.frame = CGRectMake(self.frame.size.width - navIconSize - NAV_ICON_OFFSET,
+										 NAV_ICON_OFFSET,
 										 navIconSize, navIconSize);
 
-	[self.profileNavButton setImage:[UIImage imageNamed:PROFILE_ICON] forState:UIControlStateNormal];
-	[self.adkNavButton setImage:[UIImage imageNamed:ADK_ICON] forState:UIControlStateNormal];
+	[self.profileNavButton setImage:[UIImage imageNamed:PROFILE_NAV_ICON] forState:UIControlStateNormal];
+	[self.adkNavButton setImage:[UIImage imageNamed:ADK_NAV_ICON] forState:UIControlStateNormal];
 
 	[self.profileNavButton addTarget:self action:@selector(profileButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 	[self.adkNavButton addTarget:self action:@selector(adkButtonPressed:) forControlEvents:UIControlEventTouchUpInside];

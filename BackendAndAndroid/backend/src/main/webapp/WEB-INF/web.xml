@@ -14,6 +14,7 @@
         <init-param>
             <param-name>services</param-name>
             <param-value>com.myverbatm.verbatm.backend.RegistrationEndpoint,
+                com.myverbatm.verbatm.backend.apis.BlobStoreApi,
                 com.myverbatm.verbatm.backend.MessagingEndpoint,
                 com.myverbatm.verbatm.backend.apis.ImageEndpoint,
                 com.myverbatm.verbatm.backend.apis.PageEndpoint,

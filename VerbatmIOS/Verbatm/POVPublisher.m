@@ -6,6 +6,10 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "ASIHTTPRequest.h"
+
+#import "ImageVideoUpload.h"
+
 #import "GTLDateTime.h"
 #import "GTLQueryVerbatmApp.h"
 
@@ -132,6 +136,29 @@
 	return gtlVideo;
 }
 
+#pragma mark - Uploading media -
+
+-(void) getUploadURI {
+
+	NSURL *uri = [NSURL URLWithString:@"https://verbatmapp.appspot.com/media/createUploadURI"];
+	ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:uri];
+	[request setDelegate:self];
+	[request startAsynchronous];
+}
+
+-(void) requestFinished:(ASIHTTPRequest *)request {
+
+	NSString *uri = (NSString*)[request responseData];
+//	ImageVideoUpload * mediaUpload = [[ImageVideoUpload alloc] initWithImage:<#(UIImage *)#>
+//																		 uri: uri];
+//	[mediaUpload startUpload];
+}
+
+-(void) requestFailed:(ASIHTTPRequest *)request {
+
+	NSError *error = [request error];
+	NSLog(@"error %@", error.description);
+}
 
 #pragma mark - Lazy Instantiation -
 

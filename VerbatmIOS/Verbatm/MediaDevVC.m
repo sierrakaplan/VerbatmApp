@@ -179,13 +179,13 @@
 //saves the intitial frames for the pulldown bar and the container view
 -(void)setDefaultFrames {
 
-	self.contentContainerViewFrameTop = CGRectMake(0, 0, self.view.frame.size.width, self.contentContainerView.frame.size.height + PULLBAR_HEIGHT_PULLDOWN_MODE);
+	self.contentContainerViewFrameTop = CGRectMake(0, 0, self.view.frame.size.width, self.contentContainerView.frame.size.height + NAV_BAR_HEIGHT);
 	self.contentContainerViewFrameBottom = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
 	int frameHeight = self.view.frame.size.height;
-	self.pullBarFrameTop = CGRectMake(0.f, self.contentContainerView.frame.size.height, self.view.frame.size.width, PULLBAR_HEIGHT_PULLDOWN_MODE);
-	self.pullBarFrameBottom = CGRectMake(self.pullBarFrameTop.origin.x, (frameHeight - PULLBAR_HEIGHT_MENU_MODE), self.pullBarFrameTop.size.width, PULLBAR_HEIGHT_MENU_MODE);
-	self.pullBarFrameOffScreen = CGRectMake(self.pullBar.frame.origin.x, self.view.frame.size.height, self.pullBar.frame.size.width, self.pullBar.frame.size.height);
+	self.pullBarFrameTop = CGRectMake(0.f, self.contentContainerView.frame.size.height, self.view.frame.size.width, NAV_BAR_HEIGHT);
+	self.pullBarFrameBottom = CGRectMake(self.pullBarFrameTop.origin.x, (frameHeight - NAV_BAR_HEIGHT), self.pullBarFrameTop.size.width, NAV_BAR_HEIGHT);
+	self.pullBarFrameOffScreen = CGRectMake(self.pullBarFrameBottom.origin.x, self.view.frame.size.height, self.pullBarFrameBottom.size.width, self.pullBarFrameBottom.size.height);
 }
 
 -(void) createSubViews {
@@ -201,7 +201,7 @@
 -(void)createCapturePicButton {
 	self.isTakingVideo = NO;
 	self.capturePicButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	UIImage *cameraImage = [UIImage imageNamed:CAMERA_BUTTON_IMAGE];
+	UIImage *cameraImage = [UIImage imageNamed: CAPTURE_IMAGE_ICON];
 	[self.capturePicButton setImage:cameraImage forState:UIControlStateNormal];
 	[self.capturePicButton setFrame:CGRectMake((self.view.frame.size.width -CAMERA_BUTTON_SIZE)/2.f, self.view.frame.size.height - CAMERA_BUTTON_SIZE - CAMERA_BUTTON_Y_OFFSET, CAMERA_BUTTON_SIZE, CAMERA_BUTTON_SIZE)];
 	[self.capturePicButton addTarget:self action:@selector(tappedPhotoButton:) forControlEvents:UIControlEventTouchUpInside];
@@ -228,8 +228,8 @@
 
 -(void)createSwitchCameraButton {
 	self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.switchCameraButton setImage:[UIImage imageNamed:CAMERA_ICON_FRONT] forState:UIControlStateNormal];
-	[self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE , SWITCH_ICON_SIZE)];
+	[self.switchCameraButton setImage:[UIImage imageNamed:SWITCH_CAMERA_ORIENTATION_ICON] forState:UIControlStateNormal];
+	[self.switchCameraButton setFrame:CGRectMake(SWITCH_CAMERA_START_POSITION, SWITCH_ICON_SIZE, SWITCH_ICON_SIZE)];
 	[self.switchCameraButton addTarget:self action:@selector(switchFaces:) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview: self.switchCameraButton];
 	self.switchTransform = self.switchCameraButton.transform;
@@ -247,9 +247,16 @@
 
 
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset {
-    [self.mediaPreviewView setAsset:asset];
+//    [self.mediaPreviewView setAsset:asset];
+	ALAssetRepresentation *representation = [asset defaultRepresentation];
+	CGImageRef imageRef = [representation fullResolutionImage];
+	UIImageView* previewImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
+	previewImageView.frame = self.view.bounds;
+	[self.view addSubview:previewImageView];
+	[UIView animateWithDuration:0.5 animations:^{
+		previewImageView.frame = CGRectMake(self.view.bounds.size.width, 0, 0, 0);
+	}];
 }
-
 
 -(void)switchFaces:(UITapGestureRecognizer *)sender {
     [self.sessionManager switchVideoFace];
@@ -363,7 +370,7 @@
 		[self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
 		[self createCircleVideoProgressView];
 		self.timer = [NSTimer scheduledTimerWithTimeInterval:NUM_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
-		[self.capturePicButton setImage:[UIImage imageNamed:RECORDING_IMAGE] forState:UIControlStateNormal];
+		[self.capturePicButton setImage:[UIImage imageNamed: CAPTURE_RECORDING_ICON] forState:UIControlStateNormal];
 
 	}
 }
@@ -374,7 +381,7 @@
 	self.isTakingVideo = NO;
 	[self.sessionManager stopVideoRecording];
 	[self clearCircleVideoProgressView];  //removes the video progress bar
-	[self.capturePicButton setImage:[UIImage imageNamed:CAMERA_BUTTON_IMAGE] forState:UIControlStateNormal];
+	[self.capturePicButton setImage:[UIImage imageNamed: CAPTURE_IMAGE_ICON] forState:UIControlStateNormal];
 	[self.timer invalidate];
 	self.timer = nil;
 	[self freezeFrame];
@@ -560,17 +567,14 @@
 	// How far has the transition come
 	CGPoint translation = [sender translationInView:self.pullBar.superview];
 	int newtranslation = translation.y-self.previousTranslation.y;
-	float pullBarHeight = self.pullBar.frame.size.height;
 	float contentViewHeight = self.contentContainerView.frame.size.height + newtranslation;
 
 	//pull bar is being moved up, immediately remove buttons
 	if(translation.y < 0.f && (self.pullBar.mode == PullBarModeMenu)) {
 		[self.pullBar switchToMode:PullBarModePullDown];
-		pullBarHeight = PULLBAR_HEIGHT_PULLDOWN_MODE;
-		contentViewHeight = contentViewHeight - (PULLBAR_HEIGHT_MENU_MODE-PULLBAR_HEIGHT_PULLDOWN_MODE);
 	}
 
-	CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y + newtranslation, self.view.frame.size.width, pullBarHeight);
+	CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y + newtranslation, self.view.frame.size.width, NAV_BAR_HEIGHT);
 	CGRect newContentContainerViewFrame = CGRectMake(self.contentContainerView.frame.origin.x, self.contentContainerView.frame.origin.y, self.view.frame.size.width, contentViewHeight);
 
 	self.pullBar.frame = newPullBarFrame;
@@ -614,14 +618,8 @@
 
 
 -(void)canPreview:(BOOL)canPreview {
-	if (canPreview) {
-		[self.pullBar unGrayOutPreview];
-	} else {
-		[self.pullBar grayOutPreview];
-	}
+	[self.pullBar enablePreviewInMenuMode: canPreview];
 }
-
-#pragma mark - PullBar Delegate Methods (pullbar button actions) -
 
 -(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {
 	if (!withTransition) {
@@ -641,6 +639,12 @@
 	}
 }
 
+#pragma mark - PullBar Delegate Methods (pullbar button actions) -
+
+-(void) backButtonPressed {
+	[self.delegate backButtonPressed];
+}
+
 // Displays article preview from pinch objects
 -(void) previewButtonPressed {
 	[self.contentDevVC closeAllOpenCollections];
@@ -658,6 +662,10 @@
 
 -(void) cameraButtonPressed {
 	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+}
+
+-(void) pullDownButtonPressed {
+	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 }
 
 -(void) galleryButtonPressed {
