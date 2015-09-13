@@ -85,7 +85,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="P70-Wg-8bT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2708" y="-78"/>
+            <point key="canvasLocation" x="-2700" y="74"/>
         </scene>
         <!--Trending-->
         <scene sceneID="wyz-UI-MUa">
@@ -193,16 +193,28 @@
         <!--editContentView-->
         <scene sceneID="W4f-0L-ZeV">
             <objects>
-                <viewController title="editContentView" id="x4u-kZ-n9K" sceneMemberID="viewController">
+                <viewController title="editContentView" id="x4u-kZ-n9K" customClass="EditContentVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uFC-Vd-iYm">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="GgU-Qa-i6T">
+                                <rect key="frame" x="29" y="536" width="6" height="5"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="mkh-J4-lEJ" kind="unwind" identifier="unwindFromEditContentView" unwindAction="done:" id="ffg-tJ-E6G"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AWt-co-EUv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3571" y="-2404"/>
+            <point key="canvasLocation" x="-2594" y="-549"/>
         </scene>
         <!--Create Account-->
         <scene sceneID="Re1-7h-W5B">
@@ -466,9 +478,11 @@
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
                     <connections>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
+                        <segue destination="x4u-kZ-n9K" kind="modal" identifier="BRING_UP_EDITCONTENT_SEGUE" modalPresentationStyle="fullScreen" modalTransitionStyle="coverVertical" id="ONZ-b1-Agz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="mkh-J4-lEJ" userLabel="Exit" sceneMemberID="exit"/>
                 <pinchGestureRecognizer id="WDj-eM-uvF">
                     <connections>
                         <action selector="handlePinchGesture:" destination="0lh-hP-Opv" id="93r-9H-LPJ"/>

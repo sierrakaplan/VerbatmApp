@@ -9,27 +9,43 @@
 //
 
 #import "ContentDevVC.h"
-#import "MediaDevVC.h"
-#import <QuartzCore/QuartzCore.h>
-#import "MediaSelectTile.h"
-#import "VerbatmScrollView.h"
-#import "UIEffects.h"
-#import "PinchView.h"
-#import "TextPinchView.h"
-#import "ImagePinchView.h"
-#import "VideoPinchView.h"
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
-#import "EditContentView.h"
-#import "Icons.h"
-#import "GMImagePickerController.h"
-#import "Notifications.h"
-#import "SizesAndPositions.h"
+#import "ContentPageElementScrollView.h"
+
 #import "Durations.h"
+
+#import "EditContentView.h"
+#import "EditContentVC.h"
+
+#import "ImagePinchView.h"
+#import "Icons.h"
+#import "Identifiers.h"
+
+
+#import "MediaDevVC.h"
+#import "MediaSelectTile.h"
+
+#import "GMImagePickerController.h"
+
+#import <QuartzCore/QuartzCore.h>
+#import "PinchView.h"
+
+#import "Notifications.h"
+
+#import "SizesAndPositions.h"
 #import "Strings.h"
 #import "Styles.h"
-#import "ContentPageElementScrollView.h"
+
+#import "TextPinchView.h"
+
+#import "UIEffects.h"
 #import "UserPinchViews.h"
+#import "VerbatmScrollView.h"
+#import "VideoPinchView.h"
+
+
+#define BRING_UP_EDITCONTENT_SEGUE @"BRING_UP_EDITCONTENT_SEGUE"
 
 @interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,
 							GMImagePickerControllerDelegate, EditContentViewDelegate>
@@ -1488,7 +1504,6 @@
 
 #pragma - mainScrollView handler -
 -(void)setMainScrollViewEnabled:(BOOL) enabled {
-
 	if(enabled) {
 		self.mainScrollView.scrollEnabled = enabled;
 	} else {
@@ -1523,6 +1538,7 @@
     }
 }
 
+
 -(void)addTapGestureToPinchView: (PinchView *) pinchView {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectTapped:)];
 	[pinchView addGestureRecognizer:tap];
@@ -1544,45 +1560,40 @@
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
     }else{
+        self.openPinchView = pinchView;
         //tap to open an element for viewing or editing
-        [self createEditContentViewFromPinchView:pinchView];
-        //make sure the pullbar is not available
-        [self.changePullBarDelegate showPullBar:NO withTransition:NO];
+        [self presentEditContentView];
+        
     }
 }
 
 
+#pragma mark -Edit Content View Presentation -
+
 // This should never be called on a collection pinch view, only on text, image, or video
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView {
-	self.openEditContentView = [[EditContentView alloc] initCustomViewWithFrame:self.view.bounds];
-	self.openEditContentView.delegate = self;
-	//adding text
-	if(pinchView == nil) {
-		[self.openEditContentView editText:@""];
-	} else {
-		if (pinchView.containsText) {
-			[self.openEditContentView editText:[pinchView getText]];
-		} else if(pinchView.containsImage) {
-			ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
-			[self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
-		} else if(pinchView.containsVideo) {
-			[self.openEditContentView displayVideo:[(VideoPinchView*)pinchView video]];
-		} else {
-			return;
-		}
-		self.openPinchView = pinchView;
-	}
-	[self.view addSubview:self.openEditContentView];
-    if(!self.editContentMode_Photo_TappedOpenForTheFirst)[self alertAddFilter];
-}
-
--(void)alertAddFilter{
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    self.editContentMode_Photo_TappedOpenForTheFirst = YES;
+//modally presents the edit content view
+-(void) presentEditContentView {
+    [self performSegueWithIdentifier:BRING_UP_EDITCONTENT_SEGUE sender:self];
 }
 
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if([segue.identifier isEqualToString:BRING_UP_EDITCONTENT_SEGUE]) {
+        EditContentVC *vc =  (EditContentVC *)segue.destinationViewController;
+        vc.pinchView = self.openPinchView;
+        vc.editContentMode_Photo_TappedOpenForTheFirst = self.pinchObject_TappedAndClosed_ForTheFirstTime;
+    }
+}
+
+- (IBAction)done:(UIStoryboardSegue *)segue{
+     if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
+         EditContentVC *vc = (EditContentVC *)segue.sourceViewController;
+         if(self.openPinchView.containsImage) {
+             [(ImagePinchView*)self.openPinchView changeImageToFilterIndex:vc.filterImageIndex];
+         }
+         self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
+     }
+}
 
 #pragma mark - Clean up Content Page -
 
