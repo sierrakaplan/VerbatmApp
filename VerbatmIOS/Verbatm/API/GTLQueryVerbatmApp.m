@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (24 custom class methods, 4 custom properties)
+//   GTLQueryVerbatmApp (26 custom class methods, 4 custom properties)
 
 #import "GTLQueryVerbatmApp.h"
 
@@ -22,6 +22,7 @@
 #import "GTLVerbatmAppPageListWrapper.h"
 #import "GTLVerbatmAppPOV.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
+#import "GTLVerbatmAppUploadURI.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppVideo.h"
 
@@ -45,6 +46,13 @@
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.identifier = identifier;
   query.expectedObjectClass = [GTLVerbatmAppImage class];
+  return query;
+}
+
++ (instancetype)queryForImageGetUploadURI {
+  NSString *methodName = @"verbatmApp.image.getUploadURI";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.expectedObjectClass = [GTLVerbatmAppUploadURI class];
   return query;
 }
 
@@ -243,6 +251,13 @@
 
 #pragma mark - "video" methods
 // These create a GTLQueryVerbatmApp object.
+
++ (instancetype)queryForVideoGetUploadURI {
+  NSString *methodName = @"verbatmApp.video.getUploadURI";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.expectedObjectClass = [GTLVerbatmAppUploadURI class];
+  return query;
+}
 
 + (instancetype)queryForVideoGetVideoWithIdentifier:(long long)identifier {
   NSString *methodName = @"verbatmApp.video.getVideo";

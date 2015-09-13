@@ -19,13 +19,19 @@
 #import "GTLVerbatmAppVideo.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppPageListWrapper.h"
+#import "GTLVerbatmAppUploadURI.h"
 
 #import "GTMHTTPFetcherLogging.h"
 
 #import "Notifications.h"
 
+#import "MediaUploader.h"
+
 #import "POVPublisher.h"
 #import "PinchView.h"
+
+#import <PromiseKit/PromiseKit.h>
+
 
 @interface POVPublisher()
 
@@ -42,7 +48,20 @@
 	povObject.numUpVotes = [NSNumber numberWithInt: 0];
 	povObject.title = title;
 
-	//TODO: change these
+
+	GTLQuery* getImageUploadURIQuery = [GTLQueryVerbatmApp queryForImageGetUploadURI];
+	[self.service executeQuery:getImageUploadURIQuery completionHandler:^(GTLServiceTicket *ticket,
+																		  GTLVerbatmAppUploadURI* uploadURI, NSError *error) {
+		if (error) {
+			NSLog(@"Error getting image upload URI");
+		} else {
+			NSString* uploadURIString = uploadURI.uploadURIString;
+			MediaUploader* coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uploadURIString];
+			[coverPicUploader startUpload];
+		}
+	}];
+
+
 	povObject.coverPicUrl = @"coverPicUrl";
 	povObject.creatorUserId = [NSNumber numberWithLongLong:1];
 

@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/WCj_pRpfXsBDOsDptrLJnKn5-TA\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/8kM_5mPCw4zfVqLeKxzZgfv_C1Y\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -228,6 +228,15 @@
     }
    }
   },
+  "UploadURI": {
+   "id": "UploadURI",
+   "type": "object",
+   "properties": {
+    "uploadURIString": {
+     "type": "string"
+    }
+   }
+  },
   "VerbatmUser": {
    "id": "VerbatmUser",
    "type": "object",
@@ -287,6 +296,16 @@
    ],
    "returns": {
     "$ref": "Image"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "verbatmApp.image.getUploadURI": {
+   "id": "verbatmApp.image.getUploadURI",
+   "allowGet": true,
+   "returns": {
+    "$ref": "UploadURI"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"
@@ -630,6 +649,16 @@
    ],
    "returns": {
     "$ref": "VerbatmUser"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "verbatmApp.video.getUploadURI": {
+   "id": "verbatmApp.video.getUploadURI",
+   "allowGet": true,
+   "returns": {
+    "$ref": "UploadURI"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

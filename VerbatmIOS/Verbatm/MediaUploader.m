@@ -71,12 +71,13 @@
 }
 
 -(void) requestFinished:(ASIHTTPRequest *)request {
-	NSLog(@"upload finished");
+	NSLog(@"upload media finished");
+	NSString* mediaURL = (NSString*)[request responseData];
 }
 
 -(void) requestFailed:(ASIHTTPRequest *)request {
 	NSError *error = [request error];
-	NSLog(@"error %@", error);
+	NSLog(@"error uploading media%@", error);
 }
 
 

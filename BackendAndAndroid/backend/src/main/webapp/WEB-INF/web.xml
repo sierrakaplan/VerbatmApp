@@ -28,6 +28,36 @@
         <url-pattern>/_ah/spi/*</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>UploadImage</servlet-name>
+        <servlet-class>UploadImage</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>UploadVideo</servlet-name>
+        <servlet-class>UploadVideo</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>ServeVideo</servlet-name>
+        <servlet-class>ServeVideo</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>UploadImage</servlet-name>
+        <url-pattern>/uploadImage</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>UploadVideo</servlet-name>
+        <url-pattern>/uploadVideo</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ServeVideo</servlet-name>
+        <url-pattern>/serveVideo</url-pattern>
+    </servlet-mapping>
+
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>

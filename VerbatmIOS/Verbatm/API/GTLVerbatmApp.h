@@ -23,6 +23,7 @@
 #import "GTLVerbatmAppPOV.h"
 #import "GTLVerbatmAppPOVInfo.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
+#import "GTLVerbatmAppUploadURI.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppVideo.h"
 
