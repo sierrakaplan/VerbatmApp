@@ -44,7 +44,6 @@
 		A5AA31C91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m */; };
 		A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */; };
 		A5AA31CF1BA10A6B00D8D20C /* CoverPicturePinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31CE1BA10A6B00D8D20C /* CoverPicturePinchView.m */; };
-		A5B894971BA56D0100551149 /* OMGHTTPURLRQ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5B894951BA56D0100551149 /* OMGHTTPURLRQ.framework */; };
 		A5B894981BA56D0100551149 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5B894961BA56D0100551149 /* PromiseKit.framework */; };
 		A5B8949D1BA56DC500551149 /* PromiseKit.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5B8949C1BA56DC500551149 /* PromiseKit.framework.dSYM */; };
 		A5C09BD91BA1F1D700C0AD86 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BC61BA1F1D700C0AD86 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -507,7 +506,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5B894971BA56D0100551149 /* OMGHTTPURLRQ.framework in Frameworks */,
 				A5B894981BA56D0100551149 /* PromiseKit.framework in Frameworks */,
 				C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */,
 				C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */,
@@ -1269,18 +1267,17 @@
 /* Begin PBXShellScriptBuildPhase section */
 		A5B8949A1BA56D1B00551149 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/OMGHTTPURLRQ.framework\n",
 				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework\n",
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = " /Users/sierrakaplan-nelson/.homebrew/Cellar/carthage/0.8/bin/carthage copy-frameworks";
 		};
 		A5B8EDEC1B46E1E300932ADE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
