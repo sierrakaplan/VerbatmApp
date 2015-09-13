@@ -1534,7 +1534,7 @@
 	self.openPinchView = nil;
     
     if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
-        [self alertPinchElementsTogether];
+        //[self alertPinchElementsTogether];
     }
 }
 
@@ -1677,15 +1677,13 @@
 		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
 	}
 	if (newPinchView) {
-        if(!self.pinchObject_HasBeenAdded_ForTheFirstTime && !self.pageElementScrollViews.count){
-            [self alertEachPVIsPage];
-        }else if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
-            [self alertPinchElementsTogether];
-        }
+       
         
         [self newPinchView:newPinchView belowView:nil];
 	}
 }
+
+#pragma mark - Alerts -
 
 -(void)alertEachPVIsPage{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
@@ -1722,6 +1720,17 @@
 			}];
 		}
 	}
+    
+    
+    //decides whether on what notification to present if any
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if(!self.pinchObject_HasBeenAdded_ForTheFirstTime && !self.pageElementScrollViews.count){
+            [self alertEachPVIsPage];
+        }else if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
+            [self alertPinchElementsTogether];
+        }
+        
+    });
 }
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {

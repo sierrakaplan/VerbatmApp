@@ -43,7 +43,7 @@
         self.openPinchView = pinchView;
     }
     [self.view addSubview:self.openEditContentView];
-    if(!self.editContentMode_Photo_TappedOpenForTheFirst)[self alertAddFilter];
+    if(!self.editContentMode_Photo_TappedOpenForTheFirst && [pinchView isKindOfClass:[ImagePinchView class]])[self alertAddFilter];
 }
 
 -(void)alertAddFilter{
@@ -63,9 +63,8 @@
     if(self.openPinchView.containsImage) {
        self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
     } else if(self.openPinchView.containsVideo) {
-        [self.openEditContentView.videoView stopVideo];
+        //[self.openEditContentView.videoView stopVideo];
     }
-
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
 }
 
