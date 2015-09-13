@@ -208,6 +208,10 @@
 	return nil;
 }
 
+-(NSArray*) getVideosInDataFormat {
+	return nil;
+}
+
 -(void)offScreen {}
 
 -(void)onScreen {}

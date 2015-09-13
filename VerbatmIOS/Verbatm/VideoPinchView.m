@@ -87,6 +87,10 @@
 	return @[self.video];
 }
 
+-(NSArray*) getVideosInDataFormat {
+	return @[[NSData dataWithContentsOfURL: self.video.URL]];
+}
+
 #pragma mark - Encoding -
 
 - (void)encodeWithCoder:(NSCoder *)coder {

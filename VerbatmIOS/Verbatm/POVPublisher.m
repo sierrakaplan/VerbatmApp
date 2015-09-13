@@ -44,21 +44,21 @@
 /*
  think recursive:
 
- when (stored cover pic + stored page ids) upload pov
+ when (saved cover pic serving url + saved page ids) upload pov
 
- branch 1: (get Image upload uri) then (store cover pic)
+ branch 1: (get Image upload uri) then (upload cover pic to blobstore using uri) resolves to blobstore serving url
 
- branch 2: when (stored every page) save page ids
+ branch 2: when (stored every page) resolves to page ids
 
- when (stored image ids + stored video ids) store page
+ when (saved image ids + saved video ids) then (store page) resolves to page id
 
- branch a: when(stored every image) save image ids
+ branch a: when(stored every image) resolves to image ids
 
- (get image upload uri) then (store image)
+ (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore) resolves to image id
 
- branch b: when(stored every video) save video ids
+ branch b: when(stored every video) resolves to video ids
 
- (get video upload uri) then (store video)
+ (get video upload uri) then (upload video to blobstore using uri) then (store gtlvideo with blob key string) resolves to video id
  */
 
 - (void) publishPOVFromPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
@@ -70,7 +70,7 @@
 	//TODO: get user
 	povObject.creatorUserId = [NSNumber numberWithLongLong:1];
 
-	// when (stored cover pic + stored page ids) upload pov
+	// when (saved cover pic serving url + saved page ids) upload pov
 	PMKPromise* storeCoverPicPromise = [self storeCoverPicture: coverPic];
 	PMKPromise* storePagesPromise = [self storePagesFromPinchViews: pinchViews];
 	PMKWhen(@[storeCoverPicPromise, storePagesPromise]).then(^(NSArray* results) {
@@ -87,7 +87,7 @@
 
 }
 
-// (get Image upload uri) then (store cover pic)
+// (get Image upload uri) then (upload cover pic to blobstore using uri)
 // Resolves to what [coverPicUploader startUpload] resolves to,
 // The serving url of the image in the blobstore from Images Service
 -(PMKPromise*) storeCoverPicture: (UIImage*) coverPic {
@@ -98,78 +98,39 @@
 	});
 }
 
-//when (stored every page) save page ids
-//each store page promise should resolve to the GTL page's id,
-//So this promise should resolve to an array of page ids
+// when (stored every page)
+// each store page promise should resolve to the GTL page's id,
+// So this promise should resolve to an array of page ids
 -(PMKPromise*) storePagesFromPinchViews: (NSArray*) pinchViews {
 	NSMutableArray *storePagePromises = [NSMutableArray array];
 	for (int i = 0; i < pinchViews.count; i++) {
 		PinchView* pinchView = pinchViews[i];
-		[storePagePromises addObject: [self savePageFromPinchView:pinchView withIndex:i]];
+		[storePagePromises addObject: [self storePageFromPinchView:pinchView withIndex:i]];
 	}
 	return PMKWhen(storePagePromises);
 }
 
-// when (stored image ids + stored video ids) store page
-// Should resolve to the GTL page's id (that was just stored)
--(PMKPromise*) savePageFromPinchView: (PinchView*)pinchView withIndex:(NSInteger) indexInPOV {
+// when (saved image ids + saved video ids) then (store page)
+// Resolves to the GTL page's id that was just stored
+-(PMKPromise*) storePageFromPinchView: (PinchView*)pinchView withIndex:(NSInteger) indexInPOV {
 
 	GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
 	page.indexInPOV = [[NSNumber alloc] initWithInteger: indexInPOV];
 
-	PMKPromise* imageIdsPromise;
-	PMKPromise* videoIdsPromise;
-
-	if(pinchView.containsImage) {
-
-		NSMutableArray *imagePromises = [NSMutableArray array];
-
-		NSArray* pinchViewImages = [pinchView getPhotos];
-		for (int i = 0; i < pinchViewImages.count; i++) {
-			UIImage* uiImage = pinchViewImages[i];
-			GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
-			gtlImage.indexInPage = [[NSNumber alloc] initWithInteger:i];
-			//TODO: gltImage.userKey =
-			//TODO?: gtlImage.text =
-
-			MediaUploader* imageUploader = [[MediaUploader alloc] initWithImage:uiImage andUri: imageUri];
-			PMKPromise* storeImagePromise = [imageUploader startUpload].then(^(NSString* servingURL) {
-				gtlImage.servingUrl = servingURL;
-				return [self insertImage: gtlImage];
-			}).catch(^(NSError *error){
-				//called if any search fails.
-				NSLog(error.description);
-			});
-			[imagePromises addObject: storeImagePromise];
-		}
-		imageIdsPromise = PMKWhen(imagePromises).then(^(NSArray *results){
-			// each result should be the image id resolved by the promise
-			page.imageIds = results;
-		}).catch(^(NSError *error){
-			//called if any search fails.
-			NSLog(error.description);
-		});
-	} else {
-		page.imageIds = nil;
-	}
-
-	if(pinchView.containsVideo) {
-		//TODO:
-		page.videoIds = nil;
-
-	} else {
-		page.videoIds = nil;
-	}
+	PMKPromise* imageIdsPromise = [self storeImagesFromPinchView: pinchView];
+	PMKPromise* videoIdsPromise = [self storeVideosFromPinchView: pinchView];
 
 	// after page.imageIds and page.videoIds have been stored, upload the page
 	return PMKWhen(@[imageIdsPromise, videoIdsPromise]).then(^(NSArray *results){
+		page.imageIds = results[0];
+		page.videoIds = results[1];
 		return [self insertPage: page];
 	});
 }
 
-// when(stored every image) save image ids
-// Each store image promise should resolve to the id of the GTL Image just stored
-// So this promise should resolve to an array of id's
+// when(stored every image)
+// Each storeimage promise should resolve to the id of the GTL Image just stored
+// So this promise should resolve to an array of gtl image id's
 -(PMKPromise*) storeImagesFromPinchView: (PinchView*) pinchView {
 	NSMutableArray *storeImagesPromise = [NSMutableArray array];
 
@@ -178,37 +139,60 @@
 
 		for (int i = 0; i < pinchViewImages.count; i++) {
 			UIImage* uiImage = pinchViewImages[i];
-			GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
-			gtlImage.indexInPage = [[NSNumber alloc] initWithInteger:i];
+			[storeImagesPromise addObject: [self storeImage:uiImage withIndex:i]];
 		}
 	}
 	return PMKWhen(storeImagesPromise);
 }
 
-// when(stored every video) save video ids
+// when(stored every video)
 // Each store video promise should resolve to the id of the GTL Video just stored
-// So this promise should resolve to an array of id's
+// So this promise should resolve to an array of gtl video id's
 -(PMKPromise*) storeVideosFromPinchView: (PinchView*) pinchView {
+	NSMutableArray *storeVideosPromise = [NSMutableArray array];
 
+	if(pinchView.containsVideo) {
+		NSArray* pinchViewVideos = [pinchView getVideosInDataFormat];
+
+		for (int i = 0; i < pinchViewVideos.count; i++) {
+			NSData* videoData = pinchViewVideos[i];
+			[storeVideosPromise addObject: [self storeVideo:videoData withIndex:i]];
+		}
+	}
+	return PMKWhen(storeVideosPromise);
 }
 
-// (get image upload uri) then (store image to blobstore) then (store gtlimage)
+// (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)
 // Resolves to what insertImage resolves to,
 // Which should be the ID of the GTL image just stored
--(PMKPromise*) storeImage: (UIImage*) image {
+-(PMKPromise*) storeImage: (UIImage*) image withIndex: (NSInteger) indexInPage {
 	return [self getImageUploadURI].then(^(NSString* uri) {
 		MediaUploader* imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
 		return [imageUploader startUpload];
+	}).then(^(NSString* servingURL) {
+		GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
+		gtlImage.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
+		gtlImage.servingUrl = servingURL;
+		//TODO: set user key and ?text?
+
+		return [self insertImage: gtlImage];
 	});
 }
 
-// (get video upload uri) then (store video to blobstore) then (store gtlvideo)
+//  (get video upload uri) then (upload video to blobstore using uri) then (store gtlvideo with blob key string)
 // Resolves to what insertVideo resolves to,
 // Which should be the ID of the GTL video just stored
--(PMKPromise*) storeVideo: (NSData*) videoData {
+-(PMKPromise*) storeVideo: (NSData*) videoData withIndex: (NSInteger) indexInPage {
 	return [self getVideoUploadURI].then(^(NSString* uri) {
 		MediaUploader* videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
 		return [videoUploader startUpload];
+	}).then(^(NSString* blobstoreKeyString) {
+		GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
+		gtlVideo.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
+		gtlVideo.blobStoreKeyString = blobstoreKeyString;
+		//TODO: set user key and ?text?
+
+		return [self insertVideo: gtlVideo];
 	});
 }
 
