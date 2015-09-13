@@ -47,74 +47,165 @@
 	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 	povObject.numUpVotes = [NSNumber numberWithInt: 0];
 	povObject.title = title;
+	//TODO: get user
+	povObject.creatorUserId = [NSNumber numberWithLongLong:1];
+	povObject.coverPicUrl = @"coverPicUrl";
 
+	[self getImageUploadURI].then(^(NSString* uri) {
 
+//TODO:		MediaUploader* coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uri];
+//		PMKPromise* uploadCoverPic = [coverPicUploader startUpload];
+
+		NSMutableArray *pagePromises = [NSMutableArray array];
+		for (int i = 0; i < pinchViews.count; i++) {
+			PinchView* pinchView = pinchViews[i];
+			[pagePromises addObject: [self savePageFromPinchView:pinchView withIndex:i andImageUploadURI: uri]];
+		}
+		return PMKWhen(pagePromises);
+
+	}).then(^(NSArray* results) {
+		NSMutableArray* pageIds = [[NSMutableArray alloc] init];
+		for (NSNumber* pageId in results) {
+			[pageIds addObject: pageId];
+		}
+		povObject.pageIds = pageIds;
+		[self insertPOV: povObject];
+
+	}).catch(^(NSError *error){
+		//This can catch at any part in the chain
+		NSLog(error.description);
+	});
 
 	// batch query
 	GTLBatchQuery *batchQuery = [GTLBatchQuery batchQuery];
 
 
-
-
-	GTLQuery* getImageUploadURIQuery = [GTLQueryVerbatmApp queryForImageGetUploadURI];
-	[self.service executeQuery:getImageUploadURIQuery completionHandler:^(GTLServiceTicket *ticket,
-																		  GTLVerbatmAppUploadURI* uploadURI, NSError *error) {
-		if (error) {
-			NSLog(@"Error getting image upload URI");
-		} else {
-			NSString* uploadURIString = uploadURI.uploadURIString;
-			MediaUploader* coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uploadURIString];
-
-			PMKPromise* uploadCoverPic = [coverPicUploader startUpload];
-			//TODO;
-			PMKPromise* uploadPic1 = [coverPicUploader startUpload];
-
-			PMKWhen(@[uploadCoverPic, uploadPic1]).then(^(NSArray* results) {
-				for (id response in results) {
-
-				}
-
-			}).catch(^{
-				//called if any search fails.
-				NSLog(@"Catch from PMKWhen");
-			});
-		}
-	}];
-
-	
-
-	povObject.coverPicUrl = @"coverPicUrl";
-	povObject.creatorUserId = [NSNumber numberWithLongLong:1];
-
-	GTLVerbatmAppPageListWrapper* pageListWrapper =  [[GTLVerbatmAppPageListWrapper alloc] init];
-	NSMutableArray* pages = [[NSMutableArray alloc] init];
-	for (int i = 0; i < [pinchViews count]; i++) {
-		PinchView* pinchView = pinchViews[i];
-		GTLVerbatmAppPage* page = [self sortPinchView:pinchView];
-		page.indexInPOV = [NSNumber numberWithInt:i];
-		[pages addObject: page];
-	}
-
-	pageListWrapper.pages = pages;
-	GTLQuery* insertPagesQuery = [GTLQueryVerbatmApp queryForPageInsertPagesWithObject: pageListWrapper];
-
-	[self.service executeQuery:insertPagesQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPageListWrapper* pageListWrapper, NSError *error) {
-		if (error) {
-			NSLog(@"Error uploading Pages: %@", error.description);
-		} else {
-			NSMutableArray* pageIds = [[NSMutableArray alloc] init];
-			for (GTLVerbatmAppPage* page in pageListWrapper.pages) {
-				NSNumber* pageId = page.identifier;
-				[pageIds addObject: pageId];
-			}
-			povObject.pageIds = pageIds;
-			[self insertPOV: povObject];
-		}
-	}];
 }
 
+// Queries for a uri from the blob store to upload images to
+-(PMKPromise*) getImageUploadURI {
+	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		[self.service executeQuery:[GTLQueryVerbatmApp queryForImageGetUploadURI]
+				 completionHandler:^(GTLServiceTicket *ticket,
+									 GTLVerbatmAppUploadURI* uploadURI,
+									 NSError *error) {
+					 if (error) {
+						 resolve(error);
+					 } else {
+						 resolve(uploadURI.uploadURIString);
+					 }
+				 }];
+	}];
+	return promise;
+}
 
+// Queries for a uri from the blob store to upload videos to
+-(PMKPromise*) getVideoUploadURI {
+	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		[self.service executeQuery:[GTLQueryVerbatmApp queryForVideoGetUploadURI]
+				 completionHandler:^(GTLServiceTicket *ticket,
+									 GTLVerbatmAppUploadURI* uploadURI,
+									 NSError *error) {
+					 if (error) {
+						 resolve(error);
+					 } else {
+						 resolve(uploadURI.uploadURIString);
+					 }
+				 }];
+	}];
+	return promise;
+}
 
+// Creates a gtl page object with the given index in the POV
+// Then
+-(PMKPromise*) savePageFromPinchView: (PinchView*)pinchView withIndex:(NSInteger) indexInPOV andImageUploadURI:(NSString*)imageUri {
+
+	GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
+	page.indexInPOV = [[NSNumber alloc] initWithInteger: indexInPOV];
+
+	PMKPromise* imagesPromise;
+	PMKPromise* videosPromise;
+
+	if(pinchView.containsImage) {
+
+		NSMutableArray *imagePromises = [NSMutableArray array];
+
+		NSArray* pinchViewImages = [pinchView getPhotos];
+		for (int i = 0; i < pinchViewImages.count; i++) {
+			UIImage* uiImage = pinchViewImages[i];
+			GTLVerbatmAppImage* gltImage = [[GTLVerbatmAppImage alloc] init];
+			gltImage.indexInPage = [[NSNumber alloc] initWithInteger:i];
+			//TODO: gltImage.userKey =
+			//TODO?: gtlImage.text =
+
+			MediaUploader* imageUploader = [[MediaUploader alloc] initWithImage:uiImage andUri: imageUri];
+			PMKPromise* storeImagePromise = [imageUploader startUpload].then(^(NSString* servingURL){
+				gltImage.servingUrl = servingURL;
+			});
+			[imagePromises addObject: storeImagePromise];
+		}
+		imagesPromise = PMKWhen(imagePromises).then(^(NSArray *results){
+			for (NSString* servingURL in results) {
+
+			}
+		}).catch(^(NSError *error){
+			//called if any search fails.
+			NSLog(error.description);
+		});
+	} else {
+		page.imageIds = nil;
+	}
+
+	if(pinchView.containsVideo) {
+		//TODO:
+		page.videoIds = nil;
+
+	} else {
+		page.videoIds = nil;
+	}
+	
+	return PMKWhen(@[imagesPromise, videosPromise]).then(^(NSArray *results){
+		return page;
+	});
+}
+
+// Queries insert Image into the datastore.
+// PMKPromise resolves with either error or the id of the image just stored.
+-(PMKPromise*) insertImage: (GTLVerbatmAppImage*) image {
+	GTLQuery* insertImageQuery = [GTLQueryVerbatmApp queryForImageInsertImageWithObject:image];
+
+	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		[self.service executeQuery:insertImageQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppImage* storedImage, NSError *error) {
+			if (error) {
+				resolve(error);
+			} else {
+				resolve(storedImage.identifier);
+			}
+		}];
+	}];
+
+	return promise;
+}
+
+// Queries insert Video into the datastore.
+// PMKPromise resolves with either error or the id of the video just stored.
+-(PMKPromise*) insertVideo: (GTLVerbatmAppVideo*) video {
+	GTLQuery* insertVideoQuery = [GTLQueryVerbatmApp queryForVideoInsertVideoWithObject:video];
+
+	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		[self.service executeQuery:insertVideoQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVideo* storedVideo, NSError *error) {
+			if (error) {
+				resolve(error);
+			} else {
+				resolve(storedVideo.identifier);
+			}
+		}];
+	}];
+
+	return promise;
+}
+
+// Queries insert POV into the datastore
 -(void) insertPOV: (GTLVerbatmAppPOV*) povObject {
 	GTLQuery* insertPOVQuery = [GTLQueryVerbatmApp queryForPovInsertPOVWithObject: povObject];
 
@@ -128,55 +219,6 @@
 											  object:ticket];
 				 }
 			 }];
-}
-
-/* Creates a page object out of a pinch view.
- Goes through pinch view and gets the photos and videos contained.
- For each image
- */
-- (GTLVerbatmAppPage*) sortPinchView:(PinchView*)pinchView {
-
-	GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
-	if(pinchView.containsImage) {
-
-		NSMutableArray* gtlImages = [[NSMutableArray alloc] init];
-		for (UIImage* uiimage in [pinchView getPhotos]) {
-			// Store image in server and
-			GTLVerbatmAppImage* gtlImage = [self getGTLImageFromUIImage: uiimage];
-			[gtlImages addObject: gtlImage];
-		}
-//		page.imageIDs = ;
-
-	} else {
-		page.imageIds = nil;
-	}
-
-	if(pinchView.containsVideo) {
-
-		NSMutableArray* gtlVideos = [[NSMutableArray alloc] init];
-		for (AVAsset* videoAsset in [pinchView getVideos]) {
-			GTLVerbatmAppVideo* gtlVideo = [self getGTLVideoFromAVAsset:videoAsset];
-			[gtlVideos addObject: gtlVideo];
-		}
-//		page.videos = [[NSArray alloc] initWithArray:gtlVideos copyItems:YES];
-
-	} else {
-		page.videoIds = nil;
-	}
-
-	return page;
-}
-
-- (GTLVerbatmAppImage*) getGTLImageFromUIImage: (UIImage*) uiImage {
-	GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
-	// TODO store image in blobstore and get url
-	return gtlImage;
-}
-
-- (GTLVerbatmAppVideo*) getGTLVideoFromAVAsset: (AVAsset*) videoAsset {
-	GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
-	// TODO store video in blobstore and get url
-	return gtlVideo;
 }
 
 #pragma mark - Lazy Instantiation -

@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppImage (0 custom class methods, 4 custom properties)
+//   GTLVerbatmAppImage (0 custom class methods, 5 custom properties)
 
 #import "GTLVerbatmAppImage.h"
 
@@ -23,7 +23,7 @@
 //
 
 @implementation GTLVerbatmAppImage
-@dynamic identifier, servingUrl, text, userKey;
+@dynamic identifier, indexInPage, servingUrl, text, userKey;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{

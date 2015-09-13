@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/8kM_5mPCw4zfVqLeKxzZgfv_C1Y\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/2AiW_ohqArUdXRJGqgEZoVAJZdw\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -88,6 +88,10 @@
     "id": {
      "type": "string",
      "format": "int64"
+    },
+    "indexInPage": {
+     "type": "integer",
+     "format": "int32"
     },
     "servingUrl": {
      "type": "string"
@@ -263,12 +267,16 @@
    "id": "Video",
    "type": "object",
    "properties": {
+    "blobStoreKeyString": {
+     "type": "string"
+    },
     "id": {
      "type": "string",
      "format": "int64"
     },
-    "servingUrl": {
-     "type": "string"
+    "indexInPage": {
+     "type": "integer",
+     "format": "int32"
     },
     "text": {
      "type": "string"

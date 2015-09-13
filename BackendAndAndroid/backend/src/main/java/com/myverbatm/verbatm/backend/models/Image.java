@@ -16,12 +16,17 @@ public class Image {
     private Long id;
 
     /**
+     * Stores the index of this image in the page
+     */
+    private Integer indexInPage;
+
+    /**
      * The key of the user who uploaded this image
      */
     private Long userKey;
 
     /**
-     * The url of this image in the BlobStore
+     * The serving url to access this image in the blobstore from ImagesService
      */
     private String servingUrl;
 
@@ -43,6 +48,14 @@ public class Image {
      */
     public final void clearId() {
         id = null;
+    }
+
+    public Integer getIndexInPage() {
+        return indexInPage;
+    }
+
+    public void setIndexInPage(Integer indexInPage) {
+        this.indexInPage = indexInPage;
     }
 
     /**

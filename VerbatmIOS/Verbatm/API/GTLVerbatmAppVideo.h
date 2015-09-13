@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppVideo (0 custom class methods, 4 custom properties)
+//   GTLVerbatmAppVideo (0 custom class methods, 5 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLObject.h"
@@ -27,11 +27,12 @@
 //
 
 @interface GTLVerbatmAppVideo : GTLObject
+@property (nonatomic, copy) NSString *blobStoreKeyString;
 
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, retain) NSNumber *identifier;  // longLongValue
 
-@property (nonatomic, copy) NSString *servingUrl;
+@property (nonatomic, retain) NSNumber *indexInPage;  // intValue
 @property (nonatomic, copy) NSString *text;
 @property (nonatomic, retain) NSNumber *userId;  // longLongValue
 @end
