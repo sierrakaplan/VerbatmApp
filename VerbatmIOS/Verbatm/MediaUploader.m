@@ -79,7 +79,7 @@
 }
 
 -(void) startWithCompletionHandler:(MediaUploadCompletionBlock) completionBlock {
-
+	self.completionBlock = completionBlock;
 	[self.formData startAsynchronous];
 }
 
@@ -96,7 +96,7 @@
 -(void) requestFinished:(ASIHTTPRequest *)request {
 	NSLog(@"upload media finished");
 	// TODO: this is a blobkey string for video and an imagesservice servingurl for image
-	NSString* mediaURL = (NSString*)[request responseData];
+	NSString* mediaURL = [request responseString];
 	self.completionBlock(nil, mediaURL);
 }
 

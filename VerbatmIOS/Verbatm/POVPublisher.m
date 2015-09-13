@@ -36,6 +36,7 @@
 @interface POVPublisher()
 
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
+@property(nonatomic, strong) MediaUploader* coverPicUploader;
 
 @end
 
@@ -93,9 +94,12 @@
 -(PMKPromise*) storeCoverPicture: (UIImage*) coverPic {
 	return [self getImageUploadURI].then(^(NSString* uri) {
 
-		MediaUploader* coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uri];
-		return [coverPicUploader startUpload];
-	});
+		self.coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uri];
+		return [self.coverPicUploader startUpload];
+	}).catch(^(NSError *error){
+		//This can catch at any part in the chain
+		NSLog(@"Error uploading POV: %@", error.description);
+	});;
 }
 
 // when (stored every page)
@@ -107,7 +111,10 @@
 		PinchView* pinchView = pinchViews[i];
 		[storePagePromises addObject: [self storePageFromPinchView:pinchView withIndex:i]];
 	}
-	return PMKWhen(storePagePromises);
+	return PMKWhen(storePagePromises).catch(^(NSError *error){
+		//This can catch at any part in the chain
+		NSLog(@"Error uploading POV: %@", error.description);
+	});;
 }
 
 // when (saved image ids + saved video ids) then (store page)
@@ -116,6 +123,7 @@
 
 	GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
 	page.indexInPOV = [[NSNumber alloc] initWithInteger: indexInPOV];
+//	return [self insertPage: page];
 
 	PMKPromise* imageIdsPromise = [self storeImagesFromPinchView: pinchView];
 	PMKPromise* videoIdsPromise = [self storeVideosFromPinchView: pinchView];
@@ -125,7 +133,10 @@
 		page.imageIds = results[0];
 		page.videoIds = results[1];
 		return [self insertPage: page];
-	});
+	}).catch(^(NSError *error){
+		//This can catch at any part in the chain
+		NSLog(@"Error uploading POV: %@", error.description);
+	});;
 }
 
 // when(stored every image)
@@ -142,7 +153,10 @@
 			[storeImagesPromise addObject: [self storeImage:uiImage withIndex:i]];
 		}
 	}
-	return PMKWhen(storeImagesPromise);
+	return PMKWhen(storeImagesPromise).catch(^(NSError *error){
+		//This can catch at any part in the chain
+		NSLog(@"Error uploading POV: %@", error.description);
+	});;
 }
 
 // when(stored every video)
@@ -159,7 +173,10 @@
 			[storeVideosPromise addObject: [self storeVideo:videoData withIndex:i]];
 		}
 	}
-	return PMKWhen(storeVideosPromise);
+	return PMKWhen(storeVideosPromise).catch(^(NSError *error){
+		//This can catch at any part in the chain
+		NSLog(@"Error uploading POV: %@", error.description);
+	});;
 }
 
 // (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)

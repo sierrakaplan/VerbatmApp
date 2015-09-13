@@ -12,6 +12,7 @@
 		A504ECE51B69D5E20076F9D0 /* VideoPlayerWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = A504ECE41B69D5E20076F9D0 /* VideoPlayerWrapperView.m */; };
 		A504ECE81B6AF4A00076F9D0 /* UserPinchViews.m in Sources */ = {isa = PBXBuildFile; fileRef = A504ECE71B6AF4A00076F9D0 /* UserPinchViews.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
+		A53CFB191BA62DD800215894 /* PromiseKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A5B894961BA56D0100551149 /* PromiseKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		A54689231BA3E1BC00F40E54 /* CoverPhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
@@ -188,6 +189,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		A53CFB1A1BA62DD900215894 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A53CFB191BA62DD800215894 /* PromiseKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		A5B8949B1BA56D9F00551149 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1160,6 +1172,7 @@
 				A5B8EDEC1B46E1E300932ADE /* ShellScript */,
 				A5B8949A1BA56D1B00551149 /* ShellScript */,
 				A5B8949B1BA56D9F00551149 /* CopyFiles */,
+				A53CFB1A1BA62DD900215894 /* Embed Frameworks */,
 			);
 			buildRules = (
 				A5A770801BA5633F0016F2BE /* PBXBuildRule */,
@@ -1561,6 +1574,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 2;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1572,6 +1586,7 @@
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1589,6 +1604,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 2;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1600,6 +1616,7 @@
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";

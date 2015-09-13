@@ -30,17 +30,17 @@
 
     <servlet>
         <servlet-name>UploadImage</servlet-name>
-        <servlet-class>UploadImage</servlet-class>
+        <servlet-class>com.myverbatm.verbatm.backend.handlers.UploadImage</servlet-class>
     </servlet>
 
     <servlet>
         <servlet-name>UploadVideo</servlet-name>
-        <servlet-class>UploadVideo</servlet-class>
+        <servlet-class>com.myverbatm.verbatm.backend.handlers.UploadVideo</servlet-class>
     </servlet>
 
     <servlet>
         <servlet-name>ServeVideo</servlet-name>
-        <servlet-class>ServeVideo</servlet-class>
+        <servlet-class>com.myverbatm.verbatm.backend.handlers.ServeVideo</servlet-class>
     </servlet>
 
     <servlet-mapping>
