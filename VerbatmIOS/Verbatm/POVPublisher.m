@@ -49,6 +49,13 @@
 	povObject.title = title;
 
 
+
+	// batch query
+	GTLBatchQuery *batchQuery = [GTLBatchQuery batchQuery];
+
+
+
+
 	GTLQuery* getImageUploadURIQuery = [GTLQueryVerbatmApp queryForImageGetUploadURI];
 	[self.service executeQuery:getImageUploadURIQuery completionHandler:^(GTLServiceTicket *ticket,
 																		  GTLVerbatmAppUploadURI* uploadURI, NSError *error) {
@@ -57,10 +64,24 @@
 		} else {
 			NSString* uploadURIString = uploadURI.uploadURIString;
 			MediaUploader* coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uploadURIString];
-			[coverPicUploader startUpload];
+
+			PMKPromise* uploadCoverPic = [coverPicUploader startUpload];
+			//TODO;
+			PMKPromise* uploadPic1 = [coverPicUploader startUpload];
+
+			PMKWhen(@[uploadCoverPic, uploadPic1]).then(^(NSArray* results) {
+				for (id response in results) {
+
+				}
+
+			}).catch(^{
+				//called if any search fails.
+				NSLog(@"Catch from PMKWhen");
+			});
 		}
 	}];
 
+	
 
 	povObject.coverPicUrl = @"coverPicUrl";
 	povObject.creatorUserId = [NSNumber numberWithLongLong:1];
@@ -91,6 +112,8 @@
 		}
 	}];
 }
+
+
 
 -(void) insertPOV: (GTLVerbatmAppPOV*) povObject {
 	GTLQuery* insertPOVQuery = [GTLQueryVerbatmApp queryForPovInsertPOVWithObject: povObject];

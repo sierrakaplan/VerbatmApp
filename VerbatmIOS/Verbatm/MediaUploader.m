@@ -8,6 +8,14 @@
 
 #import "MediaUploader.h"
 
+
+@interface MediaUploader()
+
+@property (strong, nonatomic) MediaUploadCompletionBlock completionBlock;
+
+@end
+
+
 @implementation MediaUploader
 
 @synthesize formData, progress;
@@ -28,6 +36,7 @@
 	return self;
 }
 
+//TODO: try this with Promise NSURLConnection
 -(instancetype) initWithVideoData: (NSData*)videoData  andUri: (NSString*)uri {
 
 // TODO: somewhere else
@@ -54,7 +63,22 @@
 	return self;
 }
 
--(void) startUpload {
+-(PMKPromise*) startUpload {
+
+	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		[self startWithCompletionHandler: ^(NSError* error, NSString* responseURL) {
+			if (error) {
+				resolve(error);
+			} else {
+				resolve(responseURL);
+			}
+		}];
+	}];
+
+	return promise;
+}
+
+-(void) startWithCompletionHandler:(MediaUploadCompletionBlock) completionBlock {
 
 	[self.formData startAsynchronous];
 }
@@ -67,17 +91,19 @@
 		float progressAmount = (float) ([theRequest totalBytesSent]/[theRequest postLength]);
 		self.progress = progressAmount;
 	}
-
 }
 
 -(void) requestFinished:(ASIHTTPRequest *)request {
 	NSLog(@"upload media finished");
+	// TODO: this is a blobkey string for video and an imagesservice servingurl for image
 	NSString* mediaURL = (NSString*)[request responseData];
+	self.completionBlock(nil, mediaURL);
 }
 
 -(void) requestFailed:(ASIHTTPRequest *)request {
 	NSError *error = [request error];
 	NSLog(@"error uploading media%@", error);
+	self.completionBlock(error, nil);
 }
 
 
