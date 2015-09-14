@@ -94,6 +94,7 @@
 #pragma mark - Preview
 
 #define PUBLISH_BUTTON_OFFSET 20.f
+
 #define PUBLISH_BUTTON_SIZE 75.f
 
 #define BACK_BUTTON_OFFSET 10.f

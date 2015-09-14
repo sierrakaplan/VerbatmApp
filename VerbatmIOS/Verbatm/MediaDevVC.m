@@ -696,7 +696,7 @@
 
 #pragma mark - Publishing POV -
 
--(void) publishPOV {
+-(void) publishPOV { 
 
 	//make sure we have an article title, cover pic, and that we have multiple pinch elements in the deck
 	NSString* title = self.contentDevVC.whatIsItLikeField.text;
@@ -725,7 +725,7 @@
 }
 
 -(void)alertAddTitle{
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story homie" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
     
     dispatch_async(dispatch_get_main_queue(), ^{

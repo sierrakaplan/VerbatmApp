@@ -438,9 +438,7 @@ ContentSVDelegate>
 	newElementScrollView.delegate = self;
 	newElementScrollView.customDelegate = self;
 
-	if (self.numPinchViews < 1) {
-		[self.changePullBarDelegate canPreview:YES];
-	}
+    [self.changePullBarDelegate canPreview:YES];
 	self.numPinchViews++;
 
 	//thread safety
@@ -1658,6 +1656,20 @@ ContentSVDelegate>
 	[self presentViewController:picker animated:YES completion:nil];
 }
 
+-(void) createPinchViewFromAsset:(id)asset {
+	PinchView* newPinchView;
+	if([asset isKindOfClass:[AVAsset class]] || [asset isKindOfClass:[NSURL class]]) {
+		newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andVideo:asset];
+	} else if([asset isKindOfClass:[NSData class]]) {
+		UIImage* image = [[UIImage alloc] initWithData:(NSData*)asset];
+		image = [UIEffects fixOrientation:image];
+		image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.view.bounds]];
+		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
+	}
+	if (newPinchView) {
+        [self newPinchView:newPinchView belowView:nil];
+	}
+}
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
@@ -1682,7 +1694,6 @@ ContentSVDelegate>
 		dispatch_async(dispatch_get_main_queue(), ^{
 			UIImage* image = [[UIImage alloc] initWithData: imageData];
 			image = [UIEffects fixOrientation:image];
-			image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds: self.coverPicView.frame]];
 			[self.coverPicView setImage: image];
 		});
 	}];
@@ -1732,6 +1743,7 @@ ContentSVDelegate>
 	}
 }
 
+    
 -(void) createPinchViewFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
 	image = [UIEffects fixOrientation:image];

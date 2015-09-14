@@ -88,7 +88,11 @@
 }
 
 -(NSArray*) getVideosInDataFormat {
-	return @[[NSData dataWithContentsOfURL: self.video.URL]];
+    NSURL * url = self.video.URL;
+    NSError * error;
+    NSData * ourData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
+    NSLog(@"%@",error.description);
+    return  (ourData) ? @[ourData] : nil;
 }
 
 #pragma mark - Encoding -
