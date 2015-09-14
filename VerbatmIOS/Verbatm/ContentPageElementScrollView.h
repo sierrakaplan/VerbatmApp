@@ -5,7 +5,7 @@
  //  Created by Sierra Kaplan-Nelson on 7/27/15.
  //  Copyright (c) 2015 Verbatm. All rights reserved.
  //
-	Is a horizontal scroll view containing a page element 
+	Is a horizontal scroll view containing a pinch object 
  
  */
 
@@ -14,6 +14,12 @@
 
 @class CollectionPinchView;
 
+@protocol ContentSVDelegate <NSObject>
+
+@required
+-(void)contentPageScrollViewShouldDelete:(UIScrollView*)scrollView;
+@end
+
 @interface ContentPageElementScrollView : UIScrollView
 
 @property (strong, nonatomic, readonly) UIView<ContentDevElementDelegate>* pageElement;
@@ -21,6 +27,10 @@
 @property (strong, nonatomic, readonly) PinchView* selectedItem;
 
 -(id) initWithFrame:(CGRect)frame andElement:(UIView<ContentDevElementDelegate>*) element;
+
+//puts the pinch view in the middle of the screen
+-(void)centerView;
+
 
 #pragma mark Deleting
 
@@ -45,6 +55,7 @@
 -(void) changePageElement:(UIView<ContentDevElementDelegate>*) newPageElement;
 
 #pragma mark Collection opening and closing
+@property (nonatomic,strong) id<ContentSVDelegate> customDelegate;
 
 @property (nonatomic, readonly) BOOL isCollection;
 // if the page element is a collectionPinchView, this can be YES

@@ -12,10 +12,5 @@
 @property (nonatomic, strong) PinchView * pinchView;
 @property (nonatomic) NSInteger filterImageIndex;
 @property (nonatomic) BOOL editContentMode_Photo_TappedOpenForTheFirst;
-
-
-
-
-
-
+@property (strong, nonatomic) EditContentView * openEditContentView;
 @end

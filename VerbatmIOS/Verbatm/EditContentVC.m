@@ -10,8 +10,8 @@
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
 #import "Identifiers.h"
+#import "UserSetupParemeters.h"
 @interface EditContentVC()<EditContentViewDelegate>
-@property (strong, nonatomic) EditContentView * openEditContentView;
 @property (strong, nonatomic) PinchView * openPinchView;
 
 @end
@@ -43,13 +43,13 @@
         self.openPinchView = pinchView;
     }
     [self.view addSubview:self.openEditContentView];
-    if(!self.editContentMode_Photo_TappedOpenForTheFirst && [pinchView isKindOfClass:[ImagePinchView class]])[self alertAddFilter];
+    if(![UserSetupParemeters filter_InstructionShown] && [pinchView isKindOfClass:[ImagePinchView class]])[self alertAddFilter];
 }
 
 -(void)alertAddFilter{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    self.editContentMode_Photo_TappedOpenForTheFirst = YES;
+    [UserSetupParemeters set_filter_InstructionAsShown];
 }
 
 

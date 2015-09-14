@@ -704,12 +704,9 @@
 	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
 	if (![title length]) {
-        
-        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story homie" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
+        [self alertAddTitle];
 	} else if (!coverPic) {
-        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
+        [self alertAddCoverPhoto];
 	} else {
 		NSArray *pinchViewsArray = [self getPinchViewsFromContentDev];
 
@@ -727,6 +724,20 @@
 		[self.contentDevVC cleanUp];
 	}
 }
+
+-(void)alertAddTitle{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story homie" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+    });
+}
+
+-(void)alertAddCoverPhoto{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+}
+
 
 -(NSArray*) getPinchViewsFromContentDev {
 	NSMutableArray *pinchViews = [[NSMutableArray alloc]init];

@@ -28,12 +28,15 @@
 //reference to the array of pinch views also contained in the collection view
 @property (strong, nonatomic) NSMutableArray* collectionPinchViews;
 
+@property (strong, nonatomic) UIButton * deleteButton;
+
 //long press selecting item
 @property (strong, nonatomic, readwrite) PinchView* selectedItem;
 @property (nonatomic) float contentOffsetXBeforeLongPress;
 @property (nonatomic) CGPoint previousLocationOfTouchPoint_PAN;
 @property (nonatomic) CGRect previousFrameInLongPress;
 
+#define DELETE_ICON_FILENAME @"deleteIcon"
 @end
 
 @implementation ContentPageElementScrollView
@@ -43,18 +46,39 @@
 	if (self) {
 		[self formatScrollView];
 		[self changePageElement:element];
+        [self createDeleteButton];
 	}
 	return self;
 }
 
 -(void) formatScrollView {
-	float contentWidth = self.frame.size.width*3;
-	self.contentSize = self.initialContentSize = CGSizeMake(contentWidth, 0);
-	self.contentOffset = self.initialContentOffset = CGPointMake(contentWidth/3.f, 0);
+	self.contentSize = self.initialContentSize = CGSizeMake(self.frame.size.width + DELETE_ICON_WIDTH + (2*DELETE_ICON_DISTANCE_FROM_LEFTWALL), 0);
+	self.contentOffset = self.initialContentOffset = CGPointMake((2*DELETE_ICON_DISTANCE_FROM_LEFTWALL)+DELETE_ICON_WIDTH, 0);
 	self.pagingEnabled = NO;
 	self.showsHorizontalScrollIndicator = NO;
 	self.showsVerticalScrollIndicator = NO;
+    self.bounces = NO;
 }
+
+-(void)createDeleteButton{
+    self.deleteButton = [[UIButton alloc] initWithFrame:
+                         CGRectMake(DELETE_ICON_DISTANCE_FROM_LEFTWALL, self.pageElement.center.y
+                                    - (DELETE_ICON_HEIGHT/2),
+                                    DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
+    [self.deleteButton setImage:[UIImage imageNamed:DELETE_ICON_FILENAME] forState:UIControlStateNormal];
+    [self.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.deleteButton];
+}
+
+-(void)deleteButtonPressed:(UIButton*) sender{
+    [self.customDelegate contentPageScrollViewShouldDelete:self];
+}
+
+//puts the pinch view right in the middle
+-(void)centerView{
+    self.contentOffset = self.initialContentOffset;
+}
+
 
 #pragma mark - Change Page Element -
 
@@ -107,26 +131,26 @@
 
 
 #pragma mark - Deleting -
-
 //Returns if delete swipe is far enough
 -(BOOL) isDeleting {
 	if (self.collectionIsOpen) {
 		return NO;
 	}
-
 	float deleteThreshold = self.frame.size.width/2.f;
-	if(fabs(self.contentOffset.x - self.initialContentOffset.x) < deleteThreshold) {
+	if(self.contentOffset.x == self.initialContentOffset.x) {
 		return NO;
 	}
 	return YES;
 }
 
 -(void) animateBackToInitialPosition {
+    return;//temp
 	[self setContentOffset:self.initialContentOffset animated:YES];
 }
 
 -(void) animateOffScreen {
-	CGPoint newContentOffset = CGPointMake(0, self.initialContentOffset.y);
+    return;//temp
+    CGPoint newContentOffset = CGPointMake(0, self.initialContentOffset.y);
 	if (self.contentOffset.x > self.initialContentOffset.x) {
 		newContentOffset.x = self.initialContentSize.width;
 	}
@@ -134,7 +158,6 @@
 }
 
 #pragma mark - Open and close collection -
-
 //remove collection view from scrollview and add all its children instead
 -(BOOL) openCollection {
 	if (!self.isCollection
@@ -154,7 +177,8 @@
 -(void) displayCollectionPinchViews:(NSMutableArray *) pinchViews {
 
 	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
-	self.contentSize = CGSizeMake((ELEMENT_OFFSET_DISTANCE + pinchViewSize)*[pinchViews count],
+    
+	self.contentSize = CGSizeMake((ELEMENT_OFFSET_DISTANCE + pinchViewSize) * [pinchViews count],
 								  self.contentSize.height);
 
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
@@ -167,8 +191,8 @@
 			xPosition += pinchView.frame.size.width + ELEMENT_OFFSET_DISTANCE;
 			[pinchView renderMedia];
 		}
-
 	}];
+    
 	self.collectionPinchViews = pinchViews;
 }
 

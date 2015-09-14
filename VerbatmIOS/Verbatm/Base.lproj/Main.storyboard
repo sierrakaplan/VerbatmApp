@@ -463,7 +463,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <scrollView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="ChT-rO-Rpn" customClass="VerbatmScrollView">
-                                <rect key="frame" x="36" y="0.0" width="320" height="568"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
@@ -478,7 +478,7 @@
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
                     <connections>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
-                        <segue destination="x4u-kZ-n9K" kind="modal" identifier="BRING_UP_EDITCONTENT_SEGUE" modalPresentationStyle="fullScreen" modalTransitionStyle="coverVertical" id="ONZ-b1-Agz"/>
+                        <segue destination="x4u-kZ-n9K" kind="modal" identifier="BRING_UP_EDITCONTENT_SEGUE" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" animates="NO" id="ONZ-b1-Agz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -494,7 +494,7 @@
                     </connections>
                 </pongPressGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-2726" y="-1302"/>
+            <point key="canvasLocation" x="-2766" y="-1302"/>
         </scene>
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">

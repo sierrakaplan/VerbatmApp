@@ -7,18 +7,23 @@
 //
 
 #import <AVFoundation/AVAudioSession.h>
+
+#import "FeedVC.h"
 #import "Identifiers.h"
 #import "Icons.h"
 #import "internetConnectionMonitor.h"
+
 #import "MasterNavigationVC.h"
 #import "MediaSessionManager.h"
-#import "PreviewDisplayView.h"
-#import "Notifications.h"
-#import "VerbatmCameraView.h"
-
-#import "ProfileVC.h"
-#import "FeedVC.h"
 #import "MediaDevVC.h"
+
+#import "Notifications.h"
+
+#import "PreviewDisplayView.h"
+#import "ProfileVC.h"
+
+#import "UserSetupParemeters.h"
+#import "VerbatmCameraView.h"
 
 
 @interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate>
@@ -67,13 +72,13 @@
 	// Do any additional setup after loading the view.
 	[self getAndFormatVCs];
 	[self formatMainScrollView];
-
     self.connectionMonitor = [[internetConnectionMonitor alloc] init];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    [self alertPullTrendingIcon];
+    
+    if(![UserSetupParemeters trendingCirle_InstructionShown])[self alertPullTrendingIcon];
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -254,8 +259,10 @@
 
 #pragma mark - Alerts -
 -(void)alertPullTrendingIcon{
+    
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
+    [UserSetupParemeters set_trendingCirle_InstructionAsShown];
 }
 
 
