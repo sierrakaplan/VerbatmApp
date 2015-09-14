@@ -351,12 +351,10 @@
 #pragma mark Scroll View actions
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-
 	if(scrollView == self.mainScrollView) {
 		[self showOrHidePullBarBasedOnMainScrollViewScroll];
 		return;
 	}
-
 	if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
 		ContentPageElementScrollView* pageElementScrollView = (ContentPageElementScrollView*)scrollView;
 		if(pageElementScrollView.collectionIsOpen) {
@@ -372,7 +370,6 @@
 
 -(void) showOrHidePullBarBasedOnMainScrollViewScroll {
 	CGPoint translation = [self.mainScrollView.panGestureRecognizer translationInView:self.mainScrollView];
-
 	if(translation.y < 0) {
 		[self.changePullBarDelegate showPullBar:NO withTransition:YES];
 	}else {
@@ -381,8 +378,8 @@
 	return;
 }
 
-#pragma mark Deleting scrollview and element
 
+#pragma mark Deleting scrollview and element
 ////make sure the object is in the right position
 //- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
 //				  willDecelerate:(BOOL)decelerate {
@@ -422,10 +419,10 @@
 
 //Deletes scroll view and the element it contained
 -(void) deleteScrollView:(ContentPageElementScrollView*)scrollView {
-
-	if (![self.pageElementScrollViews containsObject:scrollView]) {
+	if (![self.pageElementScrollViews containsObject:scrollView]){
 		return;
 	}
+    
 	NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
 	[scrollView removeFromSuperview];
 	[self.pageElementScrollViews removeObject:scrollView];
@@ -441,7 +438,6 @@
 }
 
 #pragma mark - Creating New Views -
-
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView {
 
@@ -462,7 +458,6 @@
 		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, upperScrollView.frame.size.width, upperScrollView.frame.size.height);
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
-
 	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
 	newElementScrollView.delegate = self;
     newElementScrollView.customDelegate = self;

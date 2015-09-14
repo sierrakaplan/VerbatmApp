@@ -692,6 +692,7 @@
 }
 
 -(void) galleryButtonPressed {
+    if(self.pullBar.mode == PullBarModePullDown)[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 	[self.contentDevVC presentEfficientGallery];
 }
 
