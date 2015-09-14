@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
-@interface CreateAccountOrSignIn : UIViewController
+#import "baseVC.h"
+@interface CreateAccountOrSignIn : baseVC
 
 @end

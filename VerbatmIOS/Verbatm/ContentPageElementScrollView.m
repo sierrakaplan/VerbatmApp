@@ -414,7 +414,6 @@
 
 		newXOffset = -AUTO_SCROLL_OFFSET;
 	} else if (self.contentOffset.x + self.frame.size.width < (self.selectedItem.frame.origin.x + self.selectedItem.frame.size.width) && self.contentOffset.x + AUTO_SCROLL_OFFSET < self.contentSize.width) {
-
 		newXOffset = AUTO_SCROLL_OFFSET;
 	}
 

@@ -38,7 +38,7 @@
 -(void) formatSelf {
 	[self setBackgroundColor: [UIColor clearColor]];
 	[self formatAddCoverPicLabel];
-	self.layer.borderColor = [UIColor WHAT_IS_IT_LIKE_COLOR].CGColor;
+	self.layer.borderColor = [UIColor COVER_PIC_CIRCLE_COLORE].CGColor;
 }
 
 -(void) formatAddCoverPicLabel {
@@ -47,6 +47,7 @@
 	self.addCoverPicLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	self.addCoverPicLabel.numberOfLines = 3;
 	self.addCoverPicLabel.text = @"Cover Picture";
+    [self.addCoverPicLabel setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
 	self.addCoverPicLabel.font = [UIFont fontWithName:ADD_COVER_PIC_FONT size: ADD_COVER_PIC_TEXT_SIZE];
 	self.addCoverPicLabel.textColor = [UIColor blackColor];
 	[self.background addSubview: self.addCoverPicLabel];

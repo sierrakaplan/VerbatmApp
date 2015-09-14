@@ -226,7 +226,7 @@
 	self.whatIsItLikeField = [[UITextField alloc] initWithFrame: frame];
 	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
 	self.whatIsItLikeField.font = whatIsItLikeFieldFont;
-	self.whatIsItLikeField.tintColor = [UIColor WHAT_IS_IT_LIKE_COLOR];
+	self.whatIsItLikeField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
 	self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
 													initWithString: @"tell your story"
 													attributes:@{NSForegroundColorAttributeName: [UIColor WHAT_IS_IT_LIKE_COLOR],

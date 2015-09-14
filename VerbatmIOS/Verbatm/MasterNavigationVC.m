@@ -242,10 +242,7 @@
 }
 
 #pragma mark - handle
--(NSUInteger) supportedInterfaceOrientations {
-	//return supported orientation masks
-	return UIInterfaceOrientationMaskPortrait;
-}
+
 
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];

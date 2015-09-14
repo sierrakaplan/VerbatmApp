@@ -13,12 +13,19 @@
 #import "UserSetupParemeters.h"
 @interface EditContentVC()<EditContentViewDelegate>
 @property (strong, nonatomic) PinchView * openPinchView;
+@property (strong, nonatomic) UIButton * exitButton;
 
+
+#define EXIT_BUTTON_WIDTH 60
+#define EXIT_BUTTON_HEIGHT 60
+#define EXIT_BUTTON_WALL_OFFSET 0
+#define EXIT_IMAGE @"exit"
 @end
 @implementation EditContentVC
 
 -(void)viewDidLoad {
     [self createEditContentViewFromPinchView:self.pinchView];
+    [self createExitButton];
 }
 
 
@@ -46,26 +53,44 @@
     if(![UserSetupParemeters filter_InstructionShown] && [pinchView isKindOfClass:[ImagePinchView class]])[self alertAddFilter];
 }
 
+-(void)createExitButton{
+    self.exitButton = [[UIButton alloc] initWithFrame:
+                       CGRectMake(EXIT_BUTTON_WALL_OFFSET, EXIT_BUTTON_WALL_OFFSET,
+                                  EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT)];
+    [self.exitButton setImage:[UIImage imageNamed:EXIT_IMAGE] forState:UIControlStateNormal];
+    [self.exitButton addTarget:self action:@selector(exitButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+
+    [self.view addSubview:self.exitButton];
+    [self.view bringSubviewToFront:self.exitButton];
+}
+
+
 -(void)alertAddFilter{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
     [UserSetupParemeters set_filter_InstructionAsShown];
 }
 
+-(void)exitButtonClicked:(UIButton*) sender{
+    [self exitViewController];
+}
+
+
+-(void)exitViewController{
+    if (!self.openEditContentView) {
+        return;
+    }
+    if(self.openPinchView.containsImage) {
+        self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
+    } 
+    [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
+}
 
 #pragma mark - Delegate Methods -
 
 //Delegate method for EditContentView
 -(void) exitEditContentView {
-    if (!self.openEditContentView) {
-        return;
-    }
-    if(self.openPinchView.containsImage) {
-       self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
-    } else if(self.openPinchView.containsVideo) {
-        //[self.openEditContentView.videoView stopVideo];
-    }
-    [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
+    [self exitViewController];
 }
 
 @end

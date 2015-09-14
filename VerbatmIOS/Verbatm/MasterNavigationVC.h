@@ -6,11 +6,11 @@
  */
 
 #import <UIKit/UIKit.h>
-
+#import "baseVC.h"
 @class VerbatmCameraView;
 @class MediaSessionManager;
 
-@interface MasterNavigationVC : UIViewController
+@interface MasterNavigationVC : baseVC
 
     @property(strong, nonatomic) NSMutableArray * pinchObjects;
 

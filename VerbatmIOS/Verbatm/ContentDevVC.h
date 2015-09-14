@@ -10,7 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "VerbatmScrollView.h"
 #import "EditContentView.h"
-
+#import "baseVC.h"
 @class PinchView;
 
 @protocol ContentDevElementDelegate <NSObject>
@@ -29,7 +29,7 @@
 
 @end
 
-@interface ContentDevVC : UIViewController
+@interface ContentDevVC : baseVC
 
 typedef NS_ENUM(NSInteger, PinchingMode) {
 	PinchingModeNone,

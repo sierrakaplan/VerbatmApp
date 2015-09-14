@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "baseVC.h"
 @protocol MediaDevDelegate <NSObject>
 
 -(void) backButtonPressed;
@@ -20,7 +20,7 @@
 
 @end
 
-@interface MediaDevVC : UIViewController
+@interface MediaDevVC : baseVC
 
 @property (strong, nonatomic) id<MediaDevDelegate> delegate;
 

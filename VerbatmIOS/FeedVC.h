@@ -7,19 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "baseVC.h"
 @protocol FeedVCDelegate <NSObject>
 -(void) profileButtonPressed;
 -(void) adkButtonPressed;
 @end
 
-@interface FeedVC : UIViewController
+@interface FeedVC : baseVC
 
 @property(strong, nonatomic) id<FeedVCDelegate> delegate;
 
 // animates the fact that a recent POV is publishing
 -(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
-
 -(void) refreshFeed;
-
 @end
