@@ -50,6 +50,7 @@
 #define FEED_CELL_ID @"feed_cell_id"
 #define NUM_POVS_IN_SECTION 6
 #define RELOAD_THRESHOLD 15
+#define NUM_OF_NEW_POVS_TO_LOAD 15
 
 @end
 
@@ -69,7 +70,6 @@
 											   object:nil];
     
 }
-
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
@@ -112,13 +112,10 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
 	FeedTableViewCell *cell;
 	NSInteger index = indexPath.row;
-
 	//configure cell
 	//TODO: animation placeholder if (self.refreshInProgress && index == 0){
-
 	if (self.povPublishingPlaceholderCell && index == 0) {
 		cell = self.povPublishingPlaceholderCell;
 	} else {
@@ -186,8 +183,6 @@
 	float offset_y =scrollView.contentOffset.y ;
 	if (offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
 		[self createRefreshAnimationOnScrollview:scrollView];
-    }else if (scrollView.contentOffset.y > RELOAD_THRESHOLD) {
-        
     }
 }
 
@@ -225,6 +220,9 @@
 	float offset_y =scrollView.contentOffset.y ;
 	if (self.pullDownInProgress &&  offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
 		// [self addFinalAnimationTile];
+    }
+    if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
+        [self.povLoader loadMorePOVs:NUM_OF_NEW_POVS_TO_LOAD];
     }
 	self.pullDownInProgress = false;
 }
