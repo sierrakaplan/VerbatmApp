@@ -28,7 +28,6 @@
     [self createExitButton];
 }
 
-
 // This should never be called on a collection pinch view, only on text, image, or video
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView {
     self.openEditContentView = [[EditContentView alloc] initCustomViewWithFrame:self.view.bounds];
@@ -59,13 +58,11 @@
                                   EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT)];
     [self.exitButton setImage:[UIImage imageNamed:EXIT_IMAGE] forState:UIControlStateNormal];
     [self.exitButton addTarget:self action:@selector(exitButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-
     [self.view addSubview:self.exitButton];
     [self.view bringSubviewToFront:self.exitButton];
 }
 
-
--(void)alertAddFilter{
+-(void)alertAddFilter {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
     [UserSetupParemeters set_filter_InstructionAsShown];
@@ -74,7 +71,6 @@
 -(void)exitButtonClicked:(UIButton*) sender{
     [self exitViewController];
 }
-
 
 -(void)exitViewController{
     if (!self.openEditContentView) {
@@ -86,8 +82,8 @@
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
 }
 
-#pragma mark - Delegate Methods -
 
+#pragma mark - Delegate Methods -
 //Delegate method for EditContentView
 -(void) exitEditContentView {
     [self exitViewController];

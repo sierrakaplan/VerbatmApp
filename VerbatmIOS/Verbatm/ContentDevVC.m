@@ -229,7 +229,7 @@
 	self.whatIsItLikeField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
 	self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
 													initWithString: @"tell your story"
-													attributes:@{NSForegroundColorAttributeName: [UIColor WHAT_IS_IT_LIKE_COLOR],
+													attributes:@{NSForegroundColorAttributeName: [UIColor TELL_YOUR_STORY_COLOR],
 																 NSFontAttributeName : whatIsItLikeFieldFont}];
 	[self.whatIsItLikeField resignFirstResponder];
 	self.whatIsItLikeField.enabled = YES;
@@ -243,37 +243,8 @@
 	[self.mainScrollView addSubview: self.coverPicView];
 }
 
-/* NO LONGER IN USE
--(void) createBaseSelector {
 
-	//make sure we don't create another one when we return from image picking
-	if(_baseMediaTileSelector)return;
-	CGRect frame = CGRectMake(self.view.frame.size.width + ELEMENT_OFFSET_DISTANCE,
-							  ELEMENT_OFFSET_DISTANCE/2.f,
-							  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
-	self.baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
-	self.baseMediaTileSelector.isBaseSelector =YES;
-	self.baseMediaTileSelector.delegate = self;
-	[self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
-	[self.baseMediaTileSelector formatButtons];
-
-
-	CGRect scrollViewFrame = CGRectMake(0, self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_OFFSET_DISTANCE);
-
-	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
-																	  initWithFrame:scrollViewFrame
-																	  andElement:self.baseMediaTileSelector];
-
-	baseMediaTileSelectorScrollView.scrollEnabled = NO;
-	baseMediaTileSelectorScrollView.delegate = self;
-
-	[self.mainScrollView addSubview:baseMediaTileSelectorScrollView];
-	[self.pageElementScrollViews addObject:baseMediaTileSelectorScrollView];
-} */
-
-
--(void) setUpNotifications
-{
+-(void) setUpNotifications {
 	//Tune in to get notifications of keyboard behavior
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyboardWillShow:)
