@@ -16,14 +16,19 @@ public class Video {
     private Long id;
 
     /**
+     * Stores the index of this video in the page
+     */
+    private Integer indexInPage;
+
+    /**
      * The key of the user who uploaded this video
      */
     private Long userId;
 
     /**
-     * The url of this video in the BlobStore
+     * The blobstore key string of this video
      */
-    private String servingUrl;
+    private String blobStoreKeyString;
 
     /**
      * Text caption to a video
@@ -46,6 +51,14 @@ public class Video {
         id = null;
     }
 
+    public Integer getIndexInPage() {
+        return indexInPage;
+    }
+
+    public void setIndexInPage(Integer indexInPage) {
+        this.indexInPage = indexInPage;
+    }
+
     /**
      * Gets the key of the user who uploaded this video
      * @return the key of the user who uploaded this video
@@ -63,19 +76,19 @@ public class Video {
     }
 
     /**
-     * Gets the url of this video in the BlobStore
-     * @return The url of this video in the BlobStore
+     * Gets the blobstore key string of this video
+     * @return the blobstore key string of this video
      */
-    public final String getServingUrl() {
-        return servingUrl;
+    public final String getBlobStoreKeyString() {
+        return blobStoreKeyString;
     }
 
     /**
-     * Sets the url of this video in the BlobStore
-     * @param servingUrl The url of this video in the BlobStore
+     * Sets the blobstore key string of this video
+     * @param blobStoreKeyString the blobstore key string of this video
      */
-    public final void setServingUrl(String servingUrl) {
-        this.servingUrl = servingUrl;
+    public final void setBlobStoreKeyString(String blobStoreKeyString) {
+        this.blobStoreKeyString = blobStoreKeyString;
     }
 
     /**

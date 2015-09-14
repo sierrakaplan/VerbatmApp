@@ -27,7 +27,7 @@ public class POV {
     private String title;
 
     /**
-     * The url of the cover picture in the blobstore
+     * The serving url of the cover picture in the blobstore from ImagesService
      */
     @Index
     private String coverPicUrl;

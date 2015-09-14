@@ -236,6 +236,7 @@
 	[self.whatIsItLikeField resignFirstResponder];
 	self.whatIsItLikeField.enabled = YES;
 	self.whatIsItLikeField.autocorrectionType = UITextAutocorrectionTypeYes;
+	[self.whatIsItLikeField setReturnKeyType:UIReturnKeyDone];
 }
 
 -(void) setAddCoverPictureViewWithFrame: (CGRect) frame {

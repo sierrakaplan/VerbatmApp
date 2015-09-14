@@ -36,4 +36,7 @@ typedef NS_ENUM(NSInteger, PullBarMode) {
 -(void)switchToMode: (PullBarMode) mode;
 -(void) enablePreviewInMenuMode: (BOOL) enable;
 
+// causes the pull down arrow to pulse until pressed
+-(void) pulsePullDown;
+
 @end

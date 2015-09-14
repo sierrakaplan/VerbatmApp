@@ -6,8 +6,11 @@ import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.users.User;
 import com.myverbatm.verbatm.backend.Constants;
+import com.myverbatm.verbatm.backend.models.UploadURI;
 import com.myverbatm.verbatm.backend.models.Video;
 
 import java.util.logging.Logger;
@@ -42,6 +45,9 @@ public class VideoEndpoint {
      */
     private static final Logger LOG =
         Logger.getLogger(VideoEndpoint.class.getName());
+
+    private final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
 
     /**
      * Gets the entity having primary key id.
@@ -129,5 +135,17 @@ public class VideoEndpoint {
      */
     private Video findVideo(final Long id) {
         return ofy().load().type(Video.class).id(id).now();
+    }
+
+    /**
+     * Creates an upload uri for a video from the blobstore and returns it
+     * @return The upload uri string from the blobstore for a video
+     */
+    @ApiMethod(httpMethod = "GET")
+    public final UploadURI getUploadURI() {
+        //Pass the success path (relative url that will be invoked after user
+        // successfully uploads a blob)
+        String uploadURIString = blobstoreService.createUploadUrl("/uploadVideo");
+        return new UploadURI(uploadURIString);
     }
 }

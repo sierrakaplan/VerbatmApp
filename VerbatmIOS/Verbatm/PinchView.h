@@ -68,8 +68,11 @@
 -(NSString*) getText;
 //array of UIImage*
 -(NSArray*) getPhotos;
-//array of AVasset or NSURl
+//array of AVURLAsset
 -(NSArray*) getVideos;
+
+// array of NSData* from each avurlasset
+-(NSArray*) getVideosInDataFormat;
 
 -(void)onScreen;
 -(void)offScreen;

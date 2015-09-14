@@ -26,6 +26,7 @@
 #import "GTLVerbatmAppPOV.m"
 #import "GTLVerbatmAppPOVInfo.m"
 #import "GTLVerbatmAppResultsWithCursor.m"
+#import "GTLVerbatmAppUploadURI.m"
 #import "GTLVerbatmAppVerbatmUser.m"
 #import "GTLVerbatmAppVideo.m"
 

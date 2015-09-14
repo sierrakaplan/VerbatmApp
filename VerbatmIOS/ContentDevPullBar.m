@@ -25,6 +25,9 @@
 
 // This button switches modes (can be the camera or the pull down)
 @property (strong, nonatomic) UIButton *switchModeButton;
+@property (nonatomic) CGRect switchModeButtonFrame;
+@property (nonatomic) BOOL pullDownPulsing;
+@property (strong, nonatomic) UIView* pullDownBackgroundSquare;
 @property (strong, nonatomic) UIImage* cameraImage;
 @property (strong, nonatomic) UIImage* pullDownImage;
 
@@ -32,6 +35,9 @@
 @property (strong, nonatomic) UIImage* galleryImage;
 @property (strong, nonatomic) UIImage* galleryImageGrayedOut;
 
+
+#define PULSE_DURATION 0.9
+#define PULSE_DISTANCE 15
 
 @end
 
@@ -41,23 +47,22 @@
 # pragma mark Initialization
 -(instancetype)initWithFrame:(CGRect)frame andPanGesture: (UIPanGestureRecognizer *) gesture {
 
-    //load from Nib file..this initializes the background view and all its subviews
-    self = [super initWithFrame:frame];
-    if(self) {
+	//load from Nib file..this initializes the background view and all its subviews
+	self = [super initWithFrame:frame];
+	if(self) {
 		[self setBackgroundColor: [UIColor NAV_BAR_COLOR]];
         [self createButtonsIgnoringGesture:gesture];
 		[self switchToPullDown];
-    }
-    return self;
+	}
+	return self;
 }
 
 //initialize all buttons, for all modes
 -(void)createButtonsIgnoringGesture: (UIPanGestureRecognizer *)panGesture {
 
-	float navIconSize = NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2;
-	float middleButtonWidth = (self.frame.size.width - ((navIconSize+NAV_ICON_OFFSET)*2.f))/2.f;
+	float middleButtonWidth = (self.frame.size.width - ((NAV_ICON_SIZE+NAV_ICON_OFFSET)*2.f))/2.f;
 
-	CGRect backButtonFrame = CGRectMake(NAV_ICON_OFFSET,  NAV_ICON_OFFSET, navIconSize, navIconSize);
+	CGRect backButtonFrame = CGRectMake(NAV_ICON_OFFSET,  NAV_ICON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
 	self.backButton = [self getButtonWithFrame: backButtonFrame];
 	[self.backButton setImage:[UIImage imageNamed:BACK_ARROW_LEFT] forState:UIControlStateNormal];
 	[self.backButton addTarget:self action:@selector(backButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
@@ -65,7 +70,7 @@
     //[panGesture requireGestureRecognizerToFail:self.backButton.gestureRecognizers.firstObject];
 
 	CGRect previewButtonFrame = CGRectMake(backButtonFrame.origin.x + backButtonFrame.size.width,
-										   NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
+										   NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
 	self.previewLabel = [self getLabelWithParentFrame:previewButtonFrame andText:@"PREVIEW"];
 	self.previewButton = [self getButtonWithFrame: previewButtonFrame];
 	[self.previewButton addTarget:self action:@selector(previewButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
@@ -73,19 +78,19 @@
 	[self enablePreviewInMenuMode: NO];
     
 
-    
-	CGRect switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
-											  NAV_ICON_OFFSET, middleButtonWidth, navIconSize);
-	self.switchModeButton = [self getButtonWithFrame: switchModeButtonFrame];
+	self.switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
+											  NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
+	self.switchModeButton = [self getButtonWithFrame: self.switchModeButtonFrame];
 	[self.switchModeButton addTarget:self action:@selector(switchModeButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+	self.pullDownBackgroundSquare = [[UIView alloc] initWithFrame:CGRectMake(self.switchModeButtonFrame.origin.x +
+																			 self.switchModeButtonFrame.size.width/2.f - NAV_BAR_HEIGHT/2.f,
+																			 0, NAV_BAR_HEIGHT, NAV_BAR_HEIGHT)];
+	self.pullDownBackgroundSquare.backgroundColor = [UIColor blackColor];
 	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
 	self.cameraImage = [UIImage imageNamed: CAMERA_BUTTON_ICON];
 
-
-    
-    
-	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - navIconSize - NAV_ICON_OFFSET,
-										 NAV_ICON_OFFSET, navIconSize, navIconSize);
+	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - NAV_ICON_SIZE - NAV_ICON_OFFSET,
+										   NAV_ICON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
 	self.galleryButton = [self getButtonWithFrame:galleryButtonFrame];
 	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -115,7 +120,17 @@
 #pragma mark - Pulsing pull down -
 
 -(void) pulsePullDown {
-	
+	[UIView animateWithDuration:PULSE_DURATION
+						  delay:0.0f
+						options:UIViewAnimationCurveLinear |
+	 UIViewAnimationOptionRepeat |
+	 UIViewAnimationOptionAutoreverse
+					 animations:^{
+						 self.switchModeButton.frame = CGRectOffset(self.switchModeButton.frame, 0, PULSE_DISTANCE);
+					 }
+					 completion:^(BOOL finished) {
+					 }];
+	self.pullDownPulsing = YES;
 }
 
 # pragma mark - Switch PullBar mode
@@ -132,8 +147,13 @@
 	self.mode = PullBarModeMenu;
 	[self.switchModeButton setImage:self.cameraImage forState: UIControlStateNormal];
 	[self enableGallery];
+
 	if (self.previewEnabledInMenuMode) {
         [self enablePreview:YES];
+	}
+	if (self.pullDownPulsing) {
+		[self.switchModeButton.layer removeAllAnimations];
+		self.switchModeButton.frame = self.switchModeButtonFrame;
 	}
 }
 
@@ -195,7 +215,6 @@
 	if (!self.delegate) {
 		NSLog(@"No content dev pull bar delegate set.");
 	}
-    
     [self.delegate previewButtonPressed];
 }
 

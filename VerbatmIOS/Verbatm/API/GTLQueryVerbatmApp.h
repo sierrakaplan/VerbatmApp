@@ -45,19 +45,6 @@
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, assign) long long identifier;
 
-#pragma mark - "blobstore" methods
-// These create a GTLQueryVerbatmApp object.
-
-// Method: verbatmApp.blobstore.uploadImage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-+ (instancetype)queryForBlobstoreUploadImage;
-
-// Method: verbatmApp.blobstore.uploadURI
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-+ (instancetype)queryForBlobstoreUploadURI;
-
 #pragma mark - "image" methods
 // These create a GTLQueryVerbatmApp object.
 
@@ -66,6 +53,12 @@
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppImage.
 + (instancetype)queryForImageGetImageWithIdentifier:(long long)identifier;
+
+// Method: verbatmApp.image.getUploadURI
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppUploadURI.
++ (instancetype)queryForImageGetUploadURI;
 
 // Method: verbatmApp.image.insertImage
 //  Authorization scope(s):
@@ -192,6 +185,12 @@
 
 #pragma mark - "video" methods
 // These create a GTLQueryVerbatmApp object.
+
+// Method: verbatmApp.video.getUploadURI
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppUploadURI.
++ (instancetype)queryForVideoGetUploadURI;
 
 // Method: verbatmApp.video.getVideo
 //  Authorization scope(s):

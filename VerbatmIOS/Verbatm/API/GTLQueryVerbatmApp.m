@@ -22,6 +22,7 @@
 #import "GTLVerbatmAppPageListWrapper.h"
 #import "GTLVerbatmAppPOV.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
+#import "GTLVerbatmAppUploadURI.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppVideo.h"
 
@@ -37,21 +38,6 @@
   return map;
 }
 
-#pragma mark - "blobstore" methods
-// These create a GTLQueryVerbatmApp object.
-
-+ (instancetype)queryForBlobstoreUploadImage {
-  NSString *methodName = @"verbatmApp.blobstore.uploadImage";
-  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
-  return query;
-}
-
-+ (instancetype)queryForBlobstoreUploadURI {
-  NSString *methodName = @"verbatmApp.blobstore.uploadURI";
-  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
-  return query;
-}
-
 #pragma mark - "image" methods
 // These create a GTLQueryVerbatmApp object.
 
@@ -60,6 +46,13 @@
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.identifier = identifier;
   query.expectedObjectClass = [GTLVerbatmAppImage class];
+  return query;
+}
+
++ (instancetype)queryForImageGetUploadURI {
+  NSString *methodName = @"verbatmApp.image.getUploadURI";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.expectedObjectClass = [GTLVerbatmAppUploadURI class];
   return query;
 }
 
@@ -258,6 +251,13 @@
 
 #pragma mark - "video" methods
 // These create a GTLQueryVerbatmApp object.
+
++ (instancetype)queryForVideoGetUploadURI {
+  NSString *methodName = @"verbatmApp.video.getUploadURI";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.expectedObjectClass = [GTLVerbatmAppUploadURI class];
+  return query;
+}
 
 + (instancetype)queryForVideoGetVideoWithIdentifier:(long long)identifier {
   NSString *methodName = @"verbatmApp.video.getVideo";

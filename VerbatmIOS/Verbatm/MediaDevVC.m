@@ -93,9 +93,6 @@
 #pragma mark keyboard properties
 @property (nonatomic) NSInteger keyboardHeight;
 
-#pragma mark - Publishing -
-@property (strong, nonatomic) POVPublisher* publisher;
-
 #define Preview_X_offset 10
 #define Preview_Y_offset 20
 #define Preview_Width 75
@@ -143,6 +140,7 @@
 	//patch solution to the pullbar being drawn strange
 	self.pullBar.frame = self.pullBarFrameTop;
 	[self.sessionManager startSession];
+	[self.pullBar pulsePullDown];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
@@ -716,8 +714,8 @@
 			return;
 		}
 
-		[self.publisher publishPOVFromPinchViews: pinchViewsArray andTitle: title
-									 andCoverPic: coverPic];
+		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews:pinchViewsArray andTitle: title andCoverPic: coverPic];
+		[publisher publish];
 		[self.delegate povPublishedWithCoverPic:coverPic andTitle:title];
 
 		[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
@@ -765,13 +763,6 @@
 		_verbatmCameraView = [[VerbatmCameraView alloc] initWithFrame: self.view.frame];
 	}
 	return _verbatmCameraView;
-}
-
--(POVPublisher*) publisher {
-	if (!_publisher) {
-		_publisher = [[POVPublisher alloc] init];
-	}
-	return _publisher;
 }
 
 @end

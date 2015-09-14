@@ -278,6 +278,19 @@
 	return videos;
 }
 
+-(NSArray*) getVideosInDataFormat {
+	NSMutableArray* videos = [[NSMutableArray alloc] init];
+	for (PinchView* pinchView in self.pinchedObjects) {
+		if(pinchView.containsVideo) {
+			AVURLAsset* video = [(VideoPinchView*)pinchView video];
+			NSData* videoData = [NSData dataWithContentsOfURL: video.URL];
+			[videos addObject: videoData];
+		}
+	}
+	return videos;
+}
+
+
 #pragma mark - When pinch view goes on and off screen
 
 -(void)offScreen {

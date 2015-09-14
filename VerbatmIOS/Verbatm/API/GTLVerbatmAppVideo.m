@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppVideo (0 custom class methods, 4 custom properties)
+//   GTLVerbatmAppVideo (0 custom class methods, 5 custom properties)
 
 #import "GTLVerbatmAppVideo.h"
 
@@ -23,7 +23,7 @@
 //
 
 @implementation GTLVerbatmAppVideo
-@dynamic identifier, servingUrl, text, userId;
+@dynamic blobStoreKeyString, identifier, indexInPage, text, userId;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{

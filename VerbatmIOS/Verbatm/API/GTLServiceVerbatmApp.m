@@ -33,6 +33,7 @@
     [GTLVerbatmAppPOV class],
     [GTLVerbatmAppPOVInfo class],
     [GTLVerbatmAppResultsWithCursor class],
+    [GTLVerbatmAppUploadURI class],
     [GTLVerbatmAppVerbatmUser class],
     [GTLVerbatmAppVideo class]
   ];

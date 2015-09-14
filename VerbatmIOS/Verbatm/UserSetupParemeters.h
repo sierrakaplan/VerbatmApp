@@ -26,10 +26,15 @@
 +(BOOL) filter_InstructionShown;
 +(BOOL) circlesArePages_InstructionShown;
 +(BOOL) pinchCircles_InstructionShown;
++(BOOL) tapNhold_InstructionShown;
++(BOOL) swipeToDelete_InstructionShown;
+
 
 /*Stores that the notifications have been shown*/
 +(void) set_filter_InstructionAsShown;
 +(void)set_trendingCirle_InstructionAsShown;
 +(void) set_circlesArePages_InstructionAsShown;
 +(void) set_pinchCircles_InstructionAsShown;
++(void) set_tapNhold_InstructionAsShown;
++(void) set_swipeToDelete_InstructionAsShown;
 @end

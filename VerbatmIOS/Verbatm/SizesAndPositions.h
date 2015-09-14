@@ -12,6 +12,7 @@
 
 #define NAV_BAR_HEIGHT 40.f
 #define NAV_ICON_OFFSET 7
+#define NAV_ICON_SIZE (NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2)
 
 
 #pragma mark -Delete position-
@@ -92,11 +93,10 @@
 
 #pragma mark - Preview
 
-#define PUBLISH_BUTTON_XOFFSET 20.f
-#define PUBLISH_BUTTON_YOFFSET 20.f
+#define PUBLISH_BUTTON_OFFSET 20.f
 #define PUBLISH_BUTTON_SIZE 75.f
 
-#define BACK_BUTTON_SIZE 20.f
+#define BACK_BUTTON_OFFSET 10.f
 
 #pragma mark - Content Dev Pull Bar
 
