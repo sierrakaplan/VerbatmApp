@@ -62,7 +62,6 @@
     float middleScreenSize = (self.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
     self.pageScrollTopBottomArea = (self.frame.size.height - middleScreenSize)/2.f;
 
-    [self setUpGestureRecognizers];
 }
 
 -(void) addLikeButton {
@@ -143,38 +142,6 @@
 }
 
 #pragma mark - Gesture recognizers
-
-//Sets up the gesture recognizer for dragging from the edges.
--(void) setUpGestureRecognizers {
-    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollPage:)];
-    pan.delegate = self;
-    [self addGestureRecognizer:pan];
-}
-
-
--(void) scrollPage:(UIPanGestureRecognizer*) sender {
-    switch (sender.state) {
-        case UIGestureRecognizerStateBegan: {
-            if ([sender numberOfTouches] != 1) return;
-            
-            CGPoint touchLocation = [sender locationOfTouch:0 inView:[self superview]];
-            if (touchLocation.y < (self.frame.size.height - self.pageScrollTopBottomArea)
-                && touchLocation.y > self.pageScrollTopBottomArea) {
-                self.scrollEnabled = NO;
-            }
-            break;
-        }
-        case UIGestureRecognizerStateChanged: {
-            break;
-        }
-        case UIGestureRecognizerStateEnded: {
-            self.scrollEnabled = YES;
-            break;
-        }
-        default:
-            break;
-    }
-}
 
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES;
