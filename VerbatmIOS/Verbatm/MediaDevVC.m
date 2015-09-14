@@ -545,13 +545,13 @@
 		self.contentContainerViewMode = mode;
 		if(mode == ContentContainerViewModeFullScreen) {
 			//makes sure content view is scrollable
-			[self.contentDevVC setMainScrollViewEnabled:YES];
+			//[self.contentDevVC setMainScrollViewEnabled:YES];
 			self.contentContainerView.frame = self.contentContainerViewFrameBottom;
 			[self pullBarTransitionToMode:PullBarModeMenu];
 
 		}else if (mode == ContentContainerViewModeBase) {
 			//makes sure content view is not scrollable
-			[self.contentDevVC setMainScrollViewEnabled:NO];
+			//[self.contentDevVC setMainScrollViewEnabled:NO];
 			self.contentContainerView.frame = self.contentContainerViewFrameTop;
 			[self pullBarTransitionToMode:PullBarModePullDown];
 		}

@@ -47,7 +47,6 @@
 #import "VideoPinchView.h"
 
 
-#define BRING_UP_EDITCONTENT_SEGUE @"BRING_UP_EDITCONTENT_SEGUE"
 
 @interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,
 							GMImagePickerControllerDelegate, EditContentViewDelegate,
@@ -120,6 +119,9 @@
 #define WHAT_IS_IT_LIKE_OFFSET 15
 #define WHAT_IS_IT_LIKE_HEIGHT 50
 
+#define BRING_UP_EDITCONTENT_SEGUE @"BRING_UP_EDITCONTENT_SEGUE"
+#define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
+
 @end
 
 
@@ -155,7 +157,7 @@
     self.mainScrollView.scrollEnabled = YES;
     self.mainScrollView.bounces = YES;
     //just to give it initial bounce
-    self.mainScrollView.contentSize = CGSizeMake(0, self.view.frame.size.height + 50);
+    self.mainScrollView.contentSize = CGSizeMake(0, BASE_MAINSCROLLVIEW_CONTENT_SIZE);
 }
 
 
@@ -315,7 +317,9 @@
 -(void) adjustMainScrollViewContentSize {
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 		ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
-		self.mainScrollView.contentSize = CGSizeMake(0, lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET);
+        float y_Offset = (self.pageElementScrollViews.count == 1 ) ? BASE_MAINSCROLLVIEW_CONTENT_SIZE :lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET;
+        
+		self.mainScrollView.contentSize = CGSizeMake(0,y_Offset);
 	}];
 }
 
