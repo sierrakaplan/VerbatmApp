@@ -18,4 +18,16 @@
 	return self;
 }
 
+// When user clicks story, loads one behind it and the two ahead
+-(void) loadStory: (NSInteger) index {
+
+}
+
+// When user scrolls to a new story, loads the next two in that
+// direction of scroll
+-(void) loadNextTwoStories: (NSInteger) index {
+
+}
+
+
 @end

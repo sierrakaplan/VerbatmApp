@@ -68,8 +68,7 @@
 }
 
 //gives you the frame for the next iamgeview that you'll add to the end of the list
--(CGRect) getNextFrame
-{
+-(CGRect) getNextFrame{
 	if(!self.subviews.count) return self.bounds;
 	UIView * view = self.subviews.lastObject;
 	return CGRectMake(view.frame.origin.x +view.frame.size.width, 0, self.bounds.size.width, self.bounds.size.height);

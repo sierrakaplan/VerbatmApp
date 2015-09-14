@@ -543,13 +543,13 @@
 		self.contentContainerViewMode = mode;
 		if(mode == ContentContainerViewModeFullScreen) {
 			//makes sure content view is scrollable
-			[self.contentDevVC setMainScrollViewEnabled:YES];
+			//[self.contentDevVC setMainScrollViewEnabled:YES];
 			self.contentContainerView.frame = self.contentContainerViewFrameBottom;
 			[self pullBarTransitionToMode:PullBarModeMenu];
 
 		}else if (mode == ContentContainerViewModeBase) {
 			//makes sure content view is not scrollable
-			[self.contentDevVC setMainScrollViewEnabled:NO];
+			//[self.contentDevVC setMainScrollViewEnabled:NO];
 			self.contentContainerView.frame = self.contentContainerViewFrameTop;
 			[self pullBarTransitionToMode:PullBarModePullDown];
 		}
@@ -690,6 +690,7 @@
 }
 
 -(void) galleryButtonPressed {
+    if(self.pullBar.mode == PullBarModePullDown)[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 	[self.contentDevVC presentEfficientGallery];
 }
 
@@ -702,12 +703,9 @@
 	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
 	if (![title length]) {
-        
-        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story homie" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
+        [self alertAddTitle];
 	} else if (!coverPic) {
-        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [alert show];
+        [self alertAddCoverPhoto];
 	} else {
 		NSArray *pinchViewsArray = [self getPinchViewsFromContentDev];
 
@@ -725,6 +723,20 @@
 		[self.contentDevVC cleanUp];
 	}
 }
+
+-(void)alertAddTitle{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story homie" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+    });
+}
+
+-(void)alertAddCoverPhoto{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+}
+
 
 -(NSArray*) getPinchViewsFromContentDev {
 	NSMutableArray *pinchViews = [[NSMutableArray alloc]init];

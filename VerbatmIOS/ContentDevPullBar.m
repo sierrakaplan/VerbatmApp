@@ -69,7 +69,6 @@
     
     //[panGesture requireGestureRecognizerToFail:self.backButton.gestureRecognizers.firstObject];
 
-
 	CGRect previewButtonFrame = CGRectMake(backButtonFrame.origin.x + backButtonFrame.size.width,
 										   NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
 	self.previewLabel = [self getLabelWithParentFrame:previewButtonFrame andText:@"PREVIEW"];
@@ -78,7 +77,6 @@
 	[self.previewButton addSubview:self.previewLabel];
 	[self enablePreviewInMenuMode: NO];
     
-    //[panGesture requireGestureRecognizerToFail:self.previewButton.gestureRecognizers.firstObject];
 
 	self.switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
 											  NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
@@ -95,7 +93,6 @@
 										   NAV_ICON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
 	self.galleryButton = [self getButtonWithFrame:galleryButtonFrame];
 	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
-    //[panGesture requireGestureRecognizerToFail:self.galleryButton.gestureRecognizers.firstObject];
 
     
 	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
@@ -149,10 +146,10 @@
 -(void)switchToMenu {
 	self.mode = PullBarModeMenu;
 	[self.switchModeButton setImage:self.cameraImage forState: UIControlStateNormal];
-//	[self.pullDownBackgroundSquare removeFromSuperview];
-	[self enableGallery: YES];
+	[self enableGallery];
+
 	if (self.previewEnabledInMenuMode) {
-		[self enablePreview: YES];
+        [self enablePreview:YES];
 	}
 	if (self.pullDownPulsing) {
 		[self.switchModeButton.layer removeAllAnimations];
@@ -163,8 +160,7 @@
 -(void)switchToPullDown {
 	self.mode = PullBarModePullDown;
 	[self.switchModeButton setImage:self.pullDownImage forState: UIControlStateNormal];
-//	[self insertSubview:self.pullDownBackgroundSquare belowSubview:self.switchModeButton];
-	[self enableGallery: NO];
+	[self enableGallery];
 	[self enablePreview: NO];
 }
 
@@ -200,13 +196,8 @@
 	[self.previewButton setEnabled: enable];
 }
 
--(void) enableGallery: (BOOL) enable {
-	if (enable) {
+-(void) enableGallery{
 		[self.galleryButton setImage:self.galleryImage forState: UIControlStateNormal];
-	} else {
-		[self.galleryButton setImage:self.galleryImageGrayedOut forState: UIControlStateNormal];
-	}
-	[self.galleryButton setEnabled: enable];
 }
 
 
@@ -220,13 +211,15 @@
 }
 
 - (void) previewButtonReleased:(UIButton *)sender {
+    
 	if (!self.delegate) {
 		NSLog(@"No content dev pull bar delegate set.");
 	}
-	[self.delegate previewButtonPressed];
+    [self.delegate previewButtonPressed];
 }
 
 - (void) switchModeButtonReleased:(UIButton *)sender {
+    
 	if (!self.delegate) {
 		NSLog(@"No content dev pull bar delegate set.");
 	}
@@ -246,8 +239,11 @@
 	if (!self.delegate) {
 		NSLog(@"No content dev pull bar delegate set.");
 	}
+    
+    if(self.mode == PullBarModePullDown) {
+        [self.switchModeButton  sendActionsForControlEvents: UIControlEventTouchUpInside];
+    }
 	[self.delegate galleryButtonPressed];
 }
-
 
 @end

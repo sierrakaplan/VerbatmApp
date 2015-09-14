@@ -40,15 +40,17 @@
 #import "TextPinchView.h"
 
 #import "UIEffects.h"
+#import "UserSetupParemeters.h"
+
 #import "UserPinchViews.h"
 #import "VerbatmScrollView.h"
 #import "VideoPinchView.h"
 
 
-#define BRING_UP_EDITCONTENT_SEGUE @"BRING_UP_EDITCONTENT_SEGUE"
 
 @interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,
-							GMImagePickerControllerDelegate, EditContentViewDelegate>
+							GMImagePickerControllerDelegate, EditContentViewDelegate,
+                            ContentSVDelegate>
 
 
 // Says whether or not user is currently adding a cover picture
@@ -117,6 +119,9 @@
 #define WHAT_IS_IT_LIKE_OFFSET 15
 #define WHAT_IS_IT_LIKE_HEIGHT 50
 
+#define BRING_UP_EDITCONTENT_SEGUE @"BRING_UP_EDITCONTENT_SEGUE"
+#define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
+
 @end
 
 
@@ -134,7 +139,6 @@
 	[self setCursorColor];
 
 	[self formatTitleAndCoverPicture];
-//	[self createBaseSelector];
 	[self setUpNotifications];
 	[self setDelegates];
 
@@ -150,13 +154,18 @@
 
 -(void) setFrameMainScrollView {
 	self.mainScrollView.frame= self.view.frame;
+    self.mainScrollView.scrollEnabled = YES;
+    self.mainScrollView.bounces = YES;
+    //just to give it initial bounce
+    self.mainScrollView.contentSize = CGSizeMake(0, BASE_MAINSCROLLVIEW_CONTENT_SIZE);
 }
+
 
 //records the generic frame for any element that is a square and not a pinch view circle,
 // as well as the pinch view center and radius
 -(void)setElementDefaultFrames {
 	self.defaultPageElementScrollViewSize = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
-	self.defaultPinchViewCenter = CGPointMake(((self.view.frame.size.width*3)/2.f), self.defaultPageElementScrollViewSize.height/2);
+	self.defaultPinchViewCenter = CGPointMake(PINCH_VIEW_CENTER_X, self.defaultPageElementScrollViewSize.height/2);
 	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
 }
 
@@ -219,10 +228,10 @@
 	self.whatIsItLikeField = [[UITextField alloc] initWithFrame: frame];
 	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
 	self.whatIsItLikeField.font = whatIsItLikeFieldFont;
-	self.whatIsItLikeField.tintColor = [UIColor WHAT_IS_IT_LIKE_COLOR];
+	self.whatIsItLikeField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
 	self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
 													initWithString: @"tell your story"
-													attributes:@{NSForegroundColorAttributeName: [UIColor WHAT_IS_IT_LIKE_COLOR],
+													attributes:@{NSForegroundColorAttributeName: [UIColor TELL_YOUR_STORY_COLOR],
 																 NSFontAttributeName : whatIsItLikeFieldFont}];
 	[self.whatIsItLikeField resignFirstResponder];
 	self.whatIsItLikeField.enabled = YES;
@@ -237,37 +246,8 @@
 	[self.mainScrollView addSubview: self.coverPicView];
 }
 
-/* NO LONGER IN USE
--(void) createBaseSelector {
 
-	//make sure we don't create another one when we return from image picking
-	if(_baseMediaTileSelector)return;
-	CGRect frame = CGRectMake(self.view.frame.size.width + ELEMENT_OFFSET_DISTANCE,
-							  ELEMENT_OFFSET_DISTANCE/2.f,
-							  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
-	self.baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
-	self.baseMediaTileSelector.isBaseSelector =YES;
-	self.baseMediaTileSelector.delegate = self;
-	[self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
-	[self.baseMediaTileSelector formatButtons];
-
-
-	CGRect scrollViewFrame = CGRectMake(0, self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_OFFSET_DISTANCE);
-
-	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
-																	  initWithFrame:scrollViewFrame
-																	  andElement:self.baseMediaTileSelector];
-
-	baseMediaTileSelectorScrollView.scrollEnabled = NO;
-	baseMediaTileSelectorScrollView.delegate = self;
-
-	[self.mainScrollView addSubview:baseMediaTileSelectorScrollView];
-	[self.pageElementScrollViews addObject:baseMediaTileSelectorScrollView];
-} */
-
-
--(void) setUpNotifications
-{
+-(void) setUpNotifications {
 	//Tune in to get notifications of keyboard behavior
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyboardWillShow:)
@@ -338,19 +318,19 @@
 -(void) adjustMainScrollViewContentSize {
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 		ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
-		self.mainScrollView.contentSize = CGSizeMake(0, lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET);
+        float y_Offset = (self.pageElementScrollViews.count == 1 ) ? BASE_MAINSCROLLVIEW_CONTENT_SIZE :lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET;
+        
+		self.mainScrollView.contentSize = CGSizeMake(0,y_Offset);
 	}];
 }
 
 #pragma mark Scroll View actions
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-
 	if(scrollView == self.mainScrollView) {
 		[self showOrHidePullBarBasedOnMainScrollViewScroll];
 		return;
 	}
-
 	if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
 		ContentPageElementScrollView* pageElementScrollView = (ContentPageElementScrollView*)scrollView;
 		if(pageElementScrollView.collectionIsOpen) {
@@ -366,7 +346,6 @@
 
 -(void) showOrHidePullBarBasedOnMainScrollViewScroll {
 	CGPoint translation = [self.mainScrollView.panGestureRecognizer translationInView:self.mainScrollView];
-
 	if(translation.y < 0) {
 		[self.changePullBarDelegate showPullBar:NO withTransition:YES];
 	}else {
@@ -375,43 +354,51 @@
 	return;
 }
 
+
 #pragma mark Deleting scrollview and element
+////make sure the object is in the right position
+//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
+//				  willDecelerate:(BOOL)decelerate {
+//	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
+//		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
+//	}
+//}
+//
+//-(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+//	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
+//		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
+//	}
+//}
+//
+////check if scroll view has been scrolled enough to delete, and if so delete.
+////Otherwise scroll it back
+//-(void) deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView {
+//    return;//temp
+//    
+//    if (self.pinchingMode != PinchingModeNone || scrollView.collectionIsOpen){
+//		return;
+//	}
+//
+//	if([scrollView isDeleting]) {
+//		[scrollView animateOffScreen];
+//		[self deleteScrollView:scrollView];
+//	} else {
+//		[scrollView animateBackToInitialPosition];
+//	}
+//}
 
-//make sure the object is in the right position
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
-				  willDecelerate:(BOOL)decelerate {
-	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
-		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
-	}
+
+-(void)contentPageScrollViewShouldDelete:(ContentPageElementScrollView*)scrollView {
+    [self deleteScrollView:scrollView];
 }
 
--(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
-		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
-	}
-}
-
-//check if scroll view has been scrolled enough to delete, and if so delete.
-//Otherwise scroll it back
--(void) deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView {
-	if (self.pinchingMode != PinchingModeNone || scrollView.collectionIsOpen){
-		return;
-	}
-
-	if([scrollView isDeleting]) {
-		[scrollView animateOffScreen];
-		[self deleteScrollView:scrollView];
-	} else {
-		[scrollView animateBackToInitialPosition];
-	}
-}
 
 //Deletes scroll view and the element it contained
 -(void) deleteScrollView:(ContentPageElementScrollView*)scrollView {
-
-	if (![self.pageElementScrollViews containsObject:scrollView]) {
+	if (![self.pageElementScrollViews containsObject:scrollView]){
 		return;
 	}
+    
 	NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
 	[scrollView removeFromSuperview];
 	[self.pageElementScrollViews removeObject:scrollView];
@@ -427,7 +414,6 @@
 }
 
 #pragma mark - Creating New Views -
-
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView {
 
@@ -448,9 +434,9 @@
 		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, upperScrollView.frame.size.width, upperScrollView.frame.size.height);
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
-
 	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
 	newElementScrollView.delegate = self;
+    newElementScrollView.customDelegate = self;
 
 	if (self.numPinchViews < 1) {
 		[self.changePullBarDelegate canPreview:YES];
@@ -508,6 +494,8 @@
 
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 			currentView.frame = frame;
+            //make sure everything is centered
+            [currentView centerView];
 		}];
 		firstYCoordinate+= frame.size.height;
 	}
@@ -776,18 +764,20 @@
 -(void)handleHorizontalPinchGestureChanged:(UIGestureRecognizer *) sender {
 	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
 	CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
+    
 	// touch1 is left most pinch
 	if(touch1.x > touch2.x) {
 		CGPoint temp = touch1;
 		touch1 = touch2;
 		touch2 = temp;
 	}
-
+    
 	float leftDifference = touch1.x- self.leftTouchPointInHorizontalPinch.x;
 	float rightDifference = touch2.x - self.rightTouchPointInHorizontalPinch.x;
 	self.rightTouchPointInHorizontalPinch = touch2;
 	self.leftTouchPointInHorizontalPinch = touch1;
 	self.horizontalPinchDistance += (leftDifference - rightDifference);
+    
 	[self.scrollViewOfHorizontalPinching moveViewsWithTotalDifference:self.horizontalPinchDistance];
 
 	//they have pinched enough to join the objects
@@ -877,7 +867,6 @@
 //handle the translation of the upper view
 //returns change in position of upper view
 -(float) handleUpperViewFromTouch: (CGPoint) touch {
-
 	float changeInPosition;
 	changeInPosition = touch.y - self.upperTouchPointInVerticalPinch.y;
 	self.upperTouchPointInVerticalPinch = touch;
@@ -1035,8 +1024,6 @@
 
 
 #pragma mark - Identify views involved in pinch
-
-
 -(CGPoint) findMidPointBetween: (CGPoint) touch1 and: (CGPoint) touch2 {
 	CGPoint midPoint = CGPointZero;
 	midPoint.x = (touch1.x + touch2.x)/2;
@@ -1106,9 +1093,11 @@
 	return wantedView;
 }
 
+
 -(BOOL)sufficientOverlapBetweenPinchedObjects {
-	if(self.upperPinchScrollView.frame.origin.y+(self.upperPinchScrollView.frame.size.height/2)>= self.lowerPinchScrollView.frame.origin.y)
-		return true;
+    if(self.upperPinchScrollView.frame.origin.y+(self.upperPinchScrollView.frame.size.height/2)>= self.lowerPinchScrollView.frame.origin.y){
+        return true;
+    }
 	return false;
 }
 
@@ -1290,6 +1279,7 @@
 
 //swap currently selected item's frame with view above it
 -(void) swapWithTopView: (ContentPageElementScrollView*) topView {
+    
 	[self swapScrollView:self.selectedView_PAN andScrollView: topView];
 
 	//important that objects may not be the same height
@@ -1309,8 +1299,8 @@
 
 //swap currently selected item's frame with view below it
 -(void) swapWithBottomView: (ContentPageElementScrollView*) bottomView {
+    
 	[self swapScrollView: self.selectedView_PAN andScrollView: bottomView];
-
 	//important that objects may not be the same height
 	float heightDiff = bottomView.frame.size.height - self.previousFrameInLongPress.size.height;
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
@@ -1385,7 +1375,7 @@
 	//sanitize for next run
 	self.selectedView_PAN = nil;
 
-	[self shiftElementsBelowView: self.coverPicView];
+	[self shiftElementsBelowView:self.coverPicView];
 }
 
 //swaps scroll views in the pageElementScrollView array
@@ -1506,10 +1496,10 @@
 #pragma - mainScrollView handler -
 -(void)setMainScrollViewEnabled:(BOOL) enabled {
 	if(enabled) {
-		self.mainScrollView.scrollEnabled = enabled;
+		//self.mainScrollView.scrollEnabled = enabled;
 	} else {
-		self.mainScrollView.contentOffset = CGPointMake(0, 0);
-		self.mainScrollView.scrollEnabled = enabled;
+		//self.mainScrollView.contentOffset = CGPointMake(0, 0);
+		//self.mainScrollView.scrollEnabled = enabled;
 	}
 }
 
@@ -1535,7 +1525,7 @@
 	self.openPinchView = nil;
     
     if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
-        [self alertPinchElementsTogether];
+        //[self alertPinchElementsTogether];
     }
 }
 
@@ -1592,6 +1582,7 @@
          if(self.openPinchView.containsImage) {
              [(ImagePinchView*)self.openPinchView changeImageToFilterIndex:vc.filterImageIndex];
          }
+         [vc.openEditContentView.videoView stopVideo];
          self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
      }
 }
@@ -1678,26 +1669,24 @@
 		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
 	}
 	if (newPinchView) {
-        if(!self.pinchObject_HasBeenAdded_ForTheFirstTime && !self.pageElementScrollViews.count){
-            [self alertEachPVIsPage];
-        }else if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
-            [self alertPinchElementsTogether];
-        }
+       
         
         [self newPinchView:newPinchView belowView:nil];
 	}
 }
 
+#pragma mark - Alerts -
+
 -(void)alertEachPVIsPage{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    self.pinchObject_HasBeenAdded_ForTheFirstTime = YES;
+    [UserSetupParemeters set_circlesArePages_InstructionAsShown];
 }
 
 -(void)alertPinchElementsTogether{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
+    [UserSetupParemeters set_pinchCircles_InstructionAsShown];
 }
 
 
@@ -1723,6 +1712,17 @@
 			}];
 		}
 	}
+    
+    //decides whether on what notification to present if any
+    
+        if(![UserSetupParemeters circlesArePages_InstructionShown] &&
+           !self.pageElementScrollViews.count) {
+                [self alertEachPVIsPage];
+            
+        }else if(![UserSetupParemeters pinchCircles_InstructionShown] &&
+                  (self.pageElementScrollViews.count > 1)) {
+                [self alertPinchElementsTogether];
+        }
 }
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {

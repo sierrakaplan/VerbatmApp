@@ -31,7 +31,7 @@
     }
 }
 
--(void)setDelegates{
+-(void)setDelegates {
     self.emailField.delegate = self;
     self.passwordField.delegate = self;
     self.fullnameField.delegate = self;

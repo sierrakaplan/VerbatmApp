@@ -41,13 +41,15 @@
 
 #pragma mark - ADK -
 
+#define TELL_YOUR_STORY_COLOR whiteColor
+
 #define WHAT_IS_IT_LIKE_COLOR blackColor
 #define WHAT_IS_IT_LIKE_LABEL_TEXT_SIZE 23.f
 #define WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE 23.f
 
 #define ADD_COVER_PIC_TEXT_SIZE 15.f
-#define ADD_COVER_PIC_FONT @"HelveticaNeue-UltraLight"
-
+#define ADD_COVER_PIC_FONT @"HelveticaNeue-Light"
+#define COVER_PIC_CIRCLE_COLORE whiteColor
 #pragma mark PullBar
 
 #define PREVIEW_BUTTON_FONT @"HelveticaNeue-Bold"
@@ -81,7 +83,7 @@
 
 #pragma mark Preview
 
-#define PUBLISH_BUTTON_LABEL_FONT_SIZE 16.f
+#define PUBLISH_BUTTON_LABEL_FONT_SIZE PREVIEW_BUTTON_FONT_SIZE
 #define PUBLISH_BUTTON_LABEL_COLOR blackColor
 
 

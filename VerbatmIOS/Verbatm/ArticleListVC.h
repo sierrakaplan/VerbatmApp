@@ -7,10 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "baseVC.h"
 @class POVLoadManager;
 
-@interface ArticleListVC : UIViewController
+@interface ArticleListVC : baseVC
 
 -(void) setPovLoadManager:(POVLoadManager *)povLoader;
 

@@ -10,17 +10,23 @@
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
 #import "Identifiers.h"
+#import "UserSetupParemeters.h"
 @interface EditContentVC()<EditContentViewDelegate>
-@property (strong, nonatomic) EditContentView * openEditContentView;
 @property (strong, nonatomic) PinchView * openPinchView;
+@property (strong, nonatomic) UIButton * exitButton;
 
+
+#define EXIT_BUTTON_WIDTH 60
+#define EXIT_BUTTON_HEIGHT 60
+#define EXIT_BUTTON_WALL_OFFSET 0
+#define EXIT_IMAGE @"exit"
 @end
 @implementation EditContentVC
 
 -(void)viewDidLoad {
     [self createEditContentViewFromPinchView:self.pinchView];
+    [self createExitButton];
 }
-
 
 // This should never be called on a collection pinch view, only on text, image, or video
 -(void) createEditContentViewFromPinchView: (PinchView *) pinchView {
@@ -43,30 +49,44 @@
         self.openPinchView = pinchView;
     }
     [self.view addSubview:self.openEditContentView];
-    if(!self.editContentMode_Photo_TappedOpenForTheFirst)[self alertAddFilter];
+    if(![UserSetupParemeters filter_InstructionShown] && [pinchView isKindOfClass:[ImagePinchView class]])[self alertAddFilter];
 }
 
--(void)alertAddFilter{
+-(void)createExitButton{
+    self.exitButton = [[UIButton alloc] initWithFrame:
+                       CGRectMake(EXIT_BUTTON_WALL_OFFSET, EXIT_BUTTON_WALL_OFFSET,
+                                  EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT)];
+    [self.exitButton setImage:[UIImage imageNamed:EXIT_IMAGE] forState:UIControlStateNormal];
+    [self.exitButton addTarget:self action:@selector(exitButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.exitButton];
+    [self.view bringSubviewToFront:self.exitButton];
+}
+
+-(void)alertAddFilter {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    self.editContentMode_Photo_TappedOpenForTheFirst = YES;
+    [UserSetupParemeters set_filter_InstructionAsShown];
 }
 
+-(void)exitButtonClicked:(UIButton*) sender{
+    [self exitViewController];
+}
 
-#pragma mark - Delegate Methods -
-
-//Delegate method for EditContentView
--(void) exitEditContentView {
+-(void)exitViewController{
     if (!self.openEditContentView) {
         return;
     }
     if(self.openPinchView.containsImage) {
-       self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
-    } else if(self.openPinchView.containsVideo) {
-        [self.openEditContentView.videoView stopVideo];
-    }
-
+        self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
+    } 
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
+}
+
+
+#pragma mark - Delegate Methods -
+//Delegate method for EditContentView
+-(void) exitEditContentView {
+    [self exitViewController];
 }
 
 @end

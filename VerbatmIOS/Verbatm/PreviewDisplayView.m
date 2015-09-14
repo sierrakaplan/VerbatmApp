@@ -49,7 +49,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.viewingFrame = frame;
-		self.restingFrame = CGRectMake(self.frame.origin.x - self.frame.size.width, self.frame.origin.y,
+		self.restingFrame = CGRectMake(self.frame.origin.x + self.frame.size.width, self.frame.origin.y,
 									   self.frame.size.width, self.frame.size.height);
 		self.frame = self.restingFrame;
 		[self setUpPublishButton];
@@ -94,18 +94,12 @@
 
 	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.publishButton setFrame: publishButtonFrame];
-	[self.publishButton setBackgroundImage:[UIImage imageNamed:PUBLISH_BUTTON_IMAGE] forState:UIControlStateNormal];
-
 	UIColor *labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR];
-	UIFont* labelFont = [UIFont fontWithName:BUTTON_FONT size:PUBLISH_BUTTON_LABEL_FONT_SIZE];
-	NSShadow *shadow = [[NSShadow alloc] init];
-	[shadow setShadowBlurRadius: BUTTON_LABEL_SHADOW_BLUR_RADIUS];
-	[shadow setShadowColor: labelColor];
-	[shadow setShadowOffset: CGSizeMake(0, BUTTON_LABEL_SHADOW_YOFFSET)];
-	self.publishButtonTitle = [[NSAttributedString alloc] initWithString:PUBLISH_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont, NSShadowAttributeName : shadow}];
+	UIFont* labelFont = [UIFont fontWithName:PREVIEW_BUTTON_FONT size:PREVIEW_BUTTON_FONT_SIZE];
+	self.publishButtonTitle = [[NSAttributedString alloc] initWithString:PUBLISH_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont}];
 	[self.publishButton setAttributedTitle:self.publishButtonTitle forState:UIControlStateNormal];
-
 	[self.publishButton addTarget:self action:@selector(publishArticleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    
 }
 
 -(void) setUpBackButton {
@@ -123,10 +117,10 @@
 
 //Sets up the gesture recognizer for dragging from the edges.
 -(void) setUpGestureRecognizers {
-	UIScreenEdgePanGestureRecognizer* rightEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitDisplay:)];
-	rightEdgePanGesture.edges = UIRectEdgeRight;
-	rightEdgePanGesture.delegate = self;
-	[self addGestureRecognizer: rightEdgePanGesture];
+	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitDisplay:)];
+	leftEdgePanGesture.edges = UIRectEdgeLeft;
+	leftEdgePanGesture.delegate = self;
+	[self addGestureRecognizer: leftEdgePanGesture];
 }
 
 #pragma mark - Show the preview or hide it - 
@@ -138,11 +132,9 @@
 		[UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
 			self.frame = self.viewingFrame;
 		} completion:^(BOOL finished) {
-			[self.publishButton startGlowing];
 			[self.povView displayMediaOnCurrentAVE];
 		}];
 	}else {
-		[self.publishButton stopGlowing];
 		[UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
 			self.frame = self.restingFrame;
 		}completion:^(BOOL finished) {
@@ -159,10 +151,6 @@
 #pragma mark - Publish button pressed -
 
 -(void) publishArticleButtonPressed: (UIButton*)sender {
-    
-//    if(){
-//        [];
-//    }
 	[self revealPreview:NO];
 	[self.delegate publishButtonPressed];
 }
@@ -184,7 +172,6 @@
 			}
 			CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 			self.previousGesturePoint  = touchLocation;
-			[self.publishButton stopGlowing];
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
@@ -196,7 +183,7 @@
 			break;
 		}
 		case UIGestureRecognizerStateEnded: {
-			if(self.frame.origin.x < EXIT_EPSILON) {
+			if(self.frame.origin.x > EXIT_EPSILON) {
 				//exit article
 				[self revealPreview:NO];
 			}else{
