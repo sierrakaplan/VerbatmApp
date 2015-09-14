@@ -64,12 +64,12 @@
 
 +(BOOL) tapNhold_InstructionShown{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults boolForKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
+    return [defaults boolForKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY];
 }
 
-+(BOOL) swipeToDelete_InstructionShown{
++(BOOL) swipeToDelete_InstructionShown {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults boolForKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY];
+    return [defaults boolForKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
 }
 
 #pragma mark - Change Paramaters -
@@ -87,9 +87,8 @@
     }
 }
 
-
 +(void)set_circlesArePages_InstructionAsShown{
-    @synchronized(self) {
+    @synchronized(self){
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setBool:YES forKey:CIRCLE_IS_PAGE_INSTRUCTION_KEY];
     }
@@ -107,7 +106,7 @@
 +(void)set_tapNhold_InstructionAsShown{
      @synchronized(self) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-         [defaults setBool:YES forKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
+         [defaults setBool:YES forKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY];
      }
 }
 
@@ -115,7 +114,7 @@
 +(void)set_swipeToDelete_InstructionAsShown{
      @synchronized(self) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setBool:YES forKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY];
+        [defaults setBool:YES forKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
      }
 }
 

@@ -227,7 +227,8 @@ ContentSVDelegate>
 	UIFont* whatIsItLikeFieldFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
 	self.whatIsItLikeField = [[UITextField alloc] initWithFrame: frame];
 	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
-	self.whatIsItLikeField.font = whatIsItLikeFieldFont;
+	self.whatIsItLikeField.font = [[UIFont fontNamesForFamilyName:PLACEHOLDER_FONT] firstObject];
+    [self.whatIsItLikeField setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
 	self.whatIsItLikeField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
 	self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
 													initWithString: @"tell your story"
@@ -668,16 +669,7 @@ ContentSVDelegate>
 		}
 		self.scrollViewOfHorizontalPinching.scrollEnabled = YES;
 		self.scrollViewOfHorizontalPinching = nil;
-
-	} /* else if (self.newlyCreatedMediaTile) {
-
-	   //new media creation has failed
-	   if(self.newlyCreatedMediaTile.frame.size.height != self.baseMediaTileSelector.frame.size.height){
-	   [self animateRemoveNewMediaTile];
-	   return;
-	   }
-	   self.newlyCreatedMediaTile = nil;
-	   } */
+	}
 
 	[self shiftElementsBelowView: self.coverPicView];
 	self.pinchingMode = PinchingModeNone;
@@ -849,13 +841,6 @@ ContentSVDelegate>
 	float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
 	float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
 
-	/* NO LONGER IN USE - objects are being pinched apart
-	 if(gesture.scale > 1) {
-		[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
-	 andChangeInBottomViewPosition:changeInBottomViewPosition];
-
-	 } */
-
 	//objects are being pinched together
 	if (gesture.scale < 1) {
 		[self pinchObjectsTogether];
@@ -1018,7 +1003,11 @@ ContentSVDelegate>
 	[self shiftElementsBelowView: self.coverPicView];
 	//make sure the pullbar is showing when things are pinched together
 	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
+    //present swipe to delete notification
+    if([UserSetupParemeters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
+
+
 
 
 #pragma mark - Identify views involved in pinch
@@ -1548,6 +1537,7 @@ ContentSVDelegate>
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
+        if([UserSetupParemeters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
 	}else{
 		self.openPinchView = pinchView;
 		//tap to open an element for viewing or editing
@@ -1763,7 +1753,9 @@ ContentSVDelegate>
 
 
 #pragma mark - Alerts -
-
+/*
+ These are all notifications that appear for the user at different points in the app. They only appear once.
+ */
 -(void)alertEachPVIsPage{
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
@@ -1774,6 +1766,18 @@ ContentSVDelegate>
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 	[UserSetupParemeters set_pinchCircles_InstructionAsShown];
+}
+
+-(void)alertSwipeRightToDelete{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles right to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    [UserSetupParemeters set_swipeToDelete_InstructionAsShown];
+}
+
+-(void)alertTapNHoldInCollection{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Tap and hold to remove circle" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    [UserSetupParemeters set_tapNhold_InstructionAsShown];
 }
 
 #pragma mark - Lazy Instantiation
