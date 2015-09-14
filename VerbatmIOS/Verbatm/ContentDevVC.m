@@ -9,27 +9,43 @@
 //
 
 #import "ContentDevVC.h"
-#import "MediaDevVC.h"
-#import <QuartzCore/QuartzCore.h>
-#import "MediaSelectTile.h"
-#import "VerbatmScrollView.h"
-#import "UIEffects.h"
-#import "PinchView.h"
-#import "TextPinchView.h"
-#import "ImagePinchView.h"
-#import "VideoPinchView.h"
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
-#import "EditContentView.h"
-#import "Icons.h"
-#import "GMImagePickerController.h"
-#import "Notifications.h"
-#import "SizesAndPositions.h"
+#import "ContentPageElementScrollView.h"
+
 #import "Durations.h"
+
+#import "EditContentView.h"
+#import "EditContentVC.h"
+
+#import "ImagePinchView.h"
+#import "Icons.h"
+#import "Identifiers.h"
+
+
+#import "MediaDevVC.h"
+#import "MediaSelectTile.h"
+
+#import "GMImagePickerController.h"
+
+#import <QuartzCore/QuartzCore.h>
+#import "PinchView.h"
+
+#import "Notifications.h"
+
+#import "SizesAndPositions.h"
 #import "Strings.h"
 #import "Styles.h"
-#import "ContentPageElementScrollView.h"
+
+#import "TextPinchView.h"
+
+#import "UIEffects.h"
 #import "UserPinchViews.h"
+#import "VerbatmScrollView.h"
+#import "VideoPinchView.h"
+
+
+#define BRING_UP_EDITCONTENT_SEGUE @"BRING_UP_EDITCONTENT_SEGUE"
 
 @interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,
 							GMImagePickerControllerDelegate, EditContentViewDelegate>
@@ -91,6 +107,12 @@
 //@property (nonatomic,weak) MediaSelectTile* newlyCreatedMediaTile;
 
 
+//informs our instruction notification if the user has added
+//pinch views to the article before
+@property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
+@property (nonatomic) BOOL pinchObject_TappedAndClosed_ForTheFirstTime;
+@property (nonatomic) BOOL editContentMode_Photo_TappedOpenForTheFirst;
+
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define WHAT_IS_IT_LIKE_OFFSET 15
 #define WHAT_IS_IT_LIKE_HEIGHT 50
@@ -103,6 +125,7 @@
 #pragma mark - Initialization And Instantiation -
 
 - (void)viewDidLoad{
+    
 	[super viewDidLoad];
 	[self addBlurView];
 	[self setFrameMainScrollView];
@@ -117,6 +140,8 @@
 
 	self.pinchingMode = PinchingModeNone;
 	self.numPinchViews = 0;
+    self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
+    self.pinchObject_TappedAndClosed_ForTheFirstTime = NO;
 }
 
 -(void) addBlurView {
@@ -1365,8 +1390,8 @@
 
 //swaps scroll views in the pageElementScrollView array
 -(void) swapScrollView: (ContentPageElementScrollView *) scrollView1 andScrollView: (ContentPageElementScrollView *) scrollView2 {
-	NSInteger index1 = [self.pageElementScrollViews indexOfObject: scrollView1];
-	NSInteger index2 = [self.pageElementScrollViews indexOfObject: scrollView2];
+	 NSInteger index1 = [self.pageElementScrollViews indexOfObject: scrollView1];
+	 NSInteger index2 = [self.pageElementScrollViews indexOfObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index1 withObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index2 withObject: scrollView1];
 }
@@ -1480,7 +1505,6 @@
 
 #pragma - mainScrollView handler -
 -(void)setMainScrollViewEnabled:(BOOL) enabled {
-
 	if(enabled) {
 		self.mainScrollView.scrollEnabled = enabled;
 	} else {
@@ -1509,7 +1533,12 @@
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[self.openPinchView renderMedia];
 	self.openPinchView = nil;
+    
+    if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
+        [self alertPinchElementsTogether];
+    }
 }
+
 
 -(void)addTapGestureToPinchView: (PinchView *) pinchView {
 	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectTapped:)];
@@ -1532,37 +1561,40 @@
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
     }else{
+        self.openPinchView = pinchView;
         //tap to open an element for viewing or editing
-        [self createEditContentViewFromPinchView:pinchView];
-        //make sure the pullbar is not available
-        [self.changePullBarDelegate showPullBar:NO withTransition:NO];
+        [self presentEditContentView];
+        
     }
 }
 
 
+#pragma mark -Edit Content View Presentation -
+
 // This should never be called on a collection pinch view, only on text, image, or video
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView {
-	self.openEditContentView = [[EditContentView alloc] initCustomViewWithFrame:self.view.bounds];
-	self.openEditContentView.delegate = self;
-	//adding text
-	if(pinchView == nil) {
-		[self.openEditContentView editText:@""];
-	} else {
-		if (pinchView.containsText) {
-			[self.openEditContentView editText:[pinchView getText]];
-		} else if(pinchView.containsImage) {
-			ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
-			[self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
-		} else if(pinchView.containsVideo) {
-			[self.openEditContentView displayVideo:[(VideoPinchView*)pinchView video]];
-		} else {
-			return;
-		}
-		self.openPinchView = pinchView;
-	}
-	[self.view addSubview:self.openEditContentView];
+//modally presents the edit content view
+-(void) presentEditContentView {
+    [self performSegueWithIdentifier:BRING_UP_EDITCONTENT_SEGUE sender:self];
 }
 
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if([segue.identifier isEqualToString:BRING_UP_EDITCONTENT_SEGUE]) {
+        EditContentVC *vc =  (EditContentVC *)segue.destinationViewController;
+        vc.pinchView = self.openPinchView;
+        vc.editContentMode_Photo_TappedOpenForTheFirst = self.pinchObject_TappedAndClosed_ForTheFirstTime;
+    }
+}
+
+- (IBAction)done:(UIStoryboardSegue *)segue{
+     if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
+         EditContentVC *vc = (EditContentVC *)segue.sourceViewController;
+         if(self.openPinchView.containsImage) {
+             [(ImagePinchView*)self.openPinchView changeImageToFilterIndex:vc.filterImageIndex];
+         }
+         self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
+     }
+}
 
 #pragma mark - Clean up Content Page -
 
@@ -1636,7 +1668,6 @@
 }
 
 -(void) createPinchViewFromAsset:(id)asset {
-
 	PinchView* newPinchView;
 	if([asset isKindOfClass:[AVAsset class]] || [asset isKindOfClass:[NSURL class]]) {
 		newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andVideo:asset];
@@ -1647,9 +1678,28 @@
 		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
 	}
 	if (newPinchView) {
-		[self newPinchView:newPinchView belowView:nil];
+        if(!self.pinchObject_HasBeenAdded_ForTheFirstTime && !self.pageElementScrollViews.count){
+            [self alertEachPVIsPage];
+        }else if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
+            [self alertPinchElementsTogether];
+        }
+        
+        [self newPinchView:newPinchView belowView:nil];
 	}
 }
+
+-(void)alertEachPVIsPage{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    self.pinchObject_HasBeenAdded_ForTheFirstTime = YES;
+}
+
+-(void)alertPinchElementsTogether{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
+}
+
 
 //add assets from picker to our scrollview
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {
@@ -1664,6 +1714,7 @@
 				});
 			}];
 		}else {
+            
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 				dispatch_async(dispatch_get_main_queue(), ^{
@@ -1724,23 +1775,10 @@
 }
 
 
-/* NO LONGER IN USE
-@synthesize baseMediaTileSelector = _baseMediaTileSelector;
-
--(MediaSelectTile *) baseMediaTileSelector {
-	if(!_baseMediaTileSelector) _baseMediaTileSelector = [[MediaSelectTile alloc]init];
-	return _baseMediaTileSelector;
-}
-
-- (void) setBaseMediaTileSelector: (MediaSelectTile *) baseMediaTileSelector {
-	_baseMediaTileSelector = baseMediaTileSelector;
-} */
-
 @synthesize tileSwipeViewUndoManager = _tileSwipeViewUndoManager;
 
 //get the undomanager for the main window- use this for the tiles
--(NSUndoManager *) tileSwipeViewUndoManager
-{
+-(NSUndoManager *) tileSwipeViewUndoManager{
 	if(!_tileSwipeViewUndoManager) _tileSwipeViewUndoManager = [self.view.window undoManager];
 	return _tileSwipeViewUndoManager;
 }

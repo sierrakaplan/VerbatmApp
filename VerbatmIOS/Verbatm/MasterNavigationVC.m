@@ -73,7 +73,7 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self login];
+    [self alertPullTrendingIcon];
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -112,12 +112,20 @@
 
 //nav button is pressed - so we move the SV left to the profile
 -(void) profileButtonPressed {
-	[self showProfile];
+    if(/**/true){
+        [self bringUpSignUp];
+    }else{
+        [self showProfile];
+    }
 }
 
 //nav button is pressed so we move the SV right to the ADK
 -(void) adkButtonPressed {
-	[self showADK];
+    if(/**/true){
+        [self bringUpSignUp];
+    }else{
+        [self showADK];
+    }
 }
 
 // Scrolls the main scroll view over to reveal the ADK
@@ -222,11 +230,6 @@
 
 #pragma mark - Handle Login -
 
--(void) login {
-//	if(![VerbatmUser currentUser]) {
-//		[self bringUpSignUp];
-//	}
-}
 
 //brings up the login page if there is no user logged in
 -(void)bringUpSignUp {
@@ -246,6 +249,13 @@
 
 //catches the unwind segue - do nothing
 - (IBAction)done:(UIStoryboardSegue *)segue {
+}
+
+
+#pragma mark - Alerts -
+-(void)alertPullTrendingIcon{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
 }
 
 
