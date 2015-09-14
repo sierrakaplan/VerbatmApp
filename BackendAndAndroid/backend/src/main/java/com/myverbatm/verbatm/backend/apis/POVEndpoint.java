@@ -202,12 +202,11 @@ public class POVEndpoint {
         throws ServiceException {
 
         Query.Filter povIdFilter = new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id);
-        Query pagesQuery = new Query("POV")
+        Query pageIdsQuery = new Query("POV")
             .setFilter(povIdFilter)
             .addProjection(new PropertyProjection("pageIds", List.class));
 
-        PreparedQuery preparedQuery = datastore.prepare(pagesQuery);
-        FetchOptions fetchOptions = FetchOptions.Builder.withDefaults();
+        PreparedQuery preparedQuery = datastore.prepare(pageIdsQuery);
 
         Entity entity = preparedQuery.asSingleEntity();
         List<Long> pageIds = (List<Long>) entity.getProperty("pageIds");
