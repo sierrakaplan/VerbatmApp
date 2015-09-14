@@ -49,6 +49,7 @@
 
 #define FEED_CELL_ID @"feed_cell_id"
 #define NUM_POVS_IN_SECTION 6
+#define RELOAD_THRESHOLD 15
 
 @end
 
@@ -61,11 +62,14 @@
 }
 
 -(void) registerForNotifications {
-	[[NSNotificationCenter defaultCenter] addObserver:self
+	
+    [[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(povPublished)
 												 name:NOTIFICATION_POV_PUBLISHED
 											   object:nil];
+    
 }
+
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
@@ -85,7 +89,6 @@
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	return STORY_CELL_HEIGHT;
 }
@@ -143,7 +146,6 @@
 	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
 }
 
-//
 -(void) morePOVsLoaded {
 	if (self.povPublishing) {
 		self.povPublishingPlaceholderCell = nil;
@@ -184,7 +186,9 @@
 	float offset_y =scrollView.contentOffset.y ;
 	if (offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
 		[self createRefreshAnimationOnScrollview:scrollView];
-	}
+    }else if (scrollView.contentOffset.y > RELOAD_THRESHOLD) {
+        
+    }
 }
 
 //sets the frame of the placeholder cell and also adjusts the frame of the placeholder cell
@@ -221,18 +225,11 @@
 	float offset_y =scrollView.contentOffset.y ;
 	if (self.pullDownInProgress &&  offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
 		// [self addFinalAnimationTile];
-	}
-
-
-	//    if (self.pullDownInProgress && - scrollView.contentOffset.y > SHC_ROW_HEIGHT) {
-	//        [self addFinalAnimationTile];
-	//    }
-	//they are no longer pulling this down
+    }
 	self.pullDownInProgress = false;
 }
 
 -(void)addFinalAnimationTile{
-
 	if(!self.refreshInProgress){
 		self.refreshInProgress = YES;
 		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
@@ -242,7 +239,6 @@
 }
 
 -(void)removeAnimatingView{
-
 	[UIView animateWithDuration:0.5 animations:^{
 		self.povListView.contentOffset = CGPointMake(0, STORY_CELL_HEIGHT);
 		self.placeholderCell.frame = CGRectMake(self.placeholderCell.frame.origin.x, (-1 * STORY_CELL_HEIGHT),

@@ -13,5 +13,4 @@
 @interface MasterNavigationVC : baseVC
 
     @property(strong, nonatomic) NSMutableArray * pinchObjects;
-
 @end

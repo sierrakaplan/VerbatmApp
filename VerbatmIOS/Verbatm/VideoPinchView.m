@@ -91,7 +91,6 @@
     NSURL * url = self.video.URL;
     NSError * error;
     NSData * ourData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
-    NSLog(@"%@",error.description);
     return  (ourData) ? @[ourData] : nil;
 }
 

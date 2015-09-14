@@ -33,6 +33,9 @@
 @property (nonatomic) CGPoint lastLeftmostPoint;
 @property (nonatomic) CGPoint lastRightmostPoint;
 
+//for when this is a placeholder cell and the content is being pushed to the cloud
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
+@property (nonatomic) BOOL isPlaceHolder;
 
 #define CIRCLE_DIAMETER (self.frame.size.height - STORY_CELL_PADDING*2)
 
@@ -43,6 +46,7 @@
 - (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle: style reuseIdentifier: reuseIdentifier];
 	if (self) {
+        self.isPlaceHolder = NO;
 	}
 	return self;
 }
@@ -62,6 +66,7 @@
 	[self formatTextSubview];
 	[self formatImagePinchViews];
 	[self addPinchGestureToSelf];
+    if(self.isPlaceHolder)[self startActivityIndicatrForPlaceholder];
 }
 
 -(void) formatSelf {
@@ -173,8 +178,12 @@
 	[self.povTitle setTextColor:[UIColor lightGrayColor]];
 	[self.povCreatorUsername setTextColor:[UIColor lightGrayColor]];
 	[self setContentWithUsername:username andTitle:title andCoverImage:coverImage];
+    self.isPlaceHolder = YES;
 }
 
+-(void)startActivityIndicatrForPlaceholder{
+    [self startActivityIndicator];
+}
 //TODO: make this a category
 -(UIImage*) halfPicture: (UIImage*) image leftHalf:(BOOL) leftHalf {
 	float xOrigin = leftHalf ? 0 : image.size.width/2.f;
@@ -185,17 +194,34 @@
 	return result;
 }
 
+#pragma mark - Activity Indicator -
+//creates an activity indicator on our placeholder view
+//shifts the frame of the indicator if it's on the screen
+-(void)startActivityIndicator {
+        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        self.activityIndicator.alpha = 1.0;
+        self.activityIndicator.hidesWhenStopped = YES;
+        self.activityIndicator.center = self.center;
+        [self addSubview:self.activityIndicator];
+        [self bringSubviewToFront:self.activityIndicator];
+        [self.activityIndicator startAnimating];
+}
+
+-(void)stopActivityIndicator {
+    if(!self.activityIndicator.isAnimating) return;
+    [self.activityIndicator stopAnimating];
+}
+
 #pragma mark - Pinch Gesture -
 
 -(void)addPinchGestureToSelf{
-
 //	UIPinchGestureRecognizer * pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:
 //											   @selector(pinchingSemiCirclesTogether:)];
 	//TODO: [self addGestureRecognizer: pinchGesture];
 }
 
 //moves the views frame to the provided offset
--(void)translateView:(UIView *) view withXOffset:(CGFloat) offset{
+-(void)translateView:(UIView *) view withXOffset:(CGFloat) offset {
 	view.frame = CGRectMake(view.frame.origin.x + offset, view.frame.origin.y, view.frame.size.width,
 							view.frame.size.height);
 }
@@ -245,29 +271,24 @@
 
 
 /*animates the semicircles either to the center or to their sides*/
--(void)positionSemiCirclesCenter:(BOOL)toCenter{
-
+-(void)positionSemiCirclesCenter:(BOOL)toCenter {
 	if(toCenter){
 		[UIView animateWithDuration:0.8 animations:^{
-//			CGPoint  myCenter = self.center;
-
-			//            self.leftSemiCircle.frame = CGRectMake(myCenter.x - ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
-			//            self.rightSemiCircle.frame = CGRectMake(myCenter.x +((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
+            //CGPoint  myCenter = self.center;
+			//self.leftSemiCircle.frame = CGRectMake(myCenter.x - ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
+			//self.rightSemiCircle.frame = CGRectMake(myCenter.x +((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
 		}];
 
 	}else{
 		[UIView animateWithDuration:0.8 animations:^{
-//			CGPoint  myCenter = self.center;
-			//
-			//            self.leftSemiCircle.frame = CGRectMake(myCenter.x - ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
-			//            self.rightSemiCircle.frame = CGRectMake(myCenter.x +((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
+            //CGPoint  myCenter = self.center;
+			//self.leftSemiCircle.frame = CGRectMake(myCenter.x - ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
+			//self.rightSemiCircle.frame = CGRectMake(myCenter.x +((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
 		}];
-
 	}
 }
 
 #pragma mark - Lazy Instantiation -
-
 -(UIImageView *)leftSemiCircle {
 	if(!_leftSemiCircle) {
 		_leftSemiCircle = [[UIImageView alloc] init];
@@ -275,7 +296,6 @@
 	return _leftSemiCircle;
 
 }
-
 -(UIImageView *) rightSemiCircle {
 
 	if(!_rightSemiCircle) {
@@ -283,17 +303,13 @@
 	}
 	return _rightSemiCircle;
 }
-
 -(UILabel *) povTitle {
 	if(!_povTitle)_povTitle = [[UILabel alloc]init];
 	return _povTitle;
 }
-
 -(UILabel *) povCreatorUsername{
 	if(!_povCreatorUsername)_povCreatorUsername = [[UILabel alloc]init];
 	return _povCreatorUsername;
 }
-
-
 @end
 

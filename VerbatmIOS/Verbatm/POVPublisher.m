@@ -7,6 +7,7 @@
 //
 
 
+#import "CollectionPinchView.h"
 
 #import "GTLDateTime.h"
 #import "GTLQueryVerbatmApp.h"
@@ -32,6 +33,7 @@
 
 #import <PromiseKit/PromiseKit.h>
 
+#import "VideoPinchView.h"
 
 @interface POVPublisher()
 
@@ -181,9 +183,14 @@
 // So this promise should resolve to an array of gtl video id's
 -(PMKPromise*) storeVideosFromPinchView: (PinchView*) pinchView {
 	NSMutableArray *storeVideosPromise = [NSMutableArray array];
-
 	if(pinchView.containsVideo) {
-		NSArray* pinchViewVideos = [pinchView getVideosInDataFormat];
+        NSArray* pinchViewVideos = @[];
+        if([pinchView isKindOfClass:[CollectionPinchView class]]){
+            pinchViewVideos = [((CollectionPinchView *)pinchView) getVideosInDataFormat];
+        }else if ([pinchView isKindOfClass:[VideoPinchView class]]){
+            pinchViewVideos = [((VideoPinchView *)pinchView) getVideosInDataFormat];
+        }
+        
         if(!pinchViewVideos)return nil;
 		for (int i = 0; i < pinchViewVideos.count; i++) {
 			NSData* videoData = pinchViewVideos[i];
