@@ -73,6 +73,7 @@
 										   NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
 	self.previewLabel = [self getLabelWithParentFrame:previewButtonFrame andText:@"PREVIEW"];
 	self.previewButton = [self getButtonWithFrame: previewButtonFrame];
+    [self.previewLabel setTextColor:[UIColor PREVIEW_PUBLISH_COLOR]];
 	[self.previewButton addTarget:self action:@selector(previewButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 	[self.previewButton addSubview:self.previewLabel];
 	[self enablePreviewInMenuMode: NO];
@@ -189,9 +190,11 @@
 
 -(void) enablePreview: (BOOL) enable {
 	if (enable) {
-		[self.previewLabel setTextColor: [UIColor blackColor]];
+		[self.previewLabel setTextColor: [UIColor PREVIEW_PUBLISH_COLOR]];
 	} else {
 		[self.previewLabel setTextColor: [UIColor lightGrayColor]];
+        
+        //[UIColor colorWit//hRed:<#(CGFloat)#> green:<#(CGFloat)#> blue:<#(CGFloat)#> alpha:<#(CGFloat)#>]
 	}
 	[self.previewButton setEnabled: enable];
 }

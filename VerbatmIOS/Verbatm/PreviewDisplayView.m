@@ -90,7 +90,7 @@
 #pragma mark - Set Up Views -
 
 -(void) setUpPublishButton {
-	CGRect publishButtonFrame = CGRectMake(self.viewingFrame.origin.x + PUBLISH_BUTTON_OFFSET, PUBLISH_BUTTON_OFFSET, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+	CGRect publishButtonFrame = CGRectMake(self.viewingFrame.size.width - PUBLISH_BUTTON_OFFSET - PUBLISH_BUTTON_SIZE, 0, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
 
 	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.publishButton setFrame: publishButtonFrame];
@@ -103,12 +103,11 @@
 }
 
 -(void) setUpBackButton {
-	CGRect backButtonFrame = CGRectMake(self.viewingFrame.size.width - BACK_BUTTON_OFFSET - NAV_ICON_SIZE,
+	CGRect backButtonFrame = CGRectMake(BACK_BUTTON_OFFSET,
 										BACK_BUTTON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
-
 	self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.backButton setFrame: backButtonFrame];
-	[self.backButton setImage:[UIImage imageNamed:BACK_ARROW_RIGHT] forState:UIControlStateNormal];
+	[self.backButton setImage:[UIImage imageNamed:BACK_ARROW_LEFT] forState:UIControlStateNormal];
 	self.backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self.backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }

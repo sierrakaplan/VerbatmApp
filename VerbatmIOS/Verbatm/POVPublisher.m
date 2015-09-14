@@ -173,7 +173,7 @@
 	return PMKWhen(storeImagesPromise).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error uploading POV: %@", error.description);
-	});;
+	});
 }
 
 // when(stored every video)
@@ -184,7 +184,7 @@
 
 	if(pinchView.containsVideo) {
 		NSArray* pinchViewVideos = [pinchView getVideosInDataFormat];
-
+        if(!pinchViewVideos)return nil;
 		for (int i = 0; i < pinchViewVideos.count; i++) {
 			NSData* videoData = pinchViewVideos[i];
 			[storeVideosPromise addObject: [self storeVideo:videoData withIndex:i]];

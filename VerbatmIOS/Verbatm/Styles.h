@@ -15,10 +15,14 @@
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 
 #define NAV_BAR_COLOR whiteColor
+#define PREVIEW_PUBLISH_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
 
 #define FILTER_LEVEL_BLUR 30
 #define BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
 #define BUTTON_LABEL_SHADOW_YOFFSET 1.5f
+
+
+
 
 #pragma mark - Sign In -
 
@@ -84,7 +88,7 @@
 #pragma mark Preview
 
 #define PUBLISH_BUTTON_LABEL_FONT_SIZE PREVIEW_BUTTON_FONT_SIZE
-#define PUBLISH_BUTTON_LABEL_COLOR blackColor
+#define PUBLISH_BUTTON_LABEL_COLOR PREVIEW_PUBLISH_COLOR
 
 
 #pragma mark - AVES -

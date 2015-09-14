@@ -438,9 +438,7 @@
 	newElementScrollView.delegate = self;
     newElementScrollView.customDelegate = self;
 
-	if (self.numPinchViews < 1) {
-		[self.changePullBarDelegate canPreview:YES];
-	}
+    [self.changePullBarDelegate canPreview:YES];
 	self.numPinchViews++;
 
 	//thread safety
@@ -1669,8 +1667,6 @@
 		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
 	}
 	if (newPinchView) {
-       
-        
         [self newPinchView:newPinchView belowView:nil];
 	}
 }
@@ -1703,7 +1699,6 @@
 				});
 			}];
 		}else {
-            
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 				dispatch_async(dispatch_get_main_queue(), ^{
@@ -1733,7 +1728,6 @@
 		dispatch_async(dispatch_get_main_queue(), ^{
 			UIImage* image = [[UIImage alloc] initWithData: imageData];
 			image = [UIEffects fixOrientation:image];
-			image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds: self.coverPicView.frame]];
 			[self.coverPicView setImage: image];
 		});
 	}];
