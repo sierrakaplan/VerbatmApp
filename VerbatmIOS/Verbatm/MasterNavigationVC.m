@@ -110,9 +110,10 @@
 
 #pragma mark - Nav Buttons Pressed Delegate -
 
+//TODO: change these to check if user is logged in
 //nav button is pressed - so we move the SV left to the profile
 -(void) profileButtonPressed {
-    if(/**/true){
+    if(false){
         [self bringUpSignUp];
     }else{
         [self showProfile];
@@ -121,7 +122,7 @@
 
 //nav button is pressed so we move the SV right to the ADK
 -(void) adkButtonPressed {
-    if(/**/true){
+    if(false){
         [self bringUpSignUp];
     }else{
         [self showADK];
