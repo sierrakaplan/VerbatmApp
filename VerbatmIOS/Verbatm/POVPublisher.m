@@ -35,12 +35,29 @@
 
 @interface POVPublisher()
 
+@property(nonatomic, strong) NSArray* pinchViews;
+@property(nonatomic, strong) NSString* title;
+@property(nonatomic, strong) UIImage* coverPic;
+
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
-@property(nonatomic, strong) MediaUploader* coverPicUploader;
+
+//retains reference to media uploaders since their tasks are performed async
+@property(nonatomic, strong) NSMutableArray* mediaUploaders;
 
 @end
 
 @implementation POVPublisher
+
+
+-(instancetype) initWithPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+	self = [super init];
+	if (self) {
+		self.pinchViews = pinchViews;
+		self.title = title;
+		self.coverPic = coverPic;
+	}
+	return self;
+}
 
 /*
  think recursive:
@@ -62,18 +79,18 @@
  (get video upload uri) then (upload video to blobstore using uri) then (store gtlvideo with blob key string) resolves to video id
  */
 
-- (void) publishPOVFromPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+- (void) publish {
 
 	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
 	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 	povObject.numUpVotes = [NSNumber numberWithInt: 0];
-	povObject.title = title;
+	povObject.title = self.title;
 	//TODO: get user
 	povObject.creatorUserId = [NSNumber numberWithLongLong:1];
 
 	// when (saved cover pic serving url + saved page ids) upload pov
-	PMKPromise* storeCoverPicPromise = [self storeCoverPicture: coverPic];
-	PMKPromise* storePagesPromise = [self storePagesFromPinchViews: pinchViews];
+	PMKPromise* storeCoverPicPromise = [self storeCoverPicture: self.coverPic];
+	PMKPromise* storePagesPromise = [self storePagesFromPinchViews: self.pinchViews];
 	PMKWhen(@[storeCoverPicPromise, storePagesPromise]).then(^(NSArray* results) {
 		// storeCoverPicPromise should resolve to the serving url of the cover pic
 		povObject.coverPicUrl = results[0];
@@ -85,7 +102,6 @@
 		//This can catch at any part in the chain
 		NSLog(@"Error uploading POV: %@", error.description);
 	});
-
 }
 
 // (get Image upload uri) then (upload cover pic to blobstore using uri)
@@ -94,8 +110,9 @@
 -(PMKPromise*) storeCoverPicture: (UIImage*) coverPic {
 	return [self getImageUploadURI].then(^(NSString* uri) {
 
-		self.coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uri];
-		return [self.coverPicUploader startUpload];
+		MediaUploader* coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uri];
+		[self.mediaUploaders addObject: coverPicUploader];
+		return [coverPicUploader startUpload];
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error uploading POV: %@", error.description);
@@ -185,6 +202,7 @@
 -(PMKPromise*) storeImage: (UIImage*) image withIndex: (NSInteger) indexInPage {
 	return [self getImageUploadURI].then(^(NSString* uri) {
 		MediaUploader* imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
+		[self.mediaUploaders addObject: imageUploader];
 		return [imageUploader startUpload];
 	}).then(^(NSString* servingURL) {
 		GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
@@ -202,6 +220,7 @@
 -(PMKPromise*) storeVideo: (NSData*) videoData withIndex: (NSInteger) indexInPage {
 	return [self getVideoUploadURI].then(^(NSString* uri) {
 		MediaUploader* videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
+		[self.mediaUploaders addObject: videoUploader];
 		return [videoUploader startUpload];
 	}).then(^(NSString* blobstoreKeyString) {
 		GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
@@ -335,6 +354,13 @@
 	}
 
 	return _service;
+}
+
+-(NSMutableArray *) mediaUploaders {
+	if(!_mediaUploaders) {
+		_mediaUploaders = [[NSMutableArray alloc] init];
+	}
+	return _mediaUploaders;
 }
 
 @end

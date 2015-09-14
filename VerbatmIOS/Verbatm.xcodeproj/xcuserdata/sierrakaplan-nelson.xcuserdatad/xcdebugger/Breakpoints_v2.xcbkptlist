@@ -136,11 +136,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaDevVC.m"
-            timestampString = "463775559.134367"
+            timestampString = "463881836.79211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "642"
-            endingLineNumber = "642"
+            startingLineNumber = "639"
+            endingLineNumber = "639"
             landmarkName = "-canPreview:"
             landmarkType = "5">
          </BreakpointContent>
@@ -384,12 +384,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVPublisher.m"
-            timestampString = "463878041.989528"
+            timestampString = "463881836.79211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
-            landmarkName = "-publishPOVFromPinchViews:andTitle:andCoverPic:"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
+            landmarkName = "-publish"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -400,12 +400,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVPublisher.m"
-            timestampString = "463878041.989528"
+            timestampString = "463881836.79211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "78"
-            endingLineNumber = "78"
-            landmarkName = "-publishPOVFromPinchViews:andTitle:andCoverPic:"
+            startingLineNumber = "95"
+            endingLineNumber = "95"
+            landmarkName = "-publish"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -416,11 +416,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVPublisher.m"
-            timestampString = "463878041.989528"
+            timestampString = "463881836.79211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
             landmarkName = "-storeCoverPicture:"
             landmarkType = "5">
          </BreakpointContent>
@@ -432,11 +432,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVPublisher.m"
-            timestampString = "463878041.989528"
+            timestampString = "463881836.79211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "111"
-            endingLineNumber = "111"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
             landmarkName = "-storePagesFromPinchViews:"
             landmarkType = "5">
          </BreakpointContent>
