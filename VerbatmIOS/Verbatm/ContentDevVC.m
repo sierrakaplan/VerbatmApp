@@ -49,8 +49,8 @@
 
 
 @interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,
-							GMImagePickerControllerDelegate, EditContentViewDelegate,
-                            ContentSVDelegate>
+GMImagePickerControllerDelegate, EditContentViewDelegate,
+ContentSVDelegate>
 
 
 // Says whether or not user is currently adding a cover picture
@@ -130,7 +130,7 @@
 #pragma mark - Initialization And Instantiation -
 
 - (void)viewDidLoad{
-    
+
 	[super viewDidLoad];
 	[self addBlurView];
 	[self setFrameMainScrollView];
@@ -144,8 +144,8 @@
 
 	self.pinchingMode = PinchingModeNone;
 	self.numPinchViews = 0;
-    self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
-    self.pinchObject_TappedAndClosed_ForTheFirstTime = NO;
+	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
+	self.pinchObject_TappedAndClosed_ForTheFirstTime = NO;
 }
 
 -(void) addBlurView {
@@ -154,10 +154,10 @@
 
 -(void) setFrameMainScrollView {
 	self.mainScrollView.frame= self.view.frame;
-    self.mainScrollView.scrollEnabled = YES;
-    self.mainScrollView.bounces = YES;
-    //just to give it initial bounce
-    self.mainScrollView.contentSize = CGSizeMake(0, BASE_MAINSCROLLVIEW_CONTENT_SIZE);
+	self.mainScrollView.scrollEnabled = YES;
+	self.mainScrollView.bounces = YES;
+	//just to give it initial bounce
+	self.mainScrollView.contentSize = CGSizeMake(0, BASE_MAINSCROLLVIEW_CONTENT_SIZE);
 }
 
 
@@ -318,8 +318,8 @@
 -(void) adjustMainScrollViewContentSize {
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 		ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
-        float y_Offset = (self.pageElementScrollViews.count == 1 ) ? BASE_MAINSCROLLVIEW_CONTENT_SIZE :lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET;
-        
+		float y_Offset = (self.pageElementScrollViews.count == 1 ) ? BASE_MAINSCROLLVIEW_CONTENT_SIZE :lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET;
+
 		self.mainScrollView.contentSize = CGSizeMake(0,y_Offset);
 	}];
 }
@@ -374,7 +374,7 @@
 ////Otherwise scroll it back
 //-(void) deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView {
 //    return;//temp
-//    
+//
 //    if (self.pinchingMode != PinchingModeNone || scrollView.collectionIsOpen){
 //		return;
 //	}
@@ -389,7 +389,7 @@
 
 
 -(void)contentPageScrollViewShouldDelete:(ContentPageElementScrollView*)scrollView {
-    [self deleteScrollView:scrollView];
+	[self deleteScrollView:scrollView];
 }
 
 
@@ -398,7 +398,7 @@
 	if (![self.pageElementScrollViews containsObject:scrollView]){
 		return;
 	}
-    
+
 	NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
 	[scrollView removeFromSuperview];
 	[self.pageElementScrollViews removeObject:scrollView];
@@ -436,7 +436,7 @@
 	}
 	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
 	newElementScrollView.delegate = self;
-    newElementScrollView.customDelegate = self;
+	newElementScrollView.customDelegate = self;
 
     [self.changePullBarDelegate canPreview:YES];
 	self.numPinchViews++;
@@ -466,7 +466,7 @@
 		return;
 	}
 	if(![view isKindOfClass:[ContentPageElementScrollView class]]
-				  && ![view isKindOfClass:[CoverPicturePinchView class]]) {
+	   && ![view isKindOfClass:[CoverPicturePinchView class]]) {
 		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
 		return;
 	}
@@ -492,8 +492,8 @@
 
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 			currentView.frame = frame;
-            //make sure everything is centered
-            [currentView centerView];
+			//make sure everything is centered
+			[currentView centerView];
 		}];
 		firstYCoordinate+= frame.size.height;
 	}
@@ -637,7 +637,7 @@
 				[self handleHorizontalPinchGestureChanged:sender];
 
 			} else if ((self.pinchingMode == PinchingModeVertical)
-					  && self.lowerPinchScrollView && self.upperPinchScrollView) {
+					   && self.lowerPinchScrollView && self.upperPinchScrollView) {
 				[self handleVerticlePinchGestureChanged:sender];
 			}
 			break;
@@ -671,36 +671,36 @@
 
 	} /* else if (self.newlyCreatedMediaTile) {
 
-		//new media creation has failed
-		if(self.newlyCreatedMediaTile.frame.size.height != self.baseMediaTileSelector.frame.size.height){
-			[self animateRemoveNewMediaTile];
-			return;
-		}
-		self.newlyCreatedMediaTile = nil;
-	} */
+	   //new media creation has failed
+	   if(self.newlyCreatedMediaTile.frame.size.height != self.baseMediaTileSelector.frame.size.height){
+	   [self animateRemoveNewMediaTile];
+	   return;
+	   }
+	   self.newlyCreatedMediaTile = nil;
+	   } */
 
 	[self shiftElementsBelowView: self.coverPicView];
 	self.pinchingMode = PinchingModeNone;
 }
 
 /* NO LONGER IN USE
--(void) animateRemoveNewMediaTile {
+ -(void) animateRemoveNewMediaTile {
 	float originalHeight = self.newlyCreatedMediaTile.frame.size.height;
 	[self.pageElementScrollViews removeObject:self.newlyCreatedMediaTile.superview];
 	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION/2.f animations:^{
-		self.newlyCreatedMediaTile.alpha = 0.f;
-		self.newlyCreatedMediaTile.frame = [self getStartFrameForNewMediaTile];
-		self.newlyCreatedMediaTile.superview.frame = CGRectMake(0,self.newlyCreatedMediaTile.superview.frame.origin.y + originalHeight/2.f,
-																self.newlyCreatedMediaTile.superview.frame.size.width, 0);
-		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self shiftElementsBelowView: self.coverPicView];
+ self.newlyCreatedMediaTile.alpha = 0.f;
+ self.newlyCreatedMediaTile.frame = [self getStartFrameForNewMediaTile];
+ self.newlyCreatedMediaTile.superview.frame = CGRectMake(0,self.newlyCreatedMediaTile.superview.frame.origin.y + originalHeight/2.f,
+ self.newlyCreatedMediaTile.superview.frame.size.width, 0);
+ [self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+ [self shiftElementsBelowView: self.coverPicView];
 
 	} completion:^(BOOL finished) {
-		[self.newlyCreatedMediaTile.superview removeFromSuperview];
-		self.newlyCreatedMediaTile = nil;
-		self.pinchingMode = PinchingModeNone;
+ [self.newlyCreatedMediaTile.superview removeFromSuperview];
+ self.newlyCreatedMediaTile = nil;
+ self.pinchingMode = PinchingModeNone;
 	}];
-}
+ }
  */
 
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
@@ -762,20 +762,20 @@
 -(void)handleHorizontalPinchGestureChanged:(UIGestureRecognizer *) sender {
 	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
 	CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
-    
+
 	// touch1 is left most pinch
 	if(touch1.x > touch2.x) {
 		CGPoint temp = touch1;
 		touch1 = touch2;
 		touch2 = temp;
 	}
-    
+
 	float leftDifference = touch1.x- self.leftTouchPointInHorizontalPinch.x;
 	float rightDifference = touch2.x - self.rightTouchPointInHorizontalPinch.x;
 	self.rightTouchPointInHorizontalPinch = touch2;
 	self.leftTouchPointInHorizontalPinch = touch1;
 	self.horizontalPinchDistance += (leftDifference - rightDifference);
-    
+
 	[self.scrollViewOfHorizontalPinching moveViewsWithTotalDifference:self.horizontalPinchDistance];
 
 	//they have pinched enough to join the objects
@@ -824,9 +824,9 @@
 	[self findElementsFromPinchPoint];
 
 	/* NO LONGER IN USE - if it's a pinch apart then create the media tile
-	if(self.upperPinchScrollView && self.lowerPinchScrollView && sender.scale > 1) {
+	 if(self.upperPinchScrollView && self.lowerPinchScrollView && sender.scale > 1) {
 		[self createNewMediaTileBetweenPinchViews];
-	}
+	 }
 	 */
 }
 
@@ -834,7 +834,7 @@
 	if (!([gesture numberOfTouches] == 2)) {
 		return;
 	}
-	
+
 	CGPoint touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
 	CGPoint touch2 = [gesture locationOfTouch:1 inView:self.mainScrollView];
 
@@ -845,16 +845,16 @@
 		touch2 = temp;
 	}
 
-	#pragma GCC diagnostic ignored "-Wunused-variable"
+#pragma GCC diagnostic ignored "-Wunused-variable"
 	float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
 	float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
 
 	/* NO LONGER IN USE - objects are being pinched apart
-	if(gesture.scale > 1) {
+	 if(gesture.scale > 1) {
 		[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
-					  andChangeInBottomViewPosition:changeInBottomViewPosition];
+	 andChangeInBottomViewPosition:changeInBottomViewPosition];
 
-	} */
+	 } */
 
 	//objects are being pinched together
 	if (gesture.scale < 1) {
@@ -894,7 +894,7 @@
 #pragma mark Pinching Apart two Pinch views, Adding media tile - NO LONGER IN USE -
 
 /* NO LONGER IN USE
--(void) createNewMediaTileBetweenPinchViews {
+ -(void) createNewMediaTileBetweenPinchViews {
 	CGRect frame = [self getStartFrameForNewMediaTile];
 	MediaSelectTile* newMediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
 	newMediaTile.delegate = self;
@@ -902,12 +902,12 @@
 	newMediaTile.isBaseSelector = NO;
 	[self addMediaTile: newMediaTile underView: self.upperPinchScrollView];
 	self.newlyCreatedMediaTile = newMediaTile;
-}
+ }
 
--(void) addMediaTile: (MediaSelectTile *) mediaTile underView: (ContentPageElementScrollView *) topView {
+ -(void) addMediaTile: (MediaSelectTile *) mediaTile underView: (ContentPageElementScrollView *) topView {
 	if(!mediaTile) {
-		NSLog(@"Can't add nil media tile");
-		return;
+ NSLog(@"Can't add nil media tile");
+ return;
 	}
 
 	CGRect newMediaTileScrollViewFrame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
@@ -915,91 +915,91 @@
 	newMediaTileScrollView.delegate = self;
 	[self.mainScrollView addSubview:newMediaTileScrollView];
 	[self storeView:newMediaTileScrollView inArrayAsBelowView:topView];
-}
+ }
 
--(CGRect) getStartFrameForNewMediaTile {
+ -(CGRect) getStartFrameForNewMediaTile {
 	return CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),0, 0, 0);
-}
+ }
 
--(CGRect) getStartFrameForNewMediaTileScrollViewUnderView: (ContentPageElementScrollView *) topView  {
+ -(CGRect) getStartFrameForNewMediaTileScrollViewUnderView: (ContentPageElementScrollView *) topView  {
 	return CGRectMake(topView.frame.origin.x, topView.frame.origin.y +topView.frame.size.height, self.view.frame.size.width,0);
-}
+ }
 
-//media tile grows from the center as the gesture expands
--(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture andChangeInTopViewPosition:(float)changeInTopViewPosition andChangeInBottomViewPosition:(float) changeInBottomViewPosition {
+ //media tile grows from the center as the gesture expands
+ -(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture andChangeInTopViewPosition:(float)changeInTopViewPosition andChangeInBottomViewPosition:(float) changeInBottomViewPosition {
 
 	float totalChange = fabs(changeInTopViewPosition) + fabs(changeInBottomViewPosition);
 	float widthToHeightRatio = self.baseMediaTileSelector.frame.size.width/self.baseMediaTileSelector.frame.size.height;
 	float changeInWidth = widthToHeightRatio * totalChange;
 	float mediaTileChangeInHeight = totalChange* (self.baseMediaTileSelector.frame.size.height
-												  /self.baseMediaTileSelector.superview.frame.size.height);
+ /self.baseMediaTileSelector.superview.frame.size.height);
 	//media tile top is in relation to its superview and should change based on its height
 	float mediaTileChangeInTop = mediaTileChangeInHeight * (self.baseMediaTileSelector.frame.origin.y
-															/self.baseMediaTileSelector.frame.size.height);
+ /self.baseMediaTileSelector.frame.size.height);
 
 	if(self.newlyCreatedMediaTile.superview.frame.size.height < PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION) {
 
-		//construct new frames for view and personal scroll view
-		self.newlyCreatedMediaTile.frame = CGRectMake(self.newlyCreatedMediaTile.frame.origin.x - changeInWidth/2.f,
-												 self.newlyCreatedMediaTile.frame.origin.y + mediaTileChangeInTop,
-												 self.newlyCreatedMediaTile.frame.size.width + changeInWidth,
-												 self.newlyCreatedMediaTile.frame.size.height + mediaTileChangeInHeight);
+ //construct new frames for view and personal scroll view
+ self.newlyCreatedMediaTile.frame = CGRectMake(self.newlyCreatedMediaTile.frame.origin.x - changeInWidth/2.f,
+ self.newlyCreatedMediaTile.frame.origin.y + mediaTileChangeInTop,
+ self.newlyCreatedMediaTile.frame.size.width + changeInWidth,
+ self.newlyCreatedMediaTile.frame.size.height + mediaTileChangeInHeight);
 
-		//have it gain visibility as it grows
-		self.newlyCreatedMediaTile.alpha = self.newlyCreatedMediaTile.frame.size.height/self.baseMediaTileSelector.frame.size.height;
+ //have it gain visibility as it grows
+ self.newlyCreatedMediaTile.alpha = self.newlyCreatedMediaTile.frame.size.height/self.baseMediaTileSelector.frame.size.height;
 
-		self.newlyCreatedMediaTile.superview.frame = CGRectMake(self.newlyCreatedMediaTile.superview.frame.origin.x,
-														   self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
-														   self.newlyCreatedMediaTile.superview.frame.size.width,
-														   self.newlyCreatedMediaTile.superview.frame.size.height + totalChange);
+ self.newlyCreatedMediaTile.superview.frame = CGRectMake(self.newlyCreatedMediaTile.superview.frame.origin.x,
+ self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
+ self.newlyCreatedMediaTile.superview.frame.size.width,
+ self.newlyCreatedMediaTile.superview.frame.size.height + totalChange);
 
 
-		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self.newlyCreatedMediaTile setNeedsDisplay];
+ [self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+ [self.newlyCreatedMediaTile setNeedsDisplay];
 
 	}
 	//the distance is enough that we can just animate the rest
 	else {
-		[self animateNewMediaTileToFinalPosition:gesture andChangeInTopViewPosition:changeInTopViewPosition];
+ [self animateNewMediaTileToFinalPosition:gesture andChangeInTopViewPosition:changeInTopViewPosition];
 	}
-}
+ }
 
--(void) animateNewMediaTileToFinalPosition:(UIPinchGestureRecognizer *)gesture andChangeInTopViewPosition:(float)changeInTopViewPosition {
+ -(void) animateNewMediaTileToFinalPosition:(UIPinchGestureRecognizer *)gesture andChangeInTopViewPosition:(float)changeInTopViewPosition {
 	gesture.enabled = NO;
 	gesture.enabled = YES;
 
 	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
 
-		self.newlyCreatedMediaTile.frame = self.baseMediaTileSelector.frame;
-		self.newlyCreatedMediaTile.alpha = 1; //make it fully visible
+ self.newlyCreatedMediaTile.frame = self.baseMediaTileSelector.frame;
+ self.newlyCreatedMediaTile.alpha = 1; //make it fully visible
 
-		self.newlyCreatedMediaTile.superview.frame = CGRectMake(self.newlyCreatedMediaTile.superview.frame.origin.x,
-																self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
-																self.baseMediaTileSelector.superview.frame.size.width,
-																self.baseMediaTileSelector.superview.frame.size.height);
+ self.newlyCreatedMediaTile.superview.frame = CGRectMake(self.newlyCreatedMediaTile.superview.frame.origin.x,
+ self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
+ self.baseMediaTileSelector.superview.frame.size.width,
+ self.baseMediaTileSelector.superview.frame.size.height);
 
-		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self shiftElementsBelowView: self.coverPicView];
+ [self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+ [self shiftElementsBelowView: self.coverPicView];
 	} completion:^(BOOL finished) {
-		[self shiftElementsBelowView: self.coverPicView];
-		gesture.enabled = NO;
-		gesture.enabled = YES;
-		self.pinchingMode = PinchingModeNone;
-		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self.newlyCreatedMediaTile formatButtons];
+ [self shiftElementsBelowView: self.coverPicView];
+ gesture.enabled = NO;
+ gesture.enabled = YES;
+ self.pinchingMode = PinchingModeNone;
+ [self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+ [self.newlyCreatedMediaTile formatButtons];
 	}];
-}
+ }
 
-#pragma mark Pinch Apart Failed
+ #pragma mark Pinch Apart Failed
 
-//Removes the new view being made and resets page
--(void) clearMediaTile:(MediaSelectTile*)mediaTile {
+ //Removes the new view being made and resets page
+ -(void) clearMediaTile:(MediaSelectTile*)mediaTile {
 	[mediaTile.superview removeFromSuperview];
 	[self.pageElementScrollViews removeObject:mediaTile.superview];
 	[self shiftElementsBelowView: self.coverPicView];
-}
- 
-*/
+ }
+
+ */
 
 #pragma mark Pinching Views together
 
@@ -1093,9 +1093,9 @@
 
 
 -(BOOL)sufficientOverlapBetweenPinchedObjects {
-    if(self.upperPinchScrollView.frame.origin.y+(self.upperPinchScrollView.frame.size.height/2)>= self.lowerPinchScrollView.frame.origin.y){
-        return true;
-    }
+	if(self.upperPinchScrollView.frame.origin.y+(self.upperPinchScrollView.frame.size.height/2)>= self.lowerPinchScrollView.frame.origin.y){
+		return true;
+	}
 	return false;
 }
 
@@ -1103,27 +1103,27 @@
 
 #pragma mark - Media Tile Options NO LONGER IN USE -
 /* NO LONGER IN USE
-#pragma mark Text
--(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
+ #pragma mark Text
+ -(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
 	[self.changePullBarDelegate showPullBar:NO withTransition:NO];
 	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
 	self.index = (index-1);
 	[self createEditContentViewFromPinchView:nil];
 	if (!tile.isBaseSelector) {
-		[self clearMediaTile:tile];
+ [self clearMediaTile:tile];
 	}
-}
+ }
 
--(void) multiMediaButtonPressedOnTile: (MediaSelectTile*) tile {
+ -(void) multiMediaButtonPressedOnTile: (MediaSelectTile*) tile {
 	[self.changePullBarDelegate showPullBar:NO withTransition:NO];
 	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
 	self.index = (index-1);
 	[self presentEfficientGallery];
 	if (!tile.isBaseSelector) {
-		[self clearMediaTile:tile];
+ [self clearMediaTile:tile];
 	}
-}
-*/
+ }
+ */
 
 #pragma  mark - Add cover picture -
 
@@ -1201,10 +1201,10 @@
 			self.selectedView_PAN = self.pageElementScrollViews[i];
 
 			/* NO LONGER IN USE can't select the base tile selector
-			if (self.selectedView_PAN.pageElement == self.baseMediaTileSelector) {
+			 if (self.selectedView_PAN.pageElement == self.baseMediaTileSelector) {
 				self.selectedView_PAN = nil;
 				return;
-			} */
+			 } */
 			[self.mainScrollView bringSubviewToFront:self.selectedView_PAN];
 			return;
 		}
@@ -1247,10 +1247,10 @@
 	CGRect newFrame = [self newVerticalTranslationFrameForView:self.selectedView_PAN andChange:yDifference];
 
 	/* NO LONGER IN USE view can't move below bottom media tile
-	if(bottomView && bottomView.pageElement == self.baseMediaTileSelector
-	   &&  ((newFrame.origin.y + newFrame.size.height) >= bottomView.frame.origin.y)) {
+	 if(bottomView && bottomView.pageElement == self.baseMediaTileSelector
+	 &&  ((newFrame.origin.y + newFrame.size.height) >= bottomView.frame.origin.y)) {
 		return;
-	} */
+	 } */
 
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
@@ -1266,7 +1266,7 @@
 	}
 	//check if object has moved down the halfway mark of the view below it, if so swap them
 	else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) +CENTERING_OFFSET_FOR_TEXT_VIEW
-	   > bottomView.frame.origin.y) {
+			> bottomView.frame.origin.y) {
 		[self swapWithBottomView: bottomView];
 	}
 
@@ -1277,7 +1277,7 @@
 
 //swap currently selected item's frame with view above it
 -(void) swapWithTopView: (ContentPageElementScrollView*) topView {
-    
+
 	[self swapScrollView:self.selectedView_PAN andScrollView: topView];
 
 	//important that objects may not be the same height
@@ -1285,8 +1285,8 @@
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
 		CGRect potentialFrame = CGRectMake(topView.frame.origin.x, topView.frame.origin.y,
-													   self.previousFrameInLongPress.size.width,
-													   self.previousFrameInLongPress.size.height);
+										   self.previousFrameInLongPress.size.width,
+										   self.previousFrameInLongPress.size.height);
 
 		topView.frame = CGRectMake(self.previousFrameInLongPress.origin.x,
 								   self.previousFrameInLongPress.origin.y + heightDiff,
@@ -1297,16 +1297,16 @@
 
 //swap currently selected item's frame with view below it
 -(void) swapWithBottomView: (ContentPageElementScrollView*) bottomView {
-    
+
 	[self swapScrollView: self.selectedView_PAN andScrollView: bottomView];
 	//important that objects may not be the same height
 	float heightDiff = bottomView.frame.size.height - self.previousFrameInLongPress.size.height;
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
 		CGRect potentialFrame = CGRectMake(bottomView.frame.origin.x,
-													   bottomView.frame.origin.y + heightDiff,
-													   self.previousFrameInLongPress.size.width,
-													   self.previousFrameInLongPress.size.height);
+										   bottomView.frame.origin.y + heightDiff,
+										   self.previousFrameInLongPress.size.width,
+										   self.previousFrameInLongPress.size.height);
 
 		bottomView.frame = CGRectMake(self.previousFrameInLongPress.origin.x,
 									  self.previousFrameInLongPress.origin.y,
@@ -1378,8 +1378,8 @@
 
 //swaps scroll views in the pageElementScrollView array
 -(void) swapScrollView: (ContentPageElementScrollView *) scrollView1 andScrollView: (ContentPageElementScrollView *) scrollView2 {
-	 NSInteger index1 = [self.pageElementScrollViews indexOfObject: scrollView1];
-	 NSInteger index2 = [self.pageElementScrollViews indexOfObject: scrollView2];
+	NSInteger index1 = [self.pageElementScrollViews indexOfObject: scrollView1];
+	NSInteger index2 = [self.pageElementScrollViews indexOfObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index1 withObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index2 withObject: scrollView1];
 }
@@ -1435,7 +1435,7 @@
 
 	//ungray out undo if previously was grayed out
 	if (![self.tileSwipeViewUndoManager canUndo]) {
-//		[self.changePullBarDelegate canUndo:YES];
+		//		[self.changePullBarDelegate canUndo:YES];
 	}
 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
 	//show the pullbar so that they can undo
@@ -1445,7 +1445,7 @@
 -(void)undoTileDeleteSwipe {
 	[self.tileSwipeViewUndoManager undo];
 	if(![self.tileSwipeViewUndoManager canUndo]) {
-//		[self.changePullBarDelegate canUndo:NO];
+		//		[self.changePullBarDelegate canUndo:NO];
 	}
 }
 
@@ -1475,7 +1475,7 @@
 	if(index) {
 		ContentPageElementScrollView * upperScrollView = self.pageElementScrollViews[(index -1)];
 		scrollView.frame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height,
-								 upperScrollView.frame.size.width, upperScrollView.frame.size.height);
+									  upperScrollView.frame.size.width, upperScrollView.frame.size.height);
 
 	} else {
 		scrollView.frame = CGRectMake(0,self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
@@ -1521,10 +1521,10 @@
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[self.openPinchView renderMedia];
 	self.openPinchView = nil;
-    
-    if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
-        //[self alertPinchElementsTogether];
-    }
+
+	if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
+		//[self alertPinchElementsTogether];
+	}
 }
 
 
@@ -1548,12 +1548,12 @@
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
-    }else{
-        self.openPinchView = pinchView;
-        //tap to open an element for viewing or editing
-        [self presentEditContentView];
-        
-    }
+	}else{
+		self.openPinchView = pinchView;
+		//tap to open an element for viewing or editing
+		[self presentEditContentView];
+
+	}
 }
 
 
@@ -1562,27 +1562,27 @@
 // This should never be called on a collection pinch view, only on text, image, or video
 //modally presents the edit content view
 -(void) presentEditContentView {
-    [self performSegueWithIdentifier:BRING_UP_EDITCONTENT_SEGUE sender:self];
+	[self performSegueWithIdentifier:BRING_UP_EDITCONTENT_SEGUE sender:self];
 }
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if([segue.identifier isEqualToString:BRING_UP_EDITCONTENT_SEGUE]) {
-        EditContentVC *vc =  (EditContentVC *)segue.destinationViewController;
-        vc.pinchView = self.openPinchView;
-        vc.editContentMode_Photo_TappedOpenForTheFirst = self.pinchObject_TappedAndClosed_ForTheFirstTime;
-    }
+	if([segue.identifier isEqualToString:BRING_UP_EDITCONTENT_SEGUE]) {
+		EditContentVC *vc =  (EditContentVC *)segue.destinationViewController;
+		vc.pinchView = self.openPinchView;
+		vc.editContentMode_Photo_TappedOpenForTheFirst = self.pinchObject_TappedAndClosed_ForTheFirstTime;
+	}
 }
 
 - (IBAction)done:(UIStoryboardSegue *)segue{
-     if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
-         EditContentVC *vc = (EditContentVC *)segue.sourceViewController;
-         if(self.openPinchView.containsImage) {
-             [(ImagePinchView*)self.openPinchView changeImageToFilterIndex:vc.filterImageIndex];
-         }
-         [vc.openEditContentView.videoView stopVideo];
-         self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
-     }
+	if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
+		EditContentVC *vc = (EditContentVC *)segue.sourceViewController;
+		if(self.openPinchView.containsImage) {
+			[(ImagePinchView*)self.openPinchView changeImageToFilterIndex:vc.filterImageIndex];
+		}
+		[vc.openEditContentView.videoView stopVideo];
+		self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
+	}
 }
 
 #pragma mark - Clean up Content Page -
@@ -1670,54 +1670,20 @@
         [self newPinchView:newPinchView belowView:nil];
 	}
 }
-
-#pragma mark - Alerts -
-
--(void)alertEachPVIsPage{
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    [UserSetupParemeters set_circlesArePages_InstructionAsShown];
-}
-
--(void)alertPinchElementsTogether{
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    [UserSetupParemeters set_pinchCircles_InstructionAsShown];
-}
-
-
-//add assets from picker to our scrollview
--(void )presentAssetsAsPinchViews:(NSArray *)phassets {
-	PHImageManager * iman = [[PHImageManager alloc] init];
-	//store local identifiers so we can querry the nsassets
-	for(PHAsset * asset in phassets) {
-		if(asset.mediaType==PHAssetMediaTypeImage) {
-			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[self createPinchViewFromAsset: imageData];
-				});
-			}];
-		}else {
-			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
-				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[self createPinchViewFromAsset: asset];
-				});
-			}];
+- (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
+	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
+	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+		if (self.addingCoverPicture) {
+			[self addCoverPictureFromAssetArray: assetArray];
+			self.addingCoverPicture = NO;
+		} else {
+			[self presentAssetsAsPinchViews:assetArray];
 		}
-	}
-    
-    //decides whether on what notification to present if any
-    
-        if(![UserSetupParemeters circlesArePages_InstructionShown] &&
-           !self.pageElementScrollViews.count) {
-                [self alertEachPVIsPage];
-            
-        }else if(![UserSetupParemeters pinchCircles_InstructionShown] &&
-                  (self.pageElementScrollViews.count > 1)) {
-                [self alertPinchElementsTogether];
-        }
+	}];
+}
+
+- (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
+	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 }
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
@@ -1733,20 +1699,81 @@
 	}];
 }
 
-- (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
-	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
-    [picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
-		if (self.addingCoverPicture) {
-			[self addCoverPictureFromAssetArray: assetArray];
-			self.addingCoverPicture = NO;
+//add assets from picker to our scrollview
+-(void )presentAssetsAsPinchViews:(NSArray *)phassets {
+	PHImageManager * iman = [[PHImageManager alloc] init];
+	//store local identifiers so we can querry the nsassets
+	for(PHAsset * asset in phassets) {
+		if(asset.mediaType==PHAssetMediaTypeImage) {
+			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[self createPinchViewFromImageData: imageData];
+				});
+			}];
+		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
+			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+				if (![asset isKindOfClass:[AVURLAsset class]]) {
+					NSLog(@"Issue with video not in AVURLAsset form");
+					return;
+				}
+				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];
+				});
+			}];
+		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
+			NSLog(@"Asset is of audio type, unable to handle.");
+			return;
 		} else {
-        	[self presentAssetsAsPinchViews:assetArray];
+			NSLog(@"Asset picked of unknown type");
+			return;
 		}
-	}];
+	}
+
+	//decides whether on what notification to present if any
+
+	if(![UserSetupParemeters circlesArePages_InstructionShown] &&
+	   !self.pageElementScrollViews.count) {
+		[self alertEachPVIsPage];
+
+	}else if(![UserSetupParemeters pinchCircles_InstructionShown] &&
+			 (self.pageElementScrollViews.count > 1)) {
+		[self alertPinchElementsTogether];
+	}
 }
 
-- (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
-	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
+    
+-(void) createPinchViewFromImageData:(NSData*) imageData {
+	UIImage* image = [[UIImage alloc] initWithData: imageData];
+	image = [UIEffects fixOrientation:image];
+	image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.view.bounds]];
+	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
+														  withCenter:self.defaultPinchViewCenter
+															andImage:image];
+	[self newPinchView:newPinchView belowView:nil];
+}
+
+-(void) createPinchViewFromVideoAsset:(AVURLAsset*) videoAsset {
+	PinchView* newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultPinchViewRadius
+														  withCenter:self.defaultPinchViewCenter
+															andVideo: videoAsset];
+	[self newPinchView:newPinchView belowView:nil];
+}
+
+
+#pragma mark - Alerts -
+
+-(void)alertEachPVIsPage{
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+	[UserSetupParemeters set_circlesArePages_InstructionAsShown];
+}
+
+-(void)alertPinchElementsTogether{
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+	[UserSetupParemeters set_pinchCircles_InstructionAsShown];
 }
 
 #pragma mark - Lazy Instantiation

@@ -30,8 +30,8 @@
 @property (nonatomic, strong) NSMutableDictionary* pageCollections;
 
 
-
 @end
+
 
 @implementation POVLoadManager
 

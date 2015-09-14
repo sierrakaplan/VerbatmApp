@@ -96,7 +96,8 @@
 
 //one of the POV's in the list has been clicked
 -(void) viewPOVAtIndex: (NSInteger) index {
-	// TODO: enter POV viewing list
+	GTLVerbatmAppPOVInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
+	NSLog(@"Viewing pov %@ ", povInfo.title);
 }
 
 #pragma mark - Table View Data Source methods (model) -
@@ -142,9 +143,11 @@
 	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
 }
 
+//
 -(void) morePOVsLoaded {
 	if (self.povPublishing) {
 		self.povPublishingPlaceholderCell = nil;
+		self.povPublishing = NO;
 	}
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
@@ -154,12 +157,14 @@
 -(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
 	self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
-	[self.povPublishingPlaceholderCell setContentWithUsername:@"User Name" andTitle: title andCoverImage:coverPic];
+	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:@"User Name" andTitle: title andCoverImage:coverPic];
+	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 -(void) povPublished {
 	if (self.povPublishing) {
 		[self refreshFeed];
+		NSLog(@"Pov published successfully!");
 	}
 }
 

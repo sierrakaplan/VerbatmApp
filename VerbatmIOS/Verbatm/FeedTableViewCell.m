@@ -86,7 +86,7 @@
 												  textViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 												  USERNAME_LABEL_HEIGHT)];
 
-	[self formatUILabel:self.povTitle
+	[self formatUILabel: self.povTitle
 			   withFont: [UIFont fontWithName:TITLE_FONT size:TITLE_FONT_SIZE]
 		   andTextColor: [UIColor TITLE_TEXT_COLOR]
 	   andNumberOfLines: 4];
@@ -166,6 +166,13 @@
 	UIImage* rightHalf = [self halfPicture:coverImage leftHalf:NO];
 	[self.leftSemiCircle setImage: leftHalf];
 	[self.rightSemiCircle setImage: rightHalf];
+}
+
+-(void) setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title
+				 andCoverImage: (UIImage*) coverImage {
+	[self.povTitle setTextColor:[UIColor lightGrayColor]];
+	[self.povCreatorUsername setTextColor:[UIColor lightGrayColor]];
+	[self setContentWithUsername:username andTitle:title andCoverImage:coverImage];
 }
 
 //TODO: make this a category
@@ -257,7 +264,6 @@
 		}];
 
 	}
-
 }
 
 #pragma mark - Lazy Instantiation -
