@@ -105,6 +105,7 @@
 		C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4061BA4EB500075CA80 /* EditContentVC.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParemeters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParemeters.m */; };
 		C719A40D1BA67EAC0075CA80 /* baseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A40C1BA67EAC0075CA80 /* baseVC.m */; };
+		C719A4111BA79CB40075CA80 /* RefreshTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4101BA79CB40075CA80 /* RefreshTableViewCell.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
@@ -420,6 +421,8 @@
 		C719A4091BA615B50075CA80 /* UserSetupParemeters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetupParemeters.m; sourceTree = "<group>"; };
 		C719A40B1BA67EAC0075CA80 /* baseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = baseVC.h; sourceTree = "<group>"; };
 		C719A40C1BA67EAC0075CA80 /* baseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = baseVC.m; sourceTree = "<group>"; };
+		C719A40F1BA79CB40075CA80 /* RefreshTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RefreshTableViewCell.h; path = ../RefreshTableViewCell.h; sourceTree = "<group>"; };
+		C719A4101BA79CB40075CA80 /* RefreshTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RefreshTableViewCell.m; path = ../RefreshTableViewCell.m; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		C734FD9619B13D7700B2C370 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -660,6 +663,8 @@
 		A59CC2861B6C2E2F00B4907C /* Table Views */ = {
 			isa = PBXGroup;
 			children = (
+				C719A40F1BA79CB40075CA80 /* RefreshTableViewCell.h */,
+				C719A4101BA79CB40075CA80 /* RefreshTableViewCell.m */,
 				C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */,
 				C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */,
 				A59CC2871B6C2E6400B4907C /* FeedTableView.h */,
@@ -1405,6 +1410,7 @@
 				A58656651B607EF7008E358C /* VerbatmImageScrollView.m in Sources */,
 				C75985F51B8553DF00FE77F7 /* internetConnectionMonitor.m in Sources */,
 				A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */,
+				C719A4111BA79CB40075CA80 /* RefreshTableViewCell.m in Sources */,
 				A5E85F9E1B911DA900E148D0 /* GTLDateTime.m in Sources */,
 				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,
