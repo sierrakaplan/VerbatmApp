@@ -153,7 +153,6 @@
 		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	}completion:^(BOOL finished) {
 		if(finished) {
-			[self.feedVC refreshFeed];
 		}
 	}];
 }

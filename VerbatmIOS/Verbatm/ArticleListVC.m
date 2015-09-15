@@ -7,6 +7,7 @@
 //
 
 #import "ArticleListVC.h"
+#import "ArticleDisplayVC.h"
 #import "AVETypeAnalyzer.h"
 #import "Notifications.h"
 #import "SizesAndPositions.h"
@@ -24,7 +25,7 @@
 #import "POVLoadManager.h"
 #import "GTLVerbatmAppPOVInfo.h"
 
-@interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource, POVLoadManagerDelegate>
+@interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource, FeedTableViewCellDelegate, POVLoadManagerDelegate>
 
 
 #pragma mark - Table View + data -
@@ -60,13 +61,6 @@
 	[self registerForNotifications];
 }
 
--(void) registerForNotifications {
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(povPublished)
-												 name:NOTIFICATION_POV_PUBLISHED
-											   object:nil];
-}
-
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
@@ -77,6 +71,15 @@
 	self.povListView.dataSource = self;
 	[self.view addSubview:self.povListView];
 }
+
+-(void) registerForNotifications {
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(povPublished)
+												 name:NOTIFICATION_POV_PUBLISHED
+											   object:nil];
+}
+
+#pragma mark - Setting POV Load Manager -
 
 -(void) setPovLoadManager:(POVLoadManager *) povLoader {
 	self.povLoader = povLoader;
@@ -97,6 +100,7 @@
 //one of the POV's in the list has been clicked
 -(void) viewPOVAtIndex: (NSInteger) index {
 	GTLVerbatmAppPOVInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
+	[self.delegate displayPOVWithIndex: index fromLoadManager: self.povLoader];
 	NSLog(@"Viewing pov %@ ", povInfo.title);
 }
 
@@ -134,26 +138,22 @@
 		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage: coverPic];
 	}
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+	cell.indexPath = indexPath;
+	cell.delegate = self;
 	return cell;
 }
 
-#pragma mark - Refresh feed -
+#pragma mark - Feed Table View Cell Delegate methods -
 
--(void) refreshFeed {
-	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
-}
-
-//
--(void) morePOVsLoaded {
-	if (self.povPublishing) {
-		self.povPublishingPlaceholderCell = nil;
-		self.povPublishing = NO;
-	}
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+-(void) successfullyPinchedTogetherAtIndexPath:(NSIndexPath *)indexPath {
+	[self tableView: self.povListView didDeselectRowAtIndexPath:indexPath];
 }
 
 #pragma mark - Show POV publishing -
 
+//Called on it by parent view controller to let it know that a user
+// has published a POV and to show the loading animation until the POV
+// has actually published
 -(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
 	self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
@@ -161,11 +161,29 @@
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
+// Method called from Notification sent by the model to let it know that
+// a pov has published so that it can refresh the feed
 -(void) povPublished {
 	if (self.povPublishing) {
 		[self refreshFeed];
 		NSLog(@"Pov published successfully!");
 	}
+}
+
+#pragma mark - Refresh feed -
+
+// Tells pov loader to reload POV's completely (removing all those previously loaded and getting the first page again)
+-(void) refreshFeed {
+	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
+}
+
+//Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
+-(void) morePOVsLoaded {
+	if (self.povPublishing) {
+		self.povPublishingPlaceholderCell = nil;
+		self.povPublishing = NO;
+	}
+	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 #pragma mark - Pull to refresh Feed Animation -

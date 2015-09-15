@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
@@ -87,6 +87,20 @@
             </objects>
             <point key="canvasLocation" x="-2700" y="74"/>
         </scene>
+        <!--Article Display VC-->
+        <scene sceneID="IFb-Qc-Bhx">
+            <objects>
+                <viewController storyboardIdentifier="article_display_vc" id="ydU-Jy-lXO" userLabel="Article Display VC" customClass="ArticleDisplayVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="gQu-JC-VDi">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mmd-zC-fwh" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3855" y="-44"/>
+        </scene>
         <!--Trending-->
         <scene sceneID="wyz-UI-MUa">
             <objects>
@@ -100,7 +114,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3434" y="-72.5"/>
+            <point key="canvasLocation" x="-3434" y="-73"/>
         </scene>
         <!--Most Recent-->
         <scene sceneID="gf5-8u-ULb">
@@ -124,18 +138,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="j2U-9B-X6v">
+                            <containerView opaque="NO" contentMode="scaleToFill" id="j2U-9B-X6v" userLabel="Bottom List Container">
                                 <rect key="frame" x="0.0" y="107" width="325" height="300"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             </containerView>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF">
+                            <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF" userLabel="Top List Container">
                                 <rect key="frame" x="26" y="215" width="262" height="339"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                            </containerView>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="VbX-6J-ylk" userLabel="Article Display Container">
+                                <rect key="frame" x="42" y="43" width="240" height="128"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             </containerView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="articleDisplayContainer" destination="VbX-6J-ylk" id="wFL-Vv-O1d"/>
                         <outlet property="bottomListContainer" destination="j2U-9B-X6v" id="Kku-ME-qKO"/>
                         <outlet property="topListContainer" destination="jLa-zk-lWF" id="sgL-hh-qR6"/>
                     </connections>

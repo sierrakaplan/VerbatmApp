@@ -10,7 +10,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "VerbatmScrollView.h"
 #import "EditContentView.h"
-#import "baseVC.h"
+#import "BaseVC.h"
 @class PinchView;
 
 @protocol ContentDevElementDelegate <NSObject>
@@ -29,7 +29,7 @@
 
 @end
 
-@interface ContentDevVC : baseVC
+@interface ContentDevVC : BaseVC
 
 typedef NS_ENUM(NSInteger, PinchingMode) {
 	PinchingModeNone,
@@ -65,8 +65,6 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 -(void) loadPinchViews;
 
 - (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
-
-- (void) createEditContentViewFromPinchView: (PinchView *) pinchView;
 
 // either locks the scroll view or frees it
 -(void) setMainScrollViewEnabled:(BOOL) enabled;

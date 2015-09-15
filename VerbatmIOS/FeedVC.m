@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "ArticleDisplayVC.h"
 #import "ArticleListVC.h"
 #import "HomeNavPullBar.h"
 #import "Icons.h"
@@ -17,23 +18,33 @@
 #import "TopicsFeedVC.h"
 #import "Durations.h"
 
-@interface FeedVC ()<SwitchCategoryDelegate, HomeNavPullBarDelegate>
+@interface FeedVC ()<SwitchCategoryDelegate, HomeNavPullBarDelegate, ArticleListVCDelegate>
 
 @property (strong, nonatomic) SwitchCategoryPullView *categorySwitch;
 @property (strong, nonatomic) HomeNavPullBar* navPullBar;
 
 #pragma mark - Child View Controllers -
+
 // There are two article list views faded between by the category switcher at the top
 @property (weak, nonatomic) IBOutlet UIView *topListContainer;
 @property (weak, nonatomic) IBOutlet UIView *bottomListContainer;
 
+// VC that displays articles in scroll view when clicked
+@property (weak, nonatomic) IBOutlet UIView *articleDisplayContainer;
+// article display list slides in from right and can be pulled off when a screen edge pan
+@property (nonatomic) CGRect articleDisplayContainerFrameOffScreen;
+
 @property (strong,nonatomic) ArticleListVC* trendingVC;
 @property (strong,nonatomic) ArticleListVC* mostRecentVC;
-@property (strong,nonatomic) TopicsFeedVC* topicsVC;
+// NOT IN USE NOW
+//@property (strong,nonatomic) TopicsFeedVC* topicsVC;
+@property (strong, nonatomic) ArticleDisplayVC* articleDisplayVC;
 
 #define ID_FOR_TOPICS_VC @"topics_feed_vc"
 #define ID_FOR_RECENT_VC @"most_recent_vc"
 #define ID_FOR_TRENDING_VC @"trending_vc"
+
+#define ID_FOR_DISPLAY_VC @"article_display_vc"
 
 @end
 
@@ -70,6 +81,11 @@
 											 self.view.frame.size.height - listContainerY);
 	self.bottomListContainer.frame = self.topListContainer.frame;
 	self.bottomListContainer.alpha = 0;
+
+	self.articleDisplayContainerFrameOffScreen = CGRectMake(self.view.frame.size.width, 0,
+															self.view.frame.size.width,
+															self.view.frame.size.height);
+	self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
 }
 
 //lays out all the containers in the right position and also sets the appropriate
@@ -77,15 +93,20 @@
 -(void) getAndFormatVCs {
 	self.trendingVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TRENDING_VC];
 	[self.trendingVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeTrending]];
+	self.trendingVC.delegate = self;
 
 	self.mostRecentVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_RECENT_VC];
 	[self.mostRecentVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeRecent]];
+	self.mostRecentVC.delegate = self;
 
 	// NOT IN USE RIGHT NOW
-	self.topicsVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TOPICS_VC];
+//	self.topicsVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TOPICS_VC];
 
 	[self.topListContainer addSubview: self.trendingVC.view];
 	[self.bottomListContainer addSubview: self.mostRecentVC.view];
+
+	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
+	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
 }
 
 #pragma mark - Formatting sub views -
@@ -148,14 +169,13 @@
 	[self.mostRecentVC showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
 }
 
-#pragma mark - Refresh ? -
+#pragma mark - Article List VC Delegate Methods (display articles) -
 
--(void) refreshFeed {
-	//TODO: refresh whatever feed is in view
+-(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
+
+	//TODO:
+//	[self.articleDisplayVC ];
 }
-
-
-
 
 
 @end

@@ -11,9 +11,9 @@
  maintain basic functionality that every VC in the verbatm app should have.
  all VC's inherit from here.
  */
-#import "baseVC.h"
+#import "BaseVC.h"
 
-@implementation baseVC
+@implementation BaseVC
 -(NSUInteger) supportedInterfaceOrientations {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;

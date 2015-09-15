@@ -8,7 +8,19 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol FeedTableViewCellDelegate <NSObject>
+
+// Lets table view know the two half circles have been pinched
+// so that it can select the row
+-(void) successfullyPinchedTogetherAtIndexPath: (NSIndexPath*) indexPath;
+
+@end
+
 @interface FeedTableViewCell : UITableViewCell
+
+// The cell's row index (needs to pass this to its delegate when it is pinched)
+@property (nonatomic) NSIndexPath* indexPath;
+@property (strong, nonatomic) id<FeedTableViewCellDelegate> delegate;
 
 //Loads a normal looking story cell
 -(void)setContentWithUsername:(NSString *) username andTitle: (NSString *) title andCoverImage: (UIImage*) coverImage;
