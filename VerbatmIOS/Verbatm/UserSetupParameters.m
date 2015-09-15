@@ -6,9 +6,9 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "UserSetupParemeters.h"
+#import "UserSetupParameters.h"
 
-@interface UserSetupParemeters()
+@interface UserSetupParameters()
 #define FILTER_INSTRUCTION_KEY @"FILTER_INSTRUCTION_KEY"
 #define TRENDING_CIRCLE_INSTRUCTION_KEY @"TRENDING_CIRCLE_INSTRUCTION_KEY"
 #define CIRCLE_IS_PAGE_INSTRUCTION_KEY @"CIRCLE_IS_PAGE_INSTRUCTION_KEY"
@@ -18,7 +18,7 @@
 
 @end
 
-@implementation UserSetupParemeters
+@implementation UserSetupParameters
 
 /*
     Saves the users parameters

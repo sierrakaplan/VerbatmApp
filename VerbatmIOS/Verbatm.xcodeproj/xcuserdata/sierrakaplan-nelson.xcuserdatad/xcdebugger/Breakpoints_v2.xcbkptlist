@@ -416,7 +416,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "463998745.134629"
+            timestampString = "464007174.33425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "183"
@@ -432,7 +432,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "463998745.134629"
+            timestampString = "464007174.33425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "124"
@@ -448,7 +448,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "463998689.749158"
+            timestampString = "464007174.33425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "151"
@@ -464,7 +464,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "464000319.305026"
+            timestampString = "464007174.33425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "154"
@@ -544,11 +544,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedTableViewCell.m"
-            timestampString = "464005260.352396"
+            timestampString = "464007174.33425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "66"
-            endingLineNumber = "66"
+            startingLineNumber = "68"
+            endingLineNumber = "68"
             landmarkName = "-initWithStyle:reuseIdentifier:"
             landmarkType = "5">
          </BreakpointContent>
@@ -560,11 +560,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeedTableViewCell.m"
-            timestampString = "464005260.352396"
+            timestampString = "464007174.33425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "175"
-            endingLineNumber = "175"
+            startingLineNumber = "177"
+            endingLineNumber = "177"
             landmarkName = "-formatCoverRects"
             landmarkType = "5">
          </BreakpointContent>
@@ -576,7 +576,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "464005474.989461"
+            timestampString = "464007174.33425"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "149"
@@ -598,6 +598,38 @@
             startingLineNumber = "97"
             endingLineNumber = "97"
             landmarkName = "-tableView:didSelectRowAtIndexPath:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/MediaDevVC.m"
+            timestampString = "464024616.413964"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
+            landmarkName = "-prepareCameraView"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/PagesLoadManager.m"
+            timestampString = "464047211.468497"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "52"
+            endingLineNumber = "52"
+            landmarkName = "-loadPagesForPOV:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

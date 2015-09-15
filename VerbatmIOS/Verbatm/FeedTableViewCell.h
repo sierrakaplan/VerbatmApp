@@ -28,4 +28,6 @@
 //Loads a publishing story cell
 -(void)setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title andCoverImage: (UIImage*) coverImage;
 
+//-(void) didSelect;
+
 @end

@@ -14,7 +14,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface UserSetupParemeters : NSObject
+@interface UserSetupParameters : NSObject
 
 //called when an app is first installed to save all
 //the necessary parameters

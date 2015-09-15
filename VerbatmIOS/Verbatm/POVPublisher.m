@@ -160,17 +160,17 @@
 // Each storeimage promise should resolve to the id of the GTL Image just stored
 // So this promise should resolve to an array of gtl image id's
 -(PMKPromise*) storeImagesFromPinchView: (PinchView*) pinchView {
-	NSMutableArray *storeImagesPromise = [NSMutableArray array];
+	NSMutableArray *storeImagePromises = [[NSMutableArray array] init];
 
 	if(pinchView.containsImage) {
 		NSArray* pinchViewImages = [pinchView getPhotos];
 
 		for (int i = 0; i < pinchViewImages.count; i++) {
 			UIImage* uiImage = pinchViewImages[i];
-			[storeImagesPromise addObject: [self storeImage:uiImage withIndex:i]];
+			[storeImagePromises addObject: [self storeImage:uiImage withIndex:i]];
 		}
 	}
-	return PMKWhen(storeImagesPromise).catch(^(NSError *error){
+	return PMKWhen(storeImagePromises).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error uploading POV: %@", error.description);
 	});
@@ -180,20 +180,20 @@
 // Each store video promise should resolve to the id of the GTL Video just stored
 // So this promise should resolve to an array of gtl video id's
 -(PMKPromise*) storeVideosFromPinchView: (PinchView*) pinchView {
-	NSMutableArray *storeVideosPromise = [NSMutableArray array];
+	NSMutableArray *storeVideoPromises = [[NSMutableArray array] init];
 
 	if(pinchView.containsVideo) {
 		NSArray* pinchViewVideos = [pinchView getVideosInDataFormat];
         if(!pinchViewVideos)return nil;
 		for (int i = 0; i < pinchViewVideos.count; i++) {
 			NSData* videoData = pinchViewVideos[i];
-			[storeVideosPromise addObject: [self storeVideo:videoData withIndex:i]];
+			[storeVideoPromises addObject: [self storeVideo:videoData withIndex:i]];
 		}
 	}
-	return PMKWhen(storeVideosPromise).catch(^(NSError *error){
+	return PMKWhen(storeVideoPromises).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error uploading POV: %@", error.description);
-	});;
+	});
 }
 
 // (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)
@@ -234,6 +234,8 @@
 
 
 #pragma mark - Insert entities into the Datastore -
+
+//TODO: see if batch queries speed things up
 
 // Queries insert Image into the datastore.
 // PMKPromise resolves with either error or the id of the image just stored.

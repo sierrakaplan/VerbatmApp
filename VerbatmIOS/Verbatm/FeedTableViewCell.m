@@ -20,6 +20,8 @@
 
 @interface FeedTableViewCell()
 
+
+@property (strong, nonatomic) UIImage* coverImage;
 #pragma mark - Square with text in the center of the cell -
 @property (strong, nonatomic) UIView * storyTextView;
 @property (strong, nonatomic) UILabel * povTitle;
@@ -208,8 +210,6 @@
 
 -(void) setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title
 						andCoverImage: (UIImage*) coverImage {
-	[self.povTitle setTextColor:[UIColor lightGrayColor]];
-	[self.povCreatorUsername setTextColor:[UIColor lightGrayColor]];
 	[self setContentWithUsername:username andTitle:title andCoverImage:coverImage];
 }
 
@@ -326,6 +326,24 @@
 		self.leftCircleCoverRect.frame = self.leftCoverRectFrame;
 		self.rightCircleCoverRect.frame = self.rightCoverRectFrame;
 	} completion:^(BOOL finished) {
+	}];
+}
+
+-(void) didSelect {
+	if (self.rightCircle.frame.origin.x != self.circleFrameCenter.origin.x) {
+		[self animateSemiCirclesTogether];
+	}
+	[self didPinchTogether];
+}
+
+-(void) didPinchTogether {
+	UIImageView* coverPhotoImageView = [[UIImageView alloc] initWithImage: self.coverImage];
+	coverPhotoImageView.frame = self.circleFrameCenter;
+	[self addSubview:coverPhotoImageView];
+	[UIView animateWithDuration: 1.5f animations:^{
+		coverPhotoImageView.frame = self.superview.superview.bounds;
+	} completion:^(BOOL finished) {
+
 	}];
 }
 

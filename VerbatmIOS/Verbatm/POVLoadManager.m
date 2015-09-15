@@ -29,16 +29,13 @@
 // Cursor string associated with the povInfos (used to query for next batch)
 @property (nonatomic, strong) NSString* cursorString;
 
-// Dictionary of GTLVerbatmAppPageCollection objects associated with their POV id's
-@property (nonatomic, strong) NSMutableDictionary* pageCollections;
-
 
 @end
 
 
 @implementation POVLoadManager
 
--(id) initWithType: (POVType) type {
+-(instancetype) initWithType: (POVType) type {
 	self = [super init];
 	if (self) {
 		self.povType = type;
@@ -124,66 +121,6 @@
 	}
 }
 
-//Loads the pages for a POV at a given index, sets the pages as the value
-//for the pov id key in the pageCollections dict
-- (void) loadPOVPagesForPOVAtIndex: (NSInteger) index {
-	if (index < 0 || index >= [self.povInfos count]) {
-		NSLog(@"Error: Requesting pages for POV at index not yet loaded");
-		return;
-	}
-	NSNumber* povId = ((GTLVerbatmAppPOVInfo*)self.povInfos[index]).identifier;
-	GTLQuery *pagesQuery = [GTLQueryVerbatmApp queryForPovGetPagesFromPOVWithIdentifier: povId.longLongValue];
-
-	[self.service executeQuery:pagesQuery
-			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPageCollection* result, NSError *error) {
-				 if (error) {
-					 NSLog(@"Error loading pages from POV: %@", error.description);
-				 } else {
-					 [self.pageCollections setObject:result forKey: povId];
-					 //TODO: notification to update
-				 }
-			 }];
-}
-
-// Returns the page collection for the given pov index (make sure to load the pages first)
--(GTLVerbatmAppPageCollection*) getPageCollectionForPOVAtIndex: (NSInteger) index {
-	if (index < 0 || index >= [self.povInfos count]) {
-		NSLog(@"Error: Requesting pages for POV at index not yet loaded");
-		return nil;
-	}
-	NSNumber* povId = ((GTLVerbatmAppPOVInfo*)self.povInfos[index]).identifier;
-	return [self getPageCollectionForPOV: povId];
-}
-
-// Returns the page collection for the given pov id from the PageCollections dict
-// (the pages must have been loaded first)
--(GTLVerbatmAppPageCollection*) getPageCollectionForPOV: (NSNumber*) povID {
-	GTLVerbatmAppPageCollection* pages = self.pageCollections[povID];
-	if (!pages) {
-		NSLog(@"Error: Requesting pages for POV that are not yet loaded");
-	}
-	return pages;
-}
-
-// Return a batch query for images from a page
--(NSArray*) getImagesFromPage: (GTLVerbatmAppPage*) page {
-//	GTLBatchQuery* imagesBatchQuery = [GTLBatchQuery batchQuery];
-//	for (NSNumber* imageID in page.imageIds) {
-//		GTLQuery* imageQuery = [GTLQueryVerbatmApp queryForImageGetImageWithIdentifier: imageID.longLongValue];
-//		imageQuery.completionHandler = ^(GTLServiceTicket *ticket, GTLVerbatmAppImage* gtlImage, NSError *error) {
-//			if (error) {
-//				NSLog(@"Error querying for image from id: %@", error.description);
-//			} else {
-//
-//			}
-//  		};
-//	}
-	return nil;
-}
-
--(NSArray*) getVideosFromPage: (NSNumber*) pageID {
-	return nil;
-}
 
 #pragma mark - Lazy Instantiation -
 
@@ -205,13 +142,6 @@
 		_povInfos = [[NSMutableArray alloc] init];
 	}
 	return _povInfos;
-}
-
-- (NSMutableDictionary*) pageCollections {
-	if (!_pageCollections) {
-		_pageCollections = [[NSMutableDictionary alloc] init];
-	}
-	return _pageCollections;
 }
 
 @end

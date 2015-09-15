@@ -9,7 +9,7 @@
 #import "verbatmAppDelegate.h"
 #import "UserPinchViews.h"
 #import <AVFoundation/AVFoundation.h>
-#import "UserSetupParemeters.h"
+#import "UserSetupParameters.h"
 
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
@@ -19,7 +19,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    [UserSetupParemeters setUpParameters];
+    [UserSetupParameters setUpParameters];
 	[[UserPinchViews sharedInstance] loadPinchViewsFromUserDefaults];
     [[AVAudioSession sharedInstance] setActive: YES error: nil];
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];

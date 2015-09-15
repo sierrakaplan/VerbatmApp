@@ -85,7 +85,8 @@
 	self.articleDisplayContainerFrameOffScreen = CGRectMake(self.view.frame.size.width, 0,
 															self.view.frame.size.width,
 															self.view.frame.size.height);
-	self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
+	[self.articleDisplayContainer removeFromSuperview];
+//	self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
 }
 
 //lays out all the containers in the right position and also sets the appropriate
@@ -172,9 +173,9 @@
 #pragma mark - Article List VC Delegate Methods (display articles) -
 
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
-
-	//TODO:
-//	[self.articleDisplayVC ];
+	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
+	[self.articleDisplayContainer setFrame:self.view.bounds];
+	[self.view addSubview:self.articleDisplayContainer];
 }
 
 

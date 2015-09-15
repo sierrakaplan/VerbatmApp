@@ -40,7 +40,7 @@
 #import "TextPinchView.h"
 
 #import "UIEffects.h"
-#import "UserSetupParemeters.h"
+#import "UserSetupParameters.h"
 
 #import "UserPinchViews.h"
 #import "VerbatmScrollView.h"
@@ -1503,29 +1503,6 @@ ContentSVDelegate>
 
 
 #pragma mark - Sense Tap Gesture -
-#pragma mark EditContentView
-
-//Delegate method for EditContentView
--(void) exitEditContentView {
-	if (!self.openEditContentView) {
-		return;
-	}
-	if(self.openPinchView.containsImage) {
-		NSInteger filterImageIndex = [self.openEditContentView getFilteredImageIndex];
-		[(ImagePinchView*)self.openPinchView changeImageToFilterIndex:filterImageIndex];
-	} else if(self.openPinchView.containsVideo) {
-		[self.openEditContentView.videoView stopVideo];
-	}
-	[self.openEditContentView removeFromSuperview];
-	self.openEditContentView = nil;
-	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
-	[self.openPinchView renderMedia];
-	self.openPinchView = nil;
-
-	if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
-		//[self alertPinchElementsTogether];
-	}
-}
 
 
 -(void)addTapGestureToPinchView: (PinchView *) pinchView {
@@ -1576,11 +1553,11 @@ ContentSVDelegate>
 
 - (IBAction)done:(UIStoryboardSegue *)segue{
 	if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
-		EditContentVC *vc = (EditContentVC *)segue.sourceViewController;
+		EditContentVC *editContentVC = (EditContentVC *)segue.sourceViewController;
 		if(self.openPinchView.containsImage) {
-			[(ImagePinchView*)self.openPinchView changeImageToFilterIndex:vc.filterImageIndex];
+			[(ImagePinchView*)self.openPinchView changeImageToFilterIndex: editContentVC.filterImageIndex];
 		}
-		[vc.openEditContentView.videoView stopVideo];
+		[editContentVC.openEditContentView.videoView stopVideo];
 		self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
 	}
 }
@@ -1733,11 +1710,11 @@ ContentSVDelegate>
 
 	//decides whether on what notification to present if any
 
-	if(![UserSetupParemeters circlesArePages_InstructionShown] &&
+	if(![UserSetupParameters circlesArePages_InstructionShown] &&
 	   !self.pageElementScrollViews.count) {
 		[self alertEachPVIsPage];
 
-	}else if(![UserSetupParemeters pinchCircles_InstructionShown] &&
+	}else if(![UserSetupParameters pinchCircles_InstructionShown] &&
 			 (self.pageElementScrollViews.count > 1)) {
 		[self alertPinchElementsTogether];
 	}
@@ -1767,13 +1744,13 @@ ContentSVDelegate>
 -(void)alertEachPVIsPage{
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
-	[UserSetupParemeters set_circlesArePages_InstructionAsShown];
+	[UserSetupParameters set_circlesArePages_InstructionAsShown];
 }
 
 -(void)alertPinchElementsTogether{
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
-	[UserSetupParemeters set_pinchCircles_InstructionAsShown];
+	[UserSetupParameters set_pinchCircles_InstructionAsShown];
 }
 
 #pragma mark - Lazy Instantiation
