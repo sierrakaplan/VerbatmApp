@@ -20,6 +20,6 @@
 
 //returns the image with its current filter 
 -(UIImage*) getImage;
-
-
+//replaces the current image with this image
+-(void) putNewImage:(UIImage*)image;
 @end

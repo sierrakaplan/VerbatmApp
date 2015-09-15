@@ -12,7 +12,7 @@
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
 #import "ContentPageElementScrollView.h"
-
+#import "CoverPicturePV.h"
 #import "Durations.h"
 
 #import "EditContentView.h"
@@ -56,7 +56,7 @@ ContentSVDelegate>
 // Says whether or not user is currently adding a cover picture
 // (used when returning from adding assets)
 @property (nonatomic) BOOL addingCoverPicture;
-@property (strong, nonatomic) CoverPicturePinchView* coverPicView;
+@property (strong, nonatomic) CoverPicturePV * coverPicView;
 
 @property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
 
@@ -121,11 +121,11 @@ ContentSVDelegate>
 #define WHAT_IS_IT_LIKE_OFFSET 15
 #define WHAT_IS_IT_LIKE_HEIGHT 50
 
-#define REPLACE_PHOTO_FRAME_WIDTH 60
-#define REPLACE_PHOTO_FRAME_HEIGHT 40
+#define REPLACE_PHOTO_FRAME_WIDTH 80
+#define REPLACE_PHOTO_FRAME_HEIGHT 80
 
 #define REPLACE_PHOTO_YOFFSET 20 //distance of replacePhoto y postion vs the y postion of the coverphoto
-#define REPLACE_PHOTO_XsOFFSET 20 //distance of replacePhoto y postion vs the y postion of the coverphoto
+#define REPLACE_PHOTO_XsOFFSET 20 //distance of replacePhoto x postion vs the x postion of the coverphoto
 
 
 #define BRING_UP_EDITCONTENT_SEGUE @"BRING_UP_EDITCONTENT_SEGUE"
@@ -248,7 +248,9 @@ ContentSVDelegate>
 }
 
 -(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
-	self.coverPicView = [[CoverPicturePinchView alloc] initWithFrame:frame];
+	//self.coverPicView = [[CoverPicturePV alloc] initWithFrame:frame];
+    self.coverPicView = [[CoverPicturePV alloc] initWithRadius:frame.size.width/2.f withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
+    
 	UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
 	[self.coverPicView addGestureRecognizer: tapGesture];
 	[self.mainScrollView addSubview: self.coverPicView];
@@ -474,7 +476,7 @@ ContentSVDelegate>
 		return;
 	}
 	if(![view isKindOfClass:[ContentPageElementScrollView class]]
-	   && ![view isKindOfClass:[CoverPicturePinchView class]]) {
+	   && ![view isKindOfClass:[CoverPicturePV class]]) {
 		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
 		return;
 	}
@@ -992,9 +994,12 @@ ContentSVDelegate>
 -(void) addCoverPictureTapped {
 	self.addingCoverPicture = YES;
 	[self presentGalleryForCoverPic];
-    
     //show replace photo icon after the first time this is tapped
-    if(!_replaceCoverPhotoButton)[self.mainScrollView addSubview:self.replaceCoverPhotoButton];
+    if(!_replaceCoverPhotoButton){
+        
+        [self addTapGestureToPinchView:self.coverPicView];
+        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
+    }
 }
 
 
@@ -1470,7 +1475,7 @@ ContentSVDelegate>
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
-	[self.coverPicView removeImage];
+	//[self.coverPicView removeImage];
 }
 
 -(void)clearTextFields {
@@ -1560,7 +1565,7 @@ ContentSVDelegate>
 		dispatch_async(dispatch_get_main_queue(), ^{
 			UIImage* image = [[UIImage alloc] initWithData: imageData];
 			image = [UIEffects fixOrientation:image];
-			[self.coverPicView setImage: image];
+			[self.coverPicView setNewImageWith: image];
 		});
 	}];
 }
@@ -1672,9 +1677,10 @@ ContentSVDelegate>
                                     CGRectMake(self.coverPicView.frame.origin.x +
                                                self.coverPicView.frame.size.width +
                                                
-                                               REPLACE_PHOTO_XsOFFSET, self.coverPicView.frame.origin.y +
                                                REPLACE_PHOTO_XsOFFSET,
+                                               self.coverPicView.frame.origin.y + REPLACE_PHOTO_XsOFFSET,
                                                REPLACE_PHOTO_FRAME_WIDTH, REPLACE_PHOTO_FRAME_HEIGHT)];
+        
         [_replaceCoverPhotoButton setImage:[UIImage imageNamed:@"replacePhotoIcon"] forState:UIControlStateNormal];
         [_replaceCoverPhotoButton addTarget:self action:@selector(addCoverPictureTapped) forControlEvents:UIControlEventTouchUpInside];
 
