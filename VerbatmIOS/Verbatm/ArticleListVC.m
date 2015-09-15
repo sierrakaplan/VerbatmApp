@@ -146,7 +146,7 @@
 #pragma mark - Feed Table View Cell Delegate methods -
 
 -(void) successfullyPinchedTogetherAtIndexPath:(NSIndexPath *)indexPath {
-	[self tableView: self.povListView didDeselectRowAtIndexPath:indexPath];
+	[self tableView: self.povListView didSelectRowAtIndexPath:indexPath];
 }
 
 #pragma mark - Show POV publishing -

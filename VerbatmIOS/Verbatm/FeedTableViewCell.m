@@ -315,7 +315,7 @@
 		self.leftCircleCoverRect.frame = CGRectOffset(self.leftCoverRectFrame, self.storyTextView.frame.size.width/2.f, 0);
 		self.rightCircleCoverRect.frame = CGRectOffset(self.rightCoverRectFrame, -(self.storyTextView.frame.size.width/2.f), 0);
 	} completion:^(BOOL finished) {
-//		[self.delegate successfullyPinchedTogetherAtIndexPath:self.indexPath];
+		[self.delegate successfullyPinchedTogetherAtIndexPath:self.indexPath];
 	}];
 }
 
