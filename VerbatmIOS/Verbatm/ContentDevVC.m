@@ -58,6 +58,8 @@ ContentSVDelegate>
 @property (nonatomic) BOOL addingCoverPicture;
 @property (strong, nonatomic) CoverPicturePinchView* coverPicView;
 
+@property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
+
 @property (strong, nonatomic, readwrite) NSMutableArray * pageElementScrollViews;
 @property (nonatomic) NSInteger numPinchViews;
 
@@ -119,9 +121,15 @@ ContentSVDelegate>
 #define WHAT_IS_IT_LIKE_OFFSET 15
 #define WHAT_IS_IT_LIKE_HEIGHT 50
 
+#define REPLACE_PHOTO_FRAME_WIDTH 60
+#define REPLACE_PHOTO_FRAME_HEIGHT 40
+
+#define REPLACE_PHOTO_YOFFSET 20 //distance of replacePhoto y postion vs the y postion of the coverphoto
+#define REPLACE_PHOTO_XsOFFSET 20 //distance of replacePhoto y postion vs the y postion of the coverphoto
+
+
 #define BRING_UP_EDITCONTENT_SEGUE @"BRING_UP_EDITCONTENT_SEGUE"
 #define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
-
 @end
 
 
@@ -141,7 +149,6 @@ ContentSVDelegate>
 	[self formatTitleAndCoverPicture];
 	[self setUpNotifications];
 	[self setDelegates];
-
 	self.pinchingMode = PinchingModeNone;
 	self.numPinchViews = 0;
 	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
@@ -227,7 +234,7 @@ ContentSVDelegate>
 	UIFont* whatIsItLikeFieldFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
 	self.whatIsItLikeField = [[UITextField alloc] initWithFrame: frame];
 	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
-	self.whatIsItLikeField.font = [[UIFont fontNamesForFamilyName:PLACEHOLDER_FONT] firstObject];
+	self.whatIsItLikeField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
     [self.whatIsItLikeField setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
 	self.whatIsItLikeField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
 	self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
@@ -985,6 +992,9 @@ ContentSVDelegate>
 -(void) addCoverPictureTapped {
 	self.addingCoverPicture = YES;
 	[self presentGalleryForCoverPic];
+    
+    //show replace photo icon after the first time this is tapped
+    if(!_replaceCoverPhotoButton)[self.mainScrollView addSubview:self.replaceCoverPhotoButton];
 }
 
 
@@ -1646,7 +1656,31 @@ ContentSVDelegate>
     [UserSetupParemeters set_tapNhold_InstructionAsShown];
 }
 
+#pragma mark -Tap to clear view-
+- (IBAction)tapToClearKeyboard:(UITapGestureRecognizer *)sender {
+    [self removeKeyboardFromScreen];
+}
+
+
 #pragma mark - Lazy Instantiation
+
+-(UIButton *)replaceCoverPhotoButton{
+    
+    if(!_replaceCoverPhotoButton){
+        
+        _replaceCoverPhotoButton = [[UIButton alloc] initWithFrame:
+                                    CGRectMake(self.coverPicView.frame.origin.x +
+                                               self.coverPicView.frame.size.width +
+                                               
+                                               REPLACE_PHOTO_XsOFFSET, self.coverPicView.frame.origin.y +
+                                               REPLACE_PHOTO_XsOFFSET,
+                                               REPLACE_PHOTO_FRAME_WIDTH, REPLACE_PHOTO_FRAME_HEIGHT)];
+        [_replaceCoverPhotoButton setImage:[UIImage imageNamed:@"replacePhotoIcon"] forState:UIControlStateNormal];
+        [_replaceCoverPhotoButton addTarget:self action:@selector(addCoverPictureTapped) forControlEvents:UIControlEventTouchUpInside];
+
+    }
+    return _replaceCoverPhotoButton;
+}
 
 -(UITextView *) activeTextView
 {

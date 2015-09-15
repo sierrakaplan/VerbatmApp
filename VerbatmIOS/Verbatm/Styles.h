@@ -13,6 +13,8 @@
 #define DEFAULT_FONT @"HelveticaNeue-Light"
 #define BUTTON_FONT @"HelveticaNeue"
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
+#define TITLE_TEXT_FONT @"HelveticaNeue"
+
 
 #define NAV_BAR_COLOR whiteColor
 #define PREVIEW_PUBLISH_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
@@ -33,7 +35,7 @@
 #pragma mark - Feed -
 
 #define FEED_BACKGROUND_COLOR 0.918
-#define STORY_BACKGROUND_COLOR 0.827
+#define STORY_BACKGROUND_COLOR colorWithRed: 0.8 green:0.8 blue:0.8 alpha:1
 #define SWITCH_CATEGORY_BAR_FONT_SIZE 30
 
 #define USERNAME_FONT_SIZE 18
@@ -49,7 +51,7 @@
 
 #define WHAT_IS_IT_LIKE_COLOR blackColor
 #define WHAT_IS_IT_LIKE_LABEL_TEXT_SIZE 23.f
-#define WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE 23.f
+#define WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE 28.f
 
 #define ADD_COVER_PIC_TEXT_SIZE 15.f
 #define ADD_COVER_PIC_FONT @"HelveticaNeue-Light"

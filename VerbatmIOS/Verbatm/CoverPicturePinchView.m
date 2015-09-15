@@ -56,6 +56,7 @@
 	[self.imageView setImage:image];
 	[self.addCoverPicLabel removeFromSuperview];
 	[self.background insertSubview:self.imageView atIndex:0];
+    self.containsImage = YES;
 }
 
 -(UIImage*) getImage {

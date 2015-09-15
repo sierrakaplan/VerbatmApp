@@ -65,7 +65,7 @@
 	[self formatSelf];
 	[self formatTextSubview];
 	[self formatImagePinchViews];
-	[self addPinchGestureToSelf];
+	//[self addPinchGestureToSelf];
     if(self.isPlaceHolder)[self startActivityIndicatrForPlaceholder];
 }
 
@@ -79,7 +79,7 @@
 									  self.frame.size.width - STORY_CELL_PADDING*2 - CIRCLE_DIAMETER,
 									  self.frame.size.height - STORY_CELL_PADDING*2);
 	self.storyTextView = [[UIView alloc] initWithFrame: textViewFrame];
-	[self.storyTextView setBackgroundColor:[UIColor colorWithRed: STORY_BACKGROUND_COLOR green:STORY_BACKGROUND_COLOR blue:STORY_BACKGROUND_COLOR alpha:1]];
+	[self.storyTextView setBackgroundColor:[UIColor STORY_BACKGROUND_COLOR]];
 
 	[self.povTitle setFrame: CGRectMake(FEED_TEXT_X_OFFSET,
 										FEED_TEXT_GAP,
@@ -215,9 +215,9 @@
 #pragma mark - Pinch Gesture -
 
 -(void)addPinchGestureToSelf{
-//	UIPinchGestureRecognizer * pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:
-//											   @selector(pinchingSemiCirclesTogether:)];
-	//TODO: [self addGestureRecognizer: pinchGesture];
+	UIPinchGestureRecognizer * pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:
+											   @selector(pinchingSemiCirclesTogether:)];
+	[self addGestureRecognizer: pinchGesture];
 }
 
 //moves the views frame to the provided offset

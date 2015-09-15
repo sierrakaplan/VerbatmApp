@@ -470,6 +470,7 @@
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="WDj-eM-uvF" appends="YES" id="qqz-CK-rEn"/>
                                     <outletCollection property="gestureRecognizers" destination="33n-Bh-1X3" appends="YES" id="8s6-31-bFc"/>
+                                    <outletCollection property="gestureRecognizers" destination="vkp-cu-SCl" appends="YES" id="01E-4x-04M"/>
                                 </connections>
                             </scrollView>
                         </subviews>
@@ -493,6 +494,11 @@
                         <action selector="longPressSensed:" destination="0lh-hP-Opv" id="cAV-T5-CEW"/>
                     </connections>
                 </pongPressGestureRecognizer>
+                <tapGestureRecognizer id="vkp-cu-SCl">
+                    <connections>
+                        <action selector="tapToClearKeyboard:" destination="0lh-hP-Opv" id="owt-Pd-Tn9"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-2766" y="-1302"/>
         </scene>

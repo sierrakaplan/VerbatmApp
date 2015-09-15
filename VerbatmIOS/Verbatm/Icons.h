@@ -25,7 +25,7 @@
 
 #pragma mark Category Switcher
 
-#define SWITCH_CATEGORY_CIRCLE @"pull_circle"
+#define SWITCH_CATEGORY_CIRCLE @"blackTrendingCircle"
 
 
 
