@@ -10,6 +10,12 @@
 
 @interface ArticleDisplayVC ()
 
+// Dictionary of Arrays of GTLVerbatmAppImage's associated with their Page Id's
+@property NSMutableDictionary* imagesInPage;
+
+// Dictionary of Arrays of GTLVerbatmAppVideo's associated with their Page Id's
+@property NSMutableDictionary* videosInPage;
+
 @end
 
 @implementation ArticleDisplayVC
@@ -19,19 +25,21 @@
     // Do any additional setup after loading the view.
 }
 
+
+// When user clicks story, loads one behind it and the two ahead
+-(void) loadStory: (NSInteger) index {
+
+}
+
+// When user scrolls to a new story, loads the next two in that
+// direction of scroll
+-(void) loadNextTwoStories: (NSInteger) index {
+
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "baseVC.h"
-@interface ProfileVC : baseVC
+#import "BaseVC.h"
+@interface ProfileVC : BaseVC
 
 @end

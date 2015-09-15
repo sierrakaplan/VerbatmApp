@@ -26,8 +26,25 @@
 @property (strong, nonatomic) UILabel * povCreatorUsername;
 
 #pragma mark - Left and right semi circles containing the cover picture -
-@property (strong, nonatomic) UIImageView * leftSemiCircle;
-@property (strong, nonatomic) UIImageView * rightSemiCircle;
+@property (strong, nonatomic) UIView * leftCircle;
+@property (strong, nonatomic) UIView * rightCircle;
+//Frames for the background circles
+@property (nonatomic) CGRect leftCircleFrame;
+@property (nonatomic) CGRect rightCircleFrame;
+// views that move with semi circles when pinched together to cover text view
+@property (nonatomic) UIView* leftCircleCoverRect;
+@property (nonatomic) UIView* rightCircleCoverRect;
+//Frames for the cover rects
+@property (nonatomic) CGRect leftCoverRectFrame;
+@property (nonatomic) CGRect rightCoverRectFrame;
+
+//Frame for circles when they are pinched together
+@property (nonatomic) CGRect circleFrameCenter;
+//Semi circle image views
+@property (strong, nonatomic) UIImageView* leftSemiCircle;
+@property (strong, nonatomic) UIImageView* rightSemiCircle;
+
+@property (nonatomic) BOOL isPinching;
 
 #pragma mark - Data to help with pinching gesture -
 @property (nonatomic) CGPoint lastLeftmostPoint;
@@ -38,6 +55,9 @@
 @property (nonatomic) BOOL isPlaceHolder;
 
 #define CIRCLE_DIAMETER (self.frame.size.height - STORY_CELL_PADDING*2)
+#define PINCH_TOGETHER_DURATION 0.2f
+#define PINCH_APART_DURATION 0.4f
+#define PINCH_THRESHOLD 50.f
 
 @end
 
@@ -47,6 +67,7 @@
 	self = [super initWithStyle: style reuseIdentifier: reuseIdentifier];
 	if (self) {
         self.isPlaceHolder = NO;
+		self.isPinching = NO;
 	}
 	return self;
 }
@@ -64,9 +85,10 @@
 	[super layoutSubviews];
 	[self formatSelf];
 	[self formatTextSubview];
-	[self formatImagePinchViews];
-	//[self addPinchGestureToSelf];
     if(self.isPlaceHolder)[self startActivityIndicatrForPlaceholder];
+	[self formatCoverRects];
+	[self formatSemiCircles];
+	[self addPinchGestureToSelf];
 }
 
 -(void) formatSelf {
@@ -86,7 +108,7 @@
 										textViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 										TITLE_LABEL_HEIGHT)];
 
-    [self.povCreatorUsername setFrame: CGRectMake(FEED_TEXT_X_OFFSET,
+	[self.povCreatorUsername setFrame: CGRectMake(FEED_TEXT_X_OFFSET,
 												  textViewFrame.size.height - USERNAME_LABEL_HEIGHT,
 												  textViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 												  USERNAME_LABEL_HEIGHT)];
@@ -122,24 +144,40 @@
 
 //Creates two circle shaped views with image views as subviews formatted to
 //half the width of their backgrounds so that they appear as half circles
--(void) formatImagePinchViews {
-
-	CGRect leftCircleFrame = CGRectMake(STORY_CELL_PADDING, STORY_CELL_PADDING,
+-(void) formatSemiCircles {
+	self.leftCircleFrame = CGRectMake(STORY_CELL_PADDING, STORY_CELL_PADDING,
 										CIRCLE_DIAMETER, CIRCLE_DIAMETER);
-	CGRect rightCircleFrame = CGRectMake(self.frame.size.width - STORY_CELL_PADDING - CIRCLE_DIAMETER, STORY_CELL_PADDING,
-										 CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+	self.rightCircleFrame = CGRectMake(self.frame.size.width - STORY_CELL_PADDING - CIRCLE_DIAMETER,
+									   STORY_CELL_PADDING,CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+	CGFloat center = self.frame.size.width/2.f;
+	self.circleFrameCenter = CGRectMake(center - CIRCLE_DIAMETER/2.f, STORY_CELL_PADDING,
+											CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+	self.leftCircle = [self getBackgroundCircleWithFrame: self.leftCircleFrame];
+	self.rightCircle = [self getBackgroundCircleWithFrame: self.rightCircleFrame];
 
-	UIView* leftBackground = [self getBackgroundCircleWithFrame: leftCircleFrame];
-	UIView* rightBackground = [self getBackgroundCircleWithFrame: rightCircleFrame];
+	[self formatSemiCircleImageView: self.leftSemiCircle withFrame: self.leftCircleFrame onLeft:YES];
+	[self formatSemiCircleImageView: self.rightSemiCircle withFrame: self.rightCircleFrame onLeft:NO];
 
-	[leftBackground addSubview: self.leftSemiCircle];
-	[rightBackground addSubview: self.rightSemiCircle];
+	[self.leftCircle addSubview: self.leftSemiCircle];
+	[self.rightCircle addSubview: self.rightSemiCircle];
 
-	[self formatSemiCircleImageView: self.leftSemiCircle withFrame: leftCircleFrame onLeft:YES];
-	[self formatSemiCircleImageView: self.rightSemiCircle withFrame: rightCircleFrame onLeft:NO];
+	[self addSubview: self.leftCircle];
+	[self addSubview: self.rightCircle];
+}
 
-	[self addSubview: leftBackground];
-	[self addSubview: rightBackground];
+-(void) formatCoverRects {
+	CGFloat width = self.storyTextView.frame.size.width/2.f;
+	self.leftCoverRectFrame = CGRectMake(self.storyTextView.frame.origin.x - width,
+										 self.storyTextView.frame.origin.y,
+										 width,
+										 self.storyTextView.frame.size.height);
+	self.leftCircleCoverRect.frame = self.leftCoverRectFrame;
+	self.rightCoverRectFrame = CGRectOffset(self.leftCircleCoverRect.frame, self.storyTextView.frame.size.width + width, 0);
+	self.rightCircleCoverRect.frame = self.rightCoverRectFrame;
+	self.leftCircleCoverRect.backgroundColor = [UIColor colorWithRed:FEED_BACKGROUND_COLOR green:FEED_BACKGROUND_COLOR blue:FEED_BACKGROUND_COLOR alpha:1.f];
+	self.rightCircleCoverRect.backgroundColor = [UIColor colorWithRed:FEED_BACKGROUND_COLOR green:FEED_BACKGROUND_COLOR blue:FEED_BACKGROUND_COLOR alpha:1.f];
+	[self addSubview: self.leftCircleCoverRect];
+	[self addSubview: self.rightCircleCoverRect];
 }
 
 -(UIView*) getBackgroundCircleWithFrame: (CGRect) frame {
@@ -164,7 +202,7 @@
 #pragma mark - Set Content -
 
 -(void) setContentWithUsername:(NSString *) username andTitle: (NSString *) title
-				andCoverImage: (UIImage*) coverImage {
+				 andCoverImage: (UIImage*) coverImage {
 	self.povTitle.text = title;
 	self.povCreatorUsername.text = username;
 	UIImage* leftHalf = [self halfPicture:coverImage leftHalf:YES];
@@ -174,7 +212,7 @@
 }
 
 -(void) setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title
-				 andCoverImage: (UIImage*) coverImage {
+						andCoverImage: (UIImage*) coverImage {
 	[self.povTitle setTextColor:[UIColor lightGrayColor]];
 	[self.povCreatorUsername setTextColor:[UIColor lightGrayColor]];
 	[self setContentWithUsername:username andTitle:title andCoverImage:coverImage];
@@ -226,40 +264,63 @@
 							view.frame.size.height);
 }
 
+// Captures pinching gesture so that the two half circles can be pinched
+// together to select an article
 -(void)pinchingSemiCirclesTogether:(UIPinchGestureRecognizer *)sender{
-	//make sure it's only two touches that are registered
-	if(sender.numberOfTouches != 2) return;
+
 	switch(sender.state) {
 		case UIGestureRecognizerStateBegan: {
+			if(sender.numberOfTouches != 2) return;
 			CGPoint touch1 = [sender locationOfTouch:0 inView:self];
 			CGPoint touch2 = [sender locationOfTouch:1 inView:self];
-			if(touch1.x < touch2.x){
-				self.lastLeftmostPoint = touch1;
-				self.lastRightmostPoint = touch2;
-			}else{
-				self.lastLeftmostPoint = touch2;
-				self.lastRightmostPoint = touch1;
+			if (touch2.x < touch1.x) {
+				CGPoint temp = touch1;
+				touch1 = touch2;
+				touch2 = temp;
 			}
+
+			self.lastLeftmostPoint = touch1;
+			self.lastRightmostPoint = touch2;
+			self.isPinching = YES;
+
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
+			if (!self.isPinching) return;
+			if(sender.numberOfTouches != 2) return;
 			CGPoint touch1 = [sender locationOfTouch:0 inView:self];
 			CGPoint touch2 = [sender locationOfTouch:1 inView:self];
-			if(touch1.x < touch2.x){
-				[self translateView: [self.leftSemiCircle superview] withXOffset:touch1.x - self.lastLeftmostPoint.x];
-				[self translateView: [self.rightSemiCircle superview] withXOffset:touch2.x - self.lastRightmostPoint.x];
-				self.lastLeftmostPoint = touch1;
-				self.lastRightmostPoint = touch2;
-			}else{
-				[self translateView: [self.rightSemiCircle superview] withXOffset:touch2.x - self.lastLeftmostPoint.x];
-				[self translateView: [self.rightSemiCircle superview] withXOffset:touch1.x - self.lastRightmostPoint.x];
-				self.lastLeftmostPoint = touch2;
-				self.lastRightmostPoint = touch1;
+			if (touch2.x < touch1.x) {
+				CGPoint temp = touch1;
+				touch1 = touch2;
+				touch2 = temp;
 			}
+
+			CGFloat offset = (touch1.x - self.lastLeftmostPoint.x) > (touch2.x - self.lastRightmostPoint.x) ? (touch1.x - self.lastLeftmostPoint.x) : (touch2.x - self.lastRightmostPoint.x);
+			self.leftCircle.frame = CGRectOffset(self.leftCircle.frame, offset, 0);
+			self.rightCircle.frame = CGRectOffset(self.rightCircle.frame, -offset, 0);
+			self.leftCircleCoverRect.frame = CGRectOffset(self.leftCircleCoverRect.frame, offset, 0);
+			self.rightCircleCoverRect.frame = CGRectOffset(self.rightCircleCoverRect.frame, -offset, 0);
+
+			self.lastLeftmostPoint = touch1;
+			self.lastRightmostPoint = touch2;
+
+			if ([self semiCirclesShouldBePinched]) {
+				self.isPinching = NO;
+				[self animateSemiCirclesTogether];
+			}
+
 			break;
 		}
 		case UIGestureRecognizerStateEnded: {
-			//TODO: check if the two circles were pinched far enough together to open a story or move them back
+			if (!self.isPinching) return;
+			self.isPinching = NO;
+			if ([self semiCirclesShouldBePinched]) {
+				[self animateSemiCirclesTogether];
+			} else {
+				[self animateSemiCirclesBackToOrigin];
+			}
+
 			break;
 		}
 		default: {
@@ -269,6 +330,14 @@
 
 }
 
+//checks if semi circles are close enough together to animate together
+-(BOOL) semiCirclesShouldBePinched {
+	if ((fabs(self.leftCircle.frame.origin.x - self.circleFrameCenter.origin.x) +
+		 fabs(self.rightCircle.frame.origin.x - self.circleFrameCenter.origin.x)) < PINCH_THRESHOLD) {
+		return YES;
+	}
+	return NO;
+}
 
 /*animates the semicircles either to the center or to their sides*/
 -(void)positionSemiCirclesCenter:(BOOL)toCenter {
@@ -289,26 +358,69 @@
 }
 
 #pragma mark - Lazy Instantiation -
--(UIImageView *)leftSemiCircle {
+
+-(void) animateSemiCirclesTogether {
+	[UIView animateWithDuration: PINCH_TOGETHER_DURATION animations:^{
+		//adjustment because there's like a 1px gap between halved images
+		self.leftCircle.frame = CGRectOffset(self.circleFrameCenter, 1, 0);
+		self.rightCircle.frame = self.circleFrameCenter;
+		self.leftCircleCoverRect.frame = CGRectOffset(self.leftCoverRectFrame, self.storyTextView.frame.size.width/2.f, 0);
+		self.rightCircleCoverRect.frame = CGRectOffset(self.rightCoverRectFrame, -(self.storyTextView.frame.size.width/2.f), 0);
+	} completion:^(BOOL finished) {
+		[self.delegate successfullyPinchedTogetherAtIndexPath:self.indexPath];
+	}];
+}
+
+-(void) animateSemiCirclesBackToOrigin {
+	[UIView animateWithDuration: PINCH_APART_DURATION animations:^{
+		self.leftCircle.frame = self.leftCircleFrame;
+		self.rightCircle.frame = self.rightCircleFrame;
+		self.leftCircleCoverRect.frame = self.leftCoverRectFrame;
+		self.rightCircleCoverRect.frame = self.rightCoverRectFrame;
+	} completion:^(BOOL finished) {
+	}];
+}
+
+#pragma mark - Lazy Instantiation -
+
+-(UIImageView*) leftSemiCircle {
 	if(!_leftSemiCircle) {
 		_leftSemiCircle = [[UIImageView alloc] init];
 	}
 	return _leftSemiCircle;
-
 }
--(UIImageView *) rightSemiCircle {
 
+    -(UIImageView *) rightSemiCircle {
 	if(!_rightSemiCircle) {
 		_rightSemiCircle = [[UIImageView alloc] init];
 	}
 	return _rightSemiCircle;
 }
+
+-(UIView*) leftCircleCoverRect {
+	if(!_leftCircleCoverRect) {
+		_leftCircleCoverRect = [[UIView alloc] init];
+	}
+	return _leftCircleCoverRect;
+}
+
+-(UIView*) rightCircleCoverRect {
+	if(!_rightCircleCoverRect) {
+		_rightCircleCoverRect = [[UIView alloc] init];
+	}
+	return _rightCircleCoverRect;
+}
+
 -(UILabel *) povTitle {
-	if(!_povTitle)_povTitle = [[UILabel alloc]init];
+	if(!_povTitle){
+		_povTitle = [[UILabel alloc]init];
+	}
 	return _povTitle;
 }
 -(UILabel *) povCreatorUsername{
-	if(!_povCreatorUsername)_povCreatorUsername = [[UILabel alloc]init];
+	if(!_povCreatorUsername) {
+		_povCreatorUsername = [[UILabel alloc]init];
+	}
 	return _povCreatorUsername;
 }
 @end

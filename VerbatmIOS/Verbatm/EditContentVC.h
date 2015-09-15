@@ -8,8 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "PinchView.h"
-#import "baseVC.h"
-@interface EditContentVC : baseVC
+#import "BaseVC.h"
+@interface EditContentVC : BaseVC
 @property (nonatomic, strong) PinchView * pinchView;
 @property (nonatomic) NSInteger filterImageIndex;
 @property (nonatomic) BOOL editContentMode_Photo_TappedOpenForTheFirst;

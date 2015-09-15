@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "baseVC.h"
-@interface CreateAccount : baseVC
+#import "BaseVC.h"
+@interface CreateAccount : BaseVC
 
 @end

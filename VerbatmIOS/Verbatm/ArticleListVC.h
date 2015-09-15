@@ -7,10 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "baseVC.h"
+#import "BaseVC.h"
 @class POVLoadManager;
 
-@interface ArticleListVC : baseVC
+@protocol ArticleListVCDelegate <NSObject>
+
+-(void) displayPOVWithIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager;
+
+@end
+
+@interface ArticleListVC : BaseVC
+
+@property (strong, nonatomic) id<ArticleListVCDelegate> delegate;
 
 -(void) setPovLoadManager:(POVLoadManager *)povLoader;
 
