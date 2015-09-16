@@ -21,7 +21,7 @@
 #import "PagesLoadManager.h"
 #import "POVView.h"
 
-@interface ArticleDisplayVC () <PagesLoadManagerDelegate, UIGestureRecognizerDelegate>
+@interface ArticleDisplayVC () <PagesLoadManagerDelegate>
 
 @property (strong, nonatomic) POVDisplayScrollView* scrollView;
 

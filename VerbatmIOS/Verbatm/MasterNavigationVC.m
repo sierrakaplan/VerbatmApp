@@ -28,7 +28,7 @@
 #import "VerbatmCameraView.h"
 
 
-@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate>
+@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 
@@ -68,6 +68,9 @@
 #define RIGHT_FRAME CGRectMake(self.view.frame.size.width * 2, 0, self.view.frame.size.width, self.view.frame.size.height)
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
+#define ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION 0.4f
+//the amount of space that must be pulled to exit
+#define EXIT_EPSILON 60
 
 #define ID_FOR_FEEDVC @"feed_vc"
 #define ID_FOR_MEDIADEVVC @"media_dev_vc"
@@ -217,21 +220,40 @@
 			CGPoint currentPoint = touchLocation;
 			int diff = currentPoint.x - self.previousGesturePoint.x;
 			self.previousGesturePoint = currentPoint;
-			self.frame = CGRectMake(self.frame.origin.x + diff, self.frame.origin.y,  self.frame.size.width,  self.frame.size.height);
+			self.articleDisplayContainer.frame = CGRectOffset(self.articleDisplayContainer.frame, diff, 0);
 			break;
 		}
 		case UIGestureRecognizerStateEnded: {
-			if(self.frame.origin.x > EXIT_EPSILON) {
+			if(self.articleDisplayContainer.frame.origin.x > EXIT_EPSILON) {
 				//exit article
-				[self revealPreview:NO];
+				[self revealArticleDisplay:NO];
 			}else{
 				//return view to original position
-				[self revealPreview:YES];
+				[self revealArticleDisplay:YES];
 			}
 			break;
 		}
 		default:
 			break;
+	}
+}
+
+// if show, return container view to its viewing position
+// else remove it
+-(void) revealArticleDisplay: (BOOL) show {
+	if(show)  {
+		[UIView animateWithDuration:ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION animations:^{
+			self.articleDisplayContainer.frame = self.view.bounds;
+		} completion:^(BOOL finished) {
+		}];
+	}else {
+		[UIView animateWithDuration:ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION animations:^{
+			self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
+		}completion:^(BOOL finished) {
+			if(finished) {
+				[self.articleDisplayContainer setAlpha:0];
+			}
+		}];
 	}
 }
 

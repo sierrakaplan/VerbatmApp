@@ -38,7 +38,7 @@
 @property (nonatomic) CGPoint previousGesturePoint;
 
 //the amount of space that must be pulled to exit
-#define EXIT_EPSILON -60
+#define EXIT_EPSILON 60
 
 @end
 
