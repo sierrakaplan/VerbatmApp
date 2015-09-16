@@ -95,8 +95,20 @@
 	[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
 }
 
--(void) likeButtonPressedOnPOVWithID:(NSNumber *)povID {
+-(void) likeButtonLiked:(BOOL)liked onPOVWithID:(NSNumber *)povID {
 	// TODO: update backend
+}
+
+#pragma mark - Clean up -
+
+// Reverses load Article and removes all content
+-(void) cleanUp {
+	for (POVView* povView in self.povViews) {
+		[povView clearArticle];
+		[povView removeFromSuperview];
+	}
+	self.povViews = nil;
+	self.povIDs = nil;
 }
 
 

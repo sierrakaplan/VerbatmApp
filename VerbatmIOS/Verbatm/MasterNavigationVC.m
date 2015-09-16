@@ -249,6 +249,7 @@
 			self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
 		}completion:^(BOOL finished) {
 			if(finished) {
+				[self.articleDisplayVC cleanUp];
 				[self.articleDisplayContainer setAlpha:0];
 			}
 		}];

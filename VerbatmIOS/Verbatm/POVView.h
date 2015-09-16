@@ -10,7 +10,8 @@
 
 @protocol LikeButtonDelegate <NSObject>
 
--(void) likeButtonPressedOnPOVWithID: (NSNumber*) povID;
+// tells whether button was liked or unliked
+-(void) likeButtonLiked: (BOOL)liked onPOVWithID: (NSNumber*) povID;
 
 @end
 

@@ -89,7 +89,7 @@
 	} else {
 		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
 	}
-	[self.likeButtonDelegate likeButtonPressedOnPOVWithID:self.povID];
+	[self.likeButtonDelegate likeButtonLiked: self.liked onPOVWithID:self.povID];
 }
 
 #pragma mark - Scroll view delegate -
@@ -176,9 +176,10 @@
 -(void) clearArticle {
     //We clear these so that the media is released
     [self stopAllVideos];
-    for(UIView *view in self.subviews) {
+    for(UIView *view in self.mainScrollView.subviews) {
         [view removeFromSuperview];
     }
+	[self.likeButton removeFromSuperview];
     self.currentPageIndex = -1;
     self.pageAves = nil;
 }
