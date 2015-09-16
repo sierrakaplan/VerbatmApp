@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
@@ -498,7 +498,7 @@
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
                     <connections>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
-                        <segue destination="x4u-kZ-n9K" kind="custom" identifier="BRING_UP_EDITCONTENT_SEGUE" customClass="NoAnimationSegue" id="ONZ-b1-Agz"/>
+                        <segue destination="x4u-kZ-n9K" kind="modal" identifier="BRING_UP_EDITCONTENT_SEGUE" modalPresentationStyle="fullScreen" animates="NO" id="ONZ-b1-Agz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
