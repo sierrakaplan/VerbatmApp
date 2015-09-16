@@ -113,6 +113,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	NSUInteger count = [self.povLoader getNumberOfPOVsLoaded];
 	count += (self.pullDownInProgress) ? 1 : 0;
+    count += (self.self.povPublishing) ? 1:0;
 	return count;
 }
 
@@ -120,7 +121,7 @@
 	FeedTableViewCell *cell;
 	NSInteger index = indexPath.row;
 	//configure cell
-	if (self.povPublishingPlaceholderCell && index == 0) {
+	if (self.povPublishing && index == 0) {
 		cell = self.povPublishingPlaceholderCell;
     } else if (self.refreshInProgress){
         cell = self.placeholderCell;
@@ -159,7 +160,8 @@
 	self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
 	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:@"User Name" andTitle: title andCoverImage:coverPic];
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
 }
 
 // Method called from Notification sent by the model to let it know that
@@ -183,6 +185,7 @@
 	if (self.povPublishing) {
 		self.povPublishingPlaceholderCell = nil;
 		self.povPublishing = NO;
+        [self.povListView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
 	}
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }

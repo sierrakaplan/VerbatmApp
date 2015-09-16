@@ -110,7 +110,6 @@
     float middleButtonWidth = (self.frame.size.width - ((NAV_ICON_SIZE+NAV_ICON_OFFSET)*2.f))/2.f;
     float space_left = self.frame.size.width - (widthUsed  + 2.f*NAV_ICON_OFFSET);
     float distance = space_left/3.f;
-    float width = self.frame.size.width;
     
     self.previewButton.frame =  CGRectMake(self.backButton.frame.origin.x + self.backButton.frame.size.width +
                                            distance,

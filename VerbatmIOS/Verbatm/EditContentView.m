@@ -6,16 +6,19 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "EditContentView.h"
-#import "VerbatmImageScrollView.h"
 #import "ContentDevPullBar.h"
-#import "SizesAndPositions.h"
-#import "Styles.h"
-#import "UIEffects.h"
-#import "Notifications.h"
 #import "ContentDevVC.h"
-#import "VerbatmKeyboardToolBar.h"
 
+#import "EditContentView.h"
+#import "Notifications.h"
+#import "Styles.h"
+
+#import "SizesAndPositions.h"
+
+#import "UIEffects.h"
+
+#import "VerbatmKeyboardToolBar.h"
+#import "VerbatmImageScrollView.h"
 
 @interface EditContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
 
@@ -23,6 +26,9 @@
 #pragma mark FilteredPhotos
 @property (nonatomic, weak) NSArray * filteredImages;
 @property (nonatomic) NSInteger imageIndex;
+@property (nonatomic, strong) UIButton * textCreationButton;
+
+#define TEXT_CREATION_ICON @"textCreateIcon"
 
 @end
 
@@ -40,6 +46,23 @@
 }
 
 #pragma mark - Text View -
+
+-(void)createTextCreationButton {
+    if(!_textCreationButton){
+        self.textCreationButton = [[UIButton alloc] initWithFrame:
+                       CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET - EXIT_CV_BUTTON_WIDTH, EXIT_CV_BUTTON_WALL_OFFSET,
+                                  EXIT_CV_BUTTON_WIDTH, EXIT_CV_BUTTON_HEIGHT)];
+        [self.textCreationButton setImage:[UIImage imageNamed:TEXT_CREATION_ICON] forState:UIControlStateNormal];
+        [self.textCreationButton addTarget:self action:@selector(textButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.textCreationButton];
+    }
+    [self bringSubviewToFront:self.textCreationButton];
+    
+}
+-(void)textButtonClicked:(UIButton*) sender{
+    if(self.textView.text)[self editText:self.textView.text];
+    else [self editText:@""];
+}
 
 -(void) editText: (NSString *) text {
 
@@ -149,6 +172,7 @@
 	[self addSubview:self.imageView];
 	[self addTapGestureToMainView];
 	[self addSwipeGestureToImageView];
+    [self createTextCreationButton];
 }
 
 #pragma mark Filters

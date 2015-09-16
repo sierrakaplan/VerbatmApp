@@ -903,7 +903,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	//make sure the pullbar is showing when things are pinched together
 	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
     //present swipe to delete notification
-    if([UserSetupParemeters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
+    if([UserSetupParameters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
 
 
@@ -1394,7 +1394,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
-        if([UserSetupParemeters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
+        if([UserSetupParameters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
 	}else{
 		self.openPinchView = pinchView;
 		//tap to open an element for viewing or editing
@@ -1628,13 +1628,13 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 -(void)alertSwipeRightToDelete{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles right to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    [UserSetupParemeters set_swipeToDelete_InstructionAsShown];
+    [UserSetupParameters set_swipeToDelete_InstructionAsShown];
 }
 
 -(void)alertTapNHoldInCollection{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Tap and hold to remove circle" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    [UserSetupParemeters set_tapNhold_InstructionAsShown];
+    [UserSetupParameters set_tapNhold_InstructionAsShown];
 }
 
 #pragma mark -Tap to clear view-
