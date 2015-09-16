@@ -10,6 +10,12 @@
 #define SizesAndPositions_h
 
 
+#pragma mark - Exit CV constants-
+
+#define EXIT_CV_BUTTON_WIDTH 60
+#define EXIT_CV_BUTTON_HEIGHT EXIT_CV_BUTTON_WIDTH
+#define EXIT_CV_BUTTON_WALL_OFFSET 0
+
 #define NAV_BAR_HEIGHT 40.f
 #define NAV_ICON_OFFSET 7
 #define NAV_ICON_SIZE (NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2)
