@@ -53,7 +53,7 @@
 #define NUM_POVS_IN_SECTION 6
 #define RELOAD_THRESHOLD 15
 #define NUM_OF_NEW_POVS_TO_LOAD 15
-
+#define PULL_TO_REFRESH_THRESHOLD (-1 * STORY_CELL_HEIGHT)
 @end
 
 @implementation ArticleListVC
@@ -195,16 +195,15 @@
 //when the user starts pulling down the article list we should insert the placeholder with the animating view
 -(void) scrollViewWillBeginDragging:(nonnull UIScrollView *)scrollView {
 	NSLog(@"Begin dragging");
-	self.pullDownInProgress = scrollView.contentOffset.y <= 0.0f;
+	self.pullDownInProgress = scrollView.contentOffset.y <= PULL_TO_REFRESH_THRESHOLD;
 	if (self.pullDownInProgress) {
          [self refreshFeed];
-//		[self.povListView insertSubview:self.placeholderCell atIndex:0];
-//
-//        [NSTimer timerWithTimeInterval:2
-//                                target:self
-//                              selector:@selector(refreshFeed)
-//                              userInfo:nil
-//                               repeats:NO];
+		[self.povListView insertSubview:self.placeholderCell atIndex:0];
+        [NSTimer timerWithTimeInterval:2
+                                target:self
+                              selector:@selector(refreshFeed)
+                              userInfo:nil
+                               repeats:NO];
         
 	}
 }
@@ -215,11 +214,10 @@
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    /*Pulls down past point to refresh*/
-	float offset_y =scrollView.contentOffset.y ;
-	if (offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
-       
-    }
+//    /*Pulls down past point to refresh*/
+//	float offset_y =scrollView.contentOffset.y ;
+//	if (offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
+//    }
 }
 
 //sets the frame of the placeholder cell and also adjusts the frame of the placeholder cell
