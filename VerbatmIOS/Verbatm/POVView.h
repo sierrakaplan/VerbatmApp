@@ -8,7 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface POVView : UIScrollView
+@protocol LikeButtonDelegate <NSObject>
+
+// tells whether button was liked or unliked
+-(void) likeButtonLiked: (BOOL)liked onPOVWithID: (NSNumber*) povID;
+
+@end
+
+@interface POVView : UIView
 
 @property (strong, nonatomic) NSMutableArray * pageAves;
 
@@ -17,5 +24,10 @@
 
 -(void) displayMediaOnCurrentAVE;
 -(void) clearArticle;
+
+// adds like button with delegate so that backend can be updated when the like
+// button is pressed, and passes the povID since the delegate
+// needs to pass this back
+-(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate andSetPOVID: (NSNumber*) povID;
 
 @end

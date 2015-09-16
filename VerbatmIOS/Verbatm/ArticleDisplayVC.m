@@ -21,7 +21,9 @@
 #import "PagesLoadManager.h"
 #import "POVView.h"
 
-@interface ArticleDisplayVC () <PagesLoadManagerDelegate>
+#import "UpdatingManager.h"
+
+@interface ArticleDisplayVC () <PagesLoadManagerDelegate, LikeButtonDelegate>
 
 @property (strong, nonatomic) POVDisplayScrollView* scrollView;
 
@@ -37,6 +39,9 @@
 
 // Load manager in charge of getting page objects and all their media for each pov
 @property (strong, nonatomic) PagesLoadManager* pageLoadManager;
+
+// In charge of updating information about a pov (number of likes, etc.)
+@property (strong, nonatomic) UpdatingManager* updatingManager;
 
 
 @end
@@ -54,8 +59,6 @@
 
 // When user clicks story, loads one behind it and the two ahead
 -(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
-	CGRect frame = self.view.bounds;
-
 	self.povLoadManager = loadManager;
 	GTLVerbatmAppPOVInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
 	NSNumber* povID = povInfo.identifier;
@@ -94,6 +97,23 @@
 	}
 
 	[povView renderAVES: povView.pageAves];
+	[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
+}
+
+-(void) likeButtonLiked:(BOOL)liked onPOVWithID:(NSNumber *)povID {
+	[self.updatingManager povWithId:povID wasLiked: liked];
+}
+
+#pragma mark - Clean up -
+
+// Reverses load Article and removes all content
+-(void) cleanUp {
+	for (POVView* povView in self.povViews) {
+		[povView clearArticle];
+		[povView removeFromSuperview];
+	}
+	self.povViews = nil;
+	self.povIDs = nil;
 }
 
 
@@ -119,6 +139,13 @@
 		_pageLoadManager = [[PagesLoadManager alloc] init];
 	}
 	return _pageLoadManager;
+}
+
+-(UpdatingManager*) updatingManager {
+	if (!_updatingManager) {
+		_updatingManager = [[UpdatingManager alloc] init];
+	}
+	return _updatingManager;
 }
 
 -(NSMutableArray*) povViews {

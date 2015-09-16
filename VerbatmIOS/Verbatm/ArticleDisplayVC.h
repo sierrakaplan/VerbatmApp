@@ -18,4 +18,7 @@
 // and following stories
 -(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager;
 
+//Removes any content loaded (reverses loadStory)
+-(void) cleanUp;
+
 @end
