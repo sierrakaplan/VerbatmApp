@@ -39,6 +39,14 @@
 	return self;
 }
 
+- (NSArray*) getPagesForPOV: (NSNumber*) povID {
+	NSArray* pages = [self.pagesForPOV objectForKey: povID];
+	if (!pages) {
+		NSLog(@"Error: getting pages that are not yet loaded");
+	}
+	return pages;
+}
+
 
 //TODO: think about way to load each page individually rather than all of them
 // at once
@@ -65,20 +73,6 @@
 	});
 }
 
-// Resolves to a Page object from a GTLVerbatmAppPage
-// Loads all the GTLVerbatmAppImage and GTLVerbatmAppVideo objects and
-// creates a Page object containing them.
--(PMKPromise*) loadPageFromGTLPage: (GTLVerbatmAppPage*) gtlPage {
-	return PMKWhen(@[[self loadImagesForImageIDs: gtlPage.imageIds],
-			  [self loadVideosFromVideoIDs: gtlPage.videoIds]]).then(^(NSArray* imagesAndVideos) {
-		Page* page = [Page alloc];
-		page.images = imagesAndVideos[0];
-		page.videos = imagesAndVideos[1];
-		page.indexInPOV = gtlPage.indexInPOV.integerValue;
-		return page;
-	});
-}
-
 //Queries for the pages from the given POV
 //Returns a promise that resolves to either an error or the PageList from the POV
 -(PMKPromise*) loadPageListFromPOV: (NSNumber*) povID {
@@ -97,6 +91,19 @@
 	return promise;
 }
 
+// Resolves to a Page object from a GTLVerbatmAppPage
+// Loads all the GTLVerbatmAppImage and GTLVerbatmAppVideo objects and
+// creates a Page object containing them.
+-(PMKPromise*) loadPageFromGTLPage: (GTLVerbatmAppPage*) gtlPage {
+	return PMKWhen(@[[self loadImagesForImageIDs: gtlPage.imageIds],
+					 [self loadVideosFromVideoIDs: gtlPage.videoIds]]).then(^(NSArray* imagesAndVideos) {
+		Page* page = [Page alloc];
+		page.images = imagesAndVideos[0];
+		page.videos = imagesAndVideos[1];
+		page.indexInPOV = gtlPage.indexInPOV.integerValue;
+		return page;
+	});
+}
 
 // Resolves to array of GTLVerbatmAppImage's or error
 -(PMKPromise*) loadImagesForImageIDs: (NSArray*) imageIDs {

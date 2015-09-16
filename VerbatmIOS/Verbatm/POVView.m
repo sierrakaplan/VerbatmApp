@@ -17,21 +17,17 @@
 
 @interface POVView ()<UIGestureRecognizerDelegate, UIScrollViewDelegate>
 @property (nonatomic) NSInteger currentPageIndex;
-@property (strong, nonatomic) NSArray * pageAves;
 @property (nonatomic) float pageScrollTopBottomArea;
 
 @end
 
 @implementation POVView
 
--(instancetype)initWithFrame:(CGRect)frame andAVES:(NSArray *)povPages {
+-(instancetype)initWithFrame:(CGRect)frame {
     
     self = [super initWithFrame:frame];
     if (self) {
         [self formatSelf];
-        [self renderPages: povPages];
-		[self addLikeButton];
-		self.currentPageIndex = -1;
     }
     return self;
 }
@@ -46,27 +42,24 @@
 	self.delegate = self;
 }
 
-//renders POV pages onto the view
--(void)renderPages: (NSArray *) povPages {
-	self.pageAves = povPages;
+//renders aves (pages) onto the view
+-(void) renderAVES: (NSMutableArray *) aves {
+	self.pageAves = aves;
+	self.currentPageIndex = -1;
 	
     self.contentSize = CGSizeMake(self.frame.size.width, [self.pageAves count] * self.frame.size.height);
 	self.contentOffset = CGPointMake(0, 0);
     
     CGRect viewFrame = self.bounds;
-    for(UIView* view in povPages){
+    for(UIView* view in self.pageAves){
 		view.frame = viewFrame;
 		[self addSubview: view];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
     }
     float middleScreenSize = (self.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
     self.pageScrollTopBottomArea = (self.frame.size.height - middleScreenSize)/2.f;
-
 }
 
--(void) addLikeButton {
-	//TODO: add like button
-}
 
 #pragma mark - Scroll view delegate -
 

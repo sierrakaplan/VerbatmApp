@@ -75,10 +75,11 @@
 	}
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
-	NSMutableArray* aves = [analyzer processPinchedObjectsFromArray:pinchViews withFrame: self.viewingFrame];
+	NSMutableArray* aves = [analyzer getAVESFromPinchViews: pinchViews withFrame: self.viewingFrame];
 	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.viewingFrame andImage:coverPic andTitle:title];
 	[aves insertObject:coverAVE atIndex:0];
-	self.povView = [[POVView alloc] initWithFrame:self.bounds andAVES:aves];
+	self.povView = [[POVView alloc] initWithFrame:self.bounds];
+	[self.povView renderAVES: aves];
 	[self addSubview: self.povView];
 	[self addSubview: self.publishButton];
 	[self bringSubviewToFront: self.publishButton];

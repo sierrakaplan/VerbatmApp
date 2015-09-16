@@ -85,8 +85,7 @@
 	self.articleDisplayContainerFrameOffScreen = CGRectMake(self.view.frame.size.width, 0,
 															self.view.frame.size.width,
 															self.view.frame.size.height);
-	[self.articleDisplayContainer removeFromSuperview];
-//	self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
+	self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
 }
 
 //lays out all the containers in the right position and also sets the appropriate
@@ -108,6 +107,7 @@
 
 	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
 	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
+	self.articleDisplayContainer.alpha = 0;
 }
 
 #pragma mark - Formatting sub views -
@@ -175,7 +175,9 @@
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
 	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
 	[self.articleDisplayContainer setFrame:self.view.bounds];
-	[self.view addSubview:self.articleDisplayContainer];
+	[self.articleDisplayContainer setBackgroundColor:[UIColor whiteColor]];
+	self.articleDisplayContainer.alpha = 1;
+	[self.view bringSubviewToFront: self.articleDisplayContainer];
 }
 
 

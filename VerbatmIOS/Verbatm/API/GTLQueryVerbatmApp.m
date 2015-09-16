@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (26 custom class methods, 4 custom properties)
+//   GTLQueryVerbatmApp (25 custom class methods, 4 custom properties)
 
 #import "GTLQueryVerbatmApp.h"
 
@@ -107,18 +107,6 @@
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.bodyObject = object;
   query.expectedObjectClass = [GTLVerbatmAppPage class];
-  return query;
-}
-
-+ (instancetype)queryForPageInsertPagesWithObject:(GTLVerbatmAppPageListWrapper *)object {
-  if (object == nil) {
-    GTL_DEBUG_ASSERT(object != nil, @"%@ got a nil object", NSStringFromSelector(_cmd));
-    return nil;
-  }
-  NSString *methodName = @"verbatmApp.page.insertPages";
-  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
-  query.bodyObject = object;
-  query.expectedObjectClass = [GTLVerbatmAppPageListWrapper class];
   return query;
 }
 

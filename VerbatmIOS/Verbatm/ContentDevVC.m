@@ -49,8 +49,7 @@
 
 
 @interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,
-GMImagePickerControllerDelegate, EditContentViewDelegate,
-ContentSVDelegate>
+GMImagePickerControllerDelegate, ContentSVDelegate>
 
 
 // Says whether or not user is currently adding a cover picture

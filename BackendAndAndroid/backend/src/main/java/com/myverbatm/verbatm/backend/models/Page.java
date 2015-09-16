@@ -2,6 +2,7 @@ package com.myverbatm.verbatm.backend.models;
 
 import com.googlecode.objectify.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,12 +25,12 @@ public class Page {
     /**
      * Array of images ids in page
      */
-    private List<Long> imageIds;
+    private ArrayList<Long> imageIds;
 
     /**
      * Array of videos ids in page
      */
-    private List<Long> videoIds ;
+    private ArrayList<Long> videoIds ;
 
     /**
      *
@@ -66,7 +67,7 @@ public class Page {
      * Returns the list of Video ids stored in page
      * @return the list of Video ids stored in page
      */
-    public List<Long> getVideoIds() {
+    public ArrayList<Long> getVideoIds() {
         return videoIds;
     }
 
@@ -74,7 +75,7 @@ public class Page {
      * Sets the list of Video ids stored in page
      * @param videoIds the list of Video ids stored in page
      */
-    public void setVideoIds(List<Long> videoIds) {
+    public void setVideoIds(ArrayList<Long> videoIds) {
         this.videoIds = videoIds;
     }
 
@@ -82,7 +83,7 @@ public class Page {
      * Returns the list of Image ids stored in page
      * @return the list of Image ids stored in page
      */
-    public List<Long> getImageIds() {
+    public ArrayList<Long> getImageIds() {
         return imageIds;
     }
 
@@ -90,7 +91,7 @@ public class Page {
      * Sets the list of Image ids stored in page
      * @param imageIds the list of Image ids stored in page
      */
-    public void setImageIds(List<Long> imageIds) {
+    public void setImageIds(ArrayList<Long> imageIds) {
         this.imageIds = imageIds;
     }
 }

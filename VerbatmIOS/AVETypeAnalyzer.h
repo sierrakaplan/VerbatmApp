@@ -11,5 +11,7 @@
 
 @interface AVETypeAnalyzer : NSObject
 
--(NSMutableArray*)processPinchedObjectsFromArray:(NSArray*)pinchedObjects withFrame:(CGRect)frame;
+-(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame;
+
+-(NSMutableArray*) getAVESFromPages: (NSArray*) pages withFrame: (CGRect) frame;
 @end

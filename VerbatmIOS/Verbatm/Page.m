@@ -10,6 +10,4 @@
 
 @implementation Page
 
-@dynamic images, videos;
-
 @end

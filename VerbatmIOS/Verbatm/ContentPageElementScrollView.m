@@ -136,7 +136,6 @@
 	if (self.collectionIsOpen) {
 		return NO;
 	}
-	float deleteThreshold = self.frame.size.width/2.f;
 	if(self.contentOffset.x == self.initialContentOffset.x) {
 		return NO;
 	}

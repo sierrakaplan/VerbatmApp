@@ -32,4 +32,7 @@
 // when all media has been loaded so that VC can ask for it.
 - (void) loadPagesForPOV: (NSNumber*) povID;
 
+// once the pages have loaded, returns an array of Page objects
+- (NSArray*) getPagesForPOV: (NSNumber*) povID;
+
 @end

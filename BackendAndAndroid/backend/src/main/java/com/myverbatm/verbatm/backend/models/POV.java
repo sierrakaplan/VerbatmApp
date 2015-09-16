@@ -5,6 +5,7 @@ import com.googlecode.objectify.annotation.*;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Index;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -54,26 +55,12 @@ public class POV {
      * Array of page keys in the POV
      */
     @Index
-    private List<Long> pageIds;
+    private ArrayList<Long> pageIds;
 
 
     public POV() {
 
     }
-
-//    /**
-//     * Creates a POV instance from an entity of POV type
-//     * @param entity
-//     */
-//    public POV(com.google.appengine.api.datastore.Entity entity) {
-//        this.id = entity.getKey().getId();
-//        this.title = (String) entity.getProperty("title");
-//        this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
-//        this.datePublished = (Date) entity.getProperty("datePublished");
-//        this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
-//        this.creatorUserId = (Long) entity.getProperty("creatorUserId");
-//        this.pages = (List<Page>) entity.getProperty("pages");
-//    }
 
     /**
      *
@@ -174,7 +161,7 @@ public class POV {
      * Returns the list of Page IDs for this POV
      * @return the list of Page IDs for this POV
      */
-    public List<Long> getPageIds() {
+    public ArrayList<Long> getPageIds() {
         return pageIds;
     }
 
@@ -182,7 +169,7 @@ public class POV {
      * Sets the list of Page IDs for this POV
      * @param pageIds the list of Page IDs for this POV
      */
-    public void setPageIds(List<Long> pageIds) {
+    public void setPageIds(ArrayList<Long> pageIds) {
         this.pageIds = pageIds;
     }
 }

@@ -625,6 +625,15 @@
 			name = Model;
 			sourceTree = "<group>";
 		};
+		A560EF9E1BA8DFCC003FB041 /* AVE Analyzer */ = {
+			isa = PBXGroup;
+			children = (
+				F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */,
+				F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */,
+			);
+			name = "AVE Analyzer";
+			sourceTree = "<group>";
+		};
 		A56F686F1B643ADE00CE5744 /* PullBars/ToolBars */ = {
 			isa = PBXGroup;
 			children = (
@@ -1110,6 +1119,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				A560EF9E1BA8DFCC003FB041 /* AVE Analyzer */,
 				A560EF991BA88F8B003FB041 /* User settings */,
 				A5C09BA01BA1F0BF00C0AD86 /* ASI HTTP Request */,
 				C75985F91B85577900FE77F7 /* Internet Connectivity Monitor */,
@@ -1210,8 +1220,6 @@
 		F26894441A43641C00B1D4DB /* AVEs  */ = {
 			isa = PBXGroup;
 			children = (
-				F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */,
-				F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */,
 				C7E6C13B1A4E394600863893 /* TextAVE.h */,
 				C7E6C13C1A4E394600863893 /* TextAVE.m */,
 				C7BD53C21B5B73A700EE6241 /* BaseArticleViewingExperience.h */,
