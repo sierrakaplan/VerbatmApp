@@ -21,7 +21,7 @@
 #import "PagesLoadManager.h"
 #import "POVView.h"
 
-@interface ArticleDisplayVC () <PagesLoadManagerDelegate>
+@interface ArticleDisplayVC () <PagesLoadManagerDelegate, UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) POVDisplayScrollView* scrollView;
 
@@ -44,7 +44,7 @@
 @implementation ArticleDisplayVC
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+	[super viewDidLoad];
 	// Should always have 4 stories in memory (two in the direction of scroll, current, and one back)
 	self.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
 	[self.view addSubview: self.scrollView];
@@ -98,8 +98,8 @@
 #pragma mark - Memory warning -
 
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
 }
 
 

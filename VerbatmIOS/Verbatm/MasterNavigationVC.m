@@ -8,6 +8,8 @@
 
 #import <AVFoundation/AVAudioSession.h>
 
+#import "ArticleDisplayVC.h"
+
 #import "FeedVC.h"
 #import "Identifiers.h"
 #import "Icons.h"
@@ -27,19 +29,28 @@
 
 
 @interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate>
+
+@property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
+
+#pragma mark - Child View Controllers - 
 @property (weak, nonatomic) IBOutlet UIView * profileContainer;
 @property (weak, nonatomic) IBOutlet UIView * adkContainer;
 @property (weak, nonatomic) IBOutlet UIView * feedContainer;
 
-#pragma mark - Child View Controllers - 
 @property (strong,nonatomic) ProfileVC* profileVC;
 @property (strong,nonatomic) FeedVC* feedVC;
 @property (strong,nonatomic) MediaDevVC* mediaDevVC;
 
+@property (strong, nonatomic) ArticleDisplayVC* articleDisplayVC;
+
+// VC that displays articles in scroll view when clicked
+@property (weak, nonatomic) IBOutlet UIView *articleDisplayContainer;
+// article display list slides in from right and can be pulled off when a screen edge pan
+@property (nonatomic) CGRect articleDisplayContainerFrameOffScreen;
+
+
 #pragma mark - Preview -
 @property (nonatomic) PreviewDisplayView* previewDisplayView;
-
-@property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 
 @property (nonatomic, strong) NSMutableArray * pagesToDisplay;
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
@@ -61,6 +72,8 @@
 #define ID_FOR_FEEDVC @"feed_vc"
 #define ID_FOR_MEDIADEVVC @"media_dev_vc"
 #define ID_FOR_PROFILEVC @"profile_vc"
+
+#define ID_FOR_DISPLAY_VC @"article_display_vc"
 
 @end
 
@@ -104,6 +117,15 @@
 
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_PROFILEVC];
 	[self.profileContainer addSubview: self.profileVC.view];
+
+	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
+	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
+	self.articleDisplayContainer.alpha = 0;
+	self.articleDisplayContainerFrameOffScreen = CGRectMake(self.view.frame.size.width, 0,
+															self.view.frame.size.width,
+															self.view.frame.size.height);
+	self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
+	[self addScreenEdgePanToArticleDisplay];
 }
 
 -(void) formatMainScrollView {
@@ -113,7 +135,18 @@
 	self.masterSV.pagingEnabled = YES;
 }
 
-#pragma mark - Nav Buttons Pressed Delegate -
+
+#pragma mark - Feed VC Delegate -
+
+-(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
+	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
+	[self.articleDisplayContainer setFrame:self.view.bounds];
+	[self.articleDisplayContainer setBackgroundColor:[UIColor whiteColor]];
+	self.articleDisplayContainer.alpha = 1;
+	[self.view bringSubviewToFront: self.articleDisplayContainer];
+}
+
+#pragma mark Nav Buttons
 
 //TODO: change these to check if user is logged in
 //nav button is pressed - so we move the SV left to the profile
@@ -157,6 +190,50 @@
 	}];
 }
 
+#pragma mark - Left edge screen pull for article display vc -
+
+-(void) addScreenEdgePanToArticleDisplay {
+	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
+	leftEdgePanGesture.edges = UIRectEdgeLeft;
+	leftEdgePanGesture.delegate = self;
+	[self.articleDisplayContainer addGestureRecognizer: leftEdgePanGesture];
+}
+
+//called from left edge pan
+- (void) exitArticleDisplayView:(UIScreenEdgePanGestureRecognizer *)sender {
+
+	switch (sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			//we want only one finger doing anything when exiting
+			if([sender numberOfTouches] != 1) {
+				return;
+			}
+			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+			self.previousGesturePoint  = touchLocation;
+			break;
+		}
+		case UIGestureRecognizerStateChanged: {
+			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+			CGPoint currentPoint = touchLocation;
+			int diff = currentPoint.x - self.previousGesturePoint.x;
+			self.previousGesturePoint = currentPoint;
+			self.frame = CGRectMake(self.frame.origin.x + diff, self.frame.origin.y,  self.frame.size.width,  self.frame.size.height);
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+			if(self.frame.origin.x > EXIT_EPSILON) {
+				//exit article
+				[self revealPreview:NO];
+			}else{
+				//return view to original position
+				[self revealPreview:YES];
+			}
+			break;
+		}
+		default:
+			break;
+	}
+}
 
 #pragma mark - PreviewDisplay delegate Methods (publish button pressed)
 
@@ -211,7 +288,6 @@
 		self.animationView.frame = CGRectMake(0,0,0,0);
 	}];
 }
-
 
 //for ios8- To hide the status bar
 -(BOOL)prefersStatusBarHidden {

@@ -29,22 +29,14 @@
 @property (weak, nonatomic) IBOutlet UIView *topListContainer;
 @property (weak, nonatomic) IBOutlet UIView *bottomListContainer;
 
-// VC that displays articles in scroll view when clicked
-@property (weak, nonatomic) IBOutlet UIView *articleDisplayContainer;
-// article display list slides in from right and can be pulled off when a screen edge pan
-@property (nonatomic) CGRect articleDisplayContainerFrameOffScreen;
-
 @property (strong,nonatomic) ArticleListVC* trendingVC;
 @property (strong,nonatomic) ArticleListVC* mostRecentVC;
 // NOT IN USE NOW
 //@property (strong,nonatomic) TopicsFeedVC* topicsVC;
-@property (strong, nonatomic) ArticleDisplayVC* articleDisplayVC;
 
 #define ID_FOR_TOPICS_VC @"topics_feed_vc"
 #define ID_FOR_RECENT_VC @"most_recent_vc"
 #define ID_FOR_TRENDING_VC @"trending_vc"
-
-#define ID_FOR_DISPLAY_VC @"article_display_vc"
 
 @end
 
@@ -81,11 +73,6 @@
 											 self.view.frame.size.height - listContainerY);
 	self.bottomListContainer.frame = self.topListContainer.frame;
 	self.bottomListContainer.alpha = 0;
-
-	self.articleDisplayContainerFrameOffScreen = CGRectMake(self.view.frame.size.width, 0,
-															self.view.frame.size.width,
-															self.view.frame.size.height);
-	self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
 }
 
 //lays out all the containers in the right position and also sets the appropriate
@@ -104,10 +91,6 @@
 
 	[self.topListContainer addSubview: self.trendingVC.view];
 	[self.bottomListContainer addSubview: self.mostRecentVC.view];
-
-	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
-	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
-	self.articleDisplayContainer.alpha = 0;
 }
 
 #pragma mark - Formatting sub views -
@@ -173,11 +156,8 @@
 #pragma mark - Article List VC Delegate Methods (display articles) -
 
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
-	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
-	[self.articleDisplayContainer setFrame:self.view.bounds];
-	[self.articleDisplayContainer setBackgroundColor:[UIColor whiteColor]];
-	self.articleDisplayContainer.alpha = 1;
-	[self.view bringSubviewToFront: self.articleDisplayContainer];
+	// Do this in the master vc so it can be above the main scroll view
+	[self.delegate displayPOVWithIndex:index fromLoadManager:loadManager];
 }
 
 

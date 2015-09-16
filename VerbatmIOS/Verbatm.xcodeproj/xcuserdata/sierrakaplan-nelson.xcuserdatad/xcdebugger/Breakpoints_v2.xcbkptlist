@@ -645,7 +645,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "176"
             endingLineNumber = "176"
-            landmarkName = "-displayPOVWithIndex:fromLoadManager:"
+            landmarkName = "-showPOVPublishingWithTitle:andCoverPic:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -838,6 +838,22 @@
             startingLineNumber = "100"
             endingLineNumber = "100"
             landmarkName = "-loadPageFromGTLPage:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/MasterNavigationVC.m"
+            timestampString = "464061000.675898"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "81"
+            endingLineNumber = "81"
+            landmarkName = "-viewDidLoad"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
