@@ -59,7 +59,7 @@
 
 // Re inserts the given POV
 -(PMKPromise*) storePOV: (GTLVerbatmAppPOV*) pov {
-	GTLQuery* storePOVQuery = [GTLQueryVerbatmApp queryForPovInsertPOVWithObject: pov];
+	GTLQuery* storePOVQuery = [GTLQueryVerbatmApp queryForPovUpdatePOVWithObject: pov];
 
 	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.service executeQuery: storePOVQuery
