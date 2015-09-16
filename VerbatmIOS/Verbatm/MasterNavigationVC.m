@@ -84,11 +84,12 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-
-	// Do any additional setup after loading the view.
-	[self getAndFormatVCs];
 	[self formatMainScrollView];
+	[self getAndFormatVCs];
     self.connectionMonitor = [[internetConnectionMonitor alloc] init];
+
+	CGRect frame = self.view.bounds;
+	
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -109,6 +110,7 @@
 	self.profileContainer.frame = LEFT_FRAME;
 	self.feedContainer.frame = CENTER_FRAME;
 	self.adkContainer.frame = RIGHT_FRAME;
+	self.articleDisplayContainer.frame = self.view.bounds;
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
 	[self.feedContainer addSubview: self.feedVC.view];
@@ -124,10 +126,7 @@
 	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
 	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
 	self.articleDisplayContainer.alpha = 0;
-	self.articleDisplayContainerFrameOffScreen = CGRectMake(self.view.frame.size.width, 0,
-															self.view.frame.size.width,
-															self.view.frame.size.height);
-	self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
+	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
 	[self addScreenEdgePanToArticleDisplay];
 }
 
@@ -140,6 +139,8 @@
 
 
 #pragma mark - Feed VC Delegate -
+
+#pragma mark Article Display
 
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
 	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
@@ -327,9 +328,6 @@
 	}
 }
 
-#pragma mark - Article Presentation - 
-
-//TODO
 
 #pragma mark - Handle Login -
 

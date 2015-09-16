@@ -54,6 +54,8 @@
 
 // When user clicks story, loads one behind it and the two ahead
 -(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
+	CGRect frame = self.view.bounds;
+
 	self.povLoadManager = loadManager;
 	GTLVerbatmAppPOVInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
 	NSNumber* povID = povInfo.identifier;
