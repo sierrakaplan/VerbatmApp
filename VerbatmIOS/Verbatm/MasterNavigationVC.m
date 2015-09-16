@@ -8,6 +8,8 @@
 
 #import <AVFoundation/AVAudioSession.h>
 
+#import "ArticleDisplayVC.h"
+
 #import "FeedVC.h"
 #import "Identifiers.h"
 #import "Icons.h"
@@ -26,20 +28,29 @@
 #import "VerbatmCameraView.h"
 
 
-@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate>
+@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate, UIGestureRecognizerDelegate>
+
+@property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
+
+#pragma mark - Child View Controllers - 
 @property (weak, nonatomic) IBOutlet UIView * profileContainer;
 @property (weak, nonatomic) IBOutlet UIView * adkContainer;
 @property (weak, nonatomic) IBOutlet UIView * feedContainer;
 
-#pragma mark - Child View Controllers - 
 @property (strong,nonatomic) ProfileVC* profileVC;
 @property (strong,nonatomic) FeedVC* feedVC;
 @property (strong,nonatomic) MediaDevVC* mediaDevVC;
 
+@property (strong, nonatomic) ArticleDisplayVC* articleDisplayVC;
+
+// VC that displays articles in scroll view when clicked
+@property (weak, nonatomic) IBOutlet UIView *articleDisplayContainer;
+// article display list slides in from right and can be pulled off when a screen edge pan
+@property (nonatomic) CGRect articleDisplayContainerFrameOffScreen;
+
+
 #pragma mark - Preview -
 @property (nonatomic) PreviewDisplayView* previewDisplayView;
-
-@property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 
 @property (nonatomic, strong) NSMutableArray * pagesToDisplay;
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
@@ -57,10 +68,15 @@
 #define RIGHT_FRAME CGRectMake(self.view.frame.size.width * 2, 0, self.view.frame.size.width, self.view.frame.size.height)
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
+#define ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION 0.4f
+//the amount of space that must be pulled to exit
+#define EXIT_EPSILON 60
 
 #define ID_FOR_FEEDVC @"feed_vc"
 #define ID_FOR_MEDIADEVVC @"media_dev_vc"
 #define ID_FOR_PROFILEVC @"profile_vc"
+
+#define ID_FOR_DISPLAY_VC @"article_display_vc"
 
 @end
 
@@ -68,11 +84,12 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-
-	// Do any additional setup after loading the view.
-	[self getAndFormatVCs];
 	[self formatMainScrollView];
+	[self getAndFormatVCs];
     self.connectionMonitor = [[internetConnectionMonitor alloc] init];
+
+	CGRect frame = self.view.bounds;
+	
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -93,6 +110,7 @@
 	self.profileContainer.frame = LEFT_FRAME;
 	self.feedContainer.frame = CENTER_FRAME;
 	self.adkContainer.frame = RIGHT_FRAME;
+	self.articleDisplayContainer.frame = self.view.bounds;
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
 	[self.feedContainer addSubview: self.feedVC.view];
@@ -104,6 +122,12 @@
 
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_PROFILEVC];
 	[self.profileContainer addSubview: self.profileVC.view];
+
+	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
+	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
+	self.articleDisplayContainer.alpha = 0;
+	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
+	[self addScreenEdgePanToArticleDisplay];
 }
 
 -(void) formatMainScrollView {
@@ -113,7 +137,20 @@
 	self.masterSV.pagingEnabled = YES;
 }
 
-#pragma mark - Nav Buttons Pressed Delegate -
+
+#pragma mark - Feed VC Delegate -
+
+#pragma mark Article Display
+
+-(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
+	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
+	[self.articleDisplayContainer setFrame:self.view.bounds];
+	[self.articleDisplayContainer setBackgroundColor:[UIColor whiteColor]];
+	self.articleDisplayContainer.alpha = 1;
+	[self.view bringSubviewToFront: self.articleDisplayContainer];
+}
+
+#pragma mark Nav Buttons
 
 //TODO: change these to check if user is logged in
 //nav button is pressed - so we move the SV left to the profile
@@ -157,6 +194,69 @@
 	}];
 }
 
+#pragma mark - Left edge screen pull for article display vc -
+
+-(void) addScreenEdgePanToArticleDisplay {
+	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
+	leftEdgePanGesture.edges = UIRectEdgeLeft;
+	leftEdgePanGesture.delegate = self;
+	[self.articleDisplayContainer addGestureRecognizer: leftEdgePanGesture];
+}
+
+//called from left edge pan
+- (void) exitArticleDisplayView:(UIScreenEdgePanGestureRecognizer *)sender {
+
+	switch (sender.state) {
+		case UIGestureRecognizerStateBegan: {
+			//we want only one finger doing anything when exiting
+			if([sender numberOfTouches] != 1) {
+				return;
+			}
+			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+			self.previousGesturePoint  = touchLocation;
+			break;
+		}
+		case UIGestureRecognizerStateChanged: {
+			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+			CGPoint currentPoint = touchLocation;
+			int diff = currentPoint.x - self.previousGesturePoint.x;
+			self.previousGesturePoint = currentPoint;
+			self.articleDisplayContainer.frame = CGRectOffset(self.articleDisplayContainer.frame, diff, 0);
+			break;
+		}
+		case UIGestureRecognizerStateEnded: {
+			if(self.articleDisplayContainer.frame.origin.x > EXIT_EPSILON) {
+				//exit article
+				[self revealArticleDisplay:NO];
+			}else{
+				//return view to original position
+				[self revealArticleDisplay:YES];
+			}
+			break;
+		}
+		default:
+			break;
+	}
+}
+
+// if show, return container view to its viewing position
+// else remove it
+-(void) revealArticleDisplay: (BOOL) show {
+	if(show)  {
+		[UIView animateWithDuration:ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION animations:^{
+			self.articleDisplayContainer.frame = self.view.bounds;
+		} completion:^(BOOL finished) {
+		}];
+	}else {
+		[UIView animateWithDuration:ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION animations:^{
+			self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
+		}completion:^(BOOL finished) {
+			if(finished) {
+				[self.articleDisplayContainer setAlpha:0];
+			}
+		}];
+	}
+}
 
 #pragma mark - PreviewDisplay delegate Methods (publish button pressed)
 
@@ -212,7 +312,6 @@
 	}];
 }
 
-
 //for ios8- To hide the status bar
 -(BOOL)prefersStatusBarHidden {
 	return YES;
@@ -229,9 +328,6 @@
 	}
 }
 
-#pragma mark - Article Presentation - 
-
-//TODO
 
 #pragma mark - Handle Login -
 

@@ -44,7 +44,7 @@
 @implementation ArticleDisplayVC
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+	[super viewDidLoad];
 	// Should always have 4 stories in memory (two in the direction of scroll, current, and one back)
 	self.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
 	[self.view addSubview: self.scrollView];
@@ -54,6 +54,8 @@
 
 // When user clicks story, loads one behind it and the two ahead
 -(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
+	CGRect frame = self.view.bounds;
+
 	self.povLoadManager = loadManager;
 	GTLVerbatmAppPOVInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
 	NSNumber* povID = povInfo.identifier;
@@ -98,8 +100,8 @@
 #pragma mark - Memory warning -
 
 - (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
 }
 
 
