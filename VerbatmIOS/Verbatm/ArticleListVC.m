@@ -21,6 +21,7 @@
 #import "MasterNavigationVC.h"
 #import "FeedTableViewCell.h"
 #import "FeedTableView.h"
+#import "RefreshTableViewCell.h"
 
 #import "POVLoadManager.h"
 #import "GTLVerbatmAppPOVInfo.h"
@@ -41,7 +42,7 @@
 #pragma mark - Refresh -
 
 //this cell is inserted in the top of the listview when pull down to refresh
-@property (strong,nonatomic) FeedTableViewCell* placeholderCell;
+@property (strong,nonatomic) RefreshTableViewCell * placeholderCell;
 @property (atomic) BOOL pullDownInProgress;
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 //tells you whether or not we have started a timer to animate
@@ -50,6 +51,8 @@
 
 #define FEED_CELL_ID @"feed_cell_id"
 #define NUM_POVS_IN_SECTION 6
+#define RELOAD_THRESHOLD 15
+#define NUM_OF_NEW_POVS_TO_LOAD 15
 
 @end
 
@@ -59,6 +62,15 @@
 	[super viewDidLoad];
 	[self initStoryListView];
 	[self registerForNotifications];
+}
+
+-(void) registerForNotifications {
+	
+    [[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(povPublished)
+												 name:NOTIFICATION_POV_PUBLISHED
+											   object:nil];
+    
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -72,12 +84,6 @@
 	[self.view addSubview:self.povListView];
 }
 
--(void) registerForNotifications {
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(povPublished)
-												 name:NOTIFICATION_POV_PUBLISHED
-											   object:nil];
-}
 
 #pragma mark - Setting POV Load Manager -
 
@@ -88,7 +94,6 @@
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
-
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
 	return STORY_CELL_HEIGHT;
 }
@@ -105,7 +110,6 @@
 }
 
 #pragma mark - Table View Data Source methods (model) -
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	NSUInteger count = [self.povLoader getNumberOfPOVsLoaded];
 	count += (self.pullDownInProgress) ? 1 : 0;
@@ -113,16 +117,14 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
 	FeedTableViewCell *cell;
 	NSInteger index = indexPath.row;
-
 	//configure cell
-	//TODO: animation placeholder if (self.refreshInProgress && index == 0){
-
 	if (self.povPublishingPlaceholderCell && index == 0) {
 		cell = self.povPublishingPlaceholderCell;
-	} else {
+    } else if (self.refreshInProgress){
+        cell = self.placeholderCell;
+    }else {
 		cell = [tableView dequeueReusableCellWithIdentifier:FEED_CELL_ID];
 		if (cell == nil) {
 			cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
@@ -133,7 +135,6 @@
 		} else {
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
-
 		UIImage* coverPic = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: povInfo.coverPicUrl]]];
 		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage: coverPic];
 	}
@@ -193,16 +194,29 @@
 	NSLog(@"Begin dragging");
 	self.pullDownInProgress = scrollView.contentOffset.y <= 0.0f;
 	if (self.pullDownInProgress) {
-		//     TODO:   [self.povListView insertSubview:self.placeholderCell atIndex:0];
-		[self refreshFeed];
+         [self refreshFeed];
+//		[self.povListView insertSubview:self.placeholderCell atIndex:0];
+//
+//        [NSTimer timerWithTimeInterval:2
+//                                target:self
+//                              selector:@selector(refreshFeed)
+//                              userInfo:nil
+//                               repeats:NO];
+        
 	}
 }
 
+-(RefreshTableViewCell *)placeholderCell{
+    if(!_placeholderCell) _placeholderCell = [[RefreshTableViewCell alloc] init];
+    return _placeholderCell;
+}
+
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    /*Pulls down past point to refresh*/
 	float offset_y =scrollView.contentOffset.y ;
 	if (offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
-		[self createRefreshAnimationOnScrollview:scrollView];
-	}
+       
+    }
 }
 
 //sets the frame of the placeholder cell and also adjusts the frame of the placeholder cell
@@ -211,56 +225,26 @@
 	float heightToUse = (fabs(scrollView.contentOffset.y) < STORY_CELL_HEIGHT && self.pullDownInProgress) ? fabs(scrollView.contentOffset.y) : STORY_CELL_HEIGHT;
 	float y_cord = (self.pullDownInProgress) ? scrollView.contentOffset.y : 0;
 	self.placeholderCell.frame = CGRectMake(0,y_cord ,self.povListView.frame.size.width, heightToUse);
-	[self startActivityIndicator];
+	
 }
 
-//creates an activity indicator on our placeholder view
-//shifts the frame of the indicator if it's on the screen
--(void)startActivityIndicator {
-	//add animation indicator here
-	//Create and add the Activity Indicator to splashView
-	if(!self.activityIndicator.isAnimating){
-		self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-		self.activityIndicator.alpha = 1.0;
-		self.activityIndicator.hidesWhenStopped = YES;
-		[self.placeholderCell addSubview:self.activityIndicator];
-		[self.activityIndicator startAnimating];
-	}
-	self.activityIndicator.center = CGPointMake(self.placeholderCell.frame.size.width/2, self.placeholderCell.frame.size.height/2);
-}
-
--(void)stopActivityIndicator {
-	if(!self.activityIndicator.isAnimating) return;
-	[self.activityIndicator stopAnimating];
-}
 
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-
-	float offset_y =scrollView.contentOffset.y ;
-	if (self.pullDownInProgress &&  offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
-		// [self addFinalAnimationTile];
-	}
-
-
-	//    if (self.pullDownInProgress && - scrollView.contentOffset.y > SHC_ROW_HEIGHT) {
-	//        [self addFinalAnimationTile];
-	//    }
-	//they are no longer pulling this down
-	self.pullDownInProgress = false;
+    //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
+    if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
+        [self.povLoader loadMorePOVs:NUM_OF_NEW_POVS_TO_LOAD];
+    }
 }
 
 -(void)addFinalAnimationTile{
-
 	if(!self.refreshInProgress){
 		self.refreshInProgress = YES;
 		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
 		[self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
-		[self refreshFeed];
 	}
 }
 
 -(void)removeAnimatingView{
-
 	[UIView animateWithDuration:0.5 animations:^{
 		self.povListView.contentOffset = CGPointMake(0, STORY_CELL_HEIGHT);
 		self.placeholderCell.frame = CGRectMake(self.placeholderCell.frame.origin.x, (-1 * STORY_CELL_HEIGHT),
@@ -272,7 +256,7 @@
 		self.povListView.contentOffset = CGPointMake(0,0);
 		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
 		[self.povListView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-		[self stopActivityIndicator];
+		//[self stopActivityIndicator];
 		[self.povListView reloadSectionIndexTitles];
 	}];
 }

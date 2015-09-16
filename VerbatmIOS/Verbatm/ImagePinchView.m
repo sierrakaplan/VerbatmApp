@@ -25,6 +25,7 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
+        if(!image)return self;
 		[self initWithImage:image];
 	}
 	return self;
@@ -36,6 +37,19 @@
 	self.image = image;
 	[self setFilteredPhotos];
 	[self renderMedia];
+}
+
+-(void) putNewImage:(UIImage*)image{
+    if(!image)return;
+    if(!_imageView) {
+        [self.background addSubview:self.imageView];
+    }
+    self.containsImage = YES;
+    self.image = image;
+    self.filterImageIndex = 0;
+    self.filteredImages = nil;
+    [self setFilteredPhotos];
+    [self renderMedia];
 }
 
 #pragma mark - Render Media -
@@ -121,9 +135,11 @@
 #pragma mark - Lazy Instantiation
 
 -(UIImageView*)imageView {
-	if(!_imageView) _imageView = [[UIImageView alloc] init];
-	_imageView.contentMode = UIViewContentModeScaleAspectFill;
-	_imageView.layer.masksToBounds = YES;
+    if(!_imageView) {
+        _imageView = [[UIImageView alloc] init];
+        _imageView.contentMode = UIViewContentModeScaleAspectFill;
+        _imageView.layer.masksToBounds = YES;
+    }
 	return _imageView;
 }
 

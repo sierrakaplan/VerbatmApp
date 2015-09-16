@@ -69,7 +69,7 @@
     
     //[panGesture requireGestureRecognizerToFail:self.backButton.gestureRecognizers.firstObject];
 
-	CGRect previewButtonFrame = CGRectMake(backButtonFrame.origin.x + backButtonFrame.size.width,
+	CGRect previewButtonFrame = CGRectMake(backButtonFrame.origin.x + backButtonFrame.size.width + 10,
 										   NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
 	self.previewLabel = [self getLabelWithParentFrame:previewButtonFrame andText:@"PREVIEW"];
 	self.previewButton = [self getButtonWithFrame: previewButtonFrame];
@@ -79,7 +79,7 @@
 	[self enablePreviewInMenuMode: NO];
     
 
-	self.switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width,
+	self.switchModeButtonFrame = CGRectMake(previewButtonFrame.origin.x + previewButtonFrame.size.width -10,
 											  NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
 	self.switchModeButton = [self getButtonWithFrame: self.switchModeButtonFrame];
 	[self.switchModeButton addTarget:self action:@selector(switchModeButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
@@ -98,6 +98,28 @@
     
 	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
 	self.galleryImageGrayedOut = [UIEffects imageOverlayed:self.galleryImage withColor:[UIColor lightGrayColor]];
+    
+    [self evenlySpaceObjects:@[self.backButton, self.previewButton,self.switchModeButton, self.galleryButton]];
+}
+
+-(void)evenlySpaceObjects: (NSArray *)objects{
+    
+    float widthUsed =0;
+    for (int i = 0; i < objects.count; i++) widthUsed+= ((UIView *)objects[i]).frame.size.width;
+    
+    float middleButtonWidth = (self.frame.size.width - ((NAV_ICON_SIZE+NAV_ICON_OFFSET)*2.f))/2.f;
+    float space_left = self.frame.size.width - (widthUsed  + 2.f*NAV_ICON_OFFSET);
+    float distance = space_left/3.f;
+    float width = self.frame.size.width;
+    
+    self.previewButton.frame =  CGRectMake(self.backButton.frame.origin.x + self.backButton.frame.size.width +
+                                           distance,
+                                           NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
+    self.switchModeButtonFrame = CGRectMake(self.previewButton.frame.origin.x + self.previewButton.frame.size.width +
+                                            distance,
+                                            NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
+    
+    
 }
 
 
@@ -192,9 +214,7 @@
 	if (enable) {
 		[self.previewLabel setTextColor: [UIColor PREVIEW_PUBLISH_COLOR]];
 	} else {
-		[self.previewLabel setTextColor: [UIColor lightGrayColor]];
-        
-        //[UIColor colorWit//hRed:<#(CGFloat)#> green:<#(CGFloat)#> blue:<#(CGFloat)#> alpha:<#(CGFloat)#>]
+		[self.previewLabel setTextColor: [UIColor  colorWithRed:(2.f/3.f) green:(2.f/3.f) blue:(2.f/3.f) alpha:0.5]];
 	}
 	[self.previewButton setEnabled: enable];
 }

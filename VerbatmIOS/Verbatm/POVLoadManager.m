@@ -44,11 +44,9 @@
 }
 
 
-// Loads numToLoad more POV's using the cursor stored so that it loads from where it left off
--(void) loadMorePOVs: (NSInteger) numToLoad {
-
-	GTLQuery* loadQuery = [self getLoadingQuery: numToLoad withCursor: YES];
-
+// Loads numOfNewPOVToLoad more POV's using the cursor stored so that it loads from where it left off
+-(void) loadMorePOVs: (NSInteger) numOfNewPOVToLoad {
+	GTLQuery* loadQuery = [self getLoadingQuery: numOfNewPOVToLoad withCursor: YES];
 	[self.service executeQuery:loadQuery
 			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
 				 if (error) {
@@ -57,7 +55,6 @@
 					 NSLog(@"Successfully loaded POVs!");
 					 [self.povInfos addObjectsFromArray: results.results];
 					 self.cursorString = results.cursorString;
-
 					 [self.delegate morePOVsLoaded];
 				 }
 			 }];
@@ -66,7 +63,6 @@
 // Load numToLoad POV's, replacing any POV's that were already loaded
 -(void) reloadPOVs: (NSInteger) numToLoad {
 	GTLQuery* loadQuery = [self getLoadingQuery: numToLoad withCursor: NO];
-
 	[self.service executeQuery:loadQuery
 			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
 				 if (error) {

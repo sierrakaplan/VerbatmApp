@@ -49,7 +49,7 @@
 	CGRect topicTextViewFrame = CGRectMake(TOPIC_CELL_PADDING, TOPIC_CELL_PADDING,
 										   self.frame.size.width - TOPIC_CELL_PADDING*2, self.frame.size.height - TOPIC_CELL_PADDING);
 	self.topicTextView = [[UIView alloc] initWithFrame:topicTextViewFrame];
-	[self.topicTextView setBackgroundColor:[UIColor colorWithRed: STORY_BACKGROUND_COLOR green:STORY_BACKGROUND_COLOR blue:STORY_BACKGROUND_COLOR alpha:1]];
+	[self.topicTextView setBackgroundColor:[UIColor STORY_BACKGROUND_COLOR]];
 
 	[self.topicTitle setFrame: CGRectMake(FEED_TEXT_X_OFFSET,
 										   FEED_TEXT_GAP,

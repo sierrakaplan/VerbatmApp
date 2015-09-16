@@ -27,13 +27,6 @@
 	return self;
 }
 
--(instancetype) initWithRadius:(float)radius withCenter:(CGPoint)center {
-	self = [super initWithRadius:radius withCenter:center];
-	if (self) {
-		[self formatSelf];
-	}
-	return self;
-}
 
 -(void) formatSelf {
 	[self setBackgroundColor: [UIColor clearColor]];
@@ -56,6 +49,7 @@
 	[self.imageView setImage:image];
 	[self.addCoverPicLabel removeFromSuperview];
 	[self.background insertSubview:self.imageView atIndex:0];
+    self.containsImage = YES;
 }
 
 -(UIImage*) getImage {

@@ -107,6 +107,8 @@
 		C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4061BA4EB500075CA80 /* EditContentVC.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
 		C719A40D1BA67EAC0075CA80 /* BaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A40C1BA67EAC0075CA80 /* BaseVC.m */; };
+		C719A4111BA79CB40075CA80 /* RefreshTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4101BA79CB40075CA80 /* RefreshTableViewCell.m */; };
+		C719A4141BA802D10075CA80 /* CoverPicturePV.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4131BA802D10075CA80 /* CoverPicturePV.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
@@ -426,6 +428,10 @@
 		C719A4091BA615B50075CA80 /* UserSetupParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetupParameters.m; sourceTree = "<group>"; };
 		C719A40B1BA67EAC0075CA80 /* BaseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseVC.h; sourceTree = "<group>"; };
 		C719A40C1BA67EAC0075CA80 /* BaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseVC.m; sourceTree = "<group>"; };
+		C719A40F1BA79CB40075CA80 /* RefreshTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RefreshTableViewCell.h; path = ../RefreshTableViewCell.h; sourceTree = "<group>"; };
+		C719A4101BA79CB40075CA80 /* RefreshTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RefreshTableViewCell.m; path = ../RefreshTableViewCell.m; sourceTree = "<group>"; };
+		C719A4121BA802D10075CA80 /* CoverPicturePV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPicturePV.h; sourceTree = "<group>"; };
+		C719A4131BA802D10075CA80 /* CoverPicturePV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPicturePV.m; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		C734FD9619B13D7700B2C370 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -728,6 +734,8 @@
 		A59CC2861B6C2E2F00B4907C /* Table Views */ = {
 			isa = PBXGroup;
 			children = (
+				C719A40F1BA79CB40075CA80 /* RefreshTableViewCell.h */,
+				C719A4101BA79CB40075CA80 /* RefreshTableViewCell.m */,
 				C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */,
 				C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */,
 				A59CC2871B6C2E6400B4907C /* FeedTableView.h */,
@@ -919,8 +927,8 @@
 		C719A40E1BA67EE60075CA80 /* Base VC */ = {
 			isa = PBXGroup;
 			children = (
-				C719A40B1BA67EAC0075CA80 /* BaseVC.h */,
-				C719A40C1BA67EAC0075CA80 /* BaseVC.m */,
+				C719A4151BA88CBD0075CA80 /* BaseVC.h */,
+				C719A4161BA88CBD0075CA80 /* BaseVC.m */,
 			);
 			name = "Base VC";
 			sourceTree = "<group>";
@@ -947,6 +955,8 @@
 				A56F68821B65B44C00CE5744 /* VideoPinchView.h */,
 				A56F68831B65B44C00CE5744 /* VideoPinchView.m */,
 				A5AA31CD1BA10A6B00D8D20C /* CoverPicturePinchView.h */,
+				C719A4121BA802D10075CA80 /* CoverPicturePV.h */,
+				C719A4131BA802D10075CA80 /* CoverPicturePV.m */,
 				A5AA31CE1BA10A6B00D8D20C /* CoverPicturePinchView.m */,
 			);
 			name = "Pinch Views";
@@ -1419,7 +1429,7 @@
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				C772F2851B4BC13500CEC83D /* GMGridViewController.m in Sources */,
 				A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */,
-				C719A40D1BA67EAC0075CA80 /* BaseVC.m in Sources */,
+				C719A40D1BA67EAC0075CA80 /* (null) in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A5E85F991B911DA900E148D0 /* GTLQuery.m in Sources */,
 				A5E85FA01B911DA900E148D0 /* GTLRuntimeCommon.m in Sources */,
@@ -1441,6 +1451,7 @@
 				C75985F51B8553DF00FE77F7 /* internetConnectionMonitor.m in Sources */,
 				A560EF9D1BA895A2003FB041 /* Page.m in Sources */,
 				A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */,
+				C719A4111BA79CB40075CA80 /* RefreshTableViewCell.m in Sources */,
 				A5E85F9E1B911DA900E148D0 /* GTLDateTime.m in Sources */,
 				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,
@@ -1453,6 +1464,7 @@
 				A5AA31C71B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.m in Sources */,
 				A5E85F9C1B911DA900E148D0 /* GTLBatchResult.m in Sources */,
 				A5E85FA41B911DA900E148D0 /* GTLBase64.m in Sources */,
+				C719A4171BA88CBD0075CA80 /* BaseVC.m in Sources */,
 				A58656681B61FD99008E358C /* PhotoAVE.m in Sources */,
 				A5C09BDB1BA1F1D700C0AD86 /* ASIDataDecompressor.m in Sources */,
 				A5E85FA61B911DA900E148D0 /* GTMHTTPFetcher.m in Sources */,
@@ -1510,6 +1522,7 @@
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A5C09BDF1BA1F1D700C0AD86 /* ASIInputStream.m in Sources */,
 				A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */,
+				C719A4141BA802D10075CA80 /* CoverPicturePV.m in Sources */,
 				A5AA31CF1BA10A6B00D8D20C /* CoverPicturePinchView.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,
 				A5AA31BB1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m in Sources */,

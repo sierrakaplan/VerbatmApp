@@ -12,7 +12,7 @@
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
 #import "ContentPageElementScrollView.h"
-
+#import "CoverPicturePV.h"
 #import "Durations.h"
 
 #import "EditContentView.h"
@@ -55,7 +55,9 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 // Says whether or not user is currently adding a cover picture
 // (used when returning from adding assets)
 @property (nonatomic) BOOL addingCoverPicture;
-@property (strong, nonatomic) CoverPicturePinchView* coverPicView;
+@property (strong, nonatomic) CoverPicturePV * coverPicView;
+
+@property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
 
 @property (strong, nonatomic, readwrite) NSMutableArray * pageElementScrollViews;
 @property (nonatomic) NSInteger numPinchViews;
@@ -118,9 +120,15 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 #define WHAT_IS_IT_LIKE_OFFSET 15
 #define WHAT_IS_IT_LIKE_HEIGHT 50
 
+#define REPLACE_PHOTO_FRAME_WIDTH 80
+#define REPLACE_PHOTO_FRAME_HEIGHT 80
+
+#define REPLACE_PHOTO_YOFFSET 20 //distance of replacePhoto y postion vs the y postion of the coverphoto
+#define REPLACE_PHOTO_XsOFFSET 20 //distance of replacePhoto x postion vs the x postion of the coverphoto
+
+
 #define BRING_UP_EDITCONTENT_SEGUE @"BRING_UP_EDITCONTENT_SEGUE"
 #define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
-
 @end
 
 
@@ -140,7 +148,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self formatTitleAndCoverPicture];
 	[self setUpNotifications];
 	[self setDelegates];
-
 	self.pinchingMode = PinchingModeNone;
 	self.numPinchViews = 0;
 	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
@@ -226,7 +233,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	UIFont* whatIsItLikeFieldFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
 	self.whatIsItLikeField = [[UITextField alloc] initWithFrame: frame];
 	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
-	self.whatIsItLikeField.font = whatIsItLikeFieldFont;
+	self.whatIsItLikeField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
+    [self.whatIsItLikeField setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
 	self.whatIsItLikeField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
 	self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
 													initWithString: @"tell your story"
@@ -239,7 +247,9 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 -(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
-	self.coverPicView = [[CoverPicturePinchView alloc] initWithFrame:frame];
+	//self.coverPicView = [[CoverPicturePV alloc] initWithFrame:frame];
+    self.coverPicView = [[CoverPicturePV alloc] initWithRadius:frame.size.width/2.f withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
+    
 	UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
 	[self.coverPicView addGestureRecognizer: tapGesture];
 	[self.mainScrollView addSubview: self.coverPicView];
@@ -465,7 +475,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		return;
 	}
 	if(![view isKindOfClass:[ContentPageElementScrollView class]]
-	   && ![view isKindOfClass:[CoverPicturePinchView class]]) {
+	   && ![view isKindOfClass:[CoverPicturePV class]]) {
 		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
 		return;
 	}
@@ -667,16 +677,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		}
 		self.scrollViewOfHorizontalPinching.scrollEnabled = YES;
 		self.scrollViewOfHorizontalPinching = nil;
-
-	} /* else if (self.newlyCreatedMediaTile) {
-
-	   //new media creation has failed
-	   if(self.newlyCreatedMediaTile.frame.size.height != self.baseMediaTileSelector.frame.size.height){
-	   [self animateRemoveNewMediaTile];
-	   return;
-	   }
-	   self.newlyCreatedMediaTile = nil;
-	   } */
+	}
 
 	[self shiftElementsBelowView: self.coverPicView];
 	self.pinchingMode = PinchingModeNone;
@@ -848,13 +849,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
 	float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
 
-	/* NO LONGER IN USE - objects are being pinched apart
-	 if(gesture.scale > 1) {
-		[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
-	 andChangeInBottomViewPosition:changeInBottomViewPosition];
-
-	 } */
-
 	//objects are being pinched together
 	if (gesture.scale < 1) {
 		[self pinchObjectsTogether];
@@ -890,115 +884,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	return frame;
 }
 
-#pragma mark Pinching Apart two Pinch views, Adding media tile - NO LONGER IN USE -
-
-/* NO LONGER IN USE
- -(void) createNewMediaTileBetweenPinchViews {
-	CGRect frame = [self getStartFrameForNewMediaTile];
-	MediaSelectTile* newMediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
-	newMediaTile.delegate = self;
-	newMediaTile.alpha = 0; //start it off as invisible
-	newMediaTile.isBaseSelector = NO;
-	[self addMediaTile: newMediaTile underView: self.upperPinchScrollView];
-	self.newlyCreatedMediaTile = newMediaTile;
- }
-
- -(void) addMediaTile: (MediaSelectTile *) mediaTile underView: (ContentPageElementScrollView *) topView {
-	if(!mediaTile) {
- NSLog(@"Can't add nil media tile");
- return;
-	}
-
-	CGRect newMediaTileScrollViewFrame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
-	ContentPageElementScrollView * newMediaTileScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newMediaTileScrollViewFrame andElement:mediaTile];
-	newMediaTileScrollView.delegate = self;
-	[self.mainScrollView addSubview:newMediaTileScrollView];
-	[self storeView:newMediaTileScrollView inArrayAsBelowView:topView];
- }
-
- -(CGRect) getStartFrameForNewMediaTile {
-	return CGRectMake(self.baseMediaTileSelector.frame.origin.x + (self.baseMediaTileSelector.frame.size.width/2),0, 0, 0);
- }
-
- -(CGRect) getStartFrameForNewMediaTileScrollViewUnderView: (ContentPageElementScrollView *) topView  {
-	return CGRectMake(topView.frame.origin.x, topView.frame.origin.y +topView.frame.size.height, self.view.frame.size.width,0);
- }
-
- //media tile grows from the center as the gesture expands
- -(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture andChangeInTopViewPosition:(float)changeInTopViewPosition andChangeInBottomViewPosition:(float) changeInBottomViewPosition {
-
-	float totalChange = fabs(changeInTopViewPosition) + fabs(changeInBottomViewPosition);
-	float widthToHeightRatio = self.baseMediaTileSelector.frame.size.width/self.baseMediaTileSelector.frame.size.height;
-	float changeInWidth = widthToHeightRatio * totalChange;
-	float mediaTileChangeInHeight = totalChange* (self.baseMediaTileSelector.frame.size.height
- /self.baseMediaTileSelector.superview.frame.size.height);
-	//media tile top is in relation to its superview and should change based on its height
-	float mediaTileChangeInTop = mediaTileChangeInHeight * (self.baseMediaTileSelector.frame.origin.y
- /self.baseMediaTileSelector.frame.size.height);
-
-	if(self.newlyCreatedMediaTile.superview.frame.size.height < PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION) {
-
- //construct new frames for view and personal scroll view
- self.newlyCreatedMediaTile.frame = CGRectMake(self.newlyCreatedMediaTile.frame.origin.x - changeInWidth/2.f,
- self.newlyCreatedMediaTile.frame.origin.y + mediaTileChangeInTop,
- self.newlyCreatedMediaTile.frame.size.width + changeInWidth,
- self.newlyCreatedMediaTile.frame.size.height + mediaTileChangeInHeight);
-
- //have it gain visibility as it grows
- self.newlyCreatedMediaTile.alpha = self.newlyCreatedMediaTile.frame.size.height/self.baseMediaTileSelector.frame.size.height;
-
- self.newlyCreatedMediaTile.superview.frame = CGRectMake(self.newlyCreatedMediaTile.superview.frame.origin.x,
- self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
- self.newlyCreatedMediaTile.superview.frame.size.width,
- self.newlyCreatedMediaTile.superview.frame.size.height + totalChange);
-
-
- [self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
- [self.newlyCreatedMediaTile setNeedsDisplay];
-
-	}
-	//the distance is enough that we can just animate the rest
-	else {
- [self animateNewMediaTileToFinalPosition:gesture andChangeInTopViewPosition:changeInTopViewPosition];
-	}
- }
-
- -(void) animateNewMediaTileToFinalPosition:(UIPinchGestureRecognizer *)gesture andChangeInTopViewPosition:(float)changeInTopViewPosition {
-	gesture.enabled = NO;
-	gesture.enabled = YES;
-
-	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
-
- self.newlyCreatedMediaTile.frame = self.baseMediaTileSelector.frame;
- self.newlyCreatedMediaTile.alpha = 1; //make it fully visible
-
- self.newlyCreatedMediaTile.superview.frame = CGRectMake(self.newlyCreatedMediaTile.superview.frame.origin.x,
- self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
- self.baseMediaTileSelector.superview.frame.size.width,
- self.baseMediaTileSelector.superview.frame.size.height);
-
- [self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
- [self shiftElementsBelowView: self.coverPicView];
-	} completion:^(BOOL finished) {
- [self shiftElementsBelowView: self.coverPicView];
- gesture.enabled = NO;
- gesture.enabled = YES;
- self.pinchingMode = PinchingModeNone;
- [self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
- [self.newlyCreatedMediaTile formatButtons];
-	}];
- }
-
- #pragma mark Pinch Apart Failed
-
- //Removes the new view being made and resets page
- -(void) clearMediaTile:(MediaSelectTile*)mediaTile {
-	[mediaTile.superview removeFromSuperview];
-	[self.pageElementScrollViews removeObject:mediaTile.superview];
-	[self shiftElementsBelowView: self.coverPicView];
- }
-
- */
 
 #pragma mark Pinching Views together
 
@@ -1017,7 +902,11 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self shiftElementsBelowView: self.coverPicView];
 	//make sure the pullbar is showing when things are pinched together
 	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
+    //present swipe to delete notification
+    if([UserSetupParemeters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
+
+
 
 
 #pragma mark - Identify views involved in pinch
@@ -1099,36 +988,17 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 
-
-#pragma mark - Media Tile Options NO LONGER IN USE -
-/* NO LONGER IN USE
- #pragma mark Text
- -(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
-	[self.changePullBarDelegate showPullBar:NO withTransition:NO];
-	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
-	self.index = (index-1);
-	[self createEditContentViewFromPinchView:nil];
-	if (!tile.isBaseSelector) {
- [self clearMediaTile:tile];
-	}
- }
-
- -(void) multiMediaButtonPressedOnTile: (MediaSelectTile*) tile {
-	[self.changePullBarDelegate showPullBar:NO withTransition:NO];
-	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
-	self.index = (index-1);
-	[self presentEfficientGallery];
-	if (!tile.isBaseSelector) {
- [self clearMediaTile:tile];
-	}
- }
- */
-
 #pragma  mark - Add cover picture -
 
 -(void) addCoverPictureTapped {
 	self.addingCoverPicture = YES;
 	[self presentGalleryForCoverPic];
+    //show replace photo icon after the first time this is tapped
+    if(!_replaceCoverPhotoButton){
+        
+        [self addTapGestureToPinchView:self.coverPicView];
+        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
+    }
 }
 
 
@@ -1524,6 +1394,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
+        if([UserSetupParemeters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
 	}else{
 		self.openPinchView = pinchView;
 		//tap to open an element for viewing or editing
@@ -1580,7 +1451,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
-	[self.coverPicView removeImage];
+	//[self.coverPicView removeImage];
 }
 
 -(void)clearTextFields {
@@ -1670,7 +1541,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		dispatch_async(dispatch_get_main_queue(), ^{
 			UIImage* image = [[UIImage alloc] initWithData: imageData];
 			image = [UIEffects fixOrientation:image];
-			[self.coverPicView setImage: image];
+			[self.coverPicView setNewImageWith: image];
 		});
 	}];
 }
@@ -1739,7 +1610,9 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 
 #pragma mark - Alerts -
-
+/*
+ These are all notifications that appear for the user at different points in the app. They only appear once.
+ */
 -(void)alertEachPVIsPage{
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
@@ -1752,7 +1625,44 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[UserSetupParameters set_pinchCircles_InstructionAsShown];
 }
 
+-(void)alertSwipeRightToDelete{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles right to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    [UserSetupParemeters set_swipeToDelete_InstructionAsShown];
+}
+
+-(void)alertTapNHoldInCollection{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Tap and hold to remove circle" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    [UserSetupParemeters set_tapNhold_InstructionAsShown];
+}
+
+#pragma mark -Tap to clear view-
+- (IBAction)tapToClearKeyboard:(UITapGestureRecognizer *)sender {
+    [self removeKeyboardFromScreen];
+}
+
+
 #pragma mark - Lazy Instantiation
+
+-(UIButton *)replaceCoverPhotoButton{
+    
+    if(!_replaceCoverPhotoButton){
+        
+        _replaceCoverPhotoButton = [[UIButton alloc] initWithFrame:
+                                    CGRectMake(self.coverPicView.frame.origin.x +
+                                               self.coverPicView.frame.size.width +
+                                               
+                                               REPLACE_PHOTO_XsOFFSET,
+                                               self.coverPicView.frame.origin.y + REPLACE_PHOTO_XsOFFSET,
+                                               REPLACE_PHOTO_FRAME_WIDTH, REPLACE_PHOTO_FRAME_HEIGHT)];
+        
+        [_replaceCoverPhotoButton setImage:[UIImage imageNamed:@"replacePhotoIcon"] forState:UIControlStateNormal];
+        [_replaceCoverPhotoButton addTarget:self action:@selector(addCoverPictureTapped) forControlEvents:UIControlEventTouchUpInside];
+
+    }
+    return _replaceCoverPhotoButton;
+}
 
 -(UITextView *) activeTextView
 {

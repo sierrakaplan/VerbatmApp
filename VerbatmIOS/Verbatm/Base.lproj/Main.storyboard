@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
@@ -364,7 +364,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jhx-H8-RPm" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="x2Q-q6-lhq" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-3053" y="-1947"/>
+            <point key="canvasLocation" x="-2973" y="-2065"/>
         </scene>
         <!--Media Dev-->
         <scene sceneID="74h-C3-U07">
@@ -489,6 +489,7 @@
                                 <connections>
                                     <outletCollection property="gestureRecognizers" destination="WDj-eM-uvF" appends="YES" id="qqz-CK-rEn"/>
                                     <outletCollection property="gestureRecognizers" destination="33n-Bh-1X3" appends="YES" id="8s6-31-bFc"/>
+                                    <outletCollection property="gestureRecognizers" destination="vkp-cu-SCl" appends="YES" id="01E-4x-04M"/>
                                 </connections>
                             </scrollView>
                         </subviews>
@@ -512,6 +513,11 @@
                         <action selector="longPressSensed:" destination="0lh-hP-Opv" id="cAV-T5-CEW"/>
                     </connections>
                 </pongPressGestureRecognizer>
+                <tapGestureRecognizer id="vkp-cu-SCl">
+                    <connections>
+                        <action selector="tapToClearKeyboard:" destination="0lh-hP-Opv" id="owt-Pd-Tn9"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-2766" y="-1302"/>
         </scene>
