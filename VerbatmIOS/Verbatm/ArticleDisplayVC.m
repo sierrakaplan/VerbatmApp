@@ -7,14 +7,37 @@
 //
 
 #import "ArticleDisplayVC.h"
+#import "AVETypeAnalyzer.h"
 
-@interface ArticleDisplayVC ()
+#import "CoverPhotoAVE.h"
 
-// Dictionary of Arrays of GTLVerbatmAppImage's associated with their Page Id's
-@property NSMutableDictionary* imagesInPage;
+#import "GTLVerbatmAppPOVInfo.h"
+#import "GTLVerbatmAppPage.h"
+#import "GTLVerbatmAppImage.h"
+#import "GTLVerbatmAppVideo.h"
 
-// Dictionary of Arrays of GTLVerbatmAppVideo's associated with their Page Id's
-@property NSMutableDictionary* videosInPage;
+#import "POVDisplayScrollView.h"
+#import "POVLoadManager.h"
+#import "PagesLoadManager.h"
+#import "POVView.h"
+
+@interface ArticleDisplayVC () <PagesLoadManagerDelegate>
+
+@property (strong, nonatomic) POVDisplayScrollView* scrollView;
+
+//array of POVView's currently on scrollview
+@property (strong, nonatomic) NSMutableArray* povViews;
+
+//needs to associate which pov id is at which index
+@property (strong, nonatomic) NSMutableArray* povIDs;
+
+//Should not retain strong reference to the load manager since the
+//ArticleListVC also contains a reference to it
+@property (weak, nonatomic) POVLoadManager* povLoadManager;
+
+// Load manager in charge of getting page objects and all their media for each pov
+@property (strong, nonatomic) PagesLoadManager* pageLoadManager;
+
 
 @end
 
@@ -22,13 +45,30 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+	// Should always have 4 stories in memory (two in the direction of scroll, current, and one back)
+	self.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
+	[self.view addSubview: self.scrollView];
+	self.pageLoadManager.delegate = self;
 }
 
 
 // When user clicks story, loads one behind it and the two ahead
--(void) loadStory: (NSInteger) index {
+-(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
+	self.povLoadManager = loadManager;
+	GTLVerbatmAppPOVInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
+	NSNumber* povID = povInfo.identifier;
+	[self.pageLoadManager loadPagesForPOV: povID];
+	[self.povIDs addObject: povID];
+	POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds];
 
+	UIImage* coverPic = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: povInfo.coverPicUrl]]];
+	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.view.bounds andImage: coverPic andTitle: povInfo.title];
+	NSMutableArray* aves = [[NSMutableArray alloc] initWithArray:@[coverAVE]];
+	[povView renderAVES: aves];
+	// TODO: loading icon
+
+	[self.scrollView addSubview: povView];
+	[self.povViews addObject: povView];
 }
 
 // When user scrolls to a new story, loads the next two in that
@@ -37,9 +77,60 @@
 
 }
 
+#pragma mark - Page load manager delegate -
+
+-(void) pagesLoadedForPOV:(NSNumber *)povID {
+	NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
+	NSInteger povIndex = [self.povIDs indexOfObject: povID];
+	POVView* povView = self.povViews[povIndex];
+
+	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
+	NSMutableArray* aves = [analyzer getAVESFromPages: pages withFrame: self.view.bounds];
+	// already should have cover photo ave
+	if (aves.count) {
+		[povView.pageAves addObjectsFromArray:aves];
+	}
+
+	[povView renderAVES: povView.pageAves];
+}
+
+
+#pragma mark - Memory warning -
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+#pragma mark - Lazy Instantiation
+
+-(POVDisplayScrollView*) scrollView {
+	if (!_scrollView) {
+		_scrollView = [[POVDisplayScrollView alloc] initWithFrame:self.view.bounds];
+	}
+	return _scrollView;
+}
+
+-(PagesLoadManager*) pageLoadManager {
+	if (!_pageLoadManager) {
+		_pageLoadManager = [[PagesLoadManager alloc] init];
+	}
+	return _pageLoadManager;
+}
+
+-(NSMutableArray*) povViews {
+	if (!_povViews) {
+		_povViews = [[NSMutableArray alloc] init];
+	}
+	return _povViews;
+}
+
+-(NSArray*) povIDs {
+	if (!_povIDs) {
+		_povIDs = [[NSMutableArray alloc] init];
+	}
+	return _povIDs;
 }
 
 @end

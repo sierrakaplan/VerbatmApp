@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (26 custom class methods, 4 custom properties)
+//   GTLQueryVerbatmApp (25 custom class methods, 4 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -23,7 +23,6 @@
 
 @class GTLVerbatmAppImage;
 @class GTLVerbatmAppPage;
-@class GTLVerbatmAppPageListWrapper;
 @class GTLVerbatmAppPOV;
 @class GTLVerbatmAppVerbatmUser;
 @class GTLVerbatmAppVideo;
@@ -91,12 +90,6 @@
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppPage.
 + (instancetype)queryForPageInsertPageWithObject:(GTLVerbatmAppPage *)object;
-
-// Method: verbatmApp.page.insertPages
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppPageListWrapper.
-+ (instancetype)queryForPageInsertPagesWithObject:(GTLVerbatmAppPageListWrapper *)object;
 
 // Method: verbatmApp.page.removePage
 //  Authorization scope(s):

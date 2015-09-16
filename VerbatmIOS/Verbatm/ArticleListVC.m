@@ -105,8 +105,8 @@
 //one of the POV's in the list has been clicked
 -(void) viewPOVAtIndex: (NSInteger) index {
 	GTLVerbatmAppPOVInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
-	[self.delegate displayPOVWithIndex: index fromLoadManager: self.povLoader];
 	NSLog(@"Viewing pov %@ ", povInfo.title);
+	[self.delegate displayPOVWithIndex: index fromLoadManager: self.povLoader];
 }
 
 #pragma mark - Table View Data Source methods (model) -

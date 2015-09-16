@@ -21,6 +21,7 @@ typedef NS_ENUM(NSInteger, AVEType) {
 
 @property (weak, nonatomic) UIView* subAVE;
 
+// Photos are UIImage* and Videos are AVURLAsset* or NSURL*
 -(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text andPhotos: (NSArray *)photos andVideos: (NSArray *)videos andAVEType:(AVEType)aveType;
 
 -(int)numberOfLinesInTextView:(UITextView *)textView;

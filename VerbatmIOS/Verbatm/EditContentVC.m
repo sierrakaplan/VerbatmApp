@@ -10,7 +10,7 @@
 #import "ImagePinchView.h"
 #import "Identifiers.h"
 #import "SizesAndPositions.h"
-#import "UserSetupParemeters.h"
+#import "UserSetupParameters.h"
 #import "VideoPinchView.h"
 
 @interface EditContentVC()<EditContentViewDelegate>
@@ -47,7 +47,7 @@
         self.openPinchView = pinchView;
     }
     [self.view addSubview:self.openEditContentView];
-    if(![UserSetupParemeters filter_InstructionShown] && [pinchView isKindOfClass:[ImagePinchView class]])[self alertAddFilter];
+    if(![UserSetupParameters filter_InstructionShown] && [pinchView isKindOfClass:[ImagePinchView class]])[self alertAddFilter];
 }
 
 -(void)createExitButton{
@@ -63,7 +63,7 @@
 -(void)alertAddFilter {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    [UserSetupParemeters set_filter_InstructionAsShown];
+    [UserSetupParameters set_filter_InstructionAsShown];
 }
 
 -(void)exitButtonClicked:(UIButton*) sender{

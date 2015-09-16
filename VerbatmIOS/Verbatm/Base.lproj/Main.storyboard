@@ -498,7 +498,7 @@
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
                     <connections>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
-                        <segue destination="x4u-kZ-n9K" kind="modal" identifier="BRING_UP_EDITCONTENT_SEGUE" modalPresentationStyle="fullScreen" modalTransitionStyle="crossDissolve" animates="NO" id="ONZ-b1-Agz"/>
+                        <segue destination="x4u-kZ-n9K" kind="custom" identifier="BRING_UP_EDITCONTENT_SEGUE" customClass="NoAnimationSegue" id="ONZ-b1-Agz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>

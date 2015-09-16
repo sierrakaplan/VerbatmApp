@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/2AiW_ohqArUdXRJGqgEZoVAJZdw\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/sM8UDa5c48e1O7KNiRuqf5A-bZw\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -411,21 +411,6 @@
      },
      "response": {
       "$ref": "Page"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "insertPages": {
-     "id": "verbatmApp.page.insertPages",
-     "path": "insertPages",
-     "httpMethod": "POST",
-     "request": {
-      "$ref": "PageListWrapper",
-      "parameterName": "resource"
-     },
-     "response": {
-      "$ref": "PageListWrapper"
      },
      "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"

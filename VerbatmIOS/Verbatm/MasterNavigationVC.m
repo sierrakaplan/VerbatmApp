@@ -22,7 +22,7 @@
 #import "PreviewDisplayView.h"
 #import "ProfileVC.h"
 
-#import "UserSetupParemeters.h"
+#import "UserSetupParameters.h"
 #import "VerbatmCameraView.h"
 
 
@@ -78,7 +78,7 @@
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
     
-    if(![UserSetupParemeters trendingCirle_InstructionShown])[self alertPullTrendingIcon];
+    if(![UserSetupParameters trendingCirle_InstructionShown])[self alertPullTrendingIcon];
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -259,7 +259,7 @@
     
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    [UserSetupParemeters set_trendingCirle_InstructionAsShown];
+    [UserSetupParameters set_trendingCirle_InstructionAsShown];
 }
 
 

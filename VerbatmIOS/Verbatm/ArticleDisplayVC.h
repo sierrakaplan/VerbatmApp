@@ -9,6 +9,13 @@
 
 #import <UIKit/UIKit.h>
 
+@class POVLoadManager;
+
 @interface ArticleDisplayVC : UIViewController
+
+//Tells the VC to display story at that index from that load manager
+//And gives it a reference to the load manager so that it can load previous
+// and following stories
+-(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager;
 
 @end

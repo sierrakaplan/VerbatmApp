@@ -105,8 +105,9 @@
 	[self.topListContainer addSubview: self.trendingVC.view];
 	[self.bottomListContainer addSubview: self.mostRecentVC.view];
 
-//	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
-//	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
+	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
+	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
+	self.articleDisplayContainer.alpha = 0;
 }
 
 #pragma mark - Formatting sub views -
@@ -172,9 +173,11 @@
 #pragma mark - Article List VC Delegate Methods (display articles) -
 
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
-
-	//TODO:
-//	[self.articleDisplayVC ];
+	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
+	[self.articleDisplayContainer setFrame:self.view.bounds];
+	[self.articleDisplayContainer setBackgroundColor:[UIColor whiteColor]];
+	self.articleDisplayContainer.alpha = 1;
+	[self.view bringSubviewToFront: self.articleDisplayContainer];
 }
 
 

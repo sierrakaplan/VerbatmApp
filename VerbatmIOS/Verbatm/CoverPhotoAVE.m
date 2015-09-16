@@ -62,6 +62,8 @@
 								   self.frame.size.height - TITLE_OFFSET*2.f);
 	UILabel* titleLabel = [[UILabel alloc] initWithFrame: titleFrame];
 	titleLabel.textAlignment = NSTextAlignmentCenter;
+	titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
+	titleLabel.numberOfLines = 0;
 	titleLabel.font = [UIFont fontWithName:DEFAULT_FONT size:TITLE_FONT_SIZE];
 	titleLabel.textColor = textColor;
 

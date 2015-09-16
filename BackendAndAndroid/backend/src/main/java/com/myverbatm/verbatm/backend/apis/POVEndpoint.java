@@ -12,6 +12,8 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Query;
@@ -201,20 +203,27 @@ public class POVEndpoint {
     public final PageListWrapper getPagesFromPOV(@Named("id") final Long id, final User user)
         throws ServiceException {
 
-        Query.Filter povIdFilter = new Query.FilterPredicate("id", Query.FilterOperator.EQUAL, id);
+        log.info("POV ID: " + id);
+        Key povKey = KeyFactory.createKey(POV.class.getSimpleName(), id);
+        Query.Filter povIdFilter = new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, povKey);
         Query pageIdsQuery = new Query("POV")
             .setFilter(povIdFilter)
-            .addProjection(new PropertyProjection("pageIds", List.class));
+            // a list property (a property with multiple values) in a projection query
+            // will return a separate entity for each time the property matches (so for each pageID)
+            .addProjection(new PropertyProjection("pageIds", Long.class));
 
         PreparedQuery preparedQuery = datastore.prepare(pageIdsQuery);
 
-        Entity entity = preparedQuery.asSingleEntity();
-        List<Long> pageIds = (List<Long>) entity.getProperty("pageIds");
-        List<Page> pages = new ArrayList<>();
-        for (Long pageId : pageIds) {
-            Page page = ofy().load().type(Page.class).id(pageId).now();
+        List<Entity> entities = preparedQuery.asList(FetchOptions.Builder.withDefaults());
+        log.info("Entities returned by query for getPagesFromPOV: " + entities.toString());
+        ArrayList<Page> pages = new ArrayList<>();
+        for (Entity entity: entities) {
+            Long pageID = (Long) entity.getProperty("pageIds");
+            Page page = ofy().load().type(Page.class).id(pageID).now();
             pages.add(page);
+            log.info("Page: " + page.toString());
         }
+
         PageListWrapper pageListWrapper = new PageListWrapper();
         pageListWrapper.pages = pages;
         return pageListWrapper;
@@ -253,6 +262,7 @@ public class POVEndpoint {
 
         // Do not use the key provided by the caller; use a generated key.
         pov.clearId();
+        log.info("POV published with page ids: " + pov.getPageIds());
         ofy().save().entity(pov).now();
         return pov;
     }

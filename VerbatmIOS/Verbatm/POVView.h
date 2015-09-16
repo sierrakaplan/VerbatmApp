@@ -10,8 +10,10 @@
 
 @interface POVView : UIScrollView
 
-// Takes array of AVES (pages)
--(instancetype)initWithFrame:(CGRect)frame andAVES: (NSArray *) povPages;
+@property (strong, nonatomic) NSMutableArray * pageAves;
+
+// Takes array of AVES (pages as views)
+-(void) renderAVES: (NSMutableArray *) aves;
 
 -(void) displayMediaOnCurrentAVE;
 -(void) clearArticle;

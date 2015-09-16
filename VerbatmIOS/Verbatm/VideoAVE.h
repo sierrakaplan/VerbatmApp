@@ -14,7 +14,8 @@
 #import "VideoPlayerView.h"
 
 @interface VideoAVE : VideoPlayerView
-//note that the video list can be alasset or nsdata
+
+//note that the video list can be avurlasset or nsurl
 -(id)initWithFrame:(CGRect)frame andVideoAssetArray:(NSArray*)videoList;
 -(void)onScreen;
 -(void)offScreen;

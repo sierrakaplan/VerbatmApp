@@ -5,11 +5,19 @@
 //  Created by Sierra Kaplan-Nelson on 9/7/15.
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
+//	Loads POV's from the server, in POVType order (Trending or most recent)
+//	Stores POVInfo's (all information about POV besides pages)
+//	that have been loaded
+//	Also stores a cursor string so that it can keep loading more POV's
+//	where it left off
+//	Notifies through a delegate when more POV's are loaded
+//	(not a Notification because there can be multiple POVLoadManagers
+// 	associated with different list views - trending + most recent)
+//
 
 #import <Foundation/Foundation.h>
 
 @class GTLVerbatmAppPOVInfo;
-@class GTLVerbatmAppPageCollection;
 
 @protocol POVLoadManagerDelegate <NSObject>
 
@@ -41,18 +49,5 @@ typedef NS_ENUM(NSInteger, POVType) {
 // Get the POVInfo at the given index. Will return nil if not loaded yet
 // Should only be called after getting notification from loadPOV's
 - (GTLVerbatmAppPOVInfo*) getPOVInfoAtIndex: (NSInteger) index;
-
-// Loads the pages from the POVInfo at the given index.
-// If a POVInfo at that index isn't loaded will print error and do nothing
-- (void) loadPOVPagesForPOVAtIndex: (NSInteger) index;
-
-// Returns the page collection for the POV at index.
-// If a POVInfo at that index isn't loaded will print error and return nil
-// If the POVInfo exists but there are no pages loaded for it yet will print error and return nil
--(GTLVerbatmAppPageCollection*) getPageCollectionForPOVAtIndex: (NSInteger) index;
-
-// Returns the page collection for the POV with the given ID
-// If there are no pages loaded for a POV with that id will print error and return nil
-- (GTLVerbatmAppPageCollection*) getPageCollectionForPOV: (NSNumber*) povID;
 
 @end

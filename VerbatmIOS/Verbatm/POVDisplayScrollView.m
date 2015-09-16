@@ -13,7 +13,10 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-		
+		self.scrollEnabled = YES;
+		self.pagingEnabled = YES;
+		self.showsHorizontalScrollIndicator = NO;
+		self.showsVerticalScrollIndicator = NO;
 	}
 	return self;
 }

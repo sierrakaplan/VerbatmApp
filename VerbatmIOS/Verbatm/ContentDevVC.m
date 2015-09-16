@@ -40,7 +40,7 @@
 #import "TextPinchView.h"
 
 #import "UIEffects.h"
-#import "UserSetupParemeters.h"
+#import "UserSetupParameters.h"
 
 #import "UserPinchViews.h"
 #import "VerbatmScrollView.h"
@@ -49,8 +49,7 @@
 
 
 @interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate,
-GMImagePickerControllerDelegate, EditContentViewDelegate,
-ContentSVDelegate>
+GMImagePickerControllerDelegate, ContentSVDelegate>
 
 
 // Says whether or not user is currently adding a cover picture
@@ -904,7 +903,7 @@ ContentSVDelegate>
 	//make sure the pullbar is showing when things are pinched together
 	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
     //present swipe to delete notification
-    if([UserSetupParemeters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
+    if([UserSetupParameters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
 
 
@@ -1373,29 +1372,6 @@ ContentSVDelegate>
 
 
 #pragma mark - Sense Tap Gesture -
-#pragma mark EditContentView
-
-//Delegate method for EditContentView
--(void) exitEditContentView {
-	if (!self.openEditContentView) {
-		return;
-	}
-	if(self.openPinchView.containsImage) {
-		NSInteger filterImageIndex = [self.openEditContentView getFilteredImageIndex];
-		[(ImagePinchView*)self.openPinchView changeImageToFilterIndex:filterImageIndex];
-	} else if(self.openPinchView.containsVideo) {
-		[self.openEditContentView.videoView stopVideo];
-	}
-	[self.openEditContentView removeFromSuperview];
-	self.openEditContentView = nil;
-	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
-	[self.openPinchView renderMedia];
-	self.openPinchView = nil;
-
-	if(!self.pinchObject_TappedAndClosed_ForTheFirstTime && (self.pageElementScrollViews.count > 1)){
-		//[self alertPinchElementsTogether];
-	}
-}
 
 
 -(void)addTapGestureToPinchView: (PinchView *) pinchView {
@@ -1418,7 +1394,7 @@ ContentSVDelegate>
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
-        if([UserSetupParemeters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
+        if([UserSetupParameters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
 	}else{
 		self.openPinchView = pinchView;
 		//tap to open an element for viewing or editing
@@ -1447,11 +1423,11 @@ ContentSVDelegate>
 
 - (IBAction)done:(UIStoryboardSegue *)segue{
 	if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
-		EditContentVC *vc = (EditContentVC *)segue.sourceViewController;
+		EditContentVC *editContentVC = (EditContentVC *)segue.sourceViewController;
 		if(self.openPinchView.containsImage) {
-			[(ImagePinchView*)self.openPinchView changeImageToFilterIndex:vc.filterImageIndex];
+			[(ImagePinchView*)self.openPinchView changeImageToFilterIndex: editContentVC.filterImageIndex];
 		}
-		[vc.openEditContentView.videoView stopVideo];
+		[editContentVC.openEditContentView.videoView stopVideo];
 		self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
 	}
 }
@@ -1604,11 +1580,11 @@ ContentSVDelegate>
 
 	//decides whether on what notification to present if any
 
-	if(![UserSetupParemeters circlesArePages_InstructionShown] &&
+	if(![UserSetupParameters circlesArePages_InstructionShown] &&
 	   !self.pageElementScrollViews.count) {
 		[self alertEachPVIsPage];
 
-	}else if(![UserSetupParemeters pinchCircles_InstructionShown] &&
+	}else if(![UserSetupParameters pinchCircles_InstructionShown] &&
 			 (self.pageElementScrollViews.count > 1)) {
 		[self alertPinchElementsTogether];
 	}
@@ -1640,25 +1616,25 @@ ContentSVDelegate>
 -(void)alertEachPVIsPage{
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
-	[UserSetupParemeters set_circlesArePages_InstructionAsShown];
+	[UserSetupParameters set_circlesArePages_InstructionAsShown];
 }
 
 -(void)alertPinchElementsTogether{
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
-	[UserSetupParemeters set_pinchCircles_InstructionAsShown];
+	[UserSetupParameters set_pinchCircles_InstructionAsShown];
 }
 
 -(void)alertSwipeRightToDelete{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles right to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    [UserSetupParemeters set_swipeToDelete_InstructionAsShown];
+    [UserSetupParameters set_swipeToDelete_InstructionAsShown];
 }
 
 -(void)alertTapNHoldInCollection{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Tap and hold to remove circle" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    [UserSetupParemeters set_tapNhold_InstructionAsShown];
+    [UserSetupParameters set_tapNhold_InstructionAsShown];
 }
 
 #pragma mark -Tap to clear view-
