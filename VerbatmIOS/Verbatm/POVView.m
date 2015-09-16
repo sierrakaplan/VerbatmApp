@@ -9,6 +9,7 @@
 #import "POVView.h"
 
 #import "BaseArticleViewingExperience.h"
+#import "Icons.h"
 #import "PhotoVideoAVE.h"
 #import "PhotoAVE.h"
 #import "SizesAndPositions.h"
@@ -16,8 +17,17 @@
 #import "VideoAVE.h"
 
 @interface POVView ()<UIGestureRecognizerDelegate, UIScrollViewDelegate>
+
+@property (nonatomic) UIScrollView *mainScrollView;
 @property (nonatomic) NSInteger currentPageIndex;
-@property (nonatomic) float pageScrollTopBottomArea;
+
+// Like button added by another class
+@property (strong, nonatomic) UIButton* likeButton;
+@property (nonatomic) BOOL liked;
+@property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
+@property (strong, nonatomic) UIImage* likeButtonLikedImage;
+@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
+@property (strong, nonatomic) NSNumber* povID;
 
 @end
 
@@ -27,19 +37,9 @@
     
     self = [super initWithFrame:frame];
     if (self) {
-        [self formatSelf];
+		[self addSubview: self.mainScrollView];
     }
     return self;
-}
-
--(void) formatSelf {
-	self.pagingEnabled = YES;
-	self.scrollEnabled = YES;
-	[self setShowsVerticalScrollIndicator:NO];
-	[self setShowsHorizontalScrollIndicator:NO];
-	self.bounces = YES;
-	//scroll view delegate
-	self.delegate = self;
 }
 
 //renders aves (pages) onto the view
@@ -47,19 +47,50 @@
 	self.pageAves = aves;
 	self.currentPageIndex = -1;
 	
-    self.contentSize = CGSizeMake(self.frame.size.width, [self.pageAves count] * self.frame.size.height);
-	self.contentOffset = CGPointMake(0, 0);
+    self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width, [self.pageAves count] * self.frame.size.height);
+	self.mainScrollView.contentOffset = CGPointMake(0, 0);
     
     CGRect viewFrame = self.bounds;
     for(UIView* view in self.pageAves){
 		view.frame = viewFrame;
-		[self addSubview: view];
+		[self.mainScrollView addSubview: view];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
     }
-    float middleScreenSize = (self.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
-    self.pageScrollTopBottomArea = (self.frame.size.height - middleScreenSize)/2.f;
 }
 
+#pragma mark - Add like button -
+
+//should be called by another class (since preview does not have like)
+//Sets the like button delegate and the povID since the delegate method
+//requires a pov ID be passed back
+-(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate andSetPOVID: (NSNumber*) povID {
+	self.likeButtonDelegate = delegate;
+	self.povID = povID;
+
+	CGRect likeButtonFrame = CGRectMake(self.frame.size.width - LIKE_BUTTON_SIZE - LIKE_BUTTON_OFFSET,
+										 LIKE_BUTTON_OFFSET, LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
+	self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON];
+	self.likeButtonLikedImage = [UIImage imageNamed:LIKE_PRESSED_ICON];
+	self.likeButton = [UIButton buttonWithType: UIButtonTypeCustom];
+	[self.likeButton setFrame: likeButtonFrame];
+	[self.likeButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
+
+	self.liked = NO;
+	[self.likeButton setImage: self.likeButtonNotLikedImage forState:UIControlStateNormal];
+
+	[self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+	[self addSubview: self.likeButton];
+}
+
+-(void) likeButtonPressed {
+	self.liked = !self.liked;
+	if (self.liked) {
+		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
+	} else {
+		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
+	}
+	[self.likeButtonDelegate likeButtonPressedOnPOVWithID:self.povID];
+}
 
 #pragma mark - Scroll view delegate -
 
@@ -72,7 +103,7 @@
 //takes care of playing video if necessary
 //or showing circle if multiple photo ave
 -(void) displayMediaOnCurrentAVE {
-	int nextIndex = (self.contentOffset.y/self.frame.size.height);
+	int nextIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
 	UIView *currentPage = self.pageAves[nextIndex];
 	if(self.currentPageIndex != nextIndex){
 		if (self.currentPageIndex >= 0) {
@@ -159,4 +190,22 @@
         [self stopVideosInAVE:ave];
     }
 }
+
+
+#pragma mark - Lazy Instantiation -
+
+-(UIScrollView*) mainScrollView {
+	if (!_mainScrollView) {
+		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
+		_mainScrollView.pagingEnabled = YES;
+		_mainScrollView.scrollEnabled = YES;
+		[_mainScrollView setShowsVerticalScrollIndicator:NO];
+		[_mainScrollView setShowsHorizontalScrollIndicator:NO];
+		_mainScrollView.bounces = YES;
+		//scroll view delegate
+		_mainScrollView.delegate = self;
+	}
+	return _mainScrollView;
+}
+
 @end

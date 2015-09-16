@@ -138,9 +138,10 @@
 #define MEDIA_TILE_SELECTOR_HEIGHT 100.f
 #define ADD_MEDIA_BUTTON_OFFSET 10
 
-
-
 #pragma mark - AVES -
+
+#define LIKE_BUTTON_SIZE 50.f
+#define LIKE_BUTTON_OFFSET 20.f
 
 #pragma mark Text
 

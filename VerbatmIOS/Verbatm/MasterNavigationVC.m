@@ -87,9 +87,6 @@
 	[self formatMainScrollView];
 	[self getAndFormatVCs];
     self.connectionMonitor = [[internetConnectionMonitor alloc] init];
-
-	CGRect frame = self.view.bounds;
-	
 }
 
 -(void)viewDidAppear:(BOOL)animated {

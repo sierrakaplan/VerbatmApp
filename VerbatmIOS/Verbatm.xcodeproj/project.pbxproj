@@ -51,7 +51,6 @@
 		A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */; };
 		A5AA31CF1BA10A6B00D8D20C /* CoverPicturePinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31CE1BA10A6B00D8D20C /* CoverPicturePinchView.m */; };
 		A5B894981BA56D0100551149 /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5B894961BA56D0100551149 /* PromiseKit.framework */; };
-		A5B8949D1BA56DC500551149 /* PromiseKit.framework.dSYM in CopyFiles */ = {isa = PBXBuildFile; fileRef = A5B8949C1BA56DC500551149 /* PromiseKit.framework.dSYM */; };
 		A5C09BD91BA1F1D700C0AD86 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BC61BA1F1D700C0AD86 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5C09BDA1BA1F1D700C0AD86 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BC91BA1F1D700C0AD86 /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5C09BDB1BA1F1D700C0AD86 /* ASIDataDecompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BCB1BA1F1D700C0AD86 /* ASIDataDecompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -211,16 +210,6 @@
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A5B8949B1BA56D9F00551149 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 16;
-			files = (
-				A5B8949D1BA56DC500551149 /* PromiseKit.framework.dSYM in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -316,7 +305,6 @@
 		A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPageListWrapper.m; path = API/GTLVerbatmAppPageListWrapper.m; sourceTree = "<group>"; };
 		A5AA31CD1BA10A6B00D8D20C /* CoverPicturePinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPicturePinchView.h; sourceTree = "<group>"; };
 		A5AA31CE1BA10A6B00D8D20C /* CoverPicturePinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPicturePinchView.m; sourceTree = "<group>"; };
-		A5B894951BA56D0100551149 /* OMGHTTPURLRQ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OMGHTTPURLRQ.framework; path = Carthage/Build/iOS/OMGHTTPURLRQ.framework; sourceTree = "<group>"; };
 		A5B894961BA56D0100551149 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = Carthage/Build/iOS/PromiseKit.framework; sourceTree = "<group>"; };
 		A5B8949C1BA56DC500551149 /* PromiseKit.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = PromiseKit.framework.dSYM; path = Carthage/Build/iOS/PromiseKit.framework.dSYM; sourceTree = "<group>"; };
 		A5C09BC51BA1F1D700C0AD86 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
@@ -1090,7 +1078,6 @@
 		C7BC4374199D97F5004B91A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A5B894951BA56D0100551149 /* OMGHTTPURLRQ.framework */,
 				A5B894961BA56D0100551149 /* PromiseKit.framework */,
 				A5E3CDAB1B881C710065C8E5 /* FBAudienceNetwork.framework */,
 				A5E3CDAC1B881C710065C8E5 /* FBSDKLoginKit.framework */,
@@ -1249,9 +1236,8 @@
 				C7BC436F199D97F5004B91A1 /* Frameworks */,
 				C7BC4370199D97F5004B91A1 /* Resources */,
 				A5B8EDEC1B46E1E300932ADE /* ShellScript */,
-				A5B8949A1BA56D1B00551149 /* ShellScript */,
-				A5B8949B1BA56D9F00551149 /* CopyFiles */,
 				A53CFB1A1BA62DD900215894 /* Embed Frameworks */,
+				A560EF9F1BA9EC53003FB041 /* ShellScript */,
 			);
 			buildRules = (
 				A5A770801BA5633F0016F2BE /* PBXBuildRule */,
@@ -1357,19 +1343,18 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		A5B8949A1BA56D1B00551149 /* ShellScript */ = {
+		A560EF9F1BA9EC53003FB041 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/PromiseKit.framework\n",
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = " /Users/sierrakaplan-nelson/.homebrew/Cellar/carthage/0.8/bin/carthage copy-frameworks";
+			shellScript = "APP_PATH=\"${TARGET_BUILD_DIR}/${WRAPPER_NAME}\"\n\n# This script loops through the frameworks embedded in the application and\n# removes unused architectures.\nfind \"$APP_PATH\" -name '*.framework' -type d | while read -r FRAMEWORK\ndo\nFRAMEWORK_EXECUTABLE_NAME=$(defaults read \"$FRAMEWORK/Info.plist\" CFBundleExecutable)\nFRAMEWORK_EXECUTABLE_PATH=\"$FRAMEWORK/$FRAMEWORK_EXECUTABLE_NAME\"\necho \"Executable is $FRAMEWORK_EXECUTABLE_PATH\"\n\nEXTRACTED_ARCHS=()\n\nfor ARCH in $ARCHS\ndo\necho \"Extracting $ARCH from $FRAMEWORK_EXECUTABLE_NAME\"\nlipo -extract \"$ARCH\" \"$FRAMEWORK_EXECUTABLE_PATH\" -o \"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\"\nEXTRACTED_ARCHS+=(\"$FRAMEWORK_EXECUTABLE_PATH-$ARCH\")\ndone\n\necho \"Merging extracted architectures: ${ARCHS}\"\nlipo -o \"$FRAMEWORK_EXECUTABLE_PATH-merged\" -create \"${EXTRACTED_ARCHS[@]}\"\nrm \"${EXTRACTED_ARCHS[@]}\"\n\necho \"Replacing original executable with thinned version\"\nrm \"$FRAMEWORK_EXECUTABLE_PATH\"\nmv \"$FRAMEWORK_EXECUTABLE_PATH-merged\" \"$FRAMEWORK_EXECUTABLE_PATH\"\n\ndone\n";
 		};
 		A5B8EDEC1B46E1E300932ADE /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1619,6 +1604,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
@@ -1650,9 +1636,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = NO;
 				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "armv7 armv7s arm64";
 			};
 			name = Release;
 		};
@@ -1681,6 +1669,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1707,9 +1696,11 @@
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "98f1c3d3-c353-49e8-9093-2d24fb3bec28";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				VERSIONING_SYSTEM = "apple-generic";
 				WRAPPER_EXTENSION = app;
 			};

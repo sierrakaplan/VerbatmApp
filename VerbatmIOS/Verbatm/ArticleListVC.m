@@ -118,14 +118,19 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	FeedTableViewCell *cell;
+
 	NSInteger index = indexPath.row;
+	if (self.refreshInProgress && index == 0) {
+		return self.placeholderCell;
+	}
+
+	FeedTableViewCell *cell;
+
 	//configure cell
-	if (self.povPublishing && index == 0) {
+	if (self.povPublishing && (index == 0 ||
+							   (self.refreshInProgress && index == 1))) {
 		cell = self.povPublishingPlaceholderCell;
-    } else if (self.refreshInProgress){
-        cell = self.placeholderCell;
-    }else {
+    } else {
 		cell = [tableView dequeueReusableCellWithIdentifier:FEED_CELL_ID];
 		if (cell == nil) {
 			cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
@@ -138,10 +143,10 @@
 		}
 		UIImage* coverPic = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: povInfo.coverPicUrl]]];
 		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage: coverPic];
+		cell.indexPath = indexPath;
+		cell.delegate = self;
 	}
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
-	cell.indexPath = indexPath;
-	cell.delegate = self;
 	return cell;
 }
 
@@ -211,6 +216,7 @@
 
 -(RefreshTableViewCell *)placeholderCell{
     if(!_placeholderCell) _placeholderCell = [[RefreshTableViewCell alloc] init];
+	_placeholderCell.selectionStyle = UITableViewCellSelectionStyleNone;
     return _placeholderCell;
 }
 

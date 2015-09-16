@@ -21,7 +21,7 @@
 #import "PagesLoadManager.h"
 #import "POVView.h"
 
-@interface ArticleDisplayVC () <PagesLoadManagerDelegate>
+@interface ArticleDisplayVC () <PagesLoadManagerDelegate, LikeButtonDelegate>
 
 @property (strong, nonatomic) POVDisplayScrollView* scrollView;
 
@@ -54,8 +54,6 @@
 
 // When user clicks story, loads one behind it and the two ahead
 -(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
-	CGRect frame = self.view.bounds;
-
 	self.povLoadManager = loadManager;
 	GTLVerbatmAppPOVInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
 	NSNumber* povID = povInfo.identifier;
@@ -94,6 +92,11 @@
 	}
 
 	[povView renderAVES: povView.pageAves];
+	[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
+}
+
+-(void) likeButtonPressedOnPOVWithID:(NSNumber *)povID {
+	// TODO: update backend
 }
 
 
