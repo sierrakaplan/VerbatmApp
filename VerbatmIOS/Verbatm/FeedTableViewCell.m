@@ -87,7 +87,7 @@
 	[super layoutSubviews];
 	[self formatSelf];
 	[self formatTextSubview];
-    if(self.isPlaceHolder)[self startActivityIndicatrForPlaceholder];
+    //if(self.isPlaceHolder)[self startActivityIndicatrForPlaceholder];
 	[self formatCoverRects];
 	[self formatSemiCircles];
 	[self addPinchGestureToSelf];
@@ -220,7 +220,7 @@
 }
 
 -(void)startActivityIndicatrForPlaceholder{
-    [self startActivityIndicator];
+    //[self startActivityIndicator];
 }
 //TODO: make this a category
 -(UIImage*) halfPicture: (UIImage*) image leftHalf:(BOOL) leftHalf {

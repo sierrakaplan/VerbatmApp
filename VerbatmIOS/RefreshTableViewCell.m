@@ -20,10 +20,14 @@
     [self startActivityIndicator];
 }
 -(void)startActivityIndicator {
+    //if we are already woring then no need to recreate things
+    if(self.activityIndicator.isAnimating){
+        self.activityIndicator.center = self.center;
+        return;
+    }
     self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.activityIndicator.alpha = 1.0;
     self.activityIndicator.hidesWhenStopped = YES;
-    self.activityIndicator.center = self.center;
     [self addSubview:self.activityIndicator];
     [self bringSubviewToFront:self.activityIndicator];
     [self.activityIndicator startAnimating];

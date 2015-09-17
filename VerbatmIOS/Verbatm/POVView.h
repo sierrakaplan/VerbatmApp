@@ -12,7 +12,6 @@
 
 // tells whether button was liked or unliked
 -(void) likeButtonLiked: (BOOL)liked onPOVWithID: (NSNumber*) povID;
-
 @end
 
 @interface POVView : UIView
@@ -29,5 +28,8 @@
 // button is pressed, and passes the povID since the delegate
 // needs to pass this back
 -(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate andSetPOVID: (NSNumber*) povID;
+
+//adds a down arrow to the cover photo
+-(void)addDownArrowButton;
 
 @end

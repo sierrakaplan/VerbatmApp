@@ -28,7 +28,13 @@
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
 @property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
 @property (strong, nonatomic) NSNumber* povID;
+@property (nonatomic) float pageScrollTopBottomArea;
+@property (nonatomic, strong) UIButton * downArrow;
 
+#define DOWN_ARROW_WIDTH 40
+#define DOWN_ARROE_DISTANCE_FROM_BOTTOM 5
+#define DOWN_ARROW_IMAGE  @"downarrow"
+#define SCROLL_UP_ANIMATION_DURATION 0.7
 @end
 
 @implementation POVView
@@ -56,6 +62,11 @@
 		[self.mainScrollView addSubview: view];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
     }
+    //temp
+    float middleScreenSize = (self.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
+    self.pageScrollTopBottomArea = (self.frame.size.height - middleScreenSize)/2.f;
+    [self setUpGestureRecognizers];
+
 }
 
 #pragma mark - Add like button -
@@ -165,8 +176,56 @@
     }
 }
 
-#pragma mark - Gesture recognizers
 
+-(void)addDownArrowButton{
+    self.downArrow = [[UIButton alloc] init];
+    [self.downArrow setImage:[UIImage imageNamed:DOWN_ARROW_IMAGE] forState:UIControlStateNormal];
+    self.downArrow.frame = CGRectMake(self.center.x - (DOWN_ARROW_WIDTH/2),
+                                      self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
+                                      DOWN_ARROW_WIDTH, DOWN_ARROW_WIDTH);
+    [self.mainScrollView addSubview:self.downArrow];
+    [self.downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchUpInside];
+}
+
+-(void)downArrowClicked {
+    [UIView animateWithDuration:SCROLL_UP_ANIMATION_DURATION animations:^{
+        self.mainScrollView.contentOffset = CGPointMake(0, self.frame.size.height);
+    }];
+}
+
+#pragma mark - Gesture recognizers -
+/*TEMP*/
+//Sets up the gesture recognizer for dragging from the edges.
+-(void) setUpGestureRecognizers {
+    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollPage:)];
+    pan.delegate = self;
+    [self addGestureRecognizer:pan];
+}
+
+
+-(void) scrollPage:(UIPanGestureRecognizer*) sender {
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan: {
+            if ([sender numberOfTouches] != 1) return;
+            
+            CGPoint touchLocation = [sender locationOfTouch:0 inView:[self superview]];
+            if (touchLocation.y < (self.frame.size.height - self.pageScrollTopBottomArea)
+                && touchLocation.y > self.pageScrollTopBottomArea) {
+                self.mainScrollView.scrollEnabled = NO;
+            }
+            break;
+        }
+        case UIGestureRecognizerStateChanged: {
+            break;
+        }
+        case UIGestureRecognizerStateEnded: {
+            self.mainScrollView.scrollEnabled = YES;
+            break;
+        }
+        default:
+            break;
+    }
+}
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES;
 }

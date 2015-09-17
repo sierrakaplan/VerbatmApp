@@ -69,8 +69,8 @@
 
 #pragma mark - AVES -
 
-#define LIKE_ICON @"heart"
-#define LIKE_PRESSED_ICON @"heart_filled"
+#define LIKE_ICON @"Like Unpressed"
+#define LIKE_PRESSED_ICON @"Like Pressed"
 #define PULLDOWN_TEXT_ICON @"pulldown_icon"
 
 #pragma mark Video AVE
