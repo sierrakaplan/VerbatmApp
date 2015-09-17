@@ -10,6 +10,7 @@
 #import "PinchView.h"
 #import "CollectionPinchView.h"
 #import "GTLVerbatmAppImage.h"
+#import "GTLVerbatmAppVideo.h"
 #import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
@@ -62,7 +63,7 @@
 			continue;
 		}
 
-		BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:nil andPhotos:[self getUIImagesFromPage: page] andVideos:nil andAVEType:type];
+		BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:nil andPhotos:[self getUIImagesFromPage: page] andVideos:[self getVideosFromPage: page] andAVEType:type];
 		[self.results addObject:textAndOtherMediaAVE];
 	}
 	return self.results;
@@ -76,6 +77,15 @@
 		[uiImages addObject: uiImage];
 	}
 	return uiImages;
+}
+
+-(NSArray*) getVideosFromPage: (Page*) page {
+	NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
+	for (GTLVerbatmAppVideo* gtlVideo in page.videos) {
+		NSString* blobStoreKey = gtlVideo.blobStoreKeyString;
+		
+	}
+	return videoURLs;
 }
 
 -(void) getAVEFromPinchView: (PinchView*) pinchView {

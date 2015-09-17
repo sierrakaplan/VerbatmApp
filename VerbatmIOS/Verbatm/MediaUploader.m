@@ -11,6 +11,7 @@
 
 @interface MediaUploader()
 
+@property (nonatomic, strong) ASIFormDataRequest *formData;
 @property (strong, nonatomic) MediaUploadCompletionBlock completionBlock;
 
 @end

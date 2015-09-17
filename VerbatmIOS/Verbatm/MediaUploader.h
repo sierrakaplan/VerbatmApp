@@ -17,7 +17,6 @@ typedef void(^MediaUploadCompletionBlock)(NSError* error, NSString* responseURL)
 
 @interface MediaUploader : NSObject
 
-@property (nonatomic, strong) ASIFormDataRequest *formData;
 @property (nonatomic, assign) float progress;
 
 
