@@ -107,7 +107,6 @@
 }
 
 
-
 #pragma mark - Clean up -
 
 // Reverses load Article and removes all content

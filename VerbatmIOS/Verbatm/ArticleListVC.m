@@ -44,7 +44,6 @@
 //this cell is inserted in the top of the listview when pull down to refresh
 @property (strong,nonatomic) RefreshTableViewCell * placeholderCell;
 @property (atomic) BOOL pullDownInProgress;
-@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 //tells you whether or not we have started a timer to animate
 @property (atomic) BOOL refreshInProgress;
 @property (nonatomic, strong) UIImage * baseImage; //temp
@@ -98,7 +97,6 @@
 
 #pragma mark - Table View Delegate methods (view customization) -
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    
     if(self.refreshInProgress && !indexPath.row) return STORY_CELL_HEIGHT/2;
     else return STORY_CELL_HEIGHT;
 }
@@ -147,7 +145,7 @@
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
 		//UIImage* coverPic = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: povInfo.coverPicUrl]]];
-		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage: self.baseImage];
+		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage:self.baseImage];
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
@@ -220,10 +218,9 @@
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     self.pullDownInProgress = (scrollView.contentOffset.y <= PULL_TO_REFRESH_THRESHOLD);
-    if (self.pullDownInProgress && !self.refreshInProgress) {
+    if (self.pullDownInProgress && !self.refreshInProgress){
         [self addFinalAnimationTile];
         [self refreshFeed];
-        
         //[self.povListView insertSubview:self.placeholderCell atIndex:0];
         //        [NSTimer timerWithTimeInterval:2
         //                                target:self
@@ -251,22 +248,21 @@
 	}
 }
 
--(void)removeAnimatingView{
-	[UIView animateWithDuration:0.5 animations:^{
-		self.povListView.contentOffset = CGPointMake(0, STORY_CELL_HEIGHT);
-		self.placeholderCell.frame = CGRectMake(self.placeholderCell.frame.origin.x, (-1 * STORY_CELL_HEIGHT),
-												self.placeholderCell.frame.size.width,
-												self.placeholderCell.frame.size.height);
-	}completion:^(BOOL finished) {
-		[self.placeholderCell removeFromSuperview];
-		self.refreshInProgress = NO;
-		self.povListView.contentOffset = CGPointMake(0,0);
-		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-		[self.povListView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
-		//[self stopActivityIndicator];
-		[self.povListView reloadSectionIndexTitles];
-	}];
-}
+//-(void)removeAnimatingView{
+//	[UIView animateWithDuration:0.5 animations:^{
+//		self.povListView.contentOffset = CGPointMake(0, STORY_CELL_HEIGHT);
+//		self.placeholderCell.frame = CGRectMake(self.placeholderCell.frame.origin.x, (-1 * STORY_CELL_HEIGHT),
+//												self.placeholderCell.frame.size.width,
+//												self.placeholderCell.frame.size.height);
+//	}completion:^(BOOL finished) {
+//		[self.placeholderCell removeFromSuperview];
+//		self.refreshInProgress = NO;
+//		self.povListView.contentOffset = CGPointMake(0,0);
+//		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+//		[self.povListView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
+//		[self.povListView reloadSectionIndexTitles];
+//	}];
+//}
 
 #pragma mark -Infinite Scroll -
 
