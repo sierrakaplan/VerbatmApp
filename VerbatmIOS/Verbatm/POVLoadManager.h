@@ -17,7 +17,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class GTLVerbatmAppPOVInfo;
+@class PovInfo;
 
 @protocol POVLoadManagerDelegate <NSObject>
 
@@ -49,6 +49,6 @@ typedef NS_ENUM(NSInteger, POVType) {
 
 // Get the POVInfo at the given index. Will return nil if not loaded yet
 // Should only be called after getting notification from loadPOV's
-- (GTLVerbatmAppPOVInfo*) getPOVInfoAtIndex: (NSInteger) index;
+- (PovInfo*) getPOVInfoAtIndex: (NSInteger) index;
 
 @end

@@ -283,12 +283,11 @@
 	for (PinchView* pinchView in self.pinchedObjects) {
 		if(pinchView.containsVideo) {
 			AVURLAsset* video = [(VideoPinchView*)pinchView video];
+			//TODO: do this in background
 			NSData* videoData = [NSData dataWithContentsOfURL: video.URL];
 			[videos addObject: videoData];
 		}
 	}
-    
-    
 	return videos;
 }
 

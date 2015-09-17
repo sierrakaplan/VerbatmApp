@@ -58,7 +58,7 @@
 				break;
 			}
 			case AVETypeVideo: {
-				VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoAssetArray:videos];
+				VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoArray:videos];
 				[self addSubview: videoAve];
 				self.subAVE = videoAve;
 				break;

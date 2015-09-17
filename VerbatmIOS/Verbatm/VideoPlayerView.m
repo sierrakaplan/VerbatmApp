@@ -123,7 +123,7 @@
 	}
 }
 
--(void) playVideoFromArray: (NSArray*)videoList {
+-(void) playVideoFromArrayOfAssets: (NSArray*)videoList {
 	[self fuseAssets:videoList];
 	[self playVideoFromAsset:self.mix];
 }

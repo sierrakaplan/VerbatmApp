@@ -18,13 +18,17 @@
 #import "GTLVerbatmAppVideo.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
 
+#import "PovInfo.h"
+
+#import <PromiseKit/PromiseKit.h>
+
 @interface POVLoadManager()
 
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
 
 @property (nonatomic) POVType povType;
 
-// Array of GTLVerbatmAppPovInfo objects
+// Array of PovInfo objects
 @property (nonatomic, strong) NSMutableArray* povInfos;
 // Cursor string associated with the povInfos (used to query for next batch)
 @property (nonatomic, strong) NSString* cursorString;
@@ -45,36 +49,88 @@
 
 
 // Loads numOfNewPOVToLoad more POV's using the cursor stored so that it loads from where it left off
+// First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the cover pictures and
+// stores the array of POVInfo's
 -(void) loadMorePOVs: (NSInteger) numOfNewPOVToLoad {
 	GTLQuery* loadQuery = [self getLoadingQuery: numOfNewPOVToLoad withCursor: YES];
-	[self.service executeQuery:loadQuery
-			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
-				 if (error) {
-					 NSLog(@"Error loading POVs: %@", error.description);
-				 } else {
-					 NSLog(@"Successfully loaded POVs!");
-					 [self.povInfos addObjectsFromArray: results.results];
-					 self.cursorString = results.cursorString;
-					 [self.delegate morePOVsLoaded];
-				 }
-			 }];
+	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
+		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
+		for (GTLVerbatmAppPOVInfo* gtlPovInfo in gtlPovInfos) {
+			[loadCoverPhotoPromises addObject: [self getPOVInfoWithCoverPhotoFromGTLPOVInfo:gtlPovInfo]];
+		}
+		return PMKWhen(loadCoverPhotoPromises);
+	}).then(^(NSArray* povInfosWithCoverPhoto) {
+		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
+		NSLog(@"Successfully loaded POVs!");
+		[self.delegate morePOVsLoaded];
+	}).catch(^(NSError* error) {
+		 NSLog(@"Error loading POVs: %@", error.description);
+	});
 }
 
 // Load numToLoad POV's, replacing any POV's that were already loaded
+// TODO: combine these?
+// First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the cover pictures and
+// stores the array of POVInfo's
 -(void) reloadPOVs: (NSInteger) numToLoad {
 	GTLQuery* loadQuery = [self getLoadingQuery: numToLoad withCursor: NO];
-	[self.service executeQuery:loadQuery
-			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
-				 if (error) {
-					 NSLog(@"Error loading POVs: %@", error.description);
-				 } else {
-					 NSLog(@"Successfully loaded POVs!");
-					 self.povInfos = [[NSMutableArray alloc] init];
-					 [self.povInfos addObjectsFromArray: results.results];
-					 self.cursorString = results.cursorString;
-					 [self.delegate povsRefreshed];
-				 }
-			 }];
+	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
+		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
+		for (GTLVerbatmAppPOVInfo* gtlPovInfo in gtlPovInfos) {
+			[loadCoverPhotoPromises addObject: [self getPOVInfoWithCoverPhotoFromGTLPOVInfo:gtlPovInfo]];
+		}
+		return PMKWhen(loadCoverPhotoPromises);
+	}).then(^(NSArray* povInfosWithCoverPhoto) {
+		self.povInfos = [[NSMutableArray alloc] init];
+		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
+		NSLog(@"Successfully loaded POVs!");
+		[self.delegate povsRefreshed];
+	}).catch(^(NSError* error) {
+		NSLog(@"Error loading POVs: %@", error.description);
+	});
+}
+
+// Takes a query to load POVs whos expected result is a
+// GTLVerbatmAppResultsWithCursor
+// Returns a promise that resolves to either an error or an array of
+// GTLVerbatmAppPOVInfo's
+-(PMKPromise*) loadPOVs: (GTLQuery*) query {
+	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		[self.service executeQuery: query completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
+			self.cursorString = results.cursorString;
+			if (error) {
+				resolve(error);
+			} else {
+				resolve(results.results);
+			}
+		}];
+	}];
+	return promise;
+}
+
+// Once it gets the data from the cover photo url, creates a UIImage from that data
+// and stores it in a newly created PovInfo, which it returns
+-(PMKPromise*) getPOVInfoWithCoverPhotoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
+	return [self loadDataFromURL: gtlPovInfo.coverPicUrl].then(^(NSData* imageData) {
+		UIImage* coverPhoto = [UIImage imageWithData: imageData];
+		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andCoverPhoto: coverPhoto];
+		return povInfoWithCoverPhoto;
+	});
+}
+
+// Promise wrapper for asynchronous request to get image data (or any data) from the url
+-(PMKPromise*) loadDataFromURL: (NSString*) urlString {
+	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		NSURLRequest* request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
+			if (error) {
+				resolve(error);
+			} else {
+				resolve(data);
+			}
+		}];
+	}];
+	return promise;
 }
 
 // Returns a query that loads more POV's
@@ -107,7 +163,7 @@
 }
 
 // Returns POVInfo at that index
-- (GTLVerbatmAppPOVInfo*) getPOVInfoAtIndex: (NSInteger) index {
+- (PovInfo*) getPOVInfoAtIndex: (NSInteger) index {
 	if (index >= 0 && index < [self.povInfos count]) {
 		return self.povInfos[index];
 	} else {

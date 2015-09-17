@@ -24,7 +24,7 @@
 #import "RefreshTableViewCell.h"
 
 #import "POVLoadManager.h"
-#import "GTLVerbatmAppPOVInfo.h"
+#import "PovInfo.h"
 
 @interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource, FeedTableViewCellDelegate, POVLoadManagerDelegate>
 
@@ -107,7 +107,7 @@
 
 //one of the POV's in the list has been clicked
 -(void) viewPOVAtIndex: (NSInteger) index {
-	GTLVerbatmAppPOVInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
+	PovInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
 	NSLog(@"Viewing pov %@ ", povInfo.title);
 	[self.delegate displayPOVWithIndex: index fromLoadManager: self.povLoader];
 }
@@ -136,14 +136,13 @@
 		if (cell == nil) {
 			cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
 		}
-		GTLVerbatmAppPOVInfo* povInfo;
+		PovInfo* povInfo;
 		if (self.povPublishingPlaceholderCell) {
 			povInfo = [self.povLoader getPOVInfoAtIndex: index-1];
 		} else {
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
-		UIImage* coverPic = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: povInfo.coverPicUrl]]];
-		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage:coverPic];
+		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage: povInfo.coverPhoto];
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}

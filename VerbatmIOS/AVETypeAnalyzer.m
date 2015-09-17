@@ -10,6 +10,7 @@
 #import "PinchView.h"
 #import "CollectionPinchView.h"
 #import "GTLVerbatmAppImage.h"
+#import "GTLVerbatmAppVideo.h"
 #import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
@@ -58,12 +59,11 @@
 		} else if (page.images.count) {
 			type = AVETypePhoto;
 		} else if(page.videos.count) {
-			//TODO: something with video
-//			type = AVETypeVideo;
+			type = AVETypeVideo;
 			continue;
 		}
 
-		BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:nil andPhotos:[self getUIImagesFromPage: page] andVideos:nil andAVEType:type];
+		BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:nil andPhotos:[self getUIImagesFromPage: page] andVideos:[self getVideosFromPage: page] andAVEType:type];
 		[self.results addObject:textAndOtherMediaAVE];
 	}
 	return self.results;
@@ -72,10 +72,20 @@
 -(NSArray*) getUIImagesFromPage: (Page*) page {
 	NSMutableArray* uiImages = [[NSMutableArray alloc] init];
 	for (GTLVerbatmAppImage* image in page.images) {
+		//TODO: do this in background
 		UIImage* uiImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: image.servingUrl]]];
 		[uiImages addObject: uiImage];
 	}
 	return uiImages;
+}
+
+-(NSArray*) getVideosFromPage: (Page*) page {
+	NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
+	for (GTLVerbatmAppVideo* gtlVideo in page.videos) {
+		NSString* blobStoreKey = gtlVideo.blobStoreKeyString;
+		
+	}
+	return videoURLs;
 }
 
 -(void) getAVEFromPinchView: (PinchView*) pinchView {

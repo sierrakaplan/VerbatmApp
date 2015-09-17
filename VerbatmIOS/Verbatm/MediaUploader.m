@@ -11,6 +11,7 @@
 
 @interface MediaUploader()
 
+@property (nonatomic, strong) ASIFormDataRequest *formData;
 @property (strong, nonatomic) MediaUploadCompletionBlock completionBlock;
 
 @end
@@ -36,26 +37,14 @@
 	return self;
 }
 
-//TODO: try this with Promise NSURLConnection
+//Maybe could do this with Promise NSURLConnection?
 -(instancetype) initWithVideoData: (NSData*)videoData  andUri: (NSString*)uri {
-
-// TODO: somewhere else
-//	NSURL *fileURL = nil;
-//	AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset: videoAsset
-//																		   presetName:AVAssetExportPresetHighestQuality];
-//
-//	exportSession.outputURL = fileURL;
-//
-//	[exportSession exportAsynchronouslyWithCompletionHandler:^{
-//		NSData* videoData = [NSData dataWithContentsOfURL: fileURL];
-//		NSLog(@"AVAsset saved to NSData.");
-//			  }];
 
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
 
 	[self.formData setData:videoData
 			  withFileName:@"defaultVideo.mov"
-			andContentType:@"video/quicktime"
+			andContentType:@"video/mp4"
 					forKey:@"defaultVideo"];
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
@@ -95,9 +84,9 @@
 
 -(void) requestFinished:(ASIHTTPRequest *)request {
 	NSLog(@"upload media finished");
-	// TODO: this is a blobkey string for video and an imagesservice servingurl for image
-	NSString* mediaURL = [request responseString];
-	self.completionBlock(nil, mediaURL);
+	//The response string is a blobkey string for video and an imagesservice servingurl for image
+	NSString* responseString = [request responseString];
+	self.completionBlock(nil, responseString);
 }
 
 -(void) requestFailed:(ASIHTTPRequest *)request {

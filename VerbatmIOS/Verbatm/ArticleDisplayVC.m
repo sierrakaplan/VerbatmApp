@@ -20,6 +20,7 @@
 #import "POVLoadManager.h"
 #import "PagesLoadManager.h"
 #import "POVView.h"
+#import "PovInfo.h"
 
 #import "UIEffects.h"
 #import "UpdatingManager.h"
@@ -61,14 +62,13 @@
 // When user clicks story, loads one behind it and the two ahead
 -(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
 	self.povLoadManager = loadManager;
-	GTLVerbatmAppPOVInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
+	PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
 	NSNumber* povID = povInfo.identifier;
 	[self.pageLoadManager loadPagesForPOV: povID];
 	[self.povIDs addObject: povID];
 	POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds];
 
-	UIImage* coverPic = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: povInfo.coverPicUrl]]];
-	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.view.bounds andImage: coverPic andTitle: povInfo.title];
+	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.view.bounds andImage:povInfo.coverPhoto andTitle: povInfo.title];
 	NSMutableArray* aves = [[NSMutableArray alloc] initWithArray:@[coverAVE]];
 	[povView renderAVES: aves];
 	[self.scrollView addSubview: povView];
@@ -102,6 +102,8 @@
 	[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
     [UIEffects stopActivityIndicator:self.activityIndicator];
 }
+
+#pragma mark - POVView Delegate (Like button) -
 
 -(void) likeButtonLiked:(BOOL)liked onPOVWithID:(NSNumber *)povID {
 	[self.updatingManager povWithId:povID wasLiked: liked];
