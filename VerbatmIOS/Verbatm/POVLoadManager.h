@@ -22,6 +22,7 @@
 @protocol POVLoadManagerDelegate <NSObject>
 
 -(void) morePOVsLoaded;
+-(void) povsRefreshed;
 
 @end
 

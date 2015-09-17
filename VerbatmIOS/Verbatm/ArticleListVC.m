@@ -47,13 +47,13 @@
 @property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 //tells you whether or not we have started a timer to animate
 @property (atomic) BOOL refreshInProgress;
-
+@property (nonatomic, strong) UIImage * baseImage; //temp
 
 #define FEED_CELL_ID @"feed_cell_id"
 #define NUM_POVS_IN_SECTION 6
 #define RELOAD_THRESHOLD 15
 #define NUM_OF_NEW_POVS_TO_LOAD 15
-#define PULL_TO_REFRESH_THRESHOLD (-1 * STORY_CELL_HEIGHT)
+#define PULL_TO_REFRESH_THRESHOLD (-1 * 50)
 @end
 
 @implementation ArticleListVC
@@ -62,6 +62,9 @@
 	[super viewDidLoad];
 	[self initStoryListView];
 	[self registerForNotifications];
+    self.baseImage = [UIImage imageNamed:@"AppIcon"];
+    self.pullDownInProgress = NO;
+    self.refreshInProgress = NO;
 }
 
 -(void) registerForNotifications {
@@ -95,7 +98,9 @@
 
 #pragma mark - Table View Delegate methods (view customization) -
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	return STORY_CELL_HEIGHT;
+    
+    if(self.refreshInProgress && !indexPath.row) return STORY_CELL_HEIGHT/2;
+    else return STORY_CELL_HEIGHT;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -113,7 +118,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	NSUInteger count = [self.povLoader getNumberOfPOVsLoaded];
 	count += (self.pullDownInProgress) ? 1 : 0;
-    count += (self.self.povPublishing) ? 1:0;
+    count += (self.povPublishing) ? 1:0;
 	return count;
 }
 
@@ -184,13 +189,24 @@
 	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
 }
 
+//Delagate method from povLoader informing us the the list has been refreshed. So the content length is the same
+-(void) povsRefreshed {
+    if (self.refreshInProgress) {
+        self.pullDownInProgress = NO;
+        self.placeholderCell = nil;
+        self.refreshInProgress = NO;
+        [self.povListView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+    }
+    [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+}
+
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
 -(void) morePOVsLoaded {
-	if (self.povPublishing) {
-		self.povPublishingPlaceholderCell = nil;
-		self.povPublishing = NO;
+    if (self.povPublishing) {
+        self.povPublishingPlaceholderCell = nil;
+        self.povPublishing = NO;
         [self.povListView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-	}
+    }
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
@@ -199,48 +215,32 @@
 //when the user starts pulling down the article list we should insert the placeholder with the animating view
 -(void) scrollViewWillBeginDragging:(nonnull UIScrollView *)scrollView {
 	NSLog(@"Begin dragging");
-	self.pullDownInProgress = scrollView.contentOffset.y <= PULL_TO_REFRESH_THRESHOLD;
-	if (self.pullDownInProgress) {
-         [self refreshFeed];
-		[self.povListView insertSubview:self.placeholderCell atIndex:0];
-        [NSTimer timerWithTimeInterval:2
-                                target:self
-                              selector:@selector(refreshFeed)
-                              userInfo:nil
-                               repeats:NO];
-        
-	}
-}
-
--(RefreshTableViewCell *)placeholderCell{
-    if(!_placeholderCell) _placeholderCell = [[RefreshTableViewCell alloc] init];
-	_placeholderCell.selectionStyle = UITableViewCellSelectionStyleNone;
-    return _placeholderCell;
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    /*Pulls down past point to refresh*/
-//	float offset_y =scrollView.contentOffset.y ;
-//	if (offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
-//    }
+    self.pullDownInProgress = (scrollView.contentOffset.y <= PULL_TO_REFRESH_THRESHOLD);
+    if (self.pullDownInProgress && !self.refreshInProgress) {
+        [self addFinalAnimationTile];
+        [self refreshFeed];
+        
+        //[self.povListView insertSubview:self.placeholderCell atIndex:0];
+        //        [NSTimer timerWithTimeInterval:2
+        //                                target:self
+        //                              selector:@selector(refreshFeed)
+        //                              userInfo:nil
+        //                               repeats:NO];
+    }
+
 }
 
 //sets the frame of the placeholder cell and also adjusts the frame of the placeholder cell
 -(void)createRefreshAnimationOnScrollview:(UIScrollView *)scrollView {
 	//maintain location of placeholder
-	float heightToUse = (fabs(scrollView.contentOffset.y) < STORY_CELL_HEIGHT && self.pullDownInProgress) ? fabs(scrollView.contentOffset.y) : STORY_CELL_HEIGHT;
+	float heightToUse = ((fabs(scrollView.contentOffset.y) < STORY_CELL_HEIGHT) && self.pullDownInProgress) ? fabs(scrollView.contentOffset.y) : STORY_CELL_HEIGHT;
 	float y_cord = (self.pullDownInProgress) ? scrollView.contentOffset.y : 0;
-	self.placeholderCell.frame = CGRectMake(0,y_cord ,self.povListView.frame.size.width, heightToUse);
-	
+	self.placeholderCell.frame = CGRectMake(0,y_cord,self.povListView.frame.size.width, heightToUse);
 }
 
-
--(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
-    if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
-        [self.povLoader loadMorePOVs:NUM_OF_NEW_POVS_TO_LOAD];
-    }
-}
 
 -(void)addFinalAnimationTile{
 	if(!self.refreshInProgress){
@@ -261,12 +261,21 @@
 		self.refreshInProgress = NO;
 		self.povListView.contentOffset = CGPointMake(0,0);
 		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-		[self.povListView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+		[self.povListView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
 		//[self stopActivityIndicator];
 		[self.povListView reloadSectionIndexTitles];
 	}];
 }
 
+#pragma mark -Infinite Scroll -
+
+//when the user is at the bottom of the screen and is pulling up more articles load
+-(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
+    if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
+        [self.povLoader loadMorePOVs:NUM_OF_NEW_POVS_TO_LOAD];
+    }
+}
 
 #pragma mark - Miscellaneous -
 - (NSUInteger) supportedInterfaceOrientations {
@@ -291,6 +300,14 @@
 		_povListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
 	}
 	return _povListView;
+}
+
+-(RefreshTableViewCell *)placeholderCell{
+    if(!_placeholderCell) {
+        _placeholderCell = [[RefreshTableViewCell alloc] init];
+        _placeholderCell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return _placeholderCell;
 }
 
 @end

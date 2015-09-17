@@ -87,6 +87,7 @@
 	[self formatMainScrollView];
 	[self getAndFormatVCs];
     self.connectionMonitor = [[internetConnectionMonitor alloc] init];
+    [self registerForNotifications];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -98,6 +99,18 @@
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 }
+
+
+
+
+-(void)registerForNotifications{
+    //gets notified if there is no internet connection
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(networkConnectionUpdate:)
+                                                 name:INTERNET_CONNECTION_NOTIFICATION
+                                               object:nil];
+}
+
 
 #pragma mark - Getting and formatting child view controllers -
 
@@ -355,6 +368,22 @@
     [alert show];
     [UserSetupParameters set_trendingCirle_InstructionAsShown];
 }
+
+
+
+-(void)userLostInternetConnetion{
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+}
+
+
+#pragma mark -Network Connection Lost-
+-(void)networkConnectionUpdate: (NSNotification *) notification{
+    NSDictionary * userInfo = [notification userInfo];
+    BOOL thereIsConnection = [userInfo objectForKey:INTERNET_CONNECTION_KEY];
+    if(thereIsConnection)[self userLostInternetConnetion];
+}
+
 
 
 #pragma mark - Lazy Instantiation -

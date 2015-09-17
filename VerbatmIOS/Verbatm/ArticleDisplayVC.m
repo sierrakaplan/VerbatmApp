@@ -22,6 +22,7 @@
 #import "POVView.h"
 #import "PovInfo.h"
 
+#import "UIEffects.h"
 #import "UpdatingManager.h"
 
 @interface ArticleDisplayVC () <PagesLoadManagerDelegate, LikeButtonDelegate>
@@ -44,7 +45,7 @@
 // In charge of updating information about a pov (number of likes, etc.)
 @property (strong, nonatomic) UpdatingManager* updatingManager;
 
-
+@property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 @end
 
 @implementation ArticleDisplayVC
@@ -70,10 +71,10 @@
 	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.view.bounds andImage:povInfo.coverPhoto andTitle: povInfo.title];
 	NSMutableArray* aves = [[NSMutableArray alloc] initWithArray:@[coverAVE]];
 	[povView renderAVES: aves];
-	// TODO: loading icon
-
 	[self.scrollView addSubview: povView];
 	[self.povViews addObject: povView];
+    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter:self.view.center
+                                                            andStyle:UIActivityIndicatorViewStyleWhiteLarge];
 }
 
 // When user scrolls to a new story, loads the next two in that
@@ -98,11 +99,15 @@
 
 	[povView renderAVES: povView.pageAves];
 	[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
+    [UIEffects stopActivityIndicator:self.activityIndicator];
 }
+
+#pragma mark - POVView Delegate (Like button) -
 
 -(void) likeButtonLiked:(BOOL)liked onPOVWithID:(NSNumber *)povID {
 	[self.updatingManager povWithId:povID wasLiked: liked];
 }
+
 
 #pragma mark - Clean up -
 

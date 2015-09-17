@@ -360,5 +360,29 @@
 	}];
 }
 
+/*
+ We pass in a reference to an activity indicator property and this formats it 
+ and sets it on whatever view we want it on. 
+ The center point should be the center of the view - but it can be anywhere 
+ you want to place the indicator
+ */
++(UIActivityIndicatorView *) startActivityIndicatorOnView: (UIView *) view
+                                                andCenter: (CGPoint) center andStyle:(UIActivityIndicatorViewStyle)style {
+    
+    UIActivityIndicatorView *  indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style];
+    indicator.alpha = 1.0;
+    indicator.hidesWhenStopped = YES;
+    indicator.center = center;
+    [view addSubview:indicator];
+    [view bringSubviewToFront:indicator];
+    [indicator startAnimating];
+    return indicator;
+}
+
++(void)stopActivityIndicator:(UIActivityIndicatorView *) indicator {
+    [indicator stopAnimating];
+    [indicator removeFromSuperview];
+}
+
 
 @end

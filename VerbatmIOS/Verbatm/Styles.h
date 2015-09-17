@@ -99,7 +99,7 @@
 
 #pragma mark Text
 
-#define TEXT_AVE_FONT_SIZE 20
+#define TEXT_AVE_FONT_SIZE 15
 #define TEXT_AVE_COLOR whiteColor
 
 #define TEXT_OVER_AVE_BACKGROUND_ALPHA 0.7

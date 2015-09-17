@@ -45,7 +45,7 @@
 
 
 -(void) playVideoFromArray: (NSArray*)videoList {
-	[self.videoPlayerView playVideoFromArray:videoList];
+	[self.videoPlayerView playVideoFromArrayOfAssets:videoList];
 }
 
 -(void)repeatVideoOnEnd:(BOOL)repeat {

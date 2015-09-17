@@ -23,20 +23,20 @@
 @interface EditContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) UIImageView * imageView;
+
 #pragma mark FilteredPhotos
 @property (nonatomic, weak) NSArray * filteredImages;
 @property (nonatomic) NSInteger imageIndex;
 @property (nonatomic, strong) UIButton * textCreationButton;
 
 #define TEXT_CREATION_ICON @"textCreateIcon"
-
+#define TEXT_VIEW_HEIGHT 35.f
 @end
 
 
 @implementation EditContentView
 
--(instancetype) initCustomViewWithFrame:(CGRect)frame
-{
+-(instancetype) initCustomViewWithFrame:(CGRect)frame {
 	self = [super init];
 	if(self) {
 		self.backgroundColor = [UIColor blackColor];
@@ -51,29 +51,28 @@
     if(!_textCreationButton){
         self.textCreationButton = [[UIButton alloc] initWithFrame:
                        CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET - EXIT_CV_BUTTON_WIDTH, EXIT_CV_BUTTON_WALL_OFFSET,
-                                  EXIT_CV_BUTTON_WIDTH, EXIT_CV_BUTTON_HEIGHT)];
+                                  EXIT_CV_BUTTON_WIDTH, EXIT_CV_BUTTON_WIDTH)];
         [self.textCreationButton setImage:[UIImage imageNamed:TEXT_CREATION_ICON] forState:UIControlStateNormal];
         [self.textCreationButton addTarget:self action:@selector(textButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.textCreationButton];
     }
     [self bringSubviewToFront:self.textCreationButton];
-    
 }
--(void)textButtonClicked:(UIButton*) sender{
+
+-(void)textButtonClicked:(UIButton*) sender {
     if(self.textView.text)[self editText:self.textView.text];
     else [self editText:@""];
 }
 
 -(void) editText: (NSString *) text {
-
-	CGRect textViewFrame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2, self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
+	CGRect textViewFrame = CGRectMake(0, VIEW_Y_OFFSET, self.frame.size.width, TEXT_VIEW_HEIGHT);
 	self.textView = [[VerbatmUITextView alloc] initWithFrame:textViewFrame];
 	[self formatTextView:self.textView];
 	[self addSubview:self.textView];
 	[self.textView setDelegate:self];
 	self.textView.text = text;
 	[self addToolBarToView];
-	[self adjustContentSizing];
+	//[self adjustContentSizing];
 	[self.textView becomeFirstResponder];
 }
 
@@ -81,9 +80,7 @@
 -(void)addToolBarToView {
 	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame];
-	//[toolBar setBackgroundColor:[UIColor colorWithWhite:0 alpha:1]];
 	[toolBar setDelegate:self];
-
 	self.textView.inputAccessoryView = toolBar;
 }
 
@@ -98,16 +95,17 @@
 
 
 //Formats a textview to the appropriate settings
--(void) formatTextView: (UITextView *) textView
-{
+-(void) formatTextView: (UITextView *) textView {
 	[textView setFont:[UIFont fontWithName:DEFAULT_FONT size:TEXT_AVE_FONT_SIZE]];
-	textView.backgroundColor = [UIColor TEXT_SCROLLVIEW_BACKGROUND_COLOR];
+	textView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.8];
+    
+    //TEXT_SCROLLVIEW_BACKGROUND_COLOR
 	textView.textColor = [UIColor TEXT_AVE_COLOR];
 	textView.tintColor = [UIColor TEXT_AVE_COLOR];
 
 	//ensure keyboard is black
 	textView.keyboardAppearance = UIKeyboardAppearanceDark;
-	textView.scrollEnabled = YES;
+	textView.scrollEnabled = NO;
 }
 
 -(NSString*) getText {
@@ -116,7 +114,8 @@
 
 #pragma mark Text view content changed
 -(void)adjustContentSizing {
-	if (self.textView) {
+    return;
+    if (self.textView) {
 		//drawing boundary
 		CGRect frame = self.textView.bounds;
 		CGSize size = CGSizeMake(frame.size.width, [UIEffects measureContentHeightOfUITextView:self.textView] + TEXT_VIEW_BOTTOM_PADDING);
@@ -124,7 +123,7 @@
 			frame.size = size;
 		}
 		frame.origin = CGPointMake(frame.origin.x, 0);
-		[UIEffects addDashedBorderToView:self.textView withFrame:frame];
+		//[UIEffects addDashedBorderToView:self.textView withFrame:frame];
 	}
 }
 
@@ -133,20 +132,35 @@
 	[self adjustContentSizing];
 }
 
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+//
+//    if(){
+//        
+//    }
+//    
+    return YES;
+}
+
+-(BOOL)textAtEndOfTextview: (UITextView *) tv {
+    
+    
+    return NO;
+}
+
 #pragma mark Adjust text view frame to keyboard
 
 //called when the keyboard is up. The Gap gives you the amount of visible space after
 //the keyboard is up
 -(void)adjustFrameOfTextViewForGap:(NSInteger) gap {
-	if(gap) {
-		self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
-										 self.textView.frame.size.width, gap - VIEW_WALL_OFFSET);
-	}else {
-		self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2,
-										 self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
-	}
-
-	[self adjustContentSizing];
+//	if(gap) {
+//		self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
+//										 self.textView.frame.size.width, gap - VIEW_WALL_OFFSET);
+//	}else {
+//		self.textView.frame = CGRectMake((VIEW_WALL_OFFSET/2), VIEW_WALL_OFFSET/2,
+//										 self.frame.size.width -VIEW_WALL_OFFSET, self.frame.size.height-VIEW_WALL_OFFSET);
+//	}
+//
+//	[self adjustContentSizing];
 }
 
 
@@ -172,7 +186,7 @@
 	[self addSubview:self.imageView];
 	[self addTapGestureToMainView];
 	[self addSwipeGestureToImageView];
-    [self createTextCreationButton];
+    //[self createTextCreationButton];
 }
 
 #pragma mark Filters

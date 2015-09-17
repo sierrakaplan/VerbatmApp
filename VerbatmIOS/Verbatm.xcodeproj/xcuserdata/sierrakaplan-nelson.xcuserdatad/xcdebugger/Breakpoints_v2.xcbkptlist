@@ -416,12 +416,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "464208009.920947"
+            timestampString = "464208572.498159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "187"
-            endingLineNumber = "187"
-            landmarkName = "-morePOVsLoaded"
+            startingLineNumber = "182"
+            endingLineNumber = "182"
+            landmarkName = "-povPublished"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -448,12 +448,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "464208009.920947"
+            timestampString = "464208572.498159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "155"
-            endingLineNumber = "155"
-            landmarkName = "-successfullyPinchedTogetherAtIndexPath:"
+            startingLineNumber = "150"
+            endingLineNumber = "150"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -464,13 +464,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "464208009.920947"
+            timestampString = "464208572.498159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "158"
-            endingLineNumber = "158"
-            landmarkName = "@implementation ArticleListVC"
-            landmarkType = "3">
+            startingLineNumber = "153"
+            endingLineNumber = "153"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -576,28 +576,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "464208009.920947"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "153"
-            endingLineNumber = "153"
-            landmarkName = "-successfullyPinchedTogetherAtIndexPath:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/ArticleListVC.m"
             timestampString = "464005509.05853"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "97"
             endingLineNumber = "97"
-            landmarkName = "-tableView:heightForRowAtIndexPath:"
+            landmarkName = "-setPovLoadManager:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -911,22 +895,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/ArticleDisplayVC.m"
-            timestampString = "464127371.337875"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "104"
-            endingLineNumber = "104"
-            landmarkName = "-likeButtonLiked:onPOVWithID:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Verbatm/UpdatingManager.m"
             timestampString = "464127632.874746"
             startingColumnNumber = "9223372036854775807"
@@ -960,11 +928,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVLoadManager.m"
-            timestampString = "464208169.770877"
+            timestampString = "464208572.498159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
             landmarkName = "-getPOVInfoWithCoverPhotoFromGTLPOVInfo:"
             landmarkType = "5">
          </BreakpointContent>
@@ -976,11 +944,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVLoadManager.m"
-            timestampString = "464208221.05969"
+            timestampString = "464208572.498159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
+            startingLineNumber = "83"
+            endingLineNumber = "83"
             landmarkName = "-reloadPOVs:"
             landmarkType = "5">
          </BreakpointContent>
@@ -1008,45 +976,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVLoadManager.m"
-            timestampString = "464208276.428586"
+            timestampString = "464208572.498159"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
+            startingLineNumber = "116"
+            endingLineNumber = "116"
             landmarkName = "-getPOVInfoWithCoverPhotoFromGTLPOVInfo:"
             landmarkType = "5">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__57-[POVLoadManager getPOVInfoWithCoverPhotoFromGTLPOVInfo:]_block_invoke"
-                  moduleName = "Verbatm"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/POVLoadManager.m"
-                  timestampString = "464208276.433927"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "117"
-                  endingLineNumber = "117"
-                  offsetFromSymbolStart = "192">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "__57-[POVLoadManager getPOVInfoWithCoverPhotoFromGTLPOVInfo:]_block_invoke"
-                  moduleName = "Verbatm"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/sierrakaplan-nelson/Documents/Verbatm/verbatmapp/VerbatmIOS/Verbatm/POVLoadManager.m"
-                  timestampString = "464208276.434106"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "117"
-                  endingLineNumber = "117"
-                  offsetFromSymbolStart = "212">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

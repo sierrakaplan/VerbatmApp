@@ -25,9 +25,7 @@
 
 @implementation VideoAVE
 
-//no seeking. Fast forward and rewind.
-//play and pause button that doesn't move on the side.s
--(id)initWithFrame:(CGRect)frame andVideoAssetArray:(NSArray*)videoList {
+-(id)initWithFrame:(CGRect)frame andVideoArray:(NSArray*)videoList {
     if((self = [super initWithFrame:frame])) {
 		[self repeatVideoOnEnd:YES];
         if(videoList.count) {
@@ -37,21 +35,21 @@
     return self;
 }
 
-
-
--(void)playVideos:(NSArray*)videoList
-{
+-(void)playVideos:(NSArray*)videoList {
 	//comes as avurlasset in preview
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
-		[self playVideoFromArray:videoList];
-		//comes as NSURL from parse
+		[self playVideoFromArrayOfAssets:videoList];
+		//comes as NSURL from backend
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
+		//TODO: play videos in succession
 		[self playVideoFromURL:videoList[0]];
 	}
 	[self pauseVideo];
 }
 
-#pragma mark - showing the progess bar -
+
+#pragma mark - On and Off Screen (play and pause) -
+
 -(void)offScreen{
     [self pauseVideo];
 }

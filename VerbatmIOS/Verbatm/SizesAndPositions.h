@@ -108,7 +108,9 @@
 #pragma mark - Content Dev Pull Bar
 
 #pragma mark Verbatm Image Scroll View
+#define VIEW_Y_OFFSET 50
 #define VIEW_WALL_OFFSET 20
+
 
 #define TEXTFIELD_BORDER_WIDTH 0.8f
 #define AUTO_SCROLL_OFFSET 10

@@ -84,7 +84,7 @@
 		self.povInfos = [[NSMutableArray alloc] init];
 		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
 		NSLog(@"Successfully loaded POVs!");
-		[self.delegate morePOVsLoaded];
+		[self.delegate povsRefreshed];
 	}).catch(^(NSError* error) {
 		NSLog(@"Error loading POVs: %@", error.description);
 	});

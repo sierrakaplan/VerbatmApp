@@ -13,9 +13,13 @@
 #import <AVKit/AVKit.h>
 
 @interface VideoPlayerView: UIView <NSCoding>
+
 -(void)playVideoFromURL: (NSURL*) url;
+
 -(void)playVideoFromAsset: (AVAsset*) asset;
--(void) playVideoFromArray: (NSArray*)videoList;
+
+// array of avassets
+-(void) playVideoFromArrayOfAssets: (NSArray*)videoList;
 
 //following methods will only execute if playVideo was called first
 

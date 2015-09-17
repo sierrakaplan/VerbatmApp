@@ -58,8 +58,7 @@
 		} else if (page.images.count) {
 			type = AVETypePhoto;
 		} else if(page.videos.count) {
-			//TODO: something with video
-//			type = AVETypeVideo;
+			type = AVETypeVideo;
 			continue;
 		}
 
