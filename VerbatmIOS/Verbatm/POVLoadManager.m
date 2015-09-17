@@ -72,8 +72,7 @@
 					 self.povInfos = [[NSMutableArray alloc] init];
 					 [self.povInfos addObjectsFromArray: results.results];
 					 self.cursorString = results.cursorString;
-
-					 [self.delegate morePOVsLoaded];
+					 [self.delegate povsRefreshed];
 				 }
 			 }];
 }
