@@ -186,7 +186,7 @@
 	[self addSubview:self.imageView];
 	[self addTapGestureToMainView];
 	[self addSwipeGestureToImageView];
-    [self createTextCreationButton];
+    //[self createTextCreationButton];
 }
 
 #pragma mark Filters

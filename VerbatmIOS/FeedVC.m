@@ -96,7 +96,6 @@
 #pragma mark - Formatting sub views -
 
 -(void) setUpNavPullBar {
-
 	CGRect navPullBarFrame = CGRectMake(self.view.frame.origin.x,
 										self.view.frame.size.height - NAV_BAR_HEIGHT,
 										self.view.frame.size.width, NAV_BAR_HEIGHT);
@@ -106,7 +105,6 @@
 }
 
 -(void) setUpCategorySwitcher {
-
 	float categorySwitchWidth = self.view.frame.size.width;
 	CGRect categorySwitchFrame = CGRectMake((self.view.frame.size.width - categorySwitchWidth)/2.f,
 											CATEGORY_SWITCH_OFFSET, categorySwitchWidth, CATEGORY_SWITCH_HEIGHT);
@@ -115,7 +113,7 @@
 	[self.view addSubview:self.categorySwitch];
 }
 
--(void) profileButtonPressed {
+-(void) profileButtonPressed{
 	[self.delegate profileButtonPressed];
 }
 
@@ -134,7 +132,6 @@
 
 // pull circle was released and snapped to one edge or the other
 -(void) snapped: (BOOL)snappedLeft {
-
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION animations: ^ {
 		if (snappedLeft) {
 			self.topListContainer.alpha = 0;

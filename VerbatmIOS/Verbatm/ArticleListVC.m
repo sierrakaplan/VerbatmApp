@@ -53,7 +53,7 @@
 #define NUM_POVS_IN_SECTION 6
 #define RELOAD_THRESHOLD 15
 #define NUM_OF_NEW_POVS_TO_LOAD 15
-#define PULL_TO_REFRESH_THRESHOLD (-1 * STORY_CELL_HEIGHT)
+#define PULL_TO_REFRESH_THRESHOLD (-1 * 50)
 @end
 
 @implementation ArticleListVC
@@ -200,39 +200,44 @@
 //when the user starts pulling down the article list we should insert the placeholder with the animating view
 -(void) scrollViewWillBeginDragging:(nonnull UIScrollView *)scrollView {
 	NSLog(@"Begin dragging");
-	self.pullDownInProgress = scrollView.contentOffset.y <= PULL_TO_REFRESH_THRESHOLD;
-	if (self.pullDownInProgress) {
-         [self refreshFeed];
-		[self.povListView insertSubview:self.placeholderCell atIndex:0];
-        [NSTimer timerWithTimeInterval:2
-                                target:self
-                              selector:@selector(refreshFeed)
-                              userInfo:nil
-                               repeats:NO];
-        
-	}
 }
 
--(RefreshTableViewCell *)placeholderCell{
-    if(!_placeholderCell) _placeholderCell = [[RefreshTableViewCell alloc] init];
-	_placeholderCell.selectionStyle = UITableViewCellSelectionStyleNone;
-    return _placeholderCell;
-}
+
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    /*Pulls down past point to refresh*/
-//	float offset_y =scrollView.contentOffset.y ;
-//	if (offset_y <=  (-1 * STORY_CELL_HEIGHT)) {
-//    }
+    self.pullDownInProgress = (scrollView.contentOffset.y <= PULL_TO_REFRESH_THRESHOLD);
+    if (self.pullDownInProgress && !self.refreshInProgress) {
+        self.refreshInProgress = YES;
+        //[self createRefreshAnimationOnScrollview:scrollView];
+        
+        
+       [self refreshFeed];
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        //[self.povListView insertSubview:self.placeholderCell atIndex:0];
+        //        [NSTimer timerWithTimeInterval:2
+        //                                target:self
+        //                              selector:@selector(refreshFeed)
+        //                              userInfo:nil
+        //                               repeats:NO];
+        
+    }
+
 }
 
 //sets the frame of the placeholder cell and also adjusts the frame of the placeholder cell
 -(void)createRefreshAnimationOnScrollview:(UIScrollView *)scrollView {
 	//maintain location of placeholder
-	float heightToUse = (fabs(scrollView.contentOffset.y) < STORY_CELL_HEIGHT && self.pullDownInProgress) ? fabs(scrollView.contentOffset.y) : STORY_CELL_HEIGHT;
+	float heightToUse = ((fabs(scrollView.contentOffset.y) < STORY_CELL_HEIGHT) && self.pullDownInProgress) ? fabs(scrollView.contentOffset.y) : STORY_CELL_HEIGHT;
 	float y_cord = (self.pullDownInProgress) ? scrollView.contentOffset.y : 0;
 	self.placeholderCell.frame = CGRectMake(0,y_cord ,self.povListView.frame.size.width, heightToUse);
-	
 }
 
 
@@ -292,6 +297,15 @@
 		_povListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
 	}
 	return _povListView;
+}
+
+-(RefreshTableViewCell *)placeholderCell{
+    if(!_placeholderCell) {
+        _placeholderCell = [[RefreshTableViewCell alloc] init];
+        _placeholderCell.selectionStyle = UITableViewCellSelectionStyleNone;
+        [self.povListView addSubview:_placeholderCell];
+    }
+    return _placeholderCell;
 }
 
 @end

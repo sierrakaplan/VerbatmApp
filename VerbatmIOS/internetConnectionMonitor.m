@@ -20,6 +20,7 @@
 @property (nonatomic) Reachability *wifiReachability;
 @property (nonatomic) BOOL thereIsConnection;
 @property (nonatomic) BOOL justReceivedNoConnectionSignal;//this is to prevent double calls
+@property (nonatomic, strong) NSRunLoop* runloop;
 @end
 
 @implementation internetConnectionMonitor
@@ -29,11 +30,6 @@
     self = [super init];
     if(self){
         [self prepareReachabilityInfo];
-        [NSTimer timerWithtTimeInterval:2
-                                target:self
-                              selector:@selector(weHaveNoConneciton)
-                              userInfo:nil
-                               repeats:NO];
     }
     return self;
 }
@@ -85,6 +81,13 @@
             //in this time we wait for a signal that there is indeed a connection.
             //this prevents double calls and false negatives
             
+            
+            [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(timerFireMethod:) userInfo:nil repeats:NO];
+//            [self.runloop addTimer:[NSTimer timerWithTimeInterval:2
+//                                                           target:self
+//                                                         selector:@selector(timerFireMethod:)
+//                                                         userInfo:nil
+//                                                          repeats:NO] forMode:NSDefaultRunLoopMode];
             break;
         }
         case ReachableViaWWAN:  {
@@ -109,7 +112,9 @@
         }
     }
 }
-
+- (void)timerFireMethod:(NSTimer *)timer{
+    [self weHaveNoConneciton];
+}
 
 
 //sends out a notification that we have internt connection
@@ -131,6 +136,47 @@
     [[NSNotificationCenter defaultCenter] postNotification:notification];
     
 }
+
+#pragma mark - Lazy instantiation -
+
+
+-(NSRunLoop *)runloop{
+    if(!_runloop) _runloop = [[NSRunLoop alloc] init];
+    return _runloop;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
