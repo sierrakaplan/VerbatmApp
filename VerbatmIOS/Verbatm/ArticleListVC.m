@@ -121,7 +121,6 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-
 	NSInteger index = indexPath.row;
 	if (self.refreshInProgress && index == 0) {
 		return self.placeholderCell;

@@ -1389,7 +1389,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	if(![sender.view isKindOfClass:[PinchView class]]) {
 		return;
 	}
-
+    
 	PinchView * pinchView = (PinchView *)sender.view;
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
@@ -1530,6 +1530,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
+    self.openPinchView = nil;
+    self.addingCoverPicture = NO;
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 }
 
