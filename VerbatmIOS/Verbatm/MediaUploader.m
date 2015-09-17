@@ -33,6 +33,8 @@
 					forKey:@"defaultImage"];
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
+	// Needs to be long in order to allow long videos to upload
+	[self.formData setTimeOutSeconds: 180];
 
 	return self;
 }
