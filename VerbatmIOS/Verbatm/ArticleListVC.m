@@ -128,8 +128,7 @@
 	FeedTableViewCell *cell;
     
 	//configure cell
-	if (self.povPublishing && (index == 0 ||
-							   (self.refreshInProgress && index == 1))) {
+	if (self.povPublishing && (index == 0 || (self.refreshInProgress && index == 1))) {
 		cell = self.povPublishingPlaceholderCell;
     } else {
 		cell = [tableView dequeueReusableCellWithIdentifier:FEED_CELL_ID];
