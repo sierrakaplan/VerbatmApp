@@ -46,7 +46,6 @@
 @property (atomic) BOOL pullDownInProgress;
 //tells you whether or not we have started a timer to animate
 @property (atomic) BOOL refreshInProgress;
-@property (nonatomic, strong) UIImage * baseImage; //temp
 
 #define FEED_CELL_ID @"feed_cell_id"
 #define NUM_POVS_IN_SECTION 6
@@ -61,7 +60,6 @@
 	[super viewDidLoad];
 	[self initStoryListView];
 	[self registerForNotifications];
-    self.baseImage = [UIImage imageNamed:@"AppIcon"];
     self.pullDownInProgress = NO;
     self.refreshInProgress = NO;
 }
@@ -144,8 +142,8 @@
 		} else {
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
-		//UIImage* coverPic = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: povInfo.coverPicUrl]]];
-		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage:self.baseImage];
+		UIImage* coverPic = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: povInfo.coverPicUrl]]];
+		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage:coverPic];
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
@@ -221,12 +219,6 @@
     if (self.pullDownInProgress && !self.refreshInProgress){
         [self addFinalAnimationTile];
         [self refreshFeed];
-        //[self.povListView insertSubview:self.placeholderCell atIndex:0];
-        //        [NSTimer timerWithTimeInterval:2
-        //                                target:self
-        //                              selector:@selector(refreshFeed)
-        //                              userInfo:nil
-        //                               repeats:NO];
     }
 
 }
@@ -248,21 +240,6 @@
 	}
 }
 
-//-(void)removeAnimatingView{
-//	[UIView animateWithDuration:0.5 animations:^{
-//		self.povListView.contentOffset = CGPointMake(0, STORY_CELL_HEIGHT);
-//		self.placeholderCell.frame = CGRectMake(self.placeholderCell.frame.origin.x, (-1 * STORY_CELL_HEIGHT),
-//												self.placeholderCell.frame.size.width,
-//												self.placeholderCell.frame.size.height);
-//	}completion:^(BOOL finished) {
-//		[self.placeholderCell removeFromSuperview];
-//		self.refreshInProgress = NO;
-//		self.povListView.contentOffset = CGPointMake(0,0);
-//		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-//		[self.povListView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
-//		[self.povListView reloadSectionIndexTitles];
-//	}];
-//}
 
 #pragma mark -Infinite Scroll -
 

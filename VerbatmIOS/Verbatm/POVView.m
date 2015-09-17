@@ -29,7 +29,12 @@
 @property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
 @property (strong, nonatomic) NSNumber* povID;
 @property (nonatomic) float pageScrollTopBottomArea;
+@property (nonatomic, strong) UIButton * downArrow;
 
+#define DOWN_ARROW_WIDTH 40
+#define DOWN_ARROE_DISTANCE_FROM_BOTTOM 5
+#define DOWN_ARROW_IMAGE  @"downarrow"
+#define SCROLL_UP_ANIMATION_DURATION 0.7
 @end
 
 @implementation POVView
@@ -57,10 +62,10 @@
 		[self.mainScrollView addSubview: view];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
     }
+    [self addDownArrowButton];
     //temp
     float middleScreenSize = (self.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
     self.pageScrollTopBottomArea = (self.frame.size.height - middleScreenSize)/2.f;
-    
     [self setUpGestureRecognizers];
 
 }
@@ -170,6 +175,23 @@
     } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
         [[(PhotoVideoAVE*)ave videoView] continueVideo];
     }
+}
+
+
+-(void)addDownArrowButton{
+    self.downArrow = [[UIButton alloc] init];
+    [self.downArrow setImage:[UIImage imageNamed:DOWN_ARROW_IMAGE] forState:UIControlStateNormal];
+    self.downArrow.frame = CGRectMake(self.center.x - (DOWN_ARROW_WIDTH/2),
+                                      self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
+                                      DOWN_ARROW_WIDTH, DOWN_ARROW_WIDTH);
+    [self.mainScrollView addSubview:self.downArrow];
+    [self.downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchUpInside];
+}
+
+-(void)downArrowClicked {
+    [UIView animateWithDuration:SCROLL_UP_ANIMATION_DURATION animations:^{
+        self.mainScrollView.contentOffset = CGPointMake(0, self.frame.size.height);
+    }];
 }
 
 #pragma mark - Gesture recognizers -
