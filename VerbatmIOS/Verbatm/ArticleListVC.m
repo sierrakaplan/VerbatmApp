@@ -127,6 +127,7 @@
 		return self.placeholderCell;
 	}
 	FeedTableViewCell *cell;
+    
 	//configure cell
 	if (self.povPublishing && (index == 0 ||
 							   (self.refreshInProgress && index == 1))) {

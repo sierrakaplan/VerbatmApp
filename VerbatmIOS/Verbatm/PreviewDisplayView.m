@@ -80,12 +80,14 @@
 	[aves insertObject:coverAVE atIndex:0];
 	self.povView = [[POVView alloc] initWithFrame:self.bounds];
 	[self.povView renderAVES: aves];
+    [self.povView addDownArrowButton];
 	[self addSubview: self.povView];
 	[self addSubview: self.publishButton];
 	[self bringSubviewToFront: self.publishButton];
 	[self addSubview: self.backButton];
 	[self bringSubviewToFront: self.backButton];
 	[self revealPreview:YES];
+    
 }
 
 #pragma mark - Set Up Views -

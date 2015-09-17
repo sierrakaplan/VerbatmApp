@@ -98,6 +98,7 @@
 	}
 
 	[povView renderAVES: povView.pageAves];
+    [povView addDownArrowButton];
 	[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
     [UIEffects stopActivityIndicator:self.activityIndicator];
 }
