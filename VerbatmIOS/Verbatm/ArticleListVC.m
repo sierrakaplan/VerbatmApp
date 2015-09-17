@@ -100,6 +100,8 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    if(self.refreshInProgress) return;
+    if(self.povPublishing && !indexPath.row) return;
 	[self viewPOVAtIndex: indexPath.row];
 }
 
@@ -124,9 +126,7 @@
 	if (self.refreshInProgress && index == 0) {
 		return self.placeholderCell;
 	}
-
 	FeedTableViewCell *cell;
-
 	//configure cell
 	if (self.povPublishing && (index == 0 ||
 							   (self.refreshInProgress && index == 1))) {
@@ -220,7 +220,6 @@
         [self addFinalAnimationTile];
         [self refreshFeed];
     }
-
 }
 
 //sets the frame of the placeholder cell and also adjusts the frame of the placeholder cell
