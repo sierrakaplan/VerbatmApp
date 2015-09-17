@@ -51,4 +51,15 @@
 //Also takes a bool letting it know if bounce should be in y or x direction
 + (void) scrollViewNotificationBounce:(UIScrollView*)scrollView forNextPage:(BOOL)nextPage inYDirection:(BOOL)yDirection;
 
+/*
+ We pass in a reference to an activity indicator property and this formats it
+ and sets it on whatever view we want it on.
+ The center point should be the center of the view - but it can be anywhere
+ you want to place the indicator
+ */
++(UIActivityIndicatorView *) startActivityIndicatorOnView: (UIView *) view
+                                                andCenter: (CGPoint) center
+                                                 andStyle:(UIActivityIndicatorViewStyle) style;
+/*Stops the indicator*/
++(void)stopActivityIndicator:(UIActivityIndicatorView *) indicator;
 @end

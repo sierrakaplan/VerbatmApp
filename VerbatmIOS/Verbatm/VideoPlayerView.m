@@ -173,7 +173,7 @@
 
 -(void)setButtonFormats {
     self.muteButton.frame = CGRectMake(MUTE_BUTTON_X, MUTE_BUTTON_Y, MUTE_BUTTON_WH, MUTE_BUTTON_WH);
-    [self.muteButton setImage:[UIImage imageNamed:@"mute_2"] forState:UIControlStateNormal];
+    [self.muteButton setImage:[UIImage imageNamed:@"unmute_button_icon"] forState:UIControlStateNormal];
     [self.muteButton addTarget:self action:@selector(muteButtonTouched:) forControlEvents:UIControlEventTouchUpInside];
 }
 
