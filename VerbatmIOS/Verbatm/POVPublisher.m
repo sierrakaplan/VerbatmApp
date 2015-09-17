@@ -133,7 +133,7 @@
 	return PMKWhen(storePagePromises).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error uploading POV: %@", error.description);
-	});;
+	});
 }
 
 // when (saved image ids + saved video ids) then (store page)
@@ -155,7 +155,7 @@
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error uploading POV: %@", error.description);
-	});;
+	});
 }
 
 // when(stored every image)

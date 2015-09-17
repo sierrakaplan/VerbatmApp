@@ -72,6 +72,7 @@
 -(NSArray*) getUIImagesFromPage: (Page*) page {
 	NSMutableArray* uiImages = [[NSMutableArray alloc] init];
 	for (GTLVerbatmAppImage* image in page.images) {
+		//TODO: do this in background
 		UIImage* uiImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString: image.servingUrl]]];
 		[uiImages addObject: uiImage];
 	}
