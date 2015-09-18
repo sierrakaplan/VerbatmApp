@@ -3,6 +3,7 @@ package com.myverbatm.verbatm.backend.handlers;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.blobstore.FileInfo;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,6 +36,13 @@ public class UploadVideo extends HttpServlet {
         LOG.info("Request URL for upload video: " + req.getRequestURL().toString());
 
         try {
+            //testing
+            Map<String, List<FileInfo>> uploads = blobstoreService.getFileInfos(req);
+            LOG.info("File infos + " + uploads);
+            FileInfo fileInfo = uploads.get("defaultVideo").get(0);
+            LOG.info("Cloud storage object name: " +fileInfo.getGsObjectName());
+
+
             Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
             BlobKey blobKey = blobs.get("defaultVideo").get(0);
             //Blob key can be converted back by passing string to its constructor
