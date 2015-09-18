@@ -235,19 +235,18 @@
 #pragma mark - Activity Indicator -
 //creates an activity indicator on our placeholder view
 //shifts the frame of the indicator if it's on the screen
--(void)startActivityIndicator {
+-(void)startActivityIndicator{
     if(self.activityIndicator.isAnimating){
         self.activityIndicator.center = self.center;
         [self bringSubviewToFront:self.activityIndicator];
-        return;
-    }
+    }else{
         self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    
         self.activityIndicator.hidesWhenStopped = YES;
         self.activityIndicator.center = self.center;
         [self addSubview:self.activityIndicator];
         [self bringSubviewToFront:self.activityIndicator];
         [self.activityIndicator startAnimating];
+    }
 }
 
 -(void)stopActivityIndicator {

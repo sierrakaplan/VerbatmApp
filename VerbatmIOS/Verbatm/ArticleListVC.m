@@ -71,7 +71,6 @@
 											   object:nil];
 }
 
-
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
@@ -123,7 +122,6 @@
     
 	FeedTableViewCell *cell;
     BOOL publishingNoRefresh = (self.povPublishing && (index == 0));
-	//configure cell
 	if (publishingNoRefresh) {
 		cell = self.povPublishingPlaceholderCell;
     } else {
@@ -166,11 +164,7 @@
 // Method called from Notification sent by the model to let it know that
 // a pov has published so that it can refresh the feed
 -(void) povPublished {
-	if (self.povPublishing) {
-        self.povPublishingPlaceholderCell = nil;
-        self.povPublishing = NO;
-        [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-	}
+    [self refreshFeed];
 }
 
 #pragma mark - Refresh feed -
@@ -181,8 +175,16 @@
 
 //Delagate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
+    if(self.povPublishing){
+        self.povPublishing = NO;
+        if(self.povPublishingPlaceholderCell){
+            [self.povPublishingPlaceholderCell stopActivityIndicator];
+            [self.povListView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        }
+        self.povPublishingPlaceholderCell = nil;
+    }
     [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-    [self.refreshControl endRefreshing];
+    if(self.refreshControl.isRefreshing)[self.refreshControl endRefreshing];
 }
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
