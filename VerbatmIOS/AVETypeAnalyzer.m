@@ -83,11 +83,8 @@
 -(NSArray*) getVideosFromPage: (Page*) page {
 	NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
 	for (GTLVerbatmAppVideo* video in page.videos) {
-		NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
-		NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: video.blobStoreKeyString];
-		components.queryItems = @[blobKey];
-		NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
-		[videoURLs addObject: components.URL];
+		NSLog(@"Requesting blobstore video with url: %@", video.cloudStorageURL);
+		[videoURLs addObject: [NSURL URLWithString:video.cloudStorageURL]];
 	}
 	return videoURLs;
 }

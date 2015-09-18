@@ -46,8 +46,8 @@
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
 
 	[self.formData setData:videoData
-			  withFileName:@"defaultVideo.mp4"
-			andContentType:@"video/mp4"
+			  withFileName:@"defaultVideo.mov"
+			andContentType:@"video/quicktime"
 					forKey:@"defaultVideo"];
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
@@ -87,7 +87,7 @@
 
 -(void) requestFinished:(ASIHTTPRequest *)request {
 	NSLog(@"upload media finished");
-	//The response string is a blobkey string for video and an imagesservice servingurl for image
+	//The response string is a google cloud storage link for video and an imagesservice servingurl for image
 	NSString* responseString = [request responseString];
 	self.completionBlock(nil, responseString);
 }

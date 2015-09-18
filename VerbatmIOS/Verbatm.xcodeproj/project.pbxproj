@@ -244,8 +244,6 @@
 		A560EFA11BAA006B003FB041 /* UpdatingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatingManager.m; sourceTree = "<group>"; };
 		A560EFA31BAB33B8003FB041 /* PovInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PovInfo.h; sourceTree = "<group>"; };
 		A560EFA41BAB33B8003FB041 /* PovInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PovInfo.m; sourceTree = "<group>"; };
-		A560EFAC1BACAFBC003FB041 /* MediaLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MediaLoader.h; path = ../../../../../.Trash/MediaLoader.h; sourceTree = "<group>"; };
-		A560EFAD1BACAFBC003FB041 /* MediaLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MediaLoader.m; path = ../../../../../.Trash/MediaLoader.m; sourceTree = "<group>"; };
 		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		A56434B91B636FEA0075F568 /* Identifiers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Identifiers.h; sourceTree = "<group>"; };
@@ -895,8 +893,6 @@
 				A5E860001B96249900E148D0 /* POVPublisher.m */,
 				A5C09BE41BA1F43600C0AD86 /* MediaUploader.h */,
 				A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */,
-				A560EFAC1BACAFBC003FB041 /* MediaLoader.h */,
-				A560EFAD1BACAFBC003FB041 /* MediaLoader.m */,
 				A5AA319A1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.h */,
 				A5AA319B1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m */,
 				A5AA319C1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.h */,

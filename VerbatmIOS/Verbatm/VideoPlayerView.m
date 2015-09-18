@@ -51,7 +51,6 @@
 -(void)playVideoFromURL: (NSURL*) url {
 	if (url) {
 		self.videoLoading = YES;
-		NSURL* testURL = [NSURL URLWithString:@"http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"];
 		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
 		[self playVideo];
 	}
