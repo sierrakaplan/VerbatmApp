@@ -16,17 +16,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.logging.Logger;
+
 /**
  * Class that handles request to upload image to the blobstore
  * (from "/uploadImage" success uri passed when requesting an upload uri from the blobstore)
  */
 public class UploadImage extends HttpServlet {
 
+    /**
+     * Log output.
+     */
+    private static final Logger LOG =
+        Logger.getLogger(ServeVideo.class.getName());
+
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException {
+
+        LOG.info("Request URL for upload image: " + req.getRequestURL().toString());
 
         try {
             Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
