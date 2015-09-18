@@ -683,7 +683,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	self.pinchingMode = PinchingModeNone;
 }
 
-/* NO LONGER IN USE
  -(void) animateRemoveNewMediaTile {
 	float originalHeight = self.newlyCreatedMediaTile.frame.size.height;
 	[self.pageElementScrollViews removeObject:self.newlyCreatedMediaTile.superview];
@@ -701,7 +700,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
  self.pinchingMode = PinchingModeNone;
 	}];
  }
- */
+
 
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
 
@@ -823,11 +822,11 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 	[self findElementsFromPinchPoint];
 
-	/* NO LONGER IN USE - if it's a pinch apart then create the media tile
+	//if it's a pinch apart then create the media tile
 	 if(self.upperPinchScrollView && self.lowerPinchScrollView && sender.scale > 1) {
 		[self createNewMediaTileBetweenPinchViews];
 	 }
-	 */
+
 }
 
 -(void) handleVerticlePinchGestureChanged: (UIPinchGestureRecognizer *)gesture {
@@ -845,13 +844,14 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		touch2 = temp;
 	}
 
-#pragma GCC diagnostic ignored "-Wunused-variable"
 	float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
 	float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
 
 	//objects are being pinched together
 	if (gesture.scale < 1) {
 		[self pinchObjectsTogether];
+	} else {
+		// TODO: pinch apart
 	}
 }
 
@@ -1069,11 +1069,11 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		if((view.frame.origin.y + view.frame.size.height) > touch.y) {
 			self.selectedView_PAN = self.pageElementScrollViews[i];
 
-			/* NO LONGER IN USE can't select the base tile selector
+			//can't select the base tile selector
 			 if (self.selectedView_PAN.pageElement == self.baseMediaTileSelector) {
 				self.selectedView_PAN = nil;
 				return;
-			 } */
+			 }
 			[self.mainScrollView bringSubviewToFront:self.selectedView_PAN];
 			return;
 		}
@@ -1115,11 +1115,11 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	NSInteger yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
 	CGRect newFrame = [self newVerticalTranslationFrameForView:self.selectedView_PAN andChange:yDifference];
 
-	/* NO LONGER IN USE view can't move below bottom media tile
+	// view can't move below bottom media tile
 	 if(bottomView && bottomView.pageElement == self.baseMediaTileSelector
 	 &&  ((newFrame.origin.y + newFrame.size.height) >= bottomView.frame.origin.y)) {
 		return;
-	 } */
+	 }
 
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
@@ -1286,7 +1286,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 
-#pragma mark - NO LONGER IN USE: Undo implementation -
+#pragma mark - Undo implementation -
 
 -(void) registerDeletedTile: (ContentPageElementScrollView *) tile withIndex: (NSNumber *) index {
 	//make sure there is something to delete

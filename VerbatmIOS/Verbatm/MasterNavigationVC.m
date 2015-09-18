@@ -158,6 +158,8 @@
 	[self.articleDisplayContainer setBackgroundColor:[UIColor whiteColor]];
 	self.articleDisplayContainer.alpha = 1;
 	[self.view bringSubviewToFront: self.articleDisplayContainer];
+	// Now tell selected cell in feed to be unpinched
+	[self.feedVC deSelectCell];
 }
 
 #pragma mark Nav Buttons
@@ -204,7 +206,7 @@
 	}];
 }
 
-#pragma mark - Left edge screen pull for article display vc -
+#pragma mark - Left edge screen pull for exiting article display vc -
 
 -(void) addScreenEdgePanToArticleDisplay {
 	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];

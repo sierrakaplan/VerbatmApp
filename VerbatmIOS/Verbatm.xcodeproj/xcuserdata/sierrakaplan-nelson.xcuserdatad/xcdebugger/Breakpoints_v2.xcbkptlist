@@ -469,7 +469,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "241"
             endingLineNumber = "241"
-            landmarkName = "-pinchingSemiCirclesTogether:"
+            landmarkName = "-startActivityIndicator"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -485,7 +485,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "258"
             endingLineNumber = "258"
-            landmarkName = "-pinchingSemiCirclesTogether:"
+            landmarkName = "-addPinchGestureToSelf"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -613,7 +613,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "154"
             endingLineNumber = "154"
-            landmarkName = "-displayPOVWithIndex:fromLoadManager:"
+            landmarkName = "-displayPOVOnCell:withLoadManager:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1115,7 +1115,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "AVETypeAnalyzer.m"

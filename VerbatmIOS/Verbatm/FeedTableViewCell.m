@@ -205,6 +205,7 @@
 
 -(void) setContentWithUsername:(NSString *) username andTitle: (NSString *) title
 				 andCoverImage: (UIImage*) coverImage {
+	self.title = title;
 	self.povTitle.text = title;
 	self.povCreatorUsername.text = username;
 	UIImage* leftHalf = [self halfPicture:coverImage leftHalf:YES];
@@ -250,18 +251,31 @@
     [self.activityIndicator stopAnimating];
 }
 
+#pragma mark - Selected & Deselected -
+
+// If it was selected (by a tap for example)
+// Then animate the circles together before calling delegate method
+-(void) wasSelected {
+	if (self.rightCircle.frame.origin.x != self.circleFrameCenter.origin.x) {
+		[self animateSemiCirclesTogether];
+	}
+}
+
+// After being selected needs to reset where semi circles are
+// Resets frames of right and left circle and right and left cover rects
+-(void) deSelect {
+	self.rightSemiCircle.frame = self.rightCircleFrame;
+	self.leftSemiCircle.frame = self.leftCircleFrame;
+	self.rightCircleCoverRect.frame = self.rightCoverRectFrame;
+	self.leftCircleCoverRect.frame = self.leftCoverRectFrame;
+}
+
 #pragma mark - Pinch Gesture -
 
 -(void)addPinchGestureToSelf{
 	UIPinchGestureRecognizer * pinchGesture = [[UIPinchGestureRecognizer alloc] initWithTarget:self action:
 											   @selector(pinchingSemiCirclesTogether:)];
 	[self addGestureRecognizer: pinchGesture];
-}
-
-//moves the views frame to the provided offset
--(void)translateView:(UIView *) view withXOffset:(CGFloat) offset {
-	view.frame = CGRectMake(view.frame.origin.x + offset, view.frame.origin.y, view.frame.size.width,
-							view.frame.size.height);
 }
 
 // Captures pinching gesture so that the two half circles can be pinched
@@ -327,7 +341,6 @@
 			return;
 		}
 	}
-
 }
 
 //checks if semi circles are close enough together to animate together
@@ -339,26 +352,6 @@
 	return NO;
 }
 
-/*animates the semicircles either to the center or to their sides*/
--(void)positionSemiCirclesCenter:(BOOL)toCenter {
-	if(toCenter){
-		[UIView animateWithDuration:0.8 animations:^{
-            //CGPoint  myCenter = self.center;
-			//self.leftSemiCircle.frame = CGRectMake(myCenter.x - ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
-			//self.rightSemiCircle.frame = CGRectMake(myCenter.x +((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
-		}];
-
-	}else{
-		[UIView animateWithDuration:0.8 animations:^{
-            //CGPoint  myCenter = self.center;
-			//self.leftSemiCircle.frame = CGRectMake(myCenter.x - ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
-			//self.rightSemiCircle.frame = CGRectMake(myCenter.x +((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, SEMI_CIRCLE_Y, ((self.frame.size.height - (2 * SEMI_CIRCLE_Y))/2)+20, self.frame.size.height - (2 * SEMI_CIRCLE_Y));
-		}];
-	}
-}
-
-#pragma mark - Lazy Instantiation -
-
 -(void) animateSemiCirclesTogether {
 	[UIView animateWithDuration: PINCH_TOGETHER_DURATION animations:^{
 		//adjustment because there's like a 1px gap between halved images
@@ -367,7 +360,7 @@
 		self.leftCircleCoverRect.frame = CGRectOffset(self.leftCoverRectFrame, self.storyTextView.frame.size.width/2.f, 0);
 		self.rightCircleCoverRect.frame = CGRectOffset(self.rightCoverRectFrame, -(self.storyTextView.frame.size.width/2.f), 0);
 	} completion:^(BOOL finished) {
-		[self.delegate successfullyPinchedTogetherAtIndexPath:self.indexPath];
+		[self.delegate successfullyPinchedTogetherCell: self];
 	}];
 }
 
@@ -381,23 +374,6 @@
 	}];
 }
 
--(void) didSelect {
-	if (self.rightCircle.frame.origin.x != self.circleFrameCenter.origin.x) {
-		[self animateSemiCirclesTogether];
-	}
-	[self didPinchTogether];
-}
-
--(void) didPinchTogether {
-	UIImageView* coverPhotoImageView = [[UIImageView alloc] initWithImage: self.coverImage];
-	coverPhotoImageView.frame = self.circleFrameCenter;
-	[self addSubview:coverPhotoImageView];
-	[UIView animateWithDuration: 1.5f animations:^{
-		coverPhotoImageView.frame = self.superview.superview.bounds;
-	} completion:^(BOOL finished) {
-
-	}];
-}
 
 #pragma mark - Lazy Instantiation -
 

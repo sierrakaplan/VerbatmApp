@@ -123,7 +123,6 @@
 
 		[self displayCircleOnAVE: currentPage];
 		[self playVideosInAVE: currentPage];
-		//[self showImageScrollViewBounceInAVE: self.currentPage];
 		self.currentPageIndex = nextIndex;
 	}
 }
@@ -133,14 +132,6 @@
         [self displayCircleOnAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[PhotoAVE class]]) {
         [(PhotoAVE*)ave showAndRemoveCircle];
-    }
-}
-
--(void) showImageScrollViewBounceInAVE:(UIView*) ave {
-    if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self showImageScrollViewBounceInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [(PhotoVideoAVE*)ave imageScrollViewBounce];
     }
 }
 
