@@ -14,7 +14,6 @@
     //we are redeclaring this property fromt the super class so that we can acceess it. It's
     //not duplicated in memory.
     @property (strong, nonatomic) UIImageView *imageView;
-
 @end
 
 
@@ -58,7 +57,8 @@
 }
 
 -(void) removeImage {
-    [self.imageView removeFromSuperview];
+    [self.imageView setImage:nil];
+    
     [self.background addSubview: self.addCoverPicLabel];
 }
 
