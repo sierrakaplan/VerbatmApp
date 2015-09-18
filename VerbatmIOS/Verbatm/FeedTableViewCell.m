@@ -252,6 +252,7 @@
 -(void)stopActivityIndicator {
     if(!self.activityIndicator.isAnimating) return;
     [self.activityIndicator stopAnimating];
+    [self.activityIndicator removeFromSuperview];
 }
 
 #pragma mark - Pinch Gesture -

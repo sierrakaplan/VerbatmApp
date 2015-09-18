@@ -46,6 +46,7 @@
 @property (atomic) BOOL refreshInProgress;
 
 #define FEED_CELL_ID @"feed_cell_id"
+#define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 #define NUM_POVS_IN_SECTION 6
 #define RELOAD_THRESHOLD 4
 #define NUM_OF_NEW_POVS_TO_LOAD 15
@@ -118,8 +119,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSInteger index = indexPath.row;
-    
+    NSInteger index = indexPath.row;
 	FeedTableViewCell *cell;
     BOOL publishingNoRefresh = (self.povPublishing && (index == 0));
 	if (publishingNoRefresh) {
@@ -129,6 +129,7 @@
 		if (cell == nil) {
 			cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
 		}
+        
 		PovInfo* povInfo;
 		if (self.povPublishingPlaceholderCell) {
 			povInfo = [self.povLoader getPOVInfoAtIndex: index-1];
@@ -139,6 +140,7 @@
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
+    
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
 }
@@ -155,7 +157,7 @@
 // has actually published
 -(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
 	self.povPublishing = YES;
-	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
+	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
 	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:@"User Name" andTitle: title andCoverImage:coverPic];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
@@ -197,12 +199,14 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.povListView addSubview:self.refreshControl];
-    
 }
 
 -(void)refresh:(UIRefreshControl *)refreshControl {
-    // Do your job, when done:
-    [self refreshFeed];
+    if(self.povPublishing){
+        [refreshControl endRefreshing];
+    }else{
+        [self refreshFeed];
+    }
 }
 
 
