@@ -73,7 +73,7 @@
 	[povView renderAVES: aves];
 	[self.scrollView addSubview: povView];
 	[self.povViews addObject: povView];
-    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter:self.view.center
+    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter: self.view.center
                                                             andStyle:UIActivityIndicatorViewStyleWhiteLarge];
 }
 
@@ -108,7 +108,6 @@
 -(void) likeButtonLiked:(BOOL)liked onPOVWithID:(NSNumber *)povID {
 	[self.updatingManager povWithId:povID wasLiked: liked];
 }
-
 
 #pragma mark - Clean up -
 

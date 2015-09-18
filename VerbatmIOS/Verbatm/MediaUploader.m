@@ -74,7 +74,7 @@
 	[self.formData startAsynchronous];
 }
 
-#pragma mark Upload Progress Tracking
+#pragma mark Delegate methods
 
 - (void)request:(ASIHTTPRequest *)theRequest didSendBytes:(long long)newLength {
 

@@ -103,6 +103,7 @@
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error uploading POV: %@", error.description);
+		self.mediaUploaders = nil;
 	});
 }
 
@@ -308,6 +309,7 @@
 					 NSLog(@"Error uploading POV: %@", error.description);
 				 } else {
 					 NSLog(@"Successfully uploaded POV!");
+					 self.mediaUploaders = nil;
 					 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
 											  object:ticket];
 				 }

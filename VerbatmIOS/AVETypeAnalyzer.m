@@ -10,7 +10,7 @@
 #import "PinchView.h"
 #import "CollectionPinchView.h"
 #import "GTLVerbatmAppImage.h"
-#import "GTLVerbatmAppVideo.h"
+#import "MediaLoader.h"
 #import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
@@ -19,14 +19,15 @@
 #import "Page.h"
 #import "PhotoVideoAVE.h"
 #import "BaseArticleViewingExperience.h"
+#import "Video.h"
 
 @interface AVETypeAnalyzer()
 
 @property(nonatomic, strong) NSMutableArray* results;
 @property(nonatomic) CGRect preferredFrame;
+@property (strong, nonatomic) MediaLoader* mediaLoader;
 
 @end
-
 
 
 @implementation AVETypeAnalyzer
@@ -81,9 +82,8 @@
 
 -(NSArray*) getVideosFromPage: (Page*) page {
 	NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
-	for (GTLVerbatmAppVideo* gtlVideo in page.videos) {
-		NSString* blobStoreKey = gtlVideo.blobStoreKeyString;
-		//TODO:
+	for (Video* video in page.videos) {
+		[videoURLs addObject: video.blobStoreResourceURL];
 	}
 	return videoURLs;
 }

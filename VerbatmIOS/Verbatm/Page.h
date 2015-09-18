@@ -14,7 +14,7 @@
 
 // Array of GTLVerbatmAppImage
 @property (nonatomic, strong) NSArray *images;
-// Array of GTLVerbatmAppVideo
+// Array of Video
 @property (nonatomic, strong) NSArray *videos;
 
 @end

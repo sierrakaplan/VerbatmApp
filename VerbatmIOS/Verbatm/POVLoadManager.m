@@ -77,7 +77,9 @@
 	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
 		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
 		for (GTLVerbatmAppPOVInfo* gtlPovInfo in gtlPovInfos) {
-			[loadCoverPhotoPromises addObject: [self getPOVInfoWithCoverPhotoFromGTLPOVInfo:gtlPovInfo]];
+			if (gtlPovInfo.coverPicUrl) {
+				[loadCoverPhotoPromises addObject: [self getPOVInfoWithCoverPhotoFromGTLPOVInfo:gtlPovInfo]];
+			}
 		}
 		return PMKWhen(loadCoverPhotoPromises);
 	}).then(^(NSArray* povInfosWithCoverPhoto) {
