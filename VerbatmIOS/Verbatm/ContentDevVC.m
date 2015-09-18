@@ -999,12 +999,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
     }
 }
 
--(void)coverPhotoClear{
-    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
-    [self.coverPicView addGestureRecognizer: tapGesture];
-    [self.coverPicView removeImage];
-}
-
 
 #pragma mark - Change position of elements on screen by dragging
 
@@ -1364,17 +1358,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 
-#pragma - mainScrollView handler -
--(void)setMainScrollViewEnabled:(BOOL) enabled {
-	if(enabled) {
-		//self.mainScrollView.scrollEnabled = enabled;
-	} else {
-		//self.mainScrollView.contentOffset = CGPointMake(0, 0);
-		//self.mainScrollView.scrollEnabled = enabled;
-	}
-}
-
-
 #pragma mark - Sense Tap Gesture -
 
 
@@ -1466,7 +1449,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 #pragma mark - Gallery + Image picker -
 
 -(void) presentEfficientGallery {
-
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
 	picker.delegate = self;
 	//Display or not the selection info Toolbar:
@@ -1487,7 +1469,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 -(void) presentGalleryForCoverPic {
-	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
+	GMImagePickerController * picker = [[GMImagePickerController alloc] init];
 	picker.delegate = self;
 	[picker setSelectOnlyOneImage: YES];
 	//Display or not the selection info Toolbar:
@@ -1521,6 +1503,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
         [self newPinchView:newPinchView belowView:nil];
 	}
 }
+
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
@@ -1585,7 +1568,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 
 	//decides whether on what notification to present if any
-
 	if(![UserSetupParameters circlesArePages_InstructionShown] &&
 	   !self.pageElementScrollViews.count) {
 		[self alertEachPVIsPage];
@@ -1619,19 +1601,19 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 /*
  These are all notifications that appear for the user at different points in the app. They only appear once.
  */
--(void)alertEachPVIsPage{
+-(void)alertEachPVIsPage {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 	[UserSetupParameters set_circlesArePages_InstructionAsShown];
 }
 
--(void)alertPinchElementsTogether{
+-(void)alertPinchElementsTogether {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 	[UserSetupParameters set_pinchCircles_InstructionAsShown];
 }
 
--(void)alertSwipeRightToDelete{
+-(void)alertSwipeRightToDelete {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles right to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
     [UserSetupParameters set_swipeToDelete_InstructionAsShown];
@@ -1670,8 +1652,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
     return _replaceCoverPhotoButton;
 }
 
--(UITextView *) activeTextView
-{
+-(UITextView *) activeTextView {
 	if(!_activeTextView)_activeTextView = self.firstContentPageTextBox;
 	return _activeTextView;
 }
