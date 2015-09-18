@@ -42,7 +42,7 @@
 #pragma mark - Refresh -
 
 //this cell is inserted in the top of the listview when pull down to refresh
-@property (strong,nonatomic) RefreshTableViewCell * placeholderCell;
+@property (strong,nonatomic) UIRefreshControl *refreshControl;
 @property (atomic) BOOL pullDownInProgress;
 //tells you whether or not we have started a timer to animate
 @property (atomic) BOOL refreshInProgress;
@@ -60,6 +60,7 @@
 	[super viewDidLoad];
 	[self initStoryListView];
 	[self registerForNotifications];
+    [self setRefreshAnimator];
     self.pullDownInProgress = NO;
     self.refreshInProgress = NO;
 }
@@ -72,6 +73,7 @@
 											   object:nil];
     
 }
+
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
@@ -95,12 +97,12 @@
 
 #pragma mark - Table View Delegate methods (view customization) -
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    if(self.refreshInProgress && !indexPath.row) return STORY_CELL_HEIGHT/2;
-    else return STORY_CELL_HEIGHT;
+    //if(self.refreshInProgress && !indexPath.row) return STORY_CELL_HEIGHT/2;
+     return STORY_CELL_HEIGHT;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(self.refreshInProgress) return;
+    //if(self.refreshInProgress) return;
     if(self.povPublishing && !indexPath.row) return;
 	[self viewPOVAtIndex: indexPath.row];
 }
@@ -115,18 +117,12 @@
 #pragma mark - Table View Data Source methods (model) -
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	NSUInteger count = [self.povLoader getNumberOfPOVsLoaded];
-	count += (self.refreshInProgress) ? 1 : 0;
     count += (self.povPublishing) ? 1:0;
 	return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSInteger index = indexPath.row;
-    
-    BOOL refreshingNoPublish = (self.refreshInProgress && (index == 0));
-	if (refreshingNoPublish) {
-		return self.placeholderCell;
-	}
     
 	FeedTableViewCell *cell;
     BOOL refreshingWhilePublishing = (self.refreshInProgress && self.povPublishing && index == 1);
@@ -190,15 +186,8 @@
 
 //Delagate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
-    if (self.refreshInProgress) {
-        self.pullDownInProgress = NO;
-        self.placeholderCell = nil;
-        self.refreshInProgress = NO;
-        [self.povListView beginUpdates];
-        [self.povListView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-        [self.povListView endUpdates];
-        [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-    }
+    [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+    [self.refreshControl endRefreshing];
 }
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
@@ -212,36 +201,18 @@
 }
 
 #pragma mark - Pull to refresh Feed Animation -
-
-//when the user starts pulling down the article list we should insert the placeholder with the animating view
--(void) scrollViewWillBeginDragging:(nonnull UIScrollView *)scrollView {
-	NSLog(@"Begin dragging");
+-(void)setRefreshAnimator{
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [self.povListView addSubview:self.refreshControl];
+    
 }
 
--(void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    self.pullDownInProgress = (scrollView.contentOffset.y <= PULL_TO_REFRESH_THRESHOLD);
-    if (self.pullDownInProgress && !self.refreshInProgress){
-        [self addFinalAnimationTile];
-        [self refreshFeed];
-    }
+-(void)refresh:(UIRefreshControl *)refreshControl {
+    // Do your job, when done:
+    [self refreshFeed];
 }
 
-//sets the frame of the placeholder cell and also adjusts the frame of the placeholder cell
--(void)createRefreshAnimationOnScrollview:(UIScrollView *)scrollView {
-	//maintain location of placeholder
-	float heightToUse = ((fabs(scrollView.contentOffset.y) < STORY_CELL_HEIGHT) && self.pullDownInProgress) ? fabs(scrollView.contentOffset.y) : STORY_CELL_HEIGHT;
-	float y_cord = (self.pullDownInProgress) ? scrollView.contentOffset.y : 0;
-	self.placeholderCell.frame = CGRectMake(0,y_cord,self.povListView.frame.size.width, heightToUse);
-}
-
-
--(void)addFinalAnimationTile{
-	if(!self.refreshInProgress){
-		self.refreshInProgress = YES;
-		NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-		[self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
-	}
-}
 
 
 #pragma mark -Infinite Scroll -
@@ -279,12 +250,5 @@
 	return _povListView;
 }
 
--(RefreshTableViewCell *)placeholderCell{
-    if(!_placeholderCell) {
-        _placeholderCell = [[RefreshTableViewCell alloc] init];
-        _placeholderCell.selectionStyle = UITableViewCellSelectionStyleNone;
-    }
-    return _placeholderCell;
-}
 
 @end
