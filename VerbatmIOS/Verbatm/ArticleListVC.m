@@ -12,7 +12,6 @@
 #import "Notifications.h"
 #import "SizesAndPositions.h"
 #import "Identifiers.h"
-#import "UIEffects.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Strings.h"
@@ -21,7 +20,6 @@
 #import "MasterNavigationVC.h"
 #import "FeedTableViewCell.h"
 #import "FeedTableView.h"
-#import "RefreshTableViewCell.h"
 
 #import "POVLoadManager.h"
 #import "PovInfo.h"
@@ -71,7 +69,6 @@
 											 selector:@selector(povPublished)
 												 name:NOTIFICATION_POV_PUBLISHED
 											   object:nil];
-    
 }
 
 
@@ -125,11 +122,9 @@
 	NSInteger index = indexPath.row;
     
 	FeedTableViewCell *cell;
-    BOOL refreshingWhilePublishing = (self.refreshInProgress && self.povPublishing && index == 1);
     BOOL publishingNoRefresh = (self.povPublishing && (index == 0));
-    
 	//configure cell
-	if (publishingNoRefresh || refreshingWhilePublishing) {
+	if (publishingNoRefresh) {
 		cell = self.povPublishingPlaceholderCell;
     } else {
 		cell = [tableView dequeueReusableCellWithIdentifier:FEED_CELL_ID];
@@ -157,7 +152,6 @@
 }
 
 #pragma mark - Show POV publishing -
-
 //Called on it by parent view controller to let it know that a user
 // has published a POV and to show the loading animation until the POV
 // has actually published

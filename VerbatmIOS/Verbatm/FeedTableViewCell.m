@@ -238,12 +238,13 @@
 -(void)startActivityIndicator {
     if(self.activityIndicator.isAnimating){
         self.activityIndicator.center = self.center;
+        [self bringSubviewToFront:self.activityIndicator];
         return;
     }
         self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     
         self.activityIndicator.hidesWhenStopped = YES;
-    
+        self.activityIndicator.center = self.center;
         [self addSubview:self.activityIndicator];
         [self bringSubviewToFront:self.activityIndicator];
         [self.activityIndicator startAnimating];

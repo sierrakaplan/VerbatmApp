@@ -109,7 +109,6 @@
 		C719A4041BA3FC020075CA80 /* CreateAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4031BA3FC020075CA80 /* CreateAccount.m */; };
 		C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4061BA4EB500075CA80 /* EditContentVC.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
-		C719A4111BA79CB40075CA80 /* RefreshTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4101BA79CB40075CA80 /* RefreshTableViewCell.m */; };
 		C719A4141BA802D10075CA80 /* CoverPicturePV.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4131BA802D10075CA80 /* CoverPicturePV.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
@@ -426,8 +425,6 @@
 		C719A4061BA4EB500075CA80 /* EditContentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditContentVC.m; sourceTree = "<group>"; };
 		C719A4081BA615B50075CA80 /* UserSetupParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetupParameters.h; sourceTree = "<group>"; };
 		C719A4091BA615B50075CA80 /* UserSetupParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetupParameters.m; sourceTree = "<group>"; };
-		C719A40F1BA79CB40075CA80 /* RefreshTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RefreshTableViewCell.h; path = ../RefreshTableViewCell.h; sourceTree = "<group>"; };
-		C719A4101BA79CB40075CA80 /* RefreshTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RefreshTableViewCell.m; path = ../RefreshTableViewCell.m; sourceTree = "<group>"; };
 		C719A4121BA802D10075CA80 /* CoverPicturePV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPicturePV.h; sourceTree = "<group>"; };
 		C719A4131BA802D10075CA80 /* CoverPicturePV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPicturePV.m; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -738,8 +735,6 @@
 		A59CC2861B6C2E2F00B4907C /* Table Views */ = {
 			isa = PBXGroup;
 			children = (
-				C719A40F1BA79CB40075CA80 /* RefreshTableViewCell.h */,
-				C719A4101BA79CB40075CA80 /* RefreshTableViewCell.m */,
 				C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */,
 				C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */,
 				A59CC2871B6C2E6400B4907C /* FeedTableView.h */,
@@ -1448,7 +1443,6 @@
 				C75985F51B8553DF00FE77F7 /* internetConnectionMonitor.m in Sources */,
 				A560EF9D1BA895A2003FB041 /* Page.m in Sources */,
 				A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */,
-				C719A4111BA79CB40075CA80 /* RefreshTableViewCell.m in Sources */,
 				A5E85F9E1B911DA900E148D0 /* GTLDateTime.m in Sources */,
 				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,
