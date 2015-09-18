@@ -144,7 +144,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self setElementDefaultFrames];
 	[self setKeyboardAppearance];
 	[self setCursorColor];
-
 	[self formatTitleAndCoverPicture];
 	[self setUpNotifications];
 	[self setDelegates];
@@ -995,7 +994,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self presentGalleryForCoverPic];
     //show replace photo icon after the first time this is tapped
     if(!_replaceCoverPhotoButton){
-        
         [self addTapGestureToPinchView:self.coverPicView];
         [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
     }
@@ -1360,17 +1358,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 
-#pragma - mainScrollView handler -
--(void)setMainScrollViewEnabled:(BOOL) enabled {
-	if(enabled) {
-		//self.mainScrollView.scrollEnabled = enabled;
-	} else {
-		//self.mainScrollView.contentOffset = CGPointMake(0, 0);
-		//self.mainScrollView.scrollEnabled = enabled;
-	}
-}
-
-
 #pragma mark - Sense Tap Gesture -
 
 
@@ -1451,7 +1438,16 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
+    [self coverPhotoClear];
+}
+
+-(void)coverPhotoClear{
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
+    [self.coverPicView addGestureRecognizer: tapGesture];
     [self.coverPicView removeImage];
+    self.addingCoverPicture = NO;
+    [self.replaceCoverPhotoButton removeFromSuperview];
+    self.replaceCoverPhotoButton = nil;
 }
 
 -(void)clearTextFields {
@@ -1462,7 +1458,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 #pragma mark - Gallery + Image picker -
 
 -(void) presentEfficientGallery {
-
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
 	picker.delegate = self;
 	//Display or not the selection info Toolbar:
@@ -1483,7 +1478,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 -(void) presentGalleryForCoverPic {
-	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
+	GMImagePickerController * picker = [[GMImagePickerController alloc] init];
 	picker.delegate = self;
 	[picker setSelectOnlyOneImage: YES];
 	//Display or not the selection info Toolbar:
@@ -1517,6 +1512,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
         [self newPinchView:newPinchView belowView:nil];
 	}
 }
+
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
@@ -1538,14 +1534,16 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
 	PHAsset* asset = assetArray[0];
 	PHImageManager * iman = [[PHImageManager alloc] init];
-	[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-		// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-		dispatch_async(dispatch_get_main_queue(), ^{
-			UIImage* image = [[UIImage alloc] initWithData: imageData];
-			image = [UIEffects fixOrientation:image];
-			[self.coverPicView setNewImageWith: image];
-		});
-	}];
+    @autoreleasepool {
+        [iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+            // RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIImage* image = [[UIImage alloc] initWithData: imageData];
+                image = [UIEffects fixOrientation:image];
+                [self.coverPicView setNewImageWith: image];
+            });
+        }];
+    }
 }
 
 //add assets from picker to our scrollview
@@ -1581,7 +1579,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 
 	//decides whether on what notification to present if any
-
 	if(![UserSetupParameters circlesArePages_InstructionShown] &&
 	   !self.pageElementScrollViews.count) {
 		[self alertEachPVIsPage];
@@ -1615,19 +1612,19 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 /*
  These are all notifications that appear for the user at different points in the app. They only appear once.
  */
--(void)alertEachPVIsPage{
+-(void)alertEachPVIsPage {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 	[UserSetupParameters set_circlesArePages_InstructionAsShown];
 }
 
--(void)alertPinchElementsTogether{
+-(void)alertPinchElementsTogether {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 	[UserSetupParameters set_pinchCircles_InstructionAsShown];
 }
 
--(void)alertSwipeRightToDelete{
+-(void)alertSwipeRightToDelete {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles right to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
     [UserSetupParameters set_swipeToDelete_InstructionAsShown];
@@ -1666,8 +1663,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
     return _replaceCoverPhotoButton;
 }
 
--(UITextView *) activeTextView
-{
+-(UITextView *) activeTextView {
 	if(!_activeTextView)_activeTextView = self.firstContentPageTextBox;
 	return _activeTextView;
 }

@@ -40,35 +40,6 @@
 	return self;
 }
 
--(void)removeMuteButtonFromView{
-    [self.muteButton removeFromSuperview];
-}
-
-
-//lazy instantiation of mute button
--(UIButton *)muteButton{
-    if(!_muteButton){
-        _muteButton = [[UIButton alloc] init];
-    }
-    return _muteButton;
-}
-
-
--(void)muteButtonTouched:(id)sender{
-    
-    if(self.isMuted){
-        [self unmuteVideo];
-        self.isMuted = false;
-        //set mute image on so the know to mute
-        [self.muteButton setImage:[UIImage imageNamed:MUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
-    }else{
-        [self muteVideo];
-        self.isMuted = true;
-        //set the unmute image on so they know how to unmute
-        [self.muteButton  setImage:[UIImage imageNamed:UNMUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
-    }
-}
-
 //make sure the sublayer resizes with the view screen
 - (void)layoutSubviews {
 	if (self.playerLayer) {
@@ -80,7 +51,7 @@
 -(void)playVideoFromURL: (NSURL*) url {
 	if (url) {
 		self.videoLoading = YES;
-		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL:url]];
+		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
 		[self playVideo];
 	}
 }
@@ -196,6 +167,37 @@
 -(void)continueVideo {
 	if (self.player) {
 		[self.player play];
+	}
+}
+
+#pragma mark - Mute -
+
+-(void)removeMuteButtonFromView{
+	[self.muteButton removeFromSuperview];
+}
+
+
+//lazy instantiation of mute button
+-(UIButton *)muteButton{
+	if(!_muteButton){
+		_muteButton = [[UIButton alloc] init];
+	}
+	return _muteButton;
+}
+
+
+-(void)muteButtonTouched:(id)sender{
+
+	if(self.isMuted){
+		[self unmuteVideo];
+		self.isMuted = false;
+		//set mute image on so the know to mute
+		[self.muteButton setImage:[UIImage imageNamed:MUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
+	}else{
+		[self muteVideo];
+		self.isMuted = true;
+		//set the unmute image on so they know how to unmute
+		[self.muteButton  setImage:[UIImage imageNamed:UNMUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
 	}
 }
 

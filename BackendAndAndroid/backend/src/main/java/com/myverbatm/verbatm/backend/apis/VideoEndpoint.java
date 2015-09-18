@@ -8,6 +8,7 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.blobstore.UploadOptions;
 import com.google.appengine.api.users.User;
 import com.myverbatm.verbatm.backend.Constants;
 import com.myverbatm.verbatm.backend.models.UploadURI;
@@ -145,7 +146,8 @@ public class VideoEndpoint {
     public final UploadURI getUploadURI() {
         //Pass the success path (relative url that will be invoked after user
         // successfully uploads a blob)
-        String uploadURIString = blobstoreService.createUploadUrl("/uploadVideo");
+        String uploadURIString = blobstoreService.createUploadUrl("/uploadVideo",
+            UploadOptions.Builder.withGoogleStorageBucketName("verbatmvideos"));
         return new UploadURI(uploadURIString);
     }
 }

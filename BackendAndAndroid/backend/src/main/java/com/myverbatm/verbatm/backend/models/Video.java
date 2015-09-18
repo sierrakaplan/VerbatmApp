@@ -26,9 +26,9 @@ public class Video {
     private Long userId;
 
     /**
-     * The blobstore key string of this video
+     * The cloud storage link where this video is stored
      */
-    private String blobStoreKeyString;
+    private String cloudStorageURL;
 
     /**
      * Text caption to a video
@@ -76,19 +76,19 @@ public class Video {
     }
 
     /**
-     * Gets the blobstore key string of this video
-     * @return the blobstore key string of this video
+     * Returns the cloud storage url where this video is stored
+     * @return the cloud storage url where this video is stored
      */
-    public final String getBlobStoreKeyString() {
-        return blobStoreKeyString;
+    public String getCloudStorageURL() {
+        return cloudStorageURL;
     }
 
     /**
-     * Sets the blobstore key string of this video
-     * @param blobStoreKeyString the blobstore key string of this video
+     * Sets the cloud storage url where this video is stored
+     * @param cloudStorageURL the cloud storage url where this video is stored
      */
-    public final void setBlobStoreKeyString(String blobStoreKeyString) {
-        this.blobStoreKeyString = blobStoreKeyString;
+    public void setCloudStorageURL(String cloudStorageURL) {
+        this.cloudStorageURL = cloudStorageURL;
     }
 
     /**

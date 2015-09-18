@@ -3,6 +3,7 @@ package com.myverbatm.verbatm.backend.handlers;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.blobstore.FileInfo;
 
 import java.io.IOException;
 import java.util.List;
@@ -28,6 +29,8 @@ public class UploadVideo extends HttpServlet {
 
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
+    public static final String GCS_HOST = "https://storage.googleapis.com/";
+
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException {
@@ -35,11 +38,15 @@ public class UploadVideo extends HttpServlet {
         LOG.info("Request URL for upload video: " + req.getRequestURL().toString());
 
         try {
-            Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
-            BlobKey blobKey = blobs.get("defaultVideo").get(0);
-            //Blob key can be converted back by passing string to its constructor
-            res.getWriter().write(blobKey.getKeyString());
-            System.out.println("Video successfully uploaded");
+            //testing
+            Map<String, List<FileInfo>> uploads = blobstoreService.getFileInfos(req);
+            FileInfo fileInfo = uploads.get("defaultVideo").get(0);
+            String objectName = fileInfo.getGsObjectName();
+            LOG.info("Cloud storage object name: " + objectName);
+
+            // substring(4) strips "/gs/" prefix
+            res.getWriter().write(GCS_HOST + objectName.substring(4));
+            System.out.println("Video successfully uploaded to " + GCS_HOST + objectName.substring(4));
         }
         catch (Exception e) {
             System.out.println("Video failed to upload");

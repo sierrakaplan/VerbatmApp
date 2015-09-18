@@ -67,7 +67,6 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 - (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
 
 // either locks the scroll view or frees it
--(void) setMainScrollViewEnabled:(BOOL) enabled;
 -(void) removeKeyboardFromScreen;
 -(void) closeAllOpenCollections;
 

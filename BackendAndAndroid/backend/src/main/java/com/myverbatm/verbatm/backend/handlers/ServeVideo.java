@@ -37,6 +37,7 @@ public class ServeVideo extends HttpServlet {
         LOG.info("Request URL for serve video: " + req.getRequestURL().toString());
         BlobKey blobKey = new BlobKey(req.getParameter("blob-key"));
         blobstoreService.serve(blobKey, res);
+        res.addHeader("Content-Type", "video/mp4");
         LOG.info("Serving video response: " + res.toString());
     }
 }
