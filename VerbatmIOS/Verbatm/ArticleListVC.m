@@ -47,7 +47,7 @@
 
 #define FEED_CELL_ID @"feed_cell_id"
 #define NUM_POVS_IN_SECTION 6
-#define RELOAD_THRESHOLD 15
+#define RELOAD_THRESHOLD 4
 #define NUM_OF_NEW_POVS_TO_LOAD 15
 #define PULL_TO_REFRESH_THRESHOLD (-1 * 50)
 @end
