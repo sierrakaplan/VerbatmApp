@@ -46,7 +46,7 @@
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
 
 	[self.formData setData:videoData
-			  withFileName:@"defaultVideo.mov"
+			  withFileName:@"defaultVideo.mp4"
 			andContentType:@"video/mp4"
 					forKey:@"defaultVideo"];
 	[self.formData setDelegate:self];
