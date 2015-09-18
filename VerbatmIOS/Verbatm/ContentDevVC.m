@@ -1451,7 +1451,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
-	//[self.coverPicView removeImage];
+    [self.coverPicView removeImage];
 }
 
 -(void)clearTextFields {

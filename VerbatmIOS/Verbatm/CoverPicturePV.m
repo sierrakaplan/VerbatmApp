@@ -21,7 +21,7 @@
 @implementation CoverPicturePV
 @dynamic imageView;
 
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image{
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image {
     
     self = [super initWithRadius:radius withCenter:center andImage:image];
     if(self){
@@ -29,7 +29,6 @@
     }
     return self;
 }
-
 
 -(void) formatSelf {
     [self setBackgroundColor: [UIColor clearColor]];
