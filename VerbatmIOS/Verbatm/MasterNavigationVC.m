@@ -380,7 +380,7 @@
 #pragma mark -Network Connection Lost-
 -(void)networkConnectionUpdate: (NSNotification *) notification{
     NSDictionary * userInfo = [notification userInfo];
-    BOOL thereIsConnection = [userInfo objectForKey:INTERNET_CONNECTION_KEY];
+    BOOL thereIsConnection = (BOOL)[userInfo objectForKey:INTERNET_CONNECTION_KEY];
     if(thereIsConnection)[self userLostInternetConnetion];
 }
 
