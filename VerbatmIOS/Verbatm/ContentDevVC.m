@@ -1534,14 +1534,16 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
 	PHAsset* asset = assetArray[0];
 	PHImageManager * iman = [[PHImageManager alloc] init];
-	[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-		// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-		dispatch_async(dispatch_get_main_queue(), ^{
-			UIImage* image = [[UIImage alloc] initWithData: imageData];
-			image = [UIEffects fixOrientation:image];
-			[self.coverPicView setNewImageWith: image];
-		});
-	}];
+    @autoreleasepool {
+        [iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+            // RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIImage* image = [[UIImage alloc] initWithData: imageData];
+                image = [UIEffects fixOrientation:image];
+                [self.coverPicView setNewImageWith: image];
+            });
+        }];
+    }
 }
 
 //add assets from picker to our scrollview
