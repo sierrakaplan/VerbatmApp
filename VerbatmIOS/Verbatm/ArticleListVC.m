@@ -108,7 +108,7 @@
 //one of the POV's in the list has been clicked
 -(void) viewPOVAtIndex: (NSInteger) index {
 	PovInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
-	NSLog(@"Viewing pov %@ ", povInfo.title);
+	NSLog(@"Viewing POV \"%@\"", povInfo.title);
 	[self.delegate displayPOVWithIndex: index fromLoadManager: self.povLoader];
 }
 
