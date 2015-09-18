@@ -1441,6 +1441,15 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
     [self coverPhotoClear];
 }
 
+-(void)coverPhotoClear{
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
+    [self.coverPicView addGestureRecognizer: tapGesture];
+    [self.coverPicView removeImage];
+    self.addingCoverPicture = NO;
+    [self.replaceCoverPhotoButton removeFromSuperview];
+    self.replaceCoverPhotoButton = nil;
+}
+
 -(void)clearTextFields {
 	self.whatIsItLikeField.text =@"";
 }
