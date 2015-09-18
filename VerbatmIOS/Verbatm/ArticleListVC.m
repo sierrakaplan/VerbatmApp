@@ -115,20 +115,25 @@
 #pragma mark - Table View Data Source methods (model) -
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	NSUInteger count = [self.povLoader getNumberOfPOVsLoaded];
-	count += (self.pullDownInProgress) ? 1 : 0;
+	count += (self.refreshInProgress) ? 1 : 0;
     count += (self.povPublishing) ? 1:0;
 	return count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	NSInteger index = indexPath.row;
-	if (self.refreshInProgress && index == 0) {
+    
+    BOOL refreshingNoPublish = (self.refreshInProgress && (index == 0));
+	if (refreshingNoPublish) {
 		return self.placeholderCell;
 	}
+    
 	FeedTableViewCell *cell;
+    BOOL refreshingWhilePublishing = (self.refreshInProgress && self.povPublishing && index == 1);
+    BOOL publishingNoRefresh = (self.povPublishing && (index == 0));
     
 	//configure cell
-	if (self.povPublishing && (index == 0 || (self.refreshInProgress && index == 1))) {
+	if (publishingNoRefresh || refreshingWhilePublishing) {
 		cell = self.povPublishingPlaceholderCell;
     } else {
 		cell = [tableView dequeueReusableCellWithIdentifier:FEED_CELL_ID];
@@ -178,7 +183,6 @@
 }
 
 #pragma mark - Refresh feed -
-
 // Tells pov loader to reload POV's completely (removing all those previously loaded and getting the first page again)
 -(void) refreshFeed {
 	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
@@ -190,9 +194,11 @@
         self.pullDownInProgress = NO;
         self.placeholderCell = nil;
         self.refreshInProgress = NO;
+        [self.povListView beginUpdates];
         [self.povListView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
+        [self.povListView endUpdates];
+        [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     }
-    [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
