@@ -23,10 +23,11 @@
 
 -(instancetype) initWithImage:(UIImage*)img andUri: (NSString*)uri {
 
+	NSLog(@"Uploading media to blobstore with url: %@", uri);
+
 	NSData *imageData = [NSData dataWithData:UIImagePNGRepresentation(img)];
 
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
-
 	[self.formData setData:imageData
 			  withFileName:@"defaultImage.png"
 			andContentType:@"image/png"

@@ -7,6 +7,7 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,11 +20,19 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class UploadVideo extends HttpServlet {
 
+    /**
+     * Log output.
+     */
+    private static final Logger LOG =
+        Logger.getLogger(ServeVideo.class.getName());
+
     private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException {
+
+        LOG.info("Request URL for upload video: " + req.getRequestURL().toString());
 
         try {
             Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);

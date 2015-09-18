@@ -10,7 +10,7 @@
 #import "PinchView.h"
 #import "CollectionPinchView.h"
 #import "GTLVerbatmAppImage.h"
-#import "MediaLoader.h"
+#import "GTLVerbatmAppVideo.h"
 #import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
@@ -19,13 +19,14 @@
 #import "Page.h"
 #import "PhotoVideoAVE.h"
 #import "BaseArticleViewingExperience.h"
-#import "Video.h"
 
 @interface AVETypeAnalyzer()
 
 @property(nonatomic, strong) NSMutableArray* results;
 @property(nonatomic) CGRect preferredFrame;
-@property (strong, nonatomic) MediaLoader* mediaLoader;
+
+#define GET_VIDEO_URI @"https://verbatmapp.appspot.com/serveVideo"
+#define BLOBKEYSTRING_KEY @"blob-key"
 
 @end
 
@@ -61,7 +62,6 @@
 			type = AVETypePhoto;
 		} else if(page.videos.count) {
 			type = AVETypeVideo;
-			continue;
 		}
 
 		BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:nil andPhotos:[self getUIImagesFromPage: page] andVideos:[self getVideosFromPage: page] andAVEType:type];
@@ -82,8 +82,12 @@
 
 -(NSArray*) getVideosFromPage: (Page*) page {
 	NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
-	for (Video* video in page.videos) {
-		[videoURLs addObject: video.blobStoreResourceURL];
+	for (GTLVerbatmAppVideo* video in page.videos) {
+		NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
+		NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: video.blobStoreKeyString];
+		components.queryItems = @[blobKey];
+		NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
+		[videoURLs addObject: components.URL];
 	}
 	return videoURLs;
 }
