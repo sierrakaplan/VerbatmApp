@@ -16,8 +16,12 @@
 
 #import "GTMHTTPFetcherLogging.h"
 
+#import "MediaLoader.h"
+
 #import "PagesLoadManager.h"
 #import "Page.h"
+
+#import "Video.h"
 
 #import <PromiseKit/PromiseKit.h>
 
@@ -27,6 +31,9 @@
 
 // Dict of key=POV id and value=Array of Page's
 @property (strong, nonatomic) NSMutableDictionary* pagesForPOV;
+
+//retains reference to media loaders since their tasks are performed async
+@property (strong, nonatomic) NSMutableArray* mediaLoaders;
 
 @end
 
@@ -67,9 +74,11 @@
 	}).then(^(NSArray* pages) {
 		[self.pagesForPOV setObject:pages forKey: povID];
 		[self.delegate pagesLoadedForPOV: povID];
+		self.mediaLoaders = nil;
 
 	}).catch(^(NSError* error) {
 		NSLog(@"Error loading pages from POV: %@", error.description);
+		self.mediaLoaders = nil;
 	});
 }
 
@@ -92,7 +101,7 @@
 }
 
 // Resolves to a Page object from a GTLVerbatmAppPage
-// Loads all the GTLVerbatmAppImage and GTLVerbatmAppVideo objects and
+// Loads all the GTLVerbatmAppImage and Video objects and
 // creates a Page object containing them.
 -(PMKPromise*) loadPageFromGTLPage: (GTLVerbatmAppPage*) gtlPage {
 	return PMKWhen(@[[self loadImagesForImageIDs: gtlPage.imageIds],
@@ -117,7 +126,7 @@
 	});
 }
 
-// Resolves to array of GTLVerbatmAppVideo's or error
+// Resolves to array of Video's or error
 -(PMKPromise*) loadVideosFromVideoIDs: (NSArray*) videoIDs {
 	NSMutableArray* loadVideoPromises = [[NSMutableArray array] init];
 	for (NSNumber* videoID in videoIDs) {
@@ -151,7 +160,10 @@
 }
 
 //Queries for GTLVerbatmAppVideo with given ID from server
-//Resolves to GTLVerbatmAppVideo or error
+//Then serves the video from the blobstore using the blobstore key
+//Then creates a video object using the resource url instead of
+//the blobstore key string
+//Resolves to Video or error
 -(PMKPromise*) loadVideoWithID: (NSNumber*) videoID {
 	GTLQuery* loadVideoQuery = [GTLQueryVerbatmApp queryForVideoGetVideoWithIdentifier: videoID.longLongValue];
 
@@ -165,7 +177,22 @@
 					 }
 				 }];
 	}];
-	return promise;
+
+	Video* video = [[Video alloc] init];
+
+	return promise.then(^(GTLVerbatmAppVideo* gtlVideo) {
+		video.identifier = gtlVideo.identifier;
+		video.indexInPage = gtlVideo.indexInPage;
+		video.text = gtlVideo.text;
+		video.userId = gtlVideo.userId;
+
+		MediaLoader* videoLoader = [[MediaLoader alloc] initWithBlobStoreKeyString:gtlVideo.blobStoreKeyString andURI:@"https://verbatmapp.appspot.com/serveVideo"];
+		[self.mediaLoaders addObject: videoLoader];
+		return [videoLoader startDownload];
+	}).then(^(NSString* servingURL) {
+		video.blobStoreResourceURL = servingURL;
+		return video;
+	});
 }
 
 
@@ -189,6 +216,13 @@
 		_pagesForPOV = [[NSMutableDictionary alloc] init];
 	}
 	return _pagesForPOV;
+}
+
+-(NSMutableArray*) mediaLoaders {
+	if(!_mediaLoaders) {
+		_mediaLoaders = [[NSMutableArray alloc] init];
+	}
+	return _mediaLoaders;
 }
 
 

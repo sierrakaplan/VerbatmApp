@@ -20,6 +20,8 @@
 		A560EF9D1BA895A2003FB041 /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EF9C1BA895A2003FB041 /* Page.m */; };
 		A560EFA21BAA006B003FB041 /* UpdatingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA11BAA006B003FB041 /* UpdatingManager.m */; };
 		A560EFA51BAB33B8003FB041 /* PovInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA41BAB33B8003FB041 /* PovInfo.m */; };
+		A560EFA81BAB81AD003FB041 /* MediaLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA71BAB81AD003FB041 /* MediaLoader.m */; };
+		A560EFAB1BAB97BF003FB041 /* Video.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFAA1BAB97BF003FB041 /* Video.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
 		A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687A1B65B25700CE5744 /* CollectionPinchView.m */; };
@@ -245,6 +247,10 @@
 		A560EFA11BAA006B003FB041 /* UpdatingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatingManager.m; sourceTree = "<group>"; };
 		A560EFA31BAB33B8003FB041 /* PovInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PovInfo.h; sourceTree = "<group>"; };
 		A560EFA41BAB33B8003FB041 /* PovInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PovInfo.m; sourceTree = "<group>"; };
+		A560EFA61BAB81AD003FB041 /* MediaLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaLoader.h; sourceTree = "<group>"; };
+		A560EFA71BAB81AD003FB041 /* MediaLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaLoader.m; sourceTree = "<group>"; };
+		A560EFA91BAB97BF003FB041 /* Video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video.h; sourceTree = "<group>"; };
+		A560EFAA1BAB97BF003FB041 /* Video.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Video.m; sourceTree = "<group>"; };
 		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		A56434B91B636FEA0075F568 /* Identifiers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Identifiers.h; sourceTree = "<group>"; };
@@ -623,6 +629,8 @@
 				A560EF9C1BA895A2003FB041 /* Page.m */,
 				A560EFA31BAB33B8003FB041 /* PovInfo.h */,
 				A560EFA41BAB33B8003FB041 /* PovInfo.m */,
+				A560EFA91BAB97BF003FB041 /* Video.h */,
+				A560EFAA1BAB97BF003FB041 /* Video.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -898,6 +906,8 @@
 				A5E860001B96249900E148D0 /* POVPublisher.m */,
 				A5C09BE41BA1F43600C0AD86 /* MediaUploader.h */,
 				A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */,
+				A560EFA61BAB81AD003FB041 /* MediaLoader.h */,
+				A560EFA71BAB81AD003FB041 /* MediaLoader.m */,
 				A5AA319A1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.h */,
 				A5AA319B1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m */,
 				A5AA319C1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.h */,
@@ -1476,6 +1486,7 @@
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */,
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
+				A560EFA81BAB81AD003FB041 /* MediaLoader.m in Sources */,
 				A5E85FAE1B911DA900E148D0 /* GTMOAuth2SignIn.m in Sources */,
 				A5E85FA71B911DA900E148D0 /* GTMHTTPFetcherLogging.m in Sources */,
 				A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */,
@@ -1488,6 +1499,7 @@
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				A560EFA51BAB33B8003FB041 /* PovInfo.m in Sources */,
+				A560EFAB1BAB97BF003FB041 /* Video.m in Sources */,
 				A5E85F9F1B911DA900E148D0 /* GTLErrorObject.m in Sources */,
 				A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */,

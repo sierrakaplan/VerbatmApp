@@ -28,12 +28,6 @@ typedef void(^MediaUploadCompletionBlock)(NSError* error, NSString* responseURL)
 // and stages it for upload to the given uri
 -(instancetype) initWithVideoData: (NSData*)videoData  andUri: (NSString*)uri;
 
-// Start the upload with the given completion block, called when the upload request
-// is either complete or failed (passed into success parameter)
-// If it succeeded the url from the server will be passed as a parameter
-// TODO: this is a blobkey string for video and an imagesservice servingurl for image
--(void) startWithCompletionHandler:(MediaUploadCompletionBlock) completionBlock;
-
 -(PMKPromise*) startUpload;
 
 @end
