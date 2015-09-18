@@ -534,8 +534,7 @@
 }
 
 
-#pragma mark - Transition container view and pull bar
-
+#pragma mark - Transition container view and pull bar - 
 //Sets the content container view to the appropriate frame, sets the pull bar mode,
 //and sets whether the content container view is scrollable
 -(void) transitionContentContainerViewToMode: (ContentContainerViewMode) mode {
@@ -633,8 +632,6 @@
 }
 
 #pragma mark - Change pull bar Delegate Methods (for pullbar) -
-
-
 -(void)canPreview:(BOOL)canPreview {
 	[self.pullBar enablePreviewInMenuMode: canPreview];
 }
@@ -656,8 +653,6 @@
 		self.pullBar.frame = self.pullBarFrameOffScreen;
 	}
 }
-
-
 
 
 #pragma mark - PullBar Delegate Methods (pullbar button actions) -
