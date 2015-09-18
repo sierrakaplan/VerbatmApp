@@ -173,8 +173,9 @@
 // a pov has published so that it can refresh the feed
 -(void) povPublished {
 	if (self.povPublishing) {
-		[self refreshFeed];
-		NSLog(@"Pov published successfully!");
+        self.povPublishingPlaceholderCell = nil;
+        self.povPublishing = NO;
+        [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 	}
 }
 
@@ -192,11 +193,6 @@
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
 -(void) morePOVsLoaded {
-    if (self.povPublishing) {
-        self.povPublishingPlaceholderCell = nil;
-        self.povPublishing = NO;
-        [self.povListView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]] withRowAnimation:UITableViewRowAnimationFade];
-    }
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
