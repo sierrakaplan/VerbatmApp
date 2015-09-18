@@ -80,7 +80,13 @@
 -(void)playVideoFromURL: (NSURL*) url {
 	if (url) {
 		self.videoLoading = YES;
-		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL:url]];
+		AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:url options:nil];
+		NSArray *keys     = [NSArray arrayWithObject:@"playable"];
+
+//		[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+//			[self.player insertItem:[AVPlayerItem playerItemWithAsset:asset]];
+//		}];
+		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
 		[self playVideo];
 	}
 }
