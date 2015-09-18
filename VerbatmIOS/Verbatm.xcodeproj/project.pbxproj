@@ -20,7 +20,6 @@
 		A560EF9D1BA895A2003FB041 /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EF9C1BA895A2003FB041 /* Page.m */; };
 		A560EFA21BAA006B003FB041 /* UpdatingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA11BAA006B003FB041 /* UpdatingManager.m */; };
 		A560EFA51BAB33B8003FB041 /* PovInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA41BAB33B8003FB041 /* PovInfo.m */; };
-		A560EFAE1BACAFBC003FB041 /* MediaLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFAD1BACAFBC003FB041 /* MediaLoader.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
 		A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687A1B65B25700CE5744 /* CollectionPinchView.m */; };
@@ -1475,7 +1474,6 @@
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */,
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
-				A560EFAE1BACAFBC003FB041 /* MediaLoader.m in Sources */,
 				A5E85FAE1B911DA900E148D0 /* GTMOAuth2SignIn.m in Sources */,
 				A5E85FA71B911DA900E148D0 /* GTMHTTPFetcherLogging.m in Sources */,
 				A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */,

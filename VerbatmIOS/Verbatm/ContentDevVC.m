@@ -144,7 +144,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self setElementDefaultFrames];
 	[self setKeyboardAppearance];
 	[self setCursorColor];
-
 	[self formatTitleAndCoverPicture];
 	[self setUpNotifications];
 	[self setDelegates];
@@ -995,10 +994,15 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self presentGalleryForCoverPic];
     //show replace photo icon after the first time this is tapped
     if(!_replaceCoverPhotoButton){
-        
         [self addTapGestureToPinchView:self.coverPicView];
         [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
     }
+}
+
+-(void)coverPhotoClear{
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
+    [self.coverPicView addGestureRecognizer: tapGesture];
+    [self.coverPicView removeImage];
 }
 
 
@@ -1451,7 +1455,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
-    [self.coverPicView removeImage];
+    [self coverPhotoClear];
 }
 
 -(void)clearTextFields {

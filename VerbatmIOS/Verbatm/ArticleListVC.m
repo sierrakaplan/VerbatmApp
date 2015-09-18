@@ -46,8 +46,9 @@
 @property (atomic) BOOL refreshInProgress;
 
 #define FEED_CELL_ID @"feed_cell_id"
+#define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 #define NUM_POVS_IN_SECTION 6
-#define RELOAD_THRESHOLD 15
+#define RELOAD_THRESHOLD 4
 #define NUM_OF_NEW_POVS_TO_LOAD 15
 #define PULL_TO_REFRESH_THRESHOLD (-1 * 50)
 @end
@@ -70,7 +71,6 @@
 												 name:NOTIFICATION_POV_PUBLISHED
 											   object:nil];
 }
-
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
@@ -119,11 +119,9 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSInteger index = indexPath.row;
-    
+    NSInteger index = indexPath.row;
 	FeedTableViewCell *cell;
     BOOL publishingNoRefresh = (self.povPublishing && (index == 0));
-	//configure cell
 	if (publishingNoRefresh) {
 		cell = self.povPublishingPlaceholderCell;
     } else {
@@ -131,6 +129,7 @@
 		if (cell == nil) {
 			cell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
 		}
+        
 		PovInfo* povInfo;
 		if (self.povPublishingPlaceholderCell) {
 			povInfo = [self.povLoader getPOVInfoAtIndex: index-1];
@@ -141,6 +140,7 @@
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
+    
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
 }
@@ -157,7 +157,7 @@
 // has actually published
 -(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
 	self.povPublishing = YES;
-	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID];
+	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
 	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:@"User Name" andTitle: title andCoverImage:coverPic];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
@@ -166,11 +166,7 @@
 // Method called from Notification sent by the model to let it know that
 // a pov has published so that it can refresh the feed
 -(void) povPublished {
-	if (self.povPublishing) {
-        self.povPublishingPlaceholderCell = nil;
-        self.povPublishing = NO;
-        [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-	}
+    [self refreshFeed];
 }
 
 #pragma mark - Refresh feed -
@@ -181,8 +177,16 @@
 
 //Delagate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
+    if(self.povPublishing){
+        self.povPublishing = NO;
+        if(self.povPublishingPlaceholderCell){
+            [self.povPublishingPlaceholderCell stopActivityIndicator];
+            [self.povListView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
+        }
+        self.povPublishingPlaceholderCell = nil;
+    }
     [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-    [self.refreshControl endRefreshing];
+    if(self.refreshControl.isRefreshing)[self.refreshControl endRefreshing];
 }
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
@@ -195,12 +199,14 @@
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
     [self.povListView addSubview:self.refreshControl];
-    
 }
 
 -(void)refresh:(UIRefreshControl *)refreshControl {
-    // Do your job, when done:
-    [self refreshFeed];
+    if(self.povPublishing){
+        [refreshControl endRefreshing];
+    }else{
+        [self refreshFeed];
+    }
 }
 
 
