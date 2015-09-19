@@ -146,8 +146,7 @@ public class VideoEndpoint {
     public final UploadURI getUploadURI() {
         //Pass the success path (relative url that will be invoked after user
         // successfully uploads a blob)
-        String uploadURIString = blobstoreService.createUploadUrl("/uploadVideo",
-            UploadOptions.Builder.withGoogleStorageBucketName("verbatmvideos"));
+        String uploadURIString = blobstoreService.createUploadUrl("/uploadVideo");
         return new UploadURI(uploadURIString);
     }
 }

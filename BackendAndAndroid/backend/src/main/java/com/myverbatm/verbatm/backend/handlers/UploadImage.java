@@ -48,10 +48,10 @@ public class UploadImage extends HttpServlet {
             String imageUrl = imagesService.getServingUrl(options);
 
             res.getWriter().write(imageUrl);
-            System.out.println("Image successfully uploaded");
+            LOG.info("Image successfully uploaded");
         }
         catch (Exception e) {
-            System.out.println("Image failed to upload");
+            LOG.info("Image failed to upload");
         }
     }
 }

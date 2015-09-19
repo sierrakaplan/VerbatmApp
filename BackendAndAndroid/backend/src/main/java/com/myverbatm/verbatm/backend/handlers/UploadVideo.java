@@ -38,18 +38,12 @@ public class UploadVideo extends HttpServlet {
         LOG.info("Request URL for upload video: " + req.getRequestURL().toString());
 
         try {
-            //testing
-            Map<String, List<FileInfo>> uploads = blobstoreService.getFileInfos(req);
-            FileInfo fileInfo = uploads.get("defaultVideo").get(0);
-            String objectName = fileInfo.getGsObjectName();
-            LOG.info("Cloud storage object name: " + objectName);
-
-            // substring(4) strips "/gs/" prefix
-            res.getWriter().write(GCS_HOST + objectName.substring(4));
-            System.out.println("Video successfully uploaded to " + GCS_HOST + objectName.substring(4));
+            Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);
+            BlobKey blobKey = blobs.get("defaultVideo").get(0);
+            res.getWriter().write(blobKey.getKeyString());
         }
         catch (Exception e) {
-            System.out.println("Video failed to upload");
+            LOG.info("Video failed to upload");
         }
     }
 }

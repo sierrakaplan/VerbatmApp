@@ -47,6 +47,7 @@
 
 #define FEED_CELL_ID @"feed_cell_id"
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
+
 #define NUM_POVS_IN_SECTION 6
 #define RELOAD_THRESHOLD 4
 #define NUM_OF_NEW_POVS_TO_LOAD 15
@@ -94,12 +95,10 @@
 
 #pragma mark - Table View Delegate methods (view customization) -
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    //if(self.refreshInProgress && !indexPath.row) return STORY_CELL_HEIGHT/2;
      return STORY_CELL_HEIGHT;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    //if(self.refreshInProgress) return;
     if(self.povPublishing && !indexPath.row) return;
 	[self viewPOVAtIndex: indexPath.row];
 }
@@ -179,10 +178,7 @@
 -(void) povsRefreshed {
     if(self.povPublishing){
         self.povPublishing = NO;
-        if(self.povPublishingPlaceholderCell){
-            [self.povPublishingPlaceholderCell stopActivityIndicator];
-            [self.povListView deleteRowsAtIndexPaths:@[[NSIndexPath indexPathForItem:0 inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
-        }
+		[self.povPublishingPlaceholderCell stopActivityIndicator];
         self.povPublishingPlaceholderCell = nil;
     }
     [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];

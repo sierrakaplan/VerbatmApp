@@ -230,10 +230,10 @@
 		MediaUploader* videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
 		[self.mediaUploaders addObject: videoUploader];
 		return [videoUploader startUpload];
-	}).then(^(NSString* cloudStorageURLString) {
+	}).then(^(NSString* blobStoreKeyString) {
 		GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
 		gtlVideo.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
-		gtlVideo.cloudStorageURL = cloudStorageURLString;
+		gtlVideo.blobKeyString = blobStoreKeyString;
 		//TODO: set user key and ?text?
 
 		return [self insertVideo: gtlVideo];
