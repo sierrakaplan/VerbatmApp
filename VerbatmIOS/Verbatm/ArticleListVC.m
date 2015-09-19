@@ -58,7 +58,7 @@
 
 - (void) viewDidLoad {
 	[super viewDidLoad];
-	[self initStoryListView];
+	[self initPovListView];
 	[self registerForNotifications];
     [self setRefreshAnimator];
     self.pullDownInProgress = NO;
@@ -78,7 +78,7 @@
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
--(void) initStoryListView {
+-(void) initPovListView {
 	self.povListView.delegate = self;
 	self.povListView.dataSource = self;
 	[self.view addSubview:self.povListView];
@@ -103,7 +103,7 @@
 	if(self.povPublishing && indexPath.row == 0) { return; }
 	// Tell cell it was selected so it can animate being pinched together before it calls
 	// delegate method to be selected
-	FeedTableViewCell* cell = (FeedTableViewCell*)[self tableView:tableView cellForRowAtIndexPath:indexPath];
+	FeedTableViewCell* cell = (FeedTableViewCell*)[self.povListView cellForRowAtIndexPath:indexPath];
 	[cell wasSelected];
 }
 

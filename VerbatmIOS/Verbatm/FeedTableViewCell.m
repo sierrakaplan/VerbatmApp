@@ -20,8 +20,6 @@
 
 @interface FeedTableViewCell()
 
-
-@property (strong, nonatomic) UIImage* coverImage;
 #pragma mark - Square with text in the center of the cell -
 @property (strong, nonatomic) UIView * storyTextView;
 @property (strong, nonatomic) UILabel * povTitle;
@@ -87,7 +85,9 @@
 	[super layoutSubviews];
 	[self formatSelf];
 	[self formatTextSubview];
-    if(self.isPlaceHolder)[self startActivityIndicatrForPlaceholder];
+    if(self.isPlaceHolder) {
+		[self startActivityIndicatrForPlaceholder];
+	}
 	[self formatCoverRects];
 	[self formatSemiCircles];
 	[self addPinchGestureToSelf];
@@ -261,9 +261,7 @@
 // If it was selected (by a tap for example)
 // Then animate the circles together before calling delegate method
 -(void) wasSelected {
-	if (self.rightCircle.frame.origin.x != self.circleFrameCenter.origin.x) {
-		[self animateSemiCirclesTogether];
-	}
+	[self animateSemiCirclesTogetherWithDuration: PINCH_TOGETHER_DURATION*1.5];
 }
 
 // After being selected needs to reset where semi circles are
@@ -326,7 +324,7 @@
 
 			if ([self semiCirclesShouldBePinched]) {
 				self.isPinching = NO;
-				[self animateSemiCirclesTogether];
+				[self animateSemiCirclesTogetherWithDuration: PINCH_TOGETHER_DURATION];
 			}
 
 			break;
@@ -335,7 +333,7 @@
 			if (!self.isPinching) return;
 			self.isPinching = NO;
 			if ([self semiCirclesShouldBePinched]) {
-				[self animateSemiCirclesTogether];
+				[self animateSemiCirclesTogetherWithDuration: PINCH_TOGETHER_DURATION];
 			} else {
 				[self animateSemiCirclesBackToOrigin];
 			}
@@ -357,15 +355,17 @@
 	return NO;
 }
 
--(void) animateSemiCirclesTogether {
-	[UIView animateWithDuration: PINCH_TOGETHER_DURATION animations:^{
+-(void) animateSemiCirclesTogetherWithDuration: (CGFloat) duration {
+	[UIView animateWithDuration: duration animations:^{
 		//adjustment because there's like a 1px gap between halved images
 		self.leftCircle.frame = CGRectOffset(self.circleFrameCenter, 1, 0);
 		self.rightCircle.frame = self.circleFrameCenter;
 		self.leftCircleCoverRect.frame = CGRectOffset(self.leftCoverRectFrame, self.storyTextView.frame.size.width/2.f, 0);
 		self.rightCircleCoverRect.frame = CGRectOffset(self.rightCoverRectFrame, -(self.storyTextView.frame.size.width/2.f), 0);
 	} completion:^(BOOL finished) {
-		[self.delegate successfullyPinchedTogetherCell: self];
+		if (finished) {
+			[self.delegate successfullyPinchedTogetherCell: self];
+		}
 	}];
 }
 
