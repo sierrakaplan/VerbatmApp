@@ -23,7 +23,7 @@
 //
 
 @implementation GTLVerbatmAppVideo
-@dynamic blobStoreKeyString, identifier, indexInPage, text, userId;
+@dynamic blobKeyString, identifier, indexInPage, text, userId;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{

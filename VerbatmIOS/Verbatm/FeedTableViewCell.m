@@ -236,19 +236,24 @@
 #pragma mark - Activity Indicator -
 //creates an activity indicator on our placeholder view
 //shifts the frame of the indicator if it's on the screen
--(void)startActivityIndicator {
+-(void)startActivityIndicator{
+    if(self.activityIndicator.isAnimating){
+        self.activityIndicator.center = self.center;
+        [self bringSubviewToFront:self.activityIndicator];
+    }else{
         self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        self.activityIndicator.alpha = 1.0;
         self.activityIndicator.hidesWhenStopped = YES;
         self.activityIndicator.center = self.center;
         [self addSubview:self.activityIndicator];
         [self bringSubviewToFront:self.activityIndicator];
         [self.activityIndicator startAnimating];
+    }
 }
 
 -(void)stopActivityIndicator {
     if(!self.activityIndicator.isAnimating) return;
     [self.activityIndicator stopAnimating];
+    [self.activityIndicator removeFromSuperview];
 }
 
 #pragma mark - Selected & Deselected -
@@ -264,8 +269,8 @@
 // After being selected needs to reset where semi circles are
 // Resets frames of right and left circle and right and left cover rects
 -(void) deSelect {
-	self.rightSemiCircle.frame = self.rightCircleFrame;
-	self.leftSemiCircle.frame = self.leftCircleFrame;
+	self.rightCircle.frame = self.rightCircleFrame;
+	self.leftCircle.frame = self.leftCircleFrame;
 	self.rightCircleCoverRect.frame = self.rightCoverRectFrame;
 	self.leftCircleCoverRect.frame = self.leftCoverRectFrame;
 }

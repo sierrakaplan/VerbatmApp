@@ -4,17 +4,17 @@
 
     <datastore-index kind="POV" ancestor="false" source="manual">
         <property name="numUpVotes" direction="desc"/>
+        <property name="datePublished" direction="desc"/>
         <property name="coverPicUrl" direction="asc"/>
         <property name="creatorUserId" direction="asc"/>
-        <property name="datePublished" direction="asc"/>
         <property name="title" direction="asc"/>
     </datastore-index>
 
     <datastore-index kind="POV" ancestor="false" source="manual">
         <property name="datePublished" direction="desc"/>
+        <property name="numUpVotes" direction="desc"/>
         <property name="coverPicUrl" direction="asc"/>
         <property name="creatorUserId" direction="asc"/>
-        <property name="numUpVotes" direction="asc"/>
         <property name="title" direction="asc"/>
     </datastore-index>
 

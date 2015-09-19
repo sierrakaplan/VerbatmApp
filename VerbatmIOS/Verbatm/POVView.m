@@ -66,7 +66,6 @@
     float middleScreenSize = (self.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
     self.pageScrollTopBottomArea = (self.frame.size.height - middleScreenSize)/2.f;
     [self setUpGestureRecognizers];
-
 }
 
 #pragma mark - Add like button -
@@ -167,6 +166,7 @@
     }
 }
 
+#pragma mark - Down arrow -
 
 -(void)addDownArrowButton{
     self.downArrow = [[UIButton alloc] init];
@@ -181,7 +181,9 @@
 -(void)downArrowClicked {
     [UIView animateWithDuration:SCROLL_UP_ANIMATION_DURATION animations:^{
         self.mainScrollView.contentOffset = CGPointMake(0, self.frame.size.height);
-    }];
+	} completion:^(BOOL finished) {
+		[self displayMediaOnCurrentAVE];
+	}];
 }
 
 #pragma mark - Gesture recognizers -

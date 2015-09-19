@@ -31,7 +31,7 @@
 //Loads a publishing story cell
 -(void)setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title andCoverImage: (UIImage*) coverImage;
 
--(void)startActivityIndicatrForPlaceholder;
+-(void)stopActivityIndicator;
 
 // If it was selected (by a tap for example)
 // Then animate the circles together before calling delegate method

@@ -27,7 +27,7 @@
 //
 
 @interface GTLVerbatmAppVideo : GTLObject
-@property (nonatomic, copy) NSString *blobStoreKeyString;
+@property (nonatomic, copy) NSString *blobKeyString;
 
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, retain) NSNumber *identifier;  // longLongValue

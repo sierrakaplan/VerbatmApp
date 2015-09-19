@@ -26,9 +26,9 @@ public class Video {
     private Long userId;
 
     /**
-     * The blobstore key string of this video
+     * The blobKey for this video in the blobstore
      */
-    private String blobStoreKeyString;
+    private String blobKeyString;
 
     /**
      * Text caption to a video
@@ -75,20 +75,21 @@ public class Video {
         this.userId = userId;
     }
 
+
     /**
-     * Gets the blobstore key string of this video
-     * @return the blobstore key string of this video
+     * Returns the blobKey for this video in the blobstore
+     * @return the blobKey for this video in the blobstore
      */
-    public final String getBlobStoreKeyString() {
-        return blobStoreKeyString;
+    public String getBlobKeyString() {
+        return blobKeyString;
     }
 
     /**
-     * Sets the blobstore key string of this video
-     * @param blobStoreKeyString the blobstore key string of this video
+     * Sets the blobKey for this video in the blobstore
+     * @param blobKeyString the blobKey for this video in the blobstore
      */
-    public final void setBlobStoreKeyString(String blobStoreKeyString) {
-        this.blobStoreKeyString = blobStoreKeyString;
+    public void setBlobKeyString(String blobKeyString) {
+        this.blobKeyString = blobKeyString;
     }
 
     /**

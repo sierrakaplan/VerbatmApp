@@ -23,10 +23,11 @@
 
 -(instancetype) initWithImage:(UIImage*)img andUri: (NSString*)uri {
 
+	NSLog(@"Uploading image to blobstore with url: %@", uri);
+
 	NSData *imageData = [NSData dataWithData:UIImagePNGRepresentation(img)];
 
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
-
 	[self.formData setData:imageData
 			  withFileName:@"defaultImage.png"
 			andContentType:@"image/png"
@@ -34,7 +35,7 @@
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
 	// Needs to be long in order to allow long videos to upload
-	[self.formData setTimeOutSeconds: 180];
+	[self.formData setTimeOutSeconds: 60];
 
 	return self;
 }
@@ -42,14 +43,17 @@
 //Maybe could do this with Promise NSURLConnection?
 -(instancetype) initWithVideoData: (NSData*)videoData  andUri: (NSString*)uri {
 
+	NSLog(@"Uploading video to blobstore with url: %@", uri);
+
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
 
 	[self.formData setData:videoData
 			  withFileName:@"defaultVideo.mov"
-			andContentType:@"video/mp4"
+			andContentType:@"video/quicktime"
 					forKey:@"defaultVideo"];
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
+	[self.formData setTimeOutSeconds: 180];
 
 	return self;
 }
@@ -86,9 +90,13 @@
 
 -(void) requestFinished:(ASIHTTPRequest *)request {
 	NSLog(@"upload media finished");
-	//The response string is a blobkey string for video and an imagesservice servingurl for image
+	//The response string is a blobkeystring and an imagesservice servingurl for image
 	NSString* responseString = [request responseString];
-	self.completionBlock(nil, responseString);
+	if (!responseString.length) {
+		[self requestFailed:request];
+	} else {
+		self.completionBlock(nil, responseString);
+	}
 }
 
 -(void) requestFailed:(ASIHTTPRequest *)request {

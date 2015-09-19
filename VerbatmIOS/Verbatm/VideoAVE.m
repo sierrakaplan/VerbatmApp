@@ -38,8 +38,8 @@
 -(void)playVideos:(NSArray*)videoList {
 	//comes as avurlasset in preview
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
-		[self playVideoFromArrayOfAssets:videoList];
 		//comes as NSURL from backend
+        [self playVideoFromArrayOfAssets:videoList];
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
 		//TODO: play videos in succession
 		[self playVideoFromURL:videoList[0]];

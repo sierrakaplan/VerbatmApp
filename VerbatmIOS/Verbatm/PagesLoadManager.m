@@ -16,12 +16,8 @@
 
 #import "GTMHTTPFetcherLogging.h"
 
-#import "MediaLoader.h"
-
 #import "PagesLoadManager.h"
 #import "Page.h"
-
-#import "Video.h"
 
 #import <PromiseKit/PromiseKit.h>
 
@@ -126,7 +122,7 @@
 	});
 }
 
-// Resolves to array of Video's or error
+// Resolves to array of GTLVerbatmAppVideo's or error
 -(PMKPromise*) loadVideosFromVideoIDs: (NSArray*) videoIDs {
 	NSMutableArray* loadVideoPromises = [[NSMutableArray array] init];
 	for (NSNumber* videoID in videoIDs) {
@@ -160,10 +156,7 @@
 }
 
 //Queries for GTLVerbatmAppVideo with given ID from server
-//Then serves the video from the blobstore using the blobstore key
-//Then creates a video object using the resource url instead of
-//the blobstore key string
-//Resolves to Video or error
+//Resolves to either GTLVerbatmAppVideo or error
 -(PMKPromise*) loadVideoWithID: (NSNumber*) videoID {
 	GTLQuery* loadVideoQuery = [GTLQueryVerbatmApp queryForVideoGetVideoWithIdentifier: videoID.longLongValue];
 
@@ -177,22 +170,7 @@
 					 }
 				 }];
 	}];
-
-	Video* video = [[Video alloc] init];
-
-	return promise.then(^(GTLVerbatmAppVideo* gtlVideo) {
-		video.identifier = gtlVideo.identifier;
-		video.indexInPage = gtlVideo.indexInPage;
-		video.text = gtlVideo.text;
-		video.userId = gtlVideo.userId;
-
-		MediaLoader* videoLoader = [[MediaLoader alloc] initWithBlobStoreKeyString:gtlVideo.blobStoreKeyString andURI:@"https://verbatmapp.appspot.com/serveVideo"];
-		[self.mediaLoaders addObject: videoLoader];
-		return [videoLoader startDownload];
-	}).then(^(NSString* servingURL) {
-		video.blobStoreResourceURL = servingURL;
-		return video;
-	});
+	return promise;
 }
 
 

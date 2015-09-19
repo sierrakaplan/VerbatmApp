@@ -14,14 +14,13 @@
     //we are redeclaring this property fromt the super class so that we can acceess it. It's
     //not duplicated in memory.
     @property (strong, nonatomic) UIImageView *imageView;
-
 @end
 
 
 @implementation CoverPicturePV
 @dynamic imageView;
 
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image{
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image {
     
     self = [super initWithRadius:radius withCenter:center andImage:image];
     if(self){
@@ -29,7 +28,6 @@
     }
     return self;
 }
-
 
 -(void) formatSelf {
     [self setBackgroundColor: [UIColor clearColor]];
@@ -59,7 +57,8 @@
 }
 
 -(void) removeImage {
-    [self.imageView removeFromSuperview];
+    [self.imageView setImage:nil];
+    
     [self.background addSubview: self.addCoverPicLabel];
 }
 

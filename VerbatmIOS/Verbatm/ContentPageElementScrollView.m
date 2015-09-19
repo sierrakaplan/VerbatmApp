@@ -70,6 +70,11 @@
     [self addSubview:self.deleteButton];
 }
 
+-(void)removeTheDeleteButton{
+    [self.deleteButton removeFromSuperview];
+    self.deleteButton = nil;
+}
+
 -(void)deleteButtonPressed:(UIButton*) sender{
     [self.customDelegate contentPageScrollViewShouldDelete:self];
 }
@@ -168,6 +173,7 @@
 		[[(CollectionPinchView*)self.pageElement videoView] stopVideo];
 	}
 	[self.pageElement removeFromSuperview];
+    [self removeTheDeleteButton];
 	[self displayCollectionPinchViews:[(CollectionPinchView*)self.pageElement pinchedObjects]];
 	return YES;
 }
@@ -211,6 +217,7 @@
 	self.contentSize = self.initialContentSize;
 	self.contentOffset = self.initialContentOffset;
 	[self addSubview:self.pageElement];
+    [self createDeleteButton];
 	[(CollectionPinchView*)self.pageElement updateMedia];
 	[(CollectionPinchView*)self.pageElement renderMedia];
 	self.collectionPinchViews = nil;

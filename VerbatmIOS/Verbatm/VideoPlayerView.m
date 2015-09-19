@@ -18,7 +18,6 @@
 @property (nonatomic) BOOL repeatsVideo;
 @property (nonatomic) BOOL isMuted;
 @property (strong, nonatomic) AVMutableComposition* mix;
-@property (strong, nonatomic) UIImageView* videoLoadingView;
 @property (nonatomic) BOOL videoLoading;
 
 
@@ -36,41 +35,9 @@
 -(instancetype)initWithFrame:(CGRect)frame {
 	if((self  = [super initWithFrame:frame])) {
 		self.repeatsVideo = NO;
-		UIImage* videoLoadingImage = [UIImage imageNamed:VIDEO_LOADING_ICON];
-		self.videoLoadingView = [[UIImageView alloc] initWithImage: videoLoadingImage];
-		self.videoLoadingView.frame = self.bounds;
 		self.videoLoading = NO;
 	}
 	return self;
-}
-
--(void)removeMuteButtonFromView{
-    [self.muteButton removeFromSuperview];
-}
-
-
-//lazy instantiation of mute button
--(UIButton *)muteButton{
-    if(!_muteButton){
-        _muteButton = [[UIButton alloc] init];
-    }
-    return _muteButton;
-}
-
-
--(void)muteButtonTouched:(id)sender{
-    
-    if(self.isMuted){
-        [self unmuteVideo];
-        self.isMuted = false;
-        //set mute image on so the know to mute
-        [self.muteButton setImage:[UIImage imageNamed:MUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
-    }else{
-        [self muteVideo];
-        self.isMuted = true;
-        //set the unmute image on so they know how to unmute
-        [self.muteButton  setImage:[UIImage imageNamed:UNMUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
-    }
 }
 
 //make sure the sublayer resizes with the view screen
@@ -84,9 +51,8 @@
 -(void)playVideoFromURL: (NSURL*) url {
 	if (url) {
 		self.videoLoading = YES;
-		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL:url]];
+		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
 		[self playVideo];
-		[self addSubview:self.videoLoadingView];
 	}
 }
 
@@ -114,7 +80,6 @@
 	if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
 		if (self.playerItem.status == AVPlayerStatusReadyToPlay) {
 			if (self.videoLoading) {
-				[self.videoLoadingView removeFromSuperview];
 				self.videoLoading = NO;
 			}
 		} else if (self.playerItem.status == AVPlayerStatusFailed) {
@@ -205,6 +170,37 @@
 	}
 }
 
+#pragma mark - Mute -
+
+-(void)removeMuteButtonFromView{
+	[self.muteButton removeFromSuperview];
+}
+
+
+//lazy instantiation of mute button
+-(UIButton *)muteButton{
+	if(!_muteButton){
+		_muteButton = [[UIButton alloc] init];
+	}
+	return _muteButton;
+}
+
+
+-(void)muteButtonTouched:(id)sender{
+
+	if(self.isMuted){
+		[self unmuteVideo];
+		self.isMuted = false;
+		//set mute image on so the know to mute
+		[self.muteButton setImage:[UIImage imageNamed:MUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
+	}else{
+		[self muteVideo];
+		self.isMuted = true;
+		//set the unmute image on so they know how to unmute
+		[self.muteButton  setImage:[UIImage imageNamed:UNMUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
+	}
+}
+
 -(void)unmuteVideo {
 	if(self.player) {
 		[self.player setMuted:NO];
@@ -242,7 +238,6 @@
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
 	if (self.videoLoading) {
-		[self.videoLoadingView removeFromSuperview];
 		self.videoLoading = NO;
 	}
 	for (UIView* view in self.subviews) {

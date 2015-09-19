@@ -8,6 +8,7 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.blobstore.UploadOptions;
 import com.google.appengine.api.users.User;
 import com.myverbatm.verbatm.backend.Constants;
 import com.myverbatm.verbatm.backend.models.UploadURI;
