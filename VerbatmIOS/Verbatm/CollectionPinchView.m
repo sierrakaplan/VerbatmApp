@@ -10,7 +10,6 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Icons.h"
-#import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
 
@@ -173,7 +172,6 @@
 	self.videoView.videoPlayerView.frame = self.videoView.bounds;
 	if (self.containsText) {
 		self.textView.text = self.text;
-		[TextPinchView formatTextView:self.textView];
 		[self.background bringSubviewToFront:self.textView];
 	}
 	if (self.containsImage) {

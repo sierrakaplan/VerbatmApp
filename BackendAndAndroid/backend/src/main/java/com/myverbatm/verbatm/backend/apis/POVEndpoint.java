@@ -165,7 +165,9 @@ public class POVEndpoint {
             .addProjection(new PropertyProjection("numUpVotes", Long.class))
             .addProjection(new PropertyProjection("creatorUserId", Long.class))
             // Sorting by upvotes
-            .addSort("numUpVotes", Query.SortDirection.DESCENDING);
+            .addSort("numUpVotes", Query.SortDirection.DESCENDING)
+            // Secondary sort by most recent
+            .addSort("datePublished", Query.SortDirection.DESCENDING);
 
         PreparedQuery preparedQuery = datastore.prepare(trendingPOVQuery);
         FetchOptions fetchOptions = FetchOptions.Builder.withLimit(count);

@@ -17,87 +17,61 @@
 #import "ContentDevVC.h"
 
 @interface MediaSelectTile ()
-    @property(nonatomic ,strong) UIButton * selectMedia;
-    @property (nonatomic ,strong) UIButton * selectText;
-    @property (nonatomic, strong) CAShapeLayer * border;
-    @property (readwrite, nonatomic) BOOL optionSelected;
+@property(nonatomic ,strong) UIButton * addMediaButton;
+@property (nonatomic, strong) CAShapeLayer * border;
+@property (readwrite, nonatomic) BOOL optionSelected;
 @end
 
 @implementation MediaSelectTile
 #pragma mark - initialize view
 - (id)initWithFrame:(CGRect)frame
 {
-    self = [super initWithFrame:frame];
-    if (self) {
-        
-        [self createFramesForButtonsWithFrame: frame];
-		[self createImagesForButtons];
-        [self addButtonsAsSubviews];
-        [self setBackgroundColor:[UIColor clearColor]];
-    }
-    return self;
+	self = [super initWithFrame:frame];
+	if (self) {
+
+		[self createFramesForButtonWithFrame: frame];
+		[self createImagesForButton];
+		[self addSubview: self.addMediaButton];
+		[self setBackgroundColor:[UIColor clearColor]];
+	}
+	return self;
 }
 
--(void) createFramesForButtonsWithFrame: (CGRect) frame {
+-(void) createFramesForButtonWithFrame: (CGRect) frame {
 	float buttonOffset = frame.size.height/10.f;
 	float size = frame.size.height-buttonOffset*2;
-	float xDifference = frame.size.width/4.f - size/2.f;
-    self.selectMedia.frame = CGRectMake(buttonOffset + xDifference, buttonOffset, size, size);
-    self.selectText.frame = CGRectMake(frame.size.width/2.f + xDifference, buttonOffset, size, size);
-	self.selectMedia.layer.cornerRadius = self.selectMedia.frame.size.width/2;
-	self.selectText.layer.cornerRadius = self.selectText.frame.size.width/2;
-	self.selectMedia.layer.shadowRadius = buttonOffset;
-	self.selectText.layer.shadowRadius = buttonOffset;
+
+	self.addMediaButton.frame = CGRectMake(frame.size.width/2.f - size/2.f, buttonOffset, size, size);
+	self.addMediaButton.layer.cornerRadius = self.addMediaButton.frame.size.width/2;
+	self.addMediaButton.layer.shadowRadius = buttonOffset;
 }
 
--(void) createImagesForButtons {
-//	UIImage *textButtonImage = [UIImage imageNamed:INSERT_TEXT_BUTTON];
-//	UIImage *photoButtonImage = [UIImage imageNamed:INSERT_MEDIA_BUTTON];
-//	UIImage *grayedOutIconText = [UIEffects imageOverlayed:textButtonImage withColor:[UIColor lightGrayColor]];
-//	UIImage *grayedOutIconImage = [UIEffects imageOverlayed:photoButtonImage withColor:[UIColor lightGrayColor]];
-
-//	[self.selectText setImage:grayedOutIconText forState:UIControlStateSelected | UIControlStateHighlighted];
-//	[self.selectMedia setImage:grayedOutIconImage forState:UIControlStateSelected | UIControlStateHighlighted];
-
-//	[self.selectMedia setImage:photoButtonImage forState: UIControlStateNormal];
-//	[self.selectText setImage:textButtonImage forState: UIControlStateNormal];
+-(void) createImagesForButton {
+	UIImage *addMediaImage = [UIImage imageNamed:CAMERA_BUTTON_ICON];
+	[self.addMediaButton setImage:addMediaImage forState: UIControlStateNormal];
 }
 
--(void) formatButtons {
-	[self.selectText.layer setBackgroundColor:[UIColor clearColor].CGColor];
-	[self.selectMedia.layer setBackgroundColor:[UIColor clearColor].CGColor];
+-(void) formatButton {
+	[self.addMediaButton.layer setBackgroundColor:[UIColor clearColor].CGColor];
 
 	UIColor* buttonBackgroundColor = [UIColor darkGrayColor];
 
 	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
-		self.selectMedia.layer.shadowColor = buttonBackgroundColor.CGColor;
-		self.selectText.layer.shadowColor = buttonBackgroundColor.CGColor;
-		self.selectMedia.layer.shadowOpacity = 1;
-		self.selectText.layer.shadowOpacity = 1;
-		[self.selectText.layer setBackgroundColor:buttonBackgroundColor.CGColor];
-		[self.selectMedia.layer setBackgroundColor:buttonBackgroundColor.CGColor];
+		self.addMediaButton.layer.shadowColor = buttonBackgroundColor.CGColor;
+		self.addMediaButton.layer.shadowOpacity = 1;
+		[self.addMediaButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
 	} completion:^(BOOL finished) {
 	}];
 }
 
--(void)addButtonsAsSubviews {
-	[self addSubview:self.selectMedia];
-    [self addSubview:self.selectText];
+
+- (void) addMedia {
+	self.optionSelected = YES;
+	[self.delegate addMediaButtonPressedOnTile:self];
 }
 
--(void) addText {
-    self.optionSelected =YES;
-	[self.delegate textButtonPressedOnTile:self];
-}
-
--(void) addMedia {
-    self.optionSelected = YES;
-	[self.delegate multiMediaButtonPressedOnTile:self];
-}
-
--(void) buttonHighlight: (UIButton*) button
-{
-    [button setBackgroundColor:[UIColor whiteColor]];
+-(void) buttonHighlight: (UIButton*) button {
+	[button setBackgroundColor:[UIColor whiteColor]];
 }
 
 -(void)markAsSelected: (BOOL) selected {
@@ -120,27 +94,14 @@
 
 
 #pragma mark - *Lazy Instantiation
--(UIButton *) selectMedia
-{
-    if(!_selectMedia)
-    {
-        _selectMedia = [[UIButton alloc]init];
-        [_selectMedia addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
-    }
-    
-    return _selectMedia;
+- (UIButton *) addMediaButton {
+	if(!_addMediaButton) {
+		_addMediaButton = [[UIButton alloc]init];
+		[_addMediaButton addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
+	}
+
+	return _addMediaButton;
 }
-
-
--(UIButton *) selectText
-{
-
-    if(!_selectText) _selectText = [[UIButton alloc]init];
-    [_selectText addTarget:self action:@selector(addText) forControlEvents:UIControlEventTouchUpInside];
-
-    return _selectText;
-}
-
 
 
 @end

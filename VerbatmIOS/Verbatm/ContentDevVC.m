@@ -38,8 +38,6 @@
 #import "Strings.h"
 #import "Styles.h"
 
-#import "TextPinchView.h"
-
 #import "UIEffects.h"
 #import "UserSetupParameters.h"
 
@@ -111,7 +109,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 @property (nonatomic,weak) ContentPageElementScrollView * lowerPinchScrollView;
 @property (nonatomic) CGPoint upperTouchPointInVerticalPinch;
 @property(nonatomic) CGPoint lowerTouchPointInVerticalPinch;
-//@property (nonatomic,weak) MediaSelectTile* newlyCreatedMediaTile;
+// Useful for pinch apart to add media between objects
+@property (nonatomic) ContentPageElementScrollView* addMediaBelowView;
 
 
 //informs our instruction notification if the user has added
@@ -189,8 +188,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	self.baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
 	self.baseMediaTileSelector.isBaseSelector =YES;
 	self.baseMediaTileSelector.delegate = self;
-	[self.baseMediaTileSelector createFramesForButtonsWithFrame:frame];
-	[self.baseMediaTileSelector formatButtons];
+	[self.baseMediaTileSelector createFramesForButtonWithFrame:frame];
+	[self.baseMediaTileSelector formatButton];
 
 
 	CGRect scrollViewFrame = CGRectMake(0, self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_OFFSET_DISTANCE,
@@ -202,6 +201,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 	baseMediaTileSelectorScrollView.scrollEnabled = NO;
 	baseMediaTileSelectorScrollView.delegate = self;
+	baseMediaTileSelectorScrollView.backgroundColor = [UIColor blueColor];
 
 	[self.mainScrollView addSubview:baseMediaTileSelectorScrollView];
 	[self.pageElementScrollViews addObject:baseMediaTileSelectorScrollView];
@@ -466,7 +466,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[[UserPinchViews sharedInstance] addPinchView:pinchView];
 	[self addTapGestureToPinchView:pinchView];
 
-	NSInteger index = -1;
+	// must be below base media tile selector
+	NSInteger index = self.pageElementScrollViews.count-2;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
@@ -484,11 +485,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 	//thread safety
 	@synchronized(self) {
-		if (index >= 0) {
-			[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
-		} else {
-			[self.pageElementScrollViews addObject:newElementScrollView];
-		}
+		[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
 	}
 
 	[self.mainScrollView addSubview: newElementScrollView];
@@ -730,7 +727,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		self.newlyCreatedMediaTile.frame = [self getStartFrameForNewMediaTile];
 		self.newlyCreatedMediaTile.superview.frame = CGRectMake(0,self.newlyCreatedMediaTile.superview.frame.origin.y + originalHeight/2.f,
 																self.newlyCreatedMediaTile.superview.frame.size.width, 0);
-		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
 		[self shiftElementsBelowView: self.coverPicView];
 
 	} completion:^(BOOL finished) {
@@ -978,7 +975,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 																self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
 																self.newlyCreatedMediaTile.superview.frame.size.width,
 																self.newlyCreatedMediaTile.superview.frame.size.height + totalChange);
-		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
 		[self.newlyCreatedMediaTile setNeedsDisplay];
 	}
 	//the distance is enough that we can just animate the rest
@@ -997,15 +994,15 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 																self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
 																self.baseMediaTileSelector.superview.frame.size.width,
 																self.baseMediaTileSelector.superview.frame.size.height);
-		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
 		[self shiftElementsBelowView: self.coverPicView];
 	} completion:^(BOOL finished) {
 		[self shiftElementsBelowView: self.coverPicView];
 		gesture.enabled = NO;
 		gesture.enabled = YES;
 		self.pinchingMode = PinchingModeNone;
-		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self.newlyCreatedMediaTile formatButtons];
+		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile formatButton];
 	}];
 }
 #pragma mark Pinch Apart Failed
@@ -1117,18 +1114,16 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	return false;
 }
 
-#pragma mark - Media Tile Options -
+#pragma mark - Media Tile Delegate -
 
 //TODO:
--(void) textButtonPressedOnTile: (MediaSelectTile*) tile {
-//	[self hidePullBarWithTransition:NO];
-//	[self moveAllViewsOffScreen];
-//	NSInteger index = [self.pageElementScrollViews indexOfObject:tile.superview];
-//	self.index = (index-1);
-//	[self createEditContentViewFromPinchView:Nil];
-//	if (!tile.isBaseSelector) {
-//		[self clearMediaTile:tile];
-//	}
+-(void) addMediaButtonPressedOnTile: (MediaSelectTile *)tile  {
+	NSInteger index = [self.pageElementScrollViews indexOfObject: tile.superview] - 1;
+	self.addMediaBelowView = self.pageElementScrollViews[index];
+	[self presentEfficientGallery];
+	if (!tile.isBaseSelector) {
+		[self clearMediaTile:tile];
+	}
 }
 
 #pragma  mark - Add cover picture -
@@ -1741,14 +1736,24 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andImage:image];
-	[self newPinchView:newPinchView belowView:nil];
+	if (self.addMediaBelowView) {
+		[self newPinchView: newPinchView belowView: self.addMediaBelowView];
+		self.addMediaBelowView = nil;
+	} else {
+		[self newPinchView:newPinchView belowView:nil];
+	}
 }
 
 -(void) createPinchViewFromVideoAsset:(AVURLAsset*) videoAsset {
 	PinchView* newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andVideo: videoAsset];
-	[self newPinchView:newPinchView belowView:nil];
+	if (self.addMediaBelowView) {
+		[self newPinchView: newPinchView belowView: self.addMediaBelowView];
+		self.addMediaBelowView = nil;
+	} else {
+		[self newPinchView:newPinchView belowView:nil];
+	}
 }
 
 

@@ -23,7 +23,6 @@
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
 		A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687A1B65B25700CE5744 /* CollectionPinchView.m */; };
-		A56F687E1B65B42B00CE5744 /* TextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687D1B65B42B00CE5744 /* TextPinchView.m */; };
 		A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68801B65B43D00CE5744 /* ImagePinchView.m */; };
 		A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68831B65B44C00CE5744 /* VideoPinchView.m */; };
 		A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68861B66FED900CE5744 /* ContentPageElementScrollView.m */; };
@@ -252,8 +251,6 @@
 		A56F68781B6592C400CE5744 /* PhotoFilters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoFilters.h; sourceTree = "<group>"; };
 		A56F68791B65B25700CE5744 /* CollectionPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionPinchView.h; sourceTree = "<group>"; };
 		A56F687A1B65B25700CE5744 /* CollectionPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionPinchView.m; sourceTree = "<group>"; };
-		A56F687C1B65B42B00CE5744 /* TextPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextPinchView.h; sourceTree = "<group>"; };
-		A56F687D1B65B42B00CE5744 /* TextPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextPinchView.m; sourceTree = "<group>"; };
 		A56F687F1B65B43D00CE5744 /* ImagePinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePinchView.h; sourceTree = "<group>"; };
 		A56F68801B65B43D00CE5744 /* ImagePinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagePinchView.m; sourceTree = "<group>"; };
 		A56F68821B65B44C00CE5744 /* VideoPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPinchView.h; sourceTree = "<group>"; };
@@ -930,8 +927,6 @@
 			children = (
 				C77C7D361A22E9FC00694B20 /* PinchView.h */,
 				C77C7D371A22E9FC00694B20 /* PinchView.m */,
-				A56F687C1B65B42B00CE5744 /* TextPinchView.h */,
-				A56F687D1B65B42B00CE5744 /* TextPinchView.m */,
 				A56F68791B65B25700CE5744 /* CollectionPinchView.h */,
 				A56F687A1B65B25700CE5744 /* CollectionPinchView.m */,
 				A56F687F1B65B43D00CE5744 /* ImagePinchView.h */,
@@ -1407,7 +1402,6 @@
 				A5AA31C11B9FCDDC00D8D20C /* GTLVerbatmAppPage.m in Sources */,
 				A5AA31C61B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m in Sources */,
 				C7A8E3861A61CE4D00776BD1 /* ContentDevPullBar.m in Sources */,
-				A56F687E1B65B42B00CE5744 /* TextPinchView.m in Sources */,
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				C772F2851B4BC13500CEC83D /* GMGridViewController.m in Sources */,

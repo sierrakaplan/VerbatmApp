@@ -98,14 +98,14 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	NSURL* videoURL = [self.video URL];;
-	[coder encodeObject:videoURL forKey:VIDEO_KEY];
+	NSURL* videoURL = [self.video URL];
+	[coder encodeObject: videoURL.absoluteString forKey:VIDEO_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
-		NSURL* videoURL = [decoder decodeObjectForKey:VIDEO_KEY];
-		AVURLAsset* video = [AVURLAsset assetWithURL:videoURL];
+		NSString* videoURLString = [decoder decodeObjectForKey:VIDEO_KEY];
+		AVURLAsset* video = [AVURLAsset assetWithURL:[NSURL URLWithString:videoURLString]];
 		[self initWithVideo:video];
 	}
 	return self;

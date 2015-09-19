@@ -11,7 +11,6 @@
 #import "CollectionPinchView.h"
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppVideo.h"
-#import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
 #import "VideoAVE.h"
@@ -93,12 +92,6 @@
 }
 
 -(void) getAVEFromPinchView: (PinchView*) pinchView {
-
-	if([pinchView isKindOfClass:[TextPinchView class]]) {
-		TextAVE* textAVE = [[TextAVE alloc]initWithFrame:self.preferredFrame andText:[pinchView getText]];
-		[self.results addObject:textAVE];
-		return;
-	}
 
 	AVEType type;
 
