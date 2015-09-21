@@ -280,10 +280,17 @@
 	NSMutableArray* videos = [[NSMutableArray alloc] init];
 	for (PinchView* pinchView in self.pinchedObjects) {
 		if(pinchView.containsVideo) {
+			if (
 			AVURLAsset* video = [(VideoPinchView*)pinchView video];
 			//TODO: do this in background
-			NSData* videoData = [NSData dataWithContentsOfURL: video.URL];
-			[videos addObject: videoData];
+			NSURL* videoURL = video.URL;
+			NSError * error;
+			NSData* videoData = [NSData dataWithContentsOfURL: videoURL options:NSDataReadingMappedIfSafe error:&error];
+			if (error) {
+				NSLog(@"error getting data from video url: %@", error.description);
+			} else {
+				[videos addObject: videoData];
+			}
 		}
 	}
 	return videos;

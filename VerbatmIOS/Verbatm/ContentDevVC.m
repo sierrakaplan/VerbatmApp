@@ -145,10 +145,10 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self addBlurView];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
-	[self createBaseSelector];
 	[self setKeyboardAppearance];
 	[self setCursorColor];
 	[self formatTitleAndCoverPicture];
+	[self createBaseSelector];
 	[self setUpNotifications];
 	[self setDelegates];
 	self.pinchingMode = PinchingModeNone;
@@ -201,7 +201,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 	baseMediaTileSelectorScrollView.scrollEnabled = NO;
 	baseMediaTileSelectorScrollView.delegate = self;
-	baseMediaTileSelectorScrollView.backgroundColor = [UIColor blueColor];
 
 	[self.mainScrollView addSubview:baseMediaTileSelectorScrollView];
 	[self.pageElementScrollViews addObject:baseMediaTileSelectorScrollView];
@@ -467,7 +466,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self addTapGestureToPinchView:pinchView];
 
 	// must be below base media tile selector
-	NSInteger index = self.pageElementScrollViews.count-2;
+	NSInteger index = self.pageElementScrollViews.count-1;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
@@ -1578,6 +1577,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
     [self coverPhotoClear];
+	[self createBaseSelector];
 }
 
 -(void)coverPhotoClear{
