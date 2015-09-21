@@ -136,9 +136,9 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 #pragma mark - Initialization And Instantiation -
 
-- (void)viewDidLoad{
-
+- (void)viewDidLoad {
 	[super viewDidLoad];
+	[self initializeVariables];
 	[self addBlurView];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
@@ -147,7 +147,11 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self formatTitleAndCoverPicture];
 	[self setUpNotifications];
 	[self setDelegates];
+}
+
+-(void) initializeVariables {
 	self.pinchingMode = PinchingModeNone;
+	self.addingCoverPicture = NO;
 	self.numPinchViews = 0;
 	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
 	self.pinchObject_TappedAndClosed_ForTheFirstTime = NO;
@@ -292,6 +296,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	return [self.coverPicView getImage];
 }
 
+// Loads pinch views from user defaults
 -(void) loadPinchViews {
 	NSArray* savedPinchViews = [[UserPinchViews sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
@@ -990,7 +995,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 #pragma  mark - Add cover picture -
 
 -(void) addCoverPictureTapped {
-	self.addingCoverPicture = YES;
 	[self presentGalleryForCoverPic];
     //show replace photo icon after the first time this is tapped
     if(!_replaceCoverPhotoButton){
@@ -1438,14 +1442,13 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
-    [self coverPhotoClear];
+    [self clearCoverPhoto];
 }
 
--(void)coverPhotoClear{
+-(void) clearCoverPhoto {
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
     [self.coverPicView addGestureRecognizer: tapGesture];
     [self.coverPicView removeImage];
-    self.addingCoverPicture = NO;
     [self.replaceCoverPhotoButton removeFromSuperview];
     self.replaceCoverPhotoButton = nil;
 }
@@ -1495,6 +1498,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	picker.colsInPortrait = 3;
 	picker.colsInLandscape = 5;
 	picker.minimumInteritemSpacing = 2.0;
+
+	self.addingCoverPicture = YES;
 	[self presentViewController:picker animated:YES completion:nil];
 }
 
@@ -1517,8 +1522,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		if (self.addingCoverPicture) {
-			[self addCoverPictureFromAssetArray: assetArray];
 			self.addingCoverPicture = NO;
+			[self addCoverPictureFromAssetArray: assetArray];
 		} else {
 			[self presentAssetsAsPinchViews:assetArray];
 		}
@@ -1528,7 +1533,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
     self.openPinchView = nil;
     self.addingCoverPicture = NO;
-	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 }
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {

@@ -155,7 +155,7 @@
 	[self.contentContainerView addSubview: self.contentDevVC.view];
 	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height;
 	self.contentDevVC.changePullBarDelegate = self;
-	[self.contentDevVC loadPinchViews];
+//TODO:	[self.contentDevVC loadPinchViews];
 }
 
 
