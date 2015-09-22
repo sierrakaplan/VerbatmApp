@@ -11,9 +11,6 @@
 
 #pragma mark - Sign In -
 
-#define BRING_UP_SIGNIN_SEGUE @"bringUpSign"
-#define EXIT_SIGNIN_SEGUE @"exitSignInScreen"
-
 #define UNWIND_SEGUE_EDIT_CONTENT_VIEW @"unwindFromEditContentView"
 
 #pragma mark - Feed -

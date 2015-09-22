@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "UserSignIn.h"
+#import "SignIn.h"
 #import "Notifications.h"
 #import "Identifiers.h"
 #import "SizesAndPositions.h"
@@ -26,7 +26,7 @@
 #import "GTLVerbatmAppEmail.h"
 #import "GTLVerbatmAppImage.h"
 
-@interface UserSignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
+@interface SignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
 #define TOAST_DURATION 1
 
 @property (weak, nonatomic) IBOutlet UITextField *UserName_TextField;
@@ -42,17 +42,17 @@
 @property(nonatomic, strong) GTMOAuth2Authentication *auth;
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
 
+#define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
 
 @end
 
-@implementation UserSignIn
+@implementation SignIn
 
 @synthesize service = _service;
 
 static NSString *const kKeychainItemName = @"VerbatmIOS";
 NSString *kMyClientID = @"340461213452-vrmr2vt1v1adgkra963vomulfv449odv.apps.googleusercontent.com";
 NSString *kMyClientSecret = @"H4jYylR_xFqh4EyX60wLdS20";
-
 
 
 - (void)viewDidLoad {
@@ -345,28 +345,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 //for ios8- To hide the status bar
--(BOOL)prefersStatusBarHidden
-{
+-(BOOL)prefersStatusBarHidden {
     return YES;
 }
-
--(void) removeStatusBar{
-    //remove the status bar
-    if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-        // iOS 7
-        [self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-    } else {
-        // iOS 6
-        [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-    }
-}
-
-
--(NSUInteger)supportedInterfaceOrientations{
-    //return supported orientation masks
-    return UIInterfaceOrientationMaskPortrait;
-}
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

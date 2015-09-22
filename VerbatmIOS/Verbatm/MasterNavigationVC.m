@@ -32,7 +32,7 @@
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 
-#pragma mark - Child View Controllers - 
+#pragma mark - Child View Controllers -
 @property (weak, nonatomic) IBOutlet UIView * profileContainer;
 @property (weak, nonatomic) IBOutlet UIView * adkContainer;
 @property (weak, nonatomic) IBOutlet UIView * feedContainer;
@@ -78,6 +78,8 @@
 
 #define ID_FOR_DISPLAY_VC @"article_display_vc"
 
+#define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_or_login_segue"
+
 @end
 
 @implementation MasterNavigationVC
@@ -86,14 +88,14 @@
 	[super viewDidLoad];
 	[self formatMainScrollView];
 	[self getAndFormatVCs];
-    self.connectionMonitor = [[internetConnectionMonitor alloc] init];
-    [self registerForNotifications];
+	self.connectionMonitor = [[internetConnectionMonitor alloc] init];
+	[self registerForNotifications];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    
-    if(![UserSetupParameters trendingCirle_InstructionShown])[self alertPullTrendingIcon];
+
+	if(![UserSetupParameters trendingCirle_InstructionShown])[self alertPullTrendingIcon];
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -101,14 +103,12 @@
 }
 
 
-
-
 -(void)registerForNotifications{
-    //gets notified if there is no internet connection
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(networkConnectionUpdate:)
-                                                 name:INTERNET_CONNECTION_NOTIFICATION
-                                               object:nil];
+	//gets notified if there is no internet connection
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(networkConnectionUpdate:)
+												 name:INTERNET_CONNECTION_NOTIFICATION
+											   object:nil];
 }
 
 
@@ -165,20 +165,20 @@
 //TODO: change these to check if user is logged in
 //nav button is pressed - so we move the SV left to the profile
 -(void) profileButtonPressed {
-    if(false){
-        [self bringUpSignUp];
-    }else{
-        [self showProfile];
-    }
+	if (true) {
+		[self bringUpSignIn];
+	} else {
+		[self showProfile];
+	}
 }
 
 //nav button is pressed so we move the SV right to the ADK
 -(void) adkButtonPressed {
-    if(false){
-        [self bringUpSignUp];
-    }else{
-        [self showADK];
-    }
+	if (true) {
+		[self bringUpSignIn];
+	} else {
+		[self showADK];
+	}
 }
 
 // Scrolls the main scroll view over to reveal the ADK
@@ -292,7 +292,7 @@
 	[self showFeed];
 }
 
-#pragma mark - Animations - 
+#pragma mark - Animations -
 
 //article published sucessfully
 -(void)articlePublishedAnimation {
@@ -343,9 +343,9 @@
 #pragma mark - Handle Login -
 
 
-//brings up the login page if there is no user logged in
--(void)bringUpSignUp {
-	[self performSegueWithIdentifier:BRING_UP_SIGNIN_SEGUE sender:self];
+//brings up the create account page if there is no user logged in
+-(void)bringUpCreateAccount {
+	[self performSegueWithIdentifier:BRING_UP_CREATE_ACCOUNT_SEGUE sender:self];
 }
 
 #pragma mark - handle
@@ -363,25 +363,25 @@
 
 #pragma mark - Alerts -
 -(void)alertPullTrendingIcon{
-    
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    [UserSetupParameters set_trendingCirle_InstructionAsShown];
+
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+	[UserSetupParameters set_trendingCirle_InstructionAsShown];
 }
 
 
 
 -(void)userLostInternetConnetion{
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
 }
 
 
 #pragma mark -Network Connection Lost-
 -(void)networkConnectionUpdate: (NSNotification *) notification{
-    NSDictionary * userInfo = [notification userInfo];
-    BOOL thereIsConnection = (BOOL)[userInfo objectForKey:INTERNET_CONNECTION_KEY];
-    if(thereIsConnection)[self userLostInternetConnetion];
+	NSDictionary * userInfo = [notification userInfo];
+	BOOL thereIsConnection = (BOOL)[userInfo objectForKey:INTERNET_CONNECTION_KEY];
+	if(thereIsConnection)[self userLostInternetConnetion];
 }
 
 
@@ -389,8 +389,8 @@
 #pragma mark - Lazy Instantiation -
 
 -(UIImageView *)animationView {
-    if(!_animationView)_animationView = [[UIImageView alloc] init];
-    return _animationView;
+	if(!_animationView)_animationView = [[UIImageView alloc] init];
+	return _animationView;
 }
 
 -(PreviewDisplayView*) previewDisplayView {
