@@ -28,6 +28,6 @@ typedef void(^MediaUploadCompletionBlock)(NSError* error, NSString* responseURL)
 // and stages it for upload to the given uri
 -(instancetype) initWithVideoData: (NSData*)videoData  andUri: (NSString*)uri;
 
--(PMKPromise*) startUpload;
+-(AnyPromise*) startUpload;
 
 @end

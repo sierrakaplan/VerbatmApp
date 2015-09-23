@@ -96,8 +96,8 @@
 // GTLVerbatmAppResultsWithCursor
 // Returns a promise that resolves to either an error or an array of
 // GTLVerbatmAppPOVInfo's
--(PMKPromise*) loadPOVs: (GTLQuery*) query {
-	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+-(AnyPromise*) loadPOVs: (GTLQuery*) query {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.service executeQuery: query completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppResultsWithCursor* results, NSError *error) {
 			self.cursorString = results.cursorString;
 			if (error) {
@@ -112,7 +112,7 @@
 
 // Once it gets the data from the cover photo url, creates a UIImage from that data
 // and stores it in a newly created PovInfo, which it returns
--(PMKPromise*) getPOVInfoWithCoverPhotoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
+-(AnyPromise*) getPOVInfoWithCoverPhotoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
 	return [self loadDataFromURL: gtlPovInfo.coverPicUrl].then(^(NSData* imageData) {
 		UIImage* coverPhoto = [UIImage imageWithData: imageData];
 		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andCoverPhoto: coverPhoto];
@@ -121,8 +121,8 @@
 }
 
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
--(PMKPromise*) loadDataFromURL: (NSString*) urlString {
-	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+-(AnyPromise*) loadDataFromURL: (NSString*) urlString {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		NSURLRequest* request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
 		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
 			if (error) {
