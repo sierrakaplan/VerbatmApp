@@ -36,6 +36,8 @@
 
 @property (strong, nonatomic) FeedTableViewCell* povPublishingPlaceholderCell;
 @property (nonatomic) BOOL povPublishing;
+@property (nonatomic) BOOL loadingPOVs;
+
 
 #pragma mark - Refresh -
 
@@ -49,8 +51,7 @@
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 
 #define NUM_POVS_IN_SECTION 4
-#define RELOAD_THRESHOLD 4
-#define PULL_TO_REFRESH_THRESHOLD (-1 * 50)
+#define RELOAD_THRESHOLD -10
 @end
 
 @implementation ArticleListVC
@@ -62,10 +63,10 @@
     [self setRefreshAnimator];
     self.pullDownInProgress = NO;
     self.refreshInProgress = NO;
+    self.loadingPOVs = NO;
 }
 
 -(void) registerForNotifications {
-	
     [[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(povPublished)
 												 name:NOTIFICATION_POV_PUBLISHED
@@ -74,7 +75,7 @@
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+	[self refreshFeed];
 }
 
 -(void) initStoryListView {
@@ -186,6 +187,7 @@
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
 -(void) morePOVsLoaded {
+    if(self.loadingPOVs)self.loadingPOVs = NO;
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
@@ -206,13 +208,15 @@
 
 
 
-#pragma mark -Infinite Scroll -
-
+#pragma mark - Infinite Scroll -
 //when the user is at the bottom of the screen and is pulling up more articles load
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
     if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
-        [self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
+        if(!self.loadingPOVs){
+            self.loadingPOVs = YES;
+            [self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
+        }
     }
 }
 
