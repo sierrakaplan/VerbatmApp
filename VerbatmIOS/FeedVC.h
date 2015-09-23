@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseVC.h"
+
 
 @protocol FeedVCDelegate <NSObject>
 -(void) profileButtonPressed;
@@ -15,7 +15,7 @@
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager;
 @end
 
-@interface FeedVC : BaseVC
+@interface FeedVC : UIViewController
 
 @property(strong, nonatomic) id<FeedVCDelegate> delegate;
 

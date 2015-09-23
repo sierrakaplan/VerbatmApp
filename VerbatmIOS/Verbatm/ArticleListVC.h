@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseVC.h"
+
 @class POVLoadManager;
 
 @protocol ArticleListVCDelegate <NSObject>
@@ -16,7 +16,7 @@
 
 @end
 
-@interface ArticleListVC : BaseVC
+@interface ArticleListVC : UIViewController
 
 @property (strong, nonatomic) id<ArticleListVCDelegate> delegate;
 
