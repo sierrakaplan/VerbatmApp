@@ -165,7 +165,6 @@
 		C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F681B9245200042AD99 /* ProfileVC.m */; };
 		C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6B1B92E5830042AD99 /* TopicsFeedVC.m */; };
 		C7E65F6F1B92EB650042AD99 /* POVView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F6E1B92EB650042AD99 /* POVView.m */; };
-		C7E69B8E1BA903780045BE3F /* BaseVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E69B8D1BA903780045BE3F /* BaseVC.m */; };
 		C7E6C13F1A4E394600863893 /* PhotoVideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C1301A4E394600863893 /* PhotoVideoAVE.m */; };
 		C7E6C1451A4E394600863893 /* TextAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13C1A4E394600863893 /* TextAVE.m */; };
 		C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* VideoAVE.m */; };
@@ -514,8 +513,6 @@
 		C7E65F6B1B92E5830042AD99 /* TopicsFeedVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicsFeedVC.m; sourceTree = "<group>"; };
 		C7E65F6D1B92EB650042AD99 /* POVView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POVView.h; sourceTree = "<group>"; };
 		C7E65F6E1B92EB650042AD99 /* POVView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POVView.m; sourceTree = "<group>"; };
-		C7E69B8C1BA903780045BE3F /* BaseVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseVC.h; path = ../BaseVC.h; sourceTree = "<group>"; };
-		C7E69B8D1BA903780045BE3F /* BaseVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseVC.m; path = ../BaseVC.m; sourceTree = "<group>"; };
 		C7E6C12F1A4E394600863893 /* PhotoVideoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoVideoAVE.h; sourceTree = "<group>"; };
 		C7E6C1301A4E394600863893 /* PhotoVideoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoVideoAVE.m; sourceTree = "<group>"; };
 		C7E6C13B1A4E394600863893 /* TextAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextAVE.h; sourceTree = "<group>"; };
@@ -998,8 +995,6 @@
 		C78B681119CA6914003D0AC5 /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				C7E69B8C1BA903780045BE3F /* BaseVC.h */,
-				C7E69B8D1BA903780045BE3F /* BaseVC.m */,
 				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
 				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
 				C7E65F6A1B92E5830042AD99 /* TopicsFeedVC.h */,
@@ -1397,7 +1392,6 @@
 				C772F2801B4BC13500CEC83D /* GMAlbumsViewCell.m in Sources */,
 				A5E85FA51B911DA900E148D0 /* GTMHTTPFetcherService.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
-				C7E69B8E1BA903780045BE3F /* BaseVC.m in Sources */,
 				C77F321E1B6D5D1800E87C25 /* bugSubmissionFormVC.m in Sources */,
 				A5AA31C11B9FCDDC00D8D20C /* GTLVerbatmAppPage.m in Sources */,
 				A5AA31C61B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m in Sources */,
