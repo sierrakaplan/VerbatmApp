@@ -9,7 +9,7 @@
 #import "BaseVC.h"
 
 @implementation BaseVC
--(NSUInteger) supportedInterfaceOrientations {
+-(UIInterfaceOrientationMask) supportedInterfaceOrientations {
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
 }

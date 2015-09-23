@@ -48,9 +48,8 @@
 #define FEED_CELL_ID @"feed_cell_id"
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 
-#define NUM_POVS_IN_SECTION 6
+#define NUM_POVS_IN_SECTION 4
 #define RELOAD_THRESHOLD 4
-#define NUM_OF_NEW_POVS_TO_LOAD 15
 #define PULL_TO_REFRESH_THRESHOLD (-1 * 50)
 @end
 
@@ -213,12 +212,12 @@
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
     if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
-        [self.povLoader loadMorePOVs:NUM_OF_NEW_POVS_TO_LOAD];
+        [self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
     }
 }
 
 #pragma mark - Miscellaneous -
-- (NSUInteger) supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
 	//return supported orientation masks
 	return UIInterfaceOrientationMaskPortrait;
 }

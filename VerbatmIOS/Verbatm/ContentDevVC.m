@@ -1258,7 +1258,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 #pragma mark- MIC
 
-- (NSUInteger) supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
 	//return supported orientation masks
 	return UIInterfaceOrientationMaskPortrait;
 }
