@@ -63,14 +63,12 @@
 }
 
 #pragma mark - Getting and formatting child view controllers -
-
-
 //position the container views in appropriate places and set frames
 -(void) positionContainerViews {
 	float listContainerY = CATEGORY_SWITCH_HEIGHT + CATEGORY_SWITCH_OFFSET*2;
 	self.topListContainer.frame = CGRectMake(0, listContainerY,
 											 self.view.frame.size.width,
-											 self.view.frame.size.height - listContainerY);
+											 self.view.frame.size.height - listContainerY - NAV_BAR_HEIGHT);
 	self.bottomListContainer.frame = self.topListContainer.frame;
 	self.bottomListContainer.alpha = 0;
 }
@@ -85,12 +83,11 @@
 	self.mostRecentVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_RECENT_VC];
 	[self.mostRecentVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeRecent]];
 	self.mostRecentVC.delegate = self;
-
-	// NOT IN USE RIGHT NOW
-//	self.topicsVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TOPICS_VC];
-
+    
 	[self.topListContainer addSubview: self.trendingVC.view];
 	[self.bottomListContainer addSubview: self.mostRecentVC.view];
+    
+    
 }
 
 #pragma mark - Formatting sub views -

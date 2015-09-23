@@ -207,8 +207,8 @@
 }
 
 
-
 #pragma mark - Infinite Scroll -
+
 //when the user is at the bottom of the screen and is pulling up more articles load
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
@@ -219,6 +219,7 @@
         }
     }
 }
+
 
 #pragma mark - Miscellaneous -
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
@@ -240,7 +241,7 @@
 
 -(FeedTableView*) povListView {
 	if (!_povListView) {
-		_povListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+		_povListView = [[FeedTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - NAV_BAR_HEIGHT) style:UITableViewStylePlain];
 	}
 	return _povListView;
 }

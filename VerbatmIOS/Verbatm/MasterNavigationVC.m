@@ -380,11 +380,16 @@
 #pragma mark -Network Connection Lost-
 -(void)networkConnectionUpdate: (NSNotification *) notification{
     NSDictionary * userInfo = [notification userInfo];
-    BOOL thereIsConnection = (BOOL)[userInfo objectForKey:INTERNET_CONNECTION_KEY];
-    if(thereIsConnection)[self userLostInternetConnetion];
+    BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
+    if(!thereIsConnection)[self userLostInternetConnetion];
 }
 
-
+-(BOOL)isThereConnectionFromString:(NSString *) key{
+    if([key isEqualToString:@"YES"]){
+        return YES;
+    }
+    return NO;
+}
 
 #pragma mark - Lazy Instantiation -
 
