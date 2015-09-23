@@ -65,7 +65,6 @@
 }
 
 -(void) registerForNotifications {
-	
     [[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(povPublished)
 												 name:NOTIFICATION_POV_PUBLISHED
@@ -74,7 +73,7 @@
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+	[self refreshFeed];
 }
 
 -(void) initStoryListView {
