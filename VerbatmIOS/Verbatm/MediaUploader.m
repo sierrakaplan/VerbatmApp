@@ -58,9 +58,9 @@
 	return self;
 }
 
--(PMKPromise*) startUpload {
+-(AnyPromise*) startUpload {
 
-	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self startWithCompletionHandler: ^(NSError* error, NSString* responseURL) {
 			if (error) {
 				resolve(error);

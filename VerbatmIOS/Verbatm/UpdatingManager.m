@@ -41,10 +41,10 @@
 }
 
 // Resolves to either an error or the POV with the given id
--(PMKPromise*) loadPOVWithID: (NSNumber*) povID {
+-(AnyPromise*) loadPOVWithID: (NSNumber*) povID {
 	GTLQuery* loadPOVQuery = [GTLQueryVerbatmApp queryForPovGetPOVWithIdentifier: povID.longLongValue];
 
-	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.service executeQuery: loadPOVQuery
 				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* pov, NSError *error) {
 					 if (error) {
@@ -58,10 +58,10 @@
 }
 
 // Re inserts the given POV
--(PMKPromise*) storePOV: (GTLVerbatmAppPOV*) pov {
+-(AnyPromise*) storePOV: (GTLVerbatmAppPOV*) pov {
 	GTLQuery* storePOVQuery = [GTLQueryVerbatmApp queryForPovUpdatePOVWithObject: pov];
 
-	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.service executeQuery: storePOVQuery
 				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* pov, NSError *error) {
 					 if (error) {

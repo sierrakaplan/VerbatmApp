@@ -362,7 +362,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 
--(NSUInteger)supportedInterfaceOrientations{
+-(UIInterfaceOrientationMask)supportedInterfaceOrientations{
     //return supported orientation masks
     return UIInterfaceOrientationMaskPortrait;
 }

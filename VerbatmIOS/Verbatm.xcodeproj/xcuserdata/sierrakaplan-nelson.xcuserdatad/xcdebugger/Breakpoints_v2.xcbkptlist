@@ -109,7 +109,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "639"
             endingLineNumber = "639"
-            landmarkName = "-canPreview:"
+            landmarkName = "-showPullBar:withTransition:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1893,6 +1893,15 @@
             startingLineNumber = "95"
             endingLineNumber = "95"
             landmarkName = "-getVideosInDataFormat"
+=======
+            filePath = "Verbatm/POVLoadManager.m"
+            timestampString = "464729469.420238"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "99"
+            endingLineNumber = "99"
+            landmarkName = "-loadPOVs:"
+>>>>>>> master
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

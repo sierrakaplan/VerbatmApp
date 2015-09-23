@@ -80,10 +80,10 @@
 
 //Queries for the pages from the given POV
 //Returns a promise that resolves to either an error or the PageList from the POV
--(PMKPromise*) loadPageListFromPOV: (NSNumber*) povID {
+-(AnyPromise*) loadPageListFromPOV: (NSNumber*) povID {
 	GTLQuery *pagesQuery = [GTLQueryVerbatmApp queryForPovGetPagesFromPOVWithIdentifier: povID.longLongValue];
 
-	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.service executeQuery:pagesQuery
 				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPageListWrapper* pageList, NSError *error) {
 					 if (error) {
@@ -99,7 +99,7 @@
 // Resolves to a Page object from a GTLVerbatmAppPage
 // Loads all the GTLVerbatmAppImage and Video objects and
 // creates a Page object containing them.
--(PMKPromise*) loadPageFromGTLPage: (GTLVerbatmAppPage*) gtlPage {
+-(AnyPromise*) loadPageFromGTLPage: (GTLVerbatmAppPage*) gtlPage {
 	return PMKWhen(@[[self loadImagesForImageIDs: gtlPage.imageIds],
 					 [self loadVideosFromVideoIDs: gtlPage.videoIds]]).then(^(NSArray* imagesAndVideos) {
 		Page* page = [Page alloc];
@@ -111,7 +111,7 @@
 }
 
 // Resolves to array of GTLVerbatmAppImage's or error
--(PMKPromise*) loadImagesForImageIDs: (NSArray*) imageIDs {
+-(AnyPromise*) loadImagesForImageIDs: (NSArray*) imageIDs {
 	NSMutableArray* loadImagePromises = [[NSMutableArray array] init];
 	for (NSNumber* imageID in imageIDs) {
 		[loadImagePromises addObject:[self loadImageWithID: imageID]];
@@ -123,7 +123,7 @@
 }
 
 // Resolves to array of GTLVerbatmAppVideo's or error
--(PMKPromise*) loadVideosFromVideoIDs: (NSArray*) videoIDs {
+-(AnyPromise*) loadVideosFromVideoIDs: (NSArray*) videoIDs {
 	NSMutableArray* loadVideoPromises = [[NSMutableArray array] init];
 	for (NSNumber* videoID in videoIDs) {
 		[loadVideoPromises addObject:[self loadVideoWithID: videoID]];
@@ -139,10 +139,10 @@
 
 //Queries for GTLVerbatmAppImage with given ID from server
 //Resolves to GTLVerbatmAppImage or error
--(PMKPromise*) loadImageWithID: (NSNumber*) imageID {
+-(AnyPromise*) loadImageWithID: (NSNumber*) imageID {
 	GTLQuery* loadImageQuery = [GTLQueryVerbatmApp queryForImageGetImageWithIdentifier: imageID.longLongValue];
 
-	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.service executeQuery: loadImageQuery
 				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppImage* image, NSError *error) {
 					 if (error) {
@@ -157,10 +157,10 @@
 
 //Queries for GTLVerbatmAppVideo with given ID from server
 //Resolves to either GTLVerbatmAppVideo or error
--(PMKPromise*) loadVideoWithID: (NSNumber*) videoID {
+-(AnyPromise*) loadVideoWithID: (NSNumber*) videoID {
 	GTLQuery* loadVideoQuery = [GTLQueryVerbatmApp queryForVideoGetVideoWithIdentifier: videoID.longLongValue];
 
-	PMKPromise* promise = [PMKPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.service executeQuery: loadVideoQuery
 				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVideo* video, NSError *error) {
 					 if (error) {

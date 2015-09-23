@@ -6,47 +6,39 @@
 	<dict>
 		<key>Headers/AnyPromise.h</key>
 		<data>
-		ezPSLy4RwqCdb33rUhlAD9WoUwA=
+		gUsQcyFcwPJRbEkFE9LXxLY8m4I=
 		</data>
 		<key>Headers/NSError+Cancellation.h</key>
 		<data>
 		KeSCWj+QVceBrhBFJ4rGxWocx/Y=
 		</data>
-		<key>Headers/PMKPromise.h</key>
-		<data>
-		gRdflVsuP1gK4hQNNLvWYJmoWG8=
-		</data>
-		<key>Headers/Promise.h</key>
-		<data>
-		yVsowNadgDaZNGEW3rZYi3wu6L8=
-		</data>
 		<key>Headers/PromiseKit.h</key>
 		<data>
-		eTz0F58RUQB62/U+pXX2zBIQzfQ=
+		CGijMzxhY/m5GYFEwaAn608fDP4=
 		</data>
 		<key>Headers/Umbrella.h</key>
 		<data>
-		pCcNWDn00kwO0mFmOgS7fvx+dHA=
+		EuMzFtIn6s1DnK+YXh4O3jGKh/s=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		d8V2DDzT+8EiIkWuqFnl9svG7As=
+		ghiDPGjRk2fCt5ZtVI27PJqNGd8=
 		</data>
 		<key>Modules/PromiseKit.swiftmodule/arm.swiftdoc</key>
 		<data>
-		RVnR4bNX37n93BBPL+SkcTrwGUY=
+		3z1a1Ylv65w21065PTIp+VkyF2k=
 		</data>
 		<key>Modules/PromiseKit.swiftmodule/arm.swiftmodule</key>
 		<data>
-		VV2nx8u3NrziMl2TrCwVB5rmwdg=
+		zfmIyeBsglevOfgiZFS1F4LesoU=
 		</data>
 		<key>Modules/PromiseKit.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		UtuLtXBSHseksqdMgIdUhvNIIL8=
+		rt4lng1g7/wD7m+lrs/KQWp1Npw=
 		</data>
 		<key>Modules/PromiseKit.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		vVOUtOJ36tjDtvtOMir4OHiTrEY=
+		0sHTt0om1S/Ex5FFvPHXOR+wYiM=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -54,50 +46,42 @@
 		</data>
 		<key>PrivateHeaders/AnyPromise+Private.h</key>
 		<data>
-		ZdcVqsm2sD/PQDtdgjtNn8dzt60=
+		bfnFIlzjH2nN4MgzBAMRI2pGOcc=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
 		<key>Headers/AnyPromise.h</key>
 		<data>
-		ezPSLy4RwqCdb33rUhlAD9WoUwA=
+		gUsQcyFcwPJRbEkFE9LXxLY8m4I=
 		</data>
 		<key>Headers/NSError+Cancellation.h</key>
 		<data>
 		KeSCWj+QVceBrhBFJ4rGxWocx/Y=
 		</data>
-		<key>Headers/PMKPromise.h</key>
-		<data>
-		gRdflVsuP1gK4hQNNLvWYJmoWG8=
-		</data>
-		<key>Headers/Promise.h</key>
-		<data>
-		yVsowNadgDaZNGEW3rZYi3wu6L8=
-		</data>
 		<key>Headers/PromiseKit.h</key>
 		<data>
-		eTz0F58RUQB62/U+pXX2zBIQzfQ=
+		CGijMzxhY/m5GYFEwaAn608fDP4=
 		</data>
 		<key>Headers/Umbrella.h</key>
 		<data>
-		pCcNWDn00kwO0mFmOgS7fvx+dHA=
+		EuMzFtIn6s1DnK+YXh4O3jGKh/s=
 		</data>
 		<key>Modules/PromiseKit.swiftmodule/arm.swiftdoc</key>
 		<data>
-		RVnR4bNX37n93BBPL+SkcTrwGUY=
+		3z1a1Ylv65w21065PTIp+VkyF2k=
 		</data>
 		<key>Modules/PromiseKit.swiftmodule/arm.swiftmodule</key>
 		<data>
-		VV2nx8u3NrziMl2TrCwVB5rmwdg=
+		zfmIyeBsglevOfgiZFS1F4LesoU=
 		</data>
 		<key>Modules/PromiseKit.swiftmodule/arm64.swiftdoc</key>
 		<data>
-		UtuLtXBSHseksqdMgIdUhvNIIL8=
+		rt4lng1g7/wD7m+lrs/KQWp1Npw=
 		</data>
 		<key>Modules/PromiseKit.swiftmodule/arm64.swiftmodule</key>
 		<data>
-		vVOUtOJ36tjDtvtOMir4OHiTrEY=
+		0sHTt0om1S/Ex5FFvPHXOR+wYiM=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -105,7 +89,7 @@
 		</data>
 		<key>PrivateHeaders/AnyPromise+Private.h</key>
 		<data>
-		ZdcVqsm2sD/PQDtdgjtNn8dzt60=
+		bfnFIlzjH2nN4MgzBAMRI2pGOcc=
 		</data>
 	</dict>
 	<key>rules</key>
