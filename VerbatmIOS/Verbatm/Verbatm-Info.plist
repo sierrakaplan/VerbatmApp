@@ -18,8 +18,21 @@
 	<string>0.2.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb1476890692612143</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
-	<string>2131</string>
+	<string>3245</string>
+	<key>FacebookAppID</key>
+	<string>1476890692612143</string>
+	<key>FacebookDisplayName</key>
+	<string>Verbatm</string>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>

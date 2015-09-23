@@ -10,7 +10,6 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Icons.h"
-#import "TextPinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
 
@@ -173,7 +172,6 @@
 	self.videoView.videoPlayerView.frame = self.videoView.bounds;
 	if (self.containsText) {
 		self.textView.text = self.text;
-		[TextPinchView formatTextView:self.textView];
 		[self.background bringSubviewToFront:self.textView];
 	}
 	if (self.containsImage) {
@@ -284,8 +282,14 @@
 		if(pinchView.containsVideo) {
 			AVURLAsset* video = [(VideoPinchView*)pinchView video];
 			//TODO: do this in background
-			NSData* videoData = [NSData dataWithContentsOfURL: video.URL];
-			[videos addObject: videoData];
+			NSURL* videoURL = video.URL;
+			NSError * error;
+			NSData* videoData = [NSData dataWithContentsOfURL: videoURL options:NSDataReadingMappedIfSafe error:&error];
+			if (error) {
+				NSLog(@"error getting data from video url: %@", error.description);
+			} else {
+				[videos addObject: videoData];
+			}
 		}
 	}
 	return videos;

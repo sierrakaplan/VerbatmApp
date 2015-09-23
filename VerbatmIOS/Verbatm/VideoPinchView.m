@@ -12,9 +12,12 @@
 
 @interface VideoPinchView()
 
+@property (strong, nonatomic) NSData* videoData;
+
 #pragma mark Encoding Keys
 
 #define VIDEO_KEY @"video"
+#define VIDEO_DATA_KEY @"video_data"
 
 @end
 
@@ -88,24 +91,35 @@
 }
 
 -(NSArray*) getVideosInDataFormat {
+	if (self.videoData) {
+		return @[self.videoData];
+	}
     NSURL * url = self.video.URL;
     NSError * error;
     NSData * ourData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
-    return  (ourData) ? @[ourData] : nil;
+	if (error) {
+		NSLog(@"error getting data from video url: %@", error.description);
+		return nil;
+	} else {
+		return @[ourData];
+	}
 }
 
 #pragma mark - Encoding -
 
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	NSURL* videoURL = [self.video URL];;
-	[coder encodeObject:videoURL forKey:VIDEO_KEY];
+	NSData* videoData = [NSData dataWithContentsOfURL:[self.video URL]];
+	[coder encodeObject: videoData forKey: VIDEO_DATA_KEY];
+	NSString* videoURLString = [self.video URL].absoluteString;
+	[coder encodeObject: videoURLString forKey:VIDEO_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
-		NSURL* videoURL = [decoder decodeObjectForKey:VIDEO_KEY];
-		AVURLAsset* video = [AVURLAsset assetWithURL:videoURL];
+		NSString* videoURLString = [decoder decodeObjectForKey:VIDEO_KEY];
+		self.videoData = [decoder decodeObjectForKey:VIDEO_DATA_KEY];
+		AVURLAsset* video = [AVURLAsset assetWithURL:[NSURL URLWithString:videoURLString]];
 		[self initWithVideo:video];
 	}
 	return self;

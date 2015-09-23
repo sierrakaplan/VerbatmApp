@@ -90,7 +90,7 @@
 	NSInteger povIndex = [self.povIDs indexOfObject: povID];
 	POVView* povView = self.povViews[povIndex];
 
-	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
+	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
 	NSMutableArray* aves = [analyzer getAVESFromPages: pages withFrame: self.view.bounds];
 	// already should have cover photo ave
 	if (aves.count) {

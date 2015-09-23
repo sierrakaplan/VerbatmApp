@@ -44,12 +44,6 @@
     return self;
 }
 
--(void) imageScrollViewBounce {
-	if (self.numImages > 0) {
-		[UIEffects scrollViewNotificationBounce:self.photoListScrollView forNextPage:YES inYDirection:NO];
-	}
-}
-
 //sets the frames for the video view and the photo scrollview
 -(void) setSubViews {
 
@@ -93,11 +87,7 @@
 //image scroll view is on new page
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	NSInteger newPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
-	BOOL nextPage = newPageIndex >= self.currentImageIndex ? YES : NO;
 	self.currentImageIndex = newPageIndex;
-	if (self.currentImageIndex < self.numImages-1 && self.currentImageIndex > 0) {
-		[UIEffects scrollViewNotificationBounce: scrollView forNextPage:nextPage inYDirection:NO];
-	}
 }
 
 -(void)offScreen {

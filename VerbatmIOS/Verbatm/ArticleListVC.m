@@ -58,7 +58,7 @@
 
 - (void) viewDidLoad {
 	[super viewDidLoad];
-	[self initStoryListView];
+	[self initPovListView];
 	[self registerForNotifications];
     [self setRefreshAnimator];
     self.pullDownInProgress = NO;
@@ -78,7 +78,7 @@
 	[self refreshFeed];
 }
 
--(void) initStoryListView {
+-(void) initPovListView {
 	self.povListView.delegate = self;
 	self.povListView.dataSource = self;
 	[self.view addSubview:self.povListView];
@@ -99,15 +99,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(self.povPublishing && !indexPath.row) return;
-	[self viewPOVAtIndex: indexPath.row];
-}
-
-//one of the POV's in the list has been clicked
--(void) viewPOVAtIndex: (NSInteger) index {
-	PovInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
-	NSLog(@"Viewing POV \"%@\"", povInfo.title);
-	[self.delegate displayPOVWithIndex: index fromLoadManager: self.povLoader];
+	if(self.refreshInProgress) { return; }
+	if(self.povPublishing && indexPath.row == 0) { return; }
+	// Tell cell it was selected so it can animate being pinched together before it calls
+	// delegate method to be selected
+	FeedTableViewCell* cell = (FeedTableViewCell*)[self.povListView cellForRowAtIndexPath:indexPath];
+	[cell wasSelected];
 }
 
 #pragma mark - Table View Data Source methods (model) -
@@ -146,8 +143,16 @@
 
 #pragma mark - Feed Table View Cell Delegate methods -
 
--(void) successfullyPinchedTogetherAtIndexPath:(NSIndexPath *)indexPath {
-	[self tableView: self.povListView didSelectRowAtIndexPath:indexPath];
+-(void) successfullyPinchedTogetherCell: (FeedTableViewCell *)cell {
+	[self viewPOVOnCell: cell];
+}
+
+#pragma mark - Viewing POV -
+
+//one of the POV's in the list has been clicked
+-(void) viewPOVOnCell: (FeedTableViewCell*) cell {
+	NSLog(@"Viewing POV \"%@\"", cell.title);
+	[self.delegate displayPOVOnCell:cell withLoadManager: self.povLoader];
 }
 
 #pragma mark - Show POV publishing -

@@ -20,9 +20,6 @@
 -(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos;
 //-(void)addTapGesture;
 
-//if there is more than one image the image scroll view "bounces" to show next image exists
--(void) imageScrollViewBounce;
-
 -(void)mutePlayer;
 
 -(void)enableSound;

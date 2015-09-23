@@ -8,6 +8,7 @@
 
 #import "ArticleDisplayVC.h"
 #import "ArticleListVC.h"
+#import "FeedTableViewCell.h"
 #import "HomeNavPullBar.h"
 #import "Icons.h"
 #import "FeedVC.h"
@@ -22,6 +23,8 @@
 
 @property (strong, nonatomic) SwitchCategoryPullView *categorySwitch;
 @property (strong, nonatomic) HomeNavPullBar* navPullBar;
+// Keeps track of which cell is selected when an article is being viewed
+@property (strong, nonatomic) FeedTableViewCell* selectedCell;
 
 #pragma mark - Child View Controllers -
 
@@ -152,9 +155,15 @@
 
 #pragma mark - Article List VC Delegate Methods (display articles) -
 
--(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
+-(void) displayPOVOnCell:(FeedTableViewCell *)cell withLoadManager:(POVLoadManager *)loadManager {
 	// Do this in the master vc so it can be above the main scroll view
-	[self.delegate displayPOVWithIndex:index fromLoadManager:loadManager];
+	self.selectedCell = cell;
+	[self.delegate displayPOVWithIndex: cell.indexPath.row fromLoadManager:loadManager];
+}
+
+-(void) deSelectCell {
+	[self.selectedCell deSelect];
+	self.selectedCell = nil;
 }
 
 
