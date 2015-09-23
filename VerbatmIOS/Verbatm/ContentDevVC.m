@@ -148,7 +148,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self setKeyboardAppearance];
 	[self setCursorColor];
 	[self formatTitleAndCoverPicture];
-	[self createBaseSelector];
+	//TODO:	[self createBaseSelector];
 	[self setUpNotifications];
 	[self setDelegates];
 }
@@ -178,15 +178,19 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 // as well as the pinch view center and radius
 -(void)setElementDefaultFrames {
 	self.defaultPageElementScrollViewSize = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
-	self.defaultPinchViewCenter = CGPointMake(PINCH_VIEW_CENTER_X, self.defaultPageElementScrollViewSize.height/2);
+	self.defaultPinchViewCenter = CGPointMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + (self.view.frame.size.width/2.f),
+											  self.defaultPageElementScrollViewSize.height/2);
 	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
 }
 
 -(void) createBaseSelector {
 
 	//make sure we don't create another one when we return from image picking
-	if(_baseMediaTileSelector)return;
-	CGRect frame = CGRectMake(self.view.frame.size.width + ELEMENT_OFFSET_DISTANCE,
+	if(_baseMediaTileSelector) return;
+
+	CGRect scrollViewFrame = CGRectMake(0, self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_OFFSET_DISTANCE);
+
+	CGRect frame = CGRectMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + ELEMENT_OFFSET_DISTANCE,
 							  ELEMENT_OFFSET_DISTANCE/2.f,
 							  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
 	self.baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
@@ -194,10 +198,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	self.baseMediaTileSelector.delegate = self;
 	[self.baseMediaTileSelector createFramesForButtonWithFrame:frame];
 	[self.baseMediaTileSelector formatButton];
-
-
-	CGRect scrollViewFrame = CGRectMake(0, self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_OFFSET_DISTANCE,
-										self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_OFFSET_DISTANCE);
 
 	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
 																	  initWithFrame:scrollViewFrame
@@ -1120,10 +1120,9 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 #pragma mark - Media Tile Delegate -
 
-//TODO:
 -(void) addMediaButtonPressedOnTile: (MediaSelectTile *)tile  {
 	NSInteger index = [self.pageElementScrollViews indexOfObject: tile.superview] - 1;
-	self.addMediaBelowView = self.pageElementScrollViews[index];
+	self.addMediaBelowView = index >= 0 ? self.pageElementScrollViews[index] : nil;
 	[self presentEfficientGallery];
 	if (!tile.isBaseSelector) {
 		[self clearMediaTile:tile];
@@ -1581,7 +1580,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
     [self clearCoverPhoto];
-	[self createBaseSelector];
+//TODO:	[self createBaseSelector];
 }
 
 -(void) clearCoverPhoto {

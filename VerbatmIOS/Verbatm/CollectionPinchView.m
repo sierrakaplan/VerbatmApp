@@ -280,7 +280,6 @@
 	NSMutableArray* videos = [[NSMutableArray alloc] init];
 	for (PinchView* pinchView in self.pinchedObjects) {
 		if(pinchView.containsVideo) {
-			if (
 			AVURLAsset* video = [(VideoPinchView*)pinchView video];
 			//TODO: do this in background
 			NSURL* videoURL = video.URL;

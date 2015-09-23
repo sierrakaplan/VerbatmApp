@@ -92,7 +92,7 @@
 
 -(NSArray*) getVideosInDataFormat {
 	if (self.videoData) {
-		return self.videoData;
+		return @[self.videoData];
 	}
     NSURL * url = self.video.URL;
     NSError * error;

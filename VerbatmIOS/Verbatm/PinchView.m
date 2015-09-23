@@ -149,9 +149,6 @@
 		return	firstPinchView;
 	}
 
-	//check if they are only text
-	NSString* pinchedText = @"";
-	BOOL allTextPinchViews = YES;
 	for (PinchView* pinchView in pinchViews) {
 		if ([pinchView isKindOfClass:[VideoPinchView class]]) {
 			[[(VideoPinchView*)pinchView videoView] stopVideo];
