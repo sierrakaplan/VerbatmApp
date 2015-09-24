@@ -16,7 +16,7 @@
 #import "TextAVE.h"
 #import "VideoAVE.h"
 
-@interface POVView ()<UIGestureRecognizerDelegate, UIScrollViewDelegate>
+@interface POVView ()<UIGestureRecognizerDelegate, UIScrollViewDelegate, PhotoAVEDelegate>
 
 @property (nonatomic) UIScrollView *mainScrollView;
 @property (nonatomic) NSInteger currentPageIndex;
@@ -28,7 +28,7 @@
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
 @property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
 @property (strong, nonatomic) NSNumber* povID;
-@property (nonatomic) float pageScrollTopBottomArea;
+
 @property (nonatomic, strong) UIButton * downArrow;
 
 #define DOWN_ARROW_WIDTH 40
@@ -58,13 +58,11 @@
     
     CGRect viewFrame = self.bounds;
     for(UIView* view in self.pageAves){
+		[self setDelegateOnPhotoAVE: view];
 		view.frame = viewFrame;
 		[self.mainScrollView addSubview: view];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
     }
-    //temp
-    float middleScreenSize = (self.frame.size.height/CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT)*2 + TOUCH_THRESHOLD*2;
-    self.pageScrollTopBottomArea = (self.frame.size.height - middleScreenSize)/2.f;
     [self setUpGestureRecognizers];
 }
 
@@ -109,6 +107,14 @@
 }
 
 #pragma mark - Handle Display Media on AVE -
+
+-(void) setDelegateOnPhotoAVE: (UIView*) ave {
+	if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+		[self setDelegateOnPhotoAVE:[(BaseArticleViewingExperience*)ave subAVE]];
+	} else if ([ave isKindOfClass:[PhotoAVE class]]) {
+		((PhotoAVE*) ave).delegate = self;
+	}
+}
 
 //takes care of playing video if necessary
 //or showing circle if multiple photo ave
@@ -187,7 +193,7 @@
 }
 
 #pragma mark - Gesture recognizers -
-/*TEMP*/
+
 //Sets up the gesture recognizer for dragging from the edges.
 -(void) setUpGestureRecognizers {
     UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollPage:)];
@@ -200,12 +206,12 @@
     switch (sender.state) {
         case UIGestureRecognizerStateBegan: {
             if ([sender numberOfTouches] != 1) return;
-            
-            CGPoint touchLocation = [sender locationOfTouch:0 inView:[self superview]];
-            if (touchLocation.y < (self.frame.size.height - self.pageScrollTopBottomArea)
-                && touchLocation.y > self.pageScrollTopBottomArea) {
-                self.mainScrollView.scrollEnabled = NO;
-            }
+//            
+//            CGPoint touchLocation = [sender locationOfTouch:0 inView:[self superview]];
+//            if (touchLocation.y < (self.frame.size.height - self.pageScrollTopBottomArea)
+//                && touchLocation.y > self.pageScrollTopBottomArea) {
+//                self.mainScrollView.scrollEnabled = NO;
+//            }
             break;
         }
         case UIGestureRecognizerStateChanged: {
@@ -219,8 +225,19 @@
             break;
     }
 }
+
 -(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES;
+}
+
+#pragma mark - Photo AVE Delegate -
+
+-(void) startedDraggingAroundCircle {
+	self.mainScrollView.scrollEnabled = NO;
+}
+
+-(void) stoppedDraggingAroundCircle {
+	self.mainScrollView.scrollEnabled = YES;
 }
 
 #pragma mark - Clean up -
