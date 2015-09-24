@@ -19,7 +19,7 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 
-@interface CreateAccount ()<FBSDKLoginButtonDelegate, UITextFieldDelegate>
+@interface CreateAccount () <FBSDKLoginButtonDelegate, UITextFieldDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *fullnameField;
@@ -180,8 +180,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
  @param loginButton The button that was clicked.
  */
 - (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
-
+	
 }
+
 
 #pragma mark - Sign Up User Logic -
 
