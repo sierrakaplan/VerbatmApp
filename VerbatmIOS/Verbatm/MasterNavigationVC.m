@@ -56,12 +56,9 @@
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
 @property (nonatomic) CGPoint previousGesturePoint;
 
-@property (strong, nonatomic) NSTimer * animationTimer;
-@property (strong,nonatomic) UIImageView* animationView;
-
 @property (strong, nonatomic) internetConnectionMonitor * connectionMonitor;
 
-#define ANIMATION_DURATION 0.5
+#define MAIN_SCROLLVIEW_SCROLL_DURATION 0.5
 #define NUMBER_OF_CHILD_VCS 3
 #define LEFT_FRAME self.view.bounds
 #define CENTER_FRAME CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
@@ -92,13 +89,14 @@
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 
-	if(![UserSetupParameters trendingCirle_InstructionShown])[self alertPullTrendingIcon];
+	if(![UserSetupParameters blackCircleInstructionShown]) {
+		[self alertPullTrendingIcon];
+	}
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 }
-
 
 -(void)registerForNotifications{
 	//gets notified if there is no internet connection
@@ -107,7 +105,6 @@
 												 name:INTERNET_CONNECTION_NOTIFICATION
 											   object:nil];
 }
-
 
 #pragma mark - Getting and formatting child view controllers -
 
@@ -182,20 +179,20 @@
 
 // Scrolls the main scroll view over to reveal the ADK
 -(void) showADK {
-	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+	[UIView animateWithDuration: MAIN_SCROLLVIEW_SCROLL_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width * 2, 0);
 	}];
 }
 
 -(void) showProfile {
-	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+	[UIView animateWithDuration: MAIN_SCROLLVIEW_SCROLL_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(0, 0);
 	}];
 }
 
 // Scrolls the main scroll view over to reveal the feed
 -(void) showFeed {
-	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+	[UIView animateWithDuration: MAIN_SCROLLVIEW_SCROLL_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	}completion:^(BOOL finished) {
 		if(finished) {
@@ -291,36 +288,6 @@
 	[self showFeed];
 }
 
-#pragma mark - Animations -
-
-//article published sucessfully
--(void)articlePublishedAnimation {
-	if(self.animationView.frame.size.width) return;
-	self.animationView.image = [UIImage imageNamed:PUBLISHED_ANIMATION_ICON];
-	self.animationView.frame = self.view.bounds;
-	[self.view addSubview:self.animationView];
-	if(!self.animationView.alpha)self.animationView.alpha = 1;
-	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
-}
-
-//insert title
-//TODO: Move this to the ContentDevVC
--(void)insertTitleAnimation {
-	if(self.animationView.frame.size.width) return;
-	self.animationView.image = [UIImage imageNamed:TITLE_NOTIFICATION_ANIMATION];
-	self.animationView.frame = self.view.bounds;
-	if(!self.animationView.alpha)self.animationView.alpha = 1;
-	[self.view addSubview:self.animationView];
-	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:TIME_UNTIL_ANIMATION_CLEAR target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
-}
-
--(void) removeAnimationView {
-	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
-		self.animationView.alpha=0;
-	}completion:^(BOOL finished) {
-		self.animationView.frame = CGRectMake(0,0,0,0);
-	}];
-}
 
 //for ios8- To hide the status bar
 -(BOOL)prefersStatusBarHidden {

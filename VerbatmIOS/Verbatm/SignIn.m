@@ -25,6 +25,8 @@
 #import "GTLVerbatmAppEmail.h"
 #import "GTLVerbatmAppImage.h"
 
+#import "SegueIDs.h"
+
 @interface SignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
 #define TOAST_DURATION 1
 

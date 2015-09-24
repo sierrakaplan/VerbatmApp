@@ -115,8 +115,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 //informs our instruction notification if the user has added
 //pinch views to the article before
 @property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
-@property (nonatomic) BOOL pinchObject_TappedAndClosed_ForTheFirstTime;
-@property (nonatomic) BOOL editContentMode_Photo_TappedOpenForTheFirst;
+@property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
+@property (nonatomic) BOOL photoTappedOpenForTheFirstTime;
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define WHAT_IS_IT_LIKE_OFFSET 15
@@ -155,7 +155,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	self.addingCoverPicture = NO;
 	self.numPinchViews = 0;
 	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
-	self.pinchObject_TappedAndClosed_ForTheFirstTime = NO;
+	self.pinchViewTappedAndClosedForTheFirstTime = NO;
 }
 
 -(void) addBlurView {
@@ -1531,8 +1531,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 #pragma mark - Edit Content View Navigation -
 
-// This should never be called on a collection pinch view, only on text, image, or video
-//modally presents the edit content view
+// This should never be called on a collection pinch view - only on image or video
+// modally presents the edit content view
 -(void) presentEditContentView {
 	[self performSegueWithIdentifier:BRING_UP_EDITCONTENT_SEGUE sender:self];
 }
@@ -1541,7 +1541,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	if([segue.identifier isEqualToString:BRING_UP_EDITCONTENT_SEGUE]) {
 		EditContentVC *vc =  (EditContentVC *)segue.destinationViewController;
 		vc.pinchView = self.openPinchView;
-		vc.editContentMode_Photo_TappedOpenForTheFirst = self.pinchObject_TappedAndClosed_ForTheFirstTime;
+		vc.photoTappedOpenForTheFirstTime = self.pinchViewTappedAndClosedForTheFirstTime;
 	}
 }
 
@@ -1552,7 +1552,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 			[(ImagePinchView*)self.openPinchView changeImageToFilterIndex: editContentVC.filterImageIndex];
 		}
 		[editContentVC.openEditContentView.videoView stopVideo];
-		self.pinchObject_TappedAndClosed_ForTheFirstTime = YES;
+		self.pinchViewTappedAndClosedForTheFirstTime = YES;
 	}
 }
 
