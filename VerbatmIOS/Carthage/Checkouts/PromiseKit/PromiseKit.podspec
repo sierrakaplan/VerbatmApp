@@ -17,6 +17,8 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.ios.deployment_target = '8.0'
   s.osx.deployment_target = '10.9'
+  s.watchos.deployment_target = '2.0'
+  
   s.module_map = 'Sources/PMK.modulemap'
   s.xcconfig = { 'SWIFT_INSTALL_OBJC_HEADER' => 'NO' }
 
@@ -42,6 +44,11 @@ Pod::Spec.new do |s|
     ss.ios.source_files = 'Categories/AVFoundation/*'
     ss.dependency 'PromiseKit/CorePromise'
     ss.ios.frameworks = 'AVFoundation'
+  end
+
+  s.subspec 'Bolts' do |ss|
+    ss.ios.source_files = 'Categories/Bolts/*'
+    ss.dependency 'Bolts'
   end
 
   s.subspec 'CloudKit' do |ss|
@@ -71,7 +78,7 @@ Pod::Spec.new do |s|
     ss.ios.source_files = Dir['Categories/Foundation/*'] - Dir['Categories/Foundation/NSTask*']
     ss.osx.source_files = 'Categories/Foundation/*'
     ss.dependency 'PromiseKit/CorePromise'
-    ss.dependency 'OMGHTTPURLRQ', '~> 2.1.3'
+    ss.dependency 'OMGHTTPURLRQ', '~> 3.0.0'
     ss.frameworks = 'Foundation'
   end
 

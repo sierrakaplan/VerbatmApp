@@ -7,16 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseVC.h"
+
 @class POVLoadManager;
+@class FeedTableViewCell;
 
 @protocol ArticleListVCDelegate <NSObject>
 
--(void) displayPOVWithIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager;
+-(void) displayPOVOnCell: (FeedTableViewCell*) cell withLoadManager: (POVLoadManager*) loadManager;
 
 @end
 
-@interface ArticleListVC : BaseVC
+@interface ArticleListVC : UIViewController
 
 @property (strong, nonatomic) id<ArticleListVCDelegate> delegate;
 

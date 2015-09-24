@@ -8,7 +8,6 @@
 
 #import "SignIn.h"
 #import "Notifications.h"
-#import "Identifiers.h"
 #import "SizesAndPositions.h"
 #import "Durations.h"
 #import "Styles.h"
@@ -29,11 +28,11 @@
 @interface SignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
 #define TOAST_DURATION 1
 
-@property (weak, nonatomic) IBOutlet UITextField *UserName_TextField;
-@property (weak, nonatomic) IBOutlet UITextField *Password_TextField;
-@property (weak, nonatomic) IBOutlet UILabel *verbatmTitle_label;
+@property (weak, nonatomic) IBOutlet UITextField *emailField;
+@property (weak, nonatomic) IBOutlet UITextField *passwordField;
+@property (weak, nonatomic) IBOutlet UIButton *createAccountRedirectButton;
 
-@property (weak, nonatomic) IBOutlet UIButton *signIn_button;
+@property (weak, nonatomic) IBOutlet UIButton *signInButton;
 @property (strong, nonatomic) UIView *animationView;
 @property (strong, nonatomic) UILabel* animationLabel;
 @property (strong, nonatomic) NSTimer * animationTimer;
@@ -58,10 +57,10 @@ NSString *kMyClientSecret = @"H4jYylR_xFqh4EyX60wLdS20";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    self.UserName_TextField.delegate = self;
-    self.Password_TextField.delegate = self;
+    self.emailField.delegate = self;
+    self.passwordField.delegate = self;
     [self centerAllframes];
-    [self showCursor];
+    [self setCursorColor];
     [self formatTextFields];
 
 	[self addFacebookLoginButton];
@@ -81,16 +80,6 @@ NSString *kMyClientSecret = @"H4jYylR_xFqh4EyX60wLdS20";
 
 #pragma mark - Google Auth -
 
-- (GTLServiceVerbatmApp *)service {
-	if (!_service) {
-		_service = [[GTLServiceVerbatmApp alloc] init];
-		_service.retryEnabled = YES;
-		// Development only
-//		[GTMHTTPFetcher setLoggingEnabled:YES];
-	}
-
-	return _service;
-}
 
 -(void)showGoogleUserLoginView {
 	GTMOAuth2ViewControllerTouch *oauthViewController;
@@ -167,7 +156,7 @@ NSString *kMyClientSecret = @"H4jYylR_xFqh4EyX60wLdS20";
 	FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
 	float buttonWidth = loginButton.frame.size.width*1.2;
 	float buttonHeight = loginButton.frame.size.height*1.2;
-	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2, self.UserName_TextField.frame.origin.y - buttonHeight - 20, buttonWidth, buttonHeight);
+	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2, self.emailField.frame.origin.y - buttonHeight - 20, buttonWidth, buttonHeight);
 	loginButton.delegate = self;
 	loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
 	[self.view addSubview:loginButton];
@@ -227,45 +216,40 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 
-# pragma mark - Centering other frames -
+# pragma mark - Format views -
 
 //dynamically centers all our frames depending on phone screen dimensions
--(void) centerAllframes
-{
-    self.verbatmTitle_label.frame = CGRectMake((self.view.frame.size.width/2 - self.verbatmTitle_label.frame.size.width/2), self.verbatmTitle_label.frame.origin.y, self.verbatmTitle_label.frame.size.width, self.verbatmTitle_label.frame.size.height);
+-(void) centerAllframes {
+
+    self.signInButton.frame =CGRectMake((self.view.frame.size.width/2 - self.signInButton.frame.size.width/2), self.signInButton.frame.origin.y, self.signInButton.frame.size.width, self.signInButton.frame.size.height);
+
+    self.emailField.frame= CGRectMake((self.view.frame.size.width/2 - self.emailField.frame.size.width/2), self.emailField.frame.origin.y, self.emailField.frame.size.width, self.emailField.frame.size.height);
     
-    self.signIn_button.frame =CGRectMake((self.view.frame.size.width/2 - self.signIn_button.frame.size.width/2), self.signIn_button.frame.origin.y, self.signIn_button.frame.size.width, self.signIn_button.frame.size.height);
-    
-    
-    self.UserName_TextField.frame= CGRectMake((self.view.frame.size.width/2 - self.UserName_TextField.frame.size.width/2), self.UserName_TextField.frame.origin.y, self.UserName_TextField.frame.size.width, self.UserName_TextField.frame.size.height);
-    
-    self.Password_TextField.frame = CGRectMake((self.view.frame.size.width/2 - self.Password_TextField.frame.size.width/2), self.Password_TextField.frame.origin.y, self.Password_TextField.frame.size.width, self.Password_TextField.frame.size.height);
+    self.passwordField.frame = CGRectMake((self.view.frame.size.width/2 - self.passwordField.frame.size.width/2), self.passwordField.frame.origin.y, self.passwordField.frame.size.width, self.passwordField.frame.size.height);
 }
 
--(void) showCursor{
-    self.UserName_TextField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
-    
-    self.Password_TextField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
-    
+-(void) setCursorColor {
+    self.emailField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
+    self.passwordField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
 }
 
 -(void) formatTextFields {
-    [self.UserName_TextField setReturnKeyType:UIReturnKeyNext];
-    [self.Password_TextField setReturnKeyType:UIReturnKeyDone];
+    [self.emailField setReturnKeyType:UIReturnKeyNext];
+    [self.passwordField setReturnKeyType:UIReturnKeyDone];
 
-	[UIEffects disableSpellCheckOnTextField:self.UserName_TextField];
-	[UIEffects disableSpellCheckOnTextField:self.Password_TextField];
+	[UIEffects disableSpellCheckOnTextField:self.emailField];
+	[UIEffects disableSpellCheckOnTextField:self.passwordField];
 
 }
 
 // Enter button presses login
 -(BOOL) textFieldShouldReturn:(UITextField *)textField{
-    if (textField == self.UserName_TextField){
-        [self.Password_TextField becomeFirstResponder];
+    if (textField == self.emailField){
+        [self.passwordField becomeFirstResponder];
         return YES;
     }
-    if (textField == self.Password_TextField){
-        [self.Password_TextField resignFirstResponder];
+    if (textField == self.passwordField){
+        [self.passwordField resignFirstResponder];
         return YES;
     }
     return NO;
@@ -279,7 +263,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		if (!error) {
 			// Do something with user info
 			//Send a notification that the user is logged in
-			[self performSegueWithIdentifier:EXIT_SIGNIN_SEGUE sender:self];
+//			[self performSegueWithIdentifier:EXIT_SIGNIN_SEGUE sender:self];
 		} else {
 			NSLog(@"Error signing up user: %@", error.description);
 			//TODO:Error handling
@@ -357,11 +341,23 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 #pragma mark - Navigation
 
-// In a storyboard-based application, you will often want to do a little preparation before navigation
+// Segue back to the MasterNavigationVC after logging in
+// Or segue to create account
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
 }
 
+#pragma mark - Lazy Instantiation -
+
+- (GTLServiceVerbatmApp *)service {
+	if (!_service) {
+		_service = [[GTLServiceVerbatmApp alloc] init];
+		_service.retryEnabled = YES;
+		// Development only
+		[GTMHTTPFetcher setLoggingEnabled:YES];
+	}
+	return _service;
+}
 
 @end

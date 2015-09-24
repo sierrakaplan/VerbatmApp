@@ -7,8 +7,11 @@
 //
 
 #import "CreateAccount.h"
+#import "GTLQueryVerbatmApp.h"
+#import "GTLServiceVerbatmApp.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppEmail.h"
+#import "GTMHTTPFetcherLogging.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
@@ -21,8 +24,11 @@
 @property (weak, nonatomic) IBOutlet UITextField *phoneNumberField;
 @property (weak, nonatomic) IBOutlet UILabel *orLabel;
 @property (strong, nonatomic) UIButton* signUpButton;
+@property (weak, nonatomic) IBOutlet UIButton *loginRedirectButton;
 
 @property (nonatomic) BOOL signUpButtonOnScreen;
+
+@property(nonatomic, strong) GTLServiceVerbatmApp *service;
 
 #define FACEBOOK_BUTTON_YOFFSET 40
 #define SIGN_UP_BUTTON_TEXT @"Sign Up"
@@ -182,7 +188,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		if (!error) {
 			// Do something with user info
 			//Send a notification that the user is logged in
-			[self performSegueWithIdentifier:EXIT_SIGNIN_SEGUE sender:self];
+			// unwind segue
+//			[self performSegueWithIdentifier:EXIT_SIGNIN_SEGUE sender:self];
 		} else {
 			NSLog(@"Error signing up user: %@", error.description);
 			//TODO:Error handling
@@ -193,6 +200,14 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	}];
 }
 
+#pragma mark - Navigation
+
+// Segue back to the MasterNavigationVC after logging in
+// Or segue to Sign In
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+	// Get the new view controller using [segue destinationViewController].
+	// Pass the selected object to the new view controller.
+}
 
 #pragma mark - Text field Delegate -
 
@@ -200,6 +215,18 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	if (!self.signUpButtonOnScreen) {
 		[self replaceOrFBWithSignUpButton];
 	}
+}
+
+#pragma mark - Lazy Instantiation -
+
+- (GTLServiceVerbatmApp *)service {
+	if (!_service) {
+		_service = [[GTLServiceVerbatmApp alloc] init];
+		_service.retryEnabled = YES;
+		// Development only
+		[GTMHTTPFetcher setLoggingEnabled:YES];
+	}
+	return _service;
 }
 
 @end

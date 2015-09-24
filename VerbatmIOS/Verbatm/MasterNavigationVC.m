@@ -11,7 +11,6 @@
 #import "ArticleDisplayVC.h"
 
 #import "FeedVC.h"
-#import "Identifiers.h"
 #import "Icons.h"
 #import "internetConnectionMonitor.h"
 
@@ -24,6 +23,7 @@
 #import "PreviewDisplayView.h"
 #import "ProfileVC.h"
 
+#import "SegueIDs.h"
 #import "UserSetupParameters.h"
 #import "VerbatmCameraView.h"
 
@@ -75,10 +75,7 @@
 #define ID_FOR_FEEDVC @"feed_vc"
 #define ID_FOR_MEDIADEVVC @"media_dev_vc"
 #define ID_FOR_PROFILEVC @"profile_vc"
-
 #define ID_FOR_DISPLAY_VC @"article_display_vc"
-
-#define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_or_login_segue"
 
 @end
 
@@ -158,6 +155,8 @@
 	[self.articleDisplayContainer setBackgroundColor:[UIColor whiteColor]];
 	self.articleDisplayContainer.alpha = 1;
 	[self.view bringSubviewToFront: self.articleDisplayContainer];
+	// Now tell selected cell in feed to be unpinched
+	[self.feedVC deSelectCell];
 }
 
 #pragma mark Nav Buttons
@@ -166,7 +165,7 @@
 //nav button is pressed - so we move the SV left to the profile
 -(void) profileButtonPressed {
 	if (true) {
-		[self bringUpSignIn];
+		[self bringUpLogin];
 	} else {
 		[self showProfile];
 	}
@@ -175,7 +174,7 @@
 //nav button is pressed so we move the SV right to the ADK
 -(void) adkButtonPressed {
 	if (true) {
-		[self bringUpSignIn];
+		[self bringUpLogin];
 	} else {
 		[self showADK];
 	}
@@ -204,7 +203,7 @@
 	}];
 }
 
-#pragma mark - Left edge screen pull for article display vc -
+#pragma mark - Left edge screen pull for exiting article display vc -
 
 -(void) addScreenEdgePanToArticleDisplay {
 	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
@@ -328,63 +327,50 @@
 	return YES;
 }
 
--(void) removeStatusBar {
-	//remove the status bar
-	if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-		// iOS 7
-		[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-	} else {
-		// iOS 6
-		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-	}
-}
-
 
 #pragma mark - Handle Login -
 
 
 //brings up the create account page if there is no user logged in
--(void)bringUpCreateAccount {
-	[self performSegueWithIdentifier:BRING_UP_CREATE_ACCOUNT_SEGUE sender:self];
+-(void) bringUpLogin {
+//	[self performSegueWithIdentifier:BRING_UP_CREATE_ACCOUNT_SEGUE sender:self];
 }
 
-#pragma mark - handle
+//catches the unwind segue from login / create account
+- (IBAction) unwindFromLogin: (UIStoryboardSegue *)segue {
+	UIViewController* viewController = segue.sourceViewController;
 
-
-- (void)didReceiveMemoryWarning{
-	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
-}
-
-//catches the unwind segue - do nothing
-- (IBAction)done:(UIStoryboardSegue *)segue {
+	// TODO: have variable set and go to profile or adk
 }
 
 
 #pragma mark - Alerts -
--(void)alertPullTrendingIcon{
 
+-(void)alertPullTrendingIcon {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 	[UserSetupParameters set_trendingCirle_InstructionAsShown];
 }
 
-
-
--(void)userLostInternetConnetion{
+-(void) userLostInternetConnection {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 }
 
+#pragma mark - Network Connection Lost -
 
-#pragma mark -Network Connection Lost-
 -(void)networkConnectionUpdate: (NSNotification *) notification{
 	NSDictionary * userInfo = [notification userInfo];
 	BOOL thereIsConnection = (BOOL)[userInfo objectForKey:INTERNET_CONNECTION_KEY];
-	if(thereIsConnection)[self userLostInternetConnetion];
+	if(thereIsConnection)[self userLostInternetConnection];
 }
 
+#pragma mark - Memory Warning -
 
+- (void)didReceiveMemoryWarning{
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
+}
 
 #pragma mark - Lazy Instantiation -
 

@@ -10,7 +10,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseVC.h"
-@interface SignIn : BaseVC
+
+@interface SignIn : UIViewController
 
 @end

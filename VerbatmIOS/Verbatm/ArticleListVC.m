@@ -11,7 +11,6 @@
 #import "AVETypeAnalyzer.h"
 #import "Notifications.h"
 #import "SizesAndPositions.h"
-#import "Identifiers.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Strings.h"
@@ -36,6 +35,8 @@
 
 @property (strong, nonatomic) FeedTableViewCell* povPublishingPlaceholderCell;
 @property (nonatomic) BOOL povPublishing;
+@property (nonatomic) BOOL loadingPOVs;
+
 
 #pragma mark - Refresh -
 
@@ -48,25 +49,23 @@
 #define FEED_CELL_ID @"feed_cell_id"
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 
-#define NUM_POVS_IN_SECTION 6
-#define RELOAD_THRESHOLD 4
-#define NUM_OF_NEW_POVS_TO_LOAD 15
-#define PULL_TO_REFRESH_THRESHOLD (-1 * 50)
+#define NUM_POVS_IN_SECTION 4
+#define RELOAD_THRESHOLD -10
 @end
 
 @implementation ArticleListVC
 
 - (void) viewDidLoad {
 	[super viewDidLoad];
-	[self initStoryListView];
+	[self initPovListView];
 	[self registerForNotifications];
     [self setRefreshAnimator];
     self.pullDownInProgress = NO;
     self.refreshInProgress = NO;
+    self.loadingPOVs = NO;
 }
 
 -(void) registerForNotifications {
-	
     [[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(povPublished)
 												 name:NOTIFICATION_POV_PUBLISHED
@@ -75,10 +74,10 @@
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+	[self refreshFeed];
 }
 
--(void) initStoryListView {
+-(void) initPovListView {
 	self.povListView.delegate = self;
 	self.povListView.dataSource = self;
 	[self.view addSubview:self.povListView];
@@ -99,15 +98,12 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if(self.povPublishing && !indexPath.row) return;
-	[self viewPOVAtIndex: indexPath.row];
-}
-
-//one of the POV's in the list has been clicked
--(void) viewPOVAtIndex: (NSInteger) index {
-	PovInfo* povInfo = [self.povLoader getPOVInfoAtIndex: index];
-	NSLog(@"Viewing POV \"%@\"", povInfo.title);
-	[self.delegate displayPOVWithIndex: index fromLoadManager: self.povLoader];
+	if(self.refreshInProgress) { return; }
+	if(self.povPublishing && indexPath.row == 0) { return; }
+	// Tell cell it was selected so it can animate being pinched together before it calls
+	// delegate method to be selected
+	FeedTableViewCell* cell = (FeedTableViewCell*)[self.povListView cellForRowAtIndexPath:indexPath];
+	[cell wasSelected];
 }
 
 #pragma mark - Table View Data Source methods (model) -
@@ -146,8 +142,16 @@
 
 #pragma mark - Feed Table View Cell Delegate methods -
 
--(void) successfullyPinchedTogetherAtIndexPath:(NSIndexPath *)indexPath {
-	[self tableView: self.povListView didSelectRowAtIndexPath:indexPath];
+-(void) successfullyPinchedTogetherCell: (FeedTableViewCell *)cell {
+	[self viewPOVOnCell: cell];
+}
+
+#pragma mark - Viewing POV -
+
+//one of the POV's in the list has been clicked
+-(void) viewPOVOnCell: (FeedTableViewCell*) cell {
+	NSLog(@"Viewing POV \"%@\"", cell.title);
+	[self.delegate displayPOVOnCell:cell withLoadManager: self.povLoader];
 }
 
 #pragma mark - Show POV publishing -
@@ -187,6 +191,7 @@
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
 -(void) morePOVsLoaded {
+    if(self.loadingPOVs)self.loadingPOVs = NO;
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
@@ -207,18 +212,20 @@
 
 
 
-#pragma mark -Infinite Scroll -
-
+#pragma mark - Infinite Scroll -
 //when the user is at the bottom of the screen and is pulling up more articles load
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
     if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
-        [self.povLoader loadMorePOVs:NUM_OF_NEW_POVS_TO_LOAD];
+        if(!self.loadingPOVs){
+            self.loadingPOVs = YES;
+            [self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
+        }
     }
 }
 
 #pragma mark - Miscellaneous -
-- (NSUInteger) supportedInterfaceOrientations {
+- (UIInterfaceOrientationMask) supportedInterfaceOrientations {
 	//return supported orientation masks
 	return UIInterfaceOrientationMaskPortrait;
 }

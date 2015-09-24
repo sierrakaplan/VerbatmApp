@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseVC.h"
 
-@interface TopicsFeedVC : BaseVC
+
+@interface TopicsFeedVC : UIViewController
 
 @end

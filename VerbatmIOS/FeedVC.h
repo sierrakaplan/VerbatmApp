@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BaseVC.h"
+
 
 @protocol FeedVCDelegate <NSObject>
 -(void) profileButtonPressed;
@@ -15,10 +15,14 @@
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager;
 @end
 
-@interface FeedVC : BaseVC
+@interface FeedVC : UIViewController
 
 @property(strong, nonatomic) id<FeedVCDelegate> delegate;
 
 // animates the fact that a recent POV is publishing
 -(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
+
+//Makes sure selected cell is deselected (resets formatting for it)
+-(void) deSelectCell;
+
 @end
