@@ -130,6 +130,10 @@
     }
 }
 
+-(void) isConnectedToInternet_asynchronous{
+    [self updateInterfaceWithReachability:self.internetReachability];
+    [self updateInterfaceWithReachability:self.wifiReachability];
+}
 
 #pragma mark - Lazy instantiation -
 -(NSRunLoop *)runloop{

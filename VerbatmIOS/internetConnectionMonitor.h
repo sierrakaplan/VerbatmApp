@@ -14,4 +14,6 @@
 
 @interface internetConnectionMonitor : NSObject
 
+-(void) isConnectedToInternet_asynchronous;//tells you if the app is connected to the internet asynchronously;
+
 @end

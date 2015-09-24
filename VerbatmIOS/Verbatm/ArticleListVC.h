@@ -13,7 +13,7 @@
 @protocol ArticleListVCDelegate <NSObject>
 
 -(void) displayPOVWithIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager;
-
+-(void) failedToRefreshFeed;
 @end
 
 @interface ArticleListVC : UIViewController

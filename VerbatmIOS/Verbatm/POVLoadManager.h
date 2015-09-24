@@ -23,6 +23,8 @@
 
 -(void) morePOVsLoaded;
 -(void) povsRefreshed;
+-(void) povsFailedToRefresh;
+-(void) failedToLoadMorePOVs;
 
 @end
 

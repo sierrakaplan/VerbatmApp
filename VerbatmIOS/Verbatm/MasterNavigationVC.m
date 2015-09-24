@@ -25,6 +25,7 @@
 #import "ProfileVC.h"
 
 #import "UserSetupParameters.h"
+#import "UIEffects.h"
 #import "VerbatmCameraView.h"
 
 
@@ -390,6 +391,15 @@
     }
     return NO;
 }
+
+
+//delegate method from the Feed - prompts us to check internet connectivity
+-(void) refreshingFeedsFailed {
+    [self.connectionMonitor isConnectedToInternet_asynchronous];
+}
+
+
+
 
 #pragma mark - Lazy Instantiation -
 

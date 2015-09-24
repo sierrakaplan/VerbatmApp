@@ -149,6 +149,10 @@
 
 #pragma mark - Article List VC Delegate Methods (display articles) -
 
+-(void)failedToRefreshFeed{
+    [self.delegate refreshingFeedsFailed];
+}
+
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
 	// Do this in the master vc so it can be above the main scroll view
 	[self.delegate displayPOVWithIndex:index fromLoadManager:loadManager];
