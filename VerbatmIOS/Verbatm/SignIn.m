@@ -78,8 +78,6 @@ NSString *kMyClientSecret = @"H4jYylR_xFqh4EyX60wLdS20";
 }
 
 
-
-
 #pragma mark - Google Auth -
 
 

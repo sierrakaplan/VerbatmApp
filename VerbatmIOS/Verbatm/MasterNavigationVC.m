@@ -300,7 +300,8 @@
 
 //brings up the create account page if there is no user logged in
 -(void) bringUpLogin {
-//	[self performSegueWithIdentifier:BRING_UP_CREATE_ACCOUNT_SEGUE sender:self];
+	//TODO: check user defaults and do login if they have logged in before
+	[self performSegueWithIdentifier:CREATE_ACCOUNT_SEGUE sender:self];
 }
 
 //catches the unwind segue from login / create account
@@ -340,11 +341,6 @@
 }
 
 #pragma mark - Lazy Instantiation -
-
--(UIImageView *)animationView {
-	if(!_animationView)_animationView = [[UIImageView alloc] init];
-	return _animationView;
-}
 
 -(PreviewDisplayView*) previewDisplayView {
 	if(!_previewDisplayView){
