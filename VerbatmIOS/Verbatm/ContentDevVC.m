@@ -155,6 +155,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	self.addingCoverPicture = NO;
 	self.numPinchViews = 0;
 	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
+	self.addMediaBelowView = nil;
 	self.pinchViewTappedAndClosedForTheFirstTime = NO;
 }
 
@@ -468,7 +469,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self addTapGestureToPinchView:pinchView];
 
 	// must be below base media tile selector
-	NSInteger index = self.pageElementScrollViews.count-1;
+//TODO when there is media tile	NSInteger index = self.pageElementScrollViews.count-1;
+	NSInteger index = self.pageElementScrollViews.count;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
