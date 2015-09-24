@@ -42,9 +42,6 @@
                                     <containerView opaque="NO" contentMode="scaleToFill" id="BZw-d7-VqY">
                                         <rect key="frame" x="0.0" y="39" width="320" height="577"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <connections>
-                                            <segue destination="VBm-cB-Fwg" kind="modal" identifier="segue_id_create_account" id="JKt-ij-zSv"/>
-                                        </connections>
                                     </containerView>
                                 </subviews>
                             </scrollView>
@@ -65,7 +62,8 @@
                         <outlet property="feedContainer" destination="BZw-d7-VqY" id="ZeZ-Vt-wFY"/>
                         <outlet property="masterSV" destination="Rve-tc-g3P" id="038-Bi-DAq"/>
                         <outlet property="profileContainer" destination="eFn-WD-HK1" id="yV9-aB-TGG"/>
-                        <segue destination="waF-h7-lpu" kind="modal" identifier="segue_id_sign_in" id="wAe-Sr-Fqv"/>
+                        <segue destination="VBm-cB-Fwg" kind="modal" identifier="segue_id_create_account" id="vqA-Ve-rLQ"/>
+                        <segue destination="waF-h7-lpu" kind="modal" identifier="segue_id_sign_in" id="O0U-1G-Oy1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AxA-gZ-qvU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -307,6 +305,9 @@
                                 <rect key="frame" x="41" y="518" width="238" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Need an account? Sign up for free."/>
+                                <connections>
+                                    <segue destination="VBm-cB-Fwg" kind="modal" identifier="segue_id_create_account_from_sign_in" id="uPI-hI-3x0"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="0.12156862745098039" green="0.12941176470588237" blue="0.14117647058823529" alpha="1" colorSpace="calibratedRGB"/>
@@ -318,7 +319,6 @@
                         <outlet property="emailField" destination="vpx-wo-zOE" id="sKq-W0-HzK"/>
                         <outlet property="passwordField" destination="UY0-AH-vwu" id="FW2-ec-DgN"/>
                         <outlet property="signInButton" destination="GTq-gd-CXK" id="uxP-Ww-JZi"/>
-                        <segue destination="VBm-cB-Fwg" kind="modal" identifier="segue_id_create_account_from_sign_in" id="C50-ef-ERb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jhx-H8-RPm" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -505,7 +505,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="wAe-Sr-Fqv"/>
-        <segue reference="JKt-ij-zSv"/>
+        <segue reference="O0U-1G-Oy1"/>
+        <segue reference="vqA-Ve-rLQ"/>
     </inferredMetricsTieBreakers>
 </document>
