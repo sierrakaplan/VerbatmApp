@@ -34,6 +34,8 @@
 
 @property (nonatomic) BOOL textShowing;
 
+#define CIRCLE_CENTER_Y (self.frame.size.height * 3.f/4.f)
+
 @end
 
 @implementation PhotoAVE
@@ -110,7 +112,7 @@
 		PointObject *point = [MathOperations getPointFromCircleRadius:self.circleRadius andCurrentPointIndex:i withTotalPoints:numCircles];
 		//set relative to the center of the circle
 		point.x = point.x + self.frame.size.width/2.f;
-		point.y = point.y + self.frame.size.height/2.f;
+		point.y = point.y + CIRCLE_CENTER_Y;
 		[self.pointsOnCircle addObject:point];
 		[self createDotViewFromPoint:point];
 	}
@@ -120,7 +122,7 @@
 
 
 -(void) createMainCircleView {
-	self.originPoint = CGPointMake(self.frame.size.width/2.f, self.frame.size.height/2.f);
+	self.originPoint = CGPointMake(self.frame.size.width/2.f, CIRCLE_CENTER_Y);
 	CGRect frame = CGRectMake(self.originPoint.x-self.circleRadius-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
 							  self.originPoint.y-self.circleRadius,
 							  self.circleRadius*2 + CIRCLE_OVER_IMAGES_BORDER_WIDTH, self.circleRadius*2);
@@ -228,6 +230,7 @@
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 	self.draggingFromPointIndex = [self getPointIndexFromLocation:touchLocation];
 	if (self.draggingFromPointIndex >= 0) {
+		[self.delegate startedDraggingAroundCircle];
 		[self displayCircle:YES];
 		[self setImageViewsToLocation:self.draggingFromPointIndex];
 		self.lastDistanceFromStartingPoint = 0.f;
@@ -292,6 +295,7 @@
 -(void) handleCircleGestureEnded:(UIPanGestureRecognizer*) sender {
 	self.draggingFromPointIndex = -1;
 	[self displayCircle:NO];
+	[self.delegate stoppedDraggingAroundCircle];
 }
 
 -(void) showAndRemoveCircle {
