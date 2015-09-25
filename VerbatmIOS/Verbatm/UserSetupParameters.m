@@ -41,7 +41,7 @@
 }
 
 #pragma mark - Check Parameters -
-+(BOOL)trendingCirle_InstructionShown{
++(BOOL)blackCircleInstructionShown{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     return [defaults boolForKey:TRENDING_CIRCLE_INSTRUCTION_KEY];
 }

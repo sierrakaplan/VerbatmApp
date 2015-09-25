@@ -8,7 +8,6 @@
 
 #import "EditContentVC.h"
 #import "ImagePinchView.h"
-#import "Identifiers.h"
 #import "SizesAndPositions.h"
 #import "UserSetupParameters.h"
 #import "VideoPinchView.h"
@@ -77,7 +76,7 @@
     if(self.openPinchView.containsImage) {
         self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
     } 
-    [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
+//    [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
 }
 
 

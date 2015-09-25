@@ -33,7 +33,6 @@
 
 @property (strong, nonatomic) UIButton *galleryButton;
 @property (strong, nonatomic) UIImage* galleryImage;
-@property (strong, nonatomic) UIImage* galleryImageGrayedOut;
 
 
 #define PULSE_DURATION 0.9
@@ -96,7 +95,6 @@
 	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 
 	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
-	self.galleryImageGrayedOut = [UIEffects imageOverlayed:self.galleryImage withColor:[UIColor lightGrayColor]];
     [self evenlySpaceObjects:@[self.backButton, self.previewButton,self.switchModeButton, self.galleryButton]];
 }
 

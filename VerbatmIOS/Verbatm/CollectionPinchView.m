@@ -336,7 +336,7 @@
 }
 
 -(UITextView*)textView {
-	if(!_textView) _textView = [[UITextView alloc] init];
+	if (!_textView) _textView = [[UITextView alloc] init];
 	return _textView;
 }
 

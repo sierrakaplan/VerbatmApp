@@ -9,10 +9,10 @@
 
 #import <UIKit/UIKit.h>
 
-#import "verbatmAppDelegate.h"
+#import "VerbatmAppDelegate.h"
 
 int main(int argc, char * argv[]){
     @autoreleasepool{
-        return UIApplicationMain(argc, argv, nil, NSStringFromClass([verbatmAppDelegate class]));
+        return UIApplicationMain(argc, argv, nil, NSStringFromClass([VerbatmAppDelegate class]));
     }
 }

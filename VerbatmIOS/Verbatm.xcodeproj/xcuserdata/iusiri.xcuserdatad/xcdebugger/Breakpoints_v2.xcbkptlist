@@ -127,8 +127,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "46"
             endingLineNumber = "46"
-            landmarkName = "@implementation ContentDevPullBar"
-            landmarkType = "3">
+            landmarkName = "-initWithFrame:andPanGesture:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1886,9 +1886,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "385"
-            endingLineNumber = "385"
-            landmarkName = "-networkConnectionUpdate:"
-            landmarkType = "5">
+            endingLineNumber = "385">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1918,9 +1916,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "389"
-            endingLineNumber = "389"
-            landmarkName = "-isThereConnectionFromString:"
-            landmarkType = "5">
+            endingLineNumber = "389">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1950,9 +1946,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "398"
-            endingLineNumber = "398"
-            landmarkName = "-refreshingFeedsFailed"
-            landmarkType = "5">
+            endingLineNumber = "398">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

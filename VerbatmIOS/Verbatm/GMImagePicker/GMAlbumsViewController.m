@@ -11,7 +11,6 @@
 #import "GMGridViewCell.h"
 #import "GMGridViewController.h"
 #import "GMAlbumsViewCell.h"
-#import "Identifiers.h"
 #import "Strings.h"
 
 @import Photos;
@@ -24,6 +23,8 @@
 @property (strong) NSArray *collectionsFetchResultsTitles;
 @property (nonatomic, weak) GMImagePickerController *picker;
 @property (strong) PHCachingImageManager *imageManager;
+
+#define CELL_ID @"cell_id"
 
 @end
 

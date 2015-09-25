@@ -19,16 +19,15 @@ public class VerbatmUser {
     private Long id;
 
     /**
-     * VerbatmUser name
-     */
-    private String name;
-
-
-    /**
      * User email
      */
     private Email email;
 
+    /**
+     * VerbatmUser name
+     */
+    private String name;
+    
     /**
      * User phone number
      */

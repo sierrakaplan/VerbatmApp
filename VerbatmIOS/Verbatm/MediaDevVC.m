@@ -15,7 +15,6 @@
 #import "CameraFocusSquare.h"
 
 #import "Icons.h"
-#import "Identifiers.h"
 #import "Durations.h"
 #import "UserPinchViews.h"
 
@@ -323,19 +322,8 @@
 }
 
 //Tells the screen to hide the status bar
-- (BOOL)prefersStatusBarHidden
-{
+- (BOOL) prefersStatusBarHidden {
 	return YES;
-}
-
--(void) removeStatusBar {
-	if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-		// iOS 7
-		[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-	} else {
-		// iOS 6
-		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-	}
 }
 
 

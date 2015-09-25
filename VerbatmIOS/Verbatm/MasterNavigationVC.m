@@ -11,7 +11,6 @@
 #import "ArticleDisplayVC.h"
 
 #import "FeedVC.h"
-#import "Identifiers.h"
 #import "Icons.h"
 #import "internetConnectionMonitor.h"
 
@@ -24,16 +23,20 @@
 #import "PreviewDisplayView.h"
 #import "ProfileVC.h"
 
+#import "SegueIDs.h"
 #import "UserSetupParameters.h"
 #import "UIEffects.h"
 #import "VerbatmCameraView.h"
+
+#import <Parse/Parse.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
 
 @interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 
-#pragma mark - Child View Controllers - 
+#pragma mark - Child View Controllers -
 @property (weak, nonatomic) IBOutlet UIView * profileContainer;
 @property (weak, nonatomic) IBOutlet UIView * adkContainer;
 @property (weak, nonatomic) IBOutlet UIView * feedContainer;
@@ -57,12 +60,9 @@
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
 @property (nonatomic) CGPoint previousGesturePoint;
 
-@property (strong, nonatomic) NSTimer * animationTimer;
-@property (strong,nonatomic) UIImageView* animationView;
-
 @property (strong, nonatomic) internetConnectionMonitor * connectionMonitor;
 
-#define ANIMATION_DURATION 0.5
+#define MAIN_SCROLLVIEW_SCROLL_DURATION 0.5
 #define NUMBER_OF_CHILD_VCS 3
 #define LEFT_FRAME self.view.bounds
 #define CENTER_FRAME CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
@@ -76,7 +76,6 @@
 #define ID_FOR_FEEDVC @"feed_vc"
 #define ID_FOR_MEDIADEVVC @"media_dev_vc"
 #define ID_FOR_PROFILEVC @"profile_vc"
-
 #define ID_FOR_DISPLAY_VC @"article_display_vc"
 
 @end
@@ -87,31 +86,29 @@
 	[super viewDidLoad];
 	[self formatMainScrollView];
 	[self getAndFormatVCs];
-    self.connectionMonitor = [[internetConnectionMonitor alloc] init];
-    [self registerForNotifications];
+	self.connectionMonitor = [[internetConnectionMonitor alloc] init];
+	[self registerForNotifications];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    
-    if(![UserSetupParameters trendingCirle_InstructionShown])[self alertPullTrendingIcon];
+
+	if(![UserSetupParameters blackCircleInstructionShown]) {
+		[self alertPullTrendingIcon];
+	}
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 }
 
-
-
-
 -(void)registerForNotifications{
-    //gets notified if there is no internet connection
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(networkConnectionUpdate:)
-                                                 name:INTERNET_CONNECTION_NOTIFICATION
-                                               object:nil];
+	//gets notified if there is no internet connection
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(networkConnectionUpdate:)
+												 name:INTERNET_CONNECTION_NOTIFICATION
+											   object:nil];
 }
-
 
 #pragma mark - Getting and formatting child view controllers -
 
@@ -168,38 +165,40 @@
 //TODO: change these to check if user is logged in
 //nav button is pressed - so we move the SV left to the profile
 -(void) profileButtonPressed {
-    if(false){
-        [self bringUpSignUp];
-    }else{
-        [self showProfile];
-    }
+	if (![PFUser currentUser].isAuthenticated &&
+		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+		[self bringUpLogin];
+	} else {
+		[self showProfile];
+	}
 }
 
 //nav button is pressed so we move the SV right to the ADK
 -(void) adkButtonPressed {
-    if(false){
-        [self bringUpSignUp];
-    }else{
-        [self showADK];
-    }
+	if (![PFUser currentUser].isAuthenticated &&
+		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+		[self bringUpLogin];
+	} else {
+		[self showADK];
+	}
 }
 
 // Scrolls the main scroll view over to reveal the ADK
 -(void) showADK {
-	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+	[UIView animateWithDuration: MAIN_SCROLLVIEW_SCROLL_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width * 2, 0);
 	}];
 }
 
 -(void) showProfile {
-	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+	[UIView animateWithDuration: MAIN_SCROLLVIEW_SCROLL_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(0, 0);
 	}];
 }
 
 // Scrolls the main scroll view over to reveal the feed
 -(void) showFeed {
-	[UIView animateWithDuration:ANIMATION_DURATION animations:^{
+	[UIView animateWithDuration: MAIN_SCROLLVIEW_SCROLL_DURATION animations:^{
 		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	}completion:^(BOOL finished) {
 		if(finished) {
@@ -295,92 +294,45 @@
 	[self showFeed];
 }
 
-#pragma mark - Animations - 
-
-//article published sucessfully
--(void)articlePublishedAnimation {
-	if(self.animationView.frame.size.width) return;
-	self.animationView.image = [UIImage imageNamed:PUBLISHED_ANIMATION_ICON];
-	self.animationView.frame = self.view.bounds;
-	[self.view addSubview:self.animationView];
-	if(!self.animationView.alpha)self.animationView.alpha = 1;
-	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
-}
-
-//insert title
-//TODO: Move this to the ContentDevVC
--(void)insertTitleAnimation {
-	if(self.animationView.frame.size.width) return;
-	self.animationView.image = [UIImage imageNamed:TITLE_NOTIFICATION_ANIMATION];
-	self.animationView.frame = self.view.bounds;
-	if(!self.animationView.alpha)self.animationView.alpha = 1;
-	[self.view addSubview:self.animationView];
-	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:TIME_UNTIL_ANIMATION_CLEAR target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
-}
-
--(void) removeAnimationView {
-	[UIView animateWithDuration:ANIMATION_NOTIFICATION_DURATION animations:^{
-		self.animationView.alpha=0;
-	}completion:^(BOOL finished) {
-		self.animationView.frame = CGRectMake(0,0,0,0);
-	}];
-}
 
 //for ios8- To hide the status bar
 -(BOOL)prefersStatusBarHidden {
 	return YES;
 }
 
--(void) removeStatusBar {
-	//remove the status bar
-	if ([self respondsToSelector:@selector(setNeedsStatusBarAppearanceUpdate)]) {
-		// iOS 7
-		[self performSelector:@selector(setNeedsStatusBarAppearanceUpdate)];
-	} else {
-		// iOS 6
-		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
-	}
-}
-
 
 #pragma mark - Handle Login -
 
 
-//brings up the login page if there is no user logged in
--(void)bringUpSignUp {
-	[self performSegueWithIdentifier:BRING_UP_SIGNIN_SEGUE sender:self];
+//brings up the create account page if there is no user logged in
+-(void) bringUpLogin {
+	//TODO: check user defaults and do login if they have logged in before
+	[self performSegueWithIdentifier:CREATE_ACCOUNT_SEGUE sender:self];
 }
 
-#pragma mark - handle
+//catches the unwind segue from login / create account
+- (IBAction) unwindFromLogin: (UIStoryboardSegue *)segue {
+	UIViewController* viewController = segue.sourceViewController;
 
-
-- (void)didReceiveMemoryWarning{
-	[super didReceiveMemoryWarning];
-	// Dispose of any resources that can be recreated.
-}
-
-//catches the unwind segue - do nothing
-- (IBAction)done:(UIStoryboardSegue *)segue {
+	// TODO: have variable set and go to profile or adk
 }
 
 
 #pragma mark - Alerts -
--(void)alertPullTrendingIcon{
-    
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    [UserSetupParameters set_trendingCirle_InstructionAsShown];
+
+-(void)alertPullTrendingIcon {
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+	[UserSetupParameters set_trendingCirle_InstructionAsShown];
 }
 
-
-
--(void)userLostInternetConnetion{
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
+-(void) userLostInternetConnection {
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
 }
 
+#pragma mark - Network Connection Lost -
 
-#pragma mark -Network Connection Lost-
 -(void)networkConnectionUpdate: (NSNotification *) notification{
     NSDictionary * userInfo = [notification userInfo];
     BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
@@ -401,14 +353,13 @@
 }
 
 
-
+#pragma mark - Memory Warning -
+- (void)didReceiveMemoryWarning{
+	[super didReceiveMemoryWarning];
+	// Dispose of any resources that can be recreated.
+}
 
 #pragma mark - Lazy Instantiation -
-
--(UIImageView *)animationView {
-    if(!_animationView)_animationView = [[UIImageView alloc] init];
-    return _animationView;
-}
 
 -(PreviewDisplayView*) previewDisplayView {
 	if(!_previewDisplayView){

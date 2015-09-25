@@ -179,13 +179,10 @@
 - (GTLServiceVerbatmApp *)service {
 	if (!_service) {
 		_service = [[GTLServiceVerbatmApp alloc] init];
-
 		_service.retryEnabled = YES;
-
 		// Development only
 		[GTMHTTPFetcher setLoggingEnabled:YES];
 	}
-
 	return _service;
 }
 

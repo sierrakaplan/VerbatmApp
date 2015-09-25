@@ -91,6 +91,10 @@
 
 //loads pinchviews from user defaults
 -(void) loadPinchViewsFromUserDefaults {
+	//clears user defaults
+	[[NSUserDefaults standardUserDefaults]
+	 setObject: [[NSArray alloc] init] forKey:PINCHVIEWS_KEY];
+	
 	@synchronized(self) {
 		self.pinchViewsAsData = [[NSUserDefaults standardUserDefaults]
 								 objectForKey:PINCHVIEWS_KEY];

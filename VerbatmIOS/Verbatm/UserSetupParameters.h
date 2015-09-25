@@ -22,7 +22,7 @@
 
 
 /*check if these conditions have been met*/
-+(BOOL) trendingCirle_InstructionShown;
++(BOOL) blackCircleInstructionShown;
 +(BOOL) filter_InstructionShown;
 +(BOOL) circlesArePages_InstructionShown;
 +(BOOL) pinchCircles_InstructionShown;
