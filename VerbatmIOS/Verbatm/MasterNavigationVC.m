@@ -336,7 +336,7 @@
 -(void)networkConnectionUpdate: (NSNotification *) notification{
     NSDictionary * userInfo = [notification userInfo];
     BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
-    if(!thereIsConnection)[self userLostInternetConnetion];
+    if(!thereIsConnection)[self userLostInternetConnection];
 }
 
 -(BOOL)isThereConnectionFromString:(NSString *) key{
