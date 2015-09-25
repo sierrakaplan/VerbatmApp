@@ -61,7 +61,7 @@
 
 //adds pinch view and automatically saves pinchViews
 -(void) addPinchView:(PinchView*)pinchView {
-	@synchronized(self) {
+    @synchronized(self) {
 		if ([self.pinchViews containsObject:pinchView]) {
 			return;
 		}
@@ -105,6 +105,7 @@
 		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:self.pinchViewsAsData copyItems:YES];
 	}
 }
+
 
 //removes all pinch views
 -(void) clearPinchViews {
