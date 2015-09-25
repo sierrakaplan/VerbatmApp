@@ -20,7 +20,7 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
     [UserSetupParameters setUpParameters];
-	[[UserPinchViews sharedInstance] loadPinchViewsFromUserDefaults];
+	//[[UserPinchViews sharedInstance] loadPinchViewsFromUserDefaults];
     [[AVAudioSession sharedInstance] setActive: YES error: nil];
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
     
