@@ -22,7 +22,6 @@
 #endif
 
 @class GTLVerbatmAppEmail;
-@class GTLVerbatmAppImage;
 @class GTLVerbatmAppPhoneNumber;
 
 // ----------------------------------------------------------------------------
@@ -38,5 +37,5 @@
 
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, retain) GTLVerbatmAppPhoneNumber *phoneNumber;
-@property (nonatomic, retain) GTLVerbatmAppImage *profilePhoto;
+@property (nonatomic, retain) NSNumber *profilePhotoImageID;  // longLongValue
 @end

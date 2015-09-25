@@ -8,16 +8,12 @@
 
 #import "CreateAccount.h"
 #import "Durations.h"
-#import "GTLQueryVerbatmApp.h"
-#import "GTLServiceVerbatmApp.h"
-#import "GTLVerbatmAppVerbatmUser.h"
-#import "GTLVerbatmAppPhoneNumber.h"
-#import "GTLVerbatmAppEmail.h"
-#import "GTMHTTPFetcherLogging.h"
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+
+#import "UserManager.h"
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
@@ -25,7 +21,7 @@
 #import <ParseFacebookutilsV4/PFFacebookUtils.h>
 
 
-@interface CreateAccount () <FBSDKLoginButtonDelegate, UITextFieldDelegate>
+@interface CreateAccount () <FBSDKLoginButtonDelegate, UITextFieldDelegate, UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *emailField;
 @property (weak, nonatomic) IBOutlet UITextField *fullnameField;
@@ -37,11 +33,11 @@
 
 @property (nonatomic) BOOL signUpButtonOnScreen;
 
-@property(nonatomic, strong) GTLServiceVerbatmApp *service;
-
 @property (strong, nonatomic) UIView *animationView;
 @property (strong, nonatomic) UILabel* animationLabel;
 @property (strong, nonatomic) NSTimer * animationTimer;
+
+@property (strong, nonatomic) UserManager* userManager;
 
 #define FACEBOOK_BUTTON_YOFFSET 40
 #define SIGN_UP_BUTTON_TEXT @"Sign Up"
@@ -155,6 +151,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 					 NSString* name = result[@"name"];
 					 NSString* email = result[@"email"];
 					 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+
 					 //will only show friends who have signed up for the app with fb
 					 NSArray* friends = nil;
 					 if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
@@ -196,66 +193,32 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		password.length > 0 &&
 		name.length > 0) {
 
-		PFUser* newUser = [[PFUser alloc] init];
-		// TODO: send confirmation email (must be unique)
-		newUser.username = email;
-		newUser.password = password;
-		[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-			if(succeeded) {
-				GTLVerbatmAppVerbatmUser* verbatmUser = [GTLVerbatmAppVerbatmUser alloc];
-
-				verbatmUser.name = name;
-
-				GTLVerbatmAppEmail* verbatmEmail = [GTLVerbatmAppEmail alloc];
-				verbatmEmail.email = email;
-				verbatmUser.email = verbatmEmail;
-
-				if (phoneNumber.length) {
-					GTLVerbatmAppPhoneNumber* verbatmPhoneNumber = [GTLVerbatmAppPhoneNumber alloc];
-					verbatmPhoneNumber.number = phoneNumber;
-					verbatmUser.phoneNumber = verbatmPhoneNumber;
-				}
-				
-				[self signUpUser:verbatmUser];
-
-			} else {
-				NSString* errorMessage;
-				if([error code] == kPFErrorUsernameTaken) {
-					errorMessage = @"An account with that email already exists. Try logging in.";
-				} else {
-					errorMessage = @"We're sorry, something went wrong!";
-				}
-				[self errorInSignInAnimation:errorMessage];
-			}
-		}];
-
+		[self.userManager signUpUserFromEmail: email andName: name andPassword:password andPhoneNumber: phoneNumber];
 	} else {
 		/*Give them some sort of prompt
 		 for what's missing
 		 */
 
 	}
-}
 
-
-#pragma mark - Sign Up User Logic -
-
-- (void) signUpUser:(GTLVerbatmAppVerbatmUser*) user {
-	GTLQueryVerbatmApp* query = [GTLQueryVerbatmApp queryForVerbatmuserInsertUserWithObject:user];
-	[self.service executeQuery:query completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser *object, NSError *error) {
-		if (!error) {
-			NSLog(@"Successfully inserted user object");
-		} else {
-			NSLog(@"Error signing up user: %@", error.description);
-			//TODO:Error handling
-		}
-	}];
 	/*removes the current VC by going two layers deep*/
-	[self.presentingViewController.presentingViewController dismissViewControllerAnimated:YES completion:^{
-	}];
+//	[self.presentingViewController.presentingViewController dismissViewControllerAnimated:YES completion:^{
+//	}];
 }
 
-#pragma mark Error message
+#pragma mark - User Manager Delegate methods -
+
+-(void) errorSigningUpUser: (NSError*) error {
+	NSString* errorMessage;
+	if([error code] == kPFErrorUsernameTaken) {
+		errorMessage = @"An account with that email already exists. Try logging in.";
+	} else {
+		errorMessage = @"We're sorry, something went wrong!";
+	}
+	[self errorInSignInAnimation:errorMessage];
+}
+
+#pragma mark - Error message -
 
 //article publsihed sucessfully
 -(void)errorInSignInAnimation:(NSString*)error {
@@ -303,16 +266,10 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 #pragma mark - Lazy Instantiation -
 
-- (GTLServiceVerbatmApp *)service {
-	if (!_service) {
-		_service = [[GTLServiceVerbatmApp alloc] init];
-		_service.retryEnabled = YES;
-		// Development only
-		[GTMHTTPFetcher setLoggingEnabled:YES];
-	}
-	return _service;
+-(UserManager*) userManager {
+	if (!_userManager) _userManager = [[UserManager alloc] init];
+	return _userManager;
 }
-
 
 //lazy instantiation
 -(UIView *)animationView {

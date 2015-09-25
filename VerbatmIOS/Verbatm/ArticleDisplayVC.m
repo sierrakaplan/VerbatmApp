@@ -23,7 +23,7 @@
 #import "PovInfo.h"
 
 #import "UIEffects.h"
-#import "UpdatingManager.h"
+#import "UpdatingPOVManager.h"
 
 @interface ArticleDisplayVC () <PagesLoadManagerDelegate, LikeButtonDelegate>
 
@@ -43,7 +43,7 @@
 @property (strong, nonatomic) PagesLoadManager* pageLoadManager;
 
 // In charge of updating information about a pov (number of likes, etc.)
-@property (strong, nonatomic) UpdatingManager* updatingManager;
+@property (strong, nonatomic) UpdatingPOVManager* updatingManager;
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 @end
@@ -146,9 +146,9 @@
 	return _pageLoadManager;
 }
 
--(UpdatingManager*) updatingManager {
+-(UpdatingPOVManager*) updatingManager {
 	if (!_updatingManager) {
-		_updatingManager = [[UpdatingManager alloc] init];
+		_updatingManager = [[UpdatingPOVManager alloc] init];
 	}
 	return _updatingManager;
 }

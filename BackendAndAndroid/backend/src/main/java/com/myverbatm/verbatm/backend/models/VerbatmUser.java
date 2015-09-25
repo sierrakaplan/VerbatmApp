@@ -36,7 +36,7 @@ public class VerbatmUser {
     /**
      * User profile photo
      */
-    private Image profilePhoto;
+    private Long profilePhotoImageID;
 
     //TODO(sierrakn): Store user friends
 
@@ -114,18 +114,18 @@ public class VerbatmUser {
     }
 
     /**
-     * Gets the user profile photo
-     * @return user profile photo
+     * Gets the user profile photo id
+     * @return user profile photo id
      */
-    public final Image getProfilePhoto() {
-        return profilePhoto;
+    public final Long getProfilePhotoImageID() {
+        return profilePhotoImageID;
     }
 
     /**
      * Sets the user profile photo
-     * @param profilePhoto the profile photo to set for this user
+     * @param profilePhotoImageID the profile photo image id to set for this user
      */
-    public final  void setProfilePhoto(Image profilePhoto) {
-        this.profilePhoto = profilePhoto;
+    public final  void setProfilePhotoImageID(Long profilePhotoImageID) {
+        this.profilePhotoImageID = profilePhotoImageID;
     }
 }
