@@ -479,6 +479,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, upperScrollView.frame.size.width, upperScrollView.frame.size.height);
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
+    
 	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
 	newElementScrollView.delegate = self;
 	newElementScrollView.customDelegate = self;
@@ -491,13 +492,13 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
 	}
 
-	[self.mainScrollView addSubview: newElementScrollView];
-	[self shiftElementsBelowView: self.coverPicView];
+    [self.mainScrollView addSubview: newElementScrollView];
+    [self shiftElementsBelowView: self.coverPicView];
+    
 }
 
 
 #pragma mark - Shift Positions of Elements
-
 //Once view is added- we make sure the views below it are appropriately adjusted
 //in position
 -(void)shiftElementsBelowView: (UIView *) view
@@ -1191,7 +1192,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 // Finds first view that contains location of press and sets it as the selectedView
 -(void) findSelectedViewFromTouch:(CGPoint) touch {
-
 	self.selectedView_PAN = nil;
 
 	//make sure touch is not above the first view
@@ -1694,7 +1694,10 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+                dispatch_async(dispatch_get_main_queue(), ^{
 					[self createPinchViewFromImageData: imageData];
+                });
+
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
@@ -1703,7 +1706,9 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 					return;
 				}
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+                dispatch_async(dispatch_get_main_queue(), ^{
 					[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];
+                });
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
 			NSLog(@"Asset is of audio type, unable to handle.");

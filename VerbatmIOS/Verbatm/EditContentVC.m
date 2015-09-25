@@ -11,6 +11,7 @@
 #import "SizesAndPositions.h"
 #import "UserSetupParameters.h"
 #import "VideoPinchView.h"
+#import "SegueIDs.h"
 
 @interface EditContentVC()<EditContentViewDelegate>
 @property (strong, nonatomic) PinchView * openPinchView;
@@ -76,7 +77,7 @@
     if(self.openPinchView.containsImage) {
         self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
     } 
-//    [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
+    [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
 }
 
 
