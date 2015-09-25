@@ -9,15 +9,14 @@
 #import <UIKit/UIKit.h>
 
 @class POVLoadManager;
+@class FeedTableViewCell;
 
 @protocol ArticleListVCDelegate <NSObject>
-
--(void) displayPOVWithIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager;
+-(void) displayPOVOnCell:(FeedTableViewCell *)cell withLoadManager:(POVLoadManager *)loadManager;
 -(void) failedToRefreshFeed;
 @end
 
 @interface ArticleListVC : UIViewController
-
 @property (strong, nonatomic) id<ArticleListVCDelegate> delegate;
 
 -(void) setPovLoadManager:(POVLoadManager *)povLoader;

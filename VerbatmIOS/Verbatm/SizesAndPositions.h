@@ -23,12 +23,9 @@
 
 #pragma mark -Delete position-
 
-#define DELETE_ICON_DISTANCE_FROM_LEFTWALL 30
-#define DELETE_ICON_DISTANCE_FROM_TOPWALL 50
+#define DELETE_ICON_OFFSET 30
 #define DELETE_ICON_WIDTH 30
 #define DELETE_ICON_HEIGHT 40
-
-#define PINCH_VIEW_CENTER_X ((2*DELETE_ICON_DISTANCE_FROM_LEFTWALL) + DELETE_ICON_WIDTH + (self.view.frame.size.width/2))
 
 #pragma mark - Sign In -
 

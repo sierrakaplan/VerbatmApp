@@ -29,6 +29,7 @@
         if(!image)return self;
 		[self initWithImage:image];
 	}
+    
 	return self;
 }
 

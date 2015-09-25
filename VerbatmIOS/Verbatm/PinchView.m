@@ -12,7 +12,6 @@
 #import "UIEffects.h"
 #import "ContentDevVC.h"
 #import "CollectionPinchView.h"
-#import "TextPinchView.h"
 
 
 @interface PinchView()
@@ -150,26 +149,10 @@
 		return	firstPinchView;
 	}
 
-	//check if they are only text
-	NSString* pinchedText = @"";
-	BOOL allTextPinchViews = YES;
 	for (PinchView* pinchView in pinchViews) {
-		if ([pinchView isKindOfClass:[TextPinchView class]]) {
-			if ([pinchedText length]) {
-				pinchedText = [NSString stringWithFormat:@"%@\r\r%@", pinchedText, [pinchView getText]];
-			} else {
-				pinchedText = [pinchedText stringByAppendingString:[pinchView getText]];
-			}
-		} else {
-			allTextPinchViews = NO;
-		}
 		if ([pinchView isKindOfClass:[VideoPinchView class]]) {
 			[[(VideoPinchView*)pinchView videoView] stopVideo];
 		}
-	}
-
-	if (allTextPinchViews) {
-		return [[TextPinchView alloc] initWithRadius:firstPinchView.radius withCenter:firstPinchView.center andText:pinchedText];
 	}
 
 	return [[CollectionPinchView alloc] initWithRadius:firstPinchView.radius withCenter:firstPinchView.center andPinchViews:pinchViews];
