@@ -21,6 +21,8 @@
 @property (nonatomic) BOOL thereIsConnection;
 @property (nonatomic) BOOL justReceivedNoConnectionSignal;//this is to prevent double calls
 @property (nonatomic, strong) NSRunLoop* runloop;
+
+#define NO_NETWORK_WAIT_TIME 4 //in seconds - because we get double signals we need to wait to prevent from false positves
 @end
 
 @implementation internetConnectionMonitor
@@ -73,51 +75,28 @@
 - (void)configureReachability:(Reachability *)reachability {
     NetworkStatus netStatus = [reachability currentReachabilityStatus];
     switch (netStatus){
-        case NotReachable: {
+        case NotReachable:{
             //mark there is not internet connection
-            self.thereIsConnection = NO;
-            self.justReceivedNoConnectionSignal = YES;
-            //starts a timer before the notificaiton is sent.
-            //in this time we wait for a signal that there is indeed a connection.
-            //this prevents double calls and false negatives
-            
-            
-            [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(timerFireMethod:) userInfo:nil repeats:NO];
-//            [self.runloop addTimer:[NSTimer timerWithTimeInterval:2
-//                                                           target:self
-//                                                         selector:@selector(timerFireMethod:)
-//                                                         userInfo:nil
-//                                                          repeats:NO] forMode:NSDefaultRunLoopMode];
+            //[self weHaveNoConneciton];
             break;
         }
-        case ReachableViaWWAN:  {
-            //we have connection view network
-            if(self.justReceivedNoConnectionSignal){
-                self.justReceivedNoConnectionSignal = NO;
-                self.thereIsConnection = YES;
-            }else if(!self.thereIsConnection){
-                [self weHaveConnection];
-            }
+        case ReachableViaWWAN:{
+            self.thereIsConnection = YES;
+               // [self weHaveConnection];
             break;
         }
-        case ReachableViaWiFi:  {
-            if(self.justReceivedNoConnectionSignal){
-                self.justReceivedNoConnectionSignal = NO;
+        case ReachableViaWiFi:{
                 self.thereIsConnection = YES;
-            }else if(!self.thereIsConnection){
-                [self weHaveConnection];
-            }
+              //  [self weHaveConnection];
             //we have conneciton by wifi
             break;
         }
     }
 }
-- (void)timerFireMethod:(NSTimer *)timer{
-    [self weHaveNoConneciton];
-}
 
 
-//sends out a notification that we have internt connection
+
+//sends out a notification that we have internet connection
 -(void)weHaveConnection{
     self.thereIsConnection = YES;
     NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:@"YES", INTERNET_CONNECTION_KEY, nil];
@@ -126,20 +105,37 @@
     
 }
 
+
 //send out a notificaiton that we have internet connetion
 -(void)weHaveNoConneciton{
-    self.justReceivedNoConnectionSignal = NO;
-    if(self.thereIsConnection) return;
-    self.thereIsConnection = NO;
-    NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:@"NO", INTERNET_CONNECTION_KEY, nil];
-    NSNotification *notification = [[NSNotification alloc]initWithName:INTERNET_CONNECTION_NOTIFICATION object:nil userInfo:Info];
-    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    //For the second time this function is called not by the timer
+    if(self.justReceivedNoConnectionSignal){
+        self.thereIsConnection = NO;
+    }
     
+    if(!self.justReceivedNoConnectionSignal){
+        self.justReceivedNoConnectionSignal = YES;
+        [NSTimer scheduledTimerWithTimeInterval:NO_NETWORK_WAIT_TIME target:self selector:@selector(timerForNoConnection:) userInfo:nil repeats:NO];
+    }else if(!self.thereIsConnection){
+        self.justReceivedNoConnectionSignal = NO;
+        NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:@"NO", INTERNET_CONNECTION_KEY, nil];
+        NSNotification *notification = [[NSNotification alloc]initWithName:INTERNET_CONNECTION_NOTIFICATION object:nil userInfo:Info];
+        [[NSNotificationCenter defaultCenter] postNotification:notification];
+    }
+}
+
+- (void)timerForNoConnection:(NSTimer *)timer{
+    if(self.thereIsConnection){
+        self.justReceivedNoConnectionSignal = NO;
+    }
+}
+
+-(void) isConnectedToInternet_asynchronous{
+    [self updateInterfaceWithReachability:self.internetReachability];
+    [self updateInterfaceWithReachability:self.wifiReachability];
 }
 
 #pragma mark - Lazy instantiation -
-
-
 -(NSRunLoop *)runloop{
     if(!_runloop) _runloop = [[NSRunLoop alloc] init];
     return _runloop;

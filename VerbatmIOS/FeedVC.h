@@ -13,6 +13,7 @@
 -(void) profileButtonPressed;
 -(void) adkButtonPressed;
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager;
+-(void) refreshingFeedsFailed;
 @end
 
 @interface FeedVC : UIViewController

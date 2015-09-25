@@ -66,8 +66,6 @@
 }
 
 #pragma mark - Getting and formatting child view controllers -
-
-
 //position the container views in appropriate places and set frames
 -(void) positionContainerViews {
 	float listContainerY = CATEGORY_SWITCH_HEIGHT + CATEGORY_SWITCH_OFFSET*2;
@@ -88,10 +86,7 @@
 	self.mostRecentVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_RECENT_VC];
 	[self.mostRecentVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeRecent]];
 	self.mostRecentVC.delegate = self;
-
-	// NOT IN USE RIGHT NOW
-//	self.topicsVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_TOPICS_VC];
-
+    
 	[self.topListContainer addSubview: self.trendingVC.view];
 	[self.bottomListContainer addSubview: self.mostRecentVC.view];
 }
@@ -106,6 +101,7 @@
 	self.navPullBar.delegate = self;
 	[self.view addSubview: self.navPullBar];
 }
+
 
 -(void) setUpCategorySwitcher {
 	float categorySwitchWidth = self.view.frame.size.width;
@@ -154,6 +150,9 @@
 }
 
 #pragma mark - Article List VC Delegate Methods (display articles) -
+-(void)failedToRefreshFeed{
+    [self.delegate refreshingFeedsFailed];
+}
 
 -(void) displayPOVOnCell:(FeedTableViewCell *)cell withLoadManager:(POVLoadManager *)loadManager {
 	// Do this in the master vc so it can be above the main scroll view

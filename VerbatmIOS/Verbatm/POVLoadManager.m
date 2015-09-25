@@ -89,6 +89,7 @@
 		[self.delegate povsRefreshed];
 	}).catch(^(NSError* error) {
 		NSLog(@"Error loading POVs: %@", error.description);
+        [self.delegate povsFailedToRefresh];
 	});
 }
 

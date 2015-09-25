@@ -25,6 +25,7 @@
 
 #import "SegueIDs.h"
 #import "UserSetupParameters.h"
+#import "UIEffects.h"
 #import "VerbatmCameraView.h"
 
 #import <Parse/Parse.h>
@@ -333,13 +334,28 @@
 #pragma mark - Network Connection Lost -
 
 -(void)networkConnectionUpdate: (NSNotification *) notification{
-	NSDictionary * userInfo = [notification userInfo];
-	BOOL thereIsConnection = (BOOL)[userInfo objectForKey:INTERNET_CONNECTION_KEY];
-	if(thereIsConnection)[self userLostInternetConnection];
+    NSDictionary * userInfo = [notification userInfo];
+    BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
+    if(!thereIsConnection) {
+		[self userLostInternetConnection];
+	}
 }
 
-#pragma mark - Memory Warning -
+-(BOOL)isThereConnectionFromString:(NSString *) key{
+    if([key isEqualToString:@"YES"]){
+        return YES;
+    }
+    return NO;
+}
 
+
+//delegate method from the Feed - prompts us to check internet connectivity
+-(void) refreshingFeedsFailed {
+    [self.connectionMonitor isConnectedToInternet_asynchronous];
+}
+
+
+#pragma mark - Memory Warning -
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.

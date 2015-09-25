@@ -23,6 +23,8 @@
 #import "POVLoadManager.h"
 #import "PovInfo.h"
 
+#import "UIEffects.h"
+
 @interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource, FeedTableViewCellDelegate, POVLoadManagerDelegate>
 
 
@@ -37,7 +39,6 @@
 @property (nonatomic) BOOL povPublishing;
 @property (nonatomic) BOOL loadingPOVs;
 
-
 #pragma mark - Refresh -
 
 //this cell is inserted in the top of the listview when pull down to refresh
@@ -45,6 +46,8 @@
 @property (atomic) BOOL pullDownInProgress;
 //tells you whether or not we have started a timer to animate
 @property (atomic) BOOL refreshInProgress;
+
+@property  (nonatomic, strong) UIActivityIndicatorView * activityIndicator;
 
 #define FEED_CELL_ID @"feed_cell_id"
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
@@ -70,11 +73,17 @@
 											 selector:@selector(povPublished)
 												 name:NOTIFICATION_POV_PUBLISHED
 											   object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(networkConnectionUpdate:)
+                                                 name:INTERNET_CONNECTION_NOTIFICATION
+                                               object:nil];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self refreshFeed];
+    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter:self.view.center andStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.activityIndicator.color = [UIColor grayColor];
+    [self refreshFeed];
 }
 
 -(void) initPovListView {
@@ -82,7 +91,6 @@
 	self.povListView.dataSource = self;
 	[self.view addSubview:self.povListView];
 }
-
 
 #pragma mark - Setting POV Load Manager -
 
@@ -135,7 +143,6 @@
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
-    
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
 }
@@ -175,18 +182,30 @@
 #pragma mark - Refresh feed -
 // Tells pov loader to reload POV's completely (removing all those previously loaded and getting the first page again)
 -(void) refreshFeed {
+    if(self.refreshInProgress) return;
+    self.refreshInProgress = YES;
 	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
 }
 
 //Delagate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
-    if(self.povPublishing){
+    [UIEffects stopActivityIndicator:self.activityIndicator];
+    self.refreshInProgress = NO;
+    if(self.povPublishing) {
         self.povPublishing = NO;
 		[self.povPublishingPlaceholderCell stopActivityIndicator];
         self.povPublishingPlaceholderCell = nil;
     }
+    
     [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     if(self.refreshControl.isRefreshing)[self.refreshControl endRefreshing];
+}
+
+//delegate method from povLoader - called if call to refresh failed usually for internet reasons
+-(void)povsFailedToRefresh{
+    self.refreshInProgress = NO;
+    if(self.refreshControl.isRefreshing)[self.refreshControl endRefreshing];
+    [self.delegate failedToRefreshFeed];
 }
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
@@ -205,23 +224,44 @@
 -(void)refresh:(UIRefreshControl *)refreshControl {
     if(self.povPublishing){
         [refreshControl endRefreshing];
-    }else{
+    } else {
         [self refreshFeed];
     }
 }
 
-
-
 #pragma mark - Infinite Scroll -
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    //change the contentsize
+    [self.povListView endUpdates];
+    self.povListView.contentSize = CGSizeMake(self.povListView.contentSize.width,
+                                              ([self.povLoader getNumberOfPOVsLoaded] * STORY_CELL_HEIGHT ) + 80 + NAV_BAR_HEIGHT);
+}
+
+
 //when the user is at the bottom of the screen and is pulling up more articles load
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
     if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
-        if(!self.loadingPOVs){
+        if(!self.loadingPOVs) {
             self.loadingPOVs = YES;
             [self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
         }
     }
+}
+
+#pragma mark - Network Connection -
+-(void)networkConnectionUpdate: (NSNotification *) notification{
+    NSDictionary * userInfo = [notification userInfo];
+    BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
+    if(thereIsConnection)[self refreshFeed];
+}
+
+-(BOOL)isThereConnectionFromString:(NSString *) key{
+    if([key isEqualToString:@"YES"]){
+        return YES;
+    }
+    return NO;
 }
 
 #pragma mark - Miscellaneous -
@@ -244,7 +284,7 @@
 
 -(FeedTableView*) povListView {
 	if (!_povListView) {
-		_povListView = [[FeedTableView alloc] initWithFrame:self.view.bounds style:UITableViewStylePlain];
+		_povListView = [[FeedTableView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
 	}
 	return _povListView;
 }

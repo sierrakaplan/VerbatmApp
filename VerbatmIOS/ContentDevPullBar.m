@@ -94,9 +94,7 @@
 	self.galleryButton = [self getButtonWithFrame:galleryButtonFrame];
 	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 
-    
 	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
-
     [self evenlySpaceObjects:@[self.backButton, self.previewButton,self.switchModeButton, self.galleryButton]];
 }
 
@@ -115,8 +113,6 @@
     self.switchModeButtonFrame = CGRectMake(self.previewButton.frame.origin.x + self.previewButton.frame.size.width +
                                             distance,
                                             NAV_ICON_OFFSET, middleButtonWidth, NAV_ICON_SIZE);
-    
-    
 }
 
 

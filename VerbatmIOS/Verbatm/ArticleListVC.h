@@ -12,13 +12,11 @@
 @class FeedTableViewCell;
 
 @protocol ArticleListVCDelegate <NSObject>
-
--(void) displayPOVOnCell: (FeedTableViewCell*) cell withLoadManager: (POVLoadManager*) loadManager;
-
+-(void) displayPOVOnCell:(FeedTableViewCell *)cell withLoadManager:(POVLoadManager *)loadManager;
+-(void) failedToRefreshFeed;
 @end
 
 @interface ArticleListVC : UIViewController
-
 @property (strong, nonatomic) id<ArticleListVCDelegate> delegate;
 
 -(void) setPovLoadManager:(POVLoadManager *)povLoader;

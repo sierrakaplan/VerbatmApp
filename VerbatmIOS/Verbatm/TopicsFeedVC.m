@@ -59,10 +59,6 @@
 #pragma mark - Table View Data Source methods (model) -
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	// Return the number of rows in the section.
-	//    NSUInteger count = self.articleLoadManger.articleList.count;
-	//    count += (self.pullDownInProgress) ? 1 : 0;
-	//    return count;
 	return 10;
 }
 

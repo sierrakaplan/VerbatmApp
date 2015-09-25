@@ -426,15 +426,13 @@ const SCNetworkReachabilityFlags kConnectionDown =  kSCNetworkReachabilityFlagsC
 - (NetworkStatus) networkStatusForFlags: (SCNetworkReachabilityFlags) flags {
 	
 	if (flags & kSCNetworkReachabilityFlagsReachable) {
-		
 		// Local WiFi -- Test derived from Apple's code: -localWiFiStatusForFlags:.
 		if (self.key == kLocalWiFiConnection) {
-
 			// Reachability Flag Status: xR xxxxxxd Reachable.
 			return (flags & kSCNetworkReachabilityFlagsIsDirect) ? kReachableViaWiFi : kNotReachable;
-
 		}
-		
+        
+        
 		// Observed WWAN Values:
 		// WWAN Active:              Reachability Flag Status: WR -t-----
 		// WWAN Connection required: Reachability Flag Status: WR ct-----
@@ -461,7 +459,6 @@ const SCNetworkReachabilityFlags kConnectionDown =  kSCNetworkReachabilityFlagsC
 		// If you care whether a connection needs to be brought up,   use -isConnectionRequired.
 		// If you care about whether user intervention is necessary,  use -isInterventionRequired.
 		// If you care about dynamically establishing the connection, use -isConnectionIsOnDemand.
-
 		// Reachability Flag Status: -R cxxxxxx Reachable.
 		if (flags & kSCNetworkReachabilityFlagsConnectionRequired) { return kReachableViaWiFi; }
 		
