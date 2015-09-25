@@ -227,7 +227,6 @@
 
 #pragma mark - Infinite Scroll -
 
-
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView {
     //change the contentsize
     [self.povListView endUpdates];

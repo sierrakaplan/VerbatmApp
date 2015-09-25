@@ -1267,7 +1267,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
-	[self stopAllVideos];
+	//[self stopAllVideos];
 }
 
 -(void) stopAllVideos {
