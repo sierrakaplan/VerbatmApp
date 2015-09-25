@@ -1558,9 +1558,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-				dispatch_async(dispatch_get_main_queue(), ^{
 					[self createPinchViewFromImageData: imageData];
-				});
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
@@ -1569,9 +1567,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 					return;
 				}
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-				dispatch_async(dispatch_get_main_queue(), ^{
 					[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];
-				});
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
 			NSLog(@"Asset is of audio type, unable to handle.");
@@ -1601,14 +1597,24 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andImage:image];
-	[self newPinchView:newPinchView belowView:nil];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self newPinchView:newPinchView belowView:nil];
+    });
+
+	
 }
 
 -(void) createPinchViewFromVideoAsset:(AVURLAsset*) videoAsset {
 	PinchView* newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andVideo: videoAsset];
-	[self newPinchView:newPinchView belowView:nil];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self newPinchView:newPinchView belowView:nil];
+    });
+
+	
 }
 
 
