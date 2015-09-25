@@ -27,7 +27,7 @@
 
 + (void) addDashedBorderToView:(UIView *)view withFrame:(CGRect) frame;
 
-+ (UIImage*) imageOverlayed:(UIImage*)image withColor:(UIColor*)color;
+//+ (UIImage*) imageOverlayed:(UIImage*)image withColor:(UIColor*)color;
 
 + (UIImage *)image:(UIImage*) image byApplyingAlpha:(CGFloat) alpha;
 
