@@ -27,6 +27,9 @@
 #import "UserSetupParameters.h"
 #import "VerbatmCameraView.h"
 
+#import <Parse/Parse.h>
+#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+
 
 @interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate, UIGestureRecognizerDelegate>
 
@@ -161,7 +164,8 @@
 //TODO: change these to check if user is logged in
 //nav button is pressed - so we move the SV left to the profile
 -(void) profileButtonPressed {
-	if (true) {
+	if (![PFUser currentUser].isAuthenticated &&
+		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
 		[self bringUpLogin];
 	} else {
 		[self showProfile];
@@ -170,7 +174,8 @@
 
 //nav button is pressed so we move the SV right to the ADK
 -(void) adkButtonPressed {
-	if (true) {
+	if (![PFUser currentUser].isAuthenticated &&
+		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
 		[self bringUpLogin];
 	} else {
 		[self showADK];

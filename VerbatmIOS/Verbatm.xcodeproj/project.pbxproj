@@ -17,6 +17,10 @@
 		A54689231BA3E1BC00F40E54 /* CoverPhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */; };
 		A55A59CC1BB32A8C00C7CE7A /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5B894961BA56D0100551149 /* PromiseKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		A55A59CD1BB32AD800C7CE7A /* PromiseKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A5B894961BA56D0100551149 /* PromiseKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A55A59D31BB4CFE800C7CE7A /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59D21BB4CFE800C7CE7A /* Parse.framework */; settings = {ASSET_TAGS = (); }; };
+		A55A59D91BB4DCFB00C7CE7A /* ParseFacebookUtilsV4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59D81BB4DCFB00C7CE7A /* ParseFacebookUtilsV4.framework */; settings = {ASSET_TAGS = (); }; };
+		A55A59DD1BB4DDDA00C7CE7A /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59DC1BB4DDDA00C7CE7A /* Bolts.framework */; settings = {ASSET_TAGS = (); }; };
+		A55A59DF1BB4E07D00C7CE7A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59DE1BB4E07D00C7CE7A /* libsqlite3.tbd */; };
 		A560EF981BA88B44003FB041 /* PagesLoadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EF971BA88B44003FB041 /* PagesLoadManager.m */; };
 		A560EF9D1BA895A2003FB041 /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EF9C1BA895A2003FB041 /* Page.m */; };
 		A560EFA21BAA006B003FB041 /* UpdatingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA11BAA006B003FB041 /* UpdatingManager.m */; };
@@ -141,13 +145,12 @@
 		C7BC437A199D97F5004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
 		C7BC4380199D97F5004B91A1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C7BC437E199D97F5004B91A1 /* InfoPlist.strings */; };
 		C7BC4382199D97F5004B91A1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC4381199D97F5004B91A1 /* main.m */; };
-		C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC4385199D97F5004B91A1 /* verbatmAppDelegate.m */; };
+		C7BC4386199D97F5004B91A1 /* VerbatmAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC4385199D97F5004B91A1 /* VerbatmAppDelegate.m */; };
 		C7BC4395199D97F6004B91A1 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4394199D97F6004B91A1 /* XCTest.framework */; };
 		C7BC4396199D97F6004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4397199D97F6004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
 		C7BC439F199D97F6004B91A1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C7BC439D199D97F6004B91A1 /* InfoPlist.strings */; };
 		C7BC43A1199D97F6004B91A1 /* VerbatmTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BC43A0199D97F6004B91A1 /* VerbatmTests.m */; };
-		C7BC43AB199EC2C0004B91A1 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43AA199EC2C0004B91A1 /* Parse.framework */; };
 		C7BC43AD199EC438004B91A1 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43AC199EC438004B91A1 /* AudioToolbox.framework */; };
 		C7BC43AF199EC445004B91A1 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43AE199EC445004B91A1 /* CFNetwork.framework */; };
 		C7BC43B1199EC458004B91A1 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43B0199EC458004B91A1 /* CoreLocation.framework */; };
@@ -236,6 +239,10 @@
 		A54689211BA3E1BC00F40E54 /* CoverPhotoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPhotoAVE.h; sourceTree = "<group>"; };
 		A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPhotoAVE.m; sourceTree = "<group>"; };
 		A55A59CF1BB470D300C7CE7A /* SegueIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SegueIDs.h; sourceTree = "<group>"; };
+		A55A59D21BB4CFE800C7CE7A /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
+		A55A59D81BB4DCFB00C7CE7A /* ParseFacebookUtilsV4.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtilsV4.framework; sourceTree = "<group>"; };
+		A55A59DC1BB4DDDA00C7CE7A /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
+		A55A59DE1BB4E07D00C7CE7A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		A560EF961BA88B44003FB041 /* PagesLoadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagesLoadManager.h; sourceTree = "<group>"; };
 		A560EF971BA88B44003FB041 /* PagesLoadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagesLoadManager.m; sourceTree = "<group>"; };
 		A560EF9B1BA895A2003FB041 /* Page.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page.h; sourceTree = "<group>"; };
@@ -481,8 +488,8 @@
 		C7BC437F199D97F5004B91A1 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		C7BC4381199D97F5004B91A1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		C7BC4383199D97F5004B91A1 /* Verbatm-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Verbatm-Prefix.pch"; sourceTree = "<group>"; };
-		C7BC4384199D97F5004B91A1 /* verbatmAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = verbatmAppDelegate.h; sourceTree = "<group>"; };
-		C7BC4385199D97F5004B91A1 /* verbatmAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = verbatmAppDelegate.m; sourceTree = "<group>"; };
+		C7BC4384199D97F5004B91A1 /* VerbatmAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VerbatmAppDelegate.h; sourceTree = "<group>"; };
+		C7BC4385199D97F5004B91A1 /* VerbatmAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = VerbatmAppDelegate.m; sourceTree = "<group>"; };
 		C7BC4393199D97F6004B91A1 /* VerbatmTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VerbatmTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BC4394199D97F6004B91A1 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		C7BC439C199D97F6004B91A1 /* VerbatmTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "VerbatmTests-Info.plist"; sourceTree = "<group>"; };
@@ -539,27 +546,30 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A55A59DF1BB4E07D00C7CE7A /* libsqlite3.tbd in Frameworks */,
+				C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */,
+				C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */,
+				C7BC43B9199EC696004B91A1 /* Security.framework in Frameworks */,
+				C7BC43B7199EC68B004B91A1 /* QuartzCore.framework in Frameworks */,
+				C7BC43B5199EC680004B91A1 /* MobileCoreServices.framework in Frameworks */,
+				C7BC43B1199EC458004B91A1 /* CoreLocation.framework in Frameworks */,
+				C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */,
+				C7BC43AF199EC445004B91A1 /* CFNetwork.framework in Frameworks */,
+				C7BC43AD199EC438004B91A1 /* AudioToolbox.framework in Frameworks */,
+				A55A59DD1BB4DDDA00C7CE7A /* Bolts.framework in Frameworks */,
+				A55A59D31BB4CFE800C7CE7A /* Parse.framework in Frameworks */,
 				A55A59CC1BB32A8C00C7CE7A /* PromiseKit.framework in Frameworks */,
+				A55A59D91BB4DCFB00C7CE7A /* ParseFacebookUtilsV4.framework in Frameworks */,
 				C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */,
 				C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */,
 				A5E3CDAF1B881C710065C8E5 /* FBSDKLoginKit.framework in Frameworks */,
 				A5E3CDA91B881B0C0065C8E5 /* FBSDKCoreKit.framework in Frameworks */,
 				C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */,
-				C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */,
-				C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */,
 				A5E3CDAE1B881C710065C8E5 /* FBAudienceNetwork.framework in Frameworks */,
-				C7BC43B9199EC696004B91A1 /* Security.framework in Frameworks */,
-				C7BC43B7199EC68B004B91A1 /* QuartzCore.framework in Frameworks */,
-				C7BC43B5199EC680004B91A1 /* MobileCoreServices.framework in Frameworks */,
 				C7BC43B3199EC471004B91A1 /* libz.dylib in Frameworks */,
-				C7BC43B1199EC458004B91A1 /* CoreLocation.framework in Frameworks */,
 				A5E3CDB01B881C710065C8E5 /* FBSDKMessengerShareKit.framework in Frameworks */,
-				C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */,
-				C7BC43AF199EC445004B91A1 /* CFNetwork.framework in Frameworks */,
-				C7BC43AD199EC438004B91A1 /* AudioToolbox.framework in Frameworks */,
 				A5E3CDAA1B881B0C0065C8E5 /* FBSDKShareKit.framework in Frameworks */,
 				C7BC437A199D97F5004B91A1 /* UIKit.framework in Frameworks */,
-				C7BC43AB199EC2C0004B91A1 /* Parse.framework in Frameworks */,
 				C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1110,6 +1120,10 @@
 		C7BC4374199D97F5004B91A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A55A59DE1BB4E07D00C7CE7A /* libsqlite3.tbd */,
+				A55A59DC1BB4DDDA00C7CE7A /* Bolts.framework */,
+				A55A59D21BB4CFE800C7CE7A /* Parse.framework */,
+				A55A59D81BB4DCFB00C7CE7A /* ParseFacebookUtilsV4.framework */,
 				A5B894961BA56D0100551149 /* PromiseKit.framework */,
 				A5E3CDAB1B881C710065C8E5 /* FBAudienceNetwork.framework */,
 				A5E3CDAC1B881C710065C8E5 /* FBSDKLoginKit.framework */,
@@ -1166,8 +1180,8 @@
 		C7BC437C199D97F5004B91A1 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				C7BC4384199D97F5004B91A1 /* verbatmAppDelegate.h */,
-				C7BC4385199D97F5004B91A1 /* verbatmAppDelegate.m */,
+				C7BC4384199D97F5004B91A1 /* VerbatmAppDelegate.h */,
+				C7BC4385199D97F5004B91A1 /* VerbatmAppDelegate.m */,
 				C79747D91B50B815009077E3 /* Verbatm-Info.plist */,
 				C7BC437E199D97F5004B91A1 /* InfoPlist.strings */,
 				C7BC4381199D97F5004B91A1 /* main.m */,
@@ -1491,7 +1505,7 @@
 				C78B682419CA6C01003D0AC5 /* VerbatmUITextView.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,
 				A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */,
-				C7BC4386199D97F5004B91A1 /* verbatmAppDelegate.m in Sources */,
+				C7BC4386199D97F5004B91A1 /* VerbatmAppDelegate.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */,
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
@@ -1693,6 +1707,7 @@
 					"$(PROJECT_DIR)/**",
 					"/Users/sierrakaplan-nelson/Documents/PromiseKit-2.2.2/iOS",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
@@ -1724,6 +1739,7 @@
 					"$(PROJECT_DIR)/**",
 					"/Users/sierrakaplan-nelson/Documents/PromiseKit-2.2.2/iOS",
 					"$(PROJECT_DIR)/Carthage/Build/iOS",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
