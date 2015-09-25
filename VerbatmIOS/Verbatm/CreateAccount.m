@@ -250,7 +250,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 			//TODO:Error handling
 		}
 	}];
-	/*removes the current VC by going two layers deep */
+	/*removes the current VC by going two layers deep*/
 	[self.presentingViewController.presentingViewController dismissViewControllerAnimated:YES completion:^{
 	}];
 }
