@@ -74,7 +74,6 @@
 											 selector:@selector(povPublished)
 												 name:NOTIFICATION_POV_PUBLISHED
 											   object:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(networkConnectionUpdate:)
                                                  name:INTERNET_CONNECTION_NOTIFICATION
@@ -93,7 +92,6 @@
 	self.povListView.dataSource = self;
 	[self.view addSubview:self.povListView];
 }
-
 
 #pragma mark - Setting POV Load Manager -
 
@@ -149,7 +147,6 @@
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
-    
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
 }
@@ -188,13 +185,14 @@
 
 //Delagate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
-    if(self.activityIndicator.isAnimating)[UIEffects stopActivityIndicator:self.activityIndicator];
+    [UIEffects stopActivityIndicator:self.activityIndicator];
     self.refreshInProgress = NO;
-    if(self.povPublishing){
+    if(self.povPublishing) {
         self.povPublishing = NO;
 		[self.povPublishingPlaceholderCell stopActivityIndicator];
         self.povPublishingPlaceholderCell = nil;
     }
+    
     [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
     if(self.refreshControl.isRefreshing)[self.refreshControl endRefreshing];
 }
@@ -227,13 +225,22 @@
     }
 }
 
-
 #pragma mark - Infinite Scroll -
+
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    //change the contentsize
+    [self.povListView endUpdates];
+    self.povListView.contentSize = CGSizeMake(self.povListView.contentSize.width,
+                                              ([self.povLoader getNumberOfPOVsLoaded] * STORY_CELL_HEIGHT ) + 80 + NAV_BAR_HEIGHT);
+}
+
+
 //when the user is at the bottom of the screen and is pulling up more articles load
 -(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
     //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
     if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
-        if(!self.loadingPOVs){
+        if(!self.loadingPOVs) {
             self.loadingPOVs = YES;
             [self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
         }
@@ -253,7 +260,6 @@
     }
     return NO;
 }
-
 
 #pragma mark - Miscellaneous -
 - (UIInterfaceOrientationMask) supportedInterfaceOrientations {
@@ -275,7 +281,7 @@
 
 -(FeedTableView*) povListView {
 	if (!_povListView) {
-		_povListView = [[FeedTableView alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height - NAV_BAR_HEIGHT) style:UITableViewStylePlain];
+		_povListView = [[FeedTableView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
 	}
 	return _povListView;
 }

@@ -68,7 +68,7 @@
 	float listContainerY = CATEGORY_SWITCH_HEIGHT + CATEGORY_SWITCH_OFFSET*2;
 	self.topListContainer.frame = CGRectMake(0, listContainerY,
 											 self.view.frame.size.width,
-											 self.view.frame.size.height - listContainerY - NAV_BAR_HEIGHT);
+											 self.view.frame.size.height - listContainerY);
 	self.bottomListContainer.frame = self.topListContainer.frame;
 	self.bottomListContainer.alpha = 0;
 }
@@ -86,8 +86,6 @@
     
 	[self.topListContainer addSubview: self.trendingVC.view];
 	[self.bottomListContainer addSubview: self.mostRecentVC.view];
-    
-    
 }
 
 #pragma mark - Formatting sub views -
@@ -100,6 +98,7 @@
 	self.navPullBar.delegate = self;
 	[self.view addSubview: self.navPullBar];
 }
+
 
 -(void) setUpCategorySwitcher {
 	float categorySwitchWidth = self.view.frame.size.width;
