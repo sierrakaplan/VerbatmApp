@@ -156,7 +156,8 @@
 #define CIRCLE_OFFSET 15.f
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
-#define TOUCH_THRESHOLD 40.f
+#define TAP_THRESHOLD 15.f
+#define	SLIDE_THRESHOLD 30.f
 
 
 

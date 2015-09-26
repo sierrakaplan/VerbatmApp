@@ -176,8 +176,8 @@
 
 //check if tap is within radius of circle
 -(BOOL) circleTapped:(CGPoint) touchLocation {
-	if ((touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + TOUCH_THRESHOLD)
-		&&	(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + TOUCH_THRESHOLD)) {
+	if ((touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)
+		&&	(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)) {
 		[self goToPhoto:touchLocation];
 		return YES;
 	}
@@ -240,7 +240,7 @@
 	}
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 
-	if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint withThreshold:TOUCH_THRESHOLD]) {
+	if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint withThreshold:SLIDE_THRESHOLD]) {
 		return;
 	}
 	PointObject * point = self.pointsOnCircle [self.draggingFromPointIndex];
@@ -248,7 +248,6 @@
 	float distanceFromStartingTouch = [MathOperations distanceClockwiseBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint];
 
 	[self fadeWithDistance:distanceFromStartingTouch andTotalDistance:totalDistanceToTravel];
-
 	self.lastDistanceFromStartingPoint = distanceFromStartingTouch;
 }
 
@@ -336,8 +335,8 @@
 
 	for (int i = 0; i < [self.pointsOnCircle count]; i++) {
 		PointObject* point = self.pointsOnCircle[i];
-		if(fabs(point.x - touchLocation.x) <= TOUCH_THRESHOLD
-		   && fabs(point.y - touchLocation.y) <= TOUCH_THRESHOLD) {
+		if(fabs(point.x - touchLocation.x) <= TAP_THRESHOLD
+		   && fabs(point.y - touchLocation.y) <= TAP_THRESHOLD) {
 			return i;
 		}
 	}
