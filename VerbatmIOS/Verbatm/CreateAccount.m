@@ -48,13 +48,13 @@
 @implementation CreateAccount
 
 -(void) viewDidLoad {
-    [super viewDidLoad];
-    if (self) {
+	[super viewDidLoad];
+	if (self) {
 		self.signUpButtonOnScreen = NO;
-        [self setTextFieldFrames];
-        [self setTextFieldDelegates];
-        [self addFacebookLoginButton];
-    }
+		[self setTextFieldFrames];
+		[self setTextFieldDelegates];
+		[self addFacebookLoginButton];
+	}
 }
 
 -(void) setTextFieldFrames {
@@ -68,27 +68,27 @@
 }
 
 -(void) setTextFieldDelegates {
-    self.emailField.delegate = self;
-    self.passwordField.delegate = self;
-    self.fullnameField.delegate = self;
-    self.phoneNumberField.delegate = self;
+	self.emailField.delegate = self;
+	self.passwordField.delegate = self;
+	self.fullnameField.delegate = self;
+	self.phoneNumberField.delegate = self;
 }
 
 - (void) addFacebookLoginButton {
-    FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
-    float buttonWidth = loginButton.frame.size.width*1.5;
-    float buttonHeight = loginButton.frame.size.height*1.5;
-    loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2, self.orLabel.frame.origin.y + self.orLabel.frame.size.height +FACEBOOK_BUTTON_YOFFSET, buttonWidth, buttonHeight);
-    loginButton.delegate = self;
-    loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
-    [self.view addSubview:loginButton];
+	FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
+	float buttonWidth = loginButton.frame.size.width*1.5;
+	float buttonHeight = loginButton.frame.size.height*1.5;
+	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2, self.orLabel.frame.origin.y + self.orLabel.frame.size.height +FACEBOOK_BUTTON_YOFFSET, buttonWidth, buttonHeight);
+	loginButton.delegate = self;
+	loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
+	[self.view addSubview:loginButton];
 }
 
 
 //We add a sign up button to the screen once user starts typing in
 //any of the create account fields (once they don't sign up with FB)
 -(void)replaceOrFBWithSignUpButton {
-    if (self.signUpButtonOnScreen) {
+	if (self.signUpButtonOnScreen) {
 		return;
 	}
 
@@ -96,90 +96,19 @@
 	float buttonX = self.view.center.x - buttonWidth/2;
 	float buttonY = self.orLabel.frame.origin.y;
 	float buttonHeight = self.fullnameField.frame.size.height;
-    self.signUpButton = [[UIButton alloc] initWithFrame: CGRectMake(buttonX, buttonY, buttonWidth, buttonHeight)];
-    [self.signUpButton setTitle: SIGN_UP_BUTTON_TEXT forState:UIControlStateNormal];
-    self.signUpButton.backgroundColor = [UIColor lightGrayColor];
-    [self.signUpButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [self.signUpButton addTarget:self action:@selector(completeAccountCreation) forControlEvents:UIControlEventTouchUpInside];
+	self.signUpButton = [[UIButton alloc] initWithFrame: CGRectMake(buttonX, buttonY, buttonWidth, buttonHeight)];
+	[self.signUpButton setTitle: SIGN_UP_BUTTON_TEXT forState:UIControlStateNormal];
+	self.signUpButton.backgroundColor = [UIColor lightGrayColor];
+	[self.signUpButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+	[self.signUpButton addTarget:self action:@selector(completeAccountCreation) forControlEvents:UIControlEventTouchUpInside];
 
 	// replaces sign up with fb on screen
-    [self.orLabel removeFromSuperview];
-    [self.view addSubview: self.signUpButton];
+	[self.orLabel removeFromSuperview];
+	[self.view addSubview: self.signUpButton];
 	self.signUpButtonOnScreen = YES;
 }
 
-#pragma mark - Facebook Button Delegate -
-
-/*!
- @abstract Sent to the delegate when the button was used to login.
- @param loginButton the sender
- @param result The results of the login
- @param error The error (if any) from the login
- */
-- (void)  loginButton:(FBSDKLoginButton *)loginButton
-didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
-				error:(NSError *)error {
-
-	if (error || result.isCancelled) {
-		//TODO(sierrakn): Do something with error
-		return;
-	}
-
-	//TODO(sierrakn): If any declined permissions are essential (like email)
-	//explain to user why and ask them to agree to each individually
-	NSSet* declinedPermissions = result.declinedPermissions;
-
-	//batch request for user info as well as friends
-	if ([FBSDKAccessToken currentAccessToken]) {
-
-		[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
-			if (error) {
-				//TODO:
-			}
-		}];
-
-		FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
-		//get current signed-in user info
-		NSDictionary* userFields =  [NSDictionary dictionaryWithObject: @"id,name,email,picture,friends" forKey:@"fields"];
-		FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
-								  initWithGraphPath:@"me" parameters:userFields];
-		[connection addRequest:requestMe
-			 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-				 if (!error) {
-					 NSLog(@"Fetched User: %@", result);
-
-					 NSString* name = result[@"name"];
-					 NSString* email = result[@"email"];
-					 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
-
-					 //will only show friends who have signed up for the app with fb
-					 NSArray* friends = nil;
-					 if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
-					 	friends = result[@"friends"][@"data"];
-					 }
-					 GTLVerbatmAppVerbatmUser* verbatmUser = [GTLVerbatmAppVerbatmUser alloc];
-					 GTLVerbatmAppEmail* verbatmEmail = [GTLVerbatmAppEmail alloc];
-					 verbatmEmail.email = email;
-
-					 verbatmUser.name = name;
-					 verbatmUser.email = verbatmEmail;
-					 [self signUpUser:verbatmUser];
-				 }
-			 }];
-
-		[connection start];
-	}
-}
-
-/*!
- @abstract Sent to the delegate when the button was used to logout.
- @param loginButton The button that was clicked.
- */
-- (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
-	
-}
-
-#pragma mark - Parse Authentication -
+#pragma mark - Completing account creation -
 
 //Called when user presses signUp
 -(void) completeAccountCreation {
@@ -195,18 +124,55 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 		[self.userManager signUpUserFromEmail: email andName: name andPassword:password andPhoneNumber: phoneNumber];
 	} else {
-		/*Give them some sort of prompt
-		 for what's missing
-		 */
+		[self errorInSignInAnimation: @"Please enter all required fields"];
+	}
+}
 
+#pragma mark - Facebook Button Delegate -
+
+/*!
+ @abstract Sent to the delegate when the button was used to login.
+ @param loginButton the sender
+ @param result The results of the login
+ @param error The error (if any) from the login
+ */
+- (void)  loginButton:(FBSDKLoginButton *)loginButton
+didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
+				error:(NSError *)error {
+
+	if (error || result.isCancelled) {
+		[self errorInSignInAnimation: @"Facebook login failed."];
+		return;
 	}
 
-	/*removes the current VC by going two layers deep*/
-//	[self.presentingViewController.presentingViewController dismissViewControllerAnimated:YES completion:^{
-//	}];
+	//TODO(sierrakn): If any declined permissions are essential
+	//explain to user why and ask them to agree to each individually
+	NSSet* declinedPermissions = result.declinedPermissions;
+	NSLog(@"User declined fb permissions for %@", declinedPermissions);
+
+	//batch request for user info as well as friends
+	if ([FBSDKAccessToken currentAccessToken]) {
+		[self.userManager signUpUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
+	} else {
+		[self errorInSignInAnimation: @"Facebook login failed."];
+	}
+}
+
+/*!
+ @abstract Sent to the delegate when the button was used to logout.
+ @param loginButton The button that was clicked.
+ */
+- (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
+
 }
 
 #pragma mark - User Manager Delegate methods -
+
+-(void) successfullySignedUpUser:(GTLVerbatmAppVerbatmUser *)user {
+	/*removes the current VC by going two layers deep*/
+	[self.presentingViewController.presentingViewController dismissViewControllerAnimated:YES completion:^{
+	}];
+}
 
 -(void) errorSigningUpUser: (NSError*) error {
 	NSString* errorMessage;
@@ -218,7 +184,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	[self errorInSignInAnimation:errorMessage];
 }
 
-#pragma mark - Error message -
+#pragma mark - Error message animation -
 
 //article publsihed sucessfully
 -(void)errorInSignInAnimation:(NSString*)error {

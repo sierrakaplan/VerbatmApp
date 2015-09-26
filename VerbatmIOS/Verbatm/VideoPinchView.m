@@ -32,7 +32,7 @@
 }
 
 -(void) initWithVideo: (AVURLAsset*)video {
-	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
+	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame: self.background.frame];
 	[self.videoView repeatVideoOnEnd:YES];
 	[self.background addSubview:self.videoView];
 	[self addPlayIcon];
@@ -109,8 +109,8 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	NSData* videoData = [NSData dataWithContentsOfURL:[self.video URL]];
-	[coder encodeObject: videoData forKey: VIDEO_DATA_KEY];
+//	NSData* videoData = [NSData dataWithContentsOfURL:[self.video URL]];
+//	[coder encodeObject: videoData forKey: VIDEO_DATA_KEY];
 	NSString* videoURLString = [self.video URL].absoluteString;
 	[coder encodeObject: videoURLString forKey:VIDEO_KEY];
 }
@@ -118,7 +118,7 @@
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
 		NSString* videoURLString = [decoder decodeObjectForKey:VIDEO_KEY];
-		self.videoData = [decoder decodeObjectForKey:VIDEO_DATA_KEY];
+//		self.videoData = [decoder decodeObjectForKey:VIDEO_DATA_KEY];
 		AVURLAsset* video = [AVURLAsset assetWithURL:[NSURL URLWithString:videoURLString]];
 		[self initWithVideo:video];
 	}

@@ -53,16 +53,54 @@
 
 -(void) signUpUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
 	
+	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+		if (error) {
+			//TODO:
+		}
+	}];
+
+	FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
+	//get current signed-in user info
+	NSDictionary* userFields =  [NSDictionary dictionaryWithObject: @"id,name,email,picture,friends" forKey:@"fields"];
+	FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
+									initWithGraphPath:@"me" parameters:userFields];
+	[connection addRequest:requestMe
+		 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+			 if (!error) {
+				 NSLog(@"Fetched User: %@", result);
+
+				 NSString* name = result[@"name"];
+				 NSString* email = result[@"email"];
+				 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+
+				 //will only show friends who have signed up for the app with fb
+				 NSArray* friends = nil;
+				 if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
+					 friends = result[@"friends"][@"data"];
+				 }
+				 GTLVerbatmAppVerbatmUser* verbatmUser = [GTLVerbatmAppVerbatmUser alloc];
+				 GTLVerbatmAppEmail* verbatmEmail = [GTLVerbatmAppEmail alloc];
+				 verbatmEmail.email = email;
+
+				 verbatmUser.name = name;
+				 verbatmUser.email = verbatmEmail;
+				 [self insertUser:verbatmUser];
+			 }
+		 }];
+	[connection start];
+
 }
 
 - (void) insertUser:(GTLVerbatmAppVerbatmUser*) user {
 	GTLQueryVerbatmApp* query = [GTLQueryVerbatmApp queryForVerbatmuserInsertUserWithObject:user];
-	[self.service executeQuery:query completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser *object, NSError *error) {
+	[self.service executeQuery:query completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser *userObject, NSError *error) {
 		if (!error) {
 			NSLog(@"Successfully inserted user object");
+			[self.delegate successfullySignedUpUser: userObject];
 		} else {
-			NSLog(@"Error signing up user: %@", error.description);
-			//TODO:Error handling
+			NSLog(@"Error inserting user: %@", error.description);
+			[[PFUser currentUser] deleteInBackground];
+			[self.delegate errorSigningUpUser: error];
 		}
 	}];
 }

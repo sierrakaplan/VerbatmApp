@@ -152,7 +152,8 @@
 
 #pragma mark Images
 
-#define CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT 6.f
+#define CIRCLE_RADIUS 50.f
+#define CIRCLE_OFFSET 15.f
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
 #define TOUCH_THRESHOLD 40.f

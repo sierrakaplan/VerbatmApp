@@ -29,12 +29,11 @@
 @property (nonatomic) NSInteger currentPhotoIndex;
 @property (nonatomic) NSInteger draggingFromPointIndex;
 @property (nonatomic) float lastDistanceFromStartingPoint;
-@property (nonatomic) float circleRadius;
 @property (strong, nonatomic) NSTimer * showCircleTimer;
 
 @property (nonatomic) BOOL textShowing;
 
-#define CIRCLE_CENTER_Y (self.frame.size.height * 3.f/4.f)
+#define CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
 
 @end
 
@@ -45,7 +44,6 @@
 
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.circleRadius = self.frame.size.height / CIRCLE_OVER_IMAGES_RADIUS_FACTOR_OF_HEIGHT;
 		if ([photos count]) {
 			[self addPhotos:photos];
 		}
@@ -109,7 +107,7 @@
 
 	NSUInteger numCircles = [self.imageContainerViews count];
 	for (int i = 0; i < numCircles; i++) {
-		PointObject *point = [MathOperations getPointFromCircleRadius:self.circleRadius andCurrentPointIndex:i withTotalPoints:numCircles];
+		PointObject *point = [MathOperations getPointFromCircleRadius: CIRCLE_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
 		//set relative to the center of the circle
 		point.x = point.x + self.frame.size.width/2.f;
 		point.y = point.y + CIRCLE_CENTER_Y;
@@ -123,9 +121,9 @@
 
 -(void) createMainCircleView {
 	self.originPoint = CGPointMake(self.frame.size.width/2.f, CIRCLE_CENTER_Y);
-	CGRect frame = CGRectMake(self.originPoint.x-self.circleRadius-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
-							  self.originPoint.y-self.circleRadius,
-							  self.circleRadius*2 + CIRCLE_OVER_IMAGES_BORDER_WIDTH, self.circleRadius*2);
+	CGRect frame = CGRectMake(self.originPoint.x-CIRCLE_RADIUS-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
+							  self.originPoint.y-CIRCLE_RADIUS,
+							  CIRCLE_RADIUS*2 + CIRCLE_OVER_IMAGES_BORDER_WIDTH, CIRCLE_RADIUS*2);
 
 	self.circleView = [[UIImageView alloc] initWithFrame:frame];
  	self.circleView.backgroundColor = [UIColor clearColor];
@@ -133,7 +131,6 @@
  	self.circleView.layer.borderWidth = CIRCLE_OVER_IMAGES_BORDER_WIDTH;
  	self.circleView.layer.borderColor = [UIColor CIRCLE_OVER_IMAGES_COLOR].CGColor;
 	self.circleView.alpha = 0.f;
-//	[self.circleView setImage:[UIImage imageNamed:CIRCLE_OVER_IMAGES_ICON]];
  	[self addSubview:self.circleView];
 }
 
@@ -179,8 +176,8 @@
 
 //check if tap is within radius of circle
 -(BOOL) circleTapped:(CGPoint) touchLocation {
-	if ((touchLocation.x - self.originPoint.x) < (self.circleRadius + TOUCH_THRESHOLD)
-		&&	(touchLocation.y - self.originPoint.y) < (self.circleRadius + TOUCH_THRESHOLD)) {
+	if ((touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + TOUCH_THRESHOLD)
+		&&	(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + TOUCH_THRESHOLD)) {
 		[self goToPhoto:touchLocation];
 		return YES;
 	}
@@ -243,12 +240,12 @@
 	}
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 
-	if(![MathOperations point:touchLocation onCircleWithRadius:self.circleRadius andOrigin:self.originPoint withThreshold:TOUCH_THRESHOLD]) {
+	if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint withThreshold:TOUCH_THRESHOLD]) {
 		return;
 	}
 	PointObject * point = self.pointsOnCircle [self.draggingFromPointIndex];
-	float totalDistanceToTravel = (2.f * M_PI * self.circleRadius)/[self.pointsOnCircle count];
-	float distanceFromStartingTouch = [MathOperations distanceClockwiseBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:self.circleRadius andOrigin:self.originPoint];
+	float totalDistanceToTravel = (2.f * M_PI * CIRCLE_RADIUS)/[self.pointsOnCircle count];
+	float distanceFromStartingTouch = [MathOperations distanceClockwiseBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint];
 
 	[self fadeWithDistance:distanceFromStartingTouch andTotalDistance:totalDistanceToTravel];
 
