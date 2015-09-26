@@ -1403,7 +1403,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
-	//[self stopAllVideos];
+	[self stopAllVideos];
 }
 
 -(void) stopAllVideos {
@@ -1417,8 +1417,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 
-- (void)dealloc
-{
+- (void)dealloc {
 	//tune out of nsnotification
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -1639,21 +1638,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self presentViewController:picker animated:YES completion:nil];
 }
 
--(void) createPinchViewFromAsset:(id)asset {
-	PinchView* newPinchView;
-	if([asset isKindOfClass:[AVAsset class]] || [asset isKindOfClass:[NSURL class]]) {
-		newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andVideo:asset];
-	} else if([asset isKindOfClass:[NSData class]]) {
-		UIImage* image = [[UIImage alloc] initWithData:(NSData*)asset];
-		image = [UIEffects fixOrientation:image];
-		image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.view.bounds]];
-		newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius withCenter:self.defaultPinchViewCenter andImage:image];
-	}
-	if (newPinchView) {
-        [self newPinchView:newPinchView belowView:nil];
-	}
-}
-
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
 	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
@@ -1692,12 +1676,12 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	//store local identifiers so we can querry the nsassets
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
-			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
+																			 UIImageOrientation orientation, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-                dispatch_async(dispatch_get_main_queue(), ^{
+				dispatch_async(dispatch_get_main_queue(), ^{
 					[self createPinchViewFromImageData: imageData];
-                });
-
+				});
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
@@ -1706,9 +1690,9 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 					return;
 				}
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-                dispatch_async(dispatch_get_main_queue(), ^{
+				dispatch_async(dispatch_get_main_queue(), ^{
 					[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];
-                });
+				});
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
 			NSLog(@"Asset is of audio type, unable to handle.");

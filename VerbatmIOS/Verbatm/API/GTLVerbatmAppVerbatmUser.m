@@ -18,7 +18,6 @@
 #import "GTLVerbatmAppVerbatmUser.h"
 
 #import "GTLVerbatmAppEmail.h"
-#import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppPhoneNumber.h"
 
 // ----------------------------------------------------------------------------
@@ -27,7 +26,7 @@
 //
 
 @implementation GTLVerbatmAppVerbatmUser
-@dynamic email, identifier, name, phoneNumber, profilePhoto;
+@dynamic email, identifier, name, phoneNumber, profilePhotoImageID;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{

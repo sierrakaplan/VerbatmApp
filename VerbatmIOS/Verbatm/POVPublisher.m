@@ -307,6 +307,7 @@
 			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* object, NSError *error) {
 				 if (error) {
 					 NSLog(@"Error uploading POV: %@", error.description);
+					 //TODO: should send a notification that there was an error publishing
 				 } else {
 					 NSLog(@"Successfully uploaded POV!");
 					 self.mediaUploaders = nil;

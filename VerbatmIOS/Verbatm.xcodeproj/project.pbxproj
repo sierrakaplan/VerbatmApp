@@ -21,9 +21,10 @@
 		A55A59D91BB4DCFB00C7CE7A /* ParseFacebookUtilsV4.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59D81BB4DCFB00C7CE7A /* ParseFacebookUtilsV4.framework */; settings = {ASSET_TAGS = (); }; };
 		A55A59DD1BB4DDDA00C7CE7A /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59DC1BB4DDDA00C7CE7A /* Bolts.framework */; settings = {ASSET_TAGS = (); }; };
 		A55A59DF1BB4E07D00C7CE7A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = A55A59DE1BB4E07D00C7CE7A /* libsqlite3.tbd */; };
+		A55A59E21BB5EB7300C7CE7A /* UserManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A55A59E11BB5EB7300C7CE7A /* UserManager.m */; settings = {ASSET_TAGS = (); }; };
 		A560EF981BA88B44003FB041 /* PagesLoadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EF971BA88B44003FB041 /* PagesLoadManager.m */; };
 		A560EF9D1BA895A2003FB041 /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EF9C1BA895A2003FB041 /* Page.m */; };
-		A560EFA21BAA006B003FB041 /* UpdatingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA11BAA006B003FB041 /* UpdatingManager.m */; };
+		A560EFA21BAA006B003FB041 /* UpdatingPOVManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA11BAA006B003FB041 /* UpdatingPOVManager.m */; };
 		A560EFA51BAB33B8003FB041 /* PovInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA41BAB33B8003FB041 /* PovInfo.m */; };
 		A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFB41BB0AF64003FB041 /* CreateAccountView.m */; };
 		A560EFB81BB0AF70003FB041 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFB71BB0AF70003FB041 /* LoginView.m */; };
@@ -243,12 +244,14 @@
 		A55A59D81BB4DCFB00C7CE7A /* ParseFacebookUtilsV4.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseFacebookUtilsV4.framework; sourceTree = "<group>"; };
 		A55A59DC1BB4DDDA00C7CE7A /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		A55A59DE1BB4E07D00C7CE7A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		A55A59E01BB5EB7300C7CE7A /* UserManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserManager.h; sourceTree = "<group>"; };
+		A55A59E11BB5EB7300C7CE7A /* UserManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserManager.m; sourceTree = "<group>"; };
 		A560EF961BA88B44003FB041 /* PagesLoadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagesLoadManager.h; sourceTree = "<group>"; };
 		A560EF971BA88B44003FB041 /* PagesLoadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagesLoadManager.m; sourceTree = "<group>"; };
 		A560EF9B1BA895A2003FB041 /* Page.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page.h; sourceTree = "<group>"; };
 		A560EF9C1BA895A2003FB041 /* Page.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page.m; sourceTree = "<group>"; };
-		A560EFA01BAA006B003FB041 /* UpdatingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdatingManager.h; sourceTree = "<group>"; };
-		A560EFA11BAA006B003FB041 /* UpdatingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatingManager.m; sourceTree = "<group>"; };
+		A560EFA01BAA006B003FB041 /* UpdatingPOVManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdatingPOVManager.h; sourceTree = "<group>"; };
+		A560EFA11BAA006B003FB041 /* UpdatingPOVManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatingPOVManager.m; sourceTree = "<group>"; };
 		A560EFA31BAB33B8003FB041 /* PovInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PovInfo.h; sourceTree = "<group>"; };
 		A560EFA41BAB33B8003FB041 /* PovInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PovInfo.m; sourceTree = "<group>"; };
 		A560EFB31BB0AF64003FB041 /* CreateAccountView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateAccountView.h; sourceTree = "<group>"; };
@@ -950,6 +953,10 @@
 				A5E860001B96249900E148D0 /* POVPublisher.m */,
 				A5C09BE41BA1F43600C0AD86 /* MediaUploader.h */,
 				A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */,
+				A560EFA01BAA006B003FB041 /* UpdatingPOVManager.h */,
+				A560EFA11BAA006B003FB041 /* UpdatingPOVManager.m */,
+				A55A59E01BB5EB7300C7CE7A /* UserManager.h */,
+				A55A59E11BB5EB7300C7CE7A /* UserManager.m */,
 				A5AA319A1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.h */,
 				A5AA319B1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m */,
 				A5AA319C1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.h */,
@@ -957,8 +964,6 @@
 				A5AA319F1B9FCDDC00D8D20C /* GTLVerbatmApp.h */,
 				A5AA31A01B9FCDDC00D8D20C /* GTLVerbatmAppConstants.h */,
 				A5AA31A11B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m */,
-				A560EFA01BAA006B003FB041 /* UpdatingManager.h */,
-				A560EFA11BAA006B003FB041 /* UpdatingManager.m */,
 			);
 			name = "Model Logic (Talking to Backend)";
 			sourceTree = "<group>";
@@ -1507,13 +1512,14 @@
 				A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* VerbatmAppDelegate.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
+				A55A59E21BB5EB7300C7CE7A /* UserManager.m in Sources */,
 				C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */,
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				A5E85FAE1B911DA900E148D0 /* GTMOAuth2SignIn.m in Sources */,
 				A5E85FA71B911DA900E148D0 /* GTMHTTPFetcherLogging.m in Sources */,
 				A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */,
 				A5E85F9B1B911DA900E148D0 /* GTLService.m in Sources */,
-				A560EFA21BAA006B003FB041 /* UpdatingManager.m in Sources */,
+				A560EFA21BAA006B003FB041 /* UpdatingPOVManager.m in Sources */,
 				A5E85FAD1B911DA900E148D0 /* GTMOAuth2Authentication.m in Sources */,
 				A5C09BDC1BA1F1D700C0AD86 /* ASIDownloadCache.m in Sources */,
 				A5E85F9A1B911DA900E148D0 /* GTLBatchQuery.m in Sources */,

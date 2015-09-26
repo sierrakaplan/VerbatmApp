@@ -21,10 +21,16 @@
 
 @protocol POVLoadManagerDelegate <NSObject>
 
+// Successfully loaded more POV's
 -(void) morePOVsLoaded;
--(void) povsRefreshed;
--(void) povsFailedToRefresh;
+// Was unable to load more POV's for some reason
 -(void) failedToLoadMorePOVs;
+
+// Reloaded the POV's from the server (starting at the beginning without a cursor)
+-(void) povsRefreshed;
+// Was unable to refresh POV's for some reason
+-(void) povsFailedToRefresh;
+
 
 @end
 

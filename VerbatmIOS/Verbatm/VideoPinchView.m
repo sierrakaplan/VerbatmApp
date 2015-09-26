@@ -32,7 +32,7 @@
 }
 
 -(void) initWithVideo: (AVURLAsset*)video {
-	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
+	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame: self.background.frame];
 	[self.videoView repeatVideoOnEnd:YES];
 	[self.background addSubview:self.videoView];
 	[self addPlayIcon];

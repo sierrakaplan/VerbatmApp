@@ -162,6 +162,7 @@
 }
 
 #pragma mark - Show POV publishing -
+
 //Called on it by parent view controller to let it know that a user
 // has published a POV and to show the loading animation until the POV
 // has actually published
@@ -186,6 +187,8 @@
     self.refreshInProgress = YES;
 	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
 }
+
+#pragma mark - POVLoadManager Delegate methods -
 
 //Delagate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
@@ -214,7 +217,12 @@
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
+-(void) failedToLoadMorePOVs {
+	// do something?
+}
+
 #pragma mark - Pull to refresh Feed Animation -
+
 -(void)setRefreshAnimator{
     self.refreshControl = [[UIRefreshControl alloc] init];
     [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
