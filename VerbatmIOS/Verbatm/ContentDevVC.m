@@ -464,25 +464,26 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
  add it the the stream of pinch views.
  */
 -(void)addMediaAssetToStream:(ALAsset *) asset {
-//    //check if this is a video asset or a photo asset
-//    if([asset isKindOfClass:[ALAsset class]]){
-//        //asset is a photo
+    
+    //check if this is a video asset or a photo asset
+    if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]) {
+        //asset is a photo
         dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
             NSData * data = [UseFulFunctions convertALAssetToData:asset];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self createPinchViewFromImageData: data];
             });
         });
+    
+    }else{
+        //asset is a video 
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self createPinchViewFromVideoAsset:[AVURLAsset assetWithURL:[[asset defaultRepresentation] url]]];
+            });
+        });
         
-//    }else{
-//        //asset is a video and is avurlasset
-//        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-//            dispatch_async(dispatch_get_main_queue(), ^{
-//                [self createPinchViewFromVideoAsset:asset];
-//            });
-//        });
-//        
-//    }
+    }
 }
 
 

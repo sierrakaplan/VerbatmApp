@@ -473,7 +473,22 @@
 							   resultBlock:^(ALAsset *asset) {
 								   [self.verbatmAlbum addAsset:asset];
 								   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-								   [self.delegate didFinishSavingMediaToAsset:asset];
+                                   
+                                   /*To get a usable copy of the asset just saved we will iterate through
+                                    our verbatm alassetgroup and take the first object we find. The first
+                                    object is the most recent addition*/
+                                   [self.verbatmAlbum enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
+                                       
+                                       if (alAsset) // first non-nil element will be the recent asset
+                                       {
+                                           [self.delegate didFinishSavingMediaToAsset:alAsset];
+                                           //Triggers for the enumeration to stop
+                                           *innerStop = YES;
+                                       }
+                                   }];
+                                   
+                                   
+                                   
 							   }
 							  failureBlock:^(NSError* error) {
 								  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
