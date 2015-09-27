@@ -16,8 +16,13 @@
 
 @protocol UserManagerDelegate <NSObject>
 
+@optional
+
 -(void) successfullySignedUpUser: (GTLVerbatmAppVerbatmUser*) user;
 -(void) errorSigningUpUser: (NSError*) error;
+
+-(void) successfullyRetrievedCurrentUser: (GTLVerbatmAppVerbatmUser*) user;
+-(void) errorRetrievingCurrentUser: (NSError*)error;
 
 @end
 
@@ -30,10 +35,11 @@
 
 -(void) signUpUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
 
-//TODO:
 -(void) getCurrentUser;
 
+-(void) logOutUser;
+
 //TODO:
--(void) changeUserProfilePhoto;
+-(void) changeUserProfilePhoto: (UIImage*) image;
 
 @end

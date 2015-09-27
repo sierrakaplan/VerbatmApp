@@ -177,7 +177,7 @@
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="mkh-J4-lEJ" kind="unwind" identifier="segue_id_unwind_from_edit_content_view" unwindAction="unwindSegue:" id="ffg-tJ-E6G"/>
+                                    <segue destination="mkh-J4-lEJ" kind="unwind" identifier="segue_id_unwind_from_edit_content_view" unwindAction="unwindToContentDevVC:" id="ffg-tJ-E6G"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -201,25 +201,25 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <inset key="insetFor6xAndEarlier" minX="0.0" minY="0.0" maxX="0.0" maxY="7"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" keyboardType="emailAddress" returnKeyType="done"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your full name" minimumFontSize="17" id="dQI-JP-0Ck">
                                 <rect key="frame" x="42" y="90" width="243" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Create a password" minimumFontSize="17" id="7p3-Yh-o4F">
                                 <rect key="frame" x="42" y="144" width="243" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" returnKeyType="done"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter your phone number" minimumFontSize="17" id="FW6-Bk-ITR">
                                 <rect key="frame" x="42" y="194" width="243" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad" returnKeyType="go"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="or " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Mgm-I2-Wdk">
                                 <rect key="frame" x="150" y="273" width="30" height="29"/>
@@ -246,9 +246,11 @@
                         <outlet property="orLabel" destination="Mgm-I2-Wdk" id="c6I-Sv-Adi"/>
                         <outlet property="passwordField" destination="7p3-Yh-o4F" id="sLL-MN-uZS"/>
                         <outlet property="phoneNumberField" destination="FW6-Bk-ITR" id="xNw-l3-GON"/>
+                        <segue destination="7r8-Jh-79L" kind="unwind" identifier="unwind_to_master_vc_from_create_account" unwindAction="unwindToMasterNavVC:" id="0ec-kV-N1B"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EBk-Wi-Rvw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="7r8-Jh-79L" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-3701" y="-1501"/>
         </scene>
@@ -268,13 +270,13 @@
                                 <rect key="contentStretch" x="0.0" y="0.10000000000000001" width="1" height="0.39999999999999963"/>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="29"/>
-                                <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="center" minimumFontSize="17" id="UY0-AH-vwu">
                                 <rect key="frame" x="41" y="293" width="251" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="29"/>
-                                <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" secureTextEntry="YES"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="bUQ-f6-8RA">
                                 <rect key="frame" x="16" y="530" width="30" height="30"/>
@@ -319,9 +321,11 @@
                         <outlet property="emailField" destination="vpx-wo-zOE" id="sKq-W0-HzK"/>
                         <outlet property="passwordField" destination="UY0-AH-vwu" id="FW2-ec-DgN"/>
                         <outlet property="signInButton" destination="GTq-gd-CXK" id="uxP-Ww-JZi"/>
+                        <segue destination="sxR-fz-pfS" kind="unwind" identifier="unwind_to_master_vc_from_login" unwindAction="unwindToMasterNavVC:" id="SyP-B6-Kbt"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jhx-H8-RPm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="sxR-fz-pfS" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-3259" y="-1937"/>
         </scene>
@@ -498,6 +502,9 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="userNameLabel" destination="drM-L1-cqF" id="QeN-6Z-fux"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kfn-r7-rVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -505,7 +512,7 @@
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="O0U-1G-Oy1"/>
-        <segue reference="vqA-Ve-rLQ"/>
+        <segue reference="uPI-hI-3x0"/>
+        <segue reference="UxX-nw-l5Q"/>
     </inferredMetricsTieBreakers>
 </document>

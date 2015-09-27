@@ -10,4 +10,6 @@
 
 @interface ProfileVC : UIViewController
 
+-(void) updateUserInfo;
+
 @end

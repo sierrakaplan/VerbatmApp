@@ -311,10 +311,9 @@
 }
 
 //catches the unwind segue from login / create account
-- (IBAction) unwindFromLogin: (UIStoryboardSegue *)segue {
-	UIViewController* viewController = segue.sourceViewController;
-
+- (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
 	// TODO: have variable set and go to profile or adk
+	[self.profileVC updateUserInfo];
 }
 
 

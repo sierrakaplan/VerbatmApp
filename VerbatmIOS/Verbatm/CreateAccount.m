@@ -51,10 +51,16 @@
 	[super viewDidLoad];
 	if (self) {
 		self.signUpButtonOnScreen = NO;
-		[self setTextFieldFrames];
-		[self setTextFieldDelegates];
+		[self formatTextFields];
 		[self addFacebookLoginButton];
 	}
+}
+
+-(void) formatTextFields {
+	[self setTextFieldFrames];
+	[self setTextFieldDelegates];
+
+	self.emailField.te
 }
 
 -(void) setTextFieldFrames {
@@ -141,6 +147,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 				error:(NSError *)error {
 
 	if (error || result.isCancelled) {
+		NSLog(@"Error in facebook login: %@", error.description);
 		[self errorInSignInAnimation: @"Facebook login failed."];
 		return;
 	}
@@ -152,6 +159,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
+		NSLog(@"Successfully logged in with Facebook");
 		[self.userManager signUpUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
 	} else {
 		[self errorInSignInAnimation: @"Facebook login failed."];
@@ -163,15 +171,13 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
  @param loginButton The button that was clicked.
  */
 - (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
-
+	[self.userManager logOutUser];
 }
 
 #pragma mark - User Manager Delegate methods -
 
 -(void) successfullySignedUpUser:(GTLVerbatmAppVerbatmUser *)user {
-	/*removes the current VC by going two layers deep*/
-	[self.presentingViewController.presentingViewController dismissViewControllerAnimated:YES completion:^{
-	}];
+	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_CREATE_ACCOUNT_TO_MASTER sender:self];
 }
 
 -(void) errorSigningUpUser: (NSError*) error {
@@ -187,9 +193,10 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 #pragma mark - Error message animation -
 
 //article publsihed sucessfully
--(void)errorInSignInAnimation:(NSString*)error {
+-(void)errorInSignInAnimation:(NSString*) errorMessage {
+	NSLog(@"Error: \"%@\"", errorMessage);
 	if(self.animationView.alpha > 0) return;
-	[self.animationLabel setText:error];
+	[self.animationLabel setText:errorMessage];
 	[self.view addSubview:self.animationView];
 	[self.view bringSubviewToFront:self.animationView];
 	[self showAnimationView:YES];
@@ -234,6 +241,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(UserManager*) userManager {
 	if (!_userManager) _userManager = [[UserManager alloc] init];
+	_userManager.delegate = self;
 	return _userManager;
 }
 

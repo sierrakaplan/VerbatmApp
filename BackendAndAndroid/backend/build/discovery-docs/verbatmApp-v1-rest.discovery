@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/qV8eefL4GkZAsTBGCc6PuG58TNA\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/PlpVsCMYmF9ElvSh8FA4udQBPkQ\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -618,6 +618,27 @@
      },
      "parameterOrder": [
       "id"
+     ],
+     "response": {
+      "$ref": "VerbatmUser"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+     ]
+    },
+    "getUserFromEmail": {
+     "id": "verbatmApp.verbatmuser.getUserFromEmail",
+     "path": "getUserFromEmail",
+     "httpMethod": "GET",
+     "parameters": {
+      "email": {
+       "type": "string",
+       "required": true,
+       "location": "query"
+      }
+     },
+     "parameterOrder": [
+      "email"
      ],
      "response": {
       "$ref": "VerbatmUser"

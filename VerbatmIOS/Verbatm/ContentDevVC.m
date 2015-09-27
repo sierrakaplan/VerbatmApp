@@ -1546,7 +1546,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 }
 
-- (IBAction) unwindSegue: (UIStoryboardSegue *)segue{
+- (IBAction) unwindToContentDevVC: (UIStoryboardSegue *)segue{
 	if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
 		EditContentVC *editContentVC = (EditContentVC *)segue.sourceViewController;
 		if(self.openPinchView.containsImage) {

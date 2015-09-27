@@ -56,6 +56,7 @@
 	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 		if (error) {
 			//TODO:
+		} else {
 		}
 	}];
 
@@ -71,7 +72,8 @@
 
 				 NSString* name = result[@"name"];
 				 NSString* email = result[@"email"];
-				 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+				 [PFUser currentUser].email = email;
+//	TODO: get picture data then store image			 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 
 				 //will only show friends who have signed up for the app with fb
 				 NSArray* friends = nil;
@@ -88,12 +90,11 @@
 			 }
 		 }];
 	[connection start];
-
 }
 
 - (void) insertUser:(GTLVerbatmAppVerbatmUser*) user {
-	GTLQueryVerbatmApp* query = [GTLQueryVerbatmApp queryForVerbatmuserInsertUserWithObject:user];
-	[self.service executeQuery:query completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser *userObject, NSError *error) {
+	GTLQueryVerbatmApp* insertUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserInsertUserWithObject:user];
+	[self.service executeQuery:insertUserQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser *userObject, NSError *error) {
 		if (!error) {
 			NSLog(@"Successfully inserted user object");
 			[self.delegate successfullySignedUpUser: userObject];
@@ -105,6 +106,34 @@
 	}];
 }
 
+- (void) getCurrentUser {
+	if (![PFUser currentUser]) {
+		NSLog(@"User is not logged in.");
+		return;
+	}
+	NSString* email = [PFUser currentUser].username;
+	if ([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+		email = [PFUser currentUser].email;
+	}
+	GTLQueryVerbatmApp* getUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserGetUserFromEmailWithEmail: email];
+	[self.service executeQuery:getUserQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser* currentUser, NSError *error) {
+		if (!error) {
+			NSLog(@"Succesfully retrieved current user from datastore.");
+			[self.delegate successfullyRetrievedCurrentUser: currentUser];
+		} else {
+			NSLog(@"Error retrieving current user: %@", error.description);
+			[self.delegate errorRetrievingCurrentUser: error];
+		}
+	}];
+}
+
+-(void) logOutUser {
+	[PFUser logOutInBackground];
+}
+
+-(void) changeUserProfilePhoto: (UIImage*) image {
+	//TODO:
+}
 
 #pragma mark - Lazy Instantiation -
 
