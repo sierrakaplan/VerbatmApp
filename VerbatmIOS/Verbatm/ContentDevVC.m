@@ -39,8 +39,9 @@
 
 #import "UIEffects.h"
 #import "UserSetupParameters.h"
-
+#import "UseFulFunctions.h"
 #import "UserPinchViews.h"
+
 #import "VerbatmScrollView.h"
 #import "VideoPinchView.h"
 
@@ -457,6 +458,35 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 #pragma mark - Creating New Views -
+
+/*
+ We are given an asset representing either a video or a photo and
+ add it the the stream of pinch views.
+ */
+-(void)addMediaAssetToStream:(ALAsset *) asset {
+//    //check if this is a video asset or a photo asset
+//    if([asset isKindOfClass:[ALAsset class]]){
+//        //asset is a photo
+        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+            NSData * data = [UseFulFunctions convertALAssetToData:asset];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self createPinchViewFromImageData: data];
+            });
+        });
+        
+//    }else{
+//        //asset is a video and is avurlasset
+//        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                [self createPinchViewFromVideoAsset:asset];
+//            });
+//        });
+//        
+//    }
+}
+
+
+
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView {
 
