@@ -299,9 +299,6 @@
                                 <state key="normal" title="Sign In">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <action selector="login:" destination="waF-h7-lpu" eventType="touchUpInside" id="48l-YY-8Um"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="s1d-Vy-n8i">
                                 <rect key="frame" x="41" y="518" width="238" height="30"/>

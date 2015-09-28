@@ -23,12 +23,16 @@
 
 @implementation UserManager
 
+
+#pragma mark - Creating Account (Signing up user) -
+
 -(void) signUpUserFromEmail: (NSString*)email andName: (NSString*)name
 				andPassword: (NSString*)password andPhoneNumber: (NSString*) phoneNumber {
 
 	PFUser* newUser = [[PFUser alloc] init];
 	// TODO: send confirmation email (must be unique)
 	newUser.username = email;
+	newUser.email = email;
 	newUser.password = password;
 
 	[newUser signUpInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -51,35 +55,54 @@
 	}];
 }
 
--(void) signUpUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
+-(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
 	
 	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 		if (error) {
-			//TODO:
+			if ( [self.delegate respondsToSelector:@selector(errorSigningUpUser:)]) {
+				[self.delegate errorSigningUpUser: error];
+			} else if ( [self.delegate respondsToSelector:@selector(errorLoggingInUser:)]) {
+				[self.delegate errorLoggingInUser: error];
+			}
+
+			return;
 		} else {
+			if (user.isNew) {
+				[self getUserInfoFromFacebookToken: accessToken];
+			} else {
+				NSLog(@"User had already created account. Successfully logged in with Facebook.");
+				[self.delegate successfullyLoggedInUser];
+			}
 		}
 	}];
+}
+
+// Starts request query for a fb user's name, email, picture, and friends.
+// Assumes the accessToken has been checked somewhere else
+- (void) getUserInfoFromFacebookToken: (FBSDKAccessToken*) accessToken {
 
 	FBSDKGraphRequestConnection *connection = [[FBSDKGraphRequestConnection alloc] init];
-	//get current signed-in user info
 	NSDictionary* userFields =  [NSDictionary dictionaryWithObject: @"id,name,email,picture,friends" forKey:@"fields"];
 	FBSDKGraphRequest *requestMe = [[FBSDKGraphRequest alloc]
 									initWithGraphPath:@"me" parameters:userFields];
 	[connection addRequest:requestMe
 		 completionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
 			 if (!error) {
-				 NSLog(@"Fetched User: %@", result);
 
 				 NSString* name = result[@"name"];
 				 NSString* email = result[@"email"];
 				 [PFUser currentUser].email = email;
-//	TODO: get picture data then store image			 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+
+				 //	TODO: get picture data then store image
+//				 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 
 				 //will only show friends who have signed up for the app with fb
 				 NSArray* friends = nil;
 				 if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
 					 friends = result[@"friends"][@"data"];
 				 }
+				 // TODO: do something with friends
+
 				 GTLVerbatmAppVerbatmUser* verbatmUser = [GTLVerbatmAppVerbatmUser alloc];
 				 GTLVerbatmAppEmail* verbatmEmail = [GTLVerbatmAppEmail alloc];
 				 verbatmEmail.email = email;
@@ -87,6 +110,9 @@
 				 verbatmUser.name = name;
 				 verbatmUser.email = verbatmEmail;
 				 [self insertUser:verbatmUser];
+			 } else {
+				 [[PFUser currentUser] deleteInBackground];
+				 [self.delegate errorSigningUpUser: error];
 			 }
 		 }];
 	[connection start];
@@ -106,15 +132,28 @@
 	}];
 }
 
+
+#pragma mark - Logging in User -
+
+-(void) loginUserFromEmail: (NSString*)email andPassword:(NSString*)password {
+	[PFUser logInWithUsernameInBackground:email password:password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+		if (!error) {
+			[self.delegate successfullyLoggedInUser];
+		} else {
+			[self.delegate errorLoggingInUser: error];
+		}
+	}];
+}
+
+
+#pragma mark - Retrieving current user -
+
 - (void) getCurrentUser {
 	if (![PFUser currentUser]) {
 		NSLog(@"User is not logged in.");
 		return;
 	}
-	NSString* email = [PFUser currentUser].username;
-	if ([PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-		email = [PFUser currentUser].email;
-	}
+	NSString* email = [PFUser currentUser].email;
 	GTLQueryVerbatmApp* getUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserGetUserFromEmailWithEmail: email];
 	[self.service executeQuery:getUserQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser* currentUser, NSError *error) {
 		if (!error) {
@@ -127,12 +166,16 @@
 	}];
 }
 
--(void) logOutUser {
-	[PFUser logOutInBackground];
-}
+#pragma mark - Update/change user info -
 
 -(void) changeUserProfilePhoto: (UIImage*) image {
 	//TODO:
+}
+
+#pragma mark - Log user out -
+
+-(void) logOutUser {
+	[PFUser logOutInBackground];
 }
 
 #pragma mark - Lazy Instantiation -

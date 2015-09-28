@@ -21,6 +21,9 @@
 -(void) successfullySignedUpUser: (GTLVerbatmAppVerbatmUser*) user;
 -(void) errorSigningUpUser: (NSError*) error;
 
+-(void) successfullyLoggedInUser;
+-(void) errorLoggingInUser: (NSError*) error;
+
 -(void) successfullyRetrievedCurrentUser: (GTLVerbatmAppVerbatmUser*) user;
 -(void) errorRetrievingCurrentUser: (NSError*)error;
 
@@ -33,7 +36,9 @@
 -(void) signUpUserFromEmail: (NSString*)email andName: (NSString*)name
 				andPassword: (NSString*)password andPhoneNumber: (NSString*) phoneNumber;
 
--(void) signUpUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
+-(void) signUpOrLoginUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
+
+-(void) loginUserFromEmail: (NSString*)email andPassword:(NSString*)password;
 
 -(void) getCurrentUser;
 

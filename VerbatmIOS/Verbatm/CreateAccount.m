@@ -59,8 +59,6 @@
 -(void) formatTextFields {
 	[self setTextFieldFrames];
 	[self setTextFieldDelegates];
-
-	self.emailField.te
 }
 
 -(void) setTextFieldFrames {
@@ -160,7 +158,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
 		NSLog(@"Successfully logged in with Facebook");
-		[self.userManager signUpUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
+		[self.userManager signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
 	} else {
 		[self errorInSignInAnimation: @"Facebook login failed."];
 	}
@@ -177,22 +175,37 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 #pragma mark - User Manager Delegate methods -
 
 -(void) successfullySignedUpUser:(GTLVerbatmAppVerbatmUser *)user {
-	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_CREATE_ACCOUNT_TO_MASTER sender:self];
+	[self unwindToMasterVC];
+}
+
+// This can be called if people try to create an account with fb
+// after already creating an account with fb
+-(void) successfullyLoggedInUser {
+	[self unwindToMasterVC];
 }
 
 -(void) errorSigningUpUser: (NSError*) error {
 	NSString* errorMessage;
-	if([error code] == kPFErrorUsernameTaken) {
-		errorMessage = @"An account with that email already exists. Try logging in.";
-	} else {
-		errorMessage = @"We're sorry, something went wrong!";
+	switch ([error code]) {
+		case kPFErrorUsernameTaken:
+		case kPFErrorUserEmailTaken: {
+			errorMessage = @"An account with that email already exists. Try logging in.";
+			break;
+		}
+		default: {
+			errorMessage = @"We're sorry, something went wrong!";
+		}
 	}
 	[self errorInSignInAnimation:errorMessage];
 }
 
+// Unwind segue back to master vc
+-(void) unwindToMasterVC {
+	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_CREATE_ACCOUNT_TO_MASTER sender:self];
+}
+
 #pragma mark - Error message animation -
 
-//article publsihed sucessfully
 -(void)errorInSignInAnimation:(NSString*) errorMessage {
 	NSLog(@"Error: \"%@\"", errorMessage);
 	if(self.animationView.alpha > 0) return;
@@ -210,7 +223,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 -(void)showAnimationView:(BOOL)show {
 	[UIView animateWithDuration:REMOVE_SIGNIN_ERROR_VIEW_ANIMATION_DURATION animations:^{
 		self.animationView.alpha= show ? 1.f : 0;
-	}completion:^(BOOL finished) {
+	} completion:^(BOOL finished) {
 		if (!show) {
 			[self.animationTimer invalidate];
 			self.animationTimer = nil;
@@ -219,6 +232,28 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	}];
 }
 
+#pragma mark - Text field Delegate -
+
+- (void)textFieldDidBeginEditing: (UITextField *)textField {
+	if (!self.signUpButtonOnScreen) {
+		[self replaceOrFBWithSignUpButton];
+	}
+}
+
+//TODO:
+// Enter button should navigate between fields
+-(BOOL) textFieldShouldReturn:(UITextField *)textField{
+//	if (textField == self.emailField){
+//		[self.passwordField becomeFirstResponder];
+//		return YES;
+//	}
+//	if (textField == self.passwordField){
+//		//TODO: trigger login button
+//		[self.passwordField resignFirstResponder];
+//		return YES;
+//	}
+	return NO;
+}
 
 #pragma mark - Navigation
 
@@ -229,13 +264,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	// Pass the selected object to the new view controller.
 }
 
-#pragma mark - Text field Delegate -
-
-- (void)textFieldDidBeginEditing: (UITextField *)textField {
-	if (!self.signUpButtonOnScreen) {
-		[self replaceOrFBWithSignUpButton];
-	}
-}
 
 #pragma mark - Lazy Instantiation -
 
