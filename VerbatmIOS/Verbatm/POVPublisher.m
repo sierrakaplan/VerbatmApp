@@ -98,7 +98,6 @@
 		// storePagesPromise should resolve to an array of page ids
 		povObject.pageIds = results[1];
 		[self insertPOV: povObject];
-
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error uploading POV: %@", error.description);
@@ -136,13 +135,13 @@
 	});
 }
 
+
 // when (saved image ids + saved video ids) then (store page)
 // Resolves to the GTL page's id that was just stored
 -(AnyPromise*) storePageFromPinchView: (PinchView*)pinchView withIndex:(NSInteger) indexInPOV {
 
 	GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
 	page.indexInPOV = [[NSNumber alloc] initWithInteger: indexInPOV];
-//	return [self insertPage: page];
 
 	AnyPromise* imageIdsPromise = [self storeImagesFromPinchView: pinchView];
 	AnyPromise* videoIdsPromise = [self storeVideosFromPinchView: pinchView];
@@ -166,7 +165,6 @@
 
 	if(pinchView.containsImage) {
 		NSArray* pinchViewImages = [pinchView getPhotos];
-
 		for (int i = 0; i < pinchViewImages.count; i++) {
 			UIImage* uiImage = pinchViewImages[i];
 			[storeImagePromises addObject: [self storeImage:uiImage withIndex:i]];
@@ -184,18 +182,19 @@
 -(AnyPromise*) storeVideosFromPinchView: (PinchView*) pinchView {
 	NSMutableArray *storeVideoPromises = [[NSMutableArray array] init];
 	if(pinchView.containsVideo) {
-        NSArray* pinchViewVideos = @[];
+        NSArray* pinchViewVideos = @[];//temporary set up
         if([pinchView isKindOfClass:[CollectionPinchView class]]){
             pinchViewVideos = [((CollectionPinchView *)pinchView) getVideosInDataFormat];
         }else if ([pinchView isKindOfClass:[VideoPinchView class]]){
             pinchViewVideos = [((VideoPinchView *)pinchView) getVideosInDataFormat];
         }
         
-        if(!pinchViewVideos)return nil;
-		for (int i = 0; i < pinchViewVideos.count; i++) {
-			NSData* videoData = pinchViewVideos[i];
-			[storeVideoPromises addObject: [self storeVideo:videoData withIndex:i]];
-		}
+        if(pinchViewVideos){
+            for (int i = 0; i < pinchViewVideos.count; i++) {
+                NSData* videoData = pinchViewVideos[i];
+                [storeVideoPromises addObject: [self storeVideo:videoData withIndex:i]];
+            }
+        }
 	}
 	return PMKWhen(storeVideoPromises).catch(^(NSError *error){
 		//This can catch at any part in the chain
@@ -216,7 +215,6 @@
 		gtlImage.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
 		gtlImage.servingUrl = servingURL;
 		//TODO: set user key and ?text?
-
 		return [self insertImage: gtlImage];
 	});
 }

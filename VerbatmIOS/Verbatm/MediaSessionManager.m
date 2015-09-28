@@ -435,7 +435,6 @@
 										   resultBlock:^(ALAsset *asset) {
 											   [self.verbatmAlbum addAsset:asset];
 											   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-											  // [self.delegate didFinishSavingMediaToAsset:asset];
 										   }
 										  failureBlock:^(NSError* error) {
 											  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
@@ -457,8 +456,6 @@
 	}];
 }
 
-
-
 //Lucio
 -(void)stopVideoRecording {
 	[self.movieOutputFile stopRecording];
@@ -466,22 +463,27 @@
 
 #pragma mark -delegate methods AVCaptureFileOutputRecordingDelegate
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
+    
+    MediaSessionManager * __weak weakSelf = self;
+    
 	//[self fixVideoOrientationOfAssetAtUrl:outputFileURL];
 	if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
 		[self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
-			[self.assetLibrary assetForURL:assetURL
+			[weakSelf.assetLibrary assetForURL:assetURL
 							   resultBlock:^(ALAsset *asset) {
-								   [self.verbatmAlbum addAsset:asset];
+								   [weakSelf.verbatmAlbum addAsset:asset];
 								   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
                                    
                                    /*To get a usable copy of the asset just saved we will iterate through
                                     our verbatm alassetgroup and take the first object we find. The first
                                     object is the most recent addition*/
-                                   [self.verbatmAlbum enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
-                                       
-                                       if (alAsset) // first non-nil element will be the recent asset
-                                       {
-                                           [self.delegate didFinishSavingMediaToAsset:alAsset];
+                                   [weakSelf.verbatmAlbum enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
+                                       // first non-nil element will be the recent asset
+                                       if (alAsset){
+                                           dispatch_async(dispatch_get_main_queue(), ^{
+                                              [weakSelf.delegate didFinishSavingMediaToAsset:alAsset];
+                                           });
+                                           
                                            //Triggers for the enumeration to stop
                                            *innerStop = YES;
                                        }
@@ -551,7 +553,11 @@
 																   // assign the photo to the album
 																   [self.verbatmAlbum addAsset:asset];
 																   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-																   [self.delegate didFinishSavingMediaToAsset:asset];
+																  
+                                                                   dispatch_async(dispatch_get_main_queue(), ^{
+                                                                       [self.delegate didFinishSavingMediaToAsset:asset];
+                                                                   });
+                                                                   
 															   }
 															  failureBlock:^(NSError* error) {
 																  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);

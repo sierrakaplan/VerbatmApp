@@ -98,10 +98,37 @@
     NSData * ourData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
 	if (error) {
 		NSLog(@"error getting data from video url: %@", error.description);
-		return nil;
+		
+      return [self convertAssetUsingExportSession:self.video];
+        
 	} else {
 		return @[ourData];
 	}
+}
+
+
+-(NSArray*) convertAssetUsingExportSession: (AVURLAsset *) asset { 
+    __block NSData *assetData = nil;
+    
+    NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"newoutput.mov"];
+    NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:movieOutput]){
+        NSError *error;
+        if ([fileManager removeItemAtPath:movieOutput error:&error] == NO){
+            NSLog(@"output path is wrong");
+            return nil;
+        }
+    }
+    
+    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetHighestQuality];
+    exportSession.outputURL = outputURL;
+    exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+    [exportSession exportAsynchronouslyWithCompletionHandler:^{
+        assetData = [NSData dataWithContentsOfURL:outputURL];
+    }];
+    
+    return nil;
 }
 
 #pragma mark - Encoding -

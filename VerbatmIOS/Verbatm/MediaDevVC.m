@@ -706,7 +706,11 @@
 
 		[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
 		[[UserPinchViews sharedInstance] clearPinchViews];
-		[self.contentDevVC cleanUp];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.contentDevVC cleanUp];
+        });
+		
 	}
 }
 
