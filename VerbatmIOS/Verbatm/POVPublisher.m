@@ -191,8 +191,19 @@
         
         if(pinchViewVideos){
             for (int i = 0; i < pinchViewVideos.count; i++) {
-                NSData* videoData = pinchViewVideos[i];
-                [storeVideoPromises addObject: [self storeVideo:videoData withIndex:i]];
+                
+                id videoObject =pinchViewVideos[i];
+                
+                /*the videoObject could be nsdata or a promise*/
+                if([videoObject isKindOfClass:[NSData class]]){//it's nsdata
+                    NSData* videoData =videoObject;
+                    [storeVideoPromises addObject: [self storeVideo:videoData withIndex:i]];
+                }else{//it's a promise
+                    AnyPromise * promise = videoObject;
+                    promise.then(^(NSData * data){
+                        [storeVideoPromises addObject: [self storeVideo:data withIndex:i]];
+                    });
+                }
             }
         }
 	}
@@ -264,7 +275,6 @@
 // PMKPromise resolves with either error or the id of the video just stored.
 -(AnyPromise*) insertVideo: (GTLVerbatmAppVideo*) video {
 	GTLQuery* insertVideoQuery = [GTLQueryVerbatmApp queryForVideoInsertVideoWithObject:video];
-
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self.service executeQuery:insertVideoQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVideo* storedVideo, NSError *error) {
 			if (error) {
