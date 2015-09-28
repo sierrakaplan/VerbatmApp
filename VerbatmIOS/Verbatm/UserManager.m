@@ -86,27 +86,12 @@
 				[query whereKey:@"email" equalTo: email];
 				[query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
 					if (!error && object) {
-						PFUser* userWithEmail = (PFUser*) object;
 						// delete the user created by fb login
 						[[PFUser currentUser] deleteInBackground];
-						[PFFacebookUtils linkUserInBackground:userWithEmail withAccessToken:accessToken block:^(BOOL succeeded, NSError * _Nullable error) {
-							NSLog(@"Done trying to link fb user to preexisting user.");
-							if (error) {
-								[self errorInEitherSignUpOrLogin:error];
-							} else {
-								NSLog(@"Trying to log in with facebook but already created an account with that email, \
-									  so succeeded in linking fb account to previous account.");
-
-								[PFUser logInWithUsernameInBackground:userWithEmail.username password:userWithEmail.password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
-									NSLog(@"Done trying to log in previous user.");
-									if (error) {
-										[self errorInEitherSignUpOrLogin:error];
-									} else {
-										[self.delegate successfullyLoggedInUser];
-									}
-								}];
-							}
-						}];
+						FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
+						[loginManager logOut];
+						NSError* accountWithEmailExistsError = [NSError errorWithDomain:@"world" code: kPFErrorUserEmailTaken userInfo:nil];
+						[self errorInEitherSignUpOrLogin: accountWithEmailExistsError];
 					} else {
 						// update current user
 						PFUser* currentUser = [PFUser currentUser];

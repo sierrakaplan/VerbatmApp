@@ -29,7 +29,7 @@
 #pragma mark - Sign In -
 
 #define ERROR_ANIMATION_TEXT_COLOR whiteColor
-#define ERROR_ANIMATION_FONT_SIZE 30
+#define ERROR_ANIMATION_FONT_SIZE 20
 
 
 #pragma mark - Feed -
