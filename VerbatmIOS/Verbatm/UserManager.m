@@ -9,8 +9,6 @@
 #import "GTLQueryVerbatmApp.h"
 #import "GTLServiceVerbatmApp.h"
 #import "GTLVerbatmAppVerbatmUser.h"
-#import "GTLVerbatmAppPhoneNumber.h"
-#import "GTLVerbatmAppEmail.h"
 #import "GTMHTTPFetcherLogging.h"
 
 #import "UserManager.h"
@@ -39,13 +37,9 @@
 		if(succeeded) {
 			GTLVerbatmAppVerbatmUser* verbatmUser = [GTLVerbatmAppVerbatmUser alloc];
 			verbatmUser.name = name;
-			GTLVerbatmAppEmail* verbatmEmail = [GTLVerbatmAppEmail alloc];
-			verbatmEmail.email = email;
-			verbatmUser.email = verbatmEmail;
+			verbatmUser.email = email;
 			if (phoneNumber.length) {
-				GTLVerbatmAppPhoneNumber* verbatmPhoneNumber = [GTLVerbatmAppPhoneNumber alloc];
-				verbatmPhoneNumber.number = phoneNumber;
-				verbatmUser.phoneNumber = verbatmPhoneNumber;
+				verbatmUser.phoneNumber = phoneNumber;
 			}
 			[self insertUser:verbatmUser];
 
@@ -53,18 +47,14 @@
 			[self.delegate errorSigningUpUser: error];
 		}
 	}];
+
 }
 
 -(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
-	
+
 	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 		if (error) {
-			if ( [self.delegate respondsToSelector:@selector(errorSigningUpUser:)]) {
-				[self.delegate errorSigningUpUser: error];
-			} else if ( [self.delegate respondsToSelector:@selector(errorLoggingInUser:)]) {
-				[self.delegate errorLoggingInUser: error];
-			}
-
+			[self errorInEitherSignUpOrLogin: error];
 			return;
 		} else {
 			if (user.isNew) {
@@ -91,25 +81,54 @@
 
 				 NSString* name = result[@"name"];
 				 NSString* email = result[@"email"];
-				 [PFUser currentUser].email = email;
 
-				 //	TODO: get picture data then store image
-//				 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+				PFQuery *query = [PFUser query];
+				[query whereKey:@"email" equalTo: email];
+				[query getFirstObjectInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+					if (!error && object) {
+						PFUser* userWithEmail = (PFUser*) object;
+						// delete the user created by fb login
+						[[PFUser currentUser] deleteInBackground];
+						[PFFacebookUtils linkUserInBackground:userWithEmail withAccessToken:accessToken block:^(BOOL succeeded, NSError * _Nullable error) {
+							NSLog(@"Done trying to link fb user to preexisting user.");
+							if (error) {
+								[self errorInEitherSignUpOrLogin:error];
+							} else {
+								NSLog(@"Trying to log in with facebook but already created an account with that email, \
+									  so succeeded in linking fb account to previous account.");
 
-				 //will only show friends who have signed up for the app with fb
-				 NSArray* friends = nil;
-				 if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
-					 friends = result[@"friends"][@"data"];
-				 }
-				 // TODO: do something with friends
+								[PFUser logInWithUsernameInBackground:userWithEmail.username password:userWithEmail.password block:^(PFUser * _Nullable user, NSError * _Nullable error) {
+									NSLog(@"Done trying to log in previous user.");
+									if (error) {
+										[self errorInEitherSignUpOrLogin:error];
+									} else {
+										[self.delegate successfullyLoggedInUser];
+									}
+								}];
+							}
+						}];
+					} else {
+						// update current user
+						PFUser* currentUser = [PFUser currentUser];
+						[currentUser setObject: email forKey:@"email"];
+						[currentUser saveInBackground];
 
-				 GTLVerbatmAppVerbatmUser* verbatmUser = [GTLVerbatmAppVerbatmUser alloc];
-				 GTLVerbatmAppEmail* verbatmEmail = [GTLVerbatmAppEmail alloc];
-				 verbatmEmail.email = email;
+						//	TODO: get picture data then store image
+						//				 NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 
-				 verbatmUser.name = name;
-				 verbatmUser.email = verbatmEmail;
-				 [self insertUser:verbatmUser];
+						//will only show friends who have signed up for the app with fb
+						NSArray* friends = nil;
+						if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
+							friends = result[@"friends"][@"data"];
+						}
+						// TODO: do something with friends
+
+						GTLVerbatmAppVerbatmUser* verbatmUser = [GTLVerbatmAppVerbatmUser alloc];
+						verbatmUser.name = name;
+						verbatmUser.email = email;
+						[self insertUser:verbatmUser];
+					}
+				}];
 			 } else {
 				 [[PFUser currentUser] deleteInBackground];
 				 [self.delegate errorSigningUpUser: error];
@@ -132,6 +151,13 @@
 	}];
 }
 
+-(void) errorInEitherSignUpOrLogin: (NSError*) error {
+	if ( [self.delegate respondsToSelector:@selector(errorSigningUpUser:)]) {
+		[self.delegate errorSigningUpUser: error];
+	} else if ( [self.delegate respondsToSelector:@selector(errorLoggingInUser:)]) {
+		[self.delegate errorLoggingInUser: error];
+	}
+}
 
 #pragma mark - Logging in User -
 

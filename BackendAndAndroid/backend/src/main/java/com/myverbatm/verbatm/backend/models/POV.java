@@ -30,7 +30,6 @@ public class POV {
     /**
      * The serving url of the cover picture in the blobstore from ImagesService
      */
-    @Index
     private String coverPicUrl;
 
     /**
@@ -54,7 +53,6 @@ public class POV {
     /**
      * Array of page keys in the POV
      */
-    @Index
     private ArrayList<Long> pageIds;
 
 

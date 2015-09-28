@@ -1,10 +1,8 @@
 package com.myverbatm.verbatm.backend.models;
 
-import com.google.appengine.api.datastore.Email;
-import com.google.appengine.api.datastore.PhoneNumber;
-import com.google.appengine.api.users.User;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 /**
  * Verbatm user account entity
@@ -21,21 +19,25 @@ public class VerbatmUser {
     /**
      * User email
      */
-    private Email email;
+    @Index
+    private String email;
 
     /**
      * VerbatmUser name
      */
+    @Index
     private String name;
     
     /**
      * User phone number
      */
-    private PhoneNumber phoneNumber;
+    @Index
+    private String phoneNumber;
 
     /**
      * User profile photo
      */
+    @Index
     private Long profilePhotoImageID;
 
     //TODO(sierrakn): Store user friends
@@ -85,7 +87,7 @@ public class VerbatmUser {
      * Returns the user email.
      * @return the user email
      */
-    public final Email getEmail() {
+    public final String getEmail() {
         return email;
     }
 
@@ -93,7 +95,7 @@ public class VerbatmUser {
      * Sets the user email
      * @param pEmail the email to set for this user
      */
-    public final void setEmail(final Email pEmail) {
+    public final void setEmail(final String pEmail) {
         this.email = pEmail;
     }
 
@@ -101,7 +103,7 @@ public class VerbatmUser {
      * Returns the user phone number
      * @return the user phone number
      */
-    public final PhoneNumber getPhoneNumber() {
+    public final String getPhoneNumber() {
         return phoneNumber;
     }
 
@@ -109,7 +111,7 @@ public class VerbatmUser {
      * Sets the user phone number
      * @param pPhoneNumber the phone number to set for this user
      */
-    public final void setPhoneNumber(PhoneNumber pPhoneNumber) {
+    public final void setPhoneNumber(String pPhoneNumber) {
         this.phoneNumber = pPhoneNumber;
     }
 

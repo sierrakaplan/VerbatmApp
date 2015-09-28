@@ -189,7 +189,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	switch ([error code]) {
 		case kPFErrorUsernameTaken:
 		case kPFErrorUserEmailTaken: {
-			errorMessage = @"An account with that email already exists. Try logging in.";
+			errorMessage = @"An account with that email already exists. Try logging in (maybe you logged in with Facebook?)";
 			break;
 		}
 		default: {

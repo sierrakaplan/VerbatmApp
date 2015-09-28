@@ -15,11 +15,9 @@
 
 #import "GTLVerbatmAppConstants.h"
 
-#import "GTLVerbatmAppEmail.h"
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppPage.h"
 #import "GTLVerbatmAppPageListWrapper.h"
-#import "GTLVerbatmAppPhoneNumber.h"
 #import "GTLVerbatmAppPOV.h"
 #import "GTLVerbatmAppPOVInfo.h"
 #import "GTLVerbatmAppResultsWithCursor.h"

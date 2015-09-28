@@ -15,16 +15,6 @@
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
-
-#import "GTMOAuth2ViewControllerTouch.h"
-#import "GTLServiceVerbatmApp.h"
-#import "GTMHTTPFetcherLogging.h"
-
-#import "GTLQueryVerbatmApp.h"
-#import "GTLVerbatmAppVerbatmUser.h"
-#import "GTLVerbatmAppEmail.h"
-#import "GTLVerbatmAppImage.h"
-
 #import "SegueIDs.h"
 
 #import "UserManager.h"

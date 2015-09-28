@@ -143,6 +143,11 @@
 	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);
 	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	self.masterSV.pagingEnabled = YES;
+	self.masterSV.scrollEnabled = YES;
+	if (![PFUser currentUser].isAuthenticated &&
+		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+		self.masterSV.scrollEnabled = NO;
+	}
 }
 
 
@@ -312,6 +317,7 @@
 
 //catches the unwind segue from login / create account
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
+	self.masterSV.scrollEnabled = YES;
 	// TODO: have variable set and go to profile or adk
 	[self.profileVC updateUserInfo];
 }

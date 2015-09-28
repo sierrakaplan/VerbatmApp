@@ -14,7 +14,7 @@
 
 #pragma mark - Sign In -
 
-#define ERROR_MESSAGE_ANIMATION_TIME 1.f
+#define ERROR_MESSAGE_ANIMATION_TIME 2.f
 #define REMOVE_SIGNIN_ERROR_VIEW_ANIMATION_DURATION 1.f
 
 #pragma mark - Feed -

@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/PlpVsCMYmF9ElvSh8FA4udQBPkQ\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/4dGf-SVjywscPuYIvH48fdadP1A\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -74,15 +74,6 @@
   }
  },
  "schemas": {
-  "Email": {
-   "id": "Email",
-   "type": "object",
-   "properties": {
-    "email": {
-     "type": "string"
-    }
-   }
-  },
   "Image": {
    "id": "Image",
    "type": "object",
@@ -210,15 +201,6 @@
     }
    }
   },
-  "PhoneNumber": {
-   "id": "PhoneNumber",
-   "type": "object",
-   "properties": {
-    "number": {
-     "type": "string"
-    }
-   }
-  },
   "ResultsWithCursor": {
    "id": "ResultsWithCursor",
    "type": "object",
@@ -248,7 +230,7 @@
    "type": "object",
    "properties": {
     "email": {
-     "$ref": "Email"
+     "type": "string"
     },
     "id": {
      "type": "string",
@@ -258,7 +240,7 @@
      "type": "string"
     },
     "phoneNumber": {
-     "$ref": "PhoneNumber"
+     "type": "string"
     },
     "profilePhotoImageID": {
      "type": "string",

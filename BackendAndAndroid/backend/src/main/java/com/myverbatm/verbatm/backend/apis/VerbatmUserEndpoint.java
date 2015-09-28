@@ -8,6 +8,7 @@ import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Email;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
@@ -75,8 +76,10 @@ public class VerbatmUserEndpoint {
      */
     @ApiMethod(path="/getUserFromEmail", httpMethod = "GET")
     public final VerbatmUser getUserFromEmail(@Named("email") final String email) {
+
+        LOG.info("Get user from email: " + email);
         Query.Filter emailFilter = new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email);
-        Query userFromEmailQuery = new Query("POV")
+        Query userFromEmailQuery = new Query("VerbatmUser")
             .setFilter(emailFilter);
         PreparedQuery preparedQuery = datastore.prepare(userFromEmailQuery);
 

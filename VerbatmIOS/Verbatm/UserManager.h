@@ -10,6 +10,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Parse/PFUser.h>
+#import <Parse/PFQuery.h>
 #import <ParseFacebookutilsV4/PFFacebookUtils.h>
 
 @class GTLVerbatmAppVerbatmUser;

@@ -20,6 +20,7 @@ public class Page {
     /**
      * Stores the index of this page in the POV
      */
+    @Index
     private Integer indexInPOV;
 
     /**
