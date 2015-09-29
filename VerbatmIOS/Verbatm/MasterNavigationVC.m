@@ -11,6 +11,9 @@
 #import "ArticleDisplayVC.h"
 
 #import "FeedVC.h"
+
+#import "GTLVerbatmAppVerbatmUser.h"
+
 #import "Icons.h"
 #import "internetConnectionMonitor.h"
 
@@ -25,22 +28,24 @@
 #import "ProfileVC.h"
 
 #import "SegueIDs.h"
-#import "UserSetupParameters.h"
-#import "UIEffects.h"
-#import "UserManager.h"
-#import "VerbatmCameraView.h"
-#import "GTLVerbatmAppVerbatmUser.h"
-
-#import "UserPinchViews.h"
+#import "SizesAndPositions.h"
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
+#import "UserSetupParameters.h"
+#import "UIEffects.h"
+#import "UserManager.h"
+#import "UserPinchViews.h"
+
+#import "VerbatmCameraView.h"
+
 
 @interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate,
-UIGestureRecognizerDelegate, UserManagerDelegate>
+UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
+@property (weak, nonatomic) IBOutlet UIButton *accessCodePresenter_Button;
 
 #pragma mark - Child View Controllers -
 @property (weak, nonatomic) IBOutlet UIView * profileContainer;
@@ -107,9 +112,13 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 
-	if(![UserSetupParameters blackCircleInstructionShown]) {
+    //check if they have entered an access code - if not then present the entry page
+    if(![UserSetupParameters accessCodeEntered]) {
+        [self.accessCodePresenter_Button sendActionsForControlEvents:UIControlEventTouchUpInside];
+    }else if(![UserSetupParameters blackCircleInstructionShown]) {
 		[self alertPullTrendingIcon];
 	}
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -139,15 +148,18 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 //lays out all the containers in the right position and also sets the appropriate
 //offset for the master SV
 -(void) getAndFormatVCs {
-	self.profileContainer.frame = LEFT_FRAME;
-	self.feedContainer.frame = CENTER_FRAME;
-	self.adkContainer.frame = RIGHT_FRAME;
+	self.profileContainer.frame = RIGHT_FRAME;
+	self.feedContainer.frame = LEFT_FRAME;
+	self.adkContainer.frame = CENTER_FRAME;
 	self.articleDisplayContainer.frame = self.view.bounds;
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
 	[self.feedContainer addSubview: self.feedVC.view];
 	self.feedVC.delegate = self;
-
+    
+    self.feedContainer.clipsToBounds = YES;
+    self.adkContainer.clipsToBounds = YES;
+    
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
 	[self.adkContainer addSubview: self.mediaDevVC.view];
 	self.mediaDevVC.delegate = self;
@@ -164,10 +176,11 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 
 -(void) formatMainScrollView {
 	self.masterSV.frame = self.view.bounds;
-	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);
-	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 2, 0);
+	self.masterSV.contentOffset = CGPointMake(0, 0);
 	self.masterSV.pagingEnabled = YES;
 	self.masterSV.scrollEnabled = YES;
+    self.masterSV.bounces = NO;
 }
 
 
@@ -234,22 +247,26 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 #pragma mark - Left edge screen pull for exiting article display vc -
 
 -(void) addScreenEdgePanToArticleDisplay {
-	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
-	leftEdgePanGesture.edges = UIRectEdgeLeft;
+	UIPanGestureRecognizer* leftEdgePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
 	leftEdgePanGesture.delegate = self;
 	[self.articleDisplayContainer addGestureRecognizer: leftEdgePanGesture];
 }
 
 //called from left edge pan
-- (void) exitArticleDisplayView:(UIScreenEdgePanGestureRecognizer *)sender {
-
+- (void) exitArticleDisplayView:(UIPanGestureRecognizer *)sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
+            CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+            
 			//we want only one finger doing anything when exiting
-			if([sender numberOfTouches] != 1) {
+            if([sender numberOfTouches] != 1 ||
+               ((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100)  < touchLocation.y)) {
+                //this ends the gesture
+                sender.enabled = NO;
+                sender.enabled =YES;
 				return;
 			}
-			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+			
 			self.previousGesturePoint  = touchLocation;
 			break;
 		}
@@ -257,11 +274,23 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
 			CGPoint currentPoint = touchLocation;
 			int diff = currentPoint.x - self.previousGesturePoint.x;
-			self.previousGesturePoint = currentPoint;
-			self.articleDisplayContainer.frame = CGRectOffset(self.articleDisplayContainer.frame, diff, 0);
-			break;
+            
+            if((diff < 0) && ((self.articleDisplayContainer.frame.origin.x + diff) < 0)) //swiping left which is wrong so we end the gesture
+            {
+                //this ends the gesture
+                sender.enabled = NO;
+                sender.enabled =YES;
+                break;
+            }else {
+                
+                self.previousGesturePoint = currentPoint;
+                self.articleDisplayContainer.frame = CGRectOffset(self.articleDisplayContainer.frame, diff, 0);
+                break;
+            }
 		}
-		case UIGestureRecognizerStateEnded: {
+        case UIGestureRecognizerStateCancelled:{
+            //should just fall into the next call
+        }case UIGestureRecognizerStateEnded: {
 			if(self.articleDisplayContainer.frame.origin.x > EXIT_EPSILON) {
 				//exit article
 				[self revealArticleDisplay:NO];

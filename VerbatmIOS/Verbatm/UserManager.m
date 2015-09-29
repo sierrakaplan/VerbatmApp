@@ -110,7 +110,7 @@
 						[currentUser saveInBackground];
 
 						//	TODO: get picture data then store image
-						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+//						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 //						NSLog(@"profile picture url: %@", pictureURL);
 
 						//will only show friends who have signed up for the app with fb

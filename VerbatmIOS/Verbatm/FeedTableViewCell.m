@@ -62,8 +62,7 @@
 #define CIRCLE_DIAMETER (self.frame.size.height - STORY_CELL_PADDING*2)
 #define PINCH_TOGETHER_DURATION 0.2f
 #define PINCH_APART_DURATION 0.4f
-#define PINCH_THRESHOLD 50.f
-
+#define PINCH_THRESHOLD 150.f
 @end
 
 @implementation FeedTableViewCell
@@ -138,7 +137,7 @@
 	[self.dateAndLikesView addSubview: self.numLikesLabel];
 
 	[self formatUILabel: self.povTitle
-			   withFont: [UIFont fontWithName:TITLE_FONT size:TITLE_FONT_SIZE]
+			   withFont: [UIFont fontWithName:TITLE_FONT size:FEED_TITLE_FONT_SIZE]
 		   andTextColor: [UIColor TITLE_TEXT_COLOR]
 	   andNumberOfLines: 2];
 

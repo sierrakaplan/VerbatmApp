@@ -56,12 +56,12 @@
 	[self.profileNavButton addTarget:self action:@selector(profileButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 	[self.adkNavButton addTarget:self action:@selector(adkButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 
-	[self addSubview:self.profileNavButton];
+	//[self addSubview:self.profileNavButton];
 	[self addSubview:self.adkNavButton];
 }
 
 -(void) profileButtonPressed:(UIButton*) sender {
-	[self.delegate profileButtonPressed];
+	//[self.delegate profileButtonPressed];
 }
 
 -(void) adkButtonPressed:(UIButton*) sender {

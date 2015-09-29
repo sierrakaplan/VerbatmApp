@@ -143,7 +143,7 @@
 
 #pragma mark - AVES -
 
-#define LIKE_BUTTON_SIZE 50.f
+#define LIKE_BUTTON_SIZE 30.f
 #define LIKE_BUTTON_OFFSET 20.f
 
 #pragma mark Text
@@ -163,6 +163,10 @@
 #define TAP_THRESHOLD 15.f
 #define	SLIDE_THRESHOLD 30.f
 
+#define DISTANCE_BETWEEN_FIELDS 20
+
+
+#define PAN_CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
 
 
 #endif

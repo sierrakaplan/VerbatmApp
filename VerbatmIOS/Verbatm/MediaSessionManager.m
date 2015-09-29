@@ -367,10 +367,7 @@
 
 	//making video and audio assets
 	AVAssetTrack* assetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
-	AVAssetTrack* audioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
 //	NSLog(@"%@, %@, %@", videoAsset, assetTrack, audioAssetTrack);
-
-
 
 	CGAffineTransform finalTransform;// = CGAffineTransformTranslate(t2, -assetTrack.naturalSize.width/2, -assetTrack.naturalSize.height/2);
 	CGSize assetNaturalSize =  assetTrack.naturalSize;

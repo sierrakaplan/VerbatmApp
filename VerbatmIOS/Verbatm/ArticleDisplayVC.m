@@ -46,6 +46,8 @@
 @property (strong, nonatomic) UpdatingPOVManager* updatingManager;
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
+
+#define ACTIVITY_ANIMATION_Y 100
 @end
 
 @implementation ArticleDisplayVC
@@ -73,8 +75,9 @@
 	[povView renderAVES: aves];
 	[self.scrollView addSubview: povView];
 	[self.povViews addObject: povView];
-    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter: self.view.center
+    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter: CGPointMake(self.view.center.x, ACTIVITY_ANIMATION_Y)
                                                             andStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.activityIndicator.color = [UIColor blackColor];
 }
 
 // When user scrolls to a new story, loads the next two in that

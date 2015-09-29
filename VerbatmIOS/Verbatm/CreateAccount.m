@@ -30,6 +30,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *orLabel;
 @property (strong, nonatomic) UIButton* signUpButton;
 @property (weak, nonatomic) IBOutlet UIButton *loginRedirectButton;
+@property (strong, nonatomic) FBSDKLoginButton * loginButton;
 
 @property (nonatomic) BOOL signUpButtonOnScreen;
 
@@ -39,7 +40,7 @@
 
 @property (strong, nonatomic) UserManager* userManager;
 
-#define FACEBOOK_BUTTON_YOFFSET 40
+#define FACEBOOK_BUTTON_YOFFSET 60
 #define SIGN_UP_BUTTON_TEXT @"Sign Up"
 #define BRING_UP_SIGNIN_SEGUE @"login_segue"
 
@@ -51,8 +52,10 @@
 	[super viewDidLoad];
 	if (self) {
 		self.signUpButtonOnScreen = NO;
+        [self addFacebookLoginButton];
 		[self formatTextFields];
-		[self addFacebookLoginButton];
+        [self addTapGestureToRemoveKeyboard];
+		
 	}
 }
 
@@ -62,13 +65,29 @@
 }
 
 -(void) setTextFieldFrames {
-
-	self.emailField.frame = CGRectMake((self.view.frame.size.width/2) - (self.emailField.frame.size.width/2) , self.emailField.frame.origin.y, self.emailField.frame.size.width, self.emailField.frame.size.height);
-	self.fullnameField.frame = CGRectMake((self.view.frame.size.width/2) - (self.fullnameField.frame.size.width/2) , self.fullnameField.frame.origin.y, self.fullnameField.frame.size.width, self.fullnameField.frame.size.height);
-	self.passwordField.frame = CGRectMake((self.view.frame.size.width/2) - (self.passwordField.frame.size.width/2) , self.passwordField.frame.origin.y, self.passwordField.frame.size.width, self.passwordField.frame.size.height);
-	self.phoneNumberField.frame = CGRectMake((self.view.frame.size.width/2) - (self.phoneNumberField.frame.size.width/2) , self.phoneNumberField.frame.origin.y, self.phoneNumberField.frame.size.width, self.phoneNumberField.frame.size.height);
-	self.orLabel.frame = CGRectMake((self.view.frame.size.width/2) - (self.orLabel.frame.size.width/2) , self.orLabel.frame.origin.y, self.orLabel.frame.size.width, self.orLabel.frame.size.height);
-
+    self.orLabel.frame = CGRectMake((self.view.center.x) - (self.orLabel.frame.size.width/2.f), self.loginButton.frame.origin.y +
+                                    self.loginButton.frame.size.height + DISTANCE_BETWEEN_FIELDS,
+                                    self.orLabel.frame.size.width, self.orLabel.frame.size.height);
+    
+    self.emailField.frame = CGRectMake((self.view.frame.size.width/2.f) - (self.emailField.frame.size.width/2.f) , self.orLabel.frame.origin.y +
+                                       self.orLabel.frame.size.height + DISTANCE_BETWEEN_FIELDS,
+                                       self.emailField.frame.size.width, self.emailField.frame.size.height);
+    
+	self.fullnameField.frame = CGRectMake((self.view.center.x) - (self.fullnameField.frame.size.width/2.f) ,
+                                          self.emailField.frame.origin.y +
+                                          self.emailField.frame.size.height + DISTANCE_BETWEEN_FIELDS,
+                                          self.fullnameField.frame.size.width, self.fullnameField.frame.size.height);
+	self.passwordField.frame = CGRectMake((self.view.center.x) - (self.passwordField.frame.size.width/2.f) ,
+                                          self.fullnameField.frame.origin.y +
+                                          self.fullnameField.frame.size.height + DISTANCE_BETWEEN_FIELDS,
+                                          self.passwordField.frame.size.width, self.passwordField.frame.size.height);
+	self.phoneNumberField.frame = CGRectMake((self.view.center.x) - (self.phoneNumberField.frame.size.width/2.f) ,
+                                             self.passwordField.frame.origin.y +
+                                             self.passwordField.frame.size.height + DISTANCE_BETWEEN_FIELDS,
+                                             self.phoneNumberField.frame.size.width, self.phoneNumberField.frame.size.height);
+    self.loginRedirectButton.frame = CGRectMake((self.view.center.x) - (self.loginRedirectButton.frame.size.width/2.f) ,
+                                                self.loginRedirectButton.frame.origin.y,
+                                                self.loginRedirectButton.frame.size.width, self.loginRedirectButton.frame.size.height);
 }
 
 -(void) setTextFieldDelegates {
@@ -79,13 +98,13 @@
 }
 
 - (void) addFacebookLoginButton {
-	FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
-	float buttonWidth = loginButton.frame.size.width*1.5;
-	float buttonHeight = loginButton.frame.size.height*1.5;
-	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2, self.orLabel.frame.origin.y + self.orLabel.frame.size.height +FACEBOOK_BUTTON_YOFFSET, buttonWidth, buttonHeight);
-	loginButton.delegate = self;
-	loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
-	[self.view addSubview:loginButton];
+	self.loginButton = [[FBSDKLoginButton alloc] init];
+	float buttonWidth = self.loginButton.frame.size.width*1.5;
+	float buttonHeight = self.loginButton.frame.size.height*1.5;
+	self.loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2, FACEBOOK_BUTTON_YOFFSET, buttonWidth, buttonHeight);
+	self.loginButton.delegate = self;
+	self.loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
+	[self.view addSubview:self.loginButton];
 }
 
 
@@ -98,7 +117,7 @@
 
 	float buttonWidth  = self.fullnameField.frame.size.width;
 	float buttonX = self.view.center.x - buttonWidth/2;
-	float buttonY = self.orLabel.frame.origin.y;
+	float buttonY = self.phoneNumberField.frame.origin.y + FACEBOOK_BUTTON_YOFFSET;
 	float buttonHeight = self.fullnameField.frame.size.height;
 	self.signUpButton = [[UIButton alloc] initWithFrame: CGRectMake(buttonX, buttonY, buttonWidth, buttonHeight)];
 	[self.signUpButton setTitle: SIGN_UP_BUTTON_TEXT forState:UIControlStateNormal];
@@ -106,8 +125,7 @@
 	[self.signUpButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
 	[self.signUpButton addTarget:self action:@selector(completeAccountCreation) forControlEvents:UIControlEventTouchUpInside];
 
-	// replaces sign up with fb on screen
-	[self.orLabel removeFromSuperview];
+
 	[self.view addSubview: self.signUpButton];
 	self.signUpButtonOnScreen = YES;
 }
@@ -152,7 +170,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 	//TODO(sierrakn): If any declined permissions are essential
 	//explain to user why and ask them to agree to each individually
-	NSSet* declinedPermissions = result.declinedPermissions;
+//	NSSet* declinedPermissions = result.declinedPermissions;
 //	NSLog(@"User declined fb permissions for %@", declinedPermissions);
 
 	//batch request for user info as well as friends
@@ -256,6 +274,21 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	// Get the new view controller using [segue destinationViewController].
 	// Pass the selected object to the new view controller.
+}
+
+
+
+
+-(void)addTapGestureToRemoveKeyboard{
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeKeyboardTap)];
+    [self.view addGestureRecognizer:tapGesture];
+}
+
+-(void) removeKeyboardTap {    
+    [self.emailField resignFirstResponder];
+    [self.fullnameField resignFirstResponder];
+    [self.passwordField resignFirstResponder];
+    [self.phoneNumberField resignFirstResponder];
 }
 
 

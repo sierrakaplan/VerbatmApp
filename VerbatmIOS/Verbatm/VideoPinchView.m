@@ -42,7 +42,6 @@
 }
 
 #pragma mark - Adding play button
-
 -(void) addPlayIcon {
 	UIImage* playIconImage = [UIImage imageNamed: PLAY_VIDEO_ICON];
 	UIImageView* playImageView = [[UIImageView alloc] initWithImage:playIconImage];

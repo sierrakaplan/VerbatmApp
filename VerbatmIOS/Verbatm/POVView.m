@@ -31,8 +31,8 @@
 
 @property (nonatomic, strong) UIButton * downArrow;
 
-#define DOWN_ARROW_WIDTH 40
-#define DOWN_ARROE_DISTANCE_FROM_BOTTOM 5
+#define DOWN_ARROW_WIDTH 30
+#define DOWN_ARROE_DISTANCE_FROM_BOTTOM 30
 #define DOWN_ARROW_IMAGE  @"downarrow"
 #define SCROLL_UP_ANIMATION_DURATION 0.7
 @end
@@ -74,8 +74,10 @@
 	self.likeButtonDelegate = delegate;
 	self.povID = povID;
 
-	CGRect likeButtonFrame = CGRectMake(self.frame.size.width - LIKE_BUTTON_SIZE - LIKE_BUTTON_OFFSET,
-										 LIKE_BUTTON_OFFSET, LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
+    CGRect likeButtonFrame = CGRectMake(self.frame.size.width - LIKE_BUTTON_SIZE - LIKE_BUTTON_OFFSET,
+                                        self.frame.size.height - LIKE_BUTTON_SIZE - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
+                                        LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
+    
 	self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON];
 	self.likeButtonLikedImage = [UIImage imageNamed:LIKE_PRESSED_ICON];
 	self.likeButton = [UIButton buttonWithType: UIButtonTypeCustom];

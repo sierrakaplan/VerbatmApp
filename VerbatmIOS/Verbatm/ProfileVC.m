@@ -15,6 +15,7 @@
 @interface ProfileVC()
 
 @property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *underConstructionLabel;
 
 @property (strong, nonatomic) UserManager* userManager;
 
@@ -25,10 +26,21 @@
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	[self updateUserInfo];
+    [self setLabelFrames];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
+
+-(void) setLabelFrames{
+    
+    self.userNameLabel.frame = CGRectMake(self.view.center.x - (self.userNameLabel.frame.size.width/2), self.userNameLabel.frame.origin.y, self.userNameLabel.frame.size.width,
+                                          self.userNameLabel.frame.size.height);
+    
+    self.underConstructionLabel.frame = CGRectMake(self.view.center.x - (self.underConstructionLabel.frame.size.width/2),
+                                                   self.underConstructionLabel.frame.origin.y,
+                                                   self.underConstructionLabel.frame.size.width, self.underConstructionLabel.frame.size.height);
 }
 
 -(void) updateUserInfo {

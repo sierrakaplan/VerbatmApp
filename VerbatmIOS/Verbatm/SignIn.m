@@ -25,6 +25,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *passwordField;
 @property (weak, nonatomic) IBOutlet UIButton *signInButton;
 @property (weak, nonatomic) IBOutlet UIButton *createAccountRedirectButton;
+@property (weak, nonatomic) IBOutlet UILabel *orLabel;
 
 @property (strong, nonatomic) UIView *animationView;
 @property (strong, nonatomic) UILabel* animationLabel;
@@ -47,6 +48,7 @@
 	[self setCursorColor];
 
 	[self addFacebookLoginButton];
+    [self addTapGestureToRemoveKeyboard];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -62,12 +64,26 @@
 //dynamically centers all our frames depending on phone screen dimensions
 -(void) centerAllframes {
 
-	self.emailField.frame= CGRectMake((self.view.frame.size.width/2 - self.emailField.frame.size.width/2), self.emailField.frame.origin.y, self.emailField.frame.size.width, self.emailField.frame.size.height);
+    
+    self.orLabel.frame = CGRectMake(self.view.center.x - (self.orLabel.frame.size.width/2), self.orLabel.frame.origin.y, self.orLabel.frame.size.width, self.orLabel.frame.size.height);
+    
+	self.emailField.frame= CGRectMake((self.view.frame.size.width/2 - self.emailField.frame.size.width/2), self.orLabel.frame.origin.y + self.orLabel.frame.size.height + DISTANCE_BETWEEN_FIELDS,
+                                      self.emailField.frame.size.width, self.emailField.frame.size.height);
 
-	self.passwordField.frame = CGRectMake((self.view.frame.size.width/2 - self.passwordField.frame.size.width/2), self.passwordField.frame.origin.y, self.passwordField.frame.size.width, self.passwordField.frame.size.height);
+	self.passwordField.frame = CGRectMake((self.view.frame.size.width/2 - self.passwordField.frame.size.width/2), self.emailField.frame.origin.y + self.emailField.frame.size.height + DISTANCE_BETWEEN_FIELDS,
+                                          self.passwordField.frame.size.width, self.passwordField.frame.size.height);
 
-	self.signInButton.frame =CGRectMake((self.view.frame.size.width/2 - self.signInButton.frame.size.width/2), self.signInButton.frame.origin.y, self.signInButton.frame.size.width, self.signInButton.frame.size.height);
+	self.signInButton.frame =CGRectMake((self.view.frame.size.width/2 - self.signInButton.frame.size.width/2),self.passwordField.frame.origin.y + self.passwordField.frame.size.height + DISTANCE_BETWEEN_FIELDS,
+                                        self.signInButton.frame.size.width, self.signInButton.frame.size.height);
+    
 	[self.signInButton addTarget:self action:@selector(completeLogin) forControlEvents:UIControlEventTouchUpInside];
+    
+    self.createAccountRedirectButton.frame = CGRectMake((self.view.center.x - (self.createAccountRedirectButton.frame.size.width/2)),
+                                                        self.createAccountRedirectButton.frame.origin.y,
+                                                        self.createAccountRedirectButton.frame.size.width,
+                                                        self.createAccountRedirectButton.frame.size.height);
+    
+    
 }
 
 -(void) setCursorColor {
@@ -79,10 +95,22 @@
 	FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
 	float buttonWidth = loginButton.frame.size.width*1.2;
 	float buttonHeight = loginButton.frame.size.height*1.2;
-	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2, self.emailField.frame.origin.y - buttonHeight - 20, buttonWidth, buttonHeight);
+	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2, self.orLabel.frame.origin.y - buttonHeight - DISTANCE_BETWEEN_FIELDS, buttonWidth, buttonHeight);
 	loginButton.delegate = self;
 	loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
 	[self.view addSubview:loginButton];
+}
+
+#pragma mark - Remove Keyboard -
+
+-(void)addTapGestureToRemoveKeyboard{
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeKeyboardTap)];
+    [self.view addGestureRecognizer:tapGesture];
+}
+
+-(void) removeKeyboardTap {
+    [self.emailField resignFirstResponder];
+    [self.passwordField resignFirstResponder];
 }
 
 #pragma mark - Completing login -
