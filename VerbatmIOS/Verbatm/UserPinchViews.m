@@ -77,16 +77,17 @@
 
 //removes pinch view and automatically saves pinchViews
 -(void) removePinchView:(PinchView*)pinchView {
-	@synchronized(self) {
-		if (![self.pinchViews containsObject: pinchView]) {
-			return;
-		}
-		NSInteger pinchViewIndex = [self.pinchViews indexOfObject:pinchView];
-		[self.pinchViews removeObjectAtIndex:pinchViewIndex];
-		[self.pinchViewsAsData removeObjectAtIndex:pinchViewIndex];
-		[[NSUserDefaults standardUserDefaults]
-		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
-	}
+    //broken no need for now - temp
+//	@synchronized(self) {
+//		if (![self.pinchViews containsObject: pinchView]) {
+//			return;
+//		}
+//		NSInteger pinchViewIndex = [self.pinchViews indexOfObject:pinchView];
+//		[self.pinchViews removeObjectAtIndex:pinchViewIndex];
+//		[self.pinchViewsAsData removeObjectAtIndex:pinchViewIndex];
+//		[[NSUserDefaults standardUserDefaults]
+//		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+//	}
 }
 
 //loads pinchviews from user defaults

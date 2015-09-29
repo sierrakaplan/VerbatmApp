@@ -298,7 +298,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 -(void) addCoverPictureTapped {
     [self presentGalleryForCoverPic];
     //show replace photo icon after the first time this is tapped
-    if(!self. simreplaceCoverPhotoButton){
+    if(!self.replaceCoverPhotoButton){
         [self addTapGestureToPinchView:self.coverPicView];
         [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
     }
