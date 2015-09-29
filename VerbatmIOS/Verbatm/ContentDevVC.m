@@ -190,19 +190,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 -(void) createBaseSelector {
 
-	//make sure we don't create another one when we return from image picking
-	if(_baseMediaTileSelector) return;
-
 	CGRect scrollViewFrame = CGRectMake(0, self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_OFFSET_DISTANCE);
-
-	CGRect frame = CGRectMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + ELEMENT_OFFSET_DISTANCE,
-							  ELEMENT_OFFSET_DISTANCE/2.f,
-							  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
-	self.baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
-	self.baseMediaTileSelector.isBaseSelector =YES;
-	self.baseMediaTileSelector.delegate = self;
-	[self.baseMediaTileSelector createFramesForButtonWithFrame:frame];
-	[self.baseMediaTileSelector formatButton];
 
 	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
 																	  initWithFrame:scrollViewFrame
@@ -1809,6 +1797,20 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 
 #pragma mark - Lazy Instantiation
+
+-(MediaSelectTile*) baseMediaTileSelector {
+	if (!_baseMediaTileSelector) {
+		CGRect frame = CGRectMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + ELEMENT_OFFSET_DISTANCE,
+								  ELEMENT_OFFSET_DISTANCE/2.f,
+								  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
+		_baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
+		_baseMediaTileSelector.isBaseSelector =YES;
+		_baseMediaTileSelector.delegate = self;
+		[_baseMediaTileSelector createFramesForButtonWithFrame:frame];
+		[_baseMediaTileSelector formatButton];
+	}
+	return _baseMediaTileSelector;
+}
 
 -(ContentDevNavBar*) navBar {
 	if (!_navBar) {
