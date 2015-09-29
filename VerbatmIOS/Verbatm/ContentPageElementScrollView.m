@@ -67,7 +67,7 @@
     if ([self.pageElement isKindOfClass:[MediaSelectTile class]]) {
         self.deleteButton = [[UIButton alloc] initWithFrame:
                              CGRectMake(DELETE_ICON_OFFSET,
-                                        self.pageElement.center.y + 4,
+                                        self.pageElement.center.y + 7,
                                         DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
     }else{
         self.deleteButton = [[UIButton alloc] initWithFrame:

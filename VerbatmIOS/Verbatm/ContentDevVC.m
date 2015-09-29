@@ -927,6 +927,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 //		NSLog(@"Can't add Nil media tile");
 		return;
 	}
+    
 	CGRect newMediaTileScrollViewFrame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
 	ContentPageElementScrollView * newMediaTileScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newMediaTileScrollViewFrame andElement:mediaTile];
 	newMediaTileScrollView.customDelegate = self;
