@@ -134,7 +134,7 @@
 //distance two fingers must travel for the horizontal pinch to be accepted
 #define HORIZONTAL_PINCH_THRESHOLD 100
 #define PINCH_VIEW_DELETING_THRESHOLD 80
-#define PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION 100
+#define PINCH_DISTANCE_THRESHOLD_FOR_NEW_MEDIA_TILE_CREATION (MEDIA_TILE_SELECTOR_HEIGHT * 3.f/4.f)
 
 #pragma mark Media Select Tile
 
