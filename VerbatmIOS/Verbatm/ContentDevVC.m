@@ -298,7 +298,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 -(void) addCoverPictureTapped {
     [self presentGalleryForCoverPic];
     //show replace photo icon after the first time this is tapped
-    if(!_replaceCoverPhotoButton){
+    if(!self. simreplaceCoverPhotoButton){
         [self addTapGestureToPinchView:self.coverPicView];
         [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
     }
@@ -1592,7 +1592,14 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
     [self clearCoverPhoto];
+    [self clearBaseSelcetor];
 	[self createBaseSelector];
+    [self initializeVariables];
+}
+
+-(void)clearBaseSelcetor{
+    [self.baseMediaTileSelector removeFromSuperview];
+    self.baseMediaTileSelector = nil;
 }
 
 -(void) clearCoverPhoto {
