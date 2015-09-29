@@ -24,8 +24,11 @@
 @property (strong, nonatomic) UIView * storyTextView;
 @property (strong, nonatomic) UILabel * povTitle;
 @property (strong, nonatomic) UILabel * povCreatorUsername;
+
+@property (strong, nonatomic) UIView* dateAndLikesView;
 @property (strong, nonatomic) UILabel * dateCreatedLabel;
 @property (strong, nonatomic) UILabel * numLikesLabel;
+@property (strong, nonatomic) UIImageView* likeIconView;
 
 #pragma mark - Left and right semi circles containing the cover picture -
 @property (strong, nonatomic) UIView * leftCircle;
@@ -117,22 +120,22 @@
 												  textViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 												  USERNAME_LABEL_HEIGHT)];
 
-	UIView* dateAndLikesView = [[UIView alloc] initWithFrame:CGRectMake(FEED_TEXT_X_OFFSET,
+	self.dateAndLikesView = [[UIView alloc] initWithFrame:CGRectMake(FEED_TEXT_X_OFFSET,
 																		textViewFrame.size.height - DATE_AND_LIKES_LABEL_HEIGHT,
 																		textViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 																		DATE_AND_LIKES_LABEL_HEIGHT)];
 
-	[self.dateCreatedLabel setFrame: CGRectMake(0, 0, dateAndLikesView.frame.size.width/2.f, DATE_AND_LIKES_LABEL_HEIGHT)];
-	UIImageView* likeIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed: FEED_LIKE_ICON]];
-	[likeIconView setFrame: CGRectMake(dateAndLikesView.frame.size.width/2.f, 0, DATE_AND_LIKES_LABEL_HEIGHT, DATE_AND_LIKES_LABEL_HEIGHT)];
-	likeIconView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.numLikesLabel setFrame: CGRectMake(dateAndLikesView.frame.size.width/2.f,
-											 0, dateAndLikesView.frame.size.width - self.dateCreatedLabel.frame.size.width - likeIconView.frame.size.width,
+	[self.dateCreatedLabel setFrame: CGRectMake(0, 0, self.dateAndLikesView.frame.size.width/2.f, DATE_AND_LIKES_LABEL_HEIGHT)];
+	self.likeIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed: FEED_LIKE_ICON]];
+	[self.likeIconView setFrame: CGRectMake(self.dateAndLikesView.frame.size.width/2.f, 0, DATE_AND_LIKES_LABEL_HEIGHT, DATE_AND_LIKES_LABEL_HEIGHT)];
+	self.likeIconView.contentMode = UIViewContentModeScaleAspectFit;
+	[self.numLikesLabel setFrame: CGRectMake(self.dateAndLikesView.frame.size.width/2.f + self.likeIconView.frame.size.width + 5.f,
+											 0, self.dateAndLikesView.frame.size.width - self.dateCreatedLabel.frame.size.width - self.likeIconView.frame.size.width,
 											 DATE_AND_LIKES_LABEL_HEIGHT)];
 
-	[dateAndLikesView addSubview: self.dateCreatedLabel];
-	[dateAndLikesView addSubview: likeIconView];
-	[dateAndLikesView addSubview: self.numLikesLabel];
+	[self.dateAndLikesView addSubview: self.dateCreatedLabel];
+	[self.dateAndLikesView addSubview: self.likeIconView];
+	[self.dateAndLikesView addSubview: self.numLikesLabel];
 
 	[self formatUILabel: self.povTitle
 			   withFont: [UIFont fontWithName:TITLE_FONT size:TITLE_FONT_SIZE]
@@ -145,7 +148,7 @@
 
 	[self.numLikesLabel setFont: [UIFont fontWithName:DATE_AND_LIKES_FONT size:DATE_AND_LIKES_FONT_SIZE]];
 	[self.numLikesLabel setTextColor:[UIColor TITLE_TEXT_COLOR]];
-	[self.numLikesLabel setTextAlignment: NSTextAlignmentRight];
+	[self.numLikesLabel setTextAlignment: NSTextAlignmentLeft];
 
 	[self formatUILabel: self.povCreatorUsername
 			   withFont: [UIFont fontWithName:USERNAME_FONT size:USERNAME_FONT_SIZE]
@@ -154,7 +157,7 @@
 
 	[self.storyTextView addSubview: self.povTitle];
 	[self.storyTextView addSubview: self.povCreatorUsername];
-	[self.storyTextView addSubview: dateAndLikesView];
+	[self.storyTextView addSubview: self.dateAndLikesView];
 	[self addSubview: self.storyTextView];
 }
 
@@ -241,7 +244,13 @@
 		// TODO:
 //		self.dateCreatedLabel.text = [NSString stringWithFormat: @"%@", dateCreated.stringValue];
 	}
-	self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", numLikes.longLongValue];
+	if (numLikes.longLongValue == 1) {
+		self.numLikesLabel.text = [NSString stringWithFormat: @"%lld like", numLikes.longLongValue];
+	} else if (numLikes.longLongValue > 0) {
+		self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", numLikes.longLongValue];
+	} else {
+		[self.likeIconView setHidden:YES];
+	}
 	UIImage* leftHalf = [self halfPicture:coverImage leftHalf:YES];
 	UIImage* rightHalf = [self halfPicture:coverImage leftHalf:NO];
 	[self.leftSemiCircle setImage: leftHalf];
