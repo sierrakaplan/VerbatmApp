@@ -18,6 +18,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="dka-vl-1sh">
+                                <rect key="frame" x="136" y="528" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <segue destination="J3m-rX-1gc" kind="modal" id="D49-vI-psc"/>
+                                </connections>
+                            </button>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="Rve-tc-g3P">
                                 <rect key="frame" x="0.0" y="-48" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -55,6 +62,7 @@
                         </connections>
                     </view>
                     <connections>
+                        <outlet property="accessCodePresenter_Button" destination="dka-vl-1sh" id="6E9-IQ-d7Q"/>
                         <outlet property="adkContainer" destination="yxe-c7-aMo" id="QIx-i8-eZK"/>
                         <outlet property="articleDisplayContainer" destination="R2N-mA-a8G" id="bYp-Gc-06i"/>
                         <outlet property="feedContainer" destination="BZw-d7-VqY" id="ZeZ-Vt-wFY"/>
@@ -101,7 +109,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mmd-zC-fwh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3937" y="-220"/>
+            <point key="canvasLocation" x="-4036" y="61"/>
         </scene>
         <!--Trending-->
         <scene sceneID="wyz-UI-MUa">
@@ -519,7 +527,40 @@
             </objects>
             <point key="canvasLocation" x="-4475" y="-559"/>
         </scene>
+        <!--Permission Code PageVC-->
+        <scene sceneID="cNa-nE-r4g">
+            <objects>
+                <viewController id="J3m-rX-1gc" customClass="PermissionCodePageVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="1YT-UX-oLz">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" id="Ia4-nI-UX3">
+                                <rect key="frame" x="118" y="28" width="85" height="161"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Access Code" textAlignment="natural" minimumFontSize="17" id="SXc-cW-tSX">
+                                <rect key="frame" x="40" y="231" width="240" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="fieldEntry" destination="SXc-cW-tSX" id="9V7-de-0sx"/>
+                        <outlet property="logo" destination="Ia4-nI-UX3" id="UXR-Oa-tHq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OXP-T8-HXg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-3974" y="-667"/>
+        </scene>
     </scenes>
+    <resources>
+        <image name="logo" width="130" height="266"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="uPI-hI-3x0"/>
         <segue reference="UxX-nw-l5Q"/>

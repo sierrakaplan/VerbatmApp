@@ -15,7 +15,7 @@
 #define PINCH_INSTRUCTION_KEY @"PINCH_INSTRUCTION_KEY"
 #define SWIPE_TO_DELETE_INSTRUCTION_KEY @"SWIPE_TO_DELETE_INSTRUCTION_KEY"
 #define TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY @"TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY"
-
+#define ACCESS_KEY_INSTRUCTION_KEY @"ACCESS_KEY_INSTRUCTION_KEY"
 @end
 
 @implementation UserSetupParameters
@@ -34,6 +34,7 @@
             [defaults setBool:NO forKey:PINCH_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY];
+            [defaults setBool:NO forKey:ACCESS_KEY_INSTRUCTION_KEY];
             [defaults synchronize];
         }
     }
@@ -72,7 +73,21 @@
     return [defaults boolForKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
 }
 
++(BOOL) accessCodeEntered {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults boolForKey:ACCESS_KEY_INSTRUCTION_KEY];
+}
+
 #pragma mark - Change Paramaters -
+
++(void) set_accessCodeAsEntered{
+    @synchronized(self) {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setBool:YES forKey:ACCESS_KEY_INSTRUCTION_KEY];
+    }
+}
+
+
 +(void) set_filter_InstructionAsShown{
     @synchronized(self) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

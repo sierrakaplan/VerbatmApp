@@ -28,6 +28,7 @@
 +(BOOL) pinchCircles_InstructionShown;
 +(BOOL) tapNhold_InstructionShown;
 +(BOOL) swipeToDelete_InstructionShown;
++(BOOL) accessCodeEntered;
 
 
 /*Stores that the notifications have been shown*/
@@ -37,4 +38,6 @@
 +(void) set_pinchCircles_InstructionAsShown;
 +(void) set_tapNhold_InstructionAsShown;
 +(void) set_swipeToDelete_InstructionAsShown;
++(void) set_accessCodeAsEntered;
+
 @end

@@ -40,9 +40,10 @@
 
 
 @interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate,
-UIGestureRecognizerDelegate, UserManagerDelegate>
+UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
+@property (weak, nonatomic) IBOutlet UIButton *accessCodePresenter_Button;
 
 #pragma mark - Child View Controllers -
 @property (weak, nonatomic) IBOutlet UIView * profileContainer;
@@ -109,9 +110,13 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 
-	if(![UserSetupParameters blackCircleInstructionShown]) {
+    //check if they have entered an access code - if not then present the entry page
+    if(![UserSetupParameters accessCodeEntered]) {
+        [self.accessCodePresenter_Button sendActionsForControlEvents:UIControlEventTouchUpInside];
+    }else if(![UserSetupParameters blackCircleInstructionShown]) {
 		[self alertPullTrendingIcon];
 	}
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -141,15 +146,18 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 //lays out all the containers in the right position and also sets the appropriate
 //offset for the master SV
 -(void) getAndFormatVCs {
-	self.profileContainer.frame = LEFT_FRAME;
-	self.feedContainer.frame = CENTER_FRAME;
-	self.adkContainer.frame = RIGHT_FRAME;
+	self.profileContainer.frame = RIGHT_FRAME;
+	self.feedContainer.frame = LEFT_FRAME;
+	self.adkContainer.frame = CENTER_FRAME;
 	self.articleDisplayContainer.frame = self.view.bounds;
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
 	[self.feedContainer addSubview: self.feedVC.view];
 	self.feedVC.delegate = self;
-
+    
+    self.feedContainer.clipsToBounds = YES;
+    self.adkContainer.clipsToBounds = YES;
+    
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
 	[self.adkContainer addSubview: self.mediaDevVC.view];
 	self.mediaDevVC.delegate = self;
@@ -166,10 +174,11 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 
 -(void) formatMainScrollView {
 	self.masterSV.frame = self.view.bounds;
-	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);
-	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
+	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 2, 0);
+	self.masterSV.contentOffset = CGPointMake(0, 0);
 	self.masterSV.pagingEnabled = YES;
 	self.masterSV.scrollEnabled = YES;
+    self.masterSV.bounces = NO;
 }
 
 
