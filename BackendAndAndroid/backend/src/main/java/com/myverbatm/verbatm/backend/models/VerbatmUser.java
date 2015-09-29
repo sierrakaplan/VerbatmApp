@@ -4,6 +4,8 @@ import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
 
+import java.util.ArrayList;
+
 /**
  * Verbatm user account entity
  */
@@ -40,7 +42,13 @@ public class VerbatmUser {
     @Index
     private Long profilePhotoImageID;
 
-    //TODO(sierrakn): Store user friends
+    //TODO(sierrakn): Store user fb friends
+
+    /**
+     * IDs of all the POV's the user has liked
+     */
+    @Index
+    private ArrayList<Long> likedPOVIDs;
 
 
     /**
@@ -129,5 +137,21 @@ public class VerbatmUser {
      */
     public final  void setProfilePhotoImageID(Long profilePhotoImageID) {
         this.profilePhotoImageID = profilePhotoImageID;
+    }
+
+    /**
+     * Gets the list of POV IDs that the user has liked
+     * @return the list of POV IDs that the user has liked
+     */
+    public ArrayList<Long> getLikedPOVIDs() {
+        return likedPOVIDs;
+    }
+
+    /**
+     * Sets the list of POV IDs that the user has liked
+     * @param likedPOVIDs the list of POV IDs that the user has liked
+     */
+    public void setLikedPOVIDs(ArrayList<Long> likedPOVIDs) {
+        this.likedPOVIDs = likedPOVIDs;
     }
 }

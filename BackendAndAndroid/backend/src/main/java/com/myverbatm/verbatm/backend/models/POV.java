@@ -57,24 +57,16 @@ public class POV {
     @Index
     private ArrayList<Long> pageIds;
 
+    /**
+     * Array of user ids who have liked this POV
+     */
+    @Index
+    private ArrayList<Long> usersWhoHaveLikedIDs;
+
 
     public POV() {
 
     }
-
-//    /**
-//     * Creates a POV instance from an entity of POV type
-//     * @param entity
-//     */
-//    public POV(com.google.appengine.api.datastore.Entity entity) {
-//        this.id = entity.getKey().getId();
-//        this.title = (String) entity.getProperty("title");
-//        this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
-//        this.datePublished = (Date) entity.getProperty("datePublished");
-//        this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
-//        this.creatorUserId = (Long) entity.getProperty("creatorUserId");
-//        this.pages = (List<Page>) entity.getProperty("pages");
-//    }
 
     /**
      *
@@ -185,5 +177,21 @@ public class POV {
      */
     public void setPageIds(ArrayList<Long> pageIds) {
         this.pageIds = pageIds;
+    }
+
+    /**
+     * Gets the list of user ids of users who have liked this POV
+     * @return the list of user ids of users who have liked this POV
+     */
+    public ArrayList<Long> getUsersWhoHaveLikedIDs() {
+        return usersWhoHaveLikedIDs;
+    }
+
+    /**
+     * Sets the list of user ids of users who have liked this POV
+     * @param usersWhoHaveLikedIDs the list of user ids of users who have liked this POV
+     */
+    public void setUsersWhoHaveLikedIDs(ArrayList<Long> usersWhoHaveLikedIDs) {
+        this.usersWhoHaveLikedIDs = usersWhoHaveLikedIDs;
     }
 }

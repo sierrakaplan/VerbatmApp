@@ -17,7 +17,7 @@
 #define EXIT_CV_BUTTON_WALL_OFFSET 0
 
 #define NAV_BAR_HEIGHT 40.f
-#define NAV_ICON_OFFSET 7
+#define NAV_ICON_OFFSET 7.f
 #define NAV_ICON_SIZE (NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2)
 
 
@@ -79,6 +79,9 @@
 
 
 #pragma mark - Content Dev VC -
+
+#define CONTENT_DEV_NAV_BAR_OFFSET 15.f
+#define CONTENT_DEV_NAV_BAR_HEIGHT 100.f
 
 #pragma mark - Gallery
 

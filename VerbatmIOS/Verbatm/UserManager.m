@@ -71,7 +71,7 @@
 			if (user.isNew) {
 				[self getUserInfoFromFacebookToken: accessToken];
 			} else {
-				NSLog(@"User had already created account. Successfully logged in with Facebook.");
+//				NSLog(@"User had already created account. Successfully logged in with Facebook.");
 				[self queryForCurrentUser];
 			}
 		}
@@ -110,8 +110,8 @@
 						[currentUser saveInBackground];
 
 						//	TODO: get picture data then store image
-						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
-						NSLog(@"profile picture url: %@", pictureURL);
+//						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
+//						NSLog(@"profile picture url: %@", pictureURL);
 
 						//will only show friends who have signed up for the app with fb
 						NSArray* friends = nil;
@@ -138,10 +138,10 @@
 	GTLQueryVerbatmApp* insertUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserInsertUserWithObject:user];
 	[self.service executeQuery:insertUserQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser *currentUser, NSError *error) {
 		if (!error) {
-			NSLog(@"Successfully inserted user object");
+//			NSLog(@"Successfully inserted user object");
 			[self.delegate successfullyLoggedInUser: currentUser];
 		} else {
-			NSLog(@"Error inserting user: %@", error.description);
+//			NSLog(@"Error inserting user: %@", error.description);
 			[[PFUser currentUser] deleteInBackground];
 			[self.delegate errorLoggingInUser: error];
 		}
@@ -162,18 +162,18 @@
 
 -(void) queryForCurrentUser {
 	if (![PFUser currentUser]) {
-		NSLog(@"User is not logged in.");
+//		NSLog(@"User is not logged in.");
 		return;
 	}
 	NSString* email = [PFUser currentUser].email;
 	GTLQueryVerbatmApp* getUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserGetUserFromEmailWithEmail: email];
 	[self.service executeQuery:getUserQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser* currentUser, NSError *error) {
 		if (!error) {
-			NSLog(@"Succesfully retrieved current user from datastore.");
+//			NSLog(@"Succesfully retrieved current user from datastore.");
 			self.currentUser = currentUser;
 			[self.delegate successfullyLoggedInUser: currentUser];
 		} else {
-			NSLog(@"Error retrieving current user: %@", error.description);
+//			NSLog(@"Error retrieving current user: %@", error.description);
 			[self.delegate errorLoggingInUser: error];
 		}
 	}];

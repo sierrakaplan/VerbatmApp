@@ -40,7 +40,7 @@
 	for(PinchView* pinchView in pinchViews) {
 		//there are some issue where a messed up p_obj arrives
 		if(!(pinchView.containsImage || pinchView.containsText || pinchView.containsVideo)) {
-			NSLog(@"Pinch view says it has no type of media in it.");
+//			NSLog(@"Pinch view says it has no type of media in it.");
 			continue;
 		}
 
@@ -85,7 +85,7 @@
 		NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
 		NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: video.blobKeyString];
 		components.queryItems = @[blobKey];
-		NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
+//		NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
 		[videoURLs addObject: components.URL];
 	}
 	return videoURLs;

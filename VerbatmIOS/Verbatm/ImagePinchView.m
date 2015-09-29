@@ -80,7 +80,7 @@
 
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex {
 	if(filterIndex < 0 || filterIndex >= [self.filteredImages count]) {
-		NSLog(@"Filtered image index out of range");
+//		NSLog(@"Filtered image index out of range");
 		return;
 	}
 	self.filterImageIndex = filterIndex;

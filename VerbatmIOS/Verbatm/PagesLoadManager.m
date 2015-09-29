@@ -45,7 +45,7 @@
 - (NSArray*) getPagesForPOV: (NSNumber*) povID {
 	NSArray* pages = [self.pagesForPOV objectForKey: povID];
 	if (!pages) {
-		NSLog(@"Error: getting pages that are not yet loaded");
+//		NSLog(@"Error: getting pages that are not yet loaded");
 	}
 	return pages;
 }
@@ -73,7 +73,7 @@
 		self.mediaLoaders = nil;
 
 	}).catch(^(NSError* error) {
-		NSLog(@"Error loading pages from POV: %@", error.description);
+//		NSLog(@"Error loading pages from POV: %@", error.description);
 		self.mediaLoaders = nil;
 	});
 }

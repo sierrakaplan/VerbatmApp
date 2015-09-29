@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppVerbatmUser (0 custom class methods, 5 custom properties)
+//   GTLVerbatmAppVerbatmUser (0 custom class methods, 6 custom properties)
 
 #import "GTLVerbatmAppVerbatmUser.h"
 
@@ -23,11 +23,18 @@
 //
 
 @implementation GTLVerbatmAppVerbatmUser
-@dynamic email, identifier, name, phoneNumber, profilePhotoImageID;
+@dynamic email, identifier, likedPOVIDs, name, phoneNumber, profilePhotoImageID;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{
     @"identifier" : @"id"
+  };
+  return map;
+}
+
++ (NSDictionary *)arrayPropertyToClassMap {
+  NSDictionary *map = @{
+    @"likedPOVIDs" : [NSNumber class]
   };
   return map;
 }

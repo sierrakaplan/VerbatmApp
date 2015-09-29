@@ -47,9 +47,11 @@
 
 
 @interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentSVDelegate>
+GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 
+//keeps track of ContentPageElementScrollViews
+@property (strong, nonatomic) NSMutableArray * pageElementScrollViews;
 // Says whether or not user is currently adding a cover picture
 // (used when returning from adding assets)
 @property (nonatomic) BOOL addingCoverPicture;
@@ -57,7 +59,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 @property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
 
-@property (strong, nonatomic, readwrite) NSMutableArray * pageElementScrollViews;
 @property (nonatomic) NSInteger numPinchViews;
 
 #pragma mark Keyboard related properties
@@ -119,7 +120,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 @property (nonatomic) BOOL photoTappedOpenForTheFirstTime;
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
-#define WHAT_IS_IT_LIKE_OFFSET 15
+#define WHAT_IS_IT_LIKE_OFFSET 50
 #define WHAT_IS_IT_LIKE_HEIGHT 50
 
 #define REPLACE_PHOTO_FRAME_WIDTH 80
@@ -142,6 +143,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self addBlurView];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
+	[self formatNavBar];
 	[self setKeyboardAppearance];
 	[self setCursorColor];
 	[self formatTitleAndCoverPicture];
@@ -179,6 +181,11 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	self.defaultPinchViewCenter = CGPointMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + (self.view.frame.size.width/2.f),
 											  self.defaultPageElementScrollViewSize.height/2);
 	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
+}
+
+-(void) formatNavBar {
+	self.navBar.delegate = self;
+	[self.mainScrollView addSubview: self.navBar];
 }
 
 -(void) createBaseSelector {
@@ -344,6 +351,17 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 }
 
+#pragma mark - Nav Bar Delegate Methods -
+
+-(void) backButtonPressed {
+	[self.delegate backButtonPressed];
+}
+
+-(void) previewButtonPressed {
+	[self closeAllOpenCollections];
+	[self.delegate previewButtonPressed];
+}
+
 #pragma mark - Configure Text Fields -
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
@@ -398,9 +416,9 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 -(void) showOrHidePullBarBasedOnMainScrollViewScroll {
 	CGPoint translation = [self.mainScrollView.panGestureRecognizer translationInView:self.mainScrollView];
 	if(translation.y < 0) {
-		[self.changePullBarDelegate showPullBar:NO withTransition:YES];
+		[self.delegate showPullBar:NO withTransition:YES];
 	}else {
-		[self.changePullBarDelegate showPullBar:YES withTransition:YES];
+		[self.delegate showPullBar:YES withTransition:YES];
 	}
 	return;
 }
@@ -464,12 +482,13 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	scrollView.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
 }
 
-#pragma mark - Creating New Views -
+#pragma mark - Creating New PinchViews -
+
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView {
 
 	if(!pinchView) {
-		NSLog(@"Attempting to add nil pinch view");
+//		NSLog(@"Attempting to add nil pinch view");
 		return;
 	}
 
@@ -491,7 +510,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	newElementScrollView.delegate = self;
 	newElementScrollView.customDelegate = self;
 
-    [self.changePullBarDelegate canPreview:YES];
+    [self.navBar enablePreviewButton:YES];
 	self.numPinchViews++;
 
 	//thread safety
@@ -511,12 +530,12 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 -(void)shiftElementsBelowView: (UIView *) view
 {
 	if (!view) {
-		NSLog(@"View that elements are being shifted below should not be nil");
+//		NSLog(@"View that elements are being shifted below should not be nil");
 		return;
 	}
 	if(![view isKindOfClass:[ContentPageElementScrollView class]]
 	   && ![view isKindOfClass:[CoverPicturePV class]]) {
-		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
+//		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
 		return;
 	}
 
@@ -849,7 +868,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		return;
 	}
 	//make sure the pullbar is showing when things are pinched together
-	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
+	[self.delegate showPullBar:YES withTransition:YES];
 	[openCollectionScrollView closeCollection];
 }
 
@@ -949,7 +968,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 -(void) addMediaTile: (MediaSelectTile *) mediaTile underView: (ContentPageElementScrollView *) topView {
 	if(!mediaTile) {
-		NSLog(@"Can't add Nil media tile");
+//		NSLog(@"Can't add Nil media tile");
 		return;
 	}
 	CGRect newMediaTileScrollViewFrame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
@@ -1042,8 +1061,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self shiftElementsBelowView: self.coverPicView];
     
 	//make sure the pullbar is showing when things are pinched together
-	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
-    
+	[self.delegate showPullBar:YES withTransition:YES];
     //present swipe to delete notification
     if(![UserSetupParameters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
@@ -1433,7 +1451,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		[[UserPinchViews sharedInstance] removePinchView:(PinchView*)tile.pageElement];
 		self.numPinchViews--;
 		if (self.numPinchViews < 1) {
-			[self.changePullBarDelegate canPreview:NO];
+			[self.navBar enablePreviewButton:NO];
 		}
 	}
 
@@ -1443,7 +1461,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
 	//show the pullbar so that they can undo
-	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
+	[self.delegate showPullBar:YES withTransition:YES];
 }
 
 -(void)undoTileDeleteSwipe {
@@ -1464,7 +1482,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	if ([tile.pageElement isKindOfClass:[PinchView class]]) {
 		[[UserPinchViews sharedInstance] addPinchView:(PinchView*)tile.pageElement];
 		if (self.numPinchViews < 1) {
-			[self.changePullBarDelegate canPreview:YES];
+			[self.navBar enablePreviewButton:YES];
 		}
 		self.numPinchViews++;
 	}
@@ -1569,7 +1587,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		[scrollView removeFromSuperview];
 	}
 	[self.pageElementScrollViews removeAllObjects];
-	[self.changePullBarDelegate canPreview:NO];
+	[self.navBar enablePreviewButton:NO];
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
@@ -1636,7 +1654,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
-	[self.changePullBarDelegate showPullBar:YES withTransition:NO];
+	[self.delegate showPullBar:YES withTransition:NO];
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		if (self.addingCoverPicture) {
 			self.addingCoverPicture = NO;
@@ -1683,7 +1701,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 				if (![asset isKindOfClass:[AVURLAsset class]]) {
-					NSLog(@"Issue with video not in AVURLAsset form");
+//					NSLog(@"Issue with video not in AVURLAsset form");
 					return;
 				}
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
@@ -1692,10 +1710,10 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 				});
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
-			NSLog(@"Asset is of audio type, unable to handle.");
+//			NSLog(@"Asset is of audio type, unable to handle.");
 			return;
 		} else {
-			NSLog(@"Asset picked of unknown type");
+//			NSLog(@"Asset picked of unknown type");
 			return;
 		}
 	}
@@ -1743,6 +1761,17 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 }
 
+#pragma mark - Returning Pinch Views -
+
+-(NSArray*) getPinchViews {
+	NSMutableArray *pinchViews = [[NSMutableArray alloc]init];
+	for(ContentPageElementScrollView* elementScrollView in self.pageElementScrollViews) {
+		if ([elementScrollView.pageElement isKindOfClass:[PinchView class]]) {
+			[pinchViews addObject:[elementScrollView pageElement]];
+		}
+	}
+	return pinchViews;
+}
 
 #pragma mark - Alerts -
 /*
@@ -1772,13 +1801,21 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
     [UserSetupParameters set_tapNhold_InstructionAsShown];
 }
 
-#pragma mark -Tap to clear view-
+#pragma mark - Tap to clear view -
+
 - (IBAction)tapToClearKeyboard:(UITapGestureRecognizer *)sender {
     [self removeKeyboardFromScreen];
 }
 
 
 #pragma mark - Lazy Instantiation
+
+-(ContentDevNavBar*) navBar {
+	if (!_navBar) {
+		_navBar = [[ContentDevNavBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CONTENT_DEV_NAV_BAR_HEIGHT)];
+	}
+	return _navBar;
+}
 
 -(UIButton *)replaceCoverPhotoButton{
     

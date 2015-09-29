@@ -11,6 +11,9 @@
 #import "GTLServiceVerbatmApp.h"
 #import "GTMHTTPFetcherLogging.h"
 #import "GTLQueryVerbatmApp.h"
+#import "GTLVerbatmAppVerbatmUser.h"
+
+#import "UserManager.h"
 
 #import <PromiseKit/PromiseKit.h>
 
@@ -27,14 +30,31 @@
 // more efficient way to do this than by getting the whole POV
 // and then restoring it
 - (void) povWithId: (NSNumber*) povID wasLiked: (BOOL) liked {
+	UserManager* userManager = [UserManager sharedInstance];
+	GTLVerbatmAppVerbatmUser* currentUser = [userManager getCurrentUser];
+	NSArray* likedPOVIDs = currentUser.likedPOVIDs;
+	NSMutableArray* updatedLikes = [[NSMutableArray alloc] initWithArray:likedPOVIDs copyItems:NO];
+	[updatedLikes addObject: povID];
+	currentUser.likedPOVIDs = updatedLikes;
+
+	[self updateCurrentUser:currentUser].then(^(GTLVerbatmAppVerbatmUser* user) {
+		//
+	}).catch(^(NSError* error) {
+//		NSLog(@"Error updating user: %@", error.description);
+	});
+
 	[self loadPOVWithID: povID].then(^(GTLVerbatmAppPOV* oldPOV) {
 		long long newNumUpVotes = liked ? oldPOV.numUpVotes.longLongValue + 1 : oldPOV.numUpVotes.longLongValue - 1;
 		oldPOV.numUpVotes = [NSNumber numberWithLongLong: newNumUpVotes];
+		NSArray* usersWhoHaveLikedThisPOV = oldPOV.usersWhoHaveLikedIDs;
+		NSMutableArray* updatedUsersWhoHaveLikedThisPOV = [[NSMutableArray alloc] initWithArray:usersWhoHaveLikedThisPOV copyItems:NO];
+		[updatedUsersWhoHaveLikedThisPOV addObject: currentUser.identifier];
+		oldPOV.usersWhoHaveLikedIDs = updatedUsersWhoHaveLikedThisPOV;
 		return [self storePOV: oldPOV];
 	}).then(^(GTLVerbatmAppPOV* newPOV) {
-		NSLog(@"Successfully updated pov \"%@\" 's number of upvotes to: %lld", newPOV.title, newPOV.numUpVotes.longLongValue);
+//		NSLog(@"Successfully updated pov \"%@\" 's number of upvotes to: %lld", newPOV.title, newPOV.numUpVotes.longLongValue);
 	}).catch(^(NSError* error) {
-		NSLog(@"Error updating POV: %@", error.description);
+//		NSLog(@"Error updating POV: %@", error.description);
 	});
 }
 
@@ -66,6 +86,22 @@
 						 resolve(error);
 					 } else {
 						 resolve(pov);
+					 }
+				 }];
+	}];
+	return promise;
+}
+
+-(AnyPromise*) updateCurrentUser: (GTLVerbatmAppVerbatmUser*) currentUser {
+	GTLQuery* updateUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserUpdateUserWithObject: currentUser];
+
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		[self.service executeQuery: updateUserQuery
+				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser* updatedUser, NSError *error) {
+					 if (error) {
+						 resolve(error);
+					 } else {
+						 resolve(updatedUser);
 					 }
 				 }];
 	}];

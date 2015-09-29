@@ -43,7 +43,6 @@
 		} else if([imageInfo isKindOfClass:[UIImage class]]) {
 			image = imageInfo;
 		} else {
-			NSLog(@"Trying to pass array of something to render photos in verbam image scrollview that is not NSData or UIImage");
 			return;
 		}
 

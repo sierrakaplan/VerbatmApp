@@ -12,7 +12,7 @@
 
 @interface UpdatingPOVManager : NSObject
 
-// Updates the POV in the backend with the information that user liked
+// Updates the POV in the backend with the information that the current liked
 // or unliked it
 - (void) povWithId: (NSNumber*) povID wasLiked: (BOOL) liked;
 

@@ -13,7 +13,7 @@
 
 @protocol PreviewDisplayDelegate <NSObject>
 
--(void) publishButtonPressed;
+-(void) publishWithTitle: (NSString*)title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews;
 
 @end
 
@@ -23,6 +23,6 @@
 
 -(id) initWithFrame: (CGRect)frame;
 
--(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*) coverPic andTitle: (NSString*) title;
+-(void) displayPreviewPOVWithTitle: (NSString*) title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews;
 
 @end

@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/4dGf-SVjywscPuYIvH48fdadP1A\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/F8Y-FJc650XIl9xWC0ohQaARckw\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -130,6 +130,13 @@
     },
     "title": {
      "type": "string"
+    },
+    "usersWhoHaveLikedIDs": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "format": "int64"
+     }
     }
    }
   },
@@ -235,6 +242,13 @@
     "id": {
      "type": "string",
      "format": "int64"
+    },
+    "likedPOVIDs": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "format": "int64"
+     }
     },
     "name": {
      "type": "string"

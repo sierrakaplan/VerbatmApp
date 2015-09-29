@@ -158,7 +158,7 @@
 
 //one of the POV's in the list has been clicked
 -(void) viewPOVOnCell: (FeedTableViewCell*) cell {
-	NSLog(@"Viewing POV \"%@\"", cell.title);
+//	NSLog(@"Viewing POV \"%@\"", cell.title);
 	[self.delegate displayPOVOnCell:cell withLoadManager: self.povLoader];
 }
 
