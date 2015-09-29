@@ -174,17 +174,11 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 #pragma mark - User Manager Delegate methods -
 
--(void) successfullySignedUpUser:(GTLVerbatmAppVerbatmUser *)user {
+-(void) successfullyLoggedInUser: (GTLVerbatmAppVerbatmUser*) user {
 	[self unwindToMasterVC];
 }
 
-// This can be called if people try to create an account with fb
-// after already creating an account with fb
--(void) successfullyLoggedInUser {
-	[self unwindToMasterVC];
-}
-
--(void) errorSigningUpUser: (NSError*) error {
+-(void) errorLoggingInUser: (NSError*) error {
 	NSString* errorMessage;
 	switch ([error code]) {
 		case kPFErrorUsernameTaken:
@@ -268,7 +262,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 #pragma mark - Lazy Instantiation -
 
 -(UserManager*) userManager {
-	if (!_userManager) _userManager = [[UserManager alloc] init];
+	if (!_userManager) _userManager = [UserManager sharedInstance];
 	_userManager.delegate = self;
 	return _userManager;
 }

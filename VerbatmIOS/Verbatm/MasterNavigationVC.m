@@ -26,7 +26,9 @@
 #import "SegueIDs.h"
 #import "UserSetupParameters.h"
 #import "UIEffects.h"
+#import "UserManager.h"
 #import "VerbatmCameraView.h"
+#import "GTLVerbatmAppVerbatmUser.h"
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
@@ -295,7 +297,9 @@
 }
 
 -(void) povPublishedWithCoverPic:(UIImage *)coverPic andTitle: (NSString*) title {
-	[self.feedVC showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
+	UserManager* userManager = [UserManager sharedInstance];
+	NSString* userName = [userManager getCurrentUser].name;
+	[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
 	[self showFeed];
 }
 

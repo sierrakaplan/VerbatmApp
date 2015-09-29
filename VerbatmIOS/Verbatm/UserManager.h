@@ -17,22 +17,16 @@
 
 @protocol UserManagerDelegate <NSObject>
 
-@optional
-
--(void) successfullySignedUpUser: (GTLVerbatmAppVerbatmUser*) user;
--(void) errorSigningUpUser: (NSError*) error;
-
--(void) successfullyLoggedInUser;
+-(void) successfullyLoggedInUser: (GTLVerbatmAppVerbatmUser*) user;
 -(void) errorLoggingInUser: (NSError*) error;
-
--(void) successfullyRetrievedCurrentUser: (GTLVerbatmAppVerbatmUser*) user;
--(void) errorRetrievingCurrentUser: (NSError*)error;
 
 @end
 
 @interface UserManager : NSObject
 
 @property (strong, nonatomic) id<UserManagerDelegate> delegate;
+
++ (UserManager *)sharedInstance;
 
 -(void) signUpUserFromEmail: (NSString*)email andName: (NSString*)name
 				andPassword: (NSString*)password andPhoneNumber: (NSString*) phoneNumber;
@@ -41,7 +35,7 @@
 
 -(void) loginUserFromEmail: (NSString*)email andPassword:(NSString*)password;
 
--(void) getCurrentUser;
+-(GTLVerbatmAppVerbatmUser*) getCurrentUser;
 
 -(void) logOutUser;
 

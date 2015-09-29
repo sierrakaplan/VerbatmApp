@@ -134,7 +134,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 #pragma mark - User Manager Delegate methods -
 
--(void) successfullyLoggedInUser {
+-(void) successfullyLoggedInUser: (GTLVerbatmAppVerbatmUser*) user {
 	[self unwindToMasterVC];
 }
 
@@ -229,7 +229,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 #pragma mark - Lazy Instantiation -
 
 -(UserManager*) userManager {
-	if (!_userManager) _userManager = [[UserManager alloc] init];
+	if (!_userManager) _userManager = [UserManager sharedInstance];
 	_userManager.delegate = self;
 	return _userManager;
 }

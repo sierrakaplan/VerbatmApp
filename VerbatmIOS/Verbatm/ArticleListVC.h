@@ -21,6 +21,6 @@
 
 -(void) setPovLoadManager:(POVLoadManager *)povLoader;
 
--(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
 
 @end

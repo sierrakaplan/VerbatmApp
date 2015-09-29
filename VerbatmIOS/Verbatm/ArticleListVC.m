@@ -97,7 +97,7 @@
 -(void) setPovLoadManager:(POVLoadManager *) povLoader {
 	self.povLoader = povLoader;
 	self.povLoader.delegate = self;
-	[self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
+	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
@@ -139,7 +139,7 @@
 		} else {
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
-		[cell setContentWithUsername:@"User Name" andTitle: povInfo.title andCoverImage: povInfo.coverPhoto];
+		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto];
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
@@ -166,10 +166,10 @@
 //Called on it by parent view controller to let it know that a user
 // has published a POV and to show the loading animation until the POV
 // has actually published
--(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
 	self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
-	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:@"User Name" andTitle: title andCoverImage:coverPic];
+	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:userName andTitle: title andCoverImage:coverPic];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
 }
@@ -177,7 +177,7 @@
 // Method called from Notification sent by the model to let it know that
 // a pov has published so that it can refresh the feed
 -(void) povPublished {
-    [self refreshFeed];
+    [self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
 }
 
 #pragma mark - Refresh feed -
@@ -262,7 +262,7 @@
 -(void)networkConnectionUpdate: (NSNotification *) notification{
     NSDictionary * userInfo = [notification userInfo];
     BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
-    if(thereIsConnection)[self refreshFeed];
+    if(thereIsConnection)[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
 }
 
 -(BOOL)isThereConnectionFromString:(NSString *) key{

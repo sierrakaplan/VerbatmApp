@@ -14,8 +14,9 @@
 
 @interface PovInfo : GTLVerbatmAppPOVInfo
 
--(instancetype) initWithGTLVerbatmAppPovInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo andCoverPhoto: (UIImage*) coverPhoto;
+-(instancetype) initWithGTLVerbatmAppPovInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo andUserName:(NSString*)userName andCoverPhoto: (UIImage*) coverPhoto;
 
+@property (strong, nonatomic) NSString* userName;
 @property (strong, nonatomic) UIImage* coverPhoto;
 
 @end

@@ -30,6 +30,7 @@ public class POV {
     /**
      * The serving url of the cover picture in the blobstore from ImagesService
      */
+    @Index
     private String coverPicUrl;
 
     /**
@@ -53,12 +54,27 @@ public class POV {
     /**
      * Array of page keys in the POV
      */
+    @Index
     private ArrayList<Long> pageIds;
 
 
     public POV() {
 
     }
+
+//    /**
+//     * Creates a POV instance from an entity of POV type
+//     * @param entity
+//     */
+//    public POV(com.google.appengine.api.datastore.Entity entity) {
+//        this.id = entity.getKey().getId();
+//        this.title = (String) entity.getProperty("title");
+//        this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
+//        this.datePublished = (Date) entity.getProperty("datePublished");
+//        this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
+//        this.creatorUserId = (Long) entity.getProperty("creatorUserId");
+//        this.pages = (List<Page>) entity.getProperty("pages");
+//    }
 
     /**
      *
@@ -159,7 +175,7 @@ public class POV {
      * Returns the list of Page IDs for this POV
      * @return the list of Page IDs for this POV
      */
-    public ArrayList<Long> getPageIds() {
+    public List<Long> getPageIds() {
         return pageIds;
     }
 

@@ -12,7 +12,7 @@
 
 #import "UserManager.h"
 
-@interface ProfileVC() <UserManagerDelegate>
+@interface ProfileVC()
 
 @property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
 
@@ -32,25 +32,14 @@
 }
 
 -(void) updateUserInfo {
-	[self.userManager getCurrentUser];
-}
-
-
-#pragma mark - User Manager Delegate Methods -
-
--(void) successfullyRetrievedCurrentUser:(GTLVerbatmAppVerbatmUser *)user {
-	self.userNameLabel.text = user.name;
-}
-
--(void) errorRetrievingCurrentUser:(NSError *)error {
-
+	GTLVerbatmAppVerbatmUser* currentUser = [self.userManager getCurrentUser];
+	self.userNameLabel.text = currentUser.name;
 }
 
 #pragma mark - Lazy Instantiation -
 
 -(UserManager*) userManager {
-	if (!_userManager) _userManager = [[UserManager alloc] init];
-	_userManager.delegate = self;
+	if (!_userManager) _userManager = [UserManager sharedInstance];
 	return _userManager;
 }
 
