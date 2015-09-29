@@ -163,4 +163,7 @@
 #define DISTANCE_BETWEEN_FIELDS 20
 
 
+#define PAN_CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
+
+
 #endif

@@ -11,6 +11,9 @@
 #import "ArticleDisplayVC.h"
 
 #import "FeedVC.h"
+
+#import "GTLVerbatmAppVerbatmUser.h"
+
 #import "Icons.h"
 #import "internetConnectionMonitor.h"
 
@@ -24,14 +27,16 @@
 #import "ProfileVC.h"
 
 #import "SegueIDs.h"
-#import "UserSetupParameters.h"
-#import "UIEffects.h"
-#import "UserManager.h"
-#import "VerbatmCameraView.h"
-#import "GTLVerbatmAppVerbatmUser.h"
+#import "SizesAndPositions.h"
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+
+#import "UserSetupParameters.h"
+#import "UIEffects.h"
+#import "UserManager.h"
+
+#import "VerbatmCameraView.h"
 
 
 @interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate,
@@ -238,14 +243,19 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 
 //called from left edge pan
 - (void) exitArticleDisplayView:(UIPanGestureRecognizer *)sender {
-
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
+            CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+            
 			//we want only one finger doing anything when exiting
-			if([sender numberOfTouches] != 1) {
+            if([sender numberOfTouches] != 1 ||
+               ((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100)  < touchLocation.y)) {
+                //this ends the gesture
+                sender.enabled = NO;
+                sender.enabled =YES;
 				return;
 			}
-			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+			
 			self.previousGesturePoint  = touchLocation;
 			break;
 		}

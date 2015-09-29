@@ -1040,10 +1040,12 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	self.lowerPinchScrollView = self.upperPinchScrollView = nil;
 	self.pinchingMode = PinchingModeNone;
 	[self shiftElementsBelowView: self.coverPicView];
+    
 	//make sure the pullbar is showing when things are pinched together
 	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
+    
     //present swipe to delete notification
-    if([UserSetupParameters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
+    if(![UserSetupParameters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
 
 #pragma mark - Identify views involved in pinch
@@ -1516,12 +1518,11 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
-        if([UserSetupParameters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
+        if(![UserSetupParameters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
 	}else{
 		self.openPinchView = pinchView;
 		//tap to open an element for viewing or editing
 		[self presentEditContentView];
-
 	}
 }
 
@@ -1701,7 +1702,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 	//decides whether on what notification to present if any
 	if(![UserSetupParameters circlesArePages_InstructionShown] &&
-	   !self.pageElementScrollViews.count && (phassets.count > 1)) {
+	   self.pageElementScrollViews.count == 1 && (phassets.count > 1)) {
 		[self alertEachPVIsPage];
         if(![UserSetupParameters pinchCircles_InstructionShown]) {
             //wait for a little while before circles are added to the stream
@@ -1754,7 +1755,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 -(void)alertPinchElementsTogether {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 	[UserSetupParameters set_pinchCircles_InstructionAsShown];
 }

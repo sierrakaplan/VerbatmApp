@@ -62,8 +62,7 @@
 #define CIRCLE_DIAMETER (self.frame.size.height - STORY_CELL_PADDING*2)
 #define PINCH_TOGETHER_DURATION 0.2f
 #define PINCH_APART_DURATION 0.4f
-#define PINCH_THRESHOLD 50.f
-
+#define PINCH_THRESHOLD 150.f
 @end
 
 @implementation FeedTableViewCell

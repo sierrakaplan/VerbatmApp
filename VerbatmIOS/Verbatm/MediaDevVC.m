@@ -201,7 +201,7 @@
 
 //creates the pullbar object then saves it as a property
 -(void)createPullBar {
-	self.pullBar = [[ContentDevPullBar alloc]initWithFrame:self.pullBarFrameTop andPanGesture:self.panGesture_PullBar];
+	self.pullBar = [[ContentDevPullBar alloc]initWithFrame:self.pullBarFrameTop];
 	self.pullBar.delegate = self;
 	[self.panGesture_PullBar setDelegate:self.pullBar];
 	[self.pullBar addGestureRecognizer:self.panGesture_PullBar];
@@ -710,9 +710,6 @@
 -(void)alertAddTitle{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-    });
 }
 
 -(void)alertAddCoverPhoto{
