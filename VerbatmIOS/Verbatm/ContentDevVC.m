@@ -145,7 +145,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self setKeyboardAppearance];
 	[self setCursorColor];
 	[self formatTitleAndCoverPicture];
-	//TODO:	[self createBaseSelector];
+	[self createBaseSelector];
 	[self setUpNotifications];
 	[self setDelegates];
 }
@@ -469,8 +469,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self addTapGestureToPinchView:pinchView];
 
 	// must be below base media tile selector
-//TODO when there is media tile	NSInteger index = self.pageElementScrollViews.count-1;
-	NSInteger index = self.pageElementScrollViews.count;
+	NSInteger index = self.pageElementScrollViews.count-1;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
@@ -1577,7 +1576,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
     [self clearCoverPhoto];
-//TODO:	[self createBaseSelector];
+	[self createBaseSelector];
 }
 
 -(void) clearCoverPhoto {

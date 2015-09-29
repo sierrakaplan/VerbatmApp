@@ -32,11 +32,9 @@
 #define SWITCH_CATEGORY_CIRCLE @"blackTrendingCircle"
 
 
-
 #pragma mark - ADK -
 
 #define WHAT_IS_IT_LIKE_BORDER @"dashed_border_with_line"
-
 #define TITLE_NOTIFICATION_ANIMATION @"title_notification"
 
 #pragma mark Media Capture
@@ -58,6 +56,10 @@
 #define PULLDOWN_ICON @"pulldown_arrow"
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"gallery"
+
+#pragma mark Media Tile
+
+#define PLUS_ICON @"plus_sign"
 
 #pragma mark GM Image Picker
 

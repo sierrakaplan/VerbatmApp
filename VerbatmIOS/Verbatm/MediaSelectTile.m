@@ -47,14 +47,14 @@
 }
 
 -(void) createImagesForButton {
-	UIImage *addMediaImage = [UIImage imageNamed:CAMERA_BUTTON_ICON];
+	UIImage *addMediaImage = [UIImage imageNamed:PLUS_ICON];
 	[self.addMediaButton setImage:addMediaImage forState: UIControlStateNormal];
 }
 
 -(void) formatButton {
 	[self.addMediaButton.layer setBackgroundColor:[UIColor clearColor].CGColor];
 
-	UIColor* buttonBackgroundColor = [UIColor darkGrayColor];
+	UIColor* buttonBackgroundColor = [UIColor clearColor];
 
 	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
 		self.addMediaButton.layer.shadowColor = buttonBackgroundColor.CGColor;
