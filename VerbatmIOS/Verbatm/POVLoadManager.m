@@ -21,8 +21,6 @@
 
 #import "PovInfo.h"
 
-#import <PromiseKit/PromiseKit.h>
-
 @interface POVLoadManager()
 
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
@@ -40,6 +38,23 @@
 
 @implementation POVLoadManager
 
+
+// Promise wrapper for asynchronous request to get image data (or any data) from the url
++ (AnyPromise*) loadDataFromURL: (NSString*) urlString {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		NSURLRequest* request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
+			if (error) {
+				resolve(error);
+			} else {
+				resolve(data);
+			}
+		}];
+	}];
+	return promise;
+}
+
+
 -(instancetype) initWithType: (POVType) type {
 	self = [super init];
 	if (self) {
@@ -53,6 +68,7 @@
 // First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the cover pictures and
 // stores the array of POVInfo's
 -(void) reloadPOVs: (NSInteger) numToLoad {
+
 	GTLQuery* loadQuery = [self getLoadingQuery: numToLoad withCursor: NO];
 	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
 		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
@@ -116,7 +132,7 @@
 // and stores it in a newly created PovInfo, which it returns
 -(AnyPromise*) getPOVInfoWithCoverPhotoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
 	AnyPromise* userNamePromise = [self loadUserNameFromUserID:gtlPovInfo.creatorUserId];
-	AnyPromise* coverPicDataPromise = [self loadDataFromURL: gtlPovInfo.coverPicUrl];
+	AnyPromise* coverPicDataPromise = [POVLoadManager loadDataFromURL: gtlPovInfo.coverPicUrl];
 	return PMKWhen(@[userNamePromise, coverPicDataPromise]).then(^(NSArray* results) {
 		NSString* userName = results[0];
 		UIImage* coverPhoto = [UIImage imageWithData: results[1]];
@@ -144,21 +160,6 @@
 		}];
 	}];
 
-	return promise;
-}
-
-// Promise wrapper for asynchronous request to get image data (or any data) from the url
--(AnyPromise*) loadDataFromURL: (NSString*) urlString {
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		NSURLRequest* request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
-		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
-			if (error) {
-				resolve(error);
-			} else {
-				resolve(data);
-			}
-		}];
-	}];
 	return promise;
 }
 

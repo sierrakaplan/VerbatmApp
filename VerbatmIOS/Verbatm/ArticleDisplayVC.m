@@ -92,18 +92,24 @@
 	NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
 	NSInteger povIndex = [self.povIDs indexOfObject: povID];
 	POVView* povView = self.povViews[povIndex];
+	[povView addDownArrowButton];
+	[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
+	[UIEffects stopActivityIndicator:self.activityIndicator];
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
-	NSMutableArray* aves = [analyzer getAVESFromPages: pages withFrame: self.view.bounds];
-	// already should have cover photo ave
-	if (aves.count) {
-		[povView.pageAves addObjectsFromArray:aves];
-	}
 
-	[povView renderAVES: povView.pageAves];
-    [povView addDownArrowButton];
-	[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
-    [UIEffects stopActivityIndicator:self.activityIndicator];
+//	NSMutableArray* aves = [analyzer getAVESFromPages: pages withFrame: self.view.bounds];
+	// already should have cover photo ave
+//	if (aves.count) {
+//		[povView.pageAves addObjectsFromArray:aves];
+//	}
+	for (Page* page in pages) {
+		[analyzer getAVEFromPage: page withFrame: self.view.bounds].then(^(UIView* ave) {
+			[povView renderNextAve: ave];
+		}).catch(^(NSError* error) {
+			NSLog(@"Error loading page: %@", error.description);
+		});
+	}
 }
 
 #pragma mark - POVView Delegate (Like button) -

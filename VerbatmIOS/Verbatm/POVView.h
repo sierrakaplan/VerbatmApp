@@ -21,6 +21,8 @@
 // Takes array of AVES (pages as views)
 -(void) renderAVES: (NSMutableArray *) aves;
 
+-(void) renderNextAve: (UIView*) ave;
+
 -(void) displayMediaOnCurrentAVE;
 -(void) clearArticle;
 

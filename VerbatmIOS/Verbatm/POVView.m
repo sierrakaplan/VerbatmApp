@@ -48,6 +48,15 @@
     return self;
 }
 
+-(void) renderNextAve: (UIView*) ave {
+	[self.pageAves addObject: ave];
+	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width, [self.pageAves count] * self.frame.size.height);
+	[self setDelegateOnPhotoAVE: ave];
+	CGRect frame = CGRectOffset(self.bounds, 0, self.frame.size.height * (self.pageAves.count-1));
+	ave.frame = frame;
+	[self.mainScrollView addSubview:ave];
+}
+
 //renders aves (pages) onto the view
 -(void) renderAVES: (NSMutableArray *) aves {
 	self.pageAves = aves;
