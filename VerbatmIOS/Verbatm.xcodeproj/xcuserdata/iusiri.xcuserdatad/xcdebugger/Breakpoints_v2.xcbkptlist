@@ -1757,8 +1757,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1560"
             endingLineNumber = "1560"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-cleanUp"
+            landmarkType = "5">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -2025,7 +2025,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1578"
             endingLineNumber = "1578"
-            landmarkName = "-cleanUp"
+            landmarkName = "-clearCoverPhoto"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2179,11 +2179,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "465187489.770113"
+            timestampString = "465190879.197606"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1758"
-            endingLineNumber = "1758"
+            startingLineNumber = "1762"
+            endingLineNumber = "1762"
             landmarkName = "-alertSwipeRightToDelete"
             landmarkType = "5">
          </BreakpointContent>
@@ -2195,11 +2195,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "465187489.770113"
+            timestampString = "465190879.197606"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "1718"
-            endingLineNumber = "1718"
+            startingLineNumber = "1722"
+            endingLineNumber = "1722"
             landmarkName = "-createPinchViewFromImageData:"
             landmarkType = "5">
          </BreakpointContent>

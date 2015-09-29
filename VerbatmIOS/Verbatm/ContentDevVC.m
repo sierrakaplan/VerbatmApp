@@ -145,7 +145,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self setKeyboardAppearance];
 	[self setCursorColor];
 	[self formatTitleAndCoverPicture];
-	//TODO:	[self createBaseSelector];
+	[self createBaseSelector];
 	[self setUpNotifications];
 	[self setDelegates];
 }
@@ -477,8 +477,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self addTapGestureToPinchView:pinchView];
 
 	// must be below base media tile selector
-//TODO when there is media tile	NSInteger index = self.pageElementScrollViews.count-1;
-	NSInteger index = self.pageElementScrollViews.count;
+	NSInteger index = self.pageElementScrollViews.count-1;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
@@ -1574,7 +1573,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
     [self clearCoverPhoto];
-//TODO:	[self createBaseSelector];
+	[self createBaseSelector];
 }
 
 -(void) clearCoverPhoto {
@@ -1702,13 +1701,17 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 	//decides whether on what notification to present if any
 	if(![UserSetupParameters circlesArePages_InstructionShown] &&
-	   !self.pageElementScrollViews.count) {
+	   !self.pageElementScrollViews.count && (phassets.count > 1)) {
 		[self alertEachPVIsPage];
-
-	}else if(![UserSetupParameters pinchCircles_InstructionShown] &&
-			 (self.pageElementScrollViews.count > 1)) {
-		[self alertPinchElementsTogether];
+        if(![UserSetupParameters pinchCircles_InstructionShown]) {
+            //wait for a little while before circles are added to the stream
+            [NSTimer scheduledTimerWithTimeInterval:5.f target:self selector:@selector(timerForNoNotification:) userInfo:nil repeats:NO];
+        }
 	}
+}
+
+- (void)timerForNoNotification:(NSTimer *)timer {
+    [self alertPinchElementsTogether];
 }
 
 -(void) createPinchViewFromImageData:(NSData*) imageData {

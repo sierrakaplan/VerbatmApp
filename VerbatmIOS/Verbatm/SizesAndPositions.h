@@ -135,7 +135,7 @@
 
 #pragma mark Media Select Tile
 
-#define MEDIA_TILE_SELECTOR_HEIGHT 100.f
+#define MEDIA_TILE_SELECTOR_HEIGHT 40.f
 #define ADD_MEDIA_BUTTON_OFFSET 10
 
 #pragma mark - AVES -

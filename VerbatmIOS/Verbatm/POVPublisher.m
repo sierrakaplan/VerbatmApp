@@ -36,6 +36,8 @@
 
 #import "VideoPinchView.h"
 
+#import "UserManager.h"
+
 @interface POVPublisher()
 
 @property(nonatomic, strong) NSArray* pinchViews;
@@ -85,19 +87,19 @@
 - (void) publish {
 	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
 	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
-	povObject.numUpVotes = [NSNumber numberWithInt: 0];
+	povObject.numUpVotes = [NSNumber numberWithLongLong: 0];
 	povObject.title = self.title;
+	UserManager* userManager = [UserManager sharedInstance];
+	povObject.creatorUserId = [userManager getCurrentUser].identifier;
 
 	// when (got current user id + saved cover pic serving url + saved page ids) upload pov
-	AnyPromise* getUserIDPromise = [self getCurrentUserID];
 	AnyPromise* storeCoverPicPromise = [self storeCoverPicture: self.coverPic];
 	AnyPromise* storePagesPromise = [self storePagesFromPinchViews: self.pinchViews];
-	PMKWhen(@[getUserIDPromise, storeCoverPicPromise, storePagesPromise]).then(^(NSArray* results) {
-		povObject.creatorUserId = results[0];
+	PMKWhen(@[storeCoverPicPromise, storePagesPromise]).then(^(NSArray* results) {
 		// storeCoverPicPromise should resolve to the serving url of the cover pic
-		povObject.coverPicUrl = results[1];
+		povObject.coverPicUrl = results[0];
 		// storePagesPromise should resolve to an array of page ids
-		povObject.pageIds = results[2];
+		povObject.pageIds = results[1];
 		[self insertPOV: povObject];
 
 	}).catch(^(NSError *error){
@@ -105,29 +107,6 @@
 		NSLog(@"Error uploading POV: %@", error.description);
 		self.mediaUploaders = nil;
 	});
-}
-
-// Resolves to either error or ID of the currently logged in user,
-// or if no user is logged in 1 (this should never happen)
--(AnyPromise*) getCurrentUserID {
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		if (![PFUser currentUser]) {
-			NSLog(@"User is not logged in.");
-			resolve([NSNumber numberWithLongLong:1]);
-		}
-		NSString* email = [PFUser currentUser].email;
-		GTLQueryVerbatmApp* getUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserGetUserFromEmailWithEmail: email];
-
-		[self.service executeQuery:getUserQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser* currentUser, NSError *error) {
-			if (error) {
-				resolve(error);
-			} else {
-				resolve(currentUser.identifier);
-			}
-		}];
-	}];
-
-	return promise;
 }
 
 // (get Image upload uri) then (upload cover pic to blobstore using uri)

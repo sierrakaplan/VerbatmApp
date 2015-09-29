@@ -34,7 +34,8 @@
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
 
-@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate, UIGestureRecognizerDelegate>
+@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate,
+UIGestureRecognizerDelegate, UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 
@@ -53,6 +54,8 @@
 @property (weak, nonatomic) IBOutlet UIView *articleDisplayContainer;
 // article display list slides in from right and can be pulled off when a screen edge pan
 @property (nonatomic) CGRect articleDisplayContainerFrameOffScreen;
+
+@property (strong, nonatomic) UserManager* userManager;
 
 
 #pragma mark - Preview -
@@ -90,6 +93,12 @@
 	[self getAndFormatVCs];
 	self.connectionMonitor = [[internetConnectionMonitor alloc] init];
 	[self registerForNotifications];
+	if (![PFUser currentUser].isAuthenticated &&
+		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+		self.masterSV.scrollEnabled = NO;
+	} else {
+		[self.userManager queryForCurrentUser];
+	}
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -110,6 +119,16 @@
 											 selector:@selector(networkConnectionUpdate:)
 												 name:INTERNET_CONNECTION_NOTIFICATION
 											   object:nil];
+}
+
+#pragma mark - User Manager Delegate -
+
+-(void) successfullyLoggedInUser:(GTLVerbatmAppVerbatmUser *)user {
+	[self.profileVC updateUserInfo];
+}
+
+-(void) errorLoggingInUser:(NSError *)error {
+	NSLog(@"Error finding current user: %@", error.description);
 }
 
 #pragma mark - Getting and formatting child view controllers -
@@ -146,10 +165,6 @@
 	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	self.masterSV.pagingEnabled = YES;
 	self.masterSV.scrollEnabled = YES;
-	if (![PFUser currentUser].isAuthenticated &&
-		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-		self.masterSV.scrollEnabled = NO;
-	}
 }
 
 
@@ -308,8 +323,7 @@
 }
 
 -(void) povPublishedWithCoverPic:(UIImage *)coverPic andTitle: (NSString*) title {
-	UserManager* userManager = [UserManager sharedInstance];
-	NSString* userName = [userManager getCurrentUser].name;
+	NSString* userName = [self.userManager getCurrentUser].name;
 	[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
 	[self showFeed];
 }
@@ -382,6 +396,12 @@
 }
 
 #pragma mark - Lazy Instantiation -
+
+-(UserManager*) userManager {
+	if (!_userManager) _userManager = [UserManager sharedInstance];
+	_userManager.delegate = self;
+	return _userManager;
+}
 
 -(PreviewDisplayView*) previewDisplayView {
 	if(!_previewDisplayView){

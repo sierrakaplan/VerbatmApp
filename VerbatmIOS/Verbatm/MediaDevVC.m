@@ -123,7 +123,6 @@
 	[self createSubViews];
 	[self setContentDevVC];
 	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
-    
 }
 
 -(void)viewWillLayoutSubviews {
@@ -162,7 +161,6 @@
 
 //saves the intitial frames for the pulldown bar and the container view
 -(void)setDefaultFrames {
-
 	self.contentContainerViewFrameTop = CGRectMake(0, 0, self.view.frame.size.width, NAV_BAR_HEIGHT);
 	self.contentContainerViewFrameBottom = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 
@@ -621,7 +619,8 @@
 
 #pragma mark - Change pull bar Delegate Methods (for pullbar) -
 -(void)canPreview:(BOOL)canPreview {
-	[self.pullBar enablePreviewInMenuMode: canPreview];
+	//TODO:
+//	[self.pullBar enablePreviewInMenuMode: canPreview];
 }
 
 -(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {

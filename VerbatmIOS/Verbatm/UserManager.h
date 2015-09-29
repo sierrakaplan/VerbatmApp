@@ -35,6 +35,7 @@
 
 -(void) loginUserFromEmail: (NSString*)email andPassword:(NSString*)password;
 
+-(void) queryForCurrentUser;
 -(GTLVerbatmAppVerbatmUser*) getCurrentUser;
 
 -(void) logOutUser;

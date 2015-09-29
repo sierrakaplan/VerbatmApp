@@ -148,8 +148,7 @@
 	[self addSubview:dot];
 }
 
--(void)addPanGestureToView:(UIView *) view
-{
+-(void)addPanGestureToView:(UIView *) view {
 	UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:view action:@selector(trackMovementOnCircle:)];
 	panGesture.delegate = self;
 	[view addGestureRecognizer:panGesture];
