@@ -16,12 +16,10 @@
 
 @interface POVView : UIView
 
-@property (strong, nonatomic) NSMutableArray * pageAves;
+// pageIndex is int value
+-(void) renderNextAve: (UIView*) ave withIndex: (NSNumber*) pageIndex;
 
-// Takes array of AVES (pages as views)
 -(void) renderAVES: (NSMutableArray *) aves;
-
--(void) renderNextAve: (UIView*) ave;
 
 -(void) displayMediaOnCurrentAVE;
 -(void) clearArticle;

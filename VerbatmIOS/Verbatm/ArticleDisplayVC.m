@@ -16,6 +16,7 @@
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppVideo.h"
 
+#import "Page.h"
 #import "POVDisplayScrollView.h"
 #import "POVLoadManager.h"
 #import "PagesLoadManager.h"
@@ -71,8 +72,7 @@
 	POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds];
 
 	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.view.bounds andImage:povInfo.coverPhoto andTitle: povInfo.title];
-	NSMutableArray* aves = [[NSMutableArray alloc] initWithArray:@[coverAVE]];
-	[povView renderAVES: aves];
+	[povView renderNextAve:coverAVE withIndex:[NSNumber numberWithInteger:0]];
 	[self.scrollView addSubview: povView];
 	[self.povViews addObject: povView];
     self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter: CGPointMake(self.view.center.x, ACTIVITY_ANIMATION_Y)
@@ -97,15 +97,10 @@
 	[UIEffects stopActivityIndicator:self.activityIndicator];
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
-
-//	NSMutableArray* aves = [analyzer getAVESFromPages: pages withFrame: self.view.bounds];
-	// already should have cover photo ave
-//	if (aves.count) {
-//		[povView.pageAves addObjectsFromArray:aves];
-//	}
 	for (Page* page in pages) {
 		[analyzer getAVEFromPage: page withFrame: self.view.bounds].then(^(UIView* ave) {
-			[povView renderNextAve: ave];
+			NSInteger pageIndex = page.indexInPOV+1; // bc cover page +1
+			[povView renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
 		}).catch(^(NSError* error) {
 			NSLog(@"Error loading page: %@", error.description);
 		});
