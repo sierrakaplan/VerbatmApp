@@ -77,7 +77,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 
 #define MAIN_SCROLLVIEW_SCROLL_DURATION 0.5
 #define NUMBER_OF_CHILD_VCS 3
-#define LEFT_FRAME self.view.bounds
+#define LEFT_FRAME CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
 #define CENTER_FRAME CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
 #define RIGHT_FRAME CGRectMake(self.view.frame.size.width * 2, 0, self.view.frame.size.width, self.view.frame.size.height)
 #define ANIMATION_NOTIFICATION_DURATION 0.5
@@ -148,25 +148,24 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 //lays out all the containers in the right position and also sets the appropriate
 //offset for the master SV
 -(void) getAndFormatVCs {
-	self.profileContainer.frame = RIGHT_FRAME;
-	self.feedContainer.frame = LEFT_FRAME;
-	self.adkContainer.frame = CENTER_FRAME;
+	self.profileContainer.frame = LEFT_FRAME;
+	self.feedContainer.frame = CENTER_FRAME;
+	self.adkContainer.frame = RIGHT_FRAME;
 	self.articleDisplayContainer.frame = self.view.bounds;
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
 	[self.feedContainer addSubview: self.feedVC.view];
 	self.feedVC.delegate = self;
-    
-    self.feedContainer.clipsToBounds = YES;
-    self.adkContainer.clipsToBounds = YES;
-    
+
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
 	[self.adkContainer addSubview: self.mediaDevVC.view];
 	self.mediaDevVC.delegate = self;
 
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_PROFILEVC];
 	[self.profileContainer addSubview: self.profileVC.view];
-
+    
+    self.profileContainer.clipsToBounds = YES;
+    
 	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
 	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
 	self.articleDisplayContainer.alpha = 0;
@@ -176,11 +175,17 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 
 -(void) formatMainScrollView {
 	self.masterSV.frame = self.view.bounds;
-	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 2, 0);
-	self.masterSV.contentOffset = CGPointMake(0, 0);
+	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);
+	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	self.masterSV.pagingEnabled = YES;
 	self.masterSV.scrollEnabled = YES;
-    self.masterSV.bounces = NO;
+    self.masterSV.delegate = self;
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if(scrollView.contentOffset.x < self.view.frame.size.width){
+        [scrollView setContentOffset:CGPointMake(self.view.frame.size.width, 0) animated:NO];
+    }
 }
 
 

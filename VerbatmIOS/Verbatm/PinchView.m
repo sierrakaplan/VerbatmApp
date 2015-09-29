@@ -64,7 +64,6 @@
 	[self setBackgroundFrames];
 	[self formatBackground];
 	[self addBorderToPinchView];
-	self.containsText = NO;
 	self.containsImage = NO;
 	self.containsVideo = NO;
 }
@@ -135,8 +134,7 @@
 }
 
 -(NSInteger) numTypesOfMedia {
-	return (self.containsText ? 1 : 0)
-	+ (self.containsImage ? 1 : 0)
+	return (self.containsImage ? 1 : 0)
 	+ (self.containsVideo ? 1 : 0);
 }
 
@@ -148,7 +146,6 @@
 	if ([pinchViews count] < 2) {
 		return	firstPinchView;
 	}
-
 	for (PinchView* pinchView in pinchViews) {
 		if ([pinchView isKindOfClass:[VideoPinchView class]]) {
 			[[(VideoPinchView*)pinchView videoView] stopVideo];
@@ -204,8 +201,6 @@
 #pragma mark - Encoding -
 
 - (void)encodeWithCoder:(NSCoder *)coder {
-
-	[coder encodeObject:[NSNumber numberWithBool:self.containsText] forKey:CONTAINS_TEXT_KEY];
 	[coder encodeObject:[NSNumber numberWithBool:self.containsImage] forKey:CONTAINS_IMAGE_KEY];
 	[coder encodeObject:[NSNumber numberWithBool:self.containsVideo] forKey:CONTAINS_VIDEO_KEY];
 	[coder encodeObject:[NSNumber numberWithFloat:self.center.x] forKey:CENTER_X_KEY];
@@ -220,7 +215,6 @@
 		float centerY = [(NSNumber*)[decoder decodeObjectForKey:CENTER_Y_KEY] floatValue];
 		CGPoint center = CGPointMake(centerX, centerY);
 		self = [self initWithRadius:radius withCenter:center];
-		self.containsText = [(NSNumber*)[decoder decodeObjectForKey:CONTAINS_TEXT_KEY] boolValue];
 		self.containsImage = [(NSNumber*)[decoder decodeObjectForKey:CONTAINS_IMAGE_KEY] boolValue];
 		self.containsVideo = [(NSNumber*)[decoder decodeObjectForKey:CONTAINS_VIDEO_KEY] boolValue];
 	}

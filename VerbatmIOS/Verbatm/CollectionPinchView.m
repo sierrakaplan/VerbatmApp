@@ -15,9 +15,6 @@
 
 @interface CollectionPinchView()
 
-@property (strong, nonatomic) NSString* text;
-@property (strong, nonatomic) UITextView *textView;
-
 @property (weak, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
 
@@ -50,7 +47,6 @@
 	[self.background addSubview:self.videoView];
 	[self addPlayIcon];
 	[self addCollectionViewBorder];
-	[self.background addSubview:self.textView];
 	[self.background addSubview:self.imageView];
 	[self.background addSubview:self.videoView];
 	[self.pinchedObjects addObjectsFromArray:pinchViews];
@@ -112,7 +108,7 @@
 			[self renderTwoMedia];
 			break;
 		case 3:
-			[self renderThreeMedia];
+//			[self renderThreeMedia];
 			break;
 		default:
 			return;
@@ -124,9 +120,7 @@
 
 //This renders a single view on the pinch object
 -(void)renderSingleMedia {
-	if(self.containsText){
-		self.textView.frame = self.background.frame;
-	}else if(self.containsVideo){
+	if(self.containsVideo){
 		self.videoView.frame = self.background.frame;
 		self.playVideoImageView.image = self.playVideoIconFull;
 	}else {
@@ -138,42 +132,16 @@
 -(void)renderTwoMedia {
 	CGRect frame1 = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width/2.f , self.background.frame.size.height);
 	CGRect frame2 = CGRectMake(self.background.frame.origin.x + self.background.frame.size.width/2.f, self.background.frame.origin.y, self.background.frame.size.width/2.f, self.background.frame.size.height);
-	if(self.containsText) {
-		self.textView.frame = frame2;
-		if (self.containsImage){
-			self.imageView.frame = frame1;
-			self.videoView.frame = CGRectMake(0,0,0,0);
-		} else {
-			self.videoView.frame = frame1;
-			self.playVideoImageView.image = self.playVideoIconHalf;
-		}
-	} else {
-		self.videoView.frame = frame1;
-		self.playVideoImageView.image = self.playVideoIconHalf;
-		self.imageView.frame = frame2;
-	}
+
+	self.videoView.frame = frame1;
+	self.playVideoImageView.image = self.playVideoIconHalf;
+	self.imageView.frame = frame2;
 }
-
-
-//This renders three views on the pinch view object.
--(void)renderThreeMedia {
-	//computation to determine the relative positions of each of the views
-	self.textView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y, self.background.frame.size.width, self.background.frame.size.height/2.f);
-	self.videoView.frame = CGRectMake(self.background.frame.origin.x, self.background.frame.origin.y + self.textView.frame.size.height, self.background.frame.size.width/2.f, self.background.frame.size.height - self.textView.frame.size.height);
-	self.imageView.frame = CGRectMake(self.background.frame.origin.x + self.videoView.frame.size.width, self.videoView.frame.origin.y , self.background.frame.size.width - self.videoView.frame.size.width, self.videoView.frame.size.width);
-
-	self.playVideoImageView.image = self.playVideoIconQuarter;
-}
-
 
 //This function displays the media on the view.
 -(void)displayMedia {
 	self.playVideoImageView.frame = [self getCenterFrameForVideoView];
 	self.videoView.videoPlayerView.frame = self.videoView.bounds;
-	if (self.containsText) {
-		self.textView.text = self.text;
-		[self.background bringSubviewToFront:self.textView];
-	}
 	if (self.containsImage) {
 		[self.imageView setImage:self.image];
 		[self.background bringSubviewToFront:self.imageView];
@@ -201,10 +169,8 @@
 }
 
 -(void) updateMedia {
-	self.text = @"";
 	self.image = nil;
 	self.video = nil;
-	self.containsText = NO;
 	self.containsImage = NO;
 	self.containsVideo = NO;
 	for (PinchView* pinchView in self.pinchedObjects) {
@@ -213,14 +179,7 @@
 }
 
 -(void) changeTypesOfMediaFromPinchView:(PinchView*) pinchView {
-	if (pinchView.containsText) {
-		self.containsText = YES;
-		if ([self.text length]) {
-			self.text = [NSString stringWithFormat:@"%@\r\r%@", self.text, [pinchView getText]];
-		} else {
-			self.text = [self.text stringByAppendingString:[pinchView getText]];
-		}
-	} else if(pinchView.containsImage) {
+	if(pinchView.containsImage) {
 		self.containsImage = YES;
 		if(!self.image) {
 			self.image = [(ImagePinchView*)pinchView getImage];
@@ -250,10 +209,6 @@
 	}
 	[self renderMedia];
 	return self;
-}
-
--(NSString*) getText {
-	return self.text;
 }
 
 -(NSArray*) getPhotos {
@@ -328,16 +283,6 @@
 -(NSMutableArray*) pinchedObjects {
 	if(!_pinchedObjects) _pinchedObjects = [[NSMutableArray alloc] init];
 	return _pinchedObjects;
-}
-
--(NSString *) text {
-	if(!_text) _text = @"";
-	return _text;
-}
-
--(UITextView*)textView {
-	if (!_textView) _textView = [[UITextView alloc] init];
-	return _textView;
 }
 
 -(UIImageView*)imageView {

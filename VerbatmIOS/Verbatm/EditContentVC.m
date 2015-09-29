@@ -34,9 +34,7 @@
     if(pinchView == nil) {
         [self.openEditContentView editText:@""];
     } else {
-        if (pinchView.containsText) {
-            [self.openEditContentView editText:[pinchView getText]];
-        } else if(pinchView.containsImage) {
+        if(pinchView.containsImage) {
             ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
             [self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
         } else if(pinchView.containsVideo) {
