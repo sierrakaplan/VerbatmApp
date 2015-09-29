@@ -137,7 +137,7 @@
     // Add it to your view's sublayers
 	[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
 	[self.player play];
-    self.ourTimer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(resumeSession:) userInfo:nil repeats:YES];
+    self.ourTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(resumeSession:) userInfo:nil repeats:YES];
     self.isVideoPlaying = YES;
 }
 
@@ -263,6 +263,7 @@
     self.player = nil;
     self.playerLayer = nil;
     self.mix = nil;
+    
     self.isVideoPlaying = NO;
     [self.ourTimer invalidate];
     self.ourTimer = nil;

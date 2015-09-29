@@ -233,7 +233,7 @@
     for(UIView *view in self.mainScrollView.subviews) {
         [view removeFromSuperview];
     }
-	[self.likeButton removeFromSuperview];
+    [self.likeButton removeFromSuperview];
     self.currentPageIndex = -1;
     self.pageAves = nil;
 }
@@ -241,8 +241,8 @@
 //make sure to stop all videos
 -(void) stopAllVideos {
     if (!self.pageAves) return;
-    for (UIView* ave in self.pageAves) {
-        [self stopVideosInAVE:ave];
+    for (NSNumber * key in self.pageAves) {
+        [self stopVideosInAVE:self.pageAves[key]];
     }
 }
 
