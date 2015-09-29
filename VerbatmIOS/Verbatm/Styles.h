@@ -10,7 +10,7 @@
 #define Styles_h
 
 
-#define DEFAULT_FONT @"HelveticaNeue-Light"
+#define DEFAULT_FONT @"HelveticaNeue-Italic"
 #define BUTTON_FONT @"HelveticaNeue"
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 #define TITLE_TEXT_FONT @"HelveticaNeue"
@@ -22,8 +22,6 @@
 #define FILTER_LEVEL_BLUR 30
 #define BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
 #define BUTTON_LABEL_SHADOW_YOFFSET 1.5f
-
-
 
 
 #pragma mark - Sign In -
@@ -39,7 +37,7 @@
 #define SWITCH_CATEGORY_BAR_FONT_SIZE 30
 
 #define USERNAME_FONT_SIZE 18
-#define TITLE_FONT_SIZE 20
+#define FEED_TITLE_FONT_SIZE 20
 #define USERNAME_TEXT_COLOR blackColor
 #define TITLE_TEXT_COLOR blackColor
 #define USERNAME_FONT @"HelveticaNeue-Bold"

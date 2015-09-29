@@ -12,8 +12,10 @@
 
 @interface CoverPhotoAVE()
 
-#define TITLE_OFFSET 20.f
-
+#define TITLE_CENTER_Y_OFFSET 50.f
+#define TITLE_HEIGHT_BUFFER 30
+#define TITLE_WIDTH_BUFFER 30
+#define COVER_PHOTO_TITLE_FONT_SIZE 30
 @end
 
 @implementation CoverPhotoAVE
@@ -22,12 +24,11 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		[self setBackgroundColor:[UIColor whiteColor]];
-		UIColor* titleTextColor = [UIColor whiteColor];
+		UIColor* titleTextColor = [UIColor blackColor];
 		if (image) {
 			[self addSubview: [self getImageViewContainerForImage:image]];
-		} else {
-			titleTextColor = [UIColor blackColor];
 		}
+
 		[self addTitleViewWithTitle: title andTextColor: titleTextColor];
 	}
 	return self;
@@ -58,19 +59,32 @@
 
 -(void) addTitleViewWithTitle:(NSString*) title andTextColor:(UIColor*) textColor {
 
-	CGRect titleFrame = CGRectMake(TITLE_OFFSET, TITLE_OFFSET, self.frame.size.width - TITLE_OFFSET*2.f,
-								   self.frame.size.height - TITLE_OFFSET*2.f);
-	UILabel* titleLabel = [[UILabel alloc] initWithFrame: titleFrame];
+	
+	UILabel* titleLabel = [[UILabel alloc]init];
 	titleLabel.textAlignment = NSTextAlignmentCenter;
 	titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	titleLabel.numberOfLines = 0;
-	titleLabel.font = [UIFont fontWithName:DEFAULT_FONT size:TITLE_FONT_SIZE];
+	titleLabel.font = [UIFont fontWithName:DEFAULT_FONT size:COVER_PHOTO_TITLE_FONT_SIZE];
+    
 	titleLabel.textColor = textColor;
 
 	if (![title length]) {
 		title = @"No Title Entered";
 	}
 	titleLabel.text = title;
+    
+    titleLabel.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
+    
+    [titleLabel sizeToFit];
+    
+    titleLabel.frame = self.bounds;
+    
+    
+    //CGRectMake(self.center.x - ((titleLabel.frame.size.width + TITLE_WIDTH_BUFFER)/2), self.center.y -(titleLabel.frame.size.height +  TITLE_HEIGHT_BUFFER)-
+//                                  TITLE_CENTER_Y_OFFSET,
+//                                  titleLabel.frame.size.width + TITLE_WIDTH_BUFFER,
+//                                                     titleLabel.frame.size.height +  TITLE_HEIGHT_BUFFER);
+    
 	[self addSubview: titleLabel];
 }
 

@@ -57,7 +57,7 @@
 										   TITLE_LABEL_HEIGHT)];
 
 	[self formatUILabel:self.topicTitle
-			   withFont: [UIFont fontWithName:TITLE_FONT size:TITLE_FONT_SIZE]
+			   withFont: [UIFont fontWithName:TITLE_FONT size:FEED_TITLE_FONT_SIZE]
 		   andTextColor: [UIColor TITLE_TEXT_COLOR]
 	   andNumberOfLines: 4];
 

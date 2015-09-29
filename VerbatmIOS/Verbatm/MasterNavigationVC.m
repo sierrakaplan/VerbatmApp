@@ -232,7 +232,7 @@
 			CGPoint currentPoint = touchLocation;
 			int diff = currentPoint.x - self.previousGesturePoint.x;
             
-            if(diff < 0) //swiping left which is wrong so we end the gesture
+            if((diff < 0) && ((self.articleDisplayContainer.frame.origin.x + diff) < 0)) //swiping left which is wrong so we end the gesture
             {
                 //this ends the gesture
                 sender.enabled = NO;
@@ -248,7 +248,6 @@
         case UIGestureRecognizerStateCancelled:{
             //should just fall into the next call
         }case UIGestureRecognizerStateEnded: {
-            
 			if(self.articleDisplayContainer.frame.origin.x > EXIT_EPSILON) {
 				//exit article
 				[self revealArticleDisplay:NO];
