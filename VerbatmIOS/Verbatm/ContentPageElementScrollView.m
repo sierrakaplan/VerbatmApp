@@ -15,6 +15,7 @@
 #import "Durations.h"
 #import "SizesAndPositions.h"
 #import "UserPinchViews.h"
+#import "MediaSelectTile.h"
 
 @interface ContentPageElementScrollView()
 
@@ -62,10 +63,19 @@
 }
 
 -(void)createDeleteButton{
-    self.deleteButton = [[UIButton alloc] initWithFrame:
-                         CGRectMake(DELETE_ICON_OFFSET,
-									self.pageElement.center.y - (DELETE_ICON_HEIGHT/2.f),
-                                    DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
+    
+    if ([self.pageElement isKindOfClass:[MediaSelectTile class]]) {
+        self.deleteButton = [[UIButton alloc] initWithFrame:
+                             CGRectMake(DELETE_ICON_OFFSET,
+                                        self.pageElement.center.y + 4,
+                                        DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
+    }else{
+        self.deleteButton = [[UIButton alloc] initWithFrame:
+                             CGRectMake(DELETE_ICON_OFFSET,
+                                        self.pageElement.center.y - (DELETE_ICON_HEIGHT/2.f),
+                                        DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
+    }
+    
     [self.deleteButton setImage:[UIImage imageNamed:DELETE_ICON_FILENAME] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.deleteButton];

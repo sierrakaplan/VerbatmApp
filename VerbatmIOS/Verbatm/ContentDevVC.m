@@ -413,38 +413,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 
 #pragma mark Deleting scrollview and element
-////make sure the object is in the right position
-//- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
-//				  willDecelerate:(BOOL)decelerate {
-//	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
-//		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
-//	}
-//}
-//
-//-(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
-//	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
-//		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
-//	}
-//}
-//
-////check if scroll view has been scrolled enough to delete, and if so delete.
-////Otherwise scroll it back
-//-(void) deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView {
-//    return;//temp
-//
-//    if (self.pinchingMode != PinchingModeNone || scrollView.collectionIsOpen){
-//		return;
-//	}
-//
-//	if([scrollView isDeleting]) {
-//		[scrollView animateOffScreen];
-//		[self deleteScrollView:scrollView];
-//	} else {
-//		[scrollView animateBackToInitialPosition];
-//	}
-//}
-
-
 -(void)contentPageScrollViewShouldDelete:(ContentPageElementScrollView*)scrollView {
 	[self deleteScrollView:scrollView];
 }
@@ -946,7 +914,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 -(void) createNewMediaTileBetweenPinchViews {
 	CGRect frame = [self getStartFrameForNewMediaTile];
-	MediaSelectTile* newMediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
+	MediaSelectTile * newMediaTile = [[MediaSelectTile alloc]initWithFrame:frame];
 	newMediaTile.delegate = self;
 	newMediaTile.alpha = 0; //start it off as invisible
 	newMediaTile.isBaseSelector = NO;
@@ -961,7 +929,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	}
 	CGRect newMediaTileScrollViewFrame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
 	ContentPageElementScrollView * newMediaTileScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newMediaTileScrollViewFrame andElement:mediaTile];
-	newMediaTileScrollView.delegate = self;
+	newMediaTileScrollView.customDelegate = self;
 	[self.mainScrollView addSubview:newMediaTileScrollView];
 	[self storeView:newMediaTileScrollView inArrayAsBelowView:topView];
 }
@@ -971,6 +939,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 -(CGRect) getStartFrameForNewMediaTileScrollViewUnderView: (ContentPageElementScrollView *) topView  {
 	return CGRectMake(topView.frame.origin.x, topView.frame.origin.y +topView.frame.size.height, self.view.frame.size.width,0);
 }
+
 //media tile grows from the center as the gesture expands
 -(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture andChangeInTopViewPosition:(float)changeInTopViewPosition andChangeInBottomViewPosition:(float) changeInBottomViewPosition {
 	float totalChange = fabs(changeInTopViewPosition) + fabs(changeInBottomViewPosition);

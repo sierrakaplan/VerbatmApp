@@ -18,6 +18,8 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
+#import <PromiseKit/PromiseKit.h>
+
 @implementation VerbatmAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -32,6 +34,11 @@
 	[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
 
 	[PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
+
+	PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
+		return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
+							   userInfo:nil];
+	});
 
     [UserSetupParameters setUpParameters];
 	[[UserPinchViews sharedInstance] loadPinchViewsFromUserDefaults];
