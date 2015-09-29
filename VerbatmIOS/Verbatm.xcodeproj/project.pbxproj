@@ -48,10 +48,8 @@
 		A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA319B1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m */; };
 		A5AA31BB1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA319D1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m */; };
 		A5AA31BD1B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31A11B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m */; };
-		A5AA31BE1B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31A31B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m */; };
 		A5AA31BF1B9FCDDC00D8D20C /* GTLVerbatmAppImage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31A51B9FCDDC00D8D20C /* GTLVerbatmAppImage.m */; };
 		A5AA31C11B9FCDDC00D8D20C /* GTLVerbatmAppPage.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31A91B9FCDDC00D8D20C /* GTLVerbatmAppPage.m */; };
-		A5AA31C31B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31AD1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m */; };
 		A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31AF1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m */; };
 		A5AA31C61B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B31B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m */; };
 		A5AA31C71B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B51B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.m */; };
@@ -299,14 +297,10 @@
 		A5AA319F1B9FCDDC00D8D20C /* GTLVerbatmApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmApp.h; path = API/GTLVerbatmApp.h; sourceTree = "<group>"; };
 		A5AA31A01B9FCDDC00D8D20C /* GTLVerbatmAppConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppConstants.h; path = API/GTLVerbatmAppConstants.h; sourceTree = "<group>"; };
 		A5AA31A11B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppConstants.m; path = API/GTLVerbatmAppConstants.m; sourceTree = "<group>"; };
-		A5AA31A21B9FCDDC00D8D20C /* GTLVerbatmAppEmail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppEmail.h; path = API/GTLVerbatmAppEmail.h; sourceTree = "<group>"; };
-		A5AA31A31B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppEmail.m; path = API/GTLVerbatmAppEmail.m; sourceTree = "<group>"; };
 		A5AA31A41B9FCDDC00D8D20C /* GTLVerbatmAppImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppImage.h; path = API/GTLVerbatmAppImage.h; sourceTree = "<group>"; };
 		A5AA31A51B9FCDDC00D8D20C /* GTLVerbatmAppImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppImage.m; path = API/GTLVerbatmAppImage.m; sourceTree = "<group>"; };
 		A5AA31A81B9FCDDC00D8D20C /* GTLVerbatmAppPage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPage.h; path = API/GTLVerbatmAppPage.h; sourceTree = "<group>"; };
 		A5AA31A91B9FCDDC00D8D20C /* GTLVerbatmAppPage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPage.m; path = API/GTLVerbatmAppPage.m; sourceTree = "<group>"; };
-		A5AA31AC1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPhoneNumber.h; path = API/GTLVerbatmAppPhoneNumber.h; sourceTree = "<group>"; };
-		A5AA31AD1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPhoneNumber.m; path = API/GTLVerbatmAppPhoneNumber.m; sourceTree = "<group>"; };
 		A5AA31AE1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPOV.h; path = API/GTLVerbatmAppPOV.h; sourceTree = "<group>"; };
 		A5AA31AF1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPOV.m; path = API/GTLVerbatmAppPOV.m; sourceTree = "<group>"; };
 		A5AA31B21B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPOVInfo.h; path = API/GTLVerbatmAppPOVInfo.h; sourceTree = "<group>"; };
@@ -604,16 +598,12 @@
 		A560EF9A1BA89552003FB041 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A5AA31A21B9FCDDC00D8D20C /* GTLVerbatmAppEmail.h */,
-				A5AA31A31B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m */,
 				A5AA31A41B9FCDDC00D8D20C /* GTLVerbatmAppImage.h */,
 				A5AA31A51B9FCDDC00D8D20C /* GTLVerbatmAppImage.m */,
 				A5AA31A81B9FCDDC00D8D20C /* GTLVerbatmAppPage.h */,
 				A5AA31A91B9FCDDC00D8D20C /* GTLVerbatmAppPage.m */,
 				A5AA31CA1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.h */,
 				A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */,
-				A5AA31AC1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.h */,
-				A5AA31AD1B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m */,
 				A5AA31AE1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.h */,
 				A5AA31AF1B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m */,
 				A5AA31B21B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.h */,
@@ -1470,7 +1460,6 @@
 				A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */,
 				A5E8600B1B99EF9B00E148D0 /* HomeNavPullBar.m in Sources */,
 				A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */,
-				A5AA31C31B9FCDDC00D8D20C /* GTLVerbatmAppPhoneNumber.m in Sources */,
 				A58656711B621CA4008E358C /* MathOperations.m in Sources */,
 				A58656651B607EF7008E358C /* VerbatmImageScrollView.m in Sources */,
 				A560EF981BA88B44003FB041 /* PagesLoadManager.m in Sources */,
@@ -1482,7 +1471,6 @@
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,
 				A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */,
 				C7E6C13F1A4E394600863893 /* PhotoVideoAVE.m in Sources */,
-				A5AA31BE1B9FCDDC00D8D20C /* GTLVerbatmAppEmail.m in Sources */,
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,

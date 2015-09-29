@@ -16,6 +16,7 @@
 #import "GTLVerbatmAppPage.h"
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppVideo.h"
+#import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
 
 #import "PovInfo.h"
@@ -47,27 +48,6 @@
 	return self;
 }
 
-
-// Loads numOfNewPOVToLoad more POV's using the cursor stored so that it loads from where it left off
-// First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the cover pictures and
-// stores the array of POVInfo's
--(void) loadMorePOVs: (NSInteger) numOfNewPOVToLoad {
-	GTLQuery* loadQuery = [self getLoadingQuery: numOfNewPOVToLoad withCursor: YES];
-	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
-		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
-		for (GTLVerbatmAppPOVInfo* gtlPovInfo in gtlPovInfos) {
-			[loadCoverPhotoPromises addObject: [self getPOVInfoWithCoverPhotoFromGTLPOVInfo:gtlPovInfo]];
-		}
-		return PMKWhen(loadCoverPhotoPromises);
-	}).then(^(NSArray* povInfosWithCoverPhoto) {
-		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
-		NSLog(@"Successfully loaded POVs!");
-		[self.delegate morePOVsLoaded];
-	}).catch(^(NSError* error) {
-		 NSLog(@"Error loading POVs: %@", error.description);
-	});
-}
-
 // Load numToLoad POV's, replacing any POV's that were already loaded
 // TODO: combine these?
 // First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the cover pictures and
@@ -85,11 +65,32 @@
 	}).then(^(NSArray* povInfosWithCoverPhoto) {
 		self.povInfos = [[NSMutableArray alloc] init];
 		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
-		NSLog(@"Successfully loaded POVs!");
+		NSLog(@"Successfully refreshed POVs!");
 		[self.delegate povsRefreshed];
 	}).catch(^(NSError* error) {
-		NSLog(@"Error loading POVs: %@", error.description);
-        [self.delegate povsFailedToRefresh];
+		NSLog(@"Error refreshing POVs: %@", error.description);
+		[self.delegate povsFailedToRefresh];
+	});
+}
+
+
+// Loads numOfNewPOVToLoad more POV's using the cursor stored so that it loads from where it left off
+// First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the cover pictures and
+// stores the array of POVInfo's
+-(void) loadMorePOVs: (NSInteger) numOfNewPOVToLoad {
+	GTLQuery* loadQuery = [self getLoadingQuery: numOfNewPOVToLoad withCursor: YES];
+	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
+		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
+		for (GTLVerbatmAppPOVInfo* gtlPovInfo in gtlPovInfos) {
+			[loadCoverPhotoPromises addObject: [self getPOVInfoWithCoverPhotoFromGTLPOVInfo:gtlPovInfo]];
+		}
+		return PMKWhen(loadCoverPhotoPromises);
+	}).then(^(NSArray* povInfosWithCoverPhoto) {
+		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
+		NSLog(@"Successfully loaded more POVs!");
+		[self.delegate morePOVsLoaded];
+	}).catch(^(NSError* error) {
+		 NSLog(@"Error loading more POVs: %@", error.description);
 	});
 }
 
@@ -114,11 +115,36 @@
 // Once it gets the data from the cover photo url, creates a UIImage from that data
 // and stores it in a newly created PovInfo, which it returns
 -(AnyPromise*) getPOVInfoWithCoverPhotoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
-	return [self loadDataFromURL: gtlPovInfo.coverPicUrl].then(^(NSData* imageData) {
-		UIImage* coverPhoto = [UIImage imageWithData: imageData];
-		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andCoverPhoto: coverPhoto];
+	AnyPromise* userNamePromise = [self loadUserNameFromUserID:gtlPovInfo.creatorUserId];
+	AnyPromise* coverPicDataPromise = [self loadDataFromURL: gtlPovInfo.coverPicUrl];
+	return PMKWhen(@[userNamePromise, coverPicDataPromise]).then(^(NSArray* results) {
+		NSString* userName = results[0];
+		UIImage* coverPhoto = [UIImage imageWithData: results[1]];
+		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andUserName:userName andCoverPhoto: coverPhoto];
 		return povInfoWithCoverPhoto;
 	});
+}
+
+// If the user id is 1 or not found, resolves to "Unknown User"
+// Otherwise resolves to user name
+-(AnyPromise*) loadUserNameFromUserID: (NSNumber*) userID {
+
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		if (userID.longLongValue == 1) {
+			resolve(@"Unknown User");
+		}
+		GTLQuery* getUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserGetUserWithIdentifier:userID.longLongValue];
+
+		[self.service executeQuery:getUserQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser* userWithID, NSError *error) {
+			if (error) {
+				resolve(@"Unknown User");
+			} else {
+				resolve(userWithID.name);
+			}
+		}];
+	}];
+
+	return promise;
 }
 
 // Promise wrapper for asynchronous request to get image data (or any data) from the url

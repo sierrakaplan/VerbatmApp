@@ -2,6 +2,7 @@ package com.myverbatm.verbatm.backend.models;
 
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
+import com.googlecode.objectify.annotation.Index;
 
 /**
  * Image entity used to represent an image
@@ -18,11 +19,13 @@ public class Video {
     /**
      * Stores the index of this video in the page
      */
+    @Index
     private Integer indexInPage;
 
     /**
      * The key of the user who uploaded this video
      */
+    @Index
     private Long userId;
 
     /**

@@ -62,6 +62,20 @@ public class POV {
 
     }
 
+//    /**
+//     * Creates a POV instance from an entity of POV type
+//     * @param entity
+//     */
+//    public POV(com.google.appengine.api.datastore.Entity entity) {
+//        this.id = entity.getKey().getId();
+//        this.title = (String) entity.getProperty("title");
+//        this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
+//        this.datePublished = (Date) entity.getProperty("datePublished");
+//        this.numUpVotes = (Integer) entity.getProperty("numUpVotes");
+//        this.creatorUserId = (Long) entity.getProperty("creatorUserId");
+//        this.pages = (List<Page>) entity.getProperty("pages");
+//    }
+
     /**
      *
      * @return the unique identifier of this Entity.
@@ -161,7 +175,7 @@ public class POV {
      * Returns the list of Page IDs for this POV
      * @return the list of Page IDs for this POV
      */
-    public ArrayList<Long> getPageIds() {
+    public List<Long> getPageIds() {
         return pageIds;
     }
 

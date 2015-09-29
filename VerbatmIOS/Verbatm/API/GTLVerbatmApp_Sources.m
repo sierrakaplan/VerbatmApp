@@ -18,11 +18,9 @@
 
 #import "GTLVerbatmAppConstants.m"
 
-#import "GTLVerbatmAppEmail.m"
 #import "GTLVerbatmAppImage.m"
 #import "GTLVerbatmAppPage.m"
 #import "GTLVerbatmAppPageListWrapper.m"
-#import "GTLVerbatmAppPhoneNumber.m"
 #import "GTLVerbatmAppPOV.m"
 #import "GTLVerbatmAppPOVInfo.m"
 #import "GTLVerbatmAppResultsWithCursor.m"

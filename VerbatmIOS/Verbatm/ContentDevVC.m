@@ -288,6 +288,14 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self.mainScrollView addSubview: self.coverPicView];
 }
 
+-(void) addCoverPictureTapped {
+    [self presentGalleryForCoverPic];
+    //show replace photo icon after the first time this is tapped
+    if(!_replaceCoverPhotoButton){
+        [self addTapGestureToPinchView:self.coverPicView];
+        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
+    }
+}
 
 -(void) setUpNotifications {
 	//Tune in to get notifications of keyboard behavior
@@ -1129,17 +1137,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 }
 
-#pragma  mark - Add cover picture -
-
--(void) addCoverPictureTapped {
-	[self presentGalleryForCoverPic];
-    //show replace photo icon after the first time this is tapped
-    if(!_replaceCoverPhotoButton){
-        [self addTapGestureToPinchView:self.coverPicView];
-        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
-    }
-}
-
 
 #pragma mark - Change position of elements on screen by dragging
 
@@ -1546,7 +1543,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 }
 
-- (IBAction) unwindSegue: (UIStoryboardSegue *)segue{
+- (IBAction) unwindToContentDevVC: (UIStoryboardSegue *)segue{
 	if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
 		EditContentVC *editContentVC = (EditContentVC *)segue.sourceViewController;
 		if(self.openPinchView.containsImage) {
@@ -1673,7 +1670,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 //add assets from picker to our scrollview
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {
 	PHImageManager * iman = [[PHImageManager alloc] init];
-	//store local identifiers so we can querry the nsassets
+	//store local identifiers so we can query the nsassets
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
@@ -1714,7 +1711,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 }
 
-    
 -(void) createPinchViewFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
 	image = [UIEffects fixOrientation:image];

@@ -6,10 +6,18 @@ import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Email;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.users.User;
 import com.myverbatm.verbatm.backend.Constants;
 import com.myverbatm.verbatm.backend.models.VerbatmUser;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import static com.myverbatm.verbatm.backend.OfyService.ofy;
@@ -43,6 +51,7 @@ public class VerbatmUserEndpoint {
     private static final Logger LOG =
         Logger.getLogger(VerbatmUserEndpoint.class.getName());
 
+    private static final DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     /**
      * Gets the entity having primary key id.
@@ -59,6 +68,23 @@ public class VerbatmUserEndpoint {
 //        EndpointUtil.throwIfNotAdmin(user);
 
         return findUser(id);
+    }
+
+    /**
+     * Returns the verbatm user with the given email, which should be unique
+     * @return the verbatm user with the given email, which should be unique
+     */
+    @ApiMethod(path="/getUserFromEmail", httpMethod = "GET")
+    public final VerbatmUser getUserFromEmail(@Named("email") final String email) {
+
+        LOG.info("Get user from email: " + email);
+        Query.Filter emailFilter = new Query.FilterPredicate("email", Query.FilterOperator.EQUAL, email);
+        Query userFromEmailQuery = new Query("VerbatmUser")
+            .setFilter(emailFilter);
+        PreparedQuery preparedQuery = datastore.prepare(userFromEmailQuery);
+
+        Entity entity = preparedQuery.asSingleEntity();
+        return findUser(entity.getKey().getId());
     }
 
     /**

@@ -26,7 +26,9 @@
 #import "SegueIDs.h"
 #import "UserSetupParameters.h"
 #import "UIEffects.h"
+#import "UserManager.h"
 #import "VerbatmCameraView.h"
+#import "GTLVerbatmAppVerbatmUser.h"
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
@@ -143,6 +145,11 @@
 	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);
 	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	self.masterSV.pagingEnabled = YES;
+	self.masterSV.scrollEnabled = YES;
+	if (![PFUser currentUser].isAuthenticated &&
+		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+		self.masterSV.scrollEnabled = NO;
+	}
 }
 
 
@@ -301,7 +308,9 @@
 }
 
 -(void) povPublishedWithCoverPic:(UIImage *)coverPic andTitle: (NSString*) title {
-	[self.feedVC showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
+	UserManager* userManager = [UserManager sharedInstance];
+	NSString* userName = [userManager getCurrentUser].name;
+	[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
 	[self showFeed];
 }
 
@@ -322,10 +331,10 @@
 }
 
 //catches the unwind segue from login / create account
-- (IBAction) unwindFromLogin: (UIStoryboardSegue *)segue {
-	UIViewController* viewController = segue.sourceViewController;
-
+- (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
+	self.masterSV.scrollEnabled = YES;
 	// TODO: have variable set and go to profile or adk
+	[self.profileVC updateUserInfo];
 }
 
 

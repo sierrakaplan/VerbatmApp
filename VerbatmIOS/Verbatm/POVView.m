@@ -16,7 +16,7 @@
 #import "TextAVE.h"
 #import "VideoAVE.h"
 
-@interface POVView ()<UIGestureRecognizerDelegate, UIScrollViewDelegate, PhotoAVEDelegate>
+@interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate>
 
 @property (nonatomic) UIScrollView *mainScrollView;
 @property (nonatomic) NSInteger currentPageIndex;
@@ -63,7 +63,6 @@
 		[self.mainScrollView addSubview: view];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
     }
-    [self setUpGestureRecognizers];
 }
 
 #pragma mark - Add like button -
@@ -192,44 +191,6 @@
 	} completion:^(BOOL finished) {
 		[self displayMediaOnCurrentAVE];
 	}];
-}
-
-#pragma mark - Gesture recognizers -
-
-//Sets up the gesture recognizer for dragging from the edges.
--(void) setUpGestureRecognizers {
-    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollPage:)];
-    pan.delegate = self;
-    [self addGestureRecognizer:pan];
-}
-
-
--(void) scrollPage:(UIPanGestureRecognizer*) sender {
-    switch (sender.state) {
-        case UIGestureRecognizerStateBegan: {
-            if ([sender numberOfTouches] != 1) return;
-//            
-//            CGPoint touchLocation = [sender locationOfTouch:0 inView:[self superview]];
-//            if (touchLocation.y < (self.frame.size.height - self.pageScrollTopBottomArea)
-//                && touchLocation.y > self.pageScrollTopBottomArea) {
-//                self.mainScrollView.scrollEnabled = NO;
-//            }
-            break;
-        }
-        case UIGestureRecognizerStateChanged: {
-            break;
-        }
-        case UIGestureRecognizerStateEnded: {
-            self.mainScrollView.scrollEnabled = YES;
-            break;
-        }
-        default:
-            break;
-    }
-}
-
--(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
 }
 
 #pragma mark - Photo AVE Delegate -

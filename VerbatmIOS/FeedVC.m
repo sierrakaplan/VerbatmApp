@@ -144,9 +144,9 @@
 
 #pragma mark - Show recently published POV -
 
--(void) showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
 	[self.categorySwitch snapToEdgeLeft:YES];
-	[self.mostRecentVC showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
+	[self.mostRecentVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
 }
 
 #pragma mark - Article List VC Delegate Methods (display articles) -

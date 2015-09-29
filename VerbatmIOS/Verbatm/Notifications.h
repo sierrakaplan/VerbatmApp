@@ -9,7 +9,6 @@
 #ifndef Notifications_h
 #define Notifications_h
 
-
 #pragma mark - Networking -
 #define INTERNET_CONNECTION_NOTIFICATION @"internet_connection_notification"
 //this key gives you access to a string that tells you if the connection is established or not

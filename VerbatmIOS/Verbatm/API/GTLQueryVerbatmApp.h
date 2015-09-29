@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (25 custom class methods, 4 custom properties)
+//   GTLQueryVerbatmApp (26 custom class methods, 5 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -41,6 +41,7 @@
 //
 @property (nonatomic, assign) NSInteger count;
 @property (nonatomic, copy) NSString *cursorString;
+@property (nonatomic, copy) NSString *email;
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, assign) long long identifier;
 
@@ -158,6 +159,12 @@
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppVerbatmUser.
 + (instancetype)queryForVerbatmuserGetUserWithIdentifier:(long long)identifier;
+
+// Method: verbatmApp.verbatmuser.getUserFromEmail
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppVerbatmUser.
++ (instancetype)queryForVerbatmuserGetUserFromEmailWithEmail:(NSString *)email;
 
 // Method: verbatmApp.verbatmuser.insertUser
 //  Authorization scope(s):

@@ -50,6 +50,7 @@
 
 #define TITLE_LABEL_HEIGHT 35
 #define USERNAME_LABEL_HEIGHT 25
+#define DATE_AND_LIKES_LABEL_HEIGHT 18
 
 #pragma mark Topics table view cell
 
@@ -156,8 +157,10 @@
 #define CIRCLE_OFFSET 15.f
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
-#define TOUCH_THRESHOLD 40.f
+#define TAP_THRESHOLD 15.f
+#define	SLIDE_THRESHOLD 30.f
 
+#define DISTANCE_BETWEEN_FIELDS 20
 
 
 #endif
