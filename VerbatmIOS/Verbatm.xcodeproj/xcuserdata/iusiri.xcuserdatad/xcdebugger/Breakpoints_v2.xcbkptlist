@@ -2329,7 +2329,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/ContentDevVC.m"
-                  timestampString = "465204357.612575"
+                  timestampString = "465204524.91885"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "1036"
@@ -2344,7 +2344,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/ContentDevVC.m"
-                  timestampString = "465204357.612754"
+                  timestampString = "465204524.919021"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -2359,7 +2359,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/ContentDevVC.m"
-                  timestampString = "465204357.612896"
+                  timestampString = "465204524.91917"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -2397,7 +2397,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "103"
             endingLineNumber = "103"
-            landmarkName = "-onScreen"
+            landmarkName = "-mutePlayer"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2412,9 +2412,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "115"
-            endingLineNumber = "115"
-            landmarkName = "-enableSound"
-            landmarkType = "5">
+            endingLineNumber = "115">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2429,7 +2427,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "110"
             endingLineNumber = "110"
-            landmarkName = "-mutePlayer"
+            landmarkName = "-enableSound"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2445,7 +2443,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "99"
             endingLineNumber = "99"
-            landmarkName = "-offScreen"
+            landmarkName = "-onScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2461,7 +2459,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "104"
             endingLineNumber = "104"
-            landmarkName = "-onScreen"
+            landmarkName = "-mutePlayer"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

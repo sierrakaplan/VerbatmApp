@@ -311,8 +311,7 @@
     //we expect this supreview to be a scrollview
     UIView * view = self.superview.superview;
     
-    if([view isKindOfClass:[UIScrollView class]]){
-        
+    if([view isKindOfClass:[UIScrollView class]] && self.cirlePanGesture){
         [((UIScrollView *) view).panGestureRecognizer requireGestureRecognizerToFail:self.cirlePanGesture];
     }
     
