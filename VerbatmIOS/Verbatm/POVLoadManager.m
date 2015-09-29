@@ -18,6 +18,7 @@
 #import "GTLVerbatmAppVideo.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
+#import "GTLVerbatmAppIdentifierListWrapper.h"
 
 #import "PovInfo.h"
 
@@ -164,7 +165,22 @@
 	return promise;
 }
 
--(AnyPromise*) loadUserIDs
+//
+-(AnyPromise*) loadUserIDsWhoHaveLikedPOVWithID: (NSNumber*) povID {
+
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		GTLQuery* getUserIDsWhoLikeThisPOVQuery = [GTLQueryVerbatmApp queryForPovGetUserIdsWhoLikeThisPOVWithIdentifier:povID.longLongValue];
+		[self.service executeQuery:getUserIDsWhoLikeThisPOVQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppIdentifierListWrapper* userIDs, NSError *error) {
+			if (error) {
+				resolve(error);
+			} else {
+				resolve(userIDs);
+			}
+		}];
+	}];
+
+	return promise;
+}
 
 // Returns a query that loads more POV's
 // Different query depending on the povType (recent or trending)
