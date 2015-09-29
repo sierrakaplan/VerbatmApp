@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (25 custom class methods, 4 custom properties)
+//   GTLQueryVerbatmApp (26 custom class methods, 5 custom properties)
 
 #import "GTLQueryVerbatmApp.h"
 
@@ -28,7 +28,7 @@
 
 @implementation GTLQueryVerbatmApp
 
-@dynamic count, cursorString, fields, identifier;
+@dynamic count, cursorString, email, fields, identifier;
 
 + (NSDictionary *)parameterNameMap {
   NSDictionary *map = @{
@@ -202,6 +202,14 @@
   NSString *methodName = @"verbatmApp.verbatmuser.getUser";
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.identifier = identifier;
+  query.expectedObjectClass = [GTLVerbatmAppVerbatmUser class];
+  return query;
+}
+
++ (instancetype)queryForVerbatmuserGetUserFromEmailWithEmail:(NSString *)email {
+  NSString *methodName = @"verbatmApp.verbatmuser.getUserFromEmail";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.email = email;
   query.expectedObjectClass = [GTLVerbatmAppVerbatmUser class];
   return query;
 }

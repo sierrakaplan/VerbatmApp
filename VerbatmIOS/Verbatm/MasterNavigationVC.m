@@ -11,6 +11,9 @@
 #import "ArticleDisplayVC.h"
 
 #import "FeedVC.h"
+
+#import "GTLVerbatmAppVerbatmUser.h"
+
 #import "Icons.h"
 #import "internetConnectionMonitor.h"
 
@@ -24,15 +27,20 @@
 #import "ProfileVC.h"
 
 #import "SegueIDs.h"
-#import "UserSetupParameters.h"
-#import "UIEffects.h"
-#import "VerbatmCameraView.h"
+#import "SizesAndPositions.h"
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
+#import "UserSetupParameters.h"
+#import "UIEffects.h"
+#import "UserManager.h"
 
-@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate, UIGestureRecognizerDelegate>
+#import "VerbatmCameraView.h"
+
+
+@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate,
+UIGestureRecognizerDelegate, UserManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 
@@ -51,6 +59,8 @@
 @property (weak, nonatomic) IBOutlet UIView *articleDisplayContainer;
 // article display list slides in from right and can be pulled off when a screen edge pan
 @property (nonatomic) CGRect articleDisplayContainerFrameOffScreen;
+
+@property (strong, nonatomic) UserManager* userManager;
 
 
 #pragma mark - Preview -
@@ -88,6 +98,12 @@
 	[self getAndFormatVCs];
 	self.connectionMonitor = [[internetConnectionMonitor alloc] init];
 	[self registerForNotifications];
+	if (![PFUser currentUser].isAuthenticated &&
+		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
+		self.masterSV.scrollEnabled = NO;
+	} else {
+		[self.userManager queryForCurrentUser];
+	}
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -108,6 +124,16 @@
 											 selector:@selector(networkConnectionUpdate:)
 												 name:INTERNET_CONNECTION_NOTIFICATION
 											   object:nil];
+}
+
+#pragma mark - User Manager Delegate -
+
+-(void) successfullyLoggedInUser:(GTLVerbatmAppVerbatmUser *)user {
+	[self.profileVC updateUserInfo];
+}
+
+-(void) errorLoggingInUser:(NSError *)error {
+	NSLog(@"Error finding current user: %@", error.description);
 }
 
 #pragma mark - Getting and formatting child view controllers -
@@ -143,6 +169,7 @@
 	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);
 	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
 	self.masterSV.pagingEnabled = YES;
+	self.masterSV.scrollEnabled = YES;
 }
 
 
@@ -209,22 +236,26 @@
 #pragma mark - Left edge screen pull for exiting article display vc -
 
 -(void) addScreenEdgePanToArticleDisplay {
-	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
-	leftEdgePanGesture.edges = UIRectEdgeLeft;
+	UIPanGestureRecognizer* leftEdgePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
 	leftEdgePanGesture.delegate = self;
 	[self.articleDisplayContainer addGestureRecognizer: leftEdgePanGesture];
 }
 
 //called from left edge pan
-- (void) exitArticleDisplayView:(UIScreenEdgePanGestureRecognizer *)sender {
-
+- (void) exitArticleDisplayView:(UIPanGestureRecognizer *)sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
+            CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+            
 			//we want only one finger doing anything when exiting
-			if([sender numberOfTouches] != 1) {
+            if([sender numberOfTouches] != 1 ||
+               ((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100)  < touchLocation.y)) {
+                //this ends the gesture
+                sender.enabled = NO;
+                sender.enabled =YES;
 				return;
 			}
-			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
+			
 			self.previousGesturePoint  = touchLocation;
 			break;
 		}
@@ -232,11 +263,23 @@
 			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
 			CGPoint currentPoint = touchLocation;
 			int diff = currentPoint.x - self.previousGesturePoint.x;
-			self.previousGesturePoint = currentPoint;
-			self.articleDisplayContainer.frame = CGRectOffset(self.articleDisplayContainer.frame, diff, 0);
-			break;
+            
+            if((diff < 0) && ((self.articleDisplayContainer.frame.origin.x + diff) < 0)) //swiping left which is wrong so we end the gesture
+            {
+                //this ends the gesture
+                sender.enabled = NO;
+                sender.enabled =YES;
+                break;
+            }else {
+                
+                self.previousGesturePoint = currentPoint;
+                self.articleDisplayContainer.frame = CGRectOffset(self.articleDisplayContainer.frame, diff, 0);
+                break;
+            }
 		}
-		case UIGestureRecognizerStateEnded: {
+        case UIGestureRecognizerStateCancelled:{
+            //should just fall into the next call
+        }case UIGestureRecognizerStateEnded: {
 			if(self.articleDisplayContainer.frame.origin.x > EXIT_EPSILON) {
 				//exit article
 				[self revealArticleDisplay:NO];
@@ -290,7 +333,8 @@
 }
 
 -(void) povPublishedWithCoverPic:(UIImage *)coverPic andTitle: (NSString*) title {
-	[self.feedVC showPOVPublishingWithTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
+	NSString* userName = [self.userManager getCurrentUser].name;
+	[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
 	[self showFeed];
 }
 
@@ -311,10 +355,10 @@
 }
 
 //catches the unwind segue from login / create account
-- (IBAction) unwindFromLogin: (UIStoryboardSegue *)segue {
-	UIViewController* viewController = segue.sourceViewController;
-
+- (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
+	self.masterSV.scrollEnabled = YES;
 	// TODO: have variable set and go to profile or adk
+	[self.profileVC updateUserInfo];
 }
 
 
@@ -362,6 +406,12 @@
 }
 
 #pragma mark - Lazy Instantiation -
+
+-(UserManager*) userManager {
+	if (!_userManager) _userManager = [UserManager sharedInstance];
+	_userManager.delegate = self;
+	return _userManager;
+}
 
 -(PreviewDisplayView*) previewDisplayView {
 	if(!_previewDisplayView){

@@ -33,7 +33,9 @@
 
 @property (nonatomic) BOOL textShowing;
 
-#define CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
+@property (nonatomic, strong) UIView * panGestureSensingView;
+
+@property (strong, nonatomic) UIPanGestureRecognizer * cirlePanGesture;
 
 @end
 
@@ -110,17 +112,16 @@
 		PointObject *point = [MathOperations getPointFromCircleRadius: CIRCLE_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
 		//set relative to the center of the circle
 		point.x = point.x + self.frame.size.width/2.f;
-		point.y = point.y + CIRCLE_CENTER_Y;
+		point.y = point.y + PAN_CIRCLE_CENTER_Y;
 		[self.pointsOnCircle addObject:point];
 		[self createDotViewFromPoint:point];
 	}
 	[self createMainCircleView];
-	[self addPanGestureToView:self];
 }
 
 
 -(void) createMainCircleView {
-	self.originPoint = CGPointMake(self.frame.size.width/2.f, CIRCLE_CENTER_Y);
+	self.originPoint = CGPointMake(self.frame.size.width/2.f, PAN_CIRCLE_CENTER_Y);
 	CGRect frame = CGRectMake(self.originPoint.x-CIRCLE_RADIUS-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
 							  self.originPoint.y-CIRCLE_RADIUS,
 							  CIRCLE_RADIUS*2 + CIRCLE_OVER_IMAGES_BORDER_WIDTH, CIRCLE_RADIUS*2);
@@ -131,14 +132,20 @@
  	self.circleView.layer.borderWidth = CIRCLE_OVER_IMAGES_BORDER_WIDTH;
  	self.circleView.layer.borderColor = [UIColor CIRCLE_OVER_IMAGES_COLOR].CGColor;
 	self.circleView.alpha = 0.f;
- 	[self addSubview:self.circleView];
+    
+    self.panGestureSensingView.frame = CGRectMake(self.circleView.frame.origin.x -SLIDE_THRESHOLD ,
+                                                  self.circleView.frame.origin.y - SLIDE_THRESHOLD,
+                                                  self.circleView.frame.size.width + SLIDE_THRESHOLD,
+                                                  self.circleView.frame.size.height + SLIDE_THRESHOLD);
+    [self addPanGestureToView:self.panGestureSensingView];
+    [self addSubview:self.circleView];
+    [self addSubview:self.panGestureSensingView];
 }
 
 -(void) createDotViewFromPoint:(PointObject*)point {
 	CGRect frame = CGRectMake(point.x-POINTS_ON_CIRCLE_RADIUS,
 							  point.y-POINTS_ON_CIRCLE_RADIUS,
 							  POINTS_ON_CIRCLE_RADIUS*2, POINTS_ON_CIRCLE_RADIUS*2);
-
 	UIView* dot = [[UIView alloc] initWithFrame:frame];
 	dot.backgroundColor = [UIColor CIRCLE_OVER_IMAGES_COLOR];
 	dot.layer.cornerRadius = frame.size.width/2.f;
@@ -148,11 +155,12 @@
 	[self addSubview:dot];
 }
 
--(void)addPanGestureToView:(UIView *) view
-{
-	UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:view action:@selector(trackMovementOnCircle:)];
+-(void)addPanGestureToView:(UIView *) view {
+	UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(trackMovementOnCircle:)];
 	panGesture.delegate = self;
 	[view addGestureRecognizer:panGesture];
+    self.cirlePanGesture = panGesture;
+    
 }
 
 
@@ -176,8 +184,8 @@
 
 //check if tap is within radius of circle
 -(BOOL) circleTapped:(CGPoint) touchLocation {
-	if ((touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + TOUCH_THRESHOLD)
-		&&	(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + TOUCH_THRESHOLD)) {
+	if ((touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)
+		&&	(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)) {
 		[self goToPhoto:touchLocation];
 		return YES;
 	}
@@ -227,7 +235,7 @@
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 	self.draggingFromPointIndex = [self getPointIndexFromLocation:touchLocation];
 	if (self.draggingFromPointIndex >= 0) {
-		[self.delegate startedDraggingAroundCircle];
+		//[self.delegate startedDraggingAroundCircle];
 		[self displayCircle:YES];
 		[self setImageViewsToLocation:self.draggingFromPointIndex];
 		self.lastDistanceFromStartingPoint = 0.f;
@@ -240,7 +248,7 @@
 	}
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 
-	if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint withThreshold:TOUCH_THRESHOLD]) {
+	if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint withThreshold:SLIDE_THRESHOLD]) {
 		return;
 	}
 	PointObject * point = self.pointsOnCircle [self.draggingFromPointIndex];
@@ -248,7 +256,6 @@
 	float distanceFromStartingTouch = [MathOperations distanceClockwiseBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint];
 
 	[self fadeWithDistance:distanceFromStartingTouch andTotalDistance:totalDistanceToTravel];
-
 	self.lastDistanceFromStartingPoint = distanceFromStartingTouch;
 }
 
@@ -298,6 +305,17 @@
 -(void) showAndRemoveCircle {
 	[self displayCircle:YES];
 	self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+    
+    
+    
+    //we expect this supreview to be a scrollview
+    UIView * view = self.superview.superview;
+    
+    if([view isKindOfClass:[UIScrollView class]]){
+        
+        [((UIScrollView *) view).panGestureRecognizer requireGestureRecognizerToFail:self.cirlePanGesture];
+    }
+    
 }
 
 -(void) displayCircle:(BOOL)display {
@@ -333,11 +351,10 @@
 #pragma mark Helper methods for gesture
 
 -(NSInteger) getPointIndexFromLocation:(CGPoint)touchLocation {
-
 	for (int i = 0; i < [self.pointsOnCircle count]; i++) {
 		PointObject* point = self.pointsOnCircle[i];
-		if(fabs(point.x - touchLocation.x) <= TOUCH_THRESHOLD
-		   && fabs(point.y - touchLocation.y) <= TOUCH_THRESHOLD) {
+		if(fabs(point.x - touchLocation.x) <= TAP_THRESHOLD
+		   && fabs(point.y - touchLocation.y) <= TAP_THRESHOLD) {
 			return i;
 		}
 	}
@@ -383,6 +400,12 @@
 }
 
 #pragma mark - Lazy Instantiation
+
+
+-(UIView *) panGestureSensingView {
+    if(!_panGestureSensingView)_panGestureSensingView = [[UIView alloc] init];
+    return _panGestureSensingView;
+}
 
 @synthesize pointsOnCircle = _pointsOnCircle;
 

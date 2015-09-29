@@ -21,21 +21,18 @@
   #import "GTLObject.h"
 #endif
 
-@class GTLVerbatmAppEmail;
-@class GTLVerbatmAppPhoneNumber;
-
 // ----------------------------------------------------------------------------
 //
 //   GTLVerbatmAppVerbatmUser
 //
 
 @interface GTLVerbatmAppVerbatmUser : GTLObject
-@property (nonatomic, retain) GTLVerbatmAppEmail *email;
+@property (nonatomic, copy) NSString *email;
 
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, retain) NSNumber *identifier;  // longLongValue
 
 @property (nonatomic, copy) NSString *name;
-@property (nonatomic, retain) GTLVerbatmAppPhoneNumber *phoneNumber;
+@property (nonatomic, copy) NSString *phoneNumber;
 @property (nonatomic, retain) NSNumber *profilePhotoImageID;  // longLongValue
 @end

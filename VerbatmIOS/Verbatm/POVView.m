@@ -16,7 +16,7 @@
 #import "TextAVE.h"
 #import "VideoAVE.h"
 
-@interface POVView ()<UIGestureRecognizerDelegate, UIScrollViewDelegate, PhotoAVEDelegate>
+@interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate>
 
 @property (nonatomic) UIScrollView *mainScrollView;
 @property (nonatomic) NSInteger currentPageIndex;
@@ -31,8 +31,8 @@
 
 @property (nonatomic, strong) UIButton * downArrow;
 
-#define DOWN_ARROW_WIDTH 40
-#define DOWN_ARROE_DISTANCE_FROM_BOTTOM 5
+#define DOWN_ARROW_WIDTH 30
+#define DOWN_ARROE_DISTANCE_FROM_BOTTOM 30
 #define DOWN_ARROW_IMAGE  @"downarrow"
 #define SCROLL_UP_ANIMATION_DURATION 0.7
 @end
@@ -63,7 +63,6 @@
 		[self.mainScrollView addSubview: view];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
     }
-    [self setUpGestureRecognizers];
 }
 
 #pragma mark - Add like button -
@@ -75,8 +74,10 @@
 	self.likeButtonDelegate = delegate;
 	self.povID = povID;
 
-	CGRect likeButtonFrame = CGRectMake(self.frame.size.width - LIKE_BUTTON_SIZE - LIKE_BUTTON_OFFSET,
-										 LIKE_BUTTON_OFFSET, LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
+    CGRect likeButtonFrame = CGRectMake(self.frame.size.width - LIKE_BUTTON_SIZE - LIKE_BUTTON_OFFSET,
+                                        self.frame.size.height - LIKE_BUTTON_SIZE - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
+                                        LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
+    
 	self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON];
 	self.likeButtonLikedImage = [UIImage imageNamed:LIKE_PRESSED_ICON];
 	self.likeButton = [UIButton buttonWithType: UIButtonTypeCustom];
@@ -190,44 +191,6 @@
 	} completion:^(BOOL finished) {
 		[self displayMediaOnCurrentAVE];
 	}];
-}
-
-#pragma mark - Gesture recognizers -
-
-//Sets up the gesture recognizer for dragging from the edges.
--(void) setUpGestureRecognizers {
-    UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(scrollPage:)];
-    pan.delegate = self;
-    [self addGestureRecognizer:pan];
-}
-
-
--(void) scrollPage:(UIPanGestureRecognizer*) sender {
-    switch (sender.state) {
-        case UIGestureRecognizerStateBegan: {
-            if ([sender numberOfTouches] != 1) return;
-//            
-//            CGPoint touchLocation = [sender locationOfTouch:0 inView:[self superview]];
-//            if (touchLocation.y < (self.frame.size.height - self.pageScrollTopBottomArea)
-//                && touchLocation.y > self.pageScrollTopBottomArea) {
-//                self.mainScrollView.scrollEnabled = NO;
-//            }
-            break;
-        }
-        case UIGestureRecognizerStateChanged: {
-            break;
-        }
-        case UIGestureRecognizerStateEnded: {
-            self.mainScrollView.scrollEnabled = YES;
-            break;
-        }
-        default:
-            break;
-    }
-}
-
--(BOOL) gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
 }
 
 #pragma mark - Photo AVE Delegate -

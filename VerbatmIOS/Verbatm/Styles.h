@@ -10,7 +10,7 @@
 #define Styles_h
 
 
-#define DEFAULT_FONT @"HelveticaNeue-Light"
+#define DEFAULT_FONT @"HelveticaNeue-Italic"
 #define BUTTON_FONT @"HelveticaNeue"
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 #define TITLE_TEXT_FONT @"HelveticaNeue"
@@ -24,12 +24,10 @@
 #define BUTTON_LABEL_SHADOW_YOFFSET 1.5f
 
 
-
-
 #pragma mark - Sign In -
 
 #define ERROR_ANIMATION_TEXT_COLOR whiteColor
-#define ERROR_ANIMATION_FONT_SIZE 30
+#define ERROR_ANIMATION_FONT_SIZE 20
 
 
 #pragma mark - Feed -
@@ -38,12 +36,13 @@
 #define STORY_BACKGROUND_COLOR colorWithRed: 0.8 green:0.8 blue:0.8 alpha:1
 #define SWITCH_CATEGORY_BAR_FONT_SIZE 30
 
-#define USERNAME_FONT_SIZE 18
-#define TITLE_FONT_SIZE 20
-#define USERNAME_TEXT_COLOR blackColor
 #define TITLE_TEXT_COLOR blackColor
-#define USERNAME_FONT @"HelveticaNeue-Bold"
 #define TITLE_FONT @"HelveticaNeue-Italic"
+#define FEED_TITLE_FONT_SIZE 20
+#define USERNAME_FONT @"HelveticaNeue-Bold"
+#define USERNAME_FONT_SIZE 18
+#define DATE_AND_LIKES_FONT @"HelveticaNeue-Light"
+#define DATE_AND_LIKES_FONT_SIZE 16.f
 
 #pragma mark - ADK -
 

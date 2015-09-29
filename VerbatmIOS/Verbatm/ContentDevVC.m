@@ -145,7 +145,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self setKeyboardAppearance];
 	[self setCursorColor];
 	[self formatTitleAndCoverPicture];
-	//TODO:	[self createBaseSelector];
+	[self createBaseSelector];
 	[self setUpNotifications];
 	[self setDelegates];
 }
@@ -288,6 +288,14 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self.mainScrollView addSubview: self.coverPicView];
 }
 
+-(void) addCoverPictureTapped {
+    [self presentGalleryForCoverPic];
+    //show replace photo icon after the first time this is tapped
+    if(!_replaceCoverPhotoButton){
+        [self addTapGestureToPinchView:self.coverPicView];
+        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
+    }
+}
 
 -(void) setUpNotifications {
 	//Tune in to get notifications of keyboard behavior
@@ -469,8 +477,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self addTapGestureToPinchView:pinchView];
 
 	// must be below base media tile selector
-//TODO when there is media tile	NSInteger index = self.pageElementScrollViews.count-1;
-	NSInteger index = self.pageElementScrollViews.count;
+	NSInteger index = self.pageElementScrollViews.count-1;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
@@ -1033,10 +1040,12 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	self.lowerPinchScrollView = self.upperPinchScrollView = nil;
 	self.pinchingMode = PinchingModeNone;
 	[self shiftElementsBelowView: self.coverPicView];
+    
 	//make sure the pullbar is showing when things are pinched together
 	[self.changePullBarDelegate showPullBar:YES withTransition:YES];
+    
     //present swipe to delete notification
-    if([UserSetupParameters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
+    if(![UserSetupParameters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
 
 #pragma mark - Identify views involved in pinch
@@ -1127,17 +1136,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	if (!tile.isBaseSelector) {
 		[self clearMediaTile:tile];
 	}
-}
-
-#pragma  mark - Add cover picture -
-
--(void) addCoverPictureTapped {
-	[self presentGalleryForCoverPic];
-    //show replace photo icon after the first time this is tapped
-    if(!_replaceCoverPhotoButton){
-        [self addTapGestureToPinchView:self.coverPicView];
-        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
-    }
 }
 
 
@@ -1520,12 +1518,11 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
-        if([UserSetupParameters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
+        if(![UserSetupParameters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
 	}else{
 		self.openPinchView = pinchView;
 		//tap to open an element for viewing or editing
 		[self presentEditContentView];
-
 	}
 }
 
@@ -1546,7 +1543,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 }
 
-- (IBAction) unwindSegue: (UIStoryboardSegue *)segue{
+- (IBAction) unwindToContentDevVC: (UIStoryboardSegue *)segue{
 	if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
 		EditContentVC *editContentVC = (EditContentVC *)segue.sourceViewController;
 		if(self.openPinchView.containsImage) {
@@ -1577,7 +1574,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
     [self clearCoverPhoto];
-//TODO:	[self createBaseSelector];
+	[self createBaseSelector];
 }
 
 -(void) clearCoverPhoto {
@@ -1673,7 +1670,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 //add assets from picker to our scrollview
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {
 	PHImageManager * iman = [[PHImageManager alloc] init];
-	//store local identifiers so we can querry the nsassets
+	//store local identifiers so we can query the nsassets
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
@@ -1705,16 +1702,19 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 
 	//decides whether on what notification to present if any
 	if(![UserSetupParameters circlesArePages_InstructionShown] &&
-	   !self.pageElementScrollViews.count) {
+	   self.pageElementScrollViews.count == 1 && (phassets.count > 1)) {
 		[self alertEachPVIsPage];
-
-	}else if(![UserSetupParameters pinchCircles_InstructionShown] &&
-			 (self.pageElementScrollViews.count > 1)) {
-		[self alertPinchElementsTogether];
+        if(![UserSetupParameters pinchCircles_InstructionShown]) {
+            //wait for a little while before circles are added to the stream
+            [NSTimer scheduledTimerWithTimeInterval:5.f target:self selector:@selector(timerForNoNotification:) userInfo:nil repeats:NO];
+        }
 	}
 }
 
-    
+- (void)timerForNoNotification:(NSTimer *)timer {
+    [self alertPinchElementsTogether];
+}
+
 -(void) createPinchViewFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
 	image = [UIEffects fixOrientation:image];
@@ -1755,7 +1755,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 }
 
 -(void)alertPinchElementsTogether {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 	[UserSetupParameters set_pinchCircles_InstructionAsShown];
 }

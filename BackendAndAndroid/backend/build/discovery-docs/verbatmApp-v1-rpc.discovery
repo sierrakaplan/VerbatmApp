@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/qV8eefL4GkZAsTBGCc6PuG58TNA\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/4dGf-SVjywscPuYIvH48fdadP1A\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -72,15 +72,6 @@
   }
  },
  "schemas": {
-  "Email": {
-   "id": "Email",
-   "type": "object",
-   "properties": {
-    "email": {
-     "type": "string"
-    }
-   }
-  },
   "Image": {
    "id": "Image",
    "type": "object",
@@ -208,15 +199,6 @@
     }
    }
   },
-  "PhoneNumber": {
-   "id": "PhoneNumber",
-   "type": "object",
-   "properties": {
-    "number": {
-     "type": "string"
-    }
-   }
-  },
   "ResultsWithCursor": {
    "id": "ResultsWithCursor",
    "type": "object",
@@ -246,7 +228,7 @@
    "type": "object",
    "properties": {
     "email": {
-     "$ref": "Email"
+     "type": "string"
     },
     "id": {
      "type": "string",
@@ -256,7 +238,7 @@
      "type": "string"
     },
     "phoneNumber": {
-     "$ref": "PhoneNumber"
+     "type": "string"
     },
     "profilePhotoImageID": {
      "type": "string",
@@ -588,6 +570,25 @@
    },
    "parameterOrder": [
     "id"
+   ],
+   "returns": {
+    "$ref": "VerbatmUser"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "verbatmApp.verbatmuser.getUserFromEmail": {
+   "id": "verbatmApp.verbatmuser.getUserFromEmail",
+   "allowGet": true,
+   "parameters": {
+    "email": {
+     "type": "string",
+     "required": true
+    }
+   },
+   "parameterOrder": [
+    "email"
    ],
    "returns": {
     "$ref": "VerbatmUser"

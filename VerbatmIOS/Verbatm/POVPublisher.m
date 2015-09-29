@@ -32,8 +32,11 @@
 #import "PinchView.h"
 
 #import <PromiseKit/PromiseKit.h>
+#import <Parse/PFUser.h>
 
 #import "VideoPinchView.h"
+
+#import "UserManager.h"
 
 @interface POVPublisher()
 
@@ -64,19 +67,19 @@
 /*
  think recursive:
 
- when (saved cover pic serving url + saved page ids) upload pov
+ when (got current user id +  saved cover pic serving url + saved page ids) upload pov
 
- branch 1: (get Image upload uri) then (upload cover pic to blobstore using uri) resolves to blobstore serving url
+ branch coverPic: (get Image upload uri) then (upload cover pic to blobstore using uri) resolves to blobstore serving url
 
- branch 2: when (stored every page) resolves to page ids
+ branch savePageIds: when (stored every page) resolves to page ids
 
  when (saved image ids + saved video ids) then (store page) resolves to page id
 
- branch a: when(stored every image) resolves to image ids
+ branch savedImageIDs: when(stored every image) resolves to image ids
 
  (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore) resolves to image id
 
- branch b: when(stored every video) resolves to video ids
+ branch savedVideoIDs: when(stored every video) resolves to video ids
 
  (get video upload uri) then (upload video to blobstore using uri) then (store gtlvideo with blob key string) resolves to video id
  */
@@ -84,12 +87,12 @@
 - (void) publish {
 	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
 	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
-	povObject.numUpVotes = [NSNumber numberWithInt: 0];
+	povObject.numUpVotes = [NSNumber numberWithLongLong: 0];
 	povObject.title = self.title;
-	//TODO: get user
-	povObject.creatorUserId = [NSNumber numberWithLongLong:1];
+	UserManager* userManager = [UserManager sharedInstance];
+	povObject.creatorUserId = [userManager getCurrentUser].identifier;
 
-	// when (saved cover pic serving url + saved page ids) upload pov
+	// when (got current user id + saved cover pic serving url + saved page ids) upload pov
 	AnyPromise* storeCoverPicPromise = [self storeCoverPicture: self.coverPic];
 	AnyPromise* storePagesPromise = [self storePagesFromPinchViews: self.pinchViews];
 	PMKWhen(@[storeCoverPicPromise, storePagesPromise]).then(^(NSArray* results) {

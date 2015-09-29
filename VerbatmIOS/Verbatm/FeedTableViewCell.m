@@ -13,10 +13,10 @@
 //
 
 #import "FeedTableViewCell.h"
+#import "Icons.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Durations.h"
-
 
 @interface FeedTableViewCell()
 
@@ -24,6 +24,11 @@
 @property (strong, nonatomic) UIView * storyTextView;
 @property (strong, nonatomic) UILabel * povTitle;
 @property (strong, nonatomic) UILabel * povCreatorUsername;
+
+@property (strong, nonatomic) UIView* dateAndLikesView;
+@property (strong, nonatomic) UILabel * dateCreatedLabel;
+@property (strong, nonatomic) UILabel * numLikesLabel;
+@property (strong, nonatomic) UIImageView* likeIconView;
 
 #pragma mark - Left and right semi circles containing the cover picture -
 @property (strong, nonatomic) UIView * leftCircle;
@@ -57,8 +62,7 @@
 #define CIRCLE_DIAMETER (self.frame.size.height - STORY_CELL_PADDING*2)
 #define PINCH_TOGETHER_DURATION 0.2f
 #define PINCH_APART_DURATION 0.4f
-#define PINCH_THRESHOLD 50.f
-
+#define PINCH_THRESHOLD 150.f
 @end
 
 @implementation FeedTableViewCell
@@ -111,22 +115,48 @@
 										TITLE_LABEL_HEIGHT)];
 
 	[self.povCreatorUsername setFrame: CGRectMake(FEED_TEXT_X_OFFSET,
-												  textViewFrame.size.height - USERNAME_LABEL_HEIGHT,
+												  self.povTitle.frame.origin.y + self.povTitle.frame.size.height + FEED_TEXT_GAP,
 												  textViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 												  USERNAME_LABEL_HEIGHT)];
 
+	self.dateAndLikesView = [[UIView alloc] initWithFrame:CGRectMake(FEED_TEXT_X_OFFSET,
+																		textViewFrame.size.height - DATE_AND_LIKES_LABEL_HEIGHT,
+																		textViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
+																		DATE_AND_LIKES_LABEL_HEIGHT)];
+
+	[self.dateCreatedLabel setFrame: CGRectMake(0, 0, self.dateAndLikesView.frame.size.width/2.f, DATE_AND_LIKES_LABEL_HEIGHT)];
+	self.likeIconView = [[UIImageView alloc] initWithImage:[UIImage imageNamed: FEED_LIKE_ICON]];
+	[self.likeIconView setFrame: CGRectMake(self.dateAndLikesView.frame.size.width/2.f, 0, DATE_AND_LIKES_LABEL_HEIGHT, DATE_AND_LIKES_LABEL_HEIGHT)];
+	self.likeIconView.contentMode = UIViewContentModeScaleAspectFit;
+	[self.numLikesLabel setFrame: CGRectMake(self.dateAndLikesView.frame.size.width/2.f + self.likeIconView.frame.size.width + 5.f,
+											 0, self.dateAndLikesView.frame.size.width - self.dateCreatedLabel.frame.size.width - self.likeIconView.frame.size.width,
+											 DATE_AND_LIKES_LABEL_HEIGHT)];
+
+	[self.dateAndLikesView addSubview: self.dateCreatedLabel];
+	[self.dateAndLikesView addSubview: self.likeIconView];
+	[self.dateAndLikesView addSubview: self.numLikesLabel];
+
 	[self formatUILabel: self.povTitle
-			   withFont: [UIFont fontWithName:TITLE_FONT size:TITLE_FONT_SIZE]
+			   withFont: [UIFont fontWithName:TITLE_FONT size:FEED_TITLE_FONT_SIZE]
 		   andTextColor: [UIColor TITLE_TEXT_COLOR]
-	   andNumberOfLines: 4];
+	   andNumberOfLines: 2];
+
+	[self.dateCreatedLabel setFont: [UIFont fontWithName:DATE_AND_LIKES_FONT size:DATE_AND_LIKES_FONT_SIZE]];
+	[self.dateCreatedLabel setTextColor:[UIColor TITLE_TEXT_COLOR]];
+	[self.dateCreatedLabel setTextAlignment: NSTextAlignmentLeft];
+
+	[self.numLikesLabel setFont: [UIFont fontWithName:DATE_AND_LIKES_FONT size:DATE_AND_LIKES_FONT_SIZE]];
+	[self.numLikesLabel setTextColor:[UIColor TITLE_TEXT_COLOR]];
+	[self.numLikesLabel setTextAlignment: NSTextAlignmentLeft];
 
 	[self formatUILabel: self.povCreatorUsername
 			   withFont: [UIFont fontWithName:USERNAME_FONT size:USERNAME_FONT_SIZE]
-		   andTextColor: [UIColor USERNAME_TEXT_COLOR]
-	   andNumberOfLines: 1];
+		   andTextColor: [UIColor TITLE_TEXT_COLOR]
+	   andNumberOfLines: 2];
 
 	[self.storyTextView addSubview: self.povTitle];
 	[self.storyTextView addSubview: self.povCreatorUsername];
+	[self.storyTextView addSubview: self.dateAndLikesView];
 	[self addSubview: self.storyTextView];
 }
 
@@ -204,10 +234,22 @@
 #pragma mark - Set Content -
 
 -(void) setContentWithUsername:(NSString *) username andTitle: (NSString *) title
-				 andCoverImage: (UIImage*) coverImage {
+				 andCoverImage: (UIImage*) coverImage andDateCreated: (GTLDateTime*) dateCreated
+				   andNumLikes: (NSNumber*) numLikes {
 	self.title = title;
 	self.povTitle.text = title;
 	self.povCreatorUsername.text = username;
+	if (dateCreated) {
+		// TODO:
+//		self.dateCreatedLabel.text = [NSString stringWithFormat: @"%@", dateCreated.stringValue];
+	}
+	if (numLikes.longLongValue == 1) {
+		self.numLikesLabel.text = [NSString stringWithFormat: @"%lld like", numLikes.longLongValue];
+	} else if (numLikes.longLongValue > 0) {
+		self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", numLikes.longLongValue];
+	} else {
+		[self.likeIconView setHidden:YES];
+	}
 	UIImage* leftHalf = [self halfPicture:coverImage leftHalf:YES];
 	UIImage* rightHalf = [self halfPicture:coverImage leftHalf:NO];
 	[self.leftSemiCircle setImage: leftHalf];
@@ -216,7 +258,8 @@
 
 -(void) setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title
 						andCoverImage: (UIImage*) coverImage {
-	[self setContentWithUsername:username andTitle:title andCoverImage:coverImage];
+	[self setContentWithUsername:username andTitle:title andCoverImage:coverImage andDateCreated: nil
+					 andNumLikes: [NSNumber numberWithLongLong:0]];
     self.isPlaceHolder = YES;
 }
 
@@ -422,5 +465,20 @@
 	}
 	return _povCreatorUsername;
 }
+
+-(UILabel *) numLikesLabel {
+	if (!_numLikesLabel) {
+		_numLikesLabel = [[UILabel alloc] init];
+	}
+	return _numLikesLabel;
+}
+
+-(UILabel *) dateCreatedLabel {
+	if (!_dateCreatedLabel) {
+		_dateCreatedLabel = [[UILabel alloc] init];
+	}
+	return _dateCreatedLabel;
+}
+
 @end
 

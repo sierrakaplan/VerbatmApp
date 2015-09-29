@@ -10,14 +10,15 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <Parse/PFUser.h>
+#import <Parse/PFQuery.h>
 #import <ParseFacebookutilsV4/PFFacebookUtils.h>
 
 @class GTLVerbatmAppVerbatmUser;
 
 @protocol UserManagerDelegate <NSObject>
 
--(void) successfullySignedUpUser: (GTLVerbatmAppVerbatmUser*) user;
--(void) errorSigningUpUser: (NSError*) error;
+-(void) successfullyLoggedInUser: (GTLVerbatmAppVerbatmUser*) user;
+-(void) errorLoggingInUser: (NSError*) error;
 
 @end
 
@@ -25,15 +26,21 @@
 
 @property (strong, nonatomic) id<UserManagerDelegate> delegate;
 
++ (UserManager *)sharedInstance;
+
 -(void) signUpUserFromEmail: (NSString*)email andName: (NSString*)name
 				andPassword: (NSString*)password andPhoneNumber: (NSString*) phoneNumber;
 
--(void) signUpUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
+-(void) signUpOrLoginUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
+
+-(void) loginUserFromEmail: (NSString*)email andPassword:(NSString*)password;
+
+-(void) queryForCurrentUser;
+-(GTLVerbatmAppVerbatmUser*) getCurrentUser;
+
+-(void) logOutUser;
 
 //TODO:
--(void) getCurrentUser;
-
-//TODO:
--(void) changeUserProfilePhoto;
+-(void) changeUserProfilePhoto: (UIImage*) image;
 
 @end

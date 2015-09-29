@@ -17,6 +17,10 @@
 #define NO_NETWORK_IMAGE @"no_network_image"
 #define PUBLISHED_ANIMATION_ICON @"published_icon1"
 
+#pragma mark Story Cell
+
+#define FEED_LIKE_ICON @"heart_no_fill"
+
 #pragma mark Bottom Nav
 
 #define ADK_NAV_ICON @"create_story"
@@ -28,11 +32,9 @@
 #define SWITCH_CATEGORY_CIRCLE @"blackTrendingCircle"
 
 
-
 #pragma mark - ADK -
 
 #define WHAT_IS_IT_LIKE_BORDER @"dashed_border_with_line"
-
 #define TITLE_NOTIFICATION_ANIMATION @"title_notification"
 
 #pragma mark Media Capture
@@ -55,6 +57,10 @@
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"gallery"
 
+#pragma mark Media Tile
+
+#define PLUS_ICON @"plus_sign"
+
 #pragma mark GM Image Picker
 
 #define GM_VIDEO_ICON @"GMVideoIcon"
@@ -69,8 +75,8 @@
 
 #pragma mark - AVES -
 
-#define LIKE_ICON @"Like Unpressed"
-#define LIKE_PRESSED_ICON @"Like Pressed"
+#define LIKE_ICON @"heart_unfilled"
+#define LIKE_PRESSED_ICON @"heart_filled"
 #define PULLDOWN_TEXT_ICON @"pulldown_icon"
 
 #pragma mark Video AVE

@@ -50,6 +50,7 @@
 
 #define TITLE_LABEL_HEIGHT 35
 #define USERNAME_LABEL_HEIGHT 25
+#define DATE_AND_LIKES_LABEL_HEIGHT 18
 
 #pragma mark Topics table view cell
 
@@ -134,12 +135,12 @@
 
 #pragma mark Media Select Tile
 
-#define MEDIA_TILE_SELECTOR_HEIGHT 100.f
+#define MEDIA_TILE_SELECTOR_HEIGHT 40.f
 #define ADD_MEDIA_BUTTON_OFFSET 10
 
 #pragma mark - AVES -
 
-#define LIKE_BUTTON_SIZE 50.f
+#define LIKE_BUTTON_SIZE 30.f
 #define LIKE_BUTTON_OFFSET 20.f
 
 #pragma mark Text
@@ -156,8 +157,13 @@
 #define CIRCLE_OFFSET 15.f
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
-#define TOUCH_THRESHOLD 40.f
+#define TAP_THRESHOLD 15.f
+#define	SLIDE_THRESHOLD 30.f
 
+#define DISTANCE_BETWEEN_FIELDS 20
+
+
+#define PAN_CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
 
 
 #endif

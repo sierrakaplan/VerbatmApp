@@ -17,9 +17,6 @@
 
 #import "GTLVerbatmAppVerbatmUser.h"
 
-#import "GTLVerbatmAppEmail.h"
-#import "GTLVerbatmAppPhoneNumber.h"
-
 // ----------------------------------------------------------------------------
 //
 //   GTLVerbatmAppVerbatmUser
