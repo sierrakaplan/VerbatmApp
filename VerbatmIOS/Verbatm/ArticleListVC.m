@@ -168,7 +168,14 @@
 // has published a POV and to show the loading animation until the POV
 // has actually published
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
-	self.povPublishing = YES;
+	
+    if(self.povPublishing){
+        //there is another one being published so we will exit for now
+        return;
+    }
+
+    
+    self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
 	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:userName andTitle: title andCoverImage:coverPic];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
