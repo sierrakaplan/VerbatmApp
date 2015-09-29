@@ -67,8 +67,11 @@
 	if (self.playerItem) {
 		[self removePlayerItemObserver];
 	}
+    
 	self.playerItem = playerItem;
-	[self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+	
+    [self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(playerItemDidReachEnd:)
 												 name:AVPlayerItemDidPlayToEndTimeNotification

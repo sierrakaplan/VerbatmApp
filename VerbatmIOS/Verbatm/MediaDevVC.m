@@ -663,7 +663,7 @@
 #pragma mark - Cleanup after Publishing POV -
 
 -(void) povPublished {
-	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 	[self.contentDevVC cleanUp];
 }
 

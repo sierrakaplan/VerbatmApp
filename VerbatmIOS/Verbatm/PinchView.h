@@ -25,7 +25,6 @@
 //tells you if the object is selected for panning
 @property (nonatomic) BOOL selected;
 
-@property (nonatomic) BOOL containsText;
 @property (nonatomic) BOOL containsImage;
 @property (nonatomic) BOOL containsVideo;
 
@@ -65,7 +64,6 @@
 
 
 #pragma mark Should be overriden in subclasses
--(NSString*) getText;
 //array of UIImage*
 -(NSArray*) getPhotos;
 //array of AVURLAsset

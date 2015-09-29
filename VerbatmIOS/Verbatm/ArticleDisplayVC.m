@@ -54,7 +54,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	// Should always have 4 stories in memory (two in the direction of scroll, current, and one back)
+	//TODO: should always have 4 stories in memory (two in the direction of scroll, current, and one back)
 	self.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
 	[self.view addSubview: self.scrollView];
 	self.pageLoadManager.delegate = self;

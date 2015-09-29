@@ -39,7 +39,7 @@
 	self.preferredFrame = frame;
 	for(PinchView* pinchView in pinchViews) {
 		//there are some issue where a messed up p_obj arrives
-		if(!(pinchView.containsImage || pinchView.containsText || pinchView.containsVideo)) {
+		if(!(pinchView.containsImage || pinchView.containsVideo)) {
 //			NSLog(@"Pinch view says it has no type of media in it.");
 			continue;
 		}
@@ -103,7 +103,7 @@
 		type = AVETypeVideo;
 	}
 
-	BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:[pinchView getText] andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos] andAVEType:type];
+	BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:self.preferredFrame andText:@"" andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos] andAVEType:type];
 	[self.results addObject:textAndOtherMediaAVE];
 }
 
