@@ -108,7 +108,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 				error:(NSError *)error {
 
 	if (error || result.isCancelled) {
-		NSLog(@"Error in facebook login: %@", error.description);
 		[self errorInSignInAnimation: @"Facebook login failed."];
 		return;
 	}
@@ -116,11 +115,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	//TODO(sierrakn): If any declined permissions are essential
 	//explain to user why and ask them to agree to each individually
 	NSSet* declinedPermissions = result.declinedPermissions;
-	NSLog(@"User declined fb permissions for %@", declinedPermissions);
 
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
-		NSLog(@"Successfully logged in with Facebook");
 		[self.userManager signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
 	} else {
 		[self errorInSignInAnimation: @"Facebook login failed."];

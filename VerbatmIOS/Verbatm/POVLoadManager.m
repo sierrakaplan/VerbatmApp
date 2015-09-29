@@ -65,7 +65,7 @@
 	}).then(^(NSArray* povInfosWithCoverPhoto) {
 		self.povInfos = [[NSMutableArray alloc] init];
 		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
-		NSLog(@"Successfully refreshed POVs!");
+//		NSLog(@"Successfully refreshed POVs!");
 		[self.delegate povsRefreshed];
 	}).catch(^(NSError* error) {
 		NSLog(@"Error refreshing POVs: %@", error.description);
@@ -87,7 +87,7 @@
 		return PMKWhen(loadCoverPhotoPromises);
 	}).then(^(NSArray* povInfosWithCoverPhoto) {
 		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
-		NSLog(@"Successfully loaded more POVs!");
+//		NSLog(@"Successfully loaded more POVs!");
 		[self.delegate morePOVsLoaded];
 	}).catch(^(NSError* error) {
 		 NSLog(@"Error loading more POVs: %@", error.description);
@@ -196,7 +196,6 @@
 	if (index >= 0 && index < [self.povInfos count]) {
 		return self.povInfos[index];
 	} else {
-		NSLog(@"Error: Requesting POV for index not yet loaded");
 		return nil;
 	}
 }

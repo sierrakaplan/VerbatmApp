@@ -93,14 +93,14 @@
 
 -(void) backButtonReleased:(UIButton*) sender {
 	if (!self.delegate) {
-		NSLog(@"No content dev pull bar delegate set.");
+//		NSLog(@"No content dev pull bar delegate set.");
 	}
 	[self.delegate backButtonPressed];
 }
 
 - (void) previewButtonReleased:(UIButton *)sender {
 	if (!self.delegate) {
-		NSLog(@"No content dev pull bar delegate set.");
+//		NSLog(@"No content dev nav bar delegate set.");
 	}
     [self.delegate previewButtonPressed];
 }

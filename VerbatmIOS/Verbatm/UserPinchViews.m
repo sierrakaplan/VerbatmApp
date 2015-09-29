@@ -102,7 +102,7 @@
 			PinchView* pinchView = [self convertNSDataToPinchView:data];
 			[self.pinchViews addObject:pinchView];
 		}
-		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:self.pinchViewsAsData copyItems:YES];
+		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:self.pinchViewsAsData copyItems:NO];
 	}
 }
 

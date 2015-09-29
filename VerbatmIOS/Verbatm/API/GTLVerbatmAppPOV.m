@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppPOV (0 custom class methods, 7 custom properties)
+//   GTLVerbatmAppPOV (0 custom class methods, 8 custom properties)
 
 #import "GTLVerbatmAppPOV.h"
 
@@ -24,7 +24,7 @@
 
 @implementation GTLVerbatmAppPOV
 @dynamic coverPicUrl, creatorUserId, datePublished, identifier, numUpVotes,
-         pageIds, title;
+         pageIds, title, usersWhoHaveLikedIDs;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{
@@ -35,7 +35,8 @@
 
 + (NSDictionary *)arrayPropertyToClassMap {
   NSDictionary *map = @{
-    @"pageIds" : [NSNumber class]
+    @"pageIds" : [NSNumber class],
+    @"usersWhoHaveLikedIDs" : [NSNumber class]
   };
   return map;
 }

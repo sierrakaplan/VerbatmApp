@@ -307,7 +307,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 	} else {
 
 		if(![pinchViews count]) {
-			NSLog(@"Can't publish with no pinch objects");
+//			NSLog(@"Can't publish with no pinch objects");
 			return;
 		}
 

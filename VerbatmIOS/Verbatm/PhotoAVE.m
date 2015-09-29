@@ -251,8 +251,8 @@
 }
 
 -(void) fadeWithDistance:(float)distanceFromStartingTouch andTotalDistance:(float)totalDistanceToTravel {
-	NSLog(@"Distance from starting touch: %f", distanceFromStartingTouch);
-	NSLog(@"Last distance from starting touch: %f", self.lastDistanceFromStartingPoint);
+//	NSLog(@"Distance from starting touch: %f", distanceFromStartingTouch);
+//	NSLog(@"Last distance from starting touch: %f", self.lastDistanceFromStartingPoint);
 
 	//switch current point and image
 	if (distanceFromStartingTouch > totalDistanceToTravel) {
@@ -283,7 +283,7 @@
 
 	UIView* currentImageView = self.imageContainerViews[self.currentPhotoIndex];
 	float alpha = 1.f-fractionOfDistance;
-	NSLog(@"Alpha:%f", alpha);
+//	NSLog(@"Alpha:%f", alpha);
 	[currentImageView setAlpha:alpha];
 }
 

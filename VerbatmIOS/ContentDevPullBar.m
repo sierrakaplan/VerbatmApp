@@ -110,7 +110,7 @@
 - (void) switchModeButtonReleased:(UIButton *)sender {
     
 	if (!self.delegate) {
-		NSLog(@"No content dev pull bar delegate set.");
+//		NSLog(@"No content dev pull bar delegate set.");
 	}
 	switch(self.mode) {
 		case PullBarModeMenu: {

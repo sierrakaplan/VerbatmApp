@@ -22,9 +22,6 @@
 @synthesize formData, progress;
 
 -(instancetype) initWithImage:(UIImage*)img andUri: (NSString*)uri {
-
-	NSLog(@"Uploading image to blobstore with url: %@", uri);
-
 	NSData *imageData = [NSData dataWithData:UIImagePNGRepresentation(img)];
 
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
@@ -42,9 +39,6 @@
 
 //Maybe could do this with Promise NSURLConnection?
 -(instancetype) initWithVideoData: (NSData*)videoData  andUri: (NSString*)uri {
-
-	NSLog(@"Uploading video to blobstore with url: %@", uri);
-
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
 
 	[self.formData setData:videoData
@@ -89,7 +83,6 @@
 }
 
 -(void) requestFinished:(ASIHTTPRequest *)request {
-	NSLog(@"upload media finished");
 	//The response string is a blobkeystring and an imagesservice servingurl for image
 	NSString* responseString = [request responseString];
 	if (!responseString.length) {

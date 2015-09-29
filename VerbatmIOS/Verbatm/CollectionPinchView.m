@@ -286,7 +286,7 @@
 			NSError * error;
 			NSData* videoData = [NSData dataWithContentsOfURL: videoURL options:NSDataReadingMappedIfSafe error:&error];
 			if (error) {
-				NSLog(@"error getting data from video url: %@", error.description);
+//				NSLog(@"error getting data from video url: %@", error.description);
 			} else {
 				[videos addObject: videoData];
 			}

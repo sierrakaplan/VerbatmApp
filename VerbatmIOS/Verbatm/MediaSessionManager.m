@@ -137,7 +137,7 @@
 	NSError* error = nil;
 	self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice: videoDevice error:&error];
 	if(error){
-		NSLog(@"video input not  available");
+//		NSLog(@"video input not  available");
 		return;
 	}
 
@@ -146,7 +146,7 @@
 	self.audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
 	if (!self.videoInput || !self.audioInput) {
 		// Handle the error appropriately.
-		NSLog(@"ERROR: trying to open camera: %@", error);
+//		NSLog(@"ERROR: trying to open camera: %@", error);
 		return;
 	}
 
@@ -158,7 +158,7 @@
 	if([self.session canAddOutput:self.movieOutputFile]){
 		[self.session addOutput: self.movieOutputFile];
 	}else{
-		NSLog(@"Couldn't add output for video");
+//		NSLog(@"Couldn't add output for video");
 	}
 }
 
@@ -184,10 +184,10 @@
 	NSString* albumName = VERBATM_ALBUM_NAME;
 	[self.assetLibrary addAssetsGroupAlbumWithName:albumName
 									   resultBlock:^(ALAssetsGroup *group) {
-										   NSLog(@"added album:%@", albumName);
+//										   NSLog(@"added album:%@", albumName);
 									   }
 									  failureBlock:^(NSError *error) {
-										  NSLog(@"error adding album");
+//										  NSLog(@"error adding album");
 									  }];
 
 }
@@ -200,13 +200,13 @@
 	[self.assetLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum
 									 usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
 										 if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:albumName]) {
-											 NSLog(@"found album %@", albumName);
+//											 NSLog(@"found album %@", albumName);
 											 weakSelf.verbatmAlbum = group;
 											 return;   //add this
 										 }
 									 }
 								   failureBlock:^(NSError* error) {
-									   NSLog(@"failed to enumerate albums:\nError: %@", [error localizedDescription]);
+//									   NSLog(@"failed to enumerate albums:\nError: %@", [error localizedDescription]);
 								   }];
 }
 
@@ -252,7 +252,7 @@
 		((AVCaptureDeviceInput*)currentVideoInput).device.flashMode = (((AVCaptureDeviceInput*)currentVideoInput).device.flashActive)? AVCaptureFlashModeOff : AVCaptureFlashModeOn;
 		[((AVCaptureDeviceInput*)currentVideoInput).device unlockForConfiguration];
 	}else{
-		NSLog(@"Video device does not have flash settings");
+//		NSLog(@"Video device does not have flash settings");
 	}
 	[self.session commitConfiguration];
 }
@@ -286,14 +286,11 @@
 	}
 }
 
-//by Lucio
 //set the preview session to the the bounds of the view
 -(void)setToFrameOfView:(UIView*)containerView
 {
 	if([containerView.layer.sublayers containsObject: self.videoPreview]){
 		self.videoPreview.frame = containerView.frame;
-	}else{
-		NSLog(@"Wrong container view");
 	}
 }
 
@@ -320,12 +317,10 @@
 	NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
 	NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
-	if ([fileManager fileExistsAtPath:movieOutput])
-	{
+	if ([fileManager fileExistsAtPath:movieOutput]) {
 		NSError *error;
-		if ([fileManager removeItemAtPath:movieOutput error:&error] == NO)
-		{
-			NSLog(@"output path  is wrong");
+		if ([fileManager removeItemAtPath:movieOutput error:&error] == NO) {
+//			NSLog(@"output path  is wrong");
 			return;
 		}
 	}
@@ -361,7 +356,7 @@
 	[videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
 	[audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0] atTime:kCMTimeZero error:nil];
 
-	NSLog(@"video composition track time range: %lld, %lld", videoTrack.timeRange.start.value, videoTrack.timeRange.duration.value);
+//	NSLog(@"video composition track time range: %lld, %lld", videoTrack.timeRange.start.value, videoTrack.timeRange.duration.value);
 
 	//create the instruction that fixes the orientation of the asset.
 	AVMutableVideoCompositionInstruction* instructions = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
@@ -373,7 +368,7 @@
 	//making video and audio assets
 	AVAssetTrack* assetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
 	AVAssetTrack* audioAssetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
-	NSLog(@"%@, %@, %@", videoAsset, assetTrack, audioAssetTrack);
+//	NSLog(@"%@, %@, %@", videoAsset, assetTrack, audioAssetTrack);
 
 
 
@@ -383,15 +378,12 @@
 		CGAffineTransform t1 = CGAffineTransformMakeTranslation(assetTrack.naturalSize.width/2, assetTrack.naturalSize.height/2);
 		CGAffineTransform t2;
 		if(self.deviceStartOrientation == UIDeviceOrientationLandscapeLeft){
-			NSLog(@"this is the orientation corresponding to lands left");
 			t2 = CGAffineTransformRotate(t1,0);
 		}else{
-			NSLog(@"this is the orientation corresponding to lands right");
 			t2 = CGAffineTransformRotate(t1, M_PI);
 		}
 		finalTransform =  CGAffineTransformTranslate(t2, -assetTrack.naturalSize.width/2, -assetTrack.naturalSize.height/2);
 	}else{
-		NSLog(@"this is the orientation corresponding to portraits");
 		//check for cropping . will fix this later
 		CGAffineTransform t1 = CGAffineTransformMakeTranslation(assetNaturalSize.width/2, 0);
 		finalTransform = CGAffineTransformRotate(t1, M_PI_2);
@@ -428,21 +420,19 @@
 	[exporter exportAsynchronouslyWithCompletionHandler:^{
 		switch ([exporter status]) {
 			case AVAssetExportSessionStatusCompleted: {
-				NSLog(@"Export done successfully");
 				if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
 					[self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
 						[self.assetLibrary assetForURL:assetURL
 										   resultBlock:^(ALAsset *asset) {
 											   [self.verbatmAlbum addAsset:asset];
-											   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+//											   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
 											  // [self.delegate didFinishSavingMediaToAsset:asset];
 										   }
 										  failureBlock:^(NSError* error) {
-											  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+//											  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
 										  } ];
 					}];
 				}else{
-					NSLog(@"wrong output location");
 				}
 				break;
 			}
@@ -472,15 +462,14 @@
 			[self.assetLibrary assetForURL:assetURL
 							   resultBlock:^(ALAsset *asset) {
 								   [self.verbatmAlbum addAsset:asset];
-								   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+//								   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
 								   [self.delegate didFinishSavingMediaToAsset:asset];
 							   }
 							  failureBlock:^(NSError* error) {
-								  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+//								  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
 							  }];
 		}];
 	}else{
-		NSLog(@"wrong output location");
 	}
 
 }
@@ -513,7 +502,7 @@
 			[self processImage:[[UIImage alloc] initWithData: dataForImage]];
 			[self saveImageToVerbatmAlbum];
 		}else{
-			NSLog(@"%@", [error localizedDescription]);
+//			NSLog(@"%@", [error localizedDescription]);
 		}
 	}];
 }
@@ -528,18 +517,16 @@
 										   metadata:nil
 									completionBlock:^(NSURL* assetURL, NSError* error) {
 										if (error.code == 0) {
-											NSLog(@"saved image completed:\nurl: %@", assetURL);
-
 											// try to get the asset
 											[self.assetLibrary assetForURL:assetURL
 															   resultBlock:^(ALAsset *asset) {
 																   // assign the photo to the album
 																   [self.verbatmAlbum addAsset:asset];
-																   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+//																   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
 																   [self.delegate didFinishSavingMediaToAsset:asset];
 															   }
 															  failureBlock:^(NSError* error) {
-																  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
+//																  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
 															  }];
 										}
 										else {
@@ -565,7 +552,6 @@
 		[[UIImage imageWithCGImage: self.stillImage.CGImage scale:1.0 orientation:UIImageOrientationRight] drawInRect: CGRectMake(0, 0, self.stillImage.size.height, self.stillImage.size.width)];
 		self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
 	}else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait || [UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp){
-		NSLog(@"was here for rotation");
 		[self rotateImage];
 	}
 }

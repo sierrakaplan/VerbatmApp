@@ -79,7 +79,6 @@
 	//if we have nothing in our article then return to the list view-
 	//we shouldn't need this because all downloaded articles should have legit pages
 	if(![pinchViews count]) {
-		NSLog(@"No pages in article");
 		[self revealPreview:NO];
 		return;
 	}

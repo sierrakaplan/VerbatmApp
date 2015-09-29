@@ -105,7 +105,7 @@
 
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
-		NSLog(@"Error uploading POV: %@", error.description);
+//		NSLog(@"Error uploading POV: %@", error.description);
 		self.mediaUploaders = nil;
 	});
 }
@@ -121,7 +121,7 @@
 		return [coverPicUploader startUpload];
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
-		NSLog(@"Error uploading POV: %@", error.description);
+//		NSLog(@"Error uploading POV: %@", error.description);
 	});;
 }
 
@@ -136,7 +136,7 @@
 	}
 	return PMKWhen(storePagePromises).catch(^(NSError *error){
 		//This can catch at any part in the chain
-		NSLog(@"Error uploading POV: %@", error.description);
+//		NSLog(@"Error uploading POV: %@", error.description);
 	});
 }
 
@@ -158,7 +158,7 @@
 		return [self insertPage: page];
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
-		NSLog(@"Error uploading POV: %@", error.description);
+//		NSLog(@"Error uploading POV: %@", error.description);
 	});
 }
 
@@ -178,7 +178,7 @@
 	}
 	return PMKWhen(storeImagePromises).catch(^(NSError *error){
 		//This can catch at any part in the chain
-		NSLog(@"Error uploading POV: %@", error.description);
+//		NSLog(@"Error uploading POV: %@", error.description);
 	});
 }
 
@@ -203,7 +203,7 @@
 	}
 	return PMKWhen(storeVideoPromises).catch(^(NSError *error){
 		//This can catch at any part in the chain
-		NSLog(@"Error uploading POV: %@", error.description);
+//		NSLog(@"Error uploading POV: %@", error.description);
 	});
 }
 
@@ -309,10 +309,9 @@
 	[self.service executeQuery:insertPOVQuery
 			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* object, NSError *error) {
 				 if (error) {
-					 NSLog(@"Error uploading POV: %@", error.description);
+//					 NSLog(@"Error uploading POV: %@", error.description);
 					 //TODO: should send a notification that there was an error publishing
 				 } else {
-					 NSLog(@"Successfully uploaded POV!");
 					 self.mediaUploaders = nil;
 					 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
 											  object:ticket];

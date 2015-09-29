@@ -98,7 +98,7 @@
     NSError * error;
     NSData * ourData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
 	if (error) {
-		NSLog(@"error getting data from video url: %@", error.description);
+//		NSLog(@"error getting data from video url: %@", error.description);
 		return nil;
 	} else {
 		return @[ourData];

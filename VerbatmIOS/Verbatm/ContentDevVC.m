@@ -480,7 +480,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView {
 
 	if(!pinchView) {
-		NSLog(@"Attempting to add nil pinch view");
+//		NSLog(@"Attempting to add nil pinch view");
 		return;
 	}
 
@@ -522,12 +522,12 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 -(void)shiftElementsBelowView: (UIView *) view
 {
 	if (!view) {
-		NSLog(@"View that elements are being shifted below should not be nil");
+//		NSLog(@"View that elements are being shifted below should not be nil");
 		return;
 	}
 	if(![view isKindOfClass:[ContentPageElementScrollView class]]
 	   && ![view isKindOfClass:[CoverPicturePV class]]) {
-		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
+//		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
 		return;
 	}
 
@@ -960,7 +960,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 -(void) addMediaTile: (MediaSelectTile *) mediaTile underView: (ContentPageElementScrollView *) topView {
 	if(!mediaTile) {
-		NSLog(@"Can't add Nil media tile");
+//		NSLog(@"Can't add Nil media tile");
 		return;
 	}
 	CGRect newMediaTileScrollViewFrame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
@@ -1704,7 +1704,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
 			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 				if (![asset isKindOfClass:[AVURLAsset class]]) {
-					NSLog(@"Issue with video not in AVURLAsset form");
+//					NSLog(@"Issue with video not in AVURLAsset form");
 					return;
 				}
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
@@ -1713,10 +1713,10 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 				});
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
-			NSLog(@"Asset is of audio type, unable to handle.");
+//			NSLog(@"Asset is of audio type, unable to handle.");
 			return;
 		} else {
-			NSLog(@"Asset picked of unknown type");
+//			NSLog(@"Asset picked of unknown type");
 			return;
 		}
 	}

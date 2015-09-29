@@ -602,7 +602,6 @@
 
 // Sets pull bar to mode and changes its frame based on mode
 -(void) pullBarTransitionToMode: (PullBarMode) mode {
-
 	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
 		 if (mode == PullBarModeMenu) {
 			 self.pullBar.frame = self.pullBarFrameBottom;
@@ -623,7 +622,7 @@
 -(void) previewButtonPressed {
 	NSArray *pinchViews = [self.contentDevVC getPinchViews];
 	if(![pinchViews count]) {
-		NSLog(@"Can't preview with no pinch views");
+//		NSLog(@"Can't preview with no pinch views");
 		return;
 	}
 	NSString* title = self.contentDevVC.whatIsItLikeField.text;
