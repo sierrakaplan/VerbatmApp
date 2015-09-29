@@ -50,6 +50,7 @@
 
 #define TITLE_LABEL_HEIGHT 35
 #define USERNAME_LABEL_HEIGHT 25
+#define DATE_AND_LIKES_LABEL_HEIGHT 18
 
 #pragma mark Topics table view cell
 

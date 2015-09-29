@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "GTLDateTime.h"
 #import <UIKit/UIKit.h>
 
 @class FeedTableViewCell;
@@ -26,10 +27,13 @@
 @property (strong, nonatomic) NSString* title;
 
 //Loads a normal looking story cell
--(void)setContentWithUsername:(NSString *) username andTitle: (NSString *) title andCoverImage: (UIImage*) coverImage;
+-(void) setContentWithUsername:(NSString *) username andTitle: (NSString *) title
+				 andCoverImage: (UIImage*) coverImage andDateCreated: (GTLDateTime*) dateCreated
+				   andNumLikes: (NSNumber*) numLikes;
 
 //Loads a publishing story cell
--(void)setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title andCoverImage: (UIImage*) coverImage;
+-(void) setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title
+						andCoverImage: (UIImage*) coverImage;
 
 -(void)stopActivityIndicator;
 

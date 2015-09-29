@@ -1673,7 +1673,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 //add assets from picker to our scrollview
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {
 	PHImageManager * iman = [[PHImageManager alloc] init];
-	//store local identifiers so we can querry the nsassets
+	//store local identifiers so we can query the nsassets
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
@@ -1714,7 +1714,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate>
 	}
 }
 
-    
 -(void) createPinchViewFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
 	image = [UIEffects fixOrientation:image];

@@ -139,7 +139,8 @@
 		} else {
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
-		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto];
+		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto
+					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes];
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}

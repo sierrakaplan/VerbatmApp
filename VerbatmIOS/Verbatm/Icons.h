@@ -17,6 +17,10 @@
 #define NO_NETWORK_IMAGE @"no_network_image"
 #define PUBLISHED_ANIMATION_ICON @"published_icon1"
 
+#pragma mark Story Cell
+
+#define FEED_LIKE_ICON @"heart_no_fill"
+
 #pragma mark Bottom Nav
 
 #define ADK_NAV_ICON @"create_story"
