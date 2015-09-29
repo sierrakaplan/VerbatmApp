@@ -29,7 +29,9 @@
 
 #pragma mark Category Switcher
 
-#define SWITCH_CATEGORY_CIRCLE @"blackTrendingCircle"
+#define SWITCH_CATEGORY_CIRCLE_RIGHT @"trending circle_rigthSide"
+#define SWITCH_CATEGORY_CIRCLE_LEFT @"trending circle_leftSide"
+
 
 
 #pragma mark - ADK -

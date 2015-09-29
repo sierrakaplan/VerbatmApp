@@ -233,9 +233,10 @@ public class POVEndpoint {
     }
 
     /**
+     *  Gets the user Ids who have a liked a POV from the given POV
      *
-     * @param id
-     * @return
+     * @param id the id of the POV
+     * @return IdentifierListWrapper - a list of user ids
      */
     @ApiMethod(path="/getUserIdsWhoLikeThisPOV", httpMethod = "GET")
     public final IdentifierListWrapper getUserIdsWhoLikeThisPOV(@Named("id") final Long id) {

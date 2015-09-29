@@ -92,14 +92,17 @@
 	NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
 	NSInteger povIndex = [self.povIDs indexOfObject: povID];
 	POVView* povView = self.povViews[povIndex];
-	[povView addDownArrowButton];
-	[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
-	[UIEffects stopActivityIndicator:self.activityIndicator];
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
 	for (Page* page in pages) {
 		[analyzer getAVEFromPage: page withFrame: self.view.bounds].then(^(UIView* ave) {
 			NSInteger pageIndex = page.indexInPOV+1; // bc cover page +1
+			// When first page loads, show down arrow
+			if (pageIndex == 1) {
+				[povView addDownArrowButton];
+				[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
+				[UIEffects stopActivityIndicator:self.activityIndicator];
+			}
 			[povView renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
 		}).catch(^(NSError* error) {
 			NSLog(@"Error loading page: %@", error.description);

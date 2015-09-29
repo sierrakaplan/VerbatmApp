@@ -19,7 +19,7 @@
 
 #pragma mark - Feed -
 
-#define SNAP_ANIMATION_DURATION 0.1
+#define SNAP_ANIMATION_DURATION 0.4
 
 #pragma mark - Media Dev VC -
 

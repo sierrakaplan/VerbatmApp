@@ -73,7 +73,7 @@
 	}
 	titleLabel.text = title;
     
-    titleLabel.backgroundColor = [UIColor colorWithWhite:1 alpha:0.8];
+    titleLabel.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
     
     [titleLabel sizeToFit];
     

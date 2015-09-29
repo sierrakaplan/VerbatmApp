@@ -57,7 +57,6 @@
     return [defaults boolForKey:CIRCLE_IS_PAGE_INSTRUCTION_KEY];
 }
 
-
 +(BOOL) pinchCircles_InstructionShown{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
    return [defaults boolForKey:PINCH_INSTRUCTION_KEY];

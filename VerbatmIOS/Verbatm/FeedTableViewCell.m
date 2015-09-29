@@ -249,6 +249,7 @@
 		self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", numLikes.longLongValue];
 	} else {
 		[self.likeIconView setHidden:YES];
+        self.numLikesLabel.text = @"";
 	}
 	UIImage* leftHalf = [self halfPicture:coverImage leftHalf:YES];
 	UIImage* rightHalf = [self halfPicture:coverImage leftHalf:NO];

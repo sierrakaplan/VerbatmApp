@@ -134,11 +134,12 @@
 -(AnyPromise*) getPOVInfoWithCoverPhotoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
 	AnyPromise* userNamePromise = [self loadUserNameFromUserID:gtlPovInfo.creatorUserId];
 	AnyPromise* coverPicDataPromise = [POVLoadManager loadDataFromURL: gtlPovInfo.coverPicUrl];
-	AnyPromise* loadUserIDsWhoHaveLikedThisPOV =
-	return PMKWhen(@[userNamePromise, coverPicDataPromise]).then(^(NSArray* results) {
+	AnyPromise* loadUserIDsWhoHaveLikedThisPOV = [self loadUserIDsWhoHaveLikedPOVWithID: gtlPovInfo.identifier];
+	return PMKWhen(@[userNamePromise, coverPicDataPromise, loadUserIDsWhoHaveLikedThisPOV]).then(^(NSArray* results) {
 		NSString* userName = results[0];
 		UIImage* coverPhoto = [UIImage imageWithData: results[1]];
-		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andUserName:userName andCoverPhoto: coverPhoto];
+		NSArray* userIDs = results[2];
+		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andUserName:userName andCoverPhoto: coverPhoto andUserIDsWhoHaveLikedThisPOV:userIDs];
 		return povInfoWithCoverPhoto;
 	});
 }

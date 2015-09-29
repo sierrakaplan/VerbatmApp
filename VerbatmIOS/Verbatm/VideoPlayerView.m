@@ -19,8 +19,8 @@
 @property (nonatomic) BOOL isMuted;
 @property (strong, nonatomic) AVMutableComposition* mix;
 @property (nonatomic) BOOL videoLoading;
-
-
+@property (nonatomic) BOOL isVideoPlaying; //tells you if the video is in a playing state
+@property (strong, nonatomic) NSTimer * ourTimer;//keeps calling continue
 #define MUTE_BUTTON_X 10
 #define MUTE_BUTTON_Y 10
 #define MUTE_BUTTON_WH 40
@@ -67,8 +67,11 @@
 	if (self.playerItem) {
 		[self removePlayerItemObserver];
 	}
+    
 	self.playerItem = playerItem;
-	[self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+	
+    [self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+    
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(playerItemDidReachEnd:)
 												 name:AVPlayerItemDidPlayToEndTimeNotification
@@ -134,6 +137,8 @@
     // Add it to your view's sublayers
 	[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
 	[self.player play];
+    self.ourTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(resumeSession:) userInfo:nil repeats:YES];
+    self.isVideoPlaying = YES;
 }
 
 -(void)setButtonFormats {
@@ -144,6 +149,11 @@
 
 -(void) repeatVideoOnEnd:(BOOL)repeat {
 	self.repeatsVideo = repeat;
+}
+
+// Resume session after freezing
+-(void)resumeSession:(NSTimer*)timer {
+    if(self.isVideoPlaying)[self continueVideo];
 }
 
 //tells me when the video ends so that I can rewind
@@ -161,6 +171,7 @@
 	if (self.player) {
 		[self.player pause];
 	}
+    self.isVideoPlaying = NO;
 }
 
 //plays the video of the pinch view if there is one
@@ -168,6 +179,7 @@
 	if (self.player) {
 		[self.player play];
 	}
+    self.isVideoPlaying = YES;
 }
 
 #pragma mark - Mute -
@@ -213,8 +225,7 @@
 	}
 }
 
--(void)fastForwardVideoWithRate: (NSInteger) rate
-{
+-(void)fastForwardVideoWithRate: (NSInteger) rate{
 	if(self.playerItem) {
 		if([self.playerItem canPlayFastForward]) self.playerLayer.player.rate = rate;
 	}
@@ -252,6 +263,10 @@
     self.player = nil;
     self.playerLayer = nil;
     self.mix = nil;
+    
+    self.isVideoPlaying = NO;
+    [self.ourTimer invalidate];
+    self.ourTimer = nil;
 }
 
 -(void) removePlayerItemObserver {

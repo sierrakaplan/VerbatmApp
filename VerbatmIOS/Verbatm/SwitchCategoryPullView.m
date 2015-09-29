@@ -91,7 +91,7 @@
 //tbd - set the image for the pull circle
 -(void) initPullCircle {
     self.pullCircle.frame = CGRectMake(self.maxPullCircleX, 0, self.pullCircleSize, self.pullCircleSize);
-	self.pullCircle.image = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE];
+	self.pullCircle.image = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE_RIGHT];
 	self.pullCircle.backgroundColor = self.backgroundColor;
     [self addPanGestureToView:self.pullCircle];
     [self addSubview: self.pullCircle];
@@ -100,13 +100,32 @@
 -(void) addPanGestureToView: (UIView *) view {
     UIPanGestureRecognizer * pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pullCirclePan:)];
     pan.maximumNumberOfTouches = 1; //make sure it's only one finger
+    pan.minimumNumberOfTouches = 1;
     view.userInteractionEnabled = YES;
     [view addGestureRecognizer:pan];
+    
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pullCircleTap:)];
+    [view addGestureRecognizer:tap];
 }
+
+-(void) pullCircleTap:(UITapGestureRecognizer *) sender {
+    
+    if(self.pullCircle.frame.origin.x < self.center.x){
+        //flip to right
+        [self snapToEdgeLeft: NO];
+    }else{
+        //flip to left
+        [self snapToEdgeLeft: YES];
+        
+    }
+    
+}
+
 
 //Deals with pan gesture on circle
 -(void) pullCirclePan:(UITapGestureRecognizer *) sender {
-
+    
 	    switch(sender.state) {
         case UIGestureRecognizerStateBegan: {
             self.lastPoint = [sender locationOfTouch:0 inView:self];
@@ -131,8 +150,8 @@
 			// notify delegate that we have panned our pullCircle
             [self.categorySwitchDelegate pullCircleDidPan:((newX - self.leastPullCircleX) / (self.maxPullCircleX - self.leastPullCircleX))];
             break;
-        }
-        case UIGestureRecognizerStateEnded: {
+        }case UIGestureRecognizerStateCancelled:{
+        }case UIGestureRecognizerStateEnded: {
 			float midX = (self.maxPullCircleX - self.leastPullCircleX)/2.f;
 			BOOL snapLeft;
 
@@ -149,6 +168,17 @@
             return;
         }
     }
+}
+
+-(void)changeImageForPullCircle{
+    
+    if(self.pullCircle.frame.origin.x > self.center.x){
+        self.pullCircle.image = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE_RIGHT];
+    }else{
+        
+        self.pullCircle.image = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE_LEFT];
+    }
+    
 }
 
 -(void) resizeTrendingLabel {
@@ -181,7 +211,8 @@
 														 self.pullCircle.frame.size.width,
 														 self.pullCircle.frame.size.height);
 		[self resizeTrendingLabel];
-
+        
+        [self changeImageForPullCircle];
 	}];
 }
 
