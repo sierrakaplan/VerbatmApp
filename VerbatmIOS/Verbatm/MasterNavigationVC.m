@@ -209,14 +209,13 @@
 #pragma mark - Left edge screen pull for exiting article display vc -
 
 -(void) addScreenEdgePanToArticleDisplay {
-	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
-	leftEdgePanGesture.edges = UIRectEdgeLeft;
+	UIPanGestureRecognizer* leftEdgePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
 	leftEdgePanGesture.delegate = self;
 	[self.articleDisplayContainer addGestureRecognizer: leftEdgePanGesture];
 }
 
 //called from left edge pan
-- (void) exitArticleDisplayView:(UIScreenEdgePanGestureRecognizer *)sender {
+- (void) exitArticleDisplayView:(UIPanGestureRecognizer *)sender {
 
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
@@ -232,11 +231,24 @@
 			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
 			CGPoint currentPoint = touchLocation;
 			int diff = currentPoint.x - self.previousGesturePoint.x;
-			self.previousGesturePoint = currentPoint;
-			self.articleDisplayContainer.frame = CGRectOffset(self.articleDisplayContainer.frame, diff, 0);
-			break;
+            
+            if(diff < 0) //swiping left which is wrong so we end the gesture
+            {
+                //this ends the gesture
+                sender.enabled = NO;
+                sender.enabled =YES;
+                break;
+            }else {
+                
+                self.previousGesturePoint = currentPoint;
+                self.articleDisplayContainer.frame = CGRectOffset(self.articleDisplayContainer.frame, diff, 0);
+                break;
+            }
 		}
-		case UIGestureRecognizerStateEnded: {
+        case UIGestureRecognizerStateCancelled:{
+            //should just fall into the next call
+        }case UIGestureRecognizerStateEnded: {
+            
 			if(self.articleDisplayContainer.frame.origin.x > EXIT_EPSILON) {
 				//exit article
 				[self revealArticleDisplay:NO];
