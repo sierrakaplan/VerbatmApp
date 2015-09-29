@@ -41,7 +41,7 @@
 #import "UIEffects.h"
 
 
-@interface MediaDevVC () <MediaSessionManagerDelegate, ContentDevPullBarDelegate, ChangePullBarDelegate>
+@interface MediaDevVC () <MediaSessionManagerDelegate, ContentDevPullBarDelegate, ContentDevVCDelegate>
 
 #pragma mark - SubViews of screen
 
@@ -122,7 +122,7 @@
 	[self registerForNotifications];
 	[self createSubViews];
 	[self setContentDevVC];
-	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 }
 
 -(void)viewWillLayoutSubviews {
@@ -136,8 +136,6 @@
 }
 
 -(void) viewDidAppear:(BOOL)animated {
-	//patch solution to the pullbar being drawn strange
-	self.pullBar.frame = self.pullBarFrameTop;
 	[self.sessionManager startSession];
 //	[self.pullBar pulsePullDown];
 }
@@ -152,7 +150,7 @@
 	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTDEVVC];
 	[self.contentContainerView addSubview: self.contentDevVC.view];
 	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height;
-	self.contentDevVC.changePullBarDelegate = self;
+	self.contentDevVC.delegate = self;
 //TODO:	[self.contentDevVC loadPinchViews];
 }
 
@@ -201,7 +199,7 @@
 
 //creates the pullbar object then saves it as a property
 -(void)createPullBar {
-	self.pullBar = [[ContentDevPullBar alloc]initWithFrame:self.pullBarFrameTop andPanGesture:self.panGesture_PullBar];
+	self.pullBar = [[ContentDevPullBar alloc]initWithFrame:self.pullBarFrameTop];
 	self.pullBar.delegate = self;
 	[self.panGesture_PullBar setDelegate:self.pullBar];
 	[self.pullBar addGestureRecognizer:self.panGesture_PullBar];
@@ -503,7 +501,6 @@
 	[UIView animateWithDuration:0.5 animations:^{
 
 		self.previousMode = self.contentContainerViewMode;
-
 		int containerY = -1 * self.contentContainerView.frame.size.height;
 		self.contentContainerView.frame = CGRectMake(0, containerY, self.contentContainerView.frame.size.width, self.contentContainerView.frame.size.height);
 
@@ -511,8 +508,7 @@
 		self.pullBar.frame = CGRectMake(0,pullBarY, self.pullBar.frame.size.width, self.pullBar.frame.size.height);;
 
 	} completion:^(BOOL finished) {
-		if(finished)
-		{
+		if(finished) {
 			self.contentContainerView.hidden = YES;
 			[self.contentDevVC removeKeyboardFromScreen];
 		}
@@ -521,6 +517,7 @@
 
 
 #pragma mark - Transition container view and pull bar - 
+
 //Sets the content container view to the appropriate frame, sets the pull bar mode,
 //and sets whether the content container view is scrollable
 -(void) transitionContentContainerViewToMode: (ContentContainerViewMode) mode {
@@ -606,8 +603,7 @@
 // Sets pull bar to mode and changes its frame based on mode
 -(void) pullBarTransitionToMode: (PullBarMode) mode {
 
-	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^
-	 {
+	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
 		 if (mode == PullBarModeMenu) {
 			 self.pullBar.frame = self.pullBarFrameBottom;
 		 } else {
@@ -618,9 +614,22 @@
 }
 
 #pragma mark - Change pull bar Delegate Methods (for pullbar) -
--(void)canPreview:(BOOL)canPreview {
-	//TODO:
-//	[self.pullBar enablePreviewInMenuMode: canPreview];
+
+-(void) backButtonPressed {
+	[self.delegate backButtonPressed];
+}
+
+// Displays article preview from pinch objects
+-(void) previewButtonPressed {
+	NSArray *pinchViews = [self.contentDevVC getPinchViews];
+	if(![pinchViews count]) {
+		NSLog(@"Can't preview with no pinch views");
+		return;
+	}
+	NSString* title = self.contentDevVC.whatIsItLikeField.text;
+	UIImage* coverPic = [self.contentDevVC getCoverPicture];
+
+	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic andTitle: title];
 }
 
 -(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {
@@ -644,26 +653,6 @@
 
 #pragma mark - PullBar Delegate Methods (pullbar button actions) -
 
--(void) backButtonPressed {
-	[self.delegate backButtonPressed];
-}
-
-// Displays article preview from pinch objects
--(void) previewButtonPressed {
-	[self.contentDevVC closeAllOpenCollections];
-
-	NSArray *pinchViews = [self getPinchViewsFromContentDev];
-
-	if(![pinchViews count]) {
-		NSLog(@"Can't preview with no pinch views");
-		return;
-	}
-	NSString* title = self.contentDevVC.whatIsItLikeField.text;
-	UIImage* coverPic = [self.contentDevVC getCoverPicture];
-
-	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic andTitle: title];
-}
-
 -(void) cameraButtonPressed {
 	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
 }
@@ -672,63 +661,21 @@
 	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 }
 
--(void) galleryButtonPressed {
-    if(self.pullBar.mode == PullBarModePullDown)[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
-	[self.contentDevVC presentEfficientGallery];
+#pragma mark - Cleanup after Publishing POV -
+
+-(void) povPublished {
+	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
+	[self.contentDevVC cleanUp];
 }
 
-#pragma mark - Publishing POV -
-
--(void) publishPOV { 
-
-	//make sure we have an article title, cover pic, and that we have multiple pinch elements in the deck
-	NSString* title = self.contentDevVC.whatIsItLikeField.text;
-	UIImage* coverPic = [self.contentDevVC getCoverPicture];
-
-	if (![title length]) {
-        [self alertAddTitle];
-	} else if (!coverPic) {
-        [self alertAddCoverPhoto];
-	} else {
-		NSArray *pinchViewsArray = [self getPinchViewsFromContentDev];
-
-		if(![pinchViewsArray count]) {
-			NSLog(@"Can't publish with no pinch objects");
-			return;
-		}
-
-		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews:pinchViewsArray andTitle: title andCoverPic: coverPic];
-		[publisher publish];
-		[self.delegate povPublishedWithCoverPic:coverPic andTitle:title];
-
-		[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
-		[[UserPinchViews sharedInstance] clearPinchViews];
-		[self.contentDevVC cleanUp];
-	}
-}
-
--(void)alertAddTitle{
+-(void)alertAddTitle {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-    });
 }
 
--(void)alertAddCoverPhoto{
+-(void)alertAddCoverPhoto {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-}
-
-
--(NSArray*) getPinchViewsFromContentDev {
-	NSMutableArray *pinchViews = [[NSMutableArray alloc]init];
-	for(ContentPageElementScrollView* elementScrollView in [self.contentDevVC pageElementScrollViews]) {
-		if ([elementScrollView.pageElement isKindOfClass:[PinchView class]]) {
-			[pinchViews addObject:[elementScrollView pageElement]];
-		}
-	}
-	return pinchViews;
 }
 
 #pragma mark - Lazy Instantiation -

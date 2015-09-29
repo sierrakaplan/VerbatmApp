@@ -20,6 +20,7 @@
 
 #import "Notifications.h"
 
+#import "POVPublisher.h"
 #import "PreviewDisplayView.h"
 #import "ProfileVC.h"
 
@@ -29,6 +30,8 @@
 #import "UserManager.h"
 #import "VerbatmCameraView.h"
 #import "GTLVerbatmAppVerbatmUser.h"
+
+#import "UserPinchViews.h"
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
@@ -295,10 +298,30 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 
 #pragma mark - PreviewDisplay delegate Methods (publish button pressed)
 
--(void) publishButtonPressed {
-	[self.mediaDevVC publishPOV];
-}
+-(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
+	
+	if (![title length]) {
+		[self.mediaDevVC alertAddTitle];
+	} else if (!coverPhoto) {
+		[self.mediaDevVC alertAddCoverPhoto];
+	} else {
 
+		if(![pinchViews count]) {
+			NSLog(@"Can't publish with no pinch objects");
+			return;
+		}
+
+		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: coverPhoto];
+		[publisher publish];
+
+		NSString* userName = [self.userManager getCurrentUser].name;
+		[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPhoto];
+		[self showFeed];
+
+		[[UserPinchViews sharedInstance] clearPinchViews];
+		[self.mediaDevVC povPublished];
+	}
+}
 
 #pragma mark - Media dev delegate methods -
 
@@ -308,15 +331,8 @@ UIGestureRecognizerDelegate, UserManagerDelegate>
 
 -(void) previewPOVFromPinchViews:(NSArray *)pinchViews andCoverPic:(UIImage *)coverPic andTitle: (NSString*) title{
 	[self.view bringSubviewToFront:self.previewDisplayView];
-	[self.previewDisplayView displayPreviewPOVFromPinchViews: pinchViews andCoverPic: coverPic andTitle: title];
+	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
 }
-
--(void) povPublishedWithCoverPic:(UIImage *)coverPic andTitle: (NSString*) title {
-	NSString* userName = [self.userManager getCurrentUser].name;
-	[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
-	[self showFeed];
-}
-
 
 //for ios8- To hide the status bar
 -(BOOL)prefersStatusBarHidden {

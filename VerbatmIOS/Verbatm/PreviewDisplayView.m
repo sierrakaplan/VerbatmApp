@@ -27,6 +27,12 @@
 #pragma mark - View that lays out POV -
 @property (strong, nonatomic) POVView* povView;
 
+#pragma mark - Content -
+
+@property (strong, nonatomic) NSString* title;
+@property (strong, nonatomic) UIImage* coverPhoto;
+@property (strong, nonatomic) NSArray* pinchViews;
+
 #pragma mark - Publish Button -
 @property (strong, nonatomic) UIButton* publishButton;
 @property (nonatomic) NSAttributedString *publishButtonTitle;
@@ -64,7 +70,11 @@
 
 #pragma mark - Load & display preview from pinch views -
 
--(void) displayPreviewPOVFromPinchViews: (NSArray*) pinchViews andCoverPic: (UIImage*) coverPic andTitle: (NSString*) title {
+-(void) displayPreviewPOVWithTitle: (NSString*) title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews {
+
+	self.title = title;
+	self.coverPhoto = coverPhoto;
+	self.pinchViews = pinchViews;
 
 	//if we have nothing in our article then return to the list view-
 	//we shouldn't need this because all downloaded articles should have legit pages
@@ -76,7 +86,7 @@
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
 	NSMutableArray* aves = [analyzer getAVESFromPinchViews: pinchViews withFrame: self.viewingFrame];
-	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.viewingFrame andImage:coverPic andTitle:title];
+	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.viewingFrame andImage: coverPhoto andTitle:title];
 	[aves insertObject:coverAVE atIndex:0];
 	self.povView = [[POVView alloc] initWithFrame:self.bounds];
 	[self.povView renderAVES: aves];
@@ -154,7 +164,7 @@
 
 -(void) publishArticleButtonPressed: (UIButton*)sender {
 	[self revealPreview:NO];
-	[self.delegate publishButtonPressed];
+	[self.delegate publishWithTitle:self.title andCoverPhoto:self.coverPhoto andPinchViews:self.pinchViews];
 }
 
 #pragma mark - Exit Display -

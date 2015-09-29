@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+
+#import "ContentDevNavBar.h"
 #import "VerbatmScrollView.h"
 #import "EditContentView.h"
 
@@ -22,10 +24,11 @@
 
 // Delegate tells when pull bar should be shown, hidden,
 //or when undo and preview are/n't possible
-@protocol ChangePullBarDelegate <NSObject>
+@protocol ContentDevVCDelegate <NSObject>
 
+-(void) backButtonPressed;
+-(void) previewButtonPressed;
 -(void) showPullBar: (BOOL) showPullBar withTransition: (BOOL) withTransition;
--(void) canPreview: (BOOL) canPreview;
 
 @end
 
@@ -39,15 +42,13 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
 
+//Delegate in order to tell parent view controller when pull bar should be changed
+@property (strong, nonatomic) id<ContentDevVCDelegate> delegate;
+
 @property (strong, nonatomic) UILabel *whatIsItLikeLabel;
 @property (strong, nonatomic) UITextField *whatIsItLikeField;
 
-
-//keeps track of ContentPageElementScrollViews
-@property (strong, nonatomic, readonly) NSMutableArray * pageElementScrollViews;
-
-//Delegate in order to tell parent view controller when pull bar should be changed
-@property (strong, nonatomic) id<ChangePullBarDelegate> changePullBarDelegate;
+@property (strong, nonatomic) ContentDevNavBar* navBar;
 
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;
@@ -57,22 +58,17 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 
 -(UIImage*) getCoverPicture;
+-(NSArray*) getPinchViews;
 
 //presents gallery so user can pick assets
 -(void) presentEfficientGallery;
-
 // Loads pinch views from saved settings
 -(void) loadPinchViews;
-
 - (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
 
 // either locks the scroll view or frees it
 -(void) removeKeyboardFromScreen;
--(void) closeAllOpenCollections;
-
 -(void)cleanUp;
 
-// Interacting with media dev vc
--(void)undoTileDeleteSwipe;
 
 @end
