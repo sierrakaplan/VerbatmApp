@@ -18,6 +18,10 @@
 
 @interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate>
 
+// mapping between integer and uiview
+@property (strong, nonatomic) NSMutableDictionary * pageAves;
+@property (nonatomic) NSNumber* currentIndexOfPageLoading;
+
 @property (nonatomic) UIScrollView *mainScrollView;
 @property (nonatomic) NSInteger currentPageIndex;
 
@@ -44,34 +48,43 @@
     self = [super initWithFrame:frame];
     if (self) {
 		[self addSubview: self.mainScrollView];
+		self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
     }
     return self;
 }
 
--(void) renderNextAve: (UIView*) ave {
-	[self.pageAves addObject: ave];
-	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width, [self.pageAves count] * self.frame.size.height);
-	[self setDelegateOnPhotoAVE: ave];
-	CGRect frame = CGRectOffset(self.bounds, 0, self.frame.size.height * (self.pageAves.count-1));
-	ave.frame = frame;
-	[self.mainScrollView addSubview:ave];
+-(void) renderNextAve: (UIView*) ave withIndex: (NSNumber*) pageIndex {
+	[self.pageAves setObject:ave forKey:pageIndex];
+	if (pageIndex == self.currentIndexOfPageLoading) {
+		self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
+													 (self.currentIndexOfPageLoading.integerValue+1) * self.frame.size.height);
+		[self setDelegateOnPhotoAVE: ave];
+		CGRect frame = CGRectOffset(self.bounds, 0, self.frame.size.height * self.currentIndexOfPageLoading.integerValue);
+		ave.frame = frame;
+		[self.mainScrollView addSubview:ave];
+		self.currentIndexOfPageLoading = [NSNumber numberWithInteger:self.currentIndexOfPageLoading.integerValue+1];
+		if ([self.pageAves objectForKey:self.currentIndexOfPageLoading]) {
+			[self renderNextAve:[self.pageAves objectForKey:self.currentIndexOfPageLoading] withIndex:self.currentIndexOfPageLoading];
+		}
+	}
 }
 
 //renders aves (pages) onto the view
 -(void) renderAVES: (NSMutableArray *) aves {
-	self.pageAves = aves;
+
 	self.currentPageIndex = -1;
-	
-    self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width, [self.pageAves count] * self.frame.size.height);
+	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width, [aves count] * self.frame.size.height);
 	self.mainScrollView.contentOffset = CGPointMake(0, 0);
-    
-    CGRect viewFrame = self.bounds;
-    for(UIView* view in self.pageAves){
-		[self setDelegateOnPhotoAVE: view];
-		view.frame = viewFrame;
-		[self.mainScrollView addSubview: view];
+	CGRect viewFrame = self.bounds;
+
+	for (int i = 0; i < aves.count; i++) {
+		UIView* ave = aves[i];
+		[self.pageAves setObject:ave forKey:[NSNumber numberWithInt:i]];
+		[self setDelegateOnPhotoAVE: ave];
+		ave.frame = viewFrame;
+		[self.mainScrollView addSubview: ave];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
-    }
+	}
 }
 
 #pragma mark - Add like button -
@@ -129,11 +142,11 @@
 //takes care of playing video if necessary
 //or showing circle if multiple photo ave
 -(void) displayMediaOnCurrentAVE {
-	int nextIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
-	UIView *currentPage = self.pageAves[nextIndex];
+	NSInteger nextIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
+	UIView *currentPage = [self.pageAves objectForKey:[NSNumber numberWithInteger:nextIndex]];
 	if(self.currentPageIndex != nextIndex){
 		if (self.currentPageIndex >= 0) {
-			[self pauseVideosInAVE: self.pageAves[self.currentPageIndex]];
+			[self pauseVideosInAVE: [self.pageAves objectForKey:[NSNumber numberWithInteger: self.currentPageIndex]]];
 		}
 
 		[self displayCircleOnAVE: currentPage];
@@ -235,6 +248,13 @@
 
 
 #pragma mark - Lazy Instantiation -
+
+-(NSMutableDictionary*) pageAves {
+	if(!_pageAves) {
+		_pageAves = [[NSMutableDictionary alloc] init];
+	}
+	return _pageAves;
+}
 
 -(UIScrollView*) mainScrollView {
 	if (!_mainScrollView) {
