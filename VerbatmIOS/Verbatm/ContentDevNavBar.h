@@ -19,6 +19,8 @@
 
 @interface ContentDevNavBar : UIView
 
+@property (nonatomic, strong) id<ContentDevNavBarDelegate> delegate;
+
 -(void) enablePreviewButton: (BOOL) enable;
 
 @end

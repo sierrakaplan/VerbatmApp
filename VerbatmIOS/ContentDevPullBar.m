@@ -16,9 +16,6 @@
 
 @interface ContentDevPullBar ()
 
-
-
-
 // This button switches modes (can be the camera or the pull down)
 @property (strong, nonatomic) UIButton *switchModeButton;
 @property (nonatomic) CGRect switchModeButtonFrame;
@@ -27,33 +24,27 @@
 @property (strong, nonatomic) UIImage* cameraImage;
 @property (strong, nonatomic) UIImage* pullDownImage;
 
-//@property (strong, nonatomic) UIButton *galleryButton;
-//@property (strong, nonatomic) UIImage* galleryImage;
-
-
 #define PULSE_DURATION 0.9
 #define PULSE_DISTANCE 15
 
 @end
 
-
 @implementation ContentDevPullBar
 
 # pragma mark Initialization
--(instancetype)initWithFrame:(CGRect)frame andPanGesture: (UIPanGestureRecognizer *) gesture {
+-(instancetype)initWithFrame:(CGRect)frame {
 
-	//load from Nib file..this initializes the background view and all its subviews
 	self = [super initWithFrame:frame];
 	if(self) {
 		[self setBackgroundColor: [UIColor NAV_BAR_COLOR]];
-        [self createButtonsIgnoringGesture:gesture];
+        [self createButtons];
 		[self switchToPullDown];
 	}
 	return self;
 }
 
 //initialize all buttons, for all modes
--(void)createButtonsIgnoringGesture: (UIPanGestureRecognizer *)panGesture {
+-(void)createButtons {
 
 //	float middleButtonWidth = (self.frame.size.width - ((NAV_ICON_SIZE+NAV_ICON_OFFSET)*2.f))/2.f;
 
@@ -83,13 +74,6 @@
 	self.pullDownBackgroundSquare.backgroundColor = [UIColor blackColor];
 	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
 	self.cameraImage = [UIImage imageNamed: CAMERA_BUTTON_ICON];
-
-//	CGRect galleryButtonFrame = CGRectMake(self.frame.size.width - NAV_ICON_SIZE - NAV_ICON_OFFSET,
-//										   NAV_ICON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
-//	self.galleryButton = [self getButtonWithFrame:galleryButtonFrame];
-//	[self.galleryButton addTarget:self action:@selector(galleryButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
-//
-//	self.galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
 }
 
 -(UILabel*) getLabelWithParentFrame: (CGRect) parentFrame andText:(NSString*) text {
@@ -183,21 +167,6 @@
 
 
 # pragma mark - Button actions on touch up (send message to delegates)
-//
-//-(void) backButtonReleased:(UIButton*) sender {
-//	if (!self.delegate) {
-//		NSLog(@"No content dev pull bar delegate set.");
-//	}
-//	[self.delegate backButtonPressed];
-//}
-//
-//- (void) previewButtonReleased:(UIButton *)sender {
-//    
-//	if (!self.delegate) {
-//		NSLog(@"No content dev pull bar delegate set.");
-//	}
-//    [self.delegate previewButtonPressed];
-//}
 
 - (void) switchModeButtonReleased:(UIButton *)sender {
     
@@ -216,15 +185,4 @@
 	}
 }
 
-//-(void) galleryButtonReleased:(UIButton*) sender {
-//	if (!self.delegate) {
-//		NSLog(@"No content dev pull bar delegate set.");
-//	}
-//    
-//    if(self.mode == PullBarModePullDown) {
-//        [self.switchModeButton  sendActionsForControlEvents: UIControlEventTouchUpInside];
-//    }
-//	[self.delegate galleryButtonPressed];
-//}
-//
 @end

@@ -32,7 +32,6 @@ typedef NS_ENUM(NSInteger, PullBarMode) {
 @property (nonatomic, strong) id<ContentDevPullBarDelegate> delegate;
 // Can be in either pull down mode or menu mode depending on if it's at the top or bottom
 @property (nonatomic) PullBarMode mode;
--(instancetype)initWithFrame:(CGRect)frame andPanGesture: (UIPanGestureRecognizer *) gesture;
 
 -(void)switchToMode: (PullBarMode) mode;
 
