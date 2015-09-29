@@ -15,6 +15,7 @@
 		A513706B1BA77C740058FBA6 /* ArticleDisplayVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A513706A1BA77C740058FBA6 /* ArticleDisplayVC.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
 		A5446C961BBA3C33002177F4 /* ContentDevNavBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5446C951BBA3C33002177F4 /* ContentDevNavBar.m */; settings = {ASSET_TAGS = (); }; };
+		A5446C991BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5446C981BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m */; settings = {ASSET_TAGS = (); }; };
 		A54689231BA3E1BC00F40E54 /* CoverPhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */; };
 		A55A59CC1BB32A8C00C7CE7A /* PromiseKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5B894961BA56D0100551149 /* PromiseKit.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		A55A59CD1BB32AD800C7CE7A /* PromiseKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A5B894961BA56D0100551149 /* PromiseKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -239,6 +240,8 @@
 		A52919751B5DD24F00233712 /* UIView+Glow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Glow.m"; sourceTree = "<group>"; };
 		A5446C941BBA3C33002177F4 /* ContentDevNavBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentDevNavBar.h; sourceTree = "<group>"; };
 		A5446C951BBA3C33002177F4 /* ContentDevNavBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevNavBar.m; sourceTree = "<group>"; };
+		A5446C971BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppIdentifierListWrapper.h; path = API/GTLVerbatmAppIdentifierListWrapper.h; sourceTree = "<group>"; };
+		A5446C981BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppIdentifierListWrapper.m; path = API/GTLVerbatmAppIdentifierListWrapper.m; sourceTree = "<group>"; };
 		A54689211BA3E1BC00F40E54 /* CoverPhotoAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPhotoAVE.h; sourceTree = "<group>"; };
 		A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPhotoAVE.m; sourceTree = "<group>"; };
 		A55A59CF1BB470D300C7CE7A /* SegueIDs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SegueIDs.h; sourceTree = "<group>"; };
@@ -604,6 +607,8 @@
 		A560EF9A1BA89552003FB041 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A5446C971BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.h */,
+				A5446C981BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m */,
 				A5AA31A41B9FCDDC00D8D20C /* GTLVerbatmAppImage.h */,
 				A5AA31A51B9FCDDC00D8D20C /* GTLVerbatmAppImage.m */,
 				A5AA31A81B9FCDDC00D8D20C /* GTLVerbatmAppPage.h */,
@@ -1459,6 +1464,7 @@
 				C77F321E1B6D5D1800E87C25 /* bugSubmissionFormVC.m in Sources */,
 				A5AA31C11B9FCDDC00D8D20C /* GTLVerbatmAppPage.m in Sources */,
 				A5AA31C61B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m in Sources */,
+				A5446C991BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m in Sources */,
 				C7A8E3861A61CE4D00776BD1 /* ContentDevPullBar.m in Sources */,
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,

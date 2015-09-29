@@ -2,9 +2,7 @@ package com.myverbatm.verbatm.backend.models;
 
 import com.google.appengine.api.datastore.Entity;
 import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -43,12 +41,6 @@ public class POVInfo {
      */
     private Long creatorUserId;
 
-    /**
-     * Array of user ids who have liked this POV
-     */
-    @Index
-    private ArrayList<Long> usersWhoHaveLikedIDs;
-
     public POVInfo() {
 
     }
@@ -65,7 +57,6 @@ public class POVInfo {
         this.datePublished = (Date) entity.getProperty("datePublished");
         this.numUpVotes = (Long) entity.getProperty("numUpVotes");
         this.creatorUserId = (Long) entity.getProperty("creatorUserId");
-        this.usersWhoHaveLikedIDs = ()
     }
 
     public Long getId() {
@@ -114,13 +105,5 @@ public class POVInfo {
 
     public void setCreatorUserId(Long creatorUserId) {
         this.creatorUserId = creatorUserId;
-    }
-
-    public ArrayList<Long> getUsersWhoHaveLikedIDs() {
-        return usersWhoHaveLikedIDs;
-    }
-
-    public void setUsersWhoHaveLikedIDs(ArrayList<Long> usersWhoHaveLikedIDs) {
-        this.usersWhoHaveLikedIDs = usersWhoHaveLikedIDs;
     }
 }

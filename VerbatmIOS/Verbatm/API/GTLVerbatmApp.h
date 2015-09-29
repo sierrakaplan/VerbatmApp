@@ -15,6 +15,7 @@
 
 #import "GTLVerbatmAppConstants.h"
 
+#import "GTLVerbatmAppIdentifierListWrapper.h"
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppPage.h"
 #import "GTLVerbatmAppPageListWrapper.h"

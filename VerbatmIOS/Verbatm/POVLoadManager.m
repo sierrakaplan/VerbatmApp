@@ -133,6 +133,7 @@
 -(AnyPromise*) getPOVInfoWithCoverPhotoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
 	AnyPromise* userNamePromise = [self loadUserNameFromUserID:gtlPovInfo.creatorUserId];
 	AnyPromise* coverPicDataPromise = [POVLoadManager loadDataFromURL: gtlPovInfo.coverPicUrl];
+	AnyPromise* loadUserIDsWhoHaveLikedThisPOV =
 	return PMKWhen(@[userNamePromise, coverPicDataPromise]).then(^(NSArray* results) {
 		NSString* userName = results[0];
 		UIImage* coverPhoto = [UIImage imageWithData: results[1]];
@@ -162,6 +163,8 @@
 
 	return promise;
 }
+
+-(AnyPromise*) loadUserIDs
 
 // Returns a query that loads more POV's
 // Different query depending on the povType (recent or trending)

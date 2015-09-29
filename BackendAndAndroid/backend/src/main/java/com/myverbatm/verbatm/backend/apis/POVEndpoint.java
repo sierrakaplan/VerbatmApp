@@ -20,11 +20,13 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.api.users.User;
 import com.myverbatm.verbatm.backend.Constants;
+import com.myverbatm.verbatm.backend.models.IdentifierListWrapper;
 import com.myverbatm.verbatm.backend.models.POV;
 import com.myverbatm.verbatm.backend.models.POVInfo;
 import com.myverbatm.verbatm.backend.models.Page;
 import com.myverbatm.verbatm.backend.models.PageListWrapper;
 import com.myverbatm.verbatm.backend.models.ResultsWithCursor;
+import com.myverbatm.verbatm.backend.models.VerbatmUser;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -205,7 +207,6 @@ public class POVEndpoint {
     public final PageListWrapper getPagesFromPOV(@Named("id") final Long id, final User user)
         throws ServiceException {
 
-        log.info("POV ID: " + id);
         Key povKey = KeyFactory.createKey(POV.class.getSimpleName(), id);
         Query.Filter povIdFilter = new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, povKey);
         Query pageIdsQuery = new Query("POV")
@@ -229,6 +230,36 @@ public class POVEndpoint {
         PageListWrapper pageListWrapper = new PageListWrapper();
         pageListWrapper.pages = pages;
         return pageListWrapper;
+    }
+
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @ApiMethod(path="/getUserIdsWhoLikeThisPOV", httpMethod = "GET")
+    public final IdentifierListWrapper getUserIdsWhoLikeThisPOV(@Named("id") final Long id) {
+        Key povKey = KeyFactory.createKey(POV.class.getSimpleName(), id);
+        Query.Filter povIdFilter = new Query.FilterPredicate(Entity.KEY_RESERVED_PROPERTY, Query.FilterOperator.EQUAL, povKey);
+        Query pageIdsQuery = new Query("POV")
+            .setFilter(povIdFilter)
+                // a list property (a property with multiple values) in a projection query
+                // will return a separate entity for each time the property matches (so for each pageID)
+            .addProjection(new PropertyProjection("usersWhoHaveLikedIDs", Long.class));
+
+        PreparedQuery preparedQuery = datastore.prepare(pageIdsQuery);
+
+        List<Entity> entities = preparedQuery.asList(FetchOptions.Builder.withDefaults());
+        log.info("Entities returned by query for getUserIdsWhoLikeThisPOV: " + entities.toString());
+        ArrayList<Long> userIds = new ArrayList<>();
+        for (Entity entity: entities) {
+            Long userId = (Long) entity.getProperty("usersWhoHaveLikedIDs");
+            userIds.add(userId);
+        }
+
+        IdentifierListWrapper identifierListWrapper = new IdentifierListWrapper();
+        identifierListWrapper.identifiers = userIds;
+        return identifierListWrapper;
     }
 
     /**

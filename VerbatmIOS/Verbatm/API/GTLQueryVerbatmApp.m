@@ -13,10 +13,11 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (26 custom class methods, 5 custom properties)
+//   GTLQueryVerbatmApp (27 custom class methods, 5 custom properties)
 
 #import "GTLQueryVerbatmApp.h"
 
+#import "GTLVerbatmAppIdentifierListWrapper.h"
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppPage.h"
 #import "GTLVerbatmAppPageListWrapper.h"
@@ -161,6 +162,14 @@
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.count = count;
   query.expectedObjectClass = [GTLVerbatmAppResultsWithCursor class];
+  return query;
+}
+
++ (instancetype)queryForPovGetUserIdsWhoLikeThisPOVWithIdentifier:(long long)identifier {
+  NSString *methodName = @"verbatmApp.pov.getUserIdsWhoLikeThisPOV";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.identifier = identifier;
+  query.expectedObjectClass = [GTLVerbatmAppIdentifierListWrapper class];
   return query;
 }
 

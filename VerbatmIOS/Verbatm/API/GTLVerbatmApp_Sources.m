@@ -18,6 +18,7 @@
 
 #import "GTLVerbatmAppConstants.m"
 
+#import "GTLVerbatmAppIdentifierListWrapper.m"
 #import "GTLVerbatmAppImage.m"
 #import "GTLVerbatmAppPage.m"
 #import "GTLVerbatmAppPageListWrapper.m"

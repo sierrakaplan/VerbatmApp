@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (26 custom class methods, 5 custom properties)
+//   GTLQueryVerbatmApp (27 custom class methods, 5 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -133,6 +133,12 @@
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppResultsWithCursor.
 + (instancetype)queryForPovGetTrendingPOVsInfoWithCount:(NSInteger)count;
+
+// Method: verbatmApp.pov.getUserIdsWhoLikeThisPOV
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppIdentifierListWrapper.
++ (instancetype)queryForPovGetUserIdsWhoLikeThisPOVWithIdentifier:(long long)identifier;
 
 // Method: verbatmApp.pov.insertPOV
 //  Authorization scope(s):
