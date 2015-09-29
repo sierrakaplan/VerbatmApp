@@ -75,7 +75,7 @@
 		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
 		for (GTLVerbatmAppPOVInfo* gtlPovInfo in gtlPovInfos) {
 			if (gtlPovInfo.coverPicUrl) {
-				[loadCoverPhotoPromises addObject: [self getPOVInfoWithCoverPhotoFromGTLPOVInfo:gtlPovInfo]];
+				[loadCoverPhotoPromises addObject: [self getPOVInfoWithExtraInfoFromGTLPOVInfo:gtlPovInfo]];
 			}
 		}
 		return PMKWhen(loadCoverPhotoPromises);
@@ -99,7 +99,7 @@
 	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
 		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
 		for (GTLVerbatmAppPOVInfo* gtlPovInfo in gtlPovInfos) {
-			[loadCoverPhotoPromises addObject: [self getPOVInfoWithCoverPhotoFromGTLPOVInfo:gtlPovInfo]];
+			[loadCoverPhotoPromises addObject: [self getPOVInfoWithExtraInfoFromGTLPOVInfo:gtlPovInfo]];
 		}
 		return PMKWhen(loadCoverPhotoPromises);
 	}).then(^(NSArray* povInfosWithCoverPhoto) {
@@ -131,7 +131,7 @@
 
 // Once it gets the data from the cover photo url, creates a UIImage from that data
 // and stores it in a newly created PovInfo, which it returns
--(AnyPromise*) getPOVInfoWithCoverPhotoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
+-(AnyPromise*) getPOVInfoWithExtraInfoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
 	AnyPromise* userNamePromise = [self loadUserNameFromUserID:gtlPovInfo.creatorUserId];
 	AnyPromise* coverPicDataPromise = [POVLoadManager loadDataFromURL: gtlPovInfo.coverPicUrl];
 	AnyPromise* loadUserIDsWhoHaveLikedThisPOV = [self loadUserIDsWhoHaveLikedPOVWithID: gtlPovInfo.identifier];

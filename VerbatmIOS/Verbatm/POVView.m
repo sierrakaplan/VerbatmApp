@@ -95,21 +95,7 @@
 -(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate andSetPOVID: (NSNumber*) povID {
 	self.likeButtonDelegate = delegate;
 	self.povID = povID;
-
-    CGRect likeButtonFrame = CGRectMake(self.frame.size.width - LIKE_BUTTON_SIZE - LIKE_BUTTON_OFFSET,
-                                        self.frame.size.height - LIKE_BUTTON_SIZE - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
-                                        LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
-    
-	self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON];
-	self.likeButtonLikedImage = [UIImage imageNamed:LIKE_PRESSED_ICON];
-	self.likeButton = [UIButton buttonWithType: UIButtonTypeCustom];
-	[self.likeButton setFrame: likeButtonFrame];
-	[self.likeButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
-
 	self.liked = NO;
-	[self.likeButton setImage: self.likeButtonNotLikedImage forState:UIControlStateNormal];
-
-	[self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview: self.likeButton];
 }
 
@@ -198,13 +184,7 @@
 #pragma mark - Down arrow -
 
 -(void)addDownArrowButton{
-    self.downArrow = [[UIButton alloc] init];
-    [self.downArrow setImage:[UIImage imageNamed:DOWN_ARROW_IMAGE] forState:UIControlStateNormal];
-    self.downArrow.frame = CGRectMake(self.center.x - (DOWN_ARROW_WIDTH/2),
-                                      self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
-                                      DOWN_ARROW_WIDTH, DOWN_ARROW_WIDTH);
     [self.mainScrollView addSubview:self.downArrow];
-    [self.downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(void)downArrowClicked {
@@ -269,5 +249,35 @@
 	}
 	return _mainScrollView;
 }
+
+-(UIButton *)likeButton {
+	if (!_likeButton) {
+		CGRect likeButtonFrame = CGRectMake(self.frame.size.width - LIKE_BUTTON_SIZE - LIKE_BUTTON_OFFSET,
+											self.frame.size.height - LIKE_BUTTON_SIZE - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
+											LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
+
+		self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON];
+		self.likeButtonLikedImage = [UIImage imageNamed:LIKE_PRESSED_ICON];
+		_likeButton = [UIButton buttonWithType: UIButtonTypeCustom];
+		[_likeButton setFrame: likeButtonFrame];
+		[_likeButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
+		[_likeButton setImage: self.likeButtonNotLikedImage forState:UIControlStateNormal];
+		[_likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+	}
+	return _likeButton;
+}
+
+-(UIButton*) downArrow {
+	if (!_downArrow) {
+		_downArrow = [[UIButton alloc] init];
+		[_downArrow setImage:[UIImage imageNamed:DOWN_ARROW_IMAGE] forState:UIControlStateNormal];
+		_downArrow.frame = CGRectMake(self.center.x - (DOWN_ARROW_WIDTH/2),
+										  self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
+										  DOWN_ARROW_WIDTH, DOWN_ARROW_WIDTH);
+		[_downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchUpInside];
+	}
+	return _downArrow;
+}
+
 
 @end

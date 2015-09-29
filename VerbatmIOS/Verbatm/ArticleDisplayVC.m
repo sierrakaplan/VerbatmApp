@@ -102,6 +102,7 @@
 				[povView addDownArrowButton];
 				[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
 				[UIEffects stopActivityIndicator:self.activityIndicator];
+				self.activityIndicator = nil;
 			}
 			[povView renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
 		}).catch(^(NSError* error) {
@@ -126,6 +127,9 @@
 	}
 	self.povViews = nil;
 	self.povIDs = nil;
+	if ([self.activityIndicator isAnimating]) {
+		[UIEffects stopActivityIndicator:self.activityIndicator];
+	}
 }
 
 
