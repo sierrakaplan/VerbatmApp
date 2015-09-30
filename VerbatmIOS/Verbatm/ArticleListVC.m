@@ -68,6 +68,9 @@
     self.pullDownInProgress = NO;
     self.refreshInProgress = NO;
     self.loadingPOVs = NO;
+    
+    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter:self.view.center andStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    self.activityIndicator.color = [UIColor grayColor];
 }
 
 -(void) registerForNotifications {
@@ -83,8 +86,6 @@
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter:self.view.center andStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    self.activityIndicator.color = [UIColor grayColor];
     [self refreshFeed];
 }
 
@@ -229,8 +230,6 @@
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
 -(void) morePOVsLoaded {
     if(self.loadingPOVs)self.loadingPOVs = NO;
-    
-    
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
