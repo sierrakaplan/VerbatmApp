@@ -20,7 +20,7 @@
 }
 
 -(void)formatImagePresentation{
-      self.contentMode = UIViewContentModeScaleAspectFit;
+      self.contentMode = UIViewContentModeScaleAspectFill;
       self.clipsToBounds = YES;
 }
 
