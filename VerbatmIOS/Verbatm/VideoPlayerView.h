@@ -13,6 +13,13 @@
 #import <AVKit/AVKit.h>
 
 @interface VideoPlayerView: UIView <NSCoding>
+//this boolean is NO by default and should only
+//be triggered by a videopinchview
+//this allows the video player to adjust the way the frame is displayed.
+//should be called before any URL's are passed in. 
+@property (nonatomic) BOOL forPinchView;
+
+
 
 -(void)playVideoFromURL: (NSURL*) url;
 
