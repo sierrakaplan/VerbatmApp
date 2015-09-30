@@ -127,7 +127,7 @@
 	// Create an AVPlayerLayer using the player
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
 	self.playerLayer.frame = self.bounds;
-	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+    self.playerLayer.videoGravity = (self.forPinchView) ? AVLayerVideoGravityResizeAspectFillgi: AVLayerVideoGravityResizeAspectFill;
 	[self.playerLayer removeAllAnimations];
 	
     
