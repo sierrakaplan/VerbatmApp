@@ -138,7 +138,7 @@
 	return PMKWhen(@[userNamePromise, coverPicDataPromise, loadUserIDsWhoHaveLikedThisPOV]).then(^(NSArray* results) {
 		NSString* userName = results[0];
 		UIImage* coverPhoto = [UIImage imageWithData: results[1]];
-		NSArray* userIDs = ((GTLVerbatmAppIdentifierListWrapper*)results[2]).identifiers;
+		NSArray* userIDs = results[2];
 		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andUserName:userName andCoverPhoto: coverPhoto andUserIDsWhoHaveLikedThisPOV:userIDs];
 		return povInfoWithCoverPhoto;
 	});
@@ -166,7 +166,7 @@
 	return promise;
 }
 
-//
+// Resolves to either error or Array of user ID's that correspond to users that have liked the POV with the given id
 -(AnyPromise*) loadUserIDsWhoHaveLikedPOVWithID: (NSNumber*) povID {
 
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
@@ -175,7 +175,11 @@
 			if (error) {
 				resolve(error);
 			} else {
-				resolve(userIDs);
+				if (userIDs.identifiers) {
+					resolve(userIDs.identifiers);
+				} else {
+					resolve([[NSArray alloc] init]);
+				}
 			}
 		}];
 	}];
