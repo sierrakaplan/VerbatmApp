@@ -2236,8 +2236,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "169"
             endingLineNumber = "169"
-            landmarkName = "-exitDisplay:"
-            landmarkType = "5">
+            landmarkName = "@implementation PreviewDisplayView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
