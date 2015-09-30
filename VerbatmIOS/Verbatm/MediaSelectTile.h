@@ -15,7 +15,6 @@
 @required
 
 -(void) addMediaButtonPressedOnTile: (MediaSelectTile*) tile;
--(void) deleteMediaTile;
 @end
 
 @interface MediaSelectTile : UIView<ContentDevElementDelegate>

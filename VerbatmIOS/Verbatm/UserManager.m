@@ -53,7 +53,6 @@
 				verbatmUser.phoneNumber = phoneNumber;
 			}
 			[self insertUser:verbatmUser];
-
 		} else {
 			[self.delegate errorLoggingInUser: error];
 		}
