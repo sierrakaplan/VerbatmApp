@@ -178,13 +178,10 @@
 // has published a POV and to show the loading animation until the POV
 // has actually published
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
-	
     if(self.povPublishing){
         //there is another one being published so we will exit for now
         return;
     }
-
-    
     self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
 	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:userName andTitle: title andCoverImage:coverPic];
@@ -223,7 +220,7 @@
 }
 
 //delegate method from povLoader - called if call to refresh failed usually for internet reasons
--(void)povsFailedToRefresh{
+-(void)povsFailedToRefresh {
     self.refreshInProgress = NO;
     if(self.refreshControl.isRefreshing)[self.refreshControl endRefreshing];
     [self.delegate failedToRefreshFeed];
@@ -232,6 +229,8 @@
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
 -(void) morePOVsLoaded {
     if(self.loadingPOVs)self.loadingPOVs = NO;
+    
+    
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 

@@ -1179,8 +1179,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "161"
             endingLineNumber = "161"
-            landmarkName = "-viewPOVOnCell:"
-            landmarkType = "5">
+            landmarkName = "@implementation ArticleListVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1349,7 +1349,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "290"
             endingLineNumber = "290"
-            landmarkName = "-didReceiveMemoryWarning"
+            landmarkName = "-isThereConnectionFromString:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1421,8 +1421,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "224"
             endingLineNumber = "224"
-            landmarkName = "-morePOVsLoaded"
-            landmarkType = "5">
+            landmarkName = "@implementation ArticleListVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1437,7 +1437,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "169"
             endingLineNumber = "169"
-            landmarkName = "-showPOVPublishingWithUserName:andTitle:andCoverPic:"
+            landmarkName = "-viewPOVOnCell:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1469,8 +1469,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "150"
             endingLineNumber = "150"
-            landmarkName = "@implementation ArticleListVC"
-            landmarkType = "3">
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1485,7 +1485,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "153"
             endingLineNumber = "153"
-            landmarkName = "-successfullyPinchedTogetherCell:"
+            landmarkName = "-tableView:cellForRowAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1501,7 +1501,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "274"
             endingLineNumber = "274"
-            landmarkName = "-networkConnectionUpdate:"
+            landmarkName = "-scrollViewDidEndDragging:willDecelerate:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1517,8 +1517,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "307"
             endingLineNumber = "307"
-            landmarkName = "@implementation ArticleListVC"
-            landmarkType = "3">
+            landmarkName = "-prefersStatusBarHidden"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1533,7 +1533,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "286"
             endingLineNumber = "286"
-            landmarkName = "-supportedInterfaceOrientations"
+            landmarkName = "-isThereConnectionFromString:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1549,7 +1549,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "301"
             endingLineNumber = "301"
-            landmarkName = "-povListView"
+            landmarkName = "-didReceiveMemoryWarning"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1659,25 +1659,9 @@
             timestampString = "465204942.801177"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "186"
-            endingLineNumber = "186"
-            landmarkName = "-povPublished"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "465204942.801177"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
             startingLineNumber = "203"
             endingLineNumber = "203"
-            landmarkName = "-povsRefreshed"
+            landmarkName = "-refreshFeed"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1965,8 +1949,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "195"
             endingLineNumber = "195"
-            landmarkName = "-refreshFeed"
-            landmarkType = "5">
+            landmarkName = "@implementation ArticleListVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2650,7 +2634,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "239"
             endingLineNumber = "239"
-            landmarkName = "-setContentWithUsername:andTitle:andCoverImage:andDateCreated:andNumLikes:"
+            landmarkName = "-formatSemiCircleImageView:withFrame:onLeft:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
