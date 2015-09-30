@@ -21,6 +21,9 @@
 @property (nonatomic) BOOL videoLoading;
 @property (nonatomic) BOOL isVideoPlaying; //tells you if the video is in a playing state
 @property (strong, nonatomic) NSTimer * ourTimer;//keeps calling continue
+@property (strong, nonatomic) NSArray * urlArray;
+@property (nonatomic) NSInteger nextUrlIndex;
+
 #define MUTE_BUTTON_X 10
 #define MUTE_BUTTON_Y 10
 #define MUTE_BUTTON_WH 40
@@ -36,6 +39,7 @@
 	if((self  = [super initWithFrame:frame])) {
 		self.repeatsVideo = NO;
 		self.videoLoading = NO;
+        self.urlArray = @[];//initialize array to be empty to start
 	}
 	return self;
 }
@@ -48,12 +52,17 @@
 }
 
 
--(void)playVideoFromURL: (NSURL*) url {
-	if (url) {
-		self.videoLoading = YES;
-		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
-		[self playVideo];
-	}
+-(void)playVideoFromURLArray: (NSArray*) urlArray {
+    if(urlArray.count == 0) return;
+    if (urlArray.count > 1) {
+        [self playVideoFromArrayOfAssets:urlArray];
+        return;
+    }else{
+        self.videoLoading = YES;
+        self.urlArray = urlArray;
+        [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: urlArray[0]]];
+        [self playVideo];
+    }
 }
 
 -(void)playVideoFromAsset: (AVAsset*) asset{
@@ -96,14 +105,24 @@
 	[self playVideoFromAsset:self.mix];
 }
 
-/*This code fuses the video assets into a single video that plays the videos one after the other*/
+/*This code fuses the video assets into a single video that plays the videos one after the other.
+ It accepts both avassets and urls which it converts into assets
+ */
 -(void)fuseAssets:(NSArray*)videoList {
 	self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
 	AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
 	AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
 	CMTime nextClipStartTime = kCMTimeZero;
 	NSError* error;
-	for(AVURLAsset* videoAsset in videoList) {
+	for(id asset in videoList) {
+        AVAsset * videoAsset;
+        if([asset isKindOfClass:[NSURL class]]){
+            videoAsset = [AVAsset assetWithURL:asset];
+            
+        }else{
+            videoAsset = asset;
+        }
+            
 		AVAssetTrack* this_video_track = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
 		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
 		videoTrack.preferredTransform = this_video_track.preferredTransform;
@@ -125,6 +144,7 @@
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 
 	// Create an AVPlayerLayer using the player
+    if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
 	self.playerLayer.frame = self.bounds;
 	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspect;
@@ -158,11 +178,10 @@
 
 //tells me when the video ends so that I can rewind
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
-
 	AVPlayerItem *playerItem = [notification object];
-    if (self.repeatsVideo) {
+    if (self.repeatsVideo && (self.urlArray.count <= 1)) {
 		[playerItem seekToTime:kCMTimeZero];
-	}
+    }
 }
 
 //pauses the video for the pinchview if there is one

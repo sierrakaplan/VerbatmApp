@@ -20,8 +20,9 @@
 @property (nonatomic) BOOL forPinchView;
 
 
+//pass in an array always - even if it's one url
+-(void)playVideoFromURLArray: (NSArray*) urlArray;
 
--(void)playVideoFromURL: (NSURL*) url;
 
 -(void)playVideoFromAsset: (AVAsset*) asset;
 

@@ -42,7 +42,7 @@
         [self playVideoFromArrayOfAssets:videoList];
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
 		//TODO: play videos in succession
-		[self playVideoFromURL:videoList[0]];
+		[self playVideoFromURLArray:videoList];
 	}
 	[self pauseVideo];
 }
