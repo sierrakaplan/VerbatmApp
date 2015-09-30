@@ -11,7 +11,6 @@
 @interface POVPublisher : NSObject
 
 -(instancetype) initWithPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
-
 - (void) publish;
 
 @end
