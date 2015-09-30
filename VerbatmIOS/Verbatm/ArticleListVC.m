@@ -9,6 +9,7 @@
 #import "ArticleListVC.h"
 #import "ArticleDisplayVC.h"
 #import "AVETypeAnalyzer.h"
+#import "GTLVerbatmAppVerbatmUser.h"
 #import "Notifications.h"
 #import "SizesAndPositions.h"
 #import "SizesAndPositions.h"
@@ -24,6 +25,7 @@
 #import "PovInfo.h"
 
 #import "UIEffects.h"
+#import "UserManager.h"
 
 @interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource, FeedTableViewCellDelegate, POVLoadManagerDelegate>
 
@@ -139,13 +141,21 @@
 		} else {
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
+		// check if user likes this story
 		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto
-					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes];
+					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes
+				  likedByCurrentUser:[self currentUserLikesStory:povInfo]];
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
 	return cell;
+}
+
+-(BOOL) currentUserLikesStory: (PovInfo*) povInfo {
+	UserManager* userManager = [UserManager sharedInstance];
+	GTLVerbatmAppVerbatmUser* currentUser = [userManager getCurrentUser];
+	return ([[povInfo userIDsWhoHaveLikedThisPOV] containsObject: currentUser.identifier]);
 }
 
 #pragma mark - Feed Table View Cell Delegate methods -

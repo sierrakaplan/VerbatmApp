@@ -29,7 +29,7 @@
 //Loads a normal looking story cell
 -(void) setContentWithUsername:(NSString *) username andTitle: (NSString *) title
 				 andCoverImage: (UIImage*) coverImage andDateCreated: (GTLDateTime*) dateCreated
-				   andNumLikes: (NSNumber*) numLikes;
+				   andNumLikes: (NSNumber*) numLikes likedByCurrentUser: (BOOL) likedByCurrentUser;
 
 //Loads a publishing story cell
 -(void) setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title

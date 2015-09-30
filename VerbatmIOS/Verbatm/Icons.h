@@ -19,7 +19,8 @@
 
 #pragma mark Story Cell
 
-#define FEED_LIKE_ICON @"heart_no_fill"
+#define FEED_NOT_LIKED_ICON @"heart_no_fill"
+#define FEED_LIKED_ICON @"heart_filled"
 
 #pragma mark Bottom Nav
 

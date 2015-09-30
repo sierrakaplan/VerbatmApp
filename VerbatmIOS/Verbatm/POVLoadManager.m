@@ -138,7 +138,7 @@
 	return PMKWhen(@[userNamePromise, coverPicDataPromise, loadUserIDsWhoHaveLikedThisPOV]).then(^(NSArray* results) {
 		NSString* userName = results[0];
 		UIImage* coverPhoto = [UIImage imageWithData: results[1]];
-		NSArray* userIDs = results[2];
+		NSArray* userIDs = ((GTLVerbatmAppIdentifierListWrapper*)results[2]).identifiers;
 		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andUserName:userName andCoverPhoto: coverPhoto andUserIDsWhoHaveLikedThisPOV:userIDs];
 		return povInfoWithCoverPhoto;
 	});
