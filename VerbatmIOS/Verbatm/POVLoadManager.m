@@ -95,6 +95,7 @@
 // First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the cover pictures and
 // stores the array of POVInfo's
 -(void) loadMorePOVs: (NSInteger) numOfNewPOVToLoad {
+        
 	GTLQuery* loadQuery = [self getLoadingQuery: numOfNewPOVToLoad withCursor: YES];
 	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
 		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];

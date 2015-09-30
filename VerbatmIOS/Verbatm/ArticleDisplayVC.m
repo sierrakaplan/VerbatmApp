@@ -83,14 +83,13 @@
 // When user scrolls to a new story, loads the next two in that
 // direction of scroll
 -(void) loadNextTwoStories: (NSInteger) index {
-
 }
 
 #pragma mark - Page load manager delegate -
 
 -(void) pagesLoadedForPOV:(NSNumber *)povID {
 	NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
-	NSInteger povIndex = [self.povIDs indexOfObject: povID];
+	NSUInteger povIndex = [self.povIDs indexOfObject: povID];
 	POVView* povView = self.povViews[povIndex];
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];

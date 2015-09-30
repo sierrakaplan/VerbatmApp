@@ -55,7 +55,7 @@
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 
 #define NUM_POVS_IN_SECTION 4
-#define RELOAD_THRESHOLD -10
+#define RELOAD_THRESHOLD -5
 @end
 
 @implementation ArticleListVC
@@ -71,6 +71,7 @@
     
     self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter:self.view.center andStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.activityIndicator.color = [UIColor grayColor];
+    [self refreshFeed];
 }
 
 -(void) registerForNotifications {
@@ -86,7 +87,7 @@
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    [self refreshFeed];
+    
 }
 
 -(void) initPovListView {
