@@ -285,11 +285,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 -(void) addCoverPictureTapped {
     [self presentGalleryForCoverPic];
-    //show replace photo icon after the first time this is tapped
-    if(!_replaceCoverPhotoButton){
-        [self addTapGestureToPinchView:self.coverPicView];
-        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
-    }
 }
 
 -(void) setUpNotifications {
@@ -1645,6 +1640,12 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
                 UIImage* image = [[UIImage alloc] initWithData: imageData];
                 image = [UIEffects fixOrientation:image];
                 [self.coverPicView setNewImageWith: image];
+    
+                //show replace photo icon after the first time cover photo is added
+                if(!_replaceCoverPhotoButton){
+                    [self addTapGestureToPinchView:self.coverPicView];
+                    [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
+                }
             });
         }];
     }
