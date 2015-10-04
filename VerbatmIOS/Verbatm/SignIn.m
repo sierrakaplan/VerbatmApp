@@ -63,8 +63,6 @@
 
 //dynamically centers all our frames depending on phone screen dimensions
 -(void) centerAllframes {
-
-    
     self.orLabel.frame = CGRectMake(self.view.center.x - (self.orLabel.frame.size.width/2), self.orLabel.frame.origin.y, self.orLabel.frame.size.width, self.orLabel.frame.size.height);
     
 	self.emailField.frame= CGRectMake((self.view.frame.size.width/2 - self.emailField.frame.size.width/2), self.orLabel.frame.origin.y + self.orLabel.frame.size.height + DISTANCE_BETWEEN_FIELDS,
