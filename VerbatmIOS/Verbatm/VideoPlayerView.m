@@ -21,15 +21,14 @@
 @property (nonatomic) BOOL videoLoading;
 @property (nonatomic) BOOL isVideoPlaying; //tells you if the video is in a playing state
 @property (strong, nonatomic) NSTimer * ourTimer;//keeps calling continue
-@property (strong, nonatomic) NSArray * urlArray;
-@property (nonatomic) NSInteger nextUrlIndex;
+
 
 #define MUTE_BUTTON_X 10
-#define MUTE_BUTTON_Y 10
+#define MUTE_BUTTON_Y (self.frame.size.height - MUTE_BUTTON_WH - MUTE_BUTTON_X)
 #define MUTE_BUTTON_WH 40
-#define MUTE_BUTTON_IMAGE @"mute_2"
+#define MUTE_BUTTON_IMAGE @"mute_3"
 
-#define UNMUTE_BUTTON_IMAGE @"unmuted_2"
+#define UNMUTE_BUTTON_IMAGE @"mute_3_nonmuted"
 
 @end
 
@@ -39,7 +38,7 @@
 	if((self  = [super initWithFrame:frame])) {
 		self.repeatsVideo = NO;
 		self.videoLoading = NO;
-        self.urlArray = @[];//initialize array to be empty to start
+        self.clearsContextBeforeDrawing = YES;
 	}
 	return self;
 }
@@ -48,6 +47,7 @@
 - (void)layoutSubviews {
 	if (self.playerLayer) {
 		self.playerLayer.frame = self.bounds;
+        self.muteButton.frame = CGRectMake(MUTE_BUTTON_X, MUTE_BUTTON_Y, MUTE_BUTTON_WH, MUTE_BUTTON_WH);
 	}
 }
 
@@ -59,7 +59,6 @@
         return;
     }else{
         self.videoLoading = YES;
-        self.urlArray = urlArray;
         [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: urlArray[0]]];
         [self playVideo];
     }
@@ -163,7 +162,7 @@
 
 -(void)setButtonFormats {
     self.muteButton.frame = CGRectMake(MUTE_BUTTON_X, MUTE_BUTTON_Y, MUTE_BUTTON_WH, MUTE_BUTTON_WH);
-    [self.muteButton setImage:[UIImage imageNamed:@"unmute_button_icon"] forState:UIControlStateNormal];
+    [self.muteButton setImage:[UIImage imageNamed:MUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
     [self.muteButton addTarget:self action:@selector(muteButtonTouched:) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -179,7 +178,7 @@
 //tells me when the video ends so that I can rewind
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
 	AVPlayerItem *playerItem = [notification object];
-    if (self.repeatsVideo && (self.urlArray.count <= 1)) {
+    if (self.repeatsVideo) {
 		[playerItem seekToTime:kCMTimeZero];
     }
 }
@@ -270,9 +269,11 @@
 	if (self.videoLoading) {
 		self.videoLoading = NO;
 	}
+    
 	for (UIView* view in self.subviews) {
 		[view removeFromSuperview];
 	}
+    
 	self.layer.sublayers = nil;
 	[self removePlayerItemObserver];
     [self.playerLayer removeFromSuperlayer];

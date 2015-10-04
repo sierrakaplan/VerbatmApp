@@ -491,9 +491,9 @@
 	} else if([self.contentContainerView isHidden]) {
 		self.contentContainerView.hidden = NO;
 
-		[UIView animateWithDuration:0.5 animations:^{
+		//[UIView animateWithDuration:0.5 animations:^{
 			[self transitionContentContainerViewToMode:self.previousMode];
-		}];
+		//}];
 	}
 }
 
@@ -521,22 +521,12 @@
 //Sets the content container view to the appropriate frame, sets the pull bar mode,
 //and sets whether the content container view is scrollable
 -(void) transitionContentContainerViewToMode: (ContentContainerViewMode) mode {
-
-	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
-		self.contentContainerViewMode = mode;
-		if(mode == ContentContainerViewModeFullScreen) {
-			//makes sure content view is scrollable
-			//[self.contentDevVC setMainScrollViewEnabled:YES];
-			self.contentContainerView.frame = self.contentContainerViewFrameBottom;
-			[self pullBarTransitionToMode:PullBarModeMenu];
-
-		}else if (mode == ContentContainerViewModeBase) {
-			//makes sure content view is not scrollable
-			//[self.contentDevVC setMainScrollViewEnabled:NO];
-			self.contentContainerView.frame = self.contentContainerViewFrameTop;
-			[self pullBarTransitionToMode:PullBarModePullDown];
-		}
-	}];
+    self.contentContainerViewMode = mode;
+    if(mode == ContentContainerViewModeFullScreen) {
+        [self pullBarTransitionToMode:PullBarModeMenu];
+    }else if (mode == ContentContainerViewModeBase) {
+        [self pullBarTransitionToMode:PullBarModePullDown];
+    }
 }
 
 // Moving pull bar gesture sensed
@@ -588,14 +578,14 @@
 	//how far has the transition come
 	CGPoint translation = [sender translationInView:self.pullBar.superview];
 
-	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
+	//[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
 		//snap the container view to full screen, else snap back to base
 		if( translation.y > TRANSLATION_CONTENT_DEV_CONTAINER_VIEW_THRESHOLD) {
 			[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 		}else {
 			[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
 		}
-	}];
+	//}];
 
 	self.previousTranslation = CGPointMake(0, 0);//sanitize the translation difference so that the next round is sent back up
 }
@@ -604,9 +594,14 @@
 -(void) pullBarTransitionToMode: (PullBarMode) mode {
 	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
 		 if (mode == PullBarModeMenu) {
-			 self.pullBar.frame = self.pullBarFrameBottom;
+             self.contentContainerView.frame = self.contentContainerViewFrameBottom;
+             self.pullBar.frame = self.pullBarFrameBottom;
+             [self.delegate adkViewChange:NO];
+             
 		 } else {
-			 self.pullBar.frame = self.pullBarFrameTop;
+             self.contentContainerView.frame = self.contentContainerViewFrameTop;
+             self.pullBar.frame = self.pullBarFrameTop;
+             [self.delegate adkViewChange:YES];
 		 }
 		 [self.pullBar switchToMode:mode];
 	 }];
@@ -629,24 +624,6 @@
 	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
 	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic andTitle: title];
-}
-
--(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {
-	if (!withTransition) {
-		[self showPullBar:showPullBar];
-	} else {
-		[UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
-			[self showPullBar:showPullBar];
-		}];
-	}
-}
-
--(void) showPullBar:(BOOL)showPullBar {
-	if (showPullBar) {
-		self.pullBar.frame = self.pullBarFrameBottom;
-	} else {
-		self.pullBar.frame = self.pullBarFrameOffScreen;
-	}
 }
 
 
