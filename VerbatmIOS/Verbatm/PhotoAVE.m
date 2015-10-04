@@ -262,7 +262,6 @@
 -(void) fadeWithDistance:(float)distanceFromStartingTouch andTotalDistance:(float)totalDistanceToTravel {
 //	NSLog(@"Distance from starting touch: %f", distanceFromStartingTouch);
 //	NSLog(@"Last distance from starting touch: %f", self.lastDistanceFromStartingPoint);
-
 	//switch current point and image
 	if (distanceFromStartingTouch > totalDistanceToTravel) {
 		self.draggingFromPointIndex = self.draggingFromPointIndex + 1;
