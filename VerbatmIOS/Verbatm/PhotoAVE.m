@@ -174,11 +174,17 @@
 -(void) mainViewTapped:(UITapGestureRecognizer *) sender {
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 	if ([self circleTapped:touchLocation]) {
-		[self displayCircle:YES];
-		self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_TAPPED_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+        if(!self.circleView.alpha){
+            [self displayCircle:YES];
+            self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_TAPPED_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+        }else {
+            [self removeCircle];
+        }
+		
 	} else {
 		self.textShowing = !self.textShowing;
 		[self showText:self.textShowing];
+        [self displayCircle:NO];
 	}
 }
 

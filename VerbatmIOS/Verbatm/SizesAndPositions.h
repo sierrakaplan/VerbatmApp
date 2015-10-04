@@ -160,7 +160,7 @@
 #define CIRCLE_OFFSET 15.f
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
-#define TAP_THRESHOLD 15.f
+#define TAP_THRESHOLD 20.f//the threshold to select a circle - but also to start panning
 #define	SLIDE_THRESHOLD 40.f
 
 #define DISTANCE_BETWEEN_FIELDS 20
