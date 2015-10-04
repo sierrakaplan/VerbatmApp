@@ -609,6 +609,24 @@
 
 #pragma mark - Change pull bar Delegate Methods (for pullbar) -
 
+-(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {
+    if (!withTransition) {
+        [self showPullBar:showPullBar];
+    } else {
+        [UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
+            [self showPullBar:showPullBar];
+        }];
+    }
+}
+
+-(void) showPullBar:(BOOL)showPullBar {
+    if (showPullBar) {
+        self.pullBar.frame = self.pullBarFrameBottom;
+    } else {
+        self.pullBar.frame = self.pullBarFrameOffScreen;
+    }
+}
+
 -(void) backButtonPressed {
 	[self.delegate backButtonPressed];
 }

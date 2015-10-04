@@ -82,6 +82,7 @@
 #pragma mark - Delegate Methods -
 //Delegate method for EditContentView
 -(void) exitEditContentView {
+
     [self exitViewController];
 }
 
