@@ -130,6 +130,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 #define REPLACE_PHOTO_XsOFFSET 20 //distance of replacePhoto x postion vs the x postion of the coverphoto
 
 #define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
+
+#define COVER_PIC_RADIUS (self.defaultPinchViewRadius * 3.f/4.f)
 @end
 
 
@@ -223,7 +225,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_OFFSET,
 											   WHAT_IS_IT_LIKE_HEIGHT*2);
 
-	CGFloat coverPicRadius = self.defaultPinchViewRadius * 3.f/4.f;
+	CGFloat coverPicRadius = COVER_PIC_RADIUS;
 	CGRect addCoverPicFrame = CGRectMake(self.view.frame.size.width/2.f - coverPicRadius,
 										 whatIsItLikeFieldFrame.origin.y + whatIsItLikeFieldFrame.size.height,
 										 coverPicRadius*2, coverPicRadius*2);
@@ -275,8 +277,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 }
 
 -(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
-	//self.coverPicView = [[CoverPicturePV alloc] initWithFrame:frame];
-    self.coverPicView = [[CoverPicturePV alloc] initWithRadius:frame.size.width/2.f withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
+    self.coverPicView = [[CoverPicturePV alloc] initWithRadius:COVER_PIC_RADIUS withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
     
 	UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
 	[self.coverPicView addGestureRecognizer: tapGesture];
@@ -1239,6 +1240,17 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
         //is the pinchview above the cover photo?
         if (!topView){
             if([self selctedViewAboveCoverPhoto]){
+                if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
+                    [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
+                     COVER_PIC_RADIUS*2];
+                }
+            }else{
+                if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
+                    
+                    [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
+                     self.defaultPinchViewRadius*2];
+                }
+                
             }
         }
 	}];
