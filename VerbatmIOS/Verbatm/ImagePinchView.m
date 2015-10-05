@@ -72,6 +72,9 @@
 -(UIImage*) getImage {
 	return self.filteredImages[self.filterImageIndex];
 }
+-(UIImage *) getOriginalImage{
+    return self.filteredImages[0];
+}
 
 //overriding
 -(NSArray*) getPhotos {

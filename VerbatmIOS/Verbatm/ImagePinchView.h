@@ -20,6 +20,8 @@
 
 //returns the image with its current filter 
 -(UIImage*) getImage;
+//returns the image without any filter - guaranteed to be unfiltered
+-(UIImage *) getOriginalImage;
 //replaces the current image with this image
 -(void) putNewImage:(UIImage*)image;
 @end
