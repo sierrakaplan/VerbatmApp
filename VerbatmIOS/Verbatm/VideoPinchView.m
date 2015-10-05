@@ -10,6 +10,8 @@
 #import "Icons.h"
 #import "Styles.h"
 
+#import <PromiseKit/PromiseKit.h>
+
 @interface VideoPinchView()
 
 @property (strong, nonatomic) NSData* videoData;
@@ -89,19 +91,55 @@
 	return @[self.video];
 }
 
--(NSArray*) getVideosInDataFormat {
+
+/* returns an array with nsdata or a promise*/
+-(NSArray *) getVideosInDataFormat {
 	if (self.videoData) {
 		return @[self.videoData];
 	}
     NSURL * url = self.video.URL;
     NSError * error;
-    NSData * ourData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
-	if (error) {
-//		NSLog(@"error getting data from video url: %@", error.description);
-		return nil;
-	} else {
-		return @[ourData];
-	}
+    NSData * ourData = nil;
+    ourData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
+    
+    @try{
+        if (!ourData) {
+            //NSLog(@"error getting data from video url: %@", error.description);
+            AnyPromise * promise = [self convertAssetUsingExportSession:self.video];
+           return @[promise];
+        } else {
+            return @[ourData];
+        }
+    }@catch (NSException *exception) {
+        NSLog(@"error getting data from video url: %@", exception.description);
+    }
+}
+
+
+-(AnyPromise*) convertAssetUsingExportSession: (AVURLAsset *) asset {
+    AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+        __block NSData *assetData = nil;
+        
+        NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"newoutput.mov"];
+        NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if ([fileManager fileExistsAtPath:movieOutput]){
+            NSError *error;
+            if ([fileManager removeItemAtPath:movieOutput error:&error] == NO){
+                NSLog(@"output path is wrong");
+            }
+        }
+        
+        AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetHighestQuality];
+        exportSession.outputURL = outputURL;
+        exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+        [exportSession exportAsynchronouslyWithCompletionHandler:^{
+            assetData = [NSData dataWithContentsOfURL:outputURL];
+             resolve(assetData);
+        }];
+    }];
+    
+    return promise;
 }
 
 #pragma mark - Encoding -

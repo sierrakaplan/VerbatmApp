@@ -139,7 +139,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if(self.refreshInProgress) { return; }
-	if(self.povPublishing && indexPath.row == 0) { return; }
+	if(self.povPublishing && indexPath.row == 0) {
+        return;
+    }
 	// Tell cell it was selected so it can animate being pinched together before it calls
 	// delegate method to be selected
 	FeedTableViewCell* cell = (FeedTableViewCell*)[self.povListView cellForRowAtIndexPath:indexPath];
@@ -227,7 +229,9 @@
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
 	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:userName andTitle: title andCoverImage:coverPic];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    [self.povListView beginUpdates];
     [self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
+    [self.povListView endUpdates];
 }
 
 // Method called from Notification sent by the model to let it know that

@@ -245,13 +245,17 @@
 #pragma mark - Saved Media animation -
 
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset {
+    //animate image of asset 
 	ALAssetRepresentation *representation = [asset defaultRepresentation];
 	CGImageRef imageRef = [representation fullResolutionImage];
 	self.previewImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
 	if (!self.mediaPreviewPaused) {
 		[self animatePreviewImage];
 	}
+    //add media to the contentDev stream
+    [self.contentDevVC addMediaAssetToStream:asset];
 }
+
 
 #pragma mark - Customize camera -
 
@@ -268,14 +272,12 @@
     }
 }
 
-
 #pragma mark - Create Customize Camera Gestures -
 -(void) createAndInstantiateGestures {
 	[self createTapGestureToFocus];
 	[self createPinchGestureToZoom];
     [self createDoubleTapToSwitchCamera];
 }
-
 
 -(void)createDoubleTapToSwitchCamera{
     UITapGestureRecognizer* cameraFace = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(switchCameraOrientation:)];

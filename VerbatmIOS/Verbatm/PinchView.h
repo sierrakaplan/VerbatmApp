@@ -21,7 +21,7 @@
 @property (nonatomic,readonly) float radius;
 @property (nonatomic,readonly) CGPoint center;
 
-@property(strong,nonatomic) UIView* background;
+@property(strong,nonatomic) UIView * background;
 //tells you if the object is selected for panning
 @property (nonatomic) BOOL selected;
 

@@ -165,6 +165,7 @@
 		C7BD53C41B5B73A700EE6241 /* BaseArticleViewingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
+		C7E2C88F1BB7E97600D83668 /* UseFulFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E2C88E1BB7E97600D83668 /* UseFulFunctions.m */; settings = {ASSET_TAGS = (); }; };
 		C7E65F561B8992710042AD99 /* MediaPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F551B8992710042AD99 /* MediaPreview.m */; };
 		C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5B1B911A470042AD99 /* FeedVC.m */; };
 		C7E65F5F1B911BA90042AD99 /* SwitchCategoryPullView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5E1B911BA90042AD99 /* SwitchCategoryPullView.m */; };
@@ -517,6 +518,8 @@
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
 		C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerTransitionDelegate.m; sourceTree = "<group>"; };
+		C7E2C88D1BB7E97600D83668 /* UseFulFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UseFulFunctions.h; sourceTree = "<group>"; };
+		C7E2C88E1BB7E97600D83668 /* UseFulFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UseFulFunctions.m; sourceTree = "<group>"; };
 		C7E65F541B8992710042AD99 /* MediaPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaPreview.h; sourceTree = "<group>"; };
 		C7E65F551B8992710042AD99 /* MediaPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaPreview.m; sourceTree = "<group>"; };
 		C7E65F5A1B911A470042AD99 /* FeedVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedVC.h; path = ../FeedVC.h; sourceTree = "<group>"; };
@@ -1172,6 +1175,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				C7E2C8901BB7E97F00D83668 /* Generally useful functions */,
 				A560EF9E1BA8DFCC003FB041 /* AVE Analyzer */,
 				A560EF991BA88F8B003FB041 /* User settings */,
 				A5C09BA01BA1F0BF00C0AD86 /* ASI HTTP Request */,
@@ -1250,6 +1254,15 @@
 				C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */,
 			);
 			name = "Transition Animation Managers";
+			sourceTree = "<group>";
+		};
+		C7E2C8901BB7E97F00D83668 /* Generally useful functions */ = {
+			isa = PBXGroup;
+			children = (
+				C7E2C88D1BB7E97600D83668 /* UseFulFunctions.h */,
+				C7E2C88E1BB7E97600D83668 /* UseFulFunctions.m */,
+			);
+			name = "Generally useful functions";
 			sourceTree = "<group>";
 		};
 		C7E65F641B92449E0042AD99 /* bug submission VC */ = {
@@ -1498,6 +1511,7 @@
 				C7E6C13F1A4E394600863893 /* PhotoVideoAVE.m in Sources */,
 				C745B42F1BBA630800D18944 /* PermissionCodePageVC.m in Sources */,
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
+				C7E2C88F1BB7E97600D83668 /* UseFulFunctions.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
 				A5AA31C71B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.m in Sources */,

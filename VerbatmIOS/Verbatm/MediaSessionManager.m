@@ -444,8 +444,6 @@
 	}];
 }
 
-
-
 //Lucio
 -(void)stopVideoRecording {
 	[self.movieOutputFile stopRecording];
@@ -453,14 +451,37 @@
 
 #pragma mark -delegate methods AVCaptureFileOutputRecordingDelegate
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
+    
+    MediaSessionManager * __weak weakSelf = self;
+    
 	//[self fixVideoOrientationOfAssetAtUrl:outputFileURL];
 	if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
 		[self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
-			[self.assetLibrary assetForURL:assetURL
+			[weakSelf.assetLibrary assetForURL:assetURL
 							   resultBlock:^(ALAsset *asset) {
 								   [self.verbatmAlbum addAsset:asset];
 //								   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
 								   [self.delegate didFinishSavingMediaToAsset:asset];
+
+								   //TODO: check if this is necessary (merge)
+//								   [weakSelf.verbatmAlbum addAsset:asset];
+//								   //NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
+//                                   
+//                                   /*To get a usable copy of the asset just saved we will iterate through
+//                                    our verbatm alassetgroup and take the first object we find. The first
+//                                    object is the most recent addition*/
+//                                   [weakSelf.verbatmAlbum enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
+//                                       // first non-nil element will be the recent asset
+//                                       if (alAsset){
+//                                           dispatch_async(dispatch_get_main_queue(), ^{
+//                                              [weakSelf.delegate didFinishSavingMediaToAsset:alAsset];
+//                                           });
+//                                           
+//                                           //Triggers for the enumeration to stop
+//                                           *innerStop = YES;
+//                                       }
+//                                   }];
+
 							   }
 							  failureBlock:^(NSError* error) {
 //								  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
