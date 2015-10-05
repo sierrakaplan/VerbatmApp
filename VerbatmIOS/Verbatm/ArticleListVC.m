@@ -49,7 +49,7 @@
 @property (atomic) BOOL refreshInProgress;
 @property (strong,nonatomic) UIRefreshControl *reloadingRefreshControl;
 
-@property (nonatomic) BOOL loadingPOVs;
+@property (nonatomic) BOOL loadingMorePOVsInProgress;
 @property (strong, nonatomic) UIActivityIndicatorView *loadingMoreActivityIndicator;
 
 @property (atomic) BOOL povsRefreshedForFirstTime;
@@ -116,7 +116,7 @@
 -(void) initializeVariables {
 	self.pullDownInProgress = NO;
 	self.refreshInProgress = NO;
-	self.loadingPOVs = NO;
+	self.loadingMorePOVsInProgress = NO;
 	self.recentContentOffset = CGPointZero;
 }
 
@@ -278,7 +278,7 @@
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
 -(void) morePOVsLoaded {
-    self.loadingPOVs = NO;
+    self.loadingMorePOVsInProgress = NO;
 	if ([self.loadingMoreActivityIndicator isAnimating]) {
 		[self.loadingMoreActivityIndicator stopAnimating];
 	}
@@ -287,7 +287,7 @@
 
 -(void) failedToLoadMorePOVs {
 	//TODO: tell user somehow that these failed to load more
-	self.loadingPOVs = NO;
+	self.loadingMorePOVsInProgress = NO;
 	if ([self.loadingMoreActivityIndicator isAnimating]) {
 		[self.loadingMoreActivityIndicator stopAnimating];
 	}
@@ -303,7 +303,7 @@
 }
 
 -(void)refresh:(UIRefreshControl *)refreshControl {
-    if(self.povPublishing){
+    if(self.povPublishing || self.loadingMorePOVsInProgress){
         [refreshControl endRefreshing];
     } else {
         [self refreshFeed];
@@ -320,8 +320,8 @@
 
 	//when the user has reached the very bottom of the feed and pulls we load more articles into the feed
 	if (scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height - RELOAD_THRESHOLD) {
-		if(!self.loadingPOVs) {
-			self.loadingPOVs = YES;
+		if(!self.loadingMorePOVsInProgress && !self.refreshInProgress) {
+			self.loadingMorePOVsInProgress = YES;
 			[self.loadingMoreActivityIndicator startAnimating];
 			[self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
 		}
