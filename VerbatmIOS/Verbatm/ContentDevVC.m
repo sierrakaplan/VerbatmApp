@@ -1237,6 +1237,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
 		self.selectedView_PAN.frame = newFrame;
+       
+	}completion:^(BOOL finished) {
         //is the pinchview above the cover photo?
         if (!topView){
             if([self selctedViewAboveCoverPhoto]){
@@ -1253,7 +1255,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
                 
             }
         }
-	}];
+    }];
 
 	//swap item if necessary
 
@@ -1275,10 +1277,10 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 
 -(BOOL)selctedViewAboveCoverPhoto {
-    if(self.selectedView_PAN.frame.origin.y/*perhaps add an offset*/ >
-       self.coverPicView.frame.origin.y/*perhaps subtract an offset*/ &&
+    if(self.selectedView_PAN.frame.origin.y >
+       self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height &&
        self.selectedView_PAN.frame.origin.y < self.coverPicView.frame.origin.y +
-       self.coverPicView.frame.size.height){
+       self.coverPicView.frame.size.height * (2.f/4.f)){
         
         return true;
     }
@@ -1383,14 +1385,14 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
         if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
             [self setCoverPictureImage:[((ImagePinchView *)self.selectedView_PAN.pageElement) getOriginalImage]];
             //now delete the selected pinchview
+            [self deleteScrollView:self.selectedView_PAN];
         }
         
     }else{
         self.selectedView_PAN.frame = self.previousFrameInLongPress;
     }
 	
-
-	[self.selectedView_PAN.pageElement markAsSelected:NO];
+    if(self.selectedView_PAN)[self.selectedView_PAN.pageElement markAsSelected:NO];
 
 	//sanitize for next run
 	self.selectedView_PAN = nil;
