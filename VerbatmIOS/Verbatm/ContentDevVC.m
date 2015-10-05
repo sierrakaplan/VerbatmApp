@@ -180,7 +180,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 // as well as the pinch view center and radius
 -(void)setElementDefaultFrames {
 	self.defaultPageElementScrollViewSize = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
-	self.defaultPinchViewCenter = CGPointMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + (self.view.frame.size.width/2.f),
+	self.defaultPinchViewCenter = CGPointMake((self.view.frame.size.width/2.f),
 											  self.defaultPageElementScrollViewSize.height/2);
 	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
 }
@@ -1830,9 +1830,10 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 -(MediaSelectTile*) baseMediaTileSelector {
 	if (!_baseMediaTileSelector) {
-		CGRect frame = CGRectMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + ELEMENT_OFFSET_DISTANCE,
+        float tileWidth = self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2);
+		CGRect frame = CGRectMake(self.mainScrollView.center.x - (tileWidth/2.f),
 								  ELEMENT_OFFSET_DISTANCE/2.f,
-								  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
+								  tileWidth, MEDIA_TILE_SELECTOR_HEIGHT);
 		_baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
 		_baseMediaTileSelector.isBaseSelector =YES;
 		_baseMediaTileSelector.delegate = self;

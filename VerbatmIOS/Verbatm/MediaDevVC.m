@@ -522,8 +522,11 @@
 //and sets whether the content container view is scrollable
 -(void) transitionContentContainerViewToMode: (ContentContainerViewMode) mode {
     self.contentContainerViewMode = mode;
+    //if the contentDev screen is full screen
     if(mode == ContentContainerViewModeFullScreen) {
         [self pullBarTransitionToMode:PullBarModeMenu];
+        
+        //if the bar is at the top
     }else if (mode == ContentContainerViewModeBase) {
         [self pullBarTransitionToMode:PullBarModePullDown];
     }
@@ -601,7 +604,7 @@
 		 } else {
              self.contentContainerView.frame = self.contentContainerViewFrameTop;
              self.pullBar.frame = self.pullBarFrameTop;
-             [self.delegate adkViewChange:YES];
+            // [self.delegate adkViewChange:YES];
 		 }
 		 [self.pullBar switchToMode:mode];
 	 }];
