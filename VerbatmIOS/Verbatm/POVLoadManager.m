@@ -46,7 +46,7 @@
 		NSURLRequest* request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
 		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
 			if (error) {
-				resolve(error);
+				resolve(nil);
 			} else {
 				resolve(data);
 			}
@@ -70,6 +70,8 @@
 // stores the array of POVInfo's
 -(void) reloadPOVs: (NSInteger) numToLoad {
 
+	NSLog(@"Refreshing POV's...");
+
 	GTLQuery* loadQuery = [self getLoadingQuery: numToLoad withCursor: NO];
 	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
 		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
@@ -82,7 +84,7 @@
 	}).then(^(NSArray* povInfosWithCoverPhoto) {
 		self.povInfos = [[NSMutableArray alloc] init];
 		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
-//		NSLog(@"Successfully refreshed POVs!");
+		NSLog(@"Successfully refreshed POVs!");
 		[self.delegate povsRefreshed];
 	}).catch(^(NSError* error) {
 		NSLog(@"Error refreshing POVs: %@", error.description);
@@ -95,16 +97,18 @@
 // First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the cover pictures and
 // stores the array of POVInfo's
 -(void) loadMorePOVs: (NSInteger) numOfNewPOVToLoad {
+	NSLog(@"Loading more POV's...");
+
 	GTLQuery* loadQuery = [self getLoadingQuery: numOfNewPOVToLoad withCursor: YES];
 	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
-		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
+		NSMutableArray* loadMoreInfoPromises = [[NSMutableArray alloc] init];
 		for (GTLVerbatmAppPOVInfo* gtlPovInfo in gtlPovInfos) {
-			[loadCoverPhotoPromises addObject: [self getPOVInfoWithExtraInfoFromGTLPOVInfo:gtlPovInfo]];
+			[loadMoreInfoPromises addObject: [self getPOVInfoWithExtraInfoFromGTLPOVInfo:gtlPovInfo]];
 		}
-		return PMKWhen(loadCoverPhotoPromises);
+		return PMKWhen(loadMoreInfoPromises);
 	}).then(^(NSArray* povInfosWithCoverPhoto) {
 		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
-//		NSLog(@"Successfully loaded more POVs!");
+		NSLog(@"Successfully loaded more POVs!");
 		[self.delegate morePOVsLoaded];
 	}).catch(^(NSError* error) {
 		 NSLog(@"Error loading more POVs: %@", error.description);
@@ -137,7 +141,11 @@
 	AnyPromise* loadUserIDsWhoHaveLikedThisPOV = [self loadUserIDsWhoHaveLikedPOVWithID: gtlPovInfo.identifier];
 	return PMKWhen(@[userNamePromise, coverPicDataPromise, loadUserIDsWhoHaveLikedThisPOV]).then(^(NSArray* results) {
 		NSString* userName = results[0];
-		UIImage* coverPhoto = [UIImage imageWithData: results[1]];
+		NSData* coverPhotoData = results[1];
+		UIImage* coverPhoto = nil;
+		if (coverPhotoData && ![coverPhotoData isEqual:[NSNull null]]) {
+			coverPhoto = [UIImage imageWithData: coverPhotoData];
+		}
 		NSArray* userIDs = results[2];
 		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andUserName:userName andCoverPhoto: coverPhoto andUserIDsWhoHaveLikedThisPOV:userIDs];
 		return povInfoWithCoverPhoto;

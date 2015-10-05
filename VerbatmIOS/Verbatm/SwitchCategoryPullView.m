@@ -109,19 +109,10 @@
     [view addGestureRecognizer:tap];
 }
 
+//snap to the opposite side
 -(void) pullCircleTap:(UITapGestureRecognizer *) sender {
-    
-    if(self.pullCircle.frame.origin.x < self.center.x){
-        //flip to right
-        [self snapToEdgeLeft: NO];
-    }else{
-        //flip to left
-        [self snapToEdgeLeft: YES];
-        
-    }
-    
+	[self snapToEdgeLeft: (self.pullCircle.frame.origin.x + self.pullCircle.frame.size.width/2.f) < self.center.x ? NO : YES];
 }
-
 
 //Deals with pan gesture on circle
 -(void) pullCirclePan:(UITapGestureRecognizer *) sender {
@@ -150,35 +141,15 @@
 			// notify delegate that we have panned our pullCircle
             [self.categorySwitchDelegate pullCircleDidPan:((newX - self.leastPullCircleX) / (self.maxPullCircleX - self.leastPullCircleX))];
             break;
-        }case UIGestureRecognizerStateCancelled:{
-        }case UIGestureRecognizerStateEnded: {
-			float midX = (self.maxPullCircleX - self.leastPullCircleX)/2.f;
-			BOOL snapLeft;
-
-			//snap left else right
-			if (self.pullCircle.frame.origin.x <= midX) {
-				snapLeft = YES;
-			} else {
-				snapLeft = NO;
-			}
-			[self snapToEdgeLeft: snapLeft];
+        } case UIGestureRecognizerStateCancelled:
+		case UIGestureRecognizerStateEnded: {
+			[self snapToEdgeLeft: (self.pullCircle.frame.origin.x + self.pullCircle.frame.size.width/2.f) < self.center.x ? YES : NO];
             break;
         }
         default: {
             return;
         }
     }
-}
-
--(void)changeImageForPullCircle{
-    
-    if(self.pullCircle.frame.origin.x > self.center.x){
-        self.pullCircle.image = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE_RIGHT];
-    }else{
-        
-        self.pullCircle.image = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE_LEFT];
-    }
-    
 }
 
 -(void) resizeTrendingLabel {
@@ -193,15 +164,16 @@
 
 }
 
-
 //snaps the pull circle to an edge after a pan
 -(void) snapToEdgeLeft: (BOOL) snapLeft {
-
 	CGFloat newX;
+	UIImage* pullCircleImage;
 	if (snapLeft) {
 		newX = self.leastPullCircleX;
+		pullCircleImage = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE_LEFT];
 	} else {
 		newX = self.maxPullCircleX;
+		pullCircleImage = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE_RIGHT];
 	}
 
 	[self.categorySwitchDelegate snapped: snapLeft];
@@ -211,8 +183,7 @@
 														 self.pullCircle.frame.size.width,
 														 self.pullCircle.frame.size.height);
 		[self resizeTrendingLabel];
-        
-        [self changeImageForPullCircle];
+        self.pullCircle.image = pullCircleImage;
 	}];
 }
 

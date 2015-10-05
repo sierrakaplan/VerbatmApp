@@ -17,6 +17,7 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Durations.h"
+#import "UIEffects.h"
 
 @interface FeedTableViewCell()
 
@@ -145,12 +146,10 @@
 																		DATE_AND_LIKES_LABEL_HEIGHT)];
 
 	[self.dateCreatedLabel setFrame: CGRectMake(0, 0, dateAndLikesView.frame.size.width/2.f, DATE_AND_LIKES_LABEL_HEIGHT)];
-
+	self.likeIconView.frame = CGRectMake(dateAndLikesView.frame.size.width/2.f, 0, DATE_AND_LIKES_LABEL_HEIGHT, DATE_AND_LIKES_LABEL_HEIGHT);
 	[self.numLikesLabel setFrame: CGRectMake(dateAndLikesView.frame.size.width/2.f + self.likeIconView.frame.size.width + 5.f,
 											 0, dateAndLikesView.frame.size.width - self.dateCreatedLabel.frame.size.width - self.likeIconView.frame.size.width,
 											 DATE_AND_LIKES_LABEL_HEIGHT)];
-
-	self.likeIconView.frame = CGRectMake(dateAndLikesView.frame.size.width/2.f, 0, DATE_AND_LIKES_LABEL_HEIGHT, DATE_AND_LIKES_LABEL_HEIGHT);
 
 	[dateAndLikesView addSubview: self.dateCreatedLabel];
 	[dateAndLikesView addSubview: self.likeIconView];
@@ -241,13 +240,22 @@
 	if (dateCreated) {
 		self.dateCreatedLabel.text = @""; //TODO: [NSString stringWithFormat: @"%@", dateCreated.stringValue];
 	}
-	if (numLikes.longLongValue == 1) {
-		self.numLikesLabel.text = [NSString stringWithFormat: @"%lld like", numLikes.longLongValue];
-	} else if (numLikes.longLongValue > 0) {
-		self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", numLikes.longLongValue];
-	} else {
-		[self.likeIconView setHidden:YES];
-        self.numLikesLabel.text = @"";
+
+	switch(numLikes.longLongValue) {
+		case 0: {
+			[self.likeIconView setHidden:YES];
+			self.numLikesLabel.text = @"";
+			break;
+		}
+		case 1: {
+			[self.likeIconView setHidden:NO];
+			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld like", numLikes.longLongValue];
+			break;
+		}
+		default: {
+			[self.likeIconView setHidden:NO];
+			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", numLikes.longLongValue];
+		}
 	}
 
 	if (likedByCurrentUser) {
@@ -256,8 +264,8 @@
 		[self.likeIconView setImage:self.notLikedImage];
 	}
 
-	UIImage* leftHalf = [self halfPicture:coverImage leftHalf:YES];
-	UIImage* rightHalf = [self halfPicture:coverImage leftHalf:NO];
+	UIImage* leftHalf = [UIEffects halfPicture:coverImage leftHalf:YES];
+	UIImage* rightHalf = [UIEffects halfPicture:coverImage leftHalf:NO];
 	[self.leftSemiCircle setImage: leftHalf];
 	[self.rightSemiCircle setImage: rightHalf];
 }
@@ -269,21 +277,37 @@
     self.isPlaceHolder = YES;
 }
 
--(void)startActivityIndicatrForPlaceholder{
-    [self startActivityIndicator];
-}
+-(void) updateCellLikedByCurrentUser: (BOOL) likedByCurrentUser withNewNumLikes: (long long) newNumLikes {
+	if (likedByCurrentUser) {
+		[self.likeIconView setImage:self.likedImage];
+	} else {
+		[self.likeIconView setImage:self.notLikedImage];
+	}
 
-//TODO: make this a category
--(UIImage*) halfPicture: (UIImage*) image leftHalf:(BOOL) leftHalf {
-	float xOrigin = leftHalf ? 0 : image.size.width/2.f;
-	CGRect cropRect = CGRectMake(xOrigin, 0, image.size.width/2.f, image.size.height);
-	CGImageRef imageRef = CGImageCreateWithImageInRect(image.CGImage, cropRect);
-	UIImage *result = [UIImage imageWithCGImage:imageRef scale:image.scale orientation:image.imageOrientation];
-	CGImageRelease(imageRef);
-	return result;
+	switch(newNumLikes) {
+		case 0: {
+			[self.likeIconView setHidden:YES];
+			self.numLikesLabel.text = @"";
+			break;
+		}
+		case 1: {
+			[self.likeIconView setHidden:NO];
+			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld like", newNumLikes];
+			break;
+		}
+		default: {
+			[self.likeIconView setHidden:NO];
+			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", newNumLikes];
+		}
+	}
 }
 
 #pragma mark - Activity Indicator -
+
+-(void)startActivityIndicatrForPlaceholder{
+	[self startActivityIndicator];
+}
+
 //creates an activity indicator on our placeholder view
 //shifts the frame of the indicator if it's on the screen
 -(void)startActivityIndicator{
@@ -495,7 +519,7 @@
 
 - (UIImageView *)likeIconView {
 	if (!_likeIconView) {
-		_likeIconView = [[UIImageView alloc] init];
+		_likeIconView = [[UIImageView alloc] initWithImage:self.notLikedImage];
 		_likeIconView.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return _likeIconView;

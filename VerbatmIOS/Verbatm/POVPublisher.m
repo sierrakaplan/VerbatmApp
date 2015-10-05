@@ -86,7 +86,6 @@
 
 - (void) publish {
 	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
-	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 	povObject.numUpVotes = [NSNumber numberWithLongLong: 0];
 	povObject.title = self.title;
 	UserManager* userManager = [UserManager sharedInstance];

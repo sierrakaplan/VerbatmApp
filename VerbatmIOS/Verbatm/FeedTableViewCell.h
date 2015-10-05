@@ -35,6 +35,9 @@
 -(void) setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title
 						andCoverImage: (UIImage*) coverImage;
 
+//Updates the appearance of the cell when user likes or unlikes it
+-(void) updateCellLikedByCurrentUser: (BOOL) likedByCurrentUser withNewNumLikes: (long long) newNumLikes;
+
 -(void)stopActivityIndicator;
 
 // If it was selected (by a tap for example)

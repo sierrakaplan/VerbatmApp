@@ -9,7 +9,7 @@ import java.util.Date;
  * Information about the POV needed to display in the feed
  */
 @com.googlecode.objectify.annotation.Entity
-public class POVInfo {
+public class POVInfo implements Comparable<POVInfo> {
 
     /**
      * Unique identifier of this POV Entity in the database.
@@ -105,5 +105,15 @@ public class POVInfo {
 
     public void setCreatorUserId(Long creatorUserId) {
         this.creatorUserId = creatorUserId;
+    }
+
+    /**
+     * Sorts pov infos so that the one with more votes is less
+     * @param other
+     * @return
+     */
+    @Override
+    public int compareTo(POVInfo other) {
+        return (int) (other.numUpVotes - this.numUpVotes);
     }
 }

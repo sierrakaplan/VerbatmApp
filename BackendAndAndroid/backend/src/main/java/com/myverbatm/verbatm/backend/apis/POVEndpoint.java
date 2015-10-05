@@ -19,6 +19,7 @@ import com.google.appengine.api.datastore.PropertyProjection;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.QueryResultList;
 import com.google.appengine.api.users.User;
+import com.google.appengine.repackaged.org.joda.time.DateTime;
 import com.myverbatm.verbatm.backend.Constants;
 import com.myverbatm.verbatm.backend.models.IdentifierListWrapper;
 import com.myverbatm.verbatm.backend.models.POV;
@@ -27,8 +28,10 @@ import com.myverbatm.verbatm.backend.models.Page;
 import com.myverbatm.verbatm.backend.models.PageListWrapper;
 import com.myverbatm.verbatm.backend.models.ResultsWithCursor;
 import com.myverbatm.verbatm.backend.models.VerbatmUser;
+import com.thoughtworks.xstream.mapper.Mapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -159,7 +162,6 @@ public class POVEndpoint {
         }
 
         // Search POV's with upvotes from most to least (descending)
-        // Can also add filter
         Query trendingPOVQuery = new Query("POV")
             .addProjection(new PropertyProjection("title", String.class))
             .addProjection(new PropertyProjection("coverPicUrl", String.class))
@@ -181,18 +183,16 @@ public class POVEndpoint {
 
         List<POVInfo> results = new ArrayList<>();
         QueryResultList<Entity> entities = preparedQuery.asQueryResultList(fetchOptions);
-        log.info("Trending query contains " + preparedQuery.countEntities(fetchOptions) + " items.");
 
         for (Entity entity : entities) {
             results.add(new POVInfo(entity));
         }
 
-        String recentsCursorString = entities.getCursor().toWebSafeString();
-
+        Collections.sort(results);
+        String trendingCursorString = entities.getCursor().toWebSafeString();
         log.info("Trending POVInfos: " + results.toString());
-        log.info("Trending cursor string: " + recentsCursorString);
-
-        return new ResultsWithCursor(results, recentsCursorString);
+        log.info("Trending cursor string: " + trendingCursorString);
+        return new ResultsWithCursor(results, trendingCursorString);
     }
 
     /**
@@ -296,7 +296,6 @@ public class POVEndpoint {
 
         // Do not use the key provided by the caller; use a generated key.
         pov.clearId();
-        log.info("POV published with page ids: " + pov.getPageIds());
         ofy().save().entity(pov).now();
         return pov;
     }

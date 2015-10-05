@@ -149,7 +149,21 @@
 	[self.mostRecentVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
 }
 
+#pragma mark - Notify cell its pov was unselected -
+
+-(void) deSelectCell {
+	[self.selectedCell deSelect];
+	self.selectedCell = nil;
+}
+
+#pragma mark - Update cell based on like -
+
+-(void) userHasLikedPOV: (BOOL) liked atIndex: (NSInteger) index withPovInfo: (PovInfo*) povInfo {
+	//
+}
+
 #pragma mark - Article List VC Delegate Methods (display articles) -
+
 -(void)failedToRefreshFeed{
     [self.delegate refreshingFeedsFailed];
 }
@@ -158,11 +172,6 @@
 	// Do this in the master vc so it can be above the main scroll view
 	self.selectedCell = cell;
 	[self.delegate displayPOVWithIndex: cell.indexPath.row fromLoadManager:loadManager];
-}
-
--(void) deSelectCell {
-	[self.selectedCell deSelect];
-	self.selectedCell = nil;
 }
 
 

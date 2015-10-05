@@ -44,6 +44,16 @@
 	return blurEffectView;
 }
 
+//TODO: make this a category
++ (UIImage*) halfPicture: (UIImage*) image leftHalf:(BOOL) leftHalf {
+	float xOrigin = leftHalf ? 0 : image.size.width/2.f;
+	CGRect cropRect = CGRectMake(xOrigin, 0, image.size.width/2.f, image.size.height);
+	CGImageRef imageRef = CGImageCreateWithImageInRect(image.CGImage, cropRect);
+	UIImage *result = [UIImage imageWithCGImage:imageRef scale:image.scale orientation:image.imageOrientation];
+	CGImageRelease(imageRef);
+	return result;
+}
+
 + (UIImage *)blurredImageWithImage:(UIImage *)sourceImage andFilterLevel: (float) filterValue{
 
 	//  Create our blurred image
@@ -369,7 +379,7 @@
 +(UIActivityIndicatorView *) startActivityIndicatorOnView: (UIView *) view
                                                 andCenter: (CGPoint) center andStyle:(UIActivityIndicatorViewStyle)style {
     
-    UIActivityIndicatorView *  indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style];
+    UIActivityIndicatorView *  indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: style];
     indicator.alpha = 1.0;
     indicator.hidesWhenStopped = YES;
     indicator.center = center;

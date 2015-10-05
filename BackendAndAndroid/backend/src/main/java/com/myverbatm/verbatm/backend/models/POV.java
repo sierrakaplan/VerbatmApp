@@ -4,6 +4,7 @@ import com.google.appengine.api.datastore.*;
 import com.googlecode.objectify.annotation.*;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Index;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -119,7 +120,7 @@ public class POV {
      * Returns the date the POV was published
      * @return the date the POV was published
      */
-    public final Date getDatePublished() {
+    public Date getDatePublished() {
         return datePublished;
     }
 
@@ -194,4 +195,5 @@ public class POV {
     public void setUsersWhoHaveLikedIDs(ArrayList<Long> usersWhoHaveLikedIDs) {
         this.usersWhoHaveLikedIDs = usersWhoHaveLikedIDs;
     }
+
 }

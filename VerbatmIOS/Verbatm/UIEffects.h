@@ -16,6 +16,8 @@
 
 + (UIImageView*) getBlurImageViewForImage:(UIImage*) image withFrame:(CGRect) frame;
 
++ (UIImage*) halfPicture: (UIImage*) image leftHalf:(BOOL) leftHalf;
+
 + (UIImage *)blurredImageWithImage:(UIImage *)sourceImage andFilterLevel: (float) filterValue;
 
 +(UIImage*) getGlowImageFromView:(UIView*)view andColor:(UIColor*)color;

@@ -11,6 +11,12 @@
 
 @class POVLoadManager;
 
+@protocol ArticleDisplayVCDelegate <NSObject>
+
+//-(void) storyWithIndex: (NSInteger)
+
+@end
+
 @interface ArticleDisplayVC : UIViewController
 
 //Tells the VC to display story at that index from that load manager

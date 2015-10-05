@@ -44,7 +44,7 @@
 @property (strong, nonatomic) PagesLoadManager* pageLoadManager;
 
 // In charge of updating information about a pov (number of likes, etc.)
-@property (strong, nonatomic) UpdatingPOVManager* updatingManager;
+@property (strong, nonatomic) UpdatingPOVManager* updatingPOVManager;
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
@@ -114,7 +114,8 @@
 #pragma mark - POVView Delegate (Like button) -
 
 -(void) likeButtonLiked:(BOOL)liked onPOVWithID:(NSNumber *)povID {
-	[self.updatingManager povWithId:povID wasLiked: liked];
+	[self.updatingPOVManager povWithId:povID wasLiked: liked];
+	
 }
 
 #pragma mark - Clean up -
@@ -157,11 +158,11 @@
 	return _pageLoadManager;
 }
 
--(UpdatingPOVManager*) updatingManager {
-	if (!_updatingManager) {
-		_updatingManager = [[UpdatingPOVManager alloc] init];
+-(UpdatingPOVManager*) updatingPOVManager {
+	if (!_updatingPOVManager) {
+		_updatingPOVManager = [[UpdatingPOVManager alloc] init];
 	}
-	return _updatingManager;
+	return _updatingPOVManager;
 }
 
 -(NSMutableArray*) povViews {

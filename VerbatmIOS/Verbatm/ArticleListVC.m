@@ -34,28 +34,32 @@
 
 @property (strong, nonatomic) FeedTableView *povListView;
 @property (strong, nonatomic) POVLoadManager *povLoader;
+@property (nonatomic) CGPoint recentContentOffset;
 
 #pragma mark - Publishing POV -
 
 @property (strong, nonatomic) FeedTableViewCell* povPublishingPlaceholderCell;
 @property (nonatomic) BOOL povPublishing;
-@property (nonatomic) BOOL loadingPOVs;
 
 #pragma mark - Refresh -
 
-//this cell is inserted in the top of the listview when pull down to refresh
-@property (strong,nonatomic) UIRefreshControl *refreshControl;
 @property (atomic) BOOL pullDownInProgress;
+//this cell is inserted in the top of the listview when pull down to refresh
 //tells you whether or not we have started a timer to animate
 @property (atomic) BOOL refreshInProgress;
+@property (strong,nonatomic) UIRefreshControl *reloadingRefreshControl;
 
-@property  (nonatomic, strong) UIActivityIndicatorView * activityIndicator;
+@property (nonatomic) BOOL loadingPOVs;
+@property (strong, nonatomic) UIActivityIndicatorView *loadingMoreActivityIndicator;
+
+@property (atomic) BOOL povsRefreshedForFirstTime;
+@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
 
 #define FEED_CELL_ID @"feed_cell_id"
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 
-#define NUM_POVS_IN_SECTION 4
-#define RELOAD_THRESHOLD -10
+#define NUM_POVS_IN_SECTION 6
+#define RELOAD_THRESHOLD (STORY_CELL_HEIGHT*2 + 10)
 @end
 
 @implementation ArticleListVC
@@ -65,9 +69,29 @@
 	[self initPovListView];
 	[self registerForNotifications];
     [self setRefreshAnimator];
-    self.pullDownInProgress = NO;
-    self.refreshInProgress = NO;
-    self.loadingPOVs = NO;
+	[self initializeVariables];
+}
+
+-(void) viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+	self.povListView.contentOffset = CGPointZero;
+	self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter:self.view.center andStyle: UIActivityIndicatorViewStyleWhiteLarge];
+	self.activityIndicator.color = [UIColor grayColor];
+	if (!self.povsRefreshedForFirstTime) {
+		self.povsRefreshedForFirstTime = YES;
+		[self refreshFeed];
+	}
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+	self.recentContentOffset = self.povListView.contentOffset;
+	self.povListView.contentOffset = CGPointZero;
+	[super viewWillDisappear:animated];
+}
+
+- (void)viewDidLayoutSubviews {
+	[super viewDidLayoutSubviews];
+	self.povListView.contentOffset = CGPointMake(0, self.recentContentOffset.y);
 }
 
 -(void) registerForNotifications {
@@ -75,23 +99,25 @@
 											 selector:@selector(povPublished)
 												 name:NOTIFICATION_POV_PUBLISHED
 											   object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
+   	[[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(networkConnectionUpdate:)
                                                  name:INTERNET_CONNECTION_NOTIFICATION
                                                object:nil];
 }
 
--(void) viewDidAppear:(BOOL)animated {
-	[super viewDidAppear:animated];
-    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter:self.view.center andStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    self.activityIndicator.color = [UIColor grayColor];
-    [self refreshFeed];
-}
-
 -(void) initPovListView {
 	self.povListView.delegate = self;
 	self.povListView.dataSource = self;
+	self.povListView.tableFooterView = self.loadingMoreActivityIndicator;
+	self.loadingMoreActivityIndicator.center = self.povListView.center;
 	[self.view addSubview:self.povListView];
+}
+
+-(void) initializeVariables {
+	self.pullDownInProgress = NO;
+	self.refreshInProgress = NO;
+	self.loadingPOVs = NO;
+	self.recentContentOffset = CGPointZero;
 }
 
 #pragma mark - Setting POV Load Manager -
@@ -99,10 +125,14 @@
 -(void) setPovLoadManager:(POVLoadManager *) povLoader {
 	self.povLoader = povLoader;
 	self.povLoader.delegate = self;
-	[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
+	if (!self.povsRefreshedForFirstTime) {
+		self.povsRefreshedForFirstTime = YES;
+		[self refreshFeed];
+	}
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
+
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
      return STORY_CELL_HEIGHT;
 }
@@ -117,6 +147,7 @@
 }
 
 #pragma mark - Table View Data Source methods (model) -
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	NSUInteger count = [self.povLoader getNumberOfPOVsLoaded];
     count += (self.povPublishing) ? 1:0;
@@ -142,9 +173,10 @@
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
 		// check if user likes this story
+		BOOL currentUserLikesStory = [self currentUserLikesStory:povInfo];
 		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto
 					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes
-				  likedByCurrentUser:[self currentUserLikesStory:povInfo]];
+				  likedByCurrentUser:currentUserLikesStory];
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
@@ -158,6 +190,14 @@
 	return ([[povInfo userIDsWhoHaveLikedThisPOV] containsObject: currentUser.identifier]);
 }
 
+#pragma mark - Notify cell that current user has liked or unliked it -
+
+-(void) userHasLikedPOV: (BOOL) liked atIndex: (NSInteger) index withPovInfo: (PovInfo*) povInfo {
+	FeedTableViewCell* povCell = [self.povListView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
+	long long newNumLikes = liked ? povInfo.numUpVotes.longLongValue+1 : povInfo.numUpVotes.longLongValue-1;
+	[povCell updateCellLikedByCurrentUser:liked withNewNumLikes: newNumLikes];
+}
+
 #pragma mark - Feed Table View Cell Delegate methods -
 
 -(void) successfullyPinchedTogetherCell: (FeedTableViewCell *)cell {
@@ -168,7 +208,6 @@
 
 //one of the POV's in the list has been clicked
 -(void) viewPOVOnCell: (FeedTableViewCell*) cell {
-//	NSLog(@"Viewing POV \"%@\"", cell.title);
 	[self.delegate displayPOVOnCell:cell withLoadManager: self.povLoader];
 }
 
@@ -184,7 +223,6 @@
         return;
     }
 
-    
     self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
 	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:userName andTitle: title andCoverImage:coverPic];
@@ -208,7 +246,7 @@
 
 #pragma mark - POVLoadManager Delegate methods -
 
-//Delagate method from povLoader informing us the the list has been refreshed. So the content length is the same
+//Delegate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
     [UIEffects stopActivityIndicator:self.activityIndicator];
     self.refreshInProgress = NO;
@@ -217,34 +255,47 @@
 		[self.povPublishingPlaceholderCell stopActivityIndicator];
         self.povPublishingPlaceholderCell = nil;
     }
-    
-    [self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-    if(self.refreshControl.isRefreshing)[self.refreshControl endRefreshing];
+
+    if(self.reloadingRefreshControl.isRefreshing) {
+		[self.reloadingRefreshControl endRefreshing];
+	}
+	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 //delegate method from povLoader - called if call to refresh failed usually for internet reasons
 -(void)povsFailedToRefresh{
+	//TODO: tell user somehow that these failed to refresh
     self.refreshInProgress = NO;
-    if(self.refreshControl.isRefreshing)[self.refreshControl endRefreshing];
+    if(self.reloadingRefreshControl.isRefreshing) {
+		[self.reloadingRefreshControl endRefreshing];
+	}
     [self.delegate failedToRefreshFeed];
 }
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
 -(void) morePOVsLoaded {
-    if(self.loadingPOVs)self.loadingPOVs = NO;
+    self.loadingPOVs = NO;
+	if ([self.loadingMoreActivityIndicator isAnimating]) {
+		[self.loadingMoreActivityIndicator stopAnimating];
+	}
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 -(void) failedToLoadMorePOVs {
-	// do something?
+	//TODO: tell user somehow that these failed to load more
+	self.loadingPOVs = NO;
+	if ([self.loadingMoreActivityIndicator isAnimating]) {
+		[self.loadingMoreActivityIndicator stopAnimating];
+	}
+	[self.delegate failedToRefreshFeed];
 }
 
 #pragma mark - Pull to refresh Feed Animation -
 
--(void)setRefreshAnimator{
-    self.refreshControl = [[UIRefreshControl alloc] init];
-    [self.refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-    [self.povListView addSubview:self.refreshControl];
+-(void)setRefreshAnimator {
+    self.reloadingRefreshControl = [[UIRefreshControl alloc] init];
+    [self.reloadingRefreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [self.povListView addSubview:self.reloadingRefreshControl];
 }
 
 -(void)refresh:(UIRefreshControl *)refreshControl {
@@ -262,25 +313,25 @@
     [self.povListView endUpdates];
     self.povListView.contentSize = CGSizeMake(self.povListView.contentSize.width,
                                               ([self.povLoader getNumberOfPOVsLoaded] * STORY_CELL_HEIGHT ) + 80 + NAV_BAR_HEIGHT);
-}
 
-
-//when the user is at the bottom of the screen and is pulling up more articles load
--(void) scrollViewDidEndDragging:(nonnull UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    //when the user has reached the very bottom of the feed and pulls we load more articles into the feed
-    if (scrollView.contentOffset.y +scrollView.frame.size.height + RELOAD_THRESHOLD > scrollView.contentSize.height) {
-        if(!self.loadingPOVs) {
-            self.loadingPOVs = YES;
-            [self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
-        }
-    }
+	//when the user has reached the very bottom of the feed and pulls we load more articles into the feed
+	if (scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height - RELOAD_THRESHOLD) {
+		if(!self.loadingPOVs) {
+			self.loadingPOVs = YES;
+			[self.loadingMoreActivityIndicator startAnimating];
+			[self.povLoader loadMorePOVs: NUM_POVS_IN_SECTION];
+		}
+	}
 }
 
 #pragma mark - Network Connection -
 -(void)networkConnectionUpdate: (NSNotification *) notification{
     NSDictionary * userInfo = [notification userInfo];
     BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
-    if(thereIsConnection)[self.povLoader reloadPOVs: NUM_POVS_IN_SECTION];
+	if (!self.povsRefreshedForFirstTime && thereIsConnection) {
+		self.povsRefreshedForFirstTime = YES;
+		[self refreshFeed];
+	}
 }
 
 -(BOOL)isThereConnectionFromString:(NSString *) key{
@@ -313,6 +364,16 @@
 		_povListView = [[FeedTableView alloc] initWithFrame: CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height) style:UITableViewStylePlain];
 	}
 	return _povListView;
+}
+
+-(UIActivityIndicatorView*) loadingMoreActivityIndicator {
+	if (!_loadingMoreActivityIndicator) {
+		_loadingMoreActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+		_loadingMoreActivityIndicator.color = [UIColor grayColor];
+		_loadingMoreActivityIndicator.alpha = 1.0;
+		_loadingMoreActivityIndicator.hidesWhenStopped = YES;
+	}
+	return _loadingMoreActivityIndicator;
 }
 
 

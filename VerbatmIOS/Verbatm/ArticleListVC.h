@@ -8,10 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@class PovInfo;
 @class POVLoadManager;
 @class FeedTableViewCell;
 
 @protocol ArticleListVCDelegate <NSObject>
+
 -(void) displayPOVOnCell:(FeedTableViewCell *)cell withLoadManager:(POVLoadManager *)loadManager;
 -(void) failedToRefreshFeed;
 @end
@@ -22,5 +24,8 @@
 -(void) setPovLoadManager:(POVLoadManager *)povLoader;
 
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
+
+// Notify cell to update its appearance based on the current user liking or unliking it
+-(void) userHasLikedPOV: (BOOL) liked atIndex: (NSInteger) index withPovInfo: (PovInfo*) povInfo;
 
 @end
