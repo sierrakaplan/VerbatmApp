@@ -48,7 +48,7 @@
 
 
 @interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDevNavBarDelegate>
 
 
 //keeps track of ContentPageElementScrollViews
@@ -179,8 +179,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 // as well as the pinch view center and radius
 -(void)setElementDefaultFrames {
 	self.defaultPageElementScrollViewSize = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
-	self.defaultPinchViewCenter = CGPointMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + (self.view.frame.size.width/2.f),
-											  self.defaultPageElementScrollViewSize.height/2);
+	self.defaultPinchViewCenter = CGPointMake(self.view.frame.size.width/2.f,
+											  self.defaultPageElementScrollViewSize.height/2.f);
 	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
 }
 
@@ -198,7 +198,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 																	  andElement:self.baseMediaTileSelector];
 
 	baseMediaTileSelectorScrollView.scrollEnabled = NO;
-	baseMediaTileSelectorScrollView.delegate = self;
+	baseMediaTileSelectorScrollView.contentPageElementScrollViewDelegate = self;
 
 	[self.mainScrollView addSubview:baseMediaTileSelectorScrollView];
 	[self.pageElementScrollViews addObject:baseMediaTileSelectorScrollView];
@@ -402,6 +402,20 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	}
 }
 
+//make sure the object is in the right position
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
+				  willDecelerate:(BOOL)decelerate {
+	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
+//		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
+	}
+}
+
+-(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
+//		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
+	}
+}
+
 -(void) showOrHidePullBarBasedOnMainScrollViewScroll {
 	CGPoint translation = [self.mainScrollView.panGestureRecognizer translationInView:self.mainScrollView];
 	if(translation.y < 0) {
@@ -412,12 +426,14 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	return;
 }
 
+#pragma mark - Content Page Element Scroll View Delegate -
 
-#pragma mark Deleting scrollview and element
--(void)contentPageScrollViewShouldDelete:(ContentPageElementScrollView*)scrollView {
-	[self deleteScrollView:scrollView];
+-(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView {
+	[self deleteScrollView: scrollView];
 }
 
+
+#pragma mark - Deleting scrollview and element -
 
 //Deletes scroll view and the element it contained
 -(void) deleteScrollView:(ContentPageElementScrollView*)scrollView {
@@ -492,8 +508,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	}
     
 	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
-	newElementScrollView.delegate = self;
-	newElementScrollView.customDelegate = self;
+	newElementScrollView.contentPageElementScrollViewDelegate = self;
 
     [self.navBar enablePreviewButton:YES];
 	self.numPinchViews++;
@@ -959,7 +974,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
     
 	CGRect newMediaTileScrollViewFrame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
 	ContentPageElementScrollView * newMediaTileScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newMediaTileScrollViewFrame andElement:mediaTile];
-	newMediaTileScrollView.customDelegate = self;
+	newMediaTileScrollView.contentPageElementScrollViewDelegate = self;
 	[self.mainScrollView addSubview:newMediaTileScrollView];
 	[self storeView:newMediaTileScrollView inArrayAsBelowView:topView];
 }

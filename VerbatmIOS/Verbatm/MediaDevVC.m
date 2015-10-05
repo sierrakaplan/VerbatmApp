@@ -151,7 +151,7 @@
 	[self.contentContainerView addSubview: self.contentDevVC.view];
 	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height;
 	self.contentDevVC.delegate = self;
-//TODO:	[self.contentDevVC loadPinchViews];
+	[self.contentDevVC loadPinchViews];
 }
 
 
@@ -395,7 +395,7 @@
 	self.previewImageView.frame = CGRectMake(0, NAV_BAR_HEIGHT, self.view.frame.size.width, self.view.frame.size.height - NAV_BAR_HEIGHT);
 	[self.view addSubview:self.previewImageView];
 	[UIView animateWithDuration:1.f animations:^{
-		self.previewImageView.frame = CGRectMake(self.view.bounds.size.width, 0, 0, 0);
+		self.previewImageView.frame = CGRectMake(self.view.bounds.size.width/2.f, 0, 0, 0);
 	} completion:^(BOOL finished) {
 		[self.previewImageView removeFromSuperview];
 		self.previewImageView = nil;

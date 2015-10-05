@@ -13,14 +13,17 @@
 #import "ContentDevVC.h"
 
 @class CollectionPinchView;
+@class ContentPageElementScrollView;
 
-@protocol ContentSVDelegate <NSObject>
+@protocol ContentPageElementScrollViewDelegate <NSObject>
 
-@required
--(void)contentPageScrollViewShouldDelete:(UIScrollView*)scrollView;
+-(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView;
+
 @end
 
 @interface ContentPageElementScrollView : UIScrollView
+
+@property (nonatomic, strong) id<ContentPageElementScrollViewDelegate> contentPageElementScrollViewDelegate;
 
 @property (strong, nonatomic, readonly) UIView<ContentDevElementDelegate>* pageElement;
 
@@ -55,7 +58,6 @@
 -(void) changePageElement:(UIView<ContentDevElementDelegate>*) newPageElement;
 
 #pragma mark Collection opening and closing
-@property (nonatomic,strong) id<ContentSVDelegate> customDelegate;
 
 @property (nonatomic, readonly) BOOL isCollection;
 // if the page element is a collectionPinchView, this can be YES
