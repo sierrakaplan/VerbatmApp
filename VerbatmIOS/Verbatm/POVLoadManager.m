@@ -41,11 +41,12 @@
 
 
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
-+ (AnyPromise*) loadDataFromURL: (NSString*) urlString {
++ (AnyPromise*) loadDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		NSURLRequest* request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:urlString]];
+		NSURLRequest* request = [[NSURLRequest alloc] initWithURL:url];
 		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
 			if (error) {
+				NSLog(@"Error retrieving data from url: \n %@", error.description);
 				resolve(nil);
 			} else {
 				resolve(data);
@@ -137,7 +138,7 @@
 // and stores it in a newly created PovInfo, which it returns
 -(AnyPromise*) getPOVInfoWithExtraInfoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
 	AnyPromise* userNamePromise = [self loadUserNameFromUserID:gtlPovInfo.creatorUserId];
-	AnyPromise* coverPicDataPromise = [POVLoadManager loadDataFromURL: gtlPovInfo.coverPicUrl];
+	AnyPromise* coverPicDataPromise = [POVLoadManager loadDataFromURL: [NSURL URLWithString:gtlPovInfo.coverPicUrl]];
 	AnyPromise* loadUserIDsWhoHaveLikedThisPOV = [self loadUserIDsWhoHaveLikedPOVWithID: gtlPovInfo.identifier];
 	return PMKWhen(@[userNamePromise, coverPicDataPromise, loadUserIDsWhoHaveLikedThisPOV]).then(^(NSArray* results) {
 		NSString* userName = results[0];

@@ -36,7 +36,7 @@
 #import "UserSetupParameters.h"
 #import "UIEffects.h"
 #import "UserManager.h"
-#import "UserPinchViews.h"
+#import "UserPovInProgress.h"
 
 #import "VerbatmCameraView.h"
 
@@ -155,14 +155,17 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
 	[self.feedContainer addSubview: self.feedVC.view];
+	[self addChildViewController:self.feedVC];
 	self.feedVC.delegate = self;
 
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
 	[self.adkContainer addSubview: self.mediaDevVC.view];
+	[self addChildViewController:self.mediaDevVC];
 	self.mediaDevVC.delegate = self;
 
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_PROFILEVC];
 	[self.profileContainer addSubview: self.profileVC.view];
+	[self addChildViewController:self.profileVC];
     
     self.profileContainer.clipsToBounds = YES;
     
@@ -352,7 +355,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 		[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPhoto];
 		[self showFeed];
 
-		[[UserPinchViews sharedInstance] clearPinchViews];
+		[[UserPovInProgress sharedInstance] clearPOVInProgress];
 		[self.mediaDevVC povPublished];
 	}
 }

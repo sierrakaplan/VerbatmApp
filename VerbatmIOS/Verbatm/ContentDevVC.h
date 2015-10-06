@@ -64,8 +64,9 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 //presents gallery so user can pick assets
 -(void) presentEfficientGallery;
-// Loads pinch views from saved settings
--(void) loadPinchViews;
+// Loads title, cover photo, and pinch views from user's saved settings
+// (if they exist)
+-(void) loadPOVFromUserDefaults;
 - (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
 
 // either locks the scroll view or frees it

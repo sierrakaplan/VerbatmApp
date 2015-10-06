@@ -1,73 +1,87 @@
 //
-//  CoverPicturePinchView.m
+//  CoverPicturePV.m
 //  Verbatm
 //
-//  Created by Sierra Kaplan-Nelson on 9/9/15.
+//  Created by Iain Usiri on 9/15/15.
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
 #import "CoverPicturePinchView.h"
 #import "Styles.h"
 
-@interface CoverPicturePinchView()
+@interface CoverPicturePinchView ()
 
 @property (strong, nonatomic) UILabel* addCoverPicLabel;
-
+//we are redeclaring this property fromt the super class so that we can acceess it. It's
+//not duplicated in memory.
 @property (strong, nonatomic) UIImageView *imageView;
+
+#define IMAGE_KEY @"image"
 
 @end
 
-@implementation CoverPicturePinchView
 
--(instancetype) initWithFrame:(CGRect)frame {
-	self = [super initWithFrame:frame];
-	if (self) {
+@implementation CoverPicturePinchView
+@dynamic imageView;
+
+-(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image {
+    
+    self = [super initWithRadius:radius withCenter:center andImage:image];
+    if(self){
+        [self formatSelf];
+    }
+    return self;
+}
+
+-(void) formatSelf {
+    [self setBackgroundColor: [UIColor clearColor]];
+    [self formatAddCoverPicLabel];
+    self.layer.borderColor = [UIColor COVER_PIC_CIRCLE_COLORE].CGColor;
+}
+
+-(void) formatAddCoverPicLabel {
+    self.addCoverPicLabel = [[UILabel alloc] initWithFrame:self.bounds];
+    self.addCoverPicLabel.textAlignment = NSTextAlignmentCenter;
+    self.addCoverPicLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.addCoverPicLabel.numberOfLines = 3;
+    self.addCoverPicLabel.text = @"Cover Picture";
+    [self.addCoverPicLabel setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
+    self.addCoverPicLabel.font = [UIFont fontWithName:ADD_COVER_PIC_FONT size: ADD_COVER_PIC_TEXT_SIZE];
+    [self.background addSubview: self.addCoverPicLabel];
+}
+
+-(void) setNewImage: (UIImage*) image {
+    [super putNewImage:image];
+    if(self.addCoverPicLabel)[self.addCoverPicLabel removeFromSuperview];
+    self.containsImage = YES;
+}
+
+-(UIImage*) getImage {
+    return [super getImage];
+}
+
+-(void) removeImage {
+    [self.imageView setImage:nil];
+    
+    [self.background addSubview: self.addCoverPicLabel];
+}
+
+#pragma mark - Encoding -
+
+- (void)encodeWithCoder:(NSCoder *)coder {
+	[super encodeWithCoder:coder];
+	[coder encodeObject:UIImagePNGRepresentation([super getImage]) forKey:IMAGE_KEY];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+		NSData* imageData = [decoder decodeObjectForKey:IMAGE_KEY];
+		UIImage* image = [UIImage imageWithData:imageData];
+		[super initWithImage:image];
 		[self formatSelf];
 	}
 	return self;
 }
 
-
--(void) formatSelf {
-	[self setBackgroundColor: [UIColor clearColor]];
-	[self formatAddCoverPicLabel];
-	self.layer.borderColor = [UIColor COVER_PIC_CIRCLE_COLORE].CGColor;
-}
-
--(void) formatAddCoverPicLabel {
-	self.addCoverPicLabel = [[UILabel alloc] initWithFrame:self.bounds];
-	self.addCoverPicLabel.textAlignment = NSTextAlignmentCenter;
-	self.addCoverPicLabel.lineBreakMode = NSLineBreakByWordWrapping;
-	self.addCoverPicLabel.numberOfLines = 3;
-	self.addCoverPicLabel.text = @"Cover Picture";
-    [self.addCoverPicLabel setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
-	self.addCoverPicLabel.font = [UIFont fontWithName:ADD_COVER_PIC_FONT size: ADD_COVER_PIC_TEXT_SIZE];
-	[self.background addSubview: self.addCoverPicLabel];
-}
-
--(void) setImage: (UIImage*) image {
-	[self.imageView setImage:image];
-	[self.addCoverPicLabel removeFromSuperview];
-	[self.background insertSubview:self.imageView atIndex:0];
-    self.containsImage = YES;
-}
-
--(UIImage*) getImage {
-	return [self.imageView image];
-}
-
--(void) removeImage {
-	[self.imageView removeFromSuperview];
-	[self.background addSubview: self.addCoverPicLabel];
-}
-
-#pragma mark - Lazy Instantiation
-
--(UIImageView*)imageView {
-	if(!_imageView) _imageView = [[UIImageView alloc] initWithFrame: self.background.frame];
-	_imageView.contentMode = UIViewContentModeScaleAspectFill;
-	_imageView.layer.masksToBounds = YES;
-	return _imageView;
-}
 
 @end

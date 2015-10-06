@@ -78,6 +78,10 @@
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
 }
 
+//for ios8+ To hide the status bar
+-(BOOL)prefersStatusBarHidden{
+	return YES;
+}
 
 #pragma mark - Delegate Methods -
 //Delegate method for EditContentView

@@ -1,17 +1,16 @@
 //
-//  CoverPicturePinchView.h
+//  CoverPicturePV.h
 //  Verbatm
 //
-//  Created by Sierra Kaplan-Nelson on 9/9/15.
+//  Created by Iain Usiri on 9/15/15.
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
 #import "ImagePinchView.h"
 
-@interface CoverPicturePinchView : PinchView
-
--(void) setImage: (UIImage*) image;
+@interface CoverPicturePinchView : ImagePinchView
+-(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image;
+-(void) setNewImage: (UIImage*) image;
 -(UIImage*) getImage;
 -(void) removeImage;
-
 @end

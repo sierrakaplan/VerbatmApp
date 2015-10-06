@@ -29,6 +29,7 @@
 #import "MediaUploader.h"
 
 #import "POVPublisher.h"
+#import "POVLoadManager.h"
 #import "PinchView.h"
 
 #import <PromiseKit/PromiseKit.h>
@@ -102,7 +103,7 @@
 		[self insertPOV: povObject];
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
-//		NSLog(@"Error uploading POV: %@", error.description);
+		NSLog(@"Error publishing POV: %@", error.description);
 		self.mediaUploaders = nil;
 	});
 }
@@ -184,36 +185,22 @@
 -(AnyPromise*) storeVideosFromPinchView: (PinchView*) pinchView {
 	NSMutableArray *storeVideoPromises = [[NSMutableArray array] init];
 	if(pinchView.containsVideo) {
-        NSArray* pinchViewVideos = @[];//temporary set up
-        if([pinchView isKindOfClass:[CollectionPinchView class]]){
-            pinchViewVideos = [((CollectionPinchView *)pinchView) getVideosInDataFormat];
-        }else if ([pinchView isKindOfClass:[VideoPinchView class]]){
-            pinchViewVideos = [((VideoPinchView *)pinchView) getVideosInDataFormat];
-        }
-        
-        if(pinchViewVideos){
-            for (int i = 0; i < pinchViewVideos.count; i++) {
-                
-                id videoObject =pinchViewVideos[i];
-                
-                /*the videoObject could be nsdata or a promise*/
-                if([videoObject isKindOfClass:[NSData class]]){//it's nsdata
-                    NSData* videoData =videoObject;
-                    [storeVideoPromises addObject: [self storeVideo:videoData withIndex:i]];
-                }else{//it's a promise
-                    AnyPromise * promise = videoObject;
-                    promise.then(^(NSData * data){
-                        [storeVideoPromises addObject: [self storeVideo:data withIndex:i]];
-                    });
-                }
-            }
-        }
+		NSArray* pinchViewVideos = @[];
+		if([pinchView isKindOfClass:[CollectionPinchView class]]){
+			pinchViewVideos = [((CollectionPinchView *)pinchView) getVideos];
+		}else if ([pinchView isKindOfClass:[VideoPinchView class]]){
+			pinchViewVideos = [((VideoPinchView *)pinchView) getVideos];
+		}
+		for (int i = 0; i < pinchViewVideos.count; i++) {
+			AVURLAsset* videoAsset = pinchViewVideos[i];
+			[storeVideoPromises addObject: [POVLoadManager loadDataFromURL:videoAsset.URL].then(^(NSData * data){
+				[self storeVideo:data withIndex:i];
+			})];
+		}
 	}
-	return PMKWhen(storeVideoPromises).catch(^(NSError *error){
-		//This can catch at any part in the chain
-//		NSLog(@"Error uploading POV: %@", error.description);
-	});
+	return PMKWhen(storeVideoPromises);
 }
+
 
 // (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)
 // Resolves to what insertImage resolves to,
@@ -315,7 +302,7 @@
 	[self.service executeQuery:insertPOVQuery
 			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* object, NSError *error) {
 				 if (error) {
-//					 NSLog(@"Error uploading POV: %@", error.description);
+					 NSLog(@"Error uploading POV: %@", error.description);
 					 //TODO: should send a notification that there was an error publishing
 				 } else {
 					 self.mediaUploaders = nil;

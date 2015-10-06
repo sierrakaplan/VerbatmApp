@@ -15,6 +15,8 @@
 
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image;
 
+-(void) initWithImage:(UIImage*)image;
+
 //change which filter is applied
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex;
 

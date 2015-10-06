@@ -12,7 +12,7 @@
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
 #import "ContentPageElementScrollView.h"
-#import "CoverPicturePV.h"
+#import "CoverPicturePinchView.h"
 #import "Durations.h"
 
 #import "EditContentView.h"
@@ -40,14 +40,14 @@
 #import "UIEffects.h"
 #import "UserSetupParameters.h"
 #import "UseFulFunctions.h"
-#import "UserPinchViews.h"
+#import "UserPovInProgress.h"
 
 #import "VerbatmScrollView.h"
 #import "VideoPinchView.h"
 
 
 
-@interface ContentDevVC () < UITextFieldDelegate,UIScrollViewDelegate, MediaSelectTileDelegate,
+@interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
 GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDevNavBarDelegate>
 
 
@@ -56,7 +56,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 // Says whether or not user is currently adding a cover picture
 // (used when returning from adding assets)
 @property (nonatomic) BOOL addingCoverPicture;
-@property (strong, nonatomic) CoverPicturePV * coverPicView;
+@property (strong, nonatomic) CoverPicturePinchView * coverPicView;
 
 @property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
 
@@ -121,14 +121,16 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 @property (nonatomic) BOOL photoTappedOpenForTheFirstTime;
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
-#define WHAT_IS_IT_LIKE_OFFSET 50
-#define WHAT_IS_IT_LIKE_HEIGHT 50
+#define WHAT_IS_IT_LIKE_Y_OFFSET 40
+#define WHAT_IS_IT_LIKE_X_OFFSET 7
+#define WHAT_IS_IT_LIKE_HEIGHT 52
+#define MAX_TITLE_CHARACTERS 40
 
 #define REPLACE_PHOTO_FRAME_WIDTH 80
 #define REPLACE_PHOTO_FRAME_HEIGHT 80
 
-#define REPLACE_PHOTO_YOFFSET 20 //distance of replacePhoto y postion vs the y postion of the coverphoto
-#define REPLACE_PHOTO_XsOFFSET 20 //distance of replacePhoto x postion vs the x postion of the coverphoto
+#define REPLACE_PHOTO_YOFFSET 20
+#define REPLACE_PHOTO_XsOFFSET 20
 
 #define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
 @end
@@ -150,7 +152,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	[self formatTitleAndCoverPicture];
 	[self createBaseSelector];
 	[self setUpNotifications];
-	[self setDelegates];
+	self.whatIsItLikeField.delegate = self;
+	self.mainScrollView.delegate = self;
 }
 
 -(void) initializeVariables {
@@ -198,6 +201,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 																	  andElement:self.baseMediaTileSelector];
 
 	baseMediaTileSelectorScrollView.scrollEnabled = NO;
+	baseMediaTileSelectorScrollView.delegate = self; // scroll view delegate
 	baseMediaTileSelectorScrollView.contentPageElementScrollViewDelegate = self;
 
 	[self.mainScrollView addSubview:baseMediaTileSelectorScrollView];
@@ -217,11 +221,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 //sets the textview placeholders' color and text
 -(void) formatTitleAndCoverPicture {
 
-	CGRect whatIsItLikeLabelFrame = CGRectMake(WHAT_IS_IT_LIKE_OFFSET, WHAT_IS_IT_LIKE_OFFSET,
-											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_OFFSET,
+	CGRect whatIsItLikeLabelFrame = CGRectMake(WHAT_IS_IT_LIKE_X_OFFSET, WHAT_IS_IT_LIKE_Y_OFFSET,
+											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_X_OFFSET,
 											   WHAT_IS_IT_LIKE_HEIGHT);
-	CGRect whatIsItLikeFieldFrame = CGRectMake(WHAT_IS_IT_LIKE_OFFSET, whatIsItLikeLabelFrame.origin.y + whatIsItLikeLabelFrame.size.height,
-											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_OFFSET,
+	CGRect whatIsItLikeFieldFrame = CGRectMake(WHAT_IS_IT_LIKE_X_OFFSET, whatIsItLikeLabelFrame.origin.y + whatIsItLikeLabelFrame.size.height,
+											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_X_OFFSET,
 											   WHAT_IS_IT_LIKE_HEIGHT*2);
 
 	CGFloat coverPicRadius = self.defaultPinchViewRadius * 3.f/4.f;
@@ -277,7 +281,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 -(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
 	//self.coverPicView = [[CoverPicturePV alloc] initWithFrame:frame];
-    self.coverPicView = [[CoverPicturePV alloc] initWithRadius:frame.size.width/2.f withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
+    self.coverPicView = [[CoverPicturePinchView alloc] initWithRadius:frame.size.width/2.f withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
     
 	UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
 	[self.coverPicView addGestureRecognizer: tapGesture];
@@ -320,19 +324,23 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 											   object: [UIDevice currentDevice]];
 }
 
-
--(void) setDelegates {
-	self.whatIsItLikeField.delegate = self;
-	self.mainScrollView.delegate = self;
-}
-
 -(UIImage*) getCoverPicture {
 	return [self.coverPicView getImage];
 }
 
 // Loads pinch views from user defaults
--(void) loadPinchViews {
-	NSArray* savedPinchViews = [[UserPinchViews sharedInstance] pinchViews];
+-(void) loadPOVFromUserDefaults {
+	NSString* savedTitle = [[UserPovInProgress sharedInstance] title];
+	if (savedTitle && savedTitle.length) {
+		self.whatIsItLikeField.text = savedTitle;
+	}
+
+	UIImage* coverPicture = [[UserPovInProgress sharedInstance] coverPhoto];
+	if (coverPicture) {
+		[self.coverPicView setNewImage:coverPicture];
+	}
+	
+	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
 		[pinchView specifyRadius:self.defaultPinchViewRadius
 					   andCenter:self.defaultPinchViewCenter];
@@ -353,19 +361,37 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 #pragma mark - Configure Text Fields -
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-
-	//S@nwiches shouldn't have any spaces between them
-	if([string isEqualToString:@" "]  && textField != self.whatIsItLikeField) return NO;
-	return YES;
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+	if (textField == self.whatIsItLikeField) {
+		[[UserPovInProgress sharedInstance] addTitle: textField.text];
+	}
 }
 
+// if we encounter a newline character return
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+	if(textField == self.whatIsItLikeField) {
+		// enter closes the keyboard
+		if ([string isEqualToString:@"\n"]) {
+			[textField resignFirstResponder];
+			return NO;
+		} else if (textField.text.length >= MAX_TITLE_CHARACTERS && string.length > 0)  {
+			return NO;
+		}
+		return YES;
+	} else {
+		return YES;
+	}
+}
+
+- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
+	[textField resignFirstResponder];
+	return YES;
+}
 
 -(BOOL) textFieldShouldReturn:(UITextField *)textField {
 	if(textField == self.whatIsItLikeField) {
 		[self.whatIsItLikeField resignFirstResponder];
 	}
-
 	return YES;
 }
 
@@ -406,13 +432,27 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
 				  willDecelerate:(BOOL)decelerate {
 	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
-//		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
+		[self animateScrollViewBackOrToDeleteMode:(ContentPageElementScrollView*)scrollView];
 	}
 }
 
 -(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
 	if ([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
-//		[self deleteOrAnimateBackScrollView:(ContentPageElementScrollView*)scrollView];
+		[self animateScrollViewBackOrToDeleteMode:(ContentPageElementScrollView*)scrollView];
+	}
+}
+
+//check if scroll view has been scrolled enough to delete, and if so delete.
+//Otherwise scroll it back
+-(void) animateScrollViewBackOrToDeleteMode:(ContentPageElementScrollView*)scrollView {
+	if (self.pinchingMode != PinchingModeNone || scrollView.collectionIsOpen){
+		return;
+	}
+
+	if([scrollView isDeleting]) {
+		[scrollView animateToDeleting];
+	} else {
+		[scrollView animateBackToInitialPosition];
 	}
 }
 
@@ -493,7 +533,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		return;
 	}
 
-	[[UserPinchViews sharedInstance] addPinchView:pinchView];
+	[[UserPovInProgress sharedInstance] addPinchView:pinchView];
 	[self addTapGestureToPinchView:pinchView];
 
 	// must be below base media tile selector
@@ -508,6 +548,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	}
     
 	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
+	newElementScrollView.delegate = self; //scroll view delegate
 	newElementScrollView.contentPageElementScrollViewDelegate = self;
 
     [self.navBar enablePreviewButton:YES];
@@ -527,14 +568,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #pragma mark - Shift Positions of Elements
 //Once view is added- we make sure the views below it are appropriately adjusted
 //in position
--(void)shiftElementsBelowView: (UIView *) view
-{
+-(void)shiftElementsBelowView: (UIView *) view {
 	if (!view) {
 //		NSLog(@"View that elements are being shifted below should not be nil");
 		return;
 	}
 	if(![view isKindOfClass:[ContentPageElementScrollView class]]
-	   && ![view isKindOfClass:[CoverPicturePV class]]) {
+	   && ![view isKindOfClass:[CoverPicturePinchView class]]) {
 //		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
 		return;
 	}
@@ -974,6 +1014,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     
 	CGRect newMediaTileScrollViewFrame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
 	ContentPageElementScrollView * newMediaTileScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newMediaTileScrollViewFrame andElement:mediaTile];
+	newMediaTileScrollView.delegate = self; // scroll view delegate
 	newMediaTileScrollView.contentPageElementScrollViewDelegate = self;
 	[self.mainScrollView addSubview:newMediaTileScrollView];
 	[self storeView:newMediaTileScrollView inArrayAsBelowView:topView];
@@ -1390,14 +1431,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		[self.selectedView_PAN finishMovingSelectedItem];
 		return;
 	}
-
 	self.selectedView_PAN.frame = self.previousFrameInLongPress;
-
 	[self.selectedView_PAN.pageElement markAsSelected:NO];
-
 	//sanitize for next run
 	self.selectedView_PAN = nil;
-
 	[self shiftElementsBelowView:self.coverPicView];
 }
 
@@ -1407,6 +1444,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	NSInteger index2 = [self.pageElementScrollViews indexOfObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index1 withObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index2 withObject: scrollView1];
+	if ([scrollView1.pageElement isKindOfClass:[PinchView class]] && [scrollView2.pageElement isKindOfClass:[PinchView class]]) {
+		[[UserPovInProgress sharedInstance] swapPinchView:(PinchView*)scrollView1.pageElement andPinchView:(PinchView*)scrollView2.pageElement];
+	}
 }
 
 
@@ -1443,58 +1483,52 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 #pragma mark - Undo implementation -
 
--(void) registerDeletedTile: (ContentPageElementScrollView *) tile withIndex: (NSNumber *) index {
+-(void) registerDeletedTile: (ContentPageElementScrollView *)pageElementScrollView withIndex: (NSNumber *) index {
 	//make sure there is something to delete
-	if(!tile) return;
-	[tile removeFromSuperview];
+	if(!pageElementScrollView) return;
+	[pageElementScrollView removeFromSuperview];
 
 	//update user defaults if was pinch view
-	if ([tile.pageElement isKindOfClass:[PinchView class]]) {
-		[[UserPinchViews sharedInstance] removePinchView:(PinchView*)tile.pageElement];
+	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
+		[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
 		self.numPinchViews--;
 		if (self.numPinchViews < 1) {
 			[self.navBar enablePreviewButton:NO];
 		}
 	}
 
-	//ungray out undo if previously was grayed out
-	if (![self.tileSwipeViewUndoManager canUndo]) {
-		//		[self.changePullBarDelegate canUndo:YES];
-	}
-	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[tile, index]];
+	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[pageElementScrollView, index]];
 	//show the pullbar so that they can undo
 	[self.delegate showPullBar:YES withTransition:YES];
 }
 
 -(void)undoTileDeleteSwipe {
 	[self.tileSwipeViewUndoManager undo];
-	if(![self.tileSwipeViewUndoManager canUndo]) {
-		//		[self.changePullBarDelegate canUndo:NO];
-	}
 }
 
 
 #pragma mark Undo tile swipe
 
--(void) undoTileDelete: (NSArray *) tileAndInfo {
-	ContentPageElementScrollView * tile = tileAndInfo[0];
-	NSNumber * index = tileAndInfo[1];
+-(void) undoTileDelete: (NSArray *) pageElementScrollViewAndIndex {
+
+	ContentPageElementScrollView * pageElementScrollView = pageElementScrollViewAndIndex[0];
+	NSNumber * index = pageElementScrollViewAndIndex[1];
 
 	//update user defaults if was pinch view
-	if ([tile.pageElement isKindOfClass:[PinchView class]]) {
-		[[UserPinchViews sharedInstance] addPinchView:(PinchView*)tile.pageElement];
+	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
+		[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)pageElementScrollView.pageElement];
 		if (self.numPinchViews < 1) {
 			[self.navBar enablePreviewButton:YES];
 		}
 		self.numPinchViews++;
 	}
 
-	[tile.pageElement markAsDeleting:NO];
+	[pageElementScrollView.pageElement markAsDeleting:NO];
 
-	[self returnView:tile toDisplayAtIndex:index.integerValue];
+	[self returnPageElementScrollView:pageElementScrollView toDisplayAtIndex:index.integerValue];
 }
 
--(void)returnView: (ContentPageElementScrollView *) scrollView toDisplayAtIndex:(NSInteger) index {
+-(void) returnPageElementScrollView: (ContentPageElementScrollView *) scrollView toDisplayAtIndex:(NSInteger) index {
 
 	if(index) {
 		ContentPageElementScrollView * upperScrollView = self.pageElementScrollViews[(index -1)];
@@ -1688,7 +1722,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIImage* image = [[UIImage alloc] initWithData: imageData];
                 image = [UIEffects fixOrientation:image];
-                [self.coverPicView setNewImageWith: image];
+                [self.coverPicView setNewImage: image];
+				[[UserPovInProgress sharedInstance] addCoverPhoto:image];
             });
         }];
     }
@@ -1821,7 +1856,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 -(MediaSelectTile*) baseMediaTileSelector {
 	if (!_baseMediaTileSelector) {
-		CGRect frame = CGRectMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + ELEMENT_OFFSET_DISTANCE,
+		CGRect frame = CGRectMake(ELEMENT_OFFSET_DISTANCE,
 								  ELEMENT_OFFSET_DISTANCE/2.f,
 								  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
 		_baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];

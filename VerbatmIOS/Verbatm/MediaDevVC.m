@@ -16,7 +16,7 @@
 
 #import "Icons.h"
 #import "Durations.h"
-#import "UserPinchViews.h"
+#import "UserPovInProgress.h"
 
 #import "MasterNavigationVC.h"
 #import "MediaPreview.h"
@@ -149,9 +149,10 @@
 -(void)setContentDevVC {
 	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTDEVVC];
 	[self.contentContainerView addSubview: self.contentDevVC.view];
+	[self addChildViewController:self.contentDevVC];
 	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height;
 	self.contentDevVC.delegate = self;
-	[self.contentDevVC loadPinchViews];
+	[self.contentDevVC loadPOVFromUserDefaults];
 }
 
 
@@ -666,7 +667,7 @@
 
 -(void) povPublished {
 	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
-	[self.contentDevVC cleanUp];
+//TODO:	[self.contentDevVC cleanUp];
 }
 
 -(void)alertAddTitle {

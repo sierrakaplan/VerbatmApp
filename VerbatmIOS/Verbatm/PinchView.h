@@ -69,9 +69,6 @@
 //array of AVURLAsset
 -(NSArray*) getVideos;
 
-// array of NSData* from each avurlasset
--(NSArray*) getVideosInDataFormat;
-
 -(void)onScreen;
 -(void)offScreen;
 

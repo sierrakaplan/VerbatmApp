@@ -14,7 +14,7 @@
 #import "CollectionPinchView.h"
 #import "Durations.h"
 #import "SizesAndPositions.h"
-#import "UserPinchViews.h"
+#import "UserPovInProgress.h"
 #import "MediaSelectTile.h"
 
 @interface ContentPageElementScrollView()
@@ -39,6 +39,7 @@
 
 #define DELETE_ICON_FILENAME @"deleteIcon"
 #define MEDIA_SELECT_TILE_DELETE_BUTTON_OFFSET 7
+#define ANIMATE_TO_DELETE_MODE_OR_BACK_DURATION 0.1f
 
 @end
 
@@ -112,8 +113,8 @@
 -(PinchView*) pinchWith:(ContentPageElementScrollView*)otherScrollView {
 	PinchView* newPinchView;
 
-	[[UserPinchViews sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
-	[[UserPinchViews sharedInstance] removePinchView:(PinchView*)self.pageElement];
+	[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
+	[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
 
 	if(self.isCollection) {
 		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(PinchView*)otherScrollView.pageElement];
@@ -124,7 +125,7 @@
 		newPinchView = [PinchView pinchTogether:pinchViewArray];
 		pinchViewArray = nil;
 	}
-	[[UserPinchViews sharedInstance] addPinchView:(PinchView*)newPinchView];
+	[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)newPinchView];
 	[self changePageElement:newPinchView];
 	[otherScrollView removeFromSuperview];
 	return newPinchView;
@@ -161,17 +162,17 @@
 }
 
 -(void) animateBackToInitialPosition {
-    return;//temp
-	[self setContentOffset:self.initialContentOffset animated:YES];
+	[UIView animateWithDuration:ANIMATE_TO_DELETE_MODE_OR_BACK_DURATION animations:^{
+		[self setContentOffset:self.initialContentOffset animated:NO];
+	} completion:^(BOOL finished) {
+	}];
 }
 
--(void) animateOffScreen {
-    return;//temp
-    CGPoint newContentOffset = CGPointMake(0, self.initialContentOffset.y);
-	if (self.contentOffset.x > self.initialContentOffset.x) {
-		newContentOffset.x = self.initialContentSize.width;
-	}
-	[self setContentOffset:newContentOffset animated:YES];
+-(void) animateToDeleting {
+	[UIView animateWithDuration:ANIMATE_TO_DELETE_MODE_OR_BACK_DURATION animations:^{
+		[self setContentOffset:CGPointMake(self.contentSize.width - self.frame.size.width, self.initialContentOffset.y) animated:NO];
+	} completion:^(BOOL finished) {
+	}];
 }
 
 #pragma mark - Open and close collection -
@@ -467,7 +468,7 @@
 	self.selectedItem = nil;
 	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
 	if (index < 0) index = 0;
-	[[UserPinchViews sharedInstance] removePinchView:currentPinchView];
+	[[UserPovInProgress sharedInstance] removePinchView:currentPinchView];
 	[(CollectionPinchView*)self.pageElement unPinchAndRemove:unPinched];
 
 	//check if there is now only one element in the collection, and if so
@@ -485,7 +486,7 @@
 	}
 
 	self.selectedItem = nil;
-	[[UserPinchViews sharedInstance] addPinchView:(PinchView*)self.pageElement];
+	[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)self.pageElement];
 	return unPinched;
 }
 

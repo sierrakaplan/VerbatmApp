@@ -44,7 +44,7 @@ typedef NS_ENUM(NSInteger, POVType) {
 
 @property (strong, nonatomic) id<POVLoadManagerDelegate> delegate;
 
-+ (AnyPromise*) loadDataFromURL: (NSString*) urlString;
++ (AnyPromise*) loadDataFromURL: (NSURL*) url;
 
 // Initialize with the type of POV's to load (trending, recent, etc.)
 -(id) initWithType: (POVType) type;

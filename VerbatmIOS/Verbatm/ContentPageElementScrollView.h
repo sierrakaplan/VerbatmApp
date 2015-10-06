@@ -42,7 +42,7 @@
 
 -(void) animateBackToInitialPosition;
 
--(void) animateOffScreen;
+-(void) animateToDeleting;
 
 #pragma mark Changing page element
 

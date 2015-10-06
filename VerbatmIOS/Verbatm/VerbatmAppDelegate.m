@@ -8,7 +8,7 @@
 
 #import "VerbatmAppDelegate.h"
 
-#import "UserPinchViews.h"
+#import "UserPovInProgress.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UserSetupParameters.h"
 
@@ -41,7 +41,7 @@
 	});
 
     [UserSetupParameters setUpParameters];
-	[[UserPinchViews sharedInstance] loadPinchViewsFromUserDefaults];
+	[[UserPovInProgress sharedInstance] loadPOVFromUserDefaults];
     [[AVAudioSession sharedInstance] setActive: YES error: nil];
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
     
