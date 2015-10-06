@@ -7,11 +7,8 @@
 //
 
 #import "PinchView.h"
-#import "VideoPlayerWrapperView.h"
 
 @interface VideoPinchView : PinchView
-
-@property (strong, nonatomic) VideoPlayerWrapperView *videoView;
 
 @property (strong, nonatomic) AVURLAsset* video;
 

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
 		9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995A19BA9042005EBC8A /* MediaDevVC.m */; };
-		A504ECE51B69D5E20076F9D0 /* VideoPlayerWrapperView.m in Sources */ = {isa = PBXBuildFile; fileRef = A504ECE41B69D5E20076F9D0 /* VideoPlayerWrapperView.m */; };
 		A504ECE81B6AF4A00076F9D0 /* UserPovInProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = A504ECE71B6AF4A00076F9D0 /* UserPovInProgress.m */; };
 		A51370681BA64D250058FBA6 /* POVDisplayScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A51370671BA64D250058FBA6 /* POVDisplayScrollView.m */; };
 		A513706B1BA77C740058FBA6 /* ArticleDisplayVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A513706A1BA77C740058FBA6 /* ArticleDisplayVC.m */; };
@@ -18,6 +17,7 @@
 		A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FF1BC4459800A087D1 /* UIView+Effects.m */; settings = {ASSET_TAGS = (); }; };
 		A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E5021BC44B6900A087D1 /* UITextView+Utilities.m */; settings = {ASSET_TAGS = (); }; };
 		A535E5061BC44BF100A087D1 /* UIScrollView+Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E5051BC44BF100A087D1 /* UIScrollView+Effects.m */; settings = {ASSET_TAGS = (); }; };
+		A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E5081BC45CC600A087D1 /* AVAsset+Utilities.m */; settings = {ASSET_TAGS = (); }; };
 		A5446C961BBA3C33002177F4 /* ContentDevNavBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5446C951BBA3C33002177F4 /* ContentDevNavBar.m */; settings = {ASSET_TAGS = (); }; };
 		A5446C991BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5446C981BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m */; settings = {ASSET_TAGS = (); }; };
 		A54689231BA3E1BC00F40E54 /* CoverPhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */; };
@@ -225,8 +225,6 @@
 		9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSessionManager.m; sourceTree = "<group>"; };
 		9D29995919BA9042005EBC8A /* MediaDevVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaDevVC.h; sourceTree = "<group>"; };
 		9D29995A19BA9042005EBC8A /* MediaDevVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaDevVC.m; sourceTree = "<group>"; };
-		A504ECE31B69D5E20076F9D0 /* VideoPlayerWrapperView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlayerWrapperView.h; sourceTree = "<group>"; };
-		A504ECE41B69D5E20076F9D0 /* VideoPlayerWrapperView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerWrapperView.m; sourceTree = "<group>"; };
 		A504ECE61B6AF4A00076F9D0 /* UserPovInProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserPovInProgress.h; sourceTree = "<group>"; };
 		A504ECE71B6AF4A00076F9D0 /* UserPovInProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserPovInProgress.m; sourceTree = "<group>"; };
 		A51370661BA64D250058FBA6 /* POVDisplayScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POVDisplayScrollView.h; sourceTree = "<group>"; };
@@ -249,6 +247,8 @@
 		A535E5021BC44B6900A087D1 /* UITextView+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Utilities.m"; sourceTree = "<group>"; };
 		A535E5041BC44BF100A087D1 /* UIScrollView+Effects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+Effects.h"; sourceTree = "<group>"; };
 		A535E5051BC44BF100A087D1 /* UIScrollView+Effects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+Effects.m"; sourceTree = "<group>"; };
+		A535E5071BC45CC600A087D1 /* AVAsset+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "AVAsset+Utilities.h"; sourceTree = "<group>"; };
+		A535E5081BC45CC600A087D1 /* AVAsset+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "AVAsset+Utilities.m"; sourceTree = "<group>"; };
 		A5446C941BBA3C33002177F4 /* ContentDevNavBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentDevNavBar.h; sourceTree = "<group>"; };
 		A5446C951BBA3C33002177F4 /* ContentDevNavBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevNavBar.m; sourceTree = "<group>"; };
 		A5446C971BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppIdentifierListWrapper.h; path = API/GTLVerbatmAppIdentifierListWrapper.h; sourceTree = "<group>"; };
@@ -757,8 +757,6 @@
 			children = (
 				A562D50E1B506D4500F566F4 /* VideoPlayerView.h */,
 				A562D50C1B506D2800F566F4 /* VideoPlayerView.m */,
-				A504ECE31B69D5E20076F9D0 /* VideoPlayerWrapperView.h */,
-				A504ECE41B69D5E20076F9D0 /* VideoPlayerWrapperView.m */,
 			);
 			name = "Related to Video";
 			sourceTree = "<group>";
@@ -857,6 +855,8 @@
 				A535E5021BC44B6900A087D1 /* UITextView+Utilities.m */,
 				A535E5041BC44BF100A087D1 /* UIScrollView+Effects.h */,
 				A535E5051BC44BF100A087D1 /* UIScrollView+Effects.m */,
+				A535E5071BC45CC600A087D1 /* AVAsset+Utilities.h */,
+				A535E5081BC45CC600A087D1 /* AVAsset+Utilities.m */,
 			);
 			name = "UI Categories and Effects";
 			sourceTree = "<group>";
@@ -1019,12 +1019,12 @@
 			children = (
 				C77C7D361A22E9FC00694B20 /* PinchView.h */,
 				C77C7D371A22E9FC00694B20 /* PinchView.m */,
-				A56F68791B65B25700CE5744 /* CollectionPinchView.h */,
-				A56F687A1B65B25700CE5744 /* CollectionPinchView.m */,
 				A56F687F1B65B43D00CE5744 /* ImagePinchView.h */,
 				A56F68801B65B43D00CE5744 /* ImagePinchView.m */,
 				A56F68821B65B44C00CE5744 /* VideoPinchView.h */,
 				A56F68831B65B44C00CE5744 /* VideoPinchView.m */,
+				A56F68791B65B25700CE5744 /* CollectionPinchView.h */,
+				A56F687A1B65B25700CE5744 /* CollectionPinchView.m */,
 				C719A4121BA802D10075CA80 /* CoverPicturePinchView.h */,
 				C719A4131BA802D10075CA80 /* CoverPicturePinchView.m */,
 			);
@@ -1527,6 +1527,7 @@
 				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
+				A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */,
 				A5AA31C71B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.m in Sources */,
 				A5E85F9C1B911DA900E148D0 /* GTLBatchResult.m in Sources */,
 				A5E85FA41B911DA900E148D0 /* GTLBase64.m in Sources */,
@@ -1546,7 +1547,6 @@
 				A54689231BA3E1BC00F40E54 /* CoverPhotoAVE.m in Sources */,
 				A5AA31BF1B9FCDDC00D8D20C /* GTLVerbatmAppImage.m in Sources */,
 				A5E85FA31B911DA900E148D0 /* GTLUtilities.m in Sources */,
-				A504ECE51B69D5E20076F9D0 /* VideoPlayerWrapperView.m in Sources */,
 				A59C19721B9E1DFF00EBA60E /* POVLoadManager.m in Sources */,
 				C78B682419CA6C01003D0AC5 /* VerbatmUITextView.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,

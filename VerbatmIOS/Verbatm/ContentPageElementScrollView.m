@@ -183,9 +183,6 @@
 		return NO;
 	}
 	self.collectionIsOpen = YES;
-	if ([(CollectionPinchView*)self.pageElement containsVideo]) {
-		[[(CollectionPinchView*)self.pageElement videoView] stopVideo];
-	}
 	[self.pageElement removeFromSuperview];
     [self removeTheDeleteButton];
 	[self displayCollectionPinchViews:[(CollectionPinchView*)self.pageElement pinchedObjects]];
@@ -222,9 +219,6 @@
 	}
 
 	for (PinchView* pinchView in self.collectionPinchViews) {
-		if ([pinchView isKindOfClass:[VideoPinchView class]]) {
-			[[(VideoPinchView*)pinchView videoView] stopVideo];
-		}
 		[pinchView removeFromSuperview];
 	}
 	self.collectionIsOpen = NO;

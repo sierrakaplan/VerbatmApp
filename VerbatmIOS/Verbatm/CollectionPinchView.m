@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "AVAsset+Utilities.h"
 #import "CollectionPinchView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -18,8 +19,8 @@
 @property (weak, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
 
-//Can be AVAsset or NSURL
-@property (weak, nonatomic) id video;
+@property (strong, nonatomic) UIImage* videoImage;
+@property (strong, nonatomic) UIImageView* videoView;
 @property (strong, nonatomic) UIImageView *playVideoImageView;
 @property (strong, nonatomic) UIImage* playVideoIconHalf;
 @property (strong, nonatomic) UIImage* playVideoIconQuarter;
@@ -42,8 +43,6 @@
 }
 
 -(void) initWithPinchViews:(NSArray*)pinchViews {
-	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame:self.background.frame];
-	[self.videoView repeatVideoOnEnd:YES];
 	[self.background addSubview:self.videoView];
 	[self addPlayIcon];
 	[self addCollectionViewBorder];
@@ -141,17 +140,12 @@
 //This function displays the media on the view.
 -(void)displayMedia {
 	self.playVideoImageView.frame = [self getCenterFrameForVideoView];
-	self.videoView.videoPlayerView.frame = self.videoView.bounds;
 	if (self.containsImage) {
 		[self.imageView setImage:self.image];
 		[self.background bringSubviewToFront:self.imageView];
 	}
 	if (self.containsVideo) {
-		if (![self.videoView isPlaying]) {
-			[self.videoView playVideoFromAsset: self.video];
-			[self.videoView pauseVideo];
-			[self.videoView muteVideo];
-		}
+		[self.videoView setImage: self.videoImage];
 		[self.background bringSubviewToFront:self.videoView];
 	}
 }
@@ -170,7 +164,7 @@
 
 -(void) updateMedia {
 	self.image = nil;
-	self.video = nil;
+	self.videoImage = nil;
 	self.containsImage = NO;
 	self.containsVideo = NO;
 	for (PinchView* pinchView in self.pinchedObjects) {
@@ -186,16 +180,13 @@
 		}
 	} else if(pinchView.containsVideo) {
 		self.containsVideo = YES;
-		if(!self.video) {
-			self.video = [(VideoPinchView*)pinchView video];
+		if(!self.videoImage) {
+			self.videoImage = [[(VideoPinchView*)pinchView video] getThumbnailFromAsset];
 		}
 	}
 }
 
 -(CollectionPinchView*) pinchAndAdd:(PinchView*)pinchView {
-	if ([pinchView isKindOfClass:[VideoPinchView class]]) {
-		[[(VideoPinchView*)pinchView videoView] stopVideo];
-	}
 	[self.pinchedObjects addObject:pinchView];
 	[self changeTypesOfMediaFromPinchView:pinchView];
 	[self renderMedia];
@@ -231,16 +222,6 @@
 	return videos;
 }
 
-#pragma mark - When pinch view goes on and off screen
-
--(void)offScreen {
-	[self.videoView stopVideo];
-}
-
--(void)onScreen {
-	[self displayMedia];
-}
-
 #pragma mark - Encoding -
 
 - (void)encodeWithCoder:(NSCoder *)coder {
@@ -266,10 +247,21 @@
 }
 
 -(UIImageView*)imageView {
-	if(!_imageView) _imageView = [[UIImageView alloc] init];
-	_imageView.contentMode = UIViewContentModeScaleAspectFill;
-	_imageView.layer.masksToBounds = YES;
+	if(!_imageView) {
+		_imageView = [[UIImageView alloc] init];
+		_imageView.contentMode = UIViewContentModeScaleAspectFill;
+		_imageView.layer.masksToBounds = YES;
+	}
 	return _imageView;
+}
+
+-(UIImageView*) videoView {
+	if (!_videoView) {
+		_videoView = [[UIImageView alloc] init];
+		_videoView.contentMode = UIViewContentModeScaleAspectFill;
+		_videoView.clipsToBounds = YES;
+	}
+	return _videoView;
 }
 
 @end

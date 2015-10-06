@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "AVAsset+Utilities.h"
 #import "VideoPinchView.h"
 #import "Icons.h"
 #import "POVLoadManager.h"
@@ -18,6 +19,9 @@
 #pragma mark Encoding Keys
 
 #define VIDEO_KEY @"video"
+
+@property (strong, nonatomic) UIImage* videoImage;
+@property (strong, nonatomic) UIImageView* videoView;
 
 @end
 
@@ -32,12 +36,12 @@
 }
 
 -(void) initWithVideo: (AVURLAsset*)video {
-	self.videoView = [[VideoPlayerWrapperView alloc] initWithFrame: self.background.frame];
-	[self.videoView repeatVideoOnEnd:YES];
+	[self.videoView setFrame: self.background.frame];
 	[self.background addSubview:self.videoView];
 	[self addPlayIcon];
 	self.containsVideo = YES;
 	self.video = video;
+	self.videoImage = [self.video getThumbnailFromAsset];
 	[self renderMedia];
 }
 
@@ -60,26 +64,7 @@
 
 //This should be overriden in subclasses
 -(void)renderMedia {
-	[self displayMedia];
-}
-
-//This function displays the media on the view.
--(void)displayMedia {
-	if (![self.videoView isPlaying]) {
-		[self.videoView playVideoFromAsset: self.video];
-		[self.videoView pauseVideo];
-		[self.videoView muteVideo];
-	}
-}
-
-#pragma mark - When pinch view goes on and off screen
-
--(void)offScreen {
-	[self.videoView stopVideo];
-}
-
--(void)onScreen {
-	[self displayMedia];
+	[self.videoView setImage: self.videoImage];
 }
 
 #pragma mark - Overriding get videos
@@ -104,6 +89,17 @@
 		[self initWithVideo:video];
 	}
 	return self;
+}
+
+#pragma mark - Lazy Instantiation -
+
+-(UIImageView*) videoView {
+	if (!_videoView) {
+		_videoView = [[UIImageView alloc] init];
+		_videoView.contentMode = UIViewContentModeScaleAspectFill;
+		_videoView.clipsToBounds = YES;
+	}
+	return _videoView;
 }
 
 @end

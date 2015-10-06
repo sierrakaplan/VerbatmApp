@@ -55,13 +55,14 @@
 
 //takes an alasset and creates an image to view
 -(void)setOurImage:(ALAsset *) asset  {
-    ALAssetRepresentation *representation = [asset defaultRepresentation];
-    CGImageRef imageRef = [representation fullResolutionImage];
-    if (imageRef) {
-        self.imageView.image = [UIImage imageWithCGImage:imageRef
+	@autoreleasepool {
+		ALAssetRepresentation *representation = [asset defaultRepresentation];
+		CGImageRef imageRef = [representation fullResolutionImage];
+		self.imageView.image = [UIImage imageWithCGImage:imageRef
 												   scale:representation.scale
 											 orientation:(UIImageOrientation)representation.orientation];
-    }
+		CGImageRelease(imageRef);
+	}
 }
 
 -(UIImageView *)imageView{

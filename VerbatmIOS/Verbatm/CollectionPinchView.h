@@ -7,7 +7,6 @@
 //
 
 #import "PinchView.h"
-#import "VideoPlayerWrapperView.h"
 #import "VideoPinchView.h"
 
 @interface CollectionPinchView : PinchView
@@ -15,10 +14,8 @@
 //array of PinchViews
 @property (strong, nonatomic) NSMutableArray* pinchedObjects;
 
-@property (strong, nonatomic) VideoPlayerWrapperView *videoView;
-
 //inits with an array of pinchviews
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews;
+-(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews;
 
 -(NSInteger) getNumPinchViews;
 

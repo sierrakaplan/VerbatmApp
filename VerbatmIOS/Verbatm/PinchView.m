@@ -145,11 +145,6 @@
 	if ([pinchViews count] < 2) {
 		return	firstPinchView;
 	}
-	for (PinchView* pinchView in pinchViews) {
-		if ([pinchView isKindOfClass:[VideoPinchView class]]) {
-			[[(VideoPinchView*)pinchView videoView] stopVideo];
-		}
-	}
 
 	return [[CollectionPinchView alloc] initWithRadius:firstPinchView.radius withCenter:firstPinchView.center andPinchViews:pinchViews];
 }

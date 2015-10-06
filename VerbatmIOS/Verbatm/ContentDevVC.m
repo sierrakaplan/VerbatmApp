@@ -1435,19 +1435,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
-	[self stopAllVideos];
 }
-
--(void) stopAllVideos {
-	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
-		if([scrollView.pageElement isKindOfClass:[VideoPinchView class]]) {
-			[[(VideoPinchView*)scrollView.pageElement videoView] stopVideo];
-		} else if([scrollView.pageElement isKindOfClass:[CollectionPinchView class]]) {
-			[[(CollectionPinchView*)scrollView.pageElement videoView] stopVideo];
-		}
-	}
-}
-
 
 - (void)dealloc {
 	//tune out of nsnotification
@@ -1589,11 +1577,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 //all videos in pinch views are stopped
 -(void)cleanUp {
 	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
-		if([scrollView.pageElement isKindOfClass:[VideoPinchView class]]) {
-			[[(VideoPinchView*)scrollView.pageElement videoView] stopVideo];
-		} else if([scrollView.pageElement isKindOfClass:[CollectionPinchView class]]) {
-			[[(CollectionPinchView*)scrollView.pageElement videoView] stopVideo];
-		}
 		[scrollView removeFromSuperview];
 	}
 	[self.pageElementScrollViews removeAllObjects];

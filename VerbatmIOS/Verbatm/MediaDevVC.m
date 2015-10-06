@@ -243,10 +243,13 @@
 #pragma mark - Saved Media animation -
 
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset {
-    //animate image of asset 
-	ALAssetRepresentation *representation = [asset defaultRepresentation];
-	CGImageRef imageRef = [representation fullResolutionImage];
-	self.previewImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
+    //animate image of asset
+	@autoreleasepool {
+		ALAssetRepresentation *representation = [asset defaultRepresentation];
+		CGImageRef imageRef = [representation fullResolutionImage];
+		self.previewImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
+		CGImageRelease(imageRef);
+	}
 	if (!self.mediaPreviewPaused) {
 		[self animatePreviewImage];
 	}
