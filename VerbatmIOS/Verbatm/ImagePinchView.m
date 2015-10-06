@@ -101,25 +101,25 @@
 
 //return array of uiimage with filter from image
 -(void)createFilteredImagesFromImageData:(UIImage *)image andFilterNames:(NSArray*)filterNames{
-   dispatch_async(self.createFilteredImagesQueue, ^{
-	   @autoreleasepool {
-		   NSData  * imageData = UIImagePNGRepresentation(image);
-		   //Background Thread
-		   for (NSString* filterName in filterNames) {
-			   CIImage *beginImage =  [CIImage imageWithData: imageData];
-			   CIContext *context = [CIContext contextWithOptions:nil];
-			   CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues: kCIInputImageKey, beginImage, nil];
-			   CIImage *outputImage = [filter outputImage];
-			   CGImageRef CGImageRef = [context createCGImage:outputImage fromRect:[outputImage extent]];
-			   UIImage* imageWithFilter = [UIImage imageWithCGImage:CGImageRef];
-			   CGImageRelease(CGImageRef);
+	dispatch_async(self.createFilteredImagesQueue, ^{
+		NSData  * imageData = UIImagePNGRepresentation(image);
+		//Background Thread
+		for (NSString* filterName in filterNames) {
+			@autoreleasepool {
+				CIImage *beginImage =  [CIImage imageWithData: imageData];
+				CIContext *context = [CIContext contextWithOptions:nil];
+				CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues: kCIInputImageKey, beginImage, nil];
+				CIImage *outputImage = [filter outputImage];
+				CGImageRef CGImageRef = [context createCGImage:outputImage fromRect:[outputImage extent]];
+				UIImage* imageWithFilter = [UIImage imageWithCGImage:CGImageRef];
+				CGImageRelease(CGImageRef);
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[self.filteredImages addObject:imageWithFilter];
+				});
+			}
+		}
 
-			   dispatch_async(dispatch_get_main_queue(), ^{
-				   [self.filteredImages addObject:imageWithFilter];
-			   });
-		   }
-	   }
-    });
+	});
 }
 
 #pragma mark - Encoding -

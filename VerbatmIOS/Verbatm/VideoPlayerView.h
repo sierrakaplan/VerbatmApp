@@ -20,7 +20,6 @@
 @property (nonatomic) BOOL forPinchView;
 
 
-
 -(void)playVideoFromURL: (NSURL*) url;
 
 -(void)playVideoFromAsset: (AVAsset*) asset;

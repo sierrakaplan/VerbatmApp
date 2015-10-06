@@ -34,13 +34,16 @@
 
 //takes an asset and gets the first frame of the video
 -(UIImage *)getThumbnailFromAsset:(AVAsset *)asset{
-        AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc]initWithAsset:asset];
-        imageGenerator.appliesPreferredTrackTransform = YES;
-        CMTime time = [asset duration];
-        time.value = 0;
-        CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
-        UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
-        return thumbnail;
+	@autoreleasepool {
+		AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc]initWithAsset:asset];
+		imageGenerator.appliesPreferredTrackTransform = YES;
+		CMTime time = [asset duration];
+		time.value = 0;
+		CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
+		UIImage *thumbnail = [UIImage imageWithCGImage:imageRef];
+		CGImageRelease(imageRef);
+		return thumbnail;
+	}
 }
 
 
