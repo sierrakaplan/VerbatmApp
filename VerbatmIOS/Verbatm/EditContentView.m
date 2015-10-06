@@ -97,8 +97,8 @@
 
 -(void) editText: (NSString *) text {
     if(!_textView){
-        CGRect textViewFrame = CGRectMake(0, VIEW_Y_OFFSET, self.frame.size.width, TEXT_VIEW_HEIGHT);
-        self.textView = [[VerbatmUITextView alloc] initWithFrame:textViewFrame];
+        self.userSetFrame = CGRectMake(0, VIEW_Y_OFFSET, self.frame.size.width, TEXT_VIEW_HEIGHT);
+        self.textView = [[VerbatmUITextView alloc] initWithFrame:self.userSetFrame];
         [self formatTextView:self.textView];
         [self addSubview:self.textView];
         [self.textView setDelegate:self];
@@ -166,10 +166,19 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView{
+    self.userSetFrame = textView.frame;
     if(textView.frame.origin.y > (self.frame.size.height - self.keyboardHeight)){
         [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
             self.textView.frame = CGRectMake(0, VIEW_Y_OFFSET, self.textView.frame.size.width,
                                              self.textView.frame.size.height);
+        }];
+    }
+}
+
+-(void)textViewDidEndEditing:(UITextView *)textView{
+    if(textView.frame.origin.y != self.userSetFrame.origin.y){
+        [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
+                self.textView.frame = self.userSetFrame;
         }];
     }
 }
@@ -389,13 +398,12 @@
 #pragma mark - lazy instantiation -
 -(UIButton *)textCreationButton{
     if(!_textCreationButton){
-        self.userSetFrame = CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
-                                       EXIT_CV_BUTTON_WIDTH,
-                                       self.frame.size.height - EXIT_CV_BUTTON_WIDTH -
-                                       EXIT_CV_BUTTON_WALL_OFFSET,
-                                       EXIT_CV_BUTTON_WIDTH,
-                                       EXIT_CV_BUTTON_WIDTH);
-        _textCreationButton = [[UIButton alloc] initWithFrame:self.userSetFrame];
+        _textCreationButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
+                                                                         EXIT_CV_BUTTON_WIDTH,
+                                                                         self.frame.size.height - EXIT_CV_BUTTON_WIDTH -
+                                                                         EXIT_CV_BUTTON_WALL_OFFSET,
+                                                                         EXIT_CV_BUTTON_WIDTH,
+                                                                         EXIT_CV_BUTTON_WIDTH)];
         [self addPanToTextView];
     }
     return _textCreationButton;
