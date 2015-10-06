@@ -15,6 +15,7 @@
 @property (strong, nonatomic) UIImageView *imageView;
 
 
+
 #pragma mark Encoding Keys
 
 #define IMAGE_KEY @"image"

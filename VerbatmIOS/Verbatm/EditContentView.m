@@ -23,7 +23,6 @@
 @interface EditContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) UIImageView * imageView;
-
 #pragma mark FilteredPhotos
 @property (nonatomic, weak) NSArray * filteredImages;
 @property (nonatomic) NSInteger imageIndex;
@@ -45,6 +44,7 @@
 	if(self) {
 		self.backgroundColor = [UIColor blackColor];
 		self.frame = frame;
+        self.textView = nil;
 	}
 	return self;
 }
@@ -251,12 +251,14 @@
 	}
 }
 
+
 -(void)filterViewSwipeLeft: (UISwipeGestureRecognizer *) sender {
 	if (self.imageIndex < ([self.filteredImages count]-1)) {
 		self.imageIndex = self.imageIndex +1;
 		[self.imageView setImage:self.filteredImages[self.imageIndex]];
 	}
 }
+
 
 -(NSInteger) getFilteredImageIndex {
 	return self.imageIndex;
@@ -354,11 +356,18 @@
     }
         return NO;
 }
-
+#pragma mark - custom setters -
+-(void)setTextView:(VerbatmUITextView *)textView{
+    if(_textView){
+        [_textView removeFromSuperview];
+    }
+    _textView = textView;
+    [self addSubview:_textView];
+}
 
 #pragma mark - lazy instantiation -
-
 -(UIButton *)textCreationButton{
+    
     if(!_textCreationButton){
         _textCreationButton = [[UIButton alloc] initWithFrame:
                                CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -

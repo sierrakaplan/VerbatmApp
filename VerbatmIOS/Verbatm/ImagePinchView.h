@@ -13,6 +13,11 @@
 @property (strong, nonatomic) NSMutableArray* filteredImages;
 @property (nonatomic) NSInteger filterImageIndex;
 
+//this is set by the edit content view.
+//it's also formatted etc by the edit content view
+@property (nonatomic, strong) UITextView * textView;
+
+
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image;
 
 //change which filter is applied
