@@ -1827,7 +1827,6 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 
 #pragma mark - Lazy Instantiation
-
 -(MediaSelectTile*) baseMediaTileSelector {
 	if (!_baseMediaTileSelector) {
         float tileWidth = self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2);

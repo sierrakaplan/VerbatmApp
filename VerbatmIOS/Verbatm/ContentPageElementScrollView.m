@@ -37,6 +37,8 @@
 @property (nonatomic) CGPoint previousLocationOfTouchPoint_PAN;
 @property (nonatomic) CGRect previousFrameInLongPress;
 
+@property (nonatomic) CGPoint panTouchLocation;
+
 #define DELETE_ICON_FILENAME @"deleteIcon"
 @end
 
@@ -48,6 +50,7 @@
 		[self formatScrollView];
 		[self changePageElement:element];
         [self createDeleteButton];
+        
 	}
 	return self;
 }
@@ -55,8 +58,7 @@
 -(void) formatScrollView {
 	self.contentSize = self.initialContentSize = CGSizeMake(self.frame.size.width + DELETE_ICON_WIDTH + 2*DELETE_ICON_OFFSET, 0);
 	self.contentOffset = self.initialContentOffset = CGPointMake(0, 0);
-//    CGPointMake(2*DELETE_ICON_OFFSET + DELETE_ICON_WIDTH, 0);
-//
+
 	self.pagingEnabled = NO;
 	self.showsHorizontalScrollIndicator = NO;
 	self.showsVerticalScrollIndicator = NO;
@@ -96,6 +98,14 @@
     self.contentOffset = self.initialContentOffset;
 }
 
+#pragma mark - scrolling delegate functions -
+
+
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+//    
+//    
+//    
+//}
 
 #pragma mark - Change Page Element -
 
@@ -487,5 +497,6 @@
 	[[UserPinchViews sharedInstance] addPinchView:(PinchView*)self.pageElement];
 	return unPinched;
 }
+
 
 @end
