@@ -9,7 +9,6 @@
 #import "PinchView.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
-#import "UIEffects.h"
 #import "ContentDevVC.h"
 #import "CollectionPinchView.h"
 

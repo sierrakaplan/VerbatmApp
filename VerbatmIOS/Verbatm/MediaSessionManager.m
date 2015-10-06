@@ -106,8 +106,7 @@
 {
 	static NSString* const hasRunAppOnceKey = @"hasRunAppOnceKey";
 	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-	if ([defaults boolForKey:hasRunAppOnceKey] == NO)
-	{
+	if ([defaults boolForKey:hasRunAppOnceKey] == NO) {
 		[self createVerbatmDirectory];
 		[defaults setBool:YES forKey:hasRunAppOnceKey];
 	}

@@ -14,6 +14,10 @@
 		A51370681BA64D250058FBA6 /* POVDisplayScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A51370671BA64D250058FBA6 /* POVDisplayScrollView.m */; };
 		A513706B1BA77C740058FBA6 /* ArticleDisplayVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A513706A1BA77C740058FBA6 /* ArticleDisplayVC.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
+		A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FC1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m */; settings = {ASSET_TAGS = (); }; };
+		A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E4FF1BC4459800A087D1 /* UIView+Effects.m */; settings = {ASSET_TAGS = (); }; };
+		A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E5021BC44B6900A087D1 /* UITextView+Utilities.m */; settings = {ASSET_TAGS = (); }; };
+		A535E5061BC44BF100A087D1 /* UIScrollView+Effects.m in Sources */ = {isa = PBXBuildFile; fileRef = A535E5051BC44BF100A087D1 /* UIScrollView+Effects.m */; settings = {ASSET_TAGS = (); }; };
 		A5446C961BBA3C33002177F4 /* ContentDevNavBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5446C951BBA3C33002177F4 /* ContentDevNavBar.m */; settings = {ASSET_TAGS = (); }; };
 		A5446C991BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5446C981BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m */; settings = {ASSET_TAGS = (); }; };
 		A54689231BA3E1BC00F40E54 /* CoverPhotoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */; };
@@ -72,7 +76,6 @@
 		A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */; };
 		A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61171B9CC40F009D9D11 /* TopicsTableView.m */; };
 		A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */; };
-		A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CB82A21B5740A000195A2E /* UIEffects.m */; };
 		A5E3CDA81B881B0C0065C8E5 /* FacebookSDKStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */; };
 		A5E3CDA91B881B0C0065C8E5 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5E3CDA61B881B0C0065C8E5 /* FBSDKCoreKit.framework */; };
 		A5E3CDAA1B881B0C0065C8E5 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5E3CDA71B881B0C0065C8E5 /* FBSDKShareKit.framework */; };
@@ -164,7 +167,7 @@
 		C7BD53C41B5B73A700EE6241 /* BaseArticleViewingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
-		C7E2C88F1BB7E97600D83668 /* UseFulFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E2C88E1BB7E97600D83668 /* UseFulFunctions.m */; settings = {ASSET_TAGS = (); }; };
+		C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */; settings = {ASSET_TAGS = (); }; };
 		C7E65F561B8992710042AD99 /* MediaPreview.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F551B8992710042AD99 /* MediaPreview.m */; };
 		C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5B1B911A470042AD99 /* FeedVC.m */; };
 		C7E65F5F1B911BA90042AD99 /* SwitchCategoryPullView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5E1B911BA90042AD99 /* SwitchCategoryPullView.m */; };
@@ -238,6 +241,14 @@
 		A52919731B5DA4C800233712 /* Strings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Strings.h; sourceTree = "<group>"; };
 		A52919741B5DD24F00233712 /* UIView+Glow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Glow.h"; sourceTree = "<group>"; };
 		A52919751B5DD24F00233712 /* UIView+Glow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Glow.m"; sourceTree = "<group>"; };
+		A535E4FB1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffectsAndTransforms.h"; sourceTree = "<group>"; };
+		A535E4FC1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffectsAndTransforms.m"; sourceTree = "<group>"; };
+		A535E4FE1BC4459800A087D1 /* UIView+Effects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Effects.h"; sourceTree = "<group>"; };
+		A535E4FF1BC4459800A087D1 /* UIView+Effects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Effects.m"; sourceTree = "<group>"; };
+		A535E5011BC44B6900A087D1 /* UITextView+Utilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextView+Utilities.h"; sourceTree = "<group>"; };
+		A535E5021BC44B6900A087D1 /* UITextView+Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextView+Utilities.m"; sourceTree = "<group>"; };
+		A535E5041BC44BF100A087D1 /* UIScrollView+Effects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+Effects.h"; sourceTree = "<group>"; };
+		A535E5051BC44BF100A087D1 /* UIScrollView+Effects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+Effects.m"; sourceTree = "<group>"; };
 		A5446C941BBA3C33002177F4 /* ContentDevNavBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentDevNavBar.h; sourceTree = "<group>"; };
 		A5446C951BBA3C33002177F4 /* ContentDevNavBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevNavBar.m; sourceTree = "<group>"; };
 		A5446C971BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppIdentifierListWrapper.h; path = API/GTLVerbatmAppIdentifierListWrapper.h; sourceTree = "<group>"; };
@@ -354,8 +365,6 @@
 		A5CA61171B9CC40F009D9D11 /* TopicsTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicsTableView.m; sourceTree = "<group>"; };
 		A5CA61191B9CC41F009D9D11 /* TopicsTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TopicsTableViewCell.h; sourceTree = "<group>"; };
 		A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TopicsTableViewCell.m; sourceTree = "<group>"; };
-		A5CB82A11B5740A000195A2E /* UIEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIEffects.h; sourceTree = "<group>"; };
-		A5CB82A21B5740A000195A2E /* UIEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIEffects.m; sourceTree = "<group>"; };
 		A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKStrings.bundle; sourceTree = "<group>"; };
 		A5E3CDA61B881B0C0065C8E5 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		A5E3CDA71B881B0C0065C8E5 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
@@ -515,8 +524,8 @@
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
 		C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerTransitionDelegate.m; sourceTree = "<group>"; };
-		C7E2C88D1BB7E97600D83668 /* UseFulFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UseFulFunctions.h; sourceTree = "<group>"; };
-		C7E2C88E1BB7E97600D83668 /* UseFulFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UseFulFunctions.m; sourceTree = "<group>"; };
+		C7E2C88D1BB7E97600D83668 /* UtilityFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityFunctions.h; sourceTree = "<group>"; };
+		C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityFunctions.m; sourceTree = "<group>"; };
 		C7E65F541B8992710042AD99 /* MediaPreview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaPreview.h; sourceTree = "<group>"; };
 		C7E65F551B8992710042AD99 /* MediaPreview.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaPreview.m; sourceTree = "<group>"; };
 		C7E65F5A1B911A470042AD99 /* FeedVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedVC.h; path = ../FeedVC.h; sourceTree = "<group>"; };
@@ -831,19 +840,25 @@
 			name = "ASI HTTP Request";
 			sourceTree = "<group>";
 		};
-		A5CB82A41B5744B800195A2E /* UI effects */ = {
+		A5CB82A41B5744B800195A2E /* UI Categories and Effects */ = {
 			isa = PBXGroup;
 			children = (
 				A52919741B5DD24F00233712 /* UIView+Glow.h */,
 				A52919751B5DD24F00233712 /* UIView+Glow.m */,
-				A5CB82A11B5740A000195A2E /* UIEffects.h */,
-				A5CB82A21B5740A000195A2E /* UIEffects.m */,
 				A58656691B620951008E358C /* PointObject.h */,
 				A586566C1B620E60008E358C /* PointObject.m */,
 				A5CA61131B9A013E009D9D11 /* AdjustableBlurEffect.h */,
 				A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */,
+				A535E4FB1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.h */,
+				A535E4FC1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m */,
+				A535E4FE1BC4459800A087D1 /* UIView+Effects.h */,
+				A535E4FF1BC4459800A087D1 /* UIView+Effects.m */,
+				A535E5011BC44B6900A087D1 /* UITextView+Utilities.h */,
+				A535E5021BC44B6900A087D1 /* UITextView+Utilities.m */,
+				A535E5041BC44BF100A087D1 /* UIScrollView+Effects.h */,
+				A535E5051BC44BF100A087D1 /* UIScrollView+Effects.m */,
 			);
-			name = "UI effects";
+			name = "UI Categories and Effects";
 			sourceTree = "<group>";
 		};
 		A5E85FB11B911DF300E148D0 /* Touch */ = {
@@ -1178,7 +1193,7 @@
 				C7BD53C61B5B790B00EE6241 /* Constants  */,
 				C748836A1B489AE300E64ED9 /* Gallery */,
 				A586566E1B621C7E008E358C /* MathOps */,
-				A5CB82A41B5744B800195A2E /* UI effects */,
+				A5CB82A41B5744B800195A2E /* UI Categories and Effects */,
 				C750A35919D768BD0006FA88 /* Media Capture Classes */,
 				C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */,
 				A58EE8831BA876FA00B7B396 /* Segues */,
@@ -1254,8 +1269,8 @@
 		C7E2C8901BB7E97F00D83668 /* Generally useful functions */ = {
 			isa = PBXGroup;
 			children = (
-				C7E2C88D1BB7E97600D83668 /* UseFulFunctions.h */,
-				C7E2C88E1BB7E97600D83668 /* UseFulFunctions.m */,
+				C7E2C88D1BB7E97600D83668 /* UtilityFunctions.h */,
+				C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */,
 			);
 			name = "Generally useful functions";
 			sourceTree = "<group>";
@@ -1457,6 +1472,7 @@
 				A58656621B602038008E358C /* TextOverAVEView.m in Sources */,
 				C7E65F561B8992710042AD99 /* MediaPreview.m in Sources */,
 				A5C9DA381BA551DF0055DCB2 /* GTLVerbatmAppUploadURI.m in Sources */,
+				A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */,
 				C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */,
 				C77A68B11AC0A49B000B10E2 /* VIEW_TESTERViewController.m in Sources */,
 				A5E85FA21B911DA900E148D0 /* GTLJSONParser.m in Sources */,
@@ -1493,7 +1509,9 @@
 				A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */,
 				A5E8600B1B99EF9B00E148D0 /* HomeNavPullBar.m in Sources */,
 				A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */,
+				A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */,
 				A58656711B621CA4008E358C /* MathOperations.m in Sources */,
+				A535E5061BC44BF100A087D1 /* UIScrollView+Effects.m in Sources */,
 				A58656651B607EF7008E358C /* VerbatmImageScrollView.m in Sources */,
 				A560EF981BA88B44003FB041 /* PagesLoadManager.m in Sources */,
 				C75985F51B8553DF00FE77F7 /* internetConnectionMonitor.m in Sources */,
@@ -1506,7 +1524,7 @@
 				C7E6C13F1A4E394600863893 /* PhotoVideoAVE.m in Sources */,
 				C745B42F1BBA630800D18944 /* PermissionCodePageVC.m in Sources */,
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
-				C7E2C88F1BB7E97600D83668 /* UseFulFunctions.m in Sources */,
+				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
 				A5AA31C71B9FCDDC00D8D20C /* GTLVerbatmAppResultsWithCursor.m in Sources */,
@@ -1540,7 +1558,6 @@
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				A5E85FAE1B911DA900E148D0 /* GTMOAuth2SignIn.m in Sources */,
 				A5E85FA71B911DA900E148D0 /* GTMHTTPFetcherLogging.m in Sources */,
-				A5CB82A31B5740A000195A2E /* UIEffects.m in Sources */,
 				A5E85F9B1B911DA900E148D0 /* GTLService.m in Sources */,
 				A560EFA21BAA006B003FB041 /* UpdatingPOVManager.m in Sources */,
 				A5E85FAD1B911DA900E148D0 /* GTMOAuth2Authentication.m in Sources */,
@@ -1560,6 +1577,7 @@
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A5E85FA11B911DA900E148D0 /* GTLFramework.m in Sources */,
 				A513706B1BA77C740058FBA6 /* ArticleDisplayVC.m in Sources */,
+				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
 				A5E85FAB1B911DA900E148D0 /* GTMMIMEDocument.m in Sources */,
 				A5E85F9D1B911DA900E148D0 /* GTLUploadParameters.m in Sources */,

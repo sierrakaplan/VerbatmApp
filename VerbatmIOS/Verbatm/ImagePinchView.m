@@ -7,17 +7,19 @@
 //
 
 #import "ImagePinchView.h"
-#import "UIEffects.h"
+#import "UIImage+ImageEffectsAndTransforms.h"
 
 @interface ImagePinchView()
 
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
-
+@property (nonatomic, strong) dispatch_queue_t createFilteredImagesQueue;
 
 #pragma mark Encoding Keys
 
-#define IMAGE_KEY @"image"
+#define CREATE_FILTERED_IMAGES_QUEUE_KEY "create_filtered_images_queue"
+#define IMAGE_KEY @"image_key"
+#define FILTER_INDEX_KEY @"filter_index_key"
 
 @end
 
@@ -90,7 +92,7 @@
 #pragma mark - Filters -
 
 -(void) setFilteredPhotos {
-	NSArray* filterNames = [UIEffects getPhotoFilters];
+	NSArray* filterNames = [UIImage getPhotoFilters];
 	self.filteredImages = [[NSMutableArray alloc] initWithCapacity:[filterNames count]+1];
 	//original photo
 	[self.filteredImages addObject:self.image];
@@ -99,25 +101,25 @@
 
 //return array of uiimage with filter from image
 -(void)createFilteredImagesFromImageData:(UIImage *)image andFilterNames:(NSArray*)filterNames{
-    ImagePinchView * __weak weakSelf = self;
-    // Create a block operation with our saves
-    NSBlockOperation* saveOp = [NSBlockOperation blockOperationWithBlock: ^{
-        NSData  * imageData = UIImagePNGRepresentation(image);
-        //Background Thread
-        for (NSString* filterName in filterNames) {
-            CIImage *beginImage =  [CIImage imageWithData: imageData];
-            CIContext *context = [CIContext contextWithOptions:nil];
-            CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues: kCIInputImageKey, beginImage, nil];
-            CIImage *outputImage = [filter outputImage];
-            CGImageRef CGImageRef = [context createCGImage:outputImage fromRect:[outputImage extent]];
-            UIImage* imageWithFilter = [UIImage imageWithCGImage:CGImageRef];
-            CGImageRelease(CGImageRef);
-            [weakSelf.filteredImages addObject:imageWithFilter];
-        }
-    }];
-    
-    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
-    [queue addOperation:saveOp];
+   dispatch_async(self.createFilteredImagesQueue, ^{
+	   @autoreleasepool {
+		   NSData  * imageData = UIImagePNGRepresentation(image);
+		   //Background Thread
+		   for (NSString* filterName in filterNames) {
+			   CIImage *beginImage =  [CIImage imageWithData: imageData];
+			   CIContext *context = [CIContext contextWithOptions:nil];
+			   CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues: kCIInputImageKey, beginImage, nil];
+			   CIImage *outputImage = [filter outputImage];
+			   CGImageRef CGImageRef = [context createCGImage:outputImage fromRect:[outputImage extent]];
+			   UIImage* imageWithFilter = [UIImage imageWithCGImage:CGImageRef];
+			   CGImageRelease(CGImageRef);
+
+			   dispatch_async(dispatch_get_main_queue(), ^{
+				   [self.filteredImages addObject:imageWithFilter];
+			   });
+		   }
+	   }
+    });
 }
 
 #pragma mark - Encoding -
@@ -125,18 +127,28 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
 	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
+	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
 		NSData* imageData = [decoder decodeObjectForKey:IMAGE_KEY];
 		UIImage* image = [UIImage imageWithData:imageData];
+		NSNumber* filterImageIndexNumber = [decoder decodeObjectForKey:FILTER_INDEX_KEY];
 		[self initWithImage:image];
+		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
 	}
 	return self;
 }
 
 #pragma mark - Lazy Instantiation
+
+-(dispatch_queue_t) createFilteredImagesQueue {
+	if (!_createFilteredImagesQueue) {
+		_createFilteredImagesQueue = dispatch_queue_create(CREATE_FILTERED_IMAGES_QUEUE_KEY, NULL);
+	}
+	return _createFilteredImagesQueue;
+}
 
 -(UIImageView*)imageView {
     if(!_imageView) {

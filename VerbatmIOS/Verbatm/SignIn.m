@@ -11,7 +11,6 @@
 #import "SizesAndPositions.h"
 #import "Durations.h"
 #import "Styles.h"
-#import "UIEffects.h"
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>

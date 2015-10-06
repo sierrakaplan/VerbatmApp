@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
-@interface UseFulFunctions : NSObject
-+(NSData *) convertALAssetToData:(ALAsset *)asset;
+@interface UtilityFunctions : NSObject
+
++(NSData *) convertALAssetRepresentationToData: (ALAssetRepresentation *) assetRep;
+
 @end

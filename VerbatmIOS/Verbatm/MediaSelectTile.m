@@ -8,7 +8,6 @@
 
 #import "MediaSelectTile.h"
 #import "DashLineView.h"
-#import "UIEffects.h"
 #import "Notifications.h"
 #import "Icons.h"
 #import "Styles.h"

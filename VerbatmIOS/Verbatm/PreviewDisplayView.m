@@ -7,7 +7,6 @@
 //
 
 #import "PreviewDisplayView.h"
-#import "UIEffects.h"
 #import "UIView+Glow.h"
 #import "SizesAndPositions.h"
 #import "Icons.h"
@@ -18,6 +17,7 @@
 #import "POVView.h"
 #import "PhotoAVE.h"
 #import "CoverPhotoAVE.h"
+#import "UIView+Effects.h"
 
 @interface PreviewDisplayView() <UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
@@ -62,7 +62,7 @@
 		[self setUpBackButton];
 
 		[self setBackgroundColor:[UIColor blackColor]];
-		[UIEffects addShadowToView:self];
+		[self addShadowToView];
 		[self setUpGestureRecognizers];
 	}
 	return self;

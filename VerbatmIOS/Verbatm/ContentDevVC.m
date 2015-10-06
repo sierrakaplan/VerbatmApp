@@ -37,10 +37,11 @@
 #import "Strings.h"
 #import "Styles.h"
 
-#import "UIEffects.h"
+#import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserSetupParameters.h"
-#import "UseFulFunctions.h"
+#import "UtilityFunctions.h"
 #import "UserPovInProgress.h"
+#import "UIView+Effects.h"
 
 #import "VerbatmScrollView.h"
 #import "VideoPinchView.h"
@@ -166,7 +167,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void) addBlurView {
-	[UIEffects createBlurViewOnView:self.view withStyle:UIBlurEffectStyleLight];
+	[self.view createBlurViewOnViewWithStyle:UIBlurEffectStyleLight];
 }
 
 -(void) setFrameMainScrollView {
@@ -496,33 +497,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 #pragma mark - Creating New PinchViews -
-
-/*
- We are given an asset representing either a video or a photo and
- add it the the stream of pinch views.
- */
--(void)addMediaAssetToStream:(ALAsset *) asset {
-    
-    //check if this is a video asset or a photo asset
-    if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]) {
-        //asset is a photo
-        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-            NSData * data = [UseFulFunctions convertALAssetToData:asset];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self createPinchViewFromImageData: data];
-            });
-        });
-    
-    }else{
-        //asset is a video 
-        dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self createPinchViewFromVideoAsset:[AVURLAsset assetWithURL:[[asset defaultRepresentation] url]]];
-            });
-        });
-        
-    }
-}
 
 
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
@@ -1653,6 +1627,35 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 #pragma mark - Gallery + Image picker -
 
+/*
+ We are given an asset representing either a video or a photo and
+ add it the the stream of pinch views.
+ */
+-(void)addMediaAssetToStream:(ALAsset *) asset {
+
+	ALAssetRepresentation* assetRepresentation = [asset defaultRepresentation];
+
+	//check if this is a video asset or a photo asset
+	if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]) {
+		//asset is a photo
+		dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+			NSData * data = [UtilityFunctions convertALAssetRepresentationToData:assetRepresentation];
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self createPinchViewFromImageData: data];
+			});
+		});
+
+	}else{
+		//asset is a video
+		dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self createPinchViewFromVideoAsset:[AVURLAsset assetWithURL:[assetRepresentation url]]];
+			});
+		});
+
+	}
+}
+
 -(void) presentEfficientGallery {
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
 	picker.delegate = self;
@@ -1709,24 +1712,24 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
-    self.openPinchView = nil;
+	[self.delegate showPullBar:YES withTransition:NO];
     self.addingCoverPicture = NO;
 }
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
 	PHAsset* asset = assetArray[0];
 	PHImageManager * iman = [[PHImageManager alloc] init];
-    @autoreleasepool {
-        [iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-            // RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIImage* image = [[UIImage alloc] initWithData: imageData];
-                image = [UIEffects fixOrientation:image];
-                [self.coverPicView setNewImage: image];
-				[[UserPovInProgress sharedInstance] addCoverPhoto:image];
-            });
-        }];
-    }
+	[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+
+		UIImage* image = [[UIImage alloc] initWithData: imageData];
+		image = [image getImageWithOrientationUp];
+		[[UserPovInProgress sharedInstance] addCoverPhoto:image];
+
+		// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self.coverPicView setNewImage: image];
+		});
+	}];
 }
 
 //add assets from picker to our scrollview
@@ -1779,8 +1782,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 -(void) createPinchViewFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
-	image = [UIEffects fixOrientation:image];
-	image = [UIEffects scaleImage:image toSize:[UIEffects getSizeForImage:image andBounds:self.view.bounds]];
+	image = [image getImageWithOrientationUp];
+	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andImage:image];

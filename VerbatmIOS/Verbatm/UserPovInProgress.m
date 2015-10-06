@@ -12,6 +12,7 @@
 
 //array of NSData convertible to PinchView
 @property (strong, nonatomic) NSMutableArray* pinchViewsAsData;
+@property (strong, nonatomic) NSData* coverPhotoData;
 @property (strong) dispatch_queue_t convertPinchViewQueue;
 
 #define TITLE_KEY @"user_title"
@@ -43,37 +44,35 @@
 
 -(void) addTitle: (NSString*) title {
 	self.title = title;
-	@synchronized(self) {
-		[[NSUserDefaults standardUserDefaults]
-		 setObject:self.title forKey:TITLE_KEY];
-	}
+	[[NSUserDefaults standardUserDefaults]
+	setObject:self.title forKey:TITLE_KEY];
 }
 
 -(void) addCoverPhoto: (UIImage*) coverPicture {
-	self.coverPhoto = coverPicture;
 	dispatch_async(self.convertPinchViewQueue, ^{
-		NSData* coverPhotoData = UIImagePNGRepresentation(coverPicture);
 		@synchronized(self) {
-			[[NSUserDefaults standardUserDefaults]
-			 setObject:coverPhotoData forKey:COVER_PHOTO_KEY];
+			self.coverPhoto = coverPicture;
+			self.coverPhotoData = UIImagePNGRepresentation(coverPicture);
 		}
+		[[NSUserDefaults standardUserDefaults]
+		 setObject:self.coverPhotoData forKey:COVER_PHOTO_KEY];
 	});
 }
 
 //adds pinch view and automatically saves pinchViews
 -(void) addPinchView:(PinchView*)pinchView {
-    @synchronized(self) {
-		if ([self.pinchViews containsObject:pinchView]) {
-			return;
-		}
-		[self.pinchViews addObject:pinchView];
-		dispatch_async(self.convertPinchViewQueue, ^{
+	dispatch_async(self.convertPinchViewQueue, ^{
+		@synchronized(self) {
+			if ([self.pinchViews containsObject:pinchView]) {
+				return;
+			}
+			[self.pinchViews addObject:pinchView];
 			NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
 			[self.pinchViewsAsData addObject:pinchViewData];
-			[[NSUserDefaults standardUserDefaults]
-			 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
-		});
-	}
+		}
+		[[NSUserDefaults standardUserDefaults]
+		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+	});
 }
 
 //removes pinch view and automatically saves pinchViews
@@ -85,9 +84,9 @@
 		NSInteger pinchViewIndex = [self.pinchViews indexOfObject:pinchView];
 		[self.pinchViews removeObjectAtIndex:pinchViewIndex];
 		[self.pinchViewsAsData removeObjectAtIndex:pinchViewIndex];
-		[[NSUserDefaults standardUserDefaults]
-		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	}
+	[[NSUserDefaults standardUserDefaults]
+	 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 }
 
 -(void) swapPinchView: (PinchView *) pinchView1 andPinchView: (PinchView *) pinchView2 {
@@ -102,9 +101,9 @@
 		NSData* pinchViewData2 = self.pinchViewsAsData[index2];
 		[self.pinchViewsAsData replaceObjectAtIndex: index1 withObject: pinchViewData2];
 		[self.pinchViewsAsData replaceObjectAtIndex: index2 withObject: pinchViewData1];
-		[[NSUserDefaults standardUserDefaults]
-		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	}
+	[[NSUserDefaults standardUserDefaults]
+	 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 }
 
 //loads pinchviews from user defaults
@@ -112,15 +111,16 @@
 	//clears user defaults
 //	[self clearPOVInProgress];
 
+	self.title = [[NSUserDefaults standardUserDefaults]
+				  objectForKey:TITLE_KEY];
+	NSData* coverPhotoData = [[NSUserDefaults standardUserDefaults] objectForKey:COVER_PHOTO_KEY];
+	self.pinchViewsAsData = [[NSUserDefaults standardUserDefaults]
+							 objectForKey:PINCHVIEWS_KEY];
+
 	@synchronized(self) {
-		self.title = [[NSUserDefaults standardUserDefaults]
-					  objectForKey:TITLE_KEY];
-		NSData* coverPhotoData = [[NSUserDefaults standardUserDefaults] objectForKey:COVER_PHOTO_KEY];
 		if (coverPhotoData) {
 			self.coverPhoto = [UIImage imageWithData:coverPhotoData];
 		}
-		self.pinchViewsAsData = [[NSUserDefaults standardUserDefaults]
-								 objectForKey:PINCHVIEWS_KEY];
 		for (NSData* data in self.pinchViewsAsData) {
 			PinchView* pinchView = [self convertNSDataToPinchView:data];
 			[self.pinchViews addObject:pinchView];
@@ -136,12 +136,10 @@
 	//thread safety
 	@synchronized(self) {
 		[self.pinchViewsAsData removeAllObjects];
-		self.title = nil;
-		self.coverPhoto = nil;
-		[[NSUserDefaults standardUserDefaults] removeObjectForKey:TITLE_KEY];
-		[[NSUserDefaults standardUserDefaults] removeObjectForKey:COVER_PHOTO_KEY];
-		[[NSUserDefaults standardUserDefaults] removeObjectForKey:PINCHVIEWS_KEY];
 	}
+	[[NSUserDefaults standardUserDefaults] removeObjectForKey:TITLE_KEY];
+	[[NSUserDefaults standardUserDefaults] removeObjectForKey:COVER_PHOTO_KEY];
+	[[NSUserDefaults standardUserDefaults] removeObjectForKey:PINCHVIEWS_KEY];
 }
 
 #pragma mark - Converting pinch views to data and back -

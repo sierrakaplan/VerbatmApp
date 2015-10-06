@@ -10,7 +10,6 @@
 #import "Icons.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
-#import "UIEffects.h"
 
 @interface HomeNavPullBar()
 

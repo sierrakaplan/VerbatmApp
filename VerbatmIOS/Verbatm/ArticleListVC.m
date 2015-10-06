@@ -24,8 +24,8 @@
 #import "POVLoadManager.h"
 #import "PovInfo.h"
 
-#import "UIEffects.h"
 #import "UserManager.h"
+#import "UIView+Effects.h"
 
 @interface ArticleListVC () <UITableViewDelegate, UITableViewDataSource, FeedTableViewCellDelegate, POVLoadManagerDelegate>
 
@@ -75,7 +75,7 @@
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	self.povListView.contentOffset = CGPointZero;
-	self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter:self.view.center andStyle: UIActivityIndicatorViewStyleWhiteLarge];
+	self.activityIndicator = [self.view startActivityIndicatorOnViewWithCenter:self.view.center andStyle: UIActivityIndicatorViewStyleWhiteLarge];
 	self.activityIndicator.color = [UIColor grayColor];
 	if (!self.povsRefreshedForFirstTime) {
 		self.povsRefreshedForFirstTime = YES;
@@ -252,7 +252,7 @@
 
 //Delegate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
-    [UIEffects stopActivityIndicator:self.activityIndicator];
+	[self.activityIndicator stopAnimating];
     self.refreshInProgress = NO;
     if(self.povPublishing) {
         self.povPublishing = NO;

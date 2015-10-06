@@ -8,7 +8,7 @@
 
 #import "CoverPhotoAVE.h"
 #import "Styles.h"
-#import "UIEffects.h"
+#import "UIImage+ImageEffectsAndTransforms.h"
 
 @interface CoverPhotoAVE()
 
@@ -36,13 +36,13 @@
 
 -(UIView*) getImageViewContainerForImage:(UIImage*) image {
 	//scale image
-	CGSize imageSize = [UIEffects getSizeForImage:image andBounds:self.bounds];
-	image = [UIEffects scaleImage:image toSize:imageSize];
+	CGSize imageSize = [image getSizeForImageWithBounds:self.bounds];
+	image = [image scaleImageToSize:imageSize];
 
 	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
 	[imageContainerView setBackgroundColor:[UIColor blackColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];
-	UIImageView* blurPhotoView = [UIEffects getBlurImageViewForImage:image withFrame:self.bounds];
+	UIImageView* blurPhotoView = [image getBlurImageViewWithFilterLevel:FILTER_LEVEL_BLUR andFrame: self.bounds];
 	[imageContainerView addSubview:blurPhotoView];
 	[imageContainerView addSubview:photoView];
 	return imageContainerView;

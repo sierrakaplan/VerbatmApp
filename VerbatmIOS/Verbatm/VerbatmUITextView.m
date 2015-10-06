@@ -7,7 +7,6 @@
 //
 
 #import "VerbatmUITextView.h"
-#import "UIEffects.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "Notifications.h"

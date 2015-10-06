@@ -7,7 +7,7 @@
 //
 
 #import "VerbatmImageScrollView.h"
-#import "UIEffects.h"
+#import "UIImage+ImageEffectsAndTransforms.h"
 #import "Styles.h"
 
 @interface VerbatmImageScrollView()
@@ -53,7 +53,7 @@
 		imageview.contentMode = UIViewContentModeScaleAspectFit;
 
 		if (withBackground) {
-			UIImage* blurImage = [UIEffects blurredImageWithImage:image andFilterLevel:FILTER_LEVEL_BLUR];
+			UIImage* blurImage = [image blurredImageWithFilterLevel:FILTER_LEVEL_BLUR];
 			UIImageView* blurBackground = [[UIImageView alloc] initWithImage:blurImage];
 			blurBackground.frame = imageViewFrame;
 			blurBackground.clipsToBounds = YES;

@@ -34,7 +34,6 @@
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
 #import "UserSetupParameters.h"
-#import "UIEffects.h"
 #import "UserManager.h"
 #import "UserPovInProgress.h"
 

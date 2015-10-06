@@ -38,9 +38,6 @@
 #import "ContentDevPullBar.h"
 #import "VerbatmCameraView.h"
 
-#import "UIEffects.h"
-
-
 @interface MediaDevVC () <MediaSessionManagerDelegate, ContentDevPullBarDelegate, ContentDevVCDelegate>
 
 #pragma mark - SubViews of screen

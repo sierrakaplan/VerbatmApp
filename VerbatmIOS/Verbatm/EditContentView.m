@@ -15,10 +15,10 @@
 
 #import "SizesAndPositions.h"
 
-#import "UIEffects.h"
-
 #import "VerbatmKeyboardToolBar.h"
 #import "VerbatmImageScrollView.h"
+
+#import "UITextView+Utilities.h"
 
 @interface EditContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
 
@@ -118,7 +118,7 @@
     if (self.textView) {
 		//drawing boundary
 		CGRect frame = self.textView.bounds;
-		CGSize size = CGSizeMake(frame.size.width, [UIEffects measureContentHeightOfUITextView:self.textView] + TEXT_VIEW_BOTTOM_PADDING);
+		CGSize size = CGSizeMake(frame.size.width, [self.textView measureContentHeight] + TEXT_VIEW_BOTTOM_PADDING);
 		if (size.height > frame.size.height) {
 			frame.size = size;
 		}

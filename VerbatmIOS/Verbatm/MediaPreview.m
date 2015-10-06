@@ -8,8 +8,7 @@
 
 #import "MediaPreview.h"
 #import "VideoPlayerView.h"
-#import "UIEffects.h"
-
+#import "UIView+Effects.h"
 
 @interface MediaPreview()
 @property (nonatomic, strong) UIImageView * imageView;
@@ -23,7 +22,7 @@
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
     if(self){
-        [UIEffects addShadowToView:self];
+        [self addShadowToView];
         self.alpha = 0;
     }
     return self;

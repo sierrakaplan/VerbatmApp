@@ -14,7 +14,6 @@
 #import "Styles.h"
 #import "BaseArticleViewingExperience.h"
 #import "VerbatmImageScrollView.h"
-#import "UIEffects.h"
 
 @interface PhotoVideoAVE() <UIScrollViewDelegate>
 

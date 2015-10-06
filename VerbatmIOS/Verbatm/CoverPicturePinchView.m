@@ -16,7 +16,7 @@
 //not duplicated in memory.
 @property (strong, nonatomic) UIImageView *imageView;
 
-#define IMAGE_KEY @"image"
+#define IMAGE_KEY @"image_key"
 
 @end
 
@@ -62,7 +62,6 @@
 
 -(void) removeImage {
     [self.imageView setImage:nil];
-    
     [self.background addSubview: self.addCoverPicLabel];
 }
 
@@ -70,15 +69,10 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	[coder encodeObject:UIImagePNGRepresentation([super getImage]) forKey:IMAGE_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
-		NSData* imageData = [decoder decodeObjectForKey:IMAGE_KEY];
-		UIImage* image = [UIImage imageWithData:imageData];
-		[super initWithImage:image];
-		[self formatSelf];
 	}
 	return self;
 }

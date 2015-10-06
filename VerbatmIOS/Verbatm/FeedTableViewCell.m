@@ -17,7 +17,7 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Durations.h"
-#import "UIEffects.h"
+#import "UIImage+ImageEffectsAndTransforms.h"
 
 @interface FeedTableViewCell()
 
@@ -264,8 +264,8 @@
 		[self.likeIconView setImage:self.notLikedImage];
 	}
 
-	UIImage* leftHalf = [UIEffects halfPicture:coverImage leftHalf:YES];
-	UIImage* rightHalf = [UIEffects halfPicture:coverImage leftHalf:NO];
+	UIImage* leftHalf = [coverImage halfPictureLeftHalf:YES];
+	UIImage* rightHalf = [coverImage halfPictureLeftHalf:NO];
 	[self.leftSemiCircle setImage: leftHalf];
 	[self.rightSemiCircle setImage: rightHalf];
 }

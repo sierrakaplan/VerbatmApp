@@ -23,8 +23,8 @@
 #import "POVView.h"
 #import "PovInfo.h"
 
-#import "UIEffects.h"
 #import "UpdatingPOVManager.h"
+#import "UIView+Effects.h"
 
 @interface ArticleDisplayVC () <PagesLoadManagerDelegate, LikeButtonDelegate>
 
@@ -75,7 +75,7 @@
 	[povView renderNextAve:coverAVE withIndex:[NSNumber numberWithInteger:0]];
 	[self.scrollView addSubview: povView];
 	[self.povViews addObject: povView];
-    self.activityIndicator = [UIEffects startActivityIndicatorOnView:self.view andCenter: CGPointMake(self.view.center.x, ACTIVITY_ANIMATION_Y)
+    self.activityIndicator = [self.view startActivityIndicatorOnViewWithCenter: CGPointMake(self.view.center.x, ACTIVITY_ANIMATION_Y)
                                                             andStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.activityIndicator.color = [UIColor blackColor];
 }
@@ -101,7 +101,7 @@
 			if (pageIndex == 1) {
 				[povView addDownArrowButton];
 				[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
-				[UIEffects stopActivityIndicator:self.activityIndicator];
+				[self.activityIndicator stopAnimating];
 				self.activityIndicator = nil;
 			}
 			[povView renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
@@ -129,7 +129,7 @@
 	self.povViews = nil;
 	self.povIDs = nil;
 	if ([self.activityIndicator isAnimating]) {
-		[UIEffects stopActivityIndicator:self.activityIndicator];
+		[self.activityIndicator stopAnimating];
 	}
 }
 

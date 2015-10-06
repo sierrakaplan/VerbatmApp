@@ -10,7 +10,6 @@
 #import "Styles.h"
 #import "TextOverAveView.h"
 #import "SizesAndPositions.h"
-#import "UIEffects.h"
 #import "Icons.h"
 
 @interface TextAVE()

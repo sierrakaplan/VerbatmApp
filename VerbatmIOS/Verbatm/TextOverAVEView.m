@@ -8,8 +8,8 @@
 
 #import "TextOverAVEView.h"
 #import "Styles.h"
-#import "UIEffects.h"
 #import "SizesAndPositions.h"
+#import "UITextView+Utilities.h"
 
 @interface TextOverAVEView()
 
@@ -63,7 +63,7 @@
 }
 
 -(float) getHeightOfText {
-	float heightWithoutBorder = [UIEffects measureContentHeightOfUITextView:self.textView];
+	float heightWithoutBorder = [self.textView measureContentHeight];
 	return heightWithoutBorder + TEXT_OVER_AVE_BORDER*2;
 }
 
