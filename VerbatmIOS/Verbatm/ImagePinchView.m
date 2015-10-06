@@ -15,6 +15,7 @@
 @property (strong, nonatomic) UIImageView *imageView;
 
 
+
 #pragma mark Encoding Keys
 
 #define IMAGE_KEY @"image"
@@ -72,6 +73,9 @@
 -(UIImage*) getImage {
 	return self.filteredImages[self.filterImageIndex];
 }
+-(UIImage *) getOriginalImage{
+    return self.filteredImages[0];
+}
 
 //overriding
 -(NSArray*) getPhotos {
@@ -119,6 +123,7 @@
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     [queue addOperation:saveOp];
 }
+
 
 #pragma mark - Encoding -
 

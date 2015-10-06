@@ -257,6 +257,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 	[self.articleDisplayContainer addGestureRecognizer: leftEdgePanGesture];
 }
 
+
 //called from left edge pan
 - (void) exitArticleDisplayView:(UIPanGestureRecognizer *)sender {
 	switch (sender.state) {

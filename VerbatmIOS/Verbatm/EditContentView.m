@@ -23,7 +23,6 @@
 @interface EditContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) UIImageView * imageView;
-
 #pragma mark FilteredPhotos
 @property (nonatomic, weak) NSArray * filteredImages;
 @property (nonatomic) NSInteger imageIndex;
@@ -31,6 +30,11 @@
 
 @property (nonatomic) CGPoint  panStartLocation;
 @property (nonatomic) NSInteger keyboardHeight;
+
+@property (nonatomic) UISwipeGestureRecognizer * leftSwipe;
+@property (nonatomic) UISwipeGestureRecognizer * rightSwipe;
+
+
 #define TEXT_CREATION_ICON @"textCreateIcon"
 #define TEXT_VIEW_HEIGHT 70.f
 
@@ -45,6 +49,7 @@
 	if(self) {
 		self.backgroundColor = [UIColor blackColor];
 		self.frame = frame;
+        self.textView = nil;
 	}
 	return self;
 }
@@ -242,20 +247,32 @@
 	rightSwipeRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
 	[self addGestureRecognizer:leftSwipeRecognizer];
 	[self addGestureRecognizer:rightSwipeRecognizer];
+    self.leftSwipe = leftSwipeRecognizer;
+    self.rightSwipe = rightSwipeRecognizer;
 }
 
 -(void)filterViewSwipeRight: (UISwipeGestureRecognizer *) sender {
-	if (self.imageIndex > 0) {
-		self.imageIndex = self.imageIndex -1;
-		[self.imageView setImage:self.filteredImages[self.imageIndex]];
-	}
+    [self changeFilteredImageRight];
 }
 
+
 -(void)filterViewSwipeLeft: (UISwipeGestureRecognizer *) sender {
-	if (self.imageIndex < ([self.filteredImages count]-1)) {
-		self.imageIndex = self.imageIndex +1;
-		[self.imageView setImage:self.filteredImages[self.imageIndex]];
-	}
+	[self changeFilteredImageLeft];
+}
+
+-(void)changeFilteredImageLeft{
+    if (self.imageIndex < ([self.filteredImages count]-1)) {
+        self.imageIndex = self.imageIndex +1;
+        [self.imageView setImage:self.filteredImages[self.imageIndex]];
+    }
+}
+
+
+-(void)changeFilteredImageRight{
+    if (self.imageIndex > 0) {
+        self.imageIndex = self.imageIndex -1;
+        [self.imageView setImage:self.filteredImages[self.imageIndex]];
+    }
 }
 
 -(NSInteger) getFilteredImageIndex {
@@ -270,15 +287,11 @@
 }
 
 -(void) doneButtonPressed {
-    
     if([self.textView.text isEqualToString:@""]){
         //remove text view from screen
         [self.textView removeFromSuperview];
         self.textView = nil;
     }
-    
-    
-    
 	[self.textView resignFirstResponder];
 }
 
@@ -293,16 +306,17 @@
 
 #pragma maro -Adjust textview position-
 
--(void)addPanToTextView{
-
+-(void)addPanToTextView {
     UIPanGestureRecognizer * panG = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(adjustTVPosition:)];
+    [panG requireGestureRecognizerToFail:self.leftSwipe];
+    [panG requireGestureRecognizerToFail:self.rightSwipe];
     [self addGestureRecognizer:panG];
 }
 
 -(void)adjustTVPosition:(UIGestureRecognizer *) sender{
         switch (sender.state) {
             case UIGestureRecognizerStateBegan:
-               if([self touchInTVBounds:sender]){
+                if([self touchInTVBounds:sender]){
                    if(sender.numberOfTouches != 1) return;
                    CGPoint location = [sender locationOfTouch:0 inView:self];
                    self.panStartLocation = location;
@@ -311,21 +325,26 @@
                    sender.enabled = NO;
                    sender.enabled = YES;
                }
-                   
+                
                 break;
             case UIGestureRecognizerStateChanged:{
                 if(sender.numberOfTouches != 1) return;
                 CGPoint location = [sender locationOfTouch:0 inView:self];
-                float diff = location.y - self.panStartLocation.y;
-                
-                if([self textViewTranslationInBounds:diff]){
-                    
-                    self.textView.frame = CGRectMake(self.textView.frame.origin.x,
-                                                     self.textView.frame.origin.y + diff,
-                                                     self.textView.frame.size.width, self.textView.frame.size.height);
+                if([self touchInTVBounds:sender]){
+                    float diff = location.y - self.panStartLocation.y;
+                    if([self textViewTranslationInBounds:diff]){
+                        
+                        self.textView.frame = CGRectMake(self.textView.frame.origin.x,
+                                                         self.textView.frame.origin.y + diff,
+                                                         self.textView.frame.size.width, self.textView.frame.size.height);
+                    }
+                }else{
+                    sender.enabled = NO;
+                    sender.enabled = YES;
                 }
-                
+
                 self.panStartLocation = location;
+                
                 break;
             }
             case UIGestureRecognizerStateCancelled:
@@ -354,10 +373,16 @@
     }
         return NO;
 }
-
+#pragma mark - custom setters -
+-(void)setTextView:(VerbatmUITextView *)textView{
+    if(_textView){
+        [_textView removeFromSuperview];
+    }
+    _textView = textView;
+    [self addSubview:_textView];
+}
 
 #pragma mark - lazy instantiation -
-
 -(UIButton *)textCreationButton{
     if(!_textCreationButton){
         _textCreationButton = [[UIButton alloc] initWithFrame:

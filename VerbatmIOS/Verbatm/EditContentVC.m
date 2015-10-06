@@ -37,6 +37,7 @@
         if(pinchView.containsImage) {
             ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
             [self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
+            if(imagePinchView.textView)self.openEditContentView.textView = imagePinchView.textView;
         } else if(pinchView.containsVideo) {
             [self.openEditContentView displayVideo:[(VideoPinchView*)pinchView video]];
         } else {
@@ -74,7 +75,9 @@
     }
     if(self.openPinchView.containsImage) {
         self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
-    } 
+        ((ImagePinchView *)self.openPinchView).textView = self.openEditContentView.textView;
+    }
+    
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
 }
 

@@ -119,14 +119,12 @@
 
 //allows the user to change the width and height of the frame keeping the same center
 -(void) changeWidthTo: (double) width {
-    if(width < MIN_PINCHVIEW_SIZE) return;
+    //if(width < MIN_PINCHVIEW_SIZE) return;
 
     CGPoint center = self.center;
     CGRect newFrame = CGRectMake(center.x- width/2, center.y - width/2, width, width);
-	CGRect new_bounds_frame =CGRectMake(0, 0, width, width);
-
-	self.background.frame = new_bounds_frame;
     self.frame = newFrame;
+    [self setBackgroundFrames];
 }
 
 -(void)removeBorder {

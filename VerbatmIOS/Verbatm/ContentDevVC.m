@@ -130,6 +130,8 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 #define REPLACE_PHOTO_XsOFFSET 20 //distance of replacePhoto x postion vs the x postion of the coverphoto
 
 #define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
+
+#define COVER_PIC_RADIUS (self.defaultPinchViewRadius * 3.f/4.f)
 @end
 
 
@@ -178,7 +180,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 // as well as the pinch view center and radius
 -(void)setElementDefaultFrames {
 	self.defaultPageElementScrollViewSize = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
-	self.defaultPinchViewCenter = CGPointMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + (self.view.frame.size.width/2.f),
+	self.defaultPinchViewCenter = CGPointMake((self.view.frame.size.width/2.f),
 											  self.defaultPageElementScrollViewSize.height/2);
 	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
 }
@@ -223,7 +225,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_OFFSET,
 											   WHAT_IS_IT_LIKE_HEIGHT*2);
 
-	CGFloat coverPicRadius = self.defaultPinchViewRadius * 3.f/4.f;
+	CGFloat coverPicRadius = COVER_PIC_RADIUS;
 	CGRect addCoverPicFrame = CGRectMake(self.view.frame.size.width/2.f - coverPicRadius,
 										 whatIsItLikeFieldFrame.origin.y + whatIsItLikeFieldFrame.size.height,
 										 coverPicRadius*2, coverPicRadius*2);
@@ -275,8 +277,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 }
 
 -(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
-	//self.coverPicView = [[CoverPicturePV alloc] initWithFrame:frame];
-    self.coverPicView = [[CoverPicturePV alloc] initWithRadius:frame.size.width/2.f withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
+    self.coverPicView = [[CoverPicturePV alloc] initWithRadius:COVER_PIC_RADIUS withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
     
 	UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
 	[self.coverPicView addGestureRecognizer: tapGesture];
@@ -1197,6 +1198,7 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	if (!self.selectedView_PAN) {
 		return;
 	}
+    //checks if this is a selection from an open collections
 	if (self.selectedView_PAN.collectionIsOpen) {
 		PinchView* unPinched = [self.selectedView_PAN moveSelectedItemFromTouch:touch];
 		if (unPinched) {
@@ -1207,18 +1209,22 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 		}
 		return;
 	}
-
+    
+    //find the index of the currently selected scrollview
 	NSInteger viewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN];
 	ContentPageElementScrollView* topView = nil;
 	ContentPageElementScrollView* bottomView = nil;
-
+    
+    //find the view above it
 	if(viewIndex !=0) {
 		topView  = self.pageElementScrollViews[viewIndex-1];
 	}
+    //find the view below it
 	if (viewIndex+1 < [self.pageElementScrollViews count]) {
 		bottomView = self.pageElementScrollViews[viewIndex+1];
 	}
-
+    
+    //move the selected view up or down by the drag distance of the finger
 	NSInteger yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
 	CGRect newFrame = [self newVerticalTranslationFrameForView:self.selectedView_PAN andChange:yDifference];
 
@@ -1231,7 +1237,25 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
 		self.selectedView_PAN.frame = newFrame;
-	}];
+       
+	}completion:^(BOOL finished) {
+        //is the pinchview above the cover photo?
+        if (!topView){
+            if([self selctedViewAboveCoverPhoto]){
+                if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
+                    [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
+                     COVER_PIC_RADIUS*2];
+                }
+            }else{
+                if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
+                    
+                    [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
+                     self.defaultPinchViewRadius*2];
+                }
+                
+            }
+        }
+    }];
 
 	//swap item if necessary
 
@@ -1239,9 +1263,9 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	if(topView && (newFrame.origin.y + newFrame.size.height/2.f)
 	   < (topView.frame.origin.y + topView.frame.size.height)) {
 		[self swapWithTopView: topView];
-	}
-	//check if object has moved down the halfway mark of the view below it, if so swap them
-	else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) +CENTERING_OFFSET_FOR_TEXT_VIEW
+    }
+    //check if object has moved down the halfway mark of the view below it, if so swap them
+    else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) +CENTERING_OFFSET_FOR_TEXT_VIEW
 			> bottomView.frame.origin.y) {
 		[self swapWithBottomView: bottomView];
 	}
@@ -1249,6 +1273,19 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 	//move the offest of the main scroll view
 	[self moveOffsetOfMainScrollViewBasedOnSelectedItem];
 	self.previousLocationOfTouchPoint_PAN = touch;
+}
+
+
+-(BOOL)selctedViewAboveCoverPhoto {
+    if(self.selectedView_PAN.frame.origin.y >
+       self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height &&
+       self.selectedView_PAN.frame.origin.y < self.coverPicView.frame.origin.y +
+       self.coverPicView.frame.size.height * (2.f/4.f)){
+        
+        return true;
+    }
+    
+    return NO;
 }
 
 //swap currently selected item's frame with view above it
@@ -1341,10 +1378,21 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 		[self.selectedView_PAN finishMovingSelectedItem];
 		return;
 	}
-
-	self.selectedView_PAN.frame = self.previousFrameInLongPress;
-
-	[self.selectedView_PAN.pageElement markAsSelected:NO];
+    
+    //make sure the pinch view is in the right position to replace the cover photo
+    if([self selctedViewAboveCoverPhoto]){
+        //make sure the pinchview is an image
+        if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
+            [self setCoverPictureImage:[((ImagePinchView *)self.selectedView_PAN.pageElement) getOriginalImage]];
+            //now delete the selected pinchview
+            [self deleteScrollView:self.selectedView_PAN];
+        }
+        
+    }else{
+        self.selectedView_PAN.frame = self.previousFrameInLongPress;
+    }
+	
+    if(self.selectedView_PAN)[self.selectedView_PAN.pageElement markAsSelected:NO];
 
 	//sanitize for next run
 	self.selectedView_PAN = nil;
@@ -1639,15 +1687,19 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIImage* image = [[UIImage alloc] initWithData: imageData];
                 image = [UIEffects fixOrientation:image];
-                [self.coverPicView setNewImageWith: image];
-    
-                //show replace photo icon after the first time cover photo is added
-                if(!_replaceCoverPhotoButton){
-                    [self addTapGestureToPinchView:self.coverPicView];
-                    [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
-                }
+                [self setCoverPictureImage:image];
             });
         }];
+    }
+}
+
+-(void)setCoverPictureImage:(UIImage *) image{
+    [self.coverPicView setNewImageWith: image];
+    
+    //show replace photo icon after the first time cover photo is added
+    if(!_replaceCoverPhotoButton){
+        [self addTapGestureToPinchView:self.coverPicView];
+        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
     }
 }
 
@@ -1775,12 +1827,12 @@ GMImagePickerControllerDelegate, ContentSVDelegate, ContentDevNavBarDelegate>
 
 
 #pragma mark - Lazy Instantiation
-
 -(MediaSelectTile*) baseMediaTileSelector {
 	if (!_baseMediaTileSelector) {
-		CGRect frame = CGRectMake((2*DELETE_ICON_OFFSET) + DELETE_ICON_WIDTH + ELEMENT_OFFSET_DISTANCE,
+        float tileWidth = self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2);
+		CGRect frame = CGRectMake(self.mainScrollView.center.x - (tileWidth/2.f),
 								  ELEMENT_OFFSET_DISTANCE/2.f,
-								  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
+								  tileWidth, MEDIA_TILE_SELECTOR_HEIGHT);
 		_baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
 		_baseMediaTileSelector.isBaseSelector =YES;
 		_baseMediaTileSelector.delegate = self;

@@ -37,6 +37,8 @@
 @property (nonatomic) CGPoint previousLocationOfTouchPoint_PAN;
 @property (nonatomic) CGRect previousFrameInLongPress;
 
+@property (nonatomic) CGPoint panTouchLocation;
+
 #define DELETE_ICON_FILENAME @"deleteIcon"
 @end
 
@@ -48,13 +50,14 @@
 		[self formatScrollView];
 		[self changePageElement:element];
         [self createDeleteButton];
+        
 	}
 	return self;
 }
 
 -(void) formatScrollView {
 	self.contentSize = self.initialContentSize = CGSizeMake(self.frame.size.width + DELETE_ICON_WIDTH + 2*DELETE_ICON_OFFSET, 0);
-	self.contentOffset = self.initialContentOffset = CGPointMake(2*DELETE_ICON_OFFSET + DELETE_ICON_WIDTH, 0);
+	self.contentOffset = self.initialContentOffset = CGPointMake(0, 0);
 
 	self.pagingEnabled = NO;
 	self.showsHorizontalScrollIndicator = NO;
@@ -66,12 +69,12 @@
     
     if ([self.pageElement isKindOfClass:[MediaSelectTile class]]) {
         self.deleteButton = [[UIButton alloc] initWithFrame:
-                             CGRectMake(DELETE_ICON_OFFSET,
+                             CGRectMake(self.frame.size.width + DELETE_ICON_OFFSET,
                                         self.pageElement.center.y + 7,
                                         DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
     }else{
         self.deleteButton = [[UIButton alloc] initWithFrame:
-                             CGRectMake(DELETE_ICON_OFFSET,
+                             CGRectMake(self.frame.size.width + DELETE_ICON_OFFSET,
                                         self.pageElement.center.y - (DELETE_ICON_HEIGHT/2.f),
                                         DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
     }
@@ -95,6 +98,14 @@
     self.contentOffset = self.initialContentOffset;
 }
 
+#pragma mark - scrolling delegate functions -
+
+
+//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
+//    
+//    
+//    
+//}
 
 #pragma mark - Change Page Element -
 
@@ -486,5 +497,6 @@
 	[[UserPinchViews sharedInstance] addPinchView:(PinchView*)self.pageElement];
 	return unPinched;
 }
+
 
 @end
