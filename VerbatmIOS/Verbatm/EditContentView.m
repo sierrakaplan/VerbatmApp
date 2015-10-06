@@ -8,7 +8,7 @@
 
 #import "ContentDevPullBar.h"
 #import "ContentDevVC.h"
-
+#import "Durations.h"
 #import "EditContentView.h"
 #import "Notifications.h"
 #import "Styles.h"
@@ -33,6 +33,9 @@
 @property (nonatomic) BOOL verticlePan;//tracks the pans life cylce from beginning to end
 @property (nonatomic) BOOL horizontalPan;//tracks the pans life form beginnig to end
 @property (nonatomic) NSInteger keyboardHeight;
+
+@property (nonatomic) CGRect userSetFrame;//keeps the frame the user set from panning
+
 #define TEXT_CREATION_ICON @"textCreateIcon"
 #define TEXT_VIEW_HEIGHT 70.f
 #define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
@@ -48,6 +51,7 @@
 		self.backgroundColor = [UIColor blackColor];
 		self.frame = frame;
         self.textView = nil;
+         [self registerForKeyboardNotifications];
 	}
 	return self;
 }
@@ -162,9 +166,11 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView{
-    if(self.textView.frame.origin.y < self.keyboardHeight){
-        self.textView.frame = CGRectMake(0, VIEW_Y_OFFSET, self.textView.frame.size.width,
-                                         self.textView.frame.size.height);
+    if(textView.frame.origin.y > (self.frame.size.height - self.keyboardHeight)){
+        [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
+            self.textView.frame = CGRectMake(0, VIEW_Y_OFFSET, self.textView.frame.size.width,
+                                             self.textView.frame.size.height);
+        }];
     }
 }
 
@@ -176,7 +182,7 @@
     // Get the size of the keyboard.
     CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     //store the keyboard height for further use
-    self.keyboardHeight = MIN(keyboardSize.height,keyboardSize.width);
+    self.keyboardHeight = keyboardSize.height;
 }
 
 -(void)keyBoardWillChangeFrame: (NSNotification *) notification {
@@ -263,15 +269,11 @@
 }
 
 -(void) doneButtonPressed {
-    
     if([self.textView.text isEqualToString:@""]){
         //remove text view from screen
         [self.textView removeFromSuperview];
         self.textView = nil;
     }
-    
-    
-    
 	[self.textView resignFirstResponder];
 }
 
@@ -387,15 +389,14 @@
 #pragma mark - lazy instantiation -
 -(UIButton *)textCreationButton{
     if(!_textCreationButton){
-        _textCreationButton = [[UIButton alloc] initWithFrame:
-                               CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
-                                          EXIT_CV_BUTTON_WIDTH,
-                                          self.frame.size.height - EXIT_CV_BUTTON_WIDTH -
-                                          EXIT_CV_BUTTON_WALL_OFFSET,
-                                          EXIT_CV_BUTTON_WIDTH,
-                                          EXIT_CV_BUTTON_WIDTH)];
+        self.userSetFrame = CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
+                                       EXIT_CV_BUTTON_WIDTH,
+                                       self.frame.size.height - EXIT_CV_BUTTON_WIDTH -
+                                       EXIT_CV_BUTTON_WALL_OFFSET,
+                                       EXIT_CV_BUTTON_WIDTH,
+                                       EXIT_CV_BUTTON_WIDTH);
+        _textCreationButton = [[UIButton alloc] initWithFrame:self.userSetFrame];
         [self addPanToTextView];
-        [self registerForKeyboardNotifications];
     }
     return _textCreationButton;
 }
