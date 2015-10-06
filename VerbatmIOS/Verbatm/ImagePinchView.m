@@ -119,7 +119,6 @@
             [weakSelf.filteredImages addObject:imageWithFilter];
         }
     }];
-    
     NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     [queue addOperation:saveOp];
 }

@@ -29,15 +29,13 @@
 @property (nonatomic, strong) UIButton * textCreationButton;
 
 @property (nonatomic) CGPoint  panStartLocation;
+@property (nonatomic) CGFloat horizontalPanDistance;
+@property (nonatomic) BOOL verticlePan;//tracks the pans life cylce from beginning to end
+@property (nonatomic) BOOL horizontalPan;//tracks the pans life form beginnig to end
 @property (nonatomic) NSInteger keyboardHeight;
-
-@property (nonatomic) UISwipeGestureRecognizer * leftSwipe;
-@property (nonatomic) UISwipeGestureRecognizer * rightSwipe;
-
-
 #define TEXT_CREATION_ICON @"textCreateIcon"
 #define TEXT_VIEW_HEIGHT 70.f
-
+#define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
 #define TOUCH_BUFFER 20
 @end
 
@@ -210,7 +208,6 @@
 		self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
 										 self.frame.size.width, self.frame.size.height-VIEW_WALL_OFFSET);
 	}
-
 	[self adjustContentSizing];
 }
 
@@ -234,32 +231,10 @@
 	self.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self addSubview:self.imageView];
 	[self addTapGestureToMainView];
-	[self addSwipeGestureToImageView];
     [self createTextCreationButton];
 }
 
 #pragma mark Filters
-
--(void)addSwipeGestureToImageView {
-	UISwipeGestureRecognizer *leftSwipeRecognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(filterViewSwipeLeft:)];
-	leftSwipeRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
-	UISwipeGestureRecognizer *rightSwipeRecognizer = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(filterViewSwipeRight:)];
-	rightSwipeRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
-	[self addGestureRecognizer:leftSwipeRecognizer];
-	[self addGestureRecognizer:rightSwipeRecognizer];
-    self.leftSwipe = leftSwipeRecognizer;
-    self.rightSwipe = rightSwipeRecognizer;
-}
-
--(void)filterViewSwipeRight: (UISwipeGestureRecognizer *) sender {
-    [self changeFilteredImageRight];
-}
-
-
--(void)filterViewSwipeLeft: (UISwipeGestureRecognizer *) sender {
-	[self changeFilteredImageLeft];
-}
-
 -(void)changeFilteredImageLeft{
     if (self.imageIndex < ([self.filteredImages count]-1)) {
         self.imageIndex = self.imageIndex +1;
@@ -275,6 +250,7 @@
     }
 }
 
+
 -(NSInteger) getFilteredImageIndex {
 	return self.imageIndex;
 }
@@ -287,11 +263,15 @@
 }
 
 -(void) doneButtonPressed {
+    
     if([self.textView.text isEqualToString:@""]){
         //remove text view from screen
         [self.textView removeFromSuperview];
         self.textView = nil;
     }
+    
+    
+    
 	[self.textView resignFirstResponder];
 }
 
@@ -306,57 +286,79 @@
 
 #pragma maro -Adjust textview position-
 
--(void)addPanToTextView {
+-(void)addPanToTextView{
     UIPanGestureRecognizer * panG = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(adjustTVPosition:)];
-    [panG requireGestureRecognizerToFail:self.leftSwipe];
-    [panG requireGestureRecognizerToFail:self.rightSwipe];
     [self addGestureRecognizer:panG];
 }
 
 -(void)adjustTVPosition:(UIGestureRecognizer *) sender{
         switch (sender.state) {
             case UIGestureRecognizerStateBegan:
-                if([self touchInTVBounds:sender]){
-                   if(sender.numberOfTouches != 1) return;
-                   CGPoint location = [sender locationOfTouch:0 inView:self];
-                   self.panStartLocation = location;
-                   if(self.textView.isFirstResponder)[self.textView resignFirstResponder];
-               }else{
-                   sender.enabled = NO;
-                   sender.enabled = YES;
-               }
-                
+                if(sender.numberOfTouches != 1) return;
+                CGPoint location = [sender locationOfTouch:0 inView:self];
+                self.panStartLocation = location;
+                if(self.textView.isFirstResponder)[self.textView resignFirstResponder];
+                self.horizontalPanDistance = 0.f;
+                self.horizontalPan = NO;
+                self.verticlePan = NO;
                 break;
             case UIGestureRecognizerStateChanged:{
                 if(sender.numberOfTouches != 1) return;
                 CGPoint location = [sender locationOfTouch:0 inView:self];
-                if([self touchInTVBounds:sender]){
-                    float diff = location.y - self.panStartLocation.y;
-                    if([self textViewTranslationInBounds:diff]){
-                        
-                        self.textView.frame = CGRectMake(self.textView.frame.origin.x,
-                                                         self.textView.frame.origin.y + diff,
-                                                         self.textView.frame.size.width, self.textView.frame.size.height);
+                if([self mostlyHorizontalPan:location] || (self.horizontalPan && !self.verticlePan)) {
+                    float diff = location.x - self.panStartLocation.x;
+                    self.horizontalPanDistance += diff;
+                    //has the horizontal pan gone long enough for a "swipe"
+                    if(fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE){
+                        //change the filte
+                        if(self.horizontalPanDistance < 0){
+                            [self changeFilteredImageLeft];
+                        }else{
+                            [self changeFilteredImageRight];
+                        }
+                        //now cancel the gesture
+                        sender.enabled = NO;
+                        sender.enabled = YES;
                     }
-                }else{
-                    sender.enabled = NO;
-                    sender.enabled = YES;
+                }else if(self.verticlePan){
+                    if([self touchInTVBounds:sender]){
+                        float diff = location.y - self.panStartLocation.y;
+                        if([self textViewTranslationInBounds:diff]){
+                            self.textView.frame = CGRectMake(self.textView.frame.origin.x,
+                                                             self.textView.frame.origin.y + diff,
+                                                             self.textView.frame.size.width, self.textView.frame.size.height);
+                        }
+                    }else{
+                        sender.enabled = NO;
+                        sender.enabled = YES;
+                    }
                 }
-
-                self.panStartLocation = location;
                 
+                self.panStartLocation = location;
                 break;
             }
             case UIGestureRecognizerStateCancelled:
-                
-                break;
             case UIGestureRecognizerStateEnded:
-                
+                self.horizontalPanDistance = 0.f;
                 break;
             default:
                 break;
         }
 }
+
+-(BOOL) mostlyHorizontalPan: (CGPoint) location {
+    BOOL horizontal = ((fabs(location.y - self.panStartLocation.y) < fabs(location.x - self.panStartLocation.x))//make sure it's a horizontal swipe
+                       && fabs(location.y - self.panStartLocation.y) <= 9);//prevent diagonal swipes
+    
+    if(!self.horizontalPan && !self.verticlePan){
+        self.horizontalPan = horizontal;
+        self.verticlePan = !horizontal;
+    }
+    return horizontal;
+    
+}
+
+
 
 -(BOOL)textViewTranslationInBounds:(float) diff{
     return ((self.textView.frame.origin.y + diff) > 0.f) &&

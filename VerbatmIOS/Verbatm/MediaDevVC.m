@@ -638,7 +638,6 @@
 -(void) previewButtonPressed {
 	NSArray *pinchViews = [self.contentDevVC getPinchViews];
 	if(![pinchViews count]) {
-//		NSLog(@"Can't preview with no pinch views");
 		return;
 	}
 	NSString* title = self.contentDevVC.whatIsItLikeField.text;
