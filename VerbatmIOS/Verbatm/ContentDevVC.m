@@ -1665,7 +1665,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 -(void) presentGalleryForCoverPic {
 	GMImagePickerController * picker = [[GMImagePickerController alloc] init];
 	picker.delegate = self;
-//	[picker setSelectOnlyOneImage: YES];
+	[picker setSelectOnlyOneImage: YES];
 	//Display or not the selection info Toolbar:
 	picker.displaySelectionInfoToolbar = YES;
 
@@ -1681,27 +1681,27 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	picker.colsInLandscape = 5;
 	picker.minimumInteritemSpacing = 2.0;
 
-//	self.addingCoverPicture = YES;
+	self.addingCoverPicture = YES;
 	[self presentViewController:picker animated:YES completion:nil];
 }
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
 	[self.delegate showPullBar:YES withTransition:NO];
-	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+//	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		if (self.addingCoverPicture) {
 			self.addingCoverPicture = NO;
 			[self addCoverPictureFromAssetArray: assetArray];
 		} else {
 			[self presentAssetsAsPinchViews:assetArray];
 		}
-	}];
+//	}];
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
-	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+//	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		[self.delegate showPullBar:YES withTransition:NO];
 		self.addingCoverPicture = NO;
-	}];
+//	}];
 }
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
@@ -1713,7 +1713,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		dispatch_async(dispatch_get_main_queue(), ^{
 			UIImage* image = [[UIImage alloc] initWithData: imageData];
 			image = [image getImageWithOrientationUp];
-//			[[UserPovInProgress sharedInstance] addCoverPhoto:image];
+			[[UserPovInProgress sharedInstance] addCoverPhoto:image];
 			if (![self.coverPicView getImage]) {
 				[self coverPicAddedForFirstTime];
 			}
