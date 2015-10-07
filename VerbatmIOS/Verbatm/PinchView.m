@@ -35,7 +35,6 @@
 
 @dynamic center;
 
-
 -(instancetype) initWithFrame:(CGRect)frame {
 	if((self = [super initWithFrame:frame])) {
 		[self specifyFrame: frame];

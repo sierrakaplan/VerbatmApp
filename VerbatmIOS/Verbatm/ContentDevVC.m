@@ -1626,8 +1626,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		//asset is a photo
 		dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
 			NSData * data = [UtilityFunctions convertALAssetRepresentationToData:assetRepresentation];
+			UIImage* image = [UIImage imageWithData:data];
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[self createPinchViewFromImageData: data];
+				[self createPinchViewFromImage: image];
 			});
 		});
 
@@ -1731,8 +1732,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
 																			 UIImageOrientation orientation, NSDictionary *info) {
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful do any UIView calls on main thread
+				UIImage* image = [[UIImage alloc] initWithData: imageData];
+				image = [image getImageWithOrientationUp];
 				dispatch_async(dispatch_get_main_queue(), ^{
-					[self createPinchViewFromImageData: imageData];
+					[self createPinchViewFromImage: image];
 				});
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
@@ -1770,10 +1773,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     [self alertPinchElementsTogether];
 }
 
--(void) createPinchViewFromImageData:(NSData*) imageData {
-	UIImage* image = [[UIImage alloc] initWithData: imageData];
-	image = [image getImageWithOrientationUp];
-	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+-(void) createPinchViewFromImage:(UIImage*) image {
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andImage:image];
