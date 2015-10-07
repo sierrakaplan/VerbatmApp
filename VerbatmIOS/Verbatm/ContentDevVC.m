@@ -1687,21 +1687,21 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
 	[self.delegate showPullBar:YES withTransition:NO];
-//	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		if (self.addingCoverPicture) {
 			self.addingCoverPicture = NO;
 			[self addCoverPictureFromAssetArray: assetArray];
 		} else {
 			[self presentAssetsAsPinchViews:assetArray];
 		}
-//	}];
+	}];
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
-//	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+	self.addingCoverPicture = NO;
+	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 		[self.delegate showPullBar:YES withTransition:NO];
-		self.addingCoverPicture = NO;
-//	}];
+	}];
 }
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {

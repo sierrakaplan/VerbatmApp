@@ -97,6 +97,7 @@
     [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
 	if (self.selectOneImage) {
 		[self finishPickingAssets:self];
+		return;
 	}
     [self updateDoneButton];
     
@@ -139,7 +140,7 @@
     if ([self.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)])
         [self.delegate assetsPickerControllerDidCancel:self];
 
-	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+//	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
@@ -147,7 +148,7 @@
     if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)])
         [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
 
-	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+//	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 

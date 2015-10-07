@@ -13,7 +13,6 @@
 
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
-@property (nonatomic, strong) dispatch_queue_t createFilteredImagesQueue;
 
 #pragma mark Encoding Keys
 
@@ -91,12 +90,12 @@
 	self.filteredImages = [[NSMutableArray alloc] initWithCapacity:[filterNames count]+1];
 	//original photo
 	[self.filteredImages addObject:self.image];
-    [self createFilteredImagesFromImageData:self.image andFilterNames:filterNames];
+//    [self createFilteredImagesFromImageData:self.image andFilterNames:filterNames];
 }
 
 //return array of uiimage with filter from image
 -(void)createFilteredImagesFromImageData:(UIImage *)image andFilterNames:(NSArray*)filterNames{
-	dispatch_async(self.createFilteredImagesQueue, ^{
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		NSData  * imageData = UIImagePNGRepresentation(image);
 		//Background Thread
 		for (NSString* filterName in filterNames) {
@@ -108,6 +107,7 @@
 				CGImageRef CGImageRef = [context createCGImage:outputImage fromRect:[outputImage extent]];
 				UIImage* imageWithFilter = [UIImage imageWithCGImage:CGImageRef];
 				CGImageRelease(CGImageRef);
+
 				dispatch_async(dispatch_get_main_queue(), ^{
 					[self.filteredImages addObject:imageWithFilter];
 				});
@@ -137,13 +137,6 @@
 }
 
 #pragma mark - Lazy Instantiation
-
--(dispatch_queue_t) createFilteredImagesQueue {
-	if (!_createFilteredImagesQueue) {
-		_createFilteredImagesQueue = dispatch_queue_create(CREATE_FILTERED_IMAGES_QUEUE_KEY, NULL);
-	}
-	return _createFilteredImagesQueue;
-}
 
 -(UIImageView*)imageView {
     if(!_imageView) {
