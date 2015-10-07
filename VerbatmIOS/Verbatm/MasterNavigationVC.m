@@ -354,7 +354,6 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 		[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPhoto];
 		[self showFeed];
 
-		[[UserPovInProgress sharedInstance] clearPOVInProgress];
 		[self.mediaDevVC povPublished];
 	}
 }

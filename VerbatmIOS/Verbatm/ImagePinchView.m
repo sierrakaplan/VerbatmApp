@@ -61,11 +61,6 @@
 //This should be overriden in subclasses
 -(void)renderMedia {
 	self.imageView.frame = self.background.frame;
-	[self displayMedia];
-}
-
-//This function displays the media on the view.
--(void)displayMedia {
 	[self.imageView setImage:[self getImage]];
 }
 

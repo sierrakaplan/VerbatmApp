@@ -114,22 +114,20 @@
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];
 	NSData* coverPhotoData = [[NSUserDefaults standardUserDefaults] objectForKey:COVER_PHOTO_KEY];
-	self.pinchViewsAsData = [[NSUserDefaults standardUserDefaults]
+	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
 							 objectForKey:PINCHVIEWS_KEY];
 
 	@synchronized(self) {
 		if (coverPhotoData) {
 			self.coverPhoto = [UIImage imageWithData:coverPhotoData];
 		}
-		for (NSData* data in self.pinchViewsAsData) {
+		for (NSData* data in pinchViewsData) {
 			PinchView* pinchView = [self convertNSDataToPinchView:data];
 			[self.pinchViews addObject:pinchView];
 		}
-		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:self.pinchViewsAsData copyItems:NO];
+		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:pinchViewsData copyItems:NO];
 	}
 }
-
-
 
 //removes all pinch views
 -(void) clearPOVInProgress {

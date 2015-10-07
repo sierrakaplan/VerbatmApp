@@ -668,6 +668,7 @@
 -(void) povPublished {
 	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 //TODO:	[self.contentDevVC cleanUp];
+	//TODO:		[[UserPovInProgress sharedInstance] clearPOVInProgress];
 }
 
 -(void)alertAddTitle {
