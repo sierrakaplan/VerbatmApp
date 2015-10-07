@@ -41,7 +41,7 @@
 		//comes as NSURL from backend
         [self playVideoFromArrayOfAssets:videoList];
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
-		[self playVideoFromURL:videoList[0]];
+		[self playVideoFromURLArray:videoList];
 	} else {
 		return;
 	}

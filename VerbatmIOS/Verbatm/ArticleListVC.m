@@ -219,7 +219,6 @@
 // has published a POV and to show the loading animation until the POV
 // has actually published
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
-	
     if(self.povPublishing){
         //there is another one being published so we will exit for now
         return;

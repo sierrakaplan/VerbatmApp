@@ -62,8 +62,6 @@
 
 //dynamically centers all our frames depending on phone screen dimensions
 -(void) centerAllframes {
-
-    
     self.orLabel.frame = CGRectMake(self.view.center.x - (self.orLabel.frame.size.width/2), self.orLabel.frame.origin.y, self.orLabel.frame.size.width, self.orLabel.frame.size.height);
     
 	self.emailField.frame= CGRectMake((self.view.frame.size.width/2 - self.emailField.frame.size.width/2), self.orLabel.frame.origin.y + self.orLabel.frame.size.height + DISTANCE_BETWEEN_FIELDS,
@@ -189,13 +187,18 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 #pragma mark - Error message animation -
 
 -(void)errorInSignInAnimation:(NSString*) errorMessage {
-	NSLog(@"Error: \"%@\"", errorMessage);
-	if(self.animationView.alpha > 0) return;
-	[self.animationLabel setText:errorMessage];
-	[self.view addSubview:self.animationView];
-	[self.view bringSubviewToFront:self.animationView];
-	[self showAnimationView:YES];
-	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:ERROR_MESSAGE_ANIMATION_TIME target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
+    NSLog(@"Error: \"%@\"", errorMessage);
+	
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:errorMessage message:@""
+                                                    delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    [alert show];
+    
+//    if(self.animationView.alpha > 0) return;
+//	[self.animationLabel setText:errorMessage];
+//	[self.view addSubview:self.animationView];
+//	[self.view bringSubviewToFront:self.animationView];
+//	[self showAnimationView:YES];
+//	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:ERROR_MESSAGE_ANIMATION_TIME target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
 }
 
 -(void) removeAnimationView {

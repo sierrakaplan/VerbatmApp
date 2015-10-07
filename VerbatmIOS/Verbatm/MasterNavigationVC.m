@@ -259,6 +259,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 	[self.articleDisplayContainer addGestureRecognizer: leftEdgePanGesture];
 }
 
+
 //called from left edge pan
 - (void) exitArticleDisplayView:(UIPanGestureRecognizer *)sender {
 	switch (sender.state) {
@@ -359,6 +360,18 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 }
 
 #pragma mark - Media dev delegate methods -
+
+-(void)adkViewChange:(BOOL)inCameraMode {
+    
+    if(inCameraMode){
+        //turn off navigation scrollview
+        self.masterSV.scrollEnabled = NO;
+    }else{
+        //turn on naviagtion scrollview
+        self.masterSV.scrollEnabled = YES;
+    }
+    
+}
 
 -(void) backButtonPressed {
 	[self showFeed];

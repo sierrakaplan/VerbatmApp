@@ -12,9 +12,9 @@
 
 #pragma mark - Exit CV constants-
 
-#define EXIT_CV_BUTTON_WIDTH 60
+#define EXIT_CV_BUTTON_WIDTH 35
 #define EXIT_CV_BUTTON_HEIGHT EXIT_CV_BUTTON_WIDTH
-#define EXIT_CV_BUTTON_WALL_OFFSET 0
+#define EXIT_CV_BUTTON_WALL_OFFSET 10
 
 #define NAV_BAR_HEIGHT 40.f
 #define NAV_ICON_OFFSET 7.f
@@ -160,8 +160,8 @@
 #define CIRCLE_OFFSET 15.f
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
-#define TAP_THRESHOLD 15.f
-#define	SLIDE_THRESHOLD 30.f
+#define TAP_THRESHOLD 20.f//the threshold to select a circle - but also to start panning
+#define	SLIDE_THRESHOLD 40.f
 
 #define DISTANCE_BETWEEN_FIELDS 20
 
