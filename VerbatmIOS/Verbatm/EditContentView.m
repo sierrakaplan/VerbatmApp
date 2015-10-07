@@ -365,16 +365,15 @@
         self.horizontalPan = horizontal;
         self.verticlePan = !horizontal;
     }
-    return horizontal;
     
+    return horizontal;
 }
-
 
 
 -(BOOL)textViewTranslationInBounds:(float) diff{
     return ((self.textView.frame.origin.y + diff) > 0.f) &&
             ((self.textView.frame.origin.y + self.textView.frame.size.height + diff) <
-            self.frame.size.height);
+            self.frame.size.height /*- (CIRCLE_RADIUS*2 + SLIDE_THRESHOLD //we have remove this to test what it's like to have text at the very bottom)*/);
 }
 
 

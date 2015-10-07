@@ -79,7 +79,9 @@
 
 //overriding
 -(NSArray*) getPhotos {
-	return @[[self getImage]];
+    //we return a double array because we want to bind the photo and text as one unit
+    if(self.textView) return @[@[[self getImage],self.textView]];
+    return @[@[[self getImage]]];
 }
 
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex {

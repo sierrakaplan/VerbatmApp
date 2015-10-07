@@ -72,7 +72,6 @@
 
 -(AnyPromise*) getAVEFromPage: (Page*) page withFrame: (CGRect) frame {
 	AVEType type;
-
 	if (page.images.count && page.videos.count) {
 		type = AVETypePhotoVideo;
 	} else if (page.images.count) {
@@ -80,7 +79,6 @@
 	} else if(page.videos.count) {
 		type = AVETypeVideo;
 	}
-
 	return [self getUIImagesFromPage: page].then(^(NSArray* images) {
 		BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame: frame andText:nil andPhotos:images andVideos:[self getVideosFromPage: page] andAVEType:type];
 		return textAndOtherMediaAVE;
