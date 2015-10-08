@@ -75,7 +75,12 @@
     }
     if(self.openPinchView.containsImage) {
         self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
-        ((ImagePinchView *)self.openPinchView).textView = self.openEditContentView.textView;
+        //if there is a text view and it has text then we should save it. otherwise we get rid of any reference
+        if(self.openEditContentView.textView && ![self.openEditContentView.textView.text isEqualToString:@""]){
+            ((ImagePinchView *)self.openPinchView).textView = self.openEditContentView.textView;
+        }else{
+            ((ImagePinchView *)self.openPinchView).textView =  nil;
+        }
     }
     
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];

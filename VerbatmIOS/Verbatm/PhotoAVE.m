@@ -37,7 +37,6 @@
 @property (nonatomic) float lastDistanceFromStartingPoint;
 @property (strong, nonatomic) NSTimer * showCircleTimer;
 
-@property (nonatomic) BOOL textShowing;
 
 @property (nonatomic, strong) UIView * panGestureSensingView;
 
@@ -48,7 +47,6 @@
 
 #define TEXT_CREATION_ICON @"textCreateIcon"
 #define TEXT_VIEW_HEIGHT 70.f
-
 @end
 
 @implementation PhotoAVE
@@ -66,9 +64,7 @@
 			self.currentPhotoIndex = 0;
 			[self highlightDot];
 		}
-		self.textShowing = YES;
 		[self addTapGestureToView:self];
-        [self createTextViewButton];
 	}
 	return self;
 }
@@ -79,9 +75,7 @@
     
     //@[ @[/*photo and textview content*/],...]
 	for (NSArray* photoText in photosTextArray) {
-       
         TextViewWrapper* imageContainerView;
-        
         if(photoText.count == 1){//photo no textview
 
             //add container view with blur photo and regular photo
@@ -98,6 +92,7 @@
 	UIImage* photoOne = photosTextArray[0][0];
     TextViewWrapper* imageOneContainerView = [self getImageViewContainerForImage:photoOne andTextView:(((NSArray *)photosTextArray[0]).count == 1) ? nil : photosTextArray[0][1]];
 	[self addSubview:imageOneContainerView];
+    if(imageOneContainerView.textView)[self createTextViewButton];//add textview button if the first image has text
 
 	//adding subviews in reverse order so that imageview at index 0 on top
 	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
@@ -199,17 +194,22 @@
 
 -(void)textViewButtonClicked:(UIButton*) sender {
     
-    for(TextViewWrapper * view in self.imageContainerViews){
-        if(!self.textShowing){
-            [view showText];
-        }else{
-            [view hideText];
-        }
-    }
-    self.textShowing= !self.textShowing;
+//    for(TextViewWrapper * view in self.imageContainerViews){
+//        if(!self.textShowing){
+//            [view showText];
+//        }else{
+//            [view hideText];
+//        }
+//    }
+//    self.textShowing= !self.textShowing;
+
     
-//    photoVideoWrapperViewForText * curV = self.imageContainerViews[self.currentPhotoIndex];
-//    [curV showText];
+    TextViewWrapper * currentView = self.imageContainerViews[self.currentPhotoIndex];
+    if(!currentView.textShowing){
+        [currentView showText];
+    }else{
+        [currentView hideText];
+    }
 }
 
 
@@ -229,6 +229,7 @@
         }else {
             [self removeCircle];
         }
+        [self checkTextButtonPresentation];
 	} else {
         [self displayCircle:NO];
 	}
@@ -289,6 +290,8 @@
 		[self setImageViewsToLocation:self.draggingFromPointIndex];
 		self.lastDistanceFromStartingPoint = 0.f;
 	}
+    
+    [self.textViewButton removeFromSuperview];
 }
 
 -(void) handleCircleGestureChanged:(UIPanGestureRecognizer*) sender {
@@ -342,13 +345,26 @@
 	float alpha = 1.f-fractionOfDistance;
 //	NSLog(@"Alpha:%f", alpha);
 	[currentImageView setAlpha:alpha];
+    [self checkTextButtonPresentation];
 }
 
 -(void) handleCircleGestureEnded:(UIPanGestureRecognizer*) sender {
 	self.draggingFromPointIndex = -1;
 	[self displayCircle:NO];
 	[self.delegate stoppedDraggingAroundCircle];
+    [self checkTextButtonPresentation];
 }
+
+//checks if a text button should be presented depending on the current image presented
+-(void)checkTextButtonPresentation{
+    TextViewWrapper * view = self.imageContainerViews[self.currentPhotoIndex];
+    if(view.textView){
+        [self createTextViewButton];
+    }else{
+        [self.textViewButton removeFromSuperview];
+    }
+}
+
 
 -(void) showAndRemoveCircle {
 	[self displayCircle:YES];

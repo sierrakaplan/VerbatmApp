@@ -60,6 +60,7 @@
 
 #define NUM_POVS_IN_SECTION 6
 #define RELOAD_THRESHOLD (STORY_CELL_HEIGHT*2 + 10)
+
 @end
 
 @implementation ArticleListVC
