@@ -36,8 +36,10 @@
 
 -(void)renderPhotos:(NSArray*)photos withBlurBackground:(BOOL)withBackground {
 
-	for (id imageInfo in photos) {
-		UIImage*image;
+	for (NSArray * photoContent in photos) {
+		
+        id imageInfo = photoContent[0];
+        UIImage*image;
 		if ([imageInfo isKindOfClass:[NSData class]]) {
 			image = [[UIImage alloc] initWithData: imageInfo];
 		} else if([imageInfo isKindOfClass:[UIImage class]]) {
