@@ -97,7 +97,7 @@
 		NSMutableArray* uiImages = [[NSMutableArray alloc] init];
 		for (NSData* imageData in results) {
 			UIImage* uiImage = [UIImage imageWithData:imageData];
-			[uiImages addObject: uiImage];
+			[uiImages addObject: @[uiImage]];
 		}
 		return uiImages;
 	});
