@@ -203,15 +203,13 @@
 //    }
 //    self.textShowing= !self.textShowing;
 
-    
     TextViewWrapper * currentView = self.imageContainerViews[self.currentPhotoIndex];
     if(!currentView.textShowing){
-        [currentView showText];
+        [currentView showText]; 
     }else{
         [currentView hideText];
     }
 }
-
 
 #pragma mark - Tap Gesture -
 

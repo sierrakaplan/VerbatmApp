@@ -1792,9 +1792,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 				[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
 																				 UIImageOrientation orientation, NSDictionary *info) {
 					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful do any UIView calls on main thread
-					UIImage* image = [[UIImage alloc] initWithData: imageData];
-					image = [image getImageWithOrientationUp];
+
 					dispatch_async(dispatch_get_main_queue(), ^{
+						UIImage* image = [[UIImage alloc] initWithData: imageData];
+						image = [image getImageWithOrientationUp];
 						[self createPinchViewFromImage: image];
 					});
 				}];
