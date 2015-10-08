@@ -29,7 +29,7 @@
 -(void)adjustFrameOfTextViewForGap:(NSInteger) gap;
 -(NSInteger) getFilteredImageIndex;
 
-@property (nonatomic, strong) VerbatmUITextView * textView;
+@property (nonatomic, strong) UITextView* textView;
 @property (nonatomic, strong) VideoPlayerView * videoView;
 @property (nonatomic, strong) id<EditContentViewDelegate> delegate;
 

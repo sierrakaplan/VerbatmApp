@@ -14,7 +14,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface photoVideoWrapperViewForText : UIView
+@interface TextViewWrapper : UIView
 
 @property (nonatomic, strong) UITextView * textView;
 -(void)showText;

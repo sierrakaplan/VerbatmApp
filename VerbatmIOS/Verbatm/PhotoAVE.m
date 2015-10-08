@@ -11,7 +11,7 @@
 #import "MathOperations.h"
 #import "PointObject.h"
 #import "PhotoAVE.h"
-#import "photoVideoWrapperViewForText.h"
+#import "TextViewWrapper.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Icons.h"
@@ -80,7 +80,7 @@
     //@[ @[/*photo and textview content*/],...]
 	for (NSArray* photoText in photosTextArray) {
        
-        photoVideoWrapperViewForText* imageContainerView;
+        TextViewWrapper* imageContainerView;
         
         if(photoText.count == 1){//photo no textview
 
@@ -96,7 +96,7 @@
 
 	//add extra copy of photo 1 at bottom for last arc of circle transition
 	UIImage* photoOne = photosTextArray[0][0];
-    photoVideoWrapperViewForText* imageOneContainerView = [self getImageViewContainerForImage:photoOne andTextView:(((NSArray *)photosTextArray[0]).count == 1) ? nil : photosTextArray[0][1]];
+    TextViewWrapper* imageOneContainerView = [self getImageViewContainerForImage:photoOne andTextView:(((NSArray *)photosTextArray[0]).count == 1) ? nil : photosTextArray[0][1]];
 	[self addSubview:imageOneContainerView];
 
 	//adding subviews in reverse order so that imageview at index 0 on top
@@ -105,11 +105,11 @@
 	}
 }
 
--(photoVideoWrapperViewForText*) getImageViewContainerForImage:(UIImage*) image andTextView:(UITextView *)tv {
+-(TextViewWrapper*) getImageViewContainerForImage:(UIImage*) image andTextView:(UITextView *)tv {
 	//scale image
 	CGSize imageSize = [image getSizeForImageWithBounds: self.bounds];
 	image = [image scaleImageToSize:imageSize];
-	photoVideoWrapperViewForText* imageContainerView = [[photoVideoWrapperViewForText alloc] initWithFrame:self.bounds];
+	TextViewWrapper* imageContainerView = [[TextViewWrapper alloc] initWithFrame:self.bounds];
 	[imageContainerView setBackgroundColor:[UIColor blackColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];
 	UIImageView* blurPhotoView = [image getBlurImageViewWithFilterLevel:FILTER_LEVEL_BLUR andFrame:self.bounds];
@@ -199,7 +199,7 @@
 
 -(void)textViewButtonClicked:(UIButton*) sender {
     
-    for(photoVideoWrapperViewForText * view in self.imageContainerViews){
+    for(TextViewWrapper * view in self.imageContainerViews){
         if(!self.textShowing){
             [view showText];
         }else{

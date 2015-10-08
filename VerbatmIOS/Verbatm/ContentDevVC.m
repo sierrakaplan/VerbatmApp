@@ -12,7 +12,6 @@
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
 #import "ContentPageElementScrollView.h"
-#import "CoverPicturePinchView.h"
 #import "Durations.h"
 
 #import "EditContentView.h"
@@ -287,7 +286,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
-    self.coverPicView = [[CoverPicturePV alloc] initWithRadius:COVER_PIC_RADIUS withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
+    self.coverPicView = [[CoverPicturePinchView alloc] initWithRadius:COVER_PIC_RADIUS withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
 	self.addCoverPictureTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentGalleryForCoverPic)];
 	[self.coverPicView addGestureRecognizer: self.addCoverPictureTapGesture];
 	[self.mainScrollView addSubview: self.coverPicView];
@@ -1774,7 +1773,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void)setCoverPictureImage:(UIImage *) image{
-    [self.coverPicView setNewImageWith: image];
+    [self.coverPicView setNewImage: image];
     
     //show replace photo icon after the first time cover photo is added
     if(!_replaceCoverPhotoButton){
@@ -1789,26 +1788,30 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	//store local identifiers so we can query the nsassets
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
-			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
-																			 UIImageOrientation orientation, NSDictionary *info) {
-				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful do any UIView calls on main thread
-				UIImage* image = [[UIImage alloc] initWithData: imageData];
-				image = [image getImageWithOrientationUp];
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[self createPinchViewFromImage: image];
-				});
-			}];
+			@autoreleasepool {
+				[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
+																				 UIImageOrientation orientation, NSDictionary *info) {
+					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful do any UIView calls on main thread
+					UIImage* image = [[UIImage alloc] initWithData: imageData];
+					image = [image getImageWithOrientationUp];
+					dispatch_async(dispatch_get_main_queue(), ^{
+						[self createPinchViewFromImage: image];
+					});
+				}];
+			}
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
-			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
-				if (![asset isKindOfClass:[AVURLAsset class]]) {
-//					NSLog(@"Issue with video not in AVURLAsset form");
-					return;
-				}
-				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];
-				});
-			}];
+			@autoreleasepool {
+				[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+					if (![asset isKindOfClass:[AVURLAsset class]]) {
+						//					NSLog(@"Issue with video not in AVURLAsset form");
+						return;
+					}
+					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+					dispatch_async(dispatch_get_main_queue(), ^{
+						[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];
+					});
+				}];
+			}
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
 //			NSLog(@"Asset is of audio type, unable to handle.");
 			return;
@@ -1910,7 +1913,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	if (!_baseMediaTileSelector) {
 		CGRect frame = CGRectMake(ELEMENT_OFFSET_DISTANCE,
 								  ELEMENT_OFFSET_DISTANCE/2.f,
-								  tileWidth, MEDIA_TILE_SELECTOR_HEIGHT);
+								  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
 		_baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
 		_baseMediaTileSelector.isBaseSelector =YES;
 		_baseMediaTileSelector.delegate = self;

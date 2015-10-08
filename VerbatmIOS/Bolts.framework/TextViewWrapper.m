@@ -6,18 +6,9 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
-#import "photoVideoWrapperViewForText.h"
+#import "TextViewWrapper.h"
 
-@implementation photoVideoWrapperViewForText
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
-
+@implementation TextViewWrapper
 
 -(void)showText{
     if(self.textView){
