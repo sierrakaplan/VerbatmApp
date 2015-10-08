@@ -31,7 +31,6 @@
 @property (nonatomic) float lastDistanceFromStartingPoint;
 @property (strong, nonatomic) NSTimer * showCircleTimer;
 
-@property (nonatomic) BOOL textShowing;
 
 @property (nonatomic, strong) UIView * panGestureSensingView;
 
@@ -42,7 +41,6 @@
 
 #define TEXT_CREATION_ICON @"textCreateIcon"
 #define TEXT_VIEW_HEIGHT 70.f
-
 @end
 
 @implementation PhotoAVE
@@ -60,7 +58,6 @@
 			self.currentPhotoIndex = 0;
 			[self highlightDot];
 		}
-		self.textShowing = YES;
 		[self addTapGestureToView:self];
         [self createTextViewButton];
 	}
@@ -193,17 +190,20 @@
 
 -(void)textViewButtonClicked:(UIButton*) sender {
     
-    for(photoVideoWrapperViewForText * view in self.imageContainerViews){
-        if(!self.textShowing){
-            [view showText];
-        }else{
-            [view hideText];
-        }
-    }
-    self.textShowing= !self.textShowing;
+//    for(photoVideoWrapperViewForText * curV in self.imageContainerViews){
+//        if(!curV.textShowing){
+//            [curV showText];
+//        }else{
+//            [curV hideText];
+//        }
+//    }
     
-//    photoVideoWrapperViewForText * curV = self.imageContainerViews[self.currentPhotoIndex];
-//    [curV showText];
+    photoVideoWrapperViewForText * curV = self.imageContainerViews[self.currentPhotoIndex];
+    if(!curV.textShowing){
+        [curV showText];
+    }else{
+        [curV hideText];
+    }
 }
 
 

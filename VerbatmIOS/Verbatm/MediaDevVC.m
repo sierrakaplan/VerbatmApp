@@ -604,7 +604,7 @@
 		 } else {
              self.contentContainerView.frame = self.contentContainerViewFrameTop;
              self.pullBar.frame = self.pullBarFrameTop;
-            // [self.delegate adkViewChange:YES];
+             [self.delegate adkViewChange:YES];
 		 }
 		 [self.pullBar switchToMode:mode];
 	 }];

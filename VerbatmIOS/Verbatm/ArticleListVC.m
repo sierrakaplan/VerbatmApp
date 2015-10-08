@@ -55,7 +55,7 @@
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 
 #define NUM_POVS_IN_SECTION 4
-#define RELOAD_THRESHOLD -5
+#define RELOAD_THRESHOLD (-0.f)
 @end
 
 @implementation ArticleListVC

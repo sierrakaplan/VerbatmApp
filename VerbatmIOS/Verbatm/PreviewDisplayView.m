@@ -58,7 +58,6 @@
 		self.restingFrame = CGRectMake(self.frame.origin.x + self.frame.size.width, self.frame.origin.y,
 									   self.frame.size.width, self.frame.size.height);
 		self.frame = self.restingFrame;
-		[self setUpPublishButton];
 		[self setUpBackButton];
 
 		[self setBackgroundColor:[UIColor blackColor]];
@@ -75,7 +74,8 @@
 	self.title = title;
 	self.coverPhoto = coverPhoto;
 	self.pinchViews = pinchViews;
-
+    [self setUpPublishButton];
+    
 	//if we have nothing in our article then return to the list view-
 	//we shouldn't need this because all downloaded articles should have legit pages
 	if(![pinchViews count]) {
@@ -96,7 +96,6 @@
 	[self addSubview: self.backButton];
 	[self bringSubviewToFront: self.backButton];
 	[self revealPreview:YES];
-    
 }
 
 #pragma mark - Set Up Views -
@@ -106,7 +105,18 @@
 
 	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.publishButton setFrame: publishButtonFrame];
-	UIColor *labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR];
+    
+    
+    UIColor *labelColor;
+    
+    if([self.title isEqualToString:@""] || !self.coverPhoto ){
+        labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR_INACTIVE];
+        [self.publishButton setEnabled:NO];
+    }else{
+        labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR_ACTIVE];
+        [self.publishButton setEnabled:YES];
+    }
+    
 	UIFont* labelFont = [UIFont fontWithName:PREVIEW_BUTTON_FONT size:PREVIEW_BUTTON_FONT_SIZE];
 	self.publishButtonTitle = [[NSAttributedString alloc] initWithString:PUBLISH_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont}];
 	[self.publishButton setAttributedTitle:self.publishButtonTitle forState:UIControlStateNormal];

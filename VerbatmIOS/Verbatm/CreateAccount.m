@@ -168,11 +168,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 		return;
 	}
 
-	//TODO(sierrakn): If any declined permissions are essential
-	//explain to user why and ask them to agree to each individually
-//	NSSet* declinedPermissions = result.declinedPermissions;
-//	NSLog(@"User declined fb permissions for %@", declinedPermissions);
-
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
 //		NSLog(@"Successfully logged in with Facebook");
@@ -220,17 +215,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(void)errorInSignInAnimation:(NSString*) errorMessage {
     NSLog(@"Error: \"%@\"", errorMessage);
-    
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:errorMessage message:@""
                                                     delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    
-    //    if(self.animationView.alpha > 0) return;
-    //	[self.animationLabel setText:errorMessage];
-    //	[self.view addSubview:self.animationView];
-    //	[self.view bringSubviewToFront:self.animationView];
-    //	[self showAnimationView:YES];
-    //	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:ERROR_MESSAGE_ANIMATION_TIME target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
 }
 -(void) removeAnimationView {
 	[self showAnimationView:NO];

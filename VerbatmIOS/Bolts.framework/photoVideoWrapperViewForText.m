@@ -8,6 +8,9 @@
 
 #import "photoVideoWrapperViewForText.h"
 
+@interface photoVideoWrapperViewForText ()
+@property (nonatomic, readwrite) BOOL textShowing;
+@end
 @implementation photoVideoWrapperViewForText
 
 /*
@@ -20,16 +23,19 @@
 
 
 -(void)showText{
-    if(self.textView){
+    if(self.textView && !self.textShowing){
         [self addSubview:self.textView];
         [self bringSubviewToFront:self.textView];
+        self.textShowing = !self.textShowing;
     }
     
 }
 -(void)hideText{
-    if(self.textView){
+    if(self.textView && self.textShowing){
         [self.textView removeFromSuperview];
+        self.textShowing = !self.textShowing;
     }
+    
 }
 
 @end
