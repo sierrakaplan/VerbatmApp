@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import  "VerbatmUITextView.h"
 #import "VideoPlayerView.h"
 
 @protocol EditContentViewDelegate <NSObject>

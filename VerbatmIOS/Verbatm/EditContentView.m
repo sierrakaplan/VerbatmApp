@@ -98,7 +98,7 @@
 -(void) editText: (NSString *) text {
     if(!_textView){
         self.userSetFrame = CGRectMake(0, VIEW_Y_OFFSET, self.frame.size.width, TEXT_VIEW_HEIGHT);
-        self.textView = [[VerbatmUITextView alloc] initWithFrame:self.userSetFrame];
+        self.textView = [[UITextView alloc] initWithFrame:self.userSetFrame];
         [self formatTextView:self.textView];
         [self addSubview:self.textView];
         [self.textView setDelegate:self];
@@ -385,8 +385,10 @@
     }
         return NO;
 }
+
 #pragma mark - custom setters -
--(void)setTextView:(VerbatmUITextView *)textView{
+
+-(void)setTextView:(UITextView *)textView{
     if(_textView){
         [_textView removeFromSuperview];
     }
