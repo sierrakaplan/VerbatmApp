@@ -1677,9 +1677,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	} else {
 		[self presentAssetsAsPinchViews:assetArray];
 	}
-//	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
-//
-//	}];
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
@@ -1690,10 +1687,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
 	PHAsset* asset = assetArray[0];
 	PHImageManager * iman = [[PHImageManager alloc] init];
-	[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+	[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
+																	 UIImageOrientation orientation, NSDictionary *info) {
 
 		UIImage* image = [[UIImage alloc] initWithData: imageData];
 		image = [image getImageWithOrientationUp];
+		image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
 		[[UserPovInProgress sharedInstance] addCoverPhoto:image];
 
 		// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
