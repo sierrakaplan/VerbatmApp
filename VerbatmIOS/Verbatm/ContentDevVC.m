@@ -477,17 +477,31 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #pragma mark - Deleting scrollview and element -
 
 //Deletes scroll view and the element it contained
--(void) deleteScrollView:(ContentPageElementScrollView*)scrollView {
-	if (![self.pageElementScrollViews containsObject:scrollView]){
+-(void) deleteScrollView:(ContentPageElementScrollView*)pageElementScrollView {
+	if (![self.pageElementScrollViews containsObject:pageElementScrollView]){
 		return;
 	}
 
-	NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
-	[scrollView removeFromSuperview];
-	[self.pageElementScrollViews removeObject:scrollView];
+	//update user defaults if was pinch view
+	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
+		[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
+		self.numPinchViews--;
+		if (self.numPinchViews < 1) {
+			[self.navBar enablePreviewButton:NO];
+		}
+	}
+
+	[pageElementScrollView cleanUp];
+	[self.pageElementScrollViews removeObject:pageElementScrollView];
+	[pageElementScrollView removeFromSuperview];
 	[self shiftElementsBelowView: self.coverPicView];
-	//register deleted tile
-	[self registerDeletedTile:scrollView withIndex:[NSNumber numberWithUnsignedLong:index]];
+
+	/* NOT IN USE - register deleted tile for undo
+	 NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
+ 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[pageElementScrollView, index]];
+	 //show the pullbar so that they can undo
+	 [self.delegate showPullBar:YES withTransition:YES];
+	 */
 }
 
 
@@ -1441,33 +1455,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	//tune out of nsnotification
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
-
-#pragma mark - Undo implementation -
-
--(void) registerDeletedTile: (ContentPageElementScrollView *)pageElementScrollView withIndex: (NSNumber *) index {
-	//make sure there is something to delete
-	if(!pageElementScrollView) return;
-	[pageElementScrollView removeFromSuperview];
-
-	//update user defaults if was pinch view
-	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
-		[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
-		self.numPinchViews--;
-		if (self.numPinchViews < 1) {
-			[self.navBar enablePreviewButton:NO];
-		}
-	}
-
-	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[pageElementScrollView, index]];
-	//show the pullbar so that they can undo
-	[self.delegate showPullBar:YES withTransition:YES];
-}
-
--(void)undoTileDeleteSwipe {
-	[self.tileSwipeViewUndoManager undo];
-}
-
 
 #pragma mark Undo tile swipe
 
