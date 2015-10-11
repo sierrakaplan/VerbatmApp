@@ -204,15 +204,15 @@
 + (NSArray*) getPhotoFilters {
 	NSArray* filters = @[@"CIPhotoEffectChrome",
 						 @"CIPhotoEffectMono",
-						 //						 @"CIPhotoEffectNoir",
-						 @"CIPhotoEffectProcess",
-						 //						 @"CIPhotoEffectFade",
+//						 @"CIPhotoEffectNoir",
+//						 @"CIPhotoEffectProcess",
+//						 @"CIPhotoEffectFade",
 						 @"CIPhotoEffectInstant",
 						 @"CIPhotoEffectTransfer",
-						 @"CISepiaTone",
-						 //						 @"CIVignette",
-						 @"CIColorPosterize"
-						 //						 @"CIMotionBlur"
+//						 @"CISepiaTone",
+//						 @"CIVignette",
+//						 @"CIColorPosterize"
+//						 @"CIMotionBlur"
 						 ];
 	return filters;
 }
