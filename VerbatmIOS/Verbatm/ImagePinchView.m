@@ -13,7 +13,6 @@
 
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
-@property (nonatomic, strong) dispatch_queue_t createFilteredImagesQueue;
 
 #pragma mark Encoding Keys
 
@@ -101,10 +100,11 @@
 
 //return array of uiimage with filter from image
 -(void)createFilteredImagesFromImageData:(UIImage *)image andFilterNames:(NSArray*)filterNames{
-	dispatch_async(self.createFilteredImagesQueue, ^{
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		NSData  * imageData = UIImagePNGRepresentation(image);
 		//Background Thread
 		for (NSString* filterName in filterNames) {
+			NSLog(@"Adding filtered photo.");
 			@autoreleasepool {
 				CIImage *beginImage =  [CIImage imageWithData: imageData];
 				CIContext *context = [CIContext contextWithOptions:nil];
@@ -142,13 +142,6 @@
 }
 
 #pragma mark - Lazy Instantiation
-
--(dispatch_queue_t) createFilteredImagesQueue {
-	if (!_createFilteredImagesQueue) {
-		_createFilteredImagesQueue = dispatch_queue_create(CREATE_FILTERED_IMAGES_QUEUE_KEY, NULL);
-	}
-	return _createFilteredImagesQueue;
-}
 
 -(UIImageView*)imageView {
     if(!_imageView) {

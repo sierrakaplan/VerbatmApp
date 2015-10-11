@@ -110,6 +110,11 @@
 		A5E860011B96249900E148D0 /* POVPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860001B96249900E148D0 /* POVPublisher.m */; };
 		A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */; };
 		A5E8600B1B99EF9B00E148D0 /* HomeNavPullBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E8600A1B99EF9B00E148D0 /* HomeNavPullBar.m */; };
+		A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */; settings = {ASSET_TAGS = (); }; };
+		A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D171BCB0B9700634A96 /* GMAlbumsViewController.m */; settings = {ASSET_TAGS = (); }; };
+		A5FB5D301BCB0B9700634A96 /* GMGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D1B1BCB0B9700634A96 /* GMGridViewCell.m */; settings = {ASSET_TAGS = (); }; };
+		A5FB5D311BCB0B9700634A96 /* GMGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D1D1BCB0B9700634A96 /* GMGridViewController.m */; settings = {ASSET_TAGS = (); }; };
+		A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D271BCB0B9700634A96 /* GMImagePickerController.m */; settings = {ASSET_TAGS = (); }; };
 		C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = C716A5B119E0CA3500A5490B /* DashLineView.m */; };
 		C719A4041BA3FC020075CA80 /* CreateAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4031BA3FC020075CA80 /* CreateAccount.m */; };
 		C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4061BA4EB500075CA80 /* EditContentVC.m */; };
@@ -122,18 +127,6 @@
 		C745B42F1BBA630800D18944 /* PermissionCodePageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C745B42E1BBA630800D18944 /* PermissionCodePageVC.m */; settings = {ASSET_TAGS = (); }; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
 		C75985F51B8553DF00FE77F7 /* internetConnectionMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C75985F41B8553DF00FE77F7 /* internetConnectionMonitor.m */; };
-		C772F27F1B4BC13500CEC83D /* GMImagePicker.strings in Resources */ = {isa = PBXBuildFile; fileRef = C772F2661B4BC13500CEC83D /* GMImagePicker.strings */; };
-		C772F2801B4BC13500CEC83D /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C772F26E1B4BC13500CEC83D /* GMAlbumsViewCell.m */; };
-		C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C772F2701B4BC13500CEC83D /* GMAlbumsViewController.m */; };
-		C772F2821B4BC13500CEC83D /* GMEmptyFolder@1x.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F2711B4BC13500CEC83D /* GMEmptyFolder@1x.png */; };
-		C772F2831B4BC13500CEC83D /* GMEmptyFolder@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F2721B4BC13500CEC83D /* GMEmptyFolder@2x.png */; };
-		C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C772F2741B4BC13500CEC83D /* GMGridViewCell.m */; };
-		C772F2851B4BC13500CEC83D /* GMGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C772F2761B4BC13500CEC83D /* GMGridViewController.m */; };
-		C772F2861B4BC13500CEC83D /* GMImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = C772F2781B4BC13500CEC83D /* GMImagePickerController.m */; };
-		C772F2871B4BC13500CEC83D /* GMSelected.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F2791B4BC13500CEC83D /* GMSelected.png */; };
-		C772F2881B4BC13500CEC83D /* GMSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F27A1B4BC13500CEC83D /* GMSelected@2x.png */; };
-		C772F2891B4BC13500CEC83D /* GMVideoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F27B1B4BC13500CEC83D /* GMVideoIcon.png */; };
-		C772F28A1B4BC13500CEC83D /* GMVideoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C772F27C1B4BC13500CEC83D /* GMVideoIcon@2x.png */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */; };
 		C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEAC1AD288A3003E0633 /* ArticleListVC.m */; };
@@ -428,6 +421,16 @@
 		A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewDisplayView.m; sourceTree = "<group>"; };
 		A5E860091B99EF9B00E148D0 /* HomeNavPullBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeNavPullBar.h; sourceTree = "<group>"; };
 		A5E8600A1B99EF9B00E148D0 /* HomeNavPullBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeNavPullBar.m; sourceTree = "<group>"; };
+		A5FB5D141BCB0B9700634A96 /* GMAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewCell.h; sourceTree = "<group>"; };
+		A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMAlbumsViewCell.m; sourceTree = "<group>"; };
+		A5FB5D161BCB0B9700634A96 /* GMAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewController.h; sourceTree = "<group>"; };
+		A5FB5D171BCB0B9700634A96 /* GMAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMAlbumsViewController.m; sourceTree = "<group>"; };
+		A5FB5D1A1BCB0B9700634A96 /* GMGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMGridViewCell.h; sourceTree = "<group>"; };
+		A5FB5D1B1BCB0B9700634A96 /* GMGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMGridViewCell.m; sourceTree = "<group>"; };
+		A5FB5D1C1BCB0B9700634A96 /* GMGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMGridViewController.h; sourceTree = "<group>"; };
+		A5FB5D1D1BCB0B9700634A96 /* GMGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMGridViewController.m; sourceTree = "<group>"; };
+		A5FB5D261BCB0B9700634A96 /* GMImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMImagePickerController.h; sourceTree = "<group>"; };
+		A5FB5D271BCB0B9700634A96 /* GMImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMImagePickerController.m; sourceTree = "<group>"; };
 		C716A5B019E0CA3500A5490B /* DashLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashLineView.h; sourceTree = "<group>"; };
 		C716A5B119E0CA3500A5490B /* DashLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashLineView.m; sourceTree = "<group>"; };
 		C719A4021BA3FC020075CA80 /* CreateAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateAccount.h; sourceTree = "<group>"; };
@@ -450,30 +453,6 @@
 		C75985F41B8553DF00FE77F7 /* internetConnectionMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = internetConnectionMonitor.m; sourceTree = "<group>"; };
 		C75985F61B85575900FE77F7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		C75985F71B85575900FE77F7 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
-		C772F2671B4BC13500CEC83D /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
-		C772F2681B4BC13500CEC83D /* ca */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ca; path = ca.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
-		C772F2691B4BC13500CEC83D /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
-		C772F26A1B4BC13500CEC83D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
-		C772F26B1B4BC13500CEC83D /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
-		C772F26C1B4BC13500CEC83D /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
-		C772F26D1B4BC13500CEC83D /* GMAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewCell.h; sourceTree = "<group>"; };
-		C772F26E1B4BC13500CEC83D /* GMAlbumsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMAlbumsViewCell.m; sourceTree = "<group>"; };
-		C772F26F1B4BC13500CEC83D /* GMAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewController.h; sourceTree = "<group>"; };
-		C772F2701B4BC13500CEC83D /* GMAlbumsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMAlbumsViewController.m; sourceTree = "<group>"; };
-		C772F2711B4BC13500CEC83D /* GMEmptyFolder@1x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GMEmptyFolder@1x.png"; sourceTree = "<group>"; };
-		C772F2721B4BC13500CEC83D /* GMEmptyFolder@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GMEmptyFolder@2x.png"; sourceTree = "<group>"; };
-		C772F2731B4BC13500CEC83D /* GMGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMGridViewCell.h; sourceTree = "<group>"; };
-		C772F2741B4BC13500CEC83D /* GMGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMGridViewCell.m; sourceTree = "<group>"; };
-		C772F2751B4BC13500CEC83D /* GMGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMGridViewController.h; sourceTree = "<group>"; };
-		C772F2761B4BC13500CEC83D /* GMGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMGridViewController.m; sourceTree = "<group>"; };
-		C772F2771B4BC13500CEC83D /* GMImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMImagePickerController.h; sourceTree = "<group>"; };
-		C772F2781B4BC13500CEC83D /* GMImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMImagePickerController.m; sourceTree = "<group>"; };
-		C772F2791B4BC13500CEC83D /* GMSelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GMSelected.png; sourceTree = "<group>"; };
-		C772F27A1B4BC13500CEC83D /* GMSelected@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GMSelected@2x.png"; sourceTree = "<group>"; };
-		C772F27B1B4BC13500CEC83D /* GMVideoIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GMVideoIcon.png; sourceTree = "<group>"; };
-		C772F27C1B4BC13500CEC83D /* GMVideoIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GMVideoIcon@2x.png"; sourceTree = "<group>"; };
-		C772F27D1B4BC13500CEC83D /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
-		C772F27E1B4BC13500CEC83D /* pt */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = pt; path = pt.lproj/GMImagePicker.strings; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedTableViewCell.h; sourceTree = "<group>"; };
 		C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableViewCell.m; sourceTree = "<group>"; };
@@ -1006,12 +985,21 @@
 			name = "Permission ";
 			sourceTree = "<group>";
 		};
-		C748836A1B489AE300E64ED9 /* Gallery */ = {
+		C748836A1B489AE300E64ED9 /* GMImagePicker */ = {
 			isa = PBXGroup;
 			children = (
-				C772F2651B4BC13500CEC83D /* GMImagePicker */,
+				A5FB5D141BCB0B9700634A96 /* GMAlbumsViewCell.h */,
+				A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */,
+				A5FB5D161BCB0B9700634A96 /* GMAlbumsViewController.h */,
+				A5FB5D171BCB0B9700634A96 /* GMAlbumsViewController.m */,
+				A5FB5D1A1BCB0B9700634A96 /* GMGridViewCell.h */,
+				A5FB5D1B1BCB0B9700634A96 /* GMGridViewCell.m */,
+				A5FB5D1C1BCB0B9700634A96 /* GMGridViewController.h */,
+				A5FB5D1D1BCB0B9700634A96 /* GMGridViewController.m */,
+				A5FB5D261BCB0B9700634A96 /* GMImagePickerController.h */,
+				A5FB5D271BCB0B9700634A96 /* GMImagePickerController.m */,
 			);
-			name = Gallery;
+			name = GMImagePicker;
 			sourceTree = "<group>";
 		};
 		C748836B1B48A9E200E64ED9 /* Pinch Views */ = {
@@ -1050,30 +1038,6 @@
 			);
 			name = "Internet Connectivity Monitor";
 			path = ..;
-			sourceTree = "<group>";
-		};
-		C772F2651B4BC13500CEC83D /* GMImagePicker */ = {
-			isa = PBXGroup;
-			children = (
-				C772F2661B4BC13500CEC83D /* GMImagePicker.strings */,
-				C772F26D1B4BC13500CEC83D /* GMAlbumsViewCell.h */,
-				C772F26E1B4BC13500CEC83D /* GMAlbumsViewCell.m */,
-				C772F26F1B4BC13500CEC83D /* GMAlbumsViewController.h */,
-				C772F2701B4BC13500CEC83D /* GMAlbumsViewController.m */,
-				C772F2711B4BC13500CEC83D /* GMEmptyFolder@1x.png */,
-				C772F2721B4BC13500CEC83D /* GMEmptyFolder@2x.png */,
-				C772F2731B4BC13500CEC83D /* GMGridViewCell.h */,
-				C772F2741B4BC13500CEC83D /* GMGridViewCell.m */,
-				C772F2751B4BC13500CEC83D /* GMGridViewController.h */,
-				C772F2761B4BC13500CEC83D /* GMGridViewController.m */,
-				C772F2771B4BC13500CEC83D /* GMImagePickerController.h */,
-				C772F2781B4BC13500CEC83D /* GMImagePickerController.m */,
-				C772F2791B4BC13500CEC83D /* GMSelected.png */,
-				C772F27A1B4BC13500CEC83D /* GMSelected@2x.png */,
-				C772F27B1B4BC13500CEC83D /* GMVideoIcon.png */,
-				C772F27C1B4BC13500CEC83D /* GMVideoIcon@2x.png */,
-			);
-			path = GMImagePicker;
 			sourceTree = "<group>";
 		};
 		C77A68AE1AC0A47F000B10E2 /* AVE_TESTER */ = {
@@ -1191,7 +1155,7 @@
 				A5C09BA01BA1F0BF00C0AD86 /* ASI HTTP Request */,
 				C75985F91B85577900FE77F7 /* Internet Connectivity Monitor */,
 				C7BD53C61B5B790B00EE6241 /* Constants  */,
-				C748836A1B489AE300E64ED9 /* Gallery */,
+				C748836A1B489AE300E64ED9 /* GMImagePicker */,
 				A586566E1B621C7E008E358C /* MathOps */,
 				A5CB82A41B5744B800195A2E /* UI Categories and Effects */,
 				C750A35919D768BD0006FA88 /* Media Capture Classes */,
@@ -1403,17 +1367,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C772F2871B4BC13500CEC83D /* GMSelected.png in Resources */,
 				A5E85FB01B911DA900E148D0 /* GTMOAuth2ViewTouch.xib in Resources */,
-				C772F2881B4BC13500CEC83D /* GMSelected@2x.png in Resources */,
 				C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */,
 				A5E3CDA81B881B0C0065C8E5 /* FacebookSDKStrings.bundle in Resources */,
-				C772F28A1B4BC13500CEC83D /* GMVideoIcon@2x.png in Resources */,
-				C772F27F1B4BC13500CEC83D /* GMImagePicker.strings in Resources */,
-				C772F2891B4BC13500CEC83D /* GMVideoIcon.png in Resources */,
 				A57A93071B55E95B006C2597 /* VerbatmCameraView.xib in Resources */,
-				C772F2831B4BC13500CEC83D /* GMEmptyFolder@2x.png in Resources */,
-				C772F2821B4BC13500CEC83D /* GMEmptyFolder@1x.png in Resources */,
 				C774040F19BE6538004C50EA /* Images.xcassets in Resources */,
 				C7BC4380199D97F5004B91A1 /* InfoPlist.strings in Resources */,
 			);
@@ -1482,7 +1439,6 @@
 				A5C09BDE1BA1F1D700C0AD86 /* ASIHTTPRequest.m in Sources */,
 				A5AA31C91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m in Sources */,
 				A5AA31C81B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m in Sources */,
-				C772F2801B4BC13500CEC83D /* GMAlbumsViewCell.m in Sources */,
 				A5E85FA51B911DA900E148D0 /* GTMHTTPFetcherService.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
 				C77F321E1B6D5D1800E87C25 /* bugSubmissionFormVC.m in Sources */,
@@ -1493,7 +1449,6 @@
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				A5446C961BBA3C33002177F4 /* ContentDevNavBar.m in Sources */,
-				C772F2851B4BC13500CEC83D /* GMGridViewController.m in Sources */,
 				A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A5E85F991B911DA900E148D0 /* GTLQuery.m in Sources */,
@@ -1502,7 +1457,6 @@
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				A5E85FA91B911DA900E148D0 /* GTMHTTPUploadFetcher.m in Sources */,
 				A5C09BDA1BA1F1D700C0AD86 /* ASIDataCompressor.m in Sources */,
-				C772F2811B4BC13500CEC83D /* GMAlbumsViewController.m in Sources */,
 				C7BD53C41B5B73A700EE6241 /* BaseArticleViewingExperience.m in Sources */,
 				F20A24FA1A46166100BB77C1 /* EditContentView.m in Sources */,
 				A5C09BD91BA1F1D700C0AD86 /* ASIAuthenticationDialog.m in Sources */,
@@ -1518,7 +1472,6 @@
 				A560EF9D1BA895A2003FB041 /* Page.m in Sources */,
 				A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */,
 				A5E85F9E1B911DA900E148D0 /* GTLDateTime.m in Sources */,
-				C772F2841B4BC13500CEC83D /* GMGridViewCell.m in Sources */,
 				C7E6C1451A4E394600863893 /* TextAVE.m in Sources */,
 				A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */,
 				C7E6C13F1A4E394600863893 /* PhotoVideoAVE.m in Sources */,
@@ -1541,7 +1494,6 @@
 				C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */,
 				C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */,
 				A5E85FA81B911DA900E148D0 /* GTMHTTPFetchHistory.m in Sources */,
-				C772F2861B4BC13500CEC83D /* GMImagePickerController.m in Sources */,
 				C7E65F6F1B92EB650042AD99 /* POVView.m in Sources */,
 				C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */,
 				A54689231BA3E1BC00F40E54 /* CoverPhotoAVE.m in Sources */,
@@ -1572,13 +1524,16 @@
 				A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
+				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
+				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				A5E860011B96249900E148D0 /* POVPublisher.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A5E85FA11B911DA900E148D0 /* GTLFramework.m in Sources */,
 				A513706B1BA77C740058FBA6 /* ArticleDisplayVC.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
+				A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */,
 				A5E85FAB1B911DA900E148D0 /* GTMMIMEDocument.m in Sources */,
 				A5E85F9D1B911DA900E148D0 /* GTLUploadParameters.m in Sources */,
 				A5AA31BD1B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m in Sources */,
@@ -1594,6 +1549,8 @@
 				C719A4141BA802D10075CA80 /* CoverPicturePinchView.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,
 				A5AA31BB1B9FCDDC00D8D20C /* GTLServiceVerbatmApp.m in Sources */,
+				A5FB5D311BCB0B9700634A96 /* GMGridViewController.m in Sources */,
+				A5FB5D301BCB0B9700634A96 /* GMGridViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1622,21 +1579,6 @@
 				C7469BF31B4874A600EA7B10 /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		C772F2661B4BC13500CEC83D /* GMImagePicker.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C772F2671B4BC13500CEC83D /* Base */,
-				C772F2681B4BC13500CEC83D /* ca */,
-				C772F2691B4BC13500CEC83D /* de */,
-				C772F26A1B4BC13500CEC83D /* en */,
-				C772F26B1B4BC13500CEC83D /* es */,
-				C772F26C1B4BC13500CEC83D /* fr */,
-				C772F27D1B4BC13500CEC83D /* it */,
-				C772F27E1B4BC13500CEC83D /* pt */,
-			);
-			name = GMImagePicker.strings;
 			sourceTree = "<group>";
 		};
 		C7BC437E199D97F5004B91A1 /* InfoPlist.strings */ = {

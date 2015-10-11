@@ -149,7 +149,7 @@
     if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)])
         [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
     
-    //[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 

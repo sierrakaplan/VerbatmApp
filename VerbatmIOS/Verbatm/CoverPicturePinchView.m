@@ -51,7 +51,7 @@
 }
 
 -(void) setNewImage: (UIImage*) image {
-    [super putNewImage:image];
+    [self putNewImage:image];
     if(self.addCoverPicLabel)[self.addCoverPicLabel removeFromSuperview];
     self.containsImage = YES;
 }
