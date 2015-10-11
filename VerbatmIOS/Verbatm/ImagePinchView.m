@@ -95,7 +95,7 @@
 	self.filteredImages = [[NSMutableArray alloc] initWithCapacity:[filterNames count]+1];
 	//original photo
 	[self.filteredImages addObject:self.image];
-//    [self createFilteredImagesFromImageData:self.image andFilterNames:filterNames];
+    [self createFilteredImagesFromImageData:self.image andFilterNames:filterNames];
 }
 
 //return array of uiimage with filter from image
