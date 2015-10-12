@@ -140,13 +140,11 @@
     NSMutableArray *userFetchResultLabel = [[NSMutableArray alloc] init];
     for(PHCollection *collection in topLevelUserCollections) {
         if ([collection isKindOfClass:[PHAssetCollection class]]) {
-
 				//PHFetchOptions *options = [[PHFetchOptions alloc] init];
 				//options.predicate = predicatePHAsset;
 				PHAssetCollection *assetCollection = (PHAssetCollection *)collection;
 
 				//Albums collections are allways PHAssetCollectionType=1 & PHAssetCollectionSubtype=2
-
 				PHFetchResult *assetsFetchResult = [PHAsset fetchAssetsInAssetCollection:assetCollection options:options];
 
 			if ([collection.localizedTitle isEqualToString:VERBATM_ALBUM_NAME]) {

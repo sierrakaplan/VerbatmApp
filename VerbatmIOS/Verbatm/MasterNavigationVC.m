@@ -102,15 +102,16 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 	[self registerForNotifications];
 	if (![PFUser currentUser].isAuthenticated &&
 		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-		self.masterSV.scrollEnabled = NO;
-	} else {
+    
+        self.masterSV.scrollEnabled = NO;
+
+    	} else {
 		[self.userManager queryForCurrentUser];
 	}
 }
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-
     //check if they have entered an access code - if not then present the entry page
     if(![UserSetupParameters accessCodeEntered]) {
         [self.accessCodePresenter_Button sendActionsForControlEvents:UIControlEventTouchUpInside];
@@ -172,6 +173,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
 	self.articleDisplayContainer.alpha = 0;
 	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
+    
 	[self addScreenEdgePanToArticleDisplay];
 }
 
@@ -225,6 +227,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 		[self bringUpLogin];
 	} else {
 		[self showADK];
+        //[self performSegueWithIdentifier:@"presentADK" sender:self];
 	}
 }
 

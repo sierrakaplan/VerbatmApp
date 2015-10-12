@@ -328,8 +328,7 @@
 
 #pragma mark Memory management
 
-- (void)didReceiveMemoryWarning
-{
+- (void)didReceiveMemoryWarning {
 	// TODO: dispose of any resources that can be recreated
 	[super didReceiveMemoryWarning];
 }
