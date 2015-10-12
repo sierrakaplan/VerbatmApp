@@ -33,7 +33,7 @@
     self.alpha = 1;//we do this because our view fades out
     //check if this is a video asset
     if([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypeVideo]){
-        [self.videoPlayer playVideoFromURL:asset.defaultRepresentation.url];
+        [self.videoPlayer playVideoFromURLArray:@[asset.defaultRepresentation.url]];
         [self.videoPlayer repeatVideoOnEnd:NO];
         [self.videoPlayer muteVideo];
         [self.videoPlayer removeMuteButtonFromView];

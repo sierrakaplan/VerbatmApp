@@ -60,11 +60,6 @@
 //This should be overriden in subclasses
 -(void)renderMedia {
 	self.imageView.frame = self.background.frame;
-	[self displayMedia];
-}
-
-//This function displays the media on the view.
--(void)displayMedia {
 	[self.imageView setImage:[self getImage]];
 }
 
@@ -73,10 +68,15 @@
 -(UIImage*) getImage {
 	return self.filteredImages[self.filterImageIndex];
 }
+-(UIImage *) getOriginalImage{
+    return self.filteredImages[0];
+}
 
 //overriding
 -(NSArray*) getPhotos {
-	return @[[self getImage]];
+    //we return a double array because we want to bind the photo and text as one unit
+    if(self.textView) return @[@[[self getImage],self.textView]];
+    return @[@[[self getImage]]];
 }
 
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex {
@@ -101,7 +101,7 @@
 //return array of uiimage with filter from image
 -(void)createFilteredImagesFromImageData:(UIImage *)image andFilterNames:(NSArray*)filterNames{
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-		NSData  * imageData = UIImageJPEGRepresentation(image, 0.7f);
+		NSData  * imageData = UIImagePNGRepresentation(image);
 		//Background Thread
 		for (NSString* filterName in filterNames) {
 			NSLog(@"Adding filtered photo.");
@@ -113,6 +113,7 @@
 				CGImageRef CGImageRef = [context createCGImage:outputImage fromRect:[outputImage extent]];
 				UIImage* imageWithFilter = [UIImage imageWithCGImage:CGImageRef];
 				CGImageRelease(CGImageRef);
+
 				dispatch_async(dispatch_get_main_queue(), ^{
 					[self.filteredImages addObject:imageWithFilter];
 				});
@@ -121,6 +122,7 @@
 
 	});
 }
+
 
 #pragma mark - Encoding -
 

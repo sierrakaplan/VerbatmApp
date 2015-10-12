@@ -12,7 +12,6 @@
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
 #import "ContentPageElementScrollView.h"
-#import "CoverPicturePinchView.h"
 #import "Durations.h"
 
 #import "EditContentView.h"
@@ -66,6 +65,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 // Says whether or not user is currently adding a cover picture
 // (used when returning from adding assets)
 @property (nonatomic) BOOL addingCoverPicture;
+@property (strong, nonatomic) UITapGestureRecognizer* addCoverPictureTapGesture;
 @property (strong, nonatomic) CoverPicturePinchView * coverPicView;
 @property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
 
@@ -127,6 +127,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 @property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
 @property (nonatomic) BOOL photoTappedOpenForTheFirstTime;
 
+
+#define WHAT_IS_IT_LIKE_TEXT @"tell your story"
+
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define WHAT_IS_IT_LIKE_Y_OFFSET 40
 #define WHAT_IS_IT_LIKE_X_OFFSET 7
@@ -140,6 +143,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #define REPLACE_PHOTO_XsOFFSET 20
 
 #define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
+
+#define COVER_PIC_RADIUS (self.defaultPinchViewRadius * 3.f/4.f)
 @end
 
 
@@ -235,7 +240,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_X_OFFSET,
 											   WHAT_IS_IT_LIKE_HEIGHT*2);
 
-	CGFloat coverPicRadius = self.defaultPinchViewRadius * 3.f/4.f;
+	CGFloat coverPicRadius = COVER_PIC_RADIUS;
 	CGRect addCoverPicFrame = CGRectMake(self.view.frame.size.width/2.f - coverPicRadius,
 										 whatIsItLikeFieldFrame.origin.y + whatIsItLikeFieldFrame.size.height,
 										 coverPicRadius*2, coverPicRadius*2);
@@ -277,7 +282,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     [self.whatIsItLikeField setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
 	self.whatIsItLikeField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
 	self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
-													initWithString: @"tell your story"
+													initWithString: WHAT_IS_IT_LIKE_TEXT
 													attributes:@{NSForegroundColorAttributeName: [UIColor TELL_YOUR_STORY_COLOR],
 																 NSFontAttributeName : whatIsItLikeFieldFont}];
 	[self.whatIsItLikeField resignFirstResponder];
@@ -287,21 +292,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
-	//self.coverPicView = [[CoverPicturePV alloc] initWithFrame:frame];
-    self.coverPicView = [[CoverPicturePinchView alloc] initWithRadius:frame.size.width/2.f withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
-    
-	UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
-	[self.coverPicView addGestureRecognizer: tapGesture];
+    self.coverPicView = [[CoverPicturePinchView alloc] initWithRadius:COVER_PIC_RADIUS withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
+	self.addCoverPictureTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentGalleryForCoverPic)];
+	[self.coverPicView addGestureRecognizer: self.addCoverPictureTapGesture];
 	[self.mainScrollView addSubview: self.coverPicView];
-}
-
--(void) addCoverPictureTapped {
-    [self presentGalleryForCoverPic];
-    //show replace photo icon after the first time this is tapped
-    if(!_replaceCoverPhotoButton){
-        [self addTapGestureToPinchView:self.coverPicView];
-        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
-    }
 }
 
 -(void) setUpNotifications {
@@ -345,14 +339,22 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	UIImage* coverPicture = [[UserPovInProgress sharedInstance] coverPhoto];
 	if (coverPicture) {
 		[self.coverPicView setNewImage:coverPicture];
+		[self coverPicAddedForFirstTime];
 	}
-	
+
 	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
 		[pinchView specifyRadius:self.defaultPinchViewRadius
 					   andCenter:self.defaultPinchViewCenter];
 		[self newPinchView:pinchView belowView: nil];
 	}
+}
+
+-(void) coverPicAddedForFirstTime {
+	//show replace photo icon after the first time this is tapped
+	[self addTapGestureToPinchView:self.coverPicView];
+	[self.coverPicView removeGestureRecognizer: self.addCoverPictureTapGesture];
+	[self.mainScrollView addSubview:self.replaceCoverPhotoButton];
 }
 
 #pragma mark - Nav Bar Delegate Methods -
@@ -1281,6 +1283,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	if (!self.selectedView_PAN) {
 		return;
 	}
+    //checks if this is a selection from an open collections
 	if (self.selectedView_PAN.collectionIsOpen) {
 		PinchView* unPinched = [self.selectedView_PAN moveSelectedItemFromTouch:touch];
 		if (unPinched) {
@@ -1291,18 +1294,22 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		}
 		return;
 	}
-
+    
+    //find the index of the currently selected scrollview
 	NSInteger viewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN];
 	ContentPageElementScrollView* topView = nil;
 	ContentPageElementScrollView* bottomView = nil;
-
+    
+    //find the view above it
 	if(viewIndex !=0) {
 		topView  = self.pageElementScrollViews[viewIndex-1];
 	}
+    //find the view below it
 	if (viewIndex+1 < [self.pageElementScrollViews count]) {
 		bottomView = self.pageElementScrollViews[viewIndex+1];
 	}
-
+    
+    //move the selected view up or down by the drag distance of the finger
 	NSInteger yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
 	CGRect newFrame = [self newVerticalTranslationFrameForView:self.selectedView_PAN andChange:yDifference];
 
@@ -1315,7 +1322,25 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
 		self.selectedView_PAN.frame = newFrame;
-	}];
+       
+	}completion:^(BOOL finished) {
+        //is the pinchview above the cover photo?
+        if (!topView){
+            if([self selctedViewAboveCoverPhoto]){
+                if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
+                    [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
+                     COVER_PIC_RADIUS*2];
+                }
+            }else{
+                if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
+                    
+                    [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
+                     self.defaultPinchViewRadius*2];
+                }
+                
+            }
+        }
+    }];
 
 	//swap item if necessary
 
@@ -1323,9 +1348,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	if(topView && (newFrame.origin.y + newFrame.size.height/2.f)
 	   < (topView.frame.origin.y + topView.frame.size.height)) {
 		[self swapWithTopView: topView];
-	}
-	//check if object has moved down the halfway mark of the view below it, if so swap them
-	else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) +CENTERING_OFFSET_FOR_TEXT_VIEW
+    }
+    //check if object has moved down the halfway mark of the view below it, if so swap them
+    else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) +CENTERING_OFFSET_FOR_TEXT_VIEW
 			> bottomView.frame.origin.y) {
 		[self swapWithBottomView: bottomView];
 	}
@@ -1333,6 +1358,19 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	//move the offest of the main scroll view
 	[self moveOffsetOfMainScrollViewBasedOnSelectedItem];
 	self.previousLocationOfTouchPoint_PAN = touch;
+}
+
+
+-(BOOL)selctedViewAboveCoverPhoto {
+    if(self.selectedView_PAN.frame.origin.y >
+       self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height &&
+       self.selectedView_PAN.frame.origin.y < self.coverPicView.frame.origin.y +
+       self.coverPicView.frame.size.height * (2.f/4.f)){
+        
+        return true;
+    }
+    
+    return NO;
 }
 
 //swap currently selected item's frame with view above it
@@ -1425,8 +1463,21 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		[self.selectedView_PAN finishMovingSelectedItem];
 		return;
 	}
-	self.selectedView_PAN.frame = self.previousFrameInLongPress;
-	[self.selectedView_PAN.pageElement markAsSelected:NO];
+    
+    //make sure the pinch view is in the right position to replace the cover photo
+    if([self selctedViewAboveCoverPhoto]){
+        //make sure the pinchview is an image
+        if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
+            [self setCoverPictureImage:[((ImagePinchView *)self.selectedView_PAN.pageElement) getOriginalImage]];
+            //now delete the selected pinchview
+            [self deleteScrollView:self.selectedView_PAN];
+        }
+        
+    }else{
+        self.selectedView_PAN.frame = self.previousFrameInLongPress;
+    }
+	
+    if(self.selectedView_PAN)[self.selectedView_PAN.pageElement markAsSelected:NO];
 	//sanitize for next run
 	self.selectedView_PAN = nil;
 	[self shiftElementsBelowView:self.coverPicView];
@@ -1589,9 +1640,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void) clearCoverPhoto {
-    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(addCoverPictureTapped)];
-    [self.coverPicView addGestureRecognizer: tapGesture];
     [self.coverPicView removeImage];
+	[self.coverPicView addGestureRecognizer: self.addCoverPictureTapGesture];
     [self.replaceCoverPhotoButton removeFromSuperview];
     self.replaceCoverPhotoButton = nil;
 }
@@ -1676,7 +1726,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	[self presentViewController:picker animated:YES completion:nil];
 }
 
-- (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray {
+- (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray{
 	[self.delegate showPullBar:YES withTransition:NO];
 	if (self.addingCoverPicture) {
 		self.addingCoverPicture = NO;
@@ -1687,24 +1737,37 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
-	[self.delegate showPullBar:YES withTransition:NO];
-    self.addingCoverPicture = NO;
+	self.addingCoverPicture = NO;
+	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
+		[self.delegate showPullBar:YES withTransition:NO];
+	}];
 }
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
 	PHAsset* asset = assetArray[0];
-	[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,UIImageOrientation orientation, NSDictionary *info) {
+	@autoreleasepool {
+		[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,UIImageOrientation orientation, NSDictionary *info) {
 
-		UIImage* image = [[UIImage alloc] initWithData: imageData];
-		image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
-		image = [image getImageWithOrientationUp];
-		[[UserPovInProgress sharedInstance] addCoverPhoto: image];
+			UIImage* image = [self getImageFromImageData: imageData];
+			[[UserPovInProgress sharedInstance] addCoverPhoto: image];
 
-		// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[self.coverPicView setNewImage: image];
-		});
-	}];
+			// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self setCoverPictureImage: image];
+			});
+		}];
+	}
+}
+
+
+-(void)setCoverPictureImage:(UIImage *) image{
+    [self.coverPicView setNewImage: image];
+    
+    //show replace photo icon after the first time cover photo is added
+    if(!_replaceCoverPhotoButton){
+        [self addTapGestureToPinchView:self.coverPicView];
+		[self.mainScrollView addSubview:self.replaceCoverPhotoButton];
+	}
 }
 
 //add assets from picker to our scrollview
@@ -1712,29 +1775,33 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	//store local identifiers so we can query the nsassets
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
-			[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-				UIImage* image = [self getImageFromImageData:imageData];
-				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[self createPinchViewFromImage: image];
-				});
-			}];
+			@autoreleasepool {
+				[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+					UIImage* image = [self getImageFromImageData:imageData];
+					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+					dispatch_async(dispatch_get_main_queue(), ^{
+						[self createPinchViewFromImage: image];
+					});
+				}];
+			}
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
-			[self.imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
-				if (![asset isKindOfClass:[AVURLAsset class]]) {
-//					NSLog(@"Issue with video not in AVURLAsset form");
-					return;
-				}
-				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-				dispatch_async(dispatch_get_main_queue(), ^{
-					[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];
-				});
-			}];
+			@autoreleasepool {
+				[self.imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+					if (![asset isKindOfClass:[AVURLAsset class]]) {
+						//					NSLog(@"Issue with video not in AVURLAsset form");
+						return;
+					}
+					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+					dispatch_async(dispatch_get_main_queue(), ^{
+						[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];
+					});
+				}];
+			}
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
-//			NSLog(@"Asset is of audio type, unable to handle.");
+			//			NSLog(@"Asset is of audio type, unable to handle.");
 			return;
 		} else {
-//			NSLog(@"Asset picked of unknown type");
+			//			NSLog(@"Asset picked of unknown type");
 			return;
 		}
 	}
@@ -1756,8 +1823,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 -(UIImage*) getImageFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
-	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
 	image = [image getImageWithOrientationUp];
+	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
 	return image;
 }
 
@@ -1875,9 +1942,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
                                                self.coverPicView.frame.origin.y + REPLACE_PHOTO_XsOFFSET,
                                                REPLACE_PHOTO_FRAME_WIDTH, REPLACE_PHOTO_FRAME_HEIGHT)];
         
-        [_replaceCoverPhotoButton setImage:[UIImage imageNamed:@"replacePhotoIcon"] forState:UIControlStateNormal];
-        [_replaceCoverPhotoButton addTarget:self action:@selector(addCoverPictureTapped) forControlEvents:UIControlEventTouchUpInside];
-
+        [_replaceCoverPhotoButton setImage:[UIImage imageNamed: REPLACE_COVER_PHOTO_ICON] forState:UIControlStateNormal];
+        [_replaceCoverPhotoButton addTarget:self action:@selector(presentGalleryForCoverPic) forControlEvents:UIControlEventTouchUpInside];
     }
     return _replaceCoverPhotoButton;
 }

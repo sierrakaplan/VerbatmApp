@@ -14,6 +14,10 @@
 
 //passes up the method to create a preview view so that preview can come over the whole ADK and main scroll view
 -(void) previewPOVFromPinchViews:(NSArray *)pinchViews andCoverPic:(UIImage *)coverPic andTitle: (NSString*) title;
+//lets the delegate know if the adk has switched between the deck
+//and the camera mode
+-(void)adkViewChange:(BOOL)inCameraMode;
+
 
 @end
 

@@ -206,7 +206,7 @@
 	NSMutableArray* photos = [[NSMutableArray alloc] init];
 	for (PinchView* pinchView in self.pinchedObjects) {
 		if(pinchView.containsImage) {
-			[photos addObject:[(ImagePinchView*)pinchView getImage]];
+			[photos addObject:[(ImagePinchView*)pinchView getPhotos][0]];
 		}
 	}
 	return photos;

@@ -5,8 +5,13 @@
 //  Created by Sierra Kaplan-Nelson on 7/23/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
-
+#import "BaseArticleViewingExperience.h"
+#import "Durations.h"
+#import "Icons.h"
+#import "MathOperations.h"
+#import "PointObject.h"
 #import "PhotoAVE.h"
+#import "TextViewWrapper.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Icons.h"
@@ -15,6 +20,7 @@
 #import "MathOperations.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "BaseArticleViewingExperience.h"
+
 
 @interface PhotoAVE() <UIGestureRecognizerDelegate>
 
@@ -31,19 +37,22 @@
 @property (nonatomic) float lastDistanceFromStartingPoint;
 @property (strong, nonatomic) NSTimer * showCircleTimer;
 
-@property (nonatomic) BOOL textShowing;
 
 @property (nonatomic, strong) UIView * panGestureSensingView;
 
 @property (strong, nonatomic) UIPanGestureRecognizer * cirlePanGesture;
 
+@property (nonatomic, strong) UIButton * textViewButton;
+
+
+#define TEXT_CREATION_ICON @"textCreateIcon"
+#define TEXT_VIEW_HEIGHT 70.f
 @end
 
 @implementation PhotoAVE
 
 //TODO: limit on how many photos can be pinched together?
 -(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos {
-
 	self = [super initWithFrame:frame];
 	if (self) {
 		if ([photos count]) {
@@ -55,7 +64,6 @@
 			self.currentPhotoIndex = 0;
 			[self highlightDot];
 		}
-		self.textShowing = YES;
 		[self addTapGestureToView:self];
 	}
 	return self;
@@ -63,18 +71,28 @@
 
 #pragma mark - Sub Views -
 
--(void) addPhotos:(NSArray*)photos {
+-(void) addPhotos:(NSArray*)photosTextArray {
+    
+    //@[ @[/*photo and textview content*/],...]
+	for (NSArray* photoText in photosTextArray) {
+        TextViewWrapper* imageContainerView;
+        if(photoText.count == 1){//photo no textview
 
-	for (UIImage* image in photos) {
-		//add container view with blur photo and regular photo
-		UIView* imageContainerView = [self getImageViewContainerForImage:image];
-		[self.imageContainerViews addObject:imageContainerView];
+            //add container view with blur photo and regular photo
+            imageContainerView = [self getImageViewContainerForImage:photoText[0] andTextView:nil];
+            
+        }else if (photoText.count == 2){//photo and textview
+            //add container view with blur photo and regular photo
+            imageContainerView = [self getImageViewContainerForImage:photoText[0] andTextView:photoText[1]];
+        }
+        [self.imageContainerViews addObject:imageContainerView];
 	}
 
 	//add extra copy of photo 1 at bottom for last arc of circle transition
-	UIImage* photoOne = photos[0];
-	UIView* imageOneContainerView = [self getImageViewContainerForImage:photoOne];
+	UIImage* photoOne = photosTextArray[0][0];
+    TextViewWrapper* imageOneContainerView = [self getImageViewContainerForImage:photoOne andTextView:(((NSArray *)photosTextArray[0]).count == 1) ? nil : photosTextArray[0][1]];
 	[self addSubview:imageOneContainerView];
+    if(imageOneContainerView.textView)[self createTextViewButton];//add textview button if the first image has text
 
 	//adding subviews in reverse order so that imageview at index 0 on top
 	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
@@ -82,17 +100,19 @@
 	}
 }
 
--(UIView*) getImageViewContainerForImage:(UIImage*) image {
+-(TextViewWrapper*) getImageViewContainerForImage:(UIImage*) image andTextView:(UITextView *)tv {
 	//scale image
 	CGSize imageSize = [image getSizeForImageWithBounds: self.bounds];
 	image = [image scaleImageToSize:imageSize];
-
-	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
+	TextViewWrapper* imageContainerView = [[TextViewWrapper alloc] initWithFrame:self.bounds];
 	[imageContainerView setBackgroundColor:[UIColor blackColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];
 	UIImageView* blurPhotoView = [image getBlurImageViewWithFilterLevel:FILTER_LEVEL_BLUR andFrame:self.bounds];
 	[imageContainerView addSubview:blurPhotoView];
 	[imageContainerView addSubview:photoView];
+    if(tv){
+        imageContainerView.textView = tv;
+    }
 	return imageContainerView;
 }
 
@@ -163,6 +183,35 @@
     
 }
 
+#pragma mark - Text View -
+
+-(void)createTextViewButton {
+    [self.textCreationButton setImage:[UIImage imageNamed:TEXT_CREATION_ICON] forState:UIControlStateNormal];
+    [self.textCreationButton addTarget:self action:@selector(textViewButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.textCreationButton];
+    [self bringSubviewToFront:self.textCreationButton];
+}
+
+-(void)textViewButtonClicked:(UIButton*) sender {
+    
+//    for(TextViewWrapper * view in self.imageContainerViews){
+//        if(!self.textShowing){
+//            [view showText];
+//        }else{
+//            [view hideText];
+//        }
+//    }
+//    self.textShowing= !self.textShowing;
+
+    
+    TextViewWrapper * currentView = self.imageContainerViews[self.currentPhotoIndex];
+    if(!currentView.textShowing){
+        [currentView showText];
+    }else{
+        [currentView hideText];
+    }
+}
+
 
 #pragma mark - Tap Gesture -
 
@@ -174,11 +223,15 @@
 -(void) mainViewTapped:(UITapGestureRecognizer *) sender {
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 	if ([self circleTapped:touchLocation]) {
-		[self displayCircle:YES];
-		self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_TAPPED_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+        if(!self.circleView.alpha){
+            [self displayCircle:YES];
+            self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_TAPPED_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+        }else {
+            [self removeCircle];
+        }
+        [self checkTextButtonPresentation];
 	} else {
-		self.textShowing = !self.textShowing;
-		[self showText:self.textShowing];
+        [self displayCircle:NO];
 	}
 }
 
@@ -192,9 +245,6 @@
 	return NO;
 }
 
--(void) showText:(BOOL)show {
-	[(BaseArticleViewingExperience*)self.superview showText:show];
-}
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {
 	NSInteger indexOfPoint = [self getPointIndexFromLocation:touchLocation];
@@ -240,6 +290,8 @@
 		[self setImageViewsToLocation:self.draggingFromPointIndex];
 		self.lastDistanceFromStartingPoint = 0.f;
 	}
+    
+    [self.textViewButton removeFromSuperview];
 }
 
 -(void) handleCircleGestureChanged:(UIPanGestureRecognizer*) sender {
@@ -262,7 +314,6 @@
 -(void) fadeWithDistance:(float)distanceFromStartingTouch andTotalDistance:(float)totalDistanceToTravel {
 //	NSLog(@"Distance from starting touch: %f", distanceFromStartingTouch);
 //	NSLog(@"Last distance from starting touch: %f", self.lastDistanceFromStartingPoint);
-
 	//switch current point and image
 	if (distanceFromStartingTouch > totalDistanceToTravel) {
 		self.draggingFromPointIndex = self.draggingFromPointIndex + 1;
@@ -294,13 +345,26 @@
 	float alpha = 1.f-fractionOfDistance;
 //	NSLog(@"Alpha:%f", alpha);
 	[currentImageView setAlpha:alpha];
+    [self checkTextButtonPresentation];
 }
 
 -(void) handleCircleGestureEnded:(UIPanGestureRecognizer*) sender {
 	self.draggingFromPointIndex = -1;
 	[self displayCircle:NO];
 	[self.delegate stoppedDraggingAroundCircle];
+    [self checkTextButtonPresentation];
 }
+
+//checks if a text button should be presented depending on the current image presented
+-(void)checkTextButtonPresentation{
+    TextViewWrapper * view = self.imageContainerViews[self.currentPhotoIndex];
+    if(view.textView){
+        [self createTextViewButton];
+    }else{
+        [self.textViewButton removeFromSuperview];
+    }
+}
+
 
 -(void) showAndRemoveCircle {
 	[self displayCircle:YES];
@@ -438,5 +502,19 @@
 -(void) setImageContainerViews:(NSMutableArray *)imageContainerViews {
 	_imageContainerViews = imageContainerViews;
 }
+
+
+-(UIButton *)textCreationButton{
+    if(!_textViewButton){
+        _textViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
+                                                                         EXIT_CV_BUTTON_WIDTH,
+                                                                         self.frame.size.height - EXIT_CV_BUTTON_WIDTH -
+                                                                         EXIT_CV_BUTTON_WALL_OFFSET,
+                                                                         EXIT_CV_BUTTON_WIDTH,
+                                                                         EXIT_CV_BUTTON_WIDTH)];
+    }
+    return _textViewButton;
+}
+
 
 @end

@@ -17,7 +17,7 @@
 @property (strong, nonatomic) PinchView * openPinchView;
 @property (strong, nonatomic) UIButton * exitButton;
 
-#define EXIT_IMAGE @"exit"
+#define DONE_IMAGE @"DoneIcon"
 @end
 @implementation EditContentVC
 
@@ -37,6 +37,7 @@
         if(pinchView.containsImage) {
             ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
             [self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
+            if(imagePinchView.textView)self.openEditContentView.textView = imagePinchView.textView;
         } else if(pinchView.containsVideo) {
             [self.openEditContentView displayVideo:[(VideoPinchView*)pinchView video]];
         } else {
@@ -52,7 +53,7 @@
     self.exitButton = [[UIButton alloc] initWithFrame:
                        CGRectMake(EXIT_CV_BUTTON_WALL_OFFSET, EXIT_CV_BUTTON_WALL_OFFSET,
                                   EXIT_CV_BUTTON_WIDTH, EXIT_CV_BUTTON_HEIGHT)];
-    [self.exitButton setImage:[UIImage imageNamed:EXIT_IMAGE] forState:UIControlStateNormal];
+    [self.exitButton setImage:[UIImage imageNamed:DONE_IMAGE] forState:UIControlStateNormal];
     [self.exitButton addTarget:self action:@selector(exitButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.exitButton];
     [self.view bringSubviewToFront:self.exitButton];
@@ -74,7 +75,14 @@
     }
     if(self.openPinchView.containsImage) {
         self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
-    } 
+        //if there is a text view and it has text then we should save it. otherwise we get rid of any reference
+        if(self.openEditContentView.textView && ![self.openEditContentView.textView.text isEqualToString:@""]){
+            ((ImagePinchView *)self.openPinchView).textView = self.openEditContentView.textView;
+        }else{
+            ((ImagePinchView *)self.openPinchView).textView =  nil;
+        }
+    }
+    
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
 }
 
@@ -86,6 +94,7 @@
 #pragma mark - Delegate Methods -
 //Delegate method for EditContentView
 -(void) exitEditContentView {
+
     [self exitViewController];
 }
 

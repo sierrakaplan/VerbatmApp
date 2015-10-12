@@ -99,7 +99,6 @@
 // stores the array of POVInfo's
 -(void) loadMorePOVs: (NSInteger) numOfNewPOVToLoad {
 	NSLog(@"Loading more POV's...");
-
 	GTLQuery* loadQuery = [self getLoadingQuery: numOfNewPOVToLoad withCursor: YES];
 	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
 		NSMutableArray* loadMoreInfoPromises = [[NSMutableArray alloc] init];

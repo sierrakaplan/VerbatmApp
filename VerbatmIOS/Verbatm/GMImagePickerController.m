@@ -97,6 +97,7 @@
     [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
 	if (self.selectOneImage) {
 		[self finishPickingAssets:self];
+		return;
 	}
     [self updateDoneButton];
     
@@ -135,17 +136,15 @@
 
 #pragma mark - User finish Actions
 
-- (void)dismiss:(id)sender
-{
+- (void)dismiss:(id)sender {
     if ([self.delegate respondsToSelector:@selector(assetsPickerControllerDidCancel:)])
         [self.delegate assetsPickerControllerDidCancel:self];
-    
-    [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
+
+//	[self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 }
 
 
-- (void)finishPickingAssets:(id)sender
-{
+- (void)finishPickingAssets:(id)sender {
     if ([self.delegate respondsToSelector:@selector(assetsPickerController:didFinishPickingAssets:)])
         [self.delegate assetsPickerController:self didFinishPickingAssets:self.selectedAssets];
     

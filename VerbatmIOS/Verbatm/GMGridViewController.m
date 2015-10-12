@@ -191,10 +191,6 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 }
 
 
-
-
-
-
 #pragma mark - Setup
 
 - (void)setupViews
@@ -276,8 +272,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 #pragma mark - Collection View Data Source
 
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
 }
 
