@@ -54,6 +54,13 @@
                                 <rect key="frame" x="40" y="220" width="240" height="128"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                             </containerView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Ib3-b7-ERa">
+                                <rect key="frame" x="34" y="528" width="30" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <segue destination="Qxg-C2-1Oh" kind="modal" identifier="presentADK" id="hYJ-kM-BxM"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
@@ -369,7 +376,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-3075" y="-1057"/>
+            <point key="canvasLocation" x="-3164" y="-1344"/>
         </scene>
         <!--Bug Submission FormVC-->
         <scene sceneID="5tH-V0-Rug">
@@ -491,7 +498,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-2812" y="-1288"/>
+            <point key="canvasLocation" x="-2680" y="-1310"/>
         </scene>
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
@@ -555,14 +562,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OXP-T8-HXg" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3974" y="-667"/>
+            <point key="canvasLocation" x="-4385" y="-790"/>
         </scene>
     </scenes>
     <resources>
         <image name="logo" width="130" height="266"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="uPI-hI-3x0"/>
-        <segue reference="UxX-nw-l5Q"/>
+        <segue reference="vqA-Ve-rLQ"/>
+        <segue reference="O0U-1G-Oy1"/>
     </inferredMetricsTieBreakers>
 </document>

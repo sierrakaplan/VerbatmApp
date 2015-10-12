@@ -21,10 +21,8 @@
 
 @implementation GMImagePickerController
 
-- (id)init
-{
-    if (self = [super init])
-    {
+- (id)init {
+    if (self = [super init]){
         _selectedAssets = [[NSMutableArray alloc] init];
 		_selectOneImage = NO;
         
