@@ -50,18 +50,24 @@
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
 GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDevNavBarDelegate>
 
+#pragma mark Image Manager
+
+@property (strong, nonatomic) PHImageManager *imageManager;
+
+#pragma mark Pinch Views
 
 //keeps track of ContentPageElementScrollViews
 @property (strong, nonatomic) NSMutableArray * pageElementScrollViews;
+@property (nonatomic) NSInteger numPinchViews;
+
+#pragma mark Cover photo
+
 // Says whether or not user is currently adding a cover picture
 // (used when returning from adding assets)
 @property (nonatomic) BOOL addingCoverPicture;
 @property (strong, nonatomic) UITapGestureRecognizer* addCoverPictureTapGesture;
 @property (strong, nonatomic) CoverPicturePinchView * coverPicView;
-
 @property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
-
-@property (nonatomic) NSInteger numPinchViews;
 
 #pragma mark Keyboard related properties
 @property (atomic) NSInteger keyboardHeight;
@@ -479,17 +485,31 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #pragma mark - Deleting scrollview and element -
 
 //Deletes scroll view and the element it contained
--(void) deleteScrollView:(ContentPageElementScrollView*)scrollView {
-	if (![self.pageElementScrollViews containsObject:scrollView]){
+-(void) deleteScrollView:(ContentPageElementScrollView*)pageElementScrollView {
+	if (![self.pageElementScrollViews containsObject:pageElementScrollView]){
 		return;
 	}
 
-	NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
-	[scrollView removeFromSuperview];
-	[self.pageElementScrollViews removeObject:scrollView];
+	//update user defaults if was pinch view
+	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
+		[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
+		self.numPinchViews--;
+		if (self.numPinchViews < 1) {
+			[self.navBar enablePreviewButton:NO];
+		}
+	}
+
+	[pageElementScrollView cleanUp];
+	[self.pageElementScrollViews removeObject:pageElementScrollView];
+	[pageElementScrollView removeFromSuperview];
 	[self shiftElementsBelowView: self.coverPicView];
-	//register deleted tile
-	[self registerDeletedTile:scrollView withIndex:[NSNumber numberWithUnsignedLong:index]];
+
+	/* NOT IN USE - register deleted tile for undo
+	 NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
+ 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[pageElementScrollView, index]];
+	 //show the pullbar so that they can undo
+	 [self.delegate showPullBar:YES withTransition:YES];
+	 */
 }
 
 
@@ -1493,33 +1513,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	[[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-
-#pragma mark - Undo implementation -
-
--(void) registerDeletedTile: (ContentPageElementScrollView *)pageElementScrollView withIndex: (NSNumber *) index {
-	//make sure there is something to delete
-	if(!pageElementScrollView) return;
-	[pageElementScrollView removeFromSuperview];
-
-	//update user defaults if was pinch view
-	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
-		[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
-		self.numPinchViews--;
-		if (self.numPinchViews < 1) {
-			[self.navBar enablePreviewButton:NO];
-		}
-	}
-
-	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[pageElementScrollView, index]];
-	//show the pullbar so that they can undo
-	[self.delegate showPullBar:YES withTransition:YES];
-}
-
--(void)undoTileDeleteSwipe {
-	[self.tileSwipeViewUndoManager undo];
-}
-
-
 #pragma mark Undo tile swipe
 
 -(void) undoTileDelete: (NSArray *) pageElementScrollViewAndIndex {
@@ -1673,7 +1666,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		//asset is a photo
 		dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
 			NSData * data = [UtilityFunctions convertALAssetRepresentationToData:assetRepresentation];
-			UIImage* image = [UIImage imageWithData:data];
+			UIImage* image = [self getImageFromImageData: data];
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self createPinchViewFromImage: image];
 			});
@@ -1735,14 +1728,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray{
 	[self.delegate showPullBar:YES withTransition:NO];
-	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
-		if (self.addingCoverPicture) {
-			self.addingCoverPicture = NO;
-			[self addCoverPictureFromAssetArray: assetArray];
-		} else {
-			[self presentAssetsAsPinchViews:assetArray];
-		}
-	}];
+	if (self.addingCoverPicture) {
+		self.addingCoverPicture = NO;
+		[self addCoverPictureFromAssetArray: assetArray];
+	} else {
+		[self presentAssetsAsPinchViews:assetArray];
+	}
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
@@ -1754,23 +1745,20 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
 	PHAsset* asset = assetArray[0];
-	PHImageManager * iman = [[PHImageManager alloc] init];
 	@autoreleasepool {
-		[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+		[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,UIImageOrientation orientation, NSDictionary *info) {
 
-			// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful do any UIView calls on main thread
+			UIImage* image = [self getImageFromImageData: imageData];
+			[[UserPovInProgress sharedInstance] addCoverPhoto: image];
+
+			// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 			dispatch_async(dispatch_get_main_queue(), ^{
-				UIImage* image = [[UIImage alloc] initWithData: imageData];
-				image = [image getImageWithOrientationUp];
-				[[UserPovInProgress sharedInstance] addCoverPhoto:image];
-				if (![self.coverPicView getImage]) {
-					[self coverPicAddedForFirstTime];
-				}
-				[self.coverPicView setNewImage: image];
+				[self setCoverPictureImage: image];
 			});
 		}];
 	}
 }
+
 
 -(void)setCoverPictureImage:(UIImage *) image{
     [self.coverPicView setNewImage: image];
@@ -1778,31 +1766,27 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     //show replace photo icon after the first time cover photo is added
     if(!_replaceCoverPhotoButton){
         [self addTapGestureToPinchView:self.coverPicView];
-        [self.mainScrollView addSubview:self.replaceCoverPhotoButton];
-    }
+		[self.mainScrollView addSubview:self.replaceCoverPhotoButton];
+	}
 }
 
 //add assets from picker to our scrollview
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {
-	PHImageManager * iman = [[PHImageManager alloc] init];
 	//store local identifiers so we can query the nsassets
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			@autoreleasepool {
-				[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
-																				 UIImageOrientation orientation, NSDictionary *info) {
-					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful do any UIView calls on main thread
-
+				[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+					UIImage* image = [self getImageFromImageData:imageData];
+					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 					dispatch_async(dispatch_get_main_queue(), ^{
-						UIImage* image = [[UIImage alloc] initWithData: imageData];
-						image = [image getImageWithOrientationUp];
 						[self createPinchViewFromImage: image];
 					});
 				}];
 			}
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
 			@autoreleasepool {
-				[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+				[self.imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 					if (![asset isKindOfClass:[AVURLAsset class]]) {
 						//					NSLog(@"Issue with video not in AVURLAsset form");
 						return;
@@ -1814,10 +1798,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 				}];
 			}
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
-//			NSLog(@"Asset is of audio type, unable to handle.");
+			//			NSLog(@"Asset is of audio type, unable to handle.");
 			return;
 		} else {
-//			NSLog(@"Asset picked of unknown type");
+			//			NSLog(@"Asset picked of unknown type");
 			return;
 		}
 	}
@@ -1837,7 +1821,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     [self alertPinchElementsTogether];
 }
 
--(void) createPinchViewFromImage:(UIImage*) image {
+-(UIImage*) getImageFromImageData:(NSData*) imageData {
+	UIImage* image = [[UIImage alloc] initWithData: imageData];
+	image = [image getImageWithOrientationUp];
+	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+	return image;
+}
+
+-(void) createPinchViewFromImage: (UIImage*) image {
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andImage:image];
@@ -1910,6 +1901,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 
 #pragma mark - Lazy Instantiation
+
+-(PHImageManager*) imageManager {
+	if (!_imageManager) {
+		_imageManager = [[PHImageManager alloc] init];
+	}
+	return _imageManager;
+}
+
 -(MediaSelectTile*) baseMediaTileSelector {
 	if (!_baseMediaTileSelector) {
 		CGRect frame = CGRectMake(ELEMENT_OFFSET_DISTANCE,
