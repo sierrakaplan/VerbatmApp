@@ -494,5 +494,13 @@
 	return unPinched;
 }
 
+#pragma mark - Clean up when deleted to free memory -
+
+-(void) cleanUp {
+	self.pageElement = nil;
+	self.collectionPinchViews = nil;
+	self.deleteButton = nil;
+	self.selectedItem = nil;
+}
 
 @end

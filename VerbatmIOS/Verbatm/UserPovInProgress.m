@@ -13,7 +13,6 @@
 //array of NSData convertible to PinchView
 @property (strong, nonatomic) NSMutableArray* pinchViewsAsData;
 @property (strong, nonatomic) NSData* coverPhotoData;
-@property (strong) dispatch_queue_t convertPinchViewQueue;
 
 #define TITLE_KEY @"user_title"
 #define COVER_PHOTO_KEY @"user_cover_photo"
@@ -27,7 +26,6 @@
 - (id) init {
 	self = [super init];
 	if (self) {
-		self.convertPinchViewQueue = dispatch_queue_create(CONVERTING_PINCHVIEW_DISPATCH_KEY, NULL);
 	}
 	return self;
 }
@@ -49,7 +47,7 @@
 }
 
 -(void) addCoverPhoto: (UIImage*) coverPicture {
-	dispatch_async(self.convertPinchViewQueue, ^{
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		@synchronized(self) {
 			self.coverPhoto = coverPicture;
 			self.coverPhotoData = UIImagePNGRepresentation(coverPicture);
@@ -61,7 +59,7 @@
 
 //adds pinch view and automatically saves pinchViews
 -(void) addPinchView:(PinchView*)pinchView {
-	dispatch_async(self.convertPinchViewQueue, ^{
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		@synchronized(self) {
 			if ([self.pinchViews containsObject:pinchView]) {
 				return;
@@ -108,25 +106,25 @@
 
 //loads pinchviews from user defaults
 -(void) loadPOVFromUserDefaults {
-//	//clears user defaults
+	//clears user defaults
 //	[self clearPOVInProgress];
-//
-//	self.title = [[NSUserDefaults standardUserDefaults]
-//				  objectForKey:TITLE_KEY];
-//	NSData* coverPhotoData = [[NSUserDefaults standardUserDefaults] objectForKey:COVER_PHOTO_KEY];
-//	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
-//							 objectForKey:PINCHVIEWS_KEY];
-//
-//	@synchronized(self) {
-//		if (coverPhotoData) {
-//			self.coverPhoto = [UIImage imageWithData:coverPhotoData];
-//		}
-//		for (NSData* data in pinchViewsData) {
-//			PinchView* pinchView = [self convertNSDataToPinchView:data];
-//			[self.pinchViews addObject:pinchView];
-//		}
-//		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:pinchViewsData copyItems:NO];
-//	}
+
+	self.title = [[NSUserDefaults standardUserDefaults]
+				  objectForKey:TITLE_KEY];
+	NSData* coverPhotoData = [[NSUserDefaults standardUserDefaults] objectForKey:COVER_PHOTO_KEY];
+	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
+							 objectForKey:PINCHVIEWS_KEY];
+
+	@synchronized(self) {
+		if (coverPhotoData) {
+			self.coverPhoto = [UIImage imageWithData:coverPhotoData];
+		}
+		for (NSData* data in pinchViewsData) {
+			PinchView* pinchView = [self convertNSDataToPinchView:data];
+			[self.pinchViews addObject:pinchView];
+		}
+		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:pinchViewsData copyItems:NO];
+	}
 }
 
 //removes all pinch views

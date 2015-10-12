@@ -104,6 +104,7 @@
 		NSData  * imageData = UIImagePNGRepresentation(image);
 		//Background Thread
 		for (NSString* filterName in filterNames) {
+			NSLog(@"Adding filtered photo.");
 			@autoreleasepool {
 				CIImage *beginImage =  [CIImage imageWithData: imageData];
 				CIContext *context = [CIContext contextWithOptions:nil];

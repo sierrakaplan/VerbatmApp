@@ -71,6 +71,7 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 // either locks the scroll view or frees it
 -(void) removeKeyboardFromScreen;
+// sets elements to nil to free memory
 -(void)cleanUp;
 
 

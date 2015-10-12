@@ -88,5 +88,7 @@
 
 -(void) finishMovingSelectedItem;
 
+-(void) cleanUp;
+
 @end
 
