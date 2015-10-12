@@ -101,7 +101,7 @@
 //return array of uiimage with filter from image
 -(void)createFilteredImagesFromImageData:(UIImage *)image andFilterNames:(NSArray*)filterNames{
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-		NSData  * imageData = UIImagePNGRepresentation(image);
+		NSData  * imageData = UIImageJPEGRepresentation(image, 0.7f);
 		//Background Thread
 		for (NSString* filterName in filterNames) {
 			NSLog(@"Adding filtered photo.");

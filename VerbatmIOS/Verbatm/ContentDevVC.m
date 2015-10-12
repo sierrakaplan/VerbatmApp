@@ -51,17 +51,23 @@
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
 GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDevNavBarDelegate>
 
+#pragma mark Image Manager
+
+@property (strong, nonatomic) PHImageManager *imageManager;
+
+#pragma mark Pinch Views
 
 //keeps track of ContentPageElementScrollViews
 @property (strong, nonatomic) NSMutableArray * pageElementScrollViews;
+@property (nonatomic) NSInteger numPinchViews;
+
+#pragma mark Cover photo
+
 // Says whether or not user is currently adding a cover picture
 // (used when returning from adding assets)
 @property (nonatomic) BOOL addingCoverPicture;
 @property (strong, nonatomic) CoverPicturePinchView * coverPicView;
-
 @property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
-
-@property (nonatomic) NSInteger numPinchViews;
 
 #pragma mark Keyboard related properties
 @property (atomic) NSInteger keyboardHeight;
@@ -1610,8 +1616,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		//asset is a photo
 		dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
 			NSData * data = [UtilityFunctions convertALAssetRepresentationToData:assetRepresentation];
+			UIImage* image = [self getImageFromImageData: data];
 			dispatch_async(dispatch_get_main_queue(), ^{
-				[self createPinchViewFromImageData: data];
+				[self createPinchViewFromImage: image];
 			});
 		});
 
@@ -1686,14 +1693,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 -(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
 	PHAsset* asset = assetArray[0];
-	PHImageManager * iman = [[PHImageManager alloc] init];
-	[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
-																	 UIImageOrientation orientation, NSDictionary *info) {
+	[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,UIImageOrientation orientation, NSDictionary *info) {
 
 		UIImage* image = [[UIImage alloc] initWithData: imageData];
-		image = [image getImageWithOrientationUp];
 		image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
-		[[UserPovInProgress sharedInstance] addCoverPhoto:image];
+		image = [image getImageWithOrientationUp];
+		[[UserPovInProgress sharedInstance] addCoverPhoto: image];
 
 		// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 		dispatch_async(dispatch_get_main_queue(), ^{
@@ -1704,19 +1709,18 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 //add assets from picker to our scrollview
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {
-	PHImageManager * iman = [[PHImageManager alloc] init];
 	//store local identifiers so we can query the nsassets
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
-			[iman requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,
-																			 UIImageOrientation orientation, NSDictionary *info) {
+			[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
+				UIImage* image = [self getImageFromImageData:imageData];
 				// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 				dispatch_async(dispatch_get_main_queue(), ^{
-					[self createPinchViewFromImageData: imageData];
+					[self createPinchViewFromImage: image];
 				});
 			}];
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
-			[iman requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+			[self.imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 				if (![asset isKindOfClass:[AVURLAsset class]]) {
 //					NSLog(@"Issue with video not in AVURLAsset form");
 					return;
@@ -1750,10 +1754,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     [self alertPinchElementsTogether];
 }
 
--(void) createPinchViewFromImageData:(NSData*) imageData {
+-(UIImage*) getImageFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
-	image = [image getImageWithOrientationUp];
 	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+	image = [image getImageWithOrientationUp];
+	return image;
+}
+
+-(void) createPinchViewFromImage: (UIImage*) image {
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andImage:image];
@@ -1826,6 +1834,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 
 #pragma mark - Lazy Instantiation
+
+-(PHImageManager*) imageManager {
+	if (!_imageManager) {
+		_imageManager = [[PHImageManager alloc] init];
+	}
+	return _imageManager;
+}
 
 -(MediaSelectTile*) baseMediaTileSelector {
 	if (!_baseMediaTileSelector) {
