@@ -15,6 +15,9 @@
 @property (strong, nonatomic) UIImageView* videoProgressImageView;  //Kept because of the snake....will be implemented soon
 @property (strong, nonatomic) UIButton* play_pauseBtn;
 @property (nonatomic) CGPoint firstTranslation;
+@property (nonatomic, strong) NSArray * videoList;
+@property (nonatomic) BOOL hasBeenSetUp;
+
 #define RGB 255,225,255, 0.7
 #define PROGR_VIEW_HEIGHT 60
 #define PLAYBACK_ICON_SIZE 40
@@ -30,13 +33,18 @@
 		[self repeatVideoOnEnd:YES];
         if(videoList.count) {
             [self playVideos:videoList];
+            self.hasBeenSetUp = NO;
         }
     }
     return self;
 }
 
 -(void)playVideos:(NSArray*)videoList {
-	//comes as avurlasset in preview
+    if(self.videoList != videoList){
+        self.videoList = videoList;
+        return;
+    }
+    //comes as avurlasset in preview
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
 		//comes as NSURL from backend
         [self playVideoFromArrayOfAssets:videoList];
@@ -52,13 +60,23 @@
 #pragma mark - On and Off Screen (play and pause) -
 
 -(void)offScreen{
-    [self pauseVideo];
+    [self stopVideo];
+    self.hasBeenSetUp = NO;
 }
 
 -(void)onScreen {
+    if(!self.hasBeenSetUp){
+        //in case the user scrolls up too fast to prepare the view before
+       [self playVideos:self.videoList];
+   }
     [self continueVideo];
-    [self unmuteVideo];
+    self.hasBeenSetUp = YES;
+}
 
+-(void)almostOnScreen{
+    if(self.videoList)[self stopVideo];
+    [self playVideos:self.videoList];
+    self.hasBeenSetUp = YES;
 }
 
 @end
