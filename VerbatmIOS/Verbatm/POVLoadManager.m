@@ -49,6 +49,7 @@
 				NSLog(@"Error retrieving data from url: \n %@", error.description);
 				resolve(nil);
 			} else {
+//				NSLog(@"Successfully retrieved data from url");
 				resolve(data);
 			}
 		}];

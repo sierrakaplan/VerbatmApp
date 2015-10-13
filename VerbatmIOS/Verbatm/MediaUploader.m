@@ -88,6 +88,7 @@
 	if (!responseString.length) {
 		[self requestFailed:request];
 	} else {
+		NSLog(@"Successfully uploaded media!");
 		self.completionBlock(nil, responseString);
 	}
 }

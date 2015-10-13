@@ -87,6 +87,7 @@
 
 - (void) publish {
 	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
+	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 	povObject.numUpVotes = [NSNumber numberWithLongLong: 0];
 	povObject.title = self.title;
 	UserManager* userManager = [UserManager sharedInstance];
@@ -191,14 +192,18 @@
 		}else if ([pinchView isKindOfClass:[VideoPinchView class]]){
 			pinchViewVideos = [((VideoPinchView *)pinchView) getVideos];
 		}
-		for (int i = 0; i < pinchViewVideos.count; i++) {
+		for (NSInteger i = 0; i < pinchViewVideos.count; i++) {
 			AVURLAsset* videoAsset = pinchViewVideos[i];
-			[storeVideoPromises addObject: [POVLoadManager loadDataFromURL:videoAsset.URL].then(^(NSData * data){
-				[self storeVideo:data withIndex:i];
-			})];
+			[storeVideoPromises addObject: [self storeVideoFromURL:videoAsset.URL atIndex:i]];
 		}
 	}
 	return PMKWhen(storeVideoPromises);
+}
+
+-(AnyPromise*) storeVideoFromURL: (NSURL*) url atIndex: (NSInteger) i {
+	return [POVLoadManager loadDataFromURL: url].then(^(NSData * data){
+		return [self storeVideo:data withIndex: i];
+	});
 }
 
 
@@ -305,6 +310,7 @@
 					 NSLog(@"Error uploading POV: %@", error.description);
 					 //TODO: should send a notification that there was an error publishing
 				 } else {
+					 NSLog(@"Successfully published POV!");
 					 self.mediaUploaders = nil;
 					 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
 											  object:ticket];
