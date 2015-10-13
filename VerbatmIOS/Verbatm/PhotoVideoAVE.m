@@ -107,6 +107,9 @@
 -(void)enableSound{
     [self.videoView unmuteVideo];
 }
+-(void)almostOnScreen{
+    [self.videoView almostOnScreen];
+}
 
 
 @end

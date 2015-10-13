@@ -146,7 +146,7 @@
     if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
 	self.playerLayer.frame = self.bounds;
-	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspect;
+	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
 	[self.playerLayer removeAllAnimations];
 	
     
@@ -256,7 +256,7 @@
 }
 
 -(BOOL) isPlaying {
-	if(self.player) {
+	if(self.player.rate > 0) {
 		return YES;
 	} else {
 		return NO;

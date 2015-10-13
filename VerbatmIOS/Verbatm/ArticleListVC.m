@@ -282,6 +282,8 @@
 	if ([self.loadingMoreActivityIndicator isAnimating]) {
 		[self.loadingMoreActivityIndicator stopAnimating];
 	}
+    if(self.activityIndicator.isAnimating)[self.activityIndicator stopAnimating];
+    
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 

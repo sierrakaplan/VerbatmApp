@@ -43,38 +43,45 @@
 
 #pragma mark - Check Parameters -
 +(BOOL)blackCircleInstructionShown{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults boolForKey:TRENDING_CIRCLE_INSTRUCTION_KEY];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    return [defaults boolForKey:TRENDING_CIRCLE_INSTRUCTION_KEY];
+    return true;
 }
 
 +(BOOL) filter_InstructionShown{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults boolForKey:FILTER_INSTRUCTION_KEY];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    return [defaults boolForKey:FILTER_INSTRUCTION_KEY];
+    return true;
 }
 
 +(BOOL) circlesArePages_InstructionShown{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults boolForKey:CIRCLE_IS_PAGE_INSTRUCTION_KEY];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    return [defaults boolForKey:CIRCLE_IS_PAGE_INSTRUCTION_KEY];
+    return true;
 }
 
 +(BOOL) pinchCircles_InstructionShown{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-   return [defaults boolForKey:PINCH_INSTRUCTION_KEY];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//   return [defaults boolForKey:PINCH_INSTRUCTION_KEY];
+    return true;
 }
 
 +(BOOL) tapNhold_InstructionShown{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults boolForKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    return [defaults boolForKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY];
+    return true;
 }
 
 +(BOOL) swipeToDelete_InstructionShown {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults boolForKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    return [defaults boolForKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
+    return true;
 }
 
 +(BOOL) accessCodeEntered {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    return [defaults boolForKey:ACCESS_KEY_INSTRUCTION_KEY];
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    return [defaults boolForKey:ACCESS_KEY_INSTRUCTION_KEY];
+    return true;
 }
 
 #pragma mark - Change Paramaters -

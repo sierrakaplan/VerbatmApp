@@ -22,4 +22,5 @@
 -(void)offScreen;
 //for when you want to change the video set
 -(void)playVideos:(NSArray*)videoList;
+-(void)almostOnScreen;
 @end
