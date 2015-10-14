@@ -64,10 +64,12 @@
 
 
 #pragma mark Should be overriden in subclasses
-//array of UIImage*
--(NSArray*) getPhotos;
-//array of AVURLAsset
--(NSArray*) getVideos;
+
+//array of @[UIImage*, NSString*]
+-(NSArray*) getPhotosWithText;
+
+//array of @[AVURLAsset*, NSString*]
+-(NSArray*) getVideosWithText;
 
 -(void)onScreen;
 -(void)offScreen;

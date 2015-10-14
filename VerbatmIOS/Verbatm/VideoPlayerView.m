@@ -51,7 +51,6 @@
 	}
 }
 
-
 -(void)playVideoFromURLArray: (NSArray*) urlArray {
     if(urlArray.count == 0) return;
     if (urlArray.count > 1) {
@@ -90,10 +89,24 @@
 						change:(NSDictionary *)change context:(void *)context {
 	if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
 		if (self.playerItem.status == AVPlayerStatusReadyToPlay) {
+			NSLog(@"Video ready to play");
 			if (self.videoLoading) {
 				self.videoLoading = NO;
 			}
+			__weak typeof(self) weakSelf = self;
+			[self.player prerollAtRate:0.f completionHandler:^(BOOL finished) {
+				NSLog(@"ready: %d", finished);
+
+				// if ready call the play method
+				if (finished) {
+					dispatch_async(dispatch_get_main_queue(), ^{
+						// call UI on main thread
+						[weakSelf.player play];
+					});
+				}
+			}];
 		} else if (self.playerItem.status == AVPlayerStatusFailed) {
+			NSLog(@"video couldn't play for some reason");
 			// something went wrong. player.error should contain some information
 		}
 	}
@@ -118,7 +131,7 @@
         if([asset isKindOfClass:[NSURL class]]){
             videoAsset = [AVAsset assetWithURL:asset];
             
-        }else{
+        } else {
             videoAsset = asset;
         }
             
@@ -146,16 +159,17 @@
     if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
 	self.playerLayer.frame = self.bounds;
-	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspect;
+	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
 	[self.playerLayer removeAllAnimations];
-	
+
     
     //right when we create the video we also add the mute button
     [self setButtonFormats];
     [self addSubview:self.muteButton];
     // Add it to your view's sublayers
 	[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
-	[self.player play];
+
+//	[self.player play];
     self.ourTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(resumeSession:) userInfo:nil repeats:YES];
     self.isVideoPlaying = YES;
 }
@@ -256,7 +270,7 @@
 }
 
 -(BOOL) isPlaying {
-	if(self.player) {
+	if(self.player.rate > 0) {
 		return YES;
 	} else {
 		return NO;

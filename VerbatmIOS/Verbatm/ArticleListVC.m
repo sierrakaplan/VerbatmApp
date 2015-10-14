@@ -76,11 +76,11 @@
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	self.povListView.contentOffset = CGPointZero;
-	self.activityIndicator = [self.view startActivityIndicatorOnViewWithCenter:self.view.center andStyle: UIActivityIndicatorViewStyleWhiteLarge];
-	self.activityIndicator.color = [UIColor grayColor];
 	if (!self.povsRefreshedForFirstTime) {
-		self.povsRefreshedForFirstTime = YES;
+		self.activityIndicator = [self.view startActivityIndicatorOnViewWithCenter:self.view.center andStyle: UIActivityIndicatorViewStyleWhiteLarge];
+		self.activityIndicator.color = [UIColor grayColor];
 		[self refreshFeed];
+		self.povsRefreshedForFirstTime = YES;
 	}
 }
 
@@ -252,7 +252,9 @@
 
 //Delegate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
-	[self.activityIndicator stopAnimating];
+	if ([self.activityIndicator isAnimating]) {
+		[self.activityIndicator stopAnimating];
+	}
     self.refreshInProgress = NO;
     if(self.povPublishing) {
         self.povPublishing = NO;
@@ -268,6 +270,9 @@
 
 //delegate method from povLoader - called if call to refresh failed usually for internet reasons
 -(void)povsFailedToRefresh{
+	if ([self.activityIndicator isAnimating]) {
+		[self.activityIndicator stopAnimating];
+	}
 	//TODO: tell user somehow that these failed to refresh
     self.refreshInProgress = NO;
     if(self.reloadingRefreshControl.isRefreshing) {
@@ -282,6 +287,8 @@
 	if ([self.loadingMoreActivityIndicator isAnimating]) {
 		[self.loadingMoreActivityIndicator stopAnimating];
 	}
+    if(self.activityIndicator.isAnimating)[self.activityIndicator stopAnimating];
+    
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 

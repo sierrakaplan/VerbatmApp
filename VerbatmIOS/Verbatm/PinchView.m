@@ -171,11 +171,11 @@
 	return nil;
 }
 
--(NSArray*) getPhotos {
+-(NSArray*) getPhotosWithText {
 	return nil;
 }
 
--(NSArray*) getVideos {
+-(NSArray*) getVideosWithText {
 	return nil;
 }
 

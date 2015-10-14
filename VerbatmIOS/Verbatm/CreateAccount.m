@@ -251,7 +251,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 //		return YES;
 //	}
 //	if (textField == self.passwordField){
-//		//TODO: trigger login button
 //		[self.passwordField resignFirstResponder];
 //		return YES;
 //	}

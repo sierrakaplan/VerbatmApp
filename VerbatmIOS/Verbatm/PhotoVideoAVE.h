@@ -28,4 +28,5 @@
 
 -(void)onScreen;
 
+-(void)almostOnScreen;
 @end

@@ -86,6 +86,7 @@
  */
 
 - (void) publish {
+	NSLog(@"Attempting to publish POV...");
 	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
 	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 	povObject.numUpVotes = [NSNumber numberWithLongLong: 0];
@@ -155,9 +156,6 @@
 		page.imageIds = results[0];
 		page.videoIds = results[1];
 		return [self insertPage: page];
-	}).catch(^(NSError *error){
-		//This can catch at any part in the chain
-//		NSLog(@"Error uploading POV: %@", error.description);
 	});
 }
 
@@ -166,18 +164,16 @@
 // So this promise should resolve to an array of gtl image id's
 -(AnyPromise*) storeImagesFromPinchView: (PinchView*) pinchView {
 	NSMutableArray *storeImagePromises = [[NSMutableArray array] init];
-
 	if(pinchView.containsImage) {
-		NSArray* pinchViewImages = [pinchView getPhotos];
-		for (int i = 0; i < pinchViewImages.count; i++) {
-			UIImage* uiImage = pinchViewImages[i];
-			[storeImagePromises addObject: [self storeImage:uiImage withIndex:i]];
+		NSArray* pinchViewPhotosWithText = [pinchView getPhotosWithText];
+		for (int i = 0; i < pinchViewPhotosWithText.count; i++) {
+			NSArray* photoWithText = pinchViewPhotosWithText[i];
+			UIImage* uiImage = photoWithText[0];
+			NSString* text = photoWithText[1];
+			[storeImagePromises addObject: [self storeImage:uiImage withIndex:i andText:text]];
 		}
 	}
-	return PMKWhen(storeImagePromises).catch(^(NSError *error){
-		//This can catch at any part in the chain
-//		NSLog(@"Error uploading POV: %@", error.description);
-	});
+	return PMKWhen(storeImagePromises);
 }
 
 // when(stored every video)
@@ -186,23 +182,20 @@
 -(AnyPromise*) storeVideosFromPinchView: (PinchView*) pinchView {
 	NSMutableArray *storeVideoPromises = [[NSMutableArray array] init];
 	if(pinchView.containsVideo) {
-		NSArray* pinchViewVideos = @[];
-		if([pinchView isKindOfClass:[CollectionPinchView class]]){
-			pinchViewVideos = [((CollectionPinchView *)pinchView) getVideos];
-		}else if ([pinchView isKindOfClass:[VideoPinchView class]]){
-			pinchViewVideos = [((VideoPinchView *)pinchView) getVideos];
-		}
-		for (NSInteger i = 0; i < pinchViewVideos.count; i++) {
-			AVURLAsset* videoAsset = pinchViewVideos[i];
-			[storeVideoPromises addObject: [self storeVideoFromURL:videoAsset.URL atIndex:i]];
+		NSArray* pinchViewVideosWithText = [pinchView getVideosWithText];
+		for (NSInteger i = 0; i < pinchViewVideosWithText.count; i++) {
+			NSArray* videoWithText = pinchViewVideosWithText[i];
+			AVURLAsset* videoAsset = videoWithText[0];
+			NSString* text = videoWithText[1];
+			[storeVideoPromises addObject: [self storeVideoFromURL:videoAsset.URL atIndex:i andText:text]];
 		}
 	}
 	return PMKWhen(storeVideoPromises);
 }
 
--(AnyPromise*) storeVideoFromURL: (NSURL*) url atIndex: (NSInteger) i {
+-(AnyPromise*) storeVideoFromURL: (NSURL*) url atIndex: (NSInteger) i andText: (NSString*) text {
 	return [POVLoadManager loadDataFromURL: url].then(^(NSData * data){
-		return [self storeVideo:data withIndex: i];
+		return [self storeVideo:data withIndex: i andText:text];
 	});
 }
 
@@ -210,7 +203,7 @@
 // (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)
 // Resolves to what insertImage resolves to,
 // Which should be the ID of the GTL image just stored
--(AnyPromise*) storeImage: (UIImage*) image withIndex: (NSInteger) indexInPage {
+-(AnyPromise*) storeImage: (UIImage*) image withIndex: (NSInteger) indexInPage andText: (NSString*) text {
 	return [self getImageUploadURI].then(^(NSString* uri) {
 		MediaUploader* imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
 		[self.mediaUploaders addObject: imageUploader];
@@ -219,7 +212,8 @@
 		GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
 		gtlImage.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
 		gtlImage.servingUrl = servingURL;
-		//TODO: set user key and ?text?
+		gtlImage.text = text;
+		//TODO: set user key?
 		return [self insertImage: gtlImage];
 	});
 }
@@ -227,7 +221,7 @@
 //  (get video upload uri) then (upload video to blobstore using uri) then (store gtlvideo with blob key string)
 // Resolves to what insertVideo resolves to,
 // Which should be the ID of the GTL video just stored
--(AnyPromise*) storeVideo: (NSData*) videoData withIndex: (NSInteger) indexInPage {
+-(AnyPromise*) storeVideo: (NSData*) videoData withIndex: (NSInteger) indexInPage andText: (NSString*) text {
 	return [self getVideoUploadURI].then(^(NSString* uri) {
 		MediaUploader* videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
 		[self.mediaUploaders addObject: videoUploader];
@@ -236,8 +230,8 @@
 		GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
 		gtlVideo.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
 		gtlVideo.blobKeyString = blobStoreKeyString;
-		//TODO: set user key and ?text?
-
+		gtlVideo.text = text;
+		//TODO: set user key?
 		return [self insertVideo: gtlVideo];
 	});
 }

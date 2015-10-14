@@ -202,24 +202,25 @@
 	return self;
 }
 
--(NSArray*) getPhotos {
-	NSMutableArray* photos = [[NSMutableArray alloc] init];
+//overriding
+-(NSArray*) getPhotosWithText {
+	NSMutableArray* photosWithText = [[NSMutableArray alloc] init];
 	for (PinchView* pinchView in self.pinchedObjects) {
 		if(pinchView.containsImage) {
-			[photos addObject:[(ImagePinchView*)pinchView getPhotos][0]];
+			[photosWithText addObject:[(ImagePinchView*)pinchView getPhotosWithText][0]];
 		}
 	}
-	return photos;
+	return photosWithText;
 }
 
--(NSArray*) getVideos {
-	NSMutableArray* videos = [[NSMutableArray alloc] init];
+-(NSArray*) getVideosWithText {
+	NSMutableArray* videosWithText = [[NSMutableArray alloc] init];
 	for (PinchView* pinchView in self.pinchedObjects) {
 		if(pinchView.containsVideo) {
-			[videos addObject:[(VideoPinchView*)pinchView video]];
+			[videosWithText addObject:[(VideoPinchView*)pinchView getVideosWithText][0]];
 		}
 	}
-	return videos;
+	return videosWithText;
 }
 
 #pragma mark - Encoding -

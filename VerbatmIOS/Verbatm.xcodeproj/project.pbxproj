@@ -848,8 +848,6 @@
 			children = (
 				A52919741B5DD24F00233712 /* UIView+Glow.h */,
 				A52919751B5DD24F00233712 /* UIView+Glow.m */,
-				A58656691B620951008E358C /* PointObject.h */,
-				A586566C1B620E60008E358C /* PointObject.m */,
 				A5CA61131B9A013E009D9D11 /* AdjustableBlurEffect.h */,
 				A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */,
 				A535E4FB1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.h */,
@@ -1030,6 +1028,15 @@
 			name = Icons;
 			sourceTree = "<group>";
 		};
+		A5FB5D5E1BCD85D500634A96 /* Utility UI Objects */ = {
+			isa = PBXGroup;
+			children = (
+				A58656691B620951008E358C /* PointObject.h */,
+				A586566C1B620E60008E358C /* PointObject.m */,
+			);
+			name = "Utility UI Objects";
+			sourceTree = "<group>";
+		};
 		C745B4301BBA631000D18944 /* Permission  */ = {
 			isa = PBXGroup;
 			children = (
@@ -1205,6 +1212,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				A5FB5D5E1BCD85D500634A96 /* Utility UI Objects */,
 				C7E2C8901BB7E97F00D83668 /* Generally useful functions */,
 				A560EF9E1BA8DFCC003FB041 /* AVE Analyzer */,
 				A560EF991BA88F8B003FB041 /* User settings */,

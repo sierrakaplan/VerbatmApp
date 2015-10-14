@@ -139,6 +139,7 @@
 		[self playVideosInAVE: currentPage];
 		self.currentPageIndex = nextIndex;
 	}
+    [self prepareOutLiersToEnterScreen];
 }
 
 -(void) displayCircleOnAVE:(UIView*) ave {
@@ -165,9 +166,9 @@
     if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
         [self pauseVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave pauseVideo];
+        [(VideoAVE*)ave offScreen];
     } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] pauseVideo];
+        [[(PhotoVideoAVE*)ave videoView] offScreen];
     }
 }
 
@@ -175,9 +176,38 @@
     if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
         [self playVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave continueVideo];
+        [(VideoAVE*)ave onScreen];
     } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] continueVideo];
+        [[(PhotoVideoAVE*)ave videoView] onScreen];
+    }
+}
+
+//given a boarder view  and we prepare its video media to appear
+//these are views that are one swipe (up/down) away from being shown
+-(void)prepareOutLiersToEnterScreen{
+    NSInteger currIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
+    NSInteger  indexAbove = currIndex -1;
+    NSInteger indexBelow = currIndex +1;
+    
+    for (int i =0; i < self.pageAves.count; i++) {
+        UIView * page = [self.pageAves objectForKey:[NSNumber numberWithInt:i]];
+        if(i == indexAbove){
+            [self prepareView:page];
+        }else if(i == indexBelow){
+            [self prepareView:page];
+        }else if (i != currIndex){
+            [self pauseVideosInAVE:page];
+        }
+    }
+}
+
+-(void)prepareView:(UIView *) ave{
+    if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
+        [self prepareView:[(BaseArticleViewingExperience*)ave subAVE]];
+    } else if ([ave isKindOfClass:[VideoAVE class]]) {
+        [(VideoAVE*)ave almostOnScreen];
+    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
+        [[(PhotoVideoAVE*)ave videoView] almostOnScreen];
     }
 }
 

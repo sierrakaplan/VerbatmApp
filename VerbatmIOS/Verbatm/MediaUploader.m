@@ -22,7 +22,7 @@
 @synthesize formData, progress;
 
 -(instancetype) initWithImage:(UIImage*)img andUri: (NSString*)uri {
-	NSData *imageData = [NSData dataWithData:UIImagePNGRepresentation(img)];
+	NSData *imageData = UIImagePNGRepresentation(img);
 
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
 	[self.formData setData:imageData
@@ -31,7 +31,6 @@
 					forKey:@"defaultImage"];
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
-	// Needs to be long in order to allow long videos to upload
 	[self.formData setTimeOutSeconds: 60];
 
 	return self;
@@ -47,13 +46,15 @@
 					forKey:@"defaultVideo"];
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
-	[self.formData setTimeOutSeconds: 180];
+	// Needs to be long in order to allow long videos to upload
+	[self.formData setTimeOutSeconds: 300];
 
 	return self;
 }
 
 -(AnyPromise*) startUpload {
 
+	NSLog(@"Starting upload of media.");
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self startWithCompletionHandler: ^(NSError* error, NSString* responseURL) {
 			if (error) {

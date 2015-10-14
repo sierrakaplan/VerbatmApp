@@ -329,7 +329,6 @@
 #pragma mark Memory management
 
 - (void)didReceiveMemoryWarning {
-	// TODO: dispose of any resources that can be recreated
 	[super didReceiveMemoryWarning];
 }
 
@@ -663,8 +662,8 @@
 
 -(void) povPublished {
 	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
-//TODO:	[self.contentDevVC cleanUp];
-	//TODO:		[[UserPovInProgress sharedInstance] clearPOVInProgress];
+	[self.contentDevVC cleanUp];
+	[[UserPovInProgress sharedInstance] clearPOVInProgress];
 }
 
 -(void)alertAddTitle {

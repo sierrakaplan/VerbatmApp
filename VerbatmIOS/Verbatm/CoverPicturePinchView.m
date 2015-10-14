@@ -25,7 +25,6 @@
 @dynamic imageView;
 
 -(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image {
-    
     self = [super initWithRadius:radius withCenter:center andImage:image];
     if(self){
         [self formatSelf];
@@ -36,7 +35,7 @@
 -(void) formatSelf {
     [self setBackgroundColor: [UIColor clearColor]];
     [self formatAddCoverPicLabel];
-    self.layer.borderColor = [UIColor COVER_PIC_CIRCLE_COLORE].CGColor;
+    self.layer.borderColor = [UIColor COVER_PIC_CIRCLE_COLOR].CGColor;
 }
 
 -(void) formatAddCoverPicLabel {

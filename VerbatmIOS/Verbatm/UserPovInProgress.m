@@ -68,8 +68,8 @@
 			NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
 			[self.pinchViewsAsData addObject:pinchViewData];
 		}
-		[[NSUserDefaults standardUserDefaults]
-		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+//		[[NSUserDefaults standardUserDefaults]
+//		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	});
 }
 

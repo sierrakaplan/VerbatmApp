@@ -67,10 +67,10 @@
 
 -(UIImage*) getImage {
 	return self.filteredImages[self.filterImageIndex];
-}
--(UIImage *) getOriginalImage{
+}-(UIImage *) getOriginalImage{
     return self.filteredImages[0];
 }
+
 
 //overriding
 -(NSArray*) getPhotos {
@@ -78,7 +78,6 @@
     if(self.textView) return @[@[[self getImage],self.textView]];
     return @[@[[self getImage]]];
 }
-
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex {
 	if(filterIndex < 0 || filterIndex >= [self.filteredImages count]) {
 //		NSLog(@"Filtered image index out of range");
@@ -95,11 +94,11 @@
 	self.filteredImages = [[NSMutableArray alloc] initWithCapacity:[filterNames count]+1];
 	//original photo
 	[self.filteredImages addObject:self.image];
-    [self createFilteredImagesFromImageData:self.image andFilterNames:filterNames];
+	[self createFilteredImagesFromImage:self.image andFilterNames:filterNames];
 }
 
 //return array of uiimage with filter from image
--(void)createFilteredImagesFromImageData:(UIImage *)image andFilterNames:(NSArray*)filterNames{
+-(void)createFilteredImagesFromImage:(UIImage *)image andFilterNames:(NSArray*)filterNames{
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		NSData  * imageData = UIImagePNGRepresentation(image);
 		//Background Thread

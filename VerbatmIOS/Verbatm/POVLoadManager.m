@@ -57,7 +57,6 @@
 	return promise;
 }
 
-
 -(instancetype) initWithType: (POVType) type {
 	self = [super init];
 	if (self) {

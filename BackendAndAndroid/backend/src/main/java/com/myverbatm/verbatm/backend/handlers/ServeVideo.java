@@ -33,11 +33,9 @@ public class ServeVideo extends HttpServlet {
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse res)
         throws IOException {
-
-        LOG.info("Request URL for serve video: " + req.getRequestURL().toString());
         BlobKey blobKey = new BlobKey(req.getParameter("blob-key"));
         blobstoreService.serve(blobKey, res);
-        res.addHeader("Content-Type", "video/mp4");
+        res.addHeader("Content-Type", "video/quicktime");
         LOG.info("Serving video response: " + res.toString());
     }
 }

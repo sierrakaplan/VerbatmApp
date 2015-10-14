@@ -37,7 +37,7 @@
         if(pinchView.containsImage) {
             ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
             [self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
-            if(imagePinchView.textView)self.openEditContentView.textView = imagePinchView.textView;
+            if(imagePinchView.textView) self.openEditContentView.textView = imagePinchView.textView;
         } else if(pinchView.containsVideo) {
             [self.openEditContentView displayVideo:[(VideoPinchView*)pinchView video]];
         } else {

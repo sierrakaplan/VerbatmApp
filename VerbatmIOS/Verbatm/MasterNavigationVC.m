@@ -102,7 +102,6 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 	[self registerForNotifications];
 	if (![PFUser currentUser].isAuthenticated &&
 		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-    
         self.masterSV.scrollEnabled = NO;
 
     	} else {
@@ -209,7 +208,6 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 
 #pragma mark Nav Buttons
 
-//TODO: change these to check if user is logged in
 //nav button is pressed - so we move the SV left to the profile
 -(void) profileButtonPressed {
 	if (![PFUser currentUser].isAuthenticated &&

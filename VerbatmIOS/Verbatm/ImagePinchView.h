@@ -17,8 +17,7 @@
 //it's also formatted etc by the edit content view
 @property (nonatomic, strong) UITextView * textView;
 
-
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image;
+-(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image;
 
 -(void) initWithImage:(UIImage*)image;
 
@@ -31,4 +30,5 @@
 -(UIImage *) getOriginalImage;
 //replaces the current image with this image
 -(void) putNewImage:(UIImage*)image;
+
 @end

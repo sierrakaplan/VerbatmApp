@@ -125,7 +125,7 @@
 		type = AVETypeVideo;
 	}
     
-	BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:frame andText:@"" andPhotos:[pinchView getPhotos] andVideos:[pinchView getVideos] andAVEType:type];
+	BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:frame andText:@"" andPhotos:[pinchView getPhotosWithText] andVideos:[pinchView getVideosWithText] andAVEType:type];
 	[self.results addObject:textAndOtherMediaAVE];
 }
 

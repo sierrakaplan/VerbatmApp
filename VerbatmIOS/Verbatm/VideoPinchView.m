@@ -70,8 +70,11 @@
 #pragma mark - Overriding get videos
 
 //overriding
--(NSArray*) getVideos {
-	return @[self.video];
+-(NSArray*) getVideosWithText {
+	if (self.textView) {
+		return @[@[self.video, self.textView.text]];
+	}
+	return @[@[self.video, @""]];
 }
 
 #pragma mark - Encoding -
