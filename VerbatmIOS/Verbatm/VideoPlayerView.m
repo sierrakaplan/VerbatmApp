@@ -125,9 +125,13 @@
             if(!_mix){
                 [self fuseAssets:videoList];
             }
-            [self prepareVideoFromAsset_synchronous:self.mix];
+            dispatch_async(dispatch_get_main_queue(), ^{
+               [self prepareVideoFromAsset_synchronous:self.mix];
+            });
         }else{
-            [self prepareVideoFromAsset_synchronous:videoList[0]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self prepareVideoFromAsset_synchronous:videoList[0]];
+            });
         }
     });
     
@@ -204,30 +208,30 @@
     }
 }
 
+//this function should be called on the main thread
 -(void) initiateVideo {
 	if (self.isPlaying) {
         return;
 	}
-     dispatch_async(dispatch_get_main_queue(), ^{
-        self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
-        self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-        // Create an AVPlayerLayer using the player
-        if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
-        self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
-        self.playerLayer.frame = self.bounds;
-        self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-        [self.playerLayer removeAllAnimations];
-        
-        //right when we create the video we also add the mute button
-        [self setButtonFormats];
-        [self addSubview:self.muteButton];
-        // Add it to your view's sublayers
-        [self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
-         if(self.playAtEndOfAsynchronousSetup){
-             [self playVideo];
-             self.playAtEndOfAsynchronousSetup = NO;
-         }
-    });
+    
+    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+    self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+    // Create an AVPlayerLayer using the player
+    if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
+    self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
+    self.playerLayer.frame = self.bounds;
+    self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+    [self.playerLayer removeAllAnimations];
+    
+    //right when we create the video we also add the mute button
+    [self setButtonFormats];
+    [self addSubview:self.muteButton];
+    // Add it to your view's sublayers
+    [self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
+     if(self.playAtEndOfAsynchronousSetup){
+         [self playVideo];
+         self.playAtEndOfAsynchronousSetup = NO;
+     }
 }
 
 -(void)setButtonFormats {
