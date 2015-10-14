@@ -95,7 +95,7 @@
 			}
 			__weak typeof(self) weakSelf = self;
 			[self.player prerollAtRate:0.f completionHandler:^(BOOL finished) {
-				NSLog(@"ready: %d", finished);
+				NSLog(@"Preroll ready");
 
 				// if ready call the play method
 				if (finished) {
