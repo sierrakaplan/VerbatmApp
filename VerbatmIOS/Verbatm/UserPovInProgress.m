@@ -68,8 +68,8 @@
 			NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
 			[self.pinchViewsAsData addObject:pinchViewData];
 		}
-//		[[NSUserDefaults standardUserDefaults]
-//		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+		[[NSUserDefaults standardUserDefaults]
+		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	});
 }
 
@@ -106,15 +106,12 @@
 
 //loads pinchviews from user defaults
 -(void) loadPOVFromUserDefaults {
-	//clears user defaults
-//	[self clearPOVInProgress];
 
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];
 	NSData* coverPhotoData = [[NSUserDefaults standardUserDefaults] objectForKey:COVER_PHOTO_KEY];
 	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
 							 objectForKey:PINCHVIEWS_KEY];
-
 	@synchronized(self) {
 		if (coverPhotoData) {
 			self.coverPhoto = [UIImage imageWithData:coverPhotoData];

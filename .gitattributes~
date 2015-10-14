@@ -1,2 +1,7 @@
 * text=auto
+<<<<<<< HEAD
 VerbatmIOS/Verbatm/Verbatm-Info.plist merge=ours
+VerbatmIOS/Verbatm.xcodeproj/xcuserdata/iusiri.xcuserdatad/xcdebugger/Breakpoints_v2.xcbkptlist merge=ours
+=======
+VerbatmIOS/Verbatm/Verbatm-Info.plist merge=theirs
+>>>>>>> df15b71dc759448edde23b72d45aed3425b56b6d

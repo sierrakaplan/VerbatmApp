@@ -170,9 +170,9 @@
 	CMTime nextClipStartTime = kCMTimeZero;
 	NSError* error;
 	for(id asset in videoList) {
-        AVAsset * videoAsset;
+        AVURLAsset * videoAsset;
         if([asset isKindOfClass:[NSURL class]]){
-            videoAsset = [AVAsset assetWithURL:asset];
+            videoAsset = [AVURLAsset assetWithURL:asset];
             
         } else {
             videoAsset = asset;
