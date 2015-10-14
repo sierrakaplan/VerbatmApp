@@ -105,10 +105,10 @@
 	CGSize imageSize = [image getSizeForImageWithBounds: self.bounds];
 	image = [image scaleImageToSize:imageSize];
 	TextViewWrapper* imageContainerView = [[TextViewWrapper alloc] initWithFrame:self.bounds];
-	[imageContainerView setBackgroundColor:[UIColor blackColor]];
+	[imageContainerView setBackgroundColor:[UIColor whiteColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];
-	UIImageView* blurPhotoView = [image getBlurImageViewWithFilterLevel:FILTER_LEVEL_BLUR andFrame:self.bounds];
-	[imageContainerView addSubview:blurPhotoView];
+	//UIImageView* blurPhotoView = [image getBlurImageViewWithFilterLevel:FILTER_LEVEL_BLUR andFrame:self.bounds];
+	//[imageContainerView addSubview:blurPhotoView];
 	[imageContainerView addSubview:photoView];
     if(tv){
         imageContainerView.textView = tv;
