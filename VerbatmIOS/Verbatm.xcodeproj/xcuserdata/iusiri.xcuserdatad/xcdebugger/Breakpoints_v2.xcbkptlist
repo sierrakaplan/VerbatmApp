@@ -121,7 +121,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1487"
             endingLineNumber = "1487"
-            landmarkName = "-swapScrollView:andScrollView:"
+            landmarkName = "-didReceiveMemoryWarning"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -217,8 +217,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "482"
             endingLineNumber = "482"
-            landmarkName = "-deleteButtonPressedOnContentPageElementScrollView:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -345,7 +345,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "188"
             endingLineNumber = "188"
-            landmarkName = "-addDownArrowButton"
+            landmarkName = "-prepareOutLiersToEnterScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -361,7 +361,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "149"
             endingLineNumber = "149"
-            landmarkName = "-fuseAssets:"
+            landmarkName = "-prepareVideoFromArrayOfURL_synchronous:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -377,7 +377,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "155"
             endingLineNumber = "155"
-            landmarkName = "-fuseAssets:"
+            landmarkName = "-prepareVideoFromArrayOfURL_synchronous:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -393,7 +393,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "154"
             endingLineNumber = "154"
-            landmarkName = "-fuseAssets:"
+            landmarkName = "-prepareVideoFromArrayOfURL_synchronous:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -409,7 +409,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "329"
             endingLineNumber = "329"
-            landmarkName = "-stopVideo"
+            landmarkName = "-isPlaying"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -425,7 +425,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "187"
             endingLineNumber = "187"
-            landmarkName = "-playVideo"
+            landmarkName = "-fuseAssets:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -464,7 +464,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/VideoAVE.m"
@@ -480,7 +480,7 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/VideoAVE.m"
@@ -490,6 +490,38 @@
             startingLineNumber = "52"
             endingLineNumber = "52"
             landmarkName = "-playVideos:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/VideoAVE.m"
+            timestampString = "466549113.277997"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "67"
+            endingLineNumber = "67"
+            landmarkName = "-onScreen"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/VideoPlayerView.m"
+            timestampString = "466549132.729165"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "200"
+            endingLineNumber = "200"
+            landmarkName = "-playVideo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
