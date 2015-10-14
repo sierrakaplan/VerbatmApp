@@ -47,13 +47,12 @@
     //comes as avurlasset in preview
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
 		//comes as NSURL from backend
-        [self playVideoFromArrayOfAssets:videoList];
+        [self prepareVideoFromArrayOfAssets_asynchronous:videoList];
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
-		[self playVideoFromURLArray:videoList];
+		[self prepareVideoFromURLArray_asynchronouse:videoList];
 	} else {
 		return;
 	}
-	[self pauseVideo];
 }
 
 
@@ -66,11 +65,12 @@
 
 -(void)onScreen {
     if(!self.hasBeenSetUp){
-        //in case the user scrolls up too fast to prepare the view before
-       [self playVideos:self.videoList];
-   }
-    [self continueVideo];
-    self.hasBeenSetUp = YES;
+        self.playAtEndOfAsynchronousSetup = YES;//triggers a condition in the prepare system to allow the video to play
+        [self playVideos:self.videoList];
+    }else{
+        [self playVideo];
+        self.hasBeenSetUp = YES;
+    }
 }
 
 -(void)almostOnScreen{

@@ -233,7 +233,7 @@
 	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
 	[self addSubview:self.videoView];
 	[self bringSubviewToFront:self.videoView];
-	[self.videoView playVideoFromAsset:videoAsset];
+	[self.videoView prepareVideoFromAsset_synchronous:videoAsset];
 	[self.videoView repeatVideoOnEnd:YES];
 	[self addTapGestureToMainView];
 }
