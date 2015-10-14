@@ -38,8 +38,8 @@
 	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
 	[imageContainerView setBackgroundColor:[UIColor blackColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];
-	UIImageView* blurPhotoView = [image getBlurImageViewWithFilterLevel:FILTER_LEVEL_BLUR andFrame: self.bounds];
-	[imageContainerView addSubview:blurPhotoView];
+	//UIImageView* blurPhotoView = [image getBlurImageViewWithFilterLevel:FILTER_LEVEL_BLUR andFrame: self.bounds];
+	//[imageContainerView addSubview:blurPhotoView];
 	[imageContainerView addSubview:photoView];
 	return imageContainerView;
 }

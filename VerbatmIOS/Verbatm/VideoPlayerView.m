@@ -11,16 +11,16 @@
 
 @interface VideoPlayerView()
 @property (nonatomic, strong) UIButton * muteButton;
-@property (nonatomic, strong) AVPlayer* player;
-@property (nonatomic, strong) AVPlayerItem* playerItem;
-@property (nonatomic,strong) AVPlayerLayer* playerLayer;
+@property (atomic, strong) AVPlayer* player;
+@property (atomic, strong) AVPlayerItem* playerItem;
+@property (atomic,strong) AVPlayerLayer* playerLayer;
 //will hold the actual video layer so that we can add a mute button without layer issues
 @property (nonatomic) BOOL repeatsVideo;
 @property (nonatomic) BOOL isMuted;
-@property (strong, nonatomic) AVMutableComposition* mix;
+@property (strong, atomic) AVMutableComposition* mix;
 @property (nonatomic) BOOL videoLoading;
 @property (nonatomic) BOOL isVideoPlaying; //tells you if the video is in a playing state
-@property (strong, nonatomic) NSTimer * ourTimer;//keeps calling continue
+@property (strong, atomic) NSTimer * ourTimer;//keeps calling continue
 
 
 #define MUTE_BUTTON_X 10
@@ -39,6 +39,7 @@
 		self.repeatsVideo = NO;
 		self.videoLoading = NO;
         self.clearsContextBeforeDrawing = YES;
+        self.playAtEndOfAsynchronousSetup = NO;
 	}
 	return self;
 }
@@ -51,23 +52,29 @@
 	}
 }
 
--(void)playVideoFromURLArray: (NSArray*) urlArray {
+-(void)prepareVideoFromURLArray_asynchronouse: (NSArray*) urlArray {
     if(urlArray.count == 0) return;
     if (urlArray.count > 1) {
-        [self playVideoFromArrayOfAssets:urlArray];
+        [self prepareVideoFromArrayOfAssets_asynchronous:urlArray];
         return;
     }else{
-        self.videoLoading = YES;
-        [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: urlArray[0]]];
-        [self playVideo];
+        [self prepareVideoFromURL_synchronous:urlArray[0]];
     }
 }
 
--(void)playVideoFromAsset: (AVAsset*) asset{
+-(void)prepareVideoFromAsset_synchronous: (AVAsset*) asset{
 	if (asset) {
 		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
-		[self playVideo];
+        [self initiateVideo];
 	}
+}
+
+-(void)prepareVideoFromURL_synchronous: (NSURL*) url{
+    if (url) {
+        self.videoLoading = YES;
+        [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
+        [self initiateVideo];
+    }
 }
 
 -(void) setPlayerItemFromPlayerItem:(AVPlayerItem*)playerItem {
@@ -112,15 +119,51 @@
 	}
 }
 
--(void) playVideoFromArrayOfAssets: (NSArray*)videoList {
-	[self fuseAssets:videoList];
-	[self playVideoFromAsset:self.mix];
+-(void) prepareVideoFromArrayOfAssets_asynchronous: (NSArray*)videoList {
+    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+        if(videoList.count > 1){
+            if(!_mix){
+                [self fuseAssets:videoList];
+            }
+            [self prepareVideoFromAsset_synchronous:self.mix];
+        }else{
+            [self prepareVideoFromAsset_synchronous:videoList[0]];
+        }
+    });
+    
+    
 }
+//this is used rarely when we need to load and play a view and it
+//doesn't give our code a chance to be prepared
+-(void)prepareVideoFromArrayOfAssets_synchronous: (NSArray*)videoList {
+    if(videoList.count > 1){
+        if(!self.mix){
+            [self fuseAssets:videoList];
+        }
+        [self prepareVideoFromAsset_synchronous:self.mix];
+    }else{
+        [self prepareVideoFromAsset_synchronous:videoList[0]];
+    }
+}
+-(void)prepareVideoFromArrayOfURL_synchronous: (NSArray*)videoList {
+    if(videoList.count > 1){
+        if(!self.mix){
+            [self fuseAssets:videoList];
+        }
+        [self prepareVideoFromAsset_synchronous:self.mix];
+    }else{
+        [self prepareVideoFromURL_synchronous:videoList[0]];
+    }
+}
+
 
 /*This code fuses the video assets into a single video that plays the videos one after the other.
  It accepts both avassets and urls which it converts into assets
  */
 -(void)fuseAssets:(NSArray*)videoList {
+    //if the mix exists don't runt this expensive function
+    if(self.mix)return;
+    
 	self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
 	AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
 	AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
@@ -134,44 +177,58 @@
         } else {
             videoAsset = asset;
         }
+        NSArray * videoTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
+        if(videoTrackArray.count){
+            AVAssetTrack* this_video_track = [videoTrackArray objectAtIndex:0];
+            [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
+            videoTrack.preferredTransform = this_video_track.preferredTransform;
             
-		AVAssetTrack* this_video_track = [[videoAsset tracksWithMediaType:AVMediaTypeVideo] objectAtIndex:0];
-		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
-		videoTrack.preferredTransform = this_video_track.preferredTransform;
-		AVAssetTrack* this_audio_track = [[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0];
-		videoTrack.preferredTransform = this_video_track.preferredTransform;
-		if(this_audio_track != nil) {
-			[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
+            NSArray * audioTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeAudio];
+            if(audioTrackArray.count){
+                AVAssetTrack* this_audio_track = [audioTrackArray objectAtIndex:0];
+                videoTrack.preferredTransform = this_video_track.preferredTransform;
+                if(this_audio_track != nil) {
+                    [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
+                }
+            }
 		}
 		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
 	}
 }
 
--(void) playVideo {
+-(void)playVideo{
+    if(self.player){
+        [self.player play];
+        self.ourTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(resumeSession:) userInfo:nil repeats:YES];
+        self.isVideoPlaying = YES;
+    }
+}
+
+-(void) initiateVideo {
 	if (self.isPlaying) {
-		[self stopVideo];
+        return;
 	}
-    
-	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
-	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-
-	// Create an AVPlayerLayer using the player
-    if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
-	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
-	self.playerLayer.frame = self.bounds;
-	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-	[self.playerLayer removeAllAnimations];
-
-    
-    //right when we create the video we also add the mute button
-    [self setButtonFormats];
-    [self addSubview:self.muteButton];
-    // Add it to your view's sublayers
-	[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
-
-//	[self.player play];
-    self.ourTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(resumeSession:) userInfo:nil repeats:YES];
-    self.isVideoPlaying = YES;
+     dispatch_async(dispatch_get_main_queue(), ^{
+        self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+        self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+        // Create an AVPlayerLayer using the player
+        if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
+        self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
+        self.playerLayer.frame = self.bounds;
+        self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+        [self.playerLayer removeAllAnimations];
+        
+        //right when we create the video we also add the mute button
+        [self setButtonFormats];
+        [self addSubview:self.muteButton];
+        // Add it to your view's sublayers
+        [self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
+         if(self.playAtEndOfAsynchronousSetup){
+             [self playVideo];
+             self.playAtEndOfAsynchronousSetup = NO;
+         }
+        
+    });
 }
 
 -(void)setButtonFormats {
@@ -280,27 +337,29 @@
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
-	if (self.videoLoading) {
-		self.videoLoading = NO;
-	}
-    
-	for (UIView* view in self.subviews) {
-		[view removeFromSuperview];
-	}
-    
-	self.layer.sublayers = nil;
-	[self removePlayerItemObserver];
-    [self.playerLayer removeFromSuperlayer];
-    self.layer.sublayers = nil;
-	self.muteButton = nil;
-    self.playerItem = nil;
-    self.player = nil;
-    self.playerLayer = nil;
-    self.mix = nil;
-    
-    self.isVideoPlaying = NO;
-    [self.ourTimer invalidate];
-    self.ourTimer = nil;
+    @autoreleasepool {
+        if (self.videoLoading) {
+            self.videoLoading = NO;
+        }
+        
+        for (UIView* view in self.subviews) {
+            [view removeFromSuperview];
+        }
+        
+        self.layer.sublayers = nil;
+        [self removePlayerItemObserver];
+        [self.playerLayer removeFromSuperlayer];
+        self.layer.sublayers = nil;
+        self.muteButton = nil;
+        self.playerItem = nil;
+        self.player = nil;
+        self.playerLayer = nil;
+        //self.mix = nil;
+        
+        self.isVideoPlaying = NO;
+        [self.ourTimer invalidate];
+        self.ourTimer = nil;
+    }
 }
 
 -(void) removePlayerItemObserver {
