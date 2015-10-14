@@ -39,6 +39,11 @@ public class Image {
     private String text;
 
     /**
+     * The y position of the text
+     */
+    private Float textYPosition;
+
+    /**
      *
      * @return the unique identifier of this Entity.
      */
@@ -107,5 +112,13 @@ public class Image {
      */
     public final void setText(String text) {
         this.text = text;
+    }
+
+    public Float getTextYPosition() {
+        return textYPosition;
+    }
+
+    public void setTextYPosition(Float textYPosition) {
+        this.textYPosition = textYPosition;
     }
 }

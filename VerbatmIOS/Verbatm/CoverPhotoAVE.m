@@ -35,10 +35,6 @@
 }
 
 -(UIView*) getImageViewContainerForImage:(UIImage*) image {
-	//scale image
-	CGSize imageSize = [image getSizeForImageWithBounds:self.bounds];
-	image = [image scaleImageToSize:imageSize];
-
 	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
 	[imageContainerView setBackgroundColor:[UIColor blackColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];

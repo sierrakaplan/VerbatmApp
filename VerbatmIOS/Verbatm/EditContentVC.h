@@ -10,8 +10,7 @@
 #import "PinchView.h"
 
 @interface EditContentVC : UIViewController
-@property (nonatomic, strong) PinchView * pinchView;
-@property (nonatomic) NSInteger filterImageIndex;
-@property (nonatomic) BOOL photoTappedOpenForTheFirstTime;
-@property (strong, nonatomic) EditContentView * openEditContentView;
+
+@property (strong, nonatomic) PinchView * openPinchView;
+
 @end

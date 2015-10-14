@@ -18,18 +18,24 @@
 
 @interface EditContentView : UIView
 
--(instancetype)initCustomViewWithFrame:(CGRect)frame;
+@property (nonatomic, strong) VideoPlayerView * videoView;
+
 -(void) displayVideo: (AVAsset*) videoAsset;
+
 //passes it an array of UIImages to display
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index;
--(void) editText: (NSString *) text;
+
+-(void) setText: (NSString*) text andTextViewYPosition: (CGFloat) yPosition;
+
 -(NSString*) getText;
+
+-(NSNumber*) getTextYPosition;
+
 -(void)adjustContentSizing;
--(void)adjustFrameOfTextViewForGap:(NSInteger) gap;
+
 -(NSInteger) getFilteredImageIndex;
 
-@property (nonatomic, strong) UITextView* textView;
-@property (nonatomic, strong) VideoPlayerView * videoView;
+
 @property (nonatomic, strong) id<EditContentViewDelegate> delegate;
 
 @end

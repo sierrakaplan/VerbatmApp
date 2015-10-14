@@ -125,8 +125,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 //pinch views to the article before
 @property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
 @property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
-@property (nonatomic) BOOL photoTappedOpenForTheFirstTime;
-
 
 #define WHAT_IS_IT_LIKE_TEXT @"tell your story"
 
@@ -666,17 +664,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	if (self.whatIsItLikeField.isEditing) {
 		[self.whatIsItLikeField resignFirstResponder];
 	}
-	if (self.openEditContentView) {
-		[self.openEditContentView.textView resignFirstResponder];
-	}
 }
 
 -(void) showKeyboard {
 	if(self.whatIsItLikeField.isEditing) {
 		[self.whatIsItLikeField becomeFirstResponder];
-	}
-	if (self.openEditContentView) {
-		[self.openEditContentView.textView becomeFirstResponder];
 	}
 }
 
@@ -695,19 +687,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
 	//store the keyboard height for further use
 	self.keyboardHeight = keyboardSize.height;
-
-	[self.openEditContentView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
 }
 
 
 -(void) keyBoardDidShow:(NSNotification *) notification {
-
-	[self.openEditContentView adjustFrameOfTextViewForGap: (self.view.frame.size.height - ( self.keyboardHeight + self.pullBarHeight))];
 }
 
 
 -(void)keyboardWillDisappear:(NSNotification *) notification {
-	[self.openEditContentView adjustFrameOfTextViewForGap: 0];
 }
 
 #pragma mark - Pinch Gesture -
@@ -718,9 +705,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
-			if([sender numberOfTouches] != 2 ) {
-				return;
-			}
 
 			//sometimes people will rest their hands on the screen so make sure the textviews are selectable
 			for (UIView * element in self.mainScrollView.pageElements) {
@@ -732,9 +716,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
-			if([sender numberOfTouches] != 2 ) {
-				return;
-			}
 
 			if((self.pinchingMode == PinchingModeHorizontal)
 			   && self.scrollViewOfHorizontalPinching && sender.scale < 1) {
@@ -932,9 +913,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void) handleVerticlePinchGestureChanged: (UIPinchGestureRecognizer *)gesture {
-	if (!([gesture numberOfTouches] == 2)) {
-		return;
-	}
 
 	CGPoint touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
 	CGPoint touch2 = [gesture locationOfTouch:1 inView:self.mainScrollView];
@@ -1024,6 +1002,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 //media tile grows from the center as the gesture expands
 -(void) handleRevealOfNewMediaViewWithGesture: (UIPinchGestureRecognizer *)gesture andChangeInTopViewPosition:(float)changeInTopViewPosition andChangeInBottomViewPosition:(float) changeInBottomViewPosition {
+
 	float totalChange = fabs(changeInTopViewPosition) + fabs(changeInBottomViewPosition);
 	float widthToHeightRatio = self.baseMediaTileSelector.frame.size.width/self.baseMediaTileSelector.frame.size.height;
 	float changeInWidth = widthToHeightRatio * totalChange;
@@ -1208,7 +1187,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		}
 		case UIGestureRecognizerStateBegan: {
 			//make sure it's a single finger touch and that there are multiple elements on the screen
-			if(self.pageElementScrollViews.count < 1 || [sender numberOfTouches] != 1) {
+			if(self.pageElementScrollViews.count < 1) {
 				return;
 			}
 			[self selectItem:sender];
@@ -1597,19 +1576,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	if([segue.identifier isEqualToString:BRING_UP_EDITCONTENT_SEGUE]) {
-		EditContentVC *vc =  (EditContentVC *)segue.destinationViewController;
-		vc.pinchView = self.openPinchView;
-		vc.photoTappedOpenForTheFirstTime = self.pinchViewTappedAndClosedForTheFirstTime;
+		EditContentVC *editContentVC =  (EditContentVC *)segue.destinationViewController;
+		editContentVC.openPinchView = self.openPinchView;
 	}
 }
 
 - (IBAction) unwindToContentDevVC: (UIStoryboardSegue *)segue{
 	if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
-		EditContentVC *editContentVC = (EditContentVC *)segue.sourceViewController;
-		if(self.openPinchView.containsImage) {
-			[(ImagePinchView*)self.openPinchView changeImageToFilterIndex: editContentVC.filterImageIndex];
-		}
-		[editContentVC.openEditContentView.videoView stopVideo];
 		self.pinchViewTappedAndClosedForTheFirstTime = YES;
 	}
 }

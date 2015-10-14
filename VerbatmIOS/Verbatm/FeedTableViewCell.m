@@ -361,7 +361,6 @@
 
 	switch(sender.state) {
 		case UIGestureRecognizerStateBegan: {
-			if(sender.numberOfTouches != 2) return;
 			CGPoint touch1 = [sender locationOfTouch:0 inView:self];
 			CGPoint touch2 = [sender locationOfTouch:1 inView:self];
 			if (touch2.x < touch1.x) {
@@ -378,7 +377,6 @@
 		}
 		case UIGestureRecognizerStateChanged: {
 			if (!self.isPinching) return;
-			if(sender.numberOfTouches != 2) return;
 			CGPoint touch1 = [sender locationOfTouch:0 inView:self];
 			CGPoint touch2 = [sender locationOfTouch:1 inView:self];
 			if (touch2.x < touch1.x) {

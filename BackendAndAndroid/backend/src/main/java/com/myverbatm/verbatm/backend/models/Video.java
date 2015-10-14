@@ -38,6 +38,10 @@ public class Video {
      */
     private String text;
 
+    /**
+     * The y position of the text
+     */
+    private Float textYPosition;
 
     /**
      *
@@ -109,5 +113,13 @@ public class Video {
      */
     public final void setText(String text) {
         this.text = text;
+    }
+
+    public Float getTextYPosition() {
+        return textYPosition;
+    }
+
+    public void setTextYPosition(Float textYPosition) {
+        this.textYPosition = textYPosition;
     }
 }

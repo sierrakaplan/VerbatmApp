@@ -11,7 +11,7 @@
 #import "MathOperations.h"
 #import "PointObject.h"
 #import "PhotoAVE.h"
-#import "TextViewWrapper.h"
+#import "TextAndImageView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Icons.h"
@@ -40,7 +40,7 @@
 
 @property (nonatomic, strong) UIView * panGestureSensingView;
 
-@property (strong, nonatomic) UIPanGestureRecognizer * cirlePanGesture;
+@property (strong, nonatomic) UIPanGestureRecognizer * circlePanGesture;
 
 @property (nonatomic, strong) UIButton * textViewButton;
 
@@ -73,56 +73,33 @@
 
 -(void) addPhotos:(NSArray*)photosTextArray {
     
-    //@[ @[/*photo and textview content*/],...]
 	for (NSArray* photoText in photosTextArray) {
-        TextViewWrapper* imageContainerView;
-        if(photoText.count == 1){//photo no textview
-
-            //add container view with blur photo and regular photo
-            imageContainerView = [self getImageViewContainerForImage:photoText[0] andTextView:nil];
-            
-        }else if (photoText.count == 2){//photo and textview
-            //add container view with blur photo and regular photo
-            imageContainerView = [self getImageViewContainerForImage:photoText[0] andTextView:photoText[1]];
-        }
+		UIImage* image = photoText[0];
+		NSString* text = photoText[1];
+		NSNumber* textYPosition = photoText[2];
+        TextAndImageView* imageContainerView = [[TextAndImageView alloc] initWithFrame:self.bounds
+																			  andImage: image
+																			   andText: text andTextYPosition: textYPosition.floatValue];
         [self.imageContainerViews addObject:imageContainerView];
 	}
 
 	//add extra copy of photo 1 at bottom for last arc of circle transition
-	UIImage* photoOne = photosTextArray[0][0];
-    TextViewWrapper* imageOneContainerView = [self getImageViewContainerForImage:photoOne andTextView:(((NSArray *)photosTextArray[0]).count == 1) ? nil : photosTextArray[0][1]];
-	[self addSubview:imageOneContainerView];
-    if(imageOneContainerView.textView)[self createTextViewButton];//add textview button if the first image has text
-
+	NSArray* firstPhotoText = photosTextArray[0];
+	UIImage* firstImage = firstPhotoText[0];
+	NSString* firstText = firstPhotoText[1];
+	NSNumber* textYPosition = firstPhotoText[2];
+	TextAndImageView* firstImageContainerView = [[TextAndImageView alloc] initWithFrame:self.bounds
+																		  andImage: firstImage
+																		   andText: firstText andTextYPosition: textYPosition.floatValue];
+	[self addSubview: firstImageContainerView];
 	//adding subviews in reverse order so that imageview at index 0 on top
 	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
 		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
 	}
-}
-
--(TextViewWrapper*) getImageViewContainerForImage:(UIImage*) image andTextView:(UITextView *)tv {
-	//scale image
-	CGSize imageSize = [image getSizeForImageWithBounds: self.bounds];
-	image = [image scaleImageToSize:imageSize];
-	TextViewWrapper* imageContainerView = [[TextViewWrapper alloc] initWithFrame:self.bounds];
-	[imageContainerView setBackgroundColor:[UIColor blackColor]];
-	UIImageView* photoView = [self getImageViewForImage:image];
-	UIImageView* blurPhotoView = [image getBlurImageViewWithFilterLevel:FILTER_LEVEL_BLUR andFrame:self.bounds];
-	[imageContainerView addSubview:blurPhotoView];
-	[imageContainerView addSubview:photoView];
-    if(tv){
-        imageContainerView.textView = tv;
-    }
-	return imageContainerView;
-}
-
-// returns image view with image centered
--(UIImageView*) getImageViewForImage:(UIImage*) image {
-	UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
-	photoView.frame = self.bounds;
-	photoView.clipsToBounds = YES;
-	photoView.contentMode = UIViewContentModeScaleAspectFit;
-	return photoView;
+	//add textview button if the first image has text
+	if(firstText && firstText.length) {
+		[self createTextViewButton];
+	}
 }
 
 -(void) createCircleViewAndPoints {
@@ -138,7 +115,6 @@
 	}
 	[self createMainCircleView];
 }
-
 
 -(void) createMainCircleView {
 	self.originPoint = CGPointMake(self.frame.size.width/2.f, PAN_CIRCLE_CENTER_Y);
@@ -176,11 +152,11 @@
 }
 
 -(void)addPanGestureToView:(UIView *) view {
-	UIPanGestureRecognizer* panGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(trackMovementOnCircle:)];
-	panGesture.delegate = self;
-	[view addGestureRecognizer:panGesture];
-    self.cirlePanGesture = panGesture;
-    
+	self.circlePanGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(trackMovementOnCircle:)];
+	self.circlePanGesture.minimumNumberOfTouches = 1;
+	self.circlePanGesture.maximumNumberOfTouches = 1;
+	self.circlePanGesture.delegate = self;
+	[view addGestureRecognizer:self.circlePanGesture];
 }
 
 #pragma mark - Text View -
@@ -193,22 +169,8 @@
 }
 
 -(void)textViewButtonClicked:(UIButton*) sender {
-    
-//    for(TextViewWrapper * view in self.imageContainerViews){
-//        if(!self.textShowing){
-//            [view showText];
-//        }else{
-//            [view hideText];
-//        }
-//    }
-//    self.textShowing= !self.textShowing;
-
-    TextViewWrapper * currentView = self.imageContainerViews[self.currentPhotoIndex];
-    if(!currentView.textShowing){
-        [currentView showText]; 
-    }else{
-        [currentView hideText];
-    }
+    TextAndImageView * currentView = self.imageContainerViews[self.currentPhotoIndex];
+	[currentView showText: !currentView.textShowing];
 }
 
 #pragma mark - Tap Gesture -
@@ -276,10 +238,6 @@
 }
 
 -(void) handleCircleGestureBegan:(UIPanGestureRecognizer*) sender {
-	if ([sender numberOfTouches] != 1) {
-		return;
-	}
-
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 	self.draggingFromPointIndex = [self getPointIndexFromLocation:touchLocation];
 	if (self.draggingFromPointIndex >= 0) {
@@ -293,7 +251,7 @@
 }
 
 -(void) handleCircleGestureChanged:(UIPanGestureRecognizer*) sender {
-	if ([sender numberOfTouches] != 1 || self.draggingFromPointIndex < 0) {
+	if (self.draggingFromPointIndex < 0) {
 		return;
 	}
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
@@ -355,8 +313,8 @@
 
 //checks if a text button should be presented depending on the current image presented
 -(void)checkTextButtonPresentation{
-    TextViewWrapper * view = self.imageContainerViews[self.currentPhotoIndex];
-    if(view.textView){
+    TextAndImageView * view = self.imageContainerViews[self.currentPhotoIndex];
+    if(view.textView.text && view.textView.text.length){
         [self createTextViewButton];
     }else{
         [self.textViewButton removeFromSuperview];
@@ -368,13 +326,11 @@
 	[self displayCircle:YES];
 	self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
     
-    
-    
-    //we expect this supreview to be a scrollview
+    //we expect this superview to be a scrollview
     UIView * view = self.superview.superview;
     
-    if([view isKindOfClass:[UIScrollView class]] && self.cirlePanGesture){
-        [((UIScrollView *) view).panGestureRecognizer requireGestureRecognizerToFail:self.cirlePanGesture];
+    if([view isKindOfClass:[UIScrollView class]] && self.circlePanGesture){
+        [((UIScrollView *) view).panGestureRecognizer requireGestureRecognizerToFail: self.circlePanGesture];
     }
     
 }
@@ -464,7 +420,7 @@
 
 
 -(UIView *) panGestureSensingView {
-    if(!_panGestureSensingView)_panGestureSensingView = [[UIView alloc] init];
+    if(!_panGestureSensingView) _panGestureSensingView = [[UIView alloc] init];
     return _panGestureSensingView;
 }
 

@@ -139,6 +139,8 @@
 //Sets up the gesture recognizer for dragging from the edges.
 -(void) setUpGestureRecognizers {
 	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitDisplay:)];
+	leftEdgePanGesture.minimumNumberOfTouches = 1;
+	leftEdgePanGesture.maximumNumberOfTouches = 1;
 	leftEdgePanGesture.edges = UIRectEdgeLeft;
 	leftEdgePanGesture.delegate = self;
 	[self addGestureRecognizer: leftEdgePanGesture];
@@ -187,10 +189,6 @@
 
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
-			//we want only one finger doing anything when exiting
-			if([sender numberOfTouches] != 1) {
-				return;
-			}
 			CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 			self.previousGesturePoint  = touchLocation;
 			break;

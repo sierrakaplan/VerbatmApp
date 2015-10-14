@@ -71,10 +71,7 @@
 
 //overriding
 -(NSArray*) getVideosWithText {
-	if (self.textView) {
-		return @[@[self.video, self.textView.text]];
-	}
-	return @[@[self.video, @""]];
+	return @[@[self.video, self.text, self.textYPosition]];
 }
 
 #pragma mark - Encoding -
@@ -95,6 +92,20 @@
 }
 
 #pragma mark - Lazy Instantiation -
+
+-(NSString*) text {
+	if (!_text) {
+		_text = @"";
+	}
+	return _text;
+}
+
+-(NSNumber*) textYPosition {
+	if (!_textYPosition) {
+		_textYPosition = [NSNumber numberWithFloat: 0.f];
+	}
+	return _textYPosition;
+}
 
 -(UIImageView*) videoView {
 	if (!_videoView) {

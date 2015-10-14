@@ -14,39 +14,44 @@
 #import "SegueIDs.h"
 
 @interface EditContentVC()<EditContentViewDelegate>
-@property (strong, nonatomic) PinchView * openPinchView;
+
 @property (strong, nonatomic) UIButton * exitButton;
+@property (strong, nonatomic) EditContentView * openEditContentView;
 
 #define DONE_IMAGE @"DoneIcon"
 @end
 @implementation EditContentVC
 
 -(void)viewDidLoad {
-    [self createEditContentViewFromPinchView:self.pinchView];
+    [self createEditContentViewFromPinchView];
     [self createExitButton];
 }
 
 // This should never be called on a collection pinch view, only on text, image, or video
--(void) createEditContentViewFromPinchView: (PinchView *) pinchView {
-    self.openEditContentView = [[EditContentView alloc] initCustomViewWithFrame:self.view.bounds];
+-(void) createEditContentViewFromPinchView {
+    self.openEditContentView = [[EditContentView alloc] initWithFrame:self.view.bounds];
     self.openEditContentView.delegate = self;
-    //adding text
-    if(pinchView == nil) {
-        [self.openEditContentView editText:@""];
-    } else {
-        if(pinchView.containsImage) {
-            ImagePinchView* imagePinchView = (ImagePinchView*)pinchView;
-            [self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
-            if(imagePinchView.textView) self.openEditContentView.textView = imagePinchView.textView;
-        } else if(pinchView.containsVideo) {
-            [self.openEditContentView displayVideo:[(VideoPinchView*)pinchView video]];
-        } else {
-            return;
-        }
-        self.openPinchView = pinchView;
-    }
+	if(self.openPinchView.containsImage) {
+
+		ImagePinchView* imagePinchView = (ImagePinchView*) self.openPinchView;
+		[self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
+		if (imagePinchView.text && imagePinchView.text.length) {
+			[self.openEditContentView setText:imagePinchView.text andTextViewYPosition:imagePinchView.textYPosition.floatValue];
+		}
+	} else if(self.openPinchView.containsVideo) {
+
+		[self.openEditContentView displayVideo:[(VideoPinchView*)self.openPinchView video]];
+		NSString* videoPinchViewText = [(VideoPinchView*)self.openPinchView text];
+		if (videoPinchViewText && videoPinchViewText.length) {
+			[self.openEditContentView setText:videoPinchViewText andTextViewYPosition:[(VideoPinchView*)self.openPinchView textYPosition].floatValue];
+		}
+	} else {
+		return;
+	}
     [self.view addSubview:self.openEditContentView];
-    if(![UserSetupParameters filter_InstructionShown] && [pinchView isKindOfClass:[ImagePinchView class]])[self alertAddFilter];
+    if(![UserSetupParameters filter_InstructionShown] && [self.openPinchView isKindOfClass:[ImagePinchView class]]) {
+		[self alertAddFilter];
+	}
 }
 
 -(void)createExitButton{
@@ -74,15 +79,15 @@
         return;
     }
     if(self.openPinchView.containsImage) {
-        self.filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
+		ImagePinchView* imagePinchView = (ImagePinchView*) self.openPinchView;
+        NSInteger filterImageIndex =  [self.openEditContentView getFilteredImageIndex];
+		[imagePinchView changeImageToFilterIndex: filterImageIndex];
+		[self.openEditContentView.videoView stopVideo];
         //if there is a text view and it has text then we should save it. otherwise we get rid of any reference
-        if(self.openEditContentView.textView && ![self.openEditContentView.textView.text isEqualToString:@""]){
-            ((ImagePinchView *)self.openPinchView).textView = self.openEditContentView.textView;
-        }else{
-            ((ImagePinchView *)self.openPinchView).textView =  nil;
-        }
+		((ImagePinchView *) self.openPinchView).text = [self.openEditContentView getText];
+		((ImagePinchView *) self.openPinchView).textYPosition = [self.openEditContentView getTextYPosition];
     }
-    
+	//TODO: video
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
 }
 

@@ -63,21 +63,21 @@
 	[self.imageView setImage:[self getImage]];
 }
 
-#pragma mark - Get Change Image -
+#pragma mark - Get or Change Image -
 
 -(UIImage*) getImage {
 	return self.filteredImages[self.filterImageIndex];
-}-(UIImage *) getOriginalImage{
+}
+
+-(UIImage *) getOriginalImage{
     return self.filteredImages[0];
 }
 
-
 //overriding
--(NSArray*) getPhotos {
-    //we return a double array because we want to bind the photo and text as one unit
-    if(self.textView) return @[@[[self getImage],self.textView]];
-    return @[@[[self getImage]]];
+-(NSArray*) getPhotosWithText {
+	return @[@[[self getImage], self.text, self.textYPosition]];
 }
+
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex {
 	if(filterIndex < 0 || filterIndex >= [self.filteredImages count]) {
 //		NSLog(@"Filtered image index out of range");
@@ -142,6 +142,20 @@
 }
 
 #pragma mark - Lazy Instantiation
+
+-(NSString*) text {
+	if (!_text) {
+		_text = @"";
+	}
+	return _text;
+}
+
+-(NSNumber*) textYPosition {
+	if (!_textYPosition) {
+		_textYPosition = [NSNumber numberWithFloat: 0.f];
+	}
+	return _textYPosition;
+}
 
 -(UIImageView*)imageView {
     if(!_imageView) {

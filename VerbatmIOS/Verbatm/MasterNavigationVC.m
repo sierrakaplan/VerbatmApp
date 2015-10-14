@@ -257,6 +257,8 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 -(void) addScreenEdgePanToArticleDisplay {
 	UIPanGestureRecognizer* leftEdgePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
 	leftEdgePanGesture.delegate = self;
+	leftEdgePanGesture.minimumNumberOfTouches = 1;
+	leftEdgePanGesture.maximumNumberOfTouches = 1;
 	[self.articleDisplayContainer addGestureRecognizer: leftEdgePanGesture];
 }
 
@@ -267,9 +269,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 		case UIGestureRecognizerStateBegan: {
             CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
             
-			//we want only one finger doing anything when exiting
-            if([sender numberOfTouches] != 1 ||
-               ((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100)  < touchLocation.y)) {
+            if((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100)  < touchLocation.y) {
                 //this ends the gesture
                 sender.enabled = NO;
                 sender.enabled =YES;
