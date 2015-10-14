@@ -182,6 +182,7 @@
 	[self addSubview:self.videoView];
 	[self bringSubviewToFront:self.videoView];
 	[self.videoView prepareVideoFromAsset_synchronous:videoAsset];
+    [self.videoView playVideo];
 	[self.videoView repeatVideoOnEnd:YES];
 	[self addTapGestureToMainView];
 }
@@ -236,6 +237,7 @@
     if(self.textAndImageView.textView.isFirstResponder){
         [self.textAndImageView.textView resignFirstResponder];
     } else {
+        [self.videoView stopVideo];
         [self.delegate exitEditContentView];
     }
 }

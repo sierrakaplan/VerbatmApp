@@ -1148,6 +1148,8 @@
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
 				C716A5B019E0CA3500A5490B /* DashLineView.h */,
 				C716A5B119E0CA3500A5490B /* DashLineView.m */,
+				F20A24F81A46166100BB77C1 /* EditContentView.h */,
+				F20A24F91A46166100BB77C1 /* EditContentView.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1336,8 +1338,6 @@
 				C7E6C13E1A4E394600863893 /* VideoAVE.m */,
 				A54689211BA3E1BC00F40E54 /* CoverPhotoAVE.h */,
 				A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */,
-				F20A24F81A46166100BB77C1 /* EditContentView.h */,
-				F20A24F91A46166100BB77C1 /* EditContentView.m */,
 			);
 			name = "AVEs ";
 			sourceTree = "<group>";
