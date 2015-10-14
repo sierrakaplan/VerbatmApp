@@ -22,6 +22,8 @@
 
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage*) image andText: (NSString*) text andTextYPosition: (CGFloat) textYPosition;
 
+-(void) resizeTextView;
+
 -(void) showText: (BOOL) show;
 
 @end

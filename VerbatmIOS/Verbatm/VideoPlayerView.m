@@ -100,18 +100,18 @@
 			if (self.videoLoading) {
 				self.videoLoading = NO;
 			}
-			__weak typeof(self) weakSelf = self;
-			[self.player prerollAtRate:0.f completionHandler:^(BOOL finished) {
-				NSLog(@"Preroll ready");
-
-				// if ready call the play method
-				if (finished) {
-					dispatch_async(dispatch_get_main_queue(), ^{
-						// call UI on main thread
-						[weakSelf.player play];
-					});
-				}
-			}];
+//			__weak typeof(self) weakSelf = self;
+//			[self.player prerollAtRate:0.f completionHandler:^(BOOL finished) {
+//				NSLog(@"Preroll ready");
+//
+//				// if ready call the play method
+//				if (finished) {
+//					dispatch_async(dispatch_get_main_queue(), ^{
+//						// call UI on main thread
+//						[weakSelf.player play];
+//					});
+//				}
+//			}];
 		} else if (self.playerItem.status == AVPlayerStatusFailed) {
 			NSLog(@"video couldn't play for some reason");
 			// something went wrong. player.error should contain some information

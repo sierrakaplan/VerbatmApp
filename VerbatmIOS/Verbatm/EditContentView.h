@@ -33,8 +33,6 @@
 
 -(NSNumber*) getTextYPosition;
 
--(void)adjustContentSizing;
-
 -(NSInteger) getFilteredImageIndex;
 
 

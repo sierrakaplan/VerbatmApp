@@ -13,16 +13,11 @@
 #import "Durations.h"
 #import "Styles.h"
 #import "BaseArticleViewingExperience.h"
-#import "VerbatmImageScrollView.h"
+#import "PhotoAVE.h"
 
 @interface PhotoVideoAVE() <UIScrollViewDelegate>
 
-@property (strong, nonatomic) VerbatmImageScrollView *photoListScrollView;
-@property (strong, nonatomic) AVMutableComposition* mix;
-
-@property (nonatomic) NSInteger numImages;
-@property (nonatomic) NSInteger currentImageIndex;
-
+@property (strong, nonatomic) PhotoAVE* photosView;
 
 @end
 @implementation PhotoVideoAVE
@@ -33,10 +28,7 @@
     if(self)
     {
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-        [self setSubViews];
-		self.numImages = [photos count];
-        [self.photoListScrollView renderPhotos:photos withBlurBackground:YES];
-		[self.videoView playVideos:videos];
+        [self setSubViewsWithPhotos: photos andVideos: videos];
         //make sure the video is on repeat
         [self.videoView repeatVideoOnEnd:YES];
     }
@@ -44,22 +36,19 @@
 }
 
 //sets the frames for the video view and the photo scrollview
--(void) setSubViews {
-
+-(void) setSubViewsWithPhotos: (NSArray*) photos andVideos: (NSArray*) videos {
 	float videoViewHeight = ((self.frame.size.width*3)/4);
-	float photoListScrollViewHeight = (self.frame.size.height - videoViewHeight);
+	float photosViewHeight = (self.frame.size.height - videoViewHeight);
 
     CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
-    CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photoListScrollViewHeight);
-	self.photoListScrollView = [[VerbatmImageScrollView alloc] initWithFrame:photoListFrame];
-	self.photoListScrollView.delegate = self;
-	self.currentImageIndex = 0;
-	self.videoView = [[VideoAVE alloc] initWithFrame:videoViewFrame];
+    CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photosViewHeight);
+	self.photosView = [[PhotoAVE alloc] initWithFrame: photoListFrame andPhotoArray: photos];
+	self.videoView = [[VideoAVE alloc] initWithFrame:videoViewFrame andVideoArray: videos];
 
 	[self addSubview:self.videoView];
-	[self addSubview:self.photoListScrollView];
+	[self addSubview:self.photosView];
 
-	[self addTapGestureToView: self.photoListScrollView];
+	[self addTapGestureToView: self.photosView];
 	[self addTapGestureToView: self.videoView];
 }
 
@@ -85,8 +74,7 @@
 
 //image scroll view is on new page
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	NSInteger newPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
-	self.currentImageIndex = newPageIndex;
+//	NSInteger newPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
 }
 
 -(void)offScreen {

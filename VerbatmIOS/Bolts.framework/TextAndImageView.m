@@ -10,6 +10,8 @@
 #import "Styles.h"
 #import "TextAndImageView.h"
 
+#import "UITextView+Utilities.h"
+
 @interface TextAndImageView ()
 
 @property (nonatomic, readwrite) BOOL textShowing;
@@ -25,7 +27,10 @@
 		[self.imageView setImage: image];
 		[self addSubview: self.imageView];
 		[self.textView setText: text];
-		[self.textView setFrame: CGRectOffset(self.textView.frame, 0.f, textYPosition)];
+		[self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
+											textYPosition, self.textView.frame.size.width,
+											self.textView.frame.size.height)];
+		[self resizeTextView];
 	}
 	return self;
 }
@@ -40,6 +45,14 @@
 		[self.textView removeFromSuperview];
 	}
 	self.textShowing = !self.textShowing;
+}
+
+//Calculate the appropriate bounds for the text view
+//We only return a frame that is larger than the default frame size
+-(void) resizeTextView {
+	CGFloat contentHeight = [self.textView measureContentHeight];
+	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
+	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, height);
 }
 
 #pragma mark - Lazy Instantiation -

@@ -106,6 +106,7 @@
 	[self.textAndImageView.textView setFrame: CGRectOffset(self.textAndImageView.textView.frame, 0.f, yPosition)];
 	[self.textAndImageView showText:YES];
 	[self.textAndImageView.textView setDelegate:self];
+	[self.textAndImageView resizeTextView];
 	[self addToolBarToView];
 }
 
@@ -131,23 +132,9 @@
 
 #pragma mark Text view content changed
 
--(void)adjustContentSizing {
-    if (self.textAndImageView.textView) {
-        self.textAndImageView.textView.frame = [self calculateBoundsForTextView: self.textAndImageView.textView];
-	}
-}
-
-//Calculate the appropriate bounds for the text view
-//We only return a frame that is larger than the default frame size
--(CGRect) calculateBoundsForTextView: (UITextView *) textView {
-	CGFloat contentHeight = [textView measureContentHeight];
-	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
-	return CGRectMake(textView.frame.origin.x, textView.frame.origin.y, textView.frame.size.width, height);
-}
-
 //User has edited the text view somehow so we adjust its size
 - (void)textViewDidChange:(UITextView *)textView {
-	[self adjustContentSizing];
+	[self.textAndImageView resizeTextView];
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView{
