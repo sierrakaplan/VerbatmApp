@@ -206,7 +206,7 @@
 															andText:@"" andTextYPosition:TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
 	[self addSubview: self.textAndImageView];
 	[self addTapGestureToMainView];
-    [self createTextCreationButton];
+	[self addPanGesture];
 }
 
 #pragma mark Filters
@@ -255,14 +255,14 @@
 
 #pragma maro -Adjust textview position-
 
--(void)addPanToTextView{
-    UIPanGestureRecognizer * panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(adjustTVPosition:)];
+-(void) addPanGesture {
+    UIPanGestureRecognizer * panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPan:)];
 	panGesture.minimumNumberOfTouches = 1;
 	panGesture.maximumNumberOfTouches = 1;
     [self addGestureRecognizer:panGesture];
 }
 
--(void)adjustTVPosition:(UIGestureRecognizer *) sender{
+-(void) didPan:(UIGestureRecognizer *) sender{
         switch (sender.state) {
             case UIGestureRecognizerStateBegan:
                 self.panStartLocation = [sender locationOfTouch:0 inView:self];
@@ -341,7 +341,6 @@
                                                                          EXIT_CV_BUTTON_WALL_OFFSET,
                                                                          EXIT_CV_BUTTON_WIDTH,
                                                                          EXIT_CV_BUTTON_WIDTH)];
-        [self addPanToTextView];
     }
     return _textCreationButton;
 }

@@ -28,10 +28,16 @@
 
 @implementation VideoAVE
 
--(id)initWithFrame:(CGRect)frame andVideoArray:(NSArray*)videoList {
+-(id)initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList {
     if((self = [super initWithFrame:frame])) {
 		[self repeatVideoOnEnd:YES];
-        if(videoList.count) {
+        if(videoAndTextList.count) {
+			NSMutableArray* videoList = [[NSMutableArray alloc] initWithCapacity: videoAndTextList.count];
+			for (NSArray* videoAndTextArray in videoAndTextList) {
+				[videoList addObject: videoAndTextArray[0]];
+//				NSString* text = videoAndTextList[1];
+//				NSNumber* textYPos = videoAndTextList[2];
+			}
             [self playVideos:videoList];
             self.hasBeenSetUp = NO;
         }

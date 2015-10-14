@@ -34,6 +34,6 @@
 @property (nonatomic, retain) NSNumber *indexInPage;  // intValue
 @property (nonatomic, copy) NSString *servingUrl;
 @property (nonatomic, copy) NSString *text;
-@property (nonatomic, retain) NSNumber *textYPosition;  // doubleValue
+@property (nonatomic, retain) NSNumber *textYPosition;  // floatValue
 @property (nonatomic, retain) NSNumber *userKey;  // longLongValue
 @end

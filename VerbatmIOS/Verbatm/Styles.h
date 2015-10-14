@@ -108,7 +108,7 @@
 #pragma mark Images
 
 #define CIRCLE_OVER_IMAGES_BORDER_WIDTH 3.f
-#define CIRCLE_OVER_IMAGES_COLOR whiteColor
+#define CIRCLE_OVER_IMAGES_COLOR blackColor
 #define CIRCLE_OVER_IMAGES_HIGHLIGHT_COLOR blueColor
 
 #define CIRCLE_OVER_IMAGES_ALPHA 0.4

@@ -89,15 +89,16 @@
 
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
 	for (GTLVerbatmAppImage* image in page.images) {
-
 		AnyPromise* getImageDataPromise = [POVLoadManager loadDataFromURL: [NSURL URLWithString:image.servingUrl]];
 		[loadImageDataPromises addObject: getImageDataPromise];
 	}
 	return PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
 		NSMutableArray* uiImages = [[NSMutableArray alloc] init];
-		for (NSData* imageData in results) {
+		for (int i = 0; i < results.count; i++) {
+			NSData* imageData = results[i];
+			GTLVerbatmAppImage* gtlImage = page.images[i];
 			UIImage* uiImage = [UIImage imageWithData:imageData];
-			[uiImages addObject: @[uiImage]];
+			[uiImages addObject: @[uiImage, gtlImage.text, gtlImage.textYPosition]];
 		}
 		return uiImages;
 	});
@@ -110,7 +111,7 @@
 		NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: video.blobKeyString];
 		components.queryItems = @[blobKey];
 //		NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
-		[videoURLs addObject: components.URL];
+		[videoURLs addObject: @[components.URL, video.text, video.textYPosition]];
 	}
 	return videoURLs;
 }

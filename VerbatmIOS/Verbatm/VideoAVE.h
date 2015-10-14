@@ -16,7 +16,7 @@
 @interface VideoAVE : VideoPlayerView
 
 //note that the video list can be avurlasset or nsurl
--(id)initWithFrame:(CGRect)frame andVideoArray:(NSArray*)videoList;
+-(id)initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList;
 
 -(void)onScreen;
 -(void)offScreen;

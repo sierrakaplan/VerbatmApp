@@ -170,7 +170,8 @@
 			NSArray* photoWithText = pinchViewPhotosWithText[i];
 			UIImage* uiImage = photoWithText[0];
 			NSString* text = photoWithText[1];
-			[storeImagePromises addObject: [self storeImage:uiImage withIndex:i andText:text]];
+			NSNumber* textYPosition = photoWithText[2];
+			[storeImagePromises addObject: [self storeImage:uiImage withIndex:i andText:text andYPosition:textYPosition]];
 		}
 	}
 	return PMKWhen(storeImagePromises);
@@ -187,15 +188,16 @@
 			NSArray* videoWithText = pinchViewVideosWithText[i];
 			AVURLAsset* videoAsset = videoWithText[0];
 			NSString* text = videoWithText[1];
-			[storeVideoPromises addObject: [self storeVideoFromURL:videoAsset.URL atIndex:i andText:text]];
+			NSNumber* textYPosition = videoWithText[2];
+			[storeVideoPromises addObject: [self storeVideoFromURL:videoAsset.URL atIndex:i andText:text andYPosition: textYPosition]];
 		}
 	}
 	return PMKWhen(storeVideoPromises);
 }
 
--(AnyPromise*) storeVideoFromURL: (NSURL*) url atIndex: (NSInteger) i andText: (NSString*) text {
+-(AnyPromise*) storeVideoFromURL: (NSURL*) url atIndex: (NSInteger) i andText: (NSString*) text andYPosition: (NSNumber*) textYPosition {
 	return [POVLoadManager loadDataFromURL: url].then(^(NSData * data){
-		return [self storeVideo:data withIndex: i andText:text];
+		return [self storeVideo:data withIndex: i andText:text andYPosition: textYPosition];
 	});
 }
 
@@ -203,7 +205,7 @@
 // (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)
 // Resolves to what insertImage resolves to,
 // Which should be the ID of the GTL image just stored
--(AnyPromise*) storeImage: (UIImage*) image withIndex: (NSInteger) indexInPage andText: (NSString*) text {
+-(AnyPromise*) storeImage: (UIImage*) image withIndex: (NSInteger) indexInPage andText: (NSString*) text andYPosition: (NSNumber*) textYPosition {
 	return [self getImageUploadURI].then(^(NSString* uri) {
 		MediaUploader* imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
 		[self.mediaUploaders addObject: imageUploader];
@@ -213,6 +215,7 @@
 		gtlImage.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
 		gtlImage.servingUrl = servingURL;
 		gtlImage.text = text;
+		gtlImage.textYPosition = textYPosition;
 		//TODO: set user key?
 		return [self insertImage: gtlImage];
 	});
@@ -221,7 +224,7 @@
 //  (get video upload uri) then (upload video to blobstore using uri) then (store gtlvideo with blob key string)
 // Resolves to what insertVideo resolves to,
 // Which should be the ID of the GTL video just stored
--(AnyPromise*) storeVideo: (NSData*) videoData withIndex: (NSInteger) indexInPage andText: (NSString*) text {
+-(AnyPromise*) storeVideo: (NSData*) videoData withIndex: (NSInteger) indexInPage andText: (NSString*) text andYPosition: (NSNumber*) textYPosition {
 	return [self getVideoUploadURI].then(^(NSString* uri) {
 		MediaUploader* videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
 		[self.mediaUploaders addObject: videoUploader];
@@ -231,6 +234,7 @@
 		gtlVideo.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
 		gtlVideo.blobKeyString = blobStoreKeyString;
 		gtlVideo.text = text;
+		gtlVideo.textYPosition = textYPosition;
 		//TODO: set user key?
 		return [self insertVideo: gtlVideo];
 	});

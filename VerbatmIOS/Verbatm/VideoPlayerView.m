@@ -227,7 +227,6 @@
              [self playVideo];
              self.playAtEndOfAsynchronousSetup = NO;
          }
-        
     });
 }
 

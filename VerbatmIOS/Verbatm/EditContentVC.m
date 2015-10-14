@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "CoverPicturePinchView.h"
 #import "EditContentVC.h"
 #import "ImagePinchView.h"
 #import "SizesAndPositions.h"
@@ -35,8 +36,12 @@
 
 		ImagePinchView* imagePinchView = (ImagePinchView*) self.openPinchView;
 		[self.openEditContentView displayImages:[imagePinchView filteredImages] atIndex:[imagePinchView filterImageIndex]];
-		if (imagePinchView.text && imagePinchView.text.length) {
-			[self.openEditContentView setText:imagePinchView.text andTextViewYPosition:imagePinchView.textYPosition.floatValue];
+
+		if (![self.openPinchView isKindOfClass:[CoverPicturePinchView class]]) {
+			[self.openEditContentView createTextCreationButton];
+			if (imagePinchView.text && imagePinchView.text.length) {
+				[self.openEditContentView setText:imagePinchView.text andTextViewYPosition:imagePinchView.textYPosition.floatValue];
+			}
 		}
 	} else if(self.openPinchView.containsVideo) {
 
@@ -87,7 +92,9 @@
 		((ImagePinchView *) self.openPinchView).text = [self.openEditContentView getText];
 		((ImagePinchView *) self.openPinchView).textYPosition = [self.openEditContentView getTextYPosition];
     }
-	//TODO: video
+	if(self.openPinchView.containsVideo) {
+		//TODO: add text to video
+	}
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
 }
 
