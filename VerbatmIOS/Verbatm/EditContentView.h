@@ -13,11 +13,11 @@
 
 //Tells parent view controller that edit content view should exit
 -(void) exitEditContentView;
-
 @end
 
 @interface EditContentView : UIView
 
+@property (nonatomic, strong) id<EditContentViewDelegate> delegate;
 @property (nonatomic, strong) VideoPlayerView * videoView;
 
 -(void) displayVideo: (AVAsset*) videoAsset;
@@ -34,7 +34,5 @@
 -(NSNumber*) getTextYPosition;
 
 -(NSInteger) getFilteredImageIndex;
-
-@property (nonatomic, strong) id<EditContentViewDelegate> delegate;
 
 @end
