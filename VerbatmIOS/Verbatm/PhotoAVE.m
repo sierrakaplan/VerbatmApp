@@ -80,6 +80,12 @@
 		UIImage* image = photoText[0];
 		NSString* text = photoText[1];
 		NSNumber* textYPosition = photoText[2];
+        
+        if(self.subviewOfPhotoVideoAVE){
+            textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
+        }
+        
+        
         TextAndImageView* imageContainerView = [[TextAndImageView alloc] initWithFrame:self.bounds
 																			  andImage: image
 																			   andText: text andTextYPosition: textYPosition.floatValue];

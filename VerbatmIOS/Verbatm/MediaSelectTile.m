@@ -27,7 +27,6 @@
 {
 	self = [super initWithFrame:frame];
 	if (self) {
-
 		[self createFramesForButtonWithFrame: frame];
 		[self createImagesForButton];
 		[self addSubview: self.addMediaButton];
