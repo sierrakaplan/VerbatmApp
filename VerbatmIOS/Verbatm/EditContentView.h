@@ -35,7 +35,6 @@
 
 -(NSInteger) getFilteredImageIndex;
 
-
 @property (nonatomic, strong) id<EditContentViewDelegate> delegate;
 
 @end
