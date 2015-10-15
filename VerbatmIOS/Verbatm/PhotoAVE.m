@@ -77,45 +77,38 @@
 -(void) addPhotos:(NSArray*)photosTextArray {
     
 	for (NSArray* photoText in photosTextArray) {
-		UIImage* image = photoText[0];
-		NSString* text = photoText[1];
-		NSNumber* textYPosition = photoText[2];
-        
-        if(self.subviewOfPhotoVideoAVE){
-            textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
-        }
-        
-        
-        TextAndImageView* imageContainerView = [[TextAndImageView alloc] initWithFrame:self.bounds
-																			  andImage: image
-																			   andText: text andTextYPosition: textYPosition.floatValue];
-        [self.imageContainerViews addObject:imageContainerView];
+        [self.imageContainerViews addObject:[self getImageContainerViewFromPhotoTextArray:photoText]];
 	}
 
 	// Has to add duplicate of first photo to bottom so that you can fade from the last photo into the first
 
 	//add extra copy of photo 1 at bottom for last arc of circle transition
 	NSArray* firstPhotoText = photosTextArray[0];
-	UIImage* firstImage = firstPhotoText[0];
-	NSString* firstText = firstPhotoText[1];
-	NSNumber* textYPosition = firstPhotoText[2];
+	[self addSubview: [self getImageContainerViewFromPhotoTextArray: firstPhotoText]];
 
-    if(self.subviewOfPhotoVideoAVE){
-        textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
-    }
-	TextAndImageView* firstImageContainerView = [[TextAndImageView alloc] initWithFrame:self.bounds
-																		  andImage: firstImage
-																		   andText: firstText andTextYPosition: textYPosition.floatValue];
-    
-	[self addSubview: firstImageContainerView];
 	//adding subviews in reverse order so that imageview at index 0 on top
 	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
 		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
 	}
 	//add textview button if the first image has text
+	NSString* firstText = firstPhotoText[1];
 	if(firstText && firstText.length) {
 		[self createTextViewButton];
 	}
+}
+
+-(TextAndImageView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
+	UIImage* image = photoTextArray[0];
+	NSString* text = photoTextArray[1];
+	NSNumber* textYPosition = photoTextArray[2];
+
+	if(self.subviewOfPhotoVideoAVE){
+		textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
+	}
+	return [[TextAndImageView alloc] initWithFrame:self.bounds
+										  andImage: image
+										   andText: text
+								  andTextYPosition: textYPosition.floatValue];
 }
 
 -(void) createCircleViewAndPoints {
