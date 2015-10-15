@@ -146,7 +146,11 @@
     if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
         [self displayCircleOnAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[PhotoAVE class]]) {
+        ((PhotoAVE *)ave).povScrollView = self.mainScrollView;
         [(PhotoAVE*)ave showAndRemoveCircle];
+    }else if ([ave isKindOfClass:[PhotoVideoAVE class]]){
+        ((PhotoVideoAVE *)ave).povScrollView = self.mainScrollView;
+        [(PhotoVideoAVE*)ave showAndRemoveCircle];
     }
 }
 

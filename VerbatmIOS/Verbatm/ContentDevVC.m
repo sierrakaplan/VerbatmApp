@@ -914,7 +914,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 -(void) handleVerticlePinchGestureChanged: (UIPinchGestureRecognizer *)gesture {
 
-	CGPoint touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
+    if([gesture numberOfTouches] != 2) return;
+    
+    CGPoint touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
 	CGPoint touch2 = [gesture locationOfTouch:1 inView:self.mainScrollView];
 
 	//touch1 is upper touch

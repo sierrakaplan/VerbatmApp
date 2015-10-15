@@ -42,27 +42,33 @@
 
     CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
     CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photosViewHeight);
-	self.photosView = [[PhotoAVE alloc] initWithFrame: photoListFrame andPhotoArray: photos];
+	self.photosView = [[PhotoAVE alloc] initWithFrame: photoListFrame andPhotoArray: photos  isSubViewOfPhotoVideoAve:YES];
 	self.videoView = [[VideoAVE alloc] initWithFrame:videoViewFrame andVideoArray: videos];
 
 	[self addSubview:self.videoView];
 	[self addSubview:self.photosView];
 
-	[self addTapGestureToView: self.photosView];
-	[self addTapGestureToView: self.videoView];
+	[self addTapGestureToPhotoView: self.photosView];
+	[self addTapGestureToVideoView: self.videoView];
 }
 
 
--(void) addTapGestureToView:(UIView *)view
+-(void) addTapGestureToPhotoView:(UIView *)view
 {
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(elementTapped:)];
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoElementTapped:)];
     tap.numberOfTapsRequired =1;
     [view addGestureRecognizer:tap];
+    if(self.photosView)[tap requireGestureRecognizerToFail:self.photosView.photoAveTapGesture];
+}
+-(void) addTapGestureToVideoView:(UIView *)view
+{
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(videoElementTapped:)];
+    tap.numberOfTapsRequired =1;
+    [view addGestureRecognizer:tap];
+    if(self.photosView)[tap requireGestureRecognizerToFail:self.photosView.photoAveTapGesture];
 }
 
-
--(void) elementTapped:(UITapGestureRecognizer *) gesture {
-
+-(void) videoElementTapped:(UITapGestureRecognizer *) gesture {
 	UIView * view = gesture.view;
 	BaseArticleViewingExperience* superview = (BaseArticleViewingExperience*)self.superview;
 	if(superview.mainViewIsFullScreen) {
@@ -71,6 +77,25 @@
 		[superview setViewAsMainView:view];
 	}
 }
+
+-(void) photoElementTapped:(UITapGestureRecognizer *) gesture {
+    UIView * view = gesture.view;
+    BaseArticleViewingExperience* superview = (BaseArticleViewingExperience*)self.superview;
+    if(superview.mainViewIsFullScreen) {
+        [superview removeMainView];
+    } else {
+        [superview setViewAsMainView:view];
+    }
+}
+
+
+-(void) showAndRemoveCircle {
+    if(self.povScrollView){
+        self.photosView.povScrollView = self.povScrollView;
+    }
+    [self.photosView showAndRemoveCircle];
+}
+
 
 //image scroll view is on new page
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
