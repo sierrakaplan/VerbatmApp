@@ -19,6 +19,8 @@
 #define CREATE_FILTERED_IMAGES_QUEUE_KEY "create_filtered_images_queue"
 #define IMAGE_KEY @"image_key"
 #define FILTER_INDEX_KEY @"filter_index_key"
+#define TEXT_KEY @"text_key"
+#define TEXT_Y_POSITION_KEY @"text_y_position_key"
 
 @end
 
@@ -128,6 +130,8 @@
 	[super encodeWithCoder:coder];
 	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
 	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
+	[coder encodeObject:self.textYPosition forKey:TEXT_Y_POSITION_KEY];
+	[coder encodeObject:self.text forKey:TEXT_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -137,6 +141,8 @@
 		NSNumber* filterImageIndexNumber = [decoder decodeObjectForKey:FILTER_INDEX_KEY];
 		[self initWithImage:image];
 		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
+		self.text = [decoder decodeObjectForKey:TEXT_KEY];
+		self.textYPosition = [decoder decodeObjectForKey:TEXT_Y_POSITION_KEY];
 	}
 	return self;
 }
