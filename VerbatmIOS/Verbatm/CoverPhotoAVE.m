@@ -38,8 +38,6 @@
 	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
 	[imageContainerView setBackgroundColor:[UIColor blackColor]];
 	UIImageView* photoView = [self getImageViewForImage:image];
-	//UIImageView* blurPhotoView = [image getBlurImageViewWithFilterLevel:FILTER_LEVEL_BLUR andFrame: self.bounds];
-	//[imageContainerView addSubview:blurPhotoView];
 	[imageContainerView addSubview:photoView];
 	return imageContainerView;
 }
@@ -54,8 +52,6 @@
 }
 
 -(void) addTitleViewWithTitle:(NSString*) title andTextColor:(UIColor*) textColor {
-
-	
 	UILabel* titleLabel = [[UILabel alloc]init];
 	titleLabel.textAlignment = NSTextAlignmentCenter;
 	titleLabel.lineBreakMode = NSLineBreakByWordWrapping;
@@ -68,18 +64,9 @@
 		title = @"No Title Entered";
 	}
 	titleLabel.text = title;
-    
     titleLabel.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
-    
     [titleLabel sizeToFit];
-    
     titleLabel.frame = self.bounds;
-    
-    
-    //CGRectMake(self.center.x - ((titleLabel.frame.size.width + TITLE_WIDTH_BUFFER)/2), self.center.y -(titleLabel.frame.size.height +  TITLE_HEIGHT_BUFFER)-
-//                                  TITLE_CENTER_Y_OFFSET,
-//                                  titleLabel.frame.size.width + TITLE_WIDTH_BUFFER,
-//                                                     titleLabel.frame.size.height +  TITLE_HEIGHT_BUFFER);
     
 	[self addSubview: titleLabel];
 }

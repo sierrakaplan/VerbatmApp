@@ -12,8 +12,11 @@
 
 @protocol MediaSessionManagerDelegate<NSObject>
 @optional
+
+-(void)capturedImage: (UIImage*) image;
 //notifies any one conforming to the protocol that an asset has been saved.
 -(void)didFinishSavingMediaToAsset:(ALAsset*)asset;
+
 @end
 @interface MediaSessionManager : NSObject
 

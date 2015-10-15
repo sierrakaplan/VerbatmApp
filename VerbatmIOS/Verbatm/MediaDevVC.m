@@ -242,19 +242,29 @@
 
 #pragma mark - Saved Media animation -
 
--(void)didFinishSavingMediaToAsset:(ALAsset*)asset {
-    //animate image of asset
-	@autoreleasepool {
-		ALAssetRepresentation *representation = [asset defaultRepresentation];
-		CGImageRef imageRef = [representation fullResolutionImage];
-		self.previewImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
-		CGImageRelease(imageRef);
-	}
+-(void) capturedImage:(UIImage *)image {
+	self.previewImageView = [[UIImageView alloc] initWithImage: image];
 	if (!self.mediaPreviewPaused) {
 		[self animatePreviewImage];
 	}
-    //add media to the contentDev stream
-    [self.contentDevVC addMediaAssetToStream:asset];
+	[self.contentDevVC addImageToStream:image];
+}
+
+-(void)didFinishSavingMediaToAsset:(ALAsset*)asset {
+	if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString: ALAssetTypeVideo]) {
+		//animate image of asset
+		@autoreleasepool {
+			ALAssetRepresentation *representation = [asset defaultRepresentation];
+			CGImageRef imageRef = [representation fullResolutionImage];
+			self.previewImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
+			CGImageRelease(imageRef);
+		}
+		if (!self.mediaPreviewPaused) {
+			[self animatePreviewImage];
+		}
+		//add media to the contentDev stream
+		[self.contentDevVC addMediaAssetToStream:asset];
+	}
 }
 
 

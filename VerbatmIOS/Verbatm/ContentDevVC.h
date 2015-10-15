@@ -56,6 +56,8 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 @property (nonatomic, strong) EditContentView * openEditContentView;
 @property (nonatomic, strong) PinchView * openPinchView;
 
+
+-(void) addImageToStream: (UIImage*) image;
 -(void)addMediaAssetToStream:(ALAsset *) asset;
 
 

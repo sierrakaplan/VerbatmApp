@@ -78,7 +78,7 @@
     
     //Title
     if (!self.picker.title)
-        self.title = NSLocalizedStringFromTable(@"picker.navigation.title", @"GMImagePicker",@"Navigation bar default title");
+        self.title = NSLocalizedStringFromTable(@"picker.navigation.title", @"GMImagePicker", @"Navigation bar default title");
     else
         self.title = self.picker.title;
     

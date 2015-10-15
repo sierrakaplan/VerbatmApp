@@ -79,8 +79,8 @@
 	} else if(page.videos.count) {
 		type = AVETypeVideo;
 	}
-	return [self getUIImagesFromPage: page].then(^(NSArray* images) {
-		BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame: frame andText:nil andPhotos:images andVideos:[self getVideosFromPage: page] andAVEType:type];
+	return [self getUIImagesFromPage: page].then(^(NSArray* imagesAndText) {
+		BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame: frame andText:nil andPhotos:imagesAndText andVideos:[self getVideosFromPage: page] andAVEType:type];
 		return textAndOtherMediaAVE;
 	});
 }
@@ -98,6 +98,12 @@
 			NSData* imageData = results[i];
 			GTLVerbatmAppImage* gtlImage = page.images[i];
 			UIImage* uiImage = [UIImage imageWithData:imageData];
+			if (!gtlImage.text) {
+				gtlImage.text = @"";
+			}
+			if (!gtlImage.textYPosition) {
+				gtlImage.textYPosition = [NSNumber numberWithFloat: 0.f];
+			}
 			[uiImages addObject: @[uiImage, gtlImage.text, gtlImage.textYPosition]];
 		}
 		return uiImages;
@@ -111,6 +117,12 @@
 		NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: video.blobKeyString];
 		components.queryItems = @[blobKey];
 //		NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
+		if (!video.text) {
+			video.text = @"";
+		}
+		if (!video.textYPosition) {
+			video.textYPosition = [NSNumber numberWithFloat: 0.f];
+		}
 		[videoURLs addObject: @[components.URL, video.text, video.textYPosition]];
 	}
 	return videoURLs;
