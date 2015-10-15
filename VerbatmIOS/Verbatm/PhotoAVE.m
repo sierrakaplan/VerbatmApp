@@ -86,21 +86,20 @@
         [self.imageContainerViews addObject:imageContainerView];
 	}
 
+	// Has to add duplicate of first photo to bottom so that you can fade from the last photo into the first
+
 	//add extra copy of photo 1 at bottom for last arc of circle transition
 	NSArray* firstPhotoText = photosTextArray[0];
 	UIImage* firstImage = firstPhotoText[0];
 	NSString* firstText = firstPhotoText[1];
 	NSNumber* textYPosition = firstPhotoText[2];
-    
-    
+
     if(self.subviewOfPhotoVideoAVE){
         textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
     }
-    
 	TextAndImageView* firstImageContainerView = [[TextAndImageView alloc] initWithFrame:self.bounds
 																		  andImage: firstImage
 																		   andText: firstText andTextYPosition: textYPosition.floatValue];
-    
     
 	[self addSubview: firstImageContainerView];
 	//adding subviews in reverse order so that imageview at index 0 on top

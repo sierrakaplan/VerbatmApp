@@ -239,7 +239,6 @@
     if(self.textAndImageView.textView.isFirstResponder){
         [self.textAndImageView.textView resignFirstResponder];
     } else {
-        [self.videoView stopVideo];
         [self.delegate exitEditContentView];
     }
 }

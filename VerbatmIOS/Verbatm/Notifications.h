@@ -21,5 +21,7 @@
 
 #define NOTIFICATION_POV_PUBLISHED @"notification_pov_published"
 
+#define NOTIFICATION_REFRESH_FEEDS @"notification_refresh_feeds"
+
 
 #endif /* Header_h */

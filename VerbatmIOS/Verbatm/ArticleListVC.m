@@ -104,6 +104,10 @@
                                              selector:@selector(networkConnectionUpdate:)
                                                  name:INTERNET_CONNECTION_NOTIFICATION
                                                object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(refresh)
+												 name:NOTIFICATION_REFRESH_FEEDS
+											   object:nil];
 }
 
 -(void) initPovListView {
@@ -241,6 +245,11 @@
 }
 
 #pragma mark - Refresh feed -
+
+-(void) refreshNotification {
+	[[NSNotificationCenter defaultCenter] postNotificationName: NOTIFICATION_REFRESH_FEEDS object:nil];
+}
+
 // Tells pov loader to reload POV's completely (removing all those previously loaded and getting the first page again)
 -(void) refreshFeed {
     if(self.refreshInProgress) return;

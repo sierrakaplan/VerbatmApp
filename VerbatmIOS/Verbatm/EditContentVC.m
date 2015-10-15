@@ -95,6 +95,7 @@
 		[[UserPovInProgress sharedInstance] updatePinchView: self.openPinchView];
     }
 	if(self.openPinchView.containsVideo) {
+        if(self.openEditContentView.videoView)[self.openEditContentView.videoView stopVideo];
 		//TODO: add text to video
 	}
     [self performSegueWithIdentifier:UNWIND_SEGUE_EDIT_CONTENT_VIEW sender:self];
