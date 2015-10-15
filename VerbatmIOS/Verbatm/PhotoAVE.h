@@ -19,10 +19,11 @@
 @interface PhotoAVE : UIView
 
 @property (strong, nonatomic) id<PhotoAVEDelegate> delegate;
-
+//this is used with the tap gesture in the photovideoave -- we pass it in in order to prevent them from intercepting each other
+@property (nonatomic, strong) UITapGestureRecognizer * photoAveTapGesture;
+@property (weak, nonatomic) UIScrollView * povScrollView;//set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
 //photos are UIImage*
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos;
-
--(void) showAndRemoveCircle;
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos isSubViewOfPhotoVideoAve:(BOOL) isPVSubview;
+-(void) showAndRemoveCircle;//be sure to set povScrollView
 
 @end

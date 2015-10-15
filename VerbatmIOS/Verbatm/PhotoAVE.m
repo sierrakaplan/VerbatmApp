@@ -44,6 +44,8 @@
 
 @property (nonatomic, strong) UIButton * textViewButton;
 
+@property (nonatomic) BOOL subviewOfPhotoVideoAVE;
+
 
 #define TEXT_CREATION_ICON @"textCreateIcon"
 #define TEXT_VIEW_HEIGHT 70.f
@@ -52,10 +54,11 @@
 @implementation PhotoAVE
 
 //TODO: limit on how many photos can be pinched together?
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos {
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos isSubViewOfPhotoVideoAve:(BOOL) isPVSubview {
 	self = [super initWithFrame:frame];
 	if (self) {
 		if ([photos count]) {
+            self.subviewOfPhotoVideoAVE = isPVSubview;
 			[self addPhotos:photos];
 		}
 		if ([photos count] > 1) {
@@ -88,9 +91,17 @@
 	UIImage* firstImage = firstPhotoText[0];
 	NSString* firstText = firstPhotoText[1];
 	NSNumber* textYPosition = firstPhotoText[2];
+    
+    
+    if(self.subviewOfPhotoVideoAVE){
+        textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
+    }
+    
 	TextAndImageView* firstImageContainerView = [[TextAndImageView alloc] initWithFrame:self.bounds
 																		  andImage: firstImage
 																		   andText: firstText andTextYPosition: textYPosition.floatValue];
+    
+    
 	[self addSubview: firstImageContainerView];
 	//adding subviews in reverse order so that imageview at index 0 on top
 	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
@@ -176,8 +187,8 @@
 #pragma mark - Tap Gesture -
 
 -(void)addTapGestureToView:(UIView*)view {
-	UITapGestureRecognizer* tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:view action:@selector(mainViewTapped:)];
-	[view addGestureRecognizer:tapGesture];
+	self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:view action:@selector(mainViewTapped:)];
+	[view addGestureRecognizer:self.photoAveTapGesture];
 }
 
 -(void) mainViewTapped:(UITapGestureRecognizer *) sender {
@@ -325,12 +336,8 @@
 -(void) showAndRemoveCircle {
 	[self displayCircle:YES];
 	self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_FIRST_APPEAR_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
-    
-    //we expect this superview to be a scrollview
-    UIView * view = self.superview.superview;
-    
-    if([view isKindOfClass:[UIScrollView class]] && self.circlePanGesture){
-        [((UIScrollView *) view).panGestureRecognizer requireGestureRecognizerToFail: self.circlePanGesture];
+    if(self.povScrollView && self.circlePanGesture){
+        [self.povScrollView.panGestureRecognizer requireGestureRecognizerToFail: self.circlePanGesture];
     }
     
 }

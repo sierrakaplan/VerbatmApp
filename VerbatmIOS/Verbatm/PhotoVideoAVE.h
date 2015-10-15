@@ -15,6 +15,10 @@
 @interface PhotoVideoAVE : UIView
 
 @property (strong, nonatomic) VideoAVE *videoView;
+@property (weak, nonatomic) UIScrollView * povScrollView;//set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
+
+
+
 
 //Photos are array of UIImage and videos are array of AVassets or NSURl
 -(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos;
@@ -29,4 +33,7 @@
 -(void)onScreen;
 
 -(void)almostOnScreen;
+
+-(void) showAndRemoveCircle;
+
 @end

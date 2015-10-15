@@ -52,8 +52,8 @@
     if(self) {
 		switch (aveType) {
 			case AVETypePhoto: {
-				PhotoAVE* photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:photos];
-				[self addSubview: photoAve];
+                PhotoAVE* photoAve =  [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:photos isSubViewOfPhotoVideoAve:NO];
+                [self addSubview: photoAve];
 				self.subAVE = photoAve;
 				break;
 			}
