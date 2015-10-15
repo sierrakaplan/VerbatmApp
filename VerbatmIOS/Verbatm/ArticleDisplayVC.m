@@ -105,7 +105,7 @@
 			}
 			[povView renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
 		}).catch(^(NSError* error) {
-			NSLog(@"Error loading page: %@", error.description);
+			NSLog(@"Error getting AVE from page: %@", error.description);
 		});
 	}
 }

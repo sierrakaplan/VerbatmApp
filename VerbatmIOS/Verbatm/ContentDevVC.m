@@ -1628,34 +1628,26 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 #pragma mark - Gallery + Image picker -
 
+-(void) addImageToStream: (UIImage*) image {
+	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+	[self createPinchViewFromImage: image];
+}
+
 /*
- We are given an asset representing either a video or a photo and
+ We are given an asset representing either a video and
  add it the the stream of pinch views.
  */
 -(void)addMediaAssetToStream:(ALAsset *) asset {
 
 	ALAssetRepresentation* assetRepresentation = [asset defaultRepresentation];
 
-	//check if this is a video asset or a photo asset
-	if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString:ALAssetTypePhoto]) {
-		//asset is a photo
-		dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-			NSData * data = [UtilityFunctions convertALAssetRepresentationToData:assetRepresentation];
-			UIImage* image = [self getImageFromImageData: data];
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[self createPinchViewFromImage: image];
-			});
+	//asset is a video
+	dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self createPinchViewFromVideoAsset:[AVURLAsset assetWithURL:[assetRepresentation url]]];
 		});
+	});
 
-	}else{
-		//asset is a video
-		dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[self createPinchViewFromVideoAsset:[AVURLAsset assetWithURL:[assetRepresentation url]]];
-			});
-		});
-
-	}
 }
 
 -(void) presentEfficientGallery {

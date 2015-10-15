@@ -341,145 +341,22 @@
 	[self.movieOutputFile startRecordingToOutputFileURL:outputURL recordingDelegate:self];
 }
 
-
-/*fixing video orientation seems to be working fine when tested*/
--(void)fixVideoOrientationOfAssetAtUrl:(NSURL *)outputFileURL {
-	//create the mutable composition object. This will hold the multiple tracks
-	AVMutableComposition* fixedComposition = [AVMutableComposition composition];
-
-	//get the video and audio tracks for the composition from the asset
-	AVMutableCompositionTrack* videoTrack = [fixedComposition addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-
-	AVMutableCompositionTrack* audioTrack = [fixedComposition addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-	AVAsset* videoAsset = [AVAsset assetWithURL: outputFileURL]; //could use valueForKey method in the asset class.
-	[videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0] atTime:kCMTimeZero error:nil];
-	[audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:[[videoAsset tracksWithMediaType:AVMediaTypeAudio]objectAtIndex:0] atTime:kCMTimeZero error:nil];
-
-//	NSLog(@"video composition track time range: %lld, %lld", videoTrack.timeRange.start.value, videoTrack.timeRange.duration.value);
-
-	//create the instruction that fixes the orientation of the asset.
-	AVMutableVideoCompositionInstruction* instructions = [AVMutableVideoCompositionInstruction videoCompositionInstruction];
-	instructions.timeRange = CMTimeRangeMake(kCMTimeZero, videoAsset.duration);
-
-	//fixing the orientation of the video
-	AVMutableVideoCompositionLayerInstruction* layerInstructions = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
-
-	//making video and audio assets
-	AVAssetTrack* assetTrack = [[videoAsset tracksWithMediaType:AVMediaTypeVideo]objectAtIndex:0];
-//	NSLog(@"%@, %@, %@", videoAsset, assetTrack, audioAssetTrack);
-
-	CGAffineTransform finalTransform;// = CGAffineTransformTranslate(t2, -assetTrack.naturalSize.width/2, -assetTrack.naturalSize.height/2);
-	CGSize assetNaturalSize =  assetTrack.naturalSize;
-	if(UIDeviceOrientationIsLandscape(self.deviceStartOrientation)){
-		CGAffineTransform t1 = CGAffineTransformMakeTranslation(assetTrack.naturalSize.width/2, assetTrack.naturalSize.height/2);
-		CGAffineTransform t2;
-		if(self.deviceStartOrientation == UIDeviceOrientationLandscapeLeft){
-			t2 = CGAffineTransformRotate(t1,0);
-		}else{
-			t2 = CGAffineTransformRotate(t1, M_PI);
-		}
-		finalTransform =  CGAffineTransformTranslate(t2, -assetTrack.naturalSize.width/2, -assetTrack.naturalSize.height/2);
-	}else{
-		//check for cropping . will fix this later
-		CGAffineTransform t1 = CGAffineTransformMakeTranslation(assetNaturalSize.width/2, 0);
-		finalTransform = CGAffineTransformRotate(t1, M_PI_2);
-		assetNaturalSize = CGSizeMake(assetNaturalSize.width/2,self.previewContainerView.frame.size.height);
-	}
-
-	AVMutableVideoCompositionLayerInstruction* layerInstructions2 = [AVMutableVideoCompositionLayerInstruction videoCompositionLayerInstructionWithAssetTrack:videoTrack];
-	[layerInstructions2 setTransform:finalTransform atTime:kCMTimeZero];
-	[layerInstructions2 setOpacity:0.0 atTime:videoAsset.duration];
-
-	[layerInstructions setTransform:finalTransform atTime:kCMTimeZero];
-	[layerInstructions setOpacity:0.0 atTime:videoAsset.duration];
-	instructions.layerInstructions = @[layerInstructions, layerInstructions2];
-	AVMutableVideoComposition* mainCompositionInst = [AVMutableVideoComposition videoComposition];
-	mainCompositionInst.instructions = @[instructions];
-	mainCompositionInst.frameDuration = CMTimeMake(1, 32);
-	mainCompositionInst.renderScale = 1;
-
-	mainCompositionInst.renderSize = assetNaturalSize;
-
-	NSString* filePath = [outputFileURL path];
-	NSError* error;
-	[[NSFileManager defaultManager] removeItemAtPath:filePath error:&error];
-
-	if(error){
-		NSLog(@"error %@", error.description);
-	}
-
-	AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:fixedComposition presetName:AVAssetExportPresetHighestQuality];
-	exporter.outputURL = outputFileURL;
-	exporter.outputFileType = AVFileTypeQuickTimeMovie;
-	exporter.videoComposition = mainCompositionInst;
-	exporter.shouldOptimizeForNetworkUse = YES;
-	[exporter exportAsynchronouslyWithCompletionHandler:^{
-		switch ([exporter status]) {
-			case AVAssetExportSessionStatusCompleted: {
-				if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
-					[self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
-						[self.assetLibrary assetForURL:assetURL
-										   resultBlock:^(ALAsset *asset) {
-											   [self.verbatmAlbum addAsset:asset];
-//											   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-											  // [self.delegate didFinishSavingMediaToAsset:asset];
-										   }
-										  failureBlock:^(NSError* error) {
-//											  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-										  } ];
-					}];
-				}else{
-				}
-				break;
-			}
-			case AVAssetExportSessionStatusFailed: {
-				NSLog(@"Export Session failed: %@", exporter.error.description);
-				break;
-			}
-			default: {
-				break;
-			}
-		}
-	}];
-}
-
-//Lucio
 -(void)stopVideoRecording {
 	[self.movieOutputFile stopRecording];
 }
 
 #pragma mark -delegate methods AVCaptureFileOutputRecordingDelegate
+
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
     
     MediaSessionManager * __weak weakSelf = self;
-    
-	//[self fixVideoOrientationOfAssetAtUrl:outputFileURL];
 	if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
 		[self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
 			[weakSelf.assetLibrary assetForURL:assetURL
 							   resultBlock:^(ALAsset *asset) {
 								   [self.verbatmAlbum addAsset:asset];
 //								   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-								   [self.delegate didFinishSavingMediaToAsset:asset];
-
-								   //TODO: check if this is necessary (merge)
-//								   [weakSelf.verbatmAlbum addAsset:asset];
-//								   //NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-//                                   
-//                                   /*To get a usable copy of the asset just saved we will iterate through
-//                                    our verbatm alassetgroup and take the first object we find. The first
-//                                    object is the most recent addition*/
-//                                   [weakSelf.verbatmAlbum enumerateAssetsWithOptions:NSEnumerationReverse usingBlock:^(ALAsset *alAsset, NSUInteger index, BOOL *innerStop) {
-//                                       // first non-nil element will be the recent asset
-//                                       if (alAsset){
-//                                           dispatch_async(dispatch_get_main_queue(), ^{
-//                                              [weakSelf.delegate didFinishSavingMediaToAsset:alAsset];
-//                                           });
-//                                           
-//                                           //Triggers for the enumeration to stop
-//                                           *innerStop = YES;
-//                                       }
-//                                   }];
+//TODO: [self.delegate didFinishSavingMediaToAsset:asset];
 
 							   }
 							  failureBlock:^(NSError* error) {
@@ -517,6 +394,7 @@
 		{
 			NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
 			[self processImage:[[UIImage alloc] initWithData: dataForImage]];
+			[self.delegate capturedImage: self.stillImage];
 			[self saveImageToVerbatmAlbum];
 		}else{
 //			NSLog(@"%@", [error localizedDescription]);
@@ -526,9 +404,7 @@
 
 #pragma mark - accessory methods
 
-//by Lucio
--(void)saveImageToVerbatmAlbum
-{
+-(void)saveImageToVerbatmAlbum {
 	CGImageRef img = [self.stillImage CGImage];
 	[self.assetLibrary writeImageToSavedPhotosAlbum:img
 										   metadata:nil
@@ -537,7 +413,6 @@
 											// try to get the asset
 											[self.assetLibrary assetForURL:assetURL
 															   resultBlock:^(ALAsset *asset) {
-																   // assign the photo to the album
 																   [self.verbatmAlbum addAsset:asset];
 //																   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
 																   [self.delegate didFinishSavingMediaToAsset:asset];

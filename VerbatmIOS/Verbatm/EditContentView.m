@@ -103,7 +103,9 @@
 -(void) setText: (NSString*) text andTextViewYPosition: (CGFloat) yPosition {
 	self.textAndImageView.textView.editable = YES;
 	self.textAndImageView.textView.text = text;
-	[self.textAndImageView.textView setFrame: CGRectOffset(self.textAndImageView.textView.frame, 0.f, yPosition)];
+	[self.textAndImageView.textView setFrame: CGRectMake(self.textAndImageView.textView.frame.origin.x, yPosition,
+														 self.textAndImageView.textView.frame.size.width,
+														  self.textAndImageView.textView.frame.size.height)];
 	[self.textAndImageView showText:YES];
 	[self.textAndImageView.textView setDelegate:self];
 	[self.textAndImageView resizeTextView];
