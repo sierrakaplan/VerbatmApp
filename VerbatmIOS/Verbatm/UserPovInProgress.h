@@ -32,6 +32,9 @@
 //swaps the position of the two pinch views in order to maintain user ordering
 -(void) swapPinchView: (PinchView *) pinchView1 andPinchView: (PinchView *) pinchView2;
 
+// once a pinch view has changed, updates it in the user defaults
+-(void) updatePinchView: (PinchView*) pinchView;
+
 //loads pinchviews from user defaults
 -(void) loadPOVFromUserDefaults;
 

@@ -1647,7 +1647,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 			[self createPinchViewFromVideoAsset:[AVURLAsset assetWithURL:[assetRepresentation url]]];
 		});
 	});
-
 }
 
 -(void) presentEfficientGallery {

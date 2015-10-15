@@ -13,6 +13,7 @@
 #import "UserSetupParameters.h"
 #import "VideoPinchView.h"
 #import "SegueIDs.h"
+#import "UserPovInProgress.h"
 
 @interface EditContentVC()<EditContentViewDelegate>
 
@@ -91,6 +92,7 @@
         //if there is a text view and it has text then we should save it. otherwise we get rid of any reference
 		((ImagePinchView *) self.openPinchView).text = [self.openEditContentView getText];
 		((ImagePinchView *) self.openPinchView).textYPosition = [self.openEditContentView getTextYPosition];
+		[[UserPovInProgress sharedInstance] updatePinchView: self.openPinchView];
     }
 	if(self.openPinchView.containsVideo) {
         if(self.openEditContentView.videoView)[self.openEditContentView.videoView stopVideo];

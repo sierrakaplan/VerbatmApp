@@ -98,6 +98,7 @@
 	@synchronized(self) {
 		NSInteger index1 = [self.pinchViews indexOfObject: pinchView1];
 		NSInteger index2 = [self.pinchViews indexOfObject: pinchView2];
+		if (index1 == NSNotFound || index2 == NSNotFound) return;
 		[self.pinchViews replaceObjectAtIndex: index1 withObject: pinchView2];
 		[self.pinchViews replaceObjectAtIndex: index2 withObject: pinchView1];
 
@@ -109,6 +110,21 @@
 	}
 	[[NSUserDefaults standardUserDefaults]
 	 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+}
+
+-(void) updatePinchView: (PinchView*) pinchView {
+	//TODO:
+	if (pinchView.containsVideo) return;
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+		@synchronized(self) {
+			NSInteger index = [self.pinchViews indexOfObject:pinchView];
+			if (index == NSNotFound) return;
+			NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
+			[self.pinchViewsAsData replaceObjectAtIndex:index withObject:pinchViewData];
+		}
+		[[NSUserDefaults standardUserDefaults]
+		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+	});
 }
 
 //loads pinchviews from user defaults

@@ -103,7 +103,7 @@
 			}
 			if (!gtlImage.textYPosition) {
 				gtlImage.textYPosition = [NSNumber numberWithFloat: 0.f];
-			}
+			} 
 			[uiImages addObject: @[uiImage, gtlImage.text, gtlImage.textYPosition]];
 		}
 		return uiImages;

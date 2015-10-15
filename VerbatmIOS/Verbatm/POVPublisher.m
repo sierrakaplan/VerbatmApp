@@ -140,7 +140,6 @@
 	});
 }
 
-
 // when (saved image ids + saved video ids) then (store page)
 // Resolves to the GTL page's id that was just stored
 -(AnyPromise*) storePageFromPinchView: (PinchView*)pinchView withIndex:(NSInteger) indexInPOV {
