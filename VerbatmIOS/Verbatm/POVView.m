@@ -286,7 +286,7 @@
 
 -(UIButton *)likeButton {
 	if (!_likeButton) {
-		CGRect likeButtonFrame = CGRectMake(self.frame.size.width - LIKE_BUTTON_SIZE - LIKE_BUTTON_OFFSET,
+		CGRect likeButtonFrame = CGRectMake(LIKE_BUTTON_OFFSET,
 											self.frame.size.height - LIKE_BUTTON_SIZE - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
 											LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
 
