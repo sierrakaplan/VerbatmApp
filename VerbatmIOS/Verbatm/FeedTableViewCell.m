@@ -60,8 +60,10 @@
 @property (nonatomic) CGPoint lastRightmostPoint;
 
 //for when this is a placeholder cell and the content is being pushed to the cloud
-@property (nonatomic, strong) UIActivityIndicatorView *activityIndicator;
-@property (nonatomic) BOOL isPlaceHolder;
+@property (nonatomic) BOOL isPlaceholderWhilePublishing;
+@property (strong, nonatomic) UIProgressView* progressBar;
+// does not retain strong reference to this because the PovPublisher retains it
+@property (weak, nonatomic) NSProgress* publishingProgress;
 
 #define CIRCLE_DIAMETER (self.frame.size.height - STORY_CELL_PADDING*2)
 #define PINCH_TOGETHER_DURATION 0.2f
@@ -74,7 +76,7 @@
 - (id) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle: style reuseIdentifier: reuseIdentifier];
 	if (self) {
-        self.isPlaceHolder = NO;
+        self.isPlaceholderWhilePublishing = NO;
 		self.isPinching = NO;
 	}
 	return self;
@@ -93,8 +95,8 @@
 	[super layoutSubviews];
 	[self formatSelf];
 	[self formatTextSubview];
-    if(self.isPlaceHolder) {
-		[self startActivityIndicatrForPlaceholder];
+    if(self.isPlaceholderWhilePublishing) {
+		[self startProgressBarWithProgressObject: self.publishingProgress];
 	}
 	[self formatCoverRectsWithStoryTextViewFrame: self.storyTextViewFrame];
 	[self formatSemiCircles];
@@ -135,14 +137,14 @@
 
 	[storyTextView addSubview: self.povTitle];
 	[storyTextView addSubview: self.povCreatorUsername];
-	[storyTextView addSubview: [self formatDateAndLikesViewFromTextViewFrame: self.storyTextViewFrame]];
+	[storyTextView addSubview: [self formatDateAndLikesView]];
 	[self addSubview: storyTextView];
 }
 
--(UIView*) formatDateAndLikesViewFromTextViewFrame: (CGRect) textViewFrame {
+-(UIView*) formatDateAndLikesView {
 	UIView* dateAndLikesView = [[UIView alloc] initWithFrame:CGRectMake(FEED_TEXT_X_OFFSET,
-																		textViewFrame.size.height - DATE_AND_LIKES_LABEL_HEIGHT,
-																		textViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
+																		self.storyTextViewFrame.size.height - DATE_AND_LIKES_LABEL_HEIGHT,
+																		self.storyTextViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 																		DATE_AND_LIKES_LABEL_HEIGHT)];
 
 	[self.dateCreatedLabel setFrame: CGRectMake(0, 0, dateAndLikesView.frame.size.width/2.f, DATE_AND_LIKES_LABEL_HEIGHT)];
@@ -270,11 +272,12 @@
 	[self.rightSemiCircle setImage: rightHalf];
 }
 
--(void) setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title
-						andCoverImage: (UIImage*) coverImage {
+-(void) setPublishingContentWithUsername:(NSString *) username andTitle: (NSString *) title
+						andCoverImage: (UIImage*) coverImage andProgressObject: (NSProgress*) publishingProgress {
 	[self setContentWithUsername:username andTitle:title andCoverImage:coverImage andDateCreated: nil
 					 andNumLikes: [NSNumber numberWithLongLong:0] likedByCurrentUser:NO];
-    self.isPlaceHolder = YES;
+    self.isPlaceholderWhilePublishing = YES;
+	self.publishingProgress = publishingProgress;
 }
 
 -(void) updateCellLikedByCurrentUser: (BOOL) likedByCurrentUser withNewNumLikes: (long long) newNumLikes {
@@ -302,32 +305,16 @@
 	}
 }
 
-#pragma mark - Activity Indicator -
+#pragma mark - Progress bar -
 
--(void)startActivityIndicatrForPlaceholder{
-	[self startActivityIndicator];
-}
-
-//creates an activity indicator on our placeholder view
-//shifts the frame of the indicator if it's on the screen
--(void)startActivityIndicator{
-    if(self.activityIndicator.isAnimating){
-        self.activityIndicator.center = self.center;
-        [self bringSubviewToFront:self.activityIndicator];
-    }else{
-        self.activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        self.activityIndicator.hidesWhenStopped = YES;
-        self.activityIndicator.center = self.center;
-        [self addSubview:self.activityIndicator];
-        [self bringSubviewToFront:self.activityIndicator];
-        [self.activityIndicator startAnimating];
-    }
-}
-
--(void)stopActivityIndicator {
-    if(!self.activityIndicator.isAnimating) return;
-    [self.activityIndicator stopAnimating];
-    [self.activityIndicator removeFromSuperview];
+-(void) startProgressBarWithProgressObject: (NSProgress*) progressObject {
+	self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+	[self.progressBar setFrame: CGRectMake(FEED_TEXT_X_OFFSET + self.storyTextViewFrame.origin.x,
+											self.storyTextViewFrame.size.height - self.progressBar.frame.size.height,
+											self.storyTextViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
+											self.progressBar.frame.size.height)];
+	[self.progressBar setObservedProgress: progressObject];
+	[self addSubview: self.progressBar];
 }
 
 #pragma mark - Selected & Deselected -

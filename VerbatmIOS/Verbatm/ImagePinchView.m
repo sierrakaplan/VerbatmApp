@@ -59,7 +59,6 @@
 
 #pragma mark - Render Media -
 
-//This should be overriden in subclasses
 -(void)renderMedia {
 	self.imageView.frame = self.background.frame;
 	[self.imageView setImage:[self getImage]];
@@ -87,6 +86,10 @@
 	}
 	self.filterImageIndex = filterIndex;
 	[self renderMedia];
+}
+
+-(NSInteger) getTotalPiecesOfMedia {
+	return 1;
 }
 
 #pragma mark - Filters -

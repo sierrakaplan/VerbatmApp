@@ -223,6 +223,10 @@
 	return videosWithText;
 }
 
+-(NSInteger) getTotalPiecesOfMedia {
+	return self.pinchedObjects.count;
+}
+
 #pragma mark - Encoding -
 
 - (void)encodeWithCoder:(NSCoder *)coder {

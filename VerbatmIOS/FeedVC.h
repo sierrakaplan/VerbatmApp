@@ -21,7 +21,8 @@
 @property(strong, nonatomic) id<FeedVCDelegate> delegate;
 
 // animates the fact that a recent POV is publishing
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic
+					andProgressObject:(NSProgress *)publishingProgress;
 
 //Makes sure selected cell is deselected (resets formatting for it)
 -(void) deSelectCell;

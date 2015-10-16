@@ -18,6 +18,7 @@ typedef void(^MediaUploadCompletionBlock)(NSError* error, NSString* responseURL)
 @interface MediaUploader : NSObject
 
 @property (nonatomic, assign) float progress;
+@property (nonatomic, strong) NSProgress* mediaUploadProgress;
 
 
 // Creates an ASIFormDataRequest with the image in png form

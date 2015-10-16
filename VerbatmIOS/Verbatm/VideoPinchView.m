@@ -74,6 +74,10 @@
 	return @[@[self.video, self.text, self.textYPosition]];
 }
 
+-(NSInteger) getTotalPiecesOfMedia {
+	return 1;
+}
+
 #pragma mark - Encoding -
 
 - (void)encodeWithCoder:(NSCoder *)coder {

@@ -64,6 +64,10 @@
     [self.background addSubview: self.addCoverPicLabel];
 }
 
+-(NSInteger) getTotalPiecesOfMedia {
+	return 1;
+}
+
 #pragma mark - Encoding -
 
 - (void)encodeWithCoder:(NSCoder *)coder {

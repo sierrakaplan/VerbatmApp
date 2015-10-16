@@ -167,6 +167,10 @@
 
 #pragma mark - Should be overriden by subclasses -
 
+-(NSInteger) getTotalPiecesOfMedia {
+	return 0;
+}
+
 -(NSString*) getText {
 	return nil;
 }

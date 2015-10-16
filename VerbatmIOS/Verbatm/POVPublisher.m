@@ -44,6 +44,9 @@
 @property(nonatomic, strong) NSArray* pinchViews;
 @property(nonatomic, strong) NSString* title;
 @property(nonatomic, strong) UIImage* coverPic;
+// the total number of progress units it takes to publish,
+// based on the number of photos and videos in a story
+@property(nonatomic) NSInteger totalProgressUnits;
 
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
 
@@ -61,6 +64,19 @@
 		self.pinchViews = pinchViews;
 		self.title = title;
 		self.coverPic = coverPic;
+
+		self.totalProgressUnits = PROGRESS_UNITS_FOR_FINAL_PUBLISH + PROGRESS_UNITS_FOR_PHOTO; // for the cover picture + final publish
+		for (PinchView* pinchView in self.pinchViews) {
+			NSArray* photos = [pinchView getPhotosWithText];
+			NSArray* videos = [pinchView getVideosWithText];
+			if (photos) {
+				self.totalProgressUnits += photos.count*PROGRESS_UNITS_FOR_PHOTO;
+			}
+			if (videos) {
+				self.totalProgressUnits += videos.count*PROGRESS_UNITS_FOR_VIDEO;
+			}
+		}
+		NSLog(@"Total progress units: %ld", (long)self.totalProgressUnits);
 	}
 	return self;
 }
@@ -87,6 +103,8 @@
 
 - (void) publish {
 	NSLog(@"Attempting to publish POV...");
+	self.publishingProgress = [NSProgress progressWithTotalUnitCount: self.totalProgressUnits];
+
 	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
 	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
 	povObject.numUpVotes = [NSNumber numberWithLongLong: 0];
@@ -98,6 +116,8 @@
 	AnyPromise* storeCoverPicPromise = [self storeCoverPicture: self.coverPic];
 	AnyPromise* storePagesPromise = [self storePagesFromPinchViews: self.pinchViews];
 	PMKWhen(@[storeCoverPicPromise, storePagesPromise]).then(^(NSArray* results) {
+		NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
+
 		// storeCoverPicPromise should resolve to the serving url of the cover pic
 		povObject.coverPicUrl = results[0];
 		// storePagesPromise should resolve to an array of page ids
@@ -106,6 +126,7 @@
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error publishing POV: %@", error.description);
+		[self.publishingProgress cancel];
 		self.mediaUploaders = nil;
 	});
 }
@@ -117,12 +138,10 @@
 	return [self getImageUploadURI].then(^(NSString* uri) {
 
 		MediaUploader* coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uri];
+		[self.publishingProgress addChild:coverPicUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];
 		[self.mediaUploaders addObject: coverPicUploader];
 		return [coverPicUploader startUpload];
-	}).catch(^(NSError *error){
-		//This can catch at any part in the chain
-//		NSLog(@"Error uploading POV: %@", error.description);
-	});;
+	});
 }
 
 // when (stored every page)
@@ -134,10 +153,7 @@
 		PinchView* pinchView = pinchViews[i];
 		[storePagePromises addObject: [self storePageFromPinchView:pinchView withIndex:i]];
 	}
-	return PMKWhen(storePagePromises).catch(^(NSError *error){
-		//This can catch at any part in the chain
-//		NSLog(@"Error uploading POV: %@", error.description);
-	});
+	return PMKWhen(storePagePromises);
 }
 
 // when (saved image ids + saved video ids) then (store page)
@@ -207,6 +223,7 @@
 -(AnyPromise*) storeImage: (UIImage*) image withIndex: (NSInteger) indexInPage andText: (NSString*) text andYPosition: (NSNumber*) textYPosition {
 	return [self getImageUploadURI].then(^(NSString* uri) {
 		MediaUploader* imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
+		[self.publishingProgress addChild:imageUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];
 		[self.mediaUploaders addObject: imageUploader];
 		return [imageUploader startUpload];
 	}).then(^(NSString* servingURL) {
@@ -226,6 +243,7 @@
 -(AnyPromise*) storeVideo: (NSData*) videoData withIndex: (NSInteger) indexInPage andText: (NSString*) text andYPosition: (NSNumber*) textYPosition {
 	return [self getVideoUploadURI].then(^(NSString* uri) {
 		MediaUploader* videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
+		[self.publishingProgress addChild:videoUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_VIDEO];
 		[self.mediaUploaders addObject: videoUploader];
 		return [videoUploader startUpload];
 	}).then(^(NSString* blobStoreKeyString) {
@@ -254,6 +272,7 @@
 			if (error) {
 				resolve(error);
 			} else {
+				NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
 				resolve(storedImage.identifier);
 			}
 		}];
@@ -271,6 +290,7 @@
 			if (error) {
 				resolve(error);
 			} else {
+				NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
 				resolve(storedVideo.identifier);
 			}
 		}];
@@ -308,6 +328,15 @@
 					 //TODO: should send a notification that there was an error publishing
 				 } else {
 					 NSLog(@"Successfully published POV!");
+					 @synchronized(self) {
+						 if (self.totalProgressUnits != (self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_FINAL_PUBLISH)) {
+							 NSLog(@"That's weird...the progress units don't add up, %ld vs total of %ld",
+								   (long)(self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_FINAL_PUBLISH),
+								   (long)self.totalProgressUnits);
+						 }
+						 [self.publishingProgress setCompletedUnitCount: self.totalProgressUnits];
+						 NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
+					 }
 					 self.mediaUploaders = nil;
 					 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
 											  object:ticket];

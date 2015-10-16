@@ -31,14 +31,12 @@
 				 andCoverImage: (UIImage*) coverImage andDateCreated: (GTLDateTime*) dateCreated
 				   andNumLikes: (NSNumber*) numLikes likedByCurrentUser: (BOOL) likedByCurrentUser;
 
-//Loads a publishing story cell
--(void) setLoadingContentWithUsername:(NSString *) username andTitle: (NSString *) title
-						andCoverImage: (UIImage*) coverImage;
+//Loads a publishing placeholder cell
+-(void) setPublishingContentWithUsername:(NSString *) username andTitle: (NSString *) title
+						   andCoverImage: (UIImage*) coverImage andProgressObject: (NSProgress*) publishingProgress;
 
 //Updates the appearance of the cell when user likes or unlikes it
 -(void) updateCellLikedByCurrentUser: (BOOL) likedByCurrentUser withNewNumLikes: (long long) newNumLikes;
-
--(void)stopActivityIndicator;
 
 // If it was selected (by a tap for example)
 // Then animate the circles together before calling delegate method

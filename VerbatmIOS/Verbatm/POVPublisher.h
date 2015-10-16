@@ -10,6 +10,13 @@
 
 @interface POVPublisher : NSObject
 
+#define PROGRESS_UNITS_FOR_FINAL_PUBLISH 2
+#define PROGRESS_UNITS_FOR_PHOTO 3
+#define PROGRESS_UNITS_FOR_VIDEO 10
+
+// initialized once publish has been called
+@property(nonatomic, strong) NSProgress* publishingProgress;
+
 -(instancetype) initWithPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
 - (void) publish;
 

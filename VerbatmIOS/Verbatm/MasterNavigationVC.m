@@ -353,7 +353,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 		[publisher publish];
 
 		NSString* userName = [self.userManager getCurrentUser].name;
-		[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPhoto];
+		[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPhoto andProgressObject: publisher.publishingProgress];
 		[self showFeed];
 
 		[self.mediaDevVC povPublished];

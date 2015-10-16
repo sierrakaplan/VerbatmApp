@@ -65,6 +65,8 @@
 
 #pragma mark Should be overriden in subclasses
 
+-(NSInteger) getTotalPiecesOfMedia;
+
 //array of @[UIImage*, NSString*, NSNumber /* with float value */]
 // image, text, and y position for the text
 -(NSArray*) getPhotosWithText;

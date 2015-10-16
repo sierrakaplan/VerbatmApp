@@ -223,7 +223,8 @@
 //Called on it by parent view controller to let it know that a user
 // has published a POV and to show the loading animation until the POV
 // has actually published
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic
+					andProgressObject: (NSProgress*) publishingProgress {
     if(self.povPublishing){
         //there is another one being published so we will exit for now
         return;
@@ -231,7 +232,7 @@
 
     self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
-	[self.povPublishingPlaceholderCell setLoadingContentWithUsername:userName andTitle: title andCoverImage:coverPic];
+	[self.povPublishingPlaceholderCell setPublishingContentWithUsername:userName andTitle: title andCoverImage:coverPic andProgressObject:publishingProgress];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.povListView beginUpdates];
     [self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];
@@ -267,7 +268,7 @@
     self.refreshInProgress = NO;
     if(self.povPublishing) {
         self.povPublishing = NO;
-		[self.povPublishingPlaceholderCell stopActivityIndicator];
+//TODO: get rid of progress bar?		[self.povPublishingPlaceholderCell stopActivityIndicator];
         self.povPublishingPlaceholderCell = nil;
     }
 

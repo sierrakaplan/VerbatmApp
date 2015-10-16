@@ -144,9 +144,11 @@
 
 #pragma mark - Show recently published POV -
 
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic
+					andProgressObject:(NSProgress *)publishingProgress {
 	[self.categorySwitch snapToEdgeLeft:YES];
-	[self.mostRecentVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic];
+	[self.mostRecentVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title
+										 andCoverPic: (UIImage*) coverPic andProgressObject: publishingProgress];
 }
 
 #pragma mark - Notify cell its pov was unselected -

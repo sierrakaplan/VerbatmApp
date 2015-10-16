@@ -7,7 +7,7 @@
 //
 
 #import "MediaUploader.h"
-
+#import "POVPublisher.h"
 
 @interface MediaUploader()
 
@@ -32,6 +32,7 @@
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
 	[self.formData setTimeOutSeconds: 60];
+	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: PROGRESS_UNITS_FOR_PHOTO];
 
 	return self;
 }
@@ -48,6 +49,7 @@
 	[self.formData setUploadProgressDelegate:self];
 	// Needs to be long in order to allow long videos to upload
 	[self.formData setTimeOutSeconds: 300];
+	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: PROGRESS_UNITS_FOR_VIDEO];
 
 	return self;
 }
@@ -78,8 +80,13 @@
 - (void)request:(ASIHTTPRequest *)theRequest didSendBytes:(long long)newLength {
 
 	if ([theRequest totalBytesSent] > 0) {
-		float progressAmount = (float) ([theRequest totalBytesSent]/[theRequest postLength]);
+		float progressAmount = ((float)[theRequest totalBytesSent]/(float)[theRequest postLength]);
 		self.progress = progressAmount;
+		NSInteger newProgressUnits = (NSInteger)(progressAmount*self.mediaUploadProgress.totalUnitCount);
+		if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
+			[self.mediaUploadProgress setCompletedUnitCount: newProgressUnits];
+//			NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
+		}
 	}
 }
 
@@ -90,6 +97,7 @@
 		[self requestFailed:request];
 	} else {
 		NSLog(@"Successfully uploaded media!");
+		[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
 		self.completionBlock(nil, responseString);
 	}
 }
@@ -97,6 +105,7 @@
 -(void) requestFailed:(ASIHTTPRequest *)request {
 	NSError *error = [request error];
 	NSLog(@"error uploading media%@", error);
+	[self.mediaUploadProgress cancel];
 	self.completionBlock(error, nil);
 }
 

@@ -23,7 +23,8 @@
 
 -(void) setPovLoadManager:(POVLoadManager *)povLoader;
 
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
+						  andCoverPic: (UIImage*) coverPic andProgressObject: (NSProgress*) publishingProgress;
 
 // Notify cell to update its appearance based on the current user liking or unliking it
 -(void) userHasLikedPOV: (BOOL) liked atIndex: (NSInteger) index withPovInfo: (PovInfo*) povInfo;
