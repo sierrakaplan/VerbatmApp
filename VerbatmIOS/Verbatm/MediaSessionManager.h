@@ -7,15 +7,15 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AVFoundation/AVFoundation.h>
-#import <AssetsLibrary/AssetsLibrary.h>
+@import AVFoundation;
+@import Photos;
 
 @protocol MediaSessionManagerDelegate<NSObject>
 @optional
 
 -(void)capturedImage: (UIImage*) image;
 //notifies any one conforming to the protocol that an asset has been saved.
--(void)didFinishSavingMediaToAsset:(ALAsset*)asset;
+-(void)didFinishSavingMediaToAsset:(PHAsset*)asset;
 
 @end
 @interface MediaSessionManager : NSObject
@@ -36,8 +36,8 @@
 -(void)startSession;
 -(void)stopSession;
 -(void) rerunSession;
+
 @property(strong, nonatomic) NSURL* outputurl;
 @property (nonatomic, strong) id <MediaSessionManagerDelegate> delegate;
-@property (nonatomic, strong) UIImage* stillImage;
 @property (strong, nonatomic) AVCaptureVideoPreviewLayer* videoPreview;
 @end

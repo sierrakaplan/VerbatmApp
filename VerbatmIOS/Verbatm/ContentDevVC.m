@@ -1634,19 +1634,18 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 /*
- We are given an asset representing either a video and
- add it the the stream of pinch views.
+ Given a PHAsset representing a video and we create a pinch view out of it
  */
--(void)addMediaAssetToStream:(ALAsset *) asset {
-
-	ALAssetRepresentation* assetRepresentation = [asset defaultRepresentation];
-
-	//asset is a video
-	dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-		dispatch_async(dispatch_get_main_queue(), ^{
-			[self createPinchViewFromVideoAsset:[AVURLAsset assetWithURL:[assetRepresentation url]]];
-		});
-	});
+-(void) addMediaAssetToStream:(PHAsset *) asset {
+	PHVideoRequestOptions* options = [PHVideoRequestOptions new];
+	options.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
+	[[PHImageManager defaultManager] requestAVAssetForVideo:asset
+													options:options
+											  resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+												  dispatch_async(dispatch_get_main_queue(), ^{
+													  [self createPinchViewFromVideoAsset:(AVURLAsset*)asset];
+												  });
+											  }];
 }
 
 -(void) presentEfficientGallery {
@@ -1752,11 +1751,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 			}
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
 			@autoreleasepool {
-				[self.imageManager requestAVAssetForVideo:asset options:nil resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
-					if (![asset isKindOfClass:[AVURLAsset class]]) {
-						//					NSLog(@"Issue with video not in AVURLAsset form");
-						return;
-					}
+				PHVideoRequestOptions* videoRequestOptions = [PHVideoRequestOptions new];
+				videoRequestOptions.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
+				[self.imageManager requestAVAssetForVideo:asset options:videoRequestOptions resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
 					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 					dispatch_async(dispatch_get_main_queue(), ^{
 						[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];

@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <AssetsLibrary/AssetsLibrary.h>
+@import Photos;
 
 #import "ContentDevNavBar.h"
 #import "VerbatmScrollView.h"
@@ -58,7 +58,10 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 
 -(void) addImageToStream: (UIImage*) image;
--(void)addMediaAssetToStream:(ALAsset *) asset;
+/*
+ Given a PHAsset representing a video and we create a pinch view out of it
+ */
+-(void) addMediaAssetToStream:(PHAsset *) asset;
 
 
 -(UIImage*) getCoverPicture;

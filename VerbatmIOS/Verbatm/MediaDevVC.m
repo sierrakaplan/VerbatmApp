@@ -250,17 +250,20 @@
 	[self.contentDevVC addImageToStream:image];
 }
 
--(void)didFinishSavingMediaToAsset:(ALAsset*)asset {
-	if ([[asset valueForProperty:ALAssetPropertyType] isEqualToString: ALAssetTypeVideo]) {
+-(void) didFinishSavingMediaToAsset:(PHAsset *)asset {
+	if (asset.mediaType == PHAssetMediaTypeVideo) {
 		//animate image of asset
 		@autoreleasepool {
-			ALAssetRepresentation *representation = [asset defaultRepresentation];
-			CGImageRef imageRef = [representation fullResolutionImage];
-			self.previewImageView = [[UIImageView alloc] initWithImage:[UIImage imageWithCGImage:imageRef]];
-			CGImageRelease(imageRef);
-		}
-		if (!self.mediaPreviewPaused) {
-			[self animatePreviewImage];
+			[[PHImageManager defaultManager] requestImageForAsset:asset targetSize: self.view.bounds.size
+													  contentMode:PHImageContentModeAspectFit options:nil
+													resultHandler:^(UIImage *image, NSDictionary *info) {
+														dispatch_async(dispatch_get_main_queue(), ^{
+															self.previewImageView = [[UIImageView alloc] initWithImage:image];
+															if (!self.mediaPreviewPaused) {
+																[self animatePreviewImage];
+															}
+														});
+													}];
 		}
 		//add media to the contentDev stream
 		[self.contentDevVC addMediaAssetToStream:asset];

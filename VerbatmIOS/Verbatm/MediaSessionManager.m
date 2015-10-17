@@ -13,19 +13,22 @@
 
 @interface MediaSessionManager() <AVCaptureFileOutputRecordingDelegate>
 
+@property (strong, nonatomic) UIView* previewContainerView;
 @property (strong, nonatomic) AVCaptureSession* session;
-@property (strong, nonatomic) AVCaptureMovieFileOutput * movieOutputFile;
-@property (strong) AVCaptureStillImageOutput* stillImageOutput;
-@property (strong, nonatomic) ALAssetsLibrary* assetLibrary;
-@property (strong, nonatomic) ALAssetsGroup* verbatmAlbum;
+@property (strong, nonatomic) PHAssetCollection* verbatmAlbum;
 @property (strong, nonatomic) AVCaptureDeviceInput* videoInput;
 @property (strong, nonatomic) AVCaptureDeviceInput* audioInput;
-@property (nonatomic) UIDeviceOrientation deviceStartOrientation;
-@property (strong, nonatomic) UIView* previewContainerView;
+@property (weak, nonatomic) AVCaptureConnection* videoConnection;
+@property (strong, nonatomic) AVCaptureMovieFileOutput * movieOutputFile;
+@property (strong) AVCaptureStillImageOutput* stillImageOutput;
 
-#define N_FRAMES_PER_SECOND 32
-#define ASPECT_RATIO 4/3
-#define ZOOM_RATE 0.6
+
+#define N_FRAMES_PER_SECOND 24
+#define BITRATE 1098
+#define VIDEO_RESOLUTION 480
+#define IMAGE_RESOLUTION 640
+
+#define VERBATM_ALBUM_PREVIOUSLY_CREATED_KEY @"verbatm_album_previously_created"
 
 @end
 
@@ -34,38 +37,234 @@
 @synthesize session = _session;
 
 
-#pragma mark - initialization
-//By Lucio
-//initialises the session
 -(instancetype)initSessionWithView:(UIView*)containerView {
 
 	if((self = [super init])) {
-		//set the container view
+		[self initializeVerbatmAlbum];
+		[self initializeSession];
+
+		// setup preview
 		self.previewContainerView = containerView;
-
-		//create the assetLibrary
-		self.assetLibrary = [[ALAssetsLibrary alloc] init];
-
-		[self doInitialSetUps];
-
-		//Create the session and set its properties.
-		self.session = [[AVCaptureSession alloc]init];
-		self.session.sessionPreset = AVCaptureSessionPresetHigh;
-		[self addStillImageOutput];
-
-		//add the video and audio devices to the session
-		[self addVideoAndAudioDevices];
-
 		self.videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session];
 		self.videoPreview.frame = containerView.frame;
 		self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+		[self.previewContainerView.layer addSublayer: self.videoPreview];
 
-		[containerView.layer addSublayer: self.videoPreview];
 		//start the session running
 		[self.session startRunning];
 	}
 	return self;
 }
+
+#pragma mark - Initialize Session -
+
+// set up the capture session with video and audio inputs, and video and still image outputs
+-(void) initializeSession {
+	self.session = [[AVCaptureSession alloc]init];
+	self.session.sessionPreset = AVCaptureSessionPreset640x480;
+	[self setupSessionInputs];
+	[self setupSessionOutputs];
+}
+
+//Adds video and audio inputs to the session
+-(void) setupSessionInputs {
+	//Getting video
+	AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
+	if([videoDevice isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus] && [videoDevice lockForConfiguration:nil]){
+		[videoDevice setFocusMode:AVCaptureFocusModeContinuousAutoFocus];
+		[videoDevice unlockForConfiguration];
+	}
+	NSError* error = nil;
+	self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice: videoDevice error:&error];
+	if(error){
+//		NSLog(@"video input not  available");
+		return;
+	}
+
+	//Getting audio
+	AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
+	self.audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
+	if (!self.videoInput || !self.audioInput) {
+//		NSLog(@"ERROR: trying to open camera: %@", error);
+		return;
+	}
+
+	//adding video and audio inputs
+	[self.session addInput: self.videoInput];
+	[self.session addInput: self.audioInput];
+}
+
+/*Directs the output of the still image of the session to the stillImageOutput file
+ */
+-(void) setupSessionOutputs {
+	[self setStillImageOutput:[[AVCaptureStillImageOutput alloc] init]];
+	NSDictionary* stillImageOutputSettings = [[NSDictionary alloc]initWithObjectsAndKeys:
+											  AVVideoCodecJPEG, AVVideoCodecKey,
+											  nil];
+	[self.stillImageOutput setOutputSettings: stillImageOutputSettings];
+	[self.session addOutput: self.stillImageOutput];
+
+	for (AVCaptureConnection *connection in [self.movieOutputFile connections] ) {
+		for (AVCaptureInputPort *port in [connection inputPorts] ) {
+			if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
+				self.videoConnection = connection;
+			}
+		}
+	}
+	if([self.videoConnection isVideoOrientationSupported]) {
+		[self.videoConnection setVideoOrientation:self.videoPreview.connection.videoOrientation];
+	}
+
+	[self setMovieOutputFile: [[AVCaptureMovieFileOutput alloc] init]];
+
+	int32_t framesPerSecond = N_FRAMES_PER_SECOND;
+	int64_t numSeconds = MAX_VID_SECONDS * N_FRAMES_PER_SECOND;
+	CMTime maxDuration = CMTimeMake(numSeconds, framesPerSecond);
+	_movieOutputFile.maxRecordedDuration = maxDuration;
+	[self.session addOutput: self.movieOutputFile];
+}
+
+/* NOT IN USE
+ 
+ NSDictionary* videoOutputSettings = [[NSDictionary alloc] initWithObjectsAndKeys:
+ AVVideoCodecH264, AVVideoCodecKey,
+ [NSNumber numberWithInteger: VIDEO_RESOLUTION], AVVideoWidthKey,
+ [NSNumber numberWithInteger: VIDEO_RESOLUTION], AVVideoHeightKey,
+ AVVideoScalingModeResizeAspectFill, AVVideoScalingModeKey,
+ [[NSDictionary alloc] initWithObjectsAndKeys:
+ [NSNumber numberWithInteger: BITRATE], AVVideoAverageBitRateKey,
+ nil], AVVideoCompressionPropertiesKey,
+ nil];
+ */
+
+#pragma mark - Verbatm Album Setup -
+
+// Checks if the Verbatm album has ever been created before (in user defaults) and if it hasn't,
+// creates and stores it. If it has, gets it and stores it.
+-(void) initializeVerbatmAlbum {
+	if (![[NSUserDefaults standardUserDefaults] boolForKey: VERBATM_ALBUM_PREVIOUSLY_CREATED_KEY]) {
+		[self createVerbatmAlbum];
+		[[NSUserDefaults standardUserDefaults] setBool:YES forKey:VERBATM_ALBUM_PREVIOUSLY_CREATED_KEY];
+	} else {
+		[self getVerbatmAlbum];
+	}
+}
+
+// creates a Verbatm Album in the PHPhotoLibrary if it doesn't already exist
+-(void)createVerbatmAlbum {
+	__block PHObjectPlaceholder *albumPlaceholder;
+	[[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+		PHAssetCollectionChangeRequest* changeRequest = [PHAssetCollectionChangeRequest creationRequestForAssetCollectionWithTitle:VERBATM_ALBUM_NAME];
+		albumPlaceholder = changeRequest.placeholderForCreatedAssetCollection;
+	} completionHandler:^(BOOL success, NSError * _Nullable error) {
+		NSLog(@"Finished creating Verbatm album. %@", (success ? @"Success" : error));
+		if (success) {
+			PHFetchResult *fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[albumPlaceholder.localIdentifier] options:nil];
+			self.verbatmAlbum = fetchResult.firstObject;
+		}
+	}];
+}
+
+// lists all albums and finds the one named Verbatm, then saves it
+-(void) getVerbatmAlbum {
+	PHFetchResult* assetCollectionFetchResult = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum
+																						 subtype:PHAssetCollectionSubtypeAlbumRegular
+																						 options:nil];
+	[assetCollectionFetchResult enumerateObjectsUsingBlock:^(PHAssetCollection* album, NSUInteger idx, BOOL *stop) {
+		if ([album.localizedTitle isEqualToString:VERBATM_ALBUM_NAME]) {
+			*stop = YES;
+			self.verbatmAlbum = album;
+		}
+	}];
+}
+
+#pragma mark - Start and Stop Session -
+
+-(void)startSession {
+	[self.session startRunning];
+}
+
+-(void)stopSession {
+	[self.session stopRunning];
+}
+
+-(void) rerunSession {
+	[self.session startRunning];
+}
+
+#pragma mark - Capture Image -
+
+-(void)captureImage {
+	[self.stillImageOutput captureStillImageAsynchronouslyFromConnection: self.videoConnection
+													   completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
+		if(!error) {
+			NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
+			UIImage* capturedImage = [[UIImage alloc] initWithData: dataForImage];
+			[self.delegate capturedImage: capturedImage];
+			[self saveAssetFromImage:capturedImage orVideoFile:nil];
+		} else {
+			NSLog(@"Error capturing still image %@", error);
+		}
+	}];
+}
+
+#pragma mark - Record Video -
+
+-(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation {
+	NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
+	NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
+	NSFileManager *fileManager = [NSFileManager defaultManager];
+	// Remove previous file at this path
+	if ([fileManager fileExistsAtPath:movieOutput]) {
+		NSError *error;
+		if (![fileManager removeItemAtPath:movieOutput error:&error]) {
+			NSLog(@"Error removing previous video at path. %@", error);
+			return;
+		}
+	}
+
+	//start recording to file
+	[self.movieOutputFile startRecordingToOutputFileURL:outputURL recordingDelegate:self];
+}
+
+-(void)stopVideoRecording {
+	[self.movieOutputFile stopRecording];
+}
+
+#pragma mark AVCaptureFileOutputRecordingDelegate Delegate methods
+
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections {}
+
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
+	[self saveAssetFromImage:nil orVideoFile:outputFileURL];
+}
+
+#pragma mark - Save Asset -
+
+// Pass nil for the other one you're not saving
+-(void) saveAssetFromImage: (UIImage*) image orVideoFile: (NSURL*) outputFileURL {
+	__block PHObjectPlaceholder *assetPlaceholder;
+	[[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
+		PHAssetChangeRequest* assetChangeRequest;
+		if (image) {
+			assetChangeRequest = [PHAssetChangeRequest creationRequestForAssetFromImage: image];
+		} else {
+			assetChangeRequest = [PHAssetChangeRequest creationRequestForAssetFromVideoAtFileURL: outputFileURL];
+		}
+		PHAssetCollectionChangeRequest* collectionChangeRequest = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:self.verbatmAlbum];
+		assetPlaceholder = [assetChangeRequest placeholderForCreatedAsset];
+		[collectionChangeRequest addAssets:@[assetPlaceholder]];
+	} completionHandler:^(BOOL success, NSError * _Nullable error) {
+		NSLog(@"Finished adding media to Verbatm album. %@", (success ? @"Success" : error));
+		if (success) {
+			PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[assetPlaceholder.localIdentifier] options:nil];
+			PHAsset* savedAsset = fetchResult.firstObject;
+			[self.delegate didFinishSavingMediaToAsset:savedAsset];
+		}
+	}];
+}
+
+#pragma mark - Customize Session (focus, zoom, orientation, flash, etc.) -
 
 -(void) focusAtPoint:(CGPoint)viewCoordinates {
 	AVCaptureDevice *currentDevice = [[self videoInput] device];
@@ -83,133 +282,15 @@
 	}
 }
 
-- (void) zoomPreviewWithScale:(float)effectiveScale
-{
+- (void) zoomPreviewWithScale:(float)effectiveScale {
 	if ([self.videoInput.device respondsToSelector:@selector(setVideoZoomFactor:)]
 		&& self.videoInput.device.activeFormat.videoMaxZoomFactor >= effectiveScale) {
-  // iOS 7.x with compatible hardware
 		if ([self.videoInput.device lockForConfiguration:nil]) {
 			[self.videoInput.device setVideoZoomFactor:effectiveScale];
 			[self.videoInput.device unlockForConfiguration];
 		}
 	}
 }
-
-
--(void) rerunSession
-{
-	[self.session startRunning];
-}
-
-
--(void) doInitialSetUps
-{
-	static NSString* const hasRunAppOnceKey = @"hasRunAppOnceKey";
-	NSUserDefaults* defaults = [NSUserDefaults standardUserDefaults];
-	if ([defaults boolForKey:hasRunAppOnceKey] == NO) {
-		[self createVerbatmDirectory];
-		[defaults setBool:YES forKey:hasRunAppOnceKey];
-	}
-	[self getVerbatmDirectory];
-}
-
-
-/*Directs the output of the still image of the session to the stillImageOutput file
- *By Lucio.
- */
--(void) addStillImageOutput {
-	[self setStillImageOutput:[[AVCaptureStillImageOutput alloc] init]];
-	NSDictionary* outputSettings = [[NSDictionary alloc]initWithObjectsAndKeys:AVVideoCodecJPEG,AVVideoCodecKey, nil];
-	[[self stillImageOutput] setOutputSettings:outputSettings];
-	[self.session addOutput: self.stillImageOutput];
-}
-
-//By Lucio
-//Adds video and audio devices to the session
--(void) addVideoAndAudioDevices {
-	//Getting video
-	AVCaptureDevice *videoDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-	if([videoDevice isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus] && [videoDevice lockForConfiguration:nil]){
-		[videoDevice setFocusMode:AVCaptureFocusModeContinuousAutoFocus];  //added
-		[videoDevice unlockForConfiguration];
-	}
-	NSError* error = nil;
-	self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice: videoDevice error:&error];
-	if(error){
-//		NSLog(@"video input not  available");
-		return;
-	}
-
-	//Getting audio
-	AVCaptureDevice* audioDevice = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio];
-	self.audioInput = [AVCaptureDeviceInput deviceInputWithDevice:audioDevice error:&error];
-	if (!self.videoInput || !self.audioInput) {
-		// Handle the error appropriately.
-//		NSLog(@"ERROR: trying to open camera: %@", error);
-		return;
-	}
-
-	//adding video and audio inputs
-	[self.session addInput: self.videoInput];
-	[self.session addInput: self.audioInput];
-
-	//adding the output for the video
-	if([self.session canAddOutput:self.movieOutputFile]){
-		[self.session addOutput: self.movieOutputFile];
-	}else{
-//		NSLog(@"Couldn't add output for video");
-	}
-}
-
-//By Lucio
-//Create the movieOutputFile
--(AVCaptureMovieFileOutput*)movieOutputFile
-{
-	if(!_movieOutputFile){
-		_movieOutputFile = [[AVCaptureMovieFileOutput alloc]init];
-		int32_t framesPerSecond = N_FRAMES_PER_SECOND;
-		int64_t numSeconds = MAX_VID_SECONDS * N_FRAMES_PER_SECOND;
-		CMTime maxDuration = CMTimeMake(numSeconds, framesPerSecond);
-		_movieOutputFile.maxRecordedDuration = maxDuration;
-	}
-	return _movieOutputFile;
-}
-
-#pragma mark -verbatm folder setUp
-//by Lucio
-//create the verbatm Folder in the photo album if it doesn't already exist
--(void)createVerbatmDirectory
-{
-	NSString* albumName = VERBATM_ALBUM_NAME;
-	[self.assetLibrary addAssetsGroupAlbumWithName:albumName
-									   resultBlock:^(ALAssetsGroup *group) {
-//										   NSLog(@"added album:%@", albumName);
-									   }
-									  failureBlock:^(NSError *error) {
-//										  NSLog(@"error adding album");
-									  }];
-
-}
-
-
--(void)getVerbatmDirectory
-{
-	NSString* albumName = VERBATM_ALBUM_NAME;
-	__weak MediaSessionManager* weakSelf = self;
-	[self.assetLibrary enumerateGroupsWithTypes:ALAssetsGroupAlbum
-									 usingBlock:^(ALAssetsGroup *group, BOOL *stop) {
-										 if ([[group valueForProperty:ALAssetsGroupPropertyName] isEqualToString:albumName]) {
-//											 NSLog(@"found album %@", albumName);
-											 weakSelf.verbatmAlbum = group;
-											 return;   //add this
-										 }
-									 }
-								   failureBlock:^(NSError* error) {
-//									   NSLog(@"failed to enumerate albums:\nError: %@", [error localizedDescription]);
-								   }];
-}
-
-#pragma mark - customize session -
 
 -(void) switchCameraOrientation {
 	//indicate that changes will be made to this session
@@ -256,7 +337,6 @@
 	[self.session commitConfiguration];
 }
 
-//by Lucio
 //finds the camera orientation for front or back
 -(AVCaptureDevice*)getCameraWithOrientation:(NSInteger)orientation
 {
@@ -269,11 +349,9 @@
 	return nil;
 }
 
-//by Lucio
 //sets the session orientation to the device orientation
 //it seems that left for the device corresponds to right for the session
--(void)setSessionOrientationToOrientation:(UIDeviceOrientation)orientation
-{
+-(void)setSessionOrientationToOrientation:(UIDeviceOrientation)orientation {
 	if(orientation == UIDeviceOrientationLandscapeLeft){
 		self.videoPreview.connection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
 	}else if (orientation == UIDeviceOrientationLandscapeRight){
@@ -286,172 +364,10 @@
 }
 
 //set the preview session to the the bounds of the view
--(void)setToFrameOfView:(UIView*)containerView
-{
+-(void)setToFrameOfView:(UIView*)containerView {
 	if([containerView.layer.sublayers containsObject: self.videoPreview]){
 		self.videoPreview.frame = containerView.frame;
 	}
 }
 
-//by Lucio
--(void)startSession
-{
-	[self.session startRunning];
-}
-
--(void)stopSession
-{
-	[self.session stopRunning];
-}
-
-#pragma mark - video recording
-
-//by Lucio
--(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation
-{
-
-	//set the variables
-	self.deviceStartOrientation = startOrientation;
-	//Get the right output path for the video
-	NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
-	NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
-	NSFileManager *fileManager = [NSFileManager defaultManager];
-	if ([fileManager fileExistsAtPath:movieOutput]) {
-		NSError *error;
-		if ([fileManager removeItemAtPath:movieOutput error:&error] == NO) {
-//			NSLog(@"output path  is wrong");
-			return;
-		}
-	}
-
-	//get the right orientation
-	AVCaptureConnection *videoConnection = nil;
-	for ( AVCaptureConnection *connection in [self.movieOutputFile connections] ) {
-		for ( AVCaptureInputPort *port in [connection inputPorts] ) {
-			if ( [[port mediaType] isEqual:AVMediaTypeVideo] ) {
-				videoConnection = connection;
-			}
-		}
-	}
-	if([videoConnection isVideoOrientationSupported]) {
-		[videoConnection setVideoOrientation:self.videoPreview.connection.videoOrientation];
-	}
-
-	//start recording to file
-	[self.movieOutputFile startRecordingToOutputFileURL:outputURL recordingDelegate:self];
-}
-
--(void)stopVideoRecording {
-	[self.movieOutputFile stopRecording];
-}
-
-#pragma mark -delegate methods AVCaptureFileOutputRecordingDelegate
-
--(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
-    
-    MediaSessionManager * __weak weakSelf = self;
-	if ([self.assetLibrary videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL]){
-		[self.assetLibrary writeVideoAtPathToSavedPhotosAlbum:outputFileURL completionBlock:^(NSURL *assetURL, NSError *error) {
-			[weakSelf.assetLibrary assetForURL:assetURL
-							   resultBlock:^(ALAsset *asset) {
-								   [self.verbatmAlbum addAsset:asset];
-//								   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-//TODO: [self.delegate didFinishSavingMediaToAsset:asset];
-
-							   }
-							  failureBlock:^(NSError* error) {
-//								  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-							  }];
-		}];
-	}else{
-	}
-
-}
-
--(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections {
-
-}
-
-#pragma mark - for photo capturing and processing
--(void)captureImage {
-	AVCaptureConnection* videoConnection = nil;
-	for(AVCaptureConnection* connection in self.stillImageOutput.connections){
-		for(AVCaptureInputPort* port in connection.inputPorts){
-			if([[port mediaType] isEqual:AVMediaTypeVideo]){
-				videoConnection = connection;
-				break;
-			}
-		}
-		if(videoConnection){
-			break;
-		}
-	}
-	//AVCaptureConnection *conn = [self.videoCaptureOutput connectionWithMediaType:AVMediaTypeVideo];
-	[videoConnection setVideoOrientation:self.videoPreview.connection.videoOrientation];
-	//requesting a capture
-	[self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
-		if(!error)
-		{
-			NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
-			[self processImage:[[UIImage alloc] initWithData: dataForImage]];
-			[self.delegate capturedImage: self.stillImage];
-			[self saveImageToVerbatmAlbum];
-		}else{
-//			NSLog(@"%@", [error localizedDescription]);
-		}
-	}];
-}
-
-#pragma mark - accessory methods
-
--(void)saveImageToVerbatmAlbum {
-	CGImageRef img = [self.stillImage CGImage];
-	[self.assetLibrary writeImageToSavedPhotosAlbum:img
-										   metadata:nil
-									completionBlock:^(NSURL* assetURL, NSError* error) {
-										if (error.code == 0) {
-											// try to get the asset
-											[self.assetLibrary assetForURL:assetURL
-															   resultBlock:^(ALAsset *asset) {
-																   [self.verbatmAlbum addAsset:asset];
-//																   NSLog(@"Added %@ to %@", [[asset defaultRepresentation] filename], @"Verbatm");
-																   [self.delegate didFinishSavingMediaToAsset:asset];
-															   }
-															  failureBlock:^(NSError* error) {
-//																  NSLog(@"failed to retrieve image asset:\nError: %@ ", [error localizedDescription]);
-															  }];
-										}
-										else {
-											NSLog(@"saved image failed.\nerror code %li\n%@", (long)error.code, [error localizedDescription]);
-										}
-									}];
-}
-
--(void)processImage:(UIImage*)image {
-	self.stillImage = image;
-	[self cropImage];
-}
-
-
--(void) cropImage  {
-
-	if([UIDevice currentDevice].orientation == UIDeviceOrientationLandscapeRight){
-		[self rotateImage];
-
-		//additional rotation required
-		CGSize size = CGSizeMake(self.stillImage.size.width, self.stillImage.size.height); 
-		UIGraphicsBeginImageContext(size);
-		[[UIImage imageWithCGImage: self.stillImage.CGImage scale:1.0 orientation:UIImageOrientationRight] drawInRect: CGRectMake(0, 0, self.stillImage.size.height, self.stillImage.size.width)];
-		self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
-	}else if([UIDevice currentDevice].orientation == UIDeviceOrientationPortrait || [UIDevice currentDevice].orientation == UIDeviceOrientationFaceUp){
-		[self rotateImage];
-	}
-}
-
--(void)rotateImage {
-	CGSize size = self.stillImage.size;
-	UIGraphicsBeginImageContext(size);
-	[self.stillImage drawInRect:CGRectMake(0, 0, size.width, size.height)];
-	self.stillImage = UIGraphicsGetImageFromCurrentImageContext();
-}
 @end

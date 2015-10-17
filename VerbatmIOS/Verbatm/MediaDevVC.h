@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+@import Photos;
+
 @protocol MediaDevDelegate <NSObject>
 
 -(void) backButtonPressed;
