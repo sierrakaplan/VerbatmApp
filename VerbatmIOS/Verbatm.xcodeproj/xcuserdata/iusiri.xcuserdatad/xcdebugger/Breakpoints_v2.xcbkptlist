@@ -233,7 +233,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "327"
             endingLineNumber = "327"
-            landmarkName = "-textCreationButton"
+            landmarkName = "-setFilteredPhotos"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
