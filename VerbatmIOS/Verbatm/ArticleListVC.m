@@ -76,12 +76,7 @@
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	self.povListView.contentOffset = CGPointZero;
-	if (!self.povsRefreshedForFirstTime) {
-		self.activityIndicator = [self.view startActivityIndicatorOnViewWithCenter:self.view.center andStyle: UIActivityIndicatorViewStyleWhiteLarge];
-		self.activityIndicator.color = [UIColor grayColor];
-		[self refreshFeed];
-		self.povsRefreshedForFirstTime = YES;
-	}
+	[self refreshFeedForFirstTime];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -105,7 +100,7 @@
                                                  name:INTERNET_CONNECTION_NOTIFICATION
                                                object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(refresh)
+											 selector:@selector(refreshFeed)
 												 name:NOTIFICATION_REFRESH_FEEDS
 											   object:nil];
 }
@@ -130,10 +125,7 @@
 -(void) setPovLoadManager:(POVLoadManager *) povLoader {
 	self.povLoader = povLoader;
 	self.povLoader.delegate = self;
-	if (!self.povsRefreshedForFirstTime) {
-		self.povsRefreshedForFirstTime = YES;
-		[self refreshFeed];
-	}
+	[self refreshFeedForFirstTime];
 }
 
 #pragma mark - Table View Delegate methods (view customization) -
@@ -247,11 +239,20 @@
 
 #pragma mark - Refresh feed -
 
+-(void) refreshFeedForFirstTime {
+	if (!self.povsRefreshedForFirstTime) {
+		[self.activityIndicator startAnimating];
+		[self refreshFeed];
+		self.povsRefreshedForFirstTime = YES;
+	}
+}
+
 -(void) refreshNotification {
 	[[NSNotificationCenter defaultCenter] postNotificationName: NOTIFICATION_REFRESH_FEEDS object:nil];
 }
 
 // Tells pov loader to reload POV's completely (removing all those previously loaded and getting the first page again)
+// To refresh all feeds and not just this, call refreshNotification not refreshFeed
 -(void) refreshFeed {
     if(self.refreshInProgress) return;
     self.refreshInProgress = YES;
@@ -262,33 +263,32 @@
 
 //Delegate method from povLoader informing us the the list has been refreshed. So the content length is the same
 -(void) povsRefreshed {
-	if ([self.activityIndicator isAnimating]) {
-		[self.activityIndicator stopAnimating];
-	}
-    self.refreshInProgress = NO;
-    if(self.povPublishing) {
-        self.povPublishing = NO;
-//TODO: get rid of progress bar?		[self.povPublishingPlaceholderCell stopActivityIndicator];
-        self.povPublishingPlaceholderCell = nil;
-    }
-
-    if(self.reloadingRefreshControl.isRefreshing) {
-		[self.reloadingRefreshControl endRefreshing];
-	}
+	[self endRefreshing];
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
 //delegate method from povLoader - called if call to refresh failed usually for internet reasons
 -(void)povsFailedToRefresh{
+	[self endRefreshing];
+	//TODO: tell user somehow that these failed to refresh
+    [self.delegate failedToRefreshFeed];
+}
+
+// If the activity indicator showing the first refresh is going, stops it
+// If the refresh control at the top is going, stops it
+// If there was a publishing placeholder cell removes it
+-(void)endRefreshing {
+	self.refreshInProgress = NO;
 	if ([self.activityIndicator isAnimating]) {
 		[self.activityIndicator stopAnimating];
 	}
-	//TODO: tell user somehow that these failed to refresh
-    self.refreshInProgress = NO;
-    if(self.reloadingRefreshControl.isRefreshing) {
+	if(self.reloadingRefreshControl.isRefreshing) {
 		[self.reloadingRefreshControl endRefreshing];
 	}
-    [self.delegate failedToRefreshFeed];
+	if(self.povPublishing) {
+		self.povPublishing = NO;
+		self.povPublishingPlaceholderCell = nil;
+	}
 }
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
@@ -297,8 +297,6 @@
 	if ([self.loadingMoreActivityIndicator isAnimating]) {
 		[self.loadingMoreActivityIndicator stopAnimating];
 	}
-    if(self.activityIndicator.isAnimating)[self.activityIndicator stopAnimating];
-    
 	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 }
 
@@ -323,7 +321,7 @@
     if(self.povPublishing || self.loadingMorePOVsInProgress){
         [refreshControl endRefreshing];
     } else {
-        [self refreshFeed];
+        [self refreshNotification];
     }
 }
 
@@ -349,9 +347,8 @@
 -(void)networkConnectionUpdate: (NSNotification *) notification{
     NSDictionary * userInfo = [notification userInfo];
     BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
-	if (!self.povsRefreshedForFirstTime && thereIsConnection) {
-		self.povsRefreshedForFirstTime = YES;
-		[self refreshFeed];
+	if (thereIsConnection) {
+		[self refreshFeedForFirstTime];
 	}
 }
 
@@ -387,11 +384,22 @@
 	return _povListView;
 }
 
+-(UIActivityIndicatorView*) activityIndicator {
+	if (!_activityIndicator) {
+		_activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+		_activityIndicator.color = [UIColor grayColor];
+		_activityIndicator.hidesWhenStopped = YES;
+		_activityIndicator.center = CGPointMake(self.view.center.x, self.view.frame.size.height * 1.f/3.f);
+		[self.view addSubview:_activityIndicator];
+		[self.view bringSubviewToFront:_activityIndicator];
+	}
+	return _activityIndicator;
+}
+
 -(UIActivityIndicatorView*) loadingMoreActivityIndicator {
 	if (!_loadingMoreActivityIndicator) {
 		_loadingMoreActivityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
 		_loadingMoreActivityIndicator.color = [UIColor grayColor];
-		_loadingMoreActivityIndicator.alpha = 1.0;
 		_loadingMoreActivityIndicator.hidesWhenStopped = YES;
 	}
 	return _loadingMoreActivityIndicator;

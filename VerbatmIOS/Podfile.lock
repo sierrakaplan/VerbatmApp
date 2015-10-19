@@ -1,29 +1,48 @@
 PODS:
-  - OMGHTTPURLRQ (2.1.3):
-    - OMGHTTPURLRQ/RQ (= 2.1.3)
-  - OMGHTTPURLRQ/FormURLEncode (2.1.3)
-  - OMGHTTPURLRQ/RQ (2.1.3):
+  - Google/Analytics (1.0.7):
+    - Google/Core
+    - GoogleAnalytics (~> 3.12)
+  - Google/Core (1.0.7):
+    - GoogleNetworkingUtilities (~> 1.0)
+    - GoogleSymbolUtilities (~> 1.0)
+    - GoogleUtilities (~> 1.0)
+  - GoogleAnalytics (3.13.0)
+  - GoogleNetworkingUtilities (1.0.0):
+    - GoogleSymbolUtilities (~> 1.0)
+  - GoogleSymbolUtilities (1.0.0)
+  - GoogleUtilities (1.1.0):
+    - GoogleSymbolUtilities (~> 1.0.0)
+  - OMGHTTPURLRQ (3.0.2):
+    - OMGHTTPURLRQ/RQ (= 3.0.2)
+  - OMGHTTPURLRQ/FormURLEncode (3.0.2)
+  - OMGHTTPURLRQ/RQ (3.0.2):
     - OMGHTTPURLRQ/FormURLEncode
     - OMGHTTPURLRQ/UserAgent
-  - OMGHTTPURLRQ/UserAgent (2.1.3)
-  - PromiseKit (2.2.1):
-    - PromiseKit/Foundation (= 2.2.1)
-    - PromiseKit/QuartzCore (= 2.2.1)
-    - PromiseKit/UIKit (= 2.2.1)
-  - PromiseKit/CorePromise (2.2.1)
-  - PromiseKit/Foundation (2.2.1):
-    - OMGHTTPURLRQ (~> 2.1.3)
+  - OMGHTTPURLRQ/UserAgent (3.0.2)
+  - PromiseKit (3.0.0):
+    - PromiseKit/Foundation (= 3.0.0)
+    - PromiseKit/QuartzCore (= 3.0.0)
+    - PromiseKit/UIKit (= 3.0.0)
+  - PromiseKit/CorePromise (3.0.0)
+  - PromiseKit/Foundation (3.0.0):
+    - OMGHTTPURLRQ (~> 3.0.0)
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (2.2.1):
+  - PromiseKit/QuartzCore (3.0.0):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (2.2.1):
+  - PromiseKit/UIKit (3.0.0):
     - PromiseKit/CorePromise
 
 DEPENDENCIES:
+  - Google/Analytics (~> 1.0.0)
   - PromiseKit
 
 SPEC CHECKSUMS:
-  OMGHTTPURLRQ: c4268dea4295b585d711055dbcd87bfa82badd5f
-  PromiseKit: 9c92257e39abf4b634533d44268592dfc6e4b5c2
+  Google: 875f5a8ade86dd02e36586e4a54814843938c7f6
+  GoogleAnalytics: fcf1f1cad57ae1a9a53520018f0f680ceeeb8b49
+  GoogleNetworkingUtilities: 292992ab31b7b4ba32809a0e8b40e324cdfb2c0c
+  GoogleSymbolUtilities: a7b0feed1fe667c8d5e647177938d0ecd62d6948
+  GoogleUtilities: 8ed9134debe11719097881711464752900668f10
+  OMGHTTPURLRQ: 8376dc887d76a5a7e2a67881dc788f917a2f437c
+  PromiseKit: 665540a1eb43156446872dcf49ed7dee6ebbe13b
 
-COCOAPODS: 0.38.2
+COCOAPODS: 0.39.0

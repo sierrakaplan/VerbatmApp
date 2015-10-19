@@ -189,11 +189,13 @@
 
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
+			if (sender.numberOfTouches < 1) return;
 			CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 			self.previousGesturePoint  = touchLocation;
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
+			if (sender.numberOfTouches < 1) return;
 			CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 			CGPoint currentPoint = touchLocation;
 			int diff = currentPoint.x - self.previousGesturePoint.x;

@@ -60,8 +60,6 @@
 
 //adds pinch view and automatically saves pinchViews
 -(void) addPinchView:(PinchView*)pinchView {
-	//TODO:
-	if (pinchView.containsVideo) return;
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		@synchronized(self) {
 			if ([self.pinchViews containsObject:pinchView]) {
@@ -78,8 +76,6 @@
 
 //removes pinch view and automatically saves pinchViews
 -(void) removePinchView:(PinchView*)pinchView {
-	//TODO:
-	if (pinchView.containsVideo) return;
 	@synchronized(self) {
 		if (![self.pinchViews containsObject: pinchView]) {
 			return;
@@ -93,8 +89,6 @@
 }
 
 -(void) swapPinchView: (PinchView *) pinchView1 andPinchView: (PinchView *) pinchView2 {
-	//TODO:
-	if (pinchView1.containsVideo || pinchView2.containsVideo) return;
 	@synchronized(self) {
 		NSInteger index1 = [self.pinchViews indexOfObject: pinchView1];
 		NSInteger index2 = [self.pinchViews indexOfObject: pinchView2];
@@ -113,8 +107,6 @@
 }
 
 -(void) updatePinchView: (PinchView*) pinchView {
-	//TODO:
-	if (pinchView.containsVideo) return;
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		@synchronized(self) {
 			NSInteger index = [self.pinchViews indexOfObject:pinchView];
@@ -129,6 +121,7 @@
 
 //loads pinchviews from user defaults
 -(void) loadPOVFromUserDefaults {
+//	[self clearPOVInProgress];
 
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];

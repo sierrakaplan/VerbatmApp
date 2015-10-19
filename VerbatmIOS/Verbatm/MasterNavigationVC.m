@@ -267,6 +267,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 - (void) exitArticleDisplayView:(UIPanGestureRecognizer *)sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
+			if (sender.numberOfTouches < 1) return;
             CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
             
             if((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100)  < touchLocation.y) {
@@ -280,6 +281,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
+			if (sender.numberOfTouches < 1) return;
 			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
 			CGPoint currentPoint = touchLocation;
 			int diff = currentPoint.x - self.previousGesturePoint.x;

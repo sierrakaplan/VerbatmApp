@@ -12,11 +12,4 @@
 @implementation UtilityFunctions
 
 
-+(NSData *) convertALAssetRepresentationToData: (ALAssetRepresentation *) assetRep {
-    Byte *buffer = (Byte*)malloc((NSUInteger)assetRep.size);
-    NSUInteger buffered = [assetRep getBytes:buffer fromOffset:0.0 length:(NSUInteger)assetRep.size error:nil];
-    NSData *data = [NSData dataWithBytesNoCopy:buffer length:buffered freeWhenDone:YES];
-    return data;
-}
-
 @end

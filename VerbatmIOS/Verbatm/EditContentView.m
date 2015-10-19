@@ -255,12 +255,14 @@
 -(void) didPan:(UIGestureRecognizer *) sender{
         switch (sender.state) {
             case UIGestureRecognizerStateBegan:
+				if (sender.numberOfTouches < 1) return;
                 self.panStartLocation = [sender locationOfTouch:0 inView:self];
                 if(self.textAndImageView.textView.isFirstResponder) {
 					[self.textAndImageView.textView resignFirstResponder];
 				}
                 break;
             case UIGestureRecognizerStateChanged:{
+				if (sender.numberOfTouches < 1) return;
 				CGPoint location = [sender locationOfTouch:0 inView:self];
 				[self checkGestureDirection: location];
                 if(self.isHorizontalPan) {

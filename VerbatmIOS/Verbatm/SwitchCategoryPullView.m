@@ -119,10 +119,12 @@
     
 	    switch(sender.state) {
         case UIGestureRecognizerStateBegan: {
+			if (sender.numberOfTouches < 1) return;
             self.lastPoint = [sender locationOfTouch:0 inView:self];
             break;
         }
         case UIGestureRecognizerStateChanged: {
+			if (sender.numberOfTouches < 1) return;
             CGPoint touch = [sender locationOfTouch:0 inView:self];
 			if (touch.y > self.pullCircle.frame.origin.y + self.pullCircle.frame.size.height) {
 				return;

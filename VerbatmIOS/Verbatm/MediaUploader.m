@@ -85,7 +85,7 @@
 		NSInteger newProgressUnits = (NSInteger)(progressAmount*self.mediaUploadProgress.totalUnitCount);
 		if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
 			[self.mediaUploadProgress setCompletedUnitCount: newProgressUnits];
-//			NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
+			NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 		}
 	}
 }
