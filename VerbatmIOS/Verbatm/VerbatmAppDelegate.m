@@ -12,12 +12,13 @@
 #import <AVFoundation/AVFoundation.h>
 #import "UserSetupParameters.h"
 
-
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
+
+#import <Google/Analytics.h>
+
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
-
 #import <PromiseKit/PromiseKit.h>
 
 @implementation VerbatmAppDelegate

@@ -190,6 +190,7 @@
 }
 
 -(void) mainViewTapped:(UITapGestureRecognizer *) sender {
+	if (sender.numberOfTouches < 1) return;
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 	if ([self circleTapped:touchLocation]) {
         if(!self.circleView.alpha){
@@ -247,6 +248,7 @@
 }
 
 -(void) handleCircleGestureBegan:(UIPanGestureRecognizer*) sender {
+	if (sender.numberOfTouches < 1) return;
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
 	self.draggingFromPointIndex = [self getPointIndexFromLocation:touchLocation];
 	if (self.draggingFromPointIndex >= 0) {
@@ -260,7 +262,7 @@
 }
 
 -(void) handleCircleGestureChanged:(UIPanGestureRecognizer*) sender {
-	if (self.draggingFromPointIndex < 0) {
+	if (self.draggingFromPointIndex < 0 || sender.numberOfTouches < 1) {
 		return;
 	}
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];

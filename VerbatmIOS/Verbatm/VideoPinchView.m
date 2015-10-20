@@ -16,20 +16,21 @@
 
 @interface VideoPinchView()
 
-#pragma mark Encoding Keys
-
-#define VIDEO_KEY @"video"
-
 @property (strong, nonatomic) UIImage* videoImage;
 @property (strong, nonatomic) UIImageView* videoView;
+
+#pragma mark Encoding Keys
+
+#define PHASSET_IDENTIFIER_KEY @"video_phasset_local_id"
 
 @end
 
 @implementation VideoPinchView
 
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andVideo: (AVURLAsset*)video {
+-(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andVideo: (AVURLAsset*)video andPHAssetLocalIdentifier: (NSString*) localIdentifier {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
+		self.phAssetLocalIdentifier = localIdentifier;
 		[self initWithVideo:video];
 	}
 	return self;
@@ -82,15 +83,28 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	NSString* videoURLString = [self.video URL].absoluteString;
-	[coder encodeObject: videoURLString forKey:VIDEO_KEY];
+	[coder encodeObject: self.phAssetLocalIdentifier forKey:PHASSET_IDENTIFIER_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
-		NSString* videoURLString = [decoder decodeObjectForKey:VIDEO_KEY];
-		AVURLAsset* video = [AVURLAsset assetWithURL:[NSURL URLWithString:videoURLString]];
-		[self initWithVideo:video];
+		NSString* phAssetLocalId = [decoder decodeObjectForKey:PHASSET_IDENTIFIER_KEY];
+		self.phAssetLocalIdentifier = phAssetLocalId;
+
+		// load video avurlasset from phasset
+		PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[phAssetLocalId] options:nil];
+		PHAsset* videoAsset = fetchResult.firstObject;
+		PHVideoRequestOptions* options = [PHVideoRequestOptions new];
+		options.networkAccessAllowed =  YES; //videos won't only be loaded over wifi
+		options.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
+		options.version = PHVideoRequestOptionsVersionCurrent;
+		[[PHImageManager defaultManager] requestAVAssetForVideo:videoAsset
+														options:options
+												  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
+													  dispatch_async(dispatch_get_main_queue(), ^{
+														  [self initWithVideo: (AVURLAsset*)videoAsset];
+													  });
+												  }];
 	}
 	return self;
 }

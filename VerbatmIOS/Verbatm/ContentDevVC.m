@@ -53,6 +53,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #pragma mark Image Manager
 
 @property (strong, nonatomic) PHImageManager *imageManager;
+@property (strong, nonatomic) PHVideoRequestOptions *videoRequestOptions;
 
 #pragma mark Pinch Views
 
@@ -336,8 +337,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 	UIImage* coverPicture = [[UserPovInProgress sharedInstance] coverPhoto];
 	if (coverPicture) {
-		[self.coverPicView setNewImage:coverPicture];
-		[self coverPicAddedForFirstTime];
+		[self setCoverPictureImage: coverPicture];
 	}
 
 	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
@@ -1341,17 +1341,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	self.previousLocationOfTouchPoint_PAN = touch;
 }
 
-
 -(BOOL)selctedViewAboveCoverPhoto {
-    if(self.selectedView_PAN.frame.origin.y >
-       self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height &&
-       self.selectedView_PAN.frame.origin.y < self.coverPicView.frame.origin.y +
-       self.coverPicView.frame.size.height * (2.f/4.f)){
-        
-        return true;
-    }
-    
-    return NO;
+	if(self.selectedView_PAN.frame.origin.y >
+	   self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height &&
+	   self.selectedView_PAN.frame.origin.y < self.coverPicView.frame.origin.y +
+	   self.coverPicView.frame.size.height * (2.f/4.f)) {
+		return true;
+	}
+	return NO;
 }
 
 //swap currently selected item's frame with view above it
@@ -1449,7 +1446,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     if([self selctedViewAboveCoverPhoto]){
         //make sure the pinchview is an image
         if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
-            [self setCoverPictureImage:[((ImagePinchView *)self.selectedView_PAN.pageElement) getOriginalImage]];
+			UIImage* newCoverPhoto = [((ImagePinchView *)self.selectedView_PAN.pageElement) getOriginalImage];
+            [self setCoverPictureImage: newCoverPhoto];
             //now delete the selected pinchview
             [self deleteScrollView:self.selectedView_PAN];
         }
@@ -1637,13 +1635,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
  Given a PHAsset representing a video and we create a pinch view out of it
  */
 -(void) addMediaAssetToStream:(PHAsset *) asset {
-	PHVideoRequestOptions* options = [PHVideoRequestOptions new];
-	options.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
 	[[PHImageManager defaultManager] requestAVAssetForVideo:asset
-													options:options
-											  resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+													options:self.videoRequestOptions
+											  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
 												  dispatch_async(dispatch_get_main_queue(), ^{
-													  [self createPinchViewFromVideoAsset:(AVURLAsset*)asset];
+													  [self createPinchViewFromVideoAsset:(AVURLAsset*)videoAsset
+																		andPHAssetLocalID: asset.localIdentifier];
 												  });
 											  }];
 }
@@ -1714,8 +1711,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,UIImageOrientation orientation, NSDictionary *info) {
 
 			UIImage* image = [self getImageFromImageData: imageData];
-			[[UserPovInProgress sharedInstance] addCoverPhoto: image];
-
 			// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self setCoverPictureImage: image];
@@ -1727,11 +1722,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 -(void)setCoverPictureImage:(UIImage *) image{
     [self.coverPicView setNewImage: image];
-    
+    [[UserPovInProgress sharedInstance] addCoverPhoto: image];
     //show replace photo icon after the first time cover photo is added
     if(!_replaceCoverPhotoButton){
-        [self addTapGestureToPinchView:self.coverPicView];
-		[self.mainScrollView addSubview:self.replaceCoverPhotoButton];
+        [self coverPicAddedForFirstTime];
 	}
 }
 
@@ -1751,12 +1745,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 			}
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
 			@autoreleasepool {
-				PHVideoRequestOptions* videoRequestOptions = [PHVideoRequestOptions new];
-				videoRequestOptions.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
-				[self.imageManager requestAVAssetForVideo:asset options:videoRequestOptions resultHandler:^(AVAsset *asset, AVAudioMix *audioMix, NSDictionary *info) {
+				[self.imageManager requestAVAssetForVideo:asset options:self.videoRequestOptions
+											resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
 					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 					dispatch_async(dispatch_get_main_queue(), ^{
-						[self createPinchViewFromVideoAsset: (AVURLAsset*) asset];
+						[self createPinchViewFromVideoAsset: (AVURLAsset*) videoAsset andPHAssetLocalID:asset.localIdentifier];
 					});
 				}];
 			}
@@ -1803,10 +1796,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	}
 }
 
--(void) createPinchViewFromVideoAsset:(AVURLAsset*) videoAsset {
+-(void) createPinchViewFromVideoAsset:(AVURLAsset*) videoAsset andPHAssetLocalID: (NSString*) phAssetLocalId {
 	PinchView* newPinchView = [[VideoPinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
-															andVideo: videoAsset];
+															andVideo: videoAsset
+										   andPHAssetLocalIdentifier:phAssetLocalId];
 
 	if (self.addMediaBelowView) {
 		[self newPinchView: newPinchView belowView: self.addMediaBelowView];
@@ -1864,6 +1858,16 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 
 #pragma mark - Lazy Instantiation
+
+-(PHVideoRequestOptions*) videoRequestOptions {
+	if (!_videoRequestOptions) {
+		_videoRequestOptions = [PHVideoRequestOptions new];
+		_videoRequestOptions.networkAccessAllowed =  YES; //videos won't only be loaded over wifi
+		_videoRequestOptions.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
+		_videoRequestOptions.version = PHVideoRequestOptionsVersionCurrent;
+	}
+	return _videoRequestOptions;
+}
 
 -(PHImageManager*) imageManager {
 	if (!_imageManager) {

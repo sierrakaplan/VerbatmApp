@@ -10,6 +10,4 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 @interface UtilityFunctions : NSObject
 
-+(NSData *) convertALAssetRepresentationToData: (ALAssetRepresentation *) assetRep;
-
 @end

@@ -34,7 +34,7 @@
 
 @implementation CollectionPinchView
 
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
+-(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
 		[self initWithPinchViews:pinchViews];
@@ -105,9 +105,6 @@
 			break;
 		case 2:
 			[self renderTwoMedia];
-			break;
-		case 3:
-//			[self renderThreeMedia];
 			break;
 		default:
 			return;
@@ -239,6 +236,27 @@
 	if (self = [super initWithCoder:decoder]) {
 		NSData* pinchViewsData = [decoder decodeObjectForKey:PINCHVIEWS_KEY];
 		NSArray* pinchViews = [NSKeyedUnarchiver unarchiveObjectWithData:pinchViewsData];
+		// If one of the pinch views contains video should wait until the avurlasset is fetched before rendering media
+		for (PinchView* pinchView in pinchViews) {
+			if (pinchView.containsVideo) {
+				// load video avurlasset from phasset
+				PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[[(VideoPinchView*)pinchView phAssetLocalIdentifier]] options:nil];
+				PHAsset* videoAsset = fetchResult.firstObject;
+				PHVideoRequestOptions* options = [PHVideoRequestOptions new];
+				options.networkAccessAllowed =  YES; //videos won't only be loaded over wifi
+				options.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
+				options.version = PHVideoRequestOptionsVersionCurrent;
+				[[PHImageManager defaultManager] requestAVAssetForVideo:videoAsset
+																options:options
+														  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
+															  dispatch_async(dispatch_get_main_queue(), ^{
+																  [(VideoPinchView*)pinchView initWithVideo: (AVURLAsset*)videoAsset];
+																  [self initWithPinchViews:pinchViews];
+															  });
+														  }];
+				return self;
+			}
+		}
 		[self initWithPinchViews:pinchViews];
 	}
 	return self;

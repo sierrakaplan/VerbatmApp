@@ -1,4 +1,3 @@
 source 'https://github.com/CocoaPods/Specs.git'
-pod 'Google/Analytics', '~> 1.0.0'
 pod 'PromiseKit'
 use_frameworks!
