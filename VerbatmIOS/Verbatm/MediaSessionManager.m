@@ -104,7 +104,7 @@
 	[self.stillImageOutput setOutputSettings: stillImageOutputSettings];
 	[self.session addOutput: self.stillImageOutput];
 
-	for (AVCaptureConnection *connection in [self.movieOutputFile connections] ) {
+	for (AVCaptureConnection *connection in [self.movieOutputFile connections]) {
 		for (AVCaptureInputPort *port in [connection inputPorts] ) {
 			if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
 				self.videoConnection = connection;

@@ -213,7 +213,7 @@
                                 <rect key="frame" x="44" y="146" width="243" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <inset key="insetFor6xAndEarlier" minX="0.0" minY="0.0" maxX="0.0" maxY="7"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                                 <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter full name*" minimumFontSize="17" id="dQI-JP-0Ck">
@@ -569,7 +569,7 @@
         <image name="logo" width="130" height="266"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="UxX-nw-l5Q"/>
         <segue reference="vqA-Ve-rLQ"/>
+        <segue reference="UxX-nw-l5Q"/>
     </inferredMetricsTieBreakers>
 </document>

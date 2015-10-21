@@ -76,7 +76,7 @@
 }
 
 -(void) formatLabel: (UILabel*) label {
-	label.font = [UIFont fontWithName:DEFAULT_FONT size:SWITCH_CATEGORY_BAR_FONT_SIZE];
+	label.font = [UIFont fontWithName:SWITCH_LABEL_FONT size:SWITCH_CATEGORY_BAR_FONT_SIZE];
 	label.textAlignment = NSTextAlignmentCenter;
 	label.lineBreakMode = NSLineBreakByClipping;
 
@@ -199,6 +199,7 @@
     return _trendingLabel;
 }
 
+//for now topics is actually recent
 -(UILabel *)topicsLabel{
     if(!_topicsLabel){
         _topicsLabel = [[UILabel alloc] init];

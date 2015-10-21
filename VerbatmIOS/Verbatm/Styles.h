@@ -15,6 +15,7 @@
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 #define TITLE_TEXT_FONT @"HelveticaNeue"
 
+#define SWITCH_LABEL_FONT @"Futura-Medium"
 
 #define NAV_BAR_COLOR whiteColor
 #define PREVIEW_PUBLISH_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
@@ -25,16 +26,14 @@
 
 
 #pragma mark - Sign In -
-
 #define ERROR_ANIMATION_TEXT_COLOR whiteColor
 #define ERROR_ANIMATION_FONT_SIZE 20
 
 
 #pragma mark - Feed -
-
 #define FEED_BACKGROUND_COLOR 0.918
 #define STORY_BACKGROUND_COLOR colorWithRed: 0.8 green:0.8 blue:0.8 alpha:1
-#define SWITCH_CATEGORY_BAR_FONT_SIZE 30
+#define SWITCH_CATEGORY_BAR_FONT_SIZE 27.f
 
 #define TITLE_TEXT_COLOR blackColor
 #define TITLE_FONT @"HelveticaNeue-Italic"

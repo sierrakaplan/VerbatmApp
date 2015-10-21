@@ -49,6 +49,7 @@
 
 
 -(void) storyEndedViewing{
+     if(![PFUser currentUser] || !self.currentArticleTitle) return;
     
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.storyViewStartTime)/60;
     NSDictionary *dimensions = @{
@@ -71,12 +72,10 @@
 }
 -(void) pageEndedViewingWithIndex: (NSInteger) pageIndex aveType: (NSString *) aveType{
     if(self.currentPageIndex != pageIndex) return;
-    
+    if(![PFUser currentUser] || !self.currentArticleTitle) return;
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.pageViewStartTime)/60;
     
-    NSDictionary *dimensions = @{
-                                 @"articleTitle": self.currentArticleTitle,
-                                 // Did the user filter the query?
+    NSDictionary *dimensions = @{@"articleTitle": self.currentArticleTitle,
                                  @"totalTimeSpentOnPage": [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
                                  @"username" : [[PFUser currentUser] username],
                                  @"pageIndex" : [[NSNumber numberWithInteger:pageIndex] stringValue],
@@ -94,8 +93,7 @@
     if(![PFUser currentUser])return;
     if(self.userSessionStartTime == 0) return;//prevents this method being called twice without newUserS being called 
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.userSessionStartTime)/60;
-    NSDictionary *dimensions = @{
-                                 @"username" : [[PFUser currentUser] username],
+    NSDictionary *dimensions = @{@"username" : [[PFUser currentUser] username],
                                  @"totalTimeSpent" : [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
                                  @"numerOfStoriesRead" : [[NSNumber numberWithInteger:self.numberOfStoriesRead] stringValue]
                                  };

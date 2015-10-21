@@ -64,9 +64,9 @@
 		title = @"No Title Entered";
 	}
 	titleLabel.text = title;
-    titleLabel.backgroundColor = [UIColor colorWithWhite:1 alpha:0.3];
+    titleLabel.backgroundColor = [UIColor colorWithWhite:1 alpha:0.5];
     [titleLabel sizeToFit];
-    titleLabel.frame = self.bounds;
+    titleLabel.frame = CGRectMake(0, -100, self.bounds.size.width, self.bounds.size.height +100);
     
 	[self addSubview: titleLabel];
 }

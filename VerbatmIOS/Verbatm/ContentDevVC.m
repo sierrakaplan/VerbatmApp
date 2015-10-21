@@ -137,11 +137,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #define WHAT_IS_IT_LIKE_HEIGHT 52
 #define MAX_TITLE_CHARACTERS 40
 
-#define REPLACE_PHOTO_FRAME_WIDTH 80
-#define REPLACE_PHOTO_FRAME_HEIGHT 80
+#define REPLACE_PHOTO_FRAME_WIDTH 35
+#define REPLACE_PHOTO_FRAME_HEIGHT 35
 
 #define REPLACE_PHOTO_YOFFSET 20
-#define REPLACE_PHOTO_XsOFFSET 20
+#define REPLACE_PHOTO_XsOFFSET 10
 
 #define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
 
@@ -1608,6 +1608,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     [self clearBaseSelcetor];
 	[self createBaseSelector];
     [self initializeVariables];
+    [[UserPovInProgress sharedInstance] clearPOVInProgress];//now that you have published then we should get rid of all cashed info
 }
 
 -(void)clearBaseSelcetor{
@@ -1907,7 +1908,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
         _replaceCoverPhotoButton = [[UIButton alloc] initWithFrame:
                                     CGRectMake(self.coverPicView.frame.origin.x +
                                                self.coverPicView.frame.size.width +
-                                               
                                                REPLACE_PHOTO_XsOFFSET,
                                                self.coverPicView.frame.origin.y + REPLACE_PHOTO_XsOFFSET,
                                                REPLACE_PHOTO_FRAME_WIDTH, REPLACE_PHOTO_FRAME_HEIGHT)];

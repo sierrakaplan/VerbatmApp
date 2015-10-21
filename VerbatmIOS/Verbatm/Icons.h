@@ -40,7 +40,7 @@
 #define WHAT_IS_IT_LIKE_BORDER @"dashed_border_with_line"
 #define TITLE_NOTIFICATION_ANIMATION @"title_notification"
 
-#define REPLACE_COVER_PHOTO_ICON @"replacePhotoIcon"
+#define REPLACE_COVER_PHOTO_ICON @"replaceCoverPhotoIcon"
 
 #pragma mark Media Capture
 
