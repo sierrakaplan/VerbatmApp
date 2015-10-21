@@ -190,6 +190,20 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
     if(scrollView.contentOffset.x < self.view.frame.size.width){
         [scrollView setContentOffset:CGPointMake(self.view.frame.size.width, 0) animated:NO];
     }
+    
+    //apply some analytics
+    if(scrollView == self.masterSV){
+        
+        if(self.feedContainer.frame.origin.x == scrollView.contentOffset.x){
+            //in the feed
+            [[Analytics getSharedInstance] endOfADKSession];
+        }else if (self.adkContainer.frame.origin.x == scrollView.contentOffset.x){
+            //in the adk
+            [[Analytics getSharedInstance] newADKSession];
+        }
+        
+        
+    }
 }
 
 

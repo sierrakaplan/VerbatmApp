@@ -108,10 +108,13 @@
 //we track how long the user spends per creation session on the ADK
 //for now this means from initial media caputre to final publish -- not that this must be in the same userSession
 -(void)newADKSession{
+    if(self.adkSessionStartTime != 0) return;
     self.adkSessionStartTime = CACurrentMediaTime();
 }
 
 -(void)endOfADKSession{
+    if(self.adkSessionStartTime == 0) return;
+    
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.userSessionStartTime)/60;
     NSDictionary *dimensions = @{
                                  @"totalTimeSpent":[[NSNumber numberWithFloat:timeSpent_mins] stringValue],
@@ -119,6 +122,7 @@
                                  };
     // Send the dimensions to Parse along with the 'search' event
     [PFAnalytics trackEvent:@"ADKSession" dimensions:dimensions];
+    self.adkSessionStartTime = 0;
 }
 
 
