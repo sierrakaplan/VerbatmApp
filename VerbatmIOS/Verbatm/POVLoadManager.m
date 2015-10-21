@@ -47,6 +47,7 @@
 	self = [super init];
 	if (self) {
 		self.povType = type;
+		self.noMorePOVsToLoad = NO;
 	}
 	return self;
 }
@@ -58,6 +59,7 @@
 -(void) reloadPOVs: (NSInteger) numToLoad {
 
 	NSLog(@"Refreshing POV's...");
+	self.noMorePOVsToLoad = NO;
 
 	GTLQuery* loadQuery = [self getLoadingQuery: numToLoad withCursor: NO];
 	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
@@ -93,9 +95,13 @@
 		}
 		return PMKWhen(loadMoreInfoPromises);
 	}).then(^(NSArray* povInfosWithCoverPhoto) {
+		if (povInfosWithCoverPhoto.count < numOfNewPOVToLoad) {
+			self.noMorePOVsToLoad = YES;
+			NSLog(@"No more POV's to load");
+		}
 		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
 		NSLog(@"Successfully loaded more POVs!");
-		[self.delegate morePOVsLoaded];
+		[self.delegate morePOVsLoaded: povInfosWithCoverPhoto.count];
 	}).catch(^(NSError* error) {
 		 NSLog(@"Error loading more POVs: %@", error.description);
 	});

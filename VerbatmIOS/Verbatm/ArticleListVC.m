@@ -288,12 +288,14 @@
 }
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
--(void) morePOVsLoaded {
+-(void) morePOVsLoaded: (NSInteger) numLoaded {
     self.loadingMorePOVsInProgress = NO;
 	if ([self.loadingMoreActivityIndicator isAnimating]) {
 		[self.loadingMoreActivityIndicator stopAnimating];
 	}
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+	if (numLoaded > 0) {
+		[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+	}
 }
 
 -(void) failedToLoadMorePOVs {
@@ -330,7 +332,8 @@
                                               ([self.povLoader getNumberOfPOVsLoaded] * STORY_CELL_HEIGHT ) + 80 + NAV_BAR_HEIGHT);
 
 	//when the user has reached the very bottom of the feed and pulls we load more articles into the feed
-	if (scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height - RELOAD_THRESHOLD) {
+	if (scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height - RELOAD_THRESHOLD
+		&& !self.povLoader.noMorePOVsToLoad) {
 		if(!self.loadingMorePOVsInProgress && !self.refreshInProgress) {
 			self.loadingMorePOVsInProgress = YES;
 			[self.loadingMoreActivityIndicator startAnimating];

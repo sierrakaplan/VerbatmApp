@@ -13,6 +13,7 @@
 #import "PinchView.h"
 #import "CollectionPinchView.h"
 #import "Durations.h"
+#import "Icons.h"
 #import "SizesAndPositions.h"
 #import "UserPovInProgress.h"
 #import "MediaSelectTile.h"
@@ -39,7 +40,6 @@
 
 @property (nonatomic) CGPoint panTouchLocation;
 
-#define DELETE_ICON_FILENAME @"deleteIcon"
 #define MEDIA_SELECT_TILE_DELETE_BUTTON_OFFSET 7
 #define ANIMATE_TO_DELETE_MODE_OR_BACK_DURATION 0.1f
 
@@ -81,7 +81,7 @@
                                         DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
     }
     
-    [self.deleteButton setImage:[UIImage imageNamed:DELETE_ICON_FILENAME] forState:UIControlStateNormal];
+    [self.deleteButton setImage:[UIImage imageNamed:DELETE_ICON] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.deleteButton];
 }

@@ -19,16 +19,15 @@
 @property (nonatomic) BOOL isMuted;
 @property (strong, atomic) AVMutableComposition* mix;
 @property (nonatomic) BOOL videoLoading;
+@property (strong, nonatomic) UIImageView* videoLoadingImageView;
 @property (nonatomic) BOOL isVideoPlaying; //tells you if the video is in a playing state
 @property (strong, atomic) NSTimer * ourTimer;//keeps calling continue
 
 
-#define MUTE_BUTTON_X 10
-#define MUTE_BUTTON_Y (self.frame.size.height - MUTE_BUTTON_WH - MUTE_BUTTON_X)
-#define MUTE_BUTTON_WH 40
-#define MUTE_BUTTON_IMAGE @"mute_3"
+#define MUTE_BUTTON_SIZE 40
+#define MUTE_BUTTON_OFFSET 10
 
-#define UNMUTE_BUTTON_IMAGE @"mute_3_nonmuted"
+#define VIDEO_LOADING_ICON_SIZE 50
 
 @end
 
@@ -40,6 +39,7 @@
 		self.videoLoading = NO;
         self.clearsContextBeforeDrawing = YES;
         self.playAtEndOfAsynchronousSetup = NO;
+		[self setBackgroundColor:[UIColor blackColor]];
 	}
 	return self;
 }
@@ -48,21 +48,31 @@
 - (void)layoutSubviews {
 	if (self.playerLayer) {
 		self.playerLayer.frame = self.bounds;
-        self.muteButton.frame = CGRectMake(MUTE_BUTTON_X, MUTE_BUTTON_Y, MUTE_BUTTON_WH, MUTE_BUTTON_WH);
+        self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET, MUTE_BUTTON_OFFSET, MUTE_BUTTON_SIZE, MUTE_BUTTON_SIZE);
 	}
 }
 
 -(void)prepareVideoFromURLArray_asynchronouse: (NSArray*) urlArray {
+	if (!self.videoLoading) {
+		self.videoLoading = YES;
+		[self addSubview:self.videoLoadingImageView];
+	}
+
     if(urlArray.count == 0) return;
     if (urlArray.count > 1) {
         [self prepareVideoFromArrayOfAssets_asynchronous:urlArray];
         return;
-    }else{
+    } else {
         [self prepareVideoFromURL_synchronous:urlArray[0]];
     }
 }
 
 -(void)prepareVideoFromAsset_synchronous: (AVAsset*) asset{
+	if (!self.videoLoading) {
+		self.videoLoading = YES;
+		[self addSubview:self.videoLoadingImageView];
+	}
+
 	if (asset) {
 		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
         [self initiateVideo];
@@ -70,8 +80,12 @@
 }
 
 -(void)prepareVideoFromURL_synchronous: (NSURL*) url{
+	if (!self.videoLoading) {
+		self.videoLoading = YES;
+		[self addSubview:self.videoLoadingImageView];
+	}
+
     if (url) {
-        self.videoLoading = YES;
         [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
         [self initiateVideo];
     }
@@ -83,13 +97,13 @@
 	}
     
 	self.playerItem = playerItem;
-	
     [self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
     
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(playerItemDidReachEnd:)
 												 name:AVPlayerItemDidPlayToEndTimeNotification
 											   object:self.playerItem];
+
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
@@ -99,22 +113,15 @@
 			NSLog(@"Video ready to play");
 			if (self.videoLoading) {
 				self.videoLoading = NO;
+				[self.videoLoadingImageView removeFromSuperview];
 			}
-//			__weak typeof(self) weakSelf = self;
-//			[self.player prerollAtRate:0.f completionHandler:^(BOOL finished) {
-//				NSLog(@"Preroll ready");
-//
-//				// if ready call the play method
-//				if (finished) {
-//					dispatch_async(dispatch_get_main_queue(), ^{
-//						// call UI on main thread
-//						[weakSelf.player play];
-//					});
-//				}
-//			}];
 		} else if (self.playerItem.status == AVPlayerStatusFailed) {
 			NSLog(@"video couldn't play for some reason");
 			// something went wrong. player.error should contain some information
+			if (self.videoLoading) {
+				self.videoLoading = NO;
+				[self.videoLoadingImageView removeFromSuperview];
+			}
 		}
 	}
 }
@@ -149,6 +156,7 @@
         [self prepareVideoFromAsset_synchronous:videoList[0]];
     }
 }
+
 -(void)prepareVideoFromArrayOfURL_synchronous: (NSArray*)videoList {
     if(videoList.count > 1){
         if(!self.mix){
@@ -224,7 +232,7 @@
     [self.playerLayer removeAllAnimations];
     
     //right when we create the video we also add the mute button
-    [self setButtonFormats];
+    [self formatMuteButton];
     [self addSubview:self.muteButton];
     // Add it to your view's sublayers
     [self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
@@ -234,9 +242,9 @@
      }
 }
 
--(void)setButtonFormats {
-    self.muteButton.frame = CGRectMake(MUTE_BUTTON_X, MUTE_BUTTON_Y, MUTE_BUTTON_WH, MUTE_BUTTON_WH);
-    [self.muteButton setImage:[UIImage imageNamed:MUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
+-(void)formatMuteButton {
+    self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET, MUTE_BUTTON_OFFSET, MUTE_BUTTON_SIZE, MUTE_BUTTON_SIZE);
+    [self.muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
     [self.muteButton addTarget:self action:@selector(muteButtonTouched:) forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -296,12 +304,12 @@
 		[self unmuteVideo];
 		self.isMuted = false;
 		//set mute image on so the know to mute
-		[self.muteButton setImage:[UIImage imageNamed:MUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
+		[self.muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
 	}else{
 		[self muteVideo];
 		self.isMuted = true;
 		//set the unmute image on so they know how to unmute
-		[self.muteButton  setImage:[UIImage imageNamed:UNMUTE_BUTTON_IMAGE] forState:UIControlStateNormal];
+		[self.muteButton  setImage:[UIImage imageNamed:MUTED_ICON] forState:UIControlStateNormal];
 	}
 }
 
@@ -357,8 +365,6 @@
         self.playerItem = nil;
         self.player = nil;
         self.playerLayer = nil;
-        //self.mix = nil;
-        
         self.isVideoPlaying = NO;
         [self.ourTimer invalidate];
         self.ourTimer = nil;
@@ -371,6 +377,18 @@
 	}@catch(id anException){
 		//do nothing, obviously it wasn't attached because an exception was thrown
 	}
+}
+
+#pragma mark - Lazy Instantation -
+
+-(UIImageView*) videoLoadingImageView {
+	if (!_videoLoadingImageView) {
+		_videoLoadingImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:VIDEO_LOADING_ICON]];
+		_videoLoadingImageView.frame = CGRectMake(0, self.frame.size.height/2.f - VIDEO_LOADING_ICON_SIZE/2.f,
+												  self.frame.size.width, VIDEO_LOADING_ICON_SIZE);
+		_videoLoadingImageView.contentMode = UIViewContentModeScaleAspectFit;
+	}
+	return _videoLoadingImageView;
 }
 
 @end

@@ -45,8 +45,7 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 //Delegate in order to tell parent view controller when pull bar should be changed
 @property (strong, nonatomic) id<ContentDevVCDelegate> delegate;
 
-@property (strong, nonatomic) UILabel *whatIsItLikeLabel;
-@property (strong, nonatomic) UITextField *whatIsItLikeField;
+@property (strong, nonatomic) UITextField *titleField;
 
 @property (strong, nonatomic) ContentDevNavBar* navBar;
 

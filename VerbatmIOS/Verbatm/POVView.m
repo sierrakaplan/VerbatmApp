@@ -38,7 +38,6 @@
 
 #define DOWN_ARROW_WIDTH 30
 #define DOWN_ARROE_DISTANCE_FROM_BOTTOM 30
-#define DOWN_ARROW_IMAGE  @"downarrow"
 #define SCROLL_UP_ANIMATION_DURATION 0.7
 @end
 
@@ -317,7 +316,7 @@
 -(UIButton*) downArrow {
 	if (!_downArrow) {
 		_downArrow = [[UIButton alloc] init];
-		[_downArrow setImage:[UIImage imageNamed:DOWN_ARROW_IMAGE] forState:UIControlStateNormal];
+		[_downArrow setImage:[UIImage imageNamed:PULLDOWN_ICON] forState:UIControlStateNormal];
 		_downArrow.frame = CGRectMake(self.center.x - (DOWN_ARROW_WIDTH/2),
 										  self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
 										  DOWN_ARROW_WIDTH, DOWN_ARROW_WIDTH);

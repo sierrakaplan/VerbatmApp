@@ -46,6 +46,8 @@
 //the amount of space that must be pulled to exit
 #define EXIT_EPSILON 60
 
+#define BUTTON_HEIGHT 15.f
+
 @end
 
 
@@ -58,8 +60,6 @@
 		self.restingFrame = CGRectMake(self.frame.origin.x + self.frame.size.width, self.frame.origin.y,
 									   self.frame.size.width, self.frame.size.height);
 		self.frame = self.restingFrame;
-		[self setUpBackButton];
-
 		[self setBackgroundColor:[UIColor blackColor]];
 		[self addShadowToView];
 		[self setUpGestureRecognizers];
@@ -74,7 +74,7 @@
 	self.title = title;
 	self.coverPhoto = coverPhoto;
 	self.pinchViews = pinchViews;
-    [self setUpPublishButton];
+
     
 	//if we have nothing in our article then return to the list view-
 	//we shouldn't need this because all downloaded articles should have legit pages
@@ -91,47 +91,38 @@
 	[self.povView renderAVES: aves];
     [self.povView addDownArrowButton];
 	[self addSubview: self.povView];
-	[self addSubview: self.publishButton];
-	[self bringSubviewToFront: self.publishButton];
-	[self addSubview: self.backButton];
-	[self bringSubviewToFront: self.backButton];
+	[self setUpButtons];
 	[self revealPreview:YES];
 }
 
-#pragma mark - Set Up Views -
+#pragma mark - Buttons -
 
--(void) setUpPublishButton {
-	CGRect publishButtonFrame = CGRectMake(self.viewingFrame.size.width - PUBLISH_BUTTON_OFFSET - PUBLISH_BUTTON_SIZE, 0, PUBLISH_BUTTON_SIZE, PUBLISH_BUTTON_SIZE);
+-(void) setUpButtons {
+	UIImage* backIcon = [UIImage imageNamed:BACK_ICON];
+	self.backButton = [self getButtonWithIcon: backIcon];
+	CGFloat backWidth = (backIcon.size.width / backIcon.size.height) * BUTTON_HEIGHT;
+	CGRect backButtonFrame = CGRectMake(CONTENT_DEV_NAV_BAR_OFFSET, CONTENT_DEV_NAV_BAR_OFFSET,
+										backWidth, BUTTON_HEIGHT);
+	self.backButton.frame = backButtonFrame;
+	[self.backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 
-	self.publishButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.publishButton setFrame: publishButtonFrame];
-    
-    
-    UIColor *labelColor;
-    
-    if([self.title isEqualToString:@""] || !self.coverPhoto ){
-        labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR_INACTIVE];
-        [self.publishButton setEnabled:NO];
-    }else{
-        labelColor = [UIColor PUBLISH_BUTTON_LABEL_COLOR_ACTIVE];
-        [self.publishButton setEnabled:YES];
-    }
-    
-	UIFont* labelFont = [UIFont fontWithName:PREVIEW_BUTTON_FONT size:PREVIEW_BUTTON_FONT_SIZE];
-	self.publishButtonTitle = [[NSAttributedString alloc] initWithString:PUBLISH_BUTTON_LABEL attributes:@{NSForegroundColorAttributeName: labelColor, NSFontAttributeName : labelFont}];
-	[self.publishButton setAttributedTitle:self.publishButtonTitle forState:UIControlStateNormal];
+
+	UIImage* publishIcon = [UIImage imageNamed:PUBLISH_ICON];
+	self.publishButton = [self getButtonWithIcon: publishIcon];
+	CGFloat publishWidth = (publishIcon.size.width / publishIcon.size.height) * BUTTON_HEIGHT;
+	CGRect publishButtonFrame = CGRectMake(self.frame.size.width - publishWidth - CONTENT_DEV_NAV_BAR_OFFSET,
+										   CONTENT_DEV_NAV_BAR_OFFSET,
+										   publishWidth, BUTTON_HEIGHT);
+	self.publishButton.frame = publishButtonFrame;
 	[self.publishButton addTarget:self action:@selector(publishArticleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-    
 }
 
--(void) setUpBackButton {
-	CGRect backButtonFrame = CGRectMake(BACK_BUTTON_OFFSET,
-										BACK_BUTTON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
-	self.backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.backButton setFrame: backButtonFrame];
-	[self.backButton setImage:[UIImage imageNamed:BACK_ARROW_LEFT] forState:UIControlStateNormal];
-	self.backButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[self.backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+-(UIButton*) getButtonWithIcon: (UIImage*) icon {
+	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+	[button.imageView setContentMode: UIViewContentModeScaleAspectFit];
+	[button setImage:icon forState:UIControlStateNormal];
+	[self addSubview: button];
+	return button;
 }
 
 #pragma mark - Gesture recognizers

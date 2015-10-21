@@ -23,7 +23,7 @@
 @protocol POVLoadManagerDelegate <NSObject>
 
 // Successfully loaded more POV's
--(void) morePOVsLoaded;
+-(void) morePOVsLoaded: (NSInteger) numLoaded;
 // Was unable to load more POV's for some reason
 -(void) failedToLoadMorePOVs;
 
@@ -43,6 +43,8 @@ typedef NS_ENUM(NSInteger, POVType) {
 };
 
 @property (strong, nonatomic) id<POVLoadManagerDelegate> delegate;
+// tells if we have reached the end of our feed
+@property (nonatomic) BOOL noMorePOVsToLoad;
 
 // Initialize with the type of POV's to load (trending, recent, etc.)
 -(id) initWithType: (POVType) type;

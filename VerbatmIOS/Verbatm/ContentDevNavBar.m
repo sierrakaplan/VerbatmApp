@@ -14,10 +14,10 @@
 @interface ContentDevNavBar()
 
 @property (strong, nonatomic) UIButton *backButton;
-
 @property (strong, nonatomic) UIButton *previewButton;
-@property (strong, nonatomic) UILabel *previewLabel;
 @property (nonatomic) BOOL previewEnabledInMenuMode;
+
+#define BUTTON_HEIGHT 15.f
 
 @end
 
@@ -37,43 +37,30 @@
 //initialize all buttons, for all modes
 -(void)createButtons {
 
-	CGRect backButtonFrame = CGRectMake(CONTENT_DEV_NAV_BAR_OFFSET, CONTENT_DEV_NAV_BAR_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
-	self.backButton = [self getButtonWithFrame: backButtonFrame];
-	[self.backButton setImage:[UIImage imageNamed:BACK_ARROW_LEFT] forState:UIControlStateNormal];
+	UIImage* backIcon = [UIImage imageNamed:BACK_ICON];
+	self.backButton = [self getButtonWithIcon: backIcon];
+	CGFloat backWidth = (backIcon.size.width / backIcon.size.height) * BUTTON_HEIGHT;
+	CGRect backButtonFrame = CGRectMake(CONTENT_DEV_NAV_BAR_OFFSET, CONTENT_DEV_NAV_BAR_OFFSET,
+										backWidth, BUTTON_HEIGHT);
+	self.backButton.frame = backButtonFrame;
 	[self.backButton addTarget:self action:@selector(backButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
 
 
-	self.previewLabel = [self getLabelWithText:@"PREVIEW"];
-	[self.previewLabel setTextColor:[UIColor PREVIEW_PUBLISH_COLOR]];
-
-	CGRect expectedPreviewLabelSize = [self.previewLabel.text boundingRectWithSize: self.bounds.size
-														options: NSStringDrawingTruncatesLastVisibleLine
-													 attributes: @{NSFontAttributeName: self.previewLabel.font}
-														context: nil];
-
-	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - expectedPreviewLabelSize.size.width -
+	UIImage* previewIcon = [UIImage imageNamed:PREVIEW_ICON];
+	self.previewButton = [self getButtonWithIcon: previewIcon];
+	CGFloat previewWidth = (previewIcon.size.width / previewIcon.size.height) * BUTTON_HEIGHT;
+	CGRect previewButtonFrame = CGRectMake(self.frame.size.width - previewWidth - CONTENT_DEV_NAV_BAR_OFFSET,
 										   CONTENT_DEV_NAV_BAR_OFFSET,
-										   CONTENT_DEV_NAV_BAR_OFFSET,
-										   expectedPreviewLabelSize.size.width, NAV_ICON_SIZE);
-	[self.previewLabel setFrame: CGRectMake(0, 0, previewButtonFrame.size.width, previewButtonFrame.size.height)];
-	self.previewButton = [self getButtonWithFrame: previewButtonFrame];
+										   previewWidth, BUTTON_HEIGHT);
+	self.previewButton.frame = previewButtonFrame;
 	[self.previewButton addTarget:self action:@selector(previewButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
-	[self.previewButton addSubview:self.previewLabel];
 	[self enablePreviewButton: NO];
 }
 
--(UILabel*) getLabelWithText:(NSString*) text {
-	UILabel* label = [[UILabel alloc] init];
-	label.text = text;
-	label.font = [UIFont fontWithName:PREVIEW_BUTTON_FONT size:PREVIEW_BUTTON_FONT_SIZE];
-	label.textAlignment = NSTextAlignmentCenter;
-	return label;
-}
-
--(UIButton*) getButtonWithFrame: (CGRect)frame  {
+-(UIButton*) getButtonWithIcon: (UIImage*) icon {
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
-	[button setFrame: frame];
 	[button.imageView setContentMode: UIViewContentModeScaleAspectFit];
+	[button setImage:icon forState:UIControlStateNormal];
 	[self addSubview: button];
 	return button;
 }
@@ -82,9 +69,10 @@
 
 -(void) enablePreviewButton: (BOOL) enable {
 	if (enable) {
-		[self.previewLabel setTextColor: [UIColor PREVIEW_PUBLISH_COLOR]];
+		//TODO:
+//		[self.previewLabel setTextColor: [UIColor PREVIEW_PUBLISH_COLOR]];
 	} else {
-		[self.previewLabel setTextColor: [UIColor  colorWithRed:(2.f/3.f) green:(2.f/3.f) blue:(2.f/3.f) alpha:0.5]];
+//		[self.previewLabel setTextColor: [UIColor colorWithRed:(2.f/3.f) green:(2.f/3.f) blue:(2.f/3.f) alpha:0.5]];
 	}
 	[self.previewButton setEnabled: enable];
 }
