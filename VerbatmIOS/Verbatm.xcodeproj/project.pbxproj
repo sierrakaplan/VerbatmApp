@@ -1072,10 +1072,10 @@
 				A5FB5D1A1BCB0B9700634A96 /* GMGridViewCell.h */,
 				A5FB5D1B1BCB0B9700634A96 /* GMGridViewCell.m */,
 				A5FB5D1C1BCB0B9700634A96 /* GMGridViewController.h */,
-				A560EF9E1BA8DFCC003FB041 /* AVE Analyzer */,
 				A5FB5D1D1BCB0B9700634A96 /* GMGridViewController.m */,
 				A5FB5D261BCB0B9700634A96 /* GMImagePickerController.h */,
 				A5FB5D271BCB0B9700634A96 /* GMImagePickerController.m */,
+				A560EF9E1BA8DFCC003FB041 /* AVE Analyzer */,
 			);
 			name = GMImagePicker;
 			sourceTree = "<group>";

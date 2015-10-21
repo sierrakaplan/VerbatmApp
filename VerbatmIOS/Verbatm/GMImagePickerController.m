@@ -91,20 +91,40 @@
 
 #pragma mark - Select / Deselect Asset
 
-- (void)selectAsset:(PHAsset *)asset {
-    [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
-	if (self.selectOneImage) {
-		[self finishPickingAssets:self];
-		return;
-	}
-    [self updateDoneButton];
+- (BOOL)selectAsset:(PHAsset *)asset {
     
-    if(self.displaySelectionInfoToolbar) {
-        [self updateToolbar];
-	}
+    if(![self reachedMaxSelectionAmount]){
+        [self.selectedAssets insertObject:asset atIndex:self.selectedAssets.count];
+        if (self.selectOneImage) {
+            [self finishPickingAssets:self];
+            return true;
+        }
+        [self updateDoneButton];
+        
+        if(self.displaySelectionInfoToolbar) {
+            [self updateToolbar];
+        }
+        return true;
+    }
+    return false;
+}
+
+-(BOOL)reachedMaxSelectionAmount{
+    
+//    if(self.selectedAssets.count == 10){
+//        //alert the user this is max
+//        UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Only allowed to pick 10 elements per selection round" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+//        [alert show];
+//        return true;
+//    }
+//    
+    //temp
+    return false;
 }
 
 - (void)deselectAsset:(PHAsset *)asset {
+    
+    
     [self.selectedAssets removeObjectAtIndex:[self.selectedAssets indexOfObject:asset]];
     if(self.selectedAssets.count == 0) {
         [self updateDoneButton];

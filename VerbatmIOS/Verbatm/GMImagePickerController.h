@@ -81,7 +81,8 @@ static CGSize const kPopoverContentSize = {480, 720};
 /**
  *  Managing Asset Selection
  */
-- (void)selectAsset:(PHAsset *)asset;
+//the boolean tells you if you have reached the limit of selection
+- (BOOL)selectAsset:(PHAsset *)asset;
 - (void)deselectAsset:(PHAsset *)asset;
 
 /**
