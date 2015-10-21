@@ -188,7 +188,7 @@
 		C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */; };
 		C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* VerbatmTextField.m */; };
 		C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* SignIn.m */; };
-		DEA28C4490E4BBC7A9B627D9 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6C2302226513ED1B7D1B1E2 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
+		DEA28C4490E4BBC7A9B627D9 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6C2302226513ED1B7D1B1E2 /* Pods.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		F20A24FA1A46166100BB77C1 /* EditContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* EditContentView.m */; };
 		F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */; };
 /* End PBXBuildFile section */
@@ -1831,18 +1831,20 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				CURRENT_PROJECT_VERSION = 2;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = "$(inherited)";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/**",
-					"$(PROJECT_DIR)",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Google/Libraries\"",
+					"\"${PODS_ROOT}/GoogleAnalytics/Libraries\"",
+					"\"${PODS_ROOT}/GoogleNetworkingUtilities/Libraries\"",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
@@ -1863,17 +1865,20 @@
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				CURRENT_PROJECT_VERSION = 2;
-				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
+				EMBEDDED_CONTENT_CONTAINS_SWIFT = "$(inherited)";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/**",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"${PODS_ROOT}/Google/Libraries\"",
+					"\"${PODS_ROOT}/GoogleAnalytics/Libraries\"",
+					"\"${PODS_ROOT}/GoogleNetworkingUtilities/Libraries\"",
+				);
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
@@ -1904,6 +1909,7 @@
 				);
 				INFOPLIST_FILE = "VerbatmTests/VerbatmTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "verbatm.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1927,6 +1933,7 @@
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "VerbatmTests/VerbatmTests-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = "verbatm.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
