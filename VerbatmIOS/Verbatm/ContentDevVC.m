@@ -8,6 +8,8 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
+#import "Analytics.h"
+
 #import "ContentDevVC.h"
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
@@ -528,6 +530,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	}
 
 	[[UserPovInProgress sharedInstance] addPinchView:pinchView];
+    
 	[self addTapGestureToPinchView:pinchView];
 
 	// must be below base media tile selector

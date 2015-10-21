@@ -9,6 +9,7 @@
 #import <AVFoundation/AVAudioSession.h>
 
 #import "ArticleDisplayVC.h"
+#import "Analytics.h"
 
 #import "FeedVC.h"
 
@@ -173,7 +174,7 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 	self.articleDisplayContainer.alpha = 0;
 	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
     
-	[self addScreenEdgePanToArticleDisplay];
+	[self addScreenPanToArticleDisplay];
 }
 
 -(void) formatMainScrollView {
@@ -188,6 +189,20 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     if(scrollView.contentOffset.x < self.view.frame.size.width){
         [scrollView setContentOffset:CGPointMake(self.view.frame.size.width, 0) animated:NO];
+    }
+    
+    //apply some analytics
+    if(scrollView == self.masterSV){
+        
+        if(self.feedContainer.frame.origin.x == scrollView.contentOffset.x){
+            //in the feed
+            [[Analytics getSharedInstance] endOfADKSession];
+        }else if (self.adkContainer.frame.origin.x == scrollView.contentOffset.x){
+            //in the adk
+            [[Analytics getSharedInstance] newADKSession];
+        }
+        
+        
     }
 }
 
@@ -225,7 +240,6 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 		[self bringUpLogin];
 	} else {
 		[self showADK];
-        //[self performSegueWithIdentifier:@"presentADK" sender:self];
 	}
 }
 
@@ -252,9 +266,9 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 	}];
 }
 
-#pragma mark - Left edge screen pull for exiting article display vc -
+#pragma mark - Left screen pull for exiting article display vc -
 
--(void) addScreenEdgePanToArticleDisplay {
+-(void) addScreenPanToArticleDisplay {
 	UIPanGestureRecognizer* leftEdgePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
 	leftEdgePanGesture.delegate = self;
 	leftEdgePanGesture.minimumNumberOfTouches = 1;
@@ -276,7 +290,6 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
                 sender.enabled =YES;
 				return;
 			}
-			
 			self.previousGesturePoint  = touchLocation;
 			break;
 		}
@@ -408,6 +421,24 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 }
 
 
+
+#pragma mark -Analytics -
+-(void)logAnalysis{
+    NSDictionary *dimensions = @{
+                                 // Define ranges to bucket data points into meaningful segments
+                                 @"priceRange": @"1000-1500",
+                                 // Did the user filter the query?
+                                 @"source": @"craigslist",
+                                 // Do searches happen more often on weekdays or weekends?
+                                 @"dayType": @"weekday"
+                                 };
+    // Send the dimensions to Parse along with the 'search' event
+    [PFAnalytics trackEvent:@"search" dimensions:dimensions];
+}
+
+
+
+
 #pragma mark - Alerts -
 
 -(void)alertPullTrendingIcon {
@@ -443,6 +474,9 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 -(void) refreshingFeedsFailed {
     [self.connectionMonitor isConnectedToInternet_asynchronous];
 }
+
+
+
 
 
 #pragma mark - Memory Warning -

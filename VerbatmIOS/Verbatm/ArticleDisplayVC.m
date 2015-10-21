@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "Analytics.h"
 #import "ArticleDisplayVC.h"
 #import "AVETypeAnalyzer.h"
 
@@ -78,6 +79,8 @@
     self.activityIndicator = [self.view startActivityIndicatorOnViewWithCenter: CGPointMake(self.view.center.x, ACTIVITY_ANIMATION_Y)
                                                             andStyle:UIActivityIndicatorViewStyleWhiteLarge];
     self.activityIndicator.color = [UIColor blackColor];
+    
+    [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
 }
 
 // When user scrolls to a new story, loads the next two in that
@@ -130,6 +133,7 @@
 	if ([self.activityIndicator isAnimating]) {
 		[self.activityIndicator stopAnimating];
 	}
+    [[Analytics getSharedInstance] storyEndedViewing];
 }
 
 
