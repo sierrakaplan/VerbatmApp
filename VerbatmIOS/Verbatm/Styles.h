@@ -51,6 +51,7 @@
 #define ADD_COVER_PIC_TEXT_SIZE 15.f
 #define ADD_COVER_PIC_FONT @"HelveticaNeue-Light"
 #define COVER_PIC_CIRCLE_COLOR whiteColor
+
 #pragma mark PullBar
 
 #define PREVIEW_BUTTON_FONT @"HelveticaNeue-Bold"
