@@ -126,13 +126,13 @@
 												  USERNAME_LABEL_HEIGHT)];
 
 	[self formatUILabel: self.povTitle
-			   withFont: [UIFont fontWithName:TITLE_FONT size:FEED_TITLE_FONT_SIZE]
-		   andTextColor: [UIColor TITLE_TEXT_COLOR]
+			   withFont: [UIFont fontWithName:FEED_TITLE_FONT size:FEED_TITLE_FONT_SIZE]
+		   andTextColor: [UIColor FEED_TITLE_TEXT_COLOR]
 	   andNumberOfLines: 2 withCellWidth: storyTextView.frame.size.width];
 
 	[self formatUILabel: self.povCreatorUsername
 			   withFont: [UIFont fontWithName:USERNAME_FONT size:USERNAME_FONT_SIZE]
-		   andTextColor: [UIColor TITLE_TEXT_COLOR]
+		   andTextColor: [UIColor FEED_TITLE_TEXT_COLOR]
 	   andNumberOfLines: 2 withCellWidth: storyTextView.frame.size.width];
 
 	[storyTextView addSubview: self.povTitle];
@@ -487,7 +487,7 @@
 	if (!_numLikesLabel) {
 		_numLikesLabel = [[UILabel alloc] init];
 		[_numLikesLabel setFont: [UIFont fontWithName:DATE_AND_LIKES_FONT size:DATE_AND_LIKES_FONT_SIZE]];
-		[_numLikesLabel setTextColor:[UIColor TITLE_TEXT_COLOR]];
+		[_numLikesLabel setTextColor:[UIColor FEED_TITLE_TEXT_COLOR]];
 		[_numLikesLabel setTextAlignment: NSTextAlignmentLeft];
 	}
 	return _numLikesLabel;
@@ -497,7 +497,7 @@
 	if (!_dateCreatedLabel) {
 		_dateCreatedLabel = [[UILabel alloc] init];
 		[_dateCreatedLabel setFont: [UIFont fontWithName:DATE_AND_LIKES_FONT size:DATE_AND_LIKES_FONT_SIZE]];
-		[_dateCreatedLabel setTextColor:[UIColor TITLE_TEXT_COLOR]];
+		[_dateCreatedLabel setTextColor:[UIColor FEED_TITLE_TEXT_COLOR]];
 		[_dateCreatedLabel setTextAlignment: NSTextAlignmentLeft];
 	}
 	return _dateCreatedLabel;

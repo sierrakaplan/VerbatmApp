@@ -50,7 +50,7 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if(self) {
-		self.backgroundColor = [UIColor blackColor];
+		self.backgroundColor = [UIColor AVE_BACKGROUND_COLOR];
 		[self registerForKeyboardNotifications];
 	}
 	return self;

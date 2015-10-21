@@ -44,7 +44,7 @@
     self.addCoverPicLabel.lineBreakMode = NSLineBreakByWordWrapping;
     self.addCoverPicLabel.numberOfLines = 3;
     self.addCoverPicLabel.text = @"Cover Picture";
-    [self.addCoverPicLabel setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
+    [self.addCoverPicLabel setTextColor:[UIColor TITLE_TEXT_COLOR]];
     self.addCoverPicLabel.font = [UIFont fontWithName:ADD_COVER_PIC_FONT size: ADD_COVER_PIC_TEXT_SIZE];
     [self.background addSubview: self.addCoverPicLabel];
 }

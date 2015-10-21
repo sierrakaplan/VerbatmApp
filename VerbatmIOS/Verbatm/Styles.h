@@ -35,8 +35,8 @@
 #define STORY_BACKGROUND_COLOR colorWithRed: 0.8 green:0.8 blue:0.8 alpha:1
 #define SWITCH_CATEGORY_BAR_FONT_SIZE 27.f
 
-#define TITLE_TEXT_COLOR blackColor
-#define TITLE_FONT @"HelveticaNeue-Italic"
+#define FEED_TITLE_TEXT_COLOR blackColor
+#define FEED_TITLE_FONT @"HelveticaNeue-Italic"
 #define FEED_TITLE_FONT_SIZE 20
 #define USERNAME_FONT @"HelveticaNeue-Bold"
 #define USERNAME_FONT_SIZE 18
@@ -45,11 +45,8 @@
 
 #pragma mark - ADK -
 
-#define TELL_YOUR_STORY_COLOR whiteColor
-
-#define WHAT_IS_IT_LIKE_COLOR blackColor
-#define WHAT_IS_IT_LIKE_LABEL_TEXT_SIZE 20.f
-#define WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE 20.f
+#define TITLE_TEXT_COLOR whiteColor
+#define TITLE_TEXT_SIZE 20.f
 
 #define ADD_COVER_PIC_TEXT_SIZE 15.f
 #define ADD_COVER_PIC_FONT @"HelveticaNeue-Light"
@@ -78,7 +75,7 @@
 
 #pragma mark Content Editing View
 
-#define TEXT_SCROLLVIEW_BACKGROUND_COLOR blackColor
+#define TEXT_SCROLLVIEW_BACKGROUND_COLOR whiteColor
 
 #pragma mark Verbatm Keyboard Toolbar
 
@@ -94,7 +91,7 @@
 
 #pragma mark - AVES -
 
-#define AVE_BACKGROUND_COLOR blackColor
+#define AVE_BACKGROUND_COLOR whiteColor
 
 #pragma mark Text
 

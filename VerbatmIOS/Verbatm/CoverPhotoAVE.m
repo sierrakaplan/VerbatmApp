@@ -23,7 +23,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage*) image andTitle:(NSString*) title {
 	self = [super initWithFrame:frame];
 	if (self) {
-		[self setBackgroundColor:[UIColor whiteColor]];
+		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 		UIColor* titleTextColor = [UIColor blackColor];
 		if (image) {
 			[self addSubview: [self getImageViewContainerForImage:image]];
@@ -36,7 +36,7 @@
 
 -(UIView*) getImageViewContainerForImage:(UIImage*) image {
 	UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
-	[imageContainerView setBackgroundColor:[UIColor blackColor]];
+	[imageContainerView setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 	UIImageView* photoView = [self getImageViewForImage:image];
 	[imageContainerView addSubview:photoView];
 	return imageContainerView;

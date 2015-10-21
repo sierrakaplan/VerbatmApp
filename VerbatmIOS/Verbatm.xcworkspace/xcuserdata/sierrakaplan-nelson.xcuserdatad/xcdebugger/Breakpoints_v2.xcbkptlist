@@ -170,12 +170,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "467076903.202368"
+            timestampString = "467157982.526813"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "369"
-            endingLineNumber = "369"
-            landmarkName = "-adkViewChange:"
+            startingLineNumber = "370"
+            endingLineNumber = "370"
+            landmarkName = "-publishWithTitle:andCoverPhoto:andPinchViews:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -783,8 +783,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "47"
             endingLineNumber = "47"
-            landmarkName = "-showText:"
-            landmarkType = "5">
+            landmarkName = "@implementation TextAndImageView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1391,8 +1391,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "114"
             endingLineNumber = "114"
-            landmarkName = "-likeButtonLiked:onPOV:"
-            landmarkType = "5">
+            landmarkName = "@implementation ArticleDisplayVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1402,12 +1402,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "467076903.202368"
+            timestampString = "467157982.526813"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "396"
-            endingLineNumber = "396"
-            landmarkName = "-userLiked:POV:"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
+            landmarkName = "-previewPOVFromPinchViews:andCoverPic:andTitle:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

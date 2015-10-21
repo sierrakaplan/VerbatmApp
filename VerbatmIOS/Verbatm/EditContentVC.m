@@ -55,7 +55,7 @@
 		return;
 	}
     [self.view addSubview:self.openEditContentView];
-    if(![UserSetupParameters filter_InstructionShown] && [self.openPinchView isKindOfClass:[ImagePinchView class]]) {
+    if(![[UserSetupParameters sharedInstance] filter_InstructionShown] && [self.openPinchView isKindOfClass:[ImagePinchView class]]) {
 		[self alertAddFilter];
 	}
 }
@@ -74,7 +74,7 @@
 -(void)alertAddFilter {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    [UserSetupParameters set_filter_InstructionAsShown];
+    [[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
 }
 
 -(void)exitButtonClicked:(UIButton*) sender{

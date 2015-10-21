@@ -30,6 +30,7 @@
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
@@ -112,10 +113,7 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    //check if they have entered an access code - if not then present the entry page
-    if(![UserSetupParameters accessCodeEntered]) {
-        [self.accessCodePresenter_Button sendActionsForControlEvents:UIControlEventTouchUpInside];
-    }else if(![UserSetupParameters blackCircleInstructionShown]) {
+    if(![[UserSetupParameters sharedInstance]blackCircleInstructionShown]) {
 		[self alertPullTrendingIcon];
 	}
     
@@ -216,7 +214,7 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
 	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
 	[self.articleDisplayContainer setFrame:self.view.bounds];
-	[self.articleDisplayContainer setBackgroundColor:[UIColor whiteColor]];
+	[self.articleDisplayContainer setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 	self.articleDisplayContainer.alpha = 1;
 	[self.view bringSubviewToFront: self.articleDisplayContainer];
 	// Now tell selected cell in feed to be unpinched
@@ -370,6 +368,7 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 		[publisher publish];
 
 		NSString* userName = [self.userManager getCurrentUser].name;
+        
 		[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPhoto andProgressObject: publisher.publishingProgress];
 		[self showFeed];
 
@@ -449,7 +448,7 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 -(void)alertPullTrendingIcon {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
-	[UserSetupParameters set_trendingCirle_InstructionAsShown];
+	[[UserSetupParameters sharedInstance]set_trendingCirle_InstructionAsShown];
 }
 
 -(void) userLostInternetConnection {

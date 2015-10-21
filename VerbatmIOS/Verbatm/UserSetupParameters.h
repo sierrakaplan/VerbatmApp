@@ -15,29 +15,32 @@
 #import <Foundation/Foundation.h>
 
 @interface UserSetupParameters : NSObject
-
 //called when an app is first installed to save all
 //the necessary parameters
-+(void)setUpParameters;
++(instancetype)sharedInstance;
 
+//initializes everything
+-(void)setUpParameters;
 
 /*check if these conditions have been met*/
-+(BOOL) blackCircleInstructionShown;
-+(BOOL) filter_InstructionShown;
-+(BOOL) circlesArePages_InstructionShown;
-+(BOOL) pinchCircles_InstructionShown;
-+(BOOL) tapNhold_InstructionShown;
-+(BOOL) swipeToDelete_InstructionShown;
-+(BOOL) accessCodeEntered;
+-(BOOL) blackCircleInstructionShown;
+-(BOOL) filter_InstructionShown;
+-(BOOL) circlesArePages_InstructionShown;
+-(BOOL) pinchCircles_InstructionShown;
+-(BOOL) tapNhold_InstructionShown;
+-(BOOL) swipeToDelete_InstructionShown;
+-(BOOL) accessCodeEntered;
 
 
 /*Stores that the notifications have been shown*/
-+(void) set_filter_InstructionAsShown;
-+(void)set_trendingCirle_InstructionAsShown;
-+(void) set_circlesArePages_InstructionAsShown;
-+(void) set_pinchCircles_InstructionAsShown;
-+(void) set_tapNhold_InstructionAsShown;
-+(void) set_swipeToDelete_InstructionAsShown;
-+(void) set_accessCodeAsEntered;
+-(void) set_filter_InstructionAsShown;
+-(void)set_trendingCirle_InstructionAsShown;
+-(void) set_circlesArePages_InstructionAsShown;
+-(void) set_pinchCircles_InstructionAsShown;
+-(void) set_tapNhold_InstructionAsShown;
+-(void) set_swipeToDelete_InstructionAsShown;
+-(void) set_accessCodeAsEntered;
+
+-(void)saveAllChanges;
 
 @end
