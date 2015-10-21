@@ -9,7 +9,7 @@
 #import "Durations.h"
 #import "MediaSessionManager.h"
 #import "Strings.h"
-
+#import "UIImage+ImageEffectsAndTransforms.h"
 
 @interface MediaSessionManager() <AVCaptureFileOutputRecordingDelegate>
 
@@ -50,6 +50,7 @@
 		self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;
 		[self.previewContainerView.layer addSublayer: self.videoPreview];
 
+		[self setVideoConnection];
 		//start the session running
 		[self.session startRunning];
 	}
@@ -104,17 +105,6 @@
 	[self.stillImageOutput setOutputSettings: stillImageOutputSettings];
 	[self.session addOutput: self.stillImageOutput];
 
-	for (AVCaptureConnection *connection in [self.movieOutputFile connections] ) {
-		for (AVCaptureInputPort *port in [connection inputPorts] ) {
-			if ([[port mediaType] isEqual:AVMediaTypeVideo] ) {
-				self.videoConnection = connection;
-			}
-		}
-	}
-	if([self.videoConnection isVideoOrientationSupported]) {
-		[self.videoConnection setVideoOrientation:self.videoPreview.connection.videoOrientation];
-	}
-
 	[self setMovieOutputFile: [[AVCaptureMovieFileOutput alloc] init]];
 
 	int32_t framesPerSecond = N_FRAMES_PER_SECOND;
@@ -122,6 +112,21 @@
 	CMTime maxDuration = CMTimeMake(numSeconds, framesPerSecond);
 	_movieOutputFile.maxRecordedDuration = maxDuration;
 	[self.session addOutput: self.movieOutputFile];
+}
+
+-(void) setVideoConnection {
+	for(AVCaptureConnection* connection in self.stillImageOutput.connections){
+		for(AVCaptureInputPort* port in connection.inputPorts){
+			if([[port mediaType] isEqual:AVMediaTypeVideo]){
+				self.videoConnection = connection;
+				break;
+			}
+		}
+		if(self.videoConnection){
+			break;
+		}
+	}
+	[self.videoConnection setVideoOrientation: self.videoPreview.connection.videoOrientation];
 }
 
 /* NOT IN USE
@@ -200,6 +205,7 @@
 		if(!error) {
 			NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];
 			UIImage* capturedImage = [[UIImage alloc] initWithData: dataForImage];
+			capturedImage = [capturedImage getImageWithOrientationUp];
 			[self.delegate capturedImage: capturedImage];
 			[self saveAssetFromImage:capturedImage orVideoFile:nil];
 		} else {
@@ -338,8 +344,7 @@
 }
 
 //finds the camera orientation for front or back
--(AVCaptureDevice*)getCameraWithOrientation:(NSInteger)orientation
-{
+-(AVCaptureDevice*)getCameraWithOrientation:(NSInteger)orientation {
 	NSArray* devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
 	for(AVCaptureDevice* device in devices){
 		if([device position] == orientation){
@@ -347,20 +352,6 @@
 		}
 	}
 	return nil;
-}
-
-//sets the session orientation to the device orientation
-//it seems that left for the device corresponds to right for the session
--(void)setSessionOrientationToOrientation:(UIDeviceOrientation)orientation {
-	if(orientation == UIDeviceOrientationLandscapeLeft){
-		self.videoPreview.connection.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
-	}else if (orientation == UIDeviceOrientationLandscapeRight){
-		self.videoPreview.connection.videoOrientation = AVCaptureVideoOrientationLandscapeLeft;
-	}else if (orientation == UIDeviceOrientationPortraitUpsideDown){
-		self.videoPreview.connection.videoOrientation = AVCaptureVideoOrientationPortraitUpsideDown;
-	}else{
-		self.videoPreview.connection.videoOrientation = AVCaptureVideoOrientationPortrait;
-	}
 }
 
 //set the preview session to the the bounds of the view
