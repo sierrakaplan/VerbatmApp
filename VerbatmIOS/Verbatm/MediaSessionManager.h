@@ -27,7 +27,6 @@
 -(void)captureImage;
 -(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation;
 -(void)stopVideoRecording;
--(void)setSessionOrientationToOrientation:(UIDeviceOrientation)orientation;
 -(void)setToFrameOfView:(UIView*)containerView;
 
 -(void) switchCameraOrientation;

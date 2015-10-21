@@ -43,7 +43,6 @@
 #define BACK_ICON @"text_back"
 #define PUBLISH_ICON @"text_publish"
 
-#define REPLACE_COVER_PHOTO_ICON @"replaceCoverPhotoIcon"
 #pragma mark Edit Content View
 
 #define DONE_CHECKMARK @"done_checkmark"

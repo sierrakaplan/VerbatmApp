@@ -351,8 +351,8 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    GMGridViewCell * cell = (GMGridViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    
+//    GMGridViewCell * cell = (GMGridViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+
     PHAsset *asset = self.assetsFetchResults[indexPath.item];
     
     [self.picker selectAsset:asset];
