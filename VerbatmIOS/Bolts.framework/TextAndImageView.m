@@ -9,7 +9,7 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "TextAndImageView.h"
-
+#import "UIEffects"
 #import "UITextView+Utilities.h"
 
 @interface TextAndImageView ()
@@ -25,7 +25,7 @@
 	if (self) {
 		[self setBackgroundColor:[UIColor whiteColor]];
 		[self.imageView setImage: image];
-		[self addSubview: self.imageView];
+        [self setImageViewWithImage:image];
 		[self.textView setText: text];
 		[self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
 											textYPosition, self.textView.frame.size.width,
@@ -33,6 +33,30 @@
 		[self resizeTextView];
 	}
 	return self;
+}
+
+
+-(void) setImageViewWithImage:(UIImage*) image {
+    //scale image
+    CGSize imageSize = [UIEffects getSizeForImage:image andBounds:self.bounds];
+    image = [UIEffects scaleImage:image toSize:imageSize];
+    UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
+    [imageContainerView setBackgroundColor:[UIColor blackColor]];
+    UIImageView* photoView = [self getImageViewForImage:image];
+    UIImageView* blurPhotoView = [UIEffects getBlurImageViewForImage:image withFrame:self.bounds];
+    [imageContainerView addSubview:blurPhotoView];
+    [imageContainerView addSubview:photoView];
+    [self addSubview:imageContainerView];
+}
+
+
+// returns image view with image centered
+-(UIImageView*) getImageViewForImage:(UIImage*) image {
+    UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
+    photoView.frame = self.bounds;
+    photoView.clipsToBounds = YES;
+    photoView.contentMode = UIViewContentModeScaleAspectFit;
+    return photoView;
 }
 
 -(void) showText: (BOOL) show {

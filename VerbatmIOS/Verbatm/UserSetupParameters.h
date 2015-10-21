@@ -41,4 +41,6 @@
 -(void) set_swipeToDelete_InstructionAsShown;
 -(void) set_accessCodeAsEntered;
 
+-(void)saveAllChanges;
+
 @end
