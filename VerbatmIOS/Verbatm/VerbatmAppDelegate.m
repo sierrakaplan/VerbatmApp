@@ -40,7 +40,7 @@
 							   userInfo:nil];
 	});
 
-    [UserSetupParameters setUpParameters];
+    [[UserSetupParameters sharedInstance] setUpParameters];//this sets up
 	[[UserPovInProgress sharedInstance] loadPOVFromUserDefaults];
     
     [[Analytics getSharedInstance] newUserSession];

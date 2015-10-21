@@ -112,10 +112,7 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    //check if they have entered an access code - if not then present the entry page
-    if(![UserSetupParameters accessCodeEntered]) {
-        [self.accessCodePresenter_Button sendActionsForControlEvents:UIControlEventTouchUpInside];
-    }else if(![UserSetupParameters blackCircleInstructionShown]) {
+    if(![[UserSetupParameters sharedInstance]blackCircleInstructionShown]) {
 		[self alertPullTrendingIcon];
 	}
     
@@ -450,7 +447,7 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 -(void)alertPullTrendingIcon {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
-	[UserSetupParameters set_trendingCirle_InstructionAsShown];
+	[[UserSetupParameters sharedInstance]set_trendingCirle_InstructionAsShown];
 }
 
 -(void) userLostInternetConnection {

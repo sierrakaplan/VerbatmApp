@@ -1071,7 +1071,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	//make sure the pullbar is showing when things are pinched together
 	[self.delegate showPullBar:YES withTransition:YES];
     //present swipe to delete notification
-    if(![UserSetupParameters swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
+    if(![[UserSetupParameters sharedInstance] swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
 
 #pragma mark - Identify views involved in pinch
@@ -1545,7 +1545,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
-        if(![UserSetupParameters tapNhold_InstructionShown])[self alertTapNHoldInCollection];
+        if(![[UserSetupParameters sharedInstance] tapNhold_InstructionShown])[self alertTapNHoldInCollection];
 	}else{
 		self.openPinchView = pinchView;
 		//tap to open an element for viewing or editing
@@ -1752,10 +1752,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	}
 
 	//decides whether on what notification to present if any
-	if(![UserSetupParameters circlesArePages_InstructionShown] &&
+	if(![[UserSetupParameters sharedInstance] circlesArePages_InstructionShown] &&
 	   self.pageElementScrollViews.count == 1 && (phassets.count > 1)) {
 		[self alertEachPVIsPage];
-        if(![UserSetupParameters pinchCircles_InstructionShown]) {
+        if(![[UserSetupParameters sharedInstance] pinchCircles_InstructionShown]) {
             //wait for a little while before circles are added to the stream
             [NSTimer scheduledTimerWithTimeInterval:5.f target:self selector:@selector(timerForNoNotification:) userInfo:nil repeats:NO];
         }
@@ -1818,25 +1818,25 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 -(void)alertEachPVIsPage {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
-	[UserSetupParameters set_circlesArePages_InstructionAsShown];
+    [[UserSetupParameters sharedInstance] set_circlesArePages_InstructionAsShown];
 }
 
 -(void)alertPinchElementsTogether {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
-	[UserSetupParameters set_pinchCircles_InstructionAsShown];
+	[[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];
 }
 
 -(void)alertSwipeRightToDelete {
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles right to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    [UserSetupParameters set_swipeToDelete_InstructionAsShown];
+    [[UserSetupParameters sharedInstance] set_swipeToDelete_InstructionAsShown];
 }
 
 -(void)alertTapNHoldInCollection{
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Tap and hold to remove circle" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    [UserSetupParameters set_tapNhold_InstructionAsShown];
+    [[UserSetupParameters sharedInstance] set_tapNhold_InstructionAsShown];
 }
 
 #pragma mark - Tap to clear view -

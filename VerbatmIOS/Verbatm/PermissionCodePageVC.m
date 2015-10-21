@@ -40,7 +40,7 @@
     if([textField.text isEqualToString:ACCESS_CODE]){
         //segue
         [textField resignFirstResponder];
-        [UserSetupParameters set_accessCodeAsEntered];
+        [[UserSetupParameters sharedInstance] set_accessCodeAsEntered];
         [self.presentingViewController dismissViewControllerAnimated:YES completion:nil];
 
         return YES;
