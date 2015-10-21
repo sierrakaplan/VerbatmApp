@@ -10,7 +10,7 @@
 #import "GTLServiceVerbatmApp.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTMHTTPFetcherLogging.h"
-
+#import "PovInfo.h"
 #import "UserManager.h"
 
 @interface UserManager()
@@ -161,7 +161,7 @@
 
 -(void) queryForCurrentUser {
 	if (![PFUser currentUser]) {
-//		NSLog(@"User is not logged in.");
+		NSLog(@"User is not logged in.");
 		return;
 	}
 	NSString* email = [PFUser currentUser].email;
@@ -170,7 +170,15 @@
 		if (!error) {
 //			NSLog(@"Succesfully retrieved current user from datastore.");
 			self.currentUser = currentUser;
-			[self.delegate successfullyLoggedInUser: currentUser];
+			// have to do this because otherwise it thinks the values in the array are of type NSString* from the JSON
+			NSMutableArray* povIDs = [[NSMutableArray alloc] init];
+			if (self.currentUser.likedPOVIDs) {
+				for (NSNumber* povIdentifier in self.currentUser.likedPOVIDs) {
+					[povIDs addObject:[NSNumber numberWithLongLong:povIdentifier.longLongValue]];
+				}
+			}
+			self.currentUser.likedPOVIDs = povIDs;
+			[self.delegate successfullyLoggedInUser: self.currentUser];
 		} else {
 //			NSLog(@"Error retrieving current user: %@", error.description);
 			[self.delegate errorLoggingInUser: error];
@@ -184,10 +192,40 @@
 	return self.currentUser;
 }
 
+-(BOOL) currentUserLikesStory: (PovInfo*) povInfo {
+	NSArray* userIDs = [povInfo userIDsWhoHaveLikedThisPOV];
+	return ([userIDs containsObject: self.currentUser.identifier]);
+}
+
 #pragma mark - Update/change user info -
 
 -(void) changeUserProfilePhoto: (UIImage*) image {
 	//TODO:
+}
+
+-(AnyPromise*) updateCurrentUser: (GTLVerbatmAppVerbatmUser*) currentUser {
+	GTLQuery* updateUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserUpdateUserWithObject: currentUser];
+
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+		[self.service executeQuery: updateUserQuery
+				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser* updatedUser, NSError *error) {
+					 if (error) {
+						 resolve(error);
+					 } else {
+						 self.currentUser = updatedUser;
+						 // have to do this because otherwise it thinks the values in the array are of type NSString* from the JSON
+						 NSMutableArray* povIDs = [[NSMutableArray alloc] init];
+						 if (self.currentUser.likedPOVIDs) {
+							 for (NSNumber* povIdentifier in self.currentUser.likedPOVIDs) {
+								 [povIDs addObject:[NSNumber numberWithLongLong:povIdentifier.longLongValue]];
+							 }
+						 }
+						 self.currentUser.likedPOVIDs = povIDs;
+						 resolve(self.currentUser);
+					 }
+				 }];
+	}];
+	return promise;
 }
 
 #pragma mark - Log user out -

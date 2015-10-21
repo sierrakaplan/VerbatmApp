@@ -21,7 +21,6 @@
 #import "POVLoadManager.h"
 #import "PagesLoadManager.h"
 #import "POVView.h"
-#import "PovInfo.h"
 
 #import "UpdatingPOVManager.h"
 #import "UIView+Effects.h"
@@ -69,8 +68,7 @@
 	NSNumber* povID = povInfo.identifier;
 	[self.pageLoadManager loadPagesForPOV: povID];
 	[self.povIDs addObject: povID];
-	POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds];
-
+	POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds andPOVInfo:povInfo];
 	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.view.bounds andImage:povInfo.coverPhoto andTitle: povInfo.title];
 	[povView renderNextAve:coverAVE withIndex:[NSNumber numberWithInteger:0]];
 	[self.scrollView addSubview: povView];
@@ -99,7 +97,7 @@
 			// When first page loads, show down arrow
 			if (pageIndex == 1) {
 				[povView addDownArrowButton];
-				[povView addLikeButtonWithDelegate:self andSetPOVID: povID];
+				[povView addLikeButtonWithDelegate:self];
 				[self.activityIndicator stopAnimating];
 				self.activityIndicator = nil;
 			}
@@ -112,9 +110,9 @@
 
 #pragma mark - POVView Delegate (Like button) -
 
--(void) likeButtonLiked:(BOOL)liked onPOVWithID:(NSNumber *)povID {
-	[self.updatingPOVManager povWithId:povID wasLiked: liked];
-	
+-(void) likeButtonLiked:(BOOL)liked onPOV: (PovInfo*) povInfo {
+	[self.updatingPOVManager povWithId:povInfo.identifier wasLiked: liked];
+	[self.delegate userLiked:liked POV:povInfo];
 }
 
 #pragma mark - Clean up -

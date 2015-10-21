@@ -160,8 +160,9 @@
 
 #pragma mark - Update cell based on like -
 
--(void) userHasLikedPOV: (BOOL) liked atIndex: (NSInteger) index withPovInfo: (PovInfo*) povInfo {
-	//
+-(void) userHasLikedPOV: (BOOL) liked withPovInfo: (PovInfo*) povInfo {
+	[self.mostRecentVC userHasLikedPOV:liked withPovInfo:povInfo];
+	[self.trendingVC userHasLikedPOV:liked withPovInfo:povInfo];
 }
 
 #pragma mark - Article List VC Delegate Methods (display articles) -

@@ -12,8 +12,10 @@
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
 #import <ParseFacebookutilsV4/PFFacebookUtils.h>
+#import <PromiseKit/PromiseKit.h>
 
 @class GTLVerbatmAppVerbatmUser;
+@class PovInfo;
 
 @protocol UserManagerDelegate <NSObject>
 
@@ -36,11 +38,16 @@
 -(void) loginUserFromEmail: (NSString*)email andPassword:(NSString*)password;
 
 -(void) queryForCurrentUser;
+
 -(GTLVerbatmAppVerbatmUser*) getCurrentUser;
+
+-(BOOL) currentUserLikesStory: (PovInfo*) povInfo;
 
 -(void) logOutUser;
 
 //TODO:
 -(void) changeUserProfilePhoto: (UIImage*) image;
+
+-(AnyPromise*) updateCurrentUser: (GTLVerbatmAppVerbatmUser*) currentUser;
 
 @end

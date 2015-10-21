@@ -20,6 +20,8 @@
 #import "PhotoVideoAVE.h"
 #import "BaseArticleViewingExperience.h"
 
+#import "UtilityFunctions.h"
+
 #import <PromiseKit/PromiseKit.h>
 
 @interface AVETypeAnalyzer()
@@ -89,7 +91,7 @@
 
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
 	for (GTLVerbatmAppImage* image in page.images) {
-		AnyPromise* getImageDataPromise = [POVLoadManager loadDataFromURL: [NSURL URLWithString:image.servingUrl]];
+		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedDataFromURL: [NSURL URLWithString:image.servingUrl]];
 		[loadImageDataPromises addObject: getImageDataPromise];
 	}
 	return PMKWhen(loadImageDataPromises).then(^(NSArray* results) {

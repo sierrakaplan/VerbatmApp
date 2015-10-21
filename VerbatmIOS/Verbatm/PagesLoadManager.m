@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "ASIHTTPRequest.h"
 
 #import "GTLQueryVerbatmApp.h"
 #import "GTLServiceVerbatmApp.h"
@@ -51,8 +52,6 @@
 }
 
 
-//TODO: think about way to load each page individually rather than all of them
-// at once
 /*
  Load the pages from the given pov ID.
  Then load the images and videos from each page
@@ -173,6 +172,12 @@
 	return promise;
 }
 
+-(void) downloadVideoFromUri: (NSString*) uri {
+	ASIHTTPRequest* request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:uri]];
+	[request setDelegate:self];
+	[request setDownloadProgressDelegate: self];
+	[request startAsynchronous];
+}
 
 #pragma mark - Lazy Instantiation -
 

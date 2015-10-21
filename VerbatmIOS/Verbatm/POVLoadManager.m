@@ -22,6 +22,9 @@
 
 #import "PovInfo.h"
 
+#import "UtilityFunctions.h"
+#import "UserManager.h"
+
 @interface POVLoadManager()
 
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
@@ -39,23 +42,6 @@
 
 @implementation POVLoadManager
 
-
-// Promise wrapper for asynchronous request to get image data (or any data) from the url
-+ (AnyPromise*) loadDataFromURL: (NSURL*) url {
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		NSURLRequest* request = [[NSURLRequest alloc] initWithURL:url];
-		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
-			if (error) {
-				NSLog(@"Error retrieving data from url: \n %@", error.description);
-				resolve(nil);
-			} else {
-//				NSLog(@"Successfully retrieved data from url");
-				resolve(data);
-			}
-		}];
-	}];
-	return promise;
-}
 
 -(instancetype) initWithType: (POVType) type {
 	self = [super init];
@@ -137,7 +123,7 @@
 // and stores it in a newly created PovInfo, which it returns
 -(AnyPromise*) getPOVInfoWithExtraInfoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
 	AnyPromise* userNamePromise = [self loadUserNameFromUserID:gtlPovInfo.creatorUserId];
-	AnyPromise* coverPicDataPromise = [POVLoadManager loadDataFromURL: [NSURL URLWithString:gtlPovInfo.coverPicUrl]];
+	AnyPromise* coverPicDataPromise = [UtilityFunctions loadCachedDataFromURL: [NSURL URLWithString:gtlPovInfo.coverPicUrl]];
 	AnyPromise* loadUserIDsWhoHaveLikedThisPOV = [self loadUserIDsWhoHaveLikedPOVWithID: gtlPovInfo.identifier];
 	return PMKWhen(@[userNamePromise, coverPicDataPromise, loadUserIDsWhoHaveLikedThisPOV]).then(^(NSArray* results) {
 		NSString* userName = results[0];
@@ -179,15 +165,18 @@
 
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		GTLQuery* getUserIDsWhoLikeThisPOVQuery = [GTLQueryVerbatmApp queryForPovGetUserIdsWhoLikeThisPOVWithIdentifier:povID.longLongValue];
-		[self.service executeQuery:getUserIDsWhoLikeThisPOVQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppIdentifierListWrapper* userIDs, NSError *error) {
+		[self.service executeQuery:getUserIDsWhoLikeThisPOVQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppIdentifierListWrapper* userIDsWrapper, NSError *error) {
 			if (error) {
 				resolve(error);
 			} else {
-				if (userIDs.identifiers) {
-					resolve(userIDs.identifiers);
-				} else {
-					resolve([[NSArray alloc] init]);
+				// have to do this because otherwise it thinks the values in the array are of type NSString* from the JSON
+				NSMutableArray* userIDs = [[NSMutableArray alloc] init];
+				if (userIDsWrapper.identifiers) {
+					for (NSNumber* userIdentifier in userIDsWrapper.identifiers) {
+						[userIDs addObject:[NSNumber numberWithLongLong:userIdentifier.longLongValue]];
+					}
 				}
+				resolve(userIDs);
 			}
 		}];
 	}];
@@ -233,6 +222,23 @@
 	}
 }
 
+-(NSInteger) getIndexOfPOV: (PovInfo*) povInfo {
+	return [self.povInfos indexOfObject:povInfo];
+}
+
+// update povInfo
+-(void) currentUserLiked: (BOOL) liked povInfo: (PovInfo*) povInfo {
+	GTLVerbatmAppVerbatmUser* currentUser = [[UserManager sharedInstance] getCurrentUser];
+	NSMutableArray* updatedUsersWhoHaveLikedThisPOV = [[NSMutableArray alloc] initWithArray:povInfo.userIDsWhoHaveLikedThisPOV copyItems:NO];
+	if (liked && ![updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
+		[updatedUsersWhoHaveLikedThisPOV addObject: currentUser.identifier];
+	} else if(!liked && [updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
+		[updatedUsersWhoHaveLikedThisPOV removeObject: currentUser.identifier];
+	}
+	povInfo.userIDsWhoHaveLikedThisPOV = updatedUsersWhoHaveLikedThisPOV;
+	long long newNumUpVotes = (long long) updatedUsersWhoHaveLikedThisPOV.count;
+	povInfo.numUpVotes = [NSNumber numberWithLongLong: newNumUpVotes];
+}
 
 #pragma mark - Lazy Instantiation -
 

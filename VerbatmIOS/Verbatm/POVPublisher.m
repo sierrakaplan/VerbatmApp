@@ -38,6 +38,7 @@
 #import "VideoPinchView.h"
 
 #import "UserManager.h"
+#import "UtilityFunctions.h"
 
 @interface POVPublisher()
 
@@ -211,7 +212,7 @@
 }
 
 -(AnyPromise*) storeVideoFromURL: (NSURL*) url atIndex: (NSInteger) i andText: (NSString*) text andYPosition: (NSNumber*) textYPosition {
-	return [POVLoadManager loadDataFromURL: url].then(^(NSData * data){
+	return [UtilityFunctions loadCachedDataFromURL: url].then(^(NSData * data){
 		return [self storeVideo:data withIndex: i andText:text andYPosition: textYPosition];
 	});
 }

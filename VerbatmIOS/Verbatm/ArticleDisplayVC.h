@@ -8,16 +8,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PovInfo.h"
 
 @class POVLoadManager;
 
 @protocol ArticleDisplayVCDelegate <NSObject>
 
-//-(void) storyWithIndex: (NSInteger)
+-(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo;
 
 @end
 
 @interface ArticleDisplayVC : UIViewController
+
+@property (strong, nonatomic) id<ArticleDisplayVCDelegate> delegate;
 
 //Tells the VC to display story at that index from that load manager
 //And gives it a reference to the load manager so that it can load previous

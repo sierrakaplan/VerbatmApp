@@ -12,14 +12,13 @@
 @interface MediaUploader()
 
 @property (nonatomic, strong) ASIFormDataRequest *formData;
-@property (strong, nonatomic) MediaUploadCompletionBlock completionBlock;
+@property (nonatomic, strong) MediaUploadCompletionBlock completionBlock;
 
 @end
 
-
 @implementation MediaUploader
 
-@synthesize formData, progress;
+@synthesize formData;
 
 -(instancetype) initWithImage:(UIImage*)img andUri: (NSString*)uri {
 	NSData *imageData = UIImagePNGRepresentation(img);
@@ -54,6 +53,10 @@
 	return self;
 }
 
+-(long long) getPostLength {
+	return [self.formData postLength];
+}
+
 -(AnyPromise*) startUpload {
 
 	NSLog(@"Starting upload of media.");
@@ -77,11 +80,10 @@
 
 #pragma mark Delegate methods
 
-- (void)request:(ASIHTTPRequest *)theRequest didSendBytes:(long long)newLength {
+- (void)request:(ASIHTTPRequest *)request didSendBytes:(long long)bytes {
 
-	if ([theRequest totalBytesSent] > 0) {
-		float progressAmount = ((float)[theRequest totalBytesSent]/(float)[theRequest postLength]);
-		self.progress = progressAmount;
+	if ([request totalBytesSent] > 0) {
+		float progressAmount = ((float)[request totalBytesSent]/(float)[request postLength]);
 		NSInteger newProgressUnits = (NSInteger)(progressAmount*self.mediaUploadProgress.totalUnitCount);
 		if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
 			[self.mediaUploadProgress setCompletedUnitCount: newProgressUnits];
