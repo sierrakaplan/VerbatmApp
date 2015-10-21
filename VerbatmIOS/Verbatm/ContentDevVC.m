@@ -8,6 +8,8 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
+#import "Analytics.h"
+
 #import "ContentDevVC.h"
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
@@ -528,6 +530,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	}
 
 	[[UserPovInProgress sharedInstance] addPinchView:pinchView];
+    
+    //if we are adding our first object
+    if(self.pageElementScrollViews == 0)[[Analytics getSharedInstance] newADKSession];
+    
+    
 	[self addTapGestureToPinchView:pinchView];
 
 	// must be below base media tile selector
@@ -1605,6 +1612,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     [self clearBaseSelcetor];
 	[self createBaseSelector];
     [self initializeVariables];
+    
+    //a pov is published so we end the counter
+    [[Analytics getSharedInstance] endOfADKSession];
 }
 
 -(void)clearBaseSelcetor{

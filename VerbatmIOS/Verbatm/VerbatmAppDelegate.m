@@ -7,7 +7,7 @@
 //
 
 #import "VerbatmAppDelegate.h"
-
+#import "Analytics.h"
 #import "UserPovInProgress.h"
 #import <AVFoundation/AVFoundation.h>
 #import "UserSetupParameters.h"
@@ -42,8 +42,9 @@
 
     [UserSetupParameters setUpParameters];
 	[[UserPovInProgress sharedInstance] loadPOVFromUserDefaults];
-    [[AVAudioSession sharedInstance] setActive: YES error: nil];
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient error:nil];
+    
+    [[Analytics getSharedInstance] newUserSession];
+    
     
     return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 }
@@ -64,10 +65,14 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+    
+    [[Analytics getSharedInstance] endOfUserSession];
+    
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application{
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+    [[Analytics getSharedInstance] newUserSession];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application
