@@ -121,7 +121,7 @@
 
 //loads pinchviews from user defaults
 -(void) loadPOVFromUserDefaults {
-//	[self clearPOVInProgress];
+	//[self clearPOVInProgress];
 
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];
