@@ -41,8 +41,8 @@
 #import "VerbatmCameraView.h"
 
 
-@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate,
-UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
+@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate, ArticleDisplayVCDelegate, UserManagerDelegate,
+UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
 @property (weak, nonatomic) IBOutlet UIButton *accessCodePresenter_Button;
@@ -171,6 +171,8 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
     
 	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
 	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
+	[self addChildViewController:self.articleDisplayVC];
+	self.articleDisplayVC.delegate = self;
 	self.articleDisplayContainer.alpha = 0;
 	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
     
@@ -378,7 +380,6 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 #pragma mark - Media dev delegate methods -
 
 -(void)adkViewChange:(BOOL)inCameraMode {
-    
     if(inCameraMode){
         //turn off navigation scrollview
         self.masterSV.scrollEnabled = NO;
@@ -386,7 +387,6 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
         //turn on naviagtion scrollview
         self.masterSV.scrollEnabled = YES;
     }
-    
 }
 
 -(void) backButtonPressed {
@@ -403,6 +403,11 @@ UIGestureRecognizerDelegate, UserManagerDelegate, UIScrollViewDelegate>
 	return YES;
 }
 
+#pragma mark - Article Display Delegate methods -
+
+-(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo {
+	[self.feedVC userHasLikedPOV:liked withPovInfo:povInfo];
+}
 
 #pragma mark - Handle Login -
 

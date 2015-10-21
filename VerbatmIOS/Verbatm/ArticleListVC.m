@@ -172,7 +172,7 @@
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
 		// check if user likes this story
-		BOOL currentUserLikesStory = [self currentUserLikesStory:povInfo];
+		BOOL currentUserLikesStory = [[UserManager sharedInstance] currentUserLikesStory:povInfo];
 		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto
 					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes
 				  likedByCurrentUser:currentUserLikesStory];
@@ -183,18 +183,14 @@
 	return cell;
 }
 
--(BOOL) currentUserLikesStory: (PovInfo*) povInfo {
-	UserManager* userManager = [UserManager sharedInstance];
-	GTLVerbatmAppVerbatmUser* currentUser = [userManager getCurrentUser];
-	return ([[povInfo userIDsWhoHaveLikedThisPOV] containsObject: currentUser.identifier]);
-}
-
 #pragma mark - Notify cell that current user has liked or unliked it -
 
--(void) userHasLikedPOV: (BOOL) liked atIndex: (NSInteger) index withPovInfo: (PovInfo*) povInfo {
-	FeedTableViewCell* povCell = [self.povListView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:index inSection:0]];
-	long long newNumLikes = liked ? povInfo.numUpVotes.longLongValue+1 : povInfo.numUpVotes.longLongValue-1;
-	[povCell updateCellLikedByCurrentUser:liked withNewNumLikes: newNumLikes];
+-(void) userHasLikedPOV: (BOOL) liked withPovInfo: (PovInfo*) povInfo {
+	NSInteger povIndex = [self.povLoader getIndexOfPOV: povInfo];
+	if (povIndex == NSNotFound) return;
+	[self.povLoader currentUserLiked:liked povInfo:povInfo];
+	FeedTableViewCell* povCell = [self.povListView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:povIndex inSection:0]];
+	[povCell updateCellLikedByCurrentUser:liked withNewNumLikes: povInfo.numUpVotes.longLongValue];
 }
 
 #pragma mark - Feed Table View Cell Delegate methods -
@@ -292,12 +288,14 @@
 }
 
 //Delegate method from the povLoader, letting this list know more POV's have loaded so that it can refresh
--(void) morePOVsLoaded {
+-(void) morePOVsLoaded: (NSInteger) numLoaded {
     self.loadingMorePOVsInProgress = NO;
 	if ([self.loadingMoreActivityIndicator isAnimating]) {
 		[self.loadingMoreActivityIndicator stopAnimating];
 	}
-	[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+	if (numLoaded > 0) {
+		[self.povListView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+	}
 }
 
 -(void) failedToLoadMorePOVs {
@@ -334,7 +332,8 @@
                                               ([self.povLoader getNumberOfPOVsLoaded] * STORY_CELL_HEIGHT ) + 80 + NAV_BAR_HEIGHT);
 
 	//when the user has reached the very bottom of the feed and pulls we load more articles into the feed
-	if (scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height - RELOAD_THRESHOLD) {
+	if (scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height - RELOAD_THRESHOLD
+		&& !self.povLoader.noMorePOVsToLoad) {
 		if(!self.loadingMorePOVsInProgress && !self.refreshInProgress) {
 			self.loadingMorePOVsInProgress = YES;
 			[self.loadingMoreActivityIndicator startAnimating];

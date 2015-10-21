@@ -23,7 +23,7 @@
 @protocol POVLoadManagerDelegate <NSObject>
 
 // Successfully loaded more POV's
--(void) morePOVsLoaded;
+-(void) morePOVsLoaded: (NSInteger) numLoaded;
 // Was unable to load more POV's for some reason
 -(void) failedToLoadMorePOVs;
 
@@ -43,8 +43,8 @@ typedef NS_ENUM(NSInteger, POVType) {
 };
 
 @property (strong, nonatomic) id<POVLoadManagerDelegate> delegate;
-
-+ (AnyPromise*) loadDataFromURL: (NSURL*) url;
+// tells if we have reached the end of our feed
+@property (nonatomic) BOOL noMorePOVsToLoad;
 
 // Initialize with the type of POV's to load (trending, recent, etc.)
 -(id) initWithType: (POVType) type;
@@ -61,5 +61,12 @@ typedef NS_ENUM(NSInteger, POVType) {
 // Get the POVInfo at the given index. Will return nil if not loaded yet
 // Should only be called after getting notification from loadPOV's
 - (PovInfo*) getPOVInfoAtIndex: (NSInteger) index;
+
+// Get the index of the POV. Will return NSNotFound if not found
+-(NSInteger) getIndexOfPOV: (PovInfo*) povInfo;
+
+// updates povInfo's numlikes and adds current user id to its list of users who have liked it
+// this is only on the front end, the database is updated somewhere else
+-(void) currentUserLiked: (BOOL) liked povInfo: (PovInfo*) povInfo;
 
 @end

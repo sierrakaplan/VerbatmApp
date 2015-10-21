@@ -105,10 +105,12 @@
 	if(self.subviewOfPhotoVideoAVE){
 		textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
 	}
-	return [[TextAndImageView alloc] initWithFrame:self.bounds
+	TextAndImageView* textAndImageView = [[TextAndImageView alloc] initWithFrame:self.bounds
 										  andImage: image
 										   andText: text
 								  andTextYPosition: textYPosition.floatValue];
+	[textAndImageView showText:YES];
+	return textAndImageView;
 }
 
 -(void) createCircleViewAndPoints {

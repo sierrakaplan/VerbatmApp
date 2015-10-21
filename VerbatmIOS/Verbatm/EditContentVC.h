@@ -11,6 +11,10 @@
 
 @interface EditContentVC : UIViewController
 
-@property (strong, nonatomic) PinchView * openPinchView;
+@property (strong, nonatomic) PinchView* openPinchView;
+
+// Pinch views in a collection - NOT IN USE NOW -
+@property (strong, nonatomic) NSArray* openPinchViews;
+@property (nonatomic) NSInteger indexTapped;
 
 @end

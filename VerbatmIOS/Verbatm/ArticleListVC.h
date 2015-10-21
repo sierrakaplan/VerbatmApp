@@ -27,6 +27,6 @@
 						  andCoverPic: (UIImage*) coverPic andProgressObject: (NSProgress*) publishingProgress;
 
 // Notify cell to update its appearance based on the current user liking or unliking it
--(void) userHasLikedPOV: (BOOL) liked atIndex: (NSInteger) index withPovInfo: (PovInfo*) povInfo;
+-(void) userHasLikedPOV: (BOOL) liked withPovInfo: (PovInfo*) povInfo;
 
 @end

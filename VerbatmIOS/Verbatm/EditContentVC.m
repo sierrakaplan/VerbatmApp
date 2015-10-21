@@ -8,6 +8,7 @@
 
 #import "CoverPicturePinchView.h"
 #import "EditContentVC.h"
+#import "Icons.h"
 #import "ImagePinchView.h"
 #import "SizesAndPositions.h"
 #import "UserSetupParameters.h"
@@ -20,7 +21,6 @@
 @property (strong, nonatomic) UIButton * exitButton;
 @property (strong, nonatomic) EditContentView * openEditContentView;
 
-#define DONE_IMAGE @"DoneIcon"
 @end
 @implementation EditContentVC
 
@@ -64,7 +64,8 @@
     self.exitButton = [[UIButton alloc] initWithFrame:
                        CGRectMake(EXIT_CV_BUTTON_WALL_OFFSET, EXIT_CV_BUTTON_WALL_OFFSET,
                                   EXIT_CV_BUTTON_WIDTH, EXIT_CV_BUTTON_HEIGHT)];
-    [self.exitButton setImage:[UIImage imageNamed:DONE_IMAGE] forState:UIControlStateNormal];
+    [self.exitButton setImage:[UIImage imageNamed:DONE_CHECKMARK] forState:UIControlStateNormal];
+	[self.exitButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
     [self.exitButton addTarget:self action:@selector(exitButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:self.exitButton];
     [self.view bringSubviewToFront:self.exitButton];

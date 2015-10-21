@@ -15,11 +15,10 @@
 #pragma mark - Feed -
 
 #define NO_NETWORK_IMAGE @"no_network_image"
-#define PUBLISHED_ANIMATION_ICON @"published_icon1"
 
 #pragma mark Story Cell
 
-#define FEED_NOT_LIKED_ICON @"heart_no_fill"
+#define FEED_NOT_LIKED_ICON @"heart_unfilled"
 #define FEED_LIKED_ICON @"heart_filled"
 
 #pragma mark Bottom Nav
@@ -30,17 +29,24 @@
 
 #pragma mark Category Switcher
 
-#define SWITCH_CATEGORY_CIRCLE_RIGHT @"trending circle_rigthSide"
-#define SWITCH_CATEGORY_CIRCLE_LEFT @"trending circle_leftSide"
-
-
+#define SWITCH_CATEGORY_CIRCLE_RIGHT @"arrow_circle_right"
+#define SWITCH_CATEGORY_CIRCLE_LEFT @"arrow_circle_left"
 
 #pragma mark - ADK -
 
-#define WHAT_IS_IT_LIKE_BORDER @"dashed_border_with_line"
+#define TITLE_BORDER @"dashed_border_with_line"
 #define TITLE_NOTIFICATION_ANIMATION @"title_notification"
+#define REPLACE_COVER_PHOTO_ICON @"replace_photo"
+#define DELETE_ICON @"trash_can"
+
+#define PREVIEW_ICON @"text_preview"
+#define BACK_ICON @"text_back"
+#define PUBLISH_ICON @"text_publish"
 
 #define REPLACE_COVER_PHOTO_ICON @"replaceCoverPhotoIcon"
+#pragma mark Edit Content View
+
+#define DONE_CHECKMARK @"done_checkmark"
 
 #pragma mark Media Capture
 
@@ -58,7 +64,7 @@
 
 #pragma mark Pull Bar
 
-#define PULLDOWN_ICON @"pulldown_arrow"
+#define PULLDOWN_ICON @"down_arrow"
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"gallery"
 
@@ -72,12 +78,6 @@
 #define GM_IMAGE_PICKER_VIDEO @"GMImagePickerVideo"
 #define CT_ASSETS_PICKER_CHECKED @"CTAssetsPickerChecked"
 
-#pragma mark Preview
-
-#define PUBLISH_BUTTON_IMAGE @"white_circle"
-
-
-
 #pragma mark - AVES -
 
 #define LIKE_ICON @"heart_unfilled"
@@ -87,11 +87,8 @@
 #pragma mark Video AVE
 
 #define VIDEO_LOADING_ICON @"video_loading_icon"
-#define MUTE_BUTTON_ICON @"mute_button_icon"
-#define UNMUTE_BUTTON_ICON @"unmute_button_icon"
+#define UNMUTED_ICON @"sound_unmuted"
+#define MUTED_ICON @"sound_muted"
 
-#pragma mark Images AVE
-
-#define CIRCLE_OVER_IMAGES_ICON @"multiphoto_circle"
 
 #endif /* Icons_h */

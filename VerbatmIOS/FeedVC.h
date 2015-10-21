@@ -27,4 +27,7 @@
 //Makes sure selected cell is deselected (resets formatting for it)
 -(void) deSelectCell;
 
+// Tells feed to notify both recent and trending feeds that a povInfo has been liked by the current user
+-(void) userHasLikedPOV: (BOOL) liked withPovInfo: (PovInfo*) povInfo;
+
 @end

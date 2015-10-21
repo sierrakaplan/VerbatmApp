@@ -132,9 +132,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #define WHAT_IS_IT_LIKE_TEXT @"tell your story"
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
-#define WHAT_IS_IT_LIKE_Y_OFFSET 40
-#define WHAT_IS_IT_LIKE_X_OFFSET 7
-#define WHAT_IS_IT_LIKE_HEIGHT 52
+#define TITLE_FIELD_Y_OFFSET (CONTENT_DEV_NAV_BAR_OFFSET*2 + NAV_ICON_SIZE)
+#define TITLE_FIELD_X_OFFSET 7
+#define TITLE_FIELD_HEIGHT 100
 #define MAX_TITLE_CHARACTERS 40
 
 #define REPLACE_PHOTO_FRAME_WIDTH 35
@@ -165,7 +165,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	[self formatTitleAndCoverPicture];
 	[self createBaseSelector];
 	[self setUpNotifications];
-	self.whatIsItLikeField.delegate = self;
+	self.titleField.delegate = self;
 	self.mainScrollView.delegate = self;
 }
 
@@ -234,62 +234,47 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 //sets the textview placeholders' color and text
 -(void) formatTitleAndCoverPicture {
 
-	CGRect whatIsItLikeLabelFrame = CGRectMake(WHAT_IS_IT_LIKE_X_OFFSET, WHAT_IS_IT_LIKE_Y_OFFSET,
-											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_X_OFFSET,
-											   WHAT_IS_IT_LIKE_HEIGHT);
-	CGRect whatIsItLikeFieldFrame = CGRectMake(WHAT_IS_IT_LIKE_X_OFFSET, whatIsItLikeLabelFrame.origin.y + whatIsItLikeLabelFrame.size.height,
-											   self.view.bounds.size.width - 2*WHAT_IS_IT_LIKE_X_OFFSET,
-											   WHAT_IS_IT_LIKE_HEIGHT*2);
-
+	CGRect titleFrame = CGRectMake(TITLE_FIELD_X_OFFSET, TITLE_FIELD_Y_OFFSET,
+											   self.view.bounds.size.width - 2*TITLE_FIELD_X_OFFSET,
+											   TITLE_FIELD_HEIGHT);
 	CGFloat coverPicRadius = COVER_PIC_RADIUS;
 	CGRect addCoverPicFrame = CGRectMake(self.view.frame.size.width/2.f - coverPicRadius,
-										 whatIsItLikeFieldFrame.origin.y + whatIsItLikeFieldFrame.size.height,
+										 titleFrame.origin.y + titleFrame.size.height,
 										 coverPicRadius*2, coverPicRadius*2);
 
-	[self formatWhatIsItLikeLabelFromFrame: whatIsItLikeLabelFrame];
-	[self formatWhatIsItLikeFieldFromFrame: CGRectMake(0, 0, whatIsItLikeFieldFrame.size.width, whatIsItLikeFieldFrame.size.height/2.f)];
+	[self formatTitleFieldFromFrame: CGRectMake(0, 0, titleFrame.size.width, titleFrame.size.height/2.f)];
 
-	//Field border
-	UIView* borderView = [[UIView alloc] initWithFrame: whatIsItLikeFieldFrame];
-	UIImageView* borderImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, 0,
-																				  whatIsItLikeFieldFrame.size.width,
-																				  whatIsItLikeFieldFrame.size.height)];
-	[borderImageView setImage:[UIImage imageNamed: WHAT_IS_IT_LIKE_BORDER]];
-	borderImageView.contentMode = UIViewContentModeScaleAspectFill;
+	//Title border
+	UIView* titleBorderView = [[UIView alloc] initWithFrame: titleFrame];
+	UIImageView* titleBorderImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, 0,
+																				  titleFrame.size.width,
+																				  titleFrame.size.height)];
+	[titleBorderImageView setImage:[UIImage imageNamed: TITLE_BORDER]];
+	titleBorderImageView.contentMode = UIViewContentModeScaleAspectFill;
 
-	[borderView addSubview:borderImageView];
-	[borderView addSubview:self.whatIsItLikeField];
-	[borderView bringSubviewToFront:self.whatIsItLikeField];
-	[self.mainScrollView addSubview: self.whatIsItLikeLabel];
-	[self.mainScrollView addSubview: borderView];
+	[titleBorderView addSubview: titleBorderImageView];
+	[titleBorderView addSubview: self.titleField];
+	[titleBorderView bringSubviewToFront: self.titleField];
+	[self.mainScrollView addSubview: titleBorderView];
 
 	[self setAddCoverPictureViewWithFrame: addCoverPicFrame];
 }
 
--(void) formatWhatIsItLikeLabelFromFrame: (CGRect) frame {
-	UIFont* labelFont = [UIFont fontWithName:DEFAULT_FONT size: WHAT_IS_IT_LIKE_LABEL_TEXT_SIZE];
-	self.whatIsItLikeLabel = [[UILabel alloc] initWithFrame: frame];
-	self.whatIsItLikeLabel.text = @"what is it like to be ...";
-	self.whatIsItLikeLabel.textAlignment = NSTextAlignmentLeft;
-	self.whatIsItLikeLabel.font = labelFont;
-	self.whatIsItLikeLabel.textColor = [UIColor WHAT_IS_IT_LIKE_COLOR];
-}
-
--(void) formatWhatIsItLikeFieldFromFrame: (CGRect) frame {
-	UIFont* whatIsItLikeFieldFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
-	self.whatIsItLikeField = [[UITextField alloc] initWithFrame: frame];
-	self.whatIsItLikeField.textAlignment = NSTextAlignmentCenter;
-	self.whatIsItLikeField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
-    [self.whatIsItLikeField setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
-	self.whatIsItLikeField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
-	self.whatIsItLikeField.attributedPlaceholder = [[NSAttributedString alloc]
+-(void) formatTitleFieldFromFrame: (CGRect) frame {
+	UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
+	self.titleField = [[UITextField alloc] initWithFrame: frame];
+	self.titleField.textAlignment = NSTextAlignmentCenter;
+	self.titleField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
+    [self.titleField setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
+	self.titleField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
+	self.titleField.attributedPlaceholder = [[NSAttributedString alloc]
 													initWithString: WHAT_IS_IT_LIKE_TEXT
 													attributes:@{NSForegroundColorAttributeName: [UIColor TELL_YOUR_STORY_COLOR],
-																 NSFontAttributeName : whatIsItLikeFieldFont}];
-	[self.whatIsItLikeField resignFirstResponder];
-	self.whatIsItLikeField.enabled = YES;
-	self.whatIsItLikeField.autocorrectionType = UITextAutocorrectionTypeYes;
-	[self.whatIsItLikeField setReturnKeyType:UIReturnKeyDone];
+																 NSFontAttributeName : titleFont}];
+	[self.titleField resignFirstResponder];
+	self.titleField.enabled = YES;
+	self.titleField.autocorrectionType = UITextAutocorrectionTypeYes;
+	[self.titleField setReturnKeyType:UIReturnKeyDone];
 }
 
 -(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
@@ -334,7 +319,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 -(void) loadPOVFromUserDefaults {
 	NSString* savedTitle = [[UserPovInProgress sharedInstance] title];
 	if (savedTitle && savedTitle.length) {
-		self.whatIsItLikeField.text = savedTitle;
+		self.titleField.text = savedTitle;
 	}
 
 	UIImage* coverPicture = [[UserPovInProgress sharedInstance] coverPhoto];
@@ -371,14 +356,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #pragma mark - Configure Text Fields -
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {
-	if (textField == self.whatIsItLikeField) {
+	if (textField == self.titleField) {
 		[[UserPovInProgress sharedInstance] addTitle: textField.text];
 	}
 }
 
 // if we encounter a newline character return
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-	if(textField == self.whatIsItLikeField) {
+	if(textField == self.titleField) {
 		// enter closes the keyboard
 		if ([string isEqualToString:@"\n"]) {
 			[textField resignFirstResponder];
@@ -398,8 +383,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(BOOL) textFieldShouldReturn:(UITextField *)textField {
-	if(textField == self.whatIsItLikeField) {
-		[self.whatIsItLikeField resignFirstResponder];
+	if(textField == self.titleField) {
+		[self.titleField resignFirstResponder];
 	}
 	return YES;
 }
@@ -538,7 +523,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
-		newElementScrollViewFrame = CGRectMake(0,self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		newElementScrollViewFrame = CGRectMake(0,self.titleField.frame.origin.y + self.titleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 	} else {
 		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
@@ -636,10 +621,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	}
 
 	if(![self.pageElementScrollViews containsObject:view]) {
-		if(topView && topView != self.whatIsItLikeField) {
+		if(topView && topView != self.titleField) {
 			NSInteger index = [self.pageElementScrollViews indexOfObject:topView];
 			[self.pageElementScrollViews insertObject:view atIndex:(index+1)];
-		}else if(topView == self.whatIsItLikeField) {
+		}else if(topView == self.titleField) {
 			[self.pageElementScrollViews insertObject:view atIndex:0];
 		}else {
 			[self.pageElementScrollViews addObject:view];
@@ -664,14 +649,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #pragma Remove Keyboard From Screen
 //Iain
 -(void) removeKeyboardFromScreen {
-	if (self.whatIsItLikeField.isEditing) {
-		[self.whatIsItLikeField resignFirstResponder];
+	if (self.titleField.isEditing) {
+		[self.titleField resignFirstResponder];
 	}
 }
 
 -(void) showKeyboard {
-	if(self.whatIsItLikeField.isEditing) {
-		[self.whatIsItLikeField becomeFirstResponder];
+	if(self.titleField.isEditing) {
+		[self.titleField becomeFirstResponder];
 	}
 }
 
@@ -1346,7 +1331,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 -(BOOL)selctedViewAboveCoverPhoto {
 	if(self.selectedView_PAN.frame.origin.y >
-	   self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height &&
+	   self.titleField.frame.origin.y + self.titleField.frame.size.height &&
 	   self.selectedView_PAN.frame.origin.y < self.coverPicView.frame.origin.y +
 	   self.coverPicView.frame.size.height * (2.f/4.f)) {
 		return true;
@@ -1524,7 +1509,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 									  upperScrollView.frame.size.width, upperScrollView.frame.size.height);
 
 	} else {
-		scrollView.frame = CGRectMake(0,self.whatIsItLikeField.frame.origin.y + self.whatIsItLikeField.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		scrollView.frame = CGRectMake(0,self.titleField.frame.origin.y + self.titleField.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 	}
 
 	[self.pageElementScrollViews insertObject:scrollView atIndex:index];
@@ -1624,7 +1609,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void)clearTextFields {
-	self.whatIsItLikeField.text =@"";
+	self.titleField.text =@"";
 }
 
 

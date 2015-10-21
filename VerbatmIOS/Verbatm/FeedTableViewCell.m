@@ -121,7 +121,7 @@
 										TITLE_LABEL_HEIGHT)];
 
 	[self.povCreatorUsername setFrame: CGRectMake(FEED_TEXT_X_OFFSET,
-												  self.povTitle.frame.origin.y + self.povTitle.frame.size.height + FEED_TEXT_GAP,
+												  self.storyTextViewFrame.size.height - DATE_AND_LIKES_LABEL_HEIGHT - FEED_TEXT_GAP - USERNAME_LABEL_HEIGHT,
 												  self.storyTextViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 												  USERNAME_LABEL_HEIGHT)];
 
@@ -147,9 +147,10 @@
 																		self.storyTextViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 																		DATE_AND_LIKES_LABEL_HEIGHT)];
 
-	[self.dateCreatedLabel setFrame: CGRectMake(0, 0, dateAndLikesView.frame.size.width/2.f, DATE_AND_LIKES_LABEL_HEIGHT)];
-	self.likeIconView.frame = CGRectMake(dateAndLikesView.frame.size.width/2.f, 0, DATE_AND_LIKES_LABEL_HEIGHT, DATE_AND_LIKES_LABEL_HEIGHT);
-	[self.numLikesLabel setFrame: CGRectMake(dateAndLikesView.frame.size.width/2.f + self.likeIconView.frame.size.width + 5.f,
+
+	self.likeIconView.frame = CGRectMake(0, 0, DATE_AND_LIKES_LABEL_HEIGHT, DATE_AND_LIKES_LABEL_HEIGHT);
+	[self.numLikesLabel setFrame: CGRectMake(self.likeIconView.frame.size.width + 5.f, 0, dateAndLikesView.frame.size.width/2.f, DATE_AND_LIKES_LABEL_HEIGHT)];
+	[self.dateCreatedLabel setFrame: CGRectMake(dateAndLikesView.frame.size.width/2.f,
 											 0, dateAndLikesView.frame.size.width - self.dateCreatedLabel.frame.size.width - self.likeIconView.frame.size.width,
 											 DATE_AND_LIKES_LABEL_HEIGHT)];
 
@@ -249,14 +250,14 @@
 			self.numLikesLabel.text = @"";
 			break;
 		}
-		case 1: {
-			[self.likeIconView setHidden:NO];
-			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld like", numLikes.longLongValue];
-			break;
-		}
+//		case 1: {
+//			[self.likeIconView setHidden:NO];
+//			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld", numLikes.longLongValue];
+//			break;
+//		}
 		default: {
 			[self.likeIconView setHidden:NO];
-			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", numLikes.longLongValue];
+			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld", numLikes.longLongValue];
 		}
 	}
 

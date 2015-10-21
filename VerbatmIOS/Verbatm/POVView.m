@@ -16,6 +16,7 @@
 #import "SizesAndPositions.h"
 #import "TextAVE.h"
 #import "VideoAVE.h"
+#import "UserManager.h"
 
 @interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate>
 
@@ -32,24 +33,30 @@
 @property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
 @property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
-@property (strong, nonatomic) NSNumber* povID;
+@property (strong, nonatomic) PovInfo* povInfo;
 
 @property (nonatomic, strong) UIButton * downArrow;
 
 #define DOWN_ARROW_WIDTH 30
 #define DOWN_ARROE_DISTANCE_FROM_BOTTOM 30
-#define DOWN_ARROW_IMAGE  @"downarrow"
 #define SCROLL_UP_ANIMATION_DURATION 0.7
 @end
 
 @implementation POVView
 
 -(instancetype)initWithFrame:(CGRect)frame {
-    
-    self = [super initWithFrame:frame];
-    if (self) {
+	self = [super initWithFrame:frame];
+	if (self) {
 		[self addSubview: self.mainScrollView];
 		self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
+	}
+	return self;
+}
+
+-(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo {
+    self = [self initWithFrame:frame];
+    if (self) {
+		self.povInfo = povInfo;
     }
     return self;
 }
@@ -93,10 +100,15 @@
 //should be called by another class (since preview does not have like)
 //Sets the like button delegate and the povID since the delegate method
 //requires a pov ID be passed back
--(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate andSetPOVID: (NSNumber*) povID {
+-(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate {
 	self.likeButtonDelegate = delegate;
-	self.povID = povID;
-	self.liked = NO;
+	// check if current user likes story
+	self.liked = [[UserManager sharedInstance] currentUserLikesStory: self.povInfo];
+	if (self.liked) {
+		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
+	} else {
+		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
+	}
 	[self addSubview: self.likeButton];
 }
 
@@ -107,7 +119,7 @@
 	} else {
 		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
 	}
-	[self.likeButtonDelegate likeButtonLiked: self.liked onPOVWithID:self.povID];
+	[self.likeButtonDelegate likeButtonLiked: self.liked onPOV: self.povInfo];
 }
 
 #pragma mark - Scroll view delegate -
@@ -343,7 +355,7 @@
 -(UIButton*) downArrow {
 	if (!_downArrow) {
 		_downArrow = [[UIButton alloc] init];
-		[_downArrow setImage:[UIImage imageNamed:DOWN_ARROW_IMAGE] forState:UIControlStateNormal];
+		[_downArrow setImage:[UIImage imageNamed:PULLDOWN_ICON] forState:UIControlStateNormal];
 		_downArrow.frame = CGRectMake(self.center.x - (DOWN_ARROW_WIDTH/2),
 										  self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
 										  DOWN_ARROW_WIDTH, DOWN_ARROW_WIDTH);

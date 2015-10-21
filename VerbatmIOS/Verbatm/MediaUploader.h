@@ -17,7 +17,6 @@ typedef void(^MediaUploadCompletionBlock)(NSError* error, NSString* responseURL)
 
 @interface MediaUploader : NSObject
 
-@property (nonatomic, assign) float progress;
 @property (nonatomic, strong) NSProgress* mediaUploadProgress;
 
 
@@ -28,6 +27,9 @@ typedef void(^MediaUploadCompletionBlock)(NSError* error, NSString* responseURL)
 // Creates an ASIFormDataRequest with the video in quicktime .mov form
 // and stages it for upload to the given uri
 -(instancetype) initWithVideoData: (NSData*)videoData  andUri: (NSString*)uri;
+
+// Returns the number of bytes to be uploaded
+-(long long) getPostLength;
 
 -(AnyPromise*) startUpload;
 

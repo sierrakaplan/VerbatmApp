@@ -19,7 +19,6 @@
 #import "UserPovInProgress.h"
 
 #import "MasterNavigationVC.h"
-#import "MediaPreview.h"
 #import "MediaDevVC.h"
 #import <math.h>
 #import "MediaSessionManager.h"
@@ -653,7 +652,7 @@
 	if(![pinchViews count]) {
 		return;
 	}
-	NSString* title = self.contentDevVC.whatIsItLikeField.text;
+	NSString* title = self.contentDevVC.titleField.text;
 	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
 	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic andTitle: title];
