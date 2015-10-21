@@ -7,8 +7,11 @@
 //
 
 #import "Analytics.h"
+#import "GTLVerbatmAppVerbatmUser.h"
 #import <Parse/PFAnalytics.h>
 #import <Parse/PFUser.h>
+#import "UserManager.h"
+
 
 @interface Analytics ()
 
@@ -50,13 +53,14 @@
 
 -(void) storyEndedViewing{
      if(![PFUser currentUser] || !self.currentArticleTitle) return;
+
     
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.storyViewStartTime)/60;
     NSDictionary *dimensions = @{
                                  //article title
                                  @"articleTitle": self.currentArticleTitle,
                                  @"totalTimeSpent": [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
-                                 @"username" : [[PFUser currentUser] username]
+                                 @"username" : [[UserManager sharedInstance] getCurrentUser].name
                                  };
     // Send the dimensions to Parse for the 'POV' event
     [PFAnalytics trackEvent:@"POV" dimensions:dimensions];
@@ -77,7 +81,7 @@
     
     NSDictionary *dimensions = @{@"articleTitle": self.currentArticleTitle,
                                  @"totalTimeSpentOnPage": [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
-                                 @"username" : [[PFUser currentUser] username],
+                                 @"username" : [[UserManager sharedInstance] getCurrentUser].name,
                                  @"pageIndex" : [[NSNumber numberWithInteger:pageIndex] stringValue],
                                  @"aveType": aveType
                                 };
@@ -93,7 +97,7 @@
     if(![PFUser currentUser])return;
     if(self.userSessionStartTime == 0) return;//prevents this method being called twice without newUserS being called 
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.userSessionStartTime)/60;
-    NSDictionary *dimensions = @{@"username" : [[PFUser currentUser] username],
+    NSDictionary *dimensions = @{@"username" :[[UserManager sharedInstance] getCurrentUser].name,
                                  @"totalTimeSpent" : [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
                                  @"numerOfStoriesRead" : [[NSNumber numberWithInteger:self.numberOfStoriesRead] stringValue]
                                  };
@@ -116,7 +120,7 @@
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.userSessionStartTime)/60;
     NSDictionary *dimensions = @{
                                  @"totalTimeSpent":[[NSNumber numberWithFloat:timeSpent_mins] stringValue],
-                                 @"username" : [[PFUser currentUser]username],
+                                 @"username" :[[UserManager sharedInstance] getCurrentUser].name,
                                  };
     // Send the dimensions to Parse along with the 'search' event
     [PFAnalytics trackEvent:@"ADKSession" dimensions:dimensions];
