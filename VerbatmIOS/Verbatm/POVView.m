@@ -130,16 +130,48 @@
 //or showing circle if multiple photo ave
 -(void) displayMediaOnCurrentAVE {
 	NSInteger nextIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
-	UIView *currentPage = [self.pageAves objectForKey:[NSNumber numberWithInteger:nextIndex]];
+	BaseArticleViewingExperience *nextPage = [self.pageAves objectForKey:[NSNumber numberWithInteger:nextIndex]];
+    BaseArticleViewingExperience * currentPage = [self.pageAves objectForKey:[NSNumber numberWithInteger: self.currentPageIndex]];
+    if(self.currentPageIndex != nextIndex){
+        //stop recording old page
+        [self logAVEDoneViewing:currentPage];
+        //start recoring new page
+        [[Analytics getSharedInstance]pageStartedViewingWithIndex:nextIndex];
+    }else if (!nextIndex){//first page of the article
+        //start recoring new page
+        [[Analytics getSharedInstance]pageStartedViewingWithIndex:nextIndex];
+    }
+    
 	if(self.currentPageIndex != nextIndex){
 		if (self.currentPageIndex >= 0) {
-			[self pauseVideosInAVE: [self.pageAves objectForKey:[NSNumber numberWithInteger: self.currentPageIndex]]];
+			[self pauseVideosInAVE: currentPage];
 		}
         self.currentPageIndex = nextIndex;
-		[self displayCircleOnAVE: currentPage];
-		[self playVideosInAVE: currentPage];
+		[self displayCircleOnAVE: nextPage];
+		[self playVideosInAVE: nextPage];
 	}
+    
     [self prepareOutLiersToEnterScreen];
+}
+
+
+-(void)logAVEDoneViewing:(BaseArticleViewingExperience *) ave{
+    
+    NSString * pageType = @"";
+
+   if ([ave isKindOfClass:[VideoAVE class]]) {
+        [(VideoAVE*)ave offScreen];
+        pageType = @"VideoAVE";
+    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
+        [[(PhotoVideoAVE*)ave videoView] offScreen];
+        pageType = @"PhotoVideoAVE";
+    }else if ([ave isKindOfClass:[PhotoAVE class] ]){
+        pageType = @"PhotoAVE";
+    }else{//must be textAve
+        pageType = @"textAve";
+    }
+    
+    [[Analytics getSharedInstance] pageEndedViewingWithIndex:self.currentPageIndex aveType:pageType];
 }
 
 -(void) displayCircleOnAVE:(UIView*) ave {
@@ -181,12 +213,10 @@
     }else{//must be textAve
         pageType = @"textAve";
     }
-    [[Analytics getSharedInstance] pageEndedViewingWithIndex:self.currentPageIndex aveType:pageType];
 }
 
 -(void) playVideosInAVE:(UIView*) ave {
     if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [[Analytics getSharedInstance]pageStartedViewingWithIndex:self.currentPageIndex];
         [self playVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[VideoAVE class]]) {
         [(VideoAVE*)ave onScreen];

@@ -276,11 +276,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "467086659.559044"
+            timestampString = "467089001.470289"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "174"
-            endingLineNumber = "174"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
             landmarkName = "-pauseVideosInAVE:"
             landmarkType = "5">
          </BreakpointContent>
@@ -308,11 +308,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "466388672.783382"
+            timestampString = "467089001.470289"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "142"
-            endingLineNumber = "142"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "-displayMediaOnCurrentAVE"
             landmarkType = "5">
          </BreakpointContent>
@@ -340,11 +340,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "467086659.559044"
+            timestampString = "467089001.470289"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "201"
-            endingLineNumber = "201"
+            startingLineNumber = "231"
+            endingLineNumber = "231"
             landmarkName = "-prepareOutLiersToEnterScreen"
             landmarkType = "5">
          </BreakpointContent>
@@ -585,7 +585,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "103"
             endingLineNumber = "103"
-            landmarkName = "-addPhotos:"
+            landmarkName = "-getImageContainerViewFromPhotoTextArray:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

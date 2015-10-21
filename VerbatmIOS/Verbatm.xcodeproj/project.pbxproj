@@ -188,7 +188,7 @@
 		C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */; };
 		C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* VerbatmTextField.m */; };
 		C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* SignIn.m */; };
-		DEA28C4490E4BBC7A9B627D9 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6C2302226513ED1B7D1B1E2 /* Pods.framework */; };
+		DEA28C4490E4BBC7A9B627D9 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6C2302226513ED1B7D1B1E2 /* Pods.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F20A24FA1A46166100BB77C1 /* EditContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = F20A24F91A46166100BB77C1 /* EditContentView.m */; };
 		F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */; };
 /* End PBXBuildFile section */

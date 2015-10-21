@@ -54,7 +54,7 @@
     NSDictionary *dimensions = @{
                                  //article title
                                  @"articleTitle": self.currentArticleTitle,
-                                 @"totalTimeSpent": [NSNumber numberWithFloat:timeSpent_mins],
+                                 @"totalTimeSpent": [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
                                  @"username" : [[PFUser currentUser] username]
                                  };
     // Send the dimensions to Parse for the 'POV' event
@@ -77,9 +77,9 @@
     NSDictionary *dimensions = @{
                                  @"articleTitle": self.currentArticleTitle,
                                  // Did the user filter the query?
-                                 @"totalTimeSpentOnPage": [NSNumber numberWithFloat:timeSpent_mins],
+                                 @"totalTimeSpentOnPage": [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
                                  @"username" : [[PFUser currentUser] username],
-                                 @"pageIndex" : [NSNumber numberWithInteger:pageIndex],
+                                 @"pageIndex" : [[NSNumber numberWithInteger:pageIndex] stringValue],
                                  @"aveType": aveType
                                 };
     [PFAnalytics trackEvent:@"POVPageViews" dimensions:dimensions];
@@ -88,7 +88,6 @@
 //called in pair
 //we track how long the user spends on the app per session (a session is everytime the app is in the forground)
 -(void) newUserSession{
-    if(![PFUser currentUser]) return;
     self.userSessionStartTime = CACurrentMediaTime();
 }
 -(void)endOfUserSession{
@@ -97,8 +96,8 @@
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.userSessionStartTime)/60;
     NSDictionary *dimensions = @{
                                  @"username" : [[PFUser currentUser] username],
-                                 @"totalTimeSpent" : [NSNumber numberWithFloat:timeSpent_mins],
-                                 @"numerOfStoriesRead" : [NSNumber numberWithInteger:self.numberOfStoriesRead]
+                                 @"totalTimeSpent" : [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
+                                 @"numerOfStoriesRead" : [[NSNumber numberWithInteger:self.numberOfStoriesRead] stringValue]
                                  };
     // Send the dimensions to Parse along with the 'search' event
     [PFAnalytics trackEvent:@"UserSession" dimensions:dimensions];
@@ -115,7 +114,7 @@
 -(void)endOfADKSession{
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.userSessionStartTime)/60;
     NSDictionary *dimensions = @{
-                                 @"totalTimeSpent":[NSNumber numberWithFloat:timeSpent_mins],
+                                 @"totalTimeSpent":[[NSNumber numberWithFloat:timeSpent_mins] stringValue],
                                  @"username" : [[PFUser currentUser]username],
                                  };
     // Send the dimensions to Parse along with the 'search' event
