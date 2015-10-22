@@ -63,6 +63,7 @@
 		A5AA31C81B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B71B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m */; };
 		A5AA31C91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31B91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m */; };
 		A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */; };
+		A5AB22CF1BD86A960084089B /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = A5AB22CD1BD86A960084089B /* Model.xcdatamodeld */; settings = {ASSET_TAGS = (); }; };
 		A5C09BD91BA1F1D700C0AD86 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BC61BA1F1D700C0AD86 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5C09BDA1BA1F1D700C0AD86 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BC91BA1F1D700C0AD86 /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		A5C09BDB1BA1F1D700C0AD86 /* ASIDataDecompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BCB1BA1F1D700C0AD86 /* ASIDataDecompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -344,6 +345,7 @@
 		A5AA31B91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVideo.m; path = API/GTLVerbatmAppVideo.m; sourceTree = "<group>"; };
 		A5AA31CA1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppPageListWrapper.h; path = API/GTLVerbatmAppPageListWrapper.h; sourceTree = "<group>"; };
 		A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppPageListWrapper.m; path = API/GTLVerbatmAppPageListWrapper.m; sourceTree = "<group>"; };
+		A5AB22CE1BD86A960084089B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		A5C09BC51BA1F1D700C0AD86 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
 		A5C09BC61BA1F1D700C0AD86 /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIAuthenticationDialog.m; sourceTree = "<group>"; };
 		A5C09BC71BA1F1D700C0AD86 /* ASICacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASICacheDelegate.h; sourceTree = "<group>"; };
@@ -990,6 +992,7 @@
 				A5AA319F1B9FCDDC00D8D20C /* GTLVerbatmApp.h */,
 				A5AA31A01B9FCDDC00D8D20C /* GTLVerbatmAppConstants.h */,
 				A5AA31A11B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m */,
+				A5AB22CD1BD86A960084089B /* Model.xcdatamodeld */,
 			);
 			name = "Model Logic (Talking to Backend)";
 			sourceTree = "<group>";
@@ -1578,6 +1581,7 @@
 				9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */,
 				A560EFB81BB0AF70003FB041 /* LoginView.m in Sources */,
 				A5C09BDE1BA1F1D700C0AD86 /* ASIHTTPRequest.m in Sources */,
+				A5AB22CF1BD86A960084089B /* Model.xcdatamodeld in Sources */,
 				A5AA31C91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m in Sources */,
 				A51A52F61BD6B8AB0048E62A /* MediaDownloader.m in Sources */,
 				A5AA31C81B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m in Sources */,
@@ -1845,7 +1849,7 @@
 					"\"${PODS_ROOT}/GoogleAnalytics/Libraries\"",
 					"\"${PODS_ROOT}/GoogleNetworkingUtilities/Libraries\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1879,7 +1883,7 @@
 					"\"${PODS_ROOT}/GoogleAnalytics/Libraries\"",
 					"\"${PODS_ROOT}/GoogleNetworkingUtilities/Libraries\"",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1973,6 +1977,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		A5AB22CD1BD86A960084089B /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				A5AB22CE1BD86A960084089B /* Model.xcdatamodel */,
+			);
+			currentVersion = A5AB22CE1BD86A960084089B /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = C7BC436A199D97F5004B91A1 /* Project object */;
 }

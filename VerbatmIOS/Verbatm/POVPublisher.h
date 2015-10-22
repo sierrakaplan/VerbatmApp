@@ -10,7 +10,8 @@
 
 @interface POVPublisher : NSObject
 
-#define PROGRESS_UNITS_FOR_FINAL_PUBLISH 2
+#define PROGRESS_UNITS_FOR_INITIAL_PROGRESS 5 // to show the user something is happening
+#define PROGRESS_UNITS_FOR_FINAL_PUBLISH 3
 #define PROGRESS_UNITS_FOR_PHOTO 3
 #define PROGRESS_UNITS_FOR_VIDEO 10
 

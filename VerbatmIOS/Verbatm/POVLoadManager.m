@@ -28,7 +28,6 @@
 @interface POVLoadManager()
 
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
-
 @property (nonatomic) POVType povType;
 
 // Array of PovInfo objects

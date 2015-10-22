@@ -193,13 +193,13 @@
 
 -(void)saveAllChanges{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:self.notificationArray[TRENDING_CIRCLE_INSTRUCTION_KEY_INDEX] forKey:TRENDING_CIRCLE_INSTRUCTION_KEY];
-    [defaults setBool:self.notificationArray[FILTER_INSTRUCTION_KEY_INDEX] forKey:FILTER_INSTRUCTION_KEY];
-    [defaults setBool:self.notificationArray[CIRCLE_IS_PAGE_INSTRUCTION_KEY_INDEX] forKey:CIRCLE_IS_PAGE_INSTRUCTION_KEY];
-    [defaults setBool:self.notificationArray[PINCH_INSTRUCTION_KEY_INDEX] forKey:PINCH_INSTRUCTION_KEY];
-    [defaults setBool:self.notificationArray[TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY_INDEX] forKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY];
-    [defaults setBool:self.notificationArray[SWIPE_TO_DELETE_INSTRUCTION_KEY_INDEX] forKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
-    [defaults setBool:self.notificationArray[ACCESS_KEY_INSTRUCTION_KEY_INDEX] forKey:ACCESS_KEY_INSTRUCTION_KEY];
+    [defaults setBool:(BOOL)self.notificationArray[TRENDING_CIRCLE_INSTRUCTION_KEY_INDEX] forKey:TRENDING_CIRCLE_INSTRUCTION_KEY];
+    [defaults setBool:(BOOL)self.notificationArray[FILTER_INSTRUCTION_KEY_INDEX] forKey:FILTER_INSTRUCTION_KEY];
+    [defaults setBool:(BOOL)self.notificationArray[CIRCLE_IS_PAGE_INSTRUCTION_KEY_INDEX] forKey:CIRCLE_IS_PAGE_INSTRUCTION_KEY];
+    [defaults setBool:(BOOL)self.notificationArray[PINCH_INSTRUCTION_KEY_INDEX] forKey:PINCH_INSTRUCTION_KEY];
+    [defaults setBool:(BOOL)self.notificationArray[TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY_INDEX] forKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY];
+    [defaults setBool:(BOOL)self.notificationArray[SWIPE_TO_DELETE_INSTRUCTION_KEY_INDEX] forKey:SWIPE_TO_DELETE_INSTRUCTION_KEY];
+    [defaults setBool:(BOOL)self.notificationArray[ACCESS_KEY_INSTRUCTION_KEY_INDEX] forKey:ACCESS_KEY_INSTRUCTION_KEY];
 }
 
 
