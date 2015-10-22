@@ -10,6 +10,7 @@
 #import "ContentDevVC.h"
 #import "Durations.h"
 #import "EditContentView.h"
+#import "Icons.h"
 #import "Notifications.h"
 #import "Styles.h"
 
@@ -38,7 +39,6 @@
 
 @property (nonatomic) CGRect userSetFrame;//keeps the frame the user set from panning so can revert after keyboard goes away
 
-#define TEXT_CREATION_ICON @"textCreateIcon"
 #define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
 #define TOUCH_BUFFER 20
 
@@ -50,7 +50,7 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if(self) {
-		self.backgroundColor = [UIColor blackColor];
+		self.backgroundColor = [UIColor AVE_BACKGROUND_COLOR];
 		[self registerForKeyboardNotifications];
 	}
 	return self;
@@ -74,7 +74,7 @@
 #pragma mark - Text View -
 
 -(void)createTextCreationButton {
-    [self.textCreationButton setImage:[UIImage imageNamed:TEXT_CREATION_ICON] forState:UIControlStateNormal];
+    [self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
     [self.textCreationButton addTarget:self action:@selector(textButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.textCreationButton];
     [self bringSubviewToFront:self.textCreationButton];

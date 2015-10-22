@@ -22,7 +22,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage*) image andText: (NSString*) text andTextYPosition: (CGFloat) textYPosition {
 	self = [super initWithFrame:frame];
 	if (self) {
-		[self setBackgroundColor:[UIColor whiteColor]];
+		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 		[self.imageView setImage: image];
         [self addSubview:self.imageView];
         //[self setImageViewWithImage:image];

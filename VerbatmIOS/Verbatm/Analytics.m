@@ -79,8 +79,11 @@
     if(![PFUser currentUser] || !self.currentArticleTitle) return;
     CGFloat timeSpent_mins = (CACurrentMediaTime() - self.pageViewStartTime)/60;
     
+    
+    NSString * testString = [[NSNumber numberWithFloat:timeSpent_mins] stringValue];
+    
     NSDictionary *dimensions = @{@"articleTitle": self.currentArticleTitle,
-                                 @"totalTimeSpentOnPage": [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
+                                 @"totalTimeSpentOnPage":testString,
                                  @"username" : [[UserManager sharedInstance] getCurrentUser].name,
                                  @"pageIndex" : [[NSNumber numberWithInteger:pageIndex] stringValue],
                                  @"aveType": aveType

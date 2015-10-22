@@ -46,8 +46,6 @@
 
 @property (nonatomic) BOOL subviewOfPhotoVideoAVE;
 
-
-#define TEXT_CREATION_ICON @"textCreateIcon"
 #define TEXT_VIEW_HEIGHT 70.f
 @end
 
@@ -109,7 +107,9 @@
 										  andImage: image
 										   andText: text
 								  andTextYPosition: textYPosition.floatValue];
-	[textAndImageView showText:YES];
+	if (text && text.length) {
+		[textAndImageView showText:YES];
+	}
 	return textAndImageView;
 }
 
@@ -173,7 +173,7 @@
 #pragma mark - Text View -
 
 -(void)createTextViewButton {
-    [self.textCreationButton setImage:[UIImage imageNamed:TEXT_CREATION_ICON] forState:UIControlStateNormal];
+    [self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
     [self.textCreationButton addTarget:self action:@selector(textViewButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.textCreationButton];
     [self bringSubviewToFront:self.textCreationButton];

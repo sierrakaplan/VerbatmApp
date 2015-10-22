@@ -228,7 +228,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 // set cursor color on all textfields and textviews
 -(void) setCursorColor {
-	[[UITextField appearance] setTintColor:[UIColor WHAT_IS_IT_LIKE_COLOR]];
+	[[UITextField appearance] setTintColor:[UIColor TITLE_TEXT_COLOR]];
 }
 
 //sets the textview placeholders' color and text
@@ -261,15 +261,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void) formatTitleFieldFromFrame: (CGRect) frame {
-	UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
+	UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: TITLE_TEXT_SIZE];
 	self.titleField = [[UITextField alloc] initWithFrame: frame];
 	self.titleField.textAlignment = NSTextAlignmentCenter;
-	self.titleField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: WHAT_IS_IT_LIKE_FIELD_TEXT_SIZE];
-    [self.titleField setTextColor:[UIColor TELL_YOUR_STORY_COLOR]];
-	self.titleField.tintColor = [UIColor TELL_YOUR_STORY_COLOR];
+	self.titleField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: TITLE_TEXT_SIZE];
+    [self.titleField setTextColor:[UIColor TITLE_TEXT_COLOR]];
+	self.titleField.tintColor = [UIColor TITLE_TEXT_COLOR];
 	self.titleField.attributedPlaceholder = [[NSAttributedString alloc]
 													initWithString: WHAT_IS_IT_LIKE_TEXT
-													attributes:@{NSForegroundColorAttributeName: [UIColor TELL_YOUR_STORY_COLOR],
+													attributes:@{NSForegroundColorAttributeName: [UIColor TITLE_TEXT_COLOR],
 																 NSFontAttributeName : titleFont}];
 	[self.titleField resignFirstResponder];
 	self.titleField.enabled = YES;
@@ -1828,7 +1828,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void)alertSwipeRightToDelete {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles right to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles left to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
     [[UserSetupParameters sharedInstance] set_swipeToDelete_InstructionAsShown];
 }

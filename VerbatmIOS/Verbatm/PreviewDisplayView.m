@@ -60,7 +60,7 @@
 		self.restingFrame = CGRectMake(self.frame.origin.x + self.frame.size.width, self.frame.origin.y,
 									   self.frame.size.width, self.frame.size.height);
 		self.frame = self.restingFrame;
-		[self setBackgroundColor:[UIColor blackColor]];
+		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 		[self addShadowToView];
 		[self setUpGestureRecognizers];
 	}

@@ -30,6 +30,7 @@
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
@@ -213,7 +214,7 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
 	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
 	[self.articleDisplayContainer setFrame:self.view.bounds];
-	[self.articleDisplayContainer setBackgroundColor:[UIColor whiteColor]];
+	[self.articleDisplayContainer setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 	self.articleDisplayContainer.alpha = 1;
 	[self.view bringSubviewToFront: self.articleDisplayContainer];
 	// Now tell selected cell in feed to be unpinched
