@@ -110,14 +110,13 @@
 						change:(NSDictionary *)change context:(void *)context {
 	if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
 		if (self.playerItem.status == AVPlayerStatusReadyToPlay) {
-			NSLog(@"Video ready to play");
+//			NSLog(@"Video ready to play");
 			if (self.videoLoading) {
 				self.videoLoading = NO;
 				[self.videoLoadingImageView removeFromSuperview];
 			}
 		} else if (self.playerItem.status == AVPlayerStatusFailed) {
-			NSLog(@"video couldn't play for some reason");
-			// something went wrong. player.error should contain some information
+			NSLog(@"video couldn't play: %@", self.player.error);
 			if (self.videoLoading) {
 				self.videoLoading = NO;
 				[self.videoLoadingImageView removeFromSuperview];

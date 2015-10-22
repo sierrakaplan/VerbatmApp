@@ -86,7 +86,7 @@
 		float progressAmount = ((float)[request totalBytesSent]/(float)[request postLength]);
 		NSInteger newProgressUnits = (NSInteger)(progressAmount*self.mediaUploadProgress.totalUnitCount);
 		if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
-			[self.mediaUploadProgress setCompletedUnitCount: newProgressUnits];
+			self.mediaUploadProgress.completedUnitCount = newProgressUnits;
 			NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 		}
 	}
