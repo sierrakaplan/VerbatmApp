@@ -96,7 +96,7 @@
 	[self formatSelf];
 	[self formatTextSubview];
     if(self.isPlaceholderWhilePublishing) {
-		[self startProgressBarWithProgressObject: self.publishingProgress];
+		[self startProgressBar];
 	}
 	[self formatCoverRectsWithStoryTextViewFrame: self.storyTextViewFrame];
 	[self formatSemiCircles];
@@ -308,14 +308,25 @@
 
 #pragma mark - Progress bar -
 
--(void) startProgressBarWithProgressObject: (NSProgress*) progressObject {
-	self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleDefault];
+-(void) startProgressBar {
+	self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
 	[self.progressBar setFrame: CGRectMake(FEED_TEXT_X_OFFSET + self.storyTextViewFrame.origin.x,
 											self.storyTextViewFrame.size.height - self.progressBar.frame.size.height,
 											self.storyTextViewFrame.size.width - FEED_TEXT_X_OFFSET*2,
 											self.progressBar.frame.size.height)];
-	[self.progressBar setObservedProgress: progressObject];
+	if ([self.progressBar respondsToSelector:@selector(setObservedProgress:)]) {
+		[self.progressBar setObservedProgress: self.publishingProgress];
+	} else {
+		[self.publishingProgress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:nil];
+	}
+
 	[self addSubview: self.progressBar];
+}
+
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+	if (object == self.publishingProgress && [keyPath isEqualToString:@"completedUnitCount"] ) {
+		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
+	}
 }
 
 #pragma mark - Selected & Deselected -
