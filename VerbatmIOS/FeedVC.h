@@ -10,10 +10,15 @@
 
 
 @protocol FeedVCDelegate <NSObject>
+
+// passing nav bar events up the chain
 -(void) profileButtonPressed;
 -(void) adkButtonPressed;
+-(void) homeButtonPressed;
+
 -(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager;
 -(void) refreshingFeedsFailed;
+
 @end
 
 @interface FeedVC : UIViewController

@@ -111,7 +111,7 @@
 		A5E85FB01B911DA900E148D0 /* GTMOAuth2ViewTouch.xib in Resources */ = {isa = PBXBuildFile; fileRef = A5E85F971B911DA900E148D0 /* GTMOAuth2ViewTouch.xib */; };
 		A5E860011B96249900E148D0 /* POVPublisher.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860001B96249900E148D0 /* POVPublisher.m */; };
 		A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */; };
-		A5E8600B1B99EF9B00E148D0 /* HomeNavPullBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E8600A1B99EF9B00E148D0 /* HomeNavPullBar.m */; };
+		A5E8600B1B99EF9B00E148D0 /* HomeNavBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5E8600A1B99EF9B00E148D0 /* HomeNavBar.m */; };
 		A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */; };
 		A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D171BCB0B9700634A96 /* GMAlbumsViewController.m */; };
 		A5FB5D301BCB0B9700634A96 /* GMGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = A5FB5D1B1BCB0B9700634A96 /* GMGridViewCell.m */; };
@@ -439,8 +439,8 @@
 		A5E860001B96249900E148D0 /* POVPublisher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POVPublisher.m; sourceTree = "<group>"; };
 		A5E860051B97CC3C00E148D0 /* PreviewDisplayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PreviewDisplayView.h; sourceTree = "<group>"; };
 		A5E860061B97CC3C00E148D0 /* PreviewDisplayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PreviewDisplayView.m; sourceTree = "<group>"; };
-		A5E860091B99EF9B00E148D0 /* HomeNavPullBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeNavPullBar.h; sourceTree = "<group>"; };
-		A5E8600A1B99EF9B00E148D0 /* HomeNavPullBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeNavPullBar.m; sourceTree = "<group>"; };
+		A5E860091B99EF9B00E148D0 /* HomeNavBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeNavBar.h; sourceTree = "<group>"; };
+		A5E8600A1B99EF9B00E148D0 /* HomeNavBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeNavBar.m; sourceTree = "<group>"; };
 		A5FB5D141BCB0B9700634A96 /* GMAlbumsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewCell.h; sourceTree = "<group>"; };
 		A5FB5D151BCB0B9700634A96 /* GMAlbumsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GMAlbumsViewCell.m; sourceTree = "<group>"; };
 		A5FB5D161BCB0B9700634A96 /* GMAlbumsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GMAlbumsViewController.h; sourceTree = "<group>"; };
@@ -728,8 +728,8 @@
 				A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */,
 				C7E65F5D1B911BA90042AD99 /* SwitchCategoryPullView.h */,
 				C7E65F5E1B911BA90042AD99 /* SwitchCategoryPullView.m */,
-				A5E860091B99EF9B00E148D0 /* HomeNavPullBar.h */,
-				A5E8600A1B99EF9B00E148D0 /* HomeNavPullBar.m */,
+				A5E860091B99EF9B00E148D0 /* HomeNavBar.h */,
+				A5E8600A1B99EF9B00E148D0 /* HomeNavBar.m */,
 			);
 			name = PullBars/ToolBars;
 			sourceTree = "<group>";
@@ -1607,7 +1607,7 @@
 				F20A24FA1A46166100BB77C1 /* EditContentView.m in Sources */,
 				A5C09BD91BA1F1D700C0AD86 /* ASIAuthenticationDialog.m in Sources */,
 				A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */,
-				A5E8600B1B99EF9B00E148D0 /* HomeNavPullBar.m in Sources */,
+				A5E8600B1B99EF9B00E148D0 /* HomeNavBar.m in Sources */,
 				A5E860071B97CC3C00E148D0 /* PreviewDisplayView.m in Sources */,
 				A535E5001BC4459800A087D1 /* UIView+Effects.m in Sources */,
 				A58656711B621CA4008E358C /* MathOperations.m in Sources */,

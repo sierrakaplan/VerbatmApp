@@ -109,7 +109,7 @@
 #pragma mark - Preparing View
 
 - (void)viewDidLoad{
-    self.view.backgroundColor = [UIColor redColor];
+    self.view.backgroundColor = [UIColor blackColor];
     [super viewDidLoad];
 	[self setDefaultFrames];
 	[self prepareCameraView];

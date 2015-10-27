@@ -484,8 +484,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		}
 	}
 
-	[pageElementScrollView cleanUp];
 	[self.pageElementScrollViews removeObject:pageElementScrollView];
+	[pageElementScrollView cleanUp];
 	[pageElementScrollView removeFromSuperview];
 	[self shiftElementsBelowView: self.coverPicView];
 
@@ -1046,8 +1046,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #pragma mark Pinch Apart Failed
 //Removes the new view being made and resets page
 -(void) clearMediaTile:(MediaSelectTile*)mediaTile {
-	[mediaTile.superview removeFromSuperview];
 	[self.pageElementScrollViews removeObject:mediaTile.superview];
+	[mediaTile.superview removeFromSuperview];
 	[self shiftElementsBelowView: self.coverPicView];
 }
 

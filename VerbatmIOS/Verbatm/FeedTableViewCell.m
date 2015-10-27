@@ -250,11 +250,6 @@
 			self.numLikesLabel.text = @"";
 			break;
 		}
-//		case 1: {
-//			[self.likeIconView setHidden:NO];
-//			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld", numLikes.longLongValue];
-//			break;
-//		}
 		default: {
 			[self.likeIconView setHidden:NO];
 			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld", numLikes.longLongValue];
@@ -294,14 +289,9 @@
 			self.numLikesLabel.text = @"";
 			break;
 		}
-		case 1: {
-			[self.likeIconView setHidden:NO];
-			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld like", newNumLikes];
-			break;
-		}
 		default: {
 			[self.likeIconView setHidden:NO];
-			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", newNumLikes];
+			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld", newNumLikes];
 		}
 	}
 }

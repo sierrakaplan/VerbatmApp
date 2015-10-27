@@ -9,7 +9,7 @@
 #import "ArticleDisplayVC.h"
 #import "ArticleListVC.h"
 #import "FeedTableViewCell.h"
-#import "HomeNavPullBar.h"
+#import "HomeNavBar.h"
 #import "Icons.h"
 #import "FeedVC.h"
 #import "POVLoadManager.h"
@@ -19,10 +19,10 @@
 #import "TopicsFeedVC.h"
 #import "Durations.h"
 
-@interface FeedVC ()<SwitchCategoryDelegate, HomeNavPullBarDelegate, ArticleListVCDelegate>
+@interface FeedVC ()<SwitchCategoryDelegate, HomeNavBarDelegate, ArticleListVCDelegate>
 
 @property (strong, nonatomic) SwitchCategoryPullView *categorySwitch;
-@property (strong, nonatomic) HomeNavPullBar* navPullBar;
+@property (strong, nonatomic) HomeNavBar* navPullBar;
 // Keeps track of which cell is selected when an article is being viewed
 @property (strong, nonatomic) FeedTableViewCell* selectedCell;
 
@@ -97,7 +97,7 @@
 	CGRect navPullBarFrame = CGRectMake(self.view.frame.origin.x,
 										self.view.frame.size.height - NAV_BAR_HEIGHT,
 										self.view.frame.size.width, NAV_BAR_HEIGHT);
-	self.navPullBar = [[HomeNavPullBar alloc] initWithFrame:navPullBarFrame];
+	self.navPullBar = [[HomeNavBar alloc] initWithFrame:navPullBarFrame];
 	self.navPullBar.delegate = self;
 	[self.view addSubview: self.navPullBar];
 }
@@ -118,6 +118,10 @@
 
 -(void) adkButtonPressed {
 	[self.delegate adkButtonPressed];
+}
+
+-(void) homeButtonPressed {
+	[self.delegate homeButtonPressed];
 }
 
 

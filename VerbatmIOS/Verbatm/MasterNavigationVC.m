@@ -42,33 +42,42 @@
 #import "VerbatmCameraView.h"
 
 
-@interface MasterNavigationVC () <FeedVCDelegate, MediaDevDelegate, PreviewDisplayDelegate, ArticleDisplayVCDelegate, UserManagerDelegate,
-UIGestureRecognizerDelegate, UIScrollViewDelegate>
+/*
 
-@property (weak, nonatomic) IBOutlet UIScrollView * masterSV;
-@property (weak, nonatomic) IBOutlet UIButton *accessCodePresenter_Button;
+ New navigation: Feed, profile, and adk should be in a UITabBarController. Implement delegate to perform segue when they
+ are selected. Set each view controller's tabbaritem (with title + image + selected image)
+ 
+ Segue to login if profile or adk are selected and they aren't signed in
+ 
+ Article display should segue from the feed vc 
+ 
+ ADk should use a custom bar for the pull bar but a navigation bar on top
+ 
+ Preview should use a navigation bar
+ 
+ Profile will have a custom bar
+ 
+ 
+ */
 
-#pragma mark - Child View Controllers -
-@property (weak, nonatomic) IBOutlet UIView * profileContainer;
-@property (weak, nonatomic) IBOutlet UIView * adkContainer;
-@property (weak, nonatomic) IBOutlet UIView * feedContainer;
+
+@interface MasterNavigationVC () <UITabBarControllerDelegate>
+
+#pragma mark - Tab Bar Controller -
+@property (weak, nonatomic) IBOutlet UIView *TabBarControllerContainerView;
+@property (strong, nonatomic) UITabBarController* tabBarController;
+
+#pragma mark View Controllers in tab bar Controller
 
 @property (strong,nonatomic) ProfileVC* profileVC;
 @property (strong,nonatomic) FeedVC* feedVC;
 @property (strong,nonatomic) MediaDevVC* mediaDevVC;
 
-@property (strong, nonatomic) ArticleDisplayVC* articleDisplayVC;
-
-// VC that displays articles in scroll view when clicked
-@property (weak, nonatomic) IBOutlet UIView *articleDisplayContainer;
-// article display list slides in from right and can be pulled off when a screen edge pan
-@property (nonatomic) CGRect articleDisplayContainerFrameOffScreen;
-
+#pragma mark - User Manager -
 @property (strong, nonatomic) UserManager* userManager;
 
-
 #pragma mark - Preview -
-@property (nonatomic) PreviewDisplayView* previewDisplayView;
+
 
 @property (nonatomic, strong) NSMutableArray * pagesToDisplay;
 @property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
@@ -76,21 +85,17 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 @property (strong, nonatomic) internetConnectionMonitor * connectionMonitor;
 
-#define MAIN_SCROLLVIEW_SCROLL_DURATION 0.5
-#define NUMBER_OF_CHILD_VCS 3
-#define LEFT_FRAME CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height)
-#define CENTER_FRAME CGRectMake(self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
-#define RIGHT_FRAME CGRectMake(self.view.frame.size.width * 2, 0, self.view.frame.size.width, self.view.frame.size.height)
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
 #define ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION 0.4f
 //the amount of space that must be pulled to exit
 #define EXIT_EPSILON 60
 
-#define ID_FOR_FEEDVC @"feed_vc"
-#define ID_FOR_MEDIADEVVC @"media_dev_vc"
-#define ID_FOR_PROFILEVC @"profile_vc"
-#define ID_FOR_DISPLAY_VC @"article_display_vc"
+#define TAB_BAR_CONTROLLER_ID @"main_tab_bar_controller"
+#define FEED_VC_ID @"feed_vc"
+#define MEDIA_DEV_VC_ID @"media_dev_vc"
+#define PROFILE_VC_ID @"profile_vc"
+#define ARTICLE_DISPLAY_VC_ID @"article_display_vc"
 
 @end
 
@@ -98,15 +103,12 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	[self formatMainScrollView];
-	[self getAndFormatVCs];
+	[self formatTabBarVC];
 	self.connectionMonitor = [[internetConnectionMonitor alloc] init];
 	[self registerForNotifications];
 	if (![PFUser currentUser].isAuthenticated &&
 		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-        self.masterSV.scrollEnabled = NO;
-
-    	} else {
+	} else {
 		[self.userManager queryForCurrentUser];
 	}
 }
@@ -141,7 +143,11 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 	NSLog(@"Error finding current user: %@", error.description);
 }
 
-#pragma mark - Getting and formatting child view controllers -
+#pragma mark - Tab bar controller -
+
+-(void) formatTabBarVC {
+	self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: ID_FOR_TAB_BAR_CONTROLLER];
+}
 
 //lays out all the containers in the right position and also sets the appropriate
 //offset for the master SV
@@ -150,6 +156,8 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 	self.feedContainer.frame = CENTER_FRAME;
 	self.adkContainer.frame = RIGHT_FRAME;
 	self.articleDisplayContainer.frame = self.view.bounds;
+
+	UITabBarController* tabController = [self.storyboard ]
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
 	[self.feedContainer addSubview: self.feedVC.view];
@@ -175,15 +183,6 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
     
 	[self addScreenPanToArticleDisplay];
-}
-
--(void) formatMainScrollView {
-	self.masterSV.frame = self.view.bounds;
-	self.masterSV.contentSize = CGSizeMake(self.view.frame.size.width* 3, 0);
-	self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
-	self.masterSV.pagingEnabled = YES;
-	self.masterSV.scrollEnabled = YES;
-    self.masterSV.delegate = self;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
@@ -241,6 +240,10 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 	} else {
 		[self showADK];
 	}
+}
+
+-(void) homeButtonPressed {
+	[self showFeed];
 }
 
 // Scrolls the main scroll view over to reveal the ADK
@@ -392,11 +395,6 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 	[self showFeed];
 }
 
--(void) previewPOVFromPinchViews:(NSArray *)pinchViews andCoverPic:(UIImage *)coverPic andTitle: (NSString*) title{
-	[self.view bringSubviewToFront:self.previewDisplayView];
-	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
-}
-
 //for ios8- To hide the status bar
 -(BOOL)prefersStatusBarHidden {
 	return YES;
@@ -423,8 +421,6 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 	// TODO: have variable set and go to profile or adk
 	[self.profileVC updateUserInfo];
 }
-
-
 
 #pragma mark -Analytics -
 -(void)logAnalysis{

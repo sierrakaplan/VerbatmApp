@@ -8,15 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol HomeNavPullBarDelegate <NSObject>
+@protocol HomeNavBarDelegate <NSObject>
 
 -(void) profileButtonPressed;
 -(void) adkButtonPressed;
+-(void) homeButtonPressed;
 
 @end
 
-@interface HomeNavPullBar : UIView
+@interface HomeNavBar : UIView
 
-@property (strong, nonatomic) id<HomeNavPullBarDelegate> delegate;
+@property (strong, nonatomic) id<HomeNavBarDelegate> delegate;
 
 @end
