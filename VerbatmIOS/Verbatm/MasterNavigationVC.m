@@ -64,7 +64,7 @@
 @interface MasterNavigationVC () <UITabBarControllerDelegate>
 
 #pragma mark - Tab Bar Controller -
-@property (weak, nonatomic) IBOutlet UIView *TabBarControllerContainerView;
+@property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) UITabBarController* tabBarController;
 
 #pragma mark View Controllers in tab bar Controller
@@ -146,34 +146,26 @@
 #pragma mark - Tab bar controller -
 
 -(void) formatTabBarVC {
-	self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: ID_FOR_TAB_BAR_CONTROLLER];
+	self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
+	[self.tabBarControllerContainerView addSubview:self.tabBarController.view];
+	[self addChildViewController:self.tabBarController];
+	self.tabBarController.delegate = self;
+
+	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
+	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:PROFILE_NAV_ICON] selectedImage:nil];
+	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:MEDIA_DEV_VC_ID];
+	self.mediaDevVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:ADK_NAV_ICON] selectedImage:nil];
+	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
+	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Profile" image:[UIImage imageNamed:HOME_NAV_ICON] selectedImage:nil];
+
+	self.tabBarController.viewControllers = @[self.profileVC, self.mediaDevVC, self.feedVC];
+
 }
 
 //lays out all the containers in the right position and also sets the appropriate
 //offset for the master SV
 -(void) getAndFormatVCs {
-	self.profileContainer.frame = LEFT_FRAME;
-	self.feedContainer.frame = CENTER_FRAME;
-	self.adkContainer.frame = RIGHT_FRAME;
-	self.articleDisplayContainer.frame = self.view.bounds;
 
-	UITabBarController* tabController = [self.storyboard ]
-
-	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
-	[self.feedContainer addSubview: self.feedVC.view];
-	[self addChildViewController:self.feedVC];
-	self.feedVC.delegate = self;
-
-	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
-	[self.adkContainer addSubview: self.mediaDevVC.view];
-	[self addChildViewController:self.mediaDevVC];
-	self.mediaDevVC.delegate = self;
-
-	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_PROFILEVC];
-	[self.profileContainer addSubview: self.profileVC.view];
-	[self addChildViewController:self.profileVC];
-    
-    self.profileContainer.clipsToBounds = YES;
     
 	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
 	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
@@ -190,9 +182,8 @@
         [scrollView setContentOffset:CGPointMake(self.view.frame.size.width, 0) animated:NO];
     }
     
-    //apply some analytics
+    /*TODO: apply some analytics
     if(scrollView == self.masterSV){
-        
         if(self.feedContainer.frame.origin.x == scrollView.contentOffset.x){
             //in the feed
             [[Analytics getSharedInstance] endOfADKSession];
@@ -200,9 +191,7 @@
             //in the adk
             [[Analytics getSharedInstance] newADKSession];
         }
-        
-        
-    }
+    }*/
 }
 
 

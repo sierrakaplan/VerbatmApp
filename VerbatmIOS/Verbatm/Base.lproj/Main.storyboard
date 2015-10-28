@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -47,7 +46,7 @@
                         </connections>
                     </view>
                     <connections>
-                        <outlet property="TabBarControllerContainerView" destination="JF8-rw-Rfn" id="dFp-bX-Lgt"/>
+                        <outlet property="tabBarControllerContainerView" destination="JF8-rw-Rfn" id="dFp-bX-Lgt"/>
                         <segue destination="VBm-cB-Fwg" kind="modal" identifier="segue_id_create_account" id="vqA-Ve-rLQ"/>
                         <segue destination="waF-h7-lpu" kind="modal" identifier="segue_id_sign_in" id="O0U-1G-Oy1"/>
                     </connections>

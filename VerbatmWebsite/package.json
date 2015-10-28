@@ -1,0 +1,26 @@
+{
+  "name": "Verbatm",
+  "version": "0.1.1",
+  "description": "Verbatm app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "~4.9.x",
+    "email-templates": "^2.0.0-beta.1"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.4.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sierrakn/verbatm"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express"
+  ]
+}
