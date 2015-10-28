@@ -343,11 +343,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 #pragma mark - Nav Bar Delegate Methods -
-
--(void) backButtonPressed {
-	[self.delegate backButtonPressed];
-}
-
+//TODO: make navigation bar
 -(void) previewButtonPressed {
 	[self closeAllOpenCollections];
 	[self.delegate previewButtonPressed];

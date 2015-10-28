@@ -345,17 +345,10 @@
 #pragma mark - Network Connection -
 -(void)networkConnectionUpdate: (NSNotification *) notification{
     NSDictionary * userInfo = [notification userInfo];
-    BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
+	BOOL thereIsConnection = [(NSNumber*)[userInfo objectForKey:INTERNET_CONNECTION_KEY] boolValue];
 	if (thereIsConnection) {
 		[self refreshFeedForFirstTime];
 	}
-}
-
--(BOOL)isThereConnectionFromString:(NSString *) key{
-    if([key isEqualToString:@"YES"]){
-        return YES;
-    }
-    return NO;
 }
 
 #pragma mark - Miscellaneous -

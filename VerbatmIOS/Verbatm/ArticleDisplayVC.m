@@ -63,7 +63,7 @@
 
 
 // When user clicks story, loads one behind it and the two ahead
--(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
+-(void) loadStoryAtIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
 	self.povLoadManager = loadManager;
 	PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
 	NSNumber* povID = povInfo.identifier;

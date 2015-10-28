@@ -35,7 +35,7 @@
 
 	self = [super initWithFrame:frame];
 	if(self) {
-		[self setBackgroundColor: [UIColor NAV_BAR_COLOR]];
+		[self setBackgroundColor: [UIColor clearColor]];
         [self createButtons];
 		[self switchToPullDown];
 	}

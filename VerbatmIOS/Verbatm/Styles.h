@@ -17,8 +17,9 @@
 
 #define SWITCH_LABEL_FONT @"Futura-Medium"
 
-#define NAV_BAR_COLOR whiteColor
-#define PREVIEW_PUBLISH_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
+#define TAB_BAR_COLOR whiteColor
+#define SELECTED_TAB_BAR_COLOR grayColor
+#define ADK_TAB_COLOR blackColor
 
 #define FILTER_LEVEL_BLUR 30
 #define BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f

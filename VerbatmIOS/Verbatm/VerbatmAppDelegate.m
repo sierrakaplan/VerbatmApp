@@ -23,17 +23,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-	// [Optional] Power your app with Local Datastore. For more info, go to
-	// https://parse.com/docs/ios_guide#localdatastore/iOS
-	[Parse enableLocalDatastore];
-	// Initialize Parse.
-	[Parse setApplicationId:@"rzSvJWHhiN8KUnhDVXTlapJkJ4eCe3xAlmEscSK3"
-				  clientKey:@"qmXzBTKKMNqm5A3eogopkL2ZY6SeKGcWah0zP9kk"];
-    
-	// [Optional] Track statistics around application opens.
-	[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
-
-	[PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
+	[self setUpParseWithLaunchOptions: launchOptions];
 
 	PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
 		return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
@@ -44,8 +34,28 @@
 	[[UserPovInProgress sharedInstance] loadPOVFromUserDefaults];
     
     [[Analytics getSharedInstance] newUserSession];
-    
+
     return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+}
+
+-(void) setUpParseWithLaunchOptions: (NSDictionary*)launchOptions {
+	// [Optional] Power your app with Local Datastore. For more info, go to
+	// https://parse.com/docs/ios_guide#localdatastore/iOS
+	[Parse enableLocalDatastore];
+	// Initialize Parse.
+	[Parse setApplicationId:@"rzSvJWHhiN8KUnhDVXTlapJkJ4eCe3xAlmEscSK3"
+				  clientKey:@"qmXzBTKKMNqm5A3eogopkL2ZY6SeKGcWah0zP9kk"];
+
+	// [Optional] Track statistics around application opens.
+	[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+
+	[PFFacebookUtils initializeFacebookWithApplicationLaunchOptions:launchOptions];
+}
+
+// NOT IN USE
+-(void) customizeTabBarAppearance {
+	UIImage *whiteBackground = [UIImage imageNamed:@"blackBackground"];
+	[[UITabBar appearance] setSelectionIndicatorImage:whiteBackground];
 }
 
 //logs that the app was just opened

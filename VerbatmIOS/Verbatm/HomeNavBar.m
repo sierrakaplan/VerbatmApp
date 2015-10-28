@@ -35,7 +35,7 @@
 
 -(void) formatSelf {
 //	[UIEffects createLessBlurViewOnView:self withStyle:UIBlurEffectStyleLight];
-	[self setBackgroundColor:[UIColor NAV_BAR_COLOR]];
+	[self setBackgroundColor:[UIColor whiteColor]];
 }
 
 //position the nav views in appropriate places and set frames

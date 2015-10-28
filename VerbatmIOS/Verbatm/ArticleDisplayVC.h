@@ -25,7 +25,7 @@
 //Tells the VC to display story at that index from that load manager
 //And gives it a reference to the load manager so that it can load previous
 // and following stories
--(void) loadStory: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager;
+-(void) loadStoryAtIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager;
 
 //Removes any content loaded (reverses loadStory)
 -(void) cleanUp;

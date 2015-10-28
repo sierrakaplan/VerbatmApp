@@ -11,12 +11,14 @@
 #import "ArticleDisplayVC.h"
 #import "Analytics.h"
 
+#import "CustomTabBarItem.h"
+
 #import "FeedVC.h"
 
 #import "GTLVerbatmAppVerbatmUser.h"
 
 #import "Icons.h"
-#import "internetConnectionMonitor.h"
+#import "InternetConnectionMonitor.h"
 
 #import "MasterNavigationVC.h"
 #import "MediaSessionManager.h"
@@ -35,6 +37,7 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 
+#import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserSetupParameters.h"
 #import "UserManager.h"
 #import "UserPovInProgress.h"
@@ -61,7 +64,7 @@
  */
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, UserManagerDelegate, MediaDevVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -76,26 +79,15 @@
 #pragma mark - User Manager -
 @property (strong, nonatomic) UserManager* userManager;
 
-#pragma mark - Preview -
-
-
-@property (nonatomic, strong) NSMutableArray * pagesToDisplay;
-@property (nonatomic, strong) NSMutableArray * pinchViewsToDisplay;
-@property (nonatomic) CGPoint previousGesturePoint;
-
-@property (strong, nonatomic) internetConnectionMonitor * connectionMonitor;
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
-#define ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION 0.4f
-//the amount of space that must be pulled to exit
-#define EXIT_EPSILON 60
 
 #define TAB_BAR_CONTROLLER_ID @"main_tab_bar_controller"
 #define FEED_VC_ID @"feed_vc"
 #define MEDIA_DEV_VC_ID @"media_dev_vc"
 #define PROFILE_VC_ID @"profile_vc"
-#define ARTICLE_DISPLAY_VC_ID @"article_display_vc"
+
 
 @end
 
@@ -104,8 +96,6 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self formatTabBarVC];
-	self.connectionMonitor = [[internetConnectionMonitor alloc] init];
-	[self registerForNotifications];
 	if (![PFUser currentUser].isAuthenticated &&
 		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
 	} else {
@@ -125,14 +115,6 @@
 	[super viewDidDisappear:animated];
 }
 
--(void)registerForNotifications{
-	//gets notified if there is no internet connection
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(networkConnectionUpdate:)
-												 name:INTERNET_CONNECTION_NOTIFICATION
-											   object:nil];
-}
-
 #pragma mark - User Manager Delegate -
 
 -(void) successfullyLoggedInUser:(GTLVerbatmAppVerbatmUser *)user {
@@ -146,43 +128,59 @@
 #pragma mark - Tab bar controller -
 
 -(void) formatTabBarVC {
+	self.tabBarControllerContainerView.frame = self.view.bounds;
 	self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
 	[self.tabBarControllerContainerView addSubview:self.tabBarController.view];
 	[self addChildViewController:self.tabBarController];
 	self.tabBarController.delegate = self;
 
+	//TODO: remake icons
+	CGSize iconSize = CGSizeMake(30, 30);
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
-	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:PROFILE_NAV_ICON] selectedImage:nil];
+	self.profileVC.tabBarItem = [[CustomTabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:PROFILE_NAV_ICON] scaleImageToSize:iconSize] tag:0];
+
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:MEDIA_DEV_VC_ID];
-	self.mediaDevVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:ADK_NAV_ICON] selectedImage:nil];
+	self.mediaDevVC.delegate = self;
+
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
-	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Profile" image:[UIImage imageNamed:HOME_NAV_ICON] selectedImage:nil];
+	self.feedVC.tabBarItem = [[CustomTabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
 
-	self.tabBarController.viewControllers = @[self.profileVC, self.mediaDevVC, self.feedVC];
-
+	self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC];
+	self.tabBarController.selectedViewController = self.feedVC;
+	UIImage* adkImage = [[UIImage imageNamed:ADK_NAV_ICON] scaleImageToSize:iconSize];
+	[self addTabBarCenterButtonWithImage:adkImage highlightImage:adkImage];
 }
 
-//lays out all the containers in the right position and also sets the appropriate
-//offset for the master SV
--(void) getAndFormatVCs {
+// Create a custom UIButton and add it to the center of our tab bar
+-(void) addTabBarCenterButtonWithImage:(UIImage*)buttonImage highlightImage:(UIImage*)highlightImage {
 
-    
-	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_DISPLAY_VC];
-	[self.articleDisplayContainer addSubview: self.articleDisplayVC.view];
-	[self addChildViewController:self.articleDisplayVC];
-	self.articleDisplayVC.delegate = self;
-	self.articleDisplayContainer.alpha = 0;
-	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
-    
-	[self addScreenPanToArticleDisplay];
+	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
+	button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
+	button.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
+	[button setBackgroundImage:buttonImage forState:UIControlStateNormal];
+	[button setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
+	[button addTarget:self action:@selector(revealADK) forControlEvents:UIControlEventTouchUpInside];
+
+	CGFloat heightDifference = buttonImage.size.height - self.tabBarController.tabBar.frame.size.height;
+	if (heightDifference < 0)
+		button.center = self.tabBarController.tabBar.center;
+	else {
+		CGPoint center = self.tabBarController.tabBar.center;
+		center.y = center.y - heightDifference/2.0;
+		button.center = center;
+	}
+
+	[self.tabBarController.view addSubview:button];
 }
 
+-(void) revealADK {
+	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
+}
+
+/*TODO: apply some analytics
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    if(scrollView.contentOffset.x < self.view.frame.size.width){
-        [scrollView setContentOffset:CGPointMake(self.view.frame.size.width, 0) animated:NO];
-    }
     
-    /*TODO: apply some analytics
+
     if(scrollView == self.masterSV){
         if(self.feedContainer.frame.origin.x == scrollView.contentOffset.x){
             //in the feed
@@ -191,212 +189,10 @@
             //in the adk
             [[Analytics getSharedInstance] newADKSession];
         }
-    }*/
-}
-
-
-#pragma mark - Feed VC Delegate -
-
-#pragma mark Article Display
-
--(void) displayPOVWithIndex:(NSInteger)index fromLoadManager:(POVLoadManager *)loadManager {
-	[self.articleDisplayVC loadStory:index fromLoadManager:loadManager];
-	[self.articleDisplayContainer setFrame:self.view.bounds];
-	[self.articleDisplayContainer setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-	self.articleDisplayContainer.alpha = 1;
-	[self.view bringSubviewToFront: self.articleDisplayContainer];
-	// Now tell selected cell in feed to be unpinched
-	[self.feedVC deSelectCell];
-}
-
-#pragma mark Nav Buttons
-
-//nav button is pressed - so we move the SV left to the profile
--(void) profileButtonPressed {
-	if (![PFUser currentUser].isAuthenticated &&
-		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-		[self bringUpLogin];
-	} else {
-		[self showProfile];
-	}
-}
-
-//nav button is pressed so we move the SV right to the ADK
--(void) adkButtonPressed {
-	if (![PFUser currentUser].isAuthenticated &&
-		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-		[self bringUpLogin];
-	} else {
-		[self showADK];
-	}
-}
-
--(void) homeButtonPressed {
-	[self showFeed];
-}
-
-// Scrolls the main scroll view over to reveal the ADK
--(void) showADK {
-	[UIView animateWithDuration: MAIN_SCROLLVIEW_SCROLL_DURATION animations:^{
-		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width * 2, 0);
-	}];
-}
-
--(void) showProfile {
-	[UIView animateWithDuration: MAIN_SCROLLVIEW_SCROLL_DURATION animations:^{
-		self.masterSV.contentOffset = CGPointMake(0, 0);
-	}];
-}
-
-// Scrolls the main scroll view over to reveal the feed
--(void) showFeed {
-	[UIView animateWithDuration: MAIN_SCROLLVIEW_SCROLL_DURATION animations:^{
-		self.masterSV.contentOffset = CGPointMake(self.view.frame.size.width, 0);
-	}completion:^(BOOL finished) {
-		if(finished) {
-		}
-	}];
-}
-
-#pragma mark - Left screen pull for exiting article display vc -
-
--(void) addScreenPanToArticleDisplay {
-	UIPanGestureRecognizer* leftEdgePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
-	leftEdgePanGesture.delegate = self;
-	leftEdgePanGesture.minimumNumberOfTouches = 1;
-	leftEdgePanGesture.maximumNumberOfTouches = 1;
-	[self.articleDisplayContainer addGestureRecognizer: leftEdgePanGesture];
-}
-
-
-//called from left edge pan
-- (void) exitArticleDisplayView:(UIPanGestureRecognizer *)sender {
-	switch (sender.state) {
-		case UIGestureRecognizerStateBegan: {
-			if (sender.numberOfTouches < 1) return;
-            CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
-            
-            if((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100)  < touchLocation.y) {
-                //this ends the gesture
-                sender.enabled = NO;
-                sender.enabled =YES;
-				return;
-			}
-			self.previousGesturePoint  = touchLocation;
-			break;
-		}
-		case UIGestureRecognizerStateChanged: {
-			if (sender.numberOfTouches < 1) return;
-			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
-			CGPoint currentPoint = touchLocation;
-			int diff = currentPoint.x - self.previousGesturePoint.x;
-            
-            if((diff < 0) && ((self.articleDisplayContainer.frame.origin.x + diff) < 0)) //swiping left which is wrong so we end the gesture
-            {
-                //this ends the gesture
-                sender.enabled = NO;
-                sender.enabled =YES;
-                break;
-            }else {
-                
-                self.previousGesturePoint = currentPoint;
-                self.articleDisplayContainer.frame = CGRectOffset(self.articleDisplayContainer.frame, diff, 0);
-                break;
-            }
-		}
-        case UIGestureRecognizerStateCancelled:{
-            //should just fall into the next call
-        }case UIGestureRecognizerStateEnded: {
-			if(self.articleDisplayContainer.frame.origin.x > EXIT_EPSILON) {
-				//exit article
-				[self revealArticleDisplay:NO];
-			}else{
-				//return view to original position
-				[self revealArticleDisplay:YES];
-			}
-			break;
-		}
-		default:
-			break;
-	}
-}
-
-// if show, return container view to its viewing position
-// else remove it
--(void) revealArticleDisplay: (BOOL) show {
-	if(show)  {
-		[UIView animateWithDuration:ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION animations:^{
-			self.articleDisplayContainer.frame = self.view.bounds;
-		} completion:^(BOOL finished) {
-		}];
-	}else {
-		[UIView animateWithDuration:ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION animations:^{
-			self.articleDisplayContainer.frame = self.articleDisplayContainerFrameOffScreen;
-		}completion:^(BOOL finished) {
-			if(finished) {
-				[self.articleDisplayVC cleanUp];
-				[self.articleDisplayContainer setAlpha:0];
-			}
-		}];
-	}
-}
-
-#pragma mark - PreviewDisplay delegate Methods (publish button pressed)
-
--(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
-	
-	if (![title length]) {
-		[self.mediaDevVC alertAddTitle];
-	} else if (!coverPhoto) {
-		[self.mediaDevVC alertAddCoverPhoto];
-	} else {
-
-		if(![pinchViews count]) {
-//			NSLog(@"Can't publish with no pinch objects");
-			return;
-		}
-
-		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: coverPhoto];
-		[publisher publish];
-
-		NSString* userName = [self.userManager getCurrentUser].name;
-        
-		[self.feedVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPhoto andProgressObject: publisher.publishingProgress];
-		[self showFeed];
-
-		[self.mediaDevVC povPublished];
-	}
-}
-
-#pragma mark - Media dev delegate methods -
-
--(void)adkViewChange:(BOOL)inCameraMode {
-    if(inCameraMode){
-        //turn off navigation scrollview
-        self.masterSV.scrollEnabled = NO;
-    }else{
-        //turn on naviagtion scrollview
-        self.masterSV.scrollEnabled = YES;
     }
-}
-
--(void) backButtonPressed {
-	[self showFeed];
-}
-
-//for ios8- To hide the status bar
--(BOOL)prefersStatusBarHidden {
-	return YES;
-}
-
-#pragma mark - Article Display Delegate methods -
-
--(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo {
-	[self.feedVC userHasLikedPOV:liked withPovInfo:povInfo];
-}
+}*/
 
 #pragma mark - Handle Login -
-
 
 //brings up the create account page if there is no user logged in
 -(void) bringUpLogin {
@@ -406,27 +202,16 @@
 
 //catches the unwind segue from login / create account
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
-	self.masterSV.scrollEnabled = YES;
 	// TODO: have variable set and go to profile or adk
 	[self.profileVC updateUserInfo];
 }
 
-#pragma mark -Analytics -
--(void)logAnalysis{
-    NSDictionary *dimensions = @{
-                                 // Define ranges to bucket data points into meaningful segments
-                                 @"priceRange": @"1000-1500",
-                                 // Did the user filter the query?
-                                 @"source": @"craigslist",
-                                 // Do searches happen more often on weekdays or weekends?
-                                 @"dayType": @"weekday"
-                                 };
-    // Send the dimensions to Parse along with the 'search' event
-    [PFAnalytics trackEvent:@"search" dimensions:dimensions];
+#pragma mark - Media Dev VC Delegate methods -
+
+-(void) povPublishedWithUserName:(NSString *)userName andTitle:(NSString *)title andCoverPic:(UIImage *)coverPhoto andProgressObject:(NSProgress *)progress {
+	[self.feedVC showPOVPublishingWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject:progress];
+	[self.tabBarController setSelectedViewController:self.feedVC];
 }
-
-
-
 
 #pragma mark - Alerts -
 
@@ -436,39 +221,8 @@
 	[[UserSetupParameters sharedInstance]set_trendingCirle_InstructionAsShown];
 }
 
--(void) userLostInternetConnection {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-}
-
-#pragma mark - Network Connection Lost -
-
--(void)networkConnectionUpdate: (NSNotification *) notification{
-    NSDictionary * userInfo = [notification userInfo];
-    BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
-    if(!thereIsConnection){
-        [self userLostInternetConnection];
-    }
-}
-
--(BOOL)isThereConnectionFromString:(NSString *) key{
-    if([key isEqualToString:@"YES"]){
-        return YES;
-    }
-    return NO;
-}
-
-
-//delegate method from the Feed - prompts us to check internet connectivity
--(void) refreshingFeedsFailed {
-    [self.connectionMonitor isConnectedToInternet_asynchronous];
-}
-
-
-
-
-
 #pragma mark - Memory Warning -
+
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.
@@ -480,15 +234,6 @@
 	if (!_userManager) _userManager = [UserManager sharedInstance];
 	_userManager.delegate = self;
 	return _userManager;
-}
-
--(PreviewDisplayView*) previewDisplayView {
-	if(!_previewDisplayView){
-		_previewDisplayView = [[PreviewDisplayView alloc] initWithFrame: self.view.frame];
-		_previewDisplayView.delegate = self;
-		[self.view addSubview:_previewDisplayView];
-	}
-	return _previewDisplayView;
 }
 
 @end
