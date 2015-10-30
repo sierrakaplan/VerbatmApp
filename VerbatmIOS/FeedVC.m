@@ -67,9 +67,9 @@
 	[super viewDidLoad];
 	[self.view setBackgroundColor:[UIColor colorWithRed:FEED_BACKGROUND_COLOR green:FEED_BACKGROUND_COLOR blue:FEED_BACKGROUND_COLOR alpha:1.f]];
 
+	[self setUpCategorySwitcher];
 	[self positionContainerViews];
 	[self setUpListVCs];
-	[self setUpCategorySwitcher];
 	[self setUpArticleDisplayVC];
 	[self registerForNotifications];
 }
@@ -92,9 +92,18 @@
 
 #pragma mark - Getting and formatting child view controllers -
 
+-(void) setUpCategorySwitcher {
+	float categorySwitchWidth = self.view.frame.size.width;
+	CGRect categorySwitchFrame = CGRectMake((self.view.frame.size.width - categorySwitchWidth)/2.f,
+											BELOW_STATUS_BAR, categorySwitchWidth, TITLE_BAR_HEIGHT);
+	self.categorySwitch = [[SwitchCategoryPullView alloc] initWithFrame:categorySwitchFrame andBackgroundColor: self.view.backgroundColor];
+	self.categorySwitch.categorySwitchDelegate = self;
+	[self.view addSubview:self.categorySwitch];
+}
+
 //position the container views in appropriate places and set frames
 -(void) positionContainerViews {
-	float listContainerY = CATEGORY_SWITCH_HEIGHT + CATEGORY_SWITCH_OFFSET*2;
+	float listContainerY = self.categorySwitch.frame.origin.y + self.categorySwitch.frame.size.height;
 	self.topListContainer.frame = CGRectMake(0, listContainerY,
 											 self.view.frame.size.width,
 											 self.view.frame.size.height - listContainerY);
@@ -127,17 +136,6 @@
 	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
 
 	[self addScreenPanToArticleDisplay];
-}
-
-#pragma mark - Formatting sub views -
-
--(void) setUpCategorySwitcher {
-	float categorySwitchWidth = self.view.frame.size.width;
-	CGRect categorySwitchFrame = CGRectMake((self.view.frame.size.width - categorySwitchWidth)/2.f,
-											CATEGORY_SWITCH_OFFSET, categorySwitchWidth, CATEGORY_SWITCH_HEIGHT);
-	self.categorySwitch = [[SwitchCategoryPullView alloc] initWithFrame:categorySwitchFrame andBackgroundColor: self.view.backgroundColor];
-	self.categorySwitch.categorySwitchDelegate = self;
-	[self.view addSubview:self.categorySwitch];
 }
 
 #pragma mark - Switch Category Pull View delegate methods -
@@ -193,6 +191,7 @@
 
 -(void) displayPOVOnCell:(FeedTableViewCell *)cell withLoadManager:(POVLoadManager *)loadManager {
 	[self.delegate showTabBar:NO];
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	[self.articleDisplayVC loadStoryAtIndex:cell.indexPath.row fromLoadManager:loadManager];
 	[self.articleDisplayContainerView setFrame:self.view.bounds];
 	[self.articleDisplayContainerView setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
@@ -234,28 +233,22 @@
 			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
 			CGPoint currentPoint = touchLocation;
 			int diff = currentPoint.x - self.previousGesturePoint.x;
-
-			if((diff < 0) && ((self.articleDisplayContainerView.frame.origin.x + diff) < 0)) //swiping left which is wrong so we end the gesture
-			{
+			//swiping left which is wrong so we end the gesture
+			if((diff < 0) && ((self.articleDisplayContainerView.frame.origin.x + diff) < 0)) {
 				//this ends the gesture
 				sender.enabled = NO;
 				sender.enabled =YES;
 				break;
 			}else {
-
 				self.previousGesturePoint = currentPoint;
 				self.articleDisplayContainerView.frame = CGRectOffset(self.articleDisplayContainerView.frame, diff, 0);
 				break;
 			}
-		}
-		case UIGestureRecognizerStateCancelled:{
-			//should just fall into the next call
-		}case UIGestureRecognizerStateEnded: {
+		}case UIGestureRecognizerStateCancelled:
+		 case UIGestureRecognizerStateEnded: {
 			if(self.articleDisplayContainerView.frame.origin.x > ARTICLE_DISPLAY_EXIT_EPSILON) {
-				//exit article
 				[self revealArticleDisplay:NO];
-			}else{
-				//return view to original position
+			} else{
 				[self revealArticleDisplay:YES];
 			}
 			break;
@@ -281,6 +274,7 @@
 				[self.articleDisplayVC cleanUp];
 				[self.articleDisplayContainerView setAlpha:0];
 				[self.delegate showTabBar:YES];
+				[[UIApplication sharedApplication] setStatusBarHidden:NO];
 			}
 		}];
 	}

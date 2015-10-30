@@ -10,6 +10,9 @@
 #define SizesAndPositions_h
 
 
+#define BELOW_STATUS_BAR ([UIApplication sharedApplication].statusBarFrame.origin.y + [UIApplication sharedApplication].statusBarFrame.size.height)
+#define TITLE_BAR_HEIGHT 60.f
+
 #pragma mark - Exit CV constants-
 
 #define EXIT_CV_BUTTON_WIDTH 35
@@ -35,9 +38,7 @@
 
 #pragma mark - Feed -
 
-#define CATEGORY_SWITCH_HEIGHT 60
-#define CATEGORY_SWITCH_OFFSET 10
-
+#define CATEGORY_SWITCH_OFFSET 5.f
 
 #pragma mark Story table view cell
 

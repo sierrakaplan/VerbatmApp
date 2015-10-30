@@ -50,7 +50,7 @@
 
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDevNavBarDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, UINavigationBarDelegate>
 
 #pragma mark Image Manager
 

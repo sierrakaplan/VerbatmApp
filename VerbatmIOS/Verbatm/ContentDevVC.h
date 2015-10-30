@@ -9,7 +9,6 @@
 #import <UIKit/UIKit.h>
 @import Photos;
 
-#import "ContentDevNavBar.h"
 #import "VerbatmScrollView.h"
 #import "EditContentView.h"
 
@@ -46,8 +45,6 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 @property (strong, nonatomic) id<ContentDevVCDelegate> delegate;
 
 @property (strong, nonatomic) UITextField *titleField;
-
-@property (strong, nonatomic) ContentDevNavBar* navBar;
 
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;

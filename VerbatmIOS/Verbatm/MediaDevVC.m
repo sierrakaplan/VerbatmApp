@@ -119,6 +119,7 @@
 #pragma mark - Preparing View
 
 - (void)viewDidLoad{
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
     self.view.backgroundColor = [UIColor blackColor];
     [super viewDidLoad];
 	[self setDefaultFrames];
@@ -153,6 +154,7 @@
 #pragma mark - Initialization
 
 -(void)setContentDevVC {
+	
 	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTDEVVC];
 	[self.contentContainerView addSubview: self.contentDevVC.view];
 	[self addChildViewController:self.contentDevVC];
@@ -340,11 +342,6 @@
 
 	//for postitioning the blurView when the orientation of the device changes
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-}
-
-//Tells the screen to hide the status bar
-- (BOOL) prefersStatusBarHidden {
-	return YES;
 }
 
 #pragma mark Memory management

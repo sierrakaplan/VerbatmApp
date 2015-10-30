@@ -185,6 +185,7 @@
 
 //catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
+	[[UIApplication sharedApplication] setStatusBarHidden:NO];
 	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_CREATE_ACCOUNT_TO_MASTER]
 		|| [segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
 		// TODO: have variable set and go to profile or adk

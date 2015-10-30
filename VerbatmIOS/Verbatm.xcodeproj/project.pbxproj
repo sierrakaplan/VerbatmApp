@@ -723,7 +723,7 @@
 			name = Login;
 			sourceTree = "<group>";
 		};
-		A56F686F1B643ADE00CE5744 /* PullBars/ToolBars */ = {
+		A56F686F1B643ADE00CE5744 /* PullBars */ = {
 			isa = PBXGroup;
 			children = (
 				C7A8E3841A61CE4D00776BD1 /* ContentDevPullBar.h */,
@@ -737,7 +737,7 @@
 				A5E860091B99EF9B00E148D0 /* HomeNavBar.h */,
 				A5E8600A1B99EF9B00E148D0 /* HomeNavBar.m */,
 			);
-			name = PullBars/ToolBars;
+			name = PullBars;
 			sourceTree = "<group>";
 		};
 		A56F68731B643C2600CE5744 /* Related to Images */ = {
@@ -1176,7 +1176,7 @@
 				A56F68741B643C4E00CE5744 /* Related to Text */,
 				A56F68731B643C2600CE5744 /* Related to Images */,
 				A56F68761B643D4B00CE5744 /* Related to Video */,
-				A56F686F1B643ADE00CE5744 /* PullBars/ToolBars */,
+				A56F686F1B643ADE00CE5744 /* PullBars */,
 				A59CC2861B6C2E2F00B4907C /* Table Views */,
 				A58FC5D21BE175E9008B85B1 /* TabBar */,
 				A5E860081B9919F500E148D0 /* Viewing POV's */,
