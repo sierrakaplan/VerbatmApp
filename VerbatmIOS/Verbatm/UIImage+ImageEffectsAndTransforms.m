@@ -103,6 +103,15 @@
 	}
 }
 
++ (UIImage*) makeImageWithColorAndSize:(UIColor*) color andSize:(CGSize) size {
+	UIGraphicsBeginImageContextWithOptions(size, false, 0);
+	[color setFill];
+	UIRectFill(CGRectMake(0, 0, size.width, size.height));
+	UIImage* image = UIGraphicsGetImageFromCurrentImageContext();
+	UIGraphicsEndImageContext();
+	return image;
+}
+
 - (CGSize) getSizeForImageWithBounds:(CGRect)bounds {
 	CGSize currentSize = self.size;
 	CGSize newSize;

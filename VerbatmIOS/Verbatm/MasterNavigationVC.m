@@ -45,30 +45,13 @@
 #import "VerbatmCameraView.h"
 
 
-/*
-
- New navigation: Feed, profile, and adk should be in a UITabBarController. Implement delegate to perform segue when they
- are selected. Set each view controller's tabbaritem (with title + image + selected image)
- 
- Segue to login if profile or adk are selected and they aren't signed in
- 
- Article display should segue from the feed vc 
- 
- ADk should use a custom bar for the pull bar but a navigation bar on top
- 
- Preview should use a navigation bar
- 
- Profile will have a custom bar
- 
- 
- */
-
-
-@interface MasterNavigationVC () <UITabBarControllerDelegate, UserManagerDelegate, MediaDevVCDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, UserManagerDelegate, MediaDevVCDelegate, FeedVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) UITabBarController* tabBarController;
+@property (nonatomic) CGRect tabBarFrameOnScreen;
+@property (nonatomic) CGRect tabBarFrameOffScreen;
 
 #pragma mark View Controllers in tab bar Controller
 
@@ -95,7 +78,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	[self formatTabBarVC];
+	[self setUpTabBarController];
 	if (![PFUser currentUser].isAuthenticated &&
 		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
 	} else {
@@ -127,7 +110,7 @@
 
 #pragma mark - Tab bar controller -
 
--(void) formatTabBarVC {
+-(void) setUpTabBarController {
 	self.tabBarControllerContainerView.frame = self.view.bounds;
 	self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
 	[self.tabBarControllerContainerView addSubview:self.tabBarController.view];
@@ -144,53 +127,53 @@
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
 	self.feedVC.tabBarItem = [[CustomTabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
+	self.feedVC.delegate = self;
 
 	self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC];
 	self.tabBarController.selectedViewController = self.feedVC;
 	UIImage* adkImage = [[UIImage imageNamed:ADK_NAV_ICON] scaleImageToSize:iconSize];
 	[self addTabBarCenterButtonWithImage:adkImage highlightImage:adkImage];
+
+	[self formatTabBar];
+	self.tabBarFrameOnScreen = self.tabBarController.tabBar.frame;
+	self.tabBarFrameOffScreen = CGRectMake(self.tabBarController.tabBar.frame.origin.x,
+										   self.view.frame.size.height,
+										   self.tabBarController.tabBar.frame.size.width,
+										   self.tabBarController.tabBar.frame.size.height);
+
+}
+
+-(void) formatTabBar {
+	[[UITabBar appearance] setTintColor:[UIColor blackColor]];
+	[[UITabBar appearance] setBarTintColor:[UIColor lightGrayColor]];
+	NSInteger numTabs = self.tabBarController.viewControllers.count;
+	// Sets the background color of the selected UITabBarItem
+	[[UITabBar appearance] setSelectionIndicatorImage:[UIImage makeImageWithColorAndSize:[UIColor darkGrayColor]
+																				 andSize: CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
+																															self.tabBarController.tabBar.frame.size.height)]];
 }
 
 // Create a custom UIButton and add it to the center of our tab bar
 -(void) addTabBarCenterButtonWithImage:(UIImage*)buttonImage highlightImage:(UIImage*)highlightImage {
 
+	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
-	button.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleTopMargin;
-	button.frame = CGRectMake(0.0, 0.0, buttonImage.size.width, buttonImage.size.height);
-	[button setBackgroundImage:buttonImage forState:UIControlStateNormal];
-	[button setBackgroundImage:highlightImage forState:UIControlStateHighlighted];
+	button.frame = CGRectMake(self.tabBarController.tabBar.frame.size.width/numTabs, 0.f,
+							  self.tabBarController.tabBar.frame.size.width/numTabs,
+							  self.tabBarController.tabBar.frame.size.height);
+	button.imageView.contentMode = UIViewContentModeScaleAspectFit;
+	[button setImage:buttonImage forState:UIControlStateNormal];
+	[button setImage:highlightImage forState:UIControlStateHighlighted];
 	[button addTarget:self action:@selector(revealADK) forControlEvents:UIControlEventTouchUpInside];
 
-	CGFloat heightDifference = buttonImage.size.height - self.tabBarController.tabBar.frame.size.height;
-	if (heightDifference < 0)
-		button.center = self.tabBarController.tabBar.center;
-	else {
-		CGPoint center = self.tabBarController.tabBar.center;
-		center.y = center.y - heightDifference/2.0;
-		button.center = center;
-	}
-
-	[self.tabBarController.view addSubview:button];
+	[button setBackgroundColor:[UIColor whiteColor]];
+	[self.tabBarController.tabBar addSubview:button];
 }
 
 -(void) revealADK {
+	[[Analytics getSharedInstance] newADKSession];
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
-
-/*TODO: apply some analytics
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-
-    if(scrollView == self.masterSV){
-        if(self.feedContainer.frame.origin.x == scrollView.contentOffset.x){
-            //in the feed
-            [[Analytics getSharedInstance] endOfADKSession];
-        }else if (self.adkContainer.frame.origin.x == scrollView.contentOffset.x){
-            //in the adk
-            [[Analytics getSharedInstance] newADKSession];
-        }
-    }
-}*/
 
 #pragma mark - Handle Login -
 
@@ -200,10 +183,15 @@
 	[self performSegueWithIdentifier:CREATE_ACCOUNT_SEGUE sender:self];
 }
 
-//catches the unwind segue from login / create account
+//catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
-	// TODO: have variable set and go to profile or adk
-	[self.profileVC updateUserInfo];
+	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_CREATE_ACCOUNT_TO_MASTER]
+		|| [segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
+		// TODO: have variable set and go to profile or adk
+		[self.profileVC updateUserInfo];
+	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
+		[[Analytics getSharedInstance] endOfADKSession];
+	}
 }
 
 #pragma mark - Media Dev VC Delegate methods -
@@ -213,12 +201,22 @@
 	[self.tabBarController setSelectedViewController:self.feedVC];
 }
 
+#pragma mark - Feed VC Delegate -
+
+-(void) showTabBar:(BOOL)show {
+	if (show) {
+		self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
+	} else {
+		self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
+	}
+}
+
 #pragma mark - Alerts -
 
 -(void)alertPullTrendingIcon {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
-	[[UserSetupParameters sharedInstance]set_trendingCirle_InstructionAsShown];
+	[[UserSetupParameters sharedInstance] set_trendingCirle_InstructionAsShown];
 }
 
 #pragma mark - Memory Warning -

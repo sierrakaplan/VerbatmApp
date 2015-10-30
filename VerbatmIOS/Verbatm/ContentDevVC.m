@@ -349,6 +349,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	[self.delegate previewButtonPressed];
 }
 
+-(void) backButtonPressed {
+	[self.delegate backButtonPressed];
+}
+
 #pragma mark - Configure Text Fields -
 
 - (void)textFieldDidEndEditing:(UITextField *)textField {

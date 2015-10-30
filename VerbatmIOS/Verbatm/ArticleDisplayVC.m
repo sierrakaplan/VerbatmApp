@@ -61,7 +61,6 @@
 	self.pageLoadManager.delegate = self;
 }
 
-
 // When user clicks story, loads one behind it and the two ahead
 -(void) loadStoryAtIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
 	self.povLoadManager = loadManager;

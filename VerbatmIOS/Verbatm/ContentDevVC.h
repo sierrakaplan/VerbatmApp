@@ -26,6 +26,7 @@
 //or when undo and preview are/n't possible
 @protocol ContentDevVCDelegate <NSObject>
 
+-(void) backButtonPressed;
 -(void) previewButtonPressed;
 -(void) showPullBar: (BOOL) showPullBar withTransition: (BOOL) withTransition;
 

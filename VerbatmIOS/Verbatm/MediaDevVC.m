@@ -34,6 +34,7 @@
 
 #import "Strings.h"
 #import "SizesAndPositions.h"
+#import "SegueIDs.h"
 
 #import "testerTransitionDelegate.h"
 
@@ -345,7 +346,6 @@
 - (BOOL) prefersStatusBarHidden {
 	return YES;
 }
-
 
 #pragma mark Memory management
 
@@ -662,6 +662,10 @@
 	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
 }
 
+-(void) backButtonPressed {
+	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+}
+
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
 
 -(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
@@ -682,13 +686,11 @@
 		NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
 
 		[self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
-		[self povPublished];
-	}
-}
+		[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 
--(void) povPublished {
-	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
-	[self.contentDevVC cleanUp];
+		[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
+		[self.contentDevVC cleanUp];
+	}
 }
 
 -(void)alertAddTitle {

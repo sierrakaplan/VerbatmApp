@@ -26,9 +26,6 @@
 // Shows alert to the user that they must add a cover picture to their story
 -(void)alertAddCoverPhoto;
 
-// Cleans up the adk after a story has published
--(void)povPublished;
-
 typedef NS_ENUM(NSInteger, ContentContainerViewMode) {
 	ContentContainerViewModeFullScreen,
 	ContentContainerViewModeBase

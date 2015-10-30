@@ -8,7 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol FeedVCDelegate <NSObject>
+
+-(void) showTabBar: (BOOL) show;
+
+@end
+
 @interface FeedVC : UIViewController
+
+@property (strong, nonatomic) id<FeedVCDelegate> delegate;
 
 // animates the fact that a recent POV is publishing
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic

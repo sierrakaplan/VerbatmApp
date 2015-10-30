@@ -68,12 +68,6 @@
 # pragma mark - Enable and unEnable Buttons -
 
 -(void) enablePreviewButton: (BOOL) enable {
-	if (enable) {
-		//TODO:
-//		[self.previewLabel setTextColor: [UIColor PREVIEW_PUBLISH_COLOR]];
-	} else {
-//		[self.previewLabel setTextColor: [UIColor colorWithRed:(2.f/3.f) green:(2.f/3.f) blue:(2.f/3.f) alpha:0.5]];
-	}
 	[self.previewButton setEnabled: enable];
 }
 

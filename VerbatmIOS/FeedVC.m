@@ -118,6 +118,7 @@
 }
 
 -(void) setUpArticleDisplayVC {
+	self.articleDisplayContainerView.frame = self.view.bounds;
 	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
 	[self.articleDisplayContainerView addSubview: self.articleDisplayVC.view];
 	[self addChildViewController:self.articleDisplayVC];
@@ -191,6 +192,7 @@
 }
 
 -(void) displayPOVOnCell:(FeedTableViewCell *)cell withLoadManager:(POVLoadManager *)loadManager {
+	[self.delegate showTabBar:NO];
 	[self.articleDisplayVC loadStoryAtIndex:cell.indexPath.row fromLoadManager:loadManager];
 	[self.articleDisplayContainerView setFrame:self.view.bounds];
 	[self.articleDisplayContainerView setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
@@ -278,6 +280,7 @@
 			if(finished) {
 				[self.articleDisplayVC cleanUp];
 				[self.articleDisplayContainerView setAlpha:0];
+				[self.delegate showTabBar:YES];
 			}
 		}];
 	}

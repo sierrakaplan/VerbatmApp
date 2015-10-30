@@ -24,6 +24,7 @@
 #pragma mark - ADK -
 
 #define ADK_SEGUE @"segue_id_adk"
+#define UNWIND_SEGUE_FROM_ADK_TO_MASTER @"unwind_to_master_vc_from_adk"
 
 #define BRING_UP_EDITCONTENT_SEGUE @"segue_id_edit_content_view"
 #define UNWIND_SEGUE_EDIT_CONTENT_VIEW @"segue_id_unwind_from_edit_content_view"
