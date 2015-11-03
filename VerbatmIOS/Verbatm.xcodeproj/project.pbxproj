@@ -140,6 +140,13 @@
 		C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4061BA4EB500075CA80 /* EditContentVC.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
 		C72586C21BC51BDE00EDC22A /* TextAndImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = C72586C11BC51BDE00EDC22A /* TextAndImageView.m */; };
+		C72FB07A1BE87DB000004E75 /* Instabug.bundle in Resources */ = {isa = PBXBuildFile; fileRef = C72FB0781BE87DB000004E75 /* Instabug.bundle */; };
+		C72FB07B1BE87DB000004E75 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB0791BE87DB000004E75 /* Instabug.framework */; };
+		C72FB07D1BE880B300004E75 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB07C1BE880B300004E75 /* CoreTelephony.framework */; };
+		C72FB07F1BE880C500004E75 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB07E1BE880C500004E75 /* GLKit.framework */; };
+		C72FB0811BE880DD00004E75 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB0801BE880DD00004E75 /* libc++.tbd */; };
+		C72FB0831BE880E500004E75 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB0821BE880E500004E75 /* MessageUI.framework */; };
+		C72FB0851BE880EE00004E75 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB0841BE880EE00004E75 /* OpenGLES.framework */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
@@ -481,6 +488,13 @@
 		C719A4131BA802D10075CA80 /* CoverPicturePinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPicturePinchView.m; sourceTree = "<group>"; };
 		C72586C01BC51BDE00EDC22A /* TextAndImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TextAndImageView.h; path = ../Bolts.framework/TextAndImageView.h; sourceTree = "<group>"; };
 		C72586C11BC51BDE00EDC22A /* TextAndImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TextAndImageView.m; path = ../Bolts.framework/TextAndImageView.m; sourceTree = "<group>"; };
+		C72FB0781BE87DB000004E75 /* Instabug.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = Instabug.bundle; path = Instabug/Instabug.bundle; sourceTree = "<group>"; };
+		C72FB0791BE87DB000004E75 /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Instabug.framework; path = Instabug/Instabug.framework; sourceTree = "<group>"; };
+		C72FB07C1BE880B300004E75 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		C72FB07E1BE880C500004E75 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		C72FB0801BE880DD00004E75 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
+		C72FB0821BE880E500004E75 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
+		C72FB0841BE880EE00004E75 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		C734FD9619B13D7700B2C370 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -575,7 +589,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C72FB0851BE880EE00004E75 /* OpenGLES.framework in Frameworks */,
+				C72FB0831BE880E500004E75 /* MessageUI.framework in Frameworks */,
+				C72FB0811BE880DD00004E75 /* libc++.tbd in Frameworks */,
+				C72FB07F1BE880C500004E75 /* GLKit.framework in Frameworks */,
+				C72FB07D1BE880B300004E75 /* CoreTelephony.framework in Frameworks */,
 				A55AA12E1BD5B7DC00EB883A /* CoreMotion.framework in Frameworks */,
+				C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */,
+				C7BC43AD199EC438004B91A1 /* AudioToolbox.framework in Frameworks */,
 				A55AA12C1BD5B79F00EB883A /* AdSupport.framework in Frameworks */,
 				A55A59DF1BB4E07D00C7CE7A /* libsqlite3.tbd in Frameworks */,
 				C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */,
@@ -584,9 +605,8 @@
 				C7BC43B7199EC68B004B91A1 /* QuartzCore.framework in Frameworks */,
 				C7BC43B5199EC680004B91A1 /* MobileCoreServices.framework in Frameworks */,
 				C7BC43B1199EC458004B91A1 /* CoreLocation.framework in Frameworks */,
-				C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */,
+				C72FB07B1BE87DB000004E75 /* Instabug.framework in Frameworks */,
 				C7BC43AF199EC445004B91A1 /* CFNetwork.framework in Frameworks */,
-				C7BC43AD199EC438004B91A1 /* AudioToolbox.framework in Frameworks */,
 				A55A59DD1BB4DDDA00C7CE7A /* Bolts.framework in Frameworks */,
 				A55A59D31BB4CFE800C7CE7A /* Parse.framework in Frameworks */,
 				A55A59D91BB4DCFB00C7CE7A /* ParseFacebookUtilsV4.framework in Frameworks */,
@@ -1196,6 +1216,13 @@
 		C7BC4374199D97F5004B91A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C72FB0841BE880EE00004E75 /* OpenGLES.framework */,
+				C72FB0821BE880E500004E75 /* MessageUI.framework */,
+				C72FB0801BE880DD00004E75 /* libc++.tbd */,
+				C72FB07E1BE880C500004E75 /* GLKit.framework */,
+				C72FB07C1BE880B300004E75 /* CoreTelephony.framework */,
+				C72FB0781BE87DB000004E75 /* Instabug.bundle */,
+				C72FB0791BE87DB000004E75 /* Instabug.framework */,
 				A55AA12D1BD5B7DC00EB883A /* CoreMotion.framework */,
 				A55AA12B1BD5B79F00EB883A /* AdSupport.framework */,
 				A55A59DE1BB4E07D00C7CE7A /* libsqlite3.tbd */,
@@ -1465,6 +1492,7 @@
 			files = (
 				A5FB5D571BCB122300634A96 /* GMEmptyFolder@2x.png in Resources */,
 				A5E85FB01B911DA900E148D0 /* GTMOAuth2ViewTouch.xib in Resources */,
+				C72FB07A1BE87DB000004E75 /* Instabug.bundle in Resources */,
 				A5FB5D4B1BCB11BA00634A96 /* GMImagePicker 14-24-03-208.strings in Resources */,
 				C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */,
 				A5FB5D481BCB11BA00634A96 /* GMImagePicker 14-24-03-194.strings in Resources */,
@@ -1837,7 +1865,10 @@
 				CURRENT_PROJECT_VERSION = 2;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = "$(inherited)";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Instabug",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
@@ -1871,7 +1902,10 @@
 				CURRENT_PROJECT_VERSION = 2;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = "$(inherited)";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Instabug",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";

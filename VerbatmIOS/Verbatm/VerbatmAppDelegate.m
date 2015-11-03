@@ -8,9 +8,10 @@
 
 #import "VerbatmAppDelegate.h"
 #import "Analytics.h"
-#import "UserPovInProgress.h"
 #import <AVFoundation/AVFoundation.h>
-#import "UserSetupParameters.h"
+
+#import <Instabug/Instabug.h>
+
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
@@ -18,6 +19,10 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 #import <PromiseKit/PromiseKit.h>
+
+#import "UserSetupParameters.h"
+#import "UserPovInProgress.h"
+
 
 @implementation VerbatmAppDelegate
 
@@ -44,6 +49,12 @@
 	[[UserPovInProgress sharedInstance] loadPOVFromUserDefaults];
     
     [[Analytics getSharedInstance] newUserSession];
+    
+    
+    //bug reporting
+    [Instabug startWithToken:@"f1f0a933371789d60e73dc55d25d4226" captureSource:IBGCaptureSourceUIKit invocationEvent:IBGInvocationEventShake];
+
+    
     
     return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 }
