@@ -51,9 +51,8 @@
 
 @property(nonatomic, strong) GTLServiceVerbatmApp *service;
 
-//retains reference to media uploaders since their tasks are performed async
-//TODO instead should have an image media uploader and a video media uploader and make each thing wait
-@property(nonatomic, strong) NSMutableArray* mediaUploaders;
+@property(nonatomic, strong) MediaUploader* imageUploader;
+@property(nonatomic, strong) MediaUploader* videoUploader;
 
 @end
 
@@ -117,6 +116,9 @@
 
 	// save cover pic serving url then saved page ids then upload pov
 	[self storeCoverPicture: self.coverPic].then(^(NSString* coverPicServingUrl) {
+		if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+			[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_PHOTO];
+		}
 		povObject.coverPicUrl = coverPicServingUrl;
 		return [self storePagesFromPinchViews: self.pinchViews];
 	}).then(^(NSArray* pageIds) {
@@ -126,7 +128,6 @@
 		//This can catch at any part in the chain
 		NSLog(@"Error publishing POV: %@", error.description);
 		[self.publishingProgress cancel];
-		self.mediaUploaders = nil;
 	});
 }
 
@@ -137,10 +138,11 @@
 	NSLog(@"Publishing cover picture");
 	return [self getImageUploadURI].then(^(NSString* uri) {
 
-		MediaUploader* coverPicUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uri];
-		[self.publishingProgress addChild:coverPicUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];
-		[self.mediaUploaders addObject: coverPicUploader];
-		return [coverPicUploader startUpload];
+		self.imageUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uri];
+		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];
+		}
+		return [self.imageUploader startUpload];
 	});
 }
 
@@ -264,10 +266,11 @@
 	return PMKWhen(@[getVideoDataPromise, getVideoUploadURIPromise]).then(^(NSArray * results){
 		NSData* videoData = results[0];
 		NSString* uri = results[1];
-		MediaUploader* videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
-		[self.publishingProgress addChild:videoUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_VIDEO];
-		[self.mediaUploaders addObject: videoUploader];
-		return [videoUploader startUpload];
+		self.videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
+		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+			[self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_VIDEO];
+		}
+		return [self.videoUploader startUpload];
 	}).then(^(NSString* blobStoreKeyString) {
 		GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
 		gtlVideo.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
@@ -287,10 +290,11 @@
 	NSLog(@"publishing image at index %ld", (long)indexInPage);
 
 	return [self getImageUploadURI].then(^(NSString* uri) {
-		MediaUploader* imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
-		[self.publishingProgress addChild:imageUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];
-		[self.mediaUploaders addObject: imageUploader];
-		return [imageUploader startUpload];
+		self.imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
+		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];
+		}
+		return [self.imageUploader startUpload];
 	}).then(^(NSString* servingURL) {
 		GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
 		gtlImage.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
@@ -316,6 +320,9 @@
 			if (error) {
 				resolve(error);
 			} else {
+				if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_PHOTO];
+				}
 				NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
 				resolve(storedImage.identifier);
 			}
@@ -334,6 +341,9 @@
 			if (error) {
 				resolve(error);
 			} else {
+				if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_VIDEO];
+				}
 				NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
 				resolve(storedVideo.identifier);
 			}
@@ -373,7 +383,6 @@
 				 } else {
 					 [self.publishingProgress setCompletedUnitCount: self.totalProgressUnits];
 					 NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
-					 self.mediaUploaders = nil;
 					 NSLog(@"Successfully published POV!");
 					 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
 																		 object:ticket];
@@ -430,13 +439,6 @@
 	}
 
 	return _service;
-}
-
--(NSMutableArray *) mediaUploaders {
-	if(!_mediaUploaders) {
-		_mediaUploaders = [[NSMutableArray alloc] init];
-	}
-	return _mediaUploaders;
 }
 
 @end
