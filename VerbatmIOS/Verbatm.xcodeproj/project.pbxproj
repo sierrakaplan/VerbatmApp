@@ -147,6 +147,7 @@
 		C72FB0811BE880DD00004E75 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB0801BE880DD00004E75 /* libc++.tbd */; };
 		C72FB0831BE880E500004E75 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB0821BE880E500004E75 /* MessageUI.framework */; };
 		C72FB0851BE880EE00004E75 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB0841BE880EE00004E75 /* OpenGLES.framework */; };
+		C72FB0871BE88E1500004E75 /* Sinch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C72FB0861BE88E1500004E75 /* Sinch.framework */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
@@ -495,6 +496,7 @@
 		C72FB0801BE880DD00004E75 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		C72FB0821BE880E500004E75 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		C72FB0841BE880EE00004E75 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		C72FB0861BE88E1500004E75 /* Sinch.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sinch.framework; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		C734FD9619B13D7700B2C370 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		C734FD9819B13D8600B2C370 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
@@ -589,6 +591,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7BC43B9199EC696004B91A1 /* Security.framework in Frameworks */,
 				C72FB0851BE880EE00004E75 /* OpenGLES.framework in Frameworks */,
 				C72FB0831BE880E500004E75 /* MessageUI.framework in Frameworks */,
 				C72FB0811BE880DD00004E75 /* libc++.tbd in Frameworks */,
@@ -601,7 +604,7 @@
 				A55A59DF1BB4E07D00C7CE7A /* libsqlite3.tbd in Frameworks */,
 				C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */,
 				C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */,
-				C7BC43B9199EC696004B91A1 /* Security.framework in Frameworks */,
+				C72FB0871BE88E1500004E75 /* Sinch.framework in Frameworks */,
 				C7BC43B7199EC68B004B91A1 /* QuartzCore.framework in Frameworks */,
 				C7BC43B5199EC680004B91A1 /* MobileCoreServices.framework in Frameworks */,
 				C7BC43B1199EC458004B91A1 /* CoreLocation.framework in Frameworks */,
@@ -1216,6 +1219,7 @@
 		C7BC4374199D97F5004B91A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C72FB0861BE88E1500004E75 /* Sinch.framework */,
 				C72FB0841BE880EE00004E75 /* OpenGLES.framework */,
 				C72FB0821BE880E500004E75 /* MessageUI.framework */,
 				C72FB0801BE880DD00004E75 /* libc++.tbd */,
@@ -1868,6 +1872,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Instabug",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
@@ -1905,6 +1910,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Instabug",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";

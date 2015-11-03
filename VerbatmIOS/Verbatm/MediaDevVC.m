@@ -132,11 +132,13 @@
 }
 
 -(void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 	[self.sessionManager startSession];
 //	[self.pullBar pulsePullDown];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
 	[self.sessionManager stopSession];
 }
 

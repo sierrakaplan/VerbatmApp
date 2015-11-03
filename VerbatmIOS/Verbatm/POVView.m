@@ -211,19 +211,14 @@
 }
 
 -(void) pauseVideosInAVE:(UIView*) ave {
-    NSString * pageType = @"";
     if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
         [self pauseVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[VideoAVE class]]) {
         [(VideoAVE*)ave offScreen];
-        pageType = @"VideoAVE";
     } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
         [[(PhotoVideoAVE*)ave videoView] offScreen];
-        pageType = @"PhotoVideoAVE";
     }else if ([ave isKindOfClass:[PhotoAVE class] ]){
-        pageType = @"PhotoAVE";
     }else{//must be textAve
-        pageType = @"textAve";
     }
 }
 

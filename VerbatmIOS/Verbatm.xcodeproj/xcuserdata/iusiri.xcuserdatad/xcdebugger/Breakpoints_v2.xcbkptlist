@@ -281,7 +281,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "206"
             endingLineNumber = "206"
-            landmarkName = "-pauseVideosInAVE:"
+            landmarkName = "-stopVideosInAVE:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -345,7 +345,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "231"
             endingLineNumber = "231"
-            landmarkName = "-prepareOutLiersToEnterScreen"
+            landmarkName = "-playVideosInAVE:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

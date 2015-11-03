@@ -25,6 +25,7 @@
 @implementation EditContentVC
 
 -(void)viewDidLoad {
+    [super viewDidLoad];
     [self createEditContentViewFromPinchView];
     [self createExitButton];
 }

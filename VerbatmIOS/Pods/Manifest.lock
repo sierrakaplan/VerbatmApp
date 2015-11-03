@@ -31,10 +31,12 @@ PODS:
     - PromiseKit/CorePromise
   - PromiseKit/UIKit (3.0.0):
     - PromiseKit/CorePromise
+  - SinchRTC (3.7.1)
 
 DEPENDENCIES:
   - Google/Analytics (~> 1.0.0)
   - PromiseKit
+  - SinchRTC
 
 SPEC CHECKSUMS:
   Google: 875f5a8ade86dd02e36586e4a54814843938c7f6
@@ -44,5 +46,6 @@ SPEC CHECKSUMS:
   GoogleUtilities: 8ed9134debe11719097881711464752900668f10
   OMGHTTPURLRQ: 8376dc887d76a5a7e2a67881dc788f917a2f437c
   PromiseKit: 665540a1eb43156446872dcf49ed7dee6ebbe13b
+  SinchRTC: 58b08d88160e514c08a1c03305728349113d5379
 
-COCOAPODS: 0.39.0
+COCOAPODS: 0.38.2
