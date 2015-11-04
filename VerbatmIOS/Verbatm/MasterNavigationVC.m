@@ -11,8 +11,6 @@
 #import "ArticleDisplayVC.h"
 #import "Analytics.h"
 
-#import "CustomTabBarItem.h"
-
 #import "FeedVC.h"
 
 #import "GTLVerbatmAppVerbatmUser.h"
@@ -45,7 +43,8 @@
 #import "VerbatmCameraView.h"
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, UserManagerDelegate, MediaDevVCDelegate, FeedVCDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, UserManagerDelegate,
+MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -120,13 +119,14 @@
 	//TODO: remake icons
 	CGSize iconSize = CGSizeMake(30, 30);
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
-	self.profileVC.tabBarItem = [[CustomTabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:PROFILE_NAV_ICON] scaleImageToSize:iconSize] tag:0];
+	self.profileVC.delegate = self;
+	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:PROFILE_NAV_ICON] scaleImageToSize:iconSize] tag:0];
 
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:MEDIA_DEV_VC_ID];
 	self.mediaDevVC.delegate = self;
 
 	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
-	self.feedVC.tabBarItem = [[CustomTabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
+	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
 	self.feedVC.delegate = self;
 
 	self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC];
@@ -144,11 +144,11 @@
 }
 
 -(void) formatTabBar {
-	[[UITabBar appearance] setTintColor:[UIColor blackColor]];
-	[[UITabBar appearance] setBarTintColor:[UIColor lightGrayColor]];
+	[self.tabBarController.tabBar setTintColor:[UIColor blackColor]];
+	[self.tabBarController.tabBar setBarTintColor:[UIColor lightGrayColor]];
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	// Sets the background color of the selected UITabBarItem
-	[[UITabBar appearance] setSelectionIndicatorImage:[UIImage makeImageWithColorAndSize:[UIColor darkGrayColor]
+	[self.tabBarController.tabBar setSelectionIndicatorImage:[UIImage makeImageWithColorAndSize:[UIColor darkGrayColor]
 																				 andSize: CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
 																															self.tabBarController.tabBar.frame.size.height)]];
 }

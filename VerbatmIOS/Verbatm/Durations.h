@@ -18,6 +18,10 @@
 
 #define SNAP_ANIMATION_DURATION 0.1f
 
+#define ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION 0.4f
+//the amount of space that must be pulled to exit
+#define ARTICLE_DISPLAY_EXIT_EPSILON 60
+
 #pragma mark - Media Dev VC -
 
 #define PUBLISH_ANIMATION_DURATION 0.4f

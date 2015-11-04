@@ -8,6 +8,7 @@
 
 #import "ArticleDisplayVC.h"
 #import "ArticleListVC.h"
+#import "Durations.h"
 #import "FeedTableViewCell.h"
 #import "HomeNavBar.h"
 #import "Icons.h"
@@ -53,10 +54,6 @@
 #pragma mark Gesture for pulling out of article display view
 
 @property (nonatomic) CGPoint previousGesturePoint;
-
-#define ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION 0.4f
-//the amount of space that must be pulled to exit
-#define ARTICLE_DISPLAY_EXIT_EPSILON 60
 
 @end
 
@@ -115,11 +112,12 @@
 //offset for the master SV
 -(void) setUpListVCs {
 	self.trendingVC = [self.storyboard instantiateViewControllerWithIdentifier:TRENDING_VC_ID];
-	[self.trendingVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeTrending]];
+	[self.trendingVC setPovLoadManager: [[POVLoadManager alloc]
+										 initWithType: POVTypeTrending] andCellBackgroundColor:self.view.backgroundColor];
 	self.trendingVC.delegate = self;
 
 	self.mostRecentVC = [self.storyboard instantiateViewControllerWithIdentifier:RECENT_VC_ID];
-	[self.mostRecentVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeRecent]];
+	[self.mostRecentVC setPovLoadManager: [[POVLoadManager alloc] initWithType: POVTypeRecent] andCellBackgroundColor:self.view.backgroundColor];
 	self.mostRecentVC.delegate = self;
     
 	[self.topListContainer addSubview: self.trendingVC.view];
@@ -127,14 +125,15 @@
 }
 
 -(void) setUpArticleDisplayVC {
+	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
 	self.articleDisplayContainerView.frame = self.view.bounds;
+	[self.articleDisplayContainerView setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+	self.articleDisplayContainerView.alpha = 0;
+
 	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
 	[self.articleDisplayContainerView addSubview: self.articleDisplayVC.view];
 	[self addChildViewController:self.articleDisplayVC];
 	self.articleDisplayVC.delegate = self;
-	self.articleDisplayContainerView.alpha = 0;
-	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
-
 	[self addScreenPanToArticleDisplay];
 }
 
@@ -193,8 +192,7 @@
 	[self.delegate showTabBar:NO];
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	[self.articleDisplayVC loadStoryAtIndex:cell.indexPath.row fromLoadManager:loadManager];
-	[self.articleDisplayContainerView setFrame:self.view.bounds];
-	[self.articleDisplayContainerView setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+	self.articleDisplayContainerView.frame = self.view.bounds;
 	self.articleDisplayContainerView.alpha = 1;
 	[self.view bringSubviewToFront: self.articleDisplayContainerView];
 
@@ -219,13 +217,13 @@
 			if (sender.numberOfTouches < 1) return;
 			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
 
-			if((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100)  < touchLocation.y) {
+			if((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100) < touchLocation.y) {
 				//this ends the gesture
 				sender.enabled = NO;
 				sender.enabled =YES;
 				return;
 			}
-			self.previousGesturePoint  = touchLocation;
+			self.previousGesturePoint = touchLocation;
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {

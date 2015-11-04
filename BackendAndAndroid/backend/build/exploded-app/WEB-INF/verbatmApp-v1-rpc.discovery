@@ -1,6 +1,6 @@
 {
  "kind": "discovery#rpcDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/PVmXC8MpSLprjBB5mgG6A8z54TI\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/T8Uzcon0dd2_bb8q8jaJS7MzMBk\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -558,6 +558,35 @@
    ],
    "returns": {
     "$ref": "IdentifierListWrapper"
+   },
+   "scopes": [
+    "https://www.googleapis.com/auth/userinfo.email"
+   ]
+  },
+  "verbatmApp.pov.getUserPOVsInfo": {
+   "id": "verbatmApp.pov.getUserPOVsInfo",
+   "allowGet": true,
+   "parameters": {
+    "count": {
+     "type": "integer",
+     "required": true,
+     "format": "int32"
+    },
+    "cursor_string": {
+     "type": "string"
+    },
+    "user_id": {
+     "type": "string",
+     "required": true,
+     "format": "int64"
+    }
+   },
+   "parameterOrder": [
+    "count",
+    "user_id"
+   ],
+   "returns": {
+    "$ref": "ResultsWithCursor"
    },
    "scopes": [
     "https://www.googleapis.com/auth/userinfo.email"

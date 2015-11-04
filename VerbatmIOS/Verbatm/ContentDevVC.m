@@ -11,6 +11,7 @@
 #import "Analytics.h"
 
 #import "ContentDevVC.h"
+#import "ContentDevNavBar.h"
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
 #import "ContentPageElementScrollView.h"
@@ -50,7 +51,7 @@
 
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, UINavigationBarDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDevNavBarDelegate>
 
 #pragma mark Image Manager
 

@@ -36,6 +36,8 @@
 @property (strong, nonatomic) POVLoadManager *povLoader;
 @property (nonatomic) CGPoint recentContentOffset;
 
+@property (strong, nonatomic) UIColor* cellBackgroundColor;
+
 #pragma mark - Publishing POV -
 
 @property (strong, nonatomic) FeedTableViewCell* povPublishingPlaceholderCell;
@@ -122,7 +124,8 @@
 
 #pragma mark - Setting POV Load Manager -
 
--(void) setPovLoadManager:(POVLoadManager *) povLoader {
+-(void) setPovLoadManager:(POVLoadManager *) povLoader andCellBackgroundColor: (UIColor*) cellBackgroundColor {
+	self.cellBackgroundColor = cellBackgroundColor;
 	self.povLoader = povLoader;
 	self.povLoader.delegate = self;
 	[self refreshFeedForFirstTime];
@@ -176,6 +179,7 @@
 		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto
 					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes
 				  likedByCurrentUser:currentUserLikesStory];
+		[cell setCellBackgroundColor: self.cellBackgroundColor];
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}

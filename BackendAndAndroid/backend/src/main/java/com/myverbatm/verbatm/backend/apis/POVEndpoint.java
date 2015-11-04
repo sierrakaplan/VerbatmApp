@@ -196,6 +196,66 @@ public class POVEndpoint {
     }
 
     /**
+     * Lists POV info (info to be displayed in feed) for most upvoted POV's
+     * Also returns cursor so that the client can query from the place they left off.
+     * @param pCount          the maximum number of pov's returned.
+     * @param cursorString    the cursor from the last recents query (can be null)
+     * @param user            the user that requested the entities.
+     * @return List of recent POV info (info to be displayed in feed) and cursor.
+     * @throws com.google.api.server.spi.ServiceException if user is not
+     * authorized
+     */
+    @ApiMethod(path="/getUserPOVs", httpMethod = "GET")
+    public final ResultsWithCursor getUserPOVsInfo(@Named("count") final int pCount,
+                                                   @Named("user_id") final Long userId,
+                                                   @Named("cursor_string") @Nullable final String cursorString,
+                                                   final User user) throws
+        ServiceException {
+
+        int count = pCount;
+
+        // limit the result set to up to MAXIMUM_NUMBER_PLACES places within
+        // up to MAXIMUM_DISTANCE km
+        if (count > MAXIMUM_NUMBER_POVS) {
+            count = MAXIMUM_NUMBER_POVS;
+        } else if (count <= 0) {
+            throw new BadRequestException("Invalid value of 'count' argument");
+        }
+
+        // filter by stories the user has created
+        Query.Filter povIdFilter = new Query.FilterPredicate("creatorUserId", Query.FilterOperator.EQUAL, userId);
+        // Search POV's that user created sorted by date published
+        Query userPOVQuery = new Query("POV")
+            .setFilter(povIdFilter)
+            .addProjection(new PropertyProjection("title", String.class))
+            .addProjection(new PropertyProjection("coverPicUrl", String.class))
+            .addProjection(new PropertyProjection("datePublished", Date.class))
+            .addProjection(new PropertyProjection("numUpVotes", Long.class))
+                // sort by most recent
+            .addSort("datePublished", Query.SortDirection.DESCENDING);
+
+        PreparedQuery preparedQuery = datastore.prepare(userPOVQuery);
+        FetchOptions fetchOptions = FetchOptions.Builder.withLimit(count);
+
+        if (cursorString != null) {
+            fetchOptions.startCursor(Cursor.fromWebSafeString(cursorString));
+        }
+
+        List<POVInfo> results = new ArrayList<>();
+        QueryResultList<Entity> entities = preparedQuery.asQueryResultList(fetchOptions);
+
+        for (Entity entity : entities) {
+            POVInfo povInfo = new POVInfo(entity);
+            povInfo.setCreatorUserId(userId);
+            results.add(povInfo);
+        }
+
+        Collections.sort(results);
+        String trendingCursorString = entities.getCursor().toWebSafeString();
+        return new ResultsWithCursor(results, trendingCursorString);
+    }
+
+    /**
      * Gets the Pages from a POV with given id
      *
      * @param id id of the POV
@@ -218,13 +278,11 @@ public class POVEndpoint {
         PreparedQuery preparedQuery = datastore.prepare(pageIdsQuery);
 
         List<Entity> entities = preparedQuery.asList(FetchOptions.Builder.withDefaults());
-        log.info("Entities returned by query for getPagesFromPOV: " + entities.toString());
         ArrayList<Page> pages = new ArrayList<>();
         for (Entity entity: entities) {
             Long pageID = (Long) entity.getProperty("pageIds");
             Page page = ofy().load().type(Page.class).id(pageID).now();
             pages.add(page);
-            log.info("Page: " + page.toString());
         }
 
         PageListWrapper pageListWrapper = new PageListWrapper();
@@ -251,7 +309,6 @@ public class POVEndpoint {
         PreparedQuery preparedQuery = datastore.prepare(pageIdsQuery);
 
         List<Entity> entities = preparedQuery.asList(FetchOptions.Builder.withDefaults());
-        log.info("Entities returned by query for getUserIdsWhoLikeThisPOV: " + entities.toString());
         ArrayList<Long> userIds = new ArrayList<>();
         for (Entity entity: entities) {
             Long userId = (Long) entity.getProperty("usersWhoHaveLikedIDs");

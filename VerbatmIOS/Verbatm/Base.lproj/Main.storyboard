@@ -10,10 +10,10 @@
         </mutableArray>
     </customFonts>
     <scenes>
-        <!--MainTabBarController-->
+        <!--Tab Bar Controller-->
         <scene sceneID="Ggy-sH-8Xt">
             <objects>
-                <tabBarController storyboardIdentifier="main_tab_bar_controller" title="MainTabBarController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wqM-IM-Uro" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="main_tab_bar_controller" title="Tab Bar Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wqM-IM-Uro" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="2Sz-4e-cTx">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -137,9 +137,6 @@
                                 <rect key="frame" x="48" y="20" width="240" height="128"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <animations/>
-                                <connections>
-                                    <segue destination="3Ea-Ev-H4X" kind="embed" id="kgV-cE-h8s"/>
-                                </connections>
                             </containerView>
                             <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF" userLabel="Top List Container">
                                 <rect key="frame" x="26" y="215" width="262" height="339"/>
@@ -165,10 +162,10 @@
             </objects>
             <point key="canvasLocation" x="-3434" y="-732.5"/>
         </scene>
-        <!--editContentView-->
+        <!--Edit Content-->
         <scene sceneID="W4f-0L-ZeV">
             <objects>
-                <viewController title="editContentView" id="x4u-kZ-n9K" customClass="EditContentVC" sceneMemberID="viewController">
+                <viewController title="Edit Content" id="x4u-kZ-n9K" customClass="EditContentVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uFC-Vd-iYm">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -439,6 +436,36 @@
             </objects>
             <point key="canvasLocation" x="-2680" y="-1310"/>
         </scene>
+        <!--User Drafts-->
+        <scene sceneID="i0X-XU-PPL">
+            <objects>
+                <viewController storyboardIdentifier="user_drafts_vc" title="User Drafts" id="bWz-ew-DAn" customClass="UserDraftsVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="DJB-7N-5FB">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Mfg-7S-8Pn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4915" y="-898"/>
+        </scene>
+        <!--User Stories-->
+        <scene sceneID="eKI-ka-fA5">
+            <objects>
+                <viewController storyboardIdentifier="user_stories_vc" title="User Stories" id="2m0-kX-Tyg" customClass="ArticleListVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="NpA-nt-PIW">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="htX-2P-NkT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4906" y="-281"/>
+        </scene>
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
             <objects>
@@ -448,27 +475,36 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Profile" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="drM-L1-cqF">
-                                <rect key="frame" x="20" y="52" width="275" height="65"/>
+                                <rect key="frame" x="23" y="5" width="275" height="65"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <animations/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Profile page is under construction" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="LpB-F4-Ix8">
-                                <rect key="frame" x="20" y="224" width="293" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="PIY-xz-O0f" userLabel="Stories Container">
+                                <rect key="frame" x="7" y="164" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            </containerView>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="3Td-at-cIZ" userLabel="Drafts Container">
+                                <rect key="frame" x="40" y="310" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <animations/>
+                            </containerView>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="lor-5m-ijj" userLabel="Article Display Container">
+                                <rect key="frame" x="69" y="210" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <animations/>
+                            </containerView>
                         </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="underConstructionLabel" destination="LpB-F4-Ix8" id="JXg-zl-Pb5"/>
+                        <outlet property="articleDisplayContainerView" destination="lor-5m-ijj" id="ukv-Ic-ueS"/>
+                        <outlet property="draftsContainerView" destination="3Td-at-cIZ" id="J4m-XW-cYl"/>
+                        <outlet property="storiesContainerView" destination="PIY-xz-O0f" id="oHV-MQ-W6s"/>
                         <outlet property="userNameLabel" destination="drM-L1-cqF" id="QeN-6Z-fux"/>
                     </connections>
                 </viewController>
@@ -476,73 +512,24 @@
             </objects>
             <point key="canvasLocation" x="-4475" y="-559"/>
         </scene>
-        <!--Permission Code PageVC-->
-        <scene sceneID="cNa-nE-r4g">
+        <!--User Article Display-->
+        <scene sceneID="wLm-HZ-LGJ">
             <objects>
-                <viewController id="J3m-rX-1gc" customClass="PermissionCodePageVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="1YT-UX-oLz">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="logo" id="Ia4-nI-UX3">
-                                <rect key="frame" x="118" y="28" width="85" height="161"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                            </imageView>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter Access Code" textAlignment="natural" minimumFontSize="17" id="SXc-cW-tSX">
-                                <rect key="frame" x="40" y="231" width="240" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
-                        </subviews>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <outlet property="fieldEntry" destination="SXc-cW-tSX" id="9V7-de-0sx"/>
-                        <outlet property="logo" destination="Ia4-nI-UX3" id="UXR-Oa-tHq"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="OXP-T8-HXg" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-4385" y="-790"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="SlX-zR-bpV">
-            <objects>
-                <viewController id="3Ea-Ev-H4X" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="FGp-wU-bSH">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Y0a-fl-uwS" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="bWK-XT-SUK">
-            <objects>
-                <viewController id="MpX-PP-yYk" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Qz1-LC-THw">
+                <viewController storyboardIdentifier="user_article_display_vc" title="User Article Display" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fb6-20-IL6" customClass="ArticleDisplayVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="S9s-GP-1Ky">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="fCt-Ne-5zl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="o0d-Fd-4uJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="-4128" y="-471"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="logo" width="130" height="266"/>
-    </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="O0U-1G-Oy1"/>
         <segue reference="vqA-Ve-rLQ"/>
+        <segue reference="UxX-nw-l5Q"/>
     </inferredMetricsTieBreakers>
 </document>
