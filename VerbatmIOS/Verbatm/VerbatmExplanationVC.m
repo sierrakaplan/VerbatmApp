@@ -17,6 +17,10 @@
 @property (strong, nonatomic) UIButton * exitButton;
 @property (strong, nonatomic) UITextView* textView;
 
+#define FONT @"HelveticaNeue-Medium"
+#define FONT_SIZE 20.f
+#define TEXT_OFFSET 40.f
+
 @end
 
 @implementation VerbatmExplanationVC
@@ -47,9 +51,12 @@
 
 -(UITextView*) textView {
 	if (!_textView) {
-		_textView = [[UITextView alloc] initWithFrame: self.view.bounds];
-		_textView.font = [UIFont fontWithName:DEFAULT_FONT size:16.f];
-		_textView.textColor = [UIColor blackColor];
+		_textView = [[UITextView alloc] initWithFrame: CGRectMake(TEXT_OFFSET, TEXT_OFFSET,
+																  self.view.frame.size.width - TEXT_OFFSET*2,
+																  self.view.frame.size.height - TEXT_OFFSET*2)];
+		_textView.backgroundColor = self.view.backgroundColor;
+		_textView.font = [UIFont fontWithName:FONT size:FONT_SIZE];
+		_textView.textColor = [UIColor whiteColor];
 		_textView.text = @"We're currently testing stories that comply with the following pattern: \n \
 			1. Photos, Videos, or Text (PVT) that introduces you and the event you're going to. Talk a little about how you feel about the event (excited, interested, etc.) \n \
 			2. PVT that gives the viewer a sense of the event--cool moments and your reaction to them. \n \
