@@ -120,7 +120,7 @@
 #define CONTENT_SIZE_OFFSET 20
 #define OFFSET_BELOW_ARTICLE_TITLE 30
 //distance between elements on the content view page
-#define ELEMENT_OFFSET_DISTANCE 20
+#define ELEMENT_OFFSET_DISTANCE 25
 //the distance we want the cursor from the base of the view at all times. When the
 //cursor is below this threshold we scroll the view down
 #define CURSOR_BASE_GAP 10

@@ -76,13 +76,17 @@
 
 -(void)createTextCreationButton {
     [self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
-    [self.textCreationButton addTarget:self action:@selector(textButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+    [self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.textCreationButton];
     [self bringSubviewToFront:self.textCreationButton];
+	[self addLongPress];
 }
 
--(void)textButtonClicked:(UIButton*) sender {
-	[self editText];
+// long press does the same thing as text button
+-(void) addLongPress {
+	UILongPressGestureRecognizer * longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editText)];
+	longPressRecognizer.minimumPressDuration = 0.1;
+	[self addGestureRecognizer:longPressRecognizer];
 }
 
 -(void) editText {
@@ -206,17 +210,19 @@
 #pragma mark Filters
 
 -(void)changeFilteredImageLeft{
-    if (self.imageIndex < ([self.filteredImages count]-1)) {
-        self.imageIndex = self.imageIndex +1;
-        [self.textAndImageView.imageView setImage:self.filteredImages[self.imageIndex]];
-    }
+    if (self.imageIndex >= ([self.filteredImages count]-1)) {
+		self.imageIndex = -1;
+	}
+	self.imageIndex = self.imageIndex+1;
+	[self.textAndImageView.imageView setImage:self.filteredImages[self.imageIndex]];
 }
 
 -(void)changeFilteredImageRight{
-    if (self.imageIndex > 0) {
-        self.imageIndex = self.imageIndex -1;
-        [self.textAndImageView.imageView setImage:self.filteredImages[self.imageIndex]];
-    }
+	if (self.imageIndex <= 0) {
+		self.imageIndex = [self.filteredImages count];
+	}
+	self.imageIndex = self.imageIndex-1;
+	[self.textAndImageView.imageView setImage:self.filteredImages[self.imageIndex]];
 }
 
 -(NSInteger) getFilteredImageIndex {
@@ -327,50 +333,7 @@
 				self.textAndImageView.textView.frame.size.height + TOUCH_BUFFER);
 }
 
-
-
-#pragma mark - Filters -
-
-//-(void) setFilteredPhotos {
-//    NSArray* filterNames = [UIImage getPhotoFilters];
-//    self.filteredImages = [[NSMutableArray alloc] initWithCapacity:[filterNames count]+1];
-//    //original photo
-//    [self.filteredImages addObject:self.image];
-//    [self createFilteredImagesFromImage:self.image andFilterNames:filterNames];
-//}
-//
-////return array of uiimage with filter from image
-//-(void)createFilteredImagesFromImage:(UIImage *)image andFilterNames:(NSArray*)filterNames{
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-//        NSData  * imageData = UIImagePNGRepresentation(image);
-//        //Background Thread
-//        for (NSString* filterName in filterNames) {
-//            NSLog(@"Adding filtered photo.");
-//            @autoreleasepool {
-//                CIImage *beginImage =  [CIImage imageWithData: imageData];
-//                CIContext *context = [CIContext contextWithOptions:nil];
-//                CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues: kCIInputImageKey, beginImage, nil];
-//                CIImage *outputImage = [filter outputImage];
-//                CGImageRef CGImageRef = [context createCGImage:outputImage fromRect:[outputImage extent]];
-//                UIImage* imageWithFilter = [UIImage imageWithCGImage:CGImageRef];
-//                CGImageRelease(CGImageRef);
-//                
-//                dispatch_async(dispatch_get_main_queue(), ^{
-//                    [self.filteredImages addObject:imageWithFilter];
-//                });
-//            }
-//        }
-//    });
-//}
-
-
-
-
-
-
-
-
-#pragma mark - lazy instantiation -
+#pragma mark - Lazy Instantiation -
 
 -(UIButton *)textCreationButton{
     if(!_textCreationButton){

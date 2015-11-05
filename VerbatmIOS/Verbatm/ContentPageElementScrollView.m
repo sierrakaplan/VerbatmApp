@@ -86,11 +86,6 @@
     [self addSubview:self.deleteButton];
 }
 
--(void)removeTheDeleteButton{
-    [self.deleteButton removeFromSuperview];
-    self.deleteButton = nil;
-}
-
 -(void)deleteButtonPressed:(UIButton*) sender{
     [self.contentPageElementScrollViewDelegate deleteButtonPressedOnContentPageElementScrollView:self];
 }
@@ -99,15 +94,6 @@
 -(void)centerView{
     self.contentOffset = self.initialContentOffset;
 }
-
-#pragma mark - scrolling delegate functions -
-
-
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-//    
-//    
-//    
-//}
 
 #pragma mark - Change Page Element -
 
@@ -194,7 +180,7 @@
 	}
 	self.collectionIsOpen = YES;
 	[self.pageElement removeFromSuperview];
-    [self removeTheDeleteButton];
+    [self.deleteButton removeFromSuperview];
 	[self displayCollectionPinchViews:[(CollectionPinchView*)self.pageElement pinchedObjects]];
 	return YES;
 }
@@ -484,6 +470,7 @@
 		self.collectionIsOpen = NO;
 		self.contentSize = self.initialContentSize;
 		self.contentOffset = self.initialContentOffset;
+		[self addSubview:self.deleteButton];
 		self.collectionPinchViews = nil;
 	} else {
 		[self shiftPinchViewsAfterIndex:index];

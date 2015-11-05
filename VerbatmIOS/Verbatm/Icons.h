@@ -39,9 +39,7 @@
 #define REPLACE_COVER_PHOTO_ICON @"replace_photo"
 #define DELETE_ICON @"trash_can"
 
-#define PREVIEW_ICON @"text_preview"
-#define BACK_ICON @"text_back"
-#define PUBLISH_ICON @"text_publish"
+#define INFO_ICON @"info_icon"
 
 #pragma mark Edit Content View
 

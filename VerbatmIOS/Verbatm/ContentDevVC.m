@@ -525,7 +525,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
-		newElementScrollViewFrame = CGRectMake(0,self.titleField.frame.origin.y + self.titleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		newElementScrollViewFrame = CGRectMake(0,self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		index = 0;
 	} else {
 		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
@@ -542,6 +543,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 
     [self.mainScrollView addSubview: newElementScrollView];
+	self.addMediaBelowView = newElementScrollView;
     [self shiftElementsBelowView: self.coverPicView];
     
 }
@@ -1291,9 +1293,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
 		self.selectedView_PAN.frame = newFrame;
-       
-	}completion:^(BOOL finished) {
-        //is the pinchview above the cover photo?
+	} completion:^(BOOL finished) {
+        //swap pinch view with cover photo
         if (!topView){
             if([self selctedViewAboveCoverPhoto]){
                 if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
@@ -1302,7 +1303,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
                 }
             }else{
                 if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
-                    
                     [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
                      self.defaultPinchViewRadius*2];
                 }
@@ -1440,8 +1440,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
             [self deleteScrollView:self.selectedView_PAN];
         }
         
-    }else{
-        self.selectedView_PAN.frame = self.previousFrameInLongPress;
+    } else {
+		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
+			 self.selectedView_PAN.frame = self.previousFrameInLongPress;
+		}];
     }
 	
     if(self.selectedView_PAN)[self.selectedView_PAN.pageElement markAsSelected:NO];
@@ -1613,6 +1615,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) addImageToStream: (UIImage*) image {
 	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+	// place it at the bottom of the deck, above base element view selector
+	self.addMediaBelowView = self.pageElementScrollViews.count > 1 ? self.pageElementScrollViews[self.pageElementScrollViews.count-2] : nil;
 	[self createPinchViewFromImage: image];
 }
 
@@ -1773,12 +1777,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andImage:image];
-	if (self.addMediaBelowView) {
-		[self newPinchView: newPinchView belowView: self.addMediaBelowView];
-		self.addMediaBelowView = nil;
-	} else {
-		[self newPinchView:newPinchView belowView:nil];
-	}
+	[self newPinchView: newPinchView belowView: self.addMediaBelowView];
 }
 
 -(void) createPinchViewFromVideoAsset:(AVURLAsset*) videoAsset andPHAssetLocalID: (NSString*) phAssetLocalId {
@@ -1787,12 +1786,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 															andVideo: videoAsset
 										   andPHAssetLocalIdentifier:phAssetLocalId];
 
-	if (self.addMediaBelowView) {
-		[self newPinchView: newPinchView belowView: self.addMediaBelowView];
-		self.addMediaBelowView = nil;
-	} else {
-		[self newPinchView:newPinchView belowView:nil];
-	}
+	[self newPinchView: newPinchView belowView: self.addMediaBelowView];
 }
 
 #pragma mark - Returning Pinch Views -

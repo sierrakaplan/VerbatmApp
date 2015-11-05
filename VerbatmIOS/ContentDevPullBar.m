@@ -59,7 +59,7 @@
 
 	CGRect questionButtonFrame = CGRectMake(NAV_ICON_OFFSET, NAV_ICON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
 	self.questionMarkButton = [self getButtonWithFrame: questionButtonFrame];
-	[self.questionMarkButton setImage:[UIImage imageNamed:DONE_CHECKMARK] forState:UIControlStateNormal];
+	[self.questionMarkButton setImage:[UIImage imageNamed:INFO_ICON] forState:UIControlStateNormal];
 	[self.questionMarkButton addTarget:self action:@selector(questionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
 
