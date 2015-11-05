@@ -252,7 +252,7 @@
 		A52919701B5D8BE800233712 /* SizesAndPositions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SizesAndPositions.h; sourceTree = "<group>"; };
 		A52919711B5D8E0F00233712 /* Styles.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Styles.h; sourceTree = "<group>"; };
 		A52919721B5D921500233712 /* Durations.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Durations.h; sourceTree = "<group>"; };
-		A52919731B5DA4C800233712 /* Strings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Strings.h; sourceTree = "<group>"; };
+		A52919731B5DA4C800233712 /* StringsAndAppConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StringsAndAppConstants.h; sourceTree = "<group>"; };
 		A52919741B5DD24F00233712 /* UIView+Glow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Glow.h"; sourceTree = "<group>"; };
 		A52919751B5DD24F00233712 /* UIView+Glow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Glow.m"; sourceTree = "<group>"; };
 		A535E4FB1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffectsAndTransforms.h"; sourceTree = "<group>"; };
@@ -296,7 +296,6 @@
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		A56F68701B643B1400CE5744 /* VerbatmKeyboardToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmKeyboardToolBar.h; sourceTree = "<group>"; };
 		A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmKeyboardToolBar.m; sourceTree = "<group>"; };
-		A56F68781B6592C400CE5744 /* PhotoFilters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PhotoFilters.h; sourceTree = "<group>"; };
 		A56F68791B65B25700CE5744 /* CollectionPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionPinchView.h; sourceTree = "<group>"; };
 		A56F687A1B65B25700CE5744 /* CollectionPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CollectionPinchView.m; sourceTree = "<group>"; };
 		A56F687F1B65B43D00CE5744 /* ImagePinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImagePinchView.h; sourceTree = "<group>"; };
@@ -745,22 +744,6 @@
 			name = "Custom Bars";
 			sourceTree = "<group>";
 		};
-		A56F68731B643C2600CE5744 /* Related to Images */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "Related to Images";
-			sourceTree = "<group>";
-		};
-		A56F68741B643C4E00CE5744 /* Related to Text */ = {
-			isa = PBXGroup;
-			children = (
-				A58656601B602038008E358C /* TextOverAVEView.h */,
-				A58656611B602038008E358C /* TextOverAVEView.m */,
-			);
-			name = "Related to Text";
-			sourceTree = "<group>";
-		};
 		A56F68751B643D0E00CE5744 /* Camera Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -773,13 +756,13 @@
 			name = "Camera Views";
 			sourceTree = "<group>";
 		};
-		A56F68761B643D4B00CE5744 /* Related to Video */ = {
+		A56F68761B643D4B00CE5744 /* Video Player */ = {
 			isa = PBXGroup;
 			children = (
 				A562D50E1B506D4500F566F4 /* VideoPlayerView.h */,
 				A562D50C1B506D2800F566F4 /* VideoPlayerView.m */,
 			);
-			name = "Related to Video";
+			name = "Video Player";
 			sourceTree = "<group>";
 		};
 		A56F68771B643EB200CE5744 /* Scroll Views */ = {
@@ -1156,9 +1139,7 @@
 				C748836B1B48A9E200E64ED9 /* Pinch Views */,
 				A56F68771B643EB200CE5744 /* Scroll Views */,
 				A56F68751B643D0E00CE5744 /* Camera Views */,
-				A56F68741B643C4E00CE5744 /* Related to Text */,
-				A56F68731B643C2600CE5744 /* Related to Images */,
-				A56F68761B643D4B00CE5744 /* Related to Video */,
+				A56F68761B643D4B00CE5744 /* Video Player */,
 				A56F686F1B643ADE00CE5744 /* Custom Bars */,
 				A59CC2861B6C2E2F00B4907C /* Table Views */,
 				A5E860081B9919F500E148D0 /* Viewing POV's */,
@@ -1295,8 +1276,7 @@
 				A52919701B5D8BE800233712 /* SizesAndPositions.h */,
 				A52919711B5D8E0F00233712 /* Styles.h */,
 				A52919721B5D921500233712 /* Durations.h */,
-				A52919731B5DA4C800233712 /* Strings.h */,
-				A56F68781B6592C400CE5744 /* PhotoFilters.h */,
+				A52919731B5DA4C800233712 /* StringsAndAppConstants.h */,
 				A55A59CF1BB470D300C7CE7A /* SegueIDs.h */,
 			);
 			name = "Constants ";
@@ -1366,6 +1346,8 @@
 				C7E6C13E1A4E394600863893 /* VideoAVE.m */,
 				A54689211BA3E1BC00F40E54 /* CoverPhotoAVE.h */,
 				A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */,
+				A58656601B602038008E358C /* TextOverAVEView.h */,
+				A58656611B602038008E358C /* TextOverAVEView.m */,
 			);
 			name = "AVEs ";
 			sourceTree = "<group>";

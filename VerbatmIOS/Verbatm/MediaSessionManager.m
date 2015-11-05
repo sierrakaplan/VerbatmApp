@@ -8,7 +8,7 @@
 
 #import "Durations.h"
 #import "MediaSessionManager.h"
-#import "Strings.h"
+#import "StringsAndAppConstants.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 
 @interface MediaSessionManager() <AVCaptureFileOutputRecordingDelegate>

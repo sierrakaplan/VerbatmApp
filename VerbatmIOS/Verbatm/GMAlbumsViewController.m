@@ -11,7 +11,7 @@
 #import "GMGridViewCell.h"
 #import "GMGridViewController.h"
 #import "GMAlbumsViewCell.h"
-#import "Strings.h"
+#import "StringsAndAppConstants.h"
 
 @import Photos;
 

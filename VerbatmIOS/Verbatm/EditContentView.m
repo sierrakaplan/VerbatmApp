@@ -12,9 +12,10 @@
 #import "EditContentView.h"
 #import "Icons.h"
 #import "Notifications.h"
-#import "Styles.h"
 
 #import "SizesAndPositions.h"
+#import "StringsAndAppConstants.h"
+#import "Styles.h"
 
 #import "TextAndImageView.h"
 
@@ -147,6 +148,18 @@
 		[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
 			self.textAndImageView.textView.frame = self.userSetFrame;
 		}];
+	}
+}
+
+// enforce word limit
+- (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+	NSString* newText = [textView.text stringByReplacingCharactersInRange:range withString:text];
+	NSString *trimmedText = [newText stringByReplacingOccurrencesOfString:@" " withString:@""];
+
+	if (newText.length - trimmedText.length > TEXT_WORD_LIMIT) {
+		return NO;
+	} else {
+		return YES;
 	}
 }
 

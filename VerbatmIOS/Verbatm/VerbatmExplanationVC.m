@@ -9,6 +9,7 @@
 #import "Icons.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
+#import "StringsAndAppConstants.h"
 #import "Styles.h"
 #import "VerbatmExplanationVC.h"
 
@@ -57,11 +58,8 @@
 		_textView.backgroundColor = self.view.backgroundColor;
 		_textView.font = [UIFont fontWithName:FONT size:FONT_SIZE];
 		_textView.textColor = [UIColor whiteColor];
-		_textView.text = @"We're currently testing stories that comply with the following pattern: \n \
-			1. Photos, Videos, or Text (PVT) that introduces you and the event you're going to. Talk a little about how you feel about the event (excited, interested, etc.) \n \
-			2. PVT that gives the viewer a sense of the event--cool moments and your reaction to them. \n \
-			3. PVT that summarizes what you want people to know about the event, and what your main takeaway has been from attending. \
-		";
+		_textView.editable = NO;
+		_textView.text = VERBATM_EXPLANATION_TEXT;
 	}
 	return _textView;
 }

@@ -8,6 +8,7 @@
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "StringsAndAppConstants.h"
 #import "TextAndImageView.h"
 #import "UITextView+Utilities.h"
 
@@ -25,7 +26,7 @@
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 		[self.imageView setImage: image];
         [self addSubview:self.imageView];
-        //[self setImageViewWithImage:image];
+        // adding blur [self setImageViewWithImage:image];
 		[self.textView setText: text];
 		[self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
 											textYPosition, self.textView.frame.size.width,
@@ -35,6 +36,7 @@
 	return self;
 }
 
+// IMAGE BLUR
 //
 //-(void) setImageViewWithImage:(UIImage*) image {
 //    //scale image
@@ -107,11 +109,6 @@
 		_textView.editable = NO;
 	}
 	return _textView;
-}
-
-//Formats a textview to the appropriate settings
--(void) formatTextView: (UITextView *) textView {
-
 }
 
 @end

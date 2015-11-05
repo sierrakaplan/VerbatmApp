@@ -16,12 +16,13 @@
 #import "SegueIDs.h"
 #import "UserPovInProgress.h"
 
-@interface EditContentVC()<EditContentViewDelegate>
+@interface EditContentVC() <EditContentViewDelegate>
 
 @property (strong, nonatomic) UIButton * exitButton;
 @property (strong, nonatomic) EditContentView * openEditContentView;
 
 @end
+
 @implementation EditContentVC
 
 -(void)viewDidLoad {

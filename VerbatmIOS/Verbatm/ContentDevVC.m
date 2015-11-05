@@ -36,7 +36,7 @@
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
-#import "Strings.h"
+#import "StringsAndAppConstants.h"
 #import "Styles.h"
 
 #import "UIImage+ImageEffectsAndTransforms.h"

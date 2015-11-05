@@ -110,9 +110,10 @@
 -(void) setUpTabVCs {
 	self.userDraftsVC = [self.storyboard instantiateViewControllerWithIdentifier:USER_DRAFTS_VC_ID];
 	self.userStoriesVC = [self.storyboard instantiateViewControllerWithIdentifier:USER_STORIES_VC_ID];
+	//TODO: delete this
 	NSNumber* aishwaryaId = [NSNumber numberWithLongLong:5432098273886208];
-	[self.userStoriesVC setPovLoadManager:[[POVLoadManager alloc] initWithUserId: aishwaryaId]
-				   andCellBackgroundColor:[UIColor whiteColor]]; //TODO:self.currentUser.identifier]];
+	[self.userStoriesVC setPovLoadManager:[[POVLoadManager alloc] initWithUserId: self.currentUser.identifier]
+				   andCellBackgroundColor:[UIColor whiteColor]];
 	self.userStoriesVC.delegate = self;
 
 	[self.storiesContainerView addSubview:self.userStoriesVC.view];
