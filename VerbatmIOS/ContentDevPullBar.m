@@ -23,6 +23,8 @@
 @property (strong, nonatomic) UIImage* cameraImage;
 @property (strong, nonatomic) UIImage* pullDownImage;
 
+@property (strong, nonatomic) UIButton *questionMarkButton;
+
 #define PULSE_DURATION 0.9
 #define PULSE_DISTANCE 15
 
@@ -35,7 +37,7 @@
 
 	self = [super initWithFrame:frame];
 	if(self) {
-		[self setBackgroundColor: [UIColor clearColor]];
+		[self setBackgroundColor: [UIColor whiteColor]];
         [self createButtons];
 		[self switchToPullDown];
 	}
@@ -44,16 +46,21 @@
 
 //initialize all buttons, for all modes
 -(void)createButtons {
-
-	self.switchModeButtonFrame = CGRectMake(0, NAV_ICON_OFFSET, self.frame.size.width, NAV_ICON_SIZE);
+	self.switchModeButtonFrame = CGRectMake(self.frame.size.width/2.f - NAV_ICON_SIZE/2.f,
+											NAV_ICON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
 	self.switchModeButton = [self getButtonWithFrame: self.switchModeButtonFrame];
-	[self.switchModeButton addTarget:self action:@selector(switchModeButtonReleased:) forControlEvents:UIControlEventTouchUpInside];
+	[self.switchModeButton addTarget:self action:@selector(switchModeButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 	self.pullDownBackgroundSquare = [[UIView alloc] initWithFrame:CGRectMake(self.switchModeButtonFrame.origin.x +
 																			 self.switchModeButtonFrame.size.width/2.f - NAV_BAR_HEIGHT/2.f,
 																			 0, NAV_BAR_HEIGHT, NAV_BAR_HEIGHT)];
 	self.pullDownBackgroundSquare.backgroundColor = [UIColor blackColor];
 	self.pullDownImage = [UIImage imageNamed: PULLDOWN_ICON];
 	self.cameraImage = [UIImage imageNamed: CAMERA_BUTTON_ICON];
+
+	CGRect questionButtonFrame = CGRectMake(NAV_ICON_OFFSET, NAV_ICON_OFFSET, NAV_ICON_SIZE, NAV_ICON_SIZE);
+	self.questionMarkButton = [self getButtonWithFrame: questionButtonFrame];
+	[self.questionMarkButton setImage:[UIImage imageNamed:DONE_CHECKMARK] forState:UIControlStateNormal];
+	[self.questionMarkButton addTarget:self action:@selector(questionButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 -(UIButton*) getButtonWithFrame: (CGRect)frame  {
@@ -106,11 +113,7 @@
 
 # pragma mark - Button actions on touch up (send message to delegates)
 
-- (void) switchModeButtonReleased:(UIButton *)sender {
-    
-	if (!self.delegate) {
-//		NSLog(@"No content dev pull bar delegate set.");
-	}
+- (void) switchModeButtonPressed:(UIButton *)sender {
 	switch(self.mode) {
 		case PullBarModeMenu: {
 			[self.delegate cameraButtonPressed];
@@ -121,6 +124,10 @@
 			break;
 		}
 	}
+}
+
+-(void) questionButtonPressed: (UIButton*) sender{
+	[self.delegate questionButtonPressed];
 }
 
 @end

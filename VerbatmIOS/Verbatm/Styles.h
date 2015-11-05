@@ -17,6 +17,12 @@
 
 #define SWITCH_LABEL_FONT @"Futura-Medium"
 
+#pragma mark Navigation Bars
+
+#define NAVIGATION_BAR_TEXT_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
+#define NAVIGATION_BAR_BUTTON_FONT @"HelveticaNeue-Medium"
+#define NAVIGATION_BAR_BUTTON_FONT_SIZE 14.f
+
 #define TAB_BAR_COLOR whiteColor
 #define SELECTED_TAB_BAR_COLOR grayColor
 #define ADK_TAB_COLOR blackColor
@@ -52,11 +58,6 @@
 #define ADD_COVER_PIC_TEXT_SIZE 15.f
 #define ADD_COVER_PIC_FONT @"HelveticaNeue-Light"
 #define COVER_PIC_CIRCLE_COLOR whiteColor
-
-#pragma mark PullBar
-
-#define PREVIEW_BUTTON_FONT @"HelveticaNeue-Bold"
-#define PREVIEW_BUTTON_FONT_SIZE 15
 
 #pragma mark PinchViews
 

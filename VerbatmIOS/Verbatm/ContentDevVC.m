@@ -11,7 +11,7 @@
 #import "Analytics.h"
 
 #import "ContentDevVC.h"
-#import "ContentDevNavBar.h"
+#import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
 #import "ContentPageElementScrollView.h"
@@ -51,7 +51,7 @@
 
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDevNavBarDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate>
 
 #pragma mark Image Manager
 
@@ -133,8 +133,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 #define WHAT_IS_IT_LIKE_TEXT @"tell your story"
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
-#define TITLE_FIELD_Y_OFFSET (CONTENT_DEV_NAV_BAR_OFFSET*2 + NAV_ICON_SIZE)
-#define TITLE_FIELD_X_OFFSET 7
+#define TITLE_FIELD_Y_OFFSET 10.f
+#define TITLE_FIELD_X_OFFSET 7.f
 #define TITLE_FIELD_HEIGHT 100
 #define MAX_TITLE_CHARACTERS 40
 
@@ -143,8 +143,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 #define REPLACE_PHOTO_YOFFSET 20
 #define REPLACE_PHOTO_XsOFFSET 10
-
-#define BASE_MAINSCROLLVIEW_CONTENT_SIZE self.view.frame.size.height + 1
 
 #define COVER_PIC_RADIUS (self.defaultPinchViewRadius * 3.f/4.f)
 @end
@@ -184,11 +182,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void) setFrameMainScrollView {
-	self.mainScrollView.frame= self.view.frame;
+	self.mainScrollView.frame = CGRectMake(0.f, CUSTOM_NAV_BAR_HEIGHT,
+										   self.view.frame.size.width, self.view.frame.size.height - CUSTOM_NAV_BAR_HEIGHT);
 	self.mainScrollView.scrollEnabled = YES;
 	self.mainScrollView.bounces = YES;
-	//just to give it initial bounce
-	self.mainScrollView.contentSize = CGSizeMake(0, BASE_MAINSCROLLVIEW_CONTENT_SIZE);
 }
 
 
@@ -202,8 +199,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 -(void) formatNavBar {
+	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
+	[self.navBar createMiddleButtonWithTitle:@"SAVE DRAFT" orImage:nil];
+	[self.navBar createRightButtonWithTitle:@"PREVIEW" orImage:nil];
 	self.navBar.delegate = self;
-	[self.mainScrollView addSubview: self.navBar];
+	[self.view addSubview: self.navBar];
 }
 
 -(void) createBaseSelector {
@@ -344,14 +344,22 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 #pragma mark - Nav Bar Delegate Methods -
-//TODO: make navigation bar
--(void) previewButtonPressed {
-	[self closeAllOpenCollections];
-	[self.delegate previewButtonPressed];
+
+#pragma mark Close Button
+-(void) leftButtonPressed {
+	[self.delegate closeButtonPressed];
 }
 
--(void) backButtonPressed {
-	[self.delegate backButtonPressed];
+#pragma mark Save Draft Button
+-(void) middleButtonPressed {
+	// TODO: save draft
+	[self.delegate saveDraftButtonPressed];
+}
+
+#pragma mark Preview Button
+-(void) rightButtonPressed {
+	[self closeAllOpenCollections];
+	[self.delegate previewButtonPressed];
 }
 
 #pragma mark - Configure Text Fields -
@@ -397,9 +405,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 -(void) adjustMainScrollViewContentSize {
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 		ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
-		float y_Offset = (self.pageElementScrollViews.count == 1 ) ? BASE_MAINSCROLLVIEW_CONTENT_SIZE :lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET;
-
-		self.mainScrollView.contentSize = CGSizeMake(0,y_Offset);
+		self.mainScrollView.contentSize = CGSizeMake(0, lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET);
 	}];
 }
 
@@ -480,9 +486,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
 		[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
 		self.numPinchViews--;
-		if (self.numPinchViews < 1) {
-			[self.navBar enablePreviewButton:NO];
-		}
 	}
 
 	[self.pageElementScrollViews removeObject:pageElementScrollView];
@@ -516,9 +519,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	}
 
 	[[UserPovInProgress sharedInstance] addPinchView:pinchView];
-    
 	[self addTapGestureToPinchView:pinchView];
-
 	// must be below base media tile selector
 	NSInteger index = self.pageElementScrollViews.count-1;
 
@@ -533,8 +534,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
 	newElementScrollView.delegate = self; //scroll view delegate
 	newElementScrollView.contentPageElementScrollViewDelegate = self;
-
-    [self.navBar enablePreviewButton:YES];
 	self.numPinchViews++;
 
 	//thread safety
@@ -1491,9 +1490,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	//update user defaults if was pinch view
 	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
 		[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)pageElementScrollView.pageElement];
-		if (self.numPinchViews < 1) {
-			[self.navBar enablePreviewButton:YES];
-		}
 		self.numPinchViews++;
 	}
 
@@ -1586,7 +1582,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		[scrollView removeFromSuperview];
 	}
 	[self.pageElementScrollViews removeAllObjects];
-	[self.navBar enablePreviewButton:NO];
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
@@ -1880,9 +1875,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	return _baseMediaTileSelector;
 }
 
--(ContentDevNavBar*) navBar {
+-(CustomNavigationBar*) navBar {
 	if (!_navBar) {
-		_navBar = [[ContentDevNavBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CONTENT_DEV_NAV_BAR_HEIGHT)];
+		_navBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
+										  andBackgroundColor:[UIColor whiteColor]];
 	}
 	return _navBar;
 }

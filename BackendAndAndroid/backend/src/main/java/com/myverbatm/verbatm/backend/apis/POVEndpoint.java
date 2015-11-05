@@ -128,10 +128,6 @@ public class POVEndpoint {
         }
 
         String recentsCursorString = entities.getCursor().toWebSafeString();
-
-        log.info("Recent POVInfos: " + results.toString());
-        log.info("Recent cursor string: " + recentsCursorString);
-
         return new ResultsWithCursor(results, recentsCursorString);
     }
 
@@ -196,14 +192,13 @@ public class POVEndpoint {
     }
 
     /**
-     * Lists POV info (info to be displayed in feed) for most upvoted POV's
-     * Also returns cursor so that the client can query from the place they left off.
-     * @param pCount          the maximum number of pov's returned.
-     * @param cursorString    the cursor from the last recents query (can be null)
-     * @param user            the user that requested the entities.
-     * @return List of recent POV info (info to be displayed in feed) and cursor.
-     * @throws com.google.api.server.spi.ServiceException if user is not
-     * authorized
+     * Returns a list of all the POV's made by a specific user along with the cursor string
+     * @param pCount Number of POV's to return
+     * @param userId ID of the user who made the POV's to return
+     * @param cursorString Cursor string marking the place results were last returned from (can be null)
+     * @param user
+     * @return List of POV's made by user and the cursor string
+     * @throws ServiceException
      */
     @ApiMethod(path="/getUserPOVs", httpMethod = "GET")
     public final ResultsWithCursor getUserPOVsInfo(@Named("count") final int pCount,
@@ -223,10 +218,10 @@ public class POVEndpoint {
         }
 
         // filter by stories the user has created
-        Query.Filter povIdFilter = new Query.FilterPredicate("creatorUserId", Query.FilterOperator.EQUAL, userId);
+        Query.Filter userIdFilter = new Query.FilterPredicate("creatorUserId", Query.FilterOperator.EQUAL, userId);
         // Search POV's that user created sorted by date published
         Query userPOVQuery = new Query("POV")
-            .setFilter(povIdFilter)
+            .setFilter(userIdFilter)
             .addProjection(new PropertyProjection("title", String.class))
             .addProjection(new PropertyProjection("coverPicUrl", String.class))
             .addProjection(new PropertyProjection("datePublished", Date.class))
@@ -251,8 +246,8 @@ public class POVEndpoint {
         }
 
         Collections.sort(results);
-        String trendingCursorString = entities.getCursor().toWebSafeString();
-        return new ResultsWithCursor(results, trendingCursorString);
+        String resultCursorString = entities.getCursor().toWebSafeString();
+        return new ResultsWithCursor(results, resultCursorString);
     }
 
     /**

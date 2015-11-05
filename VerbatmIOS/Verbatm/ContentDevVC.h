@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 @import Photos;
 
-#import "ContentDevNavBar.h"
+#import "CustomNavigationBar.h"
 #import "VerbatmScrollView.h"
 #import "EditContentView.h"
 
@@ -26,8 +26,10 @@
 //or when undo and preview are/n't possible
 @protocol ContentDevVCDelegate <NSObject>
 
--(void) backButtonPressed;
+-(void) closeButtonPressed;
+-(void) saveDraftButtonPressed;
 -(void) previewButtonPressed;
+
 -(void) showPullBar: (BOOL) showPullBar withTransition: (BOOL) withTransition;
 
 @end
@@ -45,7 +47,7 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 //Delegate in order to tell parent view controller when pull bar should be changed
 @property (strong, nonatomic) id<ContentDevVCDelegate> delegate;
 @property (strong, nonatomic) UITextField *titleField;
-@property (strong, nonatomic) ContentDevNavBar* navBar;
+@property (strong, nonatomic) CustomNavigationBar* navBar;
 
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;

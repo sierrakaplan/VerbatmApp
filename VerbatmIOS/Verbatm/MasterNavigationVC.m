@@ -90,7 +90,6 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
     if(![[UserSetupParameters sharedInstance]blackCircleInstructionShown]) {
 		[self alertPullTrendingIcon];
 	}
-    
 }
 
 -(void)viewDidDisappear:(BOOL)animated {

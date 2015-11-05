@@ -6,20 +6,23 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+
 #import "PreviewDisplayView.h"
-#import "UIView+Glow.h"
-#import "SizesAndPositions.h"
-#import "Icons.h"
-#import "Styles.h"
-#import "Strings.h"
-#import "Durations.h"
+
 #import "AveTypeAnalyzer.h"
+#import "CoverPhotoAVE.h"
+#import "CustomNavigationBar.h"
+#import "Durations.h"
+#import "Icons.h"
 #import "POVView.h"
 #import "PhotoAVE.h"
-#import "CoverPhotoAVE.h"
+#import "SizesAndPositions.h"
+#import "Strings.h"
+#import "Styles.h"
+#import "UIView+Glow.h"
 #import "UIView+Effects.h"
 
-@interface PreviewDisplayView() <UIGestureRecognizerDelegate, UIScrollViewDelegate>
+@interface PreviewDisplayView() <UIGestureRecognizerDelegate, UIScrollViewDelegate, CustomNavigationBarDelegate>
 
 @property (nonatomic) CGRect viewingFrame;
 @property (nonatomic) CGRect restingFrame;
@@ -87,34 +90,24 @@
 	NSMutableArray* aves = [analyzer getAVESFromPinchViews: pinchViews withFrame: self.viewingFrame];
 	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.viewingFrame andImage: coverPhoto andTitle:title];
 	[aves insertObject:coverAVE atIndex:0];
-	self.povView = [[POVView alloc] initWithFrame:self.bounds];
+	self.povView = [[POVView alloc] initWithFrame: CGRectMake(0.f, CUSTOM_NAV_BAR_HEIGHT,
+															  self.frame.size.width, self.frame.size.height - CUSTOM_NAV_BAR_HEIGHT)];
 	[self.povView renderAVES: aves];
     [self.povView addDownArrowButton];
 	[self addSubview: self.povView];
-	[self setUpButtons];
+	[self addNavigationBar];
 	[self revealPreview:YES];
 }
 
 #pragma mark - Buttons -
 
--(void) setUpButtons {
-	UIImage* backIcon = [UIImage imageNamed:BACK_ICON];
-	self.backButton = [self getButtonWithIcon: backIcon];
-	CGFloat backWidth = (backIcon.size.width / backIcon.size.height) * BUTTON_HEIGHT;
-	CGRect backButtonFrame = CGRectMake(CONTENT_DEV_NAV_BAR_OFFSET, CONTENT_DEV_NAV_BAR_OFFSET,
-										backWidth, BUTTON_HEIGHT);
-	self.backButton.frame = backButtonFrame;
-	[self.backButton addTarget:self action:@selector(backButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-
-
-	UIImage* publishIcon = [UIImage imageNamed:PUBLISH_ICON];
-	self.publishButton = [self getButtonWithIcon: publishIcon];
-	CGFloat publishWidth = (publishIcon.size.width / publishIcon.size.height) * BUTTON_HEIGHT;
-	CGRect publishButtonFrame = CGRectMake(self.frame.size.width - publishWidth - CONTENT_DEV_NAV_BAR_OFFSET,
-										   CONTENT_DEV_NAV_BAR_OFFSET,
-										   publishWidth, BUTTON_HEIGHT);
-	self.publishButton.frame = publishButtonFrame;
-	[self.publishButton addTarget:self action:@selector(publishArticleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+-(void) addNavigationBar {
+	CustomNavigationBar* navigationBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
+																 andBackgroundColor:[UIColor whiteColor]];
+	[navigationBar createLeftButtonWithTitle:@"BACK" orImage:nil];
+	[navigationBar createRightButtonWithTitle:@"PUBLISH" orImage:nil];
+	navigationBar.delegate = self;
+	[self addSubview:navigationBar];
 }
 
 -(UIButton*) getButtonWithIcon: (UIImage*) icon {
@@ -162,18 +155,20 @@
 	}
 }
 
-#pragma mark - Publish button pressed -
+#pragma mark - Navigation Bar Delegate methods -
 
--(void) publishArticleButtonPressed: (UIButton*)sender {
+#pragma mark Publish Button
+-(void) rightButtonPressed {
 	[self revealPreview:NO];
 	[self.delegate publishWithTitle:self.title andCoverPhoto:self.coverPhoto andPinchViews:self.pinchViews];
 }
 
-#pragma mark - Exit Display -
-
--(void) backButtonPressed:(UIButton*) sender {
+#pragma mark Back Button
+-(void) leftButtonPressed {
 	[self revealPreview:NO];
 }
+
+#pragma mark - Exit Display -
 
 //called from left edge pan
 - (void) exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender {

@@ -626,8 +626,9 @@
 	 }];
 }
 
-#pragma mark - Change pull bar Delegate Methods (for pullbar) -
+#pragma mark - Content Dev VC Delegate methods -
 
+#pragma mark Show and Hide Pull Bar
 -(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {
     if (!withTransition) {
         [self showPullBar:showPullBar];
@@ -646,12 +647,10 @@
     }
 }
 
+#pragma mark Display Preview
 // Displays article preview from pinch objects
 -(void) previewButtonPressed {
 	NSArray *pinchViews = [self.contentDevVC getPinchViews];
-	if(![pinchViews count]) {
-		return;
-	}
 	NSString* title = self.contentDevVC.titleField.text;
 	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
@@ -659,7 +658,13 @@
 	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
 }
 
--(void) backButtonPressed {
+#pragma mark Save Draft
+-(void) saveDraftButtonPressed {
+	//TODO: save draft
+}
+
+#pragma mark Close ADK
+-(void) closeButtonPressed {
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 }
 
@@ -708,6 +713,16 @@
 
 -(void) pullDownButtonPressed {
 	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
+}
+
+-(void) questionButtonPressed {
+	[self performSegueWithIdentifier:SEGUE_TO_QUESTION_PAGE sender:self];
+}
+
+- (IBAction) unwindToMediaDevVC: (UIStoryboardSegue *)segue{
+	if([segue.identifier isEqualToString:UNWIND_SEGUE_QUESTION_PAGE]) {
+		// do something?
+	}
 }
 
 #pragma mark - Lazy Instantiation -
