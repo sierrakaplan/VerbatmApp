@@ -17,7 +17,6 @@
 #import "ContentPageElementScrollView.h"
 #import "Durations.h"
 
-#import "EditContentView.h"
 #import "EditContentVC.h"
 
 #import "ImagePinchView.h"
@@ -1382,10 +1381,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 //adjusts offset of main scroll view so selected item is in focus
 -(void) moveOffsetOfMainScrollViewBasedOnSelectedItem {
 	float newYOffset = 0;
-	if (self.mainScrollView.contentOffset.y > self.selectedView_PAN.frame.origin.y - (self.selectedView_PAN.frame.size.height/2.f) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0)) {
+	if (self.mainScrollView.contentOffset.y > (self.selectedView_PAN.frame.origin.y + self.selectedView_PAN.frame.size.height/4.f)
+		&& (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0)) {
 
 		newYOffset = -AUTO_SCROLL_OFFSET;
-	} else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_PAN.frame.origin.y + self.selectedView_PAN.frame.size.height) && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height) {
+	} else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_PAN.frame.origin.y + self.selectedView_PAN.frame.size.height)
+			   && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height) {
 
 		newYOffset = AUTO_SCROLL_OFFSET;
 	}
@@ -1545,8 +1546,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
         if(![[UserSetupParameters sharedInstance] tapNhold_InstructionShown])[self alertTapNHoldInCollection];
-	}else{
-		self.openPinchView = pinchView;
+	} else { // pinch view should be SingleMediaOverText
+		self.editingPinchView = (SingleMediaAndTextPinchView*) pinchView;
 		//tap to open an element for viewing or editing
 		[self presentEditContentView];
 	}
@@ -1564,12 +1565,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	if([segue.identifier isEqualToString:BRING_UP_EDITCONTENT_SEGUE]) {
 		EditContentVC *editContentVC =  (EditContentVC *)segue.destinationViewController;
-		editContentVC.openPinchView = self.openPinchView;
-	}
-}
-
-- (IBAction) unwindToContentDevVC: (UIStoryboardSegue *)segue{
-	if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
+		editContentVC.openPinchView = self.editingPinchView;
 		self.pinchViewTappedAndClosedForTheFirstTime = YES;
 	}
 }

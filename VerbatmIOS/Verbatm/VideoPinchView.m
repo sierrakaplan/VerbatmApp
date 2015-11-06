@@ -112,20 +112,6 @@
 
 #pragma mark - Lazy Instantiation -
 
--(NSString*) text {
-	if (!_text) {
-		_text = @"";
-	}
-	return _text;
-}
-
--(NSNumber*) textYPosition {
-	if (!_textYPosition) {
-		_textYPosition = [NSNumber numberWithFloat: 0.f];
-	}
-	return _textYPosition;
-}
-
 -(UIImageView*) videoView {
 	if (!_videoView) {
 		_videoView = [[UIImageView alloc] init];

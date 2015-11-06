@@ -499,19 +499,11 @@
 -(void)positionContainerView {
 	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)
 	   && ![self.contentContainerView isHidden]) {
-
-		if (self.contentDevVC.openEditContentView && self.contentContainerViewMode == ContentContainerViewModeFullScreen) {
-			return;
-		}
-
 		[self positionContainerViewLandscape];
 
 	} else if([self.contentContainerView isHidden]) {
 		self.contentContainerView.hidden = NO;
-
-		//[UIView animateWithDuration:0.5 animations:^{
-			[self transitionContentContainerViewToMode:self.previousMode];
-		//}];
+		[self transitionContentContainerViewToMode:self.previousMode];
 	}
 }
 

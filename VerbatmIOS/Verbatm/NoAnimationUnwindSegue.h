@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface NoAnimationSegue : UIStoryboardSegue
+@interface NoAnimationUnwindSegue : UIStoryboardSegue
 
 @end

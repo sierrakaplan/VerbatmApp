@@ -52,6 +52,57 @@
 	}
 }
 
+#pragma mark - Format subviews -
+
+-(void)formatMuteButton {
+	self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET, MUTE_BUTTON_OFFSET, MUTE_BUTTON_SIZE, MUTE_BUTTON_SIZE);
+	[self.muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
+	[self.muteButton addTarget:self action:@selector(muteButtonTouched:) forControlEvents:UIControlEventTouchUpInside];
+}
+
+#pragma mark - Prepare array of videos -
+
+-(void) prepareVideoFromArrayOfAssets_asynchronous: (NSArray*)videoList {
+	dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
+		if(videoList.count > 1){
+			if(!_mix){
+				[self fuseAssets:videoList];
+			}
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self prepareVideoFromAsset_synchronous:self.mix];
+			});
+		}else{
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self prepareVideoFromAsset_synchronous:videoList[0]];
+			});
+		}
+	});
+}
+
+//this is used rarely when we need to load and play a view and it
+//doesn't give our code a chance to be prepared
+-(void)prepareVideoFromArrayOfAssets_synchronous: (NSArray*)videoList {
+	if(videoList.count > 1){
+		if(!self.mix){
+			[self fuseAssets:videoList];
+		}
+		[self prepareVideoFromAsset_synchronous:self.mix];
+	}else{
+		[self prepareVideoFromAsset_synchronous:videoList[0]];
+	}
+}
+
+-(void)prepareVideoFromArrayOfURL_synchronous: (NSArray*)videoList {
+	if(videoList.count > 1){
+		if(!self.mix){
+			[self fuseAssets:videoList];
+		}
+		[self prepareVideoFromAsset_synchronous:self.mix];
+	}else{
+		[self prepareVideoFromURL_synchronous:videoList[0]];
+	}
+}
+
 -(void)prepareVideoFromURLArray_asynchronouse: (NSArray*) urlArray {
 	if (!self.videoLoading) {
 		self.videoLoading = YES;
@@ -66,6 +117,8 @@
         [self prepareVideoFromURL_synchronous:urlArray[0]];
     }
 }
+
+#pragma mark - Prepare video (asset or url) -
 
 -(void)prepareVideoFromAsset_synchronous: (AVAsset*) asset{
 	if (!self.videoLoading) {
@@ -104,7 +157,14 @@
 												 name:AVPlayerItemDidPlayToEndTimeNotification
 											   object:self.playerItem];
 
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(playerItemDidStall:)
+												 name:AVPlayerItemPlaybackStalledNotification
+											   object:self.playerItem];
+
 }
+
+#pragma mark - Observe player item status -
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
 						change:(NSDictionary *)change context:(void *)context {
@@ -125,92 +185,52 @@
 	}
 }
 
--(void) prepareVideoFromArrayOfAssets_asynchronous: (NSArray*)videoList {
-    dispatch_async(dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
-        if(videoList.count > 1){
-            if(!_mix){
-                [self fuseAssets:videoList];
-            }
-            dispatch_async(dispatch_get_main_queue(), ^{
-               [self prepareVideoFromAsset_synchronous:self.mix];
-            });
-        }else{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self prepareVideoFromAsset_synchronous:videoList[0]];
-            });
-        }
-    });
-    
-    
-}
-//this is used rarely when we need to load and play a view and it
-//doesn't give our code a chance to be prepared
--(void)prepareVideoFromArrayOfAssets_synchronous: (NSArray*)videoList {
-    if(videoList.count > 1){
-        if(!self.mix){
-            [self fuseAssets:videoList];
-        }
-        [self prepareVideoFromAsset_synchronous:self.mix];
-    }else{
-        [self prepareVideoFromAsset_synchronous:videoList[0]];
-    }
-}
-
--(void)prepareVideoFromArrayOfURL_synchronous: (NSArray*)videoList {
-    if(videoList.count > 1){
-        if(!self.mix){
-            [self fuseAssets:videoList];
-        }
-        [self prepareVideoFromAsset_synchronous:self.mix];
-    }else{
-        [self prepareVideoFromURL_synchronous:videoList[0]];
-    }
-}
-
+#pragma mark - Fuse video assets into one -
 
 /*This code fuses the video assets into a single video that plays the videos one after the other.
  It accepts both avassets and urls which it converts into assets
  */
 -(void)fuseAssets:(NSArray*)videoList {
-    //if the mix exists don't runt this expensive function
-    if(self.mix)return;
-    
+	//if the mix exists don't runt this expensive function
+	if(self.mix)return;
+
 	self.mix = [AVMutableComposition composition]; //create a composition to hold the joined assets
 	AVMutableCompositionTrack* videoTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
 	AVMutableCompositionTrack* audioTrack = [self.mix addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
 	CMTime nextClipStartTime = kCMTimeZero;
 	NSError* error;
 	for(id asset in videoList) {
-        AVURLAsset * videoAsset;
-        if([asset isKindOfClass:[NSURL class]]){
-            videoAsset = [AVURLAsset assetWithURL:asset];
-            
-        } else {
-            videoAsset = asset;
-        }
-        NSArray * videoTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
-        if(videoTrackArray.count){
-            AVAssetTrack* this_video_track = [videoTrackArray objectAtIndex:0];
-            [videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_video_track atTime:nextClipStartTime error: &error]; //insert the video
-            videoTrack.preferredTransform = this_video_track.preferredTransform;
-            
-            NSArray * audioTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeAudio];
-            if(audioTrackArray.count){
-                AVAssetTrack* this_audio_track = [audioTrackArray objectAtIndex:0];
-                videoTrack.preferredTransform = this_video_track.preferredTransform;
-                if(this_audio_track != nil) {
-                    [audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:this_audio_track atTime:nextClipStartTime error:&error];
-                }
-            }
+		AVURLAsset * videoAsset;
+		if([asset isKindOfClass:[NSURL class]]){
+			videoAsset = [AVURLAsset assetWithURL:asset];
+
+		} else {
+			videoAsset = asset;
 		}
+		NSArray * videoTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
+		if(!videoTrackArray.count) continue;
+
+		AVAssetTrack* currentVideoTrack = [videoTrackArray objectAtIndex:0];
+		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentVideoTrack atTime:nextClipStartTime error: &error];
+		videoTrack.preferredTransform = currentVideoTrack.preferredTransform;
 		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
+
+		NSArray * audioTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeAudio];
+		if(!audioTrackArray.count) continue;
+		AVAssetTrack* currentAudioTrack = [audioTrackArray objectAtIndex:0];
+		audioTrack.preferredTransform = currentAudioTrack.preferredTransform;
+		[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentAudioTrack atTime:nextClipStartTime error:&error];
+	}
+	if (error) {
+		NSLog(@"Error fusing video assets: %@", error.description);
 	}
 }
+
+#pragma mark - Play video -
 
 -(void)playVideo{
     if(self.player){
         [self.player play];
-        self.ourTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(resumeSession:) userInfo:nil repeats:YES];
         self.isVideoPlaying = YES;
     }
 }
@@ -241,19 +261,8 @@
      }
 }
 
--(void)formatMuteButton {
-    self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET, MUTE_BUTTON_OFFSET, MUTE_BUTTON_SIZE, MUTE_BUTTON_SIZE);
-    [self.muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
-    [self.muteButton addTarget:self action:@selector(muteButtonTouched:) forControlEvents:UIControlEventTouchUpInside];
-}
-
 -(void) repeatVideoOnEnd:(BOOL)repeat {
 	self.repeatsVideo = repeat;
-}
-
-// Resume session after freezing
--(void)resumeSession:(NSTimer*)timer {
-    if(self.isVideoPlaying)[self continueVideo];
 }
 
 //tells me when the video ends so that I can rewind
@@ -262,6 +271,10 @@
     if (self.repeatsVideo) {
 		[playerItem seekToTime:kCMTimeZero];
     }
+}
+
+-(void)playerItemDidStall:(NSNotification*)notification {
+	if(self.isVideoPlaying)[self continueVideo];
 }
 
 //pauses the video for the pinchview if there is one
@@ -279,6 +292,14 @@
 		[self.player play];
 	}
     self.isVideoPlaying = YES;
+}
+
+-(BOOL) isPlaying {
+	if(self.player.rate > 0) {
+		return YES;
+	} else {
+		return NO;
+	}
 }
 
 #pragma mark - Mute -
@@ -324,6 +345,8 @@
 	}
 }
 
+#pragma mark - Fast forward / rewind -
+
 -(void)fastForwardVideoWithRate: (NSInteger) rate{
 	if(self.playerItem) {
 		if([self.playerItem canPlayFastForward]) self.playerLayer.player.rate = rate;
@@ -336,13 +359,7 @@
 	}
 }
 
--(BOOL) isPlaying {
-	if(self.player.rate > 0) {
-		return YES;
-	} else {
-		return NO;
-	}
-}
+#pragma mark - Clean up video assets -
 
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen

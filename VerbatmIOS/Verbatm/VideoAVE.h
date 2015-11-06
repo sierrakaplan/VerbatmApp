@@ -11,6 +11,7 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVKit/AVKit.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import "TextOverMediaView.h"
 #import "VideoPlayerView.h"
 
 @interface VideoAVE : VideoPlayerView

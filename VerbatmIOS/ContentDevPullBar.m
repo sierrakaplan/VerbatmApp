@@ -7,7 +7,6 @@
 //
 
 #import "ContentDevPullBar.h"
-#import "EditContentView.h"
 #import "Notifications.h"
 #import "Icons.h"
 #import "SizesAndPositions.h"

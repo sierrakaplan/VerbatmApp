@@ -27,7 +27,6 @@
 #define UNWIND_SEGUE_FROM_ADK_TO_MASTER @"unwind_to_master_vc_from_adk"
 
 #define BRING_UP_EDITCONTENT_SEGUE @"segue_id_edit_content_view"
-#define UNWIND_SEGUE_EDIT_CONTENT_VIEW @"segue_id_unwind_from_edit_content_view"
 
 #define SEGUE_TO_QUESTION_PAGE @"segue_id_question_page"
 #define UNWIND_SEGUE_QUESTION_PAGE @"segue_id_unwind_from_question_page"

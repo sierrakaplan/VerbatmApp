@@ -7,13 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-@import Photos;
-
 #import "CustomNavigationBar.h"
 #import "VerbatmScrollView.h"
-#import "EditContentView.h"
 
 @class PinchView;
+@class SingleMediaAndTextPinchView;
+@import Photos;
 
 @protocol ContentDevElementDelegate <NSObject>
 
@@ -52,8 +51,8 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;
 @property(nonatomic) NSInteger pullBarHeight;
-@property (nonatomic, strong) EditContentView * openEditContentView;
-@property (nonatomic, strong) PinchView * openPinchView;
+// The pinch view that the user has opened and is currently editing
+@property (nonatomic, strong) SingleMediaAndTextPinchView* editingPinchView;
 
 
 -(void) addImageToStream: (UIImage*) image;
