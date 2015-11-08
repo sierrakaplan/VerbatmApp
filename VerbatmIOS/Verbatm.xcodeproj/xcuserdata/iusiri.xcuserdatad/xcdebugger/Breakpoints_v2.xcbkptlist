@@ -100,11 +100,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "466385409.079064"
+            timestampString = "468536032.01877"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "356"
-            endingLineNumber = "356"
+            startingLineNumber = "355"
+            endingLineNumber = "355"
             landmarkName = "-isThereConnectionFromString:"
             landmarkType = "5">
          </BreakpointContent>
@@ -148,11 +148,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "467155247.048402"
+            timestampString = "468358312.431181"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "481"
-            endingLineNumber = "481"
+            startingLineNumber = "485"
+            endingLineNumber = "485"
             landmarkName = "@implementation MasterNavigationVC"
             landmarkType = "3">
          </BreakpointContent>
@@ -164,11 +164,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MediaDevVC.m"
-            timestampString = "466016197.677409"
+            timestampString = "468265854.088371"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "331"
-            endingLineNumber = "331"
+            startingLineNumber = "333"
+            endingLineNumber = "333"
             landmarkName = "-registerForNotifications"
             landmarkType = "5">
          </BreakpointContent>
@@ -233,8 +233,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "327"
             endingLineNumber = "327"
-            landmarkName = "-setFilteredPhotos"
-            landmarkType = "5">
+            landmarkName = "@implementation EditContentView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -281,7 +281,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "206"
             endingLineNumber = "206"
-            landmarkName = "-pauseVideosInAVE:"
+            landmarkName = "-stopVideosInAVE:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -292,11 +292,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ArticleListVC.m"
-            timestampString = "466385210.809073"
+            timestampString = "468536032.01877"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "255"
-            endingLineNumber = "255"
+            startingLineNumber = "254"
+            endingLineNumber = "254"
             landmarkName = "-refreshFeed"
             landmarkType = "5">
          </BreakpointContent>
@@ -329,7 +329,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "167"
             endingLineNumber = "167"
-            landmarkName = "-fuseAssets:"
+            landmarkName = "-prepareVideoFromArrayOfURL_synchronous:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -340,12 +340,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "467089001.470289"
+            timestampString = "468265854.088371"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "231"
-            endingLineNumber = "231"
-            landmarkName = "-prepareOutLiersToEnterScreen"
+            startingLineNumber = "226"
+            endingLineNumber = "226"
+            landmarkName = "-playVideosInAVE:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -361,7 +361,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "153"
             endingLineNumber = "153"
-            landmarkName = "-prepareVideoFromArrayOfURL_synchronous:"
+            landmarkName = "-prepareVideoFromArrayOfAssets_synchronous:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -409,7 +409,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "333"
             endingLineNumber = "333"
-            landmarkName = "-isPlaying"
+            landmarkName = "-rewindVideoWithRate:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -521,7 +521,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "204"
             endingLineNumber = "204"
-            landmarkName = "-playVideo"
+            landmarkName = "-fuseAssets:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -537,7 +537,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "198"
             endingLineNumber = "198"
-            landmarkName = "-displayImages:atIndex:"
+            landmarkName = "-changeFilteredImageLeft"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -553,7 +553,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "66"
             endingLineNumber = "66"
-            landmarkName = "-prepareVideoFromAsset_synchronous:"
+            landmarkName = "-prepareVideoFromURLArray_asynchronouse:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
