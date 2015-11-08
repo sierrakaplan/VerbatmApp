@@ -10,7 +10,12 @@
 #define SizesAndPositions_h
 
 
-#pragma mark - Exit CV constants-
+
+#pragma mark - Chat Cell -
+
+#define CHAT_CELL_WALL_OFFSET 30.f
+
+#pragma mark - Exit CV constants -
 
 #define EXIT_CV_BUTTON_WIDTH 35
 #define EXIT_CV_BUTTON_HEIGHT EXIT_CV_BUTTON_WIDTH
@@ -93,7 +98,7 @@
 #define TEXT_VIEW_BOTTOM_PADDING 15.f
 
 #pragma mark Toolbar
-
+#define CHAT_TEXT_TOOLBAR_HEIGHT (TEXT_TOOLBAR_HEIGHT + 20.f)
 #define TEXT_TOOLBAR_HEIGHT 30.f
 #define TEXT_TOOLBAR_BUTTON_OFFSET 9.f
 #define TEXT_TOOLBAR_BUTTON_WIDTH 70.f

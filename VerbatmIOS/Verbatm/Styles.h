@@ -11,7 +11,8 @@
 
 
 #define DEFAULT_FONT @"HelveticaNeue-Italic"
-#define BUTTON_FONT @"HelveticaNeue"
+#define BUTTON_FONT @"HelveticaNeue-Bold"
+
 #define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
 #define TITLE_TEXT_FONT @"HelveticaNeue"
 

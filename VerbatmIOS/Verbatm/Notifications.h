@@ -23,5 +23,6 @@
 
 #define NOTIFICATION_REFRESH_FEEDS @"notification_refresh_feeds"
 
+#define NOTIFICATION_MESSAGE_RECEIVED @"NOTIFICATION_MESSAGE_RECEIVED"
 
 #endif /* Header_h */

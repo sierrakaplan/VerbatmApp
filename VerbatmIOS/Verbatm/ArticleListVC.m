@@ -146,7 +146,6 @@
 }
 
 #pragma mark - Table View Data Source methods (model) -
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	NSUInteger count = [self.povLoader getNumberOfPOVsLoaded];
     count += (self.povPublishing) ? 1:0;

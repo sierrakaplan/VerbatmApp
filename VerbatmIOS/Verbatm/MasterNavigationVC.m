@@ -22,6 +22,9 @@
 #import "MediaSessionManager.h"
 #import "MediaDevVC.h"
 
+#import <MessageUI/MessageUI.h>
+#import <MessageUI/MFMessageComposeViewController.h>
+
 #import "Notifications.h"
 
 #import "POVPublisher.h"
@@ -117,13 +120,14 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 		[self alertPullTrendingIcon];
 	}
     
+    
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 }
 
--(void)registerForNotifications{
+-(void)registerForNotifications {
 	//gets notified if there is no internet connection
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(networkConnectionUpdate:)
