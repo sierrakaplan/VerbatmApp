@@ -8,7 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol ProfileVCDelegate <NSObject>
+
+-(void) showTabBar: (BOOL) show;
+
+@end
+
 @interface ProfileVC : UIViewController
+
+@property (strong, nonatomic) id<ProfileVCDelegate> delegate;
 
 -(void) updateUserInfo;
 

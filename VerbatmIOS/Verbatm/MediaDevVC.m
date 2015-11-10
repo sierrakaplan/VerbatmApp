@@ -14,9 +14,11 @@
 #import "ContentDevVC.h"
 #import "CameraFocusSquare.h"
 
-#import "Icons.h"
 #import "Durations.h"
-#import "UserPovInProgress.h"
+
+#import "GTLVerbatmAppVerbatmUser.h"
+
+#import "Icons.h"
 
 #import "MasterNavigationVC.h"
 #import "MediaDevVC.h"
@@ -28,16 +30,21 @@
 
 #import "PinchView.h"
 #import "POVPublisher.h"
+#import "PreviewDisplayView.h"
 
 #import "Strings.h"
 #import "SizesAndPositions.h"
+#import "SegueIDs.h"
 
 #import "testerTransitionDelegate.h"
 
 #import "ContentDevPullBar.h"
 #import "VerbatmCameraView.h"
 
-@interface MediaDevVC () <MediaSessionManagerDelegate, ContentDevPullBarDelegate, ContentDevVCDelegate>
+#import "UserManager.h"
+#import "UserPovInProgress.h"
+
+@interface MediaDevVC () <MediaSessionManagerDelegate, ContentDevPullBarDelegate, ContentDevVCDelegate, PreviewDisplayDelegate>
 
 #pragma mark - SubViews of screen
 
@@ -66,8 +73,7 @@
 @property (strong, nonatomic) UIImageView* previewImageView;
 @property (nonatomic) BOOL mediaPreviewPaused;
 
-#pragma  mark - Camera Customization - 
-
+#pragma  mark - Camera Customization -
 @property (strong, nonatomic) CameraFocusSquare* focusSquare;
 @property (strong, nonatomic) UIButton* switchCameraButton;
 @property (strong, nonatomic) UIButton* switchFlashButton;
@@ -84,6 +90,10 @@
 @property (nonatomic) ContentContainerViewMode contentContainerViewMode;
 //layout of the screen before it was made landscape
 @property(nonatomic) ContentContainerViewMode previousMode;
+
+#pragma mark - Preview -
+
+@property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
 
 #pragma mark keyboard properties
 @property (nonatomic) NSInteger keyboardHeight;
@@ -109,7 +119,8 @@
 #pragma mark - Preparing View
 
 - (void)viewDidLoad{
-    self.view.backgroundColor = [UIColor redColor];
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
+    self.view.backgroundColor = [UIColor blackColor];
     [super viewDidLoad];
 	[self setDefaultFrames];
 	[self prepareCameraView];
@@ -143,6 +154,7 @@
 #pragma mark - Initialization
 
 -(void)setContentDevVC {
+	
 	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTDEVVC];
 	[self.contentContainerView addSubview: self.contentDevVC.view];
 	[self addChildViewController:self.contentDevVC];
@@ -331,12 +343,6 @@
 	//for postitioning the blurView when the orientation of the device changes
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 }
-
-//Tells the screen to hide the status bar
-- (BOOL) prefersStatusBarHidden {
-	return YES;
-}
-
 
 #pragma mark Memory management
 
@@ -611,19 +617,18 @@
 		 if (mode == PullBarModeMenu) {
              self.contentContainerView.frame = self.contentContainerViewFrameBottom;
              self.pullBar.frame = self.pullBarFrameBottom;
-             [self.delegate adkViewChange:NO];
-             
+
 		 } else {
              self.contentContainerView.frame = self.contentContainerViewFrameTop;
              self.pullBar.frame = self.pullBarFrameTop;
-             [self.delegate adkViewChange:YES];
 		 }
 		 [self.pullBar switchToMode:mode];
 	 }];
 }
 
-#pragma mark - Change pull bar Delegate Methods (for pullbar) -
+#pragma mark - Content Dev VC Delegate methods -
 
+#pragma mark Show and Hide Pull Bar
 -(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {
     if (!withTransition) {
         [self showPullBar:showPullBar];
@@ -642,22 +647,63 @@
     }
 }
 
--(void) backButtonPressed {
-	[self.delegate backButtonPressed];
-}
-
+#pragma mark Display Preview
 // Displays article preview from pinch objects
 -(void) previewButtonPressed {
 	NSArray *pinchViews = [self.contentDevVC getPinchViews];
-	if(![pinchViews count]) {
-		return;
-	}
 	NSString* title = self.contentDevVC.titleField.text;
 	UIImage* coverPic = [self.contentDevVC getCoverPicture];
 
-	[self.delegate previewPOVFromPinchViews: pinchViews andCoverPic: coverPic andTitle: title];
+	[self.view bringSubviewToFront:self.previewDisplayView];
+	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
 }
 
+#pragma mark Save Draft
+-(void) saveDraftButtonPressed {
+	//TODO: save draft
+}
+
+#pragma mark Close ADK
+-(void) closeButtonPressed {
+	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+}
+
+#pragma mark - Publishing (PreviewDisplay delegate Methods)
+
+-(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
+
+	if (![title length]) {
+		[self alertAddTitle];
+	} else if (!coverPhoto) {
+		[self alertAddCoverPhoto];
+	} else {
+		if(![pinchViews count]) {
+			NSLog(@"Can't publish with no pinch objects");
+			return;
+		}
+
+		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: coverPhoto];
+		[publisher publish];
+		//TODO: make sure current user exists and if not make them sign in
+		NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
+
+		[self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
+		[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+
+		[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
+		[self.contentDevVC cleanUp];
+	}
+}
+
+-(void)alertAddTitle {
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+}
+
+-(void)alertAddCoverPhoto {
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+}
 
 #pragma mark - PullBar Delegate Methods (pullbar button actions) -
 
@@ -669,21 +715,14 @@
 	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 }
 
-#pragma mark - Cleanup after Publishing POV -
-
--(void) povPublished {
-	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
-	[self.contentDevVC cleanUp];
+-(void) questionButtonPressed {
+	[self performSegueWithIdentifier:SEGUE_TO_QUESTION_PAGE sender:self];
 }
 
--(void)alertAddTitle {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-}
-
--(void)alertAddCoverPhoto {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
+- (IBAction) unwindToMediaDevVC: (UIStoryboardSegue *)segue{
+	if([segue.identifier isEqualToString:UNWIND_SEGUE_QUESTION_PAGE]) {
+		// do something?
+	}
 }
 
 #pragma mark - Lazy Instantiation -
@@ -701,6 +740,15 @@
 		_verbatmCameraView = [[VerbatmCameraView alloc] initWithFrame: self.view.frame];
 	}
 	return _verbatmCameraView;
+}
+
+-(PreviewDisplayView*) previewDisplayView {
+	if(!_previewDisplayView){
+		_previewDisplayView = [[PreviewDisplayView alloc] initWithFrame: self.view.frame];
+		_previewDisplayView.delegate = self;
+		[self.view addSubview:_previewDisplayView];
+	}
+	return _previewDisplayView;
 }
 
 @end

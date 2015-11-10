@@ -26,6 +26,9 @@
 @property (strong, nonatomic) id<FeedTableViewCellDelegate> delegate;
 @property (strong, nonatomic) NSString* title;
 
+
+-(void) setCellBackgroundColor: (UIColor*) cellBackgroundColor;
+
 //Loads a normal looking story cell
 -(void) setContentWithUsername:(NSString *) username andTitle: (NSString *) title
 				 andCoverImage: (UIImage*) coverImage andDateCreated: (GTLDateTime*) dateCreated
