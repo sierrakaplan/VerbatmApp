@@ -36,6 +36,8 @@
 @property (strong, nonatomic) POVLoadManager *povLoader;
 @property (nonatomic) CGPoint recentContentOffset;
 
+@property (strong, nonatomic) UIColor* cellBackgroundColor;
+
 #pragma mark - Publishing POV -
 
 @property (strong, nonatomic) FeedTableViewCell* povPublishingPlaceholderCell;
@@ -122,7 +124,8 @@
 
 #pragma mark - Setting POV Load Manager -
 
--(void) setPovLoadManager:(POVLoadManager *) povLoader {
+-(void) setPovLoadManager:(POVLoadManager *) povLoader andCellBackgroundColor: (UIColor*) cellBackgroundColor {
+	self.cellBackgroundColor = cellBackgroundColor;
 	self.povLoader = povLoader;
 	self.povLoader.delegate = self;
 	[self refreshFeedForFirstTime];
@@ -176,6 +179,7 @@
 		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto
 					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes
 				  likedByCurrentUser:currentUserLikesStory];
+		[cell setCellBackgroundColor: self.cellBackgroundColor];
 		cell.indexPath = indexPath;
 		cell.delegate = self;
 	}
@@ -345,17 +349,10 @@
 #pragma mark - Network Connection -
 -(void)networkConnectionUpdate: (NSNotification *) notification{
     NSDictionary * userInfo = [notification userInfo];
-    BOOL thereIsConnection = [self isThereConnectionFromString:[userInfo objectForKey:INTERNET_CONNECTION_KEY]];
+	BOOL thereIsConnection = [(NSNumber*)[userInfo objectForKey:INTERNET_CONNECTION_KEY] boolValue];
 	if (thereIsConnection) {
 		[self refreshFeedForFirstTime];
 	}
-}
-
--(BOOL)isThereConnectionFromString:(NSString *) key{
-    if([key isEqualToString:@"YES"]){
-        return YES;
-    }
-    return NO;
 }
 
 #pragma mark - Miscellaneous -
@@ -367,11 +364,6 @@
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.
-}
-
-//for ios8+ To hide the status bar
--(BOOL)prefersStatusBarHidden{
-	return YES;
 }
 
 #pragma mark - Lazy Instantiation -

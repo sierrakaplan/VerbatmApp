@@ -35,6 +35,9 @@
 // Cursor string associated with the povInfos (used to query for next batch)
 @property (nonatomic, strong) NSString* cursorString;
 
+// property set if it is of type POVTypeUser
+@property (strong, nonatomic) NSNumber* userID; // long long value
+
 
 @end
 
@@ -47,6 +50,14 @@
 	if (self) {
 		self.povType = type;
 		self.noMorePOVsToLoad = NO;
+	}
+	return self;
+}
+
+-(instancetype) initWithUserId:(NSNumber *)userId {
+	self = [self initWithType:POVTypeUser];
+	if (self) {
+		self.userID = userId;
 	}
 	return self;
 }
@@ -194,8 +205,7 @@
 -(GTLQuery*) getLoadingQuery: (NSInteger) numToLoad withCursor: (BOOL) withCursor {
 	GTLQuery* loadQuery;
 
-	// Note: cursor string will be nil if this is the first query.
-	// That's ok on the backend.
+	// Note: cursor string can and should be nil if this is the first query.
 	switch (self.povType) {
 		case POVTypeRecent: {
 			loadQuery = [GTLQueryVerbatmApp queryForPovGetRecentPOVsInfoWithCount: numToLoad];
@@ -204,6 +214,10 @@
 		case POVTypeTrending: {
 			loadQuery = [GTLQueryVerbatmApp queryForPovGetTrendingPOVsInfoWithCount:numToLoad];
 						break;
+		}
+		case POVTypeUser: {
+			loadQuery = [GTLQueryVerbatmApp queryForPovGetUserPOVsInfoWithCount:numToLoad userId:self.userID.longLongValue];
+			break;
 		}
 		default:
 			return nil;
@@ -231,7 +245,7 @@
 	return [self.povInfos indexOfObject:povInfo];
 }
 
-// update povInfo
+// update povInfo just so that it shows up right in the feed
 -(void) currentUserLiked: (BOOL) liked povInfo: (PovInfo*) povInfo {
 	GTLVerbatmAppVerbatmUser* currentUser = [[UserManager sharedInstance] getCurrentUser];
 	NSMutableArray* updatedUsersWhoHaveLikedThisPOV = [[NSMutableArray alloc] initWithArray:povInfo.userIDsWhoHaveLikedThisPOV copyItems:NO];

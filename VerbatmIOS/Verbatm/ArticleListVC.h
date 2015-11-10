@@ -21,7 +21,8 @@
 @interface ArticleListVC : UIViewController
 @property (strong, nonatomic) id<ArticleListVCDelegate> delegate;
 
--(void) setPovLoadManager:(POVLoadManager *)povLoader;
+// sets the load manager from which to load the povs and the background color of the cells
+-(void) setPovLoadManager:(POVLoadManager *) povLoader andCellBackgroundColor: (UIColor*) cellBackgroundColor ;
 
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
 						  andCoverPic: (UIImage*) coverPic andProgressObject: (NSProgress*) publishingProgress;

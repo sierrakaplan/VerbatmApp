@@ -2,11 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "create story.png"
+      "filename" : "50x50 Create.png",
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "75x75 Create.png",
       "scale" : "2x"
     },
     {

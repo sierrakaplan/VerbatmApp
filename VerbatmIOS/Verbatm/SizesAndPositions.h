@@ -10,13 +10,20 @@
 #define SizesAndPositions_h
 
 
+#define BELOW_STATUS_BAR ([UIApplication sharedApplication].statusBarFrame.origin.y + [UIApplication sharedApplication].statusBarFrame.size.height)
+#define TITLE_BAR_HEIGHT 60.f
+
+#pragma mark - Custom Navigation Bar -
+
+#define CUSTOM_NAV_BAR_HEIGHT 40.f
+
 #pragma mark - Exit CV constants-
 
 #define EXIT_CV_BUTTON_WIDTH 35
 #define EXIT_CV_BUTTON_HEIGHT EXIT_CV_BUTTON_WIDTH
 #define EXIT_CV_BUTTON_WALL_OFFSET 10
 
-#define NAV_BAR_HEIGHT 40.f
+#define NAV_BAR_HEIGHT 50.f
 #define NAV_ICON_OFFSET 7.f
 #define NAV_ICON_SIZE (NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2)
 
@@ -35,9 +42,7 @@
 
 #pragma mark - Feed -
 
-#define CATEGORY_SWITCH_HEIGHT 60
-#define CATEGORY_SWITCH_OFFSET 10
-
+#define CATEGORY_SWITCH_OFFSET 5.f
 
 #pragma mark Story table view cell
 
@@ -79,9 +84,6 @@
 
 
 #pragma mark - Content Dev VC -
-
-#define CONTENT_DEV_NAV_BAR_OFFSET 15.f
-#define CONTENT_DEV_NAV_BAR_HEIGHT 100.f
 
 #pragma mark - Gallery
 

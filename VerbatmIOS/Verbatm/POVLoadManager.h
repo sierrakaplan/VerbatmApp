@@ -39,7 +39,8 @@
 
 typedef NS_ENUM(NSInteger, POVType) {
 	POVTypeTrending,
-	POVTypeRecent
+	POVTypeRecent,
+	POVTypeUser // filters only user stories
 };
 
 @property (strong, nonatomic) id<POVLoadManagerDelegate> delegate;
@@ -47,7 +48,10 @@ typedef NS_ENUM(NSInteger, POVType) {
 @property (nonatomic) BOOL noMorePOVsToLoad;
 
 // Initialize with the type of POV's to load (trending, recent, etc.)
+// Don't use this for POVTypeUser because needs user id to get the pov's associated with
 -(id) initWithType: (POVType) type;
+
+-(id) initWithUserId: (NSNumber*) userId;
 
 // Query for next batch of POVInfos (when scrolling down)
 -(void) loadMorePOVs: (NSInteger) numToLoad;

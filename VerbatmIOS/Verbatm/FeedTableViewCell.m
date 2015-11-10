@@ -40,6 +40,8 @@
 //Frames for the background circles
 @property (nonatomic) CGRect leftCircleFrame;
 @property (nonatomic) CGRect rightCircleFrame;
+
+@property (strong, nonatomic) UIColor* coverRectBackgroundColor;
 // views that move with semi circles when pinched together to cover text view
 @property (nonatomic) UIView* leftCircleCoverRect;
 @property (nonatomic) UIView* rightCircleCoverRect;
@@ -78,6 +80,7 @@
 	if (self) {
         self.isPlaceholderWhilePublishing = NO;
 		self.isPinching = NO;
+		self.cellBackgroundColor = [UIColor whiteColor];
 	}
 	return self;
 }
@@ -207,8 +210,8 @@
 	self.leftCircleCoverRect.frame = self.leftCoverRectFrame;
 	self.rightCoverRectFrame = CGRectOffset(self.leftCircleCoverRect.frame, storyTextViewFrame.size.width + width, 0);
 	self.rightCircleCoverRect.frame = self.rightCoverRectFrame;
-	self.leftCircleCoverRect.backgroundColor = [UIColor colorWithRed:FEED_BACKGROUND_COLOR green:FEED_BACKGROUND_COLOR blue:FEED_BACKGROUND_COLOR alpha:1.f];
-	self.rightCircleCoverRect.backgroundColor = [UIColor colorWithRed:FEED_BACKGROUND_COLOR green:FEED_BACKGROUND_COLOR blue:FEED_BACKGROUND_COLOR alpha:1.f];
+	self.leftCircleCoverRect.backgroundColor = self.coverRectBackgroundColor;
+	self.rightCircleCoverRect.backgroundColor = self.coverRectBackgroundColor;
 	[self addSubview: self.leftCircleCoverRect];
 	[self addSubview: self.rightCircleCoverRect];
 }
@@ -234,6 +237,10 @@
 
 #pragma mark - Set Content -
 
+-(void) setCellBackgroundColor: (UIColor*) cellBackgroundColor {
+	self.coverRectBackgroundColor = cellBackgroundColor;
+}
+
 -(void) setContentWithUsername:(NSString *) username andTitle: (NSString *) title
 				 andCoverImage: (UIImage*) coverImage andDateCreated: (GTLDateTime*) dateCreated
 				   andNumLikes: (NSNumber*) numLikes likedByCurrentUser: (BOOL) likedByCurrentUser {
@@ -250,11 +257,6 @@
 			self.numLikesLabel.text = @"";
 			break;
 		}
-//		case 1: {
-//			[self.likeIconView setHidden:NO];
-//			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld", numLikes.longLongValue];
-//			break;
-//		}
 		default: {
 			[self.likeIconView setHidden:NO];
 			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld", numLikes.longLongValue];
@@ -294,14 +296,9 @@
 			self.numLikesLabel.text = @"";
 			break;
 		}
-		case 1: {
-			[self.likeIconView setHidden:NO];
-			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld like", newNumLikes];
-			break;
-		}
 		default: {
 			[self.likeIconView setHidden:NO];
-			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld likes", newNumLikes];
+			self.numLikesLabel.text = [NSString stringWithFormat: @"%lld", newNumLikes];
 		}
 	}
 }
