@@ -84,9 +84,6 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    if(![[UserSetupParameters sharedInstance]blackCircleInstructionShown]) {
-		[self alertPullTrendingIcon];
-	}
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -203,14 +200,6 @@
 	} else {
 		self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
 	}
-}
-
-#pragma mark - Alerts -
-
--(void)alertPullTrendingIcon {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-	[[UserSetupParameters sharedInstance] set_trendingCirle_InstructionAsShown];
 }
 
 #pragma mark - Memory Warning -

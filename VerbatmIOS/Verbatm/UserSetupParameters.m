@@ -13,7 +13,6 @@
     @property (atomic, strong) NSMutableArray * notificationArray;
 
     #define FILTER_INSTRUCTION_KEY @"FILTER_INSTRUCTION_KEY"
-    #define TRENDING_CIRCLE_INSTRUCTION_KEY @"TRENDING_CIRCLE_INSTRUCTION_KEY"
     #define CIRCLE_IS_PAGE_INSTRUCTION_KEY @"CIRCLE_IS_PAGE_INSTRUCTION_KEY"
     #define PINCH_INSTRUCTION_KEY @"PINCH_INSTRUCTION_KEY"
     #define SWIPE_TO_DELETE_INSTRUCTION_KEY @"SWIPE_TO_DELETE_INSTRUCTION_KEY"
@@ -51,7 +50,6 @@
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         //because they are all saved together we can just check if one exists
         if(![defaults objectForKey:FILTER_INSTRUCTION_KEY]){
-            [defaults setBool:NO forKey:TRENDING_CIRCLE_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:FILTER_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:CIRCLE_IS_PAGE_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:PINCH_INSTRUCTION_KEY];
@@ -70,20 +68,12 @@
                 [self.notificationArray addObject:[NSNumber numberWithBool:[defaults boolForKey:PINCH_INSTRUCTION_KEY]]];
                 [self.notificationArray addObject:[NSNumber numberWithBool:[defaults boolForKey:SWIPE_TO_DELETE_INSTRUCTION_KEY]]];
                 [self.notificationArray addObject:[NSNumber numberWithBool:[defaults boolForKey:TAPNHOLD_TO_REMOVE_INSTRUCTION_KEY]]];
-                [self.notificationArray addObject:[NSNumber numberWithBool:[defaults boolForKey:TRENDING_CIRCLE_INSTRUCTION_KEY]]];
             });
         }
     }
 }
 
 #pragma mark - Check Parameters -
--(BOOL)blackCircleInstructionShown{
-    //the array is still being prepared -- unlikely to be a problem
-    if(self.notificationArray.count != NUMBER_OF_KEYS) return NO;
-    
-    NSNumber * boolAsNumber = self.notificationArray[TRENDING_CIRCLE_INSTRUCTION_KEY_INDEX];
-    return boolAsNumber.boolValue;
-}
 
 -(BOOL) filter_InstructionShown{
     //the array is still being prepared -- unlikely to be a problem
@@ -150,13 +140,6 @@
     self.notificationArray[FILTER_INSTRUCTION_KEY_INDEX] = [NSNumber numberWithBool:YES];
 }
 
--(void)set_trendingCirle_InstructionAsShown{
-    //the array is still being prepared -- unlikely to be a problem
-    if(self.notificationArray.count != NUMBER_OF_KEYS) return;
-    
-    self.notificationArray[TRENDING_CIRCLE_INSTRUCTION_KEY_INDEX] = [NSNumber numberWithBool:YES];
-}
-
 -(void)set_circlesArePages_InstructionAsShown{
     //the array is still being prepared -- unlikely to be a problem
     if(self.notificationArray.count != NUMBER_OF_KEYS) return;
@@ -193,7 +176,6 @@
 
 -(void)saveAllChanges{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setBool:(BOOL)self.notificationArray[TRENDING_CIRCLE_INSTRUCTION_KEY_INDEX] forKey:TRENDING_CIRCLE_INSTRUCTION_KEY];
     [defaults setBool:(BOOL)self.notificationArray[FILTER_INSTRUCTION_KEY_INDEX] forKey:FILTER_INSTRUCTION_KEY];
     [defaults setBool:(BOOL)self.notificationArray[CIRCLE_IS_PAGE_INSTRUCTION_KEY_INDEX] forKey:CIRCLE_IS_PAGE_INSTRUCTION_KEY];
     [defaults setBool:(BOOL)self.notificationArray[PINCH_INSTRUCTION_KEY_INDEX] forKey:PINCH_INSTRUCTION_KEY];
