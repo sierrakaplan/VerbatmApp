@@ -18,15 +18,13 @@
 @class PovInfo;
 
 @protocol UserManagerDelegate <NSObject>
-
+//todo: make these notifications
 -(void) successfullyLoggedInUser: (GTLVerbatmAppVerbatmUser*) user;
 -(void) errorLoggingInUser: (NSError*) error;
 
 @end
 
 @interface UserManager : NSObject
-
-@property (strong, nonatomic) id<UserManagerDelegate> delegate;
 
 + (UserManager *)sharedInstance;
 

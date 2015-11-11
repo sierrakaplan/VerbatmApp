@@ -139,7 +139,6 @@
 		C716E9CE1BD6BBB5001B769D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C716E9CD1BD6BBB5001B769D /* GoogleService-Info.plist */; };
 		C716E9CF1BD6BC0C001B769D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C716E9CD1BD6BBB5001B769D /* GoogleService-Info.plist */; };
 		C716E9D21BD6C338001B769D /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C716E9D11BD6C338001B769D /* Analytics.m */; };
-		C719A4041BA3FC020075CA80 /* CreateAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4031BA3FC020075CA80 /* CreateAccount.m */; };
 		C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4061BA4EB500075CA80 /* EditContentVC.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
@@ -463,8 +462,6 @@
 		C716E9CD1BD6BBB5001B769D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		C716E9D01BD6C338001B769D /* Analytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Analytics.h; sourceTree = "<group>"; };
 		C716E9D11BD6C338001B769D /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
-		C719A4021BA3FC020075CA80 /* CreateAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateAccount.h; sourceTree = "<group>"; };
-		C719A4031BA3FC020075CA80 /* CreateAccount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateAccount.m; sourceTree = "<group>"; };
 		C719A4051BA4EB500075CA80 /* EditContentVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditContentVC.h; sourceTree = "<group>"; };
 		C719A4061BA4EB500075CA80 /* EditContentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditContentVC.m; sourceTree = "<group>"; };
 		C719A4081BA615B50075CA80 /* UserSetupParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetupParameters.h; sourceTree = "<group>"; };
@@ -669,8 +666,6 @@
 			children = (
 				C7F3D4691A4F84C000B43238 /* SignIn.h */,
 				C7F3D46A1A4F84C000B43238 /* SignIn.m */,
-				C719A4021BA3FC020075CA80 /* CreateAccount.h */,
-				C719A4031BA3FC020075CA80 /* CreateAccount.m */,
 			);
 			name = Login;
 			sourceTree = "<group>";
@@ -1552,7 +1547,6 @@
 				A5E85FAC1B911DA900E148D0 /* GTMReadMonitorInputStream.m in Sources */,
 				A57A92FF1B55A551006C2597 /* CameraFocusSquare.m in Sources */,
 				A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */,
-				C719A4041BA3FC020075CA80 /* CreateAccount.m in Sources */,
 				C7E65F5F1B911BA90042AD99 /* SwitchCategoryPullView.m in Sources */,
 				C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */,
 				A58656621B602038008E358C /* TextOverAVEView.m in Sources */,

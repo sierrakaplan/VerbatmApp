@@ -9,6 +9,7 @@
 #import "VerbatmAppDelegate.h"
 
 #import "Analytics.h"
+#import "UserManager.h"
 #import "UserPovInProgress.h"
 #import "UserSetupParameters.h"
 
@@ -48,6 +49,11 @@
 	// Fabric and optimizely
 	[Fabric with:@[[Digits class], [Optimizely class], [Twitter class], [Crashlytics class]]];
 	[Optimizely startOptimizelyWithAPIToken:@"AANIfFEBE4sIUuvorLyNtBh2qNqBgv5e~3776222446" launchOptions:launchOptions];
+
+	// start querying for current user
+	if ([PFUser currentUser].isAuthenticated) {
+		[[UserManager sharedInstance] queryForCurrentUser];
+	}
 
     return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 }

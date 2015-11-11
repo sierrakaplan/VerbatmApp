@@ -42,7 +42,7 @@
 #import "VerbatmCameraView.h"
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, UserManagerDelegate, FeedVCDelegate, ProfileVCDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -55,10 +55,6 @@
 @property (strong,nonatomic) ProfileVC* profileVC;
 //@property (strong,nonatomic) FeedVC* feedVC;
 
-#pragma mark - User Manager -
-@property (strong, nonatomic) UserManager* userManager;
-
-
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
 
@@ -67,7 +63,6 @@
 #define MEDIA_DEV_VC_ID @"media_dev_vc"
 #define PROFILE_VC_ID @"profile_vc"
 
-
 @end
 
 @implementation MasterNavigationVC
@@ -75,29 +70,42 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self setUpTabBarController];
-	if (![PFUser currentUser].isAuthenticated &&
-		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-	} else {
-		[self.userManager queryForCurrentUser];
-	}
+	[self registerForNotifications];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+	if (![[UserManager sharedInstance] getCurrentUser]) {
+		[self bringUpLogin];
+	}
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
 }
 
+-(void) registerForNotifications {
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginFailed:)
+												 name:NOTIFICATION_USER_LOGIN_FAILED
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginSucceeded:)
+												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
+											   object:nil];
+}
+
 #pragma mark - User Manager Delegate -
 
--(void) successfullyLoggedInUser:(GTLVerbatmAppVerbatmUser *)user {
+-(void) loginSucceeded:(NSNotification*) notification {
 	[self.profileVC updateUserInfo];
 }
 
--(void) errorLoggingInUser:(NSError *)error {
+-(void) loginFailed:(NSNotification *) notification {
+	NSError* error = (NSError*) notification.object;
 	NSLog(@"Error finding current user: %@", error.description);
+	//TODO: only do this if have a connection, or only a certain number of times
+//	[[UserManager sharedInstance] queryForCurrentUser];
 }
 
 #pragma mark - Tab bar controller -
@@ -170,14 +178,13 @@
 //brings up the create account page if there is no user logged in
 -(void) bringUpLogin {
 	//TODO: check user defaults and do login if they have logged in before
-	[self performSegueWithIdentifier:CREATE_ACCOUNT_SEGUE sender:self];
+	[self performSegueWithIdentifier:SIGN_IN_SEGUE sender:self];
 }
 
 //catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
 	[[UIApplication sharedApplication] setStatusBarHidden:NO];
-	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_CREATE_ACCOUNT_TO_MASTER]
-		|| [segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
+	if ([segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
 		// TODO: have variable set and go to profile or adk
 		[self.profileVC updateUserInfo];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
@@ -207,14 +214,6 @@
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.
-}
-
-#pragma mark - Lazy Instantiation -
-
--(UserManager*) userManager {
-	if (!_userManager) _userManager = [UserManager sharedInstance];
-	_userManager.delegate = self;
-	return _userManager;
 }
 
 @end
