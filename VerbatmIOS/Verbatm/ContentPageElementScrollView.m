@@ -59,7 +59,6 @@
 }
 
 -(void) formatScrollView {
-    self.scrollEnabled = NO;
 	self.pagingEnabled = NO;
 	self.showsHorizontalScrollIndicator = NO;
 	self.showsVerticalScrollIndicator = NO;
@@ -123,6 +122,7 @@
 	[otherScrollView removeFromSuperview];
 	return newPinchView;
 }
+
 
 -(void) changePageElement:(UIView<ContentDevElementDelegate>*) newPageElement {
 	if(newPageElement == self.pageElement) {

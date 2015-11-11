@@ -705,23 +705,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
-
-			//sometimes people will rest their hands on the screen so make sure the textviews are selectable
-			for (UIView * element in self.mainScrollView.pageElements) {
-				if([element isKindOfClass:[UITextView class]]) {
-					((UITextView *)element).selectable = YES;
-				}
-			}
 			[self handlePinchGestureBegan:sender];
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
 
-			if((self.pinchingMode == PinchingModeHorizontal)
-			   && self.scrollViewOfHorizontalPinching && sender.scale < 1) {
-				[self handleHorizontalPinchGestureChanged:sender];
-
-			} else if ((self.pinchingMode == PinchingModeVertical)
+			if ((self.pinchingMode == PinchingModeVertical ||
+                 self.pinchingMode == PinchingModeVertical_Undo)
 					   && self.lowerPinchScrollView && self.upperPinchScrollView) {
 				[self handleVerticlePinchGestureChanged:sender];
 			}
@@ -784,25 +774,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	}];
 }
 
-
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
-
-	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
-	CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
-
-	int xDifference = fabs(touch1.x -touch2.x);
-	int yDifference = fabs(touch1.y -touch2.y);
-	//figure out if it's a horizontal pinch or vertical pinch
-	if(xDifference > yDifference) {
-		self.pinchingMode = PinchingModeHorizontal;
-		[self handleHorizontalPinchGestureBegan:sender];
-	}else {
-		//you can pinch together two things if there aren't two
-		if(self.pageElementScrollViews.count < 2) return;
-		self.pinchingMode = PinchingModeVertical;
-		[self handleVerticlePinchGestureBegan:sender];
-	}
-
+    self.pinchingMode = PinchingModeVertical;
+    [self handleVerticlePinchGestureBegan:sender];
 }
 
 
@@ -903,10 +877,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		self.lowerTouchPointInVerticalPinch = touch2;
 		self.upperTouchPointInVerticalPinch = touch1;
 	}
-	[self findElementsFromPinchPoint];
+	
+    [self findElementsFromPinchPoint];
 
 	//if it's a pinch apart then create the media tile
-	 if(self.upperPinchScrollView && self.lowerPinchScrollView && sender.scale > 1) {
+	 if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVertical &&sender.scale > 1) {
 		[self createNewMediaTileBetweenPinchViews];
 	 }
 
@@ -916,29 +891,34 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
     if([gesture numberOfTouches] != 2) return;
     
-    CGPoint touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
-	CGPoint touch2 = [gesture locationOfTouch:1 inView:self.mainScrollView];
+    CGPoint upperTouch = [gesture locationOfTouch:0 inView:self.mainScrollView];
+	CGPoint lowerTouch = [gesture locationOfTouch:1 inView:self.mainScrollView];
 
 	//touch1 is upper touch
-	if (touch2.y < touch1.y) {
-		CGPoint temp = touch1;
-		touch1 = touch2;
-		touch2 = temp;
+	if (lowerTouch.y < upperTouch.y) {
+		CGPoint temp = upperTouch;
+		upperTouch = lowerTouch;
+		lowerTouch = temp;
 	}
 
-	float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
-	float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
+	float changeInTopViewPosition = [self handleUpperViewFromTouch:upperTouch];
+	float changeInBottomViewPosition = [self handleLowerViewFromTouch:lowerTouch];
 
 	//objects are being pinched apart
 	if(gesture.scale > 1) {
-		[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
+        if(self.pinchingMode == PinchingModeVertical_Undo){
+            
+        }else{
+            [self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
 					  andChangeInBottomViewPosition:changeInBottomViewPosition];
+        }
 	}
 	//objects are being pinched together
 	else {
 		[self pinchObjectsTogether];
 	}
 }
+
 
 //handle the translation of the upper view
 //returns change in position of upper view
@@ -1119,7 +1099,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 //Takes a midpoint and a lower touch point and finds the two views that were being interacted with
 -(void) findElementsFromPinchPoint {
 
-	self.upperPinchScrollView = [self findPinchViewScrollViewFromPinchPoint:self.upperTouchPointInVerticalPinch];
+	self.upperPinchScrollView = [self findPinchViewScrollViewFromUpperPinchPoint:self.upperTouchPointInVerticalPinch andLowerPinchPoint:self.lowerTouchPointInVerticalPinch];
+    
 	if(!self.upperPinchScrollView) {
 		return;
 	}
@@ -1130,9 +1111,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 	NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
 
-	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound) {
+	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound && self.pinchingMode != PinchingModeVertical_Undo) {
 		self.lowerPinchScrollView = self.pageElementScrollViews[index+1];
-	}
+    }else if (self.pinchingMode == PinchingModeVertical_Undo){
+        //make sure that we're pinching apart a colleciton
+        if(![self.upperPinchScrollView.pageElement isKindOfClass:[CollectionPinchView class]]){
+            return;
+        }
+        self.lowerPinchScrollView = [self createPinchApartViews];
+    }
 
 	if([self.lowerPinchScrollView.pageElement isKindOfClass:[MediaSelectTile class]]) {
 		self.lowerPinchScrollView = nil;
@@ -1141,20 +1128,72 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 
+
+-(ContentPageElementScrollView *)createPinchApartViews {
+    
+   CollectionPinchView * collectionPv = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
+    PinchView * toRemove = [collectionPv.pinchedObjects lastObject];
+    CollectionPinchView * pv = [collectionPv unPinchAndRemove:toRemove];
+    
+    if(pv.pinchedObjects.count == 1){
+        PinchView * newpv =  [collectionPv.pinchedObjects lastObject];
+        [pv unPinchAndRemove:pv];
+        [self.upperPinchScrollView changePageElement:newpv];
+    }else{
+        [self.upperPinchScrollView changePageElement:pv];
+    }
+    
+    //[[UserPovInProgress sharedInstance] addPinchView:pinchView];
+    [self addTapGestureToPinchView:toRemove];
+    NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView] + 1;
+    
+    CGRect newElementScrollViewFrame= self.upperPinchScrollView.frame;
+    ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:toRemove];
+    newElementScrollView.delegate = self; //scroll view delegate
+    newElementScrollView.contentPageElementScrollViewDelegate = self;
+    
+    [self.navBar enablePreviewButton:YES];
+    self.numPinchViews++;
+    
+    //thread safety
+    @synchronized(self) {
+        [self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+    }
+    
+    [self.mainScrollView addSubview: newElementScrollView];
+    //[self shiftElementsBelowView: self.coverPicView];
+    
+    return newElementScrollView;
+}
+
+
 //Runs through and identifies the pinch view scrollview at that point
--(ContentPageElementScrollView *) findPinchViewScrollViewFromPinchPoint: (CGPoint) pinchPoint {
+-(ContentPageElementScrollView *) findPinchViewScrollViewFromUpperPinchPoint: (CGPoint) upperPinchPoint
+                                                          andLowerPinchPoint:(CGPoint) lowerPinchPoint{
 	NSInteger distanceTraveled = 0;
 	ContentPageElementScrollView * wantedView;
 	//Runs through the view positions to find the first one that passes the midpoint- we assume the midpoint is
 	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
 		if(distanceTraveled == 0) distanceTraveled = scrollView.frame.origin.y;
 		distanceTraveled += scrollView.frame.size.height;
-		if(distanceTraveled > pinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]]) {
-			wantedView = scrollView;
+		if(distanceTraveled > upperPinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]]) {
+            wantedView = scrollView;
+            
+            if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
+                self.pinchingMode = PinchingModeVertical_Undo;
+            }
 			break;
 		}
 	}
 	return wantedView;
+}
+
+
+-(BOOL) bothPointsInView: (UIView *) view andLowerPoint: (CGPoint) lowerPoint {
+    if(lowerPoint.y < (view.frame.origin.y + (self.defaultPinchViewRadius*2))){
+        return true;
+    }
+    return NO;
 }
 
 
