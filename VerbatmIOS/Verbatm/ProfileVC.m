@@ -112,7 +112,7 @@
 	self.userStoriesVC = [self.storyboard instantiateViewControllerWithIdentifier:USER_STORIES_VC_ID];
 	//TODO: delete this
 	NSNumber* aishwaryaId = [NSNumber numberWithLongLong:5432098273886208];
-	[self.userStoriesVC setPovLoadManager:[[POVLoadManager alloc] initWithUserId: self.currentUser.identifier]
+	[self.userStoriesVC setPovLoadManager:[[POVLoadManager alloc] initWithUserId: aishwaryaId]//self.currentUser.identifier]
 				   andCellBackgroundColor:[UIColor whiteColor]];
 	self.userStoriesVC.delegate = self;
 

@@ -25,6 +25,7 @@
 #import "UserPovInProgress.h"
 
 #import "VideoPinchView.h"
+#import "VideoPlayerView.h"
 #import "VerbatmKeyboardToolBar.h"
 
 @interface EditContentVC() <KeyboardToolBarDelegate, UITextViewDelegate>

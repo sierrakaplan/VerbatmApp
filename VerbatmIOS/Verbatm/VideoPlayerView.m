@@ -274,6 +274,7 @@
 }
 
 -(void)playerItemDidStall:(NSNotification*)notification {
+	NSLog(@"Video stalled");
 	if(self.isVideoPlaying)[self continueVideo];
 }
 

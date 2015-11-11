@@ -20,7 +20,6 @@
 
 #import "MasterNavigationVC.h"
 #import "MediaSessionManager.h"
-#import "MediaDevVC.h"
 
 #import "Notifications.h"
 
@@ -43,8 +42,7 @@
 #import "VerbatmCameraView.h"
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, UserManagerDelegate,
-MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, UserManagerDelegate, FeedVCDelegate, ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -55,8 +53,7 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 #pragma mark View Controllers in tab bar Controller
 
 @property (strong,nonatomic) ProfileVC* profileVC;
-@property (strong,nonatomic) FeedVC* feedVC;
-@property (strong,nonatomic) MediaDevVC* mediaDevVC;
+//@property (strong,nonatomic) FeedVC* feedVC;
 
 #pragma mark - User Manager -
 @property (strong, nonatomic) UserManager* userManager;
@@ -121,15 +118,12 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 	self.profileVC.delegate = self;
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:PROFILE_NAV_ICON] scaleImageToSize:iconSize] tag:0];
 
-	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:MEDIA_DEV_VC_ID];
-	self.mediaDevVC.delegate = self;
+//	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
+//	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
+//	self.feedVC.delegate = self;
 
-	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
-	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
-	self.feedVC.delegate = self;
-
-	self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC];
-	self.tabBarController.selectedViewController = self.feedVC;
+	self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init]];
+	self.tabBarController.selectedViewController = self.profileVC;
 	UIImage* adkImage = [[UIImage imageNamed:ADK_NAV_ICON] scaleImageToSize:iconSize];
 	[self addTabBarCenterButtonWithImage:adkImage highlightImage:adkImage];
 
@@ -195,10 +189,10 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 }
 
 #pragma mark - Media Dev VC Delegate methods -
-
+// TODO: make this a notification and change this to the profile vc
 -(void) povPublishedWithUserName:(NSString *)userName andTitle:(NSString *)title andCoverPic:(UIImage *)coverPhoto andProgressObject:(NSProgress *)progress {
-	[self.feedVC showPOVPublishingWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject:progress];
-	[self.tabBarController setSelectedViewController:self.feedVC];
+//	[self.feedVC showPOVPublishingWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject:progress];
+//	[self.tabBarController setSelectedViewController:self.feedVC];
 }
 
 #pragma mark - Feed VC Delegate -

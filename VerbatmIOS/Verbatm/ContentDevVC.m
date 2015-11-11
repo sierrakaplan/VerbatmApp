@@ -154,7 +154,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self initializeVariables];
-	[self addBlurView];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
 	[self formatNavBar];
@@ -167,6 +166,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.mainScrollView.delegate = self;
 }
 
+-(void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
+}
+
 -(void) initializeVariables {
 	self.pinchingMode = PinchingModeNone;
 	self.addingCoverPicture = NO;
@@ -174,10 +177,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
 	self.addMediaBelowView = nil;
 	self.pinchViewTappedAndClosedForTheFirstTime = NO;
-}
-
--(void) addBlurView {
-	[self.view createBlurViewOnViewWithStyle:UIBlurEffectStyleLight];
 }
 
 -(void) setFrameMainScrollView {

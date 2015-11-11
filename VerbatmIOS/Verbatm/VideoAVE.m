@@ -33,10 +33,10 @@
 		[self repeatVideoOnEnd:YES];
         if(videoAndTextList.count) {
 			NSMutableArray* videoList = [[NSMutableArray alloc] initWithCapacity: videoAndTextList.count];
-			for (NSArray* videoAndTextArray in videoAndTextList) {
-				[videoList addObject: videoAndTextArray[0]];
-				NSString* text = videoAndTextList[1];
-				NSNumber* textYPos = videoAndTextList[2];
+			for (NSArray* videoWithText in videoAndTextList) {
+				[videoList addObject: videoWithText[0]];
+				NSString* text = videoWithText[1];
+				NSNumber* textYPos = videoWithText[2];
 			}
             [self playVideos:videoList];
             self.hasBeenSetUp = NO;

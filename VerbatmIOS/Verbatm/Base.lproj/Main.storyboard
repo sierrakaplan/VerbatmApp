@@ -50,7 +50,7 @@
                         <outlet property="tabBarControllerContainerView" destination="JF8-rw-Rfn" id="dFp-bX-Lgt"/>
                         <segue destination="VBm-cB-Fwg" kind="modal" identifier="segue_id_create_account" id="vqA-Ve-rLQ"/>
                         <segue destination="waF-h7-lpu" kind="modal" identifier="segue_id_sign_in" id="O0U-1G-Oy1"/>
-                        <segue destination="Qxg-C2-1Oh" kind="modal" identifier="segue_id_adk" id="cOJ-P4-mLy"/>
+                        <segue destination="0lh-hP-Opv" kind="modal" identifier="segue_id_adk" id="2tt-Z0-lcH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AxA-gZ-qvU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -351,16 +351,8 @@
             <objects>
                 <viewController storyboardIdentifier="media_dev_vc" title="Media Dev" id="Qxg-C2-1Oh" customClass="MediaDevVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rWO-ax-CE2">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="yYu-am-nhj" userLabel="Content Container View">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </containerView>
-                        </subviews>
                         <animations/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <gestureRecognizers/>
@@ -368,10 +360,8 @@
                     <tabBarItem key="tabBarItem" title="Item" id="Pqz-zZ-Dsp"/>
                     <navigationItem key="navigationItem" id="76F-zj-l9s"/>
                     <connections>
-                        <outlet property="contentContainerView" destination="yYu-am-nhj" id="oIm-VS-BBM"/>
                         <outlet property="panGesture_PullBar" destination="3Xh-4j-hro" id="Izk-kV-xrj"/>
                         <segue destination="PKm-5r-jPL" kind="unwind" identifier="unwind_to_master_vc_from_adk" unwindAction="unwindToMasterNavVC:" id="ktO-DD-7db"/>
-                        <segue destination="DnR-sI-l2h" kind="modal" identifier="segue_id_question_page" id="DFz-qB-ywx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPQ-fx-ob9" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -395,6 +385,16 @@
                             <scrollView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="ChT-rO-Rpn" customClass="VerbatmScrollView">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <containerView opaque="NO" contentMode="scaleToFill" id="xE1-df-Yy5">
+                                        <rect key="frame" x="40" y="220" width="240" height="128"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                        <animations/>
+                                        <connections>
+                                            <segue destination="Qxg-C2-1Oh" kind="embed" id="D0k-UL-5wa"/>
+                                        </connections>
+                                    </containerView>
+                                </subviews>
                                 <animations/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
@@ -431,7 +431,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-2694" y="-1288"/>
+            <point key="canvasLocation" x="-3513" y="-1229"/>
         </scene>
         <!--Verbatm Explanation-->
         <scene sceneID="d4R-xX-vw4">

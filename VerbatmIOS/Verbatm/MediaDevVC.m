@@ -81,16 +81,6 @@
 @property (strong, nonatomic) UIImage* flashOffIcon;
 @property (nonatomic) BOOL flashOn;
 
-#pragma mark - Content Dev view controller
-@property (strong,nonatomic) ContentDevVC* contentDevVC;
-
-#pragma mark - Pull down to content dev -
-@property (nonatomic) CGPoint panStartPoint;
-@property (nonatomic) CGPoint previousTranslation;
-@property (nonatomic) ContentContainerViewMode contentContainerViewMode;
-//layout of the screen before it was made landscape
-@property(nonatomic) ContentContainerViewMode previousMode;
-
 #pragma mark - Preview -
 
 @property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
@@ -128,13 +118,10 @@
 	[self setDelegates];
 	[self registerForNotifications];
 	[self createSubViews];
-	[self setContentDevVC];
-	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
 }
 
 -(void)viewWillLayoutSubviews {
 	[super viewWillLayoutSubviews];
-	[self positionContainerView];
 }
 
 -(void) viewDidLayoutSubviews {
@@ -152,17 +139,6 @@
 }
 
 #pragma mark - Initialization
-
--(void)setContentDevVC {
-	
-	self.contentDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_CONTENTDEVVC];
-	[self.contentContainerView addSubview: self.contentDevVC.view];
-	[self addChildViewController:self.contentDevVC];
-	self.contentDevVC.pullBarHeight = self.pullBar.frame.size.height;
-	self.contentDevVC.delegate = self;
-	[self.contentDevVC loadPOVFromUserDefaults];
-}
-
 
 #pragma mark Create Sub Views
 
@@ -258,7 +234,7 @@
 	if (!self.mediaPreviewPaused) {
 		[self animatePreviewImage];
 	}
-	[self.contentDevVC addImageToStream:image];
+	//TODO: [self.contentDevVC addImageToStream:image];
 }
 
 -(void) didFinishSavingMediaToAsset:(PHAsset *)asset {
@@ -277,7 +253,7 @@
 													}];
 		}
 		//add media to the contentDev stream
-		[self.contentDevVC addMediaAssetToStream:asset];
+		//TODO: [self.contentDevVC addMediaAssetToStream:asset];
 	}
 }
 
@@ -334,11 +310,6 @@
 }
 
 -(void)registerForNotifications {
-
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(positionContainerView)
-												 name:UIDeviceOrientationDidChangeNotification
-											   object: [UIDevice currentDevice]];
 
 	//for postitioning the blurView when the orientation of the device changes
 	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
@@ -493,162 +464,17 @@
 	[self.sessionManager zoomPreviewWithScale:self.verbatmCameraView.effectiveScale];
 }
 
-
-#pragma mark - Change size of container view based on orientation
-
--(void)positionContainerView {
-	if(UIDeviceOrientationIsLandscape([UIDevice currentDevice].orientation)
-	   && ![self.contentContainerView isHidden]) {
-		[self positionContainerViewLandscape];
-
-	} else if([self.contentContainerView isHidden]) {
-		self.contentContainerView.hidden = NO;
-		[self transitionContentContainerViewToMode:self.previousMode];
-	}
-}
-
--(void) positionContainerViewLandscape {
-	[UIView animateWithDuration:0.5 animations:^{
-
-		self.previousMode = self.contentContainerViewMode;
-		int containerY = -1 * self.contentContainerView.frame.size.height;
-		self.contentContainerView.frame = CGRectMake(0, containerY, self.contentContainerView.frame.size.width, self.contentContainerView.frame.size.height);
-
-		int pullBarY = -1 * self.pullBar.frame.size.height;
-		self.pullBar.frame = CGRectMake(0,pullBarY, self.pullBar.frame.size.width, self.pullBar.frame.size.height);;
-
-	} completion:^(BOOL finished) {
-		if(finished) {
-			self.contentContainerView.hidden = YES;
-			[self.contentDevVC removeKeyboardFromScreen];
-		}
-	}];
-}
-
-
-#pragma mark - Transition container view and pull bar - 
-
-//Sets the content container view to the appropriate frame, sets the pull bar mode,
-//and sets whether the content container view is scrollable
--(void) transitionContentContainerViewToMode: (ContentContainerViewMode) mode {
-    self.contentContainerViewMode = mode;
-    //if the contentDev screen is full screen
-    if(mode == ContentContainerViewModeFullScreen) {
-        [self pullBarTransitionToMode:PullBarModeMenu];
-        
-        //if the bar is at the top
-    }else if (mode == ContentContainerViewModeBase) {
-        [self pullBarTransitionToMode:PullBarModePullDown];
-    }
-}
-
-// Moving pull bar gesture sensed
-- (IBAction)expandContentPage:(UIPanGestureRecognizer *)sender {
-	switch(sender.state) {
-		case UIGestureRecognizerStateBegan: {
-			if (self.isTakingVideo) {
-				[self endVideoRecordingSession];
-			}
-			break;
-		}
-		case UIGestureRecognizerStateChanged: {
-			[self expandContentPageChanged:sender];
-			break;
-		}
-		case UIGestureRecognizerStateEnded: {
-			[self expandContentPageEnded:sender];
-			break;
-		}
-		default: {
-			return;
-		}
-	}
-}
-
-// Handles the user continuing to pull the pull bar
--(void)expandContentPageChanged:(UIPanGestureRecognizer *)sender{
-	// How far has the transition come
-	CGPoint translation = [sender translationInView:self.pullBar.superview];
-	int newtranslation = translation.y-self.previousTranslation.y;
-	float contentViewHeight = self.contentContainerView.frame.size.height + newtranslation;
-
-	//pull bar is being moved up, immediately remove buttons
-	if(translation.y < 0.f && (self.pullBar.mode == PullBarModeMenu)) {
-		[self.pullBar switchToMode:PullBarModePullDown];
-	}
-
-	CGRect newPullBarFrame = CGRectMake(self.pullBar.frame.origin.x, self.pullBar.frame.origin.y + newtranslation, self.view.frame.size.width, NAV_BAR_HEIGHT);
-	CGRect newContentContainerViewFrame = CGRectMake(self.contentContainerView.frame.origin.x, self.contentContainerView.frame.origin.y, self.view.frame.size.width, contentViewHeight);
-
-	self.pullBar.frame = newPullBarFrame;
-	self.contentContainerView.frame = newContentContainerViewFrame;
-	self.previousTranslation = translation;
-}
-
-// snaps the content container view into base or full screen
-// (depending on direction of pull and if user has pulled far enough)
--(void) expandContentPageEnded:(UIPanGestureRecognizer *)sender{
-	//how far has the transition come
-	CGPoint translation = [sender translationInView:self.pullBar.superview];
-
-	//[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
-		//snap the container view to full screen, else snap back to base
-		if( translation.y > TRANSLATION_CONTENT_DEV_CONTAINER_VIEW_THRESHOLD) {
-			[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
-		}else {
-			[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
-		}
-	//}];
-
-	self.previousTranslation = CGPointMake(0, 0);//sanitize the translation difference so that the next round is sent back up
-}
-
-// Sets pull bar to mode and changes its frame based on mode
--(void) pullBarTransitionToMode: (PullBarMode) mode {
-	[UIView animateWithDuration:CONTAINER_VIEW_TRANSITION_ANIMATION_TIME animations:^{
-		 if (mode == PullBarModeMenu) {
-             self.contentContainerView.frame = self.contentContainerViewFrameBottom;
-             self.pullBar.frame = self.pullBarFrameBottom;
-
-		 } else {
-             self.contentContainerView.frame = self.contentContainerViewFrameTop;
-             self.pullBar.frame = self.pullBarFrameTop;
-		 }
-		 [self.pullBar switchToMode:mode];
-	 }];
-}
-
-#pragma mark - Content Dev VC Delegate methods -
-
-#pragma mark Show and Hide Pull Bar
--(void) showPullBar:(BOOL)showPullBar withTransition:(BOOL)withTransition {
-    if (!withTransition) {
-        [self showPullBar:showPullBar];
-    } else {
-        [UIView animateWithDuration:PULLBAR_TRANSITION_ANIMATION_TIME animations:^{
-            [self showPullBar:showPullBar];
-        }];
-    }
-}
-
--(void) showPullBar:(BOOL)showPullBar {
-    if (showPullBar) {
-        self.pullBar.frame = self.pullBarFrameBottom;
-    } else {
-        self.pullBar.frame = self.pullBarFrameOffScreen;
-    }
-}
-
 #pragma mark Display Preview
+//TODO: move this to content dev
 // Displays article preview from pinch objects
--(void) previewButtonPressed {
-	NSArray *pinchViews = [self.contentDevVC getPinchViews];
-	NSString* title = self.contentDevVC.titleField.text;
-	UIImage* coverPic = [self.contentDevVC getCoverPicture];
-
-	[self.view bringSubviewToFront:self.previewDisplayView];
-	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
-}
+//-(void) previewButtonPressed {
+//	NSArray *pinchViews = [self.contentDevVC getPinchViews];
+//	NSString* title = self.contentDevVC.titleField.text;
+//	UIImage* coverPic = [self.contentDevVC getCoverPicture];
+//
+//	[self.view bringSubviewToFront:self.previewDisplayView];
+//	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
+//}
 
 #pragma mark Save Draft
 -(void) saveDraftButtonPressed {
@@ -662,6 +488,7 @@
 
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
 
+//TODO: move to content dev
 -(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
 
 	if (![title length]) {
@@ -682,8 +509,8 @@
 		[self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
 		[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 
-		[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
-		[self.contentDevVC cleanUp];
+//		[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
+//		[self.contentDevVC cleanUp];
 	}
 }
 
@@ -698,14 +525,6 @@
 }
 
 #pragma mark - PullBar Delegate Methods (pullbar button actions) -
-
--(void) cameraButtonPressed {
-	[self transitionContentContainerViewToMode:ContentContainerViewModeBase];
-}
-
--(void) pullDownButtonPressed {
-	[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
-}
 
 -(void) questionButtonPressed {
 	[self performSegueWithIdentifier:SEGUE_TO_QUESTION_PAGE sender:self];
