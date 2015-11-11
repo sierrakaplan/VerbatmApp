@@ -28,7 +28,41 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4235</string>
+	<string>4247</string>
+	<key>Fabric</key>
+	<dict>
+		<key>APIKey</key>
+		<string>d06f1334227368d41c41560362a5986e9382ca1a</string>
+		<key>Kits</key>
+		<array>
+			<dict>
+				<key>KitInfo</key>
+				<dict>
+					<key>socket_token</key>
+					<string>AANIfFEBE4sIUuvorLyNtBh2qNqBgv5e~3776222446</string>
+				</dict>
+				<key>KitName</key>
+				<string>Optimizely</string>
+			</dict>
+			<dict>
+				<key>KitInfo</key>
+				<dict>
+					<key>consumerKey</key>
+					<string>glxgOdoezy39mTnBfOY5XG79L</string>
+					<key>consumerSecret</key>
+					<string>YcqB2d2hLyA7nKtcQeNGl1CJXF86j7DFc7D7rqhotWNXP7l4n2</string>
+				</dict>
+				<key>KitName</key>
+				<string>Digits</string>
+			</dict>
+			<dict>
+				<key>KitInfo</key>
+				<dict/>
+				<key>KitName</key>
+				<string>Crashlytics</string>
+			</dict>
+		</array>
+	</dict>
 	<key>FacebookAppID</key>
 	<string>1476890692612143</string>
 	<key>FacebookDisplayName</key>
@@ -54,6 +88,11 @@
 				<false/>
 				<key>NSIncludesSubdomains</key>
 				<true/>
+			</dict>
+			<key>api.twitter.com</key>
+			<dict>
+				<key>NSExceptionRequiresForwardSecrecy</key>
+				<false/>
 			</dict>
 			<key>facebook.com</key>
 			<dict>

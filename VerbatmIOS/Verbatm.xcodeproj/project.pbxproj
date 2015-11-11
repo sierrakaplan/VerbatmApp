@@ -216,19 +216,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		A53CFB1A1BA62DD900215894 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		113A4CE1B7B9BC71C0E99388 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		9D29995619BA7EBD005EBC8A /* MediaSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSessionManager.h; sourceTree = "<group>"; };
@@ -1363,10 +1350,10 @@
 				C7BC436E199D97F5004B91A1 /* Sources */,
 				C7BC436F199D97F5004B91A1 /* Frameworks */,
 				C7BC4370199D97F5004B91A1 /* Resources */,
-				A5B8EDEC1B46E1E300932ADE /* ShellScript */,
-				A53CFB1A1BA62DD900215894 /* Embed Frameworks */,
+				A5B8EDEC1B46E1E300932ADE /* Increase Build Number Run Script */,
 				5754F6208F8B90C343783BE4 /* Embed Pods Frameworks */,
 				AAD06C0288E8ED423216859C /* Copy Pods Resources */,
+				A5076D151BF3BBE900303746 /* Fabric Run Script */,
 			);
 			buildRules = (
 				A5A770801BA5633F0016F2BE /* PBXBuildRule */,
@@ -1496,13 +1483,28 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A5B8EDEC1B46E1E300932ADE /* ShellScript */ = {
+		A5076D151BF3BBE900303746 /* Fabric Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Fabric Run Script";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/Fabric.framework/run\" d06f1334227368d41c41560362a5986e9382ca1a 4b415ff2d66d482ed594f9998cec7eb84d619a1123567583e2cb415fc2a56432";
+		};
+		A5B8EDEC1B46E1E300932ADE /* Increase Build Number Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Increase Build Number Run Script";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -93,6 +93,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (weak, atomic) IBOutlet UITextView *firstContentPageTextBox;
 @property (strong, atomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
 
+#pragma mark Camera View
+
+@property (weak, nonatomic) IBOutlet UIView *cameraContainerView;
 
 #pragma mark PanGesture Properties
 
@@ -122,7 +125,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property(nonatomic) CGPoint lowerTouchPointInVerticalPinch;
 // Useful for pinch apart to add media between objects
 @property (nonatomic) ContentPageElementScrollView* addMediaBelowView;
-
 
 //informs our instruction notification if the user has added
 //pinch views to the article before

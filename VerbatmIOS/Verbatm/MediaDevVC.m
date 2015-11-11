@@ -9,9 +9,6 @@
 #import <AssetsLibrary/AssetsLibrary.h>
 #import "AVETypeAnalyzer.h"
 
-#import "ContentDevVC.h"
-#import "ContentPageElementScrollView.h"
-#import "ContentDevVC.h"
 #import "CameraFocusSquare.h"
 
 #import "Durations.h"
@@ -38,27 +35,16 @@
 
 #import "testerTransitionDelegate.h"
 
-#import "ContentDevPullBar.h"
 #import "VerbatmCameraView.h"
 
 #import "UserManager.h"
 #import "UserPovInProgress.h"
 
-@interface MediaDevVC () <MediaSessionManagerDelegate, ContentDevPullBarDelegate, ContentDevVCDelegate, PreviewDisplayDelegate>
+@interface MediaDevVC () <MediaSessionManagerDelegate, PreviewDisplayDelegate>
 
 #pragma mark - SubViews of screen
 
-@property (strong, nonatomic) ContentDevPullBar *pullBar;
-@property (strong, nonatomic) IBOutlet UIPanGestureRecognizer *panGesture_PullBar;
-// view with content development part of ADK
-@property (weak, nonatomic) IBOutlet UIView *contentContainerView;
 @property (strong, nonatomic) VerbatmCameraView *verbatmCameraView;
-
-@property(nonatomic) CGRect contentContainerViewFrameTop;
-@property(nonatomic) CGRect contentContainerViewFrameBottom;
-@property (nonatomic) CGRect pullBarFrameTop;
-@property (nonatomic) CGRect pullBarFrameBottom;
-@property (nonatomic) CGRect pullBarFrameOffScreen;
 
 #pragma mark - Capture Media -
 
@@ -112,7 +98,6 @@
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
     self.view.backgroundColor = [UIColor blackColor];
     [super viewDidLoad];
-	[self setDefaultFrames];
 	[self prepareCameraView];
 	[self createAndInstantiateGestures];
 	[self setDelegates];
@@ -142,19 +127,7 @@
 
 #pragma mark Create Sub Views
 
-//saves the intitial frames for the pulldown bar and the container view
--(void)setDefaultFrames {
-	self.contentContainerViewFrameTop = CGRectMake(0, 0, self.view.frame.size.width, NAV_BAR_HEIGHT);
-	self.contentContainerViewFrameBottom = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
-
-	int frameHeight = self.view.frame.size.height;
-	self.pullBarFrameTop = CGRectMake(0.f, 0.f, self.view.frame.size.width, NAV_BAR_HEIGHT);
-	self.pullBarFrameBottom = CGRectMake(self.pullBarFrameTop.origin.x, (frameHeight - NAV_BAR_HEIGHT), self.pullBarFrameTop.size.width, NAV_BAR_HEIGHT);
-	self.pullBarFrameOffScreen = CGRectMake(self.pullBarFrameBottom.origin.x, self.view.frame.size.height, self.pullBarFrameBottom.size.width, self.pullBarFrameBottom.size.height);
-}
-
 -(void) createSubViews {
-	[self createPullBar];
 	[self createCapturePicButton];
     [self addToggleFlashButton];
 	[self addSwitchCameraOrientationButton];
@@ -182,16 +155,6 @@
 	[self.verbatmCameraView bringSubviewToFront:self.captureMediaButton];
 }
 
-//creates the pullbar object then saves it as a property
--(void)createPullBar {
-	self.pullBar = [[ContentDevPullBar alloc]initWithFrame:self.pullBarFrameTop];
-	self.pullBar.delegate = self;
-	[self.panGesture_PullBar setDelegate:self.pullBar];
-	[self.pullBar addGestureRecognizer:self.panGesture_PullBar];
-	[self.view addSubview:self.pullBar];
-	[self.view bringSubviewToFront:self.pullBar];
-}
-
 -(void) addSwitchCameraOrientationButton {
 	self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.switchCameraButton setImage:[UIImage imageNamed:SWITCH_CAMERA_ORIENTATION_ICON] forState:UIControlStateNormal];
@@ -201,7 +164,7 @@
 												 SWITCH_ORIENTATION_ICON_SIZE)];
 	self.switchCameraButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self.switchCameraButton addTarget:self action:@selector(switchCameraOrientation:) forControlEvents:UIControlEventTouchUpInside];
-	[self.view insertSubview:self.switchCameraButton belowSubview:self.contentContainerView];
+	[self.view addSubview:self.switchCameraButton];
 }
 
 -(void) addToggleFlashButton {
@@ -213,7 +176,7 @@
 	self.flashOffIcon = [UIImage imageNamed:FLASH_ICON_OFF];
 	self.flashOnIcon = [UIImage imageNamed:FLASH_ICON_ON];
 	[self setFlashButtonOn:NO];
-	[self.view insertSubview:self.switchFlashButton belowSubview:self.contentContainerView];
+	[self.view addSubview:self.switchFlashButton];
 }
 
 -(void) setFlashButtonOn: (BOOL) on {

@@ -359,18 +359,8 @@
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="Pqz-zZ-Dsp"/>
                     <navigationItem key="navigationItem" id="76F-zj-l9s"/>
-                    <connections>
-                        <outlet property="panGesture_PullBar" destination="3Xh-4j-hro" id="Izk-kV-xrj"/>
-                        <segue destination="PKm-5r-jPL" kind="unwind" identifier="unwind_to_master_vc_from_adk" unwindAction="unwindToMasterNavVC:" id="ktO-DD-7db"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sPQ-fx-ob9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="PKm-5r-jPL" userLabel="Exit" sceneMemberID="exit"/>
-                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="3Xh-4j-hro">
-                    <connections>
-                        <action selector="expandContentPage:" destination="Qxg-C2-1Oh" id="Fie-gW-JY7"/>
-                    </connections>
-                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-3164" y="-1344"/>
         </scene>
@@ -386,7 +376,7 @@
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <containerView opaque="NO" contentMode="scaleToFill" id="xE1-df-Yy5">
+                                    <containerView opaque="NO" contentMode="scaleToFill" id="xE1-df-Yy5" userLabel="Camera View Container View">
                                         <rect key="frame" x="40" y="220" width="240" height="128"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                         <animations/>
@@ -410,6 +400,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
                     <connections>
+                        <outlet property="cameraContainerView" destination="xE1-df-Yy5" id="FtZ-K5-yg0"/>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
                         <segue destination="x4u-kZ-n9K" kind="modal" identifier="segue_id_edit_content_view" animates="NO" modalPresentationStyle="fullScreen" id="ONZ-b1-Agz"/>
                     </connections>
@@ -546,6 +537,6 @@
     </scenes>
     <inferredMetricsTieBreakers>
         <segue reference="vqA-Ve-rLQ"/>
-        <segue reference="UxX-nw-l5Q"/>
+        <segue reference="O0U-1G-Oy1"/>
     </inferredMetricsTieBreakers>
 </document>

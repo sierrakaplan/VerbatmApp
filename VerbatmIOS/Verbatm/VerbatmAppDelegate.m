@@ -7,10 +7,14 @@
 //
 
 #import "VerbatmAppDelegate.h"
+
 #import "Analytics.h"
 #import "UserPovInProgress.h"
-#import <AVFoundation/AVFoundation.h>
 #import "UserSetupParameters.h"
+
+#pragma mark Frameworks
+
+#import <AVFoundation/AVFoundation.h>
 
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
@@ -18,6 +22,12 @@
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
 #import <PromiseKit/PromiseKit.h>
+
+#import <Crashlytics/Crashlytics.h>
+#import <DigitsKit/Digits.h>
+#import <Fabric/Fabric.h>
+#import <Optimizely/Optimizely.h>
+#import <TwitterKit/Twitter.h>
 
 @implementation VerbatmAppDelegate
 
@@ -34,6 +44,10 @@
 	[[UserPovInProgress sharedInstance] loadPOVFromUserDefaults];
     
     [[Analytics getSharedInstance] newUserSession];
+
+	// Fabric and optimizely
+	[Fabric with:@[[Digits class], [Optimizely class], [Twitter class], [Crashlytics class]]];
+	[Optimizely startOptimizelyWithAPIToken:@"AANIfFEBE4sIUuvorLyNtBh2qNqBgv5e~3776222446" launchOptions:launchOptions];
 
     return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 }
