@@ -1176,10 +1176,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
 		if(distanceTraveled == 0) distanceTraveled = scrollView.frame.origin.y;
 		distanceTraveled += scrollView.frame.size.height;
-		if(distanceTraveled > upperPinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]]) {
+		if(distanceTraveled > upperPinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]] && (upperPinchPoint.y > scrollView.frame.origin.y)) {
             wantedView = scrollView;
             
             if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
+                
+                
+                
+                
                 self.pinchingMode = PinchingModeVertical_Undo;
             }
 			break;
