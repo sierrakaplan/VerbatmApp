@@ -461,9 +461,21 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 }
 
 #pragma mark - Content Page Element Scroll View Delegate -
-
+//apply two step deletion
 -(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView {
-	[self deleteScrollView: scrollView];
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Confirm Deletion" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              [self deleteScrollView: scrollView];
+                                                          }];
+    UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    [newAlert addAction:action1];
+    [newAlert addAction:action2];
+    [self presentViewController:newAlert animated:YES completion:nil];
+    
+    
+    
 }
 
 
