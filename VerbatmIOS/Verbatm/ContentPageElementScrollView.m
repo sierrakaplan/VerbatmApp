@@ -59,27 +59,19 @@
 }
 
 -(void) formatScrollView {
-	self.contentSize = self.initialContentSize = CGSizeMake(self.frame.size.width + DELETE_ICON_WIDTH + 2*DELETE_ICON_OFFSET, 0);
-	self.contentOffset = self.initialContentOffset = CGPointZero;
+    self.scrollEnabled = NO;
 	self.pagingEnabled = NO;
 	self.showsHorizontalScrollIndicator = NO;
 	self.showsVerticalScrollIndicator = NO;
     self.bounces = NO;
 }
 
--(void)createDeleteButton{
-    
-    if ([self.pageElement isKindOfClass:[MediaSelectTile class]]) {
-        self.deleteButton = [[UIButton alloc] initWithFrame:
-                             CGRectMake(self.contentSize.width - DELETE_ICON_OFFSET - DELETE_ICON_WIDTH,
-                                        self.pageElement.center.y + MEDIA_SELECT_TILE_DELETE_BUTTON_OFFSET,
-                                        DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
-    } else {
-        self.deleteButton = [[UIButton alloc] initWithFrame:
-                             CGRectMake(self.contentSize.width - DELETE_ICON_OFFSET - DELETE_ICON_WIDTH,
-                                        self.pageElement.center.y - (DELETE_ICON_HEIGHT/2.f),
-                                        DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
-    }
+-(void)createDeleteButton {
+    self.deleteButton = [[UIButton alloc] initWithFrame:
+                         CGRectMake(self.pageElement.frame.origin.x +
+                                    self.pageElement.frame.size.width + DELETE_ICON_X_OFFSET,
+                                    self.pageElement.center.y - (DELETE_ICON_Y_OFFSET),
+                                    DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
     
     [self.deleteButton setImage:[UIImage imageNamed:DELETE_ICON] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -99,15 +91,6 @@
 -(void)centerView{
     self.contentOffset = self.initialContentOffset;
 }
-
-#pragma mark - scrolling delegate functions -
-
-
-//- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView{
-//    
-//    
-//    
-//}
 
 #pragma mark - Change Page Element -
 

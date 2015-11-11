@@ -142,7 +142,6 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 }
 
 #pragma mark - Getting and formatting child view controllers -
-
 //lays out all the containers in the right position and also sets the appropriate
 //offset for the master SV
 -(void) getAndFormatVCs {

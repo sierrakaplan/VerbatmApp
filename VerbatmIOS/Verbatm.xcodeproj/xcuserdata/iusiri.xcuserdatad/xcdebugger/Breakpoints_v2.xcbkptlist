@@ -148,11 +148,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "468358312.431181"
+            timestampString = "468900476.343272"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "485"
-            endingLineNumber = "485"
+            startingLineNumber = "484"
+            endingLineNumber = "484"
             landmarkName = "@implementation MasterNavigationVC"
             landmarkType = "3">
          </BreakpointContent>
