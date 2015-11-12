@@ -63,6 +63,7 @@
 
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"gallery"
+#define PLUS_ICON @"plus_sign_black"
 
 #pragma mark Pull Bar (NOT IN USE)
 

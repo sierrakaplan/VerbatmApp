@@ -202,7 +202,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.defaultPageElementScrollViewSize = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
 	self.defaultPinchViewCenter = CGPointMake(self.view.frame.size.width/2.f,
 											  self.defaultPageElementScrollViewSize.height/2.f);
-	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
+	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_Y_OFFSET_DISTANCE)/2.f;
 }
 
 -(void) formatNavBar {
@@ -215,7 +215,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) createBaseSelector {
 
-	CGRect scrollViewFrame = CGRectMake(0, self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_OFFSET_DISTANCE);
+	CGRect scrollViewFrame = CGRectMake(0, self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
+										self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_Y_OFFSET_DISTANCE);
 
 	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
 																	  initWithFrame:scrollViewFrame
@@ -523,10 +524,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
-		newElementScrollViewFrame = CGRectMake(0,self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		newElementScrollViewFrame = CGRectMake(0,self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
+											   self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		index = 0;
 	} else {
-		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height,
+											   self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
     
@@ -571,7 +574,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	//If we must shift everything from the top
 	else if ([view isKindOfClass:[CoverPicturePinchView class]]) {
-		firstYCoordinate  = firstYCoordinate + ELEMENT_OFFSET_DISTANCE;
+		firstYCoordinate = firstYCoordinate + ELEMENT_Y_OFFSET_DISTANCE;
 	}
 
 	for(NSInteger i = viewIndex; i < [self.pageElementScrollViews count]; i++) {
@@ -1038,7 +1041,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		gesture.enabled = YES;
 		self.pinchingMode = PinchingModeNone;
 		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self.newlyCreatedMediaTile formatButtons];
+		[self.newlyCreatedMediaTile buttonGlow];
 	}];
 }
 
@@ -1895,14 +1898,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(MediaSelectTile*) baseMediaTileSelector {
 	if (!_baseMediaTileSelector) {
-		CGRect frame = CGRectMake(ELEMENT_OFFSET_DISTANCE,
-								  ELEMENT_OFFSET_DISTANCE/2.f,
-								  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
+		CGRect frame = CGRectMake(ELEMENT_X_OFFSET_DISTANCE,
+								  ELEMENT_Y_OFFSET_DISTANCE/2.f,
+								  self.view.frame.size.width - (ELEMENT_X_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
 		_baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
 		_baseMediaTileSelector.isBaseSelector =YES;
 		_baseMediaTileSelector.delegate = self;
 		[_baseMediaTileSelector createFramesForButtonsWithFrame:frame];
-		[_baseMediaTileSelector formatButtons];
+		[_baseMediaTileSelector buttonGlow];
 	}
 	return _baseMediaTileSelector;
 }

@@ -26,7 +26,10 @@
 // Tells if it is the base media selector tile (last in scroll view)
 @property (nonatomic) BOOL isBaseSelector;
 
+// Resizes buttons from different base frame (of the tile)
 -(void) createFramesForButtonsWithFrame: (CGRect) frame;
--(void) formatButtons;
+
+// Animates adding background and shadow to buttons
+-(void) buttonGlow;
 
 @end

@@ -119,7 +119,8 @@
 #define CONTENT_SIZE_OFFSET 20
 #define OFFSET_BELOW_ARTICLE_TITLE 30
 //distance between elements on the content view page
-#define ELEMENT_OFFSET_DISTANCE 25
+#define ELEMENT_Y_OFFSET_DISTANCE 25
+#define ELEMENT_X_OFFSET_DISTANCE 50
 //the distance we want the cursor from the base of the view at all times. When the
 //cursor is below this threshold we scroll the view down
 #define CURSOR_BASE_GAP 10
@@ -139,7 +140,7 @@
 
 #pragma mark Media Select Tile
 
-#define MEDIA_TILE_SELECTOR_HEIGHT 40.f
+#define MEDIA_TILE_SELECTOR_HEIGHT 80.f
 #define ADD_MEDIA_BUTTON_OFFSET 10
 
 #pragma mark - AVES -
