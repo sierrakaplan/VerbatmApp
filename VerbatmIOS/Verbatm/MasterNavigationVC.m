@@ -150,11 +150,6 @@ UIGestureRecognizerDelegate, UIScrollViewDelegate>
 	self.adkContainer.frame = RIGHT_FRAME;
 	self.articleDisplayContainer.frame = self.view.bounds;
 
-	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_FEEDVC];
-	[self.feedContainer addSubview: self.feedVC.view];
-	[self addChildViewController:self.feedVC];
-	self.feedVC.delegate = self;
-
 	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:ID_FOR_MEDIADEVVC];
 	[self.adkContainer addSubview: self.mediaDevVC.view];
 	[self addChildViewController:self.mediaDevVC];
