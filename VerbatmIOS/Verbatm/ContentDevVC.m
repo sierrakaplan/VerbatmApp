@@ -14,6 +14,7 @@
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
+#import "CoverPhoto.h"
 #import "ContentPageElementScrollView.h"
 #import "Durations.h"
 
@@ -234,8 +235,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 //sets the textview placeholders' color and text
 -(void) formatTitleAndCoverPicture {
-
-	CGRect titleFrame = CGRectMake(TITLE_FIELD_X_OFFSET, TITLE_FIELD_Y_OFFSET,
+    
+    CGRect titleFrame = CGRectMake(TITLE_FIELD_X_OFFSET, TITLE_FIELD_Y_OFFSET,
 											   self.view.bounds.size.width - 2*TITLE_FIELD_X_OFFSET,
 											   TITLE_FIELD_HEIGHT);
 	CGFloat coverPicRadius = COVER_PIC_RADIUS;
@@ -535,7 +536,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
     
     ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:newElementScrollViewFrame];
-	self.numPinchViews++;
+	
+    self.numPinchViews++;
     
 	//thread safety
 	@synchronized(self) {
@@ -1158,7 +1160,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 //Runs through and identifies the pinch view scrollview at that point
 -(ContentPageElementScrollView *) findPinchViewScrollViewFromUpperPinchPoint: (CGPoint) upperPinchPoint
                                                           andLowerPinchPoint:(CGPoint) lowerPinchPoint{
-	NSInteger distanceTraveled = 0;
+    NSInteger distanceTraveled = 0;
 	ContentPageElementScrollView * wantedView;
 	//Runs through the view positions to find the first one that passes the midpoint- we assume the midpoint is
 	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
@@ -1166,7 +1168,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		distanceTraveled += scrollView.frame.size.height;
 		if(distanceTraveled > upperPinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]] && (upperPinchPoint.y > scrollView.frame.origin.y)) {
             wantedView = scrollView;
-            
             if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
                 self.pinchingMode = PinchingModeVerticalUndo;
             }
