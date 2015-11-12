@@ -17,10 +17,6 @@
 
 @interface MediaSelectTile ()
 
-// buttons
-@property (nonatomic, strong) UIButton* galleryButton;
-@property (nonatomic, strong) UIButton* cameraButton;
-
 // contains images inside buttons
 @property (nonatomic, strong) UIImageView* galleryButtonImageView;
 @property (nonatomic, strong) UIImageView* cameraButtonImageView;
@@ -100,7 +96,7 @@
 	[self.delegate galleryButtonPressedOnTile:self];
 }
 
-- (void) cameraButtonPressed {
+- (void) cameraViewButtonPressed {
 	[self.delegate cameraButtonPressedOnTile:self];
 }
 
@@ -132,6 +128,7 @@
 		[_galleryButton addSubview: self.galleryButtonImageView];
 		[_galleryButton addTarget:self action:@selector(galleryButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 		_galleryButton.layer.borderColor = [UIColor blackColor].CGColor;
+		_galleryButton.clipsToBounds = YES;
 		[self addSubview:_galleryButton];
 	}
 
@@ -142,8 +139,9 @@
 	if(!_cameraButton) {
 		_cameraButton = [[UIButton alloc]init];
 		[_cameraButton addSubview: self.cameraButtonImageView];
-		[_cameraButton addTarget:self action:@selector(cameraButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+		[_cameraButton addTarget:self action:@selector(cameraViewButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 		_cameraButton.layer.borderColor = [UIColor blackColor].CGColor;
+		_cameraButton.clipsToBounds = YES;
 		[self addSubview:_cameraButton];
 	}
 

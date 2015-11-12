@@ -16,6 +16,7 @@ IB_DESIGNABLE
 
 -(void) imageCaptured: (UIImage*) image;
 -(void) videoAssetCaptured: (PHAsset*) asset;
+-(void) minimizeCameraViewButtonTapped;
 
 @end
 
@@ -25,5 +26,7 @@ IB_DESIGNABLE
 
 @property (nonatomic) float effectiveScale;
 @property (nonatomic) float beginGestureScale;
+
+-(void) createAndInstantiateGestures;
 
 @end

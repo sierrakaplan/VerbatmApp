@@ -26,6 +26,10 @@
 // Tells if it is the base media selector tile (last in scroll view)
 @property (nonatomic) BOOL isBaseSelector;
 
+// buttons
+@property (nonatomic, strong) UIButton* galleryButton;
+@property (nonatomic, strong) UIButton* cameraButton;
+
 // Resizes buttons from different base frame (of the tile)
 -(void) createFramesForButtonsWithFrame: (CGRect) frame;
 

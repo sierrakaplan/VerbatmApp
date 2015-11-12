@@ -43,6 +43,7 @@
 
 #pragma mark Edit Content View
 
+#define MINIMIZE_ICON @"minimize_icon"
 #define DONE_CHECKMARK @"done_checkmark"
 
 #pragma mark Media Capture

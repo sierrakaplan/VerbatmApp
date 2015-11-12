@@ -15,7 +15,6 @@
 #import "VerbatmCameraView.h"
 
 @interface VerbatmCameraView() <MediaSessionManagerDelegate>
-
 #pragma mark - Capture Media -
 
 @property (strong, nonatomic) MediaSessionManager* sessionManager;
@@ -36,6 +35,10 @@
 @property (strong, nonatomic) UIImage* flashOffIcon;
 @property (nonatomic) BOOL flashOn;
 
+#pragma mark - Close camera -
+
+@property (strong, nonatomic) UIButton* closeButton;
+
 @end
 
 @implementation VerbatmCameraView
@@ -45,7 +48,6 @@
 	if (self) {
 		self.backgroundColor = [UIColor blackColor];
 		self.effectiveScale = 1.0f;
-		[self createAndInstantiateGestures];
 		[self setDelegates];
 		[self registerForNotifications];
 		[self createSubViews];
@@ -56,9 +58,19 @@
 #pragma mark Create Sub Views
 
 -(void) createSubViews {
+	[self addCloseButton];
 	[self createCapturePicButton];
 	[self addToggleFlashButton];
 	[self addSwitchCameraOrientationButton];
+}
+
+-(void) addCloseButton {
+	self.closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.closeButton setImage:[UIImage imageNamed:MINIMIZE_ICON] forState:UIControlStateNormal];
+	[self.closeButton setFrame:CGRectMake(CAPTURE_MEDIA_BUTTON_OFFSET, CAPTURE_MEDIA_BUTTON_OFFSET,
+										  CAPTURE_MEDIA_BUTTON_SIZE, CAPTURE_MEDIA_BUTTON_SIZE)];
+	[self.closeButton addTarget:self action:@selector(closeButtonTapped) forControlEvents:UIControlEventTouchUpInside];
+	[self addSubview:self.closeButton];
 }
 
 -(void)createCapturePicButton {
@@ -96,6 +108,7 @@
 	[self.switchFlashButton setFrame:CGRectMake(CAPTURE_MEDIA_BUTTON_OFFSET,
 												self.bounds.size.height - FLASH_ICON_SIZE - CAPTURE_MEDIA_BUTTON_OFFSET,
 												FLASH_ICON_SIZE, FLASH_ICON_SIZE)];
+	self.switchFlashButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self.switchFlashButton addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
 	self.flashOffIcon = [UIImage imageNamed:FLASH_ICON_OFF];
 	self.flashOnIcon = [UIImage imageNamed:FLASH_ICON_ON];
@@ -160,6 +173,7 @@
 }
 
 #pragma mark - Create Customize Camera Gestures -
+
 -(void) createAndInstantiateGestures {
 	[self createTapGestureToFocus];
 	[self createPinchGestureToZoom];
@@ -355,6 +369,12 @@
 		self.beginGestureScale = self.effectiveScale;
 	}
 	return YES;
+}
+
+#pragma mark - Exit View -
+
+-(void) closeButtonTapped {
+	[self.delegate minimizeCameraViewButtonTapped];
 }
 
 #pragma mark - Lazy Instantiation -

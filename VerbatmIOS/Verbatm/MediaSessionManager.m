@@ -17,7 +17,6 @@
 @property (strong, nonatomic) PHAssetCollection* verbatmAlbum;
 @property (strong, nonatomic) AVCaptureDeviceInput* videoInput;
 @property (strong, nonatomic) AVCaptureDeviceInput* audioInput;
-@property (weak, nonatomic) AVCaptureConnection* videoConnection;
 @property (strong, nonatomic) AVCaptureMovieFileOutput * movieOutputFile;
 @property (strong) AVCaptureStillImageOutput* stillImageOutput;
 
@@ -48,7 +47,6 @@
 		self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;
 		[containerView.layer addSublayer: self.videoPreview];
 
-		[self setVideoConnection];
 		//start the session running
 		[self.session startRunning];
 	}
@@ -110,21 +108,6 @@
 	CMTime maxDuration = CMTimeMake(numSeconds, framesPerSecond);
 	_movieOutputFile.maxRecordedDuration = maxDuration;
 	[self.session addOutput: self.movieOutputFile];
-}
-
--(void) setVideoConnection {
-	for(AVCaptureConnection* connection in self.stillImageOutput.connections){
-		for(AVCaptureInputPort* port in connection.inputPorts){
-			if([[port mediaType] isEqual:AVMediaTypeVideo]){
-				self.videoConnection = connection;
-				break;
-			}
-		}
-		if(self.videoConnection){
-			break;
-		}
-	}
-	[self.videoConnection setVideoOrientation: self.videoPreview.connection.videoOrientation];
 }
 
 /* NOT IN USE
@@ -198,7 +181,19 @@
 #pragma mark - Capture Image -
 
 -(void)captureImage {
-	[self.stillImageOutput captureStillImageAsynchronouslyFromConnection: self.videoConnection
+	AVCaptureConnection* videoConnection = nil;
+	for(AVCaptureConnection* connection in self.stillImageOutput.connections){
+		for(AVCaptureInputPort* port in connection.inputPorts){
+			if([[port mediaType] isEqual:AVMediaTypeVideo]){
+				videoConnection = connection;
+				break;
+			}
+		}
+		if(videoConnection){
+			break;
+		}
+	}
+	[self.stillImageOutput captureStillImageAsynchronouslyFromConnection: videoConnection
 													   completionHandler:^(CMSampleBufferRef imageDataSampleBuffer, NSError *error) {
 		if(!error) {
 			NSData* dataForImage = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageDataSampleBuffer];

@@ -96,7 +96,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark Camera View
 
-@property (weak, nonatomic) VerbatmCameraView* cameraView;
+@property (strong, nonatomic) VerbatmCameraView* cameraView;
 
 #pragma mark PanGesture Properties
 
@@ -546,24 +546,18 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     [self.mainScrollView addSubview: newElementScrollView];
 	self.addMediaBelowView = newElementScrollView;
     [self shiftElementsBelowView: self.coverPicView];
-    
 }
 
-
 #pragma mark - Shift Positions of Elements
-//Once view is added- we make sure the views below it are appropriately adjusted
-//in position
+
+//Once view is added- we make sure the views below it are appropriately adjusted in position
 -(void)shiftElementsBelowView: (UIView *) view {
-	if (!view) {
-//		NSLog(@"View that elements are being shifted below should not be nil");
-		return;
-	}
-	if(![view isKindOfClass:[ContentPageElementScrollView class]]
-	   && ![view isKindOfClass:[CoverPicturePinchView class]]) {
+	if (!view ||
+		(![view isKindOfClass:[ContentPageElementScrollView class]]
+	   && ![view isKindOfClass:[CoverPicturePinchView class]])) {
 //		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
 		return;
 	}
-
 	NSInteger viewIndex = 0;
 	NSInteger firstYCoordinate = view.frame.origin.y + view.frame.size.height;
 
@@ -571,18 +565,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	if([self.pageElementScrollViews containsObject:view]) {
 		viewIndex = [self.pageElementScrollViews indexOfObject:view]+1;
 	}
-
 	//If we must shift everything from the top
 	else if ([view isKindOfClass:[CoverPicturePinchView class]]) {
 		firstYCoordinate = firstYCoordinate + ELEMENT_Y_OFFSET_DISTANCE;
 	}
-
 	for(NSInteger i = viewIndex; i < [self.pageElementScrollViews count]; i++) {
 		ContentPageElementScrollView * currentView = self.pageElementScrollViews[i];
-
 		CGRect frame = CGRectMake(currentView.frame.origin.x, firstYCoordinate,
 								  currentView.frame.size.width, currentView.frame.size.height);
-
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 			currentView.frame = frame;
 			//make sure everything is centered
@@ -590,11 +580,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}];
 		firstYCoordinate+= frame.size.height;
 	}
-
 	//make sure the main scroll view can show everything
 	[self adjustMainScrollViewContentSize];
 }
-
 
 //Shifts elements above a certain view up by the given difference
 -(void) shiftElementsAboveView: (ContentPageElementScrollView *) scrollView withDifference: (NSInteger) difference {
@@ -603,17 +591,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	if(viewIndex == NSNotFound || viewIndex >= self.pageElementScrollViews.count) {
 		return;
 	}
-
 	for(NSInteger i = (viewIndex-1); i >= 0; i--) {
 		ContentPageElementScrollView * currentView = self.pageElementScrollViews[i];
 		CGRect frame = CGRectMake(currentView.frame.origin.x, currentView.frame.origin.y + difference,
 								  currentView.frame.size.width, currentView.frame.size.height);
-
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 			currentView.frame = frame;
 		}];
 	}
-
 }
 
 //Storing new view to our array of elements
@@ -680,20 +665,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.keyboardHeight = keyboardSize.height;
 }
 
+-(void) keyBoardDidShow:(NSNotification *) notification {}
 
--(void) keyBoardDidShow:(NSNotification *) notification {
-}
-
-
--(void)keyboardWillDisappear:(NSNotification *) notification {
-}
+-(void)keyboardWillDisappear:(NSNotification *) notification {}
 
 #pragma mark - Pinch Gesture -
 
 #pragma mark  Sensing Pinch
 
 - (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender {
-
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
 
@@ -727,7 +707,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}
 	}
 }
-
 
 //Sanitize objects and values held during pinching. Check if pinches crossed thresholds
 // and otherwise rearrange things.
@@ -793,7 +772,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.pinchingMode = PinchingModeVertical;
 		[self handleVerticlePinchGestureBegan:sender];
 	}
-
 }
 
 
@@ -1146,7 +1124,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	return wantedView;
 }
 
-
 -(BOOL)sufficientOverlapBetweenPinchedObjects {
 	if(self.upperPinchScrollView.frame.origin.y+(self.upperPinchScrollView.frame.size.height/2)>= self.lowerPinchScrollView.frame.origin.y){
 		return true;
@@ -1165,8 +1142,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
--(void) cameraButtonPressedOnTile:(MediaSelectTile *)tile {
-	//TODO: expand camera view
+-(void) cameraButtonPressedOnTile: (MediaSelectTile *)tile {
+	if (tile == self.baseMediaTileSelector) {
+		[self.cameraView removeFromSuperview];
+		[self.view addSubview:self.cameraView];
+		[self.cameraView createAndInstantiateGestures];
+	}
 }
 
 #pragma mark - Change position of elements on screen by dragging
@@ -1610,7 +1591,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 
-#pragma mark - Gallery + Image picker -
+#pragma mark - Verbatm Camera View Delegate methods -
 
 // add image to deck (create pinch view)
 -(void) imageCaptured: (UIImage*) image {
@@ -1631,6 +1612,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 												  });
 											  }];
 }
+
+-(void) minimizeCameraViewButtonTapped {
+	[self.cameraView removeFromSuperview];
+	//TODO
+}
+
+#pragma mark - Gallery + Image picker -
 
 -(void) presentEfficientGallery {
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
@@ -1870,6 +1858,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark - Lazy Instantiation
 
+-(VerbatmCameraView*) cameraView {
+	if (!_cameraView) {
+		_cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
+		_cameraView.delegate = self;
+	}
+	return _cameraView;
+}
+
 -(PreviewDisplayView*) previewDisplayView {
 	if(!_previewDisplayView){
 		_previewDisplayView = [[PreviewDisplayView alloc] initWithFrame: self.view.frame];
@@ -1906,6 +1902,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		_baseMediaTileSelector.delegate = self;
 		[_baseMediaTileSelector createFramesForButtonsWithFrame:frame];
 		[_baseMediaTileSelector buttonGlow];
+//		[_baseMediaTileSelector.cameraButton insertSubview:self.cameraView atIndex:0];
 	}
 	return _baseMediaTileSelector;
 }
