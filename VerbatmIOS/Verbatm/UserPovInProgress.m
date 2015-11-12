@@ -59,16 +59,18 @@
 }
 
 //adds pinch view and automatically saves pinchViews
--(void) addPinchView:(PinchView*)pinchView {
+-(void) addPinchView:(PinchView*)pinchView atIndex:(NSInteger) index {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		@synchronized(self) {
 			if ([self.pinchViews containsObject:pinchView]) {
 				return;
 			}
-			[self.pinchViews addObject:pinchView];
+            
+            [self.pinchViews insertObject:pinchView atIndex:index];
 			NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
-			[self.pinchViewsAsData addObject:pinchViewData];
+            [self.pinchViewsAsData insertObject:pinchViewData atIndex:index];
 		}
+        
 		[[NSUserDefaults standardUserDefaults]
 		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	});
@@ -86,6 +88,17 @@
 	}
 	[[NSUserDefaults standardUserDefaults]
 	 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+}
+
+-(void) removePinchView:(PinchView *) pv andReplaceWithPinchView:(PinchView *) newPv{
+    @synchronized(self) {
+        if (![self.pinchViews containsObject: pv]) {
+            return;
+        }
+        NSInteger pinchViewIndex = [self.pinchViews indexOfObject:pv];
+        [self removePinchView:pv];
+        [self addPinchView:newPv atIndex:pinchViewIndex];
+    }
 }
 
 -(void) swapPinchView: (PinchView *) pinchView1 andPinchView: (PinchView *) pinchView2 {
@@ -121,7 +134,7 @@
 
 //loads pinchviews from user defaults
 -(void) loadPOVFromUserDefaults {
-	//[self clearPOVInProgress];
+	[self clearPOVInProgress];
 
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];

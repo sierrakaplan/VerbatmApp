@@ -103,21 +103,25 @@
 }
 
 -(PinchView*) pinchWith:(ContentPageElementScrollView*)otherScrollView {
-	PinchView* newPinchView;
-
-	[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
-	[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
-
+	
+    PinchView* newPinchView;
 	if(self.isCollection) {
 		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(PinchView*)otherScrollView.pageElement];
+        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
+        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement andReplaceWithPinchView:newPinchView];
+        
+        
 	} else if(otherScrollView.isCollection){
 		newPinchView = [(CollectionPinchView*)otherScrollView.pageElement pinchAndAdd:(PinchView*)self.pageElement];
+        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
+        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement andReplaceWithPinchView:newPinchView];
+        
 	} else {
 		NSMutableArray* pinchViewArray = [[NSMutableArray alloc] initWithObjects:self.pageElement, otherScrollView.pageElement, nil];
 		newPinchView = [PinchView pinchTogether:pinchViewArray];
 		pinchViewArray = nil;
 	}
-	[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)newPinchView];
+	
 	[self changePageElement:newPinchView];
 	[otherScrollView removeFromSuperview];
 	return newPinchView;
@@ -455,8 +459,8 @@
 	self.selectedItem = nil;
 	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
 	if (index < 0) index = 0;
-	[[UserPovInProgress sharedInstance] removePinchView:currentPinchView];
-	[(CollectionPinchView*)self.pageElement unPinchAndRemove:unPinched];
+	
+    [currentPinchView unPinchAndRemove:unPinched];
 
 	//check if there is now only one element in the collection, and if so
 	//this should not be collection anymore
@@ -473,7 +477,7 @@
 	}
 
 	self.selectedItem = nil;
-	[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)self.pageElement];
+	[[UserPovInProgress sharedInstance]removePinchView:currentPinchView andReplaceWithPinchView:(PinchView *)self.pageElement];
 	return unPinched;
 }
 

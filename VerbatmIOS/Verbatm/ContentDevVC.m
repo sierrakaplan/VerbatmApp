@@ -486,7 +486,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	if (![self.pageElementScrollViews containsObject:pageElementScrollView]){
 		return;
 	}
-
+    
 	//update user defaults if was pinch view
 	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
 		[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
@@ -495,18 +495,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 			[self.navBar enablePreviewButton:NO];
 		}
 	}
-
+    
 	[pageElementScrollView cleanUp];
 	[self.pageElementScrollViews removeObject:pageElementScrollView];
 	[pageElementScrollView removeFromSuperview];
 	[self shiftElementsBelowView: self.coverPicView];
-
-	/* NOT IN USE - register deleted tile for undo
-	 NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
- 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[pageElementScrollView, index]];
-	 //show the pullbar so that they can undo
-	 [self.delegate showPullBar:YES withTransition:YES];
-	 */
 }
 
 
@@ -526,7 +519,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 		return;
 	}
 
-	[[UserPovInProgress sharedInstance] addPinchView:pinchView];
     
 	[self addTapGestureToPinchView:pinchView];
 
@@ -551,11 +543,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 	//thread safety
 	@synchronized(self) {
 		[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+        
 	}
-
+    [[UserPovInProgress sharedInstance] addPinchView:pinchView atIndex:index];
+    
     [self.mainScrollView addSubview: newElementScrollView];
     [self shiftElementsBelowView: self.coverPicView];
     
+
 }
 
 
@@ -1133,17 +1128,25 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     
    CollectionPinchView * collectionPv = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
     PinchView * toRemove = [collectionPv.pinchedObjects lastObject];
-    CollectionPinchView * pv = [collectionPv unPinchAndRemove:toRemove];
+    CollectionPinchView * newCollectionPv = [collectionPv unPinchAndRemove:toRemove];
     
-    if(pv.pinchedObjects.count == 1){
+    if(newCollectionPv.pinchedObjects.count == 1){
         PinchView * newpv =  [collectionPv.pinchedObjects lastObject];
-        [pv unPinchAndRemove:pv];
+        [newCollectionPv unPinchAndRemove:newpv];
         [self.upperPinchScrollView changePageElement:newpv];
     }else{
-        [self.upperPinchScrollView changePageElement:pv];
+        [self.upperPinchScrollView changePageElement:newCollectionPv];
     }
     
     //[[UserPovInProgress sharedInstance] addPinchView:pinchView];
+    
+    
+    
+    
+    
+    
+    
+    
     [self addTapGestureToPinchView:toRemove];
     NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView] + 1;
     
@@ -1161,8 +1164,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
     }
     
     [self.mainScrollView addSubview: newElementScrollView];
-    //[self shiftElementsBelowView: self.coverPicView];
-    
     return newElementScrollView;
 }
 
@@ -1180,10 +1181,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
             wantedView = scrollView;
             
             if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
-                
-                
-                
-                
                 self.pinchingMode = PinchingModeVertical_Undo;
             }
 			break;
@@ -1537,32 +1534,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, ContentDe
 
 #pragma mark Undo tile swipe
 
--(void) undoTileDelete: (NSArray *) pageElementScrollViewAndIndex {
-
-	ContentPageElementScrollView * pageElementScrollView = pageElementScrollViewAndIndex[0];
-	NSNumber * index = pageElementScrollViewAndIndex[1];
-
-	//update user defaults if was pinch view
-	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
-		[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)pageElementScrollView.pageElement];
-		if (self.numPinchViews < 1) {
-			[self.navBar enablePreviewButton:YES];
-		}
-		self.numPinchViews++;
-	}
-
-	[pageElementScrollView.pageElement markAsDeleting:NO];
-
-	[self returnPageElementScrollView:pageElementScrollView toDisplayAtIndex:index.integerValue];
-}
-
 -(void) returnPageElementScrollView: (ContentPageElementScrollView *) scrollView toDisplayAtIndex:(NSInteger) index {
 
 	if(index) {
 		ContentPageElementScrollView * upperScrollView = self.pageElementScrollViews[(index -1)];
 		scrollView.frame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height,
 									  upperScrollView.frame.size.width, upperScrollView.frame.size.height);
-
 	} else {
 		scrollView.frame = CGRectMake(0,self.titleField.frame.origin.y + self.titleField.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 	}
