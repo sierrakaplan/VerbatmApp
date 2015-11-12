@@ -19,6 +19,7 @@
 -(void) cameraButtonPressed;
 // If in pull down mode
 -(void) pullDownButtonPressed;
+-(void) questionButtonPressed;
 
 @end
 

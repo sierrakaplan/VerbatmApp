@@ -22,6 +22,8 @@
 
 - (UIImage*) scaleImageToSize:(CGSize)size;
 
++ (UIImage*) makeImageWithColorAndSize:(UIColor*) color andSize:(CGSize) size;
+
 - (CGSize) getSizeForImageWithBounds:(CGRect)bounds;
 
 - (UIImage *) getImageWithOrientationUp;

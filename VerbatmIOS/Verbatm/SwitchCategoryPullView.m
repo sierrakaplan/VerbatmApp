@@ -6,10 +6,11 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "Durations.h"
 #import "Icons.h"
 #import "Styles.h"
 #import "SwitchCategoryPullView.h"
-#import "Durations.h"
+#import "SizesAndPositions.h"
 
 @interface SwitchCategoryPullView()
 
@@ -22,11 +23,10 @@
 //@property (nonatomic) CGRect topicsContainerInitialFrame;
 //The circle icon that we move left/right to reveal the text
 @property (strong, nonatomic) UIImageView * pullCircle;
-@property (nonatomic) float pullCircleSize;
 @property (nonatomic) BOOL isRight;
 @property (nonatomic) CGPoint lastPoint;//keeps the last recorded point of a touch on the pull circle
 
-
+#define PULL_CIRCLE_SIZE (self.frame.size.height - CATEGORY_SWITCH_OFFSET*2)
 #define TRENDING_LABEL_TEXT @"TRENDING"
 #define TOPICS_LABEL_TEXT @"RECENT"
 #define PULLCIRCLE_OFFSET 10
@@ -50,7 +50,6 @@
 // The trending label is on a container view by itself
 // The topics label is on a container view with the pull circle in order to cover the trending view when pulled
 -(void) initializeSubviews {
-	self.pullCircleSize = self.frame.size.height;
 	[self initLabelContainers];
 	[self initPullCircle];
 }
@@ -62,11 +61,11 @@
 	self.maxTrendingWidth = self.trendingLabel.frame.size.width;
 	[self formatLabel: self.topicsLabel];
 
-	self.leastPullCircleX = self.topicsLabel.frame.origin.x - self.pullCircleSize - PULLCIRCLE_OFFSET;
+	self.leastPullCircleX = self.topicsLabel.frame.origin.x - PULL_CIRCLE_SIZE - PULLCIRCLE_OFFSET;
 	if (self.leastPullCircleX < 0) { self.leastPullCircleX = PULLCIRCLE_OFFSET; }
 	self.maxPullCircleX = self.trendingLabel.frame.origin.x + self.trendingLabel.frame.size.width + PULLCIRCLE_OFFSET;
-	if (self.maxPullCircleX > self.frame.size.width - self.pullCircleSize) {
-		self.maxPullCircleX = self.frame.size.width - self.pullCircleSize - PULLCIRCLE_OFFSET;
+	if (self.maxPullCircleX > self.frame.size.width - PULL_CIRCLE_SIZE) {
+		self.maxPullCircleX = self.frame.size.width - PULL_CIRCLE_SIZE - PULLCIRCLE_OFFSET;
 	}
 
 	[self addSubview:self.topicsLabel];
@@ -90,7 +89,7 @@
 
 //tbd - set the image for the pull circle
 -(void) initPullCircle {
-    self.pullCircle.frame = CGRectMake(self.maxPullCircleX, 0, self.pullCircleSize, self.pullCircleSize);
+    self.pullCircle.frame = CGRectMake(self.maxPullCircleX, CATEGORY_SWITCH_OFFSET, PULL_CIRCLE_SIZE, PULL_CIRCLE_SIZE);
 	self.pullCircle.image = [UIImage imageNamed: SWITCH_CATEGORY_CIRCLE_RIGHT];
 	self.pullCircle.backgroundColor = self.backgroundColor;
     [self addPanGestureToView:self.pullCircle];

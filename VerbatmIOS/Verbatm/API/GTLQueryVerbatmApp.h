@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (27 custom class methods, 5 custom properties)
+//   GTLQueryVerbatmApp (28 custom class methods, 6 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -44,6 +44,7 @@
 @property (nonatomic, copy) NSString *email;
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, assign) long long identifier;
+@property (nonatomic, assign) long long userId;
 
 #pragma mark - "image" methods
 // These create a GTLQueryVerbatmApp object.
@@ -139,6 +140,15 @@
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppIdentifierListWrapper.
 + (instancetype)queryForPovGetUserIdsWhoLikeThisPOVWithIdentifier:(long long)identifier;
+
+// Method: verbatmApp.pov.getUserPOVsInfo
+//  Optional:
+//   cursorString: NSString
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppResultsWithCursor.
++ (instancetype)queryForPovGetUserPOVsInfoWithCount:(NSInteger)count
+                                             userId:(long long)userId;
 
 // Method: verbatmApp.pov.insertPOV
 //  Authorization scope(s):

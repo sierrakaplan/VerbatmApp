@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (27 custom class methods, 5 custom properties)
+//   GTLQueryVerbatmApp (28 custom class methods, 6 custom properties)
 
 #import "GTLQueryVerbatmApp.h"
 
@@ -29,12 +29,13 @@
 
 @implementation GTLQueryVerbatmApp
 
-@dynamic count, cursorString, email, fields, identifier;
+@dynamic count, cursorString, email, fields, identifier, userId;
 
 + (NSDictionary *)parameterNameMap {
   NSDictionary *map = @{
     @"cursorString" : @"cursor_string",
-    @"identifier" : @"id"
+    @"identifier" : @"id",
+    @"userId" : @"user_id"
   };
   return map;
 }
@@ -170,6 +171,16 @@
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.identifier = identifier;
   query.expectedObjectClass = [GTLVerbatmAppIdentifierListWrapper class];
+  return query;
+}
+
++ (instancetype)queryForPovGetUserPOVsInfoWithCount:(NSInteger)count
+                                             userId:(long long)userId {
+  NSString *methodName = @"verbatmApp.pov.getUserPOVsInfo";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.count = count;
+  query.userId = userId;
+  query.expectedObjectClass = [GTLVerbatmAppResultsWithCursor class];
   return query;
 }
 
