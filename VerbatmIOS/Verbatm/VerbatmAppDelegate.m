@@ -48,7 +48,7 @@
 
 	// Fabric and optimizely
 	[Fabric with:@[[Digits class], [Optimizely class], [Twitter class], [Crashlytics class]]];
-	[Optimizely startOptimizelyWithAPIToken:@"AANIfFEBE4sIUuvorLyNtBh2qNqBgv5e~3776222446" launchOptions:launchOptions];
+	[Optimizely startOptimizelyWithAPIToken:@"AANIfuMBbeMcu356OhfRHZ0xYrVP7RTV~3788260592" launchOptions:launchOptions];
 
 	// start querying for current user
 	if ([PFUser currentUser].isAuthenticated) {
@@ -121,7 +121,8 @@
 	return [[FBSDKApplicationDelegate sharedInstance] application:application
 														  openURL:url
 												sourceApplication:sourceApplication
-													   annotation:annotation];
+													   annotation:annotation]
+	&& [Optimizely handleOpenURL:url];
 }
 
 @end

@@ -28,9 +28,19 @@
 				<string>fb1476890692612143</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.optimizely</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>optly3788260592</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4280</string>
+	<string>4281</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
