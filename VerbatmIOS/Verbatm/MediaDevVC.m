@@ -79,13 +79,7 @@
 
 - (void)viewDidLoad{
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
-    self.view.backgroundColor = [UIColor blueColor];
     [super viewDidLoad];
-	[self prepareCameraView];
-	[self createAndInstantiateGestures];
-	[self setDelegates];
-	[self registerForNotifications];
-	[self createSubViews];
 }
 
 -(void)viewWillLayoutSubviews {
@@ -220,6 +214,7 @@
 }
 
 #pragma mark - Create Customize Camera Gestures -
+
 -(void) createAndInstantiateGestures {
 	[self createTapGestureToFocus];
 	[self createPinchGestureToZoom];
@@ -422,14 +417,7 @@
 	}
 }
 
-#pragma mark - Lazy Instantiation -
 
--(MediaSessionManager*)sessionManager{
-	if(!_sessionManager){
-		_sessionManager = [[MediaSessionManager alloc] initSessionWithView:self.verbatmCameraView];
-	}
-	return _sessionManager;
-}
 
 //creates the camera view with the preview session
 -(VerbatmCameraView*) verbatmCameraView {

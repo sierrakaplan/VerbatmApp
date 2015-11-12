@@ -43,30 +43,6 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 // The pinch view that the user has opened and is currently editing
 @property (nonatomic, strong) SingleMediaAndTextPinchView* editingPinchView;
 
-
--(void) addImageToStream: (UIImage*) image;
-/*
- Given a PHAsset representing a video and we create a pinch view out of it
- */
--(void) addMediaAssetToStream:(PHAsset *) asset;
-
-
--(UIImage*) getCoverPicture;
--(NSArray*) getPinchViews;
-
-//presents gallery so user can pick assets
--(void) presentEfficientGallery;
-// Loads title, cover photo, and pinch views from user's saved settings
-// (if they exist)
--(void) loadPOVFromUserDefaults;
-- (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
-
-// either locks the scroll view or frees it
--(void) removeKeyboardFromScreen;
-// sets elements to nil to free memory
--(void)cleanUp;
-
-
 @end
 
 @protocol ContentDevElementDelegate <NSObject>

@@ -8,9 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
+@import Photos;
+
 IB_DESIGNABLE
 
+@protocol VerbatmCameraViewDelegate <NSObject>
+
+-(void) imageCaptured: (UIImage*) image;
+-(void) videoAssetCaptured: (PHAsset*) asset;
+
+@end
+
 @interface VerbatmCameraView : UIView <UIGestureRecognizerDelegate>
+
+@property (strong, nonatomic) id<VerbatmCameraViewDelegate> delegate;
 
 @property (nonatomic) float effectiveScale;
 @property (nonatomic) float beginGestureScale;

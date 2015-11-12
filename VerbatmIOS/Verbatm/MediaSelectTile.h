@@ -14,17 +14,19 @@
 @protocol MediaSelectTileDelegate <NSObject>
 @required
 
--(void) addMediaButtonPressedOnTile: (MediaSelectTile*) tile;
+-(void) cameraButtonPressedOnTile: (MediaSelectTile*) tile;
+-(void) galleryButtonPressedOnTile: (MediaSelectTile*) tile;
+
 @end
 
 @interface MediaSelectTile : UIView<ContentDevElementDelegate>
 
-@property (strong, nonatomic) UIScrollView * mainScrollView;
--(void) createFramesForButtonWithFrame: (CGRect) frame;
--(void) formatButton;
 @property (strong, nonatomic) id<MediaSelectTileDelegate> delegate;
+@property (strong, nonatomic) UIScrollView * mainScrollView;
 // Tells if it is the base media selector tile (last in scroll view)
 @property (nonatomic) BOOL isBaseSelector;
-@property (readonly, nonatomic) BOOL optionSelected;
+
+-(void) createFramesForButtonsWithFrame: (CGRect) frame;
+-(void) formatButtons;
 
 @end

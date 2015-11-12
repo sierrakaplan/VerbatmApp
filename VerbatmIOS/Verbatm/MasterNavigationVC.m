@@ -77,7 +77,7 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	if (![[UserManager sharedInstance] getCurrentUser]) {
+	if (![PFUser currentUser].isAuthenticated) {
 		[self bringUpLogin];
 	}
 }
@@ -122,11 +122,9 @@
 	[self addChildViewController:self.tabBarController];
 	self.tabBarController.delegate = self;
 
-	//TODO: remake icons
-	CGSize iconSize = CGSizeMake(30, 30);
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;
-	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:PROFILE_NAV_ICON] scaleImageToSize:iconSize] tag:0];
+	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:PROFILE_NAV_ICON] tag:0];
 
 //	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
 //	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
@@ -134,8 +132,7 @@
 
 	self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init]];
 	self.tabBarController.selectedViewController = self.profileVC;
-	UIImage* adkImage = [[UIImage imageNamed:ADK_NAV_ICON] scaleImageToSize:iconSize];
-	[self addTabBarCenterButtonWithImage:adkImage highlightImage:adkImage];
+	[self addTabBarCenterButtonWithImage:[UIImage imageNamed:ADK_NAV_ICON] highlightImage:[UIImage imageNamed:ADK_NAV_ICON]];
 
 	[self formatTabBar];
 	self.tabBarFrameOnScreen = self.tabBarController.tabBar.frame;

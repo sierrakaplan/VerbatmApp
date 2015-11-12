@@ -16,61 +16,87 @@
 #import "ContentDevVC.h"
 
 @interface MediaSelectTile ()
-@property(nonatomic ,strong) UIButton * addMediaButton;
+
+// buttons
+@property (nonatomic, strong) UIButton* galleryButton;
+@property (nonatomic, strong) UIButton* cameraButton;
+
 @property (nonatomic, strong) CAShapeLayer * border;
-@property (readwrite, nonatomic) BOOL optionSelected;
+
 @end
 
 @implementation MediaSelectTile
+
 #pragma mark - initialize view
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
-		[self createFramesForButtonWithFrame: frame];
-		[self createImagesForButton];
-		[self addSubview: self.addMediaButton];
+		[self createFramesForButtonsWithFrame: frame];
+		[self createImagesForButtons];
+		[self addSubview: self.galleryButton];
+		[self addSubview: self.cameraButton];
 		[self setBackgroundColor:[UIColor clearColor]];
 	}
 	return self;
 }
 
--(void) createFramesForButtonWithFrame: (CGRect) frame {
+-(void) createFramesForButtonsWithFrame: (CGRect) frame {
 	float buttonOffset = frame.size.height/10.f;
 	float size = frame.size.height-buttonOffset*2;
+	float xDifference = frame.size.width/4.f - size/2.f;
 
-	self.addMediaButton.frame = CGRectMake(frame.size.width/2.f - size/2.f, buttonOffset, size, size);
-	self.addMediaButton.layer.cornerRadius = self.addMediaButton.frame.size.width/2;
-	self.addMediaButton.layer.shadowRadius = buttonOffset;
+	self.galleryButton.frame = CGRectMake(buttonOffset + xDifference, buttonOffset, size, size);
+	self.galleryButton.layer.cornerRadius = self.galleryButton.frame.size.width/2;
+	self.galleryButton.layer.shadowRadius = buttonOffset;
+
+	self.cameraButton.frame = CGRectMake(frame.size.width/2.f + xDifference, buttonOffset, size, size);
+	self.cameraButton.layer.cornerRadius = self.cameraButton.frame.size.width/2;
+	self.cameraButton.layer.shadowRadius = buttonOffset;
 }
 
--(void) createImagesForButton {
-	UIImage *addMediaImage = [UIImage imageNamed:PLUS_ICON];
-	[self.addMediaButton setImage:addMediaImage forState: UIControlStateNormal];
+-(void) createImagesForButtons {
+	UIImage *galleryImage = [UIImage imageNamed:GALLERY_BUTTON_ICON];
+	[self.galleryButton setImage:galleryImage forState: UIControlStateNormal];
+	self.galleryButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+
+	UIImage *cameraImage = [UIImage imageNamed:CAMERA_BUTTON_ICON];
+	[self.cameraButton setImage:cameraImage forState: UIControlStateNormal];
+	self.cameraButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
--(void) formatButton {
-	[self.addMediaButton.layer setBackgroundColor:[UIColor clearColor].CGColor];
-
+-(void) formatButtons {
 	UIColor* buttonBackgroundColor = [UIColor clearColor];
 
+	[self.galleryButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
+	[self.cameraButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
+
 	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
-		self.addMediaButton.layer.shadowColor = buttonBackgroundColor.CGColor;
-		self.addMediaButton.layer.shadowOpacity = 1;
-		[self.addMediaButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
+		self.galleryButton.layer.shadowColor = buttonBackgroundColor.CGColor;
+		self.galleryButton.layer.shadowOpacity = 1;
+		[self.galleryButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
+
+		self.cameraButton.layer.shadowColor = buttonBackgroundColor.CGColor;
+		self.cameraButton.layer.shadowOpacity = 1;
+		[self.cameraButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
 	} completion:^(BOOL finished) {
 	}];
-}
-
-
-- (void) addMedia {
-	self.optionSelected = YES;
-	[self.delegate addMediaButtonPressedOnTile:self];
 }
 
 -(void) buttonHighlight: (UIButton*) button {
 	[button setBackgroundColor:[UIColor whiteColor]];
 }
+
+#pragma mark - Buttons Pressed -
+
+- (void) galleryButtonPressed {
+	[self.delegate galleryButtonPressedOnTile:self];
+}
+
+- (void) cameraButtonPressed {
+	[self.delegate cameraButtonPressedOnTile:self];
+}
+
+#pragma mark - Content Dev Element Delegate methods (selected, deleting) -
 
 -(void)markAsSelected: (BOOL) selected {
 	if (selected) {
@@ -90,16 +116,24 @@
 	}
 }
 
+#pragma mark - Lazy Instantiation -
 
-#pragma mark - *Lazy Instantiation
-- (UIButton *) addMediaButton {
-	if(!_addMediaButton) {
-		_addMediaButton = [[UIButton alloc]init];
-		[_addMediaButton addTarget:self action:@selector(addMedia) forControlEvents:UIControlEventTouchUpInside];
+- (UIButton *) galleryButton {
+	if(!_galleryButton) {
+		_galleryButton = [[UIButton alloc]init];
+		[_galleryButton addTarget:self action:@selector(galleryButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 
-	return _addMediaButton;
+	return _galleryButton;
 }
 
+- (UIButton *) cameraButton {
+	if(!_cameraButton) {
+		_cameraButton = [[UIButton alloc]init];
+		[_cameraButton addTarget:self action:@selector(cameraButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+	}
+
+	return _cameraButton;
+}
 
 @end

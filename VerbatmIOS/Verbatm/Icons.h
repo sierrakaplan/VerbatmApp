@@ -23,7 +23,7 @@
 
 #pragma mark Bottom Nav
 
-#define ADK_NAV_ICON @"create_story"
+#define ADK_NAV_ICON @"plus_sign_black"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
 
@@ -59,15 +59,14 @@
 #define PLAY_VIDEO_ICON_HALF_CIRCLE @"play_video_icon_half_circle"
 #define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
 
-#pragma mark Pull Bar
+#pragma mark Media Tile
 
-#define PULLDOWN_ICON @"down_arrow"
 #define CAMERA_BUTTON_ICON @"camera"
 #define GALLERY_BUTTON_ICON @"gallery"
 
-#pragma mark Media Tile
+#pragma mark Pull Bar (NOT IN USE)
 
-#define PLUS_ICON @"plus_sign"
+#define PULLDOWN_ICON @"down_arrow"
 
 #pragma mark GM Image Picker
 

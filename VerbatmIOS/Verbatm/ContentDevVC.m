@@ -46,13 +46,12 @@
 #import "UserManager.h"
 #import "UIView+Effects.h"
 
+#import "VerbatmCameraView.h"
 #import "VerbatmScrollView.h"
 #import "VideoPinchView.h"
 
-
-
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate>
 
 #pragma mark Image Manager
 
@@ -97,7 +96,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark Camera View
 
-@property (weak, nonatomic) IBOutlet UIView *cameraContainerView;
+@property (weak, nonatomic) VerbatmCameraView* cameraView;
 
 #pragma mark PanGesture Properties
 
@@ -161,6 +160,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	[self.view setBackgroundColor:[UIColor lightGrayColor]];
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
@@ -169,6 +170,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[self setCursorColor];
 	[self formatTitleAndCoverPicture];
 	[self createBaseSelector];
+	[self loadPOVFromUserDefaults];
 	[self setUpNotifications];
 	self.titleField.delegate = self;
 	self.mainScrollView.delegate = self;
@@ -193,7 +195,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.mainScrollView.scrollEnabled = YES;
 	self.mainScrollView.bounces = YES;
 }
-
 
 //records the generic frame for any element that is a square and not a pinch view circle,
 // as well as the pinch view center and radius
@@ -761,7 +762,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.newlyCreatedMediaTile.frame = [self getStartFrameForNewMediaTile];
 		self.newlyCreatedMediaTile.superview.frame = CGRectMake(0,self.newlyCreatedMediaTile.superview.frame.origin.y + originalHeight/2.f,
 																self.newlyCreatedMediaTile.superview.frame.size.width, 0);
-		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
 		[self shiftElementsBelowView: self.coverPicView];
 
 	} completion:^(BOOL finished) {
@@ -1010,7 +1011,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 																self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
 																self.newlyCreatedMediaTile.superview.frame.size.width,
 																self.newlyCreatedMediaTile.superview.frame.size.height + totalChange);
-		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
 		[self.newlyCreatedMediaTile setNeedsDisplay];
 	}
 	//the distance is enough that we can just animate the rest
@@ -1029,18 +1030,20 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 																self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
 																self.baseMediaTileSelector.superview.frame.size.width,
 																self.baseMediaTileSelector.superview.frame.size.height);
-		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
 		[self shiftElementsBelowView: self.coverPicView];
 	} completion:^(BOOL finished) {
 		[self shiftElementsBelowView: self.coverPicView];
 		gesture.enabled = NO;
 		gesture.enabled = YES;
 		self.pinchingMode = PinchingModeNone;
-		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
-		[self.newlyCreatedMediaTile formatButton];
+		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile formatButtons];
 	}];
 }
+
 #pragma mark Pinch Apart Failed
+
 //Removes the new view being made and resets page
 -(void) clearMediaTile:(MediaSelectTile*)mediaTile {
 	[self.pageElementScrollViews removeObject:mediaTile.superview];
@@ -1150,7 +1153,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark - Media Tile Delegate -
 
--(void) addMediaButtonPressedOnTile: (MediaSelectTile *)tile  {
+-(void) galleryButtonPressedOnTile: (MediaSelectTile *)tile  {
 	NSInteger index = [self.pageElementScrollViews indexOfObject: tile.superview] - 1;
 	self.addMediaBelowView = index >= 0 ? self.pageElementScrollViews[index] : nil;
 	[self presentEfficientGallery];
@@ -1159,6 +1162,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
+-(void) cameraButtonPressedOnTile:(MediaSelectTile *)tile {
+	//TODO: expand camera view
+}
 
 #pragma mark - Change position of elements on screen by dragging
 
@@ -1396,7 +1402,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 //takes a PinchView that has recently been unpinched and resets its frame
 //then adds it to a scroll view either above or below where it was unpinched from
 -(void) addUnpinchedItem:(PinchView*)unPinched {
-	UIView* upperView;
+	ContentPageElementScrollView* upperView;
 	NSInteger upperViewIndex = 0;
 	if (unPinched.frame.origin.y > self.selectedView_PAN.frame.origin.y) {
 		upperView = self.selectedView_PAN;
@@ -1603,17 +1609,16 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark - Gallery + Image picker -
 
--(void) addImageToStream: (UIImage*) image {
+// add image to deck (create pinch view)
+-(void) imageCaptured: (UIImage*) image {
 	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
 	// place it at the bottom of the deck, above base element view selector
 	self.addMediaBelowView = self.pageElementScrollViews.count > 1 ? self.pageElementScrollViews[self.pageElementScrollViews.count-2] : nil;
 	[self createPinchViewFromImage: image];
 }
 
-/*
- Given a PHAsset representing a video and we create a pinch view out of it
- */
--(void) addMediaAssetToStream:(PHAsset *) asset {
+// add video asset to deck (create pinch view)
+-(void) videoAssetCaptured:(PHAsset *) asset {
 	[[PHImageManager defaultManager] requestAVAssetForVideo:asset
 													options:self.videoRequestOptions
 											  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
@@ -1896,8 +1901,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		_baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
 		_baseMediaTileSelector.isBaseSelector =YES;
 		_baseMediaTileSelector.delegate = self;
-		[_baseMediaTileSelector createFramesForButtonWithFrame:frame];
-		[_baseMediaTileSelector formatButton];
+		[_baseMediaTileSelector createFramesForButtonsWithFrame:frame];
+		[_baseMediaTileSelector formatButtons];
 	}
 	return _baseMediaTileSelector;
 }

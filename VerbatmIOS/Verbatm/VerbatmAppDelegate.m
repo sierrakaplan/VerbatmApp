@@ -48,7 +48,8 @@
 
 	// Fabric and optimizely
 	[Fabric with:@[[Digits class], [Optimizely class], [Twitter class], [Crashlytics class]]];
-	[Optimizely startOptimizelyWithAPIToken:@"AANIfuMBbeMcu356OhfRHZ0xYrVP7RTV~3788260592" launchOptions:launchOptions];
+	[Optimizely startOptimizelyWithAPIToken:
+	 @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
 
 	// start querying for current user
 	if ([PFUser currentUser].isAuthenticated) {
@@ -82,9 +83,6 @@
 -(void) logAppOpenAnalyticsWithOptions:(NSDictionary *)launchOptions{
     [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
 }
-
-
-
 							
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

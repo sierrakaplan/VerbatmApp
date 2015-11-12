@@ -13,7 +13,6 @@
 
 @interface MediaSessionManager() <AVCaptureFileOutputRecordingDelegate>
 
-@property (strong, nonatomic) UIView* previewContainerView;
 @property (strong, nonatomic) AVCaptureSession* session;
 @property (strong, nonatomic) PHAssetCollection* verbatmAlbum;
 @property (strong, nonatomic) AVCaptureDeviceInput* videoInput;
@@ -44,11 +43,10 @@
 		[self initializeSession];
 
 		// setup preview
-		self.previewContainerView = containerView;
 		self.videoPreview = [[AVCaptureVideoPreviewLayer alloc]initWithSession:self.session];
 		self.videoPreview.frame = containerView.frame;
 		self.videoPreview.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-		[self.previewContainerView.layer addSublayer: self.videoPreview];
+		[containerView.layer addSublayer: self.videoPreview];
 
 		[self setVideoConnection];
 		//start the session running
