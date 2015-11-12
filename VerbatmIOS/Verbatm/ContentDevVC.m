@@ -534,24 +534,28 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
     
-	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
-	newElementScrollView.delegate = self; //scroll view delegate
-	newElementScrollView.contentPageElementScrollViewDelegate = self;
+    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:newElementScrollViewFrame];
 	self.numPinchViews++;
-
+    
 	//thread safety
 	@synchronized(self) {
-		[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
-        
+        [self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
 	}
+    
     [[UserPovInProgress sharedInstance] addPinchView:pinchView atIndex:index];
     
     [self.mainScrollView addSubview: newElementScrollView];
     [self shiftElementsBelowView: self.coverPicView];
-    
-
 }
 
+-(ContentPageElementScrollView *) createNewContentScrollViewWithPinchView:(PinchView *) view andFrame:(CGRect) frame {
+    
+    ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:frame andElement:view];
+    newElementScrollView.delegate = self; //scroll view delegate
+    newElementScrollView.contentPageElementScrollViewDelegate = self;
+    
+    return newElementScrollView;
+}
 
 #pragma mark - Shift Positions of Elements
 //Once view is added- we make sure the views below it are appropriately adjusted
@@ -1137,19 +1141,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
         [[UserPovInProgress sharedInstance] removePinchView:[newCollectionPv unPinchAndRemove:newpv] andReplaceWithPinchView:newpv];
         [self.upperPinchScrollView changePageElement:newpv];
     }else{
-        [self.upperPinchScrollView changePageElement:newCollectionPv];
         [[UserPovInProgress sharedInstance] updatePinchView:newCollectionPv];
         [[UserPovInProgress sharedInstance] addPinchView:toRemove atIndex:index];
     }
-    
-    
-    CGRect newElementScrollViewFrame= self.upperPinchScrollView.frame;
-    ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:toRemove];
-    newElementScrollView.delegate = self; //scroll view delegate
-    newElementScrollView.contentPageElementScrollViewDelegate = self;
-    
+
+    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:toRemove andFrame:self.upperPinchScrollView.frame];
     self.numPinchViews++;
-    
     //thread safety
     @synchronized(self) {
         [self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
