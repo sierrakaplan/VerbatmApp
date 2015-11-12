@@ -41,6 +41,8 @@
 
 #import "VerbatmCameraView.h"
 
+#import <Crashlytics/Crashlytics.h>
+
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate>
 
@@ -98,6 +100,9 @@
 #pragma mark - User Manager Delegate -
 
 -(void) loginSucceeded:(NSNotification*) notification {
+	GTLVerbatmAppVerbatmUser* user = notification.object;
+	[[Crashlytics sharedInstance] setUserEmail: user.email];
+	[[Crashlytics sharedInstance] setUserName: user.name];
 	[self.profileVC updateUserInfo];
 }
 

@@ -13,8 +13,7 @@
 
 @implementation VerbatmCameraView
 
-- (id)initWithFrame:(CGRect)frame
-{
+- (id)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.effectiveScale = 1.0f;
@@ -25,13 +24,12 @@
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
 	if ([touch.view isKindOfClass:[UIControl class]]) {
 		// we touched our control surface
-		return NO; // ignore the touch
+		return NO;
 	}
-	return YES; // handle the touch
+	return YES;
 }
 
-- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
-{
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
 	if ( [gestureRecognizer isKindOfClass:[UIPinchGestureRecognizer class]] ) {
 		self.beginGestureScale = self.effectiveScale;
 	}

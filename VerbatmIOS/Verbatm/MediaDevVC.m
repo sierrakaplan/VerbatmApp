@@ -7,40 +7,27 @@
 
 
 #import <AssetsLibrary/AssetsLibrary.h>
-#import "AVETypeAnalyzer.h"
+#import <math.h>
+#import <MediaPlayer/MediaPlayer.h>
 
 #import "CameraFocusSquare.h"
 
 #import "Durations.h"
 
-#import "GTLVerbatmAppVerbatmUser.h"
-
 #import "Icons.h"
 
-#import "MasterNavigationVC.h"
 #import "MediaDevVC.h"
-#import <math.h>
 #import "MediaSessionManager.h"
-#import <MediaPlayer/MediaPlayer.h>
 
 #import "Notifications.h"
-
-#import "PinchView.h"
-#import "POVPublisher.h"
-#import "PreviewDisplayView.h"
 
 #import "Strings.h"
 #import "SizesAndPositions.h"
 #import "SegueIDs.h"
 
-#import "testerTransitionDelegate.h"
-
 #import "VerbatmCameraView.h"
 
-#import "UserManager.h"
-#import "UserPovInProgress.h"
-
-@interface MediaDevVC () <MediaSessionManagerDelegate, PreviewDisplayDelegate>
+@interface MediaDevVC () <MediaSessionManagerDelegate>
 
 #pragma mark - SubViews of screen
 
@@ -67,10 +54,6 @@
 @property (strong, nonatomic) UIImage* flashOffIcon;
 @property (nonatomic) BOOL flashOn;
 
-#pragma mark - Preview -
-
-@property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
-
 #pragma mark keyboard properties
 @property (nonatomic) NSInteger keyboardHeight;
 
@@ -96,7 +79,7 @@
 
 - (void)viewDidLoad{
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
-    self.view.backgroundColor = [UIColor blackColor];
+    self.view.backgroundColor = [UIColor blueColor];
     [super viewDidLoad];
 	[self prepareCameraView];
 	[self createAndInstantiateGestures];
@@ -427,67 +410,7 @@
 	[self.sessionManager zoomPreviewWithScale:self.verbatmCameraView.effectiveScale];
 }
 
-#pragma mark Display Preview
-//TODO: move this to content dev
-// Displays article preview from pinch objects
-//-(void) previewButtonPressed {
-//	NSArray *pinchViews = [self.contentDevVC getPinchViews];
-//	NSString* title = self.contentDevVC.titleField.text;
-//	UIImage* coverPic = [self.contentDevVC getCoverPicture];
-//
-//	[self.view bringSubviewToFront:self.previewDisplayView];
-//	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
-//}
-
-#pragma mark Save Draft
--(void) saveDraftButtonPressed {
-	//TODO: save draft
-}
-
-#pragma mark Close ADK
--(void) closeButtonPressed {
-	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-}
-
-#pragma mark - Publishing (PreviewDisplay delegate Methods)
-
-//TODO: move to content dev
--(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
-
-	if (![title length]) {
-		[self alertAddTitle];
-	} else if (!coverPhoto) {
-		[self alertAddCoverPhoto];
-	} else {
-		if(![pinchViews count]) {
-			NSLog(@"Can't publish with no pinch objects");
-			return;
-		}
-
-		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: coverPhoto];
-		[publisher publish];
-		//TODO: make sure current user exists and if not make them sign in
-		NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
-
-		[self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
-		[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-
-//		[self transitionContentContainerViewToMode:ContentContainerViewModeFullScreen];
-//		[self.contentDevVC cleanUp];
-	}
-}
-
--(void)alertAddTitle {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-}
-
--(void)alertAddCoverPhoto {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-}
-
-#pragma mark - PullBar Delegate Methods (pullbar button actions) -
+// TODO: bring question page back?
 
 -(void) questionButtonPressed {
 	[self performSegueWithIdentifier:SEGUE_TO_QUESTION_PAGE sender:self];
@@ -514,15 +437,6 @@
 		_verbatmCameraView = [[VerbatmCameraView alloc] initWithFrame: self.view.frame];
 	}
 	return _verbatmCameraView;
-}
-
--(PreviewDisplayView*) previewDisplayView {
-	if(!_previewDisplayView){
-		_previewDisplayView = [[PreviewDisplayView alloc] initWithFrame: self.view.frame];
-		_previewDisplayView.delegate = self;
-		[self.view addSubview:_previewDisplayView];
-	}
-	return _previewDisplayView;
 }
 
 @end

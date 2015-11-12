@@ -17,13 +17,6 @@
 @class GTLVerbatmAppVerbatmUser;
 @class PovInfo;
 
-@protocol UserManagerDelegate <NSObject>
-//todo: make these notifications
--(void) successfullyLoggedInUser: (GTLVerbatmAppVerbatmUser*) user;
--(void) errorLoggingInUser: (NSError*) error;
-
-@end
-
 @interface UserManager : NSObject
 
 + (UserManager *)sharedInstance;

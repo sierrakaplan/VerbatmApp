@@ -19,18 +19,19 @@
 
 #import "EditContentVC.h"
 
+#import "GTLVerbatmAppVerbatmUser.h"
+#import "GMImagePickerController.h"
+
 #import "ImagePinchView.h"
 #import "Icons.h"
 
-#import "MediaDevVC.h"
-#import "MediaSelectTile.h"
-
-#import "GMImagePickerController.h"
-
 #import <QuartzCore/QuartzCore.h>
 #import "PinchView.h"
+#import "POVPublisher.h"
+#import "PreviewDisplayView.h"
 
 #import "Notifications.h"
+#import "MediaDevVC.h"
 #import "MediaSelectTile.h"
 
 #import "SegueIDs.h"
@@ -42,6 +43,7 @@
 #import "UserSetupParameters.h"
 #import "UtilityFunctions.h"
 #import "UserPovInProgress.h"
+#import "UserManager.h"
 #import "UIView+Effects.h"
 
 #import "VerbatmScrollView.h"
@@ -50,7 +52,7 @@
 
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate>
 
 #pragma mark Image Manager
 
@@ -130,6 +132,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 //pinch views to the article before
 @property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
 @property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
+
+#pragma mark - Preview -
+
+@property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
 
 #define WHAT_IS_IT_LIKE_TEXT @"tell your story"
 
@@ -346,20 +352,25 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #pragma mark - Nav Bar Delegate Methods -
 
 #pragma mark Close Button
+
 -(void) leftButtonPressed {
-	[self.delegate closeButtonPressed];
+	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 }
 
 #pragma mark Save Draft Button
 -(void) middleButtonPressed {
 	// TODO: save draft
-	[self.delegate saveDraftButtonPressed];
 }
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
 	[self closeAllOpenCollections];
-	[self.delegate previewButtonPressed];
+	NSArray *pinchViews = [self getPinchViews];
+	NSString* title = self.titleField.text;
+	UIImage* coverPic = [self getCoverPicture];
+
+	[self.view bringSubviewToFront:self.previewDisplayView];
+	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
 }
 
 #pragma mark - Configure Text Fields -
@@ -412,10 +423,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #pragma mark Scroll View actions
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-	if(scrollView == self.mainScrollView) {
-		[self showOrHidePullBarBasedOnMainScrollViewScroll];
-		return;
-	}
 	if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
 		ContentPageElementScrollView* pageElementScrollView = (ContentPageElementScrollView*)scrollView;
 		if(pageElementScrollView.collectionIsOpen) {
@@ -455,16 +462,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	} else {
 		[scrollView animateBackToInitialPosition];
 	}
-}
-
--(void) showOrHidePullBarBasedOnMainScrollViewScroll {
-	CGPoint translation = [self.mainScrollView.panGestureRecognizer translationInView:self.mainScrollView];
-	if(translation.y < 0) {
-		[self.delegate showPullBar:NO withTransition:YES];
-	}else {
-		[self.delegate showPullBar:YES withTransition:YES];
-	}
-	return;
 }
 
 #pragma mark - Content Page Element Scroll View Delegate -
@@ -874,8 +871,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	if(!openCollectionScrollView.collectionIsOpen) {
 		return;
 	}
-	//make sure the pullbar is showing when things are pinched together
-	[self.delegate showPullBar:YES withTransition:YES];
 	[openCollectionScrollView closeCollection];
 }
 
@@ -1069,10 +1064,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.lowerPinchScrollView = self.upperPinchScrollView = nil;
 	self.pinchingMode = PinchingModeNone;
 	[self shiftElementsBelowView: self.coverPicView];
-    
-	//make sure the pullbar is showing when things are pinched together
-	[self.delegate showPullBar:YES withTransition:YES];
-    //present swipe to delete notification
+
+	//present swipe to delete notification
     if(![[UserSetupParameters sharedInstance] swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
 
@@ -1675,7 +1668,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray{
-	[self.delegate showPullBar:YES withTransition:NO];
 	if (self.addingCoverPicture) {
 		self.addingCoverPicture = NO;
 		[self addCoverPictureFromAssetArray: assetArray];
@@ -1687,7 +1679,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
 	self.addingCoverPicture = NO;
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
-		[self.delegate showPullBar:YES withTransition:NO];
 	}];
 }
 
@@ -1798,6 +1789,32 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	return pinchViews;
 }
 
+#pragma mark - Publishing (PreviewDisplay delegate Methods)
+
+//TODO: move to content dev
+-(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
+
+	if (![title length]) {
+		[self alertAddTitle];
+	} else if (!coverPhoto) {
+		[self alertAddCoverPhoto];
+	} else {
+		if(![pinchViews count]) {
+			NSLog(@"Can't publish with no pinch objects");
+			return;
+		}
+
+		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: coverPhoto];
+		[publisher publish];
+		//TODO: make sure current user exists and if not make them sign in
+		NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
+
+		[self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
+		[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+		[self cleanUp];
+	}
+}
+
 #pragma mark - Alerts -
 /*
  These are all notifications that appear for the user at different points in the app. They only appear once.
@@ -1826,6 +1843,16 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     [[UserSetupParameters sharedInstance] set_tapNhold_InstructionAsShown];
 }
 
+-(void)alertAddTitle {
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+}
+
+-(void)alertAddCoverPhoto {
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+}
+
 #pragma mark - Tap to clear view -
 
 - (IBAction)tapToClearKeyboard:(UITapGestureRecognizer *)sender {
@@ -1834,6 +1861,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 
 #pragma mark - Lazy Instantiation
+
+-(PreviewDisplayView*) previewDisplayView {
+	if(!_previewDisplayView){
+		_previewDisplayView = [[PreviewDisplayView alloc] initWithFrame: self.view.frame];
+		_previewDisplayView.delegate = self;
+		[self.view addSubview:_previewDisplayView];
+	}
+	return _previewDisplayView;
+}
 
 -(PHVideoRequestOptions*) videoRequestOptions {
 	if (!_videoRequestOptions) {

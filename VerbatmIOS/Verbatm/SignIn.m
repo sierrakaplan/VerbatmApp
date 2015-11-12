@@ -18,11 +18,11 @@
 
 #import "UserManager.h"
 
-@interface SignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate, UserManagerDelegate>
+@interface SignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
 
-@property (strong, nonatomic) UIView *animationView;
+@property (strong, nonatomic) UIView* animationView;
 @property (strong, nonatomic) UILabel* animationLabel;
-@property (strong, nonatomic) NSTimer * animationTimer;
+@property (strong, nonatomic) NSTimer* animationTimer;
 
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
 

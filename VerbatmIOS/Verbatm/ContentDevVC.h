@@ -14,22 +14,11 @@
 @class SingleMediaAndTextPinchView;
 @import Photos;
 
-@protocol ContentDevElementDelegate <NSObject>
-
--(void) markAsSelected: (BOOL) selected;
--(void) markAsDeleting: (BOOL) deleting;
-
-@end
-
 // Delegate tells when pull bar should be shown, hidden,
 //or when undo and preview are/n't possible
 @protocol ContentDevVCDelegate <NSObject>
 
--(void) closeButtonPressed;
--(void) saveDraftButtonPressed;
--(void) previewButtonPressed;
-
--(void) showPullBar: (BOOL) showPullBar withTransition: (BOOL) withTransition;
+-(void) povPublishedWithUserName:(NSString*)userName andTitle:(NSString*)title andCoverPic:(UIImage*)coverPhoto andProgressObject:(NSProgress*)progress;
 
 @end
 
@@ -77,5 +66,12 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 // sets elements to nil to free memory
 -(void)cleanUp;
 
+
+@end
+
+@protocol ContentDevElementDelegate <NSObject>
+
+-(void) markAsSelected: (BOOL) selected;
+-(void) markAsDeleting: (BOOL) deleting;
 
 @end

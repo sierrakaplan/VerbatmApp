@@ -12,19 +12,12 @@
 
 @protocol MediaDevVCDelegate <NSObject>
 
--(void) povPublishedWithUserName:(NSString*)userName andTitle:(NSString*)title andCoverPic:(UIImage*)coverPhoto andProgressObject:(NSProgress*)progress;
 
 @end
 
 @interface MediaDevVC : UIViewController
 
 @property (strong, nonatomic) id<MediaDevVCDelegate> delegate;
-
-// Shows alert to the user that they must add title to their story
--(void)alertAddTitle;
-
-// Shows alert to the user that they must add a cover picture to their story
--(void)alertAddCoverPhoto;
 
 typedef NS_ENUM(NSInteger, ContentContainerViewMode) {
 	ContentContainerViewModeFullScreen,

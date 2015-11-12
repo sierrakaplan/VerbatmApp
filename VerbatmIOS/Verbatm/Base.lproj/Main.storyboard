@@ -257,9 +257,11 @@
                         <outlet property="cameraContainerView" destination="xE1-df-Yy5" id="FtZ-K5-yg0"/>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
                         <segue destination="x4u-kZ-n9K" kind="modal" identifier="segue_id_edit_content_view" animates="NO" modalPresentationStyle="fullScreen" id="ONZ-b1-Agz"/>
+                        <segue destination="C4V-vK-ZzO" kind="unwind" identifier="unwind_to_master_vc_from_adk" unwindAction="unwindToMasterNavVC:" id="fcv-AG-35S"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <exit id="C4V-vK-ZzO" userLabel="Exit" sceneMemberID="exit"/>
                 <pinchGestureRecognizer id="WDj-eM-uvF">
                     <connections>
                         <action selector="handlePinchGesture:" destination="0lh-hP-Opv" id="93r-9H-LPJ"/>
