@@ -709,7 +709,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		case UIGestureRecognizerStateChanged: {
 
 			if ((self.pinchingMode == PinchingModeVertical ||
-                 self.pinchingMode == PinchingModeVertical_Undo)
+                 self.pinchingMode == PinchingModeVerticalUndo)
 					   && self.lowerPinchScrollView && self.upperPinchScrollView) {
 				[self handleVerticlePinchGestureChanged:sender];
 			}
@@ -904,9 +904,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	//objects are being pinched apart
 	if(gesture.scale > 1) {
-        if(self.pinchingMode == PinchingModeVertical_Undo){
-            
-        }else{
+        if(self.pinchingMode == PinchingModeVertical){
             [self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
 					  andChangeInBottomViewPosition:changeInBottomViewPosition];
         }
@@ -1109,9 +1107,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
 
-	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound && self.pinchingMode != PinchingModeVertical_Undo) {
+	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound && self.pinchingMode != PinchingModeVerticalUndo) {
 		self.lowerPinchScrollView = self.pageElementScrollViews[index+1];
-    }else if (self.pinchingMode == PinchingModeVertical_Undo){
+    }else if (self.pinchingMode == PinchingModeVerticalUndo){
         //make sure that we're pinching apart a colleciton
         if(![self.upperPinchScrollView.pageElement isKindOfClass:[CollectionPinchView class]]){
             return;
@@ -1170,7 +1168,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
             wantedView = scrollView;
             
             if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
-                self.pinchingMode = PinchingModeVertical_Undo;
+                self.pinchingMode = PinchingModeVerticalUndo;
             }
 			break;
 		}
