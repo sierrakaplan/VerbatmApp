@@ -33,7 +33,7 @@
     [self addGestureRecognizer:pan];
     
 }
-
+ 
 -(void)adjustPhotoPan:(UIPanGestureRecognizer *) pan {
     if([pan numberOfTouches] == 1){
         CGPoint touch = [pan locationOfTouch:0 inView:self];

@@ -1180,7 +1180,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(BOOL) bothPointsInView: (UIView *) view andLowerPoint: (CGPoint) lowerPoint {
     if(lowerPoint.y < (view.frame.origin.y + (self.defaultPinchViewRadius*2))){
-        return true;
+        return YES;
     }
     return NO;
 }
@@ -1188,9 +1188,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(BOOL)sufficientOverlapBetweenPinchedObjects {
 	if(self.upperPinchScrollView.frame.origin.y+(self.upperPinchScrollView.frame.size.height/2)>= self.lowerPinchScrollView.frame.origin.y){
-		return true;
+		return YES;
 	}
-	return false;
+	return NO;
 }
 
 #pragma mark - Media Tile Delegate -
@@ -1374,7 +1374,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	   self.titleField.frame.origin.y + self.titleField.frame.size.height &&
 	   self.selectedView_PAN.frame.origin.y < self.coverPicView.frame.origin.y +
 	   self.coverPicView.frame.size.height * (2.f/4.f)) {
-		return true;
+		return YES;
 	}
 	return NO;
 }
