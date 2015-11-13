@@ -2,8 +2,8 @@
   "images" : [
     {
       "idiom" : "universal",
-      "scale" : "1x",
-      "filename" : "camera.png"
+      "filename" : "camera icon.png",
+      "scale" : "1x"
     },
     {
       "idiom" : "universal",

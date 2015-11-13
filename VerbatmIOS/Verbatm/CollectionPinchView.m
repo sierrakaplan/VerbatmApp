@@ -67,26 +67,23 @@
 	self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
 	self.layer.shadowColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
 	self.layer.shadowRadius = COLLECTION_PINCHVIEW_SHADOW_RADIUS;
+	self.layer.shadowOffset = CGSizeMake(0, 0);
 	self.layer.shadowOpacity = 1;
 }
 
 -(void)markAsDeleting: (BOOL) deleting {
+	[super markAsDeleting:deleting];
 	if (deleting) {
-		self.layer.borderColor = [UIColor DELETING_ITEM_COLOR].CGColor;
 		self.layer.shadowOpacity = 0;
 	} else {
-		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
-		self.layer.shadowOpacity = 1;
+		[self addCollectionViewBorder];
 	}
 }
 
 -(void)markAsSelected: (BOOL) selected {
-	if (selected) {
-		self.layer.borderColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
-		self.layer.shadowOpacity = 0;
-	} else {
-		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
-		self.layer.shadowOpacity = 1;
+	[super markAsSelected:selected];
+	if (!selected) {
+		[self addCollectionViewBorder];
 	}
 }
 
@@ -106,8 +103,6 @@
 	}
 	[self displayMedia];
 }
-
-
 
 //This renders a single view on the pinch object
 -(void)renderSingleMedia {

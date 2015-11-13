@@ -77,11 +77,6 @@
     [self addSubview:self.deleteButton];
 }
 
--(void)removeTheDeleteButton{
-    [self.deleteButton removeFromSuperview];
-    self.deleteButton = nil;
-}
-
 -(void)deleteButtonPressed:(UIButton*) sender{
     [self.contentPageElementScrollViewDelegate deleteButtonPressedOnContentPageElementScrollView:self];
 }
@@ -181,7 +176,7 @@
 	}
 	self.collectionIsOpen = YES;
 	[self.pageElement removeFromSuperview];
-    [self removeTheDeleteButton];
+    [self.deleteButton removeFromSuperview];
 	[self displayCollectionPinchViews:[(CollectionPinchView*)self.pageElement pinchedObjects]];
 	return YES;
 }
@@ -191,17 +186,17 @@
 
 	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
     
-	self.contentSize = CGSizeMake((ELEMENT_OFFSET_DISTANCE + pinchViewSize) * [pinchViews count],
+	self.contentSize = CGSizeMake((ELEMENT_Y_OFFSET_DISTANCE + pinchViewSize) * [pinchViews count],
 								  self.contentSize.height);
 
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-		int xPosition = ELEMENT_OFFSET_DISTANCE;
+		int xPosition = ELEMENT_Y_OFFSET_DISTANCE;
 
 		for(PinchView* pinchView in pinchViews) {
-			CGRect newFrame = CGRectMake(xPosition, ELEMENT_OFFSET_DISTANCE/2, pinchViewSize, pinchViewSize);
+			CGRect newFrame = CGRectMake(xPosition, ELEMENT_Y_OFFSET_DISTANCE/2, pinchViewSize, pinchViewSize);
 			[pinchView specifyFrame:newFrame];
 			[self addSubview:pinchView];
-			xPosition += pinchView.frame.size.width + ELEMENT_OFFSET_DISTANCE;
+			xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
 			[pinchView renderMedia];
 		}
 	}];
@@ -238,7 +233,7 @@
 	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
 	float scaleFactor = difference/HORIZONTAL_PINCH_THRESHOLD;
 	for(NSInteger i = 0; i < self.collectionPinchViews.count; i++) {
-		float originalXPosition = (ELEMENT_OFFSET_DISTANCE + pinchViewSize)*i;
+		float originalXPosition = (ELEMENT_Y_OFFSET_DISTANCE + pinchViewSize)*i;
 		float originalDistanceFromMiddle = (self.contentSize.width/2.f - pinchViewSize/2.f) - originalXPosition;
 		float xTranslation = scaleFactor*originalDistanceFromMiddle;
 		CGRect oldFrame = ((PinchView *)self.collectionPinchViews[i]).frame;
@@ -256,11 +251,11 @@
 	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
 
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-		int xPosition = ELEMENT_OFFSET_DISTANCE;
+		int xPosition = ELEMENT_Y_OFFSET_DISTANCE;
 		for(PinchView* pinchView in self.collectionPinchViews) {
-			CGRect newFrame = CGRectMake(xPosition, ELEMENT_OFFSET_DISTANCE/2, pinchViewSize, pinchViewSize);
+			CGRect newFrame = CGRectMake(xPosition, ELEMENT_Y_OFFSET_DISTANCE/2, pinchViewSize, pinchViewSize);
 			[pinchView specifyFrame:newFrame];
-			xPosition += pinchView.frame.size.width + ELEMENT_OFFSET_DISTANCE;
+			xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
 		}
 	} completion:^(BOOL finished) {
 	}];
@@ -349,7 +344,7 @@
 -(void) shiftPinchViewsAfterIndex:(NSInteger) index {
 
 	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
-	float firstXCoordinate = ELEMENT_OFFSET_DISTANCE;
+	float firstXCoordinate = ELEMENT_Y_OFFSET_DISTANCE;
 	for(NSInteger i = index; i < [self.collectionPinchViews count]; i++) {
 		PinchView* pinchView = self.collectionPinchViews[i];
 
@@ -359,11 +354,11 @@
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 			[pinchView specifyFrame:frame];
 		}];
-		firstXCoordinate+= frame.size.width + ELEMENT_OFFSET_DISTANCE;
+		firstXCoordinate+= frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
 	}
 
 	//make sure the main scroll view can show everything
-	self.contentSize = CGSizeMake((pinchViewSize+ELEMENT_OFFSET_DISTANCE)*[self.collectionPinchViews count],
+	self.contentSize = CGSizeMake((pinchViewSize+ELEMENT_Y_OFFSET_DISTANCE)*[self.collectionPinchViews count],
 								  self.contentSize.height);
 }
 
@@ -471,6 +466,7 @@
 		self.collectionIsOpen = NO;
 		self.contentSize = self.initialContentSize;
 		self.contentOffset = self.initialContentOffset;
+		[self addSubview:self.deleteButton];
 		self.collectionPinchViews = nil;
 	} else {
 		[self shiftPinchViewsAfterIndex:index];

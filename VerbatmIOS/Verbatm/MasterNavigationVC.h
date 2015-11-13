@@ -7,10 +7,6 @@
 
 #import <UIKit/UIKit.h>
 
-@class VerbatmCameraView;
-@class MediaSessionManager;
-
 @interface MasterNavigationVC : UIViewController
 
-    @property(strong, nonatomic) NSMutableArray * pinchObjects;
 @end

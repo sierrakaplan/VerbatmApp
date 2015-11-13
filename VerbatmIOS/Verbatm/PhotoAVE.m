@@ -11,7 +11,7 @@
 #import "MathOperations.h"
 #import "PointObject.h"
 #import "PhotoAVE.h"
-#import "TextAndImageView.h"
+#import "TextOverMediaView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "Icons.h"
@@ -95,7 +95,7 @@
 	}
 }
 
--(TextAndImageView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
+-(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
 	UIImage* image = photoTextArray[0];
 	NSString* text = photoTextArray[1];
 	NSNumber* textYPosition = photoTextArray[2];
@@ -103,7 +103,7 @@
 	if(self.subviewOfPhotoVideoAVE){
 		textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
 	}
-	TextAndImageView* textAndImageView = [[TextAndImageView alloc] initWithFrame:self.bounds
+	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 										  andImage: image
 										   andText: text
 								  andTextYPosition: textYPosition.floatValue];
@@ -180,7 +180,7 @@
 }
 
 -(void)textViewButtonClicked:(UIButton*) sender {
-    TextAndImageView * currentView = self.imageContainerViews[self.currentPhotoIndex];
+    TextOverMediaView * currentView = self.imageContainerViews[self.currentPhotoIndex];
 	[currentView showText: !currentView.textShowing];
 }
 
@@ -326,7 +326,7 @@
 
 //checks if a text button should be presented depending on the current image presented
 -(void)checkTextButtonPresentation{
-    TextAndImageView * view = self.imageContainerViews[self.currentPhotoIndex];
+    TextOverMediaView * view = self.imageContainerViews[self.currentPhotoIndex];
     if(view.textView.text && view.textView.text.length){
         [self createTextViewButton];
     }else{

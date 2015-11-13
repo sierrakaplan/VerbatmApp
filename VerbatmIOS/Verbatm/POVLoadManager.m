@@ -163,7 +163,6 @@
 			resolve(@"Unknown User");
 		}
 		GTLQuery* getUserQuery = [GTLQueryVerbatmApp queryForVerbatmuserGetUserWithIdentifier:userID.longLongValue];
-
 		[self.service executeQuery:getUserQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser* userWithID, NSError *error) {
 			if (error) {
 				resolve(@"Unknown User");

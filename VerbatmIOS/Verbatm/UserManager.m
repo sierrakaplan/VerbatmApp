@@ -10,6 +10,7 @@
 #import "GTLServiceVerbatmApp.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTMHTTPFetcherLogging.h"
+#import "Notifications.h"
 #import "PovInfo.h"
 #import "UserManager.h"
 
@@ -54,23 +55,22 @@
 			}
 			[self insertUser:verbatmUser];
 		} else {
-			[self.delegate errorLoggingInUser: error];
+			[self notifyFailedLogin: error];
 		}
 	}];
-
 }
 
 -(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
 
 	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 		if (error) {
-			[self.delegate errorLoggingInUser: error];
+			[self notifyFailedLogin: error];
 			return;
 		} else {
 			if (user.isNew) {
 				[self getUserInfoFromFacebookToken: accessToken];
 			} else {
-//				NSLog(@"User had already created account. Successfully logged in with Facebook.");
+				NSLog(@"User had already created account. Successfully logged in with Facebook.");
 				[self queryForCurrentUser];
 			}
 		}
@@ -101,7 +101,7 @@
 						FBSDKLoginManager *loginManager = [[FBSDKLoginManager alloc] init];
 						[loginManager logOut];
 						NSError* accountWithEmailExistsError = [NSError errorWithDomain:@"world" code: kPFErrorUserEmailTaken userInfo:nil];
-						[self.delegate errorLoggingInUser: accountWithEmailExistsError];
+						[self notifyFailedLogin: accountWithEmailExistsError];
 					} else {
 						// update current user
 						PFUser* currentUser = [PFUser currentUser];
@@ -127,7 +127,7 @@
 				}];
 			 } else {
 				 [[PFUser currentUser] deleteInBackground];
-				 [self.delegate errorLoggingInUser: error];
+				 [self notifyFailedLogin: error];
 			 }
 		 }];
 	[connection start];
@@ -138,11 +138,11 @@
 	[self.service executeQuery:insertUserQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVerbatmUser *currentUser, NSError *error) {
 		if (!error) {
 //			NSLog(@"Successfully inserted user object");
-			[self.delegate successfullyLoggedInUser: currentUser];
+			[self notifySuccessfulLogin];
 		} else {
 //			NSLog(@"Error inserting user: %@", error.description);
 			[[PFUser currentUser] deleteInBackground];
-			[self.delegate errorLoggingInUser: error];
+			[self notifyFailedLogin: error];
 		}
 	}];
 }
@@ -154,7 +154,7 @@
 		if (!error) {
 			[self queryForCurrentUser];
 		} else {
-			[self.delegate errorLoggingInUser: error];
+			[self notifyFailedLogin: error];
 		}
 	}];
 }
@@ -178,10 +178,10 @@
 				}
 			}
 			self.currentUser.likedPOVIDs = povIDs;
-			[self.delegate successfullyLoggedInUser: self.currentUser];
+			[self notifySuccessfulLogin];
 		} else {
-//			NSLog(@"Error retrieving current user: %@", error.description);
-			[self.delegate errorLoggingInUser: error];
+			NSLog(@"Error retrieving current user: %@", error.description);
+			[self notifyFailedLogin: error];
 		}
 	}];
 }
@@ -232,6 +232,16 @@
 
 -(void) logOutUser {
 	[PFUser logOutInBackground];
+}
+
+#pragma mark - Notifications -
+
+-(void) notifySuccessfulLogin {
+	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_SUCCEEDED object:self.currentUser];
+}
+
+-(void) notifyFailedLogin: (NSError*) error {
+	[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_LOGIN_FAILED object:error];
 }
 
 #pragma mark - Lazy Instantiation -

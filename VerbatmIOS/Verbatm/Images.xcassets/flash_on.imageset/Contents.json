@@ -2,17 +2,15 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "Flash_On.png",
+      "filename" : "Flash On.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "Flash_On-1.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "Flash_On-2.png",
       "scale" : "3x"
     }
   ],

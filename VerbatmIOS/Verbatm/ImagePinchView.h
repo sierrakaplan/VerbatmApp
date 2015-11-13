@@ -7,14 +7,12 @@
 //
 
 #import "PinchView.h"
+#import "SingleMediaAndTextPinchView.h"
 
-@interface ImagePinchView : PinchView
+@interface ImagePinchView : SingleMediaAndTextPinchView
 
 @property (strong, nonatomic) NSMutableArray* filteredImages;
 @property (nonatomic) NSInteger filterImageIndex;
-
-@property (strong, nonatomic) NSString* text;
-@property (strong, nonatomic) NSNumber* textYPosition; // float value
 
 -(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image;
 
