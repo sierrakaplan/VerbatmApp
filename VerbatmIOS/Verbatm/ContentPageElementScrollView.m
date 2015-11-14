@@ -31,7 +31,7 @@
 @property (strong, nonatomic) NSMutableArray* collectionPinchViews;
 
 @property (strong, nonatomic) UIButton * deleteButton;
-
+@property (nonatomic) CGRect deleteButtonFrame;
 //long press selecting item
 @property (strong, nonatomic, readwrite) PinchView* selectedItem;
 @property (nonatomic) float contentOffsetXBeforeLongPress;
@@ -66,11 +66,12 @@
 }
 
 -(void)createDeleteButton {
+    self.deleteButtonFrame = CGRectMake(self.pageElement.frame.origin.x +
+                                        self.pageElement.frame.size.width + DELETE_ICON_X_OFFSET,
+                                        self.pageElement.center.y - (DELETE_ICON_HEIGHT/2.f),
+                                        DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT);
     self.deleteButton = [[UIButton alloc] initWithFrame:
-                         CGRectMake(self.pageElement.frame.origin.x +
-                                    self.pageElement.frame.size.width + DELETE_ICON_X_OFFSET,
-                                    self.pageElement.center.y - (DELETE_ICON_Y_OFFSET),
-                                    DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
+                         self.deleteButtonFrame];
     
     [self.deleteButton setImage:[UIImage imageNamed:DELETE_ICON] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -476,6 +477,24 @@
 	[[UserPovInProgress sharedInstance]removePinchView:currentPinchView andReplaceWithPinchView:(PinchView *)self.pageElement];
 	return unPinched;
 }
+
+
+-(void)markAsSelected:(BOOL) selected{
+    if (selected) {
+        self.deleteButton.frame = CGRectMake(self.deleteButton.frame.origin.x, self.deleteButton.frame.origin.y,
+                                             self.deleteButton.frame.size.width + 10, self.deleteButton.frame.size.height + 10);
+        self.deleteButton.layer.shadowOffset = CGSizeMake(5, 0);
+        self.deleteButton.layer.shadowRadius = 5;
+        self.deleteButton.layer.shadowOpacity = 0.8;
+        self.deleteButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    } else {
+        self.deleteButton.layer.borderColor = [UIColor clearColor].CGColor;
+        self.deleteButton.frame = self.deleteButtonFrame;
+        self.deleteButton.layer.shadowOpacity = 0;
+    }
+}
+
+
 
 #pragma mark - Clean up when deleted to free memory -
 

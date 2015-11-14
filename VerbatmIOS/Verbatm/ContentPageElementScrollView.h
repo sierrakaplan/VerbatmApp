@@ -90,5 +90,7 @@
 
 -(void) cleanUp;
 
+-(void)markAsSelected:(BOOL) selected;
+
 @end
 
