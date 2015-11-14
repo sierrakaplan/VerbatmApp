@@ -52,7 +52,7 @@
 	if (self) {
 		[self formatScrollView];
 		[self changePageElement:element];
-        [self createDeleteButton];
+        if([element isKindOfClass:[PinchView class]])[self createDeleteButton];
         
 	}
 	return self;

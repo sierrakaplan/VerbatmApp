@@ -759,24 +759,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
+     if(self.pageElementScrollViews.count < 2) return;//if there is only one object on the screen then don't pinch
     self.pinchingMode = PinchingModeVertical;
     [self handleVerticlePinchGestureBegan:sender];
-
-	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
-	CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
-
-	int xDifference = fabs(touch1.x -touch2.x);
-	int yDifference = fabs(touch1.y -touch2.y);
-	//figure out if it's a horizontal pinch or vertical pinch
-	if(xDifference > yDifference) {
-		self.pinchingMode = PinchingModeHorizontal;
-		[self handleHorizontalPinchGestureBegan:sender];
-	}else {
-		//you can pinch together two things if there aren't two
-		if(self.pageElementScrollViews.count < 2) return;
-		self.pinchingMode = PinchingModeVertical;
-		[self handleVerticlePinchGestureBegan:sender];
-	}
 }
 
 
@@ -1567,7 +1552,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     
 	PinchView * pinchView = (PinchView *)sender.view;
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
-		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
+        return;//temp
+        ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
         if(![[UserSetupParameters sharedInstance] tapNhold_InstructionShown])[self alertTapNHoldInCollection];
 	} else { // pinch view should be SingleMediaOverText

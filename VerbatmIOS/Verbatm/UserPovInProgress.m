@@ -62,7 +62,7 @@
 -(void) addPinchView:(PinchView*)pinchView atIndex:(NSInteger) index {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		@synchronized(self) {
-			if ([self.pinchViews containsObject:pinchView]) {
+			if ([self.pinchViews containsObject:pinchView] || !pinchView) {
 				return;
 			}
             
