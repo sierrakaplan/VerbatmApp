@@ -537,7 +537,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
     
-    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:newElementScrollViewFrame];
+    //makes the object start animating from the top of the screen
+    CGRect animationStartFrame = CGRectMake(0, self.mainScrollView.contentOffset.y - newElementScrollViewFrame.size.height, newElementScrollViewFrame.size.width, newElementScrollViewFrame.size.height);
+    
+    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:animationStartFrame];
 	
     self.numPinchViews++;
     
@@ -548,9 +551,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     
     [[UserPovInProgress sharedInstance] addPinchView:pinchView atIndex:index];
     
-    [self.mainScrollView addSubview: newElementScrollView];
-	self.addMediaBelowView = newElementScrollView;
-    [self shiftElementsBelowView: self.coverPicView];
+    
+    [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
+        [self.mainScrollView addSubview: newElementScrollView];
+        newElementScrollView.frame = newElementScrollViewFrame;
+        self.addMediaBelowView = newElementScrollView;
+        [self shiftElementsBelowView: self.coverPicView];
+    }];
+    
+    
 }
 
 -(ContentPageElementScrollView *) createNewContentScrollViewWithPinchView:(PinchView *) view andFrame:(CGRect) frame {

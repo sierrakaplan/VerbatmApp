@@ -63,7 +63,7 @@
 #pragma mark Media Tile
 
 #define CAMERA_BUTTON_ICON @"camera"
-#define GALLERY_BUTTON_ICON @"gallery"
+#define GALLERY_BUTTON_ICON @"Gallery_icon"
 #define PLUS_ICON @"plus_sign_black"
 
 #pragma mark Pull Bar (NOT IN USE)
