@@ -480,9 +480,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     [newAlert addAction:action1];
     [newAlert addAction:action2];
     [self presentViewController:newAlert animated:YES completion:nil];
-    
-    
-    
 }
 
 
@@ -500,10 +497,19 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.numPinchViews--;
 	}
 
-	[self.pageElementScrollViews removeObject:pageElementScrollView];
-	[pageElementScrollView cleanUp];
-	[pageElementScrollView removeFromSuperview];
-	[self shiftElementsBelowView: self.coverPicView];
+    [self.pageElementScrollViews removeObject:pageElementScrollView];
+	
+    [UIView animateWithDuration:PINCHVIEW_DELETE_ANIMATION_DURATION animations:^{
+        if([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+           pageElementScrollView.alpha = 0;
+        }
+    }completion:^ (BOOL finished) {
+        if(finished){
+            [pageElementScrollView cleanUp];
+            [pageElementScrollView removeFromSuperview];
+            [self shiftElementsBelowView: self.coverPicView];
+        }
+    }];
 }
 
 
@@ -537,7 +543,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
     
-    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:newElementScrollViewFrame];
+    //makes the object start animating from the top of the screen
+    CGRect animationStartFrame = CGRectMake(0, self.mainScrollView.contentOffset.y - newElementScrollViewFrame.size.height, newElementScrollViewFrame.size.width, newElementScrollViewFrame.size.height);
+    
+    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:animationStartFrame];
 	
     self.numPinchViews++;
     
@@ -548,9 +557,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     
     [[UserPovInProgress sharedInstance] addPinchView:pinchView atIndex:index];
     
-    [self.mainScrollView addSubview: newElementScrollView];
-	self.addMediaBelowView = newElementScrollView;
-    [self shiftElementsBelowView: self.coverPicView];
+    
+    [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
+        [self.mainScrollView addSubview: newElementScrollView];
+        newElementScrollView.frame = newElementScrollViewFrame;
+        self.addMediaBelowView = newElementScrollView;
+        [self shiftElementsBelowView: self.coverPicView];
+    }];
+    
+    
 }
 
 -(ContentPageElementScrollView *) createNewContentScrollViewWithPinchView:(PinchView *) view andFrame:(CGRect) frame {
@@ -1235,11 +1250,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}
 		return;
 	}
-
+    
+    
 	self.previousLocationOfTouchPoint_PAN = touch;
 	self.previousFrameInLongPress = self.selectedView_PAN.frame;
 
 	[self.selectedView_PAN.pageElement markAsSelected:YES];
+    [self.selectedView_PAN markAsSelected:YES];
 }
 
 // Finds first view that contains location of press and sets it as the selectedView
@@ -1288,6 +1305,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 			self.previousLocationOfTouchPoint_PAN = touch;
 			self.previousFrameInLongPress = self.selectedView_PAN.frame;
 			[self.selectedView_PAN.pageElement markAsSelected:YES];
+            [self.selectedView_PAN markAsSelected:YES];
 		}
 		return;
 	}
@@ -1474,7 +1492,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}];
     }
 	
-    if(self.selectedView_PAN)[self.selectedView_PAN.pageElement markAsSelected:NO];
+    if(self.selectedView_PAN){
+        [self.selectedView_PAN.pageElement markAsSelected:NO];
+        [self.selectedView_PAN markAsSelected:NO];
+    }
 	//sanitize for next run
 	self.selectedView_PAN = nil;
 	[self shiftElementsBelowView:self.coverPicView];

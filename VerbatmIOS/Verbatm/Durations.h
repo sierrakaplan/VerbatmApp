@@ -37,7 +37,9 @@
 #define REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION 1.f
 //time it takes to animate a pinch
 #define PINCHVIEW_ANIMATION_DURATION 0.5f
+#define PINCHVIEW_DROP_ANIMATION_DURATION 1.f //the speed at which pinch objects fall into place after gallery
 
+#define PINCHVIEW_DELETE_ANIMATION_DURATION 0.5f //the speed at which the pinch objet changes size before disappearing
 
 #pragma mark - AVES -
 

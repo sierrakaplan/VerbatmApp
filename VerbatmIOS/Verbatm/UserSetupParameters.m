@@ -35,8 +35,7 @@
 /*
     Saves the users parameters
  */
-+(instancetype) sharedInstance{
-
++(instancetype) sharedInstance {
     static UserSetupParameters * sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -76,6 +75,9 @@
 #pragma mark - Check Parameters -
 
 -(BOOL) filter_InstructionShown{
+    
+    return YES;
+    
     //the array is still being prepared -- unlikely to be a problem
     if(self.notificationArray.count != NUMBER_OF_KEYS) return NO;
     
@@ -84,6 +86,9 @@
 }
 
 -(BOOL) circlesArePages_InstructionShown{
+    
+    return YES;
+    
     //the array is still being prepared -- unlikely to be a problem
     if(self.notificationArray.count != NUMBER_OF_KEYS) return NO;
     
@@ -92,6 +97,9 @@
 }
 
 -(BOOL) pinchCircles_InstructionShown{
+    
+    return YES;
+    
     //the array is still being prepared -- unlikely to be a problem
     if(self.notificationArray.count != NUMBER_OF_KEYS) return NO;
     
@@ -100,6 +108,9 @@
 }
 
 -(BOOL) tapNhold_InstructionShown{
+    
+    return YES;
+    
     //the array is still being prepared -- unlikely to be a problem
     if(self.notificationArray.count != NUMBER_OF_KEYS) return NO;
     
@@ -108,6 +119,9 @@
 }
 
 -(BOOL) swipeToDelete_InstructionShown {
+    
+    return YES;
+    
     //the array is still being prepared -- unlikely to be a problem
     if(self.notificationArray.count != NUMBER_OF_KEYS) return NO;
     
@@ -116,6 +130,9 @@
 }
 
 -(BOOL) accessCodeEntered {
+    
+    return YES;
+    
     //the array is still being prepared -- unlikely to be a problem
     if(self.notificationArray.count != NUMBER_OF_KEYS) return NO;
     
@@ -126,6 +143,7 @@
 #pragma mark - Change Paramaters -
 
 -(void) set_accessCodeAsEntered{
+    
     //the array is still being prepared -- unlikely to be a problem
     if(self.notificationArray.count != NUMBER_OF_KEYS) return;
     
