@@ -72,7 +72,7 @@
 
 #pragma mark - Load & display preview from pinch views -
 
--(void) displayPreviewPOVWithTitle: (NSString*) title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews {
+-(void) displayPreviewPOVWithTitle: (NSString*) title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews withStartIndex: (NSInteger) index {
 
 	self.title = title;
 	self.coverPhoto = coverPhoto;

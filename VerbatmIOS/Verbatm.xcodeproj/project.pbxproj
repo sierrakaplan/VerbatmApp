@@ -176,6 +176,8 @@
 		C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BA199EC6A2004B91A1 /* StoreKit.framework */; };
 		C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */; };
 		C7BD53C41B5B73A700EE6241 /* BaseArticleViewingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */; };
+		C7C69A011BF819CF006B5260 /* imageAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A001BF819CF006B5260 /* imageAVE.m */; };
+		C7C69A041BF819EC006B5260 /* imageFiltered.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A031BF819EC006B5260 /* imageFiltered.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
 		C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */; };
@@ -523,6 +525,10 @@
 		C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C7BD53C21B5B73A700EE6241 /* BaseArticleViewingExperience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseArticleViewingExperience.h; sourceTree = "<group>"; };
 		C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseArticleViewingExperience.m; sourceTree = "<group>"; };
+		C7C699FF1BF819CF006B5260 /* imageAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imageAVE.h; sourceTree = "<group>"; };
+		C7C69A001BF819CF006B5260 /* imageAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imageAVE.m; sourceTree = "<group>"; };
+		C7C69A021BF819EC006B5260 /* imageFiltered.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imageFiltered.h; sourceTree = "<group>"; };
+		C7C69A031BF819EC006B5260 /* imageFiltered.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imageFiltered.m; sourceTree = "<group>"; };
 		C7CCFF3A19CE63A800E90080 /* testerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerAnimation.h; sourceTree = "<group>"; };
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
@@ -1277,6 +1283,40 @@
 			name = "Constants ";
 			sourceTree = "<group>";
 		};
+		C7C699FD1BF8191A006B5260 /* Preview AVES */ = {
+			isa = PBXGroup;
+			children = (
+				C7C699FF1BF819CF006B5260 /* imageAVE.h */,
+				C7C69A001BF819CF006B5260 /* imageAVE.m */,
+				C7C69A021BF819EC006B5260 /* imageFiltered.h */,
+				C7C69A031BF819EC006B5260 /* imageFiltered.m */,
+			);
+			name = "Preview AVES";
+			sourceTree = "<group>";
+		};
+		C7C699FE1BF8192D006B5260 /* Display AVEs */ = {
+			isa = PBXGroup;
+			children = (
+				A5076D121BF2B25100303746 /* TextOverMediaView.h */,
+				A5076D131BF2B25100303746 /* TextOverMediaView.m */,
+				C7E6C13B1A4E394600863893 /* TextAVE.h */,
+				C7E6C13C1A4E394600863893 /* TextAVE.m */,
+				C7BD53C21B5B73A700EE6241 /* BaseArticleViewingExperience.h */,
+				C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */,
+				C7E6C12F1A4E394600863893 /* PhotoVideoAVE.h */,
+				C7E6C1301A4E394600863893 /* PhotoVideoAVE.m */,
+				A58656661B61FD99008E358C /* PhotoAVE.h */,
+				A58656671B61FD99008E358C /* PhotoAVE.m */,
+				C7E6C13D1A4E394600863893 /* VideoAVE.h */,
+				C7E6C13E1A4E394600863893 /* VideoAVE.m */,
+				A54689211BA3E1BC00F40E54 /* CoverPhotoAVE.h */,
+				A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */,
+				A58656601B602038008E358C /* TextOverAVEView.h */,
+				A58656611B602038008E358C /* TextOverAVEView.m */,
+			);
+			name = "Display AVEs";
+			sourceTree = "<group>";
+		};
 		C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */ = {
 			isa = PBXGroup;
 			children = (
@@ -1327,22 +1367,8 @@
 		F26894441A43641C00B1D4DB /* AVEs  */ = {
 			isa = PBXGroup;
 			children = (
-				A5076D121BF2B25100303746 /* TextOverMediaView.h */,
-				A5076D131BF2B25100303746 /* TextOverMediaView.m */,
-				C7E6C13B1A4E394600863893 /* TextAVE.h */,
-				C7E6C13C1A4E394600863893 /* TextAVE.m */,
-				C7BD53C21B5B73A700EE6241 /* BaseArticleViewingExperience.h */,
-				C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */,
-				C7E6C12F1A4E394600863893 /* PhotoVideoAVE.h */,
-				C7E6C1301A4E394600863893 /* PhotoVideoAVE.m */,
-				A58656661B61FD99008E358C /* PhotoAVE.h */,
-				A58656671B61FD99008E358C /* PhotoAVE.m */,
-				C7E6C13D1A4E394600863893 /* VideoAVE.h */,
-				C7E6C13E1A4E394600863893 /* VideoAVE.m */,
-				A54689211BA3E1BC00F40E54 /* CoverPhotoAVE.h */,
-				A54689221BA3E1BC00F40E54 /* CoverPhotoAVE.m */,
-				A58656601B602038008E358C /* TextOverAVEView.h */,
-				A58656611B602038008E358C /* TextOverAVEView.m */,
+				C7C699FD1BF8191A006B5260 /* Preview AVES */,
+				C7C699FE1BF8192D006B5260 /* Display AVEs */,
 			);
 			name = "AVEs ";
 			sourceTree = "<group>";
@@ -1584,12 +1610,14 @@
 				A5446C991BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m in Sources */,
 				C7A8E3861A61CE4D00776BD1 /* ContentDevPullBar.m in Sources */,
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
+				C7C69A041BF819EC006B5260 /* imageFiltered.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				A5446C961BBA3C33002177F4 /* CustomNavigationBar.m in Sources */,
 				A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A5E85F991B911DA900E148D0 /* GTLQuery.m in Sources */,
 				A5E85FA01B911DA900E148D0 /* GTLRuntimeCommon.m in Sources */,
+				C7C69A011BF819CF006B5260 /* imageAVE.m in Sources */,
 				A5C09BE01BA1F1D700C0AD86 /* ASINetworkQueue.m in Sources */,
 				A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */,
 				A5E85FA91B911DA900E148D0 /* GTMHTTPUploadFetcher.m in Sources */,

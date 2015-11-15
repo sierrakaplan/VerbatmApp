@@ -23,6 +23,7 @@
 
 -(id) initWithFrame: (CGRect)frame;
 
--(void) displayPreviewPOVWithTitle: (NSString*) title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews;
+//the start index is the page that we should start viewing at not including cover page
+-(void) displayPreviewPOVWithTitle: (NSString*) title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews withStartIndex: (NSInteger) index;
 
 @end

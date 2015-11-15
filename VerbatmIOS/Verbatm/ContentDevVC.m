@@ -209,7 +209,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
 	[self.navBar createMiddleButtonWithTitle:@"SAVE DRAFT" orImage:nil];
-	[self.navBar createRightButtonWithTitle:@"PREVIEW" orImage:nil];
+	//[self.navBar createRightButtonWithTitle:@"PREVIEW" orImage:nil];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }
@@ -367,13 +367,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-	[self closeAllOpenCollections];
-	NSArray *pinchViews = [self getPinchViews];
-	NSString* title = self.titleField.text;
-	UIImage* coverPic = [self getCoverPicture];
-
-	[self.view bringSubviewToFront:self.previewDisplayView];
-	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
+    //not in use
 }
 
 #pragma mark - Configure Text Fields -
@@ -1570,20 +1564,20 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	if(![sender.view isKindOfClass:[PinchView class]]) {
 		return;
 	}
-    
-	PinchView * pinchView = (PinchView *)sender.view;
-	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
-        return;//temp
-        ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
-		[scrollView openCollection];
-        if(![[UserSetupParameters sharedInstance] tapNhold_InstructionShown])[self alertTapNHoldInCollection];
-	} else { // pinch view should be SingleMediaOverText
-		self.editingPinchView = (SingleMediaAndTextPinchView*) pinchView;
-		//tap to open an element for viewing or editing
-		[self presentEditContentView];
-	}
+    UIView * view = sender.view.superview;//this will be a scrollview
+    if(view)[self presentPreviewAtIndex:[self.pageElementScrollViews indexOfObject:view]];
 }
 
+
+-(void)presentPreviewAtIndex:(NSInteger ) index{
+    [self closeAllOpenCollections];
+    NSArray *pinchViews = [self getPinchViews];
+    NSString* title = self.titleField.text;
+    UIImage* coverPic = [self getCoverPicture];
+    
+    [self.view bringSubviewToFront:self.previewDisplayView];
+    [self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews withStartIndex:index];
+}
 
 #pragma mark - Edit Content View Navigation -
 
