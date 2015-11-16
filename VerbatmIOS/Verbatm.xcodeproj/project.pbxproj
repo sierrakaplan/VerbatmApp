@@ -177,9 +177,10 @@
 		C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */; };
 		C7BD53C41B5B73A700EE6241 /* BaseArticleViewingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */; };
 		C7C69A011BF819CF006B5260 /* imageAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A001BF819CF006B5260 /* imageAVE.m */; };
-		C7C69A041BF819EC006B5260 /* imageFiltered.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A031BF819EC006B5260 /* imageFiltered.m */; };
+		C7C69A071BF820FC006B5260 /* EditContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A061BF820FC006B5260 /* EditContentView.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
+		C7E093EC1BF98BE200A3276A /* RearrangePV.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E093EB1BF98BE200A3276A /* RearrangePV.m */; };
 		C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */; };
 		C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5B1B911A470042AD99 /* FeedVC.m */; };
 		C7E65F5F1B911BA90042AD99 /* SwitchCategoryPullView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5E1B911BA90042AD99 /* SwitchCategoryPullView.m */; };
@@ -527,12 +528,14 @@
 		C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseArticleViewingExperience.m; sourceTree = "<group>"; };
 		C7C699FF1BF819CF006B5260 /* imageAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imageAVE.h; sourceTree = "<group>"; };
 		C7C69A001BF819CF006B5260 /* imageAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imageAVE.m; sourceTree = "<group>"; };
-		C7C69A021BF819EC006B5260 /* imageFiltered.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imageFiltered.h; sourceTree = "<group>"; };
-		C7C69A031BF819EC006B5260 /* imageFiltered.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imageFiltered.m; sourceTree = "<group>"; };
+		C7C69A051BF820FC006B5260 /* EditContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditContentView.h; sourceTree = "<group>"; };
+		C7C69A061BF820FC006B5260 /* EditContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditContentView.m; sourceTree = "<group>"; };
 		C7CCFF3A19CE63A800E90080 /* testerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerAnimation.h; sourceTree = "<group>"; };
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
 		C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerTransitionDelegate.m; sourceTree = "<group>"; };
+		C7E093EA1BF98BE200A3276A /* RearrangePV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RearrangePV.h; sourceTree = "<group>"; };
+		C7E093EB1BF98BE200A3276A /* RearrangePV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RearrangePV.m; sourceTree = "<group>"; };
 		C7E2C88D1BB7E97600D83668 /* UtilityFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityFunctions.h; sourceTree = "<group>"; };
 		C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilityFunctions.m; sourceTree = "<group>"; };
 		C7E65F5A1B911A470042AD99 /* FeedVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FeedVC.h; path = ../FeedVC.h; sourceTree = "<group>"; };
@@ -1286,10 +1289,12 @@
 		C7C699FD1BF8191A006B5260 /* Preview AVES */ = {
 			isa = PBXGroup;
 			children = (
+				C7C69A051BF820FC006B5260 /* EditContentView.h */,
+				C7C69A061BF820FC006B5260 /* EditContentView.m */,
 				C7C699FF1BF819CF006B5260 /* imageAVE.h */,
 				C7C69A001BF819CF006B5260 /* imageAVE.m */,
-				C7C69A021BF819EC006B5260 /* imageFiltered.h */,
-				C7C69A031BF819EC006B5260 /* imageFiltered.m */,
+				C7E093EA1BF98BE200A3276A /* RearrangePV.h */,
+				C7E093EB1BF98BE200A3276A /* RearrangePV.m */,
 			);
 			name = "Preview AVES";
 			sourceTree = "<group>";
@@ -1603,6 +1608,7 @@
 				A51A52F61BD6B8AB0048E62A /* MediaDownloader.m in Sources */,
 				A5AA31C81B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m in Sources */,
 				A5E85FA51B911DA900E148D0 /* GTMHTTPFetcherService.m in Sources */,
+				C7E093EC1BF98BE200A3276A /* RearrangePV.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
 				C77F321E1B6D5D1800E87C25 /* bugSubmissionFormVC.m in Sources */,
 				A5AA31C11B9FCDDC00D8D20C /* GTLVerbatmAppPage.m in Sources */,
@@ -1610,7 +1616,6 @@
 				A5446C991BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.m in Sources */,
 				C7A8E3861A61CE4D00776BD1 /* ContentDevPullBar.m in Sources */,
 				C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */,
-				C7C69A041BF819EC006B5260 /* imageFiltered.m in Sources */,
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				A5446C961BBA3C33002177F4 /* CustomNavigationBar.m in Sources */,
 				A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */,
@@ -1686,6 +1691,7 @@
 				A5076D081BE99A6300303746 /* UserDraftsVC.m in Sources */,
 				A560EFA51BAB33B8003FB041 /* PovInfo.m in Sources */,
 				A5E85F9F1B911DA900E148D0 /* GTLErrorObject.m in Sources */,
+				C7C69A071BF820FC006B5260 /* EditContentView.m in Sources */,
 				A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,

@@ -298,8 +298,7 @@
 	}
 
 	float xDifference  = touch.x - self.previousLocationOfTouchPoint_PAN.x;
-	float yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
-	CGRect newFrame = [self newTranslationFrameForView:self.selectedItem andXDifference:xDifference andYDifference:yDifference];
+	CGRect newFrame = [self newTranslationFrameForView:self.selectedItem andXDifference:xDifference];
 
 	//check if new location is out of the bounds of the collection view, and if so unpinch
 	//the selected view and return it so it can be re placed
@@ -364,8 +363,8 @@
 }
 
 //Takes a change in horizontal position and constructs the frame for the views new position
--(CGRect) newTranslationFrameForView: (UIView*)view andXDifference: (float) xDifference andYDifference: (float) yDifference {
-	CGRect frame= CGRectMake(view.frame.origin.x+xDifference, view.frame.origin.y + yDifference,
+-(CGRect) newTranslationFrameForView: (UIView*)view andXDifference: (float) xDifference {
+	CGRect frame= CGRectMake(view.frame.origin.x+xDifference, view.frame.origin.y,
 							 view.frame.size.width, view.frame.size.height);
 	return frame;
 }

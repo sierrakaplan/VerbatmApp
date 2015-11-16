@@ -215,8 +215,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "327"
             endingLineNumber = "327"
-            landmarkName = "@implementation EditContentView"
-            landmarkType = "3">
+            landmarkName = "-textViewTranslationInBounds:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -519,7 +519,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "198"
             endingLineNumber = "198"
-            landmarkName = "-changeFilteredImageLeft"
+            landmarkName = "-displayVideo:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
