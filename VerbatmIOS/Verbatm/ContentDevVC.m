@@ -1567,11 +1567,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		return;
 	}
     
-    RearrangePV * rV = [[RearrangePV alloc] initWithFrame:self.view.bounds andPinchView:sender.view];
-    [self.view addSubview:rV];
-    
-//    UIView * view = sender.view.superview;//this will be a scrollview
-//    if(view)[self presentPreviewAtIndex:[self.pageElementScrollViews indexOfObject:view]];
+    UIView * view = sender.view.superview;//this will be a scrollview
+    if(view)[self presentPreviewAtIndex:[self.pageElementScrollViews indexOfObject:view]];
 }
 
 
