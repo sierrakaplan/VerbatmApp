@@ -7,9 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PinchView.h"
 /*
  Holds the scrollview that displays an open pinchivew 
  */
 @interface RearrangePV : UIView
-
+-(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView *) pinchView;
 @end

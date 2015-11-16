@@ -8,8 +8,8 @@
 
 #import "RearrangePV.h"
 #import "ContentPageElementScrollView.h"
-#import "PinchView.h"
 #import "CollectionPinchView.h"
+#import "SizesAndPositions.h"
 @interface RearrangePV ()
     @property (strong, nonatomic) ContentPageElementScrollView * scrollView;
 @end
@@ -30,10 +30,18 @@
 
 
 -(void) setUpScrollViewWithPinchViews:(PinchView *) pv{
-    self.scrollView = [[ContentPageElementScrollView alloc] initWithFrame:self.bounds andElement:pv];
+    
+    CGFloat svHeight = pv.frame.size.height + (ELEMENT_Y_OFFSET_DISTANCE*2);
+    CGFloat svOriginY = self.center.y - svHeight/2.f;
+    
+    CGRect frame = CGRectMake(0, svOriginY, self.frame.size.width, svHeight);
+    
+    
+    self.scrollView = [[ContentPageElementScrollView alloc] initWithFrame:frame andElement:pv];
     if([pv isKindOfClass:[CollectionPinchView class]]) {
         [self.scrollView openCollection];
     }
+    [self addSubview:self.scrollView];
 }
 
 -(void)addLongPressGesture {
@@ -57,11 +65,8 @@
             }
         }else if (longPress.state == UIGestureRecognizerStateEnded ||
                   longPress.state == UIGestureRecognizerStateCancelled){
-            
+            [self.scrollView finishMovingSelectedItem];
         }
-        
-        
-        
     }
 }
 

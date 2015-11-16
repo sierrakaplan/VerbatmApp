@@ -35,6 +35,8 @@
 #import "MediaDevVC.h"
 #import "MediaSelectTile.h"
 
+#import "RearrangePV.h"
+
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "StringsAndAppConstants.h"
@@ -1564,8 +1566,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	if(![sender.view isKindOfClass:[PinchView class]]) {
 		return;
 	}
-    UIView * view = sender.view.superview;//this will be a scrollview
-    if(view)[self presentPreviewAtIndex:[self.pageElementScrollViews indexOfObject:view]];
+    
+    RearrangePV * rV = [[RearrangePV alloc] initWithFrame:self.view.bounds andPinchView:sender.view];
+    [self.view addSubview:rV];
+    
+//    UIView * view = sender.view.superview;//this will be a scrollview
+//    if(view)[self presentPreviewAtIndex:[self.pageElementScrollViews indexOfObject:view]];
 }
 
 

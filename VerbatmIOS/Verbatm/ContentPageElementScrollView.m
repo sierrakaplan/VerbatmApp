@@ -187,12 +187,11 @@
 
 	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
     
-	self.contentSize = CGSizeMake((ELEMENT_Y_OFFSET_DISTANCE + pinchViewSize) * [pinchViews count],
+	self.contentSize = CGSizeMake((ELEMENT_Y_OFFSET_DISTANCE + pinchViewSize) * [pinchViews count] +ELEMENT_Y_OFFSET_DISTANCE,
 								  self.contentSize.height);
 
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 		int xPosition = ELEMENT_Y_OFFSET_DISTANCE;
-
 		for(PinchView* pinchView in pinchViews) {
 			CGRect newFrame = CGRectMake(xPosition, ELEMENT_Y_OFFSET_DISTANCE/2, pinchViewSize, pinchViewSize);
 			[pinchView specifyFrame:newFrame];
@@ -298,14 +297,16 @@
 	}
 
 	float xDifference  = touch.x - self.previousLocationOfTouchPoint_PAN.x;
-	CGRect newFrame = [self newTranslationFrameForView:self.selectedItem andXDifference:xDifference];
+    float yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
+	CGRect newFrame = [self newTranslationFrameForView:self.selectedItem andXDifference:xDifference andYDifference:yDifference];
 
 	//check if new location is out of the bounds of the collection view, and if so unpinch
 	//the selected view and return it so it can be re placed
-	if (newFrame.origin.y > (self.frame.origin.y + self.frame.size.height/2.f)
-		|| (newFrame.origin.y + newFrame.size.height) < self.frame.origin.y + self.frame.size.height/2.f) {
-		return [self unPinchObject];
-	}
+    //no unpinch for now
+//	if (newFrame.origin.y > (self.frame.origin.y + self.frame.size.height/2.f)
+//		|| (newFrame.origin.y + newFrame.size.height) < self.frame.origin.y + self.frame.size.height/2.f) {
+//		return [self unPinchObject];
+//	}
 
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
@@ -348,7 +349,7 @@
 	for(NSInteger i = index; i < [self.collectionPinchViews count]; i++) {
 		PinchView* pinchView = self.collectionPinchViews[i];
 
-		CGRect frame = CGRectMake(firstXCoordinate, pinchView.frame.origin.y,
+		CGRect frame = CGRectMake(firstXCoordinate, ELEMENT_Y_OFFSET_DISTANCE/2,
 								  pinchView.frame.size.width, pinchView.frame.size.height);
 
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
@@ -358,16 +359,18 @@
 	}
 
 	//make sure the main scroll view can show everything
-	self.contentSize = CGSizeMake((pinchViewSize+ELEMENT_Y_OFFSET_DISTANCE)*[self.collectionPinchViews count],
+	self.contentSize = CGSizeMake((pinchViewSize+ELEMENT_Y_OFFSET_DISTANCE)*[self.collectionPinchViews count]+ELEMENT_Y_OFFSET_DISTANCE,
 								  self.contentSize.height);
 }
 
 //Takes a change in horizontal position and constructs the frame for the views new position
--(CGRect) newTranslationFrameForView: (UIView*)view andXDifference: (float) xDifference {
-	CGRect frame= CGRectMake(view.frame.origin.x+xDifference, view.frame.origin.y,
-							 view.frame.size.width, view.frame.size.height);
-	return frame;
+//Takes a change in horizontal position and constructs the frame for the views new position
+-(CGRect) newTranslationFrameForView: (UIView*)view andXDifference: (float) xDifference andYDifference: (float) yDifference {
+    CGRect frame= CGRectMake(view.frame.origin.x+xDifference, view.frame.origin.y + yDifference,
+                             view.frame.size.width, view.frame.size.height);
+    return frame;
 }
+
 
 //swap currently selected item's frame with view to the left of it
 -(void) swapWithLeftView: (PinchView*) leftView {
@@ -432,7 +435,6 @@
 }
 
 -(void) finishMovingSelectedItem {
-
 	[self.selectedItem removeFromSuperview];
 	self.selectedItem.frame = CGRectMake(self.previousFrameInLongPress.origin.x - self.frame.origin.x + self.contentOffsetXBeforeLongPress,
 										 self.previousFrameInLongPress.origin.y - self.frame.origin.y,
@@ -442,7 +444,7 @@
 	[self addSubview:self.selectedItem];
 
 	[self.selectedItem markAsSelected:NO];
-
+    [self shiftPinchViewsAfterIndex:0];
 	//sanitize for next run
 	self.selectedItem = nil;
 }
