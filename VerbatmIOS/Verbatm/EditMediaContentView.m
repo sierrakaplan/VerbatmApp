@@ -9,7 +9,7 @@
 #import "ContentDevPullBar.h"
 #import "ContentDevVC.h"
 #import "Durations.h"
-#import "EditContentView.h"
+#import "EditMediaContentView.h"
 #import "Icons.h"
 #import "Notifications.h"
 
@@ -25,7 +25,7 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UITextView+Utilities.h"
 
-@interface EditContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
+@interface EditMediaContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
 
 @property (nonatomic, strong) TextOverMediaView * textAndImageView;
 
@@ -47,7 +47,7 @@
 @end
 
 
-@implementation EditContentView
+@implementation EditMediaContentView
 
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];

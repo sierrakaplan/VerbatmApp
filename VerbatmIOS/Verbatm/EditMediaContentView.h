@@ -15,7 +15,7 @@
 -(void) exitEditContentView;
 @end
 
-@interface EditContentView : UIView
+@interface EditMediaContentView : UIView
 
 @property (nonatomic, strong) id<EditContentViewDelegate> delegate;
 @property (nonatomic, strong) VideoPlayerView * videoView;

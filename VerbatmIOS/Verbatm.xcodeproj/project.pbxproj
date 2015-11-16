@@ -177,7 +177,7 @@
 		C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */; };
 		C7BD53C41B5B73A700EE6241 /* BaseArticleViewingExperience.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */; };
 		C7C69A011BF819CF006B5260 /* imageAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A001BF819CF006B5260 /* imageAVE.m */; };
-		C7C69A071BF820FC006B5260 /* EditContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A061BF820FC006B5260 /* EditContentView.m */; };
+		C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A061BF820FC006B5260 /* EditMediaContentView.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
 		C7E093EC1BF98BE200A3276A /* RearrangePV.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E093EB1BF98BE200A3276A /* RearrangePV.m */; };
@@ -528,8 +528,8 @@
 		C7BD53C31B5B73A700EE6241 /* BaseArticleViewingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseArticleViewingExperience.m; sourceTree = "<group>"; };
 		C7C699FF1BF819CF006B5260 /* imageAVE.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imageAVE.h; sourceTree = "<group>"; };
 		C7C69A001BF819CF006B5260 /* imageAVE.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imageAVE.m; sourceTree = "<group>"; };
-		C7C69A051BF820FC006B5260 /* EditContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditContentView.h; sourceTree = "<group>"; };
-		C7C69A061BF820FC006B5260 /* EditContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditContentView.m; sourceTree = "<group>"; };
+		C7C69A051BF820FC006B5260 /* EditMediaContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditMediaContentView.h; sourceTree = "<group>"; };
+		C7C69A061BF820FC006B5260 /* EditMediaContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditMediaContentView.m; sourceTree = "<group>"; };
 		C7CCFF3A19CE63A800E90080 /* testerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerAnimation.h; sourceTree = "<group>"; };
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
@@ -1289,8 +1289,8 @@
 		C7C699FD1BF8191A006B5260 /* Preview AVES */ = {
 			isa = PBXGroup;
 			children = (
-				C7C69A051BF820FC006B5260 /* EditContentView.h */,
-				C7C69A061BF820FC006B5260 /* EditContentView.m */,
+				C7C69A051BF820FC006B5260 /* EditMediaContentView.h */,
+				C7C69A061BF820FC006B5260 /* EditMediaContentView.m */,
 				C7C699FF1BF819CF006B5260 /* imageAVE.h */,
 				C7C69A001BF819CF006B5260 /* imageAVE.m */,
 				C7E093EA1BF98BE200A3276A /* RearrangePV.h */,
@@ -1691,7 +1691,7 @@
 				A5076D081BE99A6300303746 /* UserDraftsVC.m in Sources */,
 				A560EFA51BAB33B8003FB041 /* PovInfo.m in Sources */,
 				A5E85F9F1B911DA900E148D0 /* GTLErrorObject.m in Sources */,
-				C7C69A071BF820FC006B5260 /* EditContentView.m in Sources */,
+				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
 				A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,

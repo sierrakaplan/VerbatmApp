@@ -22,6 +22,7 @@
     if(self){
         [self setUpScrollViewWithPinchViews:pinchView];
         [self addLongPressGesture];
+        [self addTapGesture];
         [self formatBackground];
     }
     
@@ -48,7 +49,14 @@
     UILongPressGestureRecognizer * longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectSelected:)];
     [self addGestureRecognizer:longPress];
 }
+-(void) addTapGesture{
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(viewTapped:)];
+    [self addGestureRecognizer:tapGesture];
+}
 
+-(void)viewTapped:(UITapGestureRecognizer *) tapped{
+    [self.delegate exitPV];
+}
 
 -(void)pinchObjectSelected:(UILongPressGestureRecognizer *) longPress{
     if([longPress numberOfTouches] == 1) {

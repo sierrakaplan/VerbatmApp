@@ -11,6 +11,15 @@
 /*
  Holds the scrollview that displays an open pinchivew 
  */
+
+@protocol RearrangePVProtocol <NSObject>
+
+//tells the delegate
+-(void)exitPV;
+
+@end
+
 @interface RearrangePV : UIView
--(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView *) pinchView;
+    -(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView *) pinchView;
+    @property (strong, nonatomic) id<RearrangePVProtocol> delegate;
 @end
