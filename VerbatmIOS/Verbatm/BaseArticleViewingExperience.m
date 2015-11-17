@@ -52,19 +52,19 @@
     if(self) {
 		switch (aveType) {
 			case AVETypePhoto: {
-                PhotoAVE* photoAve =  [[PhotoAVE alloc]initWithFrame:frame andPhotoArray:photos orPinchview:nil isSubViewOfPhotoVideoAve:NO];
+                PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:photos orPinchviewArray:nil isSubViewOfPhotoVideoAve:NO];
                 [self addSubview: photoAve];
 				self.subAVE = photoAve;
 				break;
 			}
 			case AVETypeVideo: {
-				VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoArray:videos];
+                VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame pinchView:nil orVideoArray:videos];
 				[self addSubview: videoAve];
 				self.subAVE = videoAve;
 				break;
 			}
 			case AVETypePhotoVideo: {
-				PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos];
+                PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos orCollectionView:nil];
 				[self addSubview: photoVideoAVE];
 				self.subAVE = photoVideoAVE;
 				break;

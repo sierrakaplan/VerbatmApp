@@ -168,9 +168,8 @@
             break;
         }
         case AVETypePhotoVideo: {
-//            PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos];
-//            [self addSubview: photoVideoAVE];
-//            self.subAVE = photoVideoAVE;
+            PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:nil andVideos:nil orCollectionView:(CollectionPinchView *)pinchView];
+            [self.results addObject:photoVideoAVE];
             break;
         }
         default: {

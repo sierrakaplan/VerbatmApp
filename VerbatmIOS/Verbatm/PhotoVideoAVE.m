@@ -54,13 +54,13 @@
     if(collection){
         imagePVArray = [[NSMutableArray alloc] init];
         for (PinchView * pv in collection.pinchedObjects) {
-            if([pv isKindOfClass:[imagePVArray class]]){
+            if([pv isKindOfClass:[ImagePinchView class]]){
                 [imagePVArray addObject:pv];
             }
         }
     }
     
-    self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchviewArray:(imagePVArray) ? imagePVArray:nil];
+    self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchviewArray:(imagePVArray) ? imagePVArray : nil isSubViewOfPhotoVideoAve:YES];
     
     self.videoView = [[VideoAVE alloc]initWithFrame:videoViewFrame pinchView:(collection.containsVideo) ? collection : nil orVideoArray:videos];
 

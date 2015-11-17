@@ -1063,7 +1063,6 @@
 				A5FB5D1D1BCB0B9700634A96 /* GMGridViewController.m */,
 				A5FB5D261BCB0B9700634A96 /* GMImagePickerController.h */,
 				A5FB5D271BCB0B9700634A96 /* GMImagePickerController.m */,
-				A560EF9E1BA8DFCC003FB041 /* AVE Analyzer */,
 			);
 			name = GMImagePicker;
 			sourceTree = "<group>";
@@ -1212,6 +1211,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				A560EF9E1BA8DFCC003FB041 /* AVE Analyzer */,
 				C716E9D31BD6CAAA001B769D /* Analytics */,
 				C7BD53C61B5B790B00EE6241 /* Constants  */,
 				A5FB5D5E1BCD85D500634A96 /* Utility UI Objects */,
