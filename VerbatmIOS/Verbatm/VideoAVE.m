@@ -39,8 +39,8 @@
         }else if (pinchView){
              NSMutableArray * videoAssets = [[NSMutableArray alloc] init];
             if([pinchView isKindOfClass:[CollectionPinchView class]]){
-                for(VideoPinchView * view in ((CollectionPinchView *)pinchView).pinchedObjects) {
-                    [videoAssets addObject:view.video];
+                for(PinchView * view in ((CollectionPinchView *)pinchView).pinchedObjects) {
+                    if([view isKindOfClass:[VideoPinchView class]])[videoAssets addObject:((VideoPinchView *)view).video];
                 }
                 
             }else{//it's a videopinchview

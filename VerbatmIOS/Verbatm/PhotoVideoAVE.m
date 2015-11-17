@@ -50,30 +50,19 @@
     CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
     CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photosViewHeight);
     
-    NSMutableArray * videoPVArray;
     NSMutableArray * imagePVArray;
     if(collection){
-        videoPVArray = [[NSMutableArray alloc] init];
         imagePVArray = [[NSMutableArray alloc] init];
-        
         for (PinchView * pv in collection.pinchedObjects) {
             if([pv isKindOfClass:[imagePVArray class]]){
                 [imagePVArray addObject:pv];
-            }else if([pv isKindOfClass:[VideoPinchView class]]) {
-                
-                [videoPVArray addObject:pv];
             }
         }
     }
     
-   
-    
-    
-    
-    
     self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchviewArray:(imagePVArray) ? imagePVArray:nil];
     
-    self.videoView = [[VideoAVE alloc]initWithFrame:videoViewFrame pinchView:(videoPVArray) ? videoPVArray : nil orVideoArray:videos];
+    self.videoView = [[VideoAVE alloc]initWithFrame:videoViewFrame pinchView:(collection.containsVideo) ? collection : nil orVideoArray:videos];
 
 	[self addSubview:self.videoView];
 	[self addSubview:self.photosView];

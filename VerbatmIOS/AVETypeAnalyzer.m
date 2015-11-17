@@ -152,14 +152,10 @@
             PhotoAVE * photoAve;
             if([pinchView isKindOfClass:[CollectionPinchView class]]){
                 
-                photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:nil
-                                                          orPinchview:((CollectionPinchView *)pinchView).pinchedObjects
-                                             isSubViewOfPhotoVideoAve:NO];
+                photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:nil orPinchviewArray:((CollectionPinchView *)pinchView).pinchedObjects isSubViewOfPhotoVideoAve:NO];
                 
             }else {
-                photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:nil
-                                                          orPinchview:[NSMutableArray arrayWithObject:pinchView]
-                                             isSubViewOfPhotoVideoAve:NO];
+                 photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:nil orPinchviewArray:[NSMutableArray arrayWithObject:pinchView] isSubViewOfPhotoVideoAve:NO];
             }
             
             [self.results addObject:photoAve];

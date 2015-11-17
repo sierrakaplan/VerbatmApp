@@ -21,7 +21,8 @@
 
 
 //Photos are array of UIImage and videos are array of AVassets or NSURl
--(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos;
+-(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos orCollectionView:(CollectionPinchView *) collectionView;
+
 //-(void)addTapGesture;
 
 -(void)mutePlayer;
