@@ -12,6 +12,7 @@ var express = require('express')
 
 var index = require('./routes/index');
 var email = require('./routes/email');
+var storyviewer = require('./routes/storyviewer');
 
 var app = express();
 var env = process.env.NODE_ENV || 'development';
@@ -38,6 +39,7 @@ if ('development' == env) {
 
 // Setup Routes
 app.get('/', index.view);
+app.get('/v/:pov_id', storyviewer.view);
 app.post('/email', email.sendEmail);
 
 http.createServer(app).listen(app.get('port'), function(){

@@ -38,13 +38,11 @@ function resize() {
 		// video.height = height;
 		
 		$('.banner_media').css('left', '0').css('top', 'auto');
-		console.log("height > width");
 	} else {
 		// video.width = width;
 		$('.banner_media').css('height', 'auto');
 		$('.banner_media').css('width', width);
 		$('.banner_media').css('top', '0').css('left', 'auto');
-		console.log("width > height");
 	}
 }
 
@@ -73,7 +71,6 @@ function hideMenuWhileScrolling() {
 		}
 		$('#beta_test_container').removeClass('beta_scrolling');
 		$('#beta_test_container').addClass('beta_not_scrolling');
-        console.log("Haven't scrolled in 250ms!");
     }, 500));
 }
 
@@ -93,11 +90,9 @@ function readMoreAboutUs(readMore) {
 $(document).ready(function() {
 
 	if (jQuery.browser.mobile) { 
-		console.log("mobile");
 		$('#header').addClass('menu_not_scrolling_mobile');
 		$('#header').addClass('header_mobile');
 	} else {
-		console.log("desktop");
 		$('#header').addClass('menu_not_scrolling_desktop');
 		$('#header').addClass('header_desktop');
 	}
@@ -162,7 +157,6 @@ $(document).ready(function() {
 
 	$('#submit_beta_email_request').on('click', function() {
 		$.post('/email?email=' + $("#input_email")[0].value, function(res) {
-			console.log(res);
 			// window.confirm(res);
 		});
 		$('#thankyou_section').animatescroll({scrollSpeed:1500});
