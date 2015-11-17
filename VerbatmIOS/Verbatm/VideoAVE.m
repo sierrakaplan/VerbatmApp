@@ -90,6 +90,7 @@
 
 -(void)offScreen{
     [self stopVideo];
+    [self.ourEMCV exitingECV];
     self.hasBeenSetUp = NO;
 }
 

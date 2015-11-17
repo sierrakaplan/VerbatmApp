@@ -204,9 +204,9 @@
     if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
         [self stopVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
     } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave stopVideo];
+        [(VideoAVE*)ave offScreen];
     } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] stopVideo];
+        [(PhotoVideoAVE*)ave offScreen];
     }
 }
 

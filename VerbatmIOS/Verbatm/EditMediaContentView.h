@@ -34,4 +34,7 @@
 
 -(NSInteger) getFilteredImageIndex;
 
+
+//call before removing the view - (only needed no for videos)
+-(void)exitingECV;
 @end

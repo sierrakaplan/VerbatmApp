@@ -237,7 +237,7 @@
 #pragma mark - Exit view
 
 -(void) addTapGestureToMainView {
-	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitEditContentView)];
+	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeKeyboard)];
 	[self addGestureRecognizer:tap];
 }
 
@@ -249,13 +249,16 @@
 	[self.textAndImageView.textView resignFirstResponder];
 }
 
--(void) exitEditContentView {
+-(void) removeKeyboard {
     //if the keyboard is up then remove it
     if(self.textAndImageView.textView.isFirstResponder){
         [self.textAndImageView.textView resignFirstResponder];
-    } else {
-        
     }
+}
+//called before removing the view
+//clears up video content
+-(void)exitingECV{
+    [self.videoView stopVideo];
 }
 
 #pragma maro -Adjust textview position-
