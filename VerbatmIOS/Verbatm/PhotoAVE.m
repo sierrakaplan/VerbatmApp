@@ -58,7 +58,7 @@
 @implementation PhotoAVE
 
 //TODO: limit on how many photos can be pinched together?
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchview:(NSMutableArray *) pinchViewArray
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchviewArray:(NSMutableArray *) pinchViewArray
      isSubViewOfPhotoVideoAve:(BOOL) isPVSubview {
     
 	self = [super initWithFrame:frame];

@@ -19,7 +19,7 @@
 @property (nonatomic, strong) VideoPlayerView * videoView;
 @property (nonatomic, strong) PinchView * pinchView;
 
--(void) displayVideo: (AVAsset*) videoAsset;
+-(void) displayVideo: (NSMutableArray *) videoAssetArray;
 
 //passes it an array of UIImages to display
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index;

@@ -875,7 +875,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "64"
             endingLineNumber = "64"
-            landmarkName = "-initWithFrame:andPhotoArray:orPinchview:isSubViewOfPhotoVideoAve:"
+            landmarkName = "-initWithFrame:andPhotoArray:orPinchviewArray:isSubViewOfPhotoVideoAve:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

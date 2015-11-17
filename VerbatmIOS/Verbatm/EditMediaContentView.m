@@ -187,12 +187,12 @@
 
 #pragma mark - Image or Video View -
 
--(void) displayVideo: (AVAsset*) videoAsset {
+-(void) displayVideo: (NSMutableArray *) videoAssetArray {
 	self.videoView = [[VideoPlayerView alloc]init];
 	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
 	[self addSubview:self.videoView];
 	[self bringSubviewToFront:self.videoView];
-	[self.videoView prepareVideoFromAsset_synchronous:videoAsset];
+	[self.videoView prepareVideoFromArrayOfAssets_synchronous:videoAssetArray];
     [self.videoView playVideo];
 	[self.videoView repeatVideoOnEnd:YES];
 	[self addTapGestureToMainView];

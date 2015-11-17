@@ -167,9 +167,8 @@
             break;
         }
         case AVETypeVideo: {
-//            VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoArray:videos];
-//            [self addSubview: videoAve];
-//            self.subAVE = videoAve;
+            VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame pinchView:pinchView orVideoArray:nil];
+            [self.results addObject:videoAve];
             break;
         }
         case AVETypePhotoVideo: {

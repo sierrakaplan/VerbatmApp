@@ -23,8 +23,8 @@
 @property (nonatomic, strong) UITapGestureRecognizer * photoAveTapGesture;
 @property (weak, nonatomic) UIScrollView * povScrollView;//set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
 //photos are UIImage*
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchview:(NSMutableArray *) pinchViewArray
-     isSubViewOfPhotoVideoAve:(BOOL) isPVSubview;
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchviewArray:(NSMutableArray *) pinchViewArray;
+
 -(void) showAndRemoveCircle;//be sure to set povScrollView
 
 @end

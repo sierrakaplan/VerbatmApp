@@ -7,13 +7,19 @@
 //  Copyright (c) 2014 IainAndLucio. All rights reserved.
 //
 
-#import "PhotoVideoAVE.h"
-#import "VideoAVE.h"
-#import "Notifications.h"
-#import "Durations.h"
-#import "Styles.h"
 #import "BaseArticleViewingExperience.h"
+#import "CollectionPinchView.h"
+#import "Durations.h"
+#import "ImagePinchView.h"
+#import "VideoPinchView.h"
+
+#import "Notifications.h"
+
 #import "PhotoAVE.h"
+#import "PhotoVideoAVE.h"
+
+#import "Styles.h"
+#import "VideoAVE.h"
 
 @interface PhotoVideoAVE() <UIScrollViewDelegate>
 
@@ -22,13 +28,13 @@
 @end
 @implementation PhotoVideoAVE
 
--(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos
+-(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos orCollectionView:(CollectionPinchView *) collectionView
 {
     self = [super initWithFrame:frame];
     if(self)
     {
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-        [self setSubViewsWithPhotos: photos andVideos: videos];
+        [self setSubViewsWithPhotos: photos andVideos:videos orPinchView:collectionView];
         //make sure the video is on repeat
         [self.videoView repeatVideoOnEnd:YES];
     }
@@ -36,14 +42,38 @@
 }
 
 //sets the frames for the video view and the photo scrollview
--(void) setSubViewsWithPhotos: (NSArray*) photos andVideos: (NSArray*) videos {
+-(void) setSubViewsWithPhotos: (NSArray*) photos andVideos: (NSArray*) videos orPinchView:(CollectionPinchView *) collection {
+    
 	float videoViewHeight = ((self.frame.size.width*3)/4);
 	float photosViewHeight = (self.frame.size.height - videoViewHeight);
 
     CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
     CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photosViewHeight);
-	self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchview:nil isSubViewOfPhotoVideoAve:YES];
-	self.videoView = [[VideoAVE alloc] initWithFrame:videoViewFrame andVideoArray: videos];
+    
+    NSMutableArray * videoPVArray;
+    NSMutableArray * imagePVArray;
+    if(collection){
+        videoPVArray = [[NSMutableArray alloc] init];
+        imagePVArray = [[NSMutableArray alloc] init];
+        
+        for (PinchView * pv in collection.pinchedObjects) {
+            if([pv isKindOfClass:[imagePVArray class]]){
+                [imagePVArray addObject:pv];
+            }else if([pv isKindOfClass:[VideoPinchView class]]) {
+                
+                [videoPVArray addObject:pv];
+            }
+        }
+    }
+    
+   
+    
+    
+    
+    
+    self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchviewArray:(imagePVArray) ? imagePVArray:nil];
+    
+    self.videoView = [[VideoAVE alloc]initWithFrame:videoViewFrame pinchView:(videoPVArray) ? videoPVArray : nil orVideoArray:videos];
 
 	[self addSubview:self.videoView];
 	[self addSubview:self.photosView];

@@ -8,6 +8,9 @@
 
 #import "VideoAVE.h"
 #import "Icons.h"
+#import "CollectionPinchView.h"
+#import "VideoPinchView.h"
+#import "EditMediaContentView.h"
 #import "BaseArticleViewingExperience.h"
 
 @interface VideoAVE()
@@ -17,7 +20,7 @@
 @property (nonatomic) CGPoint firstTranslation;
 @property (nonatomic, strong) NSArray * videoList;
 @property (nonatomic) BOOL hasBeenSetUp;
-
+@property (nonatomic) EditMediaContentView * ourEMCV;
 #define RGB 255,225,255, 0.7
 #define PROGR_VIEW_HEIGHT 60
 #define PLAYBACK_ICON_SIZE 40
@@ -28,22 +31,43 @@
 
 @implementation VideoAVE
 
--(id)initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList {
+-(id)initWithFrame:(CGRect)frame pinchView:(PinchView *)pinchView orVideoArray:(NSArray*) videoAndTextList {
     if((self = [super initWithFrame:frame])) {
 		[self repeatVideoOnEnd:YES];
         if(videoAndTextList.count) {
-			NSMutableArray* videoList = [[NSMutableArray alloc] initWithCapacity: videoAndTextList.count];
-			for (NSArray* videoWithText in videoAndTextList) {
-				[videoList addObject: videoWithText[0]];
-				NSString* text = videoWithText[1];
-				NSNumber* textYPos = videoWithText[2];
-			}
-            [self playVideos:videoList];
-            self.hasBeenSetUp = NO;
+            [self playVideosFromArray:videoAndTextList];
+        }else if (pinchView){
+             NSMutableArray * videoAssets = [[NSMutableArray alloc] init];
+            if([pinchView isKindOfClass:[CollectionPinchView class]]){
+                for(VideoPinchView * view in ((CollectionPinchView *)pinchView).pinchedObjects) {
+                    [videoAssets addObject:view.video];
+                }
+                
+            }else{//it's a videopinchview
+                [videoAssets addObject:((VideoPinchView *)pinchView).video];
+            }
+        
+            self.ourEMCV= [[EditMediaContentView alloc] initWithFrame:self.bounds];
+            self.ourEMCV.pinchView = pinchView;
+            [self.ourEMCV displayVideo:videoAssets];
+            [self addSubview:self.ourEMCV];
         }
     }
     return self;
 }
+
+
+-(void)playVideosFromArray:(NSArray *) videoAndTextList{
+    NSMutableArray* videoList = [[NSMutableArray alloc] initWithCapacity: videoAndTextList.count];
+    for (NSArray* videoWithText in videoAndTextList) {
+        [videoList addObject: videoWithText[0]];
+        NSString* text = videoWithText[1];
+        NSNumber* textYPos = videoWithText[2];
+    }
+    [self playVideos:videoList];
+    self.hasBeenSetUp = NO;
+}
+
 
 -(void)playVideos:(NSArray*)videoList {
     if(self.videoList != videoList){
