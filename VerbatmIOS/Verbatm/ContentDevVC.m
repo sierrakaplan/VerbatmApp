@@ -211,7 +211,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
 	[self.navBar createMiddleButtonWithTitle:@"SAVE DRAFT" orImage:nil];
-	//[self.navBar createRightButtonWithTitle:@"PREVIEW" orImage:nil];
+	[self.navBar createRightButtonWithTitle:@"PREVIEW" orImage:nil];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }

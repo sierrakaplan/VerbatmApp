@@ -7,22 +7,30 @@
 //
 
 #import "AVETypeAnalyzer.h"
-#import "PinchView.h"
+
+#import "BaseArticleViewingExperience.h"
+
 #import "CollectionPinchView.h"
+
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppVideo.h"
+
 #import "ImagePinchView.h"
-#import "VideoPinchView.h"
-#import "VideoAVE.h"
-#import "TextAVE.h"
+
+
 #import "Page.h"
 #import "POVLoadManager.h"
 #import "PhotoVideoAVE.h"
-#import "BaseArticleViewingExperience.h"
+#import "PhotoAVE.h"
+#import "PinchView.h"
+#import <PromiseKit/PromiseKit.h>
+
+#import "TextAVE.h"
 
 #import "UtilityFunctions.h"
 
-#import <PromiseKit/PromiseKit.h>
+#import "VideoPinchView.h"
+#import "VideoAVE.h"
 
 @interface AVETypeAnalyzer()
 
@@ -139,10 +147,44 @@
 	} else if(pinchView.containsVideo) {
 		type = AVETypeVideo;
 	}
-    
-	BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:frame andText:@"" andPhotos:[pinchView getPhotosWithText] andVideos:[pinchView getVideosWithText] andAVEType:type];
-	[self.results addObject:textAndOtherMediaAVE];
+    switch (type) {
+        case AVETypePhoto: {
+            PhotoAVE * photoAve;
+            if([pinchView isKindOfClass:[CollectionPinchView class]]){
+                
+                photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:nil
+                                                          orPinchview:((CollectionPinchView *)pinchView).pinchedObjects
+                                             isSubViewOfPhotoVideoAve:NO];
+                
+            }else {
+                photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:nil
+                                                          orPinchview:[NSMutableArray arrayWithObject:pinchView]
+                                             isSubViewOfPhotoVideoAve:NO];
+            }
+            
+            [self.results addObject:photoAve];
+            
+            break;
+        }
+        case AVETypeVideo: {
+//            VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoArray:videos];
+//            [self addSubview: videoAve];
+//            self.subAVE = videoAve;
+            break;
+        }
+        case AVETypePhotoVideo: {
+//            PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos];
+//            [self addSubview: photoVideoAVE];
+//            self.subAVE = photoVideoAVE;
+            break;
+        }
+        default: {
+            break;
+        }
+    }
 }
+
+
 
 
 #pragma  mark - Lazy Instantiation

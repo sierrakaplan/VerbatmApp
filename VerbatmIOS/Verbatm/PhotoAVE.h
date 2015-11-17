@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "PinchView.h"
 @protocol PhotoAVEDelegate <NSObject>
 
 // Lets super class (with scroll view) know if the circle is currently dragging
@@ -23,7 +23,8 @@
 @property (nonatomic, strong) UITapGestureRecognizer * photoAveTapGesture;
 @property (weak, nonatomic) UIScrollView * povScrollView;//set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
 //photos are UIImage*
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos isSubViewOfPhotoVideoAve:(BOOL) isPVSubview;
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchview:(NSMutableArray *) pinchViewArray
+     isSubViewOfPhotoVideoAve:(BOOL) isPVSubview;
 -(void) showAndRemoveCircle;//be sure to set povScrollView
 
 @end

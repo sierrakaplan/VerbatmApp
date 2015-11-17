@@ -198,25 +198,18 @@
 	[self addTapGestureToMainView];
 }
 
--(void)displayImage: (UIImage *) image withFilterIndex:(NSInteger) index{
+-(void)displayImages: (NSMutableArray*) filteredImages atIndex:(NSInteger)index {
 	self.imageIndex = index;
 	
     
     self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-                                                            andImage:image
+                                                            andImage:filteredImages[index]
 															andText:@"" andTextYPosition:TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
-	[self addSubview: self.textAndImageView];
+	self.filteredImages = filteredImages;
+    [self addSubview: self.textAndImageView];
 	[self addTapGestureToMainView];
 	[self addPanGesture];
     
-    
-    
-    NSArray* filterNames = [UIImage getPhotoFilters];
-    self.filteredImages = [[NSMutableArray alloc] initWithCapacity:[filterNames count]+1];
-    //original photo
-    [self.filteredImages addObject:image];
-    [self createFilteredImagesFromImage:image andFilterNames:filterNames];
-
 }
 
 #pragma mark Filters
@@ -241,36 +234,6 @@
 	return self.imageIndex;
 }
 
-
-#pragma mark - Filters -
-
--(void) setFilteredPhotos {
-    }
-
-//return array of uiimage with filter from image
--(void)createFilteredImagesFromImage:(UIImage *)image andFilterNames:(NSArray*)filterNames{
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-        NSData  * imageData = UIImagePNGRepresentation(image);
-        //Background Thread
-        for (NSString* filterName in filterNames) {
-            NSLog(@"Adding filtered photo.");
-            @autoreleasepool {
-                CIImage *beginImage =  [CIImage imageWithData: imageData];
-                CIContext *context = [CIContext contextWithOptions:nil];
-                CIFilter *filter = [CIFilter filterWithName:filterName keysAndValues: kCIInputImageKey, beginImage, nil];
-                CIImage *outputImage = [filter outputImage];
-                CGImageRef CGImageRef = [context createCGImage:outputImage fromRect:[outputImage extent]];
-                UIImage* imageWithFilter = [UIImage imageWithCGImage:CGImageRef];
-                CGImageRelease(CGImageRef);
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.filteredImages addObject:imageWithFilter];
-                });
-            }
-        }
-    });
-}
-
 #pragma mark - Exit view
 
 -(void) addTapGestureToMainView {
@@ -291,7 +254,7 @@
     if(self.textAndImageView.textView.isFirstResponder){
         [self.textAndImageView.textView resignFirstResponder];
     } else {
-        [self.delegate exitEditContentView];
+        
     }
 }
 

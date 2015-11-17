@@ -1,25 +1,31 @@
-//
+ //
 //  PhotoAVE.m
 //  Verbatm
 //
 //  Created by Sierra Kaplan-Nelson on 7/23/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
+
 #import "BaseArticleViewingExperience.h"
+#import "CollectionPinchView.h"
 #import "Durations.h"
+
+#import "EditMediaContentView.h"
+
 #import "Icons.h"
+#import "ImagePinchView.h"
+
 #import "MathOperations.h"
+
 #import "PointObject.h"
 #import "PhotoAVE.h"
-#import "TextOverMediaView.h"
+
 #import "SizesAndPositions.h"
 #import "Styles.h"
-#import "Icons.h"
-#import "Durations.h"
-#import "PointObject.h"
-#import "MathOperations.h"
+
+#import "TextOverMediaView.h"
+
 #import "UIImage+ImageEffectsAndTransforms.h"
-#import "BaseArticleViewingExperience.h"
 
 
 @interface PhotoAVE() <UIGestureRecognizerDelegate>
@@ -52,14 +58,19 @@
 @implementation PhotoAVE
 
 //TODO: limit on how many photos can be pinched together?
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos isSubViewOfPhotoVideoAve:(BOOL) isPVSubview {
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchview:(NSMutableArray *) pinchViewArray
+     isSubViewOfPhotoVideoAve:(BOOL) isPVSubview {
+    
 	self = [super initWithFrame:frame];
 	if (self) {
-		if ([photos count]) {
+		
+        if(pinchViewArray){
+            [self addPinchViewContent:pinchViewArray];
+        }else if ([photos count]) {
             self.subviewOfPhotoVideoAVE = isPVSubview;
 			[self addPhotos:photos];
 		}
-		if ([photos count] > 1) {
+		if (([photos count] > 1) || ([pinchViewArray count] > 1)) {
 			[self createCircleViewAndPoints];
 			self.draggingFromPointIndex = -1;
 			self.currentPhotoIndex = 0;
@@ -70,8 +81,39 @@
 	return self;
 }
 
+
+
+
+
+
+
+
 #pragma mark - Sub Views -
 
+
+
+
+#pragma mark Pinch Views
+
+//photoTextArray is array containing subarrays of photo and text couples @[@[photo, text],...]
+-(void) addPinchViewContent:(NSMutableArray *)pinchViewArray{
+    for (ImagePinchView * iPv in pinchViewArray) {
+        EditMediaContentView * emcv = [[EditMediaContentView alloc] initWithFrame:self.bounds];
+        [emcv displayImages:[iPv filteredImages] atIndex:iPv.filterImageIndex];
+        if(iPv.text) [emcv setText:iPv.text andTextViewYPosition:[iPv.textYPosition floatValue]];
+        emcv.pinchView = iPv;
+        [self.imageContainerViews addObject:emcv];
+    }
+    
+    //adding subviews in reverse order so that imageview at index 0 on top
+    for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
+        [self addSubview:[self.imageContainerViews objectAtIndex:i]];
+    }
+}
+
+#pragma mark No PinchViews
+
+//photoTextArray is array containing subarrays of photo and text couples @[@[photo, text],...]
 -(void) addPhotos:(NSArray*)photosTextArray {
     
 	for (NSArray* photoText in photosTextArray) {
@@ -100,7 +142,7 @@
 	NSString* text = photoTextArray[1];
 	NSNumber* textYPosition = photoTextArray[2];
 
-	if(self.subviewOfPhotoVideoAVE){
+	if(self.subviewOfPhotoVideoAVE) {
 		textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
 	}
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
@@ -112,6 +154,13 @@
 	}
 	return textAndImageView;
 }
+
+
+
+
+
+#pragma mark -managing presentation of views-
+
 
 -(void) createCircleViewAndPoints {
 
@@ -187,7 +236,7 @@
 #pragma mark - Tap Gesture -
 
 -(void)addTapGestureToView:(UIView*)view {
-	self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:view action:@selector(mainViewTapped:)];
+    self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:view action:@selector(mainViewTapped:)];
 	[view addGestureRecognizer:self.photoAveTapGesture];
 }
 
@@ -326,6 +375,7 @@
 
 //checks if a text button should be presented depending on the current image presented
 -(void)checkTextButtonPresentation{
+    return;
     TextOverMediaView * view = self.imageContainerViews[self.currentPhotoIndex];
     if(view.textView.text && view.textView.text.length){
         [self createTextViewButton];

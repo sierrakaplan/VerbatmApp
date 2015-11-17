@@ -8,17 +8,16 @@
 
 #import <UIKit/UIKit.h>
 #import "VideoPlayerView.h"
-
+#import "PinchView.h"
 @protocol EditContentViewDelegate <NSObject>
-
 //Tells parent view controller that edit content view should exit
--(void) exitEditContentView;
 @end
 
 @interface EditMediaContentView : UIView
 
 @property (nonatomic, strong) id<EditContentViewDelegate> delegate;
 @property (nonatomic, strong) VideoPlayerView * videoView;
+@property (nonatomic, strong) PinchView * pinchView;
 
 -(void) displayVideo: (AVAsset*) videoAsset;
 

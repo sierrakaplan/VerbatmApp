@@ -90,8 +90,8 @@
 	NSMutableArray* aves = [analyzer getAVESFromPinchViews: pinchViews withFrame: self.viewingFrame];
 	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.viewingFrame andImage: coverPhoto andTitle:title];
 	[aves insertObject:coverAVE atIndex:0];
-	self.povView = [[POVView alloc] initWithFrame: CGRectMake(0.f, CUSTOM_NAV_BAR_HEIGHT,
-															  self.frame.size.width, self.frame.size.height - CUSTOM_NAV_BAR_HEIGHT)];
+	self.povView = [[POVView alloc] initWithFrame: CGRectMake(0.f, 0.f,
+															  self.frame.size.width, self.frame.size.height)];
 	[self.povView renderAVES: aves];
     [self.povView addDownArrowButton];
 	[self addSubview: self.povView];

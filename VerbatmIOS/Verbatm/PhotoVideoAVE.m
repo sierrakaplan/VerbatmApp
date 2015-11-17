@@ -42,7 +42,7 @@
 
     CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
     CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photosViewHeight);
-	self.photosView = [[PhotoAVE alloc] initWithFrame: photoListFrame andPhotoArray: photos  isSubViewOfPhotoVideoAve:YES];
+	self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchview:nil isSubViewOfPhotoVideoAve:YES];
 	self.videoView = [[VideoAVE alloc] initWithFrame:videoViewFrame andVideoArray: videos];
 
 	[self addSubview:self.videoView];
