@@ -19,6 +19,10 @@
 @property (nonatomic, strong) VideoPlayerView * videoView;
 @property (nonatomic, strong) PinchView * pinchView;
 
+//this should be set when the edit content view is created
+//it allows us to make the pan gestures interact
+@property (nonatomic, weak) UIScrollView * povViewMasterScrollView;
+
 -(void) displayVideo: (NSMutableArray *) videoAssetArray;
 
 //passes it an array of UIImages to display

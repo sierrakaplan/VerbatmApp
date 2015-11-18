@@ -25,7 +25,7 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UITextView+Utilities.h"
 
-@interface EditMediaContentView () <KeyboardToolBarDelegate, UITextViewDelegate>
+@interface EditMediaContentView () <KeyboardToolBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) TextOverMediaView * textAndImageView;
 
@@ -37,13 +37,20 @@
 @property (nonatomic) CGPoint  panStartLocation;
 @property (nonatomic) CGFloat horizontalPanDistance;
 @property (nonatomic) BOOL isHorizontalPan;
+
+@property (nonatomic) BOOL filterSwitched;//per pan gesture we check if we have switched the filter yet
+
+@property (nonatomic) BOOL gestureInAction; //lets us know if we're tracking the same gesture from beginning to end
+@property (nonatomic) BOOL gestureActionJustStarted; //lets us know if we're tracking the same gesture from beginning to end
+
 @property (nonatomic) NSInteger keyboardHeight;
 
 @property (nonatomic) CGRect userSetFrame;//keeps the frame the user set from panning so can revert after keyboard goes away
 
+
 #define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
 #define TOUCH_BUFFER 20
-
+#define DIAGONAL_THRESHOLD 600
 @end
 
 
@@ -268,6 +275,10 @@
 	panGesture.minimumNumberOfTouches = 1;
 	panGesture.maximumNumberOfTouches = 1;
     [self addGestureRecognizer:panGesture];
+    [self.povViewMasterScrollView.panGestureRecognizer requireGestureRecognizerToFail:panGesture];
+    self.povViewMasterScrollView.panGestureRecognizer.delegate = self;
+    panGesture.delegate = self;
+    
 }
 
 -(void) didPan:(UIGestureRecognizer *) sender{
@@ -278,26 +289,30 @@
                 if(self.textAndImageView.textView.isFirstResponder) {
 					[self.textAndImageView.textView resignFirstResponder];
 				}
+                self.gestureActionJustStarted = YES;
                 break;
             case UIGestureRecognizerStateChanged:{
 				if (sender.numberOfTouches < 1) return;
 				CGPoint location = [sender locationOfTouch:0 inView:self];
-				[self checkGestureDirection: location];
-                if(self.isHorizontalPan) {
+                if(self.gestureActionJustStarted){
+                    [self checkGestureDirection: location];
+                    self.gestureActionJustStarted = NO;
+                }
+                
+                if(self.isHorizontalPan && !self.filterSwitched ) {
 					float horizontalDiff = location.x - self.panStartLocation.x;
 					self.horizontalPanDistance += horizontalDiff;
-                    //has the horizontal pan gone long enough for a "swipe" to change filter
-                    if(fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE){
+                    //checks if the horizontal pan gone long enough for a "swipe" to change filter
+                    if((fabs(self.horizontalPanDistance) >= HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE)){
                         if(self.horizontalPanDistance < 0){
                             [self changeFilteredImageLeft];
                         }else{
                             [self changeFilteredImageRight];
                         }
-						// Cancel the rest of gesture
-                        sender.enabled = NO;
-                        sender.enabled = YES;
+                        self.filterSwitched = YES;
                     }
-                } else {
+                    
+                } else if(!self.isHorizontalPan) {
 					float verticalDiff = location.y - self.panStartLocation.y;
                     if([self touchInTextViewBounds: location]){
                         if([self textViewTranslationInBounds: verticalDiff]){
@@ -314,17 +329,35 @@
             case UIGestureRecognizerStateCancelled:
             case UIGestureRecognizerStateEnded: {
 				self.horizontalPanDistance = 0.f;
-				break;
+                self.isHorizontalPan = NO;
+                self.filterSwitched = NO;
+                break;
 			}
             default:
                 break;
         }
 }
 
+
+#pragma mark - Gesture Recognizer Delegate methods -
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return !self.isHorizontalPan;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer
+shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    if (gestureRecognizer == self.povViewMasterScrollView.panGestureRecognizer){
+        return YES;
+    }
+    return NO;
+}
+
+
 // set if gesture is horizontal or not (vertical)
 -(void) checkGestureDirection: (CGPoint) location {
 	self.isHorizontalPan = ((fabs(location.y - self.panStartLocation.y) < fabs(location.x - self.panStartLocation.x))
-							&& fabs(location.y - self.panStartLocation.y) <= 9); //prevent diagonal swipes
+							&& fabs(location.y - self.panStartLocation.y) <= DIAGONAL_THRESHOLD); //prevent diagonal swipes
 }
 
 // check if the text view move is legal (within bounds)

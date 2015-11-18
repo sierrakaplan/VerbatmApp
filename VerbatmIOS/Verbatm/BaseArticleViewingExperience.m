@@ -38,7 +38,6 @@
 
 //stores the previous point in a pulldown gesture
 @property (nonatomic) CGPoint lastPoint;
-
 @end
 
 
@@ -47,7 +46,6 @@
 /*we pass in the text for the text view and also the AVE type.
  */
 -(instancetype)initWithFrame:(CGRect)frame andText:(NSString*)text andPhotos: (NSArray *)photos andVideos: (NSArray *)videos andAVEType:(AVEType)aveType {
-
     self = [super initWithFrame:frame];
     if(self) {
 		switch (aveType) {
@@ -58,13 +56,13 @@
 				break;
 			}
 			case AVETypeVideo: {
-                VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame pinchView:nil orVideoArray:videos];
+                VideoAVE * videoAve = [[VideoAVE alloc] initWithFrame:frame pinchView:nil orVideoArray:videos];
 				[self addSubview: videoAve];
 				self.subAVE = videoAve;
 				break;
 			}
 			case AVETypePhotoVideo: {
-                PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos orCollectionView:nil];
+                PhotoVideoAVE * photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:photos andVideos:videos orCollectionView:nil];
 				[self addSubview: photoVideoAVE];
 				self.subAVE = photoVideoAVE;
 				break;
@@ -73,7 +71,8 @@
 				break;
 			}
 		}
-		if (text && [text length]) {
+		
+        if (text && [text length]) {
 			[self setUpTextViewWithText:text];
 		}
     }

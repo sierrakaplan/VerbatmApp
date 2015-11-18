@@ -102,6 +102,7 @@
         [emcv displayImages:[iPv filteredImages] atIndex:iPv.filterImageIndex];
         if(iPv.text) [emcv setText:iPv.text andTextViewYPosition:[iPv.textYPosition floatValue]];
         emcv.pinchView = iPv;
+        emcv.povViewMasterScrollView = self.povScrollView;
         [self.imageContainerViews addObject:emcv];
     }
     
