@@ -368,7 +368,7 @@
     for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
         [self addSubview:[self.imageContainerViews objectAtIndex:i]];
     }
-    [self prepareCirclePan];
+    if(self.imageContainerViews.count > 1)[self prepareCirclePan];
 }
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {

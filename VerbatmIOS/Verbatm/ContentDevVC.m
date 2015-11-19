@@ -135,6 +135,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
 @property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
 
+
+//note when previewing
+@property (nonatomic) BOOL currentlyPreviewingContent;
+
 #pragma mark - Preview -
 
 @property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
@@ -210,8 +214,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
-	[self.navBar createMiddleButtonWithTitle:@"SAVE DRAFT" orImage:nil];
-	[self.navBar createRightButtonWithTitle:@"PREVIEW" orImage:nil];
+	[self.navBar createRightButtonWithTitle:@"SAVE DRAFT" orImage:nil];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }
@@ -364,12 +367,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark Save Draft Button
 -(void) middleButtonPressed {
-	// TODO: save draft
+	
 }
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-    //not in use
+    // TODO: save draft
 }
 
 #pragma mark - Configure Text Fields -
@@ -1554,7 +1557,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) pinchObjectTapped:(UITapGestureRecognizer *) sender {
 	//only accept touches from pinch objects
-	if(![sender.view isKindOfClass:[PinchView class]]) {
+	if(![sender.view isKindOfClass:[PinchView class]] || self.currentlyPreviewingContent) {
 		return;
 	}
     
@@ -1562,6 +1565,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     if(view)[self presentPreviewAtIndex:[self.pageElementScrollViews indexOfObject:view]];
 }
 
+//protocol for preview view
+-(void) aboutToShowPreview{
+    self.currentlyPreviewingContent = YES;
+}
+-(void) aboutToRemovePreview{
+    self.currentlyPreviewingContent = NO;
+}
 
 -(void)presentPreviewAtIndex:(NSInteger ) index{
     NSArray *pinchViews = [self getPinchViews];

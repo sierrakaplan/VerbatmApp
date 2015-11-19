@@ -63,7 +63,6 @@
 
 
 -(void)moveViewTopPageIndex:(NSInteger) pageIndex{
-    
     if(pageIndex < self.pageAves.count){
         self.mainScrollView.contentOffset = CGPointMake(0, self.mainScrollView.frame.size.height * (pageIndex+1));//+1 for the cover photo
         

@@ -124,22 +124,15 @@
 // else remove scrollview
 -(void) revealPreview: (BOOL) show {
 	if(show)  {
-		[UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
+        [self.delegate aboutToShowPreview];
 			self.frame = self.viewingFrame;
-		} completion:^(BOOL finished) {
-			[self.povView displayMediaOnCurrentAVE];
-		}];
 	}else {
-		[UIView animateWithDuration:PUBLISH_ANIMATION_DURATION animations:^{
-			self.frame = self.restingFrame;
-		}completion:^(BOOL finished) {
-			if(finished) {
-				[self.povView clearArticle];
-				[self.povView removeFromSuperview];
-				self.povView = nil;
-				[self.publishButton removeFromSuperview];
-			}
-		}];
+        [self.delegate aboutToRemovePreview];
+        self.frame = self.restingFrame;
+        [self.povView clearArticle];
+        [self.povView removeFromSuperview];
+        self.povView = nil;
+        [self.publishButton removeFromSuperview];
 	}
 }
 

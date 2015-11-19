@@ -14,7 +14,8 @@
 @protocol PreviewDisplayDelegate <NSObject>
 
 -(void) publishWithTitle: (NSString*)title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews;
-
+-(void) aboutToShowPreview;
+-(void) aboutToRemovePreview;
 @end
 
 @interface PreviewDisplayView : UIView
