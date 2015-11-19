@@ -26,6 +26,7 @@
 //it allows us to make the pan gestures interact
 @property (nonatomic, weak) UIScrollView * povViewMasterScrollView;
 
+//only loads the video onto the screen. You must call onScreen for the video to play
 -(void) displayVideo: (NSMutableArray *) videoAssetArray;
 
 //passes it an array of UIImages to display
@@ -47,7 +48,7 @@
 -(void)exitingECV;
 
 
--(void)offScreen;
--(void)onScreen;
--(void)almostOnScreen;
+-(void)offScreen;//removes video 
+-(void)onScreen;//plays video
+-(void)almostOnScreen;//stages video
 @end

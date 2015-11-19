@@ -95,6 +95,7 @@
     [self.povView addDownArrowButton];
 	[self addSubview: self.povView];
 	[self addNavigationBar];
+    [self.povView moveViewTopPageIndex:index];
 	[self revealPreview:YES];
 }
 

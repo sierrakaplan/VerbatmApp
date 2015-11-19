@@ -127,8 +127,9 @@
         [assetArray addObject:videoPinchView.video];
     }
     
-    [self.ourEMCV displayVideo:assetArray];
-    
+    [self.ourEMCV displayVideo:assetArray];//this sets the assets
+    [self.ourEMCV almostOnScreen];//prepares screen
+    [self.ourEMCV onScreen];//makes it play now
     if([self.ourEMCV.pinchView isKindOfClass:[CollectionPinchView class]]){
         [((CollectionPinchView *)self.ourEMCV.pinchView) replaceVideoPinchViesWithNewVPVs:pvArray];
     }
