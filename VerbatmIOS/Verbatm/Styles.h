@@ -94,7 +94,7 @@
 
 #pragma mark - AVES -
 
-#define AVE_BACKGROUND_COLOR whiteColor
+#define AVE_BACKGROUND_COLOR blackColor
 
 #pragma mark Text
 

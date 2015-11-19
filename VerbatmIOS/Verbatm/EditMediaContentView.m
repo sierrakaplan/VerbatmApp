@@ -38,6 +38,9 @@
 @property (nonatomic, strong) UIButton * textCreationButton;
 
 @property (nonatomic) CGPoint  panStartLocation;
+
+@property (nonatomic) CGPoint  textViewPanStartLocation;
+
 @property (nonatomic) CGFloat horizontalPanDistance;
 @property (nonatomic) BOOL isHorizontalPan;
 
@@ -97,7 +100,7 @@
     [self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.textCreationButton];
     [self bringSubviewToFront:self.textCreationButton];
-	[self addLongPress];
+	//[self addLongPress];
 }
 
 // long press does the same thing as text button
@@ -241,7 +244,8 @@
 		self.imageIndex = -1;
 	}
 	self.imageIndex = self.imageIndex+1;
-	[self.textAndImageView.imageView setImage:self.filteredImages[self.imageIndex]];
+	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
+    
     [self updatePinchView];
 
 }
@@ -251,7 +255,7 @@
 		self.imageIndex = [self.filteredImages count];
 	}
 	self.imageIndex = self.imageIndex-1;
-	[self.textAndImageView.imageView setImage:self.filteredImages[self.imageIndex]];
+	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
     [self updatePinchView];
 
 }
@@ -316,6 +320,10 @@
     self.povViewMasterScrollView.panGestureRecognizer.delegate = self;
     panGesture.delegate = self;
     
+    UIPanGestureRecognizer * textViewpanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
+    textViewpanGesture.minimumNumberOfTouches = 1;
+    textViewpanGesture.maximumNumberOfTouches = 1;
+    [self.textAndImageView.textView addGestureRecognizer:textViewpanGesture];
 }
 
 -(void) didPan:(UIGestureRecognizer *) sender{
@@ -374,6 +382,44 @@
                 break;
         }
 }
+
+
+
+-(void) didPanTextView:(UIGestureRecognizer *) sender{
+    switch (sender.state) {
+        case UIGestureRecognizerStateBegan:
+            
+            if (sender.numberOfTouches < 1) return;
+            self.textViewPanStartLocation = [sender locationOfTouch:0 inView:self];
+            self.gestureActionJustStarted = YES;
+            
+                        break;
+        case UIGestureRecognizerStateChanged:{
+            CGPoint location = [sender locationOfTouch:0 inView:self];
+            float verticalDiff = location.y - self.textViewPanStartLocation.y;
+            
+            if([self touchInTextViewBounds: location]){
+                if([self textViewTranslationInBounds: verticalDiff]){
+                    self.textAndImageView.textView.frame = CGRectOffset(self.textAndImageView.textView.frame, 0, verticalDiff);
+                }
+            } else{
+                sender.enabled = NO;
+                sender.enabled = YES;
+            }
+            
+            break;
+        }
+        case UIGestureRecognizerStateCancelled:
+        case UIGestureRecognizerStateEnded: {
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+
+
 
 
 #pragma mark - Gesture Recognizer Delegate methods -

@@ -57,8 +57,8 @@
 		[self formatScrollView];
 		if(element)[self changePageElement:element];
         if([element isKindOfClass:[PinchView class]])[self createDeleteButton];
-        
-	}
+    }
+    
 	return self;
 }
 
@@ -188,13 +188,13 @@
     if(pinchViews.count){
         
         self.pinchViewStartSize = [(PinchView*)pinchViews[0] radius]*2.f;
-        float pinchViewSize = [(PinchView*)pinchViews[0] radius]*1.5;
-        float yPosition = self.center.y - (pinchViewSize/2.f);
-        float xPosition = ELEMENT_Y_OFFSET_DISTANCE;
+        CGFloat pinchViewSize = [(PinchView*)pinchViews[0] radius]*1.5;
+        CGFloat yPosition = (self.frame.size.height/2.f) - (pinchViewSize/2.f);
+        CGFloat xPosition = ELEMENT_Y_OFFSET_DISTANCE;
         for(PinchView* pinchView in pinchViews) {
             CGRect newFrame = CGRectMake(xPosition, yPosition, pinchViewSize, pinchViewSize);
+            //[pinchView changeWidthTo:pinchViewSize];
             [pinchView specifyFrame:newFrame];
-            [pinchView changeWidthTo:pinchViewSize];
             [self addSubview:pinchView];
             xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
             [pinchView renderMedia];
