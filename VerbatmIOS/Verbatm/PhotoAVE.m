@@ -320,14 +320,13 @@
         self.rearrangeView.delegate = self;
         [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
     }else{
-        [self.rearrangeView removeFromSuperview];
         [self.rearrangeView exitRearrangeView];
-        self.rearrangeView = nil;
     }
 }
 
 
 -(void)exitPVWithFinalArray:(NSMutableArray *) pvArray{
+    
     
     [self resortContainerViewsBasedOnArray:pvArray];
     [self layoutContainerViews];
@@ -339,7 +338,10 @@
         [((CollectionPinchView *)self.currentCPV) renderMedia];
     }
     
-    
+    if(self.rearrangeView){
+        [self.rearrangeView removeFromSuperview];
+        self.rearrangeView = nil;
+    }
 }
 
 //we are given a new sorting for our edit content views. We delete them and recreate new ones

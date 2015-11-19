@@ -88,7 +88,6 @@
 -(void) exitRearrangeView{
     NSMutableArray * finalArray = [self.scrollView closeCollection];
     [self.delegate exitPVWithFinalArray:finalArray];
-
 }
 
 

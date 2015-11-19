@@ -113,9 +113,7 @@
         [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
 
     }else{
-        [self.rearrangeView removeFromSuperview];
         [self.rearrangeView exitRearrangeView];
-        self.rearrangeView = nil;
     }
 
 }
@@ -132,6 +130,11 @@
     [self.ourEMCV onScreen];//makes it play now
     if([self.ourEMCV.pinchView isKindOfClass:[CollectionPinchView class]]){
         [((CollectionPinchView *)self.ourEMCV.pinchView) replaceVideoPinchViesWithNewVPVs:pvArray];
+    }
+    
+    if(self.rearrangeView){
+        [self.rearrangeView removeFromSuperview];
+        self.rearrangeView = nil;
     }
 }
 

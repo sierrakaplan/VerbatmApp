@@ -1120,12 +1120,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
    CollectionPinchView * collectionPv = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
     PinchView * toRemove = [collectionPv.pinchedObjects lastObject];
     CollectionPinchView * newCollectionPv = [collectionPv unPinchAndRemove:toRemove];
-    
+    toRemove.frame = newCollectionPv.frame;//this is to make sure the pinchview hasn't lost it's position in reordering
     [self addTapGestureToPinchView:toRemove];
     NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView] + 1;
     
     if(newCollectionPv.pinchedObjects.count == 1){
         PinchView * newpv =  [collectionPv.pinchedObjects lastObject];
+        newpv.frame = toRemove.frame;
         [[UserPovInProgress sharedInstance] removePinchView:[newCollectionPv unPinchAndRemove:newpv] andReplaceWithPinchView:newpv];
         [self.upperPinchScrollView changePageElement:newpv];
     }else{

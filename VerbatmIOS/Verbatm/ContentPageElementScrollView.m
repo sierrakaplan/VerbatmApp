@@ -23,6 +23,7 @@
 @property (nonatomic) CGPoint initialContentOffset;
 @property (nonatomic) CGSize initialContentSize;
 @property (strong, nonatomic, readwrite) UIView<ContentDevElementDelegate>* pageElement;
+@property (nonatomic) CGRect pageElementOriginalFrame;
 
 //if page element is a CollectionPinchView
 @property (nonatomic, readwrite) BOOL isCollection;
@@ -39,6 +40,7 @@
 @property (nonatomic) CGRect previousFrameInLongPress;
 
 @property (nonatomic) CGPoint panTouchLocation;
+
 
 #define MEDIA_SELECT_TILE_DELETE_BUTTON_OFFSET 7
 #define ANIMATE_TO_DELETE_MODE_OR_BACK_DURATION 0.1f
@@ -85,6 +87,8 @@
 //puts the pinch view right in the middle
 -(void)centerView{
     self.contentOffset = self.initialContentOffset;
+    self.pageElement.frame = self.pageElementOriginalFrame;
+    self.deleteButton.frame = self.deleteButtonFrame;
 }
 
 #pragma mark - Change Page Element -
@@ -132,6 +136,7 @@
 		[self.pageElement removeFromSuperview];
 	}
 	self.pageElement = newPageElement;
+    self.pageElementOriginalFrame = self.pageElement.frame;
 	if ([self.pageElement isKindOfClass:[CollectionPinchView class]]) {
 		self.isCollection = YES;
 	} else {
