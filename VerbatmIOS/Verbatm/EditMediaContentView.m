@@ -160,7 +160,7 @@
     self.userSetFrame = textView.frame;
     if((textView.frame.origin.y + textView.frame.size.height) > (self.frame.size.height - self.keyboardHeight - TEXT_TOOLBAR_HEIGHT)){
         [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-            self.textAndImageView.textView.frame = CGRectMake(0,TEXT_TOOLBAR_HEIGHT,
+            self.textAndImageView.textView.frame = CGRectMake(0,TEXT_VIEW_OVER_MEDIA_Y_OFFSET,
 											 self.textAndImageView.textView.frame.size.width,
                                              self.textAndImageView.textView.frame.size.height);
         }];
@@ -168,11 +168,11 @@
 }
 
 -(void)textViewDidEndEditing:(UITextView *)textView{
-	if(self.textAndImageView.textView.frame.origin.y != self.userSetFrame.origin.y){
-		[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-			self.textAndImageView.textView.frame = self.userSetFrame;
-		}];
-	}
+//	if(self.textAndImageView.textView.frame.origin.y != self.userSetFrame.origin.y){
+//		[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
+//			self.textAndImageView.textView.frame = self.userSetFrame;
+//		}];
+//	}
 }
 
 // enforce word limit
@@ -291,8 +291,8 @@
     
     if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
         ((SingleMediaAndTextPinchView *)self.pinchView).text = self.textAndImageView.textView.text;
-        ((SingleMediaAndTextPinchView *)self.pinchView).textYPosition = [NSNumber numberWithFloat:self.textAndImageView.frame.origin.y];        ((SingleMediaAndTextPinchView *)self.pinchView).text = self.textAndImageView.textView.text;
-
+        NSNumber * yoffset = [NSNumber numberWithFloat:self.textAndImageView.textView.frame.origin.y];
+        ((SingleMediaAndTextPinchView *)self.pinchView).textYPosition = yoffset;
     }
     
 }
