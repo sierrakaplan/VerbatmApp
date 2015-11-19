@@ -390,23 +390,19 @@
         case UIGestureRecognizerStateBegan:
             
             if (sender.numberOfTouches < 1) return;
-            self.textViewPanStartLocation = [sender locationOfTouch:0 inView:self];
+            self.textViewPanStartLocation = [sender locationOfTouch:0 inView:self.textAndImageView];
             self.gestureActionJustStarted = YES;
             
-                        break;
+            break;
+            
         case UIGestureRecognizerStateChanged:{
-            CGPoint location = [sender locationOfTouch:0 inView:self];
-            float verticalDiff = location.y - self.textViewPanStartLocation.y;
+            CGPoint location = [sender locationOfTouch:0 inView:self.textAndImageView];
+            CGFloat verticalDiff = location.y - self.textViewPanStartLocation.y;
             
-            if([self touchInTextViewBounds: location]){
-                if([self textViewTranslationInBounds: verticalDiff]){
-                    self.textAndImageView.textView.frame = CGRectOffset(self.textAndImageView.textView.frame, 0, verticalDiff);
-                }
-            } else{
-                sender.enabled = NO;
-                sender.enabled = YES;
+            if([self textViewTranslationInBounds:verticalDiff]){
+                self.textAndImageView.textView.frame = CGRectOffset(self.textAndImageView.textView.frame, 0, verticalDiff);
             }
-            
+            self.textViewPanStartLocation = location;
             break;
         }
         case UIGestureRecognizerStateCancelled:
@@ -444,7 +440,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 }
 
 // check if the text view move is legal (within bounds)
--(BOOL)textViewTranslationInBounds:(float) diff{
+-(BOOL)textViewTranslationInBounds:(CGFloat) diff{
     return ((self.textAndImageView.textView.frame.origin.y + diff) > 0.f) &&
             ((self.textAndImageView.textView.frame.origin.y + self.textAndImageView.textView.frame.size.height + diff) <
             self.frame.size.height);
