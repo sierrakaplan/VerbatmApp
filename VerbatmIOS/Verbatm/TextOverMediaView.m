@@ -29,10 +29,12 @@
 		[self.imageView setImage: image];
         [self setImageViewWithImage:image];
         [self addSubview:self.imageView];
-        [self.textView setText: text];
-        [self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
-                                                textYPosition, self.textView.frame.size.width,
-                                                self.textView.frame.size.height)];
+        if(text.length){
+            [self.textView setText: text];
+            [self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
+                                                    textYPosition, self.textView.frame.size.width,
+                                                    self.textView.frame.size.height)];
+        }
         
 		[self resizeTextView];
 	}

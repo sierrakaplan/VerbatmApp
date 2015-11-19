@@ -125,7 +125,7 @@
     for (ImagePinchView * imagePinchView in pinchViewArray) {
         EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
         [editMediaContentView displayImages:[imagePinchView filteredImages] atIndex:imagePinchView.filterImageIndex];
-        if(imagePinchView.text) [editMediaContentView setText:imagePinchView.text andTextViewYPosition:[imagePinchView.textYPosition floatValue]];
+        if(imagePinchView.text && imagePinchView.text.length) [editMediaContentView setText:imagePinchView.text andTextViewYPosition:[imagePinchView.textYPosition floatValue]];
         editMediaContentView.pinchView = imagePinchView;
         editMediaContentView.povViewMasterScrollView = self.povScrollView;
         editMediaContentView.delegate = self;

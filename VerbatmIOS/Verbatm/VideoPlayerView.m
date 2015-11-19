@@ -48,7 +48,7 @@
 - (void)layoutSubviews {
 	if (self.playerLayer) {
 		self.playerLayer.frame = self.bounds;
-        self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET, MUTE_BUTTON_OFFSET, MUTE_BUTTON_SIZE, MUTE_BUTTON_SIZE);
+        self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET, self.frame.size.height -  (MUTE_BUTTON_OFFSET + MUTE_BUTTON_SIZE), MUTE_BUTTON_SIZE, MUTE_BUTTON_SIZE);
 	}
 }
 
