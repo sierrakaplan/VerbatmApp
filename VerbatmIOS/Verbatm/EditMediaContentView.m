@@ -16,6 +16,7 @@
 #import "Notifications.h"
 
 #import "SizesAndPositions.h"
+#import "SingleMediaAndTextPinchView.h"
 #import "StringsAndAppConstants.h"
 #import "Styles.h"
 
@@ -287,6 +288,13 @@
 -(void)exitingECV{
     [self updatePinchView];
     if(self.videoView)[self.videoView stopVideo];
+    
+    if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
+        ((SingleMediaAndTextPinchView *)self.pinchView).text = self.textAndImageView.textView.text;
+        ((SingleMediaAndTextPinchView *)self.pinchView).textYPosition = [NSNumber numberWithFloat:self.textAndImageView.frame.origin.y];        ((SingleMediaAndTextPinchView *)self.pinchView).text = self.textAndImageView.textView.text;
+
+    }
+    
 }
 
 //updates the content in the pinchview after things are changed
