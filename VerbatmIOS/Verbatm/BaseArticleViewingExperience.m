@@ -50,7 +50,7 @@
     if(self) {
 		switch (aveType) {
 			case AVETypePhoto: {
-                PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:photos orPinchviewArray:nil isSubViewOfPhotoVideoAve:NO];
+                PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:photos orPinchview:nil isSubViewOfPhotoVideoAve:NO];
                 [self addSubview: photoAve];
 				self.subAVE = photoAve;
 				break;

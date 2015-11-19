@@ -20,6 +20,8 @@
 #import "PointObject.h"
 #import "PhotoAVE.h"
 
+#import "RearrangePV.h"
+
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
@@ -28,7 +30,7 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 
 
-@interface PhotoAVE() <UIGestureRecognizerDelegate>
+@interface PhotoAVE() <UIGestureRecognizerDelegate, RearrangePVDelegate>
 
 @property (nonatomic) CGPoint originPoint;
 //contains PointObjects showing dots on circle
@@ -52,29 +54,33 @@
 
 @property (nonatomic) BOOL subviewOfPhotoVideoAVE;
 
+@property (nonatomic, strong) UIButton * rearrangeButton;
+@property (nonatomic) RearrangePV * rearrangeView;
+
+@property (nonatomic)PinchView * currentCPV;
 #define TEXT_VIEW_HEIGHT 70.f
 @end
 
 @implementation PhotoAVE
 
 //TODO: limit on how many photos can be pinched together?
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchviewArray:(NSMutableArray *) pinchViewArray
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchview:(PinchView *) pinchView
      isSubViewOfPhotoVideoAve:(BOOL) isPVSubview {
     
 	self = [super initWithFrame:frame];
 	if (self) {
-		
-        if(pinchViewArray){
-            [self addPinchViewContent:pinchViewArray];
+        if(pinchView){
+            self.currentCPV = pinchView;
+            if([pinchView isKindOfClass:[CollectionPinchView class]]){
+                [self addPinchViewContent:[(CollectionPinchView *)self.currentCPV getImagePinchViews]];
+            }else{
+                [self addPinchViewContent:[NSMutableArray arrayWithObject:pinchView]];//pv is an imagepv
+            }
+            
+            
         }else if ([photos count]) {
             self.subviewOfPhotoVideoAVE = isPVSubview;
 			[self addPhotos:photos];
-		}
-		if (([photos count] > 1) || ([pinchViewArray count] > 1)) {
-			[self createCircleViewAndPoints];
-			self.draggingFromPointIndex = -1;
-			self.currentPhotoIndex = 0;
-			[self highlightDot];
 		}
 		[self addTapGestureToView:self];
 	}
@@ -82,7 +88,23 @@
 }
 
 
-
+-(void)prepareCirclePan{
+    
+    if(self.dotViewsOnCircle.count){
+        for(UIView * view in self.dotViewsOnCircle){
+            [view removeFromSuperview];
+        }
+        self.pointsOnCircle = nil;
+        self.dotViewsOnCircle = nil;
+    }
+    
+    
+    
+    [self createCircleViewAndPoints];
+    self.draggingFromPointIndex = -1;
+    self.currentPhotoIndex = 0;
+    [self highlightDot];
+}
 
 
 
@@ -97,18 +119,18 @@
 
 //photoTextArray is array containing subarrays of photo and text couples @[@[photo, text],...]
 -(void) addPinchViewContent:(NSMutableArray *)pinchViewArray{
-    for (ImagePinchView * iPv in pinchViewArray) {
-        EditMediaContentView * emcv = [[EditMediaContentView alloc] initWithFrame:self.bounds];
-        [emcv displayImages:[iPv filteredImages] atIndex:iPv.filterImageIndex];
-        if(iPv.text) [emcv setText:iPv.text andTextViewYPosition:[iPv.textYPosition floatValue]];
-        emcv.pinchView = iPv;
-        emcv.povViewMasterScrollView = self.povScrollView;
-        [self.imageContainerViews addObject:emcv];
+    for (ImagePinchView * imagePinchView in pinchViewArray) {
+        EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
+        [editMediaContentView displayImages:[imagePinchView filteredImages] atIndex:imagePinchView.filterImageIndex];
+        if(imagePinchView.text) [editMediaContentView setText:imagePinchView.text andTextViewYPosition:[imagePinchView.textYPosition floatValue]];
+        editMediaContentView.pinchView = imagePinchView;
+        editMediaContentView.povViewMasterScrollView = self.povScrollView;
+        [self.imageContainerViews addObject:editMediaContentView];
     }
-    
-    //adding subviews in reverse order so that imageview at index 0 on top
-    for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
-        [self addSubview:[self.imageContainerViews objectAtIndex:i]];
+    [self layoutContainerViews];
+    if(pinchViewArray.count > 1){
+        
+        [self createRearrangeButton];
     }
 }
 
@@ -164,7 +186,6 @@
 
 
 -(void) createCircleViewAndPoints {
-
 	NSUInteger numCircles = [self.imageContainerViews count];
 	for (int i = 0; i < numCircles; i++) {
 		PointObject *point = [MathOperations getPointFromCircleRadius: CIRCLE_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
@@ -174,6 +195,12 @@
 		[self.pointsOnCircle addObject:point];
 		[self createDotViewFromPoint:point];
 	}
+    
+    if(self.circleView){
+        [self.circleView removeFromSuperview];
+        self.circleView = nil;
+    }
+    
 	[self createMainCircleView];
 }
 
@@ -267,6 +294,82 @@
 	return NO;
 }
 
+
+#pragma mark -Add button-
+
+-(void)createRearrangeButton {
+    [self.rearrangeButton setImage:[UIImage imageNamed:CREATE_REARRANGE_ICON] forState:UIControlStateNormal];
+    self.rearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.rearrangeButton addTarget:self action:@selector(rearrangeContentSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.rearrangeButton];
+    [self bringSubviewToFront:self.rearrangeButton];
+}
+
+
+-(void)rearrangeContentSelected {
+    
+    if(!self.rearrangeView){
+        NSMutableArray * pinchViewArray;
+        
+         if([self.currentCPV isKindOfClass:[CollectionPinchView class]]){
+             pinchViewArray = [(CollectionPinchView *)self.currentCPV getImagePinchViews];
+         }else{//is an imagepinchview
+             pinchViewArray = [NSMutableArray arrayWithObject:self.currentCPV];
+         }
+        self.rearrangeView = [[RearrangePV alloc] initWithFrame:self.bounds andPinchViewArray:pinchViewArray];
+        self.rearrangeView.delegate = self;
+        [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
+    }else{
+        [self.rearrangeView removeFromSuperview];
+        [self.rearrangeView exitRearrangeView];
+        self.rearrangeView = nil;
+    }
+}
+
+
+-(void)exitPVWithFinalArray:(NSMutableArray *) pvArray{
+    
+    [self resortContainerViewsBasedOnArray:pvArray];
+    [self layoutContainerViews];
+    [self createRearrangeButton];
+    
+    if([self.currentCPV isKindOfClass:[CollectionPinchView class]]){
+        [((CollectionPinchView *)self.currentCPV) replaceImagePinchViesWithNewVPVs:pvArray];
+        [((CollectionPinchView *)self.currentCPV) updateMedia];
+        [((CollectionPinchView *)self.currentCPV) renderMedia];
+    }
+    
+    
+}
+
+//we are given a new sorting for our edit content views. We delete them and recreate new ones
+-(void)resortContainerViewsBasedOnArray:(NSMutableArray *) pvArray{
+
+    //remove edit content views from our view
+    for (EditMediaContentView * editMediaContentView in self.subviews) {
+        [editMediaContentView removeFromSuperview];
+    }
+    
+    self.imageContainerViews = [NSMutableArray arrayWithArray:[self.imageContainerViews sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        
+        PinchView * pinchViewObj1 = ((EditMediaContentView *)obj1).pinchView;
+        PinchView * pinchViewObj2 = ((EditMediaContentView *)obj2).pinchView;
+
+            CGFloat obj1PvIndex = [pvArray indexOfObject:pinchViewObj1];
+            CGFloat obj2PvIndex = [pvArray indexOfObject:pinchViewObj2];
+            if(obj1PvIndex > obj2PvIndex) return NSOrderedDescending;
+            else return NSOrderedAscending;
+    }]];
+    
+}
+
+-(void)layoutContainerViews{
+    //adding subviews in reverse order so that imageview at index 0 on top
+    for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
+        [self addSubview:[self.imageContainerViews objectAtIndex:i]];
+    }
+    [self prepareCirclePan];
+}
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {
 	NSInteger indexOfPoint = [self getPointIndexFromLocation:touchLocation];
@@ -392,7 +495,6 @@
     if(self.povScrollView && self.circlePanGesture){
         [self.povScrollView.panGestureRecognizer requireGestureRecognizerToFail: self.circlePanGesture];
     }
-    
 }
 
 -(void) displayCircle:(BOOL)display {
@@ -476,6 +578,16 @@
 	return YES;
 }
 
+
+-(void)offScreen{
+    for (UIView * view in self.imageContainerViews) {
+        if([view isKindOfClass:[EditMediaContentView class]]){
+            [((EditMediaContentView *)view)exitingECV];
+        }
+    }
+}
+
+
 #pragma mark - Lazy Instantiation
 
 
@@ -522,12 +634,24 @@
     if(!_textViewButton){
         _textViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
                                                                          EXIT_CV_BUTTON_WIDTH,
-                                                                         self.frame.size.height - EXIT_CV_BUTTON_WIDTH -
+                                                                         self.frame.size.height - EXIT_CV_BUTTON_HEIGHT -
                                                                          EXIT_CV_BUTTON_WALL_OFFSET,
                                                                          EXIT_CV_BUTTON_WIDTH,
-                                                                         EXIT_CV_BUTTON_WIDTH)];
+                                                                         EXIT_CV_BUTTON_HEIGHT)];
     }
     return _textViewButton;
+}
+
+-(UIButton *)rearrangeButton {
+    if(!_rearrangeButton){
+        _rearrangeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
+                                                                     EXIT_CV_BUTTON_WIDTH,
+                                                                     self.frame.size.height - (EXIT_CV_BUTTON_HEIGHT*2) -
+                                                                     (EXIT_CV_BUTTON_WALL_OFFSET*3),
+                                                                     EXIT_CV_BUTTON_WIDTH,
+                                                                     EXIT_CV_BUTTON_HEIGHT)];
+    }
+    return _rearrangeButton;
 }
 
 

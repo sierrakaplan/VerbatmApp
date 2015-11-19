@@ -8,7 +8,7 @@
 
 #import "POVView.h"
 #import "Analytics.h"
-
+#import "CoverPhotoAVE.h"
 #import "BaseArticleViewingExperience.h"
 #import "Icons.h"
 #import "PhotoVideoAVE.h"
@@ -203,10 +203,8 @@
 -(void) stopVideosInAVE:(UIView*) ave {
     if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
         [self stopVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave offScreen];
-    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [(PhotoVideoAVE*)ave offScreen];
+    }else{
+        if(![ave isKindOfClass:[CoverPhotoAVE class]])[(VideoAVE *)ave offScreen];//all aves have an offscreen function
     }
 }
 

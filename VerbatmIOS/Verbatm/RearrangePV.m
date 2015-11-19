@@ -9,6 +9,10 @@
 #import "RearrangePV.h"
 #import "ContentPageElementScrollView.h"
 #import "CollectionPinchView.h"
+
+#import "ImagePinchView.h"
+#import "VideoPinchView.h"
+
 #import "SizesAndPositions.h"
 @interface RearrangePV ()
     @property (strong, nonatomic) ContentPageElementScrollView * scrollView;
@@ -17,10 +21,10 @@
 @implementation RearrangePV
 
 
--(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView *) pinchView{
+-(instancetype) initWithFrame:(CGRect)frame andPinchViewArray:(NSMutableArray * ) pinchViewArray{
     self = [super initWithFrame:frame];
     if(self){
-        [self setUpScrollViewWithPinchViews:pinchView];
+        [self setUpScrollViewWithPinchViews:pinchViewArray];
         [self addLongPressGesture];
         [self addTapGesture];
         [self formatBackground];
@@ -30,19 +34,21 @@
 }
 
 
--(void) setUpScrollViewWithPinchViews:(PinchView *) pv{
+-(void) setUpScrollViewWithPinchViews:(NSMutableArray *) pvArray{
     
-    CGFloat svHeight = pv.frame.size.height + (ELEMENT_Y_OFFSET_DISTANCE*2);
-    CGFloat svOriginY = self.center.y - svHeight/2.f;
+    if(pvArray.count) {
     
-    CGRect frame = CGRectMake(0, svOriginY, self.frame.size.width, svHeight);
-    
-    
-    self.scrollView = [[ContentPageElementScrollView alloc] initWithFrame:frame andElement:pv];
-    if([pv isKindOfClass:[CollectionPinchView class]]) {
-        [self.scrollView openCollection];
+        PinchView * pv = pvArray[0];
+        
+        CGFloat svHeight = pv.frame.size.height + (ELEMENT_Y_OFFSET_DISTANCE*2);
+        CGFloat svOriginY = self.center.y - svHeight/2.f;
+        
+        CGRect frame = CGRectMake(0, svOriginY, self.frame.size.width, svHeight);
+        
+        self.scrollView = [[ContentPageElementScrollView alloc] initWithFrame:frame andElement:nil];
+        [self.scrollView openCollectionWithPinchViews:pvArray];
+        [self addSubview:self.scrollView];
     }
-    [self addSubview:self.scrollView];
 }
 
 -(void)addLongPressGesture {
@@ -55,7 +61,7 @@
 }
 
 -(void)viewTapped:(UITapGestureRecognizer *) tapped{
-    [self.delegate exitPV];
+    [self exitRearrangeView];
 }
 
 -(void)pinchObjectSelected:(UILongPressGestureRecognizer *) longPress{
@@ -78,6 +84,12 @@
     }
 }
 
+
+-(void) exitRearrangeView{
+    NSMutableArray * finalArray = [self.scrollView closeCollection];
+    [self.delegate exitPVWithFinalArray:finalArray];
+
+}
 
 
 

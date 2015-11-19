@@ -81,7 +81,7 @@
 #define LIKE_ICON @"heart_unfilled"
 #define LIKE_PRESSED_ICON @"heart_filled"
 #define PULLDOWN_TEXT_ICON @"pulldown_icon"
-#define CREATE_TEXT_ICON @"create_text"
+#define CREATE_TEXT_ICON @"edit_text_button"
 
 #pragma mark Video AVE
 
@@ -89,5 +89,8 @@
 #define UNMUTED_ICON @"sound_unmuted"
 #define MUTED_ICON @"sound_muted"
 
+#pragma mark Edit Content View
+
+#define CREATE_REARRANGE_ICON @"rearrange_icon"
 
 #endif /* Icons_h */

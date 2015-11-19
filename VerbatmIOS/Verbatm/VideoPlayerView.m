@@ -87,7 +87,7 @@
 			[self fuseAssets:videoList];
 		}
 		[self prepareVideoFromAsset_synchronous:self.mix];
-	}else{
+	}else if (videoList.count == 1){
 		[self prepareVideoFromAsset_synchronous:videoList[0]];
 	}
 }
@@ -213,13 +213,15 @@
 		AVAssetTrack* currentVideoTrack = [videoTrackArray objectAtIndex:0];
 		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentVideoTrack atTime:nextClipStartTime error: &error];
 		videoTrack.preferredTransform = currentVideoTrack.preferredTransform;
-		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
+		
 
 		NSArray * audioTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeAudio];
 		if(!audioTrackArray.count) continue;
 		AVAssetTrack* currentAudioTrack = [audioTrackArray objectAtIndex:0];
 		audioTrack.preferredTransform = currentAudioTrack.preferredTransform;
 		[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentAudioTrack atTime:nextClipStartTime error:&error];
+        
+        nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
 	}
 	if (error) {
 		NSLog(@"Error fusing video assets: %@", error.description);

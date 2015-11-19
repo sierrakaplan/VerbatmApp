@@ -9,8 +9,11 @@
 #import <UIKit/UIKit.h>
 #import "VideoPlayerView.h"
 #import "PinchView.h"
+
+
 @protocol EditContentViewDelegate <NSObject>
-//Tells parent view controller that edit content view should exit
+-(void) textIsEditing;
+-(void) textDoneEditing;
 @end
 
 @interface EditMediaContentView : UIView
@@ -39,6 +42,12 @@
 -(NSInteger) getFilteredImageIndex;
 
 
-//call before removing the view - (only needed no for videos)
+//call before removing the view our ecv
+//saves the content into the pinchview
 -(void)exitingECV;
+
+
+-(void)offScreen;
+-(void)onScreen;
+-(void)almostOnScreen;
 @end

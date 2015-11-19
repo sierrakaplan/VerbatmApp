@@ -250,6 +250,66 @@
 	return self;
 }
 
+#pragma mark - manage removing and returning content -
+
+-(NSMutableArray *) getVideoPinchViews{
+    
+    NSMutableArray * videoPinchViews = [[NSMutableArray alloc]init];
+    for (PinchView * pv in self.pinchedObjects) {
+        if([pv isKindOfClass:[VideoPinchView class]]){
+            [videoPinchViews addObject:pv];
+        }
+    }
+    return videoPinchViews;
+}
+
+-(void)replaceVideoPinchViesWithNewVPVs : (NSMutableArray *) pinchViews {
+    
+    for(int i = 0; i < self.pinchedObjects.count; i++) {
+        PinchView * storedPV = self.pinchedObjects[i];
+        if([storedPV isKindOfClass:[VideoPinchView class]]){
+            if(pinchViews.count){
+                [self.pinchedObjects replaceObjectAtIndex:i withObject:pinchViews[0]];
+                [pinchViews removeObjectAtIndex:0];
+            }else{
+                [self.pinchedObjects removeObjectAtIndex:0];
+            }
+        }
+    }
+}
+
+
+-(NSMutableArray *) getImagePinchViews{
+    NSMutableArray * imagePinchViews = [[NSMutableArray alloc]init];
+    for (PinchView * pv in self.pinchedObjects) {
+        if([pv isKindOfClass:[ImagePinchView class]]){
+            [imagePinchViews addObject:pv];
+        }
+    }
+    return imagePinchViews;
+}
+
+-(void)replaceImagePinchViesWithNewVPVs : (NSMutableArray *) pinchViews {
+    
+    for(int i = 0; i < self.pinchedObjects.count; i++) {
+        if(i < self.pinchedObjects.count){//because we are removing content from the list
+            PinchView * storedPV = self.pinchedObjects[i];
+            if([storedPV isKindOfClass:[ImagePinchView class]]){
+                
+                if(pinchViews.count){
+                    [self.pinchedObjects replaceObjectAtIndex:i withObject:pinchViews[0]];
+                    [pinchViews removeObjectAtIndex:0];
+                }else{
+                    [self.pinchedObjects removeObjectAtIndex:0];
+                }
+                
+            }
+        }
+    }
+}
+
+
+
 #pragma mark - Lazy Instantiation -
 
 -(NSMutableArray*) pinchedObjects {

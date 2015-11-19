@@ -6,14 +6,22 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "VideoAVE.h"
-#import "Icons.h"
-#import "CollectionPinchView.h"
-#import "VideoPinchView.h"
-#import "EditMediaContentView.h"
 #import "BaseArticleViewingExperience.h"
 
-@interface VideoAVE()
+#import "CollectionPinchView.h"
+
+#import "EditMediaContentView.h"
+
+#import "Icons.h"
+
+#import "SizesAndPositions.h"
+
+#import "VideoAVE.h"
+#import "VideoPinchView.h"
+
+#import "RearrangePV.h"
+
+@interface VideoAVE()<RearrangePVDelegate>
 
 @property (strong, nonatomic) UIImageView* videoProgressImageView;  //Kept because of the snake....will be implemented soon
 @property (strong, nonatomic) UIButton* play_pauseBtn;
@@ -21,6 +29,9 @@
 @property (nonatomic, strong) NSArray * videoList;
 @property (nonatomic) BOOL hasBeenSetUp;
 @property (nonatomic) EditMediaContentView * ourEMCV;
+@property (nonatomic) RearrangePV * rearrangeView;
+@property (nonatomic) UIButton * rearrangeButton;
+
 #define RGB 255,225,255, 0.7
 #define PROGR_VIEW_HEIGHT 60
 #define PLAYBACK_ICON_SIZE 40
@@ -42,7 +53,6 @@
                 for(PinchView * view in ((CollectionPinchView *)pinchView).pinchedObjects) {
                     if([view isKindOfClass:[VideoPinchView class]])[videoAssets addObject:((VideoPinchView *)view).video];
                 }
-                
             }else{//it's a videopinchview
                 [videoAssets addObject:((VideoPinchView *)pinchView).video];
             }
@@ -51,6 +61,8 @@
             self.ourEMCV.pinchView = pinchView;
             [self.ourEMCV displayVideo:videoAssets];
             [self addSubview:self.ourEMCV];
+            if(videoAssets.count > 1) [self createRearrangeButton];
+            
         }
     }
     return self;
@@ -84,30 +96,98 @@
 		return;
 	}
 }
+#pragma mark -Add button-
+
+-(void)createRearrangeButton {
+    [self.rearrangeButton setImage:[UIImage imageNamed:CREATE_REARRANGE_ICON] forState:UIControlStateNormal];
+    self.rearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.rearrangeButton addTarget:self action:@selector(rearrangeContentSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.rearrangeButton];
+    [self bringSubviewToFront:self.rearrangeButton];
+}
+
+-(void)rearrangeContentSelected {
+    if(!self.rearrangeView){
+        self.rearrangeView = [[RearrangePV alloc] initWithFrame:self.bounds andPinchViewArray:[((CollectionPinchView *)self.ourEMCV.pinchView) getVideoPinchViews]];
+        self.rearrangeView.delegate = self;
+        [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
+
+    }else{
+        [self.rearrangeView removeFromSuperview];
+        [self.rearrangeView exitRearrangeView];
+        self.rearrangeView = nil;
+    }
+
+}
+
+-(void)exitPVWithFinalArray:(NSMutableArray *) pvArray{
+    
+    NSMutableArray * assetArray = [[NSMutableArray alloc] init];
+    for(VideoPinchView * videoPinchView in pvArray){
+        [assetArray addObject:videoPinchView.video];
+    }
+    
+    [self.ourEMCV displayVideo:assetArray];
+    
+    if([self.ourEMCV.pinchView isKindOfClass:[CollectionPinchView class]]){
+        [((CollectionPinchView *)self.ourEMCV.pinchView) replaceVideoPinchViesWithNewVPVs:pvArray];
+    }
+}
 
 
 #pragma mark - On and Off Screen (play and pause) -
 
 -(void)offScreen{
-    [self stopVideo];
-    [self.ourEMCV exitingECV];
-    self.hasBeenSetUp = NO;
+    if(self.ourEMCV){
+        [self.ourEMCV offScreen];
+    }else{
+        [self stopVideo];
+        self.hasBeenSetUp = NO;
+    }
+   
 }
 
 -(void)onScreen {
-    if(!self.hasBeenSetUp){
-        self.playAtEndOfAsynchronousSetup = YES;//triggers a condition in the prepare system to allow the video to play
-        [self playVideos:self.videoList];
+    
+    
+    if(self.ourEMCV){
+        [self.ourEMCV onScreen];
     }else{
-        [self playVideo];
-        self.hasBeenSetUp = YES;
+        if(!self.hasBeenSetUp){
+            self.playAtEndOfAsynchronousSetup = YES;//triggers a condition in the prepare system to allow the video to play
+            [self playVideos:self.videoList];
+        }else{
+            [self playVideo];
+            self.hasBeenSetUp = YES;
+        }
+    
     }
 }
 
 -(void)almostOnScreen{
-    if(self.videoList)[self stopVideo];
-    [self playVideos:self.videoList];
-    self.hasBeenSetUp = YES;
+    
+    
+    if(self.ourEMCV){
+        [self.ourEMCV almostOnScreen];
+    }else{
+        if(self.videoList)[self stopVideo];
+        [self playVideos:self.videoList];
+        self.hasBeenSetUp = YES;
+    }
+}
+
+#pragma mark -lacy instantiation-
+
+-(UIButton *)rearrangeButton {
+    if(!_rearrangeButton){
+        _rearrangeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
+                                                                      EXIT_CV_BUTTON_WIDTH,
+                                                                      self.frame.size.height - (EXIT_CV_BUTTON_HEIGHT) -
+                                                                      (EXIT_CV_BUTTON_WALL_OFFSET),
+                                                                      EXIT_CV_BUTTON_WIDTH,
+                                                                      EXIT_CV_BUTTON_HEIGHT)];
+    }
+    return _rearrangeButton;
 }
 
 @end

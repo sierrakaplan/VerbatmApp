@@ -8,9 +8,11 @@
 
 #import "ContentDevPullBar.h"
 #import "ContentDevVC.h"
+#import "CollectionPinchView.h"
 #import "Durations.h"
 #import "EditMediaContentView.h"
 #import "Icons.h"
+#import "ImagePinchView.h"
 #import "Notifications.h"
 
 #import "SizesAndPositions.h"
@@ -47,10 +49,15 @@
 
 @property (nonatomic) CGRect userSetFrame;//keeps the frame the user set from panning so can revert after keyboard goes away
 
+@property (nonatomic) BOOL hasBeenSetUp;
+
 
 #define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
 #define TOUCH_BUFFER 20
 #define DIAGONAL_THRESHOLD 600
+
+@property (nonatomic) NSMutableArray * videoAssets;
+
 @end
 
 
@@ -84,6 +91,8 @@
 
 -(void)createTextCreationButton {
     [self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
+    self.textCreationButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+
     [self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.textCreationButton];
     [self bringSubviewToFront:self.textCreationButton];
@@ -183,6 +192,8 @@
     CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     //store the keyboard height for further use
     self.keyboardHeight = keyboardSize.height;
+    
+    [self.delegate textIsEditing];
 }
 
 -(void)keyBoardWillChangeFrame: (NSNotification *) notification {
@@ -195,7 +206,10 @@
 #pragma mark - Image or Video View -
 
 -(void) displayVideo: (NSMutableArray *) videoAssetArray {
-	self.videoView = [[VideoPlayerView alloc]init];
+	
+    if(self.videoView)[self.videoView stopVideo];
+    
+    self.videoView = [[VideoPlayerView alloc]init];
 	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
 	[self addSubview:self.videoView];
 	[self bringSubviewToFront:self.videoView];
@@ -203,12 +217,13 @@
     [self.videoView playVideo];
 	[self.videoView repeatVideoOnEnd:YES];
 	[self addTapGestureToMainView];
+    
+    self.videoAssets = videoAssetArray;
 }
 
 -(void)displayImages: (NSMutableArray*) filteredImages atIndex:(NSInteger)index {
 	self.imageIndex = index;
 	
-    
     self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
                                                             andImage:filteredImages[index]
 															andText:@"" andTextYPosition:TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
@@ -216,6 +231,7 @@
     [self addSubview: self.textAndImageView];
 	[self addTapGestureToMainView];
 	[self addPanGesture];
+    [self createTextCreationButton];
     
 }
 
@@ -227,6 +243,8 @@
 	}
 	self.imageIndex = self.imageIndex+1;
 	[self.textAndImageView.imageView setImage:self.filteredImages[self.imageIndex]];
+    [self updatePinchView];
+
 }
 
 -(void)changeFilteredImageRight{
@@ -235,6 +253,8 @@
 	}
 	self.imageIndex = self.imageIndex-1;
 	[self.textAndImageView.imageView setImage:self.filteredImages[self.imageIndex]];
+    [self updatePinchView];
+
 }
 
 -(NSInteger) getFilteredImageIndex {
@@ -253,7 +273,7 @@
         //remove text view from screen
         [self.textAndImageView showText:NO];
     }
-	[self.textAndImageView.textView resignFirstResponder];
+	[self removeKeyboard];
 }
 
 -(void) removeKeyboard {
@@ -261,11 +281,22 @@
     if(self.textAndImageView.textView.isFirstResponder){
         [self.textAndImageView.textView resignFirstResponder];
     }
+    [self.delegate textDoneEditing];
 }
 //called before removing the view
 //clears up video content
+//saves pinchview content as well
 -(void)exitingECV{
-    [self.videoView stopVideo];
+    [self updatePinchView];
+    if(self.videoView)[self.videoView stopVideo];
+}
+
+//updates the content in the pinchview after things are changed
+-(void)updatePinchView{
+    //save pinchview content
+    if([self.pinchView isKindOfClass:[ImagePinchView class]]){
+        [((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
+    }
 }
 
 #pragma maro -Adjust textview position-
@@ -287,7 +318,7 @@
 				if (sender.numberOfTouches < 1) return;
                 self.panStartLocation = [sender locationOfTouch:0 inView:self];
                 if(self.textAndImageView.textView.isFirstResponder) {
-					[self.textAndImageView.textView resignFirstResponder];
+					[self removeKeyboard];
 				}
                 self.gestureActionJustStarted = YES;
                 break;
@@ -364,7 +395,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 -(BOOL)textViewTranslationInBounds:(float) diff{
     return ((self.textAndImageView.textView.frame.origin.y + diff) > 0.f) &&
             ((self.textAndImageView.textView.frame.origin.y + self.textAndImageView.textView.frame.size.height + diff) <
-            self.frame.size.height /*- (CIRCLE_RADIUS*2 + SLIDE_THRESHOLD //we have remove this to test what it's like to have text at the very bottom)*/);
+            self.frame.size.height);
 }
 
 // check if the touch is on the text view
@@ -373,6 +404,36 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
                 touch.y < self.textAndImageView.textView.frame.origin.y +
 				self.textAndImageView.textView.frame.size.height + TOUCH_BUFFER);
 }
+
+
+
+-(void)offScreen{
+    [self.videoView stopVideo];
+    self.hasBeenSetUp = NO;
+}
+
+-(void)onScreen {
+    if(!self.hasBeenSetUp){
+        self.videoView.playAtEndOfAsynchronousSetup = YES;//triggers a condition in the prepare system to allow the video to play
+        [self.videoView prepareVideoFromArrayOfAssets_synchronous:self.videoAssets];
+        [self.videoView playVideo];
+    }else{
+        [self.videoView playVideo];
+        self.hasBeenSetUp = YES;
+    }
+}
+
+-(void)almostOnScreen{
+    if(self.videoAssets){
+        [self.videoView stopVideo];
+        [self.videoView prepareVideoFromArrayOfAssets_synchronous:self.videoAssets];
+    }
+    self.hasBeenSetUp = YES;
+}
+
+
+
+
 
 #pragma mark - Lazy Instantiation -
 

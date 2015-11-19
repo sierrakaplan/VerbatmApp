@@ -50,17 +50,8 @@
     CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
     CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photosViewHeight);
     
-    NSMutableArray * imagePVArray;
-    if(collection){
-        imagePVArray = [[NSMutableArray alloc] init];
-        for (PinchView * pv in collection.pinchedObjects) {
-            if([pv isKindOfClass:[ImagePinchView class]]){
-                [imagePVArray addObject:pv];
-            }
-        }
-    }
     
-    self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchviewArray:(imagePVArray) ? imagePVArray : nil isSubViewOfPhotoVideoAve:YES];
+    self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchview:(collection) ? collection : nil isSubViewOfPhotoVideoAve:YES];
     
     self.videoView = [[VideoAVE alloc]initWithFrame:videoViewFrame pinchView:(collection.containsVideo) ? collection : nil orVideoArray:videos];
 
@@ -88,13 +79,17 @@
 }
 
 -(void) videoElementTapped:(UITapGestureRecognizer *) gesture {
-	UIView * view = gesture.view;
+	
+    UIView * view = gesture.view;
 	BaseArticleViewingExperience* superview = (BaseArticleViewingExperience*)self.superview;
-	if(superview.mainViewIsFullScreen) {
-		[superview removeMainView];
-	} else {
-		[superview setViewAsMainView:view];
-	}
+	
+    if([superview isKindOfClass:[BaseArticleViewingExperience class]]){
+        if(superview.mainViewIsFullScreen) {
+            [superview removeMainView];
+        } else {
+            [superview setViewAsMainView:view];
+        }
+    }
 }
 
 -(void) photoElementTapped:(UITapGestureRecognizer *) gesture {
@@ -123,7 +118,7 @@
 
 -(void)offScreen {
     [self.videoView offScreen];
-
+    [self.photosView offScreen];
 }
 
 -(void)onScreen {

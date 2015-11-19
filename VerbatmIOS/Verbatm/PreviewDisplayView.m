@@ -65,7 +65,6 @@
 		self.frame = self.restingFrame;
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 		[self addShadowToView];
-		[self setUpGestureRecognizers];
 	}
 	return self;
 }
@@ -116,18 +115,6 @@
 	[button setImage:icon forState:UIControlStateNormal];
 	[self addSubview: button];
 	return button;
-}
-
-#pragma mark - Gesture recognizers
-
-//Sets up the gesture recognizer for dragging from the edges.
--(void) setUpGestureRecognizers {
-	UIScreenEdgePanGestureRecognizer* leftEdgePanGesture = [[UIScreenEdgePanGestureRecognizer alloc] initWithTarget:self action:@selector(exitDisplay:)];
-	leftEdgePanGesture.minimumNumberOfTouches = 1;
-	leftEdgePanGesture.maximumNumberOfTouches = 1;
-	leftEdgePanGesture.edges = UIRectEdgeLeft;
-	leftEdgePanGesture.delegate = self;
-	[self addGestureRecognizer: leftEdgePanGesture];
 }
 
 #pragma mark - Show the preview or hide it - 

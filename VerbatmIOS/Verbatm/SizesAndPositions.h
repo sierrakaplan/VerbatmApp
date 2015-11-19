@@ -19,9 +19,11 @@
 
 #pragma mark - Exit CV constants-
 
-#define EXIT_CV_BUTTON_WIDTH 35
-#define EXIT_CV_BUTTON_HEIGHT EXIT_CV_BUTTON_WIDTH
+#define EXIT_CV_BUTTON_WIDTH 42
+#define EXIT_CV_BUTTON_HEIGHT 30
 #define EXIT_CV_BUTTON_WALL_OFFSET 10
+
+
 
 #define NAV_BAR_HEIGHT 50.f
 #define NAV_ICON_OFFSET 7.f

@@ -64,13 +64,12 @@
 // otherwise will always be NO
 @property (nonatomic, readonly) BOOL collectionIsOpen;
 
-// If can open the collection, will open and return YES
-// otherwise will return NO
--(BOOL) openCollection;
+//will present the pinchviews sent in on the scrollview
+-(void) openCollectionWithPinchViews:(NSMutableArray *) pinchViews;
 
-// If can open the collection, will open and return YES
-// otherwise will return NO
--(BOOL) closeCollection;
+// will close the open collection and return a list of all the pinchviews 
+- (NSMutableArray *) closeCollection;
+
 
 //animates the open collection pinch views closer together (all will move towards the middle of the collection)
 -(void) moveViewsWithTotalDifference: (float)difference;

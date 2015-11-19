@@ -40,6 +40,7 @@
 			CGRect newTextContainerFrame = CGRectMake(self.bounds.origin.x, textViewYPos, self.bounds.size.width, self.textViewContentSize);
 			self.textViewContainer.frame = newTextContainerFrame;
 		}
+        
 		[self addSubview:self.textViewContainer];
 
 		if (self.textViewContentSize > (TEXT_OVER_AVE_STARTING_HEIGHT+ TEXT_OVER_AVE_BORDER)) {

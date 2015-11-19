@@ -51,7 +51,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		[self formatScrollView];
-		[self changePageElement:element];
+		if(element)[self changePageElement:element];
         if([element isKindOfClass:[PinchView class]])[self createDeleteButton];
         
 	}
@@ -170,58 +170,37 @@
 
 #pragma mark - Open and close collection -
 //remove collection view from scrollview and add all its children instead
--(BOOL) openCollection {
-	if (!self.isCollection
-		|| self.collectionIsOpen) {
-		return NO;
-	}
+-(void) openCollectionWithPinchViews:(NSMutableArray *) pinchViews {
 	self.collectionIsOpen = YES;
-	[self.pageElement removeFromSuperview];
+	if(self.pageElement)[self.pageElement removeFromSuperview];
     [self.deleteButton removeFromSuperview];
-	[self displayCollectionPinchViews:[(CollectionPinchView*)self.pageElement pinchedObjects]];
-	return YES;
+	[self displayCollectionPinchViews:pinchViews];
 }
 
 //array of PinchViews
 -(void) displayCollectionPinchViews:(NSMutableArray *) pinchViews {
 
-	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
-    
-	self.contentSize = CGSizeMake((ELEMENT_Y_OFFSET_DISTANCE + pinchViewSize) * [pinchViews count] +ELEMENT_Y_OFFSET_DISTANCE,
-								  self.contentSize.height);
+    if(pinchViews.count){
+        float pinchViewSize = [(PinchView*)pinchViews[0] radius]*2;
 
-	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-		int xPosition = ELEMENT_Y_OFFSET_DISTANCE;
-		for(PinchView* pinchView in pinchViews) {
-			CGRect newFrame = CGRectMake(xPosition, ELEMENT_Y_OFFSET_DISTANCE/2, pinchViewSize, pinchViewSize);
-			[pinchView specifyFrame:newFrame];
-			[self addSubview:pinchView];
-			xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
-			[pinchView renderMedia];
-		}
-	}];
-    
-	self.collectionPinchViews = pinchViews;
+        [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+            int xPosition = ELEMENT_Y_OFFSET_DISTANCE;
+            for(PinchView* pinchView in pinchViews) {
+                CGRect newFrame = CGRectMake(xPosition, ELEMENT_Y_OFFSET_DISTANCE/2, pinchViewSize, pinchViewSize);
+                [pinchView specifyFrame:newFrame];
+                [self addSubview:pinchView];
+                xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
+                [pinchView renderMedia];
+            }
+        }];
+        self.collectionPinchViews = pinchViews;
+        [self adjustScrollViewContentSize];
+    }
 }
 
--(BOOL) closeCollection {
-	if (!self.isCollection
-		|| !self.collectionIsOpen) {
-		return NO;
-	}
-
-	for (PinchView* pinchView in self.collectionPinchViews) {
-		[pinchView removeFromSuperview];
-	}
-	self.collectionIsOpen = NO;
-	self.contentSize = self.initialContentSize;
-	self.contentOffset = self.initialContentOffset;
-	[self addSubview:self.pageElement];
-    [self createDeleteButton];
-	[(CollectionPinchView*)self.pageElement updateMedia];
-	[(CollectionPinchView*)self.pageElement renderMedia];
-	self.collectionPinchViews = nil;
-	return YES;
+- (NSMutableArray *) closeCollection {
+	
+    return self.collectionPinchViews;
 }
 
 //moves the views in the scrollview of the opened collection
@@ -344,23 +323,30 @@
 
 -(void) shiftPinchViewsAfterIndex:(NSInteger) index {
 
-	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
-	float firstXCoordinate = ELEMENT_Y_OFFSET_DISTANCE;
-	for(NSInteger i = index; i < [self.collectionPinchViews count]; i++) {
-		PinchView* pinchView = self.collectionPinchViews[i];
+    if(self.subviews.count){
+        float firstXCoordinate = ELEMENT_Y_OFFSET_DISTANCE;
+        for(NSInteger i = index; i < [self.collectionPinchViews count]; i++) {
+            PinchView* pinchView = self.collectionPinchViews[i];
 
-		CGRect frame = CGRectMake(firstXCoordinate, ELEMENT_Y_OFFSET_DISTANCE/2,
-								  pinchView.frame.size.width, pinchView.frame.size.height);
+            CGRect frame = CGRectMake(firstXCoordinate, ELEMENT_Y_OFFSET_DISTANCE/2,
+                                      pinchView.frame.size.width, pinchView.frame.size.height);
 
-		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-			[pinchView specifyFrame:frame];
-		}];
-		firstXCoordinate+= frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
-	}
+            [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
+                [pinchView specifyFrame:frame];
+            }];
+            firstXCoordinate+= frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
+        }
+    }
+    [self adjustScrollViewContentSize];
+	
+}
 
-	//make sure the main scroll view can show everything
-	self.contentSize = CGSizeMake((pinchViewSize+ELEMENT_Y_OFFSET_DISTANCE)*[self.collectionPinchViews count]+ELEMENT_Y_OFFSET_DISTANCE,
-								  self.contentSize.height);
+-(void)adjustScrollViewContentSize{
+    CGFloat width = ((PinchView *)[self.collectionPinchViews lastObject]).frame.origin.x + [self.subviews lastObject].frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
+    CGFloat height = 0;
+    
+    //make sure the main scroll view can show everything
+    self.contentSize = CGSizeMake(width,height);
 }
 
 //Takes a change in horizontal position and constructs the frame for the views new position
@@ -374,7 +360,6 @@
 
 //swap currently selected item's frame with view to the left of it
 -(void) swapWithLeftView: (PinchView*) leftView {
-	[self swapPinchView:self.selectedItem andPinchView:leftView];
 
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
@@ -387,12 +372,26 @@
 								   self.previousFrameInLongPress.origin.y - self.frame.origin.y,
 								   leftView.frame.size.width, leftView.frame.size.height);
 		self.previousFrameInLongPress = potentialFrame;
+        
+        
+        [self swap:self.selectedItem with:leftView inArray:self.collectionPinchViews];
+        
 	}];
 }
 
+
+-(void)swap:(id) object1 with:(id) object2 inArray:(NSMutableArray *) array{
+    
+    CGFloat indexOfObject1 = [array indexOfObject:object1];
+    CGFloat indexOfObject2 = [array indexOfObject:object2];
+    
+    [array replaceObjectAtIndex:indexOfObject1 withObject:object2];
+    [array replaceObjectAtIndex:indexOfObject2 withObject:object1];
+}
+
+
 //swap currently selected item's frame with view to the right of it
 -(void) swapWithRightView: (PinchView*) rightView {
-	[self swapPinchView:self.selectedItem andPinchView:rightView];
 
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
@@ -405,16 +404,12 @@
 									  self.previousFrameInLongPress.origin.y - self.frame.origin.y,
 									  rightView.frame.size.width, rightView.frame.size.height);
 		self.previousFrameInLongPress = potentialFrame;
+        
+        [self swap:self.selectedItem with:rightView inArray:self.collectionPinchViews];
+
 	}];
 }
 
-//swaps scroll views int he pageElementScrollView array
--(void) swapPinchView: (PinchView *) pinchView1 andPinchView: (PinchView *) pinchView2 {
-	NSInteger index1 = [self.collectionPinchViews indexOfObject: pinchView1];
-	NSInteger index2 = [self.collectionPinchViews indexOfObject: pinchView2];
-	[self.collectionPinchViews replaceObjectAtIndex: index1 withObject: pinchView2];
-	[self.collectionPinchViews replaceObjectAtIndex: index2 withObject: pinchView1];
-}
 
 //adjusts offset of main scroll view so selected item is in focus
 -(void) moveOffsetBasedOnSelectedItem {

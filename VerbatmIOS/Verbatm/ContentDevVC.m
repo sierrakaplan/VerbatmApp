@@ -837,15 +837,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
-//goes through all scroll views and checks if they have open collections.
-//if they do it tells them to close
--(void) closeAllOpenCollections {
-	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
-		if(scrollView.collectionIsOpen) {
-			[scrollView closeCollection];
-		}
-	}
-}
 
 //checks if scroll view contains an open collection,
 //if so shows the pull bar and tells the scroll view to close the collection
@@ -1573,7 +1564,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 
 -(void)presentPreviewAtIndex:(NSInteger ) index{
-    [self closeAllOpenCollections];
     NSArray *pinchViews = [self getPinchViews];
     NSString* title = self.titleField.text;
     UIImage* coverPic = [self getCoverPicture];
