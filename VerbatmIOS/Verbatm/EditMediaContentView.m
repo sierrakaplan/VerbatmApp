@@ -153,7 +153,10 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView{
-	self.userSetFrame = textView.frame;
+	
+    [self.delegate textIsEditing];
+    
+    self.userSetFrame = textView.frame;
     if((textView.frame.origin.y + textView.frame.size.height) > (self.frame.size.height - self.keyboardHeight - TEXT_TOOLBAR_HEIGHT)){
         [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
             self.textAndImageView.textView.frame = CGRectMake(0, (self.frame.size.height - self.keyboardHeight -
@@ -192,8 +195,6 @@
     CGSize keyboardSize = [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] CGRectValue].size;
     //store the keyboard height for further use
     self.keyboardHeight = keyboardSize.height;
-    
-    [self.delegate textIsEditing];
 }
 
 -(void)keyBoardWillChangeFrame: (NSNotification *) notification {
@@ -214,7 +215,7 @@
 	[self addSubview:self.videoView];
 	[self bringSubviewToFront:self.videoView];
 	[self.videoView repeatVideoOnEnd:YES];
-	[self addTapGestureToMainView];
+	//[self addTapGestureToMainView];
     
     self.videoAssets = videoAssetArray;
 }
@@ -227,7 +228,7 @@
 															andText:@"" andTextYPosition:TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
 	self.filteredImages = filteredImages;
     [self addSubview: self.textAndImageView];
-	[self addTapGestureToMainView];
+	//[self addTapGestureToMainView];
 	[self addPanGesture];
     [self createTextCreationButton];
     
@@ -315,9 +316,9 @@
             case UIGestureRecognizerStateBegan:
 				if (sender.numberOfTouches < 1) return;
                 self.panStartLocation = [sender locationOfTouch:0 inView:self];
-                if(self.textAndImageView.textView.isFirstResponder) {
-					[self removeKeyboard];
-				}
+//                if(self.textAndImageView.textView.isFirstResponder) {
+//					[self removeKeyboard];
+//				}
                 self.gestureActionJustStarted = YES;
                 break;
             case UIGestureRecognizerStateChanged:{

@@ -21,7 +21,7 @@
 #import "Styles.h"
 #import "VideoAVE.h"
 
-@interface PhotoVideoAVE() <UIScrollViewDelegate>
+@interface PhotoVideoAVE() <UIScrollViewDelegate, PhotoAVETextEntryDelegate>
 
 @property (strong, nonatomic) PhotoAVE* photosView;
 
@@ -52,7 +52,7 @@
     
     
     self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchview:(collection) ? collection : nil isSubViewOfPhotoVideoAve:YES];
-    
+    self.photosView.textEntrydelegate = self;
     self.videoView = [[VideoAVE alloc]initWithFrame:videoViewFrame pinchView:(collection.containsVideo) ? collection : nil orVideoArray:videos];
 
 	[self addSubview:self.videoView];
@@ -115,6 +115,35 @@
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 //	NSInteger newPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
 }
+
+
+#pragma mark -photo ave protocol-
+
+-(void) editContentViewTextIsEditing{
+    [self movePhotoAveUp:YES];
+}
+-(void) editContentViewTextDoneEditing{
+    [self movePhotoAveUp:NO];
+}
+
+
+-(void)movePhotoAveUp:(BOOL) moveUp{
+    if(moveUp){
+        [UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
+            [self bringSubviewToFront:self.photosView];
+            self.photosView.frame = CGRectMake(0, 0, self.photosView.frame.size.width, self.photosView.frame.size.height);
+        }];
+    }else{
+        [UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
+            self.photosView.frame = CGRectMake(0, (self.frame.size.height - self.videoView.frame.size.height), self.photosView.frame.size.width, self.photosView.frame.size.height);
+        }];
+        
+    }
+}
+
+
+
+#pragma mark -managing content viewing-
 
 -(void)offScreen {
     [self.videoView offScreen];

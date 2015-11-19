@@ -362,6 +362,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #pragma mark Close Button
 
 -(void) leftButtonPressed {
+    self.view.clipsToBounds = YES;
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 }
 
@@ -529,7 +530,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 	[self addTapGestureToPinchView:pinchView];
 	// must be below base media tile selector
-	NSInteger index = self.pageElementScrollViews.count-1;
+	NSUInteger index = self.pageElementScrollViews.count-1;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
@@ -551,7 +552,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     
 	//thread safety
 	@synchronized(self) {
-        [self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+        if(index <= self.pageElementScrollViews.count)[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
 	}
     
     [[UserPovInProgress sharedInstance] addPinchView:pinchView atIndex:index];

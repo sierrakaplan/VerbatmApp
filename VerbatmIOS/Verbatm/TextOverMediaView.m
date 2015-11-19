@@ -63,9 +63,10 @@
 
 -(void) showText: (BOOL) show {
 	if (show) {
-		if (self.textShowing) return; // already showing
-		[self addSubview:self.textView];
-		[self bringSubviewToFront:self.textView];
+        if (!self.textShowing){
+            [self addSubview:self.textView];
+            [self bringSubviewToFront:self.textView];
+        }
 	} else {
 		if (!self.textShowing) return; // already hidden
 		[self.textView removeFromSuperview];
@@ -94,7 +95,7 @@
 
 -(UITextView*) textView {
 	if (!_textView) {
-		CGRect textViewFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
+		CGRect textViewFrame = CGRectMake(0.f, TEXT_TOOLBAR_HEIGHT, self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
 		[_textView setFont:[UIFont fontWithName:DEFAULT_FONT size:TEXT_AVE_FONT_SIZE]];
 		_textView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];

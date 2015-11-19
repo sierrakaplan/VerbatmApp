@@ -30,7 +30,7 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 
 
-@interface PhotoAVE() <UIGestureRecognizerDelegate, RearrangePVDelegate>
+@interface PhotoAVE() <UIGestureRecognizerDelegate, RearrangePVDelegate, EditContentViewDelegate>
 
 @property (nonatomic) CGPoint originPoint;
 //contains PointObjects showing dots on circle
@@ -59,6 +59,8 @@
 
 @property (nonatomic)PinchView * currentCPV;
 #define TEXT_VIEW_HEIGHT 70.f
+
+@property (nonatomic)BOOL isSubViewOfPhotoVideoAve;
 @end
 
 @implementation PhotoAVE
@@ -83,6 +85,7 @@
 			[self addPhotos:photos];
 		}
 		[self addTapGestureToView:self];
+        self.isSubViewOfPhotoVideoAve = isPVSubview;
 	}
 	return self;
 }
@@ -125,6 +128,7 @@
         if(imagePinchView.text) [editMediaContentView setText:imagePinchView.text andTextViewYPosition:[imagePinchView.textYPosition floatValue]];
         editMediaContentView.pinchView = imagePinchView;
         editMediaContentView.povViewMasterScrollView = self.povScrollView;
+        editMediaContentView.delegate = self;
         [self.imageContainerViews addObject:editMediaContentView];
     }
     [self layoutContainerViews];
@@ -587,6 +591,18 @@
             [((EditMediaContentView *)view)exitingECV];
         }
     }
+}
+
+
+
+
+#pragma mark -edit content view protocol-
+
+-(void) textIsEditing{
+    if(self.isSubViewOfPhotoVideoAve)[self.textEntrydelegate editContentViewTextIsEditing];
+}
+-(void) textDoneEditing{
+    if(self.isSubViewOfPhotoVideoAve)[self.textEntrydelegate editContentViewTextDoneEditing];
 }
 
 
