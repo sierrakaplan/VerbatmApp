@@ -133,7 +133,7 @@
 	if(![self.textAndImageView textShowing]) {
 		[self setText:@"" andTextViewYPosition: TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
 	}
-	[self.textAndImageView.textView becomeFirstResponder];
+    [self.textAndImageView showText:YES];
 }
 
 -(void) setText: (NSString*) text andTextViewYPosition: (CGFloat) yPosition {

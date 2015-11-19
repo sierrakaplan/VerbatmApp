@@ -22,4 +22,8 @@
 
 -(void) showText: (BOOL) show;
 
+-(void)changeImageTo:(UIImage *) image;
+
+-(void)setText:(NSString *) text;
+
 @end

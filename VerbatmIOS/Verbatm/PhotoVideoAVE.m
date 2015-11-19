@@ -58,48 +58,7 @@
 	[self addSubview:self.videoView];
 	[self addSubview:self.photosView];
 
-	[self addTapGestureToPhotoView: self.photosView];
-	[self addTapGestureToVideoView: self.videoView];
-}
-
-
--(void) addTapGestureToPhotoView:(UIView *)view
-{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoElementTapped:)];
-    tap.numberOfTapsRequired =1;
-    [view addGestureRecognizer:tap];
-    if(self.photosView)[tap requireGestureRecognizerToFail:self.photosView.photoAveTapGesture];
-}
--(void) addTapGestureToVideoView:(UIView *)view
-{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(videoElementTapped:)];
-    tap.numberOfTapsRequired =1;
-    [view addGestureRecognizer:tap];
-    if(self.photosView)[tap requireGestureRecognizerToFail:self.photosView.photoAveTapGesture];
-}
-
--(void) videoElementTapped:(UITapGestureRecognizer *) gesture {
 	
-    UIView * view = gesture.view;
-	BaseArticleViewingExperience* superview = (BaseArticleViewingExperience*)self.superview;
-	
-    if([superview isKindOfClass:[BaseArticleViewingExperience class]]){
-        if(superview.mainViewIsFullScreen) {
-            [superview removeMainView];
-        } else {
-            [superview setViewAsMainView:view];
-        }
-    }
-}
-
--(void) photoElementTapped:(UITapGestureRecognizer *) gesture {
-    UIView * view = gesture.view;
-    BaseArticleViewingExperience* superview = (BaseArticleViewingExperience*)self.superview;
-    if(superview.mainViewIsFullScreen) {
-        [superview removeMainView];
-    } else {
-        [superview setViewAsMainView:view];
-    }
 }
 
 
@@ -135,7 +94,7 @@
         }];
     }else{
         [UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
-            self.photosView.frame = CGRectMake(0, (self.frame.size.height - self.videoView.frame.size.height), self.photosView.frame.size.width, self.photosView.frame.size.height);
+            self.photosView.frame = CGRectMake(0, self.videoView.frame.size.height, self.photosView.frame.size.width, self.photosView.frame.size.height);
         }];
         
     }

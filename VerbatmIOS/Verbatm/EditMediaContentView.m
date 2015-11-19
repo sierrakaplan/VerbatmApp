@@ -115,7 +115,7 @@
 
 -(void) setText: (NSString*) text andTextViewYPosition: (CGFloat) yPosition {
 	self.textAndImageView.textView.editable = YES;
-	self.textAndImageView.textView.text = text;
+    [self.textAndImageView setText:text];
 	[self.textAndImageView.textView setFrame: CGRectMake(self.textAndImageView.textView.frame.origin.x, yPosition,
 														 self.textAndImageView.textView.frame.size.width,
 														  self.textAndImageView.textView.frame.size.height)];
@@ -159,8 +159,7 @@
     self.userSetFrame = textView.frame;
     if((textView.frame.origin.y + textView.frame.size.height) > (self.frame.size.height - self.keyboardHeight - TEXT_TOOLBAR_HEIGHT)){
         [UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-            self.textAndImageView.textView.frame = CGRectMake(0, (self.frame.size.height - self.keyboardHeight -
-																  TEXT_TOOLBAR_HEIGHT - textView.frame.size.height),
+            self.textAndImageView.textView.frame = CGRectMake(0,TEXT_TOOLBAR_HEIGHT,
 											 self.textAndImageView.textView.frame.size.width,
                                              self.textAndImageView.textView.frame.size.height);
         }];

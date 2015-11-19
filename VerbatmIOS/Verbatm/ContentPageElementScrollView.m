@@ -87,8 +87,6 @@
 //puts the pinch view right in the middle
 -(void)centerView{
     self.contentOffset = self.initialContentOffset;
-//    self.pageElement.frame = self.pageElementOriginalFrame;
-//    self.deleteButton.frame = self.deleteButtonFrame;
 }
 
 #pragma mark - Change Page Element -

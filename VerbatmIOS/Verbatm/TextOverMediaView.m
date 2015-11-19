@@ -11,11 +11,13 @@
 #import "StringsAndAppConstants.h"
 #import "TextOverMediaView.h"
 #import "UITextView+Utilities.h"
-
+#import "UIImage+ImageEffectsAndTransforms.h"
 @interface TextOverMediaView ()
 
 @property (nonatomic, readwrite) BOOL textShowing;
+@property (strong,nonatomic) UIImageView* ourBlurView;
 
+#define BLUR_IMAGE_FILTER 40
 @end
 
 @implementation TextOverMediaView
@@ -25,12 +27,13 @@
 	if (self) {
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 		[self.imageView setImage: image];
+        [self setImageViewWithImage:image];
         [self addSubview:self.imageView];
-        // adding blur [self setImageViewWithImage:image];
-		[self.textView setText: text];
-		[self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
-											textYPosition, self.textView.frame.size.width,
-											self.textView.frame.size.height)];
+        [self.textView setText: text];
+        [self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
+                                                textYPosition, self.textView.frame.size.width,
+                                                self.textView.frame.size.height)];
+        
 		[self resizeTextView];
 	}
 	return self;
@@ -38,28 +41,25 @@
 
 // IMAGE BLUR
 //
-//-(void) setImageViewWithImage:(UIImage*) image {
-//    //scale image
-//    CGSize imageSize = [UIEffects getSizeForImage:image andBounds:self.bounds];
-//    image = [UIEffects scaleImage:image toSize:imageSize];
-//    UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
-//    [imageContainerView setBackgroundColor:[UIColor blackColor]];
-//    UIImageView* photoView = [self getImageViewForImage:image];
-//    UIImageView* blurPhotoView = [UIEffects getBlurImageViewForImage:image withFrame:self.bounds];
-//    [imageContainerView addSubview:blurPhotoView];
-//    [imageContainerView addSubview:photoView];
-//    [self addSubview:imageContainerView];
-//}
-//
-//
-//// returns image view with image centered
-//-(UIImageView*) getImageViewForImage:(UIImage*) image {
-//    UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
-//    photoView.frame = self.bounds;
-//    photoView.clipsToBounds = YES;
-//    photoView.contentMode = UIViewContentModeScaleAspectFit;
-//    return photoView;
-//}
+-(void) setImageViewWithImage:(UIImage*) image {
+    self.ourBlurView = [image getBlurImageViewWithFilterLevel:BLUR_IMAGE_FILTER andFrame:self.bounds];
+    [self addSubview:self.ourBlurView];
+}
+
+
+// returns image view with image centered
+-(UIImageView*) getImageViewForImage:(UIImage*) image {
+    UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
+    photoView.frame = self.bounds;
+    photoView.clipsToBounds = YES;
+    photoView.contentMode = UIViewContentModeScaleAspectFit;
+    return photoView;
+}
+
+-(void)setText:(NSString *) text{
+    [self.textView setText:text];
+    [self resizeTextView];
+}
 
 -(void) showText: (BOOL) show {
 	if (show) {
@@ -72,6 +72,12 @@
 		[self.textView removeFromSuperview];
 	}
 	self.textShowing = !self.textShowing;
+}
+
+
+-(void)changeImageTo:(UIImage *) image{
+    [self.ourBlurView setImage:[image blurredImageWithFilterLevel:BLUR_IMAGE_FILTER]];
+    [self.imageView setImage:image];
 }
 
 //Calculate the appropriate bounds for the text view
@@ -95,7 +101,7 @@
 
 -(UITextView*) textView {
 	if (!_textView) {
-		CGRect textViewFrame = CGRectMake(0.f, TEXT_TOOLBAR_HEIGHT, self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
+		CGRect textViewFrame = CGRectMake(0.f, TEXT_VIEW_OVER_MEDIA_Y_OFFSET, self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
 		[_textView setFont:[UIFont fontWithName:DEFAULT_FONT size:TEXT_AVE_FONT_SIZE]];
 		_textView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];
