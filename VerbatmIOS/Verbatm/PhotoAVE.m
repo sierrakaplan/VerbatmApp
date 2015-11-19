@@ -591,6 +591,8 @@
             [((EditMediaContentView *)view)exitingECV];
         }
     }
+    
+    if(self.rearrangeView)[self.rearrangeView exitRearrangeView];
 }
 
 

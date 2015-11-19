@@ -119,9 +119,7 @@
     //if(width < MIN_PINCHVIEW_SIZE) return;
 
     CGPoint center = self.center;
-    CGRect newFrame = CGRectMake(center.x- width/2, center.y - width/2, width, width);
-    self.frame = newFrame;
-    [self setBackgroundFrames];
+    [self specifyRadius:(width/2.f) andCenter:self.center];
 }
 
 -(void)removeBorder {

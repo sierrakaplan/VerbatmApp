@@ -124,10 +124,12 @@
     for(VideoPinchView * videoPinchView in pvArray){
         [assetArray addObject:videoPinchView.video];
     }
+    if(self.ourEMCV.videoView.isPlaying){
     
-    [self.ourEMCV displayVideo:assetArray];//this sets the assets
-    [self.ourEMCV almostOnScreen];//prepares screen
-    [self.ourEMCV onScreen];//makes it play now
+        [self.ourEMCV displayVideo:assetArray];//this sets the assets
+        [self.ourEMCV almostOnScreen];//prepares screen
+        [self.ourEMCV onScreen];//makes it play now
+    }
     if([self.ourEMCV.pinchView isKindOfClass:[CollectionPinchView class]]){
         [((CollectionPinchView *)self.ourEMCV.pinchView) replaceVideoPinchViesWithNewVPVs:pvArray];
     }
@@ -148,7 +150,8 @@
         [self stopVideo];
         self.hasBeenSetUp = NO;
     }
-   
+    
+    if(self.rearrangeView)[self.rearrangeView exitRearrangeView];
 }
 
 -(void)onScreen {

@@ -42,6 +42,8 @@
 @property (nonatomic) CGPoint panTouchLocation;
 
 
+@property (nonatomic) CGFloat pinchViewStartSize;
+
 #define MEDIA_SELECT_TILE_DELETE_BUTTON_OFFSET 7
 #define ANIMATE_TO_DELETE_MODE_OR_BACK_DURATION 0.1f
 
@@ -184,25 +186,32 @@
 -(void) displayCollectionPinchViews:(NSMutableArray *) pinchViews {
 
     if(pinchViews.count){
-        float pinchViewSize = [(PinchView*)pinchViews[0] radius]*2;
-
-        [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-            int xPosition = ELEMENT_Y_OFFSET_DISTANCE;
-            for(PinchView* pinchView in pinchViews) {
-                CGRect newFrame = CGRectMake(xPosition, ELEMENT_Y_OFFSET_DISTANCE/2, pinchViewSize, pinchViewSize);
-                [pinchView specifyFrame:newFrame];
-                [self addSubview:pinchView];
-                xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
-                [pinchView renderMedia];
-            }
-        }];
+        
+        self.pinchViewStartSize = [(PinchView*)pinchViews[0] radius]*2.f;
+        float pinchViewSize = [(PinchView*)pinchViews[0] radius]*1.5;
+        float yPosition = self.center.y - (pinchViewSize/2.f);
+        float xPosition = ELEMENT_Y_OFFSET_DISTANCE;
+        for(PinchView* pinchView in pinchViews) {
+            CGRect newFrame = CGRectMake(xPosition, yPosition, pinchViewSize, pinchViewSize);
+            [pinchView specifyFrame:newFrame];
+            [pinchView changeWidthTo:pinchViewSize];
+            [self addSubview:pinchView];
+            xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
+            [pinchView renderMedia];
+        }
         self.collectionPinchViews = pinchViews;
         [self adjustScrollViewContentSize];
     }
 }
 
 - (NSMutableArray *) closeCollection {
-	
+
+    for(PinchView * pinchView in self.collectionPinchViews){
+        [pinchView changeWidthTo:self.pinchViewStartSize];
+        [pinchView renderMedia];
+    }
+    
+    
     return self.collectionPinchViews;
 }
 
@@ -328,10 +337,13 @@
 
     if(self.subviews.count){
         float firstXCoordinate = ELEMENT_Y_OFFSET_DISTANCE;
+        
+
         for(NSInteger i = index; i < [self.collectionPinchViews count]; i++) {
             PinchView* pinchView = self.collectionPinchViews[i];
-
-            CGRect frame = CGRectMake(firstXCoordinate, ELEMENT_Y_OFFSET_DISTANCE/2,
+            float yPosition = self.center.y - (pinchView.frame.size.height/2.f);
+            
+            CGRect frame = CGRectMake(firstXCoordinate, yPosition,
                                       pinchView.frame.size.width, pinchView.frame.size.height);
 
             [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{

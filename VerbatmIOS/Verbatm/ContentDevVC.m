@@ -474,6 +474,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                               [self deleteScrollView: scrollView];
+                                                              [self removeExcessMediaTiles];
                                                           }];
     UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {}];
@@ -1031,6 +1032,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[mediaTile.superview removeFromSuperview];
 	[self shiftElementsBelowView: self.coverPicView];
 }
+
 
 
 #pragma mark Pinching Views together
@@ -1829,6 +1831,27 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}
 	}
 	return pinchViews;
+}
+
+
+#pragma mark -remove excess mediatiles-
+
+-(void)removeExcessMediaTiles{
+    
+    for(int i = 0; i < self.pageElementScrollViews.count; i++){
+        
+        if(i < self.pageElementScrollViews.count)//because we're editing the scrollviews
+        {
+            ContentPageElementScrollView *  contentPageSV= self.pageElementScrollViews[i];
+            if([contentPageSV.pageElement isKindOfClass:[MediaSelectTile class]] &&
+               contentPageSV.pageElement != self.baseMediaTileSelector){
+                [self deleteScrollView:contentPageSV];
+            }
+        }
+        
+        
+    }
+    
 }
 
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
