@@ -341,7 +341,7 @@
 
         for(NSInteger i = index; i < [self.collectionPinchViews count]; i++) {
             PinchView* pinchView = self.collectionPinchViews[i];
-            float yPosition = self.center.y - (pinchView.frame.size.height/2.f);
+            float yPosition = (self.frame.size.height/2.f) - (pinchView.frame.size.height/2.f);
             
             CGRect frame = CGRectMake(firstXCoordinate, yPosition,
                                       pinchView.frame.size.width, pinchView.frame.size.height);
