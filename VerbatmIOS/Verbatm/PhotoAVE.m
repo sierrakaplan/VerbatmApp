@@ -84,7 +84,7 @@
             self.subviewOfPhotoVideoAVE = isPVSubview;
 			[self addPhotos:photos];
 		}
-		[self addTapGestureToView:self];
+		if(!pinchView)[self addTapGestureToView:self];
         self.isSubViewOfPhotoVideoAve = isPVSubview;
 	}
 	return self;

@@ -65,6 +65,7 @@
 		self.frame = self.restingFrame;
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 		[self addShadowToView];
+        [self addTapToExit];
 	}
 	return self;
 }
@@ -151,38 +152,16 @@
 
 #pragma mark - Exit Display -
 
-//called from left edge pan
-- (void) exitDisplay:(UIScreenEdgePanGestureRecognizer *)sender {
 
-	switch (sender.state) {
-		case UIGestureRecognizerStateBegan: {
-			if (sender.numberOfTouches < 1) return;
-			CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
-			self.previousGesturePoint  = touchLocation;
-			break;
-		}
-		case UIGestureRecognizerStateChanged: {
-			if (sender.numberOfTouches < 1) return;
-			CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
-			CGPoint currentPoint = touchLocation;
-			int diff = currentPoint.x - self.previousGesturePoint.x;
-			self.previousGesturePoint = currentPoint;
-			self.frame = CGRectMake(self.frame.origin.x + diff, self.frame.origin.y,  self.frame.size.width,  self.frame.size.height);
-			break;
-		}
-		case UIGestureRecognizerStateEnded: {
-			if(self.frame.origin.x > EXIT_EPSILON) {
-				//exit article
-				[self revealPreview:NO];
-			}else{
-				//return view to original position
-				[self revealPreview:YES];
-			}
-			break;
-		}
-		default:
-			break;
-	}
+-(void)addTapToExit{
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitDisplay)];
+    [self addGestureRecognizer:tapGesture];
 }
+
+- (void) exitDisplay{
+    
+    [self revealPreview:NO];
+}
+
 
 @end

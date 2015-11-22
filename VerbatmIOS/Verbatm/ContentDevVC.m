@@ -474,7 +474,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {
                                                               [self deleteScrollView: scrollView];
-                                                              [self removeExcessMediaTiles];
                                                           }];
     UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction * action) {}];
@@ -872,6 +871,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	//if it's a pinch apart then create the media tile
 	 if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVertical &&sender.scale > 1) {
+         [self removeExcessMediaTiles];
 		[self createNewMediaTileBetweenPinchViews];
 	 }
 
@@ -1210,6 +1210,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	switch (sender.state) {
 		case UIGestureRecognizerStateEnded: {
 			[self finishMovingSelectedItem];
+            [self removeExcessMediaTiles];
 			break;
 		}
 		case UIGestureRecognizerStateBegan: {
@@ -1839,10 +1840,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void)removeExcessMediaTiles{
     
     for(int i = 0; i < self.pageElementScrollViews.count; i++){
-        
         if(i < self.pageElementScrollViews.count)//because we're editing the scrollviews
         {
-            ContentPageElementScrollView *  contentPageSV= self.pageElementScrollViews[i];
+            ContentPageElementScrollView *  contentPageSV = self.pageElementScrollViews[i];
             if([contentPageSV.pageElement isKindOfClass:[MediaSelectTile class]] &&
                contentPageSV.pageElement != self.baseMediaTileSelector){
                 [self deleteScrollView:contentPageSV];
