@@ -368,14 +368,12 @@
 
 //we are given a new sorting for our edit content views. We delete them and recreate new ones
 -(void)resortContainerViewsBasedOnArray:(NSMutableArray *) pvArray{
-
     //remove edit content views from our view
-    for (EditMediaContentView * editMediaContentView in self.subviews) {
-        [editMediaContentView removeFromSuperview];
+    for (UIView * view in self.subviews) {
+        [view removeFromSuperview];
     }
     
     self.imageContainerViews = [NSMutableArray arrayWithArray:[self.imageContainerViews sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-        
         PinchView * pinchViewObj1 = ((EditMediaContentView *)obj1).pinchView;
         PinchView * pinchViewObj2 = ((EditMediaContentView *)obj2).pinchView;
 
@@ -384,7 +382,6 @@
             if(obj1PvIndex > obj2PvIndex) return NSOrderedDescending;
             else return NSOrderedAscending;
     }]];
-    
 }
 
 -(void)layoutContainerViews{
