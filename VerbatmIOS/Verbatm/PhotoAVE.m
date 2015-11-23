@@ -61,6 +61,8 @@
 #define TEXT_VIEW_HEIGHT 70.f
 
 @property (nonatomic)BOOL isSubViewOfPhotoVideoAve;
+
+@property (nonatomic, strong) UIView * circleTapView;//this view manages the tapping gesture of the set circles
 @end
 
 @implementation PhotoAVE
@@ -84,7 +86,9 @@
             self.subviewOfPhotoVideoAVE = isPVSubview;
 			[self addPhotos:photos];
 		}
-		if(!pinchView)[self addTapGestureToView:self];
+        
+        UIView * tapView = (pinchView) ? self.panGestureSensingView : self;
+		[self addTapGestureToView:tapView];
         self.isSubViewOfPhotoVideoAve = isPVSubview;
 	}
 	return self;
@@ -268,9 +272,23 @@
 #pragma mark - Tap Gesture -
 
 -(void)addTapGestureToView:(UIView*)view {
-    self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:view action:@selector(mainViewTapped:)];
+    
+    SEL tapFunction = (self.currentCPV) ? @selector(panViewTapped:) : @selector(mainViewTapped:);
+    
+    self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action: tapFunction];
 	[view addGestureRecognizer:self.photoAveTapGesture];
 }
+
+//used only when we have a pinchview and are editing
+-(void) panViewTapped:(UITapGestureRecognizer *) sender {
+    if (sender.numberOfTouches >= 1){
+        CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
+        [self goToPhoto:touchLocation];
+    }
+}
+
+
+
 
 -(void) mainViewTapped:(UITapGestureRecognizer *) sender {
 	if (sender.numberOfTouches < 1) return;
@@ -509,7 +527,7 @@
 		self.showCircleTimer = nil;
 	}
 	if(!display) {
-		 self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+		self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
 	} else {
 		[self animateFadeCircleDisplay:YES];
 	}
@@ -520,7 +538,7 @@
 		[self.showCircleTimer invalidate];
 		self.showCircleTimer = nil;
 	}
-	[self animateFadeCircleDisplay:NO];
+	if(!self.currentCPV) [self animateFadeCircleDisplay:NO];
 }
 
 -(void) animateFadeCircleDisplay:(BOOL) display {

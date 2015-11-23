@@ -35,7 +35,6 @@
                                                     textYPosition, self.textView.frame.size.width,
                                                     self.textView.frame.size.height)];
         }
-        
 		[self resizeTextView];
 	}
 	return self;
