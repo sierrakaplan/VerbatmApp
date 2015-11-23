@@ -374,6 +374,7 @@
     }
     
     self.imageContainerViews = [NSMutableArray arrayWithArray:[self.imageContainerViews sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+
         PinchView * pinchViewObj1 = ((EditMediaContentView *)obj1).pinchView;
         PinchView * pinchViewObj2 = ((EditMediaContentView *)obj2).pinchView;
 

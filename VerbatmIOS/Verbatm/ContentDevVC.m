@@ -1195,18 +1195,16 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 -(void) cameraButtonPressedOnTile: (MediaSelectTile *)tile {
-	if (tile == self.baseMediaTileSelector) {
 		[self.cameraView removeFromSuperview];
 		[self.view addSubview:self.cameraView];
 		[self.cameraView createAndInstantiateGestures];
-	}
+        self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;//should be a contentpagescrollview
 }
 
 #pragma mark - Change position of elements on screen by dragging
 
 // Handle users moving elements around on the screen using long press
 - (IBAction)longPressSensed:(UILongPressGestureRecognizer *)sender {
-
 	switch (sender.state) {
 		case UIGestureRecognizerStateEnded: {
 			[self finishMovingSelectedItem];
@@ -1646,12 +1644,38 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) imageCaptured: (UIImage*) image {
 	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
 	// place it at the bottom of the deck, above base element view selector
-	self.addMediaBelowView = self.pageElementScrollViews.count > 1 ? self.pageElementScrollViews[self.pageElementScrollViews.count-2] : nil;
+    
+    if(self.selectedView_PAN.pageElement == self.baseMediaTileSelector){
+        
+        if(self.pageElementScrollViews.count == 1){
+            self.addMediaBelowView = nil;//insert at the very top
+        }else{
+            self.addMediaBelowView = self.pageElementScrollViews[self.pageElementScrollViews.count - 2];//below the second to last object
+        }
+        
+    }else{
+        self.addMediaBelowView = self.selectedView_PAN;
+    }
+    
+    
 	[self createPinchViewFromImage: image];
 }
 
 // add video asset to deck (create pinch view)
 -(void) videoAssetCaptured:(PHAsset *) asset {
+    
+    if(self.selectedView_PAN.pageElement == self.baseMediaTileSelector){
+        
+        if(self.pageElementScrollViews.count == 1){
+            self.addMediaBelowView = nil;//insert at the very top
+        }else{
+            self.addMediaBelowView = self.pageElementScrollViews[self.pageElementScrollViews.count - 2];//below the second to last object
+        }
+        
+    }else{
+        self.addMediaBelowView = self.selectedView_PAN;
+    }
+    
 	[[PHImageManager defaultManager] requestAVAssetForVideo:asset
 													options:self.videoRequestOptions
 											  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
@@ -1664,6 +1688,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) minimizeCameraViewButtonTapped {
 	[self.cameraView removeFromSuperview];
+    [self removeExcessMediaTiles];
 	//TODO
 }
 

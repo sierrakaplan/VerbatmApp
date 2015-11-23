@@ -66,15 +66,19 @@
 				return;
 			}
             
-            [self.pinchViews insertObject:pinchView atIndex:index];
-			NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
-            [self.pinchViewsAsData insertObject:pinchViewData atIndex:index];
+            if(index < self.pinchViews.count && index >= 0) {
+                [self.pinchViews insertObject:pinchView atIndex:index];
+                NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
+                [self.pinchViewsAsData insertObject:pinchViewData atIndex:index];
+            }
 		}
         
 		[[NSUserDefaults standardUserDefaults]
 		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
 	});
 }
+
+
 
 //removes pinch view and automatically saves pinchViews
 -(void) removePinchView:(PinchView*)pinchView {
@@ -135,7 +139,6 @@
 //loads pinchviews from user defaults
 -(void) loadPOVFromUserDefaults {
 	[self clearPOVInProgress];
-
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];
 	NSData* coverPhotoData = [[NSUserDefaults standardUserDefaults] objectForKey:COVER_PHOTO_KEY];
