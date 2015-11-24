@@ -56,7 +56,7 @@
 
 #define ARTICLE_DISPLAY_VC_ID @"user_article_display_vc"
 
-#define TITLE_FONT 24.f
+#define TITLE_FONT_SIZE 24.f
 #define TAB_BAR_HEIGHT 60.f
 
 @end
@@ -86,7 +86,7 @@
     self.userNameLabel.frame = CGRectMake(self.view.center.x - (self.userNameLabel.frame.size.width/2),
 										  self.userNameLabel.frame.origin.y, self.userNameLabel.frame.size.width,
                                           self.userNameLabel.frame.size.height);
-	self.userNameLabel.font = [UIFont fontWithName:TITLE_TEXT_FONT size:TITLE_FONT];
+	self.userNameLabel.font = [UIFont fontWithName:TITLE_TEXT_FONT size:TITLE_FONT_SIZE];
 }
 
 -(void) addTabBar {

@@ -126,9 +126,6 @@
 	self.profileVC.delegate = self;
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:PROFILE_NAV_ICON] tag:0];
 
-//	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
-//	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
-//	self.feedVC.delegate = self;
 
 	self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init]];
 	self.tabBarController.selectedViewController = self.profileVC;

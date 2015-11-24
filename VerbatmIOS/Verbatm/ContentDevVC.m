@@ -27,6 +27,7 @@
 #import "Icons.h"
 
 #import <QuartzCore/QuartzCore.h>
+
 #import "PinchView.h"
 #import "POVPublisher.h"
 #import "PreviewDisplayView.h"
@@ -187,7 +188,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) addBackgroundImage{
     
-    
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     backgroundView.image =[UIImage imageNamed:@"b16"];
     
@@ -227,7 +227,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
-	[self.navBar createRightButtonWithTitle:@"SAVE DRAFT" orImage:nil];
+	[self.navBar createRightButtonWithTitle:@"PUBLISH" orImage:nil];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }
@@ -367,7 +367,16 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-    // TODO: save draft
+    NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
+    
+    for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
+        if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+            [pinchViews addObject:contentElementScrollView.pageElement];
+        }
+    }
+    
+    [self publishOurStoryWithTitle:self.titleField.text andCoverPhoto:nil andPinchViews:pinchViews];
+
 }
 
 #pragma mark - Configure Text Fields -
@@ -1827,17 +1836,23 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 			NSLog(@"Can't publish with no pinch objects");
 			return;
 		}
-
-		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: coverPhoto];
-		[publisher publish];
-		//TODO: make sure current user exists and if not make them sign in
-		NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
-
-		[self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
-		[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-		[self cleanUp];
+        
+        [self publishOurStoryWithTitle:title andCoverPhoto:nil andPinchViews:pinchViews];
 	}
 }
+
+
+-(void) publishOurStoryWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews{
+    POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: [UIImage imageNamed:@"b16"]];
+    [publisher publish];
+    //TODO: make sure current user exists and if not make them sign in
+    NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
+    
+    [self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
+    [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+    [self cleanUp];
+}
+
 
 #pragma mark - Alerts -
 /*
