@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface profileNavBar : UIView
-
+-(instancetype) initWithFrame:(CGRect)frame andThreads:(NSArray *) threads andUserName:(NSString *) userName;
 @end
