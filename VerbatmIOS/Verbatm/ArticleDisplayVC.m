@@ -46,12 +46,6 @@
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
-
-
-
-
-
-
 #define ACTIVITY_ANIMATION_Y 100
 @end
 
@@ -72,6 +66,7 @@
 	[self.scrollView addSubview: povView];
 	[self.povViews addObject: povView];
     [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
+    [self loadNextStories];
 }
 
 
@@ -79,9 +74,8 @@
 
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    
+    //[self loadNextStories];
 }
-
 
 
 
@@ -90,32 +84,54 @@
 -(void) loadNextStories {
     
     NSInteger numPOVS = [self.povLoadManager getNumberOfPOVsLoaded];
-    CGFloat currentPageIndex = self.scrollView.contentOffset.x/self.view.frame.size.width;
     
+    NSInteger currentPageIndex = self.scrollView.contentOffset.x/self.view.frame.size.width;
+    NSInteger leftPOVIndex = currentPageIndex - 1;
+    NSInteger rightPOVIndex = currentPageIndex + 1;
     if(currentPageIndex == 0) {
        //we are on the first page so load the next two
-        PovInfo* povInfo1 = [self.povLoadManager getPOVInfoAtIndex:1.f];
-        PovInfo* povInfo2 = [self.povLoadManager getPOVInfoAtIndex:2.f];
-        
+        PovInfo* povInfo1 = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex];
+        PovInfo* povInfo2 = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex + 1];
         if(povInfo1){
-            
+            POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex] andPOVInfo:povInfo1];
+            [self.povViews insertObject:povView atIndex:rightPOVIndex];
+            [self.scrollView addSubview:povView];
         }
-        
-        
-        
-    }else if (currentPageIndex == 1) {
+        if(povInfo2){
+            POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex + 1] andPOVInfo:povInfo2];
+            [self.povViews insertObject:povView atIndex:rightPOVIndex + 1];
+            [self.scrollView addSubview:povView];
+        }
+    }else if (currentPageIndex > 0) {
         //we are on the second page so the next one is already loaded
-        
-        
-        
-    }else if (currentPageIndex > 1) {
-        // we are past the first and second pages
-        
-        
+        if(self.povViews[leftPOVIndex] == [NSNull null]){
+            PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:leftPOVIndex];
+            POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:leftPOVIndex] andPOVInfo:povInfo];
+            [self.povViews insertObject:povView atIndex:leftPOVIndex];
+            
+            [self.scrollView addSubview:povView];
+        }
+        if(self.povViews[rightPOVIndex] == [NSNull null]){
+            PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex];
+            POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex] andPOVInfo:povInfo];
+            [self.povViews insertObject:povView atIndex:rightPOVIndex];
+            [self.scrollView addSubview:povView];
+        }
     }
     
-    
-    
+    [self updateScrollview];
+}
+
+
+
+-(CGRect) getFrameForPovAtIndex:(NSInteger) index{
+    return CGRectMake(index * self.view.frame.size.width, 0.f, self.view.frame.size.width, self.view.frame.size.height);
+}
+
+
+//makes the size as large as there are views
+-(void)updateScrollview{
+    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.povViews.count, 0);
 }
 
 
@@ -125,28 +141,6 @@
 	[self.updatingPOVManager povWithId:povInfo.identifier wasLiked: liked];
 	[self.delegate userLiked:liked POV:povInfo];
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

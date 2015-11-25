@@ -81,8 +81,18 @@
 }
 
 
-
-
+// Successfully loaded more POV's
+-(void) morePOVsLoaded: (NSInteger) numLoaded {
+    
+}
+// Was unable to load more POV's for some reason
+-(void) failedToLoadMorePOVs{
+    
+}
+// Was unable to refresh POV's for some reason
+-(void) povsFailedToRefresh{
+    
+}
 
 
 -(void)addClearScreenGesture{
