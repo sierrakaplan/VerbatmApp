@@ -26,7 +26,7 @@
 #import "UpdatingPOVManager.h"
 #import "UIView+Effects.h"
 
-@interface ArticleDisplayVC () < LikeButtonDelegate, UIScrollViewDelegate>
+@interface ArticleDisplayVC () < LikeButtonDelegate, UIScrollViewDelegate, POVLoadManagerDelegate>
 
 @property (strong, nonatomic) POVDisplayScrollView* scrollView;
 
@@ -38,7 +38,7 @@
 
 //Should not retain strong reference to the load manager since the
 //ArticleListVC also contains a reference to it
-@property (weak, nonatomic) POVLoadManager* povLoadManager;
+@property (strong, nonatomic) POVLoadManager* povLoadManager;
 
 
 // In charge of updating information about a pov (number of likes, etc.)
@@ -47,6 +47,7 @@
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
 #define ACTIVITY_ANIMATION_Y 100
+#define NUM_POVS_IN_SECTION 10
 @end
 
 @implementation ArticleDisplayVC
@@ -56,19 +57,59 @@
 	//TODO: should always have 4 stories in memory (two in the direction of scroll, current, and one back)
 	self.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
 	[self.view addSubview: self.scrollView];
+    [self createLoadManger];
 }
 
+-(void) presentContentWithPOVType: (POVType) povType{
+    if(povType == POVTypeUser){
+        //will be changed to show different people on
+        NSNumber* aishwaryaId = [NSNumber numberWithLongLong:5432098273886208];
+        self.povLoadManager = [[POVLoadManager alloc] initWithUserId: aishwaryaId];
+        self.povLoadManager.delegate = self;
+        [self.povLoadManager reloadPOVs: NUM_POVS_IN_SECTION];
+    }else{
+        self.povLoadManager = [[POVLoadManager alloc] initWithType:povType];
+        self.povLoadManager.delegate = self;
+        [self.povLoadManager reloadPOVs: NUM_POVS_IN_SECTION];
+    }
+}
+
+
 // When user clicks story, loads one behind it and the two ahead
--(void) loadStoryAtIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
-	self.povLoadManager = loadManager;
-    PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
+-(void) loadStoryFromStart {
+    PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:0];
     POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds andPOVInfo:povInfo];
-	[self.scrollView addSubview: povView];
+    [self.scrollView addSubview: povView];
 	[self.povViews addObject: povView];
     [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
     [self loadNextStories];
 }
 
+-(void)createLoadManger{
+    
+}
+
+
+#pragma mark - Load Manger Profile -
+
+//load manager protocol
+-(void) povsRefreshed{
+    [self loadStoryFromStart];
+}
+
+
+// Successfully loaded more POV's
+-(void) morePOVsLoaded: (NSInteger) numLoaded {
+    
+}
+// Was unable to load more POV's for some reason
+-(void) failedToLoadMorePOVs{
+    
+}
+// Was unable to refresh POV's for some reason
+-(void) povsFailedToRefresh{
+    
+}
 
 #pragma mark -manage multiple stories present-
 
@@ -82,26 +123,28 @@
 // When user scrolls to a new story, loads the next two in that
 // direction of scroll
 -(void) loadNextStories {
-    
     NSInteger numPOVS = [self.povLoadManager getNumberOfPOVsLoaded];
-    
     NSInteger currentPageIndex = self.scrollView.contentOffset.x/self.view.frame.size.width;
     NSInteger leftPOVIndex = currentPageIndex - 1;
     NSInteger rightPOVIndex = currentPageIndex + 1;
     if(currentPageIndex == 0) {
-       //we are on the first page so load the next two
+       
+        //we are on the first page so load the next two
         PovInfo* povInfo1 = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex];
         PovInfo* povInfo2 = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex + 1];
+        
         if(povInfo1){
             POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex] andPOVInfo:povInfo1];
             [self.povViews insertObject:povView atIndex:rightPOVIndex];
             [self.scrollView addSubview:povView];
         }
+        
         if(povInfo2){
             POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex + 1] andPOVInfo:povInfo2];
             [self.povViews insertObject:povView atIndex:rightPOVIndex + 1];
             [self.scrollView addSubview:povView];
         }
+        
     }else if (currentPageIndex > 0) {
         //we are on the second page so the next one is already loaded
         if(self.povViews[leftPOVIndex] == [NSNull null]){
@@ -111,15 +154,16 @@
             
             [self.scrollView addSubview:povView];
         }
-        if(self.povViews[rightPOVIndex] == [NSNull null]){
+        
+        if(self.povViews[rightPOVIndex] == [NSNull null]) {
             PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex];
             POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex] andPOVInfo:povInfo];
             [self.povViews insertObject:povView atIndex:rightPOVIndex];
             [self.scrollView addSubview:povView];
         }
     }
-    
     [self updateScrollview];
+
 }
 
 

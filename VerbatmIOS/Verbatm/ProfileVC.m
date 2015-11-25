@@ -20,9 +20,7 @@
 @property (nonatomic, strong) profileNavBar * profileNavBar;
 @property (weak, nonatomic) GTLVerbatmAppVerbatmUser* currentUser;
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
-@property (strong, nonatomic) POVLoadManager * profileLoadManager;
 #define ARTICLE_DISPLAY_VC_ID @"article_display_vc"
-#define NUM_POVS_IN_SECTION 10
 @end
 
 @implementation ProfileVC
@@ -31,7 +29,6 @@
 	[super viewDidLoad];
 	
     NSArray * testThreads = @[@"Parties", @"Selfies", @"The Diaspora", @"Entrepreneur", @"Demo Day"];
-    [self createLoadManger];
     [self createContentListView];
     [self createNavigationBarWithThreads:testThreads];
     [self addClearScreenGesture];
@@ -42,12 +39,7 @@
 	[super viewDidAppear:animated];
 }
 
--(void)createLoadManger{
-    NSNumber* aishwaryaId = [NSNumber numberWithLongLong:5432098273886208];
-    self.profileLoadManager = [[POVLoadManager alloc] initWithUserId: aishwaryaId];
-    self.profileLoadManager.delegate = self;
-    [self.profileLoadManager reloadPOVs: NUM_POVS_IN_SECTION];
-}
+
 
 -(void) createContentListView{
    
@@ -55,6 +47,7 @@
     self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
     self.postDisplayVC.view.frame = self.view.bounds;
     self.postDisplayVC.view.backgroundColor = [UIColor blackColor];
+    [self.postDisplayVC presentContentWithPOVType:POVTypeUser];
     
     [self addChildViewController:self.postDisplayVC];
     [self.view addSubview:self.postDisplayVC.view];
@@ -63,10 +56,6 @@
    
 }
 
-//load manager protocol
--(void) povsRefreshed{
-    if(self.postDisplayVC)[self.postDisplayVC loadStoryAtIndex:0.f fromLoadManager:self.profileLoadManager];
-}
 
 -(void) createNavigationBarWithThreads:(NSArray *) threads {
     CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width,(CUSTOM_NAV_BAR_HEIGHT*2));
@@ -78,20 +67,6 @@
 
 -(void) updateUserInfo {
     self.currentUser = [[UserManager sharedInstance] getCurrentUser];
-}
-
-
-// Successfully loaded more POV's
--(void) morePOVsLoaded: (NSInteger) numLoaded {
-    
-}
-// Was unable to load more POV's for some reason
--(void) failedToLoadMorePOVs{
-    
-}
-// Was unable to refresh POV's for some reason
--(void) povsFailedToRefresh{
-    
 }
 
 

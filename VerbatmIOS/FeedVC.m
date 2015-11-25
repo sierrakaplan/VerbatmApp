@@ -190,7 +190,7 @@
 -(void) displayPOVOnCell:(FeedTableViewCell *)cell withLoadManager:(POVLoadManager *)loadManager {
 	[self.delegate showTabBar:NO];
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
-	[self.articleDisplayVC loadStoryAtIndex:cell.indexPath.row fromLoadManager:loadManager];
+	//[self.articleDisplayVC loadStoryAtIndex:cell.indexPath.row fromLoadManager:loadManager];
 	self.articleDisplayContainerView.frame = self.view.bounds;
 	self.articleDisplayContainerView.alpha = 1;
 	[self.view bringSubviewToFront: self.articleDisplayContainerView];
