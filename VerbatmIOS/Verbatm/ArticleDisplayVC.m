@@ -1,4 +1,4 @@
-//
+ //
 //  ArticleDisplayVC.m
 //  Verbatm
 //
@@ -26,7 +26,7 @@
 #import "UpdatingPOVManager.h"
 #import "UIView+Effects.h"
 
-@interface ArticleDisplayVC () <PagesLoadManagerDelegate, LikeButtonDelegate>
+@interface ArticleDisplayVC () <PagesLoadManagerDelegate, LikeButtonDelegate, UIScrollViewDelegate>
 
 @property (strong, nonatomic) POVDisplayScrollView* scrollView;
 
@@ -48,6 +48,12 @@
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
+
+
+
+
+
+
 #define ACTIVITY_ANIMATION_Y 100
 @end
 
@@ -64,11 +70,18 @@
 // When user clicks story, loads one behind it and the two ahead
 -(void) loadStoryAtIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
 	self.povLoadManager = loadManager;
+    
+    
 	PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
+    
 	NSNumber* povID = povInfo.identifier;
-	[self.pageLoadManager loadPagesForPOV: povID];
-	[self.povIDs addObject: povID];
-	POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds andPOVInfo:povInfo];
+	
+    
+    [self.pageLoadManager loadPagesForPOV: povID];
+	
+    [self.povIDs addObject: povID];
+	
+    POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds andPOVInfo:povInfo];
 	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.view.bounds andImage:povInfo.coverPhoto andTitle: povInfo.title];
 	[povView renderNextAve:coverAVE withIndex:[NSNumber numberWithInteger:0]];
 	[self.scrollView addSubview: povView];
@@ -80,9 +93,53 @@
     [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
 }
 
+
+#pragma mark -manage multiple stories present-
+
+
+
+
+
+
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+}
+
+
+
+
 // When user scrolls to a new story, loads the next two in that
 // direction of scroll
--(void) loadNextTwoStories: (NSInteger) index {
+-(void) loadNextStories {
+    
+    NSInteger numPOVS = [self.povLoadManager getNumberOfPOVsLoaded];
+    CGFloat currentPageIndex = self.scrollView.contentOffset.x/self.view.frame.size.width;
+    
+    if(currentPageIndex == 0) {
+       //we are on the first page so load the next two
+        PovInfo* povInfo1 = [self.povLoadManager getPOVInfoAtIndex:1.f];
+        PovInfo* povInfo2 = [self.povLoadManager getPOVInfoAtIndex:2.f];
+        
+        if(povInfo1){
+            
+        }
+        
+        
+        
+    }else if (currentPageIndex == 1) {
+        //we are on the second page so the next one is already loaded
+        
+        
+        
+    }else if (currentPageIndex > 1) {
+        // we are past the first and second pages
+        
+        
+    }
+    
+    
+    
 }
 
 #pragma mark - Page load manager delegate -
@@ -91,23 +148,9 @@
 	NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
 	NSUInteger povIndex = [self.povIDs indexOfObject: povID];
 	POVView* povView = self.povViews[povIndex];
-
-	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
-	for (Page* page in pages) {
-		[analyzer getAVEFromPage: page withFrame: self.view.bounds].then(^(UIView* ave) {
-			NSInteger pageIndex = page.indexInPOV+1; // bc cover page +1
-			// When first page loads, show down arrow
-			if (pageIndex == 1) {
-				[povView addDownArrowButton];
-				[povView addLikeButtonWithDelegate:self];
-				[self.activityIndicator stopAnimating];
-				self.activityIndicator = nil;
-			}
-			[povView renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
-		}).catch(^(NSError* error) {
-			NSLog(@"Error getting AVE from page: %@", error.description);
-		});
-	}
+    [povView renderPOVFromPages:pages andLikeButtonDelegate:self];
+    [self.activityIndicator stopAnimating];
+    self.activityIndicator = nil;
 }
 
 #pragma mark - POVView Delegate (Like button) -
@@ -116,6 +159,30 @@
 	[self.updatingPOVManager povWithId:povInfo.identifier wasLiked: liked];
 	[self.delegate userLiked:liked POV:povInfo];
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #pragma mark - Clean up -
 
@@ -133,7 +200,6 @@
     [[Analytics getSharedInstance] storyEndedViewing];
 }
 
-
 #pragma mark - Memory warning -
 
 - (void)didReceiveMemoryWarning {
@@ -147,6 +213,7 @@
 -(POVDisplayScrollView*) scrollView {
 	if (!_scrollView) {
 		_scrollView = [[POVDisplayScrollView alloc] initWithFrame:self.view.bounds];
+        _scrollView.delegate = self;
 	}
 	return _scrollView;
 }

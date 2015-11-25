@@ -60,7 +60,7 @@
 #define FEED_CELL_ID @"feed_cell_id"
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 
-#define NUM_POVS_IN_SECTION 6
+#define NUM_POVS_IN_SECTION 10
 #define RELOAD_THRESHOLD (STORY_CELL_HEIGHT*2 + 10)
 
 @end

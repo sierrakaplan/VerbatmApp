@@ -25,7 +25,7 @@
 -(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo;
 
 // pageIndex is int value
--(void) renderNextAve: (UIView*) ave withIndex: (NSNumber*) pageIndex;
+-(void) renderNextAve: (UIView*) ave withIndex: (NSNumber*) pageIndex; 
 
 -(void) renderAVES: (NSMutableArray *) aves;
 
@@ -43,4 +43,11 @@
 
 //makes the pov start a secific page
 -(void)moveViewTopPageIndex:(NSInteger) pageIndex;
+
+
+//presents array of pages when they are downloaded
+-(void) renderPOVFromPages:(NSArray *) pages andLikeButtonDelegate:(id) likeDelegate;
+
+
+
 @end

@@ -6,17 +6,26 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "POVView.h"
 #import "Analytics.h"
-#import "CoverPhotoAVE.h"
+
 #import "BaseArticleViewingExperience.h"
+
+#import "CoverPhotoAVE.h"
+
 #import "Icons.h"
+
 #import "PhotoVideoAVE.h"
 #import "PhotoAVE.h"
+#import "POVView.h"
+#import "Page.h"
+
 #import "SizesAndPositions.h"
+
 #import "TextAVE.h"
-#import "VideoAVE.h"
+
 #import "UserManager.h"
+
+#import "VideoAVE.h"
 
 @interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate>
 
@@ -288,6 +297,33 @@
 	}];
 }
 
+
+#pragma mark -Pages Downloaded-
+
+-(void) renderPOVFromPages:(NSArray *) pages andLikeButtonDelegate:(id) likeDelegate{
+    
+    AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
+    for (Page * page in pages) {
+        [analyzer getAVEFromPage: page withFrame: self.bounds].then(^(UIView* ave) {
+            NSInteger pageIndex = page.indexInPOV+1; // bc cover page +1
+            // When first page loads, show down arrow
+            if (pageIndex == 1) {
+                [self addDownArrowButton];
+                [self addLikeButtonWithDelegate:likeDelegate];
+            }
+            
+            [self renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
+        }).catch(^(NSError* error) {
+            NSLog(@"Error getting AVE from page: %@", error.description);
+        });
+    }
+
+}
+
+
+
+
+
 #pragma mark - Photo AVE Delegate -
 
 -(void) startedDraggingAroundCircle {
@@ -336,7 +372,7 @@
 		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];
 		[_mainScrollView setShowsHorizontalScrollIndicator:NO];
-		_mainScrollView.bounces = YES;
+		_mainScrollView.bounces = NO;
 		//scroll view delegate
 		_mainScrollView.delegate = self;
 	}

@@ -21,7 +21,7 @@
 
 #define NAVIGATION_BAR_TEXT_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
 #define NAVIGATION_BAR_BUTTON_FONT @"HelveticaNeue-Medium"
-#define NAVIGATION_BAR_BUTTON_FONT_SIZE 14.f
+#define NAVIGATION_BAR_BUTTON_FONT_SIZE 15.f
 
 #define TAB_BAR_COLOR whiteColor
 #define SELECTED_TAB_BAR_COLOR grayColor
