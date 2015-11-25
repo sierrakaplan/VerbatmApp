@@ -18,16 +18,21 @@
 #import "PhotoAVE.h"
 #import "POVView.h"
 #import "Page.h"
-
+#import "PagesLoadManager.h"
 #import "SizesAndPositions.h"
 
 #import "TextAVE.h"
 
 #import "UserManager.h"
+#import "UIView+Effects.h"
 
 #import "VideoAVE.h"
 
-@interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate>
+@interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate, PagesLoadManagerDelegate>
+
+// Load manager in charge of getting page objects and all their media for each pov
+@property (strong, nonatomic) PagesLoadManager* pageLoadManager;
+
 
 // mapping between integer and uiview
 @property (strong, nonatomic) NSMutableDictionary * pageAves;
@@ -46,30 +51,42 @@
 
 @property (nonatomic, strong) UIButton * downArrow;
 
+@property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
+
+
 #define DOWN_ARROW_WIDTH 30
 #define DOWN_ARROE_DISTANCE_FROM_BOTTOM 30
 #define SCROLL_UP_ANIMATION_DURATION 0.7
+#define ACTIVITY_ANIMATION_Y 100
+
 @end
 
 @implementation POVView
 
--(instancetype)initWithFrame:(CGRect)frame {
-	self = [super initWithFrame:frame];
-	if (self) {
-		[self addSubview: self.mainScrollView];
-		self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
-	}
-	return self;
-}
-
 -(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo {
-    self = [self initWithFrame:frame];
+    self = [super initWithFrame:frame];
     if (self) {
 		self.povInfo = povInfo;
+        [self addSubview: self.mainScrollView];
+        self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
+        [self createPageLoader];
+        
+        self.activityIndicator = [self startActivityIndicatorOnViewWithCenter: CGPointMake(self.center.x, ACTIVITY_ANIMATION_Y)
+                                                                     andStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        self.activityIndicator.color = [UIColor blackColor];
     }
     return self;
 }
 
+
+-(void) createPageLoader{
+    self.pageLoadManager = [[PagesLoadManager alloc] init];
+    self.pageLoadManager.delegate = self;
+    
+    NSNumber* povID = self.povInfo.identifier;
+    [self.pageLoadManager loadPagesForPOV: povID];
+    
+}
 
 -(void)moveViewTopPageIndex:(NSInteger) pageIndex{
     if(pageIndex < self.pageAves.count){
@@ -84,7 +101,7 @@
 	[self.pageAves setObject:ave forKey:pageIndex];
 	if (pageIndex == self.currentIndexOfPageLoading) {
 		self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
-													 (self.currentIndexOfPageLoading.integerValue+1) * self.frame.size.height);
+													 (self.currentIndexOfPageLoading.integerValue) * self.frame.size.height);
 		[self setDelegateOnPhotoAVE: ave];
 		CGRect frame = CGRectOffset(self.bounds, 0, self.frame.size.height * self.currentIndexOfPageLoading.integerValue);
 		ave.frame = frame;
@@ -300,14 +317,24 @@
 
 #pragma mark -Pages Downloaded-
 
+
+
+-(void) pagesLoadedForPOV:(NSNumber *)povID {
+    NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
+    [self renderPOVFromPages:pages andLikeButtonDelegate:self];
+    [self.activityIndicator stopAnimating];
+    self.activityIndicator = nil;
+}
+
+
 -(void) renderPOVFromPages:(NSArray *) pages andLikeButtonDelegate:(id) likeDelegate{
     
     AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
     for (Page * page in pages) {
         [analyzer getAVEFromPage: page withFrame: self.bounds].then(^(UIView* ave) {
-            NSInteger pageIndex = page.indexInPOV+1; // bc cover page +1
+            NSInteger pageIndex = page.indexInPOV; // bc cover page +1
             // When first page loads, show down arrow
-            if (pageIndex == 1) {
+            if (pageIndex == 0) {
                 [self addDownArrowButton];
                 [self addLikeButtonWithDelegate:likeDelegate];
             }

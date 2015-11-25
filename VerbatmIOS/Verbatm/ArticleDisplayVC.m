@@ -26,7 +26,7 @@
 #import "UpdatingPOVManager.h"
 #import "UIView+Effects.h"
 
-@interface ArticleDisplayVC () <PagesLoadManagerDelegate, LikeButtonDelegate, UIScrollViewDelegate>
+@interface ArticleDisplayVC () < LikeButtonDelegate, UIScrollViewDelegate>
 
 @property (strong, nonatomic) POVDisplayScrollView* scrollView;
 
@@ -40,8 +40,6 @@
 //ArticleListVC also contains a reference to it
 @property (weak, nonatomic) POVLoadManager* povLoadManager;
 
-// Load manager in charge of getting page objects and all their media for each pov
-@property (strong, nonatomic) PagesLoadManager* pageLoadManager;
 
 // In charge of updating information about a pov (number of likes, etc.)
 @property (strong, nonatomic) UpdatingPOVManager* updatingPOVManager;
@@ -64,42 +62,20 @@
 	//TODO: should always have 4 stories in memory (two in the direction of scroll, current, and one back)
 	self.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
 	[self.view addSubview: self.scrollView];
-	self.pageLoadManager.delegate = self;
 }
 
 // When user clicks story, loads one behind it and the two ahead
 -(void) loadStoryAtIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
 	self.povLoadManager = loadManager;
-    
-    
-	PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
-    
-	NSNumber* povID = povInfo.identifier;
-	
-    
-    [self.pageLoadManager loadPagesForPOV: povID];
-	
-    [self.povIDs addObject: povID];
-	
+    PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
     POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds andPOVInfo:povInfo];
-	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.view.bounds andImage:povInfo.coverPhoto andTitle: povInfo.title];
-	[povView renderNextAve:coverAVE withIndex:[NSNumber numberWithInteger:0]];
 	[self.scrollView addSubview: povView];
 	[self.povViews addObject: povView];
-    self.activityIndicator = [self.view startActivityIndicatorOnViewWithCenter: CGPointMake(self.view.center.x, ACTIVITY_ANIMATION_Y)
-                                                            andStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    self.activityIndicator.color = [UIColor blackColor];
-    
     [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
 }
 
 
 #pragma mark -manage multiple stories present-
-
-
-
-
-
 
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
@@ -142,16 +118,6 @@
     
 }
 
-#pragma mark - Page load manager delegate -
-
--(void) pagesLoadedForPOV:(NSNumber *)povID {
-	NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
-	NSUInteger povIndex = [self.povIDs indexOfObject: povID];
-	POVView* povView = self.povViews[povIndex];
-    [povView renderPOVFromPages:pages andLikeButtonDelegate:self];
-    [self.activityIndicator stopAnimating];
-    self.activityIndicator = nil;
-}
 
 #pragma mark - POVView Delegate (Like button) -
 
@@ -218,12 +184,6 @@
 	return _scrollView;
 }
 
--(PagesLoadManager*) pageLoadManager {
-	if (!_pageLoadManager) {
-		_pageLoadManager = [[PagesLoadManager alloc] init];
-	}
-	return _pageLoadManager;
-}
 
 -(UpdatingPOVManager*) updatingPOVManager {
 	if (!_updatingPOVManager) {

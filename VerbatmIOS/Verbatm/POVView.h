@@ -18,9 +18,6 @@
 
 @interface POVView : UIView
 
-// default initializer
--(instancetype)initWithFrame:(CGRect)frame;
-
 // stores pov info associated with this view
 -(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo;
 
