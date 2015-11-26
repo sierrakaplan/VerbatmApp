@@ -52,34 +52,25 @@
 	if (self) {
 		[self formatScrollView];
 		[self changePageElement:element];
-        [self createDeleteButton];
+        if([element isKindOfClass:[PinchView class]])[self createDeleteButton];
         
 	}
 	return self;
 }
 
 -(void) formatScrollView {
-	self.contentSize = self.initialContentSize = CGSizeMake(self.frame.size.width + DELETE_ICON_WIDTH + 2*DELETE_ICON_OFFSET, 0);
-	self.contentOffset = self.initialContentOffset = CGPointZero;
 	self.pagingEnabled = NO;
 	self.showsHorizontalScrollIndicator = NO;
 	self.showsVerticalScrollIndicator = NO;
     self.bounces = NO;
 }
 
--(void)createDeleteButton{
-    
-    if ([self.pageElement isKindOfClass:[MediaSelectTile class]]) {
-        self.deleteButton = [[UIButton alloc] initWithFrame:
-                             CGRectMake(self.contentSize.width - DELETE_ICON_OFFSET - DELETE_ICON_WIDTH,
-                                        self.pageElement.center.y + MEDIA_SELECT_TILE_DELETE_BUTTON_OFFSET,
-                                        DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
-    } else {
-        self.deleteButton = [[UIButton alloc] initWithFrame:
-                             CGRectMake(self.contentSize.width - DELETE_ICON_OFFSET - DELETE_ICON_WIDTH,
-                                        self.pageElement.center.y - (DELETE_ICON_HEIGHT/2.f),
-                                        DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
-    }
+-(void)createDeleteButton {
+    self.deleteButton = [[UIButton alloc] initWithFrame:
+                         CGRectMake(self.pageElement.frame.origin.x +
+                                    self.pageElement.frame.size.width + DELETE_ICON_X_OFFSET,
+                                    self.pageElement.center.y - (DELETE_ICON_Y_OFFSET),
+                                    DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
     
     [self.deleteButton setImage:[UIImage imageNamed:DELETE_ICON] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -107,25 +98,30 @@
 }
 
 -(PinchView*) pinchWith:(ContentPageElementScrollView*)otherScrollView {
-	PinchView* newPinchView;
-
-	[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
-	[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
-
+	
+    PinchView* newPinchView;
 	if(self.isCollection) {
 		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(PinchView*)otherScrollView.pageElement];
+        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
+        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement andReplaceWithPinchView:newPinchView];
+        
+        
 	} else if(otherScrollView.isCollection){
 		newPinchView = [(CollectionPinchView*)otherScrollView.pageElement pinchAndAdd:(PinchView*)self.pageElement];
+        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
+        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement andReplaceWithPinchView:newPinchView];
+        
 	} else {
 		NSMutableArray* pinchViewArray = [[NSMutableArray alloc] initWithObjects:self.pageElement, otherScrollView.pageElement, nil];
 		newPinchView = [PinchView pinchTogether:pinchViewArray];
 		pinchViewArray = nil;
 	}
-	[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)newPinchView];
+	
 	[self changePageElement:newPinchView];
 	[otherScrollView removeFromSuperview];
 	return newPinchView;
 }
+
 
 -(void) changePageElement:(UIView<ContentDevElementDelegate>*) newPageElement {
 	if(newPageElement == self.pageElement) {
@@ -458,8 +454,8 @@
 	self.selectedItem = nil;
 	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
 	if (index < 0) index = 0;
-	[[UserPovInProgress sharedInstance] removePinchView:currentPinchView];
-	[(CollectionPinchView*)self.pageElement unPinchAndRemove:unPinched];
+	
+    [currentPinchView unPinchAndRemove:unPinched];
 
 	//check if there is now only one element in the collection, and if so
 	//this should not be collection anymore
@@ -477,7 +473,7 @@
 	}
 
 	self.selectedItem = nil;
-	[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)self.pageElement];
+	[[UserPovInProgress sharedInstance]removePinchView:currentPinchView andReplaceWithPinchView:(PinchView *)self.pageElement];
 	return unPinched;
 }
 

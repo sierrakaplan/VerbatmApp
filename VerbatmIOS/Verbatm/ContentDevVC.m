@@ -14,6 +14,7 @@
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
+#import "CoverPhoto.h"
 #import "ContentPageElementScrollView.h"
 #import "Durations.h"
 
@@ -242,8 +243,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 //sets the textview placeholders' color and text
 -(void) formatTitleAndCoverPicture {
-
-	CGRect titleFrame = CGRectMake(TITLE_FIELD_X_OFFSET, TITLE_FIELD_Y_OFFSET,
+    
+    CGRect titleFrame = CGRectMake(TITLE_FIELD_X_OFFSET, TITLE_FIELD_Y_OFFSET,
 											   self.view.bounds.size.width - 2*TITLE_FIELD_X_OFFSET,
 											   TITLE_FIELD_HEIGHT);
 	CGFloat coverPicRadius = COVER_PIC_RADIUS;
@@ -467,9 +468,21 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 #pragma mark - Content Page Element Scroll View Delegate -
-
+//apply two step deletion
 -(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView {
-	[self deleteScrollView: scrollView];
+    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Confirm Deletion" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {
+                                                              [self deleteScrollView: scrollView];
+                                                          }];
+    UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    [newAlert addAction:action1];
+    [newAlert addAction:action2];
+    [self presentViewController:newAlert animated:YES completion:nil];
+    
+    
+    
 }
 
 
@@ -480,7 +493,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	if (![self.pageElementScrollViews containsObject:pageElementScrollView]){
 		return;
 	}
-
+    
 	//update user defaults if was pinch view
 	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
 		[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
@@ -491,13 +504,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[pageElementScrollView cleanUp];
 	[pageElementScrollView removeFromSuperview];
 	[self shiftElementsBelowView: self.coverPicView];
-
-	/* NOT IN USE - register deleted tile for undo
-	 NSUInteger index = [self.pageElementScrollViews indexOfObject:scrollView];
- 	[self.tileSwipeViewUndoManager registerUndoWithTarget:self selector:@selector(undoTileDelete:) object:@[pageElementScrollView, index]];
-	 //show the pullbar so that they can undo
-	 [self.delegate showPullBar:YES withTransition:YES];
-	 */
 }
 
 
@@ -516,8 +522,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 //		NSLog(@"Attempting to add nil pinch view");
 		return;
 	}
-
-	[[UserPovInProgress sharedInstance] addPinchView:pinchView];
 	[self addTapGestureToPinchView:pinchView];
 	// must be below base media tile selector
 	NSInteger index = self.pageElementScrollViews.count-1;
@@ -533,19 +537,29 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
     
-	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newElementScrollViewFrame andElement:pinchView];
-	newElementScrollView.delegate = self; //scroll view delegate
-	newElementScrollView.contentPageElementScrollViewDelegate = self;
-	self.numPinchViews++;
-
+    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:newElementScrollViewFrame];
+	
+    self.numPinchViews++;
+    
 	//thread safety
 	@synchronized(self) {
-		[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+        [self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
 	}
-
+    
+    [[UserPovInProgress sharedInstance] addPinchView:pinchView atIndex:index];
+    
     [self.mainScrollView addSubview: newElementScrollView];
 	self.addMediaBelowView = newElementScrollView;
     [self shiftElementsBelowView: self.coverPicView];
+}
+
+-(ContentPageElementScrollView *) createNewContentScrollViewWithPinchView:(PinchView *) view andFrame:(CGRect) frame {
+    
+    ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:frame andElement:view];
+    newElementScrollView.delegate = self; //scroll view delegate
+    newElementScrollView.contentPageElementScrollViewDelegate = self;
+    
+    return newElementScrollView;
 }
 
 #pragma mark - Shift Positions of Elements
@@ -676,23 +690,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 - (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender {
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
-
-			//sometimes people will rest their hands on the screen so make sure the textviews are selectable
-			for (UIView * element in self.mainScrollView.pageElements) {
-				if([element isKindOfClass:[UITextView class]]) {
-					((UITextView *)element).selectable = YES;
-				}
-			}
 			[self handlePinchGestureBegan:sender];
 			break;
 		}
 		case UIGestureRecognizerStateChanged: {
 
-			if((self.pinchingMode == PinchingModeHorizontal)
-			   && self.scrollViewOfHorizontalPinching && sender.scale < 1) {
-				[self handleHorizontalPinchGestureChanged:sender];
-
-			} else if ((self.pinchingMode == PinchingModeVertical)
+			if ((self.pinchingMode == PinchingModeVertical ||
+                 self.pinchingMode == PinchingModeVerticalUndo)
 					   && self.lowerPinchScrollView && self.upperPinchScrollView) {
 				[self handleVerticlePinchGestureChanged:sender];
 			}
@@ -754,24 +758,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}];
 }
 
-
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
-
-	CGPoint touch1 = [sender locationOfTouch:0 inView:self.mainScrollView];
-	CGPoint touch2 = [sender locationOfTouch:1 inView:self.mainScrollView];
-
-	int xDifference = fabs(touch1.x -touch2.x);
-	int yDifference = fabs(touch1.y -touch2.y);
-	//figure out if it's a horizontal pinch or vertical pinch
-	if(xDifference > yDifference) {
-		self.pinchingMode = PinchingModeHorizontal;
-		[self handleHorizontalPinchGestureBegan:sender];
-	}else {
-		//you can pinch together two things if there aren't two
-		if(self.pageElementScrollViews.count < 2) return;
-		self.pinchingMode = PinchingModeVertical;
-		[self handleVerticlePinchGestureBegan:sender];
-	}
+     if(self.pageElementScrollViews.count < 2) return;//if there is only one object on the screen then don't pinch
+    self.pinchingMode = PinchingModeVertical;
+    [self handleVerticlePinchGestureBegan:sender];
 }
 
 
@@ -870,10 +860,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.lowerTouchPointInVerticalPinch = touch2;
 		self.upperTouchPointInVerticalPinch = touch1;
 	}
-	[self findElementsFromPinchPoint];
+	
+    [self findElementsFromPinchPoint];
 
 	//if it's a pinch apart then create the media tile
-	 if(self.upperPinchScrollView && self.lowerPinchScrollView && sender.scale > 1) {
+	 if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVertical &&sender.scale > 1) {
 		[self createNewMediaTileBetweenPinchViews];
 	 }
 
@@ -883,29 +874,32 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
     if([gesture numberOfTouches] != 2) return;
     
-    CGPoint touch1 = [gesture locationOfTouch:0 inView:self.mainScrollView];
-	CGPoint touch2 = [gesture locationOfTouch:1 inView:self.mainScrollView];
+    CGPoint upperTouch = [gesture locationOfTouch:0 inView:self.mainScrollView];
+	CGPoint lowerTouch = [gesture locationOfTouch:1 inView:self.mainScrollView];
 
 	//touch1 is upper touch
-	if (touch2.y < touch1.y) {
-		CGPoint temp = touch1;
-		touch1 = touch2;
-		touch2 = temp;
+	if (lowerTouch.y < upperTouch.y) {
+		CGPoint temp = upperTouch;
+		upperTouch = lowerTouch;
+		lowerTouch = temp;
 	}
 
-	float changeInTopViewPosition = [self handleUpperViewFromTouch:touch1];
-	float changeInBottomViewPosition = [self handleLowerViewFromTouch:touch2];
+	float changeInTopViewPosition = [self handleUpperViewFromTouch:upperTouch];
+	float changeInBottomViewPosition = [self handleLowerViewFromTouch:lowerTouch];
 
 	//objects are being pinched apart
 	if(gesture.scale > 1) {
-		[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
+        if(self.pinchingMode == PinchingModeVertical){
+            [self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
 					  andChangeInBottomViewPosition:changeInBottomViewPosition];
+        }
 	}
 	//objects are being pinched together
 	else {
 		[self pinchObjectsTogether];
 	}
 }
+
 
 //handle the translation of the upper view
 //returns change in position of upper view
@@ -1086,7 +1080,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 //Takes a midpoint and a lower touch point and finds the two views that were being interacted with
 -(void) findElementsFromPinchPoint {
 
-	self.upperPinchScrollView = [self findPinchViewScrollViewFromPinchPoint:self.upperTouchPointInVerticalPinch];
+	self.upperPinchScrollView = [self findPinchViewScrollViewFromUpperPinchPoint:self.upperTouchPointInVerticalPinch andLowerPinchPoint:self.lowerTouchPointInVerticalPinch];
+    
 	if(!self.upperPinchScrollView) {
 		return;
 	}
@@ -1097,9 +1092,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
 
-	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound) {
+	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound && self.pinchingMode != PinchingModeVerticalUndo) {
 		self.lowerPinchScrollView = self.pageElementScrollViews[index+1];
-	}
+    }else if (self.pinchingMode == PinchingModeVerticalUndo){
+        //make sure that we're pinching apart a colleciton
+        if(![self.upperPinchScrollView.pageElement isKindOfClass:[CollectionPinchView class]]){
+            return;
+        }
+        self.lowerPinchScrollView = [self createPinchApartViews];
+    }
 
 	if([self.lowerPinchScrollView.pageElement isKindOfClass:[MediaSelectTile class]]) {
 		self.lowerPinchScrollView = nil;
@@ -1108,27 +1109,69 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 
+
+-(ContentPageElementScrollView *)createPinchApartViews {
+    
+   CollectionPinchView * collectionPv = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
+    PinchView * toRemove = [collectionPv.pinchedObjects lastObject];
+    CollectionPinchView * newCollectionPv = [collectionPv unPinchAndRemove:toRemove];
+    
+    [self addTapGestureToPinchView:toRemove];
+    NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView] + 1;
+    
+    if(newCollectionPv.pinchedObjects.count == 1){
+        PinchView * newpv =  [collectionPv.pinchedObjects lastObject];
+        [[UserPovInProgress sharedInstance] removePinchView:[newCollectionPv unPinchAndRemove:newpv] andReplaceWithPinchView:newpv];
+        [self.upperPinchScrollView changePageElement:newpv];
+    }else{
+        [[UserPovInProgress sharedInstance] updatePinchView:newCollectionPv];
+        [[UserPovInProgress sharedInstance] addPinchView:toRemove atIndex:index];
+    }
+
+    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:toRemove andFrame:self.upperPinchScrollView.frame];
+    self.numPinchViews++;
+    //thread safety
+    @synchronized(self) {
+        [self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+    }
+    
+    [self.mainScrollView addSubview: newElementScrollView];
+    return newElementScrollView;
+}
+
+
 //Runs through and identifies the pinch view scrollview at that point
--(ContentPageElementScrollView *) findPinchViewScrollViewFromPinchPoint: (CGPoint) pinchPoint {
-	NSInteger distanceTraveled = 0;
+-(ContentPageElementScrollView *) findPinchViewScrollViewFromUpperPinchPoint: (CGPoint) upperPinchPoint
+                                                          andLowerPinchPoint:(CGPoint) lowerPinchPoint{
+    NSInteger distanceTraveled = 0;
 	ContentPageElementScrollView * wantedView;
 	//Runs through the view positions to find the first one that passes the midpoint- we assume the midpoint is
 	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
 		if(distanceTraveled == 0) distanceTraveled = scrollView.frame.origin.y;
 		distanceTraveled += scrollView.frame.size.height;
-		if(distanceTraveled > pinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]]) {
-			wantedView = scrollView;
+		if(distanceTraveled > upperPinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]] && (upperPinchPoint.y > scrollView.frame.origin.y)) {
+            wantedView = scrollView;
+            if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
+                self.pinchingMode = PinchingModeVerticalUndo;
+            }
 			break;
 		}
 	}
 	return wantedView;
 }
 
+-(BOOL) bothPointsInView: (UIView *) view andLowerPoint: (CGPoint) lowerPoint {
+    if(lowerPoint.y < (view.frame.origin.y + (self.defaultPinchViewRadius*2))){
+        return YES;
+    }
+    return NO;
+}
+
 -(BOOL)sufficientOverlapBetweenPinchedObjects {
 	if(self.upperPinchScrollView.frame.origin.y+(self.upperPinchScrollView.frame.size.height/2)>= self.lowerPinchScrollView.frame.origin.y){
-		return true;
+		return YES;
 	}
-	return false;
+	return NO;
 }
 
 #pragma mark - Media Tile Delegate -
@@ -1317,7 +1360,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	   self.titleField.frame.origin.y + self.titleField.frame.size.height &&
 	   self.selectedView_PAN.frame.origin.y < self.coverPicView.frame.origin.y +
 	   self.coverPicView.frame.size.height * (2.f/4.f)) {
-		return true;
+		return YES;
 	}
 	return NO;
 }
@@ -1468,30 +1511,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 #pragma mark Undo tile swipe
-
--(void) undoTileDelete: (NSArray *) pageElementScrollViewAndIndex {
-
-	ContentPageElementScrollView * pageElementScrollView = pageElementScrollViewAndIndex[0];
-	NSNumber * index = pageElementScrollViewAndIndex[1];
-
-	//update user defaults if was pinch view
-	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
-		[[UserPovInProgress sharedInstance] addPinchView:(PinchView*)pageElementScrollView.pageElement];
-		self.numPinchViews++;
-	}
-
-	[pageElementScrollView.pageElement markAsDeleting:NO];
-
-	[self returnPageElementScrollView:pageElementScrollView toDisplayAtIndex:index.integerValue];
-}
-
 -(void) returnPageElementScrollView: (ContentPageElementScrollView *) scrollView toDisplayAtIndex:(NSInteger) index {
 
 	if(index) {
 		ContentPageElementScrollView * upperScrollView = self.pageElementScrollViews[(index -1)];
 		scrollView.frame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height,
 									  upperScrollView.frame.size.width, upperScrollView.frame.size.height);
-
 	} else {
 		scrollView.frame = CGRectMake(0,self.titleField.frame.origin.y + self.titleField.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 	}
@@ -1527,7 +1552,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     
 	PinchView * pinchView = (PinchView *)sender.view;
 	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
-		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
+        return;//temp
+        ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
         if(![[UserSetupParameters sharedInstance] tapNhold_InstructionShown])[self alertTapNHoldInCollection];
 	} else { // pinch view should be SingleMediaOverText
@@ -1828,7 +1854,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 -(void)alertSwipeRightToDelete {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles right to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles left to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
     [[UserSetupParameters sharedInstance] set_swipeToDelete_InstructionAsShown];
 }

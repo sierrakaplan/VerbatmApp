@@ -155,6 +155,7 @@
 		C77F321E1B6D5D1800E87C25 /* bugSubmissionFormVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F321D1B6D5D1800E87C25 /* bugSubmissionFormVC.m */; };
 		C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682119CA6C01003D0AC5 /* VerbatmScrollView.m */; };
 		C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */; };
+		C79D6A6C1BF4338200B93E43 /* CoverPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = C79D6A6B1BF4338200B93E43 /* CoverPhoto.m */; };
 		C7A8E3861A61CE4D00776BD1 /* ContentDevPullBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8E3851A61CE4D00776BD1 /* ContentDevPullBar.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */; };
@@ -494,6 +495,8 @@
 		C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSelectTile.h; sourceTree = "<group>"; };
 		C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSelectTile.m; sourceTree = "<group>"; };
 		C79747D91B50B815009077E3 /* Verbatm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
+		C79D6A6A1BF4338200B93E43 /* CoverPhoto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CoverPhoto.h; sourceTree = "<group>"; };
+		C79D6A6B1BF4338200B93E43 /* CoverPhoto.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CoverPhoto.m; sourceTree = "<group>"; };
 		C7A8E3841A61CE4D00776BD1 /* ContentDevPullBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentDevPullBar.h; sourceTree = SOURCE_ROOT; };
 		C7A8E3851A61CE4D00776BD1 /* ContentDevPullBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevPullBar.m; sourceTree = SOURCE_ROOT; };
 		C7BC4372199D97F5004B91A1 /* Verbatm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Verbatm.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1117,6 +1120,7 @@
 		C78B682719CA6C0A003D0AC5 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
+				C79D6A6D1BF4338800B93E43 /* Cover Photo */,
 				A560EFB21BB0AF42003FB041 /* Login */,
 				C7E65F661B9244E90042AD99 /* Verbatm text field */,
 				F26894441A43641C00B1D4DB /* AVEs  */,
@@ -1133,6 +1137,15 @@
 				C716A5B119E0CA3500A5490B /* DashLineView.m */,
 			);
 			name = "Custom Views";
+			sourceTree = "<group>";
+		};
+		C79D6A6D1BF4338800B93E43 /* Cover Photo */ = {
+			isa = PBXGroup;
+			children = (
+				C79D6A6A1BF4338200B93E43 /* CoverPhoto.h */,
+				C79D6A6B1BF4338200B93E43 /* CoverPhoto.m */,
+			);
+			name = "Cover Photo";
 			sourceTree = "<group>";
 		};
 		C7BC4369199D97F5004B91A1 = {
@@ -1623,6 +1636,7 @@
 				A5AA31BF1B9FCDDC00D8D20C /* GTLVerbatmAppImage.m in Sources */,
 				A5E85FA31B911DA900E148D0 /* GTLUtilities.m in Sources */,
 				A59C19721B9E1DFF00EBA60E /* POVLoadManager.m in Sources */,
+				C79D6A6C1BF4338200B93E43 /* CoverPhoto.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,
 				A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* VerbatmAppDelegate.m in Sources */,

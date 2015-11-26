@@ -65,7 +65,7 @@
 
 	[self setUpCategorySwitcher];
 	[self positionContainerViews];
-	[self setUpListVCs];
+	//[self setUpListVCs];
 	[self setUpArticleDisplayVC];
 	[self registerForNotifications];
 }
@@ -176,7 +176,7 @@
 
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic
 					andProgressObject:(NSProgress *)publishingProgress {
-	[self.categorySwitch snapToEdgeLeft:YES];
+    [self.categorySwitch snapToEdgeLeft:YES];
 	[self.mostRecentVC showPOVPublishingWithUserName:userName andTitle: (NSString*) title
 										 andCoverPic: (UIImage*) coverPic andProgressObject: publishingProgress];
 }

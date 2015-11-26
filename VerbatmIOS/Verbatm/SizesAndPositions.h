@@ -29,10 +29,10 @@
 
 
 #pragma mark -Delete position-
-
-#define DELETE_ICON_OFFSET 30
-#define DELETE_ICON_WIDTH 30
-#define DELETE_ICON_HEIGHT 40
+#define DELETE_ICON_X_OFFSET 20
+#define DELETE_ICON_Y_OFFSET 50
+#define DELETE_ICON_WIDTH 20
+#define DELETE_ICON_HEIGHT 26
 
 #pragma mark - Sign In -
 

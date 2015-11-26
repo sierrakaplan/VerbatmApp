@@ -18,7 +18,7 @@
 #import "Styles.h"
 #import "Durations.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
-
+#import <Foundation/Foundation.h>
 @interface FeedTableViewCell()
 
 #pragma mark - Square with text in the center of the cell -
@@ -166,7 +166,8 @@
 
 -(void) formatUILabel: (UILabel*)label withFont: (UIFont*)font andTextColor: (UIColor*) textColor
 	 andNumberOfLines: (NSInteger) numLines withCellWidth: (CGFloat) cellWidth {
-	[label setFont:font];
+    if([label.text isKindOfClass:[NSNull class]]) return;// some tiles don't have a title -- wierd but this is more robust\
+    [label setFont:font];
 	[label setTextColor:textColor];
 	[label setLineBreakMode: NSLineBreakByWordWrapping];
 	[label setNumberOfLines: numLines];

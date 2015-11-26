@@ -24,7 +24,10 @@
 -(void) addCoverPhoto: (UIImage*) coverPicture;
 
 //adds pinch view and automatically saves pinchViews
--(void) addPinchView:(PinchView*)pinchView;
+-(void) addPinchView:(PinchView*)pinchView atIndex:(NSInteger) index;
+
+//deletes the pv element and replaces it with the newPv
+-(void) removePinchView:(PinchView *) pv andReplaceWithPinchView:(PinchView *) newPv;
 
 //removes pinch view and automatically saves pinchViews
 -(void) removePinchView:(PinchView*)pinchView;

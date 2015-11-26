@@ -15,21 +15,16 @@
 #import "VideoPinchView.h"
 
 @interface CollectionPinchView()
-
 @property (weak, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
-
 @property (strong, nonatomic) UIImage* videoImage;
 @property (strong, nonatomic) UIImageView* videoView;
 @property (strong, nonatomic) UIImageView *playVideoImageView;
 @property (strong, nonatomic) UIImage* playVideoIconHalf;
 @property (strong, nonatomic) UIImage* playVideoIconQuarter;
 @property (strong, nonatomic) UIImage* playVideoIconFull;
-
 #pragma mark Encoding Keys
-
 #define PINCHVIEWS_KEY @"child_pinchviews"
-
 @end
 
 @implementation CollectionPinchView
@@ -167,9 +162,7 @@
 -(void) changeTypesOfMediaFromPinchView:(PinchView*) pinchView {
 	if(pinchView.containsImage) {
 		self.containsImage = YES;
-		if(!self.image) {
-			self.image = [(ImagePinchView*)pinchView getImage];
-		}
+        self.image = [(ImagePinchView*)pinchView getImage];
 	} else if(pinchView.containsVideo) {
 		self.containsVideo = YES;
 		if(!self.videoImage) {
