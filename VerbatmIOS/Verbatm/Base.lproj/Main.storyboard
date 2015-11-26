@@ -4,11 +4,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <mutableArray key="HelveticaNeueLights.ttc">
-            <string>HelveticaNeue-Thin</string>
-        </mutableArray>
-    </customFonts>
     <scenes>
         <!--Tab Bar Controller-->
         <scene sceneID="Ggy-sH-8Xt">
@@ -48,9 +43,8 @@
                     </view>
                     <connections>
                         <outlet property="tabBarControllerContainerView" destination="JF8-rw-Rfn" id="dFp-bX-Lgt"/>
-                        <segue destination="VBm-cB-Fwg" kind="modal" identifier="segue_id_create_account" id="vqA-Ve-rLQ"/>
                         <segue destination="waF-h7-lpu" kind="modal" identifier="segue_id_sign_in" id="O0U-1G-Oy1"/>
-                        <segue destination="Qxg-C2-1Oh" kind="modal" identifier="segue_id_adk" id="cOJ-P4-mLy"/>
+                        <segue destination="0lh-hP-Opv" kind="modal" identifier="segue_id_adk" id="2tt-Z0-lcH"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AxA-gZ-qvU" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -177,9 +171,6 @@
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <segue destination="mkh-J4-lEJ" kind="unwind" identifier="segue_id_unwind_from_edit_content_view" unwindAction="unwindToContentDevVC:" id="ffg-tJ-E6G"/>
-                                </connections>
                             </button>
                         </subviews>
                         <animations/>
@@ -190,78 +181,6 @@
             </objects>
             <point key="canvasLocation" x="-2594" y="-549"/>
         </scene>
-        <!--Create Account-->
-        <scene sceneID="Re1-7h-W5B">
-            <objects>
-                <viewController id="VBm-cB-Fwg" customClass="CreateAccount" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="XKt-7k-FNl">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter email address*" minimumFontSize="17" id="hEu-Cp-PnS">
-                                <rect key="frame" x="44" y="146" width="243" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <inset key="insetFor6xAndEarlier" minX="0.0" minY="0.0" maxX="0.0" maxY="7"/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next"/>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter full name*" minimumFontSize="17" id="dQI-JP-0Ck">
-                                <rect key="frame" x="42" y="192" width="243" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="words" autocorrectionType="no" spellCheckingType="no" returnKeyType="next"/>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Create a password*" minimumFontSize="17" id="7p3-Yh-o4F">
-                                <rect key="frame" x="44" y="230" width="243" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" secureTextEntry="YES"/>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter phone number" minimumFontSize="17" id="FW6-Bk-ITR">
-                                <rect key="frame" x="44" y="273" width="243" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="phonePad" returnKeyType="go"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="OGP-PE-fjK">
-                                <rect key="frame" x="27" y="518" width="272" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <state key="normal" title="Already have an account? Login in here."/>
-                                <connections>
-                                    <segue destination="waF-h7-lpu" kind="modal" identifier="segue_id_sign_in_from_create_account" id="UxX-nw-l5Q"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="or " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Mgm-I2-Wdk">
-                                <rect key="frame" x="134" y="87" width="30" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="29"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
-                        <animations/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <outlet property="emailField" destination="hEu-Cp-PnS" id="UhA-RL-Yow"/>
-                        <outlet property="fullnameField" destination="dQI-JP-0Ck" id="RNA-rT-Ift"/>
-                        <outlet property="loginRedirectButton" destination="OGP-PE-fjK" id="L74-Pu-buT"/>
-                        <outlet property="orLabel" destination="Mgm-I2-Wdk" id="c6I-Sv-Adi"/>
-                        <outlet property="passwordField" destination="7p3-Yh-o4F" id="sLL-MN-uZS"/>
-                        <outlet property="phoneNumberField" destination="FW6-Bk-ITR" id="xNw-l3-GON"/>
-                        <segue destination="7r8-Jh-79L" kind="unwind" identifier="unwind_to_master_vc_from_create_account" unwindAction="unwindToMasterNavVC:" id="0ec-kV-N1B"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="EBk-Wi-Rvw" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="7r8-Jh-79L" userLabel="Exit" sceneMemberID="exit"/>
-            </objects>
-            <point key="canvasLocation" x="-3921" y="-1339"/>
-        </scene>
         <!--Login-->
         <scene sceneID="gIN-uk-7gC">
             <objects>
@@ -269,78 +188,10 @@
                     <view key="view" contentMode="scaleToFill" id="ZWl-f6-r1u">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <textField clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter email address" minimumFontSize="22" id="vpx-wo-zOE">
-                                <rect key="frame" x="41" y="250" width="251" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <rect key="contentStretch" x="0.0" y="0.10000000000000001" width="1" height="0.39999999999999963"/>
-                                <nil key="textColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" keyboardType="emailAddress" returnKeyType="next" enablesReturnKeyAutomatically="YES"/>
-                            </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter password" minimumFontSize="17" id="UY0-AH-vwu">
-                                <rect key="frame" x="41" y="293" width="251" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="go" secureTextEntry="YES"/>
-                            </textField>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="bUQ-f6-8RA">
-                                <rect key="frame" x="16" y="530" width="30" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="inB-CY-urt">
-                                <rect key="frame" x="7" y="8" width="30" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="GTq-gd-CXK">
-                                <rect key="frame" x="94" y="345" width="132" height="34"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" name="HelveticaNeue-Thin" family="Helvetica Neue" pointSize="24"/>
-                                <state key="normal" title="Sign In">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="s1d-Vy-n8i">
-                                <rect key="frame" x="41" y="518" width="238" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <state key="normal" title="Need an account? Sign up for free."/>
-                                <connections>
-                                    <segue destination="VBm-cB-Fwg" kind="modal" identifier="segue_id_create_account_from_sign_in" id="uPI-hI-3x0"/>
-                                </connections>
-                            </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="or " lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="52X-NN-vlX">
-                                <rect key="frame" x="130" y="207" width="30" height="29"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="29"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                        </subviews>
                         <animations/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="tyv-13-U6w"/>
-                    <navigationItem key="navigationItem" id="UbP-F6-oHm"/>
                     <connections>
-                        <outlet property="createAccountRedirectButton" destination="s1d-Vy-n8i" id="b2o-5r-ZNY"/>
-                        <outlet property="emailField" destination="vpx-wo-zOE" id="sKq-W0-HzK"/>
-                        <outlet property="orLabel" destination="52X-NN-vlX" id="n0R-MI-W0G"/>
-                        <outlet property="passwordField" destination="UY0-AH-vwu" id="FW2-ec-DgN"/>
-                        <outlet property="signInButton" destination="GTq-gd-CXK" id="uxP-Ww-JZi"/>
                         <segue destination="sxR-fz-pfS" kind="unwind" identifier="unwind_to_master_vc_from_login" unwindAction="unwindToMasterNavVC:" id="SyP-B6-Kbt"/>
                     </connections>
                 </viewController>
@@ -348,44 +199,6 @@
                 <exit id="sxR-fz-pfS" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="-3315" y="-2055"/>
-        </scene>
-        <!--Media Dev-->
-        <scene sceneID="74h-C3-U07">
-            <objects>
-                <viewController storyboardIdentifier="media_dev_vc" title="Media Dev" id="Qxg-C2-1Oh" customClass="MediaDevVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="rWO-ax-CE2">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <subviews>
-                            <containerView opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" id="yYu-am-nhj" userLabel="Content Container View">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="65"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <color key="tintColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </containerView>
-                        </subviews>
-                        <animations/>
-                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                        <gestureRecognizers/>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="Item" id="Pqz-zZ-Dsp"/>
-                    <navigationItem key="navigationItem" id="76F-zj-l9s"/>
-                    <connections>
-                        <outlet property="contentContainerView" destination="yYu-am-nhj" id="oIm-VS-BBM"/>
-                        <outlet property="panGesture_PullBar" destination="3Xh-4j-hro" id="Izk-kV-xrj"/>
-                        <segue destination="PKm-5r-jPL" kind="unwind" identifier="unwind_to_master_vc_from_adk" unwindAction="unwindToMasterNavVC:" id="ktO-DD-7db"/>
-                        <segue destination="DnR-sI-l2h" kind="modal" identifier="segue_id_question_page" id="DFz-qB-ywx"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="sPQ-fx-ob9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="PKm-5r-jPL" userLabel="Exit" sceneMemberID="exit"/>
-                <panGestureRecognizer minimumNumberOfTouches="1" maximumNumberOfTouches="1" id="3Xh-4j-hro">
-                    <connections>
-                        <action selector="expandContentPage:" destination="Qxg-C2-1Oh" id="Fie-gW-JY7"/>
-                    </connections>
-                </panGestureRecognizer>
-            </objects>
-            <point key="canvasLocation" x="-3164" y="-1344"/>
         </scene>
         <!--Content Dev-->
         <scene sceneID="8XD-Tr-4db">
@@ -415,10 +228,11 @@
                     <connections>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
                         <segue destination="x4u-kZ-n9K" kind="modal" identifier="segue_id_edit_content_view" animates="NO" modalPresentationStyle="fullScreen" id="ONZ-b1-Agz"/>
+                        <segue destination="C4V-vK-ZzO" kind="unwind" identifier="unwind_to_master_vc_from_adk" unwindAction="unwindToMasterNavVC:" id="fcv-AG-35S"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="qHO-Sg-QFP" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="mkh-J4-lEJ" userLabel="Exit" sceneMemberID="exit"/>
+                <exit id="C4V-vK-ZzO" userLabel="Exit" sceneMemberID="exit"/>
                 <pinchGestureRecognizer id="WDj-eM-uvF">
                     <connections>
                         <action selector="handlePinchGesture:" destination="0lh-hP-Opv" id="93r-9H-LPJ"/>
@@ -435,12 +249,12 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-2694" y="-1288"/>
+            <point key="canvasLocation" x="-3513" y="-1229"/>
         </scene>
         <!--Verbatm Explanation-->
         <scene sceneID="d4R-xX-vw4">
             <objects>
-                <viewController title="Verbatm Explanation" id="DnR-sI-l2h" customClass="VerbatmExplanationVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="verbatm_explanation_vc" title="Verbatm Explanation" id="DnR-sI-l2h" customClass="VerbatmExplanationVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="N1e-7P-uGA">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -548,8 +362,4 @@
             <point key="canvasLocation" x="-4128" y="-471"/>
         </scene>
     </scenes>
-    <inferredMetricsTieBreakers>
-        <segue reference="vqA-Ve-rLQ"/>
-        <segue reference="UxX-nw-l5Q"/>
-    </inferredMetricsTieBreakers>
 </document>

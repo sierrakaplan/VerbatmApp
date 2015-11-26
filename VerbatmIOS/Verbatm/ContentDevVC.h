@@ -7,30 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-@import Photos;
-
 #import "CustomNavigationBar.h"
 #import "VerbatmScrollView.h"
-#import "EditContentView.h"
 
 @class PinchView;
-
-@protocol ContentDevElementDelegate <NSObject>
-
--(void) markAsSelected: (BOOL) selected;
--(void) markAsDeleting: (BOOL) deleting;
-
-@end
+@class SingleMediaAndTextPinchView;
+@import Photos;
 
 // Delegate tells when pull bar should be shown, hidden,
 //or when undo and preview are/n't possible
 @protocol ContentDevVCDelegate <NSObject>
 
--(void) closeButtonPressed;
--(void) saveDraftButtonPressed;
--(void) previewButtonPressed;
-
--(void) showPullBar: (BOOL) showPullBar withTransition: (BOOL) withTransition;
+-(void) povPublishedWithUserName:(NSString*)userName andTitle:(NSString*)title andCoverPic:(UIImage*)coverPhoto andProgressObject:(NSProgress*)progress;
 
 @end
 
@@ -52,31 +40,14 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 //view that is currently being filled in
 @property (weak, nonatomic) UITextView * activeTextView;
 @property(nonatomic) NSInteger pullBarHeight;
-@property (nonatomic, strong) EditContentView * openEditContentView;
-@property (nonatomic, strong) PinchView * openPinchView;
+// The pinch view that the user has opened and is currently editing
+@property (nonatomic, strong) SingleMediaAndTextPinchView* editingPinchView;
 
+@end
 
--(void) addImageToStream: (UIImage*) image;
-/*
- Given a PHAsset representing a video and we create a pinch view out of it
- */
--(void) addMediaAssetToStream:(PHAsset *) asset;
+@protocol ContentDevElementDelegate <NSObject>
 
-
--(UIImage*) getCoverPicture;
--(NSArray*) getPinchViews;
-
-//presents gallery so user can pick assets
--(void) presentEfficientGallery;
-// Loads title, cover photo, and pinch views from user's saved settings
-// (if they exist)
--(void) loadPOVFromUserDefaults;
-- (void) newPinchView: (PinchView *) pinchView belowView:(UIView *)upperView;
-
-// either locks the scroll view or frees it
--(void) removeKeyboardFromScreen;
-// sets elements to nil to free memory
--(void)cleanUp;
-
+-(void) markAsSelected: (BOOL) selected;
+-(void) markAsDeleting: (BOOL) deleting;
 
 @end

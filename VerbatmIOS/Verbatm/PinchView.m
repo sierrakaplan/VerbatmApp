@@ -16,6 +16,7 @@
 @interface PinchView()
 
 @property (nonatomic, readwrite) float radius;
+@property (nonatomic) float unselectedRadius;
 @property (nonatomic, readwrite) CGPoint center;
 @property (nonatomic) float initialRadius;
 @property (nonatomic) CGPoint initialCenter;
@@ -72,7 +73,6 @@
 	[self addSubview: self.background];
 }
 
-
 //adds a thin circular border to the view
 -(void)addBorderToPinchView {
     self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
@@ -88,7 +88,6 @@
 							self.radius*2, self.radius*2);
 	[self setBackgroundFrames];
 }
-
 
 -(void)specifyFrame:(CGRect)frame {
 	self.radius = frame.size.width/2;
@@ -152,16 +151,25 @@
 	if (deleting) {
 		self.layer.borderColor = [UIColor DELETING_ITEM_COLOR].CGColor;
 	} else {
-		[self addBorderToPinchView];
+		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
 	}
 }
 
 -(void)markAsSelected: (BOOL) selected {
 	if (selected) {
 		self.layer.borderColor = [UIColor SELECTED_ITEM_COLOR].CGColor;
+		self.unselectedRadius = self.radius;
+		[self specifyRadius:self.radius*1.05 andCenter:self.center];
+		self.layer.shadowOffset = CGSizeMake(10, 0);
+		self.layer.shadowRadius = 5;
+		self.layer.shadowOpacity = 0.5;
+		self.layer.shadowColor = [UIColor blackColor].CGColor;
 	} else {
-		[self addBorderToPinchView];
+		self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+		[self specifyRadius:self.unselectedRadius andCenter:self.center];
+		self.layer.shadowOpacity = 0;
 	}
+	[self renderMedia];
 }
 
 

@@ -23,7 +23,7 @@
 
 #pragma mark Bottom Nav
 
-#define ADK_NAV_ICON @"create_story"
+#define ADK_NAV_ICON @"plus_sign_black"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
 
@@ -39,12 +39,11 @@
 #define REPLACE_COVER_PHOTO_ICON @"replace_photo"
 #define DELETE_ICON @"trash_can"
 
-#define PREVIEW_ICON @"text_preview"
-#define BACK_ICON @"text_back"
-#define PUBLISH_ICON @"text_publish"
+#define INFO_ICON @"info_icon"
 
 #pragma mark Edit Content View
 
+#define MINIMIZE_ICON @"minimize_icon"
 #define DONE_CHECKMARK @"done_checkmark"
 
 #pragma mark Media Capture
@@ -61,15 +60,15 @@
 #define PLAY_VIDEO_ICON_HALF_CIRCLE @"play_video_icon_half_circle"
 #define PLAY_VIDEO_ICON_QUARTER_CIRCLE @"play_video_icon_quarter_circle"
 
-#pragma mark Pull Bar
-
-#define PULLDOWN_ICON @"down_arrow"
-#define CAMERA_BUTTON_ICON @"camera"
-#define GALLERY_BUTTON_ICON @"gallery"
-
 #pragma mark Media Tile
 
-#define PLUS_ICON @"plus_sign"
+#define CAMERA_BUTTON_ICON @"camera"
+#define GALLERY_BUTTON_ICON @"gallery"
+#define PLUS_ICON @"plus_sign_black"
+
+#pragma mark Pull Bar (NOT IN USE)
+
+#define PULLDOWN_ICON @"down_arrow"
 
 #pragma mark GM Image Picker
 

@@ -20,7 +20,6 @@
 
 #import "MasterNavigationVC.h"
 #import "MediaSessionManager.h"
-#import "MediaDevVC.h"
 
 #import "Notifications.h"
 
@@ -42,9 +41,10 @@
 
 #import "VerbatmCameraView.h"
 
+#import <Crashlytics/Crashlytics.h>
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, UserManagerDelegate,
-MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
+
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -55,12 +55,7 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 #pragma mark View Controllers in tab bar Controller
 
 @property (strong,nonatomic) ProfileVC* profileVC;
-@property (strong,nonatomic) FeedVC* feedVC;
-@property (strong,nonatomic) MediaDevVC* mediaDevVC;
-
-#pragma mark - User Manager -
-@property (strong, nonatomic) UserManager* userManager;
-
+//@property (strong,nonatomic) FeedVC* feedVC;
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
@@ -70,7 +65,6 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 #define MEDIA_DEV_VC_ID @"media_dev_vc"
 #define PROFILE_VC_ID @"profile_vc"
 
-
 @end
 
 @implementation MasterNavigationVC
@@ -78,17 +72,13 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self setUpTabBarController];
-	if (![PFUser currentUser].isAuthenticated &&
-		![PFFacebookUtils isLinkedWithUser:[PFUser currentUser]]) {
-	} else {
-		[self.userManager queryForCurrentUser];
-	}
+	[self registerForNotifications];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-    if(![[UserSetupParameters sharedInstance]blackCircleInstructionShown]) {
-		[self alertPullTrendingIcon];
+	if (![PFUser currentUser].isAuthenticated) {
+		[self bringUpLogin];
 	}
 }
 
@@ -96,14 +86,31 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 	[super viewDidDisappear:animated];
 }
 
+-(void) registerForNotifications {
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginFailed:)
+												 name:NOTIFICATION_USER_LOGIN_FAILED
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginSucceeded:)
+												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
+											   object:nil];
+}
+
 #pragma mark - User Manager Delegate -
 
--(void) successfullyLoggedInUser:(GTLVerbatmAppVerbatmUser *)user {
+-(void) loginSucceeded:(NSNotification*) notification {
+	GTLVerbatmAppVerbatmUser* user = notification.object;
+	[[Crashlytics sharedInstance] setUserEmail: user.email];
+	[[Crashlytics sharedInstance] setUserName: user.name];
 	[self.profileVC updateUserInfo];
 }
 
--(void) errorLoggingInUser:(NSError *)error {
+-(void) loginFailed:(NSNotification *) notification {
+	NSError* error = (NSError*) notification.object;
 	NSLog(@"Error finding current user: %@", error.description);
+	//TODO: only do this if have a connection, or only a certain number of times
+//	[[UserManager sharedInstance] queryForCurrentUser];
 }
 
 #pragma mark - Tab bar controller -
@@ -115,23 +122,17 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 	[self addChildViewController:self.tabBarController];
 	self.tabBarController.delegate = self;
 
-	//TODO: remake icons
-	CGSize iconSize = CGSizeMake(30, 30);
 	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
 	self.profileVC.delegate = self;
-	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:PROFILE_NAV_ICON] scaleImageToSize:iconSize] tag:0];
+	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:PROFILE_NAV_ICON] tag:0];
 
-	self.mediaDevVC = [self.storyboard instantiateViewControllerWithIdentifier:MEDIA_DEV_VC_ID];
-	self.mediaDevVC.delegate = self;
+//	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
+//	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
+//	self.feedVC.delegate = self;
 
-	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
-	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[[UIImage imageNamed:HOME_NAV_ICON] scaleImageToSize:iconSize] tag:0];
-	self.feedVC.delegate = self;
-
-	self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC];
-	self.tabBarController.selectedViewController = self.feedVC;
-	UIImage* adkImage = [[UIImage imageNamed:ADK_NAV_ICON] scaleImageToSize:iconSize];
-	[self addTabBarCenterButtonWithImage:adkImage highlightImage:adkImage];
+	self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init]];
+	self.tabBarController.selectedViewController = self.profileVC;
+	[self addTabBarCenterButtonWithImage:[UIImage imageNamed:ADK_NAV_ICON] highlightImage:[UIImage imageNamed:ADK_NAV_ICON]];
 
 	[self formatTabBar];
 	self.tabBarFrameOnScreen = self.tabBarController.tabBar.frame;
@@ -179,14 +180,13 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 //brings up the create account page if there is no user logged in
 -(void) bringUpLogin {
 	//TODO: check user defaults and do login if they have logged in before
-	[self performSegueWithIdentifier:CREATE_ACCOUNT_SEGUE sender:self];
+	[self performSegueWithIdentifier:SIGN_IN_SEGUE sender:self];
 }
 
 //catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
 	[[UIApplication sharedApplication] setStatusBarHidden:NO];
-	if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_CREATE_ACCOUNT_TO_MASTER]
-		|| [segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
+	if ([segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
 		// TODO: have variable set and go to profile or adk
 		[self.profileVC updateUserInfo];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
@@ -195,10 +195,10 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 }
 
 #pragma mark - Media Dev VC Delegate methods -
-
+// TODO: make this a notification and change this to the profile vc
 -(void) povPublishedWithUserName:(NSString *)userName andTitle:(NSString *)title andCoverPic:(UIImage *)coverPhoto andProgressObject:(NSProgress *)progress {
-	[self.feedVC showPOVPublishingWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject:progress];
-	[self.tabBarController setSelectedViewController:self.feedVC];
+//	[self.feedVC showPOVPublishingWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject:progress];
+//	[self.tabBarController setSelectedViewController:self.feedVC];
 }
 
 #pragma mark - Feed VC Delegate -
@@ -211,27 +211,11 @@ MediaDevVCDelegate, FeedVCDelegate, ProfileVCDelegate>
 	}
 }
 
-#pragma mark - Alerts -
-
--(void)alertPullTrendingIcon {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Slide the black circle!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-	[[UserSetupParameters sharedInstance] set_trendingCirle_InstructionAsShown];
-}
-
 #pragma mark - Memory Warning -
 
 - (void)didReceiveMemoryWarning{
 	[super didReceiveMemoryWarning];
 	// Dispose of any resources that can be recreated.
-}
-
-#pragma mark - Lazy Instantiation -
-
--(UserManager*) userManager {
-	if (!_userManager) _userManager = [UserManager sharedInstance];
-	_userManager.delegate = self;
-	return _userManager;
 }
 
 @end

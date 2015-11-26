@@ -18,19 +18,11 @@
 
 #import "UserManager.h"
 
-@interface SignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate, UserManagerDelegate>
+@interface SignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
 
-@property (weak, nonatomic) IBOutlet UITextField *emailField;
-@property (weak, nonatomic) IBOutlet UITextField *passwordField;
-@property (weak, nonatomic) IBOutlet UIButton *signInButton;
-@property (weak, nonatomic) IBOutlet UIButton *createAccountRedirectButton;
-@property (weak, nonatomic) IBOutlet UILabel *orLabel;
-
-@property (strong, nonatomic) UIView *animationView;
+@property (strong, nonatomic) UIView* animationView;
 @property (strong, nonatomic) UILabel* animationLabel;
-@property (strong, nonatomic) NSTimer * animationTimer;
-
-@property (strong, nonatomic) UserManager* userManager;
+@property (strong, nonatomic) NSTimer* animationTimer;
 
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
 
@@ -40,14 +32,8 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-
-	self.emailField.delegate = self;
-	self.passwordField.delegate = self;
-	[self centerAllframes];
-	[self setCursorColor];
-
+	[self registerForNotifications];
 	[self addFacebookLoginButton];
-    [self addTapGestureToRemoveKeyboard];
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -58,72 +44,29 @@
 	[super viewDidAppear:animated];
 }
 
+-(void) registerForNotifications {
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginFailed:)
+												 name:NOTIFICATION_USER_LOGIN_FAILED
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(loginSucceeded:)
+												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
+											   object:nil];
+}
+
+
 # pragma mark - Format views -
-
-//dynamically centers all our frames depending on phone screen dimensions
--(void) centerAllframes {
-    self.orLabel.frame = CGRectMake(self.view.center.x - (self.orLabel.frame.size.width/2), self.orLabel.frame.origin.y, self.orLabel.frame.size.width, self.orLabel.frame.size.height);
-    
-	self.emailField.frame= CGRectMake((self.view.frame.size.width/2 - self.emailField.frame.size.width/2), self.orLabel.frame.origin.y + self.orLabel.frame.size.height + DISTANCE_BETWEEN_FIELDS,
-                                      self.emailField.frame.size.width, self.emailField.frame.size.height);
-
-	self.passwordField.frame = CGRectMake((self.view.frame.size.width/2 - self.passwordField.frame.size.width/2), self.emailField.frame.origin.y + self.emailField.frame.size.height + DISTANCE_BETWEEN_FIELDS,
-                                          self.passwordField.frame.size.width, self.passwordField.frame.size.height);
-
-	self.signInButton.frame =CGRectMake((self.view.frame.size.width/2 - self.signInButton.frame.size.width/2),self.passwordField.frame.origin.y + self.passwordField.frame.size.height + DISTANCE_BETWEEN_FIELDS,
-                                        self.signInButton.frame.size.width, self.signInButton.frame.size.height);
-    
-	[self.signInButton addTarget:self action:@selector(completeLogin) forControlEvents:UIControlEventTouchUpInside];
-    
-    self.createAccountRedirectButton.frame = CGRectMake((self.view.center.x - (self.createAccountRedirectButton.frame.size.width/2)),
-                                                        self.createAccountRedirectButton.frame.origin.y,
-                                                        self.createAccountRedirectButton.frame.size.width,
-                                                        self.createAccountRedirectButton.frame.size.height);
-    
-    
-}
-
--(void) setCursorColor {
-	self.emailField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
-	self.passwordField.tintColor = [UIColor colorWithRed:98.0/255.0f green:98.0/255.0f blue:98.0/255.0f alpha:1.0];
-}
 
 - (void) addFacebookLoginButton {
 	FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
 	float buttonWidth = loginButton.frame.size.width*1.2;
 	float buttonHeight = loginButton.frame.size.height*1.2;
-	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2, self.orLabel.frame.origin.y - buttonHeight - DISTANCE_BETWEEN_FIELDS, buttonWidth, buttonHeight);
+	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2.f, self.view.center.y
+								   - buttonHeight/2.f, buttonWidth, buttonHeight);
 	loginButton.delegate = self;
 	loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
 	[self.view addSubview:loginButton];
-}
-
-#pragma mark - Remove Keyboard -
-
--(void)addTapGestureToRemoveKeyboard{
-    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeKeyboardTap)];
-    [self.view addGestureRecognizer:tapGesture];
-}
-
--(void) removeKeyboardTap {
-    [self.emailField resignFirstResponder];
-    [self.passwordField resignFirstResponder];
-}
-
-#pragma mark - Completing login -
-
-- (void) completeLogin {
-	NSString* email = self.emailField.text;
-	NSString* password = self.passwordField.text;
-
-	if (email.length > 0 &&
-		password.length > 0) {
-
-		[self.userManager loginUserFromEmail: email andPassword: password];
-
-	} else {
-		[self errorInSignInAnimation: @"Please enter all required fields"];
-	}
 }
 
 #pragma mark - Facebook Button Delegate  -
@@ -143,24 +86,24 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 	//batch request for user info as well as friends
 	if ([FBSDKAccessToken currentAccessToken]) {
-		[self.userManager signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
+		[[UserManager sharedInstance] signUpOrLoginUserFromFacebookToken: [FBSDKAccessToken currentAccessToken]];
 	} else {
 		[self errorInSignInAnimation: @"Facebook login failed."];
 	}
 }
 
 - (void)loginButtonDidLogOut:(FBSDKLoginButton *)loginButton {
-	[self.userManager logOutUser];
+	[[UserManager sharedInstance] logOutUser];
 }
 
+#pragma mark - Notification methods -
 
-#pragma mark - User Manager Delegate methods -
-
--(void) successfullyLoggedInUser: (GTLVerbatmAppVerbatmUser*) user {
+-(void) loginSucceeded: (NSNotification*) notification {
 	[self unwindToMasterVC];
 }
 
--(void) errorLoggingInUser: (NSError*) error {
+-(void) loginFailed: (NSNotification*) notification {
+	NSError* error = notification.object;
 	NSString* errorMessage;
 	//TODO: offer to reset password
 	switch ([error code]) {
@@ -222,23 +165,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 	// Dispose of any resources that can be recreated.
 }
 
-#pragma mark - UITextField delegate methods -
-
-// Enter button should navigate between fields
--(BOOL) textFieldShouldReturn:(UITextField *)textField{
-	if (textField == self.emailField){
-		[self.passwordField becomeFirstResponder];
-		return YES;
-	}
-	if (textField == self.passwordField){
-		//TODO: trigger login button
-		[self.passwordField resignFirstResponder];
-		return YES;
-	}
-	return NO;
-}
-
-
 #pragma mark - Navigation
 
 // Segue back to the MasterNavigationVC after logging in
@@ -249,12 +175,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 #pragma mark - Lazy Instantiation -
-
--(UserManager*) userManager {
-	if (!_userManager) _userManager = [UserManager sharedInstance];
-	_userManager.delegate = self;
-	return _userManager;
-}
 
 //lazy instantiation
 -(UIView *)animationView {

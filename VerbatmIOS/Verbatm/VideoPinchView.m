@@ -17,6 +17,7 @@
 @interface VideoPinchView()
 
 @property (strong, nonatomic) UIImage* videoImage;
+@property (strong, nonatomic) UIImageView* playImageView;
 @property (strong, nonatomic) UIImageView* videoView;
 
 #pragma mark Encoding Keys
@@ -37,7 +38,6 @@
 }
 
 -(void) initWithVideo: (AVURLAsset*)video {
-	[self.videoView setFrame: self.background.frame];
 	[self.background addSubview:self.videoView];
 	[self addPlayIcon];
 	self.containsVideo = YES;
@@ -49,10 +49,9 @@
 #pragma mark - Adding play button
 -(void) addPlayIcon {
 	UIImage* playIconImage = [UIImage imageNamed: PLAY_VIDEO_ICON];
-	UIImageView* playImageView = [[UIImageView alloc] initWithImage:playIconImage];
-	playImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
-	playImageView.frame = [self getCenterFrameForVideoView];
-	[self.videoView addSubview:playImageView];
+	self.playImageView = [[UIImageView alloc] initWithImage:playIconImage];
+	self.playImageView.alpha = PLAY_VIDEO_ICON_OPACITY;
+	[self.videoView addSubview:self.playImageView];
 }
 
 -(CGRect) getCenterFrameForVideoView {
@@ -65,6 +64,8 @@
 
 //This should be overriden in subclasses
 -(void)renderMedia {
+	[self.videoView setFrame: self.background.frame];
+	self.playImageView.frame = [self getCenterFrameForVideoView];
 	[self.videoView setImage: self.videoImage];
 }
 
@@ -110,20 +111,6 @@
 }
 
 #pragma mark - Lazy Instantiation -
-
--(NSString*) text {
-	if (!_text) {
-		_text = @"";
-	}
-	return _text;
-}
-
--(NSNumber*) textYPosition {
-	if (!_textYPosition) {
-		_textYPosition = [NSNumber numberWithFloat: 0.f];
-	}
-	return _textYPosition;
-}
 
 -(UIImageView*) videoView {
 	if (!_videoView) {

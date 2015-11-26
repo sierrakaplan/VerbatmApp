@@ -17,16 +17,7 @@
 @class GTLVerbatmAppVerbatmUser;
 @class PovInfo;
 
-@protocol UserManagerDelegate <NSObject>
-
--(void) successfullyLoggedInUser: (GTLVerbatmAppVerbatmUser*) user;
--(void) errorLoggingInUser: (NSError*) error;
-
-@end
-
 @interface UserManager : NSObject
-
-@property (strong, nonatomic) id<UserManagerDelegate> delegate;
 
 + (UserManager *)sharedInstance;
 

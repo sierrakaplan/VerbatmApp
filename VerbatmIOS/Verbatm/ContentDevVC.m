@@ -17,41 +17,41 @@
 #import "ContentPageElementScrollView.h"
 #import "Durations.h"
 
-#import "EditContentView.h"
 #import "EditContentVC.h"
+
+#import "GTLVerbatmAppVerbatmUser.h"
+#import "GMImagePickerController.h"
 
 #import "ImagePinchView.h"
 #import "Icons.h"
 
-#import "MediaDevVC.h"
-#import "MediaSelectTile.h"
-
-#import "GMImagePickerController.h"
-
 #import <QuartzCore/QuartzCore.h>
 #import "PinchView.h"
+#import "POVPublisher.h"
+#import "PreviewDisplayView.h"
 
 #import "Notifications.h"
+#import "MediaDevVC.h"
 #import "MediaSelectTile.h"
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
-#import "Strings.h"
+#import "StringsAndAppConstants.h"
 #import "Styles.h"
 
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserSetupParameters.h"
 #import "UtilityFunctions.h"
 #import "UserPovInProgress.h"
+#import "UserManager.h"
 #import "UIView+Effects.h"
 
+#import "VerbatmCameraView.h"
 #import "VerbatmScrollView.h"
 #import "VideoPinchView.h"
 
-
-
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate>
 
 #pragma mark Image Manager
 
@@ -94,6 +94,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (weak, atomic) IBOutlet UITextView *firstContentPageTextBox;
 @property (strong, atomic) IBOutlet UIPinchGestureRecognizer *pinchGesture;
 
+#pragma mark Camera View
+
+@property (strong, nonatomic) VerbatmCameraView* cameraView;
 
 #pragma mark PanGesture Properties
 
@@ -124,11 +127,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 // Useful for pinch apart to add media between objects
 @property (nonatomic) ContentPageElementScrollView* addMediaBelowView;
 
-
 //informs our instruction notification if the user has added
 //pinch views to the article before
 @property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
 @property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
+
+#pragma mark - Preview -
+
+@property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
 
 #define WHAT_IS_IT_LIKE_TEXT @"tell your story"
 
@@ -154,8 +160,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	[self.view setBackgroundColor:[UIColor lightGrayColor]];
+	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	[self initializeVariables];
-	[self addBlurView];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
 	[self formatNavBar];
@@ -163,9 +170,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[self setCursorColor];
 	[self formatTitleAndCoverPicture];
 	[self createBaseSelector];
+	[self loadPOVFromUserDefaults];
 	[self setUpNotifications];
 	self.titleField.delegate = self;
 	self.mainScrollView.delegate = self;
+}
+
+-(void)viewDidAppear:(BOOL)animated {
+	[super viewDidAppear:animated];
 }
 
 -(void) initializeVariables {
@@ -177,10 +189,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.pinchViewTappedAndClosedForTheFirstTime = NO;
 }
 
--(void) addBlurView {
-	[self.view createBlurViewOnViewWithStyle:UIBlurEffectStyleLight];
-}
-
 -(void) setFrameMainScrollView {
 	self.mainScrollView.frame = CGRectMake(0.f, CUSTOM_NAV_BAR_HEIGHT,
 										   self.view.frame.size.width, self.view.frame.size.height - CUSTOM_NAV_BAR_HEIGHT);
@@ -188,14 +196,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.mainScrollView.bounces = YES;
 }
 
-
 //records the generic frame for any element that is a square and not a pinch view circle,
 // as well as the pinch view center and radius
 -(void)setElementDefaultFrames {
 	self.defaultPageElementScrollViewSize = CGSizeMake(self.view.frame.size.width, ((self.view.frame.size.height*2.f)/5.f));
 	self.defaultPinchViewCenter = CGPointMake(self.view.frame.size.width/2.f,
 											  self.defaultPageElementScrollViewSize.height/2.f);
-	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_OFFSET_DISTANCE)/2.f;
+	self.defaultPinchViewRadius = (self.defaultPageElementScrollViewSize.height - ELEMENT_Y_OFFSET_DISTANCE)/2.f;
 }
 
 -(void) formatNavBar {
@@ -208,7 +215,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) createBaseSelector {
 
-	CGRect scrollViewFrame = CGRectMake(0, self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_OFFSET_DISTANCE);
+	CGRect scrollViewFrame = CGRectMake(0, self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
+										self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_Y_OFFSET_DISTANCE);
 
 	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
 																	  initWithFrame:scrollViewFrame
@@ -346,20 +354,25 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #pragma mark - Nav Bar Delegate Methods -
 
 #pragma mark Close Button
+
 -(void) leftButtonPressed {
-	[self.delegate closeButtonPressed];
+	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 }
 
 #pragma mark Save Draft Button
 -(void) middleButtonPressed {
 	// TODO: save draft
-	[self.delegate saveDraftButtonPressed];
 }
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
 	[self closeAllOpenCollections];
-	[self.delegate previewButtonPressed];
+	NSArray *pinchViews = [self getPinchViews];
+	NSString* title = self.titleField.text;
+	UIImage* coverPic = [self getCoverPicture];
+
+	[self.view bringSubviewToFront:self.previewDisplayView];
+	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
 }
 
 #pragma mark - Configure Text Fields -
@@ -412,10 +425,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #pragma mark Scroll View actions
 
 - (void) scrollViewDidScroll:(UIScrollView *)scrollView {
-	if(scrollView == self.mainScrollView) {
-		[self showOrHidePullBarBasedOnMainScrollViewScroll];
-		return;
-	}
 	if([scrollView isKindOfClass:[ContentPageElementScrollView class]]) {
 		ContentPageElementScrollView* pageElementScrollView = (ContentPageElementScrollView*)scrollView;
 		if(pageElementScrollView.collectionIsOpen) {
@@ -455,16 +464,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	} else {
 		[scrollView animateBackToInitialPosition];
 	}
-}
-
--(void) showOrHidePullBarBasedOnMainScrollViewScroll {
-	CGPoint translation = [self.mainScrollView.panGestureRecognizer translationInView:self.mainScrollView];
-	if(translation.y < 0) {
-		[self.delegate showPullBar:NO withTransition:YES];
-	}else {
-		[self.delegate showPullBar:YES withTransition:YES];
-	}
-	return;
 }
 
 #pragma mark - Content Page Element Scroll View Delegate -
@@ -525,9 +524,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
-		newElementScrollViewFrame = CGRectMake(0,self.titleField.frame.origin.y + self.titleField.frame.size.height + ELEMENT_OFFSET_DISTANCE, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		newElementScrollViewFrame = CGRectMake(0,self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
+											   self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		index = 0;
 	} else {
-		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height, self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
+		newElementScrollViewFrame = CGRectMake(upperScrollView.frame.origin.x, upperScrollView.frame.origin.y + upperScrollView.frame.size.height,
+											   self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
     
@@ -542,25 +544,20 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 
     [self.mainScrollView addSubview: newElementScrollView];
+	self.addMediaBelowView = newElementScrollView;
     [self shiftElementsBelowView: self.coverPicView];
-    
 }
 
-
 #pragma mark - Shift Positions of Elements
-//Once view is added- we make sure the views below it are appropriately adjusted
-//in position
+
+//Once view is added- we make sure the views below it are appropriately adjusted in position
 -(void)shiftElementsBelowView: (UIView *) view {
-	if (!view) {
-//		NSLog(@"View that elements are being shifted below should not be nil");
-		return;
-	}
-	if(![view isKindOfClass:[ContentPageElementScrollView class]]
-	   && ![view isKindOfClass:[CoverPicturePinchView class]]) {
+	if (!view ||
+		(![view isKindOfClass:[ContentPageElementScrollView class]]
+	   && ![view isKindOfClass:[CoverPicturePinchView class]])) {
 //		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
 		return;
 	}
-
 	NSInteger viewIndex = 0;
 	NSInteger firstYCoordinate = view.frame.origin.y + view.frame.size.height;
 
@@ -568,18 +565,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	if([self.pageElementScrollViews containsObject:view]) {
 		viewIndex = [self.pageElementScrollViews indexOfObject:view]+1;
 	}
-
 	//If we must shift everything from the top
 	else if ([view isKindOfClass:[CoverPicturePinchView class]]) {
-		firstYCoordinate  = firstYCoordinate + ELEMENT_OFFSET_DISTANCE;
+		firstYCoordinate = firstYCoordinate + ELEMENT_Y_OFFSET_DISTANCE;
 	}
-
 	for(NSInteger i = viewIndex; i < [self.pageElementScrollViews count]; i++) {
 		ContentPageElementScrollView * currentView = self.pageElementScrollViews[i];
-
 		CGRect frame = CGRectMake(currentView.frame.origin.x, firstYCoordinate,
 								  currentView.frame.size.width, currentView.frame.size.height);
-
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 			currentView.frame = frame;
 			//make sure everything is centered
@@ -587,11 +580,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}];
 		firstYCoordinate+= frame.size.height;
 	}
-
 	//make sure the main scroll view can show everything
 	[self adjustMainScrollViewContentSize];
 }
-
 
 //Shifts elements above a certain view up by the given difference
 -(void) shiftElementsAboveView: (ContentPageElementScrollView *) scrollView withDifference: (NSInteger) difference {
@@ -600,17 +591,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	if(viewIndex == NSNotFound || viewIndex >= self.pageElementScrollViews.count) {
 		return;
 	}
-
 	for(NSInteger i = (viewIndex-1); i >= 0; i--) {
 		ContentPageElementScrollView * currentView = self.pageElementScrollViews[i];
 		CGRect frame = CGRectMake(currentView.frame.origin.x, currentView.frame.origin.y + difference,
 								  currentView.frame.size.width, currentView.frame.size.height);
-
 		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
 			currentView.frame = frame;
 		}];
 	}
-
 }
 
 //Storing new view to our array of elements
@@ -677,20 +665,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.keyboardHeight = keyboardSize.height;
 }
 
+-(void) keyBoardDidShow:(NSNotification *) notification {}
 
--(void) keyBoardDidShow:(NSNotification *) notification {
-}
-
-
--(void)keyboardWillDisappear:(NSNotification *) notification {
-}
+-(void)keyboardWillDisappear:(NSNotification *) notification {}
 
 #pragma mark - Pinch Gesture -
 
 #pragma mark  Sensing Pinch
 
 - (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender {
-
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan: {
 
@@ -724,7 +707,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}
 	}
 }
-
 
 //Sanitize objects and values held during pinching. Check if pinches crossed thresholds
 // and otherwise rearrange things.
@@ -762,7 +744,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.newlyCreatedMediaTile.frame = [self getStartFrameForNewMediaTile];
 		self.newlyCreatedMediaTile.superview.frame = CGRectMake(0,self.newlyCreatedMediaTile.superview.frame.origin.y + originalHeight/2.f,
 																self.newlyCreatedMediaTile.superview.frame.size.width, 0);
-		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
 		[self shiftElementsBelowView: self.coverPicView];
 
 	} completion:^(BOOL finished) {
@@ -790,7 +772,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.pinchingMode = PinchingModeVertical;
 		[self handleVerticlePinchGestureBegan:sender];
 	}
-
 }
 
 
@@ -872,8 +853,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	if(!openCollectionScrollView.collectionIsOpen) {
 		return;
 	}
-	//make sure the pullbar is showing when things are pinched together
-	[self.delegate showPullBar:YES withTransition:YES];
 	[openCollectionScrollView closeCollection];
 }
 
@@ -1013,7 +992,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 																self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
 																self.newlyCreatedMediaTile.superview.frame.size.width,
 																self.newlyCreatedMediaTile.superview.frame.size.height + totalChange);
-		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
 		[self.newlyCreatedMediaTile setNeedsDisplay];
 	}
 	//the distance is enough that we can just animate the rest
@@ -1032,18 +1011,20 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 																self.newlyCreatedMediaTile.superview.frame.origin.y + changeInTopViewPosition,
 																self.baseMediaTileSelector.superview.frame.size.width,
 																self.baseMediaTileSelector.superview.frame.size.height);
-		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
 		[self shiftElementsBelowView: self.coverPicView];
 	} completion:^(BOOL finished) {
 		[self shiftElementsBelowView: self.coverPicView];
 		gesture.enabled = NO;
 		gesture.enabled = YES;
 		self.pinchingMode = PinchingModeNone;
-		[self.newlyCreatedMediaTile createFramesForButtonWithFrame: self.newlyCreatedMediaTile.frame];
-		[self.newlyCreatedMediaTile formatButton];
+		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
+		[self.newlyCreatedMediaTile buttonGlow];
 	}];
 }
+
 #pragma mark Pinch Apart Failed
+
 //Removes the new view being made and resets page
 -(void) clearMediaTile:(MediaSelectTile*)mediaTile {
 	[self.pageElementScrollViews removeObject:mediaTile.superview];
@@ -1067,10 +1048,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.lowerPinchScrollView = self.upperPinchScrollView = nil;
 	self.pinchingMode = PinchingModeNone;
 	[self shiftElementsBelowView: self.coverPicView];
-    
-	//make sure the pullbar is showing when things are pinched together
-	[self.delegate showPullBar:YES withTransition:YES];
-    //present swipe to delete notification
+
+	//present swipe to delete notification
     if(![[UserSetupParameters sharedInstance] swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
 
@@ -1145,7 +1124,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	return wantedView;
 }
 
-
 -(BOOL)sufficientOverlapBetweenPinchedObjects {
 	if(self.upperPinchScrollView.frame.origin.y+(self.upperPinchScrollView.frame.size.height/2)>= self.lowerPinchScrollView.frame.origin.y){
 		return true;
@@ -1155,7 +1133,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark - Media Tile Delegate -
 
--(void) addMediaButtonPressedOnTile: (MediaSelectTile *)tile  {
+-(void) galleryButtonPressedOnTile: (MediaSelectTile *)tile  {
 	NSInteger index = [self.pageElementScrollViews indexOfObject: tile.superview] - 1;
 	self.addMediaBelowView = index >= 0 ? self.pageElementScrollViews[index] : nil;
 	[self presentEfficientGallery];
@@ -1164,6 +1142,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
+-(void) cameraButtonPressedOnTile: (MediaSelectTile *)tile {
+	if (tile == self.baseMediaTileSelector) {
+		[self.cameraView removeFromSuperview];
+		[self.view addSubview:self.cameraView];
+		[self.cameraView createAndInstantiateGestures];
+	}
+}
 
 #pragma mark - Change position of elements on screen by dragging
 
@@ -1291,9 +1276,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
 		self.selectedView_PAN.frame = newFrame;
-       
-	}completion:^(BOOL finished) {
-        //is the pinchview above the cover photo?
+	} completion:^(BOOL finished) {
+        //swap pinch view with cover photo
         if (!topView){
             if([self selctedViewAboveCoverPhoto]){
                 if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
@@ -1302,7 +1286,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
                 }
             }else{
                 if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
-                    
                     [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
                      self.defaultPinchViewRadius*2];
                 }
@@ -1382,10 +1365,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 //adjusts offset of main scroll view so selected item is in focus
 -(void) moveOffsetOfMainScrollViewBasedOnSelectedItem {
 	float newYOffset = 0;
-	if (self.mainScrollView.contentOffset.y > self.selectedView_PAN.frame.origin.y - (self.selectedView_PAN.frame.size.height/2.f) && (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0)) {
+	if (self.mainScrollView.contentOffset.y > (self.selectedView_PAN.frame.origin.y + self.selectedView_PAN.frame.size.height/4.f)
+		&& (self.mainScrollView.contentOffset.y - AUTO_SCROLL_OFFSET >= 0)) {
 
 		newYOffset = -AUTO_SCROLL_OFFSET;
-	} else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_PAN.frame.origin.y + self.selectedView_PAN.frame.size.height) && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height) {
+	} else if (self.mainScrollView.contentOffset.y + self.view.frame.size.height < (self.selectedView_PAN.frame.origin.y + self.selectedView_PAN.frame.size.height)
+			   && self.mainScrollView.contentOffset.y + AUTO_SCROLL_OFFSET < self.mainScrollView.contentSize.height) {
 
 		newYOffset = AUTO_SCROLL_OFFSET;
 	}
@@ -1401,7 +1386,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 //takes a PinchView that has recently been unpinched and resets its frame
 //then adds it to a scroll view either above or below where it was unpinched from
 -(void) addUnpinchedItem:(PinchView*)unPinched {
-	UIView* upperView;
+	ContentPageElementScrollView* upperView;
 	NSInteger upperViewIndex = 0;
 	if (unPinched.frame.origin.y > self.selectedView_PAN.frame.origin.y) {
 		upperView = self.selectedView_PAN;
@@ -1440,8 +1425,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
             [self deleteScrollView:self.selectedView_PAN];
         }
         
-    }else{
-        self.selectedView_PAN.frame = self.previousFrameInLongPress;
+    } else {
+		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
+			 self.selectedView_PAN.frame = self.previousFrameInLongPress;
+		}];
     }
 	
     if(self.selectedView_PAN)[self.selectedView_PAN.pageElement markAsSelected:NO];
@@ -1543,8 +1530,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
 		[scrollView openCollection];
         if(![[UserSetupParameters sharedInstance] tapNhold_InstructionShown])[self alertTapNHoldInCollection];
-	}else{
-		self.openPinchView = pinchView;
+	} else { // pinch view should be SingleMediaOverText
+		self.editingPinchView = (SingleMediaAndTextPinchView*) pinchView;
 		//tap to open an element for viewing or editing
 		[self presentEditContentView];
 	}
@@ -1562,12 +1549,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
 	if([segue.identifier isEqualToString:BRING_UP_EDITCONTENT_SEGUE]) {
 		EditContentVC *editContentVC =  (EditContentVC *)segue.destinationViewController;
-		editContentVC.openPinchView = self.openPinchView;
-	}
-}
-
-- (IBAction) unwindToContentDevVC: (UIStoryboardSegue *)segue{
-	if([segue.identifier isEqualToString:UNWIND_SEGUE_EDIT_CONTENT_VIEW]) {
+		editContentVC.openPinchView = self.editingPinchView;
 		self.pinchViewTappedAndClosedForTheFirstTime = YES;
 	}
 }
@@ -1609,17 +1591,18 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 
-#pragma mark - Gallery + Image picker -
+#pragma mark - Verbatm Camera View Delegate methods -
 
--(void) addImageToStream: (UIImage*) image {
+// add image to deck (create pinch view)
+-(void) imageCaptured: (UIImage*) image {
 	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+	// place it at the bottom of the deck, above base element view selector
+	self.addMediaBelowView = self.pageElementScrollViews.count > 1 ? self.pageElementScrollViews[self.pageElementScrollViews.count-2] : nil;
 	[self createPinchViewFromImage: image];
 }
 
-/*
- Given a PHAsset representing a video and we create a pinch view out of it
- */
--(void) addMediaAssetToStream:(PHAsset *) asset {
+// add video asset to deck (create pinch view)
+-(void) videoAssetCaptured:(PHAsset *) asset {
 	[[PHImageManager defaultManager] requestAVAssetForVideo:asset
 													options:self.videoRequestOptions
 											  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
@@ -1629,6 +1612,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 												  });
 											  }];
 }
+
+-(void) minimizeCameraViewButtonTapped {
+	[self.cameraView removeFromSuperview];
+	//TODO
+}
+
+#pragma mark - Gallery + Image picker -
 
 -(void) presentEfficientGallery {
 	GMImagePickerController *picker = [[GMImagePickerController alloc] init];
@@ -1674,7 +1664,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray{
-	[self.delegate showPullBar:YES withTransition:NO];
 	if (self.addingCoverPicture) {
 		self.addingCoverPicture = NO;
 		[self addCoverPictureFromAssetArray: assetArray];
@@ -1686,7 +1675,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
 	self.addingCoverPicture = NO;
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
-		[self.delegate showPullBar:YES withTransition:NO];
 	}];
 }
 
@@ -1773,12 +1761,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andImage:image];
-	if (self.addMediaBelowView) {
-		[self newPinchView: newPinchView belowView: self.addMediaBelowView];
-		self.addMediaBelowView = nil;
-	} else {
-		[self newPinchView:newPinchView belowView:nil];
-	}
+	[self newPinchView: newPinchView belowView: self.addMediaBelowView];
 }
 
 -(void) createPinchViewFromVideoAsset:(AVURLAsset*) videoAsset andPHAssetLocalID: (NSString*) phAssetLocalId {
@@ -1787,12 +1770,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 															andVideo: videoAsset
 										   andPHAssetLocalIdentifier:phAssetLocalId];
 
-	if (self.addMediaBelowView) {
-		[self newPinchView: newPinchView belowView: self.addMediaBelowView];
-		self.addMediaBelowView = nil;
-	} else {
-		[self newPinchView:newPinchView belowView:nil];
-	}
+	[self newPinchView: newPinchView belowView: self.addMediaBelowView];
 }
 
 #pragma mark - Returning Pinch Views -
@@ -1805,6 +1783,32 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}
 	}
 	return pinchViews;
+}
+
+#pragma mark - Publishing (PreviewDisplay delegate Methods)
+
+//TODO: move to content dev
+-(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
+
+	if (![title length]) {
+		[self alertAddTitle];
+	} else if (!coverPhoto) {
+		[self alertAddCoverPhoto];
+	} else {
+		if(![pinchViews count]) {
+			NSLog(@"Can't publish with no pinch objects");
+			return;
+		}
+
+		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: coverPhoto];
+		[publisher publish];
+		//TODO: make sure current user exists and if not make them sign in
+		NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
+
+		[self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
+		[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+		[self cleanUp];
+	}
 }
 
 #pragma mark - Alerts -
@@ -1835,6 +1839,16 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     [[UserSetupParameters sharedInstance] set_tapNhold_InstructionAsShown];
 }
 
+-(void)alertAddTitle {
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+}
+
+-(void)alertAddCoverPhoto {
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+}
+
 #pragma mark - Tap to clear view -
 
 - (IBAction)tapToClearKeyboard:(UITapGestureRecognizer *)sender {
@@ -1843,6 +1857,23 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 
 #pragma mark - Lazy Instantiation
+
+-(VerbatmCameraView*) cameraView {
+	if (!_cameraView) {
+		_cameraView = [[VerbatmCameraView alloc] initWithFrame:self.view.bounds];
+		_cameraView.delegate = self;
+	}
+	return _cameraView;
+}
+
+-(PreviewDisplayView*) previewDisplayView {
+	if(!_previewDisplayView){
+		_previewDisplayView = [[PreviewDisplayView alloc] initWithFrame: self.view.frame];
+		_previewDisplayView.delegate = self;
+		[self.view addSubview:_previewDisplayView];
+	}
+	return _previewDisplayView;
+}
 
 -(PHVideoRequestOptions*) videoRequestOptions {
 	if (!_videoRequestOptions) {
@@ -1863,14 +1894,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(MediaSelectTile*) baseMediaTileSelector {
 	if (!_baseMediaTileSelector) {
-		CGRect frame = CGRectMake(ELEMENT_OFFSET_DISTANCE,
-								  ELEMENT_OFFSET_DISTANCE/2.f,
-								  self.view.frame.size.width - (ELEMENT_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
+		CGRect frame = CGRectMake(ELEMENT_X_OFFSET_DISTANCE,
+								  ELEMENT_Y_OFFSET_DISTANCE/2.f,
+								  self.view.frame.size.width - (ELEMENT_X_OFFSET_DISTANCE * 2), MEDIA_TILE_SELECTOR_HEIGHT);
 		_baseMediaTileSelector= [[MediaSelectTile alloc]initWithFrame:frame];
 		_baseMediaTileSelector.isBaseSelector =YES;
 		_baseMediaTileSelector.delegate = self;
-		[_baseMediaTileSelector createFramesForButtonWithFrame:frame];
-		[_baseMediaTileSelector formatButton];
+		[_baseMediaTileSelector createFramesForButtonsWithFrame:frame];
+		[_baseMediaTileSelector buttonGlow];
+//		[_baseMediaTileSelector.cameraButton insertSubview:self.cameraView atIndex:0];
 	}
 	return _baseMediaTileSelector;
 }

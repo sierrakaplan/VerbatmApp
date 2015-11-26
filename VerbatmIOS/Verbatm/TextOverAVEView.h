@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+/* NOT IN  USE! */
+
 @interface TextOverAVEView : UIView
 
 //allows scrolling to be enabled and disabled on textview while running
