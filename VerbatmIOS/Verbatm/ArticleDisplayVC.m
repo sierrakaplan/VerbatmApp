@@ -47,7 +47,7 @@
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
 #define ACTIVITY_ANIMATION_Y 100
-#define NUM_POVS_IN_SECTION 10
+#define NUM_POVS_IN_SECTION 20
 @end
 
 @implementation ArticleDisplayVC
@@ -57,7 +57,6 @@
 	//TODO: should always have 4 stories in memory (two in the direction of scroll, current, and one back)
 	self.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
 	[self.view addSubview: self.scrollView];
-    [self createLoadManger];
 }
 
 -(void) presentContentWithPOVType: (POVType) povType{
@@ -123,26 +122,29 @@
 // When user scrolls to a new story, loads the next two in that
 // direction of scroll
 -(void) loadNextStories {
-    NSInteger numPOVS = [self.povLoadManager getNumberOfPOVsLoaded];
+    //NSInteger numPOVS = [self.povLoadManager getNumberOfPOVsLoaded];
     NSInteger currentPageIndex = self.scrollView.contentOffset.x/self.view.frame.size.width;
-    NSInteger leftPOVIndex = currentPageIndex - 1;
+    NSInteger leftPOVIndex = (currentPageIndex) ? currentPageIndex - 1 : currentPageIndex + 2;
     NSInteger rightPOVIndex = currentPageIndex + 1;
     if(currentPageIndex == 0) {
-       
-        //we are on the first page so load the next two
-        PovInfo* povInfo1 = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex];
-        PovInfo* povInfo2 = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex + 1];
-        
-        if(povInfo1){
-            POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex] andPOVInfo:povInfo1];
-            [self.povViews insertObject:povView atIndex:rightPOVIndex];
-            [self.scrollView addSubview:povView];
+        NSInteger secondRightPOVIndex = rightPOVIndex + 1;
+        if(self.povViews[rightPOVIndex] == [NSNull null]){
+            //we are on the first page so load the next two
+            PovInfo* povInfo1 = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex];
+            if(povInfo1){
+                POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex] andPOVInfo:povInfo1];
+                [self.povViews insertObject:povView atIndex:rightPOVIndex];
+                [self.scrollView addSubview:povView];
+            }
         }
         
-        if(povInfo2){
-            POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex + 1] andPOVInfo:povInfo2];
-            [self.povViews insertObject:povView atIndex:rightPOVIndex + 1];
-            [self.scrollView addSubview:povView];
+        if(self.povViews[secondRightPOVIndex] == [NSNull null]){
+            PovInfo* povInfo2 = [self.povLoadManager getPOVInfoAtIndex:secondRightPOVIndex];
+            if(povInfo2){
+                POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:secondRightPOVIndex] andPOVInfo:povInfo2];
+                [self.povViews insertObject:povView atIndex:secondRightPOVIndex];
+                [self.scrollView addSubview:povView];
+            }
         }
         
     }else if (currentPageIndex > 0) {
@@ -151,7 +153,6 @@
             PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:leftPOVIndex];
             POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:leftPOVIndex] andPOVInfo:povInfo];
             [self.povViews insertObject:povView atIndex:leftPOVIndex];
-            
             [self.scrollView addSubview:povView];
         }
         
@@ -162,10 +163,22 @@
             [self.scrollView addSubview:povView];
         }
     }
+    
+    [self dropUnusedPOVExceptleft:leftPOVIndex center:currentPageIndex right:rightPOVIndex];
     [self updateScrollview];
 
 }
 
+
+-(void) dropUnusedPOVExceptleft:(NSInteger) left center:(NSInteger) center right:(NSInteger) right{
+    for(int i = 0; i < self.povViews.count; i++){
+        if((self.povViews[i] != [NSNull null]) && //make sure it's not already null
+           ((i != left) || (i != center) || (i != right))){
+            [(POVView *)self.povViews[i] clearArticle];
+            self.povViews[i] = [NSNull null];
+        }
+    }
+}
 
 
 -(CGRect) getFrameForPovAtIndex:(NSInteger) index{
@@ -184,6 +197,14 @@
 -(void) likeButtonLiked:(BOOL)liked onPOV: (PovInfo*) povInfo {
 	[self.updatingPOVManager povWithId:povInfo.identifier wasLiked: liked];
 	[self.delegate userLiked:liked POV:povInfo];
+}
+
+
+
+-(void) setPOVArrayToNull{
+    for(int i = 0; i < self.povViews.count;i++){
+        self.povViews[i] = [NSNull null];
+    }
 }
 
 
@@ -232,7 +253,8 @@
 
 -(NSMutableArray*) povViews {
 	if (!_povViews) {
-		_povViews = [[NSMutableArray alloc] init];
+		_povViews = [[NSMutableArray alloc] initWithCapacity:NUM_POVS_IN_SECTION];
+        [self setPOVArrayToNull];
 	}
 	return _povViews;
 }
