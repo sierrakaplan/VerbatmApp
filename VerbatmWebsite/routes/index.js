@@ -1,4 +1,3 @@
-exports.view = function(req, res){
-	var title = 'Verbatm';
-	res.render('index', {title: title, section: '#home'});
+exports.view = function(req, res) {
+	res.render('index', {title: 'Verbatm | Your story, Verbatm.'});
 };

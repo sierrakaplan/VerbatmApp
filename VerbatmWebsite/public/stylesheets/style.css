@@ -47,7 +47,7 @@ ______________________________________________________________________________
 
 @base: #f938ab;
 
-#header {
+#menu_container {
 	position: fixed;
 	display: block;
 	width: 100%;
@@ -73,11 +73,11 @@ ______________________________________________________________________________
 	font-weight: 400;
 	font-size: 15px;
 	text-transform: uppercase;
-	color: inherit;
+	color: rgb(150,150,150);
 }
 
-.inactive_item {
-	color: rgb(150,150,150);
+.active_item {
+	color: inherit;
 }
 
 /*desktop*/
@@ -289,29 +289,6 @@ ______________________________________________________________________________
 	font-size: 40px;
 }
 
-#logo_text_img {
-	width: 100%;
-	height: auto;
-}
-
-
-/*logo parrot
-______________________________________________________________________________
-*/
-
-#logo_parrot_container {
-	position: fixed;
-	z-index: 200;
-	top: 50px;
-	left: 15px;
-	vertical-align: middle;
-}
-
-#logo_parrot_img {
-	width: 30px;
-	height: auto;
-}
-
 /*beta test button
 ______________________________________________________________________________
 */
@@ -362,7 +339,7 @@ ______________________________________________________________________________
 ______________________________________________________________________________
 */
 
-.about_us_section {
+.about_section {
 	vertical-align: top;
 }
 

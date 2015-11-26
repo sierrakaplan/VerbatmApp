@@ -4,7 +4,7 @@
 	______________________________________________________________________________
 	*/
 
-	#header {
+	#menu_container {
 		height: 80px !important;
 	}
 
@@ -61,16 +61,6 @@
 
 	#title_text span {
 		font-size: 90px;
-	}
-
-	#logo_parrot_container {
-		top: 30px;
-		left: 30px;
-	}
-
-	#logo_parrot_img {
-		width: 60px;
-		height: auto;
 	}
 
 	/*beta test button

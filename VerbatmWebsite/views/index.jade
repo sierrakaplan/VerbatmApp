@@ -1,0 +1,57 @@
+extends layouts/layout
+
+append head
+	script(src="/javascripts/homePage.js")
+prepend content
+	#background_banner
+		- var images = ['/images/bannerimage3.jpg', '/images/bannerimage5.jpg', '/images/bannerimage4.jpg', '/images/bannerimage8.jpg', '/images/bannerimage1.jpg', '/images/bannerimage6.jpg', '/images/bannerimage7.jpg'];
+		ul#banner_images
+			- var animationDelay = 0;
+			each image, index in images
+				li
+					- var ID = 'banner_image' + index
+					- var backgroundImageUrl = 'url(' + images[index] + ')'
+					- var animationDelaySeconds = animationDelay + 's'
+					span(id=ID, style={'background-image': backgroundImageUrl, 'animation-delay': animationDelaySeconds})
+				- animationDelay += 6;
+
+		#black_filter
+	#beta_test_container(class='beta_not_scrolling')
+		a#beta_nav(class='menu_text', href="#beta_test_section")
+			span B e t a
+
+	#menu_container
+		#main_menu
+			- var menuItems = ['home', 'about', 'team', 'contact']
+			ul
+				- var menuItemClasses = ['section_link', 'menu_item', 'menu_text']
+				each item in menuItems
+					li
+						- var href = '#' + item + '_section'
+						- var menuLinkID = item + '_nav'
+						a(id=menuLinkID, href=href, class=menuItemClasses class={active_item: item === 'home'})
+							span=item
+				li
+					a#twitter_button(href="https://twitter.com/verbatmTeam", target="_blank", class="menu_item")
+						img(src="images/twitter-logo-blue.png", alt="Follow Us", width="20px", height="20px")
+					a#facebook_button(href="https://www.facebook.com/verbatmapp", target="_blank", class="menu_item")
+						img(src="images/facebook-logo-transparent.png", alt="Like Us", width="20px", height="20px")
+
+	- var sections = menuItems.concat('beta_test', 'thankyou')
+	- var sectionClasses = ['main_section']
+	each section in sections
+		- var sectionID = section + '_section'
+		section(id=sectionID, class=sectionClasses)
+			case section
+				when 'home'
+					include ./sections/home
+				when 'about'
+					include ./sections/about
+				when 'team'
+					include ./sections/team
+				when 'contact'
+					include ./sections/contact
+				when 'beta_test'
+					include ./sections/beta
+				when 'thankyou'
+					include ./sections/thankyou
