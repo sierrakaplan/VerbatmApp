@@ -148,6 +148,7 @@
 		C745B42F1BBA630800D18944 /* PermissionCodePageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C745B42E1BBA630800D18944 /* PermissionCodePageVC.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
 		C74E1D711C091F8F00ABD41D /* VideoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C74E1D701C091F8F00ABD41D /* VideoManager.m */; };
+		C7540F741C09A47F00DE1AA6 /* ChannelButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = C7540F731C09A47F00DE1AA6 /* ChannelButtons.m */; };
 		C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */; };
@@ -483,6 +484,8 @@
 		C7469BF31B4874A600EA7B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C74E1D6F1C091F8F00ABD41D /* VideoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoManager.h; sourceTree = "<group>"; };
 		C74E1D701C091F8F00ABD41D /* VideoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoManager.m; sourceTree = "<group>"; };
+		C7540F721C09A47F00DE1AA6 /* ChannelButtons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelButtons.h; sourceTree = "<group>"; };
+		C7540F731C09A47F00DE1AA6 /* ChannelButtons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelButtons.m; sourceTree = "<group>"; };
 		C75985F31B8553DF00FE77F7 /* InternetConnectionMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InternetConnectionMonitor.h; sourceTree = "<group>"; };
 		C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InternetConnectionMonitor.m; sourceTree = "<group>"; };
 		C75985F61B85575900FE77F7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -1112,6 +1115,15 @@
 			name = "Media Capture Classes";
 			sourceTree = "<group>";
 		};
+		C7540F751C09A48700DE1AA6 /* UIButton for Channels */ = {
+			isa = PBXGroup;
+			children = (
+				C7540F721C09A47F00DE1AA6 /* ChannelButtons.h */,
+				C7540F731C09A47F00DE1AA6 /* ChannelButtons.m */,
+			);
+			name = "UIButton for Channels";
+			sourceTree = "<group>";
+		};
 		C75985F91B85577900FE77F7 /* Internet Connectivity Monitor */ = {
 			isa = PBXGroup;
 			children = (
@@ -1157,6 +1169,7 @@
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
 				C716A5B019E0CA3500A5490B /* DashLineView.h */,
 				C716A5B119E0CA3500A5490B /* DashLineView.m */,
+				C7540F751C09A48700DE1AA6 /* UIButton for Channels */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1697,6 +1710,7 @@
 				A560EFA21BAA006B003FB041 /* UpdatingPOVManager.m in Sources */,
 				A5E85FAD1B911DA900E148D0 /* GTMOAuth2Authentication.m in Sources */,
 				A5C09BDC1BA1F1D700C0AD86 /* ASIDownloadCache.m in Sources */,
+				C7540F741C09A47F00DE1AA6 /* ChannelButtons.m in Sources */,
 				A5E85F9A1B911DA900E148D0 /* GTLBatchQuery.m in Sources */,
 				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,

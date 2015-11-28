@@ -7,15 +7,16 @@
 //
 
 #import "profileNavBar.h"
+
 #import "CustomNavigationBar.h"
+#import "ChannelButtons.h"
+
+
 #import "SizesAndPositions.h"
 #import "Styles.h"
-#import "CustomNavigationBar.h"
-
 @interface profileNavBar ()
     @property (nonatomic, strong)  NSArray * topicsBar;
     @property(nonatomic, strong) UIScrollView * threadNavScrollView;
-
     @property(nonatomic) CustomNavigationBar * navigationBar;
 
     #define THREAD_BUTTON_WIDTH 150.f
@@ -46,6 +47,8 @@
     CGRect barFrame =CGRectMake(0.f, 0.f, self.frame.size.width, self.frame.size.height/2.f);
     self.navigationBar = [[CustomNavigationBar alloc] initWithFrame:barFrame
                                                  andBackgroundColor:[UIColor blackColor]];
+    
+    
     
     [self.navigationBar createLeftButtonWithTitle:@"Settings" orImage:nil];
     [self.navigationBar createRightButtonWithTitle:@"Edit" orImage:nil];
@@ -97,13 +100,10 @@
     return label;
 }
 
-
 -(void) threadButtonPressed:(UIButton*) sender{
-    
-    
-    
-    
-    
+    UILabel * textLabel = [sender.subviews firstObject];//only has one subview
+    NSString * threadName = textLabel.text;
+    [self.delegate newChannelSelectedWithName:threadName];
 }
 
 

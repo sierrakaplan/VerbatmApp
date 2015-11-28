@@ -23,7 +23,7 @@
 @property (strong, nonatomic) id<ArticleDisplayVCDelegate> delegate;
 
 //tells the article display what content to present
--(void) presentContentWithPOVType: (POVType) povType;
+-(void) presentContentWithPOVType: (POVType) povType andChannel:(NSString *) channel;
 
 //Removes any content loaded (reverses loadStory)
 -(void) cleanUp;

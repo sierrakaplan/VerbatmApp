@@ -22,7 +22,7 @@
 @property (strong, nonatomic) UIImageView* videoLoadingImageView;
 @property (nonatomic) BOOL isVideoPlaying; //tells you if the video is in a playing state
 @property (strong, atomic) NSTimer * ourTimer;//keeps calling continue
-
+@property (nonatomic,strong) AVAsset * ourAsset;
 
 #define MUTE_BUTTON_SIZE 30
 #define MUTE_BUTTON_OFFSET 10
@@ -109,12 +109,13 @@
 		[self addSubview:self.videoLoadingImageView];
 	}
 
-    if(urlArray.count == 0) return;
-    if (urlArray.count > 1) {
-        [self prepareVideoFromArrayOfAssets_asynchronous:urlArray];
-        return;
-    } else {
-        [self prepareVideoFromURL_synchronous:urlArray[0]];
+    if(urlArray.count != 0) {
+        if (urlArray.count > 1) {
+            [self prepareVideoFromArrayOfAssets_asynchronous:urlArray];
+            return;
+        } else {
+            [self prepareVideoFromURL_synchronous:urlArray[0]];
+        }
     }
 }
 
@@ -231,18 +232,22 @@
 #pragma mark - Play video -
 
 -(void)playVideo{
+    if(!self.playerItem){
+        self.player = nil;
+        [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithAsset:self.ourAsset]];
+        [self initiateVideo];
+    }
+    if(!self.player){
+        [self preparePlayer];
+    }
     if((self.player) && (self.player.rate == 0)){
         [self.player play];
         self.isVideoPlaying = YES;
     }
 }
 
-//this function should be called on the main thread
--(void) initiateVideo {
-	if (self.isPlaying) {
-        return;
-	}
-    
+
+-(void)preparePlayer {
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     // Create an AVPlayerLayer using the player
@@ -257,11 +262,20 @@
     [self addSubview:self.muteButton];
     // Add it to your view's sublayers
     [self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
+}
+
+//this function should be called on the main thread
+-(void) initiateVideo {
+	if (self.isPlaying) {
+        return;
+	}
+    
     if(self.playAtEndOfAsynchronousSetup){
          [self playVideo];
          self.playAtEndOfAsynchronousSetup = NO;
     }else{
          NSString *tracksKey = @"tracks";
+        if(!self.ourAsset)self.ourAsset = self.playerItem.asset;
         [self.playerItem.asset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:tracksKey] completionHandler:
          ^{
              dispatch_async(dispatch_get_main_queue(),
@@ -306,9 +320,15 @@
 
 //pauses the video for the pinchview if there is one
 -(void)pauseVideo {
-	[self removePlayerItemObserver];
+	//[self removePlayerItemObserver];
 	if (self.player) {
 		[self.player pause];
+        [self.playerLayer removeFromSuperlayer];
+        self.playerLayer = nil;
+        self.player = nil;
+        
+        //self.playerItem = nil;
+        //if(self.playerItem) [self.playerItem seekToTime:kCMTimeZero];
 	}
     self.isVideoPlaying = NO;
 }

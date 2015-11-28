@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+@protocol profileNavBarDelegate <NSObject>
+-(void)newChannelSelectedWithName:(NSString *) channelName;
+@end
 
 @interface profileNavBar : UIView
 -(instancetype) initWithFrame:(CGRect)frame andThreads:(NSArray *) threads andUserName:(NSString *) userName;
+@property (nonatomic, strong) id<profileNavBarDelegate> delegate;
 @end
+
+

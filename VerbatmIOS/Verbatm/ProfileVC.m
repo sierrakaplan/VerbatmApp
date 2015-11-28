@@ -15,11 +15,12 @@
 #import "ArticleDisplayVC.h"
 #import "POVLoadManager.h"
 
-@interface ProfileVC()<ArticleDisplayVCDelegate, POVLoadManagerDelegate>
+@interface ProfileVC()<ArticleDisplayVCDelegate, POVLoadManagerDelegate, profileNavBarDelegate>
 
 @property (nonatomic, strong) profileNavBar * profileNavBar;
 @property (weak, nonatomic) GTLVerbatmAppVerbatmUser* currentUser;
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
+@property (nonatomic, strong) NSString * currentThreadInView;
 #define ARTICLE_DISPLAY_VC_ID @"article_display_vc"
 @end
 
@@ -28,8 +29,11 @@
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	
+    //this is where you'd fetch the threads
     NSArray * testThreads = @[@"Parties", @"Selfies", @"The Diaspora", @"Entrepreneur", @"Demo Day"];
-    [self createContentListView];
+    
+    
+    [self createContentListViewWithStartThread:testThreads[0]];
     [self createNavigationBarWithThreads:testThreads];
     [self addClearScreenGesture];
     
@@ -41,13 +45,13 @@
 
 
 
--(void) createContentListView{
-   
-    
+-(void) createContentListViewWithStartThread:(NSString *)startThread{
     self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
     self.postDisplayVC.view.frame = self.view.bounds;
     self.postDisplayVC.view.backgroundColor = [UIColor blackColor];
-    [self.postDisplayVC presentContentWithPOVType:POVTypeUser];
+    [self.postDisplayVC presentContentWithPOVType:POVTypeUser andChannel:startThread];
+    
+    self.currentThreadInView = startThread;
     
     [self addChildViewController:self.postDisplayVC];
     [self.view addSubview:self.postDisplayVC.view];
@@ -61,6 +65,7 @@
     CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width,(CUSTOM_NAV_BAR_HEIGHT*2));
     [self updateUserInfo];
     self.profileNavBar = [[profileNavBar alloc] initWithFrame:navBarFrame andThreads:threads andUserName:self.currentUser.name];
+    self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
     
 }
@@ -75,6 +80,17 @@
     [self.view addGestureRecognizer:tap];
 }
 
+//nav bar delegate method
+-(void)newChannelSelectedWithName:(NSString *) channelName{
+    if(![channelName isEqualToString:self.currentThreadInView]){
+        [self switchStoryListToThread:channelName];
+    }
+}
+
+-(void) switchStoryListToThread:(NSString *) newChannel{
+    [self.postDisplayVC cleanUp];
+    [self.postDisplayVC presentContentWithPOVType:POVTypeUser andChannel:newChannel];
+}
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
     if(self.profileNavBar.superview){

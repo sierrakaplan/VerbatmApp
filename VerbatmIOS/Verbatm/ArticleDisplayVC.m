@@ -51,7 +51,7 @@
 #define ACTIVITY_ANIMATION_Y 100
 #define NUM_POVS_IN_SECTION 20
 #define NUM_POVS_LOADED_BEFORE 2
-#define NUM_POVS_LOADED_AFTER 7
+#define NUM_POVS_LOADED_AFTER 2
 @end
 
 @implementation ArticleDisplayVC
@@ -63,11 +63,11 @@
 	[self.view addSubview: self.scrollView];
 }
 
--(void) presentContentWithPOVType: (POVType) povType{
+-(void) presentContentWithPOVType: (POVType) povType andChannel:(NSString *) channel{
     if(povType == POVTypeUser){
         //will be changed to show different people on
         NSNumber* aishwaryaId = [NSNumber numberWithLongLong:5432098273886208];
-        self.povLoadManager = [[POVLoadManager alloc] initWithUserId: aishwaryaId];
+        self.povLoadManager = [[POVLoadManager alloc] initWithUserId: aishwaryaId andChannel:channel];
         self.povLoadManager.delegate = self;
         [self.povLoadManager reloadPOVs: NUM_POVS_IN_SECTION];
     }else{
@@ -83,7 +83,7 @@
     self.currentIndexInView = 0;//So that the first screen plays
     [self preparePOVatIndex:0];
     [self playViewOnScreen];
-    [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+    //[self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
 
 
     //    [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
@@ -130,7 +130,7 @@
 -(void)playViewOnScreen{
     NSInteger indexOfViewBeingDisplayed = self.scrollView.contentOffset.x/self.view.frame.size.width;
     if(indexOfViewBeingDisplayed == self.currentIndexInView){
-     [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+        [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
     }else{
         if(self.povViews[self.currentIndexInView] != [NSNull null]){
             [(POVView *)self.povViews[self.currentIndexInView] povOffScreen];
@@ -250,6 +250,7 @@
         if ([self.activityIndicator isAnimating]) {
             [self.activityIndicator stopAnimating];
         }
+        self.povLoadManager = nil;
     }
     
     [[Analytics getSharedInstance] storyEndedViewing];

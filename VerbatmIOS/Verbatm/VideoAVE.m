@@ -1,4 +1,4 @@
-//
+ //
 //  v_videoview.m
 //  Verbatm
 //
@@ -45,9 +45,13 @@
 -(id)initWithFrame:(CGRect)frame pinchView:(PinchView *)pinchView orVideoArray:(NSArray*) videoAndTextList {
     if((self = [super initWithFrame:frame])) {
 		[self repeatVideoOnEnd:YES];
-        if(videoAndTextList.count) {
+        if(videoAndTextList.count) {//from the internet
+            
+            
             [self playVideosFromArray:videoAndTextList];
-        }else if (pinchView){
+        
+        
+        }else if (pinchView){//from the adk
              NSMutableArray * videoAssets = [[NSMutableArray alloc] init];
             if([pinchView isKindOfClass:[CollectionPinchView class]]){
                 for(PinchView * view in ((CollectionPinchView *)pinchView).pinchedObjects) {
@@ -62,7 +66,6 @@
             [self.ourEMCV displayVideo:videoAssets];
             [self addSubview:self.ourEMCV];
             if(videoAssets.count > 1) [self createRearrangeButton];
-            
         }
     }
     return self;
@@ -73,20 +76,20 @@
     NSMutableArray* videoList = [[NSMutableArray alloc] initWithCapacity: videoAndTextList.count];
     for (NSArray* videoWithText in videoAndTextList) {
         [videoList addObject: videoWithText[0]];
-        NSString* text = videoWithText[1];
-        NSNumber* textYPos = videoWithText[2];
+//        NSString* text = videoWithText[1];
+//        NSNumber* textYPos = videoWithText[2];
     }
-    [self playVideos:videoList];
+    [self prepareVideos:videoList];
     self.hasBeenSetUp = NO;
 }
 
 
--(void)playVideos:(NSArray*)videoList {
-    if(self.videoList != videoList){
-        self.videoList = videoList;
-        return;
-    }
-    //comes as avurlasset in preview
+-(void)prepareVideos:(NSArray*)videoList {
+//    if(self.videoList != videoList){
+//        self.videoList = videoList;
+//        return;
+//    }
+    //comes as avurlasset in preview 
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
 		//comes as NSURL from backend
         [self prepareVideoFromArrayOfAssets_asynchronous:videoList];
@@ -147,10 +150,8 @@
     if(self.ourEMCV){
         [self.ourEMCV offScreen];
     }else{
-        [self stopVideo];
-        self.hasBeenSetUp = NO;
+        [self pauseVideo];
     }
-    
     if(self.rearrangeView)[self.rearrangeView exitRearrangeView];
 }
 
@@ -158,24 +159,13 @@
     if(self.ourEMCV){
         [self.ourEMCV onScreen];
     }else{
-        if(!self.hasBeenSetUp){
-            self.playAtEndOfAsynchronousSetup = YES;//triggers a condition in the prepare system to allow the video to play
-            [self playVideos:self.videoList];
-        }else{
-            [self playVideo];
-            self.hasBeenSetUp = YES;
-        }
-    
+        [self playVideo];
     }
 }
 
 -(void)almostOnScreen{
     if(self.ourEMCV){
         [self.ourEMCV almostOnScreen];
-    }else{
-        if(self.videoList)[self stopVideo];
-        [self playVideos:self.videoList];
-        self.hasBeenSetUp = YES;
     }
 }
 

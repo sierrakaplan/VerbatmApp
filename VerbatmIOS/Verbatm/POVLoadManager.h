@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, POVType) {
 // Don't use this for POVTypeUser because needs user id to get the pov's associated with
 -(id) initWithType: (POVType) type;
 
--(id) initWithUserId: (NSNumber*) userId;
+-(id) initWithUserId: (NSNumber*) userId andChannel:(NSString *) channelName;
 
 // Query for next batch of POVInfos (when scrolling down)
 -(void) loadMorePOVs: (NSInteger) numToLoad;
