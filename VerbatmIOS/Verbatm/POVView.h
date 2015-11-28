@@ -45,6 +45,8 @@
 //presents array of pages when they are downloaded
 -(void) renderPOVFromPages:(NSArray *) pages andLikeButtonDelegate:(id) likeDelegate;
 
-
-
+//informs the POV when it's visible
+-(void) povOnScreen;
+-(void) povOffScreen;
+-(void)preparePOVToBePresented;
 @end

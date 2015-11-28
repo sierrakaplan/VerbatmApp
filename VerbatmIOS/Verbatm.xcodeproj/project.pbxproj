@@ -147,6 +147,7 @@
 		C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */; };
 		C745B42F1BBA630800D18944 /* PermissionCodePageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C745B42E1BBA630800D18944 /* PermissionCodePageVC.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
+		C74E1D711C091F8F00ABD41D /* VideoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C74E1D701C091F8F00ABD41D /* VideoManager.m */; };
 		C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */; };
@@ -480,6 +481,8 @@
 		C745B42D1BBA630800D18944 /* PermissionCodePageVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PermissionCodePageVC.h; sourceTree = "<group>"; };
 		C745B42E1BBA630800D18944 /* PermissionCodePageVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PermissionCodePageVC.m; sourceTree = "<group>"; };
 		C7469BF31B4874A600EA7B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		C74E1D6F1C091F8F00ABD41D /* VideoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoManager.h; sourceTree = "<group>"; };
+		C74E1D701C091F8F00ABD41D /* VideoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoManager.m; sourceTree = "<group>"; };
 		C75985F31B8553DF00FE77F7 /* InternetConnectionMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InternetConnectionMonitor.h; sourceTree = "<group>"; };
 		C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InternetConnectionMonitor.m; sourceTree = "<group>"; };
 		C75985F61B85575900FE77F7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -1091,6 +1094,15 @@
 			name = "Pinch Views";
 			sourceTree = "<group>";
 		};
+		C74E1D6E1C091F0300ABD41D /* Video Manager */ = {
+			isa = PBXGroup;
+			children = (
+				C74E1D6F1C091F8F00ABD41D /* VideoManager.h */,
+				C74E1D701C091F8F00ABD41D /* VideoManager.m */,
+			);
+			name = "Video Manager";
+			sourceTree = "<group>";
+		};
 		C750A35919D768BD0006FA88 /* Media Capture Classes */ = {
 			isa = PBXGroup;
 			children = (
@@ -1216,6 +1228,7 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				C74E1D6E1C091F0300ABD41D /* Video Manager */,
 				A560EF9E1BA8DFCC003FB041 /* AVE Analyzer */,
 				C716E9D31BD6CAAA001B769D /* Analytics */,
 				C7BD53C61B5B790B00EE6241 /* Constants  */,
@@ -1697,6 +1710,7 @@
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
+				C74E1D711C091F8F00ABD41D /* VideoManager.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				A5E860011B96249900E148D0 /* POVPublisher.m in Sources */,

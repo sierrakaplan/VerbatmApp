@@ -190,14 +190,12 @@
         [[Analytics getSharedInstance]pageStartedViewingWithIndex:nextIndex];
     }
     
-	if(self.currentPageIndex != nextIndex){
-		if (self.currentPageIndex >= 0) {
-			[self pauseVideosInAVE: currentPage];
-		}
-        self.currentPageIndex = nextIndex;
-		[self displayCircleOnAVE: nextPage];
-		[self playVideosInAVE: nextPage];
-	}
+    if (self.currentPageIndex != nextIndex) {
+        [self pauseVideosInAVE: currentPage];
+    }
+    self.currentPageIndex = nextIndex;
+    [self displayCircleOnAVE: nextPage];
+    [self playVideosInAVE: nextPage];
     
     [self prepareOutLiersToEnterScreen];
 }
@@ -328,7 +326,6 @@
 
 
 -(void) renderPOVFromPages:(NSArray *) pages andLikeButtonDelegate:(id) likeDelegate{
-    
     AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
     for (Page * page in pages) {
         [analyzer getAVEFromPage: page withFrame: self.bounds].then(^(UIView* ave) {
@@ -344,12 +341,24 @@
             NSLog(@"Error getting AVE from page: %@", error.description);
         });
     }
-
 }
 
+#pragma mark -Playing POV content-
 
+-(void) povOnScreen{
+    [self displayMediaOnCurrentAVE];
+}
 
+-(void) povOffScreen{
+    [self stopAllVideos];
+}
 
+-(void)preparePOVToBePresented{
+    NSInteger currentPage = self.mainScrollView.contentOffset.x / self.frame.size.width;
+    UIView * page = [self.pageAves objectForKey:[NSNumber numberWithInteger:currentPage]];
+    [self prepareView:page];
+    [self prepareOutLiersToEnterScreen];
+}
 
 #pragma mark - Photo AVE Delegate -
 
@@ -364,14 +373,21 @@
 #pragma mark - Clean up -
 
 -(void) clearArticle {
-    //We clear these so that the media is released
-    [self stopAllVideos];
-    for(UIView *view in self.mainScrollView.subviews) {
-        [view removeFromSuperview];
+    @autoreleasepool {
+        //We clear these so that the media is released
+        [self stopAllVideos];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            for(UIView *view in self.mainScrollView.subviews) {
+                [view removeFromSuperview];
+            }
+             [self.likeButton removeFromSuperview];
+        });
+       
+        self.currentPageIndex = -1;
+        self.pageAves = nil;
+        self.pageLoadManager = nil;
     }
-    [self.likeButton removeFromSuperview];
-    self.currentPageIndex = -1;
-    self.pageAves = nil;
 }
 
 //make sure to stop all videos

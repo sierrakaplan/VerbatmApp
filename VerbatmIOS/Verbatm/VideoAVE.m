@@ -155,8 +155,6 @@
 }
 
 -(void)onScreen {
-    
-    
     if(self.ourEMCV){
         [self.ourEMCV onScreen];
     }else{
@@ -172,8 +170,6 @@
 }
 
 -(void)almostOnScreen{
-    
-    
     if(self.ourEMCV){
         [self.ourEMCV almostOnScreen];
     }else{

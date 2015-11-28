@@ -46,8 +46,12 @@
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
+@property (nonatomic) NSInteger currentIndexInView;
+
 #define ACTIVITY_ANIMATION_Y 100
 #define NUM_POVS_IN_SECTION 20
+#define NUM_POVS_LOADED_BEFORE 2
+#define NUM_POVS_LOADED_AFTER 7
 @end
 
 @implementation ArticleDisplayVC
@@ -76,12 +80,14 @@
 
 // When user clicks story, loads one behind it and the two ahead
 -(void) loadStoryFromStart {
-    PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:0];
-    POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds andPOVInfo:povInfo];
-    [self.scrollView addSubview: povView];
-	[self.povViews addObject: povView];
-    [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
-    [self loadNextStories];
+    self.currentIndexInView = 0;//So that the first screen plays
+    [self preparePOVatIndex:0];
+    [self playViewOnScreen];
+    [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+
+
+    //    [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
+
 }
 
 -(void)createLoadManger{
@@ -94,12 +100,13 @@
 //load manager protocol
 -(void) povsRefreshed{
     [self loadStoryFromStart];
+     [self updateScrollview];
 }
 
 
 // Successfully loaded more POV's
 -(void) morePOVsLoaded: (NSInteger) numLoaded {
-    
+     [self updateScrollview];
 }
 // Was unable to load more POV's for some reason
 -(void) failedToLoadMorePOVs{
@@ -112,71 +119,91 @@
 
 #pragma mark -manage multiple stories present-
 
-
+-(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    [self playViewOnScreen];
+    [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+}
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-    //[self loadNextStories];
+    
+}
+
+-(void)playViewOnScreen{
+    NSInteger indexOfViewBeingDisplayed = self.scrollView.contentOffset.x/self.view.frame.size.width;
+    if(indexOfViewBeingDisplayed == self.currentIndexInView){
+     [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+    }else{
+        if(self.povViews[self.currentIndexInView] != [NSNull null]){
+            [(POVView *)self.povViews[self.currentIndexInView] povOffScreen];
+        }
+        if(self.povViews[indexOfViewBeingDisplayed] != [NSNull null]){
+            [(POVView *)self.povViews[indexOfViewBeingDisplayed] povOnScreen];
+            self.currentIndexInView = indexOfViewBeingDisplayed;
+        }else{
+            [self preparePOVatIndex:indexOfViewBeingDisplayed];
+            [(POVView *)self.povViews[indexOfViewBeingDisplayed] povOnScreen];
+        }
+    }
+
 }
 
 
-
-// When user scrolls to a new story, loads the next two in that
-// direction of scroll
--(void) loadNextStories {
-    //NSInteger numPOVS = [self.povLoadManager getNumberOfPOVsLoaded];
+/*
+ Makes sure that there are a certain number of POVs prepared before and after the current view. 
+ This makes it easier to load and play videos swiftly.
+ 
+ */
+-(void) loadNextStoriesWithNumberOfPOVsBefore:(NSInteger) numPOVsBefore andNumberOfPOVsAfter:(NSInteger) numPOVsAfter {
     NSInteger currentPageIndex = self.scrollView.contentOffset.x/self.view.frame.size.width;
-    NSInteger leftPOVIndex = (currentPageIndex) ? currentPageIndex - 1 : currentPageIndex + 2;
-    NSInteger rightPOVIndex = currentPageIndex + 1;
-    if(currentPageIndex == 0) {
-        NSInteger secondRightPOVIndex = rightPOVIndex + 1;
-        if(self.povViews[rightPOVIndex] == [NSNull null]){
-            //we are on the first page so load the next two
-            PovInfo* povInfo1 = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex];
-            if(povInfo1){
-                POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex] andPOVInfo:povInfo1];
-                [self.povViews insertObject:povView atIndex:rightPOVIndex];
-                [self.scrollView addSubview:povView];
+    
+    NSInteger minIndex = currentPageIndex - numPOVsBefore;
+    NSInteger maxIndex = currentPageIndex + numPOVsAfter;
+    
+    for(NSInteger i = 0; i < self.povViews.count; i++){
+        id currentView = self.povViews[i];
+        if((minIndex <= i) && (i <= maxIndex) && (i != currentPageIndex)) {
+            if(currentView == [NSNull null]){
+                [self preparePOVatIndex:i];
             }
-        }
-        
-        if(self.povViews[secondRightPOVIndex] == [NSNull null]){
-            PovInfo* povInfo2 = [self.povLoadManager getPOVInfoAtIndex:secondRightPOVIndex];
-            if(povInfo2){
-                POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:secondRightPOVIndex] andPOVInfo:povInfo2];
-                [self.povViews insertObject:povView atIndex:secondRightPOVIndex];
-                [self.scrollView addSubview:povView];
+        }else if (i != currentPageIndex){
+            if(currentView != [NSNull null]){
+                [(POVView *)currentView clearArticle];
+                [(POVView *)currentView removeFromSuperview];
+                self.povViews[i] = [NSNull null];
             }
-        }
-        
-    }else if (currentPageIndex > 0) {
-        //we are on the second page so the next one is already loaded
-        if(self.povViews[leftPOVIndex] == [NSNull null]){
-            PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:leftPOVIndex];
-            POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:leftPOVIndex] andPOVInfo:povInfo];
-            [self.povViews insertObject:povView atIndex:leftPOVIndex];
-            [self.scrollView addSubview:povView];
-        }
-        
-        if(self.povViews[rightPOVIndex] == [NSNull null]) {
-            PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:rightPOVIndex];
-            POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:rightPOVIndex] andPOVInfo:povInfo];
-            [self.povViews insertObject:povView atIndex:rightPOVIndex];
-            [self.scrollView addSubview:povView];
         }
     }
-    
-    [self dropUnusedPOVExceptleft:leftPOVIndex center:currentPageIndex right:rightPOVIndex];
-    [self updateScrollview];
+}
+//dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//});
 
+//dispatch_async(dispatch_get_main_queue(), ^{});
+
+
+
+
+-(void)preparePOVatIndex:(NSInteger) index {
+    PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
+    if(povInfo){
+        POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:index] andPOVInfo:povInfo];
+        [self.povViews replaceObjectAtIndex:index withObject:povView];
+        [self.scrollView addSubview:povView];
+        [povView preparePOVToBePresented];
+    }
 }
 
 
 -(void) dropUnusedPOVExceptleft:(NSInteger) left center:(NSInteger) center right:(NSInteger) right{
     for(int i = 0; i < self.povViews.count; i++){
-        if((self.povViews[i] != [NSNull null]) && //make sure it's not already null
-           ((i != left) || (i != center) || (i != right))){
-            [(POVView *)self.povViews[i] clearArticle];
-            self.povViews[i] = [NSNull null];
+        @autoreleasepool {
+            if((self.povViews[i] != [NSNull null]) && //make sure it's not already null
+               ((i != left) && (i != center) && (i != right))){
+                
+                [(POVView *)self.povViews[i] clearArticle];
+                [(POVView *)self.povViews[i] removeFromSuperview];
+                self.povViews[i] = [NSNull null];
+            }
         }
+
     }
 }
 
@@ -202,8 +229,8 @@
 
 
 -(void) setPOVArrayToNull{
-    for(int i = 0; i < self.povViews.count;i++){
-        self.povViews[i] = [NSNull null];
+    for(int i = 0; i < NUM_POVS_IN_SECTION;i++){
+        [self.povViews addObject:[NSNull null]];
     }
 }
 
@@ -213,15 +240,18 @@
 
 // Reverses load Article and removes all content
 -(void) cleanUp {
-	for (POVView* povView in self.povViews) {
-		[povView clearArticle];
-		[povView removeFromSuperview];
-	}
-	self.povViews = nil;
-	self.povIDs = nil;
-	if ([self.activityIndicator isAnimating]) {
-		[self.activityIndicator stopAnimating];
-	}
+    @autoreleasepool {
+        for (POVView* povView in self.povViews) {
+            [povView clearArticle];
+            [povView removeFromSuperview];
+        }
+        self.povViews = nil;
+        self.povIDs = nil;
+        if ([self.activityIndicator isAnimating]) {
+            [self.activityIndicator stopAnimating];
+        }
+    }
+    
     [[Analytics getSharedInstance] storyEndedViewing];
 }
 

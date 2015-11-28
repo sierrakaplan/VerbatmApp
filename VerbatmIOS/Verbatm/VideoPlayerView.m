@@ -231,7 +231,7 @@
 #pragma mark - Play video -
 
 -(void)playVideo{
-    if(self.player){
+    if((self.player) && (self.player.rate == 0)){
         [self.player play];
         self.isVideoPlaying = YES;
     }
@@ -257,10 +257,30 @@
     [self addSubview:self.muteButton];
     // Add it to your view's sublayers
     [self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
-     if(self.playAtEndOfAsynchronousSetup){
+    if(self.playAtEndOfAsynchronousSetup){
          [self playVideo];
          self.playAtEndOfAsynchronousSetup = NO;
-     }
+    }else{
+         NSString *tracksKey = @"tracks";
+        [self.playerItem.asset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:tracksKey] completionHandler:
+         ^{
+             dispatch_async(dispatch_get_main_queue(),
+                            ^{
+                                NSError *error = nil;
+                                AVKeyValueStatus status = [self.playerItem.asset statusOfValueForKey:tracksKey error:&error];
+                                NSLog(@"Status %ld", (long)status);
+                                if (status == AVKeyValueStatusLoaded) {
+                                     NSLog(@"Status video preloaded");
+                                }
+                                else {
+                                    NSLog(@"The asset's tracks were not loaded:\n%@", [error localizedDescription]);
+                                }
+                            });
+         }];
+    }
+    
+    
+    
 }
 
 -(void) repeatVideoOnEnd:(BOOL)repeat {
@@ -269,15 +289,19 @@
 
 //tells me when the video ends so that I can rewind
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
-	AVPlayerItem *playerItem = [notification object];
     if (self.repeatsVideo) {
-		[playerItem seekToTime:kCMTimeZero];
+        [self startPlayerFromBeginning];
     }
+}
+
+-(void)startPlayerFromBeginning{
+    [self.playerItem seekToTime:kCMTimeZero];
+    [self continueVideo];
 }
 
 -(void)playerItemDidStall:(NSNotification*)notification {
 	NSLog(@"Video stalled");
-	if(self.isVideoPlaying)[self continueVideo];
+	if(self.isVideoPlaying)[self startPlayerFromBeginning];
 }
 
 //pauses the video for the pinchview if there is one
@@ -381,7 +405,7 @@
         [self.playerLayer removeFromSuperlayer];
         self.layer.sublayers = nil;
         self.muteButton = nil;
-        self.playerItem = nil;
+        //self.playerItem = nil;
         self.player = nil;
         self.playerLayer = nil;
         self.isVideoPlaying = NO;
