@@ -126,31 +126,9 @@
                     <view key="view" contentMode="scaleToFill" id="Clv-OZ-JXA">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="wGI-d8-PWe">
-                                <rect key="frame" x="48" y="20" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
-                            </containerView>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF" userLabel="Top List Container">
-                                <rect key="frame" x="26" y="215" width="262" height="339"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
-                            </containerView>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="j2U-9B-X6v" userLabel="Bottom List Container">
-                                <rect key="frame" x="0.0" y="107" width="325" height="300"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
-                            </containerView>
-                        </subviews>
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <connections>
-                        <outlet property="articleDisplayContainerView" destination="wGI-d8-PWe" id="UPd-33-L0K"/>
-                        <outlet property="bottomListContainer" destination="j2U-9B-X6v" id="Kku-ME-qKO"/>
-                        <outlet property="topListContainer" destination="jLa-zk-lWF" id="sgL-hh-qR6"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V0g-tI-HpL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

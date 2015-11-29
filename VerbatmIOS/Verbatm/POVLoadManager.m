@@ -54,8 +54,8 @@
 	return self;
 }
 
--(instancetype) initWithUserId:(NSNumber *)userId {
-	self = [self initWithType:POVTypeUser];
+-(instancetype) initWithUserId: (NSNumber*) userId andChannel:(NSString *) channelName{
+    self = [self initWithType:POVTypeUser];
 	if (self) {
 		self.userID = userId;
 	}

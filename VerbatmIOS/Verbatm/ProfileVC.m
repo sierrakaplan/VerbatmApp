@@ -14,6 +14,7 @@
 #import "UserManager.h"
 #import "ArticleDisplayVC.h"
 #import "POVLoadManager.h"
+#import "SegueIDs.h"
 
 @interface ProfileVC()<ArticleDisplayVCDelegate, POVLoadManagerDelegate, profileNavBarDelegate>
 
@@ -21,7 +22,7 @@
 @property (weak, nonatomic) GTLVerbatmAppVerbatmUser* currentUser;
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
-#define ARTICLE_DISPLAY_VC_ID @"article_display_vc"
+
 @end
 
 @implementation ProfileVC
