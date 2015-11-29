@@ -275,8 +275,8 @@
          self.playAtEndOfAsynchronousSetup = NO;
     }else{
          NSString *tracksKey = @"tracks";
-        if(!self.ourAsset)self.ourAsset = self.playerItem.asset;
-        [self.playerItem.asset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:tracksKey] completionHandler:
+        if(!self.ourAsset && self.playerItem)self.ourAsset = self.playerItem.asset;
+        [self.ourAsset loadValuesAsynchronouslyForKeys:[NSArray arrayWithObject:tracksKey] completionHandler:
          ^{
              dispatch_async(dispatch_get_main_queue(),
                             ^{
@@ -320,15 +320,13 @@
 
 //pauses the video for the pinchview if there is one
 -(void)pauseVideo {
-	//[self removePlayerItemObserver];
 	if (self.player) {
 		[self.player pause];
         [self.playerLayer removeFromSuperlayer];
         self.playerLayer = nil;
         self.player = nil;
-        
-        //self.playerItem = nil;
-        //if(self.playerItem) [self.playerItem seekToTime:kCMTimeZero];
+        [self removePlayerItemObserver];
+        self.playerItem = nil;
 	}
     self.isVideoPlaying = NO;
 }

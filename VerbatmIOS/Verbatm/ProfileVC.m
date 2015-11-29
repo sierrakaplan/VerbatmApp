@@ -29,15 +29,15 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	
+}
+
+-(void) viewWillAppear:(BOOL)animated{
     //this is where you'd fetch the threads
     NSArray * testThreads = @[@"Parties", @"Selfies", @"The Diaspora", @"Entrepreneur", @"Demo Day"];
-    
     
     [self createContentListViewWithStartThread:testThreads[0]];
     [self createNavigationBarWithThreads:testThreads];
     [self addClearScreenGesture];
-    
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -105,7 +105,12 @@
 }
 
 
-
+-(void) offScreen{
+    [self.postDisplayVC offScreen];
+}
+-(void)onScreen{
+    [self.postDisplayVC onScreen];
+}
 
 
 @end

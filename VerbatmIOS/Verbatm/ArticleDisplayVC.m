@@ -297,4 +297,21 @@
 	return _povIDs;
 }
 
+-(void)onScreen{
+    [self playViewOnScreen];
+    [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+}
+
+-(void)offScreen{
+    for(id povView  in self.povViews){
+        
+        if([povView isKindOfClass:[POVView class]]){
+            [(POVView *)povView povOffScreen];
+        }
+        
+        
+    }
+}
+
+
 @end

@@ -20,6 +20,8 @@
 
 #define TRENDING_VC_ID @"trending_vc"
 
+@property (nonatomic) BOOL contentCoveringScreen;
+
 @end
 
 
@@ -27,12 +29,12 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    [self createContentListView];
-
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+    [self createContentListView];
+    [self addClearScreenGesture];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -62,6 +64,36 @@
 											 selector:@selector(networkConnectionUpdate:)
 												 name:INTERNET_CONNECTION_NOTIFICATION
 											   object:nil];
+}
+
+
+-(void)addClearScreenGesture{
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
+    [self.view addGestureRecognizer:tap];
+    self.contentCoveringScreen = YES;
+}
+-(void)clearScreen:(UIGestureRecognizer *) tapGesture {
+    if(self.contentCoveringScreen){
+        [self.delegate showTabBar:NO];
+        self.contentCoveringScreen = NO;
+    }else{
+        [self.delegate showTabBar:YES];
+        self.contentCoveringScreen = YES;
+    }
+}
+
+-(void)offScreen{
+    [self.postDisplayVC offScreen];
+}
+-(void)onScreen{
+    [self.postDisplayVC onScreen];
+}
+
+//not implemented
+// animates the fact that a recent POV is publishing
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic
+                    andProgressObject:(NSProgress *)publishingProgress{
+    
 }
 
 #pragma mark - Network Connection Lost -

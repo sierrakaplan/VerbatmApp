@@ -66,14 +66,19 @@
 -(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo {
     self = [super initWithFrame:frame];
     if (self) {
-		self.povInfo = povInfo;
         [self addSubview: self.mainScrollView];
-        self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
-        [self createPageLoader];
+        if(povInfo){//if this is being used in the feed
+            self.povInfo = povInfo;
+            self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
+            if(povInfo)[self createPageLoader];
+            self.activityIndicator = [self startActivityIndicatorOnViewWithCenter: CGPointMake(self.center.x, ACTIVITY_ANIMATION_Y)
+                                                                         andStyle:UIActivityIndicatorViewStyleWhiteLarge];
+            self.activityIndicator.color = [UIColor blackColor];
+        }
         
-        self.activityIndicator = [self startActivityIndicatorOnViewWithCenter: CGPointMake(self.center.x, ACTIVITY_ANIMATION_Y)
-                                                                     andStyle:UIActivityIndicatorViewStyleWhiteLarge];
-        self.activityIndicator.color = [UIColor blackColor];
+
+        
+        
     }
     return self;
 }
@@ -89,11 +94,13 @@
 }
 
 -(void)moveViewTopPageIndex:(NSInteger) pageIndex{
+    
     if(pageIndex < self.pageAves.count){
-        self.mainScrollView.contentOffset = CGPointMake(0, self.mainScrollView.frame.size.height * (pageIndex+1));//+1 for the cover photo
+        self.mainScrollView.contentOffset = CGPointMake(0, self.mainScrollView.frame.size.height * (pageIndex));
         
         [self displayMediaOnCurrentAVE];
     }
+    
 }
 
 
@@ -322,6 +329,7 @@
     [self renderPOVFromPages:pages andLikeButtonDelegate:self];
     [self.activityIndicator stopAnimating];
     self.activityIndicator = nil;
+    if(pages.count > 1)[self addDownArrowButton];
 }
 
 
@@ -329,7 +337,7 @@
     AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
     for (Page * page in pages) {
         [analyzer getAVEFromPage: page withFrame: self.bounds].then(^(UIView* ave) {
-            NSInteger pageIndex = page.indexInPOV; // bc cover page +1
+            NSInteger pageIndex = page.indexInPOV;
             // When first page loads, show down arrow
             if (pageIndex == 0) {
                 [self addDownArrowButton];

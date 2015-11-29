@@ -88,17 +88,15 @@
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
 	NSMutableArray* aves = [analyzer getAVESFromPinchViews: pinchViews withFrame: self.viewingFrame];
-	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.viewingFrame andImage: coverPhoto andTitle:title];
-	[aves insertObject:coverAVE atIndex:0];
-	self.povView = [[POVView alloc] initWithFrame: CGRectMake(0.f, 0.f,
-															  self.frame.size.width, self.frame.size.height)];
+	self.povView = [[POVView alloc] initWithFrame: self.bounds andPOVInfo:nil];
 	[self.povView renderAVES: aves];
-    [self.povView addDownArrowButton];
 	[self addSubview: self.povView];
 	[self addNavigationBar];
     [self.povView moveViewTopPageIndex:index];
+    [self.povView povOnScreen];
 	[self revealPreview:YES];
 }
+
 
 #pragma mark - Buttons -
 

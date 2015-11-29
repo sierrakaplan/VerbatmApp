@@ -27,5 +27,7 @@
 
 //Removes any content loaded (reverses loadStory)
 -(void) cleanUp;
-
+//stops all video content
+-(void)offScreen;
+-(void)onScreen;
 @end

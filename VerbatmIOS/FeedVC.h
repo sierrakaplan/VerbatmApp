@@ -22,4 +22,9 @@
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic
 					andProgressObject:(NSProgress *)publishingProgress;
 
+
+
+-(void) offScreen;//told when it's off screen to stop videos
+-(void)onScreen;
+
 @end

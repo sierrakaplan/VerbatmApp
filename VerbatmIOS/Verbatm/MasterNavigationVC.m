@@ -210,6 +210,7 @@
 
 -(void) revealADK {
 	[[Analytics getSharedInstance] newADKSession];
+    [self playContentOnSelectedViewController:NO];
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
 
@@ -228,8 +229,31 @@
 		// TODO: have variable set and go to profile or adk
 		[self.profileVC updateUserInfo];
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
+        
+        [self playContentOnSelectedViewController:YES];
 		[[Analytics getSharedInstance] endOfADKSession];
 	}
+}
+
+-(void) playContentOnSelectedViewController:(BOOL) shoulPlay{
+    
+    if(shoulPlay){
+        UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
+        
+        if(currentViewController == self.feedVC){
+            [self.feedVC onScreen];
+        }else if (currentViewController == self.profileVC){
+            [self.profileVC onScreen];
+        }
+    }else{
+        UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
+        
+        if(currentViewController == self.feedVC){
+            [self.feedVC offScreen];
+        }else if (currentViewController == self.profileVC){
+            [self.profileVC offScreen];
+        }
+    }
 }
 
 #pragma mark - Media Dev VC Delegate methods -

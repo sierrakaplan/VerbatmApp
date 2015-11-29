@@ -19,5 +19,6 @@
 @property (strong, nonatomic) id<ProfileVCDelegate> delegate;
 
 -(void) updateUserInfo;
-
+-(void) offScreen;//told when it's off screen to stop videos
+-(void)onScreen;
 @end
