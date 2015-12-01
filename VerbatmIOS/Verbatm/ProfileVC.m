@@ -8,7 +8,7 @@
 
 
 #import "ProfileVC.h"
-#import "profileNavBar.h"
+#import "ProfileNavBar.h"
 #import "SizesAndPositions.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "UserManager.h"
@@ -16,9 +16,9 @@
 #import "POVLoadManager.h"
 #import "SegueIDs.h"
 
-@interface ProfileVC()<ArticleDisplayVCDelegate, POVLoadManagerDelegate, profileNavBarDelegate>
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate>
 
-@property (nonatomic, strong) profileNavBar * profileNavBar;
+@property (nonatomic, strong) ProfileNavBar * profileNavBar;
 @property (weak, nonatomic) GTLVerbatmAppVerbatmUser* currentUser;
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
@@ -44,8 +44,6 @@
 	[super viewDidAppear:animated];
 }
 
-
-
 -(void) createContentListViewWithStartThread:(NSString *)startThread{
     self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
     self.postDisplayVC.view.frame = self.view.bounds;
@@ -61,11 +59,10 @@
    
 }
 
-
 -(void) createNavigationBarWithThreads:(NSArray *) threads {
     CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width,(CUSTOM_NAV_BAR_HEIGHT*2));
     [self updateUserInfo];
-    self.profileNavBar = [[profileNavBar alloc] initWithFrame:navBarFrame andThreads:threads andUserName:self.currentUser.name];
+    self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:navBarFrame andThreads:threads andUserName:self.currentUser.name];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
     
@@ -101,9 +98,7 @@
         [self.view addSubview:self.profileNavBar];
         [self.delegate showTabBar:YES];
     }
-    
 }
-
 
 -(void) offScreen{
     [self.postDisplayVC offScreen];
@@ -112,5 +107,10 @@
     [self.postDisplayVC onScreen];
 }
 
+#pragma mark - Article Display Delegate methods -
+
+-(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo {
+	// do nothing
+}
 
 @end

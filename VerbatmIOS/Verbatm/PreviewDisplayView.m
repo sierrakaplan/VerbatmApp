@@ -95,6 +95,7 @@
     [self.povView moveViewTopPageIndex:index];
     [self.povView povOnScreen];
 	[self revealPreview:YES];
+    
 }
 
 

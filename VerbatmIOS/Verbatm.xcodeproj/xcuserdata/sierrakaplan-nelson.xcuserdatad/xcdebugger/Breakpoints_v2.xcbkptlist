@@ -143,7 +143,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "84"
             endingLineNumber = "84"
-            landmarkName = "-formatTitleLabel"
+            landmarkName = "-newChannelSelectedWithName:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
