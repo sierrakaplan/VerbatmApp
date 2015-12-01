@@ -36,7 +36,7 @@
 #import "MediaDevVC.h"
 #import "MediaSelectTile.h"
 
-#import "RearrangePV.h"
+#import "OpenCollectionView.h"
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"

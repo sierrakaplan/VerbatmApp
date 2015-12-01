@@ -19,9 +19,9 @@
 #import "VideoAVE.h"
 #import "VideoPinchView.h"
 
-#import "RearrangePV.h"
+#import "OpenCollectionView.h"
 
-@interface VideoAVE()<RearrangePVDelegate>
+@interface VideoAVE()<OpenCollectionViewDelegate>
 
 @property (strong, nonatomic) UIImageView* videoProgressImageView;
 @property (strong, nonatomic) UIButton* playButton;
@@ -29,7 +29,7 @@
 @property (nonatomic, strong) NSArray * videoList;
 @property (nonatomic) BOOL hasBeenSetUp;
 @property (nonatomic) EditMediaContentView * editContentView;
-@property (nonatomic) RearrangePV * rearrangeView;
+@property (nonatomic) OpenCollectionView * rearrangeView;
 @property (nonatomic) UIButton * rearrangeButton;
 
 #define RGB 255,225,255, 0.7
@@ -111,7 +111,7 @@
 
 -(void)rearrangeContentSelected {
     if(!self.rearrangeView){
-        self.rearrangeView = [[RearrangePV alloc] initWithFrame:self.bounds andPinchViewArray:[((CollectionPinchView *)self.editContentView.pinchView) getVideoPinchViews]];
+        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds andPinchViewArray:[((CollectionPinchView *)self.editContentView.pinchView) getVideoPinchViews]];
         self.rearrangeView.delegate = self;
         [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
 

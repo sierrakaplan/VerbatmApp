@@ -179,16 +179,14 @@
 //remove collection view from scrollview and add all its children instead
 -(void) openCollectionWithPinchViews:(NSMutableArray *) pinchViews {
 	self.collectionIsOpen = YES;
-	if(self.pageElement)[self.pageElement removeFromSuperview];
+	if(self.pageElement) [self.pageElement removeFromSuperview];
     [self.deleteButton removeFromSuperview];
 	[self displayCollectionPinchViews:pinchViews];
 }
 
 //array of PinchViews
 -(void) displayCollectionPinchViews:(NSMutableArray *) pinchViews {
-
     if(pinchViews.count){
-        
         self.pinchViewStartSize = [(PinchView*)pinchViews[0] radius]*2.f;
         CGFloat pinchViewSize = [(PinchView*)pinchViews[0] radius]*1.5;
         CGFloat yPosition = (self.frame.size.height/2.f) - (pinchViewSize/2.f);

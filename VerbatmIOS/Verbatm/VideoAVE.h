@@ -9,23 +9,20 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVKit/AVKit.h>
-
 #import <MediaPlayer/MediaPlayer.h>
-
-#import "PinchView.h"
-
-#import "TextOverMediaView.h"
-
 #import <UIKit/UIKit.h>
 
+#import "ArticleViewingExperience.h"
+#import "PinchView.h"
+#import "TextOverMediaView.h"
 #import "VideoPlayerView.h"
 
-@interface VideoAVE : VideoPlayerView
+@interface VideoAVE : ArticleViewingExperience
+
+@property (strong, nonatomic, readonly) VideoPlayerView* videoPlayer;
 
 //note that the video list can be avurlasset or nsurl
 -(id)initWithFrame:(CGRect)frame pinchView:(PinchView *)pinchView orVideoArray:(NSArray*) videoAndTextList;
 
--(void)onScreen;
--(void)offScreen;
--(void)almostOnScreen;
+
 @end

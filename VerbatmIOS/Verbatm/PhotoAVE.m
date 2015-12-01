@@ -19,7 +19,7 @@
 #import "PointObject.h"
 #import "PhotoAVE.h"
 
-#import "RearrangePV.h"
+#import "OpenCollectionView.h"
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -29,7 +29,7 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 
 
-@interface PhotoAVE() <UIGestureRecognizerDelegate, RearrangePVDelegate, EditContentViewDelegate>
+@interface PhotoAVE() <UIGestureRecognizerDelegate, OpenCollectionViewDelegate, EditContentViewDelegate>
 
 @property (nonatomic) CGPoint originPoint;
 //contains PointObjects showing dots on circle
@@ -54,7 +54,7 @@
 @property (nonatomic) BOOL subviewOfPhotoVideoAVE;
 
 @property (nonatomic, strong) UIButton * rearrangeButton;
-@property (nonatomic) RearrangePV * rearrangeView;
+@property (nonatomic) OpenCollectionView * rearrangeView;
 
 @property (nonatomic)PinchView * currentCPV;
 #define TEXT_VIEW_HEIGHT 70.f
@@ -66,7 +66,6 @@
 
 @implementation PhotoAVE
 
-//TODO: limit on how many photos can be pinched together?
 -(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchview:(PinchView *) pinchView
      isSubViewOfPhotoVideoAve:(BOOL) isPVSubview {
     
@@ -316,7 +315,7 @@
          }else{//is an imagepinchview
              pinchViewArray = [NSMutableArray arrayWithObject:self.currentCPV];
          }
-        self.rearrangeView = [[RearrangePV alloc] initWithFrame:self.bounds andPinchViewArray:pinchViewArray];
+        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds andPinchViewArray:pinchViewArray];
         self.rearrangeView.delegate = self;
         [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
     }else{

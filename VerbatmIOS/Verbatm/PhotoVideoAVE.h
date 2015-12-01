@@ -12,28 +12,19 @@
 #import "CollectionPinchView.h"
 @class VideoAVE;
 
-@interface PhotoVideoAVE : UIView
+@interface PhotoVideoAVE : ArticleViewingExperience
 
 @property (strong, nonatomic) VideoAVE *videoView;
-@property (weak, nonatomic) UIScrollView * povScrollView;//set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
 
-
-
+//set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
+@property (weak, nonatomic) UIScrollView * povScrollView;
 
 //Photos are array of UIImage and videos are array of AVassets or NSURl
 -(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos orCollectionView:(CollectionPinchView *) collectionView;
 
-//-(void)addTapGesture;
-
 -(void)mutePlayer;
 
 -(void)enableSound;
-
--(void)offScreen;
-
--(void)onScreen;
-
--(void)almostOnScreen;
 
 -(void) showAndRemoveCircle;
 
