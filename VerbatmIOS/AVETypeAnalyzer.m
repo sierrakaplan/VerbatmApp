@@ -48,11 +48,6 @@
 
 -(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame {
 	for(PinchView* pinchView in pinchViews) {
-		//there are some issue where a messed up p_obj arrives
-		if(!(pinchView.containsImage || pinchView.containsVideo)) {
-//			NSLog(@"Pinch view says it has no type of media in it.");
-			continue;
-		}
 
 		[self getAVEFromPinchView:pinchView withFrame:frame];
 	}
