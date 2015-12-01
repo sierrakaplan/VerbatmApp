@@ -27,7 +27,7 @@
 
 @property (strong, nonatomic, readonly) UIView<ContentDevElementDelegate>* pageElement;
 
-@property (strong, nonatomic, readonly) PinchView* selectedItem;
+@property (strong, nonatomic, readonly) SingleMediaAndTextPinchView* selectedItem;
 
 -(id) initWithFrame:(CGRect)frame andElement:(UIView<ContentDevElementDelegate>*) element;
 

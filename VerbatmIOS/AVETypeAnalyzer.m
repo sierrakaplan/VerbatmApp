@@ -55,26 +55,6 @@
 	return self.results;
 }
 
--(NSMutableArray*) getAVESFromPages: (NSArray*) pages withFrame: (CGRect) frame {
-	for (Page* page in pages) {
-		AVEType type;
-
-		if (page.images.count && page.videos.count) {
-			type = AVETypePhotoVideo;
-		} else if (page.images.count) {
-			type = AVETypePhoto;
-		} else if(page.videos.count) {
-			type = AVETypeVideo;
-		}
-
-		[self getUIImagesFromPage: page].then(^(NSArray* images) {
-			BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame:frame andText:nil andPhotos:images andVideos:[self getVideosFromPage: page] andAVEType:type];
-			[self.results addObject:textAndOtherMediaAVE];
-		});
-	}
-	return self.results;
-}
-
 -(AnyPromise*) getAVEFromPage: (Page*) page withFrame: (CGRect) frame {
 	AVEType type;
 	if (page.images.count && page.videos.count) {

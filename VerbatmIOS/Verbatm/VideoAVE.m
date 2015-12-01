@@ -23,12 +23,12 @@
 
 @interface VideoAVE()<RearrangePVDelegate>
 
-@property (strong, nonatomic) UIImageView* videoProgressImageView;  //Kept because of the snake....will be implemented soon
-@property (strong, nonatomic) UIButton* play_pauseBtn;
+@property (strong, nonatomic) UIImageView* videoProgressImageView;
+@property (strong, nonatomic) UIButton* playButton;
 @property (nonatomic) CGPoint firstTranslation;
 @property (nonatomic, strong) NSArray * videoList;
 @property (nonatomic) BOOL hasBeenSetUp;
-@property (nonatomic) EditMediaContentView * ourEMCV;
+@property (nonatomic) EditMediaContentView * editContentView;
 @property (nonatomic) RearrangePV * rearrangeView;
 @property (nonatomic) UIButton * rearrangeButton;
 
@@ -61,10 +61,10 @@
                 [videoAssets addObject:((VideoPinchView *)pinchView).video];
             }
         
-            self.ourEMCV= [[EditMediaContentView alloc] initWithFrame:self.bounds];
-            self.ourEMCV.pinchView = pinchView;
-            [self.ourEMCV displayVideo:videoAssets];
-            [self addSubview:self.ourEMCV];
+            self.editContentView= [[EditMediaContentView alloc] initWithFrame:self.bounds];
+            self.editContentView.pinchView = pinchView;
+            [self.editContentView displayVideo:videoAssets];
+            [self addSubview:self.editContentView];
             if(videoAssets.count > 1) [self createRearrangeButton];
         }
     }
@@ -111,7 +111,7 @@
 
 -(void)rearrangeContentSelected {
     if(!self.rearrangeView){
-        self.rearrangeView = [[RearrangePV alloc] initWithFrame:self.bounds andPinchViewArray:[((CollectionPinchView *)self.ourEMCV.pinchView) getVideoPinchViews]];
+        self.rearrangeView = [[RearrangePV alloc] initWithFrame:self.bounds andPinchViewArray:[((CollectionPinchView *)self.editContentView.pinchView) getVideoPinchViews]];
         self.rearrangeView.delegate = self;
         [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
 
@@ -127,14 +127,14 @@
     for(VideoPinchView * videoPinchView in pvArray){
         [assetArray addObject:videoPinchView.video];
     }
-    if(self.ourEMCV.videoView.isPlaying){
+    if(self.editContentView.videoView.isPlaying){
     
-        [self.ourEMCV displayVideo:assetArray];//this sets the assets
-        [self.ourEMCV almostOnScreen];//prepares screen
-        [self.ourEMCV onScreen];//makes it play now
+        [self.editContentView displayVideo:assetArray];//this sets the assets
+        [self.editContentView almostOnScreen];//prepares screen
+        [self.editContentView onScreen];//makes it play now
     }
-    if([self.ourEMCV.pinchView isKindOfClass:[CollectionPinchView class]]){
-        [((CollectionPinchView *)self.ourEMCV.pinchView) replaceVideoPinchViesWithNewVPVs:pvArray];
+    if([self.editContentView.pinchView isKindOfClass:[CollectionPinchView class]]){
+        [((CollectionPinchView *)self.editContentView.pinchView) replaceVideoPinchViesWithNewVPVs:pvArray];
     }
     
     if(self.rearrangeView){
@@ -147,8 +147,8 @@
 #pragma mark - On and Off Screen (play and pause) -
 
 -(void)offScreen{
-    if(self.ourEMCV){
-        [self.ourEMCV offScreen];
+    if(self.editContentView){
+        [self.editContentView offScreen];
     }else{
         [self pauseVideo];
     }
@@ -156,16 +156,16 @@
 }
 
 -(void)onScreen {
-    if(self.ourEMCV){
-        [self.ourEMCV onScreen];
+    if(self.editContentView){
+        [self.editContentView onScreen];
     }else{
         [self playVideo];
     }
 }
 
 -(void)almostOnScreen{
-    if(self.ourEMCV){
-        [self.ourEMCV almostOnScreen];
+    if(self.editContentView){
+        [self.editContentView almostOnScreen];
     }
 }
 

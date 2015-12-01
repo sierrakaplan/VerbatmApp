@@ -223,7 +223,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "30"
             endingLineNumber = "30"
-            landmarkName = "-initWithFrame:andPhotos:andVideos:"
+            landmarkName = "-initWithFrame:andPhotos:andVideos:orCollectionView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -255,8 +255,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "215"
             endingLineNumber = "215"
-            landmarkName = "-getVideosWithText"
-            landmarkType = "5">
+            landmarkName = "@implementation CollectionPinchView"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -623,7 +623,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "80"
             endingLineNumber = "80"
-            landmarkName = "-addPhotos:"
+            landmarkName = "-initWithFrame:andPhotoArray:orPinchview:isSubViewOfPhotoVideoAve:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -847,7 +847,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "227"
             endingLineNumber = "227"
-            landmarkName = "-encodeWithCoder:"
+            landmarkName = "-initWithCoder:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -879,7 +879,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "225"
             endingLineNumber = "225"
-            landmarkName = "-encodeWithCoder:"
+            landmarkName = "-initWithCoder:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -895,7 +895,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "226"
             endingLineNumber = "226"
-            landmarkName = "-encodeWithCoder:"
+            landmarkName = "-initWithCoder:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -927,7 +927,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "174"
             endingLineNumber = "174"
-            landmarkName = "-changeTypesOfMediaFromPinchView:"
+            landmarkName = "-pinchAndAdd:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1497,7 +1497,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "212"
             endingLineNumber = "212"
-            landmarkName = "-showTabBar:"
+            landmarkName = "-revealADK"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2228,22 +2228,6 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "AVETypeAnalyzer.m"
-            timestampString = "468890641.681095"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "76"
-            endingLineNumber = "76"
-            landmarkName = "-getAVESFromPages:withFrame:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "AVETypeAnalyzer.m"
             timestampString = "468890662.610574"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
@@ -2281,7 +2265,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "174"
             endingLineNumber = "174"
-            landmarkName = "-revealADK"
+            landmarkName = "-formatTabBar"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2297,7 +2281,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "158"
             endingLineNumber = "158"
-            landmarkName = "-addTabBarCenterButtonWithImage:highlightImage:"
+            landmarkName = "-addViewControllerToTabBar:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2827,6 +2811,20 @@
             endingLineNumber = "96"
             landmarkName = "-galleryButtonPressed"
             landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/MasterNavigationVC.m"
+            timestampString = "470703825.757697"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "13"
+            endingLineNumber = "13">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

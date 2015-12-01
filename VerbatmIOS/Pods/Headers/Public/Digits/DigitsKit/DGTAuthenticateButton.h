@@ -1,1 +1,1 @@
-../../../../Digits/DigitsKit.framework/Headers/DGTAuthenticateButton.h
+../../../../Digits/iOS/DigitsKit.framework/Headers/DGTAuthenticateButton.h

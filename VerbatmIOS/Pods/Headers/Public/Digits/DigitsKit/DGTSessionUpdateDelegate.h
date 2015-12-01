@@ -1,1 +1,1 @@
-../../../../Digits/DigitsKit.framework/Headers/DGTSessionUpdateDelegate.h
+../../../../Digits/iOS/DigitsKit.framework/Headers/DGTSessionUpdateDelegate.h

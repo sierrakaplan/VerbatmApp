@@ -15,7 +15,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "233"
             endingLineNumber = "233"
-            landmarkName = "-trackMovementOnCircle:"
+            landmarkName = "-createMainCircleView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -31,7 +31,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "87"
             endingLineNumber = "87"
-            landmarkName = "-addPhotos:"
+            landmarkName = "-initWithFrame:andPhotoArray:orPinchview:isSubViewOfPhotoVideoAve:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -47,23 +47,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "85"
             endingLineNumber = "85"
-            landmarkName = "-addPhotos:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "467157334.660153"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "118"
-            endingLineNumber = "118"
-            landmarkName = "-createCircleViewAndPoints"
+            landmarkName = "-initWithFrame:andPhotoArray:orPinchview:isSubViewOfPhotoVideoAve:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -320,22 +304,6 @@
             startingLineNumber = "140"
             endingLineNumber = "140"
             landmarkName = "-getPOVInfoWithExtraInfoFromGTLPOVInfo:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "467157334.660153"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "117"
-            endingLineNumber = "117"
-            landmarkName = "-createCircleViewAndPoints"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

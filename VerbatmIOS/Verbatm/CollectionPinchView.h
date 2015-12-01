@@ -11,36 +11,21 @@
 
 @interface CollectionPinchView : PinchView
 
-//array of PinchViews
-@property (strong, nonatomic) NSMutableArray* pinchedObjects;
+// pinched objects in the collection view
+@property (strong, nonatomic) NSMutableArray* imagePinchViews;
+@property (strong, nonatomic) NSMutableArray* videoPinchViews;
 
-//inits with an array of pinchviews
+//Takes an array of SingleMediaAndTextPinchViews which are being pinched together
 -(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews;
 
 -(NSInteger) getNumPinchViews;
 
 //Pinches the given pinch view onto the collection
 //returns self for chaining purposes
--(CollectionPinchView*) pinchAndAdd:(PinchView*)pinchView;
+-(CollectionPinchView*) pinchAndAdd:(SingleMediaAndTextPinchView*)pinchView;
 
 //Unpinches the given pinch view from the collection
 //returns self for chaining purposes
--(CollectionPinchView*) unPinchAndRemove:(PinchView*)pinchView;
+-(CollectionPinchView*) unPinchAndRemove:(SingleMediaAndTextPinchView*)pinchView;
 
-//updates all the media stored in the collection view
--(void) updateMedia;
-
-
-/*These functions are for when content is rearranged by the user */
-
-//returns an array of all the video pinchviews in the order they will be presented
--(NSMutableArray *) getVideoPinchViews;
-//adds the array of video content back into the list -- removing all the videos in the list that are not in this array
--(void)replaceVideoPinchViesWithNewVPVs : (NSMutableArray *) pinchViews;
-
-//returns an array of all the image pinchviews in the order they were added
--(NSMutableArray *) getImagePinchViews;
-
-//adds the array of image content back into the list -- removing all the images in the list that are not in this array
--(void)replaceImagePinchViesWithNewVPVs : (NSMutableArray *) pinchViews;
 @end

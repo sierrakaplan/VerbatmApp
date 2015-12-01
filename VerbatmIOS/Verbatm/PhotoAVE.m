@@ -6,7 +6,6 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
-#import "BaseArticleViewingExperience.h"
 #import "CollectionPinchView.h"
 #import "Durations.h"
 
@@ -96,7 +95,6 @@
 
 
 -(void)prepareCirclePan{
-    
     if(self.dotViewsOnCircle.count){
         for(UIView * view in self.dotViewsOnCircle){
             [view removeFromSuperview];
@@ -104,23 +102,12 @@
         self.pointsOnCircle = nil;
         self.dotViewsOnCircle = nil;
     }
-    
-    
-    
+
     [self createCircleViewAndPoints];
     self.draggingFromPointIndex = -1;
     self.currentPhotoIndex = 0;
     [self highlightDot];
 }
-
-
-
-
-
-#pragma mark - Sub Views -
-
-
-
 
 #pragma mark Pinch Views
 
@@ -186,17 +173,12 @@
 	return textAndImageView;
 }
 
-
-
-
-
 #pragma mark -managing presentation of views-
-
 
 -(void) createCircleViewAndPoints {
 	NSUInteger numCircles = [self.imageContainerViews count];
 	for (int i = 0; i < numCircles; i++) {
-		PointObject *point = [MathOperations getPointFromCircleRadius: CIRCLE_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
+		PointObject *point = [MathOperations getPointFromCircleRadius:CIRCLE_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
 		//set relative to the center of the circle
 		point.x = point.x + self.frame.size.width/2.f;
 		point.y = point.y + PAN_CIRCLE_CENTER_Y;
@@ -225,7 +207,7 @@
  	self.circleView.layer.borderColor = [UIColor CIRCLE_OVER_IMAGES_COLOR].CGColor;
 	self.circleView.alpha = 0.f;
     
-    self.panGestureSensingView.frame = CGRectMake(self.circleView.frame.origin.x -SLIDE_THRESHOLD ,
+    self.panGestureSensingView.frame = CGRectMake(self.circleView.frame.origin.x - SLIDE_THRESHOLD,
                                                   self.circleView.frame.origin.y - SLIDE_THRESHOLD,
                                                   self.circleView.frame.size.width + SLIDE_THRESHOLD,
                                                   self.circleView.frame.size.height + SLIDE_THRESHOLD);
@@ -287,9 +269,6 @@
     }
 }
 
-
-
-
 -(void) mainViewTapped:(UITapGestureRecognizer *) sender {
 	if (sender.numberOfTouches < 1) return;
 	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
@@ -326,7 +305,6 @@
     [self addSubview:self.rearrangeButton];
     [self bringSubviewToFront:self.rearrangeButton];
 }
-
 
 -(void)rearrangeContentSelected {
     

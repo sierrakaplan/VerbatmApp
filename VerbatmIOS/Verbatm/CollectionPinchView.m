@@ -15,6 +15,7 @@
 #import "VideoPinchView.h"
 
 @interface CollectionPinchView()
+
 @property (weak, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) UIImage* videoImage;
@@ -23,8 +24,12 @@
 @property (strong, nonatomic) UIImage* playVideoIconHalf;
 @property (strong, nonatomic) UIImage* playVideoIconQuarter;
 @property (strong, nonatomic) UIImage* playVideoIconFull;
+
 #pragma mark Encoding Keys
-#define PINCHVIEWS_KEY @"child_pinchviews"
+
+#define IMAGE_PINCHVIEWS_KEY @"image_pinchviews_key"
+#define VIDEO_PINCHVIEWS_KEY @"video_pinchviews_key"
+
 @end
 
 @implementation CollectionPinchView
@@ -43,12 +48,21 @@
 	[self addCollectionViewBorder];
 	[self.background addSubview:self.imageView];
 	[self.background addSubview:self.videoView];
-	[self.pinchedObjects addObjectsFromArray:pinchViews];
-	[self updateMedia];
+	for (SingleMediaAndTextPinchView* pinchView in pinchViews) {
+		[self addPinchView:pinchView];
+	}
 	[self renderMedia];
 }
 
-#pragma mark - Adding play button
+-(void) addPinchView: (SingleMediaAndTextPinchView*) pinchView {
+	if ([pinchView isKindOfClass:[ImagePinchView class]]) {
+		[self.imagePinchViews addObject:pinchView];
+	} else if ([pinchView isKindOfClass:[VideoPinchView class]]) {
+		[self.videoPinchViews addObject:pinchView];
+	}
+}
+
+#pragma mark - Adding play button to video
 
 -(void) addPlayIcon {
 	self.playVideoIconFull = [UIImage imageNamed: PLAY_VIDEO_ICON];
@@ -60,37 +74,30 @@
 	[self.videoView addSubview:self.playVideoImageView];
 }
 
-#pragma mark - Collection View Border - 
-
--(void) addCollectionViewBorder {
-	self.layer.borderWidth = COLLECTION_PINCHVIEW_BORDER_WIDTH;
-	self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
-	self.layer.shadowColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
-	self.layer.shadowRadius = COLLECTION_PINCHVIEW_SHADOW_RADIUS;
-	self.layer.shadowOffset = CGSizeMake(0, 0);
-	self.layer.shadowOpacity = 1;
-}
-
--(void)markAsDeleting: (BOOL) deleting {
-	[super markAsDeleting:deleting];
-	if (deleting) {
-		self.layer.shadowOpacity = 0;
-	} else {
-		[self addCollectionViewBorder];
-	}
-}
-
--(void)markAsSelected: (BOOL) selected {
-	[super markAsSelected:selected];
-	if (!selected) {
-		[self addCollectionViewBorder];
-	}
-}
-
 #pragma mark - Render Media -
 
-//This should be overriden in subclasses
+-(void) updateMedia {
+	if (self.imagePinchViews.count) {
+		self.containsImage = YES;
+		// most recently pinched image displayed
+		self.image = [(ImagePinchView*)self.imagePinchViews[self.imagePinchViews.count-1] getImage];
+	} else {
+		self.containsImage = NO;
+		self.image = nil;
+	}
+
+	if (self.videoPinchViews.count) {
+		self.containsVideo = YES;
+		// most recently pinched image displayed
+		self.videoImage = [[(VideoPinchView*)self.videoPinchViews[self.videoPinchViews.count-1] video] getThumbnailFromAsset];
+	} else {
+		self.containsVideo = NO;
+		self.videoImage = nil;
+	}
+}
+
 -(void)renderMedia {
+	[self updateMedia];
 	switch([self numTypesOfMedia]) {
 		case 1:
 			[self renderSingleMedia];
@@ -143,45 +150,50 @@
 					  self.videoView.bounds.size.width/2, self.videoView.bounds.size.height/2);
 }
 
+#pragma mark - Collection View Border -
+
+-(void) addCollectionViewBorder {
+	self.layer.borderWidth = COLLECTION_PINCHVIEW_BORDER_WIDTH;
+	self.layer.borderColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+	self.layer.shadowColor = [UIColor PINCHVIEW_BORDER_COLOR].CGColor;
+	self.layer.shadowRadius = COLLECTION_PINCHVIEW_SHADOW_RADIUS;
+	self.layer.shadowOffset = CGSizeMake(0, 0);
+	self.layer.shadowOpacity = 1;
+}
+
+-(void)markAsDeleting: (BOOL) deleting {
+	[super markAsDeleting:deleting];
+	if (deleting) {
+		self.layer.shadowOpacity = 0;
+	} else {
+		[self addCollectionViewBorder];
+	}
+}
+
+-(void)markAsSelected: (BOOL) selected {
+	[super markAsSelected:selected];
+	if (!selected) {
+		[self addCollectionViewBorder];
+	}
+}
+
 #pragma mark - Add and return pinch views -
 
 -(NSInteger) getNumPinchViews {
-	return [self.pinchedObjects count];
+	return [self.imagePinchViews count] + [self.videoPinchViews count];
 }
 
--(void) updateMedia {
-	self.image = nil;
-	self.videoImage = nil;
-	self.containsImage = NO;
-	self.containsVideo = NO;
-	for (PinchView* pinchView in self.pinchedObjects) {
-		[self changeTypesOfMediaFromPinchView:pinchView];
-	}
-}
-
--(void) changeTypesOfMediaFromPinchView:(PinchView*) pinchView {
-	if(pinchView.containsImage) {
-		self.containsImage = YES;
-        self.image = [(ImagePinchView*)pinchView getImage];
-	} else if(pinchView.containsVideo) {
-		self.containsVideo = YES;
-		if(!self.videoImage) {
-			self.videoImage = [[(VideoPinchView*)pinchView video] getThumbnailFromAsset];
-		}
-	}
-}
-
--(CollectionPinchView*) pinchAndAdd:(PinchView*)pinchView {
-	[self.pinchedObjects addObject:pinchView];
-	[self changeTypesOfMediaFromPinchView:pinchView];
+-(CollectionPinchView*) pinchAndAdd:(SingleMediaAndTextPinchView*)pinchView {
+	[self addPinchView: pinchView];
 	[self renderMedia];
 	return self;
 }
 
 -(CollectionPinchView*) unPinchAndRemove:(PinchView*)pinchView {
-	if ([self.pinchedObjects containsObject:pinchView]) {
-		[self.pinchedObjects removeObject:pinchView];
-		[self updateMedia];
+	if ([self.imagePinchViews containsObject:pinchView]) {
+		[self.imagePinchViews removeObject:pinchView];
+	} else if ([self.videoPinchViews containsObject:pinchView]) {
+		[self.videoPinchViews removeObject:pinchView];
 	}
 	[self renderMedia];
 	return self;
@@ -190,131 +202,73 @@
 //overriding
 -(NSArray*) getPhotosWithText {
 	NSMutableArray* photosWithText = [[NSMutableArray alloc] init];
-	for (PinchView* pinchView in self.pinchedObjects) {
-		if(pinchView.containsImage) {
-			[photosWithText addObject:[(ImagePinchView*)pinchView getPhotosWithText][0]];
-		}
+	for (ImagePinchView* pinchView in self.imagePinchViews) {
+		[photosWithText addObject:[(ImagePinchView*)pinchView getPhotosWithText][0]];
 	}
 	return photosWithText;
 }
 
 -(NSArray*) getVideosWithText {
 	NSMutableArray* videosWithText = [[NSMutableArray alloc] init];
-	for (PinchView* pinchView in self.pinchedObjects) {
-		if(pinchView.containsVideo) {
-			[videosWithText addObject:[(VideoPinchView*)pinchView getVideosWithText][0]];
-		}
+	for (VideoPinchView* pinchView in self.videoPinchViews) {
+		[videosWithText addObject:[(VideoPinchView*)pinchView getVideosWithText][0]];
 	}
 	return videosWithText;
-}
-
--(NSInteger) getTotalPiecesOfMedia {
-	return self.pinchedObjects.count;
 }
 
 #pragma mark - Encoding -
 
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	NSData* pinchViewsData = [NSKeyedArchiver archivedDataWithRootObject:self.pinchedObjects];
-	[coder encodeObject:pinchViewsData forKey:PINCHVIEWS_KEY];
+	NSData* imagePinchViewsData = [NSKeyedArchiver archivedDataWithRootObject:self.imagePinchViews];
+	NSData* videoPinchViewsData = [NSKeyedArchiver archivedDataWithRootObject:self.videoPinchViews];
+	[coder encodeObject:imagePinchViewsData forKey:IMAGE_PINCHVIEWS_KEY];
+	[coder encodeObject:videoPinchViewsData forKey:VIDEO_PINCHVIEWS_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
-		NSData* pinchViewsData = [decoder decodeObjectForKey:PINCHVIEWS_KEY];
-		NSArray* pinchViews = [NSKeyedUnarchiver unarchiveObjectWithData:pinchViewsData];
-		// If one of the pinch views contains video should wait until the avurlasset is fetched before rendering media
-		for (PinchView* pinchView in pinchViews) {
-			if (pinchView.containsVideo) {
-				// load video avurlasset from phasset
-				PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[[(VideoPinchView*)pinchView phAssetLocalIdentifier]] options:nil];
-				PHAsset* videoAsset = fetchResult.firstObject;
-				PHVideoRequestOptions* options = [PHVideoRequestOptions new];
-				options.networkAccessAllowed =  YES; //videos won't only be loaded over wifi
-				options.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
-				options.version = PHVideoRequestOptionsVersionCurrent;
-				[[PHImageManager defaultManager] requestAVAssetForVideo:videoAsset
-																options:options
-														  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
-															  dispatch_async(dispatch_get_main_queue(), ^{
-																  [(VideoPinchView*)pinchView initWithVideo: (AVURLAsset*)videoAsset];
-																  [self initWithPinchViews:pinchViews];
-															  });
-														  }];
-				return self;
-			}
+		NSData* imagePinchViewsData = [decoder decodeObjectForKey:IMAGE_PINCHVIEWS_KEY];
+		NSData* videoPinchViewsData = [decoder decodeObjectForKey:VIDEO_PINCHVIEWS_KEY];
+		NSArray* imagePinchViews = [NSKeyedUnarchiver unarchiveObjectWithData: imagePinchViewsData];
+		NSArray* videoPinchViews = [NSKeyedUnarchiver unarchiveObjectWithData: videoPinchViewsData];
+		NSMutableArray* pinchViews = [NSMutableArray arrayWithArray:imagePinchViews];
+		[pinchViews addObjectsFromArray:videoPinchViews];
+		// If there are videoPinchViews should wait until one avurlasset is fetched before rendering media
+		for (VideoPinchView* videoPinchView in videoPinchViews) {
+			// load video avurlasset from phasset
+			PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[[videoPinchView phAssetLocalIdentifier]] options:nil];
+			PHAsset* videoAsset = fetchResult.firstObject;
+			PHVideoRequestOptions* options = [PHVideoRequestOptions new];
+			options.networkAccessAllowed =  YES; //videos won't only be loaded over wifi
+			options.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
+			options.version = PHVideoRequestOptionsVersionCurrent;
+			[[PHImageManager defaultManager] requestAVAssetForVideo:videoAsset
+															options:options
+													  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
+														  dispatch_async(dispatch_get_main_queue(), ^{
+															  [videoPinchView initWithVideo: (AVURLAsset*)videoAsset];
+															  [self initWithPinchViews:pinchViews];
+														  });
+													  }];
+			return self;
+
 		}
 		[self initWithPinchViews:pinchViews];
 	}
 	return self;
 }
 
-#pragma mark - manage removing and returning content -
-
--(NSMutableArray *) getVideoPinchViews{
-    
-    NSMutableArray * videoPinchViews = [[NSMutableArray alloc]init];
-    for (PinchView * pv in self.pinchedObjects) {
-        if([pv isKindOfClass:[VideoPinchView class]]){
-            [videoPinchViews addObject:pv];
-        }
-    }
-    return videoPinchViews;
-}
-
--(void)replaceVideoPinchViesWithNewVPVs : (NSMutableArray *) pinchViews {
-    
-    for(int i = 0; i < self.pinchedObjects.count; i++) {
-        PinchView * storedPV = self.pinchedObjects[i];
-        if([storedPV isKindOfClass:[VideoPinchView class]]){
-            if(pinchViews.count){
-                [self.pinchedObjects replaceObjectAtIndex:i withObject:pinchViews[0]];
-                [pinchViews removeObjectAtIndex:0];
-            }else{
-                [self.pinchedObjects removeObjectAtIndex:0];
-            }
-        }
-    }
-}
-
-
--(NSMutableArray *) getImagePinchViews{
-    NSMutableArray * imagePinchViews = [[NSMutableArray alloc]init];
-    for (PinchView * pv in self.pinchedObjects) {
-        if([pv isKindOfClass:[ImagePinchView class]]){
-            [imagePinchViews addObject:pv];
-        }
-    }
-    return imagePinchViews;
-}
-
--(void)replaceImagePinchViesWithNewVPVs : (NSMutableArray *) pinchViews {
-    
-    for(int i = 0; i < self.pinchedObjects.count; i++) {
-        if(i < self.pinchedObjects.count){//because we are removing content from the list
-            PinchView * storedPV = self.pinchedObjects[i];
-            if([storedPV isKindOfClass:[ImagePinchView class]]){
-                
-                if(pinchViews.count){
-                    [self.pinchedObjects replaceObjectAtIndex:i withObject:pinchViews[0]];
-                    [pinchViews removeObjectAtIndex:0];
-                }else{
-                    [self.pinchedObjects removeObjectAtIndex:0];
-                }
-                
-            }
-        }
-    }
-}
-
-
-
 #pragma mark - Lazy Instantiation -
 
--(NSMutableArray*) pinchedObjects {
-	if(!_pinchedObjects) _pinchedObjects = [[NSMutableArray alloc] init];
-	return _pinchedObjects;
+-(NSMutableArray*) imagePinchViews {
+	if(!_imagePinchViews) _imagePinchViews = [[NSMutableArray alloc] init];
+	return _imagePinchViews;
+}
+
+-(NSMutableArray*) videoPinchViews {
+	if(!_videoPinchViews) _videoPinchViews = [[NSMutableArray alloc] init];
+	return _videoPinchViews;
 }
 
 -(UIImageView*)imageView {

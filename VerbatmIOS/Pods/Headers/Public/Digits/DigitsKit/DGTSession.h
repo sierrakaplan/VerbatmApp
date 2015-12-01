@@ -1,1 +1,1 @@
-../../../../Digits/DigitsKit.framework/Headers/DGTSession.h
+../../../../Digits/iOS/DigitsKit.framework/Headers/DGTSession.h

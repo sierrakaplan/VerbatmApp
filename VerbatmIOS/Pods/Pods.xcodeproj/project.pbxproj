@@ -106,6 +106,7 @@
 		0A5DB4FBE32496A91596A3930A332BDE /* OMGHTTPURLRQ-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "OMGHTTPURLRQ-dummy.m"; sourceTree = "<group>"; };
 		0B481A1D3ABE5A0A18826845D40FEC50 /* Error.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Error.swift; path = Sources/Error.swift; sourceTree = "<group>"; };
 		0BBB47A7910F1AE576F40AA741A8383D /* GAIEcommerceProductAction.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GAIEcommerceProductAction.h; path = Headers/Public/GAIEcommerceProductAction.h; sourceTree = "<group>"; };
+		0C9A8A1D039039BBA606A5EA86C403CA /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Fabric.framework; path = iOS/Fabric.framework; sourceTree = "<group>"; };
 		161F0A488F78FC9C361FBFDB28B44C38 /* UIViewController+Promise.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIViewController+Promise.swift"; path = "Categories/UIKit/UIViewController+Promise.swift"; sourceTree = "<group>"; };
 		1F0741E3B24C4110273D89C08F82931F /* UIActionSheet+AnyPromise.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIActionSheet+AnyPromise.m"; path = "Categories/UIKit/UIActionSheet+AnyPromise.m"; sourceTree = "<group>"; };
 		2164BFAF2BF31BD72D077A36CEDF2C4C /* OMGHTTPURLRQ.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OMGHTTPURLRQ.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,12 +118,10 @@
 		2BCC458FDD5F692BBB2BFC64BB5701FC /* Pods-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-umbrella.h"; sourceTree = "<group>"; };
 		2E62BE7BA78D8ADCCD5099B24C286C25 /* PromiseKit-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "PromiseKit-prefix.pch"; sourceTree = "<group>"; };
 		2FFBFFCE1F0AC6D27E8B03E3305CE0DD /* UIViewController+AnyPromise.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "UIViewController+AnyPromise.h"; path = "Categories/UIKit/UIViewController+AnyPromise.h"; sourceTree = "<group>"; };
-		32CDAB9C42A01180C12389B8B526E10A /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = TwitterCore.framework; sourceTree = "<group>"; };
 		3554987E428413AF9908D9A14C26DA4D /* GAITracker.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GAITracker.h; path = Headers/Public/GAITracker.h; sourceTree = "<group>"; };
 		35A4DB4A42E263C68B74D259E5B6CFAB /* CALayer+AnyPromise.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "CALayer+AnyPromise.h"; path = "Categories/QuartzCore/CALayer+AnyPromise.h"; sourceTree = "<group>"; };
 		364A874101FD7E40927D87F0DB88F6BF /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3C12AA131CFB6E451B53935351FC4EAA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		4037BB4F7299D8176CE41712A6A2F6F2 /* DigitsKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DigitsKit.framework; sourceTree = "<group>"; };
 		427A9FBEEAC8B60D65B2D11E9E7D5C22 /* UIViewController+AnyPromise.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "UIViewController+AnyPromise.m"; path = "Categories/UIKit/UIViewController+AnyPromise.m"; sourceTree = "<group>"; };
 		42C51CBF41912F4EFD445868F59B5288 /* when.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = when.m; path = Sources/when.m; sourceTree = "<group>"; };
 		484FD2D68B58060E1DF49C5F62443B41 /* libGTM_DebugUtils.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libGTM_DebugUtils.a; path = Libraries/libGTM_DebugUtils.a; sourceTree = "<group>"; };
@@ -138,7 +137,6 @@
 		55AE8FF9B42ACF11F189978BC8AF87BB /* NSURLConnection+AnyPromise.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSURLConnection+AnyPromise.h"; path = "Categories/Foundation/NSURLConnection+AnyPromise.h"; sourceTree = "<group>"; };
 		569612A863711C3F72B24E6093DAEE4E /* GGLContext+Analytics.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "GGLContext+Analytics.h"; path = "Headers/GGLAnalytics/Public/GGLContext+Analytics.h"; sourceTree = "<group>"; };
 		5901AD91EA3D6BAF1DBA6B4DCB8E4DBE /* PromiseKit.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = PromiseKit.h; path = Sources/PromiseKit.h; sourceTree = "<group>"; };
-		5A4C84477DCDF3DA3A0953A86EB3460D /* Fabric.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Fabric.framework; sourceTree = "<group>"; };
 		5CC9FEBAAE8011D4EF41463C95DBE6B5 /* AnyPromise.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnyPromise.swift; path = Sources/AnyPromise.swift; sourceTree = "<group>"; };
 		5E713EBB23CBC8D05AC85C1053E223E2 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5E945E21184DF7BF78FE34D91C1F994D /* TwitterKitResources.bundle */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "wrapper.plug-in"; name = TwitterKitResources.bundle; path = TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle; sourceTree = "<group>"; };
@@ -146,6 +144,7 @@
 		60AC8A12DEB89063BD1322BEF292CBDC /* OMGUserAgent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = OMGUserAgent.h; path = Sources/OMGUserAgent.h; sourceTree = "<group>"; };
 		62FCA350A600AB746A83298F44505D07 /* OMGHTTPURLRQ.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = OMGHTTPURLRQ.m; path = Sources/OMGHTTPURLRQ.m; sourceTree = "<group>"; };
 		64E481FD6D521AA3ECFF43153AC4D5A0 /* GGLErrorCode.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GGLErrorCode.h; path = Headers/GGLCore/Public/GGLErrorCode.h; sourceTree = "<group>"; };
+		65A200E306CEA9FED89AFDE6D71E242E /* DigitsKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DigitsKit.framework; path = iOS/DigitsKit.framework; sourceTree = "<group>"; };
 		67A9EA61156D59BD1464AD914511B1E2 /* libGTM_Regex.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libGTM_Regex.a; path = Libraries/libGTM_Regex.a; sourceTree = "<group>"; };
 		67CF395C5C71C2E6690E5B70FAD08D7A /* NSNotificationCenter+Promise.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "NSNotificationCenter+Promise.swift"; path = "Categories/Foundation/NSNotificationCenter+Promise.swift"; sourceTree = "<group>"; };
 		6B2511A9CE1E4202E0B9F501877B3B64 /* PromiseKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = PromiseKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -155,6 +154,7 @@
 		75066CDED148857AB8B0271AD6B842E1 /* OMGHTTPURLRQ.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OMGHTTPURLRQ.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79A9DEDC89FE8336BF5FEDAAF75BF7FC /* Pods.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = Pods.modulemap; sourceTree = "<group>"; };
 		7ADDF6B97DC628D21E957753F0E26AA4 /* Umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Umbrella.h; path = Sources/Umbrella.h; sourceTree = "<group>"; };
+		805A1BB2FCBAC6869575580E3BF9627A /* DigitsKitResources.bundle */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "wrapper.plug-in"; name = DigitsKitResources.bundle; path = iOS/DigitsKit.framework/Versions/A/Resources/DigitsKitResources.bundle; sourceTree = "<group>"; };
 		825BB95021CA2628F917FE3D13EA5322 /* OMGHTTPURLRQ.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = OMGHTTPURLRQ.modulemap; sourceTree = "<group>"; };
 		85460CD1E182FF2D824A3248F6FEB233 /* GAITrackedViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GAITrackedViewController.h; path = Headers/Public/GAITrackedViewController.h; sourceTree = "<group>"; };
 		87B15709F678C07CF5763A55D598D29D /* when.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = when.swift; path = Sources/when.swift; sourceTree = "<group>"; };
@@ -165,6 +165,7 @@
 		8C87E3873B009769B25CCC6A8991D766 /* OMGUserAgent.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = OMGUserAgent.m; path = Sources/OMGUserAgent.m; sourceTree = "<group>"; };
 		8C9CA1B32F5440576CB347CA599D737D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS9.0.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		8D49FE22E7EED67D5B1C2B8940627013 /* GAILogger.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GAILogger.h; path = Headers/Public/GAILogger.h; sourceTree = "<group>"; };
+		8E06425D2F1F3F4DF64497CC10C29F5C /* TwitterCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = TwitterCore.framework; path = iOS/TwitterCore.framework; sourceTree = "<group>"; };
 		8F83CB393BE1BEFCCD0680377C77B96A /* libGTMSessionFetcher_core.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libGTMSessionFetcher_core.a; path = Libraries/libGTMSessionFetcher_core.a; sourceTree = "<group>"; };
 		90CFC36E601F89004E1AD80A55019174 /* OMGFormURLEncode.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = OMGFormURLEncode.m; path = Sources/OMGFormURLEncode.m; sourceTree = "<group>"; };
 		94E9187BE9129C369B78ED32AED41944 /* NSURLConnection+AnyPromise.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "NSURLConnection+AnyPromise.m"; path = "Categories/Foundation/NSURLConnection+AnyPromise.m"; sourceTree = "<group>"; };
@@ -190,8 +191,6 @@
 		C1DC2F9021736A119862F28896D3D917 /* NSError+Cancellation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "NSError+Cancellation.h"; path = "Sources/NSError+Cancellation.h"; sourceTree = "<group>"; };
 		C28DDDA03F579F8E44BF3663389274AA /* after.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = after.swift; path = Sources/after.swift; sourceTree = "<group>"; };
 		C4A07CAAFA92D3CE5AD988BBDA48E11F /* dispatch_promise.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = dispatch_promise.swift; path = Sources/dispatch_promise.swift; sourceTree = "<group>"; };
-		C761E31E9C3E84E1817FB39C7C73A62C /* DigitsKitResources.bundle */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "wrapper.plug-in"; name = DigitsKitResources.bundle; path = DigitsKit.framework/Versions/A/Resources/DigitsKitResources.bundle; sourceTree = "<group>"; };
-		C97FCA6AAC0FAAF021769B197C77A659 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		CA9BCFBBC63D25620C7E1F4733965BD1 /* GGLConfiguration.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GGLConfiguration.h; path = Headers/GGLCore/Public/GGLConfiguration.h; sourceTree = "<group>"; };
 		CBC0F7C552B739C909B650A0F42F7F38 /* Pods-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-resources.sh"; sourceTree = "<group>"; };
 		CC3283E30B399E276E5B84D633105489 /* join.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = join.swift; path = Sources/join.swift; sourceTree = "<group>"; };
@@ -216,6 +215,7 @@
 		EE35B5D9901B5C5CD997A43F861AE896 /* libGGLCore.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libGGLCore.a; path = Libraries/libGGLCore.a; sourceTree = "<group>"; };
 		EF766DBDB4F6FB5F538732EC9DCE6389 /* libGSDK_Overload.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libGSDK_Overload.a; path = Libraries/libGSDK_Overload.a; sourceTree = "<group>"; };
 		F0E330C3F63BD78960E0594A8E155E16 /* Core.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Core.h; path = Headers/GGLCore/Public/Core.h; sourceTree = "<group>"; };
+		F10CA08BACC6760BFB4029C6F55025F4 /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Crashlytics.framework; path = iOS/Crashlytics.framework; sourceTree = "<group>"; };
 		F2A3203444966A3B3943C0579A383331 /* after.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = after.m; path = Sources/after.m; sourceTree = "<group>"; };
 		F4F51AD0A4418D584FBD92EA431539ED /* libGTM_core.a */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = archive.ar; name = libGTM_core.a; path = Libraries/libGTM_core.a; sourceTree = "<group>"; };
 		F5A4E7651C2545A17A24379F482D458A /* GAI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = GAI.h; path = Headers/Public/GAI.h; sourceTree = "<group>"; };
@@ -265,6 +265,14 @@
 			path = TwitterKit;
 			sourceTree = "<group>";
 		};
+		1191102717EAC38D221212932A42D5BB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F10CA08BACC6760BFB4029C6F55025F4 /* Crashlytics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		150EFD30DE3B7BE50D2A04C53788C491 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -277,14 +285,6 @@
 			isa = PBXGroup;
 			children = (
 				5466541F7B1D8EFA917676A54B707789 /* libGGLAnalytics.a */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		1D48783A05264BA943FE918714858537 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				32CDAB9C42A01180C12389B8B526E10A /* TwitterCore.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -362,6 +362,22 @@
 				4DA24FB3F353A48947E7F22114052567 /* TwitterKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		54A0DDADBD27F19DB5529BDBEE089449 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0C9A8A1D039039BBA606A5EA86C403CA /* Fabric.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		5C0F3676319A152EA0549691F9F84B3F /* Fabric */ = {
+			isa = PBXGroup;
+			children = (
+				54A0DDADBD27F19DB5529BDBEE089449 /* Frameworks */,
+			);
+			path = Fabric;
 			sourceTree = "<group>";
 		};
 		62436FA25E4FCEFC9A0DFAD70EE0BEDA /* Frameworks */ = {
@@ -454,14 +470,6 @@
 			path = "../Target Support Files/OMGHTTPURLRQ";
 			sourceTree = "<group>";
 		};
-		7C038B8DF1821CF87A5258B06170F62D /* Fabric */ = {
-			isa = PBXGroup;
-			children = (
-				D8544FB70A43C4598060898EF0A82722 /* Base */,
-			);
-			path = Fabric;
-			sourceTree = "<group>";
-		};
 		7DB346D0F39D3F0E887471402A8071AB = {
 			isa = PBXGroup;
 			children = (
@@ -506,7 +514,7 @@
 			children = (
 				BAF0843B6D48863D958303AEFC4C54AF /* Crashlytics */,
 				9DE55B33F7122DE6D1763FF0DFA2F04F /* Digits */,
-				7C038B8DF1821CF87A5258B06170F62D /* Fabric */,
+				5C0F3676319A152EA0549691F9F84B3F /* Fabric */,
 				63D9BBA7591DEB48947783A64C367EC0 /* Google */,
 				2466CCDE4DC18ED61F67484FA372434E /* GoogleAnalytics */,
 				2DF5A03AA4A47857DC96542C4939BC25 /* GoogleNetworkingUtilities */,
@@ -551,21 +559,21 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		970DE4BD59D2FC1D1E1F9FF590AE9ACF /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				C761E31E9C3E84E1817FB39C7C73A62C /* DigitsKitResources.bundle */,
-			);
-			name = Resources;
-			sourceTree = "<group>";
-		};
 		9DE55B33F7122DE6D1763FF0DFA2F04F /* Digits */ = {
 			isa = PBXGroup;
 			children = (
-				BE05B1A1210FEB93804985D5642FE87F /* Frameworks */,
-				970DE4BD59D2FC1D1E1F9FF590AE9ACF /* Resources */,
+				9FC0583218ED870ABF32062E1F8BD217 /* Frameworks */,
+				A627AB6ECC89008E0D769DC44FA01CE0 /* Resources */,
 			);
 			path = Digits;
+			sourceTree = "<group>";
+		};
+		9FC0583218ED870ABF32062E1F8BD217 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				65A200E306CEA9FED89AFDE6D71E242E /* DigitsKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		A396C0BF569935D78F99273C6440454F /* UserAgent */ = {
@@ -577,12 +585,12 @@
 			name = UserAgent;
 			sourceTree = "<group>";
 		};
-		A91632682B10F78DD3F1E4182C3865A9 /* Frameworks */ = {
+		A627AB6ECC89008E0D769DC44FA01CE0 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				5A4C84477DCDF3DA3A0953A86EB3460D /* Fabric.framework */,
+				805A1BB2FCBAC6869575580E3BF9627A /* DigitsKitResources.bundle */,
 			);
-			name = Frameworks;
+			name = Resources;
 			sourceTree = "<group>";
 		};
 		AC76B6EC882B4FC71163F479F01FAB50 /* Frameworks */ = {
@@ -605,17 +613,9 @@
 		BAF0843B6D48863D958303AEFC4C54AF /* Crashlytics */ = {
 			isa = PBXGroup;
 			children = (
-				D1EEF1B93A042A9C317F27CF419B2938 /* Frameworks */,
+				1191102717EAC38D221212932A42D5BB /* Frameworks */,
 			);
 			path = Crashlytics;
-			sourceTree = "<group>";
-		};
-		BE05B1A1210FEB93804985D5642FE87F /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				4037BB4F7299D8176CE41712A6A2F6F2 /* DigitsKit.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		C1056682E67BDFB03E2B6C6AEC60AEAD /* Analytics */ = {
@@ -660,14 +660,6 @@
 			name = Core;
 			sourceTree = "<group>";
 		};
-		D1EEF1B93A042A9C317F27CF419B2938 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				C97FCA6AAC0FAAF021769B197C77A659 /* Crashlytics.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		D2EA9D7BADFD7DA38AAE1A39BA3B1696 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -684,14 +676,6 @@
 				EE044E4F5903D6C62580C7D4DB90D6FB /* Frameworks */,
 			);
 			path = GoogleSymbolUtilities;
-			sourceTree = "<group>";
-		};
-		D8544FB70A43C4598060898EF0A82722 /* Base */ = {
-			isa = PBXGroup;
-			children = (
-				A91632682B10F78DD3F1E4182C3865A9 /* Frameworks */,
-			);
-			name = Base;
 			sourceTree = "<group>";
 		};
 		E10C879192A893FB4A3F29DF0C122B9D /* Optimizely-iOS-SDK */ = {
@@ -721,7 +705,7 @@
 		EC6D71B4CD1D074CFC3CDF416DC4E162 /* TwitterCore */ = {
 			isa = PBXGroup;
 			children = (
-				1D48783A05264BA943FE918714858537 /* Frameworks */,
+				F5C2E07DCAFE4DA277441707BA04828D /* Frameworks */,
 			);
 			path = TwitterCore;
 			sourceTree = "<group>";
@@ -730,6 +714,14 @@
 			isa = PBXGroup;
 			children = (
 				EF766DBDB4F6FB5F538732EC9DCE6389 /* libGSDK_Overload.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F5C2E07DCAFE4DA277441707BA04828D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8E06425D2F1F3F4DF64497CC10C29F5C /* TwitterCore.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

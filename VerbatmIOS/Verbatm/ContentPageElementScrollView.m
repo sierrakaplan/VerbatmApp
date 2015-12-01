@@ -20,28 +20,28 @@
 
 @interface ContentPageElementScrollView()
 
+#pragma mark - Page element properties
 @property (nonatomic) CGPoint initialContentOffset;
 @property (nonatomic) CGSize initialContentSize;
 @property (strong, nonatomic, readwrite) UIView<ContentDevElementDelegate>* pageElement;
 @property (nonatomic) CGRect pageElementOriginalFrame;
 
-//if page element is a CollectionPinchView
+#pragma mark - If page element is a CollectionPinchView
 @property (nonatomic, readwrite) BOOL isCollection;
 @property (nonatomic, readwrite) BOOL collectionIsOpen;
 //reference to the array of pinch views also contained in the collection view
 @property (strong, nonatomic) NSMutableArray* collectionPinchViews;
 
+#pragma mark - Delete button
 @property (strong, nonatomic) UIButton * deleteButton;
 @property (nonatomic) CGRect deleteButtonFrame;
-//long press selecting item
-@property (strong, nonatomic, readwrite) PinchView* selectedItem;
+
+#pragma mark - Long press selecting item
+@property (strong, nonatomic, readwrite) SingleMediaAndTextPinchView* selectedItem;
 @property (nonatomic) float contentOffsetXBeforeLongPress;
 @property (nonatomic) CGPoint previousLocationOfTouchPoint_PAN;
 @property (nonatomic) CGRect previousFrameInLongPress;
-
 @property (nonatomic) CGPoint panTouchLocation;
-
-
 @property (nonatomic) CGFloat pinchViewStartSize;
 
 #define MEDIA_SELECT_TILE_DELETE_BUTTON_OFFSET 7
@@ -106,19 +106,20 @@
 	
     PinchView* newPinchView;
 	if(self.isCollection) {
-		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(PinchView*)otherScrollView.pageElement];
+		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(SingleMediaAndTextPinchView*)otherScrollView.pageElement];
         [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
         [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement andReplaceWithPinchView:newPinchView];
         
-        
 	} else if(otherScrollView.isCollection){
-		newPinchView = [(CollectionPinchView*)otherScrollView.pageElement pinchAndAdd:(PinchView*)self.pageElement];
+		newPinchView = [(CollectionPinchView*)otherScrollView.pageElement pinchAndAdd:(SingleMediaAndTextPinchView*)self.pageElement];
         [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
         [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement andReplaceWithPinchView:newPinchView];
         
 	} else {
 		NSMutableArray* pinchViewArray = [[NSMutableArray alloc] initWithObjects:self.pageElement, otherScrollView.pageElement, nil];
-		newPinchView = [PinchView pinchTogether:pinchViewArray];
+		newPinchView = [[CollectionPinchView alloc] initWithRadius: [(PinchView*)self.pageElement radius]
+														withCenter: [(PinchView*)self.pageElement center]
+													 andPinchViews: pinchViewArray];
 		pinchViewArray = nil;
 	}
 	
@@ -174,6 +175,7 @@
 }
 
 #pragma mark - Open and close collection -
+
 //remove collection view from scrollview and add all its children instead
 -(void) openCollectionWithPinchViews:(NSMutableArray *) pinchViews {
 	self.collectionIsOpen = YES;
@@ -261,8 +263,7 @@
 		return;
 	}
 
-	for (PinchView* pinchView in self.collectionPinchViews) {
-
+	for (SingleMediaAndTextPinchView* pinchView in self.collectionPinchViews) {
 		//we stop when we find the first one
 		if((pinchView.frame.origin.x + pinchView.frame.size.width) > (touch.x + self.contentOffset.x)) {
 			self.selectedItem = pinchView;
@@ -462,17 +463,19 @@
 //returns the unpinched PinchView
 -(PinchView*) unPinchObject {
 	CollectionPinchView* currentPinchView = (CollectionPinchView*)self.pageElement;
-	PinchView* unPinched = self.selectedItem;
+	SingleMediaAndTextPinchView* unPinched = self.selectedItem;
 	self.selectedItem = nil;
 	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
 	if (index < 0) index = 0;
 	
     [currentPinchView unPinchAndRemove:unPinched];
 
-	//check if there is now only one element in the collection, and if so
+	//check if there is now only one element in the collection - if so
 	//this should not be collection anymore
-	if ([currentPinchView.pinchedObjects count] < 2) {
-		self.pageElement = currentPinchView.pinchedObjects[0];
+	if ([currentPinchView getNumPinchViews] < 2) {
+		if (currentPinchView.imagePinchViews.count) self.pageElement = currentPinchView.imagePinchViews[0];
+		else self.pageElement = currentPinchView.videoPinchViews[0];
+
 		[(PinchView*)self.pageElement revertToInitialFrame];
 		self.isCollection = NO;
 		self.collectionIsOpen = NO;

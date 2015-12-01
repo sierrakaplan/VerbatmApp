@@ -58,11 +58,11 @@ install_resource()
   esac
 }
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-  install_resource "Digits/DigitsKit.framework/Versions/A/Resources/DigitsKitResources.bundle"
+  install_resource "Digits/iOS/DigitsKit.framework/Versions/A/Resources/DigitsKitResources.bundle"
   install_resource "TwitterKit/TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_resource "Digits/DigitsKit.framework/Versions/A/Resources/DigitsKitResources.bundle"
+  install_resource "Digits/iOS/DigitsKit.framework/Versions/A/Resources/DigitsKitResources.bundle"
   install_resource "TwitterKit/TwitterKit.framework/Versions/A/Resources/TwitterKitResources.bundle"
 fi
 

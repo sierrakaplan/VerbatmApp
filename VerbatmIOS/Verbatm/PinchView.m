@@ -124,20 +124,7 @@
 }
 
 -(NSInteger) numTypesOfMedia {
-	return (self.containsImage ? 1 : 0)
-	+ (self.containsVideo ? 1 : 0);
-}
-
-+(PinchView*) pinchTogether:(NSArray*) pinchViews {
-	if (!pinchViews || ([pinchViews count] < 1)) {
-		return nil;
-	}
-	PinchView* firstPinchView = [pinchViews firstObject];
-	if ([pinchViews count] < 2) {
-		return	firstPinchView;
-	}
-
-	return [[CollectionPinchView alloc] initWithRadius:firstPinchView.radius withCenter:firstPinchView.center andPinchViews:pinchViews];
+	return (self.containsImage ? 1 : 0) + (self.containsVideo ? 1 : 0);
 }
 
 #pragma mark - Mark as selected or deleting -

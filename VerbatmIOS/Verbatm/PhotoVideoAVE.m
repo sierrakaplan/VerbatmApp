@@ -7,7 +7,6 @@
 //  Copyright (c) 2014 IainAndLucio. All rights reserved.
 //
 
-#import "BaseArticleViewingExperience.h"
 #import "CollectionPinchView.h"
 #import "Durations.h"
 #import "ImagePinchView.h"
@@ -57,8 +56,6 @@
 
 	[self addSubview:self.videoView];
 	[self addSubview:self.photosView];
-
-	
 }
 
 
@@ -81,10 +78,10 @@
 -(void) editContentViewTextIsEditing{
     [self movePhotoAveUp:YES];
 }
+
 -(void) editContentViewTextDoneEditing{
     [self movePhotoAveUp:NO];
 }
-
 
 -(void)movePhotoAveUp:(BOOL) moveUp{
     if(moveUp){
@@ -96,10 +93,8 @@
         [UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
             self.photosView.frame = CGRectMake(0, self.videoView.frame.size.height, self.photosView.frame.size.width, self.photosView.frame.size.height);
         }];
-        
     }
 }
-
 
 
 #pragma mark -managing content viewing-
@@ -122,6 +117,7 @@
 -(void)enableSound{
     [self.videoView unmuteVideo];
 }
+
 -(void)almostOnScreen{
     [self.videoView almostOnScreen];
 }

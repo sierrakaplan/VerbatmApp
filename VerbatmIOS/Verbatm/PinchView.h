@@ -52,16 +52,11 @@
 
 -(NSInteger) numTypesOfMedia;
 
-//This merges two verbatm pinch objects into one.
-// Unless they are both text, the result will be a collection
-+(PinchView*) pinchTogether:(NSArray*) pinchViews;
-
 //for intructing to render media
 -(void)renderMedia;
 
 //zeros out the border for the pinch view
 -(void)removeBorder;
-
 
 #pragma mark Should be overriden in subclasses
 
