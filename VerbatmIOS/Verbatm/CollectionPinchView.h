@@ -15,6 +15,9 @@
 @property (strong, nonatomic) NSMutableArray* imagePinchViews;
 @property (strong, nonatomic) NSMutableArray* videoPinchViews;
 
+// keeps track of order of elements pinched together
+@property (strong, nonatomic, readonly) NSMutableArray* pinchedObjects;
+
 //Takes an array of SingleMediaAndTextPinchViews which are being pinched together
 -(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews;
 

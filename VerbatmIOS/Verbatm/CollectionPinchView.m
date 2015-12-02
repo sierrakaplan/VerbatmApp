@@ -16,6 +16,8 @@
 
 @interface CollectionPinchView()
 
+@property (strong, nonatomic, readwrite) NSMutableArray* pinchedObjects;
+
 @property (weak, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
 @property (strong, nonatomic) UIImage* videoImage;
@@ -27,8 +29,7 @@
 
 #pragma mark Encoding Keys
 
-#define IMAGE_PINCHVIEWS_KEY @"image_pinchviews_key"
-#define VIDEO_PINCHVIEWS_KEY @"video_pinchviews_key"
+#define PINCHVIEWS_KEY @"child_pinchviews"
 
 @end
 
@@ -48,6 +49,7 @@
 	[self addCollectionViewBorder];
 	[self.background addSubview:self.imageView];
 	[self.background addSubview:self.videoView];
+	[self.pinchedObjects addObjectsFromArray:pinchViews];
 	for (SingleMediaAndTextPinchView* pinchView in pinchViews) {
 		[self addPinchView:pinchView];
 	}
@@ -180,16 +182,20 @@
 #pragma mark - Add and return pinch views -
 
 -(NSInteger) getNumPinchViews {
-	return [self.imagePinchViews count] + [self.videoPinchViews count];
+	return [self.pinchedObjects count];
 }
 
 -(CollectionPinchView*) pinchAndAdd:(SingleMediaAndTextPinchView*)pinchView {
+	[self.pinchedObjects addObject:pinchView];
 	[self addPinchView: pinchView];
 	[self renderMedia];
 	return self;
 }
 
--(CollectionPinchView*) unPinchAndRemove:(PinchView*)pinchView {
+-(CollectionPinchView*) unPinchAndRemove:(SingleMediaAndTextPinchView*)pinchView {
+	if ([self.pinchedObjects containsObject:pinchView]) {
+		[self.pinchedObjects removeObject:pinchView];
+	}
 	if ([self.imagePinchViews containsObject:pinchView]) {
 		[self.imagePinchViews removeObject:pinchView];
 	} else if ([self.videoPinchViews containsObject:pinchView]) {
@@ -220,39 +226,34 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	NSData* imagePinchViewsData = [NSKeyedArchiver archivedDataWithRootObject:self.imagePinchViews];
-	NSData* videoPinchViewsData = [NSKeyedArchiver archivedDataWithRootObject:self.videoPinchViews];
-	[coder encodeObject:imagePinchViewsData forKey:IMAGE_PINCHVIEWS_KEY];
-	[coder encodeObject:videoPinchViewsData forKey:VIDEO_PINCHVIEWS_KEY];
+	NSData* pinchViewsData = [NSKeyedArchiver archivedDataWithRootObject:self.pinchedObjects];
+	[coder encodeObject:pinchViewsData forKey:PINCHVIEWS_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
-		NSData* imagePinchViewsData = [decoder decodeObjectForKey:IMAGE_PINCHVIEWS_KEY];
-		NSData* videoPinchViewsData = [decoder decodeObjectForKey:VIDEO_PINCHVIEWS_KEY];
-		NSArray* imagePinchViews = [NSKeyedUnarchiver unarchiveObjectWithData: imagePinchViewsData];
-		NSArray* videoPinchViews = [NSKeyedUnarchiver unarchiveObjectWithData: videoPinchViewsData];
-		NSMutableArray* pinchViews = [NSMutableArray arrayWithArray:imagePinchViews];
-		[pinchViews addObjectsFromArray:videoPinchViews];
-		// If there are videoPinchViews should wait until one avurlasset is fetched before rendering media
-		for (VideoPinchView* videoPinchView in videoPinchViews) {
-			// load video avurlasset from phasset
-			PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[[videoPinchView phAssetLocalIdentifier]] options:nil];
-			PHAsset* videoAsset = fetchResult.firstObject;
-			PHVideoRequestOptions* options = [PHVideoRequestOptions new];
-			options.networkAccessAllowed =  YES; //videos won't only be loaded over wifi
-			options.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
-			options.version = PHVideoRequestOptionsVersionCurrent;
-			[[PHImageManager defaultManager] requestAVAssetForVideo:videoAsset
-															options:options
-													  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
-														  dispatch_async(dispatch_get_main_queue(), ^{
-															  [videoPinchView initWithVideo: (AVURLAsset*)videoAsset];
-															  [self initWithPinchViews:pinchViews];
-														  });
-													  }];
-			return self;
-
+		NSData* pinchViewsData = [decoder decodeObjectForKey:PINCHVIEWS_KEY];
+		NSArray* pinchViews = [NSKeyedUnarchiver unarchiveObjectWithData:pinchViewsData];
+		// If one of the pinch views contains video should wait until the avurlasset is fetched before rendering media
+		for (PinchView* pinchView in pinchViews) {
+			if (pinchView.containsVideo) {
+				// load video avurlasset from phasset
+				PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[[(VideoPinchView*)pinchView phAssetLocalIdentifier]] options:nil];
+				PHAsset* videoAsset = fetchResult.firstObject;
+				PHVideoRequestOptions* options = [PHVideoRequestOptions new];
+				options.networkAccessAllowed =  YES; //videos won't only be loaded over wifi
+				options.deliveryMode = PHVideoRequestOptionsDeliveryModeMediumQualityFormat;
+				options.version = PHVideoRequestOptionsVersionCurrent;
+				[[PHImageManager defaultManager] requestAVAssetForVideo:videoAsset
+																options:options
+														  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
+															  dispatch_async(dispatch_get_main_queue(), ^{
+																  [(VideoPinchView*)pinchView initWithVideo: (AVURLAsset*)videoAsset];
+																  [self initWithPinchViews:pinchViews];
+															  });
+														  }];
+				return self;
+			}
 		}
 		[self initWithPinchViews:pinchViews];
 	}
@@ -260,6 +261,11 @@
 }
 
 #pragma mark - Lazy Instantiation -
+
+-(NSMutableArray*) pinchedObjects {
+	if (!_pinchedObjects) _pinchedObjects = [[NSMutableArray alloc] init];
+	return _pinchedObjects;
+}
 
 -(NSMutableArray*) imagePinchViews {
 	if(!_imagePinchViews) _imagePinchViews = [[NSMutableArray alloc] init];

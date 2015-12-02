@@ -9,7 +9,10 @@
 #import <UIKit/UIKit.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVFoundation/AVFoundation.h>
+
+#import "ArticleViewingExperience.h"
 #import "CollectionPinchView.h"
+
 @class VideoAVE;
 
 @interface PhotoVideoAVE : ArticleViewingExperience

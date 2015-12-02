@@ -7,8 +7,7 @@
 //
 
 #import "AVETypeAnalyzer.h"
-
-#import "BaseArticleViewingExperience.h"
+#import <PromiseKit/PromiseKit.h>
 
 #import "CollectionPinchView.h"
 
@@ -17,15 +16,11 @@
 
 #import "ImagePinchView.h"
 
-
 #import "Page.h"
 #import "POVLoadManager.h"
 #import "PhotoVideoAVE.h"
 #import "PhotoAVE.h"
 #import "PinchView.h"
-#import <PromiseKit/PromiseKit.h>
-
-#import "TextAVE.h"
 
 #import "UtilityFunctions.h"
 
@@ -55,19 +50,43 @@
 	return self.results;
 }
 
--(AnyPromise*) getAVEFromPage: (Page*) page withFrame: (CGRect) frame {
-	AVEType type;
-	if (page.images.count && page.videos.count) {
-		type = AVETypePhotoVideo;
-	} else if (page.images.count) {
-		type = AVETypePhoto;
-	} else if(page.videos.count) {
-		type = AVETypeVideo;
+-(void) getAVEFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame {
+	if (pinchView.containsImage && pinchView.containsVideo) {
+		PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView];
+		[self.results addObject:photoVideoAVE];
+
+	} else if (pinchView.containsImage) {
+		PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPinchView:pinchView];
+		photoAve.isPhotoVideoSubview = NO;
+		[self.results addObject:photoAve];
+
+	} else if(pinchView.containsVideo) {
+		VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andPinchView:pinchView];
+		[self.results addObject:videoAve];
 	}
-	return [self getUIImagesFromPage: page].then(^(NSArray* imagesAndText) {
-		BaseArticleViewingExperience * textAndOtherMediaAVE = [[BaseArticleViewingExperience alloc] initWithFrame: frame andText:nil andPhotos:imagesAndText andVideos:[self getVideosFromPage: page] andAVEType:type];
-		return textAndOtherMediaAVE;
-	});
+}
+
+-(AnyPromise*) getAVEFromPage: (Page*)page withFrame: (CGRect) frame {
+	if (page.images.count && page.videos.count) {
+		return [self getUIImagesFromPage: page].then(^(NSArray* imagesAndText) {
+			PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:imagesAndText
+																	  andVideos:[self getVideosFromPage: page]];
+			return photoVideoAVE;
+		});
+
+	} else if (page.images.count) {
+		return [self getUIImagesFromPage: page].then(^(NSArray* imagesAndText) {
+			PhotoAVE *photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:imagesAndText];
+			photoAve.isPhotoVideoSubview = NO;
+			return photoAve;
+		});
+
+	} else {
+		return [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+			VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoArray:[self getVideosFromPage: page]];
+			resolve(videoAve);
+		}];
+	}
 }
 
 -(AnyPromise*) getUIImagesFromPage: (Page*) page {
@@ -112,43 +131,6 @@
 	}
 	return videoURLs;
 }
-
--(void) getAVEFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame {
-	AVEType type;
-	if (pinchView.containsImage && pinchView.containsVideo) {
-		type = AVETypePhotoVideo;
-	} else if (pinchView.containsImage) {
-		type = AVETypePhoto;
-	} else if(pinchView.containsVideo) {
-		type = AVETypeVideo;
-	}
-    switch (type) {
-        case AVETypePhoto: {
-            PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:nil orPinchview:pinchView isSubViewOfPhotoVideoAve:NO];
-           	PhotoAVE.isPhotoVideoSubview = NO;
-            
-            [self.results addObject:photoAve];
-            
-            break;
-        }
-        case AVETypeVideo: {
-            VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame pinchView:pinchView orVideoArray:nil];
-            [self.results addObject:videoAve];
-            break;
-        }
-        case AVETypePhotoVideo: {
-            PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:nil andVideos:nil orCollectionView:(CollectionPinchView *)pinchView];
-            [self.results addObject:photoVideoAVE];
-            break;
-        }
-        default: {
-            break;
-        }
-    }
-}
-
-
-
 
 #pragma  mark - Lazy Instantiation
 

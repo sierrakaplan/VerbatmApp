@@ -1119,34 +1119,35 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
--(ContentPageElementScrollView *)createPinchApartViews {
-    
-   CollectionPinchView * collectionPv = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
-    PinchView * toRemove = [collectionPv.pinchedObjects lastObject];
-    CollectionPinchView * newCollectionPv = [collectionPv unPinchAndRemove:toRemove];
-    toRemove.frame = newCollectionPv.frame;//this is to make sure the pinchview hasn't lost it's position in reordering
-    [self addTapGestureToPinchView:toRemove];
-    NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView] + 1;
-    
-    if(newCollectionPv.pinchedObjects.count == 1){
-        PinchView * newpv =  [collectionPv.pinchedObjects lastObject];
-        newpv.frame = toRemove.frame;
-        [[UserPovInProgress sharedInstance] removePinchView:[newCollectionPv unPinchAndRemove:newpv] andReplaceWithPinchView:newpv];
-        [self.upperPinchScrollView changePageElement:newpv];
-    }else{
-        [[UserPovInProgress sharedInstance] updatePinchView:newCollectionPv];
-        [[UserPovInProgress sharedInstance] addPinchView:toRemove atIndex:index];
-    }
+-(ContentPageElementScrollView *) createPinchApartViews {
 
-    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:toRemove andFrame:self.upperPinchScrollView.frame];
-    self.numPinchViews++;
-    //thread safety
-    @synchronized(self) {
-        [self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
-    }
-    
-    [self.mainScrollView addSubview: newElementScrollView];
-    return newElementScrollView;
+	CollectionPinchView *collectionPinchView = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
+	SingleMediaAndTextPinchView *toRemove = [collectionPinchView.pinchedObjects lastObject];
+	CollectionPinchView *newCollectionPinchView = [collectionPinchView unPinchAndRemove:toRemove];
+	toRemove.frame = newCollectionPinchView.frame;
+	[self addTapGestureToPinchView:toRemove];
+	NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView] + 1;
+
+	if(newCollectionPinchView.pinchedObjects.count == 1){
+		SingleMediaAndTextPinchView *unPinchedPinchView = [collectionPinchView.pinchedObjects lastObject];
+		unPinchedPinchView.frame = toRemove.frame;
+		[[UserPovInProgress sharedInstance] removePinchView:[newCollectionPinchView unPinchAndRemove:unPinchedPinchView]
+									andReplaceWithPinchView:unPinchedPinchView];
+		[self.upperPinchScrollView changePageElement:unPinchedPinchView];
+	}else{
+		[[UserPovInProgress sharedInstance] updatePinchView:newCollectionPinchView];
+		[[UserPovInProgress sharedInstance] addPinchView:toRemove atIndex:index];
+	}
+
+	ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:toRemove andFrame:self.upperPinchScrollView.frame];
+	self.numPinchViews++;
+	//thread safety
+	@synchronized(self) {
+		[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+	}
+
+	[self.mainScrollView addSubview: newElementScrollView];
+	return newElementScrollView;
 }
 
 
