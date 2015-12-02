@@ -17,13 +17,11 @@
 @interface FeedVC () <ArticleDisplayVCDelegate>
 
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
+@property (nonatomic) BOOL contentCoveringScreen;
 
 #define TRENDING_VC_ID @"trending_vc"
 
-@property (nonatomic) BOOL contentCoveringScreen;
-
 @end
-
 
 @implementation FeedVC
 
@@ -41,8 +39,7 @@
 	[super viewDidAppear:animated];
 }
 
-
--(void) createContentListView{
+-(void) createContentListView {
     self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
     self.postDisplayVC.view.frame = self.view.bounds;
     self.postDisplayVC.view.backgroundColor = [UIColor blackColor];
@@ -51,8 +48,8 @@
     [self.view addSubview:self.postDisplayVC.view];
     [self.postDisplayVC didMoveToParentViewController:self];
     self.postDisplayVC.delegate = self;
-    
 }
+
 //articledisplay delegate method
 -(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo{
     
@@ -66,12 +63,12 @@
 											   object:nil];
 }
 
-
 -(void)addClearScreenGesture{
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
     [self.view addGestureRecognizer:tap];
     self.contentCoveringScreen = YES;
 }
+
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
     if(self.contentCoveringScreen){
         [self.delegate showTabBar:NO];
@@ -85,13 +82,14 @@
 -(void)offScreen{
     [self.postDisplayVC offScreen];
 }
+
 -(void)onScreen{
     [self.postDisplayVC onScreen];
 }
 
 //not implemented
 // animates the fact that a recent POV is publishing
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
                     andProgressObject:(NSProgress *)publishingProgress{
     
 }

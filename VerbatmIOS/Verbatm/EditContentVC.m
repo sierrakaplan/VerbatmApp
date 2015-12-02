@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "CoverPicturePinchView.h"
 #import "Durations.h"
 
 #import "EditContentVC.h"
@@ -86,10 +85,8 @@
 	} else { // pinch view contains video
 		[self displayVideo:[(VideoPinchView*)self.openPinchView video]];
 	}
-	if (![self.openPinchView isKindOfClass:[CoverPicturePinchView class]]) {
-		if (self.openPinchView.text && self.openPinchView.text.length) {
-			[self setText:self.openPinchView.text andTextViewYPosition:self.openPinchView.textYPosition.floatValue];
-		}
+	if (self.openPinchView.text && self.openPinchView.text.length) {
+		[self setText:self.openPinchView.text andTextViewYPosition:self.openPinchView.textYPosition.floatValue];
 	}
     if(![[UserSetupParameters sharedInstance] filter_InstructionShown] && [self.openPinchView isKindOfClass:[ImagePinchView class]]) {
 		[self alertAddFilter];

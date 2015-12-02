@@ -17,7 +17,6 @@
 #define TITLE_KEY @"user_title"
 #define COVER_PHOTO_KEY @"user_cover_photo"
 #define PINCHVIEWS_KEY @"user_pinch_views"
-#define CONVERTING_PINCHVIEW_DISPATCH_KEY "converting_pinchviews"
 
 @end
 
@@ -66,9 +65,7 @@
 	});
 }
 
-
-
-//removes pinch view and automatically saves pinchViews
+//removes pinch view and saves pinchViews
 -(void) removePinchView:(PinchView*)pinchView {
 	@synchronized(self) {
 		if (![self.pinchViews containsObject: pinchView]) {

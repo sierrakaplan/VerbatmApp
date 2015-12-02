@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-@class CoverPicturePinchView;
 @class PinchView;
 
 @interface UserPovInProgress : NSObject

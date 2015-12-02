@@ -13,7 +13,6 @@
 #import "ContentDevVC.h"
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
-#import "CoverPicturePinchView.h"
 #import "ContentPageElementScrollView.h"
 #import "Durations.h"
 
@@ -167,7 +166,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[self formatNavBar];
 	[self setKeyboardAppearance];
 	[self setCursorColor];
-	[self formatTitleAndCoverPicture];
+	[self formatTitle];
 	[self createBaseSelector];
 	[self loadPOVFromUserDefaults];
 	[self setUpNotifications];
@@ -252,7 +251,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 //sets the textview placeholders' color and text
--(void) formatTitleAndCoverPicture {
+-(void) formatTitle {
     
     CGRect titleFrame = CGRectMake(TITLE_FIELD_X_OFFSET, TITLE_FIELD_Y_OFFSET,
 											   self.view.bounds.size.width - 2*TITLE_FIELD_X_OFFSET,

@@ -141,9 +141,7 @@
             [(POVView *)self.povViews[indexOfViewBeingDisplayed] povOnScreen];
         }
     }
-
 }
-
 
 /*
  Makes sure that there are a certain number of POVs prepared before and after the current view. 

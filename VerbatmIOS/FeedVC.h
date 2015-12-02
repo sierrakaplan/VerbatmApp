@@ -19,7 +19,7 @@
 @property (strong, nonatomic) id<FeedVCDelegate> delegate;
 
 // animates the fact that a recent POV is publishing
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
 					andProgressObject:(NSProgress *)publishingProgress;
 
 

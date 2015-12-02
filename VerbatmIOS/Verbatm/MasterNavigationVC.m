@@ -118,49 +118,26 @@
 -(void) setUpTabBarController {
     
     [self createTabBarViewController];
-	
-    [self creatViewControllersToEmbed];
-    
-    //add the created view controllers to the tap bar
-    [self addViewControllerToTabBar:self.feedVC];
-    [self addViewControllerToTabBar:self.profileVC];
-    
+    [self createViewControllers];
     
     self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:PROFILE_NAV_ICON] tag:0];
     self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:HOME_NAV_ICON] tag:1];
-    self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC,[[UIViewController alloc] init]];
-    
-    
-    
-    
-    
+    self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC];
+
     //add adk button to tab bar
 	[self addTabBarCenterButtonWithImage:[UIImage imageNamed:ADK_NAV_ICON] highlightImage:[UIImage imageNamed:ADK_NAV_ICON]];
     
-    self.tabBarController.selectedViewController = self.feedVC;
-    
+    self.tabBarController.selectedViewController = self.profileVC;
 	[self formatTabBar];
-
 }
 
 //the view controllers that will be tabbed
--(void)creatViewControllersToEmbed{
+-(void)createViewControllers {
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
     self.profileVC.delegate = self;
-    
-    
+
     self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
     self.feedVC.delegate = self;
-}
-
-
-
-
--(void)addViewControllerToTabBar:(UIViewController *) viewController{
-    
-    
-    
-    
 }
 
 -(void)createTabBarViewController{
@@ -171,7 +148,6 @@
     self.tabBarController.delegate = self;
 }
 
-
 -(void) formatTabBar {
 	[self.tabBarController.tabBar setTintColor:[UIColor blackColor]];
 	[self.tabBarController.tabBar setBarTintColor:[UIColor lightGrayColor]];
@@ -180,9 +156,6 @@
 	[self.tabBarController.tabBar setSelectionIndicatorImage:[UIImage makeImageWithColorAndSize:[UIColor darkGrayColor]
 																				 andSize: CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
 																															self.tabBarController.tabBar.frame.size.height)]];
-    
-    
-    
     //set two tab bar frames-- for when we want to remove the tab bar
     self.tabBarFrameOnScreen = self.tabBarController.tabBar.frame;
     self.tabBarFrameOffScreen = CGRectMake(self.tabBarController.tabBar.frame.origin.x,
