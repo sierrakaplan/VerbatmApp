@@ -7,11 +7,8 @@
 //
 
 #import "ArticleDisplayVC.h"
-
 #import "FeedVC.h"
-
 #import "Notifications.h"
-
 #import "SegueIDs.h"
 
 @interface FeedVC () <ArticleDisplayVCDelegate>
@@ -73,7 +70,7 @@
     if(self.contentCoveringScreen){
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
-    }else{
+    } else{
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
     }

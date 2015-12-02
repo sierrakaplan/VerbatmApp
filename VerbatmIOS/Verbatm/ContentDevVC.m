@@ -258,18 +258,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 											   TITLE_FIELD_HEIGHT);
 	
 	[self formatTitleFieldFromFrame: titleFrame];
-
-//	//Title border
-//	UIView* titleBorderView = [[UIView alloc] initWithFrame: titleFrame];
-//	UIImageView* titleBorderImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, 0,
-//																				  titleFrame.size.width,
-//																				  titleFrame.size.height)];
-//	[titleBorderImageView setImage:[UIImage imageNamed: TITLE_BORDER]];
-//	titleBorderImageView.contentMode = UIViewContentModeScaleAspectFill;
-//
-//	[titleBorderView addSubview: titleBorderImageView];
-//	[titleBorderView addSubview: self.titleField];
-//	[titleBorderView bringSubviewToFront: self.titleField];
 	[self.mainScrollView addSubview: self.titleField];
 }
 
@@ -291,8 +279,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.titleField.autocorrectionType = UITextAutocorrectionTypeYes;
 	[self.titleField setReturnKeyType:UIReturnKeyDone];
 }
-
-
 
 -(void) setUpNotifications {
 	//Tune in to get notifications of keyboard behavior
@@ -321,7 +307,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 											   object: [UIDevice currentDevice]];
 }
 
-
 // Loads pinch views from user defaults
 -(void) loadPOVFromUserDefaults {
 	NSString* savedTitle = [[UserPovInProgress sharedInstance] title];
@@ -336,7 +321,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		[self newPinchView:pinchView belowView: nil];
 	}
 }
-
 
 #pragma mark - Nav Bar Delegate Methods -
 

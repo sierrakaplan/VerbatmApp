@@ -65,6 +65,10 @@
 #define MEDIA_DEV_VC_ID @"media_dev_vc"
 #define PROFILE_VC_ID @"profile_vc"
 
+#define DARK_GRAY 0.f
+#define TAB_BAR_ALPHA 0.4
+#define ADK_BUTTON_SIZE 60.f
+
 @end
 
 @implementation MasterNavigationVC
@@ -116,19 +120,40 @@
 #pragma mark - Tab bar controller -
 
 -(void) setUpTabBarController {
-    
     [self createTabBarViewController];
     [self createViewControllers];
-    
-    self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:PROFILE_NAV_ICON] tag:0];
-    self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:[UIImage imageNamed:HOME_NAV_ICON] tag:1];
     self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC];
-
     //add adk button to tab bar
-	[self addTabBarCenterButtonWithImage:[UIImage imageNamed:ADK_NAV_ICON] highlightImage:[UIImage imageNamed:ADK_NAV_ICON]];
-    
+	[self addTabBarCenterButtonWithImage:[UIImage imageNamed:ADK_NAV_ICON]];
     self.tabBarController.selectedViewController = self.profileVC;
 	[self formatTabBar];
+}
+
+-(void) formatTabBar {
+	NSInteger numTabs = self.tabBarController.viewControllers.count;
+	CGSize tabBarItemSize = CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
+									   self.tabBarController.tabBar.frame.size.height);
+	// Sets background of unselected UITabBarItem
+	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
+	// Sets the background color of the selected UITabBarItem
+	[self.tabBarController.tabBar setSelectionIndicatorImage: [self getSelectedTabBarItemImageWithSize: tabBarItemSize]];
+
+	//set two tab bar frames-- for when we want to remove the tab bar
+	self.tabBarFrameOnScreen = self.tabBarController.tabBar.frame;
+	self.tabBarFrameOffScreen = CGRectMake(self.tabBarController.tabBar.frame.origin.x,
+										   self.view.frame.size.height,
+										   self.tabBarController.tabBar.frame.size.width,
+										   self.tabBarController.tabBar.frame.size.height);
+}
+
+-(UIImage*) getUnselectedTabBarItemImageWithSize: (CGSize) size {
+	return [UIImage makeImageWithColorAndSize:[UIColor colorWithWhite:1.0 alpha:TAB_BAR_ALPHA]
+									  andSize: size];
+}
+
+-(UIImage*) getSelectedTabBarItemImageWithSize: (CGSize) size {
+	return [UIImage makeImageWithColorAndSize:[UIColor colorWithWhite:DARK_GRAY alpha:TAB_BAR_ALPHA]
+									  andSize: size];
 }
 
 //the view controllers that will be tabbed
@@ -138,6 +163,17 @@
 
     self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
     self.feedVC.delegate = self;
+
+	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+															  image:[[UIImage imageNamed:PROFILE_NAV_ICON]
+																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+													  selectedImage:[[UIImage imageNamed:PROFILE_NAV_ICON]
+																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+															  image:[[UIImage imageNamed:HOME_NAV_ICON]
+																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+													  selectedImage:[[UIImage imageNamed:HOME_NAV_ICON]
+																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
 }
 
 -(void)createTabBarViewController{
@@ -148,36 +184,26 @@
     self.tabBarController.delegate = self;
 }
 
--(void) formatTabBar {
-	[self.tabBarController.tabBar setTintColor:[UIColor blackColor]];
-	[self.tabBarController.tabBar setBarTintColor:[UIColor lightGrayColor]];
-	NSInteger numTabs = self.tabBarController.viewControllers.count;
-	// Sets the background color of the selected UITabBarItem
-	[self.tabBarController.tabBar setSelectionIndicatorImage:[UIImage makeImageWithColorAndSize:[UIColor darkGrayColor]
-																				 andSize: CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
-																															self.tabBarController.tabBar.frame.size.height)]];
-    //set two tab bar frames-- for when we want to remove the tab bar
-    self.tabBarFrameOnScreen = self.tabBarController.tabBar.frame;
-    self.tabBarFrameOffScreen = CGRectMake(self.tabBarController.tabBar.frame.origin.x,
-                                           self.view.frame.size.height,
-                                           self.tabBarController.tabBar.frame.size.width,
-                                           self.tabBarController.tabBar.frame.size.height);
-}
-
 // Create a custom UIButton and add it to the center of our tab bar
--(void) addTabBarCenterButtonWithImage:(UIImage*)buttonImage highlightImage:(UIImage*)highlightImage {
+-(void) addTabBarCenterButtonWithImage:(UIImage*)buttonImage {
 
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
+	CGFloat tabWidth = self.tabBarController.tabBar.frame.size.width/numTabs;
+	// covers up tab so that it won't go to blank view controller
+	// Center tab out of 3
+	UIView* tabView = [[UIView alloc] initWithFrame:CGRectMake(tabWidth, 0.f, tabWidth,
+															self.tabBarController.tabBar.frame.size.height)];
+	[tabView setBackgroundColor:[UIColor clearColor]];
+
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
-	button.frame = CGRectMake(self.tabBarController.tabBar.frame.size.width/numTabs, 0.f,
-							  self.tabBarController.tabBar.frame.size.width/numTabs,
-							  self.tabBarController.tabBar.frame.size.height);
-	button.imageView.contentMode = UIViewContentModeScaleAspectFit;
-	[button setImage:buttonImage forState:UIControlStateNormal];
-	[button setImage:highlightImage forState:UIControlStateHighlighted];
+	button.frame = CGRectMake(tabWidth + tabWidth/2.f - ADK_BUTTON_SIZE/2.f, -(ADK_BUTTON_SIZE/2.f),
+							  ADK_BUTTON_SIZE, ADK_BUTTON_SIZE);
+	[button setBackgroundColor:[UIColor clearColor]];
+	[button.imageView setContentMode:UIViewContentModeScaleAspectFill];
+	[button setBackgroundImage:buttonImage forState:UIControlStateNormal];
 	[button addTarget:self action:@selector(revealADK) forControlEvents:UIControlEventTouchUpInside];
 
-	[button setBackgroundColor:[UIColor whiteColor]];
+	[self.tabBarController.tabBar addSubview:tabView];
 	[self.tabBarController.tabBar addSubview:button];
 }
 

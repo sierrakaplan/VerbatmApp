@@ -58,7 +58,7 @@
 // set up the capture session with video and audio inputs, and video and still image outputs
 -(void) initializeSession {
 	self.session = [[AVCaptureSession alloc]init];
-	self.session.sessionPreset = AVCaptureSessionPreset640x480;
+	self.session.sessionPreset = AVCaptureSessionPresetHigh;
 	[self setupSessionInputs];
 	[self setupSessionOutputs];
 }
