@@ -10,8 +10,6 @@
 #import "ArticleDisplayVC.h"
 #import "AVETypeAnalyzer.h"
 
-#import "CoverPhotoAVE.h"
-
 #import "GTLVerbatmAppPOVInfo.h"
 #import "GTLVerbatmAppPage.h"
 #import "GTLVerbatmAppImage.h"

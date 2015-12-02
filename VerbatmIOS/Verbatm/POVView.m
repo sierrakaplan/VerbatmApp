@@ -7,6 +7,7 @@
 //
 
 #import "Analytics.h"
+#import "AveTypeAnalyzer.h"
 
 #import "Icons.h"
 
@@ -266,7 +267,7 @@
 -(void)preparePOVToBePresented{
     NSInteger currentPage = self.mainScrollView.contentOffset.x / self.frame.size.width;
     ArticleViewingExperience* page = [self.pageAves objectForKey:[NSNumber numberWithInteger:currentPage]];
-    [self prepareView:page];
+    [page onScreen];
     [self prepareNextPage];
 }
 
