@@ -243,8 +243,9 @@
             NSInteger pageIndex = page.indexInPOV;
             // When first page loads, show down arrow
             if (pageIndex == 0) {
-                [self addDownArrowButton];
-                [self addLikeButtonWithDelegate:likeDelegate];
+				//TODO: add like button and down arrows back
+//                [self addDownArrowButton];
+//                [self addLikeButtonWithDelegate:likeDelegate];
             }
             
             [self renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
