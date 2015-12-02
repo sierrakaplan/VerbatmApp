@@ -44,54 +44,52 @@
 @property (nonatomic) float lastDistanceFromStartingPoint;
 @property (strong, nonatomic) NSTimer * showCircleTimer;
 
-
 @property (nonatomic, strong) UIView * panGestureSensingView;
-
 @property (strong, nonatomic) UIPanGestureRecognizer * circlePanGesture;
-
 @property (nonatomic, strong) UIButton * textViewButton;
 
-@property (nonatomic) BOOL subviewOfPhotoVideoAVE;
+#pragma mark - In Preview Mode -
 
+@property (nonatomic) PinchView *pinchView;
 @property (nonatomic, strong) UIButton * rearrangeButton;
 @property (nonatomic) OpenCollectionView * rearrangeView;
 
-@property (nonatomic)PinchView * currentCPV;
 #define TEXT_VIEW_HEIGHT 70.f
 
-@property (nonatomic)BOOL isSubViewOfPhotoVideoAve;
+//this view manages the tapping gesture of the set circles
+@property (nonatomic, strong) UIView * circleTapView;
 
-@property (nonatomic, strong) UIView * circleTapView;//this view manages the tapping gesture of the set circles
 @end
 
 @implementation PhotoAVE
 
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchview:(PinchView *) pinchView
-     isSubViewOfPhotoVideoAve:(BOOL) isPVSubview {
-    
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos {
 	self = [super initWithFrame:frame];
 	if (self) {
-        if(pinchView){
-            self.currentCPV = pinchView;
-            if([pinchView isKindOfClass:[CollectionPinchView class]]){
-                [self addPinchViewContent:[(CollectionPinchView *)self.currentCPV getImagePinchViews]];
-            }else{
-                [self addPinchViewContent:[NSMutableArray arrayWithObject:pinchView]];//pv is an imagepv
-            }
-            
-            
-        }else if ([photos count]) {
-            self.subviewOfPhotoVideoAVE = isPVSubview;
+		self.inPreviewMode = NO;
+        if ([photos count]) {
 			[self addPhotos:photos];
 		}
-        
-        UIView * tapView = (pinchView) ? self.panGestureSensingView : self;
-		[self addTapGestureToView:tapView];
-        self.isSubViewOfPhotoVideoAve = isPVSubview;
+
+		[self addTapGesture];
 	}
 	return self;
 }
 
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(ImagePinchView *)pinchView {
+	self = [super initWithFrame:frame];
+	if (self) {
+		self.inPreviewMode = YES;
+		self.pinchView = pinchView;
+		if([self.pinchView isKindOfClass:[CollectionPinchView class]]){
+			[self addContentFromImagePinchViews:((CollectionPinchView *)self.pinchView).imagePinchViews];
+		}else{
+			[self addContentFromImagePinchViews:[NSMutableArray arrayWithObject:pinchView]];
+		}
+		[self addTapGesture];
+	}
+	return self;
+}
 
 -(void)prepareCirclePan{
     if(self.dotViewsOnCircle.count){
@@ -108,10 +106,9 @@
     [self highlightDot];
 }
 
-#pragma mark Pinch Views
+#pragma mark - Preview mode -
 
-//photoTextArray is array containing subarrays of photo and text couples @[@[photo, text],...]
--(void) addPinchViewContent:(NSMutableArray *)pinchViewArray{
+-(void) addContentFromImagePinchViews:(NSMutableArray *)pinchViewArray{
     for (ImagePinchView * imagePinchView in pinchViewArray) {
         EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
         [editMediaContentView displayImages:[imagePinchView filteredImages] atIndex:imagePinchView.filterImageIndex];
@@ -123,12 +120,19 @@
     }
     [self layoutContainerViews];
     if(pinchViewArray.count > 1){
-        
         [self createRearrangeButton];
     }
 }
 
-#pragma mark No PinchViews
+-(void)layoutContainerViews{
+	//adding subviews in reverse order so that imageview at index 0 on top
+	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
+		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
+	}
+	if(self.imageContainerViews.count > 1) [self prepareCirclePan];
+}
+
+#pragma mark - Not preview mode -
 
 //photoTextArray is array containing subarrays of photo and text couples @[@[photo, text],...]
 -(void) addPhotos:(NSArray*)photosTextArray {
@@ -159,7 +163,7 @@
 	NSString* text = photoTextArray[1];
 	NSNumber* textYPosition = photoTextArray[2];
 
-	if(self.subviewOfPhotoVideoAVE) {
+	if(self.isPhotoVideoSubview) {
 		textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
 	}
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
@@ -252,12 +256,14 @@
 
 #pragma mark - Tap Gesture -
 
--(void)addTapGestureToView:(UIView*)view {
-    
-    SEL tapFunction = (self.currentCPV) ? @selector(panViewTapped:) : @selector(mainViewTapped:);
-    
-    self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action: tapFunction];
-	[view addGestureRecognizer:self.photoAveTapGesture];
+-(void)addTapGesture {
+	if (self.inPreviewMode) {
+		self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action: @selector(panViewTapped:)];
+		[self.panGestureSensingView addGestureRecognizer:self.photoAveTapGesture];
+	} else {
+		self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action: @selector(mainViewTapped:)];
+		[self addGestureRecognizer:self.photoAveTapGesture];
+	}
 }
 
 //used only when we have a pinchview and are editing
@@ -294,81 +300,43 @@
 	return NO;
 }
 
-
-#pragma mark -Add button-
+#pragma mark - Rearrange content (preview mode) -
 
 -(void)createRearrangeButton {
     [self.rearrangeButton setImage:[UIImage imageNamed:CREATE_REARRANGE_ICON] forState:UIControlStateNormal];
     self.rearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.rearrangeButton addTarget:self action:@selector(rearrangeContentSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.rearrangeButton addTarget:self action:@selector(rearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.rearrangeButton];
     [self bringSubviewToFront:self.rearrangeButton];
 }
 
--(void)rearrangeContentSelected {
-    
+-(void) rearrangeButtonPressed {
     if(!self.rearrangeView){
-        NSMutableArray * pinchViewArray;
-        
-         if([self.currentCPV isKindOfClass:[CollectionPinchView class]]){
-             pinchViewArray = [(CollectionPinchView *)self.currentCPV getImagePinchViews];
-         }else{//is an imagepinchview
-             pinchViewArray = [NSMutableArray arrayWithObject:self.currentCPV];
-         }
-        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds andPinchViewArray:pinchViewArray];
+        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds
+													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
         self.rearrangeView.delegate = self;
         [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
-    }else{
-        [self.rearrangeView exitRearrangeView];
+    } else {
+        [self.rearrangeView exitView];
     }
 }
 
+#pragma mark OpenCollectionView delegate method
 
--(void)exitPVWithFinalArray:(NSMutableArray *) pvArray{
-    
-    
-    [self resortContainerViewsBasedOnArray:pvArray];
-    [self layoutContainerViews];
+-(void) collectionClosedWithFinalArray:(NSMutableArray *) pinchViews {
+	if(self.rearrangeView){
+		[self.rearrangeView removeFromSuperview];
+		self.rearrangeView = nil;
+	}
+	self.imageContainerViews = nil;
+	for (UIView * view in self.subviews) {
+		[view removeFromSuperview];
+	}
+	[self addContentFromImagePinchViews: pinchViews];
     [self createRearrangeButton];
-    
-    if([self.currentCPV isKindOfClass:[CollectionPinchView class]]){
-        [((CollectionPinchView *)self.currentCPV) replaceImagePinchViesWithNewVPVs:pvArray];
-        [((CollectionPinchView *)self.currentCPV) updateMedia];
-        [((CollectionPinchView *)self.currentCPV) renderMedia];
-    }
-    
-    if(self.rearrangeView){
-        [self.rearrangeView removeFromSuperview];
-        self.rearrangeView = nil;
-    }
 }
 
-//we are given a new sorting for our edit content views. We delete them and recreate new ones
--(void)resortContainerViewsBasedOnArray:(NSMutableArray *) pvArray{
-    //remove edit content views from our view
-    for (UIView * view in self.subviews) {
-        [view removeFromSuperview];
-    }
-    
-    self.imageContainerViews = [NSMutableArray arrayWithArray:[self.imageContainerViews sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
 
-        PinchView * pinchViewObj1 = ((EditMediaContentView *)obj1).pinchView;
-        PinchView * pinchViewObj2 = ((EditMediaContentView *)obj2).pinchView;
-
-            CGFloat obj1PvIndex = [pvArray indexOfObject:pinchViewObj1];
-            CGFloat obj2PvIndex = [pvArray indexOfObject:pinchViewObj2];
-            if(obj1PvIndex > obj2PvIndex) return NSOrderedDescending;
-            else return NSOrderedAscending;
-    }]];
-}
-
--(void)layoutContainerViews{
-    //adding subviews in reverse order so that imageview at index 0 on top
-    for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
-        [self addSubview:[self.imageContainerViews objectAtIndex:i]];
-    }
-    if(self.imageContainerViews.count > 1)[self prepareCirclePan];
-}
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {
 	NSInteger indexOfPoint = [self getPointIndexFromLocation:touchLocation];
@@ -513,7 +481,7 @@
 		[self.showCircleTimer invalidate];
 		self.showCircleTimer = nil;
 	}
-	if(!self.currentCPV) [self animateFadeCircleDisplay:NO];
+	if(!self.pinchView) [self animateFadeCircleDisplay:NO];
 }
 
 -(void) animateFadeCircleDisplay:(BOOL) display {
@@ -578,26 +546,30 @@
 }
 
 
--(void)offScreen{
+#pragma mark - Overriding ArticleViewingExperience methods -
+
+-(void) onScreen {
+	[self showAndRemoveCircle];
+}
+
+- (void)offScreen {
     for (UIView * view in self.imageContainerViews) {
         if([view isKindOfClass:[EditMediaContentView class]]){
             [((EditMediaContentView *)view)exitingECV];
         }
     }
     
-    if(self.rearrangeView)[self.rearrangeView exitRearrangeView];
+    if(self.rearrangeView)[self.rearrangeView exitView];
 }
 
-
-
-
-#pragma mark -edit content view protocol-
+#pragma mark - EditContentViewDelegate methods -
 
 -(void) textIsEditing{
-    if(self.isSubViewOfPhotoVideoAve)[self.textEntrydelegate editContentViewTextIsEditing];
+    if(self.isPhotoVideoSubview) [self.textEntryDelegate editContentViewTextIsEditing];
 }
+
 -(void) textDoneEditing{
-    if(self.isSubViewOfPhotoVideoAve)[self.textEntrydelegate editContentViewTextDoneEditing];
+    if(self.isPhotoVideoSubview) [self.textEntryDelegate editContentViewTextDoneEditing];
 }
 
 

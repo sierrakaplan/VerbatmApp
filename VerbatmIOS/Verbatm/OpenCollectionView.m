@@ -91,7 +91,7 @@
 
 -(void) exitView {
 	NSMutableArray * finalArray = [self.scrollView closeCollection];
-	[self.delegate exitPVWithFinalArray:finalArray];
+	[self.delegate collectionClosedWithFinalArray:finalArray];
 }
 
 @end

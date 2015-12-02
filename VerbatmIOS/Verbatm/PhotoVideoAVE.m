@@ -25,17 +25,16 @@
 @property (strong, nonatomic) PhotoAVE* photosView;
 
 @end
+
 @implementation PhotoVideoAVE
 
--(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos orCollectionView:(CollectionPinchView *) collectionView
-{
+-(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos orCollectionView:(CollectionPinchView *) collectionView {
     self = [super initWithFrame:frame];
-    if(self)
-    {
+    if(self) {
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
         [self setSubViewsWithPhotos: photos andVideos:videos orPinchView:collectionView];
         //make sure the video is on repeat
-        [self.videoView repeatVideoOnEnd:YES];
+        [self.videoView.videoPlayer repeatVideoOnEnd:YES];
     }
     return self;
 }
@@ -51,7 +50,7 @@
     
     
     self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchview:(collection) ? collection : nil isSubViewOfPhotoVideoAve:YES];
-    self.photosView.textEntrydelegate = self;
+    self.photosView.textEntryDelegate = self;
     self.videoView = [[VideoAVE alloc]initWithFrame:videoViewFrame pinchView:(collection.containsVideo) ? collection : nil orVideoArray:videos];
 
 	[self addSubview:self.videoView];
@@ -96,8 +95,7 @@
     }
 }
 
-
-#pragma mark -managing content viewing-
+#pragma mark - Overriding offscreen/onscreen methods -
 
 -(void)offScreen {
     [self.videoView offScreen];
@@ -106,20 +104,12 @@
 
 -(void)onScreen {
     [self.videoView onScreen];
-}
-
-/*Mute the video*/
--(void)mutePlayer {
-	[self.videoView muteVideo];
-}
-
-/*Enable's the sound on the video*/
--(void)enableSound{
-    [self.videoView unmuteVideo];
+	[self.photosView onScreen];
 }
 
 -(void)almostOnScreen{
     [self.videoView almostOnScreen];
+	[self.photosView almostOnScreen];
 }
 
 

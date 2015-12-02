@@ -7,8 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ArticleViewingExperience.h"
 #import "PinchView.h"
-
 
 @protocol PhotoAVEDelegate <NSObject>
 
@@ -17,7 +17,7 @@
 
 @end
 
-@protocol AVETextEntryDelegate <NSObject>
+@protocol PhotoAVETextEntryDelegate <NSObject>
 
 -(void) editContentViewTextIsEditing;
 -(void) editContentViewTextDoneEditing;
@@ -30,15 +30,20 @@
 
 @property (strong, nonatomic) id<PhotoAVETextEntryDelegate> textEntryDelegate;
 
+@property (nonatomic) BOOL isPhotoVideoSubview;
+
 //this is used with the tap gesture in the photovideoave -- we pass it in in order to prevent them from intercepting each other
 @property (nonatomic, strong) UITapGestureRecognizer * photoAveTapGesture;
 
 @property (weak, nonatomic) UIScrollView * povScrollView;
 
 //Photos is array of UIImage
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos  orPinchview:(PinchView *) pinchView
-     isSubViewOfPhotoVideoAve:(BOOL) isPVSubview;
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *)photos;;
 
--(void) showAndRemoveCircle;//be sure to set povScrollView
+// initializer for preview mode
+-(instancetype) initWithFrame:(CGRect)frame andPinchView: (ImagePinchView*)pinchView;
+
+//be sure to set povScrollView
+-(void) showAndRemoveCircle;
 
 @end

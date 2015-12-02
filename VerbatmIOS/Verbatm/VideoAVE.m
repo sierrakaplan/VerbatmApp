@@ -158,7 +158,7 @@
 -(void)onScreen {
     if(self.editContentView){
         [self.editContentView onScreen];
-    }else{
+    } else{
         [self playVideo];
     }
 }

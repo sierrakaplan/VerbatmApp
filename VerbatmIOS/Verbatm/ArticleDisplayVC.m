@@ -173,13 +173,6 @@
         }
     }
 }
-//dispatch_async(dispatch_get_global_queue(0, 0), ^{
-//});
-
-//dispatch_async(dispatch_get_main_queue(), ^{});
-
-
-
 
 -(void)preparePOVatIndex:(NSInteger) index {
     PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
@@ -190,7 +183,6 @@
         [povView preparePOVToBePresented];
     }
 }
-
 
 -(void) dropUnusedPOVExceptleft:(NSInteger) left center:(NSInteger) center right:(NSInteger) right{
     for(int i = 0; i < self.povViews.count; i++){
@@ -203,7 +195,6 @@
                 self.povViews[i] = [NSNull null];
             }
         }
-
     }
 }
 

@@ -37,10 +37,8 @@
 //adds a down arrow to the cover photo
 -(void)addDownArrowButton;
 
-
-//makes the pov start a secific page
--(void)moveViewTopPageIndex:(NSInteger) pageIndex;
-
+//Scrolls POV to a specific page
+-(void) scrollToPageAtIndex:(NSInteger) pageIndex;
 
 //presents array of pages when they are downloaded
 -(void) renderPOVFromPages:(NSArray *) pages andLikeButtonDelegate:(id) likeDelegate;

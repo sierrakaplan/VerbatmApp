@@ -22,10 +22,6 @@
 //Photos are array of UIImage and videos are array of AVassets or NSURl
 -(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos orCollectionView:(CollectionPinchView *) collectionView;
 
--(void)mutePlayer;
-
--(void)enableSound;
-
 -(void) showAndRemoveCircle;
 
 @end

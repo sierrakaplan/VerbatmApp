@@ -8,10 +8,6 @@
 
 #import "Analytics.h"
 
-#import "BaseArticleViewingExperience.h"
-
-#import "CoverPhotoAVE.h"
-
 #import "Icons.h"
 
 #import "PhotoVideoAVE.h"
@@ -20,8 +16,6 @@
 #import "Page.h"
 #import "PagesLoadManager.h"
 #import "SizesAndPositions.h"
-
-#import "TextAVE.h"
 
 #import "UserManager.h"
 #import "UIView+Effects.h"
@@ -33,8 +27,7 @@
 // Load manager in charge of getting page objects and all their media for each pov
 @property (strong, nonatomic) PagesLoadManager* pageLoadManager;
 
-
-// mapping between integer and uiview
+// mapping between NSNumber of type Integer and ArticleViewingExperience
 @property (strong, nonatomic) NSMutableDictionary * pageAves;
 @property (nonatomic) NSNumber* currentIndexOfPageLoading;
 
@@ -67,7 +60,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self addSubview: self.mainScrollView];
-        if(povInfo){//if this is being used in the feed
+		if(povInfo) { // if being used in feed
             self.povInfo = povInfo;
             self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
             if(povInfo)[self createPageLoader];
@@ -75,14 +68,9 @@
                                                                          andStyle:UIActivityIndicatorViewStyleWhiteLarge];
             self.activityIndicator.color = [UIColor blackColor];
         }
-        
-
-        
-        
     }
     return self;
 }
-
 
 -(void) createPageLoader{
     self.pageLoadManager = [[PagesLoadManager alloc] init];
@@ -93,18 +81,16 @@
     
 }
 
--(void)moveViewTopPageIndex:(NSInteger) pageIndex{
-    
-    if(pageIndex < self.pageAves.count){
+#pragma mark - Display page -
+
+-(void) scrollToPageAtIndex:(NSInteger) pageIndex{
+    if(pageIndex < self.pageAves.count && pageIndex >= 0){
         self.mainScrollView.contentOffset = CGPointMake(0, self.mainScrollView.frame.size.height * (pageIndex));
-        
         [self displayMediaOnCurrentAVE];
     }
-    
 }
 
-
--(void) renderNextAve: (UIView*) ave withIndex: (NSNumber*) pageIndex {
+-(void) renderNextAve: (ArticleViewingExperience*)ave withIndex: (NSNumber*) pageIndex {
 	[self.pageAves setObject:ave forKey:pageIndex];
 	if (pageIndex == self.currentIndexOfPageLoading) {
 		self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
@@ -129,7 +115,7 @@
 	CGRect viewFrame = self.bounds;
 
 	for (int i = 0; i < aves.count; i++) {
-		UIView* ave = aves[i];
+		ArticleViewingExperience* ave = aves[i];
 		[self.pageAves setObject:ave forKey:[NSNumber numberWithInt:i]];
 		[self setDelegateOnPhotoAVE: ave];
 		ave.frame = viewFrame;
@@ -173,136 +159,55 @@
 
 #pragma mark - Handle Display Media on AVE -
 
--(void) setDelegateOnPhotoAVE: (UIView*) ave {
-	if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-		[self setDelegateOnPhotoAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-	} else if ([ave isKindOfClass:[PhotoAVE class]]) {
+-(void) setDelegateOnPhotoAVE: (ArticleViewingExperience*) ave {
+	if ([ave isKindOfClass:[PhotoAVE class]]) {
+		((PhotoAVE *)ave).povScrollView = self.mainScrollView;
 		((PhotoAVE*) ave).delegate = self;
+	} else if ([ave isKindOfClass:[PhotoVideoAVE class]]){
+		((PhotoVideoAVE *)ave).povScrollView = self.mainScrollView;
 	}
 }
 
-//takes care of playing video if necessary
-//or showing circle if multiple photo ave
+// Tells previous page it's offscreen and current page it's onscreen
 -(void) displayMediaOnCurrentAVE {
 	NSInteger nextIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
-	BaseArticleViewingExperience *nextPage = [self.pageAves objectForKey:[NSNumber numberWithInteger:nextIndex]];
-    BaseArticleViewingExperience * currentPage = [self.pageAves objectForKey:[NSNumber numberWithInteger: self.currentPageIndex]];
+	ArticleViewingExperience *nextPage = [self.pageAves objectForKey:[NSNumber numberWithInteger:nextIndex]];
+    ArticleViewingExperience *currentPage = [self.pageAves objectForKey:[NSNumber numberWithInteger: self.currentPageIndex]];
     if(self.currentPageIndex != nextIndex){
-        //stop recording old page
+		[currentPage offScreen];
         [self logAVEDoneViewing:currentPage];
-        //start recoring new page
-        [[Analytics getSharedInstance]pageStartedViewingWithIndex:nextIndex];
-    }else if (!nextIndex){//first page of the article
-        //start recoring new page
+        [[Analytics getSharedInstance] pageStartedViewingWithIndex:nextIndex];
+    } else if (nextIndex == 0){ //first page of the article
         [[Analytics getSharedInstance]pageStartedViewingWithIndex:nextIndex];
     }
     
-    if (self.currentPageIndex != nextIndex) {
-        [self pauseVideosInAVE: currentPage];
-    }
     self.currentPageIndex = nextIndex;
-    [self displayCircleOnAVE: nextPage];
-    [self playVideosInAVE: nextPage];
-    
-    [self prepareOutLiersToEnterScreen];
+	[nextPage onScreen];
+    [self prepareNextPage];
 }
 
-
--(void)logAVEDoneViewing:(BaseArticleViewingExperience *) ave{
-    
+-(void)logAVEDoneViewing:(ArticleViewingExperience*) ave {
     NSString * pageType = @"";
-
    if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave offScreen];
         pageType = @"VideoAVE";
     } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] offScreen];
         pageType = @"PhotoVideoAVE";
     }else if ([ave isKindOfClass:[PhotoAVE class] ]){
         pageType = @"PhotoAVE";
-    }else{//must be textAve
-        pageType = @"textAve";
     }
     
     [[Analytics getSharedInstance] pageEndedViewingWithIndex:self.currentPageIndex aveType:pageType];
 }
 
--(void) displayCircleOnAVE:(UIView*) ave {
-    if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self displayCircleOnAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[PhotoAVE class]]) {
-        ((PhotoAVE *)ave).povScrollView = self.mainScrollView;
-        [(PhotoAVE*)ave showAndRemoveCircle];
-    }else if ([ave isKindOfClass:[PhotoVideoAVE class]]){
-        ((PhotoVideoAVE *)ave).povScrollView = self.mainScrollView;
-        [(PhotoVideoAVE*)ave showAndRemoveCircle];
-    }
-}
-
-#pragma mark - Video playback
-
--(void) stopVideosInAVE:(UIView*) ave {
-    if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self stopVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    }else{
-        if(![ave isKindOfClass:[CoverPhotoAVE class]])[(VideoAVE *)ave offScreen];//all aves have an offscreen function
-    }
-}
-
--(void) pauseVideosInAVE:(UIView*) ave {
-    NSString * pageType = @"";
-    if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self pauseVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave offScreen];
-        pageType = @"VideoAVE";
-    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] offScreen];
-        pageType = @"PhotoVideoAVE";
-    }else if ([ave isKindOfClass:[PhotoAVE class] ]){
-        pageType = @"PhotoAVE";
-    }else{//must be textAve
-        pageType = @"textAve";
-    }
-}
-
--(void) playVideosInAVE:(UIView*) ave {
-    if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self playVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave onScreen];
-    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] onScreen];
-    }
-}
-
-//given a boarder view  and we prepare its video media to appear
-//these are views that are one swipe (up/down) away from being shown
--(void)prepareOutLiersToEnterScreen{
-    NSInteger currIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
-    NSInteger  indexAbove = currIndex -1;
-    NSInteger indexBelow = currIndex +1;
-    
-    for (int i =0; i < self.pageAves.count; i++) {
-        UIView * page = [self.pageAves objectForKey:[NSNumber numberWithInt:i]];
-        if(i == indexAbove){
-            [self prepareView:page];
-        }else if(i == indexBelow){
-            [self prepareView:page];
-        }else if (i != currIndex){
-            [self pauseVideosInAVE:page];
-        }
-    }
-}
-
--(void)prepareView:(UIView *) ave{
-    if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self prepareView:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave almostOnScreen];
-    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] almostOnScreen];
-    }
+// Prepares aves almost on screen (one above or below current page)
+-(void) prepareNextPage {
+    NSInteger currentIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
+    NSInteger indexAbove = currentIndex -1;
+    NSInteger indexBelow = currentIndex +1;
+	ArticleViewingExperience* pageAbove = [self.pageAves objectForKey:[NSNumber numberWithInteger:indexAbove]];
+	ArticleViewingExperience* pageBelow = [self.pageAves objectForKey:[NSNumber numberWithInteger:indexBelow]];
+	[pageAbove almostOnScreen];
+	[pageBelow almostOnScreen];
 }
 
 #pragma mark - Down arrow -
@@ -322,8 +227,6 @@
 
 #pragma mark -Pages Downloaded-
 
-
-
 -(void) pagesLoadedForPOV:(NSNumber *)povID {
     NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
     [self renderPOVFromPages:pages andLikeButtonDelegate:self];
@@ -331,7 +234,6 @@
     self.activityIndicator = nil;
     if(pages.count > 1)[self addDownArrowButton];
 }
-
 
 -(void) renderPOVFromPages:(NSArray *) pages andLikeButtonDelegate:(id) likeDelegate{
     AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
@@ -363,9 +265,9 @@
 
 -(void)preparePOVToBePresented{
     NSInteger currentPage = self.mainScrollView.contentOffset.x / self.frame.size.width;
-    UIView * page = [self.pageAves objectForKey:[NSNumber numberWithInteger:currentPage]];
+    ArticleViewingExperience* page = [self.pageAves objectForKey:[NSNumber numberWithInteger:currentPage]];
     [self prepareView:page];
-    [self prepareOutLiersToEnterScreen];
+    [self prepareNextPage];
 }
 
 #pragma mark - Photo AVE Delegate -
@@ -401,11 +303,11 @@
 //make sure to stop all videos
 -(void) stopAllVideos {
     if (!self.pageAves) return;
-    for (NSNumber * key in self.pageAves) {
-        [self stopVideosInAVE:self.pageAves[key]];
+    for (NSNumber* key in self.pageAves) {
+		ArticleViewingExperience* ave = [self.pageAves objectForKey:key];
+		[ave offScreen];
     }
 }
-
 
 #pragma mark - Lazy Instantiation -
 

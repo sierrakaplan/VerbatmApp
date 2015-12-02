@@ -8,9 +8,7 @@
 
 
 #import "PreviewDisplayView.h"
-
 #import "AveTypeAnalyzer.h"
-#import "CoverPhotoAVE.h"
 #import "CustomNavigationBar.h"
 #import "Durations.h"
 #import "Icons.h"
@@ -65,7 +63,6 @@
 		self.frame = self.restingFrame;
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
 		[self addShadowToView];
-        [self addTapToExit];
 	}
 	return self;
 }
@@ -95,7 +92,6 @@
     [self.povView moveViewTopPageIndex:index];
     [self.povView povOnScreen];
 	[self revealPreview:YES];
-    
 }
 
 
@@ -145,20 +141,14 @@
 }
 
 #pragma mark Back Button
+
 -(void) leftButtonPressed {
 	[self revealPreview:NO];
 }
 
 #pragma mark - Exit Display -
 
-
--(void)addTapToExit{
-    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(exitDisplay)];
-    [self addGestureRecognizer:tapGesture];
-}
-
 - (void) exitDisplay{
-    
     [self revealPreview:NO];
 }
 
