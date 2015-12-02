@@ -13,7 +13,7 @@
 
 @protocol PreviewDisplayDelegate <NSObject>
 
--(void) publishWithTitle: (NSString*)title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews;
+-(void) publishWithTitle: (NSString*)title andPinchViews: (NSArray*) pinchViews;
 -(void) aboutToShowPreview;
 -(void) aboutToRemovePreview;
 @end
@@ -25,6 +25,6 @@
 -(id) initWithFrame: (CGRect)frame;
 
 //the start index is the page that we should start viewing at not including cover page
--(void) displayPreviewPOVWithTitle: (NSString*) title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews withStartIndex: (NSInteger) index;
+-(void) displayPreviewPOVWithTitle: (NSString*) title andPinchViews: (NSArray*) pinchViews withStartIndex: (NSInteger) index;
 
 @end

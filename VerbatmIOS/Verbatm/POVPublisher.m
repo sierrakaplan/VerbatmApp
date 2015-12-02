@@ -44,7 +44,6 @@
 
 @property(nonatomic, strong) NSArray* pinchViews;
 @property(nonatomic, strong) NSString* title;
-@property(nonatomic, strong) UIImage* coverPic;
 // the total number of progress units it takes to publish,
 // based on the number of photos and videos in a story
 @property(nonatomic) NSInteger totalProgressUnits;
@@ -58,15 +57,13 @@
 
 @implementation POVPublisher
 
-
--(instancetype) initWithPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic {
+-(instancetype) initWithPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title {
 	self = [super init];
 	if (self) {
 		self.pinchViews = pinchViews;
 		self.title = title;
-		self.coverPic = coverPic;
 
-		self.totalProgressUnits = PROGRESS_UNITS_FOR_INITIAL_PROGRESS + PROGRESS_UNITS_FOR_PHOTO + PROGRESS_UNITS_FOR_FINAL_PUBLISH;
+		self.totalProgressUnits = PROGRESS_UNITS_FOR_INITIAL_PROGRESS + PROGRESS_UNITS_FOR_FINAL_PUBLISH;
 		for (PinchView* pinchView in self.pinchViews) {
 			NSArray* photos = [pinchView getPhotosWithText];
 			NSArray* videos = [pinchView getVideosWithText];
@@ -84,10 +81,6 @@
 
 /*
  think recursive:
-
- when (got current user id +  saved cover pic serving url + saved page ids) upload pov
-
- branch coverPic: (get Image upload uri) then (upload cover pic to blobstore using uri) resolves to blobstore serving url
 
  branch savePageIds: when (stored every page) resolves to page ids
 
@@ -114,35 +107,13 @@
 	UserManager* userManager = [UserManager sharedInstance];
 	povObject.creatorUserId = [userManager getCurrentUser].identifier;
 
-	// save cover pic serving url then saved page ids then upload pov
-	[self storeCoverPicture: self.coverPic].then(^(NSString* coverPicServingUrl) {
-		if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-			[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_PHOTO];
-		}
-		povObject.coverPicUrl = coverPicServingUrl;
-		return [self storePagesFromPinchViews: self.pinchViews];
-	}).then(^(NSArray* pageIds) {
+	[self storePagesFromPinchViews: self.pinchViews].then(^(NSArray* pageIds) {
 		povObject.pageIds = pageIds;
 		[self insertPOV: povObject];
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
 		NSLog(@"Error publishing POV: %@", error.description);
 		[self.publishingProgress cancel];
-	});
-}
-
-// (get Image upload uri) then (upload cover pic to blobstore using uri)
-// Resolves to what [coverPicUploader startUpload] resolves to,
-// The serving url of the image in the blobstore from Images Service
--(AnyPromise*) storeCoverPicture: (UIImage*) coverPic {
-	NSLog(@"Publishing cover picture");
-	return [self getImageUploadURI].then(^(NSString* uri) {
-
-		self.imageUploader = [[MediaUploader alloc] initWithImage:coverPic andUri:uri];
-		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];
-		}
-		return [self.imageUploader startUpload];
 	});
 }
 

@@ -176,7 +176,7 @@
 		}
 		// check if user likes this story
 		BOOL currentUserLikesStory = [[UserManager sharedInstance] currentUserLikesStory:povInfo];
-		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto
+		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title
 					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes
 				  likedByCurrentUser:currentUserLikesStory];
 		[cell setCellBackgroundColor: self.cellBackgroundColor];
@@ -224,7 +224,7 @@
 
     self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
-	[self.povPublishingPlaceholderCell setPublishingContentWithUsername:userName andTitle: title andCoverImage:coverPic andProgressObject:publishingProgress];
+	[self.povPublishingPlaceholderCell setPublishingContentWithUsername:userName andTitle: title andProgressObject:publishingProgress];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.povListView beginUpdates];
     [self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];

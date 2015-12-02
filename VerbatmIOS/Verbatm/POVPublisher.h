@@ -18,7 +18,7 @@
 // initialized once publish has been called
 @property(nonatomic, strong) NSProgress* publishingProgress;
 
--(instancetype) initWithPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
+-(instancetype) initWithPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title;
 - (void) publish;
 
 @end

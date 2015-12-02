@@ -13,7 +13,6 @@
 
 //array of NSData convertible to PinchView
 @property (strong, nonatomic) NSMutableArray* pinchViewsAsData;
-@property (strong, nonatomic) NSData* coverPhotoData;
 
 #define TITLE_KEY @"user_title"
 #define COVER_PHOTO_KEY @"user_cover_photo"
@@ -45,17 +44,6 @@
 	self.title = title;
 	[[NSUserDefaults standardUserDefaults]
 	setObject:self.title forKey:TITLE_KEY];
-}
-
--(void) addCoverPhoto: (UIImage*) coverPicture {
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-		@synchronized(self) {
-			self.coverPhoto = coverPicture;
-			self.coverPhotoData = UIImagePNGRepresentation(coverPicture);
-		}
-		[[NSUserDefaults standardUserDefaults]
-		 setObject:self.coverPhotoData forKey:COVER_PHOTO_KEY];
-	});
 }
 
 //adds pinch view and automatically saves pinchViews
@@ -141,13 +129,9 @@
 	[self clearPOVInProgress];
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];
-	NSData* coverPhotoData = [[NSUserDefaults standardUserDefaults] objectForKey:COVER_PHOTO_KEY];
 	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
 							 objectForKey:PINCHVIEWS_KEY];
 	@synchronized(self) {
-		if (coverPhotoData) {
-			self.coverPhoto = [UIImage imageWithData:coverPhotoData];
-		}
 		for (NSData* data in pinchViewsData) {
 			PinchView* pinchView = [self convertNSDataToPinchView:data];
 			[self.pinchViews addObject:pinchView];

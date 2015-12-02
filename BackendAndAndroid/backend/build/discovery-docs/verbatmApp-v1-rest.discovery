@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/T8Uzcon0dd2_bb8q8jaJS7MzMBk\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/C2iiapPMqOVqEKRCvzyYsyHK1VA\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -119,9 +119,6 @@
    "id": "POV",
    "type": "object",
    "properties": {
-    "coverPicUrl": {
-     "type": "string"
-    },
     "creatorUserId": {
      "type": "string",
      "format": "int64"
@@ -161,9 +158,6 @@
    "id": "POVInfo",
    "type": "object",
    "properties": {
-    "coverPicUrl": {
-     "type": "string"
-    },
     "creatorUserId": {
      "type": "string",
      "format": "int64"

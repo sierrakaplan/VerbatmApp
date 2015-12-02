@@ -18,7 +18,7 @@
 //or when undo and preview are/n't possible
 @protocol ContentDevVCDelegate <NSObject>
 
--(void) povPublishedWithUserName:(NSString*)userName andTitle:(NSString*)title andCoverPic:(UIImage*)coverPhoto andProgressObject:(NSProgress*)progress;
+-(void) povPublishedWithUserName:(NSString*)userName andTitle:(NSString*)title andProgressObject:(NSProgress*)progress;
 
 @end
 

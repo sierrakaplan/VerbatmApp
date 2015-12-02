@@ -31,7 +31,6 @@
 #pragma mark - Content -
 
 @property (strong, nonatomic) NSString* title;
-@property (strong, nonatomic) UIImage* coverPhoto;
 @property (strong, nonatomic) NSArray* pinchViews;
 
 #pragma mark - Publish Button -
@@ -69,12 +68,10 @@
 
 #pragma mark - Load & display preview from pinch views -
 
--(void) displayPreviewPOVWithTitle: (NSString*) title andCoverPhoto: (UIImage*) coverPhoto andPinchViews: (NSArray*) pinchViews withStartIndex: (NSInteger) index {
+-(void) displayPreviewPOVWithTitle: (NSString*) title andPinchViews: (NSArray*) pinchViews withStartIndex: (NSInteger) index {
 
 	self.title = title;
-	self.coverPhoto = coverPhoto;
 	self.pinchViews = pinchViews;
-
     
 	//if we have nothing in our article then return to the list view-
 	//we shouldn't need this because all downloaded articles should have legit pages
@@ -137,7 +134,7 @@
 #pragma mark Publish Button
 -(void) rightButtonPressed {
 	[self revealPreview:NO];
-	[self.delegate publishWithTitle:self.title andCoverPhoto:self.coverPhoto andPinchViews:self.pinchViews];
+	[self.delegate publishWithTitle:self.title andPinchViews:self.pinchViews];
 }
 
 #pragma mark Back Button

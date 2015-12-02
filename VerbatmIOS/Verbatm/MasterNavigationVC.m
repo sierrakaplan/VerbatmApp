@@ -257,9 +257,9 @@
 }
 
 #pragma mark - Media Dev VC Delegate methods -
+
 // TODO: make this a notification and change this to the profile vc
--(void) povPublishedWithUserName:(NSString *)userName andTitle:(NSString *)title andCoverPic:(UIImage *)coverPhoto andProgressObject:(NSProgress *)progress {
-//	[self.feedVC showPOVPublishingWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject:progress];
+-(void) povPublishedWithUserName:(NSString *)userName andTitle:(NSString *)title andProgressObject:(NSProgress *)progress {
 //	[self.tabBarController setSelectedViewController:self.feedVC];
 }
 

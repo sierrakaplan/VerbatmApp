@@ -14,7 +14,6 @@
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
 #import "CoverPicturePinchView.h"
-#import "CoverPhoto.h"
 #import "ContentPageElementScrollView.h"
 #import "Durations.h"
 
@@ -68,15 +67,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (strong, nonatomic) NSMutableArray * pageElementScrollViews;
 @property (nonatomic) NSInteger numPinchViews;
 
-#pragma mark Cover photo
-
-// Says whether or not user is currently adding a cover picture
-// (used when returning from adding assets)
-@property (nonatomic) BOOL addingCoverPicture;
-@property (strong, nonatomic) UITapGestureRecognizer* addCoverPictureTapGesture;
-@property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
-
 #pragma mark Keyboard related properties
+
 @property (atomic) NSInteger keyboardHeight;
 
 #pragma mark Helpful integer stores
@@ -203,7 +195,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) initializeVariables {
 	self.pinchingMode = PinchingModeNone;
-	self.addingCoverPicture = NO;
 	self.numPinchViews = 0;
 	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
 	self.addMediaBelowView = nil;
@@ -339,10 +330,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.titleField.text = savedTitle;
 	}
 
-	UIImage* coverPicture = [[UserPovInProgress sharedInstance] coverPhoto];
-	if (coverPicture) {
-	}
-
 	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
 		[pinchView specifyRadius:self.defaultPinchViewRadius
@@ -376,8 +363,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
         }
     }
     
-    [self publishOurStoryWithTitle:self.titleField.text andCoverPhoto:nil andPinchViews:pinchViews];
-
+    [self publishOurStoryWithTitle:self.titleField.text andPinchViews:pinchViews];
 }
 
 #pragma mark - Configure Text Fields -
@@ -1546,10 +1532,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void)presentPreviewAtIndex:(NSInteger ) index{
     NSArray *pinchViews = [self getPinchViews];
     NSString* title = self.titleField.text;
-    UIImage* coverPic = [UIImage imageNamed:@"title_notification"];//to be removed
-    
+
     [self.view bringSubviewToFront:self.previewDisplayView];
-    [self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews withStartIndex:index];
+    [self.previewDisplayView displayPreviewPOVWithTitle:title andPinchViews:pinchViews withStartIndex:index];
 }
 
 #pragma mark - Edit Content View Navigation -
@@ -1581,7 +1566,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
-    [self clearCoverPhoto];
     [self clearBaseSelcetor];
 	[self createBaseSelector];
     [self initializeVariables];
@@ -1591,11 +1575,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void)clearBaseSelcetor{
     [self.baseMediaTileSelector removeFromSuperview];
     self.baseMediaTileSelector = nil;
-}
-
--(void) clearCoverPhoto {
-    [self.replaceCoverPhotoButton removeFromSuperview];
-    self.replaceCoverPhotoButton = nil;
 }
 
 -(void)clearTextFields {
@@ -1679,39 +1658,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[self presentViewController:picker animated:YES completion:nil];
 }
 
--(void) presentGalleryForCoverPic {
-	GMImagePickerController * picker = [[GMImagePickerController alloc] init];
-	picker.delegate = self;
-	[picker setSelectOnlyOneImage: YES];
-	//Display or not the selection info Toolbar:
-	picker.displaySelectionInfoToolbar = YES;
-
-	//Display or not the number of assets in each album:
-	picker.displayAlbumsNumberOfAssets = YES;
-
-	//Customize the picker title and prompt (helper message over the title)
-	picker.title = GALLERY_PICKER_TITLE;
-	picker.customNavigationBarPrompt = COVERPIC_GALLERY_CUSTOM_MESSAGE;
-
-	//Customize the number of cols depending on orientation and the inter-item spacing
-	picker.colsInPortrait = 3;
-	picker.colsInLandscape = 5;
-	picker.minimumInteritemSpacing = 2.0;
-
-	self.addingCoverPicture = YES;
-	[self presentViewController:picker animated:YES completion:nil];
-}
-
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray{
-	if (self.addingCoverPicture) {
-		self.addingCoverPicture = NO;
-	} else {
-		[self presentAssetsAsPinchViews:assetArray];
-	}
+	[self presentAssetsAsPinchViews:assetArray];
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
-	self.addingCoverPicture = NO;
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 	}];
 }
@@ -1806,49 +1757,40 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #pragma mark -remove excess mediatiles-
 
 -(void)removeExcessMediaTiles{
-    
     for(int i = 0; i < self.pageElementScrollViews.count; i++){
-        if(i < self.pageElementScrollViews.count)//because we're editing the scrollviews
-        {
+        if(i < self.pageElementScrollViews.count) {
             ContentPageElementScrollView *  contentPageSV = self.pageElementScrollViews[i];
             if([contentPageSV.pageElement isKindOfClass:[MediaSelectTile class]] &&
                contentPageSV.pageElement != self.baseMediaTileSelector){
                 [self deleteScrollView:contentPageSV];
             }
         }
-        
-        
     }
-    
 }
 
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
 
-//TODO: move to content dev
--(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
+-(void) publishWithTitle:(NSString *)title andPinchViews:(NSArray *)pinchViews {
 
 	if (![title length]) {
 		[self alertAddTitle];
-	} else if (!coverPhoto) {
-		[self alertAddCoverPhoto];
 	} else {
 		if(![pinchViews count]) {
 			NSLog(@"Can't publish with no pinch objects");
 			return;
 		}
-        
-        [self publishOurStoryWithTitle:title andCoverPhoto:nil andPinchViews:pinchViews];
+
+		[self publishOurStoryWithTitle:title andPinchViews:pinchViews];
 	}
 }
 
-
--(void) publishOurStoryWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews{
-    POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: [UIImage imageNamed:@"b16"]];
+-(void) publishOurStoryWithTitle:(NSString *)title andPinchViews:(NSArray *)pinchViews{
+    POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title];
     [publisher publish];
     //TODO: make sure current user exists and if not make them sign in
     NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
     
-    [self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
+    [self.delegate povPublishedWithUserName:userName andTitle:title andProgressObject: publisher.publishingProgress];
     [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
     [self cleanUp];
 }
@@ -1884,11 +1826,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void)alertAddTitle {
 	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-}
-
--(void)alertAddCoverPhoto {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 }
 

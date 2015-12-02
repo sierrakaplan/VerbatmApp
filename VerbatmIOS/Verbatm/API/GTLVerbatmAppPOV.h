@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppPOV (0 custom class methods, 8 custom properties)
+//   GTLVerbatmAppPOV (0 custom class methods, 7 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLObject.h"
@@ -27,7 +27,6 @@
 //
 
 @interface GTLVerbatmAppPOV : GTLObject
-@property (nonatomic, copy) NSString *coverPicUrl;
 @property (nonatomic, retain) NSNumber *creatorUserId;  // longLongValue
 @property (nonatomic, retain) GTLDateTime *datePublished;
 
