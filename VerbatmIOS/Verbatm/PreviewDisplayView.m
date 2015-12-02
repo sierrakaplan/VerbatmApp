@@ -89,7 +89,7 @@
 	[self.povView renderAVES: aves];
 	[self addSubview: self.povView];
 	[self addNavigationBar];
-    [self.povView moveViewTopPageIndex:index];
+    [self.povView scrollToPageAtIndex:index];
     [self.povView povOnScreen];
 	[self revealPreview:YES];
 }

@@ -1,12 +1,10 @@
- //
-//  v_videoview.m
+
+//
 //  Verbatm
 //
 //  Created by Lucio Dery Jnr Mwinmaarong on 12/18/14.
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
-
-#import "BaseArticleViewingExperience.h"
 
 #import "CollectionPinchView.h"
 
@@ -28,49 +26,50 @@
 @property (nonatomic) CGPoint firstTranslation;
 @property (nonatomic, strong) NSArray * videoList;
 @property (nonatomic) BOOL hasBeenSetUp;
+
+#pragma mark - In Preview Mode -
+@property (strong, nonatomic) PinchView* pinchView;
 @property (nonatomic) EditMediaContentView * editContentView;
 @property (nonatomic) OpenCollectionView * rearrangeView;
 @property (nonatomic) UIButton * rearrangeButton;
 
-#define RGB 255,225,255, 0.7
-#define PROGR_VIEW_HEIGHT 60
-#define PLAYBACK_ICON_SIZE 40
-#define MAX_VD_RATE 2
-#define PLY_PSE_FRAME self.frame.origin.x, self.frame.origin.y + self.frame.size.height - 50, 50,50
 @end
 
 
 @implementation VideoAVE
 
--(id)initWithFrame:(CGRect)frame pinchView:(PinchView *)pinchView orVideoArray:(NSArray*) videoAndTextList {
-    if((self = [super initWithFrame:frame])) {
-		[self repeatVideoOnEnd:YES];
-        if(videoAndTextList.count) {//from the internet
-            
-            
-            [self playVideosFromArray:videoAndTextList];
-        
-        
-        }else if (pinchView){//from the adk
-             NSMutableArray * videoAssets = [[NSMutableArray alloc] init];
-            if([pinchView isKindOfClass:[CollectionPinchView class]]){
-                for(PinchView * view in ((CollectionPinchView *)pinchView).pinchedObjects) {
-                    if([view isKindOfClass:[VideoPinchView class]])[videoAssets addObject:((VideoPinchView *)view).video];
-                }
-            }else{//it's a videopinchview
-                [videoAssets addObject:((VideoPinchView *)pinchView).video];
-            }
-        
-            self.editContentView= [[EditMediaContentView alloc] initWithFrame:self.bounds];
-            self.editContentView.pinchView = pinchView;
-            [self.editContentView displayVideo:videoAssets];
-            [self addSubview:self.editContentView];
-            if(videoAssets.count > 1) [self createRearrangeButton];
-        }
+-(instancetype) initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList {
+	self = [super initWithFrame:frame];
+	if (self) {
+		self.inPreviewMode = NO;
+		[self.videoPlayer repeatVideoOnEnd:YES];
+        [self playVideosFromArray:videoAndTextList];
     }
     return self;
 }
 
+-(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView {
+	self = [super initWithFrame:frame];
+	if (self) {
+		self.inPreviewMode = YES;
+
+		NSMutableArray * videoAssets = [[NSMutableArray alloc] init];
+		if([pinchView isKindOfClass:[CollectionPinchView class]]){
+			for(VideoPinchView* videoPinchView in ((CollectionPinchView *)pinchView).videoPinchViews) {
+				[videoAssets addObject: videoPinchView.video];
+			}
+		} else {
+			[videoAssets addObject:((VideoPinchView *)pinchView).video];
+		}
+
+		self.editContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
+		self.editContentView.pinchView = pinchView;
+		[self.editContentView displayVideo:videoAssets];
+		[self addSubview: self.editContentView];
+		if(videoAssets.count > 1) [self createRearrangeButton];
+	}
+	return self;
+}
 
 -(void)playVideosFromArray:(NSArray *) videoAndTextList{
     NSMutableArray* videoList = [[NSMutableArray alloc] initWithCapacity: videoAndTextList.count];
@@ -85,58 +84,49 @@
 
 
 -(void)prepareVideos:(NSArray*)videoList {
-//    if(self.videoList != videoList){
-//        self.videoList = videoList;
-//        return;
-//    }
-    //comes as avurlasset in preview 
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
-		//comes as NSURL from backend
-        [self prepareVideoFromArrayOfAssets_asynchronous:videoList];
+        [self.videoPlayer prepareVideoFromArrayOfAssets_asynchronous:videoList];
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
-		[self prepareVideoFromURLArray_asynchronouse:videoList];
+		[self.videoPlayer prepareVideoFromURLArray_asynchronouse:videoList];
 	} else {
 		return;
 	}
 }
-#pragma mark -Add button-
+#pragma mark - Rearrange button -
 
 -(void)createRearrangeButton {
     [self.rearrangeButton setImage:[UIImage imageNamed:CREATE_REARRANGE_ICON] forState:UIControlStateNormal];
     self.rearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.rearrangeButton addTarget:self action:@selector(rearrangeContentSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.rearrangeButton addTarget:self action:@selector(rearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.rearrangeButton];
     [self bringSubviewToFront:self.rearrangeButton];
 }
 
--(void)rearrangeContentSelected {
+-(void)rearrangeButtonPressed {
     if(!self.rearrangeView){
-        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds andPinchViewArray:[((CollectionPinchView *)self.editContentView.pinchView) getVideoPinchViews]];
+        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds
+													 andPinchViewArray: ((CollectionPinchView*)self.pinchView).videoPinchViews];
         self.rearrangeView.delegate = self;
         [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
-
-    }else{
-        [self.rearrangeView exitRearrangeView];
+    } else{
+        [self.rearrangeView exitView];
     }
-
 }
 
--(void)exitPVWithFinalArray:(NSMutableArray *) pvArray{
+-(void) collectionClosedWithFinalArray:(NSMutableArray *)pinchViews {
     
     NSMutableArray * assetArray = [[NSMutableArray alloc] init];
-    for(VideoPinchView * videoPinchView in pvArray){
+    for(VideoPinchView * videoPinchView in pinchViews) {
         [assetArray addObject:videoPinchView.video];
     }
     if(self.editContentView.videoView.isPlaying){
-    
-        [self.editContentView displayVideo:assetArray];//this sets the assets
-        [self.editContentView almostOnScreen];//prepares screen
-        [self.editContentView onScreen];//makes it play now
+        [self.editContentView displayVideo:assetArray];
+        [self.editContentView almostOnScreen];
+        [self.editContentView onScreen];
     }
     if([self.editContentView.pinchView isKindOfClass:[CollectionPinchView class]]){
-        [((CollectionPinchView *)self.editContentView.pinchView) replaceVideoPinchViesWithNewVPVs:pvArray];
+		((CollectionPinchView*)self.pinchView).videoPinchViews = pinchViews;
     }
-    
     if(self.rearrangeView){
         [self.rearrangeView removeFromSuperview];
         self.rearrangeView = nil;
@@ -147,19 +137,19 @@
 #pragma mark - On and Off Screen (play and pause) -
 
 -(void)offScreen{
-    if(self.editContentView){
+    if(self.editContentView) {
         [self.editContentView offScreen];
-    }else{
-        [self pauseVideo];
+    } else{
+        [self.videoPlayer pauseVideo];
     }
-    if(self.rearrangeView)[self.rearrangeView exitRearrangeView];
+    if(self.rearrangeView) [self.rearrangeView exitView];
 }
 
 -(void)onScreen {
-    if(self.editContentView){
+    if (self.editContentView){
         [self.editContentView onScreen];
     } else{
-        [self playVideo];
+        [self.videoPlayer playVideo];
     }
 }
 
@@ -169,7 +159,7 @@
     }
 }
 
-#pragma mark -lacy instantiation-
+#pragma mark - Lazy Instantiation -
 
 -(UIButton *)rearrangeButton {
     if(!_rearrangeButton){

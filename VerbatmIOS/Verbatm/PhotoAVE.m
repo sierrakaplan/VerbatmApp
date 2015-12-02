@@ -70,13 +70,12 @@
         if ([photos count]) {
 			[self addPhotos:photos];
 		}
-
-		[self addTapGesture];
+		[self initialFormatting];
 	}
 	return self;
 }
 
--(instancetype) initWithFrame:(CGRect)frame andPinchView:(ImagePinchView *)pinchView {
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView {
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.inPreviewMode = YES;
@@ -86,9 +85,14 @@
 		}else{
 			[self addContentFromImagePinchViews:[NSMutableArray arrayWithObject:pinchView]];
 		}
-		[self addTapGesture];
+		[self initialFormatting];
 	}
 	return self;
+}
+
+-(void) initialFormatting {
+	[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+	[self addTapGesture];
 }
 
 -(void)prepareCirclePan{
@@ -176,7 +180,7 @@
 	return textAndImageView;
 }
 
-#pragma mark -managing presentation of views-
+#pragma mark - Fade circle views -
 
 -(void) createCircleViewAndPoints {
 	NSUInteger numCircles = [self.imageContainerViews count];
@@ -332,11 +336,10 @@
 	for (UIView * view in self.subviews) {
 		[view removeFromSuperview];
 	}
+	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
 	[self addContentFromImagePinchViews: pinchViews];
     [self createRearrangeButton];
 }
-
-
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {
 	NSInteger indexOfPoint = [self getPointIndexFromLocation:touchLocation];

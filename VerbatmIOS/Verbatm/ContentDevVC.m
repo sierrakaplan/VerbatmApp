@@ -1119,8 +1119,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
-
-
 -(ContentPageElementScrollView *)createPinchApartViews {
     
    CollectionPinchView * collectionPv = (CollectionPinchView *)self.upperPinchScrollView.pageElement;

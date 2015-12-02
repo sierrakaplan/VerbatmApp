@@ -22,7 +22,10 @@
 @property (strong, nonatomic, readonly) VideoPlayerView* videoPlayer;
 
 //note that the video list can be avurlasset or nsurl
--(id)initWithFrame:(CGRect)frame pinchView:(PinchView *)pinchView orVideoArray:(NSArray*) videoAndTextList;
+-(instancetype) initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList;
+
+// Initializer for preview mode
+-(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView;
 
 
 @end

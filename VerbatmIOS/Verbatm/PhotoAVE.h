@@ -41,7 +41,8 @@
 -(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *)photos;;
 
 // initializer for preview mode
--(instancetype) initWithFrame:(CGRect)frame andPinchView: (ImagePinchView*)pinchView;
+// PinchView can be either ImagePinchView or CollectionPinchView
+-(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*)pinchView;
 
 //be sure to set povScrollView
 -(void) showAndRemoveCircle;

@@ -19,8 +19,11 @@
 //set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
 @property (weak, nonatomic) UIScrollView * povScrollView;
 
-//Photos are array of UIImage and videos are array of AVassets or NSURl
--(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos orCollectionView:(CollectionPinchView *) collectionView;
+//Photos are array of UIImage* and videos are array of AVassets or NSURl
+-(instancetype) initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos;
+
+// Initializer for when AVE is in preview mode
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView;
 
 -(void) showAndRemoveCircle;
 

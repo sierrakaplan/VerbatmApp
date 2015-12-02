@@ -124,9 +124,8 @@
 	}
     switch (type) {
         case AVETypePhoto: {
-            PhotoAVE * photoAve;
-                photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:nil orPinchview:pinchView isSubViewOfPhotoVideoAve:NO];
-           
+            PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:nil orPinchview:pinchView isSubViewOfPhotoVideoAve:NO];
+           	PhotoAVE.isPhotoVideoSubview = NO;
             
             [self.results addObject:photoAve];
             

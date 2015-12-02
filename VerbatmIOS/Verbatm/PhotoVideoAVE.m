@@ -23,40 +23,60 @@
 @interface PhotoVideoAVE() <UIScrollViewDelegate, PhotoAVETextEntryDelegate>
 
 @property (strong, nonatomic) PhotoAVE* photosView;
+@property (nonatomic) CGRect videoAveFrame;
+@property (nonatomic) CGRect photoAveFrame;
+
+#pragma mark - In Preview Mode -
+@property (strong, nonatomic) CollectionPinchView* pinchView;
 
 @end
 
 @implementation PhotoVideoAVE
 
--(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos orCollectionView:(CollectionPinchView *) collectionView {
+-(instancetype)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos {
     self = [super initWithFrame:frame];
     if(self) {
-		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-        [self setSubViewsWithPhotos: photos andVideos:videos orPinchView:collectionView];
-        //make sure the video is on repeat
-        [self.videoView.videoPlayer repeatVideoOnEnd:YES];
+		self.inPreviewMode = NO;
+		[self initialFormatting];
+
+		self.photosView = [[PhotoAVE alloc] initWithFrame:self.photoAveFrame andPhotoArray:photos];
+		self.photosView.isPhotoVideoSubview = YES;
+		self.photosView.textEntryDelegate = self;
+		self.videoView = [[VideoAVE alloc]initWithFrame:self.videoAveFrame andVideoArray:videos];
+		[self addSubview:self.videoView];
+		[self addSubview:self.photosView];
     }
     return self;
 }
 
-//sets the frames for the video view and the photo scrollview
--(void) setSubViewsWithPhotos: (NSArray*) photos andVideos: (NSArray*) videos orPinchView:(CollectionPinchView *) collection {
-    
-	float videoViewHeight = ((self.frame.size.width*3)/4);
-	float photosViewHeight = (self.frame.size.height - videoViewHeight);
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView {
+	self = [super initWithFrame:frame];
+	if (self) {
+		self.inPreviewMode = YES;
+		self.pinchView = pinchView;
+		[self initialFormatting];
 
-    CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
-    CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photosViewHeight);
-    
-    
-    self.photosView = [[PhotoAVE alloc] initWithFrame:photoListFrame andPhotoArray:photos orPinchview:(collection) ? collection : nil isSubViewOfPhotoVideoAve:YES];
-    self.photosView.textEntryDelegate = self;
-    self.videoView = [[VideoAVE alloc]initWithFrame:videoViewFrame pinchView:(collection.containsVideo) ? collection : nil orVideoArray:videos];
-
-	[self addSubview:self.videoView];
-	[self addSubview:self.photosView];
+		self.photosView = [[PhotoAVE alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView];
+		self.photosView.isPhotoVideoSubview = YES;
+		self.photosView.textEntryDelegate = self;
+		self.videoView = [[VideoAVE alloc]initWithFrame:self.videoAveFrame andPinchView:pinchView];
+		[self addSubview:self.videoView];
+		[self addSubview:self.photosView];
+	}
+	return self;
 }
 
+-(void) initialFormatting {
+	[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+	//make sure the video is on repeat
+	[self.videoView.videoPlayer repeatVideoOnEnd:YES];
+
+	float videoAveHeight = ((self.frame.size.width*3)/4);
+	float photoAveHeight = (self.frame.size.height - videoAveHeight);
+
+	self.videoAveFrame = CGRectMake(0, 0, self.frame.size.width, videoAveHeight);
+	self.photoAveFrame = CGRectMake(0, videoAveHeight, self.frame.size.width, photoAveHeight);
+}
 
 -(void) showAndRemoveCircle {
     if(self.povScrollView){
@@ -65,14 +85,7 @@
     [self.photosView showAndRemoveCircle];
 }
 
-
-//image scroll view is on new page
--(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-//	NSInteger newPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
-}
-
-
-#pragma mark -photo ave protocol-
+#pragma mark - PhotoAveTextEntry Delegate methods -
 
 -(void) editContentViewTextIsEditing{
     [self movePhotoAveUp:YES];
@@ -88,7 +101,7 @@
             [self bringSubviewToFront:self.photosView];
             self.photosView.frame = CGRectMake(0, 0, self.photosView.frame.size.width, self.photosView.frame.size.height);
         }];
-    }else{
+    } else {
         [UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
             self.photosView.frame = CGRectMake(0, self.videoView.frame.size.height, self.photosView.frame.size.width, self.photosView.frame.size.height);
         }];
@@ -107,7 +120,7 @@
 	[self.photosView onScreen];
 }
 
--(void)almostOnScreen{
+-(void)almostOnScreen {
     [self.videoView almostOnScreen];
 	[self.photosView almostOnScreen];
 }
