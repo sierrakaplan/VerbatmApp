@@ -41,7 +41,6 @@
 }
 
 // IMAGE BLUR
-//
 -(void) setImageViewWithImage:(UIImage*) image {
     self.ourBlurView = [image getBlurImageViewWithFilterLevel:BLUR_IMAGE_FILTER andFrame:self.bounds];
     [self addSubview:self.ourBlurView];

@@ -14,6 +14,9 @@
 
 @interface LocalPOVs()
 
+// stores NSString thread as key to an array of povs
+@property(strong, nonatomic) NSMutableDictionary* povThreads;
+
 @end
 
 @implementation LocalPOVs
@@ -39,14 +42,27 @@
 
 - (void) storePOVWithThread: (NSString*) thread andPinchViews: (NSMutableArray*) pinchViews atIndex: (NSInteger) index {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		POV* pov = [[POV alloc] initWithThread:thread andPinchViews:pinchViews];
 		@synchronized(self) {
 			NSString* threadKey = [self getKeyFromThreadName: thread];
+			NSMutableArray* povs = [[NSMutableArray alloc] init];
+			if ([self.povThreads objectForKey:threadKey]) {
+				NSArray* povArray = [self.povThreads objectForKey:threadKey];
+				povs = [NSMutableArray arrayWithArray:povArray];
+			}
+			if (index >= 0 && index < povs.count) {
+				[povs insertObject:pov atIndex:index];
+			} else {
+				[povs addObject: pov];
+			}
+			self.povThreads[threadKey] = povs;
+
 			NSArray* threadPOVs = [[NSUserDefaults standardUserDefaults] objectForKey:threadKey];
 			NSMutableArray* mutablePOVs = [[NSMutableArray alloc] init];
 			if (threadPOVs) {
 				mutablePOVs = [[NSMutableArray alloc] initWithArray:threadPOVs];
 			}
-			POV* pov = [[POV alloc] initWithThread:thread andPinchViews:pinchViews];
+
 			NSData* povData = [self convertPOVToNSData:pov];
 			if (index >= 0 && index < mutablePOVs.count) {
 				[mutablePOVs insertObject:povData atIndex:index];
@@ -60,6 +76,11 @@
 
 -(AnyPromise*) getPOVsFromThread: (NSString*) thread {
 	NSString* threadKey = [self getKeyFromThreadName: thread];
+	if ([self.povThreads objectForKey:threadKey]) {
+		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+			resolve([self.povThreads objectForKey:threadKey]);
+		}];
+	}
 	NSArray* povsAsData = [[NSUserDefaults standardUserDefaults] objectForKey:threadKey];
 	NSMutableArray* povPromises = [[NSMutableArray alloc] init];
 	for (NSData* data in povsAsData) {
@@ -80,7 +101,10 @@
 		});
 		[povPromises addObject: povPromise];
 	}
-	return PMKWhen(povPromises).catch(^(NSError* error) {
+	return PMKWhen(povPromises).then(^(NSMutableArray* povs) {
+		self.povThreads[threadKey] = povs;
+		return povs;
+	}).catch(^(NSError* error) {
 		NSLog(@"Error loading local POVs: %@", error.description);
 	});
 }
@@ -103,6 +127,15 @@
 		resolve((POV*)[NSKeyedUnarchiver unarchiveObjectWithData:data]);
 	}];
 	return promise;
+}
+
+#pragma mark - Lazy Instantiation -
+
+-(NSMutableDictionary*) povThreads {
+	if (!_povThreads) {
+		_povThreads = [[NSMutableDictionary alloc] init];
+	}
+	return _povThreads;
 }
 
 @end

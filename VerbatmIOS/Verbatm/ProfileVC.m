@@ -53,13 +53,14 @@
     self.povScrollView.delegate = self;
 	[[LocalPOVs sharedInstance] getPOVsFromThread:threads[0]].then(^(NSArray* povs) {
 		[self.povScrollView displayPOVs: povs];
+		[self.povScrollView playPOVOnScreen];
+		povs = nil;
 	});
 	[self.view addSubview:self.povScrollView];
-    [self.povScrollView playPOVOnScreen];
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    [self.povScrollView playPOVOnScreen];
+	[self.povScrollView playPOVOnScreen];
 }
 
 -(void) createContentListViewWithStartThread:(NSString *)startThread{
@@ -105,6 +106,8 @@
 		[self.povScrollView clearPOVs];
 		[[LocalPOVs sharedInstance] getPOVsFromThread:channelName].then(^(NSArray* povs) {
 			[self.povScrollView displayPOVs: povs];
+			[self.povScrollView playPOVOnScreen];
+			povs = nil;
 		});
     }
 }
