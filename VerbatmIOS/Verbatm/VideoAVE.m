@@ -105,6 +105,20 @@
 	//[self.videoPlayer playVideo];
 }
 
+-(void)prepareVideos_synchronous:(NSArray*)videoList {
+    if (!videoList.count) return;
+    if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
+        [self.videoPlayer prepareVideoFromArrayOfAssets_synchronous:videoList];
+    } else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
+        [self.videoPlayer prepareVideoFromArrayOfURL_synchronous:videoList];
+    } else {
+        return;
+    }
+    self.videoList = videoList;
+    
+    //[self.videoPlayer playVideo];
+}
+
 #pragma mark - Rearrange button -
 
 -(void)createRearrangeButton {
@@ -156,13 +170,24 @@
        [self.videoPlayer stopVideo];
     }
     if(self.rearrangeView) [self.rearrangeView exitView];
+    self.hasBeenSetUp = NO;
 }
 
 -(void)onScreen {
     if (self.editContentView){
         [self.editContentView onScreen];
     } else{
-        [self.videoPlayer playVideo];
+        if(self.hasBeenSetUp){
+           [self.videoPlayer playVideo];
+        }else{
+            if(self.videoList){
+                [self.videoPlayer stopVideo];
+            }
+            [self prepareVideos_synchronous:self.videoList];
+            [self.videoPlayer playVideo];
+        }
+        
+        
     }
 }
 

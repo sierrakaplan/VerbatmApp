@@ -14,7 +14,7 @@
 @interface POVScrollView()
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
-
+@property (strong) NSMutableArray * povViews;
 #define NO_POVS_LABEL_WIDTH 300.f
 
 @end
@@ -52,6 +52,7 @@
 		POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
 		[povView renderAVES: aves];
 		[self addSubview: povView];
+        [self.povViews addObject:povView];
 		xPosition += self.bounds.size.width;
 	}
 	self.contentSize = CGSizeMake(povs.count * self.bounds.size.width, 0.f);
@@ -59,12 +60,11 @@
 
 
 -(void)playPOVOnScreen{
-    NSInteger povIndex = self.contentOffset.x/self.frame.size.width;
-    for(int i = 0; i < self.subviews.count; i++){
-        UIView * subView = self.subviews[i];
-        
+    int povIndex = self.contentOffset.x/self.frame.size.width;
+    for(int i = 0; i < self.povViews.count; i++){
+        UIView * subView = self.povViews[i];
         if([subView isKindOfClass:[POVView class]]){
-            if( i == povIndex ){
+            if(i == povIndex ){
                 [(POVView *)subView povOnScreen];
             }else{
                 [(POVView *)subView povOffScreen];
@@ -81,10 +81,16 @@
 	for (UIView* subview in self.subviews) {
 		[subview removeFromSuperview];
 	}
+    [self.povViews removeAllObjects];
 	[self.activityIndicator startAnimating];
 }
 
 #pragma mark - Lazy Instantiation -
+
+-(NSMutableArray *)povViews{
+    if(!_povViews)_povViews = [[NSMutableArray alloc] init];
+    return _povViews;
+}
 
 -(UIActivityIndicatorView*) activityIndicator {
 	if (!_activityIndicator) {

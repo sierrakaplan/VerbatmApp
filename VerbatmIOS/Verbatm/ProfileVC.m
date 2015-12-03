@@ -17,7 +17,7 @@
 #import "POVLoadManager.h"
 #import "SegueIDs.h"
 
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate>
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate, UIScrollViewDelegate>
 
 @property (strong, nonatomic) POVScrollView* povScrollView;
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
@@ -50,10 +50,16 @@
 
 -(void) addPOVScrollViewWithThreads: (NSArray*) threads {
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
+    self.povScrollView.delegate = self;
 	[[LocalPOVs sharedInstance] getPOVsFromThread:threads[0]].then(^(NSArray* povs) {
 		[self.povScrollView displayPOVs: povs];
 	});
 	[self.view addSubview:self.povScrollView];
+    [self.povScrollView playPOVOnScreen];
+}
+
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    [self.povScrollView playPOVOnScreen];
 }
 
 -(void) createContentListViewWithStartThread:(NSString *)startThread{

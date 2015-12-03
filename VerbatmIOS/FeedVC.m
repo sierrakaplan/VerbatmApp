@@ -63,11 +63,11 @@
 
 -(void) addPOVScrollView {
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
+    self.povScrollView.delegate = self;
 	[[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
 		[self.povScrollView displayPOVs: povs];
         
 	});
-    self.povScrollView.delegate = self;
 	[self.view insertSubview:self.povScrollView belowSubview:self.header];
 }
 
