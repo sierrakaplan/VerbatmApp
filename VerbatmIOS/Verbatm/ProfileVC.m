@@ -18,7 +18,7 @@
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate>
 
-@property (nonatomic, strong) ProfileNavBar * profileNavBar;
+@property (nonatomic, strong) ProfileNavBar* profileNavBar;
 @property (weak, nonatomic) GTLVerbatmAppVerbatmUser* currentUser;
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
@@ -29,6 +29,7 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 }
 
 -(void) viewWillAppear:(BOOL)animated{
@@ -60,7 +61,7 @@
 }
 
 -(void) createNavigationBarWithThreads:(NSArray *) threads {
-    CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width,(CUSTOM_NAV_BAR_HEIGHT*2));
+    CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
     [self updateUserInfo];
     self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:navBarFrame andThreads:threads andUserName:self.currentUser.name];
     self.profileNavBar.delegate = self;
@@ -78,7 +79,12 @@
     [self.view addGestureRecognizer:tap];
 }
 
-//nav bar delegate method
+#pragma mark - Profile Nav Bar Delegate Methods -
+
+-(void) settingsButtonClicked {
+	// TODO: go to settings
+}
+
 -(void)newChannelSelectedWithName:(NSString *) channelName{
     if(![channelName isEqualToString:self.currentThreadInView]){
         [self switchStoryListToThread:channelName];

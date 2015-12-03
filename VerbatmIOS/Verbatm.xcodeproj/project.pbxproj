@@ -52,6 +52,8 @@
 		A586566D1B620E60008E358C /* PointObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A586566C1B620E60008E358C /* PointObject.m */; };
 		A58656711B621CA4008E358C /* MathOperations.m in Sources */ = {isa = PBXBuildFile; fileRef = A58656701B621CA4008E358C /* MathOperations.m */; };
 		A58EE8861BA8771700B7B396 /* NoAnimationUnwindSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = A58EE8851BA8771700B7B396 /* NoAnimationUnwindSegue.m */; };
+		A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934B8E1C0FDFD6007C7830 /* VerbatmScrollView.m */; };
+		A5934B921C0FE041007C7830 /* ButtonScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934B911C0FE041007C7830 /* ButtonScrollView.m */; };
 		A59C19721B9E1DFF00EBA60E /* POVLoadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A59C19711B9E1DFF00EBA60E /* POVLoadManager.m */; };
 		A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A59CC2881B6C2E6400B4907C /* FeedTableView.m */; };
 		A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA319B1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m */; };
@@ -155,7 +157,6 @@
 		C77A20931C03E39E00356465 /* ProfileNavBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A20921C03E39E00356465 /* ProfileNavBar.m */; };
 		C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77C7D371A22E9FC00694B20 /* PinchView.m */; };
 		C77F321E1B6D5D1800E87C25 /* bugSubmissionFormVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F321D1B6D5D1800E87C25 /* bugSubmissionFormVC.m */; };
-		C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682119CA6C01003D0AC5 /* VerbatmScrollView.m */; };
 		C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */; };
 		C7A8E3861A61CE4D00776BD1 /* ContentDevPullBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8E3851A61CE4D00776BD1 /* ContentDevPullBar.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
@@ -309,6 +310,10 @@
 		A58656701B621CA4008E358C /* MathOperations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MathOperations.m; sourceTree = "<group>"; };
 		A58EE8841BA8771700B7B396 /* NoAnimationUnwindSegue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NoAnimationUnwindSegue.h; sourceTree = "<group>"; };
 		A58EE8851BA8771700B7B396 /* NoAnimationUnwindSegue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NoAnimationUnwindSegue.m; sourceTree = "<group>"; };
+		A5934B8D1C0FDFD6007C7830 /* VerbatmScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmScrollView.h; sourceTree = "<group>"; };
+		A5934B8E1C0FDFD6007C7830 /* VerbatmScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmScrollView.m; sourceTree = "<group>"; };
+		A5934B901C0FE041007C7830 /* ButtonScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonScrollView.h; sourceTree = "<group>"; };
+		A5934B911C0FE041007C7830 /* ButtonScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonScrollView.m; sourceTree = "<group>"; };
 		A59C19701B9E1DFF00EBA60E /* POVLoadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POVLoadManager.h; sourceTree = "<group>"; };
 		A59C19711B9E1DFF00EBA60E /* POVLoadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POVLoadManager.m; sourceTree = "<group>"; };
 		A59CC2871B6C2E6400B4907C /* FeedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedTableView.h; sourceTree = "<group>"; };
@@ -495,8 +500,6 @@
 		C77C7D371A22E9FC00694B20 /* PinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PinchView.m; sourceTree = "<group>"; };
 		C77F321C1B6D5D1800E87C25 /* bugSubmissionFormVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bugSubmissionFormVC.h; path = ../bugSubmissionFormVC.h; sourceTree = "<group>"; };
 		C77F321D1B6D5D1800E87C25 /* bugSubmissionFormVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = bugSubmissionFormVC.m; path = ../bugSubmissionFormVC.m; sourceTree = "<group>"; };
-		C78B682019CA6C01003D0AC5 /* VerbatmScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmScrollView.h; sourceTree = "<group>"; };
-		C78B682119CA6C01003D0AC5 /* VerbatmScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmScrollView.m; sourceTree = "<group>"; };
 		C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSelectTile.h; sourceTree = "<group>"; };
 		C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSelectTile.m; sourceTree = "<group>"; };
 		C79747D91B50B815009077E3 /* Verbatm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
@@ -762,12 +765,14 @@
 			children = (
 				A58656631B607EF7008E358C /* VerbatmImageScrollView.h */,
 				A58656641B607EF7008E358C /* VerbatmImageScrollView.m */,
-				C78B682019CA6C01003D0AC5 /* VerbatmScrollView.h */,
-				C78B682119CA6C01003D0AC5 /* VerbatmScrollView.m */,
+				A5934B8D1C0FDFD6007C7830 /* VerbatmScrollView.h */,
+				A5934B8E1C0FDFD6007C7830 /* VerbatmScrollView.m */,
 				A56F68851B66FED900CE5744 /* ContentPageElementScrollView.h */,
 				A56F68861B66FED900CE5744 /* ContentPageElementScrollView.m */,
 				A51370661BA64D250058FBA6 /* POVDisplayScrollView.h */,
 				A51370671BA64D250058FBA6 /* POVDisplayScrollView.m */,
+				A5934B901C0FE041007C7830 /* ButtonScrollView.h */,
+				A5934B911C0FE041007C7830 /* ButtonScrollView.m */,
 			);
 			name = "Scroll Views";
 			sourceTree = "<group>";
@@ -1658,6 +1663,7 @@
 				F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */,
 				A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* VerbatmAppDelegate.m in Sources */,
+				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				A55A59E21BB5EB7300C7CE7A /* UserManager.m in Sources */,
 				C716E9D21BD6C338001B769D /* Analytics.m in Sources */,
@@ -1689,6 +1695,7 @@
 				A5E860011B96249900E148D0 /* POVPublisher.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A5E85FA11B911DA900E148D0 /* GTLFramework.m in Sources */,
+				A5934B921C0FE041007C7830 /* ButtonScrollView.m in Sources */,
 				A513706B1BA77C740058FBA6 /* ArticleDisplayVC.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
 				C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */,
@@ -1698,7 +1705,6 @@
 				A5AA31BD1B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m in Sources */,
 				C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
-				C78B682519CA6C01003D0AC5 /* VerbatmScrollView.m in Sources */,
 				C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */,
 				A58EE8861BA8771700B7B396 /* NoAnimationUnwindSegue.m in Sources */,
 				A5C09BDD1BA1F1D700C0AD86 /* ASIFormDataRequest.m in Sources */,

@@ -12,6 +12,10 @@
 #define BACK_ARROW_LEFT @"back_arrow_left"
 #define BACK_ARROW_RIGHT @"back_arrow_right"
 
+#pragma mark - Profile -
+
+#define SETTINGS_BUTTON_ICON @"settings_gear"
+
 #pragma mark - Feed -
 
 #define NO_NETWORK_IMAGE @"no_network_image"

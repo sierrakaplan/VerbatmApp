@@ -247,7 +247,6 @@
 //                [self addDownArrowButton];
 //                [self addLikeButtonWithDelegate:likeDelegate];
             }
-            
             [self renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
         }).catch(^(NSError* error) {
             NSLog(@"Error getting AVE from page: %@", error.description);

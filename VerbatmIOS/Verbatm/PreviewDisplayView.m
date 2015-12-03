@@ -96,7 +96,7 @@
 
 -(void) addNavigationBar {
 	CustomNavigationBar* navigationBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
-																 andBackgroundColor:[UIColor whiteColor]];
+																 andBackgroundColor:[UIColor blackColor]];
 	[navigationBar createLeftButtonWithTitle:@"BACK" orImage:nil];
 	[navigationBar createRightButtonWithTitle:@"PUBLISH" orImage:nil];
 	navigationBar.delegate = self;
