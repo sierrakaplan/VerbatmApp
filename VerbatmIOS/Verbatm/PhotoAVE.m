@@ -75,10 +75,10 @@
 	return self;
 }
 
--(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView {
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView inPreviewMode: (BOOL) inPreviewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.inPreviewMode = YES;
+		self.inPreviewMode = inPreviewMode;
 		self.pinchView = pinchView;
 		if([self.pinchView isKindOfClass:[CollectionPinchView class]]){
 			[self addContentFromImagePinchViews:((CollectionPinchView *)self.pinchView).imagePinchViews];
@@ -113,17 +113,26 @@
 #pragma mark - Preview mode -
 
 -(void) addContentFromImagePinchViews:(NSMutableArray *)pinchViewArray{
+	NSMutableArray* photosTextArray = [[NSMutableArray alloc] init];
+
     for (ImagePinchView * imagePinchView in pinchViewArray) {
-        EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
-        [editMediaContentView displayImages:[imagePinchView filteredImages] atIndex:imagePinchView.filterImageIndex];
-        if(imagePinchView.text && imagePinchView.text.length) [editMediaContentView setText:imagePinchView.text andTextViewYPosition:[imagePinchView.textYPosition floatValue]];
-        editMediaContentView.pinchView = imagePinchView;
-        editMediaContentView.povViewMasterScrollView = self.povScrollView;
-        editMediaContentView.delegate = self;
-        [self.imageContainerViews addObject:editMediaContentView];
+		if (self.inPreviewMode) {
+			EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
+			[editMediaContentView displayImages:[imagePinchView filteredImages] atIndex:imagePinchView.filterImageIndex];
+			if(imagePinchView.text && imagePinchView.text.length) [editMediaContentView setText:imagePinchView.text andTextViewYPosition:[imagePinchView.textYPosition floatValue]];
+			editMediaContentView.pinchView = imagePinchView;
+			editMediaContentView.povViewMasterScrollView = self.povScrollView;
+			editMediaContentView.delegate = self;
+			[self.imageContainerViews addObject:editMediaContentView];
+		} else {
+			[photosTextArray addObject: [imagePinchView getPhotosWithText][0]];
+		}
     }
+	if (!self.inPreviewMode) {
+		[self addPhotos: photosTextArray];
+	}
     [self layoutContainerViews];
-    if(pinchViewArray.count > 1){
+    if(pinchViewArray.count > 1 && self.inPreviewMode){
         [self createRearrangeButton];
     }
 }

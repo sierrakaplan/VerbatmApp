@@ -48,10 +48,10 @@
     return self;
 }
 
--(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView {
+-(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView inPreviewMode: (BOOL) inPreviewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.inPreviewMode = YES;
+		self.inPreviewMode = inPreviewMode;
 
 		NSMutableArray * videoAssets = [[NSMutableArray alloc] init];
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
@@ -66,7 +66,7 @@
 		self.editContentView.pinchView = pinchView;
 		[self.editContentView displayVideo:videoAssets];
 		[self addSubview: self.editContentView];
-		if(videoAssets.count > 1) [self createRearrangeButton];
+		if(videoAssets.count > 1 && self.inPreviewMode) [self createRearrangeButton];
 	}
 	return self;
 }

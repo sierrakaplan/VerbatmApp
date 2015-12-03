@@ -26,7 +26,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos;
 
 // Initializer for when AVE is in preview mode
--(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView;
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView inPreviewMode: (BOOL) previewMode;
 
 -(void) showAndRemoveCircle;
 

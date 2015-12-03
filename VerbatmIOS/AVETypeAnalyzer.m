@@ -41,27 +41,27 @@
 
 @synthesize results = _results;
 
--(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame {
+-(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode {
 	for(PinchView* pinchView in pinchViews) {
 
-		[self getAVEFromPinchView:pinchView withFrame:frame];
+		[self getAVEFromPinchView:pinchView withFrame:frame inPreviewMode:inPreviewMode];
 	}
 
 	return self.results;
 }
 
--(void) getAVEFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame {
+-(void) getAVEFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame inPreviewMode: (BOOL) inPreviewMode {
 	if (pinchView.containsImage && pinchView.containsVideo) {
-		PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView];
+		PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView inPreviewMode:inPreviewMode];
 		[self.results addObject:photoVideoAVE];
 
 	} else if (pinchView.containsImage) {
-		PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPinchView:pinchView];
+		PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
 		photoAve.isPhotoVideoSubview = NO;
 		[self.results addObject:photoAve];
 
 	} else if(pinchView.containsVideo) {
-		VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andPinchView:pinchView];
+		VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
 		[self.results addObject:videoAve];
 	}
 }

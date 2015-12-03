@@ -378,12 +378,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ImagePinchView.m"
-            timestampString = "466628750.304634"
+            timestampString = "470811674.302106"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "42"
-            endingLineNumber = "42"
-            landmarkName = "-initWithImage:"
+            startingLineNumber = "43"
+            endingLineNumber = "43"
+            landmarkName = "-initWithImage:andSetFilteredImages:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

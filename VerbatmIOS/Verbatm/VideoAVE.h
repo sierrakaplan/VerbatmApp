@@ -25,7 +25,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList;
 
 // Initializer for preview mode
--(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView;
+-(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView inPreviewMode: (BOOL) inPreviewMode;
 
 
 @end

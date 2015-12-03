@@ -16,7 +16,7 @@
 
 -(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image;
 
--(void) initWithImage:(UIImage*)image;
+-(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters;
 
 //change which filter is applied
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex;

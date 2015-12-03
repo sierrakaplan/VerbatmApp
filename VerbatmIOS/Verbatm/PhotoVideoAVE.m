@@ -49,17 +49,17 @@
     return self;
 }
 
--(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView {
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView inPreviewMode: (BOOL) previewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.inPreviewMode = YES;
+		self.inPreviewMode = previewMode;
 		self.pinchView = pinchView;
 		[self initialFormatting];
 
-		self.photosView = [[PhotoAVE alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView];
+		self.photosView = [[PhotoAVE alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView inPreviewMode: previewMode];
 		self.photosView.isPhotoVideoSubview = YES;
 		self.photosView.textEntryDelegate = self;
-		self.videoView = [[VideoAVE alloc]initWithFrame:self.videoAveFrame andPinchView:pinchView];
+		self.videoView = [[VideoAVE alloc]initWithFrame:self.videoAveFrame andPinchView:pinchView inPreviewMode: previewMode];
 		[self addSubview:self.videoView];
 		[self addSubview:self.photosView];
 	}

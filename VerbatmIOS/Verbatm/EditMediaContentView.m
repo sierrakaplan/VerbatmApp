@@ -100,7 +100,7 @@
     [self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.textCreationButton];
     [self bringSubviewToFront:self.textCreationButton];
-	//[self addLongPress];
+	[self addLongPress];
 }
 
 // long press does the same thing as text button

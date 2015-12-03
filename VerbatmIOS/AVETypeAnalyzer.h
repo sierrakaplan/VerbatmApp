@@ -14,7 +14,7 @@
 
 @interface AVETypeAnalyzer : NSObject
 
--(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame;
+-(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode ;
 
 // returns a promise that either resolves to an ave or error
 -(AnyPromise*) getAVEFromPage: (Page*) page withFrame: (CGRect) frame;
