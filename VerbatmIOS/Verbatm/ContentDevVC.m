@@ -24,6 +24,8 @@
 #import "ImagePinchView.h"
 #import "Icons.h"
 
+#import "LocalPOVs.h"
+
 #import <QuartzCore/QuartzCore.h>
 
 #import "PinchView.h"
@@ -174,7 +176,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.mainScrollView.delegate = self;
     
     [self addBackgroundImage];
-   
 }
 
 -(void) addBackgroundImage{
@@ -1513,7 +1514,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 -(void)presentPreviewAtIndex:(NSInteger ) index{
-    NSArray *pinchViews = [self getPinchViews];
+    NSMutableArray *pinchViews = [self getPinchViews];
     NSString* title = self.titleField.text;
 
     [self.view bringSubviewToFront:self.previewDisplayView];
@@ -1726,7 +1727,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark - Returning Pinch Views -
 
--(NSArray*) getPinchViews {
+-(NSMutableArray*) getPinchViews {
 	NSMutableArray *pinchViews = [[NSMutableArray alloc]init];
 	for(ContentPageElementScrollView* elementScrollView in self.pageElementScrollViews) {
 		if ([elementScrollView.pageElement isKindOfClass:[PinchView class]]) {
@@ -1753,7 +1754,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
 
--(void) publishWithTitle:(NSString *)title andPinchViews:(NSArray *)pinchViews {
+-(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
 
 	if (![title length]) {
 		[self alertAddTitle];
@@ -1767,13 +1768,16 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
--(void) publishOurStoryWithTitle:(NSString *)title andPinchViews:(NSArray *)pinchViews{
-    POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title];
-    [publisher publish];
+-(void) publishOurStoryWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews{
+//    POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title];
+//TODO:    [publisher publish];
     //TODO: make sure current user exists and if not make them sign in
-    NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
-    
-    [self.delegate povPublishedWithUserName:userName andTitle:title andProgressObject: publisher.publishingProgress];
+//    NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
+
+
+	[[LocalPOVs sharedInstance] storePOVWithThread:title andPinchViews:pinchViews];
+//    [self.delegate povPublishedWithUserName:userName andTitle:title andProgressObject: publisher.publishingProgress];
+
     [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
     [self cleanUp];
 }

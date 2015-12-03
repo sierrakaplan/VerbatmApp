@@ -57,7 +57,6 @@
     [self.view addSubview:self.postDisplayVC.view];
     [self.postDisplayVC didMoveToParentViewController:self];
     self.postDisplayVC.delegate = self;
-   
 }
 
 -(void) createNavigationBarWithThreads:(NSArray *) threads {

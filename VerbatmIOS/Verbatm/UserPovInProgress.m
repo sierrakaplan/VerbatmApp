@@ -22,13 +22,6 @@
 
 @implementation UserPovInProgress
 
-- (id) init {
-	self = [super init];
-	if (self) {
-	}
-	return self;
-}
-
 + (UserPovInProgress *)sharedInstance {
 	static UserPovInProgress *_sharedInstance = nil;
 	static dispatch_once_t onceSecurePredicate;
@@ -41,8 +34,7 @@
 
 -(void) addTitle: (NSString*) title {
 	self.title = title;
-	[[NSUserDefaults standardUserDefaults]
-	setObject:self.title forKey:TITLE_KEY];
+	[[NSUserDefaults standardUserDefaults] setObject:self.title forKey:TITLE_KEY];
 }
 
 //adds pinch view and automatically saves pinchViews

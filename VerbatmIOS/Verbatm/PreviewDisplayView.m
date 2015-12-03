@@ -31,7 +31,7 @@
 #pragma mark - Content -
 
 @property (strong, nonatomic) NSString* title;
-@property (strong, nonatomic) NSArray* pinchViews;
+@property (strong, nonatomic) NSMutableArray* pinchViews;
 
 #pragma mark - Publish Button -
 @property (strong, nonatomic) UIButton* publishButton;
@@ -68,7 +68,7 @@
 
 #pragma mark - Load & display preview from pinch views -
 
--(void) displayPreviewPOVWithTitle: (NSString*) title andPinchViews: (NSArray*) pinchViews withStartIndex: (NSInteger) index {
+-(void) displayPreviewPOVWithTitle: (NSString*) title andPinchViews: (NSMutableArray*) pinchViews withStartIndex: (NSInteger) index {
 
 	self.title = title;
 	self.pinchViews = pinchViews;

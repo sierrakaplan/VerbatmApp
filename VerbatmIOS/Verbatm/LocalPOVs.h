@@ -10,4 +10,10 @@
 
 @interface LocalPOVs : NSObject
 
++ (LocalPOVs*) sharedInstance;
+
+- (void) storePOVWithThread: (NSString*) thread andPinchViews: (NSMutableArray*) pinchViews;
+
+-(NSArray*) getPOVsFromThread: (NSString*) thread;
+
 @end
