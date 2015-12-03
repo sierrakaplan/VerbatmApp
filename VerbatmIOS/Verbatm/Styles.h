@@ -9,6 +9,14 @@
 #ifndef Styles_h
 #define Styles_h
 
+#define HEADER_TEXT_FONT @"Quicksand-Regular" //@"Raleway-Light" //@"Roboto-Regular"
+#define HEADER_TEXT_SIZE 30.f
+
+#define TAB_BAR_SELECTED_FONT @"Quicksand-Bold" //@"Raleway-ExtraBold" //@"Roboto-Black"
+#define TAB_BAR_FONT @"Quicksand-Light" //@"Raleway-ExtraLight" //@"Roboto-Light"
+#define TAB_BAR_FONT_SIZE 20.f
+
+#define TAB_BAR_ALPHA 0.7
 
 #define DEFAULT_FONT @"HelveticaNeue-Italic"
 #define BUTTON_FONT @"HelveticaNeue"
@@ -22,10 +30,6 @@
 #define NAVIGATION_BAR_TEXT_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
 #define NAVIGATION_BAR_BUTTON_FONT @"HelveticaNeue-Medium"
 #define NAVIGATION_BAR_BUTTON_FONT_SIZE 15.f
-
-#define TAB_BAR_COLOR whiteColor
-#define SELECTED_TAB_BAR_COLOR grayColor
-#define ADK_TAB_COLOR blackColor
 
 #define FILTER_LEVEL_BLUR 30
 #define BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f

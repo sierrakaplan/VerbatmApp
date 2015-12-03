@@ -47,23 +47,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "265"
             endingLineNumber = "265"
-            landmarkName = "@implementation ArticleDisplayVC"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/VideoAVE.m"
-            timestampString = "470369047.244895"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "-initWithFrame:pinchView:orVideoArray:"
+            landmarkName = "-updatingPOVManager"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -199,8 +183,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "497"
             endingLineNumber = "497"
-            landmarkName = "-deleteScrollView:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -225,46 +209,14 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/VideoAVE.m"
-            timestampString = "470369047.244895"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
-            landmarkName = "-prepareVideos:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/VideoAVE.m"
-            timestampString = "470369047.244895"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "96"
-            endingLineNumber = "96"
-            landmarkName = "-prepareVideos:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "470451685.875508"
+            timestampString = "470834367.036845"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
-            landmarkName = "@implementation POVView"
-            landmarkType = "3">
+            startingLineNumber = "243"
+            endingLineNumber = "243"
+            landmarkName = "-renderPOVFromPages:andLikeButtonDelegate:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -290,12 +242,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "470451685.875508"
+            timestampString = "470834367.036845"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "192"
-            endingLineNumber = "192"
-            landmarkName = "-displayMediaOnCurrentAVE"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
+            landmarkName = "-logAVEDoneViewing:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -311,8 +263,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "168"
             endingLineNumber = "168"
-            landmarkName = "@implementation VideoPlayerView"
-            landmarkType = "3">
+            landmarkName = "-observeValueForKeyPath:ofObject:change:context:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -322,12 +274,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "470451685.875508"
+            timestampString = "470834367.036845"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "260"
-            endingLineNumber = "260"
-            landmarkName = "-pauseVideosInAVE:"
+            startingLineNumber = "261"
+            endingLineNumber = "261"
+            landmarkName = "-povOnScreen"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -391,7 +343,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "379"
             endingLineNumber = "379"
-            landmarkName = "-muteButtonTouched:"
+            landmarkName = "-stopVideo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -407,39 +359,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "192"
             endingLineNumber = "192"
-            landmarkName = "@implementation VideoPlayerView"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/VideoAVE.m"
-            timestampString = "470369047.244895"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "91"
-            endingLineNumber = "91"
-            landmarkName = "-prepareVideos:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/VideoAVE.m"
-            timestampString = "470369047.244895"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "149"
-            endingLineNumber = "149"
-            landmarkName = "-offScreen"
+            landmarkName = "-fuseAssets:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

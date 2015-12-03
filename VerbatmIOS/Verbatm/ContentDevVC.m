@@ -1705,7 +1705,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(UIImage*) getImageFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
 	image = [image getImageWithOrientationUp];
-	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+	image = [image scaleImageToSize:CGSizeMake(image.size.width/1.2f, image.size.height/1.2f)]; //[image getSizeForImageWithBounds:self.view.bounds]];
 	return image;
 }
 

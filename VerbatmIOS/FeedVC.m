@@ -15,7 +15,7 @@
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate>
+@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate>
 
 @property (strong, nonatomic) UIView* header;
 
@@ -52,7 +52,7 @@
 -(void) setHeader {
 	self.header = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.view.bounds.size.width,
 															  HEADER_HEIGHT)];
-	[self.header setBackgroundColor:[UIColor colorWithWhite:1.f alpha:0.5f]];
+	[self.header setBackgroundColor:[UIColor colorWithWhite:1.f alpha:1.f]];
 	UIImageView* verbatmTitleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:VERBATM_LOGO]];
 	verbatmTitleView.contentMode = UIViewContentModeScaleAspectFit;
 	verbatmTitleView.frame = CGRectMake(self.view.frame.size.width/2.f - VERBATM_LOGO_WIDTH/2.f,
@@ -63,11 +63,19 @@
 
 -(void) addPOVScrollView {
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
+    self.povScrollView.delegate = self;
 	[[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
 		[self.povScrollView displayPOVs: povs];
+        
 	});
 	[self.view insertSubview:self.povScrollView belowSubview:self.header];
 }
+
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    [self.povScrollView playPOVOnScreen];
+}
+
+
 
 -(void) createContentListView {
     self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];

@@ -14,7 +14,7 @@
 @interface POVScrollView()
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
-
+@property (strong, nonatomic) NSMutableArray * povViews;
 #define NO_POVS_LABEL_WIDTH 300.f
 
 @end
@@ -47,24 +47,54 @@
 
 	CGFloat xPosition = 0.f;
 	for (POV* pov in povs) {
-		CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
-		NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds inPreviewMode:NO];
-		POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
-		[povView renderAVES: aves];
-		[self addSubview: povView];
-		xPosition += self.bounds.size.width;
+		@autoreleasepool {
+			CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
+			NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds inPreviewMode:NO];
+			POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
+			[povView renderAVES: aves];
+			[self addSubview: povView];
+			[self.povViews addObject:povView];
+			xPosition += self.bounds.size.width;
+		}
 	}
 	self.contentSize = CGSizeMake(povs.count * self.bounds.size.width, 0.f);
 }
 
+
+-(void)playPOVOnScreen{
+    int povIndex = self.contentOffset.x/self.frame.size.width;
+    for(int i = 0; i < self.povViews.count; i++){
+        UIView * subView = self.povViews[i];
+        if([subView isKindOfClass:[POVView class]]){
+            if(i == povIndex ){
+                [(POVView *)subView povOnScreen];
+            }else{
+                [(POVView *)subView povOffScreen];
+            }
+        }
+    }
+}
+
 -(void) clearPOVs {
+	for(POVView* povView in self.povViews){
+		[povView clearArticle];
+	}
+
+	self.povViews = nil;
+
 	for (UIView* subview in self.subviews) {
 		[subview removeFromSuperview];
 	}
+
 	[self.activityIndicator startAnimating];
 }
 
 #pragma mark - Lazy Instantiation -
+
+-(NSMutableArray *)povViews{
+    if(!_povViews)_povViews = [[NSMutableArray alloc] init];
+    return _povViews;
+}
 
 -(UIActivityIndicatorView*) activityIndicator {
 	if (!_activityIndicator) {

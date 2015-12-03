@@ -15,4 +15,6 @@
 
 -(void) clearPOVs;
 
+-(void)playPOVOnScreen;
+
 @end

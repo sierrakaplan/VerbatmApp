@@ -66,7 +66,6 @@
 #define PROFILE_VC_ID @"profile_vc"
 
 #define DARK_GRAY 0.f
-#define TAB_BAR_ALPHA 0.4
 #define ADK_BUTTON_SIZE 60.f
 
 @end

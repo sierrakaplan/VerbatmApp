@@ -40,7 +40,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>4967</string>
+	<string>5025</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -153,6 +153,24 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>BebasNeue Light.otf</string>
+		<string>BebasNeue Regular.otf</string>
+		<string>BebasNeue Bold.otf</string>
+		<string>Quicksand-Bold.otf</string>
+		<string>Quicksand-Light.otf</string>
+		<string>Raleway-ExtraBold.ttf</string>
+		<string>Raleway-ExtraLight.ttf</string>
+		<string>Roboto-Regular.ttf</string>
+		<string>Roboto-Medium.ttf</string>
+		<string>Roboto-Light.ttf</string>
+		<string>RobotoCondensed-Light.ttf</string>
+		<string>Raleway-Black.ttf</string>
+		<string>Raleway-Light.ttf</string>
+		<string>Roboto-Black.ttf</string>
+		<string>Quicksand-Regular.otf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>Main</string>
 	<key>UIMainStoryboardFile</key>
