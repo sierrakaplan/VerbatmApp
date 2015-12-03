@@ -81,6 +81,14 @@
 	for (UIView* subview in self.subviews) {
 		[subview removeFromSuperview];
 	}
+    
+    for(int i = 0; i < self.povViews.count; i++){
+        UIView * subView = self.povViews[i];
+        if([subView isKindOfClass:[POVView class]]){
+            [(POVView *)subView povOffScreen];
+        }
+    }
+    
     [self.povViews removeAllObjects];
 	[self.activityIndicator startAnimating];
 }

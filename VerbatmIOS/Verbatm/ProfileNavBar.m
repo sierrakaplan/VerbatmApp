@@ -44,7 +44,7 @@
 	UILabel* userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(SETTINGS_BUTTON_SIZE + SETTINGS_BUTTON_OFFSET, BELOW_STATUS_BAR,
 																	   self.frame.size.width - SETTINGS_BUTTON_OFFSET*2 - SETTINGS_BUTTON_SIZE*2,
 																	   self.profileHeader.frame.size.height)];
-	userNameLabel.text = (userName && userName.length) ? userName : @"Iain Usiri";
+	userNameLabel.text =  @"Iain Usiri";
 	userNameLabel.textAlignment = NSTextAlignmentCenter;
 	userNameLabel.textColor = [UIColor whiteColor];
 	[self.profileHeader addSubview: userNameLabel];
