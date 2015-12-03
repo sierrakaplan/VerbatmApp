@@ -29,8 +29,6 @@
 
 @interface AVETypeAnalyzer()
 
-@property(nonatomic, strong) NSMutableArray* results;
-
 #define GET_VIDEO_URI @"https://verbatmapp.appspot.com/serveVideo"
 #define BLOBKEYSTRING_KEY @"blob-key"
 
@@ -39,30 +37,28 @@
 
 @implementation AVETypeAnalyzer
 
-@synthesize results = _results;
 
 -(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode {
+	NSMutableArray* results = [[NSMutableArray alloc] init];
 	for(PinchView* pinchView in pinchViews) {
-
-		[self getAVEFromPinchView:pinchView withFrame:frame inPreviewMode:inPreviewMode];
+		[results addObject:[self getAVEFromPinchView:pinchView withFrame:frame inPreviewMode:inPreviewMode]];
 	}
-
-	return self.results;
+	return results;
 }
 
--(void) getAVEFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame inPreviewMode: (BOOL) inPreviewMode {
+-(ArticleViewingExperience*) getAVEFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame inPreviewMode: (BOOL) inPreviewMode {
 	if (pinchView.containsImage && pinchView.containsVideo) {
 		PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView inPreviewMode:inPreviewMode];
-		[self.results addObject:photoVideoAVE];
+		return photoVideoAVE;
 
 	} else if (pinchView.containsImage) {
 		PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
 		photoAve.isPhotoVideoSubview = NO;
-		[self.results addObject:photoAve];
+		return photoAve;
 
-	} else if(pinchView.containsVideo) {
+	} else {
 		VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
-		[self.results addObject:videoAve];
+		return videoAve;
 	}
 }
 
@@ -130,15 +126,6 @@
 		[videoURLs addObject: @[components.URL, video.text, video.textYPosition]];
 	}
 	return videoURLs;
-}
-
-#pragma  mark - Lazy Instantiation
-
--(NSMutableArray*) results {
-	if (!_results) {
-		_results =  [[NSMutableArray alloc] init];
-	}
-	return _results;
 }
 
 @end

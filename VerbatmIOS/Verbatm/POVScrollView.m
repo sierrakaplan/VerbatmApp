@@ -34,11 +34,9 @@
 	CGFloat xPosition = 0.f;
 	for (POV* pov in povs) {
 		CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
-		NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:povFrame inPreviewMode:NO];
+		NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds inPreviewMode:NO];
 		POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
 		[povView renderAVES: aves];
-		[povView scrollToPageAtIndex:0];
-		[povView povOnScreen];
 		[self addSubview: povView];
 		xPosition += self.bounds.size.width;
 	}
