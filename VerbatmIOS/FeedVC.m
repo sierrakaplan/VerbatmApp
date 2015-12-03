@@ -9,12 +9,16 @@
 #import "ArticleDisplayVC.h"
 #import "FeedVC.h"
 #import "Notifications.h"
+#import "LocalPOVs.h"
+#import "POVScrollView.h"
 #import "SegueIDs.h"
 
 @interface FeedVC () <ArticleDisplayVCDelegate>
 
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
+
+@property (strong, nonatomic) POVScrollView* povScrollView;
 
 #define TRENDING_VC_ID @"trending_vc"
 
@@ -28,12 +32,19 @@
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-    [self createContentListView];
+//    [self createContentListView];
+	[self addPOVScrollView];
     [self addClearScreenGesture];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
+
+-(void) addPOVScrollView {
+	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
+	[self.povScrollView displayPOVs:[[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"]];
+	[self.view addSubview:self.povScrollView];
 }
 
 -(void) createContentListView {
@@ -70,7 +81,7 @@
     if(self.contentCoveringScreen){
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
-    } else{
+    } else {
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
     }

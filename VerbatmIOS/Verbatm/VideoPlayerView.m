@@ -146,6 +146,7 @@
 }
 
 -(void) setPlayerItemFromPlayerItem:(AVPlayerItem*)playerItem {
+	if (!playerItem) return;
 	if (self.playerItem) {
 		[self removePlayerItemObserver];
 	}
@@ -232,6 +233,7 @@
 #pragma mark - Play video -
 
 -(void)playVideo{
+	if (!self.ourAsset) return;
     if(!self.playerItem){
         self.player = nil;
         [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithAsset:self.ourAsset]];

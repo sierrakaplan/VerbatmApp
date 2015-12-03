@@ -322,6 +322,7 @@
 -(UIScrollView*) mainScrollView {
 	if (!_mainScrollView) {
 		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
+		_mainScrollView.backgroundColor = [UIColor blackColor];
 		_mainScrollView.pagingEnabled = YES;
 		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];

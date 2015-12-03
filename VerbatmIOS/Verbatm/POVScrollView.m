@@ -19,6 +19,7 @@
 
 -(instancetype) initWithFrame:(CGRect)frame {
 	if (self = [super initWithFrame:frame]) {
+		self.backgroundColor = [UIColor blackColor];
 		self.scrollEnabled = YES;
 		self.pagingEnabled = YES;
 		self.showsHorizontalScrollIndicator = NO;
@@ -32,8 +33,9 @@
 
 	CGFloat xPosition = 0.f;
 	for (POV* pov in povs) {
-		NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds];
-		POVView* povView = [[POVView alloc] initWithFrame:self.bounds andPOVInfo:nil];
+		CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
+		NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:povFrame];
+		POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
 		[povView renderAVES: aves];
 		[povView scrollToPageAtIndex:0];
 		[povView povOnScreen];

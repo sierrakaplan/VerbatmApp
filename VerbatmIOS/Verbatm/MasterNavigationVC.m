@@ -141,7 +141,7 @@
 	//set two tab bar frames-- for when we want to remove the tab bar
 	self.tabBarFrameOnScreen = self.tabBarController.tabBar.frame;
 	self.tabBarFrameOffScreen = CGRectMake(self.tabBarController.tabBar.frame.origin.x,
-										   self.view.frame.size.height,
+										   self.view.frame.size.height + ADK_BUTTON_SIZE/2.f,
 										   self.tabBarController.tabBar.frame.size.width,
 										   self.tabBarController.tabBar.frame.size.height);
 }
@@ -266,8 +266,10 @@
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
+		[[UIApplication sharedApplication] setStatusBarHidden:NO];
 		self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
 	} else {
+		[[UIApplication sharedApplication] setStatusBarHidden:YES];
 		self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
 	}
 }

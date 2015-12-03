@@ -6,7 +6,8 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-
+#import "LocalPOVs.h"
+#import "POVScrollView.h"
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
 #import "SizesAndPositions.h"
@@ -18,6 +19,7 @@
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate>
 
+@property (strong, nonatomic) POVScrollView* povScrollView;
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
 @property (weak, nonatomic) GTLVerbatmAppVerbatmUser* currentUser;
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
@@ -36,13 +38,20 @@
     //this is where you'd fetch the threads
     NSArray * testThreads = @[@"Parties", @"Selfies", @"The Diaspora", @"Entrepreneur", @"Demo Day"];
     
-    [self createContentListViewWithStartThread:testThreads[0]];
-    [self createNavigationBarWithThreads:testThreads];
+//    [self createContentListViewWithStartThread:testThreads[0]];
+	[self addPOVScrollViewWithThreads: testThreads];
+    [self createNavigationBarWithThreads: testThreads];
     [self addClearScreenGesture];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
+
+-(void) addPOVScrollViewWithThreads: (NSArray*) threads {
+	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
+	[self.povScrollView displayPOVs:[[LocalPOVs sharedInstance] getPOVsFromThread: threads[0]]];
+	[self.view addSubview:self.povScrollView];
 }
 
 -(void) createContentListViewWithStartThread:(NSString *)startThread{
@@ -86,7 +95,8 @@
 
 -(void)newChannelSelectedWithName:(NSString *) channelName{
     if(![channelName isEqualToString:self.currentThreadInView]){
-        [self switchStoryListToThread:channelName];
+		[self.povScrollView clearPOVs];
+		[self.povScrollView displayPOVs:[[LocalPOVs sharedInstance] getPOVsFromThread:channelName]];
     }
 }
 

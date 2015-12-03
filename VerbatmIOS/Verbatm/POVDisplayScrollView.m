@@ -13,6 +13,7 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.backgroundColor = [UIColor blackColor];
 		self.scrollEnabled = YES;
 		self.pagingEnabled = YES;
 		self.showsHorizontalScrollIndicator = NO;

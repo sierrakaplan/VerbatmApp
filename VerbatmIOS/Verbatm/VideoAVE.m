@@ -58,7 +58,7 @@
 			for(VideoPinchView* videoPinchView in ((CollectionPinchView *)pinchView).videoPinchViews) {
 				[videoAssets addObject: videoPinchView.video];
 			}
-		} else {
+		} else if (((VideoPinchView *)pinchView).video) {
 			[videoAssets addObject:((VideoPinchView *)pinchView).video];
 		}
 

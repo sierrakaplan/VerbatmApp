@@ -26,23 +26,42 @@
 }
 
 - (void) storePOVWithThread: (NSString*) thread andPinchViews: (NSMutableArray*) pinchViews {
-	NSString* threadKey = [self getKeyFromThreadName: thread];
-	NSArray* threadPOVs = [[NSUserDefaults standardUserDefaults] objectForKey:threadKey];
-	NSMutableArray* mutablePOVs = [[NSMutableArray alloc] init];
-	if (threadPOVs) {
-		mutablePOVs = [[NSMutableArray alloc] initWithArray:threadPOVs];
-	}
-	[mutablePOVs addObject: [[POV alloc] initWithThread:thread andPinchViews:pinchViews]];
-	[[NSUserDefaults standardUserDefaults] setObject:mutablePOVs forKey:threadKey];
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		@synchronized(self) {
+			NSString* threadKey = [self getKeyFromThreadName: thread];
+			NSArray* threadPOVs = [[NSUserDefaults standardUserDefaults] objectForKey:threadKey];
+			NSMutableArray* mutablePOVs = [[NSMutableArray alloc] init];
+			if (threadPOVs) {
+				mutablePOVs = [[NSMutableArray alloc] initWithArray:threadPOVs];
+			}
+			POV* pov = [[POV alloc] initWithThread:thread andPinchViews:pinchViews];
+			[mutablePOVs addObject: [self convertPOVToNSData:pov]];
+			[[NSUserDefaults standardUserDefaults] setObject:mutablePOVs forKey:threadKey];
+		}
+	});
 }
 
 -(NSArray*) getPOVsFromThread: (NSString*) thread {
 	NSString* threadKey = [self getKeyFromThreadName: thread];
-	return [[NSUserDefaults standardUserDefaults] objectForKey:threadKey];
+	NSArray* povsAsData = [[NSUserDefaults standardUserDefaults] objectForKey:threadKey];
+	NSMutableArray* povs = [[NSMutableArray alloc] init];
+	for (NSData* data in povsAsData) {
+		POV* pov = [self convertNSDataToPOV:data];
+		[povs addObject: pov];
+	}
+	return povs;
 }
 
 -(NSString*) getKeyFromThreadName: (NSString*) threadName {
 	return [threadName stringByAppendingString:@"_thread_key"];
+}
+
+-(NSData*) convertPOVToNSData: (POV*) pov {
+	return [NSKeyedArchiver archivedDataWithRootObject:pov];
+}
+
+-(POV*) convertNSDataToPOV: (NSData*) data {
+	return (POV*)[NSKeyedUnarchiver unarchiveObjectWithData:data];
 }
 
 @end
