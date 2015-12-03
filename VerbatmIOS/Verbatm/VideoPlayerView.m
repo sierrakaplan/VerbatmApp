@@ -256,7 +256,7 @@
 	// Add it to your view's sublayers
 	[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
 	if(self.playAtEndOfAsynchronousSetup){
-		[self playVideo];
+		//[self playVideo];
 		self.playAtEndOfAsynchronousSetup = NO;
 	}
 }

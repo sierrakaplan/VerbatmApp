@@ -119,6 +119,7 @@
 		ArticleViewingExperience* ave = aves[i];
 		[self.pageAves setObject:ave forKey:[NSNumber numberWithInt:i]];
 		[self setDelegateOnPhotoAVE: ave];
+        [ave offScreen];
 		ave.frame = viewFrame;
 		[self.mainScrollView addSubview: ave];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);

@@ -15,7 +15,7 @@
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate>
+@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate>
 
 @property (strong, nonatomic) UIView* header;
 
@@ -65,9 +65,17 @@
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
 	[[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
 		[self.povScrollView displayPOVs: povs];
+        
 	});
+    self.povScrollView.delegate = self;
 	[self.view insertSubview:self.povScrollView belowSubview:self.header];
 }
+
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    [self.povScrollView playPOVOnScreen];
+}
+
+
 
 -(void) createContentListView {
     self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];

@@ -57,6 +57,26 @@
 	self.contentSize = CGSizeMake(povs.count * self.bounds.size.width, 0.f);
 }
 
+
+-(void)playPOVOnScreen{
+    NSInteger povIndex = self.contentOffset.x/self.frame.size.width;
+    for(int i = 0; i < self.subviews.count; i++){
+        UIView * subView = self.subviews[i];
+        
+        if([subView isKindOfClass:[POVView class]]){
+            if( i == povIndex ){
+                [(POVView *)subView povOnScreen];
+            }else{
+                [(POVView *)subView povOffScreen];
+            }
+        }
+    }
+}
+
+
+
+
+
 -(void) clearPOVs {
 	for (UIView* subview in self.subviews) {
 		[subview removeFromSuperview];

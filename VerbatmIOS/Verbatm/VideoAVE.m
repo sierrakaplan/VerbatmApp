@@ -100,7 +100,9 @@
 	} else {
 		return;
 	}
-	[self.videoPlayer playVideo];
+    self.videoList = videoList;
+    
+	//[self.videoPlayer playVideo];
 }
 
 #pragma mark - Rearrange button -
@@ -151,7 +153,7 @@
     if(self.editContentView) {
         [self.editContentView offScreen];
     } else{
-//        [self.videoPlayer pauseVideo];
+       [self.videoPlayer stopVideo];
     }
     if(self.rearrangeView) [self.rearrangeView exitView];
 }
@@ -167,6 +169,12 @@
 -(void)almostOnScreen{
     if(self.editContentView){
         [self.editContentView almostOnScreen];
+    }else{
+        if(self.videoList){
+            [self.videoPlayer stopVideo];
+            [self prepareVideos:self.videoList];
+            self.hasBeenSetUp = YES;
+        }
     }
 }
 

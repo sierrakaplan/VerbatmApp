@@ -20,7 +20,7 @@
 
 -(instancetype) init {
 	if (self = [super init]) {
-		[self clearPOVsForThread:@"feed"];
+		//[self clearPOVsForThread:@"feed"];
 	}
 	return self;
 }
