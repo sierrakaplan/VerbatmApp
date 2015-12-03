@@ -53,6 +53,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.inPreviewMode = inPreviewMode;
+		[self.videoPlayer repeatVideoOnEnd:YES];
 
 		NSMutableArray * videoAssets = [[NSMutableArray alloc] init];
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
