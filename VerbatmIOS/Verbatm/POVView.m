@@ -67,7 +67,7 @@
             if(povInfo)[self createPageLoader];
             self.activityIndicator = [self startActivityIndicatorOnViewWithCenter: CGPointMake(self.center.x, ACTIVITY_ANIMATION_Y)
                                                                          andStyle:UIActivityIndicatorViewStyleWhiteLarge];
-            self.activityIndicator.color = [UIColor blackColor];
+            self.activityIndicator.color = [UIColor whiteColor];
         }
     }
     return self;
