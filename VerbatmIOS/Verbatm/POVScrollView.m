@@ -10,6 +10,7 @@
 #import "POV.h"
 #import "POVView.h"
 #import "POVScrollView.h"
+#import "Styles.h"
 
 @interface POVScrollView()
 
@@ -38,6 +39,7 @@
 		UILabel* noPOVSLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
 																		 NO_POVS_LABEL_WIDTH, self.frame.size.height)];
 		noPOVSLabel.text = @"There are no stories in this thread.";
+		noPOVSLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
 		noPOVSLabel.textColor = [UIColor whiteColor];
 		noPOVSLabel.textAlignment = NSTextAlignmentCenter;
 		[self addSubview:noPOVSLabel];

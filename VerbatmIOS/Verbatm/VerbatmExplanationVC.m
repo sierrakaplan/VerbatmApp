@@ -18,7 +18,6 @@
 @property (strong, nonatomic) UIButton * exitButton;
 @property (strong, nonatomic) UITextView* textView;
 
-#define FONT @"HelveticaNeue-Medium"
 #define FONT_SIZE 20.f
 #define TEXT_OFFSET 40.f
 
@@ -56,7 +55,7 @@
 																  self.view.frame.size.width - TEXT_OFFSET*2,
 																  self.view.frame.size.height - TEXT_OFFSET*2)];
 		_textView.backgroundColor = self.view.backgroundColor;
-		_textView.font = [UIFont fontWithName:FONT size:FONT_SIZE];
+		_textView.font = [UIFont fontWithName:DEFAULT_FONT size:FONT_SIZE];
 		_textView.textColor = [UIColor whiteColor];
 		_textView.editable = NO;
 		_textView.text = VERBATM_EXPLANATION_TEXT;
