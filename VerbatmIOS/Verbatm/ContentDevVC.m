@@ -1775,7 +1775,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 //    NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
 
 
-	[[LocalPOVs sharedInstance] storePOVWithThread:title andPinchViews:pinchViews];
+	[[LocalPOVs sharedInstance] storePOVWithThread:title andPinchViews:pinchViews atIndex:-1];
 //    [self.delegate povPublishedWithUserName:userName andTitle:title andProgressObject: publisher.publishingProgress];
 
     [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];

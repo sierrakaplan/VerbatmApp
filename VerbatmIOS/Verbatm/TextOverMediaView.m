@@ -104,7 +104,7 @@
 	if (!_textView) {
 		CGRect textViewFrame = CGRectMake(0.f, TEXT_VIEW_OVER_MEDIA_Y_OFFSET, self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
-		[_textView setFont:[UIFont fontWithName:DEFAULT_FONT size:TEXT_AVE_FONT_SIZE]];
+		[_textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
 		_textView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];
 
 		//TEXT_SCROLLVIEW_BACKGROUND_COLOR

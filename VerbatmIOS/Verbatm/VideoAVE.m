@@ -21,6 +21,7 @@
 
 @interface VideoAVE()<OpenCollectionViewDelegate>
 
+@property (strong, nonatomic, readwrite) VideoPlayerView* videoPlayer;
 @property (strong, nonatomic) UIImageView* videoProgressImageView;
 @property (strong, nonatomic) UIButton* playButton;
 @property (nonatomic) CGPoint firstTranslation;
@@ -60,6 +61,8 @@
 			}
 		} else if (((VideoPinchView *)pinchView).video) {
 			[videoAssets addObject:((VideoPinchView *)pinchView).video];
+		} else {
+			NSLog(@"Something went wrong, video nil");
 		}
 
 		if (self.inPreviewMode) {
@@ -87,7 +90,6 @@
     self.hasBeenSetUp = NO;
 }
 
-
 -(void)prepareVideos:(NSArray*)videoList {
 	if (!videoList.count) return;
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
@@ -97,7 +99,9 @@
 	} else {
 		return;
 	}
+	[self.videoPlayer playVideo];
 }
+
 #pragma mark - Rearrange button -
 
 -(void)createRearrangeButton {
@@ -146,7 +150,7 @@
     if(self.editContentView) {
         [self.editContentView offScreen];
     } else{
-        [self.videoPlayer pauseVideo];
+//        [self.videoPlayer pauseVideo];
     }
     if(self.rearrangeView) [self.rearrangeView exitView];
 }
@@ -166,6 +170,14 @@
 }
 
 #pragma mark - Lazy Instantiation -
+
+-(VideoPlayerView*) videoPlayer {
+	if (!_videoPlayer) {
+		_videoPlayer = [[VideoPlayerView alloc] initWithFrame:self.bounds];
+		[self addSubview:_videoPlayer];
+	}
+	return _videoPlayer;
+}
 
 -(UIButton *)rearrangeButton {
     if(!_rearrangeButton){

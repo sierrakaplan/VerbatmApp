@@ -50,7 +50,9 @@
 
 -(void) addPOVScrollViewWithThreads: (NSArray*) threads {
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
-	[self.povScrollView displayPOVs:[[LocalPOVs sharedInstance] getPOVsFromThread: threads[0]]];
+	[[LocalPOVs sharedInstance] getPOVsFromThread:threads[0]].then(^(NSArray* povs) {
+		[self.povScrollView displayPOVs: povs];
+	});
 	[self.view addSubview:self.povScrollView];
 }
 
@@ -95,7 +97,9 @@
 -(void)newChannelSelectedWithName:(NSString *) channelName{
     if(![channelName isEqualToString:self.currentThreadInView]){
 		[self.povScrollView clearPOVs];
-		[self.povScrollView displayPOVs:[[LocalPOVs sharedInstance] getPOVsFromThread:channelName]];
+		[[LocalPOVs sharedInstance] getPOVsFromThread:channelName].then(^(NSArray* povs) {
+			[self.povScrollView displayPOVs: povs];
+		});
     }
 }
 

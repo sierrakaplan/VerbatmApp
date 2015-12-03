@@ -8,6 +8,7 @@
 
 #import "PinchView.h"
 #import "UserPovInProgress.h"
+#import "VideoPinchView.h"
 
 @interface UserPovInProgress()
 
@@ -121,11 +122,18 @@
 	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
 							 objectForKey:PINCHVIEWS_KEY];
 	@synchronized(self) {
-		for (NSData* data in pinchViewsData) {
-			PinchView* pinchView = [self convertNSDataToPinchView:data];
-			[self.pinchViews addObject:pinchView];
-		}
 		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:pinchViewsData copyItems:NO];
+		for (int i = 0; i < pinchViewsData.count; i++) {
+			NSData* data = pinchViewsData[i];
+			PinchView* pinchView = [self convertNSDataToPinchView:data];
+			if ([pinchView isKindOfClass:[VideoPinchView class]]) {
+				[(VideoPinchView*)pinchView loadAVURLAssetFromPHAsset].then(^(AVURLAsset* video) {
+					[self.pinchViews insertObject:pinchView atIndex:i];
+				});
+			} else {
+				[self.pinchViews addObject:pinchView];
+			}
+		}
 	}
 }
 

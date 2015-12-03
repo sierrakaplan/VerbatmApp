@@ -9,6 +9,8 @@
 #import "PinchView.h"
 #import "SingleMediaAndTextPinchView.h"
 
+#import <PromiseKit/PromiseKit.h>
+
 @interface VideoPinchView : SingleMediaAndTextPinchView
 
 @property (strong, nonatomic) AVURLAsset* video;
@@ -18,5 +20,9 @@
 
 // sets up the pinch view with a video
 -(void) initWithVideo: (AVURLAsset*) video;
+
+// call after being decoded with nscoding
+// Resolves to avurlasset
+-(AnyPromise*) loadAVURLAssetFromPHAsset;
 
 @end

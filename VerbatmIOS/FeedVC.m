@@ -7,13 +7,17 @@
 //
 
 #import "ArticleDisplayVC.h"
+#import "Icons.h"
 #import "FeedVC.h"
 #import "Notifications.h"
 #import "LocalPOVs.h"
 #import "POVScrollView.h"
 #import "SegueIDs.h"
+#import "SizesAndPositions.h"
 
 @interface FeedVC () <ArticleDisplayVCDelegate>
+
+@property (strong, nonatomic) UIView* header;
 
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
@@ -22,12 +26,16 @@
 
 #define TRENDING_VC_ID @"trending_vc"
 
+#define HEADER_HEIGHT 50.f
+#define VERBATM_LOGO_WIDTH 150.f
 @end
 
 @implementation FeedVC
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
+	[[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
+	[self setHeader];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -41,10 +49,24 @@
 	[super viewDidAppear:animated];
 }
 
+-(void) setHeader {
+	self.header = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.view.bounds.size.width,
+															  HEADER_HEIGHT)];
+	[self.header setBackgroundColor:[UIColor colorWithWhite:1.f alpha:0.5f]];
+	UIImageView* verbatmTitleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:VERBATM_LOGO]];
+	verbatmTitleView.contentMode = UIViewContentModeScaleAspectFit;
+	verbatmTitleView.frame = CGRectMake(self.view.frame.size.width/2.f - VERBATM_LOGO_WIDTH/2.f,
+										BELOW_STATUS_BAR, VERBATM_LOGO_WIDTH, HEADER_HEIGHT - BELOW_STATUS_BAR);
+	[self.header addSubview:verbatmTitleView];
+	[self.view addSubview:self.header];
+}
+
 -(void) addPOVScrollView {
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
-	[self.povScrollView displayPOVs:[[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"]];
-	[self.view addSubview:self.povScrollView];
+	[[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
+		[self.povScrollView displayPOVs: povs];
+	});
+	[self.view insertSubview:self.povScrollView belowSubview:self.header];
 }
 
 -(void) createContentListView {
@@ -79,9 +101,11 @@
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
     if(self.contentCoveringScreen){
+		[self.header removeFromSuperview];
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
     } else {
+		[self.view addSubview: self.header];
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
     }

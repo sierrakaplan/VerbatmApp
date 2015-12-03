@@ -38,7 +38,6 @@
 //ArticleListVC also contains a reference to it
 @property (strong, nonatomic) POVLoadManager* povLoadManager;
 
-
 // In charge of updating information about a pov (number of likes, etc.)
 @property (strong, nonatomic) UpdatingPOVManager* updatingPOVManager;
 
@@ -100,7 +99,6 @@
     [self loadStoryFromStart];
      [self updateScrollview];
 }
-
 
 // Successfully loaded more POV's
 -(void) morePOVsLoaded: (NSInteger) numLoaded {
@@ -289,12 +287,9 @@
 
 -(void)offScreen{
     for(id povView  in self.povViews){
-        
         if([povView isKindOfClass:[POVView class]]){
             [(POVView *)povView povOffScreen];
         }
-        
-        
     }
 }
 

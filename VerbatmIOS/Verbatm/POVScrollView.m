@@ -13,6 +13,10 @@
 
 @interface POVScrollView()
 
+@property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
+
+#define NO_POVS_LABEL_WIDTH 300.f
+
 @end
 
 @implementation POVScrollView
@@ -24,11 +28,21 @@
 		self.pagingEnabled = YES;
 		self.showsHorizontalScrollIndicator = NO;
 		self.showsVerticalScrollIndicator = NO;
+		[self.activityIndicator startAnimating];
 	}
 	return self;
 }
 
 -(void) displayPOVs: (NSArray*)povs {
+	if (!povs || !povs.count) {
+		UILabel* noPOVSLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
+																		 NO_POVS_LABEL_WIDTH, self.frame.size.height)];
+		noPOVSLabel.text = @"There are no stories in this thread.";
+		noPOVSLabel.textColor = [UIColor whiteColor];
+		noPOVSLabel.textAlignment = NSTextAlignmentCenter;
+		[self addSubview:noPOVSLabel];
+	}
+	[self.activityIndicator stopAnimating];
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
 
 	CGFloat xPosition = 0.f;
@@ -47,6 +61,20 @@
 	for (UIView* subview in self.subviews) {
 		[subview removeFromSuperview];
 	}
+	[self.activityIndicator startAnimating];
+}
+
+#pragma mark - Lazy Instantiation -
+
+-(UIActivityIndicatorView*) activityIndicator {
+	if (!_activityIndicator) {
+		_activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+		_activityIndicator.color = [UIColor grayColor];
+		_activityIndicator.hidesWhenStopped = YES;
+		_activityIndicator.center = self.center;
+		[self addSubview:_activityIndicator];
+	}
+	return _activityIndicator;
 }
 
 @end

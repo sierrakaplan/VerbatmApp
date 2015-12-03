@@ -18,6 +18,7 @@
 
 #pragma mark - Feed -
 
+#define VERBATM_LOGO @"verbatm_logo"
 #define NO_NETWORK_IMAGE @"no_network_image"
 
 #pragma mark Story Cell

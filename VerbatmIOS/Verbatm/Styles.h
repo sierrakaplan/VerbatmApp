@@ -98,6 +98,7 @@
 
 #pragma mark Text
 
+#define TEXT_AVE_FONT @"HelveticaNeue"
 #define TEXT_AVE_FONT_SIZE 20
 #define TEXT_AVE_COLOR blackColor
 

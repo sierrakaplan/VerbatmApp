@@ -8,12 +8,15 @@
 
 #import <Foundation/Foundation.h>
 
+#import <PromiseKit/PromiseKit.h>
+
 @interface LocalPOVs : NSObject
 
 + (LocalPOVs*) sharedInstance;
 
-- (void) storePOVWithThread: (NSString*) thread andPinchViews: (NSMutableArray*) pinchViews;
+// Enter index of -1 for it to be stored at the end
+- (void) storePOVWithThread: (NSString*) thread andPinchViews: (NSMutableArray*) pinchViews atIndex: (NSInteger) index;
 
--(NSArray*) getPOVsFromThread: (NSString*) thread;
+-(AnyPromise*) getPOVsFromThread: (NSString*) thread;
 
 @end

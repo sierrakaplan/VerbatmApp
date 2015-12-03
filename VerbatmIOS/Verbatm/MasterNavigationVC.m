@@ -169,11 +169,15 @@
 																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
 													  selectedImage:[[UIImage imageNamed:PROFILE_NAV_ICON]
 																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+
 	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[[UIImage imageNamed:HOME_NAV_ICON]
 																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
 													  selectedImage:[[UIImage imageNamed:HOME_NAV_ICON]
 																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+	// images need to be centered this way for some reason
+	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
 -(void)createTabBarViewController{
