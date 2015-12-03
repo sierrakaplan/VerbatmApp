@@ -36,7 +36,7 @@
 
 -(void) viewWillAppear:(BOOL)animated{
     //this is where you'd fetch the threads
-    NSArray * testThreads = @[@"Parties", @"Selfies", @"The Diaspora", @"Entrepreneur", @"Demo Day"];
+    NSArray * testThreads = @[@"Entrepreneurship", @"Music", @"Social Justice"];
     
 //    [self createContentListViewWithStartThread:testThreads[0]];
 	[self addPOVScrollViewWithThreads: testThreads];
