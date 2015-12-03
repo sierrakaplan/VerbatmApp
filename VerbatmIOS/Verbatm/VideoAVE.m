@@ -62,11 +62,16 @@
 			[videoAssets addObject:((VideoPinchView *)pinchView).video];
 		}
 
-		self.editContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
-		self.editContentView.pinchView = pinchView;
-		[self.editContentView displayVideo:videoAssets];
-		[self addSubview: self.editContentView];
-		if(videoAssets.count > 1 && self.inPreviewMode) [self createRearrangeButton];
+		if (self.inPreviewMode) {
+			self.editContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
+			self.editContentView.pinchView = pinchView;
+			[self.editContentView displayVideo:videoAssets];
+			[self addSubview: self.editContentView];
+			if(videoAssets.count > 1) [self createRearrangeButton];
+		} else {
+			[self prepareVideos:videoAssets];
+			self.hasBeenSetUp = NO;
+		}
 	}
 	return self;
 }
@@ -84,6 +89,7 @@
 
 
 -(void)prepareVideos:(NSArray*)videoList {
+	if (!videoList.count) return;
 	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
         [self.videoPlayer prepareVideoFromArrayOfAssets_asynchronous:videoList];
 	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {

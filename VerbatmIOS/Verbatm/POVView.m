@@ -226,7 +226,7 @@
 }
 
 
-#pragma mark -Pages Downloaded-
+#pragma mark - Pages Downloaded -
 
 -(void) pagesLoadedForPOV:(NSNumber *)povID {
     NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
@@ -254,7 +254,7 @@
     }
 }
 
-#pragma mark -Playing POV content-
+#pragma mark - Playing POV content -
 
 -(void) povOnScreen{
     [self displayMediaOnCurrentAVE];
@@ -279,6 +279,10 @@
 
 -(void) stoppedDraggingAroundCircle {
 	self.mainScrollView.scrollEnabled = YES;
+}
+
+-(void) viewTapped {
+
 }
 
 #pragma mark - Clean up -

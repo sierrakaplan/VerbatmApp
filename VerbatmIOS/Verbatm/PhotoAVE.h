@@ -15,6 +15,8 @@
 -(void) startedDraggingAroundCircle;
 -(void) stoppedDraggingAroundCircle;
 
+-(void) viewTapped;
+
 @end
 
 @protocol PhotoAVETextEntryDelegate <NSObject>

@@ -277,6 +277,7 @@
 		self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action: @selector(mainViewTapped:)];
 		[self addGestureRecognizer:self.photoAveTapGesture];
 	}
+	self.photoAveTapGesture.delegate = self;
 }
 
 //used only when we have a pinchview and are editing
@@ -493,7 +494,7 @@
 		[self.showCircleTimer invalidate];
 		self.showCircleTimer = nil;
 	}
-	if(!self.pinchView) [self animateFadeCircleDisplay:NO];
+	[self animateFadeCircleDisplay:NO];
 }
 
 -(void) animateFadeCircleDisplay:(BOOL) display {
@@ -554,6 +555,14 @@
 #pragma mark - Gesture Recognizer Delegate methods -
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+	if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+		if (gestureRecognizer.numberOfTouches >= 1){
+			CGPoint touchLocation = [gestureRecognizer locationOfTouch:0 inView:self];
+			if ([self circleTapped:touchLocation]) {
+				return NO;
+			}
+		}
+	}
 	return YES;
 }
 

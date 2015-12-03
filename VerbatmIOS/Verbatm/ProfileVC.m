@@ -81,10 +81,9 @@
     self.currentUser = [[UserManager sharedInstance] getCurrentUser];
 }
 
-
 -(void)addClearScreenGesture{
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
-    [self.view addGestureRecognizer:tap];
+    [self.povScrollView addGestureRecognizer:tap];
 }
 
 #pragma mark - Profile Nav Bar Delegate Methods -
