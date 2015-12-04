@@ -42,6 +42,8 @@
 		noPOVSLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
 		noPOVSLabel.textColor = [UIColor whiteColor];
 		noPOVSLabel.textAlignment = NSTextAlignmentCenter;
+		noPOVSLabel.lineBreakMode = NSLineBreakByWordWrapping;
+		noPOVSLabel.numberOfLines = 3;
 		[self addSubview:noPOVSLabel];
 	}
 	[self.activityIndicator stopAnimating];

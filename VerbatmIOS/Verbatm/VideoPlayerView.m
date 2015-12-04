@@ -252,7 +252,7 @@
 
 	//right when we create the video we also add the mute button
 	[self formatMuteButton];
-	[self addSubview:self.muteButton];
+//	[self addSubview:self.muteButton];
 	// Add it to your view's sublayers
 	[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
 	if(self.playAtEndOfAsynchronousSetup){
