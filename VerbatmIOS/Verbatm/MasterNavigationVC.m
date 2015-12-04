@@ -11,6 +11,8 @@
 #import "ArticleDisplayVC.h"
 #import "Analytics.h"
 
+#import "CustomTabBarController.h"
+
 #import "Durations.h"
 
 #import "FeedVC.h"
@@ -50,7 +52,7 @@
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
-@property (strong, nonatomic) UITabBarController* tabBarController;
+@property (strong, nonatomic) CustomTabBarController* tabBarController;
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
@@ -70,6 +72,7 @@
 #define DARK_GRAY 0.6f
 #define ADK_BUTTON_SIZE 60.f
 #define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
+#define TAB_BAR_HEIGHT 40.f
 
 @end
 
@@ -134,7 +137,7 @@
 -(void) formatTabBar {
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	CGSize tabBarItemSize = CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
-									   self.tabBarController.tabBar.frame.size.height);
+									   self.tabBarController.tabBarHeight);
 	[self.tabBarController.tabBar setTintColor:SELECTED_TAB_ICON_COLOR];
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
@@ -146,7 +149,7 @@
 	self.tabBarFrameOffScreen = CGRectMake(self.tabBarController.tabBar.frame.origin.x,
 										   self.view.frame.size.height + ADK_BUTTON_SIZE/2.f,
 										   self.tabBarController.tabBar.frame.size.width,
-										   self.tabBarController.tabBar.frame.size.height);
+										   self.tabBarController.tabBarHeight);
 }
 
 -(UIImage*) getUnselectedTabBarItemImageWithSize: (CGSize) size {
@@ -184,6 +187,7 @@
 -(void)createTabBarViewController{
     self.tabBarControllerContainerView.frame = self.view.bounds;
     self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
+	self.tabBarController.tabBarHeight = TAB_BAR_HEIGHT;
     [self.tabBarControllerContainerView addSubview:self.tabBarController.view];
     [self addChildViewController:self.tabBarController];
     self.tabBarController.delegate = self;
@@ -197,7 +201,7 @@
 	// covers up tab so that it won't go to blank view controller
 	// Center tab out of 3
 	UIView* tabView = [[UIView alloc] initWithFrame:CGRectMake(tabWidth, 0.f, tabWidth,
-															self.tabBarController.tabBar.frame.size.height)];
+															self.tabBarController.tabBarHeight)];
 	[tabView setBackgroundColor:[UIColor clearColor]];
 
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];

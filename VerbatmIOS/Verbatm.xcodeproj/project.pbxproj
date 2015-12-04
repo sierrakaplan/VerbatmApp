@@ -106,6 +106,7 @@
 		A5934C121C10FA7D007C7830 /* BebasNeue Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934C0D1C10FA7D007C7830 /* BebasNeue Light.otf */; };
 		A5934C131C10FA7D007C7830 /* BebasNeue Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934C0E1C10FA7D007C7830 /* BebasNeue Regular.otf */; };
 		A5934C141C10FA7D007C7830 /* BebasNeue Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = A5934C0F1C10FA7D007C7830 /* BebasNeue Thin.otf */; };
+		A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934C161C11EFBD007C7830 /* CustomTabBarController.m */; };
 		A59C19721B9E1DFF00EBA60E /* POVLoadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A59C19711B9E1DFF00EBA60E /* POVLoadManager.m */; };
 		A59CC2891B6C2E6400B4907C /* FeedTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = A59CC2881B6C2E6400B4907C /* FeedTableView.m */; };
 		A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5AA319B1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m */; };
@@ -422,6 +423,8 @@
 		A5934C0D1C10FA7D007C7830 /* BebasNeue Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Light.otf"; sourceTree = "<group>"; };
 		A5934C0E1C10FA7D007C7830 /* BebasNeue Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Regular.otf"; sourceTree = "<group>"; };
 		A5934C0F1C10FA7D007C7830 /* BebasNeue Thin.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BebasNeue Thin.otf"; sourceTree = "<group>"; };
+		A5934C151C11EFBD007C7830 /* CustomTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTabBarController.h; sourceTree = "<group>"; };
+		A5934C161C11EFBD007C7830 /* CustomTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomTabBarController.m; sourceTree = "<group>"; };
 		A59C19701B9E1DFF00EBA60E /* POVLoadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POVLoadManager.h; sourceTree = "<group>"; };
 		A59C19711B9E1DFF00EBA60E /* POVLoadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POVLoadManager.m; sourceTree = "<group>"; };
 		A59CC2871B6C2E6400B4907C /* FeedTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedTableView.h; sourceTree = "<group>"; };
@@ -1311,6 +1314,8 @@
 				A560EFAF1BB09AF8003FB041 /* Login */,
 				A5076D051BE999E900303746 /* Profile */,
 				C7E65F641B92449E0042AD99 /* bug submission VC */,
+				A5934C151C11EFBD007C7830 /* CustomTabBarController.h */,
+				A5934C161C11EFBD007C7830 /* CustomTabBarController.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1860,6 +1865,7 @@
 				C745B42F1BBA630800D18944 /* PermissionCodePageVC.m in Sources */,
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
 				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
+				A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
 				A535E5091BC45CC600A087D1 /* AVAsset+Utilities.m in Sources */,
