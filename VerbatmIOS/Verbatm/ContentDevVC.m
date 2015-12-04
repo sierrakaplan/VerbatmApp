@@ -181,7 +181,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) addBackgroundImage{
     
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    backgroundView.image =[UIImage imageNamed:@"b16"];
+    backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
+	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
     
     [self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
     self.mainScrollView.backgroundColor = [UIColor clearColor];
@@ -274,7 +275,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 													attributes:@{NSForegroundColorAttributeName: [UIColor TITLE_TEXT_COLOR],
 																 NSFontAttributeName : titleFont}];
     
-    self.titleField.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
+    self.titleField.backgroundColor = ADK_NAV_BAR_COLOR;
 	[self.titleField resignFirstResponder];
 	self.titleField.enabled = YES;
 	self.titleField.autocorrectionType = UITextAutocorrectionTypeYes;
@@ -1877,7 +1878,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(CustomNavigationBar*) navBar {
 	if (!_navBar) {
 		_navBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
-										  andBackgroundColor:[UIColor blackColor]];
+										  andBackgroundColor:ADK_NAV_BAR_COLOR];
 	}
 	return _navBar;
 }

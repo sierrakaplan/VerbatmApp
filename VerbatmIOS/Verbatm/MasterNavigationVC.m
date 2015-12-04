@@ -11,6 +11,8 @@
 #import "ArticleDisplayVC.h"
 #import "Analytics.h"
 
+#import "Durations.h"
+
 #import "FeedVC.h"
 
 #import "GTLVerbatmAppVerbatmUser.h"
@@ -65,8 +67,9 @@
 #define MEDIA_DEV_VC_ID @"media_dev_vc"
 #define PROFILE_VC_ID @"profile_vc"
 
-#define DARK_GRAY 0.f
+#define DARK_GRAY 0.6f
 #define ADK_BUTTON_SIZE 60.f
+#define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
 
 @end
 
@@ -132,6 +135,7 @@
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	CGSize tabBarItemSize = CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
 									   self.tabBarController.tabBar.frame.size.height);
+	[self.tabBarController.tabBar setTintColor:SELECTED_TAB_ICON_COLOR];
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
 	// Sets the background color of the selected UITabBarItem
@@ -166,14 +170,12 @@
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[[UIImage imageNamed:PROFILE_NAV_ICON]
 																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-													  selectedImage:[[UIImage imageNamed:PROFILE_NAV_ICON]
-																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]]; //imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
 
 	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[[UIImage imageNamed:HOME_NAV_ICON]
 																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-													  selectedImage:[[UIImage imageNamed:HOME_NAV_ICON]
-																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]]; //imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
 	// images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
@@ -269,11 +271,15 @@
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
-		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-		self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
+		}];
+		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 	} else {
-		[[UIApplication sharedApplication] setStatusBarHidden:YES];
-		self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
+		}];
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	}
 }
 

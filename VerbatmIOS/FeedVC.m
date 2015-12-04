@@ -7,6 +7,7 @@
 //
 
 #import "ArticleDisplayVC.h"
+#import "Durations.h"
 #import "Icons.h"
 #import "FeedVC.h"
 #import "Notifications.h"
@@ -17,6 +18,8 @@
 
 @interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate>
 
+@property (nonatomic) CGRect headerFrameOnScreen;
+@property (nonatomic) CGRect headerFrameOffScreen;
 @property (strong, nonatomic) UIView* header;
 
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
@@ -50,8 +53,9 @@
 }
 
 -(void) setHeader {
-	self.header = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.view.bounds.size.width,
-															  HEADER_HEIGHT)];
+	self.headerFrameOnScreen = CGRectMake(0.f, 0.f, self.view.bounds.size.width, HEADER_HEIGHT);
+	self.headerFrameOffScreen = CGRectMake(0.f, -HEADER_HEIGHT, self.view.bounds.size.width, HEADER_HEIGHT);
+	self.header = [[UIView alloc] initWithFrame:self.headerFrameOnScreen];
 	[self.header setBackgroundColor:[UIColor colorWithWhite:1.f alpha:1.f]];
 	UIImageView* verbatmTitleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:VERBATM_LOGO]];
 	verbatmTitleView.contentMode = UIViewContentModeScaleAspectFit;
@@ -74,8 +78,6 @@
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
     [self.povScrollView playPOVOnScreen];
 }
-
-
 
 -(void) createContentListView {
     self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
@@ -108,12 +110,16 @@
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-    if(self.contentCoveringScreen){
-		[self.header removeFromSuperview];
+    if(self.contentCoveringScreen) {
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			[self.header setFrame:self.headerFrameOffScreen];
+		}];
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
     } else {
-		[self.view addSubview: self.header];
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			[self.header setFrame:self.headerFrameOnScreen];
+		}];
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
     }

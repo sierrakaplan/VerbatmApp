@@ -6,6 +6,7 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
+#import "Durations.h"
 #import "LocalPOVs.h"
 #import "POVScrollView.h"
 #import "ProfileVC.h"
@@ -21,6 +22,9 @@
 
 @property (strong, nonatomic) POVScrollView* povScrollView;
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
+@property (nonatomic) CGRect profileNavBarFrameOnScreen;
+@property (nonatomic) CGRect profileNavBarFrameOffScreen;
+@property (nonatomic) BOOL contentCoveringScreen;
 @property (weak, nonatomic) GTLVerbatmAppVerbatmUser* currentUser;
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
@@ -32,6 +36,7 @@
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
+	self.contentCoveringScreen = YES;
 }
 
 -(void) viewWillAppear:(BOOL)animated{
@@ -78,9 +83,11 @@
 }
 
 -(void) createNavigationBarWithThreads:(NSArray *) threads {
-    CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
+    self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
+	self.profileNavBarFrameOffScreen = CGRectMake(0.f, -PROFILE_NAV_BAR_HEIGHT, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
     [self updateUserInfo];
-    self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:navBarFrame andThreads:threads andUserName:self.currentUser.name];
+    self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:self.profileNavBarFrameOnScreen
+												   andThreads:threads andUserName:self.currentUser.name];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
     
@@ -118,13 +125,19 @@
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-    if(self.profileNavBar.superview){
-        [self.profileNavBar removeFromSuperview];
-        [self.delegate showTabBar:NO];
-    }else{
-        [self.view addSubview:self.profileNavBar];
-        [self.delegate showTabBar:YES];
-    }
+	if(self.contentCoveringScreen) {
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			[self.profileNavBar setFrame:self.profileNavBarFrameOffScreen];
+		}];
+		[self.delegate showTabBar:NO];
+		self.contentCoveringScreen = NO;
+	} else {
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			[self.profileNavBar setFrame:self.profileNavBarFrameOnScreen];
+		}];
+		[self.delegate showTabBar:YES];
+		self.contentCoveringScreen = YES;
+	}
 }
 
 -(void) offScreen{

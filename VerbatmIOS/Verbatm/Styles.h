@@ -57,7 +57,8 @@
 
 #pragma mark - ADK -
 
-#define TITLE_TEXT_COLOR whiteColor
+#define ADK_NAV_BAR_COLOR [UIColor colorWithWhite:1.0 alpha:0.8]
+#define TITLE_TEXT_COLOR blackColor
 #define TITLE_TEXT_SIZE 20.f
 
 #pragma mark PinchViews

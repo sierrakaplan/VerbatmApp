@@ -9,6 +9,8 @@
 #ifndef Icons_h
 #define Icons_h
 
+#define BACKGROUND_IMAGE @"background_4"
+
 #define BACK_ARROW_LEFT @"back_arrow_left"
 #define BACK_ARROW_RIGHT @"back_arrow_right"
 
