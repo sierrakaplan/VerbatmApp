@@ -212,21 +212,21 @@
 
 -(void) createMainCircleView {
 	self.originPoint = CGPointMake(self.frame.size.width/2.f, PAN_CIRCLE_CENTER_Y);
-	CGRect frame = CGRectMake(self.originPoint.x-CIRCLE_RADIUS-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
+	CGRect circleViewFrame = CGRectMake(self.originPoint.x-CIRCLE_RADIUS-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
 							  self.originPoint.y-CIRCLE_RADIUS,
 							  CIRCLE_RADIUS*2 + CIRCLE_OVER_IMAGES_BORDER_WIDTH, CIRCLE_RADIUS*2);
 
-	self.circleView = [[UIImageView alloc] initWithFrame:frame];
+	self.circleView = [[UIImageView alloc] initWithFrame:circleViewFrame];
  	self.circleView.backgroundColor = [UIColor clearColor];
-	self.circleView.layer.cornerRadius = frame.size.width/2.f;
+	self.circleView.layer.cornerRadius = circleViewFrame.size.width/2.f;
  	self.circleView.layer.borderWidth = CIRCLE_OVER_IMAGES_BORDER_WIDTH;
  	self.circleView.layer.borderColor = [UIColor CIRCLE_OVER_IMAGES_COLOR].CGColor;
 	self.circleView.alpha = 0.f;
     
-    self.panGestureSensingView.frame = CGRectMake(self.circleView.frame.origin.x - SLIDE_THRESHOLD,
-                                                  self.circleView.frame.origin.y - SLIDE_THRESHOLD,
-                                                  self.circleView.frame.size.width + SLIDE_THRESHOLD,
-                                                  self.circleView.frame.size.height + SLIDE_THRESHOLD);
+    self.panGestureSensingView.frame = CGRectMake(circleViewFrame.origin.x - SLIDE_THRESHOLD,
+                                                  circleViewFrame.origin.y - SLIDE_THRESHOLD,
+                                                  circleViewFrame.size.width + SLIDE_THRESHOLD*2,
+                                                  circleViewFrame.size.height + SLIDE_THRESHOLD*2);
     [self addPanGestureToView:self.panGestureSensingView];
     [self addSubview:self.circleView];
     [self addSubview:self.panGestureSensingView];
@@ -306,8 +306,8 @@
 
 //check if tap is within radius of circle
 -(BOOL) circleTapped:(CGPoint) touchLocation {
-	if ((touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)
-		&&	(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)) {
+	if (fabs(touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)
+		&&	fabs(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)) {
 		[self goToPhoto:touchLocation];
 		return YES;
 	}
@@ -555,7 +555,9 @@
 #pragma mark - Gesture Recognizer Delegate methods -
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-	if ([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) {
+	// if tapping or panning in circle area ignore other gesture recognizers
+	if (([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]])
+		|| [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
 		if (gestureRecognizer.numberOfTouches >= 1){
 			CGPoint touchLocation = [gestureRecognizer locationOfTouch:0 inView:self];
 			if ([self circleTapped:touchLocation]) {

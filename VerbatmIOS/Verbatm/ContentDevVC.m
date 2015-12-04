@@ -136,7 +136,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 @property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
 
-#define WHAT_IS_IT_LIKE_TEXT @"tell your story"
+#define WHAT_IS_IT_LIKE_TEXT @"thread for your post"
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define TITLE_FIELD_Y_OFFSET 10.f
