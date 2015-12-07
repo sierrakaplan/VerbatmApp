@@ -42,7 +42,10 @@
 
 - (void) storePOVWithThread: (NSString*) thread andPinchViews: (NSMutableArray*) pinchViews atIndex: (NSInteger) index {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		POV* pov = [[POV alloc] initWithThread:thread andPinchViews:pinchViews];
+		POV* pov = [[POV alloc] initWithThread:thread andPinchViews:pinchViews
+								andCreatorName:@"Alex Rawitz"
+						   andCreatorImageName:@"alex_profile_image"
+								andChannelName:@"Sunsets"];
 		@synchronized(self) {
 			NSString* threadKey = [self getKeyFromThreadName: thread];
 			NSMutableArray* povs = [[NSMutableArray alloc] init];

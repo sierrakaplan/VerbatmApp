@@ -80,6 +80,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	[[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
 	[self setUpTabBarController];
 	[self registerForNotifications];
 }

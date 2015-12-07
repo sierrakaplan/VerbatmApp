@@ -1759,7 +1759,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
 
 	if (![title length]) {
-		[self alertAddTitle];
+//		[self alertAddTitle];
 	} else {
 		if(![pinchViews count]) {
 			NSLog(@"Can't publish with no pinch objects");

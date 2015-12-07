@@ -37,7 +37,6 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-	[[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
 	[self setHeader];
 }
 
@@ -68,6 +67,7 @@
 -(void) addPOVScrollView {
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
     self.povScrollView.delegate = self;
+	self.povScrollView.feedScrollView = YES;
 	[[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
 		[self.povScrollView displayPOVs: povs];
         

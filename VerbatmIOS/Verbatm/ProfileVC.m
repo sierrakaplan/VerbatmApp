@@ -35,7 +35,6 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 	self.contentCoveringScreen = YES;
 }
 

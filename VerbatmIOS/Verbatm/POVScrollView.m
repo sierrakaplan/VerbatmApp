@@ -24,6 +24,7 @@
 
 -(instancetype) initWithFrame:(CGRect)frame {
 	if (self = [super initWithFrame:frame]) {
+		self.feedScrollView = NO;
 		self.backgroundColor = [UIColor blackColor];
 		self.scrollEnabled = YES;
 		self.pagingEnabled = YES;
