@@ -181,7 +181,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) addBackgroundImage{
     
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    backgroundView.image =[UIImage imageNamed:@"b16"];
+    backgroundView.image =[UIImage imageNamed:@"d11"];
     
     [self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
     self.mainScrollView.backgroundColor = [UIColor clearColor];
