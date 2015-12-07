@@ -289,21 +289,17 @@
 #pragma mark - Clean up -
 
 -(void) clearArticle {
-    @autoreleasepool {
-        //We clear these so that the media is released
-        [self stopAllVideos];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            for(UIView *view in self.mainScrollView.subviews) {
-                [view removeFromSuperview];
-            }
-             [self.likeButton removeFromSuperview];
-        });
-       
-        self.currentPageIndex = -1;
-        self.pageAves = nil;
-        self.pageLoadManager = nil;
-    }
+	//We clear these so that the media is released
+	[self stopAllVideos];
+	
+	for(UIView *view in self.mainScrollView.subviews) {
+		[view removeFromSuperview];
+	}
+	if (self.likeButton.superview) [self.likeButton removeFromSuperview];
+
+	self.currentPageIndex = -1;
+	self.pageAves = nil;
+	self.pageLoadManager = nil;
 }
 
 //make sure to stop all videos

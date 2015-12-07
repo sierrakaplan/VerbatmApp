@@ -42,12 +42,22 @@
 	}
 }
 
+-(UIImageView*) getBackgroundImageViewWithFrame: (CGRect) frame {
+	UIImageView* backgroundImageView = [[UIImageView alloc] initWithImage:self];
+	backgroundImageView.frame = frame;
+	backgroundImageView.clipsToBounds = YES;
+	backgroundImageView.contentMode = UIViewContentModeScaleAspectFill;
+
+	return backgroundImageView;
+}
+
 - (UIImageView*) getBlurImageViewWithFilterLevel: (float) filterValue andFrame:(CGRect) frame {
 	UIImage* blurImage = [self blurredImageWithFilterLevel: filterValue];
 	UIImageView* blurredImageView = [[UIImageView alloc] initWithImage:blurImage];
 	blurredImageView.frame = frame;
 	blurredImageView.clipsToBounds = YES;
 	blurredImageView.contentMode = UIViewContentModeScaleAspectFill;
+
 	return blurredImageView;
 }
 

@@ -10,11 +10,12 @@
 #import "POV.h"
 #import "POVView.h"
 #import "POVScrollView.h"
+#import "Styles.h"
 
 @interface POVScrollView()
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
-@property (strong) NSMutableArray * povViews;
+@property (strong, nonatomic) NSMutableArray * povViews;
 #define NO_POVS_LABEL_WIDTH 300.f
 
 @end
@@ -38,8 +39,11 @@
 		UILabel* noPOVSLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
 																		 NO_POVS_LABEL_WIDTH, self.frame.size.height)];
 		noPOVSLabel.text = @"There are no stories in this thread.";
+		noPOVSLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
 		noPOVSLabel.textColor = [UIColor whiteColor];
 		noPOVSLabel.textAlignment = NSTextAlignmentCenter;
+		noPOVSLabel.lineBreakMode = NSLineBreakByWordWrapping;
+		noPOVSLabel.numberOfLines = 3;
 		[self addSubview:noPOVSLabel];
 	}
 	[self.activityIndicator stopAnimating];
@@ -47,13 +51,15 @@
 
 	CGFloat xPosition = 0.f;
 	for (POV* pov in povs) {
-		CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
-		NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds inPreviewMode:NO];
-		POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
-		[povView renderAVES: aves];
-		[self addSubview: povView];
-        [self.povViews addObject:povView];
-		xPosition += self.bounds.size.width;
+		@autoreleasepool {
+			CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
+			NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds inPreviewMode:NO];
+			POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
+			[povView renderAVES: aves];
+			[self addSubview: povView];
+			[self.povViews addObject:povView];
+			xPosition += self.bounds.size.width;
+		}
 	}
 	self.contentSize = CGSizeMake(povs.count * self.bounds.size.width, 0.f);
 }
@@ -73,23 +79,17 @@
     }
 }
 
-
-
-
-
 -(void) clearPOVs {
+	for(POVView* povView in self.povViews){
+		[povView clearArticle];
+	}
+
+	self.povViews = nil;
+
 	for (UIView* subview in self.subviews) {
 		[subview removeFromSuperview];
 	}
-    
-    for(int i = 0; i < self.povViews.count; i++){
-        UIView * subView = self.povViews[i];
-        if([subView isKindOfClass:[POVView class]]){
-            [(POVView *)subView povOffScreen];
-        }
-    }
-    
-    [self.povViews removeAllObjects];
+
 	[self.activityIndicator startAnimating];
 }
 

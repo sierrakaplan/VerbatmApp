@@ -136,7 +136,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 @property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
 
-#define WHAT_IS_IT_LIKE_TEXT @"tell your story"
+#define WHAT_IS_IT_LIKE_TEXT @"thread for your post"
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define TITLE_FIELD_Y_OFFSET 10.f
@@ -182,6 +182,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     backgroundView.image =[UIImage imageNamed:@"d11"];
+    //backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
+	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
     
     [self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
     self.mainScrollView.backgroundColor = [UIColor clearColor];
@@ -274,7 +276,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 													attributes:@{NSForegroundColorAttributeName: [UIColor TITLE_TEXT_COLOR],
 																 NSFontAttributeName : titleFont}];
     
-    self.titleField.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
+    self.titleField.backgroundColor = ADK_NAV_BAR_COLOR;
 	[self.titleField resignFirstResponder];
 	self.titleField.enabled = YES;
 	self.titleField.autocorrectionType = UITextAutocorrectionTypeYes;
@@ -1706,6 +1708,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
 	image = [image getImageWithOrientationUp];
 	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+//	image = [image scaleImageToSize:CGSizeMake(image.size.width/1.2f, image.size.height/1.2f)];
 	return image;
 }
 
@@ -1877,7 +1880,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(CustomNavigationBar*) navBar {
 	if (!_navBar) {
 		_navBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
-										  andBackgroundColor:[UIColor blackColor]];
+										  andBackgroundColor:ADK_NAV_BAR_COLOR];
 	}
 	return _navBar;
 }

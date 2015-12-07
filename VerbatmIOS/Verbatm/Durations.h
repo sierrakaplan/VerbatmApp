@@ -9,6 +9,8 @@
 #ifndef Durations_h
 #define Durations_h
 
+#define TAB_BAR_TRANSITION_TIME 0.3f
+
 #pragma mark - Sign In -
 
 #define ERROR_MESSAGE_ANIMATION_TIME 3.f

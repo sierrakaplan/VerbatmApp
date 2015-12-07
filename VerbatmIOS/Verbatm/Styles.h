@@ -9,23 +9,27 @@
 #ifndef Styles_h
 #define Styles_h
 
+#define HEADER_TEXT_FONT @"Quicksand-Regular"
+#define HEADER_TEXT_SIZE 30.f
 
-#define DEFAULT_FONT @"HelveticaNeue-Italic"
-#define BUTTON_FONT @"HelveticaNeue"
-#define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
-#define TITLE_TEXT_FONT @"HelveticaNeue"
+#define TAB_BAR_SELECTED_FONT @"Quicksand-Bold"
+#define TAB_BAR_FONT @"Quicksand-Light"
+#define TAB_BAR_FONT_SIZE 20.f
+
+#define TAB_BAR_ALPHA 0.7
+
+#define DEFAULT_FONT @"Quicksand-Regular"
+#define BUTTON_FONT @"Quicksand-Regular"
+#define PLACEHOLDER_FONT @"Quicksand-LightItalic"
+#define TITLE_TEXT_FONT DEFAULT_FONT
 
 #define SWITCH_LABEL_FONT @"Futura-Medium"
 
 #pragma mark Navigation Bars
 
 #define NAVIGATION_BAR_TEXT_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
-#define NAVIGATION_BAR_BUTTON_FONT @"HelveticaNeue-Medium"
+#define NAVIGATION_BAR_BUTTON_FONT DEFAULT_FONT
 #define NAVIGATION_BAR_BUTTON_FONT_SIZE 15.f
-
-#define TAB_BAR_COLOR whiteColor
-#define SELECTED_TAB_BAR_COLOR grayColor
-#define ADK_TAB_COLOR blackColor
 
 #define FILTER_LEVEL_BLUR 30
 #define BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
@@ -38,10 +42,11 @@
 
 
 #pragma mark - Feed -
+
+#pragma mark NOT IN USE
 #define FEED_BACKGROUND_COLOR 0.918
 #define STORY_BACKGROUND_COLOR colorWithRed: 0.8 green:0.8 blue:0.8 alpha:1
 #define SWITCH_CATEGORY_BAR_FONT_SIZE 27.f
-
 #define FEED_TITLE_TEXT_COLOR blackColor
 #define FEED_TITLE_FONT @"HelveticaNeue-Italic"
 #define FEED_TITLE_FONT_SIZE 20
@@ -52,12 +57,9 @@
 
 #pragma mark - ADK -
 
-#define TITLE_TEXT_COLOR whiteColor
+#define ADK_NAV_BAR_COLOR [UIColor colorWithWhite:1.0 alpha:0.8]
+#define TITLE_TEXT_COLOR blackColor
 #define TITLE_TEXT_SIZE 20.f
-
-#define ADD_COVER_PIC_TEXT_SIZE 15.f
-#define ADD_COVER_PIC_FONT @"HelveticaNeue-Light"
-#define COVER_PIC_CIRCLE_COLOR whiteColor
 
 #pragma mark PinchViews
 
@@ -98,7 +100,7 @@
 
 #pragma mark Text
 
-#define TEXT_AVE_FONT @"HelveticaNeue"
+#define TEXT_AVE_FONT DEFAULT_FONT
 #define TEXT_AVE_FONT_SIZE 20
 #define TEXT_AVE_COLOR blackColor
 

@@ -41,12 +41,31 @@
 }
 
 // IMAGE BLUR
-//
 -(void) setImageViewWithImage:(UIImage*) image {
     self.ourBlurView = [image getBlurImageViewWithFilterLevel:BLUR_IMAGE_FILTER andFrame:self.bounds];
+//	UIImage *mask = [UIImage imageNamed:MASK_IMAGE];
+//	CALayer *maskLayer = [CALayer layer];
+//	maskLayer.contents = (id)mask.CGImage;
+//	maskLayer.frame = self.ourBlurView.bounds;
+//	self.ourBlurView.layer.mask = maskLayer;
     [self addSubview:self.ourBlurView];
 }
 
+//NSArray *colors = @[(id)[UIColor colorWithWhite:1 alpha:1].CGColor,
+//					(id)[UIColor colorWithWhite:1 alpha:0].CGColor,
+//					(id)[UIColor colorWithWhite:1 alpha:1].CGColor];
+//CAGradientLayer *gradientLayer = [CAGradientLayer layer];
+//[gradientLayer setFrame:[self.ourBlurView frame]];
+//[gradientLayer setColors:colors];
+//[gradientLayer setLocations:@[[NSNumber numberWithInt:0.2f],
+//							  [NSNumber numberWithInt:0.8],
+//							  [NSNumber numberWithInt:1.f]]];
+//[gradientLayer setStartPoint:CGPointMake(0.0f, 0.0f)];
+//[gradientLayer setEndPoint:CGPointMake(1.0f, 0.0f)];
+//
+//self.ourBlurView.layer.mask = gradientLayer;
+//
+//[self.imageView.layer addSublayer:self.ourBlurView.layer];
 
 // returns image view with image centered
 -(UIImageView*) getImageViewForImage:(UIImage*) image {

@@ -11,6 +11,10 @@
 #import "ArticleDisplayVC.h"
 #import "Analytics.h"
 
+#import "CustomTabBarController.h"
+
+#import "Durations.h"
+
 #import "FeedVC.h"
 
 #import "GTLVerbatmAppVerbatmUser.h"
@@ -48,7 +52,7 @@
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
-@property (strong, nonatomic) UITabBarController* tabBarController;
+@property (strong, nonatomic) CustomTabBarController* tabBarController;
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
@@ -65,9 +69,10 @@
 #define MEDIA_DEV_VC_ID @"media_dev_vc"
 #define PROFILE_VC_ID @"profile_vc"
 
-#define DARK_GRAY 0.f
-#define TAB_BAR_ALPHA 0.4
+#define DARK_GRAY 0.6f
 #define ADK_BUTTON_SIZE 60.f
+#define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
+#define TAB_BAR_HEIGHT 40.f
 
 @end
 
@@ -132,7 +137,8 @@
 -(void) formatTabBar {
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	CGSize tabBarItemSize = CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
-									   self.tabBarController.tabBar.frame.size.height);
+									   self.tabBarController.tabBarHeight);
+	[self.tabBarController.tabBar setTintColor:SELECTED_TAB_ICON_COLOR];
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
 	// Sets the background color of the selected UITabBarItem
@@ -143,7 +149,7 @@
 	self.tabBarFrameOffScreen = CGRectMake(self.tabBarController.tabBar.frame.origin.x,
 										   self.view.frame.size.height + ADK_BUTTON_SIZE/2.f,
 										   self.tabBarController.tabBar.frame.size.width,
-										   self.tabBarController.tabBar.frame.size.height);
+										   self.tabBarController.tabBarHeight);
 }
 
 -(UIImage*) getUnselectedTabBarItemImageWithSize: (CGSize) size {
@@ -167,14 +173,12 @@
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[[UIImage imageNamed:PROFILE_NAV_ICON]
 																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-													  selectedImage:[[UIImage imageNamed:PROFILE_NAV_ICON]
-																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]]; //imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
 
 	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[[UIImage imageNamed:HOME_NAV_ICON]
 																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-													  selectedImage:[[UIImage imageNamed:HOME_NAV_ICON]
-																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
+													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]]; //imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
 	// images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
@@ -183,6 +187,7 @@
 -(void)createTabBarViewController{
     self.tabBarControllerContainerView.frame = self.view.bounds;
     self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
+	self.tabBarController.tabBarHeight = TAB_BAR_HEIGHT;
     [self.tabBarControllerContainerView addSubview:self.tabBarController.view];
     [self addChildViewController:self.tabBarController];
     self.tabBarController.delegate = self;
@@ -196,7 +201,7 @@
 	// covers up tab so that it won't go to blank view controller
 	// Center tab out of 3
 	UIView* tabView = [[UIView alloc] initWithFrame:CGRectMake(tabWidth, 0.f, tabWidth,
-															self.tabBarController.tabBar.frame.size.height)];
+															self.tabBarController.tabBarHeight)];
 	[tabView setBackgroundColor:[UIColor clearColor]];
 
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -270,11 +275,15 @@
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
-		[[UIApplication sharedApplication] setStatusBarHidden:NO];
-		self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
+		}];
+		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 	} else {
-		[[UIApplication sharedApplication] setStatusBarHidden:YES];
-		self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
+		}];
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	}
 }
 

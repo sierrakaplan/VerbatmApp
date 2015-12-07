@@ -40,7 +40,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>5026</string>
+	<string>5029</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -153,6 +153,14 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Quicksand-LightItalic.otf</string>
+		<string>Quicksand-BoldItalic.otf</string>
+		<string>Quicksand-Bold.otf</string>
+		<string>Quicksand-Light.otf</string>
+		<string>Quicksand-Regular.otf</string>
+	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>Main</string>
 	<key>UIMainStoryboardFile</key>
