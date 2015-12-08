@@ -25,6 +25,7 @@
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
+@property (nonatomic) CGRect povScrollViewFrame;
 @property (strong, nonatomic) POVScrollView* povScrollView;
 
 #define TRENDING_VC_ID @"trending_vc"
@@ -38,17 +39,26 @@
 -(void)viewDidLoad {
 	[super viewDidLoad];
 	[self setHeader];
+    [self addPOVScrollView];
+    [self addClearScreenGesture];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 //    [self createContentListView];
-	[self addPOVScrollView];
-    [self addClearScreenGesture];
+    [[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
+        [self.povScrollView displayPOVs: povs];
+        
+    });
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
+
+-(void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.povScrollView clearPOVs];
 }
 
 -(void) setHeader {
@@ -65,13 +75,11 @@
 }
 
 -(void) addPOVScrollView {
-	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
+	self.povScrollViewFrame = CGRectMake(0.f, HEADER_HEIGHT, self.view.bounds.size.width,
+										 self.view.bounds.size.height);// - HEADER_HEIGHT - 40.f);
+	self.povScrollView = [[POVScrollView alloc] initWithFrame: self.povScrollViewFrame];
     self.povScrollView.delegate = self;
 	self.povScrollView.feedScrollView = YES;
-	[[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
-		[self.povScrollView displayPOVs: povs];
-        
-	});
 	[self.view insertSubview:self.povScrollView belowSubview:self.header];
 }
 
@@ -113,15 +121,19 @@
     if(self.contentCoveringScreen) {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self.header setFrame:self.headerFrameOffScreen];
+			[self.povScrollView setFrame:self.view.bounds];
 		}];
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
+		[self.povScrollView headerShowing:NO];
     } else {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self.header setFrame:self.headerFrameOnScreen];
+			[self.povScrollView setFrame:self.povScrollViewFrame];
 		}];
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
+		[self.povScrollView headerShowing:YES];
     }
 }
 

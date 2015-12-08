@@ -9,9 +9,10 @@
 #ifndef Icons_h
 #define Icons_h
 
+#define DARK_FADE_BACKGROUND @"dark_fade_box"
 #define BLUR_MASK @"blur_background"
 #define TEXT_BACKGROUND @"text_background"
-#define BACKGROUND_IMAGE @"background_4"
+#define BACKGROUND_IMAGE @"background_1"
 
 #define BACK_ARROW_LEFT @"back_arrow_left"
 #define BACK_ARROW_RIGHT @"back_arrow_right"

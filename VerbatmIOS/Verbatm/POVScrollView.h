@@ -17,6 +17,8 @@
 
 -(void) clearPOVs;
 
--(void)playPOVOnScreen;
+-(void) playPOVOnScreen;
+
+-(void) headerShowing: (BOOL) showing;
 
 @end

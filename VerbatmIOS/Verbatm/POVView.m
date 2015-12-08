@@ -17,6 +17,7 @@
 #import "Page.h"
 #import "PagesLoadManager.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 
 #import "UserManager.h"
 #import "UIView+Effects.h"
@@ -124,6 +125,51 @@
 		[self.mainScrollView addSubview: ave];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
+}
+
+-(void) addCreatorName: (NSString*) creatorName andCreatorImage: (NSString*) creatorImageName andChannelName: (NSString*) channelName {
+//	ArticleViewingExperience* firstPage = [self.pageAves objectForKey:[NSNumber numberWithInt:0]];
+	UIImageView* headerBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, 60.f)];
+	headerBackground.image = [UIImage imageNamed:DARK_FADE_BACKGROUND];
+	[self addSubview:headerBackground];
+
+	CGFloat headerOffsetX = 10.f;
+	CGFloat headerOffsetY = 5.f;
+	CGFloat creatorImageSize = 50.f;
+	CGRect creatorImageFrame = CGRectMake(headerOffsetX, headerOffsetY, creatorImageSize, creatorImageSize);
+	UIImageView* creatorImageView = [[UIImageView alloc] initWithFrame:creatorImageFrame];
+	creatorImageView.image = [UIImage imageNamed:creatorImageName];
+	creatorImageView.layer.cornerRadius = creatorImageSize/2.f;
+	creatorImageView.layer.masksToBounds = YES;
+	creatorImageView.clipsToBounds = YES;
+	creatorImageView.contentMode = UIViewContentModeScaleAspectFill;
+
+	CGRect creatorNameFrame = CGRectMake(creatorImageFrame.origin.x + creatorImageFrame.size.width + 10.f,
+										 headerOffsetY + 10.f, 130.f, creatorImageSize);
+	UITextView* creatorNameView = [[UITextView alloc] initWithFrame:creatorNameFrame];
+	creatorNameView.textAlignment = NSTextAlignmentLeft;
+	creatorNameView.text = creatorName;
+	creatorNameView.font = [UIFont fontWithName:DEFAULT_FONT size:16.f];
+	creatorNameView.textColor = [UIColor whiteColor];
+	creatorNameView.editable = NO;
+	creatorNameView.selectable = NO;
+	[creatorNameView setBackgroundColor:[UIColor clearColor]];
+
+	CGFloat channelNameWidth = 180.f;
+	CGFloat channelNameHeight = 30.f;
+	CGRect channelNameFrame = CGRectMake(self.frame.size.width - headerOffsetX - channelNameWidth, headerOffsetY + 10.f, channelNameWidth, channelNameHeight);
+	UIButton* channelButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	channelButton.frame = channelNameFrame;
+	[channelButton setTitle:channelName forState:UIControlStateNormal];
+	[channelButton.titleLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:18.f]];
+	channelButton.titleLabel.textColor = [UIColor whiteColor];
+	channelButton.layer.borderColor = [UIColor whiteColor].CGColor;
+	channelButton.layer.borderWidth = 2.f;
+	[channelButton setBackgroundColor:[UIColor clearColor]];
+
+	[self addSubview:creatorImageView];
+	[self addSubview:creatorNameView];
+	[self addSubview:channelButton];
 }
 
 #pragma mark - Add like button -
@@ -323,7 +369,7 @@
 -(UIScrollView*) mainScrollView {
 	if (!_mainScrollView) {
 		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
-		_mainScrollView.backgroundColor = [UIColor blackColor];
+		_mainScrollView.backgroundColor = [UIColor blueColor];
 		_mainScrollView.pagingEnabled = YES;
 		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];

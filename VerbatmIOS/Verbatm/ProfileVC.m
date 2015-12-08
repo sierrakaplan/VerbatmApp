@@ -29,6 +29,8 @@
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
 
+@property (strong, nonatomic) NSArray* threads;
+
 @end
 
 @implementation ProfileVC
@@ -36,30 +38,36 @@
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.contentCoveringScreen = YES;
+    
+    //this is where you'd fetch the threads
+    self.threads = @[@"Entrepreneurship", @"Music", @"Social Justice"];
+    [self addPOVScrollView];
+    [self createNavigationBar];
+    [self addClearScreenGesture];
 }
 
 -(void) viewWillAppear:(BOOL)animated{
-    //this is where you'd fetch the threads
-    NSArray * testThreads = @[@"Entrepreneurship", @"Music", @"Social Justice"];
+    [[LocalPOVs sharedInstance] getPOVsFromThread:self.threads[0]].then(^(NSArray* povs) {
+        [self.povScrollView displayPOVs: povs];
+        [self.povScrollView playPOVOnScreen];
+    });
     
 //    [self createContentListViewWithStartThread:testThreads[0]];
-	[self addPOVScrollViewWithThreads: testThreads];
-    [self createNavigationBarWithThreads: testThreads];
-    [self addClearScreenGesture];
+	
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 }
 
--(void) addPOVScrollViewWithThreads: (NSArray*) threads {
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.povScrollView clearPOVs];
+}
+
+-(void) addPOVScrollView {
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
     self.povScrollView.delegate = self;
-	[[LocalPOVs sharedInstance] getPOVsFromThread:threads[0]].then(^(NSArray* povs) {
-		[self.povScrollView displayPOVs: povs];
-		[self.povScrollView playPOVOnScreen];
-		povs = nil;
-	});
 	[self.view addSubview:self.povScrollView];
 }
 
@@ -81,12 +89,12 @@
     self.postDisplayVC.delegate = self;
 }
 
--(void) createNavigationBarWithThreads:(NSArray *) threads {
+-(void) createNavigationBar {
     self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
 	self.profileNavBarFrameOffScreen = CGRectMake(0.f, -PROFILE_NAV_BAR_HEIGHT, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
     [self updateUserInfo];
     self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:self.profileNavBarFrameOnScreen
-												   andThreads:threads andUserName:self.currentUser.name];
+												   andThreads:self.threads andUserName:self.currentUser.name];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
     
