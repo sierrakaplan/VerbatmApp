@@ -155,7 +155,7 @@
 	creatorNameView.selectable = NO;
 	[creatorNameView setBackgroundColor:[UIColor clearColor]];
 
-	CGFloat channelNameWidth = 180.f;
+	CGFloat channelNameWidth = 190.f;
 	CGFloat channelNameHeight = 30.f;
 	CGRect channelNameFrame = CGRectMake(self.frame.size.width - headerOffsetX - channelNameWidth, headerOffsetY + 10.f, channelNameWidth, channelNameHeight);
 	UIButton* channelButton = [UIButton buttonWithType:UIButtonTypeCustom];

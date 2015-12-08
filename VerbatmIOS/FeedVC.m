@@ -48,7 +48,7 @@
 //    [self createContentListView];
     [[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
         [self.povScrollView displayPOVs: povs];
-        
+        [self.povScrollView playPOVOnScreen];
     });
 }
 

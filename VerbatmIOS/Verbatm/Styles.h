@@ -20,14 +20,14 @@
 
 #define DEFAULT_FONT @"Quicksand-Regular"
 #define BUTTON_FONT @"Quicksand-Regular"
-#define PLACEHOLDER_FONT @"Quicksand-LightItalic"
-#define TITLE_TEXT_FONT DEFAULT_FONT
+#define PLACEHOLDER_FONT @"Quicksand-BoldItalic"
+#define TITLE_TEXT_FONT @"Quicksand-Bold"
 
 #define SWITCH_LABEL_FONT @"Futura-Medium"
 
 #pragma mark Navigation Bars
 
-#define NAVIGATION_BAR_TEXT_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
+#define NAVIGATION_BAR_TEXT_COLOR colorWithRed:(21.f/255.f) green:(71.f/255.f) blue:(97.f/255.f) alpha:1
 #define NAVIGATION_BAR_BUTTON_FONT DEFAULT_FONT
 #define NAVIGATION_BAR_BUTTON_FONT_SIZE 15.f
 
@@ -58,7 +58,7 @@
 #pragma mark - ADK -
 
 #define ADK_NAV_BAR_COLOR [UIColor colorWithWhite:1.0 alpha:1]
-#define TITLE_TEXT_COLOR blackColor
+#define TITLE_TEXT_COLOR whiteColor
 #define TITLE_TEXT_SIZE 20.f
 
 #pragma mark PinchViews

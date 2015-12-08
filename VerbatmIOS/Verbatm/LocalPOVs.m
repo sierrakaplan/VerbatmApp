@@ -24,7 +24,7 @@
 -(instancetype) init {
 	if (self = [super init]) {
 		// Clears all user defaults
-//		[[NSUserDefaults standardUserDefaults] setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
+		//	[[NSUserDefaults standardUserDefaults] setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
 //		[self clearPOVsForThread:@"feed"];
 	}
 	return self;
@@ -43,9 +43,9 @@
 - (void) storePOVWithThread: (NSString*) thread andPinchViews: (NSMutableArray*) pinchViews atIndex: (NSInteger) index {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
 		POV* pov = [[POV alloc] initWithThread:thread andPinchViews:pinchViews
-								andCreatorName:@"Humans of New York"
-						   andCreatorImageName:@"hony_profile_image"
-								andChannelName:@"Immigrant Stories"];
+								andCreatorName:@"Iain Usiri"
+						   andCreatorImageName:@"iain_profile_image"
+								andChannelName:@"Entrepreneurship"];
 		@synchronized(self) {
 			NSString* threadKey = [self getKeyFromThreadName: thread];
 			NSMutableArray* povs = [[NSMutableArray alloc] init];
