@@ -51,7 +51,6 @@
         [self.povScrollView displayPOVs: povs];
         [self.povScrollView playPOVOnScreen];
     });
-    
 //    [self createContentListViewWithStartThread:testThreads[0]];
 	
 }

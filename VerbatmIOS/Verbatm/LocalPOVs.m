@@ -24,7 +24,7 @@
 -(instancetype) init {
 	if (self = [super init]) {
 		// Clears all user defaults
-		//	[[NSUserDefaults standardUserDefaults] setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
+//			[[NSUserDefaults standardUserDefaults] setPersistentDomain:[NSDictionary dictionary] forName:[[NSBundle mainBundle] bundleIdentifier]];
 //		[self clearPOVsForThread:@"feed"];
 	}
 	return self;

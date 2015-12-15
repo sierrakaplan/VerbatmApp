@@ -44,7 +44,7 @@
 	UILabel* userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(SETTINGS_BUTTON_SIZE + SETTINGS_BUTTON_OFFSET, BELOW_STATUS_BAR,
 																	   self.frame.size.width - SETTINGS_BUTTON_OFFSET*2 - SETTINGS_BUTTON_SIZE*2,
 																	   self.profileHeader.frame.size.height - SETTINGS_BUTTON_OFFSET*2)];
-	userNameLabel.text =  @"Iain Usiri";
+	userNameLabel.text =  @"Aishwarya Vardhana";
 	userNameLabel.textAlignment = NSTextAlignmentCenter;
 	userNameLabel.textColor = [UIColor blackColor];
 	userNameLabel.font = [UIFont fontWithName:HEADER_TEXT_FONT size:HEADER_TEXT_SIZE];
