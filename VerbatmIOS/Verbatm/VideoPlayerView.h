@@ -13,51 +13,39 @@
 #import <AVKit/AVKit.h>
 
 @interface VideoPlayerView: UIView <NSCoding>
-//this boolean is NO by default and should only
-//be triggered by a videopinchview
-//this allows the video player to adjust the way the frame is displayed.
-//should be called before any URL's are passed in. 
-@property (nonatomic) BOOL forPinchView;
-@property (atomic) BOOL playAtEndOfAsynchronousSetup;//in case we want to short circuit and prepare content synchronously
 
-//pass in an array always - even if it's one url
--(void)prepareVideoFromURLArray_asynchronouse: (NSArray*) urlArray;
--(void)prepareVideoFromAsset_synchronous: (AVAsset*) asset;
+@property (nonatomic, readonly) BOOL videoLoading;
+@property (nonatomic, readonly) BOOL repeatsVideo;
+@property (nonatomic, readonly) BOOL isMuted;
+@property (nonatomic, readonly) BOOL isVideoPlaying; //tells you if the video is in a playing state
 
+// Array must be of avasset or nsurl
+// Asynchronously fuses assets then sets the player item
+-(void)prepareVideoFromArray: (NSArray*) videoList;
 
+// Sets the player item from the avasset
+-(void)prepareVideoFromAsset: (AVAsset*) asset;
 
-
-// array of avassets
--(void) prepareVideoFromArrayOfAssets_asynchronous: (NSArray*)videoList;
-
-//this is used rarely when we need to load and play a view and it
-//doesn't give our code a chance to be prepared
--(void)prepareVideoFromArrayOfAssets_synchronous: (NSArray*)videoList;
-
--(void)prepareVideoFromArrayOfURL_synchronous: (NSArray*)videoList;
+// Sets the player item from the url
+-(void)prepareVideoFromURL: (NSURL*) url;
 
 
-//following methods will only execute if playVideo was called first
-
--(void)repeatVideoOnEnd:(BOOL)repeat;
+#pragma mark - Playback -
 
 -(void)playVideo;
 
+// Pauses player. To continue, call playVideo again.
 -(void)pauseVideo;
 
--(void)continueVideo;
-
--(void)unmuteVideo;
-
--(void)muteVideo;
+// Mutes and unmutes video
+-(void) muteVideo: (BOOL) mute;
 
 -(void)fastForwardVideoWithRate: (NSInteger) rate;
 
 -(void)rewindVideoWithRate: (NSInteger) rate;
 
+// Frees all objects associated with video
 -(void) stopVideo;
-
--(BOOL) isPlaying;
 
 -(void)removeMuteButtonFromView;
 

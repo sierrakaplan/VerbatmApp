@@ -24,8 +24,6 @@
 #import "ImagePinchView.h"
 #import "Icons.h"
 
-#import "LocalPOVs.h"
-
 #import <QuartzCore/QuartzCore.h>
 
 #import "PinchView.h"
@@ -1777,14 +1775,12 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 -(void) publishOurStoryWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews{
-//    POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title];
-//TODO:    [publisher publish];
+    POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title];
+	[publisher publish];
     //TODO: make sure current user exists and if not make them sign in
-//    NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
+    NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
 
-
-	[[LocalPOVs sharedInstance] storePOVWithThread:title andPinchViews:pinchViews atIndex:-1];
-//    [self.delegate povPublishedWithUserName:userName andTitle:title andProgressObject: publisher.publishingProgress];
+    [self.delegate povPublishedWithUserName:userName andTitle:title andProgressObject: publisher.publishingProgress];
 
     [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
     [self cleanUp];

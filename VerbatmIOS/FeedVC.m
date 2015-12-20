@@ -11,7 +11,6 @@
 #import "Icons.h"
 #import "FeedVC.h"
 #import "Notifications.h"
-#import "LocalPOVs.h"
 #import "POVScrollView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -46,10 +45,9 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 //    [self createContentListView];
-    [[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
-        [self.povScrollView displayPOVs: povs];
-        [self.povScrollView playPOVOnScreen];
-    });
+//TODO: get POVs
+//        [self.povScrollView displayPOVs: povs];
+//        [self.povScrollView playPOVOnScreen];
 }
 
 -(void) viewDidAppear:(BOOL)animated {

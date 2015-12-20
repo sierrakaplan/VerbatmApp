@@ -7,7 +7,6 @@
 //
 
 #import "Durations.h"
-#import "LocalPOVs.h"
 #import "POVScrollView.h"
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
@@ -46,11 +45,12 @@
     [self addClearScreenGesture];
 }
 
--(void) viewWillAppear:(BOOL)animated{
-    [[LocalPOVs sharedInstance] getPOVsFromThread:self.threads[0]].then(^(NSArray* povs) {
-        [self.povScrollView displayPOVs: povs];
-        [self.povScrollView playPOVOnScreen];
-    });
+-(void) viewWillAppear:(BOOL)animated {
+	
+	//TODO: get POVs
+//        [self.povScrollView displayPOVs: povs];
+//        [self.povScrollView playPOVOnScreen];
+
 //    [self createContentListViewWithStartThread:testThreads[0]];
 	
 }
@@ -117,11 +117,9 @@
 -(void)newChannelSelectedWithName:(NSString *) channelName{
     if(![channelName isEqualToString:self.currentThreadInView]){
 		[self.povScrollView clearPOVs];
-		[[LocalPOVs sharedInstance] getPOVsFromThread:channelName].then(^(NSArray* povs) {
-			[self.povScrollView displayPOVs: povs];
-			[self.povScrollView playPOVOnScreen];
-			povs = nil;
-		});
+		//TODO: get POVS
+//			[self.povScrollView displayPOVs: povs];
+//			[self.povScrollView playPOVOnScreen];
     }
 }
 
