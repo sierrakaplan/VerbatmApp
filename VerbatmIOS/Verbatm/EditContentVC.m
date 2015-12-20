@@ -237,9 +237,9 @@
 	self.videoView = [[VideoPlayerView alloc]init];
 	self.videoView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 	[self.view addSubview:self.videoView];
-	[self.videoView prepareVideoFromAsset_synchronous:videoAsset];
+	[self.videoView prepareVideoFromAsset:videoAsset];
 	[self.videoView playVideo];
-	[self.videoView repeatVideoOnEnd:YES];
+	self.videoView.repeatsVideo = YES;
 }
 
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index {

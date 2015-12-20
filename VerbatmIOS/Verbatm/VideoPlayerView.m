@@ -23,7 +23,6 @@
 #pragma mark Video Playback properties
 @property (nonatomic) BOOL playVideoAfterLoading;
 @property (nonatomic, readwrite) BOOL videoLoading;
-@property (nonatomic, readwrite) BOOL repeatsVideo;
 @property (nonatomic, readwrite) BOOL isMuted;
 @property (nonatomic, readwrite) BOOL isVideoPlaying; //tells you if the video is in a playing state
 @property (strong, atomic) NSTimer * ourTimer;//keeps calling continue

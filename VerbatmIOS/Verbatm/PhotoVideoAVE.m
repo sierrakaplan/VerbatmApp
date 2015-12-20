@@ -68,8 +68,7 @@
 
 -(void) initialFormatting {
 	[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-	//make sure the video is on repeat
-	[self.videoView.videoPlayer repeatVideoOnEnd:YES];
+	self.videoView.videoPlayer.repeatsVideo = YES;
 
 	float videoAveHeight = ((self.frame.size.width*3)/4);
 	float photoAveHeight = (self.frame.size.height - videoAveHeight);

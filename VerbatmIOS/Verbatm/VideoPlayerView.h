@@ -14,8 +14,9 @@
 
 @interface VideoPlayerView: UIView <NSCoding>
 
+@property (nonatomic) BOOL repeatsVideo;
+
 @property (nonatomic, readonly) BOOL videoLoading;
-@property (nonatomic, readonly) BOOL repeatsVideo;
 @property (nonatomic, readonly) BOOL isMuted;
 @property (nonatomic, readonly) BOOL isVideoPlaying; //tells you if the video is in a playing state
 

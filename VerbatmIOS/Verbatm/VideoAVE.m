@@ -43,7 +43,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.inPreviewMode = NO;
-		[self.videoPlayer repeatVideoOnEnd:YES];
+		self.videoPlayer.repeatsVideo = YES;
         [self playVideosFromArray:videoAndTextList];
     }
     return self;
@@ -53,7 +53,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.inPreviewMode = inPreviewMode;
-		[self.videoPlayer repeatVideoOnEnd:YES];
+		self.videoPlayer.repeatsVideo = YES;
 
 		NSMutableArray * videoAssets = [[NSMutableArray alloc] init];
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
@@ -74,7 +74,7 @@
 			if(videoAssets.count > 1) [self createRearrangeButton];
 		} else {
 			[self prepareVideos:videoAssets];
-			self.hasBeenSetUp = NO;
+			self.hasBeenSetUp = YES;
 		}
 	}
 	return self;
@@ -88,35 +88,13 @@
 //        NSNumber* textYPos = videoWithText[2];
     }
     [self prepareVideos:videoList];
-    self.hasBeenSetUp = NO;
+    self.hasBeenSetUp = YES;
 }
 
 -(void)prepareVideos:(NSArray*)videoList {
 	if (!videoList.count) return;
-	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
-        [self.videoPlayer prepareVideoFromArrayOfAssets_asynchronous:videoList];
-	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
-		[self.videoPlayer prepareVideoFromURLArray_asynchronouse:videoList];
-	} else {
-		return;
-	}
+	[self.videoPlayer prepareVideoFromArray:videoList];
     self.videoList = videoList;
-    
-	//[self.videoPlayer playVideo];
-}
-
--(void)prepareVideos_synchronous:(NSArray*)videoList {
-    if (!videoList.count) return;
-    if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
-        [self.videoPlayer prepareVideoFromArrayOfAssets_synchronous:videoList];
-    } else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
-        [self.videoPlayer prepareVideoFromArrayOfURL_synchronous:videoList];
-    } else {
-        return;
-    }
-    self.videoList = videoList;
-    
-    //[self.videoPlayer playVideo];
 }
 
 #pragma mark - Rearrange button -
@@ -146,11 +124,13 @@
     for(VideoPinchView * videoPinchView in pinchViews) {
         [assetArray addObject:videoPinchView.video];
     }
-    if(self.editContentView.videoView.isPlaying){
+    if(self.editContentView.videoView.isVideoPlaying){
         [self.editContentView displayVideo:assetArray];
         [self.editContentView almostOnScreen];
         [self.editContentView onScreen];
-    }
+    } else {
+		NSLog(@"Edit content view video not playing");
+	}
     if([self.editContentView.pinchView isKindOfClass:[CollectionPinchView class]]){
 		((CollectionPinchView*)self.pinchView).videoPinchViews = pinchViews;
     }
@@ -159,7 +139,6 @@
         self.rearrangeView = nil;
     }
 }
-
 
 #pragma mark - On and Off Screen (play and pause) -
 
@@ -176,26 +155,22 @@
 -(void)onScreen {
     if (self.editContentView){
         [self.editContentView onScreen];
-    } else{
-        if(self.hasBeenSetUp){
-           [self.videoPlayer playVideo];
-        }else{
-            if(self.videoList){
-                [self.videoPlayer stopVideo];
-            }
-            [self prepareVideos_synchronous:self.videoList];
-            [self.videoPlayer playVideo];
+    } else {
+		if(self.videoList){
+			[self.videoPlayer stopVideo];
+		}
+        if(!self.hasBeenSetUp){
+           [self prepareVideos:self.videoList];
         }
-        
-        
+		[self.videoPlayer playVideo];
     }
 }
 
 -(void)almostOnScreen{
     if(self.editContentView){
         [self.editContentView almostOnScreen];
-    }else{
-        if(self.videoList){
+    } else {
+        if(self.videoList) {
             [self.videoPlayer stopVideo];
             [self prepareVideos:self.videoList];
             self.hasBeenSetUp = YES;

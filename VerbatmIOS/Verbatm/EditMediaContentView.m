@@ -217,7 +217,7 @@
 	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
 	[self addSubview:self.videoView];
 	[self bringSubviewToFront:self.videoView];
-	[self.videoView repeatVideoOnEnd:YES];
+	self.videoView.repeatsVideo = YES;
 	//[self addTapGestureToMainView];
     
     self.videoAssets = videoAssetArray;
@@ -462,8 +462,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 
 -(void)onScreen {
     if(!self.hasBeenSetUp){
-        self.videoView.playAtEndOfAsynchronousSetup = YES;//triggers a condition in the prepare system to allow the video to play
-        [self.videoView prepareVideoFromArrayOfAssets_synchronous:self.videoAssets];
+        [self.videoView prepareVideoFromArray:self.videoAssets];
         [self.videoView playVideo];
     }else{
         [self.videoView playVideo];
@@ -474,13 +473,10 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 -(void)almostOnScreen{
     if(self.videoAssets){
         [self.videoView stopVideo];
-        [self.videoView prepareVideoFromArrayOfAssets_synchronous:self.videoAssets];
+        [self.videoView prepareVideoFromArray:self.videoAssets];
     }
     self.hasBeenSetUp = YES;
 }
-
-
-
 
 
 #pragma mark - Lazy Instantiation -
