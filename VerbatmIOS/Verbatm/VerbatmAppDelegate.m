@@ -41,7 +41,7 @@
 							   userInfo:nil];
 	});
 
-    [[UserSetupParameters sharedInstance] setUpParameters];//this sets up
+    [[UserSetupParameters sharedInstance] setUpParameters];
 	[[UserPovInProgress sharedInstance] loadPOVFromUserDefaults];
     
     [[Analytics getSharedInstance] newUserSession];
@@ -54,7 +54,9 @@
 	if ([PFUser currentUser].isAuthenticated) {
 		[[UserManager sharedInstance] queryForCurrentUser];
 	}
-
+    
+    [application setStatusBarHidden:YES];
+    
     return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
