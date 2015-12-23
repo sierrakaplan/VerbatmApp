@@ -11,10 +11,14 @@
 
 @interface POVScrollView : UIScrollView
 
+@property (nonatomic) BOOL feedScrollView;
+
 -(void) displayPOVs: (NSArray*)povs;
 
 -(void) clearPOVs;
 
--(void)playPOVOnScreen;
+-(void) playPOVOnScreen;
+
+-(void) headerShowing: (BOOL) showing;
 
 @end

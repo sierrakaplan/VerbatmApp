@@ -6,6 +6,7 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
+#import "Icons.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "StringsAndAppConstants.h"
@@ -16,6 +17,7 @@
 
 @property (nonatomic, readwrite) BOOL textShowing;
 @property (strong,nonatomic) UIImageView* ourBlurView;
+@property (strong,nonatomic) UIImageView* textBackgroundView;
 
 #define BLUR_IMAGE_FILTER 40
 @end
@@ -26,9 +28,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-		[self.imageView setImage: image];
         [self setImageViewWithImage:image];
-        [self addSubview:self.imageView];
         if(text.length){
             [self.textView setText: text];
             [self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
@@ -42,30 +42,11 @@
 
 // IMAGE BLUR
 -(void) setImageViewWithImage:(UIImage*) image {
-    self.ourBlurView = [image getBlurImageViewWithFilterLevel:BLUR_IMAGE_FILTER andFrame:self.bounds];
-//	UIImage *mask = [UIImage imageNamed:MASK_IMAGE];
-//	CALayer *maskLayer = [CALayer layer];
-//	maskLayer.contents = (id)mask.CGImage;
-//	maskLayer.frame = self.ourBlurView.bounds;
-//	self.ourBlurView.layer.mask = maskLayer;
-    [self addSubview:self.ourBlurView];
+	[self.imageView setImage: image];
+//    self.ourBlurView = [image getBlurImageViewWithFilterLevel:BLUR_IMAGE_FILTER andFrame:self.bounds];
+//    [self addSubview:self.ourBlurView];
+	[self addSubview:self.imageView];
 }
-
-//NSArray *colors = @[(id)[UIColor colorWithWhite:1 alpha:1].CGColor,
-//					(id)[UIColor colorWithWhite:1 alpha:0].CGColor,
-//					(id)[UIColor colorWithWhite:1 alpha:1].CGColor];
-//CAGradientLayer *gradientLayer = [CAGradientLayer layer];
-//[gradientLayer setFrame:[self.ourBlurView frame]];
-//[gradientLayer setColors:colors];
-//[gradientLayer setLocations:@[[NSNumber numberWithInt:0.2f],
-//							  [NSNumber numberWithInt:0.8],
-//							  [NSNumber numberWithInt:1.f]]];
-//[gradientLayer setStartPoint:CGPointMake(0.0f, 0.0f)];
-//[gradientLayer setEndPoint:CGPointMake(1.0f, 0.0f)];
-//
-//self.ourBlurView.layer.mask = gradientLayer;
-//
-//[self.imageView.layer addSublayer:self.ourBlurView.layer];
 
 // returns image view with image centered
 -(UIImageView*) getImageViewForImage:(UIImage*) image {
@@ -96,7 +77,7 @@
 
 
 -(void)changeImageTo:(UIImage *) image{
-    [self.ourBlurView setImage:[image blurredImageWithFilterLevel:BLUR_IMAGE_FILTER]];
+//    [self.ourBlurView setImage:[image blurredImageWithFilterLevel:BLUR_IMAGE_FILTER]];
     [self.imageView setImage:image];
 }
 
@@ -106,6 +87,7 @@
 	CGFloat contentHeight = [self.textView measureContentHeight];
 	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
 	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, height);
+	self.textBackgroundView.frame = CGRectMake(0.f, 0.f, self.textView.frame.size.width, self.textView.frame.size.height);
 }
 
 #pragma mark - Lazy Instantiation -
@@ -114,7 +96,7 @@
 	if (!_imageView) {
 		_imageView = [[UIImageView alloc] initWithFrame: self.bounds];
 		_imageView.clipsToBounds = YES;
-		_imageView.contentMode = UIViewContentModeScaleAspectFit;
+		_imageView.contentMode = UIViewContentModeScaleAspectFill;
 	}
 	return _imageView;
 }
@@ -124,7 +106,15 @@
 		CGRect textViewFrame = CGRectMake(0.f, TEXT_VIEW_OVER_MEDIA_Y_OFFSET, self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
 		[_textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
-		_textView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];
+//		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.8];
+		_textView.backgroundColor = [UIColor clearColor];
+//		_textView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:TEXT_BACKGROUND]];
+
+		self.textBackgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0.f, 0.f, textViewFrame.size.width, textViewFrame.size.height)];
+		self.textBackgroundView.contentMode = UIViewContentModeScaleToFill;
+		self.textBackgroundView.image = [UIImage imageNamed:TEXT_BACKGROUND];
+		[_textView addSubview:self.textBackgroundView];
+		[_textView sendSubviewToBack:self.textBackgroundView];
 
 		//TEXT_SCROLLVIEW_BACKGROUND_COLOR
 		_textView.textColor = [UIColor TEXT_AVE_COLOR];

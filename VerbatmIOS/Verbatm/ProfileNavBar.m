@@ -44,9 +44,9 @@
 	UILabel* userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(SETTINGS_BUTTON_SIZE + SETTINGS_BUTTON_OFFSET, BELOW_STATUS_BAR,
 																	   self.frame.size.width - SETTINGS_BUTTON_OFFSET*2 - SETTINGS_BUTTON_SIZE*2,
 																	   self.profileHeader.frame.size.height - SETTINGS_BUTTON_OFFSET*2)];
-	userNameLabel.text =  @"Iain Usiri";
+	userNameLabel.text =  @"Aishwarya Vardhana";
 	userNameLabel.textAlignment = NSTextAlignmentCenter;
-	userNameLabel.textColor = [UIColor whiteColor];
+	userNameLabel.textColor = [UIColor blackColor];
 	userNameLabel.font = [UIFont fontWithName:HEADER_TEXT_FONT size:HEADER_TEXT_SIZE];
 	[self.profileHeader addSubview: userNameLabel];
 //	[self createSettingsButton];
@@ -73,7 +73,7 @@
 -(UIView*) profileHeader {
 	if (!_profileHeader) {
 		_profileHeader = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.bounds.size.width, PROFILE_HEADER_HEIGHT)];
-		[_profileHeader setBackgroundColor:[UIColor blackColor]];
+		[_profileHeader setBackgroundColor:[UIColor whiteColor]];
 		[self addSubview:_profileHeader];
 	}
 	return _profileHeader;

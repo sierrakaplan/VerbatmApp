@@ -40,7 +40,11 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
+<<<<<<< HEAD
 	<string>5044</string>
+=======
+	<string>5218</string>
+>>>>>>> 0d581f3a1f7eb6293d1b3119e509ea6955d5bdb5
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>

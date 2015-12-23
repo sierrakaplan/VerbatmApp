@@ -136,7 +136,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 @property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
 
-#define WHAT_IS_IT_LIKE_TEXT @"thread for your post"
+#define WHAT_IS_IT_LIKE_TEXT @"enter channel name"
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define TITLE_FIELD_Y_OFFSET 10.f
@@ -160,7 +160,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	[self.view setBackgroundColor:[UIColor lightGrayColor]];
+//	[self.view setBackgroundColor:[UIColor lightGrayColor]];
 	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	[self initializeVariables];
 	[self setFrameMainScrollView];
@@ -178,11 +178,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     [self addBackgroundImage];
 }
 
--(void) addBackgroundImage{
-    
+-(void) addBackgroundImage{    
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+<<<<<<< HEAD
     backgroundView.image =[UIImage imageNamed:@"d2"];
     //backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
+=======
+    backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
+>>>>>>> 0d581f3a1f7eb6293d1b3119e509ea6955d5bdb5
 	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
     
     [self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
@@ -208,6 +211,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 										   self.view.frame.size.width, self.view.frame.size.height - CUSTOM_NAV_BAR_HEIGHT);
 	self.mainScrollView.scrollEnabled = YES;
 	self.mainScrollView.bounces = YES;
+	[self adjustMainScrollViewContentSize];
 }
 
 //records the generic frame for any element that is a square and not a pinch view circle,
@@ -276,7 +280,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 													attributes:@{NSForegroundColorAttributeName: [UIColor TITLE_TEXT_COLOR],
 																 NSFontAttributeName : titleFont}];
     
-    self.titleField.backgroundColor = ADK_NAV_BAR_COLOR;
+    self.titleField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.6];
 	[self.titleField resignFirstResponder];
 	self.titleField.enabled = YES;
 	self.titleField.autocorrectionType = UITextAutocorrectionTypeYes;
@@ -393,10 +397,16 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 //adjusts the contentsize of the main view to the last element
 -(void) adjustMainScrollViewContentSize {
-	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-		ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
-		self.mainScrollView.contentSize = CGSizeMake(0, lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET);
-	}];
+	CGFloat minContentHeight = self.view.bounds.size.height + CONTENT_SIZE_OFFSET;
+	if (self.pageElementScrollViews && self.pageElementScrollViews.count) {
+		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+			ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
+			CGFloat contentHeight = lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET;
+			self.mainScrollView.contentSize = (contentHeight > minContentHeight) ? CGSizeMake(0, contentHeight) : CGSizeMake(0, minContentHeight);
+		}];
+	} else {
+		self.mainScrollView.contentSize = CGSizeMake(0.f, minContentHeight);
+	}
 }
 
 #pragma mark Scroll View actions
@@ -1707,7 +1717,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(UIImage*) getImageFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
 	image = [image getImageWithOrientationUp];
-	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+	image = [image scaleImageToSize:CGSizeMake(self.view.bounds.size.height*(image.size.width/image.size.height), self.view.bounds.size.height)];
 //	image = [image scaleImageToSize:CGSizeMake(image.size.width/1.2f, image.size.height/1.2f)];
 	return image;
 }
@@ -1760,7 +1770,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
 
 	if (![title length]) {
-		[self alertAddTitle];
+//		[self alertAddTitle];
 	} else {
 		if(![pinchViews count]) {
 			NSLog(@"Can't publish with no pinch objects");

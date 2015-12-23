@@ -2,16 +2,12 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "75x75 create-1.png",
+      "filename" : "33x33 Create.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "idiom" : "universal",
-      "filename" : "75x75 create.png",
+      "filename" : "Create 50x50.png",
       "scale" : "2x"
     },
     {

@@ -24,6 +24,8 @@
 
 -(instancetype) initWithFrame:(CGRect)frame {
 	if (self = [super initWithFrame:frame]) {
+		self.autoresizesSubviews = YES;
+		self.feedScrollView = NO;
 		self.backgroundColor = [UIColor blackColor];
 		self.scrollEnabled = YES;
 		self.pagingEnabled = YES;
@@ -38,7 +40,7 @@
 	if (!povs || !povs.count) {
 		UILabel* noPOVSLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
 																		 NO_POVS_LABEL_WIDTH, self.frame.size.height)];
-		noPOVSLabel.text = @"There are no stories in this thread.";
+		noPOVSLabel.text = @"There are no stories in this channel.";
 		noPOVSLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
 		noPOVSLabel.textColor = [UIColor whiteColor];
 		noPOVSLabel.textAlignment = NSTextAlignmentCenter;
@@ -55,7 +57,12 @@
 			CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
 			NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds inPreviewMode:NO];
 			POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
+			povView.autoresizesSubviews = YES;
+			povView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 			[povView renderAVES: aves];
+			if (self.feedScrollView) {
+				[povView addCreatorName:pov.creatorName andCreatorImage:pov.creatorImageName andChannelName:pov.channelName];
+			}
 			[self addSubview: povView];
 			[self.povViews addObject:povView];
 			xPosition += self.bounds.size.width;
@@ -63,7 +70,6 @@
 	}
 	self.contentSize = CGSizeMake(povs.count * self.bounds.size.width, 0.f);
 }
-
 
 -(void)playPOVOnScreen{
     int povIndex = self.contentOffset.x/self.frame.size.width;
@@ -83,14 +89,18 @@
 	for(POVView* povView in self.povViews){
 		[povView clearArticle];
 	}
-
 	self.povViews = nil;
-
 	for (UIView* subview in self.subviews) {
 		[subview removeFromSuperview];
 	}
-
 	[self.activityIndicator startAnimating];
+}
+
+-(void) headerShowing: (BOOL) showing {
+	if (showing) {
+	} else {
+
+	}
 }
 
 #pragma mark - Lazy Instantiation -

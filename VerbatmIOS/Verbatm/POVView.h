@@ -26,6 +26,8 @@
 
 -(void) renderAVES: (NSMutableArray *) aves;
 
+-(void) addCreatorName: (NSString*) creatorName andCreatorImage: (NSString*) creatorImageName andChannelName: (NSString*) channelName;
+
 -(void) displayMediaOnCurrentAVE;
 -(void) clearArticle;
 

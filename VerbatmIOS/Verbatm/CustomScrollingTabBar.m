@@ -28,7 +28,7 @@
 
 -(instancetype) initWithFrame:(CGRect)frame {
 	if (self = [super initWithFrame:frame]) {
-		[self setBackgroundColor:[UIColor colorWithWhite:0.f alpha: TAB_BAR_ALPHA]];
+		[self setBackgroundColor:[UIColor colorWithWhite:1.f alpha: TAB_BAR_ALPHA]];
 		self.scrollEnabled = YES;
 		self.showsHorizontalScrollIndicator = NO;
 		self.bounces = NO;
@@ -89,7 +89,7 @@
 
 -(NSDictionary*) tabTitleAttributes {
 	if (!_tabTitleAttributes) {
-		_tabTitleAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+		_tabTitleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
 								NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FONT size:TAB_BAR_FONT_SIZE]};
 	}
 	return _tabTitleAttributes;
@@ -99,12 +99,12 @@
 	if (!_selectedTabTitleAttributes) {
 		NSShadow *shadow = [[NSShadow alloc] init];
 		[shadow setShadowBlurRadius:10.f];
-		[shadow setShadowColor:[UIColor whiteColor]];
+		[shadow setShadowColor:[UIColor blackColor]];
 		[shadow setShadowOffset:CGSizeMake(0.f, 0.f)];
 
-		_selectedTabTitleAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+		_selectedTabTitleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
 //										NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle),
-										NSShadowAttributeName : shadow,
+//										NSShadowAttributeName : shadow,
 										NSFontAttributeName: [UIFont fontWithName:TAB_BAR_SELECTED_FONT size:TAB_BAR_FONT_SIZE]};
 	}
 	return _selectedTabTitleAttributes;

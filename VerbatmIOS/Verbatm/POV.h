@@ -12,7 +12,12 @@
 
 @property (strong, nonatomic) NSString* thread;
 @property (strong, nonatomic) NSMutableArray* pinchViews;
+@property (strong, nonatomic) NSString* creatorName;
+@property (strong, nonatomic) NSString* creatorImageName;
+@property (strong, nonatomic) NSString* channelName;
 
--(instancetype) initWithThread: (NSString*)thread andPinchViews: (NSMutableArray*) pinchViews;
+-(instancetype) initWithThread: (NSString*)thread andPinchViews: (NSMutableArray*) pinchViews
+				andCreatorName:(NSString*) creatorName andCreatorImageName: (NSString*) creatorImageName
+				andChannelName:(NSString*) channelName;
 
 @end

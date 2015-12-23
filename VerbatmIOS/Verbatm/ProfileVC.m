@@ -37,11 +37,10 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	[UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
 	self.contentCoveringScreen = YES;
     
     //this is where you'd fetch the threads
-    self.threads = @[@"Entrepreneurship", @"Music", @"Social Justice"];
+    self.threads = @[@"Entrepreneurship", @"Social Justice", @"Music"];
     [self addPOVScrollView];
     [self createNavigationBar];
     [self addClearScreenGesture];
@@ -52,7 +51,6 @@
         [self.povScrollView displayPOVs: povs];
         [self.povScrollView playPOVOnScreen];
     });
-    
 //    [self createContentListViewWithStartThread:testThreads[0]];
 	
 }
