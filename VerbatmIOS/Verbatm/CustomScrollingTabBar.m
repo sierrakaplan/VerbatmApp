@@ -9,6 +9,7 @@
 #import "CustomTab.h"
 #import "CustomScrollingTabBar.h"
 #import "Channel.h"
+#import "ChannelButtons.h"
 
 #import "Styles.h"
 
@@ -16,7 +17,7 @@
 
 // array of UIButtons
 @property (strong, nonatomic) NSMutableArray* tabs;
-@property (strong, nonatomic) UIButton* selectedTab;
+@property (strong, nonatomic) ChannelButtons * selectedTab;
 @property (strong, nonatomic) NSDictionary* tabTitleAttributes;
 @property (strong, nonatomic) NSDictionary* selectedTabTitleAttributes;
 
@@ -68,7 +69,7 @@
     return tabDivider;
 }
 
--(UIButton *) getChannelTitleButton:(Channel *) channel andOrigin: (CGPoint) origin{
+-(ChannelButtons *) getChannelTitleButton:(Channel *) channel andOrigin: (CGPoint) origin{
   
     
     CGPoint nameLabelOrigin = CGPointMake(0.f,0.f);
@@ -92,15 +93,14 @@
     followerNumberLabel.frame = CGRectMake(buttonWidth/2.f - followerNumberLabel.frame.size.width/2.f, followerNumberLabel.frame.origin.y, followerNumberLabel.frame.size.width, followerNumberLabel.frame.size.height);
     
     
-    UIButton * newButton = [[UIButton alloc] initWithFrame:buttonFrame];
-    newButton.backgroundColor = [UIColor clearColor];
+    ChannelButtons * newButton = [[ChannelButtons alloc] initWithFrame:buttonFrame];
+    newButton.channelName = channel.name;
     
+    newButton.backgroundColor = [UIColor clearColor];
     newButton.layer.borderWidth = 0.3;
     newButton.layer.borderColor = [UIColor whiteColor].CGColor;
-
     [newButton addSubview:nameLabel];
     [newButton addSubview:followerNumberLabel];
-    
     [newButton addTarget:self action:@selector(tabPressed:) forControlEvents:UIControlEventTouchUpInside];
     return newButton;
 }
@@ -164,10 +164,10 @@
     return  followersLabel;
 }
 
--(void) tabPressed: (UIButton*) tabButton {
+-(void) tabPressed: (ChannelButtons *) tabButton {
 	[self unselectTab:self.selectedTab];
 	[self selectTab:tabButton];
-	[self.customScrollingTabBarDelegate tabPressedWithTitle:[tabButton attributedTitleForState: UIControlStateNormal].string];
+	[self.customScrollingTabBarDelegate tabPressedWithTitle:tabButton.channelName];
 }
 
 -(void) selectTab: (UIButton*) tab {
@@ -176,7 +176,7 @@
 	self.selectedTab = tab;
 }
 
--(void) unselectTab: (UIButton*) tab {
+-(void) unselectTab: (ChannelButtons*) tab {
 //	[tab setAttributedTitle:[[NSAttributedString alloc] initWithString:[tab attributedTitleForState: UIControlStateNormal].string
 //																  attributes:self.tabTitleAttributes] forState:UIControlStateNormal];
 }

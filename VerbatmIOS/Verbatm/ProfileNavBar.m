@@ -10,7 +10,6 @@
 
 #import "CustomScrollingTabBar.h"
 #import "CustomNavigationBar.h"
-#import "ChannelButtons.h"
 #import "Channel.h"
 
 #import "Icons.h"
