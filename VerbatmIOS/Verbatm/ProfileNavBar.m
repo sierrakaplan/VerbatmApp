@@ -7,17 +7,23 @@
 //
 
 #import "ButtonScrollView.h"
+
 #import "CustomScrollingTabBar.h"
-#import "ProfileNavBar.h"
 #import "CustomNavigationBar.h"
 #import "ChannelButtons.h"
+#import "Channel.h"
+
 #import "Icons.h"
+
+#import "ProfileNavBar.h"
+#import "ProfileInformationBar.h"
+
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
 @interface ProfileNavBar () <CustomScrollingTabBarDelegate>
 
-@property (nonatomic, strong) UIView* profileHeader;
+@property (nonatomic, strong) ProfileInformationBar * profileHeader;
 @property (nonatomic, strong) CustomScrollingTabBar* threadNavScrollView;
 
 
@@ -31,33 +37,28 @@
 @implementation ProfileNavBar
 
 //expects an array of thread names (nsstring)
--(instancetype) initWithFrame:(CGRect)frame andThreads:(NSArray *)threads andUserName:(NSString *) userName {
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUserName:(NSString *) userName {
     self = [super initWithFrame:frame];
     if(self){
         [self createProfileHeaderWithUserName:userName];
-		[self.threadNavScrollView displayTabs:threads];
+		[self.threadNavScrollView displayTabs:channels];
     }
     return self;
 }
 
 -(void) createProfileHeaderWithUserName: (NSString*) userName {
-	UILabel* userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(SETTINGS_BUTTON_SIZE + SETTINGS_BUTTON_OFFSET, BELOW_STATUS_BAR,
-																	   self.frame.size.width - SETTINGS_BUTTON_OFFSET*2 - SETTINGS_BUTTON_SIZE*2,
-																	   self.profileHeader.frame.size.height - SETTINGS_BUTTON_OFFSET*2)];
-	userNameLabel.text =  @"Aishwarya Vardhana";
-	userNameLabel.textAlignment = NSTextAlignmentCenter;
-	userNameLabel.textColor = [UIColor blackColor];
-	userNameLabel.font = [UIFont fontWithName:HEADER_TEXT_FONT size:HEADER_TEXT_SIZE];
-	[self.profileHeader addSubview: userNameLabel];
-//	[self createSettingsButton];
+    
+    CGRect barFrame = CGRectMake(0.f, 0.f, self.bounds.size.width, PROFILE_HEADER_HEIGHT);
+    self.profileHeader = [[ProfileInformationBar alloc] initWithFrame:barFrame andUserName:userName];
+    [self addSubview:self.profileHeader];
 }
 
 -(void) createSettingsButton {
-	UIButton* settingsButton = [UIButton buttonWithType: UIButtonTypeCustom];
-	settingsButton.frame = CGRectMake(self.frame.size.width - SETTINGS_BUTTON_SIZE - SETTINGS_BUTTON_OFFSET,
-									  BELOW_STATUS_BAR + SETTINGS_BUTTON_OFFSET, SETTINGS_BUTTON_SIZE, SETTINGS_BUTTON_SIZE);
-	[settingsButton setImage:[UIImage imageNamed:SETTINGS_BUTTON_ICON] forState:UIControlStateNormal];
-	[self.profileHeader addSubview:settingsButton];
+//	UIButton* settingsButton = [UIButton buttonWithType: UIButtonTypeCustom];
+//	settingsButton.frame = CGRectMake(self.frame.size.width - SETTINGS_BUTTON_SIZE - SETTINGS_BUTTON_OFFSET,
+//									  BELOW_STATUS_BAR + SETTINGS_BUTTON_OFFSET, SETTINGS_BUTTON_SIZE, SETTINGS_BUTTON_SIZE);
+//	[settingsButton setImage:[UIImage imageNamed:SETTINGS_BUTTON_ICON] forState:UIControlStateNormal];
+//	[self.profileHeader addSubview:settingsButton];
 }
 
 
@@ -69,15 +70,6 @@
 
 
 #pragma mark - Lazy Instantation -
-
--(UIView*) profileHeader {
-	if (!_profileHeader) {
-		_profileHeader = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.bounds.size.width, PROFILE_HEADER_HEIGHT)];
-		[_profileHeader setBackgroundColor:[UIColor whiteColor]];
-		[self addSubview:_profileHeader];
-	}
-	return _profileHeader;
-}
 
 -(UIScrollView*) threadNavScrollView {
 	if (!_threadNavScrollView) {

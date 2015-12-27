@@ -10,11 +10,18 @@
 #define Styles_h
 
 #define HEADER_TEXT_FONT @"Quicksand-Regular"
-#define HEADER_TEXT_SIZE 30.f
+#define HEADER_TEXT_SIZE 20.f
 
 #define TAB_BAR_SELECTED_FONT @"Quicksand-Bold"
-#define TAB_BAR_FONT @"Quicksand-Light"
-#define TAB_BAR_FONT_SIZE 20.f
+#define TAB_BAR_CHANNEL_NAME_FONT @"Quicksand-Bold"
+#define TAB_BAR_FOLLOWERS_FONT @"Quicksand-Light"
+#define TAB_BAR_FOLLOWER_NUMBER_FONT @"Quicksand-Bold"
+
+#define TAB_BAR_FONT_SIZE 17.f
+#define FOLLOWERS_TEXT_FONT_SIZE 15.f
+
+
+
 
 #define TAB_BAR_ALPHA 0.7
 

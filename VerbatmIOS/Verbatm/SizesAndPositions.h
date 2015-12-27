@@ -10,7 +10,6 @@
 #define SizesAndPositions_h
 
 
-#define BELOW_STATUS_BAR ([UIApplication sharedApplication].statusBarFrame.origin.y + [UIApplication sharedApplication].statusBarFrame.size.height)
 #define TITLE_BAR_HEIGHT 60.f
 
 #pragma mark - Custom Navigation Bar -
