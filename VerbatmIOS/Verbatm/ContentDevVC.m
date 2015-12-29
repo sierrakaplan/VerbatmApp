@@ -180,7 +180,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) addBackgroundImage {    
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    backgroundView.image =[UIImage imageNamed:@"d2"];
+    backgroundView.image =[UIImage imageNamed:@"d3"];
     //backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
 	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
     

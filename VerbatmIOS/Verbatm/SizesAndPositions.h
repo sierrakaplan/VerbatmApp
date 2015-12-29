@@ -177,4 +177,7 @@
 #define PAN_CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
 
 
+#define TAB_BUTTON_PADDING 25.f
+#define TAB_DIVIDER_WIDTH 2.f
+
 #endif

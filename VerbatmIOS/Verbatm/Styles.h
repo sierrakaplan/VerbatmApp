@@ -123,7 +123,8 @@
 #define CIRCLE_OVER_IMAGES_ALPHA 0.4
 #define POINTS_ON_CIRCLE_ALPHA 0.5
 
+#define TAB_DIVIDER_COLOR clearColor
 
-
+#define TAB_BUTTON_BACKGROUND_IMAGE @"dark_fade_box"
 
 #endif /* Styles_h */
