@@ -56,20 +56,14 @@
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
     
-    Channel * enterpreneurship = [[Channel alloc] init];
-    enterpreneurship.numberOfFollowers = @(10);
-    enterpreneurship.name = @"Entrepreneurship";
+    Channel * enterpreneurship = [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
     
-    Channel * socialJustice = [[Channel alloc] init];
-    socialJustice.numberOfFollowers = @(200);
-    socialJustice.name = @"Social Justice";
+    Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
     
-    Channel * music = [[Channel alloc] init];
-    music.numberOfFollowers = @(590);
-    music.name = @"Music";
+    Channel * music = [[Channel alloc] initWithChannelName:@"Music" numberOfFollowers:@(10000) andUserName:@"Iain Usiri"];
+    
     
     self.channels = @[enterpreneurship, socialJustice, music];
-    
     block();//after downloading threads we call this block to build the profile
 }
 

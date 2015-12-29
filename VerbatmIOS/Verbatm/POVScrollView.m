@@ -61,7 +61,10 @@
 			povView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 			[povView renderAVES: aves];
 			if (self.feedScrollView) {
-				[povView addCreatorName:pov.creatorName andCreatorImage:pov.creatorImageName andChannelName:pov.channelName];
+                
+                Channel * povChannel = [[Channel alloc] initWithChannelName:pov.channelName numberOfFollowers:@(20) andUserName:pov.creatorName];
+				[povView addCreatorInfoFromChannel:povChannel];
+                
 			}
 			[self addSubview: povView];
 			[self.povViews addObject:povView];
