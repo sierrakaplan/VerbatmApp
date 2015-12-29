@@ -8,6 +8,7 @@
 
 #import "PovInfo.h"
 #import <UIKit/UIKit.h>
+#import "Channel.h"
 
 @protocol LikeButtonDelegate <NSObject>
 
@@ -26,7 +27,8 @@
 
 -(void) renderAVES: (NSMutableArray *) aves;
 
--(void) addCreatorName: (NSString*) creatorName andCreatorImage: (NSString*) creatorImageName andChannelName: (NSString*) channelName;
+-(void) addCreatorInfoFromChannel:(Channel *) channel;
+
 
 -(void) displayMediaOnCurrentAVE;
 -(void) clearArticle;

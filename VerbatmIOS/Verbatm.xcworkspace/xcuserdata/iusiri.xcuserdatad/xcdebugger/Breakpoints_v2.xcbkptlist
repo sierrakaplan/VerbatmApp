@@ -2133,7 +2133,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "229"
             endingLineNumber = "229"
-            landmarkName = "-displayMediaOnCurrentAVE"
+            landmarkName = "-addDownArrowButton"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2149,7 +2149,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "147"
             endingLineNumber = "147"
-            landmarkName = "-addCreatorName:andCreatorImage:andChannelName:"
+            landmarkName = "-addLikeButtonWithDelegate:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2165,7 +2165,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "146"
             endingLineNumber = "146"
-            landmarkName = "-addCreatorName:andCreatorImage:andChannelName:"
+            landmarkName = "-addLikeButtonWithDelegate:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2629,8 +2629,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "175"
             endingLineNumber = "175"
-            landmarkName = "@implementation POVView"
-            landmarkType = "3">
+            landmarkName = "-setDelegateOnPhotoAVE:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2693,7 +2693,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "151"
             endingLineNumber = "151"
-            landmarkName = "-addCreatorName:andCreatorImage:andChannelName:"
+            landmarkName = "-addLikeButtonWithDelegate:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

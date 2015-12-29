@@ -8,19 +8,19 @@
 
 #import "CustomTab.h"
 #import "CustomScrollingTabBar.h"
+#import "Channel.h"
+#import "ChannelButtons.h"
+#import "SizesAndPositions.h"
 #import "Styles.h"
 
 @interface CustomScrollingTabBar()
 
 // array of UIButtons
 @property (strong, nonatomic) NSMutableArray* tabs;
-@property (strong, nonatomic) UIButton* selectedTab;
-@property (strong, nonatomic) NSDictionary* tabTitleAttributes;
-@property (strong, nonatomic) NSDictionary* selectedTabTitleAttributes;
+@property (strong, nonatomic) ChannelButtons * selectedTab;
 
-#define TAB_BUTTON_PADDING 25.f
-#define TAB_DIVIDER_WIDTH 2.f
-#define TAB_DIVIDER_COLOR clearColor
+
+#define INITIAL_BUTTON_WIDTH 200.f
 
 @end
 
@@ -28,7 +28,7 @@
 
 -(instancetype) initWithFrame:(CGRect)frame {
 	if (self = [super initWithFrame:frame]) {
-		[self setBackgroundColor:[UIColor colorWithWhite:1.f alpha: TAB_BAR_ALPHA]];
+		[self setBackgroundColor:[UIColor clearColor]];
 		self.scrollEnabled = YES;
 		self.showsHorizontalScrollIndicator = NO;
 		self.bounces = NO;
@@ -36,47 +36,85 @@
 	return self;
 }
 
--(void) displayTabs: (NSArray*) tabTitles {
+-(void) displayTabs: (NSArray*) channels {
 	CGFloat xCoordinate = 0.f;
-	for(NSString *tabTitle in tabTitles) {
-		NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:tabTitle attributes:self.tabTitleAttributes];
-		CGSize textSize = [tabTitle sizeWithAttributes:self.selectedTabTitleAttributes];
-		CGFloat tabWidth = textSize.width + TAB_BUTTON_PADDING;
+	for(Channel * channel in channels) {
+        //create channel title button
+        CGPoint channelTitleOrigin = CGPointMake(xCoordinate, 0.f);
+        UIButton * channelTitleButton = [self getChannelTitleButton:channel andOrigin:channelTitleOrigin];
+		[self addSubview:channelTitleButton];
+		//store button in our tab list
+        [self.tabs addObject:channelTitleButton];
+        
+        //advance xCordinate
+		xCoordinate += channelTitleButton.frame.size.width;
 
-		CGRect buttonFrame = CGRectMake(xCoordinate, 0.f, tabWidth, self.frame.size.height);
-		UIButton * newButton = [[UIButton alloc] initWithFrame:buttonFrame];
-		newButton.backgroundColor = [UIColor clearColor];
-		[newButton setAttributedTitle:tabAttributedTitle forState:UIControlStateNormal];
-		[newButton addTarget:self action:@selector(tabPressed:) forControlEvents:UIControlEventTouchUpInside];
-		[self addSubview:newButton];
-		[self.tabs addObject:newButton];
-		xCoordinate += tabWidth;
-
-		UIView* tabDivider = [[UIView alloc] initWithFrame:CGRectMake(xCoordinate, 0.f, TAB_DIVIDER_WIDTH, self.frame.size.height)];
-		[tabDivider setBackgroundColor:[UIColor TAB_DIVIDER_COLOR]];
-		[self addSubview:tabDivider];
-		xCoordinate += TAB_DIVIDER_WIDTH;
+		//add divider | between buttons
+        //CGPoint dividerOrigin = CGPointMake(xCoordinate, 0.f);
+		//[self addSubview:[self getDividerAtPoint:dividerOrigin]];
+        
+        //advance xCoordinate
+		//xCoordinate += TAB_DIVIDER_WIDTH;
 	}
-	self.contentSize = CGSizeMake(xCoordinate, 0);
+    [self adjustTabFramesToSuggestedSizes];
 	[self selectTab: self.tabs[0]];
+    
 }
 
--(void) tabPressed: (UIButton*) tabButton {
+-(void)adjustContentSize{
+    UIView * lastView = [self.tabs lastObject];
+    self.contentSize = CGSizeMake(lastView.frame.origin.x + lastView.frame.size.width,0);
+}
+
+-(UIView *) getDividerAtPoint:(CGPoint) origin{
+    UIView* tabDivider = [[UIView alloc] initWithFrame:CGRectMake(origin.x, origin.y, TAB_DIVIDER_WIDTH, self.frame.size.height)];
+    [tabDivider setBackgroundColor:[UIColor TAB_DIVIDER_COLOR]];
+    return tabDivider;
+}
+
+-(ChannelButtons *) getChannelTitleButton:(Channel *) channel andOrigin: (CGPoint) origin{
+    
+    //create channel button
+    CGRect buttonFrame = CGRectMake(origin.x, origin.y, INITIAL_BUTTON_WIDTH, self.frame.size.height);
+
+    ChannelButtons * newButton = [[ChannelButtons alloc] initWithFrame:buttonFrame andChannel:channel];
+    [newButton addTarget:self action:@selector(tabPressed:) forControlEvents:UIControlEventTouchUpInside];
+    return newButton;
+}
+
+
+-(void) tabPressed: (ChannelButtons *) tabButton {
 	[self unselectTab:self.selectedTab];
 	[self selectTab:tabButton];
-	[self.customScrollingTabBarDelegate tabPressedWithTitle:[tabButton attributedTitleForState: UIControlStateNormal].string];
+	[self.customScrollingTabBarDelegate tabPressedWithTitle:tabButton.channelName];
 }
 
--(void) selectTab: (UIButton*) tab {
-	[tab setAttributedTitle:[[NSAttributedString alloc] initWithString:[tab attributedTitleForState: UIControlStateNormal].string
-															attributes: self.selectedTabTitleAttributes] forState:UIControlStateNormal];
+-(void) selectTab: (ChannelButtons *) tab {
+//    [tab setAttributedTitle:[[NSAttributedString alloc] initWithString:tab.channelName
+//															attributes: self.selectedTabTitleAttributes] forState:UIControlStateNormal];
 	self.selectedTab = tab;
 }
 
--(void) unselectTab: (UIButton*) tab {
-	[tab setAttributedTitle:[[NSAttributedString alloc] initWithString:[tab attributedTitleForState: UIControlStateNormal].string
-																  attributes:self.tabTitleAttributes] forState:UIControlStateNormal];
+-(void) unselectTab: (ChannelButtons*) tab {
+//	[tab setAttributedTitle:[[NSAttributedString alloc] initWithString:tab.channelName
+//																  attributes:self.tabTitleAttributes] forState:UIControlStateNormal];
 }
+
+
+
+//channel button protocol function
+//we adjust the frame of this button then shift everything else over
+-(void)adjustTabFramesToSuggestedSizes{
+    NSUInteger originDiff = 0;
+    for(int i = 0; i < self.tabs.count; i++) {
+        ChannelButtons * currentButton = self.tabs[i];
+        CGFloat width = [currentButton suggestedWidth];
+        currentButton.frame = CGRectMake(originDiff, currentButton.frame.origin.y, width, currentButton.frame.size.height);
+        originDiff += width;
+    }
+    [self adjustContentSize];
+}
+
 
 #pragma mark - Lazy Instantiation -
 
@@ -87,27 +125,5 @@
 	return _tabs;
 }
 
--(NSDictionary*) tabTitleAttributes {
-	if (!_tabTitleAttributes) {
-		_tabTitleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
-								NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FONT size:TAB_BAR_FONT_SIZE]};
-	}
-	return _tabTitleAttributes;
-}
-
--(NSDictionary*) selectedTabTitleAttributes {
-	if (!_selectedTabTitleAttributes) {
-		NSShadow *shadow = [[NSShadow alloc] init];
-		[shadow setShadowBlurRadius:10.f];
-		[shadow setShadowColor:[UIColor blackColor]];
-		[shadow setShadowOffset:CGSizeMake(0.f, 0.f)];
-
-		_selectedTabTitleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
-//										NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle),
-//										NSShadowAttributeName : shadow,
-										NSFontAttributeName: [UIFont fontWithName:TAB_BAR_SELECTED_FONT size:TAB_BAR_FONT_SIZE]};
-	}
-	return _selectedTabTitleAttributes;
-}
 
 @end

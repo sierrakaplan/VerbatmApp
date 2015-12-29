@@ -77,7 +77,7 @@
 	});
 }
 
--(AnyPromise*) getPOVsFromThread: (NSString*) thread {
+-(AnyPromise*) getPOVsFromChannel: (NSString*) thread {
 	NSString* threadKey = [self getKeyFromThreadName: thread];
 	if ([self.povThreads objectForKey:threadKey]) {
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {

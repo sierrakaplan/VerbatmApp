@@ -10,7 +10,6 @@
 #define SizesAndPositions_h
 
 
-#define BELOW_STATUS_BAR ([UIApplication sharedApplication].statusBarFrame.origin.y + [UIApplication sharedApplication].statusBarFrame.size.height)
 #define TITLE_BAR_HEIGHT 60.f
 
 #pragma mark - Custom Navigation Bar -
@@ -177,5 +176,8 @@
 
 #define PAN_CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
 
+
+#define TAB_BUTTON_PADDING 25.f
+#define TAB_DIVIDER_WIDTH 2.f
 
 #endif

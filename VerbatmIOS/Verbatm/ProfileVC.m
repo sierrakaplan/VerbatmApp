@@ -5,18 +5,23 @@
 //  Created by Iain Usiri on 8/29/15.
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
-
+#import "ArticleDisplayVC.h"
+#import "Channel.h"
 #import "Durations.h"
+
+#import "GTLVerbatmAppVerbatmUser.h"
+
 #import "LocalPOVs.h"
+
 #import "POVScrollView.h"
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
-#import "SizesAndPositions.h"
-#import "GTLVerbatmAppVerbatmUser.h"
-#import "UserManager.h"
-#import "ArticleDisplayVC.h"
 #import "POVLoadManager.h"
+
 #import "SegueIDs.h"
+#import "SizesAndPositions.h"
+
+#import "UserManager.h"
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate, UIScrollViewDelegate>
 
@@ -29,7 +34,7 @@
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
 
-@property (strong, nonatomic) NSArray* threads;
+@property (strong, nonatomic) NSArray* channels;
 
 @end
 
@@ -40,14 +45,34 @@
 	self.contentCoveringScreen = YES;
     
     //this is where you'd fetch the threads
-    self.threads = @[@"Entrepreneurship", @"Social Justice", @"Music"];
-    [self addPOVScrollView];
-    [self createNavigationBar];
-    [self addClearScreenGesture];
+    [self getChannelsWithCompletionBlock:^{
+        [self addPOVScrollView];
+        [self createNavigationBar];
+        [self addClearScreenGesture];
+    }];
+    
 }
 
+//this is where downloading of channels should happen
+-(void) getChannelsWithCompletionBlock:(void(^)())block{
+    
+    Channel * enterpreneurship = [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
+    
+    Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
+    
+    Channel * music = [[Channel alloc] initWithChannelName:@"Music" numberOfFollowers:@(10000) andUserName:@"Iain Usiri"];
+    
+    
+    self.channels = @[enterpreneurship, socialJustice, music];
+    block();//after downloading threads we call this block to build the profile
+}
+
+
+
 -(void) viewWillAppear:(BOOL)animated{
-    [[LocalPOVs sharedInstance] getPOVsFromThread:self.threads[0]].then(^(NSArray* povs) {
+    NSString * channel = ((Channel *)self.channels[0]).name;
+    
+    [[LocalPOVs sharedInstance] getPOVsFromChannel:channel].then(^(NSArray* povs) {
         [self.povScrollView displayPOVs: povs];
         [self.povScrollView playPOVOnScreen];
     });
@@ -89,11 +114,13 @@
 }
 
 -(void) createNavigationBar {
+    //frame when on screen
     self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
-	self.profileNavBarFrameOffScreen = CGRectMake(0.f, -PROFILE_NAV_BAR_HEIGHT, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
+    //frame when off screen
+	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - PROFILE_NAV_BAR_HEIGHT, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
     [self updateUserInfo];
     self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:self.profileNavBarFrameOnScreen
-												   andThreads:self.threads andUserName:self.currentUser.name];
+												   andChannels:self.channels andUserName:self.currentUser.name];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
     
@@ -117,7 +144,7 @@
 -(void)newChannelSelectedWithName:(NSString *) channelName{
     if(![channelName isEqualToString:self.currentThreadInView]){
 		[self.povScrollView clearPOVs];
-		[[LocalPOVs sharedInstance] getPOVsFromThread:channelName].then(^(NSArray* povs) {
+		[[LocalPOVs sharedInstance] getPOVsFromChannel:channelName].then(^(NSArray* povs) {
 			[self.povScrollView displayPOVs: povs];
 			[self.povScrollView playPOVOnScreen];
 			povs = nil;

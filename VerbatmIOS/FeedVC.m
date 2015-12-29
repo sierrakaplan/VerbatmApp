@@ -46,7 +46,7 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 //    [self createContentListView];
-    [[LocalPOVs sharedInstance] getPOVsFromThread:@"feed"].then(^(NSArray* povs) {
+    [[LocalPOVs sharedInstance] getPOVsFromChannel:@"feed"].then(^(NSArray* povs) {
         [self.povScrollView displayPOVs: povs];
         [self.povScrollView playPOVOnScreen];
     });
@@ -69,7 +69,7 @@
 	UIImageView* verbatmTitleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:VERBATM_LOGO]];
 	verbatmTitleView.contentMode = UIViewContentModeScaleAspectFit;
 	verbatmTitleView.frame = CGRectMake(self.view.frame.size.width/2.f - VERBATM_LOGO_WIDTH/2.f,
-										BELOW_STATUS_BAR, VERBATM_LOGO_WIDTH, HEADER_HEIGHT - BELOW_STATUS_BAR);
+										0, VERBATM_LOGO_WIDTH, HEADER_HEIGHT);
 	[self.header addSubview:verbatmTitleView];
 	[self.view addSubview:self.header];
 }
