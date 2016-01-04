@@ -58,7 +58,9 @@
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
 GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate,
-UIPickerViewDataSource, UIPickerViewDelegate>
+UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
+
+@property (nonatomic) UITextField * createNewChannelField;
 
 #pragma mark Image Manager
 
@@ -274,9 +276,15 @@ UIPickerViewDataSource, UIPickerViewDelegate>
     picker.delegate = self;
     picker.showsSelectionIndicator = YES;
     self.titleField = picker;
-    
     picker.backgroundColor = [UIColor clearColor];
     picker.clipsToBounds = YES;
+    
+    self.currentPresentedPickerRow = 0;
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userTappedChannelSelctor:)];
+    tap.delegate = self;
+    [picker addGestureRecognizer:tap];
+    
     [self.mainScrollView addSubview:picker];
 }
 
@@ -289,7 +297,7 @@ UIPickerViewDataSource, UIPickerViewDelegate>
 
 // returns the # of rows in each component..
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return self.userChannels.count;
+    return (self.userChannels.count + 1);
 }
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView
@@ -303,7 +311,16 @@ rowHeightForComponent:(NSInteger)component{
            reusingView:(UIView *)view{
     
     CGRect labelFrame = CGRectMake(pickerView.frame.size.height * row, 0.f, pickerView.frame.size.width, TITLE_FIELD_LABEL_TILE_HEIGHT);
-    return [self formatTitleFieldFromFrame:labelFrame andChannel:self.userChannels[row]];
+    if(view){
+        return view;
+    }else {
+        if(row == self.userChannels.count){//this is the create new channel row
+            return [self getCreateNewChannelTextFieldWithFrame:labelFrame];
+            
+        }else{
+            return [self formatTitleFieldFromFrame:labelFrame andChannel:self.userChannels[row]];
+        }
+    }
 }
 
 
@@ -319,29 +336,58 @@ rowHeightForComponent:(NSInteger)component{
     return channelTitle;
 }
 
+- (void)pickerView:(UIPickerView *)pickerView
+      didSelectRow:(NSInteger)row
+       inComponent:(NSInteger)component{
+    if(row == self.userChannels.count){
+        UITextField * textField = (UITextField *) [pickerView viewForRow:row forComponent:component];
+        [textField becomeFirstResponder];
+    }else{
+        UITextField * textField = (UITextField *) [pickerView viewForRow:row forComponent:component];
+        if(textField)[textField resignFirstResponder];
+    }
+    self.currentPresentedPickerRow = row;
+}
 
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    // return
+    return true;
+}
 
-//-(void)getCreateNewChannelTextFieldWithFrame:(CGRect) frame{
-//    
-//        UITextField * field
-//    
-//        UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: TITLE_TEXT_SIZE];
-//        self.titleField = [[UITextField alloc] initWithFrame: frame];
-//        self.titleField.textAlignment = NSTextAlignmentCenter;
-//        self.titleField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: TITLE_TEXT_SIZE];
-//        [self.titleField setTextColor:[UIColor TITLE_TEXT_COLOR]];
-//        self.titleField.tintColor = [UIColor TITLE_TEXT_COLOR];
-//        self.titleField.attributedPlaceholder = [[NSAttributedString alloc]
-//                                                 initWithString: WHAT_IS_IT_LIKE_TEXT
-//                                                 attributes:@{NSForegroundColorAttributeName: [UIColor TITLE_TEXT_COLOR],
-//                                                              NSFontAttributeName : titleFont}];
-//        
-//        self.titleField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.6];
-//        [self.titleField resignFirstResponder];
-//        self.titleField.enabled = YES;
-//        self.titleField.autocorrectionType = UITextAutocorrectionTypeYes;
-//        [self.titleField setReturnKeyType:UIReturnKeyDone];
-//}
+-(void)userTappedChannelSelctor:(UITapGestureRecognizer *) tap{
+    if(self.currentPresentedPickerRow == self.userChannels.count){
+        UITextField * textField = (UITextField *) [self.titleField viewForRow:self.userChannels.count forComponent:0];
+        if(textField)[textField becomeFirstResponder];
+    }
+}
+
+-(UITextField *)getCreateNewChannelTextFieldWithFrame:(CGRect) frame{
+    UITextField * field = [[UITextField alloc] initWithFrame:frame];
+    UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: TITLE_TEXT_SIZE];
+    field.textAlignment = NSTextAlignmentCenter;
+    field.font = [UIFont fontWithName:TITLE_TEXT_FONT size: TITLE_TEXT_SIZE];
+    [field setTextColor:[UIColor whiteColor]];
+    field.tintColor = [UIColor whiteColor];
+    field.attributedPlaceholder = [[NSAttributedString alloc]
+                                             initWithString: @"Create New Channel"
+                                             attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor],
+                                                          NSFontAttributeName : titleFont}];
+    
+    field.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.6];
+    [field resignFirstResponder];
+    field.enabled = YES;
+    field.autocorrectionType = UITextAutocorrectionTypeYes;
+    [field setReturnKeyType:UIReturnKeyDone];
+    field.delegate = self;
+    return field;
+}
+
+//text field protocol
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [textField resignFirstResponder];
+    return NO;
+}
+
 
 -(void) setUpNotifications {
 	//Tune in to get notifications of keyboard behavior

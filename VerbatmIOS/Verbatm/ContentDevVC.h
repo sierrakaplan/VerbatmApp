@@ -39,6 +39,9 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 //Delegate in order to tell parent view controller when pull bar should be changed
 @property (strong, nonatomic) id<ContentDevVCDelegate> delegate;
 @property (strong, nonatomic) UIPickerView *titleField;
+@property (nonatomic) NSUInteger currentPresentedPickerRow;
+
+
 @property (strong, nonatomic) CustomNavigationBar* navBar;
 
 //view that is currently being filled in

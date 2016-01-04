@@ -178,11 +178,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "473597186.414794"
+            timestampString = "473600680.842938"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "492"
-            endingLineNumber = "492"
+            startingLineNumber = "562"
+            endingLineNumber = "562"
             landmarkName = "-deleteScrollView:"
             landmarkType = "5">
          </BreakpointContent>
