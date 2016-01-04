@@ -339,15 +339,17 @@ rowHeightForComponent:(NSInteger)component{
 - (void)pickerView:(UIPickerView *)pickerView
       didSelectRow:(NSInteger)row
        inComponent:(NSInteger)component{
+    
     if(row == self.userChannels.count){
         UITextField * textField = (UITextField *) [pickerView viewForRow:row forComponent:component];
         [textField becomeFirstResponder];
     }else{
-        UITextField * textField = (UITextField *) [pickerView viewForRow:row forComponent:component];
-        if(textField)[textField resignFirstResponder];
+        [self removeKeyboardFromScreen];
     }
     self.currentPresentedPickerRow = row;
 }
+
+
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
     // return
@@ -358,6 +360,8 @@ rowHeightForComponent:(NSInteger)component{
     if(self.currentPresentedPickerRow == self.userChannels.count){
         UITextField * textField = (UITextField *) [self.titleField viewForRow:self.userChannels.count forComponent:0];
         if(textField)[textField becomeFirstResponder];
+    }else{
+        [self removeKeyboardFromScreen];
     }
 }
 
@@ -373,7 +377,7 @@ rowHeightForComponent:(NSInteger)component{
                                              attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor],
                                                           NSFontAttributeName : titleFont}];
     
-    field.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.6];
+    field.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.8];
     [field resignFirstResponder];
     field.enabled = YES;
     field.autocorrectionType = UITextAutocorrectionTypeYes;
@@ -455,7 +459,25 @@ rowHeightForComponent:(NSInteger)component{
         }
     }
     
-   // [self publishOurStoryWithTitle:self.titleField.text andPinchViews:pinchViews];
+    if(self.currentPresentedPickerRow < self.userChannels.count){
+        
+        UILabel * label = (UILabel *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
+        [self publishOurStoryWithTitle:label.text andPinchViews:pinchViews];
+    }else{
+          UITextField * textField = (UITextField *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
+        
+        if(![textField.text isEqualToString:@""]){
+//            NSString * currentUser = @"Aishwarya Vardhana";//get current username tbd
+//            //also create new channel object and save it as the users channel
+//            Channel * newChannel = [[Channel alloc] initWithChannelName:textField.text numberOfFollowers:@(0) andUserName:currentUser];
+//            //save new channel
+            
+            [self publishOurStoryWithTitle:textField.text andPinchViews:pinchViews];
+        }
+        
+    }
+    
+   
 }
 
 #pragma mark - Configure Text Fields -
@@ -719,9 +741,7 @@ rowHeightForComponent:(NSInteger)component{
 #pragma Remove Keyboard From Screen
 //Iain
 -(void) removeKeyboardFromScreen {
-//	if (self.titleField.isEditing) {
-//		[self.titleField resignFirstResponder];
-//	}
+[[[UIApplication sharedApplication] keyWindow] endEditing:YES];
 }
 
 -(void) showKeyboard {
