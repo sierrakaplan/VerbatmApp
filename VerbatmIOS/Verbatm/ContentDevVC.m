@@ -10,10 +10,12 @@
 
 #import "Analytics.h"
 
+#import "Channel.h"
 #import "ContentDevVC.h"
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
 #import "ContentPageElementScrollView.h"
+
 #import "Durations.h"
 
 #import "EditContentVC.h"
@@ -55,7 +57,8 @@
 #import "VideoPinchView.h"
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate,
+UIPickerViewDataSource, UIPickerViewDelegate>
 
 #pragma mark Image Manager
 
@@ -140,8 +143,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define TITLE_FIELD_Y_OFFSET 10.f
-#define TITLE_FIELD_X_OFFSET 7.f
-#define TITLE_FIELD_HEIGHT 50
+#define TITLE_FIELD_X_OFFSET 10.f
+#define TITLE_FIELD_HEIGHT 90
+#define TITLE_FIELD_LABEL_TILE_HEIGHT 50
+
 #define MAX_TITLE_CHARACTERS 40
 
 #define REPLACE_PHOTO_FRAME_WIDTH 35
@@ -259,29 +264,84 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     CGRect titleFrame = CGRectMake(TITLE_FIELD_X_OFFSET, TITLE_FIELD_Y_OFFSET,
 											   self.view.bounds.size.width - 2*TITLE_FIELD_X_OFFSET,
 											   TITLE_FIELD_HEIGHT);
-	
-	[self formatTitleFieldFromFrame: titleFrame];
-	[self.mainScrollView addSubview: self.titleField];
+    [self createChannelPickerFromChannelsFromFrame:titleFrame];
 }
 
--(void) formatTitleFieldFromFrame: (CGRect) frame {
-	UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: TITLE_TEXT_SIZE];
-	self.titleField = [[UITextField alloc] initWithFrame: frame];
-	self.titleField.textAlignment = NSTextAlignmentCenter;
-	self.titleField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: TITLE_TEXT_SIZE];
-    [self.titleField setTextColor:[UIColor TITLE_TEXT_COLOR]];
-	self.titleField.tintColor = [UIColor TITLE_TEXT_COLOR];
-	self.titleField.attributedPlaceholder = [[NSAttributedString alloc]
-													initWithString: WHAT_IS_IT_LIKE_TEXT
-													attributes:@{NSForegroundColorAttributeName: [UIColor TITLE_TEXT_COLOR],
-																 NSFontAttributeName : titleFont}];
+
+-(void)createChannelPickerFromChannelsFromFrame:(CGRect) frame {
+    UIPickerView * picker = [[UIPickerView alloc] initWithFrame:frame];
+    picker.dataSource = self;
+    picker.delegate = self;
+    picker.showsSelectionIndicator = YES;
+    self.titleField = picker;
     
-    self.titleField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.6];
-	[self.titleField resignFirstResponder];
-	self.titleField.enabled = YES;
-	self.titleField.autocorrectionType = UITextAutocorrectionTypeYes;
-	[self.titleField setReturnKeyType:UIReturnKeyDone];
+    picker.backgroundColor = [UIColor clearColor];
+    picker.clipsToBounds = YES;
+    [self.mainScrollView addSubview:picker];
 }
+
+
+
+// returns the number of 'columns' to display.
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
+    return 1;
+}
+
+// returns the # of rows in each component..
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return self.userChannels.count;
+}
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView
+rowHeightForComponent:(NSInteger)component{
+    return TITLE_FIELD_HEIGHT;
+}
+
+- (UIView *)pickerView:(UIPickerView *)pickerView
+            viewForRow:(NSInteger)row
+          forComponent:(NSInteger)component
+           reusingView:(UIView *)view{
+    
+    CGRect labelFrame = CGRectMake(pickerView.frame.size.height * row, 0.f, pickerView.frame.size.width, TITLE_FIELD_LABEL_TILE_HEIGHT);
+    return [self formatTitleFieldFromFrame:labelFrame andChannel:self.userChannels[row]];
+}
+
+
+
+-(UILabel *) formatTitleFieldFromFrame: (CGRect) frame andChannel:(Channel *) channel {
+	UILabel * channelTitle = [[UILabel alloc] initWithFrame: frame];
+	channelTitle.textAlignment = NSTextAlignmentCenter;
+	channelTitle.font = [UIFont fontWithName:TITLE_TEXT_FONT size: TITLE_TEXT_SIZE];
+    [channelTitle setTextColor:[UIColor TITLE_TEXT_COLOR]];
+	channelTitle.tintColor = [UIColor TITLE_TEXT_COLOR];
+    channelTitle.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.6];
+    [channelTitle setText:channel.name];
+    return channelTitle;
+}
+
+
+
+//-(void)getCreateNewChannelTextFieldWithFrame:(CGRect) frame{
+//    
+//        UITextField * field
+//    
+//        UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: TITLE_TEXT_SIZE];
+//        self.titleField = [[UITextField alloc] initWithFrame: frame];
+//        self.titleField.textAlignment = NSTextAlignmentCenter;
+//        self.titleField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: TITLE_TEXT_SIZE];
+//        [self.titleField setTextColor:[UIColor TITLE_TEXT_COLOR]];
+//        self.titleField.tintColor = [UIColor TITLE_TEXT_COLOR];
+//        self.titleField.attributedPlaceholder = [[NSAttributedString alloc]
+//                                                 initWithString: WHAT_IS_IT_LIKE_TEXT
+//                                                 attributes:@{NSForegroundColorAttributeName: [UIColor TITLE_TEXT_COLOR],
+//                                                              NSFontAttributeName : titleFont}];
+//        
+//        self.titleField.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.6];
+//        [self.titleField resignFirstResponder];
+//        self.titleField.enabled = YES;
+//        self.titleField.autocorrectionType = UITextAutocorrectionTypeYes;
+//        [self.titleField setReturnKeyType:UIReturnKeyDone];
+//}
 
 -(void) setUpNotifications {
 	//Tune in to get notifications of keyboard behavior
@@ -314,7 +374,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) loadPOVFromUserDefaults {
 	NSString* savedTitle = [[UserPovInProgress sharedInstance] title];
 	if (savedTitle && savedTitle.length) {
-		self.titleField.text = savedTitle;
+		//self.titleField.text = savedTitle;
 	}
 
 	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
@@ -349,44 +409,10 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
         }
     }
     
-    [self publishOurStoryWithTitle:self.titleField.text andPinchViews:pinchViews];
+   // [self publishOurStoryWithTitle:self.titleField.text andPinchViews:pinchViews];
 }
 
 #pragma mark - Configure Text Fields -
-
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-	if (textField == self.titleField) {
-		[[UserPovInProgress sharedInstance] addTitle: textField.text];
-	}
-}
-
-// if we encounter a newline character return
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-	if(textField == self.titleField) {
-		// enter closes the keyboard
-		if ([string isEqualToString:@"\n"]) {
-			[textField resignFirstResponder];
-			return NO;
-		} else if (textField.text.length >= MAX_TITLE_CHARACTERS && string.length > 0)  {
-			return NO;
-		}
-		return YES;
-	} else {
-		return YES;
-	}
-}
-
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-	[textField resignFirstResponder];
-	return YES;
-}
-
--(BOOL) textFieldShouldReturn:(UITextField *)textField {
-	if(textField == self.titleField) {
-		[self.titleField resignFirstResponder];
-	}
-	return YES;
-}
 
 
 #pragma mark - ScrollViews -
@@ -565,7 +591,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void)shiftElementsBelowView: (UIView *) view {
 	if (!view ||
 		(![view isKindOfClass:[ContentPageElementScrollView class]]
-	   && ![view isKindOfClass:[UITextField class]])) {
+	   && ![view isKindOfClass:[UIPickerView class]])) {
 		return;
 	}
 	NSInteger viewIndex = 0;
@@ -647,15 +673,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #pragma Remove Keyboard From Screen
 //Iain
 -(void) removeKeyboardFromScreen {
-	if (self.titleField.isEditing) {
-		[self.titleField resignFirstResponder];
-	}
+//	if (self.titleField.isEditing) {
+//		[self.titleField resignFirstResponder];
+//	}
 }
 
 -(void) showKeyboard {
-	if(self.titleField.isEditing) {
-		[self.titleField becomeFirstResponder];
-	}
+//	if(self.titleField.isEditing) {
+//		[self.titleField becomeFirstResponder];
+//	}
 }
 
 #pragma mark Keyboard Notifications
@@ -1523,7 +1549,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void)presentPreviewAtIndex:(NSInteger ) index{
     NSMutableArray *pinchViews = [self getPinchViews];
-    NSString* title = self.titleField.text;
+    NSString* title = @"";//self.titleField.text;
 
     [self.view bringSubviewToFront:self.previewDisplayView];
     [self.previewDisplayView displayPreviewPOVWithTitle:title andPinchViews:pinchViews withStartIndex:index];
@@ -1570,7 +1596,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 -(void)clearTextFields {
-	self.titleField.text =@"";
+	//self.titleField.text =@"";
 }
 
 
