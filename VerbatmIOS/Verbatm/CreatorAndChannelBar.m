@@ -19,11 +19,19 @@
 
 #define CHANNEL_NAME_FONT_SIZE 18.f
 #define LABEL_TEXT_PADDING 20.f  //Distance between the text and the white border
+
+
+@interface CreatorAndChannelBar ()
+@property (nonatomic) Channel * currentChannel;
+@end
+
+
 @implementation CreatorAndChannelBar
 
 -(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel *) channel{
     self = [super initWithFrame:frame];
     if(self){
+        self.currentChannel = channel;
         [self addCreatorName:channel.userName andChannelName:channel.name];
     }
     return self;
@@ -75,6 +83,10 @@
     
     [self addSubview:creatorNameView];
     [self addSubview:channelButton];
+}
+
+-(void)channelButtonPressed{
+    [self.delegate channelSelected:self.currentChannel];
 }
 
 

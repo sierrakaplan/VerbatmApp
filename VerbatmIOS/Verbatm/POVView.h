@@ -51,4 +51,7 @@
 -(void) povOnScreen;
 -(void) povOffScreen;
 -(void)preparePOVToBePresented;
+
+//moves the 
+-(void) shiftLikeShareBar:(BOOL) down;
 @end

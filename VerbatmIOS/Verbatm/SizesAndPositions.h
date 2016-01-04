@@ -150,7 +150,9 @@
 
 #pragma mark - AVES -
 
-#define LIKE_BUTTON_SIZE 30.f
+#define LIKE_BUTTON_SIZE_WIDTH 25.f
+#define LIKE_BUTTON_SIZE_HEIGHT 25.f
+
 #define LIKE_BUTTON_OFFSET 20.f
 
 #pragma mark Text

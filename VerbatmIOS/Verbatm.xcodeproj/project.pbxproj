@@ -173,6 +173,7 @@
 		C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77C7D371A22E9FC00694B20 /* PinchView.m */; };
 		C77F321E1B6D5D1800E87C25 /* bugSubmissionFormVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C77F321D1B6D5D1800E87C25 /* bugSubmissionFormVC.m */; };
 		C78204EE1C32EAC500F56A63 /* CreatorAndChannelBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */; };
+		C788745C1C334AE80048B66E /* POVLikeAndShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C788745B1C334AE80048B66E /* POVLikeAndShareBar.m */; };
 		C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */; };
 		C7A8E3861A61CE4D00776BD1 /* ContentDevPullBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8E3851A61CE4D00776BD1 /* ContentDevPullBar.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
@@ -207,7 +208,12 @@
 		C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E6C13E1A4E394600863893 /* VideoAVE.m */; };
 		C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */; };
 		C7F18D851A05C0EE0002255B /* VerbatmTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F18D841A05C0EE0002255B /* VerbatmTextField.m */; };
+		C7F22B311C38408E00E56EA7 /* SharePOVView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B301C38408E00E56EA7 /* SharePOVView.m */; };
+		C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */; };
+		C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */; };
 		C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* SignIn.m */; };
+		C7F79E7A1C39C44A00319330 /* SelectChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E791C39C44A00319330 /* SelectChannel.m */; };
+		C7F79E7D1C39E13900319330 /* selectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E7C1C39E13900319330 /* selectionView.m */; };
 		DEA28C4490E4BBC7A9B627D9 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6C2302226513ED1B7D1B1E2 /* Pods.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */; };
 /* End PBXBuildFile section */
@@ -540,6 +546,8 @@
 		C77F321D1B6D5D1800E87C25 /* bugSubmissionFormVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = bugSubmissionFormVC.m; path = ../bugSubmissionFormVC.m; sourceTree = "<group>"; };
 		C78204EC1C32EAC500F56A63 /* CreatorAndChannelBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreatorAndChannelBar.h; sourceTree = "<group>"; };
 		C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreatorAndChannelBar.m; sourceTree = "<group>"; };
+		C788745A1C334AE80048B66E /* POVLikeAndShareBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POVLikeAndShareBar.h; sourceTree = "<group>"; };
+		C788745B1C334AE80048B66E /* POVLikeAndShareBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POVLikeAndShareBar.m; sourceTree = "<group>"; };
 		C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSelectTile.h; sourceTree = "<group>"; };
 		C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSelectTile.m; sourceTree = "<group>"; };
 		C79747D91B50B815009077E3 /* Verbatm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
@@ -595,8 +603,18 @@
 		C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterNavigationVC.m; sourceTree = "<group>"; };
 		C7F18D831A05C0EE0002255B /* VerbatmTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmTextField.h; sourceTree = "<group>"; };
 		C7F18D841A05C0EE0002255B /* VerbatmTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmTextField.m; sourceTree = "<group>"; };
+		C7F22B2F1C38408E00E56EA7 /* SharePOVView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharePOVView.h; sourceTree = "<group>"; };
+		C7F22B301C38408E00E56EA7 /* SharePOVView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharePOVView.m; sourceTree = "<group>"; };
+		C7F22B361C3841AD00E56EA7 /* SelectSharingOption.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectSharingOption.h; sourceTree = "<group>"; };
+		C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectSharingOption.m; sourceTree = "<group>"; };
+		C7F22B391C38B2A600E56EA7 /* SelectOptionButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectOptionButton.h; sourceTree = "<group>"; };
+		C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectOptionButton.m; sourceTree = "<group>"; };
 		C7F3D4691A4F84C000B43238 /* SignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignIn.h; sourceTree = "<group>"; };
 		C7F3D46A1A4F84C000B43238 /* SignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignIn.m; sourceTree = "<group>"; };
+		C7F79E781C39C44A00319330 /* SelectChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectChannel.h; sourceTree = "<group>"; };
+		C7F79E791C39C44A00319330 /* SelectChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectChannel.m; sourceTree = "<group>"; };
+		C7F79E7B1C39E13900319330 /* selectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = selectionView.h; sourceTree = "<group>"; };
+		C7F79E7C1C39E13900319330 /* selectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = selectionView.m; sourceTree = "<group>"; };
 		F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVETypeAnalyzer.h; path = ../AVETypeAnalyzer.h; sourceTree = "<group>"; };
 		F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AVETypeAnalyzer.m; path = ../AVETypeAnalyzer.m; sourceTree = "<group>"; };
 		FF07D832F82FFBA4C6ACCCDB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -783,6 +801,8 @@
 				A5934B9D1C10E4C8007C7830 /* CustomTab.m */,
 				C747498F1C2B1CB90047C66E /* ProfileInformationBar.h */,
 				C74749901C2B1CB90047C66E /* ProfileInformationBar.m */,
+				C788745A1C334AE80048B66E /* POVLikeAndShareBar.h */,
+				C788745B1C334AE80048B66E /* POVLikeAndShareBar.m */,
 			);
 			name = "Custom Bars";
 			sourceTree = "<group>";
@@ -1233,6 +1253,7 @@
 				C716A5B019E0CA3500A5490B /* DashLineView.h */,
 				C716A5B119E0CA3500A5490B /* DashLineView.m */,
 				C7540F751C09A48700DE1AA6 /* UIButton for Channels */,
+				C7F22B321C38415000E56EA7 /* Sharing Views  */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1416,6 +1437,23 @@
 				C7F18D841A05C0EE0002255B /* VerbatmTextField.m */,
 			);
 			name = "Verbatm text field";
+			sourceTree = "<group>";
+		};
+		C7F22B321C38415000E56EA7 /* Sharing Views  */ = {
+			isa = PBXGroup;
+			children = (
+				C7F22B2F1C38408E00E56EA7 /* SharePOVView.h */,
+				C7F22B301C38408E00E56EA7 /* SharePOVView.m */,
+				C7F22B361C3841AD00E56EA7 /* SelectSharingOption.h */,
+				C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */,
+				C7F22B391C38B2A600E56EA7 /* SelectOptionButton.h */,
+				C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */,
+				C7F79E781C39C44A00319330 /* SelectChannel.h */,
+				C7F79E791C39C44A00319330 /* SelectChannel.m */,
+				C7F79E7B1C39E13900319330 /* selectionView.h */,
+				C7F79E7C1C39E13900319330 /* selectionView.m */,
+			);
+			name = "Sharing Views ";
 			sourceTree = "<group>";
 		};
 		EFD58CC66053EE33CE6FEF45 /* Pods */ = {
@@ -1693,6 +1731,7 @@
 				C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */,
 				A5446C961BBA3C33002177F4 /* CustomNavigationBar.m in Sources */,
 				A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */,
+				C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A5E85F991B911DA900E148D0 /* GTLQuery.m in Sources */,
 				A5E85FA01B911DA900E148D0 /* GTLRuntimeCommon.m in Sources */,
@@ -1731,6 +1770,7 @@
 				A5E85FA41B911DA900E148D0 /* GTLBase64.m in Sources */,
 				A58656681B61FD99008E358C /* PhotoAVE.m in Sources */,
 				A5C09BDB1BA1F1D700C0AD86 /* ASIDataDecompressor.m in Sources */,
+				C7F22B311C38408E00E56EA7 /* SharePOVView.m in Sources */,
 				A5E85FA61B911DA900E148D0 /* GTMHTTPFetcher.m in Sources */,
 				A51370681BA64D250058FBA6 /* POVDisplayScrollView.m in Sources */,
 				A504ECE81B6AF4A00076F9D0 /* UserPovInProgress.m in Sources */,
@@ -1762,6 +1802,7 @@
 				A5E85FAD1B911DA900E148D0 /* GTMOAuth2Authentication.m in Sources */,
 				A5C09BDC1BA1F1D700C0AD86 /* ASIDownloadCache.m in Sources */,
 				C7540F741C09A47F00DE1AA6 /* ChannelButtons.m in Sources */,
+				C788745C1C334AE80048B66E /* POVLikeAndShareBar.m in Sources */,
 				A5E85F9A1B911DA900E148D0 /* GTLBatchQuery.m in Sources */,
 				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
@@ -1779,6 +1820,7 @@
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				A5E860011B96249900E148D0 /* POVPublisher.m in Sources */,
+				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A5E85FA11B911DA900E148D0 /* GTLFramework.m in Sources */,
 				A5934B921C0FE041007C7830 /* ButtonScrollView.m in Sources */,
@@ -1792,7 +1834,9 @@
 				C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
 				C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */,
+				C7F79E7D1C39E13900319330 /* selectionView.m in Sources */,
 				A58EE8861BA8771700B7B396 /* NoAnimationUnwindSegue.m in Sources */,
+				C7F79E7A1C39C44A00319330 /* SelectChannel.m in Sources */,
 				A5C09BDD1BA1F1D700C0AD86 /* ASIFormDataRequest.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A5076D0B1BEB17E600303746 /* VerbatmExplanationVC.m in Sources */,

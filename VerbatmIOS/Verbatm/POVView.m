@@ -13,6 +13,7 @@
 
 #import "Icons.h"
 
+#import "POVLikeAndShareBar.h"
 #import "PhotoVideoAVE.h"
 #import "PhotoAVE.h"
 #import "POVView.h"
@@ -50,12 +51,16 @@
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
+@property (nonatomic) POVLikeAndShareBar * likeShareBar;
 
-#define DOWN_ARROW_WIDTH 30
-#define DOWN_ARROE_DISTANCE_FROM_BOTTOM 30
+#define DOWN_ARROW_WIDTH 30.f
+#define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
-#define ACTIVITY_ANIMATION_Y 100
-#define CREATOR_CHANNEL_BAR_HEIGHT 50
+#define ACTIVITY_ANIMATION_Y 100.f
+#define CREATOR_CHANNEL_BAR_HEIGHT 50.f
+
+#define LIKE_SHARE_BAR_HEIGHT 40.f
+#define TAB_BAR_HEIGHT 40.f
 @end
 
 @implementation POVView
@@ -127,7 +132,19 @@
 		[self.mainScrollView addSubview: ave];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
+    [self createLikeAndShareBarWithNumberOfLikes:@(10) numberOfShares:@(100) numberOfPages:@(5) andStartingPageNumber:@(1)];
+    
 }
+
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage{
+    
+    CGRect barFrame = CGRectMake(0.f,self.frame.size.height -LIKE_SHARE_BAR_HEIGHT - TAB_BAR_HEIGHT ,
+                                 self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+    
+    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame:barFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:@(5) andStartingPageNumber:@(1)];
+    [self addSubview:self.likeShareBar];
+}
+
 
 -(void) addCreatorInfoFromChannel: (Channel *) channel {
     CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
@@ -256,7 +273,8 @@
             if (pageIndex == 0) {
 				//TODO: add like button and down arrows back
 //                [self addDownArrowButton];
-//                [self addLikeButtonWithDelegate:likeDelegate];
+                
+                    [self addLikeButtonWithDelegate:likeDelegate];
             }
             [self renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
         }).catch(^(NSError* error) {
@@ -345,29 +363,13 @@
 	return _mainScrollView;
 }
 
--(UIButton *)likeButton {
-	if (!_likeButton) {
-		CGRect likeButtonFrame = CGRectMake(LIKE_BUTTON_OFFSET,
-											self.frame.size.height - LIKE_BUTTON_SIZE - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
-											LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
-
-		self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON];
-		self.likeButtonLikedImage = [UIImage imageNamed:LIKE_PRESSED_ICON];
-		_likeButton = [UIButton buttonWithType: UIButtonTypeCustom];
-		[_likeButton setFrame: likeButtonFrame];
-		[_likeButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
-		[_likeButton setImage: self.likeButtonNotLikedImage forState:UIControlStateNormal];
-		[_likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-	}
-	return _likeButton;
-}
 
 -(UIButton*) downArrow {
 	if (!_downArrow) {
 		_downArrow = [[UIButton alloc] init];
 		[_downArrow setImage:[UIImage imageNamed:PULLDOWN_ICON] forState:UIControlStateNormal];
 		_downArrow.frame = CGRectMake(self.center.x - (DOWN_ARROW_WIDTH/2),
-										  self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
+										  self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROW_DISTANCE_FROM_BOTTOM,
 										  DOWN_ARROW_WIDTH, DOWN_ARROW_WIDTH);
 		[_downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchUpInside];
 	}

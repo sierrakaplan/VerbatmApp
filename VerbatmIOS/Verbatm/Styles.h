@@ -14,7 +14,7 @@
 
 #define TAB_BAR_SELECTED_FONT @"Quicksand-Bold"
 #define TAB_BAR_CHANNEL_NAME_FONT @"Quicksand-Bold"
-#define TAB_BAR_FOLLOWERS_FONT @"Quicksand-Light"
+#define TAB_BAR_FOLLOWERS_FONT @"Quicksand-Regular"
 #define TAB_BAR_FOLLOWER_NUMBER_FONT @"Quicksand-Bold"
 
 #define TAB_BAR_FONT_SIZE 17.f

@@ -22,6 +22,7 @@
 #import "SizesAndPositions.h"
 
 #import "UserManager.h"
+#import "SharePOVView.h"
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate, UIScrollViewDelegate>
 
@@ -82,7 +83,17 @@
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+    
+        //temp
+    CGRect frame = CGRectMake(0.f, self.view.frame.size.height/2.f,
+                              self.view.frame.size.width, self.view.frame.size.height/2.f);
+    
+    SharePOVView * test = [[SharePOVView alloc] initWithFrame:frame andChannels:self.channels shouldStartOnChannels:NO];
+    [self.view addSubview:test];
 }
+
+
+
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];

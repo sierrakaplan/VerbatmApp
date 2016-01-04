@@ -21,4 +21,7 @@
 
 -(void) headerShowing: (BOOL) showing;
 
+//moves the tap/share bar up and down over the tab bar
+-(void) shiftOnScreenPOVLikeShareBar:(BOOL) down;
+
 @end

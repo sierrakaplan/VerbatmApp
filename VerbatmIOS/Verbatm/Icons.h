@@ -92,7 +92,7 @@
 #define LIKE_PRESSED_ICON @"heart_filled"
 #define PULLDOWN_TEXT_ICON @"pulldown_icon"
 #define CREATE_TEXT_ICON @"edit_text_button"
-
+#define SHARE_ICON @"shareIcon"
 #pragma mark Video AVE
 
 #define VIDEO_LOADING_ICON @"video_loading_icon"
