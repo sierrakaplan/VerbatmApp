@@ -12,6 +12,8 @@
 #import "Analytics.h"
 
 #import "CustomTabBarController.h"
+#import "ContentDevVC.h"
+#import "Channel.h"
 
 #import "Durations.h"
 
@@ -242,6 +244,31 @@
         [self playContentOnSelectedViewController:YES];
 		[[Analytics getSharedInstance] endOfADKSession];
 	}
+}
+
+//prepare for segue
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    // Make sure your segue name in storyboard is the same as this line
+    if ([[segue identifier] isEqualToString:ADK_SEGUE])
+    {
+        // Get reference to the destination view controller
+         ContentDevVC * vc = [segue destinationViewController];
+        
+        
+        //get the channels that the user owns here
+        
+        
+        
+        //temp
+        Channel * enterpreneurship = [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
+        
+        Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
+        
+        Channel * music = [[Channel alloc] initWithChannelName:@"Music" numberOfFollowers:@(10000) andUserName:@"Iain Usiri"];
+        vc.userChannels = @[enterpreneurship, socialJustice, music];
+    }
 }
 
 -(void) playContentOnSelectedViewController:(BOOL) shoulPlay{

@@ -845,7 +845,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "580"
             endingLineNumber = "580"
-            landmarkName = "-shiftElementsBelowView:"
+            landmarkName = "-deleteScrollView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1261,7 +1261,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1295"
             endingLineNumber = "1295"
-            landmarkName = "-moveItem:"
+            landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1277,7 +1277,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1296"
             endingLineNumber = "1296"
-            landmarkName = "-moveItem:"
+            landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1661,7 +1661,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "642"
             endingLineNumber = "642"
-            landmarkName = "-orientationChanged"
+            landmarkName = "-newPinchView:belowView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1837,7 +1837,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1902"
             endingLineNumber = "1902"
-            landmarkName = "-pageElementScrollViews"
+            landmarkName = "-alertSwipeRightToDelete"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3075,7 +3075,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "369"
             endingLineNumber = "369"
-            landmarkName = "-textField:shouldChangeCharactersInRange:replacementString:"
+            landmarkName = "-getCreateNewChannelTextFieldWithFrame:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3091,7 +3091,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "315"
             endingLineNumber = "315"
-            landmarkName = "-loadPOVFromUserDefaults"
+            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3107,7 +3107,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "313"
             endingLineNumber = "313"
-            landmarkName = "-loadPOVFromUserDefaults"
+            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3123,7 +3123,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "314"
             endingLineNumber = "314"
-            landmarkName = "-loadPOVFromUserDefaults"
+            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3139,7 +3139,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "343"
             endingLineNumber = "343"
-            landmarkName = "-rightButtonPressed"
+            landmarkName = "-pickerView:didSelectRow:inComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3155,7 +3155,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "339"
             endingLineNumber = "339"
-            landmarkName = "-middleButtonPressed"
+            landmarkName = "-pickerView:didSelectRow:inComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3171,7 +3171,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "344"
             endingLineNumber = "344"
-            landmarkName = "-rightButtonPressed"
+            landmarkName = "-pickerView:didSelectRow:inComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3187,7 +3187,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "360"
             endingLineNumber = "360"
-            landmarkName = "-textFieldDidEndEditing:"
+            landmarkName = "-userTappedChannelSelctor:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3203,7 +3203,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1858"
             endingLineNumber = "1858"
-            landmarkName = "-videoRequestOptions"
+            landmarkName = "-publishWithTitle:andPinchViews:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3219,7 +3219,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1872"
             endingLineNumber = "1872"
-            landmarkName = "-baseMediaTileSelector"
+            landmarkName = "-publishOurStoryWithTitle:andPinchViews:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3235,7 +3235,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "454"
             endingLineNumber = "454"
-            landmarkName = "-deleteButtonPressedOnContentPageElementScrollView:"
+            landmarkName = "-rightButtonPressed"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3251,7 +3251,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "347"
             endingLineNumber = "347"
-            landmarkName = "-rightButtonPressed"
+            landmarkName = "-pickerView:didSelectRow:inComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
