@@ -65,6 +65,8 @@
 #pragma mark - ADK -
 
 #define ADK_NAV_BAR_COLOR [UIColor colorWithWhite:1.0 alpha:1]
+#define SETTINGS_NAV_BAR_COLOR [UIColor lightGrayColor]
+
 #define TITLE_TEXT_COLOR blackColor
 #define TITLE_TEXT_SIZE 20.f
 

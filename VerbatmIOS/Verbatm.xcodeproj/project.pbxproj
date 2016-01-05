@@ -149,6 +149,8 @@
 		A5FB5D591BCB122300634A96 /* GMSelected@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A5FB5D531BCB122300634A96 /* GMSelected@2x.png */; };
 		A5FB5D5A1BCB122300634A96 /* GMVideoIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = A5FB5D541BCB122300634A96 /* GMVideoIcon.png */; };
 		A5FB5D5B1BCB122300634A96 /* GMVideoIcon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A5FB5D551BCB122300634A96 /* GMVideoIcon@2x.png */; };
+		C70E1C4E1C3BC06100346A25 /* SettingsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C70E1C4D1C3BC06100346A25 /* SettingsVC.m */; };
+		C70E1C541C3BF74C00346A25 /* TermsAndConditionsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C70E1C531C3BF74C00346A25 /* TermsAndConditionsVC.m */; };
 		C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = C716A5B119E0CA3500A5490B /* DashLineView.m */; };
 		C716E9CE1BD6BBB5001B769D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C716E9CD1BD6BBB5001B769D /* GoogleService-Info.plist */; };
 		C716E9CF1BD6BC0C001B769D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C716E9CD1BD6BBB5001B769D /* GoogleService-Info.plist */; };
@@ -213,7 +215,8 @@
 		C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */; };
 		C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* SignIn.m */; };
 		C7F79E7A1C39C44A00319330 /* SelectChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E791C39C44A00319330 /* SelectChannel.m */; };
-		C7F79E7D1C39E13900319330 /* selectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E7C1C39E13900319330 /* selectionView.m */; };
+		C7F79E7D1C39E13900319330 /* SelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E7C1C39E13900319330 /* SelectionView.m */; };
+		C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E7F1C3AACC600319330 /* CreateNewChannelView.m */; };
 		DEA28C4490E4BBC7A9B627D9 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C6C2302226513ED1B7D1B1E2 /* Pods.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		F266F3F11A4A6AE200EA0327 /* AVETypeAnalyzer.m in Sources */ = {isa = PBXBuildFile; fileRef = F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */; };
 /* End PBXBuildFile section */
@@ -504,6 +507,10 @@
 		A5FB5D541BCB122300634A96 /* GMVideoIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GMVideoIcon.png; sourceTree = "<group>"; };
 		A5FB5D551BCB122300634A96 /* GMVideoIcon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "GMVideoIcon@2x.png"; sourceTree = "<group>"; };
 		C6C2302226513ED1B7D1B1E2 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C70E1C4C1C3BC06100346A25 /* SettingsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsVC.h; sourceTree = "<group>"; };
+		C70E1C4D1C3BC06100346A25 /* SettingsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsVC.m; sourceTree = "<group>"; };
+		C70E1C521C3BF74C00346A25 /* TermsAndConditionsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TermsAndConditionsVC.h; sourceTree = "<group>"; };
+		C70E1C531C3BF74C00346A25 /* TermsAndConditionsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TermsAndConditionsVC.m; sourceTree = "<group>"; };
 		C716A5B019E0CA3500A5490B /* DashLineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DashLineView.h; sourceTree = "<group>"; };
 		C716A5B119E0CA3500A5490B /* DashLineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DashLineView.m; sourceTree = "<group>"; };
 		C716E9CD1BD6BBB5001B769D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -613,8 +620,10 @@
 		C7F3D46A1A4F84C000B43238 /* SignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignIn.m; sourceTree = "<group>"; };
 		C7F79E781C39C44A00319330 /* SelectChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectChannel.h; sourceTree = "<group>"; };
 		C7F79E791C39C44A00319330 /* SelectChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectChannel.m; sourceTree = "<group>"; };
-		C7F79E7B1C39E13900319330 /* selectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = selectionView.h; sourceTree = "<group>"; };
-		C7F79E7C1C39E13900319330 /* selectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = selectionView.m; sourceTree = "<group>"; };
+		C7F79E7B1C39E13900319330 /* SelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionView.h; sourceTree = "<group>"; };
+		C7F79E7C1C39E13900319330 /* SelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectionView.m; sourceTree = "<group>"; };
+		C7F79E7E1C3AACC600319330 /* CreateNewChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateNewChannelView.h; sourceTree = "<group>"; };
+		C7F79E7F1C3AACC600319330 /* CreateNewChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateNewChannelView.m; sourceTree = "<group>"; };
 		F266F3EF1A4A6AE200EA0327 /* AVETypeAnalyzer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AVETypeAnalyzer.h; path = ../AVETypeAnalyzer.h; sourceTree = "<group>"; };
 		F266F3F01A4A6AE200EA0327 /* AVETypeAnalyzer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AVETypeAnalyzer.m; path = ../AVETypeAnalyzer.m; sourceTree = "<group>"; };
 		FF07D832F82FFBA4C6ACCCDB /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1125,6 +1134,17 @@
 			name = "Utility UI Objects";
 			sourceTree = "<group>";
 		};
+		C70E1C551C3BF76200346A25 /* Settings page VCs */ = {
+			isa = PBXGroup;
+			children = (
+				C70E1C4C1C3BC06100346A25 /* SettingsVC.h */,
+				C70E1C4D1C3BC06100346A25 /* SettingsVC.m */,
+				C70E1C521C3BF74C00346A25 /* TermsAndConditionsVC.h */,
+				C70E1C531C3BF74C00346A25 /* TermsAndConditionsVC.m */,
+			);
+			name = "Settings page VCs";
+			sourceTree = "<group>";
+		};
 		C716E9D31BD6CAAA001B769D /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
@@ -1231,6 +1251,7 @@
 				C7E65F641B92449E0042AD99 /* bug submission VC */,
 				A5934C151C11EFBD007C7830 /* CustomTabBarController.h */,
 				A5934C161C11EFBD007C7830 /* CustomTabBarController.m */,
+				C70E1C551C3BF76200346A25 /* Settings page VCs */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1253,7 +1274,9 @@
 				C716A5B019E0CA3500A5490B /* DashLineView.h */,
 				C716A5B119E0CA3500A5490B /* DashLineView.m */,
 				C7540F751C09A48700DE1AA6 /* UIButton for Channels */,
-				C7F22B321C38415000E56EA7 /* Sharing Views  */,
+				C7F22B321C38415000E56EA7 /* Sharing Functionality Views  */,
+				C7F79E7E1C3AACC600319330 /* CreateNewChannelView.h */,
+				C7F79E7F1C3AACC600319330 /* CreateNewChannelView.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1439,7 +1462,7 @@
 			name = "Verbatm text field";
 			sourceTree = "<group>";
 		};
-		C7F22B321C38415000E56EA7 /* Sharing Views  */ = {
+		C7F22B321C38415000E56EA7 /* Sharing Functionality Views  */ = {
 			isa = PBXGroup;
 			children = (
 				C7F22B2F1C38408E00E56EA7 /* SharePOVView.h */,
@@ -1450,10 +1473,10 @@
 				C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */,
 				C7F79E781C39C44A00319330 /* SelectChannel.h */,
 				C7F79E791C39C44A00319330 /* SelectChannel.m */,
-				C7F79E7B1C39E13900319330 /* selectionView.h */,
-				C7F79E7C1C39E13900319330 /* selectionView.m */,
+				C7F79E7B1C39E13900319330 /* SelectionView.h */,
+				C7F79E7C1C39E13900319330 /* SelectionView.m */,
 			);
-			name = "Sharing Views ";
+			name = "Sharing Functionality Views ";
 			sourceTree = "<group>";
 		};
 		EFD58CC66053EE33CE6FEF45 /* Pods */ = {
@@ -1710,6 +1733,7 @@
 				A535E5031BC44B6900A087D1 /* UITextView+Utilities.m in Sources */,
 				C716A5B219E0CA3500A5490B /* DashLineView.m in Sources */,
 				A5E85FA21B911DA900E148D0 /* GTLJSONParser.m in Sources */,
+				C70E1C4E1C3BC06100346A25 /* SettingsVC.m in Sources */,
 				A5C09BE31BA1F1F200C0AD86 /* Reachability.m in Sources */,
 				9D29995B19BA9042005EBC8A /* MediaDevVC.m in Sources */,
 				A560EFB81BB0AF70003FB041 /* LoginView.m in Sources */,
@@ -1789,6 +1813,7 @@
 				A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */,
 				A5934B9E1C10E4C8007C7830 /* CustomTab.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* VerbatmAppDelegate.m in Sources */,
+				C70E1C541C3BF74C00346A25 /* TermsAndConditionsVC.m in Sources */,
 				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				A55A59E21BB5EB7300C7CE7A /* UserManager.m in Sources */,
@@ -1819,6 +1844,7 @@
 				C74E1D711C091F8F00ABD41D /* VideoManager.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
+				C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */,
 				A5E860011B96249900E148D0 /* POVPublisher.m in Sources */,
 				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
@@ -1834,7 +1860,7 @@
 				C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
 				C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */,
-				C7F79E7D1C39E13900319330 /* selectionView.m in Sources */,
+				C7F79E7D1C39E13900319330 /* SelectionView.m in Sources */,
 				A58EE8861BA8771700B7B396 /* NoAnimationUnwindSegue.m in Sources */,
 				C7F79E7A1C39C44A00319330 /* SelectChannel.m in Sources */,
 				A5C09BDD1BA1F1D700C0AD86 /* ASIFormDataRequest.m in Sources */,

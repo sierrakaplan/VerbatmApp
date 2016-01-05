@@ -6,7 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "selectionView.h"
+#import "SelectionView.h"
 
 #import "SelectSharingOption.h"
 #import "SelectOptionButton.h"
@@ -70,9 +70,9 @@
 }
 
 
--(selectionView *) createBarWithFrame: (CGRect) frame logo:(UIImage *) logoImage andTitle:(NSString *) title{
+-(SelectionView *) createBarWithFrame: (CGRect) frame logo:(UIImage *) logoImage andTitle:(NSString *) title{
     
-    selectionView * ourBar = [[selectionView alloc] initWithFrame:frame];
+    SelectionView * ourBar = [[SelectionView alloc] initWithFrame:frame];
     
     CGFloat imageHeight = frame.size.height;
     CGRect viewFrame = CGRectMake(WALL_OFFSET_X, 0.f, imageHeight, imageHeight);
@@ -126,7 +126,7 @@
 
 
 -(void)optionSelectionMade:(UITapGestureRecognizer *) gesture {
-    selectionView * selectedView = (selectionView *) gesture.view;
+    SelectionView * selectedView = (SelectionView *) gesture.view;
     [self optionSelected:selectedView.shareOptionButton];
 }
 

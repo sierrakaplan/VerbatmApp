@@ -306,12 +306,12 @@
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
 		}];
-		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 	} else {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
 		}];
-		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+//		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	}
 }
 

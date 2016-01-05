@@ -11,7 +11,7 @@
 
 -(void) settingsButtonClicked;
 -(void) newChannelSelectedWithName:(NSString *) channelName;
-
+-(void) createNewChannel;//notifies view to prompt user to create new channel
 @end
 
 @interface ProfileNavBar : UIView

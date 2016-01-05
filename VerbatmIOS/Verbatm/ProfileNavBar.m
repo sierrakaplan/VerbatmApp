@@ -20,7 +20,7 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-@interface ProfileNavBar () <CustomScrollingTabBarDelegate>
+@interface ProfileNavBar () <CustomScrollingTabBarDelegate, ProfileInformationBarProtocol>
 
 @property (nonatomic, strong) ProfileInformationBar * profileHeader;
 @property (nonatomic, strong) CustomScrollingTabBar* threadNavScrollView;
@@ -49,16 +49,19 @@
     
     CGRect barFrame = CGRectMake(0.f, 0.f, self.bounds.size.width, PROFILE_HEADER_HEIGHT);
     self.profileHeader = [[ProfileInformationBar alloc] initWithFrame:barFrame andUserName:userName];
+    self.profileHeader.delegate = self;
     [self addSubview:self.profileHeader];
 }
 
--(void) createSettingsButton {
-//	UIButton* settingsButton = [UIButton buttonWithType: UIButtonTypeCustom];
-//	settingsButton.frame = CGRectMake(self.frame.size.width - SETTINGS_BUTTON_SIZE - SETTINGS_BUTTON_OFFSET,
-//									  BELOW_STATUS_BAR + SETTINGS_BUTTON_OFFSET, SETTINGS_BUTTON_SIZE, SETTINGS_BUTTON_SIZE);
-//	[settingsButton setImage:[UIImage imageNamed:SETTINGS_BUTTON_ICON] forState:UIControlStateNormal];
-//	[self.profileHeader addSubview:settingsButton];
+
+-(void)settingsButtonSelected {
+    [self.delegate settingsButtonClicked];
 }
+
+-(void)editButtonSelected{
+    
+}
+
 
 
 #pragma mark - CustomScrollingTabBarDelegate methods -
@@ -67,6 +70,10 @@
 	[self.delegate newChannelSelectedWithName:title];
 }
 
+-(void) createNewChannel{
+    //pass information to our delegate
+    [self.delegate createNewChannel];
+}
 
 #pragma mark - Lazy Instantation -
 

@@ -12,7 +12,7 @@
 
 #import "SelectChannel.h"
 #import "SelectOptionButton.h"
-#import "selectionView.h"
+#import "SelectionView.h"
 
 
 #define CHANNEL_LABEL_HEIGHT 70
@@ -65,7 +65,7 @@
 
 
 -(UIView *) getChannelLabelWithFrame:(CGRect) frame andChannel:(Channel *) channel{
-    selectionView * selectionBar = [[selectionView alloc] initWithFrame:frame];
+    SelectionView * selectionBar = [[SelectionView alloc] initWithFrame:frame];
     
     
     
@@ -105,7 +105,7 @@
 
 
 -(void)optionSelectionMade:(UITapGestureRecognizer *) gesture {
-    selectionView * selectedView = (selectionView *) gesture.view;
+    SelectionView * selectedView = (SelectionView *) gesture.view;
     [self channelButtonSelected:selectedView.shareOptionButton];
 }
 

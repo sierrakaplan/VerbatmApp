@@ -6,7 +6,10 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 #import "ArticleDisplayVC.h"
+
 #import "Channel.h"
+#import "CreateNewChannelView.h"
+
 #import "Durations.h"
 
 #import "GTLVerbatmAppVerbatmUser.h"
@@ -20,11 +23,11 @@
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
-
+#import "SettingsVC.h"
 #import "UserManager.h"
 #import "SharePOVView.h"
 
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate, UIScrollViewDelegate>
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol>
 
 @property (strong, nonatomic) POVScrollView* povScrollView;
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
@@ -36,6 +39,10 @@
 @property (nonatomic, strong) NSString * currentThreadInView;
 
 @property (strong, nonatomic) NSArray* channels;
+
+@property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
+
+#define CHANNEL_CREATION_VIEW_WALLOFFSET_X 30.f
 
 @end
 
@@ -141,7 +148,28 @@
 
 -(void) settingsButtonClicked {
 	// TODO: go to settings
+    [self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
+    
 }
+
+//notified from selection of channel bar to prompt the user to creat a new channel
+-(void) createNewChannel{
+    CGRect newChannelViewFrame = CGRectMake(CHANNEL_CREATION_VIEW_WALLOFFSET_X, PROFILE_NAV_BAR_HEIGHT + CHANNEL_CREATION_VIEW_WALLOFFSET_X, self.view.frame.size.width - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *2), self.view.frame.size.height/2.f - PROFILE_NAV_BAR_HEIGHT - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *4));
+    self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
+    self.createNewChannelView.delegate = self;
+    [self.view addSubview:self.createNewChannelView];
+    [self.view bringSubviewToFront:self.createNewChannelView];
+}
+
+//new channel view creation protocol
+-(void) cancelCreation{
+    [self.createNewChannelView removeFromSuperview];
+    self.createNewChannelView = nil;
+}
+-(void) createChannelWithName:(NSString *) channelName{
+        //create a new channel and save it
+}
+
 
 -(void)newChannelSelectedWithName:(NSString *) channelName{
     if(![channelName isEqualToString:self.currentThreadInView]){
@@ -153,6 +181,8 @@
 		});
     }
 }
+
+
 
 -(void) switchStoryListToThread:(NSString *) newChannel{
     [self.postDisplayVC cleanUp];
@@ -181,6 +211,21 @@
 -(void)onScreen{
     [self.postDisplayVC onScreen];
 }
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Make sure your segue name in storyboard is the same as this line
+    if ([[segue identifier] isEqualToString:SETTINGS_PAGE_MODAL_SEGUE]){
+        // Get reference to the destination view controller
+        SettingsVC * vc = [segue destinationViewController];
+        
+        //set the username of the currently logged in user
+        vc.userName  = @"Aishwarya Vardhana";
+    }
+}
+
+
+
 
 #pragma mark - Article Display Delegate methods -
 

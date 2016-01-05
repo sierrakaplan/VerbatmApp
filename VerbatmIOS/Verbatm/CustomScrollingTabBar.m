@@ -48,18 +48,52 @@
         
         //advance xCordinate
 		xCoordinate += channelTitleButton.frame.size.width;
-
-		//add divider | between buttons
-        //CGPoint dividerOrigin = CGPointMake(xCoordinate, 0.f);
-		//[self addSubview:[self getDividerAtPoint:dividerOrigin]];
-        
-        //advance xCoordinate
-		//xCoordinate += TAB_DIVIDER_WIDTH;
 	}
+    
+    CGFloat createChannelButtonWidth = (channels.count == 0) ? self.frame.size.width : INITIAL_BUTTON_WIDTH;
+    
+    
+    CGRect createChannelButtonFrame = CGRectMake(xCoordinate, 0.f,
+                                                 createChannelButtonWidth,
+                                                 self.frame.size.height);
+    
+    UIButton * createChannelButton = [self getCreateChannelButtonWithFrame:createChannelButtonFrame];
+    [self.tabs addObject:createChannelButton];
+    [self addSubview:createChannelButton];
+    
     [self adjustTabFramesToSuggestedSizes];
 	[self selectTab: self.tabs[0]];
     
 }
+
+
+-(UIButton *)getCreateChannelButtonWithFrame:(CGRect) frame {
+    UIButton * createChannelButton = [[UIButton alloc] initWithFrame:frame];
+    //set background
+    createChannelButton.backgroundColor = [UIColor clearColor];
+    [createChannelButton setImage:[UIImage imageNamed:TAB_BUTTON_BACKGROUND_IMAGE] forState:UIControlStateNormal];//slightly dark background to make text more visible
+    
+    //add thin white border
+    createChannelButton.layer.borderWidth = 0.3;
+    createChannelButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    
+    UILabel * textLabel = [[UILabel alloc] initWithFrame:createChannelButton.bounds];
+    [textLabel setText:@"+ Create Channel"];
+    textLabel.textAlignment = NSTextAlignmentCenter;
+    [textLabel setTextColor:[UIColor lightGrayColor]];
+    [textLabel setBackgroundColor:[UIColor clearColor]];
+    
+    [createChannelButton addSubview:textLabel];
+    
+    [createChannelButton addTarget:self action:@selector(createChannelButtonSelected:) forControlEvents:UIControlEventTouchUpInside];
+    
+    return createChannelButton;
+}
+
+-(void)createChannelButtonSelected:(UIButton *) button{
+    [self.customScrollingTabBarDelegate createNewChannel];
+}
+
 
 -(void)adjustContentSize{
     UIView * lastView = [self.tabs lastObject];
@@ -107,9 +141,10 @@
 -(void)adjustTabFramesToSuggestedSizes{
     NSUInteger originDiff = 0;
     for(int i = 0; i < self.tabs.count; i++) {
-        ChannelButtons * currentButton = self.tabs[i];
-        CGFloat width = [currentButton suggestedWidth];
-        currentButton.frame = CGRectMake(originDiff, currentButton.frame.origin.y, width, currentButton.frame.size.height);
+        id currentButton = self.tabs[i];
+        CGFloat width = ([currentButton isKindOfClass:[ChannelButtons class]]) ? [(ChannelButtons *)currentButton suggestedWidth] : ((UIView *)currentButton).frame.size.width;
+        
+        ((UIView *)currentButton).frame = CGRectMake(originDiff, ((ChannelButtons *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
         originDiff += width;
     }
     [self adjustContentSize];
