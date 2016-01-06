@@ -14,6 +14,7 @@
 #import "CustomTabBarController.h"
 #import "ContentDevVC.h"
 #import "Channel.h"
+#import "CreateNewChannelView.h"
 
 #import "Durations.h"
 
@@ -50,7 +51,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, CreateNewChannelViewProtocol>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -58,10 +59,18 @@
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
+@property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
+
+@property (nonatomic) UIView * darkScreenCover;
+
+
 #pragma mark View Controllers in tab bar Controller
 
 @property (strong,nonatomic) ProfileVC* profileVC;
 @property (strong,nonatomic) FeedVC * feedVC;
+
+
+
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
@@ -74,15 +83,15 @@
 #define DARK_GRAY 0.6f
 #define ADK_BUTTON_SIZE 60.f
 #define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
-#define TAB_BAR_HEIGHT 40.f
 
+#define CHANNEL_CREATION_VIEW_WALLOFFSET_X 30.f
+#define CHANNEL_CREATION_VIEW_Y_OFFSET (PROFILE_NAV_BAR_HEIGHT + 50.f)
 @end
 
 @implementation MasterNavigationVC
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	[[UIApplication sharedApplication] setStatusBarStyle: UIStatusBarStyleDefault];
 	[self setUpTabBarController];
 	[self registerForNotifications];
 }
@@ -235,7 +244,6 @@
 
 //catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
-	[[UIApplication sharedApplication] setStatusBarHidden:NO];
 	if ([segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
 		// TODO: have variable set and go to profile or adk
 		[self.profileVC updateUserInfo];
@@ -314,6 +322,62 @@
 //		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	}
 }
+
+
+
+
+
+#pragma mark -create new channel prompt-
+//notified from selection of channel bar to prompt the user to creat a new channel
+-(void) createNewChannel{
+    if(!self.createNewChannelView){
+        [self darkenScreen];
+        CGFloat viewHeight = self.view.frame.size.height/2.f -
+                            (CHANNEL_CREATION_VIEW_WALLOFFSET_X *6);
+        
+        CGRect newChannelViewFrame = CGRectMake(CHANNEL_CREATION_VIEW_WALLOFFSET_X, CHANNEL_CREATION_VIEW_Y_OFFSET, self.view.frame.size.width - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *2),viewHeight);
+        self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
+        self.createNewChannelView.delegate = self;
+        [self.view addSubview:self.createNewChannelView];
+        [self.view bringSubviewToFront:self.createNewChannelView];
+    }
+}
+
+-(void)darkenScreen{
+    if(!self.darkScreenCover){
+        self.darkScreenCover = [[UIView alloc] initWithFrame:self.view.bounds];
+        self.darkScreenCover.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.7];
+        [self.view addSubview:self.darkScreenCover];
+    }
+}
+
+-(void)removeScreenDarkener{
+    if(self.darkScreenCover){
+        [self.darkScreenCover removeFromSuperview];
+        self.darkScreenCover = nil;
+    }
+}
+
+//new channel view creation protocol
+-(void) cancelCreation{
+    [self clearChannelCreationView];
+}
+-(void) createChannelWithName:(NSString *) channelName{
+    //create a new channel and save it
+    [self clearChannelCreationView];
+}
+
+
+-(void)clearChannelCreationView{
+    if(self.createNewChannelView){
+        [self removeScreenDarkener];
+        [self.createNewChannelView removeFromSuperview];
+        self.createNewChannelView = nil;
+    }
+}
+
+
+
 
 #pragma mark - Memory Warning -
 

@@ -78,7 +78,6 @@
 #pragma mark - Preparing View
 
 - (void)viewDidLoad{
-	[[UIApplication sharedApplication] setStatusBarHidden:YES];
     [super viewDidLoad];
 }
 

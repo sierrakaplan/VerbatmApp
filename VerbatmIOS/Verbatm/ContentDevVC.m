@@ -141,7 +141,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 @property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
 
-#define WHAT_IS_IT_LIKE_TEXT @"enter channel name"
+#define CHANNEL_CREATION_PROMPT @"enter channel name"
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define TITLE_FIELD_Y_OFFSET 10.f
@@ -167,8 +167,6 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-//	[self.view setBackgroundColor:[UIColor lightGrayColor]];
-	[[UIApplication sharedApplication] setStatusBarHidden:YES];
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];

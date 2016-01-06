@@ -58,6 +58,7 @@
     });
     
     [application setStatusBarHidden:YES];
+    
     return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 }
 

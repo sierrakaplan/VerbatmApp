@@ -40,9 +40,7 @@
 
 @property (strong, nonatomic) NSArray* channels;
 
-@property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 
-#define CHANNEL_CREATION_VIEW_WALLOFFSET_X 30.f
 
 @end
 
@@ -64,6 +62,7 @@
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
     
+    //simulates downloading threads
     Channel * enterpreneurship = [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
     
     Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
@@ -152,22 +151,9 @@
     
 }
 
-//notified from selection of channel bar to prompt the user to creat a new channel
+//ProfileNavBarDelegate protocol
 -(void) createNewChannel{
-    CGRect newChannelViewFrame = CGRectMake(CHANNEL_CREATION_VIEW_WALLOFFSET_X, PROFILE_NAV_BAR_HEIGHT + CHANNEL_CREATION_VIEW_WALLOFFSET_X, self.view.frame.size.width - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *2), self.view.frame.size.height/2.f - PROFILE_NAV_BAR_HEIGHT - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *4));
-    self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
-    self.createNewChannelView.delegate = self;
-    [self.view addSubview:self.createNewChannelView];
-    [self.view bringSubviewToFront:self.createNewChannelView];
-}
-
-//new channel view creation protocol
--(void) cancelCreation{
-    [self.createNewChannelView removeFromSuperview];
-    self.createNewChannelView = nil;
-}
--(void) createChannelWithName:(NSString *) channelName{
-        //create a new channel and save it
+    [self.delegate createNewChannel];
 }
 
 

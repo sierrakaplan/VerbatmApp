@@ -9,11 +9,13 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
+#pragma mark -POV View -
+#define CREATOR_CHANNEL_BAR_HEIGHT 50.f
+
 
 #define TITLE_BAR_HEIGHT 60.f
 
 #pragma mark - Custom Navigation Bar -
-
 #define CUSTOM_NAV_BAR_HEIGHT 40.f
 
 #pragma mark - Exit CV constants-
@@ -181,5 +183,12 @@
 
 #define TAB_BUTTON_PADDING 25.f
 #define TAB_DIVIDER_WIDTH 2.f
+
+#define TAB_BAR_HEIGHT 40.f
+
+
+#define PROFILE_HEADER_HEIGHT 35.f
+#define THREAD_SCROLLVIEW_HEIGHT 40.f
+#define PROFILE_NAV_BAR_HEIGHT (PROFILE_HEADER_HEIGHT + THREAD_SCROLLVIEW_HEIGHT)
 
 #endif

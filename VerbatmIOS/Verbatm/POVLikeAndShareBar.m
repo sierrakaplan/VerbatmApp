@@ -28,6 +28,12 @@
 #define BUTTON_WALLOFFSET 5.f
 #define NUMBER_FONT_SIZE 18.f
 #define ICON_SPACING_GAP 5.f
+#define NUMBER_TEXT_FONT TAB_BAR_FOLLOWERS_FONT
+#define NUMBER_TEXT_FONT_SIZE 25.f
+
+
+#define OF_TEXT_FONT TAB_BAR_FOLLOWERS_FONT
+#define OF_TEXT_FONT_SIZE 18.f
 @end
 
 
@@ -41,9 +47,60 @@
     self = [super initWithFrame:frame];
     if(self){
         [self creatButtonsWithNumLike:numLikes andNumShare:numShares];
+        if(numPages.integerValue > 1){//make sure there are multiple pages
+            [self createCounterLabelStartingAtPage:startPage outOf:numPages];
+        }
     }
     return self;
 }
+
+
+-(void) createCounterLabelStartingAtPage:(NSNumber *) startPage outOf:(NSNumber *) totalPages{
+    NSAttributedString * pageCounterText = [self createCounterStringStartingAtPage:startPage outOf:totalPages];
+    
+    CGRect labelFrame = CGRectMake(self.frame.size.width - BUTTON_WALLOFFSET - pageCounterText.size.width, BUTTON_WALLOFFSET, pageCounterText.size.width, self.frame.size.height - (BUTTON_WALLOFFSET*2));
+    
+    self.pageNumberLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    [self.pageNumberLabel setAttributedText:pageCounterText];
+    [self addSubview:self.pageNumberLabel];
+}
+
+
+
+
+
+
+//creates the text for the numbers at the bottom right that show what page you're on and how
+//many there are left
+-(NSAttributedString *) createCounterStringStartingAtPage:(NSNumber *) startPage outOf:(NSNumber *) totalPages{
+    
+    //create attributed string of number of pages
+    
+    NSDictionary * numberTextAttributes =@{
+                                              NSForegroundColorAttributeName: [UIColor whiteColor],
+                                              NSFontAttributeName: [UIFont fontWithName:NUMBER_TEXT_FONT size:NUMBER_TEXT_FONT_SIZE]};
+    
+    
+    NSMutableAttributedString * pageWeAreOn = [[NSMutableAttributedString alloc] initWithString:startPage.stringValue attributes:numberTextAttributes];
+    
+    NSAttributedString * totalNumberOfPages = [[NSMutableAttributedString alloc] initWithString:totalPages.stringValue attributes:numberTextAttributes];
+    
+    //the small "of" word between numbers. eg 1of5
+    NSDictionary * ofTextAttributes =@{
+                                           NSForegroundColorAttributeName: [UIColor whiteColor],
+                                           NSFontAttributeName: [UIFont fontWithName:OF_TEXT_FONT size:OF_TEXT_FONT_SIZE]};
+    
+    NSMutableAttributedString * ofText = [[NSMutableAttributedString alloc] initWithString:@"of" attributes:ofTextAttributes];
+    
+   [pageWeAreOn appendAttributedString:ofText];
+    [pageWeAreOn appendAttributedString:totalNumberOfPages];
+    return pageWeAreOn;
+}
+
+
+
+
+
 
 
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares{
@@ -118,18 +175,21 @@
     [self addSubview:self.numSharesButton];
 }
 
+//the icon is selected
 -(void)shareButtonPressed{
-    
+    [self.delegate shareButtonPressed];
 }
-
+//the icon is selected
 -(void) likeButtonSelected {
-    
+    [self.delegate likeButtonPressed];
 }
 
+//the actual number view is selected
 -(void) numLikesButtonSelected {
     
 }
 
+//the actual number view is selected
 -(void) numSharesButtonSelected {
     
 }

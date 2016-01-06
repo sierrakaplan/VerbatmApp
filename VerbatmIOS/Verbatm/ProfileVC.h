@@ -11,7 +11,7 @@
 @protocol ProfileVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
-
+-(void) createNewChannel;//tells delegate to present "create new channel" view
 @end
 
 @interface ProfileVC : UIViewController

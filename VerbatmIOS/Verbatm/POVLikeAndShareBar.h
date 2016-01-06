@@ -19,7 +19,6 @@
 -(void)likeButtonPressed;
 -(void)showWhoLikesThePOV;//the like numbers have been pressed
 -(void)showwhoHasSharedThePOV;
-
 @end
 
 
@@ -27,23 +26,6 @@
 
 -(instancetype) initWithFrame:(CGRect)frame numberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@property (nonatomic) id <POVLikeAndShareBarProtocol> delegate;
 
 @end

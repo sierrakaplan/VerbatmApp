@@ -27,10 +27,15 @@
 
 #import "VideoAVE.h"
 
-@interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate, PagesLoadManagerDelegate>
+@interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate,
+    PagesLoadManagerDelegate, POVLikeAndShareBarProtocol>
 
 // Load manager in charge of getting page objects and all their media for each pov
 @property (strong, nonatomic) PagesLoadManager* pageLoadManager;
+
+
+@property (nonatomic) CreatorAndChannelBar * creatorAndChannelBar;
+
 
 // mapping between NSNumber of type Integer and ArticleViewingExperience
 @property (strong, nonatomic) NSMutableDictionary * pageAves;
@@ -57,10 +62,8 @@
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
 #define ACTIVITY_ANIMATION_Y 100.f
-#define CREATOR_CHANNEL_BAR_HEIGHT 50.f
 
 #define LIKE_SHARE_BAR_HEIGHT 40.f
-#define TAB_BAR_HEIGHT 40.f
 @end
 
 @implementation POVView
@@ -132,8 +135,9 @@
 		[self.mainScrollView addSubview: ave];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
-    [self createLikeAndShareBarWithNumberOfLikes:@(10) numberOfShares:@(100) numberOfPages:@(5) andStartingPageNumber:@(1)];
     
+    //temp just to test
+    [self createLikeAndShareBarWithNumberOfLikes:@(10) numberOfShares:@(100) numberOfPages:@(5) andStartingPageNumber:@(1)];
 }
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage{
@@ -142,15 +146,34 @@
                                  self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
     
     self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame:barFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:@(5) andStartingPageNumber:@(1)];
+    self.likeShareBar.delegate = self;
     [self addSubview:self.likeShareBar];
 }
+
+//like-share bar protocol
+
+-(void)shareButtonPressed{
+    
+}
+
+//-(void)likeButtonPressed{
+//    
+//}
+
+-(void)showWhoLikesThePOV{
+    
+}
+
+-(void)showwhoHasSharedThePOV{
+    
+}
+
 
 
 -(void) addCreatorInfoFromChannel: (Channel *) channel {
     CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
-    
-    CreatorAndChannelBar * bar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
-    [self addSubview:bar];
+    self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
+    [self addSubview:self.creatorAndChannelBar];
 }
 
 #pragma mark - Add like button -
