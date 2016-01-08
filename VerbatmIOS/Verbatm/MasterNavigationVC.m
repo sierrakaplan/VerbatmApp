@@ -85,7 +85,7 @@
 #define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
 
 #define CHANNEL_CREATION_VIEW_WALLOFFSET_X 30.f
-#define CHANNEL_CREATION_VIEW_Y_OFFSET (PROFILE_NAV_BAR_HEIGHT + 50.f)
+#define CHANNEL_CREATION_VIEW_Y_OFFSET (PROFILE_NAV_BAR_HEIGHT + 90.f)
 @end
 
 @implementation MasterNavigationVC
@@ -333,7 +333,7 @@
     if(!self.createNewChannelView){
         [self darkenScreen];
         CGFloat viewHeight = self.view.frame.size.height/2.f -
-                            (CHANNEL_CREATION_VIEW_WALLOFFSET_X *6);
+                            (CHANNEL_CREATION_VIEW_WALLOFFSET_X *7);
         
         CGRect newChannelViewFrame = CGRectMake(CHANNEL_CREATION_VIEW_WALLOFFSET_X, CHANNEL_CREATION_VIEW_Y_OFFSET, self.view.frame.size.width - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *2),viewHeight);
         self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
@@ -346,7 +346,7 @@
 -(void)darkenScreen{
     if(!self.darkScreenCover){
         self.darkScreenCover = [[UIView alloc] initWithFrame:self.view.bounds];
-        self.darkScreenCover.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.7];
+        self.darkScreenCover.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
         [self.view addSubview:self.darkScreenCover];
     }
 }
@@ -375,8 +375,6 @@
         self.createNewChannelView = nil;
     }
 }
-
-
 
 
 #pragma mark - Memory Warning -

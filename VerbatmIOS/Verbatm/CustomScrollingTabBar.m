@@ -70,8 +70,7 @@
 -(UIButton *)getCreateChannelButtonWithFrame:(CGRect) frame {
     UIButton * createChannelButton = [[UIButton alloc] initWithFrame:frame];
     //set background
-    createChannelButton.backgroundColor = [UIColor clearColor];
-    [createChannelButton setImage:[UIImage imageNamed:TAB_BUTTON_BACKGROUND_IMAGE] forState:UIControlStateNormal];//slightly dark background to make text more visible
+    createChannelButton.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR;
     
     //add thin white border
     createChannelButton.layer.borderWidth = 0.3;
@@ -80,8 +79,9 @@
     UILabel * textLabel = [[UILabel alloc] initWithFrame:createChannelButton.bounds];
     [textLabel setText:@"+ Create Channel"];
     textLabel.textAlignment = NSTextAlignmentCenter;
-    [textLabel setTextColor:[UIColor lightGrayColor]];
+    [textLabel setTextColor:[UIColor yellowColor]];
     [textLabel setBackgroundColor:[UIColor clearColor]];
+    [textLabel setFont:[UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:CREATE_CHANNEL_BUTTON_FONT_SIZE]];
     
     [createChannelButton addSubview:textLabel];
     

@@ -41,8 +41,7 @@
 
 -(void)formatButton{
     //set background
-    self.backgroundColor = [UIColor clearColor];
-    [self setImage:[UIImage imageNamed:TAB_BUTTON_BACKGROUND_IMAGE] forState:UIControlStateNormal];//slightly dark background to make text more visible
+    self.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR;
     
     //add thin white border
     self.layer.borderWidth = 0.3;

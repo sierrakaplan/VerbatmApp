@@ -17,10 +17,19 @@
 #define TAB_BAR_FOLLOWERS_FONT @"Quicksand-Regular"
 #define TAB_BAR_FOLLOWER_NUMBER_FONT @"Quicksand-Bold"
 
+
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_PLACEHOLDER_FONT @"Quicksand-LightItalic"
+
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_FONT @"Quicksand-Bold"
+
+
+#define CHANNEL_CREATION_BUTTON_FONT @"Quicksand-Regular"
+
 #define TAB_BAR_FONT_SIZE 17.f
 #define FOLLOWERS_TEXT_FONT_SIZE 15.f
 
 
+#define CREATE_CHANNEL_BUTTON_FONT_SIZE 19.f
 
 
 #define TAB_BAR_ALPHA 0.7
@@ -128,5 +137,7 @@
 #define TAB_DIVIDER_COLOR clearColor
 
 #define TAB_BUTTON_BACKGROUND_IMAGE @"dark_fade_box"
+
+#define CHANNEL_TAB_BAR_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.5]
 
 #endif /* Styles_h */
