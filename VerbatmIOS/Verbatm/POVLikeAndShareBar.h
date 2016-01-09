@@ -26,6 +26,8 @@
 
 -(instancetype) initWithFrame:(CGRect)frame numberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage;
 
+-(void)setPageNumber:(NSNumber *) pageNumber;
+
 @property (nonatomic) id <POVLikeAndShareBarProtocol> delegate;
 
 @end

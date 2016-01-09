@@ -19,5 +19,10 @@
 @property (nonatomic, readonly) NSString * channelName;
 //offers a suggested width realtive to the sizes of the labels
 @property (nonatomic, readonly) CGFloat suggestedWidth;
+
+
+
+-(void)markButtonAsSelected;
+-(void)markButtonAsUnselected;
 @end
 

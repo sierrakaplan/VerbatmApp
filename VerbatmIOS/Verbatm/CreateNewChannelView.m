@@ -41,7 +41,9 @@
     [self createButtons];
     self.backgroundColor = [UIColor blackColor];
     self.layer.cornerRadius = 10.f;
-    self.layer.borderColor = [UIColor yellowColor].CGColor;
+    self.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
+    
+    
     self.layer.borderWidth = 1.f;
     self.clipsToBounds = YES;
 }
@@ -87,7 +89,7 @@
     
     self.cancelButton.layer.cornerRadius = 2.f;
     self.cancelButton.layer.borderWidth = 0.5;
-    self.cancelButton.layer.borderColor = [UIColor yellowColor].CGColor;
+    self.cancelButton.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
     [self.cancelButton addTarget:self action:@selector(cancelButtonSelected:) forControlEvents:UIControlEventTouchUpInside];
     
     
@@ -100,7 +102,7 @@
     
     self.acceptButton.layer.cornerRadius = 2.f;
     self.acceptButton.layer.borderWidth = 0.5;
-    self.acceptButton.layer.borderColor = [UIColor yellowColor].CGColor;
+    self.acceptButton.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
     
     [self.acceptButton addTarget:self action:@selector(acceptButtonSelected:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.cancelButton];

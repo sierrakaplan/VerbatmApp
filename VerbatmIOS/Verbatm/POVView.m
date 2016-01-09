@@ -137,7 +137,7 @@
 	}
     
     //temp just to test
-    [self createLikeAndShareBarWithNumberOfLikes:@(10) numberOfShares:@(100) numberOfPages:@(5) andStartingPageNumber:@(1)];
+    [self createLikeAndShareBarWithNumberOfLikes:@(10) numberOfShares:@(100) numberOfPages:@(aves.count) andStartingPageNumber:@(1)];
 }
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage{
@@ -145,7 +145,7 @@
     CGRect barFrame = CGRectMake(0.f,self.frame.size.height -LIKE_SHARE_BAR_HEIGHT - TAB_BAR_HEIGHT ,
                                  self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
     
-    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame:barFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:@(5) andStartingPageNumber:@(1)];
+    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame:barFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
     self.likeShareBar.delegate = self;
     [self addSubview:self.likeShareBar];
 }
@@ -195,18 +195,27 @@
 
 -(void) likeButtonPressed {
 	self.liked = !self.liked;
-	if (self.liked) {
-		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
-	} else {
-		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-	}
+//	if (self.liked) {
+//		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
+//	} else {
+//		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
+//	}
 	[self.likeButtonDelegate likeButtonLiked: self.liked onPOV: self.povInfo];
 }
 
 #pragma mark - Scroll view delegate -
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	[self displayMediaOnCurrentAVE];
+    [self setPageNumberOnShareBarFromScrollView:scrollView];
+    [self displayMediaOnCurrentAVE];
+}
+
+-(void) setPageNumberOnShareBarFromScrollView:(UIScrollView *) scrollview {
+    CGFloat scrollViewHeigthOffset = scrollview.contentOffset.y;
+    CGFloat screenHeight = scrollview.frame.size.height;
+    CGFloat pageIndex = scrollViewHeigthOffset/screenHeight;
+    NSNumber * pageNumber = @((pageIndex + 1.f));
+    [self.likeShareBar setPageNumber:pageNumber];
 }
 
 #pragma mark - Handle Display Media on AVE -
@@ -305,6 +314,8 @@
         });
     }
 }
+
+
 
 #pragma mark - Playing POV content -
 

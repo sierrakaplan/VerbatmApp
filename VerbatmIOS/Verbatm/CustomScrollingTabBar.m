@@ -70,7 +70,7 @@
 -(UIButton *)getCreateChannelButtonWithFrame:(CGRect) frame {
     UIButton * createChannelButton = [[UIButton alloc] initWithFrame:frame];
     //set background
-    createChannelButton.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR;
+    createChannelButton.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
     
     //add thin white border
     createChannelButton.layer.borderWidth = 0.3;
@@ -79,7 +79,7 @@
     UILabel * textLabel = [[UILabel alloc] initWithFrame:createChannelButton.bounds];
     [textLabel setText:@"+ Create Channel"];
     textLabel.textAlignment = NSTextAlignmentCenter;
-    [textLabel setTextColor:[UIColor yellowColor]];
+    [textLabel setTextColor:VERBATM_GOLD_COLOR];
     [textLabel setBackgroundColor:[UIColor clearColor]];
     [textLabel setFont:[UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:CREATE_CHANNEL_BUTTON_FONT_SIZE]];
     
@@ -124,14 +124,14 @@
 }
 
 -(void) selectTab: (ChannelButtons *) tab {
-//    [tab setAttributedTitle:[[NSAttributedString alloc] initWithString:tab.channelName
-//															attributes: self.selectedTabTitleAttributes] forState:UIControlStateNormal];
+    
+    [tab markButtonAsSelected];
+    
 	self.selectedTab = tab;
 }
 
 -(void) unselectTab: (ChannelButtons*) tab {
-//	[tab setAttributedTitle:[[NSAttributedString alloc] initWithString:tab.channelName
-//																  attributes:self.tabTitleAttributes] forState:UIControlStateNormal];
+    [tab markButtonAsUnselected];
 }
 
 

@@ -24,6 +24,8 @@
 @property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
 
+@property (nonatomic) BOOL isLiked;
+@property (nonatomic) NSNumber * totalNumberOfPages;//number of pages on our related AVE
 
 #define BUTTON_WALLOFFSET 5.f
 #define NUMBER_FONT_SIZE 18.f
@@ -50,6 +52,7 @@
         if(numPages.integerValue > 1){//make sure there are multiple pages
             [self createCounterLabelStartingAtPage:startPage outOf:numPages];
         }
+        self.totalNumberOfPages = numPages;
     }
     return self;
 }
@@ -57,17 +60,12 @@
 
 -(void) createCounterLabelStartingAtPage:(NSNumber *) startPage outOf:(NSNumber *) totalPages{
     NSAttributedString * pageCounterText = [self createCounterStringStartingAtPage:startPage outOf:totalPages];
-    
     CGRect labelFrame = CGRectMake(self.frame.size.width - BUTTON_WALLOFFSET - pageCounterText.size.width, BUTTON_WALLOFFSET, pageCounterText.size.width, self.frame.size.height - (BUTTON_WALLOFFSET*2));
     
     self.pageNumberLabel = [[UILabel alloc] initWithFrame:labelFrame];
     [self.pageNumberLabel setAttributedText:pageCounterText];
     [self addSubview:self.pageNumberLabel];
 }
-
-
-
-
 
 
 //creates the text for the numbers at the bottom right that show what page you're on and how
@@ -92,15 +90,10 @@
     
     NSMutableAttributedString * ofText = [[NSMutableAttributedString alloc] initWithString:@"of" attributes:ofTextAttributes];
     
-   [pageWeAreOn appendAttributedString:ofText];
+    [pageWeAreOn appendAttributedString:ofText];
     [pageWeAreOn appendAttributedString:totalNumberOfPages];
     return pageWeAreOn;
 }
-
-
-
-
-
 
 
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares{
@@ -111,8 +104,8 @@
     
     self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.likeButton setFrame:likeButtonFrame];
-    self.likeButtonLikedImage = [UIImage imageNamed:LIKE_ICON];
-    self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_PRESSED_ICON];
+    self.likeButtonLikedImage = [UIImage imageNamed:LIKE_ICON_PRESSED];
+    self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON_UNPRESSED];
     [self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
     [self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     
@@ -154,8 +147,7 @@
     [self.shareButon addTarget:self action:@selector(shareButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     
     [self addSubview:self.shareButon];
-    
-    
+
     
     //create numSharesButton of likes button
     self.numSharesButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -181,8 +173,27 @@
 }
 //the icon is selected
 -(void) likeButtonSelected {
-    [self.delegate likeButtonPressed];
+    
+    if(self.isLiked){
+        [self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
+        self.isLiked = NO;
+    }else{
+        [self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
+        self.isLiked = YES;
+    }
+
+    //[self.delegate likeButtonPressed];
 }
+
+//allows us to change our page number to the next number
+-(void)setPageNumber:(NSNumber *) pageNumber{
+    if(pageNumber.integerValue < self.totalNumberOfPages.integerValue ||
+       pageNumber.integerValue >= 1){
+        if(self.pageNumberLabel)[self.pageNumberLabel removeFromSuperview];
+        [self createCounterLabelStartingAtPage:pageNumber outOf:self.totalNumberOfPages];
+    }
+}
+
 
 //the actual number view is selected
 -(void) numLikesButtonSelected {

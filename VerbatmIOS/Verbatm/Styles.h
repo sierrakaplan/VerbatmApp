@@ -9,6 +9,10 @@
 #ifndef Styles_h
 #define Styles_h
 
+
+#define VERBATM_GOLD_COLOR [UIColor colorWithRed:227.f green:133.f blue:2.f alpha:1.f]
+
+
 #define HEADER_TEXT_FONT @"Quicksand-Regular"
 #define HEADER_TEXT_SIZE 20.f
 
@@ -138,6 +142,7 @@
 
 #define TAB_BUTTON_BACKGROUND_IMAGE @"dark_fade_box"
 
-#define CHANNEL_TAB_BAR_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.5]
+#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED [UIColor colorWithWhite:0.f alpha:0.5]
+#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED [UIColor colorWithWhite:1.f alpha:0.8]
 
 #endif /* Styles_h */

@@ -88,8 +88,8 @@
 
 #pragma mark - AVES -
 
-#define LIKE_ICON @"heart_unfilled"
-#define LIKE_PRESSED_ICON @"heart_filled"
+#define LIKE_ICON_UNPRESSED @"heart_unfilled"
+#define LIKE_ICON_PRESSED @"heart_filled"
 #define PULLDOWN_TEXT_ICON @"pulldown_icon"
 #define CREATE_TEXT_ICON @"edit_text_button"
 #define SHARE_ICON @"shareIcon"
