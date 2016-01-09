@@ -357,23 +357,8 @@
                         self.filterSwitched = YES;
                     }
                     
-                } else if(!self.isHorizontalPan) {
-//					float verticalDiff = location.y - self.panStartLocation.y;
-//                    if([self touchInTextViewBounds: location]){
-//                        if([self textViewTranslationInBounds: verticalDiff]){
-//                            
-//                            
-//                            CGRect newTVFrame = CGRectOffset(self.textAndImageView.textView.frame, 0, verticalDiff);
-//                            
-//                            if((newTVFrame.origin.y + newTVFrame.size.height) < (self.textAndImageView.frame.size.height - ((CIRCLE_RADIUS + SLIDE_THRESHOLD)*2))){
-//                                self.textAndImageView.textView.frame = newTVFrame;
-//                            }
-//                        }
-//                    } else{
-//                        sender.enabled = NO;
-//                        sender.enabled = YES;
-//                    }
                 }
+                
                 self.panStartLocation = location;
                 break;
             }
