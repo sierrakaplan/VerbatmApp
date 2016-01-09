@@ -68,8 +68,6 @@
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
 #define ACTIVITY_ANIMATION_Y 100.f
-
-#define LIKE_SHARE_BAR_HEIGHT 40.f
 @end
 
 @implementation POVView
@@ -113,6 +111,7 @@
 	if (pageIndex == self.currentIndexOfPageLoading) {
 		self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
 													 (self.currentIndexOfPageLoading.integerValue) * self.frame.size.height);
+        
 		[self setDelegateOnPhotoAVE: ave];
 		CGRect frame = CGRectOffset(self.bounds, 0, self.frame.size.height * self.currentIndexOfPageLoading.integerValue);
 		ave.frame = frame;
@@ -204,19 +203,15 @@
 
 
 -(void) shiftLikeShareBarDown:(BOOL) down{
-    
     if(down){
-        
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             self.likeShareBar.frame = self.lsBarDownFrame;
         }];
-        
     }else{
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             self.likeShareBar.frame = self.lsBarUpFrame;
         }];
     }
-    
 }
 
 

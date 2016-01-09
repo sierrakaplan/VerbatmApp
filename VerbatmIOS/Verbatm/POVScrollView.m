@@ -84,11 +84,16 @@
             if(i == povIndex ){
                 [(POVView *)subView povOnScreen];
                 self.visiblePOV = (POVView *)subView;
-            }else{
+            }else{//we must explicitly tell each view they are off screen
                 [(POVView *)subView povOffScreen];
             }
         }
     }
+}
+
+-(POVView *) getPOVOnScreen{
+    int povIndex = self.contentOffset.x/self.frame.size.width;
+    return self.povViews[povIndex];
 }
 
 -(void) clearPOVs {
@@ -104,14 +109,10 @@
 
 -(void) headerShowing: (BOOL) showing {
 	if (showing) {
-        if(self.visiblePOV){
-            [self.visiblePOV shiftLikeShareBarDown:NO];
-        }
+        [[self getPOVOnScreen] shiftLikeShareBarDown:NO];
         
 	} else {
-        if(self.visiblePOV){
-            [self.visiblePOV shiftLikeShareBarDown:YES];
-        }
+        [[self getPOVOnScreen] shiftLikeShareBarDown:YES];
 	}
 }
 
