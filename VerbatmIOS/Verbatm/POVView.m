@@ -11,6 +11,8 @@
 
 #import "CreatorAndChannelBar.h"
 
+#import "Durations.h"
+
 #import "Icons.h"
 
 #import "POVLikeAndShareBar.h"
@@ -57,6 +59,10 @@
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
 @property (nonatomic) POVLikeAndShareBar * likeShareBar;
+@property (nonatomic) CGRect lsBarDownFrame;// the framw of the like share button with the tab down
+@property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
+
+
 
 #define DOWN_ARROW_WIDTH 30.f
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
@@ -142,10 +148,13 @@
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage{
     
-    CGRect barFrame = CGRectMake(0.f,self.frame.size.height -LIKE_SHARE_BAR_HEIGHT - TAB_BAR_HEIGHT ,
+    self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height -LIKE_SHARE_BAR_HEIGHT - TAB_BAR_HEIGHT ,
                                  self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
     
-    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame:barFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
+    self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
+                                     self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+    
+    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame:self.lsBarUpFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
     self.likeShareBar.delegate = self;
     [self addSubview:self.likeShareBar];
 }
@@ -192,6 +201,25 @@
 	}
 	[self addSubview: self.likeButton];
 }
+
+
+-(void) shiftLikeShareBarDown:(BOOL) down{
+    
+    if(down){
+        
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.likeShareBar.frame = self.lsBarDownFrame;
+        }];
+        
+    }else{
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.likeShareBar.frame = self.lsBarUpFrame;
+        }];
+    }
+    
+}
+
+
 
 -(void) likeButtonPressed {
 	self.liked = !self.liked;

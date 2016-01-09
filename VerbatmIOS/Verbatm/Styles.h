@@ -10,7 +10,7 @@
 #define Styles_h
 
 
-#define VERBATM_GOLD_COLOR [UIColor colorWithRed:227.f green:133.f blue:2.f alpha:1.f]
+#define VERBATM_GOLD_COLOR [UIColor yellowColor]
 
 
 #define HEADER_TEXT_FONT @"Quicksand-Regular"

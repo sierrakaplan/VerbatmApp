@@ -55,5 +55,5 @@
 -(void)preparePOVToBePresented;
 
 //moves the 
--(void) shiftLikeShareBar:(BOOL) down;
+-(void) shiftLikeShareBarDown:(BOOL) down;
 @end

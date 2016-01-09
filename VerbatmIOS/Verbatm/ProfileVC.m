@@ -182,12 +182,15 @@
 		}];
 		[self.delegate showTabBar:NO];
 		self.contentCoveringScreen = NO;
+        [self.povScrollView headerShowing:NO];
 	} else {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self.profileNavBar setFrame:self.profileNavBarFrameOnScreen];
 		}];
 		[self.delegate showTabBar:YES];
 		self.contentCoveringScreen = YES;
+        [self.povScrollView headerShowing:YES];
+
 	}
 }
 
