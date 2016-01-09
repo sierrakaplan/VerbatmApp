@@ -39,7 +39,7 @@
 
 @implementation VideoAVE
 
--(instancetype) initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList {
+-(instancetype) initWithFrame:(CGRect)frame andVideoWithTextArray:(NSArray*) videoAndTextList {
 	self = [super initWithFrame:frame];
 	if (self) {
 		self.inPreviewMode = NO;

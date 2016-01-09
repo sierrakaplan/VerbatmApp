@@ -127,6 +127,7 @@
 	}
 }
 
+//TODO: change this to be loaded from the user post and be less hacky
 -(void) addCreatorName: (NSString*) creatorName andCreatorImage: (NSString*) creatorImageName andChannelName: (NSString*) channelName {
 //	ArticleViewingExperience* firstPage = [self.pageAves objectForKey:[NSNumber numberWithInt:0]];
 	UIImageView* headerBackground = [[UIImageView alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, 60.f)];

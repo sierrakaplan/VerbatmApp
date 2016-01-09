@@ -14,6 +14,7 @@
 #import "POVScrollView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
+#import "VideoAVE.h"
 
 @interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate>
 
@@ -48,6 +49,11 @@
 //TODO: get POVs
 //        [self.povScrollView displayPOVs: povs];
 //        [self.povScrollView playPOVOnScreen];
+
+	//FOR TESTING
+	NSURL* testURL = [NSURL URLWithString:@"https://www.youtube.com/watch?v=C5znw1OtI0U&feature=em-subs_digest"];
+	VideoAVE* videoTest = [[VideoAVE alloc] initWithFrame:self.view.bounds andVideoWithTextArray:@[@[testURL]]];
+	[self.view addSubview:videoTest];
 }
 
 -(void) viewDidAppear:(BOOL)animated {

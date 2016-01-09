@@ -42,7 +42,7 @@
 		self.photosView = [[PhotoAVE alloc] initWithFrame:self.photoAveFrame andPhotoArray:photos];
 		self.photosView.isPhotoVideoSubview = YES;
 		self.photosView.textEntryDelegate = self;
-		self.videoView = [[VideoAVE alloc]initWithFrame:self.videoAveFrame andVideoArray:videos];
+		self.videoView = [[VideoAVE alloc]initWithFrame:self.videoAveFrame andVideoWithTextArray:videos];
 		[self addSubview:self.videoView];
 		[self addSubview:self.photosView];
     }

@@ -28,8 +28,6 @@
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
 
-@property (strong, nonatomic) NSArray* threads;
-
 @end
 
 @implementation ProfileVC
@@ -37,9 +35,6 @@
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.contentCoveringScreen = YES;
-    
-    //this is where you'd fetch the threads
-    self.threads = @[@"Entrepreneurship", @"Social Justice", @"Music"];
     [self addPOVScrollView];
     [self createNavigationBar];
     [self addClearScreenGesture];
@@ -92,8 +87,10 @@
     self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
 	self.profileNavBarFrameOffScreen = CGRectMake(0.f, -PROFILE_NAV_BAR_HEIGHT, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
     [self updateUserInfo];
+
+	//TODO: get threads from currentUser
     self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:self.profileNavBarFrameOnScreen
-												   andThreads:self.threads andUserName:self.currentUser.name];
+												   andThreads:@[@"Test"] andUserName:self.currentUser.name];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
     

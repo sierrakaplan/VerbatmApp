@@ -79,7 +79,7 @@
 
 	} else {
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-			VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoArray:[self getVideosFromPage: page]];
+			VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoWithTextArray:[self getVideosFromPage: page]];
 			resolve(videoAve);
 		}];
 	}
