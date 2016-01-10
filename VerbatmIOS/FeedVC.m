@@ -16,7 +16,7 @@
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate>
+@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, POVScrollViewDelegate>
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
@@ -59,6 +59,7 @@
 										 self.view.bounds.size.height);// - HEADER_HEIGHT - 40.f);
 	self.povScrollView = [[POVScrollView alloc] initWithFrame: self.povScrollViewFrame];
     self.povScrollView.delegate = self;
+    self.povScrollView.customDelegate = self;
 	self.povScrollView.feedScrollView = YES;
     [self.view addSubview:self.povScrollView];
 }
@@ -122,6 +123,15 @@
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
                     andProgressObject:(NSProgress *)publishingProgress{
     
+}
+
+
+#pragma mark -POVScrollview delegate-
+-(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
+    [self.delegate feedPovLikeLiked:liked forPOV:povInfo];
+}
+-(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
+    [self.delegate feedPovShareButtonSeletedForPOV:povInfo];
 }
 
 #pragma mark - Network Connection Lost -

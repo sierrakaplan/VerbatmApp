@@ -7,11 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "PovInfo.h"
 @protocol ProfileVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
 -(void) createNewChannel;//tells delegate to present "create new channel" view
+
+-(void)profilePovShareButtonSeletedForPOV:(PovInfo *) pov;
+-(void)profilePovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov;
+
 @end
 
 @interface ProfileVC : UIViewController

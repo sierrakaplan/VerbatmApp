@@ -14,7 +14,6 @@
  */
 
 @protocol POVLikeAndShareBarProtocol <NSObject>
-
 -(void)shareButtonPressed;
 -(void)likeButtonPressed;
 -(void)showWhoLikesThePOV;//the like numbers have been pressed

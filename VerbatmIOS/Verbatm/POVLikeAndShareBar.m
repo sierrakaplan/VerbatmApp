@@ -107,7 +107,7 @@
     self.likeButtonLikedImage = [UIImage imageNamed:LIKE_ICON_PRESSED];
     self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON_UNPRESSED];
     [self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-    [self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self.likeButton addTarget:self action:@selector(likeButtonSelected) forControlEvents:UIControlEventTouchUpInside];
     
     [self addSubview:self.likeButton];
     
@@ -182,7 +182,7 @@
         self.isLiked = YES;
     }
 
-    //[self.delegate likeButtonPressed];
+    [self.delegate likeButtonPressed];
 }
 
 //allows us to change our page number to the next number

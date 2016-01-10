@@ -24,7 +24,7 @@
 #import "UpdatingPOVManager.h"
 #import "UIView+Effects.h"
 
-@interface ArticleDisplayVC () < LikeButtonDelegate, UIScrollViewDelegate, POVLoadManagerDelegate>
+@interface ArticleDisplayVC () <UIScrollViewDelegate, POVLoadManagerDelegate>
 
 @property (strong, nonatomic) POVDisplayScrollView* scrollView;
 

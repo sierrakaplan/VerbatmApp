@@ -12,7 +12,7 @@
 #import "POVScrollView.h"
 #import "Styles.h"
 
-@interface POVScrollView()
+@interface POVScrollView()<POVViewDelegate>
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 @property (strong, nonatomic) NSMutableArray * povViews;
@@ -31,6 +31,7 @@
 		self.backgroundColor = [UIColor blackColor];
 		self.scrollEnabled = YES;
 		self.pagingEnabled = YES;
+        self.bounces = NO;
 		self.showsHorizontalScrollIndicator = NO;
 		self.showsVerticalScrollIndicator = NO;
 		[self.activityIndicator startAnimating];
@@ -39,6 +40,7 @@
 }
 
 -(void) displayPOVs: (NSArray*)povs {
+    
 	if (!povs || !povs.count) {
 		UILabel* noPOVSLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
 																		 NO_POVS_LABEL_WIDTH, self.frame.size.height)];
@@ -50,24 +52,28 @@
 		noPOVSLabel.numberOfLines = 3;
 		[self addSubview:noPOVSLabel];
 	}
+    
 	[self.activityIndicator stopAnimating];
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
 
 	CGFloat xPosition = 0.f;
 	for (POV* pov in povs) {
-		@autoreleasepool {
-			CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
+		
+        @autoreleasepool {
+			
+            CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
 			NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds inPreviewMode:NO];
 			POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
+            povView.delegate = self;
 			povView.autoresizesSubviews = YES;
 			povView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
 			[povView renderAVES: aves];
-			if (self.feedScrollView) {
-                
+			
+            if (self.feedScrollView) {
                 Channel * povChannel = [[Channel alloc] initWithChannelName:pov.channelName numberOfFollowers:@(20) andUserName:pov.creatorName];
 				[povView addCreatorInfoFromChannel:povChannel];
-                
 			}
+            
 			[self addSubview: povView];
 			[self.povViews addObject:povView];
 			xPosition += self.bounds.size.width;
@@ -93,7 +99,11 @@
 
 -(POVView *) getPOVOnScreen{
     int povIndex = self.contentOffset.x/self.frame.size.width;
-    return self.povViews[povIndex];
+    
+    if((povIndex >= 0) && (povIndex < self.povViews.count)){
+        return self.povViews[povIndex];
+    }
+    return nil;
 }
 
 -(void) clearPOVs {
@@ -107,14 +117,32 @@
 	[self.activityIndicator startAnimating];
 }
 
+
+
 -(void) headerShowing: (BOOL) showing {
-	if (showing) {
-        [[self getPOVOnScreen] shiftLikeShareBarDown:NO];
-        
-	} else {
-        [[self getPOVOnScreen] shiftLikeShareBarDown:YES];
-	}
+    for(int i = 0; i < self.povViews.count; i++){
+        UIView * subView = self.povViews[i];
+        if([subView isKindOfClass:[POVView class]]){
+            if (showing) {
+                [(POVView *)subView shiftLikeShareBarDown:NO];
+            } else {
+               [(POVView *)subView shiftLikeShareBarDown:YES];
+            }
+        }
+    }
 }
+
+
+#pragma mark - POVView delegate - 
+
+-(void) likeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo {
+    [self.customDelegate povLikeButtonLiked:liked onPOV:povInfo];
+}
+
+-(void) shareOptionSelectedForPOVInfo: (PovInfo* ) pov {
+    [self.customDelegate povshareButtonSelectedForPOVInfo:pov];
+}
+
 
 #pragma mark - Lazy Instantiation -
 

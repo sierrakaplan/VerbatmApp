@@ -1413,7 +1413,7 @@
 			name = "Constants ";
 			sourceTree = "<group>";
 		};
-		C7C699FD1BF8191A006B5260 /* Preview */ = {
+		C7C699FD1BF8191A006B5260 /* Views to Edit AVE Content */ = {
 			isa = PBXGroup;
 			children = (
 				C7C69A051BF820FC006B5260 /* EditMediaContentView.h */,
@@ -1421,7 +1421,7 @@
 				C7E093EA1BF98BE200A3276A /* OpenCollectionView.h */,
 				C7E093EB1BF98BE200A3276A /* OpenCollectionView.m */,
 			);
-			name = Preview;
+			name = "Views to Edit AVE Content";
 			sourceTree = "<group>";
 		};
 		C7CCFF4019CE6E0F00E90080 /* Transition Animation Managers */ = {
@@ -1491,7 +1491,7 @@
 		F26894441A43641C00B1D4DB /* AVEs  */ = {
 			isa = PBXGroup;
 			children = (
-				C7C699FD1BF8191A006B5260 /* Preview */,
+				C7C699FD1BF8191A006B5260 /* Views to Edit AVE Content */,
 				A5076D121BF2B25100303746 /* TextOverMediaView.h */,
 				A5076D131BF2B25100303746 /* TextOverMediaView.m */,
 				C7E6C12F1A4E394600863893 /* PhotoVideoAVE.h */,

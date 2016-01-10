@@ -25,9 +25,8 @@
 #import "SizesAndPositions.h"
 #import "SettingsVC.h"
 #import "UserManager.h"
-#import "SharePOVView.h"
 
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol>
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate>
 
 @property (strong, nonatomic) POVScrollView* povScrollView;
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
@@ -100,6 +99,7 @@
 -(void) addPOVScrollView {
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
     self.povScrollView.delegate = self;
+    self.povScrollView.customDelegate = self;
 	[self.view addSubview:self.povScrollView];
 }
 
@@ -131,7 +131,6 @@
 												   andChannels:self.channels andUserName:self.currentUser.name];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
-    
 }
 
 -(void) updateUserInfo {
@@ -139,9 +138,32 @@
 }
 
 -(void)addClearScreenGesture{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
-    [self.povScrollView addGestureRecognizer:tap];
+    UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
+    singleTap.numberOfTapsRequired = 1;
+    [self.povScrollView addGestureRecognizer:singleTap];
+    
+    
+    UITapGestureRecognizer * doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(likePOVOnScreen:)];
+    doubleTap.numberOfTapsRequired = 2;
+    [self.povScrollView addGestureRecognizer:doubleTap];
 }
+
+
+-(void)likePOVOnScreen:(UITapGestureRecognizer *) tapGesture{
+    
+}
+
+
+#pragma mark -POV ScrollView custom delegate -
+
+-(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
+    [self.delegate profilePovLikeLiked:liked forPOV:povInfo];
+}
+
+-(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
+    [self.delegate profilePovShareButtonSeletedForPOV:povInfo];
+}
+
 
 #pragma mark - Profile Nav Bar Delegate Methods -
 

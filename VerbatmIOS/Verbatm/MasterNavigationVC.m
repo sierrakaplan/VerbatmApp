@@ -34,6 +34,7 @@
 #import "PreviewDisplayView.h"
 #import "ProfileVC.h"
 
+#import "SharePOVView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -51,7 +52,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, CreateNewChannelViewProtocol>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, CreateNewChannelViewProtocol, SharePOVViewDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -69,7 +70,7 @@
 @property (strong,nonatomic) ProfileVC* profileVC;
 @property (strong,nonatomic) FeedVC * feedVC;
 
-
+@property (nonatomic) SharePOVView * sharePOVView;
 
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
@@ -267,9 +268,6 @@
         
         //get the channels that the user owns here
         
-        
-        
-        //temp
         Channel * enterpreneurship = [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
         
         Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
@@ -314,17 +312,85 @@
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
 		}];
-//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
 	} else {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
 		}];
-//		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
 	}
+}
+-(void)profilePovShareButtonSeletedForPOV:(PovInfo *) pov{
+    [self presentShareSelectionView];
+}
+-(void)profilePovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov{
+    
+}
+
+-(void)feedPovShareButtonSeletedForPOV:(PovInfo *) pov {
+    
+    [self presentShareSelectionView];
+    
 }
 
 
+-(void)feedPovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov {
+    
+    
+    
+}
 
+-(void)presentShareSelectionView{
+    if(self.sharePOVView){
+        [self.sharePOVView removeFromSuperview];
+        self.sharePOVView = nil;
+    }
+    
+    
+    //temp
+    //simulates downloading threads
+    Channel * enterpreneurship = [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
+    
+    Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
+    
+    Channel * music = [[Channel alloc] initWithChannelName:@"Music" numberOfFollowers:@(10000) andUserName:@"Iain Usiri"];
+    
+    
+    CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame andChannels:@[enterpreneurship, socialJustice, music] shouldStartOnChannels:NO];
+    self.sharePOVView.delegate = self;
+    [self.view addSubview:self.sharePOVView];
+    [self.view bringSubviewToFront:self.sharePOVView];
+    [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+        self.sharePOVView.frame = onScreenFrame;
+    }];
+}
+
+-(void)removeSharePOVView{
+    if(self.sharePOVView){
+        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+        
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.sharePOVView.frame = offScreenFrame;
+        }completion:^(BOOL finished) {
+            if(finished){
+                [self.sharePOVView removeFromSuperview];
+                self.sharePOVView = nil;
+            }
+        }];
+    }
+}
+
+
+#pragma mark -Share Seletion View Protocol -
+-(void)cancelButtonSelected{
+    [self removeSharePOVView];
+}
+-(void)postPOVToChannel:(Channel *) channel {
+    
+}
+-(void)sharePostWithComment:(NSString *) comment{
+    
+}
 
 
 #pragma mark -create new channel prompt-
@@ -375,7 +441,6 @@
         self.createNewChannelView = nil;
     }
 }
-
 
 #pragma mark - Memory Warning -
 

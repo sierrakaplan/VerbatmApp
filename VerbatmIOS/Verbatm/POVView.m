@@ -51,7 +51,7 @@
 @property (nonatomic) BOOL liked;
 @property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
-@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
+//@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
 @property (strong, nonatomic) PovInfo* povInfo;
 
 @property (nonatomic, strong) UIButton * downArrow;
@@ -141,8 +141,15 @@
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
     
-    //temp just to test
-    [self createLikeAndShareBarWithNumberOfLikes:@(10) numberOfShares:@(100) numberOfPages:@(aves.count) andStartingPageNumber:@(1)];
+    
+    ArticleViewingExperience * ave = [aves firstObject];
+    if(ave){
+        BOOL inADK = ave.inPreviewMode;
+        if(!inADK){
+            //temp just to test
+            [self createLikeAndShareBarWithNumberOfLikes:@(10) numberOfShares:@(100) numberOfPages:@(aves.count) andStartingPageNumber:@(1)];
+        }
+    }
 }
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage{
@@ -160,8 +167,8 @@
 
 //like-share bar protocol
 
--(void)shareButtonPressed{
-    
+-(void)shareButtonPressed {
+    [self.delegate shareOptionSelectedForPOVInfo:self.povInfo];
 }
 
 //-(void)likeButtonPressed{
@@ -169,7 +176,6 @@
 //}
 
 -(void)showWhoLikesThePOV{
-    
 }
 
 -(void)showwhoHasSharedThePOV{
@@ -189,17 +195,17 @@
 //should be called by another class (since preview does not have like)
 //Sets the like button delegate and the povID since the delegate method
 //requires a pov ID be passed back
--(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate {
-	self.likeButtonDelegate = delegate;
-	// check if current user likes story
-	self.liked = [[UserManager sharedInstance] currentUserLikesStory: self.povInfo];
-	if (self.liked) {
-		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
-	} else {
-		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-	}
-	[self addSubview: self.likeButton];
-}
+//-(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate {
+//	self.likeButtonDelegate = delegate;
+//	// check if current user likes story
+//	self.liked = [[UserManager sharedInstance] currentUserLikesStory: self.povInfo];
+//	if (self.liked) {
+//		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
+//	} else {
+//		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
+//	}
+//	[self addSubview: self.likeButton];
+//}
 
 
 -(void) shiftLikeShareBarDown:(BOOL) down{
@@ -218,12 +224,7 @@
 
 -(void) likeButtonPressed {
 	self.liked = !self.liked;
-//	if (self.liked) {
-//		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
-//	} else {
-//		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-//	}
-	[self.likeButtonDelegate likeButtonLiked: self.liked onPOV: self.povInfo];
+
 }
 
 #pragma mark - Scroll view delegate -
@@ -329,7 +330,7 @@
 				//TODO: add like button and down arrows back
 //                [self addDownArrowButton];
                 
-                    [self addLikeButtonWithDelegate:likeDelegate];
+                    //[self addLikeButtonWithDelegate:likeDelegate];
             }
             [self renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
         }).catch(^(NSError* error) {
