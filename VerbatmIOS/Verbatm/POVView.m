@@ -65,7 +65,7 @@
 		if(povInfo) { // if being used in feed
             self.povInfo = povInfo;
             self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
-            if(povInfo)[self createPageLoader];
+            if(povInfo) [self createPageLoader];
             self.activityIndicator = [self startActivityIndicatorOnViewWithCenter: CGPointMake(self.center.x, ACTIVITY_ANIMATION_Y)
                                                                          andStyle:UIActivityIndicatorViewStyleWhiteLarge];
             self.activityIndicator.color = [UIColor whiteColor];
@@ -80,7 +80,6 @@
     
     NSNumber* povID = self.povInfo.identifier;
     [self.pageLoadManager loadPagesForPOV: povID];
-    
 }
 
 #pragma mark - Display page -
@@ -120,7 +119,7 @@
 		ArticleViewingExperience* ave = aves[i];
 		[self.pageAves setObject:ave forKey:[NSNumber numberWithInt:i]];
 		[self setDelegateOnPhotoAVE: ave];
-        [ave offScreen];
+//TODO:        [ave offScreen];
 		ave.frame = viewFrame;
 		[self.mainScrollView addSubview: ave];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);

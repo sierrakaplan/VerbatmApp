@@ -15,7 +15,9 @@
 #import "UserManager.h"
 #import "ArticleDisplayVC.h"
 #import "POVLoadManager.h"
+#import "POV.h"
 #import "SegueIDs.h"
+#import "VideoPlayerView.h"
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate, UIScrollViewDelegate>
 
@@ -41,13 +43,17 @@
 }
 
 -(void) viewWillAppear:(BOOL)animated {
-	
+	//THIS IS JUST FOR VIDEO TEST PURPOSES
+//	[self.povScrollView playPOVOnScreen];
+	VideoPlayerView* videoView = [[VideoPlayerView alloc] initWithFrame:self.view.bounds];
+	[videoView prepareVideoFromURL:[NSURL URLWithString:@"https://storage.googleapis.com/verbatm_videos/movie.mov"]];
+	videoView.repeatsVideo = YES;
+	[self.view addSubview:videoView];
+
 	//TODO: get POVs
 //        [self.povScrollView displayPOVs: povs];
 //        [self.povScrollView playPOVOnScreen];
-
 //    [self createContentListViewWithStartThread:testThreads[0]];
-	
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -60,9 +66,12 @@
 }
 
 -(void) addPOVScrollView {
+
 	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
     self.povScrollView.delegate = self;
-	[self.view addSubview:self.povScrollView];
+	//TODO
+//	[self.view addSubview:self.povScrollView];
+
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
@@ -93,7 +102,6 @@
 												   andThreads:@[@"Test"] andUserName:self.currentUser.name];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
-    
 }
 
 -(void) updateUserInfo {

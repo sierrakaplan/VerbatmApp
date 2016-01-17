@@ -27,6 +27,8 @@
 @property (nonatomic, readwrite) BOOL isVideoPlaying; //tells you if the video is in a playing state
 @property (strong, atomic) NSTimer * ourTimer;//keeps calling continue
 
+@property (strong, nonatomic) id playbackLikelyToKeepUpKVOToken;
+
 
 #define MUTE_BUTTON_SIZE 40
 #define MUTE_BUTTON_OFFSET 10
@@ -99,6 +101,7 @@
 	}
 	self.playerItem = playerItem;
 	[self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
+	[self.playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:nil];
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(playerItemDidReachEnd:)
@@ -120,6 +123,8 @@
 
 	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+	//TODO: testing
+	[self.player addObserver:self forKeyPath:@"rate" options:0 context:nil];
 	// Create an AVPlayerLayer using the player
 	if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
@@ -132,6 +137,8 @@
 	[self addSubview:self.muteButton];
 	[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
 
+	//TODO: delete
+	[self playVideo];
 	if (self.playVideoAfterLoading) {
 		[self playVideo];
 		self.playVideoAfterLoading = NO;
@@ -143,21 +150,32 @@
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
 						change:(NSDictionary *)change context:(void *)context {
 	if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
-		if (self.playerItem.status == AVPlayerStatusReadyToPlay) {
+		if (self.playerItem.status == AVPlayerItemStatusReadyToPlay) {
 			NSLog(@"Video ready to play");
 			if (self.videoLoading) {
 				self.videoLoading = NO;
-				[self.videoLoadingImageView removeFromSuperview];
+				self.videoLoadingImageView.hidden = YES;
 			}
-		} else if (self.playerItem.status == AVPlayerStatusFailed) {
-			NSLog(@"video couldn't play: %@", self.player.error);
+		} else if (self.playerItem.status == AVPlayerItemStatusFailed) {
+			NSLog(@"video couldn't play: %@", self.playerItem.error);
 			if (self.videoLoading) {
 				self.videoLoading = NO;
-				[self.videoLoadingImageView removeFromSuperview];
+				self.videoLoadingImageView.hidden = YES;
 			}
 		}
 	}
+	if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
+		if (self.playerItem.playbackLikelyToKeepUp) {
+			NSLog(@"play back will keep up");
+			self.videoLoadingImageView.hidden = YES;
+			[self playVideo];
+		} else {
+			NSLog(@"play back won't keep up");
+			self.videoLoadingImageView.hidden = NO;
+		}
+	}
 }
+
 
 #pragma mark - Fuse video assets into one -
 
@@ -211,6 +229,7 @@
 
 // Notifies that video has ended so video can replay
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
+	NSLog(@"Repeating video");
 	AVPlayerItem *playerItem = [notification object];
 	if (self.repeatsVideo) {
 		[playerItem seekToTime:kCMTimeZero];
@@ -220,7 +239,7 @@
 // Telling video to play when stalled should not be necessary but seems to be
 -(void)playerItemDidStall:(NSNotification*)notification {
 	NSLog(@"Video stalled");
-	if(self.isVideoPlaying) [self playVideo];
+//	if(self.isVideoPlaying) [self playVideo];
 }
 
 // Pauses player

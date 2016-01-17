@@ -106,12 +106,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "471211493.494835"
+            timestampString = "474683590.644426"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "99"
-            endingLineNumber = "99"
-            landmarkName = "-createNavigationBar"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
+            landmarkName = "-updateUserInfo"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

@@ -11,6 +11,7 @@
 #import "POVView.h"
 #import "POVScrollView.h"
 #import "Styles.h"
+#import "VideoAve.h"
 
 @interface POVScrollView()
 
