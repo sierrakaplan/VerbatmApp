@@ -58,7 +58,6 @@
         [self createArrowExtesion];
         [self createPanGesture];
         [self createTapGesture];
-        self.clipsToBounds = YES;
     }
     return self;
 }
@@ -73,10 +72,8 @@
     
     //to-do -- get the number of people I follow here and the number of people that follow me
     
-    self.followInfoBar = [[followInfoBar alloc] initWithFrame:self.followersInfoFrameClosed WithNumberOfFollowers:@(200) andWhoIFollow:@(350)];
+    self.followInfoBar = [[followInfoBar alloc] initWithFrame:self.followersInfoFrameClosed WithNumberOfFollowers:[NSNumber numberWithInt:200] andWhoIFollow:[NSNumber numberWithInt:350]];
     [self addSubview:self.followInfoBar];
-    self.followInfoBar.backgroundColor = [UIColor redColor];
-    
 }
 
 
@@ -92,6 +89,7 @@
     [self addGestureRecognizer:panGesture];
 }
 
+
 -(void)userDidTap:(UIPanGestureRecognizer *) pan{
     if(self.followInfoBar.frame.size.height == self.followersInfoFrameOpen.size.height){
         //the bar is greater than halfway open
@@ -100,8 +98,6 @@
         [self snapViewDown:YES];
     }
 }
-
-
 
 
 -(void)userDidPan:(UIPanGestureRecognizer *) pan{

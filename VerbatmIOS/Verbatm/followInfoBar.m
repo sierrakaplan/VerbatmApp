@@ -26,16 +26,25 @@
     self = [super initWithFrame:frame];
     if(self){
         [self createButtonsWithNumberOfFollowers:myFollowers andWhoIFollow:whoIFollow];
+        [self formatView];
     }
     return self;
+}
+
+-(void)formatView{
+    
+    [self setBackgroundColor:[UIColor colorWithWhite:1.0 alpha:0.7]];
+    
+    //[self setBackgroundColor:CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED];
+    self.clipsToBounds = YES;
 }
 
 
 -(void)createButtonsWithNumberOfFollowers:(NSNumber *) myFollowers andWhoIFollow:(NSNumber *) whoIFollow{
     
-    CGRect myFollowersFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, self.frame.size.height);
+    CGRect myFollowersFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, THREAD_SCROLLVIEW_HEIGHT);
     
-    CGRect whoIAmFollowingFrame = CGRectMake(self.frame.size.width/2.f,0.f, self.frame.size.width/2.f, self.frame.size.height);
+    CGRect whoIAmFollowingFrame = CGRectMake(self.frame.size.width/2.f,0.f, self.frame.size.width/2.f, THREAD_SCROLLVIEW_HEIGHT);
     
     [self addSubview:[self getInfoViewWithTitle:@"Follower(s)" andNumber:myFollowers andViewFrame:myFollowersFrame andSelectionSelector:@selector(myFollowersListSelected)]];
     
@@ -47,14 +56,18 @@
 //note -- selector is for when the button is pressed
 -(UIButton *) getInfoViewWithTitle:(NSString *) title andNumber:(NSNumber *) number andViewFrame:(CGRect) viewFrame andSelectionSelector:(SEL) selector{
     
-    CGRect titleFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, self.frame.size.height/2.f);
+    CGRect titleFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, THREAD_SCROLLVIEW_HEIGHT/2.f);
     
-    CGRect numberFrame = CGRectMake(0.f,self.frame.size.width/2.f, self.frame.size.width/2.f, self.frame.size.height/2.f);
+    CGRect numberFrame = CGRectMake(0.f,THREAD_SCROLLVIEW_HEIGHT/2.f, self.frame.size.width/2.f, THREAD_SCROLLVIEW_HEIGHT/2.f);
     
+    NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+    paragraphStyle.alignment                = NSTextAlignmentCenter;
     
     NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
-                                                [UIColor whiteColor],
-                                            NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:FOLLOWERS_TEXT_FONT_SIZE]};
+                                                [UIColor blackColor],
+                                            NSFontAttributeName:
+                                                [UIFont fontWithName:TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT size:TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT_SIZE],
+                                            NSParagraphStyleAttributeName:paragraphStyle};
     
     
     //create bolded number
@@ -66,35 +79,33 @@
     
     
     
-
-    //create frame for text label
-    CGSize textSize = [title sizeWithAttributes:informationAttribute];
-    CGFloat height = self.frame.size.height/2.f;
-    
-    CGRect titleLabelFrame = CGRectMake(0.f, 0.f, textSize.width, height);
-    
     UILabel * titleLabel = [[UILabel alloc] initWithFrame:titleFrame];
     [titleLabel setBackgroundColor:[UIColor clearColor]];
     [titleLabel setAttributedText:titleAttributed];
     
     
-    //create frame for text number
-    CGSize numberTextSize = [numberString sizeWithAttributes:informationAttribute];
-    CGFloat numberHeight = self.frame.size.height/2.f;
-    CGRect numberLabelFrame = CGRectMake(0.f, numberHeight, numberTextSize.width, numberHeight);
+
     UILabel * numberLabel = [[UILabel alloc] initWithFrame:numberFrame];
     [numberLabel setBackgroundColor:[UIColor clearColor]];
     [numberLabel setAttributedText:numberAttributed];
     
     
     UIButton * baseView = [[UIButton alloc]initWithFrame:viewFrame];
-    [baseView setBackgroundColor:CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED];
+    [baseView setBackgroundColor:[UIColor clearColor]];
     [baseView addTarget:self action:selector forControlEvents:UIControlEventTouchUpInside];
+ 
+    
+    
     [baseView addSubview:titleLabel];
     [baseView addSubview:numberLabel];
     
+    //add thin white border
+    baseView.layer.borderWidth = 0.3;
+    baseView.layer.borderColor = [UIColor whiteColor].CGColor;
+
     return baseView;
 }
+
 
 //list of people that follow me and the channels
 -(void)myFollowersListSelected{
