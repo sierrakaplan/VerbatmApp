@@ -9,7 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "SizesAndPositions.h"
 @protocol ProfileNavBarDelegate <NSObject>
-
+-(void) followOptionSelected;//current user selected to follow a channel
+-(void) followersOptionSelected;//current user wants to see their own followers
 -(void) settingsButtonClicked;
 -(void) newChannelSelectedWithName:(NSString *) channelName;
 -(void) createNewChannel;//notifies view to prompt user to create new channel

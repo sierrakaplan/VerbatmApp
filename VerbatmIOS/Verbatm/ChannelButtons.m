@@ -208,7 +208,6 @@
     UILabel * channelNameLabel = [self getChannelNameLabel:self.currentChannel withOrigin:self.channelNameLabel.frame.origin andAttributes:self.nonSelectedChannelNameTitleAttributes];
     
     //swap labels
-    
     [self.numberOfFollowersLabel removeFromSuperview];
     self.numberOfFollowersLabel = followersInfoLabel;
     [self addSubview:self.numberOfFollowersLabel];

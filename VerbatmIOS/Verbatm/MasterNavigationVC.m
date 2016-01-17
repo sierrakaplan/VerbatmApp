@@ -318,17 +318,28 @@
 		}];
 	}
 }
--(void)profilePovShareButtonSeletedForPOV:(PovInfo *) pov{
-    [self presentShareSelectionView];
+
+//show the list of followers of the current user
+-(void)presentFollowersList{
+    
 }
+
+
+//show the channels the current user can select
+-(void)presentChannelsToFollow{
+    [self presentShareSelectionViewStartOnChannels:YES];
+}
+
+-(void)profilePovShareButtonSeletedForPOV:(PovInfo *) pov{
+    [self presentShareSelectionViewStartOnChannels:NO];
+}
+
 -(void)profilePovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov{
     
 }
 
 -(void)feedPovShareButtonSeletedForPOV:(PovInfo *) pov {
-    
-    [self presentShareSelectionView];
-    
+    [self presentShareSelectionViewStartOnChannels:NO];
 }
 
 
@@ -338,7 +349,7 @@
     
 }
 
--(void)presentShareSelectionView{
+-(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
     if(self.sharePOVView){
         [self.sharePOVView removeFromSuperview];
         self.sharePOVView = nil;
@@ -346,7 +357,7 @@
     
     
     //temp
-    //simulates downloading threads
+    //simulates getting threads
     Channel * enterpreneurship = [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
     
     Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
@@ -356,7 +367,7 @@
     
     CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
     CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame andChannels:@[enterpreneurship, socialJustice, music] shouldStartOnChannels:NO];
+    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame andChannels:@[enterpreneurship, socialJustice, music] shouldStartOnChannels:startOnChannels];
     self.sharePOVView.delegate = self;
     [self.view addSubview:self.sharePOVView];
     [self.view bringSubviewToFront:self.sharePOVView];

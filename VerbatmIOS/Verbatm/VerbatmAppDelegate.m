@@ -59,7 +59,8 @@
     
     [application setStatusBarHidden:YES];
     
-    return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];;
+//    return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+    return YES;
 }
 
 -(void) setUpParseWithLaunchOptions: (NSDictionary*)launchOptions {

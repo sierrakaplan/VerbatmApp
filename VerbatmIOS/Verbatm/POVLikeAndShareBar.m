@@ -53,10 +53,17 @@
             [self createCounterLabelStartingAtPage:startPage outOf:numPages];
         }
         self.totalNumberOfPages = numPages;
+        [self formatView];
     }
     return self;
 }
 
+
+-(void)formatView{
+    self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.3];
+    
+    
+}
 
 -(void) createCounterLabelStartingAtPage:(NSNumber *) startPage outOf:(NSNumber *) totalPages{
     NSAttributedString * pageCounterText = [self createCounterStringStartingAtPage:startPage outOf:totalPages];

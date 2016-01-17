@@ -25,15 +25,22 @@
 #define SCROLL_BUFFER 10.f //small buffer added to content size so there's room at the bottom
 
 @interface SelectChannel ()
+
+@property (nonatomic) NSMutableArray * selectedChannels;
+
 @property (nonatomic) SelectOptionButton * selectedButton;
+@property (nonatomic) BOOL canSelectMultipleChannels;
+
+
 @end
 
 @implementation SelectChannel
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *) channels{
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *) channels canSelectMultiple:(BOOL) selectMultiple{
     
     self = [super initWithFrame:frame];
     
     if(self){
+        self.canSelectMultipleChannels = selectMultiple;
         [self createChannelLabels:channels];
     }
     
@@ -48,9 +55,7 @@
 
 
 - (void) createChannelLabels:(NSArray *) channels {
-    
     CGFloat startingYCord = 0.f;
-    
     for(Channel * channel in channels){
         
         CGRect labelFrame = CGRectMake(0.f, startingYCord, self.frame.size.width, CHANNEL_LABEL_HEIGHT);
@@ -65,9 +70,8 @@
 
 
 -(UIView *) getChannelLabelWithFrame:(CGRect) frame andChannel:(Channel *) channel{
+    
     SelectionView * selectionBar = [[SelectionView alloc] initWithFrame:frame];
-    
-    
     
     CGFloat xCord = frame.size.width - WALL_OFFSET_X - SELECTION_BUTTON_WIDTH;
     CGFloat yCord =(frame.size.height/2.f) - (SELECTION_BUTTON_WIDTH/2.f);
@@ -111,22 +115,43 @@
 
 -(void)channelButtonSelected:(UIButton *) button {
     SelectOptionButton * selectionButton = (SelectOptionButton *)button;
-    if([selectionButton buttonSelected]){//if it's already selected then remove it
-        [selectionButton setButtonSelected:NO];
-    }else{
-        if(self.selectedButton){//only one button can be selected at once
-            [self.selectedButton setButtonSelected:NO];
+    if(self.canSelectMultipleChannels) {
+        if([selectionButton buttonSelected]){//if it's already selected then remove it
+            [selectionButton setButtonSelected:NO];
+            [self.selectedChannels removeObject:selectionButton];
+        }else{
+            
+            [self.selectedChannels addObject:selectionButton];
+            [selectionButton setButtonSelected:YES];
+            if([selectionButton.associatedObject isKindOfClass:[Channel class]]) {
+                [self.delegate channelsSelected:self.selectedChannels];
+            }
         }
-        self.selectedButton = selectionButton;
-        [selectionButton setButtonSelected:YES];
-        
-        if([selectionButton.associatedObject isKindOfClass:[Channel class]]){
-          [self.delegate channelSelected:(Channel *)selectionButton.associatedObject];
+    }else {
+        if([selectionButton buttonSelected]){//if it's already selected then remove it
+            [selectionButton setButtonSelected:NO];
+        }else{
+            if(self.selectedButton){//only one button can be selected at once
+                [self.selectedButton setButtonSelected:NO];
+            }
+            self.selectedButton = selectionButton;
+            [selectionButton setButtonSelected:YES];
+            
+            if([selectionButton.associatedObject isKindOfClass:[Channel class]]){
+              [self.delegate channelsSelected:self.selectedChannels];
+            }
         }
     }
 }
 
 
+
+-(NSMutableArray *) selectedChannels{
+    if(!_selectedChannels){
+        _selectedChannels = [[NSMutableArray alloc] init];
+    }
+    return _selectedChannels;
+}
 
 
 /*

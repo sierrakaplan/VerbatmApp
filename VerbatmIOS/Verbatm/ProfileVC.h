@@ -16,6 +16,9 @@
 -(void)profilePovShareButtonSeletedForPOV:(PovInfo *) pov;
 -(void)profilePovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov;
 
+
+-(void)presentFollowersList;//show the list of followers of the current user
+-(void)presentChannelsToFollow;//show the channels the current user can select
 @end
 
 @interface ProfileVC : UIViewController

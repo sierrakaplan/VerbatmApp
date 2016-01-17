@@ -14,13 +14,12 @@
 
 @protocol SelectChannelProtocol <NSObject>
 
--(void) channelSelected:(Channel *) channel;
-
+-(void) channelsSelected:(NSMutableArray *) channels;
 
 @end
 
 @interface SelectChannel : UIScrollView
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *) channels;
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *) channels canSelectMultiple:(BOOL) selectMultiple;
 @property (nonatomic) id <SelectChannelProtocol> delegate;
 -(void)unselectAllOptions;
 @end

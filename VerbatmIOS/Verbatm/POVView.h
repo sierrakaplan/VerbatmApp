@@ -11,11 +11,9 @@
 #import "Channel.h"
 
 @protocol POVViewDelegate <NSObject>
-
 // tells whether button was liked or unliked
 -(void) likeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo;
 -(void) shareOptionSelectedForPOVInfo: (PovInfo* ) pov;
-
 @end
 
 @interface POVView : UIView

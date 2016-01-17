@@ -24,6 +24,8 @@
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "SettingsVC.h"
+
+#import "UIView+Effects.h"
 #import "UserManager.h"
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate>
@@ -123,15 +125,18 @@
 
 -(void) createNavigationBar {
     //frame when on screen
-    self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
+    self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
     //frame when off screen
-	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - PROFILE_NAV_BAR_HEIGHT, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
+	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - (PROFILE_NAV_BAR_HEIGHT+ ARROW_EXTENSION_BAR_HEIGHT), self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
     [self updateUserInfo];
     self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:self.profileNavBarFrameOnScreen
 												   andChannels:self.channels andUserName:self.currentUser.name];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
 }
+
+
+
 
 -(void) updateUserInfo {
     self.currentUser = [[UserManager sharedInstance] getCurrentUser];
@@ -167,8 +172,18 @@
 
 #pragma mark - Profile Nav Bar Delegate Methods -
 
+//current user selected to follow a channel
+-(void) followOptionSelected{
+    [self.delegate presentChannelsToFollow];
+}
+
+//current user wants to see their own followers
+-(void) followersOptionSelected{
+    [self.delegate presentChannelsToFollow];
+}
+
+
 -(void) settingsButtonClicked {
-	// TODO: go to settings
     [self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
     
 }
@@ -200,20 +215,34 @@
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
 	if(self.contentCoveringScreen) {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileNavBar setFrame:self.profileNavBarFrameOffScreen];
+            [self.profileNavBar setFrame:[self getProfileNavBarFrameOfScreen:YES]];
 		}];
 		[self.delegate showTabBar:NO];
 		self.contentCoveringScreen = NO;
         [self.povScrollView headerShowing:NO];
 	} else {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileNavBar setFrame:self.profileNavBarFrameOnScreen];
+			[self.profileNavBar setFrame:[self getProfileNavBarFrameOfScreen:NO]];
 		}];
 		[self.delegate showTabBar:YES];
 		self.contentCoveringScreen = YES;
         [self.povScrollView headerShowing:YES];
 
 	}
+}
+
+
+-(CGRect)getProfileNavBarFrameOfScreen:(BOOL) getOffScreenFrame{
+    
+    if(getOffScreenFrame){
+        return CGRectMake(0, -1 * self.profileNavBar.frame.size.height,
+                          self.profileNavBar.frame.size.width,
+                          self.profileNavBar.frame.size.height);
+    }else{
+        return CGRectMake(0, 0,
+                          self.profileNavBar.frame.size.width,
+                          self.profileNavBar.frame.size.height);
+    }
 }
 
 -(void) offScreen{
