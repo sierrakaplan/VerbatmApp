@@ -1,64 +1,34 @@
 package com.myverbatm.verbatm.backend.models;
 
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
-
-import java.util.ArrayList;
-
 /**
- * Verbatm user account entity
+ * Verbatm user
  */
-@Entity
 public class VerbatmUser {
 
     /**
-     * Unique identifier of this POV Entity in the database.
+     * Unique identifier of this User in the database.
      */
-    @Id
     private Long id;
-
-    /**
-     * User email
-     */
-    @Index
-    private String email;
 
     /**
      * VerbatmUser name
      */
-    @Index
     private String name;
+
+    /**
+     * User email
+     */
+    private String email;
     
     /**
      * User phone number
      */
-    @Index
     private String phoneNumber;
 
     /**
-     * User profile photo
+     * User profile photo url
      */
-    @Index
-    private Long profilePhotoImageID;
-
-    //TODO(sierrakn): Store user fb friends
-
-    /**
-     * IDs of all the POV's the user has liked
-     */
-    @Index
-    private ArrayList<Long> likedPOVIDs;
-
-
-    /**
-     * Returns a boolean indicating if the user is an admin or not.
-     * @param user to check.
-     * @return the user authorization level.
-     */
-    public static boolean isAdmin(final VerbatmUser user) {
-        return false;
-    }
+    private String profileImageUrl;
 
     /**
      *
@@ -68,11 +38,8 @@ public class VerbatmUser {
         return id;
     }
 
-    /**
-     * Resets the Entity key to null.
-     */
-    public final void clearId() {
-        id = null;
+    public void setId(Long id) {
+        this.id = id;
     }
 
     /**
@@ -123,35 +90,11 @@ public class VerbatmUser {
         this.phoneNumber = pPhoneNumber;
     }
 
-    /**
-     * Gets the user profile photo id
-     * @return user profile photo id
-     */
-    public final Long getProfilePhotoImageID() {
-        return profilePhotoImageID;
+    public String getProfileImageUrl() {
+        return profileImageUrl;
     }
 
-    /**
-     * Sets the user profile photo
-     * @param profilePhotoImageID the profile photo image id to set for this user
-     */
-    public final  void setProfilePhotoImageID(Long profilePhotoImageID) {
-        this.profilePhotoImageID = profilePhotoImageID;
-    }
-
-    /**
-     * Gets the list of POV IDs that the user has liked
-     * @return the list of POV IDs that the user has liked
-     */
-    public ArrayList<Long> getLikedPOVIDs() {
-        return likedPOVIDs;
-    }
-
-    /**
-     * Sets the list of POV IDs that the user has liked
-     * @param likedPOVIDs the list of POV IDs that the user has liked
-     */
-    public void setLikedPOVIDs(ArrayList<Long> likedPOVIDs) {
-        this.likedPOVIDs = likedPOVIDs;
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
     }
 }

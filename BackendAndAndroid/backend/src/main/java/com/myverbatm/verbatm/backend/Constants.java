@@ -40,6 +40,14 @@ public final class Constants {
      */
     public static final String API_PACKAGE_PATH = "com.myverbatm.verbatm.backend.apis";
 
+    public static final String PROJECT_ID = "verbatmapp";
+
+    public static final String CLOUD_SQL_INSTANCE_NAME = "stories";
+
+    public static final String DATABASE_NAME = "userstories";
+
+    public static final String LOCAL_MYSQL_INSTANCE_IP = "127.0.0.1:3306";
+
     /**
      * Default constructor, never called
      */

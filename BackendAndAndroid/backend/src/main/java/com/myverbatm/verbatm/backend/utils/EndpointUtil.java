@@ -24,10 +24,10 @@ public class EndpointUtil {
      */
     public static void throwIfNotAdmin(final VerbatmUser user) throws
             UnauthorizedException {
-        if (!VerbatmUser.isAdmin(user)) {
-            throw new UnauthorizedException(
-                    "You are not authorized to perform this operation");
-        }
+//        if (!VerbatmUser.isAdmin(user)) {
+//            throw new UnauthorizedException(
+//                    "You are not authorized to perform this operation");
+//        }
     }
 
     /**

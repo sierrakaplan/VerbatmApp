@@ -19,6 +19,7 @@
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppResultsWithCursor.h"
 #import "GTLVerbatmAppIdentifierListWrapper.h"
+#import "GTLVerbatmAppPostCollection.h"
 
 #import "PovInfo.h"
 
@@ -60,6 +61,18 @@
 		self.userID = userId;
 	}
 	return self;
+}
+
+//TESTING
+-(void) loadRecentPosts {
+	GTLQuery* loadQuery = [GTLQueryVerbatmApp queryForPostGetRecentPostsWithCount:30];
+	[self.service executeQuery: loadQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPostCollection* posts, NSError *error) {
+		if (error) {
+			NSLog(@"%@", error.description);
+		} else {
+			NSLog(@"Success loading recent posts!");
+		}
+	}];
 }
 
 // Load numToLoad POV's, replacing any POV's that were already loaded
@@ -172,21 +185,21 @@
 -(AnyPromise*) loadUserIDsWhoHaveLikedPOVWithID: (NSNumber*) povID {
 
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		GTLQuery* getUserIDsWhoLikeThisPOVQuery = [GTLQueryVerbatmApp queryForPovGetUserIdsWhoLikeThisPOVWithIdentifier:povID.longLongValue];
-		[self.service executeQuery:getUserIDsWhoLikeThisPOVQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppIdentifierListWrapper* userIDsWrapper, NSError *error) {
-			if (error) {
-				resolve(error);
-			} else {
-				// have to do this because otherwise it thinks the values in the array are of type NSString* from the JSON
-				NSMutableArray* userIDs = [[NSMutableArray alloc] init];
-				if (userIDsWrapper.identifiers) {
-					for (NSNumber* userIdentifier in userIDsWrapper.identifiers) {
-						[userIDs addObject:[NSNumber numberWithLongLong:userIdentifier.longLongValue]];
-					}
-				}
-				resolve(userIDs);
-			}
-		}];
+//		GTLQuery* getUserIDsWhoLikeThisPOVQuery = [GTLQueryVerbatmApp queryForPovGetUserIdsWhoLikeThisPOVWithIdentifier:povID.longLongValue];
+//		[self.service executeQuery:getUserIDsWhoLikeThisPOVQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppIdentifierListWrapper* userIDsWrapper, NSError *error) {
+//			if (error) {
+//				resolve(error);
+//			} else {
+//				// have to do this because otherwise it thinks the values in the array are of type NSString* from the JSON
+//				NSMutableArray* userIDs = [[NSMutableArray alloc] init];
+//				if (userIDsWrapper.identifiers) {
+//					for (NSNumber* userIdentifier in userIDsWrapper.identifiers) {
+//						[userIDs addObject:[NSNumber numberWithLongLong:userIdentifier.longLongValue]];
+//					}
+//				}
+//				resolve(userIDs);
+//			}
+//		}];
 	}];
 
 	return promise;
@@ -200,15 +213,15 @@
 	// Note: cursor string can and should be nil if this is the first query.
 	switch (self.povType) {
 		case POVTypeRecent: {
-			loadQuery = [GTLQueryVerbatmApp queryForPovGetRecentPOVsInfoWithCount: numToLoad];
+//			loadQuery = [GTLQueryVerbatmApp queryForPovGetRecentPOVsInfoWithCount: numToLoad];
 			break;
 		}
 		case POVTypeTrending: {
-			loadQuery = [GTLQueryVerbatmApp queryForPovGetTrendingPOVsInfoWithCount:numToLoad];
+//			loadQuery = [GTLQueryVerbatmApp queryForPovGetTrendingPOVsInfoWithCount:numToLoad];
 						break;
 		}
 		case POVTypeUser: {
-			loadQuery = [GTLQueryVerbatmApp queryForPovGetUserPOVsInfoWithCount:numToLoad userId:self.userID.longLongValue];
+//			loadQuery = [GTLQueryVerbatmApp queryForPovGetUserPOVsInfoWithCount:numToLoad userId:self.userID.longLongValue];
 			break;
 		}
 		default:

@@ -172,12 +172,12 @@
 			self.currentUser = currentUser;
 			// have to do this because otherwise it thinks the values in the array are of type NSString* from the JSON
 			NSMutableArray* povIDs = [[NSMutableArray alloc] init];
-			if (self.currentUser.likedPOVIDs) {
-				for (NSNumber* povIdentifier in self.currentUser.likedPOVIDs) {
-					[povIDs addObject:[NSNumber numberWithLongLong:povIdentifier.longLongValue]];
-				}
-			}
-			self.currentUser.likedPOVIDs = povIDs;
+//			if (self.currentUser.likedPOVIDs) {
+//				for (NSNumber* povIdentifier in self.currentUser.likedPOVIDs) {
+//					[povIDs addObject:[NSNumber numberWithLongLong:povIdentifier.longLongValue]];
+//				}
+//			}
+//			self.currentUser.likedPOVIDs = povIDs;
 			[self notifySuccessfulLogin];
 		} else {
 			NSLog(@"Error retrieving current user: %@", error.description);
@@ -214,13 +214,13 @@
 					 } else {
 						 self.currentUser = updatedUser;
 						 // have to do this because otherwise it thinks the values in the array are of type NSString* from the JSON
-						 NSMutableArray* povIDs = [[NSMutableArray alloc] init];
-						 if (self.currentUser.likedPOVIDs) {
-							 for (NSNumber* povIdentifier in self.currentUser.likedPOVIDs) {
-								 [povIDs addObject:[NSNumber numberWithLongLong:povIdentifier.longLongValue]];
-							 }
-						 }
-						 self.currentUser.likedPOVIDs = povIDs;
+//						 NSMutableArray* povIDs = [[NSMutableArray alloc] init];
+//						 if (self.currentUser.likedPOVIDs) {
+//							 for (NSNumber* povIdentifier in self.currentUser.likedPOVIDs) {
+//								 [povIDs addObject:[NSNumber numberWithLongLong:povIdentifier.longLongValue]];
+//							 }
+//						 }
+//						 self.currentUser.likedPOVIDs = povIDs;
 						 resolve(self.currentUser);
 					 }
 				 }];

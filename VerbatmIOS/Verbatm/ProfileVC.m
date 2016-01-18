@@ -50,6 +50,10 @@
 	videoView.repeatsVideo = YES;
 	[self.view addSubview:videoView];
 
+	//TODO delete this
+	POVLoadManager* loadManager = [[POVLoadManager alloc] init];
+	[loadManager loadRecentPosts];
+
 	//TODO: get POVs
 //        [self.povScrollView displayPOVs: povs];
 //        [self.povScrollView playPOVOnScreen];

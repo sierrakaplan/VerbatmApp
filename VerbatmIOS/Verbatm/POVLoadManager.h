@@ -53,6 +53,8 @@ typedef NS_ENUM(NSInteger, POVType) {
 
 -(instancetype) initWithUserId: (NSNumber*) userId andChannel:(NSString *) channelName;
 
+-(void) loadRecentPosts;
+
 // Query for next batch of POVInfos (when scrolling down)
 -(void) loadMorePOVs: (NSInteger) numToLoad;
 

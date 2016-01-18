@@ -344,21 +344,21 @@
 
 // Queries insert POV into the datastore
 -(void) insertPOV: (GTLVerbatmAppPOV*) povObject {
-	GTLQuery* insertPOVQuery = [GTLQueryVerbatmApp queryForPovInsertPOVWithObject: povObject];
+//	GTLQuery* insertPOVQuery = [GTLQueryVerbatmApp queryForPovInsertPOVWithObject: povObject];
 
-	[self.service executeQuery:insertPOVQuery
-			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* object, NSError *error) {
-				 if (error) {
-					 NSLog(@"Error uploading POV: %@", error.description);
-					 //TODO: should send a notification that there was an error publishing
-				 } else {
-					 [self.publishingProgress setCompletedUnitCount: self.totalProgressUnits];
-					 NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
-					 NSLog(@"Successfully published POV!");
-					 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
-																		 object:ticket];
-				 }
-			 }];
+//	[self.service executeQuery:insertPOVQuery
+//			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* object, NSError *error) {
+//				 if (error) {
+//					 NSLog(@"Error uploading POV: %@", error.description);
+//					 //TODO: should send a notification that there was an error publishing
+//				 } else {
+//					 [self.publishingProgress setCompletedUnitCount: self.totalProgressUnits];
+//					 NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
+//					 NSLog(@"Successfully published POV!");
+//					 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
+//																		 object:ticket];
+//				 }
+//			 }];
 }
 
 #pragma mark - Get upload URIS -

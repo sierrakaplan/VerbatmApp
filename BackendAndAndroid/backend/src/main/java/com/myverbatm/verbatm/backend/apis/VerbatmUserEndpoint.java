@@ -102,7 +102,7 @@ public class VerbatmUserEndpoint {
 //        EndpointUtil.throwIfNotAuthenticated(user);
 
         // Do not use the key provided by the caller; use a generated key.
-        verbatmUser.clearId();
+//        verbatmUser.clearId();
         ofy().save().entity(verbatmUser).now();
         return verbatmUser;
     }

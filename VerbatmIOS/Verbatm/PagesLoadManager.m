@@ -80,17 +80,17 @@
 //Queries for the pages from the given POV
 //Returns a promise that resolves to either an error or the PageList from the POV
 -(AnyPromise*) loadPageListFromPOV: (NSNumber*) povID {
-	GTLQuery *pagesQuery = [GTLQueryVerbatmApp queryForPovGetPagesFromPOVWithIdentifier: povID.longLongValue];
+//	GTLQuery *pagesQuery = [GTLQueryVerbatmApp queryForPovGetPagesFromPOVWithIdentifier: povID.longLongValue];
 
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		[self.service executeQuery:pagesQuery
-				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPageListWrapper* pageList, NSError *error) {
-					 if (error) {
-						 resolve(error);
-					 } else {
-						 resolve(pageList);
-					 }
-				 }];
+//		[self.service executeQuery:pagesQuery
+//				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPageListWrapper* pageList, NSError *error) {
+//					 if (error) {
+//						 resolve(error);
+//					 } else {
+//						 resolve(pageList);
+//					 }
+//				 }];
 	}];
 	return promise;
 }
