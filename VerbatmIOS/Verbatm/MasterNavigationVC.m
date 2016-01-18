@@ -46,6 +46,8 @@
 #import "UserSetupParameters.h"
 #import "UserManager.h"
 #import "UserPovInProgress.h"
+#import "UserAndChannelListsTVC.h"
+
 
 #import "VerbatmCameraView.h"
 
@@ -72,6 +74,7 @@
 
 @property (nonatomic) SharePOVView * sharePOVView;
 
+@property (nonatomic) UserAndChannelListsTVC * channelListView;
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
@@ -140,7 +143,7 @@
 -(void) setUpTabBarController {
     [self createTabBarViewController];
     [self createViewControllers];
-    self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC];
+    self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC, self.channelListView];
     //add adk button to tab bar
 	[self addTabBarCenterButtonWithImage:[UIImage imageNamed:ADK_NAV_ICON]];
     self.tabBarController.selectedViewController = self.profileVC;
@@ -177,6 +180,14 @@
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
+    
+    self.channelListView = [[UserAndChannelListsTVC alloc] init];
+    self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Search"
+                                                                    image:nil
+                                                            selectedImage:nil];
+    
+    [self.channelListView showAllVerbatmChannels];
+     
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
     self.profileVC.delegate = self;
 

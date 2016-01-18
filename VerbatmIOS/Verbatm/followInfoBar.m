@@ -110,11 +110,13 @@
 //list of people that follow me and the channels
 -(void)myFollowersListSelected{
     //to-do
+    [self.delegate showWhoIsFollowingMeSelected];
 }
 
 //list of people that I follow
 -(void)whoIAmFollowingSeleceted{
     //to-do
+    [self.delegate showWhoIAmFollowingSelected];
 }
 
 

@@ -79,11 +79,11 @@
 
 -(void) viewWillAppear:(BOOL)animated{
     NSString * channel = ((Channel *)self.channels[0]).name;
-    
-    [[LocalPOVs sharedInstance] getPOVsFromChannel:channel].then(^(NSArray* povs) {
-        [self.povScrollView displayPOVs: povs];
-        [self.povScrollView playPOVOnScreen];
-    });
+//    
+//    [[LocalPOVs sharedInstance] getPOVsFromChannel:channel].then(^(NSArray* povs) {
+//        [self.povScrollView displayPOVs: povs];
+//        [self.povScrollView playPOVOnScreen];
+//    });
 //    [self createContentListViewWithStartThread:testThreads[0]];
 	
 }

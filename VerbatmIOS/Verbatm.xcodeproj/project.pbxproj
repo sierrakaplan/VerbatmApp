@@ -169,6 +169,8 @@
 		C7540F741C09A47F00DE1AA6 /* ChannelButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = C7540F731C09A47F00DE1AA6 /* ChannelButtons.m */; };
 		C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */; };
 		C75F155F1C2B4A1B0092912D /* Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = C75F155E1C2B4A1B0092912D /* Channel.m */; };
+		C76172741C4C8B1300AB0D84 /* UserAndChannelListsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */; };
+		C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */ = {isa = PBXBuildFile; fileRef = C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */; };
 		C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEAC1AD288A3003E0633 /* ArticleListVC.m */; };
@@ -543,6 +545,10 @@
 		C75985F71B85575900FE77F7 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		C75F155D1C2B4A1B0092912D /* Channel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Channel.h; sourceTree = "<group>"; };
 		C75F155E1C2B4A1B0092912D /* Channel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Channel.m; sourceTree = "<group>"; };
+		C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserAndChannelListsTVC.h; sourceTree = "<group>"; };
+		C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserAndChannelListsTVC.m; sourceTree = "<group>"; };
+		C76172751C4C9FCE00AB0D84 /* ChannelOrUsernameCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelOrUsernameCV.h; sourceTree = "<group>"; };
+		C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelOrUsernameCV.m; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedTableViewCell.h; sourceTree = "<group>"; };
 		C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableViewCell.m; sourceTree = "<group>"; };
@@ -892,7 +898,7 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
-		A59CC2861B6C2E2F00B4907C /* Table Views */ = {
+		A59CC2861B6C2E2F00B4907C /* Table CellViews */ = {
 			isa = PBXGroup;
 			children = (
 				C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */,
@@ -903,8 +909,10 @@
 				A5CA61171B9CC40F009D9D11 /* TopicsTableView.m */,
 				A5CA61191B9CC41F009D9D11 /* TopicsTableViewCell.h */,
 				A5CA611A1B9CC41F009D9D11 /* TopicsTableViewCell.m */,
+				C76172751C4C9FCE00AB0D84 /* ChannelOrUsernameCV.h */,
+				C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */,
 			);
-			name = "Table Views";
+			name = "Table CellViews";
 			sourceTree = "<group>";
 		};
 		A5C09BA01BA1F0BF00C0AD86 /* ASI HTTP Request */ = {
@@ -1257,6 +1265,8 @@
 				A5934C151C11EFBD007C7830 /* CustomTabBarController.h */,
 				A5934C161C11EFBD007C7830 /* CustomTabBarController.m */,
 				C70E1C551C3BF76200346A25 /* Settings page VCs */,
+				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
+				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1272,7 +1282,7 @@
 				A56F68751B643D0E00CE5744 /* Camera Views */,
 				A56F68761B643D4B00CE5744 /* Video Player */,
 				A56F686F1B643ADE00CE5744 /* Custom Bars */,
-				A59CC2861B6C2E2F00B4907C /* Table Views */,
+				A59CC2861B6C2E2F00B4907C /* Table CellViews */,
 				A5E860081B9919F500E148D0 /* Viewing POV's */,
 				C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */,
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
@@ -1784,6 +1794,7 @@
 				A560EF9D1BA895A2003FB041 /* Page.m in Sources */,
 				A5CA61181B9CC40F009D9D11 /* TopicsTableView.m in Sources */,
 				A5E85F9E1B911DA900E148D0 /* GTLDateTime.m in Sources */,
+				C76172741C4C8B1300AB0D84 /* UserAndChannelListsTVC.m in Sources */,
 				A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */,
 				C7E6C13F1A4E394600863893 /* PhotoVideoAVE.m in Sources */,
 				C745B42F1BBA630800D18944 /* PermissionCodePageVC.m in Sources */,
@@ -1819,6 +1830,7 @@
 				A5934B9E1C10E4C8007C7830 /* CustomTab.m in Sources */,
 				C7BC4386199D97F5004B91A1 /* VerbatmAppDelegate.m in Sources */,
 				C70E1C541C3BF74C00346A25 /* TermsAndConditionsVC.m in Sources */,
+				C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */,
 				A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */,
 				C7BC4382199D97F5004B91A1 /* main.m in Sources */,
 				A55A59E21BB5EB7300C7CE7A /* UserManager.m in Sources */,

@@ -14,16 +14,17 @@
 #import <UIKit/UIKit.h>
 
 
-@protocol followInfoBar <NSObject>
+@protocol followInfoBarDelegate <NSObject>
 
 //present the people that follow the current user and the specific channels
--(void)showMyFollowersListSelected;
+-(void)showWhoIsFollowingMeSelected;
 
 //show the people that I am following 
--(void)showMyFollowingListSelected;
+-(void)showWhoIAmFollowingSelected;
 
 @end
 
 @interface followInfoBar : UIView
 -(instancetype)initWithFrame:(CGRect)frame WithNumberOfFollowers:(NSNumber *) myFollowers andWhoIFollow:(NSNumber *) whoIFollow;
+@property (nonatomic) id<followInfoBarDelegate> delegate;
 @end

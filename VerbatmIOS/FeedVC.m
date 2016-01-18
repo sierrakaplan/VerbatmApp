@@ -39,10 +39,10 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 //    [self createContentListView];
-    [[LocalPOVs sharedInstance] getPOVsFromChannel:@"feed"].then(^(NSArray* povs) {
-        [self.povScrollView displayPOVs: povs];
-        [self.povScrollView playPOVOnScreen];
-    });
+//    [[LocalPOVs sharedInstance] getPOVsFromChannel:@"feed"].then(^(NSArray* povs) {
+//        [self.povScrollView displayPOVs: povs];
+//        [self.povScrollView playPOVOnScreen];
+//    });
 }
 
 -(void) viewDidAppear:(BOOL)animated {
