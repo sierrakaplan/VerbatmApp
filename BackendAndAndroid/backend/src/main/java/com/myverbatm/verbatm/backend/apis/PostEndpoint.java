@@ -111,7 +111,31 @@ public class PostEndpoint {
 
     @ApiMethod(path="/getPostsInChannel", httpMethod = "GET")
     public final List<Post> getPostsInChannel(@Named("channel_id") final int channelId) {
-        return null;
+        List<Post> posts = new ArrayList<Post>();
+        try {
+            String url = getCloudSQLURL();
+            if (url == null) return null;
+            Connection connection = DriverManager.getConnection(url);
+            try {
+                String statement = "SELECT * FROM Post WHERE channel_id = ? ORDER BY date_created_ts ASC;";
+                PreparedStatement sqlStmt = connection.prepareStatement(statement);
+                sqlStmt.setLong(1, channelId);
+                ResultSet rs = sqlStmt.executeQuery();
+                while (rs.next()) {
+                    Long postId = rs.getLong("post_id");
+                    Long postChannelId = rs.getLong("channel_id");
+                    Long sharedFromPostId = rs.getLong("shared_from_post_id");
+                    Timestamp createdStamp = rs.getTimestamp("date_created_ts");
+                    Post post = new Post(postId, postChannelId, sharedFromPostId, createdStamp);
+                    posts.add(post);
+                }
+            } finally {
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return posts;
     }
 
     @ApiMethod(path="/getPagesInPost", httpMethod = "GET")

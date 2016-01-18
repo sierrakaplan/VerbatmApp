@@ -1,6 +1,5 @@
 package com.myverbatm.verbatm.backend.models;
 
-import com.google.appengine.api.datastore.*;
 import com.googlecode.objectify.annotation.*;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Index;
