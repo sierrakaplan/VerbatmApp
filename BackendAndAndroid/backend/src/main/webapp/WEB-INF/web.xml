@@ -15,6 +15,7 @@
             <param-name>services</param-name>
             <param-value>com.myverbatm.verbatm.backend.RegistrationEndpoint,
                 com.myverbatm.verbatm.backend.MessagingEndpoint,
+                com.myverbatm.verbatm.backend.apis.ChannelEndpoint,
                 com.myverbatm.verbatm.backend.apis.PostEndpoint,
                 com.myverbatm.verbatm.backend.apis.VerbatmUserEndpoint,
             </param-value>

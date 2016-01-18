@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/GLfMmwcIT64XpSuCcAAOodwbsOU\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/4saSoajh_9Ys-rrM_O1a_heRyws\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -74,6 +74,26 @@
   }
  },
  "schemas": {
+  "Channel": {
+   "id": "Channel",
+   "type": "object",
+   "properties": {
+    "creatorUserId": {
+     "type": "integer",
+     "format": "int32"
+    },
+    "id": {
+     "type": "integer",
+     "format": "int32"
+    },
+    "name": {
+     "type": "string"
+    },
+    "ts": {
+     "$ref": "Timestamp"
+    }
+   }
+  },
   "Image": {
    "id": "Image",
    "type": "object",
@@ -340,6 +360,25 @@
   }
  },
  "resources": {
+  "channel": {
+   "methods": {
+    "insertChannel": {
+     "id": "verbatmApp.channel.insertChannel",
+     "path": "insertChannel",
+     "httpMethod": "PUT",
+     "request": {
+      "$ref": "Channel",
+      "parameterName": "resource"
+     },
+     "response": {
+      "$ref": "Channel"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+     ]
+    }
+   }
+  },
   "post": {
    "methods": {
     "getImagesInPage": {

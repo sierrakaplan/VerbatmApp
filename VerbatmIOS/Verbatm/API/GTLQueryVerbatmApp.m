@@ -13,10 +13,11 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (15 custom class methods, 10 custom properties)
+//   GTLQueryVerbatmApp (16 custom class methods, 10 custom properties)
 
 #import "GTLQueryVerbatmApp.h"
 
+#import "GTLVerbatmAppChannel.h"
 #import "GTLVerbatmAppImageCollection.h"
 #import "GTLVerbatmAppPageCollection.h"
 #import "GTLVerbatmAppPost.h"
@@ -40,6 +41,21 @@
     @"userId" : @"user_id"
   };
   return map;
+}
+
+#pragma mark - "channel" methods
+// These create a GTLQueryVerbatmApp object.
+
++ (instancetype)queryForChannelInsertChannelWithObject:(GTLVerbatmAppChannel *)object {
+  if (object == nil) {
+    GTL_DEBUG_ASSERT(object != nil, @"%@ got a nil object", NSStringFromSelector(_cmd));
+    return nil;
+  }
+  NSString *methodName = @"verbatmApp.channel.insertChannel";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.bodyObject = object;
+  query.expectedObjectClass = [GTLVerbatmAppChannel class];
+  return query;
 }
 
 #pragma mark - "post" methods

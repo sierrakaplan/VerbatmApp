@@ -99,6 +99,7 @@
 		A5DDD2441C4C849A000193BA /* GTLVerbatmAppTimestamp.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DDD23D1C4C849A000193BA /* GTLVerbatmAppTimestamp.m */; };
 		A5DDD2451C4C849A000193BA /* GTLVerbatmAppVerbatmUserCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DDD23F1C4C849A000193BA /* GTLVerbatmAppVerbatmUserCollection.m */; };
 		A5DDD2461C4C849A000193BA /* GTLVerbatmAppVideoCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DDD2411C4C849A000193BA /* GTLVerbatmAppVideoCollection.m */; };
+		A5DDD2491C4D735B000193BA /* GTLVerbatmAppChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DDD2481C4D735B000193BA /* GTLVerbatmAppChannel.m */; };
 		A5E3CDA81B881B0C0065C8E5 /* FacebookSDKStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */; };
 		A5E3CDA91B881B0C0065C8E5 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5E3CDA61B881B0C0065C8E5 /* FBSDKCoreKit.framework */; };
 		A5E3CDAA1B881B0C0065C8E5 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5E3CDA71B881B0C0065C8E5 /* FBSDKShareKit.framework */; };
@@ -431,6 +432,8 @@
 		A5DDD23F1C4C849A000193BA /* GTLVerbatmAppVerbatmUserCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVerbatmUserCollection.m; path = API/GTLVerbatmAppVerbatmUserCollection.m; sourceTree = "<group>"; };
 		A5DDD2401C4C849A000193BA /* GTLVerbatmAppVideoCollection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppVideoCollection.h; path = API/GTLVerbatmAppVideoCollection.h; sourceTree = "<group>"; };
 		A5DDD2411C4C849A000193BA /* GTLVerbatmAppVideoCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVideoCollection.m; path = API/GTLVerbatmAppVideoCollection.m; sourceTree = "<group>"; };
+		A5DDD2471C4D735B000193BA /* GTLVerbatmAppChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppChannel.h; path = API/GTLVerbatmAppChannel.h; sourceTree = "<group>"; };
+		A5DDD2481C4D735B000193BA /* GTLVerbatmAppChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppChannel.m; path = API/GTLVerbatmAppChannel.m; sourceTree = "<group>"; };
 		A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKStrings.bundle; sourceTree = "<group>"; };
 		A5E3CDA61B881B0C0065C8E5 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		A5E3CDA71B881B0C0065C8E5 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
@@ -723,6 +726,8 @@
 				A5934B941C0FEBCE007C7830 /* POV.m */,
 				A5AA31A41B9FCDDC00D8D20C /* GTLVerbatmAppImage.h */,
 				A5AA31A51B9FCDDC00D8D20C /* GTLVerbatmAppImage.m */,
+				A5DDD2471C4D735B000193BA /* GTLVerbatmAppChannel.h */,
+				A5DDD2481C4D735B000193BA /* GTLVerbatmAppChannel.m */,
 				A5AA31A81B9FCDDC00D8D20C /* GTLVerbatmAppPage.h */,
 				A5AA31A91B9FCDDC00D8D20C /* GTLVerbatmAppPage.m */,
 				A5AA31CA1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.h */,
@@ -1872,6 +1877,7 @@
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
+				A5DDD2491C4D735B000193BA /* GTLVerbatmAppChannel.m in Sources */,
 				C74E1D711C091F8F00ABD41D /* VideoManager.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,

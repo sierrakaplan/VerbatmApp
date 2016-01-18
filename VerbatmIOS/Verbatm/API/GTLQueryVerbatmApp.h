@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (15 custom class methods, 10 custom properties)
+//   GTLQueryVerbatmApp (16 custom class methods, 10 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -21,6 +21,7 @@
   #import "GTLQuery.h"
 #endif
 
+@class GTLVerbatmAppChannel;
 @class GTLVerbatmAppPost;
 @class GTLVerbatmAppVerbatmUser;
 
@@ -46,6 +47,15 @@
 @property (nonatomic, assign) NSInteger postId;
 @property (nonatomic, copy) NSString *shareType;
 @property (nonatomic, assign) NSInteger userId;
+
+#pragma mark - "channel" methods
+// These create a GTLQueryVerbatmApp object.
+
+// Method: verbatmApp.channel.insertChannel
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppChannel.
++ (instancetype)queryForChannelInsertChannelWithObject:(GTLVerbatmAppChannel *)object;
 
 #pragma mark - "post" methods
 // These create a GTLQueryVerbatmApp object.

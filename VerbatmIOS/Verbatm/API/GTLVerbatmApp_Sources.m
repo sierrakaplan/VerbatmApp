@@ -18,6 +18,7 @@
 
 #import "GTLVerbatmAppConstants.m"
 
+#import "GTLVerbatmAppChannel.m"
 #import "GTLVerbatmAppImage.m"
 #import "GTLVerbatmAppImageCollection.m"
 #import "GTLVerbatmAppImageListWrapper.m"

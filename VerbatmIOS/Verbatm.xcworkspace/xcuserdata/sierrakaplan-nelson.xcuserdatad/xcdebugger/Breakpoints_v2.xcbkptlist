@@ -79,7 +79,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1412"
             endingLineNumber = "1412"
-            landmarkName = "-moveItem:"
+            landmarkName = "-swapWithTopView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -111,8 +111,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "391"
             endingLineNumber = "391"
-            landmarkName = "-setUpNotifications"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -255,8 +255,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1567"
             endingLineNumber = "1567"
-            landmarkName = "-returnPageElementScrollView:toDisplayAtIndex:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -271,7 +271,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1588"
             endingLineNumber = "1588"
-            landmarkName = "-addTapGestureToPinchView:"
+            landmarkName = "-pinchObjectTapped:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -287,7 +287,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1594"
             endingLineNumber = "1594"
-            landmarkName = "-pinchObjectTapped:"
+            landmarkName = "-aboutToShowPreview"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -303,7 +303,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1598"
             endingLineNumber = "1598"
-            landmarkName = "-pinchObjectTapped:"
+            landmarkName = "-presentPreviewAtIndex:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -319,7 +319,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1600"
             endingLineNumber = "1600"
-            landmarkName = "-pinchObjectTapped:"
+            landmarkName = "-presentPreviewAtIndex:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -335,7 +335,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1597"
             endingLineNumber = "1597"
-            landmarkName = "-pinchObjectTapped:"
+            landmarkName = "-aboutToRemovePreview"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -415,7 +415,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1644"
             endingLineNumber = "1644"
-            landmarkName = "-cleanUp"
+            landmarkName = "-clearBaseSelcetor"
             landmarkType = "5">
             <Locations>
                <Location
@@ -463,7 +463,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1705"
             endingLineNumber = "1705"
-            landmarkName = "-videoAssetCaptured:"
+            landmarkName = "-minimizeCameraViewButtonTapped"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1695,7 +1695,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "550"
             endingLineNumber = "550"
-            landmarkName = "-deleteButtonPressedOnContentPageElementScrollView:"
+            landmarkName = "-deleteScrollView:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1743,7 +1743,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "551"
             endingLineNumber = "551"
-            landmarkName = "-deleteButtonPressedOnContentPageElementScrollView:"
+            landmarkName = "-deleteScrollView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1759,7 +1759,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "549"
             endingLineNumber = "549"
-            landmarkName = "-deleteButtonPressedOnContentPageElementScrollView:"
+            landmarkName = "-deleteScrollView:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1871,7 +1871,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1216"
             endingLineNumber = "1216"
-            landmarkName = "-createPinchApartViews"
+            landmarkName = "-findPinchViewScrollViewFromUpperPinchPoint:andLowerPinchPoint:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1903,8 +1903,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1218"
             endingLineNumber = "1218"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-findPinchViewScrollViewFromUpperPinchPoint:andLowerPinchPoint:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1919,8 +1919,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "500"
             endingLineNumber = "500"
-            landmarkName = "-scrollViewDidScroll:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1935,7 +1935,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1342"
             endingLineNumber = "1342"
-            landmarkName = "-findSelectedViewFromTouch:"
+            landmarkName = "-moveItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1951,7 +1951,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1346"
             endingLineNumber = "1346"
-            landmarkName = "-findSelectedViewFromTouch:"
+            landmarkName = "-moveItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2431,7 +2431,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1343"
             endingLineNumber = "1343"
-            landmarkName = "-findSelectedViewFromTouch:"
+            landmarkName = "-moveItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2447,7 +2447,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1121"
             endingLineNumber = "1121"
-            landmarkName = "-pinchObjectsTogether"
+            landmarkName = "-findMidPointBetween:and:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2525,7 +2525,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1102"
             endingLineNumber = "1102"
-            landmarkName = "-clearMediaTile:"
+            landmarkName = "-pinchObjectsTogether"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

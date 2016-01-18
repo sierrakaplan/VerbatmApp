@@ -25,6 +25,7 @@
 + (NSArray *)checkClasses {
   NSArray *classes = @[
     [GTLQueryVerbatmApp class],
+    [GTLVerbatmAppChannel class],
     [GTLVerbatmAppImage class],
     [GTLVerbatmAppImageCollection class],
     [GTLVerbatmAppImageListWrapper class],

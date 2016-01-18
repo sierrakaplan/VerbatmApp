@@ -57,7 +57,7 @@ public class PostEndpoint {
     public PostEndpoint() {
     }
 
-    private String getCloudSQLURL() {
+    public static String getCloudSQLURL() {
         String url = null;
         try {
             if (SystemProperty.environment.value() == SystemProperty.Environment.Value.Production) {
@@ -140,6 +140,7 @@ public class PostEndpoint {
                     keys = insertPages.getGeneratedKeys();
                     keys.next();
                     Integer pageId = keys.getInt(1);
+                    page.setId(pageId);
                     pageIds.put(page.getPageNumberInPost(), pageId);
                 }
 
@@ -166,6 +167,7 @@ public class PostEndpoint {
                 }
 
                 connection.commit();
+                post.setId(postId);
             } finally {
                 if (insertImages != null) {
                     insertImages.close();

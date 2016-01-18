@@ -59,7 +59,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic) UITextField * createNewChannelField;
-
+@property (nonatomic) NSString * channelNameForNewChannel;
 #pragma mark Image Manager
 
 @property (strong, nonatomic) PHImageManager *imageManager;
@@ -379,6 +379,7 @@ rowHeightForComponent:(NSInteger)component{
     field.autocorrectionType = UITextAutocorrectionTypeYes;
     [field setReturnKeyType:UIReturnKeyDone];
     field.delegate = self;
+    self.createNewChannelField = field;
     return field;
 }
 
@@ -454,27 +455,13 @@ rowHeightForComponent:(NSInteger)component{
             [pinchViews addObject:contentElementScrollView.pageElement];
         }
     }
+  
+      if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
     
-    if(self.currentPresentedPickerRow < self.userChannels.count){
-        
-        UILabel * label = (UILabel *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
-        [self publishOurStoryWithTitle:label.text andPinchViews:pinchViews];
-    }else{
-          UITextField * textField = (UITextField *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
-        
-        if(![textField.text isEqualToString:@""]){
-//            NSString * currentUser = @"Aishwarya Vardhana";//get current username tbd
-//            //also create new channel object and save it as the users channel
-//            Channel * newChannel = [[Channel alloc] initWithChannelName:textField.text numberOfFollowers:@(0) andUserName:currentUser];
-//            //save new channel
-            
-            [self publishOurStoryWithTitle:textField.text andPinchViews:pinchViews];
-        }
-        
-    }
     
    
 }
+
 
 #pragma mark - Configure Text Fields -
 
@@ -1611,10 +1598,12 @@ rowHeightForComponent:(NSInteger)component{
 
 -(void)presentPreviewAtIndex:(NSInteger ) index{
     NSMutableArray *pinchViews = [self getPinchViews];
-    NSString* title = @"";//self.titleField.text;
+
+    
+   
 
     [self.view bringSubviewToFront:self.previewDisplayView];
-    [self.previewDisplayView displayPreviewPOVWithTitle:title andPinchViews:pinchViews withStartIndex:index];
+    [self.previewDisplayView displayPreviewPOVWithTitle:@"" andPinchViews:pinchViews withStartIndex:index];
 }
 
 #pragma mark - Edit Content View Navigation -
@@ -1854,25 +1843,26 @@ rowHeightForComponent:(NSInteger)component{
 //TODO: edit this
 -(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
 
-	if (![title length]) {
-//		[self alertAddTitle];
-	} else {
-		if(![pinchViews count]) {
-			NSLog(@"Can't publish with no pinch objects");
-			return;
-		}
-
-		[self publishOurStoryWithTitle:title andPinchViews:pinchViews];
-	}
+        if(pinchViews)[self publishOurStoryWithPinchViews:pinchViews];
 }
 
--(void) publishOurStoryWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews{
-    POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title];
-	[publisher publish];
-    //TODO: make sure current user exists and if not make them sign in
-    NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
+-(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
 
-    [self.delegate povPublishedWithUserName:userName andTitle:title andProgressObject: publisher.publishingProgress];
+    NSString * channelTitle;
+    if(self.currentPresentedPickerRow < self.userChannels.count){
+        UILabel * label = (UILabel *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
+        channelTitle = label.text;
+    }else{
+        UITextField * textField = (UITextField *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
+        if([textField.text isEqualToString:@""]){
+            //prompt user to add channel title
+            [self alertAddChannelTitle];
+        }else{
+            channelTitle = textField.text;
+        }
+    }
+    //Sierra TODO - publish post
+    //save story with provided channel name here
 
     [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
     [self cleanUp];
@@ -1907,8 +1897,8 @@ rowHeightForComponent:(NSInteger)component{
     [[UserSetupParameters sharedInstance] set_tapNhold_InstructionAsShown];
 }
 
--(void)alertAddTitle {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+-(void)alertAddChannelTitle {
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Please provide a name for your channel" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
 	[alert show];
 }
 
