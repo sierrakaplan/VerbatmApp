@@ -27,6 +27,11 @@
 #define USER_CHANNEL_LIST_FONT @"Quicksand-Regular"
 #define USER_CHANNEL_LIST_FONT_SIZE 20.f
 
+//Font of the headers of the user_channel list
+#define INFO_LIST_HEADER_FONT @"Quicksand-Bold"  
+#define INFO_LIST_HEADER_FONT_SIZE 20.f
+
+
 #define CHANNEL_CREATION_USER_TEXT_ENTRY_PLACEHOLDER_FONT @"Quicksand-LightItalic"
 
 #define CHANNEL_CREATION_USER_TEXT_ENTRY_FONT @"Quicksand-Bold"

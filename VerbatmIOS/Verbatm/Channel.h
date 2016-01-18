@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface Channel : NSObject
+@property (nonatomic) id userId;//identifier for user that owns this channel
 @property (nonatomic, readonly) NSString * name;
 @property (nonatomic, readonly) NSNumber * numberOfFollowers;
 @property (nonatomic, readonly) NSString * userName;//name of user that owns the channel

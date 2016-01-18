@@ -9,6 +9,7 @@
 #import "Channel.h"
 #import "ChannelOrUsernameCV.h"
 
+#import "Styles.h"
 #import "SizesAndPositions.h"
 
 #import "UserAndChannelListsTVC.h"
@@ -35,6 +36,8 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor blackColor];
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
+    [self setTableViewHeader];
+    self.tableView.allowsMultipleSelection = NO;
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -54,7 +57,14 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    
+    if(self.channelsToDisplay){
+        //this is some list of channels
+        Channel * channel;//get channel
+        [self.listDelegate openChannel:channel];
+    }else { //it's a user
+        id userId = nil;//get userid
+        [self.listDelegate selectedUser:userId];
+    }
 }
 
 
@@ -75,15 +85,15 @@
 
 
 //show which users are being followed by userId
--(void)showWhoIsFollowedBy:(id)userId {
-    
+-(void)presentWhoIsFollowedBy:(id)userId {
+    [self presentAllVerbatmChannels];
     //TO-DO
     //Start to download a list of users who follow this particular user then reload the table
     
 }
 
 //presents every channel in verbatm
--(void)showAllVerbatmChannels{
+-(void)presentAllVerbatmChannels{
     ///temp
     self.usersToDisplay = [[NSMutableArray alloc] init];
     for(int i = 0; i < 20 ; i ++){
@@ -95,10 +105,10 @@
 
 
 //Gives us the channels to display and if we should show the users that follow them then
--(void)displayChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {
+-(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {
     self.userInfoOnDisplay = userId;
     self.shouldDisplayFollowers = displayFollowers;
-    
+    [self presentAllVerbatmChannels];
     //TO-DO
     //if(user == current logged in usere){
     //get logged in user channels and save them in our array
@@ -106,6 +116,42 @@
     //}else{ // download that users information then reload the page
     //}
 }
+
+
+-(void)setTableViewHeader{
+    //It can be Verbatm channels
+    
+    
+    UILabel * titleLabel = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
+    [self.view addSubview:titleLabel];
+    [self.view bringSubviewToFront:titleLabel];
+    
+    //it can be a navigation bar that lets us go back
+}
+
+
+-(UILabel *) getHeaderTitleForViewWithText:(NSString *) text{
+    
+    CGRect labelFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width + 10, THREAD_SCROLLVIEW_HEIGHT);
+    UILabel * titleLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    titleLabel.backgroundColor = [UIColor whiteColor];
+ 
+    NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+
+    NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
+                                                [UIColor blackColor],
+                                            NSFontAttributeName:
+                                                [UIFont fontWithName:INFO_LIST_HEADER_FONT size:INFO_LIST_HEADER_FONT_SIZE],
+                                            NSParagraphStyleAttributeName:paragraphStyle};
+
+    NSAttributedString * titleAttributed = [[NSAttributedString alloc] initWithString:text attributes:informationAttribute];
+    
+    [titleLabel setAttributedText:titleAttributed];
+
+    return titleLabel;
+}
+
 
 
 
@@ -132,6 +178,7 @@
     
     if(!cell) {
         cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CHANNEL_CELL_ID isChannel:YES isAChannelThatIFollow:NO];
+        [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     
     [cell setCellTextTitle:@"Iain Usiri"];

@@ -15,6 +15,8 @@
 #import "ContentDevVC.h"
 #import "Channel.h"
 #import "CreateNewChannelView.h"
+#import "ChannelOrUsernameCV.h"
+
 
 #import "Durations.h"
 
@@ -34,6 +36,7 @@
 #import "PreviewDisplayView.h"
 #import "ProfileVC.h"
 
+#import "StoryboardVCIdentifiers.h"
 #import "SharePOVView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -54,7 +57,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, CreateNewChannelViewProtocol, SharePOVViewDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, CreateNewChannelViewProtocol, SharePOVViewDelegate, UserAndChannelListsTVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -79,10 +82,7 @@
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
 
-#define TAB_BAR_CONTROLLER_ID @"main_tab_bar_controller"
-#define FEED_VC_ID @"feed_vc"
-#define MEDIA_DEV_VC_ID @"media_dev_vc"
-#define PROFILE_VC_ID @"profile_vc"
+
 
 #define DARK_GRAY 0.6f
 #define ADK_BUTTON_SIZE 60.f
@@ -186,11 +186,16 @@
                                                                     image:nil
                                                             selectedImage:nil];
     
-    [self.channelListView showAllVerbatmChannels];
+    [self.channelListView presentAllVerbatmChannels];
+    
+    self.channelListView.listDelegate = self;
+    
+    
      
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
+    
     self.profileVC.delegate = self;
-
+    self.profileVC.isCurrentUserProfile = YES;
     self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
     self.feedVC.delegate = self;
 
@@ -229,7 +234,7 @@
 	[tabView setBackgroundColor:[UIColor clearColor]];
 
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
-	button.frame = CGRectMake(tabWidth + tabWidth/2.f - ADK_BUTTON_SIZE/2.f, -(ADK_BUTTON_SIZE/2.f),
+	button.frame = CGRectMake(tabWidth + tabWidth/2.f - ADK_BUTTON_SIZE/2.f, 0.f,
 							  ADK_BUTTON_SIZE, ADK_BUTTON_SIZE);
 	[button setBackgroundColor:[UIColor clearColor]];
 	[button.imageView setContentMode:UIViewContentModeScaleAspectFill];
@@ -331,12 +336,32 @@
 }
 
 //show the list of followers of the current user
--(void)presentFollowersList{
+-(void)presentFollowersListMyID:(id) userID {
+    UserAndChannelListsTVC * newList = [[UserAndChannelListsTVC alloc] init];
+    [newList presentChannelsForUser:userID shouldDisplayFollowers:YES];
+    newList.listDelegate = self;
+    
+    [self presentViewController:newList animated:YES completion:^{
+        
+    }];
+    
+}
+//show list of people the user follows
+-(void)presentWhoIFollowMyID:(id) userID {
+    
+    UserAndChannelListsTVC * newList = [[UserAndChannelListsTVC alloc] init];
+    [newList presentWhoIsFollowedBy:userID];
+    newList.listDelegate = self;
+    
+    [self presentViewController:newList animated:YES completion:^{
+        
+    }];
+    
+    
     
 }
 
-
-//show the channels the current user can select
+//show the channels the current user can select to follow
 -(void)presentChannelsToFollow{
     [self presentShareSelectionViewStartOnChannels:YES];
 }
@@ -462,6 +487,30 @@
         [self.createNewChannelView removeFromSuperview];
         self.createNewChannelView = nil;
     }
+}
+
+
+
+#pragma mark - Delegate for channel list view -
+-(void)openChannel:(Channel *) channel {
+    
+}
+
+-(void)selectedUser:(id)userId {
+    
+}
+
+//either you specify a start channel or you send in nil which goes to default
+-(void)presentUserProfileWithChannel:(Channel *) specificChannel{
+    
+    if(specificChannel){
+        
+    }else{
+        
+    }
+    
+    
+    
 }
 
 #pragma mark - Memory Warning -

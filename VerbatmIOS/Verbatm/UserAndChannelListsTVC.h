@@ -18,6 +18,17 @@
  */
 
 
+
+
+@protocol UserAndChannelListsTVCDelegate <NSObject>
+
+-(void)openChannel:(Channel *) channel;
+
+-(void)selectedUser:(id)userId;
+
+@end
+
+
 @interface UserAndChannelListsTVC : UITableViewController
 //show which users like this post
 -(void) presentUserLikeInformationForPost:(id) post;
@@ -26,11 +37,13 @@
 -(void) presentUserShareInformationForPost:(id) post;
 
 //Gives us the channels to display and if we should show the users that follow them then
--(void)displayChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers;
+-(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers;
 
 //show which users are being followed by userId
--(void)showWhoIsFollowedBy:(id)userId;
+-(void)presentWhoIsFollowedBy:(id)userId;
 
--(void)showAllVerbatmChannels;
+-(void)presentAllVerbatmChannels;
+
+@property (nonatomic) id<UserAndChannelListsTVCDelegate> listDelegate;
 
 @end

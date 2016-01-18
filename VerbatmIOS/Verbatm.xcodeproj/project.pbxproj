@@ -549,6 +549,7 @@
 		C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserAndChannelListsTVC.m; sourceTree = "<group>"; };
 		C76172751C4C9FCE00AB0D84 /* ChannelOrUsernameCV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelOrUsernameCV.h; sourceTree = "<group>"; };
 		C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelOrUsernameCV.m; sourceTree = "<group>"; };
+		C76172781C4CE80500AB0D84 /* StoryboardVCIdentifiers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoryboardVCIdentifiers.h; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedTableViewCell.h; sourceTree = "<group>"; };
 		C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableViewCell.m; sourceTree = "<group>"; };
@@ -1424,6 +1425,7 @@
 				A52919721B5D921500233712 /* Durations.h */,
 				A52919731B5DA4C800233712 /* StringsAndAppConstants.h */,
 				A55A59CF1BB470D300C7CE7A /* SegueIDs.h */,
+				C76172781C4CE80500AB0D84 /* StoryboardVCIdentifiers.h */,
 			);
 			name = "Constants ";
 			sourceTree = "<group>";

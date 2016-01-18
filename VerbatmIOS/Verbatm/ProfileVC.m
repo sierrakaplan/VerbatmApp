@@ -130,7 +130,7 @@
 	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - (PROFILE_NAV_BAR_HEIGHT+ ARROW_EXTENSION_BAR_HEIGHT), self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
     [self updateUserInfo];
     self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:self.profileNavBarFrameOnScreen
-												   andChannels:self.channels andUserName:self.currentUser.name];
+												   andChannels:self.channels andUserName:self.currentUser.name isCurrentLoggedInUser:self.isCurrentUserProfile];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
 }
@@ -179,9 +179,13 @@
 
 //current user wants to see their own followers
 -(void) followersOptionSelected{
-    [self.delegate presentChannelsToFollow];
+    [self.delegate presentFollowersListMyID:nil];//to-do
 }
 
+//current user wants to see who they follow
+-(void) followingOptionSelected {
+    [self.delegate presentWhoIFollowMyID:nil];//to-do
+}
 
 -(void) settingsButtonClicked {
     [self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
@@ -191,6 +195,11 @@
 //ProfileNavBarDelegate protocol
 -(void) createNewChannel{
     [self.delegate createNewChannel];
+}
+//the current user has selected the back button
+-(void)exitCurrentProfile {
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
+    }];
 }
 
 
