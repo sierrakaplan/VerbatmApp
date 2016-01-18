@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/B4X-8U3jiUZhO2hQgCz7AkpwlgE\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/GLfMmwcIT64XpSuCcAAOodwbsOU\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -79,10 +79,14 @@
    "type": "object",
    "properties": {
     "id": {
-     "type": "string",
-     "format": "int64"
+     "type": "integer",
+     "format": "int32"
     },
     "indexInPage": {
+     "type": "integer",
+     "format": "int32"
+    },
+    "pageNum": {
      "type": "integer",
      "format": "int32"
     },
@@ -95,10 +99,6 @@
     "textYPosition": {
      "type": "number",
      "format": "float"
-    },
-    "userKey": {
-     "type": "string",
-     "format": "int64"
     }
    }
   },
@@ -114,31 +114,29 @@
     }
    }
   },
+  "ImageListWrapper": {
+   "id": "ImageListWrapper",
+   "type": "object",
+   "properties": {
+    "images": {
+     "type": "array",
+     "items": {
+      "$ref": "Image"
+     }
+    }
+   }
+  },
   "Page": {
    "id": "Page",
    "type": "object",
    "properties": {
     "id": {
-     "type": "string",
-     "format": "int64"
-    },
-    "imageIds": {
-     "type": "array",
-     "items": {
-      "type": "string",
-      "format": "int64"
-     }
-    },
-    "indexInPOV": {
      "type": "integer",
      "format": "int32"
     },
-    "videoIds": {
-     "type": "array",
-     "items": {
-      "type": "string",
-      "format": "int64"
-     }
+    "pageNumberInPost": {
+     "type": "integer",
+     "format": "int32"
     }
    }
   },
@@ -154,24 +152,45 @@
     }
    }
   },
+  "PageListWrapper": {
+   "id": "PageListWrapper",
+   "type": "object",
+   "properties": {
+    "pages": {
+     "type": "array",
+     "items": {
+      "$ref": "Page"
+     }
+    }
+   }
+  },
   "Post": {
    "id": "Post",
    "type": "object",
    "properties": {
     "channelId": {
-     "type": "string",
-     "format": "int64"
+     "type": "integer",
+     "format": "int32"
     },
     "dateCreated": {
      "$ref": "Timestamp"
     },
     "id": {
-     "type": "string",
-     "format": "int64"
+     "type": "integer",
+     "format": "int32"
+    },
+    "images": {
+     "$ref": "ImageListWrapper"
+    },
+    "pages": {
+     "$ref": "PageListWrapper"
     },
     "sharedFromPostId": {
-     "type": "string",
-     "format": "int64"
+     "type": "integer",
+     "format": "int32"
+    },
+    "videos": {
+     "$ref": "VideoListWrapper"
     }
    }
   },
@@ -233,15 +252,6 @@
     }
    }
   },
-  "UploadURI": {
-   "id": "UploadURI",
-   "type": "object",
-   "properties": {
-    "uploadURIString": {
-     "type": "string"
-    }
-   }
-  },
   "VerbatmUser": {
    "id": "VerbatmUser",
    "type": "object",
@@ -250,8 +260,8 @@
      "type": "string"
     },
     "id": {
-     "type": "string",
-     "format": "int64"
+     "type": "integer",
+     "format": "int32"
     },
     "name": {
      "type": "string"
@@ -284,10 +294,14 @@
      "type": "string"
     },
     "id": {
-     "type": "string",
-     "format": "int64"
+     "type": "integer",
+     "format": "int32"
     },
     "indexInPage": {
+     "type": "integer",
+     "format": "int32"
+    },
+    "pageNum": {
      "type": "integer",
      "format": "int32"
     },
@@ -297,10 +311,6 @@
     "textYPosition": {
      "type": "number",
      "format": "float"
-    },
-    "userId": {
-     "type": "string",
-     "format": "int64"
     }
    }
   },
@@ -315,170 +325,21 @@
      }
     }
    }
+  },
+  "VideoListWrapper": {
+   "id": "VideoListWrapper",
+   "type": "object",
+   "properties": {
+    "videos": {
+     "type": "array",
+     "items": {
+      "$ref": "Video"
+     }
+    }
+   }
   }
  },
  "resources": {
-  "image": {
-   "methods": {
-    "getImage": {
-     "id": "verbatmApp.image.getImage",
-     "path": "verbatmApp/v1/image/{id}",
-     "httpMethod": "GET",
-     "parameters": {
-      "id": {
-       "type": "string",
-       "required": true,
-       "format": "int64",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "id"
-     ],
-     "response": {
-      "$ref": "Image"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "getUploadURI": {
-     "id": "verbatmApp.image.getUploadURI",
-     "path": "verbatmApp/v1/image",
-     "httpMethod": "GET",
-     "response": {
-      "$ref": "UploadURI"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "insertImage": {
-     "id": "verbatmApp.image.insertImage",
-     "path": "verbatmApp/v1/image",
-     "httpMethod": "POST",
-     "request": {
-      "$ref": "Image",
-      "parameterName": "resource"
-     },
-     "response": {
-      "$ref": "Image"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "removeImage": {
-     "id": "verbatmApp.image.removeImage",
-     "path": "verbatmApp/v1/image/{id}",
-     "httpMethod": "DELETE",
-     "parameters": {
-      "id": {
-       "type": "string",
-       "required": true,
-       "format": "int64",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "id"
-     ],
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "updateImage": {
-     "id": "verbatmApp.image.updateImage",
-     "path": "verbatmApp/v1/image",
-     "httpMethod": "PUT",
-     "request": {
-      "$ref": "Image",
-      "parameterName": "resource"
-     },
-     "response": {
-      "$ref": "Image"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    }
-   }
-  },
-  "page": {
-   "methods": {
-    "getPage": {
-     "id": "verbatmApp.page.getPage",
-     "path": "verbatmApp/v1/page/{id}",
-     "httpMethod": "GET",
-     "parameters": {
-      "id": {
-       "type": "string",
-       "required": true,
-       "format": "int64",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "id"
-     ],
-     "response": {
-      "$ref": "Page"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "insertPage": {
-     "id": "verbatmApp.page.insertPage",
-     "path": "verbatmApp/v1/page",
-     "httpMethod": "POST",
-     "request": {
-      "$ref": "Page",
-      "parameterName": "resource"
-     },
-     "response": {
-      "$ref": "Page"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "removePage": {
-     "id": "verbatmApp.page.removePage",
-     "path": "verbatmApp/v1/page/{id}",
-     "httpMethod": "DELETE",
-     "parameters": {
-      "id": {
-       "type": "string",
-       "required": true,
-       "format": "int64",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "id"
-     ],
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "updatePage": {
-     "id": "verbatmApp.page.updatePage",
-     "path": "verbatmApp/v1/page",
-     "httpMethod": "PUT",
-     "request": {
-      "$ref": "Page",
-      "parameterName": "resource"
-     },
-     "response": {
-      "$ref": "Page"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    }
-   }
-  },
   "post": {
    "methods": {
     "getImagesInPage": {
@@ -487,9 +348,9 @@
      "httpMethod": "GET",
      "parameters": {
       "page_id": {
-       "type": "string",
+       "type": "integer",
        "required": true,
-       "format": "int64",
+       "format": "int32",
        "location": "query"
       }
      },
@@ -509,9 +370,9 @@
      "httpMethod": "GET",
      "parameters": {
       "post_id": {
-       "type": "string",
+       "type": "integer",
        "required": true,
-       "format": "int64",
+       "format": "int32",
        "location": "query"
       }
      },
@@ -575,9 +436,9 @@
      "httpMethod": "GET",
      "parameters": {
       "post_id": {
-       "type": "string",
+       "type": "integer",
        "required": true,
-       "format": "int64",
+       "format": "int32",
        "location": "query"
       }
      },
@@ -597,9 +458,9 @@
      "httpMethod": "GET",
      "parameters": {
       "post_id": {
-       "type": "string",
+       "type": "integer",
        "required": true,
-       "format": "int64",
+       "format": "int32",
        "location": "query"
       }
      },
@@ -619,9 +480,9 @@
      "httpMethod": "GET",
      "parameters": {
       "page_id": {
-       "type": "string",
+       "type": "integer",
        "required": true,
-       "format": "int64",
+       "format": "int32",
        "location": "query"
       }
      },
@@ -639,6 +500,13 @@
      "id": "verbatmApp.post.insertPost",
      "path": "insertPost",
      "httpMethod": "PUT",
+     "request": {
+      "$ref": "Post",
+      "parameterName": "resource"
+     },
+     "response": {
+      "$ref": "Post"
+     },
      "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"
      ]
@@ -654,15 +522,15 @@
        "location": "query"
       },
       "post_id": {
-       "type": "string",
+       "type": "integer",
        "required": true,
-       "format": "int64",
+       "format": "int32",
        "location": "query"
       },
       "user_id": {
-       "type": "string",
+       "type": "integer",
        "required": true,
-       "format": "int64",
+       "format": "int32",
        "location": "query"
       }
      },
@@ -681,9 +549,9 @@
      "httpMethod": "PUT",
      "parameters": {
       "post_id": {
-       "type": "string",
+       "type": "integer",
        "required": true,
-       "format": "int64",
+       "format": "int32",
        "location": "query"
       },
       "share_type": {
@@ -692,9 +560,9 @@
        "location": "query"
       },
       "user_id": {
-       "type": "string",
+       "type": "integer",
        "required": true,
-       "format": "int64",
+       "format": "int32",
        "location": "query"
       }
      },
@@ -798,92 +666,6 @@
      },
      "response": {
       "$ref": "VerbatmUser"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    }
-   }
-  },
-  "video": {
-   "methods": {
-    "getUploadURI": {
-     "id": "verbatmApp.video.getUploadURI",
-     "path": "verbatmApp/v1/video",
-     "httpMethod": "GET",
-     "response": {
-      "$ref": "UploadURI"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "getVideo": {
-     "id": "verbatmApp.video.getVideo",
-     "path": "verbatmApp/v1/video/{id}",
-     "httpMethod": "GET",
-     "parameters": {
-      "id": {
-       "type": "string",
-       "required": true,
-       "format": "int64",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "id"
-     ],
-     "response": {
-      "$ref": "Video"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "insertVideo": {
-     "id": "verbatmApp.video.insertVideo",
-     "path": "verbatmApp/v1/video",
-     "httpMethod": "POST",
-     "request": {
-      "$ref": "Video",
-      "parameterName": "resource"
-     },
-     "response": {
-      "$ref": "Video"
-     },
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "removeVideo": {
-     "id": "verbatmApp.video.removeVideo",
-     "path": "verbatmApp/v1/video/{id}",
-     "httpMethod": "DELETE",
-     "parameters": {
-      "id": {
-       "type": "string",
-       "required": true,
-       "format": "int64",
-       "location": "path"
-      }
-     },
-     "parameterOrder": [
-      "id"
-     ],
-     "scopes": [
-      "https://www.googleapis.com/auth/userinfo.email"
-     ]
-    },
-    "updateVideo": {
-     "id": "verbatmApp.video.updateVideo",
-     "path": "verbatmApp/v1/video",
-     "httpMethod": "PUT",
-     "request": {
-      "$ref": "Video",
-      "parameterName": "resource"
-     },
-     "response": {
-      "$ref": "Video"
      },
      "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"

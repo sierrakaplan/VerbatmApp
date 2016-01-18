@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (29 custom class methods, 10 custom properties)
+//   GTLQueryVerbatmApp (15 custom class methods, 10 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -21,10 +21,8 @@
   #import "GTLQuery.h"
 #endif
 
-@class GTLVerbatmAppImage;
-@class GTLVerbatmAppPage;
+@class GTLVerbatmAppPost;
 @class GTLVerbatmAppVerbatmUser;
-@class GTLVerbatmAppVideo;
 
 @interface GTLQueryVerbatmApp : GTLQuery
 
@@ -44,68 +42,10 @@
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
 @property (nonatomic, assign) long long identifier;
 @property (nonatomic, assign) BOOL liked;
-@property (nonatomic, assign) long long pageId;
-@property (nonatomic, assign) long long postId;
+@property (nonatomic, assign) NSInteger pageId;
+@property (nonatomic, assign) NSInteger postId;
 @property (nonatomic, copy) NSString *shareType;
-@property (nonatomic, assign) long long userId;
-
-#pragma mark - "image" methods
-// These create a GTLQueryVerbatmApp object.
-
-// Method: verbatmApp.image.getImage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppImage.
-+ (instancetype)queryForImageGetImageWithIdentifier:(long long)identifier;
-
-// Method: verbatmApp.image.getUploadURI
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppUploadURI.
-+ (instancetype)queryForImageGetUploadURI;
-
-// Method: verbatmApp.image.insertImage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppImage.
-+ (instancetype)queryForImageInsertImageWithObject:(GTLVerbatmAppImage *)object;
-
-// Method: verbatmApp.image.removeImage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-+ (instancetype)queryForImageRemoveImageWithIdentifier:(long long)identifier;
-
-// Method: verbatmApp.image.updateImage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppImage.
-+ (instancetype)queryForImageUpdateImageWithObject:(GTLVerbatmAppImage *)object;
-
-#pragma mark - "page" methods
-// These create a GTLQueryVerbatmApp object.
-
-// Method: verbatmApp.page.getPage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppPage.
-+ (instancetype)queryForPageGetPageWithIdentifier:(long long)identifier;
-
-// Method: verbatmApp.page.insertPage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppPage.
-+ (instancetype)queryForPageInsertPageWithObject:(GTLVerbatmAppPage *)object;
-
-// Method: verbatmApp.page.removePage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-+ (instancetype)queryForPageRemovePageWithIdentifier:(long long)identifier;
-
-// Method: verbatmApp.page.updatePage
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppPage.
-+ (instancetype)queryForPageUpdatePageWithObject:(GTLVerbatmAppPage *)object;
+@property (nonatomic, assign) NSInteger userId;
 
 #pragma mark - "post" methods
 // These create a GTLQueryVerbatmApp object.
@@ -114,13 +54,13 @@
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppImageCollection.
-+ (instancetype)queryForPostGetImagesInPageWithPageId:(long long)pageId;
++ (instancetype)queryForPostGetImagesInPageWithPageId:(NSInteger)pageId;
 
 // Method: verbatmApp.post.getPagesInPost
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppPageCollection.
-+ (instancetype)queryForPostGetPagesInPostWithPostId:(long long)postId;
++ (instancetype)queryForPostGetPagesInPostWithPostId:(NSInteger)postId;
 
 // Method: verbatmApp.post.getPostsInChannel
 //  Authorization scope(s):
@@ -138,38 +78,39 @@
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppVerbatmUserCollection.
-+ (instancetype)queryForPostGetUsersWhoLikePostWithPostId:(long long)postId;
++ (instancetype)queryForPostGetUsersWhoLikePostWithPostId:(NSInteger)postId;
 
 // Method: verbatmApp.post.getUsersWhoSharedPost
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppVerbatmUserCollection.
-+ (instancetype)queryForPostGetUsersWhoSharedPostWithPostId:(long long)postId;
++ (instancetype)queryForPostGetUsersWhoSharedPostWithPostId:(NSInteger)postId;
 
 // Method: verbatmApp.post.getVideosInPage
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppVideoCollection.
-+ (instancetype)queryForPostGetVideosInPageWithPageId:(long long)pageId;
++ (instancetype)queryForPostGetVideosInPageWithPageId:(NSInteger)pageId;
 
 // Method: verbatmApp.post.insertPost
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
-+ (instancetype)queryForPostInsertPost;
+// Fetches a GTLVerbatmAppPost.
++ (instancetype)queryForPostInsertPostWithObject:(GTLVerbatmAppPost *)object;
 
 // Method: verbatmApp.post.userLikedPost
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 + (instancetype)queryForPostUserLikedPostWithLiked:(BOOL)liked
-                                            postId:(long long)postId
-                                            userId:(long long)userId;
+                                            postId:(NSInteger)postId
+                                            userId:(NSInteger)userId;
 
 // Method: verbatmApp.post.userSharedPost
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
-+ (instancetype)queryForPostUserSharedPostWithPostId:(long long)postId
++ (instancetype)queryForPostUserSharedPostWithPostId:(NSInteger)postId
                                            shareType:(NSString *)shareType
-                                              userId:(long long)userId;
+                                              userId:(NSInteger)userId;
 
 #pragma mark - "verbatmuser" methods
 // These create a GTLQueryVerbatmApp object.
@@ -202,37 +143,5 @@
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppVerbatmUser.
 + (instancetype)queryForVerbatmuserUpdateUserWithObject:(GTLVerbatmAppVerbatmUser *)object;
-
-#pragma mark - "video" methods
-// These create a GTLQueryVerbatmApp object.
-
-// Method: verbatmApp.video.getUploadURI
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppUploadURI.
-+ (instancetype)queryForVideoGetUploadURI;
-
-// Method: verbatmApp.video.getVideo
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppVideo.
-+ (instancetype)queryForVideoGetVideoWithIdentifier:(long long)identifier;
-
-// Method: verbatmApp.video.insertVideo
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppVideo.
-+ (instancetype)queryForVideoInsertVideoWithObject:(GTLVerbatmAppVideo *)object;
-
-// Method: verbatmApp.video.removeVideo
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-+ (instancetype)queryForVideoRemoveVideoWithIdentifier:(long long)identifier;
-
-// Method: verbatmApp.video.updateVideo
-//  Authorization scope(s):
-//   kGTLAuthScopeVerbatmAppUserinfoEmail
-// Fetches a GTLVerbatmAppVideo.
-+ (instancetype)queryForVideoUpdateVideoWithObject:(GTLVerbatmAppVideo *)object;
 
 @end

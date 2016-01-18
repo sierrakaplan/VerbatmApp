@@ -1,32 +1,25 @@
 package com.myverbatm.verbatm.backend.models;
 
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
-
 /**
- * Image entity used to represent an image
+ * Video entity, containing a blobStore key string of where the video is stored,
+ * its page number, its index in the page and text as well as text position
  */
-@Entity
 public class Video {
 
     /**
-     * Unique identifier of this Page Entity in the database.
+     * Unique identifier of this Video Entity in the database.
      */
-    @Id
-    private Long id;
+    private Integer id;
+
+    /**
+     * Stores which page in post this video belongs to
+     */
+    private Integer pageNum;
 
     /**
      * Stores the index of this video in the page
      */
-    @Index
     private Integer indexInPage;
-
-    /**
-     * The key of the user who uploaded this video
-     */
-    @Index
-    private Long userId;
 
     /**
      * The blobKey for this video in the blobstore
@@ -47,15 +40,20 @@ public class Video {
      *
      * @return the unique identifier of this Entity.
      */
-    public final Long getId() {
+    public final Integer getId() {
         return id;
     }
 
-    /**
-     * Resets the Entity key to null.
-     */
-    public final void clearId() {
-        id = null;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
     }
 
     public Integer getIndexInPage() {
@@ -65,23 +63,6 @@ public class Video {
     public void setIndexInPage(Integer indexInPage) {
         this.indexInPage = indexInPage;
     }
-
-    /**
-     * Gets the key of the user who uploaded this video
-     * @return the key of the user who uploaded this video
-     */
-    public final Long getUserId() {
-        return userId;
-    }
-
-    /**
-     * Sets the key of the user who uploaded this video
-     * @param userId the key of the user who uploaded this video
-     */
-    public final void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
 
     /**
      * Returns the blobKey for this video in the blobstore

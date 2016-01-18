@@ -9,12 +9,42 @@
 #ifndef Styles_h
 #define Styles_h
 
+
+#define VERBATM_GOLD_COLOR [UIColor yellowColor]
+
+
 #define HEADER_TEXT_FONT @"Quicksand-Regular"
-#define HEADER_TEXT_SIZE 30.f
+#define HEADER_TEXT_SIZE 20.f
 
 #define TAB_BAR_SELECTED_FONT @"Quicksand-Bold"
-#define TAB_BAR_FONT @"Quicksand-Light"
-#define TAB_BAR_FONT_SIZE 20.f
+#define TAB_BAR_CHANNEL_NAME_FONT @"Quicksand-Bold"
+#define TAB_BAR_FOLLOWERS_FONT @"Quicksand-Regular"
+#define TAB_BAR_FOLLOWER_NUMBER_FONT @"Quicksand-Bold"
+
+#define TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT @"Quicksand-Bold"
+#define TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT_SIZE 17.f
+
+#define USER_CHANNEL_LIST_FONT @"Quicksand-Regular"
+#define USER_CHANNEL_LIST_FONT_SIZE 20.f
+
+//Font of the headers of the user_channel list
+#define INFO_LIST_HEADER_FONT @"Quicksand-Bold"  
+#define INFO_LIST_HEADER_FONT_SIZE 20.f
+
+
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_PLACEHOLDER_FONT @"Quicksand-LightItalic"
+
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_FONT @"Quicksand-Bold"
+
+
+#define CHANNEL_CREATION_BUTTON_FONT @"Quicksand-Regular"
+
+#define TAB_BAR_FONT_SIZE 17.f
+#define FOLLOWERS_TEXT_FONT_SIZE 15.f
+
+
+#define CREATE_CHANNEL_BUTTON_FONT_SIZE 19.f
+
 
 #define TAB_BAR_ALPHA 0.7
 
@@ -58,7 +88,9 @@
 #pragma mark - ADK -
 
 #define ADK_NAV_BAR_COLOR [UIColor colorWithWhite:1.0 alpha:1]
-#define TITLE_TEXT_COLOR whiteColor
+#define SETTINGS_NAV_BAR_COLOR [UIColor lightGrayColor]
+
+#define TITLE_TEXT_COLOR blackColor
 #define TITLE_TEXT_SIZE 20.f
 
 #pragma mark PinchViews
@@ -116,7 +148,11 @@
 #define CIRCLE_OVER_IMAGES_ALPHA 0.4
 #define POINTS_ON_CIRCLE_ALPHA 0.5
 
+#define TAB_DIVIDER_COLOR clearColor
 
+#define TAB_BUTTON_BACKGROUND_IMAGE @"dark_fade_box"
 
+#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED [UIColor colorWithWhite:0.f alpha:0.5]
+#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED [UIColor colorWithWhite:1.f alpha:0.8]
 
 #endif /* Styles_h */

@@ -8,8 +8,19 @@
 //	Displays a list of POV objects on a scroll view (hack for demo day)
 
 #import <UIKit/UIKit.h>
+#import "PovInfo.h"
+@protocol POVScrollViewDelegate <NSObject>
+-(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo;
+-(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo;
+@end
+
+
 
 @interface POVScrollView : UIScrollView
+
+
+
+@property(nonatomic) id< POVScrollViewDelegate > customDelegate;
 
 @property (nonatomic) BOOL feedScrollView;
 
@@ -20,5 +31,8 @@
 -(void) playPOVOnScreen;
 
 -(void) headerShowing: (BOOL) showing;
+
+//moves the tap/share bar up and down over the tab bar
+-(void) shiftOnScreenPOVLikeShareBar:(BOOL) down;
 
 @end

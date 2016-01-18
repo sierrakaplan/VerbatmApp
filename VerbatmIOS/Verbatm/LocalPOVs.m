@@ -77,7 +77,7 @@
 	});
 }
 
--(AnyPromise*) getPOVsFromThread: (NSString*) thread {
+-(AnyPromise*) getPOVsFromChannel: (NSString*) thread {
 	NSString* threadKey = [self getKeyFromThreadName: thread];
 	if ([self.povThreads objectForKey:threadKey]) {
 		return [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -85,8 +85,10 @@
 		}];
 	}
 	NSArray* povsAsData = [[NSUserDefaults standardUserDefaults] objectForKey:threadKey];
+    
 	NSMutableArray* povPromises = [[NSMutableArray alloc] init];
-	for (NSData* data in povsAsData) {
+	
+    for (NSData* data in povsAsData) {
 		AnyPromise* povPromise = [self convertNSDataToPOV:data].then(^(POV* pov) {
 			NSMutableArray* videoPinchViewPromises = [[NSMutableArray alloc] init];
 			for (PinchView* pinchView in pov.pinchViews) {
@@ -102,11 +104,14 @@
 				return pov;
 			});
 		});
+        
 		[povPromises addObject: povPromise];
+        
 	}
+    
 	return PMKWhen(povPromises).then(^(NSMutableArray* povs) {
 		self.povThreads[threadKey] = povs;
-		return povs;
+        return povs;
 	}).catch(^(NSError* error) {
 		NSLog(@"Error loading local POVs: %@", error.description);
 	});

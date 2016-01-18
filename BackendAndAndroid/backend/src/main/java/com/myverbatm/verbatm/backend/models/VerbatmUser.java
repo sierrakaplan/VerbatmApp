@@ -8,7 +8,7 @@ public class VerbatmUser {
     /**
      * Unique identifier of this User in the database.
      */
-    private Long id;
+    private Integer id;
 
     /**
      * VerbatmUser name
@@ -34,11 +34,11 @@ public class VerbatmUser {
      *
      * @return the unique identifier of this Entity.
      */
-    public final Long getId() {
+    public final Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

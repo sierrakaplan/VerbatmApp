@@ -18,7 +18,6 @@ public final class OfyService {
 
     static {
         factory().register(RegistrationRecord.class);
-        factory().register(POV.class);
         factory().register(Image.class);
         factory().register(Page.class);
         factory().register(VerbatmUser.class);

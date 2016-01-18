@@ -22,6 +22,6 @@
 // Enter index of -1 for it to be stored at the end
 - (void) storePOVWithThread: (NSString*) thread andPinchViews: (NSMutableArray*) pinchViews atIndex: (NSInteger) index;
 
--(AnyPromise*) getPOVsFromThread: (NSString*) thread;
+-(AnyPromise*) getPOVsFromChannel: (NSString*) thread;
 
 @end

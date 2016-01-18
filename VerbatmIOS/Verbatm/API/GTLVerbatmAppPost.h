@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppPost (0 custom class methods, 4 custom properties)
+//   GTLVerbatmAppPost (0 custom class methods, 7 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLObject.h"
@@ -21,7 +21,10 @@
   #import "GTLObject.h"
 #endif
 
+@class GTLVerbatmAppImageListWrapper;
+@class GTLVerbatmAppPageListWrapper;
 @class GTLVerbatmAppTimestamp;
+@class GTLVerbatmAppVideoListWrapper;
 
 // ----------------------------------------------------------------------------
 //
@@ -29,11 +32,14 @@
 //
 
 @interface GTLVerbatmAppPost : GTLObject
-@property (nonatomic, retain) NSNumber *channelId;  // longLongValue
+@property (nonatomic, retain) NSNumber *channelId;  // intValue
 @property (nonatomic, retain) GTLVerbatmAppTimestamp *dateCreated;
 
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
-@property (nonatomic, retain) NSNumber *identifier;  // longLongValue
+@property (nonatomic, retain) NSNumber *identifier;  // intValue
 
-@property (nonatomic, retain) NSNumber *sharedFromPostId;  // longLongValue
+@property (nonatomic, retain) GTLVerbatmAppImageListWrapper *images;
+@property (nonatomic, retain) GTLVerbatmAppPageListWrapper *pages;
+@property (nonatomic, retain) NSNumber *sharedFromPostId;  // intValue
+@property (nonatomic, retain) GTLVerbatmAppVideoListWrapper *videos;
 @end

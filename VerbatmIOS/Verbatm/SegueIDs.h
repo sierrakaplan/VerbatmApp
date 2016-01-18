@@ -26,6 +26,8 @@
 #define SEGUE_TO_QUESTION_PAGE @"segue_id_question_page"
 #define UNWIND_SEGUE_QUESTION_PAGE @"segue_id_unwind_from_question_page"
 
+#define SETTINGS_PAGE_MODAL_SEGUE @"presentSettingsPage"
+
 #define ARTICLE_DISPLAY_VC_ID @"article_display_vc"
 
 #endif /* SegueIDs_h */

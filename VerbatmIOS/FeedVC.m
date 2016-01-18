@@ -16,12 +16,7 @@
 #import "SizesAndPositions.h"
 #import "VideoAVE.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate>
-
-@property (nonatomic) CGRect headerFrameOnScreen;
-@property (nonatomic) CGRect headerFrameOffScreen;
-@property (strong, nonatomic) UIView* header;
-
+@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, POVScrollViewDelegate>
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
@@ -29,16 +24,14 @@
 @property (strong, nonatomic) POVScrollView* povScrollView;
 
 #define TRENDING_VC_ID @"trending_vc"
-
-#define HEADER_HEIGHT 50.f
 #define VERBATM_LOGO_WIDTH 150.f
+
 @end
 
 @implementation FeedVC
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-	[self setHeader];
     [self addPOVScrollView];
     [self addClearScreenGesture];
 }
@@ -46,14 +39,6 @@
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 //    [self createContentListView];
-//TODO: get POVs
-//        [self.povScrollView displayPOVs: povs];
-//        [self.povScrollView playPOVOnScreen];
-
-	//FOR TESTING
-	NSURL* testURL = [NSURL URLWithString:@"https://www.youtube.com/watch?v=C5znw1OtI0U&feature=em-subs_digest"];
-	VideoAVE* videoTest = [[VideoAVE alloc] initWithFrame:self.view.bounds andVideoWithTextArray:@[@[testURL]]];
-	[self.view addSubview:videoTest];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -65,26 +50,14 @@
     [self.povScrollView clearPOVs];
 }
 
--(void) setHeader {
-	self.headerFrameOnScreen = CGRectMake(0.f, 0.f, self.view.bounds.size.width, HEADER_HEIGHT);
-	self.headerFrameOffScreen = CGRectMake(0.f, -HEADER_HEIGHT, self.view.bounds.size.width, HEADER_HEIGHT);
-	self.header = [[UIView alloc] initWithFrame:self.headerFrameOnScreen];
-	[self.header setBackgroundColor:[UIColor colorWithWhite:1.f alpha:1.f]];
-	UIImageView* verbatmTitleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:VERBATM_LOGO]];
-	verbatmTitleView.contentMode = UIViewContentModeScaleAspectFit;
-	verbatmTitleView.frame = CGRectMake(self.view.frame.size.width/2.f - VERBATM_LOGO_WIDTH/2.f,
-										BELOW_STATUS_BAR, VERBATM_LOGO_WIDTH, HEADER_HEIGHT - BELOW_STATUS_BAR);
-	[self.header addSubview:verbatmTitleView];
-	[self.view addSubview:self.header];
-}
-
 -(void) addPOVScrollView {
-	self.povScrollViewFrame = CGRectMake(0.f, HEADER_HEIGHT, self.view.bounds.size.width,
+	self.povScrollViewFrame = CGRectMake(0.f, 0.f, self.view.bounds.size.width,
 										 self.view.bounds.size.height);// - HEADER_HEIGHT - 40.f);
 	self.povScrollView = [[POVScrollView alloc] initWithFrame: self.povScrollViewFrame];
     self.povScrollView.delegate = self;
+    self.povScrollView.customDelegate = self;
 	self.povScrollView.feedScrollView = YES;
-	[self.view insertSubview:self.povScrollView belowSubview:self.header];
+    [self.view addSubview:self.povScrollView];
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
@@ -123,18 +96,10 @@
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
     if(self.contentCoveringScreen) {
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.header setFrame:self.headerFrameOffScreen];
-			[self.povScrollView setFrame:self.view.bounds];
-		}];
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
 		[self.povScrollView headerShowing:NO];
     } else {
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.header setFrame:self.headerFrameOnScreen];
-			[self.povScrollView setFrame:self.povScrollViewFrame];
-		}];
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
 		[self.povScrollView headerShowing:YES];
@@ -154,6 +119,15 @@
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
                     andProgressObject:(NSProgress *)publishingProgress{
     
+}
+
+
+#pragma mark -POVScrollview delegate-
+-(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
+    [self.delegate feedPovLikeLiked:liked forPOV:povInfo];
+}
+-(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
+    [self.delegate feedPovShareButtonSeletedForPOV:povInfo];
 }
 
 #pragma mark - Network Connection Lost -

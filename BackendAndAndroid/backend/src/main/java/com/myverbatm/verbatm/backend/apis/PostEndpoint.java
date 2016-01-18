@@ -18,9 +18,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 /**
@@ -49,7 +52,7 @@ public class PostEndpoint {
      * Log output.
      */
     private static final Logger log =
-        Logger.getLogger(POVEndpoint.class.getName());
+        Logger.getLogger(PostEndpoint.class.getName());
 
     public PostEndpoint() {
     }
@@ -76,9 +79,121 @@ public class PostEndpoint {
         return url;
     }
 
+    /**
+     * Inserts post. Needs to insert all pages after inserting post in one atomic transaction.
+     * Needs to insert all videos and images for a page after inserting page in same transaction
+     * so that a page never exists with no content and a post never exists with no pages.
+     * @param post
+     */
     @ApiMethod(path="/insertPost", httpMethod = "PUT")
-    public final void insertPost() {
+    public final Post insertPost(Post post) {
+        Connection connection = null;
+        PreparedStatement insertPost = null;
+        PreparedStatement insertPages = null;
+        PreparedStatement insertImages = null;
+        PreparedStatement insertVideos = null;
 
+        String insertPostStatement =
+            "INSERT INTO Posts (channel_id, shared_from_post_id) " +
+                "VALUES (?, ?)";
+
+        String insertPageStatement =
+            "INSERT INTO Pages (post_id, page_num) " +
+                "VALUES (?, ?)";
+
+        String insertImageStatement =
+            "INSERT INTO Images (url, page_id, text, text_pos, num_in_page) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        String insertVideoStatement =
+            "INSERT INTO Videos (blob_key, page_id, text, text_pos, num_in_page) " +
+                "VALUES (?, ?, ?, ?, ?)";
+
+        try {
+            String url = getCloudSQLURL();
+            if (url == null) return null;
+            connection = DriverManager.getConnection(url);
+            try {
+                // NEEDS TO INSERT POST BEFORE PAGES BEFORE VIDEOS/IMAGES,
+                // BUT POST SHOULD NOT EXIST IN DATABASE UNLESS ALL PAGES, IMAGES, AND VIDEOS
+                // ARE INSERTED
+                connection.setAutoCommit(false);
+
+                insertPost = connection.prepareStatement(insertPostStatement, Statement.RETURN_GENERATED_KEYS);
+                insertPages = connection.prepareStatement(insertPageStatement, Statement.RETURN_GENERATED_KEYS);
+                insertImages = connection.prepareStatement(insertImageStatement);
+                insertVideos = connection.prepareStatement(insertVideoStatement);
+
+                insertPost.setInt(1, post.getChannelId());
+                insertPost.setInt(2, post.getSharedFromPostId());
+                insertPost.executeUpdate();
+                ResultSet keys = insertPost.getGeneratedKeys();
+                keys.next();
+                Integer postId = keys.getInt(1);
+
+                //mapping from page num to page id in sql
+                Map<Integer, Integer> pageIds = new HashMap<Integer, Integer>();
+                for (Page page : post.getPages().pages) {
+                    insertPages.setInt(1, postId);
+                    insertPages.setInt(2, page.getPageNumberInPost());
+                    insertPages.executeUpdate();
+                    keys = insertPages.getGeneratedKeys();
+                    keys.next();
+                    Integer pageId = keys.getInt(1);
+                    pageIds.put(page.getPageNumberInPost(), pageId);
+                }
+
+                for (Image image : post.getImages().images) {
+                    //(url, page_id, text, text_pos, num_in_page)
+                    insertImages.setString(1, image.getServingUrl());
+                    // set page id
+                    insertImages.setInt(2, pageIds.get(image.getPageNum()));
+                    insertImages.setString(3, image.getText());
+                    insertImages.setFloat(4, image.getTextYPosition());
+                    insertImages.setInt(5, image.getIndexInPage());
+                    insertImages.executeUpdate();
+                }
+
+                for (Video video : post.getVideos().videos) {
+                    //(blob_key, page_id, text, text_pos, num_in_page)
+                    insertVideos.setString(1, video.getBlobKeyString());
+                    // set page id
+                    insertVideos.setInt(2, pageIds.get(video.getPageNum()));
+                    insertVideos.setString(3, video.getText());
+                    insertVideos.setFloat(4, video.getTextYPosition());
+                    insertVideos.setInt(5, video.getIndexInPage());
+                    insertVideos.executeUpdate();
+                }
+
+                connection.commit();
+            } finally {
+                if (insertImages != null) {
+                    insertImages.close();
+                }
+                if (insertVideos != null) {
+                    insertVideos.close();
+                }
+                if (insertPages != null) {
+                    insertPages.close();
+                }
+                if (insertPost != null) {
+                    insertPost.close();
+                }
+                connection.setAutoCommit(true);
+                connection.close();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if (connection != null) {
+                try {
+                    System.err.print("Transaction is being rolled back");
+                    connection.rollback();
+                } catch(SQLException sqlExc) {
+                    sqlExc.printStackTrace();
+                }
+            }
+        }
+        return post;
     }
 
     @ApiMethod(path="/getRecentPosts", httpMethod = "GET")
@@ -89,13 +204,13 @@ public class PostEndpoint {
             if (url == null) return null;
             Connection connection = DriverManager.getConnection(url);
             try {
-                String statement = "SELECT * FROM Post ORDER BY date_created_ts ASC;";
+                String statement = "SELECT * FROM Posts ORDER BY date_created_ts ASC;";
                 PreparedStatement sqlStmt = connection.prepareStatement(statement);
                 ResultSet rs = sqlStmt.executeQuery();
                 while (rs.next()) {
-                    Long postId = rs.getLong("post_id");
-                    Long channelId = rs.getLong("channel_id");
-                    Long sharedFromPostId = rs.getLong("shared_from_post_id");
+                    Integer postId = rs.getInt("post_id");
+                    Integer channelId = rs.getInt("channel_id");
+                    Integer sharedFromPostId = rs.getInt("shared_from_post_id");
                     Timestamp createdStamp = rs.getTimestamp("date_created_ts");
                     Post post = new Post(postId, channelId, sharedFromPostId, createdStamp);
                     posts.add(post);
@@ -117,14 +232,14 @@ public class PostEndpoint {
             if (url == null) return null;
             Connection connection = DriverManager.getConnection(url);
             try {
-                String statement = "SELECT * FROM Post WHERE channel_id = ? ORDER BY date_created_ts ASC;";
+                String statement = "SELECT * FROM Posts WHERE channel_id = ? ORDER BY date_created_ts ASC;";
                 PreparedStatement sqlStmt = connection.prepareStatement(statement);
-                sqlStmt.setLong(1, channelId);
+                sqlStmt.setInt(1, channelId);
                 ResultSet rs = sqlStmt.executeQuery();
                 while (rs.next()) {
-                    Long postId = rs.getLong("post_id");
-                    Long postChannelId = rs.getLong("channel_id");
-                    Long sharedFromPostId = rs.getLong("shared_from_post_id");
+                    Integer postId = rs.getInt("post_id");
+                    Integer postChannelId = rs.getInt("channel_id");
+                    Integer sharedFromPostId = rs.getInt("shared_from_post_id");
                     Timestamp createdStamp = rs.getTimestamp("date_created_ts");
                     Post post = new Post(postId, postChannelId, sharedFromPostId, createdStamp);
                     posts.add(post);
@@ -139,27 +254,27 @@ public class PostEndpoint {
     }
 
     @ApiMethod(path="/getPagesInPost", httpMethod = "GET")
-    public final List<Page> getPagesInPost(@Named("post_id") final Long postId) {
+    public final List<Page> getPagesInPost(@Named("post_id") final Integer postId) {
         return null;
     }
 
     @ApiMethod(path="/getImagesInPage", httpMethod = "GET")
-    public final List<Image> getImagesInPage(@Named("page_id") final Long pageId) {
+    public final List<Image> getImagesInPage(@Named("page_id") final Integer pageId) {
         return null;
     }
 
     @ApiMethod(path="/getVideosInPage", httpMethod = "GET")
-    public final List<Video> getVideosInPage(@Named("page_id") final Long pageId) {
+    public final List<Video> getVideosInPage(@Named("page_id") final Integer pageId) {
         return null;
     }
 
     @ApiMethod(path="/getUsersWhoLikePost", httpMethod = "GET")
-    public final List<VerbatmUser> getUsersWhoLikePost(@Named("post_id") final Long postId) {
+    public final List<VerbatmUser> getUsersWhoLikePost(@Named("post_id") final Integer postId) {
         return null;
     }
 
     @ApiMethod(path="/getUsersWhoSharedPost", httpMethod = "GET")
-    public final List<VerbatmUser> getUsersWhoSharedPost(@Named("post_id") final Long postId) {
+    public final List<VerbatmUser> getUsersWhoSharedPost(@Named("post_id") final Integer postId) {
         return null;
     }
 
@@ -170,8 +285,8 @@ public class PostEndpoint {
      * @param liked
      */
     @ApiMethod(path="/userLikedPost", httpMethod = "PUT")
-    public final void userLikedPost(@Named("user_id") final Long userId,
-                                    @Named("post_id") final Long postId,
+    public final void userLikedPost(@Named("user_id") final Integer userId,
+                                    @Named("post_id") final Integer postId,
                                     @Named("liked") Boolean liked) {
 
     }
@@ -183,8 +298,8 @@ public class PostEndpoint {
      * @param shareType Facebook, Twitter, or channel name if reblogged
      */
     @ApiMethod(path="/userSharedPost", httpMethod = "PUT")
-    public final void userSharedPost(@Named("user_id") final Long userId,
-                                     @Named("post_id") final Long postId,
+    public final void userSharedPost(@Named("user_id") final Integer userId,
+                                     @Named("post_id") final Integer postId,
                                      @Named("share_type") final String shareType) {
 
     }

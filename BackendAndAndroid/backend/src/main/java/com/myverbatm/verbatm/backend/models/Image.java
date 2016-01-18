@@ -1,32 +1,25 @@
 package com.myverbatm.verbatm.backend.models;
 
-import com.googlecode.objectify.annotation.Entity;
-import com.googlecode.objectify.annotation.Id;
-import com.googlecode.objectify.annotation.Index;
-
 /**
- * Image entity used to represent an image
+ * Image entity, containing a url where the image is stored in the blobstore,
+ * its page number, its index in the page and text as well as text position
  */
-@Entity
 public class Image {
 
     /**
      * Unique identifier of this Page Entity in the database.
      */
-    @Id
-    private Long id;
+    private Integer id;
+
+    /**
+     * Stores which page in post this image belongs to
+     */
+    private Integer pageNum;
 
     /**
      * Stores the index of this image in the page
      */
-    @Index
     private Integer indexInPage;
-
-    /**
-     * The key of the user who uploaded this image
-     */
-    @Index
-    private Long userKey;
 
     /**
      * The serving url to access this image in the blobstore from ImagesService
@@ -47,15 +40,21 @@ public class Image {
      *
      * @return the unique identifier of this Entity.
      */
-    public final Long getId() {
+    public final Integer getId() {
         return id;
     }
 
-    /**
-     * Resets the Entity key to null.
-     */
-    public final void clearId() {
-        id = null;
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(Integer pageNum) {
+        this.pageNum = pageNum;
     }
 
     public Integer getIndexInPage() {
@@ -64,22 +63,6 @@ public class Image {
 
     public void setIndexInPage(Integer indexInPage) {
         this.indexInPage = indexInPage;
-    }
-
-    /**
-     * Gets the key of the user who uploaded this image
-     * @return the key of the user who uploaded this image
-     */
-    public final Long getUserKey() {
-        return userKey;
-    }
-
-    /**
-     * Sets the key of the user who uploaded this image
-     * @param userKey the key of the user who uploaded this image
-     */
-    public final void setUserKey(Long userKey) {
-        this.userKey = userKey;
     }
 
     /**

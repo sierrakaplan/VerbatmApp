@@ -8,15 +8,18 @@
 
 #import "PovInfo.h"
 #import <UIKit/UIKit.h>
+#import "Channel.h"
 
-@protocol LikeButtonDelegate <NSObject>
-
+@protocol POVViewDelegate <NSObject>
 // tells whether button was liked or unliked
 -(void) likeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo;
-
+-(void) shareOptionSelectedForPOVInfo: (PovInfo* ) pov;
 @end
 
 @interface POVView : UIView
+
+
+@property (nonatomic) id <POVViewDelegate> delegate;
 
 // stores pov info associated with this view
 -(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo;
@@ -26,7 +29,8 @@
 
 -(void) renderAVES: (NSMutableArray *) aves;
 
--(void) addCreatorName: (NSString*) creatorName andCreatorImage: (NSString*) creatorImageName andChannelName: (NSString*) channelName;
+-(void) addCreatorInfoFromChannel:(Channel *) channel;
+
 
 -(void) displayMediaOnCurrentAVE;
 -(void) clearArticle;
@@ -34,7 +38,7 @@
 // adds like button with delegate so that backend can be updated when the like
 // button is pressed, and passes the povID since the delegate
 // needs to pass this back
--(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate;
+//-(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate;
 
 //adds a down arrow to the cover photo
 -(void)addDownArrowButton;
@@ -49,4 +53,7 @@
 -(void) povOnScreen;
 -(void) povOffScreen;
 -(void)preparePOVToBePresented;
+
+//moves the 
+-(void) shiftLikeShareBarDown:(BOOL) down;
 @end

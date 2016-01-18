@@ -27,16 +27,18 @@
     [GTLQueryVerbatmApp class],
     [GTLVerbatmAppImage class],
     [GTLVerbatmAppImageCollection class],
+    [GTLVerbatmAppImageListWrapper class],
     [GTLVerbatmAppPage class],
     [GTLVerbatmAppPageCollection class],
+    [GTLVerbatmAppPageListWrapper class],
     [GTLVerbatmAppPost class],
     [GTLVerbatmAppPostCollection class],
     [GTLVerbatmAppTimestamp class],
-    [GTLVerbatmAppUploadURI class],
     [GTLVerbatmAppVerbatmUser class],
     [GTLVerbatmAppVerbatmUserCollection class],
     [GTLVerbatmAppVideo class],
-    [GTLVerbatmAppVideoCollection class]
+    [GTLVerbatmAppVideoCollection class],
+    [GTLVerbatmAppVideoListWrapper class]
   ];
   return classes;
 }

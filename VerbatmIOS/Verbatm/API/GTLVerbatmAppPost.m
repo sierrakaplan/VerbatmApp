@@ -13,11 +13,14 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLVerbatmAppPost (0 custom class methods, 4 custom properties)
+//   GTLVerbatmAppPost (0 custom class methods, 7 custom properties)
 
 #import "GTLVerbatmAppPost.h"
 
+#import "GTLVerbatmAppImageListWrapper.h"
+#import "GTLVerbatmAppPageListWrapper.h"
 #import "GTLVerbatmAppTimestamp.h"
+#import "GTLVerbatmAppVideoListWrapper.h"
 
 // ----------------------------------------------------------------------------
 //
@@ -25,7 +28,8 @@
 //
 
 @implementation GTLVerbatmAppPost
-@dynamic channelId, dateCreated, identifier, sharedFromPostId;
+@dynamic channelId, dateCreated, identifier, images, pages, sharedFromPostId,
+         videos;
 
 + (NSDictionary *)propertyToJSONKeyMap {
   NSDictionary *map = @{

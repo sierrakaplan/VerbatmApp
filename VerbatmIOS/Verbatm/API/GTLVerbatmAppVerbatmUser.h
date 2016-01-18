@@ -30,7 +30,7 @@
 @property (nonatomic, copy) NSString *email;
 
 // identifier property maps to 'id' in JSON (to avoid Objective C's 'id').
-@property (nonatomic, retain) NSNumber *identifier;  // longLongValue
+@property (nonatomic, retain) NSNumber *identifier;  // intValue
 
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *phoneNumber;

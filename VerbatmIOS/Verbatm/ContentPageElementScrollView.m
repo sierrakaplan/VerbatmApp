@@ -56,7 +56,9 @@
 	if (self) {
 		[self formatScrollView];
 		if(element)[self changePageElement:element];
-//        if([element isKindOfClass:[PinchView class]])[self createDeleteButton];
+        if([element isKindOfClass:[PinchView class]]){
+            [self createDeleteButton];
+        }
     }
     
 	return self;
