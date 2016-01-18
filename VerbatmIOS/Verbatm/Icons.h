@@ -33,7 +33,7 @@
 
 #pragma mark Bottom Nav
 
-#define ADK_NAV_ICON @"plus_sign_black"
+#define ADK_NAV_ICON @"simple_plus_icon"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
 

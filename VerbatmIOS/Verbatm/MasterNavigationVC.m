@@ -85,7 +85,7 @@
 
 
 #define DARK_GRAY 0.6f
-#define ADK_BUTTON_SIZE 60.f
+#define ADK_BUTTON_SIZE 40.f
 #define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
 
 #define CHANNEL_CREATION_VIEW_WALLOFFSET_X 30.f
@@ -143,12 +143,32 @@
 -(void) setUpTabBarController {
     [self createTabBarViewController];
     [self createViewControllers];
-    self.tabBarController.viewControllers = @[self.profileVC, [[UIViewController alloc] init], self.feedVC, self.channelListView];
+    
+    UIViewController * deadView = [[UIViewController alloc] init];
+    
+    UIImage * deadViewTabImage = [self imageWithImage:[[UIImage imageNamed:ADK_NAV_ICON]
+                                                       imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                                        scaledToSize:CGSizeMake(40.f, 40.f)];
+    
+    deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:nil];
+    deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+
+    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.channelListView];
     //add adk button to tab bar
-	[self addTabBarCenterButtonWithImage:[UIImage imageNamed:ADK_NAV_ICON]];
+	[self addTabBarCenterButtonOverDeadView];
     self.tabBarController.selectedViewController = self.profileVC;
 	[self formatTabBar];
 }
+
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 
 -(void) formatTabBar {
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
@@ -222,8 +242,8 @@
     self.tabBarController.delegate = self;
 }
 
-// Create a custom UIButton and add it to the center of our tab bar
--(void) addTabBarCenterButtonWithImage:(UIImage*)buttonImage {
+// Create a custom UIButton and add it over our adk icon
+-(void) addTabBarCenterButtonOverDeadView{
 
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	CGFloat tabWidth = self.tabBarController.tabBar.frame.size.width/numTabs;
@@ -234,11 +254,8 @@
 	[tabView setBackgroundColor:[UIColor clearColor]];
 
 	UIButton* button = [UIButton buttonWithType:UIButtonTypeCustom];
-	button.frame = CGRectMake(tabWidth + tabWidth/2.f - ADK_BUTTON_SIZE/2.f, 0.f,
-							  ADK_BUTTON_SIZE, ADK_BUTTON_SIZE);
+	button.frame = tabView.frame;
 	[button setBackgroundColor:[UIColor clearColor]];
-	[button.imageView setContentMode:UIViewContentModeScaleAspectFill];
-	[button setBackgroundImage:buttonImage forState:UIControlStateNormal];
 	[button addTarget:self action:@selector(revealADK) forControlEvents:UIControlEventTouchUpInside];
 
 	[self.tabBarController.tabBar addSubview:tabView];

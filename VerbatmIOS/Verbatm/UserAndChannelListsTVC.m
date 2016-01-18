@@ -38,6 +38,8 @@
     [self.tableView setSeparatorStyle:UITableViewCellSeparatorStyleNone];
     [self setTableViewHeader];
     self.tableView.allowsMultipleSelection = NO;
+    self.tableView.showsHorizontalScrollIndicator = NO;
+    self.tableView.showsVerticalScrollIndicator = NO;
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
