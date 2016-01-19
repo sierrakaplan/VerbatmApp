@@ -20,6 +20,7 @@
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
 #import "POVLoadManager.h"
+#import "PostListVC.h"
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -30,7 +31,9 @@
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate>
 
-@property (strong, nonatomic) POVScrollView* povScrollView;
+@property (strong, nonatomic) PostListVC * postListVC;
+@property (weak, nonatomic) IBOutlet UIView *postListContainer;
+
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
 @property (nonatomic) CGRect profileNavBarFrameOnScreen;
 @property (nonatomic) CGRect profileNavBarFrameOffScreen;
@@ -40,8 +43,6 @@
 @property (nonatomic, strong) NSString * currentThreadInView;
 
 @property (strong, nonatomic) NSArray* channels;
-
-
 
 @end
 
@@ -79,13 +80,8 @@
 
 -(void) viewWillAppear:(BOOL)animated{
     NSString * channel = ((Channel *)self.channels[0]).name;
-//    
-//    [[LocalPOVs sharedInstance] getPOVsFromChannel:channel].then(^(NSArray* povs) {
-//        [self.povScrollView displayPOVs: povs];
-//        [self.povScrollView playPOVOnScreen];
-//    });
-//    [self createContentListViewWithStartThread:testThreads[0]];
-	
+    //send information 
+
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -95,18 +91,23 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.povScrollView clearPOVs];
 }
 
 -(void) addPOVScrollView {
-	self.povScrollView = [[POVScrollView alloc] initWithFrame:self.view.bounds];
-    self.povScrollView.delegate = self;
-    self.povScrollView.customDelegate = self;
-	[self.view addSubview:self.povScrollView];
+    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    [flowLayout setMinimumInteritemSpacing:0.3];
+    [flowLayout setMinimumLineSpacing:0.0f];
+    [flowLayout setItemSize:self.view.frame.size];
+    self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+    
+    [self.postListContainer setFrame:self.view.bounds];
+    [self.postListContainer addSubview:self.postListVC.view];
+    [self.view addSubview:self.postListContainer];
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-	[self.povScrollView playPOVOnScreen];
+
 }
 
 -(void) createContentListViewWithStartThread:(NSString *)startThread{
@@ -135,9 +136,6 @@
     [self.view addSubview:self.profileNavBar];
 }
 
-
-
-
 -(void) updateUserInfo {
     self.currentUser = [[UserManager sharedInstance] getCurrentUser];
 }
@@ -145,18 +143,9 @@
 -(void)addClearScreenGesture{
     UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
     singleTap.numberOfTapsRequired = 1;
-    [self.povScrollView addGestureRecognizer:singleTap];
-    
-    
-    UITapGestureRecognizer * doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(likePOVOnScreen:)];
-    doubleTap.numberOfTapsRequired = 2;
-    [self.povScrollView addGestureRecognizer:doubleTap];
+    [self.view addGestureRecognizer:singleTap];
 }
 
-
--(void)likePOVOnScreen:(UITapGestureRecognizer *) tapGesture{
-    
-}
 
 
 #pragma mark -POV ScrollView custom delegate -
@@ -205,12 +194,8 @@
 
 -(void)newChannelSelectedWithName:(NSString *) channelName{
     if(![channelName isEqualToString:self.currentThreadInView]){
-		[self.povScrollView clearPOVs];
-		[[LocalPOVs sharedInstance] getPOVsFromChannel:channelName].then(^(NSArray* povs) {
-			[self.povScrollView displayPOVs: povs];
-			[self.povScrollView playPOVOnScreen];
-			povs = nil;
-		});
+        //TODO -- get content from new channel and present it
+    
     }
 }
 
@@ -224,24 +209,24 @@
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
 	if(self.contentCoveringScreen) {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-            [self.profileNavBar setFrame:[self getProfileNavBarFrameOfScreen:YES]];
+            [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:YES]];
 		}];
 		[self.delegate showTabBar:NO];
 		self.contentCoveringScreen = NO;
-        [self.povScrollView headerShowing:NO];
+        //[self.povScrollView headerShowing:NO];
 	} else {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileNavBar setFrame:[self getProfileNavBarFrameOfScreen:NO]];
+			[self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:NO]];
 		}];
 		[self.delegate showTabBar:YES];
 		self.contentCoveringScreen = YES;
-        [self.povScrollView headerShowing:YES];
+        //[self.povScrollView headerShowing:YES];
 
 	}
 }
 
 
--(CGRect)getProfileNavBarFrameOfScreen:(BOOL) getOffScreenFrame{
+-(CGRect)getProfileNavBarFrameOffScreen:(BOOL) getOffScreenFrame{
     
     if(getOffScreenFrame){
         return CGRectMake(0, -1 * self.profileNavBar.frame.size.height,

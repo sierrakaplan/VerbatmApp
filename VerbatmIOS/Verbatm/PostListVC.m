@@ -7,6 +7,7 @@
 //
 
 #import "PostListVC.h"
+#import "postHolderCollecitonRV.h"
 
 @interface PostListVC ()<UICollectionViewDelegate,UICollectionViewDataSource>
 
@@ -24,18 +25,16 @@
     self.collectionView.delegate = self;
     self.collectionView.pagingEnabled = YES;
     self.collectionView.scrollEnabled = YES;
-}
-
--(void)setAppropriateScrollDirection{
-    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    self.collectionView.showsHorizontalScrollIndicator = NO;
+    //register our custom cell class
+    [self.collectionView registerClass:[postHolderCollecitonRV class] forCellWithReuseIdentifier:POV_CELL_ID];
 }
 
 
 #pragma mark -DataSource-
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
-    return 0;//we only have one section
+    return 1;//we only have one section
 }
 
 
@@ -43,18 +42,10 @@
      numberOfItemsInSection:(NSInteger)section {
     //have some array that contains
     if(self.postList)return self.postList.count;
-    else return 0;
+    else return 10;
 }
 
 #pragma mark -ViewDelegate-
-
-- (CGSize)collectionView:(UICollectionView *)collectionView
-                  layout:(UICollectionViewLayout*)collectionViewLayout
-  sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    return self.view.frame.size;//the cell should take up the whole screen
-}
-
-
 - (BOOL)collectionView:(UICollectionView *)collectionView
 shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     return NO;//POVVs are not selectable
@@ -63,16 +54,16 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    postHolderCollecitonRV * nextCellToBePresented = (postHolderCollecitonRV *) [collectionView dequeueReusableCellWithReuseIdentifier:POV_CELL_ID forIndexPath:indexPath];
+    //TODO --sierra
+    //get the AVEs for this specific post and send them to be presented
+    //[nextCellToBePresented presentPages:<#(NSMutableArray *)#> startingAtIndex:0];
     
-    
-    UICollectionViewCell * nextCell = [collectionView dequeueReusableCellWithReuseIdentifier:POV_CELL_ID forIndexPath:indexPath];
-    
-    if(!nextCell){
-        
-    }
-    
-    
-    return nextCell;
+    //temp to test paging -- remove
+    if(indexPath.row%2)nextCellToBePresented.backgroundColor = [UIColor redColor];//temp
+    else nextCellToBePresented.backgroundColor = [UIColor blueColor];//temp
+
+    return nextCellToBePresented;
 }
 
 

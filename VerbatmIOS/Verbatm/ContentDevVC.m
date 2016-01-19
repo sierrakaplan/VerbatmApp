@@ -139,7 +139,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 #pragma mark - Preview -
 
-@property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
+@property (strong, nonatomic) PreviewDisplayView * previewDisplayView;
 
 #define CHANNEL_CREATION_PROMPT @"enter channel name"
 

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface postHolderCollecitonRV : UICollectionViewCell
-
+-(void)presentPages:(NSMutableArray *) aves startingAtIndex:(NSInteger) startIndex;
 @end

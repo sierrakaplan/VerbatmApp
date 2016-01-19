@@ -81,7 +81,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mmd-zC-fwh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3852" y="-373"/>
+            <point key="canvasLocation" x="-3776" y="-478"/>
         </scene>
         <!--Trending-->
         <scene sceneID="wyz-UI-MUa">
@@ -119,8 +119,17 @@
                     <view key="view" contentMode="scaleToFill" id="Clv-OZ-JXA">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="f57-j5-SlW">
+                                <rect key="frame" x="28" y="92" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                            </containerView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="postListContainerView" destination="f57-j5-SlW" id="JHp-ye-sdD"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V0g-tI-HpL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -378,9 +387,19 @@
                     <view key="view" contentMode="scaleToFill" id="yT8-e9-31R">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="KO1-LV-Cy2">
+                                <rect key="frame" x="70" y="292" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <segue destination="Ghb-hZ-Bpl" kind="embed" id="VL8-Yc-nKv"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="postListContainer" destination="KO1-LV-Cy2" id="t2t-5k-N3w"/>
                         <segue destination="bK1-Rd-hCA" kind="modal" identifier="presentSettingsPage" id="Iif-HD-h1B"/>
                     </connections>
                 </viewController>
@@ -401,6 +420,19 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o0d-Fd-4uJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-4128" y="-471"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="Bp6-TU-7aS">
+            <objects>
+                <viewController id="Ghb-hZ-Bpl" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dyc-Nj-zKW">
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="927-aE-JQX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
         </scene>
     </scenes>
     <resources>

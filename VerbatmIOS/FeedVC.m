@@ -7,12 +7,20 @@
 //
 
 #import "ArticleDisplayVC.h"
+
 #import "Durations.h"
-#import "Icons.h"
+
 #import "FeedVC.h"
-#import "Notifications.h"
+
+#import "Icons.h"
+
 #import "LocalPOVs.h"
+
+#import "Notifications.h"
+
+#import "PostListVC.h"
 #import "POVScrollView.h"
+
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
@@ -23,6 +31,11 @@
 @property (nonatomic) CGRect povScrollViewFrame;
 @property (strong, nonatomic) POVScrollView* povScrollView;
 
+@property (nonatomic) PostListVC * postListView;
+@property (weak, nonatomic) IBOutlet UIView *postListContainerView;
+
+
+
 #define TRENDING_VC_ID @"trending_vc"
 #define VERBATM_LOGO_WIDTH 150.f
 
@@ -32,17 +45,13 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    [self addPOVScrollView];
+    [self addPostListVC];
     [self addClearScreenGesture];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-//    [self createContentListView];
-//    [[LocalPOVs sharedInstance] getPOVsFromChannel:@"feed"].then(^(NSArray* povs) {
-//        [self.povScrollView displayPOVs: povs];
-//        [self.povScrollView playPOVOnScreen];
-//    });
+
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -54,14 +63,17 @@
     [self.povScrollView clearPOVs];
 }
 
--(void) addPOVScrollView {
-	self.povScrollViewFrame = CGRectMake(0.f, 0.f, self.view.bounds.size.width,
-										 self.view.bounds.size.height);// - HEADER_HEIGHT - 40.f);
-	self.povScrollView = [[POVScrollView alloc] initWithFrame: self.povScrollViewFrame];
-    self.povScrollView.delegate = self;
-    self.povScrollView.customDelegate = self;
-	self.povScrollView.feedScrollView = YES;
-    [self.view addSubview:self.povScrollView];
+-(void) addPostListVC {
+    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    [flowLayout setMinimumInteritemSpacing:0.3];
+    [flowLayout setMinimumLineSpacing:0.0f];
+    [flowLayout setItemSize:self.view.frame.size];
+    self.postListView = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+    
+    [self.postListContainerView setFrame:self.view.bounds];
+    [self.postListContainerView addSubview:self.postListView.view];
+    [self.view addSubview:self.postListContainerView];
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{

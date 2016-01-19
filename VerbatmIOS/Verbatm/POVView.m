@@ -76,14 +76,7 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self addSubview: self.mainScrollView];
-//		if(povInfo) { // if being used in feed
-//            self.povInfo = povInfo;
-//            self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
-//            if(povInfo)[self createPageLoader];
-//            self.activityIndicator = [self startActivityIndicatorOnViewWithCenter: CGPointMake(self.center.x, ACTIVITY_ANIMATION_Y)
-//                                                                         andStyle:UIActivityIndicatorViewStyleWhiteLarge];
-//            self.activityIndicator.color = [UIColor whiteColor];
-//        }
+        self.mainScrollView.backgroundColor = [UIColor blackColor];
     }
     return self;
 }
@@ -326,12 +319,6 @@
         [analyzer getAVEFromPage: page withFrame: self.bounds].then(^(UIView* ave) {
             NSInteger pageIndex = page.indexInPOV;
             // When first page loads, show down arrow
-            if (pageIndex == 0) {
-				//TODO: add like button and down arrows back
-//                [self addDownArrowButton];
-                
-                    //[self addLikeButtonWithDelegate:likeDelegate];
-            }
             [self renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
         }).catch(^(NSError* error) {
             NSLog(@"Error getting AVE from page: %@", error.description);
