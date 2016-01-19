@@ -172,7 +172,7 @@
 		C76172741C4C8B1300AB0D84 /* UserAndChannelListsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */; };
 		C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */ = {isa = PBXBuildFile; fileRef = C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */; };
 		C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727A1C4DFB7700AB0D84 /* PostListVC.m */; };
-		C761727F1C4E0EB600AB0D84 /* postHolderCollecitonRV.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727E1C4E0EB600AB0D84 /* postHolderCollecitonRV.m */; };
+		C761727F1C4E0EB600AB0D84 /* PostHolderCollecitonRV.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727E1C4E0EB600AB0D84 /* PostHolderCollecitonRV.m */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C777EEA01AC7F8B6003E0633 /* FeedTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */; };
 		C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C777EEAC1AD288A3003E0633 /* ArticleListVC.m */; };
@@ -554,8 +554,8 @@
 		C76172781C4CE80500AB0D84 /* StoryboardVCIdentifiers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StoryboardVCIdentifiers.h; sourceTree = "<group>"; };
 		C76172791C4DFB7700AB0D84 /* PostListVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostListVC.h; sourceTree = "<group>"; };
 		C761727A1C4DFB7700AB0D84 /* PostListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostListVC.m; sourceTree = "<group>"; };
-		C761727D1C4E0EB600AB0D84 /* postHolderCollecitonRV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = postHolderCollecitonRV.h; sourceTree = "<group>"; };
-		C761727E1C4E0EB600AB0D84 /* postHolderCollecitonRV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = postHolderCollecitonRV.m; sourceTree = "<group>"; };
+		C761727D1C4E0EB600AB0D84 /* PostHolderCollecitonRV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostHolderCollecitonRV.h; sourceTree = "<group>"; };
+		C761727E1C4E0EB600AB0D84 /* PostHolderCollecitonRV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostHolderCollecitonRV.m; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C777EE9E1AC7F8B6003E0633 /* FeedTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeedTableViewCell.h; sourceTree = "<group>"; };
 		C777EE9F1AC7F8B6003E0633 /* FeedTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeedTableViewCell.m; sourceTree = "<group>"; };
@@ -1261,8 +1261,8 @@
 		C761727C1C4E0E7700AB0D84 /* Collection CellViews */ = {
 			isa = PBXGroup;
 			children = (
-				C761727D1C4E0EB600AB0D84 /* postHolderCollecitonRV.h */,
-				C761727E1C4E0EB600AB0D84 /* postHolderCollecitonRV.m */,
+				C761727D1C4E0EB600AB0D84 /* PostHolderCollecitonRV.h */,
+				C761727E1C4E0EB600AB0D84 /* PostHolderCollecitonRV.m */,
 			);
 			name = "Collection CellViews";
 			sourceTree = "<group>";
@@ -1879,7 +1879,7 @@
 				A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
-				C761727F1C4E0EB600AB0D84 /* postHolderCollecitonRV.m in Sources */,
+				C761727F1C4E0EB600AB0D84 /* PostHolderCollecitonRV.m in Sources */,
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
 				C74E1D711C091F8F00ABD41D /* VideoManager.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,

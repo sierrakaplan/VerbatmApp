@@ -7,7 +7,7 @@
 //
 
 #import "PostListVC.h"
-#import "postHolderCollecitonRV.h"
+#import "PostHolderCollecitonRV.h"
 
 @interface PostListVC ()<UICollectionViewDelegate,UICollectionViewDataSource>
 
@@ -27,7 +27,7 @@
     self.collectionView.scrollEnabled = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
     //register our custom cell class
-    [self.collectionView registerClass:[postHolderCollecitonRV class] forCellWithReuseIdentifier:POV_CELL_ID];
+    [self.collectionView registerClass:[PostHolderCollecitonRV class] forCellWithReuseIdentifier:POV_CELL_ID];
 }
 
 
@@ -54,7 +54,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    postHolderCollecitonRV * nextCellToBePresented = (postHolderCollecitonRV *) [collectionView dequeueReusableCellWithReuseIdentifier:POV_CELL_ID forIndexPath:indexPath];
+    PostHolderCollecitonRV * nextCellToBePresented = (PostHolderCollecitonRV *) [collectionView dequeueReusableCellWithReuseIdentifier:POV_CELL_ID forIndexPath:indexPath];
     //TODO --sierra
     //get the AVEs for this specific post and send them to be presented
     //[nextCellToBePresented presentPages:<#(NSMutableArray *)#> startingAtIndex:0];
