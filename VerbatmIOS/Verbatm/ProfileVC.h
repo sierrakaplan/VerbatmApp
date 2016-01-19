@@ -25,6 +25,8 @@
 
 @property (strong, nonatomic) id<ProfileVCDelegate> delegate;
 @property (nonatomic) BOOL isCurrentUserProfile;//let us know if this is the profile of the logged in user
+@property (nonatomic) id userIdToPresent;//get this users information
+
 -(void) updateUserInfo;
 -(void) offScreen;//told when it's off screen to stop videos
 -(void)onScreen;

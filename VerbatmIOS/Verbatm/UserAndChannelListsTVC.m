@@ -9,9 +9,11 @@
 #import "Channel.h"
 #import "ChannelOrUsernameCV.h"
 #import "CustomNavigationBar.h"
+#import "ProfileVC.h"
 
 #import "Styles.h"
 #import "SizesAndPositions.h"
+#import "StoryboardVCIdentifiers.h"
 
 #import "UserAndChannelListsTVC.h"
 
@@ -29,6 +31,8 @@
 @property (nonatomic) BOOL isLikeInformation;//if it is set at no then  it's share information
 
 @property (nonatomic) id userInfoOnDisplay;//the user whose data we are displaying
+
+@property (nonatomic) BOOL isInTheTabBar;
 
 #define CHANNEL_CELL_ID @"channel_cell_id"
 @end
@@ -69,7 +73,18 @@
         [self.listDelegate openChannel:channel];
     }else { //it's a user
         id userId = nil;//get userid
-        [self.listDelegate selectedUser:userId];
+        //[self.listDelegate selectedUser:userId];
+        
+        
+        ProfileVC *  userProfile = [[ProfileVC alloc] init];
+        //userProfile.delegate = self;
+        userProfile.isCurrentUserProfile = NO;
+        
+        [self presentViewController:userProfile animated:YES completion:^{
+            
+        }];
+        
+        
     }
 }
 
@@ -92,7 +107,7 @@
 
 //show which users are being followed by userId
 -(void)presentWhoIsFollowedBy:(id)userId {
-    [self presentAllVerbatmChannels];
+    [self setTempUserNumbers];
     //TO-DO
     //Start to download a list of users who follow this particular user then reload the table
     
@@ -100,12 +115,17 @@
 
 //presents every channel in verbatm
 -(void)presentAllVerbatmChannels{
+    self.isInTheTabBar = YES;
+    [self setTempUserNumbers];
+
+}
+
+-(void)setTempUserNumbers{
     ///temp
     self.usersToDisplay = [[NSMutableArray alloc] init];
     for(int i = 0; i < 20 ; i ++){
         [self.usersToDisplay addObject:@"Iain Usiri"];
     }
-
 }
 
 
@@ -114,7 +134,7 @@
 -(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {
     self.userInfoOnDisplay = userId;
     self.shouldDisplayFollowers = displayFollowers;
-    [self presentAllVerbatmChannels];
+    [self setTempUserNumbers];
     //TO-DO
     //if(user == current logged in usere){
     //get logged in user channels and save them in our array
@@ -125,20 +145,22 @@
 
 
 -(void)setTableViewHeader{
-//    //It can be Verbatm channels
-//    UILabel * titleLabel = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
-//    [self.view addSubview:titleLabel];
-//    [self.view bringSubviewToFront:titleLabel];
-//    
-//    
-    CGRect navBarFrame = CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
-    self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:ADK_NAV_BAR_COLOR];
-    [self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
-    self.navBar.delegate = self;
-    //it can be a navigation bar that lets us go back
-    
-    [self.view addSubview:self.navBar];
-    [self.view bringSubviewToFront:self.navBar];
+    if(self.isInTheTabBar){
+        //it's in the tab bar list and it should have a title
+        UILabel * titleLabel = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
+        [self.view addSubview:titleLabel];
+        [self.view bringSubviewToFront:titleLabel];
+    }else {
+        //temporary list view and should be removable
+        CGRect navBarFrame = CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
+        self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:ADK_NAV_BAR_COLOR];
+        [self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
+        self.navBar.delegate = self;
+        //it can be a navigation bar that lets us go back
+        
+        [self.view addSubview:self.navBar];
+        [self.view bringSubviewToFront:self.navBar];
+    }
     
 }
 
