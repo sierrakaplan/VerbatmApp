@@ -72,9 +72,8 @@
         Channel * channel;//get channel
         [self.listDelegate openChannel:channel];
     }else { //it's a user
-        id userId = nil;//get userid
+        //id userId = nil;//get userid
         //[self.listDelegate selectedUser:userId];
-        
         
         ProfileVC *  userProfile = [[ProfileVC alloc] init];
         //userProfile.delegate = self;

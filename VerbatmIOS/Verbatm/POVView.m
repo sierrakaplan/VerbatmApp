@@ -76,14 +76,14 @@
     self = [super initWithFrame:frame];
     if (self) {
         [self addSubview: self.mainScrollView];
-		if(povInfo) { // if being used in feed
-            self.povInfo = povInfo;
-            self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
-            if(povInfo)[self createPageLoader];
-            self.activityIndicator = [self startActivityIndicatorOnViewWithCenter: CGPointMake(self.center.x, ACTIVITY_ANIMATION_Y)
-                                                                         andStyle:UIActivityIndicatorViewStyleWhiteLarge];
-            self.activityIndicator.color = [UIColor whiteColor];
-        }
+//		if(povInfo) { // if being used in feed
+//            self.povInfo = povInfo;
+//            self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
+//            if(povInfo)[self createPageLoader];
+//            self.activityIndicator = [self startActivityIndicatorOnViewWithCenter: CGPointMake(self.center.x, ACTIVITY_ANIMATION_Y)
+//                                                                         andStyle:UIActivityIndicatorViewStyleWhiteLarge];
+//            self.activityIndicator.color = [UIColor whiteColor];
+//        }
     }
     return self;
 }
