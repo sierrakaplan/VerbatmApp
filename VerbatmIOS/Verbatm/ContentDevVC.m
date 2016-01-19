@@ -1860,6 +1860,7 @@ rowHeightForComponent:(NSInteger)component{
             [self alertAddChannelTitle];
         }else{
             channelTitle = textField.text;
+            //create channel
         }
     }
     //Sierra TODO - publish post

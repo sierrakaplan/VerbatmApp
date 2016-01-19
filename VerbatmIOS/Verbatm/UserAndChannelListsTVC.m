@@ -8,13 +8,17 @@
 
 #import "Channel.h"
 #import "ChannelOrUsernameCV.h"
+#import "CustomNavigationBar.h"
 
 #import "Styles.h"
 #import "SizesAndPositions.h"
 
 #import "UserAndChannelListsTVC.h"
 
-@interface UserAndChannelListsTVC ()
+@interface UserAndChannelListsTVC ()<CustomNavigationBarDelegate>
+
+@property (nonatomic) CustomNavigationBar * navBar;
+
 @property (nonatomic) NSMutableArray * channelsToDisplay;
 
 @property (nonatomic) NSMutableArray * usersToDisplay;//catch all array -- can be used for any of the usecases to store a list of users
@@ -121,16 +125,29 @@
 
 
 -(void)setTableViewHeader{
-    //It can be Verbatm channels
-    
-    
-    UILabel * titleLabel = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
-    [self.view addSubview:titleLabel];
-    [self.view bringSubviewToFront:titleLabel];
-    
+//    //It can be Verbatm channels
+//    UILabel * titleLabel = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
+//    [self.view addSubview:titleLabel];
+//    [self.view bringSubviewToFront:titleLabel];
+//    
+//    
+    CGRect navBarFrame = CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
+    self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:ADK_NAV_BAR_COLOR];
+    [self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
+    self.navBar.delegate = self;
     //it can be a navigation bar that lets us go back
+    
+    [self.view addSubview:self.navBar];
+    [self.view bringSubviewToFront:self.navBar];
+    
 }
 
+//user wants to exit
+-(void) leftButtonPressed{
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
+        //nothing to execute
+    }];
+}
 
 -(UILabel *) getHeaderTitleForViewWithText:(NSString *) text{
     
@@ -182,10 +199,8 @@
         cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CHANNEL_CELL_ID isChannel:YES isAChannelThatIFollow:NO];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
-    
     [cell setCellTextTitle:@"Iain Usiri"];
     return cell;
-
 }
 
 
