@@ -26,6 +26,7 @@
     self.collectionView.pagingEnabled = YES;
     self.collectionView.scrollEnabled = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
+    self.collectionView.bounces = NO;
     //register our custom cell class
     [self.collectionView registerClass:[PostHolderCollecitonRV class] forCellWithReuseIdentifier:POV_CELL_ID];
 }
