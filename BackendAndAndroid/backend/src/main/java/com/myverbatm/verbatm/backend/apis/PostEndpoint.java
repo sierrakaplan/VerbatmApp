@@ -5,11 +5,14 @@ import com.google.api.server.spi.config.ApiClass;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
 import com.google.api.server.spi.config.Named;
+import com.google.appengine.api.blobstore.BlobstoreService;
+import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.utils.SystemProperty;
 import com.myverbatm.verbatm.backend.Constants;
 import com.myverbatm.verbatm.backend.models.Image;
 import com.myverbatm.verbatm.backend.models.Page;
 import com.myverbatm.verbatm.backend.models.Post;
+import com.myverbatm.verbatm.backend.models.UploadURI;
 import com.myverbatm.verbatm.backend.models.VerbatmUser;
 import com.myverbatm.verbatm.backend.models.Video;
 
@@ -53,6 +56,8 @@ public class PostEndpoint {
      */
     private static final Logger log =
         Logger.getLogger(PostEndpoint.class.getName());
+
+    private final BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
     public PostEndpoint() {
     }
@@ -196,6 +201,30 @@ public class PostEndpoint {
             }
         }
         return post;
+    }
+
+    /**
+     * Creates an upload uri for an image from the blobstore and returns it
+     * @return The upload uri string from the blobstore for an image
+     */
+    @ApiMethod(path="/getImageUploadURI", httpMethod = "GET")
+    public final UploadURI getImageUploadURI() {
+        //Pass the success path (relative url that will be invoked after user
+        // successfully uploads a blob)
+        String uploadURIString = blobstoreService.createUploadUrl("/uploadImage");
+        return new UploadURI(uploadURIString);
+    }
+
+    /**
+     * Creates an upload uri for a video from the blobstore and returns it
+     * @return The upload uri string from the blobstore for a video
+     */
+    @ApiMethod(path="/getVideoUploadURI", httpMethod = "GET")
+    public final UploadURI getVideoUploadURI() {
+        //Pass the success path (relative url that will be invoked after user
+        // successfully uploads a blob)
+        String uploadURIString = blobstoreService.createUploadUrl("/uploadVideo");
+        return new UploadURI(uploadURIString);
     }
 
     @ApiMethod(path="/getRecentPosts", httpMethod = "GET")

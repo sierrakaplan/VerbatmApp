@@ -8,13 +8,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PovInfo.h"
 #import "POVLoadManager.h"
 @class POVLoadManager;
 
 @protocol ArticleDisplayVCDelegate <NSObject>
 
--(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo;
+//TODO
+//-(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo;
 
 @end
 
@@ -23,7 +23,8 @@
 @property (strong, nonatomic) id<ArticleDisplayVCDelegate> delegate;
 
 //tells the article display what content to present
--(void) presentContentWithPOVType: (POVType) povType andChannel:(NSString *) channel;
+//TODO
+//-(void) presentContentWithPOVType: (POVType) povType andChannel:(NSString *) channel;
 
 //Removes any content loaded (reverses loadStory)
 -(void) cleanUp;

@@ -35,6 +35,7 @@
     [GTLVerbatmAppPost class],
     [GTLVerbatmAppPostCollection class],
     [GTLVerbatmAppTimestamp class],
+    [GTLVerbatmAppUploadURI class],
     [GTLVerbatmAppVerbatmUser class],
     [GTLVerbatmAppVerbatmUserCollection class],
     [GTLVerbatmAppVideo class],

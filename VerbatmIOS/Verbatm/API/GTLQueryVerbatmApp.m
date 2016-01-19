@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (16 custom class methods, 10 custom properties)
+//   GTLQueryVerbatmApp (18 custom class methods, 10 custom properties)
 
 #import "GTLQueryVerbatmApp.h"
 
@@ -22,6 +22,7 @@
 #import "GTLVerbatmAppPageCollection.h"
 #import "GTLVerbatmAppPost.h"
 #import "GTLVerbatmAppPostCollection.h"
+#import "GTLVerbatmAppUploadURI.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppVerbatmUserCollection.h"
 #import "GTLVerbatmAppVideoCollection.h"
@@ -66,6 +67,13 @@
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.pageId = pageId;
   query.expectedObjectClass = [GTLVerbatmAppImageCollection class];
+  return query;
+}
+
++ (instancetype)queryForPostGetImageUploadURI {
+  NSString *methodName = @"verbatmApp.post.getImageUploadURI";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.expectedObjectClass = [GTLVerbatmAppUploadURI class];
   return query;
 }
 
@@ -114,6 +122,13 @@
   GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
   query.pageId = pageId;
   query.expectedObjectClass = [GTLVerbatmAppVideoCollection class];
+  return query;
+}
+
++ (instancetype)queryForPostGetVideoUploadURI {
+  NSString *methodName = @"verbatmApp.post.getVideoUploadURI";
+  GTLQueryVerbatmApp *query = [self queryWithMethodName:methodName];
+  query.expectedObjectClass = [GTLVerbatmAppUploadURI class];
   return query;
 }
 

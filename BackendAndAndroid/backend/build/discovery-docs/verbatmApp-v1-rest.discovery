@@ -1,6 +1,6 @@
 {
  "kind": "discovery#restDescription",
- "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/4saSoajh_9Ys-rrM_O1a_heRyws\"",
+ "etag": "\"u_zXkMELIlX4ktyNbM2XKD4vK8E/h36Q0RygQ2JC42q-6TepD160Kgs\"",
  "discoveryVersion": "v1",
  "id": "verbatmApp:v1",
  "name": "verbatmApp",
@@ -272,6 +272,15 @@
     }
    }
   },
+  "UploadURI": {
+   "id": "UploadURI",
+   "type": "object",
+   "properties": {
+    "uploadURIString": {
+     "type": "string"
+    }
+   }
+  },
   "VerbatmUser": {
    "id": "VerbatmUser",
    "type": "object",
@@ -381,6 +390,17 @@
   },
   "post": {
    "methods": {
+    "getImageUploadURI": {
+     "id": "verbatmApp.post.getImageUploadURI",
+     "path": "getImageUploadURI",
+     "httpMethod": "GET",
+     "response": {
+      "$ref": "UploadURI"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+     ]
+    },
     "getImagesInPage": {
      "id": "verbatmApp.post.getImagesInPage",
      "path": "getImagesInPage",
@@ -508,6 +528,17 @@
      ],
      "response": {
       "$ref": "VerbatmUserCollection"
+     },
+     "scopes": [
+      "https://www.googleapis.com/auth/userinfo.email"
+     ]
+    },
+    "getVideoUploadURI": {
+     "id": "verbatmApp.post.getVideoUploadURI",
+     "path": "getVideoUploadURI",
+     "httpMethod": "GET",
+     "response": {
+      "$ref": "UploadURI"
      },
      "scopes": [
       "https://www.googleapis.com/auth/userinfo.email"

@@ -479,71 +479,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "102"
             endingLineNumber = "102"
-            landmarkName = "-publish"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVPublisher.m"
-            timestampString = "470780636.315873"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "141"
-            endingLineNumber = "141"
-            landmarkName = "-storePageFromPinchView:withIndex:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVPublisher.m"
-            timestampString = "470780636.315873"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
-            landmarkName = "-storePageFromPinchView:withIndex:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVPublisher.m"
-            timestampString = "470780636.315873"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "260"
-            endingLineNumber = "260"
-            landmarkName = "-storeImage:withIndex:andText:andYPosition:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVPublisher.m"
-            timestampString = "470780636.315873"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "267"
-            endingLineNumber = "267"
-            landmarkName = "-storeImage:withIndex:andText:andYPosition:"
+            landmarkName = "-publishFromPinchViews"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -640,38 +576,6 @@
             startingLineNumber = "98"
             endingLineNumber = "98"
             landmarkName = "-getUIImagesFromPage:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVPublisher.m"
-            timestampString = "470780636.315873"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "269"
-            endingLineNumber = "269"
-            landmarkName = "-storeImage:withIndex:andText:andYPosition:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVPublisher.m"
-            timestampString = "470780636.315873"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "270"
-            endingLineNumber = "270"
-            landmarkName = "-storeImage:withIndex:andText:andYPosition:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -953,22 +857,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVLoadManager.m"
-            timestampString = "474776755.742711"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "257"
-            endingLineNumber = "257"
-            landmarkName = "-currentUserLiked:povInfo:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Verbatm/UpdatingPOVManager.m"
             timestampString = "467078963.13591"
             startingColumnNumber = "9223372036854775807"
@@ -976,22 +864,6 @@
             startingLineNumber = "55"
             endingLineNumber = "55"
             landmarkName = "-povWithId:wasLiked:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVLoadManager.m"
-            timestampString = "474776755.742711"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "258"
-            endingLineNumber = "258"
-            landmarkName = "-currentUserLiked:povInfo:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1145,7 +1017,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "163"
             endingLineNumber = "163"
-            landmarkName = "-storeImagesFromPinchView:"
+            landmarkName = "-storeImagesFromPinchView:withPageNum:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1161,7 +1033,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "200"
             endingLineNumber = "200"
-            landmarkName = "-storeVideosFromPinchView:"
+            landmarkName = "-storeVideosFromPinchView:withPageNum:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2541,8 +2413,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "47"
             endingLineNumber = "47"
-            landmarkName = "-createProfileHeaderWithUserName:"
-            landmarkType = "5">
+            landmarkName = "@interface ProfileNavBar()"
+            landmarkType = "2">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2925,7 +2797,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "67"
             endingLineNumber = "67"
-            landmarkName = "-tabPressedWithTitle:"
+            landmarkName = "-createFollowersInfoView"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3470,22 +3342,6 @@
             startingLineNumber = "168"
             endingLineNumber = "168"
             landmarkName = "-observeValueForKeyPath:ofObject:change:context:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVLoadManager.m"
-            timestampString = "474776304.70225"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "73"
-            endingLineNumber = "73"
-            landmarkName = "-loadRecentPosts"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

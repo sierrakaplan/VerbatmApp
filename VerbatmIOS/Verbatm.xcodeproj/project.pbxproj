@@ -34,7 +34,6 @@
 		A560EF981BA88B44003FB041 /* PagesLoadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EF971BA88B44003FB041 /* PagesLoadManager.m */; };
 		A560EF9D1BA895A2003FB041 /* Page.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EF9C1BA895A2003FB041 /* Page.m */; };
 		A560EFA21BAA006B003FB041 /* UpdatingPOVManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA11BAA006B003FB041 /* UpdatingPOVManager.m */; };
-		A560EFA51BAB33B8003FB041 /* PovInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFA41BAB33B8003FB041 /* PovInfo.m */; };
 		A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFB41BB0AF64003FB041 /* CreateAccountView.m */; };
 		A560EFB81BB0AF70003FB041 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFB71BB0AF70003FB041 /* LoginView.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
@@ -53,7 +52,6 @@
 		A58EE8861BA8771700B7B396 /* NoAnimationUnwindSegue.m in Sources */ = {isa = PBXBuildFile; fileRef = A58EE8851BA8771700B7B396 /* NoAnimationUnwindSegue.m */; };
 		A5934B8F1C0FDFD6007C7830 /* VerbatmScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934B8E1C0FDFD6007C7830 /* VerbatmScrollView.m */; };
 		A5934B921C0FE041007C7830 /* ButtonScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934B911C0FE041007C7830 /* ButtonScrollView.m */; };
-		A5934B951C0FEBCE007C7830 /* POV.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934B941C0FEBCE007C7830 /* POV.m */; };
 		A5934B981C0FF067007C7830 /* POVScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934B971C0FF067007C7830 /* POVScrollView.m */; };
 		A5934B9B1C10E2A3007C7830 /* CustomScrollingTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934B9A1C10E2A3007C7830 /* CustomScrollingTabBar.m */; };
 		A5934B9E1C10E4C8007C7830 /* CustomTab.m in Sources */ = {isa = PBXBuildFile; fileRef = A5934B9D1C10E4C8007C7830 /* CustomTab.m */; };
@@ -100,6 +98,8 @@
 		A5DDD2451C4C849A000193BA /* GTLVerbatmAppVerbatmUserCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DDD23F1C4C849A000193BA /* GTLVerbatmAppVerbatmUserCollection.m */; };
 		A5DDD2461C4C849A000193BA /* GTLVerbatmAppVideoCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DDD2411C4C849A000193BA /* GTLVerbatmAppVideoCollection.m */; };
 		A5DDD2491C4D735B000193BA /* GTLVerbatmAppChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DDD2481C4D735B000193BA /* GTLVerbatmAppChannel.m */; };
+		A5DDD24C1C4DEDDE000193BA /* GTLVerbatmAppImageListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DDD24B1C4DEDDE000193BA /* GTLVerbatmAppImageListWrapper.m */; };
+		A5DDD24F1C4DEDE7000193BA /* GTLVerbatmAppVideoListWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = A5DDD24E1C4DEDE7000193BA /* GTLVerbatmAppVideoListWrapper.m */; };
 		A5E3CDA81B881B0C0065C8E5 /* FacebookSDKStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */; };
 		A5E3CDA91B881B0C0065C8E5 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5E3CDA61B881B0C0065C8E5 /* FBSDKCoreKit.framework */; };
 		A5E3CDAA1B881B0C0065C8E5 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5E3CDA71B881B0C0065C8E5 /* FBSDKShareKit.framework */; };
@@ -306,8 +306,6 @@
 		A560EF9C1BA895A2003FB041 /* Page.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page.m; sourceTree = "<group>"; };
 		A560EFA01BAA006B003FB041 /* UpdatingPOVManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdatingPOVManager.h; sourceTree = "<group>"; };
 		A560EFA11BAA006B003FB041 /* UpdatingPOVManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdatingPOVManager.m; sourceTree = "<group>"; };
-		A560EFA31BAB33B8003FB041 /* PovInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PovInfo.h; sourceTree = "<group>"; };
-		A560EFA41BAB33B8003FB041 /* PovInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PovInfo.m; sourceTree = "<group>"; };
 		A560EFB31BB0AF64003FB041 /* CreateAccountView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CreateAccountView.h; sourceTree = "<group>"; };
 		A560EFB41BB0AF64003FB041 /* CreateAccountView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CreateAccountView.m; sourceTree = "<group>"; };
 		A560EFB61BB0AF70003FB041 /* LoginView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginView.h; sourceTree = "<group>"; };
@@ -343,8 +341,6 @@
 		A5934B8E1C0FDFD6007C7830 /* VerbatmScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmScrollView.m; sourceTree = "<group>"; };
 		A5934B901C0FE041007C7830 /* ButtonScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ButtonScrollView.h; sourceTree = "<group>"; };
 		A5934B911C0FE041007C7830 /* ButtonScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ButtonScrollView.m; sourceTree = "<group>"; };
-		A5934B931C0FEBCE007C7830 /* POV.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POV.h; sourceTree = "<group>"; };
-		A5934B941C0FEBCE007C7830 /* POV.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POV.m; sourceTree = "<group>"; };
 		A5934B961C0FF067007C7830 /* POVScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = POVScrollView.h; sourceTree = "<group>"; };
 		A5934B971C0FF067007C7830 /* POVScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POVScrollView.m; sourceTree = "<group>"; };
 		A5934B991C10E2A3007C7830 /* CustomScrollingTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomScrollingTabBar.h; sourceTree = "<group>"; };
@@ -434,6 +430,10 @@
 		A5DDD2411C4C849A000193BA /* GTLVerbatmAppVideoCollection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVideoCollection.m; path = API/GTLVerbatmAppVideoCollection.m; sourceTree = "<group>"; };
 		A5DDD2471C4D735B000193BA /* GTLVerbatmAppChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppChannel.h; path = API/GTLVerbatmAppChannel.h; sourceTree = "<group>"; };
 		A5DDD2481C4D735B000193BA /* GTLVerbatmAppChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppChannel.m; path = API/GTLVerbatmAppChannel.m; sourceTree = "<group>"; };
+		A5DDD24A1C4DEDDE000193BA /* GTLVerbatmAppImageListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppImageListWrapper.h; path = API/GTLVerbatmAppImageListWrapper.h; sourceTree = "<group>"; };
+		A5DDD24B1C4DEDDE000193BA /* GTLVerbatmAppImageListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppImageListWrapper.m; path = API/GTLVerbatmAppImageListWrapper.m; sourceTree = "<group>"; };
+		A5DDD24D1C4DEDE7000193BA /* GTLVerbatmAppVideoListWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppVideoListWrapper.h; path = API/GTLVerbatmAppVideoListWrapper.h; sourceTree = "<group>"; };
+		A5DDD24E1C4DEDE7000193BA /* GTLVerbatmAppVideoListWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppVideoListWrapper.m; path = API/GTLVerbatmAppVideoListWrapper.m; sourceTree = "<group>"; };
 		A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKStrings.bundle; sourceTree = "<group>"; };
 		A5E3CDA61B881B0C0065C8E5 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKCoreKit.framework; sourceTree = "<group>"; };
 		A5E3CDA71B881B0C0065C8E5 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = FBSDKShareKit.framework; sourceTree = "<group>"; };
@@ -722,8 +722,6 @@
 		A560EF9A1BA89552003FB041 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				A5934B931C0FEBCE007C7830 /* POV.h */,
-				A5934B941C0FEBCE007C7830 /* POV.m */,
 				A5AA31A41B9FCDDC00D8D20C /* GTLVerbatmAppImage.h */,
 				A5AA31A51B9FCDDC00D8D20C /* GTLVerbatmAppImage.m */,
 				A5DDD2471C4D735B000193BA /* GTLVerbatmAppChannel.h */,
@@ -734,12 +732,16 @@
 				A5AA31CB1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m */,
 				A5DDD2381C4C849A000193BA /* GTLVerbatmAppImageCollection.h */,
 				A5DDD2391C4C849A000193BA /* GTLVerbatmAppImageCollection.m */,
+				A5DDD24A1C4DEDDE000193BA /* GTLVerbatmAppImageListWrapper.h */,
+				A5DDD24B1C4DEDDE000193BA /* GTLVerbatmAppImageListWrapper.m */,
 				A5DDD23A1C4C849A000193BA /* GTLVerbatmAppPageCollection.h */,
 				A5DDD23B1C4C849A000193BA /* GTLVerbatmAppPageCollection.m */,
 				A5DDD23C1C4C849A000193BA /* GTLVerbatmAppTimestamp.h */,
 				A5DDD23D1C4C849A000193BA /* GTLVerbatmAppTimestamp.m */,
 				A5DDD23E1C4C849A000193BA /* GTLVerbatmAppVerbatmUserCollection.h */,
 				A5DDD23F1C4C849A000193BA /* GTLVerbatmAppVerbatmUserCollection.m */,
+				A5DDD24D1C4DEDE7000193BA /* GTLVerbatmAppVideoListWrapper.h */,
+				A5DDD24E1C4DEDE7000193BA /* GTLVerbatmAppVideoListWrapper.m */,
 				A5DDD2401C4C849A000193BA /* GTLVerbatmAppVideoCollection.h */,
 				A5DDD2411C4C849A000193BA /* GTLVerbatmAppVideoCollection.m */,
 				A5DDD2321C4C82C6000193BA /* GTLVerbatmAppPost.h */,
@@ -754,8 +756,6 @@
 				A5C9DA371BA551DF0055DCB2 /* GTLVerbatmAppUploadURI.m */,
 				A560EF9B1BA895A2003FB041 /* Page.h */,
 				A560EF9C1BA895A2003FB041 /* Page.m */,
-				A560EFA31BAB33B8003FB041 /* PovInfo.h */,
-				A560EFA41BAB33B8003FB041 /* PovInfo.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1775,6 +1775,7 @@
 				A5AA31C91B9FCDDC00D8D20C /* GTLVerbatmAppVideo.m in Sources */,
 				A51A52F61BD6B8AB0048E62A /* MediaDownloader.m in Sources */,
 				A5AA31C81B9FCDDC00D8D20C /* GTLVerbatmAppVerbatmUser.m in Sources */,
+				A5DDD24C1C4DEDDE000193BA /* GTLVerbatmAppImageListWrapper.m in Sources */,
 				A5E85FA51B911DA900E148D0 /* GTMHTTPFetcherService.m in Sources */,
 				C7E093EC1BF98BE200A3276A /* OpenCollectionView.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
@@ -1805,7 +1806,6 @@
 				A535E5061BC44BF100A087D1 /* UIScrollView+Effects.m in Sources */,
 				A58656651B607EF7008E358C /* VerbatmImageScrollView.m in Sources */,
 				A5934B981C0FF067007C7830 /* POVScrollView.m in Sources */,
-				A5934B951C0FEBCE007C7830 /* POV.m in Sources */,
 				A560EF981BA88B44003FB041 /* PagesLoadManager.m in Sources */,
 				C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */,
 				A560EF9D1BA895A2003FB041 /* Page.m in Sources */,
@@ -1868,7 +1868,6 @@
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
 				A5076D081BE99A6300303746 /* UserDraftsVC.m in Sources */,
-				A560EFA51BAB33B8003FB041 /* PovInfo.m in Sources */,
 				A5DDD2431C4C849A000193BA /* GTLVerbatmAppPageCollection.m in Sources */,
 				A5E85F9F1B911DA900E148D0 /* GTLErrorObject.m in Sources */,
 				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
@@ -1877,6 +1876,7 @@
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
+				A5DDD24F1C4DEDE7000193BA /* GTLVerbatmAppVideoListWrapper.m in Sources */,
 				A5DDD2491C4D735B000193BA /* GTLVerbatmAppChannel.m in Sources */,
 				C74E1D711C091F8F00ABD41D /* VideoManager.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,

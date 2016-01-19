@@ -28,6 +28,7 @@
 #import "GTLVerbatmAppPost.m"
 #import "GTLVerbatmAppPostCollection.m"
 #import "GTLVerbatmAppTimestamp.m"
+#import "GTLVerbatmAppUploadURI.m"
 #import "GTLVerbatmAppVerbatmUser.m"
 #import "GTLVerbatmAppVerbatmUserCollection.m"
 #import "GTLVerbatmAppVideo.m"

@@ -19,7 +19,6 @@
 #import "Icons.h"
 
 #import "ProfileNavBar.h"
-#import "ProfileInformationBar.h"
 
 #import "SizesAndPositions.h"
 #import "Styles.h"

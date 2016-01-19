@@ -13,7 +13,7 @@
 // Description:
 //   This is an API
 // Classes:
-//   GTLQueryVerbatmApp (16 custom class methods, 10 custom properties)
+//   GTLQueryVerbatmApp (18 custom class methods, 10 custom properties)
 
 #if GTL_BUILT_AS_FRAMEWORK
   #import "GTL/GTLQuery.h"
@@ -66,6 +66,12 @@
 // Fetches a GTLVerbatmAppImageCollection.
 + (instancetype)queryForPostGetImagesInPageWithPageId:(NSInteger)pageId;
 
+// Method: verbatmApp.post.getImageUploadURI
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppUploadURI.
++ (instancetype)queryForPostGetImageUploadURI;
+
 // Method: verbatmApp.post.getPagesInPost
 //  Authorization scope(s):
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
@@ -101,6 +107,12 @@
 //   kGTLAuthScopeVerbatmAppUserinfoEmail
 // Fetches a GTLVerbatmAppVideoCollection.
 + (instancetype)queryForPostGetVideosInPageWithPageId:(NSInteger)pageId;
+
+// Method: verbatmApp.post.getVideoUploadURI
+//  Authorization scope(s):
+//   kGTLAuthScopeVerbatmAppUserinfoEmail
+// Fetches a GTLVerbatmAppUploadURI.
++ (instancetype)queryForPostGetVideoUploadURI;
 
 // Method: verbatmApp.post.insertPost
 //  Authorization scope(s):

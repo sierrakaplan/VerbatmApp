@@ -25,6 +25,7 @@
 #import "GTLVerbatmAppPost.h"
 #import "GTLVerbatmAppPostCollection.h"
 #import "GTLVerbatmAppTimestamp.h"
+#import "GTLVerbatmAppUploadURI.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppVerbatmUserCollection.h"
 #import "GTLVerbatmAppVideo.h"

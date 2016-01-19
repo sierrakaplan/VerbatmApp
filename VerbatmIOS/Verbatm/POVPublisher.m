@@ -11,15 +11,13 @@
 
 #import "GTLDateTime.h"
 #import "GTLQueryVerbatmApp.h"
-
 #import "GTLServiceVerbatmApp.h"
-
-#import "GTLVerbatmAppPOV.h"
 #import "GTLVerbatmAppPage.h"
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppVideo.h"
-#import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppPageListWrapper.h"
+#import "GTLVerbatmAppImageListWrapper.h"
+#import "GTLVerbatmAppVideoListWrapper.h"
 #import "GTLVerbatmAppUploadURI.h"
 
 #import "GTMHTTPFetcherLogging.h"
@@ -37,13 +35,12 @@
 
 #import "VideoPinchView.h"
 
-#import "UserManager.h"
 #import "UtilityFunctions.h"
 
 @interface POVPublisher()
 
 @property(nonatomic, strong) NSArray* pinchViews;
-@property(nonatomic, strong) NSString* title;
+@property(nonatomic) NSInteger channelId;
 // the total number of progress units it takes to publish,
 // based on the number of photos and videos in a story
 @property(nonatomic) NSInteger totalProgressUnits;
@@ -57,18 +54,18 @@
 
 @implementation POVPublisher
 
--(instancetype) initWithPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title {
+-(instancetype) initWithPinchViews: (NSArray*) pinchViews
+					  andChannelId: (NSInteger) channelId {
 	self = [super init];
 	if (self) {
 		self.pinchViews = pinchViews;
-		self.title = title;
-
+		self.channelId = channelId;
 		self.totalProgressUnits = PROGRESS_UNITS_FOR_INITIAL_PROGRESS + PROGRESS_UNITS_FOR_FINAL_PUBLISH;
 		for (PinchView* pinchView in self.pinchViews) {
 			NSArray* photos = [pinchView getPhotosWithText];
 			NSArray* videos = [pinchView getVideosWithText];
 			if (photos) {
-				self.totalProgressUnits += photos.count*PROGRESS_UNITS_FOR_PHOTO;
+				self.totalProgressUnits += photos.count*PROGRESS_UNITS_FOR_IMAGE;
 			}
 			if (videos) {
 				self.totalProgressUnits += videos.count*PROGRESS_UNITS_FOR_VIDEO;
@@ -79,110 +76,129 @@
 	return self;
 }
 
+-(instancetype) initWithPost: (GTLVerbatmAppPost*) post
+				andChannelId: (NSInteger) channelId {
+	//TODO: REBLOGGING (figure out if each page needs to be recreated)
+	self = [super init];
+	if (self) {
+
+	}
+	return self;
+}
+
 /*
- think recursive:
-
- branch savePageIds: when (stored every page) resolves to page ids
-
- when (saved image ids + saved video ids) then (store page) resolves to page id
-
- branch savedImageIDs: when(stored every image) resolves to image ids
-
- (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore) resolves to image id
-
- branch savedVideoIDs: when(stored every video) resolves to video ids
-
- (get video upload uri) then (upload video to blobstore using uri) then (store gtlvideo with blob key string) resolves to video id
+ First save all videos and images in blobstore, 
+ then save lists of gtlVerbatmAppImage and gtlVerbatmAppVideo in post
+ Also save list of gtlVerbatmAppPage in post,
+ then call insertPost
  */
-
-- (void) publish {
+- (void) publishFromPinchViews {
 	NSLog(@"Attempting to publish POV...");
 	self.publishingProgress = [NSProgress progressWithTotalUnitCount: self.totalProgressUnits];
 	[self.publishingProgress setCompletedUnitCount:PROGRESS_UNITS_FOR_INITIAL_PROGRESS];
 
-	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
-	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
-	povObject.numUpVotes = [NSNumber numberWithLongLong: 0];
-	povObject.title = self.title;
-	UserManager* userManager = [UserManager sharedInstance];
-	povObject.creatorUserId = [userManager getCurrentUser].identifier;
+	GTLVerbatmAppPost* finalPost = [[GTLVerbatmAppPost alloc] init];
+	finalPost.channelId = [NSNumber numberWithInteger:self.channelId];
+	finalPost.sharedFromPostId = NULL; // this is the original post
 
-	[self storePagesFromPinchViews: self.pinchViews].then(^(NSArray* pageIds) {
-		povObject.pageIds = pageIds;
-		[self insertPOV: povObject];
+	NSMutableArray* pages = [[NSMutableArray alloc] init]; // of GTLVerbatmAppPage
+	NSMutableArray* images = [[NSMutableArray alloc] init]; // of GTLVerbatmAppImage
+	NSMutableArray* videos = [[NSMutableArray alloc] init]; // of GTLVerbatmAppVideo
+
+
+	AnyPromise* pagePromise = [self storePageFromPinchView:self.pinchViews[0] withPageNum:0];
+	GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
+	page.pageNumberInPost = [NSNumber numberWithInteger:0];
+	[pages addObject:page];
+
+	for (int i = 1; i < self.pinchViews.count; i++) {
+		PinchView* pinchView = self.pinchViews[i];
+		GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
+		page.pageNumberInPost = [NSNumber numberWithInteger:i];
+		[pages addObject:page];
+
+		pagePromise = pagePromise.then(^(NSArray* result) {
+			[images addObjectsFromArray:result[0]];
+			[videos addObjectsFromArray:result[1]];
+			return [self storePageFromPinchView:pinchView withPageNum:i];
+		});
+	}
+	pagePromise.then(^(NSArray* result) {
+		[images addObjectsFromArray:result[0]];
+		[videos addObjectsFromArray:result[1]];
+
+		GTLVerbatmAppPageListWrapper* pagesWrapper = [[GTLVerbatmAppPageListWrapper alloc] init];
+		pagesWrapper.pages = pages;
+		GTLVerbatmAppImageListWrapper* imagesWrapper = [[GTLVerbatmAppImageListWrapper alloc] init];
+		imagesWrapper.images = images;
+		GTLVerbatmAppVideoListWrapper* videosWrapper = [[GTLVerbatmAppVideoListWrapper alloc] init];
+		videosWrapper.videos = videos;
+
+		finalPost.pages = pagesWrapper;
+		finalPost.images = imagesWrapper;
+		finalPost.videos = videosWrapper;
+
+		return [self insertPost: finalPost];
 	}).catch(^(NSError *error){
 		//This can catch at any part in the chain
-		NSLog(@"Error publishing POV: %@", error.description);
+		NSLog(@"Error publishing Post: %@", error.description);
 		[self.publishingProgress cancel];
 	});
 }
 
-// when (stored every page)
-// each store page promise should resolve to the GTL page's id,
-// So this promise should resolve to an array of page ids
--(AnyPromise*) storePagesFromPinchViews: (NSArray*) pinchViews {
-	//Publishing pages sequentially
-	NSMutableArray* pageIds = [[NSMutableArray alloc] initWithCapacity: pinchViews.count];
-	AnyPromise* promise = [self storePageFromPinchView:pinchViews[0] withIndex:0];
-	for (int i = 1; i < pinchViews.count; i++){
-		promise = promise.then(^(NSNumber* pageID){
-			NSLog(@"successfully published page at index %ld", (long)(i-1));
-			[pageIds addObject:pageID];
-			return [self storePageFromPinchView:pinchViews[i] withIndex:i];
-		});
-	}
-	return promise.then(^(NSNumber* pageID){
-		[pageIds addObject:pageID];
-		return pageIds;
-	});
+- (void) publishReblog {
+	//TODO
 }
 
-// when (saved image ids + saved video ids) then (store page)
-// Resolves to the GTL page's id that was just stored
--(AnyPromise*) storePageFromPinchView: (PinchView*)pinchView withIndex:(NSInteger) indexInPOV {
-	NSLog(@"publishing page at index %ld", (long)indexInPOV);
+// Resolves to @[gtlImages, gtlVideos] from page, where gtlImages and gtlVideos are arrays
+-(AnyPromise*) storePageFromPinchView: (PinchView*) pinchView withPageNum: (NSInteger) pageNum {
+	NSLog(@"publishing page at index %ld", (long)pageNum);
 
-	GTLVerbatmAppPage* page = [[GTLVerbatmAppPage alloc] init];
-	page.indexInPOV = [[NSNumber alloc] initWithInteger: indexInPOV];
-
-	AnyPromise* imageIdsPromise = [self storeImagesFromPinchView: pinchView];
-	AnyPromise* videoIdsPromise = [self storeVideosFromPinchView: pinchView];
-
-	// after page.imageIds and page.videoIds have been stored, upload the page
-	return PMKWhen(@[imageIdsPromise, videoIdsPromise]).then(^(NSArray *results){
-		page.imageIds = results[0];
-		page.videoIds = results[1];
-		return [self insertPage: page];
+	NSMutableArray* result = [[NSMutableArray alloc] initWithCapacity:2];
+	return [self storeImagesFromPinchView:pinchView withPageNum: pageNum].then(^(NSArray* gtlImages) {
+		[result addObject:gtlImages];
+		return [self storeVideosFromPinchView:pinchView withPageNum:pageNum];
+	}).then(^(NSArray* gtlVideos) {
+		[result addObject:gtlVideos];
+		return result;
 	});
 }
 
 // when(stored every image)
-// Each storeimage promise should resolve to the id of the GTL Image just stored
-// So this promise should resolve to an array of gtl image id's
--(AnyPromise*) storeImagesFromPinchView: (PinchView*) pinchView {
+// Each storeimage promise should resolve to a GTLVerbatmAppImage
+// So this promise should resolve to an array of GTLVerbatmAppImage,
+// or an empty array if the pinch view contains no images.
+// Stores the images sequentially rather than in parallel because memory issues
+-(AnyPromise*) storeImagesFromPinchView: (PinchView*) pinchView
+							withPageNum: (NSInteger) pageNum {
 	if (pinchView.containsImage) {
 		//Publishing images sequentially
 		NSArray* pinchViewPhotosWithText = [pinchView getPhotosWithText];
-		NSMutableArray* imageIds = [[NSMutableArray alloc] initWithCapacity: pinchViewPhotosWithText.count];
+		NSMutableArray* gtlImages = [[NSMutableArray alloc] initWithCapacity: pinchViewPhotosWithText.count];
+
 		AnyPromise* promise = [self storeImage:pinchViewPhotosWithText[0][0]
 									 withIndex:0
+									andPageNum: pageNum
 									   andText:pinchViewPhotosWithText[0][1]
 								  andYPosition:pinchViewPhotosWithText[0][2]];
 		for (int i = 1; i < pinchViewPhotosWithText.count; i++){
-			promise = promise.then(^(NSNumber* imageID){
+			promise = promise.then(^(GTLVerbatmAppImage* gtlImage){
 				NSLog(@"successfully published image at index %ld", (long)(i-1));
-				[imageIds addObject:imageID];
-
+				[gtlImages addObject:gtlImage];
 				NSArray* photoWithText = pinchViewPhotosWithText[i];
 				UIImage* uiImage = photoWithText[0];
 				NSString* text = photoWithText[1];
 				NSNumber* textYPosition = photoWithText[2];
-				return [self storeImage:uiImage withIndex:i andText:text andYPosition:textYPosition];
+				return [self storeImage:uiImage
+							  withIndex:i
+							 andPageNum: pageNum
+								andText:text
+						   andYPosition:textYPosition];
 			});
 		}
-		return promise.then(^(NSNumber* imageID){
-			[imageIds addObject:imageID];
-			return imageIds;
+		return promise.then(^(GTLVerbatmAppImage* gtlImage){
+			[gtlImages addObject:gtlImage];
+			return gtlImages;
 		});
 	} else {
 		AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -193,33 +209,39 @@
 }
 
 // when(stored every video)
-// Each store video promise should resolve to the id of the GTL Video just stored
-// So this promise should resolve to an array of gtl video id's
--(AnyPromise*) storeVideosFromPinchView: (PinchView*) pinchView {
+// Each storevideo promise should resolve to a GTLVerbatmAppVideo
+// So this promise should resolve to an array of GTLVerbatmAppVideo,
+// or an empty array if the pinch view contains no videos.
+// Stores the videos sequentially rather than in parallel because memory issues
+-(AnyPromise*) storeVideosFromPinchView: (PinchView*) pinchView withPageNum: (NSInteger) pageNum {
 
 	if (pinchView.containsVideo) {
 		//Publishing videos sequentially
 		NSArray* pinchViewVideosWithText = [pinchView getVideosWithText];
-		NSMutableArray* videoIds = [[NSMutableArray alloc] initWithCapacity: pinchViewVideosWithText.count];
+		NSMutableArray* gtlVideos = [[NSMutableArray alloc] initWithCapacity: pinchViewVideosWithText.count];
 		AnyPromise* promise = [self storeVideoFromURL:[(AVURLAsset*)pinchViewVideosWithText[0][0] URL]
-											  atIndex:0
-											  andText:pinchViewVideosWithText[0][1]
+											  atIndex: 0
+										   andPageNum: pageNum
+											  andText: pinchViewVideosWithText[0][1]
 										 andYPosition: pinchViewVideosWithText[0][2]];
 		for (int i = 1; i < pinchViewVideosWithText.count; i++){
-			promise = promise.then(^(NSNumber* imageID){
+			promise = promise.then(^(GTLVerbatmAppVideo* gtlVideo){
 				NSLog(@"successfully published video at index %ld", (long)(i-1));
-				[videoIds addObject:imageID];
-
+				[gtlVideos addObject:gtlVideo];
 				NSArray* videoWithText = pinchViewVideosWithText[i];
 				AVURLAsset* videoAsset = videoWithText[0];
 				NSString* text = videoWithText[1];
 				NSNumber* textYPosition = videoWithText[2];
-				return [self storeVideoFromURL:videoAsset.URL atIndex:i andText:text andYPosition: textYPosition];
+				return [self storeVideoFromURL:videoAsset.URL
+									   atIndex: i
+									andPageNum: pageNum
+									   andText: text
+								  andYPosition: textYPosition];
 			});
 		}
-		return promise.then(^(NSNumber* imageID){
-			[videoIds addObject:imageID];
-			return videoIds;
+		return promise.then(^(GTLVerbatmAppVideo* gtlVideo){
+			[gtlVideos addObject:gtlVideo];
+			return gtlVideos;
 		});
 	} else {
 		AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -229,7 +251,45 @@
 	}
 }
 
--(AnyPromise*) storeVideoFromURL: (NSURL*) url atIndex: (NSInteger) indexInPage andText: (NSString*) text andYPosition: (NSNumber*) textYPosition {
+// (get image upload uri) then (upload image to blobstore using uri)
+//then resolve to gtlImage containing serving url
+-(AnyPromise*) storeImage: (UIImage*) image
+				withIndex: (NSInteger) indexInPage
+			   andPageNum: (NSInteger) pageNum
+				  andText: (NSString*) text
+			 andYPosition: (NSNumber*) textYPosition {
+	NSLog(@"publishing image at index %ld", (long)indexInPage);
+
+	return [self getImageUploadURI].then(^(NSString* uri) {
+		self.imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
+		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_IMAGE];
+		}
+		return [self.imageUploader startUpload];
+	}).then(^(NSString* servingURL) {
+		GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
+		gtlImage.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
+		gtlImage.pageNum = [[NSNumber alloc] initWithInteger:pageNum];
+		gtlImage.servingUrl = servingURL;
+		gtlImage.text = text;
+		gtlImage.textYPosition = textYPosition;
+
+		if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+			[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_IMAGE];
+		}
+		NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
+
+		return gtlImage;
+	});
+}
+
+// (get video data from url + get video upload uri) then (upload video to blobstore using uri)
+//then resolve to gtlVideo containing blobKeyString
+-(AnyPromise*) storeVideoFromURL: (NSURL*) url
+						 atIndex: (NSInteger)indexInPage
+						 andPageNum: (NSInteger) pageNum
+						 andText: (NSString*) text
+					andYPosition: (NSNumber*) textYPosition {
 	NSLog(@"publishing video at index %ld", (long)indexInPage);
 
 	AnyPromise* getVideoDataPromise = [UtilityFunctions loadCachedDataFromURL: url];
@@ -245,128 +305,50 @@
 	}).then(^(NSString* blobStoreKeyString) {
 		GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
 		gtlVideo.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
+		gtlVideo.pageNum = [NSNumber numberWithInteger:pageNum];
 		gtlVideo.blobKeyString = blobStoreKeyString;
 		gtlVideo.text = text;
 		gtlVideo.textYPosition = textYPosition;
-		//TODO: set user key?
-		return [self insertVideo: gtlVideo];
-	});
-}
 
-
-// (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)
-// Resolves to what insertImage resolves to,
-// Which should be the ID of the GTL image just stored
--(AnyPromise*) storeImage: (UIImage*) image withIndex: (NSInteger) indexInPage andText: (NSString*) text andYPosition: (NSNumber*) textYPosition {
-	NSLog(@"publishing image at index %ld", (long)indexInPage);
-
-	return [self getImageUploadURI].then(^(NSString* uri) {
-		self.imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
-		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];
+		if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+			[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_VIDEO];
 		}
-		return [self.imageUploader startUpload];
-	}).then(^(NSString* servingURL) {
-		GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
-		gtlImage.indexInPage = [[NSNumber alloc] initWithInteger: indexInPage];
-		gtlImage.servingUrl = servingURL;
-		gtlImage.text = text;
-		gtlImage.textYPosition = textYPosition;
-		//TODO: set user key?
-		return [self insertImage: gtlImage];
+		NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
+
+		return gtlVideo;
 	});
 }
 
-#pragma mark - Insert entities into the Datastore -
+#pragma mark - Insert post into cloud sql -
 
-//TODO: see if batch queries speed things up
+-(AnyPromise*) insertPost: (GTLVerbatmAppPost*) post {
+	GTLQuery* insertPostQuery = [GTLQueryVerbatmApp queryForPostInsertPostWithObject:post];
 
-// Queries insert Image into the datastore.
-// PMKPromise resolves with either error or the id of the image just stored.
--(AnyPromise*) insertImage: (GTLVerbatmAppImage*) image {
-	GTLQuery* insertImageQuery = [GTLQueryVerbatmApp queryForImageInsertImageWithObject:image];
-
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		[self.service executeQuery:insertImageQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppImage* storedImage, NSError *error) {
-			if (error) {
-				resolve(error);
-			} else {
-				if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_PHOTO];
-				}
-				NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
-				resolve(storedImage.identifier);
-			}
-		}];
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[self.service executeQuery:insertPostQuery
+				 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPost* post, NSError *error) {
+					 if (error) {
+						 resolve(error);
+					 } else {
+						 [self.publishingProgress setCompletedUnitCount: self.totalProgressUnits];
+						 NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
+						 NSLog(@"Successfully published POV!");
+						 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
+																			 object:ticket];
+						 resolve(post);
+					 }
+				 }];
 	}];
-
 	return promise;
 }
 
-// Queries insert Video into the datastore.
-// PMKPromise resolves with either error or the id of the video just stored.
--(AnyPromise*) insertVideo: (GTLVerbatmAppVideo*) video {
-	GTLQuery* insertVideoQuery = [GTLQueryVerbatmApp queryForVideoInsertVideoWithObject:video];
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		[self.service executeQuery:insertVideoQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppVideo* storedVideo, NSError *error) {
-			if (error) {
-				resolve(error);
-			} else {
-				if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_VIDEO];
-				}
-				NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
-				resolve(storedVideo.identifier);
-			}
-		}];
-	}];
-
-	return promise;
-}
-
-// Queries insert Page into the datastore.
-// PMKPromise resolves with either error or the id of the page just stored.
--(AnyPromise*) insertPage: (GTLVerbatmAppPage*) page {
-	GTLQuery* insertPageQuery = [GTLQueryVerbatmApp queryForPageInsertPageWithObject: page];
-
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		[self.service executeQuery:insertPageQuery completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPage* storedPage, NSError *error) {
-			if (error) {
-				resolve(error);
-			} else {
-				resolve(storedPage.identifier);
-			}
-		}];
-	}];
-
-	return promise;
-}
-
-// Queries insert POV into the datastore
--(void) insertPOV: (GTLVerbatmAppPOV*) povObject {
-//	GTLQuery* insertPOVQuery = [GTLQueryVerbatmApp queryForPovInsertPOVWithObject: povObject];
-
-//	[self.service executeQuery:insertPOVQuery
-//			 completionHandler:^(GTLServiceTicket *ticket, GTLVerbatmAppPOV* object, NSError *error) {
-//				 if (error) {
-//					 NSLog(@"Error uploading POV: %@", error.description);
-//					 //TODO: should send a notification that there was an error publishing
-//				 } else {
-//					 [self.publishingProgress setCompletedUnitCount: self.totalProgressUnits];
-//					 NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
-//					 NSLog(@"Successfully published POV!");
-//					 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_POV_PUBLISHED
-//																		 object:ticket];
-//				 }
-//			 }];
-}
 
 #pragma mark - Get upload URIS -
 
 // Queries for a uri from the blob store to upload images to
 -(AnyPromise*) getImageUploadURI {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		[self.service executeQuery:[GTLQueryVerbatmApp queryForImageGetUploadURI]
+		[self.service executeQuery:[GTLQueryVerbatmApp queryForPostGetImageUploadURI]
 				 completionHandler:^(GTLServiceTicket *ticket,
 									 GTLVerbatmAppUploadURI* uploadURI,
 									 NSError *error) {
@@ -383,7 +365,7 @@
 // Queries for a uri from the blob store to upload videos to
 -(AnyPromise*) getVideoUploadURI {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		[self.service executeQuery:[GTLQueryVerbatmApp queryForVideoGetUploadURI]
+		[self.service executeQuery:[GTLQueryVerbatmApp queryForPostGetVideoUploadURI]
 				 completionHandler:^(GTLServiceTicket *ticket,
 									 GTLVerbatmAppUploadURI* uploadURI,
 									 NSError *error) {

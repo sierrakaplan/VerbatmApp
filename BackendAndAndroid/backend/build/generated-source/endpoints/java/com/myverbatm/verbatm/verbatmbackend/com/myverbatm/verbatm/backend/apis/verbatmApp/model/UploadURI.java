@@ -19,7 +19,7 @@
 package com.myverbatm.verbatm.verbatmbackend.com.myverbatm.verbatm.backend.apis.verbatmApp.model;
 
 /**
- * Model definition for PageCollection.
+ * Model definition for UploadURI.
  *
  * <p> This is the Java data model class that specifies how to parse/serialize into the JSON that is
  * transmitted over HTTP when working with the verbatmApp. For a detailed explanation see:
@@ -29,43 +29,37 @@ package com.myverbatm.verbatm.verbatmbackend.com.myverbatm.verbatm.backend.apis.
  * @author Google, Inc.
  */
 @SuppressWarnings("javadoc")
-public final class PageCollection extends com.google.api.client.json.GenericJson {
+public final class UploadURI extends com.google.api.client.json.GenericJson {
 
   /**
    * The value may be {@code null}.
    */
   @com.google.api.client.util.Key
-  private java.util.List<Page> items;
-
-  static {
-    // hack to force ProGuard to consider Page used, since otherwise it would be stripped out
-    // see https://github.com/google/google-api-java-client/issues/543
-    com.google.api.client.util.Data.nullOf(Page.class);
-  }
+  private java.lang.String uploadURIString;
 
   /**
    * @return value or {@code null} for none
    */
-  public java.util.List<Page> getItems() {
-    return items;
+  public java.lang.String getUploadURIString() {
+    return uploadURIString;
   }
 
   /**
-   * @param items items or {@code null} for none
+   * @param uploadURIString uploadURIString or {@code null} for none
    */
-  public PageCollection setItems(java.util.List<Page> items) {
-    this.items = items;
+  public UploadURI setUploadURIString(java.lang.String uploadURIString) {
+    this.uploadURIString = uploadURIString;
     return this;
   }
 
   @Override
-  public PageCollection set(String fieldName, Object value) {
-    return (PageCollection) super.set(fieldName, value);
+  public UploadURI set(String fieldName, Object value) {
+    return (UploadURI) super.set(fieldName, value);
   }
 
   @Override
-  public PageCollection clone() {
-    return (PageCollection) super.clone();
+  public UploadURI clone() {
+    return (UploadURI) super.clone();
   }
 
 }
