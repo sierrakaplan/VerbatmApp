@@ -22,6 +22,7 @@
 #import "POVLoadManager.h"
 #import "PostListVC.h"
 
+#import "SharePOVView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "SettingsVC.h"
@@ -29,7 +30,7 @@
 #import "UIView+Effects.h"
 #import "UserManager.h"
 
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate>
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate>
 
 @property (strong, nonatomic) PostListVC * postListVC;
 @property (weak, nonatomic) IBOutlet UIView *postListContainer;
@@ -44,6 +45,11 @@
 
 @property (strong, nonatomic) NSArray* channels;
 
+
+@property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
+@property (nonatomic) UIView * darkScreenCover;
+@property (nonatomic) SharePOVView * sharePOVView;
+
 @end
 
 @implementation ProfileVC
@@ -54,7 +60,7 @@
     
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-        [self addPOVScrollView];
+        [self createAndAddListVC];
         [self createNavigationBar];
         [self addClearScreenGesture];
     }];
@@ -93,7 +99,7 @@
     [super viewWillDisappear:animated];
 }
 
--(void) addPOVScrollView {
+-(void) createAndAddListVC{
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     [flowLayout setMinimumInteritemSpacing:0.3];
@@ -134,7 +140,7 @@
 												   andChannels:self.channels andUserName:self.currentUser.name isCurrentLoggedInUser:self.isCurrentUserProfile];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
-}
+} 
 
 -(void) updateUserInfo {
     self.currentUser = [[UserManager sharedInstance] getCurrentUser];
@@ -151,11 +157,13 @@
 #pragma mark -POV ScrollView custom delegate -
 
 -(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
-    [self.delegate profilePovLikeLiked:liked forPOV:povInfo];
+    //sierra TODO
+    //code to register a like/dislike from the user
 }
 
 -(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
-    [self.delegate profilePovShareButtonSeletedForPOV:povInfo];
+    [self presentShareSelectionViewStartOnChannels:NO];
+    
 }
 
 
@@ -163,7 +171,50 @@
 
 //current user selected to follow a channel
 -(void) followOptionSelected{
-    [self.delegate presentChannelsToFollow];
+    [self presentShareSelectionViewStartOnChannels:YES];
+}
+
+
+-(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
+    if(self.sharePOVView){
+        [self.sharePOVView removeFromSuperview];
+        self.sharePOVView = nil;
+    }
+    
+    
+    //temp
+    //simulates getting threads
+    Channel * enterpreneurship = [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
+    
+    Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
+    
+    Channel * music = [[Channel alloc] initWithChannelName:@"Music" numberOfFollowers:@(10000) andUserName:@"Iain Usiri"];
+    
+    
+    CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame andChannels:@[enterpreneurship, socialJustice, music] shouldStartOnChannels:startOnChannels];
+    self.sharePOVView.delegate = self;
+    [self.view addSubview:self.sharePOVView];
+    [self.view bringSubviewToFront:self.sharePOVView];
+    [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+        self.sharePOVView.frame = onScreenFrame;
+    }];
+}
+
+-(void)removeSharePOVView{
+    if(self.sharePOVView){
+        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+        
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.sharePOVView.frame = offScreenFrame;
+        }completion:^(BOOL finished) {
+            if(finished){
+                [self.sharePOVView removeFromSuperview];
+                self.sharePOVView = nil;
+            }
+        }];
+    }
 }
 
 //current user wants to see their own followers
@@ -183,8 +234,68 @@
 
 //ProfileNavBarDelegate protocol
 -(void) createNewChannel{
-    [self.delegate createNewChannel];
+    if(!self.createNewChannelView){
+        [self darkenScreen];
+        CGFloat viewHeight = self.view.frame.size.height/2.f -
+        (CHANNEL_CREATION_VIEW_WALLOFFSET_X *7);
+        
+        CGRect newChannelViewFrame = CGRectMake(CHANNEL_CREATION_VIEW_WALLOFFSET_X, CHANNEL_CREATION_VIEW_Y_OFFSET, self.view.frame.size.width - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *2),viewHeight);
+        self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
+        self.createNewChannelView.delegate = self;
+        [self.view addSubview:self.createNewChannelView];
+        [self.view bringSubviewToFront:self.createNewChannelView];
+    }
+
 }
+
+-(void)darkenScreen{
+    if(!self.darkScreenCover){
+        self.darkScreenCover = [[UIView alloc] initWithFrame:self.view.bounds];
+        self.darkScreenCover.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
+        [self.view addSubview:self.darkScreenCover];
+    }
+}
+-(void)removeScreenDarkener{
+    if(self.darkScreenCover){
+        [self.darkScreenCover removeFromSuperview];
+        self.darkScreenCover = nil;
+    }
+}
+-(void) cancelCreation {
+    [self clearChannelCreationView];
+}
+-(void) createChannelWithName:(NSString *) channelName {
+    //save the channel name and create it in the backend
+    //upate the scrollview to present a new channel
+    
+    [self clearChannelCreationView];
+}
+
+-(void)clearChannelCreationView{
+    if(self.createNewChannelView){
+        [self removeScreenDarkener];
+        [self.createNewChannelView removeFromSuperview];
+        self.createNewChannelView = nil;
+    }
+}
+
+
+#pragma mark -Share Seletion View Protocol -
+-(void)cancelButtonSelected{
+    [self removeSharePOVView];
+}
+
+-(void)sharePostWithComment:(NSString *) comment{
+    //todo--sierra
+    //code to share post to facebook etc
+    
+    [self removeSharePOVView];
+    
+}
+
+
+
+#pragma mark -Navigate profile-
 //the current user has selected the back button
 -(void)exitCurrentProfile {
     [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
@@ -195,7 +306,7 @@
 -(void)newChannelSelectedWithName:(NSString *) channelName{
     if(![channelName isEqualToString:self.currentThreadInView]){
         //TODO -- get content from new channel and present it
-    
+        //sierra
     }
 }
 

@@ -134,6 +134,10 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 @property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
 
 
+
+@property (nonatomic) UIImageView * pinchElementsTogetherInstructionView;//presents instrutions to user to pinch together their media
+
+
 //note when previewing
 @property (nonatomic) BOOL currentlyPreviewingContent;
 
@@ -624,6 +628,11 @@ rowHeightForComponent:(NSInteger)component{
         newElementScrollView.frame = newElementScrollViewFrame;
         self.addMediaBelowView = newElementScrollView;
         [self shiftElementsBelowView: self.titleField];
+        
+        if(self.pageElementScrollViews.count > 3){
+            [self presentUserInstructionForPinchGesture];
+        }
+        
     }];
     
     
@@ -1110,7 +1119,6 @@ rowHeightForComponent:(NSInteger)component{
 	[self shiftElementsBelowView: self.titleField];
 
 	//present swipe to delete notification
-    if(![[UserSetupParameters sharedInstance] swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
 
 #pragma mark - Identify views involved in pinch
@@ -1448,6 +1456,34 @@ rowHeightForComponent:(NSInteger)component{
 	}];
 }
 
+
+-(void)presentUserInstructionForPinchGesture {
+
+    ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
+
+    CGFloat offsetFromPinchViewCenters = 60.f;    
+    
+    CGFloat frameHeight = firstInList.frame.size.height - (2*offsetFromPinchViewCenters);
+    
+    CGFloat frameWidth = (frameHeight * 504.f)/360.f ;
+    
+    
+    
+    CGRect instructionFrame = CGRectMake(firstInList.center.x, firstInList.center.y + offsetFromPinchViewCenters,
+                                         frameWidth,frameHeight);
+    
+    
+    UIImage * instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
+    self.pinchElementsTogetherInstructionView = [[UIImageView alloc] initWithImage:instructionImage];
+    self.pinchElementsTogetherInstructionView.frame =  instructionFrame;
+    
+    [self.mainScrollView addSubview:self.pinchElementsTogetherInstructionView];
+    [self.mainScrollView bringSubviewToFront:self.pinchElementsTogetherInstructionView];
+    
+    //[[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];//commented out for debugging
+    
+}
+
 //adjusts offset of main scroll view so selected item is in focus
 -(void) moveOffsetOfMainScrollViewBasedOnSelectedItem {
 	float newYOffset = 0;
@@ -1600,9 +1636,6 @@ rowHeightForComponent:(NSInteger)component{
 
 -(void)presentPreviewAtIndex:(NSInteger ) index{
     NSMutableArray *pinchViews = [self getPinchViews];
-
-    
-   
 
     [self.view bringSubviewToFront:self.previewDisplayView];
     [self.previewDisplayView displayPreviewPOVWithTitle:@"" andPinchViews:pinchViews withStartIndex:index];
@@ -1774,20 +1807,9 @@ rowHeightForComponent:(NSInteger)component{
 		}
 	}
 
-	//decides whether on what notification to present if any
-	if(![[UserSetupParameters sharedInstance] circlesArePages_InstructionShown] &&
-	   self.pageElementScrollViews.count == 1 && (phassets.count > 1)) {
-		[self alertEachPVIsPage];
-        if(![[UserSetupParameters sharedInstance] pinchCircles_InstructionShown]) {
-            //wait for a little while before circles are added to the stream
-            [NSTimer scheduledTimerWithTimeInterval:5.f target:self selector:@selector(timerForNoNotification:) userInfo:nil repeats:NO];
-        }
-	}
+
 }
 
-- (void)timerForNoNotification:(NSTimer *)timer {
-    [self alertPinchElementsTogether];
-}
 
 -(UIImage*) getImageFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
@@ -1843,7 +1865,6 @@ rowHeightForComponent:(NSInteger)component{
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
 
 -(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
-
         if(pinchViews)[self publishOurStoryWithPinchViews:pinchViews];
 }
 
@@ -1857,7 +1878,7 @@ rowHeightForComponent:(NSInteger)component{
         UITextField * textField = (UITextField *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
         if([textField.text isEqualToString:@""]){
             //prompt user to add channel title
-            [self alertAddChannelTitle];
+            
         }else{
             channelTitle = textField.text;
             //create channel
@@ -1866,44 +1887,8 @@ rowHeightForComponent:(NSInteger)component{
     //Sierra TODO - publish post
     //save story with provided channel name here
     
-    
-
     [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
     [self cleanUp];
-}
-
-
-#pragma mark - Alerts -
-/*
- These are all notifications that appear for the user at different points in the app. They only appear once.
- */
--(void)alertEachPVIsPage {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-    [[UserSetupParameters sharedInstance] set_circlesArePages_InstructionAsShown];
-}
-
--(void)alertPinchElementsTogether {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-	[[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];
-}
-
--(void)alertSwipeRightToDelete {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles left to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    [[UserSetupParameters sharedInstance] set_swipeToDelete_InstructionAsShown];
-}
-
--(void)alertTapNHoldInCollection{
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Tap and hold to remove circle" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    [[UserSetupParameters sharedInstance] set_tapNhold_InstructionAsShown];
-}
-
--(void)alertAddChannelTitle {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Please provide a name for your channel" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
 }
 
 #pragma mark - Tap to clear view -

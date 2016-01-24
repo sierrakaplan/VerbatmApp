@@ -16,6 +16,10 @@
 @property (nonatomic) UIButton * settingsButton;
 @property (nonatomic) UIButton * followButton;
 @property (nonatomic) BOOL isCurrentUser;
+
+@property (nonatomic) BOOL isFollowigProfileUser;//for cases when they are viewing another profile
+
+
 #define THREAD_BAR_BUTTON_FONT_SIZE 17.f
 
 #define SETTINGS_BUTTON_SIZE 25.f
@@ -84,7 +88,7 @@
     CGFloat frame_x = self.frame.size.width - width - BUTTON_WALL_XOFFSET;
     CGFloat frame_y = self.center.y - (height/2.f);
     
-    CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
+    CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height );
     
     self.settingsButton =  [[UIButton alloc] initWithFrame:iconFrame];
     [self.settingsButton setImage:settingsImage forState:UIControlStateNormal];
@@ -100,7 +104,7 @@
 -(void) createFollowButton{
     
     CGFloat height = SETTINGS_BUTTON_SIZE;
-    CGFloat width = height;
+    CGFloat width = (height*436.f)/250.f;
     CGFloat frame_x = self.frame.size.width - width - BUTTON_WALL_XOFFSET;
     CGFloat frame_y = self.center.y - (height/2.f);
     
@@ -108,7 +112,7 @@
 
     
     UIImage * buttonImage = [UIImage imageNamed:((true) ? FOLLOW_ICON_IMAGE_UNSELECTED : FOLLOW_ICON_IMAGE_SELECTED)];
-    
+    self.isFollowigProfileUser = NO;//TO-DO how to know if they are following the current user
     self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
     [self.followButton setImage:buttonImage forState:UIControlStateNormal];
     [self.followButton addTarget:self action:@selector(followOrFollowersSelected) forControlEvents:UIControlEventTouchUpInside];
@@ -143,6 +147,20 @@
 }
 
 -(void) followOrFollowersSelected {
+    
+    UIImage * newbuttonImage;
+    if(self.isFollowigProfileUser){
+        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED ];
+        self.isFollowigProfileUser = NO;
+    }else{
+        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
+        self.isFollowigProfileUser = YES;
+    }
+    
+    [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
+    
+    
+    
     [self.delegate followButtonSelected];
 }
 

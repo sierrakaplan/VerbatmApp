@@ -88,9 +88,6 @@
 	if (self.openPinchView.text && self.openPinchView.text.length) {
 		[self setText:self.openPinchView.text andTextViewYPosition:self.openPinchView.textYPosition.floatValue];
 	}
-    if(![[UserSetupParameters sharedInstance] filter_InstructionShown] && [self.openPinchView isKindOfClass:[ImagePinchView class]]) {
-		[self alertAddFilter];
-	}
 }
 
 -(void)createExitButton{

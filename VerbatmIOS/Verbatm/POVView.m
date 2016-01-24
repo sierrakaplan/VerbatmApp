@@ -25,6 +25,7 @@
 #import "Styles.h"
 
 #import "UserManager.h"
+#import "UserSetupParameters.h"
 #import "UIView+Effects.h"
 
 #import "VideoAVE.h"
@@ -62,6 +63,7 @@
 @property (nonatomic) CGRect lsBarDownFrame;// the framw of the like share button with the tab down
 @property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
 
+@property (nonatomic) UIImageView * swipeUpAndDownInstruction;///tell user they can swipe up and down to navigate
 
 
 #define DOWN_ARROW_WIDTH 30.f
@@ -251,6 +253,7 @@
 	NSInteger nextIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
 	ArticleViewingExperience *nextPage = [self.pageAves objectForKey:[NSNumber numberWithInteger:nextIndex]];
     ArticleViewingExperience *currentPage = [self.pageAves objectForKey:[NSNumber numberWithInteger: self.currentPageIndex]];
+    
     if(self.currentPageIndex != nextIndex){
 		[currentPage offScreen];
         [self logAVEDoneViewing:currentPage];
@@ -262,7 +265,90 @@
     self.currentPageIndex = nextIndex;
 	[nextPage onScreen];
     [self prepareNextPage];
+    
+    
+    if(self.pageAves.count > 1){
+        [self presentSwipeUpAndDownInstruction];
+    }
+    
+    [self presentFilterSwipeForInstructionWithAve:nextPage];
+    
+    
+    
+    //present multipage icon
 }
+
+
+
+-(void)presentSwipeUpAndDownInstruction {
+    
+    
+    UIImage * instructionImage = [UIImage imageNamed:SWIPE_UP_DOWN_INSTRUCTION];
+    
+    CGFloat frameHeight = 100.f;
+    CGFloat frameWidth = ((frameHeight * 2)/3.f);
+    
+    
+    CGRect instructionFrame = CGRectMake(self.frame.size.width - frameWidth - 10.f,
+                                         self.frame.size.height - (frameHeight + 50.f), frameWidth,frameHeight );
+    
+    
+    self.swipeUpAndDownInstruction = [[UIImageView alloc] initWithImage:instructionImage];
+    self.swipeUpAndDownInstruction.frame = instructionFrame;
+    [self addSubview:self.swipeUpAndDownInstruction];
+    [self bringSubviewToFront:self.swipeUpAndDownInstruction];
+    
+    
+}
+
+
+-(void)presentFilterSwipeForInstructionWithAve:(ArticleViewingExperience *) currentAve{
+    
+    
+    
+    BOOL isPhotoAve = [currentAve isKindOfClass:[PhotoAVE class]];
+    BOOL isVideoAve = [currentAve isKindOfClass:[PhotoVideoAVE class]];
+    
+    BOOL filterInstructionHasNotBeenPresented = ![[UserSetupParameters sharedInstance] isFilter_InstructionShown];
+    
+    if( (isPhotoAve || isVideoAve)  && filterInstructionHasNotBeenPresented){
+        UIImage * instructionImage = [UIImage imageNamed:FILTER_SWIPE_INSTRUCTION];
+        CGFloat frameWidth = 200.f;
+        CGFloat frameHeight = (frameWidth * 320.f) /488.f;
+        
+        UIImageView * filterInstruction = [[UIImageView alloc] initWithImage:instructionImage];
+        filterInstruction.backgroundColor = [UIColor clearColor];
+
+        if(isPhotoAve){
+           filterInstruction.frame = CGRectMake(10.f,
+                                          self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
+            
+            filterInstruction.center = CGPointMake(self.frame.size.width/2.f, self.frame.size.height/2.f);
+            
+
+        }else{
+            
+          filterInstruction.frame = CGRectMake(10.f,
+                                          self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
+
+        }
+        
+        [self addSubview:filterInstruction];
+        [self bringSubviewToFront:filterInstruction];
+        //commented out for debugging but should not be 
+        //[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
+    }
+    
+    
+   
+    
+    
+}
+
+
+
+
+
 
 -(void)logAVEDoneViewing:(ArticleViewingExperience*) ave {
     NSString * pageType = @"";

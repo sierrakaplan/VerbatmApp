@@ -35,7 +35,7 @@
                                                     textYPosition, self.textView.frame.size.width,
                                                     self.textView.frame.size.height)];
         }
-		[self resizeTextView];
+		//[self resizeTextView]; //this function keeps blocking our thread --- temp
 	}
 	return self;
 }
@@ -107,14 +107,6 @@
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
 		[_textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.7];
-//		_textView.backgroundColor = [UIColor clearColor];
-//		_textView.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:TEXT_BACKGROUND]];
-
-//		self.textBackgroundView = [[UIImageView alloc] initWithFrame:CGRectMake(0.f, 0.f, textViewFrame.size.width, textViewFrame.size.height)];
-//		self.textBackgroundView.contentMode = UIViewContentModeScaleToFill;
-//		self.textBackgroundView.image = [UIImage imageNamed:TEXT_BACKGROUND];
-//		[_textView addSubview:self.textBackgroundView];
-//		[_textView sendSubviewToBack:self.textBackgroundView];
 
 		//TEXT_SCROLLVIEW_BACKGROUND_COLOR
 		_textView.textColor = [UIColor TEXT_AVE_COLOR];

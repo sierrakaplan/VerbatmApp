@@ -67,7 +67,6 @@
 
 @property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 
-@property (nonatomic) UIView * darkScreenCover;
 
 
 #pragma mark View Controllers in tab bar Controller
@@ -75,7 +74,6 @@
 @property (strong,nonatomic) ProfileVC* profileVC;
 @property (strong,nonatomic) FeedVC * feedVC;
 
-@property (nonatomic) SharePOVView * sharePOVView;
 
 @property (nonatomic) UserAndChannelListsTVC * channelListView;
 
@@ -88,8 +86,7 @@
 #define ADK_BUTTON_SIZE 40.f
 #define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
 
-#define CHANNEL_CREATION_VIEW_WALLOFFSET_X 30.f
-#define CHANNEL_CREATION_VIEW_Y_OFFSET (PROFILE_NAV_BAR_HEIGHT + 90.f)
+
 @end
 
 @implementation MasterNavigationVC
@@ -102,9 +99,9 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	if (![PFUser currentUser].isAuthenticated) {
-		[self bringUpLogin];
-	}
+//	if (![PFUser currentUser].isAuthenticated) {
+//		[self bringUpLogin];
+//	}
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -209,9 +206,7 @@
     [self.channelListView presentAllVerbatmChannels];
     
     self.channelListView.listDelegate = self;
-    
-    
-     
+
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
     
     self.profileVC.delegate = self;
@@ -380,11 +375,11 @@
 
 //show the channels the current user can select to follow
 -(void)presentChannelsToFollow{
-    [self presentShareSelectionViewStartOnChannels:YES];
+    //[self presentShareSelectionViewStartOnChannels:YES];
 }
 
 -(void)profilePovShareButtonSeletedForPOV:(PovInfo *) pov{
-    [self presentShareSelectionViewStartOnChannels:NO];
+    //[self presentShareSelectionViewStartOnChannels:NO];
 }
 
 -(void)profilePovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov{
@@ -392,7 +387,7 @@
 }
 
 -(void)feedPovShareButtonSeletedForPOV:(PovInfo *) pov {
-    [self presentShareSelectionViewStartOnChannels:NO];
+    //[self presentShareSelectionViewStartOnChannels:NO];
 }
 
 
@@ -402,109 +397,10 @@
     
 }
 
--(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
-    if(self.sharePOVView){
-        [self.sharePOVView removeFromSuperview];
-        self.sharePOVView = nil;
-    }
-    
-    
-    //temp
-    //simulates getting threads
-    Channel * enterpreneurship = [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
-    
-    Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
-    
-    Channel * music = [[Channel alloc] initWithChannelName:@"Music" numberOfFollowers:@(10000) andUserName:@"Iain Usiri"];
-    
-    
-    CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame andChannels:@[enterpreneurship, socialJustice, music] shouldStartOnChannels:startOnChannels];
-    self.sharePOVView.delegate = self;
-    [self.view addSubview:self.sharePOVView];
-    [self.view bringSubviewToFront:self.sharePOVView];
-    [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-        self.sharePOVView.frame = onScreenFrame;
-    }];
-}
-
--(void)removeSharePOVView{
-    if(self.sharePOVView){
-        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-        
-        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-            self.sharePOVView.frame = offScreenFrame;
-        }completion:^(BOOL finished) {
-            if(finished){
-                [self.sharePOVView removeFromSuperview];
-                self.sharePOVView = nil;
-            }
-        }];
-    }
-}
 
 
-#pragma mark -Share Seletion View Protocol -
--(void)cancelButtonSelected{
-    [self removeSharePOVView];
-}
--(void)postPOVToChannel:(Channel *) channel {
-    
-}
--(void)sharePostWithComment:(NSString *) comment{
-    
-}
 
 
-#pragma mark -create new channel prompt-
-//notified from selection of channel bar to prompt the user to creat a new channel
--(void) createNewChannel{
-    if(!self.createNewChannelView){
-        [self darkenScreen];
-        CGFloat viewHeight = self.view.frame.size.height/2.f -
-                            (CHANNEL_CREATION_VIEW_WALLOFFSET_X *7);
-        
-        CGRect newChannelViewFrame = CGRectMake(CHANNEL_CREATION_VIEW_WALLOFFSET_X, CHANNEL_CREATION_VIEW_Y_OFFSET, self.view.frame.size.width - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *2),viewHeight);
-        self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
-        self.createNewChannelView.delegate = self;
-        [self.view addSubview:self.createNewChannelView];
-        [self.view bringSubviewToFront:self.createNewChannelView];
-    }
-}
-
--(void)darkenScreen{
-    if(!self.darkScreenCover){
-        self.darkScreenCover = [[UIView alloc] initWithFrame:self.view.bounds];
-        self.darkScreenCover.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
-        [self.view addSubview:self.darkScreenCover];
-    }
-}
-
--(void)removeScreenDarkener{
-    if(self.darkScreenCover){
-        [self.darkScreenCover removeFromSuperview];
-        self.darkScreenCover = nil;
-    }
-}
-
-//new channel view creation protocol
--(void) cancelCreation{
-    [self clearChannelCreationView];
-}
--(void) createChannelWithName:(NSString *) channelName{
-    //create a new channel and save it
-    [self clearChannelCreationView];
-}
-
-
--(void)clearChannelCreationView{
-    if(self.createNewChannelView){
-        [self removeScreenDarkener];
-        [self.createNewChannelView removeFromSuperview];
-        self.createNewChannelView = nil;
-    }
-}
 
 
 
