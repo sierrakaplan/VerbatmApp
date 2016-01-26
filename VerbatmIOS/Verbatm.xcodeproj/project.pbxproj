@@ -201,6 +201,10 @@
 		C7BC43B9199EC696004B91A1 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43B8199EC696004B91A1 /* Security.framework */; };
 		C7BC43BB199EC6A2004B91A1 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BA199EC6A2004B91A1 /* StoreKit.framework */; };
 		C7BC43BD199EC6AF004B91A1 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */; };
+		C7BF1AA51C57EFC000CEDE4B /* Post_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BF1AA41C57EFC000CEDE4B /* Post_BackendObject.m */; };
+		C7BF1AA81C57F5F500CEDE4B /* Photo_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BF1AA71C57F5F500CEDE4B /* Photo_BackendObject.m */; };
+		C7BF1AAB1C57F60600CEDE4B /* Video_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BF1AAA1C57F60600CEDE4B /* Video_BackendObject.m */; };
+		C7BF1AAE1C57F61F00CEDE4B /* Page_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C7BF1AAD1C57F61F00CEDE4B /* Page_BackendObject.m */; };
 		C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A061BF820FC006B5260 /* EditMediaContentView.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
@@ -598,6 +602,14 @@
 		C7BC43B8199EC696004B91A1 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		C7BC43BA199EC6A2004B91A1 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		C7BC43BC199EC6AF004B91A1 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		C7BF1AA31C57EFC000CEDE4B /* Post_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post_BackendObject.h; sourceTree = "<group>"; };
+		C7BF1AA41C57EFC000CEDE4B /* Post_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post_BackendObject.m; sourceTree = "<group>"; };
+		C7BF1AA61C57F5F500CEDE4B /* Photo_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Photo_BackendObject.h; sourceTree = "<group>"; };
+		C7BF1AA71C57F5F500CEDE4B /* Photo_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Photo_BackendObject.m; sourceTree = "<group>"; };
+		C7BF1AA91C57F60600CEDE4B /* Video_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Video_BackendObject.h; sourceTree = "<group>"; };
+		C7BF1AAA1C57F60600CEDE4B /* Video_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Video_BackendObject.m; sourceTree = "<group>"; };
+		C7BF1AAC1C57F61F00CEDE4B /* Page_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Page_BackendObject.h; sourceTree = "<group>"; };
+		C7BF1AAD1C57F61F00CEDE4B /* Page_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Page_BackendObject.m; sourceTree = "<group>"; };
 		C7C69A051BF820FC006B5260 /* EditMediaContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditMediaContentView.h; sourceTree = "<group>"; };
 		C7C69A061BF820FC006B5260 /* EditMediaContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditMediaContentView.m; sourceTree = "<group>"; };
 		C7CCFF3A19CE63A800E90080 /* testerAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerAnimation.h; sourceTree = "<group>"; };
@@ -718,6 +730,7 @@
 		A560EF9A1BA89552003FB041 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C7BF1AA21C57EF4A00CEDE4B /* Parse database files */,
 				A5934B931C0FEBCE007C7830 /* POV.h */,
 				A5934B941C0FEBCE007C7830 /* POV.m */,
 				A5446C971BBAB0AB002177F4 /* GTLVerbatmAppIdentifierListWrapper.h */,
@@ -1448,6 +1461,21 @@
 			name = "Constants ";
 			sourceTree = "<group>";
 		};
+		C7BF1AA21C57EF4A00CEDE4B /* Parse database files */ = {
+			isa = PBXGroup;
+			children = (
+				C7BF1AA31C57EFC000CEDE4B /* Post_BackendObject.h */,
+				C7BF1AA41C57EFC000CEDE4B /* Post_BackendObject.m */,
+				C7BF1AA61C57F5F500CEDE4B /* Photo_BackendObject.h */,
+				C7BF1AA71C57F5F500CEDE4B /* Photo_BackendObject.m */,
+				C7BF1AA91C57F60600CEDE4B /* Video_BackendObject.h */,
+				C7BF1AAA1C57F60600CEDE4B /* Video_BackendObject.m */,
+				C7BF1AAC1C57F61F00CEDE4B /* Page_BackendObject.h */,
+				C7BF1AAD1C57F61F00CEDE4B /* Page_BackendObject.m */,
+			);
+			name = "Parse database files";
+			sourceTree = "<group>";
+		};
 		C7C699FD1BF8191A006B5260 /* Views to Edit AVE Content */ = {
 			isa = PBXGroup;
 			children = (
@@ -1780,6 +1808,7 @@
 				A5E85FA51B911DA900E148D0 /* GTMHTTPFetcherService.m in Sources */,
 				C7E093EC1BF98BE200A3276A /* OpenCollectionView.m in Sources */,
 				A57A93051B55E835006C2597 /* VerbatmCameraView.m in Sources */,
+				C7BF1AAE1C57F61F00CEDE4B /* Page_BackendObject.m in Sources */,
 				C77F321E1B6D5D1800E87C25 /* bugSubmissionFormVC.m in Sources */,
 				A5AA31C11B9FCDDC00D8D20C /* GTLVerbatmAppPage.m in Sources */,
 				A5AA31C61B9FCDDC00D8D20C /* GTLVerbatmAppPOVInfo.m in Sources */,
@@ -1791,6 +1820,7 @@
 				A5446C961BBA3C33002177F4 /* CustomNavigationBar.m in Sources */,
 				A5CA611B1B9CC41F009D9D11 /* TopicsTableViewCell.m in Sources */,
 				C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */,
+				C7BF1AA51C57EFC000CEDE4B /* Post_BackendObject.m in Sources */,
 				9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */,
 				A5E85F991B911DA900E148D0 /* GTLQuery.m in Sources */,
 				A5E85FA01B911DA900E148D0 /* GTLRuntimeCommon.m in Sources */,
@@ -1839,6 +1869,7 @@
 				C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */,
 				C7E6C1461A4E394600863893 /* VideoAVE.m in Sources */,
 				A5E85FA81B911DA900E148D0 /* GTMHTTPFetchHistory.m in Sources */,
+				C7BF1AA81C57F5F500CEDE4B /* Photo_BackendObject.m in Sources */,
 				C7E65F6F1B92EB650042AD99 /* POVView.m in Sources */,
 				C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */,
 				A5AA31BF1B9FCDDC00D8D20C /* GTLVerbatmAppImage.m in Sources */,
@@ -1857,6 +1888,7 @@
 				C716E9D21BD6C338001B769D /* Analytics.m in Sources */,
 				C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */,
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
+				C7BF1AAB1C57F60600CEDE4B /* Video_BackendObject.m in Sources */,
 				A5E85FAE1B911DA900E148D0 /* GTMOAuth2SignIn.m in Sources */,
 				A5E85FA71B911DA900E148D0 /* GTMHTTPFetcherLogging.m in Sources */,
 				A5E85F9B1B911DA900E148D0 /* GTLService.m in Sources */,

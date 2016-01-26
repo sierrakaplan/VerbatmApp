@@ -132,7 +132,6 @@
 	NSError* error = (NSError*) notification.object;
 	NSLog(@"Error finding current user: %@", error.description);
 	//TODO: only do this if have a connection, or only a certain number of times
-//	[[UserManager sharedInstance] queryForCurrentUser];
 }
 
 #pragma mark - Tab bar controller -
