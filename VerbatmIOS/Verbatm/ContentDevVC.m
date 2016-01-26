@@ -1465,11 +1465,11 @@ rowHeightForComponent:(NSInteger)component{
     
     CGFloat frameHeight = firstInList.frame.size.height - (2*offsetFromPinchViewCenters);
     
-    CGFloat frameWidth = (frameHeight * 504.f)/360.f ;
+    CGFloat frameWidth = (frameHeight * 367.f)/331.f ;
     
     
     
-    CGRect instructionFrame = CGRectMake(firstInList.center.x, firstInList.center.y + offsetFromPinchViewCenters,
+    CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,
                                          frameWidth,frameHeight);
     
     

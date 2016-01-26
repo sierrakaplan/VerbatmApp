@@ -26,19 +26,11 @@
 
 -(void) signUpOrLoginUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
 
--(void) loginUserFromEmail: (NSString*)email andPassword:(NSString*)password;
-
--(void) queryForCurrentUser;
-
--(GTLVerbatmAppVerbatmUser*) getCurrentUser;
-
 -(BOOL) currentUserLikesStory: (PovInfo*) povInfo;
 
 -(void) logOutUser;
 
 //TODO:
 -(void) changeUserProfilePhoto: (UIImage*) image;
-
--(AnyPromise*) updateCurrentUser: (GTLVerbatmAppVerbatmUser*) currentUser;
 
 @end

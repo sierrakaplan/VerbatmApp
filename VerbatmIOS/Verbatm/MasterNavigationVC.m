@@ -99,9 +99,9 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-//	if (![PFUser currentUser].isAuthenticated) {
-//		[self bringUpLogin];
-//	}
+	if (![PFUser currentUser].isAuthenticated) {
+		[self bringUpLogin];
+	}
 }
 
 -(void)viewDidDisappear:(BOOL)animated {
@@ -122,9 +122,9 @@
 #pragma mark - User Manager Delegate -
 
 -(void) loginSucceeded:(NSNotification*) notification {
-	GTLVerbatmAppVerbatmUser* user = notification.object;
+	PFUser * user = notification.object;
 	[[Crashlytics sharedInstance] setUserEmail: user.email];
-	[[Crashlytics sharedInstance] setUserName: user.name];
+	[[Crashlytics sharedInstance] setUserName: [user username]];
 	[self.profileVC updateUserInfo];
 }
 
@@ -147,7 +147,7 @@
                                                        imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                                         scaledToSize:CGSizeMake(40.f, 40.f)];
     
-    deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:nil];
+    deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
     deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
     self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.channelListView];
@@ -171,7 +171,7 @@
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
 	CGSize tabBarItemSize = CGSizeMake(self.tabBarController.tabBar.frame.size.width/numTabs,
 									   self.tabBarController.tabBarHeight);
-	[self.tabBarController.tabBar setTintColor:SELECTED_TAB_ICON_COLOR];
+	//[self.tabBarController.tabBar setTintColor:SELECTED_TAB_ICON_COLOR];
 	// Sets background of unselected UITabBarItem
 	[self.tabBarController.tabBar setBackgroundImage: [self getUnselectedTabBarItemImageWithSize: tabBarItemSize]];
 	// Sets the background color of the selected UITabBarItem
@@ -199,9 +199,11 @@
 -(void)createViewControllers {
     
     self.channelListView = [[UserAndChannelListsTVC alloc] init];
-    self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"Search"
-                                                                    image:nil
-                                                            selectedImage:nil];
+    self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil
+                                                                    image:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
+                                                            selectedImage:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]];
+    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+    
     
     [self.channelListView presentAllVerbatmChannels];
     
@@ -253,7 +255,7 @@
 	[button setBackgroundColor:[UIColor clearColor]];
 	[button addTarget:self action:@selector(revealADK) forControlEvents:UIControlEventTouchUpInside];
 
-	[self.tabBarController.tabBar addSubview:tabView];
+	//[self.tabBarController.tabBar addSubview:tabView];
 	[self.tabBarController.tabBar addSubview:button];
 }
 

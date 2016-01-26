@@ -103,9 +103,11 @@
 
 #define CREATE_REARRANGE_ICON @"rearrange_icon"
 
-#define SWIPE_UP_DOWN_INSTRUCTION @"swipeUp_Instructions"
-#define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"pinch_instruction"
-#define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions"
+#define SWIPE_UP_DOWN_INSTRUCTION @"swipeUp_Instructions_black"
+#define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"pinch_instruction_black"
+#define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions_black"
 
+
+#define SEARCH_TAB_BAR_ICON @"search_icon"
 
 #endif /* Icons_h */

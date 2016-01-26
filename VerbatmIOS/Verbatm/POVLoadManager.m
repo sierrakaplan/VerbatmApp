@@ -239,16 +239,16 @@
 
 // update povInfo just so that it shows up right in the feed
 -(void) currentUserLiked: (BOOL) liked povInfo: (PovInfo*) povInfo {
-	GTLVerbatmAppVerbatmUser* currentUser = [[UserManager sharedInstance] getCurrentUser];
-	NSMutableArray* updatedUsersWhoHaveLikedThisPOV = [[NSMutableArray alloc] initWithArray:povInfo.userIDsWhoHaveLikedThisPOV copyItems:NO];
-	if (liked && ![updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
-		[updatedUsersWhoHaveLikedThisPOV addObject: currentUser.identifier];
-	} else if(!liked && [updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
-		[updatedUsersWhoHaveLikedThisPOV removeObject: currentUser.identifier];
-	}
-	povInfo.userIDsWhoHaveLikedThisPOV = updatedUsersWhoHaveLikedThisPOV;
-	long long newNumUpVotes = (long long) updatedUsersWhoHaveLikedThisPOV.count;
-	povInfo.numUpVotes = [NSNumber numberWithLongLong: newNumUpVotes];
+//	GTLVerbatmAppVerbatmUser* currentUser = [[UserManager sharedInstance] getCurrentUser];
+//	NSMutableArray* updatedUsersWhoHaveLikedThisPOV = [[NSMutableArray alloc] initWithArray:povInfo.userIDsWhoHaveLikedThisPOV copyItems:NO];
+//	if (liked && ![updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
+//		[updatedUsersWhoHaveLikedThisPOV addObject: currentUser.identifier];
+//	} else if(!liked && [updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
+//		[updatedUsersWhoHaveLikedThisPOV removeObject: currentUser.identifier];
+//	}
+//	povInfo.userIDsWhoHaveLikedThisPOV = updatedUsersWhoHaveLikedThisPOV;
+//	long long newNumUpVotes = (long long) updatedUsersWhoHaveLikedThisPOV.count;
+//	povInfo.numUpVotes = [NSNumber numberWithLongLong: newNumUpVotes];
 }
 
 #pragma mark - Lazy Instantiation -

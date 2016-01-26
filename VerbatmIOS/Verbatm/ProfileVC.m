@@ -39,7 +39,7 @@
 @property (nonatomic) CGRect profileNavBarFrameOnScreen;
 @property (nonatomic) CGRect profileNavBarFrameOffScreen;
 @property (nonatomic) BOOL contentCoveringScreen;
-@property (weak, nonatomic) GTLVerbatmAppVerbatmUser* currentUser;
+@property (weak, nonatomic) PFUser* currentUser;
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
 
@@ -137,13 +137,13 @@
 	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - (PROFILE_NAV_BAR_HEIGHT+ ARROW_EXTENSION_BAR_HEIGHT), self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
     [self updateUserInfo];
     self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:self.profileNavBarFrameOnScreen
-												   andChannels:self.channels andUserName:self.currentUser.name isCurrentLoggedInUser:self.isCurrentUserProfile];
+												   andChannels:self.channels andUserName:[self.currentUser username] isCurrentLoggedInUser:self.isCurrentUserProfile];
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
 } 
 
 -(void) updateUserInfo {
-    self.currentUser = [[UserManager sharedInstance] getCurrentUser];
+    self.currentUser = [PFUser currentUser];
 }
 
 -(void)addClearScreenGesture{

@@ -268,7 +268,7 @@
     
     
     if(self.pageAves.count > 1){
-        [self presentSwipeUpAndDownInstruction];
+        //[self presentSwipeUpAndDownInstruction];
     }
     
     [self presentFilterSwipeForInstructionWithAve:nextPage];
@@ -285,12 +285,15 @@
     
     UIImage * instructionImage = [UIImage imageNamed:SWIPE_UP_DOWN_INSTRUCTION];
     
-    CGFloat frameHeight = 100.f;
-    CGFloat frameWidth = ((frameHeight * 2)/3.f);
+    CGFloat frameHeight = 120.f;
+    CGFloat frameWidth = ((frameHeight * 117.f)/284.f);
     
     
-    CGRect instructionFrame = CGRectMake(self.frame.size.width - frameWidth - 10.f,
-                                         self.frame.size.height - (frameHeight + 50.f), frameWidth,frameHeight );
+    CGFloat frameOriginX = self.frame.size.width - frameWidth - 10.f;
+    CGFloat frameOriginY = (self.frame.size.height/2.f) + 50.f;
+    
+    CGRect instructionFrame = CGRectMake(frameOriginX,frameOriginY, frameWidth,frameHeight);
+                                         
     
     
     self.swipeUpAndDownInstruction = [[UIImageView alloc] initWithImage:instructionImage];
@@ -318,24 +321,24 @@
         
         UIImageView * filterInstruction = [[UIImageView alloc] initWithImage:instructionImage];
         filterInstruction.backgroundColor = [UIColor clearColor];
-
+        
+        CGFloat imageOriginX = (self.frame.size.width/2.f) - (frameWidth/2.f);
+        
+        
         if(isPhotoAve){
-           filterInstruction.frame = CGRectMake(10.f,
-                                          self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
-            
-            filterInstruction.center = CGPointMake(self.frame.size.width/2.f, self.frame.size.height/2.f);
-            
-
+           filterInstruction.frame = CGRectMake(imageOriginX,
+                                                (self.frame.size.height/2.f) + frameHeight,
+                                                frameWidth, frameHeight);
         }else{
             
-          filterInstruction.frame = CGRectMake(10.f,
+          filterInstruction.frame = CGRectMake(imageOriginX,
                                           self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
 
         }
         
         [self addSubview:filterInstruction];
         [self bringSubviewToFront:filterInstruction];
-        //commented out for debugging but should not be 
+        //commented out for debugging but should not be
         //[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
     }
     

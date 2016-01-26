@@ -96,25 +96,25 @@
  */
 
 - (void) publish {
-	NSLog(@"Attempting to publish POV...");
-	self.publishingProgress = [NSProgress progressWithTotalUnitCount: self.totalProgressUnits];
-	[self.publishingProgress setCompletedUnitCount:PROGRESS_UNITS_FOR_INITIAL_PROGRESS];
-
-	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
-	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
-	povObject.numUpVotes = [NSNumber numberWithLongLong: 0];
-	povObject.title = self.title;
-	UserManager* userManager = [UserManager sharedInstance];
-	povObject.creatorUserId = [userManager getCurrentUser].identifier;
-
-	[self storePagesFromPinchViews: self.pinchViews].then(^(NSArray* pageIds) {
-		povObject.pageIds = pageIds;
-		[self insertPOV: povObject];
-	}).catch(^(NSError *error){
-		//This can catch at any part in the chain
-		NSLog(@"Error publishing POV: %@", error.description);
-		[self.publishingProgress cancel];
-	});
+//	NSLog(@"Attempting to publish POV...");
+//	self.publishingProgress = [NSProgress progressWithTotalUnitCount: self.totalProgressUnits];
+//	[self.publishingProgress setCompletedUnitCount:PROGRESS_UNITS_FOR_INITIAL_PROGRESS];
+//
+//	GTLVerbatmAppPOV* povObject = [[GTLVerbatmAppPOV alloc] init];
+//	povObject.datePublished = [GTLDateTime dateTimeWithDate:[NSDate date] timeZone:[NSTimeZone localTimeZone]];
+//	povObject.numUpVotes = [NSNumber numberWithLongLong: 0];
+//	povObject.title = self.title;
+//	UserManager* userManager = [UserManager sharedInstance];
+//	povObject.creatorUserId = [userManager getCurrentUser].identifier;
+//
+//	[self storePagesFromPinchViews: self.pinchViews].then(^(NSArray* pageIds) {
+//		povObject.pageIds = pageIds;
+//		[self insertPOV: povObject];
+//	}).catch(^(NSError *error){
+//		//This can catch at any part in the chain
+//		NSLog(@"Error publishing POV: %@", error.description);
+//		[self.publishingProgress cancel];
+//	});
 }
 
 // when (stored every page)
