@@ -8,12 +8,8 @@
 
 #import "Video_BackendObject.h"
 #import <Parse/PFUser.h>
+#import "ParseBackendKeys.h"
 
-#define VIDEO_INDEX_KEY @"Video Index" //if we have multiple videos how they are organized
-#define VIDEO_PFCLASS_KEY @"Video"
-#define User_Key @"user"
-#define BLOB_STORE_URL @"Blob Store Url"
-#define VIDEO_PAGE_OBJECT_KEY @"Page"
 
 @implementation Video_BackendObject
 

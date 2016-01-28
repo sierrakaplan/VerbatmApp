@@ -8,19 +8,13 @@
 
 #import "Photo_BackendObject.h"
 #import <Parse/PFUser.h>
+#import "ParseBackendKeys.h"
 
 
-#define PHOTO_PFCLASS_KEY @"Photo Class"
-#define PHOTO_TEXT_KEY @"Photo Text"
-#define PHOTO_TEXT_YOFFSET_KEY @"Text Y Offset"
-#define PHOTO_IMAGEURL_KEY @"Blob Store Url"
-#define PHOTO_PAGE_OBJECT_KEY @"Page Object"
-#define PHOTO_INDEX_KEY @"Photo Index"
-#define PHOTO_USER_KEY @"Users Photo"
 
 @implementation Photo_BackendObject
 
-+(void)saveImage:(UIImage  *) image withText:(NSString *) userText andTextYPosition:(NSInteger) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject;
++(void)saveImage:(UIImage  *) image withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject;
 {
     
     //save the image to the GAE blobstore -- TODO Sierra (new)
@@ -31,14 +25,14 @@
 }
 
 
-+(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL withText:(NSString *) userText andTextYPosition:(NSInteger) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject{
++(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject{
     
     PFObject * newPhotoObject = [PFObject objectWithClassName:PHOTO_PFCLASS_KEY];
     
     [newPhotoObject setObject:[NSNumber numberWithInteger:photoIndex] forKey:PHOTO_INDEX_KEY];
     [newPhotoObject setObject:imageURL forKey:PHOTO_IMAGEURL_KEY];
     [newPhotoObject setObject:pageObject forKey:PHOTO_PAGE_OBJECT_KEY];
-    [newPhotoObject setObject:[NSNumber numberWithInteger:textYPosition] forKey:PHOTO_TEXT_YOFFSET_KEY];
+    [newPhotoObject setObject:textYPosition forKey:PHOTO_TEXT_YOFFSET_KEY];
     [newPhotoObject setObject:userText forKey:PHOTO_TEXT_KEY];
     
     [newPhotoObject saveInBackground];

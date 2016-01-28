@@ -12,18 +12,21 @@
 @property (nonatomic, readwrite) NSString * name;
 @property (nonatomic, readwrite) NSNumber * numberOfFollowers;
 @property (nonatomic, readwrite) NSString * userName;//name of user that owns the channel
+@property (nonatomic, readwrite) PFObject * parseChannelObject;//name of user that owns the channel TODO--SET THIS OBJECT
 
 
 @end
 
 @implementation Channel
--(instancetype) initWithChannelName:(NSString *) channelName numberOfFollowers:(NSNumber *) numberOfFollowers andUserName:(NSString *) username{
+-(instancetype) initWithChannelName:(NSString *) channelName numberOfFollowers:(NSNumber *) numberOfFollowers
+                        andUserName:(NSString *) username andParseChannelObject:(PFObject *) parseChannelObject{
     
     self = [super init];
     if(self){
         self.name = channelName;
         self.numberOfFollowers = numberOfFollowers;
         self.userName = username;
+        self.parseChannelObject = (parseChannelObject) ? parseChannelObject : NULL;
     }
     return self;
 }

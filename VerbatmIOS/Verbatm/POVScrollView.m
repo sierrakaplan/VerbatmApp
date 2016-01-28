@@ -70,7 +70,7 @@
 			[povView renderAVES: aves];
 			
             if (self.feedScrollView) {
-                Channel * povChannel = [[Channel alloc] initWithChannelName:pov.channelName numberOfFollowers:@(20) andUserName:pov.creatorName];
+                Channel * povChannel ;//= [[Channel alloc] initWithChannelName:pov.channelName numberOfFollowers:@(20) andUserName:pov.creatorName]; TODO
 				[povView addCreatorInfoFromChannel:povChannel];
 			}
             
