@@ -15,7 +15,7 @@
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
 #import "ContentPageElementScrollView.h"
-
+#import "Channel_BackendObject.h"
 #import "Durations.h"
 
 #import "EditContentVC.h"
@@ -33,7 +33,7 @@
 #import "PinchView.h"
 #import "POVPublisher.h"
 #import "PreviewDisplayView.h"
-
+#import "Post_BackendObject.h"
 #import "Notifications.h"
 #import "MediaDevVC.h"
 #import "MediaSelectTile.h"
@@ -162,6 +162,8 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 #define REPLACE_PHOTO_XsOFFSET 10
 
 #define COVER_PIC_RADIUS (self.defaultPinchViewRadius * 3.f/4.f)
+
+@property(nonatomic, strong) NSMutableArray * ourPosts;
 @end
 
 
@@ -171,6 +173,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+    self.ourPosts = [[NSMutableArray alloc] init];//temp
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
@@ -1886,9 +1889,15 @@ rowHeightForComponent:(NSInteger)component{
     }
     //Sierra TODO - publish post
     //save story with provided channel name here
+    Channel * channel = [[Channel alloc] initWithChannelName:channelTitle
+                                           numberOfFollowers:[NSNumber numberWithInt:0]
+                                                 andUserName:[PFUser currentUser].username andParseChannelObject:NULL];
+    Channel_BackendObject * newCBO = [[Channel_BackendObject alloc] init];
+    [self.ourPosts addObject:newCBO];
+    [newCBO createPostFromPinchViews:pinchViews toChannel:channel];
     
-    [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-    [self cleanUp];
+//    [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+//    [self cleanUp];
 }
 
 #pragma mark - Tap to clear view -

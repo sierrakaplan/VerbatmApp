@@ -11,6 +11,6 @@
 #import "PinchView.h"
 @interface Page_BackendObject : NSObject
 //make sure the post is arleady saved in the database before this function is called
-+(void)savePageWithIndex:(NSInteger) pageIndex andPinchView:(PinchView *) pinchView andPost:(PFObject *) post;
+-(void)savePageWithIndex:(NSInteger) pageIndex andPinchView:(PinchView *) pinchView andPost:(PFObject *) post;
 
 @end

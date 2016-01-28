@@ -60,9 +60,9 @@
     
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-        [self createAndAddListVC];
-        [self createNavigationBar];
-        [self addClearScreenGesture];
+       // [self createAndAddListVC];
+       // [self createNavigationBar];
+        //[self addClearScreenGesture];
     }];
     
 }

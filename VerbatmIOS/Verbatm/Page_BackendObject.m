@@ -10,19 +10,30 @@
 #import "ParseBackendKeys.h"
 #import "Photo_BackendObject.h"
 #import "Video_BackendObject.h"
+@interface Page_BackendObject ()
+@property (strong) NSMutableArray * photoAndVideoSavers;
+@end
 @implementation Page_BackendObject
 
 
-+(void)savePageWithIndex:(NSInteger) pageIndex andPinchView:(PinchView *) pinchView andPost:(PFObject *) post{
+-(instancetype)init{
+    self = [super init];
+    if(self){
+        self.photoAndVideoSavers = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
+-(void)savePageWithIndex:(NSInteger) pageIndex andPinchView:(PinchView *) pinchView andPost:(PFObject *) post{
     
     //create and save page object
-    PFObject * newPhotoObject = [PFObject objectWithClassName:PAGE_PFCLASS_KEY];
-    [newPhotoObject setObject:[NSNumber numberWithInteger:pageIndex] forKey:PAGE_INDEX_KEY];
-    [newPhotoObject setObject:post forKey:PAGE_POST_KEY];
-    [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+    PFObject * newPageObject = [PFObject objectWithClassName:PAGE_PFCLASS_KEY];
+    [newPageObject setObject:[NSNumber numberWithInteger:pageIndex] forKey:PAGE_INDEX_KEY];
+    [newPageObject setObject:post forKey:PAGE_POST_KEY];
+    [newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){//now we save the media for the specific
-            [Page_BackendObject storeImagesFromPinchView:pinchView withPageReference:newPhotoObject];
-            [Page_BackendObject storeVideosFromPinchView:pinchView withPageReference:newPhotoObject];
+            [self storeImagesFromPinchView:pinchView withPageReference:newPageObject];
+//            [self storeVideosFromPinchView:pinchView withPageReference:newPageObject];
         }
     }];
     
@@ -32,7 +43,7 @@
 // when(stored every image)
 // Each storeimage promise should resolve to the id of the GTL Image just stored
 // So this promise should resolve to an array of gtl image id's
-+(void) storeImagesFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
+-(void) storeImagesFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
     if (pinchView.containsImage)
     {
         //Publishing images sequentially
@@ -43,7 +54,10 @@
             UIImage* uiImage = photoWithText[0];
             NSString* text = photoWithText[1];
             NSNumber* textYPosition = photoWithText[2];
-            [Photo_BackendObject saveImage:uiImage withText:text andTextYPosition:textYPosition atPhotoIndex:i andPageObject:page];
+            
+            Photo_BackendObject * photoObj = [[Photo_BackendObject alloc] init];
+            [self.photoAndVideoSavers addObject:photoObj];
+            [photoObj saveImage:uiImage withText:text andTextYPosition:textYPosition atPhotoIndex:i andPageObject:page];
         }
     }
 }

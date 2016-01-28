@@ -6,26 +6,34 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+
+#import "GTLVerbatmAppImage.h"
+
 #import "Photo_BackendObject.h"
 #import <Parse/PFUser.h>
 #import "ParseBackendKeys.h"
+#import "POVPublisher.h"
 
 
+@interface Photo_BackendObject ()
+    @property (nonatomic) POVPublisher * mediaPublisher;
+@end
 
 @implementation Photo_BackendObject
 
-+(void)saveImage:(UIImage  *) image withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject;
+-(void)saveImage:(UIImage  *) image withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject;
 {
+    self.mediaPublisher = [[POVPublisher alloc] init];
+    [self.mediaPublisher storeImage:image withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
+        NSString * blobStoreUrl = gtlImage.servingUrl;
+        //in completion block of blobstore save
+        [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl withText:userText andTextYPosition:textYPosition atPhotoIndex:photoIndex andPageObject:pageObject];
+    }];
     
-    //save the image to the GAE blobstore -- TODO Sierra (new)
-    NSString * blobStoreUrl;//set this with the url from the blobstore
-    
-    //in completion block of blobstore save
-    [Photo_BackendObject createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl withText:userText andTextYPosition:textYPosition atPhotoIndex:photoIndex andPageObject:pageObject];
 }
 
 
-+(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject{
+-(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject{
     
     PFObject * newPhotoObject = [PFObject objectWithClassName:PHOTO_PFCLASS_KEY];
     

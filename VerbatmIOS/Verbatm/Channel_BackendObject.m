@@ -13,16 +13,29 @@
 #import "Channel_BackendObject.h"
 #import "Post_BackendObject.h"
 #import "ParseBackendKeys.h"
+
+@interface Channel_BackendObject ()
+@property (nonatomic) NSMutableArray * ourPosts;
+@end
+
 @implementation Channel_BackendObject
 
-+(Channel *) createChannelWithName:(NSString *) channelName {
+-(instancetype)init{
+    self = [super init];
+    if(self){
+        self.ourPosts = [[NSMutableArray alloc] init];
+    }
+    return self;
+}
+
+-(Channel *) createChannelWithName:(NSString *) channelName {
     
-   return [Channel_BackendObject createChannelWithName:channelName andCompletionBlock:NULL];
+   return [self createChannelWithName:channelName andCompletionBlock:NULL];
     
 }
 
 //private create channel function
-+(Channel *)createChannelWithName:(NSString *)channelName andCompletionBlock:(void(^)(Channel *))block {
+-(Channel *)createChannelWithName:(NSString *)channelName andCompletionBlock:(void(^)(Channel *))block {
     
     PFObject * newChannelObject = [PFObject objectWithClassName:CHANNEL_PFCLASS_KEY];
     [newChannelObject setObject:channelName forKey:CHANNEL_NAME_KEY];
@@ -49,14 +62,19 @@
 }
 
 //returns channel when we create a new one
-+(Channel *) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel{
+-(Channel *) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel{
     
     if(channel.parseChannelObject){
-        [Post_BackendObject createPostFromPinchViews:pinchViews toChannel:channel];
+        
+        Post_BackendObject * newPost = [[Post_BackendObject alloc]init];
+        [self.ourPosts addObject:newPost];
+        [newPost createPostFromPinchViews:pinchViews toChannel:channel];
         return NULL;
     }else{
-       return  [Channel_BackendObject createChannelWithName:channel.name andCompletionBlock:^(Channel * channelObject){
-                    [Post_BackendObject createPostFromPinchViews:pinchViews toChannel:channelObject];
+       return  [self createChannelWithName:channel.name andCompletionBlock:^(Channel * channelObject){
+           Post_BackendObject * newPost = [[Post_BackendObject alloc]init];
+           [self.ourPosts addObject:newPost];
+                    [newPost createPostFromPinchViews:pinchViews toChannel:channelObject];
                 }];
     }
 }

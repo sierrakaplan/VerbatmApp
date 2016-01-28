@@ -9,37 +9,37 @@
 #ifndef ParseBackendKeys_h
 #define ParseBackendKeys_h
 
-#define PHOTO_PFCLASS_KEY @"Photo Class"
-#define PHOTO_TEXT_KEY @"Photo Text"
-#define PHOTO_TEXT_YOFFSET_KEY @"Text Y Offset"
-#define PHOTO_IMAGEURL_KEY @"Blob Store Url"
-#define PHOTO_PAGE_OBJECT_KEY @"Page Object"
-#define PHOTO_INDEX_KEY @"Photo Index"
-#define PHOTO_USER_KEY @"Users Photo"
+#define PHOTO_PFCLASS_KEY @"PhotoClass"
+#define PHOTO_TEXT_KEY @"PhotoText"
+#define PHOTO_TEXT_YOFFSET_KEY @"TextYOffset"
+#define PHOTO_IMAGEURL_KEY @"BlobStoreUrl"
+#define PHOTO_PAGE_OBJECT_KEY @"PageObject"
+#define PHOTO_INDEX_KEY @"PhotoIndex"
+#define PHOTO_USER_KEY @"UsersPhoto"
 
 
 
-#define VIDEO_INDEX_KEY @"Video Index" //if we have multiple videos how they are organized
-#define VIDEO_PFCLASS_KEY @"Video"
+#define VIDEO_INDEX_KEY @"VideoIndex" //if we have multiple videos how they are organized
+#define VIDEO_PFCLASS_KEY @"VideoClass"
 #define User_Key @"user"
-#define BLOB_STORE_URL @"Blob Store Url"
+#define BLOB_STORE_URL @"BlobStoreUrl"
 #define VIDEO_PAGE_OBJECT_KEY @"Page"
 
 
-#define PAGE_PFCLASS_KEY @"Page Class"
-#define PAGE_INDEX_KEY @"Page Index"
-#define PAGE_POST_KEY @"Post for Page" // the post this page belongs to
+#define PAGE_PFCLASS_KEY @"PageClass"
+#define PAGE_INDEX_KEY @"PageIndex"
+#define PAGE_POST_KEY @"PostForPage" // the post this page belongs to
 
 
-#define POST_PFCLASS_KEY @"Post Class"
-#define POST_CHANNEL_KEY @"Channel for post" //the channel the post lives in
-#define POST_SIZE_KEY @"Post Size" //number of pages on this post
-#define POST_LIKES_NUM_KEY @"Number of Likes"
-#define POST_NUM_SHARES_KEY @"Number of Shares" //number of times this post has been shared
-#define POST_ORIGINAL_CREATOR_KEY @"Original Creator" //Original creator or post
+#define POST_PFCLASS_KEY @"PostClass"
+#define POST_CHANNEL_KEY @"ChannelForPost" //the channel the post lives in
+#define POST_SIZE_KEY @"PostSize" //number of pages on this post
+#define POST_LIKES_NUM_KEY @"NumberOfLikes"
+#define POST_NUM_SHARES_KEY @"NumberOfShares" //number of times this post has been shared
+#define POST_ORIGINAL_CREATOR_KEY @"OriginalCreator" //Original creator or post
 
-#define CHANNEL_PFCLASS_KEY @"Channel Class"
-#define CHANNEL_NAME_KEY @"Chanel Name"
-#define CHANNEL_NUM_POSTS_KEY @"Number of Posts"
-#define CHANNEL_NUM_FOLLOWERS_KEY @"Number of Followers"
+#define CHANNEL_PFCLASS_KEY @"ChannelClass"
+#define CHANNEL_NAME_KEY @"ChanelName"
+#define CHANNEL_NUM_POSTS_KEY @"NumberOfPosts"
+#define CHANNEL_NUM_FOLLOWERS_KEY @"NumberOfFollowers"
 #endif /* ParseBackendKeys_h */
