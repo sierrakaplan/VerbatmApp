@@ -165,11 +165,7 @@
         
         CGFloat width = ([currentButton isKindOfClass:[ChannelButtons class]]) ? [(ChannelButtons *)currentButton suggestedWidth] : ((UIView *)currentButton).frame.size.width;
         
-        
-        if((self.tabs.count == 2) && (i == 1)){
-            //basically we make sure the createchannel key reaches the end of the screen
-            width = INITIAL_BUTTON_WIDTH;
-        }
+        if(i == (self.tabs.count-1)) width = ((UIView*)currentButton).frame.size.width;
         
         ((UIView *)currentButton).frame = CGRectMake(originDiff, ((ChannelButtons *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
         originDiff += width;

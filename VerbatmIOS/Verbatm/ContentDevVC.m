@@ -189,6 +189,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 	self.titleField.delegate = self;
 	self.mainScrollView.delegate = self;
     [self addBackgroundImage];
+    [self loadChannelsAndCreateTicker];
 }
 
 
@@ -1883,30 +1884,31 @@ rowHeightForComponent:(NSInteger)component{
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
 
-    NSString * channelTitle;
+    Channel * channelToPostIn;
     if(self.currentPresentedPickerRow < self.userChannels.count){
-        UILabel * label = (UILabel *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
-        channelTitle = label.text;
+        
+        channelToPostIn = self.userChannels[self.currentPresentedPickerRow];
     }else{
         UITextField * textField = (UITextField *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
         if([textField.text isEqualToString:@""]){
-            //prompt user to add channel title
+            //prompt user to add channel title-- TODO
             
         }else{
-            channelTitle = textField.text;
-            //create channel
+            channelToPostIn = [[Channel alloc] initWithChannelName:textField.text numberOfFollowers:[NSNumber numberWithInt:0] andParseChannelObject:nil];
         }
     }
-    //save story with provided channel name here
-//    Channel * channel = [[Channel alloc] initWithChannelName:channelTitle
-//                                           numberOfFollowers:[NSNumber numberWithInt:0]
-//                                                 andUserName:[PFUser currentUser].username andParseChannelObject:NULL];
-//    Channel_BackendObject * newCBO = [[Channel_BackendObject alloc] init];
-//    [self.ourPosts addObject:newCBO];
-//    [newCBO createPostFromPinchViews:pinchViews toChannel:channel];
+   
+    Channel_BackendObject * newCBO = [[Channel_BackendObject alloc] init];
+    [self.ourPosts addObject:newCBO];
+    if(channelToPostIn){
+       channelToPostIn = [newCBO createPostFromPinchViews:pinchViews toChannel:channelToPostIn];
+        if(channelToPostIn){
+            //notify the profile that a new channel is created-- TODO
+        }
+    }
     
-//    [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-//    [self cleanUp];
+    [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+    [self cleanUp];
 }
 
 #pragma mark - Tap to clear view -
