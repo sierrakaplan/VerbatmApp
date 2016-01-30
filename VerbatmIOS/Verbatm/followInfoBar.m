@@ -7,9 +7,11 @@
 //
 
 #import "followInfoBar.h"
-
+#import "ParseBackendKeys.h"
+#import <Parse/PFUser.h>
 #import "Styles.h"
 #import "SizesAndPositions.h"
+#import "Notifications.h"
 
 @interface followInfoBar ()
 
@@ -26,9 +28,27 @@
     self = [super initWithFrame:frame];
     if(self){
         [self createButtonsWithNumberOfFollowers:myFollowers andWhoIFollow:whoIFollow];
+        [self registerForNotifications];
         [self formatView];
     }
     return self;
+}
+
+-(void)registerForNotifications{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loginSucceeded:)
+                                                 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
+                                               object:nil];
+}
+
+-(void) loginSucceeded: (NSNotification*) notification {
+    /*the user has logged in so we can update their follower info*/
+    
+    NSNumber * numberOfFollowers = [[PFUser currentUser] valueForKey:USER_NUMBER_OF_FOLLOWERS];
+    NSNumber * numberFollowing = [[PFUser currentUser] valueForKey:USER_NUMBER_OF_FOLLOWING];
+    
+    [self createButtonsWithNumberOfFollowers:numberOfFollowers andWhoIFollow:numberFollowing];
+    
 }
 
 -(void)formatView{
@@ -46,9 +66,18 @@
     
     CGRect whoIAmFollowingFrame = CGRectMake(self.frame.size.width/2.f,0.f, self.frame.size.width/2.f, THREAD_SCROLLVIEW_HEIGHT);
     
-    [self addSubview:[self getInfoViewWithTitle:@"Follower(s)" andNumber:myFollowers andViewFrame:myFollowersFrame andSelectionSelector:@selector(myFollowersListSelected)]];
+    if(self.myFollowers){
+        [self.myFollowers removeFromSuperview];
+        [self.whoIAmFollowing removeFromSuperview];
+        self.myFollowers = nil;
+        self.whoIAmFollowing = nil;
+    }
     
-     [self addSubview:[self getInfoViewWithTitle:@"Following" andNumber:whoIFollow andViewFrame:whoIAmFollowingFrame andSelectionSelector:@selector(whoIAmFollowingSeleceted)]];
+    self.myFollowers = [self getInfoViewWithTitle:@"Follower(s)" andNumber:myFollowers andViewFrame:myFollowersFrame andSelectionSelector:@selector(myFollowersListSelected)];
+    self.whoIAmFollowing = [self getInfoViewWithTitle:@"Following" andNumber:whoIFollow andViewFrame:whoIAmFollowingFrame andSelectionSelector:@selector(whoIAmFollowingSeleceted)];
+    
+    [self addSubview:self.myFollowers];
+    [self addSubview:self.whoIAmFollowing];
 }
 
 
@@ -71,7 +100,7 @@
     
     
     //create bolded number
-    NSString * numberString = [number stringValue];
+    NSString * numberString = (number) ? [number stringValue] : @"0";
     
     NSAttributedString * numberAttributed = [[NSAttributedString alloc] initWithString:numberString attributes:informationAttribute];
     

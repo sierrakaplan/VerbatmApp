@@ -12,6 +12,8 @@
 #import "GTMHTTPFetcherLogging.h"
 #import "Notifications.h"
 #import "PovInfo.h"
+#import "ParseBackendKeys.h"
+#import "ProfileVC.h"
 #import "UserManager.h"
 
 @interface UserManager()
@@ -82,7 +84,9 @@
 						// update current user
 						PFUser* currentUser = [PFUser currentUser];
                         currentUser.username = name;
-						[currentUser setObject: email forKey:@"email"];
+						[currentUser setObject: email forKey:USER_EMAIL_KEY];
+                        [currentUser setObject: [NSNumber numberWithInt:0] forKey:USER_NUMBER_OF_FOLLOWERS];
+                        [currentUser setObject: [NSNumber numberWithInt:0] forKey:USER_NUMBER_OF_FOLLOWING];
 						[currentUser saveInBackground];
 
 						//	TODO: get picture data then store image
@@ -94,7 +98,9 @@
 						if ([[FBSDKAccessToken currentAccessToken] hasGranted:@"user_friends"]) {
 							friends = result[@"friends"][@"data"];
 						}
-						// TODO: do something with friends
+                        
+						[self notifySuccessfulLogin];
+                        
 					}
                     
 				}];
@@ -110,7 +116,8 @@
 #pragma mark - Log user out -
 
 -(void) logOutUser {
-	[PFUser logOutInBackground];
+	[PFUser logOut];
+    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_SIGNED_OUT object:nil];
 }
 
 #pragma mark - Notifications -

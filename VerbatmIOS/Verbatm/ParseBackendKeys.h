@@ -9,6 +9,13 @@
 #ifndef ParseBackendKeys_h
 #define ParseBackendKeys_h
 
+
+#define USER_EMAIL_KEY @"Email"
+#define USER_NUMBER_OF_FOLLOWERS @"Follower(s)" //people that follow this user
+#define USER_NUMBER_OF_FOLLOWING @"Following" //people this user is following
+
+
+
 #define PHOTO_PFCLASS_KEY @"PhotoClass"
 #define PHOTO_TEXT_KEY @"PhotoText"
 #define PHOTO_TEXT_YOFFSET_KEY @"TextYOffset"
@@ -42,4 +49,5 @@
 #define CHANNEL_NAME_KEY @"ChanelName"
 #define CHANNEL_NUM_POSTS_KEY @"NumberOfPosts"
 #define CHANNEL_NUM_FOLLOWERS_KEY @"NumberOfFollowers"
+#define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
 #endif /* ParseBackendKeys_h */

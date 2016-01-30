@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Channel.h"
 
 @protocol CustomScrollingTabBarDelegate <NSObject>
 
@@ -22,5 +23,5 @@
 
 // array of NSString*
 -(void) displayTabs: (NSArray*) tabTitles;
-
+-(void)addNewChannelToList:(Channel *) channel;
 @end

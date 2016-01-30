@@ -16,6 +16,7 @@
 //will return the newly created channel otherwise
 -(Channel *) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel;
 
-
-+(NSMutableArray *) getChannelsForUser:(PFUser *) user;
+//takes a completion block that will be called with
+//an nsarray of the channels
++(void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 @end

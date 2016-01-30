@@ -11,6 +11,7 @@
 #import "Analytics.h"
 
 #import "Channel.h"
+#import "Channel_BackendObject.h"
 #import "ContentDevVC.h"
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
@@ -141,6 +142,10 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 //note when previewing
 @property (nonatomic) BOOL currentlyPreviewingContent;
 
+
+@property (nonatomic) NSArray * userChannels;
+
+
 #pragma mark - Preview -
 
 @property (strong, nonatomic) PreviewDisplayView * previewDisplayView;
@@ -173,21 +178,29 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    self.ourPosts = [[NSMutableArray alloc] init];//temp
+    self.ourPosts = [[NSMutableArray alloc] init];//temp--TODO. just for saving right now. Should move to masterVC
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
 	[self formatNavBar];
 	[self setKeyboardAppearance];
 	[self setCursorColor];
-	[self formatTitle];
-	[self createBaseSelector];
-	[self loadPOVFromUserDefaults];
 	[self setUpNotifications];
 	self.titleField.delegate = self;
 	self.mainScrollView.delegate = self;
-    
     [self addBackgroundImage];
+}
+
+
+
+-(void)loadChannelsAndCreateTicker{
+    [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:
+     ^(NSMutableArray * channels) {
+         self.userChannels = channels;
+         [self formatTitle];
+         [self createBaseSelector];
+         [self loadPOVFromUserDefaults];
+    }];
 }
 
 -(void) addBackgroundImage {    
@@ -429,9 +442,6 @@ rowHeightForComponent:(NSInteger)component{
 // Loads pinch views from user defaults
 -(void) loadPOVFromUserDefaults {
 	NSString* savedTitle = [[UserPovInProgress sharedInstance] title];
-	if (savedTitle && savedTitle.length) {
-		//self.titleField.text = savedTitle;
-	}
 
 	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
@@ -1887,14 +1897,13 @@ rowHeightForComponent:(NSInteger)component{
             //create channel
         }
     }
-    //Sierra TODO - publish post
     //save story with provided channel name here
-    Channel * channel = [[Channel alloc] initWithChannelName:channelTitle
-                                           numberOfFollowers:[NSNumber numberWithInt:0]
-                                                 andUserName:[PFUser currentUser].username andParseChannelObject:NULL];
-    Channel_BackendObject * newCBO = [[Channel_BackendObject alloc] init];
-    [self.ourPosts addObject:newCBO];
-    [newCBO createPostFromPinchViews:pinchViews toChannel:channel];
+//    Channel * channel = [[Channel alloc] initWithChannelName:channelTitle
+//                                           numberOfFollowers:[NSNumber numberWithInt:0]
+//                                                 andUserName:[PFUser currentUser].username andParseChannelObject:NULL];
+//    Channel_BackendObject * newCBO = [[Channel_BackendObject alloc] init];
+//    [self.ourPosts addObject:newCBO];
+//    [newCBO createPostFromPinchViews:pinchViews toChannel:channel];
     
 //    [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 //    [self cleanUp];

@@ -7,6 +7,9 @@
 //
 
 #import "CreatorAndChannelBar.h"
+#import "ParseBackendKeys.h"
+#import <Parse/PFObject.h>
+#import <Parse/PFUser.h>
 #import "Styles.h"
 /*
  Give a creator and channel name this creates labels for each.
@@ -32,7 +35,7 @@
     self = [super initWithFrame:frame];
     if(self){
         self.currentChannel = channel;
-        [self addCreatorName:channel.userName andChannelName:channel.name];
+        [self addCreatorName:[(PFUser *)[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] username] andChannelName:channel.name];
     }
     return self;
 }

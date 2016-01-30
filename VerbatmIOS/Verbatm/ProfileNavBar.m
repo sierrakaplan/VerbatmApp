@@ -20,9 +20,11 @@
 
 #import "ProfileNavBar.h"
 #import "ProfileInformationBar.h"
+#import "ParseBackendKeys.h"
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
+
 
 @interface ProfileNavBar () <CustomScrollingTabBarDelegate, ProfileInformationBarProtocol, followInfoBarDelegate>
 
@@ -49,12 +51,12 @@
 @implementation ProfileNavBar
 
 //expects an array of thread names (nsstring)
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUserName:(NSString *) userName isCurrentLoggedInUser:(BOOL) isCurrentUser{
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
     self = [super initWithFrame:frame];
     if(self){
-        [self createProfileHeaderWithUserName:userName isCurrentUser:isCurrentUser];
+        [self createProfileHeaderWithUserName:[profileUser username] isCurrentUser:isCurrentUser];
 		[self.threadNavScrollView displayTabs:channels];
-        [self createFollowersInfoView];
+        [self createFollowersInfoViewWithUser:profileUser];
         [self createArrowExtesion];
         [self createPanGesture];
         [self createTapGesture];
@@ -62,7 +64,20 @@
     return self;
 }
 
--(void)createFollowersInfoView {
+
+-(void)newChannelCreated:(Channel *)channel{
+    if(channel){
+        [self.threadNavScrollView addNewChannelToList:channel];
+    }
+}
+
+
+
+-(void)createFollowersInfoViewWithUser:(PFUser *) profileUser {
+    
+    NSNumber * numberOfFollowers = [profileUser valueForKey:USER_NUMBER_OF_FOLLOWERS];
+    NSNumber * numberFollowing = [profileUser valueForKey:USER_NUMBER_OF_FOLLOWING];
+    
     self.followersInfoFrameClosed = CGRectMake(0.f, self.threadNavScrollView.frame.origin.y +
                                       self.threadNavScrollView.frame.size.height,
                                       self.frame.size.width, 0);
@@ -71,8 +86,8 @@
                                                 self.frame.size.width, THREAD_SCROLLVIEW_HEIGHT);
     
     //to-do -- get the number of people I follow here and the number of people that follow me
-    
-    self.followInfoBar = [[followInfoBar alloc] initWithFrame:self.followersInfoFrameClosed WithNumberOfFollowers:[NSNumber numberWithInt:200] andWhoIFollow:[NSNumber numberWithInt:350]];
+
+    self.followInfoBar = [[followInfoBar alloc] initWithFrame:self.followersInfoFrameClosed WithNumberOfFollowers:numberOfFollowers andWhoIFollow:numberFollowing];
     self.followInfoBar.delegate = self;
     [self addSubview:self.followInfoBar];
 }

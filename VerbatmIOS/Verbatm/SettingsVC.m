@@ -15,6 +15,7 @@
 #import "SettingsVC.h"
 #import "Styles.h"
 
+#import "UserManager.h"
 @interface SettingsVC () <CustomNavigationBarDelegate,
 MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 
@@ -104,27 +105,29 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 
 //user selected cancel so remove settings view
 -(void) leftButtonPressed{
-    [self exitSettingsPage];
+    [self exitSettingsPageWithCompletionBlock:nil];
 }
 
 //user selected done. Save their changes and exit view
 -(void) rightButtonPressed {
     //save changes made by user to username
     
-    [self exitSettingsPage];
+    [self exitSettingsPageWithCompletionBlock:nil];
 }
 
 
--(void)exitSettingsPage{
+-(void)exitSettingsPageWithCompletionBlock:(void(^)())block{
     [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
-        //No code
+            if(block)block();
     }];
 }
 
 
 - (IBAction)signOutButtonSelected:(id)sender {
-    
-    //sign out functionality -- not sure what this should be 
+    //sign out functionality -- not sure what this should be
+    [self exitSettingsPageWithCompletionBlock:^{
+        [[UserManager sharedInstance] logOutUser];
+    }];
 }
 
 

@@ -36,6 +36,24 @@
 	return self;
 }
 
+
+-(void)addNewChannelToList:(Channel *) channel {
+    
+    UIView * createChannelView = [self.tabs lastObject];
+    CGPoint newChannelOrigin = createChannelView.frame.origin;
+    UIButton * channelButton = [self getChannelTitleButton:channel andOrigin:newChannelOrigin];
+    
+    [self.tabs insertObject:channelButton atIndex:[self.tabs indexOfObject:createChannelView]];
+    
+    CGRect newCreateChannelFrame = CGRectMake(channelButton.frame.origin.x + channelButton.frame.size.width,
+                                              createChannelView.frame.origin.y,
+                                              createChannelView.frame.size.width,
+                                              createChannelView.frame.size.height);
+    createChannelView.frame = newCreateChannelFrame;
+    [self addSubview:channelButton];
+    [self adjustTabFramesToSuggestedSizes];
+}
+
 -(void) displayTabs: (NSArray*) channels {
 	CGFloat xCoordinate = 0.f;
 	for(Channel * channel in channels) {
@@ -62,7 +80,7 @@
     [self addSubview:createChannelButton];
     
     [self adjustTabFramesToSuggestedSizes];
-	[self selectTab: self.tabs[0]];
+	if(self.tabs.count > 1)[self selectTab: self.tabs[0]];
     
 }
 
@@ -142,7 +160,16 @@
     NSUInteger originDiff = 0;
     for(int i = 0; i < self.tabs.count; i++) {
         id currentButton = self.tabs[i];
+        
+        
+        
         CGFloat width = ([currentButton isKindOfClass:[ChannelButtons class]]) ? [(ChannelButtons *)currentButton suggestedWidth] : ((UIView *)currentButton).frame.size.width;
+        
+        
+        if((self.tabs.count == 2) && (i == 1)){
+            //basically we make sure the createchannel key reaches the end of the screen
+            width = INITIAL_BUTTON_WIDTH;
+        }
         
         ((UIView *)currentButton).frame = CGRectMake(originDiff, ((ChannelButtons *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
         originDiff += width;

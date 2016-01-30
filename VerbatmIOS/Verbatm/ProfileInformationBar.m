@@ -6,7 +6,9 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
+#import <Parse/PFUser.h>
 #import "ProfileInformationBar.h"
+#import "Notifications.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
@@ -54,11 +56,25 @@
             [self createFollowButton];
             [self createBackButton];
         }
-    
+        [self registerForNotifications];
     }
     return self;
 }
 
+
+-(void)registerForNotifications{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loginSucceeded:)
+                                                 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
+                                               object:nil];
+}
+
+-(void) loginSucceeded: (NSNotification*) notification {
+/*the user has logged in so we can update our username*/
+    [self.userTitleName removeFromSuperview];
+    self.userTitleName = nil;
+    [self createProfileHeaderWithUserName:[[PFUser currentUser] username]];
+}
 
 -(void)formatView {
     self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
@@ -70,14 +86,14 @@
     CGFloat height = self.frame.size.height;
     CGFloat y_point = self.center.y - (height/2.f);
     
-    UILabel* userNameLabel = [[UILabel alloc] initWithFrame:CGRectMake(x_point, y_point,
+    self.userTitleName = [[UILabel alloc] initWithFrame:CGRectMake(x_point, y_point,
                                                                        width,height)];
     
-    userNameLabel.text =  @"Aishwarya Vardhana";
-    userNameLabel.textAlignment = NSTextAlignmentCenter;
-    userNameLabel.textColor = VERBATM_GOLD_COLOR;
-    userNameLabel.font = [UIFont fontWithName:HEADER_TEXT_FONT size:HEADER_TEXT_SIZE];
-    [self addSubview: userNameLabel];
+    self.userTitleName.text = userName;
+    self.userTitleName.textAlignment = NSTextAlignmentCenter;
+    self.userTitleName.textColor = VERBATM_GOLD_COLOR;
+    self.userTitleName.font = [UIFont fontWithName:HEADER_TEXT_FONT size:HEADER_TEXT_SIZE];
+    [self addSubview: self.userTitleName ];
 }
 
 -(void)createSettingsButton{

@@ -6,8 +6,11 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+
+#import <Parse/PFUser.h>
 #import "SizesAndPositions.h"
+#import <UIKit/UIKit.h>
+
 @protocol ProfileNavBarDelegate <NSObject>
 -(void) followOptionSelected;//current user selected to follow a channel
 
@@ -29,6 +32,9 @@
 
 @property (nonatomic, strong) id<ProfileNavBarDelegate> delegate;
 
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)threads andUserName:(NSString *)userName isCurrentLoggedInUser:(BOOL) isCurrentUser;
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)threads andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser;
+
+
+-(void)newChannelCreated:(Channel *) channel;
 
 @end

@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "PovInfo.h"
+#import <Parse/PFUser.h>
+
 @protocol ProfileVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
@@ -23,10 +25,11 @@
 @interface ProfileVC : UIViewController
 
 @property (strong, nonatomic) id<ProfileVCDelegate> delegate;
+@property (weak, nonatomic) PFUser* userOfProfile;//the user that this profile belongs to
 @property (nonatomic) BOOL isCurrentUserProfile;//let us know if this is the profile of the logged in user
+
 @property (nonatomic) id userIdToPresent;//get this users information
 
--(void) updateUserInfo;
 -(void) offScreen;//told when it's off screen to stop videos
 -(void)onScreen;
 

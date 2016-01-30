@@ -11,8 +11,11 @@
  */
 
 #import "Channel_BackendObject.h"
+#import "Channel.h"
 #import "Post_BackendObject.h"
 #import "ParseBackendKeys.h"
+#import <Parse/PFQuery.h>
+#import "UserManager.h"
 
 @interface Channel_BackendObject ()
 @property (nonatomic) NSMutableArray * ourPosts;
@@ -36,29 +39,36 @@
 
 //private create channel function
 -(Channel *)createChannelWithName:(NSString *)channelName andCompletionBlock:(void(^)(Channel *))block {
+    PFUser * ourUser = [PFUser currentUser];
+    if(ourUser){
     
-    PFObject * newChannelObject = [PFObject objectWithClassName:CHANNEL_PFCLASS_KEY];
-    [newChannelObject setObject:channelName forKey:CHANNEL_NAME_KEY];
-    [newChannelObject setObject:[NSNumber numberWithInt:0] forKey:CHANNEL_NUM_FOLLOWERS_KEY];
-    [newChannelObject setObject:[NSNumber numberWithInt:0] forKey:CHANNEL_NUM_POSTS_KEY];
-    
-    Channel * channel = [[Channel alloc] initWithChannelName:channelName
-                                                    numberOfFollowers:[NSNumber numberWithInt:0]
-                                                          andUserName:[PFUser currentUser].username andParseChannelObject:newChannelObject];
-    //set the pfobject_channel for this nwe channel object
-    
-    
-    if(block){//just in case the block doesn't exist so we create a new one
-        [newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-            if(succeeded){
-                if(block)block(channel);
-            }
-        }];
-    }else{
-        [newChannelObject saveInBackground];
+        PFObject * newChannelObject = [PFObject objectWithClassName:CHANNEL_PFCLASS_KEY];
+        [newChannelObject setObject:channelName forKey:CHANNEL_NAME_KEY];
+        [newChannelObject setObject:[NSNumber numberWithInt:0] forKey:CHANNEL_NUM_FOLLOWERS_KEY];
+        [newChannelObject setObject:[NSNumber numberWithInt:0] forKey:CHANNEL_NUM_POSTS_KEY];
+        [newChannelObject setObject:[PFUser currentUser] forKey:CHANNEL_CREATOR_KEY];
+
+        
+        Channel * channel = [[Channel alloc] initWithChannelName:channelName
+                                                        numberOfFollowers:[NSNumber numberWithInt:0]
+                                                              andParseChannelObject:newChannelObject];
+        
+        if(block){
+            [newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                if(succeeded){
+                    if(block)block(channel);
+                }
+            }];
+        }else{
+            [newChannelObject saveInBackground];
+        }
+        return channel;
     }
     
-    return channel;
+    [[UserManager sharedInstance] logOutUser];
+    
+    return nil;
+    
 }
 
 //returns channel when we create a new one
@@ -81,7 +91,30 @@
 
 
 
-
++(void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock{
+    
+    if(user){
+        PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+        [userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
+        
+        [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                             NSError * _Nullable error) {
+            NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
+            if(objects && !error){
+                for(PFObject * parseChannelObject in objects){
+                    
+                    NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+                    NSNumber * numberOfFollowers = [parseChannelObject valueForKey:CHANNEL_NUM_FOLLOWERS_KEY];
+                    Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName numberOfFollowers:numberOfFollowers andParseChannelObject:parseChannelObject];
+                    [finalChannelObjects addObject:verbatmChannelObject];
+                }
+            }
+            completionBlock(finalChannelObjects);
+        }];
+    }else{
+        completionBlock(@[]);
+    }
+}
 
 
 

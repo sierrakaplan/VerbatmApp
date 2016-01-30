@@ -117,6 +117,13 @@
 											 selector:@selector(loginSucceeded:)
 												 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
 											   object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userHasSignedOutNotification:)
+                                                 name:NOTIFICATION_USER_SIGNED_OUT
+                                               object:nil];
+    
+    
 }
 
 #pragma mark - User Manager Delegate -
@@ -125,7 +132,6 @@
 	PFUser * user = notification.object;
 	[[Crashlytics sharedInstance] setUserEmail: user.email];
 	[[Crashlytics sharedInstance] setUserName: [user username]];
-	[self.profileVC updateUserInfo];
 }
 
 -(void) loginFailed:(NSNotification *) notification {
@@ -211,6 +217,7 @@
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
     
     self.profileVC.delegate = self;
+    self.profileVC.userOfProfile = [PFUser currentUser];
     self.profileVC.isCurrentUserProfile = YES;
     self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
     self.feedVC.delegate = self;
@@ -264,6 +271,13 @@
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
 
+
+-(void)userHasSignedOutNotification:(NSNotification *) notification{
+    [self bringUpLogin];
+}
+
+
+
 #pragma mark - Handle Login -
 
 //brings up the create account page if there is no user logged in
@@ -276,7 +290,7 @@
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
 	if ([segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
 		// TODO: have variable set and go to profile or adk
-		[self.profileVC updateUserInfo];
+		
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
         
         [self playContentOnSelectedViewController:YES];
@@ -286,25 +300,9 @@
 
 //prepare for segue
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-{
-    // Make sure your segue name in storyboard is the same as this line
-    if ([[segue identifier] isEqualToString:ADK_SEGUE])
-    {
-        // Get reference to the destination view controller
-         ContentDevVC * vc = [segue destinationViewController];
-        
-        
-        //get the channels that the user owns here
-        //TODO
-        Channel * enterpreneurship=[[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri" andParseChannelObject:NULL];
-        
-        Channel * socialJustice = [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri" andParseChannelObject:NULL];
-        
-        Channel * music = [[Channel alloc] initWithChannelName:@"Music" numberOfFollowers:@(10000) andUserName:@"Iain Usiri" andParseChannelObject:NULL];
-        vc.userChannels = @[enterpreneurship, socialJustice, music];
-    }
-}
+//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+//{
+//}
 
 -(void) playContentOnSelectedViewController:(BOOL) shoulPlay{
     

@@ -19,4 +19,6 @@
 #define NOTIFICATION_USER_LOGIN_SUCCEEDED @"notification_login_succeeded" // includes GTLVerbatmAppVerbatmUser object
 #define NOTIFICATION_USER_LOGIN_FAILED @"notification_login_failed" // includes NSError object
 
+#define NOTIFICATION_USER_SIGNED_OUT @"user_signed_out"
+
 #endif /* Header_h */

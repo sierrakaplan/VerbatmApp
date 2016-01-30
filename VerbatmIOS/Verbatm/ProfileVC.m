@@ -9,6 +9,7 @@
 
 #import "Channel.h"
 #import "CreateNewChannelView.h"
+#import "Channel_BackendObject.h"
 
 #import "Durations.h"
 
@@ -39,7 +40,7 @@
 @property (nonatomic) CGRect profileNavBarFrameOnScreen;
 @property (nonatomic) CGRect profileNavBarFrameOffScreen;
 @property (nonatomic) BOOL contentCoveringScreen;
-@property (weak, nonatomic) PFUser* currentUser;
+
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
 
@@ -49,7 +50,7 @@
 @property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 @property (nonatomic) UIView * darkScreenCover;
 @property (nonatomic) SharePOVView * sharePOVView;
-
+@property (nonatomic) Channel_BackendObject * channelBackendManager;
 @end
 
 @implementation ProfileVC
@@ -57,30 +58,27 @@
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.contentCoveringScreen = YES;
-    
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-       // [self createAndAddListVC];
-       // [self createNavigationBar];
-        //[self addClearScreenGesture];
+        [self createAndAddListVC];
+        [self createNavigationBar];
+        [self addClearScreenGesture];
     }];
     
 }
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
-    
-    
-    
-    block();//after downloading threads we call this block to build the profile
+    [Channel_BackendObject getChannelsForUser:self.userOfProfile withCompletionBlock:
+     ^(NSMutableArray * channels) {
+        self.channels = channels;
+        block();
+    }];
 }
 
 
-
 -(void) viewWillAppear:(BOOL)animated{
-    NSString * channel = ((Channel *)self.channels[0]).name;
-    //send information 
-
+    
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -128,16 +126,18 @@
     self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
     //frame when off screen
 	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - (PROFILE_NAV_BAR_HEIGHT+ ARROW_EXTENSION_BAR_HEIGHT), self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
-    [self updateUserInfo];
-    self.profileNavBar = [[ProfileNavBar alloc] initWithFrame:self.profileNavBarFrameOnScreen
-												   andChannels:self.channels andUserName:[self.currentUser username] isCurrentLoggedInUser:self.isCurrentUserProfile];
+    
+    self.profileNavBar = [[ProfileNavBar alloc]
+                          initWithFrame:self.profileNavBarFrameOnScreen
+                          andChannels:self.channels
+                          andUser:self.userOfProfile
+                          isCurrentLoggedInUser:self.isCurrentUserProfile];
+    
     self.profileNavBar.delegate = self;
     [self.view addSubview:self.profileNavBar];
+    [self.view bringSubviewToFront:self.profileNavBar];
 } 
 
--(void) updateUserInfo {
-    self.currentUser = [PFUser currentUser];
-}
 
 -(void)addClearScreenGesture{
     UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
@@ -261,6 +261,8 @@
     //save the channel name and create it in the backend
     //upate the scrollview to present a new channel
     
+    Channel * newChannel = [self.channelBackendManager createChannelWithName:channelName];
+    [self.profileNavBar  newChannelCreated:newChannel];
     [self clearChannelCreationView];
 }
 
@@ -358,11 +360,16 @@
         SettingsVC * vc = [segue destinationViewController];
         
         //set the username of the currently logged in user
-        vc.userName  = @"Aishwarya Vardhana";
+        vc.userName  = [[PFUser currentUser] username];
     }
 }
 
-
+-(Channel_BackendObject *)channelBackendManager{
+    if(!_channelBackendManager){
+        _channelBackendManager = [[Channel_BackendObject alloc] init];
+    }
+    return _channelBackendManager;
+}
 
 
 #pragma mark - Article Display Delegate methods -
