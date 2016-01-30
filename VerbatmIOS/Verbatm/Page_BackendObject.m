@@ -33,7 +33,7 @@
     [newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){//now we save the media for the specific
             [self storeImagesFromPinchView:pinchView withPageReference:newPageObject];
-//            [self storeVideosFromPinchView:pinchView withPageReference:newPageObject];
+            [self storeVideosFromPinchView:pinchView withPageReference:newPageObject];
         }
     }];
     
@@ -64,8 +64,8 @@
 
 
 
-+(void) storeVideosFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
-    if (pinchView.containsImage)
+-(void) storeVideosFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
+    if (pinchView.containsVideo)
     {
         //Publishing videos sequentially
         NSArray* pinchViewVideosWithText = [pinchView getVideosWithText];
@@ -74,7 +74,9 @@
                 AVURLAsset* videoAsset = videoWithText[0];
                //NSString* text = videoWithText[1];
                //NSNumber* textYPosition = videoWithText[2];
-               [Video_BackendObject saveVideo:videoAsset.URL atVideoIndex:i andPageObject:page];
+                Video_BackendObject  * videoObj = [[Video_BackendObject alloc] init];
+            [self.photoAndVideoSavers addObject:videoObj];
+               [videoObj saveVideo:videoAsset.URL atVideoIndex:i andPageObject:page];
         }
     }
 }

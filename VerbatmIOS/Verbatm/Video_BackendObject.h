@@ -20,7 +20,7 @@
 
 //Page object is the page object that this video is related to
 //page object must already be saved in the database before this function is called
-+(void)saveVideo:(NSURL *) videoUrl atVideoIndex:(NSInteger) videoIndex andPageObject:(PFObject *) pageObject;
+-(void)saveVideo:(NSURL *) videoUrl atVideoIndex:(NSInteger) videoIndex andPageObject:(PFObject *) pageObject;
 
 //add querry for all video related to a specific page object
 @end
