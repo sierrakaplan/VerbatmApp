@@ -47,7 +47,7 @@
 -(void) scrollToPageAtIndex:(NSInteger) pageIndex;
 
 //presents array of pages when they are downloaded
--(void) renderPOVFromPages:(NSArray *) pages andLikeButtonDelegate:(id) likeDelegate;
+-(void) renderPOVFromPages:(NSArray *) pages;
 
 //informs the POV when it's visible
 -(void) povOnScreen;

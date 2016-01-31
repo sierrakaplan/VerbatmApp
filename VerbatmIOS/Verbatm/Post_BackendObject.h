@@ -17,8 +17,7 @@
 
 -(void) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel;
 
-+(NSMutableArray *) getPostsInChannel:(Channel *) channel;
-
++(void) getPostsInChannel:(Channel *) channel withCompletionBlock:(void(^)(NSArray *))block;
 
 
 @end

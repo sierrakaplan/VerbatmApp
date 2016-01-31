@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <Parse/PFObject.h>
 
 @interface PostHolderCollecitonRV : UICollectionViewCell
--(void)presentPages:(NSMutableArray *) aves startingAtIndex:(NSInteger) startIndex;
+-(void)presentPost:(PFObject *) postObject;
+-(void)onScreen;
+-(void)offScreen;
 @end

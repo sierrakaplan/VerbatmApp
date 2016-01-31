@@ -112,7 +112,7 @@
             completionBlock(finalChannelObjects);
         }];
     }else{
-        completionBlock(@[]);
+        completionBlock([[NSMutableArray alloc] init]);
     }
 }
 

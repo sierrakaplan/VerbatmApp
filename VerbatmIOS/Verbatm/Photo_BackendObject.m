@@ -11,6 +11,7 @@
 
 #import "Photo_BackendObject.h"
 #import <Parse/PFUser.h>
+#import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
 #import "POVPublisher.h"
 
@@ -46,6 +47,30 @@
     [newPhotoObject saveInBackground];
     
 }
+
++(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block{
+    
+    PFQuery * userChannelQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
+    [userChannelQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
+    
+    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                         NSError * _Nullable error) {
+        if(objects && !error){
+            
+            //we must sort the images before calling the block
+            
+            block(objects);
+        }
+        
+    }];
+    
+}
+
+
+
+
+
+
 
 
 @end

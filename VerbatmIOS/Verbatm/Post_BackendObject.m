@@ -10,8 +10,11 @@
 #import "Post_BackendObject.h"
 #import "PinchView.h"
 #import "ParseBackendKeys.h"
+
 #import <Parse/PFObject.h>
 #import <Parse/PFUser.h>
+#import <Parse/PFQuery.h>
+
 #import "Page_BackendObject.h"
 #import "CollectionPinchView.h"
 #import "VideoPinchView.h"
@@ -51,12 +54,20 @@
 }
 
 
-//+(NSMutableArray *) getPostsInChannel:(Channel *) channel{
-//    
-//    
-//    
-//    return @[];
-//}
++(void) getPostsInChannel:(Channel *) channel withCompletionBlock:(void(^)(NSArray *))block{
+    
+    if(channel){
+        PFQuery * postQuery = [PFQuery queryWithClassName:POST_PFCLASS_KEY];
+        [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel.parseChannelObject];
+        
+        [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                             NSError * _Nullable error) {
+            if(objects && !error){
+                block(objects);
+            }
+        }];
+    }
+}
 
 
 

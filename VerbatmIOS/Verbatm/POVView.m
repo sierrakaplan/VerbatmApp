@@ -15,12 +15,16 @@
 
 #import "Icons.h"
 
+
+#import <Parse/PFObject.h>
 #import "POVLikeAndShareBar.h"
 #import "PhotoVideoAVE.h"
 #import "PhotoAVE.h"
 #import "POVView.h"
 #import "Page.h"
 #import "PagesLoadManager.h"
+#import "ParseBackendKeys.h"
+
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
@@ -83,13 +87,22 @@
     return self;
 }
 
+
+-(instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self addSubview: self.mainScrollView];
+        self.mainScrollView.backgroundColor = [UIColor blackColor];
+    }
+    return self;
+}
+
 -(void) createPageLoader{
     self.pageLoadManager = [[PagesLoadManager alloc] init];
     self.pageLoadManager.delegate = self;
     
     NSNumber* povID = self.povInfo.identifier;
     [self.pageLoadManager loadPagesForPOV: povID];
-    
 }
 
 #pragma mark - Display page -
@@ -102,20 +115,14 @@
 }
 
 -(void) renderNextAve: (ArticleViewingExperience*)ave withIndex: (NSNumber*) pageIndex {
-	[self.pageAves setObject:ave forKey:pageIndex];
-	if (pageIndex == self.currentIndexOfPageLoading) {
-		self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
-													 (self.currentIndexOfPageLoading.integerValue) * self.frame.size.height);
-        
-		[self setDelegateOnPhotoAVE: ave];
-		CGRect frame = CGRectOffset(self.bounds, 0, self.frame.size.height * self.currentIndexOfPageLoading.integerValue);
-		ave.frame = frame;
-		[self.mainScrollView addSubview:ave];
-		self.currentIndexOfPageLoading = [NSNumber numberWithInteger:self.currentIndexOfPageLoading.integerValue+1];
-		if ([self.pageAves objectForKey:self.currentIndexOfPageLoading]) {
-			[self renderNextAve:[self.pageAves objectForKey:self.currentIndexOfPageLoading] withIndex:self.currentIndexOfPageLoading];
-		}
-	}
+    self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
+                                                self.mainScrollView.contentSize.height + self.frame.size.height);
+    
+    [self setDelegateOnPhotoAVE: ave];
+    CGRect frame = CGRectMake(0, self.pageAves.count * self.mainScrollView.frame.size.height , self.mainScrollView.frame.size.width, self.mainScrollView.frame.size.height);
+    ave.frame = frame;
+    [self.mainScrollView addSubview:ave];
+    [self.pageAves setObject:ave forKey:pageIndex];
 }
 
 //renders aves (pages) onto the view
@@ -250,30 +257,11 @@
 
 // Tells previous page it's offscreen and current page it's onscreen
 -(void) displayMediaOnCurrentAVE {
-	NSInteger nextIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
-	ArticleViewingExperience *nextPage = [self.pageAves objectForKey:[NSNumber numberWithInteger:nextIndex]];
-    ArticleViewingExperience *currentPage = [self.pageAves objectForKey:[NSNumber numberWithInteger: self.currentPageIndex]];
+	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
+	ArticleViewingExperience *currentPageOnScreen = [self.pageAves objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
     
-    if(self.currentPageIndex != nextIndex){
-		[currentPage offScreen];
-        [self logAVEDoneViewing:currentPage];
-        [[Analytics getSharedInstance] pageStartedViewingWithIndex:nextIndex];
-    } else if (nextIndex == 0){ //first page of the article
-        [[Analytics getSharedInstance]pageStartedViewingWithIndex:nextIndex];
-    }
-    
-    self.currentPageIndex = nextIndex;
-	[nextPage onScreen];
+	[currentPageOnScreen onScreen];
     [self prepareNextPage];
-    
-    
-    if(self.pageAves.count > 1){
-        //[self presentSwipeUpAndDownInstruction];
-    }
-    
-    [self presentFilterSwipeForInstructionWithAve:nextPage];
-    
-    
     
     //present multipage icon
 }
@@ -373,8 +361,8 @@
     NSInteger indexBelow = currentIndex +1;
 	ArticleViewingExperience* pageAbove = [self.pageAves objectForKey:[NSNumber numberWithInteger:indexAbove]];
 	ArticleViewingExperience* pageBelow = [self.pageAves objectForKey:[NSNumber numberWithInteger:indexBelow]];
-	[pageAbove almostOnScreen];
-	[pageBelow almostOnScreen];
+	if(pageAbove)[pageAbove almostOnScreen];
+	if(pageBelow)[pageBelow almostOnScreen];
 }
 
 #pragma mark - Down arrow -
@@ -395,23 +383,23 @@
 #pragma mark - Pages Downloaded -
 
 -(void) pagesLoadedForPOV:(NSNumber *)povID {
-    NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
-    [self renderPOVFromPages:pages andLikeButtonDelegate:self];
-    [self.activityIndicator stopAnimating];
-    self.activityIndicator = nil;
-    if(pages.count > 1)[self addDownArrowButton];
+//    NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
+//    [self renderPOVFromPages:pages andLikeButtonDelegate:self];
 }
 
--(void) renderPOVFromPages:(NSArray *) pages andLikeButtonDelegate:(id) likeDelegate{
+-(void) renderPOVFromPages:(NSArray *) pages{
     AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
-    for (Page * page in pages) {
-        [analyzer getAVEFromPage: page withFrame: self.bounds].then(^(UIView* ave) {
-            NSInteger pageIndex = page.indexInPOV;
-            // When first page loads, show down arrow
-            [self renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
-        }).catch(^(NSError* error) {
-            NSLog(@"Error getting AVE from page: %@", error.description);
-        });
+    for (PFObject * parsePageObject in pages) {
+        [analyzer getAVEFromPage:parsePageObject withFrame:self.bounds andCompletionBlock:^(ArticleViewingExperience * ave) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.activityIndicator stopAnimating];
+                self.activityIndicator = nil;
+                if(pages.count > 1)[self addDownArrowButton];
+                //add bar at the bottom with page numbers etc
+               [self renderNextAve:ave withIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
+                [self povOnScreen];
+            });
+        }];
     }
 }
 

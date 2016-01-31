@@ -22,5 +22,5 @@
 //page object must already be saved in the database before this function is called
 -(void)saveVideo:(NSURL *) videoUrl atVideoIndex:(NSInteger) videoIndex andPageObject:(PFObject *) pageObject;
 
-//add querry for all video related to a specific page object
++(void)getVideosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block;
 @end

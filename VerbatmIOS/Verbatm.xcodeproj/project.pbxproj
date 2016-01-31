@@ -801,6 +801,8 @@
 		A560EFB11BB09B36003FB041 /* Feed */ = {
 			isa = PBXGroup;
 			children = (
+				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
+				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
 				C7E65F6A1B92E5830042AD99 /* TopicsFeedVC.h */,
 				C7E65F6B1B92E5830042AD99 /* TopicsFeedVC.m */,
 				C777EEAB1AD288A3003E0633 /* ArticleListVC.h */,
@@ -1300,8 +1302,6 @@
 				C70E1C551C3BF76200346A25 /* Settings page VCs */,
 				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
 				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
-				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
-				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";

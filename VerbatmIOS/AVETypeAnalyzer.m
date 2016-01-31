@@ -16,16 +16,20 @@
 
 #import "ImagePinchView.h"
 
-#import "Page.h"
+#import <Parse/PFObject.h>
 #import "POVLoadManager.h"
 #import "PhotoVideoAVE.h"
 #import "PhotoAVE.h"
 #import "PinchView.h"
+#import "ParseBackendKeys.h"
+#import "Photo_BackendObject.h"
+
 
 #import "UtilityFunctions.h"
 
 #import "VideoPinchView.h"
 #import "VideoAVE.h"
+#import "Video_BackendObject.h"
 
 @interface AVETypeAnalyzer()
 
@@ -39,93 +43,110 @@
 
 
 -(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode {
-	NSMutableArray* results = [[NSMutableArray alloc] init];
-	for(PinchView* pinchView in pinchViews) {
-		[results addObject:[self getAVEFromPinchView:pinchView withFrame:frame inPreviewMode:inPreviewMode]];
-	}
-	return results;
+    NSMutableArray* results = [[NSMutableArray alloc] init];
+    for(PinchView* pinchView in pinchViews) {
+        [results addObject:[self getAVEFromPinchView:pinchView withFrame:frame inPreviewMode:inPreviewMode]];
+    }
+    return results;
 }
 
 -(ArticleViewingExperience*) getAVEFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame inPreviewMode: (BOOL) inPreviewMode {
-	if (pinchView.containsImage && pinchView.containsVideo) {
-		PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView inPreviewMode:inPreviewMode];
-		return photoVideoAVE;
-
-	} else if (pinchView.containsImage) {
-		PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
-		photoAve.isPhotoVideoSubview = NO;
-		return photoAve;
-
-	} else {
-		VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
-		return videoAve;
-	}
+    if (pinchView.containsImage && pinchView.containsVideo) {
+        PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView inPreviewMode:inPreviewMode];
+        return photoVideoAVE;
+        
+    } else if (pinchView.containsImage) {
+        PhotoAVE * photoAve = [[PhotoAVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
+        photoAve.isPhotoVideoSubview = NO;
+        return photoAve;
+        
+    } else {
+        VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
+        return videoAve;
+    }
 }
 
--(AnyPromise*) getAVEFromPage: (Page*)page withFrame: (CGRect) frame {
-	if (page.images.count && page.videos.count) {
-		return [self getUIImagesFromPage: page].then(^(NSArray* imagesAndText) {
-			PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame andPhotos:imagesAndText
-																	  andVideos:[self getVideosFromPage: page]];
-			return photoVideoAVE;
-		});
-
-	} else if (page.images.count) {
-		return [self getUIImagesFromPage: page].then(^(NSArray* imagesAndText) {
-			PhotoAVE *photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:imagesAndText];
-			photoAve.isPhotoVideoSubview = NO;
-			return photoAve;
-		});
-
-	} else {
-		return [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-			VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoArray:[self getVideosFromPage: page]];
-			resolve(videoAve);
-		}];
-	}
+-(void) getAVEFromPage: (PFObject *)page withFrame: (CGRect) frame andCompletionBlock:(void(^)(ArticleViewingExperience *))block {
+    
+    AveTypes type = [((NSNumber *)[page valueForKey:PAGE_AVE_TYPE]) intValue];
+    
+    if(type == AveTypePhoto) {
+        [self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
+            
+            PhotoAVE *photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:imagesAndText];
+            photoAve.isPhotoVideoSubview = NO;
+            
+            block(photoAve);
+        }];
+    }else if (type == AveTypeVideo){
+        [self getVideosFromPage:page withCompletionBlock:^(NSMutableArray * videoTextObjects) {
+            
+            VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoArray:videoTextObjects];
+            
+            block(videoAve);
+        }];
+        
+        
+    }else if( type == AveTypePhotoVideo){
+        
+        [self getVideosFromPage:page withCompletionBlock:^(NSMutableArray * videoTextObjects) {
+            [self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
+                PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame
+                                                                          andPhotos:imagesAndText
+                                                                          andVideos:videoTextObjects];
+                
+                block(photoVideoAVE);
+            
+            }];
+        }];
+        
+    }
+    
 }
 
--(AnyPromise*) getUIImagesFromPage: (Page*) page {
-
-	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
-	for (GTLVerbatmAppImage* image in page.images) {
-		AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedDataFromURL: [NSURL URLWithString:image.servingUrl]];
-		[loadImageDataPromises addObject: getImageDataPromise];
-	}
-	return PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
-		NSMutableArray* uiImages = [[NSMutableArray alloc] init];
-		for (int i = 0; i < results.count; i++) {
-			NSData* imageData = results[i];
-			GTLVerbatmAppImage* gtlImage = page.images[i];
-			UIImage* uiImage = [UIImage imageWithData:imageData];
-			if (!gtlImage.text) {
-				gtlImage.text = @"";
-			}
-			if (!gtlImage.textYPosition) {
-				gtlImage.textYPosition = [NSNumber numberWithFloat: 0.f];
-			} 
-			[uiImages addObject: @[uiImage, gtlImage.text, gtlImage.textYPosition]];
-		}
-		return uiImages;
-	});
+-(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
+    
+    [Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photoObjects) {
+        
+        NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
+        for (PFObject * photoBackendObject in photoObjects) {
+            NSString * photoUrl = [photoBackendObject valueForKey:PHOTO_IMAGEURL_KEY];
+            AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedDataFromURL: [NSURL URLWithString:photoUrl]];
+            [loadImageDataPromises addObject: getImageDataPromise];
+        }
+        PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
+            NSMutableArray* uiImages = [[NSMutableArray alloc] init];
+            for (int i = 0; i < results.count; i++) {
+                NSData* imageData = results[i];
+                UIImage* uiImage = [UIImage imageWithData:imageData];
+                PFObject * photoBO = photoObjects[i];
+                
+                NSString * imageText =  [photoBO valueForKey:PHOTO_TEXT_KEY];
+                NSNumber * yoffset = [photoBO valueForKey:PHOTO_TEXT_YOFFSET_KEY];
+                
+                [uiImages addObject: @[uiImage, imageText, yoffset]];
+            }
+            block(uiImages);
+        });
+    }];
 }
 
--(NSArray*) getVideosFromPage: (Page*) page {
-	NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
-	for (GTLVerbatmAppVideo* video in page.videos) {
-		NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
-		NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: video.blobKeyString];
-		components.queryItems = @[blobKey];
-//		NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
-		if (!video.text) {
-			video.text = @"";
-		}
-		if (!video.textYPosition) {
-			video.textYPosition = [NSNumber numberWithFloat: 0.f];
-		}
-		[videoURLs addObject: @[components.URL, video.text, video.textYPosition]];
-	}
-	return videoURLs;
+-(void) getVideosFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
+    
+    
+    [Video_BackendObject getVideosForPage:page andCompletionBlock:^(NSArray * pfVideoObjectArray) {
+        NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
+        for (PFObject * pfVideo in pfVideoObjectArray) {
+            
+            NSString * videoBlobKey = [pfVideo valueForKey:BLOB_STORE_URL];
+            NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
+            NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];
+            components.queryItems = @[blobKey];
+            NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
+            [videoURLs addObject: @[components.URL, @"", @(0)]];
+        }
+        block(videoURLs);
+    }];
 }
 
 @end

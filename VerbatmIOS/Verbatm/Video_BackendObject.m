@@ -8,6 +8,7 @@
 #import "GTLVerbatmAppVideo.h"
 
 #import <Parse/PFUser.h>
+#import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
 #import "POVPublisher.h"
 #import "Video_BackendObject.h"
@@ -37,7 +38,8 @@
 }
 
 
--(void)createAndSaveVideoWithBlobStoreUrl:(NSString *) blobStoreUrl videoIndex:(NSInteger) videoIndex andPageObject:(PFObject *)pageObject{
+-(void)createAndSaveVideoWithBlobStoreUrl:(NSString *) blobStoreUrl
+                               videoIndex:(NSInteger) videoIndex andPageObject:(PFObject *)pageObject{
     
     PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
     [newVideoObj setObject:[NSNumber numberWithInteger:videoIndex] forKey:VIDEO_INDEX_KEY];
@@ -47,6 +49,25 @@
     
 }
 
+
+
+
++(void)getVideosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {
+    PFQuery * video = [PFQuery queryWithClassName:VIDEO_PFCLASS_KEY];
+    [video whereKey:VIDEO_PAGE_OBJECT_KEY equalTo:page];
+    
+    [video findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                         NSError * _Nullable error) {
+        if(objects && !error){
+            
+            //we must sort the videos by index before calling the block
+            
+            block(objects);
+        }
+        
+    }];
+    
+}
 
 
 @end

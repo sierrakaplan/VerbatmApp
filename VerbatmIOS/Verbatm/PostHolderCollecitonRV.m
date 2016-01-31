@@ -7,6 +7,8 @@
 //
 
 #import "POVView.h"
+#import <Parse/PFObject.h>
+#import "Page_BackendObject.h"
 #import "PostHolderCollecitonRV.h"
 
 @interface PostHolderCollecitonRV ()
@@ -25,20 +27,35 @@
     return self;
 }
 
--(void)presentPages:(NSMutableArray *) aves startingAtIndex:(NSInteger) startIndex {
-    if(aves){
+-(void)presentPost:(PFObject *) postObject{
+    [Page_BackendObject getPagesFromPost:postObject andCompletionBlock:^(NSArray * pages) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.activityIndicator stopAnimating];
+        });
         [self.ourCurrentPOV clearArticle];//make sure there is no other stuff
-        [self.ourCurrentPOV renderAVES:aves];
-        [self.ourCurrentPOV scrollToPageAtIndex:startIndex];
+        [self.ourCurrentPOV renderPOVFromPages:pages];
+        [self.ourCurrentPOV scrollToPageAtIndex:0];//this prepares the
+    }];
+}
+-(void)onScreen{
+    if(self.ourCurrentPOV){
+        [self.ourCurrentPOV povOnScreen];
+    }
+}
+
+-(void)offScreen{
+    if(self.ourCurrentPOV){
+        [self.ourCurrentPOV povOffScreen];
     }
 }
 
 
-
-
 #pragma mark -lazy instantiation-
 -(POVView *) ourCurrentPOV{
-    if(!_ourCurrentPOV) _ourCurrentPOV = [[POVView alloc] initWithFrame:self.bounds andPOVInfo:nil];
+    if(!_ourCurrentPOV){
+        _ourCurrentPOV = [[POVView alloc] initWithFrame:self.bounds andPOVInfo:nil];
+        [self addSubview:_ourCurrentPOV];
+    }
     return _ourCurrentPOV;
 }
 

@@ -17,11 +17,15 @@
 
 #import "LocalPOVs.h"
 
+#import "Page_BackendObject.h"
 #import "POVScrollView.h"
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
 #import "POVLoadManager.h"
 #import "PostListVC.h"
+
+#import "Post_BackendObject.h"
+#import "POVView.h"
 
 #import "SharePOVView.h"
 #import "SegueIDs.h"
@@ -51,6 +55,8 @@
 @property (nonatomic) UIView * darkScreenCover;
 @property (nonatomic) SharePOVView * sharePOVView;
 @property (nonatomic) Channel_BackendObject * channelBackendManager;
+
+@property (nonatomic) POVView * hackView;
 @end
 
 @implementation ProfileVC
@@ -66,6 +72,7 @@
     }];
     
 }
+
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
@@ -97,29 +104,20 @@
     [flowLayout setMinimumLineSpacing:0.0f];
     [flowLayout setItemSize:self.view.frame.size];
     self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-    
+    self.postListVC.listOwner = [PFUser currentUser];
+    self.postListVC.channelForList = [self.channels firstObject];
+    self.postListVC.listType = listChannel;
     [self.postListContainer setFrame:self.view.bounds];
     [self.postListContainer addSubview:self.postListVC.view];
-    [self.view addSubview:self.postListContainer];
+    if(self.profileNavBar)[self.view insertSubview:self.postListContainer belowSubview:self.profileNavBar];
+    else [self.view addSubview:self.postListContainer];
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
 
 }
 
--(void) createContentListViewWithStartThread:(NSString *)startThread{
-    self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
-    self.postDisplayVC.view.frame = self.view.bounds;
-    self.postDisplayVC.view.backgroundColor = [UIColor blackColor];
-    [self.postDisplayVC presentContentWithPOVType:POVTypeUser andChannel:startThread];
-    
-    self.currentThreadInView = startThread;
-    
-    [self addChildViewController:self.postDisplayVC];
-    [self.view addSubview:self.postDisplayVC.view];
-    [self.postDisplayVC didMoveToParentViewController:self];
-    self.postDisplayVC.delegate = self;
-}
+
 
 -(void) createNavigationBar {
     //frame when on screen

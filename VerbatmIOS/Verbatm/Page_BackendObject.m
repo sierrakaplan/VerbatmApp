@@ -6,6 +6,10 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+
+#import "AVETypeAnalyzer.h"
+#import <Parse/PFQuery.h>
+
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import "Photo_BackendObject.h"
@@ -30,6 +34,18 @@
     PFObject * newPageObject = [PFObject objectWithClassName:PAGE_PFCLASS_KEY];
     [newPageObject setObject:[NSNumber numberWithInteger:pageIndex] forKey:PAGE_INDEX_KEY];
     [newPageObject setObject:post forKey:PAGE_POST_KEY];
+    
+    if (pinchView.containsImage && pinchView.containsVideo) {
+        [newPageObject setObject:[NSNumber numberWithInt:AveTypePhotoVideo] forKey:PAGE_AVE_TYPE];
+        
+    } else if (pinchView.containsImage) {
+        [newPageObject setObject:[NSNumber numberWithInt:AveTypePhoto] forKey:PAGE_AVE_TYPE];
+    } else {
+        [newPageObject setObject:[NSNumber numberWithInt:AveTypeVideo] forKey:PAGE_AVE_TYPE];
+    }
+    
+    
+    
     [newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){//now we save the media for the specific
             [self storeImagesFromPinchView:pinchView withPageReference:newPageObject];
@@ -79,6 +95,24 @@
                [videoObj saveVideo:videoAsset.URL atVideoIndex:i andPageObject:page];
         }
     }
+}
+
+
++(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block{
+    
+    PFQuery * userChannelQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
+    [userChannelQuery whereKey:PAGE_POST_KEY equalTo:post];
+    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                         NSError * _Nullable error) {
+        if(objects && !error){
+            
+            //sort pages :/
+            
+            block(objects);
+        }
+        
+    }];
+    
 }
 
 
