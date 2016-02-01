@@ -119,7 +119,7 @@
                                                 self.mainScrollView.contentSize.height + self.frame.size.height);
     
     [self setDelegateOnPhotoAVE: ave];
-    CGRect frame = CGRectMake(0, self.pageAves.count * self.mainScrollView.frame.size.height , self.mainScrollView.frame.size.width, self.mainScrollView.frame.size.height);
+    CGRect frame = CGRectMake(0, [pageIndex integerValue] * self.mainScrollView.frame.size.height , self.mainScrollView.frame.size.width, self.mainScrollView.frame.size.height);
     ave.frame = frame;
     [self.mainScrollView addSubview:ave];
     [self.pageAves setObject:ave forKey:pageIndex];

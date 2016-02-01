@@ -24,7 +24,7 @@
 @property (strong, atomic) NSTimer * ourTimer;//keeps calling continue
 
 
-#define MUTE_BUTTON_SIZE 40
+#define MUTE_BUTTON_SIZE 25
 #define MUTE_BUTTON_OFFSET 10
 
 #define VIDEO_LOADING_ICON_SIZE 50

@@ -57,7 +57,20 @@
                                                          NSError * _Nullable error) {
         if(objects && !error){
             
-            //we must sort the images before calling the block
+            [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                PFObject * photoA = obj1;
+                PFObject * photoB = obj2;
+                
+                NSNumber * photoAnum = [photoA valueForKey:PHOTO_INDEX_KEY];
+                NSNumber * photoBnum = [photoB valueForKey:PHOTO_INDEX_KEY];
+                
+                if([photoAnum integerValue] > [photoBnum integerValue]){
+                    return NSOrderedDescending;
+                }else if ([photoAnum integerValue] < [photoBnum integerValue]){
+                    return NSOrderedAscending;
+                }
+                return NSOrderedSame;
+            }];
             
             block(objects);
         }

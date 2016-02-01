@@ -98,6 +98,8 @@
 }
 
 
+
+
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block{
     
     PFQuery * userChannelQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
@@ -105,9 +107,20 @@
     [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error){
-            
-            //sort pages :/
-            
+            [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                PFObject * pageA = obj1;
+                PFObject * pageB = obj2;
+                
+                NSNumber * pageAnum = [pageA valueForKey:PAGE_INDEX_KEY];
+                NSNumber * pageBnum = [pageB valueForKey:PAGE_INDEX_KEY];
+                
+                if([pageAnum integerValue] > [pageBnum integerValue]){
+                    return NSOrderedDescending;
+                }else if ([pageAnum integerValue] < [pageBnum integerValue]){
+                    return NSOrderedAscending;
+                }
+                return NSOrderedSame;
+            }];
             block(objects);
         }
         

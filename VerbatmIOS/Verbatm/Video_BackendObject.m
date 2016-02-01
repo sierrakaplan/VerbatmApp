@@ -60,7 +60,20 @@
                                                          NSError * _Nullable error) {
         if(objects && !error){
             
-            //we must sort the videos by index before calling the block
+            [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+                PFObject * videoA = obj1;
+                PFObject * videoB = obj2;
+                
+                NSNumber * videoAnum = [videoA valueForKey:VIDEO_INDEX_KEY];
+                NSNumber * videoBnum = [videoB valueForKey:VIDEO_INDEX_KEY];
+                
+                if([videoAnum integerValue] > [videoBnum integerValue]){
+                    return NSOrderedDescending;
+                }else if ([videoAnum integerValue] < [videoBnum integerValue]){
+                    return NSOrderedAscending;
+                }
+                return NSOrderedSame;
+            }];
             
             block(objects);
         }

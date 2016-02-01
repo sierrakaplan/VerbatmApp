@@ -13,6 +13,7 @@
 
 @interface PostHolderCollecitonRV ()
     @property (nonatomic) POVView * ourCurrentPOV;
+    @property (nonatomic) PFObject * postBeingPresented;
     @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
 @end
@@ -28,14 +29,17 @@
 }
 
 -(void)presentPost:(PFObject *) postObject{
-    [Page_BackendObject getPagesFromPost:postObject andCompletionBlock:^(NSArray * pages) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.activityIndicator stopAnimating];
-        });
-        [self.ourCurrentPOV clearArticle];//make sure there is no other stuff
-        [self.ourCurrentPOV renderPOVFromPages:pages];
-        [self.ourCurrentPOV scrollToPageAtIndex:0];//this prepares the
-    }];
+    if(postObject != self.postBeingPresented){
+        self.postBeingPresented = postObject;
+        [Page_BackendObject getPagesFromPost:postObject andCompletionBlock:^(NSArray * pages) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.activityIndicator stopAnimating];
+            });
+            [self.ourCurrentPOV clearArticle];//make sure there is no other stuff
+            [self.ourCurrentPOV renderPOVFromPages:pages];
+            [self.ourCurrentPOV scrollToPageAtIndex:0];//this prepares the
+        }];
+    }
 }
 -(void)onScreen{
     if(self.ourCurrentPOV){

@@ -169,6 +169,7 @@
 	if(firstText && firstText.length) {
 		[self createTextViewButton];
 	}
+   if(photosTextArray.count > 1)[self prepareCirclePan];
 }
 
 -(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
