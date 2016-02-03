@@ -7,6 +7,7 @@
 //
 
 #import <Parse/PFUser.h>
+#import "ParseBackendKeys.h"
 #import "ProfileInformationBar.h"
 #import "Notifications.h"
 #import "SizesAndPositions.h"
@@ -73,7 +74,7 @@
 /*the user has logged in so we can update our username*/
     [self.userTitleName removeFromSuperview];
     self.userTitleName = nil;
-    [self createProfileHeaderWithUserName:[[PFUser currentUser] username]];
+    [self createProfileHeaderWithUserName:[[PFUser currentUser] valueForKey:USER_USER_NAME_KEY]];
 }
 
 -(void)formatView {

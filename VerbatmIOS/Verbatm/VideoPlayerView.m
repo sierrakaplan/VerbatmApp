@@ -55,7 +55,7 @@
 -(void)prepareVideoFromURLArray_asynchronouse: (NSArray*) urlArray {
     if (!self.videoLoading) {
         self.videoLoading = YES;
-        [self addSubview:self.videoLoadingImageView];
+        //[self addSubview:self.videoLoadingImageView];
     }
     
     if(urlArray.count == 0) return;
@@ -70,7 +70,7 @@
 -(void)prepareVideoFromAsset_synchronous: (AVAsset*) asset{
     if (!self.videoLoading) {
         self.videoLoading = YES;
-        [self addSubview:self.videoLoadingImageView];
+       // [self addSubview:self.videoLoadingImageView];
     }
     
     if (asset) {
@@ -80,9 +80,12 @@
 }
 
 -(void)prepareVideoFromURL_synchronous: (NSURL*) url{
+    NSLog([url absoluteString]);;
+    
     if (!self.videoLoading) {
         self.videoLoading = YES;
-        [self addSubview:self.videoLoadingImageView];
+        
+        //[self addSubview:self.videoLoadingImageView];
     }
     
     if (url) {
@@ -113,13 +116,13 @@
             //			NSLog(@"Video ready to play");
             if (self.videoLoading) {
                 self.videoLoading = NO;
-                [self.videoLoadingImageView removeFromSuperview];
+               // [self.videoLoadingImageView removeFromSuperview];
             }
         } else if (self.playerItem.status == AVPlayerStatusFailed) {
             NSLog(@"video couldn't play: %@", self.player.error);
             if (self.videoLoading) {
                 self.videoLoading = NO;
-                [self.videoLoadingImageView removeFromSuperview];
+               // [self.videoLoadingImageView removeFromSuperview];
             }
         }
     }

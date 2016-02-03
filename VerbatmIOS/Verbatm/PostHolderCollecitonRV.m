@@ -9,6 +9,7 @@
 #import "POVView.h"
 #import <Parse/PFObject.h>
 #import "Page_BackendObject.h"
+#import "ParseBackendKeys.h"
 #import "PostHolderCollecitonRV.h"
 
 @interface PostHolderCollecitonRV ()
@@ -38,6 +39,12 @@
             [self.ourCurrentPOV clearArticle];//make sure there is no other stuff
             [self.ourCurrentPOV renderPOVFromPages:pages];
             [self.ourCurrentPOV scrollToPageAtIndex:0];//this prepares the
+            
+            
+            NSNumber * numberOfPostLikes = [postObject valueForKey:POST_LIKES_NUM_KEY];
+            NSNumber * numberOfPostShares = [postObject valueForKey:POST_NUM_SHARES_KEY];
+            NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
+            [self.ourCurrentPOV createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1)];
         }];
     }
 }

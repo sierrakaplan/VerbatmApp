@@ -97,13 +97,7 @@
     return self;
 }
 
--(void) createPageLoader{
-    self.pageLoadManager = [[PagesLoadManager alloc] init];
-    self.pageLoadManager.delegate = self;
-    
-    NSNumber* povID = self.povInfo.identifier;
-    [self.pageLoadManager loadPagesForPOV: povID];
-}
+
 
 #pragma mark - Display page -
 
@@ -115,9 +109,6 @@
 }
 
 -(void) renderNextAve: (ArticleViewingExperience*)ave withIndex: (NSNumber*) pageIndex {
-    self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
-                                                self.mainScrollView.contentSize.height + self.frame.size.height);
-    
     [self setDelegateOnPhotoAVE: ave];
     CGRect frame = CGRectMake(0, [pageIndex integerValue] * self.mainScrollView.frame.size.height , self.mainScrollView.frame.size.width, self.mainScrollView.frame.size.height);
     ave.frame = frame;
@@ -142,16 +133,6 @@
 		[self.mainScrollView addSubview: ave];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
-    
-    
-    ArticleViewingExperience * ave = [aves firstObject];
-    if(ave){
-        BOOL inADK = ave.inPreviewMode;
-        if(!inADK){
-            //temp just to test
-            [self createLikeAndShareBarWithNumberOfLikes:@(10) numberOfShares:@(100) numberOfPages:@(aves.count) andStartingPageNumber:@(1)];
-        }
-    }
 }
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage{
@@ -398,6 +379,7 @@
                 //add bar at the bottom with page numbers etc
                [self renderNextAve:ave withIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
                 [self povOnScreen];
+                [self setApproprioateScrollViewContentSize];
             });
         }];
     }
@@ -436,6 +418,12 @@
 
 }
 
+
+-(void)setApproprioateScrollViewContentSize{
+    self.mainScrollView.contentSize = CGSizeMake(0, self.pageAves.count * self.frame.size.height);
+}
+
+
 #pragma mark - Clean up -
 
 -(void) clearArticle {
@@ -446,7 +434,8 @@
 		[view removeFromSuperview];
 	}
 	if (self.likeButton.superview) [self.likeButton removeFromSuperview];
-
+    [self.likeShareBar removeFromSuperview];
+    self.likeShareBar =  nil;
 	self.currentPageIndex = -1;
 	self.pageAves = nil;
 	self.pageLoadManager = nil;

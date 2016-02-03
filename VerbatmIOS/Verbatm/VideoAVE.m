@@ -28,11 +28,15 @@
 @property (nonatomic, strong) NSArray * videoList;
 @property (nonatomic) BOOL hasBeenSetUp;
 
+@property (nonatomic) UIImageView * thumbNailView;
+
 #pragma mark - In Preview Mode -
 @property (strong, nonatomic) PinchView* pinchView;
 @property (nonatomic) EditMediaContentView * editContentView;
 @property (nonatomic) OpenCollectionView * rearrangeView;
 @property (nonatomic) UIButton * rearrangeButton;
+
+@property (nonatomic) UIImageView * videoThumbNail;
 
 @end
 
@@ -42,11 +46,28 @@
 -(instancetype) initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList {
 	self = [super initWithFrame:frame];
 	if (self) {
+        
 		self.inPreviewMode = NO;
 		[self.videoPlayer repeatVideoOnEnd:YES];
         [self playVideosFromArray:videoAndTextList];
+        
+        NSArray * firstVideoObject = [videoAndTextList firstObject];
+        
+        if(firstVideoObject.count >= 4){
+            //this means there's a thumbnail
+            [self createVideoThumbnailView:firstVideoObject[3]];
+        }
+        
+        
     }
     return self;
+}
+
+-(void)createVideoThumbnailView:(UIImage *) image{
+   
+    self.videoThumbNail = [[UIImageView alloc] initWithFrame:self.bounds];
+    self.videoThumbNail.image = image;
+    [self insertSubview:self.videoThumbNail belowSubview:self.videoPlayer];
 }
 
 -(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView inPreviewMode: (BOOL) inPreviewMode {
@@ -89,6 +110,20 @@
     }
     [self prepareVideos:videoList];
     self.hasBeenSetUp = NO;
+}
+
+
+-(void)presentThumbnail:(UIImage *) thumbnail {
+    
+    if(self.thumbNailView){
+        [self.thumbNailView removeFromSuperview];
+        self.thumbNailView = nil;
+    }
+    self.thumbNailView = [[UIImageView alloc] initWithImage:thumbnail];
+    
+    
+    
+    
 }
 
 -(void)prepareVideos:(NSArray*)videoList {
@@ -208,6 +243,7 @@
 -(VideoPlayerView*) videoPlayer {
 	if (!_videoPlayer) {
 		_videoPlayer = [[VideoPlayerView alloc] initWithFrame:self.bounds];
+        _videoPlayer.backgroundColor = [UIColor clearColor];
 		[self addSubview:_videoPlayer];
 	}
 	return _videoPlayer;

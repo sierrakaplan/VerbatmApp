@@ -54,7 +54,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
     self = [super initWithFrame:frame];
     if(self){
-        [self createProfileHeaderWithUserName:[profileUser username] isCurrentUser:isCurrentUser];
+        [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
 		[self.threadNavScrollView displayTabs:channels];
         [self createFollowersInfoViewWithUser:profileUser];
         [self createArrowExtesion];

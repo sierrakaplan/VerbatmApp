@@ -18,6 +18,8 @@
 #import "LocalPOVs.h"
 
 #import "Page_BackendObject.h"
+#import "ParseBackendKeys.h"
+
 #import "POVScrollView.h"
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
@@ -358,7 +360,7 @@
         SettingsVC * vc = [segue destinationViewController];
         
         //set the username of the currently logged in user
-        vc.userName  = [[PFUser currentUser] username];
+        vc.userName  = [[PFUser currentUser] valueForKey:USER_USER_NAME_KEY];
     }
 }
 

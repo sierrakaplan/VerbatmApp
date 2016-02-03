@@ -5,6 +5,11 @@
 //  Created by Iain Usiri on 1/26/16.
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
+
 #import "GTLVerbatmAppVideo.h"
 
 #import <Parse/PFUser.h>
@@ -25,28 +30,60 @@
 -(void)saveVideo:(NSURL *) videoUrl atVideoIndex:(NSInteger) videoIndex andPageObject:(PFObject *) pageObject;
 {
     self.mediaPublisher = [[POVPublisher alloc] init];
+    
+    UIImage * thumbNail = [Video_BackendObject thumbnailImageForVideo:videoUrl atTime:0.f];
     [self.mediaPublisher  storeVideoFromURL:videoUrl withCompletionBlock:^(GTLVerbatmAppVideo * gtlVideo) {
         //save the video to the GAE blobstore -- TODO Sierra (new)
         NSString * blobStoreUrl = gtlVideo.blobKeyString;//set this with the url from the blobstore
         //in completion block of blobstore save
-        [self createAndSaveVideoWithBlobStoreUrl:blobStoreUrl videoIndex:videoIndex andPageObject:pageObject];
+        [self createAndSaveVideoWithBlobStoreUrl:blobStoreUrl videoIndex:videoIndex thumbnail:thumbNail andPageObject:pageObject];
     }];
-    
-    
-    
-    
 }
 
+//should be moved to another file-- TODO
++ (UIImage *)thumbnailImageForVideo:(NSURL *)videoURL
+                             atTime:(NSTimeInterval)time
+{
+    
+    AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
+    NSParameterAssert(asset);
+    AVAssetImageGenerator *assetIG =
+    [[AVAssetImageGenerator alloc] initWithAsset:asset];
+    assetIG.appliesPreferredTrackTransform = YES;
+    assetIG.apertureMode = AVAssetImageGeneratorApertureModeEncodedPixels;
+    
+    CGImageRef thumbnailImageRef = NULL;
+    CFTimeInterval thumbnailImageTime = time;
+    NSError *igError = nil;
+    thumbnailImageRef =
+    [assetIG copyCGImageAtTime:CMTimeMake(thumbnailImageTime, 60)
+                    actualTime:NULL
+                         error:&igError];
+    
+    if (!thumbnailImageRef)
+        NSLog(@"thumbnailImageGenerationError %@", igError );
+    
+    UIImage *thumbnailImage = thumbnailImageRef
+    ? [[UIImage alloc] initWithCGImage:thumbnailImageRef]
+    : nil;
+    
+    return thumbnailImage;
+}
 
--(void)createAndSaveVideoWithBlobStoreUrl:(NSString *) blobStoreUrl
-                               videoIndex:(NSInteger) videoIndex andPageObject:(PFObject *)pageObject{
+-(void)createAndSaveVideoWithBlobStoreUrl:(NSString *) blobStoreVideoUrl
+                               videoIndex:(NSInteger) videoIndex thumbnail:(UIImage *) thumbnail andPageObject:(PFObject *)pageObject{
+    if(!self.mediaPublisher)self.mediaPublisher = [[POVPublisher alloc] init];
     
-    PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
-    [newVideoObj setObject:[NSNumber numberWithInteger:videoIndex] forKey:VIDEO_INDEX_KEY];
-    [newVideoObj setObject:blobStoreUrl forKey:BLOB_STORE_URL];
-    [newVideoObj setObject:pageObject forKey:VIDEO_PAGE_OBJECT_KEY];
-    [newVideoObj saveInBackground];
-    
+    [self.mediaPublisher storeImage:thumbnail withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
+        NSString * blobStoreImageUrl = gtlImage.servingUrl;
+        NSLog(@"Saving video parse object with url");
+        PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
+        [newVideoObj setObject:[NSNumber numberWithInteger:videoIndex] forKey:VIDEO_INDEX_KEY];
+        [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];
+        [newVideoObj setObject:blobStoreImageUrl forKey:VIDEO_THUMBNAIL_KEY];
+        [newVideoObj setObject:pageObject forKey:VIDEO_PAGE_OBJECT_KEY];
+        [newVideoObj saveInBackground];
+    }];
 }
 
 

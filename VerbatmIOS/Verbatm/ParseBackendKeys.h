@@ -10,7 +10,7 @@
 #define ParseBackendKeys_h
 
 
-#define USER_EMAIL_KEY @"Email"
+#define USER_USER_NAME_KEY @"VerbatmName" //different from the username which is used by fb on parse
 #define USER_NUMBER_OF_FOLLOWERS @"Follower(s)" //people that follow this user
 #define USER_NUMBER_OF_FOLLOWING @"Following" //people this user is following
 
@@ -31,7 +31,7 @@
 #define User_Key @"user"
 #define BLOB_STORE_URL @"BlobStoreUrl"
 #define VIDEO_PAGE_OBJECT_KEY @"Page"
-
+#define VIDEO_THUMBNAIL_KEY @"Thumbnail"
 
 #define PAGE_PFCLASS_KEY @"PageClass"
 #define PAGE_INDEX_KEY @"PageIndex"

@@ -131,21 +131,52 @@
     }];
 }
 
+
+
+-(void)getImagefromUrl:(NSMutableArray *) thumbnailUrls withCompletionBlock:(void(^)(NSArray *)) block{
+    
+    NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
+    for (NSString * url in thumbnailUrls) {
+        AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedDataFromURL: [NSURL URLWithString:url]];
+        [loadImageDataPromises addObject: getImageDataPromise];
+    }
+    PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
+            block(results);
+    });
+    
+}
+
+
 -(void) getVideosFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
     
     
     [Video_BackendObject getVideosForPage:page andCompletionBlock:^(NSArray * pfVideoObjectArray) {
         NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
+        //get thumbnail urls for all videos
         for (PFObject * pfVideo in pfVideoObjectArray) {
-            
-            NSString * videoBlobKey = [pfVideo valueForKey:BLOB_STORE_URL];
-            NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
-            NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];
-            components.queryItems = @[blobKey];
-            NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
-            [videoURLs addObject: @[components.URL, @"", @(0)]];
+            NSString * thumbNailUrl = [pfVideo valueForKey:VIDEO_THUMBNAIL_KEY];
+            [videoURLs addObject:thumbNailUrl];
         }
-        block(videoURLs);
+        
+        //download all thumbnail urls for videos
+        [self getImagefromUrl:videoURLs withCompletionBlock:^(NSArray * videoThumbNails) {
+            NSMutableArray * finalVideoObjects = [[NSMutableArray alloc] init];
+            for (int i = 0; i < pfVideoObjectArray.count; i++) {
+                PFObject * pfVideo = pfVideoObjectArray[i];
+                NSString * videoBlobKey = [pfVideo valueForKey:BLOB_STORE_URL];
+                NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
+                NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];
+                components.queryItems = @[blobKey];
+                NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
+                if(i < videoThumbNails.count){
+                    [finalVideoObjects addObject: @[components.URL, @"", @(0), [UIImage imageWithData:videoThumbNails[i]]]];
+                }else{
+                    [finalVideoObjects addObject: @[components.URL, @"", @(0)]];
+                }
+            }
+            block(finalVideoObjects);
+        }];
+        
     }];
 }
 

@@ -209,6 +209,7 @@
 		C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7C69A061BF820FC006B5260 /* EditMediaContentView.m */; };
 		C7CCFF3C19CE63A800E90080 /* testerAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3B19CE63A800E90080 /* testerAnimation.m */; };
 		C7CCFF3F19CE657800E90080 /* testerTransitionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */; };
+		C7D596321C6158B500161136 /* VideoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C7D596311C6158B500161136 /* VideoTest.m */; };
 		C7E093EC1BF98BE200A3276A /* OpenCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E093EB1BF98BE200A3276A /* OpenCollectionView.m */; };
 		C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E2C88E1BB7E97600D83668 /* UtilityFunctions.m */; };
 		C7E65F5C1B911A470042AD99 /* FeedVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C7E65F5B1B911A470042AD99 /* FeedVC.m */; };
@@ -620,6 +621,8 @@
 		C7CCFF3B19CE63A800E90080 /* testerAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerAnimation.m; sourceTree = "<group>"; };
 		C7CCFF3D19CE657800E90080 /* testerTransitionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = testerTransitionDelegate.h; sourceTree = "<group>"; };
 		C7CCFF3E19CE657800E90080 /* testerTransitionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = testerTransitionDelegate.m; sourceTree = "<group>"; };
+		C7D596301C6158B500161136 /* VideoTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoTest.h; sourceTree = "<group>"; };
+		C7D596311C6158B500161136 /* VideoTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoTest.m; sourceTree = "<group>"; };
 		C7E093EA1BF98BE200A3276A /* OpenCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenCollectionView.h; sourceTree = "<group>"; };
 		C7E093EB1BF98BE200A3276A /* OpenCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenCollectionView.m; sourceTree = "<group>"; };
 		C7E2C88D1BB7E97600D83668 /* UtilityFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UtilityFunctions.h; sourceTree = "<group>"; };
@@ -1302,6 +1305,8 @@
 				C70E1C551C3BF76200346A25 /* Settings page VCs */,
 				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
 				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
+				C7D596301C6158B500161136 /* VideoTest.h */,
+				C7D596311C6158B500161136 /* VideoTest.m */,
 			);
 			name = "View Controllers";
 			sourceTree = "<group>";
@@ -1921,6 +1926,7 @@
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				C761727F1C4E0EB600AB0D84 /* PostHolderCollecitonRV.m in Sources */,
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
+				C7D596321C6158B500161136 /* VideoTest.m in Sources */,
 				C74E1D711C091F8F00ABD41D /* VideoManager.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,

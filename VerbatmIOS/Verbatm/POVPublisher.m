@@ -70,8 +70,12 @@
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
 			[self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_VIDEO];
 		}
+        NSLog(@"Starting video upload");
+
 		return [self.videoUploader startUpload];
 	}).then(^(NSString* blobStoreKeyString) {
+        NSLog(@"saved video to GAE");
+
 		GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
 		gtlVideo.blobKeyString = blobStoreKeyString;
         block(gtlVideo);
@@ -84,6 +88,8 @@
 // Which should be the ID of the GTL image just stored
 -(void) storeImage: (UIImage*) image withCompletionBlock:(void(^)(GTLVerbatmAppImage *))block {
     [self getImageUploadURI].then(^(NSString* uri) {
+        NSLog(@"saving photo to GAE");
+
 		self.imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
 			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];

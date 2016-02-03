@@ -35,7 +35,8 @@
 
 
 -(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject{
-    
+    NSLog(@"Saving parse photo object");
+
     PFObject * newPhotoObject = [PFObject objectWithClassName:PHOTO_PFCLASS_KEY];
     
     [newPhotoObject setObject:[NSNumber numberWithInteger:photoIndex] forKey:PHOTO_INDEX_KEY];
