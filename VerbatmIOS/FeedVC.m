@@ -18,7 +18,7 @@
 
 #import "Notifications.h"
 
-#import "PostListVC.h"
+//#import "PostListVC.h"
 #import "POVScrollView.h"
 
 #import "SegueIDs.h"
@@ -31,7 +31,7 @@
 @property (nonatomic) CGRect povScrollViewFrame;
 @property (strong, nonatomic) POVScrollView* povScrollView;
 
-@property (nonatomic) PostListVC * postListView;
+//@property (nonatomic) PostListVC * postListView;
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
 
 
@@ -45,7 +45,7 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    [self addPostListVC];
+    //[self addPostListVC];
     [self addClearScreenGesture];
 }
 
@@ -64,16 +64,16 @@
 }
 
 -(void) addPostListVC {
-    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    [flowLayout setMinimumInteritemSpacing:0.3];
-    [flowLayout setMinimumLineSpacing:0.0f];
-    [flowLayout setItemSize:self.view.frame.size];
-    self.postListView = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-    
-    [self.postListContainerView setFrame:self.view.bounds];
-    [self.postListContainerView addSubview:self.postListView.view];
-    [self.view addSubview:self.postListContainerView];
+//    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+//    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+//    [flowLayout setMinimumInteritemSpacing:0.3];
+//    [flowLayout setMinimumLineSpacing:0.0f];
+//    [flowLayout setItemSize:self.view.frame.size];
+//    self.postListView = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+//    
+//    [self.postListContainerView setFrame:self.view.bounds];
+//    [self.postListContainerView addSubview:self.postListView.view];
+//    [self.view addSubview:self.postListContainerView];
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{

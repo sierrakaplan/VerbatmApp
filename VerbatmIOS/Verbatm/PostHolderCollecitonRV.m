@@ -6,7 +6,6 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "POVView.h"
 #import <Parse/PFObject.h>
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
@@ -27,6 +26,14 @@
     self = [super initWithFrame:frame];
     [self.activityIndicator startAnimating];
     return self;
+}
+
+
+-(void)presentPOV:(POVView *)pov{
+    [self.ourCurrentPOV clearArticle];//make sure there is no other stuff
+    [self.ourCurrentPOV removeFromSuperview];
+    self.ourCurrentPOV = pov;
+    [self addSubview:self.ourCurrentPOV];
 }
 
 -(void)presentPost:(PFObject *) postObject{

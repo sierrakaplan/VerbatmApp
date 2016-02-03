@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/PFObject.h>
+#import "POVView.h"
 
 @interface PostHolderCollecitonRV : UICollectionViewCell
 -(void)presentPost:(PFObject *) postObject;
+-(void)presentPOV:(POVView *)pov;
 -(void)onScreen;
 -(void)offScreen;
 @end

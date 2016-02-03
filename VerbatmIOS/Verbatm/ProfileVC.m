@@ -24,7 +24,8 @@
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
 #import "POVLoadManager.h"
-#import "PostListVC.h"
+//#import "PostListVC.h"
+#import "POVListScrollViewVC.h"
 
 #import "Post_BackendObject.h"
 #import "POVView.h"
@@ -39,7 +40,7 @@
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate>
 
-@property (strong, nonatomic) PostListVC * postListVC;
+@property (strong, nonatomic) POVListScrollViewVC * postListVC;
 @property (weak, nonatomic) IBOutlet UIView *postListContainer;
 
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
@@ -100,12 +101,14 @@
 }
 
 -(void) createAndAddListVC{
-    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    [flowLayout setMinimumInteritemSpacing:0.3];
-    [flowLayout setMinimumLineSpacing:0.0f];
-    [flowLayout setItemSize:self.view.frame.size];
-    self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+//    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+//    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+//    [flowLayout setMinimumInteritemSpacing:0.3];
+//    [flowLayout setMinimumLineSpacing:0.0f];
+//    [flowLayout setItemSize:self.view.frame.size];
+    
+    
+    self.postListVC = [[POVListScrollViewVC alloc] init];
     self.postListVC.listOwner = [PFUser currentUser];
     self.postListVC.channelForList = [self.channels firstObject];
     self.postListVC.listType = listChannel;
