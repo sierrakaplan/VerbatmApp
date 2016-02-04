@@ -127,6 +127,21 @@
     }
 }
 
+-(void) headerShowing: (BOOL) showing {
+    for(POVView * subView in self.mainScrollView.subviews){
+        if([subView isKindOfClass:[POVView class]]){
+            if (showing) {
+                [(POVView *)subView shiftLikeShareBarDown:NO];
+            } else {
+                [(POVView *)subView shiftLikeShareBarDown:YES];
+            }
+        }
+    }
+}
+
+
+#pragma mark -Lazy instantiation-
+
 -(NSMutableArray *) postList{
     if(!_postList)_postList = [[NSMutableArray alloc] init];
     return _postList;

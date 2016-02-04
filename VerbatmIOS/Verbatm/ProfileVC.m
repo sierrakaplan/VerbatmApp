@@ -322,14 +322,14 @@
 		}];
 		[self.delegate showTabBar:NO];
 		self.contentCoveringScreen = NO;
-        //[self.povScrollView headerShowing:NO];
+        [self.postListVC headerShowing:NO];
 	} else {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			[self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:NO]];
 		}];
 		[self.delegate showTabBar:YES];
 		self.contentCoveringScreen = YES;
-        //[self.povScrollView headerShowing:YES];
+        [self.postListVC headerShowing:YES];
 
 	}
 }
