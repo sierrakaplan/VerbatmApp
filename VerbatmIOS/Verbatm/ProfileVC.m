@@ -88,7 +88,7 @@
 
 
 -(void) viewWillAppear:(BOOL)animated{
-    
+    if(self.postListVC)[self.postListVC continueVideoContent];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -98,16 +98,13 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+    if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
 
+
+
+
 -(void) createAndAddListVC{
-//    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-//    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-//    [flowLayout setMinimumInteritemSpacing:0.3];
-//    [flowLayout setMinimumLineSpacing:0.0f];
-//    [flowLayout setItemSize:self.view.frame.size];
-    
-    
     self.postListVC = [[POVListScrollViewVC alloc] init];
     self.postListVC.listOwner = [PFUser currentUser];
     self.postListVC.channelForList = [self.channels firstObject];

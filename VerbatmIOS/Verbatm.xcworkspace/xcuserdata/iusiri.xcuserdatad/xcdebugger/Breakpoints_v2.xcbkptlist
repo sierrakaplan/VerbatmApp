@@ -2896,11 +2896,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "476233146.885935"
+            timestampString = "476355464.384769"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "233"
-            endingLineNumber = "233"
+            startingLineNumber = "230"
+            endingLineNumber = "230"
             landmarkName = "-createNewChannel"
             landmarkType = "5">
          </BreakpointContent>
@@ -3248,11 +3248,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "476315432.197318"
+            timestampString = "476355464.384769"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "383"
-            endingLineNumber = "383">
+            startingLineNumber = "380"
+            endingLineNumber = "380">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4366,11 +4366,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "476233146.885935"
+            timestampString = "476355464.384769"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "103"
-            endingLineNumber = "103"
+            startingLineNumber = "107"
+            endingLineNumber = "107"
             landmarkName = "-createAndAddListVC"
             landmarkType = "5">
          </BreakpointContent>
@@ -4558,11 +4558,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "476233146.885935"
+            timestampString = "476355464.384769"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "140"
-            endingLineNumber = "140"
+            startingLineNumber = "137"
+            endingLineNumber = "137"
             landmarkName = "-createNavigationBar"
             landmarkType = "5">
          </BreakpointContent>
@@ -4734,11 +4734,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "476233146.885935"
+            timestampString = "476355464.384769"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "129"
-            endingLineNumber = "129"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
             landmarkName = "-createNavigationBar"
             landmarkType = "5">
          </BreakpointContent>

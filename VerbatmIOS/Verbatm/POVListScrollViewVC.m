@@ -142,6 +142,25 @@
     }
 }
 
+
+-(void) stopAllVideoContent{
+    NSInteger visibleCellIndex = [self getVisibileCellIndex];
+    if(visibleCellIndex < self.mainScrollView.subviews.count){
+        POVView * povInView = (POVView *) [self.povsPresented valueForKey:
+                                           [NSNumber numberWithInteger:visibleCellIndex].stringValue];
+        if(povInView)[povInView povOffScreen];
+        [self stopPovsExceptAtIndex:visibleCellIndex];
+    }
+}
+-(void) continueVideoContent{
+    NSInteger visibleCellIndex = [self getVisibileCellIndex];
+    if(visibleCellIndex < self.mainScrollView.subviews.count){
+        POVView * povInView = (POVView *) [self.povsPresented valueForKey:
+                                           [NSNumber numberWithInteger:visibleCellIndex].stringValue];
+        if(povInView)[povInView povOnScreen];
+    }
+}
+
 -(void) headerShowing: (BOOL) showing {
     for(POVView * subView in self.mainScrollView.subviews){
         if([subView isKindOfClass:[POVView class]]){

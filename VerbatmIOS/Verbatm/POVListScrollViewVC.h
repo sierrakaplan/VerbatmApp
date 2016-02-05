@@ -23,6 +23,8 @@ typedef enum PostListType{
 @property (nonatomic) PFUser * listOwner;//also set when POSTLIST is created
 @property (nonatomic) Channel * channelForList;//set when postlist created
 
+-(void) stopAllVideoContent;//marks all POVs as off screen
+-(void) continueVideoContent;//continues POV that's on screen
 
 -(void)reloadCurrentChannel;
 -(void)changeCurrentChannelTo:(Channel *) channel;
