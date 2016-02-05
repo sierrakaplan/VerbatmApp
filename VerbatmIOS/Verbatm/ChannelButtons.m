@@ -29,7 +29,7 @@
 
 @property (nonatomic, readwrite) CGFloat suggestedWidth;
 
-@property (nonatomic) Channel * currentChannel;
+@property (nonatomic, readwrite) Channel * currentChannel;
 @end
 
 @implementation ChannelButtons

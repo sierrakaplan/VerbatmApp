@@ -301,11 +301,8 @@
 }
 
 
--(void)newChannelSelectedWithName:(NSString *) channelName{
-    if(![channelName isEqualToString:self.currentThreadInView]){
-        //TODO -- get content from new channel and present it
-        //sierra
-    }
+-(void)newChannelSelected:(Channel *) channel{
+    [self.postListVC changeCurrentChannelTo:channel];
 }
 
 
@@ -335,13 +332,12 @@
 }
 
 
--(CGRect)getProfileNavBarFrameOffScreen:(BOOL) getOffScreenFrame{
-    
+-(CGRect)getProfileNavBarFrameOffScreen:(BOOL) getOffScreenFrame {
     if(getOffScreenFrame){
         return CGRectMake(0, -1 * self.profileNavBar.frame.size.height,
                           self.profileNavBar.frame.size.width,
                           self.profileNavBar.frame.size.height);
-    }else{
+    } else {
         return CGRectMake(0, 0,
                           self.profileNavBar.frame.size.width,
                           self.profileNavBar.frame.size.height);

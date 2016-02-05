@@ -37,9 +37,13 @@
 }
 
 -(void)changeCurrentChannelTo:(Channel *) channel{
-    self.channelForList = channel;
-    self.postList = nil;
-    [self getPosts];
+    if(![self.channelForList.name isEqualToString:channel.name]){
+        self.channelForList = channel;
+        [self clearMainScrollView];
+        self.postList = nil;
+        
+        [self getPosts];
+    }
 }
 
 -(void) getPosts {
@@ -77,6 +81,17 @@
         }];
         [self adjustScrollViewContentSize];
     }
+}
+
+-(void)clearMainScrollView{
+    for (NSString * key in self.povsPresented){
+            POVView * povInView = (POVView *) [self.povsPresented valueForKey:
+                                               key];
+        [povInView povOffScreen];
+            [povInView removeFromSuperview];
+    }
+    [self.povsPresented removeAllObjects];
+    self.mainScrollView.contentOffset = CGPointMake(0, 0);
 }
 
 -(void) addPovToMainView:(POVView *) pov withIndex:(CGFloat) index{

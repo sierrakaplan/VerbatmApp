@@ -6,7 +6,7 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
-
+#import "Channel.h"
 #import <Parse/PFUser.h>
 #import "SizesAndPositions.h"
 #import <UIKit/UIKit.h>
@@ -19,7 +19,7 @@
 -(void) followingOptionSelected;//current user wants to see who they follow
 
 -(void) settingsButtonClicked;
--(void) newChannelSelectedWithName:(NSString *) channelName;
+-(void) newChannelSelected:(Channel *) channel;
 -(void) createNewChannel;//notifies view to prompt user to create new channel
 
 -(void)exitCurrentProfile;//the current user has selected the back button

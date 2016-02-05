@@ -260,8 +260,8 @@
 
 #pragma mark - CustomScrollingTabBarDelegate methods -
 
--(void) tabPressedWithTitle:(NSString *)title {
-	[self.delegate newChannelSelectedWithName:title];
+-(void) tabPressedWithChannel:(Channel *)channel {
+	[self.delegate newChannelSelected:channel];
 }
 
 -(void) createNewChannel{

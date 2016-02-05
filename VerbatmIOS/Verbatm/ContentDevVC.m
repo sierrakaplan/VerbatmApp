@@ -642,10 +642,10 @@ rowHeightForComponent:(NSInteger)component{
         newElementScrollView.frame = newElementScrollViewFrame;
         self.addMediaBelowView = newElementScrollView;
         [self shiftElementsBelowView: self.titleField];
-        
-        if(self.pageElementScrollViews.count > 3){
-            [self presentUserInstructionForPinchGesture];
-        }
+        //TODO -- user pinch instruction
+//        if(self.pageElementScrollViews.count > 3){
+//            [self presentUserInstructionForPinchGesture];
+//        }
         
     }];
     

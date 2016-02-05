@@ -257,6 +257,7 @@
 #pragma mark - Text View -
 
 -(void)createTextViewButton {
+    return;//temp soln TODO
     [self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
     [self.textCreationButton addTarget:self action:@selector(textViewButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.textCreationButton];

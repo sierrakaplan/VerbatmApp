@@ -116,6 +116,7 @@
 		_textView.keyboardAppearance = UIKeyboardAppearanceDark;
 		_textView.scrollEnabled = NO;
 		_textView.editable = NO;
+        _textView.selectable = NO;
 	}
 	return _textView;
 }

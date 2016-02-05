@@ -138,7 +138,7 @@
 -(void) tabPressed: (ChannelButtons *) tabButton {
 	[self unselectTab:self.selectedTab];
 	[self selectTab:tabButton];
-	[self.customScrollingTabBarDelegate tabPressedWithTitle:tabButton.channelName];
+	[self.customScrollingTabBarDelegate tabPressedWithChannel:tabButton.currentChannel];
 }
 
 -(void) selectTab: (ChannelButtons *) tab {

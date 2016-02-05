@@ -11,7 +11,7 @@
 
 @protocol CustomScrollingTabBarDelegate <NSObject>
 
--(void) tabPressedWithTitle:(NSString*) title;
+-(void) tabPressedWithChannel:(Channel*) title;
 -(void) createNewChannel;//notifies view to prompt user to create new channel
 
 @end

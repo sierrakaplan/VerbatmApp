@@ -21,6 +21,7 @@
 @property (nonatomic, readonly) CGFloat suggestedWidth;
 
 
+@property (nonatomic, readonly) Channel * currentChannel;
 
 -(void)markButtonAsSelected;
 -(void)markButtonAsUnselected;
