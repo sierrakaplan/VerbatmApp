@@ -362,10 +362,11 @@ public class Promise<T> {
 
         pipe { resolution in
             switch (resolution, policy) {
-            case (let .Rejected(error as CancellableErrorType, token), .AllErrorsExceptCancellation):
+            case (let .Rejected(error, token), .AllErrorsExceptCancellation):
                 dispatch_async(dispatch_get_main_queue()) {
-                    if !error.cancelled {     // cancelled must be called on main
+                    guard let cancellableError = error as? CancellableErrorType where cancellableError.cancelled else {
                         consume(error, token)
+                        return
                     }
                 }
             case (let .Rejected(error, token), _):
@@ -450,7 +451,7 @@ public class Promise<T> {
     public func report(policy policy: ErrorPolicy = .AllErrorsExceptCancellation, _ body: (ErrorType) -> Void) { error(policy: policy, body) }
 
     @available(*, deprecated, renamed="always")
-    public func ensure(on q: dispatch_queue_t = dispatch_get_main_queue(), _ body: () -> Void) -> Promise { return ensure(on: q, body) }
+    public func ensure(on q: dispatch_queue_t = dispatch_get_main_queue(), _ body: () -> Void) -> Promise { return always(on: q, body) }
 }
 
 

@@ -8,12 +8,12 @@
 #error Digits doesn't support watchOS
 #endif
 
-#import "DGTAppearance.h"
+#import <DigitsKit/DGTAppearance.h>
 #if !TARGET_OS_TV
-#import "DGTAuthenticateButton.h"
-#import "DGTContactAccessAuthorizationStatus.h"
+#import <DigitsKit/DGTAuthenticateButton.h>
+#import <DigitsKit/DGTContactAccessAuthorizationStatus.h>
 #endif
-#import "DGTSession.h"
+#import <DigitsKit/DGTSession.h>
 #import <TwitterCore/TWTRAuthConfig.h>
 
 @class DGTAuthenticationConfiguration;

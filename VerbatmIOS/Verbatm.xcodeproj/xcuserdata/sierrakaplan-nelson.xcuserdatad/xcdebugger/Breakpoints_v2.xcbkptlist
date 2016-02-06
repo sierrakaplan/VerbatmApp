@@ -63,7 +63,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "65"
             endingLineNumber = "65"
-            landmarkName = "-signUpOrLoginUserFromFacebookToken:"
+            landmarkName = "-getUserInfoFromFacebookToken:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -126,9 +126,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "153"
-            endingLineNumber = "153"
-            landmarkName = "-loginUserFromEmail:andPassword:"
-            landmarkType = "5">
+            endingLineNumber = "153">
             <Locations>
                <Location
                   shouldBeEnabled = "No"

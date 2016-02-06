@@ -16,7 +16,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <PromiseKit/PromiseKit.h>
 
 @class PovInfo;
 

@@ -1,9 +1,9 @@
 PODS:
-  - Crashlytics (3.4.1):
-    - Fabric (~> 1.6.0)
-  - Digits (1.14.4):
-    - TwitterCore (= 1.14.4)
-  - Fabric (1.6.1)
+  - Crashlytics (3.6.0):
+    - Fabric (~> 1.6.3)
+  - Digits (1.15.1):
+    - TwitterCore (= 1.15.1)
+  - Fabric (1.6.5)
   - Google/Analytics (1.0.7):
     - Google/Core
     - GoogleAnalytics (~> 3.12)
@@ -17,30 +17,30 @@ PODS:
   - GoogleSymbolUtilities (1.0.3)
   - GoogleUtilities (1.1.0):
     - GoogleSymbolUtilities (~> 1.0.0)
-  - OMGHTTPURLRQ (3.0.2):
-    - OMGHTTPURLRQ/RQ (= 3.0.2)
-  - OMGHTTPURLRQ/FormURLEncode (3.0.2)
-  - OMGHTTPURLRQ/RQ (3.0.2):
+  - OMGHTTPURLRQ (3.1.1):
+    - OMGHTTPURLRQ/RQ (= 3.1.1)
+  - OMGHTTPURLRQ/FormURLEncode (3.1.1)
+  - OMGHTTPURLRQ/RQ (3.1.1):
     - OMGHTTPURLRQ/FormURLEncode
     - OMGHTTPURLRQ/UserAgent
-  - OMGHTTPURLRQ/UserAgent (3.0.2)
+  - OMGHTTPURLRQ/UserAgent (3.1.1)
   - Optimizely-iOS-SDK (1.3.2)
-  - PromiseKit (3.0.0):
-    - PromiseKit/Foundation (= 3.0.0)
-    - PromiseKit/QuartzCore (= 3.0.0)
-    - PromiseKit/UIKit (= 3.0.0)
-  - PromiseKit/CorePromise (3.0.0)
-  - PromiseKit/Foundation (3.0.0):
-    - OMGHTTPURLRQ (~> 3.0.0)
+  - PromiseKit (3.0.2):
+    - PromiseKit/Foundation (= 3.0.2)
+    - PromiseKit/QuartzCore (= 3.0.2)
+    - PromiseKit/UIKit (= 3.0.2)
+  - PromiseKit/CorePromise (3.0.2)
+  - PromiseKit/Foundation (3.0.2):
+    - OMGHTTPURLRQ (~> 3.1.0)
     - PromiseKit/CorePromise
-  - PromiseKit/QuartzCore (3.0.0):
+  - PromiseKit/QuartzCore (3.0.2):
     - PromiseKit/CorePromise
-  - PromiseKit/UIKit (3.0.0):
+  - PromiseKit/UIKit (3.0.2):
     - PromiseKit/CorePromise
-  - TwitterCore (1.14.4):
+  - TwitterCore (1.15.1):
     - Fabric
-  - TwitterKit (1.14.4):
-    - TwitterCore (= 1.14.4)
+  - TwitterKit (1.15.1):
+    - TwitterCore (= 1.15.1)
 
 DEPENDENCIES:
   - Crashlytics
@@ -53,18 +53,18 @@ DEPENDENCIES:
   - TwitterKit
 
 SPEC CHECKSUMS:
-  Crashlytics: 41574a245bc6ae10c55d57f385ebd2004e5bee05
-  Digits: 41f924c3a6f0115591769241c40b0a2fbc68dd64
-  Fabric: bf0ceb04e7c924090efc5f8c55e4fbcca189e0a0
+  Crashlytics: e4e8d02914f2608fbc7bf42b1a7af838b0db67a2
+  Digits: 369c517143ab4f9f35d77628540493a2042f8cc2
+  Fabric: 338ffd3c2afcab120638907b4251189de9ad17b3
   Google: 875f5a8ade86dd02e36586e4a54814843938c7f6
   GoogleAnalytics: 9be1afdb8deeac4bb5f13ca7f7d3b9db2a1f43dc
   GoogleNetworkingUtilities: 292992ab31b7b4ba32809a0e8b40e324cdfb2c0c
   GoogleSymbolUtilities: 82ad9f93d3615244b3f4ce440f5ab2515e8b4f56
   GoogleUtilities: 8ed9134debe11719097881711464752900668f10
-  OMGHTTPURLRQ: 8376dc887d76a5a7e2a67881dc788f917a2f437c
+  OMGHTTPURLRQ: 633f98ee745aeda02345935a52eec1784cddb589
   Optimizely-iOS-SDK: 4e63727b72618f35a1d919f60d5935ac4f463405
-  PromiseKit: 665540a1eb43156446872dcf49ed7dee6ebbe13b
-  TwitterCore: 432bdd0eedc3562ec59eaa43f7e2d6fd40920381
-  TwitterKit: 5fa6e6651a10b7d5d8be29a82180c1d4907b4c94
+  PromiseKit: ab1a380f7a30cf8cce663a2411e8b3580b10313d
+  TwitterCore: 12983a7464e34afbbf18881347898a9db526ac71
+  TwitterKit: b5821570887ec2d77650fa232eaec175665dc443
 
 COCOAPODS: 0.39.0
