@@ -26,7 +26,5 @@
 
 
 
--(void) offScreen;//told when it's off screen to stop videos
--(void)onScreen;
 
 @end

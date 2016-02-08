@@ -57,8 +57,6 @@
             //this means there's a thumbnail
             [self createVideoThumbnailView:firstVideoObject[3]];
         }
-        
-        
     }
     return self;
 }

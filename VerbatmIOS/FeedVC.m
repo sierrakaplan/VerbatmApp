@@ -18,18 +18,17 @@
 
 #import "Notifications.h"
 
-//#import "PostListVC.h"
-#import "POVScrollView.h"
+#import "POVListScrollViewVC.h"
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, POVScrollViewDelegate>
+@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, POVListViewProtocol>
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
 @property (nonatomic) CGRect povScrollViewFrame;
-@property (strong, nonatomic) POVScrollView* povScrollView;
+@property (strong, nonatomic) POVListScrollViewVC* postListVC;
 
 //@property (nonatomic) PostListVC * postListView;
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
@@ -45,13 +44,13 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    //[self addPostListVC];
+    [self createContentListView];
     [self addClearScreenGesture];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-
+    if(self.postListVC)[self.postListVC continueVideoContent];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -60,41 +59,26 @@
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.povScrollView clearPOVs];
+    if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
 
--(void) addPostListVC {
-//    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-//    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-//    [flowLayout setMinimumInteritemSpacing:0.3];
-//    [flowLayout setMinimumLineSpacing:0.0f];
-//    [flowLayout setItemSize:self.view.frame.size];
-//    self.postListView = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-//    
-//    [self.postListContainerView setFrame:self.view.bounds];
-//    [self.postListContainerView addSubview:self.postListView.view];
-//    [self.view addSubview:self.postListContainerView];
-}
-
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    [self.povScrollView playPOVOnScreen];
-}
 
 -(void) createContentListView {
-    self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
-    self.postDisplayVC.view.frame = self.view.bounds;
-    self.postDisplayVC.view.backgroundColor = [UIColor blackColor];
-    [self.postDisplayVC presentContentWithPOVType:POVTypeTrending andChannel:@""];
-    [self addChildViewController:self.postDisplayVC];
-    [self.view addSubview:self.postDisplayVC.view];
-    [self.postDisplayVC didMoveToParentViewController:self];
+    self.postListVC = [[POVListScrollViewVC alloc] init];
+    self.postListVC.listOwner = [PFUser currentUser];
+    self.postListVC.listType = listFeed;
+    self.postListVC.delegate = self;
+    [self.view addSubview:self.postListVC.view];
     self.postDisplayVC.delegate = self;
+    [self.postDisplayVC didMoveToParentViewController:self];
 }
 
-//articledisplay delegate method
--(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo{
+
+#pragma mark -POVListSVController-
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
     
 }
+
 
 -(void)registerForNotifications{
 	//gets notified if there is no internet connection
@@ -114,28 +98,15 @@
     if(self.contentCoveringScreen) {
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
-		[self.povScrollView headerShowing:NO];
+        [self.postListVC footerShowing:NO];
     } else {
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
-		[self.povScrollView headerShowing:YES];
+        [self.postListVC footerShowing:NO];
+
     }
 }
 
--(void)offScreen{
-    [self.postDisplayVC offScreen];
-}
-
--(void)onScreen{
-    [self.postDisplayVC onScreen];
-}
-
-//not implemented
-// animates the fact that a recent POV is publishing
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
-                    andProgressObject:(NSProgress *)publishingProgress{
-    
-}
 
 
 #pragma mark -POVScrollview delegate-

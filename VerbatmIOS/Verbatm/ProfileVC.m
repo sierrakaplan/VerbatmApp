@@ -63,7 +63,6 @@
 @end
 
 @implementation ProfileVC
-
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.contentCoveringScreen = YES;
@@ -73,7 +72,6 @@
         [self createNavigationBar];
         [self addClearScreenGesture];
     }];
-    
 }
 
 
@@ -319,14 +317,14 @@
         }];
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
-        [self.postListVC headerShowing:NO];
+        [self.postListVC footerShowing:NO];
     } else {
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:NO]];
         }];
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
-        [self.postListVC headerShowing:YES];
+        [self.postListVC footerShowing:YES];
         
     }
 }

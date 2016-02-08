@@ -11,14 +11,13 @@
 #import "POVView.h"
 #import "POVScrollView.h"
 #import "Styles.h"
-
+#import "SizesAndPositions.h"
 @interface POVScrollView()<POVViewDelegate>
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 @property (strong, nonatomic) NSMutableArray * povViews;
 @property (weak, nonatomic) POVView * visiblePOV;//the pov that the user can currently see
 
-#define NO_POVS_LABEL_WIDTH 300.f
 
 @end
 

@@ -378,7 +378,6 @@
                 if(pages.count > 1)[self addDownArrowButton];
                 //add bar at the bottom with page numbers etc
                [self renderNextAve:ave withIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
-                [self povOnScreen];
                 [self setApproprioateScrollViewContentSize];
             });
         }];

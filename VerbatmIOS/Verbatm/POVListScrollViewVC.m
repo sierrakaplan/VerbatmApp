@@ -6,20 +6,25 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "POVListScrollViewVC.h"
 #import "Channel_BackendObject.h"
+#import "FeedQueryManager.h"
+
+#import "SizesAndPositions.h"
+#import "Styles.h"
+#import "POVListScrollViewVC.h"
 #import "PostListVC.h"
 #import "PostHolderCollecitonRV.h"
 #import "Post_BackendObject.h"
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import "POVView.h"
-
 @interface POVListScrollViewVC ()<UIScrollViewDelegate,POVViewDelegate>
 
 @property (nonatomic) NSMutableArray * postList;
 @property (nonatomic) UIScrollView * mainScrollView;//shows all the povs
 @property (strong, nonatomic) NSMutableDictionary * povsPresented;
+@property (strong, nonatomic) FeedQueryManager * feedQueryManager;
+@property (nonatomic, strong) UILabel * noContentLabel;
 
 @end
 
@@ -40,24 +45,64 @@
     if(![self.channelForList.name isEqualToString:channel.name]){
         self.channelForList = channel;
         [self clearMainScrollView];
+        [self removePresentLabel];
         self.postList = nil;
         
         [self getPosts];
     }
 }
 
+
+-(void)nothingToPresentHere {
+    if(self.noContentLabel){
+        [self.noContentLabel removeFromSuperview];
+        self.noContentLabel = nil;
+    }
+    
+    self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
+                                                                     NO_POVS_LABEL_WIDTH, self.view.frame.size.height)];
+    self.noContentLabel.text = @"There are posts to present";
+    self.noContentLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
+    self.noContentLabel.textColor = [UIColor whiteColor];
+    self.noContentLabel.textAlignment = NSTextAlignmentCenter;
+    self.noContentLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.noContentLabel.numberOfLines = 3;
+    self.view.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:self.noContentLabel];
+}
+
+-(void)removePresentLabel{
+    if(self.noContentLabel){
+        [self.noContentLabel removeFromSuperview];
+        self.noContentLabel = nil;
+    }
+}
+
 -(void) getPosts {
     if(self.listType == listFeed) {
-        
+        if(!self.feedQueryManager)self.feedQueryManager = [[FeedQueryManager alloc] init];
         //to figure out
-        
-    }else if (self.listType == listChannel) {
-        
-        [Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
-            [self.postList addObjectsFromArray:posts];
+        [self.feedQueryManager getMoreFeedPostsWithCompletionHandler:^(NSArray * posts) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self startLoadingPoVs];
+                if(posts.count){
+                    [self.postList addObjectsFromArray:posts];
+                    [self startLoadingPoVs];
+                } else {
+                    [self nothingToPresentHere];
+                }
             });
+        }];
+    }else if (self.listType == listChannel) {
+        [Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if(posts.count){
+                    [self.postList addObjectsFromArray:posts];
+                    [self startLoadingPoVs];
+                }else{
+                    [self nothingToPresentHere];
+                }
+            });
+
         }];
     }
 }
@@ -75,10 +120,11 @@
             NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
             [pov createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1)];
             [pov renderPOVFromPages:pages];
+            [pov povOffScreen];
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self addPovToMainView:pov withIndex:i];
             });
-            [pov povOffScreen];
+            
         }];
         [self adjustScrollViewContentSize];
     }
@@ -162,7 +208,7 @@
     }
 }
 
--(void) headerShowing: (BOOL) showing {
+-(void) footerShowing: (BOOL) showing {
     for(POVView * subView in self.mainScrollView.subviews){
         if([subView isKindOfClass:[POVView class]]){
             if (showing) {

@@ -116,11 +116,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "476588755.09124"
+            timestampString = "476603864.273873"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "654"
-            endingLineNumber = "654">
+            startingLineNumber = "645"
+            endingLineNumber = "645">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

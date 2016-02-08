@@ -204,4 +204,7 @@
 #define ARROW_FRAME_WIDTH 30.f
 #define ARROW_IMAGE_WALL_OFFSET 2.f
 
+
+#define NO_POVS_LABEL_WIDTH 300.f
+
 #endif

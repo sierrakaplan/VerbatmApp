@@ -296,11 +296,6 @@
 	}
 }
 
-//prepare for segue
-
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-//{
-//}
 
 -(void) playContentOnSelectedViewController:(BOOL) shoulPlay{
     
@@ -308,17 +303,13 @@
         UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
         
         if(currentViewController == self.feedVC){
-            [self.feedVC onScreen];
         }else if (currentViewController == self.profileVC){
-            [self.profileVC onScreen];
         }
     }else{
         UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
         
         if(currentViewController == self.feedVC){
-            [self.feedVC offScreen];
         }else if (currentViewController == self.profileVC){
-            [self.profileVC offScreen];
         }
     }
 }
