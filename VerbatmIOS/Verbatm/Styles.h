@@ -57,7 +57,7 @@
 
 #pragma mark Navigation Bars
 
-#define NAVIGATION_BAR_TEXT_COLOR colorWithRed:(21.f/255.f) green:(71.f/255.f) blue:(97.f/255.f) alpha:1
+#define NAVIGATION_BAR_TEXT_COLOR whiteColor
 #define NAVIGATION_BAR_BUTTON_FONT DEFAULT_FONT
 #define NAVIGATION_BAR_BUTTON_FONT_SIZE 15.f
 

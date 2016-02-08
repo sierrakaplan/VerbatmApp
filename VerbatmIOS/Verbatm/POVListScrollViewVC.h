@@ -18,7 +18,6 @@ typedef enum PostListType{
 
 
 @protocol POVListViewProtocol <NSObject>
-
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov;
 @end
 

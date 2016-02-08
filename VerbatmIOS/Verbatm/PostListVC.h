@@ -10,10 +10,6 @@
 #import <UIKit/UIKit.h>
 #import <Parse/PFUser.h>
 
-//typedef enum PostListType{
-//    listFeed = 0,
-//    listChannel = 1,
-//}PostListType;
 
 @interface PostListVC : UICollectionViewController
 

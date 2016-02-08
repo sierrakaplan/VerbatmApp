@@ -61,7 +61,7 @@
     
     self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
                                                                      NO_POVS_LABEL_WIDTH, self.view.frame.size.height)];
-    self.noContentLabel.text = @"There are posts to present";
+    self.noContentLabel.text = @"There are no posts to present :(";
     self.noContentLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
     self.noContentLabel.textColor = [UIColor whiteColor];
     self.noContentLabel.textAlignment = NSTextAlignmentCenter;

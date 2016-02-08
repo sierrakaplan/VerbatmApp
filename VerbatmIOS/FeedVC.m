@@ -102,7 +102,7 @@
     } else {
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
-        [self.postListVC footerShowing:NO];
+        [self.postListVC footerShowing:YES];
 
     }
 }
