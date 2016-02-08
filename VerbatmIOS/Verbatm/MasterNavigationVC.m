@@ -14,7 +14,6 @@
 #import "CustomTabBarController.h"
 #import "ContentDevVC.h"
 #import "Channel.h"
-#import "CreateNewChannelView.h"
 #import "ChannelOrUsernameCV.h"
 
 
@@ -57,7 +56,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, CreateNewChannelViewProtocol, SharePOVViewDelegate, UserAndChannelListsTVCDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, SharePOVViewDelegate, UserAndChannelListsTVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -65,7 +64,6 @@
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
-@property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 
 
 

@@ -63,7 +63,7 @@
 			
             CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
 			NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds inPreviewMode:NO];
-			POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
+			POVView* povView = [[POVView alloc] initWithFrame:povFrame andPovParseObject:nil];
             povView.delegate = self;
 			povView.autoresizesSubviews = YES;
 			povView.autoresizingMask = UIViewAutoresizingFlexibleHeight;

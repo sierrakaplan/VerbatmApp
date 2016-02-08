@@ -9,14 +9,24 @@
 #import <UIKit/UIKit.h>
 #import "Channel.h"
 #import <Parse/PFUser.h>
+#import <Parse/PFObject.h>
 
 typedef enum PostListType{
     listFeed = 0,
     listChannel = 1,
 }PostListType;
 
+
+@protocol POVListViewProtocol <NSObject>
+
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov;
+@end
+
+
 @interface POVListScrollViewVC : UIViewController
 @property (nonatomic) PostListType listType;//should be set by the VC that creates the PLV
+
+@property (nonatomic) id<POVListViewProtocol> delegate;
 
 //if it's a feed -- whose feed?
 //if it's a channel -- whose channel?

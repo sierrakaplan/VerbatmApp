@@ -15,7 +15,7 @@
 #import "ParseBackendKeys.h"
 #import "POVView.h"
 
-@interface POVListScrollViewVC ()<UIScrollViewDelegate>
+@interface POVListScrollViewVC ()<UIScrollViewDelegate,POVViewDelegate>
 
 @property (nonatomic) NSMutableArray * postList;
 @property (nonatomic) UIScrollView * mainScrollView;//shows all the povs
@@ -68,7 +68,8 @@
     for(int i =0; i< self.postList.count; i++){
         PFObject * post = self.postList[i];
         [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-            POVView * pov = [[POVView alloc] initWithFrame:self.view.bounds];
+            POVView * pov = [[POVView alloc] initWithFrame:self.view.bounds andPovParseObject:post];
+            pov.delegate = self;
             NSNumber * numberOfPostLikes = [post valueForKey:POST_LIKES_NUM_KEY];
             NSNumber * numberOfPostShares = [post valueForKey:POST_NUM_SHARES_KEY];
             NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
@@ -171,6 +172,15 @@
             }
         }
     }
+}
+
+#pragma mark -POV Delegate Protocol-
+-(void) likeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
+    
+}
+
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
+    [self.delegate shareOptionSelectedForParsePostObject:post];
 }
 
 

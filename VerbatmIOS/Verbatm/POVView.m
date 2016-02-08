@@ -16,7 +16,6 @@
 #import "Icons.h"
 
 
-#import <Parse/PFObject.h>
 #import "POVLikeAndShareBar.h"
 #import "PhotoVideoAVE.h"
 #import "PhotoAVE.h"
@@ -57,7 +56,7 @@
 @property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
 //@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
-@property (strong, nonatomic) PovInfo* povInfo;
+@property (strong, nonatomic) PFObject* parsePostObject;
 
 @property (nonatomic, strong) UIButton * downArrow;
 
@@ -78,11 +77,12 @@
 
 @implementation POVView
 
--(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo {
+-(instancetype)initWithFrame:(CGRect)frame andPovParseObject:(PFObject*) povObject {
     self = [super initWithFrame:frame];
     if (self) {
         [self addSubview: self.mainScrollView];
         self.mainScrollView.backgroundColor = [UIColor blackColor];
+        if(povObject)self.parsePostObject = povObject;
     }
     return self;
 }
@@ -151,7 +151,7 @@
 //like-share bar protocol
 
 -(void)shareButtonPressed {
-    [self.delegate shareOptionSelectedForPOVInfo:self.povInfo];
+    [self.delegate shareOptionSelectedForParsePostObject:self.parsePostObject];
 }
 
 //-(void)likeButtonPressed{

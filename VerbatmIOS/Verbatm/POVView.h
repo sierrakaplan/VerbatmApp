@@ -5,15 +5,17 @@
 //	Controls the presentation of a single article.
 //	It simply manages laying out Pages as well as the playing/stoping of a page when it in/out of view.
 
+#import "Channel.h"
 
 #import "PovInfo.h"
+#import <Parse/PFObject.h>
+
 #import <UIKit/UIKit.h>
-#import "Channel.h"
 
 @protocol POVViewDelegate <NSObject>
 // tells whether button was liked or unliked
 -(void) likeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo;
--(void) shareOptionSelectedForPOVInfo: (PovInfo* ) pov;
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov;
 @end
 
 @interface POVView : UIView
@@ -22,7 +24,7 @@
 @property (nonatomic) id <POVViewDelegate> delegate;
 
 // stores pov info associated with this view
--(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo;
+-(instancetype)initWithFrame:(CGRect)frame andPovParseObject:(PFObject*) povObject;
 
 // pageIndex is int value
 -(void) renderNextAve: (UIView*) ave withIndex: (NSNumber*) pageIndex; 

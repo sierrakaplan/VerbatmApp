@@ -109,6 +109,7 @@
     self.postListVC.listOwner = [PFUser currentUser];
     self.postListVC.channelForList = [self.channels firstObject];
     self.postListVC.listType = listChannel;
+    self.postListVC.delegate = self;
     [self.postListContainer setFrame:self.view.bounds];
     [self.postListContainer addSubview:self.postListVC.view];
     if(self.profileNavBar)[self.view insertSubview:self.postListContainer belowSubview:self.profileNavBar];
@@ -160,11 +161,17 @@
 }
 
 
+#pragma mark POVListScrollView Delegate -
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
+    [self presentHeadAndFooter:YES];
+    [self presentShareSelectionViewStartOnChannels:NO];
+}
+
 #pragma mark - Profile Nav Bar Delegate Methods -
 
 //current user selected to follow a channel
 -(void) followOptionSelected{
-    [self presentShareSelectionViewStartOnChannels:YES];
+    
 }
 
 
@@ -174,19 +181,9 @@
         self.sharePOVView = nil;
     }
     
-    
-    //TODO
-    //simulates getting threads
-    Channel * enterpreneurship; //= [[Channel alloc] initWithChannelName:@"Entrepreneurship" numberOfFollowers:@(50) andUserName:@"Iain Usiri"];
-    
-    Channel * socialJustice; //= [[Channel alloc] initWithChannelName:@"Social Justice" numberOfFollowers:@(500) andUserName:@"Iain Usiri"];
-    
-    Channel * music; //= [[Channel alloc] initWithChannelName:@"Music" numberOfFollowers:@(10000) andUserName:@"Iain Usiri"];
-    
-    
     CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
     CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame andChannels:@[enterpreneurship, socialJustice, music] shouldStartOnChannels:startOnChannels];
+    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame andChannels:self.channels shouldStartOnChannels:startOnChannels];
     self.sharePOVView.delegate = self;
     [self.view addSubview:self.sharePOVView];
     [self.view bringSubviewToFront:self.sharePOVView];
@@ -256,6 +253,7 @@
 }
 -(void) cancelCreation {
     [self clearChannelCreationView];
+    [self presentHeadAndFooter:NO];
 }
 -(void) createChannelWithName:(NSString *) channelName {
     //save the channel name and create it in the backend
@@ -273,6 +271,10 @@
         self.createNewChannelView = nil;
     }
 }
+
+
+
+
 
 
 #pragma mark -Share Seletion View Protocol -
@@ -309,23 +311,34 @@
     [self.postDisplayVC presentContentWithPOVType:POVTypeUser andChannel:newChannel];
 }
 
--(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-	if(self.contentCoveringScreen) {
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-            [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:YES]];
-		}];
-		[self.delegate showTabBar:NO];
-		self.contentCoveringScreen = NO;
-        [self.postListVC headerShowing:NO];
-	} else {
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:NO]];
-		}];
-		[self.delegate showTabBar:YES];
-		self.contentCoveringScreen = YES;
-        [self.postListVC headerShowing:YES];
 
-	}
+-(void)presentHeadAndFooter:(BOOL) shouldShow{
+    if(shouldShow) {
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:YES]];
+        }];
+        [self.delegate showTabBar:NO];
+        self.contentCoveringScreen = NO;
+        [self.postListVC headerShowing:NO];
+    } else {
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:NO]];
+        }];
+        [self.delegate showTabBar:YES];
+        self.contentCoveringScreen = YES;
+        [self.postListVC headerShowing:YES];
+        
+    }
+}
+
+
+-(void)clearScreen:(UIGestureRecognizer *) tapGesture {
+    if(self.contentCoveringScreen) {
+       [self presentHeadAndFooter:YES];
+    } else {
+        [self presentHeadAndFooter:NO];
+        
+    }
 }
 
 

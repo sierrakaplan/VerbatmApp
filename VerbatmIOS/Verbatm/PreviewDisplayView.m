@@ -82,7 +82,7 @@
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
 	NSMutableArray* aves = [analyzer getAVESFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
-	self.povView = [[POVView alloc] initWithFrame: self.bounds andPOVInfo:nil];
+	self.povView = [[POVView alloc] initWithFrame: self.bounds andPovParseObject:nil];
 	[self.povView renderAVES: aves];
 	[self addSubview: self.povView];
 	[self addNavigationBar];
