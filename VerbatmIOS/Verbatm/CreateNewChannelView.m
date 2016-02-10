@@ -70,6 +70,7 @@
     self.channelNameField.returnKeyType = UIReturnKeyDone;
     [self addSubview:self.channelNameField];
     [self.channelNameField becomeFirstResponder];
+    [[UITextField appearance] setTintColor:[UIColor whiteColor]];
     self.channelNameField.delegate = self;
     [self addSubview:self.channelNameField];
 }
@@ -116,10 +117,9 @@
 
 -(void)acceptButtonSelected:(UIButton *) button{
     NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
-    BOOL hasCharacters = [[self.channelNameField.text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:@""];
+    BOOL hasCharacters = ! [[self.channelNameField.text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:self.channelNameField.text];
     
     if(!hasCharacters)return;
-    
     
     [self.delegate createChannelWithName:self.channelNameField.text];
 }

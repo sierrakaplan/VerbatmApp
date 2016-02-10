@@ -162,12 +162,12 @@
     NSUInteger originDiff = 0;
     for(int i = 0; i < self.tabs.count; i++) {
         id currentButton = self.tabs[i];
-        
         CGFloat width = ([currentButton isKindOfClass:[ChannelButtons class]]) ? [(ChannelButtons *)currentButton suggestedWidth] : ((UIView *)currentButton).frame.size.width;
         
-        if(i == (self.tabs.count-1) && self.isLoggedInUser) width = ((UIView*)currentButton).frame.size.width;
+        if(i == (self.tabs.count-1)) width = ((UIView*)currentButton).frame.size.width;
         
         ((UIView *)currentButton).frame = CGRectMake(originDiff, ((ChannelButtons *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
+        [currentButton setNeedsDisplay];
         originDiff += width;
     }
     [self adjustContentSize];
