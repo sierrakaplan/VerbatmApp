@@ -22,6 +22,6 @@
 
 
 // array of NSString*
--(void) displayTabs: (NSArray*) tabTitles;
+-(void) displayTabs: (NSArray*) channels withStartTabIndex:(NSInteger) index isLoggedInUser:(BOOL) isLoggedInUser;
 -(void)addNewChannelToList:(Channel *) channel;
 @end

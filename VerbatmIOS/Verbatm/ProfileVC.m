@@ -7,7 +7,6 @@
 //
 #import "ArticleDisplayVC.h"
 
-#import "Channel.h"
 #import "CreateNewChannelView.h"
 #import "Channel_BackendObject.h"
 
@@ -41,7 +40,6 @@
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate>
 
 @property (strong, nonatomic) POVListScrollViewVC * postListVC;
-@property (weak, nonatomic) IBOutlet UIView *postListContainer;
 
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
 @property (nonatomic) CGRect profileNavBarFrameOnScreen;
@@ -72,6 +70,7 @@
         [self createNavigationBar];
         [self addClearScreenGesture];
     }];
+    self.view.clipsToBounds = YES;
 }
 
 
@@ -104,14 +103,17 @@
 
 -(void) createAndAddListVC{
     self.postListVC = [[POVListScrollViewVC alloc] init];
-    self.postListVC.listOwner = [PFUser currentUser];
-    self.postListVC.channelForList = [self.channels firstObject];
+    self.postListVC.listOwner = self.userOfProfile;
+    if(self.startChannel){
+        self.postListVC.channelForList = self.startChannel ;
+    }else{
+        self.postListVC.channelForList = [self.channels firstObject];
+    }
+    
     self.postListVC.listType = listChannel;
-    self.postListVC.delegate = self;
-    [self.postListContainer setFrame:self.view.bounds];
-    [self.postListContainer addSubview:self.postListVC.view];
-    if(self.profileNavBar)[self.view insertSubview:self.postListContainer belowSubview:self.profileNavBar];
-    else [self.view addSubview:self.postListContainer];
+    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
+    if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
+    else [self.view addSubview:self.postListVC.view];
 }
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{

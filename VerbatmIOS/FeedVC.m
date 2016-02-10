@@ -67,6 +67,7 @@
     self.postListVC = [[POVListScrollViewVC alloc] init];
     self.postListVC.listOwner = [PFUser currentUser];
     self.postListVC.listType = listFeed;
+    self.postListVC.isHomeProfileOrFeed =YES;
     self.postListVC.delegate = self;
     [self.view addSubview:self.postListVC.view];
     self.postDisplayVC.delegate = self;

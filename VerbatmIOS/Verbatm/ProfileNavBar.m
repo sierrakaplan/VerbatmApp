@@ -55,7 +55,7 @@
     self = [super initWithFrame:frame];
     if(self){
         [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
-		[self.threadNavScrollView displayTabs:channels];
+		[self.threadNavScrollView displayTabs:channels withStartTabIndex:0 isLoggedInUser:isCurrentUser];
         [self createFollowersInfoViewWithUser:profileUser];
         [self createArrowExtesion];
         [self createPanGesture];
@@ -212,7 +212,6 @@
     UIColor * arrowBarBackgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
     self.arrowExtension = [[UIView alloc] initWithFrame:arrowBarFrame];
     [self.arrowExtension setBackgroundColor:arrowBarBackgroundColor];
-    
     
     CGRect arrowFrame = CGRectMake(self.frame.size.width/2.f - (ARROW_FRAME_WIDTH/2), ARROW_IMAGE_WALL_OFFSET, ARROW_FRAME_WIDTH, ARROW_FRAME_HEIGHT - (ARROW_IMAGE_WALL_OFFSET*2));
     UIImage * arrowImage = [UIImage imageNamed:@"down_arrow_white"];

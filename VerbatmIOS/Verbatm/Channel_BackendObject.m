@@ -53,20 +53,14 @@
                                                         numberOfFollowers:[NSNumber numberWithInt:0]
                                                               andParseChannelObject:newChannelObject];
         
-        if(block){
-            [newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                if(succeeded){
-                    if(block)block(channel);
-                }
-            }];
-        }else{
-            [newChannelObject saveInBackground];
-        }
+        [newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if(succeeded){
+                if(block)block(channel);
+            }
+        }];
+ 
         return channel;
     }
-    
-    [[UserManager sharedInstance] logOutUser];
-    
     return nil;
     
 }
@@ -82,10 +76,10 @@
         return NULL;
     }else{
        return  [self createChannelWithName:channel.name andCompletionBlock:^(Channel * channelObject){
-           Post_BackendObject * newPost = [[Post_BackendObject alloc]init];
-           [self.ourPosts addObject:newPost];
+                    Post_BackendObject * newPost = [[Post_BackendObject alloc]init];
+                    [self.ourPosts addObject:newPost];
                     [newPost createPostFromPinchViews:pinchViews toChannel:channelObject];
-                }];
+        }];
     }
 }
 
@@ -116,7 +110,31 @@
     }
 }
 
+//gets all the channels on V except the provided user.
+//often this will be the current user
++(void) getAllChannelsButNoneForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock{
+    PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+        if(objects.count){
+            NSMutableArray * finalObjects = [[NSMutableArray alloc] init];
+            for(PFObject * channel in objects){
+                if([channel valueForKey:CHANNEL_CREATOR_KEY] !=
+                   [PFUser currentUser]){
+                    [finalObjects addObject:channel];
+                }
+            }
+            
+            
+            completionBlock(finalObjects);
+        }
+    }];
+}
 
+
+//gets all channels on Verbatm including the current user
++(void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock{
+    
+}
 
 
 

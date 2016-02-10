@@ -115,6 +115,12 @@
 }
 
 -(void)acceptButtonSelected:(UIButton *) button{
+    NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
+    BOOL hasCharacters = [[self.channelNameField.text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:@""];
+    
+    if(!hasCharacters)return;
+    
+    
     [self.delegate createChannelWithName:self.channelNameField.text];
 }
 

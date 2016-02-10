@@ -178,7 +178,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    self.ourPosts = [[NSMutableArray alloc] init];//temp--TODO. just for saving right now. Should move to masterVC
+    self.ourPosts = [[NSMutableArray alloc] init];
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
@@ -206,8 +206,8 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 -(void) addBackgroundImage {    
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    backgroundView.image =[UIImage imageNamed:@"d3"];
-    //backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
+    backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
+    //backgroundView.image =[UIImage imageNamed:];
 	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
     
     [self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
@@ -1964,15 +1964,15 @@ rowHeightForComponent:(NSInteger)component{
 		_baseMediaTileSelector.delegate = self;
 		[_baseMediaTileSelector createFramesForButtonsWithFrame:frame];
 		[_baseMediaTileSelector buttonGlow];
-//		[_baseMediaTileSelector.cameraButton insertSubview:self.cameraView atIndex:0];
 	}
 	return _baseMediaTileSelector;
 }
 
 -(CustomNavigationBar*) navBar {
 	if (!_navBar) {
-		_navBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
-										  andBackgroundColor:ADK_NAV_BAR_COLOR];
+		_navBar = [[CustomNavigationBar alloc]
+                   initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
+                   andBackgroundColor:ADK_NAV_BAR_COLOR];
 	}
 	return _navBar;
 }

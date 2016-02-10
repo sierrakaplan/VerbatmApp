@@ -9,7 +9,13 @@
 #import "Channel.h"
 #import "ChannelOrUsernameCV.h"
 #import "CustomNavigationBar.h"
+
+#import "Channel_BackendObject.h"
+
 #import "ProfileVC.h"
+#import <Parse/PFUser.h>
+#import <Parse/PFObject.h>
+#import "ParseBackendKeys.h"
 
 #import "Styles.h"
 #import "SizesAndPositions.h"
@@ -32,7 +38,7 @@
 
 @property (nonatomic) id userInfoOnDisplay;//the user whose data we are displaying
 
-@property (nonatomic) BOOL isInTheTabBar;
+@property (nonatomic) BOOL presentAllChannels;
 
 #define CHANNEL_CELL_ID @"channel_cell_id"
 @end
@@ -56,6 +62,7 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -69,23 +76,38 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if(self.channelsToDisplay){
         //this is some list of channels
-        Channel * channel;//get channel
-        [self.listDelegate openChannel:channel];
-    }else { //it's a user
-        //id userId = nil;//get userid
-        //[self.listDelegate selectedUser:userId];
-        
-        ProfileVC *  userProfile = [[ProfileVC alloc] init];
-        //userProfile.delegate = self;
-        userProfile.isCurrentUserProfile = NO;
-        
-        [self presentViewController:userProfile animated:YES completion:^{
-            
+        Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
+        PFUser * user = [channel valueForKey:CHANNEL_CREATOR_KEY];
+        [user fetchIfNeededInBackgroundWithBlock:^
+         (PFObject * _Nullable object, NSError * _Nullable error) {
+             if(object){
+                 dispatch_async(dispatch_get_main_queue(), ^{
+                     [self presentProfileForUser:(PFUser *)object withStartChannel:channel];
+                });
+             }
         }];
-        
-        
+    }else {
     }
 }
+
+
+
+-(void)presentProfileForUser:(PFUser *) user
+            withStartChannel:(Channel *) startChannel{
+    
+    
+    ProfileVC *  userProfile = [[ProfileVC alloc] init];
+    userProfile.isCurrentUserProfile = NO;
+    userProfile.userOfProfile = user;
+    
+    [self presentViewController:userProfile animated:YES completion:^{
+        
+    }];
+    
+}
+
+
+
 
 
 #pragma mark - Public methods to set -
@@ -106,7 +128,9 @@
 
 //show which users are being followed by userId
 -(void)presentWhoIsFollowedBy:(id)userId {
-    [self setTempUserNumbers];
+    
+    
+    
     //TO-DO
     //Start to download a list of users who follow this particular user then reload the table
     
@@ -114,17 +138,17 @@
 
 //presents every channel in verbatm
 -(void)presentAllVerbatmChannels{
-    self.isInTheTabBar = YES;
-    [self setTempUserNumbers];
-
-}
-
--(void)setTempUserNumbers{
-    ///temp
-    self.usersToDisplay = [[NSMutableArray alloc] init];
-    for(int i = 0; i < 20 ; i ++){
-        [self.usersToDisplay addObject:@"Iain Usiri"];
-    }
+    self.presentAllChannels = YES;
+    
+    [Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^
+     (NSMutableArray * channels) {
+         
+         dispatch_async(dispatch_get_main_queue(), ^{
+             if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+             [self.channelsToDisplay addObjectsFromArray:channels];
+             [self.tableView reloadData];
+         });
+     }];
 }
 
 
@@ -133,7 +157,6 @@
 -(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {
     self.userInfoOnDisplay = userId;
     self.shouldDisplayFollowers = displayFollowers;
-    [self setTempUserNumbers];
     //TO-DO
     //if(user == current logged in usere){
     //get logged in user channels and save them in our array
@@ -144,7 +167,7 @@
 
 
 -(void)setTableViewHeader{
-    if(self.isInTheTabBar){
+    if(self.presentAllChannels){
         //it's in the tab bar list and it should have a title
         UILabel * titleLabel = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
         [self.view addSubview:titleLabel];
@@ -156,11 +179,9 @@
         [self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
         self.navBar.delegate = self;
         //it can be a navigation bar that lets us go back
-        
         [self.view addSubview:self.navBar];
         [self.view bringSubviewToFront:self.navBar];
     }
-    
 }
 
 //user wants to exit
@@ -198,18 +219,13 @@
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    if(self.channelsToDisplay){ //if we have multiple channels to display then we need to break it up into sections
-        return self.channelsToDisplay.count;
-    }
+
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    if(self.channelsToDisplay){
-        Channel * currChannel = self.channelsToDisplay[section];
-        return [currChannel.numberOfFollowers integerValue];
-    }
-    return self.usersToDisplay.count;
+
+    return self.channelsToDisplay.count;
 }
 
 
@@ -220,8 +236,22 @@
         cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CHANNEL_CELL_ID isChannel:YES isAChannelThatIFollow:NO];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
-    [cell setCellTextTitle:@"Iain Usiri"];
+    
+    PFObject * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
+    
+    
+    [cell setCellTextTitle:[channel valueForKey:CHANNEL_NAME_KEY]];
     return cell;
+}
+
+
+
+#pragma mark -lazy instantiation-
+
+
+-(NSMutableArray *) channelsToDisplay{
+    if(!_channelsToDisplay)_channelsToDisplay = [[NSMutableArray alloc] init];
+    return _channelsToDisplay;
 }
 
 

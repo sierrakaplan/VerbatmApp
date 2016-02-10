@@ -32,6 +32,12 @@ typedef enum PostListType{
 @property (nonatomic) PFUser * listOwner;//also set when POSTLIST is created
 @property (nonatomic) Channel * channelForList;//set when postlist created
 
+
+@property (nonatomic) BOOL isHomeProfileOrFeed;//profile of the current logged in user
+
+
+
+
 -(void) stopAllVideoContent;//marks all POVs as off screen
 -(void) continueVideoContent;//continues POV that's on screen
 
@@ -39,5 +45,9 @@ typedef enum PostListType{
 -(void)changeCurrentChannelTo:(Channel *) channel;
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;
+
+
+
+
 
 @end

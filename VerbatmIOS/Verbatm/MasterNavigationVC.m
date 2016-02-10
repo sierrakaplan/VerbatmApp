@@ -93,6 +93,7 @@
 	[super viewDidLoad];
 	[self setUpTabBarController];
 	[self registerForNotifications];
+    self.view.backgroundColor = [UIColor blackColor];
 }
 
 -(void)viewDidAppear:(BOOL)animated {

@@ -20,5 +20,12 @@
 //an nsarray of the channels
 +(void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 
+//gets all the channels on V except the provided user.
+//often this will be the current user
++(void) getAllChannelsButNoneForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
+
+
+//gets all channels on Verbatm including the current user
++(void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 
 @end

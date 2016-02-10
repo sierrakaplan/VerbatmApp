@@ -118,7 +118,7 @@
             NSNumber * numberOfPostLikes = [post valueForKey:POST_LIKES_NUM_KEY];
             NSNumber * numberOfPostShares = [post valueForKey:POST_NUM_SHARES_KEY];
             NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
-            [pov createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1)];
+            [pov createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
             [pov renderPOVFromPages:pages];
             [pov povOffScreen];
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -132,11 +132,14 @@
 
 -(void)clearMainScrollView{
     for (NSString * key in self.povsPresented){
-            POVView * povInView = (POVView *) [self.povsPresented valueForKey:
+        POVView * povInView = (POVView *) [self.povsPresented valueForKey:
                                                key];
         [povInView povOffScreen];
-            [povInView removeFromSuperview];
+        [povInView removeFromSuperview];
     }
+    
+    [self.mainScrollView.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    
     [self.povsPresented removeAllObjects];
     self.mainScrollView.contentOffset = CGPointMake(0, 0);
 }
@@ -209,12 +212,14 @@
 }
 
 -(void) footerShowing: (BOOL) showing {
-    for(POVView * subView in self.mainScrollView.subviews){
-        if([subView isKindOfClass:[POVView class]]){
-            if (showing) {
-                [(POVView *)subView shiftLikeShareBarDown:NO];
-            } else {
-                [(POVView *)subView shiftLikeShareBarDown:YES];
+    if(self.isHomeProfileOrFeed){
+        for(POVView * subView in self.mainScrollView.subviews){
+            if([subView isKindOfClass:[POVView class]]){
+                if (showing) {
+                    [(POVView *)subView shiftLikeShareBarDown:NO];
+                } else {
+                    [(POVView *)subView shiftLikeShareBarDown:YES];
+                }
             }
         }
     }

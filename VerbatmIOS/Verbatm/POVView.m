@@ -119,11 +119,10 @@
 //renders aves (pages) onto the view
 -(void) renderAVES: (NSMutableArray *) aves {
 
-	self.currentPageIndex = -1;
 	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width, [aves count] * self.frame.size.height);
 	self.mainScrollView.contentOffset = CGPointMake(0, 0);
 	CGRect viewFrame = self.bounds;
-
+    
 	for (int i = 0; i < aves.count; i++) {
 		ArticleViewingExperience* ave = aves[i];
 		[self.pageAves setObject:ave forKey:[NSNumber numberWithInt:i]];
@@ -135,7 +134,7 @@
 	}
 }
 
--(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage{
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up{
     
     self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height -LIKE_SHARE_BAR_HEIGHT - TAB_BAR_HEIGHT ,
                                  self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
@@ -143,7 +142,9 @@
     self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
                                      self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
     
-    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame:self.lsBarUpFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
+    CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
+    
+    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
     self.likeShareBar.delegate = self;
     [self addSubview:self.likeShareBar];
 }
