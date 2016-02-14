@@ -62,9 +62,9 @@
 
 -(void)createButtonsWithNumberOfFollowers:(NSNumber *) myFollowers andWhoIFollow:(NSNumber *) whoIFollow{
     
-    CGRect myFollowersFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, THREAD_SCROLLVIEW_HEIGHT);
+    CGRect myFollowersFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, USER_CELL_VIEW_HEIGHT);
     
-    CGRect whoIAmFollowingFrame = CGRectMake(self.frame.size.width/2.f,0.f, self.frame.size.width/2.f, THREAD_SCROLLVIEW_HEIGHT);
+    CGRect whoIAmFollowingFrame = CGRectMake(self.frame.size.width/2.f,0.f, self.frame.size.width/2.f, USER_CELL_VIEW_HEIGHT);
     
     if(self.myFollowers){
         [self.myFollowers removeFromSuperview];
@@ -85,9 +85,9 @@
 //note -- selector is for when the button is pressed
 -(UIButton *) getInfoViewWithTitle:(NSString *) title andNumber:(NSNumber *) number andViewFrame:(CGRect) viewFrame andSelectionSelector:(SEL) selector{
     
-    CGRect titleFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, THREAD_SCROLLVIEW_HEIGHT/2.f);
+    CGRect titleFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, USER_CELL_VIEW_HEIGHT/2.f);
     
-    CGRect numberFrame = CGRectMake(0.f,THREAD_SCROLLVIEW_HEIGHT/2.f, self.frame.size.width/2.f, THREAD_SCROLLVIEW_HEIGHT/2.f);
+    CGRect numberFrame = CGRectMake(0.f,USER_CELL_VIEW_HEIGHT/2.f, self.frame.size.width/2.f, USER_CELL_VIEW_HEIGHT/2.f);
     
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment                = NSTextAlignmentCenter;

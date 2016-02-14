@@ -83,7 +83,7 @@
                                       self.frame.size.width, 0);
     self.followersInfoFrameOpen = CGRectMake(0.f, self.threadNavScrollView.frame.origin.y +
                                                 self.threadNavScrollView.frame.size.height,
-                                                self.frame.size.width, THREAD_SCROLLVIEW_HEIGHT);
+                                                self.frame.size.width, USER_CELL_VIEW_HEIGHT);
     
     //to-do -- get the number of people I follow here and the number of people that follow me
 
@@ -274,7 +274,7 @@
 -(UIScrollView*) threadNavScrollView {
 	if (!_threadNavScrollView) {
 		_threadNavScrollView = [[CustomScrollingTabBar alloc] initWithFrame:CGRectMake(0.f, self.profileHeader.frame.origin.y + PROFILE_HEADER_HEIGHT,
-																			  self.frame.size.width, THREAD_SCROLLVIEW_HEIGHT)];
+																			  self.frame.size.width, USER_CELL_VIEW_HEIGHT)];
 
 		_threadNavScrollView.customScrollingTabBarDelegate = self;
 		[self addSubview: _threadNavScrollView];

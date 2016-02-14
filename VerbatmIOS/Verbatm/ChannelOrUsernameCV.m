@@ -67,11 +67,12 @@
         
         self.cellTextLabel = [[UILabel alloc] initWithFrame:labelFrame];
         
-        self.cellTextLabel.backgroundColor = [UIColor clearColor];
+        self.cellTextLabel.backgroundColor = [UIColor lightGrayColor];
+		self.cellTextLabel.textColor = VERBATM_GOLD_COLOR;
         
         //add thin white border
-        self.cellTextLabel.layer.borderWidth = 0.3;
-        self.cellTextLabel.layer.borderColor = [UIColor whiteColor].CGColor;
+        self.cellTextLabel.layer.borderWidth = 0.1;
+        self.cellTextLabel.layer.borderColor = [UIColor clearColor].CGColor;
         
         [self addSubview:self.cellTextLabel];
     }

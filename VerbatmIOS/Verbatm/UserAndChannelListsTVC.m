@@ -63,7 +63,7 @@
 
 #pragma mark - Table View Delegate methods (view customization) -
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return THREAD_SCROLLVIEW_HEIGHT;
+    return USER_CELL_VIEW_HEIGHT;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -172,7 +172,7 @@
 
 -(UILabel *) getHeaderTitleForViewWithText:(NSString *) text{
     
-    CGRect labelFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width + 10, THREAD_SCROLLVIEW_HEIGHT);
+    CGRect labelFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width + 10, USER_CELL_VIEW_HEIGHT);
     UILabel * titleLabel = [[UILabel alloc] initWithFrame:labelFrame];
     titleLabel.backgroundColor = [UIColor whiteColor];
  
