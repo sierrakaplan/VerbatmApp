@@ -131,6 +131,7 @@
     self.profileNavBar = [[ProfileNavBar alloc]
                           initWithFrame:self.profileNavBarFrameOnScreen
                           andChannels:self.channels
+                          startChannel:self.startChannel
                           andUser:self.userOfProfile
                           isCurrentLoggedInUser:self.isCurrentUserProfile];
     
@@ -183,7 +184,7 @@
     
     CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
     CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame andChannels:self.channels shouldStartOnChannels:startOnChannels];
+    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
     self.sharePOVView.delegate = self;
     [self.view addSubview:self.sharePOVView];
     [self.view bringSubviewToFront:self.sharePOVView];

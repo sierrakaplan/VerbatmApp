@@ -9,7 +9,8 @@
 
 
 #import "Channel.h"
-
+#import "Channel_BackendObject.h"
+#import <Parse/PFUser.h>
 #import "SelectChannel.h"
 #import "SelectOptionButton.h"
 #import "SelectionView.h"
@@ -35,13 +36,18 @@
 @end
 
 @implementation SelectChannel
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *) channels canSelectMultiple:(BOOL) selectMultiple{
+-(instancetype) initWithFrame:(CGRect)frame canSelectMultiple:(BOOL) selectMultiple{
     
     self = [super initWithFrame:frame];
     
     if(self){
         self.canSelectMultipleChannels = selectMultiple;
-        [self createChannelLabels:channels];
+        
+        
+        [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
+             [self createChannelLabels:channels];
+        }];
+       
     }
     
     return self;

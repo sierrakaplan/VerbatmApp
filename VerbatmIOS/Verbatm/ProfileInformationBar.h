@@ -15,11 +15,13 @@
 
 @protocol ProfileInformationBarProtocol <NSObject>
     -(void)settingsButtonSelected;
-    -(void)followButtonSelected;
+    -(void)followButtonSelectedShouldFollowUser:(BOOL) followUser;
     -(void)backButtonSelected;
 @end
 
 @interface ProfileInformationBar : UIView
     -(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName isCurrentUser:(BOOL) isCurrentUser;
+    //makes the follow button show that we are/aren't following the current channel being presented
+    -(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel;
     @property (nonatomic) id <ProfileInformationBarProtocol> delegate;
 @end

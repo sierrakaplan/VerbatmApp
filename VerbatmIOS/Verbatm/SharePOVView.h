@@ -23,7 +23,7 @@
 
 
 @interface SharePOVView : UIView
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *) userChannels shouldStartOnChannels:(BOOL) showChannels;//this tells us if we should show
+-(instancetype) initWithFrame:(CGRect)frame shouldStartOnChannels:(BOOL) showChannels;//this tells us if we should show
 
 @property (nonatomic) id <SharePOVViewDelegate> delegate;
 @end

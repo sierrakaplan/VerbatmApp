@@ -25,6 +25,7 @@
 @property (strong, nonatomic) NSMutableDictionary * povsPresented;
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
 @property (nonatomic, strong) UILabel * noContentLabel;
+@property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
 @end
 
@@ -32,6 +33,7 @@
 
 
 -(void)viewDidLoad{
+    [self.activityIndicator startAnimating];
     [self getPosts];
 }
 
@@ -45,7 +47,6 @@
     if(![self.channelForList.name isEqualToString:channel.name]){
         self.channelForList = channel;
         [self clearMainScrollView];
-        [self removePresentLabel];
         self.postList = nil;
         
         [self getPosts];
@@ -54,9 +55,9 @@
 
 
 -(void)nothingToPresentHere {
+    [self.activityIndicator stopAnimating];
     if(self.noContentLabel){
-        [self.noContentLabel removeFromSuperview];
-        self.noContentLabel = nil;
+        return;//no need to make another one
     }
     
     self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
@@ -85,8 +86,10 @@
         [self.feedQueryManager getMoreFeedPostsWithCompletionHandler:^(NSArray * posts) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if(posts.count){
+                    [self.activityIndicator stopAnimating];
                     [self.postList addObjectsFromArray:posts];
                     [self startLoadingPoVs];
+                    [self removePresentLabel];
                 } else {
                     [self nothingToPresentHere];
                 }
@@ -98,6 +101,7 @@
                 if(posts.count){
                     [self.postList addObjectsFromArray:posts];
                     [self startLoadingPoVs];
+                    [self removePresentLabel];
                 }else{
                     [self nothingToPresentHere];
                 }
@@ -128,6 +132,7 @@
         }];
         [self adjustScrollViewContentSize];
     }
+    [self continueVideoContent];
 }
 
 -(void)clearMainScrollView{
@@ -142,6 +147,7 @@
     
     [self.povsPresented removeAllObjects];
     self.mainScrollView.contentOffset = CGPointMake(0, 0);
+    [self.activityIndicator startAnimating];
 }
 
 -(void) addPovToMainView:(POVView *) pov withIndex:(CGFloat) index{
@@ -261,6 +267,17 @@
         _povsPresented = [[NSMutableDictionary alloc] init];
     }
     return _povsPresented;
+}
+-(UIActivityIndicatorView*) activityIndicator {
+    if (!_activityIndicator) {
+        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+        _activityIndicator.color = [UIColor grayColor];
+        _activityIndicator.hidesWhenStopped = YES;
+        _activityIndicator.center = self.view.center;
+        [self.view addSubview:_activityIndicator];
+        [self.view bringSubviewToFront:_activityIndicator];
+    }
+    return _activityIndicator;
 }
 
 @end

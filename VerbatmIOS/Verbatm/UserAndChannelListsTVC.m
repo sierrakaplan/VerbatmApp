@@ -77,7 +77,7 @@
     if(self.channelsToDisplay){
         //this is some list of channels
         Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
-        PFUser * user = [channel valueForKey:CHANNEL_CREATOR_KEY];
+        PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
         [user fetchIfNeededInBackgroundWithBlock:^
          (PFObject * _Nullable object, NSError * _Nullable error) {
              if(object){
@@ -99,9 +99,8 @@
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
     userProfile.isCurrentUserProfile = NO;
     userProfile.userOfProfile = user;
-    
+    userProfile.startChannel = startChannel;
     [self presentViewController:userProfile animated:YES completion:^{
-        
     }];
     
 }
@@ -237,10 +236,9 @@
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     
-    PFObject * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
+    Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
     
-    
-    [cell setCellTextTitle:[channel valueForKey:CHANNEL_NAME_KEY]];
+    [cell setCellTextTitle:[channel name]];
     return cell;
 }
 

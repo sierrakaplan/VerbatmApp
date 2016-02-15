@@ -47,11 +47,10 @@
 
 @implementation SharePOVView
 
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *) userChannels shouldStartOnChannels:(BOOL) showChannels{
+-(instancetype) initWithFrame:(CGRect)frame shouldStartOnChannels:(BOOL) showChannels{
     self = [super initWithFrame:frame];
     if (self) {
         [self formatView];
-        self.userChannels = userChannels;
         self.showChannels = showChannels;
         [self createListFrames];
         if(showChannels){
@@ -351,7 +350,7 @@
 
 -(SelectChannel *) channelSelectionOptions{
     if(!_channelSelectionOptions) {
-        _channelSelectionOptions = [[SelectChannel alloc] initWithFrame:self.channelSelectionFrameOFFSCREEN andChannels:self.userChannels canSelectMultiple:self.showChannels];
+        _channelSelectionOptions = [[SelectChannel alloc] initWithFrame:self.channelSelectionFrameOFFSCREEN canSelectMultiple:self.showChannels];
         _channelSelectionOptions.delegate = self;
         [self addSubview:_channelSelectionOptions];
     }

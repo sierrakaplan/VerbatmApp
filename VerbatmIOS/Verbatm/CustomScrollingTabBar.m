@@ -54,9 +54,18 @@
     [self adjustTabFramesToSuggestedSizes];
 }
 
--(void) displayTabs: (NSArray*) channels withStartTabIndex:(NSInteger) index isLoggedInUser:(BOOL) isLoggedInUser {
+-(void) displayTabs: (NSArray*) channels withStartChannel:(Channel *) startChannel isLoggedInUser:(BOOL) isLoggedInUser {
 	CGFloat xCoordinate = 0.f;
+    NSInteger startChannelIndex = -1;
 	for(Channel * channel in channels) {
+        
+        
+        if(startChannel){
+            if([startChannel.name isEqualToString:channel.name]){
+                startChannelIndex = [channels indexOfObject:channel];
+            }
+        }
+        
         //create channel title button
         CGPoint channelTitleOrigin = CGPointMake(xCoordinate, 0.f);
         UIButton * channelTitleButton = [self getChannelTitleButton:channel andOrigin:channelTitleOrigin];
@@ -67,10 +76,10 @@
         //advance xCordinate
 		xCoordinate += channelTitleButton.frame.size.width;
 	}
+
     self.isLoggedInUser = isLoggedInUser;
-    if(isLoggedInUser){
+    if(isLoggedInUser) {
         CGFloat createChannelButtonWidth = (channels.count == 0) ? self.frame.size.width : INITIAL_BUTTON_WIDTH;
-        
         
         CGRect createChannelButtonFrame = CGRectMake(xCoordinate, 0.f,
                                                      createChannelButtonWidth,
@@ -81,10 +90,18 @@
         [self addSubview:createChannelButton];
     }
     
-    [self adjustTabFramesToSuggestedSizes];
-	if(self.tabs.count > 1)[self selectTab: self.tabs[index]];
     
+    if(startChannelIndex == -1) startChannelIndex = 0;
+    
+    [self adjustTabFramesToSuggestedSizes];
+	if(self.tabs.count > 1)[self selectTab: self.tabs[startChannelIndex]];
 }
+
+
+
+
+
+
 
 
 -(UIButton *)getCreateChannelButtonWithFrame:(CGRect) frame {
@@ -144,9 +161,8 @@
 }
 
 -(void) selectTab: (ChannelButtons *) tab {
-    
     [tab markButtonAsSelected];
-    
+    self.currentChannel = tab.currentChannel;
 	self.selectedTab = tab;
 }
 

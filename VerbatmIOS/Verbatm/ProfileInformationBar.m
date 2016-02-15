@@ -6,10 +6,14 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
+#import "Follow_BackendManager.h"
+
+#import "Notifications.h"
+
 #import <Parse/PFUser.h>
 #import "ParseBackendKeys.h"
 #import "ProfileInformationBar.h"
-#import "Notifications.h"
+
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
@@ -41,7 +45,7 @@
 
 @implementation ProfileInformationBar
 
--(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName isCurrentUser:(BOOL) isCurrentUser{
+-(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName isCurrentUser:(BOOL) isCurrentUser {
     
     self =  [super initWithFrame:frame];
     
@@ -49,12 +53,10 @@
         
         [self formatView];
         [self createProfileHeaderWithUserName:userName];
-        
+        self.isCurrentUser = isCurrentUser;
         if(isCurrentUser){
             [self createSettingsButton];
-            
         }else{
-            [self createFollowButton];
             [self createBackButton];
         }
         [self registerForNotifications];
@@ -97,7 +99,7 @@
     [self addSubview: self.userTitleName ];
 }
 
--(void)createSettingsButton{
+-(void)createSettingsButton {
     UIImage * settingsImage = [UIImage imageNamed:SETTINGS_ICON_NAME];
 
     CGFloat height = SETTINGS_BUTTON_SIZE;
@@ -118,7 +120,11 @@
 
 //If it's my profile it's follower(s) and if it's someone else's profile
 //it's follow
--(void) createFollowButton{
+-(void) createFollowButton_AreWeFollowingCurrChannel:(BOOL) areFollowing{
+    if(self.followButton){
+        [self.followButton removeFromSuperview];
+        self.followButton = nil;
+    }
     
     CGFloat height = SETTINGS_BUTTON_SIZE;
     CGFloat width = (height*436.f)/250.f;
@@ -126,10 +132,9 @@
     CGFloat frame_y = self.center.y - (height/2.f);
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
-
     
-    UIImage * buttonImage = [UIImage imageNamed:((true) ? FOLLOW_ICON_IMAGE_UNSELECTED : FOLLOW_ICON_IMAGE_SELECTED)];
-    self.isFollowigProfileUser = NO;//TO-DO how to know if they are following the current user
+    UIImage * buttonImage = [UIImage imageNamed:((areFollowing) ? FOLLOW_ICON_IMAGE_SELECTED : FOLLOW_ICON_IMAGE_UNSELECTED)];
+    self.isFollowigProfileUser = areFollowing;
     self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
     [self.followButton setImage:buttonImage forState:UIControlStateNormal];
     [self.followButton addTarget:self action:@selector(followOrFollowersSelected) forControlEvents:UIControlEventTouchUpInside];
@@ -137,9 +142,9 @@
 }
 
 
--(void)createBackButton{
-    UIImage * settingsImage = [UIImage imageNamed:BACK_BUTTON_ICON_NAME];
+-(void) createBackButton {
     
+    UIImage * settingsImage = [UIImage imageNamed:BACK_BUTTON_ICON_NAME];
     CGFloat height = SETTINGS_BUTTON_SIZE;
     CGFloat width = height;
     CGFloat frame_x = BUTTON_WALL_XOFFSET;
@@ -164,23 +169,25 @@
 }
 
 -(void) followOrFollowersSelected {
-    
     UIImage * newbuttonImage;
     if(self.isFollowigProfileUser){
-        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED ];
+        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
         self.isFollowigProfileUser = NO;
     }else{
-        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
+        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
         self.isFollowigProfileUser = YES;
     }
-    
     [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
-    
-    
-    
-    [self.delegate followButtonSelected];
+    [self.followButton setNeedsDisplay];
+    [self.delegate followButtonSelectedShouldFollowUser: self.isFollowigProfileUser];
 }
 
+-(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel{
+    dispatch_async(dispatch_get_main_queue(), ^{
+         if(!self.isCurrentUser)
+             [self createFollowButton_AreWeFollowingCurrChannel:isFollowingChannel];
+    });
+}
 
 /*
 // Only override drawRect: if you perform custom drawing.

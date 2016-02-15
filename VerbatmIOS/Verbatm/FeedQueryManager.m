@@ -47,9 +47,17 @@
          if(objects.count > 1){
          
              PFQuery * postQuery = [PFQuery queryWithClassName:POST_PFCLASS_KEY];
-             for(PFObject * channel in objects){
-                 [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel];
+             
+             NSMutableArray * channelsWeFollow = [[NSMutableArray alloc] init];
+             for(int i = 0; i < objects.count; i++){
+                 [channelsWeFollow addObject:[objects[i]objectForKey:FOLLOW_CHANNEL_FOLLOWED_KEY]];
              }
+             
+             
+             [postQuery whereKey:POST_CHANNEL_KEY containedIn:channelsWeFollow];
+//             for(PFObject * channel in objects){
+//                 [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel];
+//             }
              
              [postQuery orderByDescending:@"createdAt"];
              

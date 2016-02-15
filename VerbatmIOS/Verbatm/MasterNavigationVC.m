@@ -375,9 +375,7 @@
     
 }
 
--(void)feedPovShareButtonSeletedForPOV:(PovInfo *) pov {
-    //[self presentShareSelectionViewStartOnChannels:NO];
-}
+
 
 
 -(void)feedPovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov {

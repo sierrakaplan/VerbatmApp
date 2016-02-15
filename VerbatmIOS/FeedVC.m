@@ -7,7 +7,7 @@
 //
 
 #import "ArticleDisplayVC.h"
-
+#import "Channel_BackendObject.h"
 #import "Durations.h"
 
 #import "FeedVC.h"
@@ -19,11 +19,13 @@
 #import "Notifications.h"
 
 #import "POVListScrollViewVC.h"
+#import <Parse/PFUser.h>
 
+#import "SharePOVView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, POVListViewProtocol>
+@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, POVListViewProtocol, SharePOVViewDelegate>
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
@@ -34,6 +36,7 @@
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
 
 
+@property (nonatomic) SharePOVView * sharePOVView;
 
 #define TRENDING_VC_ID @"trending_vc"
 #define VERBATM_LOGO_WIDTH 150.f
@@ -50,7 +53,9 @@
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-    if(self.postListVC)[self.postListVC continueVideoContent];
+    if(self.postListVC){
+        [self.postListVC continueVideoContent];
+    }
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -77,7 +82,8 @@
 
 #pragma mark -POVListSVController-
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
-    
+        [self presentShareSelectionViewStartOnChannels:YES];
+//    [self.delegate feedPovShareButtonSeletedForPOV:pov];
 }
 
 
@@ -97,16 +103,66 @@
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
     if(self.contentCoveringScreen) {
-        [self.delegate showTabBar:NO];
-        self.contentCoveringScreen = NO;
-        [self.postListVC footerShowing:NO];
+        [self removeContentFromScreen];
     } else {
-        [self.delegate showTabBar:YES];
-        self.contentCoveringScreen = YES;
-        [self.postListVC footerShowing:YES];
+        [self returnContentToScreen];
 
     }
 }
+-(void)returnContentToScreen{
+    [self.delegate showTabBar:YES];
+    self.contentCoveringScreen = YES;
+    [self.postListVC footerShowing:YES];
+}
+
+-(void)removeContentFromScreen{
+    [self.delegate showTabBar:NO];
+    self.contentCoveringScreen = NO;
+    [self.postListVC footerShowing:NO];
+}
+
+-(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
+    if(self.sharePOVView){
+        [self.sharePOVView removeFromSuperview];
+        self.sharePOVView = nil;
+    }
+    
+    CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+    self.sharePOVView.delegate = self;
+    [self.view addSubview:self.sharePOVView];
+    [self.view bringSubviewToFront:self.sharePOVView];
+    [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+        if(self.contentCoveringScreen) {
+            [self removeContentFromScreen];
+        }
+        self.sharePOVView.frame = onScreenFrame;
+    }];
+}
+
+-(void)cancelButtonSelected{
+    [self removeSharePOVView];
+}
+-(void)postPOVToChannel:(Channel *) channel{
+    [self removeSharePOVView];
+}
+
+-(void)removeSharePOVView{
+    if(self.sharePOVView){
+        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+        
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.sharePOVView.frame = offScreenFrame;
+        }completion:^(BOOL finished) {
+            if(finished){
+                [self.sharePOVView removeFromSuperview];
+                self.sharePOVView = nil;
+            }
+        }];
+    }
+}
+
 
 
 

@@ -20,8 +20,9 @@
 
 @property (strong, nonatomic) id<CustomScrollingTabBarDelegate> customScrollingTabBarDelegate;
 
+@property (nonatomic) Channel * currentChannel;
 
 // array of NSString*
--(void) displayTabs: (NSArray*) channels withStartTabIndex:(NSInteger) index isLoggedInUser:(BOOL) isLoggedInUser;
+-(void) displayTabs: (NSArray*) channels withStartChannel:(Channel *) channel isLoggedInUser:(BOOL) isLoggedInUser;
 -(void)addNewChannelToList:(Channel *) channel;
 @end

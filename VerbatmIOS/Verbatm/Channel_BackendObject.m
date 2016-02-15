@@ -117,14 +117,15 @@
     [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
         if(objects.count){
             NSMutableArray * finalObjects = [[NSMutableArray alloc] init];
-            for(PFObject * channel in objects){
-                if([channel valueForKey:CHANNEL_CREATOR_KEY] !=
+            for(PFObject * parseChannelObject in objects){
+                if([parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] !=
                    [PFUser currentUser]){
-                    [finalObjects addObject:channel];
+                    NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+                    NSNumber * numberOfFollowers = [parseChannelObject valueForKey:CHANNEL_NUM_FOLLOWERS_KEY];
+                    Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName numberOfFollowers:numberOfFollowers andParseChannelObject:parseChannelObject];
+                    [finalObjects addObject:verbatmChannelObject];
                 }
             }
-            
-            
             completionBlock(finalObjects);
         }
     }];
