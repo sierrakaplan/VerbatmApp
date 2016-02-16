@@ -42,6 +42,7 @@
 
 //checks to see if there is a follow relation between the channel and the user
 +(void)currentUserFollowsChannel:(Channel *) channel withCompletionBlock:(void(^)(bool))block{
+    if(!channel)return;
     //we just delete the Follow Object
     PFQuery * userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
     [userChannelQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
