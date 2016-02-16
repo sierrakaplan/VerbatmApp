@@ -171,7 +171,7 @@
 -(void)preparePOVatIndex:(NSInteger) index {
     PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
     if(povInfo){
-        POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:index] andPOVInfo:povInfo];
+        POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:index] andPovParseObject:nil];
         [self.povViews replaceObjectAtIndex:index withObject:povView];
         [self.scrollView addSubview:povView];
         [povView preparePOVToBePresented];

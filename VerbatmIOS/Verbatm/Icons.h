@@ -12,7 +12,7 @@
 #define DARK_FADE_BACKGROUND @"dark_fade_box"
 #define BLUR_MASK @"blur_background"
 #define TEXT_BACKGROUND @"text_background"
-#define BACKGROUND_IMAGE @"background_1"
+#define BACKGROUND_IMAGE @"d3"
 
 #define BACK_ARROW_LEFT @"back_arrow_left"
 #define BACK_ARROW_RIGHT @"back_arrow_right"
@@ -44,10 +44,13 @@
 
 #pragma mark - ADK -
 
-#define TITLE_BORDER @"dashed_border_with_line"
 #define TITLE_NOTIFICATION_ANIMATION @"title_notification"
-#define REPLACE_COVER_PHOTO_ICON @"replace_photo"
 #define DELETE_ICON @"trash_can"
+
+//TODO: change this
+#define EXIT_BUTTON_IMAGE DONE_CHECKMARK
+#define CHECKBOX_UNSELECTED @""
+#define CHECKBOX_SELECTED @""
 
 #define INFO_ICON @"info_icon"
 

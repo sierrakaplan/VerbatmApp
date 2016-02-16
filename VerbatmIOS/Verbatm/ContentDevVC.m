@@ -178,7 +178,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    self.ourPosts = [[NSMutableArray alloc] init];//temp--TODO. just for saving right now. Should move to masterVC
+    self.ourPosts = [[NSMutableArray alloc] init];
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
@@ -206,8 +206,8 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 -(void) addBackgroundImage {    
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    backgroundView.image =[UIImage imageNamed:@"d3"];
-    //backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
+    backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
+    //backgroundView.image =[UIImage imageNamed:];
 	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
     
     [self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
@@ -476,10 +476,7 @@ rowHeightForComponent:(NSInteger)component{
         }
     }
   
-      if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
-    
-    
-   
+	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
 }
 
 
@@ -1879,30 +1876,29 @@ rowHeightForComponent:(NSInteger)component{
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
 
 -(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
-        if(pinchViews)[self publishOurStoryWithPinchViews:pinchViews];
+	if(pinchViews) [self publishOurStoryWithPinchViews:pinchViews];
 }
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
 
     Channel * channelToPostIn;
-    if(self.currentPresentedPickerRow < self.userChannels.count){
-        
+    if (self.currentPresentedPickerRow < self.userChannels.count) {
         channelToPostIn = self.userChannels[self.currentPresentedPickerRow];
-    }else{
+    } else{
         UITextField * textField = (UITextField *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
-        if([textField.text isEqualToString:@""]){
+        if ([textField.text isEqualToString:@""]) {
             //prompt user to add channel title-- TODO
             
-        }else{
+        } else {
             channelToPostIn = [[Channel alloc] initWithChannelName:textField.text numberOfFollowers:[NSNumber numberWithInt:0] andParseChannelObject:nil];
         }
     }
    
     Channel_BackendObject * newCBO = [[Channel_BackendObject alloc] init];
     [self.ourPosts addObject:newCBO];
-    if(channelToPostIn){
+    if (channelToPostIn) {
        channelToPostIn = [newCBO createPostFromPinchViews:pinchViews toChannel:channelToPostIn];
-        if(channelToPostIn){
+        if (channelToPostIn){
             //notify the profile that a new channel is created-- TODO
         }
     }
@@ -1964,15 +1960,15 @@ rowHeightForComponent:(NSInteger)component{
 		_baseMediaTileSelector.delegate = self;
 		[_baseMediaTileSelector createFramesForButtonsWithFrame:frame];
 		[_baseMediaTileSelector buttonGlow];
-//		[_baseMediaTileSelector.cameraButton insertSubview:self.cameraView atIndex:0];
 	}
 	return _baseMediaTileSelector;
 }
 
 -(CustomNavigationBar*) navBar {
 	if (!_navBar) {
-		_navBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
-										  andBackgroundColor:ADK_NAV_BAR_COLOR];
+		_navBar = [[CustomNavigationBar alloc]
+                   initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
+                   andBackgroundColor:ADK_NAV_BAR_COLOR];
 	}
 	return _navBar;
 }

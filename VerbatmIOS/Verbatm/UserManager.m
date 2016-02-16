@@ -88,7 +88,11 @@
 						[currentUser setObject: name forKey:USER_USER_NAME_KEY];
                         [currentUser setObject: [NSNumber numberWithInt:0] forKey:USER_NUMBER_OF_FOLLOWERS];
                         [currentUser setObject: [NSNumber numberWithInt:0] forKey:USER_NUMBER_OF_FOLLOWING];
-						[currentUser saveInBackground];
+						[currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                            if(succeeded){
+                                //TODOS--Check why this doesn't work
+                            }
+                        }];
 
 						//	TODO: get picture data then store image
 //						NSString* pictureURL = result[@"picture"][@"data"][@"url"];

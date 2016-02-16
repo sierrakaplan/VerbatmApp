@@ -82,7 +82,7 @@
 
 	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
 	NSMutableArray* aves = [analyzer getAVESFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
-	self.povView = [[POVView alloc] initWithFrame: self.bounds andPOVInfo:nil];
+	self.povView = [[POVView alloc] initWithFrame: self.bounds andPovParseObject:nil];
 	[self.povView renderAVES: aves];
 	[self addSubview: self.povView];
 	[self addNavigationBar];
@@ -96,7 +96,7 @@
 
 -(void) addNavigationBar {
 	CustomNavigationBar* navigationBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
-																 andBackgroundColor:ADK_NAV_BAR_COLOR];
+																 andBackgroundColor:CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED];
 	[navigationBar createLeftButtonWithTitle:@"BACK" orImage:nil];
 	[navigationBar createRightButtonWithTitle:@"PUBLISH" orImage:nil];
 	navigationBar.delegate = self;

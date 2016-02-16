@@ -44,18 +44,21 @@
     return self;
 }
 
+
 //make sure the sublayer resizes with the view screen
 - (void)layoutSubviews {
     if (self.playerLayer) {
         self.playerLayer.frame = self.bounds;
-        self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET, MUTE_BUTTON_OFFSET, MUTE_BUTTON_SIZE, MUTE_BUTTON_SIZE);
+        self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET,
+                                           self.bounds.size.height - (MUTE_BUTTON_OFFSET + MUTE_BUTTON_SIZE),
+                                           MUTE_BUTTON_SIZE,
+                                           MUTE_BUTTON_SIZE);
     }
 }
 
 -(void)prepareVideoFromURLArray_asynchronouse: (NSArray*) urlArray {
     if (!self.videoLoading) {
         self.videoLoading = YES;
-        //[self addSubview:self.videoLoadingImageView];
     }
     
     if(urlArray.count == 0) return;
@@ -70,7 +73,6 @@
 -(void)prepareVideoFromAsset_synchronous: (AVAsset*) asset{
     if (!self.videoLoading) {
         self.videoLoading = YES;
-       // [self addSubview:self.videoLoadingImageView];
     }
     
     if (asset) {
@@ -80,12 +82,8 @@
 }
 
 -(void)prepareVideoFromURL_synchronous: (NSURL*) url{
-    NSLog([url absoluteString]);;
-    
     if (!self.videoLoading) {
         self.videoLoading = YES;
-        
-        //[self addSubview:self.videoLoadingImageView];
     }
     
     if (url) {
@@ -142,10 +140,10 @@
                 [self prepareVideoFromAsset_synchronous:videoList[0]];
             });
         }
-    });
-    
-    
+    });    
 }
+
+
 //this is used rarely when we need to load and play a view and it
 //doesn't give our code a chance to be prepared
 -(void)prepareVideoFromArrayOfAssets_synchronous: (NSArray*)videoList {

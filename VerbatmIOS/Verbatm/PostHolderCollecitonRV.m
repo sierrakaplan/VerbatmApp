@@ -47,11 +47,10 @@
             [self.ourCurrentPOV renderPOVFromPages:pages];
             [self.ourCurrentPOV scrollToPageAtIndex:0];//this prepares the
             
-            
             NSNumber * numberOfPostLikes = [postObject valueForKey:POST_LIKES_NUM_KEY];
             NSNumber * numberOfPostShares = [postObject valueForKey:POST_NUM_SHARES_KEY];
             NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
-            [self.ourCurrentPOV createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1)];
+            [self.ourCurrentPOV createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
         }];
     }
 }
@@ -71,7 +70,7 @@
 #pragma mark -lazy instantiation-
 -(POVView *) ourCurrentPOV{
     if(!_ourCurrentPOV){
-        _ourCurrentPOV = [[POVView alloc] initWithFrame:self.bounds andPOVInfo:nil];
+        _ourCurrentPOV = [[POVView alloc] initWithFrame:self.bounds andPovParseObject:nil];
         [self addSubview:_ourCurrentPOV];
     }
     return _ourCurrentPOV;

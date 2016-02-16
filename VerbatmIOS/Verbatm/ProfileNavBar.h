@@ -32,7 +32,7 @@
 
 @property (nonatomic, strong) id<ProfileNavBarDelegate> delegate;
 
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)threads andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser;
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels startChannel:(Channel *) startChannel andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser;
 
 
 -(void)newChannelCreated:(Channel *) channel;

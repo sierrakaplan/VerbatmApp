@@ -16,7 +16,6 @@
 #import "Icons.h"
 
 
-#import <Parse/PFObject.h>
 #import "POVLikeAndShareBar.h"
 #import "PhotoVideoAVE.h"
 #import "PhotoAVE.h"
@@ -57,7 +56,7 @@
 @property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
 //@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
-@property (strong, nonatomic) PovInfo* povInfo;
+@property (strong, nonatomic) PFObject* parsePostObject;
 
 @property (nonatomic, strong) UIButton * downArrow;
 
@@ -78,11 +77,12 @@
 
 @implementation POVView
 
--(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo {
+-(instancetype)initWithFrame:(CGRect)frame andPovParseObject:(PFObject*) povObject {
     self = [super initWithFrame:frame];
     if (self) {
         [self addSubview: self.mainScrollView];
         self.mainScrollView.backgroundColor = [UIColor blackColor];
+        if(povObject)self.parsePostObject = povObject;
     }
     return self;
 }
@@ -119,11 +119,10 @@
 //renders aves (pages) onto the view
 -(void) renderAVES: (NSMutableArray *) aves {
 
-	self.currentPageIndex = -1;
 	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width, [aves count] * self.frame.size.height);
 	self.mainScrollView.contentOffset = CGPointMake(0, 0);
 	CGRect viewFrame = self.bounds;
-
+    
 	for (int i = 0; i < aves.count; i++) {
 		ArticleViewingExperience* ave = aves[i];
 		[self.pageAves setObject:ave forKey:[NSNumber numberWithInt:i]];
@@ -135,7 +134,7 @@
 	}
 }
 
--(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage{
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up{
     
     self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height -LIKE_SHARE_BAR_HEIGHT - TAB_BAR_HEIGHT ,
                                  self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
@@ -143,7 +142,9 @@
     self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
                                      self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
     
-    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame:self.lsBarUpFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
+    CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
+    
+    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
     self.likeShareBar.delegate = self;
     [self addSubview:self.likeShareBar];
 }
@@ -151,7 +152,7 @@
 //like-share bar protocol
 
 -(void)shareButtonPressed {
-    [self.delegate shareOptionSelectedForPOVInfo:self.povInfo];
+    [self.delegate shareOptionSelectedForParsePostObject:self.parsePostObject];
 }
 
 //-(void)likeButtonPressed{
@@ -378,8 +379,7 @@
                 if(pages.count > 1)[self addDownArrowButton];
                 //add bar at the bottom with page numbers etc
                [self renderNextAve:ave withIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
-                [self povOnScreen];
-                [self setApproprioateScrollViewContentSize];
+               [self setApproprioateScrollViewContentSize];
             });
         }];
     }

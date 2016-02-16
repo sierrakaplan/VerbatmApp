@@ -11,14 +11,13 @@
 #import "POVView.h"
 #import "POVScrollView.h"
 #import "Styles.h"
-
+#import "SizesAndPositions.h"
 @interface POVScrollView()<POVViewDelegate>
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 @property (strong, nonatomic) NSMutableArray * povViews;
 @property (weak, nonatomic) POVView * visiblePOV;//the pov that the user can currently see
 
-#define NO_POVS_LABEL_WIDTH 300.f
 
 @end
 
@@ -63,7 +62,7 @@
 			
             CGRect povFrame = CGRectMake(xPosition, 0.f, self.bounds.size.width, self.bounds.size.height);
 			NSMutableArray* aves = [analyzer getAVESFromPinchViews:pov.pinchViews withFrame:self.bounds inPreviewMode:NO];
-			POVView* povView = [[POVView alloc] initWithFrame:povFrame andPOVInfo:nil];
+			POVView* povView = [[POVView alloc] initWithFrame:povFrame andPovParseObject:nil];
             povView.delegate = self;
 			povView.autoresizesSubviews = YES;
 			povView.autoresizingMask = UIViewAutoresizingFlexibleHeight;

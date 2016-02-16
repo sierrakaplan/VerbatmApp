@@ -57,8 +57,6 @@
             //this means there's a thumbnail
             [self createVideoThumbnailView:firstVideoObject[3]];
         }
-        
-        
     }
     return self;
 }
@@ -67,6 +65,7 @@
    
     self.videoThumbNail = [[UIImageView alloc] initWithFrame:self.bounds];
     self.videoThumbNail.image = image;
+    self.videoThumbNail.contentMode = UIViewContentModeScaleAspectFill;
     [self insertSubview:self.videoThumbNail belowSubview:self.videoPlayer];
 }
 

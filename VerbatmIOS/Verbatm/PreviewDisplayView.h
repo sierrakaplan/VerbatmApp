@@ -16,6 +16,7 @@
 -(void) publishWithTitle: (NSString*)title andPinchViews: (NSMutableArray*) pinchViews;
 -(void) aboutToShowPreview;
 -(void) aboutToRemovePreview;
+
 @end
 
 @interface PreviewDisplayView : UIView

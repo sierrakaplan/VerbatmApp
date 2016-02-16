@@ -19,7 +19,7 @@
 @end
 
 @interface SelectChannel : UIScrollView
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *) channels canSelectMultiple:(BOOL) selectMultiple;
+-(instancetype) initWithFrame:(CGRect)frame canSelectMultiple:(BOOL) selectMultiple;
 @property (nonatomic) id <SelectChannelProtocol> delegate;
 -(void)unselectAllOptions;
 @end

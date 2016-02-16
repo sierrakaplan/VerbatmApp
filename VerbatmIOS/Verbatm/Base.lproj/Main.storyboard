@@ -276,7 +276,7 @@
                                 <rect key="frame" x="0.0" y="64" width="320" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" selectable="NO" id="lcl-9z-vLB">
@@ -401,19 +401,9 @@
                     <view key="view" contentMode="scaleToFill" id="yT8-e9-31R">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="KO1-LV-Cy2">
-                                <rect key="frame" x="70" y="292" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <segue destination="Ghb-hZ-Bpl" kind="embed" id="VL8-Yc-nKv"/>
-                                </connections>
-                            </containerView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="postListContainer" destination="KO1-LV-Cy2" id="t2t-5k-N3w"/>
                         <segue destination="bK1-Rd-hCA" kind="modal" identifier="presentSettingsPage" id="Iif-HD-h1B"/>
                     </connections>
                 </viewController>
@@ -440,7 +430,7 @@
             <objects>
                 <viewController id="Ghb-hZ-Bpl" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="dyc-Nj-zKW">
-                        <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>

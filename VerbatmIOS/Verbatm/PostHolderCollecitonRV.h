@@ -15,4 +15,8 @@
 -(void)presentPOV:(POVView *)pov;
 -(void)onScreen;
 -(void)offScreen;
+
+@property (nonatomic) BOOL isHomeProfileOrFeed;//profile of the current logged in user
+
+
 @end

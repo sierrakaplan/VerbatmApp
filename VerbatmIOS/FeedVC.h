@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import <Parse/PFObject.h>
 @protocol FeedVCDelegate <NSObject>
 
--(void) showTabBar: (BOOL) show;
--(void)feedPovShareButtonSeletedForPOV:(PovInfo *) pov;
--(void)feedPovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov;
+-(void)showTabBar: (BOOL) show;
+-(void)feedPovShareButtonSeletedForPOV: (PFObject* ) pov;
+-(void)feedPovLikeLiked:(BOOL) liked forPOV: (PFObject* ) pov;
 
 @end
 
@@ -26,7 +26,5 @@
 
 
 
--(void) offScreen;//told when it's off screen to stop videos
--(void)onScreen;
 
 @end

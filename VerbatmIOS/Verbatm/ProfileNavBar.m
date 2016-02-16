@@ -15,6 +15,7 @@
 #import "Durations.h"
 
 #import "followInfoBar.h"
+#import "Follow_BackendManager.h"
 
 #import "Icons.h"
 
@@ -51,15 +52,16 @@
 @implementation ProfileNavBar
 
 //expects an array of thread names (nsstring)
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels startChannel:(Channel *) startChannel andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
     self = [super initWithFrame:frame];
     if(self){
         [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
-		[self.threadNavScrollView displayTabs:channels];
-        [self createFollowersInfoViewWithUser:profileUser];
-        [self createArrowExtesion];
-        [self createPanGesture];
-        [self createTapGesture];
+		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
+        [self setFolloweButtonInHeader];
+//        [self createFollowersInfoViewWithUser:profileUser];
+//        [self createArrowExtesion];
+//        [self createPanGesture];
+//        [self createTapGesture];
     }
     return self;
 }
@@ -213,7 +215,6 @@
     self.arrowExtension = [[UIView alloc] initWithFrame:arrowBarFrame];
     [self.arrowExtension setBackgroundColor:arrowBarBackgroundColor];
     
-    
     CGRect arrowFrame = CGRectMake(self.frame.size.width/2.f - (ARROW_FRAME_WIDTH/2), ARROW_IMAGE_WALL_OFFSET, ARROW_FRAME_WIDTH, ARROW_FRAME_HEIGHT - (ARROW_IMAGE_WALL_OFFSET*2));
     UIImage * arrowImage = [UIImage imageNamed:@"down_arrow_white"];
     
@@ -223,15 +224,25 @@
     [self addSubview:self.arrowExtension];
 }
 
--(void) createProfileHeaderWithUserName: (NSString*) userName isCurrentUser:(BOOL) isCurrentUser{
-    
+-(void) createProfileHeaderWithUserName: (NSString*) userName isCurrentUser:(BOOL) isCurrentUser {
     CGRect barFrame = CGRectMake(0.f, 0.f, self.bounds.size.width, PROFILE_HEADER_HEIGHT);
     self.profileHeader = [[ProfileInformationBar alloc] initWithFrame:barFrame andUserName:userName isCurrentUser:isCurrentUser];
     self.profileHeader.delegate = self;
     [self addSubview:self.profileHeader];
 }
 
--(void)backButtonSelected{
+
+-(void)setFolloweButtonInHeader {
+    //checks if the logged in user follows this specific channel
+    [Follow_BackendManager currentUserFollowsChannel:self.threadNavScrollView.currentChannel withCompletionBlock:^
+     (bool isFollowing) {
+        [self.profileHeader setFollowIconToFollowingCurrentChannel:isFollowing];
+    }];
+}
+
+
+
+-(void)backButtonSelected {
     [self.delegate exitCurrentProfile];
 }
 
@@ -240,8 +251,10 @@
 }
 
 //told when the follow/followers button is selected
--(void)followButtonSelected {
-    [self.delegate followOptionSelected];
+-(void)followButtonSelectedShouldFollowUser:(BOOL) followUser {
+    if(followUser)[Follow_BackendManager currentUserFollowChannel:self.threadNavScrollView.currentChannel];
+    else [Follow_BackendManager currentUserStopFollowingChannel:self.threadNavScrollView.currentChannel];
+    //[self.delegate followOptionSelected];
 }
 
 
@@ -261,6 +274,7 @@
 #pragma mark - CustomScrollingTabBarDelegate methods -
 
 -(void) tabPressedWithChannel:(Channel *)channel {
+     [self setFolloweButtonInHeader];
 	[self.delegate newChannelSelected:channel];
 }
 

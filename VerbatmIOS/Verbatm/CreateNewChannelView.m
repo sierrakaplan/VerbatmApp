@@ -18,9 +18,11 @@
 #define BUTTON_HEIGHT 50.f
 
 @interface CreateNewChannelView ()<UITextFieldDelegate>
+
 @property (nonatomic) UITextField * channelNameField;
 @property (nonatomic) UIButton * cancelButton;
 @property (nonatomic) UIButton * acceptButton;
+
 @end
 
 
@@ -70,6 +72,7 @@
     self.channelNameField.returnKeyType = UIReturnKeyDone;
     [self addSubview:self.channelNameField];
     [self.channelNameField becomeFirstResponder];
+    [[UITextField appearance] setTintColor:[UIColor whiteColor]];
     self.channelNameField.delegate = self;
     [self addSubview:self.channelNameField];
 }
@@ -115,6 +118,11 @@
 }
 
 -(void)acceptButtonSelected:(UIButton *) button{
+    NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
+    BOOL hasCharacters = ! [[self.channelNameField.text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:self.channelNameField.text];
+    
+    if(!hasCharacters)return;
+    
     [self.delegate createChannelWithName:self.channelNameField.text];
 }
 

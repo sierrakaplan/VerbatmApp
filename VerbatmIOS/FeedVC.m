@@ -7,7 +7,7 @@
 //
 
 #import "ArticleDisplayVC.h"
-
+#import "Channel_BackendObject.h"
 #import "Durations.h"
 
 #import "FeedVC.h"
@@ -18,23 +18,25 @@
 
 #import "Notifications.h"
 
-//#import "PostListVC.h"
-#import "POVScrollView.h"
+#import "POVListScrollViewVC.h"
+#import <Parse/PFUser.h>
 
+#import "SharePOVView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, POVScrollViewDelegate>
+@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, POVListViewProtocol, SharePOVViewDelegate>
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
 @property (nonatomic) CGRect povScrollViewFrame;
-@property (strong, nonatomic) POVScrollView* povScrollView;
+@property (strong, nonatomic) POVListScrollViewVC* postListVC;
 
 //@property (nonatomic) PostListVC * postListView;
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
 
 
+@property (nonatomic) SharePOVView * sharePOVView;
 
 #define TRENDING_VC_ID @"trending_vc"
 #define VERBATM_LOGO_WIDTH 150.f
@@ -45,13 +47,15 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    //[self addPostListVC];
+    [self createContentListView];
     [self addClearScreenGesture];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-
+    if(self.postListVC){
+        [self.postListVC continueVideoContent];
+    }
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -60,41 +64,28 @@
 
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.povScrollView clearPOVs];
+    if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
 
--(void) addPostListVC {
-//    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
-//    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-//    [flowLayout setMinimumInteritemSpacing:0.3];
-//    [flowLayout setMinimumLineSpacing:0.0f];
-//    [flowLayout setItemSize:self.view.frame.size];
-//    self.postListView = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-//    
-//    [self.postListContainerView setFrame:self.view.bounds];
-//    [self.postListContainerView addSubview:self.postListView.view];
-//    [self.view addSubview:self.postListContainerView];
-}
-
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    [self.povScrollView playPOVOnScreen];
-}
 
 -(void) createContentListView {
-    self.postDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
-    self.postDisplayVC.view.frame = self.view.bounds;
-    self.postDisplayVC.view.backgroundColor = [UIColor blackColor];
-    [self.postDisplayVC presentContentWithPOVType:POVTypeTrending andChannel:@""];
-    [self addChildViewController:self.postDisplayVC];
-    [self.view addSubview:self.postDisplayVC.view];
-    [self.postDisplayVC didMoveToParentViewController:self];
+    self.postListVC = [[POVListScrollViewVC alloc] init];
+    self.postListVC.listOwner = [PFUser currentUser];
+    self.postListVC.listType = listFeed;
+    self.postListVC.isHomeProfileOrFeed =YES;
+    self.postListVC.delegate = self;
+    [self.view addSubview:self.postListVC.view];
     self.postDisplayVC.delegate = self;
+    [self.postDisplayVC didMoveToParentViewController:self];
 }
 
-//articledisplay delegate method
--(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo{
-    
+
+#pragma mark -POVListSVController-
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
+        [self presentShareSelectionViewStartOnChannels:YES];
+//    [self.delegate feedPovShareButtonSeletedForPOV:pov];
 }
+
 
 -(void)registerForNotifications{
 	//gets notified if there is no internet connection
@@ -112,30 +103,67 @@
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
     if(self.contentCoveringScreen) {
-        [self.delegate showTabBar:NO];
-        self.contentCoveringScreen = NO;
-		[self.povScrollView headerShowing:NO];
+        [self removeContentFromScreen];
     } else {
-        [self.delegate showTabBar:YES];
-        self.contentCoveringScreen = YES;
-		[self.povScrollView headerShowing:YES];
+        [self returnContentToScreen];
+
+    }
+}
+-(void)returnContentToScreen{
+    [self.delegate showTabBar:YES];
+    self.contentCoveringScreen = YES;
+    [self.postListVC footerShowing:YES];
+}
+
+-(void)removeContentFromScreen{
+    [self.delegate showTabBar:NO];
+    self.contentCoveringScreen = NO;
+    [self.postListVC footerShowing:NO];
+}
+
+-(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
+    if(self.sharePOVView){
+        [self.sharePOVView removeFromSuperview];
+        self.sharePOVView = nil;
+    }
+    
+    CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+    self.sharePOVView.delegate = self;
+    [self.view addSubview:self.sharePOVView];
+    [self.view bringSubviewToFront:self.sharePOVView];
+    [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+        if(self.contentCoveringScreen) {
+            [self removeContentFromScreen];
+        }
+        self.sharePOVView.frame = onScreenFrame;
+    }];
+}
+
+-(void)cancelButtonSelected{
+    [self removeSharePOVView];
+}
+-(void)postPOVToChannel:(Channel *) channel{
+    [self removeSharePOVView];
+}
+
+-(void)removeSharePOVView{
+    if(self.sharePOVView){
+        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+        
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.sharePOVView.frame = offScreenFrame;
+        }completion:^(BOOL finished) {
+            if(finished){
+                [self.sharePOVView removeFromSuperview];
+                self.sharePOVView = nil;
+            }
+        }];
     }
 }
 
--(void)offScreen{
-    [self.postDisplayVC offScreen];
-}
 
--(void)onScreen{
-    [self.postDisplayVC onScreen];
-}
-
-//not implemented
-// animates the fact that a recent POV is publishing
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
-                    andProgressObject:(NSProgress *)publishingProgress{
-    
-}
 
 
 #pragma mark -POVScrollview delegate-

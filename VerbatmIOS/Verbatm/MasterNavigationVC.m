@@ -14,7 +14,6 @@
 #import "CustomTabBarController.h"
 #import "ContentDevVC.h"
 #import "Channel.h"
-#import "CreateNewChannelView.h"
 #import "ChannelOrUsernameCV.h"
 
 
@@ -57,7 +56,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, CreateNewChannelViewProtocol, SharePOVViewDelegate, UserAndChannelListsTVCDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, SharePOVViewDelegate, UserAndChannelListsTVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -65,7 +64,6 @@
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
-@property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 
 
 
@@ -95,6 +93,7 @@
 	[super viewDidLoad];
 	[self setUpTabBarController];
 	[self registerForNotifications];
+    self.view.backgroundColor = [UIColor blackColor];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -298,11 +297,6 @@
 	}
 }
 
-//prepare for segue
-
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-//{
-//}
 
 -(void) playContentOnSelectedViewController:(BOOL) shoulPlay{
     
@@ -310,17 +304,13 @@
         UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
         
         if(currentViewController == self.feedVC){
-            [self.feedVC onScreen];
         }else if (currentViewController == self.profileVC){
-            [self.profileVC onScreen];
         }
     }else{
         UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
         
         if(currentViewController == self.feedVC){
-            [self.feedVC offScreen];
         }else if (currentViewController == self.profileVC){
-            [self.profileVC offScreen];
         }
     }
 }
@@ -385,9 +375,7 @@
     
 }
 
--(void)feedPovShareButtonSeletedForPOV:(PovInfo *) pov {
-    //[self presentShareSelectionViewStartOnChannels:NO];
-}
+
 
 
 -(void)feedPovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov {
