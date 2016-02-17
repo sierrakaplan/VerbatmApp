@@ -9,6 +9,8 @@
 
 #import "GTLVerbatmAppImage.h"
 
+#import "Notifications.h"
+
 #import "Photo_BackendObject.h"
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
@@ -26,6 +28,9 @@
 {
     self.mediaPublisher = [[POVPublisher alloc] init];
     [self.mediaPublisher storeImage:image withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
+       
+        //tell our publishing manager that a photo is done saving
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_SUCCEEDED object:nil];
         NSString * blobStoreUrl = gtlImage.servingUrl;
         //in completion block of blobstore save
         [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl withText:userText andTextYPosition:textYPosition atPhotoIndex:photoIndex andPageObject:pageObject];

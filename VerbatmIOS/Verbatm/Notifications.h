@@ -21,4 +21,6 @@
 
 #define NOTIFICATION_USER_SIGNED_OUT @"user_signed_out"
 
+#define NOTIFICATION_MEDIA_SAVING_SUCCEEDED @"media_save_succeeded"//saved on media in an array to publish
+#define NOTIFICATION_MEDIA_SAVING_FAILED @"media_save_failed"//saving a piece of media failed
 #endif /* Header_h */

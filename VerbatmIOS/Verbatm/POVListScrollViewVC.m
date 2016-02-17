@@ -26,6 +26,7 @@
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
 @property (nonatomic, strong) UILabel * noContentLabel;
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
+@property (nonatomic) BOOL justLoaded;//records if this is the firs time the view is loaded
 
 @end
 
@@ -35,9 +36,18 @@
 -(void)viewDidLoad{
     [self.activityIndicator startAnimating];
     [self getPosts];
+    self.justLoaded = YES;
 }
 
-
+-(void)viewWillAppear:(BOOL)animated{
+    
+    if(self.justLoaded){
+        self.justLoaded = NO;
+    }else{
+        [self.activityIndicator startAnimating];
+        [self getPosts];
+    }
+}
 -(void)reloadCurrentChannel{
     self.postList = nil;
     [self getPosts];
