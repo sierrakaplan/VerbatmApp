@@ -58,10 +58,10 @@
         [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
         [self setFolloweButtonInHeader];
-//        [self createFollowersInfoViewWithUser:profileUser];
-//        [self createArrowExtesion];
-//        [self createPanGesture];
-//        [self createTapGesture];
+        [self createFollowersInfoViewWithUser:profileUser];
+        [self createArrowExtesion];
+        [self createPanGesture];
+        [self createTapGesture];
     }
     return self;
 }
@@ -216,7 +216,7 @@
     [self.arrowExtension setBackgroundColor:arrowBarBackgroundColor];
     
     CGRect arrowFrame = CGRectMake(self.frame.size.width/2.f - (ARROW_FRAME_WIDTH/2), ARROW_IMAGE_WALL_OFFSET, ARROW_FRAME_WIDTH, ARROW_FRAME_HEIGHT - (ARROW_IMAGE_WALL_OFFSET*2));
-    UIImage * arrowImage = [UIImage imageNamed:@"down_arrow_white"];
+    UIImage * arrowImage = [UIImage imageNamed:DOWN_ARROR_ICON];
     
     UIImageView * arrowView = [[UIImageView alloc] initWithImage:arrowImage];
     [arrowView setFrame:arrowFrame];

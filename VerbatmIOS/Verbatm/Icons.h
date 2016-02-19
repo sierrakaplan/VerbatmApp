@@ -110,4 +110,6 @@
 
 #define SEARCH_TAB_BAR_ICON @"search_icon"
 
+#define DOWN_ARROR_ICON @"down_arrow_white"
+
 #endif /* Icons_h */
