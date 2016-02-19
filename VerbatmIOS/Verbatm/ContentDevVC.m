@@ -35,9 +35,12 @@
 #import "POVPublisher.h"
 #import "PreviewDisplayView.h"
 #import "Post_BackendObject.h"
-#import "Notifications.h"
+#import "PublishingProgressManager.h"
+
 #import "MediaDevVC.h"
 #import "MediaSelectTile.h"
+
+#import "Notifications.h"
 
 #import "OpenCollectionView.h"
 
@@ -1893,18 +1896,13 @@ rowHeightForComponent:(NSInteger)component{
             channelToPostIn = [[Channel alloc] initWithChannelName:textField.text numberOfFollowers:[NSNumber numberWithInt:0] andParseChannelObject:nil];
         }
     }
-   
-    Channel_BackendObject * newCBO = [[Channel_BackendObject alloc] init];
-    [self.ourPosts addObject:newCBO];
-    if (channelToPostIn) {
-       channelToPostIn = [newCBO createPostFromPinchViews:pinchViews toChannel:channelToPostIn];
-        if (channelToPostIn){
-            //notify the profile that a new channel is created-- TODO
-        }
+    BOOL posting = [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews];
+    if(posting){
+        [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+        [self cleanUp];
+    }else{
+        //TODO -- either something else is publishing or there is not internet
     }
-    
-    [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-    [self cleanUp];
 }
 
 #pragma mark - Tap to clear view -

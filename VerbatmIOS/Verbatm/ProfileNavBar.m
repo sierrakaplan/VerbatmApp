@@ -58,10 +58,10 @@
         [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
         [self setFolloweButtonInHeader];
-//        [self createFollowersInfoViewWithUser:profileUser];
-//        [self createArrowExtesion];
-//        [self createPanGesture];
-//        [self createTapGesture];
+        [self createFollowersInfoViewWithUser:profileUser];
+        [self createArrowExtesion];
+        [self createPanGesture];
+        [self createTapGesture];
     }
     return self;
 }
@@ -72,8 +72,6 @@
         [self.threadNavScrollView addNewChannelToList:channel];
     }
 }
-
-
 
 -(void)createFollowersInfoViewWithUser:(PFUser *) profileUser {
     
@@ -93,8 +91,6 @@
     self.followInfoBar.delegate = self;
     [self addSubview:self.followInfoBar];
 }
-
-
 
 -(void)createTapGesture{
     UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userDidTap:)];
@@ -193,8 +189,6 @@
     }
 }
 
-
-
 -(void)adjustOurOwnFrame{
     CGRect selfFrame = CGRectMake(self.frame.origin.x,
                                   self.frame.origin.y,
@@ -216,7 +210,7 @@
     [self.arrowExtension setBackgroundColor:arrowBarBackgroundColor];
     
     CGRect arrowFrame = CGRectMake(self.frame.size.width/2.f - (ARROW_FRAME_WIDTH/2), ARROW_IMAGE_WALL_OFFSET, ARROW_FRAME_WIDTH, ARROW_FRAME_HEIGHT - (ARROW_IMAGE_WALL_OFFSET*2));
-    UIImage * arrowImage = [UIImage imageNamed:@"down_arrow_white"];
+    UIImage * arrowImage = [UIImage imageNamed:DOWN_ARROR_ICON];
     
     UIImageView * arrowView = [[UIImageView alloc] initWithImage:arrowImage];
     [arrowView setFrame:arrowFrame];
@@ -239,8 +233,6 @@
         [self.profileHeader setFollowIconToFollowingCurrentChannel:isFollowing];
     }];
 }
-
-
 
 -(void)backButtonSelected {
     [self.delegate exitCurrentProfile];
@@ -270,11 +262,14 @@
     [self.delegate followingOptionSelected];
 }
 
+-(void) selectChannel: (Channel*) channel {
+	[self.threadNavScrollView selectChannel: channel];
+}
 
 #pragma mark - CustomScrollingTabBarDelegate methods -
 
 -(void) tabPressedWithChannel:(Channel *)channel {
-     [self setFolloweButtonInHeader];
+	[self setFolloweButtonInHeader];
 	[self.delegate newChannelSelected:channel];
 }
 

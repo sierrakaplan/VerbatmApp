@@ -5,6 +5,7 @@
 //  Created by Iain Usiri on 8/29/15.
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
+
 #import "ArticleDisplayVC.h"
 
 #import "CreateNewChannelView.h"
@@ -28,6 +29,7 @@
 
 #import "Post_BackendObject.h"
 #import "POVView.h"
+#import "PublishingProgressManager.h"
 
 #import "SharePOVView.h"
 #import "SegueIDs.h"
@@ -37,7 +39,7 @@
 #import "UIView+Effects.h"
 #import "UserManager.h"
 
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate>
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate, PublishingProgressProtocol>
 
 @property (strong, nonatomic) POVListScrollViewVC * postListVC;
 
@@ -51,13 +53,17 @@
 
 @property (strong, nonatomic) NSArray* channels;
 
-
 @property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 @property (nonatomic) UIView * darkScreenCover;
 @property (nonatomic) SharePOVView * sharePOVView;
 @property (nonatomic) Channel_BackendObject * channelBackendManager;
 
-@property (nonatomic) POVView * hackView;
+#pragma mark Publishing
+
+@property (nonatomic, strong) UIView* publishingProgressView;
+@property (nonatomic, strong) NSProgress* publishingProgress;
+@property (nonatomic, strong) UIProgressView* progressBar;
+
 @end
 
 @implementation ProfileVC
@@ -73,7 +79,6 @@
     self.view.clipsToBounds = YES;
 }
 
-
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
     [Channel_BackendObject getChannelsForUser:self.userOfProfile withCompletionBlock:
@@ -83,7 +88,6 @@
     }];
 }
 
-
 -(void) viewWillAppear:(BOOL)animated{
     if(self.postListVC)[self.postListVC continueVideoContent];
 }
@@ -92,14 +96,10 @@
 	[super viewDidAppear:animated];
 }
 
-
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
-
-
-
 
 -(void) createAndAddListVC{
     self.postListVC = [[POVListScrollViewVC alloc] init];
@@ -119,8 +119,6 @@
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
 
 }
-
-
 
 -(void) createNavigationBar {
     //frame when on screen
@@ -224,7 +222,7 @@
 }
 
 //ProfileNavBarDelegate protocol
--(void) createNewChannel{
+-(void) createNewChannel {
     if(!self.createNewChannelView){
         [self darkenScreen];
         CGFloat viewHeight = self.view.frame.size.height/2.f -
@@ -246,22 +244,25 @@
         [self.view addSubview:self.darkScreenCover];
     }
 }
--(void)removeScreenDarkener{
+
+-(void) removeScreenDarkener{
     if(self.darkScreenCover){
         [self.darkScreenCover removeFromSuperview];
         self.darkScreenCover = nil;
     }
 }
+
 -(void) cancelCreation {
     [self clearChannelCreationView];
     [self presentHeadAndFooter:NO];
 }
+
 -(void) createChannelWithName:(NSString *) channelName {
     //save the channel name and create it in the backend
     //upate the scrollview to present a new channel
     
     Channel * newChannel = [self.channelBackendManager createChannelWithName:channelName];
-    [self.profileNavBar  newChannelCreated:newChannel];
+    [self.profileNavBar newChannelCreated:newChannel];
     [self clearChannelCreationView];
 }
 
@@ -272,10 +273,6 @@
         self.createNewChannelView = nil;
     }
 }
-
-
-
-
 
 
 #pragma mark -Share Seletion View Protocol -
@@ -291,8 +288,6 @@
     
 }
 
-
-
 #pragma mark -Navigate profile-
 //the current user has selected the back button
 -(void)exitCurrentProfile {
@@ -300,20 +295,22 @@
     }];
 }
 
-
 -(void)newChannelSelected:(Channel *) channel{
     [self.postListVC changeCurrentChannelTo:channel];
 }
 
-
+// updates tab and content
+-(void) selectChannel: (Channel *) channel {
+	[self.profileNavBar selectChannel: channel];
+	[self.postListVC changeCurrentChannelTo:channel];
+}
 
 -(void) switchStoryListToThread:(NSString *) newChannel{
     [self.postDisplayVC cleanUp];
     [self.postDisplayVC presentContentWithPOVType:POVTypeUser andChannel:newChannel];
 }
 
-
--(void)presentHeadAndFooter:(BOOL) shouldShow{
+-(void) presentHeadAndFooter:(BOOL) shouldShow {
     if(shouldShow) {
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:YES]];
@@ -332,16 +329,14 @@
     }
 }
 
-
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-    if(self.contentCoveringScreen) {
+    if (self.contentCoveringScreen) {
        [self presentHeadAndFooter:YES];
     } else {
         [self presentHeadAndFooter:NO];
         
     }
 }
-
 
 -(CGRect)getProfileNavBarFrameOffScreen:(BOOL) getOffScreenFrame {
     if(getOffScreenFrame){
@@ -355,13 +350,13 @@
     }
 }
 
--(void) offScreen{
+-(void) offScreen {
     [self.postDisplayVC offScreen];
 }
--(void)onScreen{
+
+-(void) onScreen {
     [self.postDisplayVC onScreen];
 }
-
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Make sure your segue name in storyboard is the same as this line
@@ -374,18 +369,71 @@
     }
 }
 
--(Channel_BackendObject *)channelBackendManager{
-    if(!_channelBackendManager){
-        _channelBackendManager = [[Channel_BackendObject alloc] init];
-    }
-    return _channelBackendManager;
+#pragma mark - Publishing -
+
+-(void) showPublishingProgress {
+	self.publishingProgressView = nil;
+	self.publishingProgress = [[PublishingProgressManager sharedInstance] progressAccountant];
+	[[PublishingProgressManager sharedInstance] setDelegate:self];
+	Channel * currentPublishingChannel = [[PublishingProgressManager sharedInstance] currentPublishingChannel];
+	if ([[PublishingProgressManager sharedInstance] newChannelCreated]) {
+		[self.profileNavBar newChannelCreated: currentPublishingChannel];
+		[[PublishingProgressManager sharedInstance] setNewChannelCreated:NO];
+	}
+	[self selectChannel: currentPublishingChannel];
+	[self.profileNavBar addSubview: self.publishingProgressView];
 }
 
+#pragma mark Publishing Progress Manager Delegate methods
+
+-(void) publishingComplete {
+	NSLog(@"Publishing Complete!");
+	[self.publishingProgressView removeFromSuperview];
+
+	[self.postListVC reloadCurrentChannel];
+}
+
+-(void) publishingFailed {
+	//TODO: tell user publishing failed
+	NSLog(@"PUBLISHING FAILED");
+}
 
 #pragma mark - Article Display Delegate methods -
 
 -(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo {
 	// do nothing
+}
+
+#pragma mark - Lazy Instantiation -
+
+-(Channel_BackendObject *) channelBackendManager {
+	if(!_channelBackendManager) {
+		_channelBackendManager = [[Channel_BackendObject alloc] init];
+	}
+	return _channelBackendManager;
+}
+
+-(UIView*) publishingProgressView {
+	if (!_publishingProgressView) {
+		_publishingProgressView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.profileNavBar.frame.size.height,
+																		   self.view.frame.size.width, 10.f)];
+		[_publishingProgressView setBackgroundColor:[UIColor blackColor]];
+		self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+		[self.progressBar setFrame:CGRectMake(5.f, 5.f, self.view.frame.size.width - 10.f, self.progressBar.frame.size.height)];
+		if ([self.progressBar respondsToSelector:@selector(setObservedProgress:)]) {
+			[self.progressBar setObservedProgress: self.publishingProgress];
+		} else {
+			[self.publishingProgress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:nil];
+		}
+		[_publishingProgressView addSubview: self.progressBar];
+	}
+	return _publishingProgressView;
+}
+
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+	if (object == self.publishingProgress && [keyPath isEqualToString:@"completedUnitCount"] ) {
+		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
+	}
 }
 
 @end

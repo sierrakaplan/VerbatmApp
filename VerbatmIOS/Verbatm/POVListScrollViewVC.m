@@ -8,7 +8,6 @@
 
 #import "Channel_BackendObject.h"
 #import "FeedQueryManager.h"
-
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "POVListScrollViewVC.h"
@@ -18,6 +17,7 @@
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import "POVView.h"
+
 @interface POVListScrollViewVC ()<UIScrollViewDelegate,POVViewDelegate>
 
 @property (nonatomic) NSMutableArray * postList;
@@ -26,6 +26,7 @@
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
 @property (nonatomic, strong) UILabel * noContentLabel;
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
+@property (nonatomic) BOOL justLoaded;//records if this is the firs time the view is loaded
 
 @end
 
@@ -35,8 +36,17 @@
 -(void)viewDidLoad{
     [self.activityIndicator startAnimating];
     [self getPosts];
+    self.justLoaded = YES;
 }
 
+-(void)viewWillAppear:(BOOL)animated {
+    if(self.justLoaded){
+        self.justLoaded = NO;
+    } else {
+        [self.activityIndicator startAnimating];
+        [self getPosts];
+    }
+}
 
 -(void)reloadCurrentChannel{
     self.postList = nil;
@@ -52,7 +62,6 @@
         [self getPosts];
     }
 }
-
 
 -(void)nothingToPresentHere {
     [self.activityIndicator stopAnimating];
@@ -111,10 +120,8 @@
     }
 }
 
-
-
 -(void)startLoadingPoVs{
-    for(int i =0; i< self.postList.count; i++){
+    for(int i = 0; i< self.postList.count; i++){
         PFObject * post = self.postList[i];
         [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
             POVView * pov = [[POVView alloc] initWithFrame:self.view.bounds andPovParseObject:post];
@@ -169,7 +176,6 @@
     return self.mainScrollView.contentOffset.x / self.view.frame.size.width;
 }
 
-
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {
     
     NSInteger visibleCellIndex = [self getVisibileCellIndex];
@@ -198,7 +204,6 @@
     }
 }
 
-
 -(void) stopAllVideoContent{
     NSInteger visibleCellIndex = [self getVisibileCellIndex];
     if(visibleCellIndex < self.mainScrollView.subviews.count){
@@ -208,6 +213,7 @@
         [self stopPovsExceptAtIndex:visibleCellIndex];
     }
 }
+
 -(void) continueVideoContent{
     NSInteger visibleCellIndex = [self getVisibileCellIndex];
     if(visibleCellIndex < self.mainScrollView.subviews.count){
@@ -268,6 +274,7 @@
     }
     return _povsPresented;
 }
+
 -(UIActivityIndicatorView*) activityIndicator {
     if (!_activityIndicator) {
         _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];

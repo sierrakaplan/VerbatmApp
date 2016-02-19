@@ -16,7 +16,8 @@
 @interface CustomScrollingTabBar()
 
 // array of UIButtons
-@property (strong, nonatomic) NSMutableArray* tabs;
+@property (strong, nonatomic) NSMutableArray* tabButtons;
+@property (strong, nonatomic) NSMutableArray* channels;
 @property (strong, nonatomic) ChannelButtons * selectedTab;
 @property (nonatomic) BOOL isLoggedInUser;
 
@@ -39,11 +40,13 @@
 
 -(void)addNewChannelToList:(Channel *) channel {
     
-    UIView * createChannelView = [self.tabs lastObject];
+    UIView * createChannelView = [self.tabButtons lastObject];
     CGPoint newChannelOrigin = createChannelView.frame.origin;
     UIButton * channelButton = [self getChannelTitleButton:channel andOrigin:newChannelOrigin];
-    
-    [self.tabs insertObject:channelButton atIndex:[self.tabs indexOfObject:createChannelView]];
+
+	NSInteger index = [self.tabButtons indexOfObject:createChannelView];
+    [self.tabButtons insertObject:channelButton atIndex: index];
+	[self.channels insertObject:channel atIndex: index];
     
     CGRect newCreateChannelFrame = CGRectMake(channelButton.frame.origin.x + channelButton.frame.size.width,
                                               createChannelView.frame.origin.y,
@@ -58,8 +61,7 @@
 	CGFloat xCoordinate = 0.f;
     NSInteger startChannelIndex = -1;
 	for(Channel * channel in channels) {
-        
-        
+
         if(startChannel){
             if([startChannel.name isEqualToString:channel.name]){
                 startChannelIndex = [channels indexOfObject:channel];
@@ -71,7 +73,8 @@
         UIButton * channelTitleButton = [self getChannelTitleButton:channel andOrigin:channelTitleOrigin];
 		[self addSubview:channelTitleButton];
 		//store button in our tab list
-        [self.tabs addObject:channelTitleButton];
+        [self.tabButtons addObject:channelTitleButton];
+		[self.channels addObject: channel];
         
         //advance xCordinate
 		xCoordinate += channelTitleButton.frame.size.width;
@@ -86,7 +89,7 @@
                                                      self.frame.size.height);
         
         UIButton * createChannelButton = [self getCreateChannelButtonWithFrame:createChannelButtonFrame];
-        [self.tabs addObject:createChannelButton];
+        [self.tabButtons addObject:createChannelButton];
         [self addSubview:createChannelButton];
     }
     
@@ -94,15 +97,8 @@
     if(startChannelIndex == -1) startChannelIndex = 0;
     
     [self adjustTabFramesToSuggestedSizes];
-	if(self.tabs.count > 1)[self selectTab: self.tabs[startChannelIndex]];
+	if(self.tabButtons.count > 1)[self selectTab: self.tabButtons[startChannelIndex]];
 }
-
-
-
-
-
-
-
 
 -(UIButton *)getCreateChannelButtonWithFrame:(CGRect) frame {
     UIButton * createChannelButton = [[UIButton alloc] initWithFrame:frame];
@@ -131,9 +127,8 @@
     [self.customScrollingTabBarDelegate createNewChannel];
 }
 
-
 -(void)adjustContentSize{
-    UIView * lastView = [self.tabs lastObject];
+    UIView * lastView = [self.tabButtons lastObject];
     self.contentSize = CGSizeMake(lastView.frame.origin.x + lastView.frame.size.width,0);
 }
 
@@ -166,21 +161,25 @@
 	self.selectedTab = tab;
 }
 
+-(void) selectChannel: (Channel*) channel {
+	NSInteger index = [self.channels indexOfObject: channel];
+	if (index == NSNotFound) return;
+	[self tabPressed: self.tabButtons[index]];
+}
+
 -(void) unselectTab: (ChannelButtons*) tab {
     [tab markButtonAsUnselected];
 }
-
-
 
 //channel button protocol function
 //we adjust the frame of this button then shift everything else over
 -(void)adjustTabFramesToSuggestedSizes{
     NSUInteger originDiff = 0;
-    for(int i = 0; i < self.tabs.count; i++) {
-        id currentButton = self.tabs[i];
+    for(int i = 0; i < self.tabButtons.count; i++) {
+        id currentButton = self.tabButtons[i];
         CGFloat width = ([currentButton isKindOfClass:[ChannelButtons class]]) ? [(ChannelButtons *)currentButton suggestedWidth] : ((UIView *)currentButton).frame.size.width;
         
-        if(i == (self.tabs.count-1)) width = ((UIView*)currentButton).frame.size.width;
+        if(i == (self.tabButtons.count-1)) width = ((UIView*)currentButton).frame.size.width;
         
         ((UIView *)currentButton).frame = CGRectMake(originDiff, ((ChannelButtons *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
         [currentButton setNeedsDisplay];
@@ -192,11 +191,11 @@
 
 #pragma mark - Lazy Instantiation -
 
--(NSMutableArray*) tabs {
-	if (!_tabs) {
-		_tabs = [[NSMutableArray alloc] init];
+-(NSMutableArray*) tabButtons {
+	if (!_tabButtons) {
+		_tabButtons = [[NSMutableArray alloc] init];
 	}
-	return _tabs;
+	return _tabButtons;
 }
 
 

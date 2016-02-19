@@ -12,10 +12,14 @@
 
 #import "GTLVerbatmAppVideo.h"
 
+#import "Notifications.h"
+
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
 #import "POVPublisher.h"
+
+
 #import "Video_BackendObject.h"
 
 
@@ -33,10 +37,11 @@
     
     UIImage * thumbNail = [Video_BackendObject thumbnailImageForVideo:videoUrl atTime:0.f];
     [self.mediaPublisher  storeVideoFromURL:videoUrl withCompletionBlock:^(GTLVerbatmAppVideo * gtlVideo) {
-        //save the video to the GAE blobstore -- TODO Sierra (new)
+        //tell our publishing manager that a video is done saving
+        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_SUCCEEDED object:nil];
         NSString * blobStoreUrl = gtlVideo.blobKeyString;//set this with the url from the blobstore
         //in completion block of blobstore save
-        [self createAndSaveVideoWithBlobStoreUrl:blobStoreUrl videoIndex:videoIndex thumbnail:thumbNail andPageObject:pageObject];
+        [self createAndSaveParseVideoObjectWithBlobStoreUrl:blobStoreUrl videoIndex:videoIndex thumbnail:thumbNail andPageObject:pageObject];
     }];
 }
 
@@ -70,7 +75,7 @@
     return thumbnailImage;
 }
 
--(void)createAndSaveVideoWithBlobStoreUrl:(NSString *) blobStoreVideoUrl
+-(void)createAndSaveParseVideoObjectWithBlobStoreUrl:(NSString *) blobStoreVideoUrl
                                videoIndex:(NSInteger) videoIndex thumbnail:(UIImage *) thumbnail andPageObject:(PFObject *)pageObject{
     if(!self.mediaPublisher)self.mediaPublisher = [[POVPublisher alloc] init];
     

@@ -31,15 +31,16 @@
 -(instancetype) initWithFrame:(CGRect)frame andChannel: (NSString*) channel {
 	self = [super initWithFrame:frame];
 	if (self) {
-		[self setBackgroundColor:[UIColor colorWithWhite:0.f alpha:0.5f]];
-		[self addSubview: self.publishingOptions];
-		[self.publishingOptions addSubview:self.exitButton];
-		NSString* verbatmName = [@"VERBATM (Channel \"" stringByAppendingString:<#(nonnull NSString *)#> + channel + "\")";
-		[self.publishingOptions addSubview: [self createSocialMediaChoiceWithName: andOffset:<#(CGFloat)#> andImage:<#(NSString *)#> andAction:<#(SEL)#>]]
-		[self.publishingOptions addSubview: [self createSocialMediaChoiceWithName:@"FACEBOOK"
-																		andOffset:EXIT_BUTTON_HEIGHT
-																		 andImage:FACEBOOK_ICON
-																		andAction:@selector(facebookOptionPressed)]]
+		//NOT IN USE
+//		[self setBackgroundColor:[UIColor colorWithWhite:0.f alpha:0.5f]];
+//		[self addSubview: self.publishingOptions];
+//		[self.publishingOptions addSubview:self.exitButton];
+//		NSString* verbatmName = [@"VERBATM (Channel \"" stringByAppendingString:<#(nonnull NSString *)#> + channel + "\")";
+//		[self.publishingOptions addSubview: [self createSocialMediaChoiceWithName: andOffset:<#(CGFloat)#> andImage:<#(NSString *)#> andAction:<#(SEL)#>]]
+//		[self.publishingOptions addSubview: [self createSocialMediaChoiceWithName:@"FACEBOOK"
+//																		andOffset:EXIT_BUTTON_HEIGHT
+//																		 andImage:FACEBOOK_ICON
+//																		andAction:@selector(facebookOptionPressed)]]
 
 	}
 	return self;
@@ -105,11 +106,5 @@
 	return _exitButton;
 }
 
--(NSMutableArray*) socialMediaChoices {
-	if (!_socialMediaChoices) {
-		_socialMediaChoices = [[NSMutableArray alloc] init];
-	}
-	return _socialMediaChoices;
-}
 
 @end

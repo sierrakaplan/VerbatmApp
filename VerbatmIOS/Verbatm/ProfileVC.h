@@ -33,8 +33,10 @@
 
 @property (nonatomic) Channel * startChannel;//channel that should be presented first
 
+-(void) showPublishingProgress;
+
 -(void) offScreen;//told when it's off screen to stop videos
--(void)onScreen;
+-(void) onScreen;
 
 
 @end

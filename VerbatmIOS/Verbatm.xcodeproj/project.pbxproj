@@ -169,6 +169,7 @@
 		C74749911C2B1CB90047C66E /* ProfileInformationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C74749901C2B1CB90047C66E /* ProfileInformationBar.m */; };
 		C74E1D711C091F8F00ABD41D /* VideoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C74E1D701C091F8F00ABD41D /* VideoManager.m */; };
 		C7540F741C09A47F00DE1AA6 /* ChannelButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = C7540F731C09A47F00DE1AA6 /* ChannelButtons.m */; };
+		C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C755DB0B1C74619200136F6E /* PublishingProgressManager.m */; };
 		C75985F51B8553DF00FE77F7 /* InternetConnectionMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */; };
 		C75F155F1C2B4A1B0092912D /* Channel.m in Sources */ = {isa = PBXBuildFile; fileRef = C75F155E1C2B4A1B0092912D /* Channel.m */; };
 		C76172741C4C8B1300AB0D84 /* UserAndChannelListsTVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */; };
@@ -556,6 +557,8 @@
 		C74E1D701C091F8F00ABD41D /* VideoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoManager.m; sourceTree = "<group>"; };
 		C7540F721C09A47F00DE1AA6 /* ChannelButtons.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChannelButtons.h; sourceTree = "<group>"; };
 		C7540F731C09A47F00DE1AA6 /* ChannelButtons.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChannelButtons.m; sourceTree = "<group>"; };
+		C755DB0A1C74619200136F6E /* PublishingProgressManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PublishingProgressManager.h; sourceTree = "<group>"; };
+		C755DB0B1C74619200136F6E /* PublishingProgressManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PublishingProgressManager.m; sourceTree = "<group>"; };
 		C75985F31B8553DF00FE77F7 /* InternetConnectionMonitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InternetConnectionMonitor.h; sourceTree = "<group>"; };
 		C75985F41B8553DF00FE77F7 /* InternetConnectionMonitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InternetConnectionMonitor.m; sourceTree = "<group>"; };
 		C75985F61B85575900FE77F7 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
@@ -1517,6 +1520,8 @@
 				C7D596371C66DC3A00161136 /* FeedQueryManager.m */,
 				C7D596391C66E47100161136 /* Follow_BackendManager.h */,
 				C7D5963A1C66E47100161136 /* Follow_BackendManager.m */,
+				C755DB0A1C74619200136F6E /* PublishingProgressManager.h */,
+				C755DB0B1C74619200136F6E /* PublishingProgressManager.m */,
 			);
 			name = "Parse database files";
 			sourceTree = "<group>";
@@ -1919,6 +1924,7 @@
 				C7BF1AA81C57F5F500CEDE4B /* Photo_BackendObject.m in Sources */,
 				C7E65F6F1B92EB650042AD99 /* POVView.m in Sources */,
 				C777EEAD1AD288A3003E0633 /* ArticleListVC.m in Sources */,
+				C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */,
 				A5AA31BF1B9FCDDC00D8D20C /* GTLVerbatmAppImage.m in Sources */,
 				A5E85FA31B911DA900E148D0 /* GTLUtilities.m in Sources */,
 				A59C19721B9E1DFF00EBA60E /* POVLoadManager.m in Sources */,

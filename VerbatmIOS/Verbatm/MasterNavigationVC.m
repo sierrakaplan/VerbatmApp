@@ -16,7 +16,6 @@
 #import "Channel.h"
 #import "ChannelOrUsernameCV.h"
 
-
 #import "Durations.h"
 
 #import "FeedVC.h"
@@ -34,6 +33,7 @@
 #import "POVPublisher.h"
 #import "PreviewDisplayView.h"
 #import "ProfileVC.h"
+#import "PublishingProgressManager.h"
 
 #import "StoryboardVCIdentifiers.h"
 #import "SharePOVView.h"
@@ -289,9 +289,11 @@
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
 	if ([segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
 		// TODO: have variable set and go to profile or adk
-		
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
-        
+		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
+			[self.tabBarController setSelectedViewController:self.profileVC];
+			[self.profileVC showPublishingProgress];
+		}
         [self playContentOnSelectedViewController:YES];
 		[[Analytics getSharedInstance] endOfADKSession];
 	}

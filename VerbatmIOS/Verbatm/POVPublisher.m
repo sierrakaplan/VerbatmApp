@@ -98,6 +98,7 @@
 	}).then(^(NSString* servingURL) {
 		GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
 		gtlImage.servingUrl = servingURL;
+        
         block(gtlImage);
     });
 }

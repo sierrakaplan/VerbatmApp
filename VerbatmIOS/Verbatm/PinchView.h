@@ -59,7 +59,7 @@
 -(void)removeBorder;
 
 #pragma mark Should be overriden in subclasses
-
+//returns 1 because each PinchView holds one piece of media
 -(NSInteger) getTotalPiecesOfMedia;
 
 //array of @[UIImage*, NSString*, NSNumber /* with float value */]

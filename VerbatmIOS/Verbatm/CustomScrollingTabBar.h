@@ -24,5 +24,7 @@
 
 // array of NSString*
 -(void) displayTabs: (NSArray*) channels withStartChannel:(Channel *) channel isLoggedInUser:(BOOL) isLoggedInUser;
--(void)addNewChannelToList:(Channel *) channel;
+-(void) addNewChannelToList:(Channel *) channel;
+-(void) selectChannel: (Channel*) channel;
+
 @end

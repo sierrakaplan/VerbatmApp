@@ -34,7 +34,7 @@
 
 -(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels startChannel:(Channel *) startChannel andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser;
 
-
--(void)newChannelCreated:(Channel *) channel;
+-(void) selectChannel: (Channel*) channel;
+-(void)newChannelCreated: (Channel *) channel;
 
 @end
