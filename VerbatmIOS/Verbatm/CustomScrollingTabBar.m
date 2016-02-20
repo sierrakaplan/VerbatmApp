@@ -60,7 +60,8 @@
 -(void) displayTabs: (NSArray*) channels withStartChannel:(Channel *) startChannel isLoggedInUser:(BOOL) isLoggedInUser {
 	CGFloat xCoordinate = 0.f;
     NSInteger startChannelIndex = -1;
-	for(Channel * channel in channels) {
+	self.isLoggedInUser = isLoggedInUser;
+    for(Channel * channel in channels) {
 
         if(startChannel){
             if([startChannel.name isEqualToString:channel.name]){
@@ -80,7 +81,7 @@
 		xCoordinate += channelTitleButton.frame.size.width;
 	}
 
-    self.isLoggedInUser = isLoggedInUser;
+    
     if(isLoggedInUser) {
         CGFloat createChannelButtonWidth = (channels.count == 0) ? self.frame.size.width : INITIAL_BUTTON_WIDTH;
         
@@ -143,7 +144,7 @@
     //create channel button
     CGRect buttonFrame = CGRectMake(origin.x, origin.y, INITIAL_BUTTON_WIDTH, self.frame.size.height);
 
-    ChannelButtons * newButton = [[ChannelButtons alloc] initWithFrame:buttonFrame andChannel:channel];
+    ChannelButtons * newButton = [[ChannelButtons alloc] initWithFrame:buttonFrame andChannel:channel isLoggedInUser:self.isLoggedInUser];
     [newButton addTarget:self action:@selector(tabPressed:) forControlEvents:UIControlEventTouchUpInside];
     return newButton;
 }

@@ -14,7 +14,7 @@
 
 @interface ChannelButtons : UIButton
 
--(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel *) channel;
+-(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel *) channel isLoggedInUser:(BOOL) isLoggedInUser;
 
 @property (nonatomic, readonly) NSString * channelName;
 //offers a suggested width realtive to the sizes of the labels

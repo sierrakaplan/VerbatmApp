@@ -27,18 +27,8 @@
 @property (nonatomic) BOOL isFollowigProfileUser;//for cases when they are viewing another profile
 
 
-#define THREAD_BAR_BUTTON_FONT_SIZE 17.f
-
-#define SETTINGS_BUTTON_SIZE 25.f
-#define SETTINGS_BUTTON_WIDTH 100.f
 
 
-#define BUTTON_WALL_XOFFSET 10.f
-#define SETTINGS_ICON_NAME @"settingsIcon"
-#define BACK_BUTTON_ICON_NAME @"back_arrow"
-#define BAR_CONTENT_COLOR yellowColor
-#define FOLLOW_ICON_IMAGE_SELECTED  @"follow_user_image_selected"
-#define FOLLOW_ICON_IMAGE_UNSELECTED  @"follow_user_image_unselected"
 
 
 @end
@@ -84,8 +74,8 @@
 }
 
 -(void) createProfileHeaderWithUserName: (NSString*) userName {
-    CGFloat x_point = (BUTTON_WALL_XOFFSET*2) + SETTINGS_BUTTON_SIZE;
-    CGFloat width = self.frame.size.width - (BUTTON_WALL_XOFFSET*2) - (SETTINGS_BUTTON_SIZE*2);
+    CGFloat x_point = (CHANNEL_BUTTON_WALL_XOFFSET*2) + SETTINGS_BUTTON_SIZE;
+    CGFloat width = self.frame.size.width - (CHANNEL_BUTTON_WALL_XOFFSET*2) - (SETTINGS_BUTTON_SIZE*2);
     CGFloat height = self.frame.size.height;
     CGFloat y_point = self.center.y - (height/2.f);
     
@@ -104,7 +94,7 @@
 
     CGFloat height = SETTINGS_BUTTON_SIZE;
     CGFloat width = height;
-    CGFloat frame_x = self.frame.size.width - width - BUTTON_WALL_XOFFSET;
+    CGFloat frame_x = self.frame.size.width - width - CHANNEL_BUTTON_WALL_XOFFSET;
     CGFloat frame_y = self.center.y - (height/2.f);
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height );
@@ -128,7 +118,7 @@
     
     CGFloat height = SETTINGS_BUTTON_SIZE;
     CGFloat width = (height*436.f)/250.f;
-    CGFloat frame_x = self.frame.size.width - width - BUTTON_WALL_XOFFSET;
+    CGFloat frame_x = self.frame.size.width - width - CHANNEL_BUTTON_WALL_XOFFSET;
     CGFloat frame_y = self.center.y - (height/2.f);
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
@@ -147,7 +137,7 @@
     UIImage * settingsImage = [UIImage imageNamed:BACK_BUTTON_ICON_NAME];
     CGFloat height = SETTINGS_BUTTON_SIZE;
     CGFloat width = height;
-    CGFloat frame_x = BUTTON_WALL_XOFFSET;
+    CGFloat frame_x = CHANNEL_BUTTON_WALL_XOFFSET;
     CGFloat frame_y = self.center.y - (height/2.f);
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
@@ -169,6 +159,8 @@
 }
 
 -(void) followOrFollowersSelected {
+
+    
     UIImage * newbuttonImage;
     if(self.isFollowigProfileUser){
         newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
