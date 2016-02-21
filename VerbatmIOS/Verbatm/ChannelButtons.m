@@ -9,6 +9,7 @@
 
 #import "Channel.h"
 #import "ChannelButtons.h"
+#import "Follow_BackendManager.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
@@ -32,9 +33,9 @@
 @property (nonatomic, readwrite) Channel * currentChannel;
 
 @property (nonatomic) UIButton * followButton;
-@property (nonatomic) BOOL isFollowigProfileUser;//for cases when they are viewing another profile
+@property (nonatomic) BOOL isFollowigProfileUser;//for cases when they are viewing another profile and we're following it
+@property (nonatomic) BOOL isLoggedInUser;
 @property (nonatomic) BOOL buttonSelected;
-
 @end
 
 @implementation ChannelButtons
@@ -44,13 +45,15 @@
     self = [super initWithFrame:frame];
     
     if(self){
+        self.channelName = channel.name;
+        self.currentChannel = channel;
+        self.isLoggedInUser = isLoggedInUser;
         [self createNonSelectedTextAttributes];
         [self createSelectedTextAttributes];
         
         [self setLabelsFromChannel:channel];
         [self formatButtonUnSelected];
-        self.channelName = channel.name;
-        self.currentChannel = channel;
+        
     }
     return self;
 }
@@ -116,8 +119,20 @@
     //tell our parent view to adjust our size
     self.suggestedWidth = buttonWidth;
     
-    //to do -- we need to actually querry it and put this based on that
-    [self createFollowButton_AreWeFollowingCurrChannel:NO];
+    //TODO --uncomment
+    //if(!self.isLoggedInUser){
+        [self createFollowIcon];
+    //}
+}
+
+
+-(void)createFollowIcon{
+[Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^
+ (bool isFollowing) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+          [self createFollowButton_AreWeFollowingCurrChannel:isFollowing];
+      });
+ }];
 }
 
 //If it's my profile it's follower(s) and if it's someone else's profile

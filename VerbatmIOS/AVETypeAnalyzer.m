@@ -106,6 +106,8 @@
 
 -(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
     
+    
+    
     [Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photoObjects) {
         
         NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
@@ -115,18 +117,22 @@
             [loadImageDataPromises addObject: getImageDataPromise];
         }
         PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
-            NSMutableArray* uiImages = [[NSMutableArray alloc] init];
-            for (int i = 0; i < results.count; i++) {
-                NSData* imageData = results[i];
-                UIImage* uiImage = [UIImage imageWithData:imageData];
-                PFObject * photoBO = photoObjects[i];
-                
-                NSString * imageText =  [photoBO valueForKey:PHOTO_TEXT_KEY];
-                NSNumber * yoffset = [photoBO valueForKey:PHOTO_TEXT_YOFFSET_KEY];
-                
-                [uiImages addObject: @[uiImage, imageText, yoffset]];
-            }
-            block(uiImages);
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                NSMutableArray* uiImages = [[NSMutableArray alloc] init];
+                for (int i = 0; i < results.count; i++) {
+                    NSData* imageData = results[i];
+                    UIImage* uiImage = [UIImage imageWithData:imageData];
+                    PFObject * photoBO = photoObjects[i];
+                    
+                    NSString * imageText =  [photoBO valueForKey:PHOTO_TEXT_KEY];
+                    NSNumber * yoffset = [photoBO valueForKey:PHOTO_TEXT_YOFFSET_KEY];
+                    
+                    [uiImages addObject: @[uiImage, imageText, yoffset]];
+                }
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    block(uiImages);
+                });
+            });
         });
     }];
 }

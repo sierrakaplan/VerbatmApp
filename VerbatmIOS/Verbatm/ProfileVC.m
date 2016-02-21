@@ -24,8 +24,8 @@
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
 #import "POVLoadManager.h"
-//#import "PostListVC.h"
-#import "POVListScrollViewVC.h"
+#import "PostListVC.h"
+//#import "POVListScrollViewVC.h"
 
 #import "Post_BackendObject.h"
 #import "POVView.h"
@@ -41,7 +41,7 @@
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate, PublishingProgressProtocol>
 
-@property (strong, nonatomic) POVListScrollViewVC * postListVC;
+@property (strong, nonatomic) PostListVC * postListVC;
 
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
 @property (nonatomic) CGRect profileNavBarFrameOnScreen;
@@ -72,7 +72,8 @@
 	self.contentCoveringScreen = YES;
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-        [self createAndAddListVC];
+        //[self createAndAddListVC];
+        [self addPostListVC];
         [self createNavigationBar];
         [self addClearScreenGesture];
     }];
@@ -101,20 +102,35 @@
     if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
 
--(void) createAndAddListVC{
-    self.postListVC = [[POVListScrollViewVC alloc] init];
-    self.postListVC.listOwner = self.userOfProfile;
-    if(self.startChannel){
-        self.postListVC.channelForList = self.startChannel ;
-    }else{
-        self.postListVC.channelForList = [self.channels firstObject];
-    }
+//-(void) createAndAddListVC{
+//    self.postListVC = [[POVListScrollViewVC alloc] init];
+//    self.postListVC.listOwner = self.userOfProfile;
+//    if(self.startChannel){
+//        self.postListVC.channelForList = self.startChannel ;
+//    }else{
+//        self.postListVC.channelForList = [self.channels firstObject];
+//    }
+//    
+//    self.postListVC.listType = listChannel;
+//    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
+//    if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
+//    else [self.view addSubview:self.postListVC.view];
+//}
+
+
+
+-(void) addPostListVC {
+    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    [flowLayout setMinimumInteritemSpacing:0.3];
+    [flowLayout setMinimumLineSpacing:0.0f];
+    [flowLayout setItemSize:self.view.frame.size];
+    self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
     
-    self.postListVC.listType = listChannel;
-    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
-    else [self.view addSubview:self.postListVC.view];
+    else[self.view addSubview:self.postListVC.view];
 }
+
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
 

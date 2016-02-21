@@ -112,7 +112,9 @@
     [self setDelegateOnPhotoAVE: ave];
     CGRect frame = CGRectMake(0, [pageIndex integerValue] * self.mainScrollView.frame.size.height , self.mainScrollView.frame.size.width, self.mainScrollView.frame.size.height);
     ave.frame = frame;
-    [self.mainScrollView addSubview:ave];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.mainScrollView addSubview:ave];
+    });
     [self.pageAves setObject:ave forKey:pageIndex];
 }
 
@@ -376,11 +378,13 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.activityIndicator stopAnimating];
                 self.activityIndicator = nil;
-                if(pages.count > 1)[self addDownArrowButton];
-                //add bar at the bottom with page numbers etc
-               [self renderNextAve:ave withIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
-               [self setApproprioateScrollViewContentSize];
             });
+                
+            if(pages.count > 1)[self addDownArrowButton];
+            //add bar at the bottom with page numbers etc
+           [self renderNextAve:ave withIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
+           [self setApproprioateScrollViewContentSize];
+            
         }];
     }
 }

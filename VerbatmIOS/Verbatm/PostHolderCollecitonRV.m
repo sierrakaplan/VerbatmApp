@@ -30,10 +30,12 @@
 
 
 -(void)presentPOV:(POVView *)pov{
-    [self.ourCurrentPOV clearArticle];//make sure there is no other stuff
-    [self.ourCurrentPOV removeFromSuperview];
-    self.ourCurrentPOV = pov;
-    [self addSubview:self.ourCurrentPOV];
+    if(pov != self.ourCurrentPOV){
+        [self.ourCurrentPOV povOffScreen];
+        [self.ourCurrentPOV removeFromSuperview];
+        self.ourCurrentPOV = pov;
+        [self addSubview:self.ourCurrentPOV];
+    }
 }
 
 -(void)presentPost:(PFObject *) postObject{
