@@ -17,7 +17,7 @@
 @interface FeedQueryManager ()
 //how many posts have we gotten and presented so far
 @property (nonatomic) NSInteger postsDownloadedSoFar;
-#define POST_DOWNLOAD_MAX_SIZE 20
+#define POST_DOWNLOAD_MAX_SIZE 10
 
 @end
 
