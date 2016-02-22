@@ -45,6 +45,11 @@
 
 // mapping between NSNumber of type Integer and ArticleViewingExperience
 @property (strong, nonatomic) NSMutableDictionary * pageAves;
+
+//used to lazily instantiate pages when the view is about to presented
+//se save the page media here and then load and present the pages on demand
+@property (strong, nonatomic) NSMutableDictionary * pageAveMedia;
+
 @property (nonatomic) NSNumber* currentIndexOfPageLoading;
 
 @property (nonatomic) UIScrollView *mainScrollView;
@@ -67,6 +72,10 @@
 @property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
 
 @property (nonatomic) UIImageView * swipeUpAndDownInstruction;///tell user they can swipe up and down to navigate
+
+
+@property (nonatomic) NSMutableArray * mediaPageContent;//TODO
+
 
 
 #define DOWN_ARROW_WIDTH 30.f
@@ -374,19 +383,35 @@
 -(void) renderPOVFromPages:(NSArray *) pages{
     AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
     for (PFObject * parsePageObject in pages) {
-        [analyzer getAVEFromPage:parsePageObject withFrame:self.bounds andCompletionBlock:^(ArticleViewingExperience * ave) {
+        [analyzer getAVEFromPage:parsePageObject withFrame:self.bounds andCompletionBlock:^(NSArray * aveMedia) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.activityIndicator stopAnimating];
                 self.activityIndicator = nil;
             });
-                
-            if(pages.count > 1)[self addDownArrowButton];
-            //add bar at the bottom with page numbers etc
-           [self renderNextAve:ave withIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
-           [self setApproprioateScrollViewContentSize];
+            [self storeMedia:aveMedia forPageIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
+            
+          
             
         }];
     }
+}
+
+
+-(void)storeMedia:(NSArray *) media forPageIndex:(NSNumber*) pageIndex{
+    if(media){
+        [self.pageAveMedia setObject:media forKey:pageIndex];
+    }
+}
+
+-(void)presentMediaContent{
+    for(NSNumber * key in self.pageAveMedia){
+        NSArray * media = [self.pageAveMedia objectForKey:key];
+        ArticleViewingExperience * ave = [AVETypeAnalyzer getAVEFromPageMedia:media withFrame:self.bounds];
+        //add bar at the bottom with page numbers etc
+        [self renderNextAve:ave withIndex:key];
+        [self setApproprioateScrollViewContentSize];
+    }
+    [self.pageAveMedia removeAllObjects];
 }
 
 
@@ -394,6 +419,12 @@
 #pragma mark - Playing POV content -
 
 -(void) povOnScreen{
+    if(self.pageAveMedia.count > 0 &&
+       self.pageAves.count ==0){
+        //we lazily create out pages
+        [self presentMediaContent];
+    }
+    
     [self displayMediaOnCurrentAVE];
 }
 
@@ -463,6 +494,14 @@
 	return _pageAves;
 }
 
+
+
+-(NSMutableDictionary*) pageAveMedia {
+    if(!_pageAveMedia) {
+        _pageAveMedia = [[NSMutableDictionary alloc] init];
+    }
+    return _pageAveMedia;
+}
 -(UIScrollView*) mainScrollView {
 	if (!_mainScrollView) {
 		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];

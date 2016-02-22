@@ -66,24 +66,48 @@
     }
 }
 
--(void) getAVEFromPage: (PFObject *)page withFrame: (CGRect) frame andCompletionBlock:(void(^)(ArticleViewingExperience *))block {
+
+
++(ArticleViewingExperience *)getAVEFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame {
+    AveTypes type = [pageMedia[0] intValue];//convert nsnumber back to our type
+    if(type == AveTypePhoto) {
+            PhotoAVE *photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:pageMedia[1]];
+            photoAve.isPhotoVideoSubview = NO;
+        return photoAve;
+        
+    }else if (type == AveTypeVideo){
+        
+            return [[VideoAVE alloc] initWithFrame:frame andVideoArray:pageMedia[1]];
+            
+        
+        
+    }else if( type == AveTypePhotoVideo){
+                return [[PhotoVideoAVE alloc] initWithFrame:frame
+                                            andPhotos:pageMedia[1]
+                                            andVideos:pageMedia[2]];
+                
+       
+        
+    }
+    
+    //should never reach here
+    return nil;
+}
+
+
+-(void) getAVEFromPage: (PFObject *)page withFrame: (CGRect) frame andCompletionBlock:(void(^)(NSArray *))block {
     
     AveTypes type = [((NSNumber *)[page valueForKey:PAGE_AVE_TYPE]) intValue];
     
     if(type == AveTypePhoto) {
         [self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
             
-            PhotoAVE *photoAve = [[PhotoAVE alloc] initWithFrame:frame andPhotoArray:imagesAndText];
-            photoAve.isPhotoVideoSubview = NO;
-            
-            block(photoAve);
+             block(@[[NSNumber numberWithInt:type], imagesAndText]);
         }];
     }else if (type == AveTypeVideo){
         [self getVideosFromPage:page withCompletionBlock:^(NSMutableArray * videoTextObjects) {
             
-            VideoAVE *videoAve = [[VideoAVE alloc] initWithFrame:frame andVideoArray:videoTextObjects];
-            
-            block(videoAve);
+            block(@[[NSNumber numberWithInt:type], videoTextObjects]);
         }];
         
         
@@ -91,11 +115,7 @@
         
         [self getVideosFromPage:page withCompletionBlock:^(NSMutableArray * videoTextObjects) {
             [self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
-                PhotoVideoAVE *photoVideoAVE = [[PhotoVideoAVE alloc] initWithFrame:frame
-                                                                          andPhotos:imagesAndText
-                                                                          andVideos:videoTextObjects];
-                
-                block(photoVideoAVE);
+                block(@[[NSNumber numberWithInt:type], imagesAndText, videoTextObjects]);
             
             }];
         }];

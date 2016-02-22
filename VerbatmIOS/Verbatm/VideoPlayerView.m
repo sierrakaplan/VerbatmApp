@@ -209,7 +209,7 @@
 }
 
 -(void)playVideo{
-    if(self.player){
+    if(self.player && !self.isVideoPlaying){
         [self.player play];
         self.ourTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(resumeSession:) userInfo:nil repeats:YES];
         self.isVideoPlaying = YES;
