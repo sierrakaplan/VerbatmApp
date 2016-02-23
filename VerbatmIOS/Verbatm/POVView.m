@@ -390,8 +390,6 @@
             });
             [self storeMedia:aveMedia forPageIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
             
-          
-            
         }];
     }
 }
@@ -404,13 +402,14 @@
 }
 
 -(void)presentMediaContent{
-    for(NSNumber * key in self.pageAveMedia){
-        NSArray * media = [self.pageAveMedia objectForKey:key];
+    for(NSInteger key = 0; key < self.pageAveMedia.count; key++){
+        NSArray * media = [self.pageAveMedia objectForKey:[NSNumber numberWithInteger:key]];
         ArticleViewingExperience * ave = [AVETypeAnalyzer getAVEFromPageMedia:media withFrame:self.bounds];
         //add bar at the bottom with page numbers etc
-        [self renderNextAve:ave withIndex:key];
+        [self renderNextAve:ave withIndex:[NSNumber numberWithInteger:key]];
         [self setApproprioateScrollViewContentSize];
     }
+    
     [self.pageAveMedia removeAllObjects];
 }
 

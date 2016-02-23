@@ -32,7 +32,7 @@
 @property (nonatomic) PostHolderCollecitonRV * lastVisibleCell;
 
 #define POV_CELL_ID @"povCellId"
-
+#define NUM_POVS_TO_PREPARE_EARLY 1 //we prepare this number of POVVs after the current one for viewing
 @end
 
 @implementation PostListVC
@@ -41,6 +41,10 @@
     [self setDateSourceAndDelegate];
     [self registerClassForCustomCells];
     [self getPosts];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    
 }
 
 //register our custom cell class
@@ -65,8 +69,9 @@
 
 -(void)changeCurrentChannelTo:(Channel *) channel{
     if(![self.channelForList.name isEqualToString:channel.name]){
+        self.collectionView.contentOffset = CGPointMake(0, 0);
         self.channelForList = channel;
-        [self.presentedPostList removeAllObjects];
+        [self clearOldPosts];
         [self getPosts];
     }
 }
@@ -91,10 +96,14 @@
     }
 }
 
-
+-(void)clearOldPosts{
+    for(POVView * view in self.presentedPostList){
+        [view removeFromSuperview];
+    }
+    [self.presentedPostList removeAllObjects];
+}
 
 -(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
-    self.presentedPostList = [[NSMutableArray alloc] init];
     
     NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
     
@@ -129,6 +138,8 @@
     //when all pages are loaded then we reload our list
     PMKWhen(pageLoadPromises).then(^(id data){
         dispatch_async(dispatch_get_main_queue(), ^{
+            //prepare the first POV object
+            [(POVView *)self.presentedPostList.firstObject povOnScreen];
             [self.collectionView reloadData];
         });
     });
@@ -160,12 +171,15 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
     PostHolderCollecitonRV * nextCellToBePresented = (PostHolderCollecitonRV *) [collectionView dequeueReusableCellWithReuseIdentifier:POV_CELL_ID forIndexPath:indexPath];
     
+    if(indexPath.row < self.presentedPostList.count){
+    
         POVView * povToPresent = self.presentedPostList[indexPath.row];
         [nextCellToBePresented presentPOV:povToPresent];
     
         if(indexPath.row == [self getVisibileCellIndex]){
             [nextCellToBePresented onScreen];
         }
+    }
     
     return nextCellToBePresented;
 }
@@ -202,6 +216,15 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
    PostHolderCollecitonRV * visibleCell = [cellsVisible firstObject];
     //somehow turn other cells off
     [self turnOffCellsOffScreenWithVisibleCell:visibleCell];
+    [self prepareNextViewAfterVisibleIndex:[self.presentedPostList indexOfObject:visibleCell.ourCurrentPOV]];
+}
+
+
+-(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
+    for(NSInteger i = visibleIndex +1; (i < self.presentedPostList.count  && 1 < visibleIndex + (NUM_POVS_TO_PREPARE_EARLY +1)); i++){
+        POVView * view = self.presentedPostList[i];
+        [view presentMediaContent];
+    }
 }
 
 -(void)turnOffCellsOffScreenWithVisibleCell:(PostHolderCollecitonRV *)visibleCell{

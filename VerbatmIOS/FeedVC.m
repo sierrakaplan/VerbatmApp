@@ -89,6 +89,9 @@
     [flowLayout setMinimumLineSpacing:0.0f];
     [flowLayout setItemSize:self.view.frame.size];
     self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+    self.postListVC.listType = listFeed;
+    self.postListVC.isHomeProfileOrFeed = YES;
+    self.postListVC.listOwner = [PFUser currentUser];
     
     [self.postListContainerView setFrame:self.view.bounds];
     [self.postListContainerView addSubview:self.postListVC.view];

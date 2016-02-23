@@ -58,7 +58,7 @@
 
 //called by presenter of the POVView with access to the postinformation
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up;
-
+-(void)presentMediaContent;
 //moves the 
 -(void) shiftLikeShareBarDown:(BOOL) down;
 @end

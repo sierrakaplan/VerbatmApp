@@ -348,27 +348,31 @@
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
-    @autoreleasepool {
-        if (self.videoLoading) {
-            self.videoLoading = NO;
+            @autoreleasepool {
+                if (self.videoLoading) {
+                    self.videoLoading = NO;
+                }
+                
+                for (UIView* view in self.subviews) {
+                    [view removeFromSuperview];
+                }
+                 self.layer.sublayers = nil;
+                [self.playerLayer removeFromSuperlayer];
+                self.layer.sublayers = nil;
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                @autoreleasepool {
+                    [self removePlayerItemObserver];
+                    self.muteButton = nil;
+                    self.playerItem = nil;
+                    self.player = nil;
+                    self.playerLayer = nil;
+                    self.isVideoPlaying = NO;
+                    [self.ourTimer invalidate];
+                    self.ourTimer = nil;
+                }
+            });
         }
-        
-        for (UIView* view in self.subviews) {
-            [view removeFromSuperview];
-        }
-        
-        self.layer.sublayers = nil;
-        [self removePlayerItemObserver];
-        [self.playerLayer removeFromSuperlayer];
-        self.layer.sublayers = nil;
-        self.muteButton = nil;
-        self.playerItem = nil;
-        self.player = nil;
-        self.playerLayer = nil;
-        self.isVideoPlaying = NO;
-        [self.ourTimer invalidate];
-        self.ourTimer = nil;
-    }
+   
 }
 
 -(void) removePlayerItemObserver {
