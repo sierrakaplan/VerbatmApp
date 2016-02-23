@@ -51,6 +51,9 @@
 #define POST_NUM_SHARES_KEY @"NumberOfShares" //number of times this post has been shared
 #define POST_ORIGINAL_CREATOR_KEY @"OriginalCreator" //Original creator or post
 
+#define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
+
+
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"
 #define CHANNEL_NAME_KEY @"ChannelName"
 #define CHANNEL_NUM_POSTS_KEY @"NumPosts"

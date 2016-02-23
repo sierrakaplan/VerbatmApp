@@ -64,6 +64,8 @@
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
+#define PROFILE_BACKGROUND_IMAGE @"d1"
+
 @end
 
 @implementation ProfileVC
@@ -79,6 +81,7 @@
     }];
     self.view.clipsToBounds = YES;
 }
+
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{

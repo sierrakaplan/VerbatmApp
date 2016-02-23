@@ -24,7 +24,7 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
-    [self.activityIndicator startAnimating];
+    //[self.activityIndicator startAnimating];
     return self;
 }
 

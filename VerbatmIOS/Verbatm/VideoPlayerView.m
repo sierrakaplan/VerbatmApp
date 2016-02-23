@@ -85,11 +85,12 @@
     if (!self.videoLoading) {
         self.videoLoading = YES;
     }
-    
-    if (url) {
-        [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
-        [self initiateVideo];
-    }
+//      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            if (url) {
+                [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
+                [self initiateVideo];
+            }
+//      });
 }
 
 -(void) setPlayerItemFromPlayerItem:(AVPlayerItem*)playerItem {
@@ -231,15 +232,18 @@
     self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
     [self.playerLayer removeAllAnimations];
     
-    //right when we create the video we also add the mute button
-    [self formatMuteButton];
-    [self addSubview:self.muteButton];
-    // Add it to your view's sublayers
-    [self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
-    if(self.playAtEndOfAsynchronousSetup){
-        [self playVideo];
-        self.playAtEndOfAsynchronousSetup = NO;
-    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        //right when we create the video we also add the mute button
+        [self formatMuteButton];
+        [self addSubview:self.muteButton];
+        // Add it to your view's sublayers
+        [self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
+        if(self.playAtEndOfAsynchronousSetup){
+            [self playVideo];
+            self.playAtEndOfAsynchronousSetup = NO;
+        }
+    });
 }
 
 -(void)formatMuteButton {

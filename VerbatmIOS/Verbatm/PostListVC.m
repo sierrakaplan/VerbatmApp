@@ -32,7 +32,7 @@
 @property (nonatomic) PostHolderCollecitonRV * lastVisibleCell;
 
 #define POV_CELL_ID @"povCellId"
-#define NUM_POVS_TO_PREPARE_EARLY 1 //we prepare this number of POVVs after the current one for viewing
+#define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
 @end
 
 @implementation PostListVC
@@ -62,6 +62,31 @@
     self.collectionView.bounces = NO;
 }
 
+-(void)nothingToPresentHere {
+    if(self.noContentLabel){
+        return;//no need to make another one
+    }
+    
+    self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
+                                                                    NO_POVS_LABEL_WIDTH, self.view.frame.size.height)];
+    self.noContentLabel.text = @"There are no posts to present :(";
+    self.noContentLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
+    self.noContentLabel.textColor = [UIColor whiteColor];
+    self.noContentLabel.textAlignment = NSTextAlignmentCenter;
+    self.noContentLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.noContentLabel.numberOfLines = 3;
+    self.view.backgroundColor = [UIColor blackColor];
+    [self.view addSubview:self.noContentLabel];
+}
+
+-(void)removePresentLabel{
+    if(self.noContentLabel){
+        [self.noContentLabel removeFromSuperview];
+        self.noContentLabel = nil;
+    }
+}
+
+
 -(void)reloadCurrentChannel{
     [self.presentedPostList removeAllObjects];
     [self getPosts];
@@ -72,6 +97,7 @@
         self.collectionView.contentOffset = CGPointMake(0, 0);
         self.channelForList = channel;
         [self clearOldPosts];
+        [self removePresentLabel];
         [self getPosts];
     }
 }
@@ -82,16 +108,21 @@
         [self.feedQueryManager getMoreFeedPostsWithCompletionHandler:^(NSArray * posts) {
                 if(posts.count){
                     [self loadNewBackendPosts:posts];
-                    //[self removePresentLabel];
+                    [self removePresentLabel];
                 } else {
-                    //[self nothingToPresentHere];
+                    [self nothingToPresentHere];
                 }
         }];
         
     }else if (self.listType == listChannel) {
         [Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
             
-            [self loadNewBackendPosts:posts];
+            if(posts.count){
+                [self loadNewBackendPosts:posts];
+                [self removePresentLabel];
+            } else {
+                [self nothingToPresentHere];
+            }
         }];
     }
 }
@@ -168,7 +199,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
                   cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     
-    
     PostHolderCollecitonRV * nextCellToBePresented = (PostHolderCollecitonRV *) [collectionView dequeueReusableCellWithReuseIdentifier:POV_CELL_ID forIndexPath:indexPath];
     
     if(indexPath.row < self.presentedPostList.count){
@@ -178,6 +208,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
         if(indexPath.row == [self getVisibileCellIndex]){
             [nextCellToBePresented onScreen];
+            //for the first cell prepare the next cell so there
+            //is a smooth transition
+            if(indexPath.row ==0)[self prepareNextViewAfterVisibleIndex:indexPath.row];
         }
     }
     
@@ -249,6 +282,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if(!_presentedPostList)_presentedPostList = [[NSMutableArray alloc] init];
     return _presentedPostList;
 }
+
 
 
 

@@ -23,6 +23,7 @@
 #import "Page.h"
 #import "PagesLoadManager.h"
 #import "ParseBackendKeys.h"
+#import <PromiseKit/PromiseKit.h>
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -76,7 +77,7 @@
 
 @property (nonatomic) NSMutableArray * mediaPageContent;//TODO
 
-
+@property(nonatomic) BOOL povIsCurrentlyBeingShown;
 
 #define DOWN_ARROW_WIDTH 30.f
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
@@ -381,17 +382,32 @@
 }
 
 -(void) renderPOVFromPages:(NSArray *) pages{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.activityIndicator startAnimating];
+    });
     AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
+    
+    NSMutableArray * downloadPromises = [[NSMutableArray alloc] init];
+    
     for (PFObject * parsePageObject in pages) {
-        [analyzer getAVEFromPage:parsePageObject withFrame:self.bounds andCompletionBlock:^(NSArray * aveMedia) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.activityIndicator stopAnimating];
-                self.activityIndicator = nil;
-            });
-            [self storeMedia:aveMedia forPageIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
-            
-        }];
+        
+         AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+            [analyzer getAVEFromPage:parsePageObject withFrame:self.bounds andCompletionBlock:^(NSArray * aveMedia) {
+                [self storeMedia:aveMedia forPageIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
+                resolve(nil);
+            }];
+         }];
+        [downloadPromises addObject:promise];
     }
+    
+    PMKWhen(downloadPromises).then(^(id data){
+        if(self.povIsCurrentlyBeingShown){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentMediaContent];
+                [self povOnScreen];
+            });
+        }
+    });
 }
 
 
@@ -402,6 +418,10 @@
 }
 
 -(void)presentMediaContent{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.activityIndicator stopAnimating];
+        self.activityIndicator = nil;
+    });
     for(NSInteger key = 0; key < self.pageAveMedia.count; key++){
         NSArray * media = [self.pageAveMedia objectForKey:[NSNumber numberWithInteger:key]];
         ArticleViewingExperience * ave = [AVETypeAnalyzer getAVEFromPageMedia:media withFrame:self.bounds];
@@ -425,10 +445,12 @@
     }
     
     [self displayMediaOnCurrentAVE];
+    self.povIsCurrentlyBeingShown = YES;
 }
 
 -(void) povOffScreen{
     [self stopAllVideos];
+    self.povIsCurrentlyBeingShown = NO;
 }
 
 -(void)preparePOVToBePresented{
@@ -527,6 +549,18 @@
 		[_downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _downArrow;
+}
+
+-(UIActivityIndicatorView*) activityIndicator {
+    if (!_activityIndicator) {
+        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+        _activityIndicator.color = [UIColor grayColor];
+        _activityIndicator.hidesWhenStopped = YES;
+        _activityIndicator.center = CGPointMake(self.center.x, self.frame.size.height * 1.f/2.f);
+        [self addSubview:_activityIndicator];
+        [self bringSubviewToFront:_activityIndicator];
+    }
+    return _activityIndicator;
 }
 
 

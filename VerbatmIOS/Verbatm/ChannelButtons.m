@@ -120,9 +120,9 @@
     self.suggestedWidth = buttonWidth;
     
     //TODO --uncomment
-    //if(!self.isLoggedInUser){
+    if(!self.isLoggedInUser){
         [self createFollowIcon];
-    //}
+    }
 }
 
 
@@ -164,9 +164,12 @@
         if(self.isFollowigProfileUser){
             newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
             self.isFollowigProfileUser = NO;
+            [Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
         }else{
             newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
             self.isFollowigProfileUser = YES;
+            [Follow_BackendManager currentUserFollowChannel:self.currentChannel];
+            
         }
         [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
         [self.followButton setNeedsDisplay];
