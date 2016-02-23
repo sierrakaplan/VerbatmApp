@@ -12,7 +12,7 @@
 #import "PostHolderCollecitonRV.h"
 
 @interface PostHolderCollecitonRV ()
-    @property (nonatomic) POVView * ourCurrentPOV;
+    @property (nonatomic, readwrite) POVView * ourCurrentPOV;
     @property (nonatomic) PFObject * postBeingPresented;
     @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
@@ -24,7 +24,7 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
-    [self.activityIndicator startAnimating];
+    //[self.activityIndicator startAnimating];
     return self;
 }
 

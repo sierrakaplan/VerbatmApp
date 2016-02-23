@@ -64,6 +64,8 @@
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
+#define PROFILE_BACKGROUND_IMAGE @"d1"
+
 @end
 
 @implementation ProfileVC
@@ -79,6 +81,7 @@
     }];
     self.view.clipsToBounds = YES;
 }
+
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
@@ -126,14 +129,22 @@
     [flowLayout setMinimumLineSpacing:0.0f];
     [flowLayout setItemSize:self.view.frame.size];
     self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
-    
+    self.postListVC.listOwner = self.userOfProfile;
+    if(self.startChannel){
+        self.postListVC.channelForList = self.startChannel;
+    }else{
+        self.postListVC.channelForList = [self.channels firstObject];
+    }
+
+    self.postListVC.listType = listChannel;
+    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
     else[self.view addSubview:self.postListVC.view];
 }
 
 
 -(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-
+    
 }
 
 -(void) createNavigationBar {

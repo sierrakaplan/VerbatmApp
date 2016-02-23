@@ -23,6 +23,7 @@
 #import "Page.h"
 #import "PagesLoadManager.h"
 #import "ParseBackendKeys.h"
+#import <PromiseKit/PromiseKit.h>
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -45,6 +46,11 @@
 
 // mapping between NSNumber of type Integer and ArticleViewingExperience
 @property (strong, nonatomic) NSMutableDictionary * pageAves;
+
+//used to lazily instantiate pages when the view is about to presented
+//se save the page media here and then load and present the pages on demand
+@property (strong, nonatomic) NSMutableDictionary * pageAveMedia;
+
 @property (nonatomic) NSNumber* currentIndexOfPageLoading;
 
 @property (nonatomic) UIScrollView *mainScrollView;
@@ -68,6 +74,10 @@
 
 @property (nonatomic) UIImageView * swipeUpAndDownInstruction;///tell user they can swipe up and down to navigate
 
+
+@property (nonatomic) NSMutableArray * mediaPageContent;//TODO
+
+@property(nonatomic) BOOL povIsCurrentlyBeingShown;
 
 #define DOWN_ARROW_WIDTH 30.f
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
@@ -372,21 +382,55 @@
 }
 
 -(void) renderPOVFromPages:(NSArray *) pages{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.activityIndicator startAnimating];
+    });
     AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
+    
+    NSMutableArray * downloadPromises = [[NSMutableArray alloc] init];
+    
     for (PFObject * parsePageObject in pages) {
-        [analyzer getAVEFromPage:parsePageObject withFrame:self.bounds andCompletionBlock:^(ArticleViewingExperience * ave) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.activityIndicator stopAnimating];
-                self.activityIndicator = nil;
-            });
-                
-            if(pages.count > 1)[self addDownArrowButton];
-            //add bar at the bottom with page numbers etc
-           [self renderNextAve:ave withIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
-           [self setApproprioateScrollViewContentSize];
-            
-        }];
+        
+         AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+            [analyzer getAVEFromPage:parsePageObject withFrame:self.bounds andCompletionBlock:^(NSArray * aveMedia) {
+                [self storeMedia:aveMedia forPageIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
+                resolve(nil);
+            }];
+         }];
+        [downloadPromises addObject:promise];
     }
+    
+    PMKWhen(downloadPromises).then(^(id data){
+        if(self.povIsCurrentlyBeingShown){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentMediaContent];
+                [self povOnScreen];
+            });
+        }
+    });
+}
+
+
+-(void)storeMedia:(NSArray *) media forPageIndex:(NSNumber*) pageIndex{
+    if(media){
+        [self.pageAveMedia setObject:media forKey:pageIndex];
+    }
+}
+
+-(void)presentMediaContent{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.activityIndicator stopAnimating];
+        self.activityIndicator = nil;
+    });
+    for(NSInteger key = 0; key < self.pageAveMedia.count; key++){
+        NSArray * media = [self.pageAveMedia objectForKey:[NSNumber numberWithInteger:key]];
+        ArticleViewingExperience * ave = [AVETypeAnalyzer getAVEFromPageMedia:media withFrame:self.bounds];
+        //add bar at the bottom with page numbers etc
+        [self renderNextAve:ave withIndex:[NSNumber numberWithInteger:key]];
+        [self setApproprioateScrollViewContentSize];
+    }
+    
+    [self.pageAveMedia removeAllObjects];
 }
 
 
@@ -394,11 +438,19 @@
 #pragma mark - Playing POV content -
 
 -(void) povOnScreen{
+    if(self.pageAveMedia.count > 0 &&
+       self.pageAves.count ==0){
+        //we lazily create out pages
+        [self presentMediaContent];
+    }
+    
     [self displayMediaOnCurrentAVE];
+    self.povIsCurrentlyBeingShown = YES;
 }
 
 -(void) povOffScreen{
     [self stopAllVideos];
+    self.povIsCurrentlyBeingShown = NO;
 }
 
 -(void)preparePOVToBePresented{
@@ -463,6 +515,14 @@
 	return _pageAves;
 }
 
+
+
+-(NSMutableDictionary*) pageAveMedia {
+    if(!_pageAveMedia) {
+        _pageAveMedia = [[NSMutableDictionary alloc] init];
+    }
+    return _pageAveMedia;
+}
 -(UIScrollView*) mainScrollView {
 	if (!_mainScrollView) {
 		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
@@ -489,6 +549,18 @@
 		[_downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _downArrow;
+}
+
+-(UIActivityIndicatorView*) activityIndicator {
+    if (!_activityIndicator) {
+        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+        _activityIndicator.color = [UIColor grayColor];
+        _activityIndicator.hidesWhenStopped = YES;
+        _activityIndicator.center = CGPointMake(self.center.x, self.frame.size.height * 1.f/2.f);
+        [self addSubview:_activityIndicator];
+        [self bringSubviewToFront:_activityIndicator];
+    }
+    return _activityIndicator;
 }
 
 
