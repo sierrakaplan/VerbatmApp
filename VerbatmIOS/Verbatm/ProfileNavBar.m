@@ -11,6 +11,7 @@
 #import "CustomScrollingTabBar.h"
 #import "CustomNavigationBar.h"
 #import "Channel.h"
+#import "Channel_BackendObject.h"
 
 #import "Durations.h"
 
@@ -18,6 +19,8 @@
 #import "Follow_BackendManager.h"
 
 #import "Icons.h"
+
+#import "Notifications.h"
 
 #import "ProfileNavBar.h"
 #import "ProfileInformationBar.h"
@@ -62,10 +65,26 @@
         [self createArrowExtesion];
         [self createPanGesture];
         [self createTapGesture];
+        [self registerForNotifications];
     }
     return self;
 }
 
+-(void)registerForNotifications{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(loginSucceeded:)
+                                                 name:NOTIFICATION_USER_LOGIN_SUCCEEDED
+                                               object:nil];
+}
+-(void) loginSucceeded: (NSNotification*) notification {
+    [self.threadNavScrollView removeFromSuperview];
+    self.threadNavScrollView = nil;
+    [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.threadNavScrollView displayTabs:channels withStartChannel:nil isLoggedInUser:YES];
+        });
+    }];
+}
 
 -(void)newChannelCreated:(Channel *)channel{
     if(channel){
