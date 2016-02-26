@@ -11,16 +11,11 @@
 
 
 #define USER_USER_NAME_KEY @"VerbatmName" //different from the username which is used by fb on parse
-#define USER_NUMBER_OF_FOLLOWERS @"Followers" //people that follow this user
-#define USER_NUMBER_OF_FOLLOWING @"Following" //people this user is following
 #define USER_RELATION_CHANNELS_FOLLOWING @"ChannelsFollowing"
-
 
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table
 #define FOLLOW_USER_KEY @"UserFollowing"//the user doing the following
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
-
-
 
 #define PHOTO_PFCLASS_KEY @"PhotoClass"
 #define PHOTO_TEXT_KEY @"PhotoText"
@@ -51,9 +46,11 @@
 #define POST_NUM_SHARES_KEY @"NumberOfShares" //number of times this post has been shared
 #define POST_ORIGINAL_CREATOR_KEY @"OriginalCreator" //Original creator or post
 
+#define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
+
+
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"
 #define CHANNEL_NAME_KEY @"ChannelName"
 #define CHANNEL_NUM_POSTS_KEY @"NumPosts"
-#define CHANNEL_NUM_FOLLOWERS_KEY @"NumFollowers"
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
 #endif /* ParseBackendKeys_h */

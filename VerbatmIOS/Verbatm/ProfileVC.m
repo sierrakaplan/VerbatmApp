@@ -24,8 +24,8 @@
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
 #import "POVLoadManager.h"
-//#import "PostListVC.h"
-#import "POVListScrollViewVC.h"
+#import "PostListVC.h"
+//#import "POVListScrollViewVC.h"
 
 #import "Post_BackendObject.h"
 #import "POVView.h"
@@ -41,7 +41,7 @@
 
 @interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate, PublishingProgressProtocol>
 
-@property (strong, nonatomic) POVListScrollViewVC * postListVC;
+@property (strong, nonatomic) PostListVC * postListVC;
 
 @property (nonatomic, strong) ProfileNavBar* profileNavBar;
 @property (nonatomic) CGRect profileNavBarFrameOnScreen;
@@ -64,6 +64,8 @@
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
+#define PROFILE_BACKGROUND_IMAGE @"d1"
+
 @end
 
 @implementation ProfileVC
@@ -72,7 +74,8 @@
 	self.contentCoveringScreen = YES;
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-        [self createAndAddListVC];
+        //[self createAndAddListVC];
+        [self addPostListVC];
         [self createNavigationBar];
         [self addClearScreenGesture];
     }];
@@ -101,23 +104,46 @@
     if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
 
--(void) createAndAddListVC{
-    self.postListVC = [[POVListScrollViewVC alloc] init];
+//-(void) createAndAddListVC{
+//    self.postListVC = [[POVListScrollViewVC alloc] init];
+//    self.postListVC.listOwner = self.userOfProfile;
+//    if(self.startChannel){
+//        self.postListVC.channelForList = self.startChannel ;
+//    }else{
+//        self.postListVC.channelForList = [self.channels firstObject];
+//    }
+//    
+//    self.postListVC.listType = listChannel;
+//    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
+//    if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
+//    else [self.view addSubview:self.postListVC.view];
+//}
+
+
+
+-(void) addPostListVC {
+    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    [flowLayout setMinimumInteritemSpacing:0.3];
+    [flowLayout setMinimumLineSpacing:0.0f];
+    [flowLayout setItemSize:self.view.frame.size];
+    self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
     self.postListVC.listOwner = self.userOfProfile;
     if(self.startChannel){
-        self.postListVC.channelForList = self.startChannel ;
+        self.postListVC.channelForList = self.startChannel;
     }else{
         self.postListVC.channelForList = [self.channels firstObject];
     }
-    
+
     self.postListVC.listType = listChannel;
     self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
-    else [self.view addSubview:self.postListVC.view];
+    else[self.view addSubview:self.postListVC.view];
 }
 
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
 
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    
 }
 
 -(void) createNavigationBar {
@@ -416,10 +442,13 @@
 -(UIView*) publishingProgressView {
 	if (!_publishingProgressView) {
 		_publishingProgressView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.profileNavBar.frame.size.height,
-																		   self.view.frame.size.width, 10.f)];
+																		   self.view.frame.size.width, 20.f)];
 		[_publishingProgressView setBackgroundColor:[UIColor blackColor]];
 		self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-		[self.progressBar setFrame:CGRectMake(5.f, 5.f, self.view.frame.size.width - 10.f, self.progressBar.frame.size.height)];
+		[self.progressBar setTrackTintColor:[UIColor grayColor]];
+		[self.progressBar setFrame:CGRectMake(15.f, 15.f, self.view.frame.size.width - 30.f, self.progressBar.frame.size.height)];
+		[self.progressBar setTransform:CGAffineTransformMakeScale(1.0, 3.0)];
+		[self.progressBar.layer setCornerRadius:10.f];
 		if ([self.progressBar respondsToSelector:@selector(setObservedProgress:)]) {
 			[self.progressBar setObservedProgress: self.publishingProgress];
 		} else {

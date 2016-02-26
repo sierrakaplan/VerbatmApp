@@ -9,43 +9,51 @@
 
 #import "Channel.h"
 #import "ChannelButtons.h"
+#import "Follow_BackendManager.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
 
 @interface ChannelButtons ()
-@property (nonatomic,strong) UILabel * channelNameLabel;
-@property (nonatomic, strong) UILabel * numberOfFollowersLabel;
+@property (nonatomic,strong) UILabel *channelNameLabel;
+@property (nonatomic, strong) UILabel *numberOfFollowersLabel;
 
-@property (strong, nonatomic) NSDictionary* nonSelectedFollowersTabTitleAttributes;
-@property (strong, nonatomic) NSDictionary* nonSelectedNumberOfFollowersTitleAttributes;
-@property (strong, nonatomic) NSDictionary* nonSelectedChannelNameTitleAttributes;
+@property (strong, nonatomic) NSDictionary *nonSelectedFollowersTabTitleAttributes;
+@property (strong, nonatomic) NSDictionary *nonSelectedNumberOfFollowersTitleAttributes;
+@property (strong, nonatomic) NSDictionary *nonSelectedChannelNameTitleAttributes;
 
-@property (strong, nonatomic) NSDictionary* selectedFollowersTabTitleAttributes;
-@property (strong, nonatomic) NSDictionary* selectedNumberOfFollowersTitleAttributes;
-@property (strong, nonatomic) NSDictionary* selectedChannelNameTitleAttributes;
+@property (strong, nonatomic) NSDictionary *selectedFollowersTabTitleAttributes;
+@property (strong, nonatomic) NSDictionary *selectedNumberOfFollowersTitleAttributes;
+@property (strong, nonatomic) NSDictionary *selectedChannelNameTitleAttributes;
 
-@property (nonatomic, readwrite) NSString * channelName;
+@property (nonatomic, readwrite) NSString *channelName;
 
 @property (nonatomic, readwrite) CGFloat suggestedWidth;
 
-@property (nonatomic, readwrite) Channel * currentChannel;
+@property (nonatomic, readwrite) Channel *currentChannel;
+
+@property (nonatomic) UIButton *followButton;
+@property (nonatomic) BOOL isFollowigProfileUser;
+@property (nonatomic) BOOL isLoggedInUser;
+@property (nonatomic) BOOL buttonSelected;
 @end
 
 @implementation ChannelButtons
 
--(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel *) channel{
-    
+-(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel *) channel isLoggedInUser:(BOOL) isLoggedInUser {
+
     self = [super initWithFrame:frame];
     
     if(self){
+        self.channelName = channel.name;
+        self.currentChannel = channel;
+        self.isLoggedInUser = isLoggedInUser;
         [self createNonSelectedTextAttributes];
         [self createSelectedTextAttributes];
         
         [self setLabelsFromChannel:channel];
         [self formatButtonUnSelected];
-        self.channelName = channel.name;
-        self.currentChannel = channel;
+        
     }
     return self;
 }
@@ -78,29 +86,100 @@
     self.numberOfFollowersLabel = [self getChannelFollowersLabel:channel origin:numFollowersOrigin followersTextAttribute:self.nonSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.nonSelectedNumberOfFollowersTitleAttributes];
     
     
-    CGFloat buttonWidth = TAB_BUTTON_PADDING + ((self.numberOfFollowersLabel.frame.size.width >  self.channelNameLabel.frame.size.width) ?
+    CGFloat buttonWidth = (TAB_BUTTON_PADDING * 3.f) + FOLLOW_BUTTON_WIDTH +  ((self.numberOfFollowersLabel.frame.size.width >  self.channelNameLabel.frame.size.width) ?
                                                 self.numberOfFollowersLabel.frame.size.width :  self.channelNameLabel.frame.size.width);
     
     
     //adjust label frame sizes to be the same with some padding
-     self.channelNameLabel.frame = CGRectMake(buttonWidth/2.f -
-                                              self.channelNameLabel.frame.size.width/2.f,
+     self.channelNameLabel.frame = CGRectMake(TAB_BUTTON_PADDING,
                                               self.channelNameLabel.frame.origin.y,
                                               self.channelNameLabel.frame.size.width,
                                               self.channelNameLabel.frame.size.height);
     
     
-    self.numberOfFollowersLabel.frame = CGRectMake(buttonWidth/2.f -
-                                                   self.numberOfFollowersLabel.frame.size.width/2.f,
+    
+    
+    CGFloat numFollowersLabelX;
+    if(self.numberOfFollowersLabel.frame.size.width > self.channelNameLabel.frame.size.width){
+        numFollowersLabelX = TAB_BUTTON_PADDING;
+    }else{
+        numFollowersLabelX = self.channelNameLabel.center.x - (self.numberOfFollowersLabel.frame.size.width/2.f);
+    }
+    
+    
+    
+    self.numberOfFollowersLabel.frame = CGRectMake(numFollowersLabelX,
                                                    self.numberOfFollowersLabel.frame.origin.y,
                                                    self.numberOfFollowersLabel.frame.size.width,
                                                    self.numberOfFollowersLabel.frame.size.height);
     
     [self addSubview: self.channelNameLabel];
-    [self addSubview:self.numberOfFollowersLabel];
+    [self addSubview: self.numberOfFollowersLabel];
     
     //tell our parent view to adjust our size
     self.suggestedWidth = buttonWidth;
+    
+    //TODO --uncomment
+    if(!self.isLoggedInUser){
+        [self createFollowIcon];
+    }
+}
+
+
+-(void)createFollowIcon{
+[Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^
+ (bool isFollowing) {
+      dispatch_async(dispatch_get_main_queue(), ^{
+          [self createFollowButton_AreWeFollowingCurrChannel:isFollowing];
+      });
+ }];
+}
+
+//If it's my profile it's follower(s) and if it's someone else's profile
+//it's follow
+-(void) createFollowButton_AreWeFollowingCurrChannel:(BOOL) areFollowing{
+    if(self.followButton){
+        [self.followButton removeFromSuperview];
+        self.followButton = nil;
+    }
+    
+    CGFloat height = FOLLOW_BUTTON_HEIGHT;
+    CGFloat width = FOLLOW_BUTTON_WIDTH;
+    CGFloat frame_x = self.suggestedWidth - width - (TAB_BUTTON_PADDING/2.f);
+    CGFloat frame_y = self.center.y - (height/2.f);
+    
+    CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
+    
+    UIImage * buttonImage = [UIImage imageNamed:((areFollowing) ? FOLLOW_ICON_IMAGE_SELECTED : FOLLOW_ICON_IMAGE_UNSELECTED)];
+    self.isFollowigProfileUser = areFollowing;
+    self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
+    [self.followButton setImage:buttonImage forState:UIControlStateNormal];
+    [self.followButton addTarget:self action:@selector(followOrFollowersSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.followButton];
+}
+
+-(void) followOrFollowersSelected {
+    
+    if(self.buttonSelected){//you can only follow a channel if you're on it
+        UIImage * newbuttonImage;
+        if(self.isFollowigProfileUser){
+            newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
+            self.isFollowigProfileUser = NO;
+            [Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
+        }else{
+            newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
+            self.isFollowigProfileUser = YES;
+            [Follow_BackendManager currentUserFollowChannel:self.currentChannel];
+            
+        }
+        [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
+        [self.followButton setNeedsDisplay];
+        
+        //[self.delegate followButtonSelectedShouldFollowUser: self.isFollowigProfileUser]; TODO
+    }else{
+        //since the channel isn't selected then we select it
+        [self sendActionsForControlEvents:UIControlEventTouchUpInside];
+    }
 }
 
 
@@ -120,15 +199,16 @@
     return nameLabel;
 }
 
--(UILabel *) getChannelFollowersLabel:(Channel *) channel origin:(CGPoint) origin followersTextAttribute:(NSDictionary *) followersTextAttribute andNumberOfFollowersAttribute:(NSDictionary *) numberOfFollowersAttribute{
+-(UILabel *) getChannelFollowersLabel:(Channel *) channel origin:(CGPoint) origin
+			   followersTextAttribute:(NSDictionary *) followersTextAttribute
+		andNumberOfFollowersAttribute:(NSDictionary *) numberOfFollowersAttribute {
     
     //create bolded number
-    NSString * numberOfFollowers = [channel.numberOfFollowers stringValue];
-    
-    
+    NSString * numberOfFollowers = @"0";
     
     NSMutableAttributedString * numberOfFollowersAttributed = [[NSMutableAttributedString alloc] initWithString:numberOfFollowers attributes:numberOfFollowersAttribute];
     NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:@" Follower(s)" attributes:followersTextAttribute];
+
     
     //create frame for label
     CGSize textSize = [[numberOfFollowers stringByAppendingString:@" Follower(s)"] sizeWithAttributes:numberOfFollowersAttribute];
@@ -138,16 +218,24 @@
     
     CGRect labelFrame = CGRectMake(origin.x, origin.y, textSize.width, height);
     
-    
     UILabel * followersLabel = [[UILabel alloc] initWithFrame:labelFrame];
     [numberOfFollowersAttributed appendAttributedString:followersText];
     [followersLabel setAttributedText:numberOfFollowersAttributed];
-    
-    return  followersLabel;
+
+	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
+		[self changeNumFollowersLabelForChannel: channel toNumber:numFollowers];
+	}];
+
+    return followersLabel;
 }
 
-
-
+- (void) changeNumFollowersLabelForChannel:(Channel *) channel toNumber: (NSNumber*) numFollowers {
+	NSMutableAttributedString *currentFollowersLabelText = [[NSMutableAttributedString alloc]
+															initWithAttributedString: self.numberOfFollowersLabel.attributedText];
+	NSString *numberOfFollowers = [numFollowers stringValue];
+	[currentFollowersLabelText.mutableString setString:[numberOfFollowers stringByAppendingString:@" Follower(s)"]];
+	[self.numberOfFollowersLabel setAttributedText: currentFollowersLabelText];
+}
 
 
 -(void)createNonSelectedTextAttributes{
@@ -187,36 +275,37 @@
 
 
 -(void)markButtonAsSelected{
-    UILabel * followersInfoLabel = [self getChannelFollowersLabel:self.currentChannel origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.selectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.selectedNumberOfFollowersTitleAttributes];
+//    UILabel * followersInfoLabel = [self getChannelFollowersLabel:self.currentChannel origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.selectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.selectedNumberOfFollowersTitleAttributes];
     UILabel * channelNameLabel = [self getChannelNameLabel:self.currentChannel withOrigin:self.channelNameLabel.frame.origin andAttributes:self.selectedChannelNameTitleAttributes];
-    
+
     //swap labels
-    
-    [self.numberOfFollowersLabel removeFromSuperview];
-    self.numberOfFollowersLabel = followersInfoLabel;
-    [self addSubview:self.numberOfFollowersLabel];
-    
+//    [self.numberOfFollowersLabel removeFromSuperview];
+//    self.numberOfFollowersLabel = followersInfoLabel;
+//    [self addSubview:self.numberOfFollowersLabel];
+
     [self.channelNameLabel removeFromSuperview];
     self.channelNameLabel = channelNameLabel;
     [self addSubview:self.channelNameLabel];
     
     [self formatButtonSelected];
+    self.buttonSelected = YES;
 }
 
 -(void)markButtonAsUnselected{
-   UILabel * followersInfoLabel = [self getChannelFollowersLabel:self.currentChannel origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.nonSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.nonSelectedNumberOfFollowersTitleAttributes];
+//   UILabel * followersInfoLabel = [self getChannelFollowersLabel:self.currentChannel origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.nonSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.nonSelectedNumberOfFollowersTitleAttributes];
     UILabel * channelNameLabel = [self getChannelNameLabel:self.currentChannel withOrigin:self.channelNameLabel.frame.origin andAttributes:self.nonSelectedChannelNameTitleAttributes];
     
     //swap labels
-    [self.numberOfFollowersLabel removeFromSuperview];
-    self.numberOfFollowersLabel = followersInfoLabel;
-    [self addSubview:self.numberOfFollowersLabel];
-    
+//    [self.numberOfFollowersLabel removeFromSuperview];
+//    self.numberOfFollowersLabel = followersInfoLabel;
+//    [self addSubview:self.numberOfFollowersLabel];
+
     [self.channelNameLabel removeFromSuperview];
     self.channelNameLabel = channelNameLabel;
     [self addSubview:self.channelNameLabel];
     
     [self formatButtonUnSelected];
+    self.buttonSelected = NO;
 }
 
 

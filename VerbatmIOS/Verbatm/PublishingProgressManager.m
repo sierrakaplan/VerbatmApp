@@ -11,6 +11,8 @@
 #import "PublishingProgressManager.h"
 #import "Notifications.h"
 #import "Channel_BackendObject.h"
+#import "ParseBackendKeys.h"
+
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -24,6 +26,10 @@
 @property (nonatomic) Channel_BackendObject * channelManager;
 @property (nonatomic, readwrite) Channel* currentPublishingChannel;
 @property (nonatomic, readwrite) NSProgress * progressAccountant;
+@property (nonatomic) PFObject * currentParsePostObject;
+
+#define INITIAL_PROGRESS_UNITS 3
+
 @end
 
 @implementation PublishingProgressManager
@@ -40,7 +46,7 @@
 }
 
 -(void)countMediaContentFromPinchViews:(NSArray *)pinchViews{
-    CGFloat totalProgressUnits = 0.f;
+    CGFloat totalProgressUnits = INITIAL_PROGRESS_UNITS;
     for(PinchView * pv in pinchViews){
         if([pv isKindOfClass:[CollectionPinchView class]]){
             totalProgressUnits+= [(CollectionPinchView *)pv getNumPinchViews];
@@ -49,6 +55,7 @@
         }
     }
     self.progressAccountant = [NSProgress progressWithTotalUnitCount: totalProgressUnits];
+	self.progressAccountant.completedUnitCount = INITIAL_PROGRESS_UNITS;
 }
 
 -(void)savingMediaFailed{
@@ -66,7 +73,11 @@
     
     self.channelManager = [[Channel_BackendObject alloc] init];
 	[self countMediaContentFromPinchViews:pinchViews];
-	Channel* newChannel = [self.channelManager createPostFromPinchViews:pinchViews toChannel:channel];
+	Channel* newChannel = [self.channelManager createPostFromPinchViews:pinchViews toChannel:channel withCompletionBlock:^(PFObject * parsePostObject) {
+        
+        self.currentParsePostObject = parsePostObject;
+        
+    }];
     if(channel.parseChannelObject){
 		self.currentPublishingChannel = channel;
     } else {
@@ -93,9 +104,17 @@
 -(void)mediaHasSaved:(NSNotification *) notification {
     self.progressAccountant.completedUnitCount ++;
 	if (self.progressAccountant.completedUnitCount == self.progressAccountant.totalUnitCount) {
-		[self.delegate publishingComplete];
-		self.currentPublishingChannel = NULL;
-		self.currentlyPublishing = NO;
+        if(self.currentParsePostObject) {
+            [self.currentParsePostObject setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
+            [self.currentParsePostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+                if(succeeded){
+                    [self.delegate publishingComplete];
+                    self.currentPublishingChannel = NULL;
+                    self.currentParsePostObject = nil;
+                    self.currentlyPublishing = NO;
+                }
+            }];
+        }
 	}
 }
 

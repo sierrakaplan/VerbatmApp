@@ -155,4 +155,11 @@
 #define CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED [UIColor colorWithWhite:0.f alpha:0.5]
 #define CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED [UIColor colorWithWhite:1.f alpha:0.8]
 
+
+
+#define SETTINGS_ICON_NAME @"settingsIcon"
+#define BACK_BUTTON_ICON_NAME @"back_arrow"
+#define BAR_CONTENT_COLOR yellowColor
+#define FOLLOW_ICON_IMAGE_SELECTED  @"follow_user_image_selected"
+#define FOLLOW_ICON_IMAGE_UNSELECTED  @"follow_user_image_unselected"
 #endif /* Styles_h */

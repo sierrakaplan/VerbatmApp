@@ -46,17 +46,20 @@
 -(instancetype) initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList {
 	self = [super initWithFrame:frame];
 	if (self) {
-        
-		self.inPreviewMode = NO;
-		[self.videoPlayer repeatVideoOnEnd:YES];
-        [self playVideosFromArray:videoAndTextList];
-        
-        NSArray * firstVideoObject = [videoAndTextList firstObject];
-        
-        if(firstVideoObject.count >= 4){
-            //this means there's a thumbnail
-            [self createVideoThumbnailView:firstVideoObject[3]];
+        if (videoAndTextList.count) {//protecting from failed uploads being downloaded
+            self.inPreviewMode = NO;
+            [self.videoPlayer repeatVideoOnEnd:YES];
+            [self playVideosFromArray:videoAndTextList];
+            
+            NSArray * firstVideoObject = [videoAndTextList firstObject];
+            
+            if(firstVideoObject.count >= 4){
+                //this means there's a thumbnail
+                [self createVideoThumbnailView:firstVideoObject[3]];
+            }
         }
+        
+		
     }
     return self;
 }
@@ -107,6 +110,7 @@
 //        NSString* text = videoWithText[1];
 //        NSNumber* textYPos = videoWithText[2];
     }
+    
     [self prepareVideos:videoList];
     self.hasBeenSetUp = NO;
 }
@@ -135,9 +139,7 @@
 		return;
 	}
     self.videoList = videoList;
-    
-	//[self.videoPlayer playVideo];
-}
+ }
 
 -(void)prepareVideos_synchronous:(NSArray*)videoList {
     if (!videoList.count) return;

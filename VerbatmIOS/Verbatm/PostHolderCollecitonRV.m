@@ -12,7 +12,7 @@
 #import "PostHolderCollecitonRV.h"
 
 @interface PostHolderCollecitonRV ()
-    @property (nonatomic) POVView * ourCurrentPOV;
+    @property (nonatomic, readwrite) POVView * ourCurrentPOV;
     @property (nonatomic) PFObject * postBeingPresented;
     @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
@@ -24,16 +24,18 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
-    [self.activityIndicator startAnimating];
+    //[self.activityIndicator startAnimating];
     return self;
 }
 
 
 -(void)presentPOV:(POVView *)pov{
-    [self.ourCurrentPOV clearArticle];//make sure there is no other stuff
-    [self.ourCurrentPOV removeFromSuperview];
-    self.ourCurrentPOV = pov;
-    [self addSubview:self.ourCurrentPOV];
+    if(pov != self.ourCurrentPOV){
+        [self.ourCurrentPOV povOffScreen];
+        [self.ourCurrentPOV removeFromSuperview];
+        self.ourCurrentPOV = pov;
+        [self addSubview:self.ourCurrentPOV];
+    }
 }
 
 -(void)presentPost:(PFObject *) postObject{

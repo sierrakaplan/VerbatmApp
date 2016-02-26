@@ -15,7 +15,7 @@
 
 @interface Post_BackendObject : NSObject
 
--(void) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel;
+-(PFObject * ) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel;
 
 +(void) getPostsInChannel:(Channel *) channel withCompletionBlock:(void(^)(NSArray *))block;
 

@@ -17,7 +17,7 @@
 @interface FeedQueryManager ()
 //how many posts have we gotten and presented so far
 @property (nonatomic) NSInteger postsDownloadedSoFar;
-#define POST_DOWNLOAD_MAX_SIZE 20
+#define POST_DOWNLOAD_MAX_SIZE 10
 
 @end
 
@@ -55,6 +55,8 @@
              
              
              [postQuery whereKey:POST_CHANNEL_KEY containedIn:channelsWeFollow];
+             //only get posts that have actually been fully published
+             [postQuery whereKey:POST_COMPLETED_SAVING equalTo:[NSNumber numberWithBool:true]];
 //             for(PFObject * channel in objects){
 //                 [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel];
 //             }

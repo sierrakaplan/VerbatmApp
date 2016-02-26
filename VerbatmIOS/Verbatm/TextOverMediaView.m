@@ -27,14 +27,15 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage*) image andText: (NSString*) text andTextYPosition: (CGFloat) textYPosition {
 	self = [super initWithFrame:frame];
 	if (self) {
-		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-        [self setImageViewWithImage:image];
-        if(text.length){
-            [self.textView setText: text];
-            [self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
+		
+            [self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+            [self setImageViewWithImage:image];
+            if(text.length){
+                [self.textView setText: text];
+                [self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
                                                     textYPosition, self.textView.frame.size.width,
                                                     self.textView.frame.size.height)];
-        }
+            }
 		//[self resizeTextView]; //this function keeps blocking our thread --- temp
 	}
 	return self;

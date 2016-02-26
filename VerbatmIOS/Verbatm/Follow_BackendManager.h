@@ -14,4 +14,10 @@
 +(void)currentUserStopFollowingChannel:(Channel *) channelToUnfollow;
 //tests to see if the logged in user follows this channel
 +(void)currentUserFollowsChannel:(Channel *) channel withCompletionBlock:(void(^)(bool))block;
+
++ (void) usersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSArray*)) block;
++ (void) channelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSArray*)) block;
++ (void) numberChannelsUserFollowing: (PFUser*) user withCompletionBlock:(void(^)(NSNumber*)) block;
++ (void) numberUsersFollowingChannel: (Channel*) channel withCompletionBlock:(void(^)(NSNumber*)) block;
+
 @end

@@ -29,6 +29,6 @@ typedef enum AveTypes{
 -(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode ;
 
 // returns a promise that either resolves to an ave or error
--(void) getAVEFromPage: (PFObject *)page withFrame: (CGRect) frame andCompletionBlock:(void(^)(ArticleViewingExperience *))block;
-
+-(void) getAVEFromPage: (PFObject *)page withFrame: (CGRect) frame andCompletionBlock:(void(^)(NSArray *))block;
++(ArticleViewingExperience *)getAVEFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame;
 @end

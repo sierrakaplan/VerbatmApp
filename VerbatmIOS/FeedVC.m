@@ -18,19 +18,20 @@
 
 #import "Notifications.h"
 
-#import "POVListScrollViewVC.h"
+#import "PostListVC.h"
+//#import "POVListScrollViewVC.h"
 #import <Parse/PFUser.h>
 
 #import "SharePOVView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, POVListViewProtocol, SharePOVViewDelegate>
+@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, SharePOVViewDelegate>
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
 @property (nonatomic) CGRect povScrollViewFrame;
-@property (strong, nonatomic) POVListScrollViewVC* postListVC;
+@property (strong, nonatomic) PostListVC * postListVC;
 
 //@property (nonatomic) PostListVC * postListView;
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
@@ -47,7 +48,8 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    [self createContentListView];
+    //[self createContentListView];
+    [self addPostListVC];
     [self addClearScreenGesture];
 }
 
@@ -68,16 +70,35 @@
 }
 
 
--(void) createContentListView {
-    self.postListVC = [[POVListScrollViewVC alloc] init];
-    self.postListVC.listOwner = [PFUser currentUser];
+//-(void) createContentListView {
+//    self.postListVC = [[POVListScrollViewVC alloc] init];
+//    self.postListVC.listOwner = [PFUser currentUser];
+//    self.postListVC.listType = listFeed;
+//    self.postListVC.isHomeProfileOrFeed =YES;
+//   // self.postListVC.delegate = self;
+//    [self.view addSubview:self.postListVC.view];
+//    self.postDisplayVC.delegate = self;
+//    [self.postDisplayVC didMoveToParentViewController:self];
+//}
+
+
+-(void) addPostListVC {
+    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    [flowLayout setMinimumInteritemSpacing:0.3];
+    [flowLayout setMinimumLineSpacing:0.0f];
+    [flowLayout setItemSize:self.view.frame.size];
+    self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
     self.postListVC.listType = listFeed;
-    self.postListVC.isHomeProfileOrFeed =YES;
-    self.postListVC.delegate = self;
-    [self.view addSubview:self.postListVC.view];
-    self.postDisplayVC.delegate = self;
-    [self.postDisplayVC didMoveToParentViewController:self];
+    self.postListVC.isHomeProfileOrFeed = YES;
+    self.postListVC.listOwner = [PFUser currentUser];
+    
+    [self.postListContainerView setFrame:self.view.bounds];
+    [self.postListContainerView addSubview:self.postListVC.view];
+    [self.view addSubview:self.postListContainerView];
 }
+
+
 
 
 #pragma mark -POVListSVController-
@@ -165,14 +186,14 @@
 
 
 
-
-#pragma mark -POVScrollview delegate-
--(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
-    [self.delegate feedPovLikeLiked:liked forPOV:povInfo];
-}
--(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
-    [self.delegate feedPovShareButtonSeletedForPOV:povInfo];
-}
+//TODO
+//#pragma mark -POVScrollview delegate-
+//-(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
+//    [self.delegate feedPovLikeLiked:liked forPOV:povInfo];
+//}
+//-(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
+//    [self.delegate feedPovShareButtonSeletedForPOV:povInfo];
+//}
 
 #pragma mark - Network Connection Lost -
 

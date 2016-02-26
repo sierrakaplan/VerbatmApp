@@ -34,13 +34,15 @@
     return self;
 }
 
--(void) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel{
+-(PFObject * ) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel{
     PFObject * newPostObject = [PFObject objectWithClassName:POST_PFCLASS_KEY];
     [newPostObject setObject:channel.parseChannelObject forKey:POST_CHANNEL_KEY];
     [newPostObject setObject:[NSNumber numberWithInt:0] forKey:POST_LIKES_NUM_KEY];
     [newPostObject setObject:[NSNumber numberWithInt:0] forKey:POST_NUM_SHARES_KEY];
     [newPostObject setObject:[PFUser currentUser] forKey:POST_ORIGINAL_CREATOR_KEY];
     [newPostObject setObject:[NSNumber numberWithInteger:pinchViews.count] forKey:POST_SIZE_KEY];
+    [newPostObject setObject:[NSNumber numberWithBool:false] forKey:POST_COMPLETED_SAVING];//mark as not done saving yet
+    
     [newPostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){//now we save the pinchview to a page
             for (int i = 0; i< pinchViews.count; i++) {
@@ -51,6 +53,8 @@
             }
         }
     }];
+    
+    return newPostObject;
 }
 
 
@@ -59,7 +63,8 @@
     if(channel){
         PFQuery * postQuery = [PFQuery queryWithClassName:POST_PFCLASS_KEY];
         [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel.parseChannelObject];
-        
+        //make sure the posts have been fully published
+        [postQuery whereKey:POST_COMPLETED_SAVING equalTo:[NSNumber numberWithBool:true]];
         [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                              NSError * _Nullable error) {
             if(objects && !error){
