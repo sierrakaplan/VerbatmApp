@@ -14,7 +14,6 @@
 @protocol ProfileNavBarDelegate <NSObject>
 -(void) followOptionSelected;//current user selected to follow a channel
 
-
 -(void) followersOptionSelected;//current user wants to see their own followers
 -(void) followingOptionSelected;//current user wants to see who they follow
 

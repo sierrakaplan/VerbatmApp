@@ -77,6 +77,7 @@
 														  NSError * _Nullable error) {
 		if(objects && !error) {
 			block ([NSNumber numberWithInteger:objects.count]);
+			return;
 		}
 		block ([NSNumber numberWithInt: 0]);
 	}];
@@ -91,6 +92,7 @@
 														  NSError * _Nullable error) {
 		if(objects && !error) {
 			block (objects);
+			return;
 		}
 		block (nil);
 	}];
@@ -105,6 +107,7 @@
 														  NSError * _Nullable error) {
 		if(objects && !error) {
 			block (objects);
+			return;
 		}
 		block (nil);
 	}];

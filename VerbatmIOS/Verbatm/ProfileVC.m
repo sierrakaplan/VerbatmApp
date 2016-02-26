@@ -185,7 +185,6 @@
     
 }
 
-
 #pragma mark POVListScrollView Delegate -
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
     [self presentHeadAndFooter:YES];
@@ -198,7 +197,6 @@
 -(void) followOptionSelected{
     
 }
-
 
 -(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
     if(self.sharePOVView){

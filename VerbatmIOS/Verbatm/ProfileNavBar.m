@@ -56,6 +56,7 @@
     self = [super initWithFrame:frame];
     if(self){
         [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
+		[self updateFollowersLabel: startChannel];
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
         [self setFolloweButtonInHeader];
         [self createFollowersInfoViewWithUser:profileUser];
@@ -255,6 +256,10 @@
 
 -(void) selectChannel: (Channel*) channel {
 	[self.threadNavScrollView selectChannel: channel];
+	[self updateFollowersLabel: channel];
+}
+
+-(void) updateFollowersLabel: (Channel*) channel {
 	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
 		[self.followInfoBar setNumFollowers: numFollowers];
 	}];
@@ -264,6 +269,7 @@
 
 -(void) tabPressedWithChannel:(Channel *)channel {
 	[self setFolloweButtonInHeader];
+	[self updateFollowersLabel: channel];
 	[self.delegate newChannelSelected:channel];
 }
 
