@@ -56,10 +56,9 @@
     self = [super initWithFrame:frame];
     if(self){
         [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
-		[self updateFollowersLabel: startChannel];
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
         [self setFolloweButtonInHeader];
-        [self createFollowersInfoViewWithUser:profileUser];
+		[self createFollowersInfoViewWithUser:profileUser andStartChannel: channels[0]];
         [self createArrowExtesion];
         [self createPanGesture];
         [self createTapGesture];
@@ -73,7 +72,7 @@
     }
 }
 
--(void)createFollowersInfoViewWithUser:(PFUser *) profileUser {
+-(void)createFollowersInfoViewWithUser:(PFUser *) profileUser andStartChannel: (Channel *) startChannel {
 
     self.followersInfoFrameClosed = CGRectMake(0.f, self.threadNavScrollView.frame.origin.y +
                                       self.threadNavScrollView.frame.size.height,
@@ -89,6 +88,7 @@
 	[Follow_BackendManager numberChannelsUserFollowing:profileUser withCompletionBlock:^(NSNumber *numFollowing) {
 		[self.followInfoBar setNumFollowing: numFollowing];
 	}];
+	[self updateFollowersLabel: startChannel];
 }
 
 -(void)createTapGesture{
