@@ -65,6 +65,7 @@
         [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel.parseChannelObject];
         //make sure the posts have been fully published
         [postQuery whereKey:POST_COMPLETED_SAVING equalTo:[NSNumber numberWithBool:true]];
+        [postQuery orderByDescending:@"createdAt"];
         [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                              NSError * _Nullable error) {
             if(objects && !error){

@@ -60,7 +60,7 @@
 
 
 -(void)formatView{
-    self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.3];
+    self.backgroundColor = LIKE_SHARE_BAR_BACKGROUND_COLOR;
     
     
 }

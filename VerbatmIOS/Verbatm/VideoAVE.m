@@ -207,6 +207,8 @@
     }
     if(self.rearrangeView) [self.rearrangeView exitView];
     self.hasBeenSetUp = NO;
+    
+    //here we check if we have URLs and if so then we create the asset again for future use
 }
 
 -(void)onScreen {

@@ -30,6 +30,7 @@
 #import "VideoPinchView.h"
 #import "VideoAVE.h"
 #import "Video_BackendObject.h"
+#import "VideoDownloadManager.h"
 
 @interface AVETypeAnalyzer()
 
@@ -141,13 +142,16 @@
                 NSMutableArray* uiImages = [[NSMutableArray alloc] init];
                 for (int i = 0; i < results.count; i++) {
                     NSData* imageData = results[i];
-                    UIImage* uiImage = [UIImage imageWithData:imageData];
-                    PFObject * photoBO = photoObjects[i];
                     
-                    NSString * imageText =  [photoBO valueForKey:PHOTO_TEXT_KEY];
-                    NSNumber * yoffset = [photoBO valueForKey:PHOTO_TEXT_YOFFSET_KEY];
-                    
-                    [uiImages addObject: @[uiImage, imageText, yoffset]];
+                    if(![imageData isKindOfClass:[NSNull class]]){
+                        UIImage* uiImage = [UIImage imageWithData:imageData];
+                        PFObject * photoBO = photoObjects[i];
+                        
+                        NSString * imageText =  [photoBO valueForKey:PHOTO_TEXT_KEY];
+                        NSNumber * yoffset = [photoBO valueForKey:PHOTO_TEXT_YOFFSET_KEY];
+                        
+                        [uiImages addObject: @[uiImage, imageText, yoffset]];
+                    }
                 }
                 dispatch_async(dispatch_get_main_queue(), ^{
                     block(uiImages);
@@ -159,9 +163,10 @@
 
 
 
--(void)getImagefromUrl:(NSMutableArray *) thumbnailUrls withCompletionBlock:(void(^)(NSArray *)) block{
+-(void)getImagefromUrl:(NSMutableArray *) thumbnailUrls withCompletionBlock:(void(^)(NSArray *)) block {
     
     NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
+    
     for (NSString * url in thumbnailUrls) {
         AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedDataFromURL: [NSURL URLWithString:url]];
         [loadImageDataPromises addObject: getImageDataPromise];
@@ -187,6 +192,7 @@
         //download all thumbnail urls for videos
         [self getImagefromUrl:videoURLs withCompletionBlock:^(NSArray * videoThumbNails) {
             NSMutableArray * finalVideoObjects = [[NSMutableArray alloc] init];
+            NSMutableArray * finalVideoUrls= [[NSMutableArray alloc] init];
             for (int i = 0; i < pfVideoObjectArray.count; i++) {
                 PFObject * pfVideo = pfVideoObjectArray[i];
                 NSString * videoBlobKey = [pfVideo valueForKey:BLOB_STORE_URL];
@@ -196,10 +202,19 @@
                 NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
                 if(i < videoThumbNails.count){
                     [finalVideoObjects addObject: @[components.URL, @"", @(0), [UIImage imageWithData:videoThumbNails[i]]]];
+                    [finalVideoUrls addObject:components.URL];
                 }else{
                     [finalVideoObjects addObject: @[components.URL, @"", @(0)]];
+                    [finalVideoUrls addObject:components.URL];
                 }
             }
+            
+//            //register the videos in our video
+//            if(finalVideoUrls.count >1){
+//                [[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:finalVideoUrls];
+//            }else{
+//                [[VideoDownloadManager sharedInstance] prepareVideoFromURL_synchronous:[finalVideoUrls firstObject]];
+//            }
             block(finalVideoObjects);
         }];
         

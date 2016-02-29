@@ -156,6 +156,8 @@
 #define CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED [UIColor colorWithWhite:1.f alpha:0.8]
 
 
+#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor clearColor]//[UIColor colorWithWhite:0.f alpha:0.3]
+
 
 #define SETTINGS_ICON_NAME @"settingsIcon"
 #define BACK_BUTTON_ICON_NAME @"back_arrow"

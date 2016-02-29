@@ -7,6 +7,7 @@
 //
 
 #import "VideoPlayerView.h"
+#import "VideoDownloadManager.h"
 #import "Icons.h"
 
 @interface VideoPlayerView()
@@ -43,6 +44,8 @@
     }
     return self;
 }
+
+
 
 
 //make sure the sublayer resizes with the view screen
@@ -85,12 +88,17 @@
     if (!self.videoLoading) {
         self.videoLoading = YES;
     }
-//      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            if (url) {
-                [self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
-                [self initiateVideo];
-            }
-//      });
+
+    if (url) {
+//        AVPlayerItem * pItem = [[VideoDownloadManager sharedInstance] getVideoForUrl:url.absoluteString];
+//        if(!pItem){
+           AVPlayerItem *  pItem = [AVPlayerItem playerItemWithURL: url];
+      //  }
+        
+        
+        [self setPlayerItemFromPlayerItem:pItem];
+        [self initiateVideo];
+    }
 }
 
 -(void) setPlayerItemFromPlayerItem:(AVPlayerItem*)playerItem {

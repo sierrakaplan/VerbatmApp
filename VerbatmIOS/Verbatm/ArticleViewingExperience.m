@@ -10,6 +10,17 @@
 
 @implementation ArticleViewingExperience
 
+-(instancetype) initWithFrame:(CGRect)frame{
+    self = [super initWithFrame:frame];
+    
+    if(self){
+        self.clipsToBounds = YES;
+    }
+    
+    return self;
+}
+
+
 -(void)onScreen {}
 
 -(void)offScreen {}

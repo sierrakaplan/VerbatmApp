@@ -210,7 +210,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
             [nextCellToBePresented onScreen];
             //for the first cell prepare the next cell so there
             //is a smooth transition
-            if(indexPath.row ==0)[self prepareNextViewAfterVisibleIndex:indexPath.row];
+            if(indexPath.row == 0)[self prepareNextViewAfterVisibleIndex:indexPath.row];
         }
     }
     
@@ -239,7 +239,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 }
 
 -(void) footerShowing: (BOOL) showing{
-    
+    for(POVView * pov in self.presentedPostList){
+        [pov shiftLikeShareBarDown:!showing];
+    }
 }
 
 

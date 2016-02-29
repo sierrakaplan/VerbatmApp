@@ -122,9 +122,9 @@
     [self setDelegateOnPhotoAVE: ave];
     CGRect frame = CGRectMake(0, [pageIndex integerValue] * self.mainScrollView.frame.size.height , self.mainScrollView.frame.size.width, self.mainScrollView.frame.size.height);
     ave.frame = frame;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.mainScrollView addSubview:ave];
-    });
+    
+    [self.mainScrollView addSubview:ave];
+
     [self.pageAves setObject:ave forKey:pageIndex];
 }
 
@@ -418,19 +418,20 @@
 }
 
 -(void)presentMediaContent{
-    dispatch_async(dispatch_get_main_queue(), ^{
+    if(self.pageAveMedia.count > 0){
         [self.activityIndicator stopAnimating];
         self.activityIndicator = nil;
-    });
-    for(NSInteger key = 0; key < self.pageAveMedia.count; key++){
-        NSArray * media = [self.pageAveMedia objectForKey:[NSNumber numberWithInteger:key]];
-        ArticleViewingExperience * ave = [AVETypeAnalyzer getAVEFromPageMedia:media withFrame:self.bounds];
-        //add bar at the bottom with page numbers etc
-        [self renderNextAve:ave withIndex:[NSNumber numberWithInteger:key]];
-        [self setApproprioateScrollViewContentSize];
+        
+        for(NSInteger key = 0; key < self.pageAveMedia.count; key++){
+            NSArray * media = [self.pageAveMedia objectForKey:[NSNumber numberWithInteger:key]];
+            ArticleViewingExperience * ave = [AVETypeAnalyzer getAVEFromPageMedia:media withFrame:self.bounds];
+            //add bar at the bottom with page numbers etc
+            [self renderNextAve:ave withIndex:[NSNumber numberWithInteger:key]];
+            [self setApproprioateScrollViewContentSize];
+        }
+        
+        [self.pageAveMedia removeAllObjects];
     }
-    
-    [self.pageAveMedia removeAllObjects];
 }
 
 

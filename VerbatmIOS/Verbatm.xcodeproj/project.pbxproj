@@ -231,6 +231,8 @@
 		C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B371C3841AD00E56EA7 /* SelectSharingOption.m */; };
 		C7F22B3B1C38B2A600E56EA7 /* SelectOptionButton.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */; };
 		C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3D46A1A4F84C000B43238 /* SignIn.m */; };
+		C7F3EBC91C7D4D73007D23DF /* VideoPlayerItemManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */; };
+		C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */; };
 		C7F79E7A1C39C44A00319330 /* SelectChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E791C39C44A00319330 /* SelectChannel.m */; };
 		C7F79E7D1C39E13900319330 /* SelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E7C1C39E13900319330 /* SelectionView.m */; };
 		C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = C7F79E7F1C3AACC600319330 /* CreateNewChannelView.m */; };
@@ -671,6 +673,10 @@
 		C7F22B3A1C38B2A600E56EA7 /* SelectOptionButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectOptionButton.m; sourceTree = "<group>"; };
 		C7F3D4691A4F84C000B43238 /* SignIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignIn.h; sourceTree = "<group>"; };
 		C7F3D46A1A4F84C000B43238 /* SignIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignIn.m; sourceTree = "<group>"; };
+		C7F3EBC71C7D4D73007D23DF /* VideoPlayerItemManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPlayerItemManager.h; sourceTree = "<group>"; };
+		C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerItemManager.m; sourceTree = "<group>"; };
+		C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoDownloadManager.h; sourceTree = "<group>"; };
+		C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoDownloadManager.m; sourceTree = "<group>"; };
 		C7F79E781C39C44A00319330 /* SelectChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectChannel.h; sourceTree = "<group>"; };
 		C7F79E791C39C44A00319330 /* SelectChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectChannel.m; sourceTree = "<group>"; };
 		C7F79E7B1C39E13900319330 /* SelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectionView.h; sourceTree = "<group>"; };
@@ -1522,6 +1528,10 @@
 				C7D5963A1C66E47100161136 /* Follow_BackendManager.m */,
 				C755DB0A1C74619200136F6E /* PublishingProgressManager.h */,
 				C755DB0B1C74619200136F6E /* PublishingProgressManager.m */,
+				C7F3EBC71C7D4D73007D23DF /* VideoPlayerItemManager.h */,
+				C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */,
+				C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */,
+				C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */,
 			);
 			name = "Parse database files";
 			sourceTree = "<group>";
@@ -1942,6 +1952,7 @@
 				C7D5963B1C66E47100161136 /* Follow_BackendManager.m in Sources */,
 				C7E65F6C1B92E5830042AD99 /* TopicsFeedVC.m in Sources */,
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
+				C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */,
 				C7BF1AAB1C57F60600CEDE4B /* Video_BackendObject.m in Sources */,
 				A5E85FAE1B911DA900E148D0 /* GTMOAuth2SignIn.m in Sources */,
 				A5E85FA71B911DA900E148D0 /* GTMHTTPFetcherLogging.m in Sources */,
@@ -1973,6 +1984,7 @@
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */,
+				C7F3EBC91C7D4D73007D23DF /* VideoPlayerItemManager.m in Sources */,
 				A5E860011B96249900E148D0 /* POVPublisher.m in Sources */,
 				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
