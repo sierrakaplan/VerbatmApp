@@ -28,9 +28,6 @@
 {
     self.mediaPublisher = [[POVPublisher alloc] init];
     [self.mediaPublisher storeImage:image withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
-       
-        //tell our publishing manager that a photo is done saving
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_SUCCEEDED object:nil];
         NSString * blobStoreUrl = gtlImage.servingUrl;
         //in completion block of blobstore save
         [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl withText:userText andTextYPosition:textYPosition atPhotoIndex:photoIndex andPageObject:pageObject];
@@ -50,7 +47,15 @@
     [newPhotoObject setObject:textYPosition forKey:PHOTO_TEXT_YOFFSET_KEY];
     [newPhotoObject setObject:userText forKey:PHOTO_TEXT_KEY];
     
-    [newPhotoObject saveInBackground];
+    [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+        if(succeeded){
+            if(succeeded){
+                //tell our publishing manager that a photo is done saving
+                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_SUCCEEDED object:nil];
+            }
+
+        }
+    }];
     
 }
 

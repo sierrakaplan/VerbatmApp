@@ -65,20 +65,31 @@
 	AnyPromise* getVideoUploadURIPromise = [self getVideoUploadURI];
 	PMKWhen(@[getVideoDataPromise, getVideoUploadURIPromise]).then(^(NSArray * results){
 		NSData* videoData = results[0];
-		NSString* uri = results[1];
-		self.videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
-		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-			[self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_VIDEO];
-		}
-        NSLog(@"Starting video upload");
+        if(![videoData isKindOfClass:[NSNull class]]){
+        
+            NSString* uri = results[1];
+            self.videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
+            if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
+                [self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_VIDEO];
+            }
+            NSLog(@"Starting video upload");
+        }else{
+            NSLog(@"Video upload failed");
+             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_FAILED object:nil];
+        }
 
 		return [self.videoUploader startUpload];
+        
 	}).then(^(NSString* blobStoreKeyString) {
         NSLog(@"saved video to GAE");
-
-		GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
-		gtlVideo.blobKeyString = blobStoreKeyString;
-        block(gtlVideo);
+        if(blobStoreKeyString && ![blobStoreKeyString isEqualToString:@""]){
+            GTLVerbatmAppVideo* gtlVideo = [[GTLVerbatmAppVideo alloc] init];
+            gtlVideo.blobKeyString = blobStoreKeyString;
+            block(gtlVideo);
+        }else{
+            NSLog(@"Video upload failed");
+            [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_FAILED object:nil];
+        }
 	});
 }
 

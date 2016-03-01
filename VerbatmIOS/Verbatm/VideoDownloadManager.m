@@ -7,9 +7,11 @@
 //
 
 #import "VideoDownloadManager.h"
+@import Foundation;
 
 @interface VideoDownloadManager ()
 @property(nonatomic) NSMutableDictionary * videoAssetList;
+@property(nonatomic) NSNumber * counter;
 @end
 
 
@@ -19,26 +21,103 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedInstance = [[VideoDownloadManager alloc] init];
+        sharedInstance.counter = [NSNumber numberWithInt:0];
     });
     return sharedInstance;
 }
 
--(AVPlayerItem *) getVideoForUrl:(NSString *) urlString{
-     AVPlayerItem * avAsset = [self.videoAssetList objectForKey:urlString];
-    [self.videoAssetList removeObjectForKey:urlString];
-     return avAsset;
+
+-(BOOL)containsEntryForUrl:(NSURL *) url{
+    if( [self.videoAssetList objectForKey:url.absoluteString] ){
+        return true;
+    }
+    return false;
 }
+
+-(AVPlayerItem *) getVideoForUrl:(NSString *) urlString{
+    
+    
+    NSString *finalUrlString = [self.videoAssetList objectForKey:urlString];
+    
+    
+//    NSData * videoData =   [self.memoryCache objectForKey:urlString];
+//    
+//    if(videoData){
+//        NSString *dataString = [[NSString alloc] initWithData:videoData encoding:NSUTF8StringEncoding];
+//        NSURL *movieURL = [NSURL URLWithString:dataString];
+//        return [AVPlayerItem playerItemWithURL:movieURL];
+//    }else{
+    
+    if(finalUrlString){
+        AVPlayerItem * player = [AVPlayerItem playerItemWithURL:[NSURL fileURLWithPath:finalUrlString]];
+        if(player){
+            return player;
+        }else{
+            AVPlayerItem * avAsset = [self.videoAssetList objectForKey:urlString];
+            [self.videoAssetList removeObjectForKey:urlString];
+            return avAsset;
+        }
+    }
+    //}
+    return  nil;
+}
+
+
+
 -(void)prepareVideoFromURL_synchronous: (NSURL*) url {
     if (url) {
-        [self.videoAssetList setObject:[AVPlayerItem playerItemWithURL: url] forKey:url.absoluteString];
+        
+          [self downloadVideo:url];
+        
+//        AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:url options:nil];
+//        NSArray *keys     =  @[@"playable"];
+//        
+//        [asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+//            [self.videoAssetList setObject:[AVPlayerItem playerItemWithAsset:asset]forKey:url.absoluteString];
+//
+//        }];
     }
 }
 
 -(void)prepareVideoFromAsset_synchronous: (NSArray *) urlArray {
     if (urlArray) {
-        [self.videoAssetList setObject:[AVPlayerItem playerItemWithAsset:[self fuseAssets:urlArray]] forKey:[urlArray firstObject]];
+//        NSURL * firstUrl =[urlArray firstObject];
+//        AVAsset * asset = [self fuseAssets:urlArray];
+//        NSArray *keys     = @[@"playable"];
+//        [asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+//            [self.videoAssetList setObject:[AVPlayerItem playerItemWithAsset:asset]forKey:firstUrl.absoluteString];
+//        }];
     }
 }
+
+
+
+
+-(void)downloadVideo:(NSURL *) url {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        
+        NSData *downloadedData = [NSData dataWithContentsOfURL:url];
+        
+        if ( downloadedData && (downloadedData.bytes > 0)) {
+           
+            //  STORE IN FILESYSTEM
+            NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+            NSString *file = [cachesDirectory stringByAppendingPathComponent:[[self.counter stringValue] stringByAppendingString:@"test.mov"]];
+            [downloadedData writeToFile:file atomically:YES];
+            [self.videoAssetList setObject:file forKey:url.absoluteString];
+            int value = [self.counter intValue];
+            self.counter = [NSNumber numberWithInt:value+1];
+            
+        }
+        
+        // NOW YOU CAN CREATE AN AVASSET OR UIIMAGE FROM THE FILE OR DATA
+    });
+}
+
+
+
+
+
 
 -(AVMutableComposition*)fuseAssets:(NSArray*)videoList {
     //if the mix exists don't runt this expensive function

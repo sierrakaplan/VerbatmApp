@@ -7,8 +7,8 @@
 //
 
 #import "UtilityFunctions.h"
-
-
+#import "Notifications.h"
+@import AVFoundation;
 @implementation UtilityFunctions
 
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
@@ -17,18 +17,21 @@
 		NSURLRequest* request = [NSURLRequest requestWithURL:url
 												 cachePolicy:NSURLRequestReturnCacheDataElseLoad
 											 timeoutInterval:300];
-		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
+		[NSURLConnection sendAsynchronousRequest:request queue:[[NSOperationQueue alloc] init] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
 			if (error) {
 				NSLog(@"Error retrieving data from url: \n %@", error.description);
+//                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_FAILED object:nil];
 				resolve(nil);
 			} else {
-				//				NSLog(@"Successfully retrieved data from url");
+				//NSLog(@"Successfully retrieved data from url");
 				resolve(data);
 			}
 		}];
 	}];
 	return promise;
 }
+
+
 
 
 @end

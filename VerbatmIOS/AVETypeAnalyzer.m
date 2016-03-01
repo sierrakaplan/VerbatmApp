@@ -209,12 +209,12 @@
                 }
             }
             
-//            //register the videos in our video
-//            if(finalVideoUrls.count >1){
-//                [[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:finalVideoUrls];
-//            }else{
-//                [[VideoDownloadManager sharedInstance] prepareVideoFromURL_synchronous:[finalVideoUrls firstObject]];
-//            }
+            //register the videos in our video
+            if(finalVideoUrls.count >1){
+                [[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:finalVideoUrls];
+            }else{
+                [[VideoDownloadManager sharedInstance] prepareVideoFromURL_synchronous:[finalVideoUrls firstObject]];
+            }
             block(finalVideoObjects);
         }];
         

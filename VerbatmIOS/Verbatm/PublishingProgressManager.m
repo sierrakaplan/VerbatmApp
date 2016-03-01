@@ -97,9 +97,10 @@
 }
 
 
+
 -(void)mediaHasSaved:(NSNotification *) notification {
     self.progressAccountant.completedUnitCount ++;
-	if (self.progressAccountant.completedUnitCount == self.progressAccountant.totalUnitCount) {
+	if (self.progressAccountant.completedUnitCount == self.progressAccountant.totalUnitCount && self.currentlyPublishing) {
         if(self.currentParsePostObject) {
             [self.currentParsePostObject setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
             [self.currentParsePostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -115,10 +116,12 @@
 }
 
 -(void)mediaHasFailedSaving:(NSNotification *) notification {
-    self.progressAccountant.completedUnitCount = 0;
-    [self.delegate publishingFailed];
-	self.currentPublishingChannel = NULL;
-	self.currentlyPublishing = NO;
+    if(self.currentlyPublishing){
+        self.progressAccountant.completedUnitCount = 0;
+        [self.delegate publishingFailed];
+        self.currentPublishingChannel = NULL;
+        self.currentlyPublishing = NO;
+    }
 }
 
 @end

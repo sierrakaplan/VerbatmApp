@@ -138,8 +138,7 @@
     
     NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
     
-    for(PFObject * post in backendPostObjects){
-        
+    for(PFObject * post in backendPostObjects) {
         AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
                                         [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
                                             POVView * pov = [[POVView alloc] initWithFrame:self.view.bounds];

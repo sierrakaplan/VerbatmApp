@@ -37,8 +37,6 @@
     
     UIImage * thumbNail = [Video_BackendObject thumbnailImageForVideo:videoUrl atTime:0.f];
     [self.mediaPublisher  storeVideoFromURL:videoUrl withCompletionBlock:^(GTLVerbatmAppVideo * gtlVideo) {
-        //tell our publishing manager that a video is done saving
-        [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_SUCCEEDED object:nil];
         NSString * blobStoreUrl = gtlVideo.blobKeyString;//set this with the url from the blobstore
         //in completion block of blobstore save
         [self createAndSaveParseVideoObjectWithBlobStoreUrl:blobStoreUrl videoIndex:videoIndex thumbnail:thumbNail andPageObject:pageObject];
@@ -87,7 +85,12 @@
         [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];
         [newVideoObj setObject:blobStoreImageUrl forKey:VIDEO_THUMBNAIL_KEY];
         [newVideoObj setObject:pageObject forKey:VIDEO_PAGE_OBJECT_KEY];
-        [newVideoObj saveInBackground];
+        [newVideoObj saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+            if(succeeded){
+                //tell our publishing manager that a video is done saving
+                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_SUCCEEDED object:nil];
+            }
+        }];
     }];
 }
 

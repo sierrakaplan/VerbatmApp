@@ -19,5 +19,7 @@
     -(void)prepareVideoFromAsset_synchronous: (NSArray *) urlArray;
     //removes reference to the playr item
     -(AVPlayerItem *) getVideoForUrl:(NSString *) urlString;
-
+    //check if there is an entry for this url
+    //if it's a list give the first entry
+    -(BOOL)containsEntryForUrl:(NSURL *) url;
 @end

@@ -24,6 +24,8 @@
 @property (nonatomic) BOOL isVideoPlaying; //tells you if the video is in a playing state
 @property (strong, atomic) NSTimer * ourTimer;//keeps calling continue
 
+@property (strong) NSArray * urlArray;
+
 
 #define MUTE_BUTTON_SIZE 25
 #define MUTE_BUTTON_OFFSET 10
@@ -84,17 +86,38 @@
     }
 }
 
+-(void)prepareVideoFromURLAsset_synchronous: (AVAsset*) asset andUrls:(NSArray *) urls{
+    if (urls) {
+        self.urlArray = urls;
+        AVPlayerItem * pItem;
+        if([[VideoDownloadManager sharedInstance] containsEntryForUrl:[urls firstObject]]){
+            NSURL * urlKey = [urls firstObject];
+            pItem = [[VideoDownloadManager sharedInstance] getVideoForUrl:urlKey.absoluteString];
+        }else{
+            pItem = [AVPlayerItem playerItemWithAsset:asset];
+        }
+        
+        [self setPlayerItemFromPlayerItem:pItem];
+        [self initiateVideo];
+    }
+
+}
+
+
 -(void)prepareVideoFromURL_synchronous: (NSURL*) url{
     if (!self.videoLoading) {
         self.videoLoading = YES;
     }
 
     if (url) {
-//        AVPlayerItem * pItem = [[VideoDownloadManager sharedInstance] getVideoForUrl:url.absoluteString];
-//        if(!pItem){
-           AVPlayerItem *  pItem = [AVPlayerItem playerItemWithURL: url];
-      //  }
+        self.urlArray = @[url];
+        AVPlayerItem * pItem;
+        if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
         
+             pItem = [[VideoDownloadManager sharedInstance] getVideoForUrl:url.absoluteString];
+        }else{
+            pItem = [AVPlayerItem playerItemWithURL: url];
+        }
         
         [self setPlayerItemFromPlayerItem:pItem];
         [self initiateVideo];
@@ -168,18 +191,22 @@
 
 -(void)prepareVideoFromArrayOfURL_synchronous: (NSArray*)videoList {
     if(videoList.count > 1){
-        if(!self.mix){
+        if(!self.mix && ![[VideoDownloadManager sharedInstance] containsEntryForUrl:[videoList firstObject]]){
             [self fuseAssets:videoList];
         }
-        [self prepareVideoFromAsset_synchronous:self.mix];
+        [self prepareVideoFromURLAsset_synchronous:self.mix andUrls:videoList];
+       // [self prepareVideoFromAsset_synchronous:self.mix];
     }else{
         [self prepareVideoFromURL_synchronous:videoList[0]];
     }
 }
 
 
-/*This code fuses the video assets into a single video that plays the videos one after the other.
+/*
+ 
+ This code fuses the video assets into a single video that plays the videos one after the other.
  It accepts both avassets and urls which it converts into assets
+ 
  */
 -(void)fuseAssets:(NSArray*)videoList {
     //if the mix exists don't runt this expensive function
@@ -381,10 +408,16 @@
                     self.isVideoPlaying = NO;
                     [self.ourTimer invalidate];
                     self.ourTimer = nil;
+                    if(self.urlArray){
+                        if(self.urlArray.count> 1){
+                            [[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:self.urlArray];
+                        }else{
+                            [[VideoDownloadManager sharedInstance] prepareVideoFromURL_synchronous:[self.urlArray firstObject]];
+                        }
+                    }
                 }
             });
         }
-   
 }
 
 -(void) removePlayerItemObserver {
