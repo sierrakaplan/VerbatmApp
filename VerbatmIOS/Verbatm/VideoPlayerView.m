@@ -409,11 +409,12 @@
                     [self.ourTimer invalidate];
                     self.ourTimer = nil;
                     if(self.urlArray){
-                        if(self.urlArray.count> 1){
-                            [[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:self.urlArray];
-                        }else{
-                            [[VideoDownloadManager sharedInstance] prepareVideoFromURL_synchronous:[self.urlArray firstObject]];
-                        }
+                        //TODO
+//                        if(self.urlArray.count> 1){
+//                            [[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:self.urlArray];
+//                        }else{
+//                            [[VideoDownloadManager sharedInstance] prepareVideoFromURL_synchronous:[self.urlArray firstObject]];
+//                        }
                     }
                 }
             });

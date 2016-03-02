@@ -190,7 +190,7 @@
 }
 
 -(UIImage*) getUnselectedTabBarItemImageWithSize: (CGSize) size {
-	return [UIImage makeImageWithColorAndSize:[UIColor colorWithWhite:1.0 alpha:TAB_BAR_ALPHA]
+	return [UIImage makeImageWithColorAndSize:[UIColor colorWithWhite:0.0 alpha:TAB_BAR_ALPHA]
 									  andSize: size];
 }
 
@@ -222,15 +222,15 @@
     self.feedVC.delegate = self;
 
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:[[UIImage imageNamed:PROFILE_NAV_ICON]
-																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]]; //imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
-
+															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
+																	
+													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
 	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:[[UIImage imageNamed:HOME_NAV_ICON]
-																	 imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]]; //imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]];
-	// images need to be centered this way for some reason
+															  image:[UIImage imageNamed:HOME_NAV_ICON]
+													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
+    
+    
+    // images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }

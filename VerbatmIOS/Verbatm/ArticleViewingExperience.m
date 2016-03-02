@@ -15,9 +15,17 @@
     
     if(self){
         self.clipsToBounds = YES;
+        [self createBorder];
     }
     
     return self;
+}
+
+
+-(void)createBorder{
+    [self.layer setBorderWidth:0.5];
+    [self.layer setCornerRadius:0.0];
+    [self.layer setBorderColor:[UIColor blackColor].CGColor];
 }
 
 

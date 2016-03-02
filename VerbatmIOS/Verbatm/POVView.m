@@ -93,6 +93,7 @@
         [self addSubview: self.mainScrollView];
         self.mainScrollView.backgroundColor = [UIColor blackColor];
         if(povObject)self.parsePostObject = povObject;
+        [self createBorder];
     }
     return self;
 }
@@ -103,8 +104,15 @@
     if (self) {
         [self addSubview: self.mainScrollView];
         self.mainScrollView.backgroundColor = [UIColor blackColor];
+        [self createBorder];
     }
     return self;
+}
+
+-(void)createBorder{
+    [self.layer setBorderWidth:1.0];
+    [self.layer setCornerRadius:0.0];
+    [self.layer setBorderColor:[UIColor blackColor].CGColor];
 }
 
 
