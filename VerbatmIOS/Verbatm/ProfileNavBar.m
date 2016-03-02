@@ -43,9 +43,6 @@
 
 #define THREAD_BAR_BUTTON_FONT_SIZE 17.f
 
-#define SETTINGS_BUTTON_SIZE 40.f
-#define SETTINGS_BUTTON_OFFSET 10.f
-
 
 @end
 
@@ -250,7 +247,7 @@
 }
 
 //show the people that I am following
--(void)showWhoIAmFollowingSelected {
+-(void)showWhoIAmFollowingButtonSelected {
     [self.delegate followingOptionSelected];
 }
 

@@ -164,7 +164,7 @@
 //like-share bar protocol
 
 -(void)shareButtonPressed {
-    [self.delegate shareOptionSelectedForParsePostObject:self.parsePostObject];
+    [self.delegate shareOptionSelectedForParsePostObject: self.parsePostObject];
 }
 
 //-(void)likeButtonPressed{

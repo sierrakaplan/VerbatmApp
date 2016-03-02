@@ -15,12 +15,12 @@
 
 
 @protocol SharePOVViewDelegate <NSObject>
+
 -(void)cancelButtonSelected;//tells the superview to remove the current presented view
 -(void)postPOVToChannel:(Channel *) channel;
 -(void)sharePostWithComment:(NSString *) comment;
+
 @end
-
-
 
 @interface SharePOVView : UIView
 -(instancetype) initWithFrame:(CGRect)frame shouldStartOnChannels:(BOOL) showChannels;//this tells us if we should show

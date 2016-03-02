@@ -12,7 +12,7 @@
 #import "POVScrollView.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
-@interface POVScrollView()<POVViewDelegate>
+@interface POVScrollView() <POVViewDelegate>
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 @property (strong, nonatomic) NSMutableArray * povViews;
@@ -116,8 +116,6 @@
 	[self.activityIndicator startAnimating];
 }
 
-
-
 -(void) headerShowing: (BOOL) showing {
     for(int i = 0; i < self.povViews.count; i++){
         UIView * subView = self.povViews[i];
@@ -135,13 +133,13 @@
 #pragma mark - POVView delegate - 
 
 -(void) likeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo {
-    [self.customDelegate povLikeButtonLiked:liked onPOV:povInfo];
+	//todo:
+//    [self.customDelegate povLikeButtonLiked:liked onPOV:povInfo];
 }
 
--(void) shareOptionSelectedForPOVInfo: (PovInfo* ) pov {
-    [self.customDelegate povshareButtonSelectedForPOVInfo:pov];
+-(void) shareOptionSelectedForParsePostObject: (PFObject *)pov {
+    [self.customDelegate povshareButtonSelectedForParsePostObject: pov];
 }
-
 
 #pragma mark - Lazy Instantiation -
 

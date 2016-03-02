@@ -127,12 +127,11 @@
 
 
 -(void)createFollowIcon{
-[Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^
- (bool isFollowing) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-          [self createFollowButton_AreWeFollowingCurrChannel:isFollowing];
+	[Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^(bool isFollowing) {
+		dispatch_async(dispatch_get_main_queue(), ^{
+          		[self createFollowButton_AreWeFollowingCurrChannel:isFollowing];
       });
- }];
+ 	}];
 }
 
 //If it's my profile it's follower(s) and if it's someone else's profile
@@ -275,17 +274,30 @@
 
 
 -(void)markButtonAsSelected{
-//    UILabel * followersInfoLabel = [self getChannelFollowersLabel:self.currentChannel origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.selectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.selectedNumberOfFollowersTitleAttributes];
-    UILabel * channelNameLabel = [self getChannelNameLabel:self.currentChannel withOrigin:self.channelNameLabel.frame.origin andAttributes:self.selectedChannelNameTitleAttributes];
+////    UILabel * followersInfoLabel = [self getChannelFollowersLabel:self.currentChannel origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.selectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.selectedNumberOfFollowersTitleAttributes];
+//    UILabel * channelNameLabel = [self getChannelNameLabel:self.currentChannel withOrigin:self.channelNameLabel.frame.origin andAttributes:self.selectedChannelNameTitleAttributes];
+//
+//    //swap labels
+////    [self.numberOfFollowersLabel removeFromSuperview];
+////    self.numberOfFollowersLabel = followersInfoLabel;
+////    [self addSubview:self.numberOfFollowersLabel];
+//
+//    [self.channelNameLabel removeFromSuperview];
+//    self.channelNameLabel = channelNameLabel;
+//    [self addSubview:self.channelNameLabel];
 
-    //swap labels
-//    [self.numberOfFollowersLabel removeFromSuperview];
-//    self.numberOfFollowersLabel = followersInfoLabel;
-//    [self addSubview:self.numberOfFollowersLabel];
+	NSMutableAttributedString *currentFollowersLabelText = [[NSMutableAttributedString alloc]
+															initWithAttributedString: self.numberOfFollowersLabel.attributedText];
+	[currentFollowersLabelText setAttributes:self.selectedFollowersTabTitleAttributes
+									   range:(NSRange){0,[currentFollowersLabelText length]}];
+	[self.numberOfFollowersLabel setAttributedText: currentFollowersLabelText];
 
-    [self.channelNameLabel removeFromSuperview];
-    self.channelNameLabel = channelNameLabel;
-    [self addSubview:self.channelNameLabel];
+
+	NSMutableAttributedString *currentChannelNameLabelText = [[NSMutableAttributedString alloc]
+															initWithAttributedString: self.channelNameLabel.attributedText];
+	[currentChannelNameLabelText setAttributes:self.selectedChannelNameTitleAttributes
+										 range:(NSRange){0,[currentFollowersLabelText length]}];
+	[self.channelNameLabel setAttributedText: currentFollowersLabelText];
     
     [self formatButtonSelected];
     self.buttonSelected = YES;
@@ -308,30 +320,5 @@
     self.buttonSelected = NO;
 }
 
-
-//-(NSDictionary*) selectedTabTitleAttributes {
-//    if (!_selectedTabTitleAttributes) {
-//        NSShadow *shadow = [[NSShadow alloc] init];
-//        [shadow setShadowBlurRadius:10.f];
-//        [shadow setShadowColor:[UIColor blackColor]];
-//        [shadow setShadowOffset:CGSizeMake(0.f, 0.f)];
-//        
-//        NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
-//        paragraphStyle.alignment = NSTextAlignmentCenter;
-//        
-//        _selectedTabTitleAttributes = @{NSForegroundColorAttributeName:[UIColor blackColor],                     NSFontAttributeName: [UIFont fontWithName:TAB_BAR_SELECTED_FONT size:TAB_BAR_FONT_SIZE],
-//                                        NSParagraphStyleAttributeName:paragraphStyle};
-//    }
-//    return _selectedTabTitleAttributes;
-//}
-//
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

@@ -445,7 +445,6 @@ rowHeightForComponent:(NSInteger)component{
 
 // Loads pinch views from user defaults
 -(void) loadPOVFromUserDefaults {
-	NSString* savedTitle = [[UserPovInProgress sharedInstance] title];
 
 	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {

@@ -39,7 +39,9 @@
 #import "UIView+Effects.h"
 #import "UserManager.h"
 
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate, PublishingProgressProtocol>
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,
+					UIScrollViewDelegate, CreateNewChannelViewProtocol, POVScrollViewDelegate,
+					SharePOVViewDelegate, PublishingProgressProtocol>
 
 @property (strong, nonatomic) PostListVC * postListVC;
 
@@ -171,21 +173,19 @@
     [self.view addGestureRecognizer:singleTap];
 }
 
-
-
-#pragma mark -POV ScrollView custom delegate -
+#pragma mark - POV ScrollView custom delegate -
 
 -(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
-    //sierra TODO
     //code to register a like/dislike from the user
 }
 
--(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
+-(void) povshareButtonSelectedForParsePostObject:(PFObject *)pov {
     [self presentShareSelectionViewStartOnChannels:NO];
     
 }
 
 #pragma mark POVListScrollView Delegate -
+
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
     [self presentHeadAndFooter:YES];
     [self presentShareSelectionViewStartOnChannels:NO];
@@ -290,7 +290,7 @@
     [self clearChannelCreationView];
 }
 
--(void)clearChannelCreationView{
+-(void) clearChannelCreationView{
     if(self.createNewChannelView){
         [self removeScreenDarkener];
         [self.createNewChannelView removeFromSuperview];
@@ -300,16 +300,21 @@
 
 
 #pragma mark -Share Seletion View Protocol -
--(void)cancelButtonSelected{
+
+-(void) cancelButtonSelected{
     [self removeSharePOVView];
 }
 
--(void)sharePostWithComment:(NSString *) comment{
+-(void) sharePostWithComment:(NSString *) comment {
     //todo--sierra
     //code to share post to facebook etc
     
     [self removeSharePOVView];
     
+}
+
+-(void) postPOVToChannel:(Channel *)channel {
+	//todo:
 }
 
 #pragma mark -Navigate profile-

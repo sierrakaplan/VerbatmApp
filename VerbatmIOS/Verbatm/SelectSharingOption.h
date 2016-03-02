@@ -23,6 +23,7 @@ typedef enum ShareOptions{
 
 
 @protocol SelectSharingOptionProtocol <NSObject>
+
 -(void)shareOptionSelected:(ShareOptions) shareOption;
 -(void)shareOptionDeselected:(ShareOptions) shareOption;
 
@@ -30,7 +31,9 @@ typedef enum ShareOptions{
 
 
 @interface SelectSharingOption : UIScrollView
-@property (nonatomic) id <SelectSharingOptionProtocol> delegate;
-//removes all selected content
+
+@property (nonatomic) id <SelectSharingOptionProtocol> sharingDelegate;
+
 -(void)unselectAllOptions;
+
 @end

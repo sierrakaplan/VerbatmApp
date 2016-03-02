@@ -130,7 +130,7 @@
             [self.selectedChannels addObject:selectionButton];
             [selectionButton setButtonSelected:YES];
             if([selectionButton.associatedObject isKindOfClass:[Channel class]]) {
-                [self.delegate channelsSelected:self.selectedChannels];
+                [self.selectChannelDelegate channelsSelected:self.selectedChannels];
             }
         }
     }else {
@@ -144,7 +144,7 @@
             [selectionButton setButtonSelected:YES];
             
             if([selectionButton.associatedObject isKindOfClass:[Channel class]]){
-              [self.delegate channelsSelected:self.selectedChannels];
+              [self.selectChannelDelegate channelsSelected:self.selectedChannels];
             }
         }
     }

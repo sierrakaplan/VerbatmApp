@@ -56,7 +56,7 @@
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, SharePOVViewDelegate, UserAndChannelListsTVCDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, UserAndChannelListsTVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;

@@ -134,7 +134,7 @@
     SelectOptionButton * selectionButton = (SelectOptionButton *)sender;
     if([selectionButton buttonSelected]){//if it's already selected then remove it
         [selectionButton setButtonSelected:NO];
-        [self.delegate shareOptionDeselected:selectionButton.buttonSharingOption];
+        [self.sharingDelegate shareOptionDeselected:selectionButton.buttonSharingOption];
         self.selectedButton = nil;
     }else{
         if(self.selectedButton){//only one button can be selected at once
@@ -142,8 +142,8 @@
         }
         
         [selectionButton setButtonSelected:YES];
-        [self.delegate shareOptionSelected:selectionButton.buttonSharingOption];
-        [self.delegate shareOptionDeselected:self.selectedButton.buttonSharingOption];
+        [self.sharingDelegate shareOptionSelected:selectionButton.buttonSharingOption];
+        [self.sharingDelegate shareOptionDeselected:self.selectedButton.buttonSharingOption];
         self.selectedButton = selectionButton;
     }
 }
