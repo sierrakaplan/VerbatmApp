@@ -66,8 +66,8 @@
 
 
 -(void)prepareVideoFromURL_synchronous: (NSURL*) url {
-    if (url) {
-        
+    if (url && ![self.videoAssetList objectForKey:url.absoluteString]) {
+         NSLog(@"Downloaded New Url");
           [self downloadVideo:url];
         
 //        AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:url options:nil];

@@ -43,6 +43,10 @@
 #define FOLLOWERS_TEXT_FONT_SIZE 15.f
 
 
+#define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
+#define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
+
+
 #define CREATE_CHANNEL_BUTTON_FONT_SIZE 19.f
 
 
@@ -164,4 +168,10 @@
 #define BAR_CONTENT_COLOR yellowColor
 #define FOLLOW_ICON_IMAGE_SELECTED  @"follow_user_image_selected"
 #define FOLLOW_ICON_IMAGE_UNSELECTED  @"follow_user_image_unselected"
+
+
+
+#define CHANNEL_LIST_CELL_SEPERATOR_COLOR [UIColor grayColor]
+
+
 #endif /* Styles_h */

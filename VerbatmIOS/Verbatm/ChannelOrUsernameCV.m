@@ -9,16 +9,26 @@
 #import "ChannelOrUsernameCV.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
-
+@import UIKit;
 
 @interface ChannelOrUsernameCV ()
 
     @property (nonatomic) BOOL isAChannel;
     @property (nonatomic) BOOL isAChannelIFollow;
 
-    @property (nonatomic) UILabel * cellTextLabel;
-    @property (nonatomic) NSString * cellText;
+    @property (nonatomic,strong) UILabel * channelNameLabel;
+    @property (nonatomic, strong) UILabel * usernameLabel;
 
+    @property (nonatomic) NSString * channelName;
+    @property (nonatomic) NSString * userName;
+
+    @property (strong, nonatomic) NSDictionary* channelNameLabelAttributes;
+    @property (strong, nonatomic) NSDictionary* userNameLabelAttributes;
+
+    @property (nonatomic) UIView * seperatorView;
+
+    @property (nonatomic) UILabel * headerTitle;//makes the cell a header for the table view
+    @property (nonatomic) BOOL isHeaderTile;
 @end
 
 @implementation ChannelOrUsernameCV
@@ -36,8 +46,7 @@
         self.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
         self.isAChannel = isChannel;
         self.isAChannelIFollow = channelThatIFollow;
-        
-        
+        if(!self.channelNameLabelAttributes)[self createSelectedTextAttributes];
     }
     
     return self;
@@ -48,56 +57,110 @@
 #pragma mark - Edit Cell formatting -
 
 
--(void)setCellTextTitle:(NSString *) title {
-    self.cellText = title;
+-(void)setHeaderTitle{
+    self.isHeaderTile = YES;
+}
+
+
+-(void)setChannelName:(NSString *)channelName andUserName:(NSString *) userName {
+    self.channelName = channelName;
+     self.userName = userName;
+    self.isHeaderTile = NO;
 }
 
 -(void)layoutSubviews {
     //do formatting here
-    [self setLabelAndPresent];
+    if(self.isHeaderTile){
+        //it's in the tab bar list and it should have a title
+        self.headerTitle = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
+        [self addSubview:self.headerTitle];
+    }else {
+        if(self.headerTitle)[self.headerTitle removeFromSuperview];
+        self.headerTitle = nil;
+        [self setLabelsForChannel];
+    }
 }
 
 
--(void)setLabelAndPresent {
-   
+-(void) setLabelsForChannel{
     
-    if(!self.cellTextLabel){
-        
-        CGRect labelFrame = CGRectMake(-5.f, 0.f, self.frame.size.width + 10, self.frame.size.height);
-        
-        self.cellTextLabel = [[UILabel alloc] initWithFrame:labelFrame];
-        
-        self.cellTextLabel.backgroundColor = [UIColor lightGrayColor];
-		self.cellTextLabel.textColor = VERBATM_GOLD_COLOR;
-        
-        //add thin white border
-        self.cellTextLabel.layer.borderWidth = 0.1;
-        self.cellTextLabel.layer.borderColor = [UIColor clearColor].CGColor;
-        
-        [self addSubview:self.cellTextLabel];
+    CGPoint channelNameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING,2.f);
+    CGPoint nameLabelOrigin = CGPointMake(TAB_BUTTON_PADDING,self.frame.size.height/2.f);
+    
+    self.channelNameLabel = [self getLabel:self.channelName withOrigin:channelNameLabelOrigin andAttributes:self.channelNameLabelAttributes];
+    self.usernameLabel = [self getLabel:self.userName withOrigin:nameLabelOrigin andAttributes:self.userNameLabelAttributes];
+    
+    [self addSubview: self.channelNameLabel];
+    [self addSubview:self.usernameLabel];
+    
+    if(!self.seperatorView){
+        self.seperatorView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height, self.frame.size.width,CHANNEL_LIST_CELL_SEPERATOR_HEIGHT)];
+        self.seperatorView.backgroundColor = CHANNEL_LIST_CELL_SEPERATOR_COLOR;
+        [self addSubview:self.seperatorView];
     }
     
-    if(![self.cellTextLabel.text isEqualToString:self.cellText]){
-        NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
-        paragraphStyle.alignment    = NSTextAlignmentCenter;
-        
-        NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
-                                                    [UIColor whiteColor],
-                                                NSFontAttributeName:
-                                                    [UIFont fontWithName:USER_CHANNEL_LIST_FONT size:USER_CHANNEL_LIST_FONT_SIZE],
-                                                NSParagraphStyleAttributeName:paragraphStyle};
-        
-        NSAttributedString * titleAttributed = [[NSAttributedString alloc] initWithString:self.cellText attributes:informationAttribute];
-        
-        [self.cellTextLabel setAttributedText:titleAttributed];
-    }
     
+}
 
+
+-(UILabel *) getLabel:(NSString *) title withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute {
+    
+    NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:title attributes:nameLabelAttribute];
+    CGSize textSize = [title sizeWithAttributes:nameLabelAttribute];
+    
+    CGFloat height = (textSize.height <= (self.frame.size.height/2.f) - 2.f) ?
+    textSize.height : self.frame.size.height/2.f;
+    
+    CGRect labelFrame = CGRectMake(origin.x, origin.y, textSize.width, height);
+    
+    UILabel * nameLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    
+    [nameLabel setAttributedText:tabAttributedTitle];
+    return nameLabel;
 }
 
 
 
+-(void)createSelectedTextAttributes{
+    NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+    paragraphStyle.alignment                = NSTextAlignmentCenter;
+    self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor yellowColor],
+                                                     NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWER_NUMBER_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
+                                                     NSParagraphStyleAttributeName:paragraphStyle};
+    
+    //create "followers" text
+    self.userNameLabelAttributes =@{
+                                                NSForegroundColorAttributeName: [UIColor grayColor],
+                                                NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
+    
+//    self.selectedChannelNameTitleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
+//                                                NSFontAttributeName: [UIFont fontWithName:TAB_BAR_CHANNEL_NAME_FONT size:TAB_BAR_FONT_SIZE],
+//                                                NSParagraphStyleAttributeName:paragraphStyle};
+}
 
+
+
+-(UILabel *) getHeaderTitleForViewWithText:(NSString *) text{
+    
+    CGRect labelFrame = CGRectMake(0.f, 0.f, self.frame.size.width + 10, self.frame.size.height - 12.f);
+    UILabel * titleLabel = [[UILabel alloc] initWithFrame:labelFrame];
+    titleLabel.backgroundColor = [UIColor whiteColor];
+    
+    NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    
+    NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
+                                                [UIColor blackColor],
+                                            NSFontAttributeName:
+                                                [UIFont fontWithName:INFO_LIST_HEADER_FONT size:INFO_LIST_HEADER_FONT_SIZE],
+                                            NSParagraphStyleAttributeName:paragraphStyle};
+    
+    NSAttributedString * titleAttributed = [[NSAttributedString alloc] initWithString:text attributes:informationAttribute];
+    
+    [titleLabel setAttributedText:titleAttributed];
+    
+    return titleLabel;
+}
 
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

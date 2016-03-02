@@ -82,13 +82,16 @@
 
 #pragma mark - Table View Delegate methods (view customization) -
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-    return USER_CELL_VIEW_HEIGHT;
+    return CHANNEL_USER_LIST_CELL_HEIGHT;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if(self.channelsToDisplay){
         //this is some list of channels
-        Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
+        
+        NSInteger objectIndex = indexPath.row - self.presentAllChannels;
+        
+        Channel * channel = [self.channelsToDisplay objectAtIndex:objectIndex];
         PFUser * user = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
         [user fetchIfNeededInBackgroundWithBlock:^
          (PFObject * _Nullable object, NSError * _Nullable error) {
@@ -153,7 +156,6 @@
     
     [Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^
      (NSMutableArray * channels) {
-         
          dispatch_async(dispatch_get_main_queue(), ^{
              if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
              [self.channelsToDisplay addObjectsFromArray:channels];
@@ -179,10 +181,7 @@
 
 -(void)setTableViewHeader{
     if(self.presentAllChannels){
-        //it's in the tab bar list and it should have a title
-        UILabel * titleLabel = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
-        [self.view addSubview:titleLabel];
-        [self.view bringSubviewToFront:titleLabel];
+        
     }else {
         //temporary list view and should be removable
         CGRect navBarFrame = CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
@@ -236,7 +235,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 
-    return self.channelsToDisplay.count;
+    return (self.channelsToDisplay.count + self.presentAllChannels);
 }
 
 
@@ -248,9 +247,24 @@
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
     
-    Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
     
-    [cell setCellTextTitle:[channel name]];
+    if(self.presentAllChannels){
+        
+        if(indexPath.row == 0){
+            //set this tile as the header
+            [cell setHeaderTitle];
+        }else if (indexPath.row > 0){
+            NSInteger objectIndex = (indexPath.row -1);
+            Channel * channel = [self.channelsToDisplay objectAtIndex:objectIndex];
+            NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:USER_USER_NAME_KEY];
+            [cell setChannelName:channel.name andUserName:userName];
+        }
+    }else{
+        Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
+        NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:USER_USER_NAME_KEY];
+        [cell setChannelName:channel.name andUserName:userName];
+    }
+    
     return cell;
 }
 
