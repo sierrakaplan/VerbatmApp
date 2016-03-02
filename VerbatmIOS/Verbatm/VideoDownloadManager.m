@@ -102,12 +102,12 @@
         NSData *downloadedData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
         
         if (!error && downloadedData && (downloadedData.bytes > 0)) {
-           
             NSLog(@"Video Downloaded!");
-            
             //  STORE IN FILESYSTEM
             NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            NSString *file = [cachesDirectory stringByAppendingPathComponent:[[self.counter stringValue] stringByAppendingString:@"test.mov"]];
+            NSString * pathString = [[url.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mov"];
+            
+            NSString *file = [cachesDirectory stringByAppendingPathComponent:pathString];
             //decompress data before writing
             [[UtilityFunctions gzipInflate:downloadedData] writeToFile:file atomically:YES];
             [self.videoAssetList setObject:file forKey:url.absoluteString];
