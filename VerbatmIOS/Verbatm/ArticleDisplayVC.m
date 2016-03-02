@@ -207,11 +207,9 @@
 #pragma mark - POVView Delegate (Like button) -
 
 -(void) likeButtonLiked:(BOOL)liked onPOV: (PovInfo*) povInfo {
-	[self.updatingPOVManager povWithId:povInfo.identifier wasLiked: liked];
+	//todo: update backend
 	[self.delegate userLiked:liked POV:povInfo];
 }
-
-
 
 -(void) setPOVArrayToNull{
     for(int i = 0; i < NUM_POVS_IN_SECTION;i++){

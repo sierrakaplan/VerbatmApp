@@ -338,6 +338,14 @@
 	}
 }
 
+-(void)feedPovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov {
+	//todo:
+}
+
+-(void) feedPovShareButtonSelectedForPOV:(PFObject *)pov {
+	//todo:
+}
+
 //show the list of followers of the current user
 -(void)presentFollowersListMyID:(id) userID {
     UserAndChannelListsTVC * newList = [[UserAndChannelListsTVC alloc] init];
@@ -359,9 +367,6 @@
     [self presentViewController:newList animated:YES completion:^{
         
     }];
-    
-    
-    
 }
 
 //show the channels the current user can select to follow
@@ -374,15 +379,6 @@
 }
 
 -(void)profilePovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov{
-    
-}
-
-
-
-
--(void)feedPovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov {
-    
-    
     
 }
 
