@@ -61,7 +61,7 @@
 
 -(void) storeVideoFromURL: (NSURL*) url withCompletionBlock:(void(^)(GTLVerbatmAppVideo *))block {
 
-	AnyPromise* getVideoDataPromise = [UtilityFunctions loadCachedDataFromURL: url];
+	AnyPromise* getVideoDataPromise = [UtilityFunctions loadCachedVideoDataFromURL:url];
 	AnyPromise* getVideoUploadURIPromise = [self getVideoUploadURI];
 	PMKWhen(@[getVideoDataPromise, getVideoUploadURIPromise]).then(^(NSArray * results){
 		NSData* videoData = results[0];

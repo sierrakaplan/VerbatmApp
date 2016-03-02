@@ -134,7 +134,7 @@
         NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
         for (PFObject * photoBackendObject in photoObjects) {
             NSString * photoUrl = [photoBackendObject valueForKey:PHOTO_IMAGEURL_KEY];
-            AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedDataFromURL: [NSURL URLWithString:photoUrl]];
+            AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString:photoUrl]];
             [loadImageDataPromises addObject: getImageDataPromise];
         }
         PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
@@ -168,7 +168,7 @@
     NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
     
     for (NSString * url in thumbnailUrls) {
-        AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedDataFromURL: [NSURL URLWithString:url]];
+        AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString:url]];
         [loadImageDataPromises addObject: getImageDataPromise];
     }
     PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
@@ -200,8 +200,17 @@
                 NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];
                 components.queryItems = @[blobKey];
                 NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
+                
+                UIImage * thumbNail;
+                
                 if(i < videoThumbNails.count){
-                    [finalVideoObjects addObject: @[components.URL, @"", @(0), [UIImage imageWithData:videoThumbNails[i]]]];
+                    thumbNail = [UIImage imageWithData:videoThumbNails[i]];
+                  
+                }
+                
+                if(thumbNail){
+                    
+                    [finalVideoObjects addObject: @[components.URL, @"", @(0),thumbNail]];
                     [finalVideoUrls addObject:components.URL];
                 }else{
                     [finalVideoObjects addObject: @[components.URL, @"", @(0)]];

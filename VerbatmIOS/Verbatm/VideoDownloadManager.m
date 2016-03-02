@@ -7,6 +7,7 @@
 //
 
 #import "VideoDownloadManager.h"
+#import "UtilityFunctions.h"
 @import Foundation;
 
 @interface VideoDownloadManager ()
@@ -96,21 +97,24 @@
 -(void)downloadVideo:(NSURL *) url {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         
-        NSData *downloadedData = [NSData dataWithContentsOfURL:url];
+        NSError * error = nil;
         
-        if ( downloadedData && (downloadedData.bytes > 0)) {
+        NSData *downloadedData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
+        
+        if (!error && downloadedData && (downloadedData.bytes > 0)) {
            
+            NSLog(@"Video Downloaded!");
+            
             //  STORE IN FILESYSTEM
             NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             NSString *file = [cachesDirectory stringByAppendingPathComponent:[[self.counter stringValue] stringByAppendingString:@"test.mov"]];
-            [downloadedData writeToFile:file atomically:YES];
+            //decompress data before writing
+            [[UtilityFunctions gzipInflate:downloadedData] writeToFile:file atomically:YES];
             [self.videoAssetList setObject:file forKey:url.absoluteString];
             int value = [self.counter intValue];
             self.counter = [NSNumber numberWithInt:value+1];
             
         }
-        
-        // NOW YOU CAN CREATE AN AVASSET OR UIIMAGE FROM THE FILE OR DATA
     });
 }
 
