@@ -14,7 +14,6 @@
 @protocol ProfileNavBarDelegate <NSObject>
 -(void) followOptionSelected;//current user selected to follow a channel
 
-
 -(void) followersOptionSelected;//current user wants to see their own followers
 -(void) followingOptionSelected;//current user wants to see who they follow
 
@@ -32,7 +31,8 @@
 
 @property (nonatomic, strong) id<ProfileNavBarDelegate> delegate;
 
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels startChannel:(Channel *) startChannel andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser;
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels startChannel:(Channel *) startChannel
+					  andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser;
 
 -(void) selectChannel: (Channel*) channel;
 -(void)newChannelCreated: (Channel *) channel;

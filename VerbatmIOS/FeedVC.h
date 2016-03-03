@@ -11,7 +11,7 @@
 @protocol FeedVCDelegate <NSObject>
 
 -(void)showTabBar: (BOOL) show;
--(void)feedPovShareButtonSeletedForPOV: (PFObject* ) pov;
+-(void)feedPovShareButtonSelectedForPOV: (PFObject* ) pov;
 -(void)feedPovLikeLiked:(BOOL) liked forPOV: (PFObject* ) pov;
 
 @end
@@ -19,12 +19,5 @@
 @interface FeedVC : UIViewController
 
 @property (strong, nonatomic) id<FeedVCDelegate> delegate;
-
-// animates the fact that a recent POV is publishing
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
-					andProgressObject:(NSProgress *)publishingProgress;
-
-
-
 
 @end

@@ -81,7 +81,7 @@
 
     self.sharingOption = [[SelectSharingOption alloc] initWithFrame:self.shareOptionSelectionStartFrameONSCREEN];
     [self addSubview:self.sharingOption];
-    self.sharingOption.delegate = self;
+    self.sharingOption.sharingDelegate = self;
     
     [self createShareOrFollowButton_isShare:YES];
     
@@ -351,7 +351,7 @@
 -(SelectChannel *) channelSelectionOptions{
     if(!_channelSelectionOptions) {
         _channelSelectionOptions = [[SelectChannel alloc] initWithFrame:self.channelSelectionFrameOFFSCREEN canSelectMultiple:self.showChannels];
-        _channelSelectionOptions.delegate = self;
+        _channelSelectionOptions.selectChannelDelegate = self;
         [self addSubview:_channelSelectionOptions];
     }
     return _channelSelectionOptions;

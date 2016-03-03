@@ -19,27 +19,24 @@
 #import "Notifications.h"
 
 #import "PostListVC.h"
-//#import "POVListScrollViewVC.h"
 #import <Parse/PFUser.h>
 
 #import "SharePOVView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, SharePOVViewDelegate>
+@interface FeedVC () <UIScrollViewDelegate, SharePOVViewDelegate>
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
 @property (nonatomic) CGRect povScrollViewFrame;
 @property (strong, nonatomic) PostListVC * postListVC;
 
-//@property (nonatomic) PostListVC * postListView;
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
 
 
 @property (nonatomic) SharePOVView * sharePOVView;
 
-#define TRENDING_VC_ID @"trending_vc"
 #define VERBATM_LOGO_WIDTH 150.f
 
 @end
@@ -69,19 +66,6 @@
     if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
 
-
-//-(void) createContentListView {
-//    self.postListVC = [[POVListScrollViewVC alloc] init];
-//    self.postListVC.listOwner = [PFUser currentUser];
-//    self.postListVC.listType = listFeed;
-//    self.postListVC.isHomeProfileOrFeed =YES;
-//   // self.postListVC.delegate = self;
-//    [self.view addSubview:self.postListVC.view];
-//    self.postDisplayVC.delegate = self;
-//    [self.postDisplayVC didMoveToParentViewController:self];
-//}
-
-
 -(void) addPostListVC {
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -98,13 +82,12 @@
     [self.view addSubview:self.postListContainerView];
 }
 
+#pragma mark - POVListSVController -
 
 
-
-#pragma mark -POVListSVController-
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
-        [self presentShareSelectionViewStartOnChannels:YES];
-//    [self.delegate feedPovShareButtonSeletedForPOV:pov];
+	[self presentShareSelectionViewStartOnChannels:YES];
+    [self.delegate feedPovShareButtonSelectedForPOV:pov];
 }
 
 
@@ -130,6 +113,7 @@
 
     }
 }
+
 -(void)returnContentToScreen{
     [self.delegate showTabBar:YES];
     self.contentCoveringScreen = YES;
@@ -184,16 +168,11 @@
     }
 }
 
+#pragma mark - Share POV Delegate -
 
-
-//TODO
-//#pragma mark -POVScrollview delegate-
-//-(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
-//    [self.delegate feedPovLikeLiked:liked forPOV:povInfo];
-//}
-//-(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
-//    [self.delegate feedPovShareButtonSeletedForPOV:povInfo];
-//}
+-(void) sharePostWithComment: (NSString *)comment {
+	//todo:
+}
 
 #pragma mark - Network Connection Lost -
 
@@ -209,4 +188,5 @@
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
 }
+
 @end

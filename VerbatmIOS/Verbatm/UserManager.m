@@ -86,8 +86,6 @@
                         //we don't set the username because that's set by facebook.
                         currentUser.email = email;
 						[currentUser setObject: name forKey:USER_USER_NAME_KEY];
-                        [currentUser setObject: [NSNumber numberWithInt:0] forKey:USER_NUMBER_OF_FOLLOWERS];
-                        [currentUser setObject: [NSNumber numberWithInt:0] forKey:USER_NUMBER_OF_FOLLOWING];
 						[currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                             if(succeeded){
                                 //TODOS--Check why this doesn't work

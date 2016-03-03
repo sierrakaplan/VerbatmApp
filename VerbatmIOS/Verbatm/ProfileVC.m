@@ -39,7 +39,9 @@
 #import "UIView+Effects.h"
 #import "UserManager.h"
 
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate, PublishingProgressProtocol>
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,
+					UIScrollViewDelegate, CreateNewChannelViewProtocol, POVScrollViewDelegate,
+					SharePOVViewDelegate, PublishingProgressProtocol>
 
 @property (strong, nonatomic) PostListVC * postListVC;
 
@@ -81,7 +83,6 @@
     }];
     self.view.clipsToBounds = YES;
 }
-
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
@@ -172,22 +173,19 @@
     [self.view addGestureRecognizer:singleTap];
 }
 
-
-
-#pragma mark -POV ScrollView custom delegate -
+#pragma mark - POV ScrollView custom delegate -
 
 -(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
-    //sierra TODO
     //code to register a like/dislike from the user
 }
 
--(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
+-(void) povshareButtonSelectedForParsePostObject:(PFObject *)pov {
     [self presentShareSelectionViewStartOnChannels:NO];
     
 }
 
-
 #pragma mark POVListScrollView Delegate -
+
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
     [self presentHeadAndFooter:YES];
     [self presentShareSelectionViewStartOnChannels:NO];
@@ -199,7 +197,6 @@
 -(void) followOptionSelected{
     
 }
-
 
 -(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
     if(self.sharePOVView){
@@ -293,7 +290,7 @@
     [self clearChannelCreationView];
 }
 
--(void)clearChannelCreationView{
+-(void) clearChannelCreationView{
     if(self.createNewChannelView){
         [self removeScreenDarkener];
         [self.createNewChannelView removeFromSuperview];
@@ -303,16 +300,21 @@
 
 
 #pragma mark -Share Seletion View Protocol -
--(void)cancelButtonSelected{
+
+-(void) cancelButtonSelected{
     [self removeSharePOVView];
 }
 
--(void)sharePostWithComment:(NSString *) comment{
+-(void) sharePostWithComment:(NSString *) comment {
     //todo--sierra
     //code to share post to facebook etc
     
     [self removeSharePOVView];
     
+}
+
+-(void) postPOVToChannel:(Channel *)channel {
+	//todo:
 }
 
 #pragma mark -Navigate profile-
@@ -443,10 +445,13 @@
 -(UIView*) publishingProgressView {
 	if (!_publishingProgressView) {
 		_publishingProgressView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.profileNavBar.frame.size.height,
-																		   self.view.frame.size.width, 10.f)];
+																		   self.view.frame.size.width, 20.f)];
 		[_publishingProgressView setBackgroundColor:[UIColor blackColor]];
 		self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-		[self.progressBar setFrame:CGRectMake(5.f, 5.f, self.view.frame.size.width - 10.f, self.progressBar.frame.size.height)];
+		[self.progressBar setTrackTintColor:[UIColor grayColor]];
+		[self.progressBar setFrame:CGRectMake(15.f, 15.f, self.view.frame.size.width - 30.f, self.progressBar.frame.size.height)];
+		[self.progressBar setTransform:CGAffineTransformMakeScale(1.0, 3.0)];
+		[self.progressBar.layer setCornerRadius:10.f];
 		if ([self.progressBar respondsToSelector:@selector(setObservedProgress:)]) {
 			[self.progressBar setObservedProgress: self.publishingProgress];
 		} else {

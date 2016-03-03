@@ -445,7 +445,6 @@ rowHeightForComponent:(NSInteger)component{
 
 // Loads pinch views from user defaults
 -(void) loadPOVFromUserDefaults {
-	NSString* savedTitle = [[UserPovInProgress sharedInstance] title];
 
 	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
@@ -1893,7 +1892,7 @@ rowHeightForComponent:(NSInteger)component{
             //prompt user to add channel title-- TODO
             
         } else {
-            channelToPostIn = [[Channel alloc] initWithChannelName:textField.text numberOfFollowers:[NSNumber numberWithInt:0] andParseChannelObject:nil];
+            channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil];
         }
     }
     BOOL posting = [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews];

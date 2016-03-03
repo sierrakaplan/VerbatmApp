@@ -175,7 +175,7 @@
 			povInfo = [self.povLoader getPOVInfoAtIndex: index];
 		}
 		// check if user likes this story
-		BOOL currentUserLikesStory = [[UserManager sharedInstance] currentUserLikesStory:povInfo];
+		BOOL currentUserLikesStory = false; //todo: [[UserManager sharedInstance] currentUserLikesStory:povInfo];
 		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title
 					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes
 				  likedByCurrentUser:currentUserLikesStory];

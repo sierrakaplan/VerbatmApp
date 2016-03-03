@@ -27,6 +27,9 @@
 @property (nonatomic, readwrite) Channel* currentPublishingChannel;
 @property (nonatomic, readwrite) NSProgress * progressAccountant;
 @property (nonatomic) PFObject * currentParsePostObject;
+
+#define INITIAL_PROGRESS_UNITS 3
+
 @end
 
 @implementation PublishingProgressManager
@@ -43,7 +46,7 @@
 }
 
 -(void)countMediaContentFromPinchViews:(NSArray *)pinchViews{
-    CGFloat totalProgressUnits = 0.f;
+    CGFloat totalProgressUnits = INITIAL_PROGRESS_UNITS;
     for(PinchView * pv in pinchViews){
         if([pv isKindOfClass:[CollectionPinchView class]]){
             totalProgressUnits+= [(CollectionPinchView *)pv getNumPinchViews];
@@ -52,6 +55,7 @@
         }
     }
     self.progressAccountant = [NSProgress progressWithTotalUnitCount: totalProgressUnits];
+	self.progressAccountant.completedUnitCount = INITIAL_PROGRESS_UNITS;
 }
 
 -(void)savingMediaFailed{

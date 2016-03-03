@@ -167,18 +167,13 @@
     if(self.isFollowigProfileUser){
         newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
         self.isFollowigProfileUser = NO;
-        
-        
-    }else{
+    } else{
         newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
         self.isFollowigProfileUser = YES;
     }
     [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
     [self.followButton setNeedsDisplay];
     [self.delegate followButtonSelectedShouldFollowUser: self.isFollowigProfileUser];
-    
-    
-    
 }
 
 -(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel{

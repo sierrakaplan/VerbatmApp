@@ -91,7 +91,7 @@
     
     if(!COMPRESSING) return data;
     
-   NSLog(@"Video File start size: %d", [data length]);
+   	NSLog(@"Video File start size: %ld", (unsigned long)[data length]);
     
     z_stream strm;
     
@@ -130,7 +130,7 @@
     
     
     NSData * finalResult = [NSData dataWithData:compressed];
-    NSLog(@"Video File end size: %d", [finalResult length]);
+    NSLog(@"Video File end size: %lu", (unsigned long)[finalResult length]);
     return finalResult;
 }
 

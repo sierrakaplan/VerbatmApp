@@ -15,9 +15,8 @@
 @interface Channel : NSObject
 @property (nonatomic) id userId;//identifier for user that owns this channel
 @property (nonatomic, readonly) NSString * name;
-@property (nonatomic, readonly) NSNumber * numberOfFollowers;
 @property (nonatomic, readonly) PFObject * parseChannelObject;
 
 
--(instancetype) initWithChannelName:(NSString *) channelName numberOfFollowers:(NSNumber *) numberOfFollowers andParseChannelObject:(PFObject *) parseChannelObject;
+-(instancetype) initWithChannelName:(NSString *) channelName andParseChannelObject:(PFObject *) parseChannelObject;
 @end
