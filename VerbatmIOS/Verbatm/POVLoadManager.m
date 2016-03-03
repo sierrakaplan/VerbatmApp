@@ -54,8 +54,8 @@
 	return self;
 }
 
--(instancetype) initWithUserId:(NSNumber *)userId {
-	self = [self initWithType:POVTypeUser];
+-(instancetype) initWithUserId: (NSNumber*) userId andChannel:(NSString *) channelName {
+    self = [self initWithType:POVTypeUser];
 	if (self) {
 		self.userID = userId;
 	}
@@ -63,8 +63,7 @@
 }
 
 // Load numToLoad POV's, replacing any POV's that were already loaded
-// TODO: combine these?
-// First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the cover pictures and
+// First loads the GTLVerbatmAppPOVInfo's from the datastore then downloads all the
 // stores the array of POVInfo's
 -(void) reloadPOVs: (NSInteger) numToLoad {
 
@@ -73,16 +72,14 @@
 
 	GTLQuery* loadQuery = [self getLoadingQuery: numToLoad withCursor: NO];
 	[self loadPOVs: loadQuery].then(^(NSArray* gtlPovInfos) {
-		NSMutableArray* loadCoverPhotoPromises = [[NSMutableArray alloc] init];
+		NSMutableArray* loadUserNamePromises = [[NSMutableArray alloc] init];
 		for (GTLVerbatmAppPOVInfo* gtlPovInfo in gtlPovInfos) {
-			if (gtlPovInfo.coverPicUrl) {
-				[loadCoverPhotoPromises addObject: [self getPOVInfoWithExtraInfoFromGTLPOVInfo:gtlPovInfo]];
-			}
+			[loadUserNamePromises addObject: [self getPOVInfoWithExtraInfoFromGTLPOVInfo:gtlPovInfo]];
 		}
-		return PMKWhen(loadCoverPhotoPromises);
-	}).then(^(NSArray* povInfosWithCoverPhoto) {
+		return PMKWhen(loadUserNamePromises);
+	}).then(^(NSArray* povInfosWithExtraInfo) {
 		self.povInfos = [[NSMutableArray alloc] init];
-		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
+		[self.povInfos addObjectsFromArray: povInfosWithExtraInfo];
 		NSLog(@"Successfully refreshed POVs!");
 		[self.delegate povsRefreshed];
 	}).catch(^(NSError* error) {
@@ -104,14 +101,14 @@
 			[loadMoreInfoPromises addObject: [self getPOVInfoWithExtraInfoFromGTLPOVInfo:gtlPovInfo]];
 		}
 		return PMKWhen(loadMoreInfoPromises);
-	}).then(^(NSArray* povInfosWithCoverPhoto) {
-		if (povInfosWithCoverPhoto.count < numOfNewPOVToLoad) {
+	}).then(^(NSArray* povInfosWithExtraInfo) {
+		if (povInfosWithExtraInfo.count < numOfNewPOVToLoad) {
 			self.noMorePOVsToLoad = YES;
 			NSLog(@"No more POV's to load");
 		}
-		[self.povInfos addObjectsFromArray: povInfosWithCoverPhoto];
+		[self.povInfos addObjectsFromArray: povInfosWithExtraInfo];
 		NSLog(@"Successfully loaded more POVs!");
-		[self.delegate morePOVsLoaded: povInfosWithCoverPhoto.count];
+		[self.delegate morePOVsLoaded: povInfosWithExtraInfo.count];
 	}).catch(^(NSError* error) {
 		 NSLog(@"Error loading more POVs: %@", error.description);
 	});
@@ -135,22 +132,18 @@
 	return promise;
 }
 
-// Once it gets the data from the cover photo url, creates a UIImage from that data
+// Once it gets the data, creates a UIImage from that data
 // and stores it in a newly created PovInfo, which it returns
 -(AnyPromise*) getPOVInfoWithExtraInfoFromGTLPOVInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo {
 	AnyPromise* userNamePromise = [self loadUserNameFromUserID:gtlPovInfo.creatorUserId];
-	AnyPromise* coverPicDataPromise = [UtilityFunctions loadCachedDataFromURL: [NSURL URLWithString:gtlPovInfo.coverPicUrl]];
 	AnyPromise* loadUserIDsWhoHaveLikedThisPOV = [self loadUserIDsWhoHaveLikedPOVWithID: gtlPovInfo.identifier];
-	return PMKWhen(@[userNamePromise, coverPicDataPromise, loadUserIDsWhoHaveLikedThisPOV]).then(^(NSArray* results) {
+	return PMKWhen(@[userNamePromise, loadUserIDsWhoHaveLikedThisPOV]).then(^(NSArray* results) {
 		NSString* userName = results[0];
-		NSData* coverPhotoData = results[1];
-		UIImage* coverPhoto = nil;
-		if (coverPhotoData && ![coverPhotoData isEqual:[NSNull null]]) {
-			coverPhoto = [UIImage imageWithData: coverPhotoData];
-		}
-		NSArray* userIDs = results[2];
-		PovInfo* povInfoWithCoverPhoto = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo andUserName:userName andCoverPhoto: coverPhoto andUserIDsWhoHaveLikedThisPOV:userIDs];
-		return povInfoWithCoverPhoto;
+		NSArray* userIDs = results[1];
+		PovInfo* povInfoWithUserName = [[PovInfo alloc] initWithGTLVerbatmAppPovInfo:gtlPovInfo
+																		   andUserName:userName
+														 andUserIDsWhoHaveLikedThisPOV:userIDs];
+		return povInfoWithUserName;
 	});
 }
 
@@ -246,16 +239,16 @@
 
 // update povInfo just so that it shows up right in the feed
 -(void) currentUserLiked: (BOOL) liked povInfo: (PovInfo*) povInfo {
-	GTLVerbatmAppVerbatmUser* currentUser = [[UserManager sharedInstance] getCurrentUser];
-	NSMutableArray* updatedUsersWhoHaveLikedThisPOV = [[NSMutableArray alloc] initWithArray:povInfo.userIDsWhoHaveLikedThisPOV copyItems:NO];
-	if (liked && ![updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
-		[updatedUsersWhoHaveLikedThisPOV addObject: currentUser.identifier];
-	} else if(!liked && [updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
-		[updatedUsersWhoHaveLikedThisPOV removeObject: currentUser.identifier];
-	}
-	povInfo.userIDsWhoHaveLikedThisPOV = updatedUsersWhoHaveLikedThisPOV;
-	long long newNumUpVotes = (long long) updatedUsersWhoHaveLikedThisPOV.count;
-	povInfo.numUpVotes = [NSNumber numberWithLongLong: newNumUpVotes];
+//	GTLVerbatmAppVerbatmUser* currentUser = [[UserManager sharedInstance] getCurrentUser];
+//	NSMutableArray* updatedUsersWhoHaveLikedThisPOV = [[NSMutableArray alloc] initWithArray:povInfo.userIDsWhoHaveLikedThisPOV copyItems:NO];
+//	if (liked && ![updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
+//		[updatedUsersWhoHaveLikedThisPOV addObject: currentUser.identifier];
+//	} else if(!liked && [updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
+//		[updatedUsersWhoHaveLikedThisPOV removeObject: currentUser.identifier];
+//	}
+//	povInfo.userIDsWhoHaveLikedThisPOV = updatedUsersWhoHaveLikedThisPOV;
+//	long long newNumUpVotes = (long long) updatedUsersWhoHaveLikedThisPOV.count;
+//	povInfo.numUpVotes = [NSNumber numberWithLongLong: newNumUpVotes];
 }
 
 #pragma mark - Lazy Instantiation -

@@ -12,8 +12,6 @@
 #import "POVLoadManager.h"
 #import "Styles.h"
 
-#import <PromiseKit/PromiseKit.h>
-
 @interface VideoPinchView()
 
 @property (strong, nonatomic) UIImage* videoImage;
@@ -89,11 +87,15 @@
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
-		NSString* phAssetLocalId = [decoder decodeObjectForKey:PHASSET_IDENTIFIER_KEY];
-		self.phAssetLocalIdentifier = phAssetLocalId;
+		self.phAssetLocalIdentifier = [decoder decodeObjectForKey:PHASSET_IDENTIFIER_KEY];
+	}
+	return self;
+}
 
+-(AnyPromise*) loadAVURLAssetFromPHAsset {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 		// load video avurlasset from phasset
-		PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[phAssetLocalId] options:nil];
+		PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
 		PHAsset* videoAsset = fetchResult.firstObject;
 		PHVideoRequestOptions* options = [PHVideoRequestOptions new];
 		options.networkAccessAllowed =  YES; //videos won't only be loaded over wifi
@@ -104,10 +106,11 @@
 												  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
 													  dispatch_async(dispatch_get_main_queue(), ^{
 														  [self initWithVideo: (AVURLAsset*)videoAsset];
+														  resolve(videoAsset);
 													  });
 												  }];
-	}
-	return self;
+	}];
+	return promise;
 }
 
 #pragma mark - Lazy Instantiation -

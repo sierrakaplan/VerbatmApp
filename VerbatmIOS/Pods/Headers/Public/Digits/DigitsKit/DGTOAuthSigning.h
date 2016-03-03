@@ -1,1 +1,1 @@
-../../../../Digits/DigitsKit.framework/Headers/DGTOAuthSigning.h
+../../../../Digits/iOS/DigitsKit.framework/Headers/DGTOAuthSigning.h

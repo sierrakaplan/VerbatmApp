@@ -99,7 +99,7 @@
 // Loads all the GTLVerbatmAppImage and Video objects and
 // creates a Page object containing them.
 -(AnyPromise*) loadPageFromGTLPage: (GTLVerbatmAppPage*) gtlPage {
-	return PMKWhen(@[[self loadImagesForImageIDs: gtlPage.imageIds],
+	return PMKWhen(@[[self loadImagesFromImageIDs: gtlPage.imageIds],
 					 [self loadVideosFromVideoIDs: gtlPage.videoIds]]).then(^(NSArray* imagesAndVideos) {
 		Page* page = [Page alloc];
 		page.images = imagesAndVideos[0];
@@ -110,7 +110,7 @@
 }
 
 // Resolves to array of GTLVerbatmAppImage's or error
--(AnyPromise*) loadImagesForImageIDs: (NSArray*) imageIDs {
+-(AnyPromise*) loadImagesFromImageIDs: (NSArray*) imageIDs {
 	NSMutableArray* loadImagePromises = [[NSMutableArray array] init];
 	for (NSNumber* imageID in imageIDs) {
 		[loadImagePromises addObject:[self loadImageWithID: imageID]];

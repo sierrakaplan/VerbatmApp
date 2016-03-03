@@ -116,12 +116,7 @@
 
 //allows the user to change the width and height of the frame keeping the same center
 -(void) changeWidthTo: (double) width {
-    //if(width < MIN_PINCHVIEW_SIZE) return;
-
-    CGPoint center = self.center;
-    CGRect newFrame = CGRectMake(center.x- width/2, center.y - width/2, width, width);
-    self.frame = newFrame;
-    [self setBackgroundFrames];
+    [self specifyRadius:(width/2.f) andCenter:self.center];
 }
 
 -(void)removeBorder {
@@ -129,20 +124,7 @@
 }
 
 -(NSInteger) numTypesOfMedia {
-	return (self.containsImage ? 1 : 0)
-	+ (self.containsVideo ? 1 : 0);
-}
-
-+(PinchView*) pinchTogether:(NSArray*) pinchViews {
-	if (!pinchViews || ([pinchViews count] < 1)) {
-		return nil;
-	}
-	PinchView* firstPinchView = [pinchViews firstObject];
-	if ([pinchViews count] < 2) {
-		return	firstPinchView;
-	}
-
-	return [[CollectionPinchView alloc] initWithRadius:firstPinchView.radius withCenter:firstPinchView.center andPinchViews:pinchViews];
+	return (self.containsImage ? 1 : 0) + (self.containsVideo ? 1 : 0);
 }
 
 #pragma mark - Mark as selected or deleting -

@@ -16,11 +16,10 @@
 
 #pragma mark - ADK -
 
-#define TEXT_WORD_LIMIT 20
+#define TEXT_WORD_LIMIT 40
 #define GALLERY_PICKER_TITLE @"Verbatm"
 #define VERBATM_ALBUM_NAME @"Verbatm"
 #define GALLERY_CUSTOM_MESSAGE @"Pick media to add to your story!"
-#define COVERPIC_GALLERY_CUSTOM_MESSAGE @"Pick a photo as your cover photo!"
 
 #define VERBATM_EXPLANATION_TEXT @"We're currently testing stories that comply with the following pattern: \n \
 1. Photos, Videos, or Text (PVT) that introduces you and the event you're going to. Talk a little about how you feel about the event (excited, interested, etc.) \n \

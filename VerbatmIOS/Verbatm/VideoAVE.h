@@ -6,22 +6,26 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <AVKit/AVKit.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import <UIKit/UIKit.h>
+
+#import "ArticleViewingExperience.h"
+#import "PinchView.h"
 #import "TextOverMediaView.h"
 #import "VideoPlayerView.h"
 
-@interface VideoAVE : VideoPlayerView
+@interface VideoAVE : ArticleViewingExperience
+
+@property (strong, nonatomic, readonly) VideoPlayerView* videoPlayer;
 
 //note that the video list can be avurlasset or nsurl
--(id)initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList;
+-(instancetype) initWithFrame:(CGRect)frame andVideoArray:(NSArray*) videoAndTextList;
 
--(void)onScreen;
--(void)offScreen;
-//for when you want to change the video set
--(void)playVideos:(NSArray*)videoList;
--(void)almostOnScreen;
+// Initializer for preview mode
+-(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView inPreviewMode: (BOOL) inPreviewMode;
+
+
 @end

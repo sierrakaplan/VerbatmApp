@@ -6,20 +6,29 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import "ArticleViewingExperience.h"
+
+#import <Foundation/Foundation.h>
+#import <Parse/PFObject.h>
 #import <PromiseKit/PromiseKit.h>
 
 @class Page;
 
+
+
+typedef enum AveTypes{
+    AveTypePhoto = 0,
+    AveTypeVideo = 1,
+    AveTypePhotoVideo = 2,
+}AveTypes;
+
+
 @interface AVETypeAnalyzer : NSObject
 
--(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame;
-
-// not in use!
--(NSMutableArray*) getAVESFromPages: (NSArray*) pages withFrame: (CGRect) frame;
+-(NSMutableArray*) getAVESFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode ;
 
 // returns a promise that either resolves to an ave or error
--(AnyPromise*) getAVEFromPage: (Page*) page withFrame: (CGRect) frame;
-
+-(void) getAVEFromPage: (PFObject *)page withFrame: (CGRect) frame andCompletionBlock:(void(^)(NSArray *))block;
++(ArticleViewingExperience *)getAVEFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame;
 @end

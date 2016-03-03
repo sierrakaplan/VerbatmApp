@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "CoverPicturePinchView.h"
 #import "Durations.h"
 
 #import "EditContentVC.h"
@@ -86,13 +85,8 @@
 	} else { // pinch view contains video
 		[self displayVideo:[(VideoPinchView*)self.openPinchView video]];
 	}
-	if (![self.openPinchView isKindOfClass:[CoverPicturePinchView class]]) {
-		if (self.openPinchView.text && self.openPinchView.text.length) {
-			[self setText:self.openPinchView.text andTextViewYPosition:self.openPinchView.textYPosition.floatValue];
-		}
-	}
-    if(![[UserSetupParameters sharedInstance] filter_InstructionShown] && [self.openPinchView isKindOfClass:[ImagePinchView class]]) {
-		[self alertAddFilter];
+	if (self.openPinchView.text && self.openPinchView.text.length) {
+		[self setText:self.openPinchView.text andTextViewYPosition:self.openPinchView.textYPosition.floatValue];
 	}
 }
 
@@ -133,7 +127,7 @@
 	if(![self.textAndImageView textShowing]) {
 		[self setText:@"" andTextViewYPosition: TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
 	}
-	[self.textAndImageView.textView becomeFirstResponder];
+    [self.textAndImageView showText:YES];
 }
 
 -(void) setText: (NSString*) text andTextViewYPosition: (CGFloat) yPosition {

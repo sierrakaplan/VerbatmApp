@@ -1,1 +1,1 @@
-../../../../Digits/DigitsKit.framework/Headers/DGTContactsUploadResult.h
+../../../../Digits/iOS/DigitsKit.framework/Headers/DGTContactsUploadResult.h

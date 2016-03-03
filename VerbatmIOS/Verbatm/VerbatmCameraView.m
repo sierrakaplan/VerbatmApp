@@ -68,7 +68,7 @@
 	self.closeButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.closeButton setImage:[UIImage imageNamed:MINIMIZE_ICON] forState:UIControlStateNormal];
 	[self.closeButton setFrame:CGRectMake(CAPTURE_MEDIA_BUTTON_OFFSET, CAPTURE_MEDIA_BUTTON_OFFSET,
-										  CAPTURE_MEDIA_BUTTON_SIZE, CAPTURE_MEDIA_BUTTON_SIZE)];
+										  CLOSE_CAMERA_BUTTON_SIZE, CLOSE_CAMERA_BUTTON_SIZE)];
 	[self.closeButton addTarget:self action:@selector(closeButtonTapped) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:self.closeButton];
 }
@@ -94,8 +94,8 @@
 -(void) addSwitchCameraOrientationButton {
 	self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
 	[self.switchCameraButton setImage:[UIImage imageNamed:SWITCH_CAMERA_ORIENTATION_ICON] forState:UIControlStateNormal];
-	[self.switchCameraButton setFrame:CGRectMake(self.bounds.size.width - CAPTURE_MEDIA_BUTTON_OFFSET - SWITCH_ORIENTATION_ICON_SIZE,
-												 self.bounds.size.height - FLASH_ICON_SIZE - CAPTURE_MEDIA_BUTTON_OFFSET,
+	[self.switchCameraButton setFrame:CGRectMake(self.bounds.size.width - (CAPTURE_MEDIA_BUTTON_OFFSET*2) - SWITCH_ORIENTATION_ICON_SIZE,
+												 self.captureMediaButton.center.y - (SWITCH_ORIENTATION_ICON_SIZE/2.f),
 												 SWITCH_ORIENTATION_ICON_SIZE,
 												 SWITCH_ORIENTATION_ICON_SIZE)];
 	self.switchCameraButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -105,9 +105,9 @@
 
 -(void) addToggleFlashButton {
 	self.switchFlashButton= [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.switchFlashButton setFrame:CGRectMake(CAPTURE_MEDIA_BUTTON_OFFSET,
-												self.bounds.size.height - FLASH_ICON_SIZE - CAPTURE_MEDIA_BUTTON_OFFSET,
-												FLASH_ICON_SIZE, FLASH_ICON_SIZE)];
+	[self.switchFlashButton setFrame:CGRectMake((CAPTURE_MEDIA_BUTTON_OFFSET * 2),
+												self.captureMediaButton.center.y -(FLASH_ICON_SIZE_HEIGHT/2.f),
+												FLASH_ICON_SIZE_WIDTH, FLASH_ICON_SIZE_HEIGHT)];
 	self.switchFlashButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 	[self.switchFlashButton addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
 	self.flashOffIcon = [UIImage imageNamed:FLASH_ICON_OFF];

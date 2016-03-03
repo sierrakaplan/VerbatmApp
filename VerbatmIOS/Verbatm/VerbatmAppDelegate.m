@@ -33,29 +33,30 @@
 @implementation VerbatmAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [self setUpParseWithLaunchOptions: launchOptions];
+//
+//
+//        PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
+//            return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
+//                                   userInfo:nil];
+//        });
+//
+        
+        [[UserSetupParameters sharedInstance] setUpParameters];
+                
+        [[Analytics getSharedInstance] newUserSession];
 
-	[self setUpParseWithLaunchOptions: launchOptions];
+        // Fabric and optimizely
+        [Fabric with:@[[Digits class], [Optimizely class], [Twitter class], [Crashlytics class]]];
+    //	[Optimizely startOptimizelyWithAPIToken: @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
 
-	PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
-		return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
-							   userInfo:nil];
-	});
-
-    [[UserSetupParameters sharedInstance] setUpParameters];//this sets up
-	[[UserPovInProgress sharedInstance] loadPOVFromUserDefaults];
+    //});
     
-    [[Analytics getSharedInstance] newUserSession];
-
-	// Fabric and optimizely
-	[Fabric with:@[[Digits class], [Optimizely class], [Twitter class], [Crashlytics class]]];
-//	[Optimizely startOptimizelyWithAPIToken: @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
-
-	// start querying for current user
-	if ([PFUser currentUser].isAuthenticated) {
-		[[UserManager sharedInstance] queryForCurrentUser];
-	}
-
+    [application setStatusBarHidden:YES];
+    
     return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+   
 }
 
 -(void) setUpParseWithLaunchOptions: (NSDictionary*)launchOptions {

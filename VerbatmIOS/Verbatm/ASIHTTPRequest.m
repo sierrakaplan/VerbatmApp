@@ -574,7 +574,8 @@ static NSOperationQueue *sharedQueue = nil;
 - (void)appendPostData:(NSData *)data
 {
 	[self setupPostBody];
-	if ([data length] == 0) {
+	if ([data isEqual:[NSNull null]] || [data length] == 0) {
+		NSLog(@"Data null...");
 		return;
 	}
 	if ([self shouldStreamPostDataFromDisk]) {

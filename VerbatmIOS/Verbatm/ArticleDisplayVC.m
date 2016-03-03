@@ -1,4 +1,4 @@
-//
+ //
 //  ArticleDisplayVC.m
 //  Verbatm
 //
@@ -9,8 +9,6 @@
 #import "Analytics.h"
 #import "ArticleDisplayVC.h"
 #import "AVETypeAnalyzer.h"
-
-#import "CoverPhotoAVE.h"
 
 #import "GTLVerbatmAppPOVInfo.h"
 #import "GTLVerbatmAppPage.h"
@@ -26,7 +24,7 @@
 #import "UpdatingPOVManager.h"
 #import "UIView+Effects.h"
 
-@interface ArticleDisplayVC () <PagesLoadManagerDelegate, LikeButtonDelegate>
+@interface ArticleDisplayVC () <UIScrollViewDelegate, POVLoadManagerDelegate>
 
 @property (strong, nonatomic) POVDisplayScrollView* scrollView;
 
@@ -38,17 +36,19 @@
 
 //Should not retain strong reference to the load manager since the
 //ArticleListVC also contains a reference to it
-@property (weak, nonatomic) POVLoadManager* povLoadManager;
-
-// Load manager in charge of getting page objects and all their media for each pov
-@property (strong, nonatomic) PagesLoadManager* pageLoadManager;
+@property (strong, nonatomic) POVLoadManager* povLoadManager;
 
 // In charge of updating information about a pov (number of likes, etc.)
 @property (strong, nonatomic) UpdatingPOVManager* updatingPOVManager;
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
+@property (nonatomic) NSInteger currentIndexInView;
+
 #define ACTIVITY_ANIMATION_Y 100
+#define NUM_POVS_IN_SECTION 20
+#define NUM_POVS_LOADED_BEFORE 2
+#define NUM_POVS_LOADED_AFTER 2
 @end
 
 @implementation ArticleDisplayVC
@@ -58,57 +58,151 @@
 	//TODO: should always have 4 stories in memory (two in the direction of scroll, current, and one back)
 	self.scrollView.contentSize = CGSizeMake(self.view.bounds.size.width, self.view.bounds.size.height);
 	[self.view addSubview: self.scrollView];
-	self.pageLoadManager.delegate = self;
 }
+
+-(void) presentContentWithPOVType: (POVType) povType andChannel:(NSString *) channel{
+    if(povType == POVTypeUser){
+        //will be changed to show different people on
+        NSNumber* aishwaryaId = [NSNumber numberWithLongLong:5432098273886208];
+        self.povLoadManager = [[POVLoadManager alloc] initWithUserId: aishwaryaId andChannel:channel];
+        self.povLoadManager.delegate = self;
+        [self.povLoadManager reloadPOVs: NUM_POVS_IN_SECTION];
+    }else{
+        self.povLoadManager = [[POVLoadManager alloc] initWithType:povType];
+        self.povLoadManager.delegate = self;
+        [self.povLoadManager reloadPOVs: NUM_POVS_IN_SECTION];
+    }
+}
+
 
 // When user clicks story, loads one behind it and the two ahead
--(void) loadStoryAtIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager {
-	self.povLoadManager = loadManager;
-	PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
-	NSNumber* povID = povInfo.identifier;
-	[self.pageLoadManager loadPagesForPOV: povID];
-	[self.povIDs addObject: povID];
-	POVView* povView = [[POVView alloc] initWithFrame: self.view.bounds andPOVInfo:povInfo];
-	CoverPhotoAVE* coverAVE = [[CoverPhotoAVE alloc] initWithFrame:self.view.bounds andImage:povInfo.coverPhoto andTitle: povInfo.title];
-	[povView renderNextAve:coverAVE withIndex:[NSNumber numberWithInteger:0]];
-	[self.scrollView addSubview: povView];
-	[self.povViews addObject: povView];
-    self.activityIndicator = [self.view startActivityIndicatorOnViewWithCenter: CGPointMake(self.view.center.x, ACTIVITY_ANIMATION_Y)
-                                                            andStyle:UIActivityIndicatorViewStyleWhiteLarge];
-    self.activityIndicator.color = [UIColor blackColor];
+-(void) loadStoryFromStart {
+    self.currentIndexInView = 0;//So that the first screen plays
+    [self preparePOVatIndex:0];
+    [self playViewOnScreen];
+    //[self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+
+
+    //    [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
+
+}
+
+-(void)createLoadManger{
     
-    [[Analytics getSharedInstance]storyStartedViewing:povInfo.title];
 }
 
-// When user scrolls to a new story, loads the next two in that
-// direction of scroll
--(void) loadNextTwoStories: (NSInteger) index {
+
+#pragma mark - Load Manger Profile -
+
+//load manager protocol
+-(void) povsRefreshed{
+    [self loadStoryFromStart];
+     [self updateScrollview];
 }
 
-#pragma mark - Page load manager delegate -
-
--(void) pagesLoadedForPOV:(NSNumber *)povID {
-	NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
-	NSUInteger povIndex = [self.povIDs indexOfObject: povID];
-	POVView* povView = self.povViews[povIndex];
-
-	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
-	for (Page* page in pages) {
-		[analyzer getAVEFromPage: page withFrame: self.view.bounds].then(^(UIView* ave) {
-			NSInteger pageIndex = page.indexInPOV+1; // bc cover page +1
-			// When first page loads, show down arrow
-			if (pageIndex == 1) {
-				[povView addDownArrowButton];
-				[povView addLikeButtonWithDelegate:self];
-				[self.activityIndicator stopAnimating];
-				self.activityIndicator = nil;
-			}
-			[povView renderNextAve: ave withIndex: [NSNumber numberWithInteger:pageIndex]];
-		}).catch(^(NSError* error) {
-			NSLog(@"Error getting AVE from page: %@", error.description);
-		});
-	}
+// Successfully loaded more POV's
+-(void) morePOVsLoaded: (NSInteger) numLoaded {
+     [self updateScrollview];
 }
+// Was unable to load more POV's for some reason
+-(void) failedToLoadMorePOVs{
+    
+}
+// Was unable to refresh POV's for some reason
+-(void) povsFailedToRefresh{
+    
+}
+
+#pragma mark -manage multiple stories present-
+
+-(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    [self playViewOnScreen];
+    [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+}
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    
+}
+
+-(void)playViewOnScreen{
+    NSInteger indexOfViewBeingDisplayed = self.scrollView.contentOffset.x/self.view.frame.size.width;
+    if(indexOfViewBeingDisplayed == self.currentIndexInView){
+        [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+    }else{
+        if(self.povViews[self.currentIndexInView] != [NSNull null]){
+            [(POVView *)self.povViews[self.currentIndexInView] povOffScreen];
+        }
+        if(self.povViews[indexOfViewBeingDisplayed] != [NSNull null]){
+            [(POVView *)self.povViews[indexOfViewBeingDisplayed] povOnScreen];
+            self.currentIndexInView = indexOfViewBeingDisplayed;
+        }else{
+            [self preparePOVatIndex:indexOfViewBeingDisplayed];
+            [(POVView *)self.povViews[indexOfViewBeingDisplayed] povOnScreen];
+        }
+    }
+}
+
+/*
+ Makes sure that there are a certain number of POVs prepared before and after the current view. 
+ This makes it easier to load and play videos swiftly.
+ 
+ */
+-(void) loadNextStoriesWithNumberOfPOVsBefore:(NSInteger) numPOVsBefore andNumberOfPOVsAfter:(NSInteger) numPOVsAfter {
+    NSInteger currentPageIndex = self.scrollView.contentOffset.x/self.view.frame.size.width;
+    
+    NSInteger minIndex = currentPageIndex - numPOVsBefore;
+    NSInteger maxIndex = currentPageIndex + numPOVsAfter;
+    
+    for(NSInteger i = 0; i < self.povViews.count; i++){
+        id currentView = self.povViews[i];
+        if((minIndex <= i) && (i <= maxIndex) && (i != currentPageIndex)) {
+            if(currentView == [NSNull null]){
+                [self preparePOVatIndex:i];
+            }
+        }else if (i != currentPageIndex){
+            if(currentView != [NSNull null]){
+                [(POVView *)currentView clearArticle];
+                [(POVView *)currentView removeFromSuperview];
+                self.povViews[i] = [NSNull null];
+            }
+        }
+    }
+}
+
+-(void)preparePOVatIndex:(NSInteger) index {
+    PovInfo* povInfo = [self.povLoadManager getPOVInfoAtIndex:index];
+    if(povInfo){
+        POVView* povView = [[POVView alloc] initWithFrame: [self getFrameForPovAtIndex:index] andPovParseObject:nil];
+        [self.povViews replaceObjectAtIndex:index withObject:povView];
+        [self.scrollView addSubview:povView];
+        [povView preparePOVToBePresented];
+    }
+}
+
+-(void) dropUnusedPOVExceptleft:(NSInteger) left center:(NSInteger) center right:(NSInteger) right{
+    for(int i = 0; i < self.povViews.count; i++){
+        @autoreleasepool {
+            if((self.povViews[i] != [NSNull null]) && //make sure it's not already null
+               ((i != left) && (i != center) && (i != right))){
+                
+                [(POVView *)self.povViews[i] clearArticle];
+                [(POVView *)self.povViews[i] removeFromSuperview];
+                self.povViews[i] = [NSNull null];
+            }
+        }
+    }
+}
+
+
+-(CGRect) getFrameForPovAtIndex:(NSInteger) index{
+    return CGRectMake(index * self.view.frame.size.width, 0.f, self.view.frame.size.width, self.view.frame.size.height);
+}
+
+
+//makes the size as large as there are views
+-(void)updateScrollview{
+    self.scrollView.contentSize = CGSizeMake(self.view.frame.size.width * self.povViews.count, 0);
+}
+
 
 #pragma mark - POVView Delegate (Like button) -
 
@@ -117,22 +211,33 @@
 	[self.delegate userLiked:liked POV:povInfo];
 }
 
+
+
+-(void) setPOVArrayToNull{
+    for(int i = 0; i < NUM_POVS_IN_SECTION;i++){
+        [self.povViews addObject:[NSNull null]];
+    }
+}
+
 #pragma mark - Clean up -
 
 // Reverses load Article and removes all content
 -(void) cleanUp {
-	for (POVView* povView in self.povViews) {
-		[povView clearArticle];
-		[povView removeFromSuperview];
-	}
-	self.povViews = nil;
-	self.povIDs = nil;
-	if ([self.activityIndicator isAnimating]) {
-		[self.activityIndicator stopAnimating];
-	}
+    @autoreleasepool {
+        for (POVView* povView in self.povViews) {
+            [povView clearArticle];
+            [povView removeFromSuperview];
+        }
+        self.povViews = nil;
+        self.povIDs = nil;
+        if ([self.activityIndicator isAnimating]) {
+            [self.activityIndicator stopAnimating];
+        }
+        self.povLoadManager = nil;
+    }
+    
     [[Analytics getSharedInstance] storyEndedViewing];
 }
-
 
 #pragma mark - Memory warning -
 
@@ -147,16 +252,11 @@
 -(POVDisplayScrollView*) scrollView {
 	if (!_scrollView) {
 		_scrollView = [[POVDisplayScrollView alloc] initWithFrame:self.view.bounds];
+        _scrollView.delegate = self;
 	}
 	return _scrollView;
 }
 
--(PagesLoadManager*) pageLoadManager {
-	if (!_pageLoadManager) {
-		_pageLoadManager = [[PagesLoadManager alloc] init];
-	}
-	return _pageLoadManager;
-}
 
 -(UpdatingPOVManager*) updatingPOVManager {
 	if (!_updatingPOVManager) {
@@ -167,7 +267,8 @@
 
 -(NSMutableArray*) povViews {
 	if (!_povViews) {
-		_povViews = [[NSMutableArray alloc] init];
+		_povViews = [[NSMutableArray alloc] initWithCapacity:NUM_POVS_IN_SECTION];
+        [self setPOVArrayToNull];
 	}
 	return _povViews;
 }
@@ -178,5 +279,19 @@
 	}
 	return _povIDs;
 }
+
+-(void)onScreen{
+    [self playViewOnScreen];
+    [self loadNextStoriesWithNumberOfPOVsBefore:NUM_POVS_LOADED_BEFORE andNumberOfPOVsAfter:NUM_POVS_LOADED_AFTER];
+}
+
+-(void)offScreen{
+    for(id povView  in self.povViews){
+        if([povView isKindOfClass:[POVView class]]){
+            [(POVView *)povView povOffScreen];
+        }
+    }
+}
+
 
 @end

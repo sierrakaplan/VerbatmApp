@@ -7,28 +7,177 @@
 //
 
 #import "UtilityFunctions.h"
+#import "Notifications.h"
+#import "zlib.h"
+#include <compression.h>
+@import AVFoundation;
+@import Foundation;
+
+@interface UtilityFunctions ()
+#define COMPRESSING 0
+@end
 
 
 @implementation UtilityFunctions
 
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
-+ (AnyPromise*) loadCachedDataFromURL: (NSURL*) url {
++ (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		NSURLRequest* request = [NSURLRequest requestWithURL:url
 												 cachePolicy:NSURLRequestReturnCacheDataElseLoad
 											 timeoutInterval:300];
-		[NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
+		[NSURLConnection sendAsynchronousRequest:request queue:[[NSOperationQueue alloc] init] completionHandler:^(NSURLResponse* response, NSData* data, NSError* error) {
 			if (error) {
 				NSLog(@"Error retrieving data from url: \n %@", error.description);
+
 				resolve(nil);
 			} else {
-				//				NSLog(@"Successfully retrieved data from url");
+				//NSLog(@"Successfully retrieved data from url");
 				resolve(data);
 			}
 		}];
 	}];
 	return promise;
 }
++ (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url {
+    AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+        
+        //[UtilityFunctions convertVideoToLowQualityWithInputURL:url withCompletion:^(NSURL * url, BOOL deleteUrl) {
+            NSError * error = nil;
+            NSData* data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
+            
+            //if(deleteUrl)[[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+            if (error) {
+                NSLog(@"%@", [error localizedDescription]);
+                resolve(nil);
+            } else {
+                NSLog(@"Successfully retrieved data from url");
+                resolve([UtilityFunctions gzipDeflate:data]);
+            }
+        }];
+    //}];
+    return promise;
+}
 
++ (void)convertVideoToLowQualityWithInputURL:(NSURL *) videoUrl withCompletion:(void (^)(NSURL *,  BOOL ))successHandler {
+
+    
+    //  STORE IN FILESYSTEM
+    NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    
+    NSString *finalFile = [cachesDirectory stringByAppendingPathComponent:@"publish.mov"];
+    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
+    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetMediumQuality];
+    NSURL * finalUrl = [NSURL fileURLWithPath:finalFile];
+    exportSession.outputURL = finalUrl;
+    exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+    [exportSession exportAsynchronouslyWithCompletionHandler: ^(void) {
+        if (exportSession.status == AVAssetExportSessionStatusCompleted)
+        {
+            successHandler(finalUrl, YES);
+        }else if (exportSession.status == AVAssetExportSessionStatusFailed){
+            successHandler(videoUrl, NO);
+        }
+    }];
+}
+
+
+
+
++ (NSData *)gzipDeflate:(NSData*)data
+{
+    
+    
+    if(!COMPRESSING) return data;
+    
+   NSLog(@"Video File start size: %d", [data length]);
+    
+    z_stream strm;
+    
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.total_out = 0;
+    strm.next_in=(Bytef *)[data bytes];
+    strm.avail_in = [data length];
+    
+    // Compresssion Levels:
+    //   Z_NO_COMPRESSION
+    //   Z_BEST_SPEED
+    //   Z_BEST_COMPRESSION
+    //   Z_DEFAULT_COMPRESSION
+    
+    if (deflateInit2(&strm, Z_BEST_COMPRESSION, Z_DEFLATED, (15+16), 8, Z_DEFAULT_STRATEGY) != Z_OK) return nil;
+    
+    NSMutableData *compressed = [NSMutableData dataWithLength:16384];  // 16K chunks for expansion
+    
+    do {
+        
+        if (strm.total_out >= [compressed length])
+            [compressed increaseLengthBy: 16384];
+        
+        strm.next_out = [compressed mutableBytes] + strm.total_out;
+        strm.avail_out = [compressed length] - strm.total_out;
+        
+        deflate(&strm, Z_FINISH);
+        
+    } while (strm.avail_out == 0);
+    
+    deflateEnd(&strm);
+    
+    [compressed setLength: strm.total_out];
+    
+    
+    NSData * finalResult = [NSData dataWithData:compressed];
+    NSLog(@"Video File end size: %d", [finalResult length]);
+    return finalResult;
+}
+
+
++(NSData *)gzipInflate:(NSData*)data
+{
+    if(!COMPRESSING) return data;
+
+    // Write decrypted and decompressed output.
+    
+    unsigned full_length = [data length];
+    unsigned half_length = [data length] / 2;
+    
+    NSMutableData *decompressed = [NSMutableData dataWithLength: full_length + half_length];
+    BOOL done = NO;
+    int status;
+    
+    z_stream strm;
+    strm.next_in = (Bytef *)[data bytes];
+    strm.avail_in = [data length];
+    strm.total_out = 0;
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    
+    if (inflateInit2(&strm, (15+32)) != Z_OK) return nil;
+    while (!done)
+    {
+        // Make sure we have enough room and reset the lengths.
+        if (strm.total_out >= [decompressed length])
+            [decompressed increaseLengthBy: half_length];
+        strm.next_out = [decompressed mutableBytes] + strm.total_out;
+        strm.avail_out = [decompressed length] - strm.total_out;
+        
+        // Inflate another chunk.
+        status = inflate (&strm, Z_SYNC_FLUSH);
+        if (status == Z_STREAM_END) done = YES;
+        else if (status != Z_OK) break;
+    }
+    if (inflateEnd (&strm) != Z_OK) return nil;
+    
+    // Set real length.
+    if (done)
+    {
+        [decompressed setLength: strm.total_out];
+        return [NSData dataWithData: decompressed];
+    }
+    else return nil;
+}
 
 @end

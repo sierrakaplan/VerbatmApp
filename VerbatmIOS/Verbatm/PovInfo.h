@@ -14,10 +14,11 @@
 
 @interface PovInfo : GTLVerbatmAppPOVInfo
 
--(instancetype) initWithGTLVerbatmAppPovInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo andUserName:(NSString*)userName andCoverPhoto: (UIImage*) coverPhoto andUserIDsWhoHaveLikedThisPOV:(NSArray*) userIDs;
+-(instancetype) initWithGTLVerbatmAppPovInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo
+								 andUserName:(NSString*)userName
+			   andUserIDsWhoHaveLikedThisPOV:(NSArray*) userIDs;
 
 @property (strong, nonatomic) NSString* userName;
-@property (strong, nonatomic) UIImage* coverPhoto;
 @property (strong, nonatomic) NSArray* userIDsWhoHaveLikedThisPOV;
 
 @end

@@ -7,6 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "GTLVerbatmAppImage.h"
+#import "GTLVerbatmAppVideo.h"
 
 @interface POVPublisher : NSObject
 
@@ -18,7 +20,9 @@
 // initialized once publish has been called
 @property(nonatomic, strong) NSProgress* publishingProgress;
 
--(instancetype) initWithPinchViews: (NSArray*) pinchViews andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic;
-- (void) publish;
 
+-(void) storeVideoFromURL: (NSURL*) url withCompletionBlock:(void(^)(GTLVerbatmAppVideo *))block;
+
+//stores an image for us and takes a completion block to handle the url
+-(void) storeImage: (UIImage*) image withCompletionBlock:(void(^)(GTLVerbatmAppImage *))block;
 @end

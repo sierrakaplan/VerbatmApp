@@ -9,16 +9,14 @@
 
 @implementation PovInfo
 
-@dynamic coverPicUrl;
-
--(instancetype) initWithGTLVerbatmAppPovInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo andUserName:(NSString*)userName andCoverPhoto: (UIImage*) coverPhoto andUserIDsWhoHaveLikedThisPOV:(NSArray*) userIDs{
+-(instancetype) initWithGTLVerbatmAppPovInfo: (GTLVerbatmAppPOVInfo*) gtlPovInfo
+								 andUserName:(NSString*)userName
+			   andUserIDsWhoHaveLikedThisPOV:(NSArray*) userIDs{
 	self = [super init];
 	if (self) {
 		self.userName = userName;
-		self.coverPhoto = coverPhoto;
 		self.userIDsWhoHaveLikedThisPOV = userIDs;
 
-		self.coverPicUrl = gtlPovInfo.coverPicUrl;
 		self.creatorUserId = gtlPovInfo.creatorUserId;
 		self.datePublished = gtlPovInfo.datePublished;
 		self.identifier = gtlPovInfo.identifier;

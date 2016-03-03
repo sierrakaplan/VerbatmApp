@@ -127,7 +127,7 @@
 		_galleryButton = [[UIButton alloc]init];
 		[_galleryButton addSubview: self.galleryButtonImageView];
 		[_galleryButton addTarget:self action:@selector(galleryButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-		_galleryButton.layer.borderColor = [UIColor blackColor].CGColor;
+		_galleryButton.layer.borderColor = [UIColor whiteColor].CGColor;
 		_galleryButton.clipsToBounds = YES;
 		[self addSubview:_galleryButton];
 	}
@@ -140,7 +140,7 @@
 		_cameraButton = [[UIButton alloc]init];
 		[_cameraButton addSubview: self.cameraButtonImageView];
 		[_cameraButton addTarget:self action:@selector(cameraViewButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-		_cameraButton.layer.borderColor = [UIColor blackColor].CGColor;
+		_cameraButton.layer.borderColor = [UIColor whiteColor].CGColor;
 		_cameraButton.clipsToBounds = YES;
 		[self addSubview:_cameraButton];
 	}

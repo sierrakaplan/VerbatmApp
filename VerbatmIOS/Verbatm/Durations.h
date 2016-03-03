@@ -9,6 +9,8 @@
 #ifndef Durations_h
 #define Durations_h
 
+#define TAB_BAR_TRANSITION_TIME 0.3f
+
 #pragma mark - Sign In -
 
 #define ERROR_MESSAGE_ANIMATION_TIME 3.f
@@ -37,7 +39,9 @@
 #define REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION 1.f
 //time it takes to animate a pinch
 #define PINCHVIEW_ANIMATION_DURATION 0.5f
+#define PINCHVIEW_DROP_ANIMATION_DURATION 1.f //the speed at which pinch objects fall into place after gallery
 
+#define PINCHVIEW_DELETE_ANIMATION_DURATION 0.5f //the speed at which the pinch objet changes size before disappearing
 
 #pragma mark - AVES -
 

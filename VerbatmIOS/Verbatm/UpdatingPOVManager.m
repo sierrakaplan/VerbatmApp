@@ -33,40 +33,41 @@
 
 	// Update current user's list of povs they like
 	UserManager* userManager = [UserManager sharedInstance];
-	GTLVerbatmAppVerbatmUser* currentUser = [userManager getCurrentUser];
-	NSArray* likedPOVIDs = currentUser.likedPOVIDs;
-	NSMutableArray* updatedLikes = [[NSMutableArray alloc] initWithArray:likedPOVIDs copyItems:NO];
-	if (liked && ![likedPOVIDs containsObject: povID]) {
-		[updatedLikes addObject: povID];
-	} else if (!liked && [likedPOVIDs containsObject: povID]) {
-		[updatedLikes removeObject: povID];
-	}
-	currentUser.likedPOVIDs = updatedLikes;
-
-	[userManager updateCurrentUser:currentUser].then(^(GTLVerbatmAppVerbatmUser* user) {
-		NSLog(@"Updated current user's likes");
-	}).catch(^(NSError* error) {
-		NSLog(@"Error updating user: %@", error.description);
-	});
+//	GTLVerbatmAppVerbatmUser* currentUser = [userManager getCurrentUser];
+//	NSArray* likedPOVIDs = currentUser.likedPOVIDs;
+//	NSMutableArray* updatedLikes = [[NSMutableArray alloc] initWithArray:likedPOVIDs copyItems:NO];
+//	if (liked && ![likedPOVIDs containsObject: povID]) {
+//		[updatedLikes addObject: povID];
+//	} else if (!liked && [likedPOVIDs containsObject: povID]) {
+//		[updatedLikes removeObject: povID];
+//	}
+//	currentUser.likedPOVIDs = updatedLikes;
+//
+//	[userManager updateCurrentUser:currentUser].then(^(GTLVerbatmAppVerbatmUser* user) {
+//		NSLog(@"Updated current user's likes");
+//	}).catch(^(NSError* error) {
+//		NSLog(@"Error updating user: %@", error.description);
+//	});
 
 	// Update Pov's users who have liked it
-	[self loadPOVWithID: povID].then(^(GTLVerbatmAppPOV* oldPOV) {
-		NSMutableArray* updatedUsersWhoHaveLikedThisPOV = [[NSMutableArray alloc] initWithArray:oldPOV.usersWhoHaveLikedIDs copyItems:NO];
-		if (liked && ![updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
-			[updatedUsersWhoHaveLikedThisPOV addObject: currentUser.identifier];
-		} else if(!liked && [updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
-			[updatedUsersWhoHaveLikedThisPOV removeObject: currentUser.identifier];
-		}
-		oldPOV.usersWhoHaveLikedIDs = updatedUsersWhoHaveLikedThisPOV;
-		long long newNumUpVotes = (long long) updatedUsersWhoHaveLikedThisPOV.count;
-		oldPOV.numUpVotes = [NSNumber numberWithLongLong: newNumUpVotes];
-		return [self storePOV: oldPOV];
-	}).then(^(GTLVerbatmAppPOV* newPOV) {
-//		NSLog(@"Successfully updated pov \"%@\" 's number of upvotes to: %lld", newPOV.title, newPOV.numUpVotes.longLongValue);
-	}).catch(^(NSError* error) {
-		NSLog(@"Error updating POV: %@", error.description);
-	});
+//	[self loadPOVWithID: povID].then(^(GTLVerbatmAppPOV* oldPOV) {
+//		NSMutableArray* updatedUsersWhoHaveLikedThisPOV = [[NSMutableArray alloc] initWithArray:oldPOV.usersWhoHaveLikedIDs copyItems:NO];
+//		if (liked && ![updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
+//			[updatedUsersWhoHaveLikedThisPOV addObject: currentUser.identifier];
+//		} else if(!liked && [updatedUsersWhoHaveLikedThisPOV containsObject: currentUser.identifier]) {
+//			[updatedUsersWhoHaveLikedThisPOV removeObject: currentUser.identifier];
+//		}
+//		oldPOV.usersWhoHaveLikedIDs = updatedUsersWhoHaveLikedThisPOV;
+//		long long newNumUpVotes = (long long) updatedUsersWhoHaveLikedThisPOV.count;
+//		oldPOV.numUpVotes = [NSNumber numberWithLongLong: newNumUpVotes];
+//		return [self storePOV: oldPOV];
+//	}).then(^(GTLVerbatmAppPOV* newPOV) {
+////		NSLog(@"Successfully updated pov \"%@\" 's number of upvotes to: %lld", newPOV.title, newPOV.numUpVotes.longLongValue);
+//	}).catch(^(NSError* error) {
+//		NSLog(@"Error updating POV: %@", error.description);
+//	});
 }
+
 
 // Resolves to either an error or the POV with the given id
 -(AnyPromise*) loadPOVWithID: (NSNumber*) povID {

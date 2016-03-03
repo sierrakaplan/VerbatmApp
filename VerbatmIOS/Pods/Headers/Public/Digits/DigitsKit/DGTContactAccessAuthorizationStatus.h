@@ -1,1 +1,1 @@
-../../../../Digits/DigitsKit.framework/Headers/DGTContactAccessAuthorizationStatus.h
+../../../../Digits/iOS/DigitsKit.framework/Headers/DGTContactAccessAuthorizationStatus.h

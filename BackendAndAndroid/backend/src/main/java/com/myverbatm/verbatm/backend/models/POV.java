@@ -29,12 +29,6 @@ public class POV {
     private String title;
 
     /**
-     * The serving url of the cover picture in the blobstore from ImagesService
-     */
-    @Index
-    private String coverPicUrl;
-
-    /**
      * Date the POV was published
      */
     @Index
@@ -98,22 +92,6 @@ public class POV {
      */
     public final void setTitle(String title) {
         this.title = title;
-    }
-
-    /**
-     * Returns the url of the cover picture from the blobstore
-     * @return the url of the cover picture from the blobstore
-     */
-    public final String getCoverPicUrl() {
-        return coverPicUrl;
-    }
-
-    /**
-     * Sets the url of the cover picture from the blobstore
-     * @param coverPicUrl the url of the cover picture from the blobstore
-     */
-    public final void setCoverPicUrl(String coverPicUrl) {
-        this.coverPicUrl = coverPicUrl;
     }
 
     /**

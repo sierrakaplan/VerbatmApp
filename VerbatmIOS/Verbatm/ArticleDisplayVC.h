@@ -9,7 +9,7 @@
 
 #import <UIKit/UIKit.h>
 #import "PovInfo.h"
-
+#import "POVLoadManager.h"
 @class POVLoadManager;
 
 @protocol ArticleDisplayVCDelegate <NSObject>
@@ -22,12 +22,12 @@
 
 @property (strong, nonatomic) id<ArticleDisplayVCDelegate> delegate;
 
-//Tells the VC to display story at that index from that load manager
-//And gives it a reference to the load manager so that it can load previous
-// and following stories
--(void) loadStoryAtIndex: (NSInteger) index fromLoadManager: (POVLoadManager*) loadManager;
+//tells the article display what content to present
+-(void) presentContentWithPOVType: (POVType) povType andChannel:(NSString *) channel;
 
 //Removes any content loaded (reverses loadStory)
 -(void) cleanUp;
-
+//stops all video content
+-(void)offScreen;
+-(void)onScreen;
 @end

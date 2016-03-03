@@ -7,239 +7,422 @@
 //
 
 #import "ArticleDisplayVC.h"
-#import "ArticleListVC.h"
+
+#import "CreateNewChannelView.h"
+#import "Channel_BackendObject.h"
+
 #import "Durations.h"
-#import "FeedTableViewCell.h"
+
 #import "GTLVerbatmAppVerbatmUser.h"
-#import "InternetConnectionMonitor.h"
-#import "POVLoadManager.h"
+
+#import "LocalPOVs.h"
+
+#import "Page_BackendObject.h"
+#import "ParseBackendKeys.h"
+
+#import "POVScrollView.h"
 #import "ProfileVC.h"
+#import "ProfileNavBar.h"
+#import "POVLoadManager.h"
+#import "PostListVC.h"
+//#import "POVListScrollViewVC.h"
+
+#import "Post_BackendObject.h"
+#import "POVView.h"
+#import "PublishingProgressManager.h"
+
+#import "SharePOVView.h"
+#import "SegueIDs.h"
 #import "SizesAndPositions.h"
-#import "Styles.h"
+#import "SettingsVC.h"
+
+#import "UIView+Effects.h"
 #import "UserManager.h"
-#import "UserDraftsVC.h"
 
-@interface ProfileVC() <UITabBarDelegate, UIGestureRecognizerDelegate, ArticleListVCDelegate, ArticleDisplayVCDelegate>
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate, PublishingProgressProtocol>
 
-@property (weak, nonatomic) IBOutlet UILabel *userNameLabel;
-// weak reference to shared reference
-@property (weak, nonatomic) GTLVerbatmAppVerbatmUser* currentUser;
+@property (strong, nonatomic) PostListVC * postListVC;
 
-#pragma mark - Tab Bar -
+@property (nonatomic, strong) ProfileNavBar* profileNavBar;
+@property (nonatomic) CGRect profileNavBarFrameOnScreen;
+@property (nonatomic) CGRect profileNavBarFrameOffScreen;
+@property (nonatomic) BOOL contentCoveringScreen;
 
-@property (strong, nonatomic) UITabBar* customTabBar;
+@property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
+@property (nonatomic, strong) NSString * currentThreadInView;
 
-#pragma mark Tab Bar Items
-@property (strong, nonatomic) UITabBarItem* storiesTab;
-@property (strong, nonatomic) UITabBarItem* draftsTab;
+@property (strong, nonatomic) NSArray* channels;
 
-#pragma mark - Tab View Controllers -
+@property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
+@property (nonatomic) UIView * darkScreenCover;
+@property (nonatomic) SharePOVView * sharePOVView;
+@property (nonatomic) Channel_BackendObject * channelBackendManager;
 
-@property (weak, nonatomic) IBOutlet UIView *storiesContainerView;
-@property (weak, nonatomic) IBOutlet UIView *draftsContainerView;
+#pragma mark Publishing
 
-#define USER_STORIES_VC_ID @"user_stories_vc"
-#define USER_DRAFTS_VC_ID @"user_drafts_vc"
+@property (nonatomic, strong) UIView* publishingProgressView;
+@property (nonatomic, strong) NSProgress* publishingProgress;
+@property (nonatomic, strong) UIProgressView* progressBar;
 
-@property (strong, nonatomic) ArticleListVC* userStoriesVC;
-@property (strong, nonatomic) UserDraftsVC* userDraftsVC;
-
-#pragma mark - Article Display View Controller -
-
-@property (nonatomic) CGRect articleDisplayContainerFrameOffScreen;
-@property (weak, nonatomic) IBOutlet UIView *articleDisplayContainerView;
-@property (strong, nonatomic) ArticleDisplayVC* articleDisplayVC;
-
-#pragma mark Gesture for pulling out of article display view
-
-@property (nonatomic) CGPoint previousGesturePoint;
-
-#define ARTICLE_DISPLAY_VC_ID @"user_article_display_vc"
-
-#define TITLE_FONT 24.f
-#define TAB_BAR_HEIGHT 60.f
+#define PROFILE_BACKGROUND_IMAGE @"d1"
 
 @end
 
 @implementation ProfileVC
-
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	[self updateUserInfo];
-    [self formatTitleLabel];
-	[self addTabBar];
-	[self formatContainerViews];
-	[self setUpTabVCs];
-	[self setUpArticleDisplayVC];
+	self.contentCoveringScreen = YES;
+    //this is where you'd fetch the threads
+    [self getChannelsWithCompletionBlock:^{
+        //[self createAndAddListVC];
+        [self addPostListVC];
+        [self createNavigationBar];
+        [self addClearScreenGesture];
+    }];
+    self.view.clipsToBounds = YES;
+}
+
+
+//this is where downloading of channels should happen
+-(void) getChannelsWithCompletionBlock:(void(^)())block{
+    [Channel_BackendObject getChannelsForUser:self.userOfProfile withCompletionBlock:
+     ^(NSMutableArray * channels) {
+        self.channels = channels;
+        block();
+    }];
+}
+
+-(void) viewWillAppear:(BOOL)animated{
+    if(self.postListVC)[self.postListVC continueVideoContent];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 }
 
--(void) updateUserInfo {
-	self.currentUser = [[UserManager sharedInstance] getCurrentUser];
-	self.userNameLabel.text = self.currentUser.name;
+-(void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
 
--(void) formatTitleLabel {
-    self.userNameLabel.frame = CGRectMake(self.view.center.x - (self.userNameLabel.frame.size.width/2),
-										  self.userNameLabel.frame.origin.y, self.userNameLabel.frame.size.width,
-                                          self.userNameLabel.frame.size.height);
-	self.userNameLabel.font = [UIFont fontWithName:TITLE_TEXT_FONT size:TITLE_FONT];
-}
+//-(void) createAndAddListVC{
+//    self.postListVC = [[POVListScrollViewVC alloc] init];
+//    self.postListVC.listOwner = self.userOfProfile;
+//    if(self.startChannel){
+//        self.postListVC.channelForList = self.startChannel ;
+//    }else{
+//        self.postListVC.channelForList = [self.channels firstObject];
+//    }
+//    
+//    self.postListVC.listType = listChannel;
+//    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
+//    if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
+//    else [self.view addSubview:self.postListVC.view];
+//}
 
--(void) addTabBar {
-	self.customTabBar.items = @[self.storiesTab, self.draftsTab];
-	self.customTabBar.selectedItem = self.storiesTab;
-	[self.view addSubview:self.customTabBar];
-}
 
--(void) formatContainerViews {
-	CGFloat tabViewYPos = self.customTabBar.frame.origin.y + self.customTabBar.frame.size.height;
-	CGRect tabViewFrame = CGRectMake(0.f, tabViewYPos, self.view.frame.size.width, self.view.frame.size.height - tabViewYPos);
-	self.storiesContainerView.frame = tabViewFrame;
-	self.draftsContainerView.frame = tabViewFrame;
 
-	self.storiesContainerView.alpha = 1;
-	self.draftsContainerView.alpha = 0;
+-(void) addPostListVC {
+    UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
+    flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
+    [flowLayout setMinimumInteritemSpacing:0.3];
+    [flowLayout setMinimumLineSpacing:0.0f];
+    [flowLayout setItemSize:self.view.frame.size];
+    self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+    self.postListVC.listOwner = self.userOfProfile;
+    if(self.startChannel){
+        self.postListVC.channelForList = self.startChannel;
+    }else{
+        self.postListVC.channelForList = [self.channels firstObject];
+    }
 
-	[self.storiesContainerView setBackgroundColor:[UIColor redColor]];
-}
-
--(void) setUpTabVCs {
-	self.userDraftsVC = [self.storyboard instantiateViewControllerWithIdentifier:USER_DRAFTS_VC_ID];
-	self.userStoriesVC = [self.storyboard instantiateViewControllerWithIdentifier:USER_STORIES_VC_ID];
-	//TODO: delete this
-	NSNumber* aishwaryaId = [NSNumber numberWithLongLong:5432098273886208];
-	[self.userStoriesVC setPovLoadManager:[[POVLoadManager alloc] initWithUserId: aishwaryaId]//self.currentUser.identifier]
-				   andCellBackgroundColor:[UIColor whiteColor]];
-	self.userStoriesVC.delegate = self;
-
-	[self.storiesContainerView addSubview:self.userStoriesVC.view];
-	[self.draftsContainerView addSubview:self.userDraftsVC.view];
-}
-
--(void) setUpArticleDisplayVC {
-	self.articleDisplayContainerFrameOffScreen = CGRectOffset(self.view.bounds, self.view.bounds.size.width, 0);
-	self.articleDisplayContainerView.frame = self.view.bounds;
-	[self.articleDisplayContainerView setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-	self.articleDisplayContainerView.alpha = 0;
-
-	self.articleDisplayVC = [self.storyboard instantiateViewControllerWithIdentifier:ARTICLE_DISPLAY_VC_ID];
-	[self.articleDisplayContainerView addSubview: self.articleDisplayVC.view];
-	[self addChildViewController:self.articleDisplayVC];
-	self.articleDisplayVC.delegate = self;
-	[self addScreenPanToArticleDisplay];
+    self.postListVC.listType = listChannel;
+    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
+    if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
+    else[self.view addSubview:self.postListVC.view];
 }
 
 
-#pragma mark - Tab Bar Delegate methods -
+-(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
+    
+}
 
--(void) tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item {
-	if (item == self.storiesTab) {
-		self.storiesContainerView.alpha = 1;
-		self.draftsContainerView.alpha = 0;
-	} else if (item == self.draftsTab) {
-		self.storiesContainerView.alpha = 0;
-		self.draftsContainerView.alpha = 1;
+-(void) createNavigationBar {
+    //frame when on screen
+    self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
+    //frame when off screen
+	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - (PROFILE_NAV_BAR_HEIGHT+ ARROW_EXTENSION_BAR_HEIGHT), self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
+    
+    self.profileNavBar = [[ProfileNavBar alloc]
+                          initWithFrame:self.profileNavBarFrameOnScreen
+                          andChannels:self.channels
+                          startChannel:self.startChannel
+                          andUser:self.userOfProfile
+                          isCurrentLoggedInUser:self.isCurrentUserProfile];
+    
+    self.profileNavBar.delegate = self;
+    [self.view addSubview:self.profileNavBar];
+    [self.view bringSubviewToFront:self.profileNavBar];
+} 
+
+
+-(void)addClearScreenGesture{
+    UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
+    singleTap.numberOfTapsRequired = 1;
+    [self.view addGestureRecognizer:singleTap];
+}
+
+
+
+#pragma mark -POV ScrollView custom delegate -
+
+-(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
+    //sierra TODO
+    //code to register a like/dislike from the user
+}
+
+-(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
+    [self presentShareSelectionViewStartOnChannels:NO];
+    
+}
+
+
+#pragma mark POVListScrollView Delegate -
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
+    [self presentHeadAndFooter:YES];
+    [self presentShareSelectionViewStartOnChannels:NO];
+}
+
+#pragma mark - Profile Nav Bar Delegate Methods -
+
+//current user selected to follow a channel
+-(void) followOptionSelected{
+    
+}
+
+
+-(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
+    if(self.sharePOVView){
+        [self.sharePOVView removeFromSuperview];
+        self.sharePOVView = nil;
+    }
+    
+    CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+    self.sharePOVView.delegate = self;
+    [self.view addSubview:self.sharePOVView];
+    [self.view bringSubviewToFront:self.sharePOVView];
+    [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+        self.sharePOVView.frame = onScreenFrame;
+    }];
+}
+
+-(void)removeSharePOVView{
+    if(self.sharePOVView){
+        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+        
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.sharePOVView.frame = offScreenFrame;
+        }completion:^(BOOL finished) {
+            if(finished){
+                [self.sharePOVView removeFromSuperview];
+                self.sharePOVView = nil;
+            }
+        }];
+    }
+}
+
+//current user wants to see their own followers
+-(void) followersOptionSelected{
+    [self.delegate presentFollowersListMyID:nil];//to-do
+}
+
+//current user wants to see who they follow
+-(void) followingOptionSelected {
+    [self.delegate presentWhoIFollowMyID:nil];//to-do
+}
+
+-(void) settingsButtonClicked {
+    [self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
+    
+}
+
+//ProfileNavBarDelegate protocol
+-(void) createNewChannel {
+    if(!self.createNewChannelView){
+        [self darkenScreen];
+        CGFloat viewHeight = self.view.frame.size.height/2.f -
+        (CHANNEL_CREATION_VIEW_WALLOFFSET_X *7);
+        
+        CGRect newChannelViewFrame = CGRectMake(CHANNEL_CREATION_VIEW_WALLOFFSET_X, CHANNEL_CREATION_VIEW_Y_OFFSET, self.view.frame.size.width - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *2),viewHeight);
+        self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
+        self.createNewChannelView.delegate = self;
+        [self.view addSubview:self.createNewChannelView];
+        [self.view bringSubviewToFront:self.createNewChannelView];
+    }
+
+}
+
+-(void)darkenScreen{
+    if(!self.darkScreenCover){
+        self.darkScreenCover = [[UIView alloc] initWithFrame:self.view.bounds];
+        self.darkScreenCover.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.5];
+        [self.view addSubview:self.darkScreenCover];
+    }
+}
+
+-(void) removeScreenDarkener{
+    if(self.darkScreenCover){
+        [self.darkScreenCover removeFromSuperview];
+        self.darkScreenCover = nil;
+    }
+}
+
+-(void) cancelCreation {
+    [self clearChannelCreationView];
+    [self presentHeadAndFooter:NO];
+}
+
+-(void) createChannelWithName:(NSString *) channelName {
+    //save the channel name and create it in the backend
+    //upate the scrollview to present a new channel
+    
+    Channel * newChannel = [self.channelBackendManager createChannelWithName:channelName];
+    [self.profileNavBar newChannelCreated:newChannel];
+    [self clearChannelCreationView];
+}
+
+-(void)clearChannelCreationView{
+    if(self.createNewChannelView){
+        [self removeScreenDarkener];
+        [self.createNewChannelView removeFromSuperview];
+        self.createNewChannelView = nil;
+    }
+}
+
+
+#pragma mark -Share Seletion View Protocol -
+-(void)cancelButtonSelected{
+    [self removeSharePOVView];
+}
+
+-(void)sharePostWithComment:(NSString *) comment{
+    //todo--sierra
+    //code to share post to facebook etc
+    
+    [self removeSharePOVView];
+    
+}
+
+#pragma mark -Navigate profile-
+//the current user has selected the back button
+-(void)exitCurrentProfile {
+    [self.presentingViewController dismissViewControllerAnimated:YES completion:^{
+    }];
+}
+
+-(void)newChannelSelected:(Channel *) channel{
+    [self.postListVC changeCurrentChannelTo:channel];
+}
+
+// updates tab and content
+-(void) selectChannel: (Channel *) channel {
+	[self.profileNavBar selectChannel: channel];
+	[self.postListVC changeCurrentChannelTo:channel];
+}
+
+-(void) switchStoryListToThread:(NSString *) newChannel{
+    [self.postDisplayVC cleanUp];
+    [self.postDisplayVC presentContentWithPOVType:POVTypeUser andChannel:newChannel];
+}
+
+-(void) presentHeadAndFooter:(BOOL) shouldShow {
+    if(shouldShow) {
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:YES]];
+        }];
+        [self.delegate showTabBar:NO];
+        self.contentCoveringScreen = NO;
+        [self.postListVC footerShowing:NO];
+    } else {
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:NO]];
+        }];
+        [self.delegate showTabBar:YES];
+        self.contentCoveringScreen = YES;
+        [self.postListVC footerShowing:YES];
+        
+    }
+}
+
+-(void)clearScreen:(UIGestureRecognizer *) tapGesture {
+    if (self.contentCoveringScreen) {
+       [self presentHeadAndFooter:YES];
+    } else {
+        [self presentHeadAndFooter:NO];
+        
+    }
+}
+
+-(CGRect)getProfileNavBarFrameOffScreen:(BOOL) getOffScreenFrame {
+    if(getOffScreenFrame){
+        return CGRectMake(0, -1 * self.profileNavBar.frame.size.height,
+                          self.profileNavBar.frame.size.width,
+                          self.profileNavBar.frame.size.height);
+    } else {
+        return CGRectMake(0, 0,
+                          self.profileNavBar.frame.size.width,
+                          self.profileNavBar.frame.size.height);
+    }
+}
+
+-(void) offScreen {
+    [self.postDisplayVC offScreen];
+}
+
+-(void) onScreen {
+    [self.postDisplayVC onScreen];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Make sure your segue name in storyboard is the same as this line
+    if ([[segue identifier] isEqualToString:SETTINGS_PAGE_MODAL_SEGUE]){
+        // Get reference to the destination view controller
+        SettingsVC * vc = [segue destinationViewController];
+        
+        //set the username of the currently logged in user
+        vc.userName  = [[PFUser currentUser] valueForKey:USER_USER_NAME_KEY];
+    }
+}
+
+#pragma mark - Publishing -
+
+-(void) showPublishingProgress {
+	self.publishingProgressView = nil;
+	self.publishingProgress = [[PublishingProgressManager sharedInstance] progressAccountant];
+	[[PublishingProgressManager sharedInstance] setDelegate:self];
+	Channel * currentPublishingChannel = [[PublishingProgressManager sharedInstance] currentPublishingChannel];
+	if ([[PublishingProgressManager sharedInstance] newChannelCreated]) {
+		[self.profileNavBar newChannelCreated: currentPublishingChannel];
+		[[PublishingProgressManager sharedInstance] setNewChannelCreated:NO];
 	}
+	[self selectChannel: currentPublishingChannel];
+	[self.profileNavBar addSubview: self.publishingProgressView];
 }
 
-#pragma mark - Article List VC Delegate Methods (display articles) -
+#pragma mark Publishing Progress Manager Delegate methods
 
--(void)failedToRefreshFeed{
-	[[InternetConnectionMonitor sharedInstance] isConnectedToInternet_asynchronous];
+-(void) publishingComplete {
+	NSLog(@"Publishing Complete!");
+	[self.publishingProgressView removeFromSuperview];
+
+	[self.postListVC reloadCurrentChannel];
 }
 
--(void) displayPOVOnCell:(FeedTableViewCell *)cell withLoadManager:(POVLoadManager *)loadManager {
-	[self.delegate showTabBar:NO];
-	[[UIApplication sharedApplication] setStatusBarHidden:YES];
-	[self.articleDisplayVC loadStoryAtIndex:cell.indexPath.row fromLoadManager:loadManager];
-	self.articleDisplayContainerView.frame = self.view.bounds;
-	self.articleDisplayContainerView.alpha = 1;
-	[self.view bringSubviewToFront: self.articleDisplayContainerView];
-
-	// notify cell it can unpinch now
-	[cell deSelect];
-}
-
-#pragma mark - Left screen pull for exiting article display vc -
-
--(void) addScreenPanToArticleDisplay {
-	UIPanGestureRecognizer* leftEdgePanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(exitArticleDisplayView:)];
-	leftEdgePanGesture.delegate = self;
-	leftEdgePanGesture.minimumNumberOfTouches = 1;
-	leftEdgePanGesture.maximumNumberOfTouches = 1;
-	[self.articleDisplayContainerView addGestureRecognizer: leftEdgePanGesture];
-}
-
-//called from left edge pan
-- (void) exitArticleDisplayView:(UIPanGestureRecognizer *)sender {
-	switch (sender.state) {
-		case UIGestureRecognizerStateBegan: {
-			if (sender.numberOfTouches < 1) return;
-			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
-
-			if((self.view.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET - 100) < touchLocation.y) {
-				//this ends the gesture
-				sender.enabled = NO;
-				sender.enabled =YES;
-				return;
-			}
-			self.previousGesturePoint = touchLocation;
-			break;
-		}
-		case UIGestureRecognizerStateChanged: {
-			if (sender.numberOfTouches < 1) return;
-			CGPoint touchLocation = [sender locationOfTouch:0 inView: self.view];
-			CGPoint currentPoint = touchLocation;
-			int diff = currentPoint.x - self.previousGesturePoint.x;
-			//swiping left which is wrong so we end the gesture
-			if((diff < 0) && ((self.articleDisplayContainerView.frame.origin.x + diff) < 0)) {
-				//this ends the gesture
-				sender.enabled = NO;
-				sender.enabled =YES;
-				break;
-			}else {
-				self.previousGesturePoint = currentPoint;
-				self.articleDisplayContainerView.frame = CGRectOffset(self.articleDisplayContainerView.frame, diff, 0);
-				break;
-			}
-		}case UIGestureRecognizerStateCancelled:
-		case UIGestureRecognizerStateEnded: {
-			if(self.articleDisplayContainerView.frame.origin.x > ARTICLE_DISPLAY_EXIT_EPSILON) {
-				[self revealArticleDisplay:NO];
-			} else{
-				[self revealArticleDisplay:YES];
-			}
-			break;
-		}
-		default:
-			break;
-	}
-}
-
-// if show, return container view to its viewing position
-// else remove it
--(void) revealArticleDisplay: (BOOL) show {
-	if(show)  {
-		[UIView animateWithDuration:ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION animations:^{
-			self.articleDisplayContainerView.frame = self.view.bounds;
-		} completion:^(BOOL finished) {
-		}];
-	}else {
-		[UIView animateWithDuration:ARTICLE_DISPLAY_REMOVAL_ANIMATION_DURATION animations:^{
-			self.articleDisplayContainerView.frame = self.articleDisplayContainerFrameOffScreen;
-		}completion:^(BOOL finished) {
-			if(finished) {
-				[self.articleDisplayVC cleanUp];
-				[self.articleDisplayContainerView setAlpha:0];
-				[self.delegate showTabBar:YES];
-				[[UIApplication sharedApplication] setStatusBarHidden:NO];
-			}
-		}];
-	}
+-(void) publishingFailed {
+	//TODO: tell user publishing failed
+	NSLog(@"PUBLISHING FAILED");
 }
 
 #pragma mark - Article Display Delegate methods -
@@ -250,29 +433,34 @@
 
 #pragma mark - Lazy Instantiation -
 
--(UITabBar*) customTabBar {
-	if (!_customTabBar) {
-		_customTabBar = [[UITabBar alloc] initWithFrame:CGRectMake(0.f, self.userNameLabel.frame.origin.y + self.userNameLabel.frame.size.height,
-																	   self.view.frame.size.width, TAB_BAR_HEIGHT)];
-		_customTabBar.barTintColor = [UIColor whiteColor];
-		_customTabBar.tintColor = [UIColor lightGrayColor];
-		_customTabBar.delegate = self;
+-(Channel_BackendObject *) channelBackendManager {
+	if(!_channelBackendManager) {
+		_channelBackendManager = [[Channel_BackendObject alloc] init];
 	}
-	return _customTabBar;
+	return _channelBackendManager;
 }
 
--(UITabBarItem*) storiesTab {
-	if (!_storiesTab) {
-		_storiesTab = [[UITabBarItem alloc] initWithTitle:@"STORIES" image:nil selectedImage:nil];
+-(UIView*) publishingProgressView {
+	if (!_publishingProgressView) {
+		_publishingProgressView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.profileNavBar.frame.size.height,
+																		   self.view.frame.size.width, 10.f)];
+		[_publishingProgressView setBackgroundColor:[UIColor blackColor]];
+		self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
+		[self.progressBar setFrame:CGRectMake(5.f, 5.f, self.view.frame.size.width - 10.f, self.progressBar.frame.size.height)];
+		if ([self.progressBar respondsToSelector:@selector(setObservedProgress:)]) {
+			[self.progressBar setObservedProgress: self.publishingProgress];
+		} else {
+			[self.publishingProgress addObserver:self forKeyPath:@"completedUnitCount" options:NSKeyValueObservingOptionNew context:nil];
+		}
+		[_publishingProgressView addSubview: self.progressBar];
 	}
-	return _storiesTab;
+	return _publishingProgressView;
 }
 
--(UITabBarItem*) draftsTab {
-	if (!_draftsTab) {
-		_draftsTab = [[UITabBarItem alloc] initWithTitle:@"DRAFTS" image:nil selectedImage:nil];
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context {
+	if (object == self.publishingProgress && [keyPath isEqualToString:@"completedUnitCount"] ) {
+		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
 	}
-	return _draftsTab;
 }
 
 @end

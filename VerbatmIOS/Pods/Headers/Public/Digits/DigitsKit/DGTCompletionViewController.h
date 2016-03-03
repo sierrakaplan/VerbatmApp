@@ -1,1 +1,1 @@
-../../../../Digits/DigitsKit.framework/Headers/DGTCompletionViewController.h
+../../../../Digits/iOS/DigitsKit.framework/Headers/DGTCompletionViewController.h

@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1509" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <scenes>
         <!--Tab Bar Controller-->
         <scene sceneID="Ggy-sH-8Xt">
             <objects>
-                <tabBarController storyboardIdentifier="main_tab_bar_controller" title="Tab Bar Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wqM-IM-Uro" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="main_tab_bar_controller" title="Tab Bar Controller" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wqM-IM-Uro" customClass="CustomTabBarController" sceneMemberID="viewController">
                     <tabBar key="tabBar" contentMode="scaleToFill" id="2Sz-4e-cTx">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                 </tabBarController>
@@ -31,10 +30,8 @@
                             <containerView opaque="NO" contentMode="scaleToFill" id="JF8-rw-Rfn">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
                             </containerView>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <gestureRecognizers/>
                         <connections>
@@ -64,7 +61,6 @@
                     <view key="view" contentMode="scaleToFill" id="voT-er-27b">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                         <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
@@ -73,6 +69,20 @@
             </objects>
             <point key="canvasLocation" x="-2700" y="74"/>
         </scene>
+        <!--Video Test-->
+        <scene sceneID="w5W-Uz-km5">
+            <objects>
+                <viewController id="G7Q-Nk-gtA" customClass="VideoTest" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="9jz-tt-sa4">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="oHw-Fn-n4R" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2055" y="-62"/>
+        </scene>
         <!--Article Display VC-->
         <scene sceneID="IFb-Qc-Bhx">
             <objects>
@@ -80,13 +90,12 @@
                     <view key="view" contentMode="scaleToFill" id="gQu-JC-VDi">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mmd-zC-fwh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3852" y="-373"/>
+            <point key="canvasLocation" x="-3776" y="-478"/>
         </scene>
         <!--Trending-->
         <scene sceneID="wyz-UI-MUa">
@@ -95,7 +104,6 @@
                     <view key="view" contentMode="scaleToFill" id="Yqu-zV-E3L">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout"/>
@@ -111,7 +119,6 @@
                     <view key="view" contentMode="scaleToFill" id="vQZ-dJ-PYL">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
@@ -127,34 +134,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="wGI-d8-PWe">
-                                <rect key="frame" x="48" y="20" width="240" height="128"/>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="f57-j5-SlW">
+                                <rect key="frame" x="28" y="92" width="240" height="128"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
-                            </containerView>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="jLa-zk-lWF" userLabel="Top List Container">
-                                <rect key="frame" x="26" y="215" width="262" height="339"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
-                            </containerView>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="j2U-9B-X6v" userLabel="Bottom List Container">
-                                <rect key="frame" x="0.0" y="107" width="325" height="300"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
                             </containerView>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="articleDisplayContainerView" destination="wGI-d8-PWe" id="UPd-33-L0K"/>
-                        <outlet property="bottomListContainer" destination="j2U-9B-X6v" id="Kku-ME-qKO"/>
-                        <outlet property="topListContainer" destination="jLa-zk-lWF" id="sgL-hh-qR6"/>
+                        <outlet property="postListContainerView" destination="f57-j5-SlW" id="JHp-ye-sdD"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="V0g-tI-HpL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3434" y="-732.5"/>
+            <point key="canvasLocation" x="-3428" y="-471"/>
         </scene>
         <!--Edit Content-->
         <scene sceneID="W4f-0L-ZeV">
@@ -167,19 +160,17 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="GgU-Qa-i6T">
                                 <rect key="frame" x="29" y="536" width="6" height="5"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
                                 <state key="normal">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                             </button>
                         </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AWt-co-EUv" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2594" y="-549"/>
+            <point key="canvasLocation" x="-3096" y="-981"/>
         </scene>
         <!--Login-->
         <scene sceneID="gIN-uk-7gC">
@@ -188,7 +179,6 @@
                     <view key="view" contentMode="scaleToFill" id="ZWl-f6-r1u">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <connections>
@@ -198,7 +188,116 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jhx-H8-RPm" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="sxR-fz-pfS" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-3315" y="-2055"/>
+            <point key="canvasLocation" x="-3567" y="-1901"/>
+        </scene>
+        <!--SettingsVC-->
+        <scene sceneID="3ai-B6-NpV">
+            <objects>
+                <viewController id="bK1-Rd-hCA" customClass="SettingsVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="GSV-UB-YoW">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="DMm-JS-Y99">
+                                <rect key="frame" x="0.0" y="350" width="320" height="89"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.91425978539999997" green="0.89323405680000001" blue="0.90542574350000005" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Terms and Conditions"/>
+                                <connections>
+                                    <segue destination="F9Z-t1-GN6" kind="modal" id="BFi-wQ-plH"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="OIW-e5-B3V">
+                                <rect key="frame" x="0.0" y="248" width="320" height="88"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.91425978535353536" green="0.89323405681328105" blue="0.90542574348035232" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Sign Out"/>
+                                <connections>
+                                    <action selector="signOutButtonSelected:" destination="bK1-Rd-hCA" eventType="touchUpInside" id="zlp-a0-6FB"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profile_icon" id="Soj-93-cK2">
+                                <rect key="frame" x="20" y="75" width="23" height="22"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tXt-K3-IoR">
+                                <rect key="frame" x="0.0" y="142" width="320" height="89"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.91425978539999997" green="0.89323405680000001" blue="0.90542574350000005" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Contact Us"/>
+                                <connections>
+                                    <action selector="contactUsButtonSelected:" destination="bK1-Rd-hCA" eventType="touchUpInside" id="MFZ-us-Fqg"/>
+                                </connections>
+                            </button>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="line" textAlignment="natural" minimumFontSize="17" id="q6H-1D-htl">
+                                <rect key="frame" x="65" y="66" width="223" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="contactUsButton" destination="tXt-K3-IoR" id="1ID-Um-lAe"/>
+                        <outlet property="profileIconImage" destination="Soj-93-cK2" id="A1H-z1-3YM"/>
+                        <outlet property="signOutButton" destination="OIW-e5-B3V" id="jiH-7g-Zkh"/>
+                        <outlet property="termsAndConditionsButton" destination="DMm-JS-Y99" id="pou-cm-6Nb"/>
+                        <outlet property="userNameField" destination="q6H-1D-htl" id="Ym0-eG-fHd"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TOk-N5-uDU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4671" y="-2673"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="x8I-zL-3vg">
+            <objects>
+                <viewController id="KhV-gL-pMu" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dJF-gB-18R">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cAY-o8-4QM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4041" y="-2821"/>
+        </scene>
+        <!--Terms And ConditionsVC-->
+        <scene sceneID="Igc-tv-5Nf">
+            <objects>
+                <viewController id="F9Z-t1-GN6" customClass="TermsAndConditionsVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="4vj-2W-ixm">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Terms And Conditions" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="uhU-Vx-q9j">
+                                <rect key="frame" x="0.0" y="64" width="320" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" selectable="NO" id="lcl-9z-vLB">
+                                <rect key="frame" x="20" y="124" width="280" height="262"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="VerbatmTermsAndConditionsText" destination="lcl-9z-vLB" id="jDH-CL-kN9"/>
+                        <outlet property="termsAndConditionsTitle" destination="uhU-Vx-q9j" id="Ktj-uS-nbj"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="iXg-tV-oY5" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-4041" y="-2175"/>
         </scene>
         <!--Content Dev-->
         <scene sceneID="8XD-Tr-4db">
@@ -211,7 +310,6 @@
                             <scrollView autoresizesSubviews="NO" clearsContextBeforeDrawing="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" id="ChT-rO-Rpn" customClass="VerbatmScrollView">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
                                 <gestureRecognizers/>
                                 <connections>
@@ -221,7 +319,6 @@
                                 </connections>
                             </scrollView>
                         </subviews>
-                        <animations/>
                         <gestureRecognizers/>
                     </view>
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
@@ -249,7 +346,7 @@
                     </connections>
                 </tapGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-3513" y="-1229"/>
+            <point key="canvasLocation" x="-3989" y="-1321"/>
         </scene>
         <!--Verbatm Explanation-->
         <scene sceneID="d4R-xX-vw4">
@@ -258,7 +355,6 @@
                     <view key="view" contentMode="scaleToFill" id="N1e-7P-uGA">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
@@ -268,7 +364,7 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="khH-Fz-yFs" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <exit id="4yB-jA-6Vi" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
-            <point key="canvasLocation" x="-2825" y="-1741"/>
+            <point key="canvasLocation" x="-3096" y="-1617"/>
         </scene>
         <!--User Drafts-->
         <scene sceneID="i0X-XU-PPL">
@@ -277,7 +373,6 @@
                     <view key="view" contentMode="scaleToFill" id="DJB-7N-5FB">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
@@ -292,7 +387,6 @@
                     <view key="view" contentMode="scaleToFill" id="NpA-nt-PIW">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
@@ -307,44 +401,15 @@
                     <view key="view" contentMode="scaleToFill" id="yT8-e9-31R">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Profile" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="drM-L1-cqF">
-                                <rect key="frame" x="23" y="5" width="275" height="65"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <animations/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="PIY-xz-O0f" userLabel="Stories Container">
-                                <rect key="frame" x="7" y="164" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
-                            </containerView>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="3Td-at-cIZ" userLabel="Drafts Container">
-                                <rect key="frame" x="40" y="310" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
-                            </containerView>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="lor-5m-ijj" userLabel="Article Display Container">
-                                <rect key="frame" x="69" y="210" width="240" height="128"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <animations/>
-                            </containerView>
-                        </subviews>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
-                        <outlet property="articleDisplayContainerView" destination="lor-5m-ijj" id="ukv-Ic-ueS"/>
-                        <outlet property="draftsContainerView" destination="3Td-at-cIZ" id="J4m-XW-cYl"/>
-                        <outlet property="storiesContainerView" destination="PIY-xz-O0f" id="oHV-MQ-W6s"/>
-                        <outlet property="userNameLabel" destination="drM-L1-cqF" id="QeN-6Z-fux"/>
+                        <segue destination="bK1-Rd-hCA" kind="modal" identifier="presentSettingsPage" id="Iif-HD-h1B"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kfn-r7-rVE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4475" y="-559"/>
+            <point key="canvasLocation" x="-5333" y="-2673"/>
         </scene>
         <!--User Article Display-->
         <scene sceneID="wLm-HZ-LGJ">
@@ -353,7 +418,6 @@
                     <view key="view" contentMode="scaleToFill" id="S9s-GP-1Ky">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
@@ -361,5 +425,21 @@
             </objects>
             <point key="canvasLocation" x="-4128" y="-471"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="Bp6-TU-7aS">
+            <objects>
+                <viewController id="Ghb-hZ-Bpl" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="dyc-Nj-zKW">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="927-aE-JQX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
     </scenes>
+    <resources>
+        <image name="profile_icon" width="512" height="512"/>
+    </resources>
 </document>

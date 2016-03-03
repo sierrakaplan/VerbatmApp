@@ -94,6 +94,14 @@
 	self.layer.cornerRadius = cornerRadius;
 }
 
+-(void)addBorderToViewWithWidth:(CGFloat) borderWidth andColor:(UIColor *) color andRadius:(CGFloat) radius{
+        self.layer.borderWidth = borderWidth;
+        self.layer.borderColor = color.CGColor;
+//        self.layer.shadowRadius = radius;
+//        self.layer.shadowOffset = CGSizeMake(0, 0);
+ //       self.layer.shadowOpacity = 1;
+}
+
 - (void) addDashedBorderToView {
 	[self addDashedBorderToViewWithFrame:self.bounds];
 }

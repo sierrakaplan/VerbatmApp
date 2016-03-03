@@ -5,6 +5,7 @@
 //  Created by Iain Usiri on 10/7/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
+
 //	TextOverMediaView takes care of displaying and editing text over an image or a video, within an AVE.
 
 #import <UIKit/UIKit.h>
@@ -20,5 +21,9 @@
 -(void) resizeTextView;
 
 -(void) showText: (BOOL) show;
+
+-(void)changeImageTo:(UIImage *) image;
+
+-(void)setText:(NSString *) text;
 
 @end

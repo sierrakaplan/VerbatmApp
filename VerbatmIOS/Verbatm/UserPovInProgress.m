@@ -8,34 +8,26 @@
 
 #import "PinchView.h"
 #import "UserPovInProgress.h"
+#import "VideoPinchView.h"
 
 @interface UserPovInProgress()
 
 //array of NSData convertible to PinchView
 @property (strong, nonatomic) NSMutableArray* pinchViewsAsData;
-@property (strong, nonatomic) NSData* coverPhotoData;
 
 #define TITLE_KEY @"user_title"
 #define COVER_PHOTO_KEY @"user_cover_photo"
 #define PINCHVIEWS_KEY @"user_pinch_views"
-#define CONVERTING_PINCHVIEW_DISPATCH_KEY "converting_pinchviews"
 
 @end
 
 @implementation UserPovInProgress
 
-- (id) init {
-	self = [super init];
-	if (self) {
-	}
-	return self;
-}
-
 + (UserPovInProgress *)sharedInstance {
 	static UserPovInProgress *_sharedInstance = nil;
 	static dispatch_once_t onceSecurePredicate;
 	dispatch_once(&onceSecurePredicate,^{
-		_sharedInstance = [[self alloc] init];
+		_sharedInstance = [[UserPovInProgress alloc] init];
 	});
 
 	return _sharedInstance;
@@ -43,19 +35,7 @@
 
 -(void) addTitle: (NSString*) title {
 	self.title = title;
-	[[NSUserDefaults standardUserDefaults]
-	setObject:self.title forKey:TITLE_KEY];
-}
-
--(void) addCoverPhoto: (UIImage*) coverPicture {
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-		@synchronized(self) {
-			self.coverPhoto = coverPicture;
-			self.coverPhotoData = UIImagePNGRepresentation(coverPicture);
-		}
-		[[NSUserDefaults standardUserDefaults]
-		 setObject:self.coverPhotoData forKey:COVER_PHOTO_KEY];
-	});
+	[[NSUserDefaults standardUserDefaults] setObject:self.title forKey:TITLE_KEY];
 }
 
 //adds pinch view and automatically saves pinchViews
@@ -66,9 +46,11 @@
 				return;
 			}
             
-            [self.pinchViews insertObject:pinchView atIndex:index];
-			NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
-            [self.pinchViewsAsData insertObject:pinchViewData atIndex:index];
+            if(index < self.pinchViews.count && index >= 0) {
+                [self.pinchViews insertObject:pinchView atIndex:index];
+                NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
+                [self.pinchViewsAsData insertObject:pinchViewData atIndex:index];
+            }
 		}
         
 		[[NSUserDefaults standardUserDefaults]
@@ -76,7 +58,7 @@
 	});
 }
 
-//removes pinch view and automatically saves pinchViews
+//removes pinch view and saves pinchViews
 -(void) removePinchView:(PinchView*)pinchView {
 	@synchronized(self) {
 		if (![self.pinchViews containsObject: pinchView]) {
@@ -134,22 +116,24 @@
 
 //loads pinchviews from user defaults
 -(void) loadPOVFromUserDefaults {
-	//[self clearPOVInProgress];
-
+	[self clearPOVInProgress];
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];
-	NSData* coverPhotoData = [[NSUserDefaults standardUserDefaults] objectForKey:COVER_PHOTO_KEY];
 	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
 							 objectForKey:PINCHVIEWS_KEY];
 	@synchronized(self) {
-		if (coverPhotoData) {
-			self.coverPhoto = [UIImage imageWithData:coverPhotoData];
-		}
-		for (NSData* data in pinchViewsData) {
-			PinchView* pinchView = [self convertNSDataToPinchView:data];
-			[self.pinchViews addObject:pinchView];
-		}
 		self.pinchViewsAsData = [[NSMutableArray alloc] initWithArray:pinchViewsData copyItems:NO];
+		for (int i = 0; i < pinchViewsData.count; i++) {
+			NSData* data = pinchViewsData[i];
+			PinchView* pinchView = [self convertNSDataToPinchView:data];
+			if ([pinchView isKindOfClass:[VideoPinchView class]]) {
+				[(VideoPinchView*)pinchView loadAVURLAssetFromPHAsset].then(^(AVURLAsset* video) {
+					[self.pinchViews insertObject:pinchView atIndex:i];
+				});
+			} else {
+				[self.pinchViews addObject:pinchView];
+			}
+		}
 	}
 }
 

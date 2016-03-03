@@ -9,19 +9,23 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
+#pragma mark -POV View -
+#define CREATOR_CHANNEL_BAR_HEIGHT 50.f
 
-#define BELOW_STATUS_BAR ([UIApplication sharedApplication].statusBarFrame.origin.y + [UIApplication sharedApplication].statusBarFrame.size.height)
+
 #define TITLE_BAR_HEIGHT 60.f
 
 #pragma mark - Custom Navigation Bar -
-
 #define CUSTOM_NAV_BAR_HEIGHT 40.f
 
 #pragma mark - Exit CV constants-
 
-#define EXIT_CV_BUTTON_WIDTH 35
-#define EXIT_CV_BUTTON_HEIGHT EXIT_CV_BUTTON_WIDTH
+#define EXIT_CV_BUTTON_WIDTH 42
+#define EXIT_CV_BUTTON_HEIGHT 30
 #define EXIT_CV_BUTTON_WALL_OFFSET 10
+
+#define BAR_TOP_OFFSET 10.f
+
 
 #define NAV_BAR_HEIGHT 50.f
 #define NAV_ICON_OFFSET 7.f
@@ -48,7 +52,7 @@
 
 #define STORY_CELL_PADDING 10
 #define STORY_CELL_HEIGHT 160
-//verticle distance between text on the
+//verticle distance between text on the feed
 #define FEED_TEXT_GAP 15
 //sets the distance between a label and the left of the screen
 #define FEED_TEXT_X_OFFSET 10
@@ -71,14 +75,17 @@
 
 #pragma mark - Media Dev VC -
 
-#define SWITCH_ORIENTATION_ICON_SIZE 30.f
-#define FLASH_ICON_SIZE 30.f
+#define SWITCH_ORIENTATION_ICON_SIZE 70.f
+#define FLASH_ICON_SIZE_HEIGHT 70.f
+#define FLASH_ICON_SIZE_WIDTH 25.f
 #define CAPTURE_MEDIA_BUTTON_SIZE 100.f
+#define CLOSE_CAMERA_BUTTON_SIZE 40.f
+
 #define PROGRESS_CIRCLE_SIZE 100.f
 #define PROGRESS_CIRCLE_THICKNESS 10.0f
 #define PROGRESS_CIRCLE_OPACITY 0.6f
 
-#define CAPTURE_MEDIA_BUTTON_OFFSET 20.f
+#define CAPTURE_MEDIA_BUTTON_OFFSET 10.f
 
 #define TRANSLATION_CONTENT_DEV_CONTAINER_VIEW_THRESHOLD 50.f
 
@@ -145,7 +152,9 @@
 
 #pragma mark - AVES -
 
-#define LIKE_BUTTON_SIZE 30.f
+#define LIKE_BUTTON_SIZE_WIDTH 25.f
+#define LIKE_BUTTON_SIZE_HEIGHT 25.f
+
 #define LIKE_BUTTON_OFFSET 20.f
 
 #pragma mark Text
@@ -163,13 +172,69 @@
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
 #define TAP_THRESHOLD 20.f//the threshold to select a circle - but also to start panning
-#define	SLIDE_THRESHOLD 40.f
+#define	SLIDE_THRESHOLD 70.f
 
-#define TEXT_VIEW_OVER_MEDIA_Y_OFFSET 75.f
+#define TEXT_VIEW_OVER_MEDIA_Y_OFFSET 150.f
 #define TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT 70.f
 
 
 #define PAN_CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
 
 
+#define TAB_BUTTON_PADDING 12.f
+#define TAB_DIVIDER_WIDTH 2.f
+
+#define TAB_BAR_HEIGHT 40.f
+
+
+
+#define PROFILE_HEADER_HEIGHT 35.f
+#define USER_CELL_VIEW_HEIGHT 40.f
+
+#define CHANNEL_USER_LIST_CELL_HEIGHT 55.f
+
+
+#define PROFILE_NAV_BAR_HEIGHT (PROFILE_HEADER_HEIGHT + USER_CELL_VIEW_HEIGHT)
+#define LIKE_SHARE_BAR_HEIGHT 40.f
+
+
+
+#define CHANNEL_CREATION_VIEW_WALLOFFSET_X 30.f
+#define CHANNEL_CREATION_VIEW_Y_OFFSET (PROFILE_NAV_BAR_HEIGHT + 90.f)
+
+//for PROFILE NAV BAR ARROW
+#define ARROW_EXTENSION_BAR_HEIGHT 15.f
+#define ARROW_FRAME_HEIGHT ARROW_EXTENSION_BAR_HEIGHT
+#define ARROW_FRAME_WIDTH 30.f
+#define ARROW_IMAGE_WALL_OFFSET 2.f
+
+#define NO_POVS_LABEL_WIDTH 300.f
+
+
+#define THREAD_BAR_BUTTON_FONT_SIZE 17.f
+
+#define SETTINGS_BUTTON_SIZE 25.f
+
+#define CHANNEL_BUTTON_WALL_XOFFSET 10.f
+
+
+#define FOLLOW_BUTTON_HEIGHT SETTINGS_BUTTON_SIZE
+#define FOLLOW_BUTTON_WIDTH (FOLLOW_BUTTON_HEIGHT * FOLLOW_BUTTON_RATIO_FOR_WIDTH)
+
+#define FOLLOW_BUTTON_RATIO_FOR_WIDTH (436.f / 250.f)
+
+
+#define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 1.f
+
 #endif
+
+
+
+
+
+
+
+
+
+
+

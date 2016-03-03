@@ -6,22 +6,51 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "POVView.h"
 #import "Analytics.h"
+#import "AveTypeAnalyzer.h"
 
-#import "BaseArticleViewingExperience.h"
+#import "CreatorAndChannelBar.h"
+
+#import "Durations.h"
+
 #import "Icons.h"
+
+
+#import "POVLikeAndShareBar.h"
 #import "PhotoVideoAVE.h"
 #import "PhotoAVE.h"
+#import "POVView.h"
+#import "Page.h"
+#import "PagesLoadManager.h"
+#import "ParseBackendKeys.h"
+#import <PromiseKit/PromiseKit.h>
+
 #import "SizesAndPositions.h"
-#import "TextAVE.h"
-#import "VideoAVE.h"
+#import "Styles.h"
+
 #import "UserManager.h"
+#import "UserSetupParameters.h"
+#import "UIView+Effects.h"
 
-@interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate>
+#import "VideoAVE.h"
 
-// mapping between integer and uiview
+@interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate,
+    PagesLoadManagerDelegate, POVLikeAndShareBarProtocol>
+
+// Load manager in charge of getting page objects and all their media for each pov
+@property (strong, nonatomic) PagesLoadManager* pageLoadManager;
+
+
+@property (nonatomic) CreatorAndChannelBar * creatorAndChannelBar;
+
+
+// mapping between NSNumber of type Integer and ArticleViewingExperience
 @property (strong, nonatomic) NSMutableDictionary * pageAves;
+
+//used to lazily instantiate pages when the view is about to presented
+//se save the page media here and then load and present the pages on demand
+@property (strong, nonatomic) NSMutableDictionary * pageAveMedia;
+
 @property (nonatomic) NSNumber* currentIndexOfPageLoading;
 
 @property (nonatomic) UIScrollView *mainScrollView;
@@ -32,67 +61,137 @@
 @property (nonatomic) BOOL liked;
 @property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
-@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
-@property (strong, nonatomic) PovInfo* povInfo;
+//@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
+@property (strong, nonatomic) PFObject* parsePostObject;
 
 @property (nonatomic, strong) UIButton * downArrow;
 
-#define DOWN_ARROW_WIDTH 30
-#define DOWN_ARROE_DISTANCE_FROM_BOTTOM 30
+@property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
+
+@property (nonatomic) POVLikeAndShareBar * likeShareBar;
+@property (nonatomic) CGRect lsBarDownFrame;// the framw of the like share button with the tab down
+@property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
+
+@property (nonatomic) UIImageView * swipeUpAndDownInstruction;///tell user they can swipe up and down to navigate
+
+
+@property (nonatomic) NSMutableArray * mediaPageContent;//TODO
+
+@property(nonatomic) BOOL povIsCurrentlyBeingShown;
+
+#define DOWN_ARROW_WIDTH 30.f
+#define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
+#define ACTIVITY_ANIMATION_Y 100.f
 @end
 
 @implementation POVView
 
--(instancetype)initWithFrame:(CGRect)frame {
-	self = [super initWithFrame:frame];
-	if (self) {
-		[self addSubview: self.mainScrollView];
-		self.currentIndexOfPageLoading = [NSNumber numberWithInteger:0];
-	}
-	return self;
-}
-
--(instancetype)initWithFrame:(CGRect)frame andPOVInfo:(PovInfo*) povInfo {
-    self = [self initWithFrame:frame];
+-(instancetype)initWithFrame:(CGRect)frame andPovParseObject:(PFObject*) povObject {
+    self = [super initWithFrame:frame];
     if (self) {
-		self.povInfo = povInfo;
+        [self addSubview: self.mainScrollView];
+        self.mainScrollView.backgroundColor = [UIColor blackColor];
+        if(povObject)self.parsePostObject = povObject;
+        [self createBorder];
     }
     return self;
 }
 
--(void) renderNextAve: (UIView*) ave withIndex: (NSNumber*) pageIndex {
-	[self.pageAves setObject:ave forKey:pageIndex];
-	if (pageIndex == self.currentIndexOfPageLoading) {
-		self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
-													 (self.currentIndexOfPageLoading.integerValue+1) * self.frame.size.height);
-		[self setDelegateOnPhotoAVE: ave];
-		CGRect frame = CGRectOffset(self.bounds, 0, self.frame.size.height * self.currentIndexOfPageLoading.integerValue);
-		ave.frame = frame;
-		[self.mainScrollView addSubview:ave];
-		self.currentIndexOfPageLoading = [NSNumber numberWithInteger:self.currentIndexOfPageLoading.integerValue+1];
-		if ([self.pageAves objectForKey:self.currentIndexOfPageLoading]) {
-			[self renderNextAve:[self.pageAves objectForKey:self.currentIndexOfPageLoading] withIndex:self.currentIndexOfPageLoading];
-		}
-	}
+
+-(instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self addSubview: self.mainScrollView];
+        self.mainScrollView.backgroundColor = [UIColor blackColor];
+        [self createBorder];
+    }
+    return self;
+}
+
+-(void)createBorder{
+    [self.layer setBorderWidth:1.0];
+    [self.layer setCornerRadius:0.0];
+    [self.layer setBorderColor:[UIColor blackColor].CGColor];
+}
+
+
+
+#pragma mark - Display page -
+
+-(void) scrollToPageAtIndex:(NSInteger) pageIndex{
+    if(pageIndex < self.pageAves.count && pageIndex >= 0){
+        self.mainScrollView.contentOffset = CGPointMake(0, self.mainScrollView.frame.size.height * (pageIndex));
+        [self displayMediaOnCurrentAVE];
+    }
+}
+
+-(void) renderNextAve: (ArticleViewingExperience*)ave withIndex: (NSNumber*) pageIndex {
+    [self setDelegateOnPhotoAVE: ave];
+    CGRect frame = CGRectMake(0, [pageIndex integerValue] * self.mainScrollView.frame.size.height , self.mainScrollView.frame.size.width, self.mainScrollView.frame.size.height);
+    ave.frame = frame;
+    
+    [self.mainScrollView addSubview:ave];
+
+    [self.pageAves setObject:ave forKey:pageIndex];
 }
 
 //renders aves (pages) onto the view
 -(void) renderAVES: (NSMutableArray *) aves {
 
-	self.currentPageIndex = -1;
 	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width, [aves count] * self.frame.size.height);
 	self.mainScrollView.contentOffset = CGPointMake(0, 0);
 	CGRect viewFrame = self.bounds;
-
+    
 	for (int i = 0; i < aves.count; i++) {
-		UIView* ave = aves[i];
+		ArticleViewingExperience* ave = aves[i];
 		[self.pageAves setObject:ave forKey:[NSNumber numberWithInt:i]];
 		[self setDelegateOnPhotoAVE: ave];
+        [ave offScreen];
 		ave.frame = viewFrame;
 		[self.mainScrollView addSubview: ave];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
+}
+
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up{
+    
+    self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height -LIKE_SHARE_BAR_HEIGHT - TAB_BAR_HEIGHT ,
+                                 self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+    
+    self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
+                                     self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+    
+    CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
+    
+    self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
+    self.likeShareBar.delegate = self;
+    [self addSubview:self.likeShareBar];
+}
+
+//like-share bar protocol
+
+-(void)shareButtonPressed {
+    [self.delegate shareOptionSelectedForParsePostObject:self.parsePostObject];
+}
+
+//-(void)likeButtonPressed{
+//    
+//}
+
+-(void)showWhoLikesThePOV{
+}
+
+-(void)showwhoHasSharedThePOV{
+    
+}
+
+
+
+-(void) addCreatorInfoFromChannel: (Channel *) channel {
+    CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
+    self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
+    [self addSubview:self.creatorAndChannelBar];
 }
 
 #pragma mark - Add like button -
@@ -100,170 +199,172 @@
 //should be called by another class (since preview does not have like)
 //Sets the like button delegate and the povID since the delegate method
 //requires a pov ID be passed back
--(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate {
-	self.likeButtonDelegate = delegate;
-	// check if current user likes story
-	self.liked = [[UserManager sharedInstance] currentUserLikesStory: self.povInfo];
-	if (self.liked) {
-		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
-	} else {
-		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-	}
-	[self addSubview: self.likeButton];
+//-(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate {
+//	self.likeButtonDelegate = delegate;
+//	// check if current user likes story
+//	self.liked = [[UserManager sharedInstance] currentUserLikesStory: self.povInfo];
+//	if (self.liked) {
+//		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
+//	} else {
+//		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
+//	}
+//	[self addSubview: self.likeButton];
+//}
+
+
+-(void) shiftLikeShareBarDown:(BOOL) down{
+    if(down){
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.likeShareBar.frame = self.lsBarDownFrame;
+        }];
+    }else{
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.likeShareBar.frame = self.lsBarUpFrame;
+        }];
+    }
 }
+
+
 
 -(void) likeButtonPressed {
 	self.liked = !self.liked;
-	if (self.liked) {
-		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
-	} else {
-		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-	}
-	[self.likeButtonDelegate likeButtonLiked: self.liked onPOV: self.povInfo];
+
 }
 
 #pragma mark - Scroll view delegate -
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	[self displayMediaOnCurrentAVE];
+    [self setPageNumberOnShareBarFromScrollView:scrollView];
+    [self displayMediaOnCurrentAVE];
+}
+
+-(void) setPageNumberOnShareBarFromScrollView:(UIScrollView *) scrollview {
+    CGFloat scrollViewHeigthOffset = scrollview.contentOffset.y;
+    CGFloat screenHeight = scrollview.frame.size.height;
+    CGFloat pageIndex = scrollViewHeigthOffset/screenHeight;
+    NSNumber * pageNumber = @((pageIndex + 1.f));
+    [self.likeShareBar setPageNumber:pageNumber];
 }
 
 #pragma mark - Handle Display Media on AVE -
 
--(void) setDelegateOnPhotoAVE: (UIView*) ave {
-	if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-		[self setDelegateOnPhotoAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-	} else if ([ave isKindOfClass:[PhotoAVE class]]) {
+-(void) setDelegateOnPhotoAVE: (ArticleViewingExperience*) ave {
+	if ([ave isKindOfClass:[PhotoAVE class]]) {
+		((PhotoAVE *)ave).povScrollView = self.mainScrollView;
 		((PhotoAVE*) ave).delegate = self;
+	} else if ([ave isKindOfClass:[PhotoVideoAVE class]]){
+		((PhotoVideoAVE *)ave).povScrollView = self.mainScrollView;
 	}
 }
 
-//takes care of playing video if necessary
-//or showing circle if multiple photo ave
+// Tells previous page it's offscreen and current page it's onscreen
 -(void) displayMediaOnCurrentAVE {
-	NSInteger nextIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
-	BaseArticleViewingExperience *nextPage = [self.pageAves objectForKey:[NSNumber numberWithInteger:nextIndex]];
-    BaseArticleViewingExperience * currentPage = [self.pageAves objectForKey:[NSNumber numberWithInteger: self.currentPageIndex]];
-    if(self.currentPageIndex != nextIndex){
-        //stop recording old page
-        [self logAVEDoneViewing:currentPage];
-        //start recoring new page
-        [[Analytics getSharedInstance]pageStartedViewingWithIndex:nextIndex];
-    }else if (!nextIndex){//first page of the article
-        //start recoring new page
-        [[Analytics getSharedInstance]pageStartedViewingWithIndex:nextIndex];
+	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
+	ArticleViewingExperience *currentPageOnScreen = [self.pageAves objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
+    
+	[currentPageOnScreen onScreen];
+    [self prepareNextPage];
+    
+    //present multipage icon
+}
+
+
+
+-(void)presentSwipeUpAndDownInstruction {
+    
+    
+    UIImage * instructionImage = [UIImage imageNamed:SWIPE_UP_DOWN_INSTRUCTION];
+    
+    CGFloat frameHeight = 120.f;
+    CGFloat frameWidth = ((frameHeight * 117.f)/284.f);
+    
+    
+    CGFloat frameOriginX = self.frame.size.width - frameWidth - 10.f;
+    CGFloat frameOriginY = (self.frame.size.height/2.f) + 50.f;
+    
+    CGRect instructionFrame = CGRectMake(frameOriginX,frameOriginY, frameWidth,frameHeight);
+                                         
+    
+    
+    self.swipeUpAndDownInstruction = [[UIImageView alloc] initWithImage:instructionImage];
+    self.swipeUpAndDownInstruction.frame = instructionFrame;
+    [self addSubview:self.swipeUpAndDownInstruction];
+    [self bringSubviewToFront:self.swipeUpAndDownInstruction];
+    
+    
+}
+
+
+-(void)presentFilterSwipeForInstructionWithAve:(ArticleViewingExperience *) currentAve{
+    
+    
+    
+    BOOL isPhotoAve = [currentAve isKindOfClass:[PhotoAVE class]];
+    BOOL isVideoAve = [currentAve isKindOfClass:[PhotoVideoAVE class]];
+    
+    BOOL filterInstructionHasNotBeenPresented = ![[UserSetupParameters sharedInstance] isFilter_InstructionShown];
+    
+    if( (isPhotoAve || isVideoAve)  && filterInstructionHasNotBeenPresented){
+        UIImage * instructionImage = [UIImage imageNamed:FILTER_SWIPE_INSTRUCTION];
+        CGFloat frameWidth = 200.f;
+        CGFloat frameHeight = (frameWidth * 320.f) /488.f;
+        
+        UIImageView * filterInstruction = [[UIImageView alloc] initWithImage:instructionImage];
+        filterInstruction.backgroundColor = [UIColor clearColor];
+        
+        CGFloat imageOriginX = (self.frame.size.width/2.f) - (frameWidth/2.f);
+        
+        
+        if(isPhotoAve){
+           filterInstruction.frame = CGRectMake(imageOriginX,
+                                                (self.frame.size.height/2.f) + frameHeight,
+                                                frameWidth, frameHeight);
+        }else{
+            
+          filterInstruction.frame = CGRectMake(imageOriginX,
+                                          self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
+
+        }
+        
+        [self addSubview:filterInstruction];
+        [self bringSubviewToFront:filterInstruction];
+        //commented out for debugging but should not be
+        //[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
     }
     
-	if(self.currentPageIndex != nextIndex){
-		if (self.currentPageIndex >= 0) {
-			[self pauseVideosInAVE: currentPage];
-		}
-        self.currentPageIndex = nextIndex;
-		[self displayCircleOnAVE: nextPage];
-		[self playVideosInAVE: nextPage];
-	}
     
-    [self prepareOutLiersToEnterScreen];
+   
+    
+    
 }
 
 
--(void)logAVEDoneViewing:(BaseArticleViewingExperience *) ave{
-    
-    NSString * pageType = @"";
 
+
+
+
+-(void)logAVEDoneViewing:(ArticleViewingExperience*) ave {
+    NSString * pageType = @"";
    if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave offScreen];
         pageType = @"VideoAVE";
     } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] offScreen];
         pageType = @"PhotoVideoAVE";
     }else if ([ave isKindOfClass:[PhotoAVE class] ]){
         pageType = @"PhotoAVE";
-    }else{//must be textAve
-        pageType = @"textAve";
     }
     
     [[Analytics getSharedInstance] pageEndedViewingWithIndex:self.currentPageIndex aveType:pageType];
 }
 
--(void) displayCircleOnAVE:(UIView*) ave {
-    if ([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self displayCircleOnAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[PhotoAVE class]]) {
-        ((PhotoAVE *)ave).povScrollView = self.mainScrollView;
-        [(PhotoAVE*)ave showAndRemoveCircle];
-    }else if ([ave isKindOfClass:[PhotoVideoAVE class]]){
-        ((PhotoVideoAVE *)ave).povScrollView = self.mainScrollView;
-        [(PhotoVideoAVE*)ave showAndRemoveCircle];
-    }
-}
-
-#pragma mark - Video playback
-
--(void) stopVideosInAVE:(UIView*) ave {
-    if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self stopVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave stopVideo];
-    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] stopVideo];
-    }
-}
-
--(void) pauseVideosInAVE:(UIView*) ave {
-    NSString * pageType = @"";
-    if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self pauseVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave offScreen];
-        pageType = @"VideoAVE";
-    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] offScreen];
-        pageType = @"PhotoVideoAVE";
-    }else if ([ave isKindOfClass:[PhotoAVE class] ]){
-        pageType = @"PhotoAVE";
-    }else{//must be textAve
-        pageType = @"textAve";
-    }
-}
-
--(void) playVideosInAVE:(UIView*) ave {
-    if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self playVideosInAVE:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave onScreen];
-    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] onScreen];
-    }
-}
-
-//given a boarder view  and we prepare its video media to appear
-//these are views that are one swipe (up/down) away from being shown
--(void)prepareOutLiersToEnterScreen{
-    NSInteger currIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
-    NSInteger  indexAbove = currIndex -1;
-    NSInteger indexBelow = currIndex +1;
-    
-    for (int i =0; i < self.pageAves.count; i++) {
-        UIView * page = [self.pageAves objectForKey:[NSNumber numberWithInt:i]];
-        if(i == indexAbove){
-            [self prepareView:page];
-        }else if(i == indexBelow){
-            [self prepareView:page];
-        }else if (i != currIndex){
-            [self pauseVideosInAVE:page];
-        }
-    }
-}
-
--(void)prepareView:(UIView *) ave{
-    if([ave isKindOfClass:[BaseArticleViewingExperience class]]) {
-        [self prepareView:[(BaseArticleViewingExperience*)ave subAVE]];
-    } else if ([ave isKindOfClass:[VideoAVE class]]) {
-        [(VideoAVE*)ave almostOnScreen];
-    } else if([ave isKindOfClass:[PhotoVideoAVE class]]) {
-        [[(PhotoVideoAVE*)ave videoView] almostOnScreen];
-    }
+// Prepares aves almost on screen (one above or below current page)
+-(void) prepareNextPage {
+    NSInteger currentIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
+    NSInteger indexAbove = currentIndex -1;
+    NSInteger indexBelow = currentIndex +1;
+	ArticleViewingExperience* pageAbove = [self.pageAves objectForKey:[NSNumber numberWithInteger:indexAbove]];
+	ArticleViewingExperience* pageBelow = [self.pageAves objectForKey:[NSNumber numberWithInteger:indexBelow]];
+	if(pageAbove)[pageAbove almostOnScreen];
+	if(pageBelow)[pageBelow almostOnScreen];
 }
 
 #pragma mark - Down arrow -
@@ -280,6 +381,94 @@
 	}];
 }
 
+
+#pragma mark - Pages Downloaded -
+
+-(void) pagesLoadedForPOV:(NSNumber *)povID {
+//    NSArray* pages = [self.pageLoadManager getPagesForPOV: povID];
+//    [self renderPOVFromPages:pages andLikeButtonDelegate:self];
+}
+
+-(void) renderPOVFromPages:(NSArray *) pages{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.activityIndicator startAnimating];
+    });
+    AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
+    
+    NSMutableArray * downloadPromises = [[NSMutableArray alloc] init];
+    
+    for (PFObject * parsePageObject in pages) {
+        
+         AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+            [analyzer getAVEFromPage:parsePageObject withFrame:self.bounds andCompletionBlock:^(NSArray * aveMedia) {
+                [self storeMedia:aveMedia forPageIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
+                resolve(nil);
+            }];
+         }];
+        [downloadPromises addObject:promise];
+    }
+    
+    PMKWhen(downloadPromises).then(^(id data){
+        if(self.povIsCurrentlyBeingShown){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentMediaContent];
+                [self povOnScreen];
+            });
+        }
+    });
+}
+
+
+-(void)storeMedia:(NSArray *) media forPageIndex:(NSNumber*) pageIndex{
+    if(media){
+        [self.pageAveMedia setObject:media forKey:pageIndex];
+    }
+}
+
+-(void)presentMediaContent{
+    if(self.pageAveMedia.count > 0){
+        [self.activityIndicator stopAnimating];
+        self.activityIndicator = nil;
+        
+        for(NSInteger key = 0; key < self.pageAveMedia.count; key++){
+            NSArray * media = [self.pageAveMedia objectForKey:[NSNumber numberWithInteger:key]];
+            ArticleViewingExperience * ave = [AVETypeAnalyzer getAVEFromPageMedia:media withFrame:self.bounds];
+            //add bar at the bottom with page numbers etc
+            [self renderNextAve:ave withIndex:[NSNumber numberWithInteger:key]];
+            [self setApproprioateScrollViewContentSize];
+        }
+        
+        [self.pageAveMedia removeAllObjects];
+    }
+}
+
+
+
+#pragma mark - Playing POV content -
+
+-(void) povOnScreen{
+    if(self.pageAveMedia.count > 0 &&
+       self.pageAves.count ==0){
+        //we lazily create out pages
+        [self presentMediaContent];
+    }
+    
+    [self displayMediaOnCurrentAVE];
+    self.povIsCurrentlyBeingShown = YES;
+}
+
+-(void) povOffScreen{
+    [self stopAllVideos];
+    self.povIsCurrentlyBeingShown = NO;
+}
+
+-(void)preparePOVToBePresented{
+    NSInteger currentPage = self.mainScrollView.contentOffset.x / self.frame.size.width;
+    ArticleViewingExperience* page = [self.pageAves objectForKey:[NSNumber numberWithInteger:currentPage]];
+    [page onScreen];
+    [self prepareNextPage];
+}
+
 #pragma mark - Photo AVE Delegate -
 
 -(void) startedDraggingAroundCircle {
@@ -290,27 +479,41 @@
 	self.mainScrollView.scrollEnabled = YES;
 }
 
+-(void) viewTapped {
+
+}
+
+
+-(void)setApproprioateScrollViewContentSize{
+    self.mainScrollView.contentSize = CGSizeMake(0, self.pageAves.count * self.frame.size.height);
+}
+
+
 #pragma mark - Clean up -
 
 -(void) clearArticle {
-    //We clear these so that the media is released
-    [self stopAllVideos];
-    for(UIView *view in self.mainScrollView.subviews) {
-        [view removeFromSuperview];
-    }
-    [self.likeButton removeFromSuperview];
-    self.currentPageIndex = -1;
-    self.pageAves = nil;
+	//We clear these so that the media is released
+	[self stopAllVideos];
+	
+	for(UIView *view in self.mainScrollView.subviews) {
+		[view removeFromSuperview];
+	}
+	if (self.likeButton.superview) [self.likeButton removeFromSuperview];
+    [self.likeShareBar removeFromSuperview];
+    self.likeShareBar =  nil;
+	self.currentPageIndex = -1;
+	self.pageAves = nil;
+	self.pageLoadManager = nil;
 }
 
 //make sure to stop all videos
 -(void) stopAllVideos {
     if (!self.pageAves) return;
-    for (NSNumber * key in self.pageAves) {
-        [self stopVideosInAVE:self.pageAves[key]];
+    for (NSNumber* key in self.pageAves) {
+		ArticleViewingExperience* ave = [self.pageAves objectForKey:key];
+		[ave offScreen];
     }
 }
-
 
 #pragma mark - Lazy Instantiation -
 
@@ -321,47 +524,52 @@
 	return _pageAves;
 }
 
+
+
+-(NSMutableDictionary*) pageAveMedia {
+    if(!_pageAveMedia) {
+        _pageAveMedia = [[NSMutableDictionary alloc] init];
+    }
+    return _pageAveMedia;
+}
 -(UIScrollView*) mainScrollView {
 	if (!_mainScrollView) {
 		_mainScrollView = [[UIScrollView alloc] initWithFrame: self.bounds];
+		_mainScrollView.backgroundColor = [UIColor blueColor];
 		_mainScrollView.pagingEnabled = YES;
 		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];
 		[_mainScrollView setShowsHorizontalScrollIndicator:NO];
-		_mainScrollView.bounces = YES;
+		_mainScrollView.bounces = NO;
 		//scroll view delegate
 		_mainScrollView.delegate = self;
 	}
 	return _mainScrollView;
 }
 
--(UIButton *)likeButton {
-	if (!_likeButton) {
-		CGRect likeButtonFrame = CGRectMake(LIKE_BUTTON_OFFSET,
-											self.frame.size.height - LIKE_BUTTON_SIZE - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
-											LIKE_BUTTON_SIZE, LIKE_BUTTON_SIZE);
-
-		self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON];
-		self.likeButtonLikedImage = [UIImage imageNamed:LIKE_PRESSED_ICON];
-		_likeButton = [UIButton buttonWithType: UIButtonTypeCustom];
-		[_likeButton setFrame: likeButtonFrame];
-		[_likeButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
-		[_likeButton setImage: self.likeButtonNotLikedImage forState:UIControlStateNormal];
-		[_likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-	}
-	return _likeButton;
-}
 
 -(UIButton*) downArrow {
 	if (!_downArrow) {
 		_downArrow = [[UIButton alloc] init];
 		[_downArrow setImage:[UIImage imageNamed:PULLDOWN_ICON] forState:UIControlStateNormal];
 		_downArrow.frame = CGRectMake(self.center.x - (DOWN_ARROW_WIDTH/2),
-										  self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROE_DISTANCE_FROM_BOTTOM,
+										  self.frame.size.height - DOWN_ARROW_WIDTH - DOWN_ARROW_DISTANCE_FROM_BOTTOM,
 										  DOWN_ARROW_WIDTH, DOWN_ARROW_WIDTH);
 		[_downArrow addTarget:self action:@selector(downArrowClicked) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _downArrow;
+}
+
+-(UIActivityIndicatorView*) activityIndicator {
+    if (!_activityIndicator) {
+        _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];
+        _activityIndicator.color = [UIColor grayColor];
+        _activityIndicator.hidesWhenStopped = YES;
+        _activityIndicator.center = CGPointMake(self.center.x, self.frame.size.height * 1.f/2.f);
+        [self addSubview:_activityIndicator];
+        [self bringSubviewToFront:_activityIndicator];
+    }
+    return _activityIndicator;
 }
 
 

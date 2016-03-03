@@ -10,7 +10,7 @@
 
 @interface SingleMediaAndTextPinchView : PinchView
 
-@property (strong, nonatomic) NSString* text;
-@property (strong, nonatomic) NSNumber* textYPosition; // float value
+    @property (strong, nonatomic) NSString* text;
+    @property (strong, nonatomic) NSNumber* textYPosition; // float value
 
 @end

@@ -94,6 +94,7 @@ NSString * const GMGridViewCellIdentifier = @"GMGridViewCellIdentifier";
     
     
     UICollectionViewFlowLayout *layout = [self collectionViewFlowLayoutForOrientation:[UIApplication sharedApplication].statusBarOrientation];
+    
     if (self = [super initWithCollectionViewLayout:layout])
     {
         //Compute the thumbnail pixel size:

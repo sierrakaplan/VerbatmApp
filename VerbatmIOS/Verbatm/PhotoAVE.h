@@ -7,23 +7,46 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ArticleViewingExperience.h"
+#import "PinchView.h"
 
 @protocol PhotoAVEDelegate <NSObject>
 
-// Lets super class (with scroll view) know if the circle is currently dragging
 -(void) startedDraggingAroundCircle;
 -(void) stoppedDraggingAroundCircle;
 
+-(void) viewTapped;
+
 @end
 
-@interface PhotoAVE : UIView
+@protocol PhotoAVETextEntryDelegate <NSObject>
+
+-(void) editContentViewTextIsEditing;
+-(void) editContentViewTextDoneEditing;
+
+@end
+
+@interface PhotoAVE : ArticleViewingExperience
 
 @property (strong, nonatomic) id<PhotoAVEDelegate> delegate;
+
+@property (strong, nonatomic) id<PhotoAVETextEntryDelegate> textEntryDelegate;
+
+@property (nonatomic) BOOL isPhotoVideoSubview;
+
 //this is used with the tap gesture in the photovideoave -- we pass it in in order to prevent them from intercepting each other
 @property (nonatomic, strong) UITapGestureRecognizer * photoAveTapGesture;
-@property (weak, nonatomic) UIScrollView * povScrollView;//set before showAndRemoveCircle is called. This allows us to make the pan gestures not interact
-//photos are UIImage*
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos isSubViewOfPhotoVideoAve:(BOOL) isPVSubview;
--(void) showAndRemoveCircle;//be sure to set povScrollView
+
+@property (weak, nonatomic) UIScrollView * povScrollView;
+
+//Photos is array of UIImage
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *)photos;;
+
+// initializer for preview mode
+// PinchView can be either ImagePinchView or CollectionPinchView
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView inPreviewMode: (BOOL) inPreviewMode;
+
+//be sure to set povScrollView
+-(void) showAndRemoveCircle;
 
 @end

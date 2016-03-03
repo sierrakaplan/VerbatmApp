@@ -16,6 +16,7 @@
 #define OFFSET 15.f
 #define BUTTON_WIDTH self.frame.size.width/3.f
 #define BUTTON_HEIGHT self.frame.size.height
+#define TITLE_FONT_SIZE 24.f
 
 @end
 
@@ -60,6 +61,13 @@
 	[middleButton addTarget:self action:@selector(middleButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }
 
+//called instead of the middle button  -- don't call both
+-(void) createMiddleTitleWithText: (NSString*) title{
+    UILabel* titleLabel = [self getTitleLabelWithText:title];
+    [self addSubview:titleLabel];
+}
+
+
 -(void) createRightButtonWithTitle: (NSString*) title orImage: (UIImage*) image {
 	UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	[rightButton setFrame: CGRectMake(BUTTON_WIDTH*2, 0.f, BUTTON_WIDTH, BUTTON_HEIGHT)];
@@ -82,6 +90,17 @@
 	label.textAlignment = alignment;
 	label.textColor = [UIColor NAVIGATION_BAR_TEXT_COLOR];
 	return label;
+}
+
+
+-(UILabel *) getTitleLabelWithText:(NSString *) text{
+    CGRect labelFrame = CGRectMake(BUTTON_WIDTH, 0.f, BUTTON_WIDTH, BUTTON_HEIGHT);
+    UILabel* label = [[UILabel alloc] initWithFrame:labelFrame];
+    label.text = text;
+    label.font = [UIFont fontWithName:TITLE_TEXT_FONT size:TITLE_FONT_SIZE];
+    label.textAlignment = NSTextAlignmentCenter;
+    label.textColor = [UIColor NAVIGATION_BAR_TEXT_COLOR];
+    return label;
 }
 
 # pragma mark - Button actions -

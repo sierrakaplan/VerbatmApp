@@ -9,5 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface VerbatmScrollView : UIScrollView
-    @property (strong, nonatomic) NSMutableArray * pageElements;
+
+@property (strong, nonatomic) NSMutableArray * pageElements;
+
 @end

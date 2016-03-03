@@ -58,7 +58,7 @@
 // set up the capture session with video and audio inputs, and video and still image outputs
 -(void) initializeSession {
 	self.session = [[AVCaptureSession alloc]init];
-	self.session.sessionPreset = AVCaptureSessionPreset640x480;
+	self.session.sessionPreset = AVCaptureSessionPresetHigh;
 	[self setupSessionInputs];
 	[self setupSessionOutputs];
 }
@@ -232,7 +232,8 @@
 
 #pragma mark AVCaptureFileOutputRecordingDelegate Delegate methods
 
--(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections {}
+-(void)captureOutput:(AVCaptureFileOutput *)captureOutput didStartRecordingToOutputFileAtURL:(NSURL *)fileURL fromConnections:(NSArray *)connections {
+}
 
 -(void)captureOutput:(AVCaptureFileOutput *)captureOutput didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL fromConnections:(NSArray *)connections error:(NSError *)error {
 	[self saveAssetFromImage:nil orVideoFile:outputFileURL];

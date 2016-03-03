@@ -20,25 +20,29 @@
 
 @interface ContentPageElementScrollView()
 
+#pragma mark - Page element properties
 @property (nonatomic) CGPoint initialContentOffset;
 @property (nonatomic) CGSize initialContentSize;
 @property (strong, nonatomic, readwrite) UIView<ContentDevElementDelegate>* pageElement;
+@property (nonatomic) CGRect pageElementOriginalFrame;
 
-//if page element is a CollectionPinchView
+#pragma mark - If page element is a CollectionPinchView
 @property (nonatomic, readwrite) BOOL isCollection;
 @property (nonatomic, readwrite) BOOL collectionIsOpen;
 //reference to the array of pinch views also contained in the collection view
 @property (strong, nonatomic) NSMutableArray* collectionPinchViews;
 
+#pragma mark - Delete button
 @property (strong, nonatomic) UIButton * deleteButton;
+@property (nonatomic) CGRect deleteButtonFrame;
 
-//long press selecting item
-@property (strong, nonatomic, readwrite) PinchView* selectedItem;
+#pragma mark - Long press selecting item
+@property (strong, nonatomic, readwrite) SingleMediaAndTextPinchView* selectedItem;
 @property (nonatomic) float contentOffsetXBeforeLongPress;
 @property (nonatomic) CGPoint previousLocationOfTouchPoint_PAN;
 @property (nonatomic) CGRect previousFrameInLongPress;
-
 @property (nonatomic) CGPoint panTouchLocation;
+@property (nonatomic) CGFloat pinchViewStartSize;
 
 #define MEDIA_SELECT_TILE_DELETE_BUTTON_OFFSET 7
 #define ANIMATE_TO_DELETE_MODE_OR_BACK_DURATION 0.1f
@@ -51,10 +55,12 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		[self formatScrollView];
-		[self changePageElement:element];
-        if([element isKindOfClass:[PinchView class]])[self createDeleteButton];
-        
-	}
+		if(element)[self changePageElement:element];
+        if([element isKindOfClass:[PinchView class]]){
+            [self createDeleteButton];
+        }
+    }
+    
 	return self;
 }
 
@@ -66,11 +72,12 @@
 }
 
 -(void)createDeleteButton {
+    self.deleteButtonFrame = CGRectMake(self.pageElement.frame.origin.x +
+                                        self.pageElement.frame.size.width + DELETE_ICON_X_OFFSET,
+                                        self.pageElement.center.y - (DELETE_ICON_HEIGHT/2.f),
+                                        DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT);
     self.deleteButton = [[UIButton alloc] initWithFrame:
-                         CGRectMake(self.pageElement.frame.origin.x +
-                                    self.pageElement.frame.size.width + DELETE_ICON_X_OFFSET,
-                                    self.pageElement.center.y - (DELETE_ICON_Y_OFFSET),
-                                    DELETE_ICON_WIDTH, DELETE_ICON_HEIGHT)];
+                         self.deleteButtonFrame];
     
     [self.deleteButton setImage:[UIImage imageNamed:DELETE_ICON] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
@@ -101,19 +108,20 @@
 	
     PinchView* newPinchView;
 	if(self.isCollection) {
-		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(PinchView*)otherScrollView.pageElement];
+		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(SingleMediaAndTextPinchView*)otherScrollView.pageElement];
         [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
         [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement andReplaceWithPinchView:newPinchView];
         
-        
 	} else if(otherScrollView.isCollection){
-		newPinchView = [(CollectionPinchView*)otherScrollView.pageElement pinchAndAdd:(PinchView*)self.pageElement];
+		newPinchView = [(CollectionPinchView*)otherScrollView.pageElement pinchAndAdd:(SingleMediaAndTextPinchView*)self.pageElement];
         [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
         [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement andReplaceWithPinchView:newPinchView];
         
 	} else {
 		NSMutableArray* pinchViewArray = [[NSMutableArray alloc] initWithObjects:self.pageElement, otherScrollView.pageElement, nil];
-		newPinchView = [PinchView pinchTogether:pinchViewArray];
+		newPinchView = [[CollectionPinchView alloc] initWithRadius: [(PinchView*)self.pageElement radius]
+														withCenter: [(PinchView*)self.pageElement center]
+													 andPinchViews: pinchViewArray];
 		pinchViewArray = nil;
 	}
 	
@@ -131,6 +139,7 @@
 		[self.pageElement removeFromSuperview];
 	}
 	self.pageElement = newPageElement;
+    self.pageElementOriginalFrame = self.pageElement.frame;
 	if ([self.pageElement isKindOfClass:[CollectionPinchView class]]) {
 		self.isCollection = YES;
 	} else {
@@ -168,60 +177,44 @@
 }
 
 #pragma mark - Open and close collection -
+
 //remove collection view from scrollview and add all its children instead
--(BOOL) openCollection {
-	if (!self.isCollection
-		|| self.collectionIsOpen) {
-		return NO;
-	}
+-(void) openCollectionWithPinchViews:(NSMutableArray *) pinchViews {
 	self.collectionIsOpen = YES;
-	[self.pageElement removeFromSuperview];
+	if(self.pageElement) [self.pageElement removeFromSuperview];
     [self.deleteButton removeFromSuperview];
-	[self displayCollectionPinchViews:[(CollectionPinchView*)self.pageElement pinchedObjects]];
-	return YES;
+	[self displayCollectionPinchViews:pinchViews];
 }
 
 //array of PinchViews
 -(void) displayCollectionPinchViews:(NSMutableArray *) pinchViews {
-
-	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
-    
-	self.contentSize = CGSizeMake((ELEMENT_Y_OFFSET_DISTANCE + pinchViewSize) * [pinchViews count],
-								  self.contentSize.height);
-
-	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-		int xPosition = ELEMENT_Y_OFFSET_DISTANCE;
-
-		for(PinchView* pinchView in pinchViews) {
-			CGRect newFrame = CGRectMake(xPosition, ELEMENT_Y_OFFSET_DISTANCE/2, pinchViewSize, pinchViewSize);
-			[pinchView specifyFrame:newFrame];
-			[self addSubview:pinchView];
-			xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
-			[pinchView renderMedia];
-		}
-	}];
-    
-	self.collectionPinchViews = pinchViews;
+    if(pinchViews.count){
+        self.pinchViewStartSize = [(PinchView*)pinchViews[0] radius]*2.f;
+        CGFloat pinchViewSize = [(PinchView*)pinchViews[0] radius]*1.5;
+        CGFloat yPosition = (self.frame.size.height/2.f) - (pinchViewSize/2.f);
+        CGFloat xPosition = ELEMENT_Y_OFFSET_DISTANCE;
+        for(PinchView* pinchView in pinchViews) {
+            CGRect newFrame = CGRectMake(xPosition, yPosition, pinchViewSize, pinchViewSize);
+            //[pinchView changeWidthTo:pinchViewSize];
+            [pinchView specifyFrame:newFrame];
+            [self addSubview:pinchView];
+            xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
+            [pinchView renderMedia];
+        }
+        self.collectionPinchViews = pinchViews;
+        [self adjustScrollViewContentSize];
+    }
 }
 
--(BOOL) closeCollection {
-	if (!self.isCollection
-		|| !self.collectionIsOpen) {
-		return NO;
-	}
+- (NSMutableArray *) closeCollection {
 
-	for (PinchView* pinchView in self.collectionPinchViews) {
-		[pinchView removeFromSuperview];
-	}
-	self.collectionIsOpen = NO;
-	self.contentSize = self.initialContentSize;
-	self.contentOffset = self.initialContentOffset;
-	[self addSubview:self.pageElement];
-    [self createDeleteButton];
-	[(CollectionPinchView*)self.pageElement updateMedia];
-	[(CollectionPinchView*)self.pageElement renderMedia];
-	self.collectionPinchViews = nil;
-	return YES;
+    for(PinchView * pinchView in self.collectionPinchViews){
+        [pinchView changeWidthTo:self.pinchViewStartSize];
+        [pinchView renderMedia];
+    }
+    
+    
+    return self.collectionPinchViews;
 }
 
 //moves the views in the scrollview of the opened collection
@@ -270,8 +263,7 @@
 		return;
 	}
 
-	for (PinchView* pinchView in self.collectionPinchViews) {
-
+	for (SingleMediaAndTextPinchView* pinchView in self.collectionPinchViews) {
 		//we stop when we find the first one
 		if((pinchView.frame.origin.x + pinchView.frame.size.width) > (touch.x + self.contentOffset.x)) {
 			self.selectedItem = pinchView;
@@ -297,15 +289,16 @@
 	}
 
 	float xDifference  = touch.x - self.previousLocationOfTouchPoint_PAN.x;
-	float yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
+    float yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
 	CGRect newFrame = [self newTranslationFrameForView:self.selectedItem andXDifference:xDifference andYDifference:yDifference];
 
 	//check if new location is out of the bounds of the collection view, and if so unpinch
 	//the selected view and return it so it can be re placed
-	if (newFrame.origin.y > (self.frame.origin.y + self.frame.size.height/2.f)
-		|| (newFrame.origin.y + newFrame.size.height) < self.frame.origin.y + self.frame.size.height/2.f) {
-		return [self unPinchObject];
-	}
+    //no unpinch for now
+//	if (newFrame.origin.y > (self.frame.origin.y + self.frame.size.height/2.f)
+//		|| (newFrame.origin.y + newFrame.size.height) < self.frame.origin.y + self.frame.size.height/2.f) {
+//		return [self unPinchObject];
+//	}
 
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
@@ -343,35 +336,46 @@
 
 -(void) shiftPinchViewsAfterIndex:(NSInteger) index {
 
-	float pinchViewSize = [(PinchView*)self.pageElement radius]*2;
-	float firstXCoordinate = ELEMENT_Y_OFFSET_DISTANCE;
-	for(NSInteger i = index; i < [self.collectionPinchViews count]; i++) {
-		PinchView* pinchView = self.collectionPinchViews[i];
+    if(self.subviews.count){
+        float firstXCoordinate = ELEMENT_Y_OFFSET_DISTANCE;
+        
 
-		CGRect frame = CGRectMake(firstXCoordinate, pinchView.frame.origin.y,
-								  pinchView.frame.size.width, pinchView.frame.size.height);
+        for(NSInteger i = index; i < [self.collectionPinchViews count]; i++) {
+            PinchView* pinchView = self.collectionPinchViews[i];
+            float yPosition = (self.frame.size.height/2.f) - (pinchView.frame.size.height/2.f);
+            
+            CGRect frame = CGRectMake(firstXCoordinate, yPosition,
+                                      pinchView.frame.size.width, pinchView.frame.size.height);
 
-		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-			[pinchView specifyFrame:frame];
-		}];
-		firstXCoordinate+= frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
-	}
+            [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
+                [pinchView specifyFrame:frame];
+            }];
+            firstXCoordinate+= frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
+        }
+    }
+    [self adjustScrollViewContentSize];
+	
+}
 
-	//make sure the main scroll view can show everything
-	self.contentSize = CGSizeMake((pinchViewSize+ELEMENT_Y_OFFSET_DISTANCE)*[self.collectionPinchViews count],
-								  self.contentSize.height);
+-(void)adjustScrollViewContentSize{
+    CGFloat width = ((PinchView *)[self.collectionPinchViews lastObject]).frame.origin.x + [self.subviews lastObject].frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
+    CGFloat height = 0;
+    
+    //make sure the main scroll view can show everything
+    self.contentSize = CGSizeMake(width,height);
 }
 
 //Takes a change in horizontal position and constructs the frame for the views new position
+//Takes a change in horizontal position and constructs the frame for the views new position
 -(CGRect) newTranslationFrameForView: (UIView*)view andXDifference: (float) xDifference andYDifference: (float) yDifference {
-	CGRect frame= CGRectMake(view.frame.origin.x+xDifference, view.frame.origin.y + yDifference,
-							 view.frame.size.width, view.frame.size.height);
-	return frame;
+    CGRect frame= CGRectMake(view.frame.origin.x+xDifference, view.frame.origin.y + yDifference,
+                             view.frame.size.width, view.frame.size.height);
+    return frame;
 }
+
 
 //swap currently selected item's frame with view to the left of it
 -(void) swapWithLeftView: (PinchView*) leftView {
-	[self swapPinchView:self.selectedItem andPinchView:leftView];
 
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
@@ -384,12 +388,26 @@
 								   self.previousFrameInLongPress.origin.y - self.frame.origin.y,
 								   leftView.frame.size.width, leftView.frame.size.height);
 		self.previousFrameInLongPress = potentialFrame;
+        
+        
+        [self swap:self.selectedItem with:leftView inArray:self.collectionPinchViews];
+        
 	}];
 }
 
+
+-(void)swap:(id) object1 with:(id) object2 inArray:(NSMutableArray *) array{
+    
+    CGFloat indexOfObject1 = [array indexOfObject:object1];
+    CGFloat indexOfObject2 = [array indexOfObject:object2];
+    
+    [array replaceObjectAtIndex:indexOfObject1 withObject:object2];
+    [array replaceObjectAtIndex:indexOfObject2 withObject:object1];
+}
+
+
 //swap currently selected item's frame with view to the right of it
 -(void) swapWithRightView: (PinchView*) rightView {
-	[self swapPinchView:self.selectedItem andPinchView:rightView];
 
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2 animations:^{
 
@@ -402,16 +420,12 @@
 									  self.previousFrameInLongPress.origin.y - self.frame.origin.y,
 									  rightView.frame.size.width, rightView.frame.size.height);
 		self.previousFrameInLongPress = potentialFrame;
+        
+        [self swap:self.selectedItem with:rightView inArray:self.collectionPinchViews];
+
 	}];
 }
 
-//swaps scroll views int he pageElementScrollView array
--(void) swapPinchView: (PinchView *) pinchView1 andPinchView: (PinchView *) pinchView2 {
-	NSInteger index1 = [self.collectionPinchViews indexOfObject: pinchView1];
-	NSInteger index2 = [self.collectionPinchViews indexOfObject: pinchView2];
-	[self.collectionPinchViews replaceObjectAtIndex: index1 withObject: pinchView2];
-	[self.collectionPinchViews replaceObjectAtIndex: index2 withObject: pinchView1];
-}
 
 //adjusts offset of main scroll view so selected item is in focus
 -(void) moveOffsetBasedOnSelectedItem {
@@ -432,7 +446,6 @@
 }
 
 -(void) finishMovingSelectedItem {
-
 	[self.selectedItem removeFromSuperview];
 	self.selectedItem.frame = CGRectMake(self.previousFrameInLongPress.origin.x - self.frame.origin.x + self.contentOffsetXBeforeLongPress,
 										 self.previousFrameInLongPress.origin.y - self.frame.origin.y,
@@ -442,7 +455,7 @@
 	[self addSubview:self.selectedItem];
 
 	[self.selectedItem markAsSelected:NO];
-
+    [self shiftPinchViewsAfterIndex:0];
 	//sanitize for next run
 	self.selectedItem = nil;
 }
@@ -450,17 +463,19 @@
 //returns the unpinched PinchView
 -(PinchView*) unPinchObject {
 	CollectionPinchView* currentPinchView = (CollectionPinchView*)self.pageElement;
-	PinchView* unPinched = self.selectedItem;
+	SingleMediaAndTextPinchView* unPinched = self.selectedItem;
 	self.selectedItem = nil;
 	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
 	if (index < 0) index = 0;
 	
     [currentPinchView unPinchAndRemove:unPinched];
 
-	//check if there is now only one element in the collection, and if so
+	//check if there is now only one element in the collection - if so
 	//this should not be collection anymore
-	if ([currentPinchView.pinchedObjects count] < 2) {
-		self.pageElement = currentPinchView.pinchedObjects[0];
+	if ([currentPinchView getNumPinchViews] < 2) {
+		if (currentPinchView.imagePinchViews.count) self.pageElement = currentPinchView.imagePinchViews[0];
+		else self.pageElement = currentPinchView.videoPinchViews[0];
+
 		[(PinchView*)self.pageElement revertToInitialFrame];
 		self.isCollection = NO;
 		self.collectionIsOpen = NO;
@@ -476,6 +491,24 @@
 	[[UserPovInProgress sharedInstance]removePinchView:currentPinchView andReplaceWithPinchView:(PinchView *)self.pageElement];
 	return unPinched;
 }
+
+
+-(void)markAsSelected:(BOOL) selected{
+    if (selected) {
+        self.deleteButton.frame = CGRectMake(self.deleteButton.frame.origin.x, self.deleteButton.frame.origin.y,
+                                             self.deleteButton.frame.size.width + 10, self.deleteButton.frame.size.height + 10);
+        self.deleteButton.layer.shadowOffset = CGSizeMake(5, 0);
+        self.deleteButton.layer.shadowRadius = 5;
+        self.deleteButton.layer.shadowOpacity = 0.8;
+        self.deleteButton.layer.shadowColor = [UIColor blackColor].CGColor;
+    } else {
+        self.deleteButton.layer.borderColor = [UIColor clearColor].CGColor;
+        self.deleteButton.frame = self.deleteButtonFrame;
+        self.deleteButton.layer.shadowOpacity = 0;
+    }
+}
+
+
 
 #pragma mark - Clean up when deleted to free memory -
 

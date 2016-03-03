@@ -30,17 +30,20 @@
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
         if(!image)return self;
-		[self initWithImage:image];
+		[self initWithImage:image andSetFilteredImages:YES];
 	}
     
 	return self;
 }
 
--(void) initWithImage:(UIImage*)image {
+-(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters {
 	[self.background addSubview:self.imageView];
 	self.containsImage = YES;
 	self.image = image;
-	[self setFilteredPhotos];
+	self.filteredImages = [[NSMutableArray alloc] init];
+	//original photo
+	[self.filteredImages addObject:self.image];
+	if (setFilters) [self createFilteredImagesFromImage:self.image];
 	[self renderMedia];
 }
 
@@ -53,7 +56,10 @@
     self.image = image;
     self.filterImageIndex = 0;
     self.filteredImages = nil;
-    [self setFilteredPhotos];
+	self.filteredImages = [[NSMutableArray alloc] init];
+	//original photo
+	[self.filteredImages addObject:self.image];
+	[self createFilteredImagesFromImage:self.image];
     [self renderMedia];
 }
 
@@ -94,16 +100,9 @@
 
 #pragma mark - Filters -
 
--(void) setFilteredPhotos {
-	NSArray* filterNames = [UIImage getPhotoFilters];
-	self.filteredImages = [[NSMutableArray alloc] initWithCapacity:[filterNames count]+1];
-	//original photo
-	[self.filteredImages addObject:self.image];
-	[self createFilteredImagesFromImage:self.image andFilterNames:filterNames];
-}
-
 //return array of uiimage with filter from image
--(void)createFilteredImagesFromImage:(UIImage *)image andFilterNames:(NSArray*)filterNames{
+-(void)createFilteredImagesFromImage:(UIImage *)image {
+	NSArray* filterNames = [UIImage getPhotoFilters];
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		NSData  * imageData = UIImagePNGRepresentation(image);
 		//Background Thread
@@ -130,8 +129,9 @@
 
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
-	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
+	[coder encodeObject:UIImagePNGRepresentation(self.filteredImages[self.filterImageIndex]) forKey:IMAGE_KEY];
+//	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
+//	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
 	[coder encodeObject:self.textYPosition forKey:TEXT_Y_POSITION_KEY];
 	[coder encodeObject:self.text forKey:TEXT_KEY];
 }
@@ -140,9 +140,9 @@
 	if (self = [super initWithCoder:decoder]) {
 		NSData* imageData = [decoder decodeObjectForKey:IMAGE_KEY];
 		UIImage* image = [UIImage imageWithData:imageData];
-		NSNumber* filterImageIndexNumber = [decoder decodeObjectForKey:FILTER_INDEX_KEY];
-		[self initWithImage:image];
-		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
+//		NSNumber* filterImageIndexNumber = [decoder decodeObjectForKey:FILTER_INDEX_KEY];
+		[self initWithImage:image andSetFilteredImages:NO];
+//		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
 		self.text = [decoder decodeObjectForKey:TEXT_KEY];
 		self.textYPosition = [decoder decodeObjectForKey:TEXT_Y_POSITION_KEY];
 	}

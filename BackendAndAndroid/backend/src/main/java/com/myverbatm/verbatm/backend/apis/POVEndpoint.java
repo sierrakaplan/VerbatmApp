@@ -106,7 +106,6 @@ public class POVEndpoint {
         // Can also add filter
         Query recentPOVQuery = new Query("POV")
             .addProjection(new PropertyProjection("title", String.class))
-            .addProjection(new PropertyProjection("coverPicUrl", String.class))
             .addProjection(new PropertyProjection("datePublished", Date.class))
             .addProjection(new PropertyProjection("numUpVotes", Long.class))
             .addProjection(new PropertyProjection("creatorUserId", Long.class))
@@ -160,7 +159,6 @@ public class POVEndpoint {
         // Search POV's with upvotes from most to least (descending)
         Query trendingPOVQuery = new Query("POV")
             .addProjection(new PropertyProjection("title", String.class))
-            .addProjection(new PropertyProjection("coverPicUrl", String.class))
             .addProjection(new PropertyProjection("datePublished", Date.class))
             .addProjection(new PropertyProjection("numUpVotes", Long.class))
             .addProjection(new PropertyProjection("creatorUserId", Long.class))
@@ -223,7 +221,6 @@ public class POVEndpoint {
         Query userPOVQuery = new Query("POV")
             .setFilter(userIdFilter)
             .addProjection(new PropertyProjection("title", String.class))
-            .addProjection(new PropertyProjection("coverPicUrl", String.class))
             .addProjection(new PropertyProjection("datePublished", Date.class))
             .addProjection(new PropertyProjection("numUpVotes", Long.class))
                 // sort by most recent

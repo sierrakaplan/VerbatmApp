@@ -1,28 +1,35 @@
-//
+ //
 //  PhotoAVE.m
 //  Verbatm
 //
 //  Created by Sierra Kaplan-Nelson on 7/23/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
-#import "BaseArticleViewingExperience.h"
+
+#import "CollectionPinchView.h"
 #import "Durations.h"
+
+#import "EditMediaContentView.h"
+
 #import "Icons.h"
+#import "ImagePinchView.h"
+
 #import "MathOperations.h"
+
 #import "PointObject.h"
 #import "PhotoAVE.h"
-#import "TextOverMediaView.h"
+
+#import "OpenCollectionView.h"
+
 #import "SizesAndPositions.h"
 #import "Styles.h"
-#import "Icons.h"
-#import "Durations.h"
-#import "PointObject.h"
-#import "MathOperations.h"
+
+#import "TextOverMediaView.h"
+
 #import "UIImage+ImageEffectsAndTransforms.h"
-#import "BaseArticleViewingExperience.h"
 
 
-@interface PhotoAVE() <UIGestureRecognizerDelegate>
+@interface PhotoAVE() <UIGestureRecognizerDelegate, OpenCollectionViewDelegate, EditContentViewDelegate>
 
 @property (nonatomic) CGPoint originPoint;
 //contains PointObjects showing dots on circle
@@ -37,41 +44,110 @@
 @property (nonatomic) float lastDistanceFromStartingPoint;
 @property (strong, nonatomic) NSTimer * showCircleTimer;
 
-
 @property (nonatomic, strong) UIView * panGestureSensingView;
-
 @property (strong, nonatomic) UIPanGestureRecognizer * circlePanGesture;
-
 @property (nonatomic, strong) UIButton * textViewButton;
 
-@property (nonatomic) BOOL subviewOfPhotoVideoAVE;
+#pragma mark - In Preview Mode -
+
+@property (nonatomic) PinchView *pinchView;
+@property (nonatomic, strong) UIButton * rearrangeButton;
+@property (nonatomic) OpenCollectionView * rearrangeView;
 
 #define TEXT_VIEW_HEIGHT 70.f
+
+//this view manages the tapping gesture of the set circles
+@property (nonatomic, strong) UIView * circleTapView;
+
 @end
 
 @implementation PhotoAVE
 
-//TODO: limit on how many photos can be pinched together?
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *) photos isSubViewOfPhotoVideoAve:(BOOL) isPVSubview {
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos {
 	self = [super initWithFrame:frame];
 	if (self) {
-		if ([photos count]) {
-            self.subviewOfPhotoVideoAVE = isPVSubview;
+		self.inPreviewMode = NO;
+        if ([photos count]) {
 			[self addPhotos:photos];
 		}
-		if ([photos count] > 1) {
-			[self createCircleViewAndPoints];
-			self.draggingFromPointIndex = -1;
-			self.currentPhotoIndex = 0;
-			[self highlightDot];
-		}
-		[self addTapGestureToView:self];
+		[self initialFormatting];
 	}
 	return self;
 }
 
-#pragma mark - Sub Views -
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView inPreviewMode: (BOOL) inPreviewMode {
+	self = [super initWithFrame:frame];
+	if (self) {
+		self.inPreviewMode = inPreviewMode;
+		self.pinchView = pinchView;
+		if([self.pinchView isKindOfClass:[CollectionPinchView class]]){
+			[self addContentFromImagePinchViews:((CollectionPinchView *)self.pinchView).imagePinchViews];
+		}else{
+			[self addContentFromImagePinchViews:[NSMutableArray arrayWithObject:pinchView]];
+		}
+		[self initialFormatting];
+	}
+	return self;
+}
 
+-(void) initialFormatting {
+	[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+	[self addTapGesture];
+}
+
+-(void)prepareCirclePan{
+    if(self.dotViewsOnCircle.count){
+        for(UIView * view in self.dotViewsOnCircle){
+            [view removeFromSuperview];
+        }
+        self.pointsOnCircle = nil;
+        self.dotViewsOnCircle = nil;
+    }
+
+    [self createCircleViewAndPoints];
+    self.draggingFromPointIndex = -1;
+    self.currentPhotoIndex = 0;
+    [self highlightDot];
+}
+
+#pragma mark - Preview mode -
+
+-(void) addContentFromImagePinchViews:(NSMutableArray *)pinchViewArray{
+	NSMutableArray* photosTextArray = [[NSMutableArray alloc] init];
+
+    for (ImagePinchView * imagePinchView in pinchViewArray) {
+		if (self.inPreviewMode) {
+			EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
+			[editMediaContentView displayImages:[imagePinchView filteredImages] atIndex:imagePinchView.filterImageIndex];
+			if(imagePinchView.text && imagePinchView.text.length) [editMediaContentView setText:imagePinchView.text andTextViewYPosition:[imagePinchView.textYPosition floatValue]];
+			editMediaContentView.pinchView = imagePinchView;
+			editMediaContentView.povViewMasterScrollView = self.povScrollView;
+			editMediaContentView.delegate = self;
+			[self.imageContainerViews addObject:editMediaContentView];
+		} else {
+			[photosTextArray addObject: [imagePinchView getPhotosWithText][0]];
+		}
+    }
+	if (!self.inPreviewMode) {
+		[self addPhotos: photosTextArray];
+	}
+    [self layoutContainerViews];
+    if(pinchViewArray.count > 1 && self.inPreviewMode){
+        [self createRearrangeButton];
+    }
+}
+
+-(void)layoutContainerViews{
+	//adding subviews in reverse order so that imageview at index 0 on top
+	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
+		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
+	}
+	if(self.imageContainerViews.count > 1) [self prepareCirclePan];
+}
+
+#pragma mark - Not preview mode -
+
+//photoTextArray is array containing subarrays of photo and text couples @[@[photo, text],...]
 -(void) addPhotos:(NSArray*)photosTextArray {
     
 	for (NSArray* photoText in photosTextArray) {
@@ -93,6 +169,7 @@
 	if(firstText && firstText.length) {
 		[self createTextViewButton];
 	}
+   if(photosTextArray.count > 1)[self prepareCirclePan];
 }
 
 -(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
@@ -100,7 +177,7 @@
 	NSString* text = photoTextArray[1];
 	NSNumber* textYPosition = photoTextArray[2];
 
-	if(self.subviewOfPhotoVideoAVE){
+	if(self.isPhotoVideoSubview) {
 		textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
 	}
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
@@ -113,37 +190,44 @@
 	return textAndImageView;
 }
 
--(void) createCircleViewAndPoints {
+#pragma mark - Fade circle views -
 
+-(void) createCircleViewAndPoints {
 	NSUInteger numCircles = [self.imageContainerViews count];
 	for (int i = 0; i < numCircles; i++) {
-		PointObject *point = [MathOperations getPointFromCircleRadius: CIRCLE_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
+		PointObject *point = [MathOperations getPointFromCircleRadius:CIRCLE_RADIUS andCurrentPointIndex:i withTotalPoints:numCircles];
 		//set relative to the center of the circle
 		point.x = point.x + self.frame.size.width/2.f;
 		point.y = point.y + PAN_CIRCLE_CENTER_Y;
 		[self.pointsOnCircle addObject:point];
 		[self createDotViewFromPoint:point];
 	}
+    
+    if(self.circleView){
+        [self.circleView removeFromSuperview];
+        self.circleView = nil;
+    }
+    
 	[self createMainCircleView];
 }
 
 -(void) createMainCircleView {
 	self.originPoint = CGPointMake(self.frame.size.width/2.f, PAN_CIRCLE_CENTER_Y);
-	CGRect frame = CGRectMake(self.originPoint.x-CIRCLE_RADIUS-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
+	CGRect circleViewFrame = CGRectMake(self.originPoint.x-CIRCLE_RADIUS-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
 							  self.originPoint.y-CIRCLE_RADIUS,
 							  CIRCLE_RADIUS*2 + CIRCLE_OVER_IMAGES_BORDER_WIDTH, CIRCLE_RADIUS*2);
 
-	self.circleView = [[UIImageView alloc] initWithFrame:frame];
+	self.circleView = [[UIImageView alloc] initWithFrame:circleViewFrame];
  	self.circleView.backgroundColor = [UIColor clearColor];
-	self.circleView.layer.cornerRadius = frame.size.width/2.f;
+	self.circleView.layer.cornerRadius = circleViewFrame.size.width/2.f;
  	self.circleView.layer.borderWidth = CIRCLE_OVER_IMAGES_BORDER_WIDTH;
  	self.circleView.layer.borderColor = [UIColor CIRCLE_OVER_IMAGES_COLOR].CGColor;
 	self.circleView.alpha = 0.f;
     
-    self.panGestureSensingView.frame = CGRectMake(self.circleView.frame.origin.x -SLIDE_THRESHOLD ,
-                                                  self.circleView.frame.origin.y - SLIDE_THRESHOLD,
-                                                  self.circleView.frame.size.width + SLIDE_THRESHOLD,
-                                                  self.circleView.frame.size.height + SLIDE_THRESHOLD);
+    self.panGestureSensingView.frame = CGRectMake(circleViewFrame.origin.x - SLIDE_THRESHOLD,
+                                                  circleViewFrame.origin.y - SLIDE_THRESHOLD,
+                                                  circleViewFrame.size.width + SLIDE_THRESHOLD*2,
+                                                  circleViewFrame.size.height + SLIDE_THRESHOLD*2);
     [self addPanGestureToView:self.panGestureSensingView];
     [self addSubview:self.circleView];
     [self addSubview:self.panGestureSensingView];
@@ -173,6 +257,7 @@
 #pragma mark - Text View -
 
 -(void)createTextViewButton {
+    return;//temp soln TODO
     [self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
     [self.textCreationButton addTarget:self action:@selector(textViewButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.textCreationButton];
@@ -186,9 +271,23 @@
 
 #pragma mark - Tap Gesture -
 
--(void)addTapGestureToView:(UIView*)view {
-	self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:view action:@selector(mainViewTapped:)];
-	[view addGestureRecognizer:self.photoAveTapGesture];
+-(void)addTapGesture {
+	if (self.inPreviewMode) {
+		self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action: @selector(panViewTapped:)];
+		[self.panGestureSensingView addGestureRecognizer:self.photoAveTapGesture];
+	} else {
+		self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action: @selector(mainViewTapped:)];
+		[self addGestureRecognizer:self.photoAveTapGesture];
+	}
+	self.photoAveTapGesture.delegate = self;
+}
+
+//used only when we have a pinchview and are editing
+-(void) panViewTapped:(UITapGestureRecognizer *) sender {
+    if (sender.numberOfTouches >= 1){
+        CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
+        [self goToPhoto:touchLocation];
+    }
 }
 
 -(void) mainViewTapped:(UITapGestureRecognizer *) sender {
@@ -209,14 +308,50 @@
 
 //check if tap is within radius of circle
 -(BOOL) circleTapped:(CGPoint) touchLocation {
-	if ((touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)
-		&&	(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)) {
+	if (fabs(touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)
+		&&	fabs(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)) {
 		[self goToPhoto:touchLocation];
 		return YES;
 	}
 	return NO;
 }
 
+#pragma mark - Rearrange content (preview mode) -
+
+-(void)createRearrangeButton {
+    [self.rearrangeButton setImage:[UIImage imageNamed:CREATE_REARRANGE_ICON] forState:UIControlStateNormal];
+    self.rearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.rearrangeButton addTarget:self action:@selector(rearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.rearrangeButton];
+    [self bringSubviewToFront:self.rearrangeButton];
+}
+
+-(void) rearrangeButtonPressed {
+    if(!self.rearrangeView){
+        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds
+													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
+        self.rearrangeView.delegate = self;
+        [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
+    } else {
+        [self.rearrangeView exitView];
+    }
+}
+
+#pragma mark OpenCollectionView delegate method
+
+-(void) collectionClosedWithFinalArray:(NSMutableArray *) pinchViews {
+	if(self.rearrangeView){
+		[self.rearrangeView removeFromSuperview];
+		self.rearrangeView = nil;
+	}
+	self.imageContainerViews = nil;
+	for (UIView * view in self.subviews) {
+		[view removeFromSuperview];
+	}
+	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
+	[self addContentFromImagePinchViews: pinchViews];
+    [self createRearrangeButton];
+}
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {
 	NSInteger indexOfPoint = [self getPointIndexFromLocation:touchLocation];
@@ -326,6 +461,7 @@
 
 //checks if a text button should be presented depending on the current image presented
 -(void)checkTextButtonPresentation{
+    return;
     TextOverMediaView * view = self.imageContainerViews[self.currentPhotoIndex];
     if(view.textView.text && view.textView.text.length){
         [self createTextViewButton];
@@ -341,7 +477,6 @@
     if(self.povScrollView && self.circlePanGesture){
         [self.povScrollView.panGestureRecognizer requireGestureRecognizerToFail: self.circlePanGesture];
     }
-    
 }
 
 -(void) displayCircle:(BOOL)display {
@@ -350,7 +485,7 @@
 		self.showCircleTimer = nil;
 	}
 	if(!display) {
-		 self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
+		self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
 	} else {
 		[self animateFadeCircleDisplay:YES];
 	}
@@ -422,8 +557,46 @@
 #pragma mark - Gesture Recognizer Delegate methods -
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+	// if tapping or panning in circle area ignore other gesture recognizers
+	if (([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]])
+		|| [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+		if (gestureRecognizer.numberOfTouches >= 1){
+			CGPoint touchLocation = [gestureRecognizer locationOfTouch:0 inView:self];
+			if ([self circleTapped:touchLocation]) {
+				return NO;
+			}
+		}
+	}
 	return YES;
 }
+
+
+#pragma mark - Overriding ArticleViewingExperience methods -
+
+-(void) onScreen {
+	[self showAndRemoveCircle];
+}
+
+- (void)offScreen {
+    for (UIView * view in self.imageContainerViews) {
+        if([view isKindOfClass:[EditMediaContentView class]]){
+            [((EditMediaContentView *)view)exitingECV];
+        }
+    }
+    
+    if(self.rearrangeView)[self.rearrangeView exitView];
+}
+
+#pragma mark - EditContentViewDelegate methods -
+
+-(void) textIsEditing{
+    if(self.isPhotoVideoSubview) [self.textEntryDelegate editContentViewTextIsEditing];
+}
+
+-(void) textDoneEditing{
+    if(self.isPhotoVideoSubview) [self.textEntryDelegate editContentViewTextDoneEditing];
+}
+
 
 #pragma mark - Lazy Instantiation
 
@@ -471,12 +644,24 @@
     if(!_textViewButton){
         _textViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
                                                                          EXIT_CV_BUTTON_WIDTH,
-                                                                         self.frame.size.height - EXIT_CV_BUTTON_WIDTH -
+                                                                         self.frame.size.height - EXIT_CV_BUTTON_HEIGHT -
                                                                          EXIT_CV_BUTTON_WALL_OFFSET,
                                                                          EXIT_CV_BUTTON_WIDTH,
-                                                                         EXIT_CV_BUTTON_WIDTH)];
+                                                                         EXIT_CV_BUTTON_HEIGHT)];
     }
     return _textViewButton;
+}
+
+-(UIButton *)rearrangeButton {
+    if(!_rearrangeButton){
+        _rearrangeButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
+                                                                     EXIT_CV_BUTTON_WIDTH,
+                                                                     self.frame.size.height - (EXIT_CV_BUTTON_HEIGHT*2) -
+                                                                     (EXIT_CV_BUTTON_WALL_OFFSET*3),
+                                                                     EXIT_CV_BUTTON_WIDTH,
+                                                                     EXIT_CV_BUTTON_HEIGHT)];
+    }
+    return _rearrangeButton;
 }
 
 

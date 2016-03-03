@@ -31,12 +31,12 @@
 
 //Loads a normal looking story cell
 -(void) setContentWithUsername:(NSString *) username andTitle: (NSString *) title
-				 andCoverImage: (UIImage*) coverImage andDateCreated: (GTLDateTime*) dateCreated
+					andDateCreated: (GTLDateTime*) dateCreated
 				   andNumLikes: (NSNumber*) numLikes likedByCurrentUser: (BOOL) likedByCurrentUser;
 
 //Loads a publishing placeholder cell
 -(void) setPublishingContentWithUsername:(NSString *) username andTitle: (NSString *) title
-						   andCoverImage: (UIImage*) coverImage andProgressObject: (NSProgress*) publishingProgress;
+						   andProgressObject: (NSProgress*) publishingProgress;
 
 //Updates the appearance of the cell when user likes or unlikes it
 -(void) updateCellLikedByCurrentUser: (BOOL) likedByCurrentUser withNewNumLikes: (long long) newNumLikes;

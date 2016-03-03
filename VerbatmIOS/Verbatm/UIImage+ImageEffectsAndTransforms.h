@@ -11,8 +11,10 @@
 @interface UIImage (ImageEffectsAndTransforms)
 
 - (UIImage*) halfPictureLeftHalf:(BOOL) leftHalf;
-
+//filter value ranges from 0 - 100
 - (UIImage *)blurredImageWithFilterLevel: (float) filterValue;
+
+- (UIImageView*) getBackgroundImageViewWithFrame: (CGRect) frame;
 
 - (UIImageView*) getBlurImageViewWithFilterLevel: (float) filterValue andFrame:(CGRect) frame;
 

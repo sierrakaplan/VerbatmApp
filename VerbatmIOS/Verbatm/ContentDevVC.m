@@ -10,12 +10,13 @@
 
 #import "Analytics.h"
 
+#import "Channel.h"
+#import "Channel_BackendObject.h"
 #import "ContentDevVC.h"
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
-#import "CoverPicturePinchView.h"
-#import "CoverPhoto.h"
 #import "ContentPageElementScrollView.h"
+#import "Channel_BackendObject.h"
 #import "Durations.h"
 
 #import "EditContentVC.h"
@@ -26,14 +27,22 @@
 #import "ImagePinchView.h"
 #import "Icons.h"
 
+#import "LocalPOVs.h"
+
 #import <QuartzCore/QuartzCore.h>
+
 #import "PinchView.h"
 #import "POVPublisher.h"
 #import "PreviewDisplayView.h"
+#import "Post_BackendObject.h"
+#import "PublishingProgressManager.h"
 
-#import "Notifications.h"
 #import "MediaDevVC.h"
 #import "MediaSelectTile.h"
+
+#import "Notifications.h"
+
+#import "OpenCollectionView.h"
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -52,8 +61,11 @@
 #import "VideoPinchView.h"
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate,
+UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
 
+@property (nonatomic) UITextField * createNewChannelField;
+@property (nonatomic) NSString * channelNameForNewChannel;
 #pragma mark Image Manager
 
 @property (strong, nonatomic) PHImageManager *imageManager;
@@ -65,16 +77,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (strong, nonatomic) NSMutableArray * pageElementScrollViews;
 @property (nonatomic) NSInteger numPinchViews;
 
-#pragma mark Cover photo
-
-// Says whether or not user is currently adding a cover picture
-// (used when returning from adding assets)
-@property (nonatomic) BOOL addingCoverPicture;
-@property (strong, nonatomic) UITapGestureRecognizer* addCoverPictureTapGesture;
-@property (strong, nonatomic) CoverPicturePinchView * coverPicView;
-@property (strong, nonatomic) UIButton * replaceCoverPhotoButton;
-
 #pragma mark Keyboard related properties
+
 @property (atomic) NSInteger keyboardHeight;
 
 #pragma mark Helpful integer stores
@@ -133,16 +137,30 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 @property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
 @property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
 
+
+
+@property (nonatomic) UIImageView * pinchElementsTogetherInstructionView;//presents instrutions to user to pinch together their media
+
+
+//note when previewing
+@property (nonatomic) BOOL currentlyPreviewingContent;
+
+
+@property (nonatomic) NSArray * userChannels;
+
+
 #pragma mark - Preview -
 
-@property (strong, nonatomic) PreviewDisplayView* previewDisplayView;
+@property (strong, nonatomic) PreviewDisplayView * previewDisplayView;
 
-#define WHAT_IS_IT_LIKE_TEXT @"tell your story"
+#define CHANNEL_CREATION_PROMPT @"enter channel name"
 
 #define CLOSED_ELEMENT_FACTOR (2/5)
 #define TITLE_FIELD_Y_OFFSET 10.f
-#define TITLE_FIELD_X_OFFSET 7.f
-#define TITLE_FIELD_HEIGHT 100
+#define TITLE_FIELD_X_OFFSET 10.f
+#define TITLE_FIELD_HEIGHT 90
+#define TITLE_FIELD_LABEL_TILE_HEIGHT 50
+
 #define MAX_TITLE_CHARACTERS 40
 
 #define REPLACE_PHOTO_FRAME_WIDTH 35
@@ -152,6 +170,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #define REPLACE_PHOTO_XsOFFSET 10
 
 #define COVER_PIC_RADIUS (self.defaultPinchViewRadius * 3.f/4.f)
+
+@property(nonatomic, strong) NSMutableArray * ourPosts;
 @end
 
 
@@ -161,21 +181,43 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	[self.view setBackgroundColor:[UIColor lightGrayColor]];
-	[[UIApplication sharedApplication] setStatusBarHidden:YES];
+    self.ourPosts = [[NSMutableArray alloc] init];
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
 	[self formatNavBar];
 	[self setKeyboardAppearance];
 	[self setCursorColor];
-	[self formatTitleAndCoverPicture];
-	[self createBaseSelector];
-	[self loadPOVFromUserDefaults];
 	[self setUpNotifications];
 	self.titleField.delegate = self;
 	self.mainScrollView.delegate = self;
+    [self addBackgroundImage];
+    [self loadChannelsAndCreateTicker];
 }
+
+
+
+-(void)loadChannelsAndCreateTicker{
+    [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:
+     ^(NSMutableArray * channels) {
+         self.userChannels = channels;
+         [self formatTitle];
+         [self createBaseSelector];
+         [self loadPOVFromUserDefaults];
+    }];
+}
+
+-(void) addBackgroundImage {    
+    UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+    backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
+    //backgroundView.image =[UIImage imageNamed:];
+	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
+    
+    [self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
+    self.mainScrollView.backgroundColor = [UIColor clearColor];
+}
+
+
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
@@ -183,7 +225,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) initializeVariables {
 	self.pinchingMode = PinchingModeNone;
-	self.addingCoverPicture = NO;
 	self.numPinchViews = 0;
 	self.pinchObject_HasBeenAdded_ForTheFirstTime = NO;
 	self.addMediaBelowView = nil;
@@ -195,6 +236,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 										   self.view.frame.size.width, self.view.frame.size.height - CUSTOM_NAV_BAR_HEIGHT);
 	self.mainScrollView.scrollEnabled = YES;
 	self.mainScrollView.bounces = YES;
+	[self adjustMainScrollViewContentSize];
 }
 
 //records the generic frame for any element that is a square and not a pinch view circle,
@@ -208,15 +250,14 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) formatNavBar {
 	[self.navBar createLeftButtonWithTitle:@"CLOSE" orImage:nil];
-	[self.navBar createMiddleButtonWithTitle:@"SAVE DRAFT" orImage:nil];
-	[self.navBar createRightButtonWithTitle:@"PREVIEW" orImage:nil];
+	[self.navBar createRightButtonWithTitle:@"PUBLISH" orImage:nil];
 	self.navBar.delegate = self;
 	[self.view addSubview: self.navBar];
 }
 
 -(void) createBaseSelector {
 
-	CGRect scrollViewFrame = CGRectMake(0, self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
+	CGRect scrollViewFrame = CGRectMake(0, self.titleField.frame.origin.y + self.titleField.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
 										self.view.frame.size.width, MEDIA_TILE_SELECTOR_HEIGHT+ELEMENT_Y_OFFSET_DISTANCE);
 
 	ContentPageElementScrollView * baseMediaTileSelectorScrollView = [[ContentPageElementScrollView alloc]
@@ -242,57 +283,138 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 //sets the textview placeholders' color and text
--(void) formatTitleAndCoverPicture {
+-(void) formatTitle {
     
     CGRect titleFrame = CGRectMake(TITLE_FIELD_X_OFFSET, TITLE_FIELD_Y_OFFSET,
 											   self.view.bounds.size.width - 2*TITLE_FIELD_X_OFFSET,
 											   TITLE_FIELD_HEIGHT);
-	CGFloat coverPicRadius = COVER_PIC_RADIUS;
-	CGRect addCoverPicFrame = CGRectMake(self.view.frame.size.width/2.f - coverPicRadius,
-										 titleFrame.origin.y + titleFrame.size.height,
-										 coverPicRadius*2, coverPicRadius*2);
-
-	[self formatTitleFieldFromFrame: CGRectMake(0, 0, titleFrame.size.width, titleFrame.size.height/2.f)];
-
-	//Title border
-	UIView* titleBorderView = [[UIView alloc] initWithFrame: titleFrame];
-	UIImageView* titleBorderImageView = [[UIImageView alloc] initWithFrame: CGRectMake(0, 0,
-																				  titleFrame.size.width,
-																				  titleFrame.size.height)];
-	[titleBorderImageView setImage:[UIImage imageNamed: TITLE_BORDER]];
-	titleBorderImageView.contentMode = UIViewContentModeScaleAspectFill;
-
-	[titleBorderView addSubview: titleBorderImageView];
-	[titleBorderView addSubview: self.titleField];
-	[titleBorderView bringSubviewToFront: self.titleField];
-	[self.mainScrollView addSubview: titleBorderView];
-
-	[self setAddCoverPictureViewWithFrame: addCoverPicFrame];
+    [self createChannelPickerFromChannelsFromFrame:titleFrame];
 }
 
--(void) formatTitleFieldFromFrame: (CGRect) frame {
-	UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: TITLE_TEXT_SIZE];
-	self.titleField = [[UITextField alloc] initWithFrame: frame];
-	self.titleField.textAlignment = NSTextAlignmentCenter;
-	self.titleField.font = [UIFont fontWithName:TITLE_TEXT_FONT size: TITLE_TEXT_SIZE];
-    [self.titleField setTextColor:[UIColor TITLE_TEXT_COLOR]];
-	self.titleField.tintColor = [UIColor TITLE_TEXT_COLOR];
-	self.titleField.attributedPlaceholder = [[NSAttributedString alloc]
-													initWithString: WHAT_IS_IT_LIKE_TEXT
-													attributes:@{NSForegroundColorAttributeName: [UIColor TITLE_TEXT_COLOR],
-																 NSFontAttributeName : titleFont}];
-	[self.titleField resignFirstResponder];
-	self.titleField.enabled = YES;
-	self.titleField.autocorrectionType = UITextAutocorrectionTypeYes;
-	[self.titleField setReturnKeyType:UIReturnKeyDone];
+
+-(void)createChannelPickerFromChannelsFromFrame:(CGRect) frame {
+    UIPickerView * picker = [[UIPickerView alloc] initWithFrame:frame];
+    picker.dataSource = self;
+    picker.delegate = self;
+    picker.showsSelectionIndicator = YES;
+    self.titleField = picker;
+    picker.backgroundColor = [UIColor clearColor];
+    picker.clipsToBounds = YES;
+    
+    self.currentPresentedPickerRow = 0;
+    
+    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userTappedChannelSelctor:)];
+    tap.delegate = self;
+    [picker addGestureRecognizer:tap];
+    
+    [self.mainScrollView addSubview:picker];
 }
 
--(void) setAddCoverPictureViewWithFrame: (CGRect) frame {
-    self.coverPicView = [[CoverPicturePinchView alloc] initWithRadius:COVER_PIC_RADIUS withCenter:CGPointMake(frame.origin.x + frame.size.width/2.f, frame.origin.y + frame.size.width/2.f) andImage:nil];
-	self.addCoverPictureTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentGalleryForCoverPic)];
-	[self.coverPicView addGestureRecognizer: self.addCoverPictureTapGesture];
-	[self.mainScrollView addSubview: self.coverPicView];
+
+
+// returns the number of 'columns' to display.
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
+    return 1;
 }
+
+// returns the # of rows in each component..
+- (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
+    return (self.userChannels.count + 1);
+}
+
+- (CGFloat)pickerView:(UIPickerView *)pickerView
+rowHeightForComponent:(NSInteger)component{
+    return TITLE_FIELD_HEIGHT;
+}
+
+- (UIView *)pickerView:(UIPickerView *)pickerView
+            viewForRow:(NSInteger)row
+          forComponent:(NSInteger)component
+           reusingView:(UIView *)view{
+    
+    CGRect labelFrame = CGRectMake(pickerView.frame.size.height * row, 0.f, pickerView.frame.size.width, TITLE_FIELD_LABEL_TILE_HEIGHT);
+    if(view){
+        return view;
+    }else {
+        if(row == self.userChannels.count){//this is the create new channel row
+            return [self getCreateNewChannelTextFieldWithFrame:labelFrame];
+            
+        }else{
+            return [self formatTitleFieldFromFrame:labelFrame andChannel:self.userChannels[row]];
+        }
+    }
+}
+
+
+
+-(UILabel *) formatTitleFieldFromFrame: (CGRect) frame andChannel:(Channel *) channel {
+	UILabel * channelTitle = [[UILabel alloc] initWithFrame: frame];
+	channelTitle.textAlignment = NSTextAlignmentCenter;
+	channelTitle.font = [UIFont fontWithName:TITLE_TEXT_FONT size: TITLE_TEXT_SIZE];
+    [channelTitle setTextColor:[UIColor TITLE_TEXT_COLOR]];
+	channelTitle.tintColor = [UIColor TITLE_TEXT_COLOR];
+    channelTitle.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.6];
+    [channelTitle setText:channel.name];
+    return channelTitle;
+}
+
+- (void)pickerView:(UIPickerView *)pickerView
+      didSelectRow:(NSInteger)row
+       inComponent:(NSInteger)component{
+    
+    if(row == self.userChannels.count){
+        UITextField * textField = (UITextField *) [pickerView viewForRow:row forComponent:component];
+        [textField becomeFirstResponder];
+    }else{
+        [self removeKeyboardFromScreen];
+    }
+    self.currentPresentedPickerRow = row;
+}
+
+
+
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
+    // return
+    return true;
+}
+
+-(void)userTappedChannelSelctor:(UITapGestureRecognizer *) tap{
+    if(self.currentPresentedPickerRow == self.userChannels.count){
+        UITextField * textField = (UITextField *) [self.titleField viewForRow:self.userChannels.count forComponent:0];
+        if(textField)[textField becomeFirstResponder];
+    }else{
+        [self removeKeyboardFromScreen];
+    }
+}
+
+-(UITextField *)getCreateNewChannelTextFieldWithFrame:(CGRect) frame{
+    UITextField * field = [[UITextField alloc] initWithFrame:frame];
+    UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: TITLE_TEXT_SIZE];
+    field.textAlignment = NSTextAlignmentCenter;
+    field.font = [UIFont fontWithName:TITLE_TEXT_FONT size: TITLE_TEXT_SIZE];
+    [field setTextColor:[UIColor whiteColor]];
+    field.tintColor = [UIColor whiteColor];
+    field.attributedPlaceholder = [[NSAttributedString alloc]
+                                             initWithString: @"Create New Channel"
+                                             attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor],
+                                                          NSFontAttributeName : titleFont}];
+    
+    field.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.8];
+    [field resignFirstResponder];
+    field.enabled = YES;
+    field.autocorrectionType = UITextAutocorrectionTypeYes;
+    [field setReturnKeyType:UIReturnKeyDone];
+    field.delegate = self;
+    self.createNewChannelField = field;
+    return field;
+}
+
+//text field protocol
+- (BOOL)textFieldShouldReturn:(UITextField *)textField{
+    [textField resignFirstResponder];
+    return NO;
+}
+
 
 -(void) setUpNotifications {
 	//Tune in to get notifications of keyboard behavior
@@ -321,21 +443,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 											   object: [UIDevice currentDevice]];
 }
 
--(UIImage*) getCoverPicture {
-	return [self.coverPicView getImage];
-}
-
 // Loads pinch views from user defaults
 -(void) loadPOVFromUserDefaults {
 	NSString* savedTitle = [[UserPovInProgress sharedInstance] title];
-	if (savedTitle && savedTitle.length) {
-		self.titleField.text = savedTitle;
-	}
-
-	UIImage* coverPicture = [[UserPovInProgress sharedInstance] coverPhoto];
-	if (coverPicture) {
-		[self setCoverPictureImage: coverPicture];
-	}
 
 	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
@@ -345,82 +455,51 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
--(void) coverPicAddedForFirstTime {
-	//show replace photo icon after the first time this is tapped
-	[self addTapGestureToPinchView:self.coverPicView];
-	[self.coverPicView removeGestureRecognizer: self.addCoverPictureTapGesture];
-	[self.mainScrollView addSubview:self.replaceCoverPhotoButton];
-}
-
 #pragma mark - Nav Bar Delegate Methods -
 
 #pragma mark Close Button
 
 -(void) leftButtonPressed {
+    self.view.clipsToBounds = YES;
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 }
 
 #pragma mark Save Draft Button
 -(void) middleButtonPressed {
-	// TODO: save draft
+	
 }
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-	[self closeAllOpenCollections];
-	NSArray *pinchViews = [self getPinchViews];
-	NSString* title = self.titleField.text;
-	UIImage* coverPic = [self getCoverPicture];
-
-	[self.view bringSubviewToFront:self.previewDisplayView];
-	[self.previewDisplayView displayPreviewPOVWithTitle:title andCoverPhoto:coverPic andPinchViews:pinchViews];
+    NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
+    
+    for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
+        if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+            [pinchViews addObject:contentElementScrollView.pageElement];
+        }
+    }
+  
+	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
 }
+
 
 #pragma mark - Configure Text Fields -
-
-- (void)textFieldDidEndEditing:(UITextField *)textField {
-	if (textField == self.titleField) {
-		[[UserPovInProgress sharedInstance] addTitle: textField.text];
-	}
-}
-
-// if we encounter a newline character return
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-	if(textField == self.titleField) {
-		// enter closes the keyboard
-		if ([string isEqualToString:@"\n"]) {
-			[textField resignFirstResponder];
-			return NO;
-		} else if (textField.text.length >= MAX_TITLE_CHARACTERS && string.length > 0)  {
-			return NO;
-		}
-		return YES;
-	} else {
-		return YES;
-	}
-}
-
-- (BOOL)textFieldShouldEndEditing:(UITextField *)textField {
-	[textField resignFirstResponder];
-	return YES;
-}
-
--(BOOL) textFieldShouldReturn:(UITextField *)textField {
-	if(textField == self.titleField) {
-		[self.titleField resignFirstResponder];
-	}
-	return YES;
-}
 
 
 #pragma mark - ScrollViews -
 
 //adjusts the contentsize of the main view to the last element
 -(void) adjustMainScrollViewContentSize {
-	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
-		ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
-		self.mainScrollView.contentSize = CGSizeMake(0, lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET);
-	}];
+	CGFloat minContentHeight = self.view.bounds.size.height + CONTENT_SIZE_OFFSET;
+	if (self.pageElementScrollViews && self.pageElementScrollViews.count) {
+		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION animations:^{
+			ContentPageElementScrollView *lastScrollView = (ContentPageElementScrollView *)[self.pageElementScrollViews lastObject];
+			CGFloat contentHeight = lastScrollView.frame.origin.y + lastScrollView.frame.size.height + CONTENT_SIZE_OFFSET;
+			self.mainScrollView.contentSize = (contentHeight > minContentHeight) ? CGSizeMake(0, contentHeight) : CGSizeMake(0, minContentHeight);
+		}];
+	} else {
+		self.mainScrollView.contentSize = CGSizeMake(0.f, minContentHeight);
+	}
 }
 
 #pragma mark Scroll View actions
@@ -480,9 +559,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     [newAlert addAction:action1];
     [newAlert addAction:action2];
     [self presentViewController:newAlert animated:YES completion:nil];
-    
-    
-    
 }
 
 
@@ -500,10 +576,19 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.numPinchViews--;
 	}
 
-	[self.pageElementScrollViews removeObject:pageElementScrollView];
-	[pageElementScrollView cleanUp];
-	[pageElementScrollView removeFromSuperview];
-	[self shiftElementsBelowView: self.coverPicView];
+    [self.pageElementScrollViews removeObject:pageElementScrollView];
+	
+    [UIView animateWithDuration:PINCHVIEW_DELETE_ANIMATION_DURATION animations:^{
+        if([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+           pageElementScrollView.alpha = 0;
+        }
+    }completion:^ (BOOL finished) {
+        if(finished){
+            [pageElementScrollView cleanUp];
+            [pageElementScrollView removeFromSuperview];
+            [self shiftElementsBelowView: self.titleField];
+        }
+    }];
 }
 
 
@@ -524,11 +609,11 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 	[self addTapGestureToPinchView:pinchView];
 	// must be below base media tile selector
-	NSInteger index = self.pageElementScrollViews.count-1;
+	NSUInteger index = self.pageElementScrollViews.count-1;
 
 	CGRect newElementScrollViewFrame;
 	if(!upperScrollView) {
-		newElementScrollViewFrame = CGRectMake(0,self.coverPicView.frame.origin.y + self.coverPicView.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
+		newElementScrollViewFrame = CGRectMake(0,self.titleField.frame.origin.y + self.titleField.frame.size.height + ELEMENT_Y_OFFSET_DISTANCE,
 											   self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		index = 0;
 	} else {
@@ -537,20 +622,34 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
     
-    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:newElementScrollViewFrame];
+    //makes the object start animating from the top of the screen
+    CGRect animationStartFrame = CGRectMake(0, self.mainScrollView.contentOffset.y - newElementScrollViewFrame.size.height, newElementScrollViewFrame.size.width, newElementScrollViewFrame.size.height);
+    
+    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:animationStartFrame];
 	
     self.numPinchViews++;
     
 	//thread safety
 	@synchronized(self) {
-        [self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+        if(index <= self.pageElementScrollViews.count)[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
 	}
     
     [[UserPovInProgress sharedInstance] addPinchView:pinchView atIndex:index];
     
-    [self.mainScrollView addSubview: newElementScrollView];
-	self.addMediaBelowView = newElementScrollView;
-    [self shiftElementsBelowView: self.coverPicView];
+    
+    [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
+        [self.mainScrollView addSubview: newElementScrollView];
+        newElementScrollView.frame = newElementScrollViewFrame;
+        self.addMediaBelowView = newElementScrollView;
+        [self shiftElementsBelowView: self.titleField];
+        //TODO -- user pinch instruction
+//        if(self.pageElementScrollViews.count > 3){
+//            [self presentUserInstructionForPinchGesture];
+//        }
+        
+    }];
+    
+    
 }
 
 -(ContentPageElementScrollView *) createNewContentScrollViewWithPinchView:(PinchView *) view andFrame:(CGRect) frame {
@@ -568,8 +667,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void)shiftElementsBelowView: (UIView *) view {
 	if (!view ||
 		(![view isKindOfClass:[ContentPageElementScrollView class]]
-	   && ![view isKindOfClass:[CoverPicturePinchView class]])) {
-//		NSLog(@"View must be a scroll view or the cover pic view to shift elements below.");
+	   && ![view isKindOfClass:[UIPickerView class]])) {
 		return;
 	}
 	NSInteger viewIndex = 0;
@@ -580,7 +678,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		viewIndex = [self.pageElementScrollViews indexOfObject:view]+1;
 	}
 	//If we must shift everything from the top
-	else if ([view isKindOfClass:[CoverPicturePinchView class]]) {
+	else if ([view isKindOfClass:[UITextField class]]) {
 		firstYCoordinate = firstYCoordinate + ELEMENT_Y_OFFSET_DISTANCE;
 	}
 	for(NSInteger i = viewIndex; i < [self.pageElementScrollViews count]; i++) {
@@ -651,15 +749,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 #pragma Remove Keyboard From Screen
 //Iain
 -(void) removeKeyboardFromScreen {
-	if (self.titleField.isEditing) {
-		[self.titleField resignFirstResponder];
-	}
+[[[UIApplication sharedApplication] keyWindow] endEditing:YES];
 }
 
 -(void) showKeyboard {
-	if(self.titleField.isEditing) {
-		[self.titleField becomeFirstResponder];
-	}
+//	if(self.titleField.isEditing) {
+//		[self.titleField becomeFirstResponder];
+//	}
 }
 
 #pragma mark Keyboard Notifications
@@ -736,7 +832,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.newlyCreatedMediaTile = Nil;
 	}
 
-	[self shiftElementsBelowView: self.coverPicView];
+	[self shiftElementsBelowView: self.titleField];
 	self.pinchingMode = PinchingModeNone;
 }
 
@@ -749,7 +845,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		self.newlyCreatedMediaTile.superview.frame = CGRectMake(0,self.newlyCreatedMediaTile.superview.frame.origin.y + originalHeight/2.f,
 																self.newlyCreatedMediaTile.superview.frame.size.width, 0);
 		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self shiftElementsBelowView: self.coverPicView];
+		[self shiftElementsBelowView: self.titleField];
 
 	} completion:^(BOOL finished) {
 		[self.newlyCreatedMediaTile.superview removeFromSuperview];
@@ -826,15 +922,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
-//goes through all scroll views and checks if they have open collections.
-//if they do it tells them to close
--(void) closeAllOpenCollections {
-	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
-		if(scrollView.collectionIsOpen) {
-			[scrollView closeCollection];
-		}
-	}
-}
 
 //checks if scroll view contains an open collection,
 //if so shows the pull bar and tells the scroll view to close the collection
@@ -865,6 +952,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 	//if it's a pinch apart then create the media tile
 	 if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVertical &&sender.scale > 1) {
+         [self removeExcessMediaTiles];
 		[self createNewMediaTileBetweenPinchViews];
 	 }
 
@@ -1006,9 +1094,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 																self.baseMediaTileSelector.superview.frame.size.width,
 																self.baseMediaTileSelector.superview.frame.size.height);
 		[self.newlyCreatedMediaTile createFramesForButtonsWithFrame: self.newlyCreatedMediaTile.frame];
-		[self shiftElementsBelowView: self.coverPicView];
+		[self shiftElementsBelowView: self.titleField];
 	} completion:^(BOOL finished) {
-		[self shiftElementsBelowView: self.coverPicView];
+		[self shiftElementsBelowView: self.titleField];
 		gesture.enabled = NO;
 		gesture.enabled = YES;
 		self.pinchingMode = PinchingModeNone;
@@ -1023,8 +1111,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) clearMediaTile:(MediaSelectTile*)mediaTile {
 	[self.pageElementScrollViews removeObject:mediaTile.superview];
 	[mediaTile.superview removeFromSuperview];
-	[self shiftElementsBelowView: self.coverPicView];
+	[self shiftElementsBelowView: self.titleField];
 }
+
 
 
 #pragma mark Pinching Views together
@@ -1041,10 +1130,9 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[self.pageElementScrollViews removeObject:self.lowerPinchScrollView];
 	self.lowerPinchScrollView = self.upperPinchScrollView = nil;
 	self.pinchingMode = PinchingModeNone;
-	[self shiftElementsBelowView: self.coverPicView];
+	[self shiftElementsBelowView: self.titleField];
 
 	//present swipe to delete notification
-    if(![[UserSetupParameters sharedInstance] swipeToDelete_InstructionShown])[self alertSwipeRightToDelete];
 }
 
 #pragma mark - Identify views involved in pinch
@@ -1108,35 +1196,35 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
 }
 
+-(ContentPageElementScrollView *) createPinchApartViews {
 
+	CollectionPinchView *collectionPinchView = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
+	SingleMediaAndTextPinchView *toRemove = [collectionPinchView.pinchedObjects lastObject];
+	CollectionPinchView *newCollectionPinchView = [collectionPinchView unPinchAndRemove:toRemove];
+	toRemove.frame = newCollectionPinchView.frame;
+	[self addTapGestureToPinchView:toRemove];
+	NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView] + 1;
 
--(ContentPageElementScrollView *)createPinchApartViews {
-    
-   CollectionPinchView * collectionPv = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
-    PinchView * toRemove = [collectionPv.pinchedObjects lastObject];
-    CollectionPinchView * newCollectionPv = [collectionPv unPinchAndRemove:toRemove];
-    
-    [self addTapGestureToPinchView:toRemove];
-    NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView] + 1;
-    
-    if(newCollectionPv.pinchedObjects.count == 1){
-        PinchView * newpv =  [collectionPv.pinchedObjects lastObject];
-        [[UserPovInProgress sharedInstance] removePinchView:[newCollectionPv unPinchAndRemove:newpv] andReplaceWithPinchView:newpv];
-        [self.upperPinchScrollView changePageElement:newpv];
-    }else{
-        [[UserPovInProgress sharedInstance] updatePinchView:newCollectionPv];
-        [[UserPovInProgress sharedInstance] addPinchView:toRemove atIndex:index];
-    }
+	if(newCollectionPinchView.pinchedObjects.count == 1){
+		SingleMediaAndTextPinchView *unPinchedPinchView = [collectionPinchView.pinchedObjects lastObject];
+		unPinchedPinchView.frame = toRemove.frame;
+		[[UserPovInProgress sharedInstance] removePinchView:[newCollectionPinchView unPinchAndRemove:unPinchedPinchView]
+									andReplaceWithPinchView:unPinchedPinchView];
+		[self.upperPinchScrollView changePageElement:unPinchedPinchView];
+	}else{
+		[[UserPovInProgress sharedInstance] updatePinchView:newCollectionPinchView];
+		[[UserPovInProgress sharedInstance] addPinchView:toRemove atIndex:index];
+	}
 
-    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:toRemove andFrame:self.upperPinchScrollView.frame];
-    self.numPinchViews++;
-    //thread safety
-    @synchronized(self) {
-        [self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
-    }
-    
-    [self.mainScrollView addSubview: newElementScrollView];
-    return newElementScrollView;
+	ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:toRemove andFrame:self.upperPinchScrollView.frame];
+	self.numPinchViews++;
+	//thread safety
+	@synchronized(self) {
+		[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+	}
+
+	[self.mainScrollView addSubview: newElementScrollView];
+	return newElementScrollView;
 }
 
 
@@ -1186,21 +1274,20 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 -(void) cameraButtonPressedOnTile: (MediaSelectTile *)tile {
-	if (tile == self.baseMediaTileSelector) {
 		[self.cameraView removeFromSuperview];
 		[self.view addSubview:self.cameraView];
 		[self.cameraView createAndInstantiateGestures];
-	}
+        self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;//should be a contentpagescrollview
 }
 
 #pragma mark - Change position of elements on screen by dragging
 
 // Handle users moving elements around on the screen using long press
 - (IBAction)longPressSensed:(UILongPressGestureRecognizer *)sender {
-
 	switch (sender.state) {
 		case UIGestureRecognizerStateEnded: {
 			[self finishMovingSelectedItem];
+            [self removeExcessMediaTiles];
 			break;
 		}
 		case UIGestureRecognizerStateBegan: {
@@ -1235,11 +1322,13 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}
 		return;
 	}
-
+    
+    
 	self.previousLocationOfTouchPoint_PAN = touch;
 	self.previousFrameInLongPress = self.selectedView_PAN.frame;
 
 	[self.selectedView_PAN.pageElement markAsSelected:YES];
+    [self.selectedView_PAN markAsSelected:YES];
 }
 
 // Finds first view that contains location of press and sets it as the selectedView
@@ -1288,6 +1377,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 			self.previousLocationOfTouchPoint_PAN = touch;
 			self.previousFrameInLongPress = self.selectedView_PAN.frame;
 			[self.selectedView_PAN.pageElement markAsSelected:YES];
+            [self.selectedView_PAN markAsSelected:YES];
 		}
 		return;
 	}
@@ -1319,23 +1409,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
 		self.selectedView_PAN.frame = newFrame;
-	} completion:^(BOOL finished) {
-        //swap pinch view with cover photo
-        if (!topView){
-            if([self selctedViewAboveCoverPhoto]){
-                if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
-                    [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
-                     COVER_PIC_RADIUS*2];
-                }
-            }else{
-                if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
-                    [((ImagePinchView *)self.selectedView_PAN.pageElement) changeWidthTo:
-                     self.defaultPinchViewRadius*2];
-                }
-                
-            }
-        }
-    }];
+	}];
 
 	//swap item if necessary
 
@@ -1355,15 +1429,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.previousLocationOfTouchPoint_PAN = touch;
 }
 
--(BOOL)selctedViewAboveCoverPhoto {
-	if(self.selectedView_PAN.frame.origin.y >
-	   self.titleField.frame.origin.y + self.titleField.frame.size.height &&
-	   self.selectedView_PAN.frame.origin.y < self.coverPicView.frame.origin.y +
-	   self.coverPicView.frame.size.height * (2.f/4.f)) {
-		return YES;
-	}
-	return NO;
-}
 
 //swap currently selected item's frame with view above it
 -(void) swapWithTopView: (ContentPageElementScrollView*) topView {
@@ -1403,6 +1468,34 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 									  bottomView.frame.size.width, bottomView.frame.size.height);
 		self.previousFrameInLongPress = potentialFrame;
 	}];
+}
+
+
+-(void)presentUserInstructionForPinchGesture {
+
+    ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
+
+    CGFloat offsetFromPinchViewCenters = 60.f;    
+    
+    CGFloat frameHeight = firstInList.frame.size.height - (2*offsetFromPinchViewCenters);
+    
+    CGFloat frameWidth = (frameHeight * 367.f)/331.f ;
+    
+    
+    
+    CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,
+                                         frameWidth,frameHeight);
+    
+    
+    UIImage * instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
+    self.pinchElementsTogetherInstructionView = [[UIImageView alloc] initWithImage:instructionImage];
+    self.pinchElementsTogetherInstructionView.frame =  instructionFrame;
+    
+    [self.mainScrollView addSubview:self.pinchElementsTogetherInstructionView];
+    [self.mainScrollView bringSubviewToFront:self.pinchElementsTogetherInstructionView];
+    
+    //[[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];//commented out for debugging
+    
 }
 
 //adjusts offset of main scroll view so selected item is in focus
@@ -1459,25 +1552,18 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	}
     
     //make sure the pinch view is in the right position to replace the cover photo
-    if([self selctedViewAboveCoverPhoto]){
-        //make sure the pinchview is an image
-        if([self.selectedView_PAN.pageElement isKindOfClass:[ImagePinchView class]]){
-			UIImage* newCoverPhoto = [((ImagePinchView *)self.selectedView_PAN.pageElement) getOriginalImage];
-            [self setCoverPictureImage: newCoverPhoto];
-            //now delete the selected pinchview
-            [self deleteScrollView:self.selectedView_PAN];
-        }
-        
-    } else {
-		[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
+ 
+    [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
 			 self.selectedView_PAN.frame = self.previousFrameInLongPress;
-		}];
-    }
+    }];
 	
-    if(self.selectedView_PAN)[self.selectedView_PAN.pageElement markAsSelected:NO];
+    if(self.selectedView_PAN){
+        [self.selectedView_PAN.pageElement markAsSelected:NO];
+        [self.selectedView_PAN markAsSelected:NO];
+    }
 	//sanitize for next run
 	self.selectedView_PAN = nil;
-	[self shiftElementsBelowView:self.coverPicView];
+	[self shiftElementsBelowView:self.titleField];
 }
 
 //swaps scroll views in the pageElementScrollView array
@@ -1527,7 +1613,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		[self addTapGestureToPinchView:(PinchView *)[scrollView pageElement]];
 	}
 	[self.mainScrollView addSubview:scrollView];
-	[self shiftElementsBelowView: self.coverPicView];
+	[self shiftElementsBelowView: self.titleField];
 }
 
 
@@ -1546,23 +1632,28 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) pinchObjectTapped:(UITapGestureRecognizer *) sender {
 	//only accept touches from pinch objects
-	if(![sender.view isKindOfClass:[PinchView class]]) {
+	if(![sender.view isKindOfClass:[PinchView class]] || self.currentlyPreviewingContent) {
 		return;
 	}
     
-	PinchView * pinchView = (PinchView *)sender.view;
-	if([pinchView isKindOfClass:[CollectionPinchView class]]) {
-        return;//temp
-        ContentPageElementScrollView * scrollView = (ContentPageElementScrollView *)pinchView.superview;
-		[scrollView openCollection];
-        if(![[UserSetupParameters sharedInstance] tapNhold_InstructionShown])[self alertTapNHoldInCollection];
-	} else { // pinch view should be SingleMediaOverText
-		self.editingPinchView = (SingleMediaAndTextPinchView*) pinchView;
-		//tap to open an element for viewing or editing
-		[self presentEditContentView];
-	}
+    UIView * view = sender.view.superview;//this will be a scrollview
+    if(view)[self presentPreviewAtIndex:[self.pageElementScrollViews indexOfObject:view]];
 }
 
+//protocol for preview view
+-(void) aboutToShowPreview{
+    self.currentlyPreviewingContent = YES;
+}
+-(void) aboutToRemovePreview{
+    self.currentlyPreviewingContent = NO;
+}
+
+-(void)presentPreviewAtIndex:(NSInteger ) index{
+    NSMutableArray *pinchViews = [self getPinchViews];
+
+    [self.view bringSubviewToFront:self.previewDisplayView];
+    [self.previewDisplayView displayPreviewPOVWithTitle:@"" andPinchViews:pinchViews withStartIndex:index];
+}
 
 #pragma mark - Edit Content View Navigation -
 
@@ -1593,7 +1684,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
-    [self clearCoverPhoto];
     [self clearBaseSelcetor];
 	[self createBaseSelector];
     [self initializeVariables];
@@ -1605,15 +1695,8 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
     self.baseMediaTileSelector = nil;
 }
 
--(void) clearCoverPhoto {
-    [self.coverPicView removeImage];
-	[self.coverPicView addGestureRecognizer: self.addCoverPictureTapGesture];
-    [self.replaceCoverPhotoButton removeFromSuperview];
-    self.replaceCoverPhotoButton = nil;
-}
-
 -(void)clearTextFields {
-	self.titleField.text =@"";
+	//self.titleField.text =@"";
 }
 
 
@@ -1623,12 +1706,38 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) imageCaptured: (UIImage*) image {
 	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
 	// place it at the bottom of the deck, above base element view selector
-	self.addMediaBelowView = self.pageElementScrollViews.count > 1 ? self.pageElementScrollViews[self.pageElementScrollViews.count-2] : nil;
+    
+    if(self.selectedView_PAN.pageElement == self.baseMediaTileSelector){
+        
+        if(self.pageElementScrollViews.count == 1){
+            self.addMediaBelowView = nil;//insert at the very top
+        }else{
+            self.addMediaBelowView = self.pageElementScrollViews[self.pageElementScrollViews.count - 2];//below the second to last object
+        }
+        
+    }else{
+        self.addMediaBelowView = self.selectedView_PAN;
+    }
+    
+    
 	[self createPinchViewFromImage: image];
 }
 
 // add video asset to deck (create pinch view)
 -(void) videoAssetCaptured:(PHAsset *) asset {
+    
+    if(self.selectedView_PAN.pageElement == self.baseMediaTileSelector){
+        
+        if(self.pageElementScrollViews.count == 1){
+            self.addMediaBelowView = nil;//insert at the very top
+        }else{
+            self.addMediaBelowView = self.pageElementScrollViews[self.pageElementScrollViews.count - 2];//below the second to last object
+        }
+        
+    }else{
+        self.addMediaBelowView = self.selectedView_PAN;
+    }
+    
 	[[PHImageManager defaultManager] requestAVAssetForVideo:asset
 													options:self.videoRequestOptions
 											  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
@@ -1641,6 +1750,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 -(void) minimizeCameraViewButtonTapped {
 	[self.cameraView removeFromSuperview];
+    [self removeExcessMediaTiles];
 	//TODO
 }
 
@@ -1666,67 +1776,17 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	[self presentViewController:picker animated:YES completion:nil];
 }
 
--(void) presentGalleryForCoverPic {
-	GMImagePickerController * picker = [[GMImagePickerController alloc] init];
-	picker.delegate = self;
-	[picker setSelectOnlyOneImage: YES];
-	//Display or not the selection info Toolbar:
-	picker.displaySelectionInfoToolbar = YES;
-
-	//Display or not the number of assets in each album:
-	picker.displayAlbumsNumberOfAssets = YES;
-
-	//Customize the picker title and prompt (helper message over the title)
-	picker.title = GALLERY_PICKER_TITLE;
-	picker.customNavigationBarPrompt = COVERPIC_GALLERY_CUSTOM_MESSAGE;
-
-	//Customize the number of cols depending on orientation and the inter-item spacing
-	picker.colsInPortrait = 3;
-	picker.colsInLandscape = 5;
-	picker.minimumInteritemSpacing = 2.0;
-
-	self.addingCoverPicture = YES;
-	[self presentViewController:picker animated:YES completion:nil];
-}
-
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)assetArray{
-	if (self.addingCoverPicture) {
-		self.addingCoverPicture = NO;
-		[self addCoverPictureFromAssetArray: assetArray];
-	} else {
-		[self presentAssetsAsPinchViews:assetArray];
-	}
+	[self presentAssetsAsPinchViews:assetArray];
 }
 
 - (void)assetsPickerControllerDidCancel:(GMImagePickerController *)picker {
-	self.addingCoverPicture = NO;
 	[picker.presentingViewController dismissViewControllerAnimated:YES completion:^{
 	}];
 }
 
--(void) addCoverPictureFromAssetArray: (NSArray*) assetArray {
-	PHAsset* asset = assetArray[0];
-	@autoreleasepool {
-		[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI,UIImageOrientation orientation, NSDictionary *info) {
-
-			UIImage* image = [self getImageFromImageData: imageData];
-			// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-			dispatch_async(dispatch_get_main_queue(), ^{
-				[self setCoverPictureImage: image];
-			});
-		}];
-	}
-}
 
 
--(void)setCoverPictureImage:(UIImage *) image{
-    [self.coverPicView setNewImage: image];
-    [[UserPovInProgress sharedInstance] addCoverPhoto: image];
-    //show replace photo icon after the first time cover photo is added
-    if(!_replaceCoverPhotoButton){
-        [self coverPicAddedForFirstTime];
-	}
-}
 
 //add assets from picker to our scrollview
 -(void )presentAssetsAsPinchViews:(NSArray *)phassets {
@@ -1761,25 +1821,15 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}
 	}
 
-	//decides whether on what notification to present if any
-	if(![[UserSetupParameters sharedInstance] circlesArePages_InstructionShown] &&
-	   self.pageElementScrollViews.count == 1 && (phassets.count > 1)) {
-		[self alertEachPVIsPage];
-        if(![[UserSetupParameters sharedInstance] pinchCircles_InstructionShown]) {
-            //wait for a little while before circles are added to the stream
-            [NSTimer scheduledTimerWithTimeInterval:5.f target:self selector:@selector(timerForNoNotification:) userInfo:nil repeats:NO];
-        }
-	}
+
 }
 
-- (void)timerForNoNotification:(NSTimer *)timer {
-    [self alertPinchElementsTogether];
-}
 
 -(UIImage*) getImageFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
 	image = [image getImageWithOrientationUp];
-	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+	image = [image scaleImageToSize:CGSizeMake(self.view.bounds.size.height*(image.size.width/image.size.height), self.view.bounds.size.height)];
+//	image = [image scaleImageToSize:CGSizeMake(image.size.width/1.2f, image.size.height/1.2f)];
 	return image;
 }
 
@@ -1801,7 +1851,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 
 #pragma mark - Returning Pinch Views -
 
--(NSArray*) getPinchViews {
+-(NSMutableArray*) getPinchViews {
 	NSMutableArray *pinchViews = [[NSMutableArray alloc]init];
 	for(ContentPageElementScrollView* elementScrollView in self.pageElementScrollViews) {
 		if ([elementScrollView.pageElement isKindOfClass:[PinchView class]]) {
@@ -1811,68 +1861,48 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	return pinchViews;
 }
 
+
+#pragma mark -remove excess mediatiles-
+
+-(void)removeExcessMediaTiles{
+    for(int i = 0; i < self.pageElementScrollViews.count; i++){
+        if(i < self.pageElementScrollViews.count) {
+            ContentPageElementScrollView *  contentPageSV = self.pageElementScrollViews[i];
+            if([contentPageSV.pageElement isKindOfClass:[MediaSelectTile class]] &&
+               contentPageSV.pageElement != self.baseMediaTileSelector){
+                [self deleteScrollView:contentPageSV];
+            }
+        }
+    }
+}
+
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
 
-//TODO: move to content dev
--(void) publishWithTitle:(NSString *)title andCoverPhoto:(UIImage *)coverPhoto andPinchViews:(NSArray *)pinchViews {
-
-	if (![title length]) {
-		[self alertAddTitle];
-	} else if (!coverPhoto) {
-		[self alertAddCoverPhoto];
-	} else {
-		if(![pinchViews count]) {
-			NSLog(@"Can't publish with no pinch objects");
-			return;
-		}
-
-		POVPublisher* publisher = [[POVPublisher alloc] initWithPinchViews: pinchViews andTitle: title andCoverPic: coverPhoto];
-		[publisher publish];
-		//TODO: make sure current user exists and if not make them sign in
-		NSString* userName = [[UserManager sharedInstance] getCurrentUser].name;
-
-		[self.delegate povPublishedWithUserName:userName andTitle:title andCoverPic:coverPhoto andProgressObject: publisher.publishingProgress];
-		[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-		[self cleanUp];
-	}
+-(void) publishWithTitle:(NSString *)title andPinchViews:(NSMutableArray *)pinchViews {
+	if(pinchViews) [self publishOurStoryWithPinchViews:pinchViews];
 }
 
-#pragma mark - Alerts -
-/*
- These are all notifications that appear for the user at different points in the app. They only appear once.
- */
--(void)alertEachPVIsPage {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Each circle is a page in your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-    [[UserSetupParameters sharedInstance] set_circlesArePages_InstructionAsShown];
-}
+-(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
 
--(void)alertPinchElementsTogether {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Try pinching circles together!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-	[[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];
-}
-
--(void)alertSwipeRightToDelete {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe circles left to delete" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    [[UserSetupParameters sharedInstance] set_swipeToDelete_InstructionAsShown];
-}
-
--(void)alertTapNHoldInCollection{
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Tap and hold to remove circle" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    [[UserSetupParameters sharedInstance] set_tapNhold_InstructionAsShown];
-}
-
--(void)alertAddTitle {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"You forgot to title your story" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
-}
-
--(void)alertAddCoverPhoto {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Hey! Please add a cover photo :)" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
+    Channel * channelToPostIn;
+    if (self.currentPresentedPickerRow < self.userChannels.count) {
+        channelToPostIn = self.userChannels[self.currentPresentedPickerRow];
+    } else{
+        UITextField * textField = (UITextField *) [self.titleField viewForRow:self.currentPresentedPickerRow forComponent:0];
+        if ([textField.text isEqualToString:@""]) {
+            //prompt user to add channel title-- TODO
+            
+        } else {
+            channelToPostIn = [[Channel alloc] initWithChannelName:textField.text numberOfFollowers:[NSNumber numberWithInt:0] andParseChannelObject:nil];
+        }
+    }
+    BOOL posting = [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews];
+    if(posting){
+        [self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+        [self cleanUp];
+    }else{
+        //TODO -- either something else is publishing or there is not internet
+    }
 }
 
 #pragma mark - Tap to clear view -
@@ -1928,35 +1958,19 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		_baseMediaTileSelector.delegate = self;
 		[_baseMediaTileSelector createFramesForButtonsWithFrame:frame];
 		[_baseMediaTileSelector buttonGlow];
-//		[_baseMediaTileSelector.cameraButton insertSubview:self.cameraView atIndex:0];
 	}
 	return _baseMediaTileSelector;
 }
 
 -(CustomNavigationBar*) navBar {
 	if (!_navBar) {
-		_navBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
-										  andBackgroundColor:[UIColor whiteColor]];
+		_navBar = [[CustomNavigationBar alloc]
+                   initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
+                   andBackgroundColor:ADK_NAV_BAR_COLOR];
 	}
 	return _navBar;
 }
 
--(UIButton *)replaceCoverPhotoButton{
-    
-    if(!_replaceCoverPhotoButton){
-        
-        _replaceCoverPhotoButton = [[UIButton alloc] initWithFrame:
-                                    CGRectMake(self.coverPicView.frame.origin.x +
-                                               self.coverPicView.frame.size.width +
-                                               REPLACE_PHOTO_XsOFFSET,
-                                               self.coverPicView.frame.origin.y + REPLACE_PHOTO_XsOFFSET,
-                                               REPLACE_PHOTO_FRAME_WIDTH, REPLACE_PHOTO_FRAME_HEIGHT)];
-        
-        [_replaceCoverPhotoButton setImage:[UIImage imageNamed: REPLACE_COVER_PHOTO_ICON] forState:UIControlStateNormal];
-        [_replaceCoverPhotoButton addTarget:self action:@selector(presentGalleryForCoverPic) forControlEvents:UIControlEventTouchUpInside];
-    }
-    return _replaceCoverPhotoButton;
-}
 
 -(UITextView *) activeTextView {
 	if(!_activeTextView)_activeTextView = self.firstContentPageTextBox;

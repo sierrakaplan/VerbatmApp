@@ -18,7 +18,7 @@
 //or when undo and preview are/n't possible
 @protocol ContentDevVCDelegate <NSObject>
 
--(void) povPublishedWithUserName:(NSString*)userName andTitle:(NSString*)title andCoverPic:(UIImage*)coverPhoto andProgressObject:(NSProgress*)progress;
+-(void) povPublishedWithUserName:(NSString*)userName andTitle:(NSString*)title andProgressObject:(NSProgress*)progress;
 
 @end
 
@@ -33,9 +33,14 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
 
+
+
 //Delegate in order to tell parent view controller when pull bar should be changed
 @property (strong, nonatomic) id<ContentDevVCDelegate> delegate;
-@property (strong, nonatomic) UITextField *titleField;
+@property (strong, nonatomic) UIPickerView *titleField;
+@property (nonatomic) NSUInteger currentPresentedPickerRow;
+
+
 @property (strong, nonatomic) CustomNavigationBar* navBar;
 
 //view that is currently being filled in

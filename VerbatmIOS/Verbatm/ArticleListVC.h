@@ -25,7 +25,7 @@
 -(void) setPovLoadManager:(POVLoadManager *) povLoader andCellBackgroundColor: (UIColor*) cellBackgroundColor ;
 
 -(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
-						  andCoverPic: (UIImage*) coverPic andProgressObject: (NSProgress*) publishingProgress;
+						  andProgressObject: (NSProgress*) publishingProgress;
 
 // Notify cell to update its appearance based on the current user liking or unliking it
 -(void) userHasLikedPOV: (BOOL) liked withPovInfo: (PovInfo*) povInfo;

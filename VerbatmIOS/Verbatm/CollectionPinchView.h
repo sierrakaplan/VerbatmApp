@@ -11,23 +11,24 @@
 
 @interface CollectionPinchView : PinchView
 
-//array of PinchViews
-@property (strong, nonatomic) NSMutableArray* pinchedObjects;
+// pinched objects in the collection view
+@property (strong, nonatomic) NSMutableArray* imagePinchViews;
+@property (strong, nonatomic) NSMutableArray* videoPinchViews;
 
-//inits with an array of pinchviews
+// keeps track of order of elements pinched together
+@property (strong, nonatomic, readonly) NSMutableArray* pinchedObjects;
+
+//Takes an array of SingleMediaAndTextPinchViews which are being pinched together
 -(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andPinchViews:(NSArray*)pinchViews;
 
 -(NSInteger) getNumPinchViews;
 
 //Pinches the given pinch view onto the collection
 //returns self for chaining purposes
--(CollectionPinchView*) pinchAndAdd:(PinchView*)pinchView;
+-(CollectionPinchView*) pinchAndAdd:(SingleMediaAndTextPinchView*)pinchView;
 
 //Unpinches the given pinch view from the collection
 //returns self for chaining purposes
--(CollectionPinchView*) unPinchAndRemove:(PinchView*)pinchView;
-
-//updates all the media stored in the collection view
--(void) updateMedia;
+-(CollectionPinchView*) unPinchAndRemove:(SingleMediaAndTextPinchView*)pinchView;
 
 @end

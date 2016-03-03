@@ -6,16 +6,20 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
+#import "Icons.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 #import "StringsAndAppConstants.h"
 #import "TextOverMediaView.h"
 #import "UITextView+Utilities.h"
-
+#import "UIImage+ImageEffectsAndTransforms.h"
 @interface TextOverMediaView ()
 
 @property (nonatomic, readwrite) BOOL textShowing;
+@property (strong,nonatomic) UIImageView* ourBlurView;
+@property (strong,nonatomic) UIImageView* textBackgroundView;
 
+#define BLUR_IMAGE_FILTER 40
 @end
 
 @implementation TextOverMediaView
@@ -23,54 +27,59 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage*) image andText: (NSString*) text andTextYPosition: (CGFloat) textYPosition {
 	self = [super initWithFrame:frame];
 	if (self) {
-		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-		[self.imageView setImage: image];
-        [self addSubview:self.imageView];
-        // adding blur [self setImageViewWithImage:image];
-		[self.textView setText: text];
-		[self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
-											textYPosition, self.textView.frame.size.width,
-											self.textView.frame.size.height)];
-		[self resizeTextView];
+		
+            [self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+            [self setImageViewWithImage:image];
+            if(text.length){
+                [self.textView setText: text];
+                [self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
+                                                    textYPosition, self.textView.frame.size.width,
+                                                    self.textView.frame.size.height)];
+            }
+		//[self resizeTextView]; //this function keeps blocking our thread --- temp
 	}
 	return self;
 }
 
 // IMAGE BLUR
-//
-//-(void) setImageViewWithImage:(UIImage*) image {
-//    //scale image
-//    CGSize imageSize = [UIEffects getSizeForImage:image andBounds:self.bounds];
-//    image = [UIEffects scaleImage:image toSize:imageSize];
-//    UIView* imageContainerView = [[UIView alloc] initWithFrame:self.bounds];
-//    [imageContainerView setBackgroundColor:[UIColor blackColor]];
-//    UIImageView* photoView = [self getImageViewForImage:image];
-//    UIImageView* blurPhotoView = [UIEffects getBlurImageViewForImage:image withFrame:self.bounds];
-//    [imageContainerView addSubview:blurPhotoView];
-//    [imageContainerView addSubview:photoView];
-//    [self addSubview:imageContainerView];
-//}
-//
-//
-//// returns image view with image centered
-//-(UIImageView*) getImageViewForImage:(UIImage*) image {
-//    UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
-//    photoView.frame = self.bounds;
-//    photoView.clipsToBounds = YES;
-//    photoView.contentMode = UIViewContentModeScaleAspectFit;
-//    return photoView;
-//}
+-(void) setImageViewWithImage:(UIImage*) image {
+	[self.imageView setImage: image];
+//    self.ourBlurView = [image getBlurImageViewWithFilterLevel:BLUR_IMAGE_FILTER andFrame:self.bounds];
+//    [self addSubview:self.ourBlurView];
+	[self addSubview:self.imageView];
+}
+
+// returns image view with image centered
+-(UIImageView*) getImageViewForImage:(UIImage*) image {
+    UIImageView* photoView = [[UIImageView alloc] initWithImage:image];
+    photoView.frame = self.bounds;
+    photoView.clipsToBounds = YES;
+    photoView.contentMode = UIViewContentModeScaleAspectFit;
+    return photoView;
+}
+
+-(void)setText:(NSString *) text{
+    [self.textView setText:text];
+    [self resizeTextView];
+}
 
 -(void) showText: (BOOL) show {
 	if (show) {
-		if (self.textShowing) return; // already showing
-		[self addSubview:self.textView];
-		[self bringSubviewToFront:self.textView];
+        if (!self.textShowing){
+            [self addSubview:self.textView];
+            [self bringSubviewToFront:self.textView];
+        }
 	} else {
 		if (!self.textShowing) return; // already hidden
 		[self.textView removeFromSuperview];
 	}
 	self.textShowing = !self.textShowing;
+}
+
+
+-(void)changeImageTo:(UIImage *) image{
+//    [self.ourBlurView setImage:[image blurredImageWithFilterLevel:BLUR_IMAGE_FILTER]];
+    [self.imageView setImage:image];
 }
 
 //Calculate the appropriate bounds for the text view
@@ -79,6 +88,7 @@
 	CGFloat contentHeight = [self.textView measureContentHeight];
 	float height = (TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT < contentHeight) ? contentHeight : TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT;
 	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y, self.textView.frame.size.width, height);
+	self.textBackgroundView.frame = CGRectMake(0.f, 0.f, self.textView.frame.size.width, self.textView.frame.size.height);
 }
 
 #pragma mark - Lazy Instantiation -
@@ -87,17 +97,17 @@
 	if (!_imageView) {
 		_imageView = [[UIImageView alloc] initWithFrame: self.bounds];
 		_imageView.clipsToBounds = YES;
-		_imageView.contentMode = UIViewContentModeScaleAspectFit;
+		_imageView.contentMode = UIViewContentModeScaleAspectFill;
 	}
 	return _imageView;
 }
 
 -(UITextView*) textView {
 	if (!_textView) {
-		CGRect textViewFrame = CGRectMake(0.f, 0.f, self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
+		CGRect textViewFrame = CGRectMake(0.f, TEXT_VIEW_OVER_MEDIA_Y_OFFSET, self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
-		[_textView setFont:[UIFont fontWithName:DEFAULT_FONT size:TEXT_AVE_FONT_SIZE]];
-		_textView.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.8];
+		[_textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
+		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.7];
 
 		//TEXT_SCROLLVIEW_BACKGROUND_COLOR
 		_textView.textColor = [UIColor TEXT_AVE_COLOR];
@@ -107,6 +117,7 @@
 		_textView.keyboardAppearance = UIKeyboardAppearanceDark;
 		_textView.scrollEnabled = NO;
 		_textView.editable = NO;
+        _textView.selectable = NO;
 	}
 	return _textView;
 }

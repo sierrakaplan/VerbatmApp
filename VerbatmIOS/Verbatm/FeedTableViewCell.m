@@ -243,7 +243,7 @@
 }
 
 -(void) setContentWithUsername:(NSString *) username andTitle: (NSString *) title
-				 andCoverImage: (UIImage*) coverImage andDateCreated: (GTLDateTime*) dateCreated
+				 andDateCreated: (GTLDateTime*) dateCreated
 				   andNumLikes: (NSNumber*) numLikes likedByCurrentUser: (BOOL) likedByCurrentUser {
 	self.title = title;
 	self.povTitle.text = title;
@@ -270,15 +270,15 @@
 		[self.likeIconView setImage:self.notLikedImage];
 	}
 
-	UIImage* leftHalf = [coverImage halfPictureLeftHalf:YES];
-	UIImage* rightHalf = [coverImage halfPictureLeftHalf:NO];
-	[self.leftSemiCircle setImage: leftHalf];
-	[self.rightSemiCircle setImage: rightHalf];
+//	UIImage* leftHalf = [coverImage halfPictureLeftHalf:YES];
+//	UIImage* rightHalf = [coverImage halfPictureLeftHalf:NO];
+//	[self.leftSemiCircle setImage: leftHalf];
+//	[self.rightSemiCircle setImage: rightHalf];
 }
 
 -(void) setPublishingContentWithUsername:(NSString *) username andTitle: (NSString *) title
-						andCoverImage: (UIImage*) coverImage andProgressObject: (NSProgress*) publishingProgress {
-	[self setContentWithUsername:username andTitle:title andCoverImage:coverImage andDateCreated: nil
+						andProgressObject: (NSProgress*) publishingProgress {
+	[self setContentWithUsername:username andTitle:title andDateCreated: nil
 					 andNumLikes: [NSNumber numberWithLongLong:0] likedByCurrentUser:NO];
     self.isPlaceholderWhilePublishing = YES;
 	self.publishingProgress = publishingProgress;

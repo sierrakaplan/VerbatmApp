@@ -60,7 +60,7 @@
 #define FEED_CELL_ID @"feed_cell_id"
 #define FEED_CELL_ID_PUBLISHING  @"feed_cell_id_publishing"
 
-#define NUM_POVS_IN_SECTION 6
+#define NUM_POVS_IN_SECTION 10
 #define RELOAD_THRESHOLD (STORY_CELL_HEIGHT*2 + 10)
 
 @end
@@ -176,7 +176,7 @@
 		}
 		// check if user likes this story
 		BOOL currentUserLikesStory = [[UserManager sharedInstance] currentUserLikesStory:povInfo];
-		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title andCoverImage: povInfo.coverPhoto
+		[cell setContentWithUsername:povInfo.userName andTitle: povInfo.title
 					  andDateCreated:povInfo.datePublished andNumLikes:povInfo.numUpVotes
 				  likedByCurrentUser:currentUserLikesStory];
 		[cell setCellBackgroundColor: self.cellBackgroundColor];
@@ -215,7 +215,7 @@
 //Called on it by parent view controller to let it know that a user
 // has published a POV and to show the loading animation until the POV
 // has actually published
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title andCoverPic: (UIImage*) coverPic
+-(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
 					andProgressObject: (NSProgress*) publishingProgress {
     if(self.povPublishing){
         //there is another one being published so we will exit for now
@@ -224,7 +224,7 @@
 
     self.povPublishing = YES;
 	self.povPublishingPlaceholderCell = [[FeedTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:FEED_CELL_ID_PUBLISHING];
-	[self.povPublishingPlaceholderCell setPublishingContentWithUsername:userName andTitle: title andCoverImage:coverPic andProgressObject:publishingProgress];
+	[self.povPublishingPlaceholderCell setPublishingContentWithUsername:userName andTitle: title andProgressObject:publishingProgress];
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.povListView beginUpdates];
     [self.povListView insertRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationTop];

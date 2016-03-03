@@ -22,11 +22,6 @@ public class POVInfo implements Comparable<POVInfo> {
     private String title;
 
     /**
-     * The url of the cover picture in the blobstore
-     */
-    private String coverPicUrl;
-
-    /**
      * Date the POV was published
      */
     private Date datePublished;
@@ -53,7 +48,6 @@ public class POVInfo implements Comparable<POVInfo> {
     public POVInfo(Entity entity) {
         this.id = entity.getKey().getId();
         this.title = (String) entity.getProperty("title");
-        this.coverPicUrl = (String) entity.getProperty("coverPicUrl");
         this.datePublished = (Date) entity.getProperty("datePublished");
         this.numUpVotes = (Long) entity.getProperty("numUpVotes");
         this.creatorUserId = (Long) entity.getProperty("creatorUserId");
@@ -73,14 +67,6 @@ public class POVInfo implements Comparable<POVInfo> {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getCoverPicUrl() {
-        return coverPicUrl;
-    }
-
-    public void setCoverPicUrl(String coverPicUrl) {
-        this.coverPicUrl = coverPicUrl;
     }
 
     public Date getDatePublished() {

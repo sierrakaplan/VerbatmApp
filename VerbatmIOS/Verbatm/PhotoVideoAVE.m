@@ -7,87 +7,76 @@
 //  Copyright (c) 2014 IainAndLucio. All rights reserved.
 //
 
-#import "PhotoVideoAVE.h"
-#import "VideoAVE.h"
-#import "Notifications.h"
+#import "CollectionPinchView.h"
 #import "Durations.h"
-#import "Styles.h"
-#import "BaseArticleViewingExperience.h"
-#import "PhotoAVE.h"
+#import "ImagePinchView.h"
+#import "VideoPinchView.h"
 
-@interface PhotoVideoAVE() <UIScrollViewDelegate>
+#import "Notifications.h"
+
+#import "PhotoAVE.h"
+#import "PhotoVideoAVE.h"
+
+#import "Styles.h"
+#import "VideoAVE.h"
+
+@interface PhotoVideoAVE() <UIScrollViewDelegate, PhotoAVETextEntryDelegate>
 
 @property (strong, nonatomic) PhotoAVE* photosView;
+@property (nonatomic) CGRect videoAveFrame;
+@property (nonatomic) CGRect photoAveFrame;
+
+#pragma mark - In Preview Mode -
+@property (strong, nonatomic) CollectionPinchView* pinchView;
 
 @end
+
 @implementation PhotoVideoAVE
 
--(id)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos
-{
+-(instancetype)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos {
     self = [super initWithFrame:frame];
-    if(self)
-    {
-		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
-        [self setSubViewsWithPhotos: photos andVideos: videos];
-        //make sure the video is on repeat
-        [self.videoView repeatVideoOnEnd:YES];
+    if(self) {
+		self.inPreviewMode = NO;
+		[self initialFormatting];
+
+		self.photosView = [[PhotoAVE alloc] initWithFrame:self.photoAveFrame andPhotoArray:photos];
+		self.photosView.isPhotoVideoSubview = YES;
+		self.photosView.textEntryDelegate = self;
+		self.videoView = [[VideoAVE alloc]initWithFrame:self.videoAveFrame andVideoArray:videos];
+		[self addSubview:self.videoView];
+		[self addSubview:self.photosView];
     }
     return self;
 }
 
-//sets the frames for the video view and the photo scrollview
--(void) setSubViewsWithPhotos: (NSArray*) photos andVideos: (NSArray*) videos {
-	float videoViewHeight = ((self.frame.size.width*3)/4);
-	float photosViewHeight = (self.frame.size.height - videoViewHeight);
+-(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView inPreviewMode: (BOOL) previewMode {
+	self = [super initWithFrame:frame];
+	if (self) {
+		self.inPreviewMode = previewMode;
+		self.pinchView = pinchView;
+		[self initialFormatting];
 
-    CGRect videoViewFrame = CGRectMake(0, 0, self.frame.size.width, videoViewHeight);
-    CGRect photoListFrame = CGRectMake(0, videoViewHeight, self.frame.size.width, photosViewHeight);
-	self.photosView = [[PhotoAVE alloc] initWithFrame: photoListFrame andPhotoArray: photos  isSubViewOfPhotoVideoAve:YES];
-	self.videoView = [[VideoAVE alloc] initWithFrame:videoViewFrame andVideoArray: videos];
-
-	[self addSubview:self.videoView];
-	[self addSubview:self.photosView];
-
-	[self addTapGestureToPhotoView: self.photosView];
-	[self addTapGestureToVideoView: self.videoView];
-}
-
-
--(void) addTapGestureToPhotoView:(UIView *)view
-{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoElementTapped:)];
-    tap.numberOfTapsRequired =1;
-    [view addGestureRecognizer:tap];
-    if(self.photosView)[tap requireGestureRecognizerToFail:self.photosView.photoAveTapGesture];
-}
--(void) addTapGestureToVideoView:(UIView *)view
-{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(videoElementTapped:)];
-    tap.numberOfTapsRequired =1;
-    [view addGestureRecognizer:tap];
-    if(self.photosView)[tap requireGestureRecognizerToFail:self.photosView.photoAveTapGesture];
-}
-
--(void) videoElementTapped:(UITapGestureRecognizer *) gesture {
-	UIView * view = gesture.view;
-	BaseArticleViewingExperience* superview = (BaseArticleViewingExperience*)self.superview;
-	if(superview.mainViewIsFullScreen) {
-		[superview removeMainView];
-	} else {
-		[superview setViewAsMainView:view];
+		self.photosView = [[PhotoAVE alloc] initWithFrame:self.photoAveFrame andPinchView:pinchView inPreviewMode: previewMode];
+		self.photosView.isPhotoVideoSubview = YES;
+		self.photosView.textEntryDelegate = self;
+		self.videoView = [[VideoAVE alloc]initWithFrame:self.videoAveFrame andPinchView:pinchView inPreviewMode: previewMode];
+		[self addSubview:self.videoView];
+		[self addSubview:self.photosView];
 	}
+	return self;
 }
 
--(void) photoElementTapped:(UITapGestureRecognizer *) gesture {
-    UIView * view = gesture.view;
-    BaseArticleViewingExperience* superview = (BaseArticleViewingExperience*)self.superview;
-    if(superview.mainViewIsFullScreen) {
-        [superview removeMainView];
-    } else {
-        [superview setViewAsMainView:view];
-    }
-}
+-(void) initialFormatting {
+	[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+	//make sure the video is on repeat
+	[self.videoView.videoPlayer repeatVideoOnEnd:YES];
 
+	float videoAveHeight = ((self.frame.size.width*3)/4);
+	float photoAveHeight = (self.frame.size.height - videoAveHeight);
+
+	self.videoAveFrame = CGRectMake(0, 0, self.frame.size.width, videoAveHeight);
+	self.photoAveFrame = CGRectMake(0, videoAveHeight, self.frame.size.width, photoAveHeight);
+}
 
 -(void) showAndRemoveCircle {
     if(self.povScrollView){
@@ -96,32 +85,44 @@
     [self.photosView showAndRemoveCircle];
 }
 
+#pragma mark - PhotoAveTextEntry Delegate methods -
 
-//image scroll view is on new page
--(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-//	NSInteger newPageIndex = scrollView.contentOffset.x/scrollView.frame.size.width;
+-(void) editContentViewTextIsEditing{
+    [self movePhotoAveUp:YES];
 }
+
+-(void) editContentViewTextDoneEditing{
+    [self movePhotoAveUp:NO];
+}
+
+-(void)movePhotoAveUp:(BOOL) moveUp{
+    if(moveUp){
+        [UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
+            [self bringSubviewToFront:self.photosView];
+            self.photosView.frame = CGRectMake(0, 0, self.photosView.frame.size.width, self.photosView.frame.size.height);
+        }];
+    } else {
+        [UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
+            self.photosView.frame = CGRectMake(0, self.videoView.frame.size.height, self.photosView.frame.size.width, self.photosView.frame.size.height);
+        }];
+    }
+}
+
+#pragma mark - Overriding offscreen/onscreen methods -
 
 -(void)offScreen {
     [self.videoView offScreen];
-
+    [self.photosView offScreen];
 }
 
 -(void)onScreen {
     [self.videoView onScreen];
+	[self.photosView onScreen];
 }
 
-/*Mute the video*/
--(void)mutePlayer {
-	[self.videoView muteVideo];
-}
-
-/*Enable's the sound on the video*/
--(void)enableSound{
-    [self.videoView unmuteVideo];
-}
--(void)almostOnScreen{
+-(void)almostOnScreen {
     [self.videoView almostOnScreen];
+	[self.photosView almostOnScreen];
 }
 
 

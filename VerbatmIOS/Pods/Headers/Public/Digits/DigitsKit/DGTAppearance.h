@@ -1,1 +1,1 @@
-../../../../Digits/DigitsKit.framework/Headers/DGTAppearance.h
+../../../../Digits/iOS/DigitsKit.framework/Headers/DGTAppearance.h

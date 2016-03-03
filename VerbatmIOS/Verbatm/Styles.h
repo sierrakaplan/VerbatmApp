@@ -10,22 +10,60 @@
 #define Styles_h
 
 
-#define DEFAULT_FONT @"HelveticaNeue-Italic"
-#define BUTTON_FONT @"HelveticaNeue"
-#define PLACEHOLDER_FONT @"HelveticaNeue-UltraLightItalic"
-#define TITLE_TEXT_FONT @"HelveticaNeue"
+#define VERBATM_GOLD_COLOR [UIColor yellowColor]
+
+
+#define HEADER_TEXT_FONT @"Quicksand-Regular"
+#define HEADER_TEXT_SIZE 20.f
+
+#define TAB_BAR_SELECTED_FONT @"Quicksand-Bold"
+#define TAB_BAR_CHANNEL_NAME_FONT @"Quicksand-Bold"
+#define TAB_BAR_FOLLOWERS_FONT @"Quicksand-Regular"
+#define TAB_BAR_FOLLOWER_NUMBER_FONT @"Quicksand-Bold"
+
+#define TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT @"Quicksand-Bold"
+#define TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT_SIZE 17.f
+
+#define USER_CHANNEL_LIST_FONT @"Quicksand-Regular"
+#define USER_CHANNEL_LIST_FONT_SIZE 20.f
+
+//Font of the headers of the user_channel list
+#define INFO_LIST_HEADER_FONT @"Quicksand-Bold"  
+#define INFO_LIST_HEADER_FONT_SIZE 20.f
+
+
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_PLACEHOLDER_FONT @"Quicksand-LightItalic"
+
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_FONT @"Quicksand-Bold"
+
+
+#define CHANNEL_CREATION_BUTTON_FONT @"Quicksand-Regular"
+
+#define TAB_BAR_FONT_SIZE 17.f
+#define FOLLOWERS_TEXT_FONT_SIZE 15.f
+
+
+#define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
+#define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
+
+
+#define CREATE_CHANNEL_BUTTON_FONT_SIZE 19.f
+
+
+#define TAB_BAR_ALPHA 0.7
+
+#define DEFAULT_FONT @"Quicksand-Regular"
+#define BUTTON_FONT @"Quicksand-Regular"
+#define PLACEHOLDER_FONT @"Quicksand-BoldItalic"
+#define TITLE_TEXT_FONT @"Quicksand-Bold"
 
 #define SWITCH_LABEL_FONT @"Futura-Medium"
 
 #pragma mark Navigation Bars
 
-#define NAVIGATION_BAR_TEXT_COLOR colorWithRed:(33.f/255.f) green:(169.f/255.f) blue:(255.f/255.f) alpha:1
-#define NAVIGATION_BAR_BUTTON_FONT @"HelveticaNeue-Medium"
-#define NAVIGATION_BAR_BUTTON_FONT_SIZE 14.f
-
-#define TAB_BAR_COLOR whiteColor
-#define SELECTED_TAB_BAR_COLOR grayColor
-#define ADK_TAB_COLOR blackColor
+#define NAVIGATION_BAR_TEXT_COLOR whiteColor
+#define NAVIGATION_BAR_BUTTON_FONT DEFAULT_FONT
+#define NAVIGATION_BAR_BUTTON_FONT_SIZE 15.f
 
 #define FILTER_LEVEL_BLUR 30
 #define BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
@@ -38,10 +76,11 @@
 
 
 #pragma mark - Feed -
+
+#pragma mark NOT IN USE
 #define FEED_BACKGROUND_COLOR 0.918
 #define STORY_BACKGROUND_COLOR colorWithRed: 0.8 green:0.8 blue:0.8 alpha:1
 #define SWITCH_CATEGORY_BAR_FONT_SIZE 27.f
-
 #define FEED_TITLE_TEXT_COLOR blackColor
 #define FEED_TITLE_FONT @"HelveticaNeue-Italic"
 #define FEED_TITLE_FONT_SIZE 20
@@ -52,12 +91,11 @@
 
 #pragma mark - ADK -
 
-#define TITLE_TEXT_COLOR whiteColor
-#define TITLE_TEXT_SIZE 20.f
+#define ADK_NAV_BAR_COLOR CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED //[UIColor colorWithWhite:1.0 alpha:1]
+#define SETTINGS_NAV_BAR_COLOR [UIColor lightGrayColor]
 
-#define ADD_COVER_PIC_TEXT_SIZE 15.f
-#define ADD_COVER_PIC_FONT @"HelveticaNeue-Light"
-#define COVER_PIC_CIRCLE_COLOR whiteColor
+#define TITLE_TEXT_COLOR blackColor
+#define TITLE_TEXT_SIZE 20.f
 
 #pragma mark PinchViews
 
@@ -94,10 +132,11 @@
 
 #pragma mark - AVES -
 
-#define AVE_BACKGROUND_COLOR whiteColor
+#define AVE_BACKGROUND_COLOR blackColor
 
 #pragma mark Text
 
+#define TEXT_AVE_FONT DEFAULT_FONT
 #define TEXT_AVE_FONT_SIZE 20
 #define TEXT_AVE_COLOR blackColor
 
@@ -113,7 +152,26 @@
 #define CIRCLE_OVER_IMAGES_ALPHA 0.4
 #define POINTS_ON_CIRCLE_ALPHA 0.5
 
+#define TAB_DIVIDER_COLOR clearColor
 
+#define TAB_BUTTON_BACKGROUND_IMAGE @"dark_fade_box"
+
+#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED [UIColor colorWithWhite:0.f alpha:0.5]
+#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED [UIColor colorWithWhite:1.f alpha:0.8]
+
+
+#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor clearColor]//[UIColor colorWithWhite:0.f alpha:0.3]
+
+
+#define SETTINGS_ICON_NAME @"settingsIcon"
+#define BACK_BUTTON_ICON_NAME @"back_arrow"
+#define BAR_CONTENT_COLOR yellowColor
+#define FOLLOW_ICON_IMAGE_SELECTED  @"follow_user_image_selected"
+#define FOLLOW_ICON_IMAGE_UNSELECTED  @"follow_user_image_unselected"
+
+
+
+#define CHANNEL_LIST_CELL_SEPERATOR_COLOR [UIColor grayColor]
 
 
 #endif /* Styles_h */

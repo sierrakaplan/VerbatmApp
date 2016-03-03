@@ -9,11 +9,21 @@
 #ifndef Icons_h
 #define Icons_h
 
+#define DARK_FADE_BACKGROUND @"dark_fade_box"
+#define BLUR_MASK @"blur_background"
+#define TEXT_BACKGROUND @"text_background"
+#define BACKGROUND_IMAGE @"d3"
+
 #define BACK_ARROW_LEFT @"back_arrow_left"
 #define BACK_ARROW_RIGHT @"back_arrow_right"
 
+#pragma mark - Profile -
+
+#define SETTINGS_BUTTON_ICON @"settings_gear"
+
 #pragma mark - Feed -
 
+#define VERBATM_LOGO @"verbatm_logo"
 #define NO_NETWORK_IMAGE @"no_network_image"
 
 #pragma mark Story Cell
@@ -23,7 +33,7 @@
 
 #pragma mark Bottom Nav
 
-#define ADK_NAV_ICON @"plus_sign_black"
+#define ADK_NAV_ICON @"simple_plus_icon"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
 
@@ -34,10 +44,13 @@
 
 #pragma mark - ADK -
 
-#define TITLE_BORDER @"dashed_border_with_line"
 #define TITLE_NOTIFICATION_ANIMATION @"title_notification"
-#define REPLACE_COVER_PHOTO_ICON @"replace_photo"
 #define DELETE_ICON @"trash_can"
+
+//TODO: change this
+#define EXIT_BUTTON_IMAGE DONE_CHECKMARK
+#define CHECKBOX_UNSELECTED @""
+#define CHECKBOX_SELECTED @""
 
 #define INFO_ICON @"info_icon"
 
@@ -63,7 +76,7 @@
 #pragma mark Media Tile
 
 #define CAMERA_BUTTON_ICON @"camera"
-#define GALLERY_BUTTON_ICON @"gallery"
+#define GALLERY_BUTTON_ICON @"galleryIcon"
 #define PLUS_ICON @"plus_sign_black"
 
 #pragma mark Pull Bar (NOT IN USE)
@@ -78,16 +91,28 @@
 
 #pragma mark - AVES -
 
-#define LIKE_ICON @"heart_unfilled"
-#define LIKE_PRESSED_ICON @"heart_filled"
+#define LIKE_ICON_UNPRESSED @"heart_unfilled"
+#define LIKE_ICON_PRESSED @"heart_filled"
 #define PULLDOWN_TEXT_ICON @"pulldown_icon"
-#define CREATE_TEXT_ICON @"create_text"
-
+#define CREATE_TEXT_ICON @"edit_text_button"
+#define SHARE_ICON @"shareIcon"
 #pragma mark Video AVE
 
 #define VIDEO_LOADING_ICON @"video_loading_icon"
 #define UNMUTED_ICON @"sound_unmuted"
 #define MUTED_ICON @"sound_muted"
 
+#pragma mark Edit Content View
+
+#define CREATE_REARRANGE_ICON @"rearrange_icon"
+
+#define SWIPE_UP_DOWN_INSTRUCTION @"swipeUp_Instructions_black"
+#define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"pinch_instruction_black"
+#define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions_black"
+
+
+#define SEARCH_TAB_BAR_ICON @"search_icon"
+
+#define DOWN_ARROR_ICON @"down_arrow_white"
 
 #endif /* Icons_h */
