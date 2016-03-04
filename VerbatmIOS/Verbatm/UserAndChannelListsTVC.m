@@ -125,18 +125,13 @@
 -(void) presentUserShareInformationForPost:(id) post {
     self.postInformationToPresent = post;
     self.isLikeInformation = NO;
-    //load a list of users that have shared this post then reload the list
+    //todo: load a list of users that have shared this post then reload the list
 }
 
 
 //show which users are being followed by userId
 -(void)presentWhoIsFollowedBy:(id)userId {
-    
-    
-    
-    //TO-DO
-    //Start to download a list of users who follow this particular user then reload the table
-    
+	//todo:
 }
 
 //presents every channel in verbatm
@@ -146,14 +141,12 @@
     [Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^
      (NSMutableArray * channels) {
          dispatch_async(dispatch_get_main_queue(), ^{
-             if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+             if(self.channelsToDisplay.count) [self.channelsToDisplay removeAllObjects];
              [self.channelsToDisplay addObjectsFromArray:channels];
              [self.tableView reloadData];
          });
      }];
 }
-
-
 
 //Gives us the channels to display and if we should show the users that follow them then
 -(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {
@@ -212,18 +205,13 @@
     return titleLabel;
 }
 
-
-
-
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-
     return (self.channelsToDisplay.count + self.presentAllChannels);
 }
 
@@ -243,73 +231,25 @@
         }else if (indexPath.row > 0){
             NSInteger objectIndex = (indexPath.row -1);
             Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
-			//todo:
-//            NSString *userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
-            [cell setChannelName:channel.name andUserName:@"Unknown"];
+            NSString *userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
+            [cell setChannelName:channel.name andUserName: userName];
         }
     }else{
         Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
-		//todo:
-//        NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
-        [cell setChannelName:channel.name andUserName:@"Unknown"];
+        NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
+        [cell setChannelName:channel.name andUserName: userName];
     }
     
     return cell;
 }
 
 
-
-#pragma mark -lazy instantiation-
+#pragma mark - Lazy Instantiation -
 
 
 -(NSMutableArray *) channelsToDisplay{
     if(!_channelsToDisplay)_channelsToDisplay = [[NSMutableArray alloc] init];
     return _channelsToDisplay;
 }
-
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 @end

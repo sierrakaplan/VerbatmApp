@@ -185,11 +185,10 @@
 }
 
 #pragma mark -ViewDelegate-
-- (BOOL)collectionView:(UICollectionView *)collectionView
-shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-	return NO;//POVVs are not selectable
+- (BOOL)collectionView: (UICollectionView *)collectionView
+	shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+	return NO;
 }
-
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -237,7 +236,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 		[pov shiftLikeShareBarDown:!showing];
 	}
 }
-
 
 #pragma mark -Scrollview delegate-
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {

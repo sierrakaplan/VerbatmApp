@@ -72,6 +72,7 @@
                                                  name:NOTIFICATION_USER_LOGIN_SUCCEEDED
                                                object:nil];
 }
+
 -(void) loginSucceeded: (NSNotification*) notification {
     [self.threadNavScrollView removeFromSuperview];
     self.threadNavScrollView = nil;
