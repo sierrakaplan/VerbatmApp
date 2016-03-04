@@ -69,12 +69,11 @@
 -(instancetype) initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if(self) {
-		self.backgroundColor = [UIColor AVE_BACKGROUND_COLOR];
+		self.backgroundColor = [UIColor PAGE_BACKGROUND_COLOR];
 		[self registerForKeyboardNotifications];
 	}
 	return self;
 }
-
 
 -(void)registerForKeyboardNotifications{
 	//Tune in to get notifications of keyboard behavior

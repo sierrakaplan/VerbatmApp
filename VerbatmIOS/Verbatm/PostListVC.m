@@ -29,8 +29,8 @@
 @property (nonatomic, strong) UILabel * noContentLabel;
 @property (nonatomic) PostCollectionViewCell * lastVisibleCell;
 
-#define POV_CELL_ID @"povCellId"
-#define NUM_POVS_TO_PREPARE_EARLY 2
+#define POST_CELL_ID @"povCellId"
+#define NUM_POSTS_TO_PREPARE_EARLY 2
 
 @end
 
@@ -48,7 +48,7 @@
 
 //register our custom cell class
 -(void)registerClassForCustomCells{
-	[self.collectionView registerClass:[PostCollectionViewCell class] forCellWithReuseIdentifier:POV_CELL_ID];
+	[self.collectionView registerClass:[PostCollectionViewCell class] forCellWithReuseIdentifier:POST_CELL_ID];
 }
 
 //set the data source and delegate of the collection view
@@ -66,8 +66,8 @@
 		return;//no need to make another one
 	}
 
-	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
-																	NO_POVS_LABEL_WIDTH, self.view.frame.size.height)];
+	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POSTS_LABEL_WIDTH/2.f, 0.f,
+																	NO_POSTS_LABEL_WIDTH, self.view.frame.size.height)];
 	self.noContentLabel.text = @"There are no posts to present :(";
 	self.noContentLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
 	self.noContentLabel.textColor = [UIColor whiteColor];
@@ -194,7 +194,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView
 				  cellForItemAtIndexPath:(NSIndexPath *)indexPath {
 
-	PostCollectionViewCell * nextCellToBePresented = (PostCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:POV_CELL_ID forIndexPath:indexPath];
+	PostCollectionViewCell * nextCellToBePresented = (PostCollectionViewCell *) [collectionView dequeueReusableCellWithReuseIdentifier:POST_CELL_ID forIndexPath:indexPath];
 
 	if(indexPath.row < self.presentedPostList.count){
 
@@ -250,7 +250,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
 
 -(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
-	for(NSInteger i = visibleIndex +1; (i < self.presentedPostList.count  && 1 < visibleIndex + (NUM_POVS_TO_PREPARE_EARLY +1)); i++){
+	for(NSInteger i = visibleIndex +1; (i < self.presentedPostList.count
+										&& 1 < visibleIndex + (NUM_POSTS_TO_PREPARE_EARLY + 1)); i++){
 		PostView * view = self.presentedPostList[i];
 		[view presentMediaContent];
 	}

@@ -49,28 +49,28 @@
 	return results;
 }
 
--(PageViewingExperience*) getPageViewFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame inPreviewMode: (BOOL) inPreviewMode {
+-(PageViewingExperience *) getPageViewFromPinchView: (PinchView*) pinchView withFrame: (CGRect) frame inPreviewMode: (BOOL) inPreviewMode {
 	if (pinchView.containsImage && pinchView.containsVideo) {
-		PhotoVideoPVE *photoVideoAVE = [[PhotoVideoPVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView inPreviewMode:inPreviewMode];
-		return photoVideoAVE;
+		PhotoVideoPVE *photoVideoPageView = [[PhotoVideoPVE alloc] initWithFrame:frame andPinchView:(CollectionPinchView *)pinchView inPreviewMode:inPreviewMode];
+		return photoVideoPageView;
 
 	} else if (pinchView.containsImage) {
-		PhotoPVE * photoAve = [[PhotoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
-		photoAve.isPhotoVideoSubview = NO;
-		return photoAve;
+		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
+		photoPageView.isPhotoVideoSubview = NO;
+		return photoPageView;
 
 	} else {
-		VideoPVE *videoAve = [[VideoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
-		return videoAve;
+		VideoPVE *videoPageView = [[VideoPVE alloc] initWithFrame:frame andPinchView:pinchView inPreviewMode:inPreviewMode];
+		return videoPageView;
 	}
 }
 
-+(PageViewingExperience *)getPageFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame {
++(PageViewingExperience *)getPageViewFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame {
 	PageTypes type = [pageMedia[0] intValue];//convert nsnumber back to our type
 	if(type == PageTypePhoto) {
-		PhotoPVE *photoAve = [[PhotoPVE alloc] initWithFrame:frame andPhotoArray:pageMedia[1]];
-		photoAve.isPhotoVideoSubview = NO;
-		return photoAve;
+		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPhotoArray:pageMedia[1]];
+		photoPageView.isPhotoVideoSubview = NO;
+		return photoPageView;
 
 	}else if (type == PageTypeVideo){
 		return [[VideoPVE alloc] initWithFrame:frame andVideoWithTextArray:pageMedia[1]];
@@ -87,21 +87,20 @@
 
 -(void) getPageViewFromPage: (PFObject *)page withFrame: (CGRect) frame andCompletionBlock:(void(^)(NSArray *))block {
 
-	PageTypes type = [((NSNumber *)[page valueForKey:PAGE_AVE_TYPE]) intValue];
+	PageTypes type = [((NSNumber *)[page valueForKey:PAGE_VIEW_TYPE]) intValue];
 
-	if(type == PageTypePhoto) {
+	if (type == PageTypePhoto) {
 		[self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
 
 			block(@[[NSNumber numberWithInt:type], imagesAndText]);
 		}];
-	}else if (type == PageTypeVideo){
+	} else if (type == PageTypeVideo){
 		[self getVideosFromPage:page withCompletionBlock:^(NSMutableArray * videoTextObjects) {
 
 			block(@[[NSNumber numberWithInt:type], videoTextObjects]);
 		}];
 
-
-	}else if( type == PageTypePhotoVideo){
+	} else if( type == PageTypePhotoVideo){
 
 		[self getVideosFromPage:page withCompletionBlock:^(NSMutableArray * videoTextObjects) {
 			[self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
@@ -109,14 +108,10 @@
 
 			}];
 		}];
-
 	}
-
 }
 
 -(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
-
-
 
 	[Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photoObjects) {
 
@@ -150,8 +145,6 @@
 	}];
 }
 
-
-
 -(void)getImagefromUrl:(NSMutableArray *) thumbnailUrls withCompletionBlock:(void(^)(NSArray *)) block {
 
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
@@ -165,7 +158,6 @@
 	});
 
 }
-
 
 -(void) getVideosFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
 

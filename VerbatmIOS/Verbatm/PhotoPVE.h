@@ -1,10 +1,11 @@
 //
-//  PhotoAVE.h
+//  PhotoPVEDelegate.h
 //  Verbatm
 //
 //  Created by Sierra Kaplan-Nelson on 7/23/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
+//	Page View for photos
 
 #import <UIKit/UIKit.h>
 #import "PageViewingExperience.h"

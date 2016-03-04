@@ -89,14 +89,15 @@
 #define GM_IMAGE_PICKER_VIDEO @"GMImagePickerVideo"
 #define CT_ASSETS_PICKER_CHECKED @"CTAssetsPickerChecked"
 
-#pragma mark - AVES -
+#pragma mark - Post Views -
 
 #define LIKE_ICON_UNPRESSED @"heart_unfilled"
 #define LIKE_ICON_PRESSED @"heart_filled"
 #define PULLDOWN_TEXT_ICON @"pulldown_icon"
 #define CREATE_TEXT_ICON @"edit_text_button"
 #define SHARE_ICON @"shareIcon"
-#pragma mark Video AVE
+
+#pragma mark Video Page View
 
 #define VIDEO_LOADING_ICON @"video_loading_icon"
 #define UNMUTED_ICON @"sound_unmuted"

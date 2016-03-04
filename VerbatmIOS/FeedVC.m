@@ -18,11 +18,11 @@
 #import "PostListVC.h"
 #import <Parse/PFUser.h>
 
-#import "SharePOVView.h"
+#import "SharePostView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <UIScrollViewDelegate, SharePOVViewDelegate>
+@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate>
 
 @property (nonatomic) BOOL contentCoveringScreen;
 
@@ -31,7 +31,7 @@
 
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
 
-@property (nonatomic) SharePOVView * sharePOVView;
+@property (nonatomic) SharePostView * sharePostView;
 
 #define VERBATM_LOGO_WIDTH 150.f
 
@@ -121,48 +121,49 @@
 }
 
 -(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
-    if(self.sharePOVView){
-        [self.sharePOVView removeFromSuperview];
-        self.sharePOVView = nil;
+    if(self.sharePostView){
+        [self.sharePostView removeFromSuperview];
+        self.sharePostView = nil;
     }
     
     CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
     CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
-    self.sharePOVView.delegate = self;
-    [self.view addSubview:self.sharePOVView];
-    [self.view bringSubviewToFront:self.sharePOVView];
+    self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+    self.sharePostView.delegate = self;
+    [self.view addSubview:self.sharePostView];
+    [self.view bringSubviewToFront:self.sharePostView];
     [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
         if(self.contentCoveringScreen) {
             [self removeContentFromScreen];
         }
-        self.sharePOVView.frame = onScreenFrame;
+        self.sharePostView.frame = onScreenFrame;
     }];
 }
 
--(void)cancelButtonSelected{
-    [self removeSharePOVView];
-}
--(void)postPOVToChannel:(Channel *) channel{
-    [self removeSharePOVView];
+-(void) cancelButtonSelected{
+    [self removeSharePostView];
 }
 
--(void)removeSharePOVView{
-    if(self.sharePOVView){
+-(void) postPostToChannel:(Channel *) channel{
+    [self removeSharePostView];
+}
+
+-(void)removeSharePostView{
+    if(self.sharePostView){
         CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
         
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-            self.sharePOVView.frame = offScreenFrame;
+            self.sharePostView.frame = offScreenFrame;
         }completion:^(BOOL finished) {
             if(finished){
-                [self.sharePOVView removeFromSuperview];
-                self.sharePOVView = nil;
+                [self.sharePostView removeFromSuperview];
+                self.sharePostView = nil;
             }
         }];
     }
 }
 
-#pragma mark - Share POV Delegate -
+#pragma mark - Share Post Delegate -
 
 -(void) sharePostWithComment: (NSString *)comment {
 	//todo:

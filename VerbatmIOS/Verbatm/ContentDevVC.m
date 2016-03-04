@@ -8,10 +8,6 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
-#import "Analytics.h"
-
-#import "Channel.h"
-#import "Channel_BackendObject.h"
 #import "ContentDevVC.h"
 #import "CustomNavigationBar.h"
 #import "CollectionPinchView.h"
@@ -21,26 +17,18 @@
 
 #import "EditContentVC.h"
 
-#import "GTLVerbatmAppVerbatmUser.h"
 #import "GMImagePickerController.h"
 
 #import "ImagePinchView.h"
 #import "Icons.h"
 
-#import <QuartzCore/QuartzCore.h>
-
 #import "PinchView.h"
-#import "PostPublisher.h"
 #import "PreviewDisplayView.h"
-#import "Post_BackendObject.h"
+#import "PostInProgress.h"
 #import "PublishingProgressManager.h"
 
 #import "MediaDevVC.h"
 #import "MediaSelectTile.h"
-
-#import "Notifications.h"
-
-#import "OpenCollectionView.h"
 
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -48,14 +36,7 @@
 #import "Styles.h"
 
 #import "UIImage+ImageEffectsAndTransforms.h"
-#import "UserSetupParameters.h"
-#import "UtilityFunctions.h"
-#import "UserManager.h"
-#import "PostInProgress.h"
-#import "UIView+Effects.h"
-
 #import "VerbatmCameraView.h"
-#import "VerbatmScrollView.h"
 #import "VideoPinchView.h"
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
@@ -201,7 +182,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
          self.userChannels = channels;
          [self formatTitle];
          [self createBaseSelector];
-         [self loadPOVFromUserDefaults];
+         [self loadPostFromUserDefaults];
     }];
 }
 
@@ -442,7 +423,7 @@ rowHeightForComponent:(NSInteger)component{
 }
 
 // Loads pinch views from user defaults
--(void) loadPOVFromUserDefaults {
+-(void) loadPostFromUserDefaults {
 
 	NSArray* savedPinchViews = [[PostInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
@@ -1647,7 +1628,7 @@ rowHeightForComponent:(NSInteger)component{
     NSMutableArray *pinchViews = [self getPinchViews];
 
     [self.view bringSubviewToFront:self.previewDisplayView];
-    [self.previewDisplayView displayPreviewPOVWithTitle:@"" andPinchViews:pinchViews withStartIndex:index];
+    [self.previewDisplayView displayPreviewPostWithTitle:@"" andPinchViews:pinchViews withStartIndex:index];
 }
 
 #pragma mark - Edit Content View Navigation -
@@ -1682,7 +1663,7 @@ rowHeightForComponent:(NSInteger)component{
     [self clearBaseSelcetor];
 	[self createBaseSelector];
     [self initializeVariables];
-    [[PostInProgress sharedInstance] clearPOVInProgress];//now that you have published then we should get rid of all cashed info
+    [[PostInProgress sharedInstance] clearPostInProgress];//now that you have published then we should get rid of all cashed info
 }
 
 -(void)clearBaseSelcetor{

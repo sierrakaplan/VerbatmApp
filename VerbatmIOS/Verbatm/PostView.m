@@ -107,27 +107,26 @@
 }
 
 
-
 #pragma mark - Display page -
 
 -(void) scrollToPageAtIndex:(NSInteger) pageIndex{
     if(pageIndex < self.pageViews.count && pageIndex >= 0){
         self.mainScrollView.contentOffset = CGPointMake(0, self.mainScrollView.frame.size.height * (pageIndex));
-        [self displayMediaOnCurrentAVE];
+        [self displayMediaOnCurrentPage];
     }
 }
 
--(void) renderNextPage: (PageViewingExperience*)ave withIndex: (NSNumber*) pageIndex {
-    [self setDelegateOnPhotoAVE: ave];
+-(void) renderNextPage: (PageViewingExperience*)pageView withIndex: (NSNumber*) pageIndex {
+    [self setDelegateOnPhotoPage: pageView];
     CGRect frame = CGRectMake(0, [pageIndex integerValue] * self.mainScrollView.frame.size.height , self.mainScrollView.frame.size.width, self.mainScrollView.frame.size.height);
-    ave.frame = frame;
+    pageView.frame = frame;
     
-    [self.mainScrollView addSubview:ave];
+	[self.mainScrollView addSubview:pageView];
 
-    [self.pageViews setObject:ave forKey:pageIndex];
+    [self.pageViews setObject:pageView forKey:pageIndex];
 }
 
--(void) renderPostFromPages: (NSMutableArray *) pageViews {
+-(void) renderPages: (NSMutableArray *) pageViews {
 	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
 												 pageViews.count * self.frame.size.height);
 	self.mainScrollView.contentOffset = CGPointMake(0, 0);
@@ -136,7 +135,7 @@
 	for (int i = 0; i < pageViews.count; i++) {
 		PageViewingExperience* pageView = pageViews[i];
 		[self.pageViews setObject:pageView forKey:[NSNumber numberWithInt:i]];
-		[self setDelegateOnPhotoAVE: pageView];
+		[self setDelegateOnPhotoPage: pageView];
         [pageView offScreen];
 		pageView.frame = viewFrame;
 		[self.mainScrollView addSubview: pageView];
@@ -182,6 +181,7 @@
 
 #pragma mark - Add like button -
 
+//todo:
 //should be called by another class (since preview does not have like)
 //Sets the like button delegate and the postID since the delegate method
 //requires a post ID be passed back
@@ -210,8 +210,6 @@
     }
 }
 
-
-
 -(void) likeButtonPressed {
 	self.liked = !self.liked;
 
@@ -221,7 +219,7 @@
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     [self setPageNumberOnShareBarFromScrollView:scrollView];
-    [self displayMediaOnCurrentAVE];
+    [self displayMediaOnCurrentPage];
 }
 
 -(void) setPageNumberOnShareBarFromScrollView:(UIScrollView *) scrollview {
@@ -232,19 +230,19 @@
     [self.likeShareBar setPageNumber:pageNumber];
 }
 
-#pragma mark - Handle Display Media on AVE -
+#pragma mark - Handle Display Media on Page -
 
--(void) setDelegateOnPhotoAVE: (PageViewingExperience*) ave {
-	if ([ave isKindOfClass:[PhotoPVE class]]) {
-		((PhotoPVE *)ave).postScrollView = self.mainScrollView;
-		((PhotoPVE*) ave).delegate = self;
-	} else if ([ave isKindOfClass:[PhotoVideoPVE class]]){
-		((PhotoVideoPVE *)ave).postScrollView = self.mainScrollView;
+-(void) setDelegateOnPhotoPage: (PageViewingExperience*) pageView {
+	if ([pageView isKindOfClass:[PhotoPVE class]]) {
+		((PhotoPVE *)pageView).postScrollView = self.mainScrollView;
+		((PhotoPVE *)pageView).delegate = self;
+	} else if ([pageView isKindOfClass:[PhotoVideoPVE class]]){
+		((PhotoVideoPVE *)pageView).postScrollView = self.mainScrollView;
 	}
 }
 
 // Tells previous page it's offscreen and current page it's onscreen
--(void) displayMediaOnCurrentAVE {
+-(void) displayMediaOnCurrentPage {
 	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
 	PageViewingExperience *currentPageOnScreen = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
     
@@ -258,28 +256,22 @@
     
     CGFloat frameHeight = 120.f;
     CGFloat frameWidth = ((frameHeight * 117.f)/284.f);
-    
-    
+
     CGFloat frameOriginX = self.frame.size.width - frameWidth - 10.f;
     CGFloat frameOriginY = (self.frame.size.height/2.f) + 50.f;
     
     CGRect instructionFrame = CGRectMake(frameOriginX,frameOriginY, frameWidth,frameHeight);
-                                         
-    
-    
+
     self.swipeUpAndDownInstruction = [[UIImageView alloc] initWithImage:instructionImage];
     self.swipeUpAndDownInstruction.frame = instructionFrame;
     [self addSubview:self.swipeUpAndDownInstruction];
     [self bringSubviewToFront:self.swipeUpAndDownInstruction];
-    
-    
 }
 
+-(void)presentFilterSwipeForInstructionWithPageView:(PageViewingExperience *) currentPage {
 
--(void)presentFilterSwipeForInstructionWithAve:(PageViewingExperience *) currentAve{
-
-    BOOL isPhotoAve = [currentAve isKindOfClass:[PhotoPVE class]];
-    BOOL isVideoAve = [currentAve isKindOfClass:[PhotoVideoPVE class]];
+    BOOL isPhotoAve = [currentPage isKindOfClass:[PhotoPVE class]];
+    BOOL isVideoAve = [currentPage isKindOfClass:[PhotoVideoPVE class]];
     
     BOOL filterInstructionHasNotBeenPresented = ![[UserSetupParameters sharedInstance] isFilter_InstructionShown];
     
@@ -293,43 +285,30 @@
         
         CGFloat imageOriginX = (self.frame.size.width/2.f) - (frameWidth/2.f);
         
-        
-        if(isPhotoAve){
+        if (isPhotoAve) {
            filterInstruction.frame = CGRectMake(imageOriginX,
                                                 (self.frame.size.height/2.f) + frameHeight,
                                                 frameWidth, frameHeight);
-        }else{
+        } else {
             
           filterInstruction.frame = CGRectMake(imageOriginX,
                                           self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
-
         }
         
         [self addSubview:filterInstruction];
         [self bringSubviewToFront:filterInstruction];
-        //commented out for debugging but should not be
-        //[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
+        [[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
     }
-    
-    
-   
-    
-    
 }
 
-
-
-
-
-
--(void)logAVEDoneViewing:(PageViewingExperience*) ave {
+-(void)logPageDoneViewing:(PageViewingExperience*) ave {
     NSString * pageType = @"";
-   if ([ave isKindOfClass:[VideoPVE class]]) {
-        pageType = @"VideoAVE";
+   	if ([ave isKindOfClass:[VideoPVE class]]) {
+        pageType = @"VideoPageView";
     } else if([ave isKindOfClass:[PhotoVideoPVE class]]) {
-        pageType = @"PhotoVideoAVE";
-    }else if ([ave isKindOfClass:[PhotoPVE class] ]){
-        pageType = @"PhotoAVE";
+        pageType = @"PhotoVideoPageView";
+    } else if ([ave isKindOfClass:[PhotoPVE class] ]){
+        pageType = @"PhotoPageView";
     }
     
     [[Analytics getSharedInstance] pageEndedViewingWithIndex:self.currentPageIndex aveType:pageType];
@@ -356,14 +335,14 @@
     [UIView animateWithDuration:SCROLL_UP_ANIMATION_DURATION animations:^{
         self.mainScrollView.contentOffset = CGPointMake(0, self.frame.size.height);
 	} completion:^(BOOL finished) {
-		[self displayMediaOnCurrentAVE];
+		[self displayMediaOnCurrentPage];
 	}];
 }
 
 
 #pragma mark - Pages Downloaded -
 
--(void) renderPages:(NSArray *) pages {
+-(void) renderPostFromPages:(NSArray *) pages {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.activityIndicator startAnimating];
     });
@@ -372,7 +351,6 @@
     NSMutableArray * downloadPromises = [[NSMutableArray alloc] init];
     
     for (PFObject * parsePageObject in pages) {
-        
          AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
             [analyzer getPageViewFromPage:parsePageObject withFrame:self.bounds andCompletionBlock:^(NSArray * pageMedia) {
                 [self storeMedia:pageMedia forPageIndex:[parsePageObject valueForKey:PAGE_INDEX_KEY]];
@@ -406,7 +384,7 @@
         
         for(NSInteger key = 0; key < self.pageMedia.count; key++){
             NSArray * media = [self.pageMedia objectForKey:[NSNumber numberWithInteger:key]];
-            PageViewingExperience *pageView = [PageTypeAnalyzer getAVEFromPageMedia:media withFrame:self.bounds];
+            PageViewingExperience *pageView = [PageTypeAnalyzer getPageViewFromPageMedia:media withFrame:self.bounds];
             //add bar at the bottom with page numbers etc
             [self renderNextPage:pageView withIndex:[NSNumber numberWithInteger:key]];
             [self setApproprioateScrollViewContentSize];
@@ -492,8 +470,6 @@
 	}
 	return _pageViews;
 }
-
-
 
 -(NSMutableDictionary*) pageMedia {
     if(!_pageMedia) {

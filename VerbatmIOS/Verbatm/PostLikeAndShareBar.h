@@ -1,17 +1,14 @@
 //
-//  POVLikeAndShareBar.h
+//  PostLikeAndShareBar.h
 //  Verbatm
 //
 //  Created by Iain Usiri on 12/29/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
+//	Presents the like button and share button as well as the number of likes and shares.
+//	It also shows the page that we are on on the Post
 
 #import <UIKit/UIKit.h>
-
-/*
- Presents the like button and share button as well as the number of likes and shares.
- It also shows the page that we are on on the POV
- */
 
 @protocol PostLikeAndShareBarProtocol <NSObject>
 

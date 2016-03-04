@@ -58,8 +58,8 @@
     NSDictionary *dimensions = @{@"articleTitle": self.currentArticleTitle,
                                  @"totalTimeSpent": [[NSNumber numberWithFloat:timeSpent_mins] stringValue],
                                  @"username" : [PFUser currentUser].username};
-    // Send the dimensions to Parse for the 'POV' event
-    [PFAnalytics trackEvent:@"POV" dimensions:dimensions];
+    // Send the dimensions to Parse for the 'Post' event
+    [PFAnalytics trackEvent:@"Post" dimensions:dimensions];
 }
 
 //called in a pair
@@ -80,7 +80,7 @@
                                  @"username" : [PFUser currentUser].username,
                                  @"pageIndex" : [[NSNumber numberWithInteger:pageIndex] stringValue],
                                  @"aveType": aveType};
-    [PFAnalytics trackEvent:@"POVPageViews" dimensions:dimensions];
+    [PFAnalytics trackEvent:@"PostPageViews" dimensions:dimensions];
 }
 
 //called in pair

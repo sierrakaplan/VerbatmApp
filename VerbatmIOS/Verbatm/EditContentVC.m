@@ -56,7 +56,7 @@
 @implementation EditContentVC
 
 -(void)viewDidLoad {
-	self.view.backgroundColor = [UIColor AVE_BACKGROUND_COLOR];
+	self.view.backgroundColor = [UIColor PAGE_BACKGROUND_COLOR];
 	[self registerForKeyboardNotifications];
 	[self createEditContentViewFromPinchView];
 	[self createTextCreationButton];

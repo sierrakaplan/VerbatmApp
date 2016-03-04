@@ -1,11 +1,11 @@
 //
-//  BaseAVE.h
+//  PageViewingExperience.h
 //  Verbatm
 //
 //  Created by Sierra Kaplan-Nelson on 12/1/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
-//	This is the base class that all other ArticleViewingExperience's inherit from
+//	This is the base class for all page views.
 //
 
 #import <UIKit/UIKit.h>

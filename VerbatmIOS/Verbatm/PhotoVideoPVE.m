@@ -67,7 +67,7 @@
 }
 
 -(void) initialFormatting {
-	[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 	//make sure the video is on repeat
 	self.videoView.videoPlayer.repeatsVideo = YES;
 
@@ -88,21 +88,21 @@
 #pragma mark - PhotoAveTextEntry Delegate methods -
 
 -(void) editContentViewTextIsEditing{
-    [self movePhotoAveUp:YES];
+    [self movePhotoPageUp:YES];
 }
 
 -(void) editContentViewTextDoneEditing{
-    [self movePhotoAveUp:NO];
+    [self movePhotoPageUp:NO];
 }
 
--(void)movePhotoAveUp:(BOOL) moveUp{
+-(void)movePhotoPageUp:(BOOL) moveUp{
     if(moveUp){
-        [UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
+        [UIView animateWithDuration:PAGE_VIEW_FILLS_SCREEN_DURATION animations:^{
             [self bringSubviewToFront:self.photosView];
             self.photosView.frame = CGRectMake(0, 0, self.photosView.frame.size.width, self.photosView.frame.size.height);
         }];
     } else {
-        [UIView animateWithDuration:AVE_VIEW_FILLS_SCREEN_DURATION animations:^{
+        [UIView animateWithDuration:PAGE_VIEW_FILLS_SCREEN_DURATION animations:^{
             self.photosView.frame = CGRectMake(0, self.videoView.frame.size.height, self.photosView.frame.size.width, self.photosView.frame.size.height);
         }];
     }

@@ -62,7 +62,7 @@
 		self.restingFrame = CGRectMake(self.frame.origin.x + self.frame.size.width, self.frame.origin.y,
 									   self.frame.size.width, self.frame.size.height);
 		self.frame = self.restingFrame;
-		[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 		[self addShadowToView];
 	}
 	return self;
@@ -70,7 +70,9 @@
 
 #pragma mark - Load & display preview from pinch views -
 
--(void) displayPreviewPOVWithTitle: (NSString*) title andPinchViews: (NSMutableArray*) pinchViews withStartIndex: (NSInteger) index {
+-(void) displayPreviewPostWithTitle: (NSString*) title
+					  andPinchViews: (NSMutableArray*) pinchViews
+					 withStartIndex: (NSInteger) index {
 
 	self.title = title;
 	self.pinchViews = pinchViews;
@@ -83,7 +85,7 @@
 	}
 
 	PageTypeAnalyzer * analyzer = [[PageTypeAnalyzer alloc]init];
-	NSMutableArray* aves = [analyzer getPageViewsFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
+	NSMutableArray* pages = [analyzer getPageViewsFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
 	self.postView = [[PostView alloc] initWithFrame: self.bounds andPostParseObject:nil];
 	[self.postView renderPages: pages];
 	[self addSubview: self.postView];

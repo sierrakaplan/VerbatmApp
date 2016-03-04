@@ -35,10 +35,10 @@
 -(void) updatePinchView: (PinchView*) pinchView;
 
 //loads pinchviews from user defaults
--(void) loadPOVFromUserDefaults;
+-(void) loadPostFromUserDefaults;
 
 //removes title, cover picture, and pinch views
--(void) clearPOVInProgress;
+-(void) clearPostInProgress;
 
 
 @end

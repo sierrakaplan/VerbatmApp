@@ -43,9 +43,9 @@
 
 #define PINCHVIEW_DELETE_ANIMATION_DURATION 0.5f //the speed at which the pinch objet changes size before disappearing
 
-#pragma mark - AVES -
+#pragma mark - Page Views -
 
-#define AVE_VIEW_FILLS_SCREEN_DURATION 0.5f
+#define PAGE_VIEW_FILLS_SCREEN_DURATION 0.5f
 #define CIRCLE_FADE_DURATION 0.5f
 #define CIRCLE_REMAIN_DURATION 1.f
 #define CIRCLE_FIRST_APPEAR_REMAIN_DURATION 2.f

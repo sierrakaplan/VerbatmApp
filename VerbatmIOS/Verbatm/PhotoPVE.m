@@ -1,5 +1,5 @@
  //
-//  PhotoAVE.m
+//  PhotoPVE.m
 //  Verbatm
 //
 //  Created by Sierra Kaplan-Nelson on 7/23/15.
@@ -91,7 +91,7 @@
 }
 
 -(void) initialFormatting {
-	[self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 	[self addTapGesture];
 }
 

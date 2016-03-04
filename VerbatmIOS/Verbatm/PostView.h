@@ -26,7 +26,7 @@
 
 -(void) renderPages: (NSArray *) pages;
 
--(void) renderPostFromPages; (NSArray *) pages;
+-(void) renderPostFromPages: (NSArray *) pages;
 
 -(void) addCreatorInfoFromChannel:(Channel *) channel;
 

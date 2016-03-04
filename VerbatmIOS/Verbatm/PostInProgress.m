@@ -115,8 +115,8 @@
 }
 
 //loads pinchviews from user defaults
--(void) loadPOVFromUserDefaults {
-	[self clearPOVInProgress];
+-(void) loadPostFromUserDefaults {
+	[self clearPostInProgress];
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];
 	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
@@ -138,7 +138,7 @@
 }
 
 //removes all pinch views
--(void) clearPOVInProgress {
+-(void) clearPostInProgress {
 	//thread safety
 	@synchronized(self) {
 		[self.pinchViewsAsData removeAllObjects];

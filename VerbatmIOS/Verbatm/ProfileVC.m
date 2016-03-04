@@ -19,13 +19,13 @@
 
 #import "PublishingProgressManager.h"
 
-#import "SharePOVView.h"
+#import "SharePostView.h"
 #import "SegueIDs.h"
 #import "SettingsVC.h"
 
 @interface ProfileVC() <ProfileNavBarDelegate,
 					UIScrollViewDelegate, CreateNewChannelViewProtocol,
-					SharePOVViewDelegate, PublishingProgressProtocol>
+					SharePostViewDelegate, PublishingProgressProtocol>
 
 @property (strong, nonatomic) PostListVC * postListVC;
 
@@ -40,7 +40,7 @@
 
 @property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 @property (nonatomic) UIView * darkScreenCover;
-@property (nonatomic) SharePOVView * sharePOVView;
+@property (nonatomic) SharePostView * sharePOVView;
 @property (nonatomic) Channel_BackendObject * channelBackendManager;
 
 #pragma mark Publishing
@@ -155,7 +155,7 @@
     
     CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
     CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+    self.sharePOVView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
     self.sharePOVView.delegate = self;
     [self.view addSubview:self.sharePOVView];
     [self.view bringSubviewToFront:self.sharePOVView];

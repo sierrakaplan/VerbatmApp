@@ -1,5 +1,5 @@
 //
-//  BaseAVE.m
+//  PageViewingExperience.m
 //  Verbatm
 //
 //  Created by Sierra Kaplan-Nelson on 12/1/15.
@@ -21,13 +21,11 @@
     return self;
 }
 
-
 -(void)createBorder{
     [self.layer setBorderWidth:0.5];
     [self.layer setCornerRadius:0.0];
     [self.layer setBorderColor:[UIColor blackColor].CGColor];
 }
-
 
 -(void)onScreen {}
 

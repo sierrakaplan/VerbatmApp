@@ -10,30 +10,24 @@
 #import <UIKit/UIKit.h>
 #import <Parse/PFUser.h>
 
-typedef enum PostListType{
+typedef enum PostListType {
     listFeed = 0,
     listChannel = 1,
-}PostListType;
-
-
+} PostListType;
 
 @interface PostListVC : UICollectionViewController
 
-
 @property (nonatomic) BOOL isHomeProfileOrFeed;
-//profile of the current logged in user
 
+@property (nonatomic) PostListType listType;
 
-@property (nonatomic) PostListType listType;//should be set by the VC that creates the PLV
+@property (nonatomic) PFUser * listOwner;
+@property (nonatomic) Channel * channelForList;
 
-//if it's a feed -- whose feed?
-//if it's a channel -- whose channel?
-@property (nonatomic) PFUser * listOwner;//also set when POSTLIST is created
-@property (nonatomic) Channel * channelForList;//set when postlist created
-
-//marks all POVs as off screen
+//marks all posts as off screen
 -(void) stopAllVideoContent;
-//continues POV that's on screen
+
+//continues post that's on screen
 -(void) continueVideoContent;
 
 -(void)reloadCurrentChannel;

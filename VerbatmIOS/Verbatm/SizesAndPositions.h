@@ -9,7 +9,7 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
-#pragma mark -POV View -
+#pragma mark -POST View -
 #define CREATOR_CHANNEL_BAR_HEIGHT 50.f
 
 
@@ -150,20 +150,12 @@
 #define MEDIA_TILE_SELECTOR_HEIGHT 80.f
 #define ADD_MEDIA_BUTTON_OFFSET 10
 
-#pragma mark - AVES -
+#pragma mark - Page Views -
 
 #define LIKE_BUTTON_SIZE_WIDTH 25.f
 #define LIKE_BUTTON_SIZE_HEIGHT 25.f
 
 #define LIKE_BUTTON_OFFSET 20.f
-
-#pragma mark Text
-
-#define TEXT_OVER_AVE_TOP_OFFSET 80.f
-#define TEXT_OVER_AVE_STARTING_HEIGHT 100.f
-#define TEXT_OVER_AVE_PULLBAR_HEIGHT 40.f
-#define TEXT_OVER_AVE_ANIMATION_THRESHOLD 30.f
-#define TEXT_OVER_AVE_BORDER 30.f
 
 #pragma mark Images
 
@@ -186,18 +178,13 @@
 
 #define TAB_BAR_HEIGHT 40.f
 
-
-
 #define PROFILE_HEADER_HEIGHT 35.f
 #define USER_CELL_VIEW_HEIGHT 40.f
 
 #define CHANNEL_USER_LIST_CELL_HEIGHT 55.f
 
-
 #define PROFILE_NAV_BAR_HEIGHT (PROFILE_HEADER_HEIGHT + USER_CELL_VIEW_HEIGHT)
 #define LIKE_SHARE_BAR_HEIGHT 40.f
-
-
 
 #define CHANNEL_CREATION_VIEW_WALLOFFSET_X 30.f
 #define CHANNEL_CREATION_VIEW_Y_OFFSET (PROFILE_NAV_BAR_HEIGHT + 90.f)
@@ -208,8 +195,7 @@
 #define ARROW_FRAME_WIDTH 30.f
 #define ARROW_IMAGE_WALL_OFFSET 2.f
 
-#define NO_POVS_LABEL_WIDTH 300.f
-
+#define NO_POSTS_LABEL_WIDTH 300.f
 
 #define THREAD_BAR_BUTTON_FONT_SIZE 17.f
 

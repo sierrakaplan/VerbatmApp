@@ -1,5 +1,5 @@
 //
-//  POVLikeAndShareBar.m
+//  PostLikeAndShareBar.m
 //  Verbatm
 //
 //  Created by Iain Usiri on 12/29/15.
@@ -14,6 +14,7 @@
 
 
 @interface PostLikeAndShareBar ()
+
 @property (nonatomic,strong) UIButton * likeButton;
 @property (nonatomic,strong) UIButton * numLikesButton;
 @property (nonatomic, strong) UIButton * shareButon;
@@ -25,7 +26,7 @@
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
 
 @property (nonatomic) BOOL isLiked;
-@property (nonatomic) NSNumber * totalNumberOfPages;//number of pages on our related AVE
+@property (nonatomic) NSNumber * totalNumberOfPages;
 
 #define BUTTON_WALLOFFSET 5.f
 #define NUMBER_FONT_SIZE 18.f

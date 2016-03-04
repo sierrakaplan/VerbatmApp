@@ -39,15 +39,13 @@
 	[newPageObject setObject:post forKey:PAGE_POST_KEY];
 
 	if (pinchView.containsImage && pinchView.containsVideo) {
-		[newPageObject setObject:[NSNumber numberWithInt:PageTypePhotoVideo] forKey:PAGE_AVE_TYPE];
+		[newPageObject setObject:[NSNumber numberWithInt:PageTypePhotoVideo] forKey:PAGE_VIEW_TYPE];
 
 	} else if (pinchView.containsImage) {
-		[newPageObject setObject:[NSNumber numberWithInt:PageTypePhoto] forKey:PAGE_AVE_TYPE];
+		[newPageObject setObject:[NSNumber numberWithInt:PageTypePhoto] forKey:PAGE_VIEW_TYPE];
 	} else {
-		[newPageObject setObject:[NSNumber numberWithInt:PageTypeVideo] forKey:PAGE_AVE_TYPE];
+		[newPageObject setObject:[NSNumber numberWithInt:PageTypeVideo] forKey:PAGE_VIEW_TYPE];
 	}
-
-
 
 	[newPageObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(succeeded){//now we save the media for the specific
@@ -55,7 +53,6 @@
 			[self storeVideosFromPinchView:pinchView withPageReference:newPageObject];
 		}
 	}];
-
 }
 
 
