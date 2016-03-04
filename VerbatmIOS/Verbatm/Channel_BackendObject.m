@@ -66,19 +66,18 @@
 //returns channel when we create a new one
 -(Channel *) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel
                    withCompletionBlock:(void(^)(PFObject *))block {
-    
     if(channel.parseChannelObject){
         Post_BackendObject * newPost = [[Post_BackendObject alloc]init];
         [self.ourPosts addObject:newPost];
-       PFObject * parsePostObject = [newPost createPostFromPinchViews:pinchViews toChannel:channel];
-         block(parsePostObject);
+		PFObject *parsePostObject = [newPost createPostFromPinchViews:pinchViews toChannel:channel];
+		block(parsePostObject);
         return NULL;
-    }else{
-       return  [self createChannelWithName:channel.name andCompletionBlock:^(Channel * channelObject){
+    } else {
+       return [self createChannelWithName:channel.name andCompletionBlock:^(Channel * channelObject){
                     Post_BackendObject * newPost = [[Post_BackendObject alloc]init];
                     [self.ourPosts addObject:newPost];
-               PFObject * parsePostObject = [newPost createPostFromPinchViews:pinchViews toChannel:channelObject];
-           block(parsePostObject);
+			PFObject * parsePostObject = [newPost createPostFromPinchViews:pinchViews toChannel:channelObject];
+           	block(parsePostObject);
         }];
     }
 }

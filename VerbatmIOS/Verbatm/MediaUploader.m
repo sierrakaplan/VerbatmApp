@@ -7,7 +7,7 @@
 //
 
 #import "MediaUploader.h"
-#import "POVPublisher.h"
+#import "PostPublisher.h"
 
 @interface MediaUploader()
 

@@ -27,12 +27,10 @@
 #import "ImagePinchView.h"
 #import "Icons.h"
 
-#import "LocalPOVs.h"
-
 #import <QuartzCore/QuartzCore.h>
 
 #import "PinchView.h"
-#import "POVPublisher.h"
+#import "PostPublisher.h"
 #import "PreviewDisplayView.h"
 #import "Post_BackendObject.h"
 #import "PublishingProgressManager.h"
@@ -52,8 +50,8 @@
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserSetupParameters.h"
 #import "UtilityFunctions.h"
-#import "UserPovInProgress.h"
 #import "UserManager.h"
+#import "PostInProgress.h"
 #import "UIView+Effects.h"
 
 #import "VerbatmCameraView.h"
@@ -446,7 +444,7 @@ rowHeightForComponent:(NSInteger)component{
 // Loads pinch views from user defaults
 -(void) loadPOVFromUserDefaults {
 
-	NSArray* savedPinchViews = [[UserPovInProgress sharedInstance] pinchViews];
+	NSArray* savedPinchViews = [[PostInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
 		[pinchView specifyRadius:self.defaultPinchViewRadius
 					   andCenter:self.defaultPinchViewCenter];
@@ -571,7 +569,7 @@ rowHeightForComponent:(NSInteger)component{
     
 	//update user defaults if was pinch view
 	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
-		[[UserPovInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
+		[[PostInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
 		self.numPinchViews--;
 	}
 
@@ -633,7 +631,7 @@ rowHeightForComponent:(NSInteger)component{
         if(index <= self.pageElementScrollViews.count)[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
 	}
     
-    [[UserPovInProgress sharedInstance] addPinchView:pinchView atIndex:index];
+    [[PostInProgress sharedInstance] addPinchView:pinchView atIndex:index];
     
     
     [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
@@ -1207,12 +1205,12 @@ rowHeightForComponent:(NSInteger)component{
 	if(newCollectionPinchView.pinchedObjects.count == 1){
 		SingleMediaAndTextPinchView *unPinchedPinchView = [collectionPinchView.pinchedObjects lastObject];
 		unPinchedPinchView.frame = toRemove.frame;
-		[[UserPovInProgress sharedInstance] removePinchView:[newCollectionPinchView unPinchAndRemove:unPinchedPinchView]
+		[[PostInProgress sharedInstance] removePinchView:[newCollectionPinchView unPinchAndRemove:unPinchedPinchView]
 									andReplaceWithPinchView:unPinchedPinchView];
 		[self.upperPinchScrollView changePageElement:unPinchedPinchView];
 	}else{
-		[[UserPovInProgress sharedInstance] updatePinchView:newCollectionPinchView];
-		[[UserPovInProgress sharedInstance] addPinchView:toRemove atIndex:index];
+		[[PostInProgress sharedInstance] updatePinchView:newCollectionPinchView];
+		[[PostInProgress sharedInstance] addPinchView:toRemove atIndex:index];
 	}
 
 	ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:toRemove andFrame:self.upperPinchScrollView.frame];
@@ -1492,9 +1490,7 @@ rowHeightForComponent:(NSInteger)component{
     
     [self.mainScrollView addSubview:self.pinchElementsTogetherInstructionView];
     [self.mainScrollView bringSubviewToFront:self.pinchElementsTogetherInstructionView];
-    
-    //[[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];//commented out for debugging
-    
+	
 }
 
 //adjusts offset of main scroll view so selected item is in focus
@@ -1572,7 +1568,7 @@ rowHeightForComponent:(NSInteger)component{
 	[self.pageElementScrollViews replaceObjectAtIndex: index1 withObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index2 withObject: scrollView1];
 	if ([scrollView1.pageElement isKindOfClass:[PinchView class]] && [scrollView2.pageElement isKindOfClass:[PinchView class]]) {
-		[[UserPovInProgress sharedInstance] swapPinchView:(PinchView*)scrollView1.pageElement andPinchView:(PinchView*)scrollView2.pageElement];
+		[[PostInProgress sharedInstance] swapPinchView:(PinchView*)scrollView1.pageElement andPinchView:(PinchView*)scrollView2.pageElement];
 	}
 }
 
@@ -1686,7 +1682,7 @@ rowHeightForComponent:(NSInteger)component{
     [self clearBaseSelcetor];
 	[self createBaseSelector];
     [self initializeVariables];
-    [[UserPovInProgress sharedInstance] clearPOVInProgress];//now that you have published then we should get rid of all cashed info
+    [[PostInProgress sharedInstance] clearPOVInProgress];//now that you have published then we should get rid of all cashed info
 }
 
 -(void)clearBaseSelcetor{

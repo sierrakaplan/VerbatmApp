@@ -10,9 +10,9 @@
 #import <Parse/PFObject.h>
 @protocol FeedVCDelegate <NSObject>
 
--(void)showTabBar: (BOOL) show;
--(void)feedPovShareButtonSelectedForPOV: (PFObject* ) pov;
--(void)feedPovLikeLiked:(BOOL) liked forPOV: (PFObject* ) pov;
+-(void) showTabBar: (BOOL) show;
+-(void) shareButtonSelectedForPostObject: (PFObject* ) post;
+-(void) likeButtonLiked:(BOOL) liked forPostObject: (PFObject* ) post;
 
 @end
 

@@ -13,6 +13,8 @@
 #import "ImagePinchView.h"
 #import "NoAnimationUnwindSegue.h"
 
+#import "PostInProgress.h"
+
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "StringsAndAppConstants.h"
@@ -21,7 +23,6 @@
 #import "TextOverMediaView.h"
 
 #import "UserSetupParameters.h"
-#import "UserPovInProgress.h"
 
 #import "VideoPinchView.h"
 #import "VideoPlayerView.h"
@@ -57,9 +58,9 @@
 -(void)viewDidLoad {
 	self.view.backgroundColor = [UIColor AVE_BACKGROUND_COLOR];
 	[self registerForKeyboardNotifications];
-    [self createEditContentViewFromPinchView];
+	[self createEditContentViewFromPinchView];
 	[self createTextCreationButton];
-    [self createExitButton];
+	[self createExitButton];
 	[self addTapGestureToMainView];
 }
 
@@ -69,7 +70,6 @@
 											 selector:@selector(keyboardWillShow:)
 												 name:UIKeyboardWillShowNotification
 											   object:nil];
-
 
 	[[NSNotificationCenter defaultCenter] addObserver:self
 											 selector:@selector(keyBoardWillChangeFrame:)
@@ -91,20 +91,20 @@
 }
 
 -(void)createExitButton{
-    self.exitButton = [[UIButton alloc] initWithFrame:
-                       CGRectMake(EXIT_CV_BUTTON_WALL_OFFSET, EXIT_CV_BUTTON_WALL_OFFSET,
-                                  EXIT_CV_BUTTON_WIDTH, EXIT_CV_BUTTON_HEIGHT)];
-    [self.exitButton setImage:[UIImage imageNamed:DONE_CHECKMARK] forState:UIControlStateNormal];
+	self.exitButton = [[UIButton alloc] initWithFrame:
+					   CGRectMake(EXIT_CV_BUTTON_WALL_OFFSET, EXIT_CV_BUTTON_WALL_OFFSET,
+								  EXIT_CV_BUTTON_WIDTH, EXIT_CV_BUTTON_HEIGHT)];
+	[self.exitButton setImage:[UIImage imageNamed:DONE_CHECKMARK] forState:UIControlStateNormal];
 	[self.exitButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
-    [self.exitButton addTarget:self action:@selector(exitButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.exitButton];
-    [self.view bringSubviewToFront:self.exitButton];
+	[self.exitButton addTarget:self action:@selector(exitButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+	[self.view addSubview:self.exitButton];
+	[self.view bringSubviewToFront:self.exitButton];
 }
 
 -(void)alertAddFilter {
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
-    [[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
+	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"Swipe left to add a filter!" message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+	[alert show];
+	[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
 }
 
 #pragma mark - Text View -
@@ -127,7 +127,7 @@
 	if(![self.textAndImageView textShowing]) {
 		[self setText:@"" andTextViewYPosition: TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
 	}
-    [self.textAndImageView showText:YES];
+	[self.textAndImageView showText:YES];
 }
 
 -(void) setText: (NSString*) text andTextViewYPosition: (CGFloat) yPosition {
@@ -234,9 +234,9 @@
 	self.videoView = [[VideoPlayerView alloc]init];
 	self.videoView.frame = CGRectMake(0, 0, self.view.frame.size.width, self.view.frame.size.height);
 	[self.view addSubview:self.videoView];
-	[self.videoView prepareVideoFromAsset_synchronous:videoAsset];
+	[self.videoView prepareVideoFromAsset:videoAsset];
 	[self.videoView playVideo];
-	[self.videoView repeatVideoOnEnd:YES];
+	self.videoView.repeatsVideo = YES;
 }
 
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index {
@@ -306,7 +306,7 @@
 		((VideoPinchView *) self.openPinchView).text = [self getText];
 		((VideoPinchView *) self.openPinchView).textYPosition = [self getTextYPosition];
 	}
-	[[UserPovInProgress sharedInstance] updatePinchView: self.openPinchView];
+	[[PostInProgress sharedInstance] updatePinchView: self.openPinchView];
 	[self dismissViewControllerAnimated:NO completion:^{
 		// do nothing
 	}];

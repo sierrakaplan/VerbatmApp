@@ -6,15 +6,12 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "ArticleDisplayVC.h"
 #import "Channel_BackendObject.h"
 #import "Durations.h"
 
 #import "FeedVC.h"
 
 #import "Icons.h"
-
-#import "LocalPOVs.h"
 
 #import "Notifications.h"
 
@@ -26,14 +23,13 @@
 #import "SizesAndPositions.h"
 
 @interface FeedVC () <UIScrollViewDelegate, SharePOVViewDelegate>
-@property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
+
 @property (nonatomic) BOOL contentCoveringScreen;
 
 @property (nonatomic) CGRect povScrollViewFrame;
 @property (strong, nonatomic) PostListVC * postListVC;
 
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
-
 
 @property (nonatomic) SharePOVView * sharePOVView;
 
@@ -84,12 +80,10 @@
 
 #pragma mark - POVListSVController -
 
-
--(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
 	[self presentShareSelectionViewStartOnChannels:YES];
-    [self.delegate feedPovShareButtonSelectedForPOV:pov];
+    [self.delegate shareButtonSelectedForPostObject: post];
 }
-
 
 -(void)registerForNotifications{
 	//gets notified if there is no internet connection

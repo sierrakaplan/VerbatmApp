@@ -15,7 +15,7 @@
 #import "Durations.h"
 #import "Icons.h"
 #import "SizesAndPositions.h"
-#import "UserPovInProgress.h"
+#import "PostInProgress.h"
 #import "MediaSelectTile.h"
 
 @interface ContentPageElementScrollView()
@@ -109,13 +109,13 @@
     PinchView* newPinchView;
 	if(self.isCollection) {
 		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(SingleMediaAndTextPinchView*)otherScrollView.pageElement];
-        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
-        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement andReplaceWithPinchView:newPinchView];
+        [[PostInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
+        [[PostInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement andReplaceWithPinchView:newPinchView];
         
 	} else if(otherScrollView.isCollection){
 		newPinchView = [(CollectionPinchView*)otherScrollView.pageElement pinchAndAdd:(SingleMediaAndTextPinchView*)self.pageElement];
-        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
-        [[UserPovInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement andReplaceWithPinchView:newPinchView];
+        [[PostInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
+        [[PostInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement andReplaceWithPinchView:newPinchView];
         
 	} else {
 		NSMutableArray* pinchViewArray = [[NSMutableArray alloc] initWithObjects:self.pageElement, otherScrollView.pageElement, nil];
@@ -488,7 +488,7 @@
 	}
 
 	self.selectedItem = nil;
-	[[UserPovInProgress sharedInstance]removePinchView:currentPinchView andReplaceWithPinchView:(PinchView *)self.pageElement];
+	[[PostInProgress sharedInstance]removePinchView:currentPinchView andReplaceWithPinchView:(PinchView *)self.pageElement];
 	return unPinched;
 }
 

@@ -15,18 +15,20 @@
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
-#import "POVPublisher.h"
+#import "PostPublisher.h"
 
 
 @interface Photo_BackendObject ()
-    @property (nonatomic) POVPublisher * mediaPublisher;
+
+@property (nonatomic) PostPublisher * mediaPublisher;
+
 @end
 
 @implementation Photo_BackendObject
 
 -(void)saveImage:(UIImage  *) image withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject;
 {
-    self.mediaPublisher = [[POVPublisher alloc] init];
+    self.mediaPublisher = [[PostPublisher alloc] init];
     [self.mediaPublisher storeImage:image withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
         NSString * blobStoreUrl = gtlImage.servingUrl;
         //in completion block of blobstore save
@@ -34,7 +36,6 @@
     }];
     
 }
-
 
 -(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject{
     NSLog(@"Saving parse photo object");
@@ -89,12 +90,5 @@
     }];
     
 }
-
-
-
-
-
-
-
 
 @end

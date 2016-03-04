@@ -10,7 +10,7 @@
 #define ParseBackendKeys_h
 
 
-#define USER_USER_NAME_KEY @"VerbatmName" //different from the username which is used by fb on parse
+#define VERBATM_USER_NAME_KEY @"VerbatmName" //different from the username which is used by fb on parse
 #define USER_RELATION_CHANNELS_FOLLOWING @"ChannelsFollowing"
 
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table

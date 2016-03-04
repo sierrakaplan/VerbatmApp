@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "PovInfo.h"
 #import <Parse/PFUser.h>
 #import "Channel.h"
 
@@ -15,28 +14,26 @@
 
 -(void) showTabBar: (BOOL) show;
 
--(void)profilePovShareButtonSeletedForPOV:(PovInfo *) pov;
--(void)profilePovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov;
-
 -(void)presentWhoIFollowMyID:(id) userID ;//show list of people the user follows
 -(void)presentFollowersListMyID:(id) userID ;//show the list of people who follow me
 -(void)presentChannelsToFollow;//show the channels the current user can select
+
 @end
 
 @interface ProfileVC : UIViewController
 
 @property (strong, nonatomic) id<ProfileVCDelegate> delegate;
-@property (weak, nonatomic) PFUser* userOfProfile;//the user that this profile belongs to
-@property (nonatomic) BOOL isCurrentUserProfile;//let us know if this is the profile of the logged in user
 
-@property (nonatomic) id userIdToPresent;//get this users information
+@property (weak, nonatomic) PFUser* userOfProfile;
 
-@property (nonatomic) Channel * startChannel;//channel that should be presented first
+//let us know if this is the profile of the logged in user
+@property (nonatomic) BOOL isCurrentUserProfile;
+
+@property (nonatomic) id userIdToPresent;
+
+//channel that should be presented first
+@property (nonatomic) Channel * startChannel;
 
 -(void) showPublishingProgress;
-
--(void) offScreen;//told when it's off screen to stop videos
--(void) onScreen;
-
 
 @end

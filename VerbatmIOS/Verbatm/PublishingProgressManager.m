@@ -73,7 +73,9 @@
     
     self.channelManager = [[Channel_BackendObject alloc] init];
 	[self countMediaContentFromPinchViews:pinchViews];
-	Channel* newChannel = [self.channelManager createPostFromPinchViews:pinchViews              toChannel:channel withCompletionBlock:^(PFObject * parsePostObject) {
+	Channel* newChannel = [self.channelManager createPostFromPinchViews:pinchViews
+															  toChannel:channel
+													withCompletionBlock:^(PFObject * parsePostObject) {
         
         self.currentParsePostObject = parsePostObject;
         

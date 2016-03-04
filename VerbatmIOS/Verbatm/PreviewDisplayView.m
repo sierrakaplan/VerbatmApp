@@ -8,25 +8,27 @@
 
 
 #import "PreviewDisplayView.h"
-#import "AveTypeAnalyzer.h"
+#import "PageTypeAnalyzer.h"
 #import "CustomNavigationBar.h"
 #import "Durations.h"
 #import "Icons.h"
-#import "POVView.h"
-#import "PhotoAVE.h"
+#import "PostView.h"
+#import "PhotoPVE.h"
 #import "SizesAndPositions.h"
 #import "Strings.h"
 #import "Styles.h"
 #import "UIView+Glow.h"
 #import "UIView+Effects.h"
 
-@interface PreviewDisplayView() <UIGestureRecognizerDelegate, UIScrollViewDelegate, CustomNavigationBarDelegate>
+@interface PreviewDisplayView() <UIGestureRecognizerDelegate, UIScrollViewDelegate,
+								CustomNavigationBarDelegate>
 
 @property (nonatomic) CGRect viewingFrame;
 @property (nonatomic) CGRect restingFrame;
 
-#pragma mark - View that lays out POV -
-@property (strong, nonatomic) POVView* povView;
+#pragma mark - View that lays out Post -
+
+@property (strong, nonatomic) PostView* postView;
 
 #pragma mark - Content -
 
@@ -80,14 +82,14 @@
 		return;
 	}
 
-	AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc]init];
-	NSMutableArray* aves = [analyzer getAVESFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
-	self.povView = [[POVView alloc] initWithFrame: self.bounds andPovParseObject:nil];
-	[self.povView renderAVES: aves];
-	[self addSubview: self.povView];
+	PageTypeAnalyzer * analyzer = [[PageTypeAnalyzer alloc]init];
+	NSMutableArray* aves = [analyzer getPageViewsFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
+	self.postView = [[PostView alloc] initWithFrame: self.bounds andPostParseObject:nil];
+	[self.postView renderPages: pages];
+	[self addSubview: self.postView];
 	[self addNavigationBar];
-    [self.povView scrollToPageAtIndex:index];
-    [self.povView povOnScreen];
+    [self.postView scrollToPageAtIndex:index];
+    [self.postView postOnScreen];
 	[self revealPreview:YES];
 }
 
@@ -122,9 +124,9 @@
 	}else {
         [self.delegate aboutToRemovePreview];
         self.frame = self.restingFrame;
-        [self.povView clearArticle];
-        [self.povView removeFromSuperview];
-        self.povView = nil;
+        [self.postView clearArticle];
+        [self.postView removeFromSuperview];
+        self.postView = nil;
         [self.publishButton removeFromSuperview];
 	}
 }

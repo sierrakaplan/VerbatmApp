@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1509" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
     </dependencies>
     <scenes>
@@ -86,7 +85,7 @@
         <!--Article Display VC-->
         <scene sceneID="IFb-Qc-Bhx">
             <objects>
-                <viewController storyboardIdentifier="article_display_vc" id="ydU-Jy-lXO" userLabel="Article Display VC" customClass="ArticleDisplayVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="article_display_vc" id="ydU-Jy-lXO" userLabel="Article Display VC" customClass="PostDisplayVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="gQu-JC-VDi">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -414,7 +413,7 @@
         <!--User Article Display-->
         <scene sceneID="wLm-HZ-LGJ">
             <objects>
-                <viewController storyboardIdentifier="user_article_display_vc" title="User Article Display" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fb6-20-IL6" customClass="ArticleDisplayVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="user_article_display_vc" title="User Article Display" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fb6-20-IL6" customClass="PostDisplayVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="S9s-GP-1Ky">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

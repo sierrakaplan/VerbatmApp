@@ -6,34 +6,23 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "Channel.h"
 #import "ChannelOrUsernameCV.h"
 #import "CustomNavigationBar.h"
 
 #import "Channel_BackendObject.h"
 
-#import "FeedQueryManager.h"
-
 #import "ProfileVC.h"
-#import <Parse/PFUser.h>
-#import <Parse/PFObject.h>
 #import "ParseBackendKeys.h"
-#import "POVListScrollViewVC.h"
-#import "PostListVC.h"
-#import "PostHolderCollecitonRV.h"
-#import "Post_BackendObject.h"
-#import "Page_BackendObject.h"
-#import "POVView.h"
+
+#import "PostCollectionViewCell.h"
 
 #import "Styles.h"
 #import "SizesAndPositions.h"
-#import "StoryboardVCIdentifiers.h"
 
 #import "UserAndChannelListsTVC.h"
 
-
-
-
+#import <Parse/PFUser.h>
+#import <Parse/PFObject.h>
 
 @interface UserAndChannelListsTVC ()<CustomNavigationBarDelegate>
 
@@ -256,12 +245,12 @@
         }else if (indexPath.row > 0){
             NSInteger objectIndex = (indexPath.row -1);
             Channel * channel = [self.channelsToDisplay objectAtIndex:objectIndex];
-            NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:USER_USER_NAME_KEY];
+            NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
             [cell setChannelName:channel.name andUserName:userName];
         }
     }else{
         Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
-        NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:USER_USER_NAME_KEY];
+        NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
         [cell setChannelName:channel.name andUserName:userName];
     }
     

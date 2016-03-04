@@ -55,7 +55,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels startChannel:(Channel *) startChannel andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
     self = [super initWithFrame:frame];
     if(self){
-        [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
+        [self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY] isCurrentUser:isCurrentUser];
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
         [self setFolloweButtonInHeader];
 		[self createFollowersInfoViewWithUser:profileUser andStartChannel: channels[0]];

@@ -6,41 +6,25 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "ArticleDisplayVC.h"
-
 #import "CreateNewChannelView.h"
 #import "Channel_BackendObject.h"
 
 #import "Durations.h"
 
-#import "GTLVerbatmAppVerbatmUser.h"
-
-#import "LocalPOVs.h"
-
-#import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
 
-#import "POVScrollView.h"
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
-#import "POVLoadManager.h"
 #import "PostListVC.h"
-//#import "POVListScrollViewVC.h"
 
-#import "Post_BackendObject.h"
-#import "POVView.h"
 #import "PublishingProgressManager.h"
 
 #import "SharePOVView.h"
 #import "SegueIDs.h"
-#import "SizesAndPositions.h"
 #import "SettingsVC.h"
 
-#import "UIView+Effects.h"
-#import "UserManager.h"
-
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,
-					UIScrollViewDelegate, CreateNewChannelViewProtocol, POVScrollViewDelegate,
+@interface ProfileVC() <ProfileNavBarDelegate,
+					UIScrollViewDelegate, CreateNewChannelViewProtocol,
 					SharePOVViewDelegate, PublishingProgressProtocol>
 
 @property (strong, nonatomic) PostListVC * postListVC;
@@ -50,7 +34,6 @@
 @property (nonatomic) CGRect profileNavBarFrameOffScreen;
 @property (nonatomic) BOOL contentCoveringScreen;
 
-@property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
 
 @property (strong, nonatomic) NSArray* channels;
@@ -66,17 +49,16 @@
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
-#define PROFILE_BACKGROUND_IMAGE @"d1"
+#define PROFILE_BACKGROUND_IMAGE @"d1" //todo:
 
 @end
 
 @implementation ProfileVC
+
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.contentCoveringScreen = YES;
-    //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-        //[self createAndAddListVC];
         [self addPostListVC];
         [self createNavigationBar];
         [self addClearScreenGesture];
@@ -94,7 +76,7 @@
 }
 
 -(void) viewWillAppear:(BOOL)animated{
-    if(self.postListVC)[self.postListVC continueVideoContent];
+    if(self.postListVC) [self.postListVC continueVideoContent];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -103,25 +85,8 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if(self.postListVC)[self.postListVC stopAllVideoContent];
+    if(self.postListVC) [self.postListVC stopAllVideoContent];
 }
-
-//-(void) createAndAddListVC{
-//    self.postListVC = [[POVListScrollViewVC alloc] init];
-//    self.postListVC.listOwner = self.userOfProfile;
-//    if(self.startChannel){
-//        self.postListVC.channelForList = self.startChannel ;
-//    }else{
-//        self.postListVC.channelForList = [self.channels firstObject];
-//    }
-//    
-//    self.postListVC.listType = listChannel;
-//    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
-//    if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
-//    else [self.view addSubview:self.postListVC.view];
-//}
-
-
 
 -(void) addPostListVC {
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -141,11 +106,6 @@
     self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
     else[self.view addSubview:self.postListVC.view];
-}
-
-
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    
 }
 
 -(void) createNavigationBar {
@@ -171,17 +131,6 @@
     UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
     singleTap.numberOfTapsRequired = 1;
     [self.view addGestureRecognizer:singleTap];
-}
-
-#pragma mark - POV ScrollView custom delegate -
-
--(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
-    //code to register a like/dislike from the user
-}
-
--(void) povshareButtonSelectedForParsePostObject:(PFObject *)pov {
-    [self presentShareSelectionViewStartOnChannels:NO];
-    
 }
 
 #pragma mark POVListScrollView Delegate -
@@ -334,11 +283,6 @@
 	[self.postListVC changeCurrentChannelTo:channel];
 }
 
--(void) switchStoryListToThread:(NSString *) newChannel{
-    [self.postDisplayVC cleanUp];
-    [self.postDisplayVC presentContentWithPOVType:POVTypeUser andChannel:newChannel];
-}
-
 -(void) presentHeadAndFooter:(BOOL) shouldShow {
     if(shouldShow) {
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
@@ -379,14 +323,6 @@
     }
 }
 
--(void) offScreen {
-    [self.postDisplayVC offScreen];
-}
-
--(void) onScreen {
-    [self.postDisplayVC onScreen];
-}
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Make sure your segue name in storyboard is the same as this line
     if ([[segue identifier] isEqualToString:SETTINGS_PAGE_MODAL_SEGUE]){
@@ -394,7 +330,7 @@
         SettingsVC * vc = [segue destinationViewController];
         
         //set the username of the currently logged in user
-        vc.userName  = [[PFUser currentUser] valueForKey:USER_USER_NAME_KEY];
+        vc.userName  = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
     }
 }
 
@@ -425,12 +361,6 @@
 -(void) publishingFailed {
 	//TODO: tell user publishing failed
 	NSLog(@"PUBLISHING FAILED");
-}
-
-#pragma mark - Article Display Delegate methods -
-
--(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo {
-	// do nothing
 }
 
 #pragma mark - Lazy Instantiation -
