@@ -235,23 +235,23 @@
         cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CHANNEL_CELL_ID isChannel:YES isAChannelThatIFollow:NO];
         [cell setSelectionStyle:UITableViewCellSelectionStyleNone];
     }
-    
-    
+
     if(self.presentAllChannels){
-        
         if(indexPath.row == 0){
             //set this tile as the header
             [cell setHeaderTitle];
         }else if (indexPath.row > 0){
             NSInteger objectIndex = (indexPath.row -1);
-            Channel * channel = [self.channelsToDisplay objectAtIndex:objectIndex];
-            NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
-            [cell setChannelName:channel.name andUserName:userName];
+            Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
+			//todo:
+//            NSString *userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
+            [cell setChannelName:channel.name andUserName:@"Unknown"];
         }
     }else{
         Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
-        NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
-        [cell setChannelName:channel.name andUserName:userName];
+		//todo:
+//        NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
+        [cell setChannelName:channel.name andUserName:@"Unknown"];
     }
     
     return cell;

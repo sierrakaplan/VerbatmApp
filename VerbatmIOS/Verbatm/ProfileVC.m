@@ -1,5 +1,5 @@
 //
-//  profileVC.m
+//  ProfileVC.m
 //  Verbatm
 //
 //  Created by Iain Usiri on 8/29/15.
@@ -96,12 +96,7 @@
     [flowLayout setItemSize:self.view.frame.size];
     self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
     self.postListVC.listOwner = self.userOfProfile;
-    if(self.startChannel){
-        self.postListVC.channelForList = self.startChannel;
-    }else{
-        self.postListVC.channelForList = [self.channels firstObject];
-    }
-
+    self.postListVC.channelForList = [self.channels firstObject];
     self.postListVC.listType = listChannel;
     self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
@@ -116,8 +111,7 @@
     
     self.profileNavBar = [[ProfileNavBar alloc]
                           initWithFrame:self.profileNavBarFrameOnScreen
-                          andChannels:self.channels
-                          startChannel:self.startChannel
+                          andChannels: self.channels
                           andUser:self.userOfProfile
                           isCurrentLoggedInUser:self.isCurrentUserProfile];
     
@@ -259,7 +253,6 @@
     //code to share post to facebook etc
     
     [self removeSharePOVView];
-    
 }
 
 -(void) postPostToChannel:(Channel *)channel {

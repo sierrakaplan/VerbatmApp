@@ -1,5 +1,5 @@
 //
-//  profileNavBar.m
+//  ProfileNavBar.m
 //  Verbatm
 //
 //  Created by Iain Usiri on 11/23/15.
@@ -50,13 +50,14 @@
 @implementation ProfileNavBar
 
 //expects an array of thread names (nsstring)
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels startChannel:(Channel *) startChannel andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
     self = [super initWithFrame:frame];
     if(self){
         [self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY] isCurrentUser:isCurrentUser];
-		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
         [self setFolloweButtonInHeader];
-		[self createFollowersInfoViewWithUser:profileUser andStartChannel: channels[0]];
+		Channel* startChannel = (channels.count > 0) ? channels[0] : nil;
+		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
+		[self createFollowersInfoViewWithUser:profileUser andStartChannel: startChannel];
         [self createArrowExtesion];
         [self createPanGesture];
         [self createTapGesture];

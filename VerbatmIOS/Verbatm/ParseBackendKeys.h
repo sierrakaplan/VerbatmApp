@@ -37,7 +37,7 @@
 #define PAGE_PFCLASS_KEY @"PageClass"
 #define PAGE_INDEX_KEY @"PageIndex"
 #define PAGE_POST_KEY @"PostForPage" // the post this page belongs to
-#define PAGE_VIEW_TYPE @"PageViewType"
+#define PAGE_VIEW_TYPE @"AveType"
 
 #define POST_PFCLASS_KEY @"PostClass"
 #define POST_CHANNEL_KEY @"ChannelForPost" //the channel the post lives in

@@ -2001,12 +2001,7 @@
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_ROOT}/Google/Libraries\"",
-					"\"${PODS_ROOT}/GoogleAnalytics/Libraries\"",
-					"\"${PODS_ROOT}/GoogleNetworkingUtilities/Libraries\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
@@ -2040,12 +2035,7 @@
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"\"${PODS_ROOT}/Google/Libraries\"",
-					"\"${PODS_ROOT}/GoogleAnalytics/Libraries\"",
-					"\"${PODS_ROOT}/GoogleNetworkingUtilities/Libraries\"",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				ONLY_ACTIVE_ARCH = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myVerbatm.Verbatm;
