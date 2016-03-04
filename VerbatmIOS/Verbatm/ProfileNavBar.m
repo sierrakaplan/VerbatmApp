@@ -6,8 +6,6 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
-#import "ButtonScrollView.h"
-
 #import "CustomScrollingTabBar.h"
 #import "CustomNavigationBar.h"
 #import "Channel.h"

@@ -262,7 +262,7 @@
     
 }
 
--(void) postPOVToChannel:(Channel *)channel {
+-(void) postPostToChannel:(Channel *)channel {
 	//todo:
 }
 
