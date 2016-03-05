@@ -101,6 +101,10 @@
     self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
     else[self.view addSubview:self.postListVC.view];
+    
+    if(!self.currentlyBeingViewed){
+        [self.postListVC stopAllVideoContent];
+    }
 }
 
 -(void) createNavigationBar {

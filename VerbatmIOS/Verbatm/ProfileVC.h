@@ -38,5 +38,5 @@
 @property (nonatomic) Channel * startChannel;
 
 -(void) showPublishingProgress;
-
+@property (nonatomic) BOOL currentlyBeingViewed;//set when this view is selected
 @end

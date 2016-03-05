@@ -41,7 +41,6 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    //[self createContentListView];
     [self addPostListVC];
     [self addClearScreenGesture];
 }
@@ -76,6 +75,9 @@
     [self.postListContainerView setFrame:self.view.bounds];
     [self.postListContainerView addSubview:self.postListVC.view];
     [self.view addSubview:self.postListContainerView];
+    if(!self.currentlyBeingViewed){
+        [self.postListVC stopAllVideoContent];
+    }
 }
 
 #pragma mark - POVListSVController -

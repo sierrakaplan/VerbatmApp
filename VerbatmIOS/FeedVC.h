@@ -19,5 +19,6 @@
 @interface FeedVC : UIViewController
 
 @property (strong, nonatomic) id<FeedVCDelegate> delegate;
+@property (nonatomic) BOOL currentlyBeingViewed;//set when this view is selected
 
 @end

@@ -34,6 +34,8 @@
 @property (nonatomic) OpenCollectionView * rearrangeView;
 @property (nonatomic) UIButton * rearrangeButton;
 
+@property (nonatomic) UIImageView * firstVideoFrame;
+
 @end
 
 
@@ -99,6 +101,10 @@
 	} else {
 		[self.videoPlayer prepareVideoFromArray:videoList];
 	}
+    
+    
+    
+    
 	self.videoList = videoList;
 }
 
@@ -184,6 +190,13 @@
 }
 
 #pragma mark - Lazy Instantiation -
+
+
+
+-(UIImageView *)firstVideoFrame{
+    if(!_firstVideoFrame)_firstVideoFrame = [[UIImageView alloc] initWithFrame:self.bounds];
+    return _firstVideoFrame;
+}
 
 -(VideoPlayerView*) videoPlayer {
 	if (!_videoPlayer) {

@@ -36,7 +36,7 @@
 
 
 @interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate,
-								ProfileVCDelegate, UserAndChannelListsTVCDelegate>
+								ProfileVCDelegate, UserAndChannelListsTVCDelegate, UITabBarControllerDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
@@ -51,6 +51,12 @@
 
 
 @property (nonatomic) UserAndChannelListsTVC * channelListView;
+
+//the view controller in the tab bar that is currentl
+//doesn't store the ContentDev -- so when returning from segue it has
+//the previous allocation
+@property (nonatomic) UIViewController * currentViewController;
+
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
@@ -134,6 +140,7 @@
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
     self.tabBarController.selectedViewController = self.feedVC;
+    self.currentViewController = self.feedVC;
 	[self formatTabBar];
 }
 
@@ -249,7 +256,31 @@
     [self bringUpLogin];
 }
 
-
+- (void)tabBarController:(UITabBarController *)tabBarController
+ didSelectViewController:(UIViewController *)viewController
+{
+    NSLog(@"controller class: %@", NSStringFromClass([viewController class]));
+    NSLog(@"controller title: %@", viewController.title);
+    
+    //make sure they selected a new view
+    if (self.currentViewController != viewController) {
+        if (viewController == self.profileVC)
+        {
+            
+        } else if (viewController == self.feedVC)
+        {
+        }else if (viewController == self.channelListView)
+        {
+        }else
+        {
+            //It's the ADK and we do nothing for now
+        }
+        
+        self.currentViewController = viewController;
+    }
+    
+    
+}
 
 #pragma mark - Handle Login -
 

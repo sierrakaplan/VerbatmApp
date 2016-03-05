@@ -45,5 +45,6 @@
 -(void)presentAllVerbatmChannels;
 
 @property (nonatomic) id<UserAndChannelListsTVCDelegate> listDelegate;
+@property (nonatomic) BOOL currentlyBeingViewed;//set when this view is selected
 
 @end

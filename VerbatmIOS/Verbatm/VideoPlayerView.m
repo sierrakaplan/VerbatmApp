@@ -45,7 +45,7 @@
 		self.videoLoading = NO;
 		self.playVideoAfterLoading = NO;
 		self.clearsContextBeforeDrawing = YES;
-		[self setBackgroundColor:[UIColor blackColor]];
+		[self setBackgroundColor:[UIColor clearColor]];
 	}
 	return self;
 }
@@ -124,7 +124,7 @@
 	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 	//TODO: testing
-	[self.player addObserver:self forKeyPath:@"rate" options:0 context:nil];
+	//[self.player addObserver:self forKeyPath:@"rate" options:0 context:nil];
 	// Create an AVPlayerLayer using the player
 	if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
 	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
@@ -171,7 +171,7 @@
 			[self playVideo];
 		} else {
 			NSLog(@"play back won't keep up");
-			self.videoLoadingImageView.hidden = NO;
+			//self.videoLoadingImageView.hidden = NO;
 		}
 	}
 }
@@ -296,9 +296,10 @@
 		for (UIView* view in self.subviews) {
 			[view removeFromSuperview];
 		}
-
+        [self removePlayerItemObserver];
+        
 		self.layer.sublayers = nil;
-		[self removePlayerItemObserver];
+		
 		[self.playerLayer removeFromSuperlayer];
 		self.layer.sublayers = nil;
 		self.muteButton = nil;
@@ -319,6 +320,8 @@
 	@try{
 		[self.playerItem removeObserver:self forKeyPath:@"status"];
         [self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
+        //[self.playerItem removeObserver:self forKeyPath:@"rate"];
+
 	}@catch(id anException){
 		//do nothing, obviously it wasn't attached because an exception was thrown
 	}
