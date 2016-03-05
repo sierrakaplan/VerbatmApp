@@ -10,20 +10,18 @@
 
 @interface Channel ()
 @property (nonatomic, readwrite) NSString * name;
-@property (nonatomic, readwrite) NSNumber * numberOfFollowers;
-@property (nonatomic, readwrite) PFObject * parseChannelObject;//name of user that owns the channel TODO--SET THIS OBJECT
+@property (nonatomic, readwrite) PFObject * parseChannelObject;
 
 
 @end
 
 @implementation Channel
--(instancetype) initWithChannelName:(NSString *) channelName numberOfFollowers:(NSNumber *) numberOfFollowers
+-(instancetype) initWithChannelName:(NSString *) channelName
               andParseChannelObject:(PFObject *) parseChannelObject{
     
     self = [super init];
     if(self){
         self.name = channelName;
-        self.numberOfFollowers = numberOfFollowers;
         self.parseChannelObject = (parseChannelObject) ? parseChannelObject : NULL;
     }
     return self;

@@ -130,18 +130,18 @@
 #define PUBLISH_BUTTON_LABEL_COLOR_INACTIVE grayColor
 
 
-#pragma mark - AVES -
+#pragma mark - Page Views -
 
-#define AVE_BACKGROUND_COLOR blackColor
+#define PAGE_BACKGROUND_COLOR blackColor
 
 #pragma mark Text
 
-#define TEXT_AVE_FONT DEFAULT_FONT
-#define TEXT_AVE_FONT_SIZE 20
-#define TEXT_AVE_COLOR blackColor
+#define TEXT_PAGE_VIEW_FONT DEFAULT_FONT
+#define TEXT_PAGE_VIEW_FONT_SIZE 20
+#define TEXT_PAGE_VIEW_COLOR blackColor
 
-#define TEXT_OVER_AVE_BACKGROUND_ALPHA 0.7
-#define TEXT_OVER_AVE_PULLBAR_COLOR clearColor
+#define TEXT_PAGE_VIEW_BACKGROUND_ALPHA 0.7
+#define TEXT_PAGE_VIEW_PULLBAR_COLOR clearColor
 
 #pragma mark Images
 

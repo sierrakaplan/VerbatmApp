@@ -16,5 +16,6 @@
 + (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url;
 + (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url;
 //decompress our video file
-+(NSData *)gzipInflate:(NSData*)data;
++ (NSData *)gzipInflate:(NSData*)data;
+
 @end

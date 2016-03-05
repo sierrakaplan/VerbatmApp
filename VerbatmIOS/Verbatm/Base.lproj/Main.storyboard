@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="14F1509" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9532" systemVersion="15C50" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="f1t-Lb-Erp">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9530"/>
@@ -69,24 +69,10 @@
             </objects>
             <point key="canvasLocation" x="-2700" y="74"/>
         </scene>
-        <!--Video Test-->
-        <scene sceneID="w5W-Uz-km5">
-            <objects>
-                <viewController id="G7Q-Nk-gtA" customClass="VideoTest" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="9jz-tt-sa4">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="oHw-Fn-n4R" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2055" y="-62"/>
-        </scene>
         <!--Article Display VC-->
         <scene sceneID="IFb-Qc-Bhx">
             <objects>
-                <viewController storyboardIdentifier="article_display_vc" id="ydU-Jy-lXO" userLabel="Article Display VC" customClass="ArticleDisplayVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="article_display_vc" id="ydU-Jy-lXO" userLabel="Article Display VC" customClass="PostDisplayVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="gQu-JC-VDi">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -250,20 +236,6 @@
             </objects>
             <point key="canvasLocation" x="-4671" y="-2673"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="x8I-zL-3vg">
-            <objects>
-                <viewController id="KhV-gL-pMu" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="dJF-gB-18R">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="cAY-o8-4QM" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-4041" y="-2821"/>
-        </scene>
         <!--Terms And ConditionsVC-->
         <scene sceneID="Igc-tv-5Nf">
             <objects>
@@ -348,24 +320,6 @@
             </objects>
             <point key="canvasLocation" x="-3989" y="-1321"/>
         </scene>
-        <!--Verbatm Explanation-->
-        <scene sceneID="d4R-xX-vw4">
-            <objects>
-                <viewController storyboardIdentifier="verbatm_explanation_vc" title="Verbatm Explanation" id="DnR-sI-l2h" customClass="VerbatmExplanationVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="N1e-7P-uGA">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                    <connections>
-                        <segue destination="4yB-jA-6Vi" kind="unwind" identifier="segue_id_unwind_from_question_page" unwindAction="unwindToMediaDevVC:" id="hHt-T7-90e"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="khH-Fz-yFs" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <exit id="4yB-jA-6Vi" userLabel="Exit" sceneMemberID="exit"/>
-            </objects>
-            <point key="canvasLocation" x="-3096" y="-1617"/>
-        </scene>
         <!--User Drafts-->
         <scene sceneID="i0X-XU-PPL">
             <objects>
@@ -414,7 +368,7 @@
         <!--User Article Display-->
         <scene sceneID="wLm-HZ-LGJ">
             <objects>
-                <viewController storyboardIdentifier="user_article_display_vc" title="User Article Display" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fb6-20-IL6" customClass="ArticleDisplayVC" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="user_article_display_vc" title="User Article Display" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fb6-20-IL6" customClass="PostDisplayVC" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="S9s-GP-1Ky">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -424,19 +378,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o0d-Fd-4uJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-4128" y="-471"/>
-        </scene>
-        <!--View Controller-->
-        <scene sceneID="Bp6-TU-7aS">
-            <objects>
-                <viewController id="Ghb-hZ-Bpl" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="dyc-Nj-zKW">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="927-aE-JQX" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
         </scene>
     </scenes>
     <resources>

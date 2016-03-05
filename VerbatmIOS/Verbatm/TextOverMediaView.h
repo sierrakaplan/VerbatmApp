@@ -6,7 +6,7 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
-//	TextOverMediaView takes care of displaying and editing text over an image or a video, within an AVE.
+//	TextOverMediaView takes care of displaying and editing text over an image or a video, within a Page.
 
 #import <UIKit/UIKit.h>
 @interface TextOverMediaView : UIView

@@ -5,6 +5,11 @@
 //  Created by Iain Usiri on 8/29/14.
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
+//	The content dev VC is in charge of almost all of the creation process -
+// 	it handles displaying the channel the post will be published to, all of the pinch views
+// 	in the post, and all of the logic for combining pinch views, pinching apart, and in
+//	general adding media. It also is responsible for bringing up the MediaDevVC to capture media
+//	(the camera view) and the Preview Mode where users can further edit their posts.
 
 #import <UIKit/UIKit.h>
 #import "CustomNavigationBar.h"
@@ -13,14 +18,6 @@
 @class PinchView;
 @class SingleMediaAndTextPinchView;
 @import Photos;
-
-// Delegate tells when pull bar should be shown, hidden,
-//or when undo and preview are/n't possible
-@protocol ContentDevVCDelegate <NSObject>
-
--(void) povPublishedWithUserName:(NSString*)userName andTitle:(NSString*)title andProgressObject:(NSProgress*)progress;
-
-@end
 
 @interface ContentDevVC : UIViewController
 
@@ -33,13 +30,8 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
 
-
-
-//Delegate in order to tell parent view controller when pull bar should be changed
-@property (strong, nonatomic) id<ContentDevVCDelegate> delegate;
 @property (strong, nonatomic) UIPickerView *titleField;
 @property (nonatomic) NSUInteger currentPresentedPickerRow;
-
 
 @property (strong, nonatomic) CustomNavigationBar* navBar;
 

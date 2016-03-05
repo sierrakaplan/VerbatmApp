@@ -1,45 +1,31 @@
 //
-//  profileVC.m
+//  ProfileVC.m
 //  Verbatm
 //
 //  Created by Iain Usiri on 8/29/15.
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "ArticleDisplayVC.h"
-
 #import "CreateNewChannelView.h"
 #import "Channel_BackendObject.h"
 
 #import "Durations.h"
 
-#import "GTLVerbatmAppVerbatmUser.h"
-
-#import "LocalPOVs.h"
-
-#import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
 
-#import "POVScrollView.h"
 #import "ProfileVC.h"
 #import "ProfileNavBar.h"
-#import "POVLoadManager.h"
 #import "PostListVC.h"
-//#import "POVListScrollViewVC.h"
 
-#import "Post_BackendObject.h"
-#import "POVView.h"
 #import "PublishingProgressManager.h"
 
-#import "SharePOVView.h"
+#import "SharePostView.h"
 #import "SegueIDs.h"
-#import "SizesAndPositions.h"
 #import "SettingsVC.h"
 
-#import "UIView+Effects.h"
-#import "UserManager.h"
-
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate, PublishingProgressProtocol>
+@interface ProfileVC() <ProfileNavBarDelegate,
+					UIScrollViewDelegate, CreateNewChannelViewProtocol,
+					SharePostViewDelegate, PublishingProgressProtocol>
 
 @property (strong, nonatomic) PostListVC * postListVC;
 
@@ -48,14 +34,13 @@
 @property (nonatomic) CGRect profileNavBarFrameOffScreen;
 @property (nonatomic) BOOL contentCoveringScreen;
 
-@property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic, strong) NSString * currentThreadInView;
 
 @property (strong, nonatomic) NSArray* channels;
 
 @property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 @property (nonatomic) UIView * darkScreenCover;
-@property (nonatomic) SharePOVView * sharePOVView;
+@property (nonatomic) SharePostView * sharePOVView;
 @property (nonatomic) Channel_BackendObject * channelBackendManager;
 
 #pragma mark Publishing
@@ -64,24 +49,22 @@
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
-#define PROFILE_BACKGROUND_IMAGE @"d1"
+#define PROFILE_BACKGROUND_IMAGE @"d1" //todo:
 
 @end
 
 @implementation ProfileVC
+
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.contentCoveringScreen = YES;
-    //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-        //[self createAndAddListVC];
         [self addPostListVC];
         [self createNavigationBar];
         [self addClearScreenGesture];
     }];
     self.view.clipsToBounds = YES;
 }
-
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
@@ -93,7 +76,7 @@
 }
 
 -(void) viewWillAppear:(BOOL)animated{
-    if(self.postListVC)[self.postListVC continueVideoContent];
+    if(self.postListVC) [self.postListVC continueVideoContent];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -102,25 +85,8 @@
 
 -(void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    if(self.postListVC)[self.postListVC stopAllVideoContent];
+    if(self.postListVC) [self.postListVC stopAllVideoContent];
 }
-
-//-(void) createAndAddListVC{
-//    self.postListVC = [[POVListScrollViewVC alloc] init];
-//    self.postListVC.listOwner = self.userOfProfile;
-//    if(self.startChannel){
-//        self.postListVC.channelForList = self.startChannel ;
-//    }else{
-//        self.postListVC.channelForList = [self.channels firstObject];
-//    }
-//    
-//    self.postListVC.listType = listChannel;
-//    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
-//    if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
-//    else [self.view addSubview:self.postListVC.view];
-//}
-
-
 
 -(void) addPostListVC {
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
@@ -130,21 +96,11 @@
     [flowLayout setItemSize:self.view.frame.size];
     self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
     self.postListVC.listOwner = self.userOfProfile;
-    if(self.startChannel){
-        self.postListVC.channelForList = self.startChannel;
-    }else{
-        self.postListVC.channelForList = [self.channels firstObject];
-    }
-
+    self.postListVC.channelForList = [self.channels firstObject];
     self.postListVC.listType = listChannel;
     self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
     else[self.view addSubview:self.postListVC.view];
-}
-
-
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView{
-    
 }
 
 -(void) createNavigationBar {
@@ -155,8 +111,7 @@
     
     self.profileNavBar = [[ProfileNavBar alloc]
                           initWithFrame:self.profileNavBarFrameOnScreen
-                          andChannels:self.channels
-                          startChannel:self.startChannel
+                          andChannels: self.channels
                           andUser:self.userOfProfile
                           isCurrentLoggedInUser:self.isCurrentUserProfile];
     
@@ -172,22 +127,8 @@
     [self.view addGestureRecognizer:singleTap];
 }
 
-
-
-#pragma mark -POV ScrollView custom delegate -
-
--(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
-    //sierra TODO
-    //code to register a like/dislike from the user
-}
-
--(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
-    [self presentShareSelectionViewStartOnChannels:NO];
-    
-}
-
-
 #pragma mark POVListScrollView Delegate -
+
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
     [self presentHeadAndFooter:YES];
     [self presentShareSelectionViewStartOnChannels:NO];
@@ -200,7 +141,6 @@
     
 }
 
-
 -(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
     if(self.sharePOVView){
         [self.sharePOVView removeFromSuperview];
@@ -209,7 +149,7 @@
     
     CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
     CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+    self.sharePOVView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
     self.sharePOVView.delegate = self;
     [self.view addSubview:self.sharePOVView];
     [self.view bringSubviewToFront:self.sharePOVView];
@@ -293,7 +233,7 @@
     [self clearChannelCreationView];
 }
 
--(void)clearChannelCreationView{
+-(void) clearChannelCreationView{
     if(self.createNewChannelView){
         [self removeScreenDarkener];
         [self.createNewChannelView removeFromSuperview];
@@ -303,16 +243,20 @@
 
 
 #pragma mark -Share Seletion View Protocol -
--(void)cancelButtonSelected{
+
+-(void) cancelButtonSelected{
     [self removeSharePOVView];
 }
 
--(void)sharePostWithComment:(NSString *) comment{
+-(void) sharePostWithComment:(NSString *) comment {
     //todo--sierra
     //code to share post to facebook etc
     
     [self removeSharePOVView];
-    
+}
+
+-(void) postPostToChannel:(Channel *)channel {
+	//todo:
 }
 
 #pragma mark -Navigate profile-
@@ -330,11 +274,6 @@
 -(void) selectChannel: (Channel *) channel {
 	[self.profileNavBar selectChannel: channel];
 	[self.postListVC changeCurrentChannelTo:channel];
-}
-
--(void) switchStoryListToThread:(NSString *) newChannel{
-    [self.postDisplayVC cleanUp];
-    [self.postDisplayVC presentContentWithPOVType:POVTypeUser andChannel:newChannel];
 }
 
 -(void) presentHeadAndFooter:(BOOL) shouldShow {
@@ -377,14 +316,6 @@
     }
 }
 
--(void) offScreen {
-    [self.postDisplayVC offScreen];
-}
-
--(void) onScreen {
-    [self.postDisplayVC onScreen];
-}
-
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Make sure your segue name in storyboard is the same as this line
     if ([[segue identifier] isEqualToString:SETTINGS_PAGE_MODAL_SEGUE]){
@@ -392,7 +323,7 @@
         SettingsVC * vc = [segue destinationViewController];
         
         //set the username of the currently logged in user
-        vc.userName  = [[PFUser currentUser] valueForKey:USER_USER_NAME_KEY];
+        vc.userName  = [[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY];
     }
 }
 
@@ -425,12 +356,6 @@
 	NSLog(@"PUBLISHING FAILED");
 }
 
-#pragma mark - Article Display Delegate methods -
-
--(void) userLiked:(BOOL)liked POV:(PovInfo *)povInfo {
-	// do nothing
-}
-
 #pragma mark - Lazy Instantiation -
 
 -(Channel_BackendObject *) channelBackendManager {
@@ -443,10 +368,13 @@
 -(UIView*) publishingProgressView {
 	if (!_publishingProgressView) {
 		_publishingProgressView = [[UIView alloc] initWithFrame:CGRectMake(0.f, self.profileNavBar.frame.size.height,
-																		   self.view.frame.size.width, 10.f)];
+																		   self.view.frame.size.width, 20.f)];
 		[_publishingProgressView setBackgroundColor:[UIColor blackColor]];
 		self.progressBar = [[UIProgressView alloc] initWithProgressViewStyle:UIProgressViewStyleBar];
-		[self.progressBar setFrame:CGRectMake(5.f, 5.f, self.view.frame.size.width - 10.f, self.progressBar.frame.size.height)];
+		[self.progressBar setTrackTintColor:[UIColor grayColor]];
+		[self.progressBar setFrame:CGRectMake(15.f, 15.f, self.view.frame.size.width - 30.f, self.progressBar.frame.size.height)];
+		[self.progressBar setTransform:CGAffineTransformMakeScale(1.0, 3.0)];
+		[self.progressBar.layer setCornerRadius:10.f];
 		if ([self.progressBar respondsToSelector:@selector(setObservedProgress:)]) {
 			[self.progressBar setObservedProgress: self.publishingProgress];
 		} else {

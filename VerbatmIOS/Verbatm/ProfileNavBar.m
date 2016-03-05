@@ -1,12 +1,10 @@
 //
-//  profileNavBar.m
+//  ProfileNavBar.m
 //  Verbatm
 //
 //  Created by Iain Usiri on 11/23/15.
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
-
-#import "ButtonScrollView.h"
 
 #import "CustomScrollingTabBar.h"
 #import "CustomNavigationBar.h"
@@ -15,7 +13,7 @@
 
 #import "Durations.h"
 
-#import "followInfoBar.h"
+#import "FollowInfoBar.h"
 #import "Follow_BackendManager.h"
 
 #import "Icons.h"
@@ -30,12 +28,12 @@
 #import "Styles.h"
 
 
-@interface ProfileNavBar () <CustomScrollingTabBarDelegate, ProfileInformationBarProtocol, followInfoBarDelegate>
+@interface ProfileNavBar () <CustomScrollingTabBarDelegate, ProfileInformationBarProtocol, FollowInfoBarDelegate>
 
 @property (nonatomic, strong) ProfileInformationBar * profileHeader;
 @property (nonatomic, strong) CustomScrollingTabBar* threadNavScrollView;
 
-@property (nonatomic) followInfoBar * followInfoBar;
+@property (nonatomic) FollowInfoBar * followInfoBar;
 
 @property (nonatomic, strong) UIView * arrowExtension;
 
@@ -46,22 +44,20 @@
 
 #define THREAD_BAR_BUTTON_FONT_SIZE 17.f
 
-#define SETTINGS_BUTTON_SIZE 40.f
-#define SETTINGS_BUTTON_OFFSET 10.f
-
 
 @end
 
 @implementation ProfileNavBar
 
 //expects an array of thread names (nsstring)
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels startChannel:(Channel *) startChannel andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
     self = [super initWithFrame:frame];
     if(self){
-        [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
-		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
+        [self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY] isCurrentUser:isCurrentUser];
         [self setFolloweButtonInHeader];
-        [self createFollowersInfoViewWithUser:profileUser];
+		Channel* startChannel = (channels.count > 0) ? channels[0] : nil;
+		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
+		[self createFollowersInfoViewWithUser:profileUser andStartChannel: startChannel];
         [self createArrowExtesion];
         [self createPanGesture];
         [self createTapGesture];
@@ -76,6 +72,7 @@
                                                  name:NOTIFICATION_USER_LOGIN_SUCCEEDED
                                                object:nil];
 }
+
 -(void) loginSucceeded: (NSNotification*) notification {
     [self.threadNavScrollView removeFromSuperview];
     self.threadNavScrollView = nil;
@@ -92,23 +89,23 @@
     }
 }
 
--(void)createFollowersInfoViewWithUser:(PFUser *) profileUser {
-    
-    NSNumber * numberOfFollowers = [profileUser valueForKey:USER_NUMBER_OF_FOLLOWERS];
-    NSNumber * numberFollowing = [profileUser valueForKey:USER_NUMBER_OF_FOLLOWING];
-    
+-(void)createFollowersInfoViewWithUser:(PFUser *) profileUser andStartChannel: (Channel *) startChannel {
+
     self.followersInfoFrameClosed = CGRectMake(0.f, self.threadNavScrollView.frame.origin.y +
                                       self.threadNavScrollView.frame.size.height,
                                       self.frame.size.width, 0);
     self.followersInfoFrameOpen = CGRectMake(0.f, self.threadNavScrollView.frame.origin.y +
                                                 self.threadNavScrollView.frame.size.height,
                                                 self.frame.size.width, USER_CELL_VIEW_HEIGHT);
-    
-    //to-do -- get the number of people I follow here and the number of people that follow me
 
-    self.followInfoBar = [[followInfoBar alloc] initWithFrame:self.followersInfoFrameClosed WithNumberOfFollowers:numberOfFollowers andWhoIFollow:numberFollowing];
+    self.followInfoBar = [[FollowInfoBar alloc] initWithFrame:self.followersInfoFrameClosed];
     self.followInfoBar.delegate = self;
     [self addSubview:self.followInfoBar];
+
+	[Follow_BackendManager numberChannelsUserFollowing:profileUser withCompletionBlock:^(NSNumber *numFollowing) {
+		[self.followInfoBar setNumFollowing: numFollowing];
+	}];
+	[self updateFollowersLabel: startChannel];
 }
 
 -(void)createTapGesture{
@@ -122,7 +119,6 @@
     [self addGestureRecognizer:panGesture];
 }
 
-
 -(void)userDidTap:(UIPanGestureRecognizer *) pan{
     if(self.followInfoBar.frame.size.height == self.followersInfoFrameOpen.size.height){
         //the bar is greater than halfway open
@@ -132,26 +128,22 @@
     }
 }
 
-
 -(void)userDidPan:(UIPanGestureRecognizer *) pan{
     
     if(pan.state == UIGestureRecognizerStateBegan){
         if(pan.numberOfTouches != 1) return;
         self.panLastLocation = [pan locationOfTouch:0 inView:self];
-    }else if (pan.state == UIGestureRecognizerStateChanged){
+    } else if (pan.state == UIGestureRecognizerStateChanged){
         if(pan.numberOfTouches != 1) return;
         CGPoint currentPoint = [pan locationOfTouch:0 inView:self];
         CGFloat diff = currentPoint.y - self.panLastLocation.y;
         self.panLastLocation = currentPoint;
         CGFloat newFollowerFrameHeight = self.followInfoBar.frame.size.height + diff;
         
-        if(newFollowerFrameHeight >= 0){
-            
-            if(newFollowerFrameHeight >= self.followersInfoFrameOpen.size.height){
-                
+        if(newFollowerFrameHeight >= 0) {
+            if (newFollowerFrameHeight >= self.followersInfoFrameOpen.size.height) {
                 self.followInfoBar.frame = self.followersInfoFrameOpen;
-                
-            }else{
+            } else {
 
                 CGRect followInfoBarFrame = CGRectMake(self.followInfoBar.frame.origin.x,
                                                   self.followInfoBar.frame.origin.y,
@@ -169,21 +161,19 @@
                                               self.arrowExtension.frame.size.height);
             self.arrowExtension.frame = arrowBarFrame;
             [self adjustOurOwnFrame];
-            
         }
-    }else {
-        if(self.followInfoBar.frame.size.height >= self.followersInfoFrameOpen.size.height/2.f){
+    } else {
+        if (self.followInfoBar.frame.size.height >= self.followersInfoFrameOpen.size.height/2.f) {
             //the bar is greater than halfway open
             [self snapViewDown:YES];
-        }else{
+        } else{
             [self snapViewDown:NO];
         }
     }
 }
 
-
 -(void)snapViewDown:(BOOL) down{
-    if(down){
+    if (down){
         [UIView animateWithDuration:SNAP_ANIMATION_DURATION animations:^{
             self.followInfoBar.frame = self.followersInfoFrameOpen;
             CGRect arrowBarFrame = CGRectMake(self.arrowExtension.frame.origin.x,
@@ -194,7 +184,7 @@
             self.arrowExtension.frame = arrowBarFrame;
             [self adjustOurOwnFrame];
         }];
-    }else{
+    } else{
         [UIView animateWithDuration:SNAP_ANIMATION_DURATION animations:^{
             self.followInfoBar.frame = self.followersInfoFrameClosed;
             CGRect arrowBarFrame = CGRectMake(self.arrowExtension.frame.origin.x,
@@ -277,18 +267,26 @@
 }
 
 //show the people that I am following
--(void)showWhoIAmFollowingSelected {
+-(void)showWhoIAmFollowingButtonSelected {
     [self.delegate followingOptionSelected];
 }
 
 -(void) selectChannel: (Channel*) channel {
 	[self.threadNavScrollView selectChannel: channel];
+	[self updateFollowersLabel: channel];
+}
+
+-(void) updateFollowersLabel: (Channel*) channel {
+	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
+		[self.followInfoBar setNumFollowers: numFollowers];
+	}];
 }
 
 #pragma mark - CustomScrollingTabBarDelegate methods -
 
 -(void) tabPressedWithChannel:(Channel *)channel {
 	[self setFolloweButtonInHeader];
+	[self updateFollowersLabel: channel];
 	[self.delegate newChannelSelected:channel];
 }
 

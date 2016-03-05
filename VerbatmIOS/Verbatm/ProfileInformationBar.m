@@ -66,7 +66,7 @@
 /*the user has logged in so we can update our username*/
     [self.userTitleName removeFromSuperview];
     self.userTitleName = nil;
-    [self createProfileHeaderWithUserName:[[PFUser currentUser] valueForKey:USER_USER_NAME_KEY]];
+    [self createProfileHeaderWithUserName:[[PFUser currentUser] valueForKey:VERBATM_USER_NAME_KEY]];
 }
 
 -(void)formatView {
@@ -111,9 +111,6 @@
 //If it's my profile it's follower(s) and if it's someone else's profile
 //it's follow
 -(void) createFollowButton_AreWeFollowingCurrChannel:(BOOL) areFollowing{
-    return;//Short circuit for now
-    
-    
     if(self.followButton){
         [self.followButton removeFromSuperview];
         self.followButton = nil;
@@ -167,18 +164,13 @@
     if(self.isFollowigProfileUser){
         newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
         self.isFollowigProfileUser = NO;
-        
-        
-    }else{
+    } else{
         newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
         self.isFollowigProfileUser = YES;
     }
     [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
     [self.followButton setNeedsDisplay];
     [self.delegate followButtonSelectedShouldFollowUser: self.isFollowigProfileUser];
-    
-    
-    
 }
 
 -(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel{

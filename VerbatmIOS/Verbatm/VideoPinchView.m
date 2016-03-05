@@ -9,7 +9,6 @@
 #import "AVAsset+Utilities.h"
 #import "VideoPinchView.h"
 #import "Icons.h"
-#import "POVLoadManager.h"
 #import "Styles.h"
 
 @interface VideoPinchView()

@@ -6,28 +6,30 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
-#import "followInfoBar.h"
+#import "FollowInfoBar.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "Notifications.h"
 
-@interface followInfoBar ()
+@interface FollowInfoBar ()
 
-@property (nonatomic) UIButton * myFollowers;
-@property (nonatomic) UIButton * whoIAmFollowing;
+@property (nonatomic, strong) UIButton *myFollowersButton;
+@property (nonatomic, strong) UIButton *whoIAmFollowingButton;
 
+@property (nonatomic, strong) UILabel *myFollowersLabel;
+@property (nonatomic, strong) UILabel *followingLabel;
 
 @end
 
-@implementation followInfoBar
+@implementation FollowInfoBar
 
 
--(instancetype)initWithFrame:(CGRect)frame WithNumberOfFollowers:(NSNumber *) myFollowers andWhoIFollow:(NSNumber *) whoIFollow {
+-(instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if(self){
-        [self createButtonsWithNumberOfFollowers:myFollowers andWhoIFollow:whoIFollow];
+        [self createButtons];
         [self registerForNotifications];
         [self formatView];
     }
@@ -42,16 +44,10 @@
 }
 
 -(void) loginSucceeded: (NSNotification*) notification {
-    /*the user has logged in so we can update their follower info*/
-    
-    NSNumber * numberOfFollowers = [[PFUser currentUser] valueForKey:USER_NUMBER_OF_FOLLOWERS];
-    NSNumber * numberFollowing = [[PFUser currentUser] valueForKey:USER_NUMBER_OF_FOLLOWING];
-    
-    [self createButtonsWithNumberOfFollowers:numberOfFollowers andWhoIFollow:numberFollowing];
-    
+    [self createButtons];
 }
 
--(void)formatView{
+-(void) formatView{
     
     [self setBackgroundColor:[UIColor colorWithWhite:1.0 alpha:0.7]];
     
@@ -60,30 +56,29 @@
 }
 
 
--(void)createButtonsWithNumberOfFollowers:(NSNumber *) myFollowers andWhoIFollow:(NSNumber *) whoIFollow{
+-(void) createButtons {
     
-    CGRect myFollowersFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, USER_CELL_VIEW_HEIGHT);
+    CGRect myFollowersButtonFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, USER_CELL_VIEW_HEIGHT);
     
-    CGRect whoIAmFollowingFrame = CGRectMake(self.frame.size.width/2.f,0.f, self.frame.size.width/2.f, USER_CELL_VIEW_HEIGHT);
+    CGRect whoIAmFollowingButtonFrame = CGRectMake(self.frame.size.width/2.f,0.f, self.frame.size.width/2.f, USER_CELL_VIEW_HEIGHT);
     
-    if(self.myFollowers){
-        [self.myFollowers removeFromSuperview];
-        [self.whoIAmFollowing removeFromSuperview];
-        self.myFollowers = nil;
-        self.whoIAmFollowing = nil;
+    if(self.myFollowersButton){
+        [self.myFollowersButton removeFromSuperview];
+        [self.whoIAmFollowingButton removeFromSuperview];
+        self.myFollowersButton = nil;
+        self.whoIAmFollowingButton = nil;
     }
     
-    self.myFollowers = [self getInfoViewWithTitle:@"Follower(s)" andNumber:myFollowers andViewFrame:myFollowersFrame andSelectionSelector:@selector(myFollowersListSelected)];
-    self.whoIAmFollowing = [self getInfoViewWithTitle:@"Following" andNumber:whoIFollow andViewFrame:whoIAmFollowingFrame andSelectionSelector:@selector(whoIAmFollowingSeleceted)];
+    self.myFollowersButton = [self getInfoViewWithTitle:@"Follower(s)" andViewFrame:myFollowersButtonFrame andSelectionSelector:@selector(myFollowersButtonListSelected)];
+    self.whoIAmFollowingButton = [self getInfoViewWithTitle:@"Following" andViewFrame:whoIAmFollowingButtonFrame andSelectionSelector:@selector(whoIAmFollowingButtonSeleceted)];
     
-    [self addSubview:self.myFollowers];
-    [self addSubview:self.whoIAmFollowing];
+    [self addSubview:self.myFollowersButton];
+    [self addSubview:self.whoIAmFollowingButton];
 }
 
 
-
 //note -- selector is for when the button is pressed
--(UIButton *) getInfoViewWithTitle:(NSString *) title andNumber:(NSNumber *) number andViewFrame:(CGRect) viewFrame andSelectionSelector:(SEL) selector{
+-(UIButton *) getInfoViewWithTitle:(NSString *) title andViewFrame:(CGRect) viewFrame andSelectionSelector:(SEL) selector{
     
     CGRect titleFrame = CGRectMake(0.f,0.f, self.frame.size.width/2.f, USER_CELL_VIEW_HEIGHT/2.f);
     
@@ -97,34 +92,28 @@
                                             NSFontAttributeName:
                                                 [UIFont fontWithName:TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT size:TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT_SIZE],
                                             NSParagraphStyleAttributeName:paragraphStyle};
-    
-    
+
     //create bolded number
-    NSString * numberString = (number) ? [number stringValue] : @"0";
-    
+    NSString * numberString = @"0";
     NSAttributedString * numberAttributed = [[NSAttributedString alloc] initWithString:numberString attributes:informationAttribute];
-    
     NSAttributedString * titleAttributed = [[NSAttributedString alloc] initWithString:title attributes:informationAttribute];
-    
-    
     
     UILabel * titleLabel = [[UILabel alloc] initWithFrame:titleFrame];
     [titleLabel setBackgroundColor:[UIColor clearColor]];
     [titleLabel setAttributedText:titleAttributed];
     
-    
 
     UILabel * numberLabel = [[UILabel alloc] initWithFrame:numberFrame];
     [numberLabel setBackgroundColor:[UIColor clearColor]];
     [numberLabel setAttributedText:numberAttributed];
+	if ([title isEqualToString:@"Follower(s)"]) self.myFollowersLabel = numberLabel;
+	if ([title isEqualToString:@"Following"]) self.followingLabel = numberLabel;
     
     
     UIButton * baseView = [[UIButton alloc]initWithFrame:viewFrame];
     [baseView setBackgroundColor:[UIColor clearColor]];
     [baseView addTarget:self action:selector forControlEvents:UIControlEventTouchUpInside];
- 
-    
-    
+
     [baseView addSubview:titleLabel];
     [baseView addSubview:numberLabel];
     
@@ -135,26 +124,32 @@
     return baseView;
 }
 
+-(void) setNumFollowers: (NSNumber*) numFollowers {
+	NSMutableAttributedString *currentFollowersLabelText = [[NSMutableAttributedString alloc]
+															initWithAttributedString: self.myFollowersLabel.attributedText];
+	NSString *numFollowersString = [numFollowers stringValue];
+	[currentFollowersLabelText.mutableString setString: numFollowersString];
+	[self.myFollowersLabel setAttributedText: currentFollowersLabelText];
+}
+
+-(void) setNumFollowing: (NSNumber*) numFollowing {
+
+	NSMutableAttributedString *currentFollowersLabelText = [[NSMutableAttributedString alloc]
+															initWithAttributedString: self.followingLabel.attributedText];
+	NSString *numFollowingString = [numFollowing stringValue];
+	[currentFollowersLabelText.mutableString setString: numFollowingString];
+	[self.followingLabel setAttributedText: currentFollowersLabelText];
+}
 
 //list of people that follow me and the channels
--(void)myFollowersListSelected{
-    //to-do
+-(void)myFollowersButtonListSelected{
     [self.delegate showWhoIsFollowingMeSelected];
 }
 
 //list of people that I follow
--(void)whoIAmFollowingSeleceted{
-    //to-do
-    [self.delegate showWhoIAmFollowingSelected];
+-(void)whoIAmFollowingButtonSeleceted{
+    [self.delegate showWhoIAmFollowingButtonSelected];
 }
 
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

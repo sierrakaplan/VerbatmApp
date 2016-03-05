@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "ArticleDisplayVC.h"
 #import "Channel_BackendObject.h"
 #import "Durations.h"
 
@@ -14,32 +13,26 @@
 
 #import "Icons.h"
 
-#import "LocalPOVs.h"
-
 #import "Notifications.h"
 
 #import "PostListVC.h"
-//#import "POVListScrollViewVC.h"
 #import <Parse/PFUser.h>
 
-#import "SharePOVView.h"
+#import "SharePostView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, SharePOVViewDelegate>
-@property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
+@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate>
+
 @property (nonatomic) BOOL contentCoveringScreen;
 
 @property (nonatomic) CGRect povScrollViewFrame;
 @property (strong, nonatomic) PostListVC * postListVC;
 
-//@property (nonatomic) PostListVC * postListView;
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
 
+@property (nonatomic) SharePostView * sharePostView;
 
-@property (nonatomic) SharePOVView * sharePOVView;
-
-#define TRENDING_VC_ID @"trending_vc"
 #define VERBATM_LOGO_WIDTH 150.f
 
 @end
@@ -69,19 +62,6 @@
     if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
 
-
-//-(void) createContentListView {
-//    self.postListVC = [[POVListScrollViewVC alloc] init];
-//    self.postListVC.listOwner = [PFUser currentUser];
-//    self.postListVC.listType = listFeed;
-//    self.postListVC.isHomeProfileOrFeed =YES;
-//   // self.postListVC.delegate = self;
-//    [self.view addSubview:self.postListVC.view];
-//    self.postDisplayVC.delegate = self;
-//    [self.postDisplayVC didMoveToParentViewController:self];
-//}
-
-
 -(void) addPostListVC {
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -98,15 +78,12 @@
     [self.view addSubview:self.postListContainerView];
 }
 
+#pragma mark - POVListSVController -
 
-
-
-#pragma mark -POVListSVController-
--(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
-        [self presentShareSelectionViewStartOnChannels:YES];
-//    [self.delegate feedPovShareButtonSeletedForPOV:pov];
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
+	[self presentShareSelectionViewStartOnChannels:YES];
+    [self.delegate shareButtonSelectedForPostObject: post];
 }
-
 
 -(void)registerForNotifications{
 	//gets notified if there is no internet connection
@@ -130,6 +107,7 @@
 
     }
 }
+
 -(void)returnContentToScreen{
     [self.delegate showTabBar:YES];
     self.contentCoveringScreen = YES;
@@ -143,57 +121,53 @@
 }
 
 -(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
-    if(self.sharePOVView){
-        [self.sharePOVView removeFromSuperview];
-        self.sharePOVView = nil;
+    if(self.sharePostView){
+        [self.sharePostView removeFromSuperview];
+        self.sharePostView = nil;
     }
     
     CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
     CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
-    self.sharePOVView.delegate = self;
-    [self.view addSubview:self.sharePOVView];
-    [self.view bringSubviewToFront:self.sharePOVView];
+    self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+    self.sharePostView.delegate = self;
+    [self.view addSubview:self.sharePostView];
+    [self.view bringSubviewToFront:self.sharePostView];
     [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
         if(self.contentCoveringScreen) {
             [self removeContentFromScreen];
         }
-        self.sharePOVView.frame = onScreenFrame;
+        self.sharePostView.frame = onScreenFrame;
     }];
 }
 
--(void)cancelButtonSelected{
-    [self removeSharePOVView];
-}
--(void)postPOVToChannel:(Channel *) channel{
-    [self removeSharePOVView];
+-(void) cancelButtonSelected{
+    [self removeSharePostView];
 }
 
--(void)removeSharePOVView{
-    if(self.sharePOVView){
+-(void) postPostToChannel:(Channel *) channel{
+    [self removeSharePostView];
+}
+
+-(void)removeSharePostView{
+    if(self.sharePostView){
         CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
         
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-            self.sharePOVView.frame = offScreenFrame;
+            self.sharePostView.frame = offScreenFrame;
         }completion:^(BOOL finished) {
             if(finished){
-                [self.sharePOVView removeFromSuperview];
-                self.sharePOVView = nil;
+                [self.sharePostView removeFromSuperview];
+                self.sharePostView = nil;
             }
         }];
     }
 }
 
+#pragma mark - Share Post Delegate -
 
-
-//TODO
-//#pragma mark -POVScrollview delegate-
-//-(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
-//    [self.delegate feedPovLikeLiked:liked forPOV:povInfo];
-//}
-//-(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
-//    [self.delegate feedPovShareButtonSeletedForPOV:povInfo];
-//}
+-(void) sharePostWithComment: (NSString *)comment {
+	//todo:
+}
 
 #pragma mark - Network Connection Lost -
 
@@ -209,4 +183,5 @@
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
 }
+
 @end

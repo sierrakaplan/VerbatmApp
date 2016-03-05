@@ -10,21 +10,14 @@
 #import <Parse/PFObject.h>
 @protocol FeedVCDelegate <NSObject>
 
--(void)showTabBar: (BOOL) show;
--(void)feedPovShareButtonSeletedForPOV: (PFObject* ) pov;
--(void)feedPovLikeLiked:(BOOL) liked forPOV: (PFObject* ) pov;
+-(void) showTabBar: (BOOL) show;
+-(void) shareButtonSelectedForPostObject: (PFObject* ) post;
+-(void) likeButtonLiked:(BOOL) liked forPostObject: (PFObject* ) post;
 
 @end
 
 @interface FeedVC : UIViewController
 
 @property (strong, nonatomic) id<FeedVCDelegate> delegate;
-
-// animates the fact that a recent POV is publishing
--(void) showPOVPublishingWithUserName: (NSString*)userName andTitle: (NSString*) title
-					andProgressObject:(NSProgress *)publishingProgress;
-
-
-
 
 @end

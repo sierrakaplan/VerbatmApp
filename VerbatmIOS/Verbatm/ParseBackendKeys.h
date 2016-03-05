@@ -10,17 +10,12 @@
 #define ParseBackendKeys_h
 
 
-#define USER_USER_NAME_KEY @"VerbatmName" //different from the username which is used by fb on parse
-#define USER_NUMBER_OF_FOLLOWERS @"Followers" //people that follow this user
-#define USER_NUMBER_OF_FOLLOWING @"Following" //people this user is following
+#define VERBATM_USER_NAME_KEY @"VerbatmName" //different from the username which is used by fb on parse
 #define USER_RELATION_CHANNELS_FOLLOWING @"ChannelsFollowing"
-
 
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table
 #define FOLLOW_USER_KEY @"UserFollowing"//the user doing the following
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
-
-
 
 #define PHOTO_PFCLASS_KEY @"PhotoClass"
 #define PHOTO_TEXT_KEY @"PhotoText"
@@ -42,7 +37,7 @@
 #define PAGE_PFCLASS_KEY @"PageClass"
 #define PAGE_INDEX_KEY @"PageIndex"
 #define PAGE_POST_KEY @"PostForPage" // the post this page belongs to
-#define PAGE_AVE_TYPE @"AveType"
+#define PAGE_VIEW_TYPE @"AveType"
 
 #define POST_PFCLASS_KEY @"PostClass"
 #define POST_CHANNEL_KEY @"ChannelForPost" //the channel the post lives in
@@ -57,6 +52,5 @@
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"
 #define CHANNEL_NAME_KEY @"ChannelName"
 #define CHANNEL_NUM_POSTS_KEY @"NumPosts"
-#define CHANNEL_NUM_FOLLOWERS_KEY @"NumFollowers"
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
 #endif /* ParseBackendKeys_h */

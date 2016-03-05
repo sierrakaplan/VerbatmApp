@@ -6,66 +6,43 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import <AVFoundation/AVAudioSession.h>
-
-#import "ArticleDisplayVC.h"
 #import "Analytics.h"
 
 #import "CustomTabBarController.h"
 #import "ContentDevVC.h"
-#import "Channel.h"
-#import "ChannelOrUsernameCV.h"
 
 #import "Durations.h"
 
 #import "FeedVC.h"
 
-#import "GTLVerbatmAppVerbatmUser.h"
-
 #import "Icons.h"
-#import "InternetConnectionMonitor.h"
 
 #import "MasterNavigationVC.h"
-#import "MediaSessionManager.h"
 
 #import "Notifications.h"
 
-#import "POVPublisher.h"
-#import "PreviewDisplayView.h"
 #import "ProfileVC.h"
 #import "PublishingProgressManager.h"
 
 #import "StoryboardVCIdentifiers.h"
-#import "SharePOVView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-#import <Parse/Parse.h>
-#import <ParseFacebookUtilsV4/PFFacebookUtils.h>
-
 #import "UIImage+ImageEffectsAndTransforms.h"
-#import "UserSetupParameters.h"
-#import "UserManager.h"
-#import "UserPovInProgress.h"
 #import "UserAndChannelListsTVC.h"
-
-
-#import "VerbatmCameraView.h"
 
 #import <Crashlytics/Crashlytics.h>
 
 
-@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate, ProfileVCDelegate, SharePOVViewDelegate, UserAndChannelListsTVCDelegate>
+@interface MasterNavigationVC () <UITabBarControllerDelegate, FeedVCDelegate,
+								ProfileVCDelegate, UserAndChannelListsTVCDelegate>
 
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
-
-
-
 
 #pragma mark View Controllers in tab bar Controller
 
@@ -77,13 +54,9 @@
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
-
-
-
 #define DARK_GRAY 0.6f
 #define ADK_BUTTON_SIZE 40.f
 #define SELECTED_TAB_ICON_COLOR [UIColor colorWithRed:0.5 green:0.1 blue:0.1 alpha:1.f]
-
 
 @end
 
@@ -161,6 +134,50 @@
 	[self formatTabBar];
 }
 
+-(void)createTabBarViewController{
+	self.tabBarControllerContainerView.frame = self.view.bounds;
+	self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
+	self.tabBarController.tabBarHeight = TAB_BAR_HEIGHT;
+	[self.tabBarControllerContainerView addSubview:self.tabBarController.view];
+	[self addChildViewController:self.tabBarController];
+	self.tabBarController.delegate = self;
+}
+
+//the view controllers that will be tabbed
+-(void)createViewControllers {
+
+	self.channelListView = [[UserAndChannelListsTVC alloc] init];
+	self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil
+																	image:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
+															selectedImage:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]];
+	self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+
+
+	[self.channelListView presentAllVerbatmChannels];
+
+	self.channelListView.listDelegate = self;
+
+	self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
+
+	self.profileVC.delegate = self;
+	self.profileVC.userOfProfile = [PFUser currentUser];
+	self.profileVC.isCurrentUserProfile = YES;
+	self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
+	self.feedVC.delegate = self;
+
+	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
+
+													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
+	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+															  image:[UIImage imageNamed:HOME_NAV_ICON]
+													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
+
+
+	// images need to be centered this way for some reason
+	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+}
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
     UIGraphicsBeginImageContextWithOptions(newSize, NO, 0.0);
@@ -169,7 +186,6 @@
     UIGraphicsEndImageContext();
     return newImage;
 }
-
 
 -(void) formatTabBar {
 	NSInteger numTabs = self.tabBarController.viewControllers.count;
@@ -197,51 +213,6 @@
 -(UIImage*) getSelectedTabBarItemImageWithSize: (CGSize) size {
 	return [UIImage makeImageWithColorAndSize:[UIColor colorWithWhite:DARK_GRAY alpha:TAB_BAR_ALPHA]
 									  andSize: size];
-}
-
-//the view controllers that will be tabbed
--(void)createViewControllers {
-    
-    self.channelListView = [[UserAndChannelListsTVC alloc] init];
-    self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil
-                                                                    image:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
-                                                            selectedImage:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]];
-    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-    
-    
-    [self.channelListView presentAllVerbatmChannels];
-    
-    self.channelListView.listDelegate = self;
-
-    self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
-    
-    self.profileVC.delegate = self;
-    self.profileVC.userOfProfile = [PFUser currentUser];
-    self.profileVC.isCurrentUserProfile = YES;
-    self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
-    self.feedVC.delegate = self;
-
-	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
-																	
-													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
-	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
-															  image:[UIImage imageNamed:HOME_NAV_ICON]
-													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
-    
-    
-    // images need to be centered this way for some reason
-	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-}
-
--(void)createTabBarViewController{
-    self.tabBarControllerContainerView.frame = self.view.bounds;
-    self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
-	self.tabBarController.tabBarHeight = TAB_BAR_HEIGHT;
-    [self.tabBarControllerContainerView addSubview:self.tabBarController.view];
-    [self addChildViewController:self.tabBarController];
-    self.tabBarController.delegate = self;
 }
 
 // Create a custom UIButton and add it over our adk icon
@@ -338,6 +309,14 @@
 	}
 }
 
+-(void) shareButtonSelectedForPostObject: (PFObject* ) post {
+	//todo:
+}
+
+-(void) likeButtonLiked:(BOOL) liked forPostObject: (PFObject* ) post {
+	//todo:
+}
+
 //show the list of followers of the current user
 -(void)presentFollowersListMyID:(id) userID {
     UserAndChannelListsTVC * newList = [[UserAndChannelListsTVC alloc] init];
@@ -359,9 +338,6 @@
     [self presentViewController:newList animated:YES completion:^{
         
     }];
-    
-    
-    
 }
 
 //show the channels the current user can select to follow
@@ -369,51 +345,23 @@
     //[self presentShareSelectionViewStartOnChannels:YES];
 }
 
--(void)profilePovShareButtonSeletedForPOV:(PovInfo *) pov{
-    //[self presentShareSelectionViewStartOnChannels:NO];
-}
-
--(void)profilePovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov{
-    
-}
-
-
-
-
--(void)feedPovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov {
-    
-    
-    
-}
-
-
-
-
-
-
-
-
 #pragma mark - Delegate for channel list view -
+
 -(void)openChannel:(Channel *) channel {
-    
+	//todo:
 }
 
 -(void)selectedUser:(id)userId {
-  
-    
+	//todo:
 }
 
 //either you specify a start channel or you send in nil which goes to default
--(void)presentUserProfileWithChannel:(Channel *) specificChannel{
-    
-    if(specificChannel){
-        
-    }else{
+-(void)presentUserProfileWithChannel:(Channel *) specificChannel {
+    if (specificChannel) {
+		//todo:
+    } else {
         
     }
-    
-    
-    
 }
 
 #pragma mark - Memory Warning -

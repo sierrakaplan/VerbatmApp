@@ -28,7 +28,7 @@
 	self = [super initWithFrame:frame];
 	if (self) {
 		
-            [self setBackgroundColor:[UIColor AVE_BACKGROUND_COLOR]];
+            [self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
             [self setImageViewWithImage:image];
             if(text.length){
                 [self.textView setText: text];
@@ -106,12 +106,12 @@
 	if (!_textView) {
 		CGRect textViewFrame = CGRectMake(0.f, TEXT_VIEW_OVER_MEDIA_Y_OFFSET, self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
-		[_textView setFont:[UIFont fontWithName:TEXT_AVE_FONT size:TEXT_AVE_FONT_SIZE]];
+		[_textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_FONT size:TEXT_PAGE_VIEW_FONT_SIZE]];
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.7];
 
 		//TEXT_SCROLLVIEW_BACKGROUND_COLOR
-		_textView.textColor = [UIColor TEXT_AVE_COLOR];
-		_textView.tintColor = [UIColor TEXT_AVE_COLOR];
+		_textView.textColor = [UIColor TEXT_PAGE_VIEW_COLOR];
+		_textView.tintColor = [UIColor TEXT_PAGE_VIEW_COLOR];
 
 		//ensure keyboard is black
 		_textView.keyboardAppearance = UIKeyboardAppearanceDark;

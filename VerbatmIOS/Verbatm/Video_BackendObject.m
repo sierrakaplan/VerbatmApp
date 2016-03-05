@@ -17,26 +17,24 @@
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
-#import "POVPublisher.h"
+#import "PostPublisher.h"
 
 
 #import "Video_BackendObject.h"
 
 
 @interface Video_BackendObject ()
-@property (nonatomic) POVPublisher * mediaPublisher;
+
+@property (nonatomic) PostPublisher * mediaPublisher;
+
 @end
 
 @implementation Video_BackendObject
 
-
-
--(void)saveVideo:(NSURL *) videoUrl atVideoIndex:(NSInteger) videoIndex andPageObject:(PFObject *) pageObject;
-{
-    self.mediaPublisher = [[POVPublisher alloc] init];
-    
+-(void)saveVideo:(NSURL *) videoUrl atVideoIndex:(NSInteger) videoIndex andPageObject:(PFObject *) pageObject {
+    self.mediaPublisher = [[PostPublisher alloc] init];
     UIImage * thumbNail = [Video_BackendObject thumbnailImageForVideo:videoUrl atTime:0.f];
-    [self.mediaPublisher  storeVideoFromURL:videoUrl withCompletionBlock:^(GTLVerbatmAppVideo * gtlVideo) {
+    [self.mediaPublisher storeVideoFromURL:videoUrl withCompletionBlock:^(GTLVerbatmAppVideo * gtlVideo) {
         NSString * blobStoreUrl = gtlVideo.blobKeyString;//set this with the url from the blobstore
         //in completion block of blobstore save
         [self createAndSaveParseVideoObjectWithBlobStoreUrl:blobStoreUrl videoIndex:videoIndex thumbnail:thumbNail andPageObject:pageObject];
@@ -75,7 +73,7 @@
 
 -(void)createAndSaveParseVideoObjectWithBlobStoreUrl:(NSString *) blobStoreVideoUrl
                                videoIndex:(NSInteger) videoIndex thumbnail:(UIImage *) thumbnail andPageObject:(PFObject *)pageObject{
-    if(!self.mediaPublisher)self.mediaPublisher = [[POVPublisher alloc] init];
+    if(!self.mediaPublisher)self.mediaPublisher = [[PostPublisher alloc] init];
     
     [self.mediaPublisher storeImage:thumbnail withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
         NSString * blobStoreImageUrl = gtlImage.servingUrl;

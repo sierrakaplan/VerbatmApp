@@ -46,7 +46,7 @@
 
 	NSInteger index = [self.tabButtons indexOfObject:createChannelView];
     [self.tabButtons insertObject:channelButton atIndex: index];
-	[self.channels insertObject:channel atIndex: index];
+	[self.channels insertObject:channel.name atIndex: index];
     
     CGRect newCreateChannelFrame = CGRectMake(channelButton.frame.origin.x + channelButton.frame.size.width,
                                               createChannelView.frame.origin.y,
@@ -75,7 +75,7 @@
 		[self addSubview:channelTitleButton];
 		//store button in our tab list
         [self.tabButtons addObject:channelTitleButton];
-		[self.channels addObject: channel];
+		[self.channels addObject: channel.name];
         
         //advance xCordinate
 		xCoordinate += channelTitleButton.frame.size.width;
@@ -163,7 +163,7 @@
 }
 
 -(void) selectChannel: (Channel*) channel {
-	NSInteger index = [self.channels indexOfObject: channel];
+	NSInteger index = [self.channels indexOfObject: channel.name];
 	if (index == NSNotFound) return;
 	[self tabPressed: self.tabButtons[index]];
 }
@@ -199,5 +199,11 @@
 	return _tabButtons;
 }
 
+-(NSMutableArray*) channels {
+	if (!_channels) {
+		_channels = [[NSMutableArray alloc] init];
+	}
+	return _channels;
+}
 
 @end

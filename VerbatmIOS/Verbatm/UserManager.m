@@ -11,7 +11,6 @@
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTMHTTPFetcherLogging.h"
 #import "Notifications.h"
-#import "PovInfo.h"
 #import "ParseBackendKeys.h"
 #import "ProfileVC.h"
 #import "UserManager.h"
@@ -85,9 +84,7 @@
 						PFUser* currentUser = [PFUser currentUser];
                         //we don't set the username because that's set by facebook.
                         currentUser.email = email;
-						[currentUser setObject: name forKey:USER_USER_NAME_KEY];
-                        [currentUser setObject: [NSNumber numberWithInt:0] forKey:USER_NUMBER_OF_FOLLOWERS];
-                        [currentUser setObject: [NSNumber numberWithInt:0] forKey:USER_NUMBER_OF_FOLLOWING];
+						[currentUser setObject: name forKey:VERBATM_USER_NAME_KEY];
 						[currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                             if(succeeded){
                                 //TODOS--Check why this doesn't work

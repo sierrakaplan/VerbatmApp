@@ -21,16 +21,11 @@
 
 + (UserManager *)sharedInstance;
 
--(void) signUpUserFromEmail: (NSString*)email andName: (NSString*)name
-				andPassword: (NSString*)password andPhoneNumber: (NSString*) phoneNumber;
+//-(void) signUpUserFromEmail: (NSString*)email andName: (NSString*)name
+//				andPassword: (NSString*)password andPhoneNumber: (NSString*) phoneNumber;
 
 -(void) signUpOrLoginUserFromFacebookToken: (FBSDKAccessToken*) accessToken;
 
--(BOOL) currentUserLikesStory: (PovInfo*) povInfo;
-
 -(void) logOutUser;
-
-//TODO:
--(void) changeUserProfilePhoto: (UIImage*) image;
 
 @end
