@@ -64,7 +64,9 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	[self setUpTabBarController];
+    if ([PFUser currentUser].isAuthenticated) {
+        [self setUpTabBarController];
+    }
 	[self registerForNotifications];
     self.view.backgroundColor = [UIColor blackColor];
 }
@@ -104,6 +106,7 @@
 	PFUser * user = notification.object;
 	[[Crashlytics sharedInstance] setUserEmail: user.email];
 	[[Crashlytics sharedInstance] setUserName: [user username]];
+    [self setUpTabBarController];
 }
 
 -(void) loginFailed:(NSNotification *) notification {

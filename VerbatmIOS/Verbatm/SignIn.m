@@ -100,6 +100,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(void) loginSucceeded: (NSNotification*) notification {
 	[self unwindToMasterVC];
+    
 }
 
 -(void) loginFailed: (NSNotification*) notification {
