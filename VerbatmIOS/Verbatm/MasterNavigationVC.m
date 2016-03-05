@@ -154,10 +154,10 @@
     deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
     deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.channelListView];
+    self.tabBarController.viewControllers = @[self.profileVC, deadView,self.channelListView, self.feedVC];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
-    self.tabBarController.selectedViewController = self.profileVC;
+    self.tabBarController.selectedViewController = self.feedVC;
 	[self formatTabBar];
 }
 

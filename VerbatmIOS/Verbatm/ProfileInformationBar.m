@@ -120,7 +120,7 @@
     }
     
     CGFloat height = SETTINGS_BUTTON_SIZE;
-    CGFloat width = (height*436.f)/250.f;
+    CGFloat width = SETTINGS_BUTTON_SIZE;//(height*436.f)/250.f;
     CGFloat frame_x = self.frame.size.width - width - CHANNEL_BUTTON_WALL_XOFFSET;
     CGFloat frame_y = self.center.y - (height/2.f);
     
