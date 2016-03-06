@@ -42,7 +42,7 @@
         self.videoLoading = NO;
         self.clearsContextBeforeDrawing = YES;
         self.playAtEndOfAsynchronousSetup = NO;
-        [self setBackgroundColor:[UIColor blackColor]];
+        [self setBackgroundColor:[UIColor clearColor]];
     }
     return self;
 }
@@ -146,13 +146,11 @@
             //			NSLog(@"Video ready to play");
             if (self.videoLoading) {
                 self.videoLoading = NO;
-               // [self.videoLoadingImageView removeFromSuperview];
             }
         } else if (self.playerItem.status == AVPlayerStatusFailed) {
             NSLog(@"video couldn't play: %@", self.player.error);
             if (self.videoLoading) {
                 self.videoLoading = NO;
-               // [self.videoLoadingImageView removeFromSuperview];
             }
         }
     }
