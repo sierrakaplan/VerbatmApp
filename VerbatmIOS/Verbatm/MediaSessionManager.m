@@ -181,6 +181,10 @@
 #pragma mark - Capture Image -
 
 -(void)captureImage {
+    [self.session beginConfiguration];
+    self.session.sessionPreset = AVCaptureSessionPresetHigh;
+    [self.session commitConfiguration];
+    
 	AVCaptureConnection* videoConnection = nil;
 	for(AVCaptureConnection* connection in self.stillImageOutput.connections){
 		for(AVCaptureInputPort* port in connection.inputPorts){
@@ -210,6 +214,10 @@
 #pragma mark - Record Video -
 
 -(void)startVideoRecordingInOrientation:(UIDeviceOrientation)startOrientation {
+    [self.session beginConfiguration];
+    self.session.sessionPreset = AVCaptureSessionPreset640x480;
+    [self.session commitConfiguration];
+    
 	NSString *movieOutput = [[NSString alloc] initWithFormat:@"%@%@", NSTemporaryDirectory(), @"output.mov"];
 	NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:movieOutput];
 	NSFileManager *fileManager = [NSFileManager defaultManager];
