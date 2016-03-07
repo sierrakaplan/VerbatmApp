@@ -68,8 +68,13 @@
         [postQuery orderByDescending:@"createdAt"];
         [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                              NSError * _Nullable error) {
+            
+            
             if(objects && !error){
-                block(objects);
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                            block(objects);
+                        
+                        });
             }
         }];
     }

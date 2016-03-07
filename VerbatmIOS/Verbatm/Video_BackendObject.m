@@ -70,6 +70,7 @@
     ? [[UIImage alloc] initWithCGImage:thumbnailImageRef]
     : nil;
     
+    if(thumbnailImageRef) CGImageRelease(thumbnailImageRef);
     return thumbnailImage;
 }
 

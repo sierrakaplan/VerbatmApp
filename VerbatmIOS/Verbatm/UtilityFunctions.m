@@ -42,11 +42,13 @@
 + (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url {
     AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
         
-        //[UtilityFunctions convertVideoToLowQualityWithInputURL:url withCompletion:^(NSURL * url, BOOL deleteUrl) {
+       
+        
+        [UtilityFunctions convertVideoToLowQualityWithInputURL:url withCompletion:^(NSURL * url, BOOL deleteUrl) {
             NSError * error = nil;
             NSData* data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
             
-            //if(deleteUrl)[[NSFileManager defaultManager] removeItemAtURL:url error:nil];
+          if(deleteUrl)[[NSFileManager defaultManager] removeItemAtURL:url error:nil];
             if (error) {
                 NSLog(@"%@", [error localizedDescription]);
                 resolve(nil);
@@ -55,7 +57,7 @@
                 resolve([UtilityFunctions gzipDeflate:data]);
             }
         }];
-    //}];
+    }];
     return promise;
 }
 
@@ -66,22 +68,43 @@
     NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     
-    NSString *finalFile = [cachesDirectory stringByAppendingPathComponent:@"publish.mov"];
-    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
-    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetMediumQuality];
+    NSString *finalFile = [cachesDirectory stringByAppendingPathComponent:@"publish.mp4"];
+//    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
+//    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetMediumQuality];
     NSURL * finalUrl = [NSURL fileURLWithPath:finalFile];
-    exportSession.outputURL = finalUrl;
-    exportSession.outputFileType = AVFileTypeQuickTimeMovie;
-    [exportSession exportAsynchronouslyWithCompletionHandler: ^(void) {
-        if (exportSession.status == AVAssetExportSessionStatusCompleted)
-        {
+    
+    [UtilityFunctions convertVideoToLowQuailtyWithInputURL:videoUrl outputURL:finalUrl handler:^(AVAssetExportSession * session) {
+        if (session.status == AVAssetExportSessionStatusCompleted){
             successHandler(finalUrl, YES);
-        }else if (exportSession.status == AVAssetExportSessionStatusFailed){
+        }else if (session.status == AVAssetExportSessionStatusFailed){
             successHandler(videoUrl, NO);
         }
     }];
+    
+    
+//    exportSession.outputURL = finalUrl;
+//    exportSession.outputFileType = AVFileTypeQuickTimeMovie;
+//    [exportSession exportAsynchronouslyWithCompletionHandler: ^(void) {
+//        if (exportSession.status == AVAssetExportSessionStatusCompleted)
+//        {
+//            successHandler(finalUrl, YES);
+//        }else if (exportSession.status == AVAssetExportSessionStatusFailed){
+//            successHandler(videoUrl, NO);
+//        }
+//    }];
 }
 
+
++ (void)convertVideoToLowQuailtyWithInputURL:(NSURL*)inputURL outputURL:(NSURL*)outputURL handler:(void (^)(AVAssetExportSession*))handler {
+    [[NSFileManager defaultManager] removeItemAtURL:outputURL error:nil];
+    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:inputURL options:nil];
+    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetPassthrough];
+    exportSession.outputURL = outputURL;
+    exportSession.outputFileType = AVFileTypeMPEG4;
+    [exportSession exportAsynchronouslyWithCompletionHandler:^(void) {
+        handler(exportSession);
+    }];
+}
 
 
 

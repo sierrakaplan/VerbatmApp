@@ -32,7 +32,7 @@
 @property (nonatomic) PostHolderCollecitonRV * lastVisibleCell;
 
 #define POV_CELL_ID @"povCellId"
-#define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
+#define NUM_POVS_TO_PREPARE_EARLY 1 //we prepare this number of POVVs after the current one for viewing
 @end
 
 @implementation PostListVC
@@ -130,6 +130,7 @@
 -(void)clearOldPosts{
     for(POVView * view in self.presentedPostList){
         [view removeFromSuperview];
+        [view clearArticle];
     }
     [self.presentedPostList removeAllObjects];
 }
@@ -156,6 +157,7 @@
                                                 startUp:self.isHomeProfileOrFeed];
                                             [pov renderPOVFromPages:pages];
                                             [pov povOffScreen];
+                                            pov.parsePostObject = post;
                                             [self.presentedPostList addObject:pov];
                                             resolve(nil);
                                         }];
@@ -167,6 +169,7 @@
     
     //when all pages are loaded then we reload our list
     PMKWhen(pageLoadPromises).then(^(id data){
+        [self sortOurPostList];
         dispatch_async(dispatch_get_main_queue(), ^{
             //prepare the first POV object
             [(POVView *)self.presentedPostList.firstObject povOnScreen];
@@ -174,6 +177,33 @@
         });
     });
 }
+
+
+-(void)sortOurPostList{
+    [self.presentedPostList sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        
+        POVView * view1 = obj1;
+        POVView * view2 = obj2;
+    
+        PFObject * postA = view1.parsePostObject;
+        PFObject * postB = view2.parsePostObject;
+        
+        NSTimeInterval distanceBetweenDates = [[postA createdAt] timeIntervalSinceDate:[postB createdAt]];
+        double secondsInMinute = 60;
+        NSInteger secondsBetweenDates = distanceBetweenDates / secondsInMinute;
+        
+        if (secondsBetweenDates == 0)
+             return NSOrderedSame;
+        
+        else if (secondsBetweenDates < 0)
+            return NSOrderedDescending;
+        else
+            return NSOrderedAscending;
+
+    }];
+}
+
+
 
 #pragma mark -DataSource-
 
@@ -255,7 +285,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
 
 -(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
-    for(NSInteger i = visibleIndex +1; (i < self.presentedPostList.count  && 1 < visibleIndex + (NUM_POVS_TO_PREPARE_EARLY +1)); i++){
+    
+    NSInteger startIndex = visibleIndex -1;
+    if(startIndex < 0) startIndex = 1;
+    
+    for(NSInteger i = startIndex; (i < self.presentedPostList.count  && 1 < visibleIndex + (NUM_POVS_TO_PREPARE_EARLY +1)); i++){
         POVView * view = self.presentedPostList[i];
         [view presentMediaContent];
     }
@@ -283,11 +317,5 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if(!_presentedPostList)_presentedPostList = [[NSMutableArray alloc] init];
     return _presentedPostList;
 }
-
-
-
-
-
-
 
 @end

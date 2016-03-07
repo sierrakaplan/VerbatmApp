@@ -62,7 +62,6 @@
 @property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
 //@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
-@property (strong, nonatomic) PFObject* parsePostObject;
 
 @property (nonatomic, strong) UIButton * downArrow;
 

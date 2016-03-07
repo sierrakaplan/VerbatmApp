@@ -20,7 +20,7 @@
 
 @interface POVView : UIView
 
-
+@property (strong, nonatomic) PFObject* parsePostObject;
 @property (nonatomic) id <POVViewDelegate> delegate;
 
 // stores pov info associated with this view

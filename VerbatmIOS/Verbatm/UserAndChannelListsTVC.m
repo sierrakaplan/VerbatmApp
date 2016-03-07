@@ -66,12 +66,27 @@
     self.tableView.allowsMultipleSelection = NO;
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = NO;
-    
+    [self addRefreshFeature];
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+}
+
+
+-(void)addRefreshFeature{
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:refreshControl];
+}
+
+- (void)refresh:(UIRefreshControl *)refreshControl {
+     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self presentAllVerbatmChannels];
+     });
+    
+    [refreshControl endRefreshing];
 }
 
 

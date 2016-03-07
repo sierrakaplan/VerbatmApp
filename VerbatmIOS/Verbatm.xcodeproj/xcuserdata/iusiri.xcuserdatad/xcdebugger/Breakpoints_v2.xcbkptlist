@@ -116,11 +116,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "477194805.185939"
+            timestampString = "479076086.225277"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "644"
-            endingLineNumber = "644">
+            startingLineNumber = "653"
+            endingLineNumber = "653">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -224,11 +224,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "478655461.381249"
+            timestampString = "479059007.992296"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
+            startingLineNumber = "193"
+            endingLineNumber = "193"
             landmarkName = "-addCreatorInfoFromChannel:"
             landmarkType = "5">
          </BreakpointContent>
@@ -240,11 +240,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "478655461.381249"
+            timestampString = "479059007.992296"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "349"
-            endingLineNumber = "349"
+            startingLineNumber = "348"
+            endingLineNumber = "348"
             landmarkName = "-logAVEDoneViewing:"
             landmarkType = "5">
          </BreakpointContent>
