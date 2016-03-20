@@ -320,6 +320,19 @@
     [self addSubview:self.numberOfFollowersLabel];
 }
 
+//should be recentered in specific scenarious
+//1) if in current user profile so there's no follow icon
+//2)if in general user profile and there's only one channel
+
+-(void)recenterTextLables{
+    [self centerViewFrame_XCord:self.channelNameLabel];
+    [self centerViewFrame_XCord:self.numberOfFollowersLabel];
+}
+
+-(void)centerViewFrame_XCord:(UIView *)view{
+    view.frame = CGRectMake((self.frame.size.width/2.f) - (view.frame.size.width/2.f), view.frame.origin.y, view.frame.size.width, view.frame.size.height);
+}
+
 
 //-(NSDictionary*) selectedTabTitleAttributes {
 //    if (!_selectedTabTitleAttributes) {

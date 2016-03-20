@@ -60,10 +60,7 @@
     if(self){
         [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
-        [self createFollowersInfoViewWithUser:profileUser];
-        [self createArrowExtesion];
-        [self createPanGesture];
-        [self createTapGesture];
+        //[self createFollowersInfoViewWithUser:profileUser];
         [self registerForNotifications];
     }
     return self;
@@ -108,6 +105,10 @@
     self.followInfoBar = [[followInfoBar alloc] initWithFrame:self.followersInfoFrameClosed WithNumberOfFollowers:numberOfFollowers andWhoIFollow:numberFollowing];
     self.followInfoBar.delegate = self;
     [self addSubview:self.followInfoBar];
+    
+    [self createArrowExtesion];
+    [self createPanGesture];
+    [self createTapGesture];
 }
 
 -(void)createTapGesture{

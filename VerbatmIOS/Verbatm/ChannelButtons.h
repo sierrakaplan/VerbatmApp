@@ -25,5 +25,7 @@
 
 -(void)markButtonAsSelected;
 -(void)markButtonAsUnselected;
+
+-(void)recenterTextLables;
 @end
 
