@@ -240,7 +240,7 @@
     
     // images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(10.f, 0.f, -5.f, 0.f);
+    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 

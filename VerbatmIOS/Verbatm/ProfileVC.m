@@ -74,7 +74,6 @@
 	self.contentCoveringScreen = YES;
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-        //[self createAndAddListVC];
         [self addPostListVC];
         [self createNavigationBar];
         [self addClearScreenGesture];

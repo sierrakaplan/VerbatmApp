@@ -161,25 +161,24 @@
     [self.delegate settingsButtonSelected];
 }
 
--(void) followOrFollowersSelected {
-
-    UIImage * newbuttonImage;
-    if(self.isFollowigProfileUser){
-        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
-        self.isFollowigProfileUser = NO;
-        
-        
-    }else{
-        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
-        self.isFollowigProfileUser = YES;
-    }
-    [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
-    [self.followButton setNeedsDisplay];
-    [self.delegate followButtonSelectedShouldFollowUser: self.isFollowigProfileUser];
-    
-    
-    
-}
+//-(void) followOrFollowersSelected {
+//    UIImage * newbuttonImage;
+//    if(self.isFollowigProfileUser){
+//        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
+//        self.isFollowigProfileUser = NO;
+//        
+//        
+//    }else{
+//        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
+//        self.isFollowigProfileUser = YES;
+//    }
+//    [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
+//    [self.followButton setNeedsDisplay];
+//    [self.delegate followButtonSelectedShouldFollowUser: self.isFollowigProfileUser];
+//    
+//    
+//    
+//}
 
 -(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel{
     dispatch_async(dispatch_get_main_queue(), ^{

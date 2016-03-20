@@ -60,7 +60,6 @@
     if(self){
         [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
-        [self setFolloweButtonInHeader];
         [self createFollowersInfoViewWithUser:profileUser];
         [self createArrowExtesion];
         [self createPanGesture];
@@ -245,13 +244,6 @@
 }
 
 
--(void)setFolloweButtonInHeader {
-    //checks if the logged in user follows this specific channel
-    [Follow_BackendManager currentUserFollowsChannel:self.threadNavScrollView.currentChannel withCompletionBlock:^
-     (bool isFollowing) {
-        [self.profileHeader setFollowIconToFollowingCurrentChannel:isFollowing];
-    }];
-}
 
 -(void)backButtonSelected {
     [self.delegate exitCurrentProfile];
@@ -288,7 +280,6 @@
 #pragma mark - CustomScrollingTabBarDelegate methods -
 
 -(void) tabPressedWithChannel:(Channel *)channel {
-	[self setFolloweButtonInHeader];
 	[self.delegate newChannelSelected:channel];
 }
 
