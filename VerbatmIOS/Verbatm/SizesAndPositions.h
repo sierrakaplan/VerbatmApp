@@ -152,8 +152,14 @@
 
 #pragma mark - AVES -
 
+#define SHARE_BUTTON_SIZE_WIDTH 25.f
+#define SHARE_BUTTON_SIZE_HEIGHT 30.f
+
+
 #define LIKE_BUTTON_SIZE_WIDTH 25.f
 #define LIKE_BUTTON_SIZE_HEIGHT 25.f
+
+
 
 #define LIKE_BUTTON_OFFSET 20.f
 
@@ -225,6 +231,13 @@
 
 
 #define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 1.f
+
+
+#define MUTE_BUTTON_SIZE 25
+#define MUTE_BUTTON_OFFSET 10
+
+#define VIDEO_LOADING_ICON_SIZE 50
+
 
 #endif
 

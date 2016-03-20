@@ -67,11 +67,6 @@
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = NO;
     [self addRefreshFeature];
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
 
 
@@ -157,8 +152,6 @@
 
 //show which users are being followed by userId
 -(void)presentWhoIsFollowedBy:(id)userId {
-    
-    
     
     //TO-DO
     //Start to download a list of users who follow this particular user then reload the table

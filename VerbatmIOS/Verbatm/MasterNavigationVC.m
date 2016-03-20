@@ -166,7 +166,7 @@
     self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.channelListView];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
-    self.tabBarController.selectedViewController = self.profileVC;
+    self.tabBarController.selectedViewController = self.feedVC;
 	[self formatTabBar];
 }
 
@@ -215,7 +215,6 @@
     self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil
                                                                     image:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
                                                             selectedImage:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]];
-    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
     
     
     [self.channelListView presentAllVerbatmChannels];
@@ -241,6 +240,7 @@
     
     // images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(10.f, 0.f, -5.f, 0.f);
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 

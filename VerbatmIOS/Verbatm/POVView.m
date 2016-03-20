@@ -8,13 +8,14 @@
 
 #import "Analytics.h"
 #import "AveTypeAnalyzer.h"
-
+#import "LoadingIndicator.h"
 #import "CreatorAndChannelBar.h"
 
 #import "Durations.h"
 
 #import "Icons.h"
 
+#import "Like_BackendManager.h"
 
 #import "POVLikeAndShareBar.h"
 #import "PhotoVideoAVE.h"
@@ -66,7 +67,7 @@
 @property (nonatomic, strong) UIButton * downArrow;
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
-
+@property (strong, nonatomic) LoadingIndicator * customActivityIndicator;
 @property (nonatomic) POVLikeAndShareBar * likeShareBar;
 @property (nonatomic) CGRect lsBarDownFrame;// the framw of the like share button with the tab down
 @property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
@@ -109,7 +110,7 @@
 }
 
 -(void)createBorder{
-    [self.layer setBorderWidth:1.0];
+    [self.layer setBorderWidth:2.0];
     [self.layer setCornerRadius:0.0];
     [self.layer setBorderColor:[UIColor blackColor].CGColor];
 }
@@ -152,6 +153,13 @@
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
 }
+-(void)checkIfUserHasLikedThePost{
+    [Like_BackendManager currentUserLikesPost:self.parsePostObject withCompletionBlock:^(bool userLikedPost) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.likeShareBar shouldStartPostAsLiked:userLikedPost];
+        });
+    }];
+}
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up{
     
@@ -166,6 +174,7 @@
     self.likeShareBar = [[POVLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
     self.likeShareBar.delegate = self;
     [self addSubview:self.likeShareBar];
+    [self checkIfUserHasLikedThePost];
 }
 
 //like-share bar protocol
@@ -174,9 +183,6 @@
     [self.delegate shareOptionSelectedForParsePostObject:self.parsePostObject];
 }
 
-//-(void)likeButtonPressed{
-//    
-//}
 
 -(void)showWhoLikesThePOV{
 }
@@ -195,21 +201,6 @@
 
 #pragma mark - Add like button -
 
-//should be called by another class (since preview does not have like)
-//Sets the like button delegate and the povID since the delegate method
-//requires a pov ID be passed back
-//-(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate {
-//	self.likeButtonDelegate = delegate;
-//	// check if current user likes story
-//	self.liked = [[UserManager sharedInstance] currentUserLikesStory: self.povInfo];
-//	if (self.liked) {
-//		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
-//	} else {
-//		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-//	}
-//	[self addSubview: self.likeButton];
-//}
-
 
 -(void) shiftLikeShareBarDown:(BOOL) down{
     if(down){
@@ -223,6 +214,28 @@
     }
 }
 
+-(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive{
+    
+    switch (action) {
+        case Like:
+            if(positive){
+                [Like_BackendManager currentUserLikePost:self.parsePostObject];
+            }else{
+                [Like_BackendManager currentUserStopLikingPost:self.parsePostObject];
+            }
+            
+            break;
+        case Share:
+            
+            break;
+        default:
+            break;
+    }
+    
+
+    
+    
+}
 
 
 -(void) likeButtonPressed {
@@ -262,10 +275,26 @@
 	ArticleViewingExperience *currentPageOnScreen = [self.pageAves objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
     
 	[currentPageOnScreen onScreen];
+    
+    [self checkForMuteButton:currentPageOnScreen];
+    
     [self prepareNextPage];
     
-    //present multipage icon
 }
+
+
+-(void)checkForMuteButton:(ArticleViewingExperience * )currentPageOnScreen {
+    
+    if ([currentPageOnScreen isKindOfClass:[VideoAVE class]] ||
+        [currentPageOnScreen isKindOfClass:[PhotoVideoAVE class]]) {
+     
+        [self.likeShareBar presentMuteButton:YES];
+    }else {
+        [self.likeShareBar presentMuteButton:NO];
+    }
+
+}
+
 
 
 
@@ -331,13 +360,7 @@
         //[[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
     }
     
-    
-   
-    
-    
 }
-
-
 
 
 
@@ -390,7 +413,9 @@
 
 -(void) renderPOVFromPages:(NSArray *) pages{
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.activityIndicator startAnimating];
+        [self.customActivityIndicator startCustomActivityIndicator];
+        
+        //[self.activityIndicator startAnimating];
     });
     AVETypeAnalyzer * analyzer = [[AVETypeAnalyzer alloc] init];
     
@@ -426,8 +451,11 @@
 
 -(void)presentMediaContent{
     if(self.pageAveMedia.count > 0){
-        [self.activityIndicator stopAnimating];
-        self.activityIndicator = nil;
+        [self.customActivityIndicator stopCustomActivityIndicator];
+
+        
+//        [self.activityIndicator stopAnimating];
+//        self.activityIndicator = nil;
         
         for(NSInteger key = 0; key < self.pageAveMedia.count; key++){
             NSArray * media = [self.pageAveMedia objectForKey:[NSNumber numberWithInteger:key]];
@@ -558,7 +586,14 @@
 	}
 	return _downArrow;
 }
-
+-(LoadingIndicator *)customActivityIndicator{
+    if(!_customActivityIndicator){
+        CGPoint newCenter = CGPointMake(self.center.x, self.frame.size.height * 1.f/2.f);
+        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter];
+        [self addSubview:_customActivityIndicator];
+    }
+    return _customActivityIndicator;
+}
 -(UIActivityIndicatorView*) activityIndicator {
     if (!_activityIndicator) {
         _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];

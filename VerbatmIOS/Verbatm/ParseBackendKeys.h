@@ -22,6 +22,12 @@
 
 
 
+#define LIKE_PFCLASS_KEY @"LikeClass"//we maintain all the like relationships in their own table
+#define LIKE_USER_KEY @"UserLiking"//the user doing the liking
+#define LIKE_POST_LIKED_KEY @"PostLiked"//post being liked by above user
+
+
+
 #define PHOTO_PFCLASS_KEY @"PhotoClass"
 #define PHOTO_TEXT_KEY @"PhotoText"
 #define PHOTO_TEXT_YOFFSET_KEY @"TextYOffset"

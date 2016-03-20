@@ -8,7 +8,9 @@
 
 #import "VideoPlayerView.h"
 #import "VideoDownloadManager.h"
+#import "LoadingIndicator.h"
 #import "Icons.h"
+#import "SizesAndPositions.h"
 
 @interface VideoPlayerView()
 @property (nonatomic, strong) UIButton * muteButton;
@@ -26,9 +28,9 @@
 
 @property (strong) NSArray * urlArray;
 
+@property (nonatomic) LoadingIndicator * customActivityIndicator;
 
-#define MUTE_BUTTON_SIZE 25
-#define MUTE_BUTTON_OFFSET 10
+
 
 #define VIDEO_LOADING_ICON_SIZE 50
 
@@ -43,10 +45,10 @@
         self.clearsContextBeforeDrawing = YES;
         self.playAtEndOfAsynchronousSetup = NO;
         [self setBackgroundColor:[UIColor clearColor]];
+        
     }
     return self;
 }
-
 
 
 
@@ -58,7 +60,9 @@
                                            self.bounds.size.height - (MUTE_BUTTON_OFFSET + MUTE_BUTTON_SIZE),
                                            MUTE_BUTTON_SIZE,
                                            MUTE_BUTTON_SIZE);
+        
     }
+
 }
 
 -(void)prepareVideoFromURLArray_asynchronouse: (NSArray*) urlArray {
@@ -132,6 +136,7 @@
     self.playerItem = playerItem;
     [self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
     
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(playerItemDidReachEnd:)
                                                  name:AVPlayerItemDidPlayToEndTimeNotification
@@ -143,7 +148,6 @@
                         change:(NSDictionary *)change context:(void *)context {
     if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
         if (self.playerItem.status == AVPlayerStatusReadyToPlay) {
-            //			NSLog(@"Video ready to play");
             if (self.videoLoading) {
                 self.videoLoading = NO;
             }
@@ -154,6 +158,13 @@
             }
         }
     }
+    
+        if ([self.player rate] > 0.f) //If it started playing
+        {
+           [self.customActivityIndicator stopCustomActivityIndicator];
+        }else if([self.player rate] == 0.f){
+            [self.customActivityIndicator startCustomActivityIndicator];
+        }
 }
 
 -(void) prepareVideoFromArrayOfAssets_asynchronous: (NSArray*)videoList {
@@ -250,14 +261,20 @@
     }
 }
 
+
 //this function should be called on the main thread
 -(void) initiateVideo {
     if (self.isPlaying) {
         return;
     }
     
+    if(self.player){
+        [self removePlayerRateObserver];
+    }
+    
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+    [self.player addObserver:self forKeyPath:@"rate" options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew) context:nil];
     // Create an AVPlayerLayer using the player
     if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
     self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
@@ -268,10 +285,11 @@
     
     dispatch_async(dispatch_get_main_queue(), ^{
         //right when we create the video we also add the mute button
-        [self formatMuteButton];
-        [self addSubview:self.muteButton];
+//        [self formatMuteButton];
+//        [self addSubview:self.muteButton];
         // Add it to your view's sublayers
-        [self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
+        if(self.playerLayer)[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
+        [self.customActivityIndicator startCustomActivityIndicator];
         if(self.playAtEndOfAsynchronousSetup){
             [self playVideo];
             self.playAtEndOfAsynchronousSetup = NO;
@@ -389,16 +407,20 @@
                 if (self.videoLoading) {
                     self.videoLoading = NO;
                 }
+                [self.customActivityIndicator stopCustomActivityIndicator];
                 
                 for (UIView* view in self.subviews) {
                     [view removeFromSuperview];
                 }
-                 self.layer.sublayers = nil;
-                [self.playerLayer removeFromSuperlayer];
-                self.layer.sublayers = nil;
+                 @autoreleasepool {
+                    [self removePlayerItemObserver];
+                     self.layer.sublayers = nil;
+                    [self.playerLayer removeFromSuperlayer];
+                    self.layer.sublayers = nil;
+                 }
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 @autoreleasepool {
-                    [self removePlayerItemObserver];
+                    
                     self.muteButton = nil;
                     self.playerItem = nil;
                     self.player = nil;
@@ -406,14 +428,7 @@
                     self.isVideoPlaying = NO;
                     [self.ourTimer invalidate];
                     self.ourTimer = nil;
-                    if(self.urlArray){
-                        //TODO
-//                        if(self.urlArray.count> 1){
-//                            [[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:self.urlArray];
-//                        }else{
-//                            [[VideoDownloadManager sharedInstance] prepareVideoFromURL_synchronous:[self.urlArray firstObject]];
-//                        }
-                    }
+                    
                 }
             });
         }
@@ -422,12 +437,31 @@
 -(void) removePlayerItemObserver {
     @try{
         [self.playerItem removeObserver:self forKeyPath:@"status"];
+        [self removePlayerRateObserver];
     }@catch(id anException){
         //do nothing, obviously it wasn't attached because an exception was thrown
     }
 }
 
+-(void)removePlayerRateObserver{
+    @try{
+         [self.player removeObserver:self forKeyPath:@"rate"];
+    }@catch(id anException){
+        //do nothing, obviously it wasn't attached because an exception was thrown
+    }
+}
+
+
 #pragma mark - Lazy Instantation -
+
+-(LoadingIndicator *)customActivityIndicator{
+    if(!_customActivityIndicator){
+        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:self.center];
+        [self addSubview:_customActivityIndicator];
+    }
+    return _customActivityIndicator;
+}
+
 
 -(UIImageView*) videoLoadingImageView {
     if (!_videoLoadingImageView) {

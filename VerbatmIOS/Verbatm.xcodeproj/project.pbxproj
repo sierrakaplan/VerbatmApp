@@ -185,6 +185,8 @@
 		C78204EE1C32EAC500F56A63 /* CreatorAndChannelBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */; };
 		C788745C1C334AE80048B66E /* POVLikeAndShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C788745B1C334AE80048B66E /* POVLikeAndShareBar.m */; };
 		C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */; };
+		C78FF0C21C9EFF2F0088E71D /* Like_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C78FF0C11C9EFF2F0088E71D /* Like_BackendManager.m */; };
+		C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */; };
 		C7A8E3861A61CE4D00776BD1 /* ContentDevPullBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8E3851A61CE4D00776BD1 /* ContentDevPullBar.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */; };
@@ -595,7 +597,11 @@
 		C788745B1C334AE80048B66E /* POVLikeAndShareBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = POVLikeAndShareBar.m; sourceTree = "<group>"; };
 		C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSelectTile.h; sourceTree = "<group>"; };
 		C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSelectTile.m; sourceTree = "<group>"; };
+		C78FF0C01C9EFF2E0088E71D /* Like_BackendManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Like_BackendManager.h; sourceTree = "<group>"; };
+		C78FF0C11C9EFF2F0088E71D /* Like_BackendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Like_BackendManager.m; sourceTree = "<group>"; };
 		C79747D91B50B815009077E3 /* Verbatm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
+		C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingIndicator.h; sourceTree = "<group>"; };
+		C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingIndicator.m; sourceTree = "<group>"; };
 		C7A8E3841A61CE4D00776BD1 /* ContentDevPullBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentDevPullBar.h; sourceTree = SOURCE_ROOT; };
 		C7A8E3851A61CE4D00776BD1 /* ContentDevPullBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevPullBar.m; sourceTree = SOURCE_ROOT; };
 		C7BC4372199D97F5004B91A1 /* Verbatm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Verbatm.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1377,6 +1383,8 @@
 				C7F22B321C38415000E56EA7 /* Sharing Functionality Views  */,
 				C7F79E7E1C3AACC600319330 /* CreateNewChannelView.h */,
 				C7F79E7F1C3AACC600319330 /* CreateNewChannelView.m */,
+				C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */,
+				C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";
@@ -1540,6 +1548,8 @@
 				C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */,
 				C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */,
 				C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */,
+				C78FF0C01C9EFF2E0088E71D /* Like_BackendManager.h */,
+				C78FF0C11C9EFF2F0088E71D /* Like_BackendManager.m */,
 			);
 			name = "Parse database files";
 			sourceTree = "<group>";
@@ -1972,6 +1982,7 @@
 				C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */,
 				C7540F741C09A47F00DE1AA6 /* ChannelButtons.m in Sources */,
 				C788745C1C334AE80048B66E /* POVLikeAndShareBar.m in Sources */,
+				C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */,
 				A5E85F9A1B911DA900E148D0 /* GTLBatchQuery.m in Sources */,
 				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
@@ -1993,6 +2004,7 @@
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */,
 				C7F3EBC91C7D4D73007D23DF /* VideoPlayerItemManager.m in Sources */,
+				C78FF0C21C9EFF2F0088E71D /* Like_BackendManager.m in Sources */,
 				A5E860011B96249900E148D0 /* POVPublisher.m in Sources */,
 				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,

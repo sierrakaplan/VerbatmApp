@@ -87,7 +87,6 @@
 	[self addSubview: self.povView];
 	[self addNavigationBar];
     [self.povView scrollToPageAtIndex:index];
-    [self.povView povOnScreen];
 	[self revealPreview:YES];
 }
 

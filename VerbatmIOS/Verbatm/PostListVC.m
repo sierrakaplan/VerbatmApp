@@ -10,6 +10,8 @@
 
 #import "FeedQueryManager.h"
 
+#import "LoadingIndicator.h"
+
 #import "Page_BackendObject.h"
 #import "PostListVC.h"
 #import "PostHolderCollecitonRV.h"
@@ -30,9 +32,10 @@
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
 @property (nonatomic, strong) UILabel * noContentLabel;
 @property (nonatomic) PostHolderCollecitonRV * lastVisibleCell;
+@property (nonatomic) LoadingIndicator * customActivityIndicator;
 
 #define POV_CELL_ID @"povCellId"
-#define NUM_POVS_TO_PREPARE_EARLY 1 //we prepare this number of POVVs after the current one for viewing
+#define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
 @end
 
 @implementation PostListVC
@@ -89,6 +92,7 @@
 
 -(void)reloadCurrentChannel{
     [self.presentedPostList removeAllObjects];
+    [self.customActivityIndicator startCustomActivityIndicator];
     [self getPosts];
 }
 
@@ -98,6 +102,7 @@
         self.channelForList = channel;
         [self clearOldPosts];
         [self removePresentLabel];
+        [self.customActivityIndicator startCustomActivityIndicator];
         [self getPosts];
     }
 }
@@ -106,23 +111,27 @@
     if(self.listType == listFeed) {
         if(!self.feedQueryManager)self.feedQueryManager = [[FeedQueryManager alloc] init];
         [self.feedQueryManager getMoreFeedPostsWithCompletionHandler:^(NSArray * posts) {
+            
+               [self.customActivityIndicator stopCustomActivityIndicator];
                 if(posts.count){
                     [self loadNewBackendPosts:posts];
                     [self removePresentLabel];
                 } else {
                     [self nothingToPresentHere];
                 }
+            
         }];
         
     }else if (self.listType == listChannel) {
         [Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
-            
+            [self.customActivityIndicator stopCustomActivityIndicator];
             if(posts.count){
                 [self loadNewBackendPosts:posts];
                 [self removePresentLabel];
             } else {
                 [self nothingToPresentHere];
             }
+            
         }];
     }
 }
@@ -143,6 +152,7 @@
         AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
                                         [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
                                             POVView * pov = [[POVView alloc] initWithFrame:self.view.bounds];
+                                            pov.parsePostObject = post;
                                             NSNumber * numberOfPostLikes =
                                             [post valueForKey:POST_LIKES_NUM_KEY];
                                             NSNumber * numberOfPostShares =
@@ -157,7 +167,6 @@
                                                 startUp:self.isHomeProfileOrFeed];
                                             [pov renderPOVFromPages:pages];
                                             [pov povOffScreen];
-                                            pov.parsePostObject = post;
                                             [self.presentedPostList addObject:pov];
                                             resolve(nil);
                                         }];
@@ -284,14 +293,21 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 }
 
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+//    NSInteger currentPOVIndex = [self getVisibileCellIndex];
+//    //somehow turn other cells off
+//    [self.presentedPostList[currentPOVIndex] povOnScreen];
+//    [self prepareNextViewAfterVisibleIndex:currentPOVIndex];
+}
+
 -(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
-    
-    NSInteger startIndex = visibleIndex -1;
-    if(startIndex < 0) startIndex = 1;
-    
-    for(NSInteger i = startIndex; (i < self.presentedPostList.count  && 1 < visibleIndex + (NUM_POVS_TO_PREPARE_EARLY +1)); i++){
-        POVView * view = self.presentedPostList[i];
-        [view presentMediaContent];
+    for(NSInteger i = 0; i < self.presentedPostList.count; i++){
+         POVView * view = self.presentedPostList[i];
+        if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
+            [view presentMediaContent];
+        }else if(i != visibleIndex){
+            [view povOffScreen];
+        }
     }
 }
 
@@ -312,6 +328,15 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
 
 #pragma mark -Lazy instantiation-
+-(LoadingIndicator *)customActivityIndicator{
+    if(!_customActivityIndicator){
+        CGPoint center = CGPointMake(self.view.frame.size.width/2., self.view.frame.size.height/2.f);
+        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:center];
+        [self.view addSubview:_customActivityIndicator];
+        [self.view bringSubviewToFront:_customActivityIndicator];
+    }
+    return _customActivityIndicator;
+}
 
 -(NSMutableArray *)presentedPostList{
     if(!_presentedPostList)_presentedPostList = [[NSMutableArray alloc] init];

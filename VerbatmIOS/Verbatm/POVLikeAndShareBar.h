@@ -13,9 +13,18 @@
  It also shows the page that we are on on the POV
  */
 
+
+
+typedef enum BarActivityOptions{
+    Like = 0,
+    Share = 1,
+}ActivityOptions;
+
 @protocol POVLikeAndShareBarProtocol <NSObject>
--(void)shareButtonPressed;
--(void)likeButtonPressed;
+
+//if the activity is a like the positive says if it's a like or unlike
+//like == positive , unlike == !positive
+-(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive;
 -(void)showWhoLikesThePOV;//the like numbers have been pressed
 -(void)showwhoHasSharedThePOV;
 @end
@@ -26,6 +35,8 @@
 -(instancetype) initWithFrame:(CGRect)frame numberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage;
 
 -(void)setPageNumber:(NSNumber *) pageNumber;
+-(void)presentMuteButton:(BOOL) shouldPresent;
+-(void)shouldStartPostAsLiked:(BOOL) postLiked;
 
 @property (nonatomic) id <POVLikeAndShareBarProtocol> delegate;
 
