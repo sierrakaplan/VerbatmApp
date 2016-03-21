@@ -286,6 +286,8 @@
         //set the unmute image on so they know how to unmute
         [self.muteButton  setImage:[UIImage imageNamed:MUTED_ICON] forState:UIControlStateNormal];
     }
+    
+    [self.delegate muteButtonSelected:self.isMuted];
 }
 
 #pragma mark -Lazy instantiation-

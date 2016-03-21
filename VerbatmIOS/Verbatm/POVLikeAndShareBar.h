@@ -27,6 +27,9 @@ typedef enum BarActivityOptions{
 -(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive;
 -(void)showWhoLikesThePOV;//the like numbers have been pressed
 -(void)showwhoHasSharedThePOV;
+
+-(void)muteButtonSelected:(BOOL)shouldMute;
+
 @end
 
 

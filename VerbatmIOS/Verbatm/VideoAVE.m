@@ -264,4 +264,12 @@
     return _rearrangeButton;
 }
 
+-(void)unmuteVideo{
+    [self.videoPlayer unmuteVideo];
+}
+
+-(void)muteVideo{
+    [self.videoPlayer muteVideo];
+}
+
 @end

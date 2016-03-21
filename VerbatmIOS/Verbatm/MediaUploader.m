@@ -8,6 +8,10 @@
 
 #import "MediaUploader.h"
 #import "POVPublisher.h"
+#import "Notifications.h"
+#import "PublishingProgressManager.h"
+
+//#import "ASIHTTPRequest.h"
 
 @interface MediaUploader()
 
@@ -81,14 +85,15 @@
 #pragma mark Delegate methods
 
 - (void)request:(ASIHTTPRequest *)request didSendBytes:(long long)bytes {
-
 	if ([request totalBytesSent] > 0) {
 		float progressAmount = ((float)[request totalBytesSent]/(float)[request postLength]);
 		NSInteger newProgressUnits = (NSInteger)(progressAmount*self.mediaUploadProgress.totalUnitCount);
 		if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
-			self.mediaUploadProgress.completedUnitCount = newProgressUnits;
 			
-            
+
+            [[PublishingProgressManager sharedInstance] mediaHasProgressedSavind:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
+            self.mediaUploadProgress.completedUnitCount = newProgressUnits;
+
             NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
 		}
 	}

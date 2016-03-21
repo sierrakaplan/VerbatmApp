@@ -49,7 +49,7 @@
 @property (strong, nonatomic) NSMutableDictionary * pageAves;
 
 //used to lazily instantiate pages when the view is about to presented
-//se save the page media here and then load and present the pages on demand
+//we save the page media here and then lazily load and present the pages
 @property (strong, nonatomic) NSMutableDictionary * pageAveMedia;
 
 @property (nonatomic) NSNumber* currentIndexOfPageLoading;
@@ -279,21 +279,40 @@
     
 }
 
-
 -(void)checkForMuteButton:(ArticleViewingExperience * )currentPageOnScreen {
     
     if ([currentPageOnScreen isKindOfClass:[VideoAVE class]] ||
         [currentPageOnScreen isKindOfClass:[PhotoVideoAVE class]]) {
-     
         [self.likeShareBar presentMuteButton:YES];
     }else {
         [self.likeShareBar presentMuteButton:NO];
     }
+}
 
+-(void)muteButtonSelected:(BOOL)shouldMute{
+   // dispatch_async(dispatch_get_main_queue(), ^{
+        [self muteAllVideos:shouldMute];
+  //  });
+    
 }
 
 
-
+-(void)muteAllVideos:(BOOL) shouldMute{
+    for(id ave in [self.pageAves allValues]){
+       
+        
+        if ([ave isKindOfClass:[VideoAVE class]] ||
+            [ave isKindOfClass:[PhotoVideoAVE class]]) {
+           
+            if(shouldMute){
+                [(VideoAVE *)ave muteVideo];
+            }else{
+                [(VideoAVE *)ave unmuteVideo];
+            }
+            
+        }
+    }
+}
 
 -(void)presentSwipeUpAndDownInstruction {
     

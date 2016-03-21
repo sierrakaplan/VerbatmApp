@@ -42,8 +42,6 @@
 + (AnyPromise*) loadCachedVideoDataFromURL: (NSURL*) url {
     AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
         
-       
-        
         [UtilityFunctions convertVideoToLowQualityWithInputURL:url withCompletion:^(NSURL * url, BOOL deleteUrl) {
             NSError * error = nil;
             NSData* data = [NSData dataWithContentsOfURL:url options:NSDataReadingUncached error:&error];
@@ -68,7 +66,9 @@
     NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
     
-    NSString *finalFile = [cachesDirectory stringByAppendingPathComponent:@"publish.mp4"];
+    NSString * uniqueVideoURL = [[videoUrl.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mp4"];
+    
+    NSString *finalFile = [cachesDirectory stringByAppendingPathComponent:uniqueVideoURL];
 //    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
 //    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetMediumQuality];
     NSURL * finalUrl = [NSURL fileURLWithPath:finalFile];

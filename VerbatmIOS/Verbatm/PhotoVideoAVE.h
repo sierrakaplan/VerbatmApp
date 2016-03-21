@@ -30,4 +30,8 @@
 
 -(void) showAndRemoveCircle;
 
+-(void)unmuteVideo;
+
+-(void)muteVideo;
+
 @end

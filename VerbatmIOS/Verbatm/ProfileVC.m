@@ -175,10 +175,6 @@
 
 #pragma mark -POV ScrollView custom delegate -
 
--(void) povLikeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo{
-    //sierra TODO
-    //code to register a like/dislike from the user
-}
 
 -(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
     [self presentShareSelectionViewStartOnChannels:NO];
