@@ -16,6 +16,7 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
 #import "UserManager.h"
+#import "UserInfoCache.h"
 
 @interface Channel_BackendObject ()
 @property (nonatomic) NSMutableArray * ourPosts;
@@ -55,6 +56,9 @@
         
         [newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if(succeeded){
+                
+                [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:nil];
+                
                 if(block)block(channel);
             }
         }];

@@ -352,6 +352,7 @@
 	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
 	[self addContentFromImagePinchViews: pinchViews];
     [self createRearrangeButton];
+    [self displayCircle:YES];
 }
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {

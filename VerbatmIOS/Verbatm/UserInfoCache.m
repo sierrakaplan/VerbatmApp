@@ -36,7 +36,7 @@
 -(void)loadUserChannelsWithCompletionBlock:(void(^)())block{
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         self.userChannels = channels;
-        block();
+        if(block)block();
     }];
 }
 
