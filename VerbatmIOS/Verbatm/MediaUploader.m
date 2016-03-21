@@ -85,18 +85,22 @@
 #pragma mark Delegate methods
 
 - (void)request:(ASIHTTPRequest *)request didSendBytes:(long long)bytes {
-	if ([request totalBytesSent] > 0) {
-		float progressAmount = ((float)[request totalBytesSent]/(float)[request postLength]);
-		NSInteger newProgressUnits = (NSInteger)(progressAmount*self.mediaUploadProgress.totalUnitCount);
-		if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
-			
+	
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        if ([request totalBytesSent] > 0) {
+            float progressAmount = ((float)[request totalBytesSent]/(float)[request postLength]);
+            NSInteger newProgressUnits = (NSInteger)(progressAmount*self.mediaUploadProgress.totalUnitCount);
+            if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
+                
+                
+                [[PublishingProgressManager sharedInstance] mediaHasProgressedSavind:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
+                self.mediaUploadProgress.completedUnitCount = newProgressUnits;
+                
+                NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
+            }
+        }
 
-            [[PublishingProgressManager sharedInstance] mediaHasProgressedSavind:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
-            self.mediaUploadProgress.completedUnitCount = newProgressUnits;
-
-            NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
-		}
-	}
+    });
 }
 
 -(void) requestFinished:(ASIHTTPRequest *)request {
