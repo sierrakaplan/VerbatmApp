@@ -20,7 +20,9 @@
 
 @interface POVView : UIView
 
-@property (strong, nonatomic) PFObject* parsePostObject;
+//we store this to help us sort the posts once in the feed by date created
+@property (strong, nonatomic) PFObject* parsePostChannelActivityObject;
+
 @property (nonatomic) id <POVViewDelegate> delegate;
 
 // stores pov info associated with this view

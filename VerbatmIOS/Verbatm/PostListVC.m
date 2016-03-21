@@ -154,11 +154,14 @@
     
     NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
     
-    for(PFObject * post in backendPostObjects) {
+    for(PFObject * pc_activity in backendPostObjects) {
+        
+        PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+        
         AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
                                         [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
                                             POVView * pov = [[POVView alloc] initWithFrame:self.view.bounds];
-                                            pov.parsePostObject = post;
+                                            pov.parsePostChannelActivityObject = pc_activity;
                                             NSNumber * numberOfPostLikes =
                                             [post valueForKey:POST_LIKES_NUM_KEY];
                                             NSNumber * numberOfPostShares =
@@ -201,10 +204,10 @@
         POVView * view1 = obj1;
         POVView * view2 = obj2;
     
-        PFObject * postA = view1.parsePostObject;
-        PFObject * postB = view2.parsePostObject;
+        PFObject * pc_activityA = view1.parsePostChannelActivityObject;
+        PFObject * pc_activityB = view2.parsePostChannelActivityObject;
         
-        NSTimeInterval distanceBetweenDates = [[postA createdAt] timeIntervalSinceDate:[postB createdAt]];
+        NSTimeInterval distanceBetweenDates = [[pc_activityA createdAt] timeIntervalSinceDate:[pc_activityB createdAt]];
         double secondsInMinute = 60;
         NSInteger secondsBetweenDates = distanceBetweenDates / secondsInMinute;
         

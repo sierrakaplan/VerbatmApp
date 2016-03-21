@@ -77,7 +77,7 @@
                     
                     PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
                     [post fetchIfNeededInBackground];
-                    [finalPostObjects addObject:post];
+                    [finalPostObjects addObject:pc_activity];
                 }
 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{

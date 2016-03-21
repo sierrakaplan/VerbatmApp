@@ -64,9 +64,11 @@
                  
                  for(PFObject * pc_activity in activities){
                      
+                     //we do this to make sure the info is downloaded and cached early
                      PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
                      [post fetchIfNeededInBackground];
-                     [finalPostObjects addObject:post];
+                     
+                     [finalPostObjects addObject:pc_activity];
                  }
 
                  self.postsDownloadedSoFar += finalPostObjects.count;

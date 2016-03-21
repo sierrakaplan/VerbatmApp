@@ -92,7 +92,7 @@
     if (self) {
         [self addSubview: self.mainScrollView];
         self.mainScrollView.backgroundColor = [UIColor blackColor];
-        if(povObject)self.parsePostObject = povObject;
+        if(povObject)self.parsePostChannelActivityObject = povObject;
         [self createBorder];
     }
     return self;
@@ -154,7 +154,7 @@
 	}
 }
 -(void)checkIfUserHasLikedThePost{
-    [Like_BackendManager currentUserLikesPost:self.parsePostObject withCompletionBlock:^(bool userLikedPost) {
+    [Like_BackendManager currentUserLikesPost:self.parsePostChannelActivityObject withCompletionBlock:^(bool userLikedPost) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.likeShareBar shouldStartPostAsLiked:userLikedPost];
         });
@@ -214,13 +214,13 @@
     switch (action) {
         case Like:
             if(positive){
-                [Like_BackendManager currentUserLikePost:self.parsePostObject];
+                [Like_BackendManager currentUserLikePost:self.parsePostChannelActivityObject];
             }else{
-                [Like_BackendManager currentUserStopLikingPost:self.parsePostObject];
+                [Like_BackendManager currentUserStopLikingPost:self.parsePostChannelActivityObject];
             }
             break;
         case Share:
-            [self.delegate shareOptionSelectedForParsePostObject:self.parsePostObject];
+            [self.delegate shareOptionSelectedForParsePostObject:self.parsePostChannelActivityObject];
             break;
         default:
             break;
