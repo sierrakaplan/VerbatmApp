@@ -240,13 +240,12 @@
 -(void)changeLikeCount:(BOOL)up{
     
     int currentLikes = self.totalNumberOfLikes.intValue;
-    
-    if(up)
-        currentLikes++;
-    else
-        currentLikes --;
-    
-    if(currentLikes < 0) currentLikes = 0;
+    if(up){
+        currentLikes+=1;
+    }else{
+        currentLikes -=1;
+        if(currentLikes < 0) currentLikes = 0;
+    }
     
     [self createLikeButtonNumbers:[NSNumber numberWithInt:currentLikes]];
 }

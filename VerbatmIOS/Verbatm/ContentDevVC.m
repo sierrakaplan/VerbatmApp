@@ -159,7 +159,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 #define TITLE_FIELD_Y_OFFSET 10.f
 #define TITLE_FIELD_X_OFFSET 10.f
 #define TITLE_FIELD_HEIGHT 90
-#define TITLE_FIELD_LABEL_TILE_HEIGHT 50
+#define TITLE_FIELD_LABEL_TILE_HEIGHT 40
 
 #define MAX_TITLE_CHARACTERS 40
 

@@ -14,7 +14,7 @@
 #import "SelectChannel.h"
 #import "SelectOptionButton.h"
 #import "SelectionView.h"
-
+#import "UserInfoCache.h"
 
 #define CHANNEL_LABEL_HEIGHT 70
 #define WALL_OFFSET_X 30.f
@@ -42,10 +42,7 @@
     
     if(self){
         self.canSelectMultipleChannels = selectMultiple;
-        
-        [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
-             [self createChannelLabels:channels];
-        }];
+        [self createChannelLabels:[[UserInfoCache sharedInstance] getUserChannels]];
        
     }
     

@@ -154,7 +154,7 @@
 	}
 }
 -(void)checkIfUserHasLikedThePost{
-    [Like_BackendManager currentUserLikesPost:self.parsePostChannelActivityObject withCompletionBlock:^(bool userLikedPost) {
+    [Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]withCompletionBlock:^(bool userLikedPost) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.likeShareBar shouldStartPostAsLiked:userLikedPost];
         });
@@ -214,13 +214,13 @@
     switch (action) {
         case Like:
             if(positive){
-                [Like_BackendManager currentUserLikePost:self.parsePostChannelActivityObject];
+                [Like_BackendManager currentUserLikePost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
             }else{
-                [Like_BackendManager currentUserStopLikingPost:self.parsePostChannelActivityObject];
+                [Like_BackendManager currentUserStopLikingPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
             }
             break;
         case Share:
-            [self.delegate shareOptionSelectedForParsePostObject:self.parsePostChannelActivityObject];
+            [self.delegate shareOptionSelectedForParsePostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
             break;
         default:
             break;

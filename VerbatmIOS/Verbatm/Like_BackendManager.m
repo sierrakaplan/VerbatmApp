@@ -22,6 +22,7 @@
     //we first save the number on the post then we save the relationship in our table
     [postParseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){
+            NSLog(@"Saved like relationship");
             PFObject * newFollowObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
             [newFollowObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
             [newFollowObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
@@ -55,6 +56,7 @@
                     if(objects.count){
                         PFObject * followObj = [objects firstObject];
                         [followObj deleteInBackground];
+                        NSLog(@"Deleted like relationship");
                     }
                 }
             }];
@@ -72,7 +74,7 @@
     [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error) {
-            if(objects.count == 1)block(YES);
+            if(objects.count >= 1)block(YES);
             else block(NO);
         }
     }];
