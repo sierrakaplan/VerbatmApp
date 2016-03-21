@@ -16,9 +16,16 @@ typedef enum PostListType{
 }PostListType;
 
 
+@protocol PostListVCProtocol <NSObject>
+
+-(void)hideNavBarIfPresent;
+
+@end
+
 
 @interface PostListVC : UICollectionViewController
 
+@property (nonatomic) id <PostListVCProtocol> delegate;
 
 @property (nonatomic) BOOL isHomeProfileOrFeed;
 //profile of the current logged in user

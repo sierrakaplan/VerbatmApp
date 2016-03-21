@@ -177,11 +177,6 @@
     [self checkIfUserHasLikedThePost];
 }
 
-//like-share bar protocol
-
--(void)shareButtonPressed {
-    [self.delegate shareOptionSelectedForParsePostObject:self.parsePostObject];
-}
 
 
 -(void)showWhoLikesThePOV{
@@ -223,10 +218,9 @@
             }else{
                 [Like_BackendManager currentUserStopLikingPost:self.parsePostObject];
             }
-            
             break;
         case Share:
-            
+            [self.delegate shareOptionSelectedForParsePostObject:self.parsePostObject];
             break;
         default:
             break;

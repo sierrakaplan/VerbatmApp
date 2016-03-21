@@ -26,7 +26,7 @@
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate, SharePOVViewDelegate>
+@interface FeedVC () <ArticleDisplayVCDelegate, UIScrollViewDelegate,SharePOVViewDelegate, PostListVCProtocol>
 @property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
@@ -92,7 +92,7 @@
     self.postListVC.listType = listFeed;
     self.postListVC.isHomeProfileOrFeed = YES;
     self.postListVC.listOwner = [PFUser currentUser];
-    
+    self.postListVC.delegate = self;
     [self.postListContainerView setFrame:self.view.bounds];
     [self.postListContainerView addSubview:self.postListVC.view];
     [self.view addSubview:self.postListContainerView];
@@ -100,11 +100,9 @@
 
 
 
-
 #pragma mark -POVListSVController-
--(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
-        [self presentShareSelectionViewStartOnChannels:YES];
-//    [self.delegate feedPovShareButtonSeletedForPOV:pov];
+-(void)hideNavBarIfPresent{
+    [self removeContentFromScreen];
 }
 
 

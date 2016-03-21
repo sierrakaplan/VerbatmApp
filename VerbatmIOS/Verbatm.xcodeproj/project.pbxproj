@@ -188,6 +188,7 @@
 		C78FF0C21C9EFF2F0088E71D /* Like_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C78FF0C11C9EFF2F0088E71D /* Like_BackendManager.m */; };
 		C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */; };
 		C7A8E3861A61CE4D00776BD1 /* ContentDevPullBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C7A8E3851A61CE4D00776BD1 /* ContentDevPullBar.m */; };
+		C7B9D8981C9FAE730068C13E /* Post_Channel_RelationshipManger.m in Sources */ = {isa = PBXBuildFile; fileRef = C7B9D8971C9FAE730068C13E /* Post_Channel_RelationshipManger.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */; };
 		C7BC437A199D97F5004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
@@ -604,6 +605,8 @@
 		C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingIndicator.m; sourceTree = "<group>"; };
 		C7A8E3841A61CE4D00776BD1 /* ContentDevPullBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContentDevPullBar.h; sourceTree = SOURCE_ROOT; };
 		C7A8E3851A61CE4D00776BD1 /* ContentDevPullBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContentDevPullBar.m; sourceTree = SOURCE_ROOT; };
+		C7B9D8961C9FAE730068C13E /* Post_Channel_RelationshipManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post_Channel_RelationshipManger.h; sourceTree = "<group>"; };
+		C7B9D8971C9FAE730068C13E /* Post_Channel_RelationshipManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post_Channel_RelationshipManger.m; sourceTree = "<group>"; };
 		C7BC4372199D97F5004B91A1 /* Verbatm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Verbatm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BC4375199D97F5004B91A1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1550,6 +1553,8 @@
 				C7F3EBCB1C814313007D23DF /* VideoDownloadManager.m */,
 				C78FF0C01C9EFF2E0088E71D /* Like_BackendManager.h */,
 				C78FF0C11C9EFF2F0088E71D /* Like_BackendManager.m */,
+				C7B9D8961C9FAE730068C13E /* Post_Channel_RelationshipManger.h */,
+				C7B9D8971C9FAE730068C13E /* Post_Channel_RelationshipManger.m */,
 			);
 			name = "Parse database files";
 			sourceTree = "<group>";
@@ -2029,6 +2034,7 @@
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A5076D0B1BEB17E600303746 /* VerbatmExplanationVC.m in Sources */,
 				A5C09BDF1BA1F1D700C0AD86 /* ASIInputStream.m in Sources */,
+				C7B9D8981C9FAE730068C13E /* Post_Channel_RelationshipManger.m in Sources */,
 				A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */,
 				C75F155F1C2B4A1B0092912D /* Channel.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,

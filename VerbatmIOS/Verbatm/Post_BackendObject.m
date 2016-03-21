@@ -16,6 +16,7 @@
 #import <Parse/PFQuery.h>
 
 #import "Page_BackendObject.h"
+
 #import "CollectionPinchView.h"
 #import "VideoPinchView.h"
 
@@ -41,10 +42,10 @@
     [newPostObject setObject:[NSNumber numberWithInt:0] forKey:POST_NUM_SHARES_KEY];
     [newPostObject setObject:[PFUser currentUser] forKey:POST_ORIGINAL_CREATOR_KEY];
     [newPostObject setObject:[NSNumber numberWithInteger:pinchViews.count] forKey:POST_SIZE_KEY];
-    [newPostObject setObject:[NSNumber numberWithBool:false] forKey:POST_COMPLETED_SAVING];//mark as not done saving yet
-    
+    //[newPostObject setObject:[NSNumber numberWithBool:false] forKey:POST_COMPLETED_SAVING];//mark as not done saving yet
     [newPostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){//now we save the pinchview to a page
+            //save individual pages
             for (int i = 0; i< pinchViews.count; i++) {
                 PinchView * pv = pinchViews[i];
                 Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
@@ -61,20 +62,23 @@
 +(void) getPostsInChannel:(Channel *) channel withCompletionBlock:(void(^)(NSArray *))block{
     
     if(channel){
-        PFQuery * postQuery = [PFQuery queryWithClassName:POST_PFCLASS_KEY];
-        [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel.parseChannelObject];
+        PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+        [postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
         //make sure the posts have been fully published
-        [postQuery whereKey:POST_COMPLETED_SAVING equalTo:[NSNumber numberWithBool:true]];
+        //[postQuery whereKey:POST_COMPLETED_SAVING equalTo:[NSNumber numberWithBool:true]];
         [postQuery orderByDescending:@"createdAt"];
         [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                              NSError * _Nullable error) {
             
             
             if(objects && !error){
-                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                            block(objects);
-                        
-                        });
+                for(PFObject * post in objects){
+                    [post fetchIfNeededInBackground];
+                }
+                dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+                        block(objects);
+                    
+                    });
             }
         }];
     }

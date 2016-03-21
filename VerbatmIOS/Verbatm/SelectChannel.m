@@ -43,7 +43,6 @@
     if(self){
         self.canSelectMultipleChannels = selectMultiple;
         
-        
         [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
              [self createChannelLabels:channels];
         }];
@@ -125,6 +124,10 @@
         if([selectionButton buttonSelected]){//if it's already selected then remove it
             [selectionButton setButtonSelected:NO];
             [self.selectedChannels removeObject:selectionButton];
+            if([selectionButton.associatedObject isKindOfClass:[Channel class]] &&
+               self.selectedChannels.count) {
+                [self.delegate channelsSelected:self.selectedChannels];
+            }
         }else{
             
             [self.selectedChannels addObject:selectionButton];

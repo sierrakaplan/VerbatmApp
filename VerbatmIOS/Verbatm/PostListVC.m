@@ -8,6 +8,8 @@
 
 #import "Channel_BackendObject.h"
 
+#import "Durations.h"
+
 #import "FeedQueryManager.h"
 
 #import "LoadingIndicator.h"
@@ -16,23 +18,27 @@
 #import "PostListVC.h"
 #import "PostHolderCollecitonRV.h"
 #import "Post_BackendObject.h"
+#import "Post_Channel_RelationshipManger.h"
 #import "ParseBackendKeys.h"
 #import "POVView.h"
 #import <PromiseKit/PromiseKit.h>
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
-
+#import "SharePOVView.h"
 
 
 @interface PostListVC ()<UICollectionViewDelegate,UICollectionViewDataSource,
-                        UIScrollViewDelegate>
+                        UIScrollViewDelegate,POVViewDelegate>
 
 @property (nonatomic) NSMutableArray * presentedPostList;
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
 @property (nonatomic, strong) UILabel * noContentLabel;
 @property (nonatomic) PostHolderCollecitonRV * lastVisibleCell;
 @property (nonatomic) LoadingIndicator * customActivityIndicator;
+@property (nonatomic) SharePOVView * sharePOVView;
+
+@property (nonatomic) PFObject * povToShare;
 
 #define POV_CELL_ID @"povCellId"
 #define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
@@ -167,6 +173,7 @@
                                                 startUp:self.isHomeProfileOrFeed];
                                             [pov renderPOVFromPages:pages];
                                             [pov povOffScreen];
+                                            pov.delegate = self;
                                             [self.presentedPostList addObject:pov];
                                             resolve(nil);
                                         }];
@@ -240,7 +247,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     PostHolderCollecitonRV * nextCellToBePresented = (PostHolderCollecitonRV *) [collectionView dequeueReusableCellWithReuseIdentifier:POV_CELL_ID forIndexPath:indexPath];
     
     if(indexPath.row < self.presentedPostList.count){
-    
         POVView * povToPresent = self.presentedPostList[indexPath.row];
         [nextCellToBePresented presentPOV:povToPresent];
     
@@ -325,6 +331,63 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 }
 
 
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
+   [self.delegate hideNavBarIfPresent];
+    self.povToShare = pov;
+    [self presentShareSelectionViewStartOnChannels:YES];
+}
+
+
+-(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
+    if(self.sharePOVView){
+        [self.sharePOVView removeFromSuperview];
+        self.sharePOVView = nil;
+    }
+    
+    CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+    self.sharePOVView.delegate = self;
+    [self.view addSubview:self.sharePOVView];
+    [self.view bringSubviewToFront:self.sharePOVView];
+    [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+        self.sharePOVView.frame = onScreenFrame;
+    }];
+}
+
+-(void)removeSharePOVView{
+    if(self.sharePOVView){
+        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+            self.sharePOVView.frame = offScreenFrame;
+        }completion:^(BOOL finished) {
+            if(finished){
+                [self.sharePOVView removeFromSuperview];
+                self.sharePOVView = nil;
+            }
+        }];
+    }
+}
+
+#pragma mark -Share Seletion View Protocol -
+-(void)cancelButtonSelected{
+    [self removeSharePOVView];
+}
+
+-(void)postPOVToChannels:(NSMutableArray *) channels{
+    if(channels.count){
+        [Post_Channel_RelationshipManger savePost:self.povToShare toChannels:channels withCompletionBlock:nil];
+    }
+    [self removeSharePOVView];
+}
+
+-(void)sharePostWithComment:(NSString *) comment{
+    //todo--sierra
+    //code to share post to facebook etc
+    
+    [self removeSharePOVView];
+    
+}
 
 
 #pragma mark -Lazy instantiation-

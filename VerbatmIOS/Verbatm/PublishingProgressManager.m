@@ -12,7 +12,7 @@
 #import "Notifications.h"
 #import "Channel_BackendObject.h"
 #import "ParseBackendKeys.h"
-
+#import "Post_Channel_RelationshipManger.h"
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -111,15 +111,19 @@
     self.progressAccountant.completedUnitCount += newProgress;
 	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount && self.currentlyPublishing) {
         if(self.currentParsePostObject) {
-            [self.currentParsePostObject setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
-            [self.currentParsePostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-                if(succeeded){
+//            [self.currentParsePostObject setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
+//            [self.currentParsePostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+//                if(succeeded){
+            
+                    //register the relationship
+                    [Post_Channel_RelationshipManger savePost:self.currentParsePostObject  toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel]withCompletionBlock:nil];
+                    
                     [self.delegate publishingComplete];
                     self.currentPublishingChannel = NULL;
                     self.currentParsePostObject = nil;
                     self.currentlyPublishing = NO;
-                }
-            }];
+              //  }
+//            }];
         }
 	}
 }

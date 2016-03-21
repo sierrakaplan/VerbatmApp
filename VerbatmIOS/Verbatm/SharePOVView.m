@@ -35,7 +35,7 @@
 
 @property (nonatomic) UITextField * facebookCommentTextField;
 
-@property (nonatomic) Channel * selectedChannel;
+@property (nonatomic) NSMutableArray * selectedChannels;
 
 
 @property (nonatomic) BOOL showChannels;
@@ -66,7 +66,7 @@
 
 -(void)presentUserChannelsToFollow {
     [self createReportAndCancelButtonsCancelFullScreen:YES];
-    [self createShareOrFollowButton_isShare:NO];
+    [self createShareOrFollowButton_isShare:YES];
     [self showChannelSelection:YES];
 }
 
@@ -90,7 +90,7 @@
 
 -(void)createShareOrFollowButton_isShare:(BOOL) isShareButton {
     
-    NSString * titleText = (isShareButton) ? @"SHARE" : @"FOLLOW" ;
+    NSString * titleText = (isShareButton) ? @"REPOST" : @"FOLLOW" ;
     
     //create share button
     CGRect shareButtonFrame = CGRectMake(BUTTON_WALL_OFFSET_X, self.shareOptionSelectionStartFrameONSCREEN.origin.y + self.shareOptionSelectionStartFrameONSCREEN.size.height, self.frame.size.width - (BUTTON_WALL_OFFSET_X * 2), SHARE_BUTTON_HEIGHT - 10.f);
@@ -161,7 +161,7 @@
         [self createReportAlert];
     }else{//it says back so lets go back
         [self showChannelSelection:NO];
-        [self.shareButton setTitle:@"SHARE" forState:UIControlStateNormal];
+        [self.shareButton setTitle:@"REPOST" forState:UIControlStateNormal];
         [self.reportButton setTitle:@"REPORT" forState:UIControlStateNormal];
     }
 }
@@ -217,26 +217,31 @@
 
 
 -(void)shareButtonSelected {
-    if([self.shareButton.titleLabel.text isEqualToString:@"SHARE"]){//sharing to social media
-        //for now they have selected facebook
-        NSString * comment = @"";
-        if(self.facebookCommentTextField){
-            comment = self.facebookCommentTextField.text;
+        if([self.shareButton.titleLabel.text isEqualToString:@"REPOST"]){
+            [self.delegate postPOVToChannels:self.selectedChannels];
         }
-        [self.delegate sharePostWithComment:comment];
-        
-    }else if ([self.shareButton.titleLabel.text isEqualToString:@"POST"]){//Posting to a channel
-        
-        if(self.selectedChannel){
-            [self.delegate postPOVToChannel:self.selectedChannel];
-        }
-    }
+    
+    
+//    if([self.shareButton.titleLabel.text isEqualToString:@"REPOST"]){//sharing to social media
+//        //for now they have selected facebook
+//        NSString * comment = @"";
+//        if(self.facebookCommentTextField){
+//            comment = self.facebookCommentTextField.text;
+//        }
+//        [self.delegate sharePostWithComment:comment];
+//        
+//    }else if ([self.shareButton.titleLabel.text isEqualToString:@"POST"]){//Posting to a channel
+//        
+//        if(self.selectedChannel){
+//            [self.delegate postPOVToChannel:self.selectedChannel];
+//        }
+//    }
 }
 
 //channel selection protocol
 
 -(void) channelsSelected:(NSMutableArray *) channels{
-    self.selectedChannel = [channels firstObject];
+    self.selectedChannels = channels;
 }
 
 
@@ -318,20 +323,24 @@
 
 
 -(void) showChannelSelection:(BOOL) shouldShow{
-    if(shouldShow){
+    if(shouldShow) {
+        
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
             self.channelSelectionOptions.frame = self.channelSelectionStartFrameONSCREEN;
             self.sharingOption.frame = self.shareOptionSelectionStartFrameOFFSCREEN;
-            
             [self.channelSelectionOptions unselectAllOptions];
         }];
-    }else{
+        
+    } else {
+        
         [UIView animateWithDuration:ANIMATION_DURATION animations:^{
             self.channelSelectionOptions.frame = self.channelSelectionFrameOFFSCREEN;
             self.sharingOption.frame = self.shareOptionSelectionStartFrameONSCREEN;
             [self.sharingOption unselectAllOptions];
         }];
+        
     }
+    
 }
 
 //frames of the channel list and the share options list
@@ -345,12 +354,13 @@
                                                               self.frame.size.width, self.frame.size.height- (SHARE_BUTTON_HEIGHT * 2.f));
     
     self.channelSelectionFrameOFFSCREEN = CGRectMake(self.frame.size.width, self.shareOptionSelectionStartFrameOFFSCREEN.origin.y, self.shareOptionSelectionStartFrameOFFSCREEN.size.width, self.shareOptionSelectionStartFrameOFFSCREEN.size.height);
+    
     self.channelSelectionStartFrameONSCREEN = CGRectMake(0.f, self.shareOptionSelectionStartFrameONSCREEN.origin.y, self.shareOptionSelectionStartFrameONSCREEN.size.width, self.shareOptionSelectionStartFrameONSCREEN.size.height);
 }
 
 -(SelectChannel *) channelSelectionOptions{
     if(!_channelSelectionOptions) {
-        _channelSelectionOptions = [[SelectChannel alloc] initWithFrame:self.channelSelectionFrameOFFSCREEN canSelectMultiple:self.showChannels];
+        _channelSelectionOptions = [[SelectChannel alloc] initWithFrame:self.channelSelectionFrameOFFSCREEN canSelectMultiple:YES];
         _channelSelectionOptions.delegate = self;
         [self addSubview:_channelSelectionOptions];
     }

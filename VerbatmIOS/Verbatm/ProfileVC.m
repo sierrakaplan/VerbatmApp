@@ -172,22 +172,6 @@
 }
 
 
-
-#pragma mark -POV ScrollView custom delegate -
-
-
--(void) povshareButtonSelectedForPOVInfo:(PovInfo *) povInfo{
-    [self presentShareSelectionViewStartOnChannels:NO];
-    
-}
-
-
-#pragma mark POVListScrollView Delegate -
--(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
-    [self presentHeadAndFooter:YES];
-    [self presentShareSelectionViewStartOnChannels:NO];
-}
-
 #pragma mark - Profile Nav Bar Delegate Methods -
 
 //current user selected to follow a channel
@@ -196,37 +180,6 @@
 }
 
 
--(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
-    if(self.sharePOVView){
-        [self.sharePOVView removeFromSuperview];
-        self.sharePOVView = nil;
-    }
-    
-    CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
-    self.sharePOVView.delegate = self;
-    [self.view addSubview:self.sharePOVView];
-    [self.view bringSubviewToFront:self.sharePOVView];
-    [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-        self.sharePOVView.frame = onScreenFrame;
-    }];
-}
-
--(void)removeSharePOVView{
-    if(self.sharePOVView){
-        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-        
-        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-            self.sharePOVView.frame = offScreenFrame;
-        }completion:^(BOOL finished) {
-            if(finished){
-                [self.sharePOVView removeFromSuperview];
-                self.sharePOVView = nil;
-            }
-        }];
-    }
-}
 
 //current user wants to see their own followers
 -(void) followersOptionSelected{
@@ -297,18 +250,6 @@
 }
 
 
-#pragma mark -Share Seletion View Protocol -
--(void)cancelButtonSelected{
-    [self removeSharePOVView];
-}
-
--(void)sharePostWithComment:(NSString *) comment{
-    //todo--sierra
-    //code to share post to facebook etc
-    
-    [self removeSharePOVView];
-    
-}
 
 #pragma mark -Navigate profile-
 //the current user has selected the back button
@@ -332,11 +273,17 @@
     [self.postDisplayVC presentContentWithPOVType:POVTypeUser andChannel:newChannel];
 }
 
+#pragma mark -POSTListVC Protocol-
+-(void)hideNavBarIfPresent{
+    [self presentHeadAndFooter:NO];
+}
+
 -(void) presentHeadAndFooter:(BOOL) shouldShow {
     if(shouldShow) {
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:YES]];
         }];
+        
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
         [self.postListVC footerShowing:NO];

@@ -59,6 +59,11 @@
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
 
+#define POST_CHANNEL_ACTIVITY_CLASS  @"PostChannelActivityClass"
+#define POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO @"PostChannelActivityChannelPosted"//channel that post is posted in 
+#define POST_CHANNEL_ACTIVITY_POST @"PostChannelActivityPost"
+
+
 
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"
 #define CHANNEL_NAME_KEY @"ChannelName"

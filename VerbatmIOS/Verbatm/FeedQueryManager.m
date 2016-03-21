@@ -46,7 +46,7 @@
          
          if(objects.count > 1){
          
-             PFQuery * postQuery = [PFQuery queryWithClassName:POST_PFCLASS_KEY];
+             PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
              
              NSMutableArray * channelsWeFollow = [[NSMutableArray alloc] init];
              for(int i = 0; i < objects.count; i++){
@@ -54,9 +54,13 @@
              }
              
              
-             [postQuery whereKey:POST_CHANNEL_KEY containedIn:channelsWeFollow];
+             [postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:channelsWeFollow];
+             
              //only get posts that have actually been fully published
-             [postQuery whereKey:POST_COMPLETED_SAVING equalTo:[NSNumber numberWithBool:true]];
+             
+             
+             
+             
 //             for(PFObject * channel in objects){
 //                 [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel];
 //             }
@@ -68,7 +72,12 @@
                  for(NSInteger i = self.postsDownloadedSoFar;
                      (i < objects.count && i < (self.postsDownloadedSoFar + POST_DOWNLOAD_MAX_SIZE));
                      i++){
-                        [finalPostResults addObject:objects[i]];
+                     
+                    [objects[i] fetchIfNeededInBackground];
+                    [finalPostResults addObject:objects[i]];
+                     
+                     
+                     
                  }
                  self.postsDownloadedSoFar += finalPostResults.count;
                  block(finalPostResults);

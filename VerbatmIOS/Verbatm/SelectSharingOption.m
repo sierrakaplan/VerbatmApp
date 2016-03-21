@@ -115,6 +115,8 @@
     return ourBar;
 }
 
+
+
 -(void)unselectAllOptions{
     [self.selectedButton setButtonSelected:NO];
 }
