@@ -55,32 +55,22 @@
              
              
              [postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:channelsWeFollow];
-             
-             //only get posts that have actually been fully published
-             
-             
-             
-             
-//             for(PFObject * channel in objects){
-//                 [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel];
-//             }
-             
              [postQuery orderByDescending:@"createdAt"];
              
-             [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-                 NSMutableArray * finalPostResults = [[NSMutableArray alloc] init];
-                 for(NSInteger i = self.postsDownloadedSoFar;
-                     (i < objects.count && i < (self.postsDownloadedSoFar + POST_DOWNLOAD_MAX_SIZE));
-                     i++){
+             [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
+                 
+                 
+                 NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
+                 
+                 for(PFObject * pc_activity in activities){
                      
-                    [objects[i] fetchIfNeededInBackground];
-                    [finalPostResults addObject:objects[i]];
-                     
-                     
-                     
+                     PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+                     [post fetchIfNeededInBackground];
+                     [finalPostObjects addObject:post];
                  }
-                 self.postsDownloadedSoFar += finalPostResults.count;
-                 block(finalPostResults);
+
+                 self.postsDownloadedSoFar += finalPostObjects.count;
+                 block(finalPostObjects);
              }];
          }else{
              block(@[]);//no results so we send an empty list

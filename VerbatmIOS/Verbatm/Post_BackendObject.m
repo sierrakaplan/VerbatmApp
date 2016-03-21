@@ -64,19 +64,24 @@
     if(channel){
         PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
         [postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-        //make sure the posts have been fully published
-        //[postQuery whereKey:POST_COMPLETED_SAVING equalTo:[NSNumber numberWithBool:true]];
         [postQuery orderByDescending:@"createdAt"];
-        [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+        [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
                                                              NSError * _Nullable error) {
             
             
-            if(objects && !error){
-                for(PFObject * post in objects){
+            if(activities && !error){
+
+                NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
+                
+                for(PFObject * pc_activity in activities){
+                    
+                    PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
                     [post fetchIfNeededInBackground];
+                    [finalPostObjects addObject:post];
                 }
+
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-                        block(objects);
+                        block(finalPostObjects);
                     
                     });
             }

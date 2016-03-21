@@ -123,14 +123,14 @@
     if(self.canSelectMultipleChannels) {
         if([selectionButton buttonSelected]){//if it's already selected then remove it
             [selectionButton setButtonSelected:NO];
-            [self.selectedChannels removeObject:selectionButton];
+            [self.selectedChannels removeObject:selectionButton.associatedObject];
             if([selectionButton.associatedObject isKindOfClass:[Channel class]] &&
                self.selectedChannels.count) {
                 [self.delegate channelsSelected:self.selectedChannels];
             }
         }else{
             
-            [self.selectedChannels addObject:selectionButton];
+            [self.selectedChannels addObject:selectionButton.associatedObject];
             [selectionButton setButtonSelected:YES];
             if([selectionButton.associatedObject isKindOfClass:[Channel class]]) {
                 [self.delegate channelsSelected:self.selectedChannels];
