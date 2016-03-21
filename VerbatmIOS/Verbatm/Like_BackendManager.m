@@ -39,6 +39,8 @@
     NSNumber * currentLikes = [postParseObject valueForKey:POST_LIKES_NUM_KEY];
     int likes = currentLikes.intValue;
     likes--;
+    if(likes < 0) likes = 0;
+    
     [postParseObject setValue:[NSNumber numberWithInt:likes] forKey:POST_LIKES_NUM_KEY];
     
     //we first save the number on the post then we save the relationship in our table

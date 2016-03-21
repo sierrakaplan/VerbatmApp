@@ -195,11 +195,10 @@
             
         }
         
-        ((ChannelButtons *)currentButton).frame = CGRectMake(originDiff, ((ChannelButtons *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
+        ((UIView *)currentButton).frame = CGRectMake(originDiff, ((UIView *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
         
-        if(self.isLoggedInUser ||
-           (!self.isLoggedInUser && self.tabButtons.count == 1)){
-            //[(ChannelButtons *)currentButton  recenterTextLables];
+        if(self.isLoggedInUser && [currentButton isKindOfClass:[ChannelButtons class]]){
+            [(ChannelButtons *)currentButton  recenterTextLables];
         }
         
         [currentButton setNeedsDisplay];

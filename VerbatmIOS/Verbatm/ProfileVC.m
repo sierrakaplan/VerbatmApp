@@ -360,7 +360,6 @@
        [self presentHeadAndFooter:YES];
     } else {
         [self presentHeadAndFooter:NO];
-        
     }
 }
 
