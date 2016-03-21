@@ -25,7 +25,6 @@
 #import "ProfileNavBar.h"
 #import "POVLoadManager.h"
 #import "PostListVC.h"
-//#import "POVListScrollViewVC.h"
 
 #import "Post_BackendObject.h"
 #import "POVView.h"
@@ -39,7 +38,10 @@
 #import "UIView+Effects.h"
 #import "UserManager.h"
 
-@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate, PublishingProgressProtocol>
+#import "UserInfoCache.h"
+
+
+@interface ProfileVC() <ArticleDisplayVCDelegate, ProfileNavBarDelegate,UIScrollViewDelegate,CreateNewChannelViewProtocol, POVScrollViewDelegate, SharePOVViewDelegate, PublishingProgressProtocol, PostListVCProtocol>
 
 @property (strong, nonatomic) PostListVC * postListVC;
 
@@ -84,9 +86,7 @@
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
-    [Channel_BackendObject getChannelsForUser:self.userOfProfile withCompletionBlock:
-     ^(NSMutableArray * channels) {
-        self.channels = channels;
+    [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
         block();
     }];
 }
@@ -137,6 +137,7 @@
 
     self.postListVC.listType = listChannel;
     self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
+    self.postListVC.delegate =self;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
     else[self.view addSubview:self.postListVC.view];
 }
@@ -239,6 +240,8 @@
     Channel * newChannel = [self.channelBackendManager createChannelWithName:channelName];
     [self.profileNavBar newChannelCreated:newChannel];
     [self clearChannelCreationView];
+    //make sure the channels are up to date
+    [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:nil];
 }
 
 -(void)clearChannelCreationView{
@@ -275,7 +278,7 @@
 
 #pragma mark -POSTListVC Protocol-
 -(void)hideNavBarIfPresent{
-    [self presentHeadAndFooter:NO];
+    [self presentHeadAndFooter:YES];
 }
 
 -(void) presentHeadAndFooter:(BOOL) shouldShow {
@@ -403,5 +406,10 @@
 		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
 	}
 }
+
+-(NSArray *)channels{
+    return [[UserInfoCache sharedInstance] getUserChannels];
+}
+
 
 @end

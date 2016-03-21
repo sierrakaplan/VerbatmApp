@@ -293,8 +293,8 @@
 
 -(UIScrollView*) threadNavScrollView {
 	if (!_threadNavScrollView) {
-		_threadNavScrollView = [[CustomScrollingTabBar alloc] initWithFrame:CGRectMake(0.f, self.profileHeader.frame.origin.y + PROFILE_HEADER_HEIGHT,
-																			  self.frame.size.width, USER_CELL_VIEW_HEIGHT)];
+		_threadNavScrollView = [[CustomScrollingTabBar alloc] initWithFrame:CGRectMake(2.f, self.profileHeader.frame.origin.y + PROFILE_HEADER_HEIGHT,
+																			  self.frame.size.width-4.f, USER_CELL_VIEW_HEIGHT)];
 
 		_threadNavScrollView.customScrollingTabBarDelegate = self;
 		[self addSubview: _threadNavScrollView];

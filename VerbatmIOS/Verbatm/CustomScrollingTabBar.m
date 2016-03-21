@@ -12,6 +12,7 @@
 #import "ChannelButtons.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "UserInfoCache.h"
 
 @interface CustomScrollingTabBar()
 
@@ -66,6 +67,7 @@
         if(startChannel){
             if([startChannel.name isEqualToString:channel.name]){
                 startChannelIndex = [channels indexOfObject:channel];
+                [[UserInfoCache sharedInstance] setCurrentChannelIndex:startChannelIndex];
             }
         }
         
@@ -158,6 +160,9 @@
 
 -(void) selectTab: (ChannelButtons *) tab {
     [tab markButtonAsSelected];
+    //store this as the current tab index to view
+    [[UserInfoCache sharedInstance] setCurrentChannelIndex:[self.tabButtons indexOfObject:tab]];
+    
     self.currentChannel = tab.currentChannel;
 	self.selectedTab = tab;
 }

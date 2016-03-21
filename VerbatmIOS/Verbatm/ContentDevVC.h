@@ -33,7 +33,7 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
 
-
+@property (nonatomic) NSInteger startChannelIndex;
 
 //Delegate in order to tell parent view controller when pull bar should be changed
 @property (strong, nonatomic) id<ContentDevVCDelegate> delegate;
