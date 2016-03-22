@@ -78,7 +78,6 @@
 		//store button in our tab list
         [self.tabButtons addObject:channelTitleButton];
 		[self.channels addObject: channel];
-        
         //advance xCordinate
 		xCoordinate += channelTitleButton.frame.size.width;
 	}

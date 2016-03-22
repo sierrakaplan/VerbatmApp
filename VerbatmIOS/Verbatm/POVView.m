@@ -192,12 +192,16 @@
 
 -(void) addCreatorInfo{
     [Post_Channel_RelationshipManger getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject withCompletionBlock:^(Channel * channel) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
-            self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
-            self.creatorAndChannelBar.delegate = self;
-            [self addSubview:self.creatorAndChannelBar];
-        });
+        //we only add the channel info to posts that don't belong to the current
+        //user
+        if(![channel channelBelongsToCurrentUser]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
+                self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
+                self.creatorAndChannelBar.delegate = self;
+                [self addSubview:self.creatorAndChannelBar];
+            });
+        }
     }];
 }
 
