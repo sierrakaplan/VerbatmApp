@@ -9,23 +9,26 @@
 #import "CreatorAndChannelBar.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFObject.h>
-#import <Parse/PFUser.h>
 #import "Styles.h"
+#import "Follow_BackendManager.h"
+#import "ProfileVC.h"
 /*
  Give a creator and channel name this creates labels for each.
  */
 
-#define LABEL_WALL_OFFSET 10.f
-#define TEXT_FONT_TYPE @"Quicksand-Bold"
-#define CREATOR_NAME_FONT_SIZE 18.f
+#define LABEL_WALL_OFFSET 5.f
+#define TEXT_FONT_TYPE @"Quicksand"
+#define CREATOR_NAME_FONT_SIZE 15.f
 #define CREATOR_NAME_TEXT_COLOR whiteColor
 
-#define CHANNEL_NAME_FONT_SIZE 18.f
+#define CHANNEL_NAME_FONT_SIZE CREATOR_NAME_FONT_SIZE
 #define LABEL_TEXT_PADDING 20.f  //Distance between the text and the white border
 
 
 @interface CreatorAndChannelBar ()
 @property (nonatomic) Channel * currentChannel;
+@property (nonatomic) PFUser * channelOwner;
+@property (nonatomic) UIImageView * followImage;
 @end
 
 
@@ -35,7 +38,10 @@
     self = [super initWithFrame:frame];
     if(self){
         self.currentChannel = channel;
-        [self addCreatorName:[(PFUser *)[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] username] andChannelName:channel.name];
+        self.channelOwner =(PFUser *)[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+        [self createBackground];
+        [self addCreatorName:[self.channelOwner valueForKey:USER_USER_NAME_KEY] andChannelName:channel.name];
+        [self setTapGesture];
     }
     return self;
 }
@@ -56,40 +62,100 @@
     [creatorNameView setBackgroundColor:[UIColor clearColor]];
     
     
-    UIButton* channelButton = [UIButton buttonWithType:UIButtonTypeCustom];
     
-    [channelButton setTitle:channelName forState:UIControlStateNormal];
-    UIFont * channelNameFont = [UIFont fontWithName:TEXT_FONT_TYPE size:CHANNEL_NAME_FONT_SIZE];
-    [channelButton.titleLabel setFont:channelNameFont];
     
-    //find size of channel text
-    CGSize channelNameSize = [channelButton.titleLabel.text sizeWithAttributes:@{
-                                                                        NSFontAttributeName : channelNameFont
-                                                                        }];
+   // find size of channel text
+    
+    UIFont * fontForChannelName = [UIFont fontWithName:TEXT_FONT_TYPE size:CREATOR_NAME_FONT_SIZE];
+    
+    CGSize channelNameSize = [channelName sizeWithAttributes:@{NSFontAttributeName : fontForChannelName}];
     
     CGFloat channelNameFrameWidth = LABEL_TEXT_PADDING +  ((channelNameSize.width < self.frame.size.width/2.f) ?
-    channelNameSize.width : self.frame.size.width/2.f);
+        channelNameSize.width : self.frame.size.width/2.f);
     
-    //set the button frame
-    CGRect channelNameFrame = CGRectMake(self.frame.size.width -
-                                         (channelNameFrameWidth + LABEL_WALL_OFFSET),
-                                         LABEL_WALL_OFFSET,
-                                         channelNameFrameWidth,
-                                         self.frame.size.height - (LABEL_WALL_OFFSET *2));
-    channelButton.frame = channelNameFrame;
+    //create channel name view
     
-    channelButton.titleLabel.textColor = [UIColor whiteColor];
-    channelButton.layer.borderColor = [UIColor whiteColor].CGColor;
-    channelButton.layer.borderWidth = 2.f;
-    channelButton.layer.cornerRadius = channelButton.frame.size.width/15.f;
-    [channelButton setBackgroundColor:[UIColor clearColor]];
     
+    CGFloat labelHeights = self.frame.size.height - (2*LABEL_WALL_OFFSET);
+    
+    CGRect followImageFrame = CGRectMake(0.f,0.f,labelHeights+10.f,
+                                                   labelHeights);
+    CGFloat channelNameHolderFrameWidth = (channelNameFrameWidth + followImageFrame.size.width + LABEL_WALL_OFFSET);
+    
+    CGRect channelNameHolderViewFrame = CGRectMake(self.frame.size.width -
+                                         (channelNameHolderFrameWidth + LABEL_WALL_OFFSET),
+                                         LABEL_WALL_OFFSET, channelNameHolderFrameWidth,
+                                         labelHeights);
+    CGRect channelNameFrame = CGRectMake(followImageFrame.size.width,0.f, channelNameFrameWidth,labelHeights);
+    
+    
+    //create and format channel name holder view
+    UIView * channelNameHolderView = [[UIView alloc] initWithFrame:channelNameHolderViewFrame];
+    
+    channelNameHolderView.backgroundColor = [UIColor clearColor];
+    channelNameHolderView.layer.borderColor = [UIColor whiteColor].CGColor;
+    channelNameHolderView.layer.borderWidth = 1.f;
+    channelNameHolderView.layer.cornerRadius = channelNameHolderView.frame.size.width/15.f;
+    
+    
+    //create follow image
+    self.followImage = [[UIImageView alloc] initWithFrame:followImageFrame];
+    self.followImage.backgroundColor = [UIColor clearColor];
+    
+    
+    
+    
+    
+    UILabel* channelNameView = [[UILabel alloc] initWithFrame:channelNameFrame];
+    channelNameView.textAlignment = NSTextAlignmentCenter;
+    channelNameView.text = channelName;
+    
+    channelNameView.font = fontForChannelName;
+    channelNameView.textColor = [UIColor CREATOR_NAME_TEXT_COLOR];
+    [channelNameView setBackgroundColor:[UIColor clearColor]];
+    
+    
+    [channelNameHolderView addSubview:self.followImage];
+    [channelNameHolderView addSubview:channelNameView];
     [self addSubview:creatorNameView];
-    [self addSubview:channelButton];
+    [self addSubview:channelNameHolderView];
+    [self createFollowIcon];
 }
 
--(void)channelButtonPressed{
-    [self.delegate channelSelected:self.currentChannel];
+
+-(void)setFollowImageIsFollowing:(BOOL) isFollowing{
+    UIImage * image = [UIImage imageNamed:((isFollowing) ? FOLLOW_ICON_IMAGE_SELECTED :FOLLOW_ICON_IMAGE_UNSELECTED)];
+    
+    self.followImage.image = image;
+}
+
+
+
+-(void) createBackground {
+    UIImage * background = [UIImage imageNamed:@"Rectangle_Background_2"];
+    UIImageView * view = [[UIImageView alloc] initWithImage:background];
+    view.frame = self.bounds;
+    [self addSubview:view];
+}
+
+
+-(void)createFollowIcon{
+    [Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^
+     (bool isFollowing) {
+         dispatch_async(dispatch_get_main_queue(), ^{
+             [self setFollowImageIsFollowing:isFollowing];
+         });
+     }];
+}
+
+-(void)setTapGesture{
+    UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentChannel)];
+    singleTap.numberOfTapsRequired = 1;
+    [self addGestureRecognizer:singleTap];
+}
+
+-(void)presentChannel{
+    [self.delegate channelSelected:self.currentChannel withOwner:self.channelOwner];
 }
 
 

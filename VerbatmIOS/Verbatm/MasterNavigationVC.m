@@ -309,9 +309,9 @@
 }
 
 
--(void) playContentOnSelectedViewController:(BOOL) shoulPlay{
+-(void) playContentOnSelectedViewController:(BOOL) shouldPlay{
     
-    if(shoulPlay){
+    if(shouldPlay){
         UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
         
         if(currentViewController == self.feedVC){
@@ -322,6 +322,7 @@
         
         if(currentViewController == self.feedVC){
         }else if (currentViewController == self.profileVC){
+            //[self.profileVC offScreen];
         }
     }
 }
@@ -396,7 +397,9 @@
 }
 
 
-
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
+    
+}
 
 
 
@@ -421,7 +424,10 @@
         
     }
     
-    
+}
+
+
+-(void)channelSelectedToPresent:(Channel *) channel{
     
 }
 

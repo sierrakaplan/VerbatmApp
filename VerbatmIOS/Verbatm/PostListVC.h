@@ -19,7 +19,7 @@ typedef enum PostListType{
 @protocol PostListVCProtocol <NSObject>
 
 -(void)hideNavBarIfPresent;
-
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
 @end
 
 

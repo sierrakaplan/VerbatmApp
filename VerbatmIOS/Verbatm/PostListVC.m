@@ -37,9 +37,11 @@
 @property (nonatomic) PostHolderCollecitonRV * lastVisibleCell;
 @property (nonatomic) LoadingIndicator * customActivityIndicator;
 @property (nonatomic) SharePOVView * sharePOVView;
-
+@property (nonatomic) BOOL shouldPlayVideos;
+@property (nonatomic) BOOL isReloading;
 @property (nonatomic) PFObject * povToShare;
 
+#define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
 #define POV_CELL_ID @"povCellId"
 #define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
 @end
@@ -50,6 +52,7 @@
     [self setDateSourceAndDelegate];
     [self registerClassForCustomCells];
     [self getPosts];
+    self.shouldPlayVideos = YES;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -72,7 +75,7 @@
 }
 
 -(void)nothingToPresentHere {
-    if(self.noContentLabel){
+    if(self.noContentLabel || self.presentedPostList.count > 0){
         return;//no need to make another one
     }
     
@@ -97,6 +100,7 @@
 
 
 -(void)reloadCurrentChannel{
+    [self stopAllVideoContent];
     [self.presentedPostList removeAllObjects];
     [self.customActivityIndicator startCustomActivityIndicator];
     [self getPosts];
@@ -156,9 +160,10 @@
     
     for(PFObject * pc_activity in backendPostObjects) {
         
-        PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+        
         
         AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+                                        PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
                                         [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
                                             POVView * pov = [[POVView alloc] initWithFrame:self.view.bounds];
                                             pov.parsePostChannelActivityObject = pc_activity;
@@ -183,7 +188,6 @@
                             }];
         
         [pageLoadPromises addObject:promise];
-        
     }
     
     //when all pages are loaded then we reload our list
@@ -191,8 +195,9 @@
         [self sortOurPostList];
         dispatch_async(dispatch_get_main_queue(), ^{
             //prepare the first POV object
-            [(POVView *)self.presentedPostList.firstObject povOnScreen];
+            if(self.shouldPlayVideos && !self.isReloading)[(POVView *)self.presentedPostList.firstObject povOnScreen];
             [self.collectionView reloadData];
+            self.isReloading = NO;
         });
     });
 }
@@ -253,12 +258,19 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
         POVView * povToPresent = self.presentedPostList[indexPath.row];
         [nextCellToBePresented presentPOV:povToPresent];
     
-        if(indexPath.row == [self getVisibileCellIndex]){
-            [nextCellToBePresented onScreen];
+        if(indexPath.row == [self getVisibileCellIndex]) {
+            if(self.shouldPlayVideos)[nextCellToBePresented onScreen];
             //for the first cell prepare the next cell so there
             //is a smooth transition
             if(indexPath.row == 0)[self prepareNextViewAfterVisibleIndex:indexPath.row];
         }
+    }
+    //we only load more media if we're in the feed and if there are "Load_more.."
+    //cells left until the end
+    if(indexPath.row == (self.presentedPostList.count - LOAD_MORE_POSTS_COUNT) &&
+       (self.listType == listFeed)){
+        self.isReloading = YES;
+        [self getPosts];
     }
     
     return nextCellToBePresented;
@@ -272,6 +284,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
 //marks all POVs as off screen
 -(void) stopAllVideoContent{
+    self.shouldPlayVideos = NO;
     for(POVView * pov in self.presentedPostList){
         [pov povOffScreen];
     }
@@ -279,9 +292,14 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
 //continues POV that's on screen
 -(void) continueVideoContent{
-    if([self getVisibileCellIndex] < self.presentedPostList.count){
-        POVView * pov = [self.presentedPostList objectAtIndex:[self getVisibileCellIndex]];
-        [pov povOnScreen];
+    self.shouldPlayVideos = YES;
+    if(self.presentedPostList.count > 0){
+        if([self getVisibileCellIndex] < self.presentedPostList.count){
+            POVView * pov = [self.presentedPostList objectAtIndex:[self getVisibileCellIndex]];
+            [pov povOnScreen];
+        }
+    }else{
+        [self getPosts];
     }
 }
 
@@ -328,7 +346,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
         }else{
             self.lastVisibleCell = visibleCell;
         }
-        [visibleCell onScreen];
+        if(self.shouldPlayVideos)[visibleCell onScreen];
     }
     
 }
@@ -392,6 +410,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
 }
 
+#pragma mark -POV delegate-
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+    [self.delegate channelSelected:channel withOwner:owner];
+}
 
 #pragma mark -Lazy instantiation-
 -(LoadingIndicator *)customActivityIndicator{

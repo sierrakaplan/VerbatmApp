@@ -255,7 +255,7 @@
 }
 
 -(void)playVideo{
-    if(self.player && !self.isVideoPlaying){
+    if(self.player && self.player.rate == 0.f){
         [self.player play];
         self.ourTimer = [NSTimer scheduledTimerWithTimeInterval:4 target:self selector:@selector(resumeSession:) userInfo:nil repeats:YES];
         self.isVideoPlaying = YES;
@@ -275,7 +275,7 @@
     
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-    [self.player addObserver:self forKeyPath:@"rate" options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew) context:nil];
+    //[self.player addObserver:self forKeyPath:@"rate" options:(NSKeyValueObservingOptionInitial | NSKeyValueObservingOptionNew) context:nil];
     // Create an AVPlayerLayer using the player
     if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
     self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
@@ -285,15 +285,26 @@
     
     self.player.muted = self.isMuted;
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        // Add it to your view's sublayers
-        if(self.playerLayer)[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
-        [self.customActivityIndicator startCustomActivityIndicator];
-        if(self.playAtEndOfAsynchronousSetup){
-            [self playVideo];
-            self.playAtEndOfAsynchronousSetup = NO;
-        }
-    });
+    
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self presentNewLayers];
+        });
+    }else{
+        [self presentNewLayers];
+    }
+    
+    
+}
+
+-(void)presentNewLayers{
+    // Add it to your view's sublayers
+    if(self.playerLayer)[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
+    [self.customActivityIndicator startCustomActivityIndicator];
+    if(self.playAtEndOfAsynchronousSetup){
+        [self playVideo];
+        self.playAtEndOfAsynchronousSetup = NO;
+    }
 }
 
 -(void)formatMuteButton {
@@ -404,41 +415,33 @@
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
+            [self.player pause];
             @autoreleasepool {
-                if (self.videoLoading) {
-                    self.videoLoading = NO;
-                }
-                [self.customActivityIndicator stopCustomActivityIndicator];
-                
-                for (UIView* view in self.subviews) {
-                    [view removeFromSuperview];
-                }
-                 @autoreleasepool {
-                    [self removePlayerItemObserver];
-                     self.layer.sublayers = nil;
-                    [self.playerLayer removeFromSuperlayer];
-                    self.layer.sublayers = nil;
-                 }
+                [self removePlayerItemObserver];
+            }
+            //[self.customActivityIndicator stopCustomActivityIndicator];
+            self.layer.sublayers = nil;
+            self.playerLayer = nil;
+            self.playerItem = nil;
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 @autoreleasepool {
-                    
                     self.muteButton = nil;
-                    self.playerItem = nil;
+                   
                     self.player = nil;
-                    self.playerLayer = nil;
                     self.isVideoPlaying = NO;
                     [self.ourTimer invalidate];
                     self.ourTimer = nil;
-                    
+                    if (self.videoLoading) {
+                        self.videoLoading = NO;
+                    }
                 }
             });
-        }
 }
 
 -(void) removePlayerItemObserver {
     @try{
         [self.playerItem removeObserver:self forKeyPath:@"status"];
-        [self removePlayerRateObserver];
+        //[self removePlayerRateObserver];
     }@catch(id anException){
         //do nothing, obviously it wasn't attached because an exception was thrown
     }
@@ -450,6 +453,7 @@
     }@catch(id anException){
         //do nothing, obviously it wasn't attached because an exception was thrown
     }
+   
 }
 
 

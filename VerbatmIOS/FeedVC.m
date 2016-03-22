@@ -38,7 +38,7 @@
 
 
 @property (nonatomic) SharePOVView * sharePOVView;
-
+@property (nonatomic) BOOL didJustLoadForTheFirstTime;
 #define TRENDING_VC_ID @"trending_vc"
 #define VERBATM_LOGO_WIDTH 150.f
 
@@ -48,15 +48,15 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    //[self createContentListView];
     [self addPostListVC];
     [self addClearScreenGesture];
+    self.didJustLoadForTheFirstTime = YES;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-    if(self.postListVC){
-        [self.postListVC continueVideoContent];
+    if(self.postListVC && !self.didJustLoadForTheFirstTime){
+       [self.postListVC continueVideoContent];
     }
 }
 
@@ -67,19 +67,9 @@
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if(self.postListVC)[self.postListVC stopAllVideoContent];
+    self.didJustLoadForTheFirstTime = NO;
 }
 
-
-//-(void) createContentListView {
-//    self.postListVC = [[POVListScrollViewVC alloc] init];
-//    self.postListVC.listOwner = [PFUser currentUser];
-//    self.postListVC.listType = listFeed;
-//    self.postListVC.isHomeProfileOrFeed =YES;
-//   // self.postListVC.delegate = self;
-//    [self.view addSubview:self.postListVC.view];
-//    self.postDisplayVC.delegate = self;
-//    [self.postDisplayVC didMoveToParentViewController:self];
-//}
 
 
 -(void) addPostListVC {
@@ -121,12 +111,12 @@
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-    if(self.contentCoveringScreen) {
-        [self removeContentFromScreen];
-    } else {
-        [self returnContentToScreen];
+        if(self.contentCoveringScreen) {
+            [self removeContentFromScreen];
+        } else {
+            [self returnContentToScreen];
 
-    }
+        }
 }
 -(void)returnContentToScreen{
     [self.delegate showTabBar:YES];

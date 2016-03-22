@@ -10,7 +10,7 @@
 #define SizesAndPositions_h
 
 #pragma mark -POV View -
-#define CREATOR_CHANNEL_BAR_HEIGHT 50.f
+#define CREATOR_CHANNEL_BAR_HEIGHT 30.f
 
 
 #define TITLE_BAR_HEIGHT 60.f

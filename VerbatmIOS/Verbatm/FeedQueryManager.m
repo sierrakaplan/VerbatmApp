@@ -17,7 +17,7 @@
 @interface FeedQueryManager ()
 //how many posts have we gotten and presented so far
 @property (nonatomic) NSInteger postsDownloadedSoFar;
-#define POST_DOWNLOAD_MAX_SIZE 10
+#define POST_DOWNLOAD_MAX_SIZE 5
 
 @end
 
@@ -62,15 +62,28 @@
                  
                  NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
                  
-                 for(PFObject * pc_activity in activities){
+                 
+                 for(NSInteger i = self.postsDownloadedSoFar;
+                     (i < activities.count && i < self.postsDownloadedSoFar+POST_DOWNLOAD_MAX_SIZE); i ++){
                      
-                     //we do this to make sure the info is downloaded and cached early
+                     PFObject * pc_activity = activities[i];
                      PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-                     [post fetchIfNeededInBackground];
+                     [post fetchIfNeeded];
                      
                      [finalPostObjects addObject:pc_activity];
+                     
                  }
-
+                 
+                 
+//                 for(PFObject * pc_activity in activities){
+//                     
+//                     //we do this to make sure the info is downloaded and cached early
+//                     PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+//                     [post fetchIfNeededInBackground];
+//                     
+//                     [finalPostObjects addObject:pc_activity];
+//                 }
+//
                  self.postsDownloadedSoFar += finalPostObjects.count;
                  block(finalPostObjects);
              }];

@@ -16,6 +16,7 @@
 // tells whether button was liked or unliked
 -(void) likeButtonLiked: (BOOL)liked onPOV: (PovInfo*) povInfo;
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov;
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
 @end
 
 @interface POVView : UIView

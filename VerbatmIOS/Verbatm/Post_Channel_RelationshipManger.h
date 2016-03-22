@@ -19,10 +19,14 @@
 
 @interface Post_Channel_RelationshipManger : NSObject
 
-+(void)savePost:(PFObject *) postParseObject toChannels: (NSMutableArray *) channels withCompletionBlock:(void(^)())block;
++(void)savePost:(PFObject *) postParseObject toChannels: (NSMutableArray *) channels
+                                                    withCompletionBlock:(void(^)())block;
 
-+(void)deletePost:(PFObject *) postParseObject fromChannel: (Channel *) channel withCompletionBlock:(void(^)(bool))block;
++(void)deletePost:(PFObject *) postParseObject fromChannel: (Channel *) channel
+                                                    withCompletionBlock:(void(^)(bool))block;
 
-+(void)isPost:(PFObject *) postParseObject partOfChannel: (Channel *) channel withCompletionBlock:(void(^)(bool))block;
-
++(void)isPost:(PFObject *) postParseObject partOfChannel: (Channel *) channel
+                                                    withCompletionBlock:(void(^)(bool))block;
++(void)getChannelObjectFromParsePCRelationship:(PFObject *) pcr
+                                                    withCompletionBlock:(void(^)(Channel * ))block;
 @end

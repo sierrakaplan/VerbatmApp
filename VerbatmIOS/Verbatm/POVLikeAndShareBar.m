@@ -58,6 +58,7 @@
     
     self = [super initWithFrame:frame];
     if(self){
+        
         [self creatButtonsWithNumLike:numLikes andNumShare:numShares];
         if(numPages.integerValue > 1){//make sure there are multiple pages
             [self createCounterLabelStartingAtPage:startPage outOf:numPages];
@@ -111,6 +112,9 @@
     [pageWeAreOn appendAttributedString:totalNumberOfPages];
     return pageWeAreOn;
 }
+
+
+
 
 
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares{

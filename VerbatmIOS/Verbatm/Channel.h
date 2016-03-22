@@ -20,4 +20,7 @@
 
 
 -(instancetype) initWithChannelName:(NSString *) channelName numberOfFollowers:(NSNumber *) numberOfFollowers andParseChannelObject:(PFObject *) parseChannelObject;
+
+//note - method is synchronous so will block to get user info
+-(NSString *)getChannelOwnerUserName;
 @end

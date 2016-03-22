@@ -7,7 +7,7 @@
 //
 
 #import "Channel.h"
-
+#import "ParseBackendKeys.h"
 @interface Channel ()
 @property (nonatomic, readwrite) NSString * name;
 @property (nonatomic, readwrite) NSNumber * numberOfFollowers;
@@ -27,6 +27,12 @@
         self.parseChannelObject = (parseChannelObject) ? parseChannelObject : NULL;
     }
     return self;
+}
+
+-(NSString *)getChannelOwnerUserName{
+    PFObject * user = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+    NSString * userName = [user valueForKey:USER_USER_NAME_KEY];
+    return userName;
 }
 
 @end

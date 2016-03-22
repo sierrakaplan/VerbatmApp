@@ -19,7 +19,7 @@
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table
 #define FOLLOW_USER_KEY @"UserFollowing"//the user doing the following
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
-
+#define FOLLOW_CHANNEL_RELATIONSHIP_OWNER @"RelationshipOwner" //either the person currently posting or the person doing the reposting
 
 
 #define LIKE_PFCLASS_KEY @"LikeClass"//we maintain all the like relationships in their own table

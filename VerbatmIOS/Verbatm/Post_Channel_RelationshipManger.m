@@ -10,6 +10,7 @@
 #import "Post_Channel_RelationshipManger.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
+#import <Parse/PFUser.h>
 #import <PromiseKit/PromiseKit.h>
 
 
@@ -25,10 +26,11 @@
              PFObject * newFollowObject = [PFObject objectWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
              [newFollowObject setObject:postParseObject forKey:POST_CHANNEL_ACTIVITY_POST];
              [newFollowObject setObject:channel.parseChannelObject forKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO ];
+             //we store the person creating the relationship -- either reposter or original owner
+             [newFollowObject setObject:[PFUser currentUser] forKey:FOLLOW_CHANNEL_RELATIONSHIP_OWNER];
              [newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                  resolve(nil);
              }];
-         
          }];
         
         [pageLoadPromises addObject:promise];
@@ -54,6 +56,25 @@
                 [followObj deleteInBackground];
             }
         }
+    }];
+}
+
++(void)getChannelObjectFromParsePCRelationship:(PFObject *) pcr withCompletionBlock:(void(^)(Channel * ))block{
+    
+    PFObject * parsePostObject = [pcr valueForKey:POST_CHANNEL_ACTIVITY_POST];
+    
+    [parsePostObject fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        PFUser * postOriginalChannel = [parsePostObject valueForKey:POST_CHANNEL_KEY];
+        [postOriginalChannel fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+            if(object){
+                NSString * channelName  = [postOriginalChannel valueForKey:CHANNEL_NAME_KEY];
+                NSNumber * numberOfFollowers = [postOriginalChannel valueForKey:CHANNEL_NUM_FOLLOWERS_KEY];
+                Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName numberOfFollowers:numberOfFollowers andParseChannelObject:postOriginalChannel];
+                block(verbatmChannelObject);
+            }
+        }];
+        
+        
     }];
 }
 

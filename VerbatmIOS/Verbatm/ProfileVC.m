@@ -77,6 +77,9 @@
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
         [self addPostListVC];
+        if(self.isCurrentUserProfile){
+            [self.postListVC stopAllVideoContent];//We stop the video because we start in the feed
+        }
         [self createNavigationBar];
         [self addClearScreenGesture];
     }];
@@ -86,13 +89,24 @@
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
-    [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
-        block();
-    }];
+    
+    if(self.isCurrentUserProfile){
+        [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
+            block();
+        }];
+    }else{
+        [Channel_BackendObject getChannelsForUser:self.userOfProfile withCompletionBlock:
+         ^(NSMutableArray * channels) {
+             self.channels = channels;
+             block();
+         }];
+    }
 }
 
 -(void) viewWillAppear:(BOOL)animated{
-    if(self.postListVC)[self.postListVC continueVideoContent];
+    if(self.postListVC){
+        [self.postListVC continueVideoContent];
+    }
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -104,35 +118,30 @@
     if(self.postListVC)[self.postListVC stopAllVideoContent];
 }
 
-//-(void) createAndAddListVC{
-//    self.postListVC = [[POVListScrollViewVC alloc] init];
-//    self.postListVC.listOwner = self.userOfProfile;
-//    if(self.startChannel){
-//        self.postListVC.channelForList = self.startChannel ;
-//    }else{
-//        self.postListVC.channelForList = [self.channels firstObject];
-//    }
-//    
-//    self.postListVC.listType = listChannel;
-//    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
-//    if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
-//    else [self.view addSubview:self.postListVC.view];
-//}
+
 
 
 
 -(void) addPostListVC {
+    if(self.postListVC){
+        [self.postListVC stopAllVideoContent];
+        [self.postListVC.view removeFromSuperview];
+    }
+    
+    
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     [flowLayout setMinimumInteritemSpacing:0.3];
     [flowLayout setMinimumLineSpacing:0.0f];
     [flowLayout setItemSize:self.view.frame.size];
     self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+    
     self.postListVC.listOwner = self.userOfProfile;
     if(self.startChannel){
         self.postListVC.channelForList = self.startChannel;
     }else{
         self.postListVC.channelForList = [self.channels firstObject];
+        self.startChannel = self.postListVC.channelForList;
     }
 
     self.postListVC.listType = listChannel;
@@ -170,6 +179,18 @@
     UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(clearScreen:)];
     singleTap.numberOfTapsRequired = 1;
     [self.view addGestureRecognizer:singleTap];
+}
+
+
+
+#pragma mark -POSTListView delegate-
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+    ProfileVC *  userProfile = [[ProfileVC alloc] init];
+    userProfile.isCurrentUserProfile = NO;
+    userProfile.userOfProfile = owner;
+    userProfile.startChannel = channel;
+    [self presentViewController:userProfile animated:YES completion:^{
+    }];
 }
 
 
@@ -262,7 +283,14 @@
 }
 
 -(void)newChannelSelected:(Channel *) channel{
-    [self.postListVC changeCurrentChannelTo:channel];
+    
+    if(![self.startChannel.name isEqualToString:channel.name]){
+        self.startChannel = channel;
+        [self addPostListVC];
+    }
+    
+    
+    //[self.postListVC changeCurrentChannelTo:channel];
 }
 
 // updates tab and content
@@ -289,24 +317,25 @@
         
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
-        [self.postListVC footerShowing:NO];
+       if(self.isCurrentUserProfile) [self.postListVC footerShowing:NO];
     } else {
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:NO]];
         }];
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
-        [self.postListVC footerShowing:YES];
+       if(self.isCurrentUserProfile) [self.postListVC footerShowing:YES];
         
     }
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-    if (self.contentCoveringScreen) {
-       [self presentHeadAndFooter:YES];
-    } else {
-        [self presentHeadAndFooter:NO];
-    }
+    
+        if (self.contentCoveringScreen) {
+           [self presentHeadAndFooter:YES];
+        } else {
+            [self presentHeadAndFooter:NO];
+        }
 }
 
 -(CGRect)getProfileNavBarFrameOffScreen:(BOOL) getOffScreenFrame {
@@ -326,7 +355,12 @@
 }
 
 -(void) onScreen {
-    [self.postDisplayVC onScreen];
+//    if(self.postListVC){
+//        [self.postDisplayVC onScreen];
+//    }else{
+//         //[self addPostListVC];
+//    }
+    
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -360,8 +394,8 @@
 -(void) publishingComplete {
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
-
-	[self.postListVC reloadCurrentChannel];
+    [self addPostListVC];
+	//[self.postListVC reloadCurrentChannel];
 }
 
 -(void) publishingFailed {
@@ -408,7 +442,7 @@
 }
 
 -(NSArray *)channels{
-    return [[UserInfoCache sharedInstance] getUserChannels];
+    return (!self.isCurrentUserProfile) ? _channels : [[UserInfoCache sharedInstance] getUserChannels];
 }
 
 

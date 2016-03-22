@@ -25,6 +25,8 @@
 #import "PagesLoadManager.h"
 #import "ParseBackendKeys.h"
 #import <PromiseKit/PromiseKit.h>
+#import "PostChannelAndCreatorBar.h"
+#import "Post_Channel_RelationshipManger.h"
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -36,7 +38,7 @@
 #import "VideoAVE.h"
 
 @interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate,
-    PagesLoadManagerDelegate, POVLikeAndShareBarProtocol>
+                    PagesLoadManagerDelegate, POVLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 // Load manager in charge of getting page objects and all their media for each pov
 @property (strong, nonatomic) PagesLoadManager* pageLoadManager;
@@ -175,6 +177,7 @@
     self.likeShareBar.delegate = self;
     [self addSubview:self.likeShareBar];
     [self checkIfUserHasLikedThePost];
+    [self addCreatorInfo];
 }
 
 
@@ -187,11 +190,20 @@
 }
 
 
+-(void) addCreatorInfo{
+    [Post_Channel_RelationshipManger getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject withCompletionBlock:^(Channel * channel) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
+            self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
+            self.creatorAndChannelBar.delegate = self;
+            [self addSubview:self.creatorAndChannelBar];
+        });
+    }];
+}
 
--(void) addCreatorInfoFromChannel: (Channel *) channel {
-    CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
-    self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
-    [self addSubview:self.creatorAndChannelBar];
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+    [self.delegate channelSelected:channel withOwner:owner];
+
 }
 
 #pragma mark - Add like button -
@@ -484,14 +496,17 @@
 #pragma mark - Playing POV content -
 
 -(void) povOnScreen{
-    if(self.pageAveMedia.count > 0 &&
-       self.pageAves.count ==0){
-        //we lazily create out pages
-        [self presentMediaContent];
-    }
-    
-    [self displayMediaOnCurrentAVE];
     self.povIsCurrentlyBeingShown = YES;
+    
+    if(self.pageAveMedia){
+        if(self.pageAveMedia.count > 0 &&
+           self.pageAves.count ==0){
+            //we lazily create out pages
+            [self presentMediaContent];
+        }
+        [self displayMediaOnCurrentAVE];
+    }
+   
 }
 
 -(void) povOffScreen{
