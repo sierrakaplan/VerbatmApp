@@ -37,6 +37,11 @@
 
 #import "VideoAVE.h"
 
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
+
 @interface POVView ()<UIScrollViewDelegate, PhotoAVEDelegate,
                     PagesLoadManagerDelegate, POVLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
@@ -79,6 +84,8 @@
 
 @property (nonatomic) UIView * PagingLine;//line that moves up and down as the user swipes up and down
 
+@property (nonatomic) UIImageView * pageUpIndicator;
+
 @property (nonatomic) NSMutableArray * mediaPageContent;//TODO
 
 @property(nonatomic) BOOL povIsCurrentlyBeingShown;
@@ -113,7 +120,7 @@
         [self addSubview: self.mainScrollView];
         self.mainScrollView.backgroundColor = [UIColor blackColor];
         [self createBorder];
-         [self addPagingLine];
+        [self addPagingLine];
     }
     return self;
 }
@@ -140,9 +147,7 @@
     CGFloat lineHeight = self.frame.size.height * lineRatio;
      CGRect lineFrame = CGRectMake(self.PagingLine.frame.origin.x, self.frame.size.height - lineHeight,
                                    self.PagingLine.frame.size.width, lineHeight);
-    //[UIView animateWithDuration:PAGING_LINE_ANIMATION_DURATION animations:^{
-        self.PagingLine.frame = lineFrame;
-    //}];
+    self.PagingLine.frame = lineFrame;
 }
 
 
@@ -244,13 +249,28 @@
 
 
 -(void) shiftLikeShareBarDown:(BOOL) down{
+    BOOL shiftArrow = NO;
+    if(self.pageUpIndicator){
+        shiftArrow = YES;
+        [self.pageUpIndicator removeFromSuperview];
+        self.pageUpIndicator = nil;
+    }
+    
     if(down){
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             self.likeShareBar.frame = self.lsBarDownFrame;
+        } completion:^(BOOL finished) {
+            if(finished && shiftArrow){
+                [self addUpArrowAnimation];
+            }
         }];
     }else{
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             self.likeShareBar.frame = self.lsBarUpFrame;
+        } completion:^(BOOL finished) {
+            if(finished && shiftArrow){
+                [self addUpArrowAnimation];
+            }
         }];
     }
 }
@@ -285,6 +305,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
     //[self setPageNumberOnShareBarFromScrollView:scrollView];
     [self displayMediaOnCurrentAVE];
+    [self removePageUpIndicatorFromView];
 }
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
     [self upDatePagingLine];
@@ -333,10 +354,7 @@
 }
 
 -(void)muteButtonSelected:(BOOL)shouldMute{
-   // dispatch_async(dispatch_get_main_queue(), ^{
-        [self muteAllVideos:shouldMute];
-  //  });
-    
+        [self muteAllVideos:shouldMute];    
 }
 
 
@@ -540,12 +558,16 @@
         }
         [self displayMediaOnCurrentAVE];
     }
-   
+    
+    if(self.pageAves.count > 1){
+        [self addUpArrowAnimation];
+    }
 }
 
 -(void) povOffScreen{
      self.povIsCurrentlyBeingShown = NO;
     [self stopAllVideos];
+    [self removePageUpIndicatorFromView];
 }
 
 -(void)preparePOVToBePresented{
@@ -590,6 +612,7 @@
 	self.currentPageIndex = -1;
 	self.pageAves = nil;
 	self.pageLoadManager = nil;
+    [self removePageUpIndicatorFromView];
 }
 
 //make sure to stop all videos
@@ -600,6 +623,65 @@
 		[ave offScreen];
     }
 }
+
+-(void)removePageUpIndicatorFromView{
+    if(self.pageUpIndicator){
+        [UIView animateWithDuration:1.f animations:^{
+            self.pageUpIndicator.alpha = 0.f;
+        } completion:^(BOOL finished) {
+            [self.pageUpIndicator removeFromSuperview];
+            self.pageUpIndicator = nil;
+        }];
+        
+    }
+}
+
+-(void)addUpArrowAnimation{
+    if(!self.pageUpIndicator && self.pageAves.count){
+        if(![NSThread isMainThread]){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self startArrowAnimation];
+            });
+        }else{
+            [self startArrowAnimation];
+        }
+    }
+    
+    
+    
+}
+
+-(void)startArrowAnimation{
+    
+    
+    
+    UIImage * arrowImage = [UIImage imageNamed:@"up_arrow"];
+    UIImageView * iv = [[UIImageView alloc] initWithImage:arrowImage];
+    [self addSubview:iv];
+    [self bringSubviewToFront:iv];
+    
+    CGFloat size = 30.f;
+    CGFloat x_cord = self.frame.size.width - size - 8.f;
+    CGFloat y_cord = (self.likeShareBar.frame.origin.y + self.likeShareBar.frame.size.height) - size - 3.f;
+    CGRect frame = CGRectMake(x_cord,y_cord, size, size);
+    iv.frame = frame;
+    
+    
+    CABasicAnimation *pulse;
+    pulse = [CABasicAnimation animationWithKeyPath:@"transform.translation.y"];
+    pulse.duration = 0.5;
+    pulse.autoreverses = YES;
+    pulse.cumulative = NO;
+    pulse.fillMode = kCAFillModeForwards;
+    pulse.fromValue = [NSNumber numberWithFloat:1.f];
+    pulse.toValue =[NSNumber numberWithFloat:(-20.f)];
+    pulse.repeatCount = HUGE_VALF;
+    
+    [iv.layer removeAllAnimations];
+    [iv.layer addAnimation:pulse forKey:@"Pulse"];
+    self.pageUpIndicator = iv;
+}
+
 
 #pragma mark - Lazy Instantiation -
 

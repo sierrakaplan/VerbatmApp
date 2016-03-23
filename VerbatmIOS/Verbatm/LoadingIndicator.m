@@ -69,7 +69,7 @@
     [self.customActivityIndicator.layer removeAllAnimations];
     [self.customActivityIndicator.layer addAnimation:rotation forKey:@"Spin"];
     [self.customActivityIndicator.layer addAnimation:pulse forKey:@"Pulse"];
-    [self addSubview:self.customActivityIndicator];
+    //[self addSubview:self.customActivityIndicator];
     [self bringSubviewToFront:self.customActivityIndicator];
 }
 

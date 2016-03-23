@@ -128,10 +128,13 @@
 
 
 -(void) createBackground {
-    UIImage * background = [UIImage imageNamed:@"Rectangle_Background_2"];
-    UIImageView * view = [[UIImageView alloc] initWithImage:background];
-    view.frame = self.bounds;
-    [self addSubview:view];
+
+    
+    self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.3];
+    //    UIImage * background = [UIImage imageNamed:@"Rectangle_Background_2"];
+//    UIImageView * view = [[UIImageView alloc] initWithImage:background];
+//    view.frame = self.bounds;
+//    [self addSubview:view];
 }
 
 
