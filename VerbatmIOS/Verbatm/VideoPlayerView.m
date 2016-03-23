@@ -299,12 +299,8 @@
 
 -(void)presentNewLayers{
     // Add it to your view's sublayers
-    if(self.playerLayer)[self.layer insertSublayer:self.playerLayer below:self.muteButton.layer];
-    [self.customActivityIndicator startCustomActivityIndicator];
-    if(self.playAtEndOfAsynchronousSetup){
-        [self playVideo];
-        self.playAtEndOfAsynchronousSetup = NO;
-    }
+    if(self.playerLayer)[self.layer addSublayer:self.playerLayer];
+    if(self.customActivityIndicator)[self.customActivityIndicator startCustomActivityIndicator];
 }
 
 -(void)formatMuteButton {
@@ -415,27 +411,35 @@
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
-            [self.player pause];
-            @autoreleasepool {
-                [self removePlayerItemObserver];
-            }
-            //[self.customActivityIndicator stopCustomActivityIndicator];
+    @autoreleasepool {
+        if (self.videoLoading) {
+            self.videoLoading = NO;
+        }
+        [self.customActivityIndicator stopCustomActivityIndicator];
+        
+        for (UIView* view in self.subviews) {
+            [view removeFromSuperview];
+        }
+        @autoreleasepool {
+            [self removePlayerItemObserver];
             self.layer.sublayers = nil;
-            self.playerLayer = nil;
-            self.playerItem = nil;
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                @autoreleasepool {
-                    self.muteButton = nil;
-                   
-                    self.player = nil;
-                    self.isVideoPlaying = NO;
-                    [self.ourTimer invalidate];
-                    self.ourTimer = nil;
-                    if (self.videoLoading) {
-                        self.videoLoading = NO;
-                    }
-                }
-            });
+            [self.playerLayer removeFromSuperlayer];
+            self.layer.sublayers = nil;
+        }
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            @autoreleasepool {
+                
+                self.muteButton = nil;
+                self.playerItem = nil;
+                self.player = nil;
+                self.playerLayer = nil;
+                self.isVideoPlaying = NO;
+                [self.ourTimer invalidate];
+                self.ourTimer = nil;
+                
+            }
+        });
+    }
 }
 
 -(void) removePlayerItemObserver {

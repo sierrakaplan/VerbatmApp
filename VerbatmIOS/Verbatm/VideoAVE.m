@@ -130,14 +130,14 @@
 }
 
 -(void)prepareVideos:(NSArray*)videoList {
-	if (!videoList.count) return;
-	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
-        [self.videoPlayer prepareVideoFromArrayOfAssets_asynchronous:videoList];
-	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
-		[self.videoPlayer prepareVideoFromURLArray_asynchronouse:videoList];
-	} else {
-		return;
-	}
+//	if (!videoList.count) return;
+//	if ([[videoList objectAtIndex:0] isKindOfClass:[AVURLAsset class]]) {
+//        [self.videoPlayer prepareVideoFromArrayOfAssets_asynchronous:videoList];
+//	} else if ([[videoList objectAtIndex:0] isKindOfClass:[NSURL class]]) {
+//		[self.videoPlayer prepareVideoFromURLArray_asynchronouse:videoList];
+//	} else {
+//		return;
+//	}
     self.videoList = videoList;
  }
 
@@ -218,14 +218,12 @@
         if(self.hasBeenSetUp){
            [self.videoPlayer playVideo];
         }else{
-            if(self.videoList){
-                [self.videoPlayer stopVideo];
-            }
+//            if(self.videoList){
+//                [self.videoPlayer stopVideo];
+//            }
             [self prepareVideos_synchronous:self.videoList];
             [self.videoPlayer playVideo];
         }
-        
-        
     }
 }
 

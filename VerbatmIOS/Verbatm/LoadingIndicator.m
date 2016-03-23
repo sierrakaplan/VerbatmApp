@@ -45,7 +45,7 @@
 
 
 - (void)startCustomActivityIndicator {
-    self.hidden = NO;
+   self.hidden = NO;
 }
 
 -(void)spin{
@@ -74,16 +74,23 @@
 }
 
 -(void)stopCustomActivityIndicator{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if(self.customActivityIndicator && !self.hidden){
-            [self.customActivityIndicator.layer removeAllAnimations];
-            //[self.customActivityIndicator.layer removeFromSuperlayer];
-        }
-        self.hidden = YES;
-    });
+    if(![NSThread isMainThread]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self stopAnimationsAndHide];
+        });
+    }else{
+        [self stopAnimationsAndHide];
+    }
     
 }
 
+-(void)stopAnimationsAndHide{
+    if(self.customActivityIndicator && !self.hidden){
+        [self.customActivityIndicator.layer removeAllAnimations];
+        //[self.customActivityIndicator.layer removeFromSuperlayer];
+    }
+    self.hidden = YES;
+}
 
 -(UIImageView *)customActivityIndicator{
     if(!_customActivityIndicator){

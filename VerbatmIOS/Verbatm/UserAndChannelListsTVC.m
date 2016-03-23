@@ -267,6 +267,7 @@
             NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:USER_USER_NAME_KEY];
             [cell setChannelName:channel.name andUserName:userName];
         }
+        
     }else{
         Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
         NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:USER_USER_NAME_KEY];

@@ -480,9 +480,6 @@
         [self.customActivityIndicator stopCustomActivityIndicator];
 
         
-//        [self.activityIndicator stopAnimating];
-//        self.activityIndicator = nil;
-        
         for(NSInteger key = 0; key < self.pageAveMedia.count; key++){
             NSArray * media = [self.pageAveMedia objectForKey:[NSNumber numberWithInteger:key]];
             ArticleViewingExperience * ave = [AVETypeAnalyzer getAVEFromPageMedia:media withFrame:self.bounds];
@@ -514,8 +511,8 @@
 }
 
 -(void) povOffScreen{
+     self.povIsCurrentlyBeingShown = NO;
     [self stopAllVideos];
-    self.povIsCurrentlyBeingShown = NO;
 }
 
 -(void)preparePOVToBePresented{

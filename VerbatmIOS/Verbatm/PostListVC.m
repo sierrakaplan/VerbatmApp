@@ -268,7 +268,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     //we only load more media if we're in the feed and if there are "Load_more.."
     //cells left until the end
     if(indexPath.row == (self.presentedPostList.count - LOAD_MORE_POSTS_COUNT) &&
-       (self.listType == listFeed)){
+       (self.listType == listFeed) && !self.isReloading){
         self.isReloading = YES;
         [self getPosts];
     }
@@ -302,6 +302,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
         [self getPosts];
     }
 }
+
 
 -(void) footerShowing: (BOOL) showing{
     for(POVView * pov in self.presentedPostList){
