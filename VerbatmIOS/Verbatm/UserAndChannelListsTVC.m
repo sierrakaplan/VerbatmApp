@@ -164,9 +164,9 @@
     
     [Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^
      (NSMutableArray * channels) {
+         if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+         [self.channelsToDisplay addObjectsFromArray:channels];
          dispatch_async(dispatch_get_main_queue(), ^{
-             if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-             [self.channelsToDisplay addObjectsFromArray:channels];
              [self.tableView reloadData];
          });
      }];
@@ -267,7 +267,6 @@
             NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:USER_USER_NAME_KEY];
             [cell setChannelName:channel.name andUserName:userName];
         }
-        
     }else{
         Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
         NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:USER_USER_NAME_KEY];

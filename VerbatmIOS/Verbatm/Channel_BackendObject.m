@@ -129,7 +129,8 @@
                     NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
                     NSNumber * numberOfFollowers = [parseChannelObject valueForKey:CHANNEL_NUM_FOLLOWERS_KEY];
                     //making sure we have info on the owner of the channel for our list
-                    [[parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackground];
+                    PFUser * creator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+                    [creator fetchIfNeededInBackground];
                     Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName numberOfFollowers:numberOfFollowers andParseChannelObject:parseChannelObject];
                     [finalObjects addObject:verbatmChannelObject];
                 }
