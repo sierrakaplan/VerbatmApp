@@ -77,6 +77,8 @@
 @property (nonatomic) UIImageView * swipeUpAndDownInstruction;///tell user they can swipe up and down to navigate
 
 
+@property (nonatomic) UIView * PagingLine;//line that moves up and down as the user swipes up and down
+
 @property (nonatomic) NSMutableArray * mediaPageContent;//TODO
 
 @property(nonatomic) BOOL povIsCurrentlyBeingShown;
@@ -85,6 +87,10 @@
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
 #define ACTIVITY_ANIMATION_Y 100.f
+
+#define PAGING_LINE_WIDTH 4.f
+#define PAGING_LINE_ANIMATION_DURATION 0.5
+#define PAGING_LINE_COLE [UIColor whiteColor]
 @end
 
 @implementation POVView
@@ -107,6 +113,7 @@
         [self addSubview: self.mainScrollView];
         self.mainScrollView.backgroundColor = [UIColor blackColor];
         [self createBorder];
+         [self addPagingLine];
     }
     return self;
 }
@@ -115,6 +122,27 @@
     [self.layer setBorderWidth:2.0];
     [self.layer setCornerRadius:0.0];
     [self.layer setBorderColor:[UIColor blackColor].CGColor];
+}
+
+
+-(void)addPagingLine{
+    CGRect lineFrame = CGRectMake(self.frame.size.width - PAGING_LINE_WIDTH, self.frame.size.height, PAGING_LINE_WIDTH, 0.f);
+    self.PagingLine = [[UIView alloc] initWithFrame:lineFrame];
+    self.PagingLine.backgroundColor = PAGING_LINE_COLE;
+    [self addSubview:self.PagingLine];
+    [self bringSubviewToFront:self.PagingLine];
+}
+
+
+-(void)upDatePagingLine{
+    //we subtract the page height because the contentOffset is never == contentSize... but our ratio needs to become 1
+    CGFloat lineRatio = self.mainScrollView.contentOffset.y/(self.mainScrollView.contentSize.height-self.frame.size.height);
+    CGFloat lineHeight = self.frame.size.height * lineRatio;
+     CGRect lineFrame = CGRectMake(self.PagingLine.frame.origin.x, self.frame.size.height - lineHeight,
+                                   self.PagingLine.frame.size.width, lineHeight);
+    //[UIView animateWithDuration:PAGING_LINE_ANIMATION_DURATION animations:^{
+        self.PagingLine.frame = lineFrame;
+    //}];
 }
 
 
@@ -155,7 +183,7 @@
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
 }
--(void)checkIfUserHasLikedThePost{
+-(void) checkIfUserHasLikedThePost {
     [Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]withCompletionBlock:^(bool userLikedPost) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.likeShareBar shouldStartPostAsLiked:userLikedPost];
@@ -165,11 +193,13 @@
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up{
     
-    self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height -LIKE_SHARE_BAR_HEIGHT - TAB_BAR_HEIGHT ,
-                                 self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+    CGFloat barHeight = (self.frame.size.height/2.f);
     
-    self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
-                                     self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+    self.lsBarUpFrame = CGRectMake(0.f,barHeight - TAB_BAR_HEIGHT,
+                                 LIKE_SHARE_BAR_HEIGHT,barHeight);
+    
+    self.lsBarDownFrame = CGRectMake(0.f,barHeight,
+                                     LIKE_SHARE_BAR_HEIGHT,barHeight);
     
     CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
     
@@ -253,8 +283,11 @@
 #pragma mark - Scroll view delegate -
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [self setPageNumberOnShareBarFromScrollView:scrollView];
+    //[self setPageNumberOnShareBarFromScrollView:scrollView];
     [self displayMediaOnCurrentAVE];
+}
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    [self upDatePagingLine];
 }
 
 -(void) setPageNumberOnShareBarFromScrollView:(UIScrollView *) scrollview {

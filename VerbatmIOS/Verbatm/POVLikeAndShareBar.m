@@ -60,9 +60,9 @@
     if(self){
         
         [self creatButtonsWithNumLike:numLikes andNumShare:numShares];
-        if(numPages.integerValue > 1){//make sure there are multiple pages
-            [self createCounterLabelStartingAtPage:startPage outOf:numPages];
-        }
+//        if(numPages.integerValue > 1){//make sure there are multiple pages
+//            //[self createCounterLabelStartingAtPage:startPage outOf:numPages];
+//        }
         self.totalNumberOfPages = numPages;
         self.totalNumberOfLikes = numLikes;
         [self formatView];
@@ -125,28 +125,26 @@
 
     
     //create numSharesButton of likes button
-    self.numSharesButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    
-    //create "followers" text
-    NSAttributedString * sharesText = [[NSAttributedString alloc] initWithString:numShares.stringValue attributes:self.followNumberTextAttributes];
-    
-    [self.numSharesButton setAttributedTitle:sharesText forState:UIControlStateNormal];
-    CGSize textSizeNumShares = [numShares.stringValue sizeWithAttributes:self.followNumberTextAttributes];
-    CGRect shareNumberButtonFrame = CGRectMake(self.shareButon.frame.origin.x +
-                                               self.shareButon.frame.size.width +
-                                               BUTTON_WALLOFFSET, BUTTON_WALLOFFSET,
-                                              textSizeNumShares.width, self.frame.size.height - (BUTTON_WALLOFFSET*2));
-    [self.numSharesButton setFrame:shareNumberButtonFrame];
-    
-    [self.numSharesButton addTarget:self action:@selector(numSharesButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+//    self.numSharesButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    NSAttributedString * sharesText = [[NSAttributedString alloc] initWithString:numShares.stringValue attributes:self.followNumberTextAttributes];
+//    
+//    [self.numSharesButton setAttributedTitle:sharesText forState:UIControlStateNormal];
+//    CGSize textSizeNumShares = [numShares.stringValue sizeWithAttributes:self.followNumberTextAttributes];
+//    
+//    CGRect shareNumberButtonFrame = CGRectMake(self.shareButon.frame.origin.x +
+//                                               self.shareButon.frame.size.width +
+//                                               BUTTON_WALLOFFSET, BUTTON_WALLOFFSET,
+//                                              textSizeNumShares.width, self.frame.size.height - (BUTTON_WALLOFFSET*2));
+//    [self.numSharesButton setFrame:shareNumberButtonFrame];
+//    
+//    [self.numSharesButton addTarget:self action:@selector(numSharesButtonSelected) forControlEvents:UIControlEventTouchUpInside];
     //[self addSubview:self.numSharesButton];
 }
 
 -(void)createShareButton{
     //create share button
-    CGRect shareButtonFrame = CGRectMake(self.numLikesButton.frame.origin.x +
-                                         self.numLikesButton.frame.size.width + ICON_SPACING_GAP,
-                                         BUTTON_WALLOFFSET,
+    CGRect shareButtonFrame = CGRectMake(ICON_SPACING_GAP,
+                                         self.likeButton.frame.origin.y - (SHARE_BUTTON_SIZE_HEIGHT + ICON_SPACING_GAP),
                                          SHARE_BUTTON_SIZE_WIDTH, SHARE_BUTTON_SIZE_HEIGHT);
     
     self.shareButon = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -160,7 +158,7 @@
 
 -(void)createLikeButton{
     //create like button
-    CGRect likeButtonFrame = CGRectMake(ICON_SPACING_GAP, BUTTON_WALLOFFSET,
+    CGRect likeButtonFrame = CGRectMake(ICON_SPACING_GAP, self.frame.size.height - (LIKE_BUTTON_SIZE_HEIGHT + ICON_SPACING_GAP),
                                         LIKE_BUTTON_SIZE_WIDTH, LIKE_BUTTON_SIZE_HEIGHT);
     
     self.likeButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -188,9 +186,11 @@
     [self.numLikesButton setAttributedTitle:followersText forState:UIControlStateNormal];
     CGSize textSize = [numLikes.stringValue sizeWithAttributes:self.followNumberTextAttributes];
     
+    CGFloat numberHeight = self.frame.size.height - (BUTTON_WALLOFFSET*2);
+    
     CGRect likeNumberButtonFrame = CGRectMake(self.likeButton.frame.origin.x +
-                                              self.likeButton.frame.size.width + ICON_SPACING_GAP, BUTTON_WALLOFFSET,
-                                              textSize.width, self.frame.size.height - (BUTTON_WALLOFFSET*2));
+                                              self.likeButton.frame.size.width + ICON_SPACING_GAP, self.likeButton.center.y - (numberHeight/2.f) ,
+                                              textSize.width,numberHeight);
     [self.numLikesButton setFrame:likeNumberButtonFrame];
     
     [self.numLikesButton addTarget:self action:@selector(numLikesButtonSelected) forControlEvents:UIControlEventTouchUpInside];
@@ -234,6 +234,7 @@
 
 //allows us to change our page number to the next number
 -(void)setPageNumber:(NSNumber *) pageNumber{
+    return;//temp -- removing numbers
     if(pageNumber.integerValue < self.totalNumberOfPages.integerValue ||
        pageNumber.integerValue >= 1){
         if(self.pageNumberLabel)[self.pageNumberLabel removeFromSuperview];
@@ -309,9 +310,8 @@
     if(!_muteButton){
         _muteButton = [[UIButton alloc] init];
         
-        CGRect buttonFrame = CGRectMake(self.shareButon.frame.origin.x +
-                                             self.shareButon.frame.size.width + ICON_SPACING_GAP,
-                                             BUTTON_WALLOFFSET,
+        CGRect buttonFrame = CGRectMake(ICON_SPACING_GAP,
+                                             self.shareButon.frame.origin.y - (MUTE_BUTTON_SIZE + ICON_SPACING_GAP),
                                              MUTE_BUTTON_SIZE, MUTE_BUTTON_SIZE);
         _muteButton.frame = buttonFrame;
         

@@ -9,7 +9,7 @@
 
 #import "PovInfo.h"
 #import <Parse/PFObject.h>
-
+#import <QuartzCore/QuartzCore.h>
 #import <UIKit/UIKit.h>
 
 @protocol POVViewDelegate <NSObject>
