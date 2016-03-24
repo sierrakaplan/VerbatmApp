@@ -23,13 +23,16 @@
 #import "SegueIDs.h"
 #import "SettingsVC.h"
 
+#import "UIView+Effects.h"
+#import "UserInfoCache.h"
+
 @interface ProfileVC() <ProfileNavBarDelegate,
 					UIScrollViewDelegate, CreateNewChannelViewProtocol,
-					SharePostViewDelegate, PublishingProgressProtocol>
+					PublishingProgressProtocol, PostListVCProtocol>
 
-@property (strong, nonatomic) PostListVC * postListVC;
+@property (strong, nonatomic) PostListVC *postListVC;
 
-@property (nonatomic, strong) ProfileNavBar* profileNavBar;
+@property (nonatomic, strong) ProfileNavBar *profileNavBar;
 @property (nonatomic) CGRect profileNavBarFrameOnScreen;
 @property (nonatomic) CGRect profileNavBarFrameOffScreen;
 @property (nonatomic) BOOL contentCoveringScreen;
@@ -58,8 +61,13 @@
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.contentCoveringScreen = YES;
+    self.view.backgroundColor = [UIColor whiteColor];
+    //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
         [self addPostListVC];
+        if(self.isCurrentUserProfile){
+            [self.postListVC stopAllVideoContent];//We stop the video because we start in the feed
+        }
         [self createNavigationBar];
         [self addClearScreenGesture];
     }];
@@ -68,15 +76,24 @@
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
-    [Channel_BackendObject getChannelsForUser:self.userOfProfile withCompletionBlock:
-     ^(NSMutableArray * channels) {
-        self.channels = channels;
-        block();
-    }];
+    
+    if(self.isCurrentUserProfile){
+        [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
+            block();
+        }];
+    }else{
+        [Channel_BackendObject getChannelsForUser:self.userOfProfile withCompletionBlock:
+         ^(NSMutableArray * channels) {
+             self.channels = channels;
+             block();
+         }];
+    }
 }
 
 -(void) viewWillAppear:(BOOL)animated{
-    if(self.postListVC) [self.postListVC continueVideoContent];
+    if(self.postListVC){
+        [self.postListVC continueVideoContent];
+    }
 }
 
 -(void) viewDidAppear:(BOOL)animated {
@@ -89,25 +106,38 @@
 }
 
 -(void) addPostListVC {
+    if(self.postListVC){
+        [self.postListVC stopAllVideoContent];
+        [self.postListVC.view removeFromSuperview];
+    }
+    
+    
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     [flowLayout setMinimumInteritemSpacing:0.3];
     [flowLayout setMinimumLineSpacing:0.0f];
     [flowLayout setItemSize:self.view.frame.size];
     self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
+    
     self.postListVC.listOwner = self.userOfProfile;
-    self.postListVC.channelForList = [self.channels firstObject];
+    if(self.startChannel){
+        self.postListVC.channelForList = self.startChannel;
+    }else{
+        self.postListVC.channelForList = [self.channels firstObject];
+        self.startChannel = self.postListVC.channelForList;
+    }
     self.postListVC.listType = listChannel;
     self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
+    self.postListVC.delegate = self;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
     else[self.view addSubview:self.postListVC.view];
 }
 
 -(void) createNavigationBar {
     //frame when on screen
-    self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
+    self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
     //frame when off screen
-	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - (PROFILE_NAV_BAR_HEIGHT+ ARROW_EXTENSION_BAR_HEIGHT), self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT + ARROW_EXTENSION_BAR_HEIGHT);
+	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - (PROFILE_NAV_BAR_HEIGHT), self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT );
     
     self.profileNavBar = [[ProfileNavBar alloc]
                           initWithFrame:self.profileNavBarFrameOnScreen
@@ -127,11 +157,14 @@
     [self.view addGestureRecognizer:singleTap];
 }
 
-#pragma mark POVListScrollView Delegate -
-
--(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
-    [self presentHeadAndFooter:YES];
-    [self presentShareSelectionViewStartOnChannels:NO];
+#pragma mark -POSTListView delegate-
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+    ProfileVC *  userProfile = [[ProfileVC alloc] init];
+    userProfile.isCurrentUserProfile = NO;
+    userProfile.userOfProfile = owner;
+    userProfile.startChannel = channel;
+    [self presentViewController:userProfile animated:YES completion:^{
+    }];
 }
 
 #pragma mark - Profile Nav Bar Delegate Methods -
@@ -139,38 +172,6 @@
 //current user selected to follow a channel
 -(void) followOptionSelected{
     
-}
-
--(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
-    if(self.sharePOVView){
-        [self.sharePOVView removeFromSuperview];
-        self.sharePOVView = nil;
-    }
-    
-    CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-    self.sharePOVView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
-    self.sharePOVView.delegate = self;
-    [self.view addSubview:self.sharePOVView];
-    [self.view bringSubviewToFront:self.sharePOVView];
-    [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-        self.sharePOVView.frame = onScreenFrame;
-    }];
-}
-
--(void)removeSharePOVView{
-    if(self.sharePOVView){
-        CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-        
-        [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-            self.sharePOVView.frame = offScreenFrame;
-        }completion:^(BOOL finished) {
-            if(finished){
-                [self.sharePOVView removeFromSuperview];
-                self.sharePOVView = nil;
-            }
-        }];
-    }
 }
 
 //current user wants to see their own followers
@@ -231,6 +232,8 @@
     Channel * newChannel = [self.channelBackendManager createChannelWithName:channelName];
     [self.profileNavBar newChannelCreated:newChannel];
     [self clearChannelCreationView];
+    //make sure the channels are up to date
+    [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:nil];
 }
 
 -(void) clearChannelCreationView{
@@ -241,24 +244,6 @@
     }
 }
 
-
-#pragma mark -Share Seletion View Protocol -
-
--(void) cancelButtonSelected{
-    [self removeSharePOVView];
-}
-
--(void) sharePostWithComment:(NSString *) comment {
-    //todo--sierra
-    //code to share post to facebook etc
-    
-    [self removeSharePOVView];
-}
-
--(void) postPostToChannel:(Channel *)channel {
-	//todo:
-}
-
 #pragma mark -Navigate profile-
 //the current user has selected the back button
 -(void)exitCurrentProfile {
@@ -267,7 +252,13 @@
 }
 
 -(void)newChannelSelected:(Channel *) channel{
-    [self.postListVC changeCurrentChannelTo:channel];
+    
+    if(![self.startChannel.name isEqualToString:channel.name]){
+        self.startChannel = channel;
+        [self addPostListVC];
+    }
+
+    //[self.postListVC changeCurrentChannelTo:channel];
 }
 
 // updates tab and content
@@ -276,32 +267,38 @@
 	[self.postListVC changeCurrentChannelTo:channel];
 }
 
+#pragma mark -POSTListVC Protocol-
+-(void)hideNavBarIfPresent{
+    [self presentHeadAndFooter:YES];
+}
+
 -(void) presentHeadAndFooter:(BOOL) shouldShow {
     if(shouldShow) {
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:YES]];
         }];
+        
         [self.delegate showTabBar:NO];
         self.contentCoveringScreen = NO;
-        [self.postListVC footerShowing:NO];
+       if(self.isCurrentUserProfile) [self.postListVC footerShowing:NO];
     } else {
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             [self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:NO]];
         }];
         [self.delegate showTabBar:YES];
         self.contentCoveringScreen = YES;
-        [self.postListVC footerShowing:YES];
+       if(self.isCurrentUserProfile) [self.postListVC footerShowing:YES];
         
     }
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-    if (self.contentCoveringScreen) {
-       [self presentHeadAndFooter:YES];
-    } else {
-        [self presentHeadAndFooter:NO];
-        
-    }
+    
+        if (self.contentCoveringScreen) {
+           [self presentHeadAndFooter:YES];
+        } else {
+            [self presentHeadAndFooter:NO];
+        }
 }
 
 -(CGRect)getProfileNavBarFrameOffScreen:(BOOL) getOffScreenFrame {
@@ -347,8 +344,8 @@
 -(void) publishingComplete {
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
-
-	[self.postListVC reloadCurrentChannel];
+    [self addPostListVC];
+	//[self.postListVC reloadCurrentChannel];
 }
 
 -(void) publishingFailed {
@@ -390,5 +387,10 @@
 		[self.progressBar setProgress:self.publishingProgress.fractionCompleted animated:YES];
 	}
 }
+
+-(NSArray *)channels{
+    return (!self.isCurrentUserProfile) ? _channels : [[UserInfoCache sharedInstance] getUserChannels];
+}
+
 
 @end

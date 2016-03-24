@@ -22,8 +22,8 @@
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate>
-
+@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate, PostListVCProtocol, ArticleDisplayVCDelegate>
+@property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
 @property (nonatomic) BOOL contentCoveringScreen;
 
 @property (nonatomic) CGRect povScrollViewFrame;
@@ -41,15 +41,15 @@
 
 -(void)viewDidLoad {
 	[super viewDidLoad];
-    //[self createContentListView];
     [self addPostListVC];
     [self addClearScreenGesture];
+    self.didJustLoadForTheFirstTime = YES;
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-    if(self.postListVC){
-        [self.postListVC continueVideoContent];
+    if(self.postListVC && !self.didJustLoadForTheFirstTime){
+       [self.postListVC continueVideoContent];
     }
 }
 
@@ -60,6 +60,7 @@
 -(void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if(self.postListVC)[self.postListVC stopAllVideoContent];
+    self.didJustLoadForTheFirstTime = NO;
 }
 
 -(void) addPostListVC {
@@ -72,7 +73,7 @@
     self.postListVC.listType = listFeed;
     self.postListVC.isHomeProfileOrFeed = YES;
     self.postListVC.listOwner = [PFUser currentUser];
-    
+    self.postListVC.delegate = self;
     [self.postListContainerView setFrame:self.view.bounds];
     [self.postListContainerView addSubview:self.postListVC.view];
     [self.view addSubview:self.postListContainerView];
@@ -83,6 +84,11 @@
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
 	[self presentShareSelectionViewStartOnChannels:YES];
     [self.delegate shareButtonSelectedForPostObject: post];
+}
+
+#pragma mark -POVListSVController-
+-(void)hideNavBarIfPresent{
+    [self removeContentFromScreen];
 }
 
 -(void)registerForNotifications{
@@ -100,12 +106,12 @@
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
-    if(self.contentCoveringScreen) {
-        [self removeContentFromScreen];
-    } else {
-        [self returnContentToScreen];
+        if(self.contentCoveringScreen) {
+            [self removeContentFromScreen];
+        } else {
+            [self returnContentToScreen];
 
-    }
+        }
 }
 
 -(void)returnContentToScreen{

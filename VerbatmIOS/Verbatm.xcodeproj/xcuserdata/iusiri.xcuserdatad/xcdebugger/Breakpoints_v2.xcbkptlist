@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "469934714.858014"
+            timestampString = "480282257.921901"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "153"
-            endingLineNumber = "153"
+            startingLineNumber = "154"
+            endingLineNumber = "154"
             landmarkName = "-addPhotos:"
             landmarkType = "5">
          </BreakpointContent>
@@ -116,11 +116,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/MasterNavigationVC.m"
-            timestampString = "477194805.185939"
+            timestampString = "480463385.052627"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "644"
-            endingLineNumber = "644">
+            startingLineNumber = "668"
+            endingLineNumber = "668">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -176,11 +176,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "477394931.130706"
+            timestampString = "480288433.629542"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "590"
-            endingLineNumber = "590"
+            startingLineNumber = "600"
+            endingLineNumber = "600"
             landmarkName = "-deleteScrollView:"
             landmarkType = "5">
          </BreakpointContent>
@@ -224,27 +224,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/POVView.m"
-            timestampString = "478655461.381249"
+            timestampString = "480471749.698849"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
-            landmarkName = "-addCreatorInfoFromChannel:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/POVView.m"
-            timestampString = "478655461.381249"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "349"
-            endingLineNumber = "349"
+            startingLineNumber = "460"
+            endingLineNumber = "460"
             landmarkName = "-logAVEDoneViewing:"
             landmarkType = "5">
          </BreakpointContent>
@@ -272,11 +256,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoAVE.m"
-            timestampString = "475978642.249355"
+            timestampString = "480282257.921901"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "177"
-            endingLineNumber = "177"
+            startingLineNumber = "178"
+            endingLineNumber = "178"
             landmarkName = "-getImageContainerViewFromPhotoTextArray:"
             landmarkType = "5">
          </BreakpointContent>

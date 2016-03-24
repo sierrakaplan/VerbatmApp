@@ -53,14 +53,8 @@
 -(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
     self = [super initWithFrame:frame];
     if(self){
-        [self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY] isCurrentUser:isCurrentUser];
-        [self setFolloweButtonInHeader];
-		Channel* startChannel = (channels.count > 0) ? channels[0] : nil;
+        [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
-		[self createFollowersInfoViewWithUser:profileUser andStartChannel: startChannel];
-        [self createArrowExtesion];
-        [self createPanGesture];
-        [self createTapGesture];
         [self registerForNotifications];
     }
     return self;
@@ -101,11 +95,9 @@
     self.followInfoBar = [[FollowInfoBar alloc] initWithFrame:self.followersInfoFrameClosed];
     self.followInfoBar.delegate = self;
     [self addSubview:self.followInfoBar];
-
-	[Follow_BackendManager numberChannelsUserFollowing:profileUser withCompletionBlock:^(NSNumber *numFollowing) {
-		[self.followInfoBar setNumFollowing: numFollowing];
-	}];
-	[self updateFollowersLabel: startChannel];
+    [self createArrowExtesion];
+    [self createPanGesture];
+    [self createTapGesture];
 }
 
 -(void)createTapGesture{
@@ -235,13 +227,6 @@
 }
 
 
--(void)setFolloweButtonInHeader {
-    //checks if the logged in user follows this specific channel
-    [Follow_BackendManager currentUserFollowsChannel:self.threadNavScrollView.currentChannel withCompletionBlock:^
-     (bool isFollowing) {
-        [self.profileHeader setFollowIconToFollowingCurrentChannel:isFollowing];
-    }];
-}
 
 -(void)backButtonSelected {
     [self.delegate exitCurrentProfile];
@@ -285,8 +270,6 @@
 #pragma mark - CustomScrollingTabBarDelegate methods -
 
 -(void) tabPressedWithChannel:(Channel *)channel {
-	[self setFolloweButtonInHeader];
-	[self updateFollowersLabel: channel];
 	[self.delegate newChannelSelected:channel];
 }
 
@@ -299,8 +282,8 @@
 
 -(UIScrollView*) threadNavScrollView {
 	if (!_threadNavScrollView) {
-		_threadNavScrollView = [[CustomScrollingTabBar alloc] initWithFrame:CGRectMake(0.f, self.profileHeader.frame.origin.y + PROFILE_HEADER_HEIGHT,
-																			  self.frame.size.width, USER_CELL_VIEW_HEIGHT)];
+		_threadNavScrollView = [[CustomScrollingTabBar alloc] initWithFrame:CGRectMake(2.f, self.profileHeader.frame.origin.y + PROFILE_HEADER_HEIGHT,
+																			  self.frame.size.width-4.f, USER_CELL_VIEW_HEIGHT)];
 
 		_threadNavScrollView.customScrollingTabBarDelegate = self;
 		[self addSubview: _threadNavScrollView];

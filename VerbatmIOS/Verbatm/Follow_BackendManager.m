@@ -20,7 +20,11 @@
     PFObject * newFollowObject = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
     [newFollowObject setObject:[PFUser currentUser]forKey:FOLLOW_USER_KEY];
     [newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
-	[newFollowObject save];
+	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+		if(succeeded){
+			NSLog(@"Now following channel");
+		}
+	}];
 }
 
 +(void)currentUserStopFollowingChannel:(Channel *) channelToUnfollow{
@@ -32,7 +36,11 @@
                                                          NSError * _Nullable error) {
         if(objects && !error && objects.count){
 			PFObject * followObj = [objects firstObject];
-			[followObj deleteInBackground];
+			[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+				if(succeeded){
+					NSLog(@"Stopped following channel sucessfully");
+				}
+			}];
         }
     }];
 }

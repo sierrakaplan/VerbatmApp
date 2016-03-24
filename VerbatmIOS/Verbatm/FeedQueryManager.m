@@ -17,7 +17,7 @@
 @interface FeedQueryManager ()
 //how many posts have we gotten and presented so far
 @property (nonatomic) NSInteger postsDownloadedSoFar;
-#define POST_DOWNLOAD_MAX_SIZE 10
+#define POST_DOWNLOAD_MAX_SIZE 5
 
 @end
 
@@ -46,7 +46,7 @@
          
          if(objects.count > 1){
          
-             PFQuery * postQuery = [PFQuery queryWithClassName:POST_PFCLASS_KEY];
+             PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
              
              NSMutableArray * channelsWeFollow = [[NSMutableArray alloc] init];
              for(int i = 0; i < objects.count; i++){
@@ -54,24 +54,38 @@
              }
              
              
-             [postQuery whereKey:POST_CHANNEL_KEY containedIn:channelsWeFollow];
-             //only get posts that have actually been fully published
-             [postQuery whereKey:POST_COMPLETED_SAVING equalTo:[NSNumber numberWithBool:true]];
-//             for(PFObject * channel in objects){
-//                 [postQuery whereKey:POST_CHANNEL_KEY equalTo:channel];
-//             }
-             
+             [postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:channelsWeFollow];
              [postQuery orderByDescending:@"createdAt"];
              
-             [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-                 NSMutableArray * finalPostResults = [[NSMutableArray alloc] init];
+             [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
+                 
+                 
+                 NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
+                 
+                 
                  for(NSInteger i = self.postsDownloadedSoFar;
-                     (i < objects.count && i < (self.postsDownloadedSoFar + POST_DOWNLOAD_MAX_SIZE));
-                     i++){
-                        [finalPostResults addObject:objects[i]];
+                     (i < activities.count && i < self.postsDownloadedSoFar+POST_DOWNLOAD_MAX_SIZE); i ++){
+                     
+                     PFObject * pc_activity = activities[i];
+                     PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+                     [post fetchIfNeeded];
+                     
+                     [finalPostObjects addObject:pc_activity];
+                     
                  }
-                 self.postsDownloadedSoFar += finalPostResults.count;
-                 block(finalPostResults);
+                 
+                 
+//                 for(PFObject * pc_activity in activities){
+//                     
+//                     //we do this to make sure the info is downloaded and cached early
+//                     PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+//                     [post fetchIfNeededInBackground];
+//                     
+//                     [finalPostObjects addObject:pc_activity];
+//                 }
+//
+                 self.postsDownloadedSoFar += finalPostObjects.count;
+                 block(finalPostObjects);
              }];
          }else{
              block(@[]);//no results so we send an empty list

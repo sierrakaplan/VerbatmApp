@@ -8,11 +8,12 @@
 
 #import <UIKit/UIKit.h>
 #import "Channel.h"
+#import <Parse/PFUser.h>
 
 @protocol CreatorAndChannelBarProtocol <NSObject>
 //this prompts the view controller to present the channel
 //that has been selected
--(void)channelSelected:(Channel *) channel;
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
 
 @end
 

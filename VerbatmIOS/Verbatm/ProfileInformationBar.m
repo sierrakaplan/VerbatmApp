@@ -26,11 +26,6 @@
 
 @property (nonatomic) BOOL isFollowigProfileUser;//for cases when they are viewing another profile
 
-
-
-
-
-
 @end
 
 @implementation ProfileInformationBar
@@ -70,7 +65,7 @@
 }
 
 -(void)formatView {
-    self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
+    self.backgroundColor = [UIColor colorWithWhite:0 alpha:1.f];
 }
 
 -(void) createProfileHeaderWithUserName: (NSString*) userName {
@@ -158,34 +153,11 @@
     [self.delegate settingsButtonSelected];
 }
 
--(void) followOrFollowersSelected {
-
-    UIImage * newbuttonImage;
-    if(self.isFollowigProfileUser){
-        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
-        self.isFollowigProfileUser = NO;
-    } else{
-        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
-        self.isFollowigProfileUser = YES;
-    }
-    [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
-    [self.followButton setNeedsDisplay];
-    [self.delegate followButtonSelectedShouldFollowUser: self.isFollowigProfileUser];
-}
-
 -(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel{
     dispatch_async(dispatch_get_main_queue(), ^{
          if(!self.isCurrentUser)
              [self createFollowButton_AreWeFollowingCurrChannel:isFollowingChannel];
     });
 }
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end

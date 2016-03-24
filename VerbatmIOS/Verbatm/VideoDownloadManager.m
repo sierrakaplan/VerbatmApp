@@ -12,6 +12,7 @@
 
 @interface VideoDownloadManager ()
 @property(nonatomic) NSMutableDictionary * videoAssetList;
+@property (nonatomic) NSMutableSet * urlsBeingDownloaded;
 @property(nonatomic) NSNumber * counter;
 @end
 
@@ -37,17 +38,7 @@
 
 -(AVPlayerItem *) getVideoForUrl:(NSString *) urlString{
     
-    
     NSString *finalUrlString = [self.videoAssetList objectForKey:urlString];
-    
-    
-//    NSData * videoData =   [self.memoryCache objectForKey:urlString];
-//    
-//    if(videoData){
-//        NSString *dataString = [[NSString alloc] initWithData:videoData encoding:NSUTF8StringEncoding];
-//        NSURL *movieURL = [NSURL URLWithString:dataString];
-//        return [AVPlayerItem playerItemWithURL:movieURL];
-//    }else{
     
     if(finalUrlString){
         AVPlayerItem * player = [AVPlayerItem playerItemWithURL:[NSURL fileURLWithPath:finalUrlString]];
@@ -59,14 +50,15 @@
             return avAsset;
         }
     }
-    //}
+    
     return  nil;
 }
 
 
 
 -(void)prepareVideoFromURL_synchronous: (NSURL*) url {
-    if (url && ![self.videoAssetList objectForKey:url.absoluteString]) {
+    if (url && ![self.videoAssetList objectForKey:url.absoluteString] &&
+        ![self.urlsBeingDownloaded containsObject:url.absoluteString]) {
          NSLog(@"Downloaded New Url");
           [self downloadVideo:url];
         
@@ -95,6 +87,9 @@
 
 
 -(void)downloadVideo:(NSURL *) url {
+    [self.urlsBeingDownloaded addObject:url.absoluteString];
+    
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
         
         NSError * error = nil;
@@ -105,7 +100,7 @@
             NSLog(@"Video Downloaded!");
             //  STORE IN FILESYSTEM
             NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            NSString * pathString = [[url.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mov"];
+            NSString * pathString = [[url.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mp4"];
             
             NSString *file = [cachesDirectory stringByAppendingPathComponent:pathString];
             //decompress data before writing
@@ -158,6 +153,13 @@
         nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
     }
     return mix;
+}
+
+
+-(NSMutableSet *)urlsBeingDownloaded{
+    if(!_urlsBeingDownloaded) _urlsBeingDownloaded = [[NSMutableSet alloc] init];
+    return _urlsBeingDownloaded;
+    
 }
 
 

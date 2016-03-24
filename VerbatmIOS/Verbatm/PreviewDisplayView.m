@@ -91,7 +91,6 @@
 	[self addSubview: self.postView];
 	[self addNavigationBar];
     [self.postView scrollToPageAtIndex:index];
-    [self.postView postOnScreen];
 	[self revealPreview:YES];
 }
 

@@ -99,7 +99,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 #pragma mark - Notification methods -
 
 -(void) loginSucceeded: (NSNotification*) notification {
-	[self unwindToMasterVC];
+    [self unwindToMasterVC];
 }
 
 -(void) loginFailed: (NSNotification*) notification {

@@ -10,12 +10,21 @@
 #import <UIKit/UIKit.h>
 #import <Parse/PFUser.h>
 
+
+@protocol PostListVCProtocol <NSObject>
+
+-(void)hideNavBarIfPresent;
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
+@end
+
 typedef enum PostListType {
-    listFeed = 0,
-    listChannel = 1,
+	listFeed = 0,
+	listChannel = 1,
 } PostListType;
 
 @interface PostListVC : UICollectionViewController
+
+@property (nonatomic) id <PostListVCProtocol> delegate;
 
 @property (nonatomic) BOOL isHomeProfileOrFeed;
 

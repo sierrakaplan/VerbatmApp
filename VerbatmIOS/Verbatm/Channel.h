@@ -19,4 +19,8 @@
 
 
 -(instancetype) initWithChannelName:(NSString *) channelName andParseChannelObject:(PFObject *) parseChannelObject;
+
+//note - methods are synchronous so could block to get user info
+-(NSString *)getChannelOwnerUserName;
+-(BOOL)channelBelongsToCurrentUser;
 @end

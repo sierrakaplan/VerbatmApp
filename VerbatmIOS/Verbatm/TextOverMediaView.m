@@ -31,12 +31,11 @@
             [self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
             [self setImageViewWithImage:image];
             if(text.length){
-                [self.textView setText: text];
+                [self setText: text];
                 [self.textView setFrame: CGRectMake(self.textView.frame.origin.x,
                                                     textYPosition, self.textView.frame.size.width,
                                                     self.textView.frame.size.height)];
             }
-		//[self resizeTextView]; //this function keeps blocking our thread --- temp
 	}
 	return self;
 }

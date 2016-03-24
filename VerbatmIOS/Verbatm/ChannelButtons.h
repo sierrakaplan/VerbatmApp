@@ -23,10 +23,11 @@
 
 @property (nonatomic, readonly) Channel * currentChannel;
 
-- (void) changeNumFollowersLabelForChannel:(Channel *) channel toNumber: (NSNumber*) numFollowers;
+-(void) changeNumFollowersLabelForChannel:(Channel *) channel toNumber: (NSNumber*) numFollowers;
 
 -(void) markButtonAsSelected;
 -(void) markButtonAsUnselected;
 
+-(void)recenterTextLables; //todo: what?
 @end
 

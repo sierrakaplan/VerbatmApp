@@ -30,12 +30,12 @@
 @implementation VerbatmAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-        [self setUpParseWithLaunchOptions: launchOptions];
+
+		 [self setUpParseWithLaunchOptions: launchOptions];
         PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
             return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
                                    userInfo:nil];
         });
-
         [[UserSetupParameters sharedInstance] setUpParameters];
         [[Analytics getSharedInstance] newUserSession];
 

@@ -8,11 +8,14 @@
 
 #import "Analytics.h"
 
+#import "LoadingIndicator.h"
 #import "CreatorAndChannelBar.h"
 
 #import "Durations.h"
 
 #import "Icons.h"
+
+#import "Like_BackendManager.h"
 
 #import "PageTypeAnalyzer.h"
 #import "PostLikeAndShareBar.h"
@@ -21,6 +24,8 @@
 #import "PostView.h"
 #import "ParseBackendKeys.h"
 #import <PromiseKit/PromiseKit.h>
+#import "PostChannelAndCreatorBar.h"
+#import "Post_Channel_RelationshipManger.h"
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -31,8 +36,13 @@
 
 #import "VideoPVE.h"
 
+#import <AssetsLibrary/AssetsLibrary.h>
+#import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
+
 @interface PostView ()<UIScrollViewDelegate, PhotoPVEDelegate,
-					 PostLikeAndShareBarProtocol>
+					 PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 @property (nonatomic) CreatorAndChannelBar * creatorAndChannelBar;
 
@@ -40,7 +50,7 @@
 @property (strong, nonatomic) NSMutableDictionary * pageViews;
 
 //used to lazily instantiate pages when the view is about to presented
-//se save the page media here and then load and present the pages on demand
+//we save the page media here and then load and present the pages on demand
 @property (strong, nonatomic) NSMutableDictionary * pageMedia;
 
 @property (nonatomic) NSNumber* currentIndexOfPageLoading;
@@ -54,18 +64,22 @@
 @property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
 //@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
-@property (strong, nonatomic) PFObject* parsePostObject;
 
 @property (nonatomic, strong) UIButton * downArrow;
 
 @property (strong, nonatomic) UIActivityIndicatorView * activityIndicator;
 
+@property (strong, nonatomic) LoadingIndicator * customActivityIndicator;
 @property (nonatomic) PostLikeAndShareBar * likeShareBar;
-@property (nonatomic) CGRect lsBarDownFrame;
-@property (nonatomic) CGRect lsBarUpFrame;
+@property (nonatomic) CGRect lsBarDownFrame;// the framw of the like share button with the tab down
+@property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
 
 @property (nonatomic) UIImageView * swipeUpAndDownInstruction;
 
+
+@property (nonatomic) UIView * PagingLine;//line that moves up and down as the user swipes up and down
+
+@property (nonatomic) UIImageView * pageUpIndicator;
 
 @property (nonatomic) NSMutableArray * mediaPageContent;//TODO
 
@@ -75,6 +89,10 @@
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
 #define ACTIVITY_ANIMATION_Y 100.f
+
+#define PAGING_LINE_WIDTH 4.f
+#define PAGING_LINE_ANIMATION_DURATION 0.5
+#define PAGING_LINE_COLE [UIColor whiteColor]
 @end
 
 @implementation PostView
@@ -96,16 +114,34 @@
         [self addSubview: self.mainScrollView];
         self.mainScrollView.backgroundColor = [UIColor blackColor];
         [self createBorder];
+        [self addPagingLine];
     }
     return self;
 }
 
 -(void)createBorder{
-    [self.layer setBorderWidth:1.0];
+    [self.layer setBorderWidth:2.0];
     [self.layer setCornerRadius:0.0];
     [self.layer setBorderColor:[UIColor blackColor].CGColor];
 }
 
+-(void)addPagingLine{
+    CGRect lineFrame = CGRectMake(self.frame.size.width - PAGING_LINE_WIDTH, self.frame.size.height, PAGING_LINE_WIDTH, 0.f);
+    self.PagingLine = [[UIView alloc] initWithFrame:lineFrame];
+    self.PagingLine.backgroundColor = PAGING_LINE_COLE;
+    [self addSubview:self.PagingLine];
+    [self bringSubviewToFront:self.PagingLine];
+}
+
+
+-(void)upDatePagingLine{
+    //we subtract the page height because the contentOffset is never == contentSize... but our ratio needs to become 1
+    CGFloat lineRatio = self.mainScrollView.contentOffset.y/(self.mainScrollView.contentSize.height-self.frame.size.height);
+    CGFloat lineHeight = self.frame.size.height * lineRatio;
+     CGRect lineFrame = CGRectMake(self.PagingLine.frame.origin.x, self.frame.size.height - lineHeight,
+                                   self.PagingLine.frame.size.width, lineHeight);
+    self.PagingLine.frame = lineFrame;
+}
 
 #pragma mark - Display page -
 
@@ -142,28 +178,44 @@
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
 }
+-(void) checkIfUserHasLikedThePost {
+    [Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]withCompletionBlock:^(bool userLikedPost) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.likeShareBar shouldStartPostAsLiked:userLikedPost];
+        });
+    }];
+}
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up{
     
-    self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height -LIKE_SHARE_BAR_HEIGHT - TAB_BAR_HEIGHT ,
-                                 self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+    //verticle bar positioning
+//    CGFloat barHeight = (self.frame.size.height/2.f);
+//    
+//    self.lsBarUpFrame = CGRectMake(0.f,barHeight - TAB_BAR_HEIGHT,
+//                                 LIKE_SHARE_BAR_HEIGHT,barHeight);
+//    
+//    self.lsBarDownFrame = CGRectMake(0.f,barHeight,
+//                                     LIKE_SHARE_BAR_HEIGHT,barHeight);
     
-    self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - LIKE_SHARE_BAR_HEIGHT,
-                                     self.frame.size.width, LIKE_SHARE_BAR_HEIGHT);
+    //horizontal bar positioning
+    CGFloat barHeight = LIKE_SHARE_BAR_HEIGHT;
+    
+    self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height - (barHeight + TAB_BAR_HEIGHT),
+                                   self.frame.size.width,barHeight);
+    
+    self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - barHeight,
+                                     self.frame.size.width,barHeight);
+    
+    
     
     CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
     
     self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
     self.likeShareBar.delegate = self;
     [self addSubview:self.likeShareBar];
+    [self checkIfUserHasLikedThePost];
+    [self addCreatorInfo];
 }
-
-# pragma mark - Like and Share -
-
--(void)shareButtonPressed {
-    [self.delegate shareOptionSelectedForParsePostObject: self.parsePostObject];
-}
-
 
 -(void) showWhoLikesThePost {
 	//todo:
@@ -173,53 +225,87 @@
 	//todo:
 }
 
--(void) addCreatorInfoFromChannel: (Channel *) channel {
-    CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
-    self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
-    [self addSubview:self.creatorAndChannelBar];
+-(void) addCreatorInfo{
+    [Post_Channel_RelationshipManger getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject withCompletionBlock:^(Channel * channel) {
+        //we only add the channel info to posts that don't belong to the current
+        //user
+        if(![channel channelBelongsToCurrentUser]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
+                self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
+                self.creatorAndChannelBar.delegate = self;
+                [self addSubview:self.creatorAndChannelBar];
+            });
+        }
+    }];
+}
+
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+    [self.delegate channelSelected:channel withOwner:owner];
 }
 
 #pragma mark - Add like button -
 
-//todo:
-//should be called by another class (since preview does not have like)
-//Sets the like button delegate and the postID since the delegate method
-//requires a post ID be passed back
-//-(void) addLikeButtonWithDelegate: (id<LikeButtonDelegate>) delegate {
-//	self.likeButtonDelegate = delegate;
-//	// check if current user likes story
-//	self.liked = [[UserManager sharedInstance] currentUserLikesStory: self.postInfo];
-//	if (self.liked) {
-//		[self.likeButton setImage:self.likeButtonLikedImage forState:UIControlStateNormal];
-//	} else {
-//		[self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-//	}
-//	[self addSubview: self.likeButton];
-//}
-
-
 -(void) shiftLikeShareBarDown:(BOOL) down{
+    BOOL shiftArrow = NO;
+    if(self.pageUpIndicator){
+        shiftArrow = YES;
+        [self.pageUpIndicator removeFromSuperview];
+        self.pageUpIndicator = nil;
+    }
+    
     if(down){
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             self.likeShareBar.frame = self.lsBarDownFrame;
+        } completion:^(BOOL finished) {
+            if(finished && shiftArrow){
+                [self addUpArrowAnimation];
+            }
         }];
     }else{
         [UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
             self.likeShareBar.frame = self.lsBarUpFrame;
+        } completion:^(BOOL finished) {
+            if(finished && shiftArrow){
+                [self addUpArrowAnimation];
+            }
         }];
     }
 }
 
+-(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive{
+    
+    switch (action) {
+        case Like:
+            if(positive){
+                [Like_BackendManager currentUserLikePost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+            }else{
+                [Like_BackendManager currentUserStopLikingPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+            }
+            break;
+        case Share:
+            [self.delegate shareOptionSelectedForParsePostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+            break;
+        default:
+            break;
+    }
+    
+}
+
+
 -(void) likeButtonPressed {
 	self.liked = !self.liked;
-
 }
 
 #pragma mark - Scroll view delegate -
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [self setPageNumberOnShareBarFromScrollView:scrollView];
     [self displayMediaOnCurrentPage];
+    [self removePageUpIndicatorFromView];
+}
+
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    [self upDatePagingLine];
 }
 
 -(void) setPageNumberOnShareBarFromScrollView:(UIScrollView *) scrollview {
@@ -247,7 +333,42 @@
 	PageViewingExperience *currentPageOnScreen = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
     
 	[currentPageOnScreen onScreen];
+    
+    [self checkForMuteButton:currentPageOnScreen];
+    
     [self prepareNextPage];
+}
+
+-(void)checkForMuteButton:(ArticleViewingExperience * )currentPageOnScreen {
+    
+    if ([currentPageOnScreen isKindOfClass:[VideoAVE class]] ||
+        [currentPageOnScreen isKindOfClass:[PhotoVideoAVE class]]) {
+        [self.likeShareBar presentMuteButton:YES];
+    }else {
+        [self.likeShareBar presentMuteButton:NO];
+    }
+    
+}
+
+-(void)muteButtonSelected:(BOOL)shouldMute{
+        [self muteAllVideos:shouldMute];    
+}
+
+
+-(void)muteAllVideos:(BOOL) shouldMute{
+    for(id ave in [self.pageAves allValues]){
+       
+        if ([ave isKindOfClass:[VideoAVE class]] ||
+            [ave isKindOfClass:[PhotoVideoAVE class]]) {
+           
+            if(shouldMute){
+                [(VideoAVE *)ave muteVideo];
+            }else{
+                [(VideoAVE *)ave unmuteVideo];
+            }
+            
+        }
+    }
 }
 
 -(void)presentSwipeUpAndDownInstruction {
@@ -301,7 +422,7 @@
     }
 }
 
--(void)logPageDoneViewing:(PageViewingExperience*) ave {
+-(void)logAVEDoneViewing:(ArticleViewingExperience*) ave {
     NSString * pageType = @"";
    	if ([ave isKindOfClass:[VideoPVE class]]) {
         pageType = @"VideoPageView";
@@ -344,7 +465,9 @@
 
 -(void) renderPostFromPages:(NSArray *) pages {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.activityIndicator startAnimating];
+        [self.customActivityIndicator startCustomActivityIndicator];
+        
+        //[self.activityIndicator startAnimating];
     });
     PageTypeAnalyzer * analyzer = [[PageTypeAnalyzer alloc] init];
     
@@ -379,9 +502,8 @@
 
 -(void)presentMediaContent{
     if(self.pageMedia.count > 0){
-        [self.activityIndicator stopAnimating];
-        self.activityIndicator = nil;
-        
+        [self.customActivityIndicator stopCustomActivityIndicator];
+
         for(NSInteger key = 0; key < self.pageMedia.count; key++){
             NSArray * media = [self.pageMedia objectForKey:[NSNumber numberWithInteger:key]];
             PageViewingExperience *pageView = [PageTypeAnalyzer getPageViewFromPageMedia:media withFrame:self.bounds];
@@ -396,18 +518,27 @@
 
 #pragma mark - Playing post content -
 
--(void) postOnScreen {
-    if(self.pageMedia.count > 0 &&
-       self.pageViews.count ==0){
-        [self presentMediaContent];
+-(void) postOnScreen{
+    self.postIsCurrentlyBeingShown = YES;
+    
+    if(self.pageMedia){
+        if(self.pageMedia.count > 0 &&
+           self.pageViews.count ==0){
+            //we lazily create out pages
+            [self presentMediaContent];
+        }
+        [self displayMediaOnCurrentAVE];
     }
     
-    self.postIsCurrentlyBeingShown = YES;
+    if(self.pageViews.count > 1){
+        [self addUpArrowAnimation];
+    }
 }
 
 -(void) postOffScreen{
+     self.postIsCurrentlyBeingShown = NO;
     [self stopAllVideos];
-    self.postIsCurrentlyBeingShown = NO;
+    [self removePageUpIndicatorFromView];
 }
 
 -(void)preparepostToBePresented{
@@ -431,7 +562,6 @@
 
 }
 
-
 -(void)setApproprioateScrollViewContentSize{
     self.mainScrollView.contentSize = CGSizeMake(0, self.pageViews.count * self.frame.size.height);
 }
@@ -451,6 +581,8 @@
     self.likeShareBar =  nil;
 	self.currentPageIndex = -1;
 	self.pageViews = nil;
+	self.pageLoadManager = nil;
+    [self removePageUpIndicatorFromView];
 }
 
 //make sure to stop all videos
@@ -461,6 +593,66 @@
 		[pageView offScreen];
     }
 }
+
+
+//removes the little bouncing arrow in the right corner of the screen
+-(void)removePageUpIndicatorFromView{
+    if(self.pageUpIndicator){
+        [UIView animateWithDuration:1.f animations:^{
+            self.pageUpIndicator.alpha = 0.f;
+        } completion:^(BOOL finished) {
+            [self.pageUpIndicator removeFromSuperview];
+            self.pageUpIndicator = nil;
+        }];
+        
+    }
+}
+
+//adds the little bouncing arrow to the bottom right of the screen
+-(void)addUpArrowAnimation{
+    if(!self.pageUpIndicator && self.pageAves.count){
+        if(![NSThread isMainThread]){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self startArrowAnimation];
+            });
+        }else{
+            [self startArrowAnimation];
+        }
+    }
+    
+    
+    
+}
+
+-(void)startArrowAnimation{
+    
+    UIImage * arrowImage = [UIImage imageNamed:@"up_arrow"];
+    UIImageView * iv = [[UIImageView alloc] initWithImage:arrowImage];
+    [self addSubview:iv];
+    [self bringSubviewToFront:iv];
+    
+    CGFloat size = 30.f;
+    CGFloat x_cord = self.frame.size.width - size - 8.f;
+    CGFloat y_cord = (self.likeShareBar.frame.origin.y + self.likeShareBar.frame.size.height) - size - 3.f;
+    CGRect frame = CGRectMake(x_cord,y_cord, size, size);
+    iv.frame = frame;
+    
+    
+    CABasicAnimation *pulse;
+    pulse = [CABasicAnimation animationWithKeyPath:@"transform.translation.y"];
+    pulse.duration = 0.5;
+    pulse.autoreverses = YES;
+    pulse.cumulative = NO;
+    pulse.fillMode = kCAFillModeForwards;
+    pulse.fromValue = [NSNumber numberWithFloat:1.f];
+    pulse.toValue =[NSNumber numberWithFloat:(-20.f)];
+    pulse.repeatCount = HUGE_VALF;
+    
+    [iv.layer removeAllAnimations];
+    [iv.layer addAnimation:pulse forKey:@"Pulse"];
+    self.pageUpIndicator = iv;
+}
+
 
 #pragma mark - Lazy Instantiation -
 
@@ -486,7 +678,7 @@
 		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];
 		[_mainScrollView setShowsHorizontalScrollIndicator:NO];
-		_mainScrollView.bounces = NO;
+		_mainScrollView.bounces = YES;
 		//scroll view delegate
 		_mainScrollView.delegate = self;
 	}
@@ -505,7 +697,14 @@
 	}
 	return _downArrow;
 }
-
+-(LoadingIndicator *)customActivityIndicator{
+    if(!_customActivityIndicator){
+        CGPoint newCenter = CGPointMake(self.center.x, self.frame.size.height * 1.f/2.f);
+        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter];
+        [self addSubview:_customActivityIndicator];
+    }
+    return _customActivityIndicator;
+}
 -(UIActivityIndicatorView*) activityIndicator {
     if (!_activityIndicator) {
         _activityIndicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle: UIActivityIndicatorViewStyleWhiteLarge];

@@ -14,7 +14,7 @@
 @protocol SharePostViewDelegate <NSObject>
 
 -(void) cancelButtonSelected;//tells the superview to remove the current presented view
--(void) postPostToChannel:(Channel *) channel;
+-(void) postPostToChannel:(NSMutableArray *) channels;
 -(void) sharePostWithComment:(NSString *) comment;
 
 @end

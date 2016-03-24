@@ -30,6 +30,7 @@ typedef NS_ENUM(NSInteger, PinchingMode) {
 
 @property (weak, nonatomic) IBOutlet VerbatmScrollView *mainScrollView;
 
+@property (nonatomic) NSInteger startChannelIndex;
 @property (strong, nonatomic) UIPickerView *titleField;
 @property (nonatomic) NSUInteger currentPresentedPickerRow;
 

@@ -16,6 +16,7 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
 #import "UserManager.h"
+#import "UserInfoCache.h"
 
 @interface Channel_BackendObject ()
 @property (nonatomic) NSMutableArray * ourPosts;
@@ -60,7 +61,6 @@
 		return channel;
 	}
 	return nil;
-
 }
 
 //returns channel when we create a new one
@@ -131,11 +131,5 @@
 +(void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock{
 
 }
-
-
-
-
-
-
 
 @end

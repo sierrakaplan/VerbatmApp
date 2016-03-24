@@ -14,7 +14,8 @@
 #import "SelectChannel.h"
 #import "SelectOptionButton.h"
 #import "SelectionView.h"
-
+#import "Styles.h"
+#import "UserInfoCache.h"
 
 #define CHANNEL_LABEL_HEIGHT 70
 #define WALL_OFFSET_X 30.f
@@ -42,11 +43,7 @@
     
     if(self){
         self.canSelectMultipleChannels = selectMultiple;
-        
-        
-        [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
-             [self createChannelLabels:channels];
-        }];
+        [self createChannelLabels:[[UserInfoCache sharedInstance] getUserChannels]];
        
     }
     
@@ -91,8 +88,7 @@
     NSString * channelName = channel.name;
     CGRect labelFrame = CGRectMake(WALL_OFFSET_X, 0.f, xCord , frame.size.height);
     UILabel * newLabel = [[UILabel alloc] initWithFrame:labelFrame];
-    [newLabel setText:channelName];
-    [newLabel setTextColor:[UIColor whiteColor]];
+    [newLabel setAttributedText:[self getButtonAttributeStringWithText:channelName]];
     
     selectionBar.shareOptionButton = selectOption;
 
@@ -102,6 +98,9 @@
     [self addTapGestureToView:selectionBar];
     
     return selectionBar;
+}
+-(NSAttributedString *)getButtonAttributeStringWithText:(NSString *)text{
+    return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
 }
 
 -(void)unselectAllOptions{
@@ -124,10 +123,14 @@
     if(self.canSelectMultipleChannels) {
         if([selectionButton buttonSelected]){//if it's already selected then remove it
             [selectionButton setButtonSelected:NO];
-            [self.selectedChannels removeObject:selectionButton];
+            [self.selectedChannels removeObject:selectionButton.associatedObject];
+            if([selectionButton.associatedObject isKindOfClass:[Channel class]] &&
+               self.selectedChannels.count) {
+                [self.delegate channelsSelected:self.selectedChannels];
+            }
         }else{
             
-            [self.selectedChannels addObject:selectionButton];
+            [self.selectedChannels addObject:selectionButton.associatedObject];
             [selectionButton setButtonSelected:YES];
             if([selectionButton.associatedObject isKindOfClass:[Channel class]]) {
                 [self.selectChannelDelegate channelsSelected:self.selectedChannels];

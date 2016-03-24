@@ -21,8 +21,7 @@
 
 #import "UserAndChannelListsTVC.h"
 
-#import <Parse/PFUser.h>
-#import <Parse/PFObject.h>
+#import "QuartzCore/QuartzCore.h"
 
 @interface UserAndChannelListsTVC ()<CustomNavigationBarDelegate>
 
@@ -55,12 +54,22 @@
     self.tableView.allowsMultipleSelection = NO;
     self.tableView.showsHorizontalScrollIndicator = NO;
     self.tableView.showsVerticalScrollIndicator = NO;
+    [self addRefreshFeature];
+}
+
+
+-(void)addRefreshFeature{
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:refreshControl];
+}
+
+- (void)refresh:(UIRefreshControl *)refreshControl {
+     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [self presentAllVerbatmChannels];
+     });
     
-    // Uncomment the following line to preserve selection between presentations.
-    // self.clearsSelectionOnViewWillAppear = NO;
-    
-    // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-    // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    [refreshControl endRefreshing];
 }
 
 
@@ -99,21 +108,18 @@
 -(void)presentProfileForUser:(PFUser *) user
             withStartChannel:(Channel *) startChannel{
     
-    
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
     userProfile.isCurrentUserProfile = NO;
     userProfile.userOfProfile = user;
     userProfile.startChannel = startChannel;
+    
     [self presentViewController:userProfile animated:YES completion:^{
     }];
     
 }
 
-
-
-
-
 #pragma mark - Public methods to set -
+
 //show which users like this post
 -(void) presentUserLikeInformationForPost:(id) post {
     self.postInformationToPresent = post;
@@ -132,6 +138,7 @@
 //show which users are being followed by userId
 -(void)presentWhoIsFollowedBy:(id)userId {
 	//todo:
+    //Start to download a list of users who follow this particular user then reload the table
 }
 
 //presents every channel in verbatm
@@ -140,9 +147,9 @@
     
     [Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^
      (NSMutableArray * channels) {
+         if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+         [self.channelsToDisplay addObjectsFromArray:channels];
          dispatch_async(dispatch_get_main_queue(), ^{
-             if(self.channelsToDisplay.count) [self.channelsToDisplay removeAllObjects];
-             [self.channelsToDisplay addObjectsFromArray:channels];
              [self.tableView reloadData];
          });
      }];

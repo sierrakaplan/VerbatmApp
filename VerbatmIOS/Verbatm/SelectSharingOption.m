@@ -7,7 +7,7 @@
 //
 
 #import "SelectionView.h"
-
+#import "Styles.h"
 #import "SelectSharingOption.h"
 #import "SelectOptionButton.h"
 #import "SizesAndPositions.h"
@@ -83,8 +83,9 @@
     CGRect labelFrame = CGRectMake(viewFrame.origin.x + viewFrame.size.width +
                                           IMAGE_TEXT_SPACING, 0.f, imageHeight+ 50, imageHeight);
     UILabel * nameLabel = [[UILabel alloc] initWithFrame:labelFrame];
-    [nameLabel setText:title];
-    [nameLabel setTextColor:[UIColor whiteColor]];
+    [nameLabel setAttributedText:[self getButtonAttributeStringWithText:title]];
+//    [nameLabel setText:title];
+//    [nameLabel setTextColor:[UIColor whiteColor]];
     
     
     CGRect buttonFrame = CGRectMake(frame.size.width - WALL_OFFSET_X - SELECTION_BUTTON_WIDTH ,
@@ -114,6 +115,12 @@
     
     return ourBar;
 }
+
+
+-(NSAttributedString *)getButtonAttributeStringWithText:(NSString *)text{
+    return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
+}
+
 
 -(void)unselectAllOptions{
     [self.selectedButton setButtonSelected:NO];

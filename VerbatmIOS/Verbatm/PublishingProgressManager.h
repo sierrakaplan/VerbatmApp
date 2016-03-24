@@ -38,6 +38,7 @@
 @property (nonatomic, readonly) Channel* currentPublishingChannel;
 @property (nonatomic) BOOL newChannelCreated;
 
+-(void)mediaHasProgressedSavind:(int64_t) newProgress;
 @end
 
 

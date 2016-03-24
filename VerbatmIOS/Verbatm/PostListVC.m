@@ -8,30 +8,47 @@
 
 #import "Channel_BackendObject.h"
 
+#import "Durations.h"
+
 #import "FeedQueryManager.h"
+
+#import "LoadingIndicator.h"
 
 #import "Page_BackendObject.h"
 #import "PostListVC.h"
 #import "PostCollectionViewCell.h"
 #import "Post_BackendObject.h"
+#import "Post_Channel_RelationshipManger.h"
 #import "ParseBackendKeys.h"
 #import "PostView.h"
 #import <PromiseKit/PromiseKit.h>
 
+#import "SharePOVView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
 @interface PostListVC () <UICollectionViewDelegate,UICollectionViewDataSource,
-						 UIScrollViewDelegate>
+UIScrollViewDelegate>
 
 @property (nonatomic) NSMutableArray * presentedPostList;
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
 @property (nonatomic, strong) UILabel * noContentLabel;
-@property (nonatomic) PostCollectionViewCell * lastVisibleCell;
 
-#define POST_CELL_ID @"povCellId"
-#define NUM_POSTS_TO_PREPARE_EARLY 2
+@property (nonatomic) PostCollectionViewCell *lastVisibleCell;
+@property (nonatomic) LoadingIndicator *customActivityIndicator;
+@property (nonatomic) SharePOVView *sharePOVView;
+@property (nonatomic) BOOL shouldPlayVideos;
+@property (nonatomic) BOOL isReloading;
+@property (nonatomic) PFObject *povToShare;
 
+@property (nonatomic) UIImageView * reblogSucessful;
+
+#define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
+#define POV_CELL_ID @"povCellId"
+#define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
+#define REBLOG_IMAGE @"Posted Icon 2"
+#define REBLOG_IMAGE_SIZE 150.f //when we put size it means both width and height
+#define REPOST_ANIMATION_DURATION 2.f
 @end
 
 @implementation PostListVC
@@ -40,6 +57,7 @@
 	[self setDateSourceAndDelegate];
 	[self registerClassForCustomCells];
 	[self getPosts];
+	self.shouldPlayVideos = YES;
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -58,16 +76,16 @@
 	self.collectionView.pagingEnabled = YES;
 	self.collectionView.scrollEnabled = YES;
 	self.collectionView.showsHorizontalScrollIndicator = NO;
-	self.collectionView.bounces = NO;
+	self.collectionView.bounces = YES;
 }
 
 -(void)nothingToPresentHere {
-	if(self.noContentLabel){
+	if(self.noContentLabel || self.presentedPostList.count > 0){
 		return;//no need to make another one
 	}
 
-	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POSTS_LABEL_WIDTH/2.f, 0.f,
-																	NO_POSTS_LABEL_WIDTH, self.view.frame.size.height)];
+	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
+																	NO_POVS_LABEL_WIDTH, self.view.frame.size.height)];
 	self.noContentLabel.text = @"There are no posts to present :(";
 	self.noContentLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
 	self.noContentLabel.textColor = [UIColor whiteColor];
@@ -86,7 +104,9 @@
 }
 
 -(void)reloadCurrentChannel{
+	[self stopAllVideoContent];
 	[self.presentedPostList removeAllObjects];
+	[self.customActivityIndicator startCustomActivityIndicator];
 	[self getPosts];
 }
 
@@ -96,6 +116,7 @@
 		self.channelForList = channel;
 		[self clearOldPosts];
 		[self removePresentLabel];
+		[self.customActivityIndicator startCustomActivityIndicator];
 		[self getPosts];
 	}
 }
@@ -104,30 +125,35 @@
 	if(self.listType == listFeed) {
 		if(!self.feedQueryManager)self.feedQueryManager = [[FeedQueryManager alloc] init];
 		[self.feedQueryManager getMoreFeedPostsWithCompletionHandler:^(NSArray * posts) {
+
+			[self.customActivityIndicator stopCustomActivityIndicator];
 			if(posts.count){
 				[self loadNewBackendPosts:posts];
 				[self removePresentLabel];
 			} else {
 				[self nothingToPresentHere];
 			}
+
 		}];
 
 	}else if (self.listType == listChannel) {
 		[Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
-
+			[self.customActivityIndicator stopCustomActivityIndicator];
 			if(posts.count){
 				[self loadNewBackendPosts:posts];
 				[self removePresentLabel];
 			} else {
 				[self nothingToPresentHere];
 			}
+
 		}];
 	}
 }
 
 -(void)clearOldPosts{
-	for(PostView * view in self.presentedPostList){
+	for(POVView * view in self.presentedPostList){
 		[view removeFromSuperview];
+		[view clearArticle];
 	}
 	[self.presentedPostList removeAllObjects];
 }
@@ -136,25 +162,28 @@
 
 	NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
 
-	for(PFObject * post in backendPostObjects) {
+	for(PFObject * pc_activity in backendPostObjects) {
 		AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+			PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-				PostView *post = [[PostView alloc] initWithFrame:self.view.bounds];
-				NSNumber *numberOfPostLikes =
+				POVView * pov = [[POVView alloc] initWithFrame:self.view.bounds];
+				pov.parsePostChannelActivityObject = pc_activity;
+				NSNumber * numberOfPostLikes =
 				[post valueForKey:POST_LIKES_NUM_KEY];
-				NSNumber *numberOfPostShares =
+				NSNumber * numberOfPostShares =
 				[post valueForKey:POST_NUM_SHARES_KEY];
 
-				NSNumber *numberOfPostPages =
+				NSNumber * numberOfPostPages =
 				[NSNumber numberWithInteger:pages.count];
 
-				[post createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares
+				[pov createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares
 											  numberOfPages:numberOfPostPages
 									  andStartingPageNumber:@(1)
 													startUp:self.isHomeProfileOrFeed];
-				[post renderPostFromPages:pages];
-				[post postOffScreen];
-				[self.presentedPostList addObject:post];
+				[pov renderPOVFromPages:pages];
+				[pov povOffScreen];
+				pov.delegate = self;
+				[self.presentedPostList addObject:pov];
 				resolve(nil);
 			}];
 		}];
@@ -164,15 +193,41 @@
 
 	//when all pages are loaded then we reload our list
 	PMKWhen(pageLoadPromises).then(^(id data){
+		[self sortOurPostList];
 		dispatch_async(dispatch_get_main_queue(), ^{
 			//prepare the first POV object
-			[(PostView *) self.presentedPostList.firstObject postOnScreen];
+			if(self.shouldPlayVideos && !self.isReloading)[(POVView *)self.presentedPostList.firstObject povOnScreen];
 			[self.collectionView reloadData];
+			self.isReloading = NO;
 		});
 	});
 }
 
-#pragma mark -DataSource-
+-(void)sortOurPostList{
+	[self.presentedPostList sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+
+		POVView * view1 = obj1;
+		POVView * view2 = obj2;
+
+		PFObject * pc_activityA = view1.parsePostChannelActivityObject;
+		PFObject * pc_activityB = view2.parsePostChannelActivityObject;
+
+		NSTimeInterval distanceBetweenDates = [[pc_activityA createdAt] timeIntervalSinceDate:[pc_activityB createdAt]];
+		double secondsInMinute = 60;
+		NSInteger secondsBetweenDates = distanceBetweenDates / secondsInMinute;
+
+		if (secondsBetweenDates == 0)
+			return NSOrderedSame;
+
+		else if (secondsBetweenDates < 0)
+			return NSOrderedDescending;
+		else
+			return NSOrderedAscending;
+
+	}];
+}
+
+#pragma mark - DataSource -
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
 	return 1;//we only have one section
@@ -186,7 +241,7 @@
 
 #pragma mark -ViewDelegate-
 - (BOOL)collectionView: (UICollectionView *)collectionView
-	shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return NO;
 }
 
@@ -208,6 +263,14 @@
 		}
 	}
 
+	//we only load more media if we're in the feed and if there are "Load_more.."
+	//cells left until the end
+	if(indexPath.row == (self.presentedPostList.count - LOAD_MORE_POSTS_COUNT) &&
+	   (self.listType == listFeed) && !self.isReloading){
+		self.isReloading = YES;
+		[self getPosts];
+	}
+
 	return nextCellToBePresented;
 }
 
@@ -218,6 +281,7 @@
 
 //marks all POVs as off screen
 -(void) stopAllVideoContent{
+	self.shouldPlayVideos = NO;
 	for(PostView *post in self.presentedPostList){
 		[post postOffScreen];
 	}
@@ -225,9 +289,14 @@
 
 //continues POV that's on screen
 -(void) continueVideoContent{
-	if([self getVisibileCellIndex] < self.presentedPostList.count) {
-		PostView *post = [self.presentedPostList objectAtIndex:[self getVisibileCellIndex]];
-		[post postOnScreen];
+	self.shouldPlayVideos = YES;
+	if(self.presentedPostList.count > 0) {
+		if([self getVisibileCellIndex] < self.presentedPostList.count) {
+			PostView *post = [self.presentedPostList objectAtIndex:[self getVisibileCellIndex]];
+			[post postOnScreen];
+		}
+	} else {
+		[self getPosts];
 	}
 }
 
@@ -247,11 +316,33 @@
 }
 
 
+-(void)scrollViewDidScroll:(UIScrollView *)scrollView{
+	//    NSInteger currentPOVIndex = [self getVisibileCellIndex];
+	//    //somehow turn other cells off
+	//    [self.presentedPostList[currentPOVIndex] povOnScreen];
+	//    [self prepareNextViewAfterVisibleIndex:currentPOVIndex];
+}
+
 -(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
-	for(NSInteger i = visibleIndex +1; (i < self.presentedPostList.count
-										&& 1 < visibleIndex + (NUM_POSTS_TO_PREPARE_EARLY + 1)); i++){
+	for(NSInteger i = 0; i < self.presentedPostList.count; i++){
 		PostView * view = self.presentedPostList[i];
-		[view presentMediaContent];
+		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
+			[view presentMediaContent];
+		}else if(i != visibleIndex){
+			[view povOffScreen];
+		}
+	}
+}
+
+-(void)turnOffCellsOffScreenWithVisibleCell:(PostHolderCollecitonRV *)visibleCell{
+	if(visibleCell && (self.lastVisibleCell !=visibleCell)){
+		if(self.lastVisibleCell){
+			[self.lastVisibleCell offScreen];
+			self.lastVisibleCell = visibleCell;
+		}else{
+			self.lastVisibleCell = visibleCell;
+		}
+		if(self.shouldPlayVideos)[visibleCell onScreen];
 	}
 }
 
@@ -265,10 +356,106 @@
 		}
 		[visibleCell onScreen];
 	}
+}
+
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
+	[self.delegate hideNavBarIfPresent];
+	self.povToShare = pov;
+	[self presentShareSelectionViewStartOnChannels:YES];
+}
+
+-(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
+	if(self.sharePOVView){
+		[self.sharePOVView removeFromSuperview];
+		self.sharePOVView = nil;
+	}
+
+	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
+	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+	self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+	self.sharePOVView.delegate = self;
+	[self.view addSubview:self.sharePOVView];
+	[self.view bringSubviewToFront:self.sharePOVView];
+	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+		self.sharePOVView.frame = onScreenFrame;
+	}];
+}
+
+-(void)removeSharePOVView{
+	if(self.sharePOVView){
+		CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			self.sharePOVView.frame = offScreenFrame;
+		}completion:^(BOOL finished) {
+			if(finished){
+				[self.sharePOVView removeFromSuperview];
+				self.sharePOVView = nil;
+			}
+		}];
+	}
+}
+
+#pragma mark -Share Seletion View Protocol -
+-(void)cancelButtonSelected{
+	[self removeSharePOVView];
+}
+
+-(void)postPOVToChannels:(NSMutableArray *) channels{
+	if(channels.count){
+		[Post_Channel_RelationshipManger savePost:self.povToShare toChannels:channels withCompletionBlock:^{
+			dispatch_async(dispatch_get_main_queue(), ^{
+				[self successfullyReblogged];
+			});
+		}];
+	}
+	[self removeSharePOVView];
+}
+
+
+-(void)successfullyReblogged{
+	[self.view addSubview:self.reblogSucessful];
+	[self.view bringSubviewToFront:self.reblogSucessful];
+	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+		self.reblogSucessful.alpha = 0.f;
+	}completion:^(BOOL finished) {
+		[self.reblogSucessful removeFromSuperview];
+		self.reblogSucessful = nil;
+	}];
+}
+
+-(void)sharePostWithComment:(NSString *) comment{
+	//todo--sierra
+	//code to share post to facebook etc
+
+	[self removeSharePOVView];
 
 }
 
+#pragma mark -POV delegate-
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+	[self.delegate channelSelected:channel withOwner:owner];
+}
+
 #pragma mark -Lazy instantiation-
+
+-(UIImageView *)reblogSucessful{
+	if(!_reblogSucessful){
+		_reblogSucessful = [[UIImageView alloc] init];
+		[_reblogSucessful setImage:[UIImage imageNamed:REBLOG_IMAGE]];
+		[_reblogSucessful setFrame:CGRectMake((self.view.frame.size.width/2.f)-REBLOG_IMAGE_SIZE/2.f, (self.view.frame.size.height/2.f) -REBLOG_IMAGE_SIZE/2.f, REBLOG_IMAGE_SIZE, REBLOG_IMAGE_SIZE)];
+	}
+	return _reblogSucessful;
+}
+
+-(LoadingIndicator *)customActivityIndicator{
+	if(!_customActivityIndicator){
+		CGPoint center = CGPointMake(self.view.frame.size.width/2., self.view.frame.size.height/2.f);
+		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:center];
+		[self.view addSubview:_customActivityIndicator];
+		[self.view bringSubviewToFront:_customActivityIndicator];
+	}
+	return _customActivityIndicator;
+}
 
 -(NSMutableArray *)presentedPostList{
 	if(!_presentedPostList)_presentedPostList = [[NSMutableArray alloc] init];

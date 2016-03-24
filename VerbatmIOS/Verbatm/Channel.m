@@ -7,7 +7,8 @@
 //
 
 #import "Channel.h"
-
+#import "ParseBackendKeys.h"
+#import <Parse/PFUser.h>
 @interface Channel ()
 @property (nonatomic, readwrite) NSString * name;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
@@ -25,6 +26,17 @@
         self.parseChannelObject = (parseChannelObject) ? parseChannelObject : NULL;
     }
     return self;
+}
+
+-(NSString *)getChannelOwnerUserName{
+    PFObject * user = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+    NSString * userName = [user valueForKey:USER_USER_NAME_KEY];
+    return userName;
+}
+
+-(BOOL)channelBelongsToCurrentUser{
+    PFObject * user = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+    return ([[PFUser currentUser].objectId isEqualToString:user.objectId]);
 }
 
 @end

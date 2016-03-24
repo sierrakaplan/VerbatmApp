@@ -12,7 +12,7 @@
 #import "Notifications.h"
 #import "Channel_BackendObject.h"
 #import "ParseBackendKeys.h"
-
+#import "Post_Channel_RelationshipManger.h"
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -29,6 +29,8 @@
 @property (nonatomic) PFObject * currentParsePostObject;
 
 #define INITIAL_PROGRESS_UNITS 3
+#define IMAGE_PROGRESS_COUNT_UNIT_SIZE 3 //we divide the progress into 3rds
+#define VIDEO_PROGRESS_COUNT_UNIT_SIZE 10 //we divide the progress into 10ths
 
 @end
 
@@ -49,9 +51,13 @@
     CGFloat totalProgressUnits = INITIAL_PROGRESS_UNITS;
     for(PinchView * pv in pinchViews){
         if([pv isKindOfClass:[CollectionPinchView class]]){
-            totalProgressUnits+= [(CollectionPinchView *)pv getNumPinchViews];
+            
+            totalProgressUnits+= [(CollectionPinchView *)pv imagePinchViews].count * IMAGE_PROGRESS_COUNT_UNIT_SIZE;
+            
+            totalProgressUnits+= [(CollectionPinchView *)pv videoPinchViews].count * VIDEO_PROGRESS_COUNT_UNIT_SIZE;
+            
         }else{
-            totalProgressUnits += [pv getTotalPiecesOfMedia];
+            totalProgressUnits += ([pv isKindOfClass:[VideoPinchView class]]) ? VIDEO_PROGRESS_COUNT_UNIT_SIZE : IMAGE_PROGRESS_COUNT_UNIT_SIZE;
         }
     }
     self.progressAccountant = [NSProgress progressWithTotalUnitCount: totalProgressUnits];
@@ -91,10 +97,10 @@
 
 
 -(void)registerForNotifications{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(mediaHasSaved:)
-                                                 name:NOTIFICATION_MEDIA_SAVING_SUCCEEDED
-                                               object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(mediaHasSaved:)
+//                                                 name:NOTIFICATION_MEDIA_SAVING_SUCCEEDED
+//                                               object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(mediaHasFailedSaving:)
@@ -104,17 +110,23 @@
 
 
 
--(void)mediaHasSaved:(NSNotification *) notification {
-    self.progressAccountant.completedUnitCount ++;
-	if (self.progressAccountant.completedUnitCount == self.progressAccountant.totalUnitCount && self.currentlyPublishing) {
+-(void)mediaHasProgressedSavind:(int64_t) newProgress{
+    self.progressAccountant.completedUnitCount += newProgress;
+	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount && self.currentlyPublishing) {
         if(self.currentParsePostObject) {
             [self.currentParsePostObject setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
             [self.currentParsePostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                 if(succeeded){
-                    [self.delegate publishingComplete];
-                    self.currentPublishingChannel = NULL;
-                    self.currentParsePostObject = nil;
-                    self.currentlyPublishing = NO;
+            
+                    //register the relationship
+                    [Post_Channel_RelationshipManger savePost:self.currentParsePostObject  toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel]withCompletionBlock:^{
+                        [self.delegate publishingComplete];
+                        self.currentPublishingChannel = NULL;
+                        self.currentParsePostObject = nil;
+                        self.currentlyPublishing = NO;
+                    }];
+                    
+                    
                 }
             }];
         }

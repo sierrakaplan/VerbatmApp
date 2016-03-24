@@ -16,6 +16,12 @@
 #define FOLLOW_PFCLASS_KEY @"FollowClass"//we maintain all the follow relationships in their own table
 #define FOLLOW_USER_KEY @"UserFollowing"//the user doing the following
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
+#define FOLLOW_CHANNEL_RELATIONSHIP_OWNER @"RelationshipOwner" //either the person currently posting or the person doing the reposting
+
+
+#define LIKE_PFCLASS_KEY @"LikeClass"//we maintain all the like relationships in their own table
+#define LIKE_USER_KEY @"UserLiking"//the user doing the liking
+#define LIKE_POST_LIKED_KEY @"PostLiked"//post being liked by above user
 
 #define PHOTO_PFCLASS_KEY @"PhotoClass"
 #define PHOTO_TEXT_KEY @"PhotoText"
@@ -47,6 +53,11 @@
 #define POST_ORIGINAL_CREATOR_KEY @"OriginalCreator" //Original creator or post
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
+
+#define POST_CHANNEL_ACTIVITY_CLASS  @"PostChannelActivityClass"
+#define POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO @"PostChannelActivityChannelPosted"//channel that post is posted in 
+#define POST_CHANNEL_ACTIVITY_POST @"PostChannelActivityPost"
+
 
 
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"

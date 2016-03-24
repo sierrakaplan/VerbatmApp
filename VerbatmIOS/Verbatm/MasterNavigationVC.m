@@ -64,9 +64,15 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	[self setUpTabBarController];
-	[self registerForNotifications];
-    self.view.backgroundColor = [UIColor blackColor];
+    [self registerForNotifications];
+    if ([PFUser currentUser].isAuthenticated) {
+        [self setUpStartEnvironment];
+    }
+}
+
+-(void)setUpStartEnvironment{
+    [self setUpTabBarController];
+     self.view.backgroundColor = [UIColor blackColor];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -104,6 +110,9 @@
 	PFUser * user = notification.object;
 	[[Crashlytics sharedInstance] setUserEmail: user.email];
 	[[Crashlytics sharedInstance] setUserName: [user username]];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self setUpStartEnvironment];
+    });
 }
 
 -(void) loginFailed:(NSNotification *) notification {
@@ -122,7 +131,7 @@
     
     UIImage * deadViewTabImage = [self imageWithImage:[[UIImage imageNamed:ADK_NAV_ICON]
                                                        imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                                        scaledToSize:CGSizeMake(40.f, 40.f)];
+                                                        scaledToSize:CGSizeMake(30.f, 30.f)];
     
     deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
     deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
@@ -130,7 +139,7 @@
     self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.channelListView];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
-    self.tabBarController.selectedViewController = self.profileVC;
+    self.tabBarController.selectedViewController = self.feedVC;
 	[self formatTabBar];
 }
 
@@ -215,6 +224,60 @@
 									  andSize: size];
 }
 
+//the view controllers that will be tabbed
+-(void)createViewControllers {
+    
+    
+    
+    UIImage * searchUnselected =  [self imageWithImage:[[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
+                                              imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                scaledToSize:CGSizeMake(30.f, 30.f)];
+    
+    UIImage * searchSelected =  [self imageWithImage:[[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
+                                                      imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                        scaledToSize:CGSizeMake(30.f, 30.f)];
+    
+    self.channelListView = [[UserAndChannelListsTVC alloc] init];
+    self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil
+                                                                    image:searchUnselected
+                                                            selectedImage:searchSelected];
+    
+    [self.channelListView presentAllVerbatmChannels];
+    
+    self.channelListView.listDelegate = self;
+
+    self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
+    
+    self.profileVC.delegate = self;
+    self.profileVC.userOfProfile = [PFUser currentUser];
+    self.profileVC.isCurrentUserProfile = YES;
+    self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
+    self.feedVC.delegate = self;
+
+	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
+																	
+													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
+	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+															  image:[UIImage imageNamed:HOME_NAV_ICON]
+													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
+    
+    
+    // images need to be centered this way for some reason
+	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+}
+
+-(void)createTabBarViewController{
+    self.tabBarControllerContainerView.frame = self.view.bounds;
+    self.tabBarController = [self.storyboard instantiateViewControllerWithIdentifier: TAB_BAR_CONTROLLER_ID];
+	self.tabBarController.tabBarHeight = TAB_BAR_HEIGHT;
+    [self.tabBarControllerContainerView addSubview:self.tabBarController.view];
+    [self addChildViewController:self.tabBarController];
+    self.tabBarController.delegate = self;
+}
+
 // Create a custom UIButton and add it over our adk icon
 -(void) addTabBarCenterButtonOverDeadView{
 
@@ -271,9 +334,9 @@
 }
 
 
--(void) playContentOnSelectedViewController:(BOOL) shoulPlay{
+-(void) playContentOnSelectedViewController:(BOOL) shouldPlay{
     
-    if(shoulPlay){
+    if(shouldPlay){
         UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
         
         if(currentViewController == self.feedVC){
@@ -284,6 +347,7 @@
         
         if(currentViewController == self.feedVC){
         }else if (currentViewController == self.profileVC){
+            //[self.profileVC offScreen];
         }
     }
 }
@@ -345,6 +409,23 @@
     //[self presentShareSelectionViewStartOnChannels:YES];
 }
 
+-(void)profilePovShareButtonSeletedForPOV:(PovInfo *) pov{
+    //[self presentShareSelectionViewStartOnChannels:NO];
+}
+
+-(void)profilePovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov{
+    
+}
+
+-(void)feedPovLikeLiked:(BOOL) liked forPOV:(PovInfo *) pov {
+
+}
+
+- (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController{
+    
+}
+
+
 #pragma mark - Delegate for channel list view -
 
 -(void)openChannel:(Channel *) channel {
@@ -362,6 +443,11 @@
     } else {
         
     }
+}
+
+
+-(void)channelSelectedToPresent:(Channel *) channel{
+	//todo
 }
 
 #pragma mark - Memory Warning -

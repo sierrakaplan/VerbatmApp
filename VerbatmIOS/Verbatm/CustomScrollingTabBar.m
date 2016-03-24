@@ -12,6 +12,7 @@
 #import "ChannelButtons.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import "UserInfoCache.h"
 
 @interface CustomScrollingTabBar()
 
@@ -66,6 +67,7 @@
         if(startChannel){
             if([startChannel.name isEqualToString:channel.name]){
                 startChannelIndex = [channels indexOfObject:channel];
+                [[UserInfoCache sharedInstance] setCurrentChannelIndex:startChannelIndex];
             }
         }
         
@@ -76,7 +78,6 @@
 		//store button in our tab list
         [self.tabButtons addObject:channelTitleButton];
 		[self.channels addObject: channel.name];
-        
         //advance xCordinate
 		xCoordinate += channelTitleButton.frame.size.width;
 	}
@@ -158,6 +159,9 @@
 
 -(void) selectTab: (ChannelButtons *) tab {
     [tab markButtonAsSelected];
+    //store this as the current tab index to view
+    [[UserInfoCache sharedInstance] setCurrentChannelIndex:[self.tabButtons indexOfObject:tab]];
+    
     self.currentChannel = tab.currentChannel;
 	self.selectedTab = tab;
 }
@@ -180,9 +184,27 @@
         id currentButton = self.tabButtons[i];
         CGFloat width = ([currentButton isKindOfClass:[ChannelButtons class]]) ? [(ChannelButtons *)currentButton suggestedWidth] : ((UIView *)currentButton).frame.size.width;
         
-        if(i == (self.tabButtons.count-1)) width = ((UIView*)currentButton).frame.size.width;
+        //check if it's the last button in the scroll bar
+        if(i == (self.tabButtons.count-1)){
+            if(self.isLoggedInUser){
+                //it's the "create new channel button"
+                //so we allow it to maintain the width we calculated earlier
+                width = ((UIView*)currentButton).frame.size.width;
+            }else{
+                if(self.tabButtons.count == 1){
+                    width = self.frame.size.width;
+                }
+            }
+            
+            
+        }
         
-        ((UIView *)currentButton).frame = CGRectMake(originDiff, ((ChannelButtons *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
+        ((UIView *)currentButton).frame = CGRectMake(originDiff, ((UIView *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
+        
+        if(self.isLoggedInUser && [currentButton isKindOfClass:[ChannelButtons class]]){
+            [(ChannelButtons *)currentButton  recenterTextLables];
+        }
+        
         [currentButton setNeedsDisplay];
         originDiff += width;
     }

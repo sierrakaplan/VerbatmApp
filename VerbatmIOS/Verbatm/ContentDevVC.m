@@ -36,6 +36,7 @@
 #import "Styles.h"
 
 #import "UIImage+ImageEffectsAndTransforms.h"
+
 #import "VerbatmCameraView.h"
 #import "VideoPinchView.h"
 
@@ -125,7 +126,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 @property (nonatomic) BOOL currentlyPreviewingContent;
 
 
-@property (nonatomic) NSArray * userChannels;
+@property (nonatomic) NSMutableArray * userChannels;
 
 
 #pragma mark - Preview -
@@ -134,11 +135,10 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 #define CHANNEL_CREATION_PROMPT @"enter channel name"
 
-#define CLOSED_ELEMENT_FACTOR (2/5)
 #define TITLE_FIELD_Y_OFFSET 10.f
 #define TITLE_FIELD_X_OFFSET 10.f
-#define TITLE_FIELD_HEIGHT 90
-#define TITLE_FIELD_LABEL_TILE_HEIGHT 50
+#define TITLE_FIELD_HEIGHT 80
+#define TITLE_FIELD_LABEL_TILE_HEIGHT 80
 
 #define MAX_TITLE_CHARACTERS 40
 
@@ -177,16 +177,32 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 
 -(void)loadChannelsAndCreateTicker{
-    [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:
-     ^(NSMutableArray * channels) {
-         self.userChannels = channels;
-         [self formatTitle];
-         [self createBaseSelector];
-         [self loadPostFromUserDefaults];
-    }];
+	//todo: delete?
+//    [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:
+//     ^(NSMutableArray * channels) {
+//         self.userChannels = channels;
+//         [self formatTitle];
+//         [self createBaseSelector];
+//         [self loadPostFromUserDefaults];
+//    }];
+
+	self.userChannels = [NSMutableArray arrayWithArray:[[UserInfoCache sharedInstance] getUserChannels]];
+    
+    if(self.userChannels.count){
+        NSUInteger startViewIndex =[[UserInfoCache sharedInstance] currentChannelViewedIndex];
+        id channel = [self.userChannels objectAtIndex:startViewIndex];
+        //we simple set the current index being viewed as the first channel. This is
+        // a heuristic for the user.
+        [self.userChannels removeObject:channel];
+        [self.userChannels insertObject:channel atIndex:0];
+    }
+     [self formatTitle];
+     [self createBaseSelector];
+     [self loadPOVFromUserDefaults];
 }
 
--(void) addBackgroundImage {    
+
+-(void) addBackgroundImage {
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
     backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
     //backgroundView.image =[UIImage imageNamed:];
@@ -262,7 +278,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 }
 
 //sets the textview placeholders' color and text
--(void) formatTitle {
+-(void) formatTitle{
     
     CGRect titleFrame = CGRectMake(TITLE_FIELD_X_OFFSET, TITLE_FIELD_Y_OFFSET,
 											   self.view.bounds.size.width - 2*TITLE_FIELD_X_OFFSET,
@@ -271,7 +287,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 }
 
 
--(void)createChannelPickerFromChannelsFromFrame:(CGRect) frame {
+-(void)createChannelPickerFromChannelsFromFrame:(CGRect) frame{
     UIPickerView * picker = [[UIPickerView alloc] initWithFrame:frame];
     picker.dataSource = self;
     picker.delegate = self;
@@ -281,6 +297,9 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
     picker.clipsToBounds = YES;
     
     self.currentPresentedPickerRow = 0;
+    
+    
+    
     
     UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(userTappedChannelSelctor:)];
     tap.delegate = self;

@@ -42,6 +42,9 @@
 #define TAB_BAR_FONT_SIZE 17.f
 #define FOLLOWERS_TEXT_FONT_SIZE 15.f
 
+#define REPOST_BUTTON_TEXT_FONT_SIZE 15.f
+#define REPOST_VIEW_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.8]
+
 
 #define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
 #define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
@@ -137,7 +140,7 @@
 #pragma mark Text
 
 #define TEXT_PAGE_VIEW_FONT DEFAULT_FONT
-#define TEXT_PAGE_VIEW_FONT_SIZE 20
+#define TEXT_PAGE_VIEW_FONT_SIZE 50
 #define TEXT_PAGE_VIEW_COLOR blackColor
 
 #define TEXT_PAGE_VIEW_BACKGROUND_ALPHA 0.7
@@ -166,9 +169,10 @@
 #define SETTINGS_ICON_NAME @"settingsIcon"
 #define BACK_BUTTON_ICON_NAME @"back_arrow"
 #define BAR_CONTENT_COLOR yellowColor
-#define FOLLOW_ICON_IMAGE_SELECTED  @"follow_user_image_selected"
-#define FOLLOW_ICON_IMAGE_UNSELECTED  @"follow_user_image_unselected"
+#define FOLLOW_ICON_IMAGE_SELECTED  @"Followed_Icon"
+#define FOLLOW_ICON_IMAGE_UNSELECTED  @"Not_Followed_Icon"
 
+#define DARKENED_FOLLOW_ICON_IMAGE_SELECTED @"Darkened Following Button (1)"
 
 
 #define CHANNEL_LIST_CELL_SEPERATOR_COLOR [UIColor grayColor]

@@ -124,6 +124,7 @@
 			editMediaContentView.povViewMasterScrollView = self.postScrollView;
 			editMediaContentView.delegate = self;
 			[self.imageContainerViews addObject:editMediaContentView];
+            
 		} else {
 			[photosTextArray addObject: [imagePinchView getPhotosWithText][0]];
 		}
@@ -351,6 +352,7 @@
 	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
 	[self addContentFromImagePinchViews: pinchViews];
     [self createRearrangeButton];
+    [self displayCircle:YES];
 }
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {
@@ -499,13 +501,15 @@
 }
 
 -(void) animateFadeCircleDisplay:(BOOL) display {
-	[UIView animateWithDuration:CIRCLE_FADE_DURATION animations:^{
-		[self.circleView setAlpha: display ? CIRCLE_OVER_IMAGES_ALPHA : 0.f];
-		for (UIView* dotView in self.dotViewsOnCircle) {
-			[dotView setAlpha: display ? POINTS_ON_CIRCLE_ALPHA : 0.f];
-		}
-	} completion:^(BOOL finished) {
-	}];
+    if(display){//prevents circle fade from disappearing
+        [UIView animateWithDuration:CIRCLE_FADE_DURATION animations:^{
+            [self.circleView setAlpha: display ? CIRCLE_OVER_IMAGES_ALPHA : 0.f];
+            for (UIView* dotView in self.dotViewsOnCircle) {
+                [dotView setAlpha: display ? POINTS_ON_CIRCLE_ALPHA : 0.f];
+            }
+        } completion:^(BOOL finished) {
+        }];
+    }
 }
 
 #pragma mark Helper methods for gesture
