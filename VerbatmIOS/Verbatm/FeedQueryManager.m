@@ -68,7 +68,7 @@
                      
                      PFObject * pc_activity = activities[i];
                      PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-                     [post fetchIfNeeded];
+                     [post fetchIfNeededInBackground];
                      
                      [finalPostObjects addObject:pc_activity];
                      

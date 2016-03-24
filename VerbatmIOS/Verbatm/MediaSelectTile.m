@@ -66,11 +66,9 @@
 }
 
 -(void) buttonGlow {
-	UIColor* buttonBackgroundColor = [UIColor clearColor];
-
+    UIColor* buttonBackgroundColor = [UIColor clearColor];
 	[self.galleryButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
 	[self.cameraButton.layer setBackgroundColor:buttonBackgroundColor.CGColor];
-
 	[UIView animateWithDuration:REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION animations:^{
 		self.galleryButton.layer.shadowColor = buttonBackgroundColor.CGColor;
 		self.galleryButton.layer.shadowOpacity = 1;

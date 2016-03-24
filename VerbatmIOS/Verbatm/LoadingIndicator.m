@@ -22,8 +22,8 @@
 
 
 
-#define LOAD_ICON_WIDTH 50.f
-#define LOAD_ICON_IMAGE @"spinner_5"
+#define LOAD_ICON_WIDTH 70.f
+#define LOAD_ICON_IMAGE @"verbatmLogo"
 
 -(instancetype)initWithCenter:(CGPoint ) center{
     
@@ -49,17 +49,17 @@
 }
 
 -(void)spin{
-    CABasicAnimation *rotation;
-    rotation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
-    rotation.fromValue = [NSNumber numberWithFloat:0];
-    rotation.toValue = [NSNumber numberWithFloat:(2 * M_PI)];
-    rotation.duration = 1.f; // Speed
-    rotation.repeatCount = HUGE_VALF; // Repeat forever. Can be a finite number.
-    
+//    CABasicAnimation *rotation;
+//    rotation = [CABasicAnimation animationWithKeyPath:@"transform.rotation"];
+//    rotation.fromValue = [NSNumber numberWithFloat:0];
+//    rotation.toValue = [NSNumber numberWithFloat:(2 * M_PI)];
+//    rotation.duration = 1.f; // Speed
+//    rotation.repeatCount = HUGE_VALF; // Repeat forever. Can be a finite number.
+//    
     
     CABasicAnimation *pulse;
     pulse = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-    pulse.duration = 0.7f;
+    pulse.duration = 0.5f;
     pulse.autoreverses = YES;
     pulse.fromValue = [NSNumber numberWithFloat:1.f];
     pulse.toValue =[NSNumber numberWithFloat:1.2f];
@@ -67,7 +67,7 @@
     
     
     [self.customActivityIndicator.layer removeAllAnimations];
-    [self.customActivityIndicator.layer addAnimation:rotation forKey:@"Spin"];
+    //[self.customActivityIndicator.layer addAnimation:rotation forKey:@"Spin"];
     [self.customActivityIndicator.layer addAnimation:pulse forKey:@"Pulse"];
     //[self addSubview:self.customActivityIndicator];
     [self bringSubviewToFront:self.customActivityIndicator];

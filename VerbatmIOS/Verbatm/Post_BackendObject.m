@@ -68,7 +68,6 @@
         [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
                                                              NSError * _Nullable error) {
             
-            
             if(activities && !error){
 
                 NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
@@ -76,13 +75,12 @@
                 for(PFObject * pc_activity in activities){
                     
                     PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-                    [post fetchIfNeeded];
+                    [post fetchIfNeededInBackground];
                     [finalPostObjects addObject:pc_activity];
                 }
 
                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
                         block(finalPostObjects);
-                    
                     });
             }
         }];
