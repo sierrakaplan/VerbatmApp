@@ -127,7 +127,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "350"
             endingLineNumber = "350"
-            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
+            landmarkName = "-formatTitleFieldFromFrame:andChannel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -255,7 +255,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1543"
             endingLineNumber = "1543"
-            landmarkName = "-addUnpinchedItem:"
+            landmarkName = "-finishMovingSelectedItem"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -271,7 +271,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1564"
             endingLineNumber = "1564"
-            landmarkName = "-finishMovingSelectedItem"
+            landmarkName = "-swapScrollView:andScrollView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -287,7 +287,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1570"
             endingLineNumber = "1570"
-            landmarkName = "-finishMovingSelectedItem"
+            landmarkName = "-swapScrollView:andScrollView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -303,8 +303,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1574"
             endingLineNumber = "1574"
-            landmarkName = "-swapScrollView:andScrollView:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -319,8 +319,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1576"
             endingLineNumber = "1576"
-            landmarkName = "-swapScrollView:andScrollView:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -335,8 +335,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1573"
             endingLineNumber = "1573"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-swapScrollView:andScrollView:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -383,7 +383,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "316"
             endingLineNumber = "316"
-            landmarkName = "-createChannelPickerFromChannelsFromFrame:"
+            landmarkName = "-numberOfComponentsInPickerView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -399,7 +399,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "328"
             endingLineNumber = "328"
-            landmarkName = "-pickerView:numberOfRowsInComponent:"
+            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -415,7 +415,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1620"
             endingLineNumber = "1620"
-            landmarkName = "-returnPageElementScrollView:toDisplayAtIndex:"
+            landmarkName = "-addTapGestureToPinchView:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -463,8 +463,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1681"
             endingLineNumber = "1681"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-cleanUp"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -975,7 +975,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "336"
             endingLineNumber = "336"
-            landmarkName = "-pickerView:rowHeightForComponent:"
+            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -991,7 +991,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "335"
             endingLineNumber = "335"
-            landmarkName = "-pickerView:rowHeightForComponent:"
+            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1156,13 +1156,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FeedVC.m"
-            timestampString = "478780344.194152"
+            timestampString = "480551007.948995"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
-            landmarkName = "@implementation FeedVC"
-            landmarkType = "3">
+            startingLineNumber = "194"
+            endingLineNumber = "194"
+            landmarkName = "-userLostInternetConnection"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1172,13 +1172,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "FeedVC.m"
-            timestampString = "478780344.194152"
+            timestampString = "480551007.948995"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "203"
-            endingLineNumber = "203"
-            landmarkName = "-networkConnectionUpdate:"
-            landmarkType = "5">
+            startingLineNumber = "208"
+            endingLineNumber = "208">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1262,11 +1260,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "478780344.194152"
+            timestampString = "480550236.524077"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "186"
-            endingLineNumber = "186"
+            startingLineNumber = "187"
+            endingLineNumber = "187"
             landmarkName = "-loadChannelsAndCreateTicker"
             landmarkType = "5">
          </BreakpointContent>
@@ -1283,7 +1281,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "353"
             endingLineNumber = "353"
-            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
+            landmarkName = "-formatTitleFieldFromFrame:andChannel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1299,7 +1297,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "348"
             endingLineNumber = "348"
-            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
+            landmarkName = "-formatTitleFieldFromFrame:andChannel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1395,7 +1393,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "107"
             endingLineNumber = "107"
-            landmarkName = "-viewWillAppear:"
+            landmarkName = "-addPostListVC"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1459,7 +1457,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "365"
             endingLineNumber = "365"
-            landmarkName = "-formatTitleFieldFromFrame:andChannel:"
+            landmarkName = "-pickerView:didSelectRow:inComponent:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1507,7 +1505,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "366"
             endingLineNumber = "366"
-            landmarkName = "-formatTitleFieldFromFrame:andChannel:"
+            landmarkName = "-pickerView:didSelectRow:inComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1555,7 +1553,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "528"
             endingLineNumber = "528"
-            landmarkName = "-scrollViewDidEndDragging:willDecelerate:"
+            landmarkName = "-scrollViewWillBeginDecelerating:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1603,7 +1601,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "529"
             endingLineNumber = "529"
-            landmarkName = "-scrollViewDidEndDragging:willDecelerate:"
+            landmarkName = "-scrollViewWillBeginDecelerating:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1619,8 +1617,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "527"
             endingLineNumber = "527"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-scrollViewWillBeginDecelerating:"
+            landmarkType = "5">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -1667,7 +1665,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1364"
             endingLineNumber = "1364"
-            landmarkName = "-findSelectedViewFromTouch:"
+            landmarkName = "-moveItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1747,7 +1745,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1339"
             endingLineNumber = "1339"
-            landmarkName = "-selectItem:"
+            landmarkName = "-findSelectedViewFromTouch:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1763,7 +1761,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1196"
             endingLineNumber = "1196"
-            landmarkName = "-findElementsFromPinchPoint"
+            landmarkName = "-createPinchApartViews"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1779,8 +1777,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "478"
             endingLineNumber = "478"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-rightButtonPressed"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1838,11 +1836,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "478780344.194152"
+            timestampString = "480550236.524077"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "132"
-            endingLineNumber = "132">
+            startingLineNumber = "133"
+            endingLineNumber = "133"
+            landmarkName = "@interface ContentDevVC()"
+            landmarkType = "2">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -1852,11 +1852,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "478780344.194152"
+            timestampString = "480550236.524077"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "150"
-            endingLineNumber = "150">
+            startingLineNumber = "151"
+            endingLineNumber = "151"
+            landmarkName = "@interface ContentDevVC()"
+            landmarkType = "2">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2309,7 +2311,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1090"
             endingLineNumber = "1090"
-            landmarkName = "-handleRevealOfNewMediaViewWithGesture:andChangeInTopViewPosition:andChangeInBottomViewPosition:"
+            landmarkName = "-animateNewMediaTileToFinalPosition:andChangeInTopViewPosition:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2368,11 +2370,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ContentDevVC.m"
-            timestampString = "478780344.194152"
+            timestampString = "480550236.524077"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "144"
-            endingLineNumber = "144">
+            startingLineNumber = "145"
+            endingLineNumber = "145"
+            landmarkName = "@interface ContentDevVC()"
+            landmarkType = "2">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2419,7 +2423,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "80"
             endingLineNumber = "80"
-            landmarkName = "-viewDidLoad"
+            landmarkName = "-getChannelsWithCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2689,7 +2693,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "316"
             endingLineNumber = "316"
-            landmarkName = "-clearChannelCreationView"
+            landmarkName = "-prepareForSegue:sender:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2714,13 +2718,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileNavBar.m"
-            timestampString = "478781486.045247"
+            timestampString = "480551007.948995"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "253"
             endingLineNumber = "253"
-            landmarkName = "-backButtonSelected"
-            landmarkType = "5">
+            landmarkName = "@implementation ProfileNavBar"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2762,12 +2766,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ChannelButtons.m"
-            timestampString = "478812804.520757"
+            timestampString = "480550236.524077"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "189"
-            endingLineNumber = "189"
-            landmarkName = "-createFollowIcon"
+            startingLineNumber = "183"
+            endingLineNumber = "183"
+            landmarkName = "-getChannelNameLabel:withOrigin:andAttributes:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2874,44 +2878,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ChannelButtons.m"
-            timestampString = "478812804.520757"
+            timestampString = "480550236.524077"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "227"
+            endingLineNumber = "227"
+            landmarkName = "-changeNumFollowersLabelForChannel:toNumber:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Verbatm/ChannelButtons.m"
+            timestampString = "480550236.524077"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "231"
             endingLineNumber = "231"
-            landmarkName = "-createFollowIcon"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/ChannelButtons.m"
-            timestampString = "478812804.520757"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "235"
-            endingLineNumber = "235"
-            landmarkName = "-createFollowIcon"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/ChannelButtons.m"
-            timestampString = "478812804.520757"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "204"
-            endingLineNumber = "204"
-            landmarkName = "-createFollowIcon"
+            landmarkName = "-changeNumFollowersLabelForChannel:toNumber:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2970,12 +2958,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileNavBar.m"
-            timestampString = "478781486.045247"
+            timestampString = "480551007.948995"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "252"
             endingLineNumber = "252"
-            landmarkName = "-backButtonSelected"
+            landmarkName = "-showWhoIsFollowingMeSelected"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2986,12 +2974,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileNavBar.m"
-            timestampString = "478781486.045247"
+            timestampString = "480551007.948995"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "258"
             endingLineNumber = "258"
-            landmarkName = "-settingsButtonSelected"
+            landmarkName = "-selectChannel:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3023,14 +3011,14 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "144"
             endingLineNumber = "144"
-            landmarkName = "-presentUserShareInformationForPost:"
+            landmarkName = "-presentAllVerbatmChannels"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
@@ -3039,8 +3027,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "62"
             endingLineNumber = "62"
-            landmarkName = "@interface ProfileVC()"
-            landmarkType = "2">
+            landmarkName = "-viewDidLoad"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

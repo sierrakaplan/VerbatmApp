@@ -14,10 +14,14 @@
 
 -(void) likeButtonLiked: (BOOL)liked onPostObject: (PFObject*) post;
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post;
+-(void) channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
+
 @end
 
 @interface PostView : UIView
 
+//we store this to help us sort the posts once in the feed by date created
+@property (strong, nonatomic) PFObject* parsePostChannelActivityObject;
 
 @property (nonatomic) id <PostViewDelegate> delegate;
 
@@ -27,8 +31,6 @@
 -(void) renderPages: (NSArray *) pages;
 
 -(void) renderPostFromPages: (NSArray *) pages;
-
--(void) addCreatorInfoFromChannel:(Channel *) channel;
 
 -(void) clearArticle;
 
@@ -52,3 +54,4 @@
 -(void) shiftLikeShareBarDown:(BOOL) down;
 
 @end
+

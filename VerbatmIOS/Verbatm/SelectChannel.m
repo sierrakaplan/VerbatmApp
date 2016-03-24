@@ -126,7 +126,7 @@
             [self.selectedChannels removeObject:selectionButton.associatedObject];
             if([selectionButton.associatedObject isKindOfClass:[Channel class]] &&
                self.selectedChannels.count) {
-                [self.delegate channelsSelected:self.selectedChannels];
+                [self.selectChannelDelegate channelsSelected:self.selectedChannels];
             }
         }else{
             

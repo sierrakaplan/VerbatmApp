@@ -27,8 +27,6 @@
 // Initializer for preview mode
 -(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView inPreviewMode: (BOOL) inPreviewMode;
 
--(void)unmuteVideo;
-
--(void)muteVideo;
+-(void) muteVideo: (BOOL) mute;
 
 @end

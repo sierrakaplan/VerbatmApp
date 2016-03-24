@@ -45,7 +45,7 @@
         self.currentChannel = channel;
         self.channelOwner =(PFUser *)[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
         [self createBackground];
-        [self addCreatorName:[self.channelOwner valueForKey:USER_USER_NAME_KEY] andChannelName:channel.name];
+        [self addCreatorName:[self.channelOwner valueForKey:VERBATM_USER_NAME_KEY] andChannelName:channel.name];
     }
     return self;
 }

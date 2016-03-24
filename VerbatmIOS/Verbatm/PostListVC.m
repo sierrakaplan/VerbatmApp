@@ -23,12 +23,12 @@
 #import "PostView.h"
 #import <PromiseKit/PromiseKit.h>
 
-#import "SharePOVView.h"
+#import "SharePostView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-@interface PostListVC () <UICollectionViewDelegate,UICollectionViewDataSource,
-UIScrollViewDelegate>
+@interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
+							SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 @property (nonatomic) NSMutableArray * presentedPostList;
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
@@ -36,10 +36,10 @@ UIScrollViewDelegate>
 
 @property (nonatomic) PostCollectionViewCell *lastVisibleCell;
 @property (nonatomic) LoadingIndicator *customActivityIndicator;
-@property (nonatomic) SharePOVView *sharePOVView;
+@property (nonatomic) SharePostView *sharePOVView;
 @property (nonatomic) BOOL shouldPlayVideos;
 @property (nonatomic) BOOL isReloading;
-@property (nonatomic) PFObject *povToShare;
+@property (nonatomic) PFObject *postToShare;
 
 @property (nonatomic) UIImageView * reblogSucessful;
 
@@ -328,20 +328,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
 			[view presentMediaContent];
 		}else if(i != visibleIndex){
-			[view povOffScreen];
+			[view postOffScreen];
 		}
-	}
-}
-
--(void)turnOffCellsOffScreenWithVisibleCell:(PostHolderCollecitonRV *)visibleCell{
-	if(visibleCell && (self.lastVisibleCell !=visibleCell)){
-		if(self.lastVisibleCell){
-			[self.lastVisibleCell offScreen];
-			self.lastVisibleCell = visibleCell;
-		}else{
-			self.lastVisibleCell = visibleCell;
-		}
-		if(self.shouldPlayVideos)[visibleCell onScreen];
 	}
 }
 
@@ -353,13 +341,17 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		}else{
 			self.lastVisibleCell = visibleCell;
 		}
-		[visibleCell onScreen];
+		if(self.shouldPlayVideos)[visibleCell onScreen];
 	}
 }
 
--(void) shareOptionSelectedForParsePostObject: (PFObject* ) pov{
+-(void) likeButtonLiked:(BOOL)liked onPostObject:(PFObject *)post {
+	//todo:
+}
+
+-(void) shareOptionSelectedForParsePostObject: (PFObject* )post {
 	[self.delegate hideNavBarIfPresent];
-	self.povToShare = pov;
+	self.postToShare = post;
 	[self presentShareSelectionViewStartOnChannels:YES];
 }
 
@@ -371,8 +363,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-	self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
-	self.sharePOVView. = self;
+	self.sharePOVView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+	self.sharePOVView.delegate = self;
 	[self.view addSubview:self.sharePOVView];
 	[self.view bringSubviewToFront:self.sharePOVView];
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
@@ -399,9 +391,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self removeSharePOVView];
 }
 
--(void)postPOVToChannels:(NSMutableArray *) channels{
+-(void)postPostToChannels:(NSMutableArray *) channels{
 	if(channels.count){
-		[Post_Channel_RelationshipManger savePost:self.povToShare toChannels:channels withCompletionBlock:^{
+		[Post_Channel_RelationshipManger savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self successfullyReblogged];
 			});

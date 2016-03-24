@@ -47,6 +47,4 @@
 // Frees all objects associated with video
 -(void) stopVideo;
 
--(void)removeMuteButtonFromView;
-
 @end

@@ -1,5 +1,5 @@
 //
-//  SharePOVView.m
+//  SharePostView.m
 //  Verbatm
 //
 //  Created by Iain Usiri on 1/2/16.
@@ -226,7 +226,7 @@
 
 -(void)shareButtonSelected {
 	if([self.shareButton.titleLabel.text isEqualToString:@"REPOST"]){
-		[self.delegate postPostToChannel:self.selectedChannels];
+		[self.delegate postPostToChannels: self.selectedChannels];
 	}
 }
 

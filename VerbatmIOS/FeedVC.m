@@ -150,7 +150,7 @@
     [self removeSharePostView];
 }
 
--(void) postPostToChannel:(Channel *) channel{
+-(void) postPostToChannels:(NSMutableArray *)channels {
     [self removeSharePostView];
 }
 
@@ -167,6 +167,11 @@
             }
         }];
     }
+}
+
+//todo:
+-(void) channelSelected:(Channel *)channel withOwner:(PFUser *)owner {
+	//todo:
 }
 
 #pragma mark - Share Post Delegate -

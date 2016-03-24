@@ -33,7 +33,6 @@
 
 @property (nonatomic) UIButton *followButton;
 @property (nonatomic) BOOL isFollowigProfileUser; //todo: change spelling?
-@property (nonatomic) NSNumber * numberOfFollowers;
 @property (nonatomic) BOOL isLoggedInUser;
 @property (nonatomic) BOOL buttonSelected;
 @end
@@ -83,9 +82,6 @@
     CGPoint numFollowersOrigin = CGPointMake(0.f,self.frame.size.height/2.f);
     self.numberOfFollowersLabel = [self getChannelFollowersLabel:channel origin:numFollowersOrigin followersTextAttribute:self.unSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.unSelectedNumberOfFollowersTitleAttributes];
     
-    //store number of current followers on channel
-    self.numberOfFollowers = channel.numberOfFollowers;
-    
     CGFloat buttonWidth = (TAB_BUTTON_PADDING * 3.f) + FOLLOW_BUTTON_WIDTH +  ((self.numberOfFollowersLabel.frame.size.width >  self.channelNameLabel.frame.size.width) ?
                                                 self.numberOfFollowersLabel.frame.size.width :  self.channelNameLabel.frame.size.width);
     
@@ -127,8 +123,7 @@
 
 
 -(void)createFollowIcon{
-    [Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^
-     (bool isFollowing) {
+    [Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^(bool isFollowing) {
           dispatch_async(dispatch_get_main_queue(), ^{
               [self createFollowButton_AreWeFollowingCurrChannel:isFollowing];
           });
@@ -182,7 +177,6 @@
     }
 }
 
-
 -(UILabel *) getChannelNameLabel:(Channel *) channel withOrigin:(CGPoint) origin andAttributes:(NSDictionary *) nameLabelAttribute{
     
     NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:channel.name attributes:nameLabelAttribute];
@@ -199,32 +193,34 @@
     return nameLabel;
 }
 
--(UILabel *) getChannelFollowersLabel:(NSNumber *) numFollowers origin:(CGPoint) origin followersTextAttribute:(NSDictionary *) followersTextAttribute andNumberOfFollowersAttribute:(NSDictionary *) numberOfFollowersAttribute{
-    
-    //create bolded number
-    NSString * numberOfFollowers = [numFollowers stringValue];
+-(UILabel *) getChannelFollowersLabel:(Channel *) channel origin:(CGPoint) origin
+			   followersTextAttribute:(NSDictionary *) followersTextAttribute
+		andNumberOfFollowersAttribute:(NSDictionary *) numberOfFollowersAttribute {
 
-    NSMutableAttributedString * numberOfFollowersAttributed = [[NSMutableAttributedString alloc] initWithString:numberOfFollowers attributes:numberOfFollowersAttribute];
-    NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:@" Follower(s)" attributes:followersTextAttribute];
+	//create bolded number
+	NSString * numberOfFollowers = @"0";
 
-    
-    //create frame for label
-    CGSize textSize = [[numberOfFollowers stringByAppendingString:@" Follower(s)"] sizeWithAttributes:numberOfFollowersAttribute];
-    
-    CGFloat height = (textSize.height <= self.frame.size.height/2.f) ?
-    textSize.height : self.frame.size.height/2.f;
-    
-    CGRect labelFrame = CGRectMake(origin.x, origin.y, textSize.width, height);
-    
-    UILabel * followersLabel = [[UILabel alloc] initWithFrame:labelFrame];
-    [numberOfFollowersAttributed appendAttributedString:followersText];
-    [followersLabel setAttributedText:numberOfFollowersAttributed];
+	NSMutableAttributedString * numberOfFollowersAttributed = [[NSMutableAttributedString alloc] initWithString:numberOfFollowers attributes:numberOfFollowersAttribute];
+	NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:@" Follower(s)" attributes:followersTextAttribute];
+
+
+	//create frame for label
+	CGSize textSize = [[numberOfFollowers stringByAppendingString:@" Follower(s)"] sizeWithAttributes:numberOfFollowersAttribute];
+
+	CGFloat height = (textSize.height <= self.frame.size.height/2.f) ?
+	textSize.height : self.frame.size.height/2.f;
+
+	CGRect labelFrame = CGRectMake(origin.x, origin.y, textSize.width, height);
+
+	UILabel * followersLabel = [[UILabel alloc] initWithFrame:labelFrame];
+	[numberOfFollowersAttributed appendAttributedString:followersText];
+	[followersLabel setAttributedText:numberOfFollowersAttributed];
 
 	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
 		[self changeNumFollowersLabelForChannel: channel toNumber:numFollowers];
 	}];
 
-    return followersLabel;
+	return followersLabel;
 }
 
 - (void) changeNumFollowersLabelForChannel:(Channel *) channel toNumber: (NSNumber*) numFollowers {
@@ -307,17 +303,8 @@
 }
 
 -(void)registerFollowActivityIsFollowing:(BOOL) isFollowing{
-    int followers = [self.numberOfFollowers intValue];
-    if(isFollowing){
-        followers++;
-    }else{
-        followers--;
-        if(followers < 0) followers = 0;
-    }
     
-    self.numberOfFollowers = [NSNumber numberWithInt:followers];
-    
-    UILabel * followersInfoLabel = [self getChannelFollowersLabel:[NSNumber numberWithInt:followers] origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.nonSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.nonSelectedNumberOfFollowersTitleAttributes];
+    UILabel * followersInfoLabel = [self getChannelFollowersLabel:self.currentChannel origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.unSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.unSelectedNumberOfFollowersTitleAttributes];
     //swap labels
     [self.numberOfFollowersLabel removeFromSuperview];
     self.numberOfFollowersLabel = followersInfoLabel;

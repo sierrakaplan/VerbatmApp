@@ -13,7 +13,6 @@
 		A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */; };
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
 		A51A52F61BD6B8AB0048E62A /* MediaDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = A51A52F51BD6B8AB0048E62A /* MediaDownloader.m */; };
-		A51E744D1C73069200CF8DEA /* SharingOption.m in Sources */ = {isa = PBXBuildFile; fileRef = A51E744C1C73069200CF8DEA /* SharingOption.m */; };
 		A51E74641C898C4E00CF8DEA /* PostInProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = A51E74631C898C4E00CF8DEA /* PostInProgress.m */; };
 		A51E74651C898C4E00CF8DEA /* PostInProgress.m in Sources */ = {isa = PBXBuildFile; fileRef = A51E74631C898C4E00CF8DEA /* PostInProgress.m */; };
 		A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */ = {isa = PBXBuildFile; fileRef = A52919751B5DD24F00233712 /* UIView+Glow.m */; };
@@ -34,6 +33,9 @@
 		A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFB41BB0AF64003FB041 /* CreateAccountView.m */; };
 		A560EFB81BB0AF70003FB041 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFB71BB0AF70003FB041 /* LoginView.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
+		A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */; };
+		A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */; };
+		A56B5D231CA49D0E00A61D27 /* Like_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */; };
 		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
 		A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687A1B65B25700CE5744 /* CollectionPinchView.m */; };
 		A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68801B65B43D00CE5744 /* ImagePinchView.m */; };
@@ -159,16 +161,13 @@
 		C76172771C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m in Sources */ = {isa = PBXBuildFile; fileRef = C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */; };
 		C761727B1C4DFB7700AB0D84 /* PostListVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727A1C4DFB7700AB0D84 /* PostListVC.m */; };
 		C761727F1C4E0EB600AB0D84 /* PostCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */; };
-		C76F89331CA0732F002A88A4 /* UserInfoCache.m in Sources */ = {isa = PBXBuildFile; fileRef = C76F89321CA0732F002A88A4 /* UserInfoCache.m */; };
 		C774040F19BE6538004C50EA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C774040E19BE6538004C50EA /* Images.xcassets */; };
 		C77A20931C03E39E00356465 /* ProfileNavBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C77A20921C03E39E00356465 /* ProfileNavBar.m */; };
 		C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = C77C7D371A22E9FC00694B20 /* PinchView.m */; };
 		C78204EE1C32EAC500F56A63 /* CreatorAndChannelBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C78204ED1C32EAC500F56A63 /* CreatorAndChannelBar.m */; };
 		C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C788745B1C334AE80048B66E /* PostLikeAndShareBar.m */; };
 		C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */ = {isa = PBXBuildFile; fileRef = C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */; };
-		C78FF0C21C9EFF2F0088E71D /* Like_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C78FF0C11C9EFF2F0088E71D /* Like_BackendManager.m */; };
 		C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */ = {isa = PBXBuildFile; fileRef = C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */; };
-		C7B9D8981C9FAE730068C13E /* Post_Channel_RelationshipManger.m in Sources */ = {isa = PBXBuildFile; fileRef = C7B9D8971C9FAE730068C13E /* Post_Channel_RelationshipManger.m */; };
 		C7BC4376199D97F5004B91A1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4375199D97F5004B91A1 /* Foundation.framework */; };
 		C7BC4378199D97F5004B91A1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */; };
 		C7BC437A199D97F5004B91A1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7BC4379199D97F5004B91A1 /* UIKit.framework */; };
@@ -255,7 +254,6 @@
 		A5076D131BF2B25100303746 /* TextOverMediaView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextOverMediaView.m; sourceTree = "<group>"; };
 		A51A52F41BD6B8AB0048E62A /* MediaDownloader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaDownloader.h; sourceTree = "<group>"; };
 		A51A52F51BD6B8AB0048E62A /* MediaDownloader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaDownloader.m; sourceTree = "<group>"; };
-		A51E744C1C73069200CF8DEA /* SharingOption.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharingOption.m; sourceTree = "<group>"; };
 		A51E74621C898C4E00CF8DEA /* PostInProgress.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostInProgress.h; sourceTree = "<group>"; };
 		A51E74631C898C4E00CF8DEA /* PostInProgress.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostInProgress.m; sourceTree = "<group>"; };
 		A51E74661C89914A00CF8DEA /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = "Pods/../build/Debug-iphoneos/PromiseKit.framework"; sourceTree = "<group>"; };
@@ -296,6 +294,12 @@
 		A560EFB71BB0AF70003FB041 /* LoginView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginView.m; sourceTree = "<group>"; };
 		A562D50C1B506D2800F566F4 /* VideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPlayerView.m; sourceTree = "<group>"; };
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
+		A56B5D1B1CA49A8100A61D27 /* UserInfoCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoCache.h; sourceTree = "<group>"; };
+		A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoCache.m; sourceTree = "<group>"; };
+		A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post_Channel_RelationshipManger.h; sourceTree = "<group>"; };
+		A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post_Channel_RelationshipManger.m; sourceTree = "<group>"; };
+		A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Like_BackendManager.h; sourceTree = "<group>"; };
+		A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Like_BackendManager.m; sourceTree = "<group>"; };
 		A56F68701B643B1400CE5744 /* VerbatmKeyboardToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmKeyboardToolBar.h; sourceTree = "<group>"; };
 		A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmKeyboardToolBar.m; sourceTree = "<group>"; };
 		A56F68791B65B25700CE5744 /* CollectionPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionPinchView.h; sourceTree = "<group>"; };
@@ -519,7 +523,6 @@
 		C761727A1C4DFB7700AB0D84 /* PostListVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostListVC.m; sourceTree = "<group>"; };
 		C761727D1C4E0EB600AB0D84 /* PostCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostCollectionViewCell.h; sourceTree = "<group>"; };
 		C761727E1C4E0EB600AB0D84 /* PostCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostCollectionViewCell.m; sourceTree = "<group>"; };
-		C76F89321CA0732F002A88A4 /* UserInfoCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoCache.m; sourceTree = "<group>"; };
 		C774040E19BE6538004C50EA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		C77A20911C03E39E00356465 /* ProfileNavBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileNavBar.h; sourceTree = "<group>"; };
 		C77A20921C03E39E00356465 /* ProfileNavBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileNavBar.m; sourceTree = "<group>"; };
@@ -531,11 +534,9 @@
 		C788745B1C334AE80048B66E /* PostLikeAndShareBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostLikeAndShareBar.m; sourceTree = "<group>"; };
 		C78B682219CA6C01003D0AC5 /* MediaSelectTile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSelectTile.h; sourceTree = "<group>"; };
 		C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSelectTile.m; sourceTree = "<group>"; };
-		C78FF0C11C9EFF2F0088E71D /* Like_BackendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Like_BackendManager.m; sourceTree = "<group>"; };
 		C79747D91B50B815009077E3 /* Verbatm-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Verbatm-Info.plist"; sourceTree = "<group>"; };
 		C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadingIndicator.h; sourceTree = "<group>"; };
 		C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadingIndicator.m; sourceTree = "<group>"; };
-		C7B9D8971C9FAE730068C13E /* Post_Channel_RelationshipManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post_Channel_RelationshipManger.m; sourceTree = "<group>"; };
 		C7BC4372199D97F5004B91A1 /* Verbatm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Verbatm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7BC4375199D97F5004B91A1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		C7BC4377199D97F5004B91A1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -1340,6 +1341,12 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				A56B5D1B1CA49A8100A61D27 /* UserInfoCache.h */,
+				A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */,
+				A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.h */,
+				A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */,
+				A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */,
+				A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */,
 				C7469BF21B4874A600EA7B10 /* Main.storyboard */,
 				A51E74521C897EFC00CF8DEA /* UI Things */,
 				A51E74511C897E2F00CF8DEA /* Downloaded Libraries */,
@@ -1756,6 +1763,7 @@
 				A58656681B61FD99008E358C /* PhotoPVE.m in Sources */,
 				A5C09BDB1BA1F1D700C0AD86 /* ASIDataDecompressor.m in Sources */,
 				C7F22B311C38408E00E56EA7 /* SharePostView.m in Sources */,
+				A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */,
 				A5E85FA61B911DA900E148D0 /* GTMHTTPFetcher.m in Sources */,
 				C7EF5BB61B0CD5E500E7915B /* MasterNavigationVC.m in Sources */,
 				A5E85F981B911DA900E148D0 /* GTLObject.m in Sources */,
@@ -1767,6 +1775,7 @@
 				C7E65F6F1B92EB650042AD99 /* PostView.m in Sources */,
 				C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */,
 				A5AA31BF1B9FCDDC00D8D20C /* GTLVerbatmAppImage.m in Sources */,
+				A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m in Sources */,
 				A5E85FA31B911DA900E148D0 /* GTLUtilities.m in Sources */,
 				A5B0A81B1C0E63D60062D7BF /* PageViewingExperience.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* PageTypeAnalyzer.m in Sources */,
@@ -1794,6 +1803,7 @@
 				C7996CC31C8FCF74002E5DA6 /* LoadingIndicator.m in Sources */,
 				C788745C1C334AE80048B66E /* PostLikeAndShareBar.m in Sources */,
 				A5E85F9A1B911DA900E148D0 /* GTLBatchQuery.m in Sources */,
+				A56B5D231CA49D0E00A61D27 /* Like_BackendManager.m in Sources */,
 				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
@@ -1803,7 +1813,6 @@
 				A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */,
 				A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
-				A51E744D1C73069200CF8DEA /* SharingOption.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				C761727F1C4E0EB600AB0D84 /* PostCollectionViewCell.m in Sources */,
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
@@ -1812,13 +1821,11 @@
 				A5FB5D2D1BCB0B9700634A96 /* GMAlbumsViewController.m in Sources */,
 				C7F79E801C3AACC600319330 /* CreateNewChannelView.m in Sources */,
 				C7F3EBC91C7D4D73007D23DF /* VideoPlayerItemManager.m in Sources */,
-				C78FF0C21C9EFF2F0088E71D /* Like_BackendManager.m in Sources */,
 				A5E860011B96249900E148D0 /* PostPublisher.m in Sources */,
 				C7F22B381C3841AD00E56EA7 /* SelectSharingOption.m in Sources */,
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A5E85FA11B911DA900E148D0 /* GTLFramework.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
-				C76F89331CA0732F002A88A4 /* UserInfoCache.m in Sources */,
 				A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */,
 				C7D596381C66DC3A00161136 /* FeedQueryManager.m in Sources */,
 				A5E85FAB1B911DA900E148D0 /* GTMMIMEDocument.m in Sources */,
@@ -1832,7 +1839,6 @@
 				A5C09BDD1BA1F1D700C0AD86 /* ASIFormDataRequest.m in Sources */,
 				C77C7D391A22E9FC00694B20 /* PinchView.m in Sources */,
 				A5C09BDF1BA1F1D700C0AD86 /* ASIInputStream.m in Sources */,
-				C7B9D8981C9FAE730068C13E /* Post_Channel_RelationshipManger.m in Sources */,
 				A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */,
 				C75F155F1C2B4A1B0092912D /* Channel.m in Sources */,
 				A52919761B5DD24F00233712 /* UIView+Glow.m in Sources */,

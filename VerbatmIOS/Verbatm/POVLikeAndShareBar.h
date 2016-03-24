@@ -13,8 +13,6 @@
  It also shows the page that we are on on the POV
  */
 
-
-
 typedef enum BarActivityOptions{
     Like = 0,
     Share = 1,

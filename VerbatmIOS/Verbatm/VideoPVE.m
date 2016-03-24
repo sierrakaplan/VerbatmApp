@@ -183,6 +183,10 @@
 	}
 }
 
+-(void) muteVideo:(BOOL)mute {
+	[self.videoPlayer muteVideo:mute];
+}
+
 #pragma mark - Lazy Instantiation -
 
 -(VideoPlayerView*) videoPlayer {

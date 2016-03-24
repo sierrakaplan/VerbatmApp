@@ -102,7 +102,7 @@
     if (self) {
         [self addSubview: self.mainScrollView];
         self.mainScrollView.backgroundColor = [UIColor blackColor];
-        if(postObject)self.parsePostObject = postObject;
+        if(postObject) self.parsePostChannelActivityObject = postObject;
         [self createBorder];
     }
     return self;
@@ -339,10 +339,10 @@
     [self prepareNextPage];
 }
 
--(void)checkForMuteButton:(ArticleViewingExperience * )currentPageOnScreen {
+-(void)checkForMuteButton:(PageViewingExperience * )currentPageOnScreen {
     
-    if ([currentPageOnScreen isKindOfClass:[VideoAVE class]] ||
-        [currentPageOnScreen isKindOfClass:[PhotoVideoAVE class]]) {
+    if ([currentPageOnScreen isKindOfClass:[VideoPVE class]] ||
+        [currentPageOnScreen isKindOfClass:[PhotoVideoPVE class]]) {
         [self.likeShareBar presentMuteButton:YES];
     }else {
         [self.likeShareBar presentMuteButton:NO];
@@ -354,19 +354,13 @@
         [self muteAllVideos:shouldMute];    
 }
 
-
 -(void)muteAllVideos:(BOOL) shouldMute{
-    for(id ave in [self.pageAves allValues]){
+    for(id pve in [self.pageViews allValues]){
        
-        if ([ave isKindOfClass:[VideoAVE class]] ||
-            [ave isKindOfClass:[PhotoVideoAVE class]]) {
+        if ([pve isKindOfClass:[VideoPVE class]] ||
+            [pve isKindOfClass:[PhotoVideoPVE class]]) {
            
-            if(shouldMute){
-                [(VideoAVE *)ave muteVideo];
-            }else{
-                [(VideoAVE *)ave unmuteVideo];
-            }
-            
+			[(VideoPVE *)pve muteVideo: shouldMute];
         }
     }
 }
@@ -422,13 +416,13 @@
     }
 }
 
--(void)logAVEDoneViewing:(ArticleViewingExperience*) ave {
+-(void)logAVEDoneViewing:(PageViewingExperience*) pve {
     NSString * pageType = @"";
-   	if ([ave isKindOfClass:[VideoPVE class]]) {
+   	if ([pve isKindOfClass:[VideoPVE class]]) {
         pageType = @"VideoPageView";
-    } else if([ave isKindOfClass:[PhotoVideoPVE class]]) {
+    } else if([pve isKindOfClass:[PhotoVideoPVE class]]) {
         pageType = @"PhotoVideoPageView";
-    } else if ([ave isKindOfClass:[PhotoPVE class] ]){
+    } else if ([pve isKindOfClass:[PhotoPVE class] ]){
         pageType = @"PhotoPageView";
     }
     
@@ -527,7 +521,7 @@
             //we lazily create out pages
             [self presentMediaContent];
         }
-        [self displayMediaOnCurrentAVE];
+        [self displayMediaOnCurrentPage];
     }
     
     if(self.pageViews.count > 1){
@@ -581,7 +575,6 @@
     self.likeShareBar =  nil;
 	self.currentPageIndex = -1;
 	self.pageViews = nil;
-	self.pageLoadManager = nil;
     [self removePageUpIndicatorFromView];
 }
 
@@ -610,7 +603,7 @@
 
 //adds the little bouncing arrow to the bottom right of the screen
 -(void)addUpArrowAnimation{
-    if(!self.pageUpIndicator && self.pageAves.count){
+    if(!self.pageUpIndicator && self.pageViews.count){
         if(![NSThread isMainThread]){
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self startArrowAnimation];

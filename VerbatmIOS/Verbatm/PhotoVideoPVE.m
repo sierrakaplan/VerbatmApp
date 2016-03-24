@@ -125,12 +125,8 @@
 	[self.photosView almostOnScreen];
 }
 
--(void)unmuteVideo{
-    [self.videoView unmuteVideo];
-}
-
--(void)muteVideo{
-    [self.videoView muteVideo];
+-(void) muteVideo: (BOOL) mute{
+	[self.videoView muteVideo: mute];
 }
 
 @end

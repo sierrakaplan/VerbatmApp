@@ -36,6 +36,7 @@
 #import "Styles.h"
 
 #import "UIImage+ImageEffectsAndTransforms.h"
+#import "UserInfoCache.h"
 
 #import "VerbatmCameraView.h"
 #import "VideoPinchView.h"
@@ -198,9 +199,8 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
     }
      [self formatTitle];
      [self createBaseSelector];
-     [self loadPOVFromUserDefaults];
+     [self loadPostFromUserDefaults];
 }
-
 
 -(void) addBackgroundImage {
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];

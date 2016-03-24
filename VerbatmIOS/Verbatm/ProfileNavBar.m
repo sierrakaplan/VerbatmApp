@@ -44,20 +44,20 @@
 
 #define THREAD_BAR_BUTTON_FONT_SIZE 17.f
 
-
 @end
 
 @implementation ProfileNavBar
 
 //expects an array of thread names (nsstring)
 -(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
-    self = [super initWithFrame:frame];
-    if(self){
-        [self createProfileHeaderWithUserName:[profileUser valueForKey:USER_USER_NAME_KEY] isCurrentUser:isCurrentUser];
+	self = [super initWithFrame:frame];
+	if(self){
+		[self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY] isCurrentUser:isCurrentUser];
+		Channel* startChannel = (channels.count > 0) ? channels[0] : nil;
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
-        [self registerForNotifications];
-    }
-    return self;
+		[self registerForNotifications];
+	}
+	return self;
 }
 
 -(void)registerForNotifications{

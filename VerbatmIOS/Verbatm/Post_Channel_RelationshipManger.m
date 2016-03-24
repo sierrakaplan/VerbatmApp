@@ -7,6 +7,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Follow_BackendManager.h"
 #import "Post_Channel_RelationshipManger.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
@@ -68,14 +69,12 @@
         PFUser * postOriginalChannel = [parsePostObject valueForKey:POST_CHANNEL_KEY];
         [postOriginalChannel fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
             if(object){
-                NSString * channelName  = [postOriginalChannel valueForKey:CHANNEL_NAME_KEY];
-                NSNumber * numberOfFollowers = [postOriginalChannel valueForKey:CHANNEL_NUM_FOLLOWERS_KEY];
-                Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName numberOfFollowers:numberOfFollowers andParseChannelObject:postOriginalChannel];
-                block(verbatmChannelObject);
+                NSString *channelName  = [postOriginalChannel valueForKey:CHANNEL_NAME_KEY];
+				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName andParseChannelObject:postOriginalChannel];
+				block(verbatmChannelObject);
+				//todo: store num followers in Channel object
             }
         }];
-        
-        
     }];
 }
 

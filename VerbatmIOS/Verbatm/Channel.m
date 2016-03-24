@@ -30,7 +30,7 @@
 
 -(NSString *)getChannelOwnerUserName{
     PFObject * user = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
-    NSString * userName = [user valueForKey:USER_USER_NAME_KEY];
+    NSString * userName = [user valueForKey:VERBATM_USER_NAME_KEY];
     return userName;
 }
 

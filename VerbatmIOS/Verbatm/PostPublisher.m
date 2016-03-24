@@ -19,6 +19,7 @@
 #import "GTLVerbatmAppVideo.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppPageListWrapper.h"
+#import "GTLVerbatmAppUploadURI.h"
 
 #import "GTMHTTPFetcherLogging.h"
 
