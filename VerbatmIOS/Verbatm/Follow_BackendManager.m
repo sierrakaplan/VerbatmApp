@@ -12,6 +12,7 @@
 #import <Parse/PFUser.h>
 #import <Parse/PFObject.h>
 #import <Parse/PFRelation.h>
+#import "Notifications.h"
 
 @implementation Follow_BackendManager
 
@@ -33,6 +34,7 @@
             [newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                 if(succeeded){
                     NSLog(@"Now following channel");
+                    [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_NOW_FOLLOWING_USER object:nil];
                 }
             }];
         }
@@ -64,6 +66,7 @@
                     [followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                         if(succeeded){
                             NSLog(@"Stopped following channel sucessfully");
+                             [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_STOPPED_FOLLOWING_USER object:nil];
                         }
                     }];
                 }

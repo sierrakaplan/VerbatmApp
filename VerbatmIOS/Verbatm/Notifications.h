@@ -23,6 +23,9 @@
 #define NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY @"user_name_changed_success"
 #define NOTIFICATION_USERNAME_CHANGE_FAILED @"user_name_change_failed"
 
+#define NOTIFICATION_NOW_FOLLOWING_USER @"following_user"
+#define NOTIFICATION_STOPPED_FOLLOWING_USER @"stoped_following_user"
+
 
 #define NOTIFICATION_MEDIA_SAVING_SUCCEEDED @"media_save_succeeded"//saved on media in an array to publish
 #define NOTIFICATION_MEDIA_SAVING_FAILED @"media_save_failed"//saving a piece of media failed

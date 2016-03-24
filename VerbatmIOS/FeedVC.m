@@ -21,7 +21,7 @@
 #import "PostListVC.h"
 //#import "POVListScrollViewVC.h"
 #import <Parse/PFUser.h>
-
+#import "ProfileVC.h"
 #import "SharePOVView.h"
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
@@ -93,6 +93,15 @@
 #pragma mark -POVListSVController-
 -(void)hideNavBarIfPresent{
     [self removeContentFromScreen];
+}
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+    ProfileVC *  userProfile = [[ProfileVC alloc] init];
+    userProfile.isCurrentUserProfile = NO;
+    userProfile.userOfProfile = owner;
+    userProfile.startChannel = channel;
+    [self presentViewController:userProfile animated:YES completion:^{
+    }];
+
 }
 
 

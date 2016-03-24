@@ -174,8 +174,6 @@
             
         }
         [self registerFollowActivityIsFollowing:self.isFollowigProfileUser];
-        [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
-        [self.followButton setNeedsDisplay];
         
        
     }else{
@@ -302,20 +300,29 @@
 
 
 -(void)registerFollowActivityIsFollowing:(BOOL) isFollowing{
+    
+    UIImage * newbuttonImage;
     int followers = [self.numberOfFollowers intValue];
     if(isFollowing){
+        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
         followers++;
     }else{
+        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
         followers--;
         if(followers < 0) followers = 0;
     }
+    [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
     
     self.numberOfFollowers = [NSNumber numberWithInt:followers];
     
-    UILabel * followersInfoLabel = [self getChannelFollowersLabel:[NSNumber numberWithInt:followers] origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.nonSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.nonSelectedNumberOfFollowersTitleAttributes];
+    UILabel * followersInfoLabel = [self getChannelFollowersLabel:[NSNumber numberWithInt:followers] origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.selectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.selectedNumberOfFollowersTitleAttributes];
     //swap labels
     [self.numberOfFollowersLabel removeFromSuperview];
     self.numberOfFollowersLabel = followersInfoLabel;
+    
+    
+    
+    
     [self addSubview:self.numberOfFollowersLabel];
 }
 
