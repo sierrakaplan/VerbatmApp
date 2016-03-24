@@ -13,7 +13,6 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-
 @interface ChannelButtons ()
 @property (nonatomic,strong) UILabel *channelNameLabel;
 @property (nonatomic, strong) UILabel *numberOfFollowersLabel;
@@ -126,7 +125,7 @@
 }
 
 
--(void)createFollowIcon{
+-(void) createFollowIcon {
 	[Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^(bool isFollowing) {
 		dispatch_async(dispatch_get_main_queue(), ^{
           		[self createFollowButton_AreWeFollowingCurrChannel:isFollowing];

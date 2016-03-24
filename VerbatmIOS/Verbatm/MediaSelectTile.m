@@ -16,11 +16,11 @@
 
 @interface MediaSelectTile ()
 
-// contains images inside buttons
+// Contains images inside buttons
 @property (nonatomic, strong) UIImageView* galleryButtonImageView;
 @property (nonatomic, strong) UIImageView* cameraButtonImageView;
 
-// displays plus behind button
+// Displays plus behind button
 @property (nonatomic, strong) UIImageView* galleryButtonPlus;
 @property (nonatomic, strong) UIImageView* cameraButtonPlus;
 
