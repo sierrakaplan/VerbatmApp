@@ -17,19 +17,22 @@
  Give a creator and channel name this creates labels for each.
  */
 
-#define LABEL_WALL_OFFSET 5.f
-#define TEXT_FONT_TYPE @"Quicksand"
+#define LABEL_WALL_OFFSET 8.f
+#define TEXT_FONT_TYPE @"Quicksand-Bold"
 #define CREATOR_NAME_FONT_SIZE 15.f
 #define CREATOR_NAME_TEXT_COLOR whiteColor
 
 #define CHANNEL_NAME_FONT_SIZE CREATOR_NAME_FONT_SIZE
 #define LABEL_TEXT_PADDING 20.f  //Distance between the text and the white border
 
+#define FOLLOW_IMAGE_ICON_SIZE 15.f
 
 @interface CreatorAndChannelBar ()
 @property (nonatomic) Channel * currentChannel;
 @property (nonatomic) PFUser * channelOwner;
 @property (nonatomic) UIImageView * followImage;
+@property (nonatomic) UILabel * channelNameLabel;
+@property (nonatomic) UIView * channelNameLabelHolder;
 @property (nonatomic) BOOL isFollowingChannel;
 @end
 
@@ -49,6 +52,79 @@
 
 -(void) addCreatorName: (NSString*) creatorName andChannelName: (NSString*) channelName{
     
+    [self addCreatorNameViewWithName:creatorName];
+    [self createChannelNameView:channelName];
+    [self createFollowIcon];
+}
+
+-(void)createChannelNameView:(NSString *)channelName{
+    // find size of channel text
+    UIFont * fontForChannelName = [UIFont fontWithName:TEXT_FONT_TYPE size:CREATOR_NAME_FONT_SIZE];
+    
+    CGSize channelNameSize = [channelName sizeWithAttributes:@{NSFontAttributeName : fontForChannelName}];
+    
+    CGFloat channelNameFrameWidth = LABEL_TEXT_PADDING +  ((channelNameSize.width < self.frame.size.width/2.f) ?
+                                                           channelNameSize.width : self.frame.size.width/2.f);
+    
+    //create channel name view
+    
+    CGFloat labelHeights = FOLLOW_IMAGE_ICON_SIZE;
+    
+    
+    CGFloat channelNameHolderFrameWidth = (channelNameFrameWidth + labelHeights + LABEL_WALL_OFFSET);
+    
+    CGRect channelNameHolderViewFrame = CGRectMake(self.frame.size.width -
+                                                   (channelNameHolderFrameWidth + LABEL_WALL_OFFSET),                                         (LABEL_WALL_OFFSET*0.5),
+                                                   channelNameHolderFrameWidth,
+                                                   self.frame.size.height - LABEL_WALL_OFFSET);
+    CGRect followImageFrame = CGRectMake(4.f,(channelNameHolderViewFrame.size.height/2.f) - (labelHeights/2.f),labelHeights,
+                                         labelHeights);
+    CGRect channelNameFrame = CGRectMake(followImageFrame.size.width,(channelNameHolderViewFrame.size.height/2.f) - (labelHeights/2.f), channelNameFrameWidth,labelHeights);
+    
+    
+    //create and format channel name holder view
+    UIView * channelNameHolderView = [[UIView alloc] initWithFrame:channelNameHolderViewFrame];
+    [self addFollowChannelGestureToView: channelNameHolderView];
+    channelNameHolderView.backgroundColor = [UIColor clearColor];
+    channelNameHolderView.layer.borderColor = [UIColor whiteColor].CGColor;
+    channelNameHolderView.layer.borderWidth = 1.f;
+    channelNameHolderView.layer.cornerRadius = channelNameHolderView.frame.size.width/15.f;
+    
+    
+    //create follow image
+    self.followImage = [[UIImageView alloc] initWithFrame:followImageFrame];
+    self.followImage.backgroundColor = [UIColor clearColor];
+    
+    
+    self.channelNameLabel = [[UILabel alloc] initWithFrame:channelNameFrame];
+    self.channelNameLabel.textAlignment = NSTextAlignmentCenter;
+    self.channelNameLabel.text = channelName;
+    
+    self.channelNameLabel.font = fontForChannelName;
+    self.channelNameLabel.textColor = [UIColor CREATOR_NAME_TEXT_COLOR];
+    [self.channelNameLabel setBackgroundColor:[UIColor clearColor]];
+    
+    
+    [channelNameHolderView addSubview:self.followImage];
+    [channelNameHolderView addSubview:self.channelNameLabel];
+    self.channelNameLabelHolder = channelNameHolderView;
+    [self addSubview:channelNameHolderView];
+}
+
+
+-(void)changeChannelNameToSelectedView:(BOOL) selected{
+    
+    if(selected){
+        self.channelNameLabel.textColor = [UIColor blackColor];
+    }else{
+        self.channelNameLabel.textColor = [UIColor whiteColor];
+    }
+    
+}
+
+
+
+-(void)addCreatorNameViewWithName:(NSString *) creatorName{
     //create username
     CGRect creatorNameFrame = CGRectMake(LABEL_WALL_OFFSET,
                                          LABEL_WALL_OFFSET, self.frame.size.width/2.f,
@@ -64,77 +140,19 @@
     
     [self addPresentChannelGestureToView:creatorNameView];
     creatorNameView.userInteractionEnabled = YES;
-    
-    // find size of channel text
-    UIFont * fontForChannelName = [UIFont fontWithName:TEXT_FONT_TYPE size:CREATOR_NAME_FONT_SIZE];
-    
-    CGSize channelNameSize = [channelName sizeWithAttributes:@{NSFontAttributeName : fontForChannelName}];
-    
-    CGFloat channelNameFrameWidth = LABEL_TEXT_PADDING +  ((channelNameSize.width < self.frame.size.width/2.f) ?
-        channelNameSize.width : self.frame.size.width/2.f);
-    
-    //create channel name view
-    
-    CGFloat labelHeights = self.frame.size.height - (2*LABEL_WALL_OFFSET);
-    
-    CGRect followImageFrame = CGRectMake(0.f,0.f,labelHeights,
-                                                   labelHeights);
-    CGFloat channelNameHolderFrameWidth = (channelNameFrameWidth + followImageFrame.size.width + LABEL_WALL_OFFSET);
-    
-    CGRect channelNameHolderViewFrame = CGRectMake(self.frame.size.width -
-                                         (channelNameHolderFrameWidth + LABEL_WALL_OFFSET),
-                                         LABEL_WALL_OFFSET, channelNameHolderFrameWidth,
-                                         labelHeights);
-    CGRect channelNameFrame = CGRectMake(followImageFrame.size.width,0.f, channelNameFrameWidth,labelHeights);
-    
-    
-    //create and format channel name holder view
-    UIView * channelNameHolderView = [[UIView alloc] initWithFrame:channelNameHolderViewFrame];
-    [self addFollowChannelGestureToView: channelNameHolderView];
-    channelNameHolderView.backgroundColor = [UIColor clearColor];
-    channelNameHolderView.layer.borderColor = [UIColor whiteColor].CGColor;
-    channelNameHolderView.layer.borderWidth = 1.f;
-    channelNameHolderView.layer.cornerRadius = channelNameHolderView.frame.size.width/15.f;
-    
-    
-    //create follow image
-    self.followImage = [[UIImageView alloc] initWithFrame:followImageFrame];
-    self.followImage.backgroundColor = [UIColor clearColor];
-
-    
-    UILabel* channelNameView = [[UILabel alloc] initWithFrame:channelNameFrame];
-    channelNameView.textAlignment = NSTextAlignmentCenter;
-    channelNameView.text = channelName;
-    
-    channelNameView.font = fontForChannelName;
-    channelNameView.textColor = [UIColor CREATOR_NAME_TEXT_COLOR];
-    [channelNameView setBackgroundColor:[UIColor clearColor]];
-    
-    
-    [channelNameHolderView addSubview:self.followImage];
-    [channelNameHolderView addSubview:channelNameView];
     [self addSubview:creatorNameView];
-    [self addSubview:channelNameHolderView];
-    [self createFollowIcon];
 }
 
 
 -(void)setFollowImageIsFollowing:(BOOL) isFollowing{
-    UIImage * image = [UIImage imageNamed:((isFollowing) ? FOLLOW_ICON_IMAGE_SELECTED :FOLLOW_ICON_IMAGE_UNSELECTED)];
-    
+    UIImage * image = [UIImage imageNamed:((isFollowing) ? DARKENED_FOLLOW_ICON_IMAGE_SELECTED :FOLLOW_ICON_IMAGE_UNSELECTED)];
     self.followImage.image = image;
 }
 
 
 
 -(void) createBackground {
-
-    
     self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.3];
-    //    UIImage * background = [UIImage imageNamed:@"Rectangle_Background_2"];
-//    UIImageView * view = [[UIImageView alloc] initWithImage:background];
-//    view.frame = self.bounds;
-//    [self addSubview:view];
 }
 
 
@@ -143,7 +161,7 @@
         (bool isFollowing) {
          dispatch_async(dispatch_get_main_queue(), ^{
              self.isFollowingChannel = isFollowing;
-             [self setFollowImageIsFollowing:isFollowing];
+             [self markFollowViewAsFollowing:isFollowing];
          });
      }];
 }
@@ -157,14 +175,28 @@
 
 -(void) followChannel {
     if(self.isFollowingChannel){
-        [self setFollowImageIsFollowing:NO];
         self.isFollowingChannel = NO;
+        [self markFollowViewAsFollowing:NO];
         [Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
     }else{
-        [self setFollowImageIsFollowing:YES];
         self.isFollowingChannel = YES;
+        [self markFollowViewAsFollowing:YES];
         [Follow_BackendManager currentUserFollowChannel:self.currentChannel];
     }
+}
+
+-(void)markFollowViewAsFollowing:(BOOL) isFollowing{
+    if(isFollowing){
+        [self setFollowImageIsFollowing:YES];
+        self.channelNameLabelHolder.backgroundColor = [UIColor whiteColor];
+        [self changeChannelNameToSelectedView:YES];
+    }else{
+        [self setFollowImageIsFollowing:NO];
+        self.channelNameLabelHolder.backgroundColor = [UIColor clearColor];
+        [self changeChannelNameToSelectedView:NO];
+    }
+    
+    
 }
 
 

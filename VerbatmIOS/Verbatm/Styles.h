@@ -166,9 +166,10 @@
 #define SETTINGS_ICON_NAME @"settingsIcon"
 #define BACK_BUTTON_ICON_NAME @"back_arrow"
 #define BAR_CONTENT_COLOR yellowColor
-#define FOLLOW_ICON_IMAGE_SELECTED  @"follow_user_image_selected"
-#define FOLLOW_ICON_IMAGE_UNSELECTED  @"follow_user_image_unselected"
+#define FOLLOW_ICON_IMAGE_SELECTED  @"Followed_Icon"
+#define FOLLOW_ICON_IMAGE_UNSELECTED  @"Not_Followed_Icon"
 
+#define DARKENED_FOLLOW_ICON_IMAGE_SELECTED @"Darkened Following Button (1)"
 
 
 #define CHANNEL_LIST_CELL_SEPERATOR_COLOR [UIColor grayColor]

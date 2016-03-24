@@ -198,13 +198,25 @@
 
 -(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up{
     
-    CGFloat barHeight = (self.frame.size.height/2.f);
+    //verticle bar positioning
+//    CGFloat barHeight = (self.frame.size.height/2.f);
+//    
+//    self.lsBarUpFrame = CGRectMake(0.f,barHeight - TAB_BAR_HEIGHT,
+//                                 LIKE_SHARE_BAR_HEIGHT,barHeight);
+//    
+//    self.lsBarDownFrame = CGRectMake(0.f,barHeight,
+//                                     LIKE_SHARE_BAR_HEIGHT,barHeight);
     
-    self.lsBarUpFrame = CGRectMake(0.f,barHeight - TAB_BAR_HEIGHT,
-                                 LIKE_SHARE_BAR_HEIGHT,barHeight);
+    //horizontal bar positioning
+    CGFloat barHeight = LIKE_SHARE_BAR_HEIGHT;
     
-    self.lsBarDownFrame = CGRectMake(0.f,barHeight,
-                                     LIKE_SHARE_BAR_HEIGHT,barHeight);
+    self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height - (barHeight + TAB_BAR_HEIGHT),
+                                   self.frame.size.width,barHeight);
+    
+    self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - barHeight,
+                                     self.frame.size.width,barHeight);
+    
+    
     
     CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
     
@@ -351,6 +363,7 @@
     }else {
         [self.likeShareBar presentMuteButton:NO];
     }
+    
 }
 
 -(void)muteButtonSelected:(BOOL)shouldMute{
@@ -361,7 +374,6 @@
 -(void)muteAllVideos:(BOOL) shouldMute{
     for(id ave in [self.pageAves allValues]){
        
-        
         if ([ave isKindOfClass:[VideoAVE class]] ||
             [ave isKindOfClass:[PhotoVideoAVE class]]) {
            
@@ -624,6 +636,8 @@
     }
 }
 
+
+//removes the little bouncing arrow in the right corner of the screen
 -(void)removePageUpIndicatorFromView{
     if(self.pageUpIndicator){
         [UIView animateWithDuration:1.f animations:^{
@@ -636,6 +650,7 @@
     }
 }
 
+//adds the little bouncing arrow to the bottom right of the screen
 -(void)addUpArrowAnimation{
     if(!self.pageUpIndicator && self.pageAves.count){
         if(![NSThread isMainThread]){
@@ -652,8 +667,6 @@
 }
 
 -(void)startArrowAnimation{
-    
-    
     
     UIImage * arrowImage = [UIImage imageNamed:@"up_arrow"];
     UIImageView * iv = [[UIImageView alloc] initWithImage:arrowImage];
@@ -708,7 +721,7 @@
 		_mainScrollView.scrollEnabled = YES;
 		[_mainScrollView setShowsVerticalScrollIndicator:NO];
 		[_mainScrollView setShowsHorizontalScrollIndicator:NO];
-		_mainScrollView.bounces = NO;
+		_mainScrollView.bounces = YES;
 		//scroll view delegate
 		_mainScrollView.delegate = self;
 	}

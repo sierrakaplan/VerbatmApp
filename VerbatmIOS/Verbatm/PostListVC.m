@@ -71,7 +71,7 @@
     self.collectionView.pagingEnabled = YES;
     self.collectionView.scrollEnabled = YES;
     self.collectionView.showsHorizontalScrollIndicator = NO;
-    self.collectionView.bounces = NO;
+    self.collectionView.bounces = YES;
 }
 
 -(void)nothingToPresentHere {
@@ -159,9 +159,6 @@
     NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
     
     for(PFObject * pc_activity in backendPostObjects) {
-        
-        
-        
         AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
                                         PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
                                         [Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {

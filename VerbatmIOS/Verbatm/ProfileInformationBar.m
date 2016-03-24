@@ -70,7 +70,7 @@
 }
 
 -(void)formatView {
-    self.backgroundColor = [UIColor colorWithWhite:0 alpha:0.8];
+    self.backgroundColor = [UIColor colorWithWhite:0 alpha:1.f];
 }
 
 -(void) createProfileHeaderWithUserName: (NSString*) userName {

@@ -862,8 +862,6 @@
 		A560EFB11BB09B36003FB041 /* Feed */ = {
 			isa = PBXGroup;
 			children = (
-				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
-				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
 				C7E65F6A1B92E5830042AD99 /* TopicsFeedVC.h */,
 				C7E65F6B1B92E5830042AD99 /* TopicsFeedVC.m */,
 				C777EEAB1AD288A3003E0633 /* ArticleListVC.h */,
@@ -872,8 +870,6 @@
 				A513706A1BA77C740058FBA6 /* ArticleDisplayVC.m */,
 				C7E65F5A1B911A470042AD99 /* FeedVC.h */,
 				C7E65F5B1B911A470042AD99 /* FeedVC.m */,
-				C7D596331C62B79500161136 /* POVListScrollViewVC.h */,
-				C7D596341C62B79500161136 /* POVListScrollViewVC.m */,
 			);
 			name = Feed;
 			sourceTree = "<group>";
@@ -1258,6 +1254,17 @@
 			name = Analytics;
 			sourceTree = "<group>";
 		};
+		C71833161CA36147009A13C5 /* POV ListViews-- feed and profile */ = {
+			isa = PBXGroup;
+			children = (
+				C7D596331C62B79500161136 /* POVListScrollViewVC.h */,
+				C7D596341C62B79500161136 /* POVListScrollViewVC.m */,
+				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
+				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
+			);
+			name = "POV ListViews-- feed and profile";
+			sourceTree = "<group>";
+		};
 		C745B4301BBA631000D18944 /* Permission  */ = {
 			isa = PBXGroup;
 			children = (
@@ -1398,6 +1405,7 @@
 				C7F79E7F1C3AACC600319330 /* CreateNewChannelView.m */,
 				C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */,
 				C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */,
+				C71833161CA36147009A13C5 /* POV ListViews-- feed and profile */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";

@@ -96,6 +96,7 @@
     
     self.shareButton =  [[UIButton alloc] initWithFrame:shareButtonFrame];
     [self.shareButton setTitle:titleText forState:UIControlStateNormal];
+    self.shareButton.highlighted = YES;
     self.shareButton.backgroundColor = [UIColor clearColor];
     
     self.shareButton.layer.cornerRadius = 4.f;

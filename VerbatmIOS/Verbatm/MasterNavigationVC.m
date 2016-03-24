@@ -158,7 +158,7 @@
     
     UIImage * deadViewTabImage = [self imageWithImage:[[UIImage imageNamed:ADK_NAV_ICON]
                                                        imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
-                                                        scaledToSize:CGSizeMake(40.f, 40.f)];
+                                                        scaledToSize:CGSizeMake(30.f, 30.f)];
     
     deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
     deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
@@ -211,11 +211,20 @@
 //the view controllers that will be tabbed
 -(void)createViewControllers {
     
+    
+    
+    UIImage * searchUnselected =  [self imageWithImage:[[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
+                                              imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                scaledToSize:CGSizeMake(30.f, 30.f)];
+    
+    UIImage * searchSelected =  [self imageWithImage:[[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
+                                                      imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
+                                        scaledToSize:CGSizeMake(30.f, 30.f)];
+    
     self.channelListView = [[UserAndChannelListsTVC alloc] init];
     self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil
-                                                                    image:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
-                                                            selectedImage:[UIImage imageNamed:SEARCH_TAB_BAR_ICON]];
-    
+                                                                    image:searchUnselected
+                                                            selectedImage:searchSelected];
     
     [self.channelListView presentAllVerbatmChannels];
     

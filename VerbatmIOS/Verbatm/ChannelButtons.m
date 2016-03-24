@@ -147,7 +147,7 @@
     
     CGFloat height = FOLLOW_BUTTON_HEIGHT;
     CGFloat width = FOLLOW_BUTTON_WIDTH;
-    CGFloat frame_x = self.suggestedWidth - width - (TAB_BUTTON_PADDING/2.f);
+    CGFloat frame_x = self.suggestedWidth - width - (TAB_BUTTON_PADDING);
     CGFloat frame_y = self.center.y - (height/2.f);
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
@@ -161,7 +161,6 @@
 }
 
 -(void) followOrFollowersSelected {
-    
     if(self.buttonSelected){//you can only follow a channel if you're on it
         UIImage * newbuttonImage;
         if(self.isFollowigProfileUser){

@@ -33,7 +33,7 @@
 
 #pragma mark Bottom Nav
 
-#define ADK_NAV_ICON @"simple_plus_icon"
+#define ADK_NAV_ICON @"Plus"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
 
@@ -111,7 +111,7 @@
 #define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions_black"
 
 
-#define SEARCH_TAB_BAR_ICON @"search_icon"
+#define SEARCH_TAB_BAR_ICON @"Search"
 
 #define DOWN_ARROR_ICON @"down_arrow_white"
 
