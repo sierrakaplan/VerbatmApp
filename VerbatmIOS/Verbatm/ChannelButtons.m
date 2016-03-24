@@ -129,12 +129,12 @@
 
 
 -(void)createFollowIcon{
-[Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^
- (bool isFollowing) {
-      dispatch_async(dispatch_get_main_queue(), ^{
-          [self createFollowButton_AreWeFollowingCurrChannel:isFollowing];
-      });
- }];
+    [Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^
+     (bool isFollowing) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+              [self createFollowButton_AreWeFollowingCurrChannel:isFollowing];
+          });
+     }];
 }
 
 //If it's my profile it's follower(s) and if it's someone else's profile

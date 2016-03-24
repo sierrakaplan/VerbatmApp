@@ -9,7 +9,7 @@
 #import "SharePOVView.h"
 #import "SelectSharingOption.h"
 #import "SelectChannel.h"
-
+#import "Styles.h"
 #define SHARE_BUTTON_HEIGHT 40.f
 #define BUTTON_WALL_OFFSET_X  10.f
 #define ANIMATION_DURATION 0.5
@@ -96,6 +96,9 @@
     
     self.shareButton =  [[UIButton alloc] initWithFrame:shareButtonFrame];
     [self.shareButton setTitle:titleText forState:UIControlStateNormal];
+    
+    
+    [self.shareButton setAttributedTitle:[self getButtonAttributeStringWithText:titleText] forState:UIControlStateNormal];
     self.shareButton.highlighted = YES;
     self.shareButton.backgroundColor = [UIColor clearColor];
     
@@ -111,6 +114,11 @@
     [self addSubview:self.shareButton];
 
 }
+
+-(NSAttributedString *)getButtonAttributeStringWithText:(NSString *)text{
+    return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
+}
+
 
 //if the cancel button is full screen then we don't have report
 -(void)createReportAndCancelButtonsCancelFullScreen:(BOOL) cancelButonFullscreen {
@@ -140,7 +148,7 @@
     
     
     self.cancelButton = [[UIButton alloc] initWithFrame:cancelButtonFrame];
-    [self.cancelButton  setTitle:@"CANCEL" forState:UIControlStateNormal];
+    [self.cancelButton  setAttributedTitle:[self getButtonAttributeStringWithText:@"CANCEL"] forState:UIControlStateNormal];
     self.cancelButton .backgroundColor = [UIColor clearColor];
     
     self.cancelButton .layer.cornerRadius = 1.f;
@@ -220,22 +228,6 @@
         if([self.shareButton.titleLabel.text isEqualToString:@"REPOST"]){
             [self.delegate postPOVToChannels:self.selectedChannels];
         }
-    
-    
-//    if([self.shareButton.titleLabel.text isEqualToString:@"REPOST"]){//sharing to social media
-//        //for now they have selected facebook
-//        NSString * comment = @"";
-//        if(self.facebookCommentTextField){
-//            comment = self.facebookCommentTextField.text;
-//        }
-//        [self.delegate sharePostWithComment:comment];
-//        
-//    }else if ([self.shareButton.titleLabel.text isEqualToString:@"POST"]){//Posting to a channel
-//        
-//        if(self.selectedChannel){
-//            [self.delegate postPOVToChannel:self.selectedChannel];
-//        }
-//    }
 }
 
 //channel selection protocol

@@ -13,7 +13,7 @@
 
 
 #define UNSELECTED_BACKGROUND_COLOR clearColor
-#define SELECTED_BACKGROUND_COLOR yellowColor
+#define SELECTED_BACKGROUND_COLOR whiteColor
 @end
 
 @implementation SelectOptionButton

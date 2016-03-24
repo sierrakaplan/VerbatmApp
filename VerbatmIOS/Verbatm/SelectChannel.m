@@ -14,6 +14,7 @@
 #import "SelectChannel.h"
 #import "SelectOptionButton.h"
 #import "SelectionView.h"
+#import "Styles.h"
 #import "UserInfoCache.h"
 
 #define CHANNEL_LABEL_HEIGHT 70
@@ -87,8 +88,9 @@
     NSString * channelName = channel.name;
     CGRect labelFrame = CGRectMake(WALL_OFFSET_X, 0.f, xCord , frame.size.height);
     UILabel * newLabel = [[UILabel alloc] initWithFrame:labelFrame];
-    [newLabel setText:channelName];
-    [newLabel setTextColor:[UIColor whiteColor]];
+    [newLabel setAttributedText:[self getButtonAttributeStringWithText:channelName]];
+//    [newLabel setText:channelName];
+//    [newLabel setTextColor:[UIColor whiteColor]];
     
     selectionBar.shareOptionButton = selectOption;
 
@@ -98,6 +100,9 @@
     [self addTapGestureToView:selectionBar];
     
     return selectionBar;
+}
+-(NSAttributedString *)getButtonAttributeStringWithText:(NSString *)text{
+    return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
 }
 
 -(void)unselectAllOptions{
