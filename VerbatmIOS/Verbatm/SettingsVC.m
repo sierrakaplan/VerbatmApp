@@ -7,7 +7,7 @@
 //
 
 #import "CustomNavigationBar.h"
-
+#import "User_BackendObject.h"
 #import <MessageUI/MessageUI.h>
 
 
@@ -31,7 +31,6 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 #define VIEW_OFFSET_Y 50.f
 #define PROFILE_ICON_WALL_OFFSET 15.f //distance of profile picture from left wall
 #define PROFILE_TEXTFILED_GAP 10.f //distance between the profile icon and the textField
-
 #define VERBATM_HELP_EMAIL @"founders@verbatm.io"
 #define HELP_EMAIL_SUBJECT @"Feedback to Verbatm team"
 @end
@@ -51,7 +50,8 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
     self.navigationBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:SETTINGS_NAV_BAR_COLOR];
     self.navigationBar.delegate = self;
     
-    [self.navigationBar createLeftButtonWithTitle:@"CANCEL" orImage:nil];
+    [self.navigationBar createLeftButtonWithTitle:@"BACK" orImage:nil];
+    
     [self.navigationBar createRightButtonWithTitle:@"SAVE" orImage:nil];
     
     [self.view addSubview:self.navigationBar];
@@ -111,7 +111,7 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 //user selected done. Save their changes and exit view
 -(void) rightButtonPressed {
     //save changes made by user to username
-    
+    [User_BackendObject updateUserNameOfCurrentUserTo:self.userNameField.text];
     [self exitSettingsPageWithCompletionBlock:nil];
 }
 

@@ -16,8 +16,10 @@
 
 #import "PostListVC.h"
 #import <Parse/PFUser.h>
+#import "ProfileVC.h"
 
 #import "SharePostView.h"
+
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
@@ -89,6 +91,15 @@
 #pragma mark -POVListSVController-
 -(void)hideNavBarIfPresent{
     [self removeContentFromScreen];
+}
+-(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+    ProfileVC * userProfile = [[ProfileVC alloc] init];
+    userProfile.isCurrentUserProfile = NO;
+    userProfile.userOfProfile = owner;
+    userProfile.startChannel = channel;
+    [self presentViewController:userProfile animated:YES completion:^{
+    }];
+
 }
 
 -(void)registerForNotifications{
@@ -167,11 +178,6 @@
             }
         }];
     }
-}
-
-//todo:
--(void) channelSelected:(Channel *)channel withOwner:(PFUser *)owner {
-	//todo:
 }
 
 #pragma mark - Share Post Delegate -

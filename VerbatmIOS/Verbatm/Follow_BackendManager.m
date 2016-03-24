@@ -12,6 +12,7 @@
 #import <Parse/PFUser.h>
 #import <Parse/PFObject.h>
 #import <Parse/PFRelation.h>
+#import "Notifications.h"
 
 @implementation Follow_BackendManager
 

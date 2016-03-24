@@ -13,6 +13,8 @@
 #import "Follow_BackendManager.h"
 #import "ProfileVC.h"
 #import "Follow_BackendManager.h"
+#import "Notifications.h"
+
 /*
  Give a creator and channel name this creates labels for each.
  */
@@ -45,7 +47,7 @@
         self.currentChannel = channel;
         self.channelOwner =(PFUser *)[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
         [self createBackground];
-        [self addCreatorName:[self.channelOwner valueForKey:VERBATM_USER_NAME_KEY] andChannelName:channel.name];
+        [self registerForNotifications];
     }
     return self;
 }
@@ -56,6 +58,23 @@
     [self createChannelNameView:channelName];
     [self createFollowIcon];
 }
+
+-(void)registerForNotifications{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userFollowStatusChanged:)
+                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userFollowStatusChanged:)
+                                                 name:NOTIFICATION_STOPPED_FOLLOWING_USER
+                                               object:nil];
+}
+
+
+-(void)userFollowStatusChanged:(NSNotification *) notification{
+    [self createFollowIcon];
+}
+
 
 -(void)createChannelNameView:(NSString *)channelName{
     // find size of channel text
@@ -154,6 +173,8 @@
 -(void) createBackground {
     self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.3];
 }
+
+
 
 
 -(void)createFollowIcon{

@@ -36,6 +36,7 @@
 		A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */; };
 		A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */; };
 		A56B5D231CA49D0E00A61D27 /* Like_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */; };
+		A56B5D261CA4A24300A61D27 /* User_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D251CA4A24300A61D27 /* User_BackendObject.m */; };
 		A56F68721B643B1400CE5744 /* VerbatmKeyboardToolBar.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */; };
 		A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F687A1B65B25700CE5744 /* CollectionPinchView.m */; };
 		A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A56F68801B65B43D00CE5744 /* ImagePinchView.m */; };
@@ -300,6 +301,8 @@
 		A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post_Channel_RelationshipManger.m; sourceTree = "<group>"; };
 		A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Like_BackendManager.h; sourceTree = "<group>"; };
 		A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Like_BackendManager.m; sourceTree = "<group>"; };
+		A56B5D241CA4A24300A61D27 /* User_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User_BackendObject.h; sourceTree = "<group>"; };
+		A56B5D251CA4A24300A61D27 /* User_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User_BackendObject.m; sourceTree = "<group>"; };
 		A56F68701B643B1400CE5744 /* VerbatmKeyboardToolBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VerbatmKeyboardToolBar.h; sourceTree = "<group>"; };
 		A56F68711B643B1400CE5744 /* VerbatmKeyboardToolBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VerbatmKeyboardToolBar.m; sourceTree = "<group>"; };
 		A56F68791B65B25700CE5744 /* CollectionPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CollectionPinchView.h; sourceTree = "<group>"; };
@@ -1341,6 +1344,8 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
+				A56B5D241CA4A24300A61D27 /* User_BackendObject.h */,
+				A56B5D251CA4A24300A61D27 /* User_BackendObject.m */,
 				A56B5D1B1CA49A8100A61D27 /* UserInfoCache.h */,
 				A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */,
 				A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.h */,
@@ -1815,6 +1820,7 @@
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,
 				C761727F1C4E0EB600AB0D84 /* PostCollectionViewCell.m in Sources */,
+				A56B5D261CA4A24300A61D27 /* User_BackendObject.m in Sources */,
 				A5FB5D2C1BCB0B9700634A96 /* GMAlbumsViewCell.m in Sources */,
 				C7D596321C6158B500161136 /* VideoTest.m in Sources */,
 				A560EFB51BB0AF64003FB041 /* CreateAccountView.m in Sources */,
