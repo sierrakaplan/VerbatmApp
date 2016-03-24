@@ -44,7 +44,7 @@ UIScrollViewDelegate>
 @property (nonatomic) UIImageView * reblogSucessful;
 
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
-#define POV_CELL_ID @"povCellId"
+#define POST_CELL_ID @"postCellId"
 #define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
 #define REBLOG_IMAGE @"Posted Icon 2"
 #define REBLOG_IMAGE_SIZE 150.f //when we put size it means both width and height
@@ -84,8 +84,8 @@ UIScrollViewDelegate>
 		return;//no need to make another one
 	}
 
-	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POVS_LABEL_WIDTH/2.f, 0.f,
-																	NO_POVS_LABEL_WIDTH, self.view.frame.size.height)];
+	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POSTS_LABEL_WIDTH/2.f, 0.f,
+																	NO_POSTS_LABEL_WIDTH, self.view.frame.size.height)];
 	self.noContentLabel.text = @"There are no posts to present :(";
 	self.noContentLabel.font = [UIFont fontWithName:DEFAULT_FONT size:20.f];
 	self.noContentLabel.textColor = [UIColor whiteColor];
@@ -151,7 +151,7 @@ UIScrollViewDelegate>
 }
 
 -(void)clearOldPosts{
-	for(POVView * view in self.presentedPostList){
+	for(PostView * view in self.presentedPostList){
 		[view removeFromSuperview];
 		[view clearArticle];
 	}
@@ -166,8 +166,8 @@ UIScrollViewDelegate>
 		AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-				POVView * pov = [[POVView alloc] initWithFrame:self.view.bounds];
-				pov.parsePostChannelActivityObject = pc_activity;
+				PostView *postView = [[PostView alloc] initWithFrame:self.view.bounds];
+				postView.parsePostChannelActivityObject = pc_activity;
 				NSNumber * numberOfPostLikes =
 				[post valueForKey:POST_LIKES_NUM_KEY];
 				NSNumber * numberOfPostShares =
@@ -176,14 +176,14 @@ UIScrollViewDelegate>
 				NSNumber * numberOfPostPages =
 				[NSNumber numberWithInteger:pages.count];
 
-				[pov createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares
+				[postView createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares
 											  numberOfPages:numberOfPostPages
 									  andStartingPageNumber:@(1)
 													startUp:self.isHomeProfileOrFeed];
-				[pov renderPOVFromPages:pages];
-				[pov povOffScreen];
-				pov.delegate = self;
-				[self.presentedPostList addObject:pov];
+				[postView renderPostFromPages:pages];
+				[postView postOffScreen];
+				postView.delegate = self;
+				[self.presentedPostList addObject:postView];
 				resolve(nil);
 			}];
 		}];
@@ -196,7 +196,7 @@ UIScrollViewDelegate>
 		[self sortOurPostList];
 		dispatch_async(dispatch_get_main_queue(), ^{
 			//prepare the first POV object
-			if(self.shouldPlayVideos && !self.isReloading)[(POVView *)self.presentedPostList.firstObject povOnScreen];
+			if(self.shouldPlayVideos && !self.isReloading)[(PostView *)self.presentedPostList.firstObject postOnScreen];
 			[self.collectionView reloadData];
 			self.isReloading = NO;
 		});
@@ -205,9 +205,8 @@ UIScrollViewDelegate>
 
 -(void)sortOurPostList{
 	[self.presentedPostList sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-
-		POVView * view1 = obj1;
-		POVView * view2 = obj2;
+		PostView * view1 = obj1;
+		PostView * view2 = obj2;
 
 		PFObject * pc_activityA = view1.parsePostChannelActivityObject;
 		PFObject * pc_activityB = view2.parsePostChannelActivityObject;
@@ -373,7 +372,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	self.sharePOVView = [[SharePOVView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
-	self.sharePOVView.delegate = self;
+	self.sharePOVView. = self;
 	[self.view addSubview:self.sharePOVView];
 	[self.view bringSubviewToFront:self.sharePOVView];
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{

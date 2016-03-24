@@ -14,13 +14,11 @@
 
 #import "GTLServiceVerbatmApp.h"
 
-#import "GTLVerbatmAppPOV.h"
 #import "GTLVerbatmAppPage.h"
 #import "GTLVerbatmAppImage.h"
 #import "GTLVerbatmAppVideo.h"
 #import "GTLVerbatmAppVerbatmUser.h"
 #import "GTLVerbatmAppPageListWrapper.h"
-#import "GTLVerbatmAppUploadURI.h"
 
 #import "GTMHTTPFetcherLogging.h"
 

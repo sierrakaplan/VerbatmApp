@@ -6,7 +6,6 @@
 //  Copyright (c) 2015 Verbatm. All rights reserved.
 //
 
-#import "Channel_BackendObject.h"
 #import "Durations.h"
 
 #import "FeedVC.h"
@@ -22,8 +21,8 @@
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate, PostListVCProtocol, ArticleDisplayVCDelegate>
-@property (strong, nonatomic) ArticleDisplayVC * postDisplayVC;
+@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate, PostListVCProtocol>
+
 @property (nonatomic) BOOL contentCoveringScreen;
 
 @property (nonatomic) CGRect povScrollViewFrame;
@@ -32,6 +31,7 @@
 @property (weak, nonatomic) IBOutlet UIView *postListContainerView;
 
 @property (nonatomic) SharePostView * sharePostView;
+@property (nonatomic) BOOL didJustLoadForTheFirstTime;
 
 #define VERBATM_LOGO_WIDTH 150.f
 
