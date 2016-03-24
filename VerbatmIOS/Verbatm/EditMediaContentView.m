@@ -459,18 +459,17 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 	if(!self.hasBeenSetUp){
 		[self.videoView prepareVideoFromArray:self.videoAssets];
 		[self.videoView playVideo];
-	}else{
-		[self.videoView playVideo];
 		self.hasBeenSetUp = YES;
+	} else{
+		[self.videoView playVideo];
 	}
 }
 
 -(void)almostOnScreen{
-	if(self.videoAssets){
-		[self.videoView stopVideo];
+	if(self.videoAssets && !self.hasBeenSetUp){
 		[self.videoView prepareVideoFromArray:self.videoAssets];
+		self.hasBeenSetUp = YES;
 	}
-	self.hasBeenSetUp = YES;
 }
 
 

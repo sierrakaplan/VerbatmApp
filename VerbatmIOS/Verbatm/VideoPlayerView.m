@@ -19,16 +19,13 @@
 @property (atomic, strong) AVPlayerItem* playerItem;
 @property (atomic,strong) AVPlayerLayer* playerLayer;
 
-#pragma mark Subviews
-@property (nonatomic, strong) UIButton * muteButton;
-@property (strong, nonatomic) UIImageView* videoLoadingImageView;
-
 #pragma mark Video Playback properties
-@property (nonatomic) BOOL playVideoAfterLoading;
 @property (nonatomic, readwrite) BOOL videoLoading;
 @property (nonatomic, readwrite) BOOL isMuted;
 @property (nonatomic, readwrite) BOOL isVideoPlaying; //tells you if the video is in a playing state
-@property (strong, atomic) NSTimer * ourTimer;//keeps calling continue
+@property (strong, atomic) NSTimer *ourTimer;//keeps calling continue
+
+@property (nonatomic) BOOL shouldPlayOnLoad;
 
 @property (strong, nonatomic) id playbackLikelyToKeepUpKVOToken;
 
@@ -45,6 +42,7 @@
     if((self  = [super initWithFrame:frame])) {
         self.repeatsVideo = NO;
         self.videoLoading = NO;
+		self.shouldPlayOnLoad = NO;
         self.clearsContextBeforeDrawing = YES;
         self.isMuted = false;
         [self setBackgroundColor:[UIColor clearColor]];
@@ -59,18 +57,7 @@
 - (void)layoutSubviews {
     if (self.playerLayer) {
         self.playerLayer.frame = self.bounds;
-        self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET,
-                                           self.bounds.size.height - (MUTE_BUTTON_OFFSET + MUTE_BUTTON_SIZE),
-                                           MUTE_BUTTON_SIZE,
-                                           MUTE_BUTTON_SIZE);
-        
     }
-}
-
--(void)formatMuteButton {
-	self.muteButton.frame = CGRectMake(MUTE_BUTTON_OFFSET, MUTE_BUTTON_OFFSET, MUTE_BUTTON_SIZE, MUTE_BUTTON_SIZE);
-	[self.muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
-	[self.muteButton addTarget:self action:@selector(muteButtonTouched:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 #pragma mark - Prepare Video Asset -
@@ -80,7 +67,6 @@
 		dispatch_async(dispatch_get_main_queue(), ^{
 			if (!self.videoLoading) {
 				self.videoLoading = YES;
-				[self addSubview:self.videoLoadingImageView];
 			}
 		});
 		AVMutableComposition* fusedVideoAsset = [self fuseAssets:videoList];
@@ -128,7 +114,6 @@
 -(void) prepareVideoFromPlayerItem:(AVPlayerItem*)playerItem {
 	if (!self.videoLoading) {
 		self.videoLoading = YES;
-		[self addSubview:self.videoLoadingImageView];
 	}
 	if (self.playerItem) {
 		[self removePlayerItemObservers];
@@ -151,6 +136,10 @@
 
 //this function should be called on the main thread
 -(void) initiateVideo {
+	if (self.isVideoPlaying) {
+		return;
+	}
+
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     // Create an AVPlayerLayer using the player
@@ -162,14 +151,15 @@
     
     self.player.muted = self.isMuted;
     
-    
     if(![NSThread isMainThread]){
         dispatch_async(dispatch_get_main_queue(), ^{
             [self presentNewLayers];
         });
-    }else{
+    } else {
         [self presentNewLayers];
     }
+	if (self.shouldPlayOnLoad) [self playVideo];
+	self.shouldPlayOnLoad = NO;
 }
 
 -(void)presentNewLayers{
@@ -187,24 +177,20 @@
 			NSLog(@"Video ready to play");
 			if (self.videoLoading) {
 				self.videoLoading = NO;
-				self.videoLoadingImageView.hidden = YES;
 			}
 		} else if (self.playerItem.status == AVPlayerItemStatusFailed) {
 			NSLog(@"video couldn't play: %@", self.playerItem.error);
 			if (self.videoLoading) {
 				self.videoLoading = NO;
-				self.videoLoadingImageView.hidden = YES;
 			}
 		}
 	}
 	if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
 		if (self.playerItem.playbackLikelyToKeepUp) {
 			NSLog(@"play back will keep up");
-			self.videoLoadingImageView.hidden = YES;
 			[self playVideo];
 		} else {
 			NSLog(@"play back won't keep up");
-			self.videoLoadingImageView.hidden = NO;
 		}
 	}
 }
@@ -250,13 +236,14 @@
 
 #pragma mark - Play video -
 
--(void)playVideo{
-	if(self.player){
+-(void)playVideo {
+	if (self.player) {
 		[self.player play];
 		self.isVideoPlaying = YES;
+		NSLog(@"Playing video");
 	} else {
 		NSLog(@"Called play video but video player unprepared");
-		self.playVideoAfterLoading = YES;
+		self.shouldPlayOnLoad = YES;
 	}
 }
 
@@ -286,19 +273,10 @@
 
 #pragma mark - Mute / Unmute -
 
--(void)muteButtonTouched:(UIButton*)sender {
-	[self muteVideo: !self.isMuted];
-}
-
 -(void) muteVideo: (BOOL)mute {
 	if(self.player) {
 		[self.player setMuted:mute];
 		self.isMuted = mute;
-		if (mute) {
-			[self.muteButton  setImage:[UIImage imageNamed:MUTED_ICON] forState:UIControlStateNormal];
-		} else {
-			[self.muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
-		}
 	}
 }
 
@@ -336,8 +314,6 @@
         }
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             @autoreleasepool {
-                
-                self.muteButton = nil;
                 self.playerItem = nil;
                 self.player = nil;
                 self.playerLayer = nil;
@@ -367,23 +343,6 @@
         [self addSubview:_customActivityIndicator];
     }
     return _customActivityIndicator;
-}
-
--(UIImageView*) videoLoadingImageView {
-	if (!_videoLoadingImageView) {
-		_videoLoadingImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:VIDEO_LOADING_ICON]];
-		_videoLoadingImageView.frame = CGRectMake(0, self.frame.size.height/2.f - VIDEO_LOADING_ICON_SIZE/2.f,
-												  self.frame.size.width, VIDEO_LOADING_ICON_SIZE);
-		_videoLoadingImageView.contentMode = UIViewContentModeScaleAspectFit;
-	}
-	return _videoLoadingImageView;
-}
-
--(UIButton *)muteButton{
-	if(!_muteButton){
-		_muteButton = [[UIButton alloc] init];
-	}
-	return _muteButton;
 }
 
 @end
