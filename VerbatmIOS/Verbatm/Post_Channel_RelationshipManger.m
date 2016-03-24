@@ -43,6 +43,7 @@
     
 }
 
+
 +(void)deletePost:(PFObject *) postParseObject fromChannel: (Channel *) channel withCompletionBlock:(void(^)(bool))block{
     PFQuery * userChannelQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
     [userChannelQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];

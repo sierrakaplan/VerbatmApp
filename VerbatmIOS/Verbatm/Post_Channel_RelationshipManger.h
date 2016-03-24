@@ -18,9 +18,12 @@
 
 
 @interface Post_Channel_RelationshipManger : NSObject
-
+//used when an object is being created for the first time
 +(void)savePost:(PFObject *) postParseObject toChannels: (NSMutableArray *) channels
                                                     withCompletionBlock:(void(^)())block;
+
+
+
 
 +(void)deletePost:(PFObject *) postParseObject fromChannel: (Channel *) channel
                                                     withCompletionBlock:(void(^)(bool))block;

@@ -74,6 +74,7 @@
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.contentCoveringScreen = YES;
+    self.view.backgroundColor = [UIColor whiteColor];
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
         [self addPostListVC];

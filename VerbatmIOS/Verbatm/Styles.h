@@ -136,8 +136,8 @@
 
 #pragma mark Text
 
-#define TEXT_AVE_FONT DEFAULT_FONT
-#define TEXT_AVE_FONT_SIZE 20
+#define TEXT_AVE_FONT TITLE_TEXT_FONT
+#define TEXT_AVE_FONT_SIZE 50
 #define TEXT_AVE_COLOR blackColor
 
 #define TEXT_OVER_AVE_BACKGROUND_ALPHA 0.7

@@ -30,7 +30,7 @@
 #import "StoryboardVCIdentifiers.h"
 
 #import "UserAndChannelListsTVC.h"
-
+#import "QuartzCore/QuartzCore.h"
 
 
 
@@ -120,11 +120,11 @@
 -(void)presentProfileForUser:(PFUser *) user
             withStartChannel:(Channel *) startChannel{
     
-    
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
     userProfile.isCurrentUserProfile = NO;
     userProfile.userOfProfile = user;
     userProfile.startChannel = startChannel;
+    
     [self presentViewController:userProfile animated:YES completion:^{
     }];
     

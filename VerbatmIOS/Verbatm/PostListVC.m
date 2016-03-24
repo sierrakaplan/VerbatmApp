@@ -41,9 +41,14 @@
 @property (nonatomic) BOOL isReloading;
 @property (nonatomic) PFObject * povToShare;
 
+@property (nonatomic) UIImageView * reblogSucessful;
+
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
 #define POV_CELL_ID @"povCellId"
 #define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
+#define REBLOG_IMAGE @"Posted Icon 2"
+#define REBLOG_IMAGE_SIZE 150.f //when we put size it means both width and height
+#define REPOST_ANIMATION_DURATION 2.f
 @end
 
 @implementation PostListVC
@@ -395,9 +400,25 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 
 -(void)postPOVToChannels:(NSMutableArray *) channels{
     if(channels.count){
-        [Post_Channel_RelationshipManger savePost:self.povToShare toChannels:channels withCompletionBlock:nil];
+        [Post_Channel_RelationshipManger savePost:self.povToShare toChannels:channels withCompletionBlock:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self successfullyReblogged];
+            });
+        }];
     }
     [self removeSharePOVView];
+}
+
+
+-(void)successfullyReblogged{
+    [self.view addSubview:self.reblogSucessful];
+    [self.view bringSubviewToFront:self.reblogSucessful];
+    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+        self.reblogSucessful.alpha = 0.f;
+    }completion:^(BOOL finished) {
+        [self.reblogSucessful removeFromSuperview];
+        self.reblogSucessful = nil;
+    }];
 }
 
 -(void)sharePostWithComment:(NSString *) comment{
@@ -414,6 +435,16 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath{
 }
 
 #pragma mark -Lazy instantiation-
+
+-(UIImageView *)reblogSucessful{
+    if(!_reblogSucessful){
+        _reblogSucessful = [[UIImageView alloc] init];
+        [_reblogSucessful setImage:[UIImage imageNamed:REBLOG_IMAGE]];
+        [_reblogSucessful setFrame:CGRectMake((self.view.frame.size.width/2.f)-REBLOG_IMAGE_SIZE/2.f, (self.view.frame.size.height/2.f) -REBLOG_IMAGE_SIZE/2.f, REBLOG_IMAGE_SIZE, REBLOG_IMAGE_SIZE)];
+    }
+    return _reblogSucessful;
+}
+
 -(LoadingIndicator *)customActivityIndicator{
     if(!_customActivityIndicator){
         CGPoint center = CGPointMake(self.view.frame.size.width/2., self.view.frame.size.height/2.f);
