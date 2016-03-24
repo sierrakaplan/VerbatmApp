@@ -96,8 +96,7 @@
 	}
 
 	if (asset) {
-		[self setPlayerItemFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
-		[self initiateVideo];
+		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
 	}
 }
 
@@ -107,32 +106,15 @@
 	}
 
 	if (url) {
-		AVPlayerItem * pItem;
+		AVPlayerItem *playerItem;
 		if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
-			pItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
+			playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
 		}else{
-			pItem = [AVPlayerItem playerItemWithURL: url];
+			playerItem = [AVPlayerItem playerItemWithURL: url];
 		}
 
-		[self setPlayerItemFromPlayerItem:pItem];
-		[self initiateVideo];
+		[self prepareVideoFromPlayerItem: playerItem];
 	}
-}
-
--(void) setPlayerItemFromPlayerItem:(AVPlayerItem*)playerItem {
-    if (self.playerItem) {
-        [self removePlayerItemObserver];
-    }
-    
-    self.playerItem = playerItem;
-    [self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
-    
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(playerItemDidReachEnd:)
-                                                 name:AVPlayerItemDidPlayToEndTimeNotification
-                                               object:self.playerItem];
-    
 }
 
 -(void)prepareVideoFromAsset: (AVAsset*) asset{
@@ -149,9 +131,10 @@
 		[self addSubview:self.videoLoadingImageView];
 	}
 	if (self.playerItem) {
-		[self removePlayerItemObserver];
+		[self removePlayerItemObservers];
 	}
 	self.playerItem = playerItem;
+	[self initiateVideo];
 	[self.playerItem addObserver:self forKeyPath:@"status" options:0 context:nil];
 	[self.playerItem addObserver:self forKeyPath:@"playbackLikelyToKeepUp" options:0 context:nil];
 
@@ -164,15 +147,10 @@
 											 selector:@selector(playerItemDidStall:)
 												 name:AVPlayerItemPlaybackStalledNotification
 											   object:self.playerItem];
-	[self initiateVideo];
 }
 
 //this function should be called on the main thread
 -(void) initiateVideo {
-    if(self.player){
-        [self removePlayerRateObserver];
-    }
-    
     self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
     self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
     // Create an AVPlayerLayer using the player
@@ -299,7 +277,7 @@
 
 // Pauses player
 -(void)pauseVideo {
-	[self removePlayerItemObserver];
+	[self removePlayerItemObservers];
 	if (self.player) {
 		[self.player pause];
 	}
@@ -351,7 +329,7 @@
             [view removeFromSuperview];
         }
         @autoreleasepool {
-            [self removePlayerItemObserver];
+            [self removePlayerItemObservers];
             self.layer.sublayers = nil;
             [self.playerLayer removeFromSuperlayer];
             self.layer.sublayers = nil;
@@ -372,22 +350,13 @@
     }
 }
 
--(void) removePlayerItemObserver {
+-(void) removePlayerItemObservers {
     @try {
         [self.playerItem removeObserver:self forKeyPath:@"status"];
-        //[self removePlayerRateObserver];
+		[self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
     } @catch(id anException){
-        //do nothing, obviously it wasn't attached because an exception was thrown
+        //do nothing, obviously they weren't attached because an exception was thrown
     }
-}
-
--(void)removePlayerRateObserver{
-    @try{
-         [self.player removeObserver:self forKeyPath:@"rate"];
-    }@catch(id anException){
-        //do nothing, obviously it wasn't attached because an exception was thrown
-    }
-   
 }
 
 #pragma mark - Lazy Instantation -

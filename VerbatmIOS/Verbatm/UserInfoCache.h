@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @interface UserInfoCache : NSObject
+
 +(instancetype)sharedInstance;
 -(void)loadUserChannelsWithCompletionBlock:(void(^)())block;
 -(void)storeUserChannels:(NSMutableArray *) channels;
@@ -18,4 +19,6 @@
 //set on tab selection in the profile
 -(NSUInteger) currentChannelViewedIndex;
 -(void) setCurrentChannelIndex:(NSUInteger)index;
+
 @end
+
