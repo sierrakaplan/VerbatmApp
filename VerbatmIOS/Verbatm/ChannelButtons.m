@@ -162,13 +162,10 @@
 
 -(void) followOrFollowersSelected {
     if(self.buttonSelected){//you can only follow a channel if you're on it
-        UIImage * newbuttonImage;
         if(self.isFollowigProfileUser){
-            newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
             self.isFollowigProfileUser = NO;
             [Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
         }else{
-            newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
             self.isFollowigProfileUser = YES;
             [Follow_BackendManager currentUserFollowChannel:self.currentChannel];
             
@@ -304,10 +301,10 @@
     UIImage * newbuttonImage;
     int followers = [self.numberOfFollowers intValue];
     if(isFollowing){
-        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
+        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
         followers++;
     }else{
-        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
+        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
         followers--;
         if(followers < 0) followers = 0;
     }
@@ -319,9 +316,6 @@
     //swap labels
     [self.numberOfFollowersLabel removeFromSuperview];
     self.numberOfFollowersLabel = followersInfoLabel;
-    
-    
-    
     
     [self addSubview:self.numberOfFollowersLabel];
 }

@@ -45,12 +45,13 @@
 }
 
 +(void)currentUserStopFollowingChannel:(Channel *) channelToUnfollow{
-    
-    
     //updating the number of followers on the channel object
     NSNumber * followerNum = [channelToUnfollow.parseChannelObject valueForKey:CHANNEL_NUM_FOLLOWERS_KEY];
     int numFollowers = followerNum.intValue;
     numFollowers--;
+    //sometimes we go into negatives :/ lets not 
+    if(numFollowers < 0) return;
+    
     [channelToUnfollow.parseChannelObject  setValue:[NSNumber numberWithInt:numFollowers] forKey:CHANNEL_NUM_FOLLOWERS_KEY];
     
     [channelToUnfollow.parseChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -89,7 +90,6 @@
             else block(YES);
         }
     }];
-    
 }
 
 

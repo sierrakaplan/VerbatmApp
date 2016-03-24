@@ -14,4 +14,5 @@
 +(void)currentUserStopFollowingChannel:(Channel *) channelToUnfollow;
 //tests to see if the logged in user follows this channel
 +(void)currentUserFollowsChannel:(Channel *) channel withCompletionBlock:(void(^)(bool))block;
+
 @end
