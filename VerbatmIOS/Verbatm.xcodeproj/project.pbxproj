@@ -158,6 +158,7 @@
 		C716E9CF1BD6BC0C001B769D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C716E9CD1BD6BBB5001B769D /* GoogleService-Info.plist */; };
 		C716E9D21BD6C338001B769D /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C716E9D11BD6C338001B769D /* Analytics.m */; };
 		C71833151CA1CBE7009A13C5 /* PostChannelAndCreatorBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C71833141CA1CBE7009A13C5 /* PostChannelAndCreatorBar.m */; };
+		C71833191CA47B88009A13C5 /* User_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = C71833181CA47B88009A13C5 /* User_BackendObject.m */; };
 		C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4061BA4EB500075CA80 /* EditContentVC.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
@@ -548,6 +549,8 @@
 		C716E9D11BD6C338001B769D /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		C71833131CA1CBE7009A13C5 /* PostChannelAndCreatorBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostChannelAndCreatorBar.h; sourceTree = "<group>"; };
 		C71833141CA1CBE7009A13C5 /* PostChannelAndCreatorBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostChannelAndCreatorBar.m; sourceTree = "<group>"; };
+		C71833171CA47B88009A13C5 /* User_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User_BackendObject.h; sourceTree = "<group>"; };
+		C71833181CA47B88009A13C5 /* User_BackendObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User_BackendObject.m; sourceTree = "<group>"; };
 		C719A4051BA4EB500075CA80 /* EditContentVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditContentVC.h; sourceTree = "<group>"; };
 		C719A4061BA4EB500075CA80 /* EditContentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditContentVC.m; sourceTree = "<group>"; };
 		C719A4081BA615B50075CA80 /* UserSetupParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetupParameters.h; sourceTree = "<group>"; };
@@ -1573,6 +1576,8 @@
 				C78FF0C11C9EFF2F0088E71D /* Like_BackendManager.m */,
 				C7B9D8961C9FAE730068C13E /* Post_Channel_RelationshipManger.h */,
 				C7B9D8971C9FAE730068C13E /* Post_Channel_RelationshipManger.m */,
+				C71833171CA47B88009A13C5 /* User_BackendObject.h */,
+				C71833181CA47B88009A13C5 /* User_BackendObject.m */,
 			);
 			name = "Parse database files";
 			sourceTree = "<group>";
@@ -1954,6 +1959,7 @@
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
 				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
 				A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */,
+				C71833191CA47B88009A13C5 /* User_BackendObject.m in Sources */,
 				C7F3D46B1A4F84C000B43238 /* SignIn.m in Sources */,
 				A5E85FAA1B911DA900E148D0 /* GTMGatherInputStream.m in Sources */,
 				C7BF1AB21C59D6BF00CEDE4B /* Channel_BackendObject.m in Sources */,

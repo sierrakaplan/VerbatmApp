@@ -20,6 +20,9 @@
 #define NOTIFICATION_USER_LOGIN_FAILED @"notification_login_failed" // includes NSError object
 
 #define NOTIFICATION_USER_SIGNED_OUT @"user_signed_out"
+#define NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY @"user_name_changed_success"
+#define NOTIFICATION_USERNAME_CHANGE_FAILED @"user_name_change_failed"
+
 
 #define NOTIFICATION_MEDIA_SAVING_SUCCEEDED @"media_save_succeeded"//saved on media in an array to publish
 #define NOTIFICATION_MEDIA_SAVING_FAILED @"media_save_failed"//saving a piece of media failed

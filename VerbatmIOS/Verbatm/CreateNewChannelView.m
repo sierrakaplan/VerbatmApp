@@ -118,14 +118,17 @@
 }
 
 -(void)acceptButtonSelected:(UIButton *) button{
-    NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
-    BOOL hasCharacters = ! [[self.channelNameField.text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:self.channelNameField.text];
     
-    if(!hasCharacters)return;
+    if(![self stringHasCharacters:self.channelNameField.text])return;
     
     [self.delegate createChannelWithName:self.channelNameField.text];
 }
 
+//checks if there are actually characters in the string not just spaces
+-(BOOL)stringHasCharacters:(NSString *) text{
+    NSCharacterSet *alphaSet = [NSCharacterSet alphanumericCharacterSet];
+    return ![[text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:text];
+}
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];

@@ -60,10 +60,20 @@
                                              selector:@selector(loginSucceeded:)
                                                  name:NOTIFICATION_USER_LOGIN_SUCCEEDED
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(userNameChanged:)
+                                                 name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
+                                               object:nil];
 }
-
+-(void) userNameChanged: (NSNotification*) notification {
+    [self updateUserName];
+}
 -(void) loginSucceeded: (NSNotification*) notification {
 /*the user has logged in so we can update our username*/
+    [self updateUserName];
+}
+
+-(void)updateUserName{
     [self.userTitleName removeFromSuperview];
     self.userTitleName = nil;
     [self createProfileHeaderWithUserName:[[PFUser currentUser] valueForKey:USER_USER_NAME_KEY]];

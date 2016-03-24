@@ -4,7 +4,7 @@
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "736h",
-      "filename" : "Launch Screen for iPhone 6 Plus image.png",
+      "filename" : "Launch Screen iPhone 6 image (2).png",
       "minimum-system-version" : "8.0",
       "orientation" : "portrait",
       "scale" : "3x"
@@ -22,7 +22,7 @@
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "667h",
-      "filename" : "Launch Screen iPhone 6 image.png",
+      "filename" : "Launch Screen iPhone 6 image (2)-1.png",
       "minimum-system-version" : "8.0",
       "orientation" : "portrait",
       "scale" : "2x"
@@ -30,7 +30,7 @@
     {
       "orientation" : "portrait",
       "idiom" : "iphone",
-      "filename" : "Launch Screen for iPhone 6 Plus image-1.png",
+      "filename" : "Launch Screen for iPhone 6 Plus image (2).png",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
       "scale" : "2x"
@@ -39,7 +39,7 @@
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "retina4",
-      "filename" : "Launch Screen iPhone 6 image-1.png",
+      "filename" : "Launch Screen for iPhone 6 Plus image (2)-1.png",
       "minimum-system-version" : "7.0",
       "orientation" : "portrait",
       "scale" : "2x"
