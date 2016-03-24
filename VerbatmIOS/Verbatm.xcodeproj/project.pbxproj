@@ -741,6 +741,8 @@
 		A560EF9A1BA89552003FB041 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				A56B5D1B1CA49A8100A61D27 /* UserInfoCache.h */,
+				A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */,
 				C75F155D1C2B4A1B0092912D /* Channel.h */,
 				C75F155E1C2B4A1B0092912D /* Channel.m */,
 				C7BF1AA31C57EFC000CEDE4B /* Post_BackendObject.h */,
@@ -753,6 +755,12 @@
 				C7BF1AAD1C57F61F00CEDE4B /* Page_BackendObject.m */,
 				C7BF1AB01C59D6BF00CEDE4B /* Channel_BackendObject.h */,
 				C7BF1AB11C59D6BF00CEDE4B /* Channel_BackendObject.m */,
+				A56B5D241CA4A24300A61D27 /* User_BackendObject.h */,
+				A56B5D251CA4A24300A61D27 /* User_BackendObject.m */,
+				A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.h */,
+				A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */,
+				A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */,
+				A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */,
 				C7D596361C66DC3A00161136 /* FeedQueryManager.h */,
 				C7D596371C66DC3A00161136 /* FeedQueryManager.m */,
 				C7D596391C66E47100161136 /* Follow_BackendManager.h */,
@@ -1344,14 +1352,6 @@
 		C7BC437B199D97F5004B91A1 /* Verbatm */ = {
 			isa = PBXGroup;
 			children = (
-				A56B5D241CA4A24300A61D27 /* User_BackendObject.h */,
-				A56B5D251CA4A24300A61D27 /* User_BackendObject.m */,
-				A56B5D1B1CA49A8100A61D27 /* UserInfoCache.h */,
-				A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */,
-				A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.h */,
-				A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */,
-				A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */,
-				A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */,
 				C7469BF21B4874A600EA7B10 /* Main.storyboard */,
 				A51E74521C897EFC00CF8DEA /* UI Things */,
 				A51E74511C897E2F00CF8DEA /* Downloaded Libraries */,
