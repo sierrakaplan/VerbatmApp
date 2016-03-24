@@ -89,8 +89,6 @@
     CGRect labelFrame = CGRectMake(WALL_OFFSET_X, 0.f, xCord , frame.size.height);
     UILabel * newLabel = [[UILabel alloc] initWithFrame:labelFrame];
     [newLabel setAttributedText:[self getButtonAttributeStringWithText:channelName]];
-//    [newLabel setText:channelName];
-//    [newLabel setTextColor:[UIColor whiteColor]];
     
     selectionBar.shareOptionButton = selectOption;
 

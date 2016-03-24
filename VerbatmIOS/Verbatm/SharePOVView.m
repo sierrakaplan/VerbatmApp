@@ -71,7 +71,7 @@
 
 
 -(void)formatView{
-    self.backgroundColor = [UIColor blackColor];
+    self.backgroundColor = REPOST_VIEW_BACKGROUND_COLOR;
 }
 
 -(void)createSelections{

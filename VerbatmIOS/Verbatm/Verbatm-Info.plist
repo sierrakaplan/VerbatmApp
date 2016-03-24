@@ -42,7 +42,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>7091</string>
+	<string>7099</string>
 	<key>Fabric</key>
 	<dict>
 		<key>APIKey</key>
@@ -163,8 +163,6 @@
 		<string>Quicksand-Light.otf</string>
 		<string>Quicksand-Regular.otf</string>
 	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>Main</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIStatusBarHidden</key>
