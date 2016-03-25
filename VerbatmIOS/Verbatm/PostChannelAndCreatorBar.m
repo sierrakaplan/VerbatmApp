@@ -40,7 +40,7 @@
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment = NSTextAlignmentCenter;
     NSDictionary * userNameAttributes =  @{NSForegroundColorAttributeName: [UIColor whiteColor],
-      NSFontAttributeName: [UIFont fontWithName:TAB_BAR_CHANNEL_NAME_FONT size:TAB_BAR_FONT_SIZE],
+      NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_NAME_FONT size:CHANNEL_TAB_BAR_NAME_FONT_SIZE],
       NSParagraphStyleAttributeName:paragraphStyle};
     
     UILabel * userNameLabel = [self getLabelWithString:[channel getChannelOwnerUserName] andAttributes:userNameAttributes];
@@ -57,7 +57,7 @@
     
 //   NSDictionary * ChannelNameAttributes =  @{
 //      NSForegroundColorAttributeName: [UIColor whiteColor],
-//      NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:FOLLOWERS_TEXT_FONT_SIZE]};
+//      NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_TAB_BAR_NUM_FOLLOWING_FONT_SIZE]};
 //    
     
     

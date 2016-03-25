@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Icons.h"
 #import "SelectionView.h"
 #import "Styles.h"
 #import "SelectSharingOption.h"
@@ -55,16 +56,17 @@
     //VERBATM BAR -- top
     CGRect barFrame = CGRectMake(0.f, (remainingTopHeight/2.f) -
                                  (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT);
-    UIView * verbatmBar = [self createBarWithFrame:barFrame logo:[UIImage imageNamed:@"verbatmLogo"] andTitle:@"Verbatm"];
+    UIView * verbatmBar = [self createBarWithFrame:barFrame logo:[UIImage imageNamed:VERBATM_LOGO] andTitle:@"Verbatm"];
     [self addSubview:verbatmBar];
     
    
     
     //Twitter BAR -- bottom
+	//todo: make constants
     CGRect tw_barFrame = CGRectMake(0.f, facebookBar.frame.origin.y +
                                     facebookBar.frame.size.height +
                                     (remainingTopHeight/2.f) - (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT);
-    UIView * twitterBar = [self createBarWithFrame:tw_barFrame logo:[UIImage imageNamed:@"Twitter-Logo-square"] andTitle:@"Twitter"];
+    UIView * twitterBar = [self createBarWithFrame:tw_barFrame logo:[UIImage imageNamed:@"twitter_logo"] andTitle:@"Twitter"];
     [self addSubview:twitterBar];
     
 }
@@ -118,7 +120,7 @@
 
 
 -(NSAttributedString *)getButtonAttributeStringWithText:(NSString *)text{
-    return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
+    return [[NSAttributedString alloc] initWithString:text attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:REPOST_BUTTON_TEXT_FONT_SIZE]}];
 }
 
 

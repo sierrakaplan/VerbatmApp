@@ -125,16 +125,16 @@
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment                = NSTextAlignmentCenter;
     self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor yellowColor],
-                                                     NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWER_NUMBER_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
+                                                     NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_NUM_FOLLOWERS_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
                                                      NSParagraphStyleAttributeName:paragraphStyle};
     
     //create "followers" text
     self.userNameLabelAttributes =@{
                                                 NSForegroundColorAttributeName: [UIColor grayColor],
-                                                NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
+                                                NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_USER_LIST_USER_NAME_FONT_SIZE]};
     
 //    self.selectedChannelNameTitleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
-//                                                NSFontAttributeName: [UIFont fontWithName:TAB_BAR_CHANNEL_NAME_FONT size:TAB_BAR_FONT_SIZE],
+//                                                NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_NAME_FONT size:CHANNEL_TAB_BAR_NAME_FONT_SIZE],
 //                                                NSParagraphStyleAttributeName:paragraphStyle};
 }
 

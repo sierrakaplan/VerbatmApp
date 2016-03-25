@@ -6,6 +6,8 @@
 //  Copyright © 2015 Verbatm. All rights reserved.
 //
 
+#import "Icons.h"
+
 #import "Follow_BackendManager.h"
 
 #import "Notifications.h"
@@ -95,7 +97,7 @@
 }
 
 -(void)createSettingsButton {
-    UIImage * settingsImage = [UIImage imageNamed:SETTINGS_ICON_NAME];
+    UIImage * settingsImage = [UIImage imageNamed:SETTINGS_BUTTON_ICON];
 
     CGFloat height = SETTINGS_BUTTON_SIZE;
     CGFloat width = height;
@@ -126,7 +128,7 @@
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
     
-    UIImage * buttonImage = [UIImage imageNamed:((areFollowing) ? FOLLOW_ICON_IMAGE_SELECTED : FOLLOW_ICON_IMAGE_UNSELECTED)];
+    UIImage * buttonImage = [UIImage imageNamed:((areFollowing) ? FOLLOWED_BY_ICON : FOLLOW_ICON)];
     self.isFollowigProfileUser = areFollowing;
     self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
     [self.followButton setImage:buttonImage forState:UIControlStateNormal];
@@ -136,7 +138,7 @@
 
 -(void) createBackButton {
     
-    UIImage * settingsImage = [UIImage imageNamed:BACK_BUTTON_ICON_NAME];
+    UIImage * settingsImage = [UIImage imageNamed:BACK_BUTTON_ICON];
     CGFloat height = SETTINGS_BUTTON_SIZE;
     CGFloat width = height;
     CGFloat frame_x = CHANNEL_BUTTON_WALL_XOFFSET;
@@ -163,12 +165,12 @@
 -(void) followOrFollowersSelected {
     UIImage * newbuttonImage;
     if(self.isFollowigProfileUser){
-        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
+        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON];
         self.isFollowigProfileUser = NO;
 
 
     }else{
-        newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
+        newbuttonImage = [UIImage imageNamed:FOLLOWED_BY_ICON];
         self.isFollowigProfileUser = YES;
     }
     [self.followButton setImage:newbuttonImage forState:UIControlStateNormal];

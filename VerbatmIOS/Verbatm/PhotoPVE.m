@@ -320,7 +320,7 @@
 #pragma mark - Rearrange content (preview mode) -
 
 -(void)createRearrangeButton {
-    [self.rearrangeButton setImage:[UIImage imageNamed:CREATE_REARRANGE_ICON] forState:UIControlStateNormal];
+    [self.rearrangeButton setImage:[UIImage imageNamed:MEDIA_REARRANGE_ICON] forState:UIControlStateNormal];
     self.rearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.rearrangeButton addTarget:self action:@selector(rearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.rearrangeButton];

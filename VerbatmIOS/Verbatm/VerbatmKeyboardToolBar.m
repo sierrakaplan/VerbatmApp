@@ -19,7 +19,7 @@
 	if(self) {
 		self.frame = frame;
 		[self createButtons];
-        self.backgroundColor = [UIColor whiteWith];
+        self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.8];
 	}
 	return self;
 }

@@ -35,8 +35,6 @@
 @property (nonatomic) SharePostView * sharePostView;
 @property (nonatomic) BOOL didJustLoadForTheFirstTime;
 
-#define VERBATM_LOGO_WIDTH 150.f
-
 @end
 
 @implementation FeedVC

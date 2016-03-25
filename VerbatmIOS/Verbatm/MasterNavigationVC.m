@@ -182,11 +182,11 @@
 //the view controllers that will be tabbed
 -(void)createViewControllers {
 
-    UIImage * searchUnselected =  [self imageWithImage:[[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
+    UIImage * searchUnselected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
                                               imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                 scaledToSize:CGSizeMake(30.f, 30.f)];
     
-    UIImage * searchSelected =  [self imageWithImage:[[UIImage imageNamed:SEARCH_TAB_BAR_ICON]
+    UIImage * searchSelected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
                                                       imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                         scaledToSize:CGSizeMake(30.f, 30.f)];
     

@@ -211,7 +211,7 @@
     [self.arrowExtension setBackgroundColor:arrowBarBackgroundColor];
     
     CGRect arrowFrame = CGRectMake(self.frame.size.width/2.f - (ARROW_FRAME_WIDTH/2), ARROW_IMAGE_WALL_OFFSET, ARROW_FRAME_WIDTH, ARROW_FRAME_HEIGHT - (ARROW_IMAGE_WALL_OFFSET*2));
-    UIImage * arrowImage = [UIImage imageNamed:DOWN_ARROR_ICON];
+    UIImage * arrowImage = [UIImage imageNamed:DOWN_ARROW_ICON];
     
     UIImageView * arrowView = [[UIImageView alloc] initWithImage:arrowImage];
     [arrowView setFrame:arrowFrame];

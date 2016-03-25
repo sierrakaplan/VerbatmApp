@@ -116,7 +116,7 @@
     textLabel.textAlignment = NSTextAlignmentCenter;
     [textLabel setTextColor:VERBATM_GOLD_COLOR];
     [textLabel setBackgroundColor:[UIColor clearColor]];
-    [textLabel setFont:[UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:CREATE_CHANNEL_BUTTON_FONT_SIZE]];
+    [textLabel setFont:[UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CREATE_CHANNEL_BUTTON_FONT_SIZE]];
     
     [createChannelButton addSubview:textLabel];
     
@@ -136,7 +136,7 @@
 
 -(UIView *) getDividerAtPoint:(CGPoint) origin{
     UIView* tabDivider = [[UIView alloc] initWithFrame:CGRectMake(origin.x, origin.y, TAB_DIVIDER_WIDTH, self.frame.size.height)];
-    [tabDivider setBackgroundColor:[UIColor TAB_DIVIDER_COLOR]];
+    [tabDivider setBackgroundColor:[UIColor CHANNEL_TAB_BAR_DIVIDER_COLOR]];
     return tabDivider;
 }
 

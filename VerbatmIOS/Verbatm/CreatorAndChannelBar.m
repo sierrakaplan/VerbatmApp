@@ -7,17 +7,19 @@
 //
 
 #import "CreatorAndChannelBar.h"
-#import "ParseBackendKeys.h"
-#import <Parse/PFObject.h>
-#import "Styles.h"
+
 #import "Follow_BackendManager.h"
-#import "ProfileVC.h"
-#import "Follow_BackendManager.h"
+
+#import "Icons.h"
+
 #import "Notifications.h"
 
-/*
- Give a creator and channel name this creates labels for each.
- */
+#import "ParseBackendKeys.h"
+#import <Parse/PFObject.h>
+
+#import "Styles.h"
+
+#import "ProfileVC.h"
 
 #define LABEL_WALL_OFFSET 8.f
 #define TEXT_FONT_TYPE @"Quicksand-Bold"
@@ -164,18 +166,13 @@
 
 
 -(void)setFollowImageIsFollowing:(BOOL) isFollowing{
-    UIImage * image = [UIImage imageNamed:((isFollowing) ? DARKENED_FOLLOW_ICON_IMAGE_SELECTED :FOLLOW_ICON_IMAGE_UNSELECTED)];
+    UIImage * image = [UIImage imageNamed:((isFollowing) ? FOLLOWING_ICON :FOLLOW_ICON)];
     self.followImage.image = image;
 }
-
-
 
 -(void) createBackground {
     self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.3];
 }
-
-
-
 
 -(void)createFollowIcon{
     [Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^

@@ -38,11 +38,11 @@
 #define BUTTON_WALLOFFSET 10.f
 #define NUMBER_FONT_SIZE 10.f
 #define ICON_SPACING_GAP 20.f
-#define NUMBER_TEXT_FONT TAB_BAR_FOLLOWERS_FONT
+#define NUMBER_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
 #define NUMBER_TEXT_FONT_SIZE 25.f
 
 
-#define OF_TEXT_FONT TAB_BAR_FOLLOWERS_FONT
+#define OF_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
 #define OF_TEXT_FONT_SIZE 18.f
 
 
@@ -284,7 +284,7 @@
     if(!_followNumberTextAttributes){
         _followNumberTextAttributes =@{
                            NSForegroundColorAttributeName: [UIColor whiteColor],
-                           NSFontAttributeName: [UIFont fontWithName:TAB_BAR_FOLLOWERS_FONT size:NUMBER_FONT_SIZE]};
+                           NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:NUMBER_FONT_SIZE]};
     }
     
     return _followNumberTextAttributes;

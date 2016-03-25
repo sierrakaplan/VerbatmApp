@@ -6,6 +6,8 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Icons.h"
+
 #import "LoadingIndicator.h"
 #import <AssetsLibrary/AssetsLibrary.h>
 #import <MediaPlayer/MediaPlayer.h>
@@ -23,7 +25,7 @@
 
 
 #define LOAD_ICON_WIDTH 70.f
-#define LOAD_ICON_IMAGE @"verbatmLogo"
+#define LOAD_ICON_IMAGE VERBATM_LOGO
 
 -(instancetype)initWithCenter:(CGPoint ) center{
     

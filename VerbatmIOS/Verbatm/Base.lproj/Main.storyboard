@@ -204,7 +204,7 @@
                                     <action selector="signOutButtonSelected:" destination="bK1-Rd-hCA" eventType="touchUpInside" id="zlp-a0-6FB"/>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profile_icon" id="Soj-93-cK2">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="followed_by_icon" id="Soj-93-cK2">
                                 <rect key="frame" x="20" y="66" width="23" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -401,6 +401,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="profile_icon" width="35" height="47"/>
+        <image name="followed_by_icon" width="223" height="234"/>
     </resources>
 </document>

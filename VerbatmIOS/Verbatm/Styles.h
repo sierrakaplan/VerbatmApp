@@ -10,25 +10,26 @@
 #define Styles_h
 
 
-#define REBLOG_IMAGE @"Posted Icon 2"
-#define SUCCESS_PUBLISHING_IMAGE @"Published_success_icon"
-#define FAILED_PUBLISHING_IMAGE @"Publishing Failed icon"
-#define FOLLOWING_SUCCESS_IMAGE @"Following_Notification"
-
-
 #define VERBATM_GOLD_COLOR [UIColor yellowColor]
 
+#define DEFAULT_FONT @"Quicksand-Regular"
+#define BUTTON_FONT @"Quicksand-Regular"
+#define PLACEHOLDER_FONT @"Quicksand-BoldItalic"
+#define TITLE_TEXT_FONT @"Quicksand-Bold"
 
 #define HEADER_TEXT_FONT @"Quicksand-Regular"
 #define HEADER_TEXT_SIZE 20.f
 
-#define TAB_BAR_SELECTED_FONT @"Quicksand-Bold"
-#define TAB_BAR_CHANNEL_NAME_FONT @"Quicksand-Bold"
-#define TAB_BAR_FOLLOWERS_FONT @"Quicksand-Regular"
-#define TAB_BAR_FOLLOWER_NUMBER_FONT @"Quicksand-Bold"
+#pragma mark - Sign In -
 
-#define TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT @"Quicksand-Bold"
-#define TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT_SIZE 17.f
+#define ERROR_ANIMATION_TEXT_COLOR whiteColor
+#define ERROR_ANIMATION_FONT_SIZE 20
+
+#pragma mark - Bottom Tab Bar -
+
+#define TAB_BAR_ALPHA 0.7
+
+#pragma mark - Profile -
 
 #define USER_CHANNEL_LIST_FONT @"Quicksand-Regular"
 #define USER_CHANNEL_LIST_FONT_SIZE 20.f
@@ -37,38 +38,65 @@
 #define INFO_LIST_HEADER_FONT @"Quicksand-Bold"  
 #define INFO_LIST_HEADER_FONT_SIZE 20.f
 
+#pragma mark Channel Tab Bar
+
+#define CHANNEL_TAB_BAR_DIVIDER_COLOR clearColor
+#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED [UIColor colorWithWhite:0.f alpha:0.5]
+#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED [UIColor colorWithWhite:1.f alpha:0.8]
+
+#define CHANNEL_TAB_BAR_NAME_FONT @"Quicksand-Bold"
+#define CHANNEL_TAB_BAR_NAME_FONT_SIZE 17.f
+#define CHANNEL_TAB_BAR_NAME_FONT_ATTRIBUTE [UIFont fontWithName:CHANNEL_TAB_BAR_NAME_FONT size:CHANNEL_TAB_BAR_NAME_FONT_SIZE]
+
+#define CHANNEL_TAB_BAR_FOLLOWERS_FONT @"Quicksand-Regular"
+#define CHANNEL_TAB_BAR_FOLLOWERS_FONT_SIZE 15.f
+#define CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_TAB_BAR_FOLLOWERS_FONT_SIZE]
+
+#define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT @"Quicksand-Bold"
+#define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_SIZE 17.f
+#define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_ATTRIBUTE [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_SIZE]
 
 #define CHANNEL_CREATION_USER_TEXT_ENTRY_PLACEHOLDER_FONT @"Quicksand-LightItalic"
-
 #define CHANNEL_CREATION_USER_TEXT_ENTRY_FONT @"Quicksand-Bold"
-
-
 #define CHANNEL_CREATION_BUTTON_FONT @"Quicksand-Regular"
-
-#define TAB_BAR_FONT_SIZE 17.f
-#define FOLLOWERS_TEXT_FONT_SIZE 15.f
-
-#define REPOST_BUTTON_TEXT_FONT_SIZE 15.f
-#define REPOST_VIEW_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.8]
-
-
-#define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
-#define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
-
 
 #define CREATE_CHANNEL_BUTTON_FONT_SIZE 19.f
 
 
-#define TAB_BAR_ALPHA 0.7
+#pragma mark - Feed - 
 
-#define DEFAULT_FONT @"Quicksand-Regular"
-#define BUTTON_FONT @"Quicksand-Regular"
-#define PLACEHOLDER_FONT @"Quicksand-BoldItalic"
-#define TITLE_TEXT_FONT @"Quicksand-Bold"
+#define REPOST_BUTTON_TEXT_FONT_SIZE 15.f
+#define REPOST_VIEW_BACKGROUND_COLOR [UIColor colorWithWhite:0.f alpha:0.8]
 
-#define SWITCH_LABEL_FONT @"Futura-Medium"
+#define CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE 20.f
+#define CHANNEL_USER_LIST_USER_NAME_FONT_SIZE 15.f
 
-#pragma mark Navigation Bars
+#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor clearColor]//[UIColor colorWithWhite:0.f alpha:0.3]
+
+#pragma mark - Page Views -
+
+#define PAGE_BACKGROUND_COLOR blackColor
+
+#pragma mark Text
+
+#define TEXT_PAGE_VIEW_FONT DEFAULT_FONT
+#define TEXT_PAGE_VIEW_FONT_SIZE 50
+#define TEXT_PAGE_VIEW_COLOR blackColor
+
+#define TEXT_PAGE_VIEW_BACKGROUND_ALPHA 0.7
+#define TEXT_PAGE_VIEW_PULLBAR_COLOR clearColor
+
+#pragma mark Images
+
+#define CIRCLE_OVER_IMAGES_BORDER_WIDTH 3.f
+#define CIRCLE_OVER_IMAGES_COLOR blackColor
+#define CIRCLE_OVER_IMAGES_HIGHLIGHT_COLOR blueColor
+
+#define CIRCLE_OVER_IMAGES_ALPHA 0.4
+#define POINTS_ON_CIRCLE_ALPHA 0.5
+
+
+#pragma mark - Navigation Bars -
 
 #define NAVIGATION_BAR_TEXT_COLOR whiteColor
 #define NAVIGATION_BAR_BUTTON_FONT DEFAULT_FONT
@@ -78,25 +106,6 @@
 #define BUTTON_LABEL_SHADOW_BLUR_RADIUS 3.f
 #define BUTTON_LABEL_SHADOW_YOFFSET 1.5f
 
-
-#pragma mark - Sign In -
-#define ERROR_ANIMATION_TEXT_COLOR whiteColor
-#define ERROR_ANIMATION_FONT_SIZE 20
-
-
-#pragma mark - Feed -
-
-#pragma mark NOT IN USE
-#define FEED_BACKGROUND_COLOR 0.918
-#define STORY_BACKGROUND_COLOR colorWithRed: 0.8 green:0.8 blue:0.8 alpha:1
-#define SWITCH_CATEGORY_BAR_FONT_SIZE 27.f
-#define FEED_TITLE_TEXT_COLOR blackColor
-#define FEED_TITLE_FONT @"HelveticaNeue-Italic"
-#define FEED_TITLE_FONT_SIZE 20
-#define USERNAME_FONT @"HelveticaNeue-Bold"
-#define USERNAME_FONT_SIZE 18
-#define DATE_AND_LIKES_FONT @"HelveticaNeue-Light"
-#define DATE_AND_LIKES_FONT_SIZE 16.f
 
 #pragma mark - ADK -
 
@@ -139,47 +148,7 @@
 #define PUBLISH_BUTTON_LABEL_COLOR_INACTIVE grayColor
 
 
-#pragma mark - Page Views -
-
-#define PAGE_BACKGROUND_COLOR blackColor
-
-#pragma mark Text
-
-#define TEXT_PAGE_VIEW_FONT DEFAULT_FONT
-#define TEXT_PAGE_VIEW_FONT_SIZE 50
-#define TEXT_PAGE_VIEW_COLOR blackColor
-
-#define TEXT_PAGE_VIEW_BACKGROUND_ALPHA 0.7
-#define TEXT_PAGE_VIEW_PULLBAR_COLOR clearColor
-
-#pragma mark Images
-
-#define CIRCLE_OVER_IMAGES_BORDER_WIDTH 3.f
-#define CIRCLE_OVER_IMAGES_COLOR blackColor
-#define CIRCLE_OVER_IMAGES_HIGHLIGHT_COLOR blueColor
-
-#define CIRCLE_OVER_IMAGES_ALPHA 0.4
-#define POINTS_ON_CIRCLE_ALPHA 0.5
-
-#define TAB_DIVIDER_COLOR clearColor
-
-#define TAB_BUTTON_BACKGROUND_IMAGE @"dark_fade_box"
-
-#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED [UIColor colorWithWhite:0.f alpha:0.5]
-#define CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED [UIColor colorWithWhite:1.f alpha:0.8]
-
-
-#define LIKE_SHARE_BAR_BACKGROUND_COLOR [UIColor clearColor]//[UIColor colorWithWhite:0.f alpha:0.3]
-
-
-#define SETTINGS_ICON_NAME @"settingsIcon"
-#define BACK_BUTTON_ICON_NAME @"back_arrow"
-#define BAR_CONTENT_COLOR yellowColor
-#define FOLLOW_ICON_IMAGE_SELECTED  @"Followed_Icon"
-#define FOLLOW_ICON_IMAGE_UNSELECTED  @"Not_Followed_Icon"
-
-#define DARKENED_FOLLOW_ICON_IMAGE_SELECTED @"Darkened Following Button (1)"
-
+#pragma mark - Discover/Search -
 
 #define CHANNEL_LIST_CELL_SEPERATOR_COLOR [UIColor grayColor]
 

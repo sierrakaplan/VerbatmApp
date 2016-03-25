@@ -9,50 +9,36 @@
 #ifndef Icons_h
 #define Icons_h
 
-#define DARK_FADE_BACKGROUND @"dark_fade_box"
-#define BLUR_MASK @"blur_background"
-#define TEXT_BACKGROUND @"text_background"
-#define BACKGROUND_IMAGE @"d3"
-
-#define BACK_ARROW_LEFT @"back_arrow_left"
-#define BACK_ARROW_RIGHT @"back_arrow_right"
-
-#pragma mark - Profile -
-
-#define SETTINGS_BUTTON_ICON @"settings_gear"
-
-#pragma mark - Feed -
-
+#define BACKGROUND_IMAGE @"adk_background"
 #define VERBATM_LOGO @"verbatm_logo"
-#define NO_NETWORK_IMAGE @"no_network_image"
 
-#pragma mark Story Cell
-
-#define FEED_NOT_LIKED_ICON @"heart_unfilled"
-#define FEED_LIKED_ICON @"heart_filled"
-
-#pragma mark Bottom Nav
+#pragma mark - Bottom Tab Bar -
 
 #define ADK_NAV_ICON @"Plus"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
+#define DISCOVER_TAB_BAR_ICON @"search"
 
-#pragma mark Category Switcher
+#pragma mark - Profile -
 
-#define SWITCH_CATEGORY_CIRCLE_RIGHT @"arrow_circle_right"
-#define SWITCH_CATEGORY_CIRCLE_LEFT @"arrow_circle_left"
+#define SETTINGS_BUTTON_ICON @"settings_icon"
+#define BACK_BUTTON_ICON @"back_arrow"
+#define DOWN_ARROW_ICON @"down_arrow_white"
+
+#pragma mark - Feed -
+
+#define FOLLOWED_BY_ICON  @"followed_by_icon"
+#define FOLLOW_ICON  @"follow_icon"
+#define FOLLOWING_ICON @"following_icon"
+#define FOLLOWING_SUCCESS_IMAGE @"following_succeeded_notification"
+#define REBLOG_IMAGE @"posted_succeeded_notification"
 
 #pragma mark - ADK -
 
-#define TITLE_NOTIFICATION_ANIMATION @"title_notification"
 #define DELETE_ICON @"trash_can"
 
-//TODO: change this
-#define EXIT_BUTTON_IMAGE DONE_CHECKMARK
-#define CHECKBOX_UNSELECTED @""
-#define CHECKBOX_SELECTED @""
-
-#define INFO_ICON @"info_icon"
+#define SUCCESS_PUBLISHING_IMAGE @"publishing_succeeded_notification"
+#define FAILED_PUBLISHING_IMAGE @"publishing_failed_notification"
 
 #pragma mark Edit Content View
 
@@ -79,10 +65,6 @@
 #define GALLERY_BUTTON_ICON @"galleryIcon"
 #define PLUS_ICON @"plus_sign_black"
 
-#pragma mark Pull Bar (NOT IN USE)
-
-#define PULLDOWN_ICON @"down_arrow"
-
 #pragma mark GM Image Picker
 
 #define GM_VIDEO_ICON @"GMVideoIcon"
@@ -91,29 +73,23 @@
 
 #pragma mark - Post Views -
 
+#define PULLDOWN_ICON @"down_arrow"
 #define LIKE_ICON_UNPRESSED @"heart_unfilled"
 #define LIKE_ICON_PRESSED @"heart_filled"
-#define PULLDOWN_TEXT_ICON @"pulldown_icon"
-#define CREATE_TEXT_ICON @"edit_text_button"
-#define SHARE_ICON @"shareIcon"
+#define CREATE_TEXT_ICON @"text_edit_button"
+#define SHARE_ICON @"share_icon"
 
 #pragma mark Video Page View
 
-#define VIDEO_LOADING_ICON @"video_loading_icon"
 #define UNMUTED_ICON @"sound_unmuted"
 #define MUTED_ICON @"sound_muted"
 
 #pragma mark Edit Content View
 
-#define CREATE_REARRANGE_ICON @"rearrange_icon"
+#define MEDIA_REARRANGE_ICON @"rearrange_icon"
 
 #define SWIPE_UP_DOWN_INSTRUCTION @"swipeUp_Instructions_black"
 #define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"pinch_instruction_black"
 #define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions_black"
-
-
-#define SEARCH_TAB_BAR_ICON @"Search"
-
-#define DOWN_ARROR_ICON @"down_arrow_white"
 
 #endif /* Icons_h */

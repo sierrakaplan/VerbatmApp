@@ -89,8 +89,7 @@
     
     NSDictionary * informationAttribute = @{NSForegroundColorAttributeName:
                                                 [UIColor blackColor],
-                                            NSFontAttributeName:
-                                                [UIFont fontWithName:TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT size:TAB_BAR_FOLLOWERS_FOLLOWING_INFO_FONT_SIZE],
+                                            NSFontAttributeName: CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_ATTRIBUTE,
                                             NSParagraphStyleAttributeName:paragraphStyle};
 
     //create bolded number
