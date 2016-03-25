@@ -173,6 +173,7 @@
 				[self.customActivityIndicator stopCustomActivityIndicator];
 				self.videoLoading = NO;
 			}
+			[self playVideo];
 		} else if (self.playerItem.status == AVPlayerItemStatusFailed) {
 			NSLog(@"video couldn't play: %@", self.playerItem.error);
 			if (self.videoLoading) {

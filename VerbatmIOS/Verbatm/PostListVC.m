@@ -30,7 +30,7 @@
 #import "Styles.h"
 
 @interface PostListVC () <UICollectionViewDelegate, UICollectionViewDataSource,
-							SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
+SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 @property (nonatomic) NSMutableArray * presentedPostList;
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
@@ -63,24 +63,24 @@
 	[self registerClassForCustomCells];
 	[self getPosts];
 	self.shouldPlayVideos = YES;
-    [self registerForNotifications];
+	[self registerForNotifications];
 }
 
 
 -(void)registerForNotifications{
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(publishingFailedNotification:)
-                                                 name:NOTIFICATION_MEDIA_SAVING_FAILED
-                                               object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(publishingFailedNotification:)
+												 name:NOTIFICATION_MEDIA_SAVING_FAILED
+											   object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(successfullyPublishedNotification:)
-                                                 name:NOTIFICATION_POST_PUBLISHED
-                                               object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(followingSuccesufulNotification:)
-                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
-                                               object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(successfullyPublishedNotification:)
+												 name:NOTIFICATION_POST_PUBLISHED
+											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(followingSuccesufulNotification:)
+												 name:NOTIFICATION_NOW_FOLLOWING_USER
+											   object:nil];
 }
 
 
@@ -130,7 +130,6 @@
 -(void)reloadCurrentChannel{
 	[self stopAllVideoContent];
 	[self.presentedPostList removeAllObjects];
-	[self.customActivityIndicator startCustomActivityIndicator];
 	[self getPosts];
 }
 
@@ -140,12 +139,12 @@
 		self.channelForList = channel;
 		[self clearOldPosts];
 		[self removePresentLabel];
-		[self.customActivityIndicator startCustomActivityIndicator];
 		[self getPosts];
 	}
 }
 
 -(void) getPosts {
+	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed) {
 		if(!self.feedQueryManager)self.feedQueryManager = [[FeedQueryManager alloc] init];
 		[self.feedQueryManager getMoreFeedPostsWithCompletionHandler:^(NSArray * posts) {
@@ -169,7 +168,6 @@
 			} else {
 				[self nothingToPresentHere];
 			}
-
 		}];
 	}
 }
@@ -201,9 +199,9 @@
 				[NSNumber numberWithInteger:pages.count];
 
 				[postView createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares
-											  numberOfPages:numberOfPostPages
-									  andStartingPageNumber:@(1)
-													startUp:self.isHomeProfileOrFeed];
+												   numberOfPages:numberOfPostPages
+										   andStartingPageNumber:@(1)
+														 startUp:self.isHomeProfileOrFeed];
 				[postView renderPostFromPages:pages];
 				[postView postOffScreen];
 				postView.delegate = self;
@@ -439,36 +437,36 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)successfullyPublishedNotification:(NSNotification *) notification{
-    [self.view addSubview:self.publishSuccessful];
-    [self.view bringSubviewToFront:self.publishSuccessful];
-    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-        self.publishSuccessful.alpha = 0.f;
-    }completion:^(BOOL finished) {
-        [self.publishSuccessful removeFromSuperview];
-        self.publishSuccessful = nil;
-    }];
+	[self.view addSubview:self.publishSuccessful];
+	[self.view bringSubviewToFront:self.publishSuccessful];
+	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+		self.publishSuccessful.alpha = 0.f;
+	}completion:^(BOOL finished) {
+		[self.publishSuccessful removeFromSuperview];
+		self.publishSuccessful = nil;
+	}];
 }
 
 -(void)publishingFailedNotification:(NSNotification *) notification{
-    [self.view addSubview:self.publishFailed];
-    [self.view bringSubviewToFront:self.publishFailed];
-    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-        self.publishFailed.alpha = 0.f;
-    }completion:^(BOOL finished) {
-        [self.publishFailed removeFromSuperview];
-        self.publishFailed = nil;
-    }];
+	[self.view addSubview:self.publishFailed];
+	[self.view bringSubviewToFront:self.publishFailed];
+	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+		self.publishFailed.alpha = 0.f;
+	}completion:^(BOOL finished) {
+		[self.publishFailed removeFromSuperview];
+		self.publishFailed = nil;
+	}];
 }
 
 -(void)followingSuccesufulNotification:(NSNotification *) notification{
-    [self.view addSubview:self.following];
-    [self.view bringSubviewToFront:self.following];
-    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
-        self.following.alpha = 0.f;
-    }completion:^(BOOL finished) {
-        [self.following removeFromSuperview];
-        self.following = nil;
-    }];
+	[self.view addSubview:self.following];
+	[self.view bringSubviewToFront:self.following];
+	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+		self.following.alpha = 0.f;
+	}completion:^(BOOL finished) {
+		[self.following removeFromSuperview];
+		self.following = nil;
+	}];
 }
 
 -(void)sharePostWithComment:(NSString *) comment{
@@ -496,33 +494,33 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 
 -(UIImageView *)publishSuccessful{
-    if(!_publishSuccessful){
-        _publishSuccessful = [[UIImageView alloc] init];
-        [_publishSuccessful setImage:[UIImage imageNamed:SUCCESS_PUBLISHING_IMAGE]];
-        [_publishSuccessful setFrame:self.reblogSucessful.frame];
-        self.reblogSucessful = nil;
-    }
-    return _publishSuccessful;
+	if(!_publishSuccessful){
+		_publishSuccessful = [[UIImageView alloc] init];
+		[_publishSuccessful setImage:[UIImage imageNamed:SUCCESS_PUBLISHING_IMAGE]];
+		[_publishSuccessful setFrame:self.reblogSucessful.frame];
+		self.reblogSucessful = nil;
+	}
+	return _publishSuccessful;
 }
 
 -(UIImageView *)publishFailed{
-    if(!_publishFailed){
-        _publishFailed = [[UIImageView alloc] init];
-        [_publishFailed setImage:[UIImage imageNamed:FAILED_PUBLISHING_IMAGE]];
-        [_publishFailed setFrame:self.reblogSucessful.frame];
-        self.reblogSucessful = nil;
-    }
-    return _publishFailed;
+	if(!_publishFailed){
+		_publishFailed = [[UIImageView alloc] init];
+		[_publishFailed setImage:[UIImage imageNamed:FAILED_PUBLISHING_IMAGE]];
+		[_publishFailed setFrame:self.reblogSucessful.frame];
+		self.reblogSucessful = nil;
+	}
+	return _publishFailed;
 }
 
 -(UIImageView *)following{
-    if(!_following){
-        _following = [[UIImageView alloc] init];
-        [_following setImage:[UIImage imageNamed:FOLLOWING_SUCCESS_IMAGE]];
-        [_following setFrame:self.reblogSucessful.frame];
-        self.reblogSucessful = nil;
-    }
-    return _following;
+	if(!_following){
+		_following = [[UIImageView alloc] init];
+		[_following setImage:[UIImage imageNamed:FOLLOWING_SUCCESS_IMAGE]];
+		[_following setFrame:self.reblogSucessful.frame];
+		self.reblogSucessful = nil;
+	}
+	return _following;
 }
 
 -(LoadingIndicator *)customActivityIndicator{

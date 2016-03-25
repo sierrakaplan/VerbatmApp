@@ -74,14 +74,7 @@
 }
 
 -(void)stopCustomActivityIndicator{
-    if(![NSThread isMainThread]){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self stopAnimationsAndHide];
-        });
-    }else{
-        [self stopAnimationsAndHide];
-    }
-    
+	[self stopAnimationsAndHide];
 }
 
 -(void)stopAnimationsAndHide{
