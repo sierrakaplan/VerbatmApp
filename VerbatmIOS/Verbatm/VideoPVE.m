@@ -161,21 +161,20 @@
 	if (self.editContentView){
 		[self.editContentView onScreen];
 	} else {
-		if(self.videoList){
-			[self.videoPlayer stopVideo];
-		}
-		if(!self.hasBeenSetUp){
+		if(self.hasBeenSetUp){
+			[self.videoPlayer playVideo];
+		}else{
 			[self prepareVideos:self.videoList];
+			[self.videoPlayer playVideo];
 		}
-		[self.videoPlayer playVideo];
 	}
 }
 
 -(void)almostOnScreen{
 	if(self.editContentView){
 		[self.editContentView almostOnScreen];
-	} else {
-		if(self.videoList) {
+	}else{
+		if(self.videoList){
 			[self.videoPlayer stopVideo];
 			[self prepareVideos:self.videoList];
 			self.hasBeenSetUp = YES;
