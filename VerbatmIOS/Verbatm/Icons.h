@@ -9,12 +9,12 @@
 #ifndef Icons_h
 #define Icons_h
 
-#define BACKGROUND_IMAGE @"adk_background"
+#define BACKGROUND_IMAGE @"background_adk"
 #define VERBATM_LOGO @"verbatm_logo"
 
 #pragma mark - Bottom Tab Bar -
 
-#define ADK_NAV_ICON @"Plus"
+#define ADK_NAV_ICON @"plus"
 #define PROFILE_NAV_ICON @"profile"
 #define HOME_NAV_ICON @"home"
 #define DISCOVER_TAB_BAR_ICON @"search"
@@ -44,6 +44,16 @@
 
 #define MINIMIZE_ICON @"minimize_icon"
 #define DONE_CHECKMARK @"done_checkmark"
+
+#pragma mark Text Toolbar
+
+#define WHITE_FONT_ICON @"text_toolbar_white_font_icon"
+#define BLACK_FONT_ICON @"text_toolbar_black_font_icon"
+#define INCREASE_FONT_SIZE_ICON @"text_toolbar_increase_font_icon"
+#define DECREASE_FONT_SIZE_ICON @"text_toolbar_decrease_font_icon"
+#define LEFT_ALIGN_ICON @"text_toolbar_left_align_icon"
+#define CENTER_ALIGN_ICON @"text_toolbar_center_align_icon"
+#define RIGHT_ALIGN_ICON @"text_tooblar_right_align_icon"
 
 #pragma mark Media Capture
 

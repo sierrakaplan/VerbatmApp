@@ -102,9 +102,10 @@
 
 #pragma mark Toolbar
 
-#define TEXT_TOOLBAR_HEIGHT 30.f
+#define TEXT_TOOLBAR_HEIGHT 40.f
 #define TEXT_TOOLBAR_BUTTON_OFFSET 9.f
-#define TEXT_TOOLBAR_BUTTON_WIDTH 70.f
+#define TEXT_TOOLBAR_BUTTON_WIDTH 40.f
+#define TEXT_TOOLBAR_DONE_WIDTH 70.f
 
 #pragma mark - Preview
 

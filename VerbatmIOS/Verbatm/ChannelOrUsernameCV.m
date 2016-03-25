@@ -125,7 +125,7 @@
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment                = NSTextAlignmentCenter;
     self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor yellowColor],
-                                                     NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_NUM_FOLLOWERS_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
+                                                     NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
                                                      NSParagraphStyleAttributeName:paragraphStyle};
     
     //create "followers" text

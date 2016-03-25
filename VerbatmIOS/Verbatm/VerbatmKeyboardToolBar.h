@@ -10,7 +10,14 @@
 
 @protocol KeyboardToolBarDelegate <NSObject>
 
--(void)doneButtonPressed;
+/* If black, text color changed to black, else changed to white */
+-(void) textColorChangedToBlack:(BOOL)black;
+-(void) textSizeIncreased;
+-(void) textSizeDecreased;
+-(void) leftAlignButtonPressed;
+-(void) centerAlignButtonPressed;
+-(void) rightAlignButtonPressed;
+-(void) doneButtonPressed;
 
 @end
 

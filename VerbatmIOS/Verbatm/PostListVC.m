@@ -12,6 +12,8 @@
 
 #import "FeedQueryManager.h"
 
+#import "Icons.h"
+
 #import "Like_BackendManager.h"
 #import "LoadingIndicator.h"
 

@@ -138,7 +138,6 @@
 
 #pragma mark Verbatm Keyboard Toolbar
 
-#define DONE_BUTTON_COLOR clearColor
 #define KEYBOARD_TOOLBAR_FONT_SIZE 22.f
 
 #pragma mark Preview
