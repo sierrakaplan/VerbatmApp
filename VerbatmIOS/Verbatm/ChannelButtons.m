@@ -155,13 +155,10 @@
 
 -(void) followOrFollowersSelected {
     if(self.buttonSelected){//you can only follow a channel if you're on it
-        UIImage * newbuttonImage;
         if(self.isFollowigProfileUser){
-            newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_IMAGE_UNSELECTED];
             self.isFollowigProfileUser = NO;
             [Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
         }else{
-            newbuttonImage = [UIImage imageNamed:FOLLOW_ICON_IMAGE_SELECTED];
             self.isFollowigProfileUser = YES;
             [Follow_BackendManager currentUserFollowChannel:self.currentChannel];
             

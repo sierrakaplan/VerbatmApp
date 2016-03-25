@@ -10,6 +10,12 @@
 #define Styles_h
 
 
+#define REBLOG_IMAGE @"Posted Icon 2"
+#define SUCCESS_PUBLISHING_IMAGE @"Published_success_icon"
+#define FAILED_PUBLISHING_IMAGE @"Publishing Failed icon"
+#define FOLLOWING_SUCCESS_IMAGE @"Following_Notification"
+
+
 #define VERBATM_GOLD_COLOR [UIColor yellowColor]
 
 

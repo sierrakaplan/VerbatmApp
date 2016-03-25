@@ -14,6 +14,8 @@
 
 #import "LoadingIndicator.h"
 
+#import "Notifications.h"
+
 #import "Page_BackendObject.h"
 #import "PostListVC.h"
 #import "PostCollectionViewCell.h"
@@ -36,17 +38,20 @@
 
 @property (nonatomic) PostCollectionViewCell *lastVisibleCell;
 @property (nonatomic) LoadingIndicator *customActivityIndicator;
-@property (nonatomic) SharePostView *sharePOVView;
+@property (nonatomic) SharePostView *sharePostView;
 @property (nonatomic) BOOL shouldPlayVideos;
 @property (nonatomic) BOOL isReloading;
 @property (nonatomic) PFObject *postToShare;
 
 @property (nonatomic) UIImageView * reblogSucessful;
+@property (nonatomic) UIImageView * following;
+@property (nonatomic) UIImageView * publishSuccessful;
+@property (nonatomic) UIImageView * publishFailed;
 
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
 #define POST_CELL_ID @"postCellId"
 #define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
-#define REBLOG_IMAGE @"Posted Icon 2"
+
 #define REBLOG_IMAGE_SIZE 150.f //when we put size it means both width and height
 #define REPOST_ANIMATION_DURATION 2.f
 @end
@@ -58,7 +63,26 @@
 	[self registerClassForCustomCells];
 	[self getPosts];
 	self.shouldPlayVideos = YES;
+    [self registerForNotifications];
 }
+
+
+-(void)registerForNotifications{
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(publishingFailedNotification:)
+                                                 name:NOTIFICATION_MEDIA_SAVING_FAILED
+                                               object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(successfullyPublishedNotification:)
+                                                 name:NOTIFICATION_POST_PUBLISHED
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(followingSuccesufulNotification:)
+                                                 name:NOTIFICATION_NOW_FOLLOWING_USER
+                                               object:nil];
+}
+
 
 -(void)viewDidAppear:(BOOL)animated{
 
@@ -195,7 +219,7 @@
 	PMKWhen(pageLoadPromises).then(^(id data){
 		[self sortOurPostList];
 		dispatch_async(dispatch_get_main_queue(), ^{
-			//prepare the first POV object
+			//prepare the first post object
 			if(self.shouldPlayVideos && !self.isReloading)[(PostView *)self.presentedPostList.firstObject postOnScreen];
 			[self.collectionView reloadData];
 			self.isReloading = NO;
@@ -251,8 +275,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	if(indexPath.row < self.presentedPostList.count){
 
-		PostView * povToPresent = self.presentedPostList[indexPath.row];
-		[nextCellToBePresented presentPOV:povToPresent];
+		PostView * postToPresent = self.presentedPostList[indexPath.row];
+		[nextCellToBePresented presentPostView:postToPresent];
 
 		if(indexPath.row == [self getVisibileCellIndex]){
 			[nextCellToBePresented onScreen];
@@ -278,7 +302,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return self.collectionView.contentOffset.x / self.view.frame.size.width;
 }
 
-//marks all POVs as off screen
+//marks all posts as off screen
 -(void) stopAllVideoContent{
 	self.shouldPlayVideos = NO;
 	for(PostView *post in self.presentedPostList){
@@ -286,7 +310,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
-//continues POV that's on screen
+//continues post that's on screen
 -(void) continueVideoContent{
 	self.shouldPlayVideos = YES;
 	if(self.presentedPostList.count > 0) {
@@ -300,8 +324,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) footerShowing: (BOOL) showing{
-	for(PostView * pov in self.presentedPostList){
-		[pov shiftLikeShareBarDown:!showing];
+	for(PostView *postView in self.presentedPostList){
+		[postView shiftLikeShareBarDown:!showing];
 	}
 }
 
@@ -311,7 +335,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	PostCollectionViewCell * visibleCell = [cellsVisible firstObject];
 	//somehow turn other cells off
 	[self turnOffCellsOffScreenWithVisibleCell:visibleCell];
-	[self prepareNextViewAfterVisibleIndex:[self.presentedPostList indexOfObject:visibleCell.ourCurrentPOV]];
+	[self prepareNextViewAfterVisibleIndex:[self.presentedPostList indexOfObject:visibleCell.currentPostView]];
 }
 
 
@@ -356,31 +380,31 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)presentShareSelectionViewStartOnChannels:(BOOL) startOnChannels{
-	if(self.sharePOVView){
-		[self.sharePOVView removeFromSuperview];
-		self.sharePOVView = nil;
+	if(self.sharePostView){
+		[self.sharePostView removeFromSuperview];
+		self.sharePostView = nil;
 	}
 
 	CGRect onScreenFrame = CGRectMake(0.f, self.view.frame.size.height/2.f, self.view.frame.size.width, self.view.frame.size.height/2.f);
 	CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
-	self.sharePOVView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
-	self.sharePOVView.delegate = self;
-	[self.view addSubview:self.sharePOVView];
-	[self.view bringSubviewToFront:self.sharePOVView];
+	self.sharePostView = [[SharePostView alloc] initWithFrame:offScreenFrame shouldStartOnChannels:startOnChannels];
+	self.sharePostView.delegate = self;
+	[self.view addSubview:self.sharePostView];
+	[self.view bringSubviewToFront:self.sharePostView];
 	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-		self.sharePOVView.frame = onScreenFrame;
+		self.sharePostView.frame = onScreenFrame;
 	}];
 }
 
 -(void)removeSharePOVView{
-	if(self.sharePOVView){
+	if(self.sharePostView){
 		CGRect offScreenFrame = CGRectMake(0.f, self.view.frame.size.height, self.view.frame.size.width, self.view.frame.size.height/2.f);
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			self.sharePOVView.frame = offScreenFrame;
+			self.sharePostView.frame = offScreenFrame;
 		}completion:^(BOOL finished) {
 			if(finished){
-				[self.sharePOVView removeFromSuperview];
-				self.sharePOVView = nil;
+				[self.sharePostView removeFromSuperview];
+				self.sharePostView = nil;
 			}
 		}];
 	}
@@ -414,12 +438,44 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}];
 }
 
+-(void)successfullyPublishedNotification:(NSNotification *) notification{
+    [self.view addSubview:self.publishSuccessful];
+    [self.view bringSubviewToFront:self.publishSuccessful];
+    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+        self.publishSuccessful.alpha = 0.f;
+    }completion:^(BOOL finished) {
+        [self.publishSuccessful removeFromSuperview];
+        self.publishSuccessful = nil;
+    }];
+}
+
+-(void)publishingFailedNotification:(NSNotification *) notification{
+    [self.view addSubview:self.publishFailed];
+    [self.view bringSubviewToFront:self.publishFailed];
+    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+        self.publishFailed.alpha = 0.f;
+    }completion:^(BOOL finished) {
+        [self.publishFailed removeFromSuperview];
+        self.publishFailed = nil;
+    }];
+}
+
+-(void)followingSuccesufulNotification:(NSNotification *) notification{
+    [self.view addSubview:self.following];
+    [self.view bringSubviewToFront:self.following];
+    [UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
+        self.following.alpha = 0.f;
+    }completion:^(BOOL finished) {
+        [self.following removeFromSuperview];
+        self.following = nil;
+    }];
+}
+
 -(void)sharePostWithComment:(NSString *) comment{
 	//todo--sierra
 	//code to share post to facebook etc
 
 	[self removeSharePOVView];
-
 }
 
 #pragma mark -POV delegate-
@@ -436,6 +492,37 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[_reblogSucessful setFrame:CGRectMake((self.view.frame.size.width/2.f)-REBLOG_IMAGE_SIZE/2.f, (self.view.frame.size.height/2.f) -REBLOG_IMAGE_SIZE/2.f, REBLOG_IMAGE_SIZE, REBLOG_IMAGE_SIZE)];
 	}
 	return _reblogSucessful;
+}
+
+
+-(UIImageView *)publishSuccessful{
+    if(!_publishSuccessful){
+        _publishSuccessful = [[UIImageView alloc] init];
+        [_publishSuccessful setImage:[UIImage imageNamed:SUCCESS_PUBLISHING_IMAGE]];
+        [_publishSuccessful setFrame:self.reblogSucessful.frame];
+        self.reblogSucessful = nil;
+    }
+    return _publishSuccessful;
+}
+
+-(UIImageView *)publishFailed{
+    if(!_publishFailed){
+        _publishFailed = [[UIImageView alloc] init];
+        [_publishFailed setImage:[UIImage imageNamed:FAILED_PUBLISHING_IMAGE]];
+        [_publishFailed setFrame:self.reblogSucessful.frame];
+        self.reblogSucessful = nil;
+    }
+    return _publishFailed;
+}
+
+-(UIImageView *)following{
+    if(!_following){
+        _following = [[UIImageView alloc] init];
+        [_following setImage:[UIImage imageNamed:FOLLOWING_SUCCESS_IMAGE]];
+        [_following setFrame:self.reblogSucessful.frame];
+        self.reblogSucessful = nil;
+    }
+    return _following;
 }
 
 -(LoadingIndicator *)customActivityIndicator{

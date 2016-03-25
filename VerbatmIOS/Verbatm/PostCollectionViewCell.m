@@ -26,16 +26,16 @@
     //[self.activityIndicator startAnimating];
     return self;
 }
--(void)presentPOV:(PostView *)pov{
-    if(pov != self.ourCurrentPost){
+-(void) presentPostView:(PostView *)postView{
+    if(postView != self.ourCurrentPost){
         [self.ourCurrentPost postOffScreen];
         [self.ourCurrentPost removeFromSuperview];
-        self.ourCurrentPost = pov;
+        self.ourCurrentPost = postView;
         [self addSubview:self.ourCurrentPost];
     }
 }
 
--(void)presentPost:(PFObject *) postObject{
+-(void) presentPost:(PFObject *) postObject{
     if(postObject != self.postBeingPresented){
         self.postBeingPresented = postObject;
         [Page_BackendObject getPagesFromPost:postObject andCompletionBlock:^(NSArray * pages) {

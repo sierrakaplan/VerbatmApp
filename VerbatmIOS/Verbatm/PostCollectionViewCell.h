@@ -13,12 +13,12 @@
 @interface PostCollectionViewCell : UICollectionViewCell
 
 -(void)presentPost:(PFObject *) postObject;
--(void)presentPOV:(PostView *)pov;
+-(void)presentPostView:(PostView *)postView;
 -(void)onScreen;
 -(void)offScreen;
 
 @property (nonatomic) BOOL isHomeProfileOrFeed;//profile of the current logged in user
-@property (nonatomic, readonly) PostView * ourCurrentPOV;
+@property (nonatomic, readonly) PostView *currentPostView;
 
 
 @end
