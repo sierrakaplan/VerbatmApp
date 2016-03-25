@@ -18,6 +18,7 @@
 @property (atomic, strong) AVPlayer* player;
 @property (atomic, strong) AVPlayerItem* playerItem;
 @property (atomic,strong) AVPlayerLayer* playerLayer;
+@property (strong) AVMutableComposition* fusedVideoAsset;
 
 #pragma mark Video Playback properties
 @property (nonatomic, readwrite) BOOL videoLoading;
@@ -40,6 +41,7 @@
 
 -(instancetype)initWithFrame:(CGRect)frame {
     if((self  = [super initWithFrame:frame])) {
+		self.fusedVideoAsset = nil;
         self.repeatsVideo = NO;
         self.videoLoading = NO;
 		self.shouldPlayOnLoad = NO;
@@ -62,53 +64,45 @@
 
 #pragma mark - Prepare Video Asset -
 
--(void)prepareVideoFromArray: (NSArray*) videoList {
+-(void) prepareVideoFromArray: (NSArray*) videoList {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
 		dispatch_async(dispatch_get_main_queue(), ^{
 			if (!self.videoLoading) {
 				self.videoLoading = YES;
 			}
 		});
-		AVMutableComposition* fusedVideoAsset = [self fuseAssets:videoList];
+		[self fuseAssets: videoList];
 		dispatch_async(dispatch_get_main_queue(), ^{
-			[self prepareVideoFromAsset: fusedVideoAsset];
+			[self prepareVideoFromAsset: self.fusedVideoAsset];
 		});
 	});
 }
 
--(void)prepareVideoFromAsset_synchronous: (AVAsset*) asset{
-	if (!self.videoLoading) {
-		self.videoLoading = YES;
-	}
-
-	if (asset) {
-		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
-	}
-}
-
--(void)prepareVideoFromURL_synchronous: (NSURL*) url{
-	if (!self.videoLoading) {
-		self.videoLoading = YES;
-	}
-
-	if (url) {
-		AVPlayerItem *playerItem;
-		if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
-			playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
-		}else{
-			playerItem = [AVPlayerItem playerItemWithURL: url];
-		}
-
-		[self prepareVideoFromPlayerItem: playerItem];
-	}
-}
-
 -(void)prepareVideoFromAsset: (AVAsset*) asset{
+	if (!asset) return;
+
+	if (!self.videoLoading) {
+		self.videoLoading = YES;
+	}
+
 	[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
 }
 
 -(void)prepareVideoFromURL: (NSURL*) url{
-	[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithURL: url]];
+	if (!url) return;
+
+	if (!self.videoLoading) {
+		self.videoLoading = YES;
+	}
+
+	AVPlayerItem *playerItem;
+	if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
+		playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
+	}else{
+		playerItem = [AVPlayerItem playerItemWithURL: url];
+	}
+
+	[self prepareVideoFromPlayerItem: playerItem];
 }
 
 -(void) prepareVideoFromPlayerItem:(AVPlayerItem*)playerItem {
@@ -201,10 +195,12 @@
 //This code fuses the video assets into a single video that plays the videos one after the other.
 //It accepts both avassets and urls which it converts into assets
 -(AVMutableComposition*) fuseAssets:(NSArray*)videoList {
-
-	AVMutableComposition* fusedVideos = [AVMutableComposition composition]; //create a composition to hold the joined assets
-	AVMutableCompositionTrack* videoTrack = [fusedVideos addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-	AVMutableCompositionTrack* audioTrack = [fusedVideos addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+	if (self.fusedVideoAsset) return self.fusedVideoAsset;
+	self.fusedVideoAsset = [AVMutableComposition composition]; //create a composition to hold the joined assets
+	AVMutableCompositionTrack* videoTrack = [self.fusedVideoAsset addMutableTrackWithMediaType:AVMediaTypeVideo
+																			  preferredTrackID:kCMPersistentTrackID_Invalid];
+	AVMutableCompositionTrack* audioTrack = [self.fusedVideoAsset addMutableTrackWithMediaType:AVMediaTypeAudio
+																			  preferredTrackID:kCMPersistentTrackID_Invalid];
 	CMTime nextClipStartTime = kCMTimeZero;
 	NSError* error;
 	for(id asset in videoList) {
@@ -231,7 +227,7 @@
 	if (error) {
 		NSLog(@"Error fusing video assets: %@", error.description);
 	}
-	return fusedVideos;
+	return self.fusedVideoAsset;
 }
 
 #pragma mark - Play video -
