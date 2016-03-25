@@ -170,11 +170,13 @@
 		if (self.playerItem.status == AVPlayerItemStatusReadyToPlay) {
 			NSLog(@"Video ready to play");
 			if (self.videoLoading) {
+				[self.customActivityIndicator stopCustomActivityIndicator];
 				self.videoLoading = NO;
 			}
 		} else if (self.playerItem.status == AVPlayerItemStatusFailed) {
 			NSLog(@"video couldn't play: %@", self.playerItem.error);
 			if (self.videoLoading) {
+				[self.customActivityIndicator stopCustomActivityIndicator];
 				self.videoLoading = NO;
 			}
 		}
@@ -182,8 +184,14 @@
 	if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
 		if (self.playerItem.playbackLikelyToKeepUp) {
 			NSLog(@"play back will keep up");
+			if (self.videoLoading) {
+				[self.customActivityIndicator stopCustomActivityIndicator];
+				self.videoLoading = NO;
+			}
 			[self playVideo];
 		} else {
+			[self.customActivityIndicator startCustomActivityIndicator];
+			self.videoLoading = YES;
 			NSLog(@"play back won't keep up");
 		}
 	}
