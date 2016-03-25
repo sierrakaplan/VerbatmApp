@@ -1159,13 +1159,6 @@
 			name = Analytics;
 			sourceTree = "<group>";
 		};
-		C71833161CA36147009A13C5 /* POV ListViews-- feed and profile */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = "POV ListViews-- feed and profile";
-			sourceTree = "<group>";
-		};
 		C745B4301BBA631000D18944 /* Permission  */ = {
 			isa = PBXGroup;
 			children = (
@@ -1291,7 +1284,6 @@
 				C7F79E7F1C3AACC600319330 /* CreateNewChannelView.m */,
 				C7996CC11C8FCF74002E5DA6 /* LoadingIndicator.h */,
 				C7996CC21C8FCF74002E5DA6 /* LoadingIndicator.m */,
-				C71833161CA36147009A13C5 /* POV ListViews-- feed and profile */,
 			);
 			name = "Custom Views";
 			sourceTree = "<group>";

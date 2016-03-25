@@ -19,11 +19,10 @@
 	if(self) {
 		self.frame = frame;
 		[self createButtons];
-        self.backgroundColor = [UIColor clearColor];
+        self.backgroundColor = [UIColor whiteWith];
 	}
 	return self;
 }
-
 
 -(void) createButtons {
 	CGRect doneButtonFrame = CGRectMake(self.frame.size.width - TEXT_TOOLBAR_BUTTON_WIDTH, 0.f, TEXT_TOOLBAR_BUTTON_WIDTH, self.frame.size.height - TEXT_TOOLBAR_BUTTON_OFFSET);
