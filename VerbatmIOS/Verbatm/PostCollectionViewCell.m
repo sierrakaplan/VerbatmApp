@@ -6,6 +6,7 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Like_BackendManager.h"
 #import <Parse/PFObject.h>
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
@@ -47,8 +48,10 @@
             [self.ourCurrentPost scrollToPageAtIndex:0];//this prepares the
             
             NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
-			//todo:
-//            [self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+			[Like_BackendManager numberOfLikesForPost:postObject withCompletionBlock:^(NSNumber *numLikes) {
+				//todo: shares
+				[self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:0 numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+			}];
         }];
     }
 }

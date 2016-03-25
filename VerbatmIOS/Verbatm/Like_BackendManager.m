@@ -62,8 +62,19 @@
             else block(NO);
         }
     }];
-    
+}
 
++(void) numberOfLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(NSNumber*)) block {
+	PFQuery *numLikesQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+	[numLikesQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
+	[numLikesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+														  NSError * _Nullable error) {
+		if(objects && !error) {
+			block ([NSNumber numberWithInteger:objects.count]);
+			return;
+		}
+		block ([NSNumber numberWithInt: 0]);
+	}];
 }
 
 @end

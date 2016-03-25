@@ -134,7 +134,6 @@
 	//todo: load a list of users that have shared this post then reload the list
 }
 
-
 //show which users are being followed by userId
 -(void)presentWhoIsFollowedBy:(id)userId {
 	//todo:

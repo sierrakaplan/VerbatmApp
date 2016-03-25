@@ -10,6 +10,7 @@
 #import "Channel.h"
 
 @interface Follow_BackendManager : NSObject
+
 +(void)currentUserFollowChannel:(Channel *) channelToFollow;
 +(void)currentUserStopFollowingChannel:(Channel *) channelToUnfollow;
 //tests to see if the logged in user follows this channel

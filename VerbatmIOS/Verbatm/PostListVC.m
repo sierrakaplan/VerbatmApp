@@ -12,6 +12,7 @@
 
 #import "FeedQueryManager.h"
 
+#import "Like_BackendManager.h"
 #import "LoadingIndicator.h"
 
 #import "Notifications.h"
@@ -192,11 +193,11 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 				NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 
-				//todo:
-//				[postView createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares
-//												   numberOfPages:numberOfPostPages
-//										   andStartingPageNumber:@(1)
-//														 startUp:self.isHomeProfileOrFeed];
+				[Like_BackendManager numberOfLikesForPost:post withCompletionBlock:^(NSNumber *numLikes) {
+					//todo: shares
+					[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:0 numberOfPages:numberOfPages
+											   andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+				}];
 				[postView renderPostFromPages:pages];
 				[postView postOffScreen];
 				postView.delegate = self;

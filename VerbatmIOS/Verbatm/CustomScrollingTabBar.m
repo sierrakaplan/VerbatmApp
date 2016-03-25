@@ -202,7 +202,7 @@
         ((UIView *)currentButton).frame = CGRectMake(originDiff, ((UIView *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);
         
         if(self.isLoggedInUser && [currentButton isKindOfClass:[ChannelButtons class]]){
-            [(ChannelButtons *)currentButton  recenterTextLables];
+            [(ChannelButtons *)currentButton recenterTextLabels];
         }
         
         [currentButton setNeedsDisplay];
