@@ -105,36 +105,40 @@
 	if (!_textColorButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_textColorButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:BLACK_FONT_ICON
+										andSelector:@selector(textColorButtonPressed)];
 	}
 	return _textColorButton;
 }
 
-- (UIButton *) textSizeBiggerButton {
-	if (!_textSizeBiggerButton) {
+- (UIButton *) textSizeIncreaseButton {
+	if (!_textSizeIncreaseButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_textSizeBiggerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		_textSizeIncreaseButton = [self getButtonWithFrame:buttonFrame andIcon:INCREASE_FONT_SIZE_ICON
+											 andSelector:@selector(textSizeIncreaseButtonPressed)];
 
 	}
-	return _textSizeBiggerButton;
+	return _textSizeIncreaseButton;
 }
 
-- (UIButton *) textSizeSmallerButton {
-	if (!_textSizeSmallerButton) {
+- (UIButton *) textSizeDecreaseButton {
+	if (!_textSizeDecreaseButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_textSizeSmallerButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		_textSizeDecreaseButton = [self getButtonWithFrame:buttonFrame andIcon:DECREASE_FONT_SIZE_ICON
+											   andSelector:@selector(textSizeDecreaseButtonPressed)];
 
 	}
-	return _textSizeSmallerButton;
+	return _textSizeDecreaseButton;
 }
 
 - (UIButton *) leftAlignButton {
 	if (!_leftAlignButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_leftAlignButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		_leftAlignButton = [self getButtonWithFrame:buttonFrame andIcon:LEFT_ALIGN_ICON
+										andSelector:@selector(leftAlignButtonPressed)];
 
 	}
 	return _leftAlignButton;
@@ -144,7 +148,8 @@
 	if (!_centerAlignButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_centerAlignButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		_centerAlignButton = [self getButtonWithFrame:buttonFrame andIcon:CENTER_ALIGN_ICON
+											 andSelector:@selector(centerAlignButtonPressed)];
 
 	}
 	return _centerAlignButton;
@@ -154,7 +159,8 @@
 	if (!_rightAlignButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_rightAlignButton = [self getButtonWithFrame:buttonFrame andIcon:RIGHT_ALIGN_ICON andSelector:@selector(rightAlignButtonPressed)]
+		_rightAlignButton = [self getButtonWithFrame:buttonFrame andIcon:RIGHT_ALIGN_ICON
+										 andSelector:@selector(rightAlignButtonPressed)];
 
 	}
 	return _rightAlignButton;
