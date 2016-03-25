@@ -160,8 +160,6 @@
 }
 
 -(void) getVideosFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
-
-
 	[Video_BackendObject getVideosForPage:page andCompletionBlock:^(NSArray * pfVideoObjectArray) {
 		NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
 		//get thumbnail urls for all videos
@@ -180,17 +178,12 @@
 				NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
 				NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];
 				components.queryItems = @[blobKey];
-				NSLog(@"Requesting blobstore video with url: %@", components.URL.absoluteString);
 
 				UIImage * thumbNail;
-
 				if(i < videoThumbNails.count){
 					thumbNail = [UIImage imageWithData:videoThumbNails[i]];
-
 				}
-
 				if(thumbNail){
-
 					[finalVideoObjects addObject: @[components.URL, @"", @(0),thumbNail]];
 					[finalVideoUrls addObject:components.URL];
 				}else{
@@ -199,12 +192,13 @@
 				}
 			}
 
-			//register the videos in our video
 			if(finalVideoUrls.count >1){
-				[[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:finalVideoUrls];
+				//todo:
+//				[[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:finalVideoUrls];
 			}else{
-				[[VideoDownloadManager sharedInstance] prepareVideoFromURL_synchronous:[finalVideoUrls firstObject]];
+				[[VideoDownloadManager sharedInstance] downloadURL:[finalVideoUrls firstObject]];
 			}
+
 			block(finalVideoObjects);
 		}];
 

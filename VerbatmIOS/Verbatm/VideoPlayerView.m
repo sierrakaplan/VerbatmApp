@@ -40,37 +40,45 @@
 @implementation VideoPlayerView
 
 -(instancetype)initWithFrame:(CGRect)frame {
-    if((self  = [super initWithFrame:frame])) {
+	if((self  = [super initWithFrame:frame])) {
 		self.fusedVideoAsset = nil;
-        self.repeatsVideo = NO;
-        self.videoLoading = NO;
+		self.repeatsVideo = NO;
+		self.videoLoading = NO;
 		self.shouldPlayOnLoad = NO;
-        self.clearsContextBeforeDrawing = YES;
-        self.isMuted = false;
-        [self setBackgroundColor:[UIColor clearColor]];
-        
-    }
-    return self;
+		self.clearsContextBeforeDrawing = YES;
+		self.isMuted = false;
+		[self setBackgroundColor:[UIColor clearColor]];
+
+	}
+	return self;
 }
 
 #pragma mark - Format subviews -
 
 //make sure the sublayer resizes with the view screen
 - (void)layoutSubviews {
-    if (self.playerLayer) {
-        self.playerLayer.frame = self.bounds;
-    }
+	if (self.playerLayer) {
+		self.playerLayer.frame = self.bounds;
+	}
 }
 
 #pragma mark - Prepare Video Asset -
 
 -(void) prepareVideoFromArray: (NSArray*) videoList {
+	self.videoLoading = YES;
+	if ([[videoList firstObject] isKindOfClass:[NSURL class]]) {
+		NSURL *urlKey = [videoList firstObject];
+		if([[VideoDownloadManager sharedInstance] containsEntryForUrl:urlKey]) {
+			AVPlayerItem *playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl:urlKey.absoluteString];
+			[self prepareVideoFromPlayerItem:playerItem];
+			return;
+		}
+	}
+	[self fuseVideoArray: videoList];
+}
+
+-(void) fuseVideoArray: (NSArray*) videoList {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
-		dispatch_async(dispatch_get_main_queue(), ^{
-			if (!self.videoLoading) {
-				self.videoLoading = YES;
-			}
-		});
 		[self fuseAssets: videoList];
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self prepareVideoFromAsset: self.fusedVideoAsset];
@@ -133,33 +141,35 @@
 	if (self.isVideoPlaying) {
 		return;
 	}
+	if (self.playerItem == NULL) {
 
-    self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
-    self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
-    // Create an AVPlayerLayer using the player
-    if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
-    self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
-    self.playerLayer.frame = self.bounds;
-    self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
-    [self.playerLayer removeAllAnimations];
-    
-    self.player.muted = self.isMuted;
-    
-    if(![NSThread isMainThread]){
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self presentNewLayers];
-        });
-    } else {
-        [self presentNewLayers];
-    }
+	}
+	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
+	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
+	// Create an AVPlayerLayer using the player
+	if(self.playerLayer)[self.playerLayer removeFromSuperlayer];
+	self.playerLayer = [AVPlayerLayer playerLayerWithPlayer:self.player];
+	self.playerLayer.frame = self.bounds;
+	self.playerLayer.videoGravity =  AVLayerVideoGravityResizeAspectFill;
+	[self.playerLayer removeAllAnimations];
+
+	self.player.muted = self.isMuted;
+
+	if(![NSThread isMainThread]){
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self presentNewLayers];
+		});
+	} else {
+		[self presentNewLayers];
+	}
 	if (self.shouldPlayOnLoad) [self playVideo];
 	self.shouldPlayOnLoad = NO;
 }
 
 -(void)presentNewLayers{
-    // Add it to your view's sublayers
-    if(self.playerLayer)[self.layer addSublayer:self.playerLayer];
-    if(self.customActivityIndicator)[self.customActivityIndicator startCustomActivityIndicator];
+	// Add it to your view's sublayers
+	if(self.playerLayer)[self.layer addSublayer:self.playerLayer];
+	if(self.customActivityIndicator)[self.customActivityIndicator startCustomActivityIndicator];
 }
 
 #pragma mark - Observe player item status -
@@ -302,52 +312,52 @@
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
-    @autoreleasepool {
-        if (self.videoLoading) {
-            self.videoLoading = NO;
-        }
-        [self.customActivityIndicator stopCustomActivityIndicator];
-        
-        for (UIView* view in self.subviews) {
-            [view removeFromSuperview];
-        }
-        @autoreleasepool {
-            [self removePlayerItemObservers];
-            self.layer.sublayers = nil;
-            [self.playerLayer removeFromSuperlayer];
-            self.layer.sublayers = nil;
-        }
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            @autoreleasepool {
-                self.playerItem = nil;
-                self.player = nil;
-                self.playerLayer = nil;
-                self.isVideoPlaying = NO;
-                [self.ourTimer invalidate];
-                self.ourTimer = nil;
-                
-            }
-        });
-    }
+	@autoreleasepool {
+		if (self.videoLoading) {
+			self.videoLoading = NO;
+		}
+		[self.customActivityIndicator stopCustomActivityIndicator];
+
+		for (UIView* view in self.subviews) {
+			[view removeFromSuperview];
+		}
+		@autoreleasepool {
+			[self removePlayerItemObservers];
+			self.layer.sublayers = nil;
+			[self.playerLayer removeFromSuperlayer];
+			self.layer.sublayers = nil;
+		}
+		dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+			@autoreleasepool {
+				self.playerItem = nil;
+				self.player = nil;
+				self.playerLayer = nil;
+				self.isVideoPlaying = NO;
+				[self.ourTimer invalidate];
+				self.ourTimer = nil;
+
+			}
+		});
+	}
 }
 
 -(void) removePlayerItemObservers {
-    @try {
-        [self.playerItem removeObserver:self forKeyPath:@"status"];
+	@try {
+		[self.playerItem removeObserver:self forKeyPath:@"status"];
 		[self.playerItem removeObserver:self forKeyPath:@"playbackLikelyToKeepUp"];
-    } @catch(id anException){
-        //do nothing, obviously they weren't attached because an exception was thrown
-    }
+	} @catch(id anException){
+		//do nothing, obviously they weren't attached because an exception was thrown
+	}
 }
 
 #pragma mark - Lazy Instantation -
 
 -(LoadingIndicator *)customActivityIndicator{
-    if(!_customActivityIndicator){
-        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:self.center];
-        [self addSubview:_customActivityIndicator];
-    }
-    return _customActivityIndicator;
+	if(!_customActivityIndicator){
+		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:self.center];
+		[self addSubview:_customActivityIndicator];
+	}
+	return _customActivityIndicator;
 }
 
 @end

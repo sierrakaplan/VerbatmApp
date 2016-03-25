@@ -14,12 +14,14 @@
 
 @interface VideoDownloadManager : NSObject
 
-    +(instancetype)sharedInstance;
-    -(void)prepareVideoFromURL_synchronous: (NSURL*) url;
-    -(void)prepareVideoFromAsset_synchronous: (NSArray *) urlArray;
-    //removes reference to the playr item
-    -(AVPlayerItem *) getVideoForUrl:(NSString *) urlString;
-    //check if there is an entry for this url
-    //if it's a list give the first entry
-    -(BOOL)containsEntryForUrl:(NSURL *) url;
++(instancetype)sharedInstance;
+
+-(void) downloadURL: (NSURL*) url;
+
+-(AVPlayerItem *) getVideoForUrl:(NSString *) urlString;
+
+//check if there is an entry for this url
+//if it's a list give the first entry
+-(BOOL)containsEntryForUrl:(NSURL *) url;
+
 @end

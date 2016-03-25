@@ -181,7 +181,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 }
 
 -(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
-
+	//todo
 	NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
 
 	for(PFObject * pc_activity in backendPostObjects) {

@@ -93,7 +93,6 @@
 
 -(void)prepareVideos:(NSArray*)videoList {
 	if (!videoList.count) return;
-	//TODO: remove this
 	if (videoList.count == 1) {
 		[self.videoPlayer prepareVideoFromURL: videoList[0]];
 	} else {
