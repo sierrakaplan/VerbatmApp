@@ -238,12 +238,14 @@
         }else if (indexPath.row > 0){
             NSInteger objectIndex = (indexPath.row -1);
             Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
-            NSString *userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
+			PFObject *creator = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+            NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
             [cell setChannelName:channel.name andUserName: userName];
         }
     }else{
         Channel * channel = [self.channelsToDisplay objectAtIndex:indexPath.row];
-        NSString * userName = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] valueForKey:VERBATM_USER_NAME_KEY];
+		PFObject *creator = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+		NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
         [cell setChannelName:channel.name andUserName: userName];
     }
     
