@@ -175,17 +175,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
     [self loadChannelsAndCreateTicker];
 }
 
-
-
 -(void)loadChannelsAndCreateTicker{
-	//todo: delete?
-//    [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:
-//     ^(NSMutableArray * channels) {
-//         self.userChannels = channels;
-//         [self formatTitle];
-//         [self createBaseSelector];
-//         [self loadPostFromUserDefaults];
-//    }];
 
 	self.userChannels = [NSMutableArray arrayWithArray:[[UserInfoCache sharedInstance] getUserChannels]];
     

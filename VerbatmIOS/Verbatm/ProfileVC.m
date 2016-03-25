@@ -52,8 +52,6 @@
 @property (nonatomic, strong) NSProgress* publishingProgress;
 @property (nonatomic, strong) UIProgressView* progressBar;
 
-#define PROFILE_BACKGROUND_IMAGE @"d1" //todo:
-
 @end
 
 @implementation ProfileVC

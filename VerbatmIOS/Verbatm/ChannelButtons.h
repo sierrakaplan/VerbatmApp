@@ -28,6 +28,7 @@
 -(void) markButtonAsSelected;
 -(void) markButtonAsUnselected;
 
--(void)recenterTextLables; //todo: what?
+-(void) recenterTextLabels;
+
 @end
 

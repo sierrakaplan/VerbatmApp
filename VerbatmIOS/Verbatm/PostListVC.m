@@ -181,7 +181,6 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 }
 
 -(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
-	//todo
 	NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
 
 	for(PFObject * pc_activity in backendPostObjects) {
@@ -190,18 +189,14 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 				PostView *postView = [[PostView alloc] initWithFrame:self.view.bounds];
 				postView.parsePostChannelActivityObject = pc_activity;
-				NSNumber * numberOfPostLikes =
-				[post valueForKey:POST_LIKES_NUM_KEY];
-				NSNumber * numberOfPostShares =
-				[post valueForKey:POST_NUM_SHARES_KEY];
 
-				NSNumber * numberOfPostPages =
-				[NSNumber numberWithInteger:pages.count];
+				NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 
-				[postView createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares
-												   numberOfPages:numberOfPostPages
-										   andStartingPageNumber:@(1)
-														 startUp:self.isHomeProfileOrFeed];
+				//todo:
+//				[postView createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares
+//												   numberOfPages:numberOfPostPages
+//										   andStartingPageNumber:@(1)
+//														 startUp:self.isHomeProfileOrFeed];
 				[postView renderPostFromPages:pages];
 				[postView postOffScreen];
 				postView.delegate = self;

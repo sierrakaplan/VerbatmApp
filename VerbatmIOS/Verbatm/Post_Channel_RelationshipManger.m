@@ -72,7 +72,6 @@
                 NSString *channelName  = [postOriginalChannel valueForKey:CHANNEL_NAME_KEY];
 				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName andParseChannelObject:postOriginalChannel];
 				block(verbatmChannelObject);
-				//todo: store num followers in Channel object
             }
         }];
     }];

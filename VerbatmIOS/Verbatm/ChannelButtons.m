@@ -32,7 +32,7 @@
 @property (nonatomic, readwrite) Channel *currentChannel;
 
 @property (nonatomic) UIButton *followButton;
-@property (nonatomic) BOOL isFollowigProfileUser; //todo: change spelling?
+@property (nonatomic) BOOL isFollowingProfileUser;
 @property (nonatomic) BOOL isLoggedInUser;
 @property (nonatomic) BOOL buttonSelected;
 @end
@@ -146,7 +146,7 @@
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
     
     UIImage * buttonImage = [UIImage imageNamed:((areFollowing) ? FOLLOW_ICON_IMAGE_SELECTED : FOLLOW_ICON_IMAGE_UNSELECTED)];
-    self.isFollowigProfileUser = areFollowing;
+    self.isFollowingProfileUser = areFollowing;
     self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
     [self.followButton setImage:buttonImage forState:UIControlStateNormal];
     [self.followButton addTarget:self action:@selector(followOrFollowersSelected) forControlEvents:UIControlEventTouchUpInside];
@@ -155,15 +155,15 @@
 
 -(void) followOrFollowersSelected {
     if(self.buttonSelected){//you can only follow a channel if you're on it
-        if(self.isFollowigProfileUser){
-            self.isFollowigProfileUser = NO;
+        if(self.isFollowingProfileUser){
+            self.isFollowingProfileUser = NO;
             [Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
         }else{
-            self.isFollowigProfileUser = YES;
+            self.isFollowingProfileUser = YES;
             [Follow_BackendManager currentUserFollowChannel:self.currentChannel];
             
         }
-        [self registerFollowActivityIsFollowing:self.isFollowigProfileUser];
+        [self registerFollowActivityIsFollowing:self.isFollowingProfileUser];
         
        
     }else{
@@ -316,7 +316,7 @@
 //1) if in current user profile so there's no follow icon
 //2)if in general user profile and there's only one channel
 
--(void)recenterTextLables{
+-(void)recenterTextLabels {
     [self centerViewFrame_XCord:self.channelNameLabel];
     [self centerViewFrame_XCord:self.numberOfFollowersLabel];
 }

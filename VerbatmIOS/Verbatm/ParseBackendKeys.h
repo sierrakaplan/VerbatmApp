@@ -31,8 +31,6 @@
 #define PHOTO_INDEX_KEY @"PhotoIndex"
 #define PHOTO_USER_KEY @"UsersPhoto"
 
-
-
 #define VIDEO_INDEX_KEY @"VideoIndex" //if we have multiple videos how they are organized
 #define VIDEO_PFCLASS_KEY @"VideoClass"
 #define User_Key @"user"
@@ -48,8 +46,6 @@
 #define POST_PFCLASS_KEY @"PostClass"
 #define POST_CHANNEL_KEY @"ChannelForPost" //the channel the post lives in
 #define POST_SIZE_KEY @"PostSize" //number of pages on this post
-#define POST_LIKES_NUM_KEY @"NumberOfLikes"
-#define POST_NUM_SHARES_KEY @"NumberOfShares" //number of times this post has been shared
 #define POST_ORIGINAL_CREATOR_KEY @"OriginalCreator" //Original creator or post
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
@@ -57,8 +53,6 @@
 #define POST_CHANNEL_ACTIVITY_CLASS  @"PostChannelActivityClass"
 #define POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO @"PostChannelActivityChannelPosted"//channel that post is posted in 
 #define POST_CHANNEL_ACTIVITY_POST @"PostChannelActivityPost"
-
-
 
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"
 #define CHANNEL_NAME_KEY @"ChannelName"

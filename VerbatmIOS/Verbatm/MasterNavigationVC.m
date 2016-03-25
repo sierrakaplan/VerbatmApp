@@ -386,7 +386,6 @@
     }
 }
 
-
 -(void)channelSelectedToPresent:(Channel *) channel{
 	//todo
 }

@@ -38,8 +38,6 @@
 -(PFObject * ) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel{
 	PFObject * newPostObject = [PFObject objectWithClassName:POST_PFCLASS_KEY];
 	[newPostObject setObject:channel.parseChannelObject forKey:POST_CHANNEL_KEY];
-	[newPostObject setObject:[NSNumber numberWithInt:0] forKey:POST_LIKES_NUM_KEY];
-	[newPostObject setObject:[NSNumber numberWithInt:0] forKey:POST_NUM_SHARES_KEY];
 	[newPostObject setObject:[PFUser currentUser] forKey:POST_ORIGINAL_CREATOR_KEY];
 	[newPostObject setObject:[NSNumber numberWithInteger:pinchViews.count] forKey:POST_SIZE_KEY];
 	//[newPostObject setObject:[NSNumber numberWithBool:false] forKey:POST_COMPLETED_SAVING];//mark as not done saving yet

@@ -46,10 +46,9 @@
             [self.ourCurrentPost renderPostFromPages:pages];
             [self.ourCurrentPost scrollToPageAtIndex:0];//this prepares the
             
-            NSNumber * numberOfPostLikes = [postObject valueForKey:POST_LIKES_NUM_KEY];
-            NSNumber * numberOfPostShares = [postObject valueForKey:POST_NUM_SHARES_KEY];
             NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
-            [self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+			//todo:
+//            [self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numberOfPostLikes numberOfShares:numberOfPostShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
         }];
     }
 }

@@ -10,41 +10,25 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
 #import <Parse/PFQuery.h>
+
 @implementation Like_BackendManager
 
 +(void)currentUserLikePost:(PFObject *) postParseObject{
-    
-    NSNumber * currentLikes = [postParseObject valueForKey:POST_LIKES_NUM_KEY];
-    int likes = currentLikes.intValue;
-    likes++;
-    [postParseObject setValue:[NSNumber numberWithInt:likes] forKey:POST_LIKES_NUM_KEY];
-    
-    //we first save the number on the post then we save the relationship in our table
+
     [postParseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){
             NSLog(@"Saved like relationship");
-            PFObject * newFollowObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
-            [newFollowObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
-            [newFollowObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
-            [newFollowObject saveInBackground];
+            PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
+            [newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
+            [newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
+            [newLikeObject saveInBackground];
         }
     }];
    
 }
 
-
-
-
-+(void)currentUserStopLikingPost:(PFObject *) postParseObject{
++ (void)currentUserStopLikingPost:(PFObject *) postParseObject{
     
-    NSNumber * currentLikes = [postParseObject valueForKey:POST_LIKES_NUM_KEY];
-    int likes = currentLikes.intValue;
-    likes--;
-    if(likes < 0) likes = 0;
-    
-    [postParseObject setValue:[NSNumber numberWithInt:likes] forKey:POST_LIKES_NUM_KEY];
-    
-    //we first save the number on the post then we save the relationship in our table
     [postParseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){
             PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
@@ -54,8 +38,8 @@
                                                                  NSError * _Nullable error) {
                 if(objects && !error) {
                     if(objects.count){
-                        PFObject * followObj = [objects firstObject];
-                        [followObj deleteInBackground];
+                        PFObject *likeObject = [objects firstObject];
+                        [likeObject deleteInBackground];
                         NSLog(@"Deleted like relationship");
                     }
                 }
@@ -81,7 +65,5 @@
     
 
 }
-
-
 
 @end
