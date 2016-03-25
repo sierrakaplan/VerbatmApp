@@ -459,19 +459,19 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 	if(!self.hasBeenSetUp){
 		[self.videoView prepareVideoFromArray:self.videoAssets];
 		[self.videoView playVideo];
-		self.hasBeenSetUp = YES;
-	} else{
+	}else{
 		[self.videoView playVideo];
+		self.hasBeenSetUp = YES;
 	}
 }
 
 -(void)almostOnScreen{
-	if(self.videoAssets && !self.hasBeenSetUp){
+	if(self.videoAssets){
+		[self.videoView stopVideo];
 		[self.videoView prepareVideoFromArray:self.videoAssets];
-		self.hasBeenSetUp = YES;
 	}
+	self.hasBeenSetUp = YES;
 }
-
 
 #pragma mark - Lazy Instantiation -
 

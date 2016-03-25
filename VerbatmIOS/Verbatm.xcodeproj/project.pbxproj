@@ -34,7 +34,7 @@
 		A560EFB81BB0AF70003FB041 /* LoginView.m in Sources */ = {isa = PBXBuildFile; fileRef = A560EFB71BB0AF70003FB041 /* LoginView.m */; };
 		A562D50D1B506D2800F566F4 /* VideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = A562D50C1B506D2800F566F4 /* VideoPlayerView.m */; };
 		A56B5D1D1CA49A8100A61D27 /* UserInfoCache.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */; };
-		A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */; };
+		A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m */; };
 		A56B5D231CA49D0E00A61D27 /* Like_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */; };
 		A56B5D261CA4A24300A61D27 /* User_BackendObject.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D251CA4A24300A61D27 /* User_BackendObject.m */; };
 		A56B5D291CA4D39400A61D27 /* Share_BackendManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A56B5D281CA4D39400A61D27 /* Share_BackendManager.m */; };
@@ -298,8 +298,8 @@
 		A562D50E1B506D4500F566F4 /* VideoPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VideoPlayerView.h; sourceTree = "<group>"; };
 		A56B5D1B1CA49A8100A61D27 /* UserInfoCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserInfoCache.h; sourceTree = "<group>"; };
 		A56B5D1C1CA49A8100A61D27 /* UserInfoCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserInfoCache.m; sourceTree = "<group>"; };
-		A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post_Channel_RelationshipManger.h; sourceTree = "<group>"; };
-		A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post_Channel_RelationshipManger.m; sourceTree = "<group>"; };
+		A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Post_Channel_RelationshipManager.h; sourceTree = "<group>"; };
+		A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Post_Channel_RelationshipManager.m; sourceTree = "<group>"; };
 		A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Like_BackendManager.h; sourceTree = "<group>"; };
 		A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Like_BackendManager.m; sourceTree = "<group>"; };
 		A56B5D241CA4A24300A61D27 /* User_BackendObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User_BackendObject.h; sourceTree = "<group>"; };
@@ -760,8 +760,8 @@
 				C7BF1AB11C59D6BF00CEDE4B /* Channel_BackendObject.m */,
 				A56B5D241CA4A24300A61D27 /* User_BackendObject.h */,
 				A56B5D251CA4A24300A61D27 /* User_BackendObject.m */,
-				A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.h */,
-				A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m */,
+				A56B5D1E1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.h */,
+				A56B5D1F1CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m */,
 				A56B5D211CA49D0E00A61D27 /* Like_BackendManager.h */,
 				A56B5D221CA49D0E00A61D27 /* Like_BackendManager.m */,
 				A56B5D271CA4D39400A61D27 /* Share_BackendManager.h */,
@@ -1785,7 +1785,7 @@
 				C7E65F6F1B92EB650042AD99 /* PostView.m in Sources */,
 				C755DB0C1C74619200136F6E /* PublishingProgressManager.m in Sources */,
 				A5AA31BF1B9FCDDC00D8D20C /* GTLVerbatmAppImage.m in Sources */,
-				A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManger.m in Sources */,
+				A56B5D201CA49B1E00A61D27 /* Post_Channel_RelationshipManager.m in Sources */,
 				A5E85FA31B911DA900E148D0 /* GTLUtilities.m in Sources */,
 				A5B0A81B1C0E63D60062D7BF /* PageViewingExperience.m in Sources */,
 				F266F3F11A4A6AE200EA0327 /* PageTypeAnalyzer.m in Sources */,

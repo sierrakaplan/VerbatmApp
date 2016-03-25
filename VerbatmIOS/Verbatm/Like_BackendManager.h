@@ -12,7 +12,8 @@
 
 +(void) currentUserLikePost:(PFObject *) postParseObject;
 +(void) currentUserStopLikingPost:(PFObject *) postParseObject;
-//tests to see if the logged in user follows this channel
+
+//tests to see if the logged in user likes this post
 +(void) currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block;
 
 +(void) numberOfLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(NSNumber*)) block;

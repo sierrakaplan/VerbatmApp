@@ -8,14 +8,14 @@
 //
 
 #import "Follow_BackendManager.h"
-#import "Post_Channel_RelationshipManger.h"
+#import "Post_Channel_RelationshipManager.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
 #import <Parse/PFUser.h>
 #import <PromiseKit/PromiseKit.h>
 
 
-@implementation Post_Channel_RelationshipManger
+@implementation Post_Channel_RelationshipManager
 
 
 +(void)savePost:(PFObject *) postParseObject toChannels: (NSMutableArray *) channels withCompletionBlock:(void(^)())block{

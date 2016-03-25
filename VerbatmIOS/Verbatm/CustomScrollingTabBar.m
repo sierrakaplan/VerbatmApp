@@ -186,17 +186,15 @@
         
         //check if it's the last button in the scroll bar
         if(i == (self.tabButtons.count-1)){
-            if(self.isLoggedInUser){
+            if(self.isLoggedInUser) {
                 //it's the "create new channel button"
                 //so we allow it to maintain the width we calculated earlier
                 width = ((UIView*)currentButton).frame.size.width;
-            }else{
+            } else{
                 if(self.tabButtons.count == 1){
                     width = self.frame.size.width;
                 }
             }
-            
-            
         }
         
         ((UIView *)currentButton).frame = CGRectMake(originDiff, ((UIView *)currentButton).frame.origin.y, width, ((UIView *)currentButton).frame.size.height);

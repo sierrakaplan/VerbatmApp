@@ -12,7 +12,7 @@
 #import "Notifications.h"
 #import "Channel_BackendObject.h"
 #import "ParseBackendKeys.h"
-#import "Post_Channel_RelationshipManger.h"
+#import "Post_Channel_RelationshipManager.h"
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -119,7 +119,7 @@
                 if(succeeded){
             
                     //register the relationship
-                    [Post_Channel_RelationshipManger savePost:self.currentParsePostObject  toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel]withCompletionBlock:^{
+                    [Post_Channel_RelationshipManager savePost:self.currentParsePostObject  toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel]withCompletionBlock:^{
                         [self.delegate publishingComplete];
                         self.currentPublishingChannel = NULL;
                         self.currentParsePostObject = nil;

@@ -18,10 +18,16 @@
 #define FOLLOW_CHANNEL_FOLLOWED_KEY @"ChannelFollowed"//channel being followed by above user
 #define FOLLOW_CHANNEL_RELATIONSHIP_OWNER @"RelationshipOwner" //either the person currently posting or the person doing the reposting
 
-
 #define LIKE_PFCLASS_KEY @"LikeClass"//we maintain all the like relationships in their own table
 #define LIKE_USER_KEY @"UserLiking"//the user doing the liking
 #define LIKE_POST_LIKED_KEY @"PostLiked"//post being liked by above user
+
+#define SHARE_PFCLASS_KEY @"ShareClass"
+#define SHARE_USER_KEY @"UserSharing"
+#define SHARE_POST_SHARED_KEY @"PostShared"
+#define SHARE_TYPE @"ShareType"
+#define SHARE_TYPE_REBLOG @"ShareTypeReblog"
+#define SHARE_REBLOG_CHANNEL @"ChannelRebloggedTo"
 
 #define PHOTO_PFCLASS_KEY @"PhotoClass"
 #define PHOTO_TEXT_KEY @"PhotoText"

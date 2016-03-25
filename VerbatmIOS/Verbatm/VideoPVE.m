@@ -74,7 +74,6 @@
 			if(videoAssets.count > 1) [self createRearrangeButton];
 		} else {
 			[self prepareVideos:videoAssets];
-			self.hasBeenSetUp = YES;
 		}
 	}
 	return self;
@@ -88,7 +87,6 @@
 		//        NSNumber* textYPos = videoWithText[2];
 	}
 	[self prepareVideos:videoList];
-	self.hasBeenSetUp = YES;
 }
 
 -(void)prepareVideos:(NSArray*)videoList {
@@ -99,6 +97,7 @@
 		[self.videoPlayer prepareVideoFromArray:videoList];
 	}
 	self.videoList = videoList;
+	self.hasBeenSetUp = YES;
 }
 
 #pragma mark - Rearrange button -
@@ -154,12 +153,14 @@
 	}
 	if(self.rearrangeView) [self.rearrangeView exitView];
 	self.hasBeenSetUp = NO;
+
+	//here we check if we have URLs and if so then we create the asset again for future use
 }
 
 -(void)onScreen {
 	if (self.editContentView){
 		[self.editContentView onScreen];
-	} else {
+	} else{
 		if(self.hasBeenSetUp){
 			[self.videoPlayer playVideo];
 		}else{
@@ -169,14 +170,13 @@
 	}
 }
 
--(void)almostOnScreen{
+-(void) almostOnScreen{
 	if(self.editContentView){
 		[self.editContentView almostOnScreen];
-	}else{
-		if(self.videoList){
+	} else {
+		if(!self.hasBeenSetUp){
 			[self.videoPlayer stopVideo];
 			[self prepareVideos:self.videoList];
-			self.hasBeenSetUp = YES;
 		}
 	}
 }

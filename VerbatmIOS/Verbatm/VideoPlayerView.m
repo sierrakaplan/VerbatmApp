@@ -312,6 +312,7 @@
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
+	NSLog(@"stopping video");
 	@autoreleasepool {
 		if (self.videoLoading) {
 			self.videoLoading = NO;

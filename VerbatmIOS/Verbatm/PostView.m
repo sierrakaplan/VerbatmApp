@@ -25,7 +25,7 @@
 #import "ParseBackendKeys.h"
 #import <PromiseKit/PromiseKit.h>
 #import "PostChannelAndCreatorBar.h"
-#import "Post_Channel_RelationshipManger.h"
+#import "Post_Channel_RelationshipManager.h"
 
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -216,7 +216,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void) addCreatorInfo{
-	[Post_Channel_RelationshipManger getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject withCompletionBlock:^(Channel * channel) {
+	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject withCompletionBlock:^(Channel * channel) {
 		//we only add the channel info to posts that don't belong to the current
 		//user
 		if(![channel channelBelongsToCurrentUser]) {

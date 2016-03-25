@@ -21,11 +21,12 @@
 #import "PostListVC.h"
 #import "PostCollectionViewCell.h"
 #import "Post_BackendObject.h"
-#import "Post_Channel_RelationshipManger.h"
+#import "Post_Channel_RelationshipManager.h"
 #import "ParseBackendKeys.h"
 #import "PostView.h"
 #import <PromiseKit/PromiseKit.h>
 
+#import "Share_BackendManager.h"
 #import "SharePostView.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
@@ -194,9 +195,11 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 				NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 
 				[Like_BackendManager numberOfLikesForPost:post withCompletionBlock:^(NSNumber *numLikes) {
-					//todo: shares
-					[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:0 numberOfPages:numberOfPages
-											   andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+					//todo: make this not embedded
+					[Share_BackendManager numberOfSharesForPost:post withCompletionBlock:^(NSNumber *numShares) {
+						[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPages
+												   andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+					}];
 				}];
 				[postView renderPostFromPages:pages];
 				[postView postOffScreen];
@@ -291,7 +294,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return nextCellToBePresented;
 }
 
-
 -(CGFloat) getVisibileCellIndex{
 	return self.collectionView.contentOffset.x / self.view.frame.size.width;
 }
@@ -346,7 +348,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
 			[view presentMediaContent];
 		}else if(i != visibleIndex){
-			[view postOffScreen];
+			//todo: this ends up being current post?
+//			[view postOffScreen];
 		}
 	}
 }
@@ -409,9 +412,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self removeSharePOVView];
 }
 
+//todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels{
 	if(channels.count){
-		[Post_Channel_RelationshipManger savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+		[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self successfullyReblogged];
 			});
@@ -419,7 +423,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 	[self removeSharePOVView];
 }
-
 
 -(void)successfullyReblogged{
 	[self.view addSubview:self.reblogSucessful];

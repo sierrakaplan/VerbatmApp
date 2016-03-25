@@ -48,8 +48,8 @@
     }];
 }
 
-//tests to see if the logged in user follows this channel
-+(void)currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block{
+//tests to see if the logged in user likes this post
++(void)currentUserLikesPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block {
     if(!postParseObject)return;
     //we just delete the Follow Object
     PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];

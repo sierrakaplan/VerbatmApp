@@ -11,6 +11,7 @@
 #import "Page_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import "PostCollectionViewCell.h"
+#import "Share_BackendManager.h"
 
 @interface PostCollectionViewCell ()
 
@@ -49,8 +50,10 @@
             
             NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
 			[Like_BackendManager numberOfLikesForPost:postObject withCompletionBlock:^(NSNumber *numLikes) {
-				//todo: shares
-				[self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:0 numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+				//todo: make this not embedded
+				[Share_BackendManager numberOfSharesForPost:postObject withCompletionBlock:^(NSNumber *numShares) {
+					[self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+				}];
 			}];
         }];
     }

@@ -300,7 +300,7 @@
         
         if(currentViewController == self.feedVC){
         }else if (currentViewController == self.profileVC){
-            //[self.profileVC offScreen];
+			//[self.profileVC offScreen]; //todo: delete?
         }
     }
 }
