@@ -25,16 +25,12 @@
 
 
 -(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel *) channel{
-    
     self = [super initWithFrame:frame];
-    
     if(self){
         self.channel = channel;
     }
-    
     return self;
 }
-
 
 -(void)createLabelsFromChannel:(Channel *) channel{
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
@@ -52,20 +48,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self addSubview:userNameLabel];
     });
-    
-    
-    
-//   NSDictionary * ChannelNameAttributes =  @{
-//      NSForegroundColorAttributeName: [UIColor whiteColor],
-//      NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_TAB_BAR_NUM_FOLLOWING_FONT_SIZE]};
-//    
-    
-    
-    
 }
-
-
-
 
 -(UILabel *) getLabelWithString:(NSString *) string andAttributes:(NSDictionary *) nameLabelAttribute{
     NSAttributedString* tabAttributedTitle = [[NSAttributedString alloc] initWithString:string attributes:nameLabelAttribute];

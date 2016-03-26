@@ -9,33 +9,25 @@
 #ifndef SizesAndPositions_h
 #define SizesAndPositions_h
 
-#pragma mark -POST View -
-#define CREATOR_CHANNEL_BAR_HEIGHT 35.f
 
-#define TITLE_BAR_HEIGHT 60.f
+
+#pragma mark - Main Tab bar -
+
+#define TAB_BUTTON_PADDING 12.f
+#define TAB_DIVIDER_WIDTH 2.f
+#define TAB_BAR_HEIGHT 40.f
+
+
 
 #pragma mark - Custom Navigation Bar -
+
 #define CUSTOM_NAV_BAR_HEIGHT 40.f
-
-#pragma mark - Exit CV constants-
-
-#define EXIT_CV_BUTTON_WIDTH 42
-#define EXIT_CV_BUTTON_HEIGHT 30
-#define EXIT_CV_BUTTON_WALL_OFFSET 20
-
 #define BAR_TOP_OFFSET 10.f
-
-
 #define NAV_BAR_HEIGHT 50.f
 #define NAV_ICON_OFFSET 7.f
 #define NAV_ICON_SIZE (NAV_BAR_HEIGHT - NAV_ICON_OFFSET*2)
 
 
-#pragma mark -Delete position-
-#define DELETE_ICON_X_OFFSET 20
-#define DELETE_ICON_Y_OFFSET 50
-#define DELETE_ICON_WIDTH 20
-#define DELETE_ICON_HEIGHT 26
 
 #pragma mark - Sign In -
 
@@ -43,36 +35,10 @@
 #define SIGNIN_ERROR_LABEL_PADDING 30.f
 
 
-#pragma mark - Feed -
 
-#define CATEGORY_SWITCH_OFFSET 5.f
+#pragma mark - ADK -
 
-#pragma mark Story table view cell
-
-#define STORY_CELL_PADDING 10
-#define STORY_CELL_HEIGHT 160
-//verticle distance between text on the feed
-#define FEED_TEXT_GAP 15
-//sets the distance between a label and the left of the screen
-#define FEED_TEXT_X_OFFSET 10
-
-#define TITLE_LABEL_HEIGHT 35
-#define USERNAME_LABEL_HEIGHT 25
-#define DATE_AND_LIKES_LABEL_HEIGHT 18
-
-#pragma mark Topics table view cell
-
-#define TOPIC_CELL_PADDING 10
-#define TOPIC_CELL_HEIGHT 80
-
-#pragma mark Compose Story Button
-
-#define COMPOSE_STORY_BUTTON_SIZE 90.f
-#define COMPOSE_STORY_BUTTON_OFFSET 20.f
-#define COMPOSE_STORY_OUTER_CIRCLE_SIZE 110.f
-
-
-#pragma mark - Media Dev VC -
+#pragma mark - Media Dev VC
 
 #define SWITCH_ORIENTATION_ICON_SIZE 70.f
 #define FLASH_ICON_SIZE_HEIGHT 70.f
@@ -88,8 +54,20 @@
 
 #define TRANSLATION_CONTENT_DEV_CONTAINER_VIEW_THRESHOLD 50.f
 
+#pragma mark - Content Dev VC
 
-#pragma mark - Content Dev VC -
+#define AUTO_SCROLL_OFFSET 10
+#define CONTENT_SIZE_OFFSET 20
+#define ELEMENT_Y_OFFSET_DISTANCE 25
+#define ELEMENT_X_OFFSET_DISTANCE 50
+#define CENTERING_OFFSET_FOR_TEXT_VIEW 30
+
+#pragma mark Delete icon
+
+#define DELETE_ICON_X_OFFSET 20
+#define DELETE_ICON_Y_OFFSET 50
+#define DELETE_ICON_WIDTH 20
+#define DELETE_ICON_HEIGHT 26
 
 #pragma mark - Gallery
 
@@ -98,7 +76,9 @@
 
 #pragma mark - Editing Content View
 
-#define TEXT_VIEW_BOTTOM_PADDING 15.f
+#define EXIT_CV_BUTTON_WIDTH 42
+#define EXIT_CV_BUTTON_HEIGHT 30
+#define EXIT_CV_BUTTON_WALL_OFFSET 20
 
 #pragma mark Toolbar
 
@@ -110,34 +90,12 @@
 #pragma mark - Preview
 
 #define PUBLISH_BUTTON_OFFSET 20.f
-
 #define PUBLISH_BUTTON_SIZE 75.f
-
 #define BACK_BUTTON_OFFSET 10.f
-
-#pragma mark - Content Dev Pull Bar
-
-#pragma mark Verbatm Image Scroll View
-#define VIEW_Y_OFFSET 50
-#define VIEW_WALL_OFFSET 20
-
-#define TEXTFIELD_BORDER_WIDTH 0.8f
-#define AUTO_SCROLL_OFFSET 10
-#define CONTENT_SIZE_OFFSET 20
-#define OFFSET_BELOW_ARTICLE_TITLE 30
-//distance between elements on the content view page
-#define ELEMENT_Y_OFFSET_DISTANCE 25
-#define ELEMENT_X_OFFSET_DISTANCE 50
-//the distance we want the cursor from the base of the view at all times. When the
-//cursor is below this threshold we scroll the view down
-#define CURSOR_BASE_GAP 10
-
-#define CENTERING_OFFSET_FOR_TEXT_VIEW 30
-//if the image is up- you can scroll up and have it turn to circles. This gives that scrollup distance
-#define SCROLLDISTANCE_FOR_PINCHVIEW_RETURN 200
 
 #pragma mark PinchViews
 
+#define ELEMENT_Y_OFFSET_DISTANCE 25
 #define PINCHVIEW_DIVISION_FACTOR_FOR_TWO 2
 #define MIN_PINCHVIEW_SIZE 100
 //distance two fingers must travel for the horizontal pinch to be accepted
@@ -150,17 +108,28 @@
 #define MEDIA_TILE_SELECTOR_HEIGHT 80.f
 #define ADD_MEDIA_BUTTON_OFFSET 10
 
-#pragma mark - Page Views -
-
-#define SHARE_BUTTON_SIZE 25.f
 
 
-#define LIKE_BUTTON_SIZE 25.f
-#define LIKE_BUTTON_SIZE 25.f
+#pragma mark - Feed -
 
+#define FOLLOW_BUTTON_HEIGHT SETTINGS_BUTTON_SIZE
+#define FOLLOW_BUTTON_WIDTH (FOLLOW_BUTTON_HEIGHT * FOLLOW_BUTTON_RATIO_FOR_WIDTH)
+#define FOLLOW_BUTTON_RATIO_FOR_WIDTH (223.f / 234.f)
+#define VIDEO_LOADING_ICON_SIZE 50
 
+#pragma mark - Post View
 
-#define LIKE_BUTTON_OFFSET 20.f
+#define CREATOR_CHANNEL_BAR_HEIGHT 35.f
+#define TITLE_BAR_HEIGHT 60.f
+
+#pragma mark - Like Share Bar
+
+#define LIKE_SHARE_BAR_HEIGHT 50.f
+#define LIKE_SHARE_BAR_BUTTON_SIZE 32.f
+#define LIKE_SHARE_BAR_BUTTON_OFFSET 20.f
+#define MUTE_BUTTON_OFFSET 10
+
+#pragma mark - Page Views
 
 #pragma mark Images
 
@@ -175,14 +144,11 @@
 #define TEXT_VIEW_OVER_MEDIA_Y_OFFSET 150.f
 #define TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT 70.f
 
-
 #define PAN_CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
 
 
-#define TAB_BUTTON_PADDING 12.f
-#define TAB_DIVIDER_WIDTH 2.f
 
-#define TAB_BAR_HEIGHT 40.f
+#pragma mark - Profile -
 
 #define PROFILE_HEADER_HEIGHT 35.f
 #define USER_CELL_VIEW_HEIGHT 40.f
@@ -190,7 +156,6 @@
 #define CHANNEL_USER_LIST_CELL_HEIGHT 55.f
 
 #define PROFILE_NAV_BAR_HEIGHT (PROFILE_HEADER_HEIGHT + USER_CELL_VIEW_HEIGHT)
-#define LIKE_SHARE_BAR_HEIGHT 40.f
 
 #define CHANNEL_CREATION_VIEW_WALLOFFSET_X 30.f
 #define CHANNEL_CREATION_VIEW_Y_OFFSET (PROFILE_NAV_BAR_HEIGHT + 90.f)
@@ -208,21 +173,7 @@
 #define SETTINGS_BUTTON_SIZE 25.f
 
 #define CHANNEL_BUTTON_WALL_XOFFSET 10.f
-
-
-#define FOLLOW_BUTTON_HEIGHT SETTINGS_BUTTON_SIZE
-#define FOLLOW_BUTTON_WIDTH (FOLLOW_BUTTON_HEIGHT * FOLLOW_BUTTON_RATIO_FOR_WIDTH)
-
-#define FOLLOW_BUTTON_RATIO_FOR_WIDTH (223.f / 234.f)
-
-
 #define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 1.f
-
-
-#define MUTE_BUTTON_SIZE LIKE_BUTTON_SIZE
-#define MUTE_BUTTON_OFFSET 10
-
-#define VIDEO_LOADING_ICON_SIZE 50
 
 
 #endif

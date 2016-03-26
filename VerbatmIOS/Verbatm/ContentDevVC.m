@@ -1404,7 +1404,7 @@ rowHeightForComponent:(NSInteger)component{
 		[self swapWithTopView: topView];
     }
     //check if object has moved down the halfway mark of the view below it, if so swap them
-    else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) +CENTERING_OFFSET_FOR_TEXT_VIEW
+    else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) + CENTERING_OFFSET_FOR_TEXT_VIEW
 			> bottomView.frame.origin.y) {
 		[self swapWithBottomView: bottomView];
 	}

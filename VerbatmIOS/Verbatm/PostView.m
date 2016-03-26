@@ -191,16 +191,14 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	CGFloat barHeight = LIKE_SHARE_BAR_HEIGHT;
 
 	self.lsBarUpFrame = CGRectMake(0.f,self.frame.size.height - (barHeight + TAB_BAR_HEIGHT),
-								   self.frame.size.width,barHeight);
+								   self.frame.size.width, barHeight);
 
 	self.lsBarDownFrame = CGRectMake(0.f,self.frame.size.height - barHeight,
-									 self.frame.size.width,barHeight);
-
-
+									 self.frame.size.width, barHeight);
 
 	CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
-
-	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
+	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes
+													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
