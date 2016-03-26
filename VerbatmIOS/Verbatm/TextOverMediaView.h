@@ -28,6 +28,8 @@ andTextYPosition:(CGFloat) textYPosition
 andTextAlignment:(NSTextAlignment) textAlignment
 	andTextSize:(CGFloat) textSize;
 
+-(void) revertToDefaultTextSettings;
+
 -(void) changeImageTo:(UIImage *)image;
 
 -(void) changeText:(NSString *)text;

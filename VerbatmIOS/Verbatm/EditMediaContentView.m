@@ -105,7 +105,7 @@
 
 -(void) editText {
 	if(![self.textAndImageView textShowing]) {
-		[self setText:@"" andTextViewYPosition: TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
+		[self.textAndImageView revertToDefaultTextSettings];
 	}
 	[self.textAndImageView setTextViewFirstResponder: YES];
 }
@@ -349,10 +349,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		case UIGestureRecognizerStateChanged:{
 			CGPoint location = [sender locationOfTouch:0 inView:self.textAndImageView];
 			CGFloat verticalDiff = location.y - self.textViewPanStartLocation.y;
-
-			if([self textViewTranslationInBounds: verticalDiff]){
-				[self.textAndImageView changeTextViewYPos: verticalDiff];
-			}
+			[self.textAndImageView changeTextViewYPos: verticalDiff];
 			self.textViewPanStartLocation = location;
 			break;
 		}
@@ -404,9 +401,10 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 	if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
 		SingleMediaAndTextPinchView *mediaAndTextPinchView = (SingleMediaAndTextPinchView *)self.pinchView;
 		mediaAndTextPinchView.text = self.textAndImageView.text;
-		//todo: SIERRA
-		//		NSNumber * yoffset = [NSNumber numberWithFloat:self.textAndImageView.textView.frame.origin.y];
-		mediaAndTextPinchView.textYPosition = yoffset;
+		mediaAndTextPinchView.textYPosition = [NSNumber numberWithFloat:self.textAndImageView.textYPosition];
+		mediaAndTextPinchView.textColor = self.textAndImageView.textColor;
+		mediaAndTextPinchView.textSize = [NSNumber numberWithFloat:self.textAndImageView.textSize];
+		mediaAndTextPinchView.textAlignment = [NSNumber numberWithInteger:self.textAndImageView.textAlignment];
 	}
 }
 

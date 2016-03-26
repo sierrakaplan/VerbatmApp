@@ -70,10 +70,19 @@
 			UIImage* uiImage = photoWithText[0];
 			NSString* text = photoWithText[1];
 			NSNumber* textYPosition = photoWithText[2];
+			UIColor *textColor = photoWithText[3];
+			NSNumber *textAlignment = photoWithText[4];
+			NSNumber *textSize = photoWithText[5];
 
 			Photo_BackendObject * photoObj = [[Photo_BackendObject alloc] init];
 			[self.photoAndVideoSavers addObject:photoObj];
-			[photoObj saveImage:uiImage withText:text andTextYPosition:textYPosition atPhotoIndex:i andPageObject:page];
+			[photoObj saveImage:uiImage withText:text
+			   andTextYPosition:textYPosition
+				   andTextColor:textColor
+			   andTextAlignment:textAlignment
+					andTextSize:textSize
+				   atPhotoIndex:i
+				  andPageObject:page];
 		}
 	}
 }

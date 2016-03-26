@@ -118,10 +118,17 @@
 
     for (ImagePinchView * imagePinchView in pinchViewArray) {
 		if (self.inPreviewMode) {
-
 			EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
 			[editMediaContentView displayImages:[imagePinchView filteredImages] atIndex:imagePinchView.filterImageIndex];
-			if(imagePinchView.text && imagePinchView.text.length) [editMediaContentView setText:imagePinchView.text andTextViewYPosition:[imagePinchView.textYPosition floatValue]];
+
+			if(imagePinchView.text && imagePinchView.text.length) {
+				[editMediaContentView setText:imagePinchView.text
+							 andTextYPosition:[imagePinchView.textYPosition floatValue]
+								 andTextColor:imagePinchView.textColor
+							 andTextAlignment:[imagePinchView.textAlignment integerValue]
+								  andTextSize:[imagePinchView.textSize floatValue]];
+			}
+
 			editMediaContentView.pinchView = imagePinchView;
 			editMediaContentView.povViewMasterScrollView = self.postScrollView;
 			editMediaContentView.delegate = self;

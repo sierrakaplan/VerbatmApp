@@ -23,6 +23,8 @@
 #import "ParseBackendKeys.h"
 #import "Photo_BackendObject.h"
 
+#import "Styles.h"
+
 #import "UtilityFunctions.h"
 
 #import "VideoPinchView.h"
@@ -111,6 +113,8 @@
 	}
 }
 
+/* photoTextArray is array containing subarrays of photo and text info
+ @[@[photo, text, textYPosition, textColor, textAlignment, textSize],...] */
 -(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
 
 	[Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photoObjects) {
@@ -126,15 +130,21 @@
 				NSMutableArray* uiImages = [[NSMutableArray alloc] init];
 				for (int i = 0; i < results.count; i++) {
 					NSData* imageData = results[i];
-
 					if(![imageData isKindOfClass:[NSNull class]]){
 						UIImage* uiImage = [UIImage imageWithData:imageData];
-						PFObject * photoBO = photoObjects[i];
+						PFObject *imageAndTextObj = photoObjects[i];
 
-						NSString * imageText =  [photoBO valueForKey:PHOTO_TEXT_KEY];
-						NSNumber * yoffset = [photoBO valueForKey:PHOTO_TEXT_YOFFSET_KEY];
+						NSString *text =  [imageAndTextObj valueForKey:PHOTO_TEXT_KEY];
+						NSNumber *yOffset = [imageAndTextObj valueForKey:PHOTO_TEXT_YOFFSET_KEY];
 
-						[uiImages addObject: @[uiImage, imageText, yoffset]];
+						UIColor *textColor = [imageAndTextObj valueForKey:PHOTO_TEXT_COLOR_KEY];
+						if (textColor == nil) textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
+						NSNumber *textAlignment = [imageAndTextObj valueForKey:PHOTO_TEXT_ALIGNMENT_KEY];
+						if (textAlignment == nil) textAlignment = [NSNumber numberWithInt:0];
+						NSNumber *textSize = [imageAndTextObj valueForKey:PHOTO_TEXT_SIZE_KEY];
+						if (textSize == nil) textSize = [NSNumber numberWithFloat:TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE];
+
+						[uiImages addObject: @[uiImage, text, yOffset, textColor, textAlignment, textSize]];
 					}
 				}
 				dispatch_async(dispatch_get_main_queue(), ^{

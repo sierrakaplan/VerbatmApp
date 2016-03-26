@@ -26,17 +26,25 @@
 
 @implementation Photo_BackendObject
 
--(void)saveImage:(UIImage  *) image withText:(NSString *) userText
+-(void)saveImage:(UIImage  *) image
+		withText:(NSString *) text
 andTextYPosition:(NSNumber *) textYPosition
+	andTextColor:(UIColor *) textColor
+andTextAlignment:(NSNumber *) textAlignment
+	 andTextSize:(NSNumber *) textSize
 	atPhotoIndex:(NSInteger) photoIndex
-   andPageObject:(PFObject *) pageObject;
-{
+   andPageObject:(PFObject *) pageObject {
     self.mediaPublisher = [[PostPublisher alloc] init];
     [self.mediaPublisher storeImage:image withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
         NSString * blobStoreUrl = gtlImage.servingUrl;
         //in completion block of blobstore save
-        [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl withText:userText
-									  andTextYPosition:textYPosition atPhotoIndex:photoIndex
+        [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl
+											  withText:text
+									  andTextYPosition:textYPosition
+										  andTextColor:textColor
+									  andTextAlignment:textAlignment
+										   andTextSize:textSize
+										  atPhotoIndex:photoIndex
 										 andPageObject:pageObject];
     }];
     
@@ -46,8 +54,11 @@ andTextYPosition:(NSNumber *) textYPosition
 -(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL
 									   withText:(NSString *) text
 							   andTextYPosition:(NSNumber *) textYPosition
+								   andTextColor:(UIColor *) textColor
+							   andTextAlignment:(NSNumber *) textAlignment
+									andTextSize:(NSNumber *) textSize
 								   atPhotoIndex:(NSInteger) photoIndex
-								  andPageObject:(PFObject *) pageObject{
+								  andPageObject:(PFObject *) pageObject {
     NSLog(@"Saving parse photo object");
 
     PFObject * newPhotoObject = [PFObject objectWithClassName:PHOTO_PFCLASS_KEY];
@@ -57,10 +68,10 @@ andTextYPosition:(NSNumber *) textYPosition
     [newPhotoObject setObject:pageObject forKey:PHOTO_PAGE_OBJECT_KEY];
 	[newPhotoObject setObject:text forKey:PHOTO_TEXT_KEY];
     [newPhotoObject setObject:textYPosition forKey:PHOTO_TEXT_YOFFSET_KEY];
-	//todo:
-    [newPhotoObject setObject:<#(nonnull id)#> forKey:<#(nonnull NSString *)#>]
+	[newPhotoObject setObject:textColor forKey:PHOTO_TEXT_COLOR_KEY];
+	[newPhotoObject setObject:textAlignment forKey:PHOTO_TEXT_ALIGNMENT_KEY];
+	[newPhotoObject setObject:textSize forKey:PHOTO_TEXT_SIZE_KEY];
 
-    
     [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){
             if(succeeded){

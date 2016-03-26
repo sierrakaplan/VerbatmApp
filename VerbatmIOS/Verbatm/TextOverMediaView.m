@@ -37,10 +37,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.textYPosition = 0.f;
-		self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
-		self.textAlignment = NSTextAlignmentLeft;
-		self.textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
+		[self revertToDefaultTextSettings];
 		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
 		[self setImageViewWithImage:image];
 	}
@@ -79,6 +76,14 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textSize = textSize;
 	self.textView.frame = CGRectOffset(self.textView.frame, 0.f, self.textView.frame.origin.y - textYPosition);
 	[self changeText: text];
+}
+
+-(void) revertToDefaultTextSettings {
+	self.text = @"";
+	self.textYPosition = 0.f;
+	self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
+	self.textAlignment = NSTextAlignmentLeft;
+	self.textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
 }
 
 -(void)changeText:(NSString *) text{
