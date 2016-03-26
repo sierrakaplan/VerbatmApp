@@ -44,8 +44,8 @@
 GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate,
 UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
 
-@property (nonatomic) UITextField * createNewChannelField;
-@property (nonatomic) NSString * channelNameForNewChannel;
+@property (nonatomic) UITextField *createNewChannelField;
+@property (nonatomic) NSString *channelNameForNewChannel;
 #pragma mark Image Manager
 
 @property (strong, nonatomic) PHImageManager *imageManager;
@@ -117,14 +117,11 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 @property (nonatomic) BOOL pinchObject_HasBeenAdded_ForTheFirstTime;
 @property (nonatomic) BOOL pinchViewTappedAndClosedForTheFirstTime;
 
-
-
 @property (nonatomic) UIImageView * pinchElementsTogetherInstructionView;//presents instrutions to user to pinch together their media
 
 
 //note when previewing
 @property (nonatomic) BOOL currentlyPreviewingContent;
-
 
 @property (nonatomic) NSMutableArray * userChannels;
 
