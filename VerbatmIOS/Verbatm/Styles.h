@@ -10,10 +10,10 @@
 #define Styles_h
 
 
-#define VERBATM_GOLD_COLOR [UIColor yellowColor]
+#define VERBATM_GOLD_COLOR [UIColor yellowColor]//[UIColor colorWithRed:0.81 green:0.78 blue:0.03 alpha:1.0]
 
 #define DEFAULT_FONT @"Quicksand-Regular"
-#define BUTTON_FONT @"Quicksand-Regular"
+#define BUTTON_FONT @"Quicksand-Bold"
 #define PLACEHOLDER_FONT @"Quicksand-BoldItalic"
 #define TITLE_TEXT_FONT @"Quicksand-Bold"
 
