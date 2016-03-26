@@ -9,8 +9,11 @@
 #ifndef Icons_h
 #define Icons_h
 
-#define BACKGROUND_IMAGE @"background_adk"
 #define VERBATM_LOGO @"verbatm_logo"
+
+#pragma mark - Sign in -
+
+#define SIGN_IN_BACKGROUND @"background_sign_in"
 
 #pragma mark - Bottom Tab Bar -
 
@@ -34,6 +37,8 @@
 #define REBLOG_IMAGE @"posted_succeeded_notification"
 
 #pragma mark - ADK -
+
+#define ADK_BACKGROUND @"background_adk"
 
 #define DELETE_ICON @"trash_can"
 

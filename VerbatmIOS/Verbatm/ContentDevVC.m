@@ -193,8 +193,7 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 -(void) addBackgroundImage {
     UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    backgroundView.image =[UIImage imageNamed:BACKGROUND_IMAGE];
-    //backgroundView.image =[UIImage imageNamed:];
+    backgroundView.image =[UIImage imageNamed:ADK_BACKGROUND];
 	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
     
     [self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
