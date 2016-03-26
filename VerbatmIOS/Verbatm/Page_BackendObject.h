@@ -13,4 +13,7 @@
 //make sure the post is arleady saved in the database before this function is called
 -(void)savePageWithIndex:(NSInteger) pageIndex andPinchView:(PinchView *) pinchView andPost:(PFObject *) post;
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block;
+
++(void) deletePagesInPost:(PFObject *)post withCompletionBlock:(void(^)(BOOL))block;
+
 @end

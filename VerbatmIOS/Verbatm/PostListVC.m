@@ -179,7 +179,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 -(void)clearOldPosts{
 	for(PostView * view in self.presentedPostList){
 		[view removeFromSuperview];
-		[view clearArticle];
+		[view clearPost];
 	}
 	[self.presentedPostList removeAllObjects];
 }
@@ -261,7 +261,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	return self.presentedPostList.count;
 }
 
-#pragma mark -ViewDelegate-
+#pragma mark - ViewDelegate -
 - (BOOL)collectionView: (UICollectionView *)collectionView
 shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	return NO;
@@ -327,7 +327,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
-#pragma mark -Scrollview delegate-
+#pragma mark - Scrollview delegate -
+
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {
 	NSArray * cellsVisible = [self.collectionView visibleCells];
 	PostCollectionViewCell * visibleCell = [cellsVisible firstObject];
@@ -336,21 +337,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self prepareNextViewAfterVisibleIndex:[self.presentedPostList indexOfObject:visibleCell.currentPostView]];
 }
 
-
--(void)scrollViewDidScroll:(UIScrollView *)scrollView{
-	//    NSInteger currentPOVIndex = [self getVisibileCellIndex];
-	//    //somehow turn other cells off
-	//    [self.presentedPostList[currentPOVIndex] povOnScreen];
-	//    [self prepareNextViewAfterVisibleIndex:currentPOVIndex];
-}
-
 -(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
 	for(NSInteger i = 0; i < self.presentedPostList.count; i++){
 		PostView * view = self.presentedPostList[i];
 		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
 			[view presentMediaContent];
 		}else if(i != visibleIndex){
-			//todo: this ends up being current post?
+			//todo: video this ends up being current post?
 //			[view postOffScreen];
 		}
 	}
@@ -368,8 +361,39 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
--(void) likeButtonLiked:(BOOL)liked onPostObject:(PFObject *)post {
-	//todo:
+-(void) deleteButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post {
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+																   message:@"Are you sure you want to delete the entire post?"
+															preferredStyle:UIAlertControllerStyleAlert];
+
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		NSInteger postIndex = [self.presentedPostList indexOfObject: postView];
+		[self removePostAtIndex: postIndex];
+		[postView clearPost];
+		[Post_BackendObject deletePost:post withCompletionBlock:^(BOOL success) {
+			if (success) {
+				NSLog(@"Deleted post successfully");
+			} else {
+				NSLog(@"Error deleting post");
+			}
+		}];
+	}];
+
+	[alert addAction: cancelAction];
+	[alert addAction: deleteAction];
+	[self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void)removePostAtIndex:(NSInteger)i {
+	[self.collectionView performBatchUpdates:^{
+		[self.presentedPostList removeObjectAtIndex:i];
+		NSIndexPath *indexPath =[NSIndexPath indexPathForRow:i inSection:0];
+		[self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+	} completion:^(BOOL finished) {
+
+	}];
 }
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* )post {

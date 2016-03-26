@@ -77,4 +77,17 @@
 	}];
 }
 
++(void) deleteLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block {
+	PFQuery *likesQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+	[likesQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
+	[likesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+													NSError * _Nullable error) {
+		if(objects && !error) {
+			block (YES);
+			return;
+		}
+		block (NO);
+	}];
+}
+
 @end

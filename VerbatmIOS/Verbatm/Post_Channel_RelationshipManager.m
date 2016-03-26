@@ -37,26 +37,21 @@
         [pageLoadPromises addObject:promise];
     }
     
-    
     PMKWhen(pageLoadPromises).then(^(id data){
         if(block)block();
     });
-    
 }
 
 
-+(void)deletePost:(PFObject *) postParseObject fromChannel: (Channel *) channel withCompletionBlock:(void(^)(bool))block{
-    PFQuery * userChannelQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-    [userChannelQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
-    [userChannelQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:postParseObject];
-    
-    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
++(void)deleteChannelRelationshipsForPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block{
+    PFQuery * postChannelRelationshipQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+    [postChannelRelationshipQuery whereKey:POST_CHANNEL_ACTIVITY_POST equalTo:postParseObject];
+    [postChannelRelationshipQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error) {
-            if(objects.count){
-                PFObject * followObj = [objects firstObject];
-                [followObj deleteInBackground];
-            }
+			for (PFObject *obj in objects) {
+				[obj deleteInBackground];
+			}
         }
     }];
 }

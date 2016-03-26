@@ -18,4 +18,6 @@
 
 +(void) numberOfLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(NSNumber*)) block;
 
++(void) deleteLikesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block;
+
 @end

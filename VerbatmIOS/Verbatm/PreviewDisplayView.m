@@ -125,7 +125,7 @@
 	}else {
         [self.delegate aboutToRemovePreview];
         self.frame = self.restingFrame;
-        [self.postView clearArticle];
+        [self.postView clearPost];
         [self.postView removeFromSuperview];
         self.postView = nil;
         [self.publishButton removeFromSuperview];

@@ -19,5 +19,6 @@
 
 +(void) getPostsInChannel:(Channel *) channel withCompletionBlock:(void(^)(NSArray *))block;
 
++(void) deletePost: (PFObject *)post withCompletionBlock:(void(^)(BOOL))block;
 
 @end

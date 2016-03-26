@@ -6,8 +6,12 @@
 //  Created by Iain Usiri on 1/26/16.
 //  Copyright © 2016 Verbatm. All rights reserved.
 
+#import "CollectionPinchView.h"
+
+#import "Like_BackendManager.h"
 
 #import "Post_BackendObject.h"
+#import "Post_Channel_RelationshipManager.h"
 #import "PinchView.h"
 #import "ParseBackendKeys.h"
 
@@ -17,7 +21,8 @@
 
 #import "Page_BackendObject.h"
 
-#import "CollectionPinchView.h"
+#import "Share_BackendManager.h"
+
 #import "VideoPinchView.h"
 
 @interface Post_BackendObject ()
@@ -35,15 +40,13 @@
 	return self;
 }
 
--(PFObject * ) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel{
+-(PFObject *) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel{
 	PFObject * newPostObject = [PFObject objectWithClassName:POST_PFCLASS_KEY];
 	[newPostObject setObject:channel.parseChannelObject forKey:POST_CHANNEL_KEY];
 	[newPostObject setObject:[PFUser currentUser] forKey:POST_ORIGINAL_CREATOR_KEY];
 	[newPostObject setObject:[NSNumber numberWithInteger:pinchViews.count] forKey:POST_SIZE_KEY];
-	//[newPostObject setObject:[NSNumber numberWithBool:false] forKey:POST_COMPLETED_SAVING];//mark as not done saving yet
 	[newPostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-		if(succeeded){//now we save the pinchview to a page
-					  //save individual pages
+		if(succeeded){
 			for (int i = 0; i< pinchViews.count; i++) {
 				PinchView * pv = pinchViews[i];
 				Page_BackendObject * newPage = [[Page_BackendObject alloc] init];
@@ -54,6 +57,36 @@
 	}];
 
 	return newPostObject;
+}
+
+//todo: make sure post is not visible while media deleting
+/* Remove pages (which will remove media), then remove post.
+   Also delete like and share objects associated with post */
++(void) deletePost: (PFObject *)post withCompletionBlock:(void(^)(BOOL))block {
+	[Post_Channel_RelationshipManager deleteChannelRelationshipsForPost:post withCompletionBlock:^(bool success) {
+		if (!success) {
+			block (NO);
+			return;
+		}
+	}];
+	[Page_BackendObject deletePagesInPost:post withCompletionBlock:^(BOOL success) {
+		[post deleteInBackground];
+		block(success);
+	}];
+	[Like_BackendManager deleteLikesForPost:post withCompletionBlock:^(BOOL success) {
+		if (success) {
+			NSLog(@"Deleted likes successfully");
+		} else {
+			NSLog(@"Error deleting likes");
+		}
+	}];
+	[Share_BackendManager deleteSharesForPost:post withCompletionBlock:^(BOOL success) {
+		if (success) {
+			NSLog(@"Deleted shares successfully");
+		} else {
+			NSLog(@"Error deleting shares");
+		}
+	}];
 }
 
 

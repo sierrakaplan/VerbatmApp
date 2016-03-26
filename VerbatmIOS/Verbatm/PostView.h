@@ -10,20 +10,14 @@
 #import <Parse/PFObject.h>
 #import <UIKit/UIKit.h>
 
-@protocol PostViewDelegate <NSObject>
-
--(void) likeButtonLiked: (BOOL)liked onPostObject: (PFObject*) post;
--(void) shareOptionSelectedForParsePostObject: (PFObject* ) post;
--(void) channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
-
-@end
+@protocol PostViewDelegate;
 
 @interface PostView : UIView
 
 //we store this to help us sort the posts once in the feed by date created
 @property (strong, nonatomic) PFObject* parsePostChannelActivityObject;
 
-@property (nonatomic) id <PostViewDelegate> delegate;
+@property (nonatomic) id<PostViewDelegate> delegate;
 
 // stores pov info associated with this view
 -(instancetype)initWithFrame:(CGRect)frame andPostParseObject:(PFObject*) povObject;
@@ -32,7 +26,7 @@
 
 -(void) renderPostFromPages: (NSArray *) pages;
 
--(void) clearArticle;
+-(void) clearPost;
 
 //adds a down arrow to the cover photo
 -(void) addDownArrowButton;
@@ -52,6 +46,14 @@
 
 //moves the 
 -(void) shiftLikeShareBarDown:(BOOL) down;
+
+@end
+
+@protocol PostViewDelegate <NSObject>
+
+-(void) shareOptionSelectedForParsePostObject: (PFObject* ) post;
+-(void) channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
+-(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
 
 @end
 

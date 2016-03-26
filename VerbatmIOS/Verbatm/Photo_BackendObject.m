@@ -82,12 +82,11 @@ andTextAlignment:(NSNumber *) textAlignment
     }];
 }
 
-+(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block{
++(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {
     
-    PFQuery * userChannelQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
-    [userChannelQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
-    
-    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+    PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
+    [imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
+    [imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error){
             
@@ -108,9 +107,23 @@ andTextAlignment:(NSNumber *) textAlignment
             
             block(objects);
         }
-        
     }];
-    
+}
+
++(void)deletePhotosInPage:(PFObject *)page withCompeletionBlock:(void(^)(BOOL))block {
+	PFQuery *imagesQuery = [PFQuery queryWithClassName:PHOTO_PFCLASS_KEY];
+	[imagesQuery whereKey:PHOTO_PAGE_OBJECT_KEY equalTo:page];
+	[imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+													NSError * _Nullable error) {
+		if(objects && !error){
+			for (PFObject *photoObj in objects) {
+				[photoObj deleteInBackground];
+			}
+			block(YES);
+			return;
+		}
+		block (NO);
+	}];
 }
 
 @end

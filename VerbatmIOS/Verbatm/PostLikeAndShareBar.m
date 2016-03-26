@@ -15,17 +15,18 @@
 
 @interface PostLikeAndShareBar ()
 
-@property (nonatomic,strong) UIButton * likeButton;
-@property (nonatomic,strong) UIButton * numLikesButton;
-@property (nonatomic, strong) UIButton * shareButon;
-@property (nonatomic,strong) UIButton * numSharesButton;
-@property (nonatomic, strong) UILabel * pageNumberLabel;
+@property (nonatomic,strong) UIButton *likeButton;
+@property (nonatomic,strong) UIButton *numLikesButton;
+@property (nonatomic, strong) UIButton *shareButon;
+@property (nonatomic, strong) UIButton *deleteButton;
+@property (nonatomic,strong) UIButton *numSharesButton;
+@property (nonatomic, strong) UILabel *pageNumberLabel;
 
-@property (nonatomic, strong) UIButton * muteButton;
+@property (nonatomic, strong) UIButton *muteButton;
 @property (nonatomic) BOOL isMuted;
 
-@property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
-@property (strong, nonatomic) UIImage* likeButtonLikedImage;
+@property (strong, nonatomic) UIImage *likeButtonNotLikedImage;
+@property (strong, nonatomic) UIImage *likeButtonLikedImage;
 
 @property (nonatomic) BOOL isLiked;
 @property (nonatomic) NSNumber * totalNumberOfPages;
@@ -102,6 +103,7 @@
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares {
     [self createShareButton];
     [self createLikeButton];
+	[self createDeleteButton];
     [self createLikeButtonNumbers:numLikes];
 }
 
@@ -119,7 +121,6 @@
 }
 
 -(void)createLikeButton {
-    //create like button
     CGRect likeButtonFrame =  CGRectMake(self.shareButon.frame.origin.x + self.shareButon.frame.size.width +
                                          ICON_SPACING_GAP,
                                          BUTTON_WALLOFFSET,
@@ -130,9 +131,18 @@
     self.likeButtonLikedImage = [UIImage imageNamed:LIKE_ICON_PRESSED];
     self.likeButtonNotLikedImage = [UIImage imageNamed:LIKE_ICON_UNPRESSED];
     [self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
-    [self.likeButton addTarget:self action:@selector(likeButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.likeButton addTarget:self action:@selector(likeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     
     [self addSubview:self.likeButton];
+}
+
+-(void)presentMuteButton:(BOOL) shouldPresent{
+	if(shouldPresent){
+		[self addSubview:self.muteButton];
+	}else{
+		[self.muteButton removeFromSuperview];
+		self.muteButton = nil;
+	}
 }
 
 -(void)createLikeButtonNumbers:(NSNumber *) numLikes {
@@ -163,11 +173,27 @@
         [self.likeButton setImage:self.likeButtonLikedImage  forState:UIControlStateNormal];
         self.isLiked = YES;
         
-    }else{
+    } else {
         [self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
         self.isLiked = NO;
     }
 }
+
+//todo: only in profile
+-(void)createDeleteButton {
+	CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - (LIKE_SHARE_BAR_BUTTON_SIZE)*2 - ICON_SPACING_GAP, BUTTON_WALLOFFSET,
+										 LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
+
+	self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	[self.deleteButton setFrame:deleteButtonFrame];
+	[self.deleteButton setImage:[UIImage imageNamed:DELETE_POST_ICON] forState:UIControlStateNormal];
+	[self.deleteButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
+	[self.deleteButton addTarget:self action:@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+	[self addSubview:self.deleteButton];
+}
+
+
+#pragma mark - Button actions -
 
 //the icon is selected
 -(void)shareButtonPressed{
@@ -175,7 +201,7 @@
 }
 
 //the icon is selected
--(void) likeButtonSelected {
+-(void) likeButtonPressed {
     if(self.isLiked){
         [self.likeButton setImage:self.likeButtonNotLikedImage forState:UIControlStateNormal];
         self.isLiked = NO;
@@ -189,14 +215,19 @@
     [self.delegate userAction:Like isPositive:self.isLiked];
 }
 
-//allows us to change our page number to the next number
--(void)setPageNumber:(NSNumber *) pageNumber{
-	//todo: remove page number code?
-//    if(pageNumber.integerValue < self.totalNumberOfPages.integerValue ||
-//       pageNumber.integerValue >= 1){
-//        if(self.pageNumberLabel)[self.pageNumberLabel removeFromSuperview];
-//        [self createCounterLabelStartingAtPage:pageNumber outOf:self.totalNumberOfPages];
-//    }
+-(void)muteButtonPressed {
+	if(self.isMuted){
+		self.isMuted = false;
+		[self.muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
+	}else{
+		self.isMuted = true;
+		[self.muteButton  setImage:[UIImage imageNamed:MUTED_ICON] forState:UIControlStateNormal];
+	}
+	[self.delegate muteButtonSelected:self.isMuted];
+}
+
+-(void)deleteButtonPressed {
+	[self.delegate deleteButtonPressed];
 }
 
 -(void)changeLikeCount:(BOOL)up{
@@ -211,14 +242,7 @@
     [self createLikeButtonNumbers: self.totalNumberOfLikes];
 }
 
--(void)presentMuteButton:(BOOL) shouldPresent{
-    if(shouldPresent){
-        [self addSubview:self.muteButton];
-    }else{
-        [self.muteButton removeFromSuperview];
-        self.muteButton = nil;
-    }
-}
+#pragma mark - Display likes and shares -
 
 //the actual number view is selected
 -(void) numLikesButtonSelected {
@@ -230,16 +254,16 @@
     
 }
 
--(void)muteButtonTouched:(id)sender{
-    if(self.isMuted){
-        self.isMuted = false;
-        [self.muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
-    }else{
-        self.isMuted = true;
-        [self.muteButton  setImage:[UIImage imageNamed:MUTED_ICON] forState:UIControlStateNormal];
-    }
-    
-    [self.delegate muteButtonSelected:self.isMuted];
+#pragma mark Page Numbers
+
+//allows us to change our page number to the next number
+-(void)setPageNumber:(NSNumber *) pageNumber{
+	//todo: remove page number code?
+	//    if(pageNumber.integerValue < self.totalNumberOfPages.integerValue ||
+	//       pageNumber.integerValue >= 1){
+	//        if(self.pageNumberLabel)[self.pageNumberLabel removeFromSuperview];
+	//        [self createCounterLabelStartingAtPage:pageNumber outOf:self.totalNumberOfPages];
+	//    }
 }
 
 #pragma mark - Lazy instantiation -
@@ -263,7 +287,7 @@
         _muteButton.frame = buttonFrame;
         
         [_muteButton setImage:[UIImage imageNamed:UNMUTED_ICON] forState:UIControlStateNormal];
-        [_muteButton addTarget:self action:@selector(muteButtonTouched:) forControlEvents:UIControlEventTouchUpInside];
+        [_muteButton addTarget:self action:@selector(muteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     }
     return _muteButton;
 }

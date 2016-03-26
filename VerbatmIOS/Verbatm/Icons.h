@@ -40,7 +40,7 @@
 
 #define ADK_BACKGROUND @"background_adk"
 
-#define DELETE_ICON @"trash_can"
+#define DELETE_PINCHVIEW_ICON @"trash_can"
 
 #define SUCCESS_PUBLISHING_IMAGE @"publishing_succeeded_notification"
 #define FAILED_PUBLISHING_IMAGE @"publishing_failed_notification"
@@ -49,6 +49,8 @@
 
 #define MINIMIZE_ICON @"minimize_icon"
 #define DONE_CHECKMARK @"done_checkmark"
+#define PULLDOWN_ICON @"down_arrow"
+#define CREATE_TEXT_ICON @"text_edit_button"
 
 #pragma mark Text Toolbar
 
@@ -88,16 +90,14 @@
 
 #pragma mark - Post Views -
 
-#define PULLDOWN_ICON @"down_arrow"
+#pragma mark Like Share Bar
+
 #define LIKE_ICON_UNPRESSED @"heart_unfilled"
 #define LIKE_ICON_PRESSED @"heart_filled"
-#define CREATE_TEXT_ICON @"text_edit_button"
 #define SHARE_ICON @"share_icon"
-
-#pragma mark Video Page View
-
 #define UNMUTED_ICON @"sound_unmuted"
 #define MUTED_ICON @"sound_muted"
+#define DELETE_POST_ICON @"trash_icon_dark"
 
 #pragma mark Edit Content View
 

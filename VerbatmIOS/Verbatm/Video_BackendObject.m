@@ -121,9 +121,23 @@
             
             block(objects);
         }
-        
     }];
-    
+}
+
++(void)deleteVideosInPage:(PFObject *)page withCompeletionBlock:(void(^)(BOOL))block {
+	PFQuery *videosQuery = [PFQuery queryWithClassName:VIDEO_PFCLASS_KEY];
+	[videosQuery whereKey:VIDEO_PAGE_OBJECT_KEY equalTo:page];
+	[videosQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+													NSError * _Nullable error) {
+		if(objects && !error){
+			for (PFObject *photoObj in objects) {
+				[photoObj deleteInBackground];
+			}
+			block(YES);
+			return;
+		}
+		block (NO);
+	}];
 }
 
 

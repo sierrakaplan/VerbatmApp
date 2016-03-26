@@ -24,4 +24,6 @@ andTextAlignment:(NSNumber *) textAlignment
 //querry for all photos relating to a specific page
 +(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block;
 
++(void)deletePhotosInPage:(PFObject *)page withCompeletionBlock:(void(^)(BOOL))block;
+
 @end

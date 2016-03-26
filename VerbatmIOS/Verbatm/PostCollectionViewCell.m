@@ -44,9 +44,9 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.activityIndicator stopAnimating];
             });
-            [self.ourCurrentPost clearArticle];//make sure there is no other stuff
+            [self.ourCurrentPost clearPost];
             [self.ourCurrentPost renderPostFromPages:pages];
-            [self.ourCurrentPost scrollToPageAtIndex:0];//this prepares the
+            [self.ourCurrentPost scrollToPageAtIndex:0];
             
             NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
 			[Like_BackendManager numberOfLikesForPost:postObject withCompletionBlock:^(NSNumber *numLikes) {

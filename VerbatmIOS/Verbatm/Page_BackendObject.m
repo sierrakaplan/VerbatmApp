@@ -105,9 +105,9 @@
 
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block {
 
-	PFQuery * userChannelQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
-	[userChannelQuery whereKey:PAGE_POST_KEY equalTo:post];
-	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+	PFQuery * pagesQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
+	[pagesQuery whereKey:PAGE_POST_KEY equalTo:post];
+	[pagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														 NSError * _Nullable error) {
 		if(objects && !error){
 			[objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
@@ -126,7 +126,24 @@
 			}];
 			block(objects);
 		}
+	}];
+}
 
++(void)deletePagesInPost:(PFObject *)post withCompletionBlock:(void(^)(BOOL))block {
+	PFQuery * pagesQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
+	[pagesQuery whereKey:PAGE_POST_KEY equalTo:post];
+	[pagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+														 NSError * _Nullable error) {
+		if(objects && !error){
+			for (PFObject *obj in objects) {
+				[Photo_BackendObject deletePhotosInPage:obj withCompeletionBlock:^(BOOL success) {
+					block(success);
+					[obj deleteInBackground];
+				}];
+			}
+			return;
+		}
+		block(NO);
 	}];
 }
 

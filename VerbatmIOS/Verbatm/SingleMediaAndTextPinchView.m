@@ -9,6 +9,7 @@
 //	Contains text over a single media.
 //
 
+#import "Styles.h"
 #import "SingleMediaAndTextPinchView.h"
 
 @implementation SingleMediaAndTextPinchView
@@ -27,6 +28,27 @@
 		_textYPosition = [NSNumber numberWithFloat: 0.f];
 	}
 	return _textYPosition;
+}
+
+-(UIColor *) textColor {
+	if (!_textColor) {
+		_textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
+	}
+	return _textColor;
+}
+
+-(NSNumber *)textAlignment {
+	if (!_textAlignment) {
+		_textAlignment = [NSNumber numberWithInt: 0];
+	}
+	return _textAlignment;
+}
+
+-(NSNumber *)textSize {
+	if (!_textSize) {
+		_textSize = [NSNumber numberWithFloat: TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE];
+	}
+	return _textSize;
 }
 
 @end

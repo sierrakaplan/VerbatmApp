@@ -79,7 +79,7 @@
     self.deleteButton = [[UIButton alloc] initWithFrame:
                          self.deleteButtonFrame];
     
-    [self.deleteButton setImage:[UIImage imageNamed:DELETE_ICON] forState:UIControlStateNormal];
+    [self.deleteButton setImage:[UIImage imageNamed:DELETE_PINCHVIEW_ICON] forState:UIControlStateNormal];
     [self.deleteButton addTarget:self action:@selector(deleteButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.deleteButton];
 }

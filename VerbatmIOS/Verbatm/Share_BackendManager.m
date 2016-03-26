@@ -54,7 +54,7 @@
 +(void)currentUserSharedPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block{
 	if(!postParseObject)return;
 	//we just delete the Follow Object
-	PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+	PFQuery * userChannelQuery = [PFQuery queryWithClassName:SHARE_PFCLASS_KEY];
 	[userChannelQuery whereKey:SHARE_POST_SHARED_KEY equalTo:postParseObject];
 	[userChannelQuery whereKey:SHARE_USER_KEY equalTo:[PFUser currentUser]];
 	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
@@ -67,7 +67,7 @@
 }
 
 +(void) numberOfSharesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(NSNumber*)) block {
-	PFQuery *numSharesQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+	PFQuery *numSharesQuery = [PFQuery queryWithClassName:SHARE_PFCLASS_KEY];
 	[numSharesQuery whereKey:SHARE_POST_SHARED_KEY equalTo:postParseObject];
 	[numSharesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													  NSError * _Nullable error) {
@@ -76,6 +76,19 @@
 			return;
 		}
 		block ([NSNumber numberWithInt: 0]);
+	}];
+}
+
++(void) deleteSharesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block {
+	PFQuery *sharesQuery = [PFQuery queryWithClassName:SHARE_PFCLASS_KEY];
+	[sharesQuery whereKey:SHARE_POST_SHARED_KEY equalTo:postParseObject];
+	[sharesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+													   NSError * _Nullable error) {
+		if(objects && !error) {
+			block (YES);
+			return;
+		}
+		block (NO);
 	}];
 }
 

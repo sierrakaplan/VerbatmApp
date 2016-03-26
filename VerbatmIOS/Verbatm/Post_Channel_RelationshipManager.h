@@ -22,11 +22,7 @@
 +(void)savePost:(PFObject *) postParseObject toChannels: (NSMutableArray *) channels
                                                     withCompletionBlock:(void(^)())block;
 
-
-
-
-+(void)deletePost:(PFObject *) postParseObject fromChannel: (Channel *) channel
-                                                    withCompletionBlock:(void(^)(bool))block;
++(void)deleteChannelRelationshipsForPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block;
 
 +(void)isPost:(PFObject *) postParseObject partOfChannel: (Channel *) channel
                                                     withCompletionBlock:(void(^)(bool))block;

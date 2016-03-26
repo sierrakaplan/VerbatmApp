@@ -63,7 +63,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 @property (nonatomic) BOOL liked;
 @property (strong, nonatomic) UIImage* likeButtonNotLikedImage;
 @property (strong, nonatomic) UIImage* likeButtonLikedImage;
-//@property (weak, nonatomic) id<LikeButtonDelegate> likeButtonDelegate;
 
 @property (nonatomic, strong) UIButton * downArrow;
 
@@ -551,7 +550,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 #pragma mark - Clean up -
 
--(void) clearArticle {
+-(void) clearPost {
 	//We clear these so that the media is released
 	[self stopAllVideos];
 
@@ -618,7 +617,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	CGRect frame = CGRectMake(x_cord,y_cord, size, size);
 	iv.frame = frame;
 
-
 	CABasicAnimation *pulse;
 	pulse = [CABasicAnimation animationWithKeyPath:@"transform.translation.y"];
 	pulse.duration = 0.5;
@@ -634,6 +632,11 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	self.pageUpIndicator = iv;
 }
 
+#pragma mark - Delete Post -
+
+-(void)deleteButtonPressed {
+	[self.delegate deleteButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+}
 
 #pragma mark - Lazy Instantiation -
 

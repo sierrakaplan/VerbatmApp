@@ -23,4 +23,7 @@
 -(void)saveVideo:(NSURL *) videoUrl atVideoIndex:(NSInteger) videoIndex andPageObject:(PFObject *) pageObject;
 
 +(void)getVideosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block;
+
++(void)deleteVideosInPage:(PFObject *)page withCompeletionBlock:(void(^)(BOOL))block;
+
 @end
