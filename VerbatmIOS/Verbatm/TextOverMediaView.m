@@ -71,11 +71,16 @@ andTextYPosition:(CGFloat) textYPosition
 andTextAlignment:(NSTextAlignment) textAlignment
 	andTextSize:(CGFloat) textSize {
 	if(!text.length) return;
+
 	self.textYPosition = textYPosition;
-	self.textColor = textColor;
-	self.textAlignment = textAlignment;
-	self.textSize = textSize;
 	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
+
+	[self changeTextColor:textColor];
+	[self changeTextAlignment: textAlignment];
+
+	self.textSize = textSize;
+	[self.textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
+
 	[self changeText: text];
 }
 

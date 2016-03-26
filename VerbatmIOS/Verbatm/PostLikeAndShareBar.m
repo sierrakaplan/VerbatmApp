@@ -148,7 +148,7 @@
     
     CGFloat numberHeight = self.frame.size.height - (BUTTON_WALLOFFSET*2);
     
-    CGRect likeNumberButtonFrame = CGRectMake(self.likeButton.frame.origin.x + LIKE_SHARE_BAR_BUTTON_SIZE/2.f,
+    CGRect likeNumberButtonFrame = CGRectMake(self.likeButton.frame.origin.x + LIKE_SHARE_BAR_BUTTON_SIZE/2.f - 2.f,
 											  self.likeButton.center.y - (numberHeight/2.f),
                                               textSize.width, numberHeight);
     [self.numLikesButton setFrame:likeNumberButtonFrame];
