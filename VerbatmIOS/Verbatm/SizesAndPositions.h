@@ -171,6 +171,7 @@
 #define TAP_THRESHOLD 20.f//the threshold to select a circle - but also to start panning
 #define	SLIDE_THRESHOLD 70.f
 
+#define TEXT_VIEW_X_OFFSET 10.f
 #define TEXT_VIEW_OVER_MEDIA_Y_OFFSET 150.f
 #define TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT 70.f
 

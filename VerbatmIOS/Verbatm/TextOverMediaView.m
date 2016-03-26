@@ -74,7 +74,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textColor = textColor;
 	self.textAlignment = textAlignment;
 	self.textSize = textSize;
-	self.textView.frame = CGRectMake(10.f, self.textYPosition,
+	self.textView.frame = CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition,
 									 self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 	[self changeText: text];
 }
@@ -205,7 +205,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(UITextView*) textView {
 	if (!_textView) {
-		CGRect textViewFrame = CGRectMake(10.f, self.textYPosition,
+		CGRect textViewFrame = CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition,
 										  self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
 		[_textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
