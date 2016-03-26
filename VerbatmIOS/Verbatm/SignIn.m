@@ -24,6 +24,11 @@
 @property (strong, nonatomic) UILabel* animationLabel;
 @property (strong, nonatomic) NSTimer* animationTimer;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *verbatmLogoImageView;
+@property (weak, nonatomic) IBOutlet UILabel *welcomeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *mobileBloggingLabel;
+@property (weak, nonatomic) IBOutlet UILabel *mottoLabel1;
+@property (weak, nonatomic) IBOutlet UILabel *mottoLabel2;
 
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
 
@@ -34,6 +39,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	[self.backgroundImageView setFrame:self.view.bounds];
+	[self centerViews];
 	[self registerForNotifications];
 	[self addFacebookLoginButton];
 }
@@ -44,6 +50,15 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
+
+-(void) centerViews {
+	CGFloat offset = self.verbatmLogoImageView.center.x - self.view.center.x;
+	self.verbatmLogoImageView.center = CGPointMake(self.view.center.x, self.verbatmLogoImageView.center.y);
+	self.welcomeLabel.center = CGPointMake(self.view.center.x, self.welcomeLabel.center.y);
+	self.mobileBloggingLabel.center = CGPointMake(self.view.center.x, self.mobileBloggingLabel.center.y);
+	self.mottoLabel1.center = CGPointMake(self.mottoLabel1.center.x - offset, self.mottoLabel1.center.y);
+	self.mottoLabel2.center = CGPointMake(self.mottoLabel2.center.x - offset, self.mottoLabel2.center.y);
 }
 
 -(void) registerForNotifications {
@@ -64,7 +79,7 @@
 	FBSDKLoginButton *loginButton = [[FBSDKLoginButton alloc] init];
 	float buttonWidth = loginButton.frame.size.width*1.2;
 	float buttonHeight = loginButton.frame.size.height*1.2;
-	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2.f, 400.f,
+	loginButton.frame = CGRectMake(self.view.center.x - buttonWidth/2.f, 600.f,
 								   buttonWidth, buttonHeight);
 	loginButton.delegate = self;
 	loginButton.readPermissions = @[@"public_profile", @"email", @"user_friends"];
@@ -137,13 +152,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     UIAlertView * alert = [[UIAlertView alloc] initWithTitle:errorMessage message:@""
                                                     delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [alert show];
-    
-//    if(self.animationView.alpha > 0) return;
-//	[self.animationLabel setText:errorMessage];
-//	[self.view addSubview:self.animationView];
-//	[self.view bringSubviewToFront:self.animationView];
-//	[self showAnimationView:YES];
-//	self.animationTimer = [NSTimer scheduledTimerWithTimeInterval:ERROR_MESSAGE_ANIMATION_TIME target:self selector:@selector(removeAnimationView) userInfo:nil repeats:YES];
 }
 
 -(void) removeAnimationView {

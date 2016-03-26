@@ -157,39 +157,39 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView autoresizesSubviews="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background_sign_in" id="GKm-Mk-qgk">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background_sign_in" id="GKm-Mk-qgk">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="verbatm_logo" id="Iqv-b5-e4e">
-                                <rect key="frame" x="118" y="20" width="85" height="85"/>
+                                <rect key="frame" x="106" y="66" width="109" height="121"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="86e-CU-3ZO">
-                                <rect key="frame" x="40" y="136" width="240" height="34"/>
+                                <rect key="frame" x="40" y="353" width="240" height="34"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="22"/>
+                                <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="35"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="to mobile blogging." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="ZaS-l4-AcK">
-                                <rect key="frame" x="38" y="178" width="245" height="21"/>
+                                <rect key="frame" x="16" y="395" width="289" height="36"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Quicksand-Regular" family="Quicksand" pointSize="17"/>
+                                <fontDescription key="fontDescription" name="Quicksand-Regular" family="Quicksand" pointSize="26"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="be anyone you want," textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="BTw-pB-XOe">
-                                <rect key="frame" x="-6" y="207" width="263" height="83"/>
+                                <rect key="frame" x="-3" y="439" width="263" height="83"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="20"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="make anything you want." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pk3-Gr-fMr">
-                                <rect key="frame" x="57" y="233" width="263" height="83"/>
+                                <rect key="frame" x="60" y="465" width="263" height="83"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="Quicksand-Bold" family="Quicksand" pointSize="20"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -198,6 +198,11 @@
                     </view>
                     <connections>
                         <outlet property="backgroundImageView" destination="GKm-Mk-qgk" id="Nlf-Rk-NnE"/>
+                        <outlet property="mobileBloggingLabel" destination="ZaS-l4-AcK" id="3e8-SA-sjk"/>
+                        <outlet property="mottoLabel1" destination="BTw-pB-XOe" id="O2I-wY-QgN"/>
+                        <outlet property="mottoLabel2" destination="pk3-Gr-fMr" id="3z1-bc-2UP"/>
+                        <outlet property="verbatmLogoImageView" destination="Iqv-b5-e4e" id="Cgi-Cr-ost"/>
+                        <outlet property="welcomeLabel" destination="86e-CU-3ZO" id="iD1-Hf-dBS"/>
                         <segue destination="sxR-fz-pfS" kind="unwind" identifier="unwind_to_master_vc_from_login" unwindAction="unwindToMasterNavVC:" id="SyP-B6-Kbt"/>
                     </connections>
                 </viewController>
