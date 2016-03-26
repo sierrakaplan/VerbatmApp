@@ -145,7 +145,6 @@
 		C716E9CF1BD6BC0C001B769D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C716E9CD1BD6BBB5001B769D /* GoogleService-Info.plist */; };
 		C716E9D21BD6C338001B769D /* Analytics.m in Sources */ = {isa = PBXBuildFile; fileRef = C716E9D11BD6C338001B769D /* Analytics.m */; };
 		C71833151CA1CBE7009A13C5 /* PostChannelAndCreatorBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C71833141CA1CBE7009A13C5 /* PostChannelAndCreatorBar.m */; };
-		C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4061BA4EB500075CA80 /* EditContentVC.m */; };
 		C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = C719A4091BA615B50075CA80 /* UserSetupParameters.m */; };
 		C734FD9519B13D5F00B2C370 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9419B13D5F00B2C370 /* ImageIO.framework */; };
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
@@ -494,8 +493,6 @@
 		C716E9D11BD6C338001B769D /* Analytics.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Analytics.m; sourceTree = "<group>"; };
 		C71833131CA1CBE7009A13C5 /* PostChannelAndCreatorBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PostChannelAndCreatorBar.h; sourceTree = "<group>"; };
 		C71833141CA1CBE7009A13C5 /* PostChannelAndCreatorBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PostChannelAndCreatorBar.m; sourceTree = "<group>"; };
-		C719A4051BA4EB500075CA80 /* EditContentVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditContentVC.h; sourceTree = "<group>"; };
-		C719A4061BA4EB500075CA80 /* EditContentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditContentVC.m; sourceTree = "<group>"; };
 		C719A4081BA615B50075CA80 /* UserSetupParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserSetupParameters.h; sourceTree = "<group>"; };
 		C719A4091BA615B50075CA80 /* UserSetupParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserSetupParameters.m; sourceTree = "<group>"; };
 		C734FD9419B13D5F00B2C370 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
@@ -806,8 +803,6 @@
 				C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */,
 				9D29995919BA9042005EBC8A /* MediaDevVC.h */,
 				9D29995A19BA9042005EBC8A /* MediaDevVC.m */,
-				C719A4051BA4EB500075CA80 /* EditContentVC.h */,
-				C719A4061BA4EB500075CA80 /* EditContentVC.m */,
 			);
 			name = Creation;
 			sourceTree = "<group>";
@@ -1271,6 +1266,7 @@
 				A560EFB21BB0AF42003FB041 /* Login */,
 				A56F68761B643D4B00CE5744 /* Video Player */,
 				F26894441A43641C00B1D4DB /* Page Viewing Experiences */,
+				C7C699FD1BF8191A006B5260 /* Views to Edit PVE Content */,
 				C748836B1B48A9E200E64ED9 /* Pinch Views */,
 				A56F68771B643EB200CE5744 /* Scroll Views */,
 				A56F68751B643D0E00CE5744 /* Camera Views */,
@@ -1419,7 +1415,7 @@
 			name = "Constants ";
 			sourceTree = "<group>";
 		};
-		C7C699FD1BF8191A006B5260 /* Views to Edit AVE Content */ = {
+		C7C699FD1BF8191A006B5260 /* Views to Edit PVE Content */ = {
 			isa = PBXGroup;
 			children = (
 				C7C69A051BF820FC006B5260 /* EditMediaContentView.h */,
@@ -1427,7 +1423,7 @@
 				C7E093EA1BF98BE200A3276A /* OpenCollectionView.h */,
 				C7E093EB1BF98BE200A3276A /* OpenCollectionView.m */,
 			);
-			name = "Views to Edit AVE Content";
+			name = "Views to Edit PVE Content";
 			sourceTree = "<group>";
 		};
 		C7E2C8901BB7E97F00D83668 /* Utility Functions */ = {
@@ -1470,7 +1466,6 @@
 		F26894441A43641C00B1D4DB /* Page Viewing Experiences */ = {
 			isa = PBXGroup;
 			children = (
-				C7C699FD1BF8191A006B5260 /* Views to Edit AVE Content */,
 				A5076D121BF2B25100303746 /* TextOverMediaView.h */,
 				A5076D131BF2B25100303746 /* TextOverMediaView.m */,
 				C7E6C12F1A4E394600863893 /* PhotoVideoPVE.h */,
@@ -1836,7 +1831,6 @@
 				A5E85F9D1B911DA900E148D0 /* GTLUploadParameters.m in Sources */,
 				A5AA31BD1B9FCDDC00D8D20C /* GTLVerbatmAppConstants.m in Sources */,
 				A56F68811B65B43D00CE5744 /* ImagePinchView.m in Sources */,
-				C719A4071BA4EB500075CA80 /* EditContentVC.m in Sources */,
 				C7F79E7D1C39E13900319330 /* SelectionView.m in Sources */,
 				A58EE8861BA8771700B7B396 /* NoAnimationUnwindSegue.m in Sources */,
 				C7F79E7A1C39C44A00319330 /* SelectChannel.m in Sources */,

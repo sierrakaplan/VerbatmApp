@@ -26,18 +26,28 @@
 
 @implementation Photo_BackendObject
 
--(void)saveImage:(UIImage  *) image withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject;
+-(void)saveImage:(UIImage  *) image withText:(NSString *) userText
+andTextYPosition:(NSNumber *) textYPosition
+	atPhotoIndex:(NSInteger) photoIndex
+   andPageObject:(PFObject *) pageObject;
 {
     self.mediaPublisher = [[PostPublisher alloc] init];
     [self.mediaPublisher storeImage:image withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
         NSString * blobStoreUrl = gtlImage.servingUrl;
         //in completion block of blobstore save
-        [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl withText:userText andTextYPosition:textYPosition atPhotoIndex:photoIndex andPageObject:pageObject];
+        [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl withText:userText
+									  andTextYPosition:textYPosition atPhotoIndex:photoIndex
+										 andPageObject:pageObject];
     }];
     
 }
 
--(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL withText:(NSString *) userText andTextYPosition:(NSNumber *) textYPosition atPhotoIndex:(NSInteger) photoIndex andPageObject:(PFObject *) pageObject{
+/* media, text, textYPosition, textColor, textAlignment, textSize */
+-(void)createAndSavePhotoObjectwithBlobstoreUrl:(NSString *) imageURL
+									   withText:(NSString *) text
+							   andTextYPosition:(NSNumber *) textYPosition
+								   atPhotoIndex:(NSInteger) photoIndex
+								  andPageObject:(PFObject *) pageObject{
     NSLog(@"Saving parse photo object");
 
     PFObject * newPhotoObject = [PFObject objectWithClassName:PHOTO_PFCLASS_KEY];
@@ -45,8 +55,11 @@
     [newPhotoObject setObject:[NSNumber numberWithInteger:photoIndex] forKey:PHOTO_INDEX_KEY];
     [newPhotoObject setObject:imageURL forKey:PHOTO_IMAGEURL_KEY];
     [newPhotoObject setObject:pageObject forKey:PHOTO_PAGE_OBJECT_KEY];
+	[newPhotoObject setObject:text forKey:PHOTO_TEXT_KEY];
     [newPhotoObject setObject:textYPosition forKey:PHOTO_TEXT_YOFFSET_KEY];
-    [newPhotoObject setObject:userText forKey:PHOTO_TEXT_KEY];
+	//todo:
+    [newPhotoObject setObject:<#(nonnull id)#> forKey:<#(nonnull NSString *)#>]
+
     
     [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){
@@ -54,10 +67,8 @@
                 //tell our publishing manager that a photo is done saving
                 [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_SUCCEEDED object:nil];
             }
-
         }
     }];
-    
 }
 
 +(void)getPhotosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block{

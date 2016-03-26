@@ -34,21 +34,20 @@
 
 -(void)createTextCreationButton;
 
--(void) setText: (NSString*) text andTextViewYPosition: (CGFloat) yPosition;
-
--(NSString*) getText;
-
--(NSNumber*) getTextYPosition;
-
--(NSInteger) getFilteredImageIndex;
-
+-(void) setText:(NSString *)text
+andTextYPosition:(CGFloat)yPosition
+   andTextColor:(UIColor *)textColor
+andTextAlignment:(NSTextAlignment)textAlignment
+	andTextSize:(CGFloat)textSize;
 
 //call before removing the view our ecv
 //saves the content into the pinchview
--(void)exitingECV;
+-(void)exiting;
 
+-(void)offScreen;//removes video
 
--(void)offScreen;//removes video 
 -(void)onScreen;//plays video
+
 -(void)almostOnScreen;//stages video
+
 @end

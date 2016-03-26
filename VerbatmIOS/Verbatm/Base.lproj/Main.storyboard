@@ -143,29 +143,6 @@
             </objects>
             <point key="canvasLocation" x="-3428" y="-471"/>
         </scene>
-        <!--Edit Content-->
-        <scene sceneID="W4f-0L-ZeV">
-            <objects>
-                <viewController title="Edit Content" id="x4u-kZ-n9K" customClass="EditContentVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="uFC-Vd-iYm">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="GgU-Qa-i6T">
-                                <rect key="frame" x="29" y="536" width="6" height="5"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="AWt-co-EUv" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3096" y="-981"/>
-        </scene>
         <!--Login-->
         <scene sceneID="gIN-uk-7gC">
             <objects>
@@ -316,7 +293,6 @@
                     <navigationItem key="navigationItem" id="sqn-EE-Emp"/>
                     <connections>
                         <outlet property="mainScrollView" destination="ChT-rO-Rpn" id="yN6-Fp-Fpp"/>
-                        <segue destination="x4u-kZ-n9K" kind="modal" identifier="segue_id_edit_content_view" animates="NO" modalPresentationStyle="fullScreen" id="ONZ-b1-Agz"/>
                         <segue destination="C4V-vK-ZzO" kind="unwind" identifier="unwind_to_master_vc_from_adk" unwindAction="unwindToMasterNavVC:" id="fcv-AG-35S"/>
                     </connections>
                 </viewController>

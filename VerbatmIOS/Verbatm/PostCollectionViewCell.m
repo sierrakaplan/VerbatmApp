@@ -25,9 +25,9 @@
 
 -(instancetype)initWithFrame:(CGRect)frame{
     self = [super initWithFrame:frame];
-    //[self.activityIndicator startAnimating];
     return self;
 }
+
 -(void) presentPostView:(PostView *)postView{
     if(postView != self.ourCurrentPost){
         [self.ourCurrentPost postOffScreen];
@@ -58,6 +58,7 @@
         }];
     }
 }
+
 -(void)onScreen{
     if(self.ourCurrentPost){
         [self.ourCurrentPost postOnScreen];

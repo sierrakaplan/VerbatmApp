@@ -80,14 +80,14 @@
     return self.filteredImages[0];
 }
 
-//overriding
+/* media, text, textYPosition, textColor, textAlignment, textSize */
 -(NSArray*) getPhotosWithText {
-	return @[@[[self getImage], self.text, self.textYPosition]];
+	return @[@[[self getImage], self.text, self.textYPosition,
+			   self.textColor, self.textAlignment, self.textSize]];
 }
 
 -(void)changeImageToFilterIndex:(NSInteger)filterIndex {
 	if(filterIndex < 0 || filterIndex >= [self.filteredImages count]) {
-//		NSLog(@"Filtered image index out of range");
 		return;
 	}
 	self.filterImageIndex = filterIndex;
@@ -127,6 +127,7 @@
 
 #pragma mark - Encoding -
 
+//todo: add other text data
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
 	[coder encodeObject:UIImagePNGRepresentation(self.filteredImages[self.filterImageIndex]) forKey:IMAGE_KEY];

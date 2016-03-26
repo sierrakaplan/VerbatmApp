@@ -112,11 +112,13 @@
 
 #pragma mark - Preview mode -
 
+//todo: clean this up. better way to separate preview functionality from feed
 -(void) addContentFromImagePinchViews:(NSMutableArray *)pinchViewArray{
 	NSMutableArray* photosTextArray = [[NSMutableArray alloc] init];
 
     for (ImagePinchView * imagePinchView in pinchViewArray) {
 		if (self.inPreviewMode) {
+
 			EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
 			[editMediaContentView displayImages:[imagePinchView filteredImages] atIndex:imagePinchView.filterImageIndex];
 			if(imagePinchView.text && imagePinchView.text.length) [editMediaContentView setText:imagePinchView.text andTextViewYPosition:[imagePinchView.textYPosition floatValue]];
@@ -148,7 +150,8 @@
 
 #pragma mark - Not preview mode -
 
-//photoTextArray is array containing subarrays of photo and text couples @[@[photo, text],...]
+/* photoTextArray is array containing subarrays of photo and text info
+  @[@[photo, text, textYPosition, textColor, textAlignment, textSize],...] */
 -(void) addPhotos:(NSArray*)photosTextArray {
     
 	for (NSArray* photoText in photosTextArray) {
@@ -156,8 +159,6 @@
 	}
 
 	// Has to add duplicate of first photo to bottom so that you can fade from the last photo into the first
-
-	//add extra copy of photo 1 at bottom for last arc of circle transition
 	NSArray* firstPhotoText = photosTextArray[0];
 	[self addSubview: [self getImageContainerViewFromPhotoTextArray: firstPhotoText]];
 
@@ -176,16 +177,23 @@
 -(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
 	UIImage* image = photoTextArray[0];
 	NSString* text = photoTextArray[1];
-	NSNumber* textYPosition = photoTextArray[2];
+	CGFloat textYPosition = [(NSNumber *)photoTextArray[2] floatValue];
+	UIColor *textColor = photoTextArray[3];
+	NSTextAlignment textAlignment = (NSTextAlignment) ([(NSNumber *)photoTextArray[4] integerValue]);
+	CGFloat textSize = [(NSNumber *)photoTextArray[3] floatValue];
 
 	if(self.isPhotoVideoSubview) {
-		textYPosition = [NSNumber numberWithFloat:textYPosition.floatValue/2.f];
+		textYPosition = textYPosition/2.f;
 	}
+
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-										  andImage: image
-										   andText: text
-								  andTextYPosition: textYPosition.floatValue];
+																		  andImage: image];
 	if (text && text.length) {
+		[textAndImageView setText: text
+				 andTextYPosition: textYPosition
+					 andTextColor: textColor
+				 andTextAlignment: textAlignment
+					  andTextSize: textSize];
 		[textAndImageView showText:YES];
 	}
 	return textAndImageView;
@@ -583,7 +591,7 @@
 - (void)offScreen {
     for (UIView * view in self.imageContainerViews) {
         if([view isKindOfClass:[EditMediaContentView class]]){
-            [((EditMediaContentView *)view)exitingECV];
+            [((EditMediaContentView *)view) exiting];
         }
     }
     

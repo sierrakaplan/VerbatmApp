@@ -38,12 +38,12 @@
 
 /* Stores if filter has been changed in order to preserve state on exit */
 @property (nonatomic) BOOL filterSwitched;
-/* Sentinel to check direction of gesture the first time a 
+/* Sentinel to check direction of gesture the first time a
  gesture state changed event is recorded */
 @property (nonatomic) BOOL gestureActionJustStarted;
 
 @property (nonatomic) NSInteger keyboardHeight;
-/* Stores frame for text view that user has set so that it can be 
+/* Stores frame for text view that user has set so that it can be
  restored after keyboard goes away */
 @property (nonatomic) CGRect userSetFrame;
 
@@ -107,18 +107,23 @@
 	if(![self.textAndImageView textShowing]) {
 		[self setText:@"" andTextViewYPosition: TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
 	}
-	[self.textAndImageView.textView becomeFirstResponder];
+	[self.textAndImageView setTextViewFirstResponder: YES];
 }
 
--(void) setText: (NSString*) text andTextViewYPosition: (CGFloat) yPosition {
-	self.textAndImageView.textView.editable = YES;
-	[self.textAndImageView setText:text];
-	[self.textAndImageView.textView setFrame: CGRectMake(self.textAndImageView.textView.frame.origin.x, yPosition,
-														 self.textAndImageView.textView.frame.size.width,
-														 self.textAndImageView.textView.frame.size.height)];
+-(void) setText:(NSString *)text
+andTextYPosition:(CGFloat)yPosition
+   andTextColor:(UIColor *)textColor
+andTextAlignment:(NSTextAlignment)textAlignment
+	andTextSize:(CGFloat)textSize {
+
+	[self.textAndImageView setText: text
+				  andTextYPosition: yPosition
+					  andTextColor: textColor
+				  andTextAlignment: textAlignment
+					   andTextSize: textSize];
+	[self.textAndImageView setTextViewEditable:YES];
 	[self.textAndImageView showText:YES];
-	[self.textAndImageView.textView setDelegate:self];
-	[self.textAndImageView resizeTextView];
+	[self.textAndImageView setTextViewDelegate:self];
 	[self addToolBarToView];
 }
 
@@ -129,47 +134,29 @@
 	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame];
 	[toolBar setDelegate:self];
-	self.textAndImageView.textView.inputAccessoryView = toolBar;
+	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
 }
 
-#pragma mark - Return text and text y position -
+#pragma mark - Text view content changed -
 
--(NSString*) getText {
-	return [self.textAndImageView.textView text];
-}
-
--(NSNumber*) getTextYPosition {
-	return [NSNumber numberWithFloat: self.textAndImageView.textView.frame.origin.y];
-}
-
-#pragma mark Text view content changed
-
-//User has edited the text view somehow so we adjust its size
+/* User has edited the text view somehow so we adjust its size */
 - (void)textViewDidChange:(UITextView *)textView {
 	[self.textAndImageView resizeTextView];
 }
 
-- (void)textViewDidBeginEditing:(UITextView *)textView{
-
+- (void)textViewDidBeginEditing: (UITextView *)textView{
 	[self.delegate textIsEditing];
-
 	self.userSetFrame = textView.frame;
-	if((textView.frame.origin.y + textView.frame.size.height) > (self.frame.size.height - self.keyboardHeight - TEXT_TOOLBAR_HEIGHT)){
-		[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-			self.textAndImageView.textView.frame = CGRectMake(0,TEXT_VIEW_OVER_MEDIA_Y_OFFSET,
-															  self.textAndImageView.textView.frame.size.width,
-															  self.textAndImageView.textView.frame.size.height);
-		}];
+	if((textView.frame.origin.y + textView.frame.size.height)
+	   > (self.frame.size.height - self.keyboardHeight - TEXT_TOOLBAR_HEIGHT)) {
+		[self.textAndImageView animateTextViewToYPos: TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
 	}
 }
 
-//todo: delete or put back
 -(void)textViewDidEndEditing:(UITextView *)textView{
-	//	if(self.textAndImageView.textView.frame.origin.y != self.userSetFrame.origin.y){
-	//		[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-	//			self.textAndImageView.textView.frame = self.userSetFrame;
-	//		}];
-	//	}
+	if(textView.frame.origin.y != self.userSetFrame.origin.y){
+		[self.textAndImageView animateTextViewToYPos: self.userSetFrame.origin.y];
+	}
 }
 
 /* Enforces word limit */
@@ -212,10 +199,8 @@
 
 -(void)displayImages: (NSMutableArray*) filteredImages atIndex:(NSInteger)index {
 	self.imageIndex = index;
-
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-															andImage:filteredImages[index]
-															 andText:@"" andTextYPosition:TEXT_VIEW_OVER_MEDIA_Y_OFFSET];
+															andImage:filteredImages[index]];
 	self.filteredImages = filteredImages;
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
@@ -243,10 +228,6 @@
 	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
 	[self updatePinchView];
 
-}
-
--(NSInteger) getFilteredImageIndex {
-	return self.imageIndex;
 }
 
 #pragma mark - Keyboard toolbar delegate methods -
@@ -280,50 +261,13 @@
 }
 
 -(void) doneButtonPressed {
-	if([self.textAndImageView.textView.text isEqualToString:@""]) {
+	if([self.textAndImageView.text isEqualToString:@""]) {
 		[self.textAndImageView showText:NO];
 	}
 	[self removeKeyboard];
 }
 
-#pragma mark - Exit view
-
--(void) addTapGestureToMainView {
-	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeKeyboard)];
-	[self addGestureRecognizer:tap];
-}
-
--(void) removeKeyboard {
-	//if the keyboard is up then remove it
-	if(self.textAndImageView.textView.isFirstResponder){
-		[self.textAndImageView.textView resignFirstResponder];
-	}
-	[self.delegate textDoneEditing];
-}
-//called before removing the view
-//clears up video content
-//saves pinchview content as well
--(void)exitingECV{
-	[self updatePinchView];
-	if(self.videoView)[self.videoView stopVideo];
-
-	if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
-		((SingleMediaAndTextPinchView *)self.pinchView).text = self.textAndImageView.textView.text;
-		NSNumber * yoffset = [NSNumber numberWithFloat:self.textAndImageView.textView.frame.origin.y];
-		((SingleMediaAndTextPinchView *)self.pinchView).textYPosition = yoffset;
-	}
-
-}
-
-//updates the content in the pinchview after things are changed
--(void)updatePinchView{
-	//save pinchview content
-	if([self.pinchView isKindOfClass:[ImagePinchView class]]){
-		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
-	}
-}
-
-#pragma maro - Adjust text position -
+#pragma maro - Pan gestures -
 
 /* Adds pan gestures for adding filters to images and changing text position */
 -(void) addPanGestures {
@@ -335,14 +279,14 @@
 	self.povViewMasterScrollView.panGestureRecognizer.delegate = self;
 	panGesture.delegate = self;
 
-	UIPanGestureRecognizer * textViewpanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
-	textViewpanGesture.minimumNumberOfTouches = 1;
-	textViewpanGesture.maximumNumberOfTouches = 1;
-	[self.textAndImageView.textView addGestureRecognizer:textViewpanGesture];
+	UIPanGestureRecognizer * textViewPanGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(didPanTextView:)];
+	textViewPanGesture.minimumNumberOfTouches = 1;
+	textViewPanGesture.maximumNumberOfTouches = 1;
+	[self.textAndImageView addTextViewGestureRecognizer:textViewPanGesture];
 }
 
 /* Handles pan gesture which could be horizontal to add a filter to an image,
-   or vertical to change text position */
+ or vertical to change text position */
 -(void) didPan:(UIGestureRecognizer *) sender{
 	switch (sender.state) {
 		case UIGestureRecognizerStateBegan:
@@ -406,14 +350,8 @@
 			CGPoint location = [sender locationOfTouch:0 inView:self.textAndImageView];
 			CGFloat verticalDiff = location.y - self.textViewPanStartLocation.y;
 
-			if([self textViewTranslationInBounds:verticalDiff]){
-				CGRect newTVFrame = CGRectOffset(self.textAndImageView.textView.frame, 0, verticalDiff);
-
-				if((newTVFrame.origin.y + newTVFrame.size.height) <
-				   (self.textAndImageView.frame.size.height - ((CIRCLE_RADIUS)*2))){
-					self.textAndImageView.textView.frame = newTVFrame;
-				}
-
+			if([self textViewTranslationInBounds: verticalDiff]){
+				[self.textAndImageView changeTextViewYPos: verticalDiff];
 			}
 			self.textViewPanStartLocation = location;
 			break;
@@ -446,19 +384,40 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 							&& fabs(location.y - self.panStartLocation.y) <= DIAGONAL_THRESHOLD); //prevent diagonal swipes
 }
 
-/* Check if the text view move is legal (within bounds) */
--(BOOL)textViewTranslationInBounds:(CGFloat) diff{
-	return ((self.textAndImageView.textView.frame.origin.y + diff) > 0.f) &&
-	((self.textAndImageView.textView.frame.origin.y + self.textAndImageView.textView.frame.size.height + diff) <
-	 self.frame.size.height);
+#pragma mark - Exit view -
+
+-(void) addTapGestureToMainView {
+	UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(removeKeyboard)];
+	[self addGestureRecognizer:tap];
 }
 
-/* Check if the touch is on the text view */
--(BOOL) touchInTextViewBounds:(CGPoint) touch {
-	return (touch.y > self.textAndImageView.textView.frame.origin.y - TOUCH_BUFFER &&
-			touch.y < self.textAndImageView.textView.frame.origin.y +
-			self.textAndImageView.textView.frame.size.height + TOUCH_BUFFER);
+-(void) removeKeyboard {
+	[self.textAndImageView setTextViewFirstResponder: NO];
+	[self.delegate textDoneEditing];
 }
+
+/* Clears video content and saves pinch view info */
+-(void) exiting {
+	[self updatePinchView];
+	if(self.videoView)[self.videoView stopVideo];
+
+	if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
+		SingleMediaAndTextPinchView *mediaAndTextPinchView = (SingleMediaAndTextPinchView *)self.pinchView;
+		mediaAndTextPinchView.text = self.textAndImageView.text;
+		//todo: SIERRA
+		//		NSNumber * yoffset = [NSNumber numberWithFloat:self.textAndImageView.textView.frame.origin.y];
+		mediaAndTextPinchView.textYPosition = yoffset;
+	}
+}
+
+//updates the content in the pinchview after things are changed
+-(void) updatePinchView {
+	if([self.pinchView isKindOfClass:[ImagePinchView class]]){
+		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
+	}
+}
+
+#pragma mark - On/Offscreen -
 
 -(void)offScreen {
 	[self.videoView stopVideo];

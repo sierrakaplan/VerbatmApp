@@ -13,9 +13,8 @@
 #import "CollectionPinchView.h"
 #import "ContentPageElementScrollView.h"
 #import "Channel_BackendObject.h"
-#import "Durations.h"
 
-#import "EditContentVC.h"
+#import "Durations.h"
 
 #import "GMImagePickerController.h"
 
@@ -1638,22 +1637,6 @@ rowHeightForComponent:(NSInteger)component{
 
     [self.view bringSubviewToFront:self.previewDisplayView];
     [self.previewDisplayView displayPreviewPostWithTitle:@"" andPinchViews:pinchViews withStartIndex:index];
-}
-
-#pragma mark - Edit Content View Navigation -
-
-// This should never be called on a collection pinch view - only on image or video
-// modally presents the edit content view
--(void) presentEditContentView {
-	[self performSegueWithIdentifier:BRING_UP_EDITCONTENT_SEGUE sender:self];
-}
-
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-	if([segue.identifier isEqualToString:BRING_UP_EDITCONTENT_SEGUE]) {
-		EditContentVC *editContentVC =  (EditContentVC *)segue.destinationViewController;
-		editContentVC.openPinchView = self.editingPinchView;
-		self.pinchViewTappedAndClosedForTheFirstTime = YES;
-	}
 }
 
 #pragma mark - Clean up Content Page -
