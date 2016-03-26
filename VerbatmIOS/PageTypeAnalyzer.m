@@ -137,7 +137,8 @@
 						NSString *text =  [imageAndTextObj valueForKey:PHOTO_TEXT_KEY];
 						NSNumber *yOffset = [imageAndTextObj valueForKey:PHOTO_TEXT_YOFFSET_KEY];
 
-						UIColor *textColor = [imageAndTextObj valueForKey:PHOTO_TEXT_COLOR_KEY];
+						NSData *textColorData = [imageAndTextObj valueForKey:PHOTO_TEXT_COLOR_KEY];
+						UIColor *textColor = textColorData == nil ? nil : [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
 						if (textColor == nil) textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
 						NSNumber *textAlignment = [imageAndTextObj valueForKey:PHOTO_TEXT_ALIGNMENT_KEY];
 						if (textAlignment == nil) textAlignment = [NSNumber numberWithInt:0];

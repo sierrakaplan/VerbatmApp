@@ -187,7 +187,7 @@
 	CGFloat textYPosition = [(NSNumber *)photoTextArray[2] floatValue];
 	UIColor *textColor = photoTextArray[3];
 	NSTextAlignment textAlignment = (NSTextAlignment) ([(NSNumber *)photoTextArray[4] integerValue]);
-	CGFloat textSize = [(NSNumber *)photoTextArray[3] floatValue];
+	CGFloat textSize = [(NSNumber *)photoTextArray[5] floatValue];
 
 	if(self.isPhotoVideoSubview) {
 		textYPosition = textYPosition/2.f;

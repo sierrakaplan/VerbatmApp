@@ -87,9 +87,12 @@
 #pragma mark - Text View -
 
 -(void)createTextCreationButton {
+	[self.textAndImageView setTextViewEditable:YES];
+	[self.textAndImageView showText:YES];
+	[self.textAndImageView setTextViewDelegate:self];
+	[self addToolBarToView];
 	[self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
 	self.textCreationButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-
 	[self.textCreationButton addTarget:self action:@selector(editText) forControlEvents:UIControlEventTouchUpInside];
 	[self addSubview:self.textCreationButton];
 	[self bringSubviewToFront:self.textCreationButton];
@@ -121,17 +124,14 @@ andTextAlignment:(NSTextAlignment)textAlignment
 					  andTextColor: textColor
 				  andTextAlignment: textAlignment
 					   andTextSize: textSize];
-	[self.textAndImageView setTextViewEditable:YES];
-	[self.textAndImageView showText:YES];
-	[self.textAndImageView setTextViewDelegate:self];
-	[self addToolBarToView];
 }
 
 #pragma mark - Keyboard ToolBar -
 
 //creates a toolbar to add onto the keyboard
 -(void)addToolBarToView {
-	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT, self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
+	CGRect toolBarFrame = CGRectMake(0, self.frame.size.height - TEXT_TOOLBAR_HEIGHT,
+									 self.frame.size.width, TEXT_TOOLBAR_HEIGHT);
 	VerbatmKeyboardToolBar* toolBar = [[VerbatmKeyboardToolBar alloc] initWithFrame:toolBarFrame];
 	[toolBar setDelegate:self];
 	[self.textAndImageView setTextViewKeyboardToolbar:toolBar];
@@ -234,34 +234,34 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 -(void) textColorChangedToBlack:(BOOL)black {
 	if (black) {
-		//todo:[self.textAndImageView]
+		[self.textAndImageView changeTextColor:[UIColor blackColor]];
 	} else {
-
+		[self.textAndImageView changeTextColor:[UIColor whiteColor]];
 	}
 }
 
 -(void) textSizeIncreased {
-
+	[self.textAndImageView increaseTextSize];
 }
 
 -(void) textSizeDecreased {
-
+	[self.textAndImageView decreaseTextSize];
 }
 
 -(void) leftAlignButtonPressed {
-
+	[self.textAndImageView changeTextAlignment:NSTextAlignmentLeft];
 }
 
 -(void) centerAlignButtonPressed {
-
+	[self.textAndImageView changeTextAlignment:NSTextAlignmentCenter];
 }
 
 -(void) rightAlignButtonPressed {
-
+	[self.textAndImageView changeTextAlignment:NSTextAlignmentRight];
 }
 
 -(void) doneButtonPressed {
-	if([self.textAndImageView.text isEqualToString:@""]) {
+	if([[self.textAndImageView getText] isEqualToString:@""]) {
 		[self.textAndImageView showText:NO];
 	}
 	[self removeKeyboard];
@@ -400,7 +400,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 
 	if([self.pinchView isKindOfClass:[SingleMediaAndTextPinchView class]]){
 		SingleMediaAndTextPinchView *mediaAndTextPinchView = (SingleMediaAndTextPinchView *)self.pinchView;
-		mediaAndTextPinchView.text = self.textAndImageView.text;
+		mediaAndTextPinchView.text = [self.textAndImageView getText];
 		mediaAndTextPinchView.textYPosition = [NSNumber numberWithFloat:self.textAndImageView.textYPosition];
 		mediaAndTextPinchView.textColor = self.textAndImageView.textColor;
 		mediaAndTextPinchView.textSize = [NSNumber numberWithFloat:self.textAndImageView.textSize];

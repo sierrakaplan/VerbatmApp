@@ -68,7 +68,7 @@ andTextAlignment:(NSNumber *) textAlignment
     [newPhotoObject setObject:pageObject forKey:PHOTO_PAGE_OBJECT_KEY];
 	[newPhotoObject setObject:text forKey:PHOTO_TEXT_KEY];
     [newPhotoObject setObject:textYPosition forKey:PHOTO_TEXT_YOFFSET_KEY];
-	[newPhotoObject setObject:textColor forKey:PHOTO_TEXT_COLOR_KEY];
+	[newPhotoObject setObject:[NSKeyedArchiver archivedDataWithRootObject:textColor] forKey:PHOTO_TEXT_COLOR_KEY];
 	[newPhotoObject setObject:textAlignment forKey:PHOTO_TEXT_ALIGNMENT_KEY];
 	[newPhotoObject setObject:textSize forKey:PHOTO_TEXT_SIZE_KEY];
 

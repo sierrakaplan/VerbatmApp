@@ -22,6 +22,12 @@
 @property (strong, nonatomic) UIButton *rightAlignButton;
 @property (strong, nonatomic) UIButton *doneButton;
 
+#define BUTTON_Y_OFFSET ((TEXT_TOOLBAR_HEIGHT - TEXT_TOOLBAR_BUTTON_WIDTH)/2.f)
+#define COLOR_BUTTON_X_OFFSET 20.f
+#define SIZE_BUTTONS_OFFSET 100.f
+#define ALIGNMENT_BUTTONS_OFFSET 200.f
+#define SPACE 10.f
+
 @end
 
 @implementation VerbatmKeyboardToolBar
@@ -53,9 +59,9 @@
 	self.textColorBlack = !self.textColorBlack;
 	UIImage *iconImage;
 	if (self.textColorBlack) {
-		iconImage = [UIImage imageNamed: BLACK_FONT_ICON];
-	} else {
 		iconImage = [UIImage imageNamed: WHITE_FONT_ICON];
+	} else {
+		iconImage = [UIImage imageNamed: BLACK_FONT_ICON];
 	}
 	[self.textColorButton setImage:iconImage forState:UIControlStateNormal];
 	[self.delegate textColorChangedToBlack:self.textColorBlack];
@@ -89,7 +95,7 @@
 
 -(UIButton *) doneButton {
 	if (!_doneButton) {
-		CGRect doneButtonFrame = CGRectMake(self.frame.size.width - TEXT_TOOLBAR_DONE_WIDTH, 0.f,
+		CGRect doneButtonFrame = CGRectMake(self.frame.size.width - TEXT_TOOLBAR_DONE_WIDTH, BUTTON_Y_OFFSET,
 											TEXT_TOOLBAR_DONE_WIDTH, self.frame.size.height - TEXT_TOOLBAR_BUTTON_OFFSET);
 		_doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_doneButton.frame = doneButtonFrame;
@@ -103,9 +109,9 @@
 
 - (UIButton *) textColorButton {
 	if (!_textColorButton) {
-		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
+		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, BUTTON_Y_OFFSET,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:BLACK_FONT_ICON
+		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:WHITE_FONT_ICON
 										andSelector:@selector(textColorButtonPressed)];
 	}
 	return _textColorButton;
@@ -113,7 +119,7 @@
 
 - (UIButton *) textSizeIncreaseButton {
 	if (!_textSizeIncreaseButton) {
-		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
+		CGRect buttonFrame = CGRectMake(SIZE_BUTTONS_OFFSET, BUTTON_Y_OFFSET,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
 		_textSizeIncreaseButton = [self getButtonWithFrame:buttonFrame andIcon:INCREASE_FONT_SIZE_ICON
 											 andSelector:@selector(textSizeIncreaseButtonPressed)];
@@ -124,7 +130,7 @@
 
 - (UIButton *) textSizeDecreaseButton {
 	if (!_textSizeDecreaseButton) {
-		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
+		CGRect buttonFrame = CGRectMake(SIZE_BUTTONS_OFFSET + SPACE + TEXT_TOOLBAR_BUTTON_WIDTH, BUTTON_Y_OFFSET,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
 		_textSizeDecreaseButton = [self getButtonWithFrame:buttonFrame andIcon:DECREASE_FONT_SIZE_ICON
 											   andSelector:@selector(textSizeDecreaseButtonPressed)];
@@ -135,7 +141,7 @@
 
 - (UIButton *) leftAlignButton {
 	if (!_leftAlignButton) {
-		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
+		CGRect buttonFrame = CGRectMake(ALIGNMENT_BUTTONS_OFFSET, BUTTON_Y_OFFSET,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
 		_leftAlignButton = [self getButtonWithFrame:buttonFrame andIcon:LEFT_ALIGN_ICON
 										andSelector:@selector(leftAlignButtonPressed)];
@@ -146,7 +152,7 @@
 
 - (UIButton *) centerAlignButton {
 	if (!_centerAlignButton) {
-		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
+		CGRect buttonFrame = CGRectMake(ALIGNMENT_BUTTONS_OFFSET + SPACE + TEXT_TOOLBAR_BUTTON_WIDTH, BUTTON_Y_OFFSET,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
 		_centerAlignButton = [self getButtonWithFrame:buttonFrame andIcon:CENTER_ALIGN_ICON
 											 andSelector:@selector(centerAlignButtonPressed)];
@@ -157,7 +163,7 @@
 
 - (UIButton *) rightAlignButton {
 	if (!_rightAlignButton) {
-		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, 0.f,
+		CGRect buttonFrame = CGRectMake(ALIGNMENT_BUTTONS_OFFSET + (SPACE + TEXT_TOOLBAR_BUTTON_WIDTH)*2, BUTTON_Y_OFFSET,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
 		_rightAlignButton = [self getButtonWithFrame:buttonFrame andIcon:RIGHT_ALIGN_ICON
 										 andSelector:@selector(rightAlignButtonPressed)];

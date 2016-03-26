@@ -74,13 +74,14 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textColor = textColor;
 	self.textAlignment = textAlignment;
 	self.textSize = textSize;
-	self.textView.frame = CGRectOffset(self.textView.frame, 0.f, self.textView.frame.origin.y - textYPosition);
+	self.textView.frame = CGRectMake(10.f, self.textYPosition,
+									 self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 	[self changeText: text];
 }
 
 -(void) revertToDefaultTextSettings {
 	self.text = @"";
-	self.textYPosition = 0.f;
+	self.textYPosition = TEXT_VIEW_OVER_MEDIA_Y_OFFSET;
 	self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
 	self.textAlignment = NSTextAlignmentLeft;
 	self.textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
@@ -89,6 +90,10 @@ andTextAlignment:(NSTextAlignment) textAlignment
 -(void)changeText:(NSString *) text{
 	[self.textView setText:text];
 	[self resizeTextView];
+}
+
+-(NSString *)getText {
+	return self.textView.text;
 }
 
 - (BOOL) changeTextViewYPos: (CGFloat) yDiff {
@@ -108,6 +113,30 @@ andTextAlignment:(NSTextAlignment) textAlignment
 		self.textView.frame = CGRectOffset(self.textView.frame, 0.f,
 										   tempYPos - self.textView.frame.origin.y);
 	}];
+}
+
+-(void) changeTextColor:(UIColor *)textColor {
+	self.textColor = textColor;
+	[self.textView setTextColor:textColor];
+}
+
+-(void) changeTextAlignment:(NSTextAlignment)textAlignment {
+	self.textAlignment = textAlignment;
+	[self.textView setTextAlignment:textAlignment];
+}
+
+-(void) increaseTextSize {
+	self.textSize += 2;
+	if (self.textSize > TEXT_PAGE_VIEW_MAX_FONT_SIZE) self.textSize = TEXT_PAGE_VIEW_MAX_FONT_SIZE;
+	[self.textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
+	[self resizeTextView];
+}
+
+-(void) decreaseTextSize {
+	self.textSize -= 2;
+	if (self.textSize < TEXT_PAGE_VIEW_MIN_FONT_SIZE) self.textSize = TEXT_PAGE_VIEW_MIN_FONT_SIZE;
+	[self.textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
+	[self resizeTextView];
 }
 
 -(void) addTextViewGestureRecognizer: (UIGestureRecognizer*)gestureRecognizer {
@@ -148,7 +177,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 }
 
 -(void) setTextViewFirstResponder:(BOOL)firstResponder {
-	if (firstResponder && !self.textView.isFirstResponder)
+	if (firstResponder)
 		[self.textView becomeFirstResponder];
 	else if (self.textView.isFirstResponder)
 		[self.textView resignFirstResponder];
@@ -161,14 +190,6 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textView.frame = CGRectMake(self.textView.frame.origin.x, self.textView.frame.origin.y,
 									 self.textView.frame.size.width, height);
 	self.textBackgroundView.frame = CGRectMake(0.f, 0.f, self.textView.frame.size.width, self.textView.frame.size.height);
-}
-
--(void) increaseTextSize {
-
-}
-
--(void) decreaseTextSize {
-
 }
 
 #pragma mark - Lazy Instantiation -
@@ -184,13 +205,14 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(UITextView*) textView {
 	if (!_textView) {
-		CGRect textViewFrame = CGRectMake(self.textYPosition, TEXT_VIEW_OVER_MEDIA_Y_OFFSET,
+		CGRect textViewFrame = CGRectMake(10.f, self.textYPosition,
 										  self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
 		[_textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
 		_textView.textColor = self.textColor;
 		_textView.tintColor = self.textColor;
+		_textView.textAlignment = self.textAlignment;
 		_textView.keyboardAppearance = UIKeyboardAppearanceDark;
 		_textView.scrollEnabled = NO;
 		_textView.editable = NO;

@@ -14,7 +14,6 @@
 
 @property (nonatomic, readonly) BOOL textShowing;
 
-@property (nonatomic, readonly) NSString* text;
 @property (nonatomic, readonly) CGFloat textYPosition;
 @property (nonatomic, readonly) CGFloat textSize;
 @property (nonatomic, readonly) NSTextAlignment textAlignment;
@@ -34,11 +33,21 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(void) changeText:(NSString *)text;
 
+-(NSString *) getText;
+
 /* Changes y position of textView, if it is legal (within bounds */
 -(BOOL) changeTextViewYPos: (CGFloat) yDiff;
 
 /* Animates text view to new frame. Does not store new frame information (not permanent) */
 -(void) animateTextViewToYPos: (CGFloat) tempYPos;
+
+-(void) changeTextColor:(UIColor *)textColor;
+
+-(void) changeTextAlignment:(NSTextAlignment)textAlignment;
+
+-(void) increaseTextSize;
+
+-(void) decreaseTextSize;
 
 -(void) addTextViewGestureRecognizer: (UIGestureRecognizer*)gestureRecognizer;
 

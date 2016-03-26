@@ -12,9 +12,9 @@
 
 /* media, text, textYPosition, textColor, textAlignment, textSize */
 @property (strong, nonatomic) NSString* text;
-@property (strong, nonatomic) NSNumber *textYPosition;
+@property (strong, nonatomic) NSNumber *textYPosition; //float value
 @property (strong, nonatomic) UIColor *textColor;
-@property (strong, nonatomic) NSNumber *textAlignment;
-@property (strong, nonatomic) NSNumber *textSize;
+@property (strong, nonatomic) NSNumber *textAlignment; //NSTextAlignment integer value
+@property (strong, nonatomic) NSNumber *textSize; //foat value
 
 @end
