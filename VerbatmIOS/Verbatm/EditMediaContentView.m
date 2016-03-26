@@ -50,7 +50,6 @@
 /* Only want to prepare videos once, otherwise just play them */
 @property (nonatomic) BOOL videoHasBeenPrepared;
 
-
 #define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
 #define TOUCH_BUFFER 20
 #define DIAGONAL_THRESHOLD 600
@@ -99,7 +98,7 @@
 	[self addLongPress];
 }
 
-// long press does the same thing as text button
+/* long press does the same thing as edit text button */
 -(void) addLongPress {
 	UILongPressGestureRecognizer * longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editText)];
 	longPressRecognizer.minimumPressDuration = 0.1;
@@ -107,9 +106,7 @@
 }
 
 -(void) editText {
-	if(![self.textAndImageView textShowing]) {
-		[self.textAndImageView revertToDefaultTextSettings];
-	}
+	[self.textAndImageView showText: YES];
 	[self.textAndImageView setTextViewFirstResponder: YES];
 }
 
@@ -153,7 +150,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 }
 
--(void)textViewDidEndEditing:(UITextView *)textView{
+-(void)textViewDidEndEditing:(UITextView *)textView {
 	if(textView.frame.origin.y != self.userSetFrame.origin.y){
 		[self.textAndImageView animateTextViewToYPos: self.userSetFrame.origin.y];
 	}
@@ -163,7 +160,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 - (BOOL) textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
 	NSString* newText = [textView.text stringByReplacingCharactersInRange:range withString:text];
 	NSString *trimmedText = [newText stringByReplacingOccurrencesOfString:@" " withString:@""];
-
 	if (newText.length - trimmedText.length > TEXT_WORD_LIMIT) {
 		return NO;
 	} else {
@@ -318,7 +314,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 					}
 					self.filterSwitched = YES;
 				}
-
 			}
 
 			self.panStartLocation = location;

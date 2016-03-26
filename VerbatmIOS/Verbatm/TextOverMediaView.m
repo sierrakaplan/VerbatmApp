@@ -29,7 +29,8 @@
 @property (nonatomic, readwrite) NSTextAlignment textAlignment;
 @property (nonatomic, strong, readwrite) UIColor *textColor;
 
-#define BLUR_IMAGE_FILTER 40
+#define DEFAULT_TEXT_VIEW_FRAME CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition, self.frame.size.width - TEXT_VIEW_X_OFFSET*2, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT)
+
 @end
 
 @implementation TextOverMediaView
@@ -74,17 +75,21 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	self.textColor = textColor;
 	self.textAlignment = textAlignment;
 	self.textSize = textSize;
-	self.textView.frame = CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition,
-									 self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
+	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
 	[self changeText: text];
 }
 
 -(void) revertToDefaultTextSettings {
-	self.text = @"";
+	[self changeText:@""];
+
 	self.textYPosition = TEXT_VIEW_OVER_MEDIA_Y_OFFSET;
+	self.textView.frame = DEFAULT_TEXT_VIEW_FRAME;
+
 	self.textSize = TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE;
-	self.textAlignment = NSTextAlignmentLeft;
-	self.textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
+	[self.textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
+
+	[self changeTextAlignment: NSTextAlignmentLeft];
+	[self changeTextColor:[UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR]];
 }
 
 -(void)changeText:(NSString *) text{
@@ -108,16 +113,23 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	return NO;
 }
 
--(void) animateTextViewToYPos: (CGFloat) tempYPos {
+-(void) animateTextViewToYPos: (CGFloat) yPos {
+	self.textYPosition = yPos;
+	CGRect tempFrame = CGRectMake(self.textView.frame.origin.x, yPos,
+								  self.textView.frame.size.width, self.textView.frame.size.height);
 	[UIView animateWithDuration:SNAP_ANIMATION_DURATION  animations:^{
-		self.textView.frame = CGRectOffset(self.textView.frame, 0.f,
-										   tempYPos - self.textView.frame.origin.y);
+		self.textView.frame = tempFrame;
 	}];
 }
 
 -(void) changeTextColor:(UIColor *)textColor {
 	self.textColor = textColor;
-	[self.textView setTextColor:textColor];
+	self.textView.textColor = self.textColor;
+	self.textView.tintColor = self.textColor;
+	if([self.textView isFirstResponder]){
+		[self.textView resignFirstResponder];
+		[self.textView becomeFirstResponder];
+	}
 }
 
 -(void) changeTextAlignment:(NSTextAlignment)textAlignment {
@@ -205,18 +217,14 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(UITextView*) textView {
 	if (!_textView) {
-		CGRect textViewFrame = CGRectMake(TEXT_VIEW_X_OFFSET, self.textYPosition,
-										  self.frame.size.width, TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT);
+		CGRect textViewFrame = DEFAULT_TEXT_VIEW_FRAME;
 		_textView = [[UITextView alloc] initWithFrame: textViewFrame];
-		[_textView setFont:[UIFont fontWithName:TEXT_PAGE_VIEW_DEFAULT_FONT size:self.textSize]];
 		_textView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
-		_textView.textColor = self.textColor;
-		_textView.tintColor = self.textColor;
-		_textView.textAlignment = self.textAlignment;
 		_textView.keyboardAppearance = UIKeyboardAppearanceDark;
 		_textView.scrollEnabled = NO;
 		_textView.editable = NO;
 		_textView.selectable = NO;
+		[_textView setTintAdjustmentMode:UIViewTintAdjustmentModeNormal];
 	}
 	return _textView;
 }
