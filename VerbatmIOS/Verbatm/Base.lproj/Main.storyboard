@@ -197,6 +197,7 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <connections>
+                        <outlet property="backgroundImageView" destination="GKm-Mk-qgk" id="Nlf-Rk-NnE"/>
                         <segue destination="sxR-fz-pfS" kind="unwind" identifier="unwind_to_master_vc_from_login" unwindAction="unwindToMasterNavVC:" id="SyP-B6-Kbt"/>
                     </connections>
                 </viewController>

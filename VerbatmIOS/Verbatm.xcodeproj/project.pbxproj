@@ -370,6 +370,7 @@
 		A5AB22CE1BD86A960084089B /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		A5B0A8191C0E63D60062D7BF /* PageViewingExperience.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageViewingExperience.h; sourceTree = "<group>"; };
 		A5B0A81A1C0E63D60062D7BF /* PageViewingExperience.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageViewingExperience.m; sourceTree = "<group>"; };
+		A5BAC9111CA70A8B00F00260 /* PromiseKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PromiseKit.framework; path = "Pods/../build/Debug-iphoneos/PromiseKit.framework"; sourceTree = "<group>"; };
 		A5C09BC51BA1F1D700C0AD86 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
 		A5C09BC61BA1F1D700C0AD86 /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIAuthenticationDialog.m; sourceTree = "<group>"; };
 		A5C09BC71BA1F1D700C0AD86 /* ASICacheDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASICacheDelegate.h; sourceTree = "<group>"; };
@@ -1308,6 +1309,7 @@
 		C7BC4374199D97F5004B91A1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A5BAC9111CA70A8B00F00260 /* PromiseKit.framework */,
 				A51E74661C89914A00CF8DEA /* PromiseKit.framework */,
 				C7F3EBCF1C86249E007D23DF /* libcompression.tbd */,
 				C7F3EBCD1C859B8C007D23DF /* libbz2.1.0.tbd */,
@@ -2008,10 +2010,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = "$(inherited)";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/build/Debug-iphoneos",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";
@@ -2042,10 +2041,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = "$(inherited)";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/build/Debug-iphoneos",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				INFOPLIST_FILE = "Verbatm/Verbatm-Info.plist";

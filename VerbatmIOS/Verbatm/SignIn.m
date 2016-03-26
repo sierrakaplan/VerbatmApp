@@ -23,6 +23,7 @@
 @property (strong, nonatomic) UIView* animationView;
 @property (strong, nonatomic) UILabel* animationLabel;
 @property (strong, nonatomic) NSTimer* animationTimer;
+@property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 
 #define BRING_UP_CREATE_ACCOUNT_SEGUE @"create_account_segue"
 
@@ -32,6 +33,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	[self.backgroundImageView setFrame:self.view.bounds];
 	[self registerForNotifications];
 	[self addFacebookLoginButton];
 }
