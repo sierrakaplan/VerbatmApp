@@ -31,6 +31,7 @@
 
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserAndChannelListsTVC.h"
+#import "UserInfoCache.h"
 
 #import <Crashlytics/Crashlytics.h>
 
@@ -73,6 +74,7 @@
 -(void)setUpStartEnvironment{
     [self setUpTabBarController];
      self.view.backgroundColor = [UIColor blackColor];
+	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{}];
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -214,8 +216,7 @@
 	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:HOME_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
-    
-    
+
     // images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
     self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);

@@ -44,7 +44,6 @@
     self.userChannels = channels;
 }
 
-
 -(NSMutableArray *) getUserChannels{
     return self.userChannels;
 }
