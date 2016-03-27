@@ -37,28 +37,6 @@
     }
 }
 
--(void) presentPost:(PFObject *) postObject{
-    if(postObject != self.postBeingPresented){
-        self.postBeingPresented = postObject;
-        [Page_BackendObject getPagesFromPost:postObject andCompletionBlock:^(NSArray * pages) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.activityIndicator stopAnimating];
-            });
-            [self.ourCurrentPost clearPost];
-            [self.ourCurrentPost renderPostFromPages:pages];
-            [self.ourCurrentPost scrollToPageAtIndex:0];
-			NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
-			AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:postObject];
-			AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:postObject];
-			PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
-				NSNumber *numLikes = likesAndShares[0];
-				NSNumber *numShares = likesAndShares[1];
-				[self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
-			});
-        }];
-    }
-}
-
 -(void)onScreen{
     if(self.ourCurrentPost){
         [self.ourCurrentPost postOnScreen];

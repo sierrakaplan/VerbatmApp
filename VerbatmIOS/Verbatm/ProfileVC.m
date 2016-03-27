@@ -62,8 +62,9 @@
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
         [self addPostListVC];
-        if(self.isCurrentUserProfile){
-            [self.postListVC stopAllVideoContent];//We stop the video because we start in the feed
+        if(self.isCurrentUserProfile) {
+			//We stop the video because we start in the feed
+            [self.postListVC stopAllVideoContent];
         }
         [self createNavigationBar];
         [self addClearScreenGesture];
@@ -73,7 +74,6 @@
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
-    
     if(self.isCurrentUserProfile){
         [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
             block();
@@ -107,8 +107,7 @@
         [self.postListVC stopAllVideoContent];
         [self.postListVC.view removeFromSuperview];
     }
-    
-    
+
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     [flowLayout setMinimumInteritemSpacing:0.3];
@@ -124,7 +123,7 @@
         self.startChannel = self.postListVC.channelForList;
     }
     self.postListVC.listType = listChannel;
-    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
+    self.postListVC.isCurrentUserProfile = self.isCurrentUserProfile;
     self.postListVC.delegate = self;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
     else[self.view addSubview:self.postListVC.view];
@@ -154,7 +153,8 @@
     [self.view addGestureRecognizer:singleTap];
 }
 
-#pragma mark -POSTListView delegate-
+#pragma mark - POSTListView delegate -
+
 -(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
     userProfile.isCurrentUserProfile = NO;

@@ -207,8 +207,11 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 				PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
 					NSNumber *numLikes = likesAndShares[0];
 					NSNumber *numShares = likesAndShares[1];
-					[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPages
-											   andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+					[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+													   numberOfPages:numberOfPages
+											   andStartingPageNumber:@(1)
+															 startUp:(self.listType == listFeed || self.isCurrentUserProfile)
+													withDeleteButton:self.isCurrentUserProfile];
 				});
 			}];
 		}];

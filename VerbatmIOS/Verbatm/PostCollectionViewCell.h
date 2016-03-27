@@ -12,7 +12,6 @@
 
 @interface PostCollectionViewCell : UICollectionViewCell
 
--(void)presentPost:(PFObject *) postObject;
 -(void)presentPostView:(PostView *)postView;
 -(void)onScreen;
 -(void)offScreen;

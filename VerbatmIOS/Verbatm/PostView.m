@@ -186,7 +186,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}];
 }
 
--(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up{
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares
+								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
+									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete {
 	//horizontal bar positioning
 	CGFloat barHeight = LIKE_SHARE_BAR_HEIGHT;
 
@@ -200,6 +202,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes
 													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
+	if (withDelete) {
+		[self.likeShareBar createDeleteButton];
+	}
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
 	[self addCreatorInfo];
