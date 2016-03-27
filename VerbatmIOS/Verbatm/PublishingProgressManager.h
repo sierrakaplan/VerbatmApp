@@ -30,7 +30,8 @@
 
 +(instancetype)sharedInstance;
 //the returns NO if there is publishing taking place already or if there is not internet TODO
--(BOOL)publishPostToChannel:(Channel *) channel withPinchViews:(NSArray *)pinchViews;
+-(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
+		withCompletionBlock:(void(^)(BOOL))block;
 -(void)registerForNotifications;
 @property (nonatomic) id<PublishingProgressProtocol> delegate;
 @property (nonatomic, readonly) NSProgress * progressAccountant;

@@ -23,4 +23,6 @@
 //note - methods are synchronous so could block to get user info
 -(NSString *)getChannelOwnerUserName;
 -(BOOL)channelBelongsToCurrentUser;
+
+-(void)addParseChannelObject:(PFObject *)object;
 @end

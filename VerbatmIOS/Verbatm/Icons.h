@@ -40,6 +40,9 @@
 
 #define ADK_BACKGROUND @"background_adk"
 
+#define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
+#define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
+
 #define DELETE_PINCHVIEW_ICON @"trash_can"
 
 #define SUCCESS_PUBLISHING_IMAGE @"publishing_succeeded_notification"
