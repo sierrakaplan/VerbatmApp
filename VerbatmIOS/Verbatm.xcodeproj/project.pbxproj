@@ -768,8 +768,6 @@
 				C7D5963A1C66E47100161136 /* Follow_BackendManager.m */,
 				C7D596361C66DC3A00161136 /* FeedQueryManager.h */,
 				C7D596371C66DC3A00161136 /* FeedQueryManager.m */,
-				C755DB0A1C74619200136F6E /* PublishingProgressManager.h */,
-				C755DB0B1C74619200136F6E /* PublishingProgressManager.m */,
 				C7F3EBC71C7D4D73007D23DF /* VideoPlayerItemManager.h */,
 				C7F3EBC81C7D4D73007D23DF /* VideoPlayerItemManager.m */,
 				C7F3EBCA1C814313007D23DF /* VideoDownloadManager.h */,
@@ -812,7 +810,6 @@
 			isa = PBXGroup;
 			children = (
 				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
-				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
 				C7E65F5A1B911A470042AD99 /* FeedVC.h */,
 				C7E65F5B1B911A470042AD99 /* FeedVC.m */,
 			);
@@ -918,6 +915,20 @@
 				C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */,
 			);
 			name = "Table Cell Views";
+			sourceTree = "<group>";
+		};
+		A5BFA5971CA89A90002C3884 /* Publishing */ = {
+			isa = PBXGroup;
+			children = (
+				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
+				A5E85FFF1B96249900E148D0 /* PostPublisher.h */,
+				A5E860001B96249900E148D0 /* PostPublisher.m */,
+				A5C09BE41BA1F43600C0AD86 /* MediaUploader.h */,
+				A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */,
+				C755DB0A1C74619200136F6E /* PublishingProgressManager.h */,
+				C755DB0B1C74619200136F6E /* PublishingProgressManager.m */,
+			);
+			name = Publishing;
 			sourceTree = "<group>";
 		};
 		A5C09BA01BA1F0BF00C0AD86 /* ASI HTTP Request */ = {
@@ -1074,10 +1085,6 @@
 		A5E85FFE1B96233D00E148D0 /* GTL Logic */ = {
 			isa = PBXGroup;
 			children = (
-				A5E85FFF1B96249900E148D0 /* PostPublisher.h */,
-				A5E860001B96249900E148D0 /* PostPublisher.m */,
-				A5C09BE41BA1F43600C0AD86 /* MediaUploader.h */,
-				A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */,
 				A51A52F41BD6B8AB0048E62A /* MediaDownloader.h */,
 				A51A52F51BD6B8AB0048E62A /* MediaDownloader.m */,
 				A55A59E01BB5EB7300C7CE7A /* UserManager.h */,
@@ -1363,6 +1370,7 @@
 				C78B682319CA6C01003D0AC5 /* MediaSelectTile.m */,
 				C78B681119CA6914003D0AC5 /* View Controllers */,
 				A560EF9A1BA89552003FB041 /* Model */,
+				A5BFA5971CA89A90002C3884 /* Publishing */,
 				A5E85FFE1B96233D00E148D0 /* GTL Logic */,
 				C7BC437C199D97F5004B91A1 /* Supporting Files */,
 			);

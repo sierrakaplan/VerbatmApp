@@ -16,7 +16,7 @@
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
 #import "PostPublisher.h"
-
+#import "PublishingProgressManager.h"
 
 @interface Photo_BackendObject ()
 
@@ -75,8 +75,7 @@ andTextAlignment:(NSNumber *) textAlignment
     [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){
             if(succeeded){
-                //tell our publishing manager that a photo is done saving
-                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_SUCCEEDED object:nil];
+				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
             }
         }
     }];

@@ -28,6 +28,10 @@
 
 @interface PublishingProgressManager : NSObject
 
+#define INITIAL_PROGRESS_UNITS 3
+#define IMAGE_PROGRESS_UNITS 4
+#define VIDEO_PROGRESS_UNITS 11
+
 @property (nonatomic) id<PublishingProgressProtocol> delegate;
 @property (nonatomic, readonly) NSProgress * progressAccountant;
 @property (nonatomic, readonly) BOOL currentlyPublishing;
@@ -41,7 +45,8 @@
 
 -(void)registerForNotifications;
 
--(void)mediaHasProgressedSavind:(int64_t) newProgress;
+-(void)mediaSavingProgressed:(int64_t) newProgress;
+
 @end
 
 

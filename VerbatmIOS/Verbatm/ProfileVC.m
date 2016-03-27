@@ -326,12 +326,13 @@
 
 -(void) showPublishingProgress {
 	self.publishingProgressView = nil;
-	self.publishingProgress = [[PublishingProgressManager sharedInstance] progressAccountant];
-	[[PublishingProgressManager sharedInstance] setDelegate:self];
-	Channel * currentPublishingChannel = [[PublishingProgressManager sharedInstance] currentPublishingChannel];
-	if ([[PublishingProgressManager sharedInstance] newChannelCreated]) {
+	PublishingProgressManager *progressManager = [PublishingProgressManager sharedInstance];
+	self.publishingProgress = [progressManager progressAccountant];
+	[progressManager setDelegate:self];
+	Channel * currentPublishingChannel = [progressManager currentPublishingChannel];
+	if ([progressManager newChannelCreated]) {
 		[self.profileNavBar newChannelCreated: currentPublishingChannel];
-		[[PublishingProgressManager sharedInstance] setNewChannelCreated:NO];
+		[progressManager setNewChannelCreated:NO];
 	}
 	[self selectChannel: currentPublishingChannel];
 	[self.profileNavBar addSubview: self.publishingProgressView];
@@ -342,12 +343,12 @@
 -(void) publishingComplete {
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
-    [self addPostListVC];
-	//[self.postListVC reloadCurrentChannel];
+	if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
+		[self.postListVC reloadCurrentChannel];
+	}
 }
 
 -(void) publishingFailed {
-	//TODO: tell user publishing failed
 	NSLog(@"PUBLISHING FAILED");
 }
 

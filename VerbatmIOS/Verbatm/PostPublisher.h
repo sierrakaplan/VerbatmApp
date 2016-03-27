@@ -12,12 +12,6 @@
 
 @interface PostPublisher : NSObject
 
-#define PROGRESS_UNITS_FOR_INITIAL_PROGRESS 5 // to show the user something is happening
-#define PROGRESS_UNITS_FOR_FINAL_PUBLISH 3
-#define PROGRESS_UNITS_FOR_PHOTO 3
-#define PROGRESS_UNITS_FOR_VIDEO 10
-
-// initialized once publish has been called
 @property(nonatomic, strong) NSProgress* publishingProgress;
 
 -(void) storeVideoFromURL: (NSURL*) url withCompletionBlock:(void(^)(GTLVerbatmAppVideo *))block;

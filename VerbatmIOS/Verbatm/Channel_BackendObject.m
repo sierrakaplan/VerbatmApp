@@ -54,19 +54,19 @@
 -(void) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel
 				  withCompletionBlock:(void(^)(PFObject *))block {
 	if(channel.parseChannelObject){
-		Post_BackendObject * newPost = [[Post_BackendObject alloc]init];
-		[self.ourPosts addObject:newPost];
-		PFObject *parsePostObject = [newPost createPostFromPinchViews:pinchViews toChannel:channel];
-		block(parsePostObject);
+		block ([self createPostFromPinchViews:pinchViews andChannel:channel]);
 	} else {
 		[Channel_BackendObject createChannelWithName:channel.name andCompletionBlock:^(PFObject* channelObject){
 			[channel addParseChannelObject:channelObject];
-			Post_BackendObject * newPost = [[Post_BackendObject alloc]init];
-			[self.ourPosts addObject:newPost];
-			PFObject * parsePostObject = [newPost createPostFromPinchViews:pinchViews toChannel:channel];
-			block(parsePostObject);
+			block ([self createPostFromPinchViews:pinchViews andChannel:channel]);
 		}];
 	}
+}
+
+-(PFObject *) createPostFromPinchViews:(NSArray*)pinchViews andChannel:(Channel*)channel {
+	Post_BackendObject * newPost = [[Post_BackendObject alloc]init];
+	[self.ourPosts addObject:newPost];
+	return [newPost createPostFromPinchViews:pinchViews toChannel:channel];
 }
 
 + (void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock{
