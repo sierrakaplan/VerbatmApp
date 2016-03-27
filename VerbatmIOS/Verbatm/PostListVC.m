@@ -137,15 +137,16 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	[self getPosts];
 }
 
--(void)changeCurrentChannelTo:(Channel *) channel{
-	if(![self.channelForList.name isEqualToString:channel.name]){
-		self.collectionView.contentOffset = CGPointMake(0, 0);
-		self.channelForList = channel;
-		[self clearOldPosts];
-		[self removePresentLabel];
-		[self getPosts];
-	}
-}
+//todo: delete?
+//-(void)changeCurrentChannelTo:(Channel *) channel{
+//	if(![self.channelForList.name isEqualToString:channel.name]){
+//		self.collectionView.contentOffset = CGPointMake(0, 0);
+//		self.channelForList = channel;
+//		[self clearOldPosts];
+//		[self removePresentLabel];
+//		[self getPosts];
+//	}
+//}
 
 -(void) getPosts {
 	[self.customActivityIndicator startCustomActivityIndicator];

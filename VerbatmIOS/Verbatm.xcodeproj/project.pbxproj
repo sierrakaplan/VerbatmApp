@@ -810,6 +810,7 @@
 			isa = PBXGroup;
 			children = (
 				C76172791C4DFB7700AB0D84 /* PostListVC.h */,
+				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
 				C7E65F5A1B911A470042AD99 /* FeedVC.h */,
 				C7E65F5B1B911A470042AD99 /* FeedVC.m */,
 			);
@@ -920,7 +921,6 @@
 		A5BFA5971CA89A90002C3884 /* Publishing */ = {
 			isa = PBXGroup;
 			children = (
-				C761727A1C4DFB7700AB0D84 /* PostListVC.m */,
 				A5E85FFF1B96249900E148D0 /* PostPublisher.h */,
 				A5E860001B96249900E148D0 /* PostPublisher.m */,
 				A5C09BE41BA1F43600C0AD86 /* MediaUploader.h */,

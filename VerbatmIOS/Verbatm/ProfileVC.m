@@ -61,12 +61,12 @@
     self.view.backgroundColor = [UIColor whiteColor];
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-        [self addPostListVC];
+		[self createNavigationBar];
+		[self selectChannel:self.startChannel];
         if(self.isCurrentUserProfile) {
 			//We stop the video because we start in the feed
             [self.postListVC stopAllVideoContent];
         }
-        [self createNavigationBar];
         [self addClearScreenGesture];
     }];
     self.view.clipsToBounds = YES;
@@ -250,19 +250,16 @@
 }
 
 -(void)newChannelSelected:(Channel *) channel{
-    
     if(![self.startChannel.name isEqualToString:channel.name]){
         self.startChannel = channel;
         [self addPostListVC];
     }
-
-    //[self.postListVC changeCurrentChannelTo:channel];
 }
 
 // updates tab and content
 -(void) selectChannel: (Channel *) channel {
 	[self.profileNavBar selectChannel: channel];
-	[self.postListVC changeCurrentChannelTo:channel];
+	[self addPostListVC];
 }
 
 #pragma mark -POSTListVC Protocol-

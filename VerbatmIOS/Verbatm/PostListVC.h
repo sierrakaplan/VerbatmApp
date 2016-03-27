@@ -39,7 +39,6 @@ typedef enum PostListType {
 -(void) continueVideoContent;
 
 -(void)reloadCurrentChannel;
--(void)changeCurrentChannelTo:(Channel *) channel;
 
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;
