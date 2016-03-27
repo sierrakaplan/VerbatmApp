@@ -44,8 +44,7 @@
     self.backgroundColor = [UIColor blackColor];
     self.layer.cornerRadius = 10.f;
     self.layer.borderColor = VERBATM_GOLD_COLOR.CGColor;
-    
-    
+
     self.layer.borderWidth = 1.f;
     self.clipsToBounds = YES;
 }
@@ -66,9 +65,6 @@
     [self.channelNameField setFont: entryTextFont];
     
     self.channelNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString: @"Name your channel!" attributes:@{NSForegroundColorAttributeName: color,  NSFontAttributeName:placeHolderTextFont }];
-    
-    
-    
     self.channelNameField.returnKeyType = UIReturnKeyDone;
     [self addSubview:self.channelNameField];
     [self.channelNameField becomeFirstResponder];
@@ -130,17 +126,21 @@
     return ![[text stringByTrimmingCharactersInSet:alphaSet] isEqualToString:text];
 }
 
+#pragma mark - Text Field delegate methods -
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
     [textField resignFirstResponder];
     return NO;
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
+/* Enforce channel name character limit */
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+	if(range.length + range.location > textField.text.length) {
+		return NO;
+	}
+
+	NSUInteger newLength = [textField.text length] + [string length] - range.length;
+	return newLength <= CHANNEL_NAME_CHARACTER_LIMIT;
 }
-*/
 
 @end

@@ -190,16 +190,15 @@
 -(void) createNewChannel {
     if(!self.createNewChannelView){
         [self darkenScreen];
-        CGFloat viewHeight = self.view.frame.size.height/2.f -
-        (CHANNEL_CREATION_VIEW_WALLOFFSET_X *7);
-        
-        CGRect newChannelViewFrame = CGRectMake(CHANNEL_CREATION_VIEW_WALLOFFSET_X, CHANNEL_CREATION_VIEW_Y_OFFSET, self.view.frame.size.width - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *2),viewHeight);
+
+		CGFloat xOffset = (self.view.frame.size.width - CHANNEL_CREATION_VIEW_WIDTH)/2.f;
+        CGRect newChannelViewFrame = CGRectMake(xOffset, CHANNEL_CREATION_VIEW_Y_OFFSET,
+												CHANNEL_CREATION_VIEW_WIDTH, CHANNEL_CREATION_VIEW_HEIGHT);
         self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
         self.createNewChannelView.delegate = self;
         [self.view addSubview:self.createNewChannelView];
         [self.view bringSubviewToFront:self.createNewChannelView];
     }
-
 }
 
 -(void)darkenScreen{
