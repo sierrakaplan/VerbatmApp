@@ -109,7 +109,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 -(void)nothingToPresentHere {
 	if(self.noContentLabel || self.presentedPostList.count > 0){
-		return;//no need to make another one
+		return;
 	}
 
 	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POSTS_LABEL_WIDTH/2.f, 0.f,
@@ -396,6 +396,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self.presentedPostList removeObjectAtIndex:i];
 		NSIndexPath *indexPath =[NSIndexPath indexPathForRow:i inSection:0];
 		[self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+		if (self.presentedPostList.count < 1) {
+			[self nothingToPresentHere];
+		}
 	} completion:^(BOOL finished) {
 
 	}];
