@@ -11,6 +11,9 @@
 
 #import "Durations.h"
 
+#import "Intro_Instruction_Notification_View.h"
+
+
 #import "ParseBackendKeys.h"
 
 #import "ProfileVC.h"
@@ -25,14 +28,16 @@
 
 #import "UIView+Effects.h"
 #import "UserInfoCache.h"
+#import "UserSetupParameters.h"
 
-@interface ProfileVC() <ProfileNavBarDelegate,
+@interface ProfileVC() <ProfileNavBarDelegate,Intro_Notification_Delegate,
 					UIScrollViewDelegate, CreateNewChannelViewProtocol,
 					PublishingProgressProtocol, PostListVCProtocol>
 
-@property (strong, nonatomic) PostListVC *postListVC;
+@property (strong, nonatomic) PostListVC * postListVC;
+@property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
-@property (nonatomic, strong) ProfileNavBar *profileNavBar;
+@property (nonatomic, strong) ProfileNavBar * profileNavBar;
 @property (nonatomic) CGRect profileNavBarFrameOnScreen;
 @property (nonatomic) CGRect profileNavBarFrameOffScreen;
 @property (nonatomic) BOOL contentCoveringScreen;
@@ -67,13 +72,13 @@
         }
         [self createNavigationBar];
         [self addClearScreenGesture];
+        [self checkIntroNotification];
     }];
     self.view.clipsToBounds = YES;
 }
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
-    
     if(self.isCurrentUserProfile){
         [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
             block();
@@ -86,6 +91,24 @@
          }];
     }
 }
+
+-(void)checkIntroNotification{
+    
+    if(![[UserSetupParameters sharedInstance] isProfile_InstructionShown] &&
+       self.isCurrentUserProfile) {
+        self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Profile];
+        self.introInstruction.custom_delegate = self;
+        [self.view addSubview:self.introInstruction];
+        [self.view bringSubviewToFront:self.introInstruction];
+    }
+}
+
+-(void)notificationDoneAnimatingOut{
+    
+}
+
+
+
 
 -(void) viewWillAppear:(BOOL)animated{
     if(self.postListVC){

@@ -25,7 +25,11 @@
 /*check if these conditions have been met*/
 -(BOOL) isFilter_InstructionShown;
 -(BOOL) isPinchCircles_InstructionShown;
--(BOOL) isPageSwipeNavigation_InstructionShown;
+
+-(BOOL) isFeed_InstructionShown;
+-(BOOL) isProfile_InstructionShown;
+-(BOOL) isAdk_InstructionShown;
+
 
 /*Stores that the notifications have been shown*/
 -(void) set_filter_InstructionAsShown;

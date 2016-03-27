@@ -18,6 +18,7 @@
 
 #import "GMImagePickerController.h"
 
+#import "Intro_Instruction_Notification_View.h"
 #import "ImagePinchView.h"
 #import "Icons.h"
 
@@ -36,13 +37,14 @@
 
 #import "UIImage+ImageEffectsAndTransforms.h"
 #import "UserInfoCache.h"
+#import "UserSetupParameters.h"
 
 #import "VerbatmCameraView.h"
 #import "VideoPinchView.h"
 
-@interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,
-GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate,
-UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
+@interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,Intro_Notification_Delegate,
+    GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
+@property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
 @property (nonatomic) UITextField *createNewChannelField;
 @property (nonatomic) NSString *channelNameForNewChannel;
@@ -195,6 +197,22 @@ UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureReco
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [self checkIntroNotification];
+}
+-(void) checkIntroNotification {
+    if(![[UserSetupParameters sharedInstance] isAdk_InstructionShown]) {
+        self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:ADK];
+        self.introInstruction.custom_delegate = self;
+        [self.view addSubview:self.introInstruction];
+        [self.view bringSubviewToFront:self.introInstruction];
+    }
+}
+
+-(void)notificationDoneAnimatingOut{
+    
 }
 
 -(void) initializeVariables {

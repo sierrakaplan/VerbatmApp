@@ -11,6 +11,8 @@
 
 
 
+#define INTRO_NOTIFICATION_SIZE 300.f
+
 #pragma mark - Main Tab bar -
 
 #define TAB_BUTTON_PADDING 12.f

@@ -11,6 +11,7 @@
 #import "FeedVC.h"
 
 #import "Icons.h"
+#import "Intro_Instruction_Notification_View.h"
 
 #import "Notifications.h"
 
@@ -23,7 +24,9 @@
 #import "SegueIDs.h"
 #import "SizesAndPositions.h"
 
-@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate, PostListVCProtocol>
+#import "UserSetupParameters.h"
+
+@interface FeedVC () <UIScrollViewDelegate, SharePostViewDelegate, PostListVCProtocol,Intro_Notification_Delegate>
 
 @property (nonatomic) BOOL contentCoveringScreen;
 
@@ -34,6 +37,8 @@
 
 @property (nonatomic) SharePostView * sharePostView;
 @property (nonatomic) BOOL didJustLoadForTheFirstTime;
+
+@property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
 @end
 
@@ -51,10 +56,26 @@
     if(self.postListVC && !self.didJustLoadForTheFirstTime){
        [self.postListVC continueVideoContent];
     }
+    [self checkIntroNotification];
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+    
+}
+
+
+-(void)checkIntroNotification{
+    if(![[UserSetupParameters sharedInstance] isFeed_InstructionShown]){
+        self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Feed];
+        self.introInstruction.custom_delegate = self;
+        [self.view addSubview:self.introInstruction];
+        [self.view bringSubviewToFront:self.introInstruction];
+    }
+}
+
+-(void)notificationDoneAnimatingOut{
+    
 }
 
 -(void)viewWillDisappear:(BOOL)animated {
