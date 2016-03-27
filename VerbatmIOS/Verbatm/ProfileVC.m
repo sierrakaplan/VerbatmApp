@@ -44,7 +44,6 @@
 @property (strong, nonatomic) CreateNewChannelView * createNewChannelView;
 @property (nonatomic) UIView * darkScreenCover;
 @property (nonatomic) SharePostView * sharePOVView;
-@property (nonatomic) Channel_BackendObject * channelBackendManager;
 
 #pragma mark Publishing
 
@@ -227,11 +226,14 @@
     //save the channel name and create it in the backend
     //upate the scrollview to present a new channel
     
-    Channel * newChannel = [self.channelBackendManager createChannelWithName:channelName];
-    [self.profileNavBar newChannelCreated:newChannel];
-    [self clearChannelCreationView];
-    //make sure the channels are up to date
-    [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:nil];
+    [Channel_BackendObject createChannelWithName:channelName andCompletionBlock:^(PFObject *channelObject) {
+		if (channelObject) {
+			Channel *newChannel = [[Channel alloc] initWithChannelName:channelName andParseChannelObject:channelObject];
+			[self.profileNavBar newChannelCreated:newChannel];
+			[self clearChannelCreationView];
+			[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:nil];
+		}
+	}];
 }
 
 -(void) clearChannelCreationView{
@@ -352,13 +354,6 @@
 }
 
 #pragma mark - Lazy Instantiation -
-
--(Channel_BackendObject *) channelBackendManager {
-	if(!_channelBackendManager) {
-		_channelBackendManager = [[Channel_BackendObject alloc] init];
-	}
-	return _channelBackendManager;
-}
 
 -(UIView*) publishingProgressView {
 	if (!_publishingProgressView) {

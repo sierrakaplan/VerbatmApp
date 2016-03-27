@@ -65,6 +65,5 @@
 
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"
 #define CHANNEL_NAME_KEY @"ChannelName"
-#define CHANNEL_NUM_POSTS_KEY @"NumPosts"
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
 #endif /* ParseBackendKeys_h */

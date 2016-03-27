@@ -114,8 +114,8 @@
 #define ADK_NAV_BAR_COLOR CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED 
 #define SETTINGS_NAV_BAR_COLOR [UIColor blackColor]
 
-#define TITLE_TEXT_COLOR blackColor
-#define TITLE_TEXT_SIZE 20.f
+#define CHANNEL_PICKER_TEXT_COLOR whiteColor
+#define CHANNEL_PICKER_TEXT_SIZE 20.f
 
 #pragma mark PinchViews
 

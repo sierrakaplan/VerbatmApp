@@ -39,4 +39,8 @@
     return ([[PFUser currentUser].objectId isEqualToString:user.objectId]);
 }
 
+-(void)addParseChannelObject:(PFObject *)object {
+	self.parseChannelObject = object;
+}
+
 @end
