@@ -185,7 +185,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 }
 
 -(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
-	NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
+	NSMutableArray * postLoadPromises = [[NSMutableArray alloc] init];
 
 	for(PFObject * pc_activity in backendPostObjects) {
 		AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -196,26 +196,28 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 				NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 
-				[Like_BackendManager numberOfLikesForPost:post withCompletionBlock:^(NSNumber *numLikes) {
-					//todo: make this not embedded
-					[Share_BackendManager numberOfSharesForPost:post withCompletionBlock:^(NSNumber *numShares) {
-						[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPages
-												   andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
-					}];
-				}];
 				[postView renderPostFromPages:pages];
 				[postView postOffScreen];
 				postView.delegate = self;
 				[self.presentedPostList addObject:postView];
 				resolve(nil);
+
+				AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
+				AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
+				PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
+					NSNumber *numLikes = likesAndShares[0];
+					NSNumber *numShares = likesAndShares[1];
+					[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPages
+											   andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+				});
 			}];
 		}];
 
-		[pageLoadPromises addObject:promise];
+		[postLoadPromises addObject:promise];
 	}
 
 	//when all pages are loaded then we reload our list
-	PMKWhen(pageLoadPromises).then(^(id data){
+	PMKWhen(postLoadPromises).then(^(id data){
 		[self sortOurPostList];
 		dispatch_async(dispatch_get_main_queue(), ^{
 			//prepare the first post object

@@ -47,14 +47,14 @@
             [self.ourCurrentPost clearPost];
             [self.ourCurrentPost renderPostFromPages:pages];
             [self.ourCurrentPost scrollToPageAtIndex:0];
-            
-            NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
-			[Like_BackendManager numberOfLikesForPost:postObject withCompletionBlock:^(NSNumber *numLikes) {
-				//todo: make this not embedded
-				[Share_BackendManager numberOfSharesForPost:postObject withCompletionBlock:^(NSNumber *numShares) {
-					[self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
-				}];
-			}];
+			NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
+			AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:postObject];
+			AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:postObject];
+			PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
+				NSNumber *numLikes = likesAndShares[0];
+				NSNumber *numShares = likesAndShares[1];
+				[self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
+			});
         }];
     }
 }

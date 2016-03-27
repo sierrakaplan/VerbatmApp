@@ -66,17 +66,20 @@
 	}];
 }
 
-+(void) numberOfSharesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(NSNumber*)) block {
-	PFQuery *numSharesQuery = [PFQuery queryWithClassName:SHARE_PFCLASS_KEY];
-	[numSharesQuery whereKey:SHARE_POST_SHARED_KEY equalTo:postParseObject];
-	[numSharesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-													  NSError * _Nullable error) {
-		if(objects && !error) {
-			block ([NSNumber numberWithInteger:objects.count]);
-			return;
-		}
-		block ([NSNumber numberWithInt: 0]);
++(AnyPromise *) numberOfSharesForPost:(PFObject*) postParseObject {
+	AnyPromise *promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		PFQuery *numSharesQuery = [PFQuery queryWithClassName:SHARE_PFCLASS_KEY];
+		[numSharesQuery whereKey:SHARE_POST_SHARED_KEY equalTo:postParseObject];
+		[numSharesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+														   NSError * _Nullable error) {
+			if(objects && !error) {
+				resolve ([NSNumber numberWithInteger:objects.count]);
+				return;
+			}
+			resolve ([NSNumber numberWithInt: 0]);
+		}];
 	}];
+	return promise;
 }
 
 +(void) deleteSharesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block {

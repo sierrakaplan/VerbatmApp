@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <PromiseKit/PromiseKit.h>
 
 @interface Share_BackendManager : NSObject
 
@@ -15,7 +16,8 @@
 //tests to see if the logged in user shared this post
 +(void) currentUserSharedPost:(PFObject *) postParseObject withCompletionBlock:(void(^)(bool))block;
 
-+(void) numberOfSharesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(NSNumber*)) block;
+/* Promise resolves to NSNumber */
++(AnyPromise*) numberOfSharesForPost:(PFObject*) postParseObject;
 
 +(void) deleteSharesForPost:(PFObject*) postParseObject withCompletionBlock:(void(^)(BOOL)) block;
 
