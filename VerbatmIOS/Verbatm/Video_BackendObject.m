@@ -41,10 +41,8 @@
     }];
 }
 
-//should be moved to another file-- TODO
 + (UIImage *)thumbnailImageForVideo:(NSURL *)videoURL
-                             atTime:(NSTimeInterval)time
-{
+                             atTime:(NSTimeInterval)time {
     
     AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
     NSParameterAssert(asset);

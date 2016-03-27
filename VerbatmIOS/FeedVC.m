@@ -178,12 +178,6 @@
     }
 }
 
-#pragma mark - Share Post Delegate -
-
--(void) sharePostWithComment: (NSString *)comment {
-	//todo:
-}
-
 #pragma mark - Network Connection Lost -
 
 -(void)networkConnectionUpdate: (NSNotification *) notification{

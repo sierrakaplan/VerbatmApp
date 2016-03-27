@@ -253,7 +253,6 @@
 
 -(void) revealADK {
 	[[Analytics getSharedInstance] newADKSession];
-    [self playContentOnSelectedViewController:NO];
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
 
@@ -275,34 +274,13 @@
 //catches the unwind segue from login / create account or adk
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
 	if ([segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
-		// TODO: have variable set and go to profile or adk
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
 			[self.tabBarController setSelectedViewController:self.profileVC];
 			[self.profileVC showPublishingProgress];
 		}
-        [self playContentOnSelectedViewController:YES];
 		[[Analytics getSharedInstance] endOfADKSession];
 	}
-}
-
-
--(void) playContentOnSelectedViewController:(BOOL) shouldPlay{
-    
-    if(shouldPlay){
-        UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
-        
-        if(currentViewController == self.feedVC){
-        }else if (currentViewController == self.profileVC){
-        }
-    }else{
-        UIViewController * currentViewController = self.tabBarController.viewControllers[self.tabBarController.selectedIndex];
-        
-        if(currentViewController == self.feedVC){
-        }else if (currentViewController == self.profileVC){
-			//[self.profileVC offScreen]; //todo: delete?
-        }
-    }
 }
 
 #pragma mark - Media Dev VC Delegate methods -

@@ -288,10 +288,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 		case UIGestureRecognizerStateBegan:
 			if (sender.numberOfTouches < 1) return;
 			self.panStartLocation = [sender locationOfTouch:0 inView:self];
-			//todo: add back? remove keyboard on pan?
-			//                if(self.textAndImageView.textView.isFirstResponder) {
-			//					[self removeKeyboard];
-			//				}
 			self.gestureActionJustStarted = YES;
 			break;
 		case UIGestureRecognizerStateChanged:{

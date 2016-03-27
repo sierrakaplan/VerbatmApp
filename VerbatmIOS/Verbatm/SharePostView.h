@@ -15,7 +15,6 @@
 
 -(void) cancelButtonSelected;//tells the superview to remove the current presented view
 -(void) postPostToChannels:(NSMutableArray *) channels;
--(void) sharePostWithComment:(NSString *) comment;
 
 @end
 

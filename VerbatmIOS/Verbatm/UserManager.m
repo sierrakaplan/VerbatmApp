@@ -87,11 +87,10 @@
 						[currentUser setObject: name forKey:VERBATM_USER_NAME_KEY];
 						[currentUser saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
                             if(succeeded){
-                                //TODOS--Check why this doesn't work
+                                //TODO --Check why this doesn't work
                             }
                         }];
 
-						//	TODO: get picture data then store image
 //						NSString* pictureURL = result[@"picture"][@"data"][@"url"];
 //						NSLog(@"profile picture url: %@", pictureURL);
 

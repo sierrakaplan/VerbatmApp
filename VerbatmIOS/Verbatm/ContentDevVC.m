@@ -626,14 +626,7 @@ rowHeightForComponent:(NSInteger)component{
         newElementScrollView.frame = newElementScrollViewFrame;
         self.addMediaBelowView = newElementScrollView;
         [self shiftElementsBelowView: self.channelPicker];
-        //TODO -- user pinch instruction
-//        if(self.pageElementScrollViews.count > 3){
-//            [self presentUserInstructionForPinchGesture];
-//        }
-        
     }];
-    
-    
 }
 
 -(ContentPageElementScrollView *) createNewContentScrollViewWithPinchView:(PinchView *) view andFrame:(CGRect) frame {
@@ -1717,7 +1710,6 @@ rowHeightForComponent:(NSInteger)component{
 -(void) minimizeCameraViewButtonTapped {
 	[self.cameraView removeFromSuperview];
     [self removeExcessMediaTiles];
-	//TODO
 }
 
 #pragma mark - Gallery + Image picker -
@@ -1863,7 +1855,7 @@ rowHeightForComponent:(NSInteger)component{
 			[self cleanUp];
 		}else {
 			NSLog(@"Couldn't publish because something else is publishing or no internet.");
-			//TODO -- either something else is publishing or there is not internet
+			//TODO -- notification to user either something else is publishing or there is not internet
 		}
 	}];
 }

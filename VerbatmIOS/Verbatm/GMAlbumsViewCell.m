@@ -141,35 +141,24 @@
     return self;
 }
 
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
-    
-    //TODO Reduce text font size if the name label does not fit screen.
-
 }
 
-- (void)setVideoLayout:(BOOL)isVideo
-{
-    //TODO : Add additional icons for slowmo, burst, etc...
-    if (isVideo)
-    {
+- (void)setVideoLayout:(BOOL)isVideo {
+    if (isVideo) {
         _videoIcon.hidden = NO;
         _gradientView.hidden = NO;
     }
-    else
-    {
+    else {
         _videoIcon.hidden = YES;
         _gradientView.hidden = YES;
     }
 }
 
 
-- (void)setSelected:(BOOL)selected animated:(BOOL)animated
-{
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
-    // Configure the view for the selected state
 }
 
 @end

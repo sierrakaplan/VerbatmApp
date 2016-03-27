@@ -496,14 +496,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}];
 }
 
--(void)sharePostWithComment:(NSString *) comment{
-	//todo--sierra
-	//code to share post to facebook etc
-
-	[self removeSharePOVView];
-}
 
 #pragma mark -POV delegate-
+
 -(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
 	[self.delegate channelSelected:channel withOwner:owner];
 }

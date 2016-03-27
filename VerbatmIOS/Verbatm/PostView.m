@@ -28,6 +28,7 @@
 #import "Post_Channel_RelationshipManager.h"
 
 #import "SizesAndPositions.h"
+#import "Share_BackendManager.h"
 #import "Styles.h"
 
 #import "UserManager.h"
@@ -260,25 +261,24 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 }
 
--(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive{
+-(void)userAction:(ActivityOptions) action isPositive:(BOOL) positive {
+	PFObject *post = [self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST];
 	switch (action) {
 		case Like:
 			if(positive){
-				[Like_BackendManager currentUserLikePost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+				[Like_BackendManager currentUserLikePost:post];
 			}else{
-				[Like_BackendManager currentUserStopLikingPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+				[Like_BackendManager currentUserStopLikingPost:post];
 			}
 			break;
 		case Share:
-			//todo: share objects
+			[Share_BackendManager currentUserReblogPost:post toChannel:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO]];
 			[self.delegate shareOptionSelectedForParsePostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 			break;
 		default:
 			break;
 	}
-
 }
-
 
 -(void) likeButtonPressed {
 	self.liked = !self.liked;

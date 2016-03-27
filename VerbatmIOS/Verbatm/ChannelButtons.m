@@ -119,12 +119,10 @@
     //tell our parent view to adjust our size
     self.suggestedWidth = buttonWidth;
     
-    //TODO --uncomment
     if(!self.isLoggedInUser){
         [self createFollowIcon];
     }
 }
-
 
 -(void)createFollowIcon{
     [Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^(bool isFollowing) {

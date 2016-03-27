@@ -37,38 +37,27 @@
     return self;
 }
 
+-(void)presentSelectionOptions {
 
-
-
--(void)presentSelectionOptions{
-    
     //Facebook BAR -- center
     CGRect fb_barFrame = CGRectMake(0.f, self.frame.size.height/2.f -
                                     (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT);
-    UIView * facebookBar = [self createBarWithFrame:fb_barFrame logo:[UIImage imageNamed:@"Facebook_logo"] andTitle:@"Facebook"];
+    UIView * facebookBar = [self createBarWithFrame:fb_barFrame logo:[UIImage imageNamed:FACEBOOK_LOGO] andTitle:@"Facebook"];
     [self addSubview:facebookBar];
-    
-    
-    
-    CGFloat  remainingTopHeight = fb_barFrame.origin.y;
-    
-    
-    //VERBATM BAR -- top
-    CGRect barFrame = CGRectMake(0.f, (remainingTopHeight/2.f) -
-                                 (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT);
-    UIView * verbatmBar = [self createBarWithFrame:barFrame logo:[UIImage imageNamed:VERBATM_LOGO] andTitle:@"Verbatm"];
-    [self addSubview:verbatmBar];
-    
-   
+
+	//VERBATM BAR -- top
+	CGFloat  remainingTopHeight = fb_barFrame.origin.y;
+	CGRect barFrame = CGRectMake(0.f, (remainingTopHeight/2.f) -
+								 (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT);
+	UIView * verbatmBar = [self createBarWithFrame:barFrame logo:[UIImage imageNamed:VERBATM_LOGO] andTitle:@"Verbatm"];
+	[self addSubview:verbatmBar];
     
     //Twitter BAR -- bottom
-	//todo: make constants
     CGRect tw_barFrame = CGRectMake(0.f, facebookBar.frame.origin.y +
                                     facebookBar.frame.size.height +
                                     (remainingTopHeight/2.f) - (BAR_HEIGHT/2.f), self.frame.size.width, BAR_HEIGHT);
-    UIView * twitterBar = [self createBarWithFrame:tw_barFrame logo:[UIImage imageNamed:@"twitter_logo"] andTitle:@"Twitter"];
+    UIView * twitterBar = [self createBarWithFrame:tw_barFrame logo:[UIImage imageNamed:TWITTER_LOGO] andTitle:@"Twitter"];
     [self addSubview:twitterBar];
-    
 }
 
 

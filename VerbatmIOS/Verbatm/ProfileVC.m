@@ -183,7 +183,6 @@
 
 -(void) settingsButtonClicked {
     [self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
-    
 }
 
 //ProfileNavBarDelegate protocol
