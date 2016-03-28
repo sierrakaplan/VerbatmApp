@@ -40,7 +40,9 @@
 -(void) postOffScreen;
 
 //called by presenter of the POVView with access to the postinformation
--(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage startUp:(BOOL)up;
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares
+								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
+									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete;
 
 -(void) presentMediaContent;
 

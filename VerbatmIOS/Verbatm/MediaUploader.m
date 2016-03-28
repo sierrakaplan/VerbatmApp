@@ -33,7 +33,7 @@
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
 	[self.formData setTimeOutSeconds: 60];
-	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: PROGRESS_UNITS_FOR_PHOTO];
+	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: IMAGE_PROGRESS_UNITS-1];
 
 	return self;
 }
@@ -50,7 +50,7 @@
 	[self.formData setUploadProgressDelegate:self];
 	// Needs to be long in order to allow long videos to upload
 	[self.formData setTimeOutSeconds: 300];
-	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: PROGRESS_UNITS_FOR_VIDEO];
+	self.mediaUploadProgress = [NSProgress progressWithTotalUnitCount: VIDEO_PROGRESS_UNITS-1];
 
 	return self;
 }
@@ -90,14 +90,12 @@
             NSInteger newProgressUnits = (NSInteger)(progressAmount*self.mediaUploadProgress.totalUnitCount);
             if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
                 
-                
-                [[PublishingProgressManager sharedInstance] mediaHasProgressedSavind:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
+                [[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
                 self.mediaUploadProgress.completedUnitCount = newProgressUnits;
                 
                 NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
             }
         }
-
     });
 }
 

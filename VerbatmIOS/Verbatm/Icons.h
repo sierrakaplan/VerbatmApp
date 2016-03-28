@@ -102,6 +102,11 @@
 #define MUTED_ICON @"sound_muted"
 #define DELETE_POST_ICON @"trash_icon_dark"
 
+#pragma mark Sharing options
+
+#define FACEBOOK_LOGO @"facebook_logo"
+#define TWITTER_LOGO @"twitter_logo"
+
 #pragma mark Edit Content View
 
 #define MEDIA_REARRANGE_ICON @"rearrange_icon"

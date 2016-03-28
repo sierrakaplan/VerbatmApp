@@ -36,6 +36,7 @@
 @property (nonatomic, readwrite) Channel *currentChannel;
 
 @property (nonatomic) UIButton *followButton;
+@property (nonatomic) NSNumber *numFollowers;
 @property (nonatomic) BOOL isFollowingProfileUser;
 @property (nonatomic) BOOL isLoggedInUser;
 @property (nonatomic) BOOL buttonSelected;
@@ -59,25 +60,6 @@
     return self;
 }
 
--(void)formatButtonUnSelected{
-    //set background
-    self.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
-    
-    //add thin white border
-    self.layer.borderWidth = 0.3;
-    self.layer.borderColor = [UIColor whiteColor].CGColor;
-}
-
-
--(void)formatButtonSelected{
-    //set background
-    self.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED;
-    
-    //add thin white border
-    self.layer.borderWidth = 0.3;
-    self.layer.borderColor = [UIColor whiteColor].CGColor;
-}
-
 -(void) setLabelsFromChannel:(Channel *) channel{
     
     CGPoint nameLabelOrigin = CGPointMake(0.f,0.f);
@@ -89,24 +71,18 @@
     CGFloat buttonWidth = (TAB_BUTTON_PADDING * 3.f) + FOLLOW_BUTTON_WIDTH +  ((self.numberOfFollowersLabel.frame.size.width >  self.channelNameLabel.frame.size.width) ?
                                                 self.numberOfFollowersLabel.frame.size.width :  self.channelNameLabel.frame.size.width);
     
-    
     //adjust label frame sizes to be the same with some padding
      self.channelNameLabel.frame = CGRectMake(TAB_BUTTON_PADDING,
                                               self.channelNameLabel.frame.origin.y,
                                               self.channelNameLabel.frame.size.width,
                                               self.channelNameLabel.frame.size.height);
-    
-    
-    
-    
+
     CGFloat numFollowersLabelX;
     if(self.numberOfFollowersLabel.frame.size.width > self.channelNameLabel.frame.size.width){
         numFollowersLabelX = TAB_BUTTON_PADDING;
-    }else{
+    } else {
         numFollowersLabelX = self.channelNameLabel.center.x - (self.numberOfFollowersLabel.frame.size.width/2.f);
     }
-    
-    
     
     self.numberOfFollowersLabel.frame = CGRectMake(numFollowersLabelX,
                                                    self.numberOfFollowersLabel.frame.origin.y,
@@ -119,24 +95,23 @@
     //tell our parent view to adjust our size
     self.suggestedWidth = buttonWidth;
     
-    //TODO --uncomment
     if(!self.isLoggedInUser){
         [self createFollowIcon];
     }
 }
 
-
 -(void)createFollowIcon{
     [Follow_BackendManager currentUserFollowsChannel:self.currentChannel withCompletionBlock:^(bool isFollowing) {
+		self.isFollowingProfileUser = isFollowing;
           dispatch_async(dispatch_get_main_queue(), ^{
-              [self createFollowButton_AreWeFollowingCurrChannel:isFollowing];
+              [self createFollowButton];
           });
      }];
 }
 
 //If it's my profile it's follower(s) and if it's someone else's profile
 //it's follow
--(void) createFollowButton_AreWeFollowingCurrChannel:(BOOL) areFollowing{
+-(void) createFollowButton {
     if(self.followButton){
         [self.followButton removeFromSuperview];
         self.followButton = nil;
@@ -149,28 +124,25 @@
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
     
-    UIImage * buttonImage = [UIImage imageNamed:((areFollowing) ? FOLLOWED_BY_ICON : FOLLOW_ICON)];
-    self.isFollowingProfileUser = areFollowing;
+    UIImage * buttonImage = [UIImage imageNamed:((self.isFollowingProfileUser) ? FOLLOWING_ICON : FOLLOW_ICON)];
     self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
     [self.followButton setImage:buttonImage forState:UIControlStateNormal];
-    [self.followButton addTarget:self action:@selector(followOrFollowersSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.followButton addTarget:self action:@selector(followButtonSelected) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.followButton];
 }
 
--(void) followOrFollowersSelected {
-    if(self.buttonSelected){//you can only follow a channel if you're on it
-        if(self.isFollowingProfileUser){
-            self.isFollowingProfileUser = NO;
-            [Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
-        }else{
-            self.isFollowingProfileUser = YES;
+-(void) followButtonSelected {
+    if(self.buttonSelected) {
+		self.isFollowingProfileUser = !self.isFollowingProfileUser;
+        if(self.isFollowingProfileUser) {
+			self.numFollowers = [NSNumber numberWithInteger:([self.numFollowers integerValue]+1)];
             [Follow_BackendManager currentUserFollowChannel:self.currentChannel];
-            
+        } else {
+			self.numFollowers = [NSNumber numberWithInteger:([self.numFollowers integerValue]-1)];
+           	[Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
         }
-        [self registerFollowActivityIsFollowing:self.isFollowingProfileUser];
-        
-       
-    }else{
+        [self updateFollowingIconAndNumber];
+    } else {
         //since the channel isn't selected then we select it
         [self sendActionsForControlEvents:UIControlEventTouchUpInside];
     }
@@ -202,7 +174,6 @@
 	NSMutableAttributedString * numberOfFollowersAttributed = [[NSMutableAttributedString alloc] initWithString:numberOfFollowers attributes:numberOfFollowersAttribute];
 	NSAttributedString * followersText = [[NSAttributedString alloc] initWithString:@" Follower(s)" attributes:followersTextAttribute];
 
-
 	//create frame for label
 	CGSize textSize = [[numberOfFollowers stringByAppendingString:@" Follower(s)"] sizeWithAttributes:numberOfFollowersAttribute];
 
@@ -216,51 +187,21 @@
 	[followersLabel setAttributedText:numberOfFollowersAttributed];
 
 	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
-		[self changeNumFollowersLabelForChannel: channel toNumber:numFollowers];
+		self.numFollowers = numFollowers;
+		[self changeNumFollowersLabel];
 	}];
 
 	return followersLabel;
 }
 
-- (void) changeNumFollowersLabelForChannel:(Channel *) channel toNumber: (NSNumber*) numFollowers {
+- (void) changeNumFollowersLabel {
 	NSMutableAttributedString *currentFollowersLabelText = [[NSMutableAttributedString alloc]
 															initWithAttributedString: self.numberOfFollowersLabel.attributedText];
-	NSString *numberOfFollowers = [numFollowers stringValue];
+	NSString *numberOfFollowers = [self.numFollowers stringValue];
 	[currentFollowersLabelText.mutableString setString:[numberOfFollowers stringByAppendingString:@" Follower(s)"]];
 	[self.numberOfFollowersLabel setAttributedText: currentFollowersLabelText];
 }
 
-
--(void)createNonSelectedTextAttributes{
-    NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
-    paragraphStyle.alignment = NSTextAlignmentCenter;
-
-    self.unSelectedNumberOfFollowersTitleAttributes =@{NSForegroundColorAttributeName: [UIColor whiteColor],
-                                                        NSFontAttributeName: CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE,
-                                                        NSParagraphStyleAttributeName:paragraphStyle};
-    
-    self.unSelectedFollowersTabTitleAttributes =@{NSForegroundColorAttributeName: [UIColor whiteColor],
-                                                   NSFontAttributeName: CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE};
-    
-    self.unSelectedChannelNameTitleAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
-                                                   NSFontAttributeName: CHANNEL_TAB_BAR_NAME_FONT_ATTRIBUTE,
-                                                   NSParagraphStyleAttributeName:paragraphStyle};
-}
-
--(void)createSelectedTextAttributes{
-    NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
-    paragraphStyle.alignment                = NSTextAlignmentCenter;
-    self.selectedNumberOfFollowersTitleAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
-														NSFontAttributeName: CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE,
-                                                        NSParagraphStyleAttributeName:paragraphStyle};
-    
-    self.selectedFollowersTabTitleAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
-													NSFontAttributeName: CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE};
-    
-    self.selectedChannelNameTitleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
-                                                   NSFontAttributeName: CHANNEL_TAB_BAR_NAME_FONT_ATTRIBUTE,
-                                                   NSParagraphStyleAttributeName:paragraphStyle};
-}
 
 -(void) markButtonAsSelected {
 	NSMutableAttributedString *currentFollowersLabelText = [[NSMutableAttributedString alloc]
@@ -268,7 +209,6 @@
 	[currentFollowersLabelText setAttributes:self.selectedFollowersTabTitleAttributes
 									   range:(NSRange){0,[currentFollowersLabelText length]}];
 	[self.numberOfFollowersLabel setAttributedText: currentFollowersLabelText];
-
 
 	NSMutableAttributedString *currentChannelNameLabelText = [[NSMutableAttributedString alloc]
 															initWithAttributedString: self.channelNameLabel.attributedText];
@@ -299,25 +239,39 @@
     self.buttonSelected = NO;
 }
 
--(void)registerFollowActivityIsFollowing:(BOOL) isFollowing{
+-(void)formatButtonUnSelected{
+	//set background
+	self.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED;
+
+	//add thin white border
+	self.layer.borderWidth = 0.3;
+	self.layer.borderColor = [UIColor whiteColor].CGColor;
+}
+
+
+-(void)formatButtonSelected{
+	//set background
+	self.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED;
+
+	//add thin white border
+	self.layer.borderWidth = 0.3;
+	self.layer.borderColor = [UIColor whiteColor].CGColor;
+}
+
+-(void) updateFollowingIconAndNumber {
 	UIImage * newbuttonImage;
-	if(isFollowing){
-		newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON];
-	} else{
-		newbuttonImage = [UIImage imageNamed:FOLLOWED_BY_ICON];
+	if(self.isFollowingProfileUser) {
+		newbuttonImage  = [UIImage imageNamed:FOLLOWING_ICON];
+	} else {
+		newbuttonImage = [UIImage imageNamed:FOLLOW_ICON];
 	}
-    UILabel * followersInfoLabel = [self getChannelFollowersLabel:self.currentChannel origin:self.numberOfFollowersLabel.frame.origin followersTextAttribute:self.unSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.unSelectedNumberOfFollowersTitleAttributes];
+	[self changeNumFollowersLabel];
 	[self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
-    //swap labels
-    [self.numberOfFollowersLabel removeFromSuperview];
-    self.numberOfFollowersLabel = followersInfoLabel;
-    [self addSubview:self.numberOfFollowersLabel];
 }
 
 //should be recentered in specific scenarious
 //1) if in current user profile so there's no follow icon
-//2)if in general user profile and there's only one channel
-
+//2) if in general user profile and there's only one channel
 -(void)recenterTextLabels {
     [self centerViewFrame_XCord:self.channelNameLabel];
     [self centerViewFrame_XCord:self.numberOfFollowersLabel];
@@ -325,6 +279,37 @@
 
 -(void)centerViewFrame_XCord:(UIView *)view{
     view.frame = CGRectMake((self.frame.size.width/2.f) - (view.frame.size.width/2.f), view.frame.origin.y, view.frame.size.width, view.frame.size.height);
+}
+
+-(void)createNonSelectedTextAttributes{
+	NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+	paragraphStyle.alignment = NSTextAlignmentCenter;
+
+	self.unSelectedNumberOfFollowersTitleAttributes =@{NSForegroundColorAttributeName: [UIColor whiteColor],
+													   NSFontAttributeName: CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE,
+													   NSParagraphStyleAttributeName:paragraphStyle};
+
+	self.unSelectedFollowersTabTitleAttributes =@{NSForegroundColorAttributeName: [UIColor whiteColor],
+												  NSFontAttributeName: CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE};
+
+	self.unSelectedChannelNameTitleAttributes = @{NSForegroundColorAttributeName: [UIColor whiteColor],
+												  NSFontAttributeName: CHANNEL_TAB_BAR_NAME_FONT_ATTRIBUTE,
+												  NSParagraphStyleAttributeName:paragraphStyle};
+}
+
+-(void)createSelectedTextAttributes{
+	NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
+	paragraphStyle.alignment                = NSTextAlignmentCenter;
+	self.selectedNumberOfFollowersTitleAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
+														NSFontAttributeName: CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE,
+													 NSParagraphStyleAttributeName:paragraphStyle};
+
+	self.selectedFollowersTabTitleAttributes =@{NSForegroundColorAttributeName: [UIColor blackColor],
+												NSFontAttributeName: CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE};
+
+	self.selectedChannelNameTitleAttributes = @{NSForegroundColorAttributeName: [UIColor blackColor],
+												NSFontAttributeName: CHANNEL_TAB_BAR_NAME_FONT_ATTRIBUTE,
+												NSParagraphStyleAttributeName:paragraphStyle};
 }
 
 @end

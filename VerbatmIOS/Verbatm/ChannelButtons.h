@@ -23,8 +23,6 @@
 
 @property (nonatomic, readonly) Channel * currentChannel;
 
--(void) changeNumFollowersLabelForChannel:(Channel *) channel toNumber: (NSNumber*) numFollowers;
-
 -(void) markButtonAsSelected;
 -(void) markButtonAsUnselected;
 

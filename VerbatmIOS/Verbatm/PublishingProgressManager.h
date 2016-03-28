@@ -28,18 +28,25 @@
 
 @interface PublishingProgressManager : NSObject
 
-+(instancetype)sharedInstance;
-//the returns NO if there is publishing taking place already or if there is not internet TODO
--(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
-		withCompletionBlock:(void(^)(BOOL))block;
--(void)registerForNotifications;
+#define INITIAL_PROGRESS_UNITS 3
+#define IMAGE_PROGRESS_UNITS 4
+#define VIDEO_PROGRESS_UNITS 11
+
 @property (nonatomic) id<PublishingProgressProtocol> delegate;
 @property (nonatomic, readonly) NSProgress * progressAccountant;
 @property (nonatomic, readonly) BOOL currentlyPublishing;
 @property (nonatomic, readonly) Channel* currentPublishingChannel;
 @property (nonatomic) BOOL newChannelCreated;
 
--(void)mediaHasProgressedSavind:(int64_t) newProgress;
++(instancetype)sharedInstance;
+
+-(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
+		withCompletionBlock:(void(^)(BOOL))block;
+
+-(void)registerForNotifications;
+
+-(void)mediaSavingProgressed:(int64_t) newProgress;
+
 @end
 
 

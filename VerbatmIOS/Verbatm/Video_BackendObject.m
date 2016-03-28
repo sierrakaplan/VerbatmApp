@@ -18,7 +18,7 @@
 #import <Parse/PFQuery.h>
 #import "ParseBackendKeys.h"
 #import "PostPublisher.h"
-
+#import "PublishingProgressManager.h"
 
 #import "Video_BackendObject.h"
 
@@ -41,10 +41,8 @@
     }];
 }
 
-//should be moved to another file-- TODO
 + (UIImage *)thumbnailImageForVideo:(NSURL *)videoURL
-                             atTime:(NSTimeInterval)time
-{
+                             atTime:(NSTimeInterval)time {
     
     AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:videoURL options:nil];
     NSParameterAssert(asset);
@@ -87,7 +85,7 @@
         [newVideoObj saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if(succeeded){
                 //tell our publishing manager that a video is done saving
-                [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_MEDIA_SAVING_SUCCEEDED object:nil];
+				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
             }
         }];
     }];

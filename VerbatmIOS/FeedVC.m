@@ -96,7 +96,7 @@
     [flowLayout setItemSize:self.view.frame.size];
     self.postListVC = [[PostListVC alloc] initWithCollectionViewLayout:flowLayout];
     self.postListVC.listType = listFeed;
-    self.postListVC.isHomeProfileOrFeed = YES;
+    self.postListVC.isCurrentUserProfile = NO;
     self.postListVC.listOwner = [PFUser currentUser];
     self.postListVC.delegate = self;
     [self.postListContainerView setFrame:self.view.bounds];
@@ -201,12 +201,6 @@
             }
         }];
     }
-}
-
-#pragma mark - Share Post Delegate -
-
--(void) sharePostWithComment: (NSString *)comment {
-	//todo:
 }
 
 #pragma mark - Network Connection Lost -

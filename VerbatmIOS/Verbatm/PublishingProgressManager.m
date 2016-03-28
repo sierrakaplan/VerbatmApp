@@ -28,10 +28,6 @@
 @property (nonatomic, readwrite) NSProgress * progressAccountant;
 @property (nonatomic) PFObject * currentParsePostObject;
 
-#define INITIAL_PROGRESS_UNITS 3
-#define IMAGE_PROGRESS_COUNT_UNIT_SIZE 3 //we divide the progress into 3rds
-#define VIDEO_PROGRESS_COUNT_UNIT_SIZE 10 //we divide the progress into 10ths
-
 @end
 
 @implementation PublishingProgressManager
@@ -45,28 +41,6 @@
 		[sharedInstance registerForNotifications];
 	});
 	return sharedInstance;
-}
-
--(void)countMediaContentFromPinchViews:(NSArray *)pinchViews{
-	CGFloat totalProgressUnits = INITIAL_PROGRESS_UNITS;
-	for(PinchView * pv in pinchViews){
-		if([pv isKindOfClass:[CollectionPinchView class]]){
-
-			totalProgressUnits+= [(CollectionPinchView *)pv imagePinchViews].count * IMAGE_PROGRESS_COUNT_UNIT_SIZE;
-
-			totalProgressUnits+= [(CollectionPinchView *)pv videoPinchViews].count * VIDEO_PROGRESS_COUNT_UNIT_SIZE;
-
-		}else{
-			totalProgressUnits += ([pv isKindOfClass:[VideoPinchView class]]) ? VIDEO_PROGRESS_COUNT_UNIT_SIZE : IMAGE_PROGRESS_COUNT_UNIT_SIZE;
-		}
-	}
-	self.progressAccountant = [NSProgress progressWithTotalUnitCount: totalProgressUnits];
-	self.progressAccountant.completedUnitCount = INITIAL_PROGRESS_UNITS;
-}
-
--(void)savingMediaFailed{
-	self.currentlyPublishing = NO;
-	[self.delegate publishingFailed];
 }
 
 -(void)publishPostToChannel:(Channel *)channel withPinchViews:(NSArray *)pinchViews
@@ -99,24 +73,39 @@
 							  }];
 }
 
-
 -(void)registerForNotifications{
 	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(mediaHasFailedSaving:)
+											 selector:@selector(mediaSavingFailed:)
 												 name:NOTIFICATION_MEDIA_SAVING_FAILED
 											   object:nil];
 }
 
+-(void)countMediaContentFromPinchViews:(NSArray *)pinchViews{
+	CGFloat totalProgressUnits = INITIAL_PROGRESS_UNITS;
+	for(PinchView * pinchView in pinchViews){
+		if([pinchView isKindOfClass:[CollectionPinchView class]]){
+			totalProgressUnits+= [(CollectionPinchView *)pinchView imagePinchViews].count * IMAGE_PROGRESS_UNITS;
+			totalProgressUnits+= [(CollectionPinchView *)pinchView videoPinchViews].count * VIDEO_PROGRESS_UNITS;
+		} else {
+			totalProgressUnits += ([pinchView isKindOfClass:[VideoPinchView class]]) ? VIDEO_PROGRESS_UNITS : IMAGE_PROGRESS_UNITS;
+		}
+	}
+	self.progressAccountant = [NSProgress progressWithTotalUnitCount: totalProgressUnits];
+	self.progressAccountant.completedUnitCount = INITIAL_PROGRESS_UNITS;
+}
 
+-(void)savingMediaFailed{
+	self.currentlyPublishing = NO;
+	[self.delegate publishingFailed];
+}
 
--(void)mediaHasProgressedSavind:(int64_t) newProgress{
+-(void)mediaSavingProgressed:(int64_t) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
 	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount && self.currentlyPublishing) {
 		if(self.currentParsePostObject) {
 			[self.currentParsePostObject setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
 			[self.currentParsePostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 				if(succeeded){
-
 					//register the relationship
 					[Post_Channel_RelationshipManager savePost:self.currentParsePostObject  toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel]withCompletionBlock:^{
 						[self.delegate publishingComplete];
@@ -124,15 +113,13 @@
 						self.currentParsePostObject = nil;
 						self.currentlyPublishing = NO;
 					}];
-
-
 				}
 			}];
 		}
 	}
 }
 
--(void)mediaHasFailedSaving:(NSNotification *) notification {
+-(void)mediaSavingFailed:(NSNotification *) notification {
 	if(self.currentlyPublishing){
 		self.progressAccountant.completedUnitCount = 0;
 		[self.delegate publishingFailed];

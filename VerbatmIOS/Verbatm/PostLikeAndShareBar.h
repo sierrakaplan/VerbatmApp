@@ -39,6 +39,7 @@ typedef enum BarActivityOptions{
 -(void)setPageNumber:(NSNumber *) pageNumber;
 -(void)presentMuteButton:(BOOL) shouldPresent;
 -(void)shouldStartPostAsLiked:(BOOL) postLiked;
+-(void)createDeleteButton;
 
 @property (nonatomic) id <PostLikeAndShareBarProtocol> delegate;
 

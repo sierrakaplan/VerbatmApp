@@ -29,9 +29,9 @@
 
 #import "PostPublisher.h"
 #import "PinchView.h"
-
 #import <PromiseKit/PromiseKit.h>
 #import <Parse/PFUser.h>
+#import "PublishingProgressManager.h"
 
 #import "VideoPinchView.h"
 
@@ -67,7 +67,7 @@
             NSString* uri = results[1];
             self.videoUploader = [[MediaUploader alloc] initWithVideoData:videoData andUri: uri];
             if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-                [self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_VIDEO];
+                [self.publishingProgress addChild:self.videoUploader.mediaUploadProgress withPendingUnitCount: VIDEO_PROGRESS_UNITS - 1];
             }
             NSLog(@"Starting video upload");
         } else {
@@ -100,7 +100,7 @@
 
 		self.imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: PROGRESS_UNITS_FOR_PHOTO];
+			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: IMAGE_PROGRESS_UNITS - 1];
 		}
         return [self.imageUploader startUpload];
 	}).then(^(NSString* servingURL) {
@@ -111,7 +111,7 @@
     });
 }
 
-#pragma mark - Insert entities into the Datastore -
+#pragma mark - Insert entities into the Datastore NOT IN USE -
 
 //TODO: see if batch queries speed things up
 
@@ -126,7 +126,7 @@
 				resolve(error);
 			} else {
 				if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_PHOTO];
+					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + IMAGE_PROGRESS_UNITS];
 				}
 				resolve(storedImage.identifier);
 			}
@@ -146,7 +146,7 @@
 				resolve(error);
 			} else {
 				if (![self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
-					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + PROGRESS_UNITS_FOR_VIDEO];
+					[self.publishingProgress setCompletedUnitCount:self.publishingProgress.completedUnitCount + VIDEO_PROGRESS_UNITS];
 				}
 				NSLog(@"Publishing progress updated to %ld out of %ld", (long)self.publishingProgress.completedUnitCount, (long)self.totalProgressUnits);
 				resolve(storedVideo.identifier);

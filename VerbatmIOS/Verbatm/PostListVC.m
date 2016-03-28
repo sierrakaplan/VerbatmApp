@@ -109,7 +109,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 -(void)nothingToPresentHere {
 	if(self.noContentLabel || self.presentedPostList.count > 0){
-		return;//no need to make another one
+		return;
 	}
 
 	self.noContentLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.view.frame.size.width/2.f - NO_POSTS_LABEL_WIDTH/2.f, 0.f,
@@ -137,15 +137,16 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	[self getPosts];
 }
 
--(void)changeCurrentChannelTo:(Channel *) channel{
-	if(![self.channelForList.name isEqualToString:channel.name]){
-		self.collectionView.contentOffset = CGPointMake(0, 0);
-		self.channelForList = channel;
-		[self clearOldPosts];
-		[self removePresentLabel];
-		[self getPosts];
-	}
-}
+//todo: delete?
+//-(void)changeCurrentChannelTo:(Channel *) channel{
+//	if(![self.channelForList.name isEqualToString:channel.name]){
+//		self.collectionView.contentOffset = CGPointMake(0, 0);
+//		self.channelForList = channel;
+//		[self clearOldPosts];
+//		[self removePresentLabel];
+//		[self getPosts];
+//	}
+//}
 
 -(void) getPosts {
 	[self.customActivityIndicator startCustomActivityIndicator];
@@ -185,7 +186,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 }
 
 -(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
-	NSMutableArray * pageLoadPromises = [[NSMutableArray alloc] init];
+	NSMutableArray * postLoadPromises = [[NSMutableArray alloc] init];
 
 	for(PFObject * pc_activity in backendPostObjects) {
 		AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
@@ -196,26 +197,31 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 				NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 
-				[Like_BackendManager numberOfLikesForPost:post withCompletionBlock:^(NSNumber *numLikes) {
-					//todo: make this not embedded
-					[Share_BackendManager numberOfSharesForPost:post withCompletionBlock:^(NSNumber *numShares) {
-						[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPages
-												   andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
-					}];
-				}];
 				[postView renderPostFromPages:pages];
 				[postView postOffScreen];
 				postView.delegate = self;
 				[self.presentedPostList addObject:postView];
 				resolve(nil);
+
+				AnyPromise *likesPromise = [Like_BackendManager numberOfLikesForPost:post];
+				AnyPromise *sharesPromise = [Share_BackendManager numberOfSharesForPost:post];
+				PMKWhen(@[likesPromise, sharesPromise]).then(^(NSArray *likesAndShares) {
+					NSNumber *numLikes = likesAndShares[0];
+					NSNumber *numShares = likesAndShares[1];
+					[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
+													   numberOfPages:numberOfPages
+											   andStartingPageNumber:@(1)
+															 startUp:(self.listType == listFeed || self.isCurrentUserProfile)
+													withDeleteButton:self.isCurrentUserProfile];
+				});
 			}];
 		}];
 
-		[pageLoadPromises addObject:promise];
+		[postLoadPromises addObject:promise];
 	}
 
 	//when all pages are loaded then we reload our list
-	PMKWhen(pageLoadPromises).then(^(id data){
+	PMKWhen(postLoadPromises).then(^(id data){
 		[self sortOurPostList];
 		dispatch_async(dispatch_get_main_queue(), ^{
 			//prepare the first post object
@@ -391,6 +397,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		[self.presentedPostList removeObjectAtIndex:i];
 		NSIndexPath *indexPath =[NSIndexPath indexPathForRow:i inSection:0];
 		[self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
+		if (self.presentedPostList.count < 1) {
+			[self nothingToPresentHere];
+		}
 	} completion:^(BOOL finished) {
 
 	}];
@@ -494,14 +503,9 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}];
 }
 
--(void)sharePostWithComment:(NSString *) comment{
-	//todo--sierra
-	//code to share post to facebook etc
-
-	[self removeSharePOVView];
-}
 
 #pragma mark -POV delegate-
+
 -(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
 	[self.delegate channelSelected:channel withOwner:owner];
 }

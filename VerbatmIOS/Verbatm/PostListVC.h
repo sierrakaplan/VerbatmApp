@@ -26,9 +26,8 @@ typedef enum PostListType {
 
 @property (nonatomic) id <PostListVCProtocol> delegate;
 
-@property (nonatomic) BOOL isHomeProfileOrFeed;
-
 @property (nonatomic) PostListType listType;
+@property (nonatomic) BOOL isCurrentUserProfile;
 
 @property (nonatomic) PFUser * listOwner;
 @property (nonatomic) Channel * channelForList;
@@ -40,7 +39,6 @@ typedef enum PostListType {
 -(void) continueVideoContent;
 
 -(void)reloadCurrentChannel;
--(void)changeCurrentChannelTo:(Channel *) channel;
 
 //moves the tap/share bar up and down over the tab bar
 -(void) footerShowing: (BOOL) showing;

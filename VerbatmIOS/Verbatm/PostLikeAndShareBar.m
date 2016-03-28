@@ -103,7 +103,6 @@
 -(void) creatButtonsWithNumLike:(NSNumber *) numLikes andNumShare:(NSNumber *) numShares {
     [self createShareButton];
     [self createLikeButton];
-	[self createDeleteButton];
     [self createLikeButtonNumbers:numLikes];
 }
 

@@ -37,28 +37,6 @@
     }
 }
 
--(void) presentPost:(PFObject *) postObject{
-    if(postObject != self.postBeingPresented){
-        self.postBeingPresented = postObject;
-        [Page_BackendObject getPagesFromPost:postObject andCompletionBlock:^(NSArray * pages) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.activityIndicator stopAnimating];
-            });
-            [self.ourCurrentPost clearPost];
-            [self.ourCurrentPost renderPostFromPages:pages];
-            [self.ourCurrentPost scrollToPageAtIndex:0];
-            
-            NSNumber * numberOfPostPages =[NSNumber numberWithInteger:pages.count];
-			[Like_BackendManager numberOfLikesForPost:postObject withCompletionBlock:^(NSNumber *numLikes) {
-				//todo: make this not embedded
-				[Share_BackendManager numberOfSharesForPost:postObject withCompletionBlock:^(NSNumber *numShares) {
-					[self.ourCurrentPost createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares numberOfPages:numberOfPostPages andStartingPageNumber:@(1) startUp:self.isHomeProfileOrFeed];
-				}];
-			}];
-        }];
-    }
-}
-
 -(void)onScreen{
     if(self.ourCurrentPost){
         [self.ourCurrentPost postOnScreen];

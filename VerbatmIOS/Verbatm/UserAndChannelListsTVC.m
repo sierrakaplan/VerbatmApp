@@ -103,8 +103,6 @@
 	}
 }
 
-
-
 -(void)presentProfileForUser:(PFUser *) user
 			withStartChannel:(Channel *) startChannel{
 

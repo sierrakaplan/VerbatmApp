@@ -66,11 +66,12 @@
     self.view.backgroundColor = [UIColor whiteColor];
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
-        [self addPostListVC];
-        if(self.isCurrentUserProfile){
-            [self.postListVC stopAllVideoContent];//We stop the video because we start in the feed
+		[self createNavigationBar];
+		[self selectChannel:self.startChannel];
+        if(self.isCurrentUserProfile) {
+			//We stop the video because we start in the feed
+            [self.postListVC stopAllVideoContent];
         }
-        [self createNavigationBar];
         [self addClearScreenGesture];
         [self checkIntroNotification];
     }];
@@ -135,8 +136,7 @@
         [self.postListVC stopAllVideoContent];
         [self.postListVC.view removeFromSuperview];
     }
-    
-    
+
     UICollectionViewFlowLayout * flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
     [flowLayout setMinimumInteritemSpacing:0.3];
@@ -152,7 +152,7 @@
         self.startChannel = self.postListVC.channelForList;
     }
     self.postListVC.listType = listChannel;
-    self.postListVC.isHomeProfileOrFeed = self.isCurrentUserProfile;
+    self.postListVC.isCurrentUserProfile = self.isCurrentUserProfile;
     self.postListVC.delegate = self;
     if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
     else[self.view addSubview:self.postListVC.view];
@@ -182,7 +182,8 @@
     [self.view addGestureRecognizer:singleTap];
 }
 
-#pragma mark -POSTListView delegate-
+#pragma mark - POSTListView delegate -
+
 -(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
     userProfile.isCurrentUserProfile = NO;
@@ -211,23 +212,21 @@
 
 -(void) settingsButtonClicked {
     [self performSegueWithIdentifier:SETTINGS_PAGE_MODAL_SEGUE sender:self];
-    
 }
 
 //ProfileNavBarDelegate protocol
 -(void) createNewChannel {
     if(!self.createNewChannelView){
         [self darkenScreen];
-        CGFloat viewHeight = self.view.frame.size.height/2.f -
-        (CHANNEL_CREATION_VIEW_WALLOFFSET_X *7);
-        
-        CGRect newChannelViewFrame = CGRectMake(CHANNEL_CREATION_VIEW_WALLOFFSET_X, CHANNEL_CREATION_VIEW_Y_OFFSET, self.view.frame.size.width - (CHANNEL_CREATION_VIEW_WALLOFFSET_X *2),viewHeight);
+
+		CGFloat xOffset = (self.view.frame.size.width - CHANNEL_CREATION_VIEW_WIDTH)/2.f;
+        CGRect newChannelViewFrame = CGRectMake(xOffset, CHANNEL_CREATION_VIEW_Y_OFFSET,
+												CHANNEL_CREATION_VIEW_WIDTH, CHANNEL_CREATION_VIEW_HEIGHT);
         self.createNewChannelView = [[CreateNewChannelView alloc] initWithFrame:newChannelViewFrame];
         self.createNewChannelView.delegate = self;
         [self.view addSubview:self.createNewChannelView];
         [self.view bringSubviewToFront:self.createNewChannelView];
     }
-
 }
 
 -(void)darkenScreen{
@@ -280,19 +279,16 @@
 }
 
 -(void)newChannelSelected:(Channel *) channel{
-    
     if(![self.startChannel.name isEqualToString:channel.name]){
         self.startChannel = channel;
         [self addPostListVC];
     }
-
-    //[self.postListVC changeCurrentChannelTo:channel];
 }
 
 // updates tab and content
 -(void) selectChannel: (Channel *) channel {
 	[self.profileNavBar selectChannel: channel];
-	[self.postListVC changeCurrentChannelTo:channel];
+	[self addPostListVC];
 }
 
 #pragma mark -POSTListVC Protocol-
@@ -356,12 +352,13 @@
 
 -(void) showPublishingProgress {
 	self.publishingProgressView = nil;
-	self.publishingProgress = [[PublishingProgressManager sharedInstance] progressAccountant];
-	[[PublishingProgressManager sharedInstance] setDelegate:self];
-	Channel * currentPublishingChannel = [[PublishingProgressManager sharedInstance] currentPublishingChannel];
-	if ([[PublishingProgressManager sharedInstance] newChannelCreated]) {
+	PublishingProgressManager *progressManager = [PublishingProgressManager sharedInstance];
+	self.publishingProgress = [progressManager progressAccountant];
+	[progressManager setDelegate:self];
+	Channel * currentPublishingChannel = [progressManager currentPublishingChannel];
+	if ([progressManager newChannelCreated]) {
 		[self.profileNavBar newChannelCreated: currentPublishingChannel];
-		[[PublishingProgressManager sharedInstance] setNewChannelCreated:NO];
+		[progressManager setNewChannelCreated:NO];
 	}
 	[self selectChannel: currentPublishingChannel];
 	[self.profileNavBar addSubview: self.publishingProgressView];
@@ -372,12 +369,12 @@
 -(void) publishingComplete {
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
-    [self addPostListVC];
-	//[self.postListVC reloadCurrentChannel];
+	if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
+		[self.postListVC reloadCurrentChannel];
+	}
 }
 
 -(void) publishingFailed {
-	//TODO: tell user publishing failed
 	NSLog(@"PUBLISHING FAILED");
 }
 
