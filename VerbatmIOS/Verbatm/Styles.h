@@ -15,7 +15,7 @@
 #define DEFAULT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 #define BUTTON_FONT @"Raleway-Bold" //@"Quicksand-Bold"
 #define PLACEHOLDER_FONT @"Raleway-BoldItalic" //@"Quicksand-BoldItalic"
-#define TITLE_TEXT_FONT @"Raleway-Bold" //@"Quicksand-Bold"
+#define TITLE_TEXT_FONT @"Raleway-Regular" //@"Quicksand-Bold"
 
 #define HEADER_TEXT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 #define HEADER_TEXT_SIZE 20.f

@@ -58,6 +58,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 #define REBLOG_IMAGE_SIZE 150.f //when we put size it means both width and height
 #define REPOST_ANIMATION_DURATION 2.f
+
 @end
 
 @implementation PostListVC
@@ -73,7 +74,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 /* Refresh */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	CGPoint offset = scrollView.contentOffset;
-	float reload_distance = 75;
+	float reload_distance = 120;
 
 	/* Refresh */
 	if(offset.x < (0 - reload_distance)) {
