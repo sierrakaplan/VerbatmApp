@@ -9,6 +9,10 @@
 #import "ChannelOrUsernameCV.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
+#import <Parse/PFObject.h>
+#import "ParseBackendKeys.h"
+
+
 @import UIKit;
 
 @interface ChannelOrUsernameCV ()
@@ -62,6 +66,23 @@
 }
 
 
+-(void)presentChannel:(Channel *) channel{
+     PFObject *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+    
+    [creator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        if(object){
+            
+            NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self setChannelName:channel.name andUserName: userName];
+                [self setLabelsForChannel];
+            });
+        }
+    }];
+    
+}
+
 -(void)setChannelName:(NSString *)channelName andUserName:(NSString *) userName {
     self.channelName = channelName;
      self.userName = userName;
@@ -77,7 +98,7 @@
     }else {
         if(self.headerTitle)[self.headerTitle removeFromSuperview];
         self.headerTitle = nil;
-        [self setLabelsForChannel];
+       
     }
 }
 

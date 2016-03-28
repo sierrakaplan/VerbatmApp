@@ -233,9 +233,7 @@
 	} else {
 		NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;
 		Channel *channel = [self.channelsToDisplay objectAtIndex:objectIndex];
-		PFObject *creator = [[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
-		NSString *userName = [creator valueForKey:VERBATM_USER_NAME_KEY];
-		[cell setChannelName:channel.name andUserName: userName];
+        [cell presentChannel:channel];
 	}
 
 	return cell;
