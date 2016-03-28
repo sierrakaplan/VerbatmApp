@@ -113,7 +113,7 @@
 -(void)rearrangeButtonPressed {
 	if(!self.rearrangeView){
 		self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds
-													 andPinchViewArray: ((CollectionPinchView*)self.pinchView).videoPinchViews];
+													 andPinchViewArray: ((CollectionPinchView*)self.editContentView.pinchView).videoPinchViews];
 		self.rearrangeView.delegate = self;
 		[self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
 	} else{
@@ -131,11 +131,12 @@
 		[self.editContentView displayVideo:assetArray];
 		[self.editContentView almostOnScreen];
 		[self.editContentView onScreen];
+        
 	} else {
 		NSLog(@"Edit content view video not playing");
 	}
 	if([self.editContentView.pinchView isKindOfClass:[CollectionPinchView class]]){
-		((CollectionPinchView*)self.pinchView).videoPinchViews = pinchViews;
+		((CollectionPinchView*)self.editContentView.pinchView).videoPinchViews = pinchViews;
 	}
 	if(self.rearrangeView){
 		[self.rearrangeView removeFromSuperview];

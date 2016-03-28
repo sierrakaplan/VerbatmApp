@@ -25,12 +25,19 @@
 /*check if these conditions have been met*/
 -(BOOL) isFilter_InstructionShown;
 -(BOOL) isPinchCircles_InstructionShown;
--(BOOL) isPageSwipeNavigation_InstructionShown;
+
+-(BOOL) isFeed_InstructionShown;
+-(BOOL) isProfile_InstructionShown;
+-(BOOL) isAdk_InstructionShown;
+
 
 /*Stores that the notifications have been shown*/
 -(void) set_filter_InstructionAsShown;
 -(void) set_pinchCircles_InstructionAsShown;
--(void) set_pageSwipeNavigation_InstructionAsShown;
+
+-(void) set_profileNotification_InstructionAsShown;
+-(void) set_feedNotification_InstructionAsShown;
+-(void) set_ADKNotification_InstructionAsShown;
 
 
 -(void)saveAllChanges;

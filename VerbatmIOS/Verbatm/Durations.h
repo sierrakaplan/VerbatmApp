@@ -35,7 +35,8 @@
 #define TIME_FOR_SESSION_TO_RESUME_POST_MEDIA_CAPTURE 0.2f
 
 #pragma mark - Content Dev VC -
-
+//time it take for a new media tile to come to alpha==1 when
+//two pinchviews are pinched apart
 #define REVEAL_NEW_MEDIA_TILE_ANIMATION_DURATION 1.f
 //time it takes to animate a pinch
 #define PINCHVIEW_ANIMATION_DURATION 0.5f

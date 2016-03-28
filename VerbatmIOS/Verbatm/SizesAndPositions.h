@@ -11,6 +11,8 @@
 
 #define CHANNEL_NAME_CHARACTER_LIMIT 20
 
+#define INTRO_NOTIFICATION_SIZE 250.f
+
 #pragma mark - Main Tab bar -
 
 #define TAB_BUTTON_PADDING 12.f
