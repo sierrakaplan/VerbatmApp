@@ -12,12 +12,12 @@
 
 #define VERBATM_GOLD_COLOR [UIColor yellowColor]//[UIColor colorWithRed:0.81 green:0.78 blue:0.03 alpha:1.0]
 
-#define DEFAULT_FONT @"Quicksand-Regular"
-#define BUTTON_FONT @"Quicksand-Bold"
-#define PLACEHOLDER_FONT @"Quicksand-BoldItalic"
-#define TITLE_TEXT_FONT @"Quicksand-Bold"
+#define DEFAULT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
+#define BUTTON_FONT @"Raleway-Bold" //@"Quicksand-Bold"
+#define PLACEHOLDER_FONT @"Raleway-BoldItalic" //@"Quicksand-BoldItalic"
+#define TITLE_TEXT_FONT @"Raleway-Bold" //@"Quicksand-Bold"
 
-#define HEADER_TEXT_FONT @"Quicksand-Regular"
+#define HEADER_TEXT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 #define HEADER_TEXT_SIZE 20.f
 
 #pragma mark - Sign In -
@@ -31,11 +31,11 @@
 
 #pragma mark - Profile -
 
-#define USER_CHANNEL_LIST_FONT @"Quicksand-Regular"
+#define USER_CHANNEL_LIST_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 #define USER_CHANNEL_LIST_FONT_SIZE 20.f
 
 //Font of the headers of the user_channel list
-#define INFO_LIST_HEADER_FONT @"Quicksand-Bold"  
+#define INFO_LIST_HEADER_FONT @"Raleway-Bold" //@"Quicksand-Bold"
 #define INFO_LIST_HEADER_FONT_SIZE 20.f
 
 #pragma mark Channel Tab Bar
@@ -44,21 +44,21 @@
 #define CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED [UIColor colorWithWhite:0.f alpha:0.5]
 #define CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED [UIColor colorWithWhite:1.f alpha:0.8]
 
-#define CHANNEL_TAB_BAR_NAME_FONT @"Quicksand-Bold"
+#define CHANNEL_TAB_BAR_NAME_FONT @"Raleway-Bold" //@"Quicksand-Bold"
 #define CHANNEL_TAB_BAR_NAME_FONT_SIZE 17.f
 #define CHANNEL_TAB_BAR_NAME_FONT_ATTRIBUTE [UIFont fontWithName:CHANNEL_TAB_BAR_NAME_FONT size:CHANNEL_TAB_BAR_NAME_FONT_SIZE]
 
-#define CHANNEL_TAB_BAR_FOLLOWERS_FONT @"Quicksand-Regular"
+#define CHANNEL_TAB_BAR_FOLLOWERS_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 #define CHANNEL_TAB_BAR_FOLLOWERS_FONT_SIZE 15.f
 #define CHANNEL_TAB_BAR_FOLLOWERS_FONT_ATTRIBUTE [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWERS_FONT size:CHANNEL_TAB_BAR_FOLLOWERS_FONT_SIZE]
 
-#define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT @"Quicksand-Bold"
+#define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT @"Raleway-Bold" //@"Quicksand-Bold"
 #define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_SIZE 17.f
 #define CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_ATTRIBUTE [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT_SIZE]
 
-#define CHANNEL_CREATION_USER_TEXT_ENTRY_PLACEHOLDER_FONT @"Quicksand-LightItalic"
-#define CHANNEL_CREATION_USER_TEXT_ENTRY_FONT @"Quicksand-Bold"
-#define CHANNEL_CREATION_BUTTON_FONT @"Quicksand-Regular"
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_PLACEHOLDER_FONT @"Raleway-LightItalic" //@"Quicksand-LightItalic"
+#define CHANNEL_CREATION_USER_TEXT_ENTRY_FONT @"Raleway-Bold" //@"Quicksand-Bold"
+#define CHANNEL_CREATION_BUTTON_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 
 #define CREATE_CHANNEL_BUTTON_FONT_SIZE 19.f
 
@@ -79,7 +79,7 @@
 
 #pragma mark Text
 
-#define TEXT_PAGE_VIEW_DEFAULT_FONT @"Quicksand-Bold"
+#define TEXT_PAGE_VIEW_DEFAULT_FONT @"Raleway-Bold" //@"Quicksand-Bold"
 #define TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE 40
 #define TEXT_PAGE_VIEW_MIN_FONT_SIZE 25
 #define TEXT_PAGE_VIEW_MAX_FONT_SIZE 70
