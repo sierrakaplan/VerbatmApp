@@ -9,8 +9,7 @@
 #ifndef Styles_h
 #define Styles_h
 
-
-#define VERBATM_GOLD_COLOR [UIColor yellowColor]//[UIColor colorWithRed:0.81 green:0.78 blue:0.03 alpha:1.0]
+#define VERBATM_GOLD_COLOR [UIColor colorWithRed:1.0 green:0.85 blue:0.20 alpha:1.0]
 
 #define DEFAULT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 #define BUTTON_FONT @"Raleway-Bold" //@"Quicksand-Bold"

@@ -124,7 +124,7 @@
 -(void)createSelectedTextAttributes{
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment                = NSTextAlignmentCenter;
-    self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor yellowColor],
+    self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: VERBATM_GOLD_COLOR,
                                                      NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
                                                      NSParagraphStyleAttributeName:paragraphStyle};
     
