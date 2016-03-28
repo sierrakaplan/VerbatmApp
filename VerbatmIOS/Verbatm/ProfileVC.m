@@ -13,6 +13,7 @@
 
 #import "Intro_Instruction_Notification_View.h"
 
+#import "LoadingIndicator.h"
 
 #import "ParseBackendKeys.h"
 
@@ -34,6 +35,8 @@
 UIScrollViewDelegate, CreateNewChannelViewProtocol,
 PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
+@property (nonatomic) BOOL currentlyCreatingNewChannel;
+
 @property (strong, nonatomic) PostListVC * postListVC;
 @property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
@@ -50,6 +53,8 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 @property (nonatomic) UIView * darkScreenCover;
 @property (nonatomic) SharePostView * sharePOVView;
 
+@property (strong, nonatomic) LoadingIndicator * customActivityIndicator;
+
 #pragma mark Publishing
 
 @property (nonatomic, strong) UIView* publishingProgressView;
@@ -65,8 +70,10 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	self.contentCoveringScreen = YES;
 	self.view.backgroundColor = [UIColor blackColor];
 	//this is where you'd fetch the threads
-	[self getChannelsWithCompletionBlock:^{
-		[self createNavigationBar];
+    [self.customActivityIndicator startCustomActivityIndicator];
+    [self getChannelsWithCompletionBlock:^{
+        [self.customActivityIndicator stopCustomActivityIndicator];
+        [self createNavigationBar];
 		[self selectChannel:self.startChannel];
 		if(self.isCurrentUserProfile) {
 			//We stop the video because we start in the feed
@@ -255,15 +262,18 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 -(void) createChannelWithName:(NSString *) channelName {
 	//save the channel name and create it in the backend
 	//upate the scrollview to present a new channel
-
-	[Channel_BackendObject createChannelWithName:channelName andCompletionBlock:^(PFObject *channelObject) {
-		if (channelObject) {
-			Channel *newChannel = [[Channel alloc] initWithChannelName:channelName andParseChannelObject:channelObject];
-			[self.profileNavBar newChannelCreated:newChannel];
-			[self clearChannelCreationView];
-			[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:nil];
-		}
-	}];
+    if(!self.currentlyCreatingNewChannel){
+        self.currentlyCreatingNewChannel = YES;
+        [Channel_BackendObject createChannelWithName:channelName andCompletionBlock:^(PFObject *channelObject) {
+            if (channelObject) {
+                Channel *newChannel = [[Channel alloc] initWithChannelName:channelName andParseChannelObject:channelObject];
+                [self.profileNavBar newChannelCreated:newChannel];
+                [self clearChannelCreationView];
+                [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:nil];
+                self.currentlyCreatingNewChannel = NO;
+            }
+        }];
+    }
 }
 
 -(void) clearChannelCreationView{
@@ -417,6 +427,15 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(NSArray *)channels{
 	return (!self.isCurrentUserProfile) ? _channels : [[UserInfoCache sharedInstance] getUserChannels];
+}
+
+-(LoadingIndicator *)customActivityIndicator{
+    if(!_customActivityIndicator){
+        CGPoint newCenter = CGPointMake(self.view.center.x, self.view.frame.size.height * 1.f/2.f);
+        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter];
+        [self.view addSubview:_customActivityIndicator];
+    }
+    return _customActivityIndicator;
 }
 
 

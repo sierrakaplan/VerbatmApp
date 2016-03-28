@@ -404,8 +404,10 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
         self.swipeUpAndDownInstruction.alpha = 0.f;
     }completion:^(BOOL finished) {
         if(finished){
+            
             [self.swipeUpAndDownInstruction removeFromSuperview];
             self.swipeUpAndDownInstruction = nil;
+            
         }
     }];
 }
@@ -724,6 +726,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 	return _downArrow;
 }
+
 -(LoadingIndicator *)customActivityIndicator{
 	if(!_customActivityIndicator){
 		CGPoint newCenter = CGPointMake(self.center.x, self.frame.size.height * 1.f/2.f);

@@ -9,6 +9,7 @@
 #import "UserInfoCache.h"
 #import <Parse/PFUser.h>
 #import "Channel_BackendObject.h"
+#import "Notifications.h"
 /*
  Shared instance that simplifies fetching ubiquitous user information. 
  For example we use it now to cache the users channels - but can be used 
@@ -29,6 +30,12 @@
     dispatch_once(&onceToken, ^{
         sharedInstance = [[UserInfoCache alloc] init];
         [sharedInstance setCurrentChannelIndex:0];
+        
+        
+        [[NSNotificationCenter defaultCenter] addObserver:sharedInstance
+                                                 selector:@selector(reloadUserChannels)
+                                                     name:NOTIFICATION_POST_PUBLISHED
+                                                   object:nil];
     });
     return sharedInstance;
 }
@@ -55,6 +62,13 @@
     if(index < self.userChannels.count){
         _currentChannelIndex = index;
     }
+}
+
+-(void)reloadUserChannels{
+    [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
+        self.userChannels = channels;
+    }];
+
 }
 
 @end

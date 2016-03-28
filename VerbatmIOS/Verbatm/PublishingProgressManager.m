@@ -108,11 +108,16 @@
 				if(succeeded){
 					//register the relationship
 					[Post_Channel_RelationshipManager savePost:self.currentParsePostObject  toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel]withCompletionBlock:^{
-						[self.delegate publishingComplete];
-						self.currentPublishingChannel = NULL;
-						self.currentParsePostObject = nil;
-						self.currentlyPublishing = NO;
-					}];
+                        
+                            [self.delegate publishingComplete];
+                            self.currentPublishingChannel = NULL;
+                            self.currentParsePostObject = nil;
+                            self.currentlyPublishing = NO;
+                            
+                           NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
+                            [[NSNotificationCenter defaultCenter] postNotification:not];
+                    
+                    }];
 				}
 			}];
 		}
@@ -125,6 +130,8 @@
 		[self.delegate publishingFailed];
 		self.currentPublishingChannel = NULL;
 		self.currentlyPublishing = NO;
+        
+        
 	}
 }
 

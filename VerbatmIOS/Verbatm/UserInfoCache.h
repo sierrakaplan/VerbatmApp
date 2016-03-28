@@ -19,6 +19,5 @@
 //set on tab selection in the profile
 -(NSUInteger) currentChannelViewedIndex;
 -(void) setCurrentChannelIndex:(NSUInteger)index;
-
 @end
 

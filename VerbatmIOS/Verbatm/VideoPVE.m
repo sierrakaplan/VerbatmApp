@@ -34,6 +34,8 @@
 @property (nonatomic) OpenCollectionView * rearrangeView;
 @property (nonatomic) UIButton * rearrangeButton;
 
+@property (nonatomic) UIImageView * thumbnailView;
+
 @end
 
 
@@ -83,10 +85,24 @@
 	NSMutableArray* videoList = [[NSMutableArray alloc] initWithCapacity: videoAndTextList.count];
 	for (NSArray* videoWithText in videoAndTextList) {
 		[videoList addObject: videoWithText[0]];
-		//        NSString* text = videoWithText[1];
+        if((videoWithText.count == 4) && [videoAndTextList indexOfObject:videoWithText] == 0){
+            UIImage * thumbnail = videoWithText[3];
+            [self setThumbnailImage:thumbnail];
+        }
+        
+        //        NSString* text = videoWithText[1];
 		//        NSNumber* textYPos = videoWithText[2];
 	}
 	[self prepareVideos:videoList];
+}
+
+
+-(void)setThumbnailImage:(UIImage *) image{
+    self.thumbnailView = [[UIImageView alloc] initWithImage:image];
+    self.thumbnailView.contentMode = UIViewContentModeScaleAspectFill;
+    self.thumbnailView.frame = self.bounds;
+    [self addSubview: self.thumbnailView];
+    [self sendSubviewToBack:self.thumbnailView];
 }
 
 -(void)prepareVideos:(NSArray*)videoList {

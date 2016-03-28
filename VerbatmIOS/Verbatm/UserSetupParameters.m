@@ -92,13 +92,13 @@
 }
 
 
-
 -(BOOL) isPinchCircles_InstructionShown {
     //the array is still being prepared -- unlikely to be a problem
     if(!self.self.notificationSet) return NO;
     NSNumber * boolAsNumber = self.notificationSet[PINCH_INSTRUCTION_KEY];
     return boolAsNumber.boolValue;
 }
+
 
 -(BOOL) isSwipeUpDown_InstructionShown{
     
