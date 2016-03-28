@@ -392,7 +392,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
 			[view presentMediaContent];
 		}else if(i != visibleIndex){
-			[view postOffScreen];
+//			[view postOffScreen];
 		}
 	}
 }
