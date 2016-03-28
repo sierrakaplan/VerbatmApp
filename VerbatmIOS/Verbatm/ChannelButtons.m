@@ -124,9 +124,8 @@
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
     
-    UIImage * buttonImage = [UIImage imageNamed:((self.isFollowingProfileUser) ? FOLLOWING_ICON : FOLLOW_ICON)];
     self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
-    [self.followButton setImage:buttonImage forState:UIControlStateNormal];
+	[self updateFollowingIconSelected:self.buttonSelected];
     [self.followButton addTarget:self action:@selector(followButtonSelected) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.followButton];
 }
@@ -141,7 +140,8 @@
 			self.numFollowers = [NSNumber numberWithInteger:([self.numFollowers integerValue]-1)];
            	[Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
         }
-        [self updateFollowingIconAndNumber];
+        [self updateFollowingIconSelected:YES];
+		[self changeNumFollowersLabel];
     } else {
         //since the channel isn't selected then we select it
         [self sendActionsForControlEvents:UIControlEventTouchUpInside];
@@ -194,6 +194,16 @@
 	return followersLabel;
 }
 
+-(void) updateFollowingIconSelected: (BOOL) selected {
+	UIImage * newbuttonImage;
+	if(self.isFollowingProfileUser) {
+		newbuttonImage  = selected ? [UIImage imageNamed:FOLLOWING_ICON_DARK] : [UIImage imageNamed:FOLLOWING_ICON_LIGHT];
+	} else {
+		newbuttonImage  = selected ? [UIImage imageNamed:FOLLOW_ICON_DARK] : [UIImage imageNamed:FOLLOW_ICON_LIGHT];
+	}
+	[self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
+}
+
 - (void) changeNumFollowersLabel {
 	NSMutableAttributedString *currentFollowersLabelText = [[NSMutableAttributedString alloc]
 															initWithAttributedString: self.numberOfFollowersLabel.attributedText];
@@ -201,7 +211,6 @@
 	[currentFollowersLabelText.mutableString setString:[numberOfFollowers stringByAppendingString:@" Follower(s)"]];
 	[self.numberOfFollowersLabel setAttributedText: currentFollowersLabelText];
 }
-
 
 -(void) markButtonAsSelected {
 	NSMutableAttributedString *currentFollowersLabelText = [[NSMutableAttributedString alloc]
@@ -215,7 +224,7 @@
 	[currentChannelNameLabelText setAttributes:self.selectedChannelNameTitleAttributes
 										 range:(NSRange){0,[currentChannelNameLabelText length]}];
 	[self.channelNameLabel setAttributedText: currentChannelNameLabelText];
-
+	[self updateFollowingIconSelected:YES];
     [self formatButtonSelected];
     self.buttonSelected = YES;
 }
@@ -234,7 +243,7 @@
 	[currentChannelNameLabelText setAttributes:self.unSelectedChannelNameTitleAttributes
 										 range:(NSRange){0,[currentChannelNameLabelText length]}];
 	[self.channelNameLabel setAttributedText: currentChannelNameLabelText];
-    
+	[self updateFollowingIconSelected:NO];
     [self formatButtonUnSelected];
     self.buttonSelected = NO;
 }
@@ -248,7 +257,6 @@
 	self.layer.borderColor = [UIColor whiteColor].CGColor;
 }
 
-
 -(void)formatButtonSelected{
 	//set background
 	self.backgroundColor = CHANNEL_TAB_BAR_BACKGROUND_COLOR_SELECTED;
@@ -256,17 +264,6 @@
 	//add thin white border
 	self.layer.borderWidth = 0.3;
 	self.layer.borderColor = [UIColor whiteColor].CGColor;
-}
-
--(void) updateFollowingIconAndNumber {
-	UIImage * newbuttonImage;
-	if(self.isFollowingProfileUser) {
-		newbuttonImage  = [UIImage imageNamed:FOLLOWING_ICON];
-	} else {
-		newbuttonImage = [UIImage imageNamed:FOLLOW_ICON];
-	}
-	[self changeNumFollowersLabel];
-	[self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
 }
 
 //should be recentered in specific scenarious

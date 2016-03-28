@@ -63,7 +63,6 @@
     NSInteger startChannelIndex = -1;
 	self.isLoggedInUser = isLoggedInUser;
     for(Channel * channel in channels) {
-
         if(startChannel){
             if([startChannel.name isEqualToString:channel.name]){
                 startChannelIndex = [channels indexOfObject:channel];
@@ -81,7 +80,6 @@
         //advance xCordinate
 		xCoordinate += channelTitleButton.frame.size.width;
 	}
-
     
     if(isLoggedInUser) {
         CGFloat createChannelButtonWidth = (channels.count == 0) ? self.frame.size.width : INITIAL_BUTTON_WIDTH;
@@ -94,8 +92,7 @@
         [self.tabButtons addObject:createChannelButton];
         [self addSubview:createChannelButton];
     }
-    
-    
+
     if(startChannelIndex == -1) startChannelIndex = 0;
     
     [self adjustTabFramesToSuggestedSizes];
@@ -149,7 +146,6 @@
     [newButton addTarget:self action:@selector(tabPressed:) forControlEvents:UIControlEventTouchUpInside];
     return newButton;
 }
-
 
 -(void) tabPressed: (ChannelButtons *) tabButton {
 	[self unselectTab:self.selectedTab];

@@ -128,7 +128,7 @@
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
     
-    UIImage * buttonImage = [UIImage imageNamed:((areFollowing) ? FOLLOWED_BY_ICON : FOLLOW_ICON)];
+    UIImage * buttonImage = [UIImage imageNamed:((areFollowing) ? FOLLOWED_BY_ICON : FOLLOW_ICON_LIGHT)];
     self.isFollowigProfileUser = areFollowing;
     self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
     [self.followButton setImage:buttonImage forState:UIControlStateNormal];
@@ -165,11 +165,9 @@
 -(void) followOrFollowersSelected {
     UIImage * newbuttonImage;
     if(self.isFollowigProfileUser){
-        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON];
+        newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_LIGHT];
         self.isFollowigProfileUser = NO;
-
-
-    }else{
+    } else {
         newbuttonImage = [UIImage imageNamed:FOLLOWED_BY_ICON];
         self.isFollowigProfileUser = YES;
     }

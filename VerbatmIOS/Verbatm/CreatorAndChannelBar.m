@@ -134,16 +134,12 @@
 
 
 -(void)changeChannelNameToSelectedView:(BOOL) selected{
-    
     if(selected){
         self.channelNameLabel.textColor = [UIColor blackColor];
     }else{
         self.channelNameLabel.textColor = [UIColor whiteColor];
     }
-    
 }
-
-
 
 -(void)addCreatorNameViewWithName:(NSString *) creatorName{
     //create username
@@ -164,9 +160,8 @@
     [self addSubview:creatorNameView];
 }
 
-
 -(void)setFollowImageIsFollowing:(BOOL) isFollowing{
-    UIImage * image = [UIImage imageNamed:((isFollowing) ? FOLLOWING_ICON :FOLLOW_ICON)];
+    UIImage * image = [UIImage imageNamed:((isFollowing) ? FOLLOWING_ICON_DARK : FOLLOW_ICON_DARK)];
     self.followImage.image = image;
 }
 
@@ -183,7 +178,6 @@
          });
      }];
 }
-
 
 -(void)addFollowChannelGestureToView:(UIView *) view{
     UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(followChannel)];
@@ -213,10 +207,7 @@
         self.channelNameLabelHolder.backgroundColor = [UIColor clearColor];
         [self changeChannelNameToSelectedView:NO];
     }
-    
-    
 }
-
 
 -(void)addPresentChannelGestureToView:(UIView *) view{
     UITapGestureRecognizer * singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(presentChannel)];
@@ -227,14 +218,5 @@
 -(void)presentChannel{
     [self.delegate channelSelected:self.currentChannel withOwner:self.channelOwner];
 }
-
-
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
-- (void)drawRect:(CGRect)rect {
-    // Drawing code
-}
-*/
 
 @end
