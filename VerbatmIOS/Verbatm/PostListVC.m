@@ -167,7 +167,6 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
     [self.collectionView reloadData];
 }
 
-
 -(void)refreshPosts{
     [self.customActivityIndicator startCustomActivityIndicator];
     
@@ -391,8 +390,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		PostView * view = self.presentedPostList[i];
 		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
 			[view presentMediaContent];
-		}else if(i != visibleIndex){
-//			[view postOffScreen];
 		}
 	}
 }
