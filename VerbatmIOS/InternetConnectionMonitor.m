@@ -105,7 +105,9 @@
 //sends out a notification that we have internet connection
 -(void)weHaveConnection{
     self.thereIsConnection = YES;
+    
     NSDictionary *Info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], INTERNET_CONNECTION_KEY, nil];
+    
     NSNotification *notification = [[NSNotification alloc]initWithName:INTERNET_CONNECTION_NOTIFICATION object:nil userInfo:Info];
     [[NSNotificationCenter defaultCenter] postNotification:notification];
     

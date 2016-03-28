@@ -162,11 +162,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/SignIn.m"
-            timestampString = "480788153.24313"
+            timestampString = "480836768.934074"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "226"
-            endingLineNumber = "226">
+            startingLineNumber = "240"
+            endingLineNumber = "240">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

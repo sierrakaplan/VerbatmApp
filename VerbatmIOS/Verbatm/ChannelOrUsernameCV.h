@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-
+#import "Channel.h"
 @interface ChannelOrUsernameCV : UITableViewCell
 
 
@@ -15,4 +15,5 @@
 
 -(void)setChannelName:(NSString *)channelName andUserName:(NSString *) userName ;
 -(void)setHeaderTitle;
+-(void)presentChannel:(Channel *) channel;
 @end

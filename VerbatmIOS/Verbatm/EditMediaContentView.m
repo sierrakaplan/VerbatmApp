@@ -20,9 +20,14 @@
 
 #import "VerbatmKeyboardToolBar.h"
 
+
+#import "UserSetupParameters.h"
+
 @interface EditMediaContentView () <KeyboardToolBarDelegate, UITextViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) TextOverMediaView * textAndImageView;
+
+@property (nonatomic) UIImageView * swipeInstructionView;
 
 #pragma mark FilteredPhotos
 @property (nonatomic, strong) NSMutableArray * filteredImages;
@@ -53,6 +58,9 @@
 #define HORIZONTAL_PAN_FILTER_SWITCH_DISTANCE 11
 #define TOUCH_BUFFER 20
 #define DIAGONAL_THRESHOLD 600
+
+
+#define SWIPE_NOTIFICATON_WIDTH 300.f
 
 @property (nonatomic) NSMutableArray * videoAssets;
 
@@ -201,7 +209,39 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self addSubview: self.textAndImageView];
 	[self addPanGestures];
 	[self createTextCreationButton];
+    
+    
+    if(![[UserSetupParameters sharedInstance ] isFilter_InstructionShown]){
+        [self presentUserInstructionForFilterSwipe];
+        [[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
+    }
 }
+
+
+
+
+
+
+-(void)presentUserInstructionForFilterSwipe {
+    
+    self.swipeInstructionView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"swipe_to_add_filter"]];
+    
+    CGFloat width = SWIPE_NOTIFICATON_WIDTH;
+    CGFloat height =  width * (82.f/527.f);
+    
+    self.swipeInstructionView.frame = CGRectMake((self.frame.size.width/2.f) - (width/2.f), (self.frame.size.height/2.f) - (height/2.f), width,height);
+    
+    [self addSubview:self.swipeInstructionView];
+    [self bringSubviewToFront:self.swipeInstructionView];
+    
+    [UIView animateWithDuration:6.f animations:^{
+        self.swipeInstructionView.alpha = 0.f;
+    }completion:^(BOOL finished) {
+        [self.swipeInstructionView removeFromSuperview];
+    }];
+    
+}
+
 
 #pragma mark Filters
 
@@ -211,7 +251,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 	self.imageIndex = self.imageIndex+1;
 	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
-
 	[self updatePinchView];
 
 }

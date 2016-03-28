@@ -21,4 +21,6 @@
 
 +(void) deletePost: (PFObject *)post withCompletionBlock:(void(^)(BOOL))block;
 
++(void)markPostAsFlagged:(PFObject *) flaggedPost;
+
 @end

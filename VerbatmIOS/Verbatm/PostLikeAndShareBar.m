@@ -18,7 +18,7 @@
 @property (nonatomic,strong) UIButton *likeButton;
 @property (nonatomic,strong) UIButton *numLikesButton;
 @property (nonatomic, strong) UIButton *shareButon;
-@property (nonatomic, strong) UIButton *deleteButton;
+@property (nonatomic, strong) UIButton *delete_Or_FlagButton;
 @property (nonatomic,strong) UIButton *numSharesButton;
 @property (nonatomic, strong) UILabel *pageNumberLabel;
 
@@ -122,8 +122,7 @@
 }
 
 -(void)createLikeButton {
-    CGRect likeButtonFrame =  CGRectMake(self.shareButon.frame.origin.x + self.shareButon.frame.size.width +
-                                         ICON_SPACING_GAP,
+    CGRect likeButtonFrame =  CGRectMake(self.shareButon.frame.origin.x + self.shareButon.frame.size.width + ICON_SPACING_GAP,
                                          BUTTON_WALLOFFSET,
                                          LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
     
@@ -182,15 +181,39 @@
 
 //todo: only in profile
 -(void)createDeleteButton {
-	CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - (LIKE_SHARE_BAR_BUTTON_SIZE)*2 - ICON_SPACING_GAP, BUTTON_WALLOFFSET,
-										 LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
+	
 
-	self.deleteButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	[self.deleteButton setFrame:deleteButtonFrame];
-	[self.deleteButton setImage:[UIImage imageNamed:DELETE_POST_ICON] forState:UIControlStateNormal];
-	[self.deleteButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
-	[self.deleteButton addTarget:self action:@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
-	[self addSubview:self.deleteButton];
+	
+    [self createDeleteOrFlagButtonIsFlag:NO];
+    
+}
+
+
+-(void) createFlagButton {
+
+    [self createDeleteOrFlagButtonIsFlag:YES];
+
+}
+
+-(void)createDeleteOrFlagButtonIsFlag:(BOOL) flag{
+    
+    UIImage * buttonImage;
+    if(flag){
+        buttonImage = [UIImage imageNamed:FLAG_POST_ICON ];
+    }else{
+        buttonImage = [UIImage imageNamed:DELETE_POST_ICON];
+    }
+    
+    
+    CGRect deleteButtonFrame = CGRectMake(self.frame.size.width - (LIKE_SHARE_BAR_BUTTON_SIZE)*2 - ICON_SPACING_GAP - 5.f, BUTTON_WALLOFFSET,
+                                          LIKE_SHARE_BAR_BUTTON_SIZE, LIKE_SHARE_BAR_BUTTON_SIZE);
+    self.delete_Or_FlagButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    [self.delete_Or_FlagButton setFrame:deleteButtonFrame];
+    [self.delete_Or_FlagButton setImage:buttonImage forState:UIControlStateNormal];
+    [self.delete_Or_FlagButton.imageView setContentMode:UIViewContentModeScaleAspectFit];
+    [self.delete_Or_FlagButton addTarget:self action:
+     (flag) ? @selector(flagButtonPressed):@selector(deleteButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [self addSubview:self.delete_Or_FlagButton];
 }
 
 
@@ -229,6 +252,10 @@
 
 -(void)deleteButtonPressed {
 	[self.delegate deleteButtonPressed];
+}
+
+-(void)flagButtonPressed{
+    [self.delegate flagButtonPressed];
 }
 
 -(void)changeLikeCount:(BOOL)up{

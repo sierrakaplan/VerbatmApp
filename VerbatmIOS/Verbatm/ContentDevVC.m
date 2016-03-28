@@ -604,11 +604,11 @@ rowHeightForComponent:(NSInteger)component{
 #pragma mark - Creating New PinchViews -
 
 
+
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
 - (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView {
 
 	if(!pinchView) {
-//		NSLog(@"Attempting to add nil pinch view");
 		return;
 	}
 	[self addTapGestureToPinchView:pinchView];
@@ -646,6 +646,16 @@ rowHeightForComponent:(NSInteger)component{
         newElementScrollView.frame = newElementScrollViewFrame;
         self.addMediaBelowView = newElementScrollView;
         [self shiftElementsBelowView: self.channelPicker];
+        
+    }completion:^(BOOL finished) {
+        if(finished){
+            if(![[UserSetupParameters sharedInstance] isPinchCircles_InstructionShown] &&
+               self.pageElementScrollViews.count > 2){
+                [self presentUserInstructionForPinchGesture];
+                [[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];
+                
+            }
+        }
     }];
 }
 
@@ -1474,22 +1484,28 @@ rowHeightForComponent:(NSInteger)component{
 
     CGFloat offsetFromPinchViewCenters = 60.f;    
     
-    CGFloat frameHeight = firstInList.frame.size.height - (2*offsetFromPinchViewCenters);
+    CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
     
-    CGFloat frameWidth = (frameHeight * 367.f)/331.f ;
+    CGFloat frameWidth = frameHeight;
     
     
     
-    CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,
-                                         frameWidth,frameHeight);
+    CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
     
     
     UIImage * instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
     self.pinchElementsTogetherInstructionView = [[UIImageView alloc] initWithImage:instructionImage];
+    self.pinchElementsTogetherInstructionView.contentMode = UIViewContentModeScaleAspectFit;
     self.pinchElementsTogetherInstructionView.frame =  instructionFrame;
     
     [self.mainScrollView addSubview:self.pinchElementsTogetherInstructionView];
     [self.mainScrollView bringSubviewToFront:self.pinchElementsTogetherInstructionView];
+    
+    [UIView animateWithDuration:4.f animations:^{
+        self.pinchElementsTogetherInstructionView.alpha = 0.f;
+    }completion:^(BOOL finished) {
+        [self.pinchElementsTogetherInstructionView removeFromSuperview];
+    }];
 	
 }
 
@@ -1529,7 +1545,9 @@ rowHeightForComponent:(NSInteger)component{
 		} else {
 			upperView = nil;
 		}
-	}
+    }
+    
+    
 	[unPinched revertToInitialFrame];
 	[unPinched removeFromSuperview];
 	[self newPinchView:unPinched belowView:upperView];

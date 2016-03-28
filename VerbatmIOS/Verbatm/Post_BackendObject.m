@@ -116,6 +116,12 @@
 	}
 }
 
++(void)markPostAsFlagged:(PFObject *) flaggedPost{
+    if(flaggedPost){
+        [flaggedPost setValue:[NSNumber numberWithBool:YES] forKey:POST_FLAGGED_KEY];
+        [flaggedPost saveInBackground];
+    }
+}
 
 
 @end

@@ -104,6 +104,9 @@
 #define MUTED_ICON @"sound_muted"
 #define DELETE_POST_ICON @"trash_icon_dark"
 
+#define FLAG_POST_ICON @"Flagging Icon"
+
+
 #pragma mark Sharing options
 
 #define FACEBOOK_LOGO @"facebook_logo"
@@ -113,8 +116,8 @@
 
 #define MEDIA_REARRANGE_ICON @"rearrange_icon"
 
-#define SWIPE_UP_DOWN_INSTRUCTION @"swipeUp_Instructions_black"
-#define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"pinch_instruction_black"
+#define SWIPE_UP_DOWN_INSTRUCTION @"Swipe _up_down_to_page"
+#define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"Pinch D1"
 #define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions_black"
 
 #endif /* Icons_h */

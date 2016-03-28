@@ -24,6 +24,8 @@
 	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(succeeded){
 			NSLog(@"Now following channel");
+            NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:nil];
+            [[NSNotificationCenter defaultCenter] postNotification:not];
 		}
 	}];
 }

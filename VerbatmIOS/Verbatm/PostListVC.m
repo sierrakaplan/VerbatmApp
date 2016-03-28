@@ -40,7 +40,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 @property (strong, nonatomic) FeedQueryManager * feedQueryManager;
 @property (nonatomic, strong) UILabel * noContentLabel;
 
-@property (nonatomic) PostCollectionViewCell *lastVisibleCell;
+@property (nonatomic) PostView *lastVisibleCell;
 @property (nonatomic) LoadingIndicator *customActivityIndicator;
 @property (nonatomic) SharePostView *sharePostView;
 @property (nonatomic) BOOL shouldPlayVideos;
@@ -58,7 +58,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 #define NUM_POVS_TO_PREPARE_EARLY 2 //we prepare this number of POVVs after the current one for viewing
 
 #define REBLOG_IMAGE_SIZE 150.f //when we put size it means both width and height
-#define REPOST_ANIMATION_DURATION 2.f
+#define REPOST_ANIMATION_DURATION 4.f
 
 @end
 
@@ -379,10 +379,16 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Scrollview delegate -
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {
-	NSArray * cellsVisible = [self.collectionView visibleCells];
-	PostCollectionViewCell * visibleCell = [cellsVisible firstObject];
-	[self turnOffCellsOffScreenWithVisibleCell:visibleCell];
-	[self prepareNextViewAfterVisibleIndex:[self.presentedPostList indexOfObject:visibleCell.currentPostView]];
+	//NSArray * cellsVisible = [self.collectionView visibleCells];
+	//PostCollectionViewCell * visibleCell = [cellsVisible firstObject];
+    
+    NSInteger visibleIndex = [self getVisibileCellIndex];
+    if(visibleIndex < self.presentedPostList.count){
+        PostView * currentView = self.presentedPostList[visibleIndex];
+        [self turnOffCellsOffScreenWithVisibleCell:currentView];
+        [self prepareNextViewAfterVisibleIndex:visibleIndex];
+        
+    }
 }
 
 -(void)prepareNextViewAfterVisibleIndex:(NSInteger) visibleIndex{
@@ -394,15 +400,18 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
--(void)turnOffCellsOffScreenWithVisibleCell:(PostCollectionViewCell *)visibleCell{
-	if(visibleCell && (self.lastVisibleCell != visibleCell)){
+-(void)turnOffCellsOffScreenWithVisibleCell:(PostView *)visibleCell{
+    if(visibleCell && (self.lastVisibleCell != visibleCell)){
 		if(self.lastVisibleCell) {
-			[self.lastVisibleCell offScreen];
+			[self.lastVisibleCell postOffScreen];
 			self.lastVisibleCell = visibleCell;
 		}else{
+            if([self.presentedPostList indexOfObject:visibleCell] != 0){
+                [(PostView *)self.presentedPostList[0] postOffScreen];
+            }
 			self.lastVisibleCell = visibleCell;
 		}
-		[visibleCell onScreen];
+		[visibleCell postOnScreen];
 	}
 }
 
@@ -435,6 +444,26 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentViewController:alert animated:YES completion:nil];
 }
 
+-(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
+                                                                   message:@"Are you sure you want to flag the content of this post. We will review it ASAP."
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) {}];
+    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [Post_BackendObject markPostAsFlagged:post];
+    
+    }];
+    
+    [alert addAction: cancelAction];
+    [alert addAction: deleteAction];
+    [self presentViewController:alert animated:YES completion:nil];
+    
+}
+
+
 -(void) deleteReblog:(PFObject *)post onPostView:(PostView *)postView {
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
 																   message:@"Are you sure you want to delete this reblogged post from your channel?"
@@ -455,7 +484,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void)removePostAtIndex:(NSInteger)i {
-	[self.collectionView performBatchUpdates:^{
+	[self.collectionView performBatchUpdates: ^ {
 		[self.presentedPostList removeObjectAtIndex:i];
 		NSIndexPath *indexPath =[NSIndexPath indexPathForRow:i inSection:0];
 		[self.collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:indexPath]];
@@ -485,7 +514,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	self.sharePostView.delegate = self;
 	[self.view addSubview:self.sharePostView];
 	[self.view bringSubviewToFront:self.sharePostView];
-	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^ {
 		self.sharePostView.frame = onScreenFrame;
 	}];
 }
@@ -511,23 +540,30 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 //todo: save share object
 -(void)postPostToChannels:(NSMutableArray *) channels{
-	if(channels.count){
-		[Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
+	
+    if(channels.count) {
+		
+        [Post_Channel_RelationshipManager savePost:self.postToShare toChannels:channels withCompletionBlock:^{
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self successfullyReblogged];
 			});
 		}];
+        
+        
 	}
+    
 	[self removeSharePOVView];
 }
 
 -(void)successfullyReblogged{
 	[self.view addSubview:self.reblogSucessful];
 	[self.view bringSubviewToFront:self.reblogSucessful];
+    
 	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
 		self.reblogSucessful.alpha = 0.f;
 	}completion:^(BOOL finished) {
-		[self.reblogSucessful removeFromSuperview];
+		
+        [self.reblogSucessful removeFromSuperview];
 		self.reblogSucessful = nil;
 	}];
 }

@@ -9,7 +9,7 @@
 #import "CustomNavigationBar.h"
 #import "User_BackendObject.h"
 #import <MessageUI/MessageUI.h>
-
+#import "TermsAndConditionsVC.h"
 
 #import "SizesAndPositions.h"
 #import "SettingsVC.h"
@@ -76,8 +76,10 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
     }
     
     
-    
-    CGRect profileIconFrame = CGRectMake(PROFILE_ICON_WALL_OFFSET,self.userNameField.center.y - (self.profileIconImage.frame.size.height/2.f) , self.profileIconImage.frame.size.width, self.profileIconImage.frame.size.height);
+    CGFloat profileIconWidth = self.profileIconImage.frame.size.width;
+    CGFloat profileIconHeight = profileIconWidth * (47.f/35.f);
+
+    CGRect profileIconFrame = CGRectMake(PROFILE_ICON_WALL_OFFSET,self.userNameField.center.y - (profileIconHeight/2.f) , profileIconWidth, profileIconHeight);
     
     self.profileIconImage.frame = profileIconFrame;
     
@@ -171,14 +173,19 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
     // Dispose of any resources that can be recreated.
 }
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    
+    UIViewController * vc = [segue destinationViewController];
+    if([vc isKindOfClass:[TermsAndConditionsVC class]]){
+        ((TermsAndConditionsVC *)vc).userMustAcceptTerms = NO;
+    }
 }
-*/
+
 
 @end

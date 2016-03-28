@@ -79,7 +79,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1365"
             endingLineNumber = "1365"
-            landmarkName = "-moveItem:"
+            landmarkName = "-findSelectedViewFromTouch:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -255,7 +255,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1518"
             endingLineNumber = "1518"
-            landmarkName = "-addUnpinchedItem:"
+            landmarkName = "-moveOffsetOfMainScrollViewBasedOnSelectedItem"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -271,7 +271,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1539"
             endingLineNumber = "1539"
-            landmarkName = "-finishMovingSelectedItem"
+            landmarkName = "-addUnpinchedItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -287,7 +287,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1545"
             endingLineNumber = "1545"
-            landmarkName = "-finishMovingSelectedItem"
+            landmarkName = "-addUnpinchedItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -303,7 +303,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1549"
             endingLineNumber = "1549"
-            landmarkName = "-finishMovingSelectedItem"
+            landmarkName = "-addUnpinchedItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -319,7 +319,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1551"
             endingLineNumber = "1551"
-            landmarkName = "-finishMovingSelectedItem"
+            landmarkName = "-addUnpinchedItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -335,7 +335,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1548"
             endingLineNumber = "1548"
-            landmarkName = "-finishMovingSelectedItem"
+            landmarkName = "-addUnpinchedItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -415,7 +415,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1595"
             endingLineNumber = "1595"
-            landmarkName = "-returnPageElementScrollView:toDisplayAtIndex:"
+            landmarkName = "-supportedInterfaceOrientations"
             landmarkType = "5">
             <Locations>
                <Location
@@ -463,7 +463,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1640"
             endingLineNumber = "1640"
-            landmarkName = "-aboutToShowPreview"
+            landmarkName = "-addTapGestureToPinchView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1651,7 +1651,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1339"
             endingLineNumber = "1339"
-            landmarkName = "-findSelectedViewFromTouch:"
+            landmarkName = "-selectItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1715,7 +1715,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1169"
             endingLineNumber = "1169"
-            landmarkName = "-findElementsFromPinchPoint"
+            landmarkName = "-findElementScrollViewFromPoint:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1731,7 +1731,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1314"
             endingLineNumber = "1314"
-            landmarkName = "-selectItem:"
+            landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1747,7 +1747,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1171"
             endingLineNumber = "1171"
-            landmarkName = "-findElementsFromPinchPoint"
+            landmarkName = "-findElementScrollViewFromPoint:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2313,7 +2313,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1055"
             endingLineNumber = "1055"
-            landmarkName = "-handleRevealOfNewMediaViewWithGesture:andChangeInTopViewPosition:andChangeInBottomViewPosition:"
+            landmarkName = "-getStartFrameForNewMediaTile"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
