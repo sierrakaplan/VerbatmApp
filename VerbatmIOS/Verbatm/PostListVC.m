@@ -75,25 +75,27 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 /* Refresh */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	CGPoint offset = scrollView.contentOffset;
-	float reload_distance = 120;
+	if (scrollView == self.collectionView) {
+		CGPoint offset = scrollView.contentOffset;
+		float reload_distance = 120;
 
-	/* Refresh */
-	if(offset.x < (0 - reload_distance)) {
-		//todo: showindicator
-		[self reloadCurrentChannel];
-		NSLog(@"refreshing");
-	}
-	/* Load more */
-	CGRect bounds = scrollView.bounds;
-	CGSize size = scrollView.contentSize;
-	UIEdgeInsets inset = scrollView.contentInset;
+		/* Refresh */
+		if(offset.x < (0 - reload_distance)) {
+			//todo: showindicator
+			[self reloadCurrentChannel];
+			NSLog(@"refreshing");
+		}
+		/* Load more */
+		CGRect bounds = scrollView.bounds;
+		CGSize size = scrollView.contentSize;
+		UIEdgeInsets inset = scrollView.contentInset;
 
-	float y = offset.x + bounds.size.width - inset.right;
-	float h = size.width;
-	if(y > h + reload_distance) {
-		//todo:show indicator
-		NSLog(@"load more rows");
+		float y = offset.x + bounds.size.width - inset.right;
+		float h = size.width;
+		if(y > h + reload_distance) {
+			//todo:show indicator
+			NSLog(@"load more rows");
+		}
 	}
 }
 
@@ -380,7 +382,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {
 	NSArray * cellsVisible = [self.collectionView visibleCells];
 	PostCollectionViewCell * visibleCell = [cellsVisible firstObject];
-	//somehow turn other cells off
 	[self turnOffCellsOffScreenWithVisibleCell:visibleCell];
 	[self prepareNextViewAfterVisibleIndex:[self.presentedPostList indexOfObject:visibleCell.currentPostView]];
 }
@@ -391,21 +392,20 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
 			[view presentMediaContent];
 		}else if(i != visibleIndex){
-			//todo: video this ends up being current post?
-//			[view postOffScreen];
+			[view postOffScreen];
 		}
 	}
 }
 
 -(void)turnOffCellsOffScreenWithVisibleCell:(PostCollectionViewCell *)visibleCell{
-	if(visibleCell && (self.lastVisibleCell !=visibleCell)){
-		if(self.lastVisibleCell){
+	if(visibleCell && (self.lastVisibleCell != visibleCell)){
+		if(self.lastVisibleCell) {
 			[self.lastVisibleCell offScreen];
 			self.lastVisibleCell = visibleCell;
 		}else{
 			self.lastVisibleCell = visibleCell;
 		}
-		if(self.shouldPlayVideos)[visibleCell onScreen];
+		[visibleCell onScreen];
 	}
 }
 
@@ -471,7 +471,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* )post {
-	[self.delegate hideNavBarIfPresent];
+	[self.postListDelegate hideNavBarIfPresent];
 	self.postToShare = post;
 	[self presentShareSelectionViewStartOnChannels:YES];
 }
@@ -572,7 +572,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark -POV delegate-
 
 -(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
-	[self.delegate channelSelected:channel withOwner:owner];
+	[self.postListDelegate channelSelected:channel withOwner:owner];
 }
 
 #pragma mark -Lazy instantiation-

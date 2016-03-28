@@ -99,7 +99,7 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	self.postListVC.listType = listFeed;
 	self.postListVC.isCurrentUserProfile = NO;
 	self.postListVC.listOwner = [PFUser currentUser];
-	self.postListVC.delegate = self;
+	self.postListVC.postListDelegate = self;
 	[self.postListContainerView setFrame:self.view.bounds];
 	[self.postListContainerView addSubview:self.postListVC.view];
 	[self.view addSubview:self.postListContainerView];

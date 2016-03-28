@@ -150,7 +150,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	}
 	self.postListVC.listType = listChannel;
 	self.postListVC.isCurrentUserProfile = self.isCurrentUserProfile;
-	self.postListVC.delegate = self;
+	self.postListVC.postListDelegate = self;
 	if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
 	else[self.view addSubview:self.postListVC.view];
 }

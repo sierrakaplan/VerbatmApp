@@ -75,6 +75,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 @property (nonatomic) UIImageView * swipeUpAndDownInstruction;
 
+@property (strong, nonatomic) PageViewingExperience *currentPage;
 
 @property (nonatomic) UIView * PagingLine;//line that moves up and down as the user swipes up and down
 
@@ -322,12 +323,11 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 // Tells previous page it's offscreen and current page it's onscreen
 -(void) displayMediaOnCurrentPage {
 	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
-	PageViewingExperience *currentPageOnScreen = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
-
-	[currentPageOnScreen onScreen];
-
-	[self checkForMuteButton:currentPageOnScreen];
-
+	PageViewingExperience *newCurrentPage = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
+	[self.currentPage offScreen];
+	self.currentPage = newCurrentPage;
+	[self.currentPage onScreen];
+	[self checkForMuteButton:self.currentPage];
 	[self prepareNextPage];
 }
 
@@ -578,7 +578,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 		[pageView offScreen];
 	}
 }
-
 
 //removes the little bouncing arrow in the right corner of the screen
 -(void)removePageUpIndicatorFromView{
