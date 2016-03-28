@@ -118,33 +118,40 @@
 
     for (ImagePinchView * imagePinchView in pinchViewArray) {
 		if (self.inPreviewMode) {
-			EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
-			[editMediaContentView displayImages:[imagePinchView filteredImages] atIndex:imagePinchView.filterImageIndex];
-
-			if(imagePinchView.text && imagePinchView.text.length) {
-				[editMediaContentView setText:imagePinchView.text
-							 andTextYPosition:[imagePinchView.textYPosition floatValue]
-								 andTextColor:imagePinchView.textColor
-							 andTextAlignment:[imagePinchView.textAlignment integerValue]
-								  andTextSize:[imagePinchView.textSize floatValue]];
-			}
-
-			editMediaContentView.pinchView = imagePinchView;
-			editMediaContentView.povViewMasterScrollView = self.postScrollView;
-			editMediaContentView.delegate = self;
+			EditMediaContentView * editMediaContentView = [self getEditContentViewFromPinchView:imagePinchView];
 			[self.imageContainerViews addObject:editMediaContentView];
-            
 		} else {
 			[photosTextArray addObject: [imagePinchView getPhotosWithText][0]];
 		}
     }
 	if (!self.inPreviewMode) {
 		[self addPhotos: photosTextArray];
-	}
-    [self layoutContainerViews];
-    if(pinchViewArray.count > 1 && self.inPreviewMode){
-        [self createRearrangeButton];
+	} else {
+		//add first photo again so it doesn't fade to black
+		EditMediaContentView *firstPhotoEditContentView = [self getEditContentViewFromPinchView:pinchViewArray[0]];
+		[self addSubview:firstPhotoEditContentView];
+		[self layoutContainerViews];
+		if(pinchViewArray.count > 1)
+         	[self createRearrangeButton];
     }
+}
+
+-(EditMediaContentView *) getEditContentViewFromPinchView: (ImagePinchView *)pinchView {
+	EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
+	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex];
+
+	if(pinchView.text && pinchView.text.length) {
+		[editMediaContentView setText:pinchView.text
+					 andTextYPosition:[pinchView.textYPosition floatValue]
+						 andTextColor:pinchView.textColor
+					 andTextAlignment:[pinchView.textAlignment integerValue]
+						  andTextSize:[pinchView.textSize floatValue]];
+	}
+
+	editMediaContentView.pinchView = pinchView;
+	editMediaContentView.povViewMasterScrollView = self.postScrollView;
+	editMediaContentView.delegate = self;
+	return editMediaContentView;
 }
 
 -(void)layoutContainerViews{
@@ -168,17 +175,7 @@
 	// Has to add duplicate of first photo to bottom so that you can fade from the last photo into the first
 	NSArray* firstPhotoText = photosTextArray[0];
 	[self addSubview: [self getImageContainerViewFromPhotoTextArray: firstPhotoText]];
-
-	//adding subviews in reverse order so that imageview at index 0 on top
-	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
-		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
-	}
-	//add textview button if the first image has text
-	NSString* firstText = firstPhotoText[1];
-	if(firstText && firstText.length) {
-		[self createTextViewButton];
-	}
-   if(photosTextArray.count > 1)[self prepareCirclePan];
+	[self layoutContainerViews];
 }
 
 -(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
@@ -271,14 +268,6 @@
 }
 
 #pragma mark - Text View -
-
--(void)createTextViewButton {
-    return;//temp soln TODO
-//    [self.textCreationButton setImage:[UIImage imageNamed:CREATE_TEXT_ICON] forState:UIControlStateNormal];
-//    [self.textCreationButton addTarget:self action:@selector(textViewButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
-//    [self addSubview:self.textCreationButton];
-//    [self bringSubviewToFront:self.textCreationButton];
-}
 
 -(void)textViewButtonClicked:(UIButton*) sender {
     TextOverMediaView * currentView = self.imageContainerViews[self.currentPhotoIndex];
