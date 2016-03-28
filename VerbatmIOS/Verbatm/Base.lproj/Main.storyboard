@@ -292,7 +292,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Privacy Policy" id="7Zr-Wk-hCy">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Privacy_Policy" id="7Zr-Wk-hCy">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             </imageView>
@@ -429,7 +429,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Privacy Policy" width="750" height="1334"/>
+        <image name="Privacy_Policy" width="750" height="1334"/>
         <image name="background_sign_in" width="750" height="1334"/>
         <image name="profile_icon_2" width="35" height="47"/>
         <image name="verbatm_logo" width="1395" height="1142"/>

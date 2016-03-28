@@ -109,7 +109,7 @@
 
 -(BOOL) isTermsAccept_InstructionShown{
     
-    if(!self.self.notificationSet) return NO;
+    if(!self.notificationSet) return NO;
     NSNumber * boolAsNumber = self.notificationSet[ACCEPTED_TERMS_KEY];
     return boolAsNumber.boolValue;
 
