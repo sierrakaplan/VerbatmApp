@@ -45,7 +45,7 @@
 
 -(void)offScreen{
     if(self.ourCurrentPost){
-        [self.ourCurrentPost postOnScreen];
+        [self.ourCurrentPost postOffScreen];
     }
 }
 

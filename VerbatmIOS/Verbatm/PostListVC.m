@@ -48,10 +48,10 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 @property (nonatomic) BOOL footerBarIsUp;//like share bar
 @property (nonatomic) PFObject *postToShare;
 
-@property (nonatomic) UIImageView * reblogSucessful;
-@property (nonatomic) UIImageView * following;
-@property (nonatomic) UIImageView * publishSuccessful;
-@property (nonatomic) UIImageView * publishFailed;
+@property (nonatomic) UIImageView *reblogSucessful;
+@property (nonatomic) UIImageView *following;
+@property (nonatomic) UIImageView *publishSuccessful;
+@property (nonatomic) UIImageView *publishFailed;
 
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
 #define POST_CELL_ID @"postCellId"
@@ -75,25 +75,27 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 /* Refresh */
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	CGPoint offset = scrollView.contentOffset;
-	float reload_distance = 120;
+	if (scrollView == self.collectionView) {
+		CGPoint offset = scrollView.contentOffset;
+		float reload_distance = 120;
 
-	/* Refresh */
-	if(offset.x < (0 - reload_distance)) {
-		//todo: showindicator
-		[self reloadCurrentChannel];
-		NSLog(@"refreshing");
-	}
-	/* Load more */
-	CGRect bounds = scrollView.bounds;
-	CGSize size = scrollView.contentSize;
-	UIEdgeInsets inset = scrollView.contentInset;
+		/* Refresh */
+		if(offset.x < (0 - reload_distance)) {
+			//todo: showindicator
+			[self reloadCurrentChannel];
+			NSLog(@"refreshing");
+		}
+		/* Load more */
+		CGRect bounds = scrollView.bounds;
+		CGSize size = scrollView.contentSize;
+		UIEdgeInsets inset = scrollView.contentInset;
 
-	float y = offset.x + bounds.size.width - inset.right;
-	float h = size.width;
-	if(y > h + reload_distance) {
-		//todo:show indicator
-		NSLog(@"load more rows");
+		float y = offset.x + bounds.size.width - inset.right;
+		float h = size.width;
+		if(y > h + reload_distance) {
+			//todo:show indicator
+			NSLog(@"load more rows");
+		}
 	}
 }
 
@@ -197,8 +199,6 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
     }];
 }
 
-
-
 -(void) getPosts {
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed) {
@@ -241,6 +241,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 				[postView renderPostFromPages:pages];
 				[postView postOffScreen];
 				postView.delegate = self;
+				postView.listChannel = self.channelForList;
 				[self.presentedPostList addObject:postView];
 				resolve(nil);
 
@@ -254,6 +255,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 											   andStartingPageNumber:@(1)
 															 startUp:self.footerBarIsUp
 													withDeleteButton:self.isCurrentUserProfile];
+					[postView addCreatorInfo];
 				});
 			}];
 		}];
@@ -380,7 +382,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {
 	NSArray * cellsVisible = [self.collectionView visibleCells];
 	PostCollectionViewCell * visibleCell = [cellsVisible firstObject];
-	//somehow turn other cells off
 	[self turnOffCellsOffScreenWithVisibleCell:visibleCell];
 	[self prepareNextViewAfterVisibleIndex:[self.presentedPostList indexOfObject:visibleCell.currentPostView]];
 }
@@ -391,25 +392,28 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		if((i > visibleIndex) && (i < (visibleIndex + NUM_POVS_TO_PREPARE_EARLY))){
 			[view presentMediaContent];
 		}else if(i != visibleIndex){
-			//todo: video this ends up being current post?
 //			[view postOffScreen];
 		}
 	}
 }
 
 -(void)turnOffCellsOffScreenWithVisibleCell:(PostCollectionViewCell *)visibleCell{
-	if(visibleCell && (self.lastVisibleCell !=visibleCell)){
-		if(self.lastVisibleCell){
+	if(visibleCell && (self.lastVisibleCell != visibleCell)){
+		if(self.lastVisibleCell) {
 			[self.lastVisibleCell offScreen];
 			self.lastVisibleCell = visibleCell;
 		}else{
 			self.lastVisibleCell = visibleCell;
 		}
-		if(self.shouldPlayVideos)[visibleCell onScreen];
+		[visibleCell onScreen];
 	}
 }
 
--(void) deleteButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post {
+-(void) deleteButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post reblogged:(BOOL)reblogged {
+	if (reblogged) {
+		[self deleteReblog:post onPostView:postView];
+		return;
+	}
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
 																   message:@"Are you sure you want to delete the entire post?"
 															preferredStyle:UIAlertControllerStyleAlert];
@@ -434,7 +438,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentViewController:alert animated:YES completion:nil];
 }
 
-
 -(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
     
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
@@ -455,6 +458,24 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 
+-(void) deleteReblog:(PFObject *)post onPostView:(PostView *)postView {
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+																   message:@"Are you sure you want to delete this reblogged post from your channel?"
+															preferredStyle:UIAlertControllerStyleAlert];
+
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		NSInteger postIndex = [self.presentedPostList indexOfObject: postView];
+		[self removePostAtIndex: postIndex];
+		[postView clearPost];
+		[postView.parsePostChannelActivityObject deleteInBackground];
+	}];
+
+	[alert addAction: cancelAction];
+	[alert addAction: deleteAction];
+	[self presentViewController:alert animated:YES completion:nil];
+}
 
 -(void)removePostAtIndex:(NSInteger)i {
 	[self.collectionView performBatchUpdates:^{
@@ -470,7 +491,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* )post {
-	[self.delegate hideNavBarIfPresent];
+	[self.postListDelegate hideNavBarIfPresent];
 	self.postToShare = post;
 	[self presentShareSelectionViewStartOnChannels:YES];
 }
@@ -571,7 +592,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark -POV delegate-
 
 -(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
-	[self.delegate channelSelected:channel withOwner:owner];
+	[self.postListDelegate channelSelected:channel withOwner:owner];
 }
 
 #pragma mark -Lazy instantiation-

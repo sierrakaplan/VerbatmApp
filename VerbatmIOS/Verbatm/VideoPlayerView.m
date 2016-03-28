@@ -163,7 +163,6 @@
 		[self presentNewLayers];
 	}
 	if (self.shouldPlayOnLoad) [self playVideo];
-	self.shouldPlayOnLoad = NO;
 }
 
 -(void)presentNewLayers{
@@ -183,7 +182,7 @@
 				[self.customActivityIndicator stopCustomActivityIndicator];
 				self.videoLoading = NO;
 			}
-			[self playVideo];
+			if (self.shouldPlayOnLoad) [self playVideo];
 		} else if (self.playerItem.status == AVPlayerItemStatusFailed) {
 			NSLog(@"video couldn't play: %@", self.playerItem.error);
 			if (self.videoLoading) {
@@ -199,7 +198,7 @@
 				[self.customActivityIndicator stopCustomActivityIndicator];
 				self.videoLoading = NO;
 			}
-			[self playVideo];
+			if (self.shouldPlayOnLoad) [self playVideo];
 		} else {
 			[self.customActivityIndicator startCustomActivityIndicator];
 			self.videoLoading = YES;
@@ -336,7 +335,7 @@
 				self.isVideoPlaying = NO;
 				[self.ourTimer invalidate];
 				self.ourTimer = nil;
-
+				self.shouldPlayOnLoad = NO;
 			}
 		});
 	}

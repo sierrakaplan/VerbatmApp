@@ -75,6 +75,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 @property (nonatomic) UIImageView * swipeUpAndDownInstruction;
 
+@property (strong, nonatomic) PageViewingExperience *currentPage;
 
 //@property (nonatomic) UIImageView * swipeInstructionView
 
@@ -156,11 +157,18 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
     
     
     if(![[UserSetupParameters sharedInstance] isSwipeUpDown_InstructionShown] &&
-       self.pageViews.count > 1){
-        [self presentSwipeUpAndDownInstruction];
+       ([[UserSetupParameters sharedInstance] isFilter_InstructionShown] || [[self getCUrrentView] isKindOfClass:[VideoPVE class]])
+       &&  self.pageViews.count > 1) {
         
+        [self presentSwipeUpAndDownInstruction];
         [[UserSetupParameters sharedInstance] set_SwipeUpDownNotification_InstructionAsShown];
     }
+}
+
+-(PageViewingExperience *)getCUrrentView{
+    NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
+    PageViewingExperience *newCurrentPage = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
+    return newCurrentPage;
 }
 
 -(void) renderNextPage: (PageViewingExperience*)pageView withIndex: (NSNumber*) pageIndex {
@@ -220,7 +228,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
     }
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
-	[self addCreatorInfo];
 }
 
 -(void) showWhoLikesThePost {
@@ -231,11 +238,13 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	//todo:
 }
 
--(void) addCreatorInfo{
+-(void) addCreatorInfo {
 	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject withCompletionBlock:^(Channel * channel) {
-		//we only add the channel info to posts that don't belong to the current
-		//user
-		if(![channel channelBelongsToCurrentUser]) {
+		self.postChannel = channel;
+		//we only add the channel info to posts that don't belong to the current user
+		//todo: or in profile
+		if(channel.parseChannelObject != self.listChannel.parseChannelObject
+		   && ![channel channelBelongsToCurrentUser]) {
 			dispatch_async(dispatch_get_main_queue(), ^{
 				CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
 				self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
@@ -342,24 +351,21 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 // Tells previous page it's offscreen and current page it's onscreen
 -(void) displayMediaOnCurrentPage {
 	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
-	PageViewingExperience *currentPageOnScreen = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
-
-	[currentPageOnScreen onScreen];
-
-	[self checkForMuteButton:currentPageOnScreen];
-
+	PageViewingExperience *newCurrentPage = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
+	[self.currentPage offScreen];
+	self.currentPage = newCurrentPage;
+	[self.currentPage onScreen];
+	[self checkForMuteButton:self.currentPage];
 	[self prepareNextPage];
 }
 
 -(void)checkForMuteButton:(PageViewingExperience * )currentPageOnScreen {
-
 	if ([currentPageOnScreen isKindOfClass:[VideoPVE class]] ||
 		[currentPageOnScreen isKindOfClass:[PhotoVideoPVE class]]) {
 		[self.likeShareBar presentMuteButton:YES];
 	}else {
 		[self.likeShareBar presentMuteButton:NO];
 	}
-
 }
 
 -(void)muteButtonSelected:(BOOL)shouldMute{
@@ -381,7 +387,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 	UIImage * instructionImage = [UIImage imageNamed:SWIPE_UP_DOWN_INSTRUCTION];
 
-	CGFloat frameHeight = 120.f;
+	CGFloat frameHeight = 200.f;
 	CGFloat frameWidth = ((frameHeight * 117.f)/284.f);
 
 	CGFloat frameOriginX = self.frame.size.width - frameWidth - 10.f;
@@ -394,6 +400,14 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
     self.swipeUpAndDownInstruction.contentMode =  UIViewContentModeScaleAspectFit;
 	[self addSubview:self.swipeUpAndDownInstruction];
 	[self bringSubviewToFront:self.swipeUpAndDownInstruction];
+    [UIView animateWithDuration:7.f animations:^{
+        self.swipeUpAndDownInstruction.alpha = 0.f;
+    }completion:^(BOOL finished) {
+        if(finished){
+            [self.swipeUpAndDownInstruction removeFromSuperview];
+            self.swipeUpAndDownInstruction = nil;
+        }
+    }];
 }
 
 -(void)presentFilterSwipeForInstructionWithPageView:(PageViewingExperience *) currentPage {
@@ -600,7 +614,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 }
 
-
 //removes the little bouncing arrow in the right corner of the screen
 -(void)removePageUpIndicatorFromView{
 	if(self.pageUpIndicator){
@@ -661,7 +674,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 #pragma mark - Delete Post -
 
 -(void)deleteButtonPressed {
-	[self.delegate deleteButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+	BOOL reblogged = self.postChannel.parseChannelObject != self.listChannel.parseChannelObject;
+	[self.delegate deleteButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] reblogged: reblogged];
 }
 -(void)flagButtonPressed{
     [self.delegate flagButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];

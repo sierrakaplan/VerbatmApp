@@ -24,7 +24,7 @@
 
 #define BUTTON_Y_OFFSET ((TEXT_TOOLBAR_HEIGHT - TEXT_TOOLBAR_BUTTON_WIDTH)/2.f)
 #define COLOR_BUTTON_X_OFFSET 20.f
-#define SIZE_BUTTONS_OFFSET 100.f
+#define SIZE_BUTTONS_OFFSET 80.f
 #define ALIGNMENT_BUTTONS_OFFSET 200.f
 #define SPACE 10.f
 
@@ -37,7 +37,7 @@
 	if(self) {
 		self.frame = frame;
 		self.backgroundColor = [UIColor colorWithWhite:0.f alpha:0.8];
-		self.textColorBlack = YES;
+		self.textColorBlack = NO;
 		[self addButtons];
 	}
 	return self;
@@ -111,7 +111,7 @@
 	if (!_textColorButton) {
 		CGRect buttonFrame = CGRectMake(TEXT_TOOLBAR_BUTTON_OFFSET, BUTTON_Y_OFFSET,
 										TEXT_TOOLBAR_BUTTON_WIDTH, TEXT_TOOLBAR_BUTTON_WIDTH);
-		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:WHITE_FONT_ICON
+		_textColorButton = [self getButtonWithFrame:buttonFrame andIcon:BLACK_FONT_ICON
 										andSelector:@selector(textColorButtonPressed)];
 	}
 	return _textColorButton;

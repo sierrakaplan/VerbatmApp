@@ -1997,6 +1997,7 @@ rowHeightForComponent:(NSInteger)component{
 -(UIImageView *) channelSelectorImageLeft {
 	if (!_channelSelectorImageLeft) {
 		_channelSelectorImageLeft = [[UIImageView alloc] initWithImage:[UIImage imageNamed:CHANNEL_SELECTOR_ARROW_LEFT]];
+		_channelSelectorImageLeft.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return _channelSelectorImageLeft;
 }
@@ -2004,6 +2005,7 @@ rowHeightForComponent:(NSInteger)component{
 -(UIImageView *) channelSelectorImageRight {
 	if (!_channelSelectorImageRight) {
 		_channelSelectorImageRight = [[UIImageView alloc] initWithImage:[UIImage imageNamed:CHANNEL_SELECTOR_ARROW_RIGHT]];
+		_channelSelectorImageRight.contentMode = UIViewContentModeScaleAspectFit;
 	}
 	return _channelSelectorImageRight;
 }

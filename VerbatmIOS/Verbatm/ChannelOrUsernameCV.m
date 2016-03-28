@@ -72,7 +72,7 @@
     //do formatting here
     if(self.isHeaderTile){
         //it's in the tab bar list and it should have a title
-        self.headerTitle = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
+        self.headerTitle = [self getHeaderTitleForViewWithText:@"Discover"];
         [self addSubview:self.headerTitle];
     }else {
         if(self.headerTitle)[self.headerTitle removeFromSuperview];
@@ -124,7 +124,7 @@
 -(void)createSelectedTextAttributes{
     NSMutableParagraphStyle *paragraphStyle = NSMutableParagraphStyle.new;
     paragraphStyle.alignment                = NSTextAlignmentCenter;
-    self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: [UIColor yellowColor],
+    self.channelNameLabelAttributes =@{NSForegroundColorAttributeName: VERBATM_GOLD_COLOR,
                                                      NSFontAttributeName: [UIFont fontWithName:CHANNEL_TAB_BAR_FOLLOWING_INFO_FONT size:CHANNEL_USER_LIST_CHANNEL_NAME_FONT_SIZE],
                                                      NSParagraphStyleAttributeName:paragraphStyle};
     
