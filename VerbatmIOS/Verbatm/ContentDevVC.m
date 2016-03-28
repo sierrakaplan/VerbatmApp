@@ -195,24 +195,31 @@
     self.mainScrollView.backgroundColor = [UIColor clearColor];
 }
 
--(void)viewDidAppear:(BOOL)animated {
+
+-(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 }
 
--(void)viewWillAppear:(BOOL)animated{
+
+-(void) viewWillAppear:(BOOL)animated {
     [self checkIntroNotification];
 }
+
 -(void) checkIntroNotification {
     if(![[UserSetupParameters sharedInstance] isAdk_InstructionShown]) {
         self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:ADK];
         self.introInstruction.custom_delegate = self;
         [self.view addSubview:self.introInstruction];
         [self.view bringSubviewToFront:self.introInstruction];
+        [[UserSetupParameters sharedInstance] set_ADKNotification_InstructionAsShown];
     }
 }
 
--(void)notificationDoneAnimatingOut{
-    
+-(void) notificationDoneAnimatingOut {
+    if(self.introInstruction){
+       [self.introInstruction removeFromSuperview];
+        self.introInstruction = nil;
+    }
 }
 
 -(void) initializeVariables {

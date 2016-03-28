@@ -100,11 +100,16 @@
         self.introInstruction.custom_delegate = self;
         [self.view addSubview:self.introInstruction];
         [self.view bringSubviewToFront:self.introInstruction];
+        [[UserSetupParameters sharedInstance] set_profileNotification_InstructionAsShown];
     }
+    
 }
 
--(void)notificationDoneAnimatingOut{
-    
+-(void) notificationDoneAnimatingOut {
+    if(self.introInstruction){
+        [self.introInstruction removeFromSuperview];
+        self.introInstruction = nil;
+    }
 }
 
 

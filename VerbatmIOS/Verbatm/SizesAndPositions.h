@@ -11,7 +11,7 @@
 
 
 
-#define INTRO_NOTIFICATION_SIZE 300.f
+#define INTRO_NOTIFICATION_SIZE 250.f
 
 #pragma mark - Main Tab bar -
 

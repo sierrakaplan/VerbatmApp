@@ -71,11 +71,15 @@
         self.introInstruction.custom_delegate = self;
         [self.view addSubview:self.introInstruction];
         [self.view bringSubviewToFront:self.introInstruction];
+         [[UserSetupParameters sharedInstance] set_feedNotification_InstructionAsShown];
     }
 }
 
--(void)notificationDoneAnimatingOut{
-    
+-(void)notificationDoneAnimatingOut {
+    if (self.introInstruction) {
+        [self.introInstruction removeFromSuperview];
+        self.introInstruction = nil;
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated {

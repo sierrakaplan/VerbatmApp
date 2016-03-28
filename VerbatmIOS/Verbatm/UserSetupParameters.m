@@ -10,7 +10,7 @@
 
 @interface UserSetupParameters()
 
-    @property (atomic, strong) NSDictionary * notificationSet;
+    @property (atomic, strong) NSMutableDictionary * notificationSet;
 
     #define FILTER_SWIPE_INSTRUCTION_KEY @"FILTER_INSTRUCTION_KEY"
     #define PROFILE_INTRO_INSTRUCTION_KEY @"PROFILE_INTRO_INSTRUCTION_KEY"
@@ -38,7 +38,7 @@
     @synchronized(self) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         //because they are all saved together we can just check if one exists
-        if(![defaults objectForKey:FILTER_SWIPE_INSTRUCTION_KEY]){
+        if(![defaults objectForKey:FEED_INTRO_INSTRUCTION_KEY]){
             [defaults setBool:NO forKey:FILTER_SWIPE_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:PINCH_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:PROFILE_INTRO_INSTRUCTION_KEY];
@@ -49,7 +49,7 @@
             //load and set the information we have saved already -- asynchronous
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-                self.notificationSet = [NSDictionary dictionaryWithDictionary:defaults.dictionaryRepresentation];
+                self.notificationSet = [NSMutableDictionary dictionaryWithDictionary:defaults.dictionaryRepresentation];
             });
         }
     }
@@ -75,45 +75,64 @@
 }
 
 
-//
-//-(BOOL) isFilter_InstructionShown{
-//    
-//    //the array is still being prepared -- unlikely to be a problem
-//    if(!self.notificationSet) return NO;
-//    
-//    NSNumber * boolAsNumber = self.notificationArray[FILTER_SWIPE_INSTRUCTION_KEY_INDEX];
-//    return boolAsNumber.boolValue;
-//}
-//
-//
-//
-//-(BOOL) isPinchCircles_InstructionShown{
-//    //the array is still being prepared -- unlikely to be a problem
-//    if(self.notificationArray.count != NUMBER_OF_KEYS) return NO;
-//    
-//    NSNumber * boolAsNumber = self.notificationArray[PINCH_INSTRUCTION_KEY_INDEX];
-//    return boolAsNumber.boolValue;
-//}
+
+-(BOOL) isFilter_InstructionShown{
+    
+    //the array is still being prepared -- unlikely to be a problem
+    if(!self.notificationSet) return NO;
+    
+    NSNumber * boolAsNumber = self.notificationSet[FILTER_SWIPE_INSTRUCTION_KEY];
+    return boolAsNumber.boolValue;
+}
+
+
+
+-(BOOL) isPinchCircles_InstructionShown{
+    //the array is still being prepared -- unlikely to be a problem
+    if(!self.self.notificationSet) return NO;
+    NSNumber * boolAsNumber = self.notificationSet[PINCH_INSTRUCTION_KEY];
+    return boolAsNumber.boolValue;
+}
 
 
 
 #pragma mark - Change Paramaters -
 
+-(void) set_filter_InstructionAsShown {
+    //the array is still being prepared -- unlikely to be a problem
+    if(!self.notificationSet) return ;
+    [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:FILTER_SWIPE_INSTRUCTION_KEY];
+}
 
 
+-(void) set_pinchCircles_InstructionAsShown {
+    //the array is still being prepared -- unlikely to be a problem
+    if(!self.notificationSet) return ;
+    
+    [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:PINCH_INSTRUCTION_KEY];
+    
+}
 
-//-(void) set_filter_InstructionAsShown {
-//    //the array is still being prepared -- unlikely to be a problem
-//    if(self.notificationArray.count != NUMBER_OF_KEYS) return;
-//    self.notificationArray[FILTER_SWIPE_INSTRUCTION_KEY_INDEX] = [NSNumber numberWithBool:YES];
-//}
-//
-//
-//-(void) set_pinchCircles_InstructionAsShown {
-//    //the array is still being prepared -- unlikely to be a problem
-//    if(self.notificationArray.count != NUMBER_OF_KEYS) return;
-//    self.notificationArray[PINCH_INSTRUCTION_KEY_INDEX] = [NSNumber numberWithBool:YES];
-//}
+-(void) set_profileNotification_InstructionAsShown {
+    //the array is still being prepared -- unlikely to be a problem
+    if(!self.notificationSet) return ;
+    
+    [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:PROFILE_INTRO_INSTRUCTION_KEY];
+    
+}
+-(void) set_feedNotification_InstructionAsShown {
+    //the array is still being prepared -- unlikely to be a problem
+    if(!self.notificationSet) return ;
+    
+    [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:FEED_INTRO_INSTRUCTION_KEY];
+    
+}
+-(void) set_ADKNotification_InstructionAsShown {
+    //the array is still being prepared -- unlikely to be a problem
+    if(!self.notificationSet) return ;
+    [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:ADK_INTRO_INSTRUCTION_KEY];
+    
+}
 
 
 
@@ -121,10 +140,8 @@
 
 -(void)saveAllChanges {
     
-//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//    [defaults setBool:(BOOL)self.notificationArray[FILTER_SWIPE_INSTRUCTION_KEY_INDEX] forKey:FILTER_SWIPE_INSTRUCTION_KEY];
-//    [defaults setBool:(BOOL)self.notificationArray[PINCH_INSTRUCTION_KEY_INDEX] forKey:PINCH_INSTRUCTION_KEY];
-    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setValuesForKeysWithDictionary:self.notificationSet];
 }
 
 
