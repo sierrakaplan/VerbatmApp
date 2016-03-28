@@ -136,7 +136,7 @@
 #pragma mark Images
 
 #define CIRCLE_RADIUS 45.f
-#define CIRCLE_OFFSET (LIKE_SHARE_BAR_HEIGHT + 10.f)
+#define CIRCLE_OFFSET (LIKE_SHARE_BAR_HEIGHT*2 + 10.f)
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
 #define TAP_THRESHOLD 20.f//the threshold to select a circle - but also to start panning
