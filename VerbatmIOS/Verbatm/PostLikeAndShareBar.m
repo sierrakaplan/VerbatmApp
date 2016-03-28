@@ -106,6 +106,7 @@
     [self createLikeButtonNumbers:numLikes];
 }
 
+
 -(void)createShareButton {
     //create share button
     CGRect shareButtonFrame = CGRectMake(BUTTON_WALLOFFSET, BUTTON_WALLOFFSET,
