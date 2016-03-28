@@ -18,9 +18,9 @@
 
 //this function should not be called for a channel that is already being followed
 +(void)currentUserFollowChannel:(Channel *) channelToFollow {
-    PFObject * newFollowObject = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
-    [newFollowObject setObject:[PFUser currentUser]forKey:FOLLOW_USER_KEY];
-    [newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
+	PFObject * newFollowObject = [PFObject objectWithClassName:FOLLOW_PFCLASS_KEY];
+	[newFollowObject setObject:[PFUser currentUser]forKey:FOLLOW_USER_KEY];
+	[newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(succeeded){
 			NSLog(@"Now following channel");
@@ -29,13 +29,13 @@
 }
 
 +(void)currentUserStopFollowingChannel:(Channel *) channelToUnfollow{
-    //we just delete the Follow Object
-    PFQuery * userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-    [userChannelQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channelToUnfollow.parseChannelObject];
-    [userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
-    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-                                                         NSError * _Nullable error) {
-        if(objects && !error && objects.count){
+	//we just delete the Follow Object
+	PFQuery * userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+	[userChannelQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channelToUnfollow.parseChannelObject];
+	[userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
+	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+														 NSError * _Nullable error) {
+		if(objects && !error && objects.count){
 			PFObject * followObj = [objects firstObject];
 			[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 				if(succeeded){
@@ -43,24 +43,24 @@
 					[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_STOPPED_FOLLOWING_USER object:nil];
 				}
 			}];
-        }
-    }];
+		}
+	}];
 }
 
 //checks to see if there is a follow relation between the channel and the user
 + (void)currentUserFollowsChannel:(Channel *) channel withCompletionBlock:(void(^)(bool)) block {
-    if(!channel) return;
-    PFQuery *userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-    [userChannelQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
-    [userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
-    [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-                                                         NSError * _Nullable error) {
-        if(objects && !error) {
-            if(objects.count > 0) block(YES);
+	if(!channel) return;
+	PFQuery *userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+	[userChannelQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
+	[userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
+	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+														 NSError * _Nullable error) {
+		if(objects && !error && objects.count > 0) {
+			block(YES);
 			return;
-        }
+		}
 		block (NO);
-    }];
+	}];
 }
 
 // Returns the number of users following a given channel
@@ -69,7 +69,7 @@
 	PFQuery *numFollowersQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 	[numFollowersQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channel.parseChannelObject];
 	[numFollowersQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														 NSError * _Nullable error) {
+														  NSError * _Nullable error) {
 		if(objects && !error) {
 			block ([NSNumber numberWithInteger:objects.count]);
 			return;
