@@ -49,16 +49,12 @@
         self.currentChannel = channel;
         self.channelOwner =(PFUser *)[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
         [self createBackground];
+		[self addCreatorNameViewWithName:(NSString *)[self.channelOwner valueForKey:VERBATM_USER_NAME_KEY]];
+		[self createChannelNameView:channel.name];
+		[self createFollowIcon];
         [self registerForNotifications];
     }
     return self;
-}
-
--(void) addCreatorName: (NSString*) creatorName andChannelName: (NSString*) channelName{
-    
-    [self addCreatorNameViewWithName:creatorName];
-    [self createChannelNameView:channelName];
-    [self createFollowIcon];
 }
 
 -(void)registerForNotifications{
