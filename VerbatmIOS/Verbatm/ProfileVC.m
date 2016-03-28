@@ -78,6 +78,8 @@
     self.view.clipsToBounds = YES;
 }
 
+
+
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
     if(self.isCurrentUserProfile){

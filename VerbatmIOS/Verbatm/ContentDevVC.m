@@ -652,6 +652,7 @@ rowHeightForComponent:(NSInteger)component{
             if(![[UserSetupParameters sharedInstance] isPinchCircles_InstructionShown] &&
                self.pageElementScrollViews.count > 2){
                 [self presentUserInstructionForPinchGesture];
+                [[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];
                 
             }
         }
@@ -1499,6 +1500,12 @@ rowHeightForComponent:(NSInteger)component{
     
     [self.mainScrollView addSubview:self.pinchElementsTogetherInstructionView];
     [self.mainScrollView bringSubviewToFront:self.pinchElementsTogetherInstructionView];
+    
+    [UIView animateWithDuration:4.f animations:^{
+        self.pinchElementsTogetherInstructionView.alpha = 0.f;
+    }completion:^(BOOL finished) {
+        [self.pinchElementsTogetherInstructionView removeFromSuperview];
+    }];
 	
 }
 
@@ -1538,7 +1545,9 @@ rowHeightForComponent:(NSInteger)component{
 		} else {
 			upperView = nil;
 		}
-	}
+    }
+    
+    
 	[unPinched revertToInitialFrame];
 	[unPinched removeFromSuperview];
 	[self newPinchView:unPinched belowView:upperView];

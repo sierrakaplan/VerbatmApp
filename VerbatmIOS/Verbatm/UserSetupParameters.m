@@ -16,6 +16,7 @@
     #define PROFILE_INTRO_INSTRUCTION_KEY @"PROFILE_INTRO_INSTRUCTION_KEY"
     #define FEED_INTRO_INSTRUCTION_KEY @"FEED_INTRO_INSTRUCTION_KEY"
     #define ADK_INTRO_INSTRUCTION_KEY @"ADK_INTRO_INSTRUCTION_KEY"
+    #define SWIPE_UP_DOWN_INSTRUCTION_KEY @"SWIPE_UP_DOWN_INSTRUCTION_KEY"
 
     #define ACCEPTED_TERMS_KEY @"ACCEPTED_TERMS_KEY"
 
@@ -47,6 +48,7 @@
             [defaults setBool:NO forKey:PROFILE_INTRO_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:FEED_INTRO_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:ADK_INTRO_INSTRUCTION_KEY];
+            [defaults setBool:NO forKey:SWIPE_UP_DOWN_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:ACCEPTED_TERMS_KEY];
             [defaults synchronize];
         }else{
@@ -91,7 +93,7 @@
 
 
 
--(BOOL) isPinchCircles_InstructionShown{
+-(BOOL) isPinchCircles_InstructionShown {
     //the array is still being prepared -- unlikely to be a problem
     if(!self.self.notificationSet) return NO;
     NSNumber * boolAsNumber = self.notificationSet[PINCH_INSTRUCTION_KEY];
@@ -100,7 +102,9 @@
 
 -(BOOL) isSwipeUpDown_InstructionShown{
     
-    return true;
+    if(!self.self.notificationSet) return NO;
+    NSNumber * boolAsNumber = self.notificationSet[SWIPE_UP_DOWN_INSTRUCTION_KEY];
+    return boolAsNumber.boolValue;
 }
 
 -(BOOL) isTermsAccept_InstructionShown{

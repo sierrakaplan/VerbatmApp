@@ -76,6 +76,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 @property (nonatomic) UIImageView * swipeUpAndDownInstruction;
 
 
+//@property (nonatomic) UIImageView * swipeInstructionView
+
 @property (nonatomic) UIView * PagingLine;//line that moves up and down as the user swipes up and down
 
 @property (nonatomic) UIImageView * pageUpIndicator;
@@ -151,6 +153,14 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 		self.mainScrollView.contentOffset = CGPointMake(0, self.mainScrollView.frame.size.height * (pageIndex));
 		[self displayMediaOnCurrentPage];
 	}
+    
+    
+    if(![[UserSetupParameters sharedInstance] isSwipeUpDown_InstructionShown] &&
+       self.pageViews.count > 1){
+        [self presentSwipeUpAndDownInstruction];
+        
+        [[UserSetupParameters sharedInstance] set_SwipeUpDownNotification_InstructionAsShown];
+    }
 }
 
 -(void) renderNextPage: (PageViewingExperience*)pageView withIndex: (NSNumber*) pageIndex {
@@ -292,6 +302,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	self.liked = !self.liked;
 }
 
+
+
 #pragma mark - Scroll view delegate -
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -379,6 +391,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 	self.swipeUpAndDownInstruction = [[UIImageView alloc] initWithImage:instructionImage];
 	self.swipeUpAndDownInstruction.frame = instructionFrame;
+    self.swipeUpAndDownInstruction.contentMode =  UIViewContentModeScaleAspectFit;
 	[self addSubview:self.swipeUpAndDownInstruction];
 	[self bringSubviewToFront:self.swipeUpAndDownInstruction];
 }
@@ -390,7 +403,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 	BOOL filterInstructionHasNotBeenPresented = ![[UserSetupParameters sharedInstance] isFilter_InstructionShown];
 
-	if( (isPhotoAve || isVideoAve)  && filterInstructionHasNotBeenPresented){
+	if( (isPhotoAve || isVideoAve)  && filterInstructionHasNotBeenPresented) {
 		UIImage * instructionImage = [UIImage imageNamed:FILTER_SWIPE_INSTRUCTION];
 		CGFloat frameWidth = 200.f;
 		CGFloat frameHeight = (frameWidth * 320.f) /488.f;

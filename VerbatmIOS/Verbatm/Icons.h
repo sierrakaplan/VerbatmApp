@@ -116,7 +116,7 @@
 
 #define MEDIA_REARRANGE_ICON @"rearrange_icon"
 
-#define SWIPE_UP_DOWN_INSTRUCTION @"swipeUp_Instructions_black"
+#define SWIPE_UP_DOWN_INSTRUCTION @"Swipe _up_down_to_page"
 #define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"Pinch D1"
 #define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions_black"
 
