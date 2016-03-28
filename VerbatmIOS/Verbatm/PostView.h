@@ -14,7 +14,8 @@
 
 @interface PostView : UIView
 
-//we store this to help us sort the posts once in the feed by date created
+@property (strong, nonatomic) Channel *listChannel; /* Channel currently reblogged in */
+@property (strong, nonatomic) Channel *postChannel; /* Original channel posted to */
 @property (strong, nonatomic) PFObject* parsePostChannelActivityObject;
 
 @property (nonatomic) id<PostViewDelegate> delegate;
@@ -44,7 +45,7 @@
 								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete;
 
--(void) addCreatorInfoFromChannel: (Channel *)listChannel;
+-(void) addCreatorInfo;
 
 -(void) presentMediaContent;
 
@@ -57,7 +58,7 @@
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post;
 -(void) channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
--(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;
+-(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post reblogged: (BOOL)reblogged;
 
 @end
 

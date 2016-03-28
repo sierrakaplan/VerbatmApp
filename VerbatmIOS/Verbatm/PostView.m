@@ -216,11 +216,12 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	//todo:
 }
 
--(void) addCreatorInfoFromChannel: (Channel *)listChannel {
+-(void) addCreatorInfo {
 	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject withCompletionBlock:^(Channel * channel) {
+		self.postChannel = channel;
 		//we only add the channel info to posts that don't belong to the current user
 		//todo: or in profile
-		if(channel.parseChannelObject != listChannel.parseChannelObject
+		if(channel.parseChannelObject != self.listChannel.parseChannelObject
 		   && ![channel channelBelongsToCurrentUser]) {
 			dispatch_async(dispatch_get_main_queue(), ^{
 				CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
@@ -639,7 +640,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 #pragma mark - Delete Post -
 
 -(void)deleteButtonPressed {
-	[self.delegate deleteButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+	BOOL reblogged = self.postChannel.parseChannelObject != self.listChannel.parseChannelObject;
+	[self.delegate deleteButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] reblogged: reblogged];
 }
 
 #pragma mark - Lazy Instantiation -

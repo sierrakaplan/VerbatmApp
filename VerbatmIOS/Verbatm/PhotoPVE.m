@@ -305,7 +305,6 @@
         }else {
             [self removeCircle];
         }
-        [self checkTextButtonPresentation];
 	} else {
         [self displayCircle:NO];
 	}
@@ -453,27 +452,13 @@
 
 	UIView* currentImageView = self.imageContainerViews[self.currentPhotoIndex];
 	float alpha = 1.f-fractionOfDistance;
-//	NSLog(@"Alpha:%f", alpha);
 	[currentImageView setAlpha:alpha];
-    [self checkTextButtonPresentation];
 }
 
 -(void) handleCircleGestureEnded:(UIPanGestureRecognizer*) sender {
 	self.draggingFromPointIndex = -1;
 	[self displayCircle:NO];
 	[self.delegate stoppedDraggingAroundCircle];
-    [self checkTextButtonPresentation];
-}
-
-//checks if a text button should be presented depending on the current image presented
--(void)checkTextButtonPresentation{
-	return; //todo:
-//    TextOverMediaView * view = self.imageContainerViews[self.currentPhotoIndex];
-//    if(view.textView.text && view.textView.text.length){
-//        [self createTextViewButton];
-//    }else{
-//        [self.textViewButton removeFromSuperview];
-//    }
 }
 
 -(void) showAndRemoveCircle {

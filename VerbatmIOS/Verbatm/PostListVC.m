@@ -239,6 +239,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 				[postView renderPostFromPages:pages];
 				[postView postOffScreen];
 				postView.delegate = self;
+				postView.listChannel = self.channelForList;
 				[self.presentedPostList addObject:postView];
 				resolve(nil);
 
@@ -252,7 +253,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 											   andStartingPageNumber:@(1)
 															 startUp:self.footerBarIsUp
 													withDeleteButton:self.isCurrentUserProfile];
-					[postView addCreatorInfoFromChannel:self.channelForList];
+					[postView addCreatorInfo];
 				});
 			}];
 		}];
@@ -408,7 +409,11 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}
 }
 
--(void) deleteButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post {
+-(void) deleteButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post reblogged:(BOOL)reblogged {
+	if (reblogged) {
+		[self deleteReblog:post onPostView:postView];
+		return;
+	}
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
 																   message:@"Are you sure you want to delete the entire post?"
 															preferredStyle:UIAlertControllerStyleAlert];
@@ -426,6 +431,25 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 				NSLog(@"Error deleting post");
 			}
 		}];
+	}];
+
+	[alert addAction: cancelAction];
+	[alert addAction: deleteAction];
+	[self presentViewController:alert animated:YES completion:nil];
+}
+
+-(void) deleteReblog:(PFObject *)post onPostView:(PostView *)postView {
+	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
+																   message:@"Are you sure you want to delete this reblogged post from your channel?"
+															preferredStyle:UIAlertControllerStyleAlert];
+
+	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+														 handler:^(UIAlertAction * action) {}];
+	UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+		NSInteger postIndex = [self.presentedPostList indexOfObject: postView];
+		[self removePostAtIndex: postIndex];
+		[postView clearPost];
+		[postView.parsePostChannelActivityObject deleteInBackground];
 	}];
 
 	[alert addAction: cancelAction];
