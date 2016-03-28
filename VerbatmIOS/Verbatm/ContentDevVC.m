@@ -124,15 +124,11 @@
 
 @property (nonatomic) UIImageView * pinchElementsTogetherInstructionView;//presents instrutions to user to pinch together their media
 
+#pragma mark Previewing
 
-//note when previewing
 @property (nonatomic) BOOL currentlyPreviewingContent;
-
 @property (nonatomic) NSMutableArray * userChannels;
-
-
-#pragma mark - Preview -
-
+@property(nonatomic, strong) NSMutableArray * ourPosts;
 @property (strong, nonatomic) PreviewDisplayView * previewDisplayView;
 
 #define CHANNEL_CREATION_PROMPT @"enter channel name"
@@ -144,9 +140,8 @@
 #define CHANNEL_SELECTOR_IMAGE_SIZE 30.f
 #define CHANNEL_PICKER_COLOR clearColor
 
-@property(nonatomic, strong) NSMutableArray * ourPosts;
-@end
 
+@end
 
 @implementation ContentDevVC
 

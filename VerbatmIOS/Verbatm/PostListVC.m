@@ -70,6 +70,29 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	[self registerForNotifications];
 }
 
+/* Refresh */
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+	CGPoint offset = scrollView.contentOffset;
+	float reload_distance = 75;
+
+	/* Refresh */
+	if(offset.x < (0 - reload_distance)) {
+		//todo: showindicator
+		[self reloadCurrentChannel];
+		NSLog(@"refreshing");
+	}
+	/* Load more */
+	CGRect bounds = scrollView.bounds;
+	CGSize size = scrollView.contentSize;
+	UIEdgeInsets inset = scrollView.contentInset;
+
+	float y = offset.x + bounds.size.width - inset.right;
+	float h = size.width;
+	if(y > h + reload_distance) {
+		//todo:show indicator
+		NSLog(@"load more rows");
+	}
+}
 
 -(void)registerForNotifications{
 	[[NSNotificationCenter defaultCenter] addObserver:self
@@ -86,7 +109,6 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 												 name:NOTIFICATION_NOW_FOLLOWING_USER
 											   object:nil];
 }
-
 
 -(void)viewDidAppear:(BOOL)animated{
 
@@ -135,25 +157,14 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	[self stopAllVideoContent];
 	[self.presentedPostList removeAllObjects];
 	[self getPosts];
+	[self.collectionView reloadData];
 }
-
-//todo: delete?
-//-(void)changeCurrentChannelTo:(Channel *) channel{
-//	if(![self.channelForList.name isEqualToString:channel.name]){
-//		self.collectionView.contentOffset = CGPointMake(0, 0);
-//		self.channelForList = channel;
-//		[self clearOldPosts];
-//		[self removePresentLabel];
-//		[self getPosts];
-//	}
-//}
 
 -(void) getPosts {
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed) {
 		if(!self.feedQueryManager)self.feedQueryManager = [[FeedQueryManager alloc] init];
 		[self.feedQueryManager getMoreFeedPostsWithCompletionHandler:^(NSArray * posts) {
-
 			[self.customActivityIndicator stopCustomActivityIndicator];
 			if(posts.count){
 				[self loadNewBackendPosts:posts];
@@ -161,10 +172,9 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 			} else {
 				[self nothingToPresentHere];
 			}
-
 		}];
 
-	}else if (self.listType == listChannel) {
+	} else if (self.listType == listChannel) {
 		[Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
 			[self.customActivityIndicator stopCustomActivityIndicator];
 			if(posts.count){
@@ -177,7 +187,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	}
 }
 
--(void)clearOldPosts{
+-(void)clearOldPosts {
 	for(PostView * view in self.presentedPostList){
 		[view removeFromSuperview];
 		[view clearPost];

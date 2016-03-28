@@ -24,7 +24,6 @@
 #import "PostView.h"
 #import "ParseBackendKeys.h"
 #import <PromiseKit/PromiseKit.h>
-#import "PostChannelAndCreatorBar.h"
 #import "Post_Channel_RelationshipManager.h"
 
 #import "SizesAndPositions.h"
