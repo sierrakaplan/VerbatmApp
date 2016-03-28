@@ -95,7 +95,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "317"
             endingLineNumber = "317"
-            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
+            landmarkName = "-numberOfComponentsInPickerView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -111,7 +111,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "347"
             endingLineNumber = "347"
-            landmarkName = "-pickerView:didSelectRow:inComponent:"
+            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -127,7 +127,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "326"
             endingLineNumber = "326"
-            landmarkName = "-formatChannelPickerFieldFromFrame:andChannel:"
+            landmarkName = "-pickerView:rowHeightForComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -255,7 +255,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1523"
             endingLineNumber = "1523"
-            landmarkName = "-finishMovingSelectedItem"
+            landmarkName = "-addUnpinchedItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -271,7 +271,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1544"
             endingLineNumber = "1544"
-            landmarkName = "-swapScrollView:andScrollView:"
+            landmarkName = "-finishMovingSelectedItem"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -287,7 +287,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1550"
             endingLineNumber = "1550"
-            landmarkName = "-swapScrollView:andScrollView:"
+            landmarkName = "-finishMovingSelectedItem"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -303,8 +303,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1554"
             endingLineNumber = "1554"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-finishMovingSelectedItem"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -319,8 +319,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1556"
             endingLineNumber = "1556"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-finishMovingSelectedItem"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -335,7 +335,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1553"
             endingLineNumber = "1553"
-            landmarkName = "-swapScrollView:andScrollView:"
+            landmarkName = "-finishMovingSelectedItem"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -383,7 +383,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "294"
             endingLineNumber = "294"
-            landmarkName = "-numberOfComponentsInPickerView:"
+            landmarkName = "-formatChannelPicker"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -399,7 +399,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "306"
             endingLineNumber = "306"
-            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
+            landmarkName = "-formatChannelPicker"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -415,7 +415,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1600"
             endingLineNumber = "1600"
-            landmarkName = "-addTapGestureToPinchView:"
+            landmarkName = "-returnPageElementScrollView:toDisplayAtIndex:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -463,7 +463,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1645"
             endingLineNumber = "1645"
-            landmarkName = "-cleanUp"
+            landmarkName = "-aboutToShowPreview"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -975,7 +975,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "314"
             endingLineNumber = "314"
-            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
+            landmarkName = "-formatChannelPicker"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -991,7 +991,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "313"
             endingLineNumber = "313"
-            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
+            landmarkName = "-formatChannelPicker"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1265,7 +1265,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "329"
             endingLineNumber = "329"
-            landmarkName = "-formatChannelPickerFieldFromFrame:andChannel:"
+            landmarkName = "-pickerView:rowHeightForComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1281,7 +1281,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "324"
             endingLineNumber = "324"
-            landmarkName = "-formatChannelPickerFieldFromFrame:andChannel:"
+            landmarkName = "-pickerView:numberOfRowsInComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1441,7 +1441,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "342"
             endingLineNumber = "342"
-            landmarkName = "-pickerView:didSelectRow:inComponent:"
+            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1489,7 +1489,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "344"
             endingLineNumber = "344"
-            landmarkName = "-pickerView:didSelectRow:inComponent:"
+            landmarkName = "-pickerView:viewForRow:forComponent:reusingView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1537,7 +1537,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "515"
             endingLineNumber = "515"
-            landmarkName = "-scrollViewWillBeginDecelerating:"
+            landmarkName = "-scrollViewDidScroll:"
             landmarkType = "5">
             <Locations>
                <Location
@@ -1585,7 +1585,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "516"
             endingLineNumber = "516"
-            landmarkName = "-scrollViewWillBeginDecelerating:"
+            landmarkName = "-scrollViewDidScroll:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1601,8 +1601,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "514"
             endingLineNumber = "514"
-            landmarkName = "-scrollViewWillBeginDecelerating:"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -1649,7 +1649,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1344"
             endingLineNumber = "1344"
-            landmarkName = "-moveItem:"
+            landmarkName = "-findSelectedViewFromTouch:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1729,7 +1729,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1319"
             endingLineNumber = "1319"
-            landmarkName = "-findSelectedViewFromTouch:"
+            landmarkName = "-selectItem:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1745,7 +1745,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1176"
             endingLineNumber = "1176"
-            landmarkName = "-createPinchApartViews"
+            landmarkName = "-findElementsFromPinchPoint"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1761,7 +1761,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "465"
             endingLineNumber = "465"
-            landmarkName = "-rightButtonPressed"
+            landmarkName = "-loadPostFromUserDefaults"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1777,7 +1777,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1300"
             endingLineNumber = "1300"
-            landmarkName = "-selectItem:"
+            landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1793,7 +1793,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1304"
             endingLineNumber = "1304"
-            landmarkName = "-selectItem:"
+            landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2247,7 +2247,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1301"
             endingLineNumber = "1301"
-            landmarkName = "-selectItem:"
+            landmarkName = "-longPressSensed:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2263,7 +2263,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1079"
             endingLineNumber = "1079"
-            landmarkName = "-animateNewMediaTileToFinalPosition:andChangeInTopViewPosition:"
+            landmarkName = "-handleRevealOfNewMediaViewWithGesture:andChangeInTopViewPosition:andChangeInBottomViewPosition:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2279,7 +2279,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1070"
             endingLineNumber = "1070"
-            landmarkName = "-animateNewMediaTileToFinalPosition:andChangeInTopViewPosition:"
+            landmarkName = "-handleRevealOfNewMediaViewWithGesture:andChangeInTopViewPosition:andChangeInBottomViewPosition:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
