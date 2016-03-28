@@ -295,7 +295,7 @@
 	tap.delegate = self;
 	[picker addGestureRecognizer:tap];
 
-	CGFloat channelPickerOffset = 40.f;
+	CGFloat channelPickerOffset = 20.f;
 	self.channelSelectorImageLeft.frame = CGRectMake(channelPickerOffset, 0.f,
 													 CHANNEL_SELECTOR_IMAGE_SIZE, CHANNEL_SELECTOR_IMAGE_SIZE);
 	self.channelSelectorImageRight.frame = CGRectMake(channelPickerFrame.size.width - CHANNEL_SELECTOR_IMAGE_SIZE - channelPickerOffset, 0.f,

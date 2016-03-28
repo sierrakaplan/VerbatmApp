@@ -167,7 +167,6 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
     [self.collectionView reloadData];
 }
 
-
 -(void)refreshPosts{
     [self.customActivityIndicator startCustomActivityIndicator];
     
