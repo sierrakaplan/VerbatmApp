@@ -44,6 +44,8 @@
 								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete;
 
+-(void) addCreatorInfoFromChannel: (Channel *)listChannel;
+
 -(void) presentMediaContent;
 
 //moves the 

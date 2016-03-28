@@ -47,10 +47,10 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 @property (nonatomic) BOOL isReloading;
 @property (nonatomic) PFObject *postToShare;
 
-@property (nonatomic) UIImageView * reblogSucessful;
-@property (nonatomic) UIImageView * following;
-@property (nonatomic) UIImageView * publishSuccessful;
-@property (nonatomic) UIImageView * publishFailed;
+@property (nonatomic) UIImageView *reblogSucessful;
+@property (nonatomic) UIImageView *following;
+@property (nonatomic) UIImageView *publishSuccessful;
+@property (nonatomic) UIImageView *publishFailed;
 
 #define LOAD_MORE_POSTS_COUNT 3 //number of posts left to see before we start loading more content
 #define POST_CELL_ID @"postCellId"
@@ -224,6 +224,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 											   andStartingPageNumber:@(1)
 															 startUp:(self.listType == listFeed || self.isCurrentUserProfile)
 													withDeleteButton:self.isCurrentUserProfile];
+					[postView addCreatorInfoFromChannel:self.channelForList];
 				});
 			}];
 		}];

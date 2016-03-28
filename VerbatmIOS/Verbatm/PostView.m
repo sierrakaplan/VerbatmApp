@@ -206,7 +206,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
-	[self addCreatorInfo];
 }
 
 -(void) showWhoLikesThePost {
@@ -217,11 +216,12 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	//todo:
 }
 
--(void) addCreatorInfo{
+-(void) addCreatorInfoFromChannel: (Channel *)listChannel {
 	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject withCompletionBlock:^(Channel * channel) {
-		//we only add the channel info to posts that don't belong to the current
-		//user
-		if(![channel channelBelongsToCurrentUser]) {
+		//we only add the channel info to posts that don't belong to the current user
+		//todo: or in profile
+		if(channel.parseChannelObject != listChannel.parseChannelObject
+		   && ![channel channelBelongsToCurrentUser]) {
 			dispatch_async(dispatch_get_main_queue(), ^{
 				CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
 				self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
