@@ -45,6 +45,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 @property (nonatomic) SharePostView *sharePostView;
 @property (nonatomic) BOOL shouldPlayVideos;
 @property (nonatomic) BOOL isReloading;
+@property (nonatomic) BOOL footerBarIsUp;//like share bar
 @property (nonatomic) PFObject *postToShare;
 
 @property (nonatomic) UIImageView * reblogSucessful;
@@ -68,6 +69,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	[self registerClassForCustomCells];
 	[self getPosts];
 	self.shouldPlayVideos = YES;
+    self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
 	[self registerForNotifications];
 }
 
@@ -157,9 +159,45 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 -(void)reloadCurrentChannel{
 	[self stopAllVideoContent];
 	[self.presentedPostList removeAllObjects];
-	[self getPosts];
-	[self.collectionView reloadData];
+    self.isReloading = NO;
+    self.shouldPlayVideos  = YES;
+    [self refreshPosts];
+    [self.collectionView reloadData];
 }
+
+
+-(void)refreshPosts{
+    [self.customActivityIndicator startCustomActivityIndicator];
+    
+    if(self.listType == listFeed){
+        [self.feedQueryManager reloadFeedFromStartWithCompletionHandler:^(NSArray * posts) {
+            [self.customActivityIndicator stopCustomActivityIndicator];
+            if(posts.count){
+                [self loadNewBackendPosts:posts];
+                [self removePresentLabel];
+            } else if(self.presentedPostList.count == 0) {
+                [self nothingToPresentHere];
+            }
+        }];
+        
+    }else if (self.listType == listChannel){
+        [self loadCurrentChannel];
+    }
+}
+
+-(void)loadCurrentChannel{
+    [Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
+        [self.customActivityIndicator stopCustomActivityIndicator];
+        if(posts.count){
+            [self loadNewBackendPosts:posts];
+            [self removePresentLabel];
+        } else if(self.presentedPostList.count == 0) {
+            [self nothingToPresentHere];
+        }
+    }];
+}
+
+
 
 -(void) getPosts {
 	[self.customActivityIndicator startCustomActivityIndicator];
@@ -170,21 +208,13 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 			if(posts.count){
 				[self loadNewBackendPosts:posts];
 				[self removePresentLabel];
-			} else {
+			} else if(self.presentedPostList.count == 0) {
 				[self nothingToPresentHere];
 			}
 		}];
 
 	} else if (self.listType == listChannel) {
-		[Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
-			[self.customActivityIndicator stopCustomActivityIndicator];
-			if(posts.count){
-				[self loadNewBackendPosts:posts];
-				[self removePresentLabel];
-			} else {
-				[self nothingToPresentHere];
-			}
-		}];
+		[self loadCurrentChannel];
 	}
 }
 
@@ -222,7 +252,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 					[postView createLikeAndShareBarWithNumberOfLikes:numLikes numberOfShares:numShares
 													   numberOfPages:numberOfPages
 											   andStartingPageNumber:@(1)
-															 startUp:(self.listType == listFeed || self.isCurrentUserProfile)
+															 startUp:self.footerBarIsUp
 													withDeleteButton:self.isCurrentUserProfile];
 				});
 			}];
@@ -339,6 +369,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 -(void) footerShowing: (BOOL) showing{
+    self.footerBarIsUp = showing;
 	for(PostView *postView in self.presentedPostList){
 		[postView shiftLikeShareBarDown:!showing];
 	}

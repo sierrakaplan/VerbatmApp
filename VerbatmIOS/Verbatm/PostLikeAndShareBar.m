@@ -29,6 +29,7 @@
 @property (strong, nonatomic) UIImage *likeButtonLikedImage;
 
 @property (nonatomic) BOOL isLiked;
+
 @property (nonatomic) NSNumber * totalNumberOfPages;
 
 @property (nonatomic) NSNumber * totalNumberOfLikes;//number of likes on our related AVE
@@ -37,7 +38,7 @@
 
 #define BUTTON_WALLOFFSET 10.f
 #define NUMBER_FONT_SIZE 10.f
-#define ICON_SPACING_GAP 20.f
+#define ICON_SPACING_GAP 10.f
 #define NUMBER_TEXT_FONT CHANNEL_TAB_BAR_FOLLOWERS_FONT
 #define NUMBER_TEXT_FONT_SIZE 25.f
 

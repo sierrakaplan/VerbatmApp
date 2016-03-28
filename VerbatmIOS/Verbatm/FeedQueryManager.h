@@ -22,4 +22,5 @@
 //Will return at most 20 results at any time
 //If there are no more posts then the argument will be NULL.
 -(void)getMoreFeedPostsWithCompletionHandler:(void(^)(NSArray *))block;
+-(void)reloadFeedFromStartWithCompletionHandler:(void(^)(NSArray *))block;
 @end
