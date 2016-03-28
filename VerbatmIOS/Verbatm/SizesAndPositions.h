@@ -135,8 +135,8 @@
 
 #pragma mark Images
 
-#define CIRCLE_RADIUS 50.f
-#define CIRCLE_OFFSET 15.f
+#define CIRCLE_RADIUS 45.f
+#define CIRCLE_OFFSET (LIKE_SHARE_BAR_HEIGHT + 10.f)
 
 #define POINTS_ON_CIRCLE_RADIUS 10.f
 #define TAP_THRESHOLD 20.f//the threshold to select a circle - but also to start panning
@@ -147,7 +147,6 @@
 #define TEXT_VIEW_OVER_MEDIA_MIN_HEIGHT 70.f
 
 #define PAN_CIRCLE_CENTER_Y (self.frame.size.height - CIRCLE_RADIUS - CIRCLE_OFFSET)
-
 
 
 #pragma mark - Profile -

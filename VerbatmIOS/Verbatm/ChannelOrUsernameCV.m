@@ -72,7 +72,7 @@
     //do formatting here
     if(self.isHeaderTile){
         //it's in the tab bar list and it should have a title
-        self.headerTitle = [self getHeaderTitleForViewWithText:@"All Verbatm Channels"];
+        self.headerTitle = [self getHeaderTitleForViewWithText:@"Discover"];
         [self addSubview:self.headerTitle];
     }else {
         if(self.headerTitle)[self.headerTitle removeFromSuperview];

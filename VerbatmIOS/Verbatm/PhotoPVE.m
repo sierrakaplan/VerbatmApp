@@ -550,8 +550,7 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
 	// if tapping or panning in circle area ignore other gesture recognizers
-	if (([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]])
-		|| [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+	if (([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) || [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
 		if (gestureRecognizer.numberOfTouches >= 1){
 			CGPoint touchLocation = [gestureRecognizer locationOfTouch:0 inView:self];
 			if ([self circleTapped:touchLocation]) {
