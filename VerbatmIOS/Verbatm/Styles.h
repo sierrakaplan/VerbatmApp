@@ -14,7 +14,7 @@
 
 #define DEFAULT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
 #define BUTTON_FONT @"Raleway-Bold" //@"Quicksand-Bold"
-#define PLACEHOLDER_FONT @"Raleway-BoldItalic" //@"Quicksand-BoldItalic"
+#define PLACEHOLDER_FONT @"Raleway-Italic" //@"Quicksand-BoldItalic"
 #define TITLE_TEXT_FONT @"Raleway-Regular" //@"Quicksand-Bold"
 
 #define HEADER_TEXT_FONT @"Raleway-Regular"//@"Quicksand-Regular"
@@ -83,7 +83,7 @@
 #define TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE 40
 #define TEXT_PAGE_VIEW_MIN_FONT_SIZE 25
 #define TEXT_PAGE_VIEW_MAX_FONT_SIZE 70
-#define TEXT_PAGE_VIEW_DEFAULT_COLOR blackColor
+#define TEXT_PAGE_VIEW_DEFAULT_COLOR whiteColor
 
 #define TEXT_PAGE_VIEW_BACKGROUND_ALPHA 0.7
 #define TEXT_PAGE_VIEW_PULLBAR_COLOR clearColor

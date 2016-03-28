@@ -157,6 +157,7 @@
 	</dict>
 	<key>UIAppFonts</key>
 	<array>
+		<string>Raleway-Italic.ttf</string>
 		<string>Raleway-BoldItalic.ttf</string>
 		<string>Raleway-Regular.ttf</string>
 		<string>Raleway-LightItalic.ttf</string>

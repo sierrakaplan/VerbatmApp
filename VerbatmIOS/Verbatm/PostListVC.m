@@ -197,8 +197,6 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
     }];
 }
 
-
-
 -(void) getPosts {
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed) {

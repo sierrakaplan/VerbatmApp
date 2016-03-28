@@ -3025,7 +3025,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "165"
             endingLineNumber = "165"
-            landmarkName = "-getPosts"
+            landmarkName = "-reloadCurrentChannel"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3244,12 +3244,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "480825036.798808"
+            timestampString = "480829127.174431"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "209"
-            endingLineNumber = "209"
-            landmarkName = "-loadNewBackendPosts:"
+            startingLineNumber = "207"
+            endingLineNumber = "207"
+            landmarkName = "-getPosts"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3340,12 +3340,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "480828925.942989"
+            timestampString = "480829127.174431"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "373"
-            endingLineNumber = "373"
-            landmarkName = "-turnOffCellsOffScreenWithVisibleCell:"
+            startingLineNumber = "371"
+            endingLineNumber = "371"
+            landmarkName = "-footerShowing:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3409,7 +3409,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "193"
             endingLineNumber = "193"
-            landmarkName = "-clearOldPosts"
+            landmarkName = "-loadCurrentChannel"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3436,12 +3436,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "480825036.798808"
+            timestampString = "480829127.174431"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "212"
-            endingLineNumber = "212"
-            landmarkName = "-loadNewBackendPosts:"
+            startingLineNumber = "210"
+            endingLineNumber = "210"
+            landmarkName = "-getPosts"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3452,12 +3452,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "480828925.942989"
+            timestampString = "480829127.174431"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "325"
-            endingLineNumber = "325"
-            landmarkName = "-stopAllVideoContent"
+            startingLineNumber = "323"
+            endingLineNumber = "323"
+            landmarkName = "-collectionView:cellForItemAtIndexPath:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -3756,12 +3756,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostListVC.m"
-            timestampString = "480828925.942989"
+            timestampString = "480829127.174431"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "410"
-            endingLineNumber = "410"
-            landmarkName = "-removePostAtIndex:"
+            startingLineNumber = "408"
+            endingLineNumber = "408"
+            landmarkName = "-turnOffCellsOffScreenWithVisibleCell:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
