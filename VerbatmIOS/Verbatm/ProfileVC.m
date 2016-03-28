@@ -63,7 +63,7 @@
 -(void) viewDidLoad {
 	[super viewDidLoad];
 	self.contentCoveringScreen = YES;
-    self.view.backgroundColor = [UIColor whiteColor];
+    self.view.backgroundColor = [UIColor blackColor];
     //this is where you'd fetch the threads
     [self getChannelsWithCompletionBlock:^{
 		[self createNavigationBar];

@@ -17,6 +17,9 @@
     #define FEED_INTRO_INSTRUCTION_KEY @"FEED_INTRO_INSTRUCTION_KEY"
     #define ADK_INTRO_INSTRUCTION_KEY @"ADK_INTRO_INSTRUCTION_KEY"
 
+    #define ACCEPTED_TERMS_KEY @"ACCEPTED_TERMS_KEY"
+
+
     #define PINCH_INSTRUCTION_KEY @"PINCH_INSTRUCTION_KEY"
 @end
 
@@ -44,6 +47,7 @@
             [defaults setBool:NO forKey:PROFILE_INTRO_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:FEED_INTRO_INSTRUCTION_KEY];
             [defaults setBool:NO forKey:ADK_INTRO_INSTRUCTION_KEY];
+            [defaults setBool:NO forKey:ACCEPTED_TERMS_KEY];
             [defaults synchronize];
         }else{
             //load and set the information we have saved already -- asynchronous
@@ -94,6 +98,18 @@
     return boolAsNumber.boolValue;
 }
 
+-(BOOL) isSwipeUpDown_InstructionShown{
+    
+    return true;
+}
+
+-(BOOL) isTermsAccept_InstructionShown{
+    
+    if(!self.self.notificationSet) return NO;
+    NSNumber * boolAsNumber = self.notificationSet[ACCEPTED_TERMS_KEY];
+    return boolAsNumber.boolValue;
+
+}
 
 
 #pragma mark - Change Paramaters -
@@ -108,7 +124,6 @@
 -(void) set_pinchCircles_InstructionAsShown {
     //the array is still being prepared -- unlikely to be a problem
     if(!self.notificationSet) return ;
-    
     [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:PINCH_INSTRUCTION_KEY];
     
 }
@@ -116,14 +131,12 @@
 -(void) set_profileNotification_InstructionAsShown {
     //the array is still being prepared -- unlikely to be a problem
     if(!self.notificationSet) return ;
-    
     [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:PROFILE_INTRO_INSTRUCTION_KEY];
     
 }
 -(void) set_feedNotification_InstructionAsShown {
     //the array is still being prepared -- unlikely to be a problem
     if(!self.notificationSet) return ;
-    
     [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:FEED_INTRO_INSTRUCTION_KEY];
     
 }
@@ -135,8 +148,15 @@
 }
 
 
+-(void) set_SwipeUpDownNotification_InstructionAsShown{
+    
+}
 
 
+-(void) set_TermsAccept_InstructionAsShown{
+    if(!self.notificationSet) return ;
+    [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:ACCEPTED_TERMS_KEY];
+}
 
 -(void)saveAllChanges {
     

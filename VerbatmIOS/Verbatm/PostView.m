@@ -89,6 +89,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 #define SCROLL_UP_ANIMATION_DURATION 0.7
 #define ACTIVITY_ANIMATION_Y 100.f
 
+#define PAGE_UP_ICON_IMAGE @"Page_up"
+
 #define PAGING_LINE_WIDTH 4.f
 #define PAGING_LINE_ANIMATION_DURATION 0.5
 #define PAGING_LINE_COLE [UIColor whiteColor]
@@ -203,7 +205,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	self.likeShareBar.delegate = self;
 	if (withDelete) {
 		[self.likeShareBar createDeleteButton];
-	}
+    }else{
+        [self.likeShareBar createFlagButton];
+    }
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
 	[self addCreatorInfo];
@@ -292,7 +296,12 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	[self displayMediaOnCurrentPage];
-	[self removePageUpIndicatorFromView];
+    
+    if(scrollView.contentOffset.y == 0){
+        [self addUpArrowAnimation];
+    }else{
+        [self removePageUpIndicatorFromView];
+    }
 }
 
 -(void)scrollViewDidScroll:(UIScrollView *)scrollView{
@@ -594,7 +603,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 //adds the little bouncing arrow to the bottom right of the screen
 -(void)addUpArrowAnimation{
-	if(!self.pageUpIndicator && self.pageViews.count){
+	if(!self.pageUpIndicator && self.pageViews.count &&  !self.pageUpIndicator){
 		if(![NSThread isMainThread]){
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self startArrowAnimation];
@@ -610,14 +619,14 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 -(void)startArrowAnimation{
 
-	UIImage * arrowImage = [UIImage imageNamed:@"up_arrow"];
+	UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];
 	UIImageView * iv = [[UIImageView alloc] initWithImage:arrowImage];
 	[self addSubview:iv];
 	[self bringSubviewToFront:iv];
 
 	CGFloat size = 30.f;
 	CGFloat x_cord = self.frame.size.width - size - 8.f;
-	CGFloat y_cord = (self.likeShareBar.frame.origin.y + self.likeShareBar.frame.size.height) - size - 3.f;
+	CGFloat y_cord = (self.likeShareBar.frame.origin.y - size - 3.f);
 	CGRect frame = CGRectMake(x_cord,y_cord, size, size);
 	iv.frame = frame;
 
@@ -640,6 +649,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 -(void)deleteButtonPressed {
 	[self.delegate deleteButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
+}
+-(void)flagButtonPressed{
+    [self.delegate flagButtonSelectedOnPostView:self withPostObject:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]];
 }
 
 #pragma mark - Lazy Instantiation -

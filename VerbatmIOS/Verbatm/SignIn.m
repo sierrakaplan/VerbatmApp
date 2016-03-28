@@ -16,6 +16,9 @@
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "SegueIDs.h"
 
+#import "TermsAndConditionsVC.h"
+
+#import "UserSetupParameters.h"
 #import "UserManager.h"
 
 @interface SignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
@@ -42,10 +45,15 @@
 	[self centerViews];
 	[self registerForNotifications];
 	[self addFacebookLoginButton];
+    
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
+    if(![[UserSetupParameters sharedInstance] isTermsAccept_InstructionShown]){
+        [self performSegueWithIdentifier:TERMS_CONDITIONS_VC_SEGUE_ID sender:self];
+    }
 }
 
 -(void)viewDidAppear:(BOOL)animated {
@@ -181,7 +189,13 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 // Segue back to the MasterNavigationVC after logging in
 // Or segue to create account
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-	// Get the new view controller using [segue destinationViewController].
+    UIViewController * vc =  [segue destinationViewController];
+    
+    if([vc isKindOfClass:[TermsAndConditionsVC class]]){
+        ((TermsAndConditionsVC *)vc).userMustAcceptTerms = YES;
+    }
+    
+    
 	// Pass the selected object to the new view controller.
 }
 

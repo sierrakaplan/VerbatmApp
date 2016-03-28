@@ -434,6 +434,28 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	[self presentViewController:alert animated:YES completion:nil];
 }
 
+
+-(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
+                                                                   message:@"Are you sure you want to flag the content of this post. We will review it ASAP."
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) {}];
+    UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        [Post_BackendObject markPostAsFlagged:post];
+    
+    }];
+    
+    [alert addAction: cancelAction];
+    [alert addAction: deleteAction];
+    [self presentViewController:alert animated:YES completion:nil];
+    
+}
+
+
+
 -(void)removePostAtIndex:(NSInteger)i {
 	[self.collectionView performBatchUpdates:^{
 		[self.presentedPostList removeObjectAtIndex:i];

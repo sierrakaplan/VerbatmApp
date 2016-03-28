@@ -9,27 +9,59 @@
 #import "Styles.h"
 #import "SizesAndPositions.h"
 #import "TermsAndConditionsVC.h"
-
+#import "UserSetupParameters.h"
 @interface TermsAndConditionsVC ()<CustomNavigationBarDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *termsAndConditionsTitle;
 @property (weak, nonatomic) IBOutlet UITextView *VerbatmTermsAndConditionsText;
 @property (nonatomic) CustomNavigationBar * navigationBar;
+@property (weak, nonatomic) IBOutlet UIImageView *T_C_ImageView;
 
+@property (weak, nonatomic) IBOutlet UIButton *Accept_Terms;
 
 #define VIEW_OFFSET_Y 50.f
 #define TERMS_CONDITIONS_WALL_OFFSET 15.f
-
+#define ACCEPT_BUTTON_SIZE 70.f
 @end
 
 @implementation TermsAndConditionsVC
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
     // Do any additional setup after loading the view.
-    [self createNavigationBar];
-    [self positionButtonViews];
+    if(self.userMustAcceptTerms){
+        self.T_C_ImageView.frame = self.view.bounds;
+        self.Accept_Terms.frame = CGRectMake(self.Accept_Terms.frame.origin.x, self.view.frame.size.height - ACCEPT_BUTTON_SIZE - 10.f, ACCEPT_BUTTON_SIZE, ACCEPT_BUTTON_SIZE);
+        self.Accept_Terms.layer.cornerRadius = self.Accept_Terms.frame.size.width/2.f;
+    }else{
+        [self createNavigationBar];
+        self.T_C_ImageView.frame = CGRectMake(0.f, CUSTOM_NAV_BAR_HEIGHT, self.view.frame.size.width, self.view.frame.size.height - CUSTOM_NAV_BAR_HEIGHT);
+        [self.Accept_Terms removeFromSuperview];
+    }
+   
 }
 
+-(void)viewDidLayoutSubviews{
+    if(self.userMustAcceptTerms){
+        [self MakeViewPulse:self.Accept_Terms];
+    }
+}
+
+
+-(void)MakeViewPulse:(UIView *) view{
+    CABasicAnimation *pulse;
+    pulse = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+    pulse.duration = 0.6f;
+    pulse.autoreverses = YES;
+    pulse.fromValue = [NSNumber numberWithFloat:1.f];
+    pulse.toValue =[NSNumber numberWithFloat:1.2f];
+    pulse.repeatCount = HUGE_VALF;
+    
+    
+    [view.layer removeAllAnimations];
+    [view.layer addAnimation:pulse forKey:@"Pulse"];
+}
 
 
 -(void)createNavigationBar{
@@ -73,6 +105,14 @@
 }
 
 
+- (IBAction)termsAccepted:(id)sender {
+    
+    //store that the terms have been accepted
+    [[UserSetupParameters sharedInstance] set_TermsAccept_InstructionAsShown];
+    
+    //great the user has accepted the terms
+    [self exitSettingsPage];
+}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];

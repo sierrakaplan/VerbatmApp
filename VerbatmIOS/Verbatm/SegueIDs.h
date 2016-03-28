@@ -30,4 +30,6 @@
 
 #define ARTICLE_DISPLAY_VC_ID @"article_display_vc"
 
+#define TERMS_CONDITIONS_VC_SEGUE_ID @"Accept_Terms_And_Conditions_Segue"
+
 #endif /* SegueIDs_h */

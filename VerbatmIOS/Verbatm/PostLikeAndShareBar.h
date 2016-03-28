@@ -29,6 +29,9 @@ typedef enum BarActivityOptions{
 -(void)muteButtonSelected:(BOOL)shouldMute;
 -(void)deleteButtonPressed;
 
+-(void)flagButtonPressed;
+
+
 @end
 
 
@@ -39,8 +42,11 @@ typedef enum BarActivityOptions{
 -(void)setPageNumber:(NSNumber *) pageNumber;
 -(void)presentMuteButton:(BOOL) shouldPresent;
 -(void)shouldStartPostAsLiked:(BOOL) postLiked;
--(void)createDeleteButton;
 
+//if it's the current user's post we add a delete icon
+//if it's another user's post we create a flag
+-(void)createDeleteButton;
+-(void)createFlagButton;
 @property (nonatomic) id <PostLikeAndShareBarProtocol> delegate;
 
 @end

@@ -100,7 +100,7 @@
     UIImage * settingsImage = [UIImage imageNamed:SETTINGS_BUTTON_ICON];
 
     CGFloat height = SETTINGS_BUTTON_SIZE;
-    CGFloat width = height;
+    CGFloat width = height+ 20.f;
     CGFloat frame_x = self.frame.size.width - width - CHANNEL_BUTTON_WALL_XOFFSET;
     CGFloat frame_y = self.center.y - (height/2.f);
     
@@ -109,8 +109,10 @@
     self.settingsButton =  [[UIButton alloc] initWithFrame:iconFrame];
     [self.settingsButton setImage:settingsImage forState:UIControlStateNormal];
     self.settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-    [self.settingsButton addTarget:self action:@selector(settingsButtonSelected) forControlEvents:UIControlEventTouchUpInside];
+    [self.settingsButton addTarget:self action:@selector(settingsButtonSelected) forControlEvents:UIControlEventTouchDown];
     [self addSubview:self.settingsButton];
+    self.settingsButton.clipsToBounds = YES;;
+
 }
 
 //If it's my profile it's follower(s) and if it's someone else's profile
