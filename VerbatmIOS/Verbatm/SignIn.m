@@ -22,7 +22,7 @@
 #import "UserManager.h"
 
 @interface SignIn () <UITextFieldDelegate, FBSDKLoginButtonDelegate>
-
+@property (nonatomic) BOOL loginFirstTimeDone;
 @property (strong, nonatomic) UIView* animationView;
 @property (strong, nonatomic) UILabel* animationLabel;
 @property (strong, nonatomic) NSTimer* animationTimer;
@@ -45,13 +45,15 @@
 	[self centerViews];
 	[self registerForNotifications];
 	[self addFacebookLoginButton];
+    self.loginFirstTimeDone = NO;
     
     
 }
 
 -(void)viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-    if(![[UserSetupParameters sharedInstance] isTermsAccept_InstructionShown]){
+    if(![[UserSetupParameters sharedInstance] isTermsAccept_InstructionShown] && !self.loginFirstTimeDone){
+        self.loginFirstTimeDone = YES;
         [self performSegueWithIdentifier:TERMS_CONDITIONS_VC_SEGUE_ID sender:self];
     }
 }
