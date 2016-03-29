@@ -52,6 +52,11 @@
 	} else {
 		self.currentlyPublishing = YES;
 	}
+    
+    //let the pv's know they are being published so they can releae excess media
+    for(PinchView * pv in pinchViews){
+        [pv publishingPinchView];
+    }
 
 	self.channelManager = [[Channel_BackendObject alloc] init];
 	[self countMediaContentFromPinchViews:pinchViews];

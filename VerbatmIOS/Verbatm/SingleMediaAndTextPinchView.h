@@ -16,5 +16,4 @@
 @property (strong, nonatomic) UIColor *textColor;
 @property (strong, nonatomic) NSNumber *textAlignment; //NSTextAlignment integer value
 @property (strong, nonatomic) NSNumber *textSize; //foat value
-
 @end

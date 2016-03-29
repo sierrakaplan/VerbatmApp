@@ -73,5 +73,5 @@
 -(void)onScreen;
 -(void)offScreen;
 
-
+-(void)publishingPinchView;
 @end

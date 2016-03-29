@@ -11,6 +11,9 @@
 
 @interface ImagePinchView()
 
+@property (strong, nonatomic) UIImage* imageToPublish;
+
+
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
 
@@ -31,6 +34,7 @@
 	if (self) {
         if(!image)return self;
 		[self initWithImage:image andSetFilteredImages:YES];
+        self.imageToPublish = nil;
 	}
     
 	return self;
@@ -72,6 +76,22 @@
 
 #pragma mark - Get or Change Image -
 
+//warns the pinchview that it is getting published -- so it can
+//release all the excess media that it has in order to clear up some
+//space (prevents crashing)
+-(void)publishingPinchView{
+    self.imageToPublish = [self getImage];
+    @autoreleasepool {
+       [self.filteredImages removeAllObjects];
+        self.filteredImages = nil;
+        self.image = nil;
+        [self.imageView removeFromSuperview];
+        self.imageView = nil;
+    }
+    
+}
+
+
 -(UIImage*) getImage {
 	return self.filteredImages[self.filterImageIndex];
 }
@@ -82,7 +102,10 @@
 
 /* media, text, textYPosition, textColor, textAlignment, textSize */
 -(NSArray*) getPhotosWithText {
-	return @[@[[self getImage], self.text, self.textYPosition,
+	
+    UIImage * imageToReturn = (self.imageToPublish) ? self.imageToPublish : [self getImage];
+    
+    return @[@[imageToReturn, self.text, self.textYPosition,
 			   self.textColor, self.textAlignment, self.textSize]];
 }
 

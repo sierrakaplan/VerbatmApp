@@ -182,6 +182,7 @@
 -(void)onScreen {}
 
 -(void)renderMedia {}
+-(void)publishingPinchView{}
 
 #pragma mark - Encoding -
 

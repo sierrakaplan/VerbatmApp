@@ -29,5 +29,8 @@
 
 //replaces the current image with this image
 -(void) putNewImage:(UIImage*)image;
-
+//warns the pinchview that it is getting published -- so it can
+//release all the excess media that it has in order to clear up some
+//space (prevents crashing)
+-(void)publishingPinchView;
 @end
