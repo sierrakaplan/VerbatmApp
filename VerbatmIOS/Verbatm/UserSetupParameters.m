@@ -53,10 +53,10 @@
             [defaults synchronize];
         }else{
             //load and set the information we have saved already -- asynchronous
-          //  dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
                 self.notificationSet = [NSMutableDictionary dictionaryWithDictionary:defaults.dictionaryRepresentation];
-           // });
+            });
         }
     }
 }

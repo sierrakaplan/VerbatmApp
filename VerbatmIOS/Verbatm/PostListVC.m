@@ -163,12 +163,13 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	[self.presentedPostList removeAllObjects];
     self.isReloading = NO;
     self.shouldPlayVideos  = YES;
+    self.lastVisibleCell = nil;
     [self refreshPosts];
-    [self.collectionView reloadData];
 }
 
 -(void)refreshPosts{
     [self.customActivityIndicator startCustomActivityIndicator];
+
     
     if(self.listType == listFeed){
         [self.feedQueryManager reloadFeedFromStartWithCompletionHandler:^(NSArray * posts) {
@@ -338,7 +339,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if(indexPath.row == (self.presentedPostList.count - LOAD_MORE_POSTS_COUNT) &&
 	   (self.listType == listFeed) && !self.isReloading){
 		self.isReloading = YES;
-		[self getPosts];
+		if(self.listType == listFeed)[self getPosts];
 	}
 
 	return nextCellToBePresented;

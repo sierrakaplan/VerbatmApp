@@ -152,6 +152,8 @@
 	 }];
 }
 
+
+
 //Gives us the channels to display and if we should show the users that follow them then
 -(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {
 	self.userInfoOnDisplay = userId;

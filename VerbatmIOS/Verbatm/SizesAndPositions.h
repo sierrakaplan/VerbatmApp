@@ -87,7 +87,7 @@
 #define TEXT_TOOLBAR_HEIGHT 35.f
 #define TEXT_TOOLBAR_BUTTON_OFFSET 9.f
 #define TEXT_TOOLBAR_BUTTON_WIDTH 25.f
-#define TEXT_TOOLBAR_DONE_WIDTH 80.f
+#define TEXT_TOOLBAR_DONE_WIDTH 75.f
 
 #pragma mark - Preview
 
