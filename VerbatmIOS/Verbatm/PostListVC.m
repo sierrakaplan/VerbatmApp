@@ -160,7 +160,11 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 -(void)reloadCurrentChannel{
 	[self stopAllVideoContent];
-	[self.presentedPostList removeAllObjects];
+    for(UIView * view in self.presentedPostList){
+        [view removeFromSuperview];
+    }
+    [self.presentedPostList removeAllObjects];
+    self.collectionView.contentOffset = CGPointMake(0, 0);
     self.isReloading = NO;
     self.shouldPlayVideos  = YES;
     self.lastVisibleCell = nil;
@@ -365,9 +369,10 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			PostView *post = [self.presentedPostList objectAtIndex:[self getVisibileCellIndex]];
 			[post postOnScreen];
 		}
-	} else {
-		[self getPosts];
-	}
+    }
+//	} else {
+//		[self getPosts];
+//	}
 }
 
 -(void) footerShowing: (BOOL) showing{
