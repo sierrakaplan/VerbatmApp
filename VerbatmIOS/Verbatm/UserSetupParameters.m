@@ -122,6 +122,7 @@
     //the array is still being prepared -- unlikely to be a problem
     if(!self.notificationSet) return ;
     [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:FILTER_SWIPE_INSTRUCTION_KEY];
+    [self saveAllChanges];
 }
 
 
@@ -129,43 +130,48 @@
     //the array is still being prepared -- unlikely to be a problem
     if(!self.notificationSet) return ;
     [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:PINCH_INSTRUCTION_KEY];
-    
+    [self saveAllChanges];
 }
 
 -(void) set_profileNotification_InstructionAsShown {
     //the array is still being prepared -- unlikely to be a problem
     if(!self.notificationSet) return ;
     [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:PROFILE_INTRO_INSTRUCTION_KEY];
-    
+    [self saveAllChanges];
 }
 -(void) set_feedNotification_InstructionAsShown {
     //the array is still being prepared -- unlikely to be a problem
     if(!self.notificationSet) return ;
     [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:FEED_INTRO_INSTRUCTION_KEY];
-    
+    [self saveAllChanges];
 }
 -(void) set_ADKNotification_InstructionAsShown {
     //the array is still being prepared -- unlikely to be a problem
     if(!self.notificationSet) return ;
     [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:ADK_INTRO_INSTRUCTION_KEY];
-    
+    [self saveAllChanges];
 }
 
 
 -(void) set_SwipeUpDownNotification_InstructionAsShown{
-    
+    if(!self.notificationSet) return ;
+    [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:SWIPE_UP_DOWN_INSTRUCTION_KEY];
+    [self saveAllChanges];
 }
 
 
 -(void) set_TermsAccept_InstructionAsShown{
     if(!self.notificationSet) return ;
     [self.notificationSet setValue:[NSNumber numberWithBool:YES] forKey:ACCEPTED_TERMS_KEY];
+    [self saveAllChanges];
 }
 
 -(void)saveAllChanges {
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setValuesForKeysWithDictionary:self.notificationSet];
+    });
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setValuesForKeysWithDictionary:self.notificationSet];
 }
 
 
