@@ -239,7 +239,7 @@
         [cell removeFromSuperview];
     }
 
-	if(indexPath.row == 0) {
+	if(self.presentAllChannels && indexPath.row == 0) {
 		[cell setHeaderTitle];
 	} else {
 		NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;
