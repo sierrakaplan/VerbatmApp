@@ -41,6 +41,7 @@
 @property (nonatomic) BOOL presentAllChannels;
 
 #define CHANNEL_CELL_ID @"channel_cell_id"
+#define CUSTOM_NAV_BAR_HEIGHT 40.f
 @end
 
 
@@ -55,6 +56,11 @@
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 	[self addRefreshFeature];
+    
+    //avoid covering last item in uitableview
+    UIEdgeInsets inset = UIEdgeInsetsMake(0, 0, CUSTOM_NAV_BAR_HEIGHT, 0);
+    self.tableView.contentInset = inset;
+    self.tableView.scrollIndicatorInsets = inset;
 }
 
 
@@ -218,19 +224,22 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return (self.channelsToDisplay.count + self.presentAllChannels);
+    return (self.channelsToDisplay.count + self.presentAllChannels);
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	ChannelOrUsernameCV *cell = [tableView dequeueReusableCellWithIdentifier:CHANNEL_CELL_ID];
+    NSString *identifier = [NSString stringWithFormat:@"cell,%ld", indexPath.row];
+	ChannelOrUsernameCV *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 
-	if(!cell) {
-		cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CHANNEL_CELL_ID isChannel:YES isAChannelThatIFollow:NO];
+	if(cell == nil) {
+		cell = [[ChannelOrUsernameCV alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier isChannel:YES isAChannelThatIFollow:NO];
 		[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-	}
+    } else {
+        [cell removeFromSuperview];
+    }
 
-	if(self.presentAllChannels && indexPath.row == 0) {
+	if(indexPath.row == 0) {
 		[cell setHeaderTitle];
 	} else {
 		NSInteger objectIndex = self.presentAllChannels ? (indexPath.row - 1) : indexPath.row;
