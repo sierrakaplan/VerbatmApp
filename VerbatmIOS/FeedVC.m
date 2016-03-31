@@ -55,7 +55,8 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
 	if(self.postListVC && !self.didJustLoadForTheFirstTime){
-		[self.postListVC continueVideoContent];
+        [self.postListVC reloadCurrentChannel];
+        [self.postListVC continueVideoContent];
 	}
 	[self checkIntroNotification];
 }

@@ -30,5 +30,5 @@
 //Unpinches the given pinch view from the collection
 //returns self for chaining purposes
 -(CollectionPinchView*) unPinchAndRemove:(SingleMediaAndTextPinchView*)pinchView;
-
+-(void)publishingPinchView;
 @end

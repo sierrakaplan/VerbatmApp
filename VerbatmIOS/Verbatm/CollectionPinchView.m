@@ -205,6 +205,12 @@
 	return self;
 }
 
+-(void)publishingPinchView{
+    for (ImagePinchView* pinchView in self.imagePinchViews) {
+        [pinchView publishingPinchView];
+    }
+}
+
 //overriding
 -(NSArray*) getPhotosWithText {
 	NSMutableArray* photosWithText = [[NSMutableArray alloc] init];

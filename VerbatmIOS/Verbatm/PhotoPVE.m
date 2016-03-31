@@ -412,12 +412,16 @@
 	if(![MathOperations point:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint withThreshold:SLIDE_THRESHOLD]) {
 		return;
 	}
-	PointObject * point = self.pointsOnCircle [self.draggingFromPointIndex];
-	float totalDistanceToTravel = (2.f * M_PI * CIRCLE_RADIUS)/[self.pointsOnCircle count];
-	float distanceFromStartingTouch = [MathOperations distanceClockwiseBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint];
+    
+    if(self.draggingFromPointIndex < self.pointsOnCircle.count){
+    
+        PointObject * point = self.pointsOnCircle [self.draggingFromPointIndex];
+        float totalDistanceToTravel = (2.f * M_PI * CIRCLE_RADIUS)/[self.pointsOnCircle count];
+        float distanceFromStartingTouch = [MathOperations distanceClockwiseBetweenTwoPoints:[point getCGPoint] and:touchLocation onCircleWithRadius:CIRCLE_RADIUS andOrigin:self.originPoint];
 
-	[self fadeWithDistance:distanceFromStartingTouch andTotalDistance:totalDistanceToTravel];
-	self.lastDistanceFromStartingPoint = distanceFromStartingTouch;
+        [self fadeWithDistance:distanceFromStartingTouch andTotalDistance:totalDistanceToTravel];
+        self.lastDistanceFromStartingPoint = distanceFromStartingTouch;
+    }
 }
 
 -(void) fadeWithDistance:(float)distanceFromStartingTouch andTotalDistance:(float)totalDistanceToTravel {

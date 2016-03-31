@@ -388,13 +388,14 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 -(void) publishingComplete {
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
-	if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
+	//if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
 		[self.postListVC reloadCurrentChannel];
-	}
+	//}
 }
 
 -(void) publishingFailed {
 	NSLog(@"PUBLISHING FAILED");
+   if(self.publishingProgress) [self.publishingProgressView removeFromSuperview];
 }
 
 #pragma mark - Lazy Instantiation -
