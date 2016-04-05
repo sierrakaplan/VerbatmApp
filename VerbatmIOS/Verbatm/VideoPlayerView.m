@@ -177,7 +177,6 @@
 						change:(NSDictionary *)change context:(void *)context {
 	if (object == self.playerItem && [keyPath isEqualToString:@"status"]) {
 		if (self.playerItem.status == AVPlayerItemStatusReadyToPlay) {
-			NSLog(@"Video ready to play");
 			if (self.videoLoading) {
 				[self.customActivityIndicator stopCustomActivityIndicator];
 				self.videoLoading = NO;
@@ -193,7 +192,6 @@
 	}
 	if ([keyPath isEqualToString:@"playbackLikelyToKeepUp"]) {
 		if (self.playerItem.playbackLikelyToKeepUp) {
-			NSLog(@"play back will keep up");
 			if (self.videoLoading) {
 				[self.customActivityIndicator stopCustomActivityIndicator];
 				self.videoLoading = NO;
@@ -234,13 +232,13 @@
 		AVAssetTrack* currentVideoTrack = [videoTrackArray objectAtIndex:0];
 		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentVideoTrack atTime:nextClipStartTime error: &error];
 		videoTrack.preferredTransform = currentVideoTrack.preferredTransform;
-		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
 
 		NSArray * audioTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeAudio];
 		if(!audioTrackArray.count) continue;
 		AVAssetTrack* currentAudioTrack = [audioTrackArray objectAtIndex:0];
 		audioTrack.preferredTransform = currentAudioTrack.preferredTransform;
 		[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentAudioTrack atTime:nextClipStartTime error:&error];
+		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
 	}
 	if (error) {
 		NSLog(@"Error fusing video assets: %@", error.description);
@@ -254,7 +252,6 @@
 	if (self.player) {
 		[self.player play];
 		self.isVideoPlaying = YES;
-		NSLog(@"Playing video");
 	} else {
 		NSLog(@"Called play video but video player unprepared");
 		self.shouldPlayOnLoad = YES;
@@ -263,7 +260,6 @@
 
 // Notifies that video has ended so video can replay
 -(void)playerItemDidReachEnd:(NSNotification *)notification {
-	NSLog(@"Repeating video");
 	AVPlayerItem *playerItem = [notification object];
 	if (self.repeatsVideo) {
 		[playerItem seekToTime:kCMTimeZero];
@@ -311,7 +307,6 @@
 //cleans up video and all other helper objects
 //this is called right before the view is removed from the screen
 -(void) stopVideo {
-	NSLog(@"stopping video");
 	@autoreleasepool {
 		if (self.videoLoading) {
 			self.videoLoading = NO;

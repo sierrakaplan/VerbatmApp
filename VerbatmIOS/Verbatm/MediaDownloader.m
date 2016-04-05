@@ -30,8 +30,6 @@
 }
 
 -(AnyPromise*) startDownload {
-
-	NSLog(@"Starting download of media.");
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self startWithCompletionHandler: ^(NSError* error, NSData* responseData) {
 			if (error) {

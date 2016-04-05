@@ -23,7 +23,6 @@
 	[newFollowObject setObject:channelToFollow.parseChannelObject forKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
 	[newFollowObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 		if(succeeded){
-			NSLog(@"Now following channel");
             NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_NOW_FOLLOWING_USER object:nil userInfo:nil];
             [[NSNotificationCenter defaultCenter] postNotification:not];
 		}
@@ -41,7 +40,6 @@
 			PFObject * followObj = [objects firstObject];
 			[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 				if(succeeded){
-					NSLog(@"Stopped following channel sucessfully");
 					[[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_STOPPED_FOLLOWING_USER object:nil];
 				}
 			}];

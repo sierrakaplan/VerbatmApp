@@ -114,13 +114,15 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 }
 
 #pragma mark -POVListSVController-
+
 -(void)hideNavBarIfPresent{
 	[self removeContentFromScreen];
 }
--(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+
+-(void)channelSelected:(Channel *) channel{
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
-	userProfile.userOfProfile = owner;
+	userProfile.userOfProfile = channel.channelCreator;
 	userProfile.startChannel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];

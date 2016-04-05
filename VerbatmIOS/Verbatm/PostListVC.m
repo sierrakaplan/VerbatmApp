@@ -83,7 +83,6 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 		if(offset.x < (0 - reload_distance)) {
 			//todo: showindicator
 			[self reloadCurrentChannel];
-			NSLog(@"refreshing");
 		}
 		/* Load more */
 		CGRect bounds = scrollView.bounds;
@@ -610,8 +609,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 #pragma mark -POV delegate-
 
--(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
-	[self.postListDelegate channelSelected:channel withOwner:owner];
+-(void)channelSelected:(Channel *) channel{
+	[self.postListDelegate channelSelected:channel];
 }
 
 #pragma mark -Lazy instantiation-

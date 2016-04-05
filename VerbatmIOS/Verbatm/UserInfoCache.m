@@ -31,7 +31,6 @@
         sharedInstance = [[UserInfoCache alloc] init];
         [sharedInstance setCurrentChannelIndex:0];
         
-        
         [[NSNotificationCenter defaultCenter] addObserver:sharedInstance
                                                  selector:@selector(reloadUserChannels)
                                                      name:NOTIFICATION_POST_PUBLISHED

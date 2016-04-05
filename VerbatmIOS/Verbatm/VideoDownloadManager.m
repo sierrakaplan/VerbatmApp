@@ -56,7 +56,6 @@
 -(void) downloadURL: (NSURL*) url {
 	if (url && ![self.videoAssetList objectForKey:url.absoluteString] &&
 		![self.urlsBeingDownloaded containsObject:url.absoluteString]) {
-		NSLog(@"Downloaded New Url");
 		[self downloadVideo: url];
 	}
 }
@@ -71,7 +70,6 @@
         NSData *downloadedData = [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:&error];
         
         if (!error && downloadedData && (downloadedData.bytes > 0)) {
-            NSLog(@"Video Downloaded!");
             //  STORE IN FILESYSTEM
             NSString *cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
             NSString *pathString = [[url.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mp4"];

@@ -1882,9 +1882,8 @@ rowHeightForComponent:(NSInteger)component{
         UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.currentPresentedPickerRow forComponent:0];
         if ([textField.text isEqualToString:@""]) {
             //prompt user to add channel title-- TODO
-            
         } else {
-            channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil];
+            channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil andChannelCreator:nil];
         }
     }
     [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews withCompletionBlock:^(BOOL posting) {

@@ -9,38 +9,47 @@
 #import "Channel.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
+
 @interface Channel ()
+
 @property (nonatomic, readwrite) NSString * name;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
+@property (nonatomic, readwrite) PFUser *channelCreator;
 
 
 @end
 
 @implementation Channel
 -(instancetype) initWithChannelName:(NSString *) channelName
-              andParseChannelObject:(PFObject *) parseChannelObject{
+              andParseChannelObject:(PFObject *) parseChannelObject
+				  andChannelCreator:(PFUser *) channelCreator {
     
     self = [super init];
     if(self){
         self.name = channelName;
-        self.parseChannelObject = (parseChannelObject) ? parseChannelObject : NULL;
+		if (parseChannelObject) {
+			[self addParseChannelObject:parseChannelObject andChannelCreator:channelCreator];
+		}
     }
     return self;
 }
 
--(NSString *)getChannelOwnerUserName{
-    PFObject * user = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
-    NSString * userName = [user valueForKey:VERBATM_USER_NAME_KEY];
+-(NSString *)getChannelOwnerUserName {
+	if (!self.parseChannelObject) return nil;
+	if (!self.channelCreator) self.channelCreator = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+    NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
     return userName;
 }
 
--(BOOL)channelBelongsToCurrentUser{
-    PFObject * user = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
-    return ([[PFUser currentUser].objectId isEqualToString:user.objectId]);
+-(BOOL)channelBelongsToCurrentUser {
+	if (!self.parseChannelObject) return nil;
+	if (!self.channelCreator) self.channelCreator = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+    return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
 }
 
--(void)addParseChannelObject:(PFObject *)object {
+-(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator{
 	self.parseChannelObject = object;
+	self.channelCreator = channelCreator;
 }
 
 @end

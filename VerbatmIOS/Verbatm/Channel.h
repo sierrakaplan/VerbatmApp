@@ -13,16 +13,19 @@
 /*Channels should not be created by anything but the Channel_BackendObject class.*/
 
 @interface Channel : NSObject
-@property (nonatomic) id userId;//identifier for user that owns this channel
+
 @property (nonatomic, readonly) NSString * name;
 @property (nonatomic, readonly) PFObject * parseChannelObject;
+@property (nonatomic, readonly) PFUser *channelCreator;
 
 
--(instancetype) initWithChannelName:(NSString *) channelName andParseChannelObject:(PFObject *) parseChannelObject;
+-(instancetype) initWithChannelName:(NSString *) channelName
+			  andParseChannelObject:(PFObject *) parseChannelObject
+				  andChannelCreator:(PFUser *) channelCreator;
 
 //note - methods are synchronous so could block to get user info
 -(NSString *)getChannelOwnerUserName;
 -(BOOL)channelBelongsToCurrentUser;
 
--(void)addParseChannelObject:(PFObject *)object;
+-(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;
 @end

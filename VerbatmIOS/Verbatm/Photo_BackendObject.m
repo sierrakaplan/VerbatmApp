@@ -74,10 +74,10 @@ andTextAlignment:(NSNumber *) textAlignment
 
     [newPhotoObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
         if(succeeded){
-            if(succeeded){
-				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
-            }
-        }
+			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
+        } else {
+			[[PublishingProgressManager sharedInstance] savingMediaFailed];
+		}
     }];
 }
 

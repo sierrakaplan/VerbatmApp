@@ -194,10 +194,10 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 #pragma mark - POSTListView delegate -
 
--(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
+-(void)channelSelected:(Channel *) channel{
 	ProfileVC *  userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
-	userProfile.userOfProfile = owner;
+	userProfile.userOfProfile = channel.channelCreator;
 	userProfile.startChannel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
@@ -266,7 +266,9 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
         self.currentlyCreatingNewChannel = YES;
         [Channel_BackendObject createChannelWithName:channelName andCompletionBlock:^(PFObject *channelObject) {
             if (channelObject) {
-                Channel *newChannel = [[Channel alloc] initWithChannelName:channelName andParseChannelObject:channelObject];
+                Channel *newChannel = [[Channel alloc] initWithChannelName:channelName
+													 andParseChannelObject:channelObject
+														 andChannelCreator:[PFUser currentUser]];
                 [self.profileNavBar newChannelCreated:newChannel];
                 [self clearChannelCreationView];
                 [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:nil];
@@ -428,6 +430,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 -(void) publishingComplete {
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
+	//todo: bring this back
 	//if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
 		[self.postListVC reloadCurrentChannel];
 	//}

@@ -57,17 +57,24 @@
 }
 
 +(void)getChannelObjectFromParsePCRelationship:(PFObject *) pcr withCompletionBlock:(void(^)(Channel * ))block{
-    
     PFObject * parsePostObject = [pcr valueForKey:POST_CHANNEL_ACTIVITY_POST];
-    
     [parsePostObject fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-        PFUser * postOriginalChannel = [parsePostObject valueForKey:POST_CHANNEL_KEY];
-        [postOriginalChannel fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-            if(object){
-                NSString *channelName  = [postOriginalChannel valueForKey:CHANNEL_NAME_KEY];
-				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName andParseChannelObject:postOriginalChannel];
+        PFObject* postOriginalChannel = [parsePostObject valueForKey:POST_CHANNEL_KEY];
+        [postOriginalChannel fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable channelError) {
+			[[postOriginalChannel valueForKey:CHANNEL_CREATOR_KEY] fetchInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable userError) {
+				if (!object || !user) {
+					NSError *error = channelError ? channelError : userError;
+					NSLog(@"Error: %@", error.description);
+					block (nil);
+					return;
+				}
+				PFUser *channelCreator = (PFUser *)user;
+				NSString *channelName  = [postOriginalChannel valueForKey:CHANNEL_NAME_KEY];
+				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+															   andParseChannelObject:postOriginalChannel
+																   andChannelCreator:channelCreator];
 				block(verbatmChannelObject);
-            }
+			}];
         }];
     }];
 }

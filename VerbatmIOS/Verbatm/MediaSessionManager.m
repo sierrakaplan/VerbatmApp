@@ -74,7 +74,6 @@
 	NSError* error = nil;
 	self.videoInput = [AVCaptureDeviceInput deviceInputWithDevice: videoDevice error:&error];
 	if(error){
-//		NSLog(@"video input not  available");
 		return;
 	}
 

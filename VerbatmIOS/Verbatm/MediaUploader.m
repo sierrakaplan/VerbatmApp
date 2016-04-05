@@ -60,8 +60,6 @@
 }
 
 -(AnyPromise*) startUpload {
-
-	NSLog(@"Starting upload of media.");
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
 		[self startWithCompletionHandler: ^(NSError* error, NSString* responseURL) {
 			if (error) {
@@ -83,16 +81,13 @@
 #pragma mark Delegate methods
 
 - (void)request:(ASIHTTPRequest *)request didSendBytes:(long long)bytes {
-	
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         if ([request totalBytesSent] > 0) {
             float progressAmount = ((float)[request totalBytesSent]/(float)[request postLength]);
             NSInteger newProgressUnits = (NSInteger)(progressAmount*(float)self.mediaUploadProgress.totalUnitCount);
             if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
-                
                 [[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
                 self.mediaUploadProgress.completedUnitCount = newProgressUnits;
-                
                 NSLog(@"media upload progress: %ld out of %ld", (long)newProgressUnits, (long)self.mediaUploadProgress.totalUnitCount);
             }
         }
@@ -114,6 +109,7 @@
 -(void) requestFailed:(ASIHTTPRequest *)request {
 	NSError *error = [request error];
 	NSLog(@"error uploading media%@", error);
+	[[PublishingProgressManager sharedInstance] savingMediaFailed];
 	[self.mediaUploadProgress cancel];
 	self.completionBlock(error, nil);
 }
