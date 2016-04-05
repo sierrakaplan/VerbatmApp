@@ -52,11 +52,11 @@
 	} else {
 		self.currentlyPublishing = YES;
 	}
-    
-    //let the pv's know they are being published so they can releae excess media
-    for(PinchView * pv in pinchViews){
-        [pv publishingPinchView];
-    }
+
+	//let the pv's know they are being published so they can releae excess media
+	for(PinchView * pv in pinchViews){
+		[pv publishingPinchView];
+	}
 
 	self.channelManager = [[Channel_BackendObject alloc] init];
 	[self countMediaContentFromPinchViews:pinchViews];
@@ -106,26 +106,28 @@
 
 -(void)mediaSavingProgressed:(int64_t) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
-	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount && self.currentlyPublishing) {
-		if(self.currentParsePostObject) {
-			[self.currentParsePostObject setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
-			[self.currentParsePostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-				if(succeeded){
-					//register the relationship
-					[Post_Channel_RelationshipManager savePost:self.currentParsePostObject  toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel]withCompletionBlock:^{
-                        
-                            [self.delegate publishingComplete];
-                            self.currentPublishingChannel = NULL;
-                            self.currentParsePostObject = nil;
-                            self.currentlyPublishing = NO;
-                            
-                           NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
-                            [[NSNotificationCenter defaultCenter] postNotification:not];
-                    
-                    }];
-				}
-			}];
-		}
+	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount
+		&& self.currentlyPublishing && self.currentParsePostObject) {
+		PFObject *currentPost = self.currentParsePostObject;
+		Channel *currentChannel = self.currentPublishingChannel;
+		self.currentlyPublishing = NO;
+		self.progressAccountant.completedUnitCount = 0;
+		self.currentParsePostObject = nil;
+		self.currentPublishingChannel = nil;
+		[currentPost setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
+		[currentPost saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
+			if(succeeded) {
+				//register the relationship
+				[Post_Channel_RelationshipManager savePost:currentPost toChannels:[NSMutableArray arrayWithObject:currentChannel]withCompletionBlock:^{
+					[self.delegate publishingComplete];
+					NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
+					[[NSNotificationCenter defaultCenter] postNotification:not];
+				}];
+			} else {
+				[self.delegate publishingFailed];
+			}
+
+		}];
 	}
 }
 
@@ -135,8 +137,6 @@
 		[self.delegate publishingFailed];
 		self.currentPublishingChannel = NULL;
 		self.currentlyPublishing = NO;
-        
-        
 	}
 }
 
