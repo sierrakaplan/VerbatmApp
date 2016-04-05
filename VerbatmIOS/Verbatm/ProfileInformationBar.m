@@ -32,7 +32,8 @@
 
 @implementation ProfileInformationBar
 
--(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName isCurrentUser:(BOOL) isCurrentUser {
+-(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName
+			   isCurrentUser:(BOOL) isCurrentUser isBlockedByCurrentUser:(BOOL) isBlocked {
     
     self =  [super initWithFrame:frame];
     
@@ -45,7 +46,8 @@
             [self createSettingsButton];
         }else{
             [self createBackButton];
-            [self checkHasBlockedUser];
+			self.hasBlockedUser = isBlocked;
+			[self createBlockingButton];
         }
         [self registerForNotifications];
     }
@@ -115,24 +117,6 @@
     self.settingsButton.clipsToBounds = YES;;
 
 }
-
-
--(void)checkHasBlockedUser{
-    
-    /*
-     Sierra TODO
-        Querry database and check if the logged in user has blocked this users profile. 
-        In completion block:
-            Set --> self.checkHasBlockedUser == true or false
-            then call --> [self createBlockingButton]; in main thread of course
-     
-     
-     */
-    
-    
-    [self createBlockingButton];
-}
-
 
 -(void)createBlockingButton {
     UIImage * settingsImage = [UIImage imageNamed:BLOCK_USER_ICON];

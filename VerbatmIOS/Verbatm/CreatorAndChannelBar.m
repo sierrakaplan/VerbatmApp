@@ -183,7 +183,7 @@
     if(self.isFollowingChannel){
         self.isFollowingChannel = NO;
         [self markFollowViewAsFollowing:NO];
-        [Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
+		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel:self.currentChannel];
     }else{
         self.isFollowingChannel = YES;
         [self markFollowViewAsFollowing:YES];

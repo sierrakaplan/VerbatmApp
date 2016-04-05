@@ -2626,12 +2626,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "481584216.247443"
+            timestampString = "481585265.214919"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "314"
-            endingLineNumber = "314"
-            landmarkName = "-presentHeadAndFooter:"
+            startingLineNumber = "313"
+            endingLineNumber = "313"
+            landmarkName = "-blockCurrentUserShouldBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2661,8 +2661,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "253"
             endingLineNumber = "253"
-            landmarkName = "@implementation ProfileNavBar"
-            landmarkType = "3">
+            landmarkName = "-showWhoIsFollowingMeSelected"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2901,7 +2901,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "258"
             endingLineNumber = "258"
-            landmarkName = "-selectChannel:"
+            landmarkName = "-showWhoIAmFollowingButtonSelected"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4286,12 +4286,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ProfileVC.m"
-            timestampString = "481584216.247443"
+            timestampString = "481585265.214919"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "322"
-            endingLineNumber = "322"
-            landmarkName = "-presentHeadAndFooter:"
+            startingLineNumber = "319"
+            endingLineNumber = "319"
+            landmarkName = "-blockCurrentUserShouldBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

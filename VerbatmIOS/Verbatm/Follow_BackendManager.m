@@ -29,14 +29,14 @@
 	}];
 }
 
-+(void)currentUserStopFollowingChannel:(Channel *) channelToUnfollow{
++(void)user:(PFUser *)user stopFollowingChannel:(Channel *) channelToUnfollow {
 	//we just delete the Follow Object
 	PFQuery * userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 	[userChannelQuery whereKey:FOLLOW_CHANNEL_FOLLOWED_KEY equalTo:channelToUnfollow.parseChannelObject];
-	[userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
+	[userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:user];
 	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														 NSError * _Nullable error) {
-		if(objects && !error && objects.count){
+		if(objects && !error && objects.count) {
 			PFObject * followObj = [objects firstObject];
 			[followObj deleteInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 				if(succeeded){

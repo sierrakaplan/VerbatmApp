@@ -96,23 +96,33 @@
 
 //gets all the channels on V except the provided user.
 //often this will be the current user
-+(void) getAllChannelsButNoneForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock{
-	PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
-		if(objects.count){
-			NSMutableArray * finalObjects = [[NSMutableArray alloc] init];
-			for(PFObject * parseChannelObject in objects){
-				if([parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] !=
-				   [PFUser currentUser]){
-					NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
-					Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-																	andParseChannelObject:parseChannelObject
-																		andChannelCreator:user];
-					[finalObjects addObject:verbatmChannelObject];
++(void) getAllChannelsButNoneForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
+	//First get all the people who have blocked this user and do not include their channels
+	PFQuery *blockQuery = [PFQuery queryWithClassName:BLOCK_PFCLASS_KEY];
+	[blockQuery setValue:user forKey:BLOCK_USER_BLOCKED_KEY];
+	[blockQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable blocks, NSError * _Nullable error) {
+		NSMutableArray *usersWhoHaveBlockedUser = [[NSMutableArray alloc] init];
+		for (PFObject *block in blocks) {
+			[usersWhoHaveBlockedUser addObject:[block valueForKey:BLOCK_USER_BLOCKING_KEY]];
+		}
+
+		PFQuery *allChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+		[allChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
+			NSMutableArray * finalChannels = [[NSMutableArray alloc] init];
+			if(channels && channels.count){
+				for(PFObject * parseChannelObject in channels){
+					if([parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] !=
+						[PFUser currentUser] && ![usersWhoHaveBlockedUser containsObject:[PFUser currentUser]]){
+						NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+						Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+																		andParseChannelObject:parseChannelObject
+																			andChannelCreator:user];
+						[finalChannels addObject:verbatmChannelObject];
+					}
 				}
 			}
-			completionBlock(finalObjects);
-		}
+			completionBlock(finalChannels);
+		}];
 	}];
 }
 

@@ -12,7 +12,9 @@
 @interface Follow_BackendManager : NSObject
 
 +(void)currentUserFollowChannel:(Channel *) channelToFollow;
-+(void)currentUserStopFollowingChannel:(Channel *) channelToUnfollow;
+
++(void)user:(PFUser *)user stopFollowingChannel:(Channel *) channelToUnfollow;
+
 //tests to see if the logged in user follows this channel
 +(void)currentUserFollowsChannel:(Channel *) channel withCompletionBlock:(void(^)(bool))block;
 

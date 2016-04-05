@@ -8,6 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+@class PFUser;
+
 @interface User_BackendObject : NSObject
+
 +(void)updateUserNameOfCurrentUserTo:(NSString *) newName;
+
+//Checks if user has been blocked by current user
++(void)userIsBlockedByCurrentUser:(PFUser *)user withCompletionBlock:(void(^)(BOOL))block;
+
++(void)blockUser:(PFUser *)user;
+
++(void)unblockUser:(PFUser *)user;
+
 @end

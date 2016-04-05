@@ -13,6 +13,8 @@
 
 #import "Intro_Instruction_Notification_View.h"
 
+#import "Follow_BackendManager.h"
+
 #import "LoadingIndicator.h"
 
 #import "ParseBackendKeys.h"
@@ -28,6 +30,7 @@
 #import "SettingsVC.h"
 
 #import "UIView+Effects.h"
+#import "User_BackendObject.h"
 #import "UserInfoCache.h"
 #import "UserSetupParameters.h"
 
@@ -295,18 +298,16 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 
 -(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock{
-    
-    
+
     NSString * titleText;
     NSString * messageText;
     
-    if(shouldBlock){
+    if(shouldBlock) {
         titleText = @"Block User";
-        messageText = @"Prevents this user from finding you on Verbatm. You can undo your decision at any time.";
-    }else{
-        titleText = @"UnBlock User";
-        messageText = @"Allows this user to find you and your content on Verbatm.";
-
+        messageText = @"Are you sure you want to block this user? This will prevent them from finding you on Verbatm or viewing any of your content. You will also automatically unfollow all of their channels. You can undo your decision at any time.";
+    } else {
+        titleText = @"Unblock User";
+        messageText = @"Are you sure you want to unblock this user? This will allow them to view your content on Verbatm.";
     }
     
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:titleText
@@ -316,15 +317,17 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * action) {}];
     UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
-        
-        
         if(shouldBlock){
-            //Sierra TODO
-            //store the blocking relationship
-        }else{
-            //unblock the user
+			[User_BackendObject blockUser:self.userOfProfile];
+
+			//unfollow all their channels automatically
+			for (Channel *channel in self.channels) {
+				[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: channel];
+			}
+
+        } else {
+			[User_BackendObject unblockUser:self.userOfProfile];
         }
-        
     }];
     
     [alert addAction: cancelAction];

@@ -9,20 +9,27 @@
 #import <UIKit/UIKit.h>
 
 /*
- This is the view that presents the username as well as the settings button on the 
+ This is the view that presents the username as well as the settings button on the
  Profile screen
  */
 
 @protocol ProfileInformationBarProtocol <NSObject>
-    -(void)settingsButtonSelected;
-    -(void)followButtonSelectedShouldFollowUser:(BOOL) followUser;
-    -(void)backButtonSelected;
+
+-(void)settingsButtonSelected;
+-(void)followButtonSelectedShouldFollowUser:(BOOL) followUser;
+-(void)backButtonSelected;
 -(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock;
+
 @end
 
 @interface ProfileInformationBar : UIView
-    -(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName isCurrentUser:(BOOL) isCurrentUser;
-    //makes the follow button show that we are/aren't following the current channel being presented
-    -(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel;
-    @property (nonatomic) id <ProfileInformationBarProtocol> delegate;
+
+@property (nonatomic) id <ProfileInformationBarProtocol> delegate;
+
+-(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName
+			   isCurrentUser:(BOOL) isCurrentUser isBlockedByCurrentUser:(BOOL) isBlocked;
+
+//makes the follow button show that we are/aren't following the current channel being presented
+-(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel;
+
 @end

@@ -20,6 +20,7 @@
 
 #import "Notifications.h"
 
+#import <Parse/PFUser.h>
 #import "ProfileNavBar.h"
 #import "ProfileInformationBar.h"
 #import "ParseBackendKeys.h"
@@ -27,6 +28,7 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
+#import "User_BackendObject.h"
 
 @interface ProfileNavBar () <CustomScrollingTabBarDelegate, ProfileInformationBarProtocol, FollowInfoBarDelegate>
 
@@ -49,10 +51,20 @@
 @implementation ProfileNavBar
 
 //expects an array of thread names (nsstring)
--(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
+-(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels
+					  andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
 	self = [super initWithFrame:frame];
-	if(self){
-		[self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY] isCurrentUser:isCurrentUser];
+	if(self) {
+		if (!isCurrentUser) {
+			[User_BackendObject userIsBlockedByCurrentUser:profileUser withCompletionBlock:^(BOOL blocked) {
+				[self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY]
+										isCurrentUser:NO isBlocked:blocked];
+			}];
+		} else {
+			[self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY]
+									isCurrentUser:YES isBlocked:NO];
+		}
+
 		Channel* startChannel = (channels.count > 0) ? channels[0] : nil;
 		[self.threadNavScrollView displayTabs:channels withStartChannel:startChannel isLoggedInUser:isCurrentUser];
 		[self registerForNotifications];
@@ -219,9 +231,11 @@
     [self addSubview:self.arrowExtension];
 }
 
--(void) createProfileHeaderWithUserName: (NSString*) userName isCurrentUser:(BOOL) isCurrentUser {
+-(void) createProfileHeaderWithUserName: (NSString*) userName isCurrentUser:(BOOL) isCurrentUser
+							  isBlocked: (BOOL) blocked {
     CGRect barFrame = CGRectMake(0.f, 0.f, self.bounds.size.width, PROFILE_HEADER_HEIGHT);
-    self.profileHeader = [[ProfileInformationBar alloc] initWithFrame:barFrame andUserName:userName isCurrentUser:isCurrentUser];
+    self.profileHeader = [[ProfileInformationBar alloc] initWithFrame:barFrame andUserName:userName
+														isCurrentUser:isCurrentUser isBlockedByCurrentUser:blocked];
     self.profileHeader.delegate = self;
     [self addSubview:self.profileHeader];
 }
@@ -241,7 +255,7 @@
 //told when the follow/followers button is selected
 -(void)followButtonSelectedShouldFollowUser:(BOOL) followUser {
     if(followUser)[Follow_BackendManager currentUserFollowChannel:self.threadNavScrollView.currentChannel];
-    else [Follow_BackendManager currentUserStopFollowingChannel:self.threadNavScrollView.currentChannel];
+	else [Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel:self.threadNavScrollView.currentChannel];
     //[self.delegate followOptionSelected];
 }
 

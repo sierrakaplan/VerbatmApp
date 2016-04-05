@@ -17,6 +17,8 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
+#import <Parse/PFUser.h>
+
 @interface ChannelButtons ()
 @property (nonatomic,strong) UILabel *channelNameLabel;
 @property (nonatomic, strong) UILabel *numberOfFollowersLabel;
@@ -138,7 +140,7 @@
             [Follow_BackendManager currentUserFollowChannel:self.currentChannel];
         } else {
 			self.numFollowers = [NSNumber numberWithInteger:([self.numFollowers integerValue]-1)];
-           	[Follow_BackendManager currentUserStopFollowingChannel:self.currentChannel];
+			[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel:self.currentChannel];
         }
         [self updateFollowingIconSelected:YES];
 		[self changeNumFollowersLabel];

@@ -9,6 +9,7 @@
 #ifndef ParseBackendKeys_h
 #define ParseBackendKeys_h
 
+#define USER_KEY @"User"
 
 #define VERBATM_USER_NAME_KEY @"VerbatmName" //different from the username which is used by fb on parse
 #define USER_RELATION_CHANNELS_FOLLOWING @"ChannelsFollowing"
@@ -42,7 +43,6 @@
 
 #define VIDEO_INDEX_KEY @"VideoIndex" //if we have multiple videos how they are organized
 #define VIDEO_PFCLASS_KEY @"VideoClass"
-#define User_Key @"user"
 #define BLOB_STORE_URL @"BlobStoreUrl"
 #define VIDEO_PAGE_OBJECT_KEY @"Page"
 #define VIDEO_THUMBNAIL_KEY @"Thumbnail"
@@ -67,6 +67,10 @@
 #define FLAG_PFCLASS_KEY @"FlagClass"
 #define FLAG_USER_KEY @"FlagUser"
 #define FLAG_POST_FLAGGED_KEY @"FlagPost"
+
+#define BLOCK_PFCLASS_KEY @"BlockClass"
+#define BLOCK_USER_BLOCKED_KEY @"BlockUserBlocked" //User who has been blocked
+#define BLOCK_USER_BLOCKING_KEY @"BlockUserBlocking" //User who blocked another user
 
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"
 #define CHANNEL_NAME_KEY @"ChannelName"
