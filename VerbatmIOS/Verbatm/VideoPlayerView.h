@@ -18,6 +18,7 @@
 @property (nonatomic, readonly) BOOL videoLoading;
 @property (nonatomic, readonly) BOOL isMuted;
 @property (nonatomic, readonly) BOOL isVideoPlaying; //tells you if the video is in a playing state
+@property (strong, readonly) AVMutableComposition* fusedVideoAsset;
 
 // Array must be of avasset or nsurl
 // Asynchronously fuses assets then sets the player item

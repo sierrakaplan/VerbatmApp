@@ -18,7 +18,7 @@
 @property (atomic, strong) AVPlayer* player;
 @property (atomic, strong) AVPlayerItem* playerItem;
 @property (atomic,strong) AVPlayerLayer* playerLayer;
-@property (strong) AVMutableComposition* fusedVideoAsset;
+@property (strong, readwrite) AVMutableComposition* fusedVideoAsset;
 
 #pragma mark Video Playback properties
 @property (nonatomic, readwrite) BOOL videoLoading;

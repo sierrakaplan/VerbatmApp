@@ -452,14 +452,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(void)flagButtonSelectedOnPostView:(PostView *)postView withPostObject:(PFObject *)post{
     
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Flag Post"
-                                                                   message:@"Are you sure you want to flag the content of this post. We will review it ASAP."
+                                                                   message:@"Are you sure you want to flag the content of this post? We will review it ASAP."
                                                             preferredStyle:UIAlertControllerStyleAlert];
     
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
                                                          handler:^(UIAlertAction * action) {}];
     UIAlertAction* deleteAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
         [Post_BackendObject markPostAsFlagged:post];
-    
     }];
     
     [alert addAction: cancelAction];

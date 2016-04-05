@@ -112,10 +112,15 @@
 	}
 }
 
-+(void)markPostAsFlagged:(PFObject *) flaggedPost{
++(void)markPostAsFlagged:(PFObject *)flaggedPost {
     if(flaggedPost){
         [flaggedPost setValue:[NSNumber numberWithBool:YES] forKey:POST_FLAGGED_KEY];
         [flaggedPost saveInBackground];
+		PFObject *newFlagObject = [PFObject objectWithClassName:FLAG_PFCLASS_KEY];
+		[newFlagObject setObject:[PFUser currentUser] forKey:FLAG_USER_KEY];
+		[newFlagObject setObject:flaggedPost forKey:FLAG_POST_FLAGGED_KEY];
+		[newFlagObject saveInBackground];
+		//todo: send us an email that it was flagged
     }
 }
 
