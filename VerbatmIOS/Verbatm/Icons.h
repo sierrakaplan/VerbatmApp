@@ -24,6 +24,8 @@
 
 #pragma mark - Profile -
 
+#define BLOCK_USER_ICON @"report_icon"
+
 #define SETTINGS_BUTTON_ICON @"settings_icon"
 #define BACK_BUTTON_ICON @"back_arrow"
 #define DOWN_ARROW_ICON @"down_arrow_white"

@@ -291,6 +291,46 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	}];
 }
 
+
+-(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock{
+    
+    
+    NSString * titleText;
+    NSString * messageText;
+    
+    if(shouldBlock){
+        titleText = @"Block User";
+        messageText = @"Prevents this user from finding you on Verbatm. You can undo your decision at any time.";
+    }else{
+        titleText = @"UnBlock User";
+        messageText = @"Allows this user to find you and your content on Verbatm.";
+
+    }
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:titleText
+                                                                   message:messageText
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction * action) {}];
+    UIAlertAction* confirmAction = [UIAlertAction actionWithTitle:@"Confirm" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        
+        
+        if(shouldBlock){
+            //Sierra TODO
+            //store the blocking relationship
+        }else{
+            //unblock the user
+        }
+        
+    }];
+    
+    [alert addAction: cancelAction];
+    [alert addAction: confirmAction];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+
 -(void)newChannelSelected:(Channel *) channel{
 	if(![self.startChannel.name isEqualToString:channel.name]){
 		self.startChannel = channel;

@@ -83,7 +83,6 @@
 
 
 -(BOOL) isFilter_InstructionShown{
-    
     //the array is still being prepared -- unlikely to be a problem
     if(!self.notificationSet) return NO;
     
@@ -101,14 +100,12 @@
 
 
 -(BOOL) isSwipeUpDown_InstructionShown{
-    
     if(!self.self.notificationSet) return NO;
     NSNumber * boolAsNumber = self.notificationSet[SWIPE_UP_DOWN_INSTRUCTION_KEY];
     return boolAsNumber.boolValue;
 }
 
 -(BOOL) isTermsAccept_InstructionShown{
-    
     if(!self.notificationSet) return NO;
     NSNumber * boolAsNumber = self.notificationSet[ACCEPTED_TERMS_KEY];
     return boolAsNumber.boolValue;
