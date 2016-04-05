@@ -13,7 +13,7 @@
 @protocol CreatorAndChannelBarProtocol <NSObject>
 //this prompts the view controller to present the channel
 //that has been selected
--(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
+-(void)channelSelected:(Channel *) channel;
 
 @end
 

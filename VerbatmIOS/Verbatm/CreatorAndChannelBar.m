@@ -33,7 +33,6 @@
 
 @interface CreatorAndChannelBar ()
 @property (nonatomic) Channel * currentChannel;
-@property (nonatomic) PFUser * channelOwner;
 @property (nonatomic) UIImageView * followImage;
 @property (nonatomic) UILabel * channelNameLabel;
 @property (nonatomic) UIView * channelNameLabelHolder;
@@ -47,9 +46,8 @@
     self = [super initWithFrame:frame];
     if(self){
         self.currentChannel = channel;
-        self.channelOwner =(PFUser *)[channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
         [self createBackground];
-		[self addCreatorNameViewWithName:(NSString *)[self.channelOwner valueForKey:VERBATM_USER_NAME_KEY]];
+		[self addCreatorNameViewWithName:[self.currentChannel getChannelOwnerUserName]];
 		[self createChannelNameView:channel.name];
 		[self createFollowIcon];
         [self registerForNotifications];
@@ -212,7 +210,7 @@
 }
 
 -(void)presentChannel{
-    [self.delegate channelSelected:self.currentChannel withOwner:self.channelOwner];
+    [self.delegate channelSelected:self.currentChannel];
 }
 
 @end

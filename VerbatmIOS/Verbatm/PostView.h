@@ -57,7 +57,7 @@
 @protocol PostViewDelegate <NSObject>
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post;
--(void) channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
+-(void) channelSelected:(Channel *) channel;
 -(void) deleteButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post reblogged: (BOOL)reblogged;
 
 -(void) flagButtonSelectedOnPostView:(PostView *) postView withPostObject:(PFObject*)post;

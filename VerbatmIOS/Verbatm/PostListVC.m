@@ -609,8 +609,8 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 #pragma mark -POV delegate-
 
--(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
-	[self.postListDelegate channelSelected:channel withOwner:owner];
+-(void)channelSelected:(Channel *) channel{
+	[self.postListDelegate channelSelected:channel];
 }
 
 #pragma mark -Lazy instantiation-

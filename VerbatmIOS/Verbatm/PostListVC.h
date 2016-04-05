@@ -14,7 +14,7 @@
 @protocol PostListVCProtocol <NSObject>
 
 -(void)hideNavBarIfPresent;
--(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner;
+-(void)channelSelected:(Channel *) channel;
 @end
 
 typedef enum PostListType {

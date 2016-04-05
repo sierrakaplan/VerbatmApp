@@ -9,26 +9,26 @@
 #import "Channel.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFUser.h>
+
 @interface Channel ()
+
 @property (nonatomic, readwrite) NSString * name;
 @property (nonatomic, readwrite) PFObject * parseChannelObject;
-@property (nonatomic) PFObject *channelCreator;
+@property (nonatomic, readwrite) PFUser *channelCreator;
 
 
 @end
 
 @implementation Channel
 -(instancetype) initWithChannelName:(NSString *) channelName
-              andParseChannelObject:(PFObject *) parseChannelObject{
+              andParseChannelObject:(PFObject *) parseChannelObject
+				  andChannelCreator:(PFUser *) channelCreator {
     
     self = [super init];
     if(self){
         self.name = channelName;
-        self.parseChannelObject = (parseChannelObject) ? parseChannelObject : NULL;
-		if (self.parseChannelObject) {
-			[[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
-				self.channelCreator = object;
-			}];
+		if (parseChannelObject) {
+			[self addParseChannelObject:parseChannelObject andChannelCreator:channelCreator];
 		}
     }
     return self;
@@ -47,8 +47,9 @@
     return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
 }
 
--(void)addParseChannelObject:(PFObject *)object {
+-(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator{
 	self.parseChannelObject = object;
+	self.channelCreator = channelCreator;
 }
 
 @end

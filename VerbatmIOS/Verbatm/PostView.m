@@ -154,8 +154,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 		self.mainScrollView.contentOffset = CGPointMake(0, self.mainScrollView.frame.size.height * (pageIndex));
 		[self displayMediaOnCurrentPage];
 	}
-    
-    
+
     if(![[UserSetupParameters sharedInstance] isSwipeUpDown_InstructionShown] &&
        ([[UserSetupParameters sharedInstance] isFilter_InstructionShown] || [[self getCUrrentView] isKindOfClass:[VideoPVE class]])
        &&  self.pageViews.count > 1) {
@@ -177,7 +176,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	pageView.frame = frame;
 
 	[self.mainScrollView addSubview:pageView];
-
 	[self.pageViews setObject:pageView forKey:pageIndex];
 }
 
@@ -239,7 +237,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void) addCreatorInfo {
-	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject withCompletionBlock:^(Channel * channel) {
+	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject
+														  withCompletionBlock:^(Channel * channel) {
 		self.postChannel = channel;
 		//we only add the channel info to posts that don't belong to the current user
 		//todo: or in profile
@@ -255,8 +254,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}];
 }
 
--(void)channelSelected:(Channel *) channel withOwner:(PFUser *) owner{
-	[self.delegate channelSelected:channel withOwner:owner];
+-(void)channelSelected:(Channel *) channel {
+	[self.delegate channelSelected:channel];
 }
 
 #pragma mark - Add like button -

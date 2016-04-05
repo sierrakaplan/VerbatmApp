@@ -57,7 +57,7 @@
 		block ([self createPostFromPinchViews:pinchViews andChannel:channel]);
 	} else {
 		[Channel_BackendObject createChannelWithName:channel.name andCompletionBlock:^(PFObject* channelObject){
-			[channel addParseChannelObject:channelObject];
+			[channel addParseChannelObject:channelObject andChannelCreator:[PFUser currentUser]];
 			block ([self createPostFromPinchViews:pinchViews andChannel:channel]);
 		}];
 	}
@@ -81,7 +81,9 @@
 
 					NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
 					// get number of follows from follow objects
-					Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName andParseChannelObject:parseChannelObject];
+					Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+																	andParseChannelObject:parseChannelObject
+																		andChannelCreator:user];
 					[finalChannelObjects addObject:verbatmChannelObject];
 				}
 			}
@@ -104,7 +106,8 @@
 				   [PFUser currentUser]){
 					NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
 					Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-																	andParseChannelObject:parseChannelObject];
+																	andParseChannelObject:parseChannelObject
+																		andChannelCreator:user];
 					[finalObjects addObject:verbatmChannelObject];
 				}
 			}
