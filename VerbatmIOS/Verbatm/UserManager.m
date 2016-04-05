@@ -38,7 +38,6 @@
 #pragma mark - Creating Account (Signing up user) -
 
 -(void) signUpOrLoginUserFromFacebookToken:(FBSDKAccessToken *)accessToken {
-
 	[PFFacebookUtils logInInBackgroundWithAccessToken:[FBSDKAccessToken currentAccessToken] block:^(PFUser * _Nullable user, NSError * _Nullable error) {
 		if (error) {
 			[self notifyFailedLogin: error];

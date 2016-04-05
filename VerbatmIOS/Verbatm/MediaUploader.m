@@ -87,7 +87,7 @@
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         if ([request totalBytesSent] > 0) {
             float progressAmount = ((float)[request totalBytesSent]/(float)[request postLength]);
-            NSInteger newProgressUnits = (NSInteger)(progressAmount*self.mediaUploadProgress.totalUnitCount);
+            NSInteger newProgressUnits = (NSInteger)(progressAmount*(float)self.mediaUploadProgress.totalUnitCount);
             if (newProgressUnits != self.mediaUploadProgress.completedUnitCount) {
                 
                 [[PublishingProgressManager sharedInstance] mediaSavingProgressed:(newProgressUnits - self.mediaUploadProgress.completedUnitCount)];
