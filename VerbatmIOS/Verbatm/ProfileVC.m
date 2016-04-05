@@ -324,9 +324,11 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 			for (Channel *channel in self.channels) {
 				[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: channel];
 			}
+			[self.profileNavBar updateUserIsBlocked:YES];
 
         } else {
 			[User_BackendObject unblockUser:self.userOfProfile];
+			[self.profileNavBar updateUserIsBlocked:NO];
         }
     }];
     

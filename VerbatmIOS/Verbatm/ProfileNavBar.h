@@ -37,4 +37,6 @@
 -(void) selectChannel: (Channel*) channel;
 -(void) newChannelCreated: (Channel *) channel;
 
+-(void)updateUserIsBlocked:(BOOL)blocked;
+
 @end

@@ -25,6 +25,7 @@
 @interface ProfileInformationBar : UIView
 
 @property (nonatomic) id <ProfileInformationBarProtocol> delegate;
+@property (nonatomic) BOOL hasBlockedUser;
 
 -(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName
 			   isCurrentUser:(BOOL) isCurrentUser isBlockedByCurrentUser:(BOOL) isBlocked;

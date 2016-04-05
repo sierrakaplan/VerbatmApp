@@ -244,6 +244,10 @@
     [self.delegate blockCurrentUserShouldBlock:shouldBlock];
 }
 
+-(void)updateUserIsBlocked:(BOOL)blocked {
+	self.profileHeader.hasBlockedUser = blocked;
+}
+
 -(void)backButtonSelected {
     [self.delegate exitCurrentProfile];
 }

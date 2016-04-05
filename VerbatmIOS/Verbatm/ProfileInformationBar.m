@@ -25,7 +25,6 @@
 @property (nonatomic) UIButton * settingsButton;
 @property (nonatomic) UIButton * followButton;
 @property (nonatomic) BOOL isCurrentUser;
-@property (nonatomic) BOOL hasBlockedUser;
 @property (nonatomic) BOOL isFollowigProfileUser;//for cases when they are viewing another profile
 
 @end

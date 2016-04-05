@@ -99,7 +99,7 @@
 +(void) getAllChannelsButNoneForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
 	//First get all the people who have blocked this user and do not include their channels
 	PFQuery *blockQuery = [PFQuery queryWithClassName:BLOCK_PFCLASS_KEY];
-	[blockQuery setValue:user forKey:BLOCK_USER_BLOCKED_KEY];
+	[blockQuery whereKey:BLOCK_USER_BLOCKED_KEY equalTo:user];
 	[blockQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable blocks, NSError * _Nullable error) {
 		NSMutableArray *usersWhoHaveBlockedUser = [[NSMutableArray alloc] init];
 		for (PFObject *block in blocks) {
