@@ -76,7 +76,6 @@
     
     [self.mediaPublisher storeImage:thumbnail withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
         NSString * blobStoreImageUrl = gtlImage.servingUrl;
-        NSLog(@"Saving video parse object with url");
         PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
         [newVideoObj setObject:[NSNumber numberWithInteger:videoIndex] forKey:VIDEO_INDEX_KEY];
         [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];
@@ -85,8 +84,10 @@
         [newVideoObj saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
             if(succeeded){
                 //tell our publishing manager that a video is done saving
-				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:1];
-            }
+				[[PublishingProgressManager sharedInstance] mediaSavingProgressed:2]; //2 for thumbnail and video
+            } else {
+				[[PublishingProgressManager sharedInstance] savingMediaFailed];
+			}
         }];
     }];
 }

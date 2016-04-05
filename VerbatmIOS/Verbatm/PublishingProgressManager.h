@@ -47,6 +47,8 @@
 
 -(void)mediaSavingProgressed:(int64_t) newProgress;
 
+-(void)savingMediaFailed;
+
 @end
 
 

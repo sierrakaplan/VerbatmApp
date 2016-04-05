@@ -65,10 +65,8 @@
     self.isHeaderTile = YES;
 }
 
-
 -(void)presentChannel:(Channel *) channel{
      PFObject *creator = [channel.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-    
     [creator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         if(object){
             
@@ -80,7 +78,6 @@
             });
         }
     }];
-    
 }
 
 -(void)setChannelName:(NSString *)channelName andUserName:(NSString *) userName {

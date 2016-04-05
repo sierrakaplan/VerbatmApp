@@ -388,6 +388,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 -(void) publishingComplete {
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
+	//todo: bring this back
 	//if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
 		[self.postListVC reloadCurrentChannel];
 	//}

@@ -74,16 +74,12 @@
 		block(success);
 	}];
 	[Like_BackendManager deleteLikesForPost:post withCompletionBlock:^(BOOL success) {
-		if (success) {
-			NSLog(@"Deleted likes successfully");
-		} else {
+		if (!success) {
 			NSLog(@"Error deleting likes");
 		}
 	}];
 	[Share_BackendManager deleteSharesForPost:post withCompletionBlock:^(BOOL success) {
-		if (success) {
-			NSLog(@"Deleted shares successfully");
-		} else {
+		if (!success) {
 			NSLog(@"Error deleting shares");
 		}
 	}];

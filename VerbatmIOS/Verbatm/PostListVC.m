@@ -83,7 +83,6 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 		if(offset.x < (0 - reload_distance)) {
 			//todo: showindicator
 			[self reloadCurrentChannel];
-			NSLog(@"refreshing");
 		}
 		/* Load more */
 		CGRect bounds = scrollView.bounds;
