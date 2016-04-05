@@ -23,6 +23,7 @@
 -(void) createNewChannel;
 
 -(void) exitCurrentProfile;
+-(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock;
 
 @end
 

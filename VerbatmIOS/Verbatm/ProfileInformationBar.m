@@ -25,7 +25,7 @@
 @property (nonatomic) UIButton * settingsButton;
 @property (nonatomic) UIButton * followButton;
 @property (nonatomic) BOOL isCurrentUser;
-
+@property (nonatomic) BOOL hasBlockedUser;
 @property (nonatomic) BOOL isFollowigProfileUser;//for cases when they are viewing another profile
 
 @end
@@ -45,6 +45,7 @@
             [self createSettingsButton];
         }else{
             [self createBackButton];
+            [self checkHasBlockedUser];
         }
         [self registerForNotifications];
     }
@@ -113,6 +114,47 @@
     [self addSubview:self.settingsButton];
     self.settingsButton.clipsToBounds = YES;;
 
+}
+
+
+-(void)checkHasBlockedUser{
+    
+    /*
+     Sierra TODO
+        Querry database and check if the logged in user has blocked this users profile. 
+        In completion block:
+            Set --> self.checkHasBlockedUser == true or false
+            then call --> [self createBlockingButton]; in main thread of course
+     
+     
+     */
+    
+    
+    [self createBlockingButton];
+}
+
+
+-(void)createBlockingButton {
+    UIImage * settingsImage = [UIImage imageNamed:BLOCK_USER_ICON];
+    
+    CGFloat height = SETTINGS_BUTTON_SIZE;
+    CGFloat width = height+ 20.f;
+    CGFloat frame_x = self.frame.size.width - width - CHANNEL_BUTTON_WALL_XOFFSET;
+    CGFloat frame_y = self.center.y - (height/2.f);
+    
+    CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height );
+    
+    self.settingsButton =  [[UIButton alloc] initWithFrame:iconFrame];
+    [self.settingsButton setImage:settingsImage forState:UIControlStateNormal];
+    self.settingsButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
+    [self.settingsButton addTarget:self action:@selector(blockButtonSelected) forControlEvents:UIControlEventTouchDown];
+    [self addSubview:self.settingsButton];
+    self.settingsButton.clipsToBounds = YES;;
+    
+}
+
+-(void)blockButtonSelected {
+    [self.delegate blockCurrentUserShouldBlock:!self.hasBlockedUser];
 }
 
 //If it's my profile it's follower(s) and if it's someone else's profile

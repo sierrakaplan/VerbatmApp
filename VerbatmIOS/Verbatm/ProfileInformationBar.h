@@ -17,6 +17,7 @@
     -(void)settingsButtonSelected;
     -(void)followButtonSelectedShouldFollowUser:(BOOL) followUser;
     -(void)backButtonSelected;
+-(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock;
 @end
 
 @interface ProfileInformationBar : UIView

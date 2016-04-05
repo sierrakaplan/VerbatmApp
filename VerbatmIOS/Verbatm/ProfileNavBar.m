@@ -226,7 +226,9 @@
     [self addSubview:self.profileHeader];
 }
 
-
+-(void)blockCurrentUserShouldBlock:(BOOL) shouldBlock {
+    [self.delegate blockCurrentUserShouldBlock:shouldBlock];
+}
 
 -(void)backButtonSelected {
     [self.delegate exitCurrentProfile];
