@@ -471,7 +471,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 #pragma mark - On/Offscreen -
 
 -(void)offScreen {
-	[self.videoView stopVideo];
+	[self exiting];
 	self.videoHasBeenPrepared = NO;
 }
 

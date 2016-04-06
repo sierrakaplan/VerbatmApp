@@ -63,8 +63,10 @@
 		self.inPreviewMode = inPreviewMode;
 		self.videoPlayer.repeatsVideo = YES;
 
+		AVAsset *videoAsset = nil;
 		NSMutableArray * videoAssets = [[NSMutableArray alloc] init];
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
+			videoAsset = ((CollectionPinchView *)pinchView).videoAsset;
 			for(VideoPinchView* videoPinchView in ((CollectionPinchView *)pinchView).videoPinchViews) {
 				[videoAssets addObject: videoPinchView.video];
 			}
@@ -81,7 +83,12 @@
 			[self addSubview: self.editContentView];
 			if(videoAssets.count > 1) [self createRearrangeButton];
 		}
-		[self fuseVideoArray:videoAssets];
+		if (videoAsset != nil) {
+			[self fuseVideoArray:@[videoAsset]];
+		} else {
+			[self fuseVideoArray:videoAssets];
+		}
+
 	}
 	return self;
 }
@@ -157,7 +164,6 @@
 	}
 	if([self.editContentView.pinchView isKindOfClass:[CollectionPinchView class]]){
 		((CollectionPinchView*)self.editContentView.pinchView).videoPinchViews = pinchViews;
-		((CollectionPinchView*)self.editContentView.pinchView).videoAsset = self.videoAsset;
 	}
 	if(self.rearrangeView){
 		[self.rearrangeView removeFromSuperview];
@@ -170,6 +176,9 @@
 -(void)offScreen{
 	if(self.editContentView) {
 		[self.editContentView offScreen];
+		if([self.editContentView.pinchView isKindOfClass:[CollectionPinchView class]]){
+			((CollectionPinchView*)self.editContentView.pinchView).videoAsset = self.videoAsset;
+		}
 	} else{
 		[self.videoPlayer stopVideo];
 	}
