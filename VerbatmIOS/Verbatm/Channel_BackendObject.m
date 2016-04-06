@@ -111,8 +111,8 @@
 			NSMutableArray * finalChannels = [[NSMutableArray alloc] init];
 			if(channels && channels.count){
 				for(PFObject * parseChannelObject in channels){
-					if([parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] !=
-						[PFUser currentUser] && ![usersWhoHaveBlockedUser containsObject:[PFUser currentUser]]){
+					PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+					if(channelCreator != [PFUser currentUser] && ![usersWhoHaveBlockedUser containsObject:channelCreator]){
 						NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
 						Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
 																		andParseChannelObject:parseChannelObject
