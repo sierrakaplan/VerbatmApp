@@ -118,7 +118,7 @@
 	[pagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 														 NSError * _Nullable error) {
 		if(objects && !error){
-			[objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+			objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
 				PFObject * pageA = obj1;
 				PFObject * pageB = obj2;
 

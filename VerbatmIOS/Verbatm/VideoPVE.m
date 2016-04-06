@@ -164,6 +164,7 @@
 	}
 	if([self.editContentView.pinchView isKindOfClass:[CollectionPinchView class]]){
 		((CollectionPinchView*)self.editContentView.pinchView).videoPinchViews = pinchViews;
+		[self.editContentView.pinchView renderMedia];
 	}
 	if(self.rearrangeView){
 		[self.rearrangeView removeFromSuperview];

@@ -353,6 +353,7 @@
 		[view removeFromSuperview];
 	}
 	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
+	[self.pinchView renderMedia];
 	[self addContentFromImagePinchViews: pinchViews];
     [self createRearrangeButton];
     [self displayCircle:YES];

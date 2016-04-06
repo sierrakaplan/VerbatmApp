@@ -88,8 +88,7 @@ andTextAlignment:(NSNumber *) textAlignment
     [imagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error){
-            
-            [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+            objects = [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
                 PFObject * photoA = obj1;
                 PFObject * photoB = obj2;
                 
