@@ -403,10 +403,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
         self.swipeUpAndDownInstruction.alpha = 0.f;
     }completion:^(BOOL finished) {
         if(finished){
-            
             [self.swipeUpAndDownInstruction removeFromSuperview];
             self.swipeUpAndDownInstruction = nil;
-            
         }
     }];
 }
@@ -433,7 +431,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 												 (self.frame.size.height/2.f) + frameHeight,
 												 frameWidth, frameHeight);
 		} else {
-
 			filterInstruction.frame = CGRectMake(imageOriginX,
 												 self.frame.size.height - (frameHeight + 50.f), frameWidth, frameHeight);
 		}

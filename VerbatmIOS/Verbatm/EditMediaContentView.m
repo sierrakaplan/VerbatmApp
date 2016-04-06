@@ -110,6 +110,7 @@
 -(void) addLongPress {
 	UILongPressGestureRecognizer * longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(editText)];
 	longPressRecognizer.minimumPressDuration = 0.1;
+	longPressRecognizer.delegate = self;
 	[self addGestureRecognizer:longPressRecognizer];
 }
 
@@ -216,10 +217,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
         [[UserSetupParameters sharedInstance] set_filter_InstructionAsShown];
     }
 }
-
-
-
-
 
 
 -(void)presentUserInstructionForFilterSwipe {
@@ -395,7 +392,25 @@ andTextAlignment:(NSTextAlignment)textAlignment
 #pragma mark - Gesture Recognizer Delegate methods -
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-	return !self.isHorizontalPan;
+	if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]
+		&& [otherGestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+		return !self.isHorizontalPan;
+	}
+	return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+		if ([touch.view isDescendantOfView:self.textAndImageView.textView]) {
+			return NO;
+		}
+	}
+	if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+		if ([self.textAndImageView.textView isFirstResponder]) { //keyboard is up
+			return NO;
+		}
+	}
+	return YES;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer

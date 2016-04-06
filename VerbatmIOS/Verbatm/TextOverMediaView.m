@@ -19,7 +19,7 @@
 
 @property (nonatomic, readwrite) BOOL textShowing;
 @property (nonatomic, strong) UIImageView* imageView;
-@property (nonatomic, strong) UITextView * textView;
+@property (nonatomic, readwrite) UITextView * textView;
 @property (strong,nonatomic) UIImageView* textBackgroundView;
 
 #pragma mark Text properties

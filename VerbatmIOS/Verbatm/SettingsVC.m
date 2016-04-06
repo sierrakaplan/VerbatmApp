@@ -82,16 +82,17 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
     CGRect profileIconFrame = CGRectMake(PROFILE_ICON_WALL_OFFSET,self.userNameField.center.y - (profileIconHeight/2.f) , profileIconWidth, profileIconHeight);
     
     self.profileIconImage.frame = profileIconFrame;
-    
-    CGRect contactUsButtonFrame = CGRectMake(0.f, profileIconFrame.origin.y +
-                                           profileIconFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.contactUsButton.frame.size.height);
-    
-    CGRect termsAndCondButtonFrame = CGRectMake(0.f, contactUsButtonFrame.origin.y +
-                                             contactUsButtonFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.termsAndConditionsButton.frame.size.height);
-    
-    
-    CGRect signOutButtonFrame = CGRectMake(0.f, termsAndCondButtonFrame.origin.y +
-                                                termsAndCondButtonFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.signOutButton.frame.size.height);
+
+	CGRect signOutButtonFrame = CGRectMake(0.f, profileIconFrame.origin.y +
+										   profileIconFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.contactUsButton.frame.size.height);
+
+    CGRect termsAndCondButtonFrame = CGRectMake(0.f, signOutButtonFrame.origin.y +
+                                             signOutButtonFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.termsAndConditionsButton.frame.size.height);
+
+	CGRect contactUsButtonFrame = CGRectMake(0.f, termsAndCondButtonFrame.origin.y +
+											 termsAndCondButtonFrame.size.height + VIEW_OFFSET_Y , self.view.frame.size.width, self.signOutButton.frame.size.height);
+
+
     
     
     self.contactUsButton.frame= contactUsButtonFrame;

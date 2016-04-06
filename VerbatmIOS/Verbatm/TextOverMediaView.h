@@ -14,10 +14,12 @@
 
 @property (nonatomic, readonly) BOOL textShowing;
 
+@property (nonatomic, readonly) UITextView * textView;
 @property (nonatomic, readonly) CGFloat textYPosition;
 @property (nonatomic, readonly) CGFloat textSize;
 @property (nonatomic, readonly) NSTextAlignment textAlignment;
 @property (nonatomic, strong, readonly) UIColor *textColor;
+
 
 -(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage*)image;
 
