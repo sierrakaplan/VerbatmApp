@@ -33,7 +33,8 @@
 
 @implementation PhotoVideoPVE
 
--(instancetype)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideos:(NSArray*)videos {
+-(instancetype)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideo:(NSURL*)videoURL
+		   andVideoThumbnail:(UIImage *)thumbnail {
     self = [super initWithFrame:frame];
     if(self) {
 		self.inPreviewMode = NO;
@@ -42,7 +43,8 @@
 		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPhotoArray:photos];
 		self.photosView.isPhotoVideoSubview = YES;
 		self.photosView.textEntryDelegate = self;
-		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame andVideoWithTextArray:videos];
+		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame andVideo:videoURL
+										   andThumbnail:thumbnail];
 		[self addSubview:self.videoView];
 		[self addSubview:self.photosView];
     }

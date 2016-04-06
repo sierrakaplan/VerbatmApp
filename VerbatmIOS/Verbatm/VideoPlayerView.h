@@ -22,7 +22,7 @@
 
 // Array must be of avasset or nsurl
 // Asynchronously fuses assets then sets the player item
--(void)prepareVideoFromArray: (NSArray*) videoList;
+//-(void)prepareVideoFromArray: (NSArray*) videoList;
 
 // Sets the player item from the avasset
 -(void)prepareVideoFromAsset: (AVAsset*) asset;

@@ -14,6 +14,8 @@
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
 
+#import "UtilityFunctions.h"
+
 @interface CollectionPinchView()
 
 @property (strong, nonatomic, readwrite) NSMutableArray* pinchedObjects;
@@ -186,6 +188,7 @@
 }
 
 -(CollectionPinchView*) pinchAndAdd:(SingleMediaAndTextPinchView*)pinchView {
+	self.videoAsset = nil;
 	[self.pinchedObjects addObject:pinchView];
 	[self addPinchView: pinchView];
 	[self renderMedia];
@@ -193,6 +196,7 @@
 }
 
 -(CollectionPinchView*) unPinchAndRemove:(SingleMediaAndTextPinchView*)pinchView {
+	self.videoAsset = nil;
 	if ([self.pinchedObjects containsObject:pinchView]) {
 		[self.pinchedObjects removeObject:pinchView];
 	}
@@ -220,12 +224,15 @@
 	return photosWithText;
 }
 
--(NSArray*) getVideosWithText {
-	NSMutableArray* videosWithText = [[NSMutableArray alloc] init];
+-(AVAsset*) getVideo {
+	NSMutableArray* videoList = [[NSMutableArray alloc] init];
 	for (VideoPinchView* pinchView in self.videoPinchViews) {
-		[videosWithText addObject:[(VideoPinchView*)pinchView getVideosWithText][0]];
+		[videoList addObject:(VideoPinchView*)pinchView.video];
 	}
-	return videosWithText;
+	if (!self.videoAsset) {
+		self.videoAsset = [UtilityFunctions fuseAssets:videoList];
+	}
+	return self.videoAsset;
 }
 
 #pragma mark - Encoding -

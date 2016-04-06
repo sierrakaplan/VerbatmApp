@@ -75,12 +75,12 @@
 		return photoPageView;
 
 	}else if (type == PageTypeVideo){
-		return [[VideoPVE alloc] initWithFrame:frame andVideoWithTextArray:pageMedia[1]];
+		return [[VideoPVE alloc] initWithFrame:frame andVideo:pageMedia[1][0] andThumbnail:pageMedia[1][1]];
 
 	} else if (type == PageTypePhotoVideo){
 		return [[PhotoVideoPVE alloc] initWithFrame:frame
 										  andPhotos:pageMedia[1]
-										  andVideos:pageMedia[2]];
+										  andVideo:pageMedia[2][0] andVideoThumbnail:pageMedia[2][1]];
 	}
 
 	//should never reach here
@@ -97,17 +97,13 @@
 			block(@[[NSNumber numberWithInt:type], imagesAndText]);
 		}];
 	} else if (type == PageTypeVideo){
-		[self getVideosFromPage:page withCompletionBlock:^(NSMutableArray * videoTextObjects) {
-
-			block(@[[NSNumber numberWithInt:type], videoTextObjects]);
+		[self getVideoFromPage:page withCompletionBlock:^(NSArray *videoAndThumbnail) {
+			block(@[[NSNumber numberWithInt:type], videoAndThumbnail]);
 		}];
-
 	} else if( type == PageTypePhotoVideo){
-
-		[self getVideosFromPage:page withCompletionBlock:^(NSMutableArray * videoTextObjects) {
-			[self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray * imagesAndText) {
-				block(@[[NSNumber numberWithInt:type], imagesAndText, videoTextObjects]);
-
+		[self getVideoFromPage:page withCompletionBlock:^(NSArray *videoAndThumbnail) {
+			[self getUIImagesFromPage:page withCompletionBlock:^(NSMutableArray* imagesAndText) {
+				block(@[[NSNumber numberWithInt:type], imagesAndText, videoAndThumbnail]);
 			}];
 		}];
 	}
@@ -156,7 +152,7 @@
 	}];
 }
 
--(void)getImagefromUrl:(NSMutableArray *) thumbnailUrls withCompletionBlock:(void(^)(NSArray *)) block {
+-(void)getImagesfromUrls:(NSArray *) thumbnailUrls withCompletionBlock:(void(^)(NSArray *)) block {
 
 	NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
 
@@ -170,47 +166,22 @@
 
 }
 
--(void) getVideosFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
-	[Video_BackendObject getVideosForPage:page andCompletionBlock:^(NSArray * pfVideoObjectArray) {
-		NSMutableArray* videoURLs = [[NSMutableArray alloc] init];
-		//get thumbnail urls for all videos
-		for (PFObject * pfVideo in pfVideoObjectArray) {
-			NSString * thumbNailUrl = [pfVideo valueForKey:VIDEO_THUMBNAIL_KEY];
-			[videoURLs addObject:thumbNailUrl];
-		}
+//Video array looks like @[URL, thumbnail]
+-(void) getVideoFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSArray *)) block{
+	[Video_BackendObject getVideoForPage:page andCompletionBlock:^(PFObject *videoObject) {
+		//get thumbnail url for video
+		NSString * thumbNailUrl = [videoObject valueForKey:VIDEO_THUMBNAIL_KEY];
 
 		//download all thumbnail urls for videos
-		[self getImagefromUrl:videoURLs withCompletionBlock:^(NSArray * videoThumbNails) {
-			NSMutableArray * finalVideoObjects = [[NSMutableArray alloc] init];
-			NSMutableArray * finalVideoUrls= [[NSMutableArray alloc] init];
-			for (int i = 0; i < pfVideoObjectArray.count; i++) {
-				PFObject * pfVideo = pfVideoObjectArray[i];
-				NSString * videoBlobKey = [pfVideo valueForKey:BLOB_STORE_URL];
-				NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
-				NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];
-				components.queryItems = @[blobKey];
+		[self getImagesfromUrls:@[thumbNailUrl] withCompletionBlock:^(NSArray * videoThumbNails) {
+			NSString * videoBlobKey = [videoObject valueForKey:BLOB_STORE_URL];
+			NSURLComponents *components = [NSURLComponents componentsWithString: GET_VIDEO_URI];
+			NSURLQueryItem* blobKey = [NSURLQueryItem queryItemWithName:BLOBKEYSTRING_KEY value: videoBlobKey];
+			components.queryItems = @[blobKey];
 
-				UIImage * thumbNail;
-				if(i < videoThumbNails.count){
-					thumbNail = [UIImage imageWithData:videoThumbNails[i]];
-				}
-				if(thumbNail){
-					[finalVideoObjects addObject: @[components.URL, @"", @(0),thumbNail]];
-					[finalVideoUrls addObject:components.URL];
-				}else{
-					[finalVideoObjects addObject: @[components.URL, @"", @(0)]];
-					[finalVideoUrls addObject:components.URL];
-				}
-			}
-
-			if(finalVideoUrls.count >1){
-				//todo:
-//				[[VideoDownloadManager sharedInstance] prepareVideoFromAsset_synchronous:finalVideoUrls];
-			}else{
-				[[VideoDownloadManager sharedInstance] downloadURL:[finalVideoUrls firstObject]];
-			}
-
-			block(finalVideoObjects);
+			UIImage * thumbNail = [UIImage imageWithData:videoThumbNails[0]];
+			[[VideoDownloadManager sharedInstance] downloadURL:components.URL];
+			block(@[components.URL, thumbNail]);
 		}];
 
 	}];

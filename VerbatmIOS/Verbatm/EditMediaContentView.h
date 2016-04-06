@@ -27,7 +27,9 @@
 @property (nonatomic, weak) UIScrollView * povViewMasterScrollView;
 
 //only loads the video onto the screen. You must call onScreen for the video to play
--(void) displayVideo: (NSMutableArray *) videoAssetArray;
+-(void) displayVideo;
+
+-(void) prepareVideoFromAsset: (AVAsset *)videoAsset;
 
 //passes it an array of UIImages to display
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index;

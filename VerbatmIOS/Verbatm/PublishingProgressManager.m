@@ -90,7 +90,7 @@
 	for(PinchView * pinchView in pinchViews){
 		if([pinchView isKindOfClass:[CollectionPinchView class]]){
 			totalProgressUnits+= [(CollectionPinchView *)pinchView imagePinchViews].count * IMAGE_PROGRESS_UNITS;
-			totalProgressUnits+= [(CollectionPinchView *)pinchView videoPinchViews].count * (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS);
+			totalProgressUnits+= [(CollectionPinchView *)pinchView videoPinchViews].count > 1 ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : 0;
 		} else {
 			//Saves thumbnail for every video too
 			totalProgressUnits += ([pinchView isKindOfClass:[VideoPinchView class]]) ? (VIDEO_PROGRESS_UNITS + IMAGE_PROGRESS_UNITS) : IMAGE_PROGRESS_UNITS;

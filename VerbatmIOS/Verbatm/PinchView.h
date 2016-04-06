@@ -66,9 +66,7 @@
 // image, text, and y position for the text
 -(NSArray*) getPhotosWithText;
 
-//array of @[AVURLAsset*, NSString*, NSNumber /* with float value */]
-// video, text, and y position of the text
--(NSArray*) getVideosWithText;
+-(AVURLAsset*) getVideo;
 
 -(void)onScreen;
 -(void)offScreen;

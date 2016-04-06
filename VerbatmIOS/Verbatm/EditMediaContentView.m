@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
+#import "CollectionPinchView.h"
+
 #import "Durations.h"
 #import "EditMediaContentView.h"
 
@@ -19,7 +21,6 @@
 #import "TextOverMediaView.h"
 
 #import "VerbatmKeyboardToolBar.h"
-
 
 #import "UserSetupParameters.h"
 
@@ -62,7 +63,7 @@
 
 #define SWIPE_NOTIFICATON_WIDTH 300.f
 
-@property (nonatomic) NSMutableArray * videoAssets;
+@property (nonatomic) AVAsset *videoAsset;
 
 @end
 
@@ -192,14 +193,18 @@ andTextAlignment:(NSTextAlignment)textAlignment
 
 #pragma mark - Image or Video View -
 
--(void) displayVideo: (NSMutableArray *) videoAssetArray {
+-(void) displayVideo {
 	if(self.videoView)[self.videoView stopVideo];
 	self.videoView = [[VideoPlayerView alloc]init];
 	self.videoView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
 	[self addSubview:self.videoView];
 	[self bringSubviewToFront:self.videoView];
 	self.videoView.repeatsVideo = YES;
-	self.videoAssets = videoAssetArray;
+}
+
+-(void) prepareVideoFromAsset: (AVAsset *)videoAsset {
+	self.videoAsset = videoAsset;
+	[self.videoView prepareVideoFromAsset:videoAsset];
 }
 
 -(void)displayImages: (NSMutableArray*) filteredImages atIndex:(NSInteger)index {
@@ -248,7 +253,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 	self.imageIndex = self.imageIndex+1;
 	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
-	[self updatePinchView];
 
 }
 
@@ -258,8 +262,6 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	}
 	self.imageIndex = self.imageIndex-1;
 	[self.textAndImageView changeImageTo:self.filteredImages[self.imageIndex]];
-	[self updatePinchView];
-
 }
 
 #pragma mark - Keyboard toolbar delegate methods -
@@ -458,6 +460,12 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 	if([self.pinchView isKindOfClass:[ImagePinchView class]]){
 		[((ImagePinchView *)self.pinchView) changeImageToFilterIndex:self.imageIndex];
 	}
+	if([self.pinchView isKindOfClass:[CollectionPinchView class]]) {
+		CollectionPinchView *pinchView = (CollectionPinchView *)self.pinchView;
+		if (pinchView.videoPinchViews.count > 1) {
+			
+		}
+	}
 }
 
 #pragma mark - On/Offscreen -
@@ -469,7 +477,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 
 -(void)onScreen {
 	if(!self.videoHasBeenPrepared){
-		[self.videoView prepareVideoFromArray:self.videoAssets];
+		[self.videoView prepareVideoFromAsset:self.videoAsset];
 		[self.videoView playVideo];
 	}else{
 		[self.videoView playVideo];
@@ -478,9 +486,9 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 }
 
 -(void)almostOnScreen {
-	if(self.videoAssets){
+	if(self.videoAsset){
 		[self.videoView stopVideo];
-		[self.videoView prepareVideoFromArray:self.videoAssets];
+		[self.videoView prepareVideoFromAsset:self.videoAsset];
 	}
 	self.videoHasBeenPrepared = YES;
 }

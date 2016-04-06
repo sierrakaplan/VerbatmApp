@@ -31,13 +31,13 @@
 
 @implementation Video_BackendObject
 
--(void)saveVideo:(NSURL *) videoUrl atVideoIndex:(NSInteger) videoIndex andPageObject:(PFObject *) pageObject {
+-(void)saveVideo:(NSURL *) videoUrl andPageObject:(PFObject *) pageObject {
     self.mediaPublisher = [[PostPublisher alloc] init];
     UIImage * thumbNail = [Video_BackendObject thumbnailImageForVideo:videoUrl atTime:0.f];
     [self.mediaPublisher storeVideoFromURL:videoUrl withCompletionBlock:^(GTLVerbatmAppVideo * gtlVideo) {
         NSString * blobStoreUrl = gtlVideo.blobKeyString;//set this with the url from the blobstore
         //in completion block of blobstore save
-        [self createAndSaveParseVideoObjectWithBlobStoreUrl:blobStoreUrl videoIndex:videoIndex thumbnail:thumbNail andPageObject:pageObject];
+        [self createAndSaveParseVideoObjectWithBlobStoreUrl:blobStoreUrl thumbnail:thumbNail andPageObject:pageObject];
     }];
 }
 
@@ -71,13 +71,12 @@
 }
 
 -(void)createAndSaveParseVideoObjectWithBlobStoreUrl:(NSString *) blobStoreVideoUrl
-                               videoIndex:(NSInteger) videoIndex thumbnail:(UIImage *) thumbnail andPageObject:(PFObject *)pageObject{
+                               thumbnail:(UIImage *) thumbnail andPageObject:(PFObject *)pageObject{
     if(!self.mediaPublisher)self.mediaPublisher = [[PostPublisher alloc] init];
     
     [self.mediaPublisher storeImage:thumbnail withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
         NSString * blobStoreImageUrl = gtlImage.servingUrl;
         PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
-        [newVideoObj setObject:[NSNumber numberWithInteger:videoIndex] forKey:VIDEO_INDEX_KEY];
         [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];
         [newVideoObj setObject:blobStoreImageUrl forKey:VIDEO_THUMBNAIL_KEY];
         [newVideoObj setObject:pageObject forKey:VIDEO_PAGE_OBJECT_KEY];
@@ -92,34 +91,17 @@
     }];
 }
 
-
-
-
-+(void)getVideosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block {
++(void)getVideoForPage:(PFObject *) page andCompletionBlock:(void(^)(PFObject *))block {
     PFQuery * video = [PFQuery queryWithClassName:VIDEO_PFCLASS_KEY];
     [video whereKey:VIDEO_PAGE_OBJECT_KEY equalTo:page];
     
     [video findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
         if(objects && !error){
-            
-            [objects sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
-                PFObject * videoA = obj1;
-                PFObject * videoB = obj2;
-                
-                NSNumber * videoAnum = [videoA valueForKey:VIDEO_INDEX_KEY];
-                NSNumber * videoBnum = [videoB valueForKey:VIDEO_INDEX_KEY];
-                
-                if([videoAnum integerValue] > [videoBnum integerValue]){
-                    return NSOrderedDescending;
-                }else if ([videoAnum integerValue] < [videoBnum integerValue]){
-                    return NSOrderedAscending;
-                }
-                return NSOrderedSame;
-            }];
-            
-            block(objects);
-        }
+            block(objects[0]);
+        } else {
+			block(nil);
+		}
     }];
 }
 

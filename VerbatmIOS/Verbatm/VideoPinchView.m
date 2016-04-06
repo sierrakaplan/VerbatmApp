@@ -69,8 +69,8 @@
 #pragma mark - Overriding get videos
 
 //overriding
--(NSArray*) getVideosWithText {
-	return @[@[self.video, self.text, self.textYPosition]];
+-(AVURLAsset*) getVideo {
+	return self.video;
 }
 
 -(NSInteger) getTotalPiecesOfMedia {

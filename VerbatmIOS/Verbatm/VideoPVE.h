@@ -22,7 +22,7 @@
 @property (strong, nonatomic, readonly) VideoPlayerView* videoPlayer;
 
 //Video list is array of arrays, each subarray containing either an NSURL or AVAsset, text, and textYPos
--(instancetype) initWithFrame:(CGRect)frame andVideoWithTextArray:(NSArray*) videoAndTextList;
+-(instancetype) initWithFrame:(CGRect)frame andVideo: (NSURL *)videoURL andThumbnail:(UIImage *)thumbnail;
 
 // Initializer for preview mode
 -(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView inPreviewMode: (BOOL) inPreviewMode;

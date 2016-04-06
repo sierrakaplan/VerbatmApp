@@ -43,8 +43,8 @@
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
 
 	[self.formData setData:videoData
-			  withFileName:@"defaultVideo.mov"
-			andContentType:@"video/quicktime"
+			  withFileName:@"defaultVideo.mp4"
+			andContentType:@"video/mp4"
 					forKey:@"defaultVideo"];
 	[self.formData setDelegate:self];
 	[self.formData setUploadProgressDelegate:self];
@@ -108,7 +108,7 @@
 
 -(void) requestFailed:(ASIHTTPRequest *)request {
 	NSError *error = [request error];
-	NSLog(@"error uploading media%@", error);
+	NSLog(@"error uploading media%@", error.description);
 	[[PublishingProgressManager sharedInstance] savingMediaFailed];
 	[self.mediaUploadProgress cancel];
 	self.completionBlock(error, nil);

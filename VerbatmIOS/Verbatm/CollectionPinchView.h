@@ -14,6 +14,7 @@
 // pinched objects in the collection view
 @property (strong, nonatomic) NSMutableArray* imagePinchViews;
 @property (strong, nonatomic) NSMutableArray* videoPinchViews;
+@property (strong, nonatomic) AVAsset *videoAsset; //stores fused asset of videoPinchViews
 
 // keeps track of order of elements pinched together
 @property (strong, nonatomic, readonly) NSMutableArray* pinchedObjects;

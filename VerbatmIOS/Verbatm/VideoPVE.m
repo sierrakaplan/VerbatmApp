@@ -12,12 +12,14 @@
 
 #import "Icons.h"
 
+#import "OpenCollectionView.h"
+
 #import "SizesAndPositions.h"
 
 #import "VideoPVE.h"
 #import "VideoPinchView.h"
 
-#import "OpenCollectionView.h"
+#import "UtilityFunctions.h"
 
 @interface VideoPVE()<OpenCollectionViewDelegate>
 
@@ -25,7 +27,6 @@
 @property (strong, nonatomic) UIImageView* videoProgressImageView;
 @property (strong, nonatomic) UIButton* playButton;
 @property (nonatomic) CGPoint firstTranslation;
-@property (nonatomic, strong) NSArray * videoList;
 @property (nonatomic) BOOL hasBeenSetUp;
 
 #pragma mark - In Preview Mode -
@@ -35,18 +36,22 @@
 @property (nonatomic) UIButton * rearrangeButton;
 
 @property (nonatomic) UIImageView * thumbnailView;
+@property (nonatomic) AVAsset *videoAsset;
+@property (nonatomic) BOOL shouldPrepareOnLoad; //should prepare video after fusing assets
 
 @end
 
 
 @implementation VideoPVE
 
--(instancetype) initWithFrame:(CGRect)frame andVideoWithTextArray:(NSArray*) videoAndTextList {
+-(instancetype) initWithFrame:(CGRect)frame andVideo: (NSURL *)videoURL andThumbnail:(UIImage *)thumbnail {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.shouldPrepareOnLoad = NO;
 		self.inPreviewMode = NO;
 		self.videoPlayer.repeatsVideo = YES;
-		[self playVideosFromArray:videoAndTextList];
+		[self fuseVideoArray:@[videoURL]];
+		[self setThumbnailImage: thumbnail];
 	}
 	return self;
 }
@@ -54,6 +59,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView inPreviewMode: (BOOL) inPreviewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.shouldPrepareOnLoad = NO;
 		self.inPreviewMode = inPreviewMode;
 		self.videoPlayer.repeatsVideo = YES;
 
@@ -71,31 +77,32 @@
 		if (self.inPreviewMode) {
 			self.editContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
 			self.editContentView.pinchView = pinchView;
-			[self.editContentView displayVideo:videoAssets];
+			[self.editContentView displayVideo];
 			[self addSubview: self.editContentView];
 			if(videoAssets.count > 1) [self createRearrangeButton];
-		} else {
-			[self prepareVideos:videoAssets];
 		}
+		[self fuseVideoArray:videoAssets];
 	}
 	return self;
 }
 
--(void)playVideosFromArray:(NSArray *) videoAndTextList{
-	NSMutableArray* videoList = [[NSMutableArray alloc] initWithCapacity: videoAndTextList.count];
-	for (NSArray* videoWithText in videoAndTextList) {
-		[videoList addObject: videoWithText[0]];
-        if((videoWithText.count == 4) && [videoAndTextList indexOfObject:videoWithText] == 0){
-            UIImage * thumbnail = videoWithText[3];
-            [self setThumbnailImage:thumbnail];
-        }
-        
-        //        NSString* text = videoWithText[1];
-		//        NSNumber* textYPos = videoWithText[2];
+-(void) fuseVideoArray: (NSArray*) videoList {
+	if (videoList.count == 1) {
+		AVAsset *asset = videoList[0];
+		if ([videoList[0] isKindOfClass:[NSURL class]]) {
+			asset = [AVAsset assetWithURL:videoList[0]];
+		}
+		self.videoAsset = asset;
+		[self prepareVideo];
+		return;
 	}
-	[self prepareVideos:videoList];
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
+		self.videoAsset = [UtilityFunctions fuseAssets: videoList];
+		dispatch_async(dispatch_get_main_queue(), ^{
+			[self prepareVideo];
+		});
+	});
 }
-
 
 -(void)setThumbnailImage:(UIImage *) image{
     self.thumbnailView = [[UIImageView alloc] initWithImage:image];
@@ -105,14 +112,15 @@
     [self sendSubviewToBack:self.thumbnailView];
 }
 
--(void)prepareVideos:(NSArray*)videoList {
-	if (!videoList.count) return;
-	if (videoList.count == 1) {
-		[self.videoPlayer prepareVideoFromURL: videoList[0]];
-	} else {
-		[self.videoPlayer prepareVideoFromArray:videoList];
+-(void)prepareVideo {
+	if (self.videoAsset == nil) {
+		return;
 	}
-	self.videoList = videoList;
+	if (self.inPreviewMode) {
+		[self.editContentView prepareVideoFromAsset:self.videoAsset];
+	} else {
+		[self.videoPlayer prepareVideoFromAsset: self.videoAsset];
+	}
 	self.hasBeenSetUp = YES;
 }
 
@@ -138,21 +146,18 @@
 }
 
 -(void) collectionClosedWithFinalArray:(NSMutableArray *)pinchViews {
-
 	NSMutableArray * assetArray = [[NSMutableArray alloc] init];
 	for(VideoPinchView * videoPinchView in pinchViews) {
 		[assetArray addObject:videoPinchView.video];
 	}
+	self.videoAsset = nil;
+	[self fuseVideoArray:assetArray];
 	if(self.editContentView.videoView.isVideoPlaying){
-		[self.editContentView displayVideo:assetArray];
-		[self.editContentView almostOnScreen];
-		[self.editContentView onScreen];
-        
-	} else {
-		NSLog(@"Edit content view video not playing");
+		[self.editContentView offScreen];
 	}
 	if([self.editContentView.pinchView isKindOfClass:[CollectionPinchView class]]){
 		((CollectionPinchView*)self.editContentView.pinchView).videoPinchViews = pinchViews;
+		((CollectionPinchView*)self.editContentView.pinchView).videoAsset = self.videoAsset;
 	}
 	if(self.rearrangeView){
 		[self.rearrangeView removeFromSuperview];
@@ -170,8 +175,6 @@
 	}
 	if(self.rearrangeView) [self.rearrangeView exitView];
 	self.hasBeenSetUp = NO;
-
-	//here we check if we have URLs and if so then we create the asset again for future use
 }
 
 -(void)onScreen {
@@ -181,7 +184,7 @@
 		if(self.hasBeenSetUp){
 			[self.videoPlayer playVideo];
 		}else{
-			[self prepareVideos:self.videoList];
+			[self prepareVideo];
 			[self.videoPlayer playVideo];
 		}
 	}
@@ -193,7 +196,7 @@
 	} else {
 		if(!self.hasBeenSetUp){
 			[self.videoPlayer stopVideo];
-			[self prepareVideos:self.videoList];
+			[self prepareVideo];
 		}
 	}
 }

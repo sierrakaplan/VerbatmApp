@@ -169,11 +169,7 @@
 	return nil;
 }
 
--(NSArray*) getVideosWithText {
-	return nil;
-}
-
--(NSArray*) getVideosInDataFormat {
+-(NSArray*) getVideo {
 	return nil;
 }
 

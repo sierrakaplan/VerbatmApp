@@ -20,6 +20,55 @@
 
 @implementation UtilityFunctions
 
+
+//This code fuses the video assets into a single video that plays the videos one after the other.
+//It accepts both avassets and urls which it converts into assets
++(AVMutableComposition*) fuseAssets:(NSArray*)videoList {
+	AVMutableComposition *fusedAsset = [AVMutableComposition composition]; //create a composition to hold the joined assets
+	AVMutableCompositionTrack* videoTrack = [fusedAsset addMutableTrackWithMediaType:AVMediaTypeVideo
+																	preferredTrackID:kCMPersistentTrackID_Invalid];
+	AVMutableCompositionTrack* audioTrack = [fusedAsset addMutableTrackWithMediaType:AVMediaTypeAudio
+																	preferredTrackID:kCMPersistentTrackID_Invalid];
+	CMTime nextClipStartTime = kCMTimeZero;
+	NSError* error;
+	for(id asset in videoList) {
+		AVURLAsset * videoAsset;
+		if([asset isKindOfClass:[NSURL class]]) {
+			videoAsset = [AVURLAsset assetWithURL:asset];
+		} else {
+			videoAsset = asset;
+		}
+		NSArray * videoTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
+		if(!videoTrackArray.count) continue;
+
+		AVAssetTrack* currentVideoTrack = [videoTrackArray objectAtIndex:0];
+		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentVideoTrack atTime:nextClipStartTime error: &error];
+		videoTrack.preferredTransform = currentVideoTrack.preferredTransform;
+
+		NSArray * audioTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeAudio];
+		if(!audioTrackArray.count) continue;
+		AVAssetTrack* currentAudioTrack = [audioTrackArray objectAtIndex:0];
+		audioTrack.preferredTransform = currentAudioTrack.preferredTransform;
+		[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentAudioTrack atTime:nextClipStartTime error:&error];
+		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
+	}
+	if (error) {
+		NSLog(@"Error fusing video assets: %@", error.description);
+	}
+	return fusedAsset;
+}
+
+NSString *letters = @"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
++ (NSString *) randomStringWithLength: (NSInteger)length {
+	NSMutableString *randomString = [NSMutableString stringWithCapacity: length];
+	for (int i=0; i<length; i++) {
+		[randomString appendFormat: @"%C", [letters characterAtIndex: arc4random_uniform((unsigned int)[letters length])]];
+	}
+	return randomString;
+}
+
+
 // Promise wrapper for asynchronous request to get image data (or any data) from the url
 + (AnyPromise*) loadCachedPhotoDataFromURL: (NSURL*) url {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
@@ -61,7 +110,6 @@
 
 + (void)convertVideoToLowQualityWithInputURL:(NSURL *) videoUrl withCompletion:(void (^)(NSURL *,  BOOL ))successHandler {
 
-    
     //  STORE IN FILESYSTEM
     NSString* cachesDirectory = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
@@ -69,8 +117,6 @@
     NSString * uniqueVideoURL = [[videoUrl.absoluteString stringByReplacingOccurrencesOfString:@"/" withString:@""] stringByAppendingString:@".mp4"];
     
     NSString *finalFile = [cachesDirectory stringByAppendingPathComponent:uniqueVideoURL];
-//    AVURLAsset *asset = [AVURLAsset URLAssetWithURL:videoUrl options:nil];
-//    AVAssetExportSession *exportSession = [[AVAssetExportSession alloc] initWithAsset:asset presetName:AVAssetExportPresetMediumQuality];
     NSURL * finalUrl = [NSURL fileURLWithPath:finalFile];
     
     [UtilityFunctions convertVideoToLowQuailtyWithInputURL:videoUrl outputURL:finalUrl handler:^(AVAssetExportSession * session) {
@@ -80,18 +126,6 @@
             successHandler(videoUrl, NO);
         }
     }];
-    
-    
-//    exportSession.outputURL = finalUrl;
-//    exportSession.outputFileType = AVFileTypeQuickTimeMovie;
-//    [exportSession exportAsynchronouslyWithCompletionHandler: ^(void) {
-//        if (exportSession.status == AVAssetExportSessionStatusCompleted)
-//        {
-//            successHandler(finalUrl, YES);
-//        }else if (exportSession.status == AVAssetExportSessionStatusFailed){
-//            successHandler(videoUrl, NO);
-//        }
-//    }];
 }
 
 
@@ -105,8 +139,6 @@
         handler(exportSession);
     }];
 }
-
-
 
 + (NSData *)gzipDeflate:(NSData*)data
 {

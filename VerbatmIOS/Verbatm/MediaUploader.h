@@ -24,7 +24,6 @@ typedef void(^MediaUploadCompletionBlock)(NSError* error, NSString* responseURL)
 // and stages it for upload to the given uri
 -(instancetype) initWithImage:(UIImage*)img andUri: (NSString*)uri;
 
-// Creates an ASIFormDataRequest with the video in quicktime .mov form
 // and stages it for upload to the given uri
 -(instancetype) initWithVideoData: (NSData*)videoData  andUri: (NSString*)uri;
 

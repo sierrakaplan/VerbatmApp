@@ -20,9 +20,9 @@
 
 //Page object is the page object that this video is related to
 //page object must already be saved in the database before this function is called
--(void)saveVideo:(NSURL *) videoUrl atVideoIndex:(NSInteger) videoIndex andPageObject:(PFObject *) pageObject;
+-(void)saveVideo:(NSURL *) videoUrl andPageObject:(PFObject *) pageObject;
 
-+(void)getVideosForPage:(PFObject *) page andCompletionBlock:(void(^)(NSArray *))block;
++(void)getVideoForPage:(PFObject *) page andCompletionBlock:(void(^)(PFObject *))block ;
 
 +(void)deleteVideosInPage:(PFObject *)page withCompeletionBlock:(void(^)(BOOL))block;
 

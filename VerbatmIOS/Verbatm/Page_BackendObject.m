@@ -14,6 +14,7 @@
 #import "ParseBackendKeys.h"
 #import "Photo_BackendObject.h"
 #import "Video_BackendObject.h"
+#import "UtilityFunctions.h"
 
 @interface Page_BackendObject ()
 
@@ -89,16 +90,23 @@
 
 -(void) storeVideosFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
 	if (pinchView.containsVideo) {
-		//Publishing videos sequentially
-		NSArray* pinchViewVideosWithText = [pinchView getVideosWithText];
-		for (int i = 0; i < pinchViewVideosWithText.count; i++){
-			NSArray* videoWithText = pinchViewVideosWithText[i];
-			AVURLAsset* videoAsset = videoWithText[0];
-			//NSString* text = videoWithText[1];
-			//NSNumber* textYPosition = videoWithText[2];
-			Video_BackendObject  * videoObj = [[Video_BackendObject alloc] init];
-			[self.photoAndVideoSavers addObject:videoObj];
-			[videoObj saveVideo:videoAsset.URL atVideoIndex:i andPageObject:page];
+		Video_BackendObject  *videoObj = [[Video_BackendObject alloc] init];
+		[self.photoAndVideoSavers addObject:videoObj];
+
+		AVAsset* videoAsset = [pinchView getVideo];
+		if (![videoAsset isKindOfClass:[AVURLAsset class]]) {
+			NSString *videoFileName = [UtilityFunctions randomStringWithLength:10];
+			NSURL* exportURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@%@", NSTemporaryDirectory(), videoFileName, @".mp4"]];
+			AVAssetExportSession* exporter = [[AVAssetExportSession alloc] initWithAsset:videoAsset
+																			  presetName:AVAssetExportPresetPassthrough];
+
+			[exporter setOutputURL:exportURL];
+			[exporter setOutputFileType:AVFileTypeMPEG4];
+			[exporter exportAsynchronouslyWithCompletionHandler:^(void){
+				[videoObj saveVideo:exportURL andPageObject:page];
+			}];
+		} else {
+			[videoObj saveVideo:((AVURLAsset *)videoAsset).URL andPageObject:page];
 		}
 	}
 }
