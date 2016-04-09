@@ -22,8 +22,6 @@
 #define CREATE_FILTERED_IMAGES_QUEUE_KEY "create_filtered_images_queue"
 #define IMAGE_KEY @"image_key"
 #define FILTER_INDEX_KEY @"filter_index_key"
-#define TEXT_KEY @"text_key"
-#define TEXT_Y_POSITION_KEY @"text_y_position_key"
 
 @end
 
@@ -88,9 +86,7 @@
         [self.imageView removeFromSuperview];
         self.imageView = nil;
     }
-    
 }
-
 
 -(UIImage*) getImage {
 	return self.filteredImages[self.filterImageIndex];
@@ -154,22 +150,17 @@
 //todo: add other text data
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
-	[coder encodeObject:UIImagePNGRepresentation(self.filteredImages[self.filterImageIndex]) forKey:IMAGE_KEY];
-//	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
-//	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
-	[coder encodeObject:self.textYPosition forKey:TEXT_Y_POSITION_KEY];
-	[coder encodeObject:self.text forKey:TEXT_KEY];
+	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
+	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
 		NSData* imageData = [decoder decodeObjectForKey:IMAGE_KEY];
 		UIImage* image = [UIImage imageWithData:imageData];
-//		NSNumber* filterImageIndexNumber = [decoder decodeObjectForKey:FILTER_INDEX_KEY];
-		[self initWithImage:image andSetFilteredImages:NO];
-//		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
-		self.text = [decoder decodeObjectForKey:TEXT_KEY];
-		self.textYPosition = [decoder decodeObjectForKey:TEXT_Y_POSITION_KEY];
+		NSNumber* filterImageIndexNumber = [decoder decodeObjectForKey:FILTER_INDEX_KEY];
+		[self initWithImage:image andSetFilteredImages:YES];
+		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
 	}
 	return self;
 }

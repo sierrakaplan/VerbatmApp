@@ -121,14 +121,14 @@
 	[self.currentParsePostObject saveInBackground];
 	//register the relationship
 	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
-		[self.delegate publishingComplete];
-		NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
-		[[NSNotificationCenter defaultCenter] postNotification:not];
 		self.progressAccountant.completedUnitCount = 0;
 		self.currentlyPublishing = NO;
+		[[PostInProgress sharedInstance] clearPostInProgress];
+		[self.delegate publishingComplete];
+		NSNotification *notification = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotification: notification];
 		self.currentParsePostObject = nil;
 		self.currentPublishingChannel = nil;
-		[[PostInProgress sharedInstance] clearPostInProgress];
 	}];
 }
 

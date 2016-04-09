@@ -12,6 +12,16 @@
 #import "Styles.h"
 #import "SingleMediaAndTextPinchView.h"
 
+@interface SingleMediaAndTextPinchView()
+
+#define TEXT_KEY @"text_key"
+#define TEXT_Y_POSITION_KEY @"text_y_position_key"
+#define TEXT_COLOR_KEY @"text_color_key"
+#define TEXT_ALIGNMENT_KEY @"text_alignment_key"
+#define TEXT_SIZE_KEY @"text_size_key"
+
+@end
+
 @implementation SingleMediaAndTextPinchView
 
 #pragma mark - Lazy Instantiation -
@@ -49,6 +59,29 @@
 		_textSize = [NSNumber numberWithFloat: TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE];
 	}
 	return _textSize;
+}
+
+#pragma mark - Encoding -
+
+//todo: add other text data
+- (void)encodeWithCoder:(NSCoder *)coder {
+	[super encodeWithCoder:coder];
+	[coder encodeObject:self.textYPosition forKey:TEXT_Y_POSITION_KEY];
+	[coder encodeObject:self.text forKey:TEXT_KEY];
+	[coder encodeObject:[NSKeyedArchiver archivedDataWithRootObject:self.textColor]  forKey:TEXT_COLOR_KEY];
+	[coder encodeObject:self.textAlignment forKey:TEXT_ALIGNMENT_KEY];
+	[coder encodeObject:self.textSize forKey:TEXT_SIZE_KEY];
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+	if (self = [super initWithCoder:decoder]) {
+		self.text = [decoder decodeObjectForKey:TEXT_KEY];
+		self.textYPosition = [decoder decodeObjectForKey:TEXT_Y_POSITION_KEY];
+		self.textColor = [NSKeyedUnarchiver unarchiveObjectWithData:[decoder decodeObjectForKey:TEXT_COLOR_KEY]];
+		self.textAlignment = [decoder decodeObjectForKey:TEXT_ALIGNMENT_KEY];
+		self.textSize = [decoder decodeObjectForKey:TEXT_SIZE_KEY];
+	}
+	return self;
 }
 
 @end

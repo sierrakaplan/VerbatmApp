@@ -140,6 +140,7 @@
 -(void) clearPostInProgress {
 	//thread safety
 	@synchronized(self) {
+		[self.pinchViews removeAllObjects];
 		[self.pinchViewsAsData removeAllObjects];
 	}
 	[[NSUserDefaults standardUserDefaults] removeObjectForKey:TITLE_KEY];
