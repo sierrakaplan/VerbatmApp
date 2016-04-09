@@ -20,6 +20,7 @@
 
 @property (nonatomic, strong) id<EditContentViewDelegate> delegate;
 @property (nonatomic, strong) VideoPlayerView * videoView;
+@property (nonatomic) AVAsset *videoAsset;
 @property (nonatomic, strong) PinchView * pinchView;
 
 //this should be set when the edit content view is created

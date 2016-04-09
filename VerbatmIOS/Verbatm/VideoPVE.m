@@ -37,7 +37,6 @@
 
 @property (nonatomic) UIImageView * thumbnailView;
 @property (nonatomic) AVAsset *videoAsset;
-@property (nonatomic) BOOL shouldPrepareOnLoad; //should prepare video after fusing assets
 
 @end
 
@@ -47,7 +46,6 @@
 -(instancetype) initWithFrame:(CGRect)frame andVideo: (NSURL *)videoURL andThumbnail:(UIImage *)thumbnail {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.shouldPrepareOnLoad = NO;
 		self.inPreviewMode = NO;
 		self.videoPlayer.repeatsVideo = YES;
 		[self fuseVideoArray:@[videoURL]];
@@ -59,7 +57,6 @@
 -(instancetype) initWithFrame:(CGRect)frame andPinchView: (PinchView*) pinchView inPreviewMode: (BOOL) inPreviewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
-		self.shouldPrepareOnLoad = NO;
 		self.inPreviewMode = inPreviewMode;
 		self.videoPlayer.repeatsVideo = YES;
 
@@ -143,11 +140,12 @@
 
 -(void)rearrangeButtonPressed {
 	if(!self.rearrangeView){
+		[self offScreen];
 		self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds
 													 andPinchViewArray: ((CollectionPinchView*)self.editContentView.pinchView).videoPinchViews];
 		self.rearrangeView.delegate = self;
 		[self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
-	} else{
+	} else {
 		[self.rearrangeView exitView];
 	}
 }
@@ -158,6 +156,9 @@
 		[assetArray addObject:videoPinchView.video];
 	}
 	self.videoAsset = nil;
+	if (self.editContentView) {
+		self.editContentView.videoAsset = nil;
+	}
 	[self fuseVideoArray:assetArray];
 	if(self.editContentView.videoView.isVideoPlaying){
 		[self.editContentView offScreen];
@@ -170,6 +171,8 @@
 		[self.rearrangeView removeFromSuperview];
 		self.rearrangeView = nil;
 	}
+	self.hasBeenSetUp = NO;
+	[self onScreen];
 }
 
 #pragma mark - On and Off Screen (play and pause) -
@@ -190,7 +193,7 @@
 -(void)onScreen {
 	if (self.editContentView){
 		[self.editContentView onScreen];
-	} else{
+	} else {
 		if(self.hasBeenSetUp){
 			[self.videoPlayer playVideo];
 		}else{

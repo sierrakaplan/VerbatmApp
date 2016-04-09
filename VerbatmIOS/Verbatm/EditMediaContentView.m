@@ -63,8 +63,6 @@
 
 #define SWIPE_NOTIFICATON_WIDTH 300.f
 
-@property (nonatomic) AVAsset *videoAsset;
-
 @end
 
 @implementation EditMediaContentView

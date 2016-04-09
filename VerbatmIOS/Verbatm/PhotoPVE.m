@@ -112,7 +112,6 @@
 
 #pragma mark - Preview mode -
 
-//todo: clean this up. better way to separate preview functionality from feed
 -(void) addContentFromImagePinchViews:(NSMutableArray *)pinchViewArray{
 	NSMutableArray* photosTextArray = [[NSMutableArray alloc] init];
 
@@ -332,6 +331,7 @@
 
 -(void) rearrangeButtonPressed {
     if(!self.rearrangeView){
+		[self offScreen];
         self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds
 													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
         self.rearrangeView.delegate = self;
