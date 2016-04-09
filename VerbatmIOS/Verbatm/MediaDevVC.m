@@ -92,7 +92,6 @@
 
 -(void) viewDidAppear:(BOOL)animated {
 	[self.sessionManager startSession];
-//	[self.pullBar pulsePullDown];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
@@ -102,12 +101,6 @@
 #pragma mark - Initialization
 
 #pragma mark Create Sub Views
-
--(void) createSubViews {
-	[self createCapturePicButton];
-    [self addToggleFlashButton];
-	[self addSwitchCameraOrientationButton];
-}
 
 -(void) prepareCameraView {
 	[self.view insertSubview: self.verbatmCameraView atIndex:0];
@@ -131,30 +124,6 @@
 	[self.verbatmCameraView bringSubviewToFront:self.captureMediaButton];
 }
 
--(void) addSwitchCameraOrientationButton {
-//	self.switchCameraButton= [UIButton buttonWithType:UIButtonTypeCustom];
-//	[self.switchCameraButton setImage:[UIImage imageNamed:SWITCH_CAMERA_ORIENTATION_ICON] forState:UIControlStateNormal];
-//	[self.switchCameraButton setFrame:CGRectMake(self.view.bounds.size.width - CAPTURE_MEDIA_BUTTON_OFFSET - SWITCH_ORIENTATION_ICON_SIZE,
-//												 self.view.bounds.size.height - FLASH_ICON_SIZE - CAPTURE_MEDIA_BUTTON_OFFSET,
-//												 SWITCH_ORIENTATION_ICON_SIZE,
-//												 SWITCH_ORIENTATION_ICON_SIZE)];
-//	self.switchCameraButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
-//	[self.switchCameraButton addTarget:self action:@selector(switchCameraOrientation:) forControlEvents:UIControlEventTouchUpInside];
-//	[self.view addSubview:self.switchCameraButton];
-}
-
--(void) addToggleFlashButton {
-//	self.switchFlashButton= [UIButton buttonWithType:UIButtonTypeCustom];
-//	[self.switchFlashButton setFrame:CGRectMake(CAPTURE_MEDIA_BUTTON_OFFSET,
-//												self.view.bounds.size.height - FLASH_ICON_SIZE - CAPTURE_MEDIA_BUTTON_OFFSET,
-//												FLASH_ICON_SIZE, FLASH_ICON_SIZE)];
-//	[self.switchFlashButton addTarget:self action:@selector(toggleFlash:) forControlEvents:UIControlEventTouchUpInside];
-//	self.flashOffIcon = [UIImage imageNamed:FLASH_ICON_OFF];
-//	self.flashOnIcon = [UIImage imageNamed:FLASH_ICON_ON];
-//	[self setFlashButtonOn:NO];
-//	[self.view addSubview:self.switchFlashButton];
-}
-
 -(void) setFlashButtonOn: (BOOL) on {
 	if (on) {
 		self.flashOn = YES;
@@ -164,7 +133,6 @@
 		[self.switchFlashButton setImage:self.flashOffIcon forState:UIControlStateNormal];
 	}
 }
-
 
 #pragma mark - Saved Media animation -
 

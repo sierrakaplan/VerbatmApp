@@ -217,11 +217,7 @@
 #pragma mark - Capture Media
 
 - (void) tappedCaptureMediaButton:(id)sender {
-	if(self.isTakingVideo) {
-		[self endVideoRecordingSession];
-	} else {
-		[self takePhoto:sender];
-	}
+	[self takePhoto:sender];
 }
 
 - (void) takePhoto:(id)sender {
@@ -230,7 +226,6 @@
 }
 
 -(void) takeVideo:(UILongPressGestureRecognizer*)sender {
-
 	if(!self.isTakingVideo && sender.state == UIGestureRecognizerStateBegan){
 		self.isTakingVideo = YES;
 		[self.sessionManager startVideoRecordingInOrientation:[UIDevice currentDevice].orientation];
@@ -238,6 +233,8 @@
 		self.videoTimer = [NSTimer scheduledTimerWithTimeInterval:MAX_VID_SECONDS target:self selector:@selector(endVideoRecordingSession) userInfo:nil repeats:NO];
 		[self.captureMediaButton setImage:[UIImage imageNamed: CAPTURE_RECORDING_ICON] forState:UIControlStateNormal];
 
+	} else if (sender.state == UIGestureRecognizerStateEnded) {
+		[self endVideoRecordingSession];
 	}
 }
 
