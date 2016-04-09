@@ -417,7 +417,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 #pragma mark - Publishing -
 
 -(void) showPublishingProgress {
-	self.publishingProgressView = nil;
+	if (_publishingProgressView) return;
 	PublishingProgressManager *progressManager = [PublishingProgressManager sharedInstance];
 	self.publishingProgress = [progressManager progressAccountant];
 	[progressManager setDelegate:self];
@@ -435,6 +435,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 -(void) publishingComplete {
 	NSLog(@"Publishing Complete!");
 	[self.publishingProgressView removeFromSuperview];
+	self.publishingProgressView = nil;
 	//todo: bring this back
 	//if ([PublishingProgressManager sharedInstance].currentPublishingChannel == self.postListVC.channelForList) {
 		[self.postListVC reloadCurrentChannel];
