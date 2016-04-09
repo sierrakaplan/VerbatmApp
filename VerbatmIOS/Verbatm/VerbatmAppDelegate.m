@@ -21,6 +21,7 @@
 
 #import <Parse/Parse.h>
 #import <ParseFacebookUtilsV4/PFFacebookUtils.h>
+#import "PostInProgress.h"
 #import <PromiseKit/PromiseKit.h>
 
 #import <Crashlytics/Crashlytics.h>
@@ -31,22 +32,21 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-		 [self setUpParseWithLaunchOptions: launchOptions];
-        PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
-            return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
-                                   userInfo:nil];
-        });
-        [[UserSetupParameters sharedInstance] setUpParameters];
-        [[Analytics getSharedInstance] newUserSession];
+	[[PostInProgress sharedInstance] loadPostFromUserDefaults];
+	[self setUpParseWithLaunchOptions: launchOptions];
+	PMKSetUnhandledExceptionHandler(^NSError * _Nullable(id exception) {
+		return [NSError errorWithDomain:PMKErrorDomain code:PMKUnexpectedError
+							   userInfo:nil];
+	});
+	[[UserSetupParameters sharedInstance] setUpParameters];
+	[[Analytics getSharedInstance] newUserSession];
 
-        // Fabric and Optimizely
-        [Fabric with:@[[Optimizely class], [Crashlytics class]]];
-//    	[Optimizely startOptimizelyWithAPIToken: @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
-    
-    [application setStatusBarHidden:YES];
-    
-    return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
-   
+	// Fabric and Optimizely
+	[Fabric with:@[[Optimizely class], [Crashlytics class]]];
+	//    	[Optimizely startOptimizelyWithAPIToken: @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
+
+	return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
+
 }
 
 -(void) setUpParseWithLaunchOptions: (NSDictionary*)launchOptions {
@@ -71,34 +71,34 @@
 
 //logs that the app was just opened
 -(void) logAppOpenAnalyticsWithOptions:(NSDictionary *)launchOptions{
-    [PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
+	[PFAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
 }
-							
+
 - (void)applicationWillResignActive:(UIApplication *)application {
-    // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-    // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
+	// Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
+	// Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
-    // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
-    // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    
-   [[Analytics getSharedInstance] endOfUserSession];
+	// Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
+	// If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+
+	[[Analytics getSharedInstance] endOfUserSession];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
-    // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
-    [[Analytics getSharedInstance] newUserSession];
+	// Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
+	[[Analytics getSharedInstance] newUserSession];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+	// Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
 	[FBSDKAppEvents activateApp];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
-    // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    [[UserSetupParameters sharedInstance] saveAllChanges];
+	// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+	[[UserSetupParameters sharedInstance] saveAllChanges];
 }
 
 // Facebook login code

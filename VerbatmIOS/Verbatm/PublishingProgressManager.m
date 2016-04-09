@@ -13,6 +13,7 @@
 #import "Channel_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import "Post_Channel_RelationshipManager.h"
+#import "PostInProgress.h"
 
 @interface PublishingProgressManager()
 //how many media pieces we are trying to publish in total
@@ -111,19 +112,24 @@
 		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
 	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount
 		&& self.currentlyPublishing && self.currentParsePostObject) {
-		[self.currentParsePostObject setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
-		[self.currentParsePostObject saveInBackground];
-		//register the relationship
-		[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
-			[self.delegate publishingComplete];
-			NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
-			[[NSNotificationCenter defaultCenter] postNotification:not];
-			self.progressAccountant.completedUnitCount = 0;
-			self.currentlyPublishing = NO;
-			self.currentParsePostObject = nil;
-			self.currentPublishingChannel = nil;
-		}];
+		[self postPublishedSuccessfully];
 	}
+}
+
+-(void)postPublishedSuccessfully {
+	[self.currentParsePostObject setObject:[NSNumber numberWithBool:YES] forKey:POST_COMPLETED_SAVING];
+	[self.currentParsePostObject saveInBackground];
+	//register the relationship
+	[Post_Channel_RelationshipManager savePost:self.currentParsePostObject toChannels:[NSMutableArray arrayWithObject:self.currentPublishingChannel] withCompletionBlock:^{
+		[self.delegate publishingComplete];
+		NSNotification * not = [[NSNotification alloc]initWithName:NOTIFICATION_POST_PUBLISHED object:nil userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotification:not];
+		self.progressAccountant.completedUnitCount = 0;
+		self.currentlyPublishing = NO;
+		self.currentParsePostObject = nil;
+		self.currentPublishingChannel = nil;
+		[[PostInProgress sharedInstance] clearPostInProgress];
+	}];
 }
 
 -(void)mediaSavingFailed:(NSNotification *) notification {

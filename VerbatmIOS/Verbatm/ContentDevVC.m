@@ -450,7 +450,6 @@ rowHeightForComponent:(NSInteger)component{
 
 // Loads pinch views from user defaults
 -(void) loadPostFromUserDefaults {
-
 	NSArray* savedPinchViews = [[PostInProgress sharedInstance] pinchViews];
 	for (PinchView* pinchView in savedPinchViews) {
 		[pinchView specifyRadius:self.defaultPinchViewRadius
@@ -639,7 +638,6 @@ rowHeightForComponent:(NSInteger)component{
 	}
     
     [[PostInProgress sharedInstance] addPinchView:pinchView atIndex:index];
-    
     
     [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
         [self.mainScrollView addSubview: newElementScrollView];
@@ -1684,7 +1682,6 @@ rowHeightForComponent:(NSInteger)component{
     [self clearBaseSelcetor];
 	[self createBaseSelector];
     [self initializeVariables];
-    [[PostInProgress sharedInstance] clearPostInProgress];//now that you have published then we should get rid of all cashed info
 }
 
 -(void)clearBaseSelcetor{

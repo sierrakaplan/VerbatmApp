@@ -46,7 +46,7 @@
 				return;
 			}
             
-            if(index < self.pinchViews.count && index >= 0) {
+            if(index <= self.pinchViews.count && index >= 0) {
                 [self.pinchViews insertObject:pinchView atIndex:index];
                 NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
                 [self.pinchViewsAsData insertObject:pinchViewData atIndex:index];
@@ -116,7 +116,6 @@
 
 //loads pinchviews from user defaults
 -(void) loadPostFromUserDefaults {
-	[self clearPostInProgress];
 	self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];
 	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]

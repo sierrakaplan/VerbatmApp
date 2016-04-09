@@ -572,7 +572,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	}];
 }
 
--(void)successfullyPublishedNotification:(NSNotification *) notification{
+-(void)successfullyPublishedNotification:(NSNotification *) notification {
 	[self.view addSubview:self.publishSuccessful];
 	[self.view bringSubviewToFront:self.publishSuccessful];
 	[UIView animateWithDuration:REPOST_ANIMATION_DURATION animations:^{
