@@ -52,7 +52,7 @@
 //up to the caller to check that the two are ok to pinch first
 //removes the other scroll view from its superview
 //Returns the pinched pinch view
--(PinchView*) pinchWith:(ContentPageElementScrollView*)otherScrollView;
+-(PinchView*) pinchWith:(ContentPageElementScrollView*)otherScrollView currentIndex:(NSInteger)currentIndex otherIndex:(NSInteger)otherIndex;
 
 //changes the page element and updates the scroll view
 -(void) changePageElement:(UIView<ContentDevElementDelegate>*) newPageElement;

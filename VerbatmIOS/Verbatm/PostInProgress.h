@@ -23,16 +23,13 @@
 -(void) addPinchView:(PinchView*) pinchView atIndex:(NSInteger) index;
 
 //deletes the pv element and replaces it with the newPv
--(void) removePinchView:(PinchView *) pinchView andReplaceWithPinchView:(PinchView *) newPinchView;
+-(void) removePinchViewAtIndex:(NSInteger)index andReplaceWithPinchView:(PinchView *)newPinchView;
 
 //removes pinch view and automatically saves pinchViews
--(void) removePinchView:(PinchView*) pinchView;
+-(void) removePinchViewAtIndex: (NSInteger) index;
 
 //swaps the position of the two pinch views in order to maintain user ordering
--(void) swapPinchView: (PinchView *) pinchView1 andPinchView: (PinchView *) pinchView2;
-
-// once a pinch view has changed, updates it in the user defaults
--(void) updatePinchView: (PinchView*) pinchView;
+-(void) swapPinchViewsAtIndex:(NSInteger)index1 andIndex:(NSInteger)index2;
 
 //loads pinchviews from user defaults
 -(void) loadPostFromUserDefaults;

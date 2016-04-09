@@ -35,7 +35,6 @@
 }
 
 -(void) initWithVideo: (AVURLAsset*)video {
-	[self.background addSubview:self.videoView];
 	[self addPlayIcon];
 	self.containsVideo = YES;
 	self.video = video;
@@ -64,6 +63,8 @@
 	[self.videoView setFrame: self.background.frame];
 	self.playImageView.frame = [self getCenterFrameForVideoView];
 	[self.videoView setImage: self.videoImage];
+	[self.videoView removeFromSuperview];
+	[self.background addSubview:self.videoView];
 }
 
 #pragma mark - Overriding get videos
@@ -87,6 +88,7 @@
 - (id)initWithCoder:(NSCoder *)decoder {
 	if (self = [super initWithCoder:decoder]) {
 		self.phAssetLocalIdentifier = [decoder decodeObjectForKey:PHASSET_IDENTIFIER_KEY];
+		[self loadAVURLAssetFromPHAsset];
 	}
 	return self;
 }

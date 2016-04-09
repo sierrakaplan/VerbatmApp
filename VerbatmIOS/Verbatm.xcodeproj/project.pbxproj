@@ -187,7 +187,6 @@
 		C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */; };
 		C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */ = {isa = PBXBuildFile; fileRef = C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */; };
 		C741AC581C49D23C0076FFC5 /* FollowInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C741AC571C49D23B0076FFC5 /* FollowInfoBar.m */; };
-		C745B42F1BBA630800D18944 /* PermissionCodePageVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C745B42E1BBA630800D18944 /* PermissionCodePageVC.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
 		C74749911C2B1CB90047C66E /* ProfileInformationBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C74749901C2B1CB90047C66E /* ProfileInformationBar.m */; };
 		C7540F741C09A47F00DE1AA6 /* ChannelButtons.m in Sources */ = {isa = PBXBuildFile; fileRef = C7540F731C09A47F00DE1AA6 /* ChannelButtons.m */; };
@@ -557,8 +556,6 @@
 		C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Intro_Instruction_Notification_View.m; sourceTree = "<group>"; };
 		C741AC561C49D23B0076FFC5 /* FollowInfoBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FollowInfoBar.h; sourceTree = "<group>"; };
 		C741AC571C49D23B0076FFC5 /* FollowInfoBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FollowInfoBar.m; sourceTree = "<group>"; };
-		C745B42D1BBA630800D18944 /* PermissionCodePageVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PermissionCodePageVC.h; sourceTree = "<group>"; };
-		C745B42E1BBA630800D18944 /* PermissionCodePageVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PermissionCodePageVC.m; sourceTree = "<group>"; };
 		C7469BF31B4874A600EA7B10 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C747498F1C2B1CB90047C66E /* ProfileInformationBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProfileInformationBar.h; sourceTree = "<group>"; };
 		C74749901C2B1CB90047C66E /* ProfileInformationBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProfileInformationBar.m; sourceTree = "<group>"; };
@@ -1232,15 +1229,6 @@
 			name = Analytics;
 			sourceTree = "<group>";
 		};
-		C745B4301BBA631000D18944 /* Permission  */ = {
-			isa = PBXGroup;
-			children = (
-				C745B42D1BBA630800D18944 /* PermissionCodePageVC.h */,
-				C745B42E1BBA630800D18944 /* PermissionCodePageVC.m */,
-			);
-			name = "Permission ";
-			sourceTree = "<group>";
-		};
 		C748836A1B489AE300E64ED9 /* GMImagePicker */ = {
 			isa = PBXGroup;
 			children = (
@@ -1322,7 +1310,6 @@
 				A58EE8831BA876FA00B7B396 /* Segues */,
 				C7EF5BB51B0CD5E500E7915B /* MasterNavigationVC.m */,
 				C7EF5BB41B0CD5E500E7915B /* MasterNavigationVC.h */,
-				C745B4301BBA631000D18944 /* Permission  */,
 				A560EFB11BB09B36003FB041 /* Feed */,
 				A560EFB01BB09B21003FB041 /* Creation */,
 				A560EFAF1BB09AF8003FB041 /* Login */,
@@ -1847,7 +1834,6 @@
 				C76172741C4C8B1300AB0D84 /* UserAndChannelListsTVC.m in Sources */,
 				A5AA31BA1B9FCDDC00D8D20C /* GTLQueryVerbatmApp.m in Sources */,
 				C7E6C13F1A4E394600863893 /* PhotoVideoPVE.m in Sources */,
-				C745B42F1BBA630800D18944 /* PermissionCodePageVC.m in Sources */,
 				C7E65F691B9245200042AD99 /* ProfileVC.m in Sources */,
 				C7E2C88F1BB7E97600D83668 /* UtilityFunctions.m in Sources */,
 				A5934C171C11EFBD007C7830 /* CustomTabBarController.m in Sources */,

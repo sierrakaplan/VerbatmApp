@@ -450,11 +450,12 @@ rowHeightForComponent:(NSInteger)component{
 
 // Loads pinch views from user defaults
 -(void) loadPostFromUserDefaults {
-	NSArray* savedPinchViews = [[PostInProgress sharedInstance] pinchViews];
+	NSArray* savedPinchViews = [[NSArray alloc] initWithArray:[[PostInProgress sharedInstance] pinchViews]];
+	[[PostInProgress sharedInstance] clearPostInProgress];
 	for (PinchView* pinchView in savedPinchViews) {
 		[pinchView specifyRadius:self.defaultPinchViewRadius
 					   andCenter:self.defaultPinchViewCenter];
-		[self newPinchView:pinchView belowView: nil];
+		[self newPinchView:pinchView belowView: nil andSaveInUserDefaults:YES];
 	}
 }
 
@@ -575,7 +576,8 @@ rowHeightForComponent:(NSInteger)component{
     
 	//update user defaults if was pinch view
 	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
-		[[PostInProgress sharedInstance] removePinchView:(PinchView*)pageElementScrollView.pageElement];
+		NSInteger index = [self.pageElementScrollViews indexOfObject:pageElementScrollView];
+		[[PostInProgress sharedInstance] removePinchViewAtIndex:index];
 		self.numPinchViews--;
 	}
 
@@ -605,7 +607,8 @@ rowHeightForComponent:(NSInteger)component{
 
 
 // Create a horizontal scrollview displaying a pinch object from a pinchView passed in
-- (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView {
+- (void) newPinchView:(PinchView *) pinchView belowView:(ContentPageElementScrollView *)upperScrollView
+andSaveInUserDefaults:(BOOL)save {
 
 	if(!pinchView) {
 		return;
@@ -636,9 +639,11 @@ rowHeightForComponent:(NSInteger)component{
 	@synchronized(self) {
         if(index <= self.pageElementScrollViews.count)[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
 	}
-    
-    [[PostInProgress sharedInstance] addPinchView:pinchView atIndex:index];
-    
+
+    if (save) {
+		[[PostInProgress sharedInstance] addPinchView:pinchView atIndex:index];
+	}
+
     [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
         [self.mainScrollView addSubview: newElementScrollView];
         newElementScrollView.frame = newElementScrollViewFrame;
@@ -1130,7 +1135,10 @@ rowHeightForComponent:(NSInteger)component{
 		return;
 	}
 	self.numPinchViews--;
-	PinchView* pinched = [self.upperPinchScrollView pinchWith:self.lowerPinchScrollView];
+	NSInteger upperPinchIndex = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
+	NSInteger lowerPinchIndex = [self.pageElementScrollViews indexOfObject:self.lowerPinchScrollView];
+	PinchView* pinched = [self.upperPinchScrollView pinchWith:self.lowerPinchScrollView
+												 currentIndex:upperPinchIndex otherIndex:lowerPinchIndex];
 	[self addTapGestureToPinchView:pinched];
 	[self.pageElementScrollViews removeObject:self.lowerPinchScrollView];
 	self.lowerPinchScrollView = self.upperPinchScrollView = nil;
@@ -1202,24 +1210,23 @@ rowHeightForComponent:(NSInteger)component{
 }
 
 -(ContentPageElementScrollView *) createPinchApartViews {
-
+	NSInteger upperIndex = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView];
 	CollectionPinchView *collectionPinchView = (CollectionPinchView *)self.upperPinchScrollView.pageElement;
 	SingleMediaAndTextPinchView *toRemove = [collectionPinchView.pinchedObjects lastObject];
 	CollectionPinchView *newCollectionPinchView = [collectionPinchView unPinchAndRemove:toRemove];
 	toRemove.frame = newCollectionPinchView.frame;
 	[self addTapGestureToPinchView:toRemove];
 	NSInteger index = [self.pageElementScrollViews indexOfObject:self.upperPinchScrollView] + 1;
-
-	if(newCollectionPinchView.pinchedObjects.count == 1){
+	if(newCollectionPinchView.pinchedObjects.count == 1) {
 		SingleMediaAndTextPinchView *unPinchedPinchView = [collectionPinchView.pinchedObjects lastObject];
 		unPinchedPinchView.frame = toRemove.frame;
-		[[PostInProgress sharedInstance] removePinchView:[newCollectionPinchView unPinchAndRemove:unPinchedPinchView]
-									andReplaceWithPinchView:unPinchedPinchView];
+		[newCollectionPinchView unPinchAndRemove:unPinchedPinchView];
+		[[PostInProgress sharedInstance] removePinchViewAtIndex:upperIndex andReplaceWithPinchView:unPinchedPinchView];
 		[self.upperPinchScrollView changePageElement:unPinchedPinchView];
-	}else{
-		[[PostInProgress sharedInstance] updatePinchView:newCollectionPinchView];
-		[[PostInProgress sharedInstance] addPinchView:toRemove atIndex:index];
+	} else {
+		[[PostInProgress sharedInstance] removePinchViewAtIndex:upperIndex andReplaceWithPinchView:newCollectionPinchView];
 	}
+	[[PostInProgress sharedInstance] addPinchView:toRemove atIndex:index];
 
 	ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:toRemove andFrame:self.upperPinchScrollView.frame];
 	self.numPinchViews++;
@@ -1475,7 +1482,6 @@ rowHeightForComponent:(NSInteger)component{
 	}];
 }
 
-
 -(void)presentUserInstructionForPinchGesture {
 
     ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
@@ -1548,7 +1554,8 @@ rowHeightForComponent:(NSInteger)component{
     
 	[unPinched revertToInitialFrame];
 	[unPinched removeFromSuperview];
-	[self newPinchView:unPinched belowView:upperView];
+	//todo: test this
+	[self newPinchView:unPinched belowView:upperView andSaveInUserDefaults:YES];
 	self.selectedView_PAN = self.pageElementScrollViews[upperViewIndex+1];
 }
 
@@ -1584,10 +1591,9 @@ rowHeightForComponent:(NSInteger)component{
 	[self.pageElementScrollViews replaceObjectAtIndex: index1 withObject: scrollView2];
 	[self.pageElementScrollViews replaceObjectAtIndex: index2 withObject: scrollView1];
 	if ([scrollView1.pageElement isKindOfClass:[PinchView class]] && [scrollView2.pageElement isKindOfClass:[PinchView class]]) {
-		[[PostInProgress sharedInstance] swapPinchView:(PinchView*)scrollView1.pageElement andPinchView:(PinchView*)scrollView2.pageElement];
+		[[PostInProgress sharedInstance] swapPinchViewsAtIndex:index1 andIndex:index2];
 	}
 }
-
 
 #pragma mark- MIC
 
@@ -1825,7 +1831,7 @@ rowHeightForComponent:(NSInteger)component{
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
 															andImage:image];
-	[self newPinchView: newPinchView belowView: self.addMediaBelowView];
+	[self newPinchView: newPinchView belowView: self.addMediaBelowView andSaveInUserDefaults:YES];
 }
 
 -(void) createPinchViewFromVideoAsset:(AVURLAsset*) videoAsset andPHAssetLocalID: (NSString*) phAssetLocalId {
@@ -1834,7 +1840,7 @@ rowHeightForComponent:(NSInteger)component{
 															andVideo: videoAsset
 										   andPHAssetLocalIdentifier:phAssetLocalId];
 
-	[self newPinchView: newPinchView belowView: self.addMediaBelowView];
+	[self newPinchView: newPinchView belowView: self.addMediaBelowView andSaveInUserDefaults:YES];
 }
 
 #pragma mark - Returning Pinch Views -

@@ -104,24 +104,30 @@
 	return NO;
 }
 
--(PinchView*) pinchWith:(ContentPageElementScrollView*)otherScrollView {
-	
+-(PinchView*) pinchWith:(ContentPageElementScrollView*)otherScrollView currentIndex:(NSInteger)currentIndex otherIndex:(NSInteger)otherIndex {
+
+	// remove index twice because other pinch view will have replaced it at its index
+	NSInteger index = currentIndex < otherIndex ? currentIndex : otherIndex;
     PinchView* newPinchView;
 	if(self.isCollection) {
 		newPinchView = [(CollectionPinchView*)self.pageElement pinchAndAdd:(SingleMediaAndTextPinchView*)otherScrollView.pageElement];
-        [[PostInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement];
-        [[PostInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement andReplaceWithPinchView:newPinchView];
+        [[PostInProgress sharedInstance] removePinchViewAtIndex:index];
+        [[PostInProgress sharedInstance] removePinchViewAtIndex:index andReplaceWithPinchView:newPinchView];
         
 	} else if(otherScrollView.isCollection){
 		newPinchView = [(CollectionPinchView*)otherScrollView.pageElement pinchAndAdd:(SingleMediaAndTextPinchView*)self.pageElement];
-        [[PostInProgress sharedInstance] removePinchView:(PinchView*)otherScrollView.pageElement];
-        [[PostInProgress sharedInstance] removePinchView:(PinchView*)self.pageElement andReplaceWithPinchView:newPinchView];
-        
+		[[PostInProgress sharedInstance] removePinchViewAtIndex:index];
+		[[PostInProgress sharedInstance] removePinchViewAtIndex:index andReplaceWithPinchView:newPinchView];
+
 	} else {
 		NSMutableArray* pinchViewArray = [[NSMutableArray alloc] initWithObjects:self.pageElement, otherScrollView.pageElement, nil];
 		newPinchView = [[CollectionPinchView alloc] initWithRadius: [(PinchView*)self.pageElement radius]
 														withCenter: [(PinchView*)self.pageElement center]
 													 andPinchViews: pinchViewArray];
+
+		[[PostInProgress sharedInstance] removePinchViewAtIndex:index];
+		[[PostInProgress sharedInstance] removePinchViewAtIndex:index];
+		[[PostInProgress sharedInstance] addPinchView:newPinchView atIndex:currentIndex];
 		pinchViewArray = nil;
 	}
 	
@@ -292,14 +298,6 @@
     float yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
 	CGRect newFrame = [self newTranslationFrameForView:self.selectedItem andXDifference:xDifference andYDifference:yDifference];
 
-	//check if new location is out of the bounds of the collection view, and if so unpinch
-	//the selected view and return it so it can be re placed
-    //no unpinch for now
-//	if (newFrame.origin.y > (self.frame.origin.y + self.frame.size.height/2.f)
-//		|| (newFrame.origin.y + newFrame.size.height) < self.frame.origin.y + self.frame.size.height/2.f) {
-//		return [self unPinchObject];
-//	}
-
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
 		self.selectedItem.frame = newFrame;
@@ -460,37 +458,38 @@
 	self.selectedItem = nil;
 }
 
-//returns the unpinched PinchView
--(PinchView*) unPinchObject {
-	CollectionPinchView* currentPinchView = (CollectionPinchView*)self.pageElement;
-	SingleMediaAndTextPinchView* unPinched = self.selectedItem;
-	self.selectedItem = nil;
-	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
-	if (index < 0) index = 0;
-	
-    [currentPinchView unPinchAndRemove:unPinched];
-
-	//check if there is now only one element in the collection - if so
-	//this should not be collection anymore
-	if ([currentPinchView getNumPinchViews] < 2) {
-		if (currentPinchView.imagePinchViews.count) self.pageElement = currentPinchView.imagePinchViews[0];
-		else self.pageElement = currentPinchView.videoPinchViews[0];
-
-		[(PinchView*)self.pageElement revertToInitialFrame];
-		self.isCollection = NO;
-		self.collectionIsOpen = NO;
-		self.contentSize = self.initialContentSize;
-		self.contentOffset = self.initialContentOffset;
-		[self addSubview:self.deleteButton];
-		self.collectionPinchViews = nil;
-	} else {
-		[self shiftPinchViewsAfterIndex:index];
-	}
-
-	self.selectedItem = nil;
-	[[PostInProgress sharedInstance]removePinchView:currentPinchView andReplaceWithPinchView:(PinchView *)self.pageElement];
-	return unPinched;
-}
+//todo:delete
+////returns the unpinched PinchView
+//-(PinchView*) unPinchObjectAtCurrentIndex: (NSInteger) currentIndex {
+//	CollectionPinchView* currentPinchView = (CollectionPinchView*)self.pageElement;
+//	SingleMediaAndTextPinchView* unPinched = self.selectedItem;
+//	self.selectedItem = nil;
+//	NSInteger index = [self.collectionPinchViews indexOfObject:unPinched]-1;
+//	if (index < 0) index = 0;
+//	
+//    [currentPinchView unPinchAndRemove:unPinched];
+//
+//	//check if there is now only one element in the collection - if so
+//	//this should not be collection anymore
+//	if ([currentPinchView getNumPinchViews] < 2) {
+//		if (currentPinchView.imagePinchViews.count) self.pageElement = currentPinchView.imagePinchViews[0];
+//		else self.pageElement = currentPinchView.videoPinchViews[0];
+//
+//		[(PinchView*)self.pageElement revertToInitialFrame];
+//		self.isCollection = NO;
+//		self.collectionIsOpen = NO;
+//		self.contentSize = self.initialContentSize;
+//		self.contentOffset = self.initialContentOffset;
+//		[self addSubview:self.deleteButton];
+//		self.collectionPinchViews = nil;
+//	} else {
+//		[self shiftPinchViewsAfterIndex:index];
+//	}
+//
+//	self.selectedItem = nil;
+//	[[PostInProgress sharedInstance] removePinchViewAtIndex:currentIndex andReplaceWithPinchView:(PinchView *)self.pageElement];
+//	return unPinched;
+//}
 
 
 -(void)markAsSelected:(BOOL) selected{
