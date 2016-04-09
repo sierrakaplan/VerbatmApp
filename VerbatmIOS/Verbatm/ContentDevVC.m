@@ -1887,7 +1887,7 @@ rowHeightForComponent:(NSInteger)component{
 		if(posting) {
 			[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 			[self cleanUp];
-		}else {
+		} else {
 			NSLog(@"Couldn't publish because something else is publishing or no internet.");
 			//TODO -- notification to user either something else is publishing or there is not internet
 		}

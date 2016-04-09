@@ -38,21 +38,15 @@
 	[self getMoreFeedPostsWithCompletionHandler:block];
 }
 
-
-
 -(void)reloadFeedFromStartWithCompletionHandler:(void(^)(NSArray *))block {
     //reset cursor to start
     self.postsDownloadedSoFar = 0;
-    
     PFQuery * userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
     [userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
     [userChannelQuery findObjectsInBackgroundWithBlock:^
      (NSArray * _Nullable objects, NSError * _Nullable error) {
-         
          if(objects.count > 0){
-             
              PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-             
              NSMutableArray * channelsWeFollow = [[NSMutableArray alloc] init];
              for(int i = 0; i < objects.count; i++){
                  [channelsWeFollow addObject:[objects[i]objectForKey:FOLLOW_CHANNEL_FOLLOWED_KEY]];
@@ -78,12 +72,9 @@
          } else {
              block(@[]);//no results so we send an empty list
          }
-         
      }];
 }
      
-     
-
 -(void)getMoreFeedPostsWithCompletionHandler:(void(^)(NSArray *))block{
 	PFQuery * userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
 	[userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];

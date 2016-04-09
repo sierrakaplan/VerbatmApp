@@ -87,16 +87,14 @@
 
 
 +(void) getPostsInChannel:(Channel *) channel withCompletionBlock:(void(^)(NSArray *))block{
-
 	if(channel){
 		PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
-		[postQuery orderByDescending:@"createdAt"];
+		[postQuery orderByAscending:@"createdAt"];
 		[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 													  NSError * _Nullable error) {
 
 			if(activities && !error){
-
 				NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
 
 				for(PFObject * pc_activity in activities){

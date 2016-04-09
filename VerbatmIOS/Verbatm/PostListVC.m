@@ -294,9 +294,9 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 			return NSOrderedSame;
 
 		else if (secondsBetweenDates < 0)
-			return NSOrderedDescending;
-		else
 			return NSOrderedAscending;
+		else
+			return NSOrderedDescending;
 
 	}];
 }
