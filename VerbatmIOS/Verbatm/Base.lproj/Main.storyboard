@@ -67,21 +67,6 @@
             </objects>
             <point key="canvasLocation" x="-4475" y="-1606"/>
         </scene>
-        <!--Topics-->
-        <scene sceneID="A4H-1v-HNX">
-            <objects>
-                <viewController storyboardIdentifier="topics_feed_vc" title="Topics" id="icb-0n-CtC" customClass="TopicsFeedVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="voT-er-27b">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.0" colorSpace="calibratedRGB"/>
-                        <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="P70-Wg-8bT" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-2700" y="74"/>
-        </scene>
         <!--Article Display VC-->
         <scene sceneID="IFb-Qc-Bhx">
             <objects>
@@ -95,35 +80,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mmd-zC-fwh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-3776" y="-478"/>
-        </scene>
-        <!--Trending-->
-        <scene sceneID="wyz-UI-MUa">
-            <objects>
-                <viewController storyboardIdentifier="trending_vc" title="Trending" wantsFullScreenLayout="YES" automaticallyAdjustsScrollViewInsets="NO" id="Ve4-Qj-kgj" customClass="ArticleListVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Yqu-zV-E3L">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    </view>
-                    <extendedEdge key="edgesForExtendedLayout"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="njz-fF-6j9" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3958" y="433"/>
-        </scene>
-        <!--Most Recent-->
-        <scene sceneID="gf5-8u-ULb">
-            <objects>
-                <viewController storyboardIdentifier="most_recent_vc" title="Most Recent" id="cjn-wD-zXD" customClass="ArticleListVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="vQZ-dJ-PYL">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="SqR-00-svU" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-3567" y="433"/>
         </scene>
         <!--Feed-->
         <scene sceneID="LSe-v6-SsT">
@@ -367,33 +323,57 @@
             </objects>
             <point key="canvasLocation" x="-3989" y="-1321"/>
         </scene>
-        <!--User Drafts-->
-        <scene sceneID="i0X-XU-PPL">
+        <!--DiscoverVC-->
+        <scene sceneID="hNI-n8-7Cf">
             <objects>
-                <viewController storyboardIdentifier="user_drafts_vc" title="User Drafts" id="bWz-ew-DAn" customClass="UserDraftsVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="DJB-7N-5FB">
+                <viewController storyboardIdentifier="discover_vc" id="Hhc-hu-zb3" customClass="DiscoverVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="FMo-lH-YSb">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <searchBar contentMode="redraw" id="OMW-t2-1RC">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="Hhc-hu-zb3" id="ESL-H8-YD0"/>
+                                </connections>
+                            </searchBar>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="eqy-rr-7Zi">
+                                <rect key="frame" x="0.0" y="44" width="320" height="524"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <segue destination="i9B-d6-FOW" kind="embed" id="vVU-fA-YAA"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="searchBar" destination="OMW-t2-1RC" id="NJn-1L-Hkw"/>
+                        <outlet property="searchDisplayController" destination="N54-Ic-Hel" id="DKj-dN-Kna"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Mfg-7S-8Pn" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jmU-sY-VEf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <searchDisplayController id="07b-bQ-TLh">
+                    <connections>
+                        <outlet property="delegate" destination="Hhc-hu-zb3" id="d7U-s4-DcD"/>
+                        <outlet property="searchBar" destination="OMW-t2-1RC" id="5M1-c9-wtF"/>
+                        <outlet property="searchContentsController" destination="Hhc-hu-zb3" id="bmg-92-AHV"/>
+                        <outlet property="searchResultsDataSource" destination="Hhc-hu-zb3" id="ebS-3s-xii"/>
+                        <outlet property="searchResultsDelegate" destination="Hhc-hu-zb3" id="WfM-C2-yd0"/>
+                    </connections>
+                </searchDisplayController>
+                <searchDisplayController id="N54-Ic-Hel">
+                    <connections>
+                        <outlet property="delegate" destination="Hhc-hu-zb3" id="GOc-Po-t38"/>
+                        <outlet property="searchContentsController" destination="Hhc-hu-zb3" id="Zlq-8i-3e7"/>
+                        <outlet property="searchResultsDataSource" destination="Hhc-hu-zb3" id="Bv3-PY-7EI"/>
+                        <outlet property="searchResultsDelegate" destination="Hhc-hu-zb3" id="I1l-qG-lG7"/>
+                    </connections>
+                </searchDisplayController>
             </objects>
-            <point key="canvasLocation" x="-4915" y="-898"/>
-        </scene>
-        <!--User Stories-->
-        <scene sceneID="eKI-ka-fA5">
-            <objects>
-                <viewController storyboardIdentifier="user_stories_vc" title="User Stories" id="2m0-kX-Tyg" customClass="ArticleListVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="NpA-nt-PIW">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="htX-2P-NkT" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-4906" y="-281"/>
+            <point key="canvasLocation" x="-3369" y="-1230"/>
         </scene>
         <!--Profile-->
         <scene sceneID="Apv-cW-9iI">
@@ -412,19 +392,19 @@
             </objects>
             <point key="canvasLocation" x="-5333" y="-2673"/>
         </scene>
-        <!--User Article Display-->
-        <scene sceneID="wLm-HZ-LGJ">
+        <!--Featured ContentVC-->
+        <scene sceneID="Ztj-7g-WJd">
             <objects>
-                <viewController storyboardIdentifier="user_article_display_vc" title="User Article Display" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fb6-20-IL6" customClass="PostDisplayVC" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="S9s-GP-1Ky">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                <viewController storyboardIdentifier="featured_content_vc" id="i9B-d6-FOW" customClass="FeaturedContentVC" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Cf5-tW-Arb">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="524"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="o0d-Fd-4uJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="QaT-Ao-b0g" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-4128" y="-471"/>
+            <point key="canvasLocation" x="-2938" y="-991"/>
         </scene>
     </scenes>
     <resources>

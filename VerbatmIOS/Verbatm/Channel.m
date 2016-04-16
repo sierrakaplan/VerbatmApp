@@ -42,7 +42,7 @@
 }
 
 -(BOOL)channelBelongsToCurrentUser {
-	if (!self.parseChannelObject) return nil;
+	if (!self.parseChannelObject) return false;
 	if (!self.channelCreator) self.channelCreator = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
     return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
 }

@@ -159,10 +159,12 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(void)errorInSignInAnimation:(NSString*) errorMessage {
     NSLog(@"Error: \"%@\"", errorMessage);
-	
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:errorMessage message:@""
-                                                    delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Error signing in" message:errorMessage
+																preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:defaultAction];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
 -(void) removeAnimationView {

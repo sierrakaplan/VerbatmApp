@@ -11,6 +11,7 @@
 #import "CustomTabBarController.h"
 #import "ContentDevVC.h"
 
+#import "DiscoverVC.h"
 #import "Durations.h"
 
 #import "FeedVC.h"
@@ -47,11 +48,10 @@
 
 #pragma mark View Controllers in tab bar Controller
 
-@property (strong,nonatomic) ProfileVC* profileVC;
-@property (strong,nonatomic) FeedVC * feedVC;
+@property (strong,nonatomic) ProfileVC *profileVC;
+@property (strong,nonatomic) FeedVC *feedVC;
+@property (strong,nonatomic) DiscoverVC *discoverVC;
 
-
-@property (nonatomic) UserAndChannelListsTVC * channelListView;
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
@@ -138,7 +138,7 @@
     deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
     deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.channelListView];
+    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.discoverVC];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
     self.tabBarController.selectedViewController = self.feedVC;
@@ -183,7 +183,6 @@
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-
     UIImage * searchUnselected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
                                               imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                 scaledToSize:CGSizeMake(30.f, 30.f)];
@@ -191,35 +190,35 @@
     UIImage * searchSelected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
                                                       imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                         scaledToSize:CGSizeMake(30.f, 30.f)];
-    
-    self.channelListView = [[UserAndChannelListsTVC alloc] init];
-    self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil
-                                                                    image:searchUnselected
-                                                            selectedImage:searchSelected];
-    
-    [self.channelListView presentAllVerbatmChannels];
-    
-    self.channelListView.listDelegate = self;
+
+	//todo: delete references to channel list view
+//    self.channelListView = [[UserAndChannelListsTVC alloc] init];
+//    [self.channelListView presentAllVerbatmChannels];
+//    self.channelListView.listDelegate = self;
+	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
 
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
-    
-    self.profileVC.delegate = self;
+	self.profileVC.delegate = self;
     self.profileVC.userOfProfile = [PFUser currentUser];
     self.profileVC.isCurrentUserProfile = YES;
+
     self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
     self.feedVC.delegate = self;
 
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
-																	
 													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
 	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:HOME_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
+	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+															  image:searchUnselected
+													  selectedImage:searchSelected];
 
     // images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+//    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	self.discoverVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 

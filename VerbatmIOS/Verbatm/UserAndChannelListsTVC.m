@@ -229,7 +229,7 @@
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *identifier = [NSString stringWithFormat:@"cell,%ld", indexPath.row];
+    NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
     ChannelOrUsernameCV *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if(cell == nil) {

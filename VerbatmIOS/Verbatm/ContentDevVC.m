@@ -27,7 +27,6 @@
 #import "PostInProgress.h"
 #import "PublishingProgressManager.h"
 
-#import "MediaDevVC.h"
 #import "MediaSelectTile.h"
 
 #import "SegueIDs.h"
@@ -554,7 +553,7 @@ rowHeightForComponent:(NSInteger)component{
 //apply two step deletion
 -(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView {
     UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Confirm Deletion" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDefault
+    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive
                                                           handler:^(UIAlertAction * action) {
                                                               [self deleteScrollView: scrollView];
                                                           }];
