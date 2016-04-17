@@ -162,6 +162,10 @@
     [self loadChannelsAndCreateTicker];
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return YES;
+}
+
 -(void)loadChannelsAndCreateTicker{
 
 	self.userChannels = [NSMutableArray arrayWithArray:[[UserInfoCache sharedInstance] getUserChannels]];

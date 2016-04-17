@@ -371,13 +371,14 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[post postOnScreen];
 		}
     }
-//	} else {
-//		[self getPosts];
-//	}
 }
 
 -(void) footerShowing: (BOOL) showing{
     self.footerBarIsUp = showing;
+	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+		[self setNeedsStatusBarAppearanceUpdate];
+	} completion:^(BOOL finished) {
+	}];
 	for(PostView *postView in self.presentedPostList){
 		[postView shiftLikeShareBarDown:!showing];
 	}

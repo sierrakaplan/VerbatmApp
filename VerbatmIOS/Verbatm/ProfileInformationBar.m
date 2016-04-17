@@ -33,11 +33,8 @@
 
 -(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName
 			   isCurrentUser:(BOOL) isCurrentUser isBlockedByCurrentUser:(BOOL) isBlocked {
-    
     self =  [super initWithFrame:frame];
-    
     if(self){
-        
         [self formatView];
         [self createProfileHeaderWithUserName:userName];
         self.isCurrentUser = isCurrentUser;
@@ -64,9 +61,11 @@
                                                  name:NOTIFICATION_USERNAME_CHANGED_SUCCESFULLY
                                                object:nil];
 }
+
 -(void) userNameChanged: (NSNotification*) notification {
     [self updateUserName];
 }
+
 -(void) loginSucceeded: (NSNotification*) notification {
 /*the user has logged in so we can update our username*/
     [self updateUserName];
@@ -86,7 +85,7 @@
     CGFloat x_point = (CHANNEL_BUTTON_WALL_XOFFSET*2) + SETTINGS_BUTTON_SIZE;
     CGFloat width = self.frame.size.width - (CHANNEL_BUTTON_WALL_XOFFSET*2) - (SETTINGS_BUTTON_SIZE*2);
     CGFloat height = self.frame.size.height;
-    CGFloat y_point = self.center.y - (height/2.f);
+    CGFloat y_point = self.center.y - ((height - STATUS_BAR_HEIGHT)/2.f);
     
     self.userTitleName = [[UILabel alloc] initWithFrame:CGRectMake(x_point, y_point,
                                                                        width,height)];
@@ -104,7 +103,7 @@
     CGFloat height = SETTINGS_BUTTON_SIZE;
     CGFloat width = height+ 20.f;
     CGFloat frame_x = self.frame.size.width - width - CHANNEL_BUTTON_WALL_XOFFSET;
-    CGFloat frame_y = self.center.y - (height/2.f);
+    CGFloat frame_y = self.center.y - ((height - STATUS_BAR_HEIGHT)/2.f);
     
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height );
     

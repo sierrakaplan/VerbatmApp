@@ -39,9 +39,6 @@
 								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete;
 
-//adds a down arrow to the cover photo
--(void) addDownArrowButton;
-
 //Scrolls POV to a specific page
 -(void) scrollToPageAtIndex:(NSInteger) pageIndex;
 

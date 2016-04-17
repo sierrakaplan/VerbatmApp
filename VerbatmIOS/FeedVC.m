@@ -66,7 +66,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 }
 
-
 -(void)checkIntroNotification{
 	if(![[UserSetupParameters sharedInstance] isFeed_InstructionShown]){
 		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Feed];

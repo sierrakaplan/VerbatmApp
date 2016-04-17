@@ -43,6 +43,7 @@
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
+@property (nonatomic) BOOL tabBarHidden;
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
@@ -86,6 +87,18 @@
 
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return self.tabBarHidden;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
+}
+
+- (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
+	return UIStatusBarAnimationSlide;
 }
 
 -(void) registerForNotifications {
@@ -261,8 +274,6 @@
     [self bringUpLogin];
 }
 
-
-
 #pragma mark - Handle Login -
 
 //brings up the create account page if there is no user logged in
@@ -294,22 +305,18 @@
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
+		self.tabBarHidden = NO;
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
 		}];
 	} else {
+		self.tabBarHidden = YES;
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
 		}];
 	}
-}
-
--(void) shareButtonSelectedForPostObject: (PFObject* ) post {
-	//todo:
-}
-
--(void) likeButtonLiked:(BOOL) liked forPostObject: (PFObject* ) post {
-	//todo:
 }
 
 //show the list of followers of the current user
@@ -319,10 +326,9 @@
     newList.listDelegate = self;
     
     [self presentViewController:newList animated:YES completion:^{
-        
     }];
-    
 }
+
 //show list of people the user follows
 -(void)presentWhoIFollowMyID:(id) userID {
     
