@@ -428,7 +428,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		return;
 	}
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
-																   message:@"Are you sure you want to delete the entire post?"
+																   message:@"Entire post will be deleted."
 															preferredStyle:UIAlertControllerStyleAlert];
 
 	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
