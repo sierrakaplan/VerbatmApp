@@ -9,6 +9,7 @@
 #ifndef Icons_h
 #define Icons_h
 
+#define LOAD_ICON_IMAGE @"spinner_5"
 #define VERBATM_LOGO @"verbatm_logo"
 
 #pragma mark - Sign in -
@@ -32,6 +33,7 @@
 
 #pragma mark - Feed -
 
+#define VIDEO_LOADING_ICON @"white_spin_icon"
 #define FOLLOWED_BY_ICON  @"followed_by_icon"
 #define FOLLOW_ICON_LIGHT  @"follow_icon_light"
 #define FOLLOW_ICON_DARK  @"follow_icon_dark"

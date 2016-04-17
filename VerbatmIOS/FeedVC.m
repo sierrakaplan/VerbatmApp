@@ -148,6 +148,10 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 	return YES;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	return  (![touch.view isKindOfClass:[Intro_Instruction_Notification_View class]]);
+}
+
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
 	// Tap interferes with photo fade circle
 	CGFloat circleRadiusWithPadding = (CIRCLE_RADIUS + 20.f);

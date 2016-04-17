@@ -659,7 +659,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(LoadingIndicator *)customActivityIndicator{
 	if(!_customActivityIndicator){
 		CGPoint center = CGPointMake(self.view.frame.size.width/2., self.view.frame.size.height/2.f);
-		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:center];
+		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:center andImage:[UIImage imageNamed:LOAD_ICON_IMAGE]];
 		[self.view addSubview:_customActivityIndicator];
 		[self.view bringSubviewToFront:_customActivityIndicator];
 	}

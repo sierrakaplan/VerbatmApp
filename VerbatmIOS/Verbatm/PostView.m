@@ -610,13 +610,12 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 //removes the little bouncing arrow in the right corner of the screen
 -(void)removePageUpIndicatorFromView{
 	if(self.pageUpIndicator){
-		[UIView animateWithDuration:1.f animations:^{
+		[UIView animateWithDuration:0.2f animations:^{
 			self.pageUpIndicator.alpha = 0.f;
 		} completion:^(BOOL finished) {
 			[self.pageUpIndicator removeFromSuperview];
 			self.pageUpIndicator = nil;
 		}];
-
 	}
 }
 
@@ -637,31 +636,28 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void)startArrowAnimation{
-
-	UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];
-	UIImageView * iv = [[UIImageView alloc] initWithImage:arrowImage];
-	[self addSubview:iv];
-	[self bringSubviewToFront:iv];
-
-	CGFloat size = 30.f;
-	CGFloat x_cord = self.frame.size.width - size - 8.f;
-	CGFloat y_cord = (self.likeShareBar.frame.origin.y - size - 3.f);
+	CGFloat size = 50.f;
+	CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
+	CGFloat y_cord = self.likeShareBar.frame.origin.y;
 	CGRect frame = CGRectMake(x_cord,y_cord, size, size);
-	iv.frame = frame;
+	UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];
+	self.pageUpIndicator = [[UIImageView alloc] initWithImage:arrowImage];
+	self.pageUpIndicator.frame = frame;
+	self.pageUpIndicator.contentMode = UIViewContentModeScaleAspectFit;
+	[self addSubview:self.pageUpIndicator];
 
-	CABasicAnimation *pulse;
-	pulse = [CABasicAnimation animationWithKeyPath:@"transform.translation.y"];
-	pulse.duration = 0.5;
-	pulse.autoreverses = YES;
-	pulse.cumulative = NO;
-	pulse.fillMode = kCAFillModeForwards;
-	pulse.fromValue = [NSNumber numberWithFloat:1.f];
-	pulse.toValue =[NSNumber numberWithFloat:(-20.f)];
-	pulse.repeatCount = HUGE_VALF;
-
-	[iv.layer removeAllAnimations];
-	[iv.layer addAnimation:pulse forKey:@"Pulse"];
-	self.pageUpIndicator = iv;
+//	CABasicAnimation *pulse;
+//	pulse = [CABasicAnimation animationWithKeyPath:@"transform.translation.y"];
+//	pulse.duration = 0.5;
+//	pulse.autoreverses = YES;
+//	pulse.cumulative = NO;
+//	pulse.fillMode = kCAFillModeForwards;
+//	pulse.fromValue = [NSNumber numberWithFloat:1.f];
+//	pulse.toValue =[NSNumber numberWithFloat:(-20.f)];
+//	pulse.repeatCount = HUGE_VALF;
+//
+//	[pageUpImageView.layer removeAllAnimations];
+//	[pageUpImageView.layer addAnimation:pulse forKey:@"Pulse"];
 }
 
 #pragma mark - Delete Post -
@@ -721,7 +717,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 -(LoadingIndicator *)customActivityIndicator{
 	if(!_customActivityIndicator){
 		CGPoint newCenter = CGPointMake(self.center.x, self.frame.size.height * 1.f/2.f);
-		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter];
+		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter andImage:[UIImage imageNamed:LOAD_ICON_IMAGE]];
 		[self addSubview:_customActivityIndicator];
 	}
 	return _customActivityIndicator;

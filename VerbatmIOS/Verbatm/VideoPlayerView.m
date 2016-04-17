@@ -63,28 +63,6 @@
 }
 
 #pragma mark - Prepare Video Asset -
-//
-//-(void) prepareVideoFromArray: (NSArray*) videoList {
-//	self.videoLoading = YES;
-//	if ([[videoList firstObject] isKindOfClass:[NSURL class]]) {
-//		NSURL *urlKey = [videoList firstObject];
-//		if([[VideoDownloadManager sharedInstance] containsEntryForUrl:urlKey]) {
-//			AVPlayerItem *playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl:urlKey.absoluteString];
-//			[self prepareVideoFromPlayerItem:playerItem];
-//			return;
-//		}
-//	}
-//	[self fuseVideoArray: videoList];
-//}
-
-//-(void) fuseVideoArray: (NSArray*) videoList {
-//	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
-//		[self fuseAssets: videoList];
-//		dispatch_async(dispatch_get_main_queue(), ^{
-//			[self prepareVideoFromAsset: self.fusedVideoAsset];
-//		});
-//	});
-//}
 
 -(void)prepareVideoFromAsset: (AVAsset*) asset{
 	if (!asset) return;
@@ -197,63 +175,15 @@
 				self.videoLoading = NO;
 			}
 			if (self.shouldPlayOnLoad) [self playVideo];
+			self.shouldPlayOnLoad = NO;
 		} else {
 			[self.customActivityIndicator startCustomActivityIndicator];
 			self.videoLoading = YES;
+			self.shouldPlayOnLoad = YES;
 			NSLog(@"play back won't keep up");
 		}
 	}
 }
-
-
-#pragma mark - Fuse video assets into one -
-
-//-(void) fuseVideoArray: (NSArray*) videoList {
-//	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
-//		[self fuseAssets: videoList];
-//		dispatch_async(dispatch_get_main_queue(), ^{
-//			[self prepareVideoFromAsset: self.fusedVideoAsset];
-//		});
-//	});
-//}
-//
-////This code fuses the video assets into a single video that plays the videos one after the other.
-////It accepts both avassets and urls which it converts into assets
-//-(AVMutableComposition*) fuseAssets:(NSArray*)videoList {
-//	if (self.fusedVideoAsset) return self.fusedVideoAsset;
-//	self.fusedVideoAsset = [AVMutableComposition composition]; //create a composition to hold the joined assets
-//	AVMutableCompositionTrack* videoTrack = [self.fusedVideoAsset addMutableTrackWithMediaType:AVMediaTypeVideo
-//																			  preferredTrackID:kCMPersistentTrackID_Invalid];
-//	AVMutableCompositionTrack* audioTrack = [self.fusedVideoAsset addMutableTrackWithMediaType:AVMediaTypeAudio
-//																			  preferredTrackID:kCMPersistentTrackID_Invalid];
-//	CMTime nextClipStartTime = kCMTimeZero;
-//	NSError* error;
-//	for(id asset in videoList) {
-//		AVURLAsset * videoAsset;
-//		if([asset isKindOfClass:[NSURL class]]) {
-//			videoAsset = [AVURLAsset assetWithURL:asset];
-//		} else {
-//			videoAsset = asset;
-//		}
-//		NSArray * videoTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
-//		if(!videoTrackArray.count) continue;
-//
-//		AVAssetTrack* currentVideoTrack = [videoTrackArray objectAtIndex:0];
-//		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentVideoTrack atTime:nextClipStartTime error: &error];
-//		videoTrack.preferredTransform = currentVideoTrack.preferredTransform;
-//
-//		NSArray * audioTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeAudio];
-//		if(!audioTrackArray.count) continue;
-//		AVAssetTrack* currentAudioTrack = [audioTrackArray objectAtIndex:0];
-//		audioTrack.preferredTransform = currentAudioTrack.preferredTransform;
-//		[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentAudioTrack atTime:nextClipStartTime error:&error];
-//		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
-//	}
-//	if (error) {
-//		NSLog(@"Error fusing video assets: %@", error.description);
-//	}
-//	return self.fusedVideoAsset;
-//}
 
 #pragma mark - Play video -
 
@@ -352,11 +282,12 @@
 
 #pragma mark - Lazy Instantation -
 
--(LoadingIndicator *)customActivityIndicator{
+-(LoadingIndicator *) customActivityIndicator{
 	if(!_customActivityIndicator){
-		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:self.center];
+		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:self.center andImage:[UIImage imageNamed:VIDEO_LOADING_ICON]];
 		[self addSubview:_customActivityIndicator];
 	}
+	[self bringSubviewToFront:_customActivityIndicator];
 	return _customActivityIndicator;
 }
 

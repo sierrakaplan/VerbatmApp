@@ -11,6 +11,7 @@
 
 #import "Durations.h"
 
+#import "Icons.h"
 #import "Intro_Instruction_Notification_View.h"
 
 #import "Follow_BackendManager.h"
@@ -193,6 +194,10 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
 	return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	return  (![touch.view isKindOfClass:[Intro_Instruction_Notification_View class]]);
 }
 
 #pragma mark - POSTListView delegate -
@@ -482,7 +487,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 -(LoadingIndicator *)customActivityIndicator{
     if(!_customActivityIndicator){
         CGPoint newCenter = CGPointMake(self.view.center.x, self.view.frame.size.height * 1.f/2.f);
-        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter];
+        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter andImage:[UIImage imageNamed:LOAD_ICON_IMAGE]];
         [self.view addSubview:_customActivityIndicator];
     }
     return _customActivityIndicator;
