@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		9D29995819BA7EBD005EBC8A /* MediaSessionManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */; };
-		A5076D081BE99A6300303746 /* UserDraftsVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D071BE99A6300303746 /* UserDraftsVC.m */; };
 		A5076D0E1BED6EF000303746 /* SingleMediaAndTextPinchView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */; };
 		A5076D141BF2B25100303746 /* TextOverMediaView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5076D131BF2B25100303746 /* TextOverMediaView.m */; };
 		A51A52F61BD6B8AB0048E62A /* MediaDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = A51A52F51BD6B8AB0048E62A /* MediaDownloader.m */; };
@@ -284,8 +283,6 @@
 		113A4CE1B7B9BC71C0E99388 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		9D29995619BA7EBD005EBC8A /* MediaSessionManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MediaSessionManager.h; sourceTree = "<group>"; };
 		9D29995719BA7EBD005EBC8A /* MediaSessionManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MediaSessionManager.m; sourceTree = "<group>"; };
-		A5076D061BE99A6300303746 /* UserDraftsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserDraftsVC.h; sourceTree = "<group>"; };
-		A5076D071BE99A6300303746 /* UserDraftsVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserDraftsVC.m; sourceTree = "<group>"; };
 		A5076D0C1BED6EF000303746 /* SingleMediaAndTextPinchView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleMediaAndTextPinchView.h; sourceTree = "<group>"; };
 		A5076D0D1BED6EF000303746 /* SingleMediaAndTextPinchView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleMediaAndTextPinchView.m; sourceTree = "<group>"; };
 		A5076D121BF2B25100303746 /* TextOverMediaView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextOverMediaView.h; sourceTree = "<group>"; };
@@ -740,8 +737,6 @@
 				C70E1C551C3BF76200346A25 /* Settings Page */,
 				C7E65F671B9245200042AD99 /* ProfileVC.h */,
 				C7E65F681B9245200042AD99 /* ProfileVC.m */,
-				A5076D061BE99A6300303746 /* UserDraftsVC.h */,
-				A5076D071BE99A6300303746 /* UserDraftsVC.m */,
 			);
 			name = Profile;
 			sourceTree = "<group>";
@@ -1923,7 +1918,6 @@
 				A56F68871B66FED900CE5744 /* ContentPageElementScrollView.m in Sources */,
 				A586566D1B620E60008E358C /* PointObject.m in Sources */,
 				C78B682619CA6C01003D0AC5 /* MediaSelectTile.m in Sources */,
-				A5076D081BE99A6300303746 /* UserDraftsVC.m in Sources */,
 				A5E85F9F1B911DA900E148D0 /* GTLErrorObject.m in Sources */,
 				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
 				A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */,

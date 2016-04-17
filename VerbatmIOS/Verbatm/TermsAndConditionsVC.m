@@ -39,7 +39,6 @@
         self.T_C_ImageView.frame = CGRectMake(0.f, CUSTOM_NAV_BAR_HEIGHT, self.view.frame.size.width, self.view.frame.size.height - CUSTOM_NAV_BAR_HEIGHT);
         [self.Accept_Terms removeFromSuperview];
     }
-   
 }
 
 -(void)viewDidLayoutSubviews{
@@ -48,6 +47,9 @@
     }
 }
 
+-(BOOL) prefersStatusBarHidden {
+	return YES;
+}
 
 -(void)MakeViewPulse:(UIView *) view{
     CABasicAnimation *pulse;
@@ -58,11 +60,9 @@
     pulse.toValue =[NSNumber numberWithFloat:1.2f];
     pulse.repeatCount = HUGE_VALF;
     
-    
     [view.layer removeAllAnimations];
     [view.layer addAnimation:pulse forKey:@"Pulse"];
 }
-
 
 -(void)createNavigationBar{
     CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);

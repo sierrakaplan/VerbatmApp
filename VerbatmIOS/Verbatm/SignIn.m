@@ -46,8 +46,6 @@
 	[self registerForNotifications];
 	[self addFacebookLoginButton];
     self.loginFirstTimeDone = NO;
-    
-    
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -60,6 +58,10 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
 -(void) centerViews {
