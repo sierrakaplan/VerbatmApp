@@ -43,6 +43,8 @@
 -(PFObject *) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel{
 	PFObject * newPostObject = [PFObject objectWithClassName:POST_PFCLASS_KEY];
 	[newPostObject setObject:channel.parseChannelObject forKey:POST_CHANNEL_KEY];
+	[newPostObject setObject:[NSNumber numberWithInteger:0] forKey:POST_NUM_LIKES];
+	[newPostObject setObject:[NSNumber numberWithInteger:0] forKey:POST_NUM_REBLOGS];
 	[newPostObject setObject:[PFUser currentUser] forKey:POST_ORIGINAL_CREATOR_KEY];
 	[newPostObject setObject:[NSNumber numberWithInteger:pinchViews.count] forKey:POST_SIZE_KEY];
 	[newPostObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
@@ -85,16 +87,14 @@
 	}];
 }
 
-
-+(void) getPostsInChannel:(Channel *) channel withCompletionBlock:(void(^)(NSArray *))block{
++(void) getPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block{
 	if(channel){
 		PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 		[postQuery orderByAscending:@"createdAt"];
 		[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 													  NSError * _Nullable error) {
-
-			if(activities && !error){
+			if(activities && !error) {
 				NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
 
 				for(PFObject * pc_activity in activities){

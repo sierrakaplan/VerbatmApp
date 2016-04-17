@@ -11,6 +11,7 @@
 @interface DiscoverVC()
 
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (weak, nonatomic) IBOutlet UIView *tableContainerView;
 
 
 @end
@@ -24,12 +25,12 @@
 //	CGFloat trendingContentYOffset = featuredContentYOffset + featuredContentHeight + 10.f;
 //	self.featuredContentContainerView.frame = CGRectMake(0.f, featuredContentYOffset,
 //														 self.view.frame.size.width, featuredContentHeight);
-//	self.trendingContainerView.frame = CGRectMake(0.f, trendingContentYOffset, <#CGFloat width#>, <#CGFloat height#>)
+//	self.trendingContainerView.frame = CGRectMake(0.f, trendingContentYOffset, CGFloat width, CGFloat height)
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-
+	self.tableContainerView.frame = CGRectMake(0.f, self.searchBar.frame.size.height + 45.f, self.view.frame.size.width, self.view.frame.size.height);
 }
 
 @end

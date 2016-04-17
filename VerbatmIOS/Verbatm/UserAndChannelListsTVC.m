@@ -23,7 +23,7 @@
 
 #import "QuartzCore/QuartzCore.h"
 
-@interface UserAndChannelListsTVC ()<CustomNavigationBarDelegate>
+@interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
 
 @property (nonatomic) CustomNavigationBar * navBar;
 
@@ -63,7 +63,6 @@
     self.tableView.scrollIndicatorInsets = inset;
 }
 
-
 -(void)addRefreshFeature{
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
@@ -77,7 +76,6 @@
     
     [refreshControl endRefreshing];
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -158,8 +156,6 @@
      }];
 }
 
-
-
 //Gives us the channels to display and if we should show the users that follow them then
 -(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {
     self.userInfoOnDisplay = userId;
@@ -172,11 +168,8 @@
     //}
 }
 
-
 -(void)setTableViewHeader{
-    if(self.presentAllChannels){
-        
-    }else {
+    if (!self.presentAllChannels) {
         //temporary list view and should be removable
         CGRect navBarFrame = CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
         self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:ADK_NAV_BAR_COLOR];
@@ -226,7 +219,6 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return (self.channelsToDisplay.count + self.presentAllChannels);
 }
-
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];

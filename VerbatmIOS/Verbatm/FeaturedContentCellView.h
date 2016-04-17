@@ -1,5 +1,5 @@
 //
-//  FeaturedContentVC.h
+//  FeaturedContentCellView.h
 //  Verbatm
 //
 //  Created by Sierra Kaplan-Nelson on 4/15/16.
@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FeaturedContentVC : UITableViewController
+@interface FeaturedContentCellView : UITableViewCell
+
+-(void)presentChannels:(NSArray*) channels;
 
 @end

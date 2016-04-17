@@ -37,6 +37,7 @@
 	if(ourUser){
 		PFObject * newChannelObject = [PFObject objectWithClassName:CHANNEL_PFCLASS_KEY];
 		[newChannelObject setObject:channelName forKey:CHANNEL_NAME_KEY];
+		[newChannelObject setObject:[NSNumber numberWithInteger:0] forKey:CHANNEL_NUM_FOLLOWS];
 		[newChannelObject setObject:[PFUser currentUser] forKey:CHANNEL_CREATOR_KEY];
 		[newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded){
@@ -124,12 +125,6 @@
 			completionBlock(finalChannels);
 		}];
 	}];
-}
-
-
-//gets all channels on Verbatm including the current user
-+(void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock{
-
 }
 
 @end

@@ -109,7 +109,7 @@
     createChannelButton.layer.borderColor = [UIColor whiteColor].CGColor;
     
     UILabel * textLabel = [[UILabel alloc] initWithFrame:createChannelButton.bounds];
-    [textLabel setText:@"+ Create Channel"];
+    [textLabel setText:@"+ Create Blog"];
     textLabel.textAlignment = NSTextAlignmentCenter;
     [textLabel setTextColor:VERBATM_GOLD_COLOR];
     [textLabel setBackgroundColor:[UIColor clearColor]];

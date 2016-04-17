@@ -17,6 +17,7 @@
 #define BUTTON_WIDTH self.frame.size.width/3.f
 #define BUTTON_HEIGHT self.frame.size.height
 #define TITLE_FONT_SIZE 24.f
+#define BUTTON_IMAGE_Y_OFFSET 11.f
 
 @end
 
@@ -40,7 +41,9 @@
 		titleLabel.frame = CGRectMake(OFFSET, 0.f, BUTTON_WIDTH - OFFSET, BUTTON_HEIGHT);
 		[leftButton addSubview:titleLabel];
 	} else if (image) {
-		[leftButton.imageView setContentMode: UIViewContentModeLeft];
+		[leftButton.imageView setContentMode: UIViewContentModeScaleAspectFit];
+		leftButton.imageEdgeInsets = UIEdgeInsetsMake(BUTTON_IMAGE_Y_OFFSET, OFFSET, BUTTON_IMAGE_Y_OFFSET,
+													  BUTTON_WIDTH - OFFSET - (BUTTON_HEIGHT - 2*BUTTON_IMAGE_Y_OFFSET));
 		[leftButton setImage:image forState:UIControlStateNormal];
 	}
 	[self addSubview: leftButton];

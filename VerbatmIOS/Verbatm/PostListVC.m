@@ -232,16 +232,15 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 -(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
 	NSMutableArray * postLoadPromises = [[NSMutableArray alloc] init];
 
-	for(PFObject * pc_activity in backendPostObjects) {
+	for(PFObject * postChannelActivityObject in backendPostObjects) {
 		AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-			PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+			PFObject * post = [postChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-				PostView *postView = [[PostView alloc] initWithFrame:self.view.bounds];
-				postView.parsePostChannelActivityObject = pc_activity;
+				PostView *postView = [[PostView alloc] initWithFrame:self.view.bounds andPostChannelActivityObject:postChannelActivityObject];
 
 				NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 
-				[postView renderPostFromPages:pages];
+				[postView renderPostFromPageObjects: pages];
 				[postView postOffScreen];
 				postView.delegate = self;
 				postView.listChannel = self.channelForList;
@@ -268,7 +267,11 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 	//when all pages are loaded then we reload our list
 	PMKWhen(postLoadPromises).then(^(id data){
-		[self sortOurPostList];
+		if (self.listType == listFeed) {
+			[self sortOurPostListEarliestToLatest: NO];
+		} else {
+			[self sortOurPostListEarliestToLatest: YES];
+		}
 		dispatch_async(dispatch_get_main_queue(), ^{
 			//prepare the first post object
 			if(self.shouldPlayVideos && !self.isReloading)[(PostView *)self.presentedPostList.firstObject postOnScreen];
@@ -278,7 +281,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	});
 }
 
--(void)sortOurPostList{
+-(void)sortOurPostListEarliestToLatest: (BOOL) earliestToLatest {
 	[self.presentedPostList sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
 		PostView * view1 = obj1;
 		PostView * view2 = obj2;
@@ -292,11 +295,10 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 		if (secondsBetweenDates == 0)
 			return NSOrderedSame;
-
 		else if (secondsBetweenDates < 0)
-			return NSOrderedAscending;
+			return earliestToLatest ? NSOrderedAscending : NSOrderedDescending;
 		else
-			return NSOrderedDescending;
+			return earliestToLatest ? NSOrderedDescending : NSOrderedAscending;
 
 	}];
 }

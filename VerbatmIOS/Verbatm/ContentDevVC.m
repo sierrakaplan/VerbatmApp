@@ -314,7 +314,7 @@
 
 // returns the # of rows in each component..
 - (NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component {
-    return (self.userChannels.count + 1);
+	return self.userChannels.count > 0 ? self.userChannels.count : 1;
 }
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView
@@ -331,7 +331,8 @@ rowHeightForComponent:(NSInteger)component{
     if(view){
         return view;
     }else {
-        if(row == self.userChannels.count){//this is the create new channel row
+		// Create new channel row should only exist if they haven't created any channels yet
+        if(row == self.userChannels.count && self.userChannels.count == 0) {
             return [self getCreateNewChannelTextFieldWithFrame:labelFrame];
             
         }else{
@@ -386,7 +387,7 @@ rowHeightForComponent:(NSInteger)component{
     [field setTextColor:[UIColor whiteColor]];
     field.tintColor = [UIColor whiteColor];
     field.attributedPlaceholder = [[NSAttributedString alloc]
-                                             initWithString: @"Create New Channel"
+                                             initWithString: @"New Blog Name"
                                              attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor],
                                                           NSFontAttributeName : titleFont}];
     
@@ -1877,26 +1878,32 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
 
-    Channel * channelToPostIn;
+    Channel * channelToPostIn = nil;
     if (self.currentPresentedPickerRow < self.userChannels.count) {
         channelToPostIn = self.userChannels[self.currentPresentedPickerRow];
-    } else{
+    } else {
         UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.currentPresentedPickerRow forComponent:0];
         if ([textField.text isEqualToString:@""]) {
-            //prompt user to add channel title-- TODO
+			UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"You must publish to a blog" message:@"Please enter a name for your new blog." preferredStyle:UIAlertControllerStyleAlert];
+			UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+															handler:^(UIAlertAction * action) {}];
+			[newAlert addAction:defaultAction];
+			[self presentViewController:newAlert animated:YES completion:nil];
         } else {
             channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil andChannelCreator:nil];
         }
     }
-    [[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews withCompletionBlock:^(BOOL posting) {
-		if(posting) {
-			[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
-			[self cleanUp];
-		} else {
-			NSLog(@"Couldn't publish because something else is publishing or no internet.");
-			//TODO -- notification to user either something else is publishing or there is not internet
-		}
-	}];
+	if (channelToPostIn) {
+		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews withCompletionBlock:^(BOOL posting) {
+			if(posting) {
+				[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
+				[self cleanUp];
+			} else {
+				NSLog(@"Couldn't publish because something else is publishing or no internet.");
+				//TODO -- notification to user either something else is publishing or there is not internet
+			}
+		}];
+	}
 }
 
 #pragma mark - Tap to clear view -

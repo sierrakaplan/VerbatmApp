@@ -101,7 +101,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 @implementation PostView
 
--(instancetype)initWithFrame:(CGRect)frame andPostParseObject:(PFObject*) postObject {
+-(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject {
 	self = [super initWithFrame:frame];
 	if (self) {
 		[self addSubview: self.mainScrollView];
@@ -136,7 +136,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	[self addSubview:self.PagingLine];
 	[self bringSubviewToFront:self.PagingLine];
 }
-
 
 -(void)upDatePagingLine{
 	//we subtract the page height because the contentOffset is never == contentSize... but our ratio needs to become 1
@@ -179,24 +178,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	[self.pageViews setObject:pageView forKey:pageIndex];
 }
 
--(void) renderPages: (NSMutableArray *) pageViews {
-	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
-												 pageViews.count * self.frame.size.height);
-	self.mainScrollView.contentOffset = CGPointMake(0, 0);
-	CGRect viewFrame = self.bounds;
-
-	for (int i = 0; i < pageViews.count; i++) {
-		PageViewingExperience* pageView = pageViews[i];
-		[self.pageViews setObject:pageView forKey:[NSNumber numberWithInt:i]];
-		[self setDelegateOnPhotoPage: pageView];
-		[pageView offScreen];
-		pageView.frame = viewFrame;
-		[self.mainScrollView addSubview: pageView];
-		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
-	}
-}
 -(void) checkIfUserHasLikedThePost {
-	[Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST]withCompletionBlock:^(bool userLikedPost) {
+	[Like_BackendManager currentUserLikesPost:[self.parsePostChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST] withCompletionBlock:^(bool userLikedPost) {
 		dispatch_async(dispatch_get_main_queue(), ^{
 			[self.likeShareBar shouldStartPostAsLiked:userLikedPost];
 		});
@@ -258,7 +241,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	[self.delegate channelSelected:channel];
 }
 
-#pragma mark - Add like button -
+#pragma mark - Like Share Bar -
 
 -(void) shiftLikeShareBarDown:(BOOL) down{
 	BOOL shiftArrow = NO;
@@ -268,7 +251,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 		self.pageUpIndicator = nil;
 	}
 
-	if(down){
+	if(down) {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.likeShareBar.frame = self.lsBarDownFrame;
 		} completion:^(BOOL finished) {
@@ -309,7 +292,6 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 -(void) likeButtonPressed {
 	self.liked = !self.liked;
 }
-
 
 
 #pragma mark - Scroll view delegate -
@@ -372,12 +354,12 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void)muteAllVideos:(BOOL) shouldMute{
-	for(id pve in [self.pageViews allValues]){
+	for(id pageView in [self.pageViews allValues]){
 
-		if ([pve isKindOfClass:[VideoPVE class]] ||
-			[pve isKindOfClass:[PhotoVideoPVE class]]) {
+		if ([pageView isKindOfClass:[VideoPVE class]] ||
+			[pageView isKindOfClass:[PhotoVideoPVE class]]) {
 
-			[(VideoPVE *)pve muteVideo: shouldMute];
+			[(VideoPVE *)pageView muteVideo: shouldMute];
 		}
 	}
 }
@@ -482,14 +464,11 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 #pragma mark - Pages Downloaded -
 
--(void) renderPostFromPages:(NSArray *) pages {
+-(void) renderPostFromPageObjects:(NSArray *) pages {
 	dispatch_async(dispatch_get_main_queue(), ^{
 		[self.customActivityIndicator startCustomActivityIndicator];
-
-		//[self.activityIndicator startAnimating];
 	});
 	PageTypeAnalyzer * analyzer = [[PageTypeAnalyzer alloc] init];
-
 	NSMutableArray * downloadPromises = [[NSMutableArray alloc] init];
 
 	for (PFObject * parsePageObject in pages) {
@@ -512,6 +491,22 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	});
 }
 
+-(void) renderPageViews: (NSMutableArray *) pageViews {
+	self.mainScrollView.contentSize = CGSizeMake(self.frame.size.width,
+												 pageViews.count * self.frame.size.height);
+	self.mainScrollView.contentOffset = CGPointMake(0, 0);
+	CGRect viewFrame = self.bounds;
+
+	for (int i = 0; i < pageViews.count; i++) {
+		PageViewingExperience* pageView = pageViews[i];
+		[self.pageViews setObject:pageView forKey:[NSNumber numberWithInt:i]];
+		[self setDelegateOnPhotoPage: pageView];
+		[pageView offScreen];
+		pageView.frame = viewFrame;
+		[self.mainScrollView addSubview: pageView];
+		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
+	}
+}
 
 -(void)storeMedia:(NSArray *) media forPageIndex:(NSNumber*) pageIndex{
 	if(media){

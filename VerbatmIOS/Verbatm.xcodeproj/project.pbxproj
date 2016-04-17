@@ -123,6 +123,9 @@
 		A5C38ABE1CC1B38F0067D077 /* DiscoverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */; };
 		A5C38AC11CC1B67B0067D077 /* FeaturedContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */; };
 		A5C38AC41CC1B6940067D077 /* TrendingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC31CC1B6940067D077 /* TrendingVC.m */; };
+		A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */; };
+		A5C38ACA1CC1D1B80067D077 /* ExploreChannelCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */; };
+		A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */; };
 		A5C9DA381BA551DF0055DCB2 /* GTLVerbatmAppUploadURI.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C9DA371BA551DF0055DCB2 /* GTLVerbatmAppUploadURI.m */; };
 		A5CA61151B9A013E009D9D11 /* AdjustableBlurEffect.m in Sources */ = {isa = PBXBuildFile; fileRef = A5CA61141B9A013E009D9D11 /* AdjustableBlurEffect.m */; };
 		A5E3CDA81B881B0C0065C8E5 /* FacebookSDKStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = A5E3CDA51B881B0C0065C8E5 /* FacebookSDKStrings.bundle */; };
@@ -453,6 +456,12 @@
 		A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentVC.m; sourceTree = "<group>"; };
 		A5C38AC21CC1B6940067D077 /* TrendingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrendingVC.h; sourceTree = "<group>"; };
 		A5C38AC31CC1B6940067D077 /* TrendingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrendingVC.m; sourceTree = "<group>"; };
+		A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedContentCellView.h; sourceTree = "<group>"; };
+		A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentCellView.m; sourceTree = "<group>"; };
+		A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreChannelCellView.h; sourceTree = "<group>"; };
+		A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExploreChannelCellView.m; sourceTree = "<group>"; };
+		A5C38ACB1CC1D4120067D077 /* FeaturedContentChannelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedContentChannelView.h; sourceTree = "<group>"; };
+		A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentChannelView.m; sourceTree = "<group>"; };
 		A5C9DA361BA551DF0055DCB2 /* GTLVerbatmAppUploadURI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTLVerbatmAppUploadURI.h; path = API/GTLVerbatmAppUploadURI.h; sourceTree = "<group>"; };
 		A5C9DA371BA551DF0055DCB2 /* GTLVerbatmAppUploadURI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GTLVerbatmAppUploadURI.m; path = API/GTLVerbatmAppUploadURI.m; sourceTree = "<group>"; };
 		A5CA61131B9A013E009D9D11 /* AdjustableBlurEffect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdjustableBlurEffect.h; sourceTree = "<group>"; };
@@ -983,6 +992,12 @@
 			children = (
 				C76172751C4C9FCE00AB0D84 /* ChannelOrUsernameCV.h */,
 				C76172761C4C9FCE00AB0D84 /* ChannelOrUsernameCV.m */,
+				A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */,
+				A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */,
+				A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */,
+				A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */,
+				A5C38ACB1CC1D4120067D077 /* FeaturedContentChannelView.h */,
+				A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */,
 			);
 			name = "Table Cell Views";
 			sourceTree = "<group>";
@@ -1034,10 +1049,10 @@
 			children = (
 				C76172721C4C8B1300AB0D84 /* UserAndChannelListsTVC.h */,
 				C76172731C4C8B1300AB0D84 /* UserAndChannelListsTVC.m */,
-				A5C38ABC1CC1B38F0067D077 /* DiscoverVC.h */,
-				A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */,
 				A5C38ABF1CC1B67B0067D077 /* FeaturedContentVC.h */,
 				A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */,
+				A5C38ABC1CC1B38F0067D077 /* DiscoverVC.h */,
+				A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */,
 				A5C38AC21CC1B6940067D077 /* TrendingVC.h */,
 				A5C38AC31CC1B6940067D077 /* TrendingVC.m */,
 			);
@@ -1858,6 +1873,7 @@
 				A5E85F9C1B911DA900E148D0 /* GTLBatchResult.m in Sources */,
 				A5E85FA41B911DA900E148D0 /* GTLBase64.m in Sources */,
 				A58656681B61FD99008E358C /* PhotoPVE.m in Sources */,
+				A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */,
 				A5C38AC11CC1B67B0067D077 /* FeaturedContentVC.m in Sources */,
 				A5C09BDB1BA1F1D700C0AD86 /* ASIDataDecompressor.m in Sources */,
 				C7F22B311C38408E00E56EA7 /* SharePostView.m in Sources */,
@@ -1889,6 +1905,7 @@
 				C7D5963B1C66E47100161136 /* Follow_BackendManager.m in Sources */,
 				A5E85FAF1B911DA900E148D0 /* GTMOAuth2ViewControllerTouch.m in Sources */,
 				C7F3EBCC1C814313007D23DF /* VideoDownloadManager.m in Sources */,
+				A5C38ACA1CC1D1B80067D077 /* ExploreChannelCellView.m in Sources */,
 				C7BF1AAB1C57F60600CEDE4B /* Video_BackendObject.m in Sources */,
 				A5E85FAE1B911DA900E148D0 /* GTMOAuth2SignIn.m in Sources */,
 				A5E85FA71B911DA900E148D0 /* GTMHTTPFetcherLogging.m in Sources */,
@@ -1910,6 +1927,7 @@
 				A5E85F9F1B911DA900E148D0 /* GTLErrorObject.m in Sources */,
 				C7C69A071BF820FC006B5260 /* EditMediaContentView.m in Sources */,
 				A5AA31CC1BA0B48D00D8D20C /* GTLVerbatmAppPageListWrapper.m in Sources */,
+				A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */,
 				A5AA31C41B9FCDDC00D8D20C /* GTLVerbatmAppPOV.m in Sources */,
 				A56F687B1B65B25700CE5744 /* CollectionPinchView.m in Sources */,
 				C719A40A1BA615B50075CA80 /* UserSetupParameters.m in Sources */,

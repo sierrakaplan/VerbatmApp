@@ -198,9 +198,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     if([vc isKindOfClass:[TermsAndConditionsVC class]]){
         ((TermsAndConditionsVC *)vc).userMustAcceptTerms = YES;
     }
-    
-    
-	// Pass the selected object to the new view controller.
 }
 
 #pragma mark - Lazy Instantiation -

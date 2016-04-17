@@ -42,6 +42,7 @@
 
 #pragma mark - ADK -
 
+#define X_ICON @"x_icon"
 #define ADK_BACKGROUND @"background_adk"
 
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"

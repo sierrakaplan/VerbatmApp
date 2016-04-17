@@ -86,8 +86,8 @@
 
 	PageTypeAnalyzer * analyzer = [[PageTypeAnalyzer alloc]init];
 	NSMutableArray* pages = [analyzer getPageViewsFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
-	self.postView = [[PostView alloc] initWithFrame: self.bounds andPostParseObject:nil];
-	[self.postView renderPages: pages];
+	self.postView = [[PostView alloc] initWithFrame: self.bounds andPostChannelActivityObject:nil];
+	[self.postView renderPageViews: pages];
 	[self addSubview: self.postView];
 	[self addNavigationBar];
     [self.postView scrollToPageAtIndex:index];
@@ -100,7 +100,7 @@
 -(void) addNavigationBar {
 	CustomNavigationBar* navigationBar = [[CustomNavigationBar alloc] initWithFrame:CGRectMake(0.f, 0.f, self.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
 																 andBackgroundColor:CHANNEL_TAB_BAR_BACKGROUND_COLOR_UNSELECTED];
-	[navigationBar createLeftButtonWithTitle:@"BACK" orImage:nil];
+	[navigationBar createLeftButtonWithTitle:nil orImage:[UIImage imageNamed:X_ICON]];
 	[navigationBar createRightButtonWithTitle:@"PUBLISH" orImage:nil];
 	navigationBar.delegate = self;
 	[self addSubview:navigationBar];

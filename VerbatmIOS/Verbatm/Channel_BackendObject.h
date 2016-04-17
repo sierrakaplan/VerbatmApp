@@ -25,8 +25,4 @@
 //often this will be the current user
 +(void) getAllChannelsButNoneForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 
-
-//gets all channels on Verbatm including the current user
-+(void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
-
 @end

@@ -57,12 +57,10 @@
              [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
                  NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
                  for(NSInteger i = self.postsDownloadedSoFar;
-                     (i < activities.count && i < self.postsDownloadedSoFar+POST_DOWNLOAD_MAX_SIZE); i ++){
-                     
+                     (i < activities.count && i < self.postsDownloadedSoFar+POST_DOWNLOAD_MAX_SIZE); i++){
                      PFObject * pc_activity = activities[i];
                      PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
                      [post fetchIfNeededInBackground];
-                     
                      [finalPostObjects addObject:pc_activity];
                  }
                  
