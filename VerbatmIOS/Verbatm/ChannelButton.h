@@ -12,7 +12,7 @@
  */
 #import <UIKit/UIKit.h>
 
-@interface ChannelButtons : UIButton
+@interface ChannelButton : UIButton
 
 -(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel *) channel isLoggedInUser:(BOOL) isLoggedInUser;
 

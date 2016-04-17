@@ -301,7 +301,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
     
     if(scrollView.contentOffset.y == 0){
         [self addUpArrowAnimation];
-    }else{
+    } else {
         [self removePageUpIndicatorFromView];
     }
 }
@@ -626,13 +626,10 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self startArrowAnimation];
 			});
-		}else{
+		} else {
 			[self startArrowAnimation];
 		}
 	}
-
-
-
 }
 
 -(void)startArrowAnimation{

@@ -8,7 +8,7 @@
 //
 
 #import "Channel.h"
-#import "ChannelButtons.h"
+#import "ChannelButton.h"
 
 #import "Icons.h"
 
@@ -19,7 +19,7 @@
 
 #import <Parse/PFUser.h>
 
-@interface ChannelButtons ()
+@interface ChannelButton ()
 @property (nonatomic,strong) UILabel *channelNameLabel;
 @property (nonatomic, strong) UILabel *numberOfFollowersLabel;
 
@@ -44,7 +44,7 @@
 @property (nonatomic) BOOL buttonSelected;
 @end
 
-@implementation ChannelButtons
+@implementation ChannelButton
 
 -(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel *) channel isLoggedInUser:(BOOL) isLoggedInUser {
 
