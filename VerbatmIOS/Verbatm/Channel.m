@@ -37,6 +37,7 @@
 -(NSString *)getChannelOwnerUserName {
 	if (!self.parseChannelObject) return nil;
 	if (!self.channelCreator) self.channelCreator = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+	[self.channelCreator fetchIfNeeded];
     NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
     return userName;
 }
@@ -44,6 +45,7 @@
 -(BOOL)channelBelongsToCurrentUser {
 	if (!self.parseChannelObject) return false;
 	if (!self.channelCreator) self.channelCreator = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+	[self.channelCreator fetchIfNeeded];
     return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
 }
 

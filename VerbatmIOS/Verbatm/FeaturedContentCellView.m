@@ -91,7 +91,7 @@
 -(UIScrollView *) horizontalScrollView {
 	if (!_horizontalScrollView) {
 		_horizontalScrollView = [[UIScrollView alloc] initWithFrame:self.bounds];
-		_horizontalScrollView.backgroundColor = [UIColor grayColor];
+		_horizontalScrollView.backgroundColor = self.backgroundColor;
 		_horizontalScrollView.delegate = self;
 		_horizontalScrollView.showsVerticalScrollIndicator = NO;
 		_horizontalScrollView.showsHorizontalScrollIndicator = YES;

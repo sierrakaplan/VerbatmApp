@@ -18,6 +18,8 @@
 @property (strong, nonatomic) NSMutableArray *exploreChannels;
 @property (strong, nonatomic) NSMutableArray *featuredChannels;
 
+#define HEADER_HEIGHT 50.f
+
 @end
 
 @implementation FeaturedContentVC
@@ -85,15 +87,19 @@
 	return sectionName;
 }
 
+- (CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+	return HEADER_HEIGHT;
+}
+
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
 	// Background color
 	view.tintColor = [UIColor blackColor];
-
 	// Text Color
 	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
 	[header.textLabel setTextColor:[UIColor whiteColor]];
 	//todo: make constant
 	[header.textLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
+	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -111,7 +117,7 @@
 	if (indexPath.section == 0) {
 		return 350.f; //todo
 	} else {
-		return 300.f;
+		return 360.f;
 	}
 }
 
