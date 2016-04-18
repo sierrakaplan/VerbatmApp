@@ -30,7 +30,7 @@
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-        if(!image)return self;
+        if(!image) return self;
 		[self initWithImage:image andSetFilteredImages:YES];
         self.imageToPublish = nil;
 	}
@@ -39,13 +39,14 @@
 }
 
 -(void) initWithImage:(UIImage*)image andSetFilteredImages: (BOOL) setFilters {
+	if (image == nil) return;
 	[self.background addSubview:self.imageView];
 	self.containsImage = YES;
 	self.image = image;
 	self.filteredImages = [[NSMutableArray alloc] init];
 	//original photo
 	[self.filteredImages addObject:self.image];
-	if (setFilters) [self createFilteredImagesFromImage:self.image];
+//	if (setFilters) [self createFilteredImagesFromImage:self.image];
 	[self renderMedia];
 }
 
@@ -61,7 +62,7 @@
 	self.filteredImages = [[NSMutableArray alloc] init];
 	//original photo
 	[self.filteredImages addObject:self.image];
-	[self createFilteredImagesFromImage:self.image];
+//	[self createFilteredImagesFromImage:self.image];
     [self renderMedia];
 }
 

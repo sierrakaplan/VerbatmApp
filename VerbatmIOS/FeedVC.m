@@ -109,7 +109,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
 	[self presentShareSelectionViewStartOnChannels:YES];
-	[self.delegate shareButtonSelectedForPostObject: post];
 }
 
 #pragma mark -POVListSVController-

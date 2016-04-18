@@ -11,8 +11,6 @@
 @protocol FeedVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
--(void) shareButtonSelectedForPostObject: (PFObject* ) post;
--(void) likeButtonLiked:(BOOL) liked forPostObject: (PFObject* ) post;
 
 @end
 

@@ -1794,8 +1794,10 @@ andSaveInUserDefaults:(BOOL)save {
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			@autoreleasepool {
-				[self.imageManager requestImageDataForAsset:asset options:nil resultHandler:^(NSData *imageData, NSString *dataUTI, UIImageOrientation orientation, NSDictionary *info) {
-					UIImage* image = [self getImageFromImageData:imageData];
+				PHImageRequestOptions *options = [PHImageRequestOptions new];
+				options.synchronous = YES;
+				[self.imageManager requestImageForAsset:asset targetSize:self.view.bounds.size contentMode:PHImageContentModeAspectFill
+												options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
 					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 					dispatch_async(dispatch_get_main_queue(), ^{
 						[self createPinchViewFromImage: image];
@@ -1813,21 +1815,19 @@ andSaveInUserDefaults:(BOOL)save {
 				}];
 			}
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
-			//			NSLog(@"Asset is of audio type, unable to handle.");
+			// NSLog(@"Asset is of audio type, unable to handle.");
 			return;
 		} else {
-			//			NSLog(@"Asset picked of unknown type");
 			return;
 		}
 	}
 }
 
-
+/* NOT IN USE */
 -(UIImage*) getImageFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
 	image = [image getImageWithOrientationUp];
 	image = [image scaleImageToSize:CGSizeMake(self.view.bounds.size.height*(image.size.width/image.size.height), self.view.bounds.size.height)];
-//	image = [image scaleImageToSize:CGSizeMake(image.size.width/1.2f, image.size.height/1.2f)];
 	return image;
 }
 
