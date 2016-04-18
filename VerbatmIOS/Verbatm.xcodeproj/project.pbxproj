@@ -121,7 +121,6 @@
 		A5C09BE61BA1F43600C0AD86 /* MediaUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C09BE51BA1F43600C0AD86 /* MediaUploader.m */; };
 		A5C38ABE1CC1B38F0067D077 /* DiscoverVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */; };
 		A5C38AC11CC1B67B0067D077 /* FeaturedContentVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */; };
-		A5C38AC41CC1B6940067D077 /* TrendingVC.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC31CC1B6940067D077 /* TrendingVC.m */; };
 		A5C38AC71CC1D1970067D077 /* FeaturedContentCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */; };
 		A5C38ACA1CC1D1B80067D077 /* ExploreChannelCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38AC91CC1D1B80067D077 /* ExploreChannelCellView.m */; };
 		A5C38ACD1CC1D4120067D077 /* FeaturedContentChannelView.m in Sources */ = {isa = PBXBuildFile; fileRef = A5C38ACC1CC1D4120067D077 /* FeaturedContentChannelView.m */; };
@@ -451,8 +450,6 @@
 		A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DiscoverVC.m; sourceTree = "<group>"; };
 		A5C38ABF1CC1B67B0067D077 /* FeaturedContentVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedContentVC.h; sourceTree = "<group>"; };
 		A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentVC.m; sourceTree = "<group>"; };
-		A5C38AC21CC1B6940067D077 /* TrendingVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrendingVC.h; sourceTree = "<group>"; };
-		A5C38AC31CC1B6940067D077 /* TrendingVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrendingVC.m; sourceTree = "<group>"; };
 		A5C38AC51CC1D1970067D077 /* FeaturedContentCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FeaturedContentCellView.h; sourceTree = "<group>"; };
 		A5C38AC61CC1D1970067D077 /* FeaturedContentCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FeaturedContentCellView.m; sourceTree = "<group>"; };
 		A5C38AC81CC1D1B80067D077 /* ExploreChannelCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExploreChannelCellView.h; sourceTree = "<group>"; };
@@ -1048,8 +1045,6 @@
 				A5C38AC01CC1B67B0067D077 /* FeaturedContentVC.m */,
 				A5C38ABC1CC1B38F0067D077 /* DiscoverVC.h */,
 				A5C38ABD1CC1B38F0067D077 /* DiscoverVC.m */,
-				A5C38AC21CC1B6940067D077 /* TrendingVC.h */,
-				A5C38AC31CC1B6940067D077 /* TrendingVC.m */,
 			);
 			name = Discover;
 			sourceTree = "<group>";
@@ -1938,7 +1933,6 @@
 				A56F68841B65B44C00CE5744 /* VideoPinchView.m in Sources */,
 				A5E85FA11B911DA900E148D0 /* GTLFramework.m in Sources */,
 				A535E4FD1BC43D2300A087D1 /* UIImage+ImageEffectsAndTransforms.m in Sources */,
-				A5C38AC41CC1B6940067D077 /* TrendingVC.m in Sources */,
 				A5FB5D3A1BCB0B9700634A96 /* GMImagePickerController.m in Sources */,
 				C7D596381C66DC3A00161136 /* FeedQueryManager.m in Sources */,
 				A5E85FAB1B911DA900E148D0 /* GTMMIMEDocument.m in Sources */,

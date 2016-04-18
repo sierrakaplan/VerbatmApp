@@ -13,7 +13,7 @@
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-@interface FeaturedContentVC()
+@interface FeaturedContentVC() <UIScrollViewDelegate>
 
 @property (strong, nonatomic) NSMutableArray *exploreChannels;
 @property (strong, nonatomic) NSMutableArray *featuredChannels;
@@ -31,6 +31,7 @@
 	self.tableView.allowsMultipleSelection = NO;
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
+	self.tableView.delegate = self;
 	[self addRefreshFeature];
 
 	[self loadChannels];
@@ -69,7 +70,6 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 2;
 }
-
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	NSString *sectionName;
@@ -148,6 +148,16 @@
 		Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
 		[cell presentChannel:channel];
 		return cell;
+	}
+}
+
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+	// Don't let headers remain anchored
+	if (scrollView.contentOffset.y <= HEADER_HEIGHT && scrollView.contentOffset.y>=0) {
+		scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
+	} else if (scrollView.contentOffset.y >= HEADER_HEIGHT) {
+		scrollView.contentInset = UIEdgeInsetsMake(-HEADER_HEIGHT, 0, 0, 0);
 	}
 }
 
