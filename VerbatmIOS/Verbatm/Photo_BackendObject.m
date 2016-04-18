@@ -26,7 +26,7 @@
 
 @implementation Photo_BackendObject
 
--(void)saveImage:(UIImage  *) image
+-(void)saveImageData:(NSData *) imageData
 		withText:(NSString *) text
 andTextYPosition:(NSNumber *) textYPosition
 	andTextColor:(UIColor *) textColor
@@ -35,7 +35,7 @@ andTextAlignment:(NSNumber *) textAlignment
 	atPhotoIndex:(NSInteger) photoIndex
    andPageObject:(PFObject *) pageObject {
     self.mediaPublisher = [[PostPublisher alloc] init];
-    [self.mediaPublisher storeImage:image withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
+    [self.mediaPublisher storeImage:imageData withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
         NSString * blobStoreUrl = gtlImage.servingUrl;
         //in completion block of blobstore save
         [self createAndSavePhotoObjectwithBlobstoreUrl:blobStoreUrl

@@ -92,18 +92,17 @@
 // (get image upload uri) then (upload image to blobstore using uri) then (store gtlimage with serving url from blobstore)
 // Resolves to what insertImage resolves to,
 // Which should be the ID of the GTL image just stored
--(void) storeImage: (UIImage*) image withCompletionBlock:(void(^)(GTLVerbatmAppImage *))block {
+-(void) storeImage: (NSData*) imageData withCompletionBlock:(void(^)(GTLVerbatmAppImage *))block {
     [self getImageUploadURI].then(^(NSString* uri) {
-		self.imageUploader = [[MediaUploader alloc] initWithImage: image andUri:uri];
+		self.imageUploader = [[MediaUploader alloc] initWithImage: imageData andUri:uri];
 		if ([self.publishingProgress respondsToSelector:@selector(addChild:withPendingUnitCount:)]) {
 			[self.publishingProgress addChild:self.imageUploader.mediaUploadProgress withPendingUnitCount: IMAGE_PROGRESS_UNITS - 1];
 		}
-        return [self.imageUploader startUpload];
+		return [self.imageUploader startUpload];
 	}).then(^(NSString* servingURL) {
 		GTLVerbatmAppImage* gtlImage = [[GTLVerbatmAppImage alloc] init];
 		gtlImage.servingUrl = servingURL;
-        
-        block(gtlImage);
+		block(gtlImage);
     });
 }
 

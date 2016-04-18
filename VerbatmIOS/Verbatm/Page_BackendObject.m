@@ -6,6 +6,9 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "CollectionPinchView.h"
+
+#import "ImagePinchView.h"
 
 #import "PageTypeAnalyzer.h"
 #import <Parse/PFQuery.h>
@@ -60,32 +63,52 @@
 // when(stored every image)
 // Each storeimage promise should resolve to the id of the GTL Image just stored
 // So this promise should resolve to an array of gtl image id's
--(void) storeImagesFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{
-	if (pinchView.containsImage)
-	{
-		//Publishing images sequentially
-		NSArray* pinchViewPhotosWithText = [pinchView getPhotosWithText];
-		for (int i = 0; i < pinchViewPhotosWithText.count; i++)
-		{
-			NSArray* photoWithText = pinchViewPhotosWithText[i];
-			UIImage* uiImage = photoWithText[0];
-			NSString* text = photoWithText[1];
-			NSNumber* textYPosition = photoWithText[2];
-			UIColor *textColor = photoWithText[3];
-			NSNumber *textAlignment = photoWithText[4];
-			NSNumber *textSize = photoWithText[5];
+-(void) storeImagesFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page {
+	if (!pinchView.containsImage) return;
 
-			Photo_BackendObject * photoObj = [[Photo_BackendObject alloc] init];
-			[self.photoAndVideoSavers addObject:photoObj];
-			[photoObj saveImage:uiImage withText:text
-			   andTextYPosition:textYPosition
-				   andTextColor:textColor
-			   andTextAlignment:textAlignment
-					andTextSize:textSize
-				   atPhotoIndex:i
-				  andPageObject:page];
-		}
+	NSArray* pinchViewPhotosWithText = [pinchView getPhotosWithText];
+	NSMutableArray *imagePinchViews = [[NSMutableArray alloc] init];
+	if ([pinchView isKindOfClass:[ImagePinchView class]]) {
+		[imagePinchViews addObject:(ImagePinchView*) pinchView];
+	} else if (pinchView.containsImage) {
+		imagePinchViews = ((CollectionPinchView*)pinchView).imagePinchViews;
 	}
+
+	//Publishing images sequentially
+	AnyPromise *getImageDataPromise = [imagePinchViews[0] getImageData];
+	for (int i = 1; i < imagePinchViews.count; i++) {
+		getImageDataPromise = getImageDataPromise.then(^(NSData *imageData) {
+			NSArray* photoWithText = pinchViewPhotosWithText[i-1];
+			[self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
+								  atIndex:i withPageObject:page];
+			return [imagePinchViews[i] getImageData];
+		});
+	}
+	getImageDataPromise.then(^(NSData *imageData) {
+		NSInteger index = imagePinchViews.count - 1;
+		NSArray* photoWithText = pinchViewPhotosWithText[index];
+		[self storeImageFromImageData:imageData andPhotoWithTextArray:photoWithText
+							  atIndex:index withPageObject:page];
+	});
+}
+
+-(void) storeImageFromImageData: (NSData *) imageData andPhotoWithTextArray: (NSArray *)photoWithText
+						atIndex: (NSInteger) index withPageObject: (PFObject *) page {
+	NSString* text = photoWithText[1];
+	NSNumber* textYPosition = photoWithText[2];
+	UIColor *textColor = photoWithText[3];
+	NSNumber *textAlignment = photoWithText[4];
+	NSNumber *textSize = photoWithText[5];
+
+	Photo_BackendObject * photoObj = [[Photo_BackendObject alloc] init];
+	[self.photoAndVideoSavers addObject:photoObj];
+	[photoObj saveImageData:imageData withText:text
+	   andTextYPosition:textYPosition
+		   andTextColor:textColor
+	   andTextAlignment:textAlignment
+			andTextSize:textSize
+		   atPhotoIndex:index
+		  andPageObject:page];
 }
 
 -(void) storeVideosFromPinchView: (PinchView*) pinchView withPageReference:(PFObject *) page{

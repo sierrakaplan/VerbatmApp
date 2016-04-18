@@ -11,9 +11,6 @@
 
 @interface ImagePinchView()
 
-@property (strong, nonatomic) UIImage* imageToPublish;
-
-
 @property (strong, nonatomic) UIImage* image;
 @property (strong, nonatomic) UIImageView *imageView;
 
@@ -22,19 +19,20 @@
 #define CREATE_FILTERED_IMAGES_QUEUE_KEY "create_filtered_images_queue"
 #define IMAGE_KEY @"image_key"
 #define FILTER_INDEX_KEY @"filter_index_key"
+#define PHASSET_IDENTIFIER_KEY @"image_phasset_local_id"
 
 @end
 
 @implementation ImagePinchView
 
--(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center andImage:(UIImage*)image {
+-(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image
+	andPHAssetLocalIdentifier: (NSString*) localIdentifier {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
-        if(!image) return self;
+		if(!image) return self;
+		self.phAssetLocalIdentifier = localIdentifier;
 		[self initWithImage:image andSetFilteredImages:YES];
-        self.imageToPublish = nil;
 	}
-    
 	return self;
 }
 
@@ -46,6 +44,7 @@
 	self.filteredImages = [[NSMutableArray alloc] init];
 	//original photo
 	[self.filteredImages addObject:self.image];
+	//todo: should we have filters?
 //	if (setFilters) [self createFilteredImagesFromImage:self.image];
 	[self renderMedia];
 }
@@ -62,6 +61,7 @@
 	self.filteredImages = [[NSMutableArray alloc] init];
 	//original photo
 	[self.filteredImages addObject:self.image];
+	//todo: should we have filters?
 //	[self createFilteredImagesFromImage:self.image];
     [self renderMedia];
 }
@@ -78,8 +78,7 @@
 //warns the pinchview that it is getting published -- so it can
 //release all the excess media that it has in order to clear up some
 //space (prevents crashing)
--(void)publishingPinchView{
-    self.imageToPublish = [self getImage];
+-(void)publishingPinchView {
     @autoreleasepool {
        [self.filteredImages removeAllObjects];
         self.filteredImages = nil;
@@ -87,6 +86,19 @@
         [self.imageView removeFromSuperview];
         self.imageView = nil;
     }
+}
+
+-(AnyPromise *) getImageData {
+	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
+	PHAsset* imageAsset = fetchResult.firstObject;
+	PHImageRequestOptions *options = [PHImageRequestOptions new];
+	options.synchronous = YES;
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[[PHImageManager defaultManager] requestImageDataForAsset:imageAsset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
+			resolve(imageData);
+		}];
+	}];
+	return promise;
 }
 
 -(UIImage*) getImage {
@@ -99,10 +111,7 @@
 
 /* media, text, textYPosition, textColor, textAlignment, textSize */
 -(NSArray*) getPhotosWithText {
-	
-    UIImage * imageToReturn = (self.imageToPublish) ? self.imageToPublish : [self getImage];
-    
-    return @[@[imageToReturn, self.text, self.textYPosition,
+    return @[@[[self getImage], self.text, self.textYPosition,
 			   self.textColor, self.textAlignment, self.textSize]];
 }
 
@@ -153,6 +162,7 @@
 	[super encodeWithCoder:coder];
 	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
 	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
+	[coder encodeObject: self.phAssetLocalIdentifier forKey:PHASSET_IDENTIFIER_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -160,6 +170,7 @@
 		NSData* imageData = [decoder decodeObjectForKey:IMAGE_KEY];
 		UIImage* image = [UIImage imageWithData:imageData];
 		NSNumber* filterImageIndexNumber = [decoder decodeObjectForKey:FILTER_INDEX_KEY];
+		self.phAssetLocalIdentifier = [decoder decodeObjectForKey:PHASSET_IDENTIFIER_KEY];
 		[self initWithImage:image andSetFilteredImages:YES];
 		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
 	}

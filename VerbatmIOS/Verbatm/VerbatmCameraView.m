@@ -134,7 +134,6 @@
 	if (!self.mediaPreviewPaused) {
 		[self animatePreviewImage];
 	}
-	[self.delegate imageCaptured:image];
 }
 
 -(void) didFinishSavingMediaToAsset:(PHAsset *)asset {
@@ -153,6 +152,8 @@
 													}];
 		}
 		[self.delegate videoAssetCaptured:asset];
+	} else if (asset.mediaType == PHAssetMediaTypeImage) {
+		[self.delegate imageAssetCaptured:asset];
 	}
 }
 

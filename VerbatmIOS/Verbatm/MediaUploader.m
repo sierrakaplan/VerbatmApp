@@ -10,6 +10,8 @@
 #import "PostPublisher.h"
 #import "Notifications.h"
 #import "PublishingProgressManager.h"
+#import "AFNetworking/AFHTTPSessionManager.h"
+#import "AFNetworking/AFNetworking.h"
 
 @interface MediaUploader()
 
@@ -22,9 +24,8 @@
 
 @synthesize formData;
 
--(instancetype) initWithImage:(UIImage*)img andUri: (NSString*)uri {
-	NSData *imageData = UIImagePNGRepresentation(img);
-
+-(instancetype) initWithImage:(NSData*)imageData andUri: (NSString*)uri {
+	NSLog(@"Image size is : %.2f KB",(float)imageData.length/1024.0f);
 	self.formData = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:uri]];
 	[self.formData setData:imageData
 			  withFileName:@"defaultImage.png"
@@ -102,6 +103,7 @@
 	} else {
 		NSLog(@"Successfully uploaded media!");
 		[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
+		responseString = [responseString stringByAppendingString:@"=s0"];
 		self.completionBlock(nil, responseString);
 	}
 }
@@ -114,5 +116,33 @@
 	self.completionBlock(error, nil);
 }
 
+/* NOT IN USE */
++(AnyPromise *) uploadImageData: (NSData*) imageData toUri: (NSString*) uri {
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+
+		NSLog(@"Image size is : %.2f KB",(float)imageData.length/1024.0f);
+		AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:uri]];
+		manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+		//		NSDictionary *parameters = @{};//@{@"username": @"", @"password" : @""};
+		AFHTTPRequestOperation *op = [manager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> afFormData) {
+			//do not put image inside parameters dictionary as I did, but append it!
+			[afFormData appendPartWithFileData:imageData name:@"defaultImage" fileName:@"defaultImage.png" mimeType:@"image/png"];
+
+		} success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			NSLog(@"Success: %@ ***** %@", operation.responseString, responseObject);
+			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:IMAGE_PROGRESS_UNITS-1];
+			NSString *responseURL = [operation responseString];
+			[responseURL stringByAppendingString:@"=s0"];
+			resolve (responseURL);
+		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			NSLog(@"Error: %@ ***** %@", operation.responseString, error);
+			resolve (error);
+		}];
+		op.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
+		[op start];
+
+	}];
+	return promise;
+}
 
 @end

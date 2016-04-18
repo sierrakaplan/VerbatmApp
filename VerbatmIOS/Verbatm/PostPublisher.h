@@ -17,6 +17,6 @@
 -(void) storeVideoFromURL: (NSURL*) url withCompletionBlock:(void(^)(GTLVerbatmAppVideo *))block;
 
 //stores an image for us and takes a completion block to handle the url
--(void) storeImage: (UIImage*) image withCompletionBlock:(void(^)(GTLVerbatmAppImage *))block;
+-(void) storeImage: (NSData*) imageData withCompletionBlock:(void(^)(GTLVerbatmAppImage *))block;
 
 @end

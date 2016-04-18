@@ -12,7 +12,7 @@
 @interface Photo_BackendObject : NSObject
 
 //make sure that the page object is already saved before calling this function
--(void)saveImage:(UIImage  *) image
+-(void)saveImageData:(NSData *) imageData
 		withText:(NSString *) text
 andTextYPosition:(NSNumber *) textYPosition
 	andTextColor:(UIColor *) textColor

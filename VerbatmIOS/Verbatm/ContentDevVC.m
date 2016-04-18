@@ -42,7 +42,7 @@
 #import "VideoPinchView.h"
 
 @interface ContentDevVC () <UITextFieldDelegate, UIScrollViewDelegate, MediaSelectTileDelegate,Intro_Notification_Delegate,
-    GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
+GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNavigationBarDelegate, PreviewDisplayDelegate, VerbatmCameraViewDelegate,UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
 @property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
 @property (nonatomic) UITextField *createNewChannelField;
@@ -148,7 +148,7 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    self.ourPosts = [[NSMutableArray alloc] init];
+	self.ourPosts = [[NSMutableArray alloc] init];
 	[self initializeVariables];
 	[self setFrameMainScrollView];
 	[self setElementDefaultFrames];
@@ -158,8 +158,8 @@
 	[self setUpNotifications];
 	self.channelPicker.delegate = self;
 	self.mainScrollView.delegate = self;
-    [self addBackgroundImage];
-    [self loadChannelsAndCreateTicker];
+	[self addBackgroundImage];
+	[self loadChannelsAndCreateTicker];
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -169,27 +169,27 @@
 -(void)loadChannelsAndCreateTicker{
 
 	self.userChannels = [NSMutableArray arrayWithArray:[[UserInfoCache sharedInstance] getUserChannels]];
-    
-    if(self.userChannels.count){
-        NSUInteger startViewIndex =[[UserInfoCache sharedInstance] currentChannelViewedIndex];
-        id channel = [self.userChannels objectAtIndex:startViewIndex];
-        //we simple set the current index being viewed as the first channel. This is
-        // a heuristic for the user.
-        [self.userChannels removeObject:channel];
-        [self.userChannels insertObject:channel atIndex:0];
-    }
-     [self formatChannelPicker];
-     [self createBaseSelector];
-     [self loadPostFromUserDefaults];
+
+	if(self.userChannels.count){
+		NSUInteger startViewIndex =[[UserInfoCache sharedInstance] currentChannelViewedIndex];
+		id channel = [self.userChannels objectAtIndex:startViewIndex];
+		//we simple set the current index being viewed as the first channel. This is
+		// a heuristic for the user.
+		[self.userChannels removeObject:channel];
+		[self.userChannels insertObject:channel atIndex:0];
+	}
+	[self formatChannelPicker];
+	[self createBaseSelector];
+	[self loadPostFromUserDefaults];
 }
 
 -(void) addBackgroundImage {
-    UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    backgroundView.image =[UIImage imageNamed:ADK_BACKGROUND];
+	UIImageView * backgroundView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+	backgroundView.image =[UIImage imageNamed:ADK_BACKGROUND];
 	backgroundView.contentMode = UIViewContentModeScaleAspectFill;
-    
-    [self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
-    self.mainScrollView.backgroundColor = [UIColor clearColor];
+
+	[self.view insertSubview:backgroundView belowSubview:self.mainScrollView];
+	self.mainScrollView.backgroundColor = [UIColor clearColor];
 }
 
 
@@ -199,24 +199,24 @@
 
 
 -(void) viewWillAppear:(BOOL)animated {
-    [self checkIntroNotification];
+	[self checkIntroNotification];
 }
 
 -(void) checkIntroNotification {
-    if(![[UserSetupParameters sharedInstance] isAdk_InstructionShown]) {
-        self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:ADK];
-        self.introInstruction.custom_delegate = self;
-        [self.view addSubview:self.introInstruction];
-        [self.view bringSubviewToFront:self.introInstruction];
-        [[UserSetupParameters sharedInstance] set_ADKNotification_InstructionAsShown];
-    }
+	if(![[UserSetupParameters sharedInstance] isAdk_InstructionShown]) {
+		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:ADK];
+		self.introInstruction.custom_delegate = self;
+		[self.view addSubview:self.introInstruction];
+		[self.view bringSubviewToFront:self.introInstruction];
+		[[UserSetupParameters sharedInstance] set_ADKNotification_InstructionAsShown];
+	}
 }
 
 -(void) notificationDoneAnimatingOut {
-    if(self.introInstruction){
-       [self.introInstruction removeFromSuperview];
-        self.introInstruction = nil;
-    }
+	if(self.introInstruction){
+		[self.introInstruction removeFromSuperview];
+		self.introInstruction = nil;
+	}
 }
 
 -(void) initializeVariables {
@@ -280,9 +280,9 @@
 
 //sets the textview placeholders' color and text
 -(void) formatChannelPicker {
-    CGRect channelPickerFrame = CGRectMake(CHANNEL_PICKER_FIELD_X_OFFSET, CHANNEL_PICKER_FIELD_Y_OFFSET,
-											   self.view.bounds.size.width - 2*CHANNEL_PICKER_FIELD_X_OFFSET,
-											   CHANNEL_PICKER_FIELD_HEIGHT);
+	CGRect channelPickerFrame = CGRectMake(CHANNEL_PICKER_FIELD_X_OFFSET, CHANNEL_PICKER_FIELD_Y_OFFSET,
+										   self.view.bounds.size.width - 2*CHANNEL_PICKER_FIELD_X_OFFSET,
+										   CHANNEL_PICKER_FIELD_HEIGHT);
 	UIPickerView * picker = [[UIPickerView alloc] initWithFrame:channelPickerFrame];
 
 	picker.dataSource = self;
@@ -313,7 +313,7 @@
 
 // returns the number of 'columns' to display.
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView{
-    return 1;
+	return 1;
 }
 
 // returns the # of rows in each component..
@@ -323,94 +323,94 @@
 
 - (CGFloat)pickerView:(UIPickerView *)pickerView
 rowHeightForComponent:(NSInteger)component{
-    return CHANNEL_PICKER_FIELD_LABEL_TILE_HEIGHT;
+	return CHANNEL_PICKER_FIELD_LABEL_TILE_HEIGHT;
 }
 
 - (UIView *)pickerView:(UIPickerView *)pickerView
-            viewForRow:(NSInteger)row
-          forComponent:(NSInteger)component
-           reusingView:(UIView *)view{
-    
-    CGRect labelFrame = CGRectMake(0.f, 0.f, pickerView.frame.size.width, CHANNEL_PICKER_FIELD_LABEL_TILE_HEIGHT);
-    if(view){
-        return view;
-    }else {
+			viewForRow:(NSInteger)row
+		  forComponent:(NSInteger)component
+		   reusingView:(UIView *)view{
+
+	CGRect labelFrame = CGRectMake(0.f, 0.f, pickerView.frame.size.width, CHANNEL_PICKER_FIELD_LABEL_TILE_HEIGHT);
+	if(view){
+		return view;
+	}else {
 		// Create new channel row should only exist if they haven't created any channels yet
-        if(row == self.userChannels.count && self.userChannels.count == 0) {
-            return [self getCreateNewChannelTextFieldWithFrame:labelFrame];
-            
-        }else{
-            return [self formatChannelPickerFieldFromFrame:labelFrame andChannel:self.userChannels[row]];
-        }
-    }
+		if(row == self.userChannels.count && self.userChannels.count == 0) {
+			return [self getCreateNewChannelTextFieldWithFrame:labelFrame];
+
+		}else{
+			return [self formatChannelPickerFieldFromFrame:labelFrame andChannel:self.userChannels[row]];
+		}
+	}
 }
 
 -(UILabel *) formatChannelPickerFieldFromFrame: (CGRect) frame andChannel:(Channel *) channel {
 	UILabel * channelTitle = [[UILabel alloc] initWithFrame: frame];
 	channelTitle.textAlignment = NSTextAlignmentCenter;
 	channelTitle.font = [UIFont fontWithName:TITLE_TEXT_FONT size: CHANNEL_PICKER_TEXT_SIZE];
-    [channelTitle setTextColor:[UIColor CHANNEL_PICKER_TEXT_COLOR]];
+	[channelTitle setTextColor:[UIColor CHANNEL_PICKER_TEXT_COLOR]];
 	channelTitle.tintColor = [UIColor CHANNEL_PICKER_TEXT_COLOR];
-    channelTitle.backgroundColor = [UIColor CHANNEL_PICKER_COLOR];
-    [channelTitle setText:channel.name];
-    return channelTitle;
+	channelTitle.backgroundColor = [UIColor CHANNEL_PICKER_COLOR];
+	[channelTitle setText:channel.name];
+	return channelTitle;
 }
 
 - (void)pickerView:(UIPickerView *)pickerView
-      didSelectRow:(NSInteger)row
-       inComponent:(NSInteger)component{
+	  didSelectRow:(NSInteger)row
+	   inComponent:(NSInteger)component{
 
 	UIView *selectedView = [pickerView viewForRow:row forComponent:component];
-    if(row == self.userChannels.count){
-        UITextField * textField = (UITextField *) selectedView;
-        [textField becomeFirstResponder];
-    } else {
-        [self removeKeyboardFromScreen];
-    }
-    self.currentPresentedPickerRow = row;
+	if(row == self.userChannels.count){
+		UITextField * textField = (UITextField *) selectedView;
+		[textField becomeFirstResponder];
+	} else {
+		[self removeKeyboardFromScreen];
+	}
+	self.currentPresentedPickerRow = row;
 }
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer{
-    return true;
+	return true;
 }
 
 -(void)userTappedChannelSelctor:(UITapGestureRecognizer *) tap{
-    if(self.currentPresentedPickerRow == self.userChannels.count){
-        UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.userChannels.count forComponent:0];
-        if(textField)[textField becomeFirstResponder];
-    }else{
-        [self removeKeyboardFromScreen];
-    }
+	if(self.currentPresentedPickerRow == self.userChannels.count){
+		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.userChannels.count forComponent:0];
+		if(textField)[textField becomeFirstResponder];
+	}else{
+		[self removeKeyboardFromScreen];
+	}
 }
 
 -(UITextField *)getCreateNewChannelTextFieldWithFrame:(CGRect) frame{
-    UITextField * field = [[UITextField alloc] initWithFrame:frame];
-    UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: CHANNEL_PICKER_TEXT_SIZE];
-    field.textAlignment = NSTextAlignmentCenter;
-    field.font = [UIFont fontWithName:TITLE_TEXT_FONT size: CHANNEL_PICKER_TEXT_SIZE];
-    [field setTextColor:[UIColor whiteColor]];
-    field.tintColor = [UIColor whiteColor];
-    field.attributedPlaceholder = [[NSAttributedString alloc]
-                                             initWithString: @"New Blog Name"
-                                             attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor],
-                                                          NSFontAttributeName : titleFont}];
-    
-    field.backgroundColor = [UIColor CHANNEL_PICKER_COLOR];
-    [field resignFirstResponder];
-    field.enabled = YES;
-    field.autocorrectionType = UITextAutocorrectionTypeYes;
-    [field setReturnKeyType:UIReturnKeyDone];
-    field.delegate = self;
-    self.createNewChannelField = field;
-    return field;
+	UITextField * field = [[UITextField alloc] initWithFrame:frame];
+	UIFont* titleFont = [UIFont fontWithName:PLACEHOLDER_FONT size: CHANNEL_PICKER_TEXT_SIZE];
+	field.textAlignment = NSTextAlignmentCenter;
+	field.font = [UIFont fontWithName:TITLE_TEXT_FONT size: CHANNEL_PICKER_TEXT_SIZE];
+	[field setTextColor:[UIColor whiteColor]];
+	field.tintColor = [UIColor whiteColor];
+	field.attributedPlaceholder = [[NSAttributedString alloc]
+								   initWithString: @"New Blog Name"
+								   attributes:@{NSForegroundColorAttributeName: [UIColor whiteColor],
+												NSFontAttributeName : titleFont}];
+
+	field.backgroundColor = [UIColor CHANNEL_PICKER_COLOR];
+	[field resignFirstResponder];
+	field.enabled = YES;
+	field.autocorrectionType = UITextAutocorrectionTypeYes;
+	[field setReturnKeyType:UIReturnKeyDone];
+	field.delegate = self;
+	self.createNewChannelField = field;
+	return field;
 }
 
 #pragma mark - Text field delegate methods -
 
 //text field protocol
 - (BOOL)textFieldShouldReturn:(UITextField *)textField{
-    [textField resignFirstResponder];
-    return NO;
+	[textField resignFirstResponder];
+	return NO;
 }
 
 /* Enforce channel name character limit */
@@ -468,25 +468,25 @@ rowHeightForComponent:(NSInteger)component{
 #pragma mark Close Button
 
 -(void) leftButtonPressed {
-    self.view.clipsToBounds = YES;
+	self.view.clipsToBounds = YES;
 	[self performSegueWithIdentifier:UNWIND_SEGUE_FROM_ADK_TO_MASTER sender:self];
 }
 
 #pragma mark Save Draft Button
 -(void) middleButtonPressed {
-	
+
 }
 
 #pragma mark Preview Button
 -(void) rightButtonPressed {
-    NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
-    
-    for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
-        if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
-            [pinchViews addObject:contentElementScrollView.pageElement];
-        }
-    }
-  
+	NSMutableArray * pinchViews = [[NSMutableArray alloc] init];
+
+	for(ContentPageElementScrollView * contentElementScrollView in self.pageElementScrollViews){
+		if([contentElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+			[pinchViews addObject:contentElementScrollView.pageElement];
+		}
+	}
+
 	if(pinchViews.count) [self publishOurStoryWithPinchViews:pinchViews];
 }
 
@@ -557,16 +557,16 @@ rowHeightForComponent:(NSInteger)component{
 #pragma mark - Content Page Element Scroll View Delegate -
 //apply two step deletion
 -(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView {
-    UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Confirm Deletion" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive
-                                                          handler:^(UIAlertAction * action) {
-                                                              [self deleteScrollView: scrollView];
-                                                          }];
-    UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction * action) {}];
-    [newAlert addAction:action1];
-    [newAlert addAction:action2];
-    [self presentViewController:newAlert animated:YES completion:nil];
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Confirm Deletion" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* action1 = [UIAlertAction actionWithTitle:@"Delete" style:UIAlertActionStyleDestructive
+													handler:^(UIAlertAction * action) {
+														[self deleteScrollView: scrollView];
+													}];
+	UIAlertAction* action2 = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:action1];
+	[newAlert addAction:action2];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
 
@@ -577,7 +577,7 @@ rowHeightForComponent:(NSInteger)component{
 	if (![self.pageElementScrollViews containsObject:pageElementScrollView]){
 		return;
 	}
-    
+
 	//update user defaults if was pinch view
 	if ([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]) {
 		NSInteger index = [self.pageElementScrollViews indexOfObject:pageElementScrollView];
@@ -585,19 +585,19 @@ rowHeightForComponent:(NSInteger)component{
 		self.numPinchViews--;
 	}
 
-    [self.pageElementScrollViews removeObject:pageElementScrollView];
-	
-    [UIView animateWithDuration:PINCHVIEW_DELETE_ANIMATION_DURATION animations:^{
-        if([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]){
-           pageElementScrollView.alpha = 0;
-        }
-    }completion:^ (BOOL finished) {
-        if(finished){
-            [pageElementScrollView cleanUp];
-            [pageElementScrollView removeFromSuperview];
-            [self shiftElementsBelowView: self.channelPicker];
-        }
-    }];
+	[self.pageElementScrollViews removeObject:pageElementScrollView];
+
+	[UIView animateWithDuration:PINCHVIEW_DELETE_ANIMATION_DURATION animations:^{
+		if([pageElementScrollView.pageElement isKindOfClass:[PinchView class]]){
+			pageElementScrollView.alpha = 0;
+		}
+	}completion:^ (BOOL finished) {
+		if(finished){
+			[pageElementScrollView cleanUp];
+			[pageElementScrollView removeFromSuperview];
+			[self shiftElementsBelowView: self.channelPicker];
+		}
+	}];
 }
 
 
@@ -631,48 +631,48 @@ andSaveInUserDefaults:(BOOL)save {
 											   self.defaultPageElementScrollViewSize.width, self.defaultPageElementScrollViewSize.height);
 		index = [self.pageElementScrollViews indexOfObject:upperScrollView]+1;
 	}
-    
-    //makes the object start animating from the top of the screen
-    CGRect animationStartFrame = CGRectMake(0, self.mainScrollView.contentOffset.y - newElementScrollViewFrame.size.height, newElementScrollViewFrame.size.width, newElementScrollViewFrame.size.height);
-    
-    ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:animationStartFrame];
-	
-    self.numPinchViews++;
-    
+
+	//makes the object start animating from the top of the screen
+	CGRect animationStartFrame = CGRectMake(0, self.mainScrollView.contentOffset.y - newElementScrollViewFrame.size.height, newElementScrollViewFrame.size.width, newElementScrollViewFrame.size.height);
+
+	ContentPageElementScrollView *newElementScrollView = [self createNewContentScrollViewWithPinchView:pinchView andFrame:animationStartFrame];
+
+	self.numPinchViews++;
+
 	//thread safety
 	@synchronized(self) {
-        if(index <= self.pageElementScrollViews.count)[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
+		if(index <= self.pageElementScrollViews.count)[self.pageElementScrollViews insertObject:newElementScrollView atIndex: index];
 	}
 
-    if (save) {
+	if (save) {
 		[[PostInProgress sharedInstance] addPinchView:pinchView atIndex:index];
 	}
 
-    [UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
-        [self.mainScrollView addSubview: newElementScrollView];
-        newElementScrollView.frame = newElementScrollViewFrame;
-        self.addMediaBelowView = newElementScrollView;
-        [self shiftElementsBelowView: self.channelPicker];
-        
-    }completion:^(BOOL finished) {
-        if(finished){
-            if(![[UserSetupParameters sharedInstance] isPinchCircles_InstructionShown] &&
-               self.pageElementScrollViews.count > 2){
-                [self presentUserInstructionForPinchGesture];
-                [[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];
-                
-            }
-        }
-    }];
+	[UIView animateWithDuration:PINCHVIEW_DROP_ANIMATION_DURATION animations:^{
+		[self.mainScrollView addSubview: newElementScrollView];
+		newElementScrollView.frame = newElementScrollViewFrame;
+		self.addMediaBelowView = newElementScrollView;
+		[self shiftElementsBelowView: self.channelPicker];
+
+	}completion:^(BOOL finished) {
+		if(finished){
+			if(![[UserSetupParameters sharedInstance] isPinchCircles_InstructionShown] &&
+			   self.pageElementScrollViews.count > 2){
+				[self presentUserInstructionForPinchGesture];
+				[[UserSetupParameters sharedInstance] set_pinchCircles_InstructionAsShown];
+
+			}
+		}
+	}];
 }
 
 -(ContentPageElementScrollView *) createNewContentScrollViewWithPinchView:(PinchView *) view andFrame:(CGRect) frame {
-    
-    ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:frame andElement:view];
-    newElementScrollView.delegate = self; //scroll view delegate
-    newElementScrollView.contentPageElementScrollViewDelegate = self;
-    
-    return newElementScrollView;
+
+	ContentPageElementScrollView *newElementScrollView = [[ContentPageElementScrollView alloc]initWithFrame:frame andElement:view];
+	newElementScrollView.delegate = self; //scroll view delegate
+	newElementScrollView.contentPageElementScrollViewDelegate = self;
+
+	return newElementScrollView;
 }
 
 #pragma mark - Shift Positions of Elements
@@ -681,9 +681,9 @@ andSaveInUserDefaults:(BOOL)save {
 -(void)shiftElementsBelowView: (UIView *) view {
 	if (!view ||
 		(![view isKindOfClass:[ContentPageElementScrollView class]]
-	   && ![view isKindOfClass:[UIPickerView class]])) {
-		return;
-	}
+		 && ![view isKindOfClass:[UIPickerView class]])) {
+			return;
+		}
 	NSInteger viewIndex = 0;
 	NSInteger firstYCoordinate = view.frame.origin.y + view.frame.size.height;
 
@@ -763,13 +763,13 @@ andSaveInUserDefaults:(BOOL)save {
 #pragma Remove Keyboard From Screen
 //Iain
 -(void) removeKeyboardFromScreen {
-[[[UIApplication sharedApplication] keyWindow] endEditing:YES];
+	[[[UIApplication sharedApplication] keyWindow] endEditing:YES];
 }
 
 -(void) showKeyboard {
-//	if(self.channelPicker.isEditing) {
-//		[self.channelPicker becomeFirstResponder];
-//	}
+	//	if(self.channelPicker.isEditing) {
+	//		[self.channelPicker becomeFirstResponder];
+	//	}
 }
 
 #pragma mark Keyboard Notifications
@@ -806,8 +806,8 @@ andSaveInUserDefaults:(BOOL)save {
 		case UIGestureRecognizerStateChanged: {
 
 			if ((self.pinchingMode == PinchingModeVertical ||
-                 self.pinchingMode == PinchingModeVerticalUndo)
-					   && self.lowerPinchScrollView && self.upperPinchScrollView) {
+				 self.pinchingMode == PinchingModeVerticalUndo)
+				&& self.lowerPinchScrollView && self.upperPinchScrollView) {
 				[self handleVerticlePinchGestureChanged:sender];
 			}
 			break;
@@ -869,9 +869,9 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) handlePinchGestureBegan: (UIPinchGestureRecognizer *)sender {
-     if(self.pageElementScrollViews.count < 2) return;//if there is only one object on the screen then don't pinch
-    self.pinchingMode = PinchingModeVertical;
-    [self handleVerticlePinchGestureBegan:sender];
+	if(self.pageElementScrollViews.count < 2) return;//if there is only one object on the screen then don't pinch
+	self.pinchingMode = PinchingModeVertical;
+	[self handleVerticlePinchGestureBegan:sender];
 }
 
 
@@ -961,22 +961,22 @@ andSaveInUserDefaults:(BOOL)save {
 		self.lowerTouchPointInVerticalPinch = touch2;
 		self.upperTouchPointInVerticalPinch = touch1;
 	}
-	
-    [self findElementsFromPinchPoint];
+
+	[self findElementsFromPinchPoint];
 
 	//if it's a pinch apart then create the media tile
-	 if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVertical &&sender.scale > 1) {
-         [self removeExcessMediaTiles];
+	if(self.upperPinchScrollView && self.lowerPinchScrollView && self.pinchingMode == PinchingModeVertical &&sender.scale > 1) {
+		[self removeExcessMediaTiles];
 		[self createNewMediaTileBetweenPinchViews];
-	 }
+	}
 
 }
 
 -(void) handleVerticlePinchGestureChanged: (UIPinchGestureRecognizer *)gesture {
 
-    if([gesture numberOfTouches] != 2) return;
-    
-    CGPoint upperTouch = [gesture locationOfTouch:0 inView:self.mainScrollView];
+	if([gesture numberOfTouches] != 2) return;
+
+	CGPoint upperTouch = [gesture locationOfTouch:0 inView:self.mainScrollView];
 	CGPoint lowerTouch = [gesture locationOfTouch:1 inView:self.mainScrollView];
 
 	//touch1 is upper touch
@@ -991,10 +991,10 @@ andSaveInUserDefaults:(BOOL)save {
 
 	//objects are being pinched apart
 	if(gesture.scale > 1) {
-        if(self.pinchingMode == PinchingModeVertical){
-            [self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
-					  andChangeInBottomViewPosition:changeInBottomViewPosition];
-        }
+		if(self.pinchingMode == PinchingModeVertical){
+			[self handleRevealOfNewMediaViewWithGesture:gesture andChangeInTopViewPosition:changeInTopViewPosition
+						  andChangeInBottomViewPosition:changeInBottomViewPosition];
+		}
 	}
 	//objects are being pinched together
 	else {
@@ -1047,10 +1047,10 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void) addMediaTile: (MediaSelectTile *) mediaTile underView: (ContentPageElementScrollView *) topView {
 	if(!mediaTile) {
-//		NSLog(@"Can't add Nil media tile");
+		//		NSLog(@"Can't add Nil media tile");
 		return;
 	}
-    
+
 	CGRect newMediaTileScrollViewFrame = [self getStartFrameForNewMediaTileScrollViewUnderView:topView];
 	ContentPageElementScrollView * newMediaTileScrollView = [[ContentPageElementScrollView alloc]initWithFrame:newMediaTileScrollViewFrame andElement:mediaTile];
 	newMediaTileScrollView.delegate = self; // scroll view delegate
@@ -1186,7 +1186,7 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) findElementsFromPinchPoint {
 
 	self.upperPinchScrollView = [self findPinchViewScrollViewFromUpperPinchPoint:self.upperTouchPointInVerticalPinch andLowerPinchPoint:self.lowerTouchPointInVerticalPinch];
-    
+
 	if(!self.upperPinchScrollView) {
 		return;
 	}
@@ -1199,13 +1199,13 @@ andSaveInUserDefaults:(BOOL)save {
 
 	if(self.pageElementScrollViews.count > (index+1) && index != NSNotFound && self.pinchingMode != PinchingModeVerticalUndo) {
 		self.lowerPinchScrollView = self.pageElementScrollViews[index+1];
-    }else if (self.pinchingMode == PinchingModeVerticalUndo){
-        //make sure that we're pinching apart a colleciton
-        if(![self.upperPinchScrollView.pageElement isKindOfClass:[CollectionPinchView class]]){
-            return;
-        }
-        self.lowerPinchScrollView = [self createPinchApartViews];
-    }
+	}else if (self.pinchingMode == PinchingModeVerticalUndo){
+		//make sure that we're pinching apart a colleciton
+		if(![self.upperPinchScrollView.pageElement isKindOfClass:[CollectionPinchView class]]){
+			return;
+		}
+		self.lowerPinchScrollView = [self createPinchApartViews];
+	}
 
 	if([self.lowerPinchScrollView.pageElement isKindOfClass:[MediaSelectTile class]]) {
 		self.lowerPinchScrollView = nil;
@@ -1246,18 +1246,18 @@ andSaveInUserDefaults:(BOOL)save {
 
 //Runs through and identifies the pinch view scrollview at that point
 -(ContentPageElementScrollView *) findPinchViewScrollViewFromUpperPinchPoint: (CGPoint) upperPinchPoint
-                                                          andLowerPinchPoint:(CGPoint) lowerPinchPoint{
-    NSInteger distanceTraveled = 0;
+														  andLowerPinchPoint:(CGPoint) lowerPinchPoint{
+	NSInteger distanceTraveled = 0;
 	ContentPageElementScrollView * wantedView;
 	//Runs through the view positions to find the first one that passes the midpoint- we assume the midpoint is
 	for (ContentPageElementScrollView* scrollView in self.pageElementScrollViews) {
 		if(distanceTraveled == 0) distanceTraveled = scrollView.frame.origin.y;
 		distanceTraveled += scrollView.frame.size.height;
 		if(distanceTraveled > upperPinchPoint.y && [scrollView.pageElement isKindOfClass:[PinchView class]] && (upperPinchPoint.y > scrollView.frame.origin.y)) {
-            wantedView = scrollView;
-            if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
-                self.pinchingMode = PinchingModeVerticalUndo;
-            }
+			wantedView = scrollView;
+			if([self bothPointsInView:wantedView andLowerPoint:lowerPinchPoint]){
+				self.pinchingMode = PinchingModeVerticalUndo;
+			}
 			break;
 		}
 	}
@@ -1265,10 +1265,10 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(BOOL) bothPointsInView: (UIView *) view andLowerPoint: (CGPoint) lowerPoint {
-    if(lowerPoint.y < (view.frame.origin.y + (self.defaultPinchViewRadius*2))){
-        return YES;
-    }
-    return NO;
+	if(lowerPoint.y < (view.frame.origin.y + (self.defaultPinchViewRadius*2))){
+		return YES;
+	}
+	return NO;
 }
 
 -(BOOL)sufficientOverlapBetweenPinchedObjects {
@@ -1290,10 +1290,10 @@ andSaveInUserDefaults:(BOOL)save {
 }
 
 -(void) cameraButtonPressedOnTile: (MediaSelectTile *)tile {
-		[self.cameraView removeFromSuperview];
-		[self.view addSubview:self.cameraView];
-		[self.cameraView createAndInstantiateGestures];
-        self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;//should be a contentpagescrollview
+	[self.cameraView removeFromSuperview];
+	[self.view addSubview:self.cameraView];
+	[self.cameraView createAndInstantiateGestures];
+	self.selectedView_PAN = (ContentPageElementScrollView *)tile.superview;//should be a contentpagescrollview
 }
 
 #pragma mark - Change position of elements on screen by dragging
@@ -1303,7 +1303,7 @@ andSaveInUserDefaults:(BOOL)save {
 	switch (sender.state) {
 		case UIGestureRecognizerStateEnded: {
 			[self finishMovingSelectedItem];
-            [self removeExcessMediaTiles];
+			[self removeExcessMediaTiles];
 			break;
 		}
 		case UIGestureRecognizerStateBegan: {
@@ -1338,13 +1338,13 @@ andSaveInUserDefaults:(BOOL)save {
 		}
 		return;
 	}
-    
-    
+
+
 	self.previousLocationOfTouchPoint_PAN = touch;
 	self.previousFrameInLongPress = self.selectedView_PAN.frame;
 
 	[self.selectedView_PAN.pageElement markAsSelected:YES];
-    [self.selectedView_PAN markAsSelected:YES];
+	[self.selectedView_PAN markAsSelected:YES];
 }
 
 // Finds first view that contains location of press and sets it as the selectedView
@@ -1365,10 +1365,10 @@ andSaveInUserDefaults:(BOOL)save {
 			self.selectedView_PAN = self.pageElementScrollViews[i];
 
 			//can't select the base tile selector
-			 if (self.selectedView_PAN.pageElement == self.baseMediaTileSelector) {
+			if (self.selectedView_PAN.pageElement == self.baseMediaTileSelector) {
 				self.selectedView_PAN = nil;
 				return;
-			 }
+			}
 			[self.mainScrollView bringSubviewToFront:self.selectedView_PAN];
 			return;
 		}
@@ -1385,7 +1385,7 @@ andSaveInUserDefaults:(BOOL)save {
 	if (!self.selectedView_PAN) {
 		return;
 	}
-    //checks if this is a selection from an open collections
+	//checks if this is a selection from an open collections
 	if (self.selectedView_PAN.collectionIsOpen) {
 		PinchView* unPinched = [self.selectedView_PAN moveSelectedItemFromTouch:touch];
 		if (unPinched) {
@@ -1393,34 +1393,34 @@ andSaveInUserDefaults:(BOOL)save {
 			self.previousLocationOfTouchPoint_PAN = touch;
 			self.previousFrameInLongPress = self.selectedView_PAN.frame;
 			[self.selectedView_PAN.pageElement markAsSelected:YES];
-            [self.selectedView_PAN markAsSelected:YES];
+			[self.selectedView_PAN markAsSelected:YES];
 		}
 		return;
 	}
-    
-    //find the index of the currently selected scrollview
+
+	//find the index of the currently selected scrollview
 	NSInteger viewIndex = [self.pageElementScrollViews indexOfObject:self.selectedView_PAN];
 	ContentPageElementScrollView* topView = nil;
 	ContentPageElementScrollView* bottomView = nil;
-    
-    //find the view above it
+
+	//find the view above it
 	if(viewIndex !=0) {
 		topView  = self.pageElementScrollViews[viewIndex-1];
 	}
-    //find the view below it
+	//find the view below it
 	if (viewIndex+1 < [self.pageElementScrollViews count]) {
 		bottomView = self.pageElementScrollViews[viewIndex+1];
 	}
-    
-    //move the selected view up or down by the drag distance of the finger
+
+	//move the selected view up or down by the drag distance of the finger
 	NSInteger yDifference  = touch.y - self.previousLocationOfTouchPoint_PAN.y;
 	CGRect newFrame = [self newVerticalTranslationFrameForView:self.selectedView_PAN andChange:yDifference];
 
 	// view can't move below bottom media tile
-	 if(bottomView && bottomView.pageElement == self.baseMediaTileSelector
-	 &&  ((newFrame.origin.y + newFrame.size.height) >= bottomView.frame.origin.y)) {
+	if(bottomView && bottomView.pageElement == self.baseMediaTileSelector
+	   &&  ((newFrame.origin.y + newFrame.size.height) >= bottomView.frame.origin.y)) {
 		return;
-	 }
+	}
 
 	//move item
 	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
@@ -1433,9 +1433,9 @@ andSaveInUserDefaults:(BOOL)save {
 	if(topView && (newFrame.origin.y + newFrame.size.height/2.f)
 	   < (topView.frame.origin.y + topView.frame.size.height)) {
 		[self swapWithTopView: topView];
-    }
-    //check if object has moved down the halfway mark of the view below it, if so swap them
-    else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) + CENTERING_OFFSET_FOR_TEXT_VIEW
+	}
+	//check if object has moved down the halfway mark of the view below it, if so swap them
+	else if(bottomView && (newFrame.origin.y + newFrame.size.height/2.f) + CENTERING_OFFSET_FOR_TEXT_VIEW
 			> bottomView.frame.origin.y) {
 		[self swapWithBottomView: bottomView];
 	}
@@ -1488,33 +1488,33 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void)presentUserInstructionForPinchGesture {
 
-    ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
+	ContentPageElementScrollView * firstInList = self.pageElementScrollViews[0];
 
-    CGFloat offsetFromPinchViewCenters = 60.f;    
-    
-    CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
-    
-    CGFloat frameWidth = frameHeight;
-    
-    
-    
-    CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
-    
-    
-    UIImage * instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
-    self.pinchElementsTogetherInstructionView = [[UIImageView alloc] initWithImage:instructionImage];
-    self.pinchElementsTogetherInstructionView.contentMode = UIViewContentModeScaleAspectFit;
-    self.pinchElementsTogetherInstructionView.frame =  instructionFrame;
-    
-    [self.mainScrollView addSubview:self.pinchElementsTogetherInstructionView];
-    [self.mainScrollView bringSubviewToFront:self.pinchElementsTogetherInstructionView];
-    
-    [UIView animateWithDuration:4.f animations:^{
-        self.pinchElementsTogetherInstructionView.alpha = 0.f;
-    }completion:^(BOOL finished) {
-        [self.pinchElementsTogetherInstructionView removeFromSuperview];
-    }];
-	
+	CGFloat offsetFromPinchViewCenters = 60.f;
+
+	CGFloat frameHeight = firstInList.frame.size.height - (offsetFromPinchViewCenters);
+
+	CGFloat frameWidth = frameHeight;
+
+
+
+	CGRect instructionFrame = CGRectMake(firstInList.center.x - 8.f, firstInList.center.y + offsetFromPinchViewCenters,frameWidth,frameHeight);
+
+
+	UIImage * instructionImage = [UIImage imageNamed:PINCH_OBJECTS_TOGETHER_INSTRUCTION];
+	self.pinchElementsTogetherInstructionView = [[UIImageView alloc] initWithImage:instructionImage];
+	self.pinchElementsTogetherInstructionView.contentMode = UIViewContentModeScaleAspectFit;
+	self.pinchElementsTogetherInstructionView.frame =  instructionFrame;
+
+	[self.mainScrollView addSubview:self.pinchElementsTogetherInstructionView];
+	[self.mainScrollView bringSubviewToFront:self.pinchElementsTogetherInstructionView];
+
+	[UIView animateWithDuration:4.f animations:^{
+		self.pinchElementsTogetherInstructionView.alpha = 0.f;
+	}completion:^(BOOL finished) {
+		[self.pinchElementsTogetherInstructionView removeFromSuperview];
+	}];
+
 }
 
 //adjusts offset of main scroll view so selected item is in focus
@@ -1553,9 +1553,9 @@ andSaveInUserDefaults:(BOOL)save {
 		} else {
 			upperView = nil;
 		}
-    }
-    
-    
+	}
+
+
 	[unPinched revertToInitialFrame];
 	[unPinched removeFromSuperview];
 	//todo: test this
@@ -1572,17 +1572,17 @@ andSaveInUserDefaults:(BOOL)save {
 		[self.selectedView_PAN finishMovingSelectedItem];
 		return;
 	}
-    
-    //make sure the pinch view is in the right position to replace the cover photo
- 
-    [UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
-			 self.selectedView_PAN.frame = self.previousFrameInLongPress;
-    }];
-	
-    if(self.selectedView_PAN){
-        [self.selectedView_PAN.pageElement markAsSelected:NO];
-        [self.selectedView_PAN markAsSelected:NO];
-    }
+
+	//make sure the pinch view is in the right position to replace the cover photo
+
+	[UIView animateWithDuration:PINCHVIEW_ANIMATION_DURATION/2.f animations:^{
+		self.selectedView_PAN.frame = self.previousFrameInLongPress;
+	}];
+
+	if(self.selectedView_PAN){
+		[self.selectedView_PAN.pageElement markAsSelected:NO];
+		[self.selectedView_PAN markAsSelected:NO];
+	}
 	//sanitize for next run
 	self.selectedView_PAN = nil;
 	[self shiftElementsBelowView:self.channelPicker];
@@ -1656,24 +1656,24 @@ andSaveInUserDefaults:(BOOL)save {
 	if(![sender.view isKindOfClass:[PinchView class]] || self.currentlyPreviewingContent) {
 		return;
 	}
-    
-    UIView * view = sender.view.superview;//this will be a scrollview
-    if(view)[self presentPreviewAtIndex:[self.pageElementScrollViews indexOfObject:view]];
+
+	UIView * view = sender.view.superview;//this will be a scrollview
+	if(view)[self presentPreviewAtIndex:[self.pageElementScrollViews indexOfObject:view]];
 }
 
 //protocol for preview view
 -(void) aboutToShowPreview{
-    self.currentlyPreviewingContent = YES;
+	self.currentlyPreviewingContent = YES;
 }
 -(void) aboutToRemovePreview{
-    self.currentlyPreviewingContent = NO;
+	self.currentlyPreviewingContent = NO;
 }
 
 -(void)presentPreviewAtIndex:(NSInteger ) index{
-    NSMutableArray *pinchViews = [self getPinchViews];
+	NSMutableArray *pinchViews = [self getPinchViews];
 
-    [self.view bringSubviewToFront:self.previewDisplayView];
-    [self.previewDisplayView displayPreviewPostWithTitle:@"" andPinchViews:pinchViews withStartIndex:index];
+	[self.view bringSubviewToFront:self.previewDisplayView];
+	[self.previewDisplayView displayPreviewPostWithTitle:@"" andPinchViews:pinchViews withStartIndex:index];
 }
 
 #pragma mark - Clean up Content Page -
@@ -1689,14 +1689,14 @@ andSaveInUserDefaults:(BOOL)save {
 	[self.mainScrollView setContentOffset:CGPointMake(0, 0)];
 	[self adjustMainScrollViewContentSize];
 	[self clearTextFields];
-    [self clearBaseSelcetor];
+	[self clearBaseSelcetor];
 	[self createBaseSelector];
-    [self initializeVariables];
+	[self initializeVariables];
 }
 
 -(void)clearBaseSelcetor{
-    [self.baseMediaTileSelector removeFromSuperview];
-    self.baseMediaTileSelector = nil;
+	[self.baseMediaTileSelector removeFromSuperview];
+	self.baseMediaTileSelector = nil;
 }
 
 -(void)clearTextFields {
@@ -1706,55 +1706,35 @@ andSaveInUserDefaults:(BOOL)save {
 
 #pragma mark - Verbatm Camera View Delegate methods -
 
-// add image to deck (create pinch view)
--(void) imageCaptured: (UIImage*) image {
-	image = [image scaleImageToSize:[image getSizeForImageWithBounds:self.view.bounds]];
+-(void) placeNewMediaAtBottomOfDeck {
 	// place it at the bottom of the deck, above base element view selector
-    
-    if(self.selectedView_PAN.pageElement == self.baseMediaTileSelector){
-        
-        if(self.pageElementScrollViews.count == 1){
-            self.addMediaBelowView = nil;//insert at the very top
-        }else{
-            self.addMediaBelowView = self.pageElementScrollViews[self.pageElementScrollViews.count - 2];//below the second to last object
-        }
-        
-    }else{
-        self.addMediaBelowView = self.selectedView_PAN;
-    }
-    
-    
-	[self createPinchViewFromImage: image];
+	if(self.selectedView_PAN.pageElement == self.baseMediaTileSelector){
+		if(self.pageElementScrollViews.count == 1){
+			self.addMediaBelowView = nil;//insert at the very top
+		}else{
+			self.addMediaBelowView = self.pageElementScrollViews[self.pageElementScrollViews.count - 2];//below the second to last object
+		}
+
+	}else{
+		self.addMediaBelowView = self.selectedView_PAN;
+	}
+}
+
+// add image to deck (create pinch view)
+-(void) imageAssetCaptured: (PHAsset *) asset {
+	[self placeNewMediaAtBottomOfDeck];
+	[self getImageFromAsset:asset];
 }
 
 // add video asset to deck (create pinch view)
 -(void) videoAssetCaptured:(PHAsset *) asset {
-    
-    if(self.selectedView_PAN.pageElement == self.baseMediaTileSelector){
-        
-        if(self.pageElementScrollViews.count == 1){
-            self.addMediaBelowView = nil;//insert at the very top
-        }else{
-            self.addMediaBelowView = self.pageElementScrollViews[self.pageElementScrollViews.count - 2];//below the second to last object
-        }
-        
-    }else{
-        self.addMediaBelowView = self.selectedView_PAN;
-    }
-    
-	[[PHImageManager defaultManager] requestAVAssetForVideo:asset
-													options:self.videoRequestOptions
-											  resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
-												  dispatch_async(dispatch_get_main_queue(), ^{
-													  [self createPinchViewFromVideoAsset:(AVURLAsset*)videoAsset
-																		andPHAssetLocalID: asset.localIdentifier];
-												  });
-											  }];
+	[self placeNewMediaAtBottomOfDeck];
+	[self getVideoFromAsset: asset];
 }
 
 -(void) minimizeCameraViewButtonTapped {
 	[self.cameraView removeFromSuperview];
-    [self removeExcessMediaTiles];
+	[self removeExcessMediaTiles];
 }
 
 #pragma mark - Gallery + Image picker -
@@ -1794,25 +1774,11 @@ andSaveInUserDefaults:(BOOL)save {
 	for(PHAsset * asset in phassets) {
 		if(asset.mediaType==PHAssetMediaTypeImage) {
 			@autoreleasepool {
-				PHImageRequestOptions *options = [PHImageRequestOptions new];
-				options.synchronous = YES;
-				[self.imageManager requestImageForAsset:asset targetSize:self.view.bounds.size contentMode:PHImageContentModeAspectFill
-												options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-					dispatch_async(dispatch_get_main_queue(), ^{
-						[self createPinchViewFromImage: image];
-					});
-				}];
+				[self getImageFromAsset:asset];
 			}
 		} else if(asset.mediaType==PHAssetMediaTypeVideo) {
 			@autoreleasepool {
-				[self.imageManager requestAVAssetForVideo:asset options:self.videoRequestOptions
-											resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
-					// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-					dispatch_async(dispatch_get_main_queue(), ^{
-						[self createPinchViewFromVideoAsset: (AVURLAsset*) videoAsset andPHAssetLocalID:asset.localIdentifier];
-					});
-				}];
+				[self getVideoFromAsset:asset];
 			}
 		} else if(asset.mediaType==PHAssetMediaTypeAudio) {
 			// NSLog(@"Asset is of audio type, unable to handle.");
@@ -1823,6 +1789,28 @@ andSaveInUserDefaults:(BOOL)save {
 	}
 }
 
+-(void) getImageFromAsset: (PHAsset *) asset {
+	PHImageRequestOptions *options = [PHImageRequestOptions new];
+	options.synchronous = YES;
+	[self.imageManager requestImageForAsset:asset targetSize:self.view.bounds.size contentMode:PHImageContentModeAspectFill
+									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+										dispatch_async(dispatch_get_main_queue(), ^{
+											[self createPinchViewFromImage: image andPhAssetId:[asset localIdentifier]];
+										});
+									}];
+}
+
+-(void) getVideoFromAsset: (PHAsset *) asset {
+	[self.imageManager requestAVAssetForVideo:asset options:self.videoRequestOptions
+								resultHandler:^(AVAsset *videoAsset, AVAudioMix *audioMix, NSDictionary *info) {
+									// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+									dispatch_async(dispatch_get_main_queue(), ^{
+										[self createPinchViewFromVideoAsset: (AVURLAsset*) videoAsset andPHAssetLocalID:asset.localIdentifier];
+									});
+								}];
+}
+
 /* NOT IN USE */
 -(UIImage*) getImageFromImageData:(NSData*) imageData {
 	UIImage* image = [[UIImage alloc] initWithData: imageData];
@@ -1831,10 +1819,10 @@ andSaveInUserDefaults:(BOOL)save {
 	return image;
 }
 
--(void) createPinchViewFromImage: (UIImage*) image {
+-(void) createPinchViewFromImage: (UIImage*) image andPhAssetId: (NSString*) assetId {
 	PinchView* newPinchView = [[ImagePinchView alloc] initWithRadius:self.defaultPinchViewRadius
 														  withCenter:self.defaultPinchViewCenter
-															andImage:image];
+															andImage:image andPHAssetLocalIdentifier:assetId];
 	[self newPinchView: newPinchView belowView: self.addMediaBelowView andSaveInUserDefaults:YES];
 }
 
@@ -1863,15 +1851,15 @@ andSaveInUserDefaults:(BOOL)save {
 #pragma mark -remove excess mediatiles-
 
 -(void)removeExcessMediaTiles{
-    for(int i = 0; i < self.pageElementScrollViews.count; i++){
-        if(i < self.pageElementScrollViews.count) {
-            ContentPageElementScrollView *  contentPageSV = self.pageElementScrollViews[i];
-            if([contentPageSV.pageElement isKindOfClass:[MediaSelectTile class]] &&
-               contentPageSV.pageElement != self.baseMediaTileSelector){
-                [self deleteScrollView:contentPageSV];
-            }
-        }
-    }
+	for(int i = 0; i < self.pageElementScrollViews.count; i++){
+		if(i < self.pageElementScrollViews.count) {
+			ContentPageElementScrollView *  contentPageSV = self.pageElementScrollViews[i];
+			if([contentPageSV.pageElement isKindOfClass:[MediaSelectTile class]] &&
+			   contentPageSV.pageElement != self.baseMediaTileSelector){
+				[self deleteScrollView:contentPageSV];
+			}
+		}
+	}
 }
 
 #pragma mark - Publishing (PreviewDisplay delegate Methods)
@@ -1882,21 +1870,21 @@ andSaveInUserDefaults:(BOOL)save {
 
 -(void) publishOurStoryWithPinchViews:(NSMutableArray *)pinchViews{
 
-    Channel * channelToPostIn = nil;
-    if (self.currentPresentedPickerRow < self.userChannels.count) {
-        channelToPostIn = self.userChannels[self.currentPresentedPickerRow];
-    } else {
-        UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.currentPresentedPickerRow forComponent:0];
-        if ([textField.text isEqualToString:@""]) {
+	Channel * channelToPostIn = nil;
+	if (self.currentPresentedPickerRow < self.userChannels.count) {
+		channelToPostIn = self.userChannels[self.currentPresentedPickerRow];
+	} else {
+		UITextField * textField = (UITextField *) [self.channelPicker viewForRow:self.currentPresentedPickerRow forComponent:0];
+		if ([textField.text isEqualToString:@""]) {
 			UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"You must publish to a blog" message:@"Please enter a name for your new blog." preferredStyle:UIAlertControllerStyleAlert];
 			UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
-															handler:^(UIAlertAction * action) {}];
+																  handler:^(UIAlertAction * action) {}];
 			[newAlert addAction:defaultAction];
 			[self presentViewController:newAlert animated:YES completion:nil];
-        } else {
-            channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil andChannelCreator:nil];
-        }
-    }
+		} else {
+			channelToPostIn = [[Channel alloc] initWithChannelName:textField.text andParseChannelObject:nil andChannelCreator:nil];
+		}
+	}
 	if (channelToPostIn) {
 		[[PublishingProgressManager sharedInstance] publishPostToChannel:channelToPostIn withPinchViews:pinchViews withCompletionBlock:^(BOOL posting) {
 			if(posting) {
@@ -1913,7 +1901,7 @@ andSaveInUserDefaults:(BOOL)save {
 #pragma mark - Tap to clear view -
 
 - (IBAction)tapToClearKeyboard:(UITapGestureRecognizer *)sender {
-    [self removeKeyboardFromScreen];
+	[self removeKeyboardFromScreen];
 }
 
 
@@ -1970,8 +1958,8 @@ andSaveInUserDefaults:(BOOL)save {
 -(CustomNavigationBar*) navBar {
 	if (!_navBar) {
 		_navBar = [[CustomNavigationBar alloc]
-                   initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
-                   andBackgroundColor:ADK_NAV_BAR_COLOR];
+				   initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT)
+				   andBackgroundColor:ADK_NAV_BAR_COLOR];
 	}
 	return _navBar;
 }
