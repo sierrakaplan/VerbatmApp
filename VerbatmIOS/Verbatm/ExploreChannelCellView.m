@@ -8,12 +8,16 @@
 
 #import "ExploreChannelCellView.h"
 
+@interface ExploreChannelCellView()
+
+@end
+
 @implementation ExploreChannelCellView
 
 -(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if (self) {
-
+		self.backgroundColor = [UIColor darkGrayColor];
 	}
 	return self;
 }

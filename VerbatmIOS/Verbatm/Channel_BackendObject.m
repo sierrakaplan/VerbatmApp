@@ -117,7 +117,7 @@
 						NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
 						Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
 																		andParseChannelObject:parseChannelObject
-																			andChannelCreator:user];
+																			andChannelCreator:channelCreator];
 						[finalChannels addObject:verbatmChannelObject];
 					}
 				}

@@ -28,8 +28,8 @@
 @property (nonatomic, strong) PFObject *post;
 @property (nonatomic, strong) NSArray *pages;
 
-#define POST_VIEW_Y_OFFSET 50.f
-#define OFFSET 10.f
+#define POST_VIEW_Y_OFFSET 60.f
+#define OFFSET 5.f
 
 @end
 
@@ -42,7 +42,7 @@
 		self.backgroundColor = [UIColor darkGrayColor];
 		self.channel = channel;
 		[self addSubview:self.followButton];
-		[self.userNameLabel setText: [channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY]];
+		[self.userNameLabel setText: [channel getChannelOwnerUserName]];
 		[self addSubview:self.userNameLabel];
 		[self.channelNameLabel setText: channel.name];
 		[self addSubview: self.channelNameLabel];
@@ -66,13 +66,25 @@
 	//todo:
 }
 
+-(void) onScreen {
+	[self.postView postOnScreen];
+}
+
+-(void) offScreen {
+	[self.postView postOffScreen];
+}
+
+-(void) almostOnScreen {
+	[self.postView preparepostToBePresented];
+}
+
 #pragma mark - Lazy Instantiation -
 
 //todo: make numbers constants
 
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
-		CGRect labelFrame = CGRectMake(0.f, 0.f, 100.f, 20.f);
+		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, 150.f, 20.f);
 		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
@@ -86,7 +98,10 @@
 		CGRect followFrame = CGRectMake(self.frame.size.width - 70.f, OFFSET, 70.f, 20.f); //todo
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.frame = followFrame;
-		[_followButton setTitle:@"Follow" forState:UIControlStateNormal];
+		NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Follow"
+																			  attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],
+																						   NSFontAttributeName: [UIFont fontWithName:DEFAULT_FONT size:16.f]}]; //todo
+		[_followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
 		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _followButton;
@@ -94,12 +109,13 @@
 
 -(UILabel *) channelNameLabel {
 	if (!_channelNameLabel) {
-		CGRect channelNameFrame = CGRectMake(OFFSET, self.followButton.frame.origin.y + self.followButton.frame.size.height + OFFSET,
-											 self.frame.size.width - (OFFSET *2), 50.f);
-		_channelNameLabel.frame = channelNameFrame;
+		CGRect channelNameFrame = CGRectMake(OFFSET, self.followButton.frame.size.height + self.followButton.frame.origin.y,
+											 self.frame.size.width - (OFFSET *2), 40.f);
+		_channelNameLabel = [[UILabel alloc] initWithFrame:channelNameFrame];
 		[_channelNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_channelNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]]; //todo:
-		[_channelNameLabel setTextColor:[UIColor blackColor]];
+		[_channelNameLabel setTextAlignment:NSTextAlignmentCenter];
+		[_channelNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:20.f]]; //todo:
+		[_channelNameLabel setTextColor:[UIColor whiteColor]];
 	}
 	return _channelNameLabel;
 }

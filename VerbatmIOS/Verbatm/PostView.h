@@ -45,6 +45,8 @@
 //informs the POV when it's visible
 -(void) postOnScreen;
 
+-(void) preparepostToBePresented;
+
 -(void) postOffScreen;
 
 // presents media only for the page on screen

@@ -150,7 +150,7 @@
 
 				if([pageAnum integerValue] > [pageBnum integerValue]){
 					return NSOrderedDescending;
-				}else if ([pageAnum integerValue] < [pageBnum integerValue]){
+				} else if ([pageAnum integerValue] < [pageBnum integerValue]){
 					return NSOrderedAscending;
 				}
 				return NSOrderedSame;

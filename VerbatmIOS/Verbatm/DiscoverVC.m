@@ -21,6 +21,7 @@
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
+	self.view.backgroundColor = [UIColor blackColor];
 	self.searchBar.frame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.searchBar.frame.size.width,
 									  self.searchBar.frame.size.height);
 	self.tableContainerView.frame = CGRectMake(0.f, self.searchBar.frame.origin.y + self.searchBar.frame.size.height,

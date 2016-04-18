@@ -13,4 +13,10 @@
 -(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel*)channel
 				andPostObject: (PFObject *)post andPages: (NSArray *) pages;
 
+-(void) onScreen;
+
+-(void) offScreen;
+
+-(void) almostOnScreen;
+
 @end

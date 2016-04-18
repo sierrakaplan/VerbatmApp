@@ -496,7 +496,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void)storeMedia:(NSArray *) media forPageIndex:(NSNumber*) pageIndex{
-	if(media){
+	if(media) {
 		[self.pageMedia setObject:media forKey:pageIndex];
 	}
 }
@@ -519,17 +519,15 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 #pragma mark - Playing post content -
 
--(void) postOnScreen{
+-(void) postOnScreen {
 	self.postIsCurrentlyBeingShown = YES;
 
-	if(self.pageMedia){
-		if(self.pageMedia.count > 0 &&
-		   self.pageViews.count ==0){
-			//we lazily create out pages
-			[self presentMediaContent];
-		}
-		[self displayMediaOnCurrentPage];
+	if(self.pageMedia.count > 0 &&
+	   self.pageViews.count ==0){
+		//we lazily create out pages
+		[self presentMediaContent];
 	}
+	[self displayMediaOnCurrentPage];
 }
 
 -(void) postOffScreen{
@@ -538,7 +536,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	[self removePageUpIndicatorFromView];
 }
 
--(void)preparepostToBePresented{
+-(void) preparepostToBePresented {
 	NSInteger currentPage = self.mainScrollView.contentOffset.x / self.frame.size.width;
 	PageViewingExperience* page = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentPage]];
 	[page onScreen];

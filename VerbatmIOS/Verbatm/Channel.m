@@ -50,6 +50,7 @@
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator{
 	self.parseChannelObject = object;
 	self.channelCreator = channelCreator;
+	[self.channelCreator fetchInBackground];
 }
 
 @end
