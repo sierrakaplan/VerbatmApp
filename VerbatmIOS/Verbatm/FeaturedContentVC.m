@@ -19,6 +19,7 @@
 @property (strong, nonatomic) NSMutableArray *featuredChannels;
 
 #define HEADER_HEIGHT 50.f
+#define CELL_HEIGHT 350.f
 
 @end
 
@@ -59,7 +60,7 @@
 
 - (void)refresh:(UIRefreshControl *)refreshControl {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		//todo: update each type of content
+		[self loadChannels];
 	});
 
 	[refreshControl endRefreshing];
@@ -114,11 +115,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	if (indexPath.section == 0) {
-		return 350.f; //todo
-	} else {
-		return 360.f;
-	}
+	return CELL_HEIGHT;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -132,21 +129,25 @@
 		if(cell == nil) {
 			cell = [[FeaturedContentCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-		} else {
-			[cell removeFromSuperview];
 		}
-		[cell presentChannels: self.featuredChannels];
+		if (!cell.alreadyPresented && self.featuredChannels.count > 0) {
+			[cell presentChannels: self.featuredChannels];
+		}
+
+		[cell onScreen];
 		return cell;
 	} else {
 		ExploreChannelCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 		if(cell == nil) {
 			cell = [[ExploreChannelCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
-		} else {
-			[cell removeFromSuperview];
 		}
-		Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
-		[cell presentChannel:channel];
+		if (!cell.alreadyPresented && self.exploreChannels.count > indexPath.row) {
+			Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
+			[cell presentChannel: channel];
+		}
+
+		[cell onScreen];
 		return cell;
 	}
 }
@@ -159,6 +160,20 @@
 	} else if (scrollView.contentOffset.y >= HEADER_HEIGHT) {
 		scrollView.contentInset = UIEdgeInsetsMake(-HEADER_HEIGHT, 0, 0, 0);
 	}
+}
+
+- (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {
+	if ([tableView.indexPathsForVisibleRows indexOfObject:indexPath] == NSNotFound) {
+		if (indexPath.section == 0) {
+			[(FeaturedContentCellView*)cell offScreen];
+		} else {
+			[(ExploreChannelCellView*)cell offScreen];
+		}
+	}
+}
+
+-(CGFloat) getVisibileCellIndex{
+	return self.tableView.contentOffset.y / CELL_HEIGHT;
 }
 
 #pragma mark - Lazy Instantiation -

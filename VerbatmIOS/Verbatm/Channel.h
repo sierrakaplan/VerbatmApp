@@ -23,8 +23,8 @@
 			  andParseChannelObject:(PFObject *) parseChannelObject
 				  andChannelCreator:(PFUser *) channelCreator;
 
-//note - methods are synchronous so could block to get user info
--(NSString *)getChannelOwnerUserName;
+-(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block;
+
 -(BOOL)channelBelongsToCurrentUser;
 
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator;

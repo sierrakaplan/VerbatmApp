@@ -24,6 +24,7 @@
 @property (strong, nonatomic) UIScrollView *horizontalScrollView;
 @property (strong, nonatomic) NSArray *posts;
 @property (strong, nonatomic) NSMutableArray *postViews;
+@property (nonatomic) NSInteger indexOnScreen;
 
 
 #define POST_VIEW_OFFSET 20.f
@@ -40,6 +41,8 @@
 -(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if (self) {
+		self.alreadyPresented = NO;
+		self.indexOnScreen = 0;
 		self.backgroundColor = [UIColor darkGrayColor];
 		[self addSubview:self.horizontalScrollView];
 		[self addSubview:self.footerView];
@@ -68,11 +71,16 @@
 		xCoordinate += POST_VIEW_WIDTH + POST_VIEW_OFFSET;
 	}
 	self.horizontalScrollView.contentSize = CGSizeMake(xCoordinate, self.horizontalScrollView.contentSize.height);
+	[self setPostsOnScreen];
 }
 
 -(void) presentChannel:(Channel *)channel {
+	self.alreadyPresented = YES;
 	[self.channelNameLabel setText: channel.name];
-	[self.userNameLabel setText: [channel getChannelOwnerUserName]];
+	[channel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
+		[self.userNameLabel setText: name];
+	}];
+
 	__block CGFloat xCoordinate = POST_VIEW_OFFSET;
 	[Post_BackendObject getPostsInChannel:channel withCompletionBlock:^(NSArray *postChannelActivityObjects) {
 		for (PFObject *postChannelActivityObj in postChannelActivityObjects) {
@@ -86,6 +94,11 @@
 				xCoordinate += POST_VIEW_WIDTH + POST_VIEW_OFFSET;
 				self.horizontalScrollView.contentSize = CGSizeMake(xCoordinate, self.horizontalScrollView.contentSize.height);
 				[self.horizontalScrollView addSubview: postView];
+				if (self.postViews.count >= self.indexOnScreen && self.postViews.count <= self.indexOnScreen+2) {
+					[postView postOnScreen];
+				} else if (self.postViews.count == (self.indexOnScreen+3)) {
+					[postView preparepostToBePresented];
+				}
 				[self.postViews addObject: postView];
 			}];
 		}
@@ -97,7 +110,45 @@
 }
 
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-	//todo: put posts on and off screen
+	[self setPostsOnScreen];
+}
+
+-(void) setPostsOnScreen {
+	CGFloat originX = self.horizontalScrollView.contentOffset.x;
+	//Round down/truncate
+	NSInteger postIndex = originX / (POST_VIEW_WIDTH + POST_VIEW_OFFSET);
+
+	//Three posts can be visible
+	for (NSInteger i = postIndex; i < postIndex+3; i++) {
+		// Set previous on screen posts off screen
+		NSInteger previousPostIndex = self.indexOnScreen+(i-postIndex);
+		if (previousPostIndex < self.postViews.count &&
+			(previousPostIndex < postIndex || previousPostIndex > postIndex+2)) {
+			[(PostView*)self.postViews[previousPostIndex] postOffScreen];
+		}
+		// set posts on screen
+		if (i < self.postViews.count) {
+			[(PostView*)self.postViews[i] postOnScreen];
+		}
+	}
+	// Prepare next view
+	if (postIndex + 3 < self.postViews.count) {
+		[(PostView*)self.postViews[postIndex+3] preparepostToBePresented];
+	}
+}
+
+-(void) setAllPostsOffScreen {
+	for (PostView* postView in self.postViews) {
+		[postView postOffScreen];
+	}
+}
+
+-(void) offScreen {
+	[self setAllPostsOffScreen];
+}
+
+-(void) onScreen {
+	[self setPostsOnScreen];
 }
 
 #pragma mark - Lazy Instantiation -

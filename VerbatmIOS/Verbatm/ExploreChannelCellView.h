@@ -11,6 +11,12 @@
 
 @interface ExploreChannelCellView : UITableViewCell
 
+@property (nonatomic) BOOL alreadyPresented;
+
 -(void)presentChannel:(Channel *) channel;
+
+-(void)onScreen;
+
+-(void)offScreen;
 
 @end

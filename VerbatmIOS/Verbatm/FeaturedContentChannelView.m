@@ -42,7 +42,9 @@
 		self.backgroundColor = [UIColor darkGrayColor];
 		self.channel = channel;
 		[self addSubview:self.followButton];
-		[self.userNameLabel setText: [channel getChannelOwnerUserName]];
+		[channel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
+			[self.userNameLabel setText: name];
+		}];
 		[self addSubview:self.userNameLabel];
 		[self.channelNameLabel setText: channel.name];
 		[self addSubview: self.channelNameLabel];

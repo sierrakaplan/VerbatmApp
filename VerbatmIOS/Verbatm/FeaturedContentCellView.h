@@ -10,6 +10,12 @@
 
 @interface FeaturedContentCellView : UITableViewCell
 
+@property (nonatomic) BOOL alreadyPresented;
+
 -(void)presentChannels:(NSArray*) channels;
+
+-(void)onScreen;
+
+-(void)offScreen;
 
 @end

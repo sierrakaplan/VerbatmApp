@@ -387,9 +387,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Scrollview delegate -
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {
-	//NSArray * cellsVisible = [self.collectionView visibleCells];
-	//PostCollectionViewCell * visibleCell = [cellsVisible firstObject];
-    
     NSInteger visibleIndex = [self getVisibileCellIndex];
     if(visibleIndex < self.presentedPostList.count){
         PostView * currentView = self.presentedPostList[visibleIndex];

@@ -30,6 +30,7 @@
 -(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if (self) {
+		self.alreadyPresented = NO;
 		self.backgroundColor = [UIColor lightGrayColor];
 		[self addSubview:self.horizontalScrollView];
 		self.indexOnScreen = 0;
@@ -50,6 +51,7 @@
 }
 
 -(void) presentChannels:(NSArray *)channels {
+	self.alreadyPresented = YES;
 	__block CGFloat xCoordinate = CHANNEL_VIEW_OFFSET;
 	for (Channel *channel in channels) {
 		[Post_BackendObject getPostsInChannel:channel withCompletionBlock:^(NSArray *postChannelActivityObjects) {
@@ -76,6 +78,10 @@
 }
 
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	[self setPostsOnScreen];
+}
+
+-(void) setPostsOnScreen {
 	CGFloat originX = self.horizontalScrollView.contentOffset.x;
 	//Round down/truncate
 	NSInteger postIndex = originX / (CHANNEL_VIEW_WIDTH + CHANNEL_VIEW_OFFSET);
@@ -97,7 +103,20 @@
 	if (postIndex + 3 < self.channelViews.count) {
 		[(FeaturedContentChannelView*)self.channelViews[postIndex+3] almostOnScreen];
 	}
+}
 
+-(void) setAllPostsOffScreen {
+	for (FeaturedContentChannelView* channelView in self.channelViews) {
+		[channelView offScreen];
+	}
+}
+
+-(void) offScreen {
+	[self setAllPostsOffScreen];
+}
+
+-(void) onScreen {
+	[self setPostsOnScreen];
 }
 
 #pragma mark - Lazy Instantiation -

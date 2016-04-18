@@ -110,9 +110,11 @@
 		PFQuery *allChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
 		[allChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
 			NSMutableArray * finalChannels = [[NSMutableArray alloc] init];
-			if(channels && channels.count){
+			if(channels && channels.count) {
 				for(PFObject * parseChannelObject in channels){
 					PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+					[channelCreator fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+					}];
 					if(channelCreator != [PFUser currentUser] && ![usersWhoHaveBlockedUser containsObject:channelCreator]){
 						NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
 						Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
