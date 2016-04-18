@@ -18,6 +18,8 @@
 @property (strong, nonatomic) UIScrollView *horizontalScrollView;
 @property (strong, nonatomic) NSMutableArray *channelViews;
 
+@property (nonatomic) NSInteger indexOnScreen;
+
 #define CHANNEL_VIEW_WIDTH 230.f
 #define CHANNEL_VIEW_OFFSET 10.f
 
@@ -30,6 +32,7 @@
 	if (self) {
 		self.backgroundColor = [UIColor lightGrayColor];
 		[self addSubview:self.horizontalScrollView];
+		self.indexOnScreen = 0;
 	}
 	return self;
 }
@@ -61,6 +64,11 @@
 				xCoordinate += CHANNEL_VIEW_WIDTH + CHANNEL_VIEW_OFFSET;
 				self.horizontalScrollView.contentSize = CGSizeMake(xCoordinate, self.horizontalScrollView.contentSize.height);
 				[self.horizontalScrollView addSubview:channelView];
+				if (self.channelViews.count == self.indexOnScreen || self.channelViews.count == self.indexOnScreen+1) {
+					[channelView onScreen];
+				} else if (self.channelViews.count == (self.indexOnScreen+2)) {
+					[channelView almostOnScreen];
+				}
 				[self.channelViews addObject: channelView];
 			}];
 		}];
@@ -69,14 +77,27 @@
 
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	CGFloat originX = self.horizontalScrollView.contentOffset.x;
+	//Round down/truncate
 	NSInteger postIndex = originX / (CHANNEL_VIEW_WIDTH + CHANNEL_VIEW_OFFSET);
-	if (postIndex < self.channelViews.count) {
-		[(FeaturedContentChannelView*)self.channelViews[postIndex] onScreen];
+
+	//Three posts can be visible
+	for (NSInteger i = postIndex; i < postIndex+3; i++) {
+		// Set previous on screen posts off screen
+		NSInteger previousPostIndex = self.indexOnScreen+(i-postIndex);
+		if (previousPostIndex < self.channelViews.count &&
+			(previousPostIndex < postIndex || previousPostIndex > postIndex+2)) {
+			[(FeaturedContentChannelView*)self.channelViews[previousPostIndex] offScreen];
+		}
+		// set posts on screen
+		if (i < self.channelViews.count) {
+			[(FeaturedContentChannelView*)self.channelViews[i] onScreen];
+		}
 	}
-	//Two posts are visible
-	if (postIndex + 1 < self.channelViews.count) {
-		[(FeaturedContentChannelView*)self.channelViews[postIndex+1] onScreen];
+	// Prepare next view
+	if (postIndex + 3 < self.channelViews.count) {
+		[(FeaturedContentChannelView*)self.channelViews[postIndex+3] almostOnScreen];
 	}
+
 }
 
 #pragma mark - Lazy Instantiation -
