@@ -25,40 +25,41 @@
 // shows latest post in channel
 @property (nonatomic, strong) Channel *channel;
 @property (nonatomic, strong) PostView *postView;
-@property (nonatomic, strong) NSArray *posts; // array of post channel objects
+@property (nonatomic, strong) PFObject *post;
+@property (nonatomic, strong) NSArray *pages;
+
+#define POST_VIEW_Y_OFFSET 50.f
+#define OFFSET 10.f
 
 @end
 
 @implementation FeaturedContentChannelView
 
--(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel*)channel {
+-(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel*)channel
+				andPostObject: (PFObject *)post andPages: (NSArray *) pages {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.backgroundColor = [UIColor darkGrayColor];
 		self.channel = channel;
 		[self addSubview:self.followButton];
 		[self.userNameLabel setText: [channel.channelCreator valueForKey:VERBATM_USER_NAME_KEY]];
 		[self addSubview:self.userNameLabel];
 		[self.channelNameLabel setText: channel.name];
 		[self addSubview: self.channelNameLabel];
+		self.post = post;
+		self.pages = pages;
 		[self loadPostView];
 	}
 	return self;
 }
 
 -(void) loadPostView {
-	CGRect postViewFrame = CGRectMake(10.f, 100.f, 60.f, 60.f);
-	[Post_BackendObject getPostsInChannel:self.channel withCompletionBlock:^(NSArray *posts) {
-		self.posts = posts;
-		if (posts.count > 0) {
-			[Page_BackendObject getPagesFromPost:posts[0] andCompletionBlock:^(NSArray * pages) {
-				//todo: make sure that only channels with posts go into discover
-				self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject:posts[0]];
-				[self.postView renderPostFromPageObjects:pages];
-				[self.postView postOffScreen];
-				[self addSubview: self.postView];
-			}];
-		}
-	}];
+	CGRect postViewFrame = CGRectMake(OFFSET, POST_VIEW_Y_OFFSET, self.bounds.size.width - (OFFSET * 2),
+									  self.bounds.size.height - (OFFSET + POST_VIEW_Y_OFFSET));
+	self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject: self.post];
+	[self.postView renderPostFromPageObjects: self.pages];
+	[self.postView postOffScreen];
+	[self addSubview: self.postView];
 }
 
 -(void) followButtonPressed {
@@ -72,9 +73,10 @@
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
 		CGRect labelFrame = CGRectMake(0.f, 0.f, 50.f, 50.f);
+		_userNameLabel.backgroundColor = [UIColor blueColor];
 		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:14.f]];
+		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
 	}
 	return _userNameLabel;
@@ -82,7 +84,7 @@
 
 -(UIButton *) followButton {
 	if (!_followButton) {
-		CGRect followFrame = CGRectMake(self.frame.size.width - 50.f, 0.f, 50.f, 50.f);
+		CGRect followFrame = CGRectMake(self.frame.size.width - 70.f, OFFSET, 70.f, 30.f);
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.frame = followFrame;
 		[_followButton setTitle:@"Follow" forState:UIControlStateNormal];
@@ -93,11 +95,12 @@
 
 -(UILabel *) channelNameLabel {
 	if (!_channelNameLabel) {
-		CGRect channelNameFrame = CGRectMake(10.f, 60.f, self.frame.size.width - 20.f, 50.f);
+		CGRect channelNameFrame = CGRectMake(OFFSET, self.followButton.frame.origin.y + self.followButton.frame.size.height + OFFSET,
+											 self.frame.size.width - (OFFSET *2), 50.f);
 		_channelNameLabel.frame = channelNameFrame;
 		[_channelNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_channelNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:14.f]];
-		[_channelNameLabel setTextColor:VERBATM_GOLD_COLOR];
+		[_channelNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:14.f]]; //todo:
+		[_channelNameLabel setTextColor:[UIColor blackColor]];
 	}
 	return _channelNameLabel;
 }

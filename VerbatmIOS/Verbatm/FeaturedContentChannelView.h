@@ -10,6 +10,7 @@
 
 @interface FeaturedContentChannelView : UIView
 
--(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel*)channel;
+-(instancetype) initWithFrame:(CGRect)frame andChannel:(Channel*)channel
+				andPostObject: (PFObject *)post andPages: (NSArray *) pages;
 
 @end

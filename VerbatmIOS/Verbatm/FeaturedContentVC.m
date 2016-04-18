@@ -11,6 +11,7 @@
 #import "FeaturedContentVC.h"
 #import "FeaturedContentCellView.h"
 #import "SizesAndPositions.h"
+#import "Styles.h"
 
 @interface FeaturedContentVC()
 
@@ -63,21 +64,10 @@
 
 #pragma mark - Table View delegate methods -
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
-	if (indexPath.section == 0) {
-		return 200.f; //todo
-	} else {
-		return 300.f;
-	}
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	//todo
-}
-
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 	return 2;
 }
+
 
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	NSString *sectionName;
@@ -95,6 +85,17 @@
 	return sectionName;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
+	// Background color
+	view.tintColor = [UIColor blackColor];
+
+	// Text Color
+	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
+	[header.textLabel setTextColor:[UIColor whiteColor]];
+	//todo: make constant
+	[header.textLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
 	switch (section) {
 		case 0:
@@ -104,6 +105,18 @@
 		default:
 			return 0;
 	}
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+	if (indexPath.section == 0) {
+		return 300.f; //todo
+	} else {
+		return 300.f;
+	}
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	//todo: select a channel
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
