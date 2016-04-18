@@ -119,6 +119,10 @@
 
 		for (PFObject * imageAndTextObj in photoObjects) {
 			NSString * photoUrlString = [imageAndTextObj valueForKey:PHOTO_IMAGEURL_KEY];
+			// Tell google to give us high quality image
+			if (![photoUrlString hasSuffix:@"=s0"]) {
+				photoUrlString = [photoUrlString stringByAppendingString:@"=s0"];
+			}
 			NSURL *photoURL = [NSURL URLWithString:photoUrlString];
 
 			NSString *text =  [imageAndTextObj valueForKey:PHOTO_TEXT_KEY];
