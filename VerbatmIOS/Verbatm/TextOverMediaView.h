@@ -20,8 +20,9 @@
 @property (nonatomic, readonly) NSTextAlignment textAlignment;
 @property (nonatomic, strong, readonly) UIColor *textColor;
 
+-(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image;
 
--(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage*)image;
+-(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl;
 
 -(void) setText:(NSString *)text
 andTextYPosition:(CGFloat) textYPosition

@@ -178,7 +178,7 @@
 }
 
 -(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
-	UIImage* image = photoTextArray[0];
+	NSURL *url = photoTextArray[0];
 	NSString* text = photoTextArray[1];
 	CGFloat textYPosition = [(NSNumber *)photoTextArray[2] floatValue];
 	UIColor *textColor = photoTextArray[3];
@@ -190,7 +190,7 @@
 	}
 
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-																		  andImage: image];
+																		  andImageURL: url];
 	if (text && text.length) {
 		[textAndImageView setText: text
 				 andTextYPosition: textYPosition

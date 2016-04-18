@@ -13,6 +13,7 @@
 #import "StringsAndAppConstants.h"
 #import "TextOverMediaView.h"
 #import "UITextView+Utilities.h"
+#import "UIImageView+AFNetworking.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
 
 @interface TextOverMediaView ()
@@ -35,19 +36,30 @@
 
 @implementation TextOverMediaView
 
--(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image {
-	self = [super initWithFrame:frame];
+-(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl {
+	self = [self initWithFrame:frame];
 	if (self) {
-		[self revertToDefaultTextSettings];
-		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
-		[self setImageViewWithImage:image];
+		[self.imageView setImageWithURL: imageUrl];
 	}
 	return self;
 }
 
--(void) setImageViewWithImage:(UIImage*) image {
-	[self.imageView setImage: image];
-	[self addSubview:self.imageView];
+-(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
+	self = [self initWithFrame: frame];
+	if (self) {
+		[self.imageView setImage:image];
+	}
+	return self;
+}
+
+-(instancetype) initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+	if (self) {
+		[self revertToDefaultTextSettings];
+		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
+		[self addSubview:self.imageView];
+	}
+	return self;
 }
 
 /* Returns image view with image centered */

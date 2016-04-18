@@ -80,7 +80,7 @@
 	} else if (type == PageTypePhotoVideo){
 		return [[PhotoVideoPVE alloc] initWithFrame:frame
 										  andPhotos:pageMedia[1]
-										  andVideo:pageMedia[2][0] andVideoThumbnail:pageMedia[2][1]];
+										   andVideo:pageMedia[2][0] andVideoThumbnail:pageMedia[2][1]];
 	}
 
 	//should never reach here
@@ -110,45 +110,34 @@
 }
 
 /* photoTextArray is array containing subarrays of photo and text info
- @[@[photo, text, textYPosition, textColor, textAlignment, textSize],...] */
+ @[@[url, text, textYPosition, textColor, textAlignment, textSize],...] */
 -(void) getUIImagesFromPage: (PFObject *) page withCompletionBlock:(void(^)(NSMutableArray *)) block{
 
 	[Photo_BackendObject getPhotosForPage:page andCompletionBlock:^(NSArray * photoObjects) {
 
-		NSMutableArray* loadImageDataPromises = [[NSMutableArray alloc] init];
-		for (PFObject * photoBackendObject in photoObjects) {
-			NSString * photoUrl = [photoBackendObject valueForKey:PHOTO_IMAGEURL_KEY];
-			AnyPromise* getImageDataPromise = [UtilityFunctions loadCachedPhotoDataFromURL: [NSURL URLWithString:photoUrl]];
-			[loadImageDataPromises addObject: getImageDataPromise];
-		}
-		PMKWhen(loadImageDataPromises).then(^(NSArray* results) {
-			dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-				NSMutableArray* uiImages = [[NSMutableArray alloc] init];
-				for (int i = 0; i < results.count; i++) {
-					NSData* imageData = results[i];
-					if(![imageData isKindOfClass:[NSNull class]]){
-						UIImage* uiImage = [UIImage imageWithData:imageData];
-						PFObject *imageAndTextObj = photoObjects[i];
+		NSMutableArray* uiImages = [[NSMutableArray alloc] init];
 
-						NSString *text =  [imageAndTextObj valueForKey:PHOTO_TEXT_KEY];
-						NSNumber *yOffset = [imageAndTextObj valueForKey:PHOTO_TEXT_YOFFSET_KEY];
+		for (PFObject * imageAndTextObj in photoObjects) {
+			NSString * photoUrlString = [imageAndTextObj valueForKey:PHOTO_IMAGEURL_KEY];
+			NSURL *photoURL = [NSURL URLWithString:photoUrlString];
 
-						NSData *textColorData = [imageAndTextObj valueForKey:PHOTO_TEXT_COLOR_KEY];
-						UIColor *textColor = textColorData == nil ? nil : [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
-						if (textColor == nil) textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
-						NSNumber *textAlignment = [imageAndTextObj valueForKey:PHOTO_TEXT_ALIGNMENT_KEY];
-						if (textAlignment == nil) textAlignment = [NSNumber numberWithInt:0];
-						NSNumber *textSize = [imageAndTextObj valueForKey:PHOTO_TEXT_SIZE_KEY];
-						if (textSize == nil) textSize = [NSNumber numberWithFloat:TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE];
+			NSString *text =  [imageAndTextObj valueForKey:PHOTO_TEXT_KEY];
+			NSNumber *yOffset = [imageAndTextObj valueForKey:PHOTO_TEXT_YOFFSET_KEY];
 
-						[uiImages addObject: @[uiImage, text, yOffset, textColor, textAlignment, textSize]];
-					}
-				}
-				dispatch_async(dispatch_get_main_queue(), ^{
-					block(uiImages);
-				});
+			NSData *textColorData = [imageAndTextObj valueForKey:PHOTO_TEXT_COLOR_KEY];
+			UIColor *textColor = textColorData == nil ? nil : [NSKeyedUnarchiver unarchiveObjectWithData:textColorData];
+			if (textColor == nil) textColor = [UIColor TEXT_PAGE_VIEW_DEFAULT_COLOR];
+			NSNumber *textAlignment = [imageAndTextObj valueForKey:PHOTO_TEXT_ALIGNMENT_KEY];
+			if (textAlignment == nil) textAlignment = [NSNumber numberWithInt:0];
+			NSNumber *textSize = [imageAndTextObj valueForKey:PHOTO_TEXT_SIZE_KEY];
+			if (textSize == nil) textSize = [NSNumber numberWithFloat:TEXT_PAGE_VIEW_DEFAULT_FONT_SIZE];
+
+			[uiImages addObject: @[photoURL, text, yOffset, textColor, textAlignment, textSize]];
+
+			dispatch_async(dispatch_get_main_queue(), ^{
+				block(uiImages);
 			});
-		});
+		}
 	}];
 }
 
@@ -183,7 +172,7 @@
 			[[VideoDownloadManager sharedInstance] downloadURL:components.URL];
 			block(@[components.URL, thumbNail]);
 		}];
-
+		
 	}];
 }
 
