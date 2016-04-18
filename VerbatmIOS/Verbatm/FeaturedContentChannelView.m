@@ -72,8 +72,7 @@
 
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
-		CGRect labelFrame = CGRectMake(0.f, 0.f, 50.f, 50.f);
-		_userNameLabel.backgroundColor = [UIColor blueColor];
+		CGRect labelFrame = CGRectMake(0.f, 0.f, 100.f, 20.f);
 		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
@@ -84,7 +83,7 @@
 
 -(UIButton *) followButton {
 	if (!_followButton) {
-		CGRect followFrame = CGRectMake(self.frame.size.width - 70.f, OFFSET, 70.f, 30.f);
+		CGRect followFrame = CGRectMake(self.frame.size.width - 70.f, OFFSET, 70.f, 20.f); //todo
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.frame = followFrame;
 		[_followButton setTitle:@"Follow" forState:UIControlStateNormal];
@@ -99,7 +98,7 @@
 											 self.frame.size.width - (OFFSET *2), 50.f);
 		_channelNameLabel.frame = channelNameFrame;
 		[_channelNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_channelNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:14.f]]; //todo:
+		[_channelNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]]; //todo:
 		[_channelNameLabel setTextColor:[UIColor blackColor]];
 	}
 	return _channelNameLabel;

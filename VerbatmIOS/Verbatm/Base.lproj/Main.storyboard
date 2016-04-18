@@ -347,6 +347,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <connections>
+                        <outlet property="searchBar" destination="90J-sa-VJ8" id="e18-8d-PH5"/>
                         <outlet property="searchDisplayController" destination="N54-Ic-Hel" id="DKj-dN-Kna"/>
                         <outlet property="tableContainerView" destination="eqy-rr-7Zi" id="f0Z-AK-ewr"/>
                     </connections>

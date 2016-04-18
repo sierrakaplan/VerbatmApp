@@ -23,13 +23,12 @@
 	[super viewDidLoad];
 	self.searchBar.frame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.searchBar.frame.size.width,
 									  self.searchBar.frame.size.height);
-	self.tableContainerView.frame = CGRectMake(0.f, self.searchBar.frame.size.height + 45.f,
+	self.tableContainerView.frame = CGRectMake(0.f, self.searchBar.frame.origin.y + self.searchBar.frame.size.height,
 											   self.view.frame.size.width, self.view.frame.size.height);
 }
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-
 }
 
 @end
