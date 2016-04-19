@@ -67,7 +67,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 -(void)viewDidLoad {
 	[self setDateSourceAndDelegate];
 	[self registerClassForCustomCells];
-	[self getPosts];
+	[self refreshPosts];
 	self.shouldPlayVideos = YES;
     self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
 	[self registerForNotifications];
@@ -184,7 +184,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
             }
         }];
         
-    }else if (self.listType == listChannel){
+    } else if (self.listType == listChannel){
         [self loadCurrentChannel];
     }
 }
@@ -201,10 +201,9 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
     }];
 }
 
--(void) getPosts {
+-(void) loadMorePosts {
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed) {
-		if(!self.feedQueryManager) self.feedQueryManager = [FeedQueryManager sharedInstance];
 		[self.feedQueryManager loadMorePostsWithCompletionHandler:^(NSArray * posts) {
 			[self.customActivityIndicator stopCustomActivityIndicator];
 			if(posts.count){
@@ -235,7 +234,8 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 		AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
 			PFObject * post = [postChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-				PostView *postView = [[PostView alloc] initWithFrame:self.view.bounds andPostChannelActivityObject:postChannelActivityObject];
+				PostView *postView = [[PostView alloc] initWithFrame:self.view.bounds andPostChannelActivityObject:postChannelActivityObject
+															   small:NO];
 
 				NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 
@@ -343,7 +343,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if(indexPath.row == (self.presentedPostList.count - LOAD_MORE_POSTS_COUNT) &&
 	   (self.listType == listFeed) && !self.isReloading){
 		self.isReloading = YES;
-		if(self.listType == listFeed)[self getPosts];
+		if(self.listType == listFeed) [self loadMorePosts];
 	}
 
 	return nextCellToBePresented;
@@ -666,6 +666,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(NSMutableArray *)presentedPostList{
 	if(!_presentedPostList)_presentedPostList = [[NSMutableArray alloc] init];
 	return _presentedPostList;
+}
+
+-(FeedQueryManager*) feedQueryManager {
+	if (!_feedQueryManager) {
+		_feedQueryManager = [FeedQueryManager sharedInstance];
+	}
+	return _feedQueryManager;
 }
 
 @end

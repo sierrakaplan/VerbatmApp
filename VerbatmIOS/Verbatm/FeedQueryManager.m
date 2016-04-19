@@ -119,7 +119,7 @@
 -(void) loadMorePostsWithCompletionHandler:(void(^)(NSArray *))block {
 
 	//Needs to call refresh first
-	if (!self.channelsFollowed || !self.channelsFollowed.count) {
+	if (!self.channelsFollowed || !self.channelsFollowed.count || !self.currentFeedStart) {
 		block (@[]);
 		return;
 	}

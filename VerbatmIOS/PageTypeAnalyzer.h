@@ -27,6 +27,7 @@ typedef enum PageTypes{
 
 -(void) getPageViewFromPage: (PFObject *)page withFrame: (CGRect)frame andCompletionBlock:(void(^)(NSArray *))block;
 
-+(PageViewingExperience *) getPageViewFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame;
+//Small tells whether should display media in small format
++(PageViewingExperience *)getPageViewFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame small:(BOOL)small;
 
 @end

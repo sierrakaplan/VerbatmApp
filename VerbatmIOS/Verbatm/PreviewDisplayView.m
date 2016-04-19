@@ -86,7 +86,7 @@
 
 	PageTypeAnalyzer * analyzer = [[PageTypeAnalyzer alloc]init];
 	NSMutableArray* pages = [analyzer getPageViewsFromPinchViews: pinchViews withFrame: self.viewingFrame inPreviewMode:YES];
-	self.postView = [[PostView alloc] initWithFrame: self.bounds andPostChannelActivityObject:nil];
+	self.postView = [[PostView alloc] initWithFrame: self.bounds andPostChannelActivityObject:nil small:NO];
 	[self.postView renderPageViews: pages];
 	[self addSubview: self.postView];
 	[self addNavigationBar];

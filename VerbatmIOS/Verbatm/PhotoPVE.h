@@ -41,7 +41,8 @@
 @property (weak, nonatomic) UIScrollView * postScrollView;
 
 //Photos is array of UIImage
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray: (NSArray *)photos;;
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos
+						small:(BOOL) small;
 
 // initializer for preview mode
 // PinchView can be either ImagePinchView or CollectionPinchView

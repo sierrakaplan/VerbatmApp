@@ -83,7 +83,6 @@
 		NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
 		if(objects && !error){
 			for(PFObject * parseChannelObject in objects){
-
 				NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
 				// get number of follows from follow objects
 				Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName

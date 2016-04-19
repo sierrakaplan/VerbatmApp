@@ -33,6 +33,9 @@
 //let us know if this is the profile of the logged in user
 @property (nonatomic) BOOL isCurrentUserProfile;
 
+// This is the profile tab
+@property (nonatomic) BOOL isProfileTab;
+
 @property (nonatomic) id userIdToPresent;
 
 //channel that should be presented first

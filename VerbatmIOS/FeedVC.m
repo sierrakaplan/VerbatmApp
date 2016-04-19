@@ -120,11 +120,11 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 -(void)channelSelected:(Channel *) channel{
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
+	userProfile.isProfileTab = NO;
 	userProfile.userOfProfile = channel.channelCreator;
 	userProfile.startChannel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
-
 }
 
 -(void)registerForNotifications{

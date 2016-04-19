@@ -9,8 +9,16 @@
 #import "Channel.h"
 #import <UIKit/UIKit.h>
 
+@protocol ExploreChannelCellViewDelegate <NSObject>
+
+-(void) channelFollowed:(Channel *)channel;
+-(void) channelSelected: (Channel*)channel;
+
+@end
+
 @interface ExploreChannelCellView : UITableViewCell
 
+@property (weak, nonatomic) id<ExploreChannelCellViewDelegate> delegate;
 @property (weak, readonly) Channel *channelBeingPresented;
 
 -(void)presentChannel:(Channel *) channel;

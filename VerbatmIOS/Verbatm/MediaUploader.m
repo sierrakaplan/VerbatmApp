@@ -101,7 +101,6 @@
 	if (!responseString.length) {
 		[self requestFailed:request];
 	} else {
-		NSLog(@"Successfully uploaded media!");
 		[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
 		responseString = [responseString stringByAppendingString:@"=s0"];
 		self.completionBlock(nil, responseString);
@@ -119,8 +118,6 @@
 /* NOT IN USE */
 +(AnyPromise *) uploadImageData: (NSData*) imageData toUri: (NSString*) uri {
 	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-
-		NSLog(@"Image size is : %.2f KB",(float)imageData.length/1024.0f);
 		AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:uri]];
 		manager.responseSerializer = [AFHTTPResponseSerializer serializer];
 		//		NSDictionary *parameters = @{};//@{@"username": @"", @"password" : @""};
@@ -129,7 +126,6 @@
 			[afFormData appendPartWithFileData:imageData name:@"defaultImage" fileName:@"defaultImage.png" mimeType:@"image/png"];
 
 		} success:^(AFHTTPRequestOperation *operation, id responseObject) {
-			NSLog(@"Success: %@ ***** %@", operation.responseString, responseObject);
 			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:IMAGE_PROGRESS_UNITS-1];
 			NSString *responseURL = [operation responseString];
 			[responseURL stringByAppendingString:@"=s0"];

@@ -13,7 +13,7 @@
 #import "Page_BackendObject.h"
 #import "Post_BackendObject.h"
 
-@interface FeaturedContentCellView() <UIScrollViewDelegate>
+@interface FeaturedContentCellView() <UIScrollViewDelegate, FeaturedChannelViewDelegate>
 
 @property (strong, nonatomic) UIScrollView *horizontalScrollView;
 @property (strong, nonatomic) NSMutableArray *channelViews;
@@ -71,6 +71,7 @@
 				} else if (self.channelViews.count == (self.indexOnScreen+2)) {
 					[channelView almostOnScreen];
 				}
+				channelView.delegate = self;
 				[self.channelViews addObject: channelView];
 			}];
 		}];
@@ -85,6 +86,14 @@
 	}
 	self.channelViews = nil;
 	self.indexOnScreen = 0;
+}
+
+-(void) channelSelected:(Channel *)channel {
+	[self.delegate channelSelected:channel];
+}
+
+-(void) channelFollowed:(Channel *)channel {
+	[self.delegate channelFollowed:channel];
 }
 
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {

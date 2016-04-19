@@ -54,6 +54,9 @@
 @property (nonatomic, strong) UIButton * rearrangeButton;
 @property (nonatomic) OpenCollectionView * rearrangeView;
 
+// Tells whether should display smaller sized images
+@property (nonatomic) BOOL small;
+
 #define TEXT_VIEW_HEIGHT 70.f
 
 //this view manages the tapping gesture of the set circles
@@ -63,9 +66,11 @@
 
 @implementation PhotoPVE
 
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos {
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos
+						small:(BOOL) small {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.small = small;
 		self.inPreviewMode = NO;
         if ([photos count]) {
 			[self addPhotos:photos];
@@ -78,6 +83,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView inPreviewMode: (BOOL) inPreviewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.small = NO;
 		self.inPreviewMode = inPreviewMode;
 		self.pinchView = pinchView;
 		if([self.pinchView isKindOfClass:[CollectionPinchView class]]){
@@ -190,7 +196,8 @@
 	}
 
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-																		  andImageURL: url];
+																		  andImageURL: url
+																	withSmallImage:self.small];
 	if (text && text.length) {
 		[textAndImageView setText: text
 				 andTextYPosition: textYPosition
@@ -426,8 +433,6 @@
 }
 
 -(void) fadeWithDistance:(float)distanceFromStartingTouch andTotalDistance:(float)totalDistanceToTravel {
-//	NSLog(@"Distance from starting touch: %f", distanceFromStartingTouch);
-//	NSLog(@"Last distance from starting touch: %f", self.lastDistanceFromStartingPoint);
 	//switch current point and image
 	if (distanceFromStartingTouch > totalDistanceToTravel) {
 		self.draggingFromPointIndex = self.draggingFromPointIndex + 1;

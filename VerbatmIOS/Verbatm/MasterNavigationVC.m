@@ -214,6 +214,7 @@
 	self.profileVC.delegate = self;
     self.profileVC.userOfProfile = [PFUser currentUser];
     self.profileVC.isCurrentUserProfile = YES;
+	self.profileVC.isProfileTab = YES;
 
     self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
     self.feedVC.delegate = self;

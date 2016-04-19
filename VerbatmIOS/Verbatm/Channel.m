@@ -20,6 +20,7 @@
 @end
 
 @implementation Channel
+
 -(instancetype) initWithChannelName:(NSString *) channelName
               andParseChannelObject:(PFObject *) parseChannelObject
 				  andChannelCreator:(PFUser *) channelCreator {

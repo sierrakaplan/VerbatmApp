@@ -37,23 +37,26 @@
 
 @implementation TextOverMediaView
 
--(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl {
+-(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
+			   withSmallImage:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
-		//todo: remove
-		NSString * imageUri = [imageUrl absoluteString];
-		NSString * suffix = @"=s0";
-		if ([imageUri hasSuffix:suffix] ) {
-			imageUri = [imageUri substringWithRange:NSMakeRange(0, imageUri.length-suffix.length)];
-			imageUrl = [NSURL URLWithString:imageUri];
-		};
+		if (small) {
+			NSString * imageUri = [imageUrl absoluteString];
+			NSString * suffix = @"=s0";
+			if ([imageUri hasSuffix:suffix] ) {
+				imageUri = [imageUri substringWithRange:NSMakeRange(0, imageUri.length-suffix.length)];
+				imageUrl = [NSURL URLWithString:imageUri];
+			};
+		}
 
 		[self.imageView setImageWithURL: imageUrl];
 
-//		AnyPromise *loadData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
-//		loadData.then(^(NSData* imageData) {
-//			[self.imageView setImage:[UIImage imageWithData:imageData]];
-//		});
+		//todo: remove or figure out how to limit cache size
+		//		AnyPromise *loadData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
+		//		loadData.then(^(NSData* imageData) {
+		//			[self.imageView setImage:[UIImage imageWithData:imageData]];
+		//		});
 	}
 	return self;
 }
@@ -137,10 +140,10 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	if (newFrame.origin.y > 0.f
 		&& ((newFrame.origin.y + newFrame.size.height)
 			< (self.frame.size.height - (CIRCLE_RADIUS * 2)))) {
-		self.textView.frame = newFrame;
-		self.textYPosition = newFrame.origin.y;
-		return YES;
-	}
+			self.textView.frame = newFrame;
+			self.textYPosition = newFrame.origin.y;
+			return YES;
+		}
 	return NO;
 }
 
@@ -202,7 +205,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer {
 	return point.y > self.textView.frame.origin.y - buffer
-		&& point.y < self.textView.frame.origin.y + self.textView.frame.size.height + buffer;
+	&& point.y < self.textView.frame.origin.y + self.textView.frame.size.height + buffer;
 }
 
 #pragma mark - Change text properties -

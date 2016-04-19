@@ -8,8 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol FeaturedContentCellViewDelegate <NSObject>
+
+-(void) channelSelected:(Channel*)channel;
+-(void) channelFollowed:(Channel *)channel;
+
+@end
+
 @interface FeaturedContentCellView : UITableViewCell
 
+@property (weak, nonatomic) id<FeaturedContentCellViewDelegate> delegate;
 @property (nonatomic) BOOL alreadyPresented;
 
 -(void)presentChannels:(NSArray*) channels;

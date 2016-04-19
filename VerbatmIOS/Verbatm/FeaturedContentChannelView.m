@@ -17,7 +17,7 @@
 #import <Parse/PFObject.h>
 #import <Parse/PFUser.h>
 
-@interface FeaturedContentChannelView()
+@interface FeaturedContentChannelView() <UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) UILabel *userNameLabel;
 @property (nonatomic, strong) UIButton *followButton;
@@ -51,21 +51,30 @@
 		self.post = post;
 		self.pages = pages;
 		[self loadPostView];
+
+		UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
+		tap.delegate = self;
+		[self addGestureRecognizer:tap];
+
 	}
 	return self;
+}
+
+-(void) cellTapped:(UITapGestureRecognizer*)gesture {
+	[self.delegate channelSelected:self.channel];
 }
 
 -(void) loadPostView {
 	CGRect postViewFrame = CGRectMake(OFFSET, POST_VIEW_Y_OFFSET, self.bounds.size.width - (OFFSET * 2),
 									  self.bounds.size.height - (OFFSET + POST_VIEW_Y_OFFSET));
-	self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject: self.post];
+	self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject: self.post small:YES];
 	[self.postView renderPostFromPageObjects: self.pages];
 	[self.postView postOffScreen];
 	[self addSubview: self.postView];
 }
 
 -(void) followButtonPressed {
-	//todo:
+	[self.delegate channelFollowed: self.channel];
 }
 
 -(void) onScreen {

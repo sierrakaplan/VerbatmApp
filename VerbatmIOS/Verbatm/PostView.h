@@ -21,7 +21,8 @@
 @property (nonatomic) id<PostViewDelegate> delegate;
 
 // stores pov info associated with this view
--(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) povObject;
+-(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject
+					   small:(BOOL) small;
 
 // Displays post from an array of PageViewingExperiences
 -(void) renderPageViews: (NSArray *) pages;

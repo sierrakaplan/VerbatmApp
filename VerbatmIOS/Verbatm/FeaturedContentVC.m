@@ -11,20 +11,28 @@
 #import "FeedQueryManager.h"
 #import "FeaturedContentVC.h"
 #import "FeaturedContentCellView.h"
+#import "Follow_BackendManager.h"
+#import "ProfileVC.h"
 #import "SizesAndPositions.h"
 #import "Styles.h"
 
-@interface FeaturedContentVC() <UIScrollViewDelegate>
+@interface FeaturedContentVC() <UIScrollViewDelegate, FeaturedContentCellViewDelegate,
+ExploreChannelCellViewDelegate>
 
 @property (strong, nonatomic) NSMutableArray *exploreChannels;
 @property (strong, nonatomic) NSMutableArray *featuredChannels;
 
+@property (nonatomic) UIRefreshControl *refreshControl;
+
 #define HEADER_HEIGHT 50.f
+#define HEADER_FONT_SIZE 20.f
 #define CELL_HEIGHT 350.f
 
 @end
 
 @implementation FeaturedContentVC
+
+@dynamic refreshControl;
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
@@ -34,28 +42,24 @@
 	self.tableView.showsHorizontalScrollIndicator = NO;
 	self.tableView.showsVerticalScrollIndicator = NO;
 	self.tableView.delegate = self;
-	[self addRefreshFeature];
 
 	//avoid covering last item in uitableview
 	//todo: change this when bring back search bar
 	UIEdgeInsets inset = UIEdgeInsetsMake(0, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
 	self.tableView.scrollIndicatorInsets = inset;
+
+	[self addRefreshFeature];
+	[self loadChannels];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
 	[super viewWillAppear:animated];
-//	[self.view addSubview:self.tableView];
-	[self loadChannels];
+	[self.tableView reloadData];
 }
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
-
-	//Free all memory
-	self.exploreChannels = nil;
-	self.featuredChannels = nil;
-//	[self.tableView removeFromSuperview];
 }
 
 -(void) loadChannels {
@@ -64,23 +68,30 @@
 		[self.tableView reloadData];
 	}];
 	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+		[self.refreshControl endRefreshing];
 		[self.exploreChannels addObjectsFromArray: exploreChannels];
 		[self.tableView reloadData];
 	}];
 }
 
 -(void)addRefreshFeature{
-	UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-	[refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
-	[self.tableView addSubview:refreshControl];
+	self.refreshControl = [[UIRefreshControl alloc] init];
+	[self.refreshControl addTarget:self action:@selector(loadChannels) forControlEvents:UIControlEventValueChanged];
+	[self.tableView addSubview:self.refreshControl];
 }
 
-- (void)refresh:(UIRefreshControl *)refreshControl {
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-		[self loadChannels];
-	});
+-(void) channelSelected:(Channel *)channel {
+	ProfileVC * userProfile = [[ProfileVC alloc] init];
+	userProfile.isCurrentUserProfile = channel.channelCreator == [PFUser currentUser];
+	userProfile.isProfileTab = NO;
+	userProfile.userOfProfile = channel.channelCreator;
+	userProfile.startChannel = channel;
+	[self presentViewController:userProfile animated:YES completion:^{
+	}];
+}
 
-	[refreshControl endRefreshing];
+-(void) channelFollowed:(Channel *)channel {
+	[Follow_BackendManager currentUserFollowChannel: channel];
 }
 
 #pragma mark - Table View delegate methods -
@@ -115,8 +126,7 @@
 	// Text Color
 	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
 	[header.textLabel setTextColor:[UIColor whiteColor]];
-	//todo: make constant
-	[header.textLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
+	[header.textLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:HEADER_FONT_SIZE]];
 	[header.textLabel setTextAlignment:NSTextAlignmentCenter];
 }
 
@@ -135,8 +145,13 @@
 	return CELL_HEIGHT;
 }
 
+//todo: is this necessary?
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	//todo: select a channel
+//	if (indexPath.section == 0) {
+//		FeaturedContentCellView *cellVew = [self.tableView cellForRowAtIndexPath:indexPath];
+//	} else {
+//		ExploreChannelCellView *cellView = [self.tableView cellForRowAtIndexPath:indexPath];
+//	}
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -146,6 +161,7 @@
 		if(cell == nil) {
 			cell = [[FeaturedContentCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+			cell.delegate = self;
 		}
 		if (!cell.alreadyPresented && self.featuredChannels.count > 0) {
 			//Only one featured content cell
@@ -155,15 +171,18 @@
 		[cell onScreen];
 		return cell;
 	} else {
-		Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
 		ExploreChannelCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 		if(cell == nil) {
 			cell = [[ExploreChannelCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
+			cell.delegate = self;
 		}
-		if (cell.channelBeingPresented != channel && self.exploreChannels.count > 0){
-			[cell clearViews];
-			[cell presentChannel: channel];
+		if (self.exploreChannels.count > indexPath.row) {
+			Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
+			if (cell.channelBeingPresented != channel) {
+				[cell clearViews];
+				[cell presentChannel: channel];
+			}
 		}
 		[cell onScreen];
 		return cell;
@@ -182,11 +201,11 @@
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	// Don't let headers remain anchored
-	if (scrollView.contentOffset.y <= HEADER_HEIGHT && scrollView.contentOffset.y>=0) {
-		scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
-	} else if (scrollView.contentOffset.y >= HEADER_HEIGHT) {
-		scrollView.contentInset = UIEdgeInsetsMake(-HEADER_HEIGHT, 0, 0, 0);
-	}
+//	if (scrollView.contentOffset.y <= HEADER_HEIGHT && scrollView.contentOffset.y>=0) {
+//		scrollView.contentInset = UIEdgeInsetsMake(-scrollView.contentOffset.y, 0, 0, 0);
+//	} else if (scrollView.contentOffset.y >= HEADER_HEIGHT) {
+//		scrollView.contentInset = UIEdgeInsetsMake(-HEADER_HEIGHT, 0, 0, 0);
+//	}
 }
 
 - (void)tableView:(UITableView *)tableView didEndDisplayingCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath {

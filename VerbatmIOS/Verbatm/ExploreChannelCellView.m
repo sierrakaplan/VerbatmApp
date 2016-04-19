@@ -13,7 +13,7 @@
 #import "PostView.h"
 #import "Styles.h"
 
-@interface ExploreChannelCellView() <UIScrollViewDelegate>
+@interface ExploreChannelCellView() <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
 // view for content so that there can be a black footer in every cell
 @property (nonatomic, strong) UIView *footerView;
@@ -46,8 +46,16 @@
 		self.backgroundColor = [UIColor darkGrayColor];
 		[self addSubview:self.horizontalScrollView];
 		[self addSubview:self.footerView];
+
+		UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(cellTapped:)];
+		tap.delegate = self;
+		[self addGestureRecognizer:tap];
 	}
 	return self;
+}
+
+-(void) cellTapped:(UITapGestureRecognizer*)gesture {
+	[self.delegate channelSelected:self.channelBeingPresented];
 }
 
 -(void) layoutSubviews {
@@ -85,7 +93,7 @@
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
 				CGRect frame = CGRectMake(xCoordinate, POST_VIEW_OFFSET, POST_VIEW_WIDTH,
 										  self.horizontalScrollView.frame.size.height - (POST_VIEW_OFFSET*2));
-				PostView *postView = [[PostView alloc] initWithFrame:frame andPostChannelActivityObject:post];
+				PostView *postView = [[PostView alloc] initWithFrame:frame andPostChannelActivityObject:post small:YES];
 				[postView postOffScreen];
 				[postView renderPostFromPageObjects: pages];
 				xCoordinate += POST_VIEW_WIDTH + POST_VIEW_OFFSET;
@@ -123,7 +131,7 @@
 }
 
 -(void) followButtonPressed {
-	//todo
+	[self.delegate channelFollowed:self.channelBeingPresented];
 }
 
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {

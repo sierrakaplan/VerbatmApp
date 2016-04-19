@@ -87,6 +87,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 @property(nonatomic) BOOL postIsCurrentlyBeingShown;
 
+//Tells whether should display media in small format
+@property (nonatomic) BOOL small;
+
 #define DOWN_ARROW_WIDTH 30.f
 #define DOWN_ARROW_DISTANCE_FROM_BOTTOM 40.f
 #define SCROLL_UP_ANIMATION_DURATION 0.7
@@ -101,9 +104,11 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 
 @implementation PostView
 
--(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject {
+-(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject
+					   small:(BOOL) small {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.small = small;
 		[self addSubview: self.mainScrollView];
 		self.mainScrollView.backgroundColor = [UIColor blackColor];
 		if(postObject) self.parsePostChannelActivityObject = postObject;
@@ -501,13 +506,14 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 }
 
--(void)presentMediaContent{
+-(void) presentMediaContent {
 	if(self.pageMedia.count > 0){
 		[self.customActivityIndicator stopCustomActivityIndicator];
 
 		for(NSInteger key = 0; key < self.pageMedia.count; key++){
 			NSArray * media = [self.pageMedia objectForKey:[NSNumber numberWithInteger:key]];
-			PageViewingExperience *pageView = [PageTypeAnalyzer getPageViewFromPageMedia:media withFrame:self.bounds];
+			PageViewingExperience *pageView = [PageTypeAnalyzer getPageViewFromPageMedia:media withFrame:self.bounds
+																				   small:self.small];
 			//add bar at the bottom with page numbers etc
 			[self renderNextPage:pageView withIndex:[NSNumber numberWithInteger:key]];
 			[self setApproprioateScrollViewContentSize];

@@ -53,7 +53,7 @@
 
 -(PostView *) ourCurrentPost{
     if(!_ourCurrentPost){
-        _ourCurrentPost = [[PostView alloc] initWithFrame:self.bounds andPostChannelActivityObject:nil];
+        _ourCurrentPost = [[PostView alloc] initWithFrame:self.bounds andPostChannelActivityObject:nil small:NO];
         [self addSubview:_ourCurrentPost];
     }
     return _ourCurrentPost;

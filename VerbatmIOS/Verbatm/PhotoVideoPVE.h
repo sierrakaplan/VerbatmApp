@@ -24,7 +24,7 @@
 
 //Photos are array of UIImage* and videos are array of AVassets or NSURl
 -(instancetype)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideo:(NSURL*)videoURL
-		   andVideoThumbnail:(UIImage *)thumbnail;
+		   andVideoThumbnail:(UIImage *)thumbnail small: (BOOL)small;
 
 // Initializer for when page view is in preview mode
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView inPreviewMode: (BOOL) previewMode;

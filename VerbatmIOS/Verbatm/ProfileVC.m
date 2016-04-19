@@ -174,7 +174,8 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 						  initWithFrame:self.profileNavBarFrameOnScreen
 						  andChannels: self.channels
 						  andUser:self.userOfProfile
-						  isCurrentLoggedInUser:self.isCurrentUserProfile];
+						  isCurrentLoggedInUser:self.isCurrentUserProfile
+						  isProfileTab:self.isProfileTab];
 
 	self.profileNavBar.delegate = self;
 	[self.view addSubview:self.profileNavBar];
@@ -202,6 +203,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 -(void)channelSelected:(Channel *) channel{
 	ProfileVC *  userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
+	userProfile.isProfileTab = NO;
 	userProfile.userOfProfile = channel.channelCreator;
 	userProfile.startChannel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{

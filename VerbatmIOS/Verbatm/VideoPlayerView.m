@@ -125,10 +125,10 @@
 												 name:AVPlayerItemDidPlayToEndTimeNotification
 											   object:self.playerItem];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(playerItemDidStall:)
-												 name:AVPlayerItemPlaybackStalledNotification
-											   object:self.playerItem];
+//	[[NSNotificationCenter defaultCenter] addObserver:self
+//											 selector:@selector(playerItemDidStall:)
+//												 name:AVPlayerItemPlaybackStalledNotification
+//											   object:self.playerItem];
 }
 
 //this function should be called on the main thread
@@ -210,7 +210,6 @@
 		[self.player play];
 		self.isVideoPlaying = YES;
 	} else {
-		NSLog(@"Called play video but video player unprepared");
 		self.shouldPlayOnLoad = YES;
 	}
 }
@@ -221,12 +220,6 @@
 	if (self.repeatsVideo) {
 		[playerItem seekToTime:kCMTimeZero];
 	}
-}
-
-// Telling video to play when stalled should not be necessary but seems to be
--(void)playerItemDidStall:(NSNotification*)notification {
-	NSLog(@"Video stalled");
-	//	if(self.isVideoPlaying) [self playVideo];
 }
 
 // Pauses player

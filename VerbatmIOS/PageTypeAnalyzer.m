@@ -67,10 +67,10 @@
 	}
 }
 
-+(PageViewingExperience *)getPageViewFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame {
++(PageViewingExperience *)getPageViewFromPageMedia:(NSArray *)pageMedia withFrame:(CGRect)frame small:(BOOL)small {
 	PageTypes type = [pageMedia[0] intValue];//convert nsnumber back to our type
 	if(type == PageTypePhoto) {
-		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPhotoArray:pageMedia[1]];
+		PhotoPVE *photoPageView = [[PhotoPVE alloc] initWithFrame:frame andPhotoArray:pageMedia[1] small:small];
 		photoPageView.isPhotoVideoSubview = NO;
 		return photoPageView;
 
@@ -80,7 +80,8 @@
 	} else if (type == PageTypePhotoVideo){
 		return [[PhotoVideoPVE alloc] initWithFrame:frame
 										  andPhotos:pageMedia[1]
-										   andVideo:pageMedia[2][0] andVideoThumbnail:pageMedia[2][1]];
+										   andVideo:pageMedia[2][0] andVideoThumbnail:pageMedia[2][1]
+											  small:small];
 	}
 
 	//should never reach here
