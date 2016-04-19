@@ -78,5 +78,6 @@
 #define CHANNEL_NAME_KEY @"ChannelName"
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
 #define CHANNEL_NUM_FOLLOWS @"ChannelNumFollows"
+#define CHANNEL_FEATURED_BOOL @"Featured"
 
 #endif /* ParseBackendKeys_h */

@@ -55,7 +55,7 @@
 	__block CGFloat xCoordinate = CHANNEL_VIEW_OFFSET;
 	for (Channel *channel in channels) {
 		[Post_BackendObject getPostsInChannel:channel withCompletionBlock:^(NSArray *postChannelActivityObjects) {
-			//			for (PFObject *postChannelActivityObj in postChannelActivityObjects) {
+			if (postChannelActivityObjects.count < 1) return;
 			PFObject *postChannelActivityObj = postChannelActivityObjects[0];
 			PFObject *post = [postChannelActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
@@ -74,6 +74,22 @@
 				[self.channelViews addObject: channelView];
 			}];
 		}];
+	}
+}
+
+-(void) clearViews {
+	self.alreadyPresented = NO;
+	[self offScreen];
+	for (FeaturedContentCellView *channelView in self.channelViews) {
+		[channelView removeFromSuperview];
+	}
+	self.channelViews = nil;
+	self.indexOnScreen = 0;
+}
+
+-(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+	if (!decelerate) {
+		[self setPostsOnScreen];
 	}
 }
 

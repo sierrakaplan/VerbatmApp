@@ -7,125 +7,270 @@
 //  Copyright © 2016 Verbatm. All rights reserved.
 //
 
+#import "Channel.h"
 #import "FeedQueryManager.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
-#import <Parse/PFUser.h>
-#import <Parse/PFObject.h>
 
 
 @interface FeedQueryManager ()
-//how many posts have we gotten and presented so far
-@property (nonatomic) NSInteger postsDownloadedSoFar;
-#define POST_DOWNLOAD_MAX_SIZE 5
+
+@property (nonatomic) NSInteger postsInFeed;
+@property (nonatomic, strong) NSDate *currentFeedStart;
+
+@property (nonatomic, strong) NSMutableArray *channelsFollowed;
+@property (nonatomic, strong) NSMutableArray *channelsFollowedIds;
+// to stop two queries refreshing simultaneously
+@property (nonatomic) BOOL followedChannelsRefreshing;
+@property (nonatomic, strong) NSCondition *channelsRefreshingCondition;
+
+@property (nonatomic) NSInteger exploreChannelsLoaded;
+@property (nonatomic, strong) NSMutableArray *usersWhoHaveBlockedUser;
 
 @end
 
 @implementation FeedQueryManager
 
++(instancetype) sharedInstance {
+	static FeedQueryManager* sharedInstance = nil;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		sharedInstance = [[FeedQueryManager alloc] init];
+	});
+	return sharedInstance;
+}
+
 -(instancetype)init{
 	self = [super init];
-	if(self){
-		self.postsDownloadedSoFar = 0;
+	if(self) {
+		self.followedChannelsRefreshing = NO;
+		self.channelsRefreshingCondition = [[NSCondition alloc] init];
+		self.postsInFeed = 0;
 	}
 	return self;
 }
 
+// Waits if another thread is already refreshing followed channels,
+// Otherwise refreshes followed channels and signals that refreshing is done, then
+// block returns.
+-(void) refreshChannelsWeFollowWithCompletionHandler:(void(^)(void))block {
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+		[self.channelsRefreshingCondition lock];
 
-//resets our cursor to zero and starts downloading from scratch
--(void)getFeedPostsFromStartWithCompletionHandler:(void(^)(NSArray *))block{
-	self.postsDownloadedSoFar = 0;
-	[self getMoreFeedPostsWithCompletionHandler:block];
+		// Someone else is refreshing channels
+		if (self.followedChannelsRefreshing) {
+			while (self.followedChannelsRefreshing) {
+				[self.channelsRefreshingCondition wait];
+			}
+			[self.channelsRefreshingCondition unlock];
+			block();
+		}
+
+		// Refresh followed channels
+		self.followedChannelsRefreshing = YES;
+		[self.channelsRefreshingCondition unlock];
+
+		PFQuery *followObjectsQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
+		[followObjectsQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
+		[followObjectsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable followObjects, NSError * _Nullable error) {
+			self.channelsFollowed = [[NSMutableArray alloc] init];
+			self.channelsFollowedIds = [[NSMutableArray alloc] init];
+			if (!error && followObjects) { //todo: error handling
+				for(PFObject *followObj in followObjects) {
+					PFObject *channelObject = [followObj objectForKey:FOLLOW_CHANNEL_FOLLOWED_KEY];
+					[self.channelsFollowed addObject: channelObject];
+					[self.channelsFollowedIds addObject:[channelObject objectId]];
+				}
+			}
+			[self.channelsRefreshingCondition lock];
+			self.followedChannelsRefreshing = NO;
+			[self.channelsRefreshingCondition signal];
+			[self.channelsRefreshingCondition unlock];
+			block();
+		}];
+	});
 }
 
--(void)reloadFeedFromStartWithCompletionHandler:(void(^)(NSArray *))block {
-    //reset cursor to start
-    self.postsDownloadedSoFar = 0;
-    PFQuery * userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-    [userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
-    [userChannelQuery findObjectsInBackgroundWithBlock:^
-     (NSArray * _Nullable objects, NSError * _Nullable error) {
-         if(objects.count > 0){
-             PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-             NSMutableArray * channelsWeFollow = [[NSMutableArray alloc] init];
-             for(int i = 0; i < objects.count; i++){
-                 [channelsWeFollow addObject:[objects[i]objectForKey:FOLLOW_CHANNEL_FOLLOWED_KEY]];
-             }
-             
-             [postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:channelsWeFollow];
-             [postQuery orderByDescending:@"createdAt"];
-             [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
-                 NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-                 for(NSInteger i = self.postsDownloadedSoFar;
-                     (i < activities.count && i < self.postsDownloadedSoFar+POST_DOWNLOAD_MAX_SIZE); i++){
-                     PFObject * pc_activity = activities[i];
-                     PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-                     [post fetchIfNeededInBackground];
-                     [finalPostObjects addObject:pc_activity];
-                 }
-                 
-                 self.postsDownloadedSoFar += finalPostObjects.count;
-                 block(finalPostObjects);
-             }];
-         } else {
-             block(@[]);//no results so we send an empty list
-         }
-     }];
-}
-     
--(void)getMoreFeedPostsWithCompletionHandler:(void(^)(NSArray *))block{
-	PFQuery * userChannelQuery = [PFQuery queryWithClassName:FOLLOW_PFCLASS_KEY];
-	[userChannelQuery whereKey:FOLLOW_USER_KEY equalTo:[PFUser currentUser]];
-	[userChannelQuery findObjectsInBackgroundWithBlock:^
-	 (NSArray * _Nullable objects, NSError * _Nullable error) {
+-(void)refreshFeedWithCompletionHandler:(void(^)(NSArray *))block {
+	[self refreshChannelsWeFollowWithCompletionHandler:^{
+		// Get POST_DOWNLOAD_MAX_SIZE of posts associated with these channels sorted from newest to oldest
+		PFQuery *postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:self.channelsFollowed];
+		[postQuery orderByDescending:@"createdAt"];
+		[postQuery setLimit: POST_DOWNLOAD_MAX_SIZE];
+		[postQuery setSkip: 0];
+		[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
+			NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
+			for(PFObject *postChannelActivity in activities) {
+				PFObject *post = [postChannelActivity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+				[post fetchIfNeededInBackground];
+				[finalPostObjects addObject:postChannelActivity];
+			}
 
-		 if(objects.count > 0){
-
-			 PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
-
-			 NSMutableArray * channelsWeFollow = [[NSMutableArray alloc] init];
-			 for(int i = 0; i < objects.count; i++){
-				 [channelsWeFollow addObject:[objects[i]objectForKey:FOLLOW_CHANNEL_FOLLOWED_KEY]];
-			 }
-
-			 [postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:channelsWeFollow];
-			 [postQuery orderByDescending:@"createdAt"];
-			 [postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
-				 NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
-				 for(NSInteger i = self.postsDownloadedSoFar;
-					 (i < activities.count && i < self.postsDownloadedSoFar+POST_DOWNLOAD_MAX_SIZE); i ++){
-
-					 PFObject * pc_activity = activities[i];
-					 PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
-					 [post fetchIfNeededInBackground];
-
-					 [finalPostObjects addObject:pc_activity];
-				 }
-
-				 self.postsDownloadedSoFar += finalPostObjects.count;
-				 block(finalPostObjects);
-			 }];
-		 } else {
-			 block(@[]);//no results so we send an empty list
-		 }
-
-	 }];
-
+			// Reset cursor to start
+			if (activities.count > 0) self.currentFeedStart = [activities[0] objectForKey:@"createdAt"];
+			self.postsInFeed = 0;
+			self.postsInFeed += finalPostObjects.count;
+			block(finalPostObjects);
+		}];
+	}];
 }
 
+-(void) loadMorePostsWithCompletionHandler:(void(^)(NSArray *))block {
 
+	//Needs to call refresh first
+	if (!self.channelsFollowed || !self.channelsFollowed.count) {
+		block (@[]);
+		return;
+	}
 
+	// Get POST_DOWNLOAD_MAX_SIZE more posts older than the ones returned so far
+	PFQuery *postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+	[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO containedIn:self.channelsFollowed];
+	[postQuery orderByDescending:@"createdAt"];
+	[postQuery setLimit: POST_DOWNLOAD_MAX_SIZE];
+	[postQuery setSkip: self.postsInFeed];
+	[postQuery whereKey:@"createdAt" lessThan:self.currentFeedStart];
+	[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities, NSError * _Nullable error) {
+		if (error) {
+			//todo: error handling
+			block (@[]);
+			return;
+		}
+		NSMutableArray * finalPostObjects = [[NSMutableArray alloc] init];
+		for(PFObject *postChannelActivity in activities) {
+			PFObject *post = [postChannelActivity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+			[post fetchIfNeededInBackground];
+			[finalPostObjects addObject:postChannelActivity];
+		}
 
+		self.postsInFeed += finalPostObjects.count;
+		block(finalPostObjects);
+	}];
+}
 
+//Gets all the channels on Verbatm except the provided user and channels owned by people who have blocked user.
+//Often this will be the current user
+-(void) refreshExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
 
+	PFUser *user = [PFUser currentUser];
+	[self refreshChannelsWeFollowWithCompletionHandler:^{
+		//First get all the people who have blocked this user and do not include their channels
+		PFQuery *blockQuery = [PFQuery queryWithClassName:BLOCK_PFCLASS_KEY];
+		[blockQuery whereKey:BLOCK_USER_BLOCKED_KEY equalTo:user];
+		[blockQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable blocks, NSError * _Nullable error) {
+			self.usersWhoHaveBlockedUser = [[NSMutableArray alloc] init];
+			for (PFObject *block in blocks) {
+				[self.usersWhoHaveBlockedUser addObject:[block valueForKey:BLOCK_USER_BLOCKING_KEY]];
+			}
 
+			PFQuery *exploreChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notEqualTo: user];
+			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
+			[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+			[exploreChannelsQuery orderByDescending:CHANNEL_NUM_FOLLOWS];
+			[exploreChannelsQuery setLimit:CHANNEL_DOWNLOAD_MAX_SIZE];
+			[exploreChannelsQuery setSkip: 0];
+			[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
+				NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
+				if(error || !channels) {
+					//todo: error handling
+					completionBlock (finalChannels);
+					return;
+				}
+				for(PFObject *parseChannelObject in channels) {
+					PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+					[channelCreator fetchIfNeededInBackground];
+					NSString *channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+					Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+																   andParseChannelObject:parseChannelObject
+																	   andChannelCreator:channelCreator];
+					[finalChannels addObject:verbatmChannelObject];
+				}
+				self.exploreChannelsLoaded = 0;
+				self.exploreChannelsLoaded += finalChannels.count;
+				completionBlock(finalChannels);
+			}];
+		}];
+	}];
+}
 
+-(void) loadMoreExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
 
+	//Needs to call refresh first
+	if (!self.channelsFollowed || !self.usersWhoHaveBlockedUser) {
+		completionBlock (@[]);
+		return;
+	}
 
+	PFUser *user = [PFUser currentUser];
+	PFQuery *exploreChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+	[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notEqualTo: user];
+	[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
+	[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+	[exploreChannelsQuery orderByDescending:CHANNEL_NUM_FOLLOWS];
+	[exploreChannelsQuery setLimit:CHANNEL_DOWNLOAD_MAX_SIZE];
+	[exploreChannelsQuery setSkip: self.exploreChannelsLoaded];
+	[exploreChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
+		NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
+		if(error || !channels) {
+			//todo: error handling
+			completionBlock (finalChannels);
+			return;
+		}
+		for(PFObject *parseChannelObject in channels) {
+			PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+			[channelCreator fetchIfNeededInBackground];
+			NSString *channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+			Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+														   andParseChannelObject:parseChannelObject
+															   andChannelCreator:channelCreator];
+			[finalChannels addObject:verbatmChannelObject];
+		}
+		self.exploreChannelsLoaded += finalChannels.count;
+		completionBlock(finalChannels);
+	}];
+}
 
+-(void) loadFeaturedChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
+	PFUser *user = [PFUser currentUser];
+	//First get all the people who have blocked this user and do not include their channels
+	PFQuery *blockQuery = [PFQuery queryWithClassName:BLOCK_PFCLASS_KEY];
+	[blockQuery whereKey:BLOCK_USER_BLOCKED_KEY equalTo:user];
+	[blockQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable blocks, NSError * _Nullable error) {
+		self.usersWhoHaveBlockedUser = [[NSMutableArray alloc] init];
+		for (PFObject *block in blocks) {
+			[self.usersWhoHaveBlockedUser addObject:[block valueForKey:BLOCK_USER_BLOCKING_KEY]];
+		}
 
+		PFQuery *featuredChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+		//			[exploreChannelsQuery whereKey:CHANNEL_CREATOR_KEY notEqualTo: user];
+		[featuredChannelsQuery whereKey:CHANNEL_CREATOR_KEY notContainedIn: self.usersWhoHaveBlockedUser];
+		[featuredChannelsQuery whereKey:CHANNEL_FEATURED_BOOL equalTo:[NSNumber numberWithBool:YES]];
 
-
+		//NOTE: if this is uncommented followed channels needs to be refreshed before all of this code
+		//			[exploreChannelsQuery whereKey:@"objectId" notContainedIn: self.channelsFollowedIds];
+		[featuredChannelsQuery orderByAscending:CHANNEL_NUM_FOLLOWS]; // just to change things up since they're all featured
+		[featuredChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
+			NSMutableArray *finalChannels = [[NSMutableArray alloc] init];
+			if(error || !channels) {
+				//todo: error handling
+				completionBlock (finalChannels);
+				return;
+			}
+			for(PFObject *parseChannelObject in channels) {
+				PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+				[channelCreator fetchIfNeededInBackground];
+				NSString *channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+				Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+															   andParseChannelObject:parseChannelObject
+																   andChannelCreator:channelCreator];
+				[finalChannels addObject:verbatmChannelObject];
+			}
+			completionBlock(finalChannels);
+		}];
+	}];
+}
 
 @end
 

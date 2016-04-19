@@ -71,7 +71,21 @@
 		self.videoLoading = YES;
 	}
 
-	[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+//	NSArray *keys = @[@"playable",@"tracks",@"duration"];
+//
+//	[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+//		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+//	}];
+
+	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+
+	dispatch_async(queue, ^{
+		AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
+
+		dispatch_sync(dispatch_get_main_queue(), ^{
+			[self prepareVideoFromPlayerItem:item];
+		});
+	});
 }
 
 -(void)prepareVideoFromURL: (NSURL*) url{
@@ -84,8 +98,11 @@
 	AVPlayerItem *playerItem;
 	if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
 		playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
-	}else{
-		playerItem = [AVPlayerItem playerItemWithURL: url];
+	}else {
+		//todo: test this
+		[self prepareVideoFromAsset:[AVAsset assetWithURL: url]];
+		return;
+//		playerItem = [AVPlayerItem playerItemWithURL: url];
 	}
 
 	[self prepareVideoFromPlayerItem: playerItem];
@@ -122,6 +139,7 @@
 	if (self.playerItem == NULL) {
 
 	}
+	//todo background thread
 	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 	// Create an AVPlayerLayer using the player
@@ -257,9 +275,10 @@
 		}
 		@autoreleasepool {
 			[self removePlayerItemObservers];
-			self.layer.sublayers = nil;
+			for (CALayer *sublayer in self.layer.sublayers) {
+				[sublayer removeFromSuperlayer];
+			}
 			[self.playerLayer removeFromSuperlayer];
-			self.layer.sublayers = nil;
 			self.playerItem = nil;
 			self.player = nil;
 			self.playerLayer = nil;

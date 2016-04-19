@@ -14,6 +14,9 @@
 
 -(void)presentChannels:(NSArray*) channels;
 
+//Makes cell ready to display new content
+-(void)clearViews;
+
 -(void)onScreen;
 
 -(void)offScreen;

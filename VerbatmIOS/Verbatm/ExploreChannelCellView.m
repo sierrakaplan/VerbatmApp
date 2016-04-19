@@ -22,9 +22,10 @@
 @property (nonatomic, strong) UILabel *channelNameLabel;
 
 @property (strong, nonatomic) UIScrollView *horizontalScrollView;
-@property (strong, nonatomic) NSArray *posts;
 @property (strong, nonatomic) NSMutableArray *postViews;
 @property (nonatomic) NSInteger indexOnScreen;
+
+@property (weak, readwrite) Channel *channelBeingPresented;
 
 
 #define POST_VIEW_OFFSET 20.f
@@ -41,14 +42,10 @@
 -(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if (self) {
-		self.alreadyPresented = NO;
 		self.indexOnScreen = 0;
 		self.backgroundColor = [UIColor darkGrayColor];
 		[self addSubview:self.horizontalScrollView];
 		[self addSubview:self.footerView];
-		[self addSubview:self.followButton];
-		[self addSubview:self.userNameLabel];
-		[self addSubview:self.channelNameLabel];
 	}
 	return self;
 }
@@ -75,7 +72,7 @@
 }
 
 -(void) presentChannel:(Channel *)channel {
-	self.alreadyPresented = YES;
+	self.channelBeingPresented = channel;
 	[self.channelNameLabel setText: channel.name];
 	[channel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
 		[self.userNameLabel setText: name];
@@ -103,10 +100,36 @@
 			}];
 		}
 	}];
+
+	[self addSubview:self.followButton];
+	[self addSubview:self.userNameLabel];
+	[self addSubview:self.channelNameLabel];
+}
+
+-(void) clearViews {
+	[self offScreen];
+	self.indexOnScreen = 0;
+	[self.userNameLabel removeFromSuperview];
+	[self.followButton removeFromSuperview];
+	[self.channelNameLabel removeFromSuperview];
+	self.userNameLabel = nil;
+	self.followButton = nil;
+	self.channelNameLabel = nil;
+
+	for (PostView *postView in self.postViews) {
+		[postView removeFromSuperview];
+	}
+	self.postViews = nil;
 }
 
 -(void) followButtonPressed {
 	//todo
+}
+
+-(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+	if (!decelerate) {
+		[self setPostsOnScreen];
+	}
 }
 
 -(void) scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
@@ -149,6 +172,16 @@
 
 -(void) onScreen {
 	[self setPostsOnScreen];
+}
+
+-(void) almostOnScreen {
+	for (PostView* postView in self.postViews) {
+		[postView preparepostToBePresented];
+	}
+}
+
+-(void) pauseAllVideos {
+
 }
 
 #pragma mark - Lazy Instantiation -

@@ -61,7 +61,7 @@
     [parsePostObject fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
         PFObject* postOriginalChannel = [parsePostObject valueForKey:POST_CHANNEL_KEY];
         [postOriginalChannel fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable channelError) {
-			[[postOriginalChannel valueForKey:CHANNEL_CREATOR_KEY] fetchInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable userError) {
+			[[postOriginalChannel valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable user, NSError * _Nullable userError) {
 				if (!object || !user) {
 					NSError *error = channelError ? channelError : userError;
 					NSLog(@"Error: %@", error.description);

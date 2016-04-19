@@ -15,6 +15,7 @@
 #import "UITextView+Utilities.h"
 #import "UIImageView+AFNetworking.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
+#import "UtilityFunctions.h"
 
 @interface TextOverMediaView ()
 
@@ -39,7 +40,20 @@
 -(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl {
 	self = [self initWithFrame:frame];
 	if (self) {
+		//todo: remove
+		NSString * imageUri = [imageUrl absoluteString];
+		NSString * suffix = @"=s0";
+		if ([imageUri hasSuffix:suffix] ) {
+			imageUri = [imageUri substringWithRange:NSMakeRange(0, imageUri.length-suffix.length)];
+			imageUrl = [NSURL URLWithString:imageUri];
+		};
+
 		[self.imageView setImageWithURL: imageUrl];
+
+//		AnyPromise *loadData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
+//		loadData.then(^(NSData* imageData) {
+//			[self.imageView setImage:[UIImage imageWithData:imageData]];
+//		});
 	}
 	return self;
 }

@@ -40,7 +40,7 @@
 		return;
 	}
 	if (!self.channelCreator) {
-		[[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+		[[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
 			self.channelCreator = (PFUser*)object;
 			[self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
 				NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];

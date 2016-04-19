@@ -26,9 +26,6 @@
 
 @implementation UserSetupParameters
 
-/*
-    Saves the users parameters
- */
 +(instancetype) sharedInstance {
     static UserSetupParameters * sharedInstance = nil;
     static dispatch_once_t onceToken;

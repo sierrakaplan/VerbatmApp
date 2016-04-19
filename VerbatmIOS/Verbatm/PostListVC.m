@@ -173,9 +173,8 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 -(void)refreshPosts{
     [self.customActivityIndicator startCustomActivityIndicator];
 
-    
-    if(self.listType == listFeed){
-        [self.feedQueryManager reloadFeedFromStartWithCompletionHandler:^(NSArray * posts) {
+	if(self.listType == listFeed){
+        [self.feedQueryManager refreshFeedWithCompletionHandler:^(NSArray * posts) {
             [self.customActivityIndicator stopCustomActivityIndicator];
             if(posts.count){
                 [self loadNewBackendPosts:posts];
@@ -205,8 +204,8 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 -(void) getPosts {
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed) {
-		if(!self.feedQueryManager)self.feedQueryManager = [[FeedQueryManager alloc] init];
-		[self.feedQueryManager getMoreFeedPostsWithCompletionHandler:^(NSArray * posts) {
+		if(!self.feedQueryManager) self.feedQueryManager = [FeedQueryManager sharedInstance];
+		[self.feedQueryManager loadMorePostsWithCompletionHandler:^(NSArray * posts) {
 			[self.customActivityIndicator stopCustomActivityIndicator];
 			if(posts.count){
 				[self loadNewBackendPosts:posts];

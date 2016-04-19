@@ -11,11 +11,16 @@
 
 @interface ExploreChannelCellView : UITableViewCell
 
-@property (nonatomic) BOOL alreadyPresented;
+@property (weak, readonly) Channel *channelBeingPresented;
 
 -(void)presentChannel:(Channel *) channel;
 
+// Makes cell ready to present new channel
+-(void)clearViews;
+
 -(void)onScreen;
+
+-(void)almostOnScreen;
 
 -(void)offScreen;
 

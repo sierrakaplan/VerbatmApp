@@ -8,6 +8,7 @@
 
 #import "Channel_BackendObject.h"
 #import "ExploreChannelCellView.h"
+#import "FeedQueryManager.h"
 #import "FeaturedContentVC.h"
 #import "FeaturedContentCellView.h"
 #import "SizesAndPositions.h"
@@ -35,19 +36,35 @@
 	self.tableView.delegate = self;
 	[self addRefreshFeature];
 
-	[self loadChannels];
-
 	//avoid covering last item in uitableview
-	UIEdgeInsets inset = UIEdgeInsetsMake(0, 0, CUSTOM_NAV_BAR_HEIGHT, 0);
+	//todo: change this when bring back search bar
+	UIEdgeInsets inset = UIEdgeInsetsMake(0, 0, TAB_BAR_HEIGHT + STATUS_BAR_HEIGHT, 0);
 	self.tableView.contentInset = inset;
 	self.tableView.scrollIndicatorInsets = inset;
 }
 
+-(void) viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
+//	[self.view addSubview:self.tableView];
+	[self loadChannels];
+}
+
+-(void) viewDidDisappear:(BOOL)animated {
+	[super viewDidDisappear:animated];
+
+	//Free all memory
+	self.exploreChannels = nil;
+	self.featuredChannels = nil;
+//	[self.tableView removeFromSuperview];
+}
+
 -(void) loadChannels {
-	[Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray *allChannels) {
-		[self.featuredChannels addObjectsFromArray:allChannels];
-		[self.exploreChannels addObjectsFromArray:allChannels];
-		//todo: fix this algorithm
+	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
+		[self.featuredChannels addObjectsFromArray:featuredChannels];
+		[self.tableView reloadData];
+	}];
+	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+		[self.exploreChannels addObjectsFromArray: exploreChannels];
 		[self.tableView reloadData];
 	}];
 }
@@ -123,7 +140,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	NSString *identifier = [NSString stringWithFormat:@"cell,%ld%ld", (long)indexPath.section, (long)indexPath.row];
+	NSString *identifier = [NSString stringWithFormat:@"cell,%ld%ld", (long)indexPath.section, (long)indexPath.row % 10]; // reuse cells every 10
 	if (indexPath.section == 0) {
 		FeaturedContentCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 		if(cell == nil) {
@@ -131,27 +148,37 @@
 			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 		}
 		if (!cell.alreadyPresented && self.featuredChannels.count > 0) {
+			//Only one featured content cell
 			[cell presentChannels: self.featuredChannels];
 		}
 
 		[cell onScreen];
 		return cell;
 	} else {
+		Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
 		ExploreChannelCellView *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
 		if(cell == nil) {
 			cell = [[ExploreChannelCellView alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:identifier];
 			[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 		}
-		if (!cell.alreadyPresented && self.exploreChannels.count > indexPath.row) {
-			Channel *channel = [self.exploreChannels objectAtIndex: indexPath.row];
+		if (cell.channelBeingPresented != channel && self.exploreChannels.count > 0){
+			[cell clearViews];
 			[cell presentChannel: channel];
 		}
-
 		[cell onScreen];
 		return cell;
 	}
 }
 
+//Pause videos
+-(void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+
+}
+
+// Play videos
+- (void) scrollViewWillBeginDecelerating:(UIScrollView *)scrollView {
+
+}
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	// Don't let headers remain anchored

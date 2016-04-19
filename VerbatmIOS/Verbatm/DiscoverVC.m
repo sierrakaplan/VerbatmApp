@@ -24,8 +24,9 @@
 	[super viewDidLoad];
 	self.view.backgroundColor = [UIColor blackColor];
 	self.headerView.backgroundColor = [UIColor blackColor];
-	self.searchBar.frame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.searchBar.frame.size.width,
-									  self.searchBar.frame.size.height);
+	//todo: bring back search bar
+	self.searchBar.frame = CGRectMake(0.f, STATUS_BAR_HEIGHT, self.searchBar.frame.size.width, 0.f);
+									  //self.searchBar.frame.size.height);
 	CGFloat headerViewHeight = self.searchBar.frame.size.height + STATUS_BAR_HEIGHT;
 	self.headerView.frame = CGRectMake(0.f, 0.f, self.view.frame.size.width, headerViewHeight);
 

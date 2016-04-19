@@ -539,7 +539,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 -(void) preparepostToBePresented {
 	NSInteger currentPage = self.mainScrollView.contentOffset.x / self.frame.size.width;
 	PageViewingExperience* page = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentPage]];
-	[page onScreen];
+	[page almostOnScreen];
 	[self prepareNextPage];
 }
 
