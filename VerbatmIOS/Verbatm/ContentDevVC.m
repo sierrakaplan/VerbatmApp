@@ -1792,7 +1792,8 @@ andSaveInUserDefaults:(BOOL)save {
 -(void) getImageFromAsset: (PHAsset *) asset {
 	PHImageRequestOptions *options = [PHImageRequestOptions new];
 	options.synchronous = YES;
-	[self.imageManager requestImageForAsset:asset targetSize:self.view.bounds.size contentMode:PHImageContentModeAspectFill
+	CGSize pinchViewImageSize = CGSizeMake(self.defaultPinchViewRadius*2, self.defaultPinchViewRadius*2);
+	[self.imageManager requestImageForAsset:asset targetSize:pinchViewImageSize contentMode:PHImageContentModeAspectFill
 									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
 										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 										dispatch_async(dispatch_get_main_queue(), ^{
@@ -1809,14 +1810,6 @@ andSaveInUserDefaults:(BOOL)save {
 										[self createPinchViewFromVideoAsset: (AVURLAsset*) videoAsset andPHAssetLocalID:asset.localIdentifier];
 									});
 								}];
-}
-
-/* NOT IN USE */
--(UIImage*) getImageFromImageData:(NSData*) imageData {
-	UIImage* image = [[UIImage alloc] initWithData: imageData];
-	image = [image getImageWithOrientationUp];
-	image = [image scaleImageToSize:CGSizeMake(self.view.bounds.size.height*(image.size.width/image.size.height), self.view.bounds.size.height)];
-	return image;
 }
 
 -(void) createPinchViewFromImage: (UIImage*) image andPhAssetId: (NSString*) assetId {
