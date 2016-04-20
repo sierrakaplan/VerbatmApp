@@ -37,12 +37,12 @@
 @property (nonatomic) BOOL isFollowed;
 
 
-#define POST_VIEW_OFFSET 20.f
-#define POST_VIEW_WIDTH 160.f
+#define POST_VIEW_OFFSET 10.f
+#define POST_VIEW_WIDTH 180.f
 
-#define POST_SCROLLVIEW_OFFSET 60.f
-#define OFFSET 10.f
+#define OFFSET 5.f
 #define FOOTER_HEIGHT 20.f
+#define USER_NAME_WIDTH 120.f
 
 @end
 
@@ -69,15 +69,16 @@
 }
 
 -(void) layoutSubviews {
-	self.horizontalScrollView.frame = CGRectMake(0.f, POST_SCROLLVIEW_OFFSET, self.frame.size.width,
-												 self.frame.size.height - POST_SCROLLVIEW_OFFSET - FOOTER_HEIGHT);
-
-	self.userNameLabel.frame = CGRectMake(OFFSET, OFFSET, 150.f, 20.f);
-	self.followButton.frame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - OFFSET, OFFSET,
-										 FOLLOW_BUTTON_WIDTH, FOLLOW_BUTTON_HEIGHT);
-	self.channelNameLabel.frame = CGRectMake(OFFSET, self.followButton.frame.size.height + self.followButton.frame.origin.y,
-											 self.frame.size.width - (OFFSET *2), 40.f);
+	self.userNameLabel.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, USER_NAME_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
+	self.followButton.frame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - POST_VIEW_OFFSET, OFFSET,
+										 FOLLOW_BUTTON_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
+	self.channelNameLabel.frame = CGRectMake(self.userNameLabel.frame.size.width + self.userNameLabel.frame.origin.x + OFFSET, OFFSET,
+											 self.frame.size.width - USER_NAME_WIDTH*2 - (OFFSET*2),
+											 DISCOVER_CHANNEL_NAME_HEIGHT);
 	self.footerView.frame = CGRectMake(0.f, self.frame.size.height - FOOTER_HEIGHT, self.frame.size.width, FOOTER_HEIGHT);
+	CGFloat postScrollViewOffset = self.channelNameLabel.frame.origin.y + self.channelNameLabel.frame.size.height;
+	self.horizontalScrollView.frame = CGRectMake(0.f, postScrollViewOffset, self.frame.size.width,
+												 self.frame.size.height - postScrollViewOffset - FOOTER_HEIGHT);
 
 
 	CGFloat xCoordinate = POST_VIEW_OFFSET;
@@ -125,7 +126,7 @@
 
 	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
 		self.numFollowers = [numFollowers integerValue];
-		//		[self changeNumFollowersLabel]; //todo
+		[self changeNumFollowersLabel];
 	}];
 
 	//Since this is in explore we know the channel is not followed by user
@@ -164,6 +165,10 @@
 -(void) updateFollowIcon {
 	UIImage * newbuttonImage = self.isFollowed ? [UIImage imageNamed:FOLLOWING_ICON_LIGHT] : [UIImage imageNamed:FOLLOW_ICON_LIGHT];
 	[self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
+}
+
+-(void) changeNumFollowersLabel {
+	//todo
 }
 
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -236,9 +241,7 @@
 
 -(UIScrollView *) horizontalScrollView {
 	if (!_horizontalScrollView) {
-		CGRect frame = CGRectMake(0.f, POST_SCROLLVIEW_OFFSET, self.frame.size.width,
-								  self.frame.size.height - POST_SCROLLVIEW_OFFSET);
-		_horizontalScrollView = [[UIScrollView alloc] initWithFrame: frame];
+		_horizontalScrollView = [[UIScrollView alloc] init];
 		_horizontalScrollView.backgroundColor = self.backgroundColor;
 		_horizontalScrollView.delegate = self;
 		_horizontalScrollView.showsVerticalScrollIndicator = NO;
@@ -258,7 +261,7 @@
 	if (!_userNameLabel) {
 		_userNameLabel = [[UILabel alloc] init];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
+		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
 	}
 	return _userNameLabel;
@@ -278,7 +281,7 @@
 		_channelNameLabel = [[UILabel alloc] init];
 		[_channelNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_channelNameLabel setTextAlignment:NSTextAlignmentCenter];
-		[_channelNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:20.f]]; //todo:
+		[_channelNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:DISCOVER_CHANNEL_NAME_FONT_SIZE]];
 		[_channelNameLabel setTextColor:[UIColor whiteColor]];
 	}
 	return _channelNameLabel;

@@ -198,7 +198,7 @@
 			[self.customActivityIndicator startCustomActivityIndicator];
 			self.videoLoading = YES;
 			self.shouldPlayOnLoad = YES;
-			NSLog(@"play back won't keep up");
+//			NSLog(@"play back won't keep up");
 		}
 	}
 }

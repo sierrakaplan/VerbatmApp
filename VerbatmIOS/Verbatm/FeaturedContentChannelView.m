@@ -34,7 +34,6 @@
 
 #define POST_VIEW_Y_OFFSET 60.f
 #define OFFSET 5.f
-#define CHANNEL_NAME_FONT_SIZE 20.f
 
 @end
 
@@ -122,10 +121,10 @@
 
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
-		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, 130.f, 20.f); //todo: make constants
+		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, DISCOVER_USERNAME_LABEL_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
-		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
+		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
 	}
 	return _userNameLabel;
@@ -134,7 +133,7 @@
 -(UIButton *) followButton {
 	if (!_followButton) {
 		CGRect followFrame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - OFFSET, OFFSET,
-										FOLLOW_BUTTON_WIDTH, FOLLOW_BUTTON_HEIGHT - 5.f);
+										FOLLOW_BUTTON_WIDTH, DISCOVER_USERNAME_AND_FOLLOW_HEIGHT);
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.frame = followFrame;
 		_followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
@@ -146,11 +145,11 @@
 -(UILabel *) channelNameLabel {
 	if (!_channelNameLabel) {
 		CGRect channelNameFrame = CGRectMake(OFFSET, self.followButton.frame.size.height + self.followButton.frame.origin.y,
-											 self.frame.size.width - (OFFSET *2), 40.f); //todo: make constnats
+											 self.frame.size.width - (OFFSET *2), DISCOVER_CHANNEL_NAME_HEIGHT);
 		_channelNameLabel = [[UILabel alloc] initWithFrame:channelNameFrame];
 		[_channelNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_channelNameLabel setTextAlignment:NSTextAlignmentCenter];
-		[_channelNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:CHANNEL_NAME_FONT_SIZE]];
+		[_channelNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:DISCOVER_CHANNEL_NAME_FONT_SIZE]];
 		[_channelNameLabel setTextColor:[UIColor whiteColor]];
 	}
 	return _channelNameLabel;

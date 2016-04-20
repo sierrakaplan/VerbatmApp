@@ -179,6 +179,13 @@
 #define CHANNEL_BUTTON_WALL_XOFFSET 5.f
 #define CHANNEL_LIST_CELL_SEPERATOR_HEIGHT 1.f
 
+#pragma mark - Discover/Search -
+
+#define DISCOVER_USERNAME_AND_FOLLOW_HEIGHT 20.f
+#define DISCOVER_USERNAME_LABEL_WIDTH (self.frame.size.width - (FOLLOW_BUTTON_WIDTH + OFFSET*2))
+#define DISCOVER_CHANNEL_NAME_HEIGHT 35.f
+
+
 
 #endif
 
