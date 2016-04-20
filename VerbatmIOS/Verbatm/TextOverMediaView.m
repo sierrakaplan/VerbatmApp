@@ -20,6 +20,7 @@
 
 @property (nonatomic, readwrite) BOOL textShowing;
 @property (nonatomic, strong) UIImageView* imageView;
+@property (nonatomic, weak) UIImage *image;
 @property (nonatomic, readwrite) UITextView * textView;
 @property (strong,nonatomic) UIImageView* textBackgroundView;
 
@@ -40,22 +41,35 @@
 			   withSmallImage:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
-		if (small) {
-			NSString * imageUri = [imageUrl absoluteString];
-			NSString * suffix = @"=s0";
-			if ([imageUri hasSuffix:suffix] ) {
-				imageUri = [imageUri substringWithRange:NSMakeRange(0, imageUri.length-suffix.length)];
-				imageUrl = [NSURL URLWithString:imageUri];
-			};
+
+		NSURL *smallImageUrl = imageUrl;
+		NSString * imageUri = [imageUrl absoluteString];
+		NSString * suffix = @"=s0";
+		if ([imageUri hasSuffix:suffix] ) {
+			imageUri = [imageUri substringWithRange:NSMakeRange(0, imageUri.length-suffix.length)];
+			smallImageUrl = [NSURL URLWithString:imageUri];
 		}
 
-		AnyPromise *loadData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
-		loadData.then(^(NSData* imageData) {
-			UIImage *image = [UIImage imageWithData:imageData];
-			CGSize imageSize = CGSizeMake(self.bounds.size.height*(image.size.width/image.size.height)*1.5f, self.bounds.size.height*1.5f);
-			image = [image scaleImageToSize: imageSize];
-			[self.imageView setImage: image];
+		AnyPromise *loadSmallImageData = [UtilityFunctions loadCachedPhotoDataFromURL:smallImageUrl];
+		loadSmallImageData.then(^(NSData* smallImageData) {
+			UIImage *smallImage = [UIImage imageWithData:smallImageData];
+			if (!self.image || small) {
+				[self.imageView setImage: smallImage];
+			}
 		});
+
+		if (!small) {
+			AnyPromise *loadLargeImageData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
+			loadLargeImageData.then(^(NSData* largeImageData) {
+				UIImage *image = [UIImage imageWithData:largeImageData];
+				self.image = image;
+				CGSize imageSize = CGSizeMake(self.bounds.size.height*(image.size.width/image.size.height)*1.5f, self.bounds.size.height*1.5f);
+				image = [image scaleImageToSize: imageSize];
+				self.image = image;
+				[self.imageView setImage: image];
+			});
+		}
+
 	}
 	return self;
 }
