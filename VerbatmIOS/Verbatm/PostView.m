@@ -205,6 +205,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete {
 
 	CGRect startFrame = (up) ? self.lsBarUpFrame : self.lsBarDownFrame;
+	[self.likeShareBar removeFromSuperview];
 	self.likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame: startFrame numberOfLikes:numLikes
 													numberOfShares:numShares numberOfPages:numPages andStartingPageNumber:startPage];
 	self.likeShareBar.delegate = self;
@@ -618,10 +619,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void)showPageUpIndicator {
-	if (!_likeShareBar) {
-		[self addSubview: self.likeShareBar];
-	}
-	if(!self.pageUpIndicator && self.pageViews.count && self.likeShareBar) {
+	if(!self.pageUpIndicator && self.pageViews.count) {
 		UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];
 		self.pageUpIndicator = [[UIImageView alloc] initWithImage:arrowImage];
 		self.pageUpIndicator.contentMode = UIViewContentModeScaleAspectFit;
@@ -678,6 +676,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 -(PostLikeAndShareBar*) likeShareBar {
 	if (!_likeShareBar) {
 		_likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - LIKE_SHARE_BAR_HEIGHT, self.frame.size.width, LIKE_SHARE_BAR_HEIGHT)];
+		[self addSubview:_likeShareBar];
 	}
 	return _likeShareBar;
 }
