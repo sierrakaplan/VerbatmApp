@@ -16,6 +16,8 @@
 //tells the delegate to exit and gives the final array order
 -(void) collectionClosedWithFinalArray:(NSMutableArray *) pinchViews;
 
+-(void)pinchViewSelected:(PinchView *) pv;
+
 @end
 
 @interface OpenCollectionView : UIView

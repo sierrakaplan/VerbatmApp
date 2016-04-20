@@ -240,7 +240,7 @@
 - (void)encodeWithCoder:(NSCoder *)coder {
 	[super encodeWithCoder:coder];
 	NSData* pinchViewsData = [NSKeyedArchiver archivedDataWithRootObject:self.pinchedObjects];
-	[coder encodeObject:pinchViewsData forKey:PINCHVIEWS_KEY];
+	if(pinchViewsData)[coder encodeObject:pinchViewsData forKey:PINCHVIEWS_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {

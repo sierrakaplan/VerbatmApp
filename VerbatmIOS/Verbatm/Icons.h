@@ -125,4 +125,12 @@
 #define PINCH_OBJECTS_TOGETHER_INSTRUCTION @"Pinch D1"
 #define FILTER_SWIPE_INSTRUCTION @"filterAndSwipe_Instructions_black"
 
+
+#pragma mark -Photo Slideshow icons-
+
+#define PAUSE_SLIDESHOW_ICON @"Pause_slideshow_icon"
+#define PLAY_SLIDESHOW_ICON @"Play_slideshow_icon"
+
+
+
 #endif /* Icons_h */

@@ -7,6 +7,8 @@
 //
 
 #import "CollectionPinchView.h"
+#import "CustomNavigationBar.h"
+
 #import "Durations.h"
 
 #import "EditMediaContentView.h"
@@ -44,7 +46,14 @@
 @property (nonatomic) float lastDistanceFromStartingPoint;
 @property (strong, nonatomic) NSTimer * showCircleTimer;
 
-@property (nonatomic, strong) UIView * panGestureSensingView;
+//When a view is animating it doesn't sense gestures very well. This makes it tough for users
+// to scroll up and down while their photo slideshow is playing.
+//To manage this we add to clear views above the animating views to catch the gestures.
+//We add two views instead of one because of the buttons on the bottom right -- don't want
+// to cover them.
+@property (nonatomic, strong) UIView * panGestureSensingViewVertical;
+@property (nonatomic, strong) UIView * panGestureSensingViewHorizontal;
+
 @property (strong, nonatomic) UIPanGestureRecognizer * circlePanGesture;
 @property (nonatomic, strong) UIButton * textViewButton;
 
@@ -59,9 +68,12 @@
 
 #define TEXT_VIEW_HEIGHT 70.f
 
+#define OPEN_COLLECTION_FRAME_HEIGHT 70.f
+
 //this view manages the tapping gesture of the set circles
 @property (nonatomic, strong) UIView * circleTapView;
 
+@property (nonatomic) BOOL slideShowPlaying;
 @end
 
 @implementation PhotoPVE
@@ -98,7 +110,6 @@
 
 -(void) initialFormatting {
 	[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
-	[self addTapGesture];
 }
 
 -(void)prepareCirclePan{
@@ -133,8 +144,8 @@
 		[self addPhotos: photosTextArray];
 	} else {
 		//add first photo again so it doesn't fade to black
-		EditMediaContentView *firstPhotoEditContentView = [self getEditContentViewFromPinchView:pinchViewArray[0]];
-		[self addSubview:firstPhotoEditContentView];
+//		EditMediaContentView *firstPhotoEditContentView = [self getEditContentViewFromPinchView:pinchViewArray[0]];
+//		[self addSubview:firstPhotoEditContentView];
 		[self layoutContainerViews];
 		if(pinchViewArray.count > 1)
          	[self createRearrangeButton];
@@ -151,7 +162,7 @@
 									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
 										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
 										dispatch_async(dispatch_get_main_queue(), ^{
-											[editMediaContentView changeImageTo:image];
+											if(image)[editMediaContentView changeImageTo:image];
 										});
 									}];
 	//Display low quality image before loading high quality version
@@ -182,7 +193,6 @@
 	for (int i = (int)[self.imageContainerViews count]-1; i >= 0; i--) {
 		[self addSubview:[self.imageContainerViews objectAtIndex:i]];
 	}
-	if(self.imageContainerViews.count > 1) [self prepareCirclePan];
 }
 
 #pragma mark - Not preview mode -
@@ -196,8 +206,8 @@
 	}
 
 	// Has to add duplicate of first photo to bottom so that you can fade from the last photo into the first
-	NSArray* firstPhotoText = photosTextArray[0];
-	[self addSubview: [self getImageContainerViewFromPhotoTextArray: firstPhotoText]];
+	//NSArray* firstPhotoText = photosTextArray[0];
+	//[self addSubview: [self getImageContainerViewFromPhotoTextArray: firstPhotoText]];
 	[self layoutContainerViews];
 }
 
@@ -237,7 +247,6 @@
 		point.x = point.x + self.frame.size.width/2.f;
 		point.y = point.y + PAN_CIRCLE_CENTER_Y;
 		[self.pointsOnCircle addObject:point];
-		[self createDotViewFromPoint:point];
 	}
     
     if(self.circleView){
@@ -245,51 +254,8 @@
         self.circleView = nil;
     }
     
-	[self createMainCircleView];
 }
 
--(void) createMainCircleView {
-	self.originPoint = CGPointMake(self.frame.size.width/2.f, PAN_CIRCLE_CENTER_Y);
-	CGRect circleViewFrame = CGRectMake(self.originPoint.x-CIRCLE_RADIUS-CIRCLE_OVER_IMAGES_BORDER_WIDTH/2.f,
-							  self.originPoint.y-CIRCLE_RADIUS,
-							  CIRCLE_RADIUS*2 + CIRCLE_OVER_IMAGES_BORDER_WIDTH, CIRCLE_RADIUS*2);
-
-	self.circleView = [[UIImageView alloc] initWithFrame:circleViewFrame];
- 	self.circleView.backgroundColor = [UIColor clearColor];
-	self.circleView.layer.cornerRadius = circleViewFrame.size.width/2.f;
- 	self.circleView.layer.borderWidth = CIRCLE_OVER_IMAGES_BORDER_WIDTH;
- 	self.circleView.layer.borderColor = [UIColor CIRCLE_OVER_IMAGES_COLOR].CGColor;
-	self.circleView.alpha = 0.f;
-    
-    self.panGestureSensingView.frame = CGRectMake(circleViewFrame.origin.x - SLIDE_THRESHOLD,
-                                                  circleViewFrame.origin.y - SLIDE_THRESHOLD,
-                                                  circleViewFrame.size.width + SLIDE_THRESHOLD*2,
-                                                  circleViewFrame.size.height + SLIDE_THRESHOLD*2);
-    [self addPanGestureToView:self.panGestureSensingView];
-    [self addSubview:self.circleView];
-    [self addSubview:self.panGestureSensingView];
-}
-
--(void) createDotViewFromPoint:(PointObject*)point {
-	CGRect frame = CGRectMake(point.x-POINTS_ON_CIRCLE_RADIUS,
-							  point.y-POINTS_ON_CIRCLE_RADIUS,
-							  POINTS_ON_CIRCLE_RADIUS*2, POINTS_ON_CIRCLE_RADIUS*2);
-	UIView* dot = [[UIView alloc] initWithFrame:frame];
-	dot.backgroundColor = [UIColor CIRCLE_OVER_IMAGES_COLOR];
-	dot.layer.cornerRadius = frame.size.width/2.f;
-	dot.layer.borderColor = [UIColor CIRCLE_OVER_IMAGES_COLOR].CGColor;
-	dot.alpha = 0.f;
-	[self.dotViewsOnCircle addObject:dot];
-	[self addSubview:dot];
-}
-
--(void)addPanGestureToView:(UIView *) view {
-	self.circlePanGesture = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(trackMovementOnCircle:)];
-	self.circlePanGesture.minimumNumberOfTouches = 1;
-	self.circlePanGesture.maximumNumberOfTouches = 1;
-	self.circlePanGesture.delegate = self;
-	[view addGestureRecognizer:self.circlePanGesture];
-}
 
 #pragma mark - Text View -
 
@@ -300,54 +266,11 @@
 
 #pragma mark - Tap Gesture -
 
--(void)addTapGesture {
-	if (self.inPreviewMode) {
-		self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action: @selector(panViewTapped:)];
-		[self.panGestureSensingView addGestureRecognizer:self.photoAveTapGesture];
-	} else {
-		self.photoAveTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action: @selector(mainViewTapped:)];
-		[self addGestureRecognizer:self.photoAveTapGesture];
-	}
-	self.photoAveTapGesture.delegate = self;
-}
-
-//used only when we have a pinchview and are editing
--(void) panViewTapped:(UITapGestureRecognizer *) sender {
-    if (sender.numberOfTouches >= 1){
-        CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
-        [self goToPhoto:touchLocation];
-    }
-}
-
--(void) mainViewTapped:(UITapGestureRecognizer *) sender {
-	if (sender.numberOfTouches < 1) return;
-	CGPoint touchLocation = [sender locationOfTouch:0 inView:self];
-	if ([self circleTapped:touchLocation]) {
-        if(!self.circleView.alpha){
-            [self displayCircle:YES];
-            self.showCircleTimer = [NSTimer scheduledTimerWithTimeInterval:CIRCLE_TAPPED_REMAIN_DURATION target:self selector:@selector(removeCircle) userInfo:nil repeats:YES];
-        }else {
-            [self removeCircle];
-        }
-	} else {
-        [self displayCircle:NO];
-	}
-}
-
-//check if tap is within radius of circle
--(BOOL) circleTapped:(CGPoint) touchLocation {
-	if (fabs(touchLocation.x - self.originPoint.x) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)
-		&&	fabs(touchLocation.y - self.originPoint.y) < (CIRCLE_RADIUS + SLIDE_THRESHOLD)) {
-		[self goToPhoto:touchLocation];
-		return YES;
-	}
-	return NO;
-}
 
 #pragma mark - Rearrange content (preview mode) -
 
 -(void)createRearrangeButton {
-    [self.rearrangeButton setImage:[UIImage imageNamed:MEDIA_REARRANGE_ICON] forState:UIControlStateNormal];
+    [self.rearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
     self.rearrangeButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
     [self.rearrangeButton addTarget:self action:@selector(rearrangeButtonPressed) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.rearrangeButton];
@@ -357,14 +280,64 @@
 -(void) rearrangeButtonPressed {
     if(!self.rearrangeView){
 		[self offScreen];
-        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:self.bounds
+        CGRect frame = CGRectMake(0.f,CUSTOM_NAV_BAR_HEIGHT, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
+        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
 													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
         self.rearrangeView.delegate = self;
         [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
+        [self.rearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
     } else {
+        [self.rearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
         [self.rearrangeView exitView];
+        [self playWithSpeed:2.f];
     }
 }
+
+//new pinchview tapped in rearange view so we need to change what's presented
+-(void)pinchViewSelected:(PinchView *) pv{
+    NSInteger imageIndex = [((CollectionPinchView*)self.pinchView).imagePinchViews indexOfObject:pv];
+    [self setImageViewsToLocation:imageIndex];
+}
+
+
+
+-(void)playWithSpeed:(CGFloat) speed{
+   
+    
+    CGRect h_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.rearrangeButton.frame.origin.y);
+    CGRect v_frame = CGRectMake(0.f, self.rearrangeButton.frame.origin.y,self.rearrangeButton.frame.origin.x - 10.f, self.frame.size.height - self.rearrangeButton.frame.origin.y);
+    
+    //create view to sense swiping
+    self.panGestureSensingViewVertical = [[UIView alloc] initWithFrame:h_frame];
+    self.panGestureSensingViewVertical.backgroundColor = [UIColor clearColor];
+    
+    self.panGestureSensingViewHorizontal = [[UIView alloc] initWithFrame:v_frame];
+    self.panGestureSensingViewHorizontal.backgroundColor = [UIColor clearColor];
+    
+    [self addSubview:self.panGestureSensingViewVertical];
+    [self bringSubviewToFront:self.panGestureSensingViewVertical];
+    [self addSubview:self.panGestureSensingViewHorizontal];
+    [self bringSubviewToFront:self.panGestureSensingViewHorizontal];
+    
+    [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+    self.slideShowPlaying = YES;
+}
+-(void)stopSlideshow{
+    self.slideShowPlaying = NO;
+    [self.panGestureSensingViewHorizontal removeFromSuperview];
+    self.panGestureSensingViewHorizontal = nil;
+    [self.panGestureSensingViewVertical removeFromSuperview];
+    self.panGestureSensingViewVertical = nil;
+}
+
+-(void)animateNextView{
+    [UIView animateWithDuration:1.f animations:^{
+        [self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
+    } completion:^(BOOL finished) {
+        if(self.slideShowPlaying)[self animateNextView];
+    }];
+}
+
 
 #pragma mark OpenCollectionView delegate method
 
@@ -381,7 +354,6 @@
 	[self.pinchView renderMedia];
 	[self addContentFromImagePinchViews: pinchViews];
     [self createRearrangeButton];
-    [self displayCircle:YES];
 }
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {
@@ -555,7 +527,12 @@
 //sets image at given index to front by setting the opacity of all those in front of it to 0
 //and those behind it to 1
 -(void) setImageViewsToLocation:(NSInteger)index {
-	self.currentPhotoIndex = index;
+	
+    if(index >= self.imageContainerViews.count){
+        index = 0;
+        ((UIView *) self.imageContainerViews[index]).alpha = 1.f;
+    }
+    self.currentPhotoIndex = index;
 	for (int i = 0; i < [self.imageContainerViews count]; i++) {
 		UIView* imageView = self.imageContainerViews[i];
 		if (i < index) {
@@ -564,7 +541,6 @@
 			imageView.alpha = 1.f;
 		}
 	}
-	[self highlightDot];
 }
 
 //sets all views to opaque again
@@ -576,27 +552,18 @@
 
 #pragma mark - Gesture Recognizer Delegate methods -
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-	// if tapping or panning in circle area ignore other gesture recognizers
-	if (([gestureRecognizer isKindOfClass:[UITapGestureRecognizer class]] && [otherGestureRecognizer isKindOfClass:[UITapGestureRecognizer class]]) || [gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
-		if (gestureRecognizer.numberOfTouches >= 1){
-			CGPoint touchLocation = [gestureRecognizer locationOfTouch:0 inView:self];
-			if ([self circleTapped:touchLocation]) {
-				return NO;
-			}
-		}
-	}
-	return YES;
-}
-
 
 #pragma mark - Overriding ArticleViewingExperience methods -
 
 -(void) onScreen {
-	[self showAndRemoveCircle];
+    if(self.imageContainerViews.count > 1 &&
+       !self.slideShowPlaying){
+        [self playWithSpeed:2.f];
+    }
 }
 
 - (void)offScreen {
+    [self stopSlideshow];
     for (UIView * view in self.imageContainerViews) {
         if([view isKindOfClass:[EditMediaContentView class]]){
             [((EditMediaContentView *)view) exiting];
@@ -619,33 +586,6 @@
 
 #pragma mark - Lazy Instantiation
 
-
--(UIView *) panGestureSensingView {
-    if(!_panGestureSensingView) _panGestureSensingView = [[UIView alloc] init];
-    return _panGestureSensingView;
-}
-
-@synthesize pointsOnCircle = _pointsOnCircle;
-
--(NSMutableArray *) pointsOnCircle {
-	if(!_pointsOnCircle) _pointsOnCircle = [[NSMutableArray alloc] init];
-	return _pointsOnCircle;
-}
-
-- (void) setPointsOnCircle:(NSMutableArray *)pointsOnCircle {
-	_pointsOnCircle = pointsOnCircle;
-}
-
-@synthesize dotViewsOnCircle = _dotViewsOnCircle;
-
--(NSMutableArray *) dotViewsOnCircle {
-	if(!_dotViewsOnCircle) _dotViewsOnCircle = [[NSMutableArray alloc] init];
-	return _dotViewsOnCircle;
-}
-
-- (void) setDotViewsOnCircle:(NSMutableArray *)dotViewsOnCircle {
-	_dotViewsOnCircle = dotViewsOnCircle;
-}
 
 @synthesize imageContainerViews = _imageContainerViews;
 

@@ -192,17 +192,28 @@
 	[self displayCollectionPinchViews:pinchViews];
 }
 
+
+-(void) addTapGestureToPinchView:(UIView *) pinchView{
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(pinchviewTapped:)];
+    [pinchView addGestureRecognizer:tapGesture];
+}
+
+-(void)pinchviewTapped:(UITapGestureRecognizer *) tapped{
+    PinchView * pv = (PinchView *)tapped.view;
+    [self.contentPageElementScrollViewDelegate pinchviewSelected:pv];
+}
+
 //array of PinchViews
 -(void) displayCollectionPinchViews:(NSMutableArray *) pinchViews {
     if(pinchViews.count){
         self.pinchViewStartSize = [(PinchView*)pinchViews[0] radius]*2.f;
-        CGFloat pinchViewSize = [(PinchView*)pinchViews[0] radius]*1.5;
+        CGFloat pinchViewSize = self.frame.size.height - 5.f;
         CGFloat yPosition = (self.frame.size.height/2.f) - (pinchViewSize/2.f);
         CGFloat xPosition = ELEMENT_Y_OFFSET_DISTANCE;
         for(PinchView* pinchView in pinchViews) {
             CGRect newFrame = CGRectMake(xPosition, yPosition, pinchViewSize, pinchViewSize);
-            //[pinchView changeWidthTo:pinchViewSize];
             [pinchView specifyFrame:newFrame];
+            [self addTapGestureToPinchView:pinchView];
             [self addSubview:pinchView];
             xPosition += pinchView.frame.size.width + ELEMENT_Y_OFFSET_DISTANCE;
             [pinchView renderMedia];
