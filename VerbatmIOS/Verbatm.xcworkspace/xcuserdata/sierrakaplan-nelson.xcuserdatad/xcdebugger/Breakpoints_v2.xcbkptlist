@@ -5683,27 +5683,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PostView.m"
-            timestampString = "482819192.75728"
+            timestampString = "482871860.712478"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "630"
-            endingLineNumber = "630"
-            landmarkName = "-showPageUpIndicator"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Verbatm/PostView.m"
-            timestampString = "482819192.75728"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "624"
-            endingLineNumber = "624"
+            startingLineNumber = "628"
+            endingLineNumber = "628"
             landmarkName = "-showPageUpIndicator"
             landmarkType = "5">
          </BreakpointContent>
@@ -6227,11 +6211,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentChannelView.m"
-            timestampString = "482870248.782931"
+            timestampString = "482871860.712478"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
             landmarkName = "-onScreen"
             landmarkType = "5">
          </BreakpointContent>
@@ -6467,11 +6451,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ExploreChannelCellView.m"
-            timestampString = "482871422.354845"
+            timestampString = "482871860.712478"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "107"
-            endingLineNumber = "107"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
             landmarkName = "-presentChannel:"
             landmarkType = "5">
             <Locations>
@@ -6515,11 +6499,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ExploreChannelCellView.m"
-            timestampString = "482871422.354845"
+            timestampString = "482871860.712478"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
             landmarkName = "-presentChannel:"
             landmarkType = "5">
          </BreakpointContent>
@@ -6595,11 +6579,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/ExploreChannelCellView.m"
-            timestampString = "482871422.354845"
+            timestampString = "482871860.712478"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "100"
-            endingLineNumber = "100"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
             landmarkName = "-presentChannel:"
             landmarkType = "5">
          </BreakpointContent>
@@ -7539,7 +7523,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/FeaturedContentChannelView.m"
-            timestampString = "482870248.782931"
+            timestampString = "482871860.712478"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "86"

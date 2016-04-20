@@ -86,6 +86,7 @@
 		CGRect frame = CGRectMake(xCoordinate, POST_VIEW_OFFSET, POST_VIEW_WIDTH,
 								  self.horizontalScrollView.frame.size.height - (POST_VIEW_OFFSET*2));
 		postView.frame = frame;
+		[postView showPageUpIndicator];
 		xCoordinate += POST_VIEW_WIDTH + POST_VIEW_OFFSET;
 	}
 	self.horizontalScrollView.contentSize = CGSizeMake(xCoordinate, self.horizontalScrollView.contentSize.height);
@@ -118,6 +119,7 @@
 				} else if (self.postViews.count == (self.indexOnScreen+3)) {
 					[postView preparepostToBePresented];
 				}
+				[postView showPageUpIndicator];
 				[postView muteAllVideos:YES];
 				[self.postViews addObject: postView];
 			}];

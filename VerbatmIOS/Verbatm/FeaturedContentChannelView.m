@@ -84,6 +84,7 @@
 	self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject: self.post small:YES];
 	[self.postView renderPostFromPageObjects: self.pages];
 	[self.postView postOffScreen];
+	[self.postView showPageUpIndicator];
 	[self.postView muteAllVideos:YES];
 	[self addSubview: self.postView];
 }

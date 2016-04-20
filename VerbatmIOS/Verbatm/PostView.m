@@ -618,17 +618,20 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void)showPageUpIndicator {
+	if (!_likeShareBar) {
+		[self addSubview: self.likeShareBar];
+	}
 	if(!self.pageUpIndicator && self.pageViews.count && self.likeShareBar) {
-		CGFloat size = 50.f;
-		CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
-		CGFloat y_cord = 0.f;
-		CGRect frame = CGRectMake(x_cord, y_cord, size, size);
 		UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];
 		self.pageUpIndicator = [[UIImageView alloc] initWithImage:arrowImage];
-		self.pageUpIndicator.frame = frame;
 		self.pageUpIndicator.contentMode = UIViewContentModeScaleAspectFit;
 		[self.likeShareBar addSubview:self.pageUpIndicator];
 	}
+	CGFloat size = 50.f;
+	CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
+	CGFloat y_cord = 0.f;
+	CGRect frame = CGRectMake(x_cord, y_cord, size, size);
+	self.pageUpIndicator.frame = frame;
 }
 
 #pragma mark - Delete Post -
@@ -670,6 +673,13 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 		_mainScrollView.delegate = self;
 	}
 	return _mainScrollView;
+}
+
+-(PostLikeAndShareBar*) likeShareBar {
+	if (!_likeShareBar) {
+		_likeShareBar = [[PostLikeAndShareBar alloc] initWithFrame:CGRectMake(0.f, self.frame.size.height - LIKE_SHARE_BAR_HEIGHT, self.frame.size.width, LIKE_SHARE_BAR_HEIGHT)];
+	}
+	return _likeShareBar;
 }
 
 

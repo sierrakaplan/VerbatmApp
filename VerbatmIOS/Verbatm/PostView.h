@@ -50,13 +50,15 @@
 
 -(void) postOffScreen;
 
--(void)muteAllVideos:(BOOL) shouldMute;
+-(void) muteAllVideos:(BOOL) shouldMute;
 
 // presents media only for the page on screen
 -(void) presentMediaContent;
 
 //moves the like share bar up and down to be above tab bar when tab bar is showing
 -(void) shiftLikeShareBarDown:(BOOL) down;
+
+-(void)showPageUpIndicator;
 
 @end
 
