@@ -11,7 +11,6 @@
 @protocol FeaturedChannelViewDelegate <NSObject>
 
 -(void) channelSelected: (Channel*)channel;
--(void) channelFollowed:(Channel *)channel;
 
 @end
 

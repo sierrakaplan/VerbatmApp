@@ -10,4 +10,6 @@
 
 @interface DiscoverVC : UIViewController
 
+-(void) freeMemory;
+
 @end

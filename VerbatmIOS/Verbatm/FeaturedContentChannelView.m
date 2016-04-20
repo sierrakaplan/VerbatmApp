@@ -7,11 +7,14 @@
 //
 
 #import "Channel.h"
+#import "Icons.h"
 #import "FeaturedContentChannelView.h"
+#import "Follow_BackendManager.h"
 #import "ParseBackendKeys.h"
 #import "Page_BackendObject.h"
 #import "PostView.h"
 #import "Post_BackendObject.h"
+#import "SizesAndPositions.h"
 #import "Styles.h"
 
 #import <Parse/PFObject.h>
@@ -27,9 +30,11 @@
 @property (nonatomic, strong) PostView *postView;
 @property (nonatomic, strong) PFObject *post;
 @property (nonatomic, strong) NSArray *pages;
+@property (nonatomic) BOOL isFollowed;
 
 #define POST_VIEW_Y_OFFSET 60.f
 #define OFFSET 5.f
+#define CHANNEL_NAME_FONT_SIZE 20.f
 
 @end
 
@@ -41,7 +46,17 @@
 	if (self) {
 		self.backgroundColor = [UIColor darkGrayColor];
 		self.channel = channel;
-		[self addSubview:self.followButton];
+
+		if (self.channel.channelCreator != [PFUser currentUser]) {
+			[Follow_BackendManager currentUserFollowsChannel:self.channel withCompletionBlock:^(bool isFollowed) {
+				self.isFollowed = isFollowed;
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[self updateFollowIcon];
+					[self addSubview:self.followButton];
+				});
+			}];
+		}
+
 		[channel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
 			[self.userNameLabel setText: name];
 		}];
@@ -70,11 +85,23 @@
 	self.postView = [[PostView alloc] initWithFrame:postViewFrame andPostChannelActivityObject: self.post small:YES];
 	[self.postView renderPostFromPageObjects: self.pages];
 	[self.postView postOffScreen];
+	[self.postView muteAllVideos:YES];
 	[self addSubview: self.postView];
 }
 
 -(void) followButtonPressed {
-	[self.delegate channelFollowed: self.channel];
+	self.isFollowed = !self.isFollowed;
+	if (self.isFollowed) {
+		[Follow_BackendManager currentUserFollowChannel: self.channel];
+	} else {
+		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channel];
+	}
+	[self updateFollowIcon];
+}
+
+-(void) updateFollowIcon {
+	UIImage * newbuttonImage = self.isFollowed ? [UIImage imageNamed:FOLLOWING_ICON_LIGHT] : [UIImage imageNamed:FOLLOW_ICON_LIGHT];
+	[self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
 }
 
 -(void) onScreen {
@@ -95,7 +122,7 @@
 
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
-		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, 150.f, 20.f);
+		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, 130.f, 20.f); //todo: make constants
 		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
@@ -106,13 +133,11 @@
 
 -(UIButton *) followButton {
 	if (!_followButton) {
-		CGRect followFrame = CGRectMake(self.frame.size.width - 70.f, OFFSET, 70.f, 20.f); //todo
+		CGRect followFrame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - OFFSET, OFFSET,
+										FOLLOW_BUTTON_WIDTH, FOLLOW_BUTTON_HEIGHT - 5.f);
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		_followButton.frame = followFrame;
-		NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Follow"
-																			  attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],
-																						   NSFontAttributeName: [UIFont fontWithName:DEFAULT_FONT size:16.f]}]; //todo
-		[_followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
+		_followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _followButton;
@@ -121,11 +146,11 @@
 -(UILabel *) channelNameLabel {
 	if (!_channelNameLabel) {
 		CGRect channelNameFrame = CGRectMake(OFFSET, self.followButton.frame.size.height + self.followButton.frame.origin.y,
-											 self.frame.size.width - (OFFSET *2), 40.f);
+											 self.frame.size.width - (OFFSET *2), 40.f); //todo: make constnats
 		_channelNameLabel = [[UILabel alloc] initWithFrame:channelNameFrame];
 		[_channelNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_channelNameLabel setTextAlignment:NSTextAlignmentCenter];
-		[_channelNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:20.f]]; //todo:
+		[_channelNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:CHANNEL_NAME_FONT_SIZE]];
 		[_channelNameLabel setTextColor:[UIColor whiteColor]];
 	}
 	return _channelNameLabel;

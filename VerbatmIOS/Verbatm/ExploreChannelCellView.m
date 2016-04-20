@@ -7,11 +7,16 @@
 //
 
 #import "ExploreChannelCellView.h"
+#import "Icons.h"
+#import "Follow_BackendManager.h"
 #import "ParseBackendKeys.h"
 #import "Page_BackendObject.h"
 #import "Post_BackendObject.h"
 #import "PostView.h"
+#import "SizesAndPositions.h"
 #import "Styles.h"
+
+#import <Parse/PFUser.h>
 
 @interface ExploreChannelCellView() <UIScrollViewDelegate, UIGestureRecognizerDelegate>
 
@@ -25,7 +30,11 @@
 @property (strong, nonatomic) NSMutableArray *postViews;
 @property (nonatomic) NSInteger indexOnScreen;
 
+@property (nonatomic) NSInteger numFollowers;
 @property (weak, readwrite) Channel *channelBeingPresented;
+
+
+@property (nonatomic) BOOL isFollowed;
 
 
 #define POST_VIEW_OFFSET 20.f
@@ -42,6 +51,7 @@
 -(instancetype) initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
 	self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
 	if (self) {
+		self.isFollowed = NO;
 		self.indexOnScreen = 0;
 		self.backgroundColor = [UIColor darkGrayColor];
 		[self addSubview:self.horizontalScrollView];
@@ -61,11 +71,13 @@
 -(void) layoutSubviews {
 	self.horizontalScrollView.frame = CGRectMake(0.f, POST_SCROLLVIEW_OFFSET, self.frame.size.width,
 												 self.frame.size.height - POST_SCROLLVIEW_OFFSET - FOOTER_HEIGHT);
-	self.footerView.frame = CGRectMake(0.f, self.frame.size.height - FOOTER_HEIGHT, self.frame.size.width, FOOTER_HEIGHT);
+
+	self.userNameLabel.frame = CGRectMake(OFFSET, OFFSET, 150.f, 20.f);
+	self.followButton.frame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - OFFSET, OFFSET,
+										 FOLLOW_BUTTON_WIDTH, FOLLOW_BUTTON_HEIGHT);
 	self.channelNameLabel.frame = CGRectMake(OFFSET, self.followButton.frame.size.height + self.followButton.frame.origin.y,
 											 self.frame.size.width - (OFFSET *2), 40.f);
-	self.followButton.frame = CGRectMake(self.frame.size.width - 70.f, OFFSET, 70.f, 20.f);
-	self.userNameLabel.frame = CGRectMake(OFFSET, OFFSET, 150.f, 20.f);
+	self.footerView.frame = CGRectMake(0.f, self.frame.size.height - FOOTER_HEIGHT, self.frame.size.width, FOOTER_HEIGHT);
 
 
 	CGFloat xCoordinate = POST_VIEW_OFFSET;
@@ -81,13 +93,14 @@
 
 -(void) presentChannel:(Channel *)channel {
 	self.channelBeingPresented = channel;
+
 	[self.channelNameLabel setText: channel.name];
 	[channel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
 		[self.userNameLabel setText: name];
 	}];
 
 	__block CGFloat xCoordinate = POST_VIEW_OFFSET;
-	[Post_BackendObject getPostsInChannel:channel withCompletionBlock:^(NSArray *postChannelActivityObjects) {
+	[Post_BackendObject getPostsInChannel:channel withLimit:3 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
 		for (PFObject *postChannelActivityObj in postChannelActivityObjects) {
 			PFObject *post = [postChannelActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
@@ -104,11 +117,19 @@
 				} else if (self.postViews.count == (self.indexOnScreen+3)) {
 					[postView preparepostToBePresented];
 				}
+				[postView muteAllVideos:YES];
 				[self.postViews addObject: postView];
 			}];
 		}
 	}];
 
+	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
+		self.numFollowers = [numFollowers integerValue];
+		//		[self changeNumFollowersLabel]; //todo
+	}];
+
+	//Since this is in explore we know the channel is not followed by user
+	[self updateFollowIcon];
 	[self addSubview:self.followButton];
 	[self addSubview:self.userNameLabel];
 	[self addSubview:self.channelNameLabel];
@@ -131,7 +152,18 @@
 }
 
 -(void) followButtonPressed {
-	[self.delegate channelFollowed:self.channelBeingPresented];
+	self.isFollowed = !self.isFollowed;
+	if (self.isFollowed) {
+		[Follow_BackendManager currentUserFollowChannel: self.channelBeingPresented];
+	} else {
+		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channelBeingPresented];
+	}
+	[self updateFollowIcon];
+}
+
+-(void) updateFollowIcon {
+	UIImage * newbuttonImage = self.isFollowed ? [UIImage imageNamed:FOLLOWING_ICON_LIGHT] : [UIImage imageNamed:FOLLOW_ICON_LIGHT];
+	[self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
 }
 
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -196,8 +228,7 @@
 
 -(UIView *) footerView {
 	if (!_footerView) {
-		CGRect frame = CGRectMake(0.f, self.frame.size.height - FOOTER_HEIGHT, self.frame.size.width, FOOTER_HEIGHT);
-		_footerView = [[UIView alloc] initWithFrame:frame];
+		_footerView = [[UIView alloc] init];
 		_footerView.backgroundColor = [UIColor blackColor];
 	}
 	return _footerView;
@@ -225,8 +256,7 @@
 
 -(UILabel *) userNameLabel {
 	if (!_userNameLabel) {
-		CGRect labelFrame = CGRectMake(OFFSET, OFFSET, 150.f, 20.f);
-		_userNameLabel = [[UILabel alloc] initWithFrame:labelFrame];
+		_userNameLabel = [[UILabel alloc] init];
 		[_userNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_userNameLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:20.f]];
 		[_userNameLabel setTextColor:VERBATM_GOLD_COLOR];
@@ -236,13 +266,8 @@
 
 -(UIButton *) followButton {
 	if (!_followButton) {
-		CGRect followFrame = CGRectMake(self.frame.size.width - 70.f, OFFSET, 70.f, 20.f); //todo
 		_followButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		_followButton.frame = followFrame;
-		NSAttributedString *attributedTitle = [[NSAttributedString alloc] initWithString:@"Follow"
-																			  attributes:@{NSForegroundColorAttributeName:[UIColor whiteColor],
-																						   NSFontAttributeName: [UIFont fontWithName:DEFAULT_FONT size:16.f]}]; //todo
-		[_followButton setAttributedTitle:attributedTitle forState:UIControlStateNormal];
+		_followButton.imageView.contentMode = UIViewContentModeScaleAspectFit;
 		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _followButton;
@@ -250,9 +275,7 @@
 
 -(UILabel *) channelNameLabel {
 	if (!_channelNameLabel) {
-		CGRect channelNameFrame = CGRectMake(OFFSET, self.followButton.frame.size.height + self.followButton.frame.origin.y,
-											 self.frame.size.width - (OFFSET *2), 40.f);
-		_channelNameLabel = [[UILabel alloc] initWithFrame:channelNameFrame];
+		_channelNameLabel = [[UILabel alloc] init];
 		[_channelNameLabel setAdjustsFontSizeToFitWidth:YES];
 		[_channelNameLabel setTextAlignment:NSTextAlignmentCenter];
 		[_channelNameLabel setFont:[UIFont fontWithName:INFO_LIST_HEADER_FONT size:20.f]]; //todo:

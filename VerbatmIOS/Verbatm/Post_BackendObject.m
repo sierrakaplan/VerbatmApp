@@ -87,11 +87,13 @@
 	}];
 }
 
-+(void) getPostsInChannel:(Channel *)channel withCompletionBlock:(void(^)(NSArray *))block{
++(void) getPostsInChannel:(Channel *)channel withLimit:(NSInteger)limit
+	  withCompletionBlock:(void(^)(NSArray *))block {
 	if(channel){
 		PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
 		[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel.parseChannelObject];
 		[postQuery orderByAscending:@"createdAt"];
+		[postQuery setLimit: limit];
 		[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable activities,
 													  NSError * _Nullable error) {
 			if(activities && !error) {

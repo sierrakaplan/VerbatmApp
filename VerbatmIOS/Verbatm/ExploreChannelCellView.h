@@ -11,7 +11,6 @@
 
 @protocol ExploreChannelCellViewDelegate <NSObject>
 
--(void) channelFollowed:(Channel *)channel;
 -(void) channelSelected: (Channel*)channel;
 
 @end

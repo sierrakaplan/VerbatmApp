@@ -236,8 +236,8 @@
 -(void) muteVideo: (BOOL)mute {
 	if(self.player) {
 		[self.player setMuted:mute];
-		self.isMuted = mute;
 	}
+	self.isMuted = mute;
 }
 
 -(void)fastForwardVideoWithRate: (NSInteger) rate{

@@ -50,7 +50,7 @@ ExploreChannelCellViewDelegate>
 	self.tableView.scrollIndicatorInsets = inset;
 
 	[self addRefreshFeature];
-	[self loadChannels];
+	[self refreshChannels];
 }
 
 -(void) viewWillAppear:(BOOL)animated {
@@ -60,14 +60,23 @@ ExploreChannelCellViewDelegate>
 
 -(void) viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
+	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:0]; ++i) {
+		[(FeaturedContentCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]] offScreen];
+	}
+	for (NSInteger i = 0; i < [self.tableView numberOfRowsInSection:1]; ++i) {
+		[(ExploreChannelCellView*)[self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:i inSection:1]] offScreen];
+	}
 }
 
--(void) loadChannels {
+-(void) refreshChannels {
+
 	[[FeedQueryManager sharedInstance] loadFeaturedChannelsWithCompletionHandler:^(NSArray *featuredChannels) {
+		self.featuredChannels = nil;
 		[self.featuredChannels addObjectsFromArray:featuredChannels];
 		[self.tableView reloadData];
 	}];
 	[[FeedQueryManager sharedInstance] refreshExploreChannelsWithCompletionHandler:^(NSArray *exploreChannels) {
+		self.exploreChannels = nil;
 		[self.refreshControl endRefreshing];
 		[self.exploreChannels addObjectsFromArray: exploreChannels];
 		[self.tableView reloadData];
@@ -76,7 +85,7 @@ ExploreChannelCellViewDelegate>
 
 -(void)addRefreshFeature{
 	self.refreshControl = [[UIRefreshControl alloc] init];
-	[self.refreshControl addTarget:self action:@selector(loadChannels) forControlEvents:UIControlEventValueChanged];
+	[self.refreshControl addTarget:self action:@selector(refreshChannels) forControlEvents:UIControlEventValueChanged];
 	[self.tableView addSubview:self.refreshControl];
 }
 
@@ -88,10 +97,6 @@ ExploreChannelCellViewDelegate>
 	userProfile.startChannel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
-}
-
--(void) channelFollowed:(Channel *)channel {
-	[Follow_BackendManager currentUserFollowChannel: channel];
 }
 
 #pragma mark - Table View delegate methods -

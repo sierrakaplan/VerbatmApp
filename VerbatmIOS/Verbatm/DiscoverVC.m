@@ -38,4 +38,7 @@
 	[super viewDidAppear:animated];
 }
 
+-(void) freeMemory {
+}
+
 @end

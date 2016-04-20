@@ -43,4 +43,8 @@
 
 -(void) showPublishingProgress;
 
+-(void) freeMemory;
+
+-(void) addPostListVC;
+
 @end

@@ -63,7 +63,14 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
 
+-(void) freeMemory {
+	//todo: figure out how to free memory
+//	[self.postListVC stopAllVideoContent];
+//	[self.postListVC.view removeFromSuperview];
+//	[self.postListVC clearOldPosts];
+//	self.postListVC = nil;
 }
 
 -(void)checkIntroNotification{

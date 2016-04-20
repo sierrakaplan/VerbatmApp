@@ -88,6 +88,18 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	self.view.clipsToBounds = YES;
 }
 
+-(void) freeMemory {
+	//todo: figure out how to clear memory
+//	[self.postListVC stopAllVideoContent];
+//	[self.postListVC.view removeFromSuperview];
+//	[self.postListVC clearOldPosts];
+//	self.postListVC = nil;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
+}
+
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
 	if(self.isCurrentUserProfile){
@@ -137,7 +149,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 -(void) addPostListVC {
-	if(self.postListVC){
+	if(self.postListVC) {
 		[self.postListVC stopAllVideoContent];
 		[self.postListVC.view removeFromSuperview];
 	}
@@ -160,7 +172,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	self.postListVC.isCurrentUserProfile = self.isCurrentUserProfile;
 	self.postListVC.postListDelegate = self;
 	if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
-	else[self.view addSubview:self.postListVC.view];
+	else [self.view addSubview:self.postListVC.view];
 }
 
 -(void) createNavigationBar {

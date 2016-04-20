@@ -31,7 +31,4 @@
 			   isCurrentUser:(BOOL) isCurrentUser isBlockedByCurrentUser:(BOOL) isBlocked
 				isProfileTab: (BOOL)profileTab;
 
-//makes the follow button show that we are/aren't following the current channel being presented
--(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel;
-
 @end

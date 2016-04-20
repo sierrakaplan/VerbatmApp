@@ -23,9 +23,7 @@
 @interface ProfileInformationBar ()
 @property (nonatomic) UILabel * userTitleName;
 @property (nonatomic) UIButton * settingsButton;
-@property (nonatomic) UIButton * followButton;
 @property (nonatomic) BOOL isCurrentUser;
-@property (nonatomic) BOOL isFollowigProfileUser;//for cases when they are viewing another profile
 
 @end
 
@@ -142,29 +140,6 @@
 	[self.delegate blockCurrentUserShouldBlock:!self.hasBlockedUser];
 }
 
-//If it's my profile it's follower(s) and if it's someone else's profile
-//it's follow
--(void) createFollowButton_AreWeFollowingCurrChannel:(BOOL) areFollowing{
-	if(self.followButton){
-		[self.followButton removeFromSuperview];
-		self.followButton = nil;
-	}
-
-	CGFloat height = SETTINGS_BUTTON_SIZE;
-	CGFloat width = (height*436.f)/250.f;
-	CGFloat frame_x = self.frame.size.width - width - CHANNEL_BUTTON_WALL_XOFFSET;
-	CGFloat frame_y = self.center.y - (height/2.f);
-
-	CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
-
-	UIImage * buttonImage = [UIImage imageNamed:((areFollowing) ? FOLLOWED_BY_ICON : FOLLOW_ICON_LIGHT)];
-	self.isFollowigProfileUser = areFollowing;
-	self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
-	[self.followButton setImage:buttonImage forState:UIControlStateNormal];
-	[self.followButton addTarget:self action:@selector(followOrFollowersSelected) forControlEvents:UIControlEventTouchUpInside];
-	[self addSubview:self.followButton];
-}
-
 -(void) createBackButton {
 
 	UIImage * settingsImage = [UIImage imageNamed:BACK_BUTTON_ICON];
@@ -189,27 +164,6 @@
 
 -(void) settingsButtonSelected {
 	[self.delegate settingsButtonSelected];
-}
-
--(void) followOrFollowersSelected {
-	UIImage * newbuttonImage;
-	if(self.isFollowigProfileUser){
-		newbuttonImage  = [UIImage imageNamed:FOLLOW_ICON_LIGHT];
-		self.isFollowigProfileUser = NO;
-	} else {
-		newbuttonImage = [UIImage imageNamed:FOLLOWED_BY_ICON];
-		self.isFollowigProfileUser = YES;
-	}
-	[self.followButton setImage:newbuttonImage forState:UIControlStateNormal];
-	[self.followButton setNeedsDisplay];
-	[self.delegate followButtonSelectedShouldFollowUser: self.isFollowigProfileUser];
-}
-
--(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel{
-	dispatch_async(dispatch_get_main_queue(), ^{
-		if(!self.isCurrentUser)
-			[self createFollowButton_AreWeFollowingCurrChannel:isFollowingChannel];
-	});
 }
 
 @end

@@ -18,4 +18,8 @@
 
 @property (strong, nonatomic) id<FeedVCDelegate> delegate;
 
+-(void) freeMemory;
+
+-(void) addPostListVC;
+
 @end

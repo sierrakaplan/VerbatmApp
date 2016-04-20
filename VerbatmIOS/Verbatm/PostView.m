@@ -86,6 +86,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 @property (nonatomic) NSMutableArray * mediaPageContent;//TODO
 
 @property(nonatomic) BOOL postIsCurrentlyBeingShown;
+@property(nonatomic) BOOL postMuted;
 
 //Tells whether should display media in small format
 @property (nonatomic) BOOL small;
@@ -108,6 +109,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 					   small:(BOOL) small {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.postMuted = NO;
 		self.small = small;
 		[self addSubview: self.mainScrollView];
 		self.mainScrollView.backgroundColor = [UIColor blackColor];
@@ -120,6 +122,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 -(instancetype)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.postMuted = NO;
 		[self addSubview: self.mainScrollView];
 		self.mainScrollView.backgroundColor = [UIColor blackColor];
 		[self createBorder];
@@ -345,9 +348,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	[self muteAllVideos:shouldMute];
 }
 
--(void)muteAllVideos:(BOOL) shouldMute{
-	for(id pageView in [self.pageViews allValues]){
-
+-(void)muteAllVideos:(BOOL) shouldMute {
+	self.postMuted = shouldMute;
+	for(PageViewingExperience *pageView in [self.pageViews allValues]){
 		if ([pageView isKindOfClass:[VideoPVE class]] ||
 			[pageView isKindOfClass:[PhotoVideoPVE class]]) {
 
@@ -474,7 +477,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 
 	PMKWhen(downloadPromises).then(^(id data){
-		if(self.postIsCurrentlyBeingShown){
+		if (self.postIsCurrentlyBeingShown){
 			dispatch_async(dispatch_get_main_queue(), ^{
 				[self presentMediaContent];
 				[self postOnScreen];
@@ -495,6 +498,10 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 		[self setDelegateOnPhotoPage: pageView];
 		[pageView offScreen];
 		pageView.frame = viewFrame;
+		if (self.postMuted && ([pageView isKindOfClass:[VideoPVE class]] ||
+							   [pageView isKindOfClass:[PhotoVideoPVE class]])) {
+			[(VideoPVE *)pageView muteVideo: YES];
+		}
 		[self.mainScrollView addSubview: pageView];
 		viewFrame = CGRectOffset(viewFrame, 0, self.frame.size.height);
 	}
@@ -514,6 +521,10 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 			NSArray * media = [self.pageMedia objectForKey:[NSNumber numberWithInteger:key]];
 			PageViewingExperience *pageView = [PageTypeAnalyzer getPageViewFromPageMedia:media withFrame:self.bounds
 																				   small:self.small];
+			if (self.postMuted && ([pageView isKindOfClass:[VideoPVE class]] ||
+								   [pageView isKindOfClass:[PhotoVideoPVE class]])) {
+				[(VideoPVE *)pageView muteVideo: YES];
+			}
 			//add bar at the bottom with page numbers etc
 			[self renderNextPage:pageView withIndex:[NSNumber numberWithInteger:key]];
 			[self setApproprioateScrollViewContentSize];

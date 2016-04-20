@@ -28,6 +28,9 @@
     return self;
 }
 
+-(void) prepareForReuse {
+}
+
 -(void) presentPostView:(PostView *)postView{
     if(postView != self.ourCurrentPost){
         [self.ourCurrentPost postOffScreen];

@@ -50,13 +50,15 @@
 			};
 		}
 
-		[self.imageView setImageWithURL: imageUrl];
+		//		[self.imageView setImageWithURL: imageUrl];
 
-		//todo: remove or figure out how to limit cache size
-		//		AnyPromise *loadData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
-		//		loadData.then(^(NSData* imageData) {
-		//			[self.imageView setImage:[UIImage imageWithData:imageData]];
-		//		});
+		AnyPromise *loadData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
+		loadData.then(^(NSData* imageData) {
+			UIImage *image = [UIImage imageWithData:imageData];
+			CGSize imageSize = CGSizeMake(self.bounds.size.height*(image.size.width/image.size.height)*1.5f, self.bounds.size.height*1.5f);
+			image = [image scaleImageToSize: imageSize];
+			[self.imageView setImage: image];
+		});
 	}
 	return self;
 }

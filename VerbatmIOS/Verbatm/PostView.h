@@ -50,6 +50,8 @@
 
 -(void) postOffScreen;
 
+-(void)muteAllVideos:(BOOL) shouldMute;
+
 // presents media only for the page on screen
 -(void) presentMediaContent;
 

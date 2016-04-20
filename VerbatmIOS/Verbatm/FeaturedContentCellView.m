@@ -20,7 +20,7 @@
 
 @property (nonatomic) NSInteger indexOnScreen;
 
-#define CHANNEL_VIEW_WIDTH 230.f
+#define CHANNEL_VIEW_WIDTH 200.f
 #define CHANNEL_VIEW_OFFSET 10.f
 
 @end
@@ -54,7 +54,7 @@
 	self.alreadyPresented = YES;
 	__block CGFloat xCoordinate = CHANNEL_VIEW_OFFSET;
 	for (Channel *channel in channels) {
-		[Post_BackendObject getPostsInChannel:channel withCompletionBlock:^(NSArray *postChannelActivityObjects) {
+		[Post_BackendObject getPostsInChannel:channel withLimit:1 withCompletionBlock:^(NSArray *postChannelActivityObjects) {
 			if (postChannelActivityObjects.count < 1) return;
 			PFObject *postChannelActivityObj = postChannelActivityObjects[0];
 			PFObject *post = [postChannelActivityObj objectForKey:POST_CHANNEL_ACTIVITY_POST];
@@ -90,10 +90,6 @@
 
 -(void) channelSelected:(Channel *)channel {
 	[self.delegate channelSelected:channel];
-}
-
--(void) channelFollowed:(Channel *)channel {
-	[self.delegate channelFollowed:channel];
 }
 
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {

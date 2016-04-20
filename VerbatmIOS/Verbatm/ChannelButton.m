@@ -70,8 +70,7 @@
     CGPoint numFollowersOrigin = CGPointMake(0.f,self.frame.size.height/2.f);
     self.numberOfFollowersLabel = [self getChannelFollowersLabel:channel origin:numFollowersOrigin followersTextAttribute:self.unSelectedFollowersTabTitleAttributes andNumberOfFollowersAttribute:self.unSelectedNumberOfFollowersTitleAttributes];
     
-    CGFloat buttonWidth = (TAB_BUTTON_PADDING * 3.f) + FOLLOW_BUTTON_WIDTH +  ((self.numberOfFollowersLabel.frame.size.width >  self.channelNameLabel.frame.size.width) ?
-                                                self.numberOfFollowersLabel.frame.size.width :  self.channelNameLabel.frame.size.width);
+    CGFloat buttonWidth = (TAB_BUTTON_PADDING * 3.f) + FOLLOW_BUTTON_WIDTH + ((self.numberOfFollowersLabel.frame.size.width > self.channelNameLabel.frame.size.width) ? self.numberOfFollowersLabel.frame.size.width :  self.channelNameLabel.frame.size.width);
     
     //adjust label frame sizes to be the same with some padding
      self.channelNameLabel.frame = CGRectMake(TAB_BUTTON_PADDING,
@@ -127,7 +126,7 @@
     CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
     
     self.followButton = [[UIButton alloc] initWithFrame:iconFrame];
-	[self updateFollowingIconSelected:self.buttonSelected];
+	[self updateFollowingIconSelected: self.buttonSelected];
     [self.followButton addTarget:self action:@selector(followButtonSelected) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.followButton];
 }

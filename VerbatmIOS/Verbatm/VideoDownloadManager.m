@@ -84,42 +84,6 @@
     });
 }
 
-//-(AVMutableComposition*) fuseAssets:(NSArray*) videoList {
-//	if (self.fusedVideoAsset) return self.fusedVideoAsset;
-//	self.fusedVideoAsset = [AVMutableComposition composition]; //create a composition to hold the joined assets
-//	AVMutableCompositionTrack* videoTrack = [self.fusedVideoAsset addMutableTrackWithMediaType:AVMediaTypeVideo
-//																			  preferredTrackID:kCMPersistentTrackID_Invalid];
-//	AVMutableCompositionTrack* audioTrack = [self.fusedVideoAsset addMutableTrackWithMediaType:AVMediaTypeAudio
-//																			  preferredTrackID:kCMPersistentTrackID_Invalid];
-//	CMTime nextClipStartTime = kCMTimeZero;
-//	NSError* error;
-//	for(id asset in videoList) {
-//		AVURLAsset * videoAsset;
-//		if([asset isKindOfClass:[NSURL class]]) {
-//			videoAsset = [AVURLAsset assetWithURL:asset];
-//		} else {
-//			videoAsset = asset;
-//		}
-//		NSArray * videoTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
-//		if(!videoTrackArray.count) continue;
-//
-//		AVAssetTrack* currentVideoTrack = [videoTrackArray objectAtIndex:0];
-//		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentVideoTrack atTime:nextClipStartTime error: &error];
-//		videoTrack.preferredTransform = currentVideoTrack.preferredTransform;
-//		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
-//
-//		NSArray * audioTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeAudio];
-//		if(!audioTrackArray.count) continue;
-//		AVAssetTrack* currentAudioTrack = [audioTrackArray objectAtIndex:0];
-//		audioTrack.preferredTransform = currentAudioTrack.preferredTransform;
-//		[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentAudioTrack atTime:nextClipStartTime error:&error];
-//	}
-//	if (error) {
-//		NSLog(@"Error fusing video assets: %@", error.description);
-//	}
-//	return self.fusedVideoAsset;
-//}
-
 -(NSMutableSet *)urlsBeingDownloaded{
     if(!_urlsBeingDownloaded) _urlsBeingDownloaded = [[NSMutableSet alloc] init];
     return _urlsBeingDownloaded;

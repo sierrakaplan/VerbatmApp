@@ -189,8 +189,9 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
     }
 }
 
--(void)loadCurrentChannel{
-    [Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
+-(void)loadCurrentChannel {
+	//todo: page through posts
+	[Post_BackendObject getPostsInChannel:self.channelForList withLimit:100 withCompletionBlock:^(NSArray * posts) {
         [self.customActivityIndicator stopCustomActivityIndicator];
         if(posts.count){
             [self loadNewBackendPosts:posts];
@@ -348,6 +349,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 
 	return nextCellToBePresented;
 }
+
 
 -(CGFloat) getVisibileCellIndex{
 	return self.collectionView.contentOffset.x / self.view.frame.size.width;
