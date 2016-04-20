@@ -20,6 +20,8 @@
 #define IMAGE_KEY @"image_key"
 #define FILTER_INDEX_KEY @"filter_index_key"
 #define PHASSET_IDENTIFIER_KEY @"image_phasset_local_id"
+#define LARGE_SIZE_WIDTH_KEY @"large_size_width_key"
+#define LARGE_SIZE_HEIGHT_KEY @"large_size_height_key"
 
 @end
 
@@ -171,6 +173,8 @@
 	[coder encodeObject:UIImagePNGRepresentation(self.image) forKey:IMAGE_KEY];
 	[coder encodeObject:[NSNumber numberWithInteger:self.filterImageIndex] forKey:FILTER_INDEX_KEY];
 	[coder encodeObject: self.phAssetLocalIdentifier forKey:PHASSET_IDENTIFIER_KEY];
+	[coder encodeObject: [NSNumber numberWithFloat:self.largeSize.width] forKey:LARGE_SIZE_WIDTH_KEY];
+	[coder encodeObject: [NSNumber numberWithFloat:self.largeSize.height] forKey:LARGE_SIZE_HEIGHT_KEY];
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
@@ -181,6 +185,9 @@
 		self.phAssetLocalIdentifier = [decoder decodeObjectForKey:PHASSET_IDENTIFIER_KEY];
 		[self initWithImage:image andSetFilteredImages:YES];
 		[self changeImageToFilterIndex:filterImageIndexNumber.integerValue];
+		NSNumber *largeSizeWidth = [decoder decodeObjectForKey:LARGE_SIZE_WIDTH_KEY];
+		NSNumber *largeSizeHeight = [decoder decodeObjectForKey:LARGE_SIZE_HEIGHT_KEY];
+		self.largeSize = CGSizeMake([largeSizeWidth floatValue], [largeSizeHeight floatValue]);
 	}
 	return self;
 }

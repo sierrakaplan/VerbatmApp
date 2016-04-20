@@ -17,6 +17,7 @@
 #import "MathOperations.h"
 
 #import "PointObject.h"
+#import "PostInProgress.h"
 #import "PhotoPVE.h"
 
 #import "OpenCollectionView.h"
@@ -366,6 +367,7 @@
 		[view removeFromSuperview];
 	}
 	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
+	[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
 	[self.pinchView renderMedia];
 	[self addContentFromImagePinchViews: pinchViews];
     [self createRearrangeButton];
@@ -590,7 +592,10 @@
             [((EditMediaContentView *)view) exiting];
         }
     }
-    
+	if (self.inPreviewMode) {
+		[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
+	}
+
     if(self.rearrangeView)[self.rearrangeView exitView];
 }
 
