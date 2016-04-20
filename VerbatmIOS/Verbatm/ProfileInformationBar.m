@@ -25,6 +25,8 @@
 @property (nonatomic) UIButton * settingsButton;
 @property (nonatomic) BOOL isCurrentUser;
 
+#define BUTTON_Y (self.center.y - ((height - STATUS_BAR_HEIGHT)/2.f))
+
 @end
 
 @implementation ProfileInformationBar
@@ -86,10 +88,8 @@
 	CGFloat x_point = (CHANNEL_BUTTON_WALL_XOFFSET*2) + SETTINGS_BUTTON_SIZE;
 	CGFloat width = self.frame.size.width - (CHANNEL_BUTTON_WALL_XOFFSET*2) - (SETTINGS_BUTTON_SIZE*2);
 	CGFloat height = self.frame.size.height;
-	CGFloat y_point = self.center.y - ((height - STATUS_BAR_HEIGHT)/2.f);
 
-	self.userTitleName = [[UILabel alloc] initWithFrame:CGRectMake(x_point, y_point,
-																   width,height)];
+	self.userTitleName = [[UILabel alloc] initWithFrame:CGRectMake(x_point, BUTTON_Y, width, height)];
 
 	self.userTitleName.text = userName;
 	self.userTitleName.textAlignment = NSTextAlignmentCenter;
@@ -104,9 +104,8 @@
 	CGFloat height = SETTINGS_BUTTON_SIZE;
 	CGFloat width = height+ 20.f;
 	CGFloat frame_x = self.frame.size.width - width - CHANNEL_BUTTON_WALL_XOFFSET;
-	CGFloat frame_y = self.center.y - ((height - STATUS_BAR_HEIGHT)/2.f);
 
-	CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height );
+	CGRect iconFrame = CGRectMake(frame_x, BUTTON_Y, width, height );
 
 	self.settingsButton =  [[UIButton alloc] initWithFrame:iconFrame];
 	[self.settingsButton setImage:settingsImage forState:UIControlStateNormal];
@@ -123,9 +122,8 @@
 	CGFloat height = SETTINGS_BUTTON_SIZE;
 	CGFloat width = height+ 20.f;
 	CGFloat frame_x = self.frame.size.width - width - CHANNEL_BUTTON_WALL_XOFFSET;
-	CGFloat frame_y = self.center.y - (height/2.f);
 
-	CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height );
+	CGRect iconFrame = CGRectMake(frame_x, BUTTON_Y, width, height );
 
 	self.settingsButton =  [[UIButton alloc] initWithFrame:iconFrame];
 	[self.settingsButton setImage:settingsImage forState:UIControlStateNormal];
@@ -146,9 +144,8 @@
 	CGFloat height = SETTINGS_BUTTON_SIZE;
 	CGFloat width = height;
 	CGFloat frame_x = CHANNEL_BUTTON_WALL_XOFFSET;
-	CGFloat frame_y = self.center.y - (height/2.f);
 
-	CGRect iconFrame = CGRectMake(frame_x, frame_y, width, height);
+	CGRect iconFrame = CGRectMake(frame_x, BUTTON_Y, width, height);
 
 	self.settingsButton =  [[UIButton alloc] initWithFrame:iconFrame];
 	[self.settingsButton setImage:settingsImage forState:UIControlStateNormal];

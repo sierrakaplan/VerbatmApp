@@ -623,8 +623,9 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 		UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];
 		self.pageUpIndicator = [[UIImageView alloc] initWithImage:arrowImage];
 		self.pageUpIndicator.contentMode = UIViewContentModeScaleAspectFit;
-		[self.likeShareBar addSubview:self.pageUpIndicator];
 	}
+	[self.pageUpIndicator removeFromSuperview];
+	[self.likeShareBar addSubview:self.pageUpIndicator];
 	CGFloat size = 50.f;
 	CGFloat x_cord = self.frame.size.width/2.f - size/2.f;
 	CGFloat y_cord = 0.f;
