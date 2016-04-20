@@ -47,7 +47,9 @@
     if(self){
         self.currentChannel = channel;
         [self createBackground];
-		[self addCreatorNameViewWithName:[self.currentChannel getChannelOwnerUserName]];
+		[self.currentChannel getChannelOwnerNameWithCompletionBlock:^(NSString *name) {
+			[self addCreatorNameViewWithName:name];
+		}];
 		[self createChannelNameView:channel.name];
 		[self createFollowIcon];
         [self registerForNotifications];

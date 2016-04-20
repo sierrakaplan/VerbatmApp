@@ -446,6 +446,9 @@ static NSString *const kCallbackError = @"error";
     self.downloadedData = [NSMutableData data];
   }
 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	//todo: update to ios 9 functions
+
   hasConnectionEnded_ = NO;
   if ([runLoopModes_ count] == 0 && delegateQueue == nil) {
     // No custom callback modes or queue were specified, so start the connection

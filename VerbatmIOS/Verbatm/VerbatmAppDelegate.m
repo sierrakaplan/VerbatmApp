@@ -26,11 +26,15 @@
 
 #import <Crashlytics/Crashlytics.h>
 #import <Fabric/Fabric.h>
-#import <Optimizely/Optimizely.h>
 
 @implementation VerbatmAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+
+	int cacheSizeMemory = 4*1024*1024; // 4MB
+	int cacheSizeDisk = 32*1024*1024; // 32MB
+	NSURLCache *sharedCache = [[NSURLCache alloc] initWithMemoryCapacity:cacheSizeMemory diskCapacity:cacheSizeDisk diskPath:@"nsurlcache"];
+	[NSURLCache setSharedURLCache:sharedCache];
 
 	[[PostInProgress sharedInstance] loadPostFromUserDefaults];
 	[self setUpParseWithLaunchOptions: launchOptions];
@@ -41,12 +45,16 @@
 	[[UserSetupParameters sharedInstance] setUpParameters];
 	[[Analytics getSharedInstance] newUserSession];
 
-	// Fabric and Optimizely
-	[Fabric with:@[[Optimizely class], [Crashlytics class]]];
+	// Fabric (and Optimizely, if needed can bring back)
+	[Fabric with:@[[Crashlytics class]]];
 	//    	[Optimizely startOptimizelyWithAPIToken: @"AANIfyUBGNNvR9jy_iEWX8c97ahEroKr~3788260592" launchOptions:launchOptions];
 
 	return [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
 
+}
+
+- (void)applicationDidReceiveMemoryWarning:(UIApplication *)application {
+	[[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
 -(void) setUpParseWithLaunchOptions: (NSDictionary*)launchOptions {
@@ -109,8 +117,7 @@
 	return [[FBSDKApplicationDelegate sharedInstance] application:application
 														  openURL:url
 												sourceApplication:sourceApplication
-													   annotation:annotation]
-	&& [Optimizely handleOpenURL:url];
+													   annotation:annotation];
 }
 
 @end

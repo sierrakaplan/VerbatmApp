@@ -20,6 +20,7 @@
 @end
 
 @implementation Channel
+
 -(instancetype) initWithChannelName:(NSString *) channelName
               andParseChannelObject:(PFObject *) parseChannelObject
 				  andChannelCreator:(PFUser *) channelCreator {
@@ -34,16 +35,31 @@
     return self;
 }
 
--(NSString *)getChannelOwnerUserName {
-	if (!self.parseChannelObject) return nil;
-	if (!self.channelCreator) self.channelCreator = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
-    NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
-    return userName;
+-(void)getChannelOwnerNameWithCompletionBlock:(void(^)(NSString *))block {
+	if (!self.parseChannelObject) {
+		block(@"");
+		return;
+	}
+	if (!self.channelCreator) {
+		[[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+			self.channelCreator = (PFUser*)object;
+			[self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+				NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
+				block(userName);
+			}];
+		}];
+	} else {
+		[self.channelCreator fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+			NSString * userName = [self.channelCreator valueForKey:VERBATM_USER_NAME_KEY];
+			block(userName);
+		}];
+	}
 }
 
 -(BOOL)channelBelongsToCurrentUser {
-	if (!self.parseChannelObject) return nil;
+	if (!self.parseChannelObject) return false;
 	if (!self.channelCreator) self.channelCreator = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
+	[self.channelCreator fetchIfNeeded];
     return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
 }
 

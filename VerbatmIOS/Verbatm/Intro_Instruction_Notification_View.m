@@ -9,6 +9,7 @@
 #import "Intro_Instruction_Notification_View.h"
 #import "SizesAndPositions.h"
 #import "Durations.h"
+
 #define FEED_NOTIFICATION_IMAGE @"Feed Notification"
 #define ADK_NOTIFICATION_IMAGE @"ADK Notification"
 #define PROFILE_NOTIFICATION_IMAGE @"Profile Notification"
@@ -17,7 +18,7 @@
 
 #define INTRO_TIMER_DURATION 20.f
 
-@interface Intro_Instruction_Notification_View ()
+@interface Intro_Instruction_Notification_View () <UIGestureRecognizerDelegate>
 @property (nonatomic) NSTimer * timer;
 @end
 
@@ -25,8 +26,7 @@
 
 
 -(instancetype)initWithCenter:(CGPoint) center andType:(NotificationType) type{
-    
-    
+
     CGRect frame  = CGRectMake(0.f, 0.f, INTRO_NOTIFICATION_SIZE, INTRO_NOTIFICATION_SIZE);
     self = [super initWithFrame:frame];
     if(self){
@@ -37,14 +37,9 @@
         [self createNotificationFromType:type];
         
     }
-    
-    
-    
+
     return  self;
 }
-
-
-
 
 -(void)createNotificationFromType:(NotificationType) type{
     
@@ -65,10 +60,10 @@
     [self beginFadeTimer];
 }
 
-
 -(void)addTapGestureToView{
-    UITapGestureRecognizer * tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(notAcceptedByUser:)];
-    [self addGestureRecognizer:tap];
+    UITapGestureRecognizer * tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(notAcceptedByUser:)];
+	tapGesture.delegate = self;
+    [self addGestureRecognizer:tapGesture];
     [self setUserInteractionEnabled:YES];
 }
 

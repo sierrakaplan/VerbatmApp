@@ -11,6 +11,7 @@
 
 #import "Durations.h"
 
+#import "Icons.h"
 #import "Intro_Instruction_Notification_View.h"
 
 #import "Follow_BackendManager.h"
@@ -44,9 +45,9 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 @property (nonatomic) Intro_Instruction_Notification_View * introInstruction;
 
 @property (nonatomic, strong) ProfileNavBar * profileNavBar;
+@property (nonatomic) BOOL profileNavBarOnScreen;
 @property (nonatomic) CGRect profileNavBarFrameOnScreen;
 @property (nonatomic) CGRect profileNavBarFrameOffScreen;
-@property (nonatomic) BOOL contentCoveringScreen;
 
 @property (nonatomic, strong) NSString * currentThreadInView;
 
@@ -70,7 +71,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(void) viewDidLoad {
 	[super viewDidLoad];
-	self.contentCoveringScreen = YES;
 	self.view.backgroundColor = [UIColor blackColor];
 	//this is where you'd fetch the threads
     [self.customActivityIndicator startCustomActivityIndicator];
@@ -88,7 +88,17 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	self.view.clipsToBounds = YES;
 }
 
+-(void) freeMemory {
+	//todo: figure out how to clear memory
+//	[self.postListVC stopAllVideoContent];
+//	[self.postListVC.view removeFromSuperview];
+//	[self.postListVC clearOldPosts];
+//	self.postListVC = nil;
+}
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
+}
 
 //this is where downloading of channels should happen
 -(void) getChannelsWithCompletionBlock:(void(^)())block{
@@ -106,7 +116,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 -(void)checkIntroNotification{
-
 	if(![[UserSetupParameters sharedInstance] isProfile_InstructionShown] &&
 	   self.isCurrentUserProfile) {
 		self.introInstruction = [[Intro_Instruction_Notification_View alloc] initWithCenter:self.view.center andType:Profile];
@@ -115,7 +124,6 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 		[self.view bringSubviewToFront:self.introInstruction];
 		[[UserSetupParameters sharedInstance] set_profileNotification_InstructionAsShown];
 	}
-
 }
 
 -(void) notificationDoneAnimatingOut {
@@ -141,7 +149,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 }
 
 -(void) addPostListVC {
-	if(self.postListVC){
+	if(self.postListVC) {
 		[self.postListVC stopAllVideoContent];
 		[self.postListVC.view removeFromSuperview];
 	}
@@ -164,24 +172,27 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	self.postListVC.isCurrentUserProfile = self.isCurrentUserProfile;
 	self.postListVC.postListDelegate = self;
 	if(self.profileNavBar)[self.view insertSubview:self.postListVC.view belowSubview:self.profileNavBar];
-	else[self.view addSubview:self.postListVC.view];
+	else [self.view addSubview:self.postListVC.view];
 }
 
 -(void) createNavigationBar {
 	//frame when on screen
 	self.profileNavBarFrameOnScreen = CGRectMake(0.f, 0.f, self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
 	//frame when off screen
-	self.profileNavBarFrameOffScreen = CGRectMake(0.f, - (PROFILE_NAV_BAR_HEIGHT), self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT );
+	self.profileNavBarFrameOffScreen = CGRectMake(0.f, 0.f - STATUS_BAR_HEIGHT - PROFILE_NAV_BAR_HEIGHT,
+												  self.view.frame.size.width, PROFILE_NAV_BAR_HEIGHT);
 
 	self.profileNavBar = [[ProfileNavBar alloc]
 						  initWithFrame:self.profileNavBarFrameOnScreen
 						  andChannels: self.channels
 						  andUser:self.userOfProfile
-						  isCurrentLoggedInUser:self.isCurrentUserProfile];
+						  isCurrentLoggedInUser:self.isCurrentUserProfile
+						  isProfileTab:self.isProfileTab];
 
 	self.profileNavBar.delegate = self;
 	[self.view addSubview:self.profileNavBar];
 	[self.view bringSubviewToFront:self.profileNavBar];
+	self.profileNavBarOnScreen = YES;
 }
 
 -(void)addClearScreenGesture{
@@ -195,11 +206,16 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	return YES;
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	return  (![touch.view isKindOfClass:[Intro_Instruction_Notification_View class]]);
+}
+
 #pragma mark - POSTListView delegate -
 
 -(void)channelSelected:(Channel *) channel{
 	ProfileVC *  userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
+	userProfile.isProfileTab = NO;
 	userProfile.userOfProfile = channel.channelCreator;
 	userProfile.startChannel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
@@ -259,7 +275,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 
 -(void) cancelCreation {
 	[self clearChannelCreationView];
-	[self presentHeadAndFooter:NO];
+	[self presentHeadAndFooter:YES];
 }
 
 -(void) createChannelWithName:(NSString *) channelName {
@@ -351,27 +367,29 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 	[self addPostListVC];
 }
 
-#pragma mark -POSTListVC Protocol-
+#pragma mark - POSTListVC Protocol -
+
 -(void)hideNavBarIfPresent{
-	[self presentHeadAndFooter:YES];
+	[self presentHeadAndFooter:NO];
 }
 
 -(void) presentHeadAndFooter:(BOOL) shouldShow {
 	if(shouldShow) {
+		self.profileNavBarOnScreen = YES;
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:YES]];
+			[self.profileNavBar setFrame: self.profileNavBarFrameOnScreen];
+		}];
+		[self.delegate showTabBar:YES];
+		if(self.isCurrentUserProfile) [self.postListVC footerShowing:YES];
+
+	} else {
+		self.profileNavBarOnScreen = NO;
+		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			[self.profileNavBar setFrame: self.profileNavBarFrameOffScreen];
 		}];
 
 		[self.delegate showTabBar:NO];
-		self.contentCoveringScreen = NO;
 		if(self.isCurrentUserProfile) [self.postListVC footerShowing:NO];
-	} else {
-		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
-			[self.profileNavBar setFrame:[self getProfileNavBarFrameOffScreen:NO]];
-		}];
-		[self.delegate showTabBar:YES];
-		self.contentCoveringScreen = YES;
-		if(self.isCurrentUserProfile) [self.postListVC footerShowing:YES];
 	}
 }
 
@@ -384,22 +402,10 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 		&& (tapPoint.x > (self.view.frame.size.width/2.f - circleRadiusWithPadding)
 			&& tapPoint.x < (self.view.frame.size.width/2.f + circleRadiusWithPadding)))
 		return;
-	if (self.contentCoveringScreen) {
-		[self presentHeadAndFooter:YES];
-	} else {
+	if (self.profileNavBarOnScreen) {
 		[self presentHeadAndFooter:NO];
-	}
-}
-
--(CGRect)getProfileNavBarFrameOffScreen:(BOOL) getOffScreenFrame {
-	if(getOffScreenFrame){
-		return CGRectMake(0, -1 * self.profileNavBar.frame.size.height,
-						  self.profileNavBar.frame.size.width,
-						  self.profileNavBar.frame.size.height);
 	} else {
-		return CGRectMake(0, 0,
-						  self.profileNavBar.frame.size.width,
-						  self.profileNavBar.frame.size.height);
+		[self presentHeadAndFooter:YES];
 	}
 }
 
@@ -482,7 +488,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 -(LoadingIndicator *)customActivityIndicator{
     if(!_customActivityIndicator){
         CGPoint newCenter = CGPointMake(self.view.center.x, self.view.frame.size.height * 1.f/2.f);
-        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter];
+        _customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:newCenter andImage:[UIImage imageNamed:LOAD_ICON_IMAGE]];
         [self.view addSubview:_customActivityIndicator];
     }
     return _customActivityIndicator;

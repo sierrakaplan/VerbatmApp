@@ -8,8 +8,8 @@
 //	The content dev VC is in charge of almost all of the creation process -
 // 	it handles displaying the channel the post will be published to, all of the pinch views
 // 	in the post, and all of the logic for combining pinch views, pinching apart, and in
-//	general adding media. It also is responsible for bringing up the MediaDevVC to capture media
-//	(the camera view) and the Preview Mode where users can further edit their posts.
+//	general adding media. It also is responsible for bringing up the Verbatm Camera View to capture media
+//	and the Preview Mode where users can further edit their posts.
 
 #import <UIKit/UIKit.h>
 #import "CustomNavigationBar.h"

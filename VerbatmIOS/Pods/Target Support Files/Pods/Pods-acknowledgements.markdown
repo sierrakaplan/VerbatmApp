@@ -13,10 +13,6 @@ Fabric: Copyright 2015 Twitter, Inc. All Rights Reserved. Use of this software i
 
 See README.markdown for full license text.
 
-## Optimizely-iOS-SDK
-
-See http://developers.optimizely.com/ios/terms
-
 ## PromiseKit
 
 @see README

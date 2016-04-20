@@ -35,6 +35,8 @@
 //passes it an array of UIImages to display
 -(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index;
 
+-(void)changeImageTo: (UIImage *) image;
+
 -(void)createTextCreationButton;
 
 -(void) setText:(NSString *)text

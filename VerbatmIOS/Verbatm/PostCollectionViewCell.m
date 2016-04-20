@@ -28,6 +28,9 @@
     return self;
 }
 
+-(void) prepareForReuse {
+}
+
 -(void) presentPostView:(PostView *)postView{
     if(postView != self.ourCurrentPost){
         [self.ourCurrentPost postOffScreen];
@@ -53,7 +56,7 @@
 
 -(PostView *) ourCurrentPost{
     if(!_ourCurrentPost){
-        _ourCurrentPost = [[PostView alloc] initWithFrame:self.bounds andPostParseObject:nil];
+        _ourCurrentPost = [[PostView alloc] initWithFrame:self.bounds andPostChannelActivityObject:nil small:NO];
         [self addSubview:_ourCurrentPost];
     }
     return _ourCurrentPost;

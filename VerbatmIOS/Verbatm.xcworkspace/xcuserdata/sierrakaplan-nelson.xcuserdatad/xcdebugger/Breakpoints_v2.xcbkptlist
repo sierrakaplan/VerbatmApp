@@ -3619,8 +3619,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "596"
             endingLineNumber = "596"
-            landmarkName = "@implementation PhotoPVE"
-            landmarkType = "3">
+            landmarkName = "-onScreen"
+            landmarkType = "5">
             <Locations>
                <Location
                   shouldBeEnabled = "No"
@@ -4003,7 +4003,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "339"
             endingLineNumber = "339"
-            landmarkName = "-rearrangeButtonPressed"
+            landmarkName = "-circleTapped:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4019,8 +4019,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "577"
             endingLineNumber = "577"
-            landmarkName = "-offScreen"
-            landmarkType = "5">
+            landmarkName = "@implementation PhotoPVE"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4035,8 +4035,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "576"
             endingLineNumber = "576"
-            landmarkName = "-offScreen"
-            landmarkType = "5">
+            landmarkName = "@implementation PhotoPVE"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -4067,7 +4067,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "323"
             endingLineNumber = "323"
-            landmarkName = "-createRearrangeButton"
+            landmarkName = "-mainViewTapped:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4632,7 +4632,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "382"
             endingLineNumber = "382"
-            landmarkName = "-trackMovementOnCircle:"
+            landmarkName = "-collectionClosedWithFinalArray:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -4776,7 +4776,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "159"
             endingLineNumber = "159"
-            landmarkName = "-layoutContainerViews"
+            landmarkName = "-getEditContentViewFromPinchView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7496,7 +7496,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "81"
             endingLineNumber = "81"
-            landmarkName = "+getPageViewFromPageMedia:withFrame:"
+            landmarkName = "+getPageViewFromPageMedia:withFrame:small:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7512,7 +7512,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "78"
             endingLineNumber = "78"
-            landmarkName = "+getPageViewFromPageMedia:withFrame:"
+            landmarkName = "+getPageViewFromPageMedia:withFrame:small:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7528,7 +7528,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "73"
             endingLineNumber = "73"
-            landmarkName = "+getPageViewFromPageMedia:withFrame:"
+            landmarkName = "+getPageViewFromPageMedia:withFrame:small:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -7576,7 +7576,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "151"
             endingLineNumber = "151"
-            landmarkName = "-getUIImagesFromPage:withCompletionBlock:"
+            landmarkName = "-getImagesfromUrls:withCompletionBlock:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

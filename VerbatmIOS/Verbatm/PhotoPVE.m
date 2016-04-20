@@ -54,6 +54,9 @@
 @property (nonatomic, strong) UIButton * rearrangeButton;
 @property (nonatomic) OpenCollectionView * rearrangeView;
 
+// Tells whether should display smaller sized images
+@property (nonatomic) BOOL small;
+
 #define TEXT_VIEW_HEIGHT 70.f
 
 //this view manages the tapping gesture of the set circles
@@ -63,9 +66,11 @@
 
 @implementation PhotoPVE
 
--(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos {
+-(instancetype) initWithFrame:(CGRect)frame andPhotoArray:(NSArray *)photos
+						small:(BOOL) small {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.small = small;
 		self.inPreviewMode = NO;
         if ([photos count]) {
 			[self addPhotos:photos];
@@ -78,6 +83,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(PinchView *)pinchView inPreviewMode: (BOOL) inPreviewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.small = NO;
 		self.inPreviewMode = inPreviewMode;
 		self.pinchView = pinchView;
 		if([self.pinchView isKindOfClass:[CollectionPinchView class]]){
@@ -137,6 +143,18 @@
 
 -(EditMediaContentView *) getEditContentViewFromPinchView: (ImagePinchView *)pinchView {
 	EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
+
+	PHImageRequestOptions *options = [PHImageRequestOptions new];
+	options.synchronous = YES;
+	PHAsset *imageAsset = [self getImageAssetFromPHLocalId:pinchView.phAssetLocalIdentifier];
+	[[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:self.bounds.size contentMode:PHImageContentModeAspectFill
+									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
+										dispatch_async(dispatch_get_main_queue(), ^{
+											[editMediaContentView changeImageTo:image];
+										});
+									}];
+	//Display low quality image before loading high quality version
 	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex];
 
 	if(pinchView.text && pinchView.text.length) {
@@ -151,6 +169,12 @@
 	editMediaContentView.povViewMasterScrollView = self.postScrollView;
 	editMediaContentView.delegate = self;
 	return editMediaContentView;
+}
+
+-(PHAsset *)getImageAssetFromPHLocalId: (NSString*)phLocalIdentifier {
+	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[phLocalIdentifier] options:nil];
+	PHAsset* imageAsset = fetchResult.firstObject;
+	return imageAsset;
 }
 
 -(void)layoutContainerViews{
@@ -178,7 +202,7 @@
 }
 
 -(TextOverMediaView*) getImageContainerViewFromPhotoTextArray: (NSArray*) photoTextArray {
-	UIImage* image = photoTextArray[0];
+	NSURL *url = photoTextArray[0];
 	NSString* text = photoTextArray[1];
 	CGFloat textYPosition = [(NSNumber *)photoTextArray[2] floatValue];
 	UIColor *textColor = photoTextArray[3];
@@ -190,7 +214,8 @@
 	}
 
 	TextOverMediaView* textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
-																		  andImage: image];
+																		  andImageURL: url
+																	withSmallImage:self.small];
 	if (text && text.length) {
 		[textAndImageView setText: text
 				 andTextYPosition: textYPosition
@@ -426,8 +451,6 @@
 }
 
 -(void) fadeWithDistance:(float)distanceFromStartingTouch andTotalDistance:(float)totalDistanceToTravel {
-//	NSLog(@"Distance from starting touch: %f", distanceFromStartingTouch);
-//	NSLog(@"Last distance from starting touch: %f", self.lastDistanceFromStartingPoint);
 	//switch current point and image
 	if (distanceFromStartingTouch > totalDistanceToTravel) {
 		self.draggingFromPointIndex = self.draggingFromPointIndex + 1;

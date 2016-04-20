@@ -1170,7 +1170,10 @@ static NSOperationQueue *sharedQueue = nil;
 	NSFileManager *fileManager = [[[NSFileManager alloc] init] autorelease];
 
 	[self setReadStreamIsScheduled:NO];
-	
+
+	#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+	//todo: update to ios 9 functions
+
 	// Do we need to stream the request body from disk
 	if ([self shouldStreamPostDataFromDisk] && [self postBodyFilePath] && [fileManager fileExistsAtPath:[self postBodyFilePath]]) {
 		

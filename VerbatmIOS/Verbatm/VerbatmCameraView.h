@@ -14,7 +14,7 @@ IB_DESIGNABLE
 
 @protocol VerbatmCameraViewDelegate <NSObject>
 
--(void) imageCaptured: (UIImage*) image;
+-(void) imageAssetCaptured: (PHAsset *) asset;
 -(void) videoAssetCaptured: (PHAsset*) asset;
 -(void) minimizeCameraViewButtonTapped;
 

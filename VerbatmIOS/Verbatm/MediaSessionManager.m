@@ -135,7 +135,7 @@
 	}
 }
 
-// creates a Verbatm Album in the PHPhotoLibrary if it doesn't already exist
+// creates a Verbatm Album in the PHPhotoLibrary
 -(void)createVerbatmAlbum {
 	__block PHObjectPlaceholder *albumPlaceholder;
 	[[PHPhotoLibrary sharedPhotoLibrary] performChanges:^{
@@ -146,6 +146,8 @@
 		if (success) {
 			PHFetchResult *fetchResult = [PHAssetCollection fetchAssetCollectionsWithLocalIdentifiers:@[albumPlaceholder.localIdentifier] options:nil];
 			self.verbatmAlbum = fetchResult.firstObject;
+		} else {
+			[[NSUserDefaults standardUserDefaults] setBool:NO forKey:VERBATM_ALBUM_PREVIOUSLY_CREATED_KEY];
 		}
 	}];
 }
@@ -161,6 +163,9 @@
 			self.verbatmAlbum = album;
 		}
 	}];
+	if (self.verbatmAlbum == nil) {
+		[self createVerbatmAlbum];
+	}
 }
 
 #pragma mark - Start and Stop Session -

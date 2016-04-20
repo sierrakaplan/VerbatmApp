@@ -1,8 +1,8 @@
 source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '9.0'
 use_frameworks!
 pod 'PromiseKit'
 pod 'Fabric'
 pod 'Crashlytics'
-pod 'Optimizely-iOS-SDK'
 
 link_with 'Verbatm'

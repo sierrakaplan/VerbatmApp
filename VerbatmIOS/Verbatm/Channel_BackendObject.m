@@ -37,6 +37,7 @@
 	if(ourUser){
 		PFObject * newChannelObject = [PFObject objectWithClassName:CHANNEL_PFCLASS_KEY];
 		[newChannelObject setObject:channelName forKey:CHANNEL_NAME_KEY];
+		[newChannelObject setObject:[NSNumber numberWithInteger:0] forKey:CHANNEL_NUM_FOLLOWS];
 		[newChannelObject setObject:[PFUser currentUser] forKey:CHANNEL_CREATOR_KEY];
 		[newChannelObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
 			if(succeeded){
@@ -52,7 +53,7 @@
 
 //returns channel when we create a new one
 -(void) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel
-				  withCompletionBlock:(void(^)(PFObject *))block {
+			 withCompletionBlock:(void(^)(PFObject *))block {
 	if(channel.parseChannelObject){
 		block ([self createPostFromPinchViews:pinchViews andChannel:channel]);
 	} else {
@@ -69,67 +70,29 @@
 	return [newPost createPostFromPinchViews:pinchViews toChannel:channel];
 }
 
-+ (void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock{
-	if(user) {
-		PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-		[userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
-		[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-															 NSError * _Nullable error) {
-			NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
-			if(objects && !error){
-				for(PFObject * parseChannelObject in objects){
-
-					NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
-					// get number of follows from follow objects
-					Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-																	andParseChannelObject:parseChannelObject
-																		andChannelCreator:user];
-					[finalChannelObjects addObject:verbatmChannelObject];
-				}
-			}
-			completionBlock(finalChannelObjects);
-		}];
-	} else {
-		completionBlock([[NSMutableArray alloc] init]);
++ (void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
+	if (!user) {
+		completionBlock (nil);
+		return;
 	}
-}
 
-//gets all the channels on V except the provided user.
-//often this will be the current user
-+(void) getAllChannelsButNoneForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock {
-	//First get all the people who have blocked this user and do not include their channels
-	PFQuery *blockQuery = [PFQuery queryWithClassName:BLOCK_PFCLASS_KEY];
-	[blockQuery whereKey:BLOCK_USER_BLOCKED_KEY equalTo:user];
-	[blockQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable blocks, NSError * _Nullable error) {
-		NSMutableArray *usersWhoHaveBlockedUser = [[NSMutableArray alloc] init];
-		for (PFObject *block in blocks) {
-			[usersWhoHaveBlockedUser addObject:[block valueForKey:BLOCK_USER_BLOCKING_KEY]];
-		}
-
-		PFQuery *allChannelsQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-		[allChannelsQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable channels, NSError * _Nullable error) {
-			NSMutableArray * finalChannels = [[NSMutableArray alloc] init];
-			if(channels && channels.count){
-				for(PFObject * parseChannelObject in channels){
-					PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-					if(channelCreator != [PFUser currentUser] && ![usersWhoHaveBlockedUser containsObject:channelCreator]){
-						NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
-						Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-																		andParseChannelObject:parseChannelObject
-																			andChannelCreator:user];
-						[finalChannels addObject:verbatmChannelObject];
-					}
-				}
+	PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+	[userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
+	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+														 NSError * _Nullable error) {
+		NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
+		if(objects && !error){
+			for(PFObject * parseChannelObject in objects){
+				NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+				// get number of follows from follow objects
+				Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+																andParseChannelObject:parseChannelObject
+																	andChannelCreator:user];
+				[finalChannelObjects addObject:verbatmChannelObject];
 			}
-			completionBlock(finalChannels);
-		}];
+		}
+		completionBlock(finalChannelObjects);
 	}];
-}
-
-
-//gets all channels on Verbatm including the current user
-+(void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock{
-
 }
 
 @end

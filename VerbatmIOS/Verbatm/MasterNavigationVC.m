@@ -11,6 +11,7 @@
 #import "CustomTabBarController.h"
 #import "ContentDevVC.h"
 
+#import "DiscoverVC.h"
 #import "Durations.h"
 
 #import "FeedVC.h"
@@ -42,16 +43,16 @@
 #pragma mark - Tab Bar Controller -
 @property (weak, nonatomic) IBOutlet UIView *tabBarControllerContainerView;
 @property (strong, nonatomic) CustomTabBarController* tabBarController;
+@property (nonatomic) BOOL tabBarHidden;
 @property (nonatomic) CGRect tabBarFrameOnScreen;
 @property (nonatomic) CGRect tabBarFrameOffScreen;
 
 #pragma mark View Controllers in tab bar Controller
 
-@property (strong,nonatomic) ProfileVC* profileVC;
-@property (strong,nonatomic) FeedVC * feedVC;
+@property (strong,nonatomic) ProfileVC *profileVC;
+@property (strong,nonatomic) FeedVC *feedVC;
+@property (strong,nonatomic) DiscoverVC *discoverVC;
 
-
-@property (nonatomic) UserAndChannelListsTVC * channelListView;
 
 #define ANIMATION_NOTIFICATION_DURATION 0.5
 #define TIME_UNTIL_ANIMATION_CLEAR 1.5
@@ -86,6 +87,18 @@
 
 -(void)viewDidDisappear:(BOOL)animated {
 	[super viewDidDisappear:animated];
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return self.tabBarHidden;
+}
+
+- (UIStatusBarStyle)preferredStatusBarStyle {
+	return UIStatusBarStyleLightContent;
+}
+
+- (UIStatusBarAnimation) preferredStatusBarUpdateAnimation {
+	return UIStatusBarAnimationSlide;
 }
 
 -(void) registerForNotifications {
@@ -138,7 +151,7 @@
     deadView.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"" image:deadViewTabImage selectedImage:deadViewTabImage];
     deadView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 
-    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.channelListView];
+    self.tabBarController.viewControllers = @[self.profileVC, deadView, self.feedVC, self.discoverVC];
     //add adk button to tab bar
 	[self addTabBarCenterButtonOverDeadView];
     self.tabBarController.selectedViewController = self.feedVC;
@@ -183,7 +196,6 @@
 
 //the view controllers that will be tabbed
 -(void)createViewControllers {
-
     UIImage * searchUnselected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
                                               imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                 scaledToSize:CGSizeMake(30.f, 30.f)];
@@ -191,35 +203,36 @@
     UIImage * searchSelected =  [self imageWithImage:[[UIImage imageNamed:DISCOVER_TAB_BAR_ICON]
                                                       imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal]
                                         scaledToSize:CGSizeMake(30.f, 30.f)];
-    
-    self.channelListView = [[UserAndChannelListsTVC alloc] init];
-    self.channelListView.tabBarItem = [[UITabBarItem alloc] initWithTitle:nil
-                                                                    image:searchUnselected
-                                                            selectedImage:searchSelected];
-    
-    [self.channelListView presentAllVerbatmChannels];
-    
-    self.channelListView.listDelegate = self;
+
+	//todo: delete references to channel list view
+//    self.channelListView = [[UserAndChannelListsTVC alloc] init];
+//    [self.channelListView presentAllVerbatmChannels];
+//    self.channelListView.listDelegate = self;
+	self.discoverVC = [self.storyboard instantiateViewControllerWithIdentifier:DISCOVER_VC_ID];
 
     self.profileVC = [self.storyboard instantiateViewControllerWithIdentifier:PROFILE_VC_ID];
-    
-    self.profileVC.delegate = self;
+	self.profileVC.delegate = self;
     self.profileVC.userOfProfile = [PFUser currentUser];
     self.profileVC.isCurrentUserProfile = YES;
+	self.profileVC.isProfileTab = YES;
+
     self.feedVC = [self.storyboard instantiateViewControllerWithIdentifier:FEED_VC_ID];
     self.feedVC.delegate = self;
 
 	self.profileVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:PROFILE_NAV_ICON]
-																	
 													  selectedImage:[UIImage imageNamed:PROFILE_NAV_ICON]];
 	self.feedVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
 															  image:[UIImage imageNamed:HOME_NAV_ICON]
 													  selectedImage:[UIImage imageNamed:HOME_NAV_ICON]];
+	self.discoverVC.tabBarItem = [[UITabBarItem alloc] initWithTitle:@""
+															  image:searchUnselected
+													  selectedImage:searchSelected];
 
     // images need to be centered this way for some reason
 	self.profileVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
-    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+//    self.channelListView.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
+	self.discoverVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 	self.feedVC.tabBarItem.imageInsets = UIEdgeInsetsMake(5.f, 0.f, -5.f, 0.f);
 }
 
@@ -253,6 +266,9 @@
 }
 
 -(void) revealADK {
+	[self.profileVC freeMemory];
+	[self.discoverVC freeMemory];
+	[self.feedVC freeMemory];
 	[[Analytics getSharedInstance] newADKSession];
 	[self performSegueWithIdentifier:ADK_SEGUE sender:self];
 }
@@ -261,8 +277,6 @@
 -(void)userHasSignedOutNotification:(NSNotification *) notification{
     [self bringUpLogin];
 }
-
-
 
 #pragma mark - Handle Login -
 
@@ -276,6 +290,9 @@
 - (IBAction) unwindToMasterNavVC: (UIStoryboardSegue *)segue {
 	if ([segue.identifier  isEqualToString: UNWIND_SEGUE_FROM_LOGIN_TO_MASTER]) {
 	} else if ([segue.identifier isEqualToString: UNWIND_SEGUE_FROM_ADK_TO_MASTER]) {
+		//todo: figure out how to free memory
+//		[self.profileVC addPostListVC];
+//		[self.feedVC addPostListVC];
 		if ([[PublishingProgressManager sharedInstance] currentlyPublishing]) {
 			[self.tabBarController setSelectedViewController:self.profileVC];
 			[self.profileVC showPublishingProgress];
@@ -295,22 +312,18 @@
 
 -(void) showTabBar:(BOOL)show {
 	if (show) {
+		self.tabBarHidden = NO;
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBarController.tabBar.frame = self.tabBarFrameOnScreen;
 		}];
 	} else {
+		self.tabBarHidden = YES;
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+			[self setNeedsStatusBarAppearanceUpdate];
 			self.tabBarController.tabBar.frame = self.tabBarFrameOffScreen;
 		}];
 	}
-}
-
--(void) shareButtonSelectedForPostObject: (PFObject* ) post {
-	//todo:
-}
-
--(void) likeButtonLiked:(BOOL) liked forPostObject: (PFObject* ) post {
-	//todo:
 }
 
 //show the list of followers of the current user
@@ -320,10 +333,9 @@
     newList.listDelegate = self;
     
     [self presentViewController:newList animated:YES completion:^{
-        
     }];
-    
 }
+
 //show list of people the user follows
 -(void)presentWhoIFollowMyID:(id) userID {
     

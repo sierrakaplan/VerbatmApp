@@ -54,11 +54,6 @@
 		self.currentlyPublishing = YES;
 	}
 
-	//let the pv's know they are being published so they can releae excess media
-	for(PinchView * pv in pinchViews){
-		[pv publishingPinchView];
-	}
-
 	self.channelManager = [[Channel_BackendObject alloc] init];
 	[self countMediaContentFromPinchViews:pinchViews];
 	if(!channel.parseChannelObject) {
@@ -67,7 +62,6 @@
 	[self.channelManager createPostFromPinchViews:pinchViews
 										toChannel:channel
 							  withCompletionBlock:^(PFObject *parsePostObject) {
-
 								  if (!parsePostObject) {
 									  self.newChannelCreated = NO;
 									  block (NO);
@@ -75,6 +69,10 @@
 								  }
 								  self.currentParsePostObject = parsePostObject;
 								  self.currentPublishingChannel = channel;
+								  //todo let the pv's know they are being published so they can releae excess media
+//								  for(PinchView * pinchView in pinchViews){
+//									  [pinchView publishingPinchView];
+//								  }
 								  block(YES);
 							  }];
 }
@@ -108,8 +106,8 @@
 
 -(void)mediaSavingProgressed:(int64_t) newProgress {
 	self.progressAccountant.completedUnitCount += newProgress;
-	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
-		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
+//	NSLog(@"Media saving progressed %lld new units to completed %lld units of total %lld units", newProgress,
+//		  self.progressAccountant.completedUnitCount, self.progressAccountant.totalUnitCount);
 	if (self.progressAccountant.completedUnitCount >= self.progressAccountant.totalUnitCount
 		&& self.currentlyPublishing && self.currentParsePostObject) {
 		[self postPublishedSuccessfully];

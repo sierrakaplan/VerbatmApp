@@ -74,7 +74,7 @@
                                thumbnail:(UIImage *) thumbnail andPageObject:(PFObject *)pageObject{
     if(!self.mediaPublisher)self.mediaPublisher = [[PostPublisher alloc] init];
     
-    [self.mediaPublisher storeImage:thumbnail withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
+    [self.mediaPublisher storeImage:UIImagePNGRepresentation(thumbnail) withCompletionBlock:^(GTLVerbatmAppImage * gtlImage) {
         NSString * blobStoreImageUrl = gtlImage.servingUrl;
         PFObject * newVideoObj = [PFObject objectWithClassName:VIDEO_PFCLASS_KEY];
         [newVideoObj setObject:blobStoreVideoUrl forKey:BLOB_STORE_URL];
@@ -97,7 +97,7 @@
     
     [video findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
-        if(objects && !error){
+        if(objects && objects.count && !error){
             block(objects[0]);
         } else {
 			block(nil);
@@ -111,8 +111,8 @@
 	[videosQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													NSError * _Nullable error) {
 		if(objects && !error){
-			for (PFObject *photoObj in objects) {
-				[photoObj deleteInBackground];
+			for (PFObject *videoObj in objects) {
+				[videoObj deleteInBackground];
 			}
 			block(YES);
 			return;

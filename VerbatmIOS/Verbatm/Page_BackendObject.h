@@ -14,6 +14,6 @@
 -(void)savePageWithIndex:(NSInteger) pageIndex andPinchView:(PinchView *) pinchView andPost:(PFObject *) post;
 +(void)getPagesFromPost:(PFObject *) post andCompletionBlock:(void(^)(NSArray *))block;
 
-+(void) deletePagesInPost:(PFObject *)post withCompletionBlock:(void(^)(BOOL))block;
++(void)deletePagesInPost:(PFObject *)post;
 
 @end

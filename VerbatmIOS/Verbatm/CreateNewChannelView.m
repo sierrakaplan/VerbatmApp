@@ -64,7 +64,7 @@
     
     [self.channelNameField setFont: entryTextFont];
     
-    self.channelNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString: @"Name your channel!" attributes:@{NSForegroundColorAttributeName: color,  NSFontAttributeName:placeHolderTextFont }];
+    self.channelNameField.attributedPlaceholder = [[NSAttributedString alloc] initWithString: @"Name your blog!" attributes:@{NSForegroundColorAttributeName: color,  NSFontAttributeName:placeHolderTextFont }];
     self.channelNameField.returnKeyType = UIReturnKeyDone;
     [self addSubview:self.channelNameField];
     [self.channelNameField becomeFirstResponder];

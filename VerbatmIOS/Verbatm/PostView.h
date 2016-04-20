@@ -21,16 +21,24 @@
 @property (nonatomic) id<PostViewDelegate> delegate;
 
 // stores pov info associated with this view
--(instancetype)initWithFrame:(CGRect)frame andPostParseObject:(PFObject*) povObject;
+-(instancetype)initWithFrame:(CGRect)frame andPostChannelActivityObject:(PFObject*) postObject
+					   small:(BOOL) small;
 
--(void) renderPages: (NSArray *) pages;
+// Displays post from an array of PageViewingExperiences
+-(void) renderPageViews: (NSArray *) pages;
 
--(void) renderPostFromPages: (NSArray *) pages;
+// Displays post from an array of page PFObjects
+-(void) renderPostFromPageObjects: (NSArray *) pages;
 
 -(void) clearPost;
 
-//adds a down arrow to the cover photo
--(void) addDownArrowButton;
+//Displays creator and channel at the top
+-(void) addCreatorInfo;
+
+//called by presenter of the POVView with access to the postinformation
+-(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares
+								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
+									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete;
 
 //Scrolls POV to a specific page
 -(void) scrollToPageAtIndex:(NSInteger) pageIndex;
@@ -38,18 +46,16 @@
 //informs the POV when it's visible
 -(void) postOnScreen;
 
+-(void) preparepostToBePresented;
+
 -(void) postOffScreen;
 
-//called by presenter of the POVView with access to the postinformation
--(void)createLikeAndShareBarWithNumberOfLikes:(NSNumber *) numLikes numberOfShares:(NSNumber *) numShares
-								numberOfPages:(NSNumber *) numPages andStartingPageNumber:(NSNumber *) startPage
-									  startUp:(BOOL)up withDeleteButton: (BOOL)withDelete;
+-(void)muteAllVideos:(BOOL) shouldMute;
 
--(void) addCreatorInfo;
-
+// presents media only for the page on screen
 -(void) presentMediaContent;
 
-//moves the 
+//moves the like share bar up and down to be above tab bar when tab bar is showing
 -(void) shiftLikeShareBarDown:(BOOL) down;
 
 @end

@@ -63,28 +63,6 @@
 }
 
 #pragma mark - Prepare Video Asset -
-//
-//-(void) prepareVideoFromArray: (NSArray*) videoList {
-//	self.videoLoading = YES;
-//	if ([[videoList firstObject] isKindOfClass:[NSURL class]]) {
-//		NSURL *urlKey = [videoList firstObject];
-//		if([[VideoDownloadManager sharedInstance] containsEntryForUrl:urlKey]) {
-//			AVPlayerItem *playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl:urlKey.absoluteString];
-//			[self prepareVideoFromPlayerItem:playerItem];
-//			return;
-//		}
-//	}
-//	[self fuseVideoArray: videoList];
-//}
-
-//-(void) fuseVideoArray: (NSArray*) videoList {
-//	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
-//		[self fuseAssets: videoList];
-//		dispatch_async(dispatch_get_main_queue(), ^{
-//			[self prepareVideoFromAsset: self.fusedVideoAsset];
-//		});
-//	});
-//}
 
 -(void)prepareVideoFromAsset: (AVAsset*) asset{
 	if (!asset) return;
@@ -93,7 +71,21 @@
 		self.videoLoading = YES;
 	}
 
-	[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+//	NSArray *keys = @[@"playable",@"tracks",@"duration"];
+//
+//	[asset loadValuesAsynchronouslyForKeys:keys completionHandler:^() {
+//		[self prepareVideoFromPlayerItem:[AVPlayerItem playerItemWithAsset:asset]];
+//	}];
+
+	dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0ul);
+
+	dispatch_async(queue, ^{
+		AVPlayerItem *item = [AVPlayerItem playerItemWithAsset:asset];
+
+		dispatch_sync(dispatch_get_main_queue(), ^{
+			[self prepareVideoFromPlayerItem:item];
+		});
+	});
 }
 
 -(void)prepareVideoFromURL: (NSURL*) url{
@@ -106,8 +98,11 @@
 	AVPlayerItem *playerItem;
 	if([[VideoDownloadManager sharedInstance] containsEntryForUrl:url]){
 		playerItem = [[VideoDownloadManager sharedInstance] getVideoForUrl: url.absoluteString];
-	}else{
-		playerItem = [AVPlayerItem playerItemWithURL: url];
+	}else {
+		//todo: test this
+		[self prepareVideoFromAsset:[AVAsset assetWithURL: url]];
+		return;
+//		playerItem = [AVPlayerItem playerItemWithURL: url];
 	}
 
 	[self prepareVideoFromPlayerItem: playerItem];
@@ -130,10 +125,10 @@
 												 name:AVPlayerItemDidPlayToEndTimeNotification
 											   object:self.playerItem];
 
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(playerItemDidStall:)
-												 name:AVPlayerItemPlaybackStalledNotification
-											   object:self.playerItem];
+//	[[NSNotificationCenter defaultCenter] addObserver:self
+//											 selector:@selector(playerItemDidStall:)
+//												 name:AVPlayerItemPlaybackStalledNotification
+//											   object:self.playerItem];
 }
 
 //this function should be called on the main thread
@@ -144,6 +139,7 @@
 	if (self.playerItem == NULL) {
 
 	}
+	//todo background thread
 	self.player = [AVPlayer playerWithPlayerItem:self.playerItem];
 	self.player.actionAtItemEnd = AVPlayerActionAtItemEndNone;
 	// Create an AVPlayerLayer using the player
@@ -197,63 +193,15 @@
 				self.videoLoading = NO;
 			}
 			if (self.shouldPlayOnLoad) [self playVideo];
+			self.shouldPlayOnLoad = NO;
 		} else {
 			[self.customActivityIndicator startCustomActivityIndicator];
 			self.videoLoading = YES;
+			self.shouldPlayOnLoad = YES;
 			NSLog(@"play back won't keep up");
 		}
 	}
 }
-
-
-#pragma mark - Fuse video assets into one -
-
-//-(void) fuseVideoArray: (NSArray*) videoList {
-//	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0), ^(void){
-//		[self fuseAssets: videoList];
-//		dispatch_async(dispatch_get_main_queue(), ^{
-//			[self prepareVideoFromAsset: self.fusedVideoAsset];
-//		});
-//	});
-//}
-//
-////This code fuses the video assets into a single video that plays the videos one after the other.
-////It accepts both avassets and urls which it converts into assets
-//-(AVMutableComposition*) fuseAssets:(NSArray*)videoList {
-//	if (self.fusedVideoAsset) return self.fusedVideoAsset;
-//	self.fusedVideoAsset = [AVMutableComposition composition]; //create a composition to hold the joined assets
-//	AVMutableCompositionTrack* videoTrack = [self.fusedVideoAsset addMutableTrackWithMediaType:AVMediaTypeVideo
-//																			  preferredTrackID:kCMPersistentTrackID_Invalid];
-//	AVMutableCompositionTrack* audioTrack = [self.fusedVideoAsset addMutableTrackWithMediaType:AVMediaTypeAudio
-//																			  preferredTrackID:kCMPersistentTrackID_Invalid];
-//	CMTime nextClipStartTime = kCMTimeZero;
-//	NSError* error;
-//	for(id asset in videoList) {
-//		AVURLAsset * videoAsset;
-//		if([asset isKindOfClass:[NSURL class]]) {
-//			videoAsset = [AVURLAsset assetWithURL:asset];
-//		} else {
-//			videoAsset = asset;
-//		}
-//		NSArray * videoTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeVideo];
-//		if(!videoTrackArray.count) continue;
-//
-//		AVAssetTrack* currentVideoTrack = [videoTrackArray objectAtIndex:0];
-//		[videoTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentVideoTrack atTime:nextClipStartTime error: &error];
-//		videoTrack.preferredTransform = currentVideoTrack.preferredTransform;
-//
-//		NSArray * audioTrackArray = [videoAsset tracksWithMediaType:AVMediaTypeAudio];
-//		if(!audioTrackArray.count) continue;
-//		AVAssetTrack* currentAudioTrack = [audioTrackArray objectAtIndex:0];
-//		audioTrack.preferredTransform = currentAudioTrack.preferredTransform;
-//		[audioTrack insertTimeRange: CMTimeRangeMake(kCMTimeZero, videoAsset.duration) ofTrack:currentAudioTrack atTime:nextClipStartTime error:&error];
-//		nextClipStartTime = CMTimeAdd(nextClipStartTime, videoAsset.duration);
-//	}
-//	if (error) {
-//		NSLog(@"Error fusing video assets: %@", error.description);
-//	}
-//	return self.fusedVideoAsset;
-//}
 
 #pragma mark - Play video -
 
@@ -262,7 +210,6 @@
 		[self.player play];
 		self.isVideoPlaying = YES;
 	} else {
-		NSLog(@"Called play video but video player unprepared");
 		self.shouldPlayOnLoad = YES;
 	}
 }
@@ -273,12 +220,6 @@
 	if (self.repeatsVideo) {
 		[playerItem seekToTime:kCMTimeZero];
 	}
-}
-
-// Telling video to play when stalled should not be necessary but seems to be
--(void)playerItemDidStall:(NSNotification*)notification {
-	NSLog(@"Video stalled");
-	//	if(self.isVideoPlaying) [self playVideo];
 }
 
 // Pauses player
@@ -295,8 +236,8 @@
 -(void) muteVideo: (BOOL)mute {
 	if(self.player) {
 		[self.player setMuted:mute];
-		self.isMuted = mute;
 	}
+	self.isMuted = mute;
 }
 
 -(void)fastForwardVideoWithRate: (NSInteger) rate{
@@ -327,9 +268,10 @@
 		}
 		@autoreleasepool {
 			[self removePlayerItemObservers];
-			self.layer.sublayers = nil;
+			for (CALayer *sublayer in self.layer.sublayers) {
+				[sublayer removeFromSuperlayer];
+			}
 			[self.playerLayer removeFromSuperlayer];
-			self.layer.sublayers = nil;
 			self.playerItem = nil;
 			self.player = nil;
 			self.playerLayer = nil;
@@ -352,11 +294,12 @@
 
 #pragma mark - Lazy Instantation -
 
--(LoadingIndicator *)customActivityIndicator{
+-(LoadingIndicator *) customActivityIndicator{
 	if(!_customActivityIndicator){
-		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:self.center];
+		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:self.center andImage:[UIImage imageNamed:VIDEO_LOADING_ICON]];
 		[self addSubview:_customActivityIndicator];
 	}
+	[self bringSubviewToFront:_customActivityIndicator];
 	return _customActivityIndicator;
 }
 

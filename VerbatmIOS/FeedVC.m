@@ -63,9 +63,15 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-
 }
 
+-(void) freeMemory {
+	//todo: figure out how to free memory
+//	[self.postListVC stopAllVideoContent];
+//	[self.postListVC.view removeFromSuperview];
+//	[self.postListVC clearOldPosts];
+//	self.postListVC = nil;
+}
 
 -(void)checkIntroNotification{
 	if(![[UserSetupParameters sharedInstance] isFeed_InstructionShown]){
@@ -110,7 +116,6 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(void) shareOptionSelectedForParsePostObject: (PFObject* ) post{
 	[self presentShareSelectionViewStartOnChannels:YES];
-	[self.delegate shareButtonSelectedForPostObject: post];
 }
 
 #pragma mark -POVListSVController-
@@ -122,11 +127,11 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 -(void)channelSelected:(Channel *) channel{
 	ProfileVC * userProfile = [[ProfileVC alloc] init];
 	userProfile.isCurrentUserProfile = NO;
+	userProfile.isProfileTab = NO;
 	userProfile.userOfProfile = channel.channelCreator;
 	userProfile.startChannel = channel;
 	[self presentViewController:userProfile animated:YES completion:^{
 	}];
-
 }
 
 -(void)registerForNotifications{
@@ -146,6 +151,10 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 
 -(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
 	return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+	return  (![touch.view isKindOfClass:[Intro_Instruction_Notification_View class]]);
 }
 
 -(void)clearScreen:(UIGestureRecognizer *) tapGesture {
@@ -230,8 +239,11 @@ Intro_Notification_Delegate, UIGestureRecognizerDelegate>
 }
 
 -(void) userLostInternetConnection {
-	UIAlertView * alert = [[UIAlertView alloc] initWithTitle:@"No Network. Please make sure you're connected WiFi or turn on data for this app in Settings." message:@"" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-	[alert show];
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"No Network" message:@"Please make sure you're connected WiFi or turn on data for this app in Settings." preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:defaultAction];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
 @end

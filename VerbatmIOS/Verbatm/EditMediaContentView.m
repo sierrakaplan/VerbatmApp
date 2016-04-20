@@ -31,7 +31,7 @@
 @property (nonatomic) UIImageView * swipeInstructionView;
 
 #pragma mark FilteredPhotos
-@property (nonatomic, strong) NSMutableArray * filteredImages;
+@property (nonatomic, strong) NSArray * filteredImages;
 @property (nonatomic) NSInteger imageIndex;
 @property (nonatomic, strong) UIButton * textCreationButton;
 
@@ -205,7 +205,7 @@ andTextAlignment:(NSTextAlignment)textAlignment
 	[self.videoView prepareVideoFromAsset:videoAsset];
 }
 
--(void)displayImages: (NSMutableArray*) filteredImages atIndex:(NSInteger)index {
+-(void)displayImages: (NSArray*) filteredImages atIndex:(NSInteger)index {
 	self.imageIndex = index;
 	self.textAndImageView = [[TextOverMediaView alloc] initWithFrame:self.bounds
 															andImage:filteredImages[index]];
@@ -221,6 +221,11 @@ andTextAlignment:(NSTextAlignment)textAlignment
     }
 }
 
+//todo: bring back filters?
+-(void)changeImageTo: (UIImage *) image {
+	self.filteredImages = @[image];
+	[self.textAndImageView changeImageTo: image];
+}
 
 -(void)presentUserInstructionForFilterSwipe {
     

@@ -14,6 +14,7 @@
 #import "TextOverMediaView.h"
 #import "UITextView+Utilities.h"
 #import "UIImage+ImageEffectsAndTransforms.h"
+#import "UtilityFunctions.h"
 
 @interface TextOverMediaView ()
 
@@ -35,19 +36,46 @@
 
 @implementation TextOverMediaView
 
--(instancetype) initWithFrame:(CGRect)frame andImage:(UIImage *)image {
-	self = [super initWithFrame:frame];
+-(instancetype) initWithFrame:(CGRect)frame andImageURL:(NSURL*)imageUrl
+			   withSmallImage:(BOOL) small {
+	self = [self initWithFrame:frame];
 	if (self) {
-		[self revertToDefaultTextSettings];
-		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
-		[self setImageViewWithImage:image];
+		if (small) {
+			NSString * imageUri = [imageUrl absoluteString];
+			NSString * suffix = @"=s0";
+			if ([imageUri hasSuffix:suffix] ) {
+				imageUri = [imageUri substringWithRange:NSMakeRange(0, imageUri.length-suffix.length)];
+				imageUrl = [NSURL URLWithString:imageUri];
+			};
+		}
+
+		AnyPromise *loadData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
+		loadData.then(^(NSData* imageData) {
+			UIImage *image = [UIImage imageWithData:imageData];
+			CGSize imageSize = CGSizeMake(self.bounds.size.height*(image.size.width/image.size.height)*1.5f, self.bounds.size.height*1.5f);
+			image = [image scaleImageToSize: imageSize];
+			[self.imageView setImage: image];
+		});
 	}
 	return self;
 }
 
--(void) setImageViewWithImage:(UIImage*) image {
-	[self.imageView setImage: image];
-	[self addSubview:self.imageView];
+-(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
+	self = [self initWithFrame: frame];
+	if (self) {
+		[self.imageView setImage:image];
+	}
+	return self;
+}
+
+-(instancetype) initWithFrame:(CGRect)frame {
+	self = [super initWithFrame:frame];
+	if (self) {
+		[self revertToDefaultTextSettings];
+		[self setBackgroundColor:[UIColor PAGE_BACKGROUND_COLOR]];
+		[self addSubview:self.imageView];
+	}
+	return self;
 }
 
 /* Returns image view with image centered */
@@ -111,10 +139,10 @@ andTextAlignment:(NSTextAlignment) textAlignment
 	if (newFrame.origin.y > 0.f
 		&& ((newFrame.origin.y + newFrame.size.height)
 			< (self.frame.size.height - (CIRCLE_RADIUS * 2)))) {
-		self.textView.frame = newFrame;
-		self.textYPosition = newFrame.origin.y;
-		return YES;
-	}
+			self.textView.frame = newFrame;
+			self.textYPosition = newFrame.origin.y;
+			return YES;
+		}
 	return NO;
 }
 
@@ -176,7 +204,7 @@ andTextAlignment:(NSTextAlignment) textAlignment
 
 -(BOOL) pointInTextView: (CGPoint)point withBuffer: (CGFloat)buffer {
 	return point.y > self.textView.frame.origin.y - buffer
-		&& point.y < self.textView.frame.origin.y + self.textView.frame.size.height + buffer;
+	&& point.y < self.textView.frame.origin.y + self.textView.frame.size.height + buffer;
 }
 
 #pragma mark - Change text properties -

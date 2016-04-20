@@ -15,35 +15,30 @@
 
 +(void)currentUserLikePost:(PFObject *) postParseObject{
 
-    [postParseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded){
-            PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
-            [newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
-            [newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
-            [newLikeObject saveInBackground];
-        }
-    }];
-   
+	[postParseObject incrementKey:POST_NUM_LIKES];
+	[postParseObject saveInBackground];
+	PFObject *newLikeObject = [PFObject objectWithClassName:LIKE_PFCLASS_KEY];
+	[newLikeObject setObject:[PFUser currentUser]forKey:LIKE_USER_KEY];
+	[newLikeObject setObject:postParseObject forKey:LIKE_POST_LIKED_KEY];
+	[newLikeObject saveInBackground];
 }
 
 + (void)currentUserStopLikingPost:(PFObject *) postParseObject{
-    
-    [postParseObject saveInBackgroundWithBlock:^(BOOL succeeded, NSError * _Nullable error) {
-        if(succeeded){
-            PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
-            [userChannelQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
-            [userChannelQuery whereKey:LIKE_USER_KEY equalTo:[PFUser currentUser]];
-            [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-                                                                 NSError * _Nullable error) {
-                if(objects && !error) {
-                    if(objects.count){
-                        PFObject *likeObject = [objects firstObject];
-                        [likeObject deleteInBackground];
-                    }
-                }
-            }];
-        }
-    }];
+
+	[postParseObject incrementKey:POST_NUM_LIKES byAmount:[NSNumber numberWithInteger:-1]];
+	[postParseObject saveInBackground];
+	PFQuery * userChannelQuery = [PFQuery queryWithClassName:LIKE_PFCLASS_KEY];
+	[userChannelQuery whereKey:LIKE_POST_LIKED_KEY equalTo:postParseObject];
+	[userChannelQuery whereKey:LIKE_USER_KEY equalTo:[PFUser currentUser]];
+	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+														 NSError * _Nullable error) {
+		if(objects && !error) {
+			if(objects.count){
+				PFObject *likeObject = [objects firstObject];
+				[likeObject deleteInBackground];
+			}
+		}
+	}];
 }
 
 //tests to see if the logged in user likes this post
@@ -84,6 +79,9 @@
 	[likesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													NSError * _Nullable error) {
 		if(objects && !error) {
+			for (PFObject *likeObject in objects) {
+				[likeObject deleteInBackground];
+			}
 			block (YES);
 			return;
 		}

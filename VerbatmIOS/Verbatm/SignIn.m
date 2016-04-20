@@ -46,8 +46,6 @@
 	[self registerForNotifications];
 	[self addFacebookLoginButton];
     self.loginFirstTimeDone = NO;
-    
-    
 }
 
 -(void)viewWillAppear:(BOOL)animated {
@@ -60,6 +58,10 @@
 
 -(void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+}
+
+-(BOOL) prefersStatusBarHidden {
+	return YES;
 }
 
 -(void) centerViews {
@@ -159,10 +161,12 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 -(void)errorInSignInAnimation:(NSString*) errorMessage {
     NSLog(@"Error: \"%@\"", errorMessage);
-	
-    UIAlertView * alert = [[UIAlertView alloc] initWithTitle:errorMessage message:@""
-                                                    delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-    [alert show];
+	UIAlertController * newAlert = [UIAlertController alertControllerWithTitle:@"Error signing in" message:errorMessage
+																preferredStyle:UIAlertControllerStyleAlert];
+	UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Ok" style:UIAlertActionStyleDefault
+													handler:^(UIAlertAction * action) {}];
+	[newAlert addAction:defaultAction];
+	[self presentViewController:newAlert animated:YES completion:nil];
 }
 
 -(void) removeAnimationView {
@@ -196,9 +200,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     if([vc isKindOfClass:[TermsAndConditionsVC class]]){
         ((TermsAndConditionsVC *)vc).userMustAcceptTerms = YES;
     }
-    
-    
-	// Pass the selected object to the new view controller.
 }
 
 #pragma mark - Lazy Instantiation -

@@ -23,7 +23,7 @@
 
 #import "QuartzCore/QuartzCore.h"
 
-@interface UserAndChannelListsTVC ()<CustomNavigationBarDelegate>
+@interface UserAndChannelListsTVC () <CustomNavigationBarDelegate>
 
 @property (nonatomic) CustomNavigationBar * navBar;
 
@@ -63,7 +63,6 @@
     self.tableView.scrollIndicatorInsets = inset;
 }
 
-
 -(void)addRefreshFeature{
     UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
     [refreshControl addTarget:self action:@selector(refresh:) forControlEvents:UIControlEventValueChanged];
@@ -77,7 +76,6 @@
     
     [refreshControl endRefreshing];
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -114,6 +112,7 @@
     
     ProfileVC *  userProfile = [[ProfileVC alloc] init];
     userProfile.isCurrentUserProfile = NO;
+	userProfile.isProfileTab = NO;
     userProfile.userOfProfile = user;
     userProfile.startChannel = startChannel;
     
@@ -144,21 +143,20 @@
     //Start to download a list of users who follow this particular user then reload the table
 }
 
+/* NOT IN USE */
 //presents every channel in verbatm
 -(void)presentAllVerbatmChannels{
     self.presentAllChannels = YES;
     
-    [Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^
-     (NSMutableArray * channels) {
-         if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
-         [self.channelsToDisplay addObjectsFromArray:channels];
-         dispatch_async(dispatch_get_main_queue(), ^{
-             [self.tableView reloadData];
-         });
-     }];
+//    [Channel_BackendObject getAllChannelsButNoneForUser:[PFUser currentUser] withCompletionBlock:^
+//     (NSMutableArray * channels) {
+//         if(self.channelsToDisplay.count)[self.channelsToDisplay removeAllObjects];
+//         [self.channelsToDisplay addObjectsFromArray:channels];
+//         dispatch_async(dispatch_get_main_queue(), ^{
+//             [self.tableView reloadData];
+//         });
+//     }];
 }
-
-
 
 //Gives us the channels to display and if we should show the users that follow them then
 -(void)presentChannelsForUser:(id) userId shouldDisplayFollowers:(BOOL) displayFollowers {
@@ -172,11 +170,8 @@
     //}
 }
 
-
 -(void)setTableViewHeader{
-    if(self.presentAllChannels){
-        
-    }else {
+    if (!self.presentAllChannels) {
         //temporary list view and should be removable
         CGRect navBarFrame = CGRectMake(0, 0, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
         self.navBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:ADK_NAV_BAR_COLOR];
@@ -227,9 +222,8 @@
     return (self.channelsToDisplay.count + self.presentAllChannels);
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSString *identifier = [NSString stringWithFormat:@"cell,%ld", indexPath.row];
+    NSString *identifier = [NSString stringWithFormat:@"cell,%ld", (long)indexPath.row];
     ChannelOrUsernameCV *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     
     if(cell == nil) {

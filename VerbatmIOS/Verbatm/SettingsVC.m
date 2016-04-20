@@ -45,6 +45,11 @@ MFMailComposeViewControllerDelegate,UITextFieldDelegate>
     [self positionButtonViews];
 }
 
+-(BOOL) prefersStatusBarHidden {
+	//todo: add status bar?
+	return YES;
+}
+
 -(void)createNavigationBar{
     CGRect navBarFrame = CGRectMake(0.f, 0.f, self.view.frame.size.width, CUSTOM_NAV_BAR_HEIGHT);
     self.navigationBar = [[CustomNavigationBar alloc] initWithFrame:navBarFrame andBackgroundColor:SETTINGS_NAV_BAR_COLOR];

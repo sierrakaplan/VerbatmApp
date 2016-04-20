@@ -11,13 +11,15 @@
 @protocol FeedVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;
--(void) shareButtonSelectedForPostObject: (PFObject* ) post;
--(void) likeButtonLiked:(BOOL) liked forPostObject: (PFObject* ) post;
 
 @end
 
 @interface FeedVC : UIViewController
 
 @property (strong, nonatomic) id<FeedVCDelegate> delegate;
+
+-(void) freeMemory;
+
+-(void) addPostListVC;
 
 @end

@@ -9,7 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface LoadingIndicator : UIView
--(instancetype)initWithCenter:(CGPoint ) center;
-- (void)startCustomActivityIndicator;
+
+-(instancetype)initWithCenter:(CGPoint ) center andImage: (UIImage *) loadImage;
+
+-(void)startCustomActivityIndicator;
+
 -(void)stopCustomActivityIndicator;
+
 @end

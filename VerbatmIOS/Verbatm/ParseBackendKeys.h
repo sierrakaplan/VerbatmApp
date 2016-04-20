@@ -56,6 +56,8 @@
 #define POST_CHANNEL_KEY @"ChannelForPost" //the channel the post lives in
 #define POST_SIZE_KEY @"PostSize" //number of pages on this post
 #define POST_ORIGINAL_CREATOR_KEY @"OriginalCreator" //Original creator or post
+#define POST_NUM_LIKES @"PostNumLikes"
+#define POST_NUM_REBLOGS @"PostNumReblogs"
 
 #define POST_COMPLETED_SAVING @"PostDoneSaving"//we store
 
@@ -75,4 +77,7 @@
 #define CHANNEL_PFCLASS_KEY @"ChannelClass"
 #define CHANNEL_NAME_KEY @"ChannelName"
 #define CHANNEL_CREATOR_KEY @"ChannelCreator" //the user that has created this channel
+#define CHANNEL_NUM_FOLLOWS @"ChannelNumFollows"
+#define CHANNEL_FEATURED_BOOL @"Featured"
+
 #endif /* ParseBackendKeys_h */

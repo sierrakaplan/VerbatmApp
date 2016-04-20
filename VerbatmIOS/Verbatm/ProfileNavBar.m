@@ -52,17 +52,18 @@
 
 //expects an array of thread names (nsstring)
 -(instancetype) initWithFrame:(CGRect)frame andChannels:(NSArray *)channels
-					  andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser{
+					  andUser:(PFUser *)profileUser isCurrentLoggedInUser:(BOOL) isCurrentUser
+				 isProfileTab:(BOOL) profileTab {
 	self = [super initWithFrame:frame];
 	if(self) {
 		if (!isCurrentUser) {
 			[User_BackendObject userIsBlockedByCurrentUser:profileUser withCompletionBlock:^(BOOL blocked) {
 				[self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY]
-										isCurrentUser:NO isBlocked:blocked];
+										isCurrentUser:NO isBlocked:blocked isProfileTab:profileTab];
 			}];
 		} else {
 			[self createProfileHeaderWithUserName:[profileUser valueForKey:VERBATM_USER_NAME_KEY]
-									isCurrentUser:YES isBlocked:NO];
+									isCurrentUser:YES isBlocked:NO isProfileTab:profileTab];
 		}
 
 		Channel* startChannel = (channels.count > 0) ? channels[0] : nil;
@@ -232,10 +233,11 @@
 }
 
 -(void) createProfileHeaderWithUserName: (NSString*) userName isCurrentUser:(BOOL) isCurrentUser
-							  isBlocked: (BOOL) blocked {
+							  isBlocked: (BOOL) blocked isProfileTab: (BOOL) profileTab {
     CGRect barFrame = CGRectMake(0.f, 0.f, self.bounds.size.width, PROFILE_HEADER_HEIGHT);
     self.profileHeader = [[ProfileInformationBar alloc] initWithFrame:barFrame andUserName:userName
-														isCurrentUser:isCurrentUser isBlockedByCurrentUser:blocked];
+														isCurrentUser:isCurrentUser isBlockedByCurrentUser:blocked
+														 isProfileTab:profileTab];
     self.profileHeader.delegate = self;
     [self addSubview:self.profileHeader];
 }

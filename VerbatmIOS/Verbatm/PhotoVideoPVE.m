@@ -29,18 +29,22 @@
 #pragma mark - In Preview Mode -
 @property (strong, nonatomic) CollectionPinchView* pinchView;
 
+// Tells whether should display media in small format
+@property (nonatomic) BOOL small;
+
 @end
 
 @implementation PhotoVideoPVE
 
 -(instancetype)initWithFrame:(CGRect)frame andPhotos:(NSArray*)photos andVideo:(NSURL*)videoURL
-		   andVideoThumbnail:(UIImage *)thumbnail {
+		   andVideoThumbnail:(UIImage *)thumbnail small: (BOOL)small {
     self = [super initWithFrame:frame];
     if(self) {
+		self.small = small;
 		self.inPreviewMode = NO;
 		[self initialFormatting];
 
-		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPhotoArray:photos];
+		self.photosView = [[PhotoPVE alloc] initWithFrame:self.photoAveFrame andPhotoArray:photos small:small];
 		self.photosView.isPhotoVideoSubview = YES;
 		self.photosView.textEntryDelegate = self;
 		self.videoView = [[VideoPVE alloc]initWithFrame:self.videoAveFrame andVideo:videoURL
@@ -54,6 +58,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andPinchView:(CollectionPinchView*) pinchView inPreviewMode: (BOOL) previewMode {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.small = NO;
 		self.inPreviewMode = previewMode;
 		self.pinchView = pinchView;
 		[self initialFormatting];

@@ -17,16 +17,9 @@
 //will return the newly created channel otherwise
 -(void) createPostFromPinchViews: (NSArray*) pinchViews toChannel: (Channel *) channel
 			 withCompletionBlock:(void(^)(PFObject *))block;
+
 //takes a completion block that will be called with
 //an nsarray of the channels
 +(void) getChannelsForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
-
-//gets all the channels on V except the provided user.
-//often this will be the current user
-+(void) getAllChannelsButNoneForUser:(PFUser *) user withCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
-
-
-//gets all channels on Verbatm including the current user
-+(void) getAllChannelsWithCompletionBlock:(void(^)(NSMutableArray *))completionBlock;
 
 @end

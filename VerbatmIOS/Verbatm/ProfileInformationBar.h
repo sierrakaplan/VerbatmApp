@@ -28,9 +28,7 @@
 @property (nonatomic) BOOL hasBlockedUser;
 
 -(instancetype)initWithFrame:(CGRect)frame andUserName: (NSString *) userName
-			   isCurrentUser:(BOOL) isCurrentUser isBlockedByCurrentUser:(BOOL) isBlocked;
-
-//makes the follow button show that we are/aren't following the current channel being presented
--(void)setFollowIconToFollowingCurrentChannel:(BOOL) isFollowingChannel;
+			   isCurrentUser:(BOOL) isCurrentUser isBlockedByCurrentUser:(BOOL) isBlocked
+				isProfileTab: (BOOL)profileTab;
 
 @end

@@ -19,10 +19,11 @@ typedef void(^MediaUploadCompletionBlock)(NSError* error, NSString* responseURL)
 
 @property (nonatomic, strong) NSProgress* mediaUploadProgress;
 
-
 // Creates an ASIFormDataRequest with the image in png form
 // and stages it for upload to the given uri
--(instancetype) initWithImage:(UIImage*)img andUri: (NSString*)uri;
+-(instancetype) initWithImage:(NSData*)imageData andUri: (NSString*)uri;
+
++(AnyPromise *) uploadImageData: (NSData*) imageData toUri: (NSString*) uri ;
 
 // and stages it for upload to the given uri
 -(instancetype) initWithVideoData: (NSData*)videoData  andUri: (NSString*)uri;

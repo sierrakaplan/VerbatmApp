@@ -38,14 +38,6 @@
 		</dict>
 		<dict>
 			<key>FooterText</key>
-			<string>See http://developers.optimizely.com/ios/terms</string>
-			<key>Title</key>
-			<string>Optimizely-iOS-SDK</string>
-			<key>Type</key>
-			<string>PSGroupSpecifier</string>
-		</dict>
-		<dict>
-			<key>FooterText</key>
 			<string>@see README</string>
 			<key>Title</key>
 			<string>PromiseKit</string>

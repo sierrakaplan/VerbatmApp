@@ -67,7 +67,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 -(void)viewDidLoad {
 	[self setDateSourceAndDelegate];
 	[self registerClassForCustomCells];
-	[self getPosts];
+	[self refreshPosts];
 	self.shouldPlayVideos = YES;
     self.footerBarIsUp = (self.listType == listFeed || self.isCurrentUserProfile);
 	[self registerForNotifications];
@@ -173,9 +173,8 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 -(void)refreshPosts{
     [self.customActivityIndicator startCustomActivityIndicator];
 
-    
-    if(self.listType == listFeed){
-        [self.feedQueryManager reloadFeedFromStartWithCompletionHandler:^(NSArray * posts) {
+	if(self.listType == listFeed){
+        [self.feedQueryManager refreshFeedWithCompletionHandler:^(NSArray * posts) {
             [self.customActivityIndicator stopCustomActivityIndicator];
             if(posts.count){
                 [self loadNewBackendPosts:posts];
@@ -185,13 +184,14 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
             }
         }];
         
-    }else if (self.listType == listChannel){
+    } else if (self.listType == listChannel){
         [self loadCurrentChannel];
     }
 }
 
--(void)loadCurrentChannel{
-    [Post_BackendObject getPostsInChannel:self.channelForList withCompletionBlock:^(NSArray * posts) {
+-(void)loadCurrentChannel {
+	//todo: page through posts
+	[Post_BackendObject getPostsInChannel:self.channelForList withLimit:100 withCompletionBlock:^(NSArray * posts) {
         [self.customActivityIndicator stopCustomActivityIndicator];
         if(posts.count){
             [self loadNewBackendPosts:posts];
@@ -202,11 +202,10 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
     }];
 }
 
--(void) getPosts {
+-(void) loadMorePosts {
 	[self.customActivityIndicator startCustomActivityIndicator];
 	if(self.listType == listFeed) {
-		if(!self.feedQueryManager)self.feedQueryManager = [[FeedQueryManager alloc] init];
-		[self.feedQueryManager getMoreFeedPostsWithCompletionHandler:^(NSArray * posts) {
+		[self.feedQueryManager loadMorePostsWithCompletionHandler:^(NSArray * posts) {
 			[self.customActivityIndicator stopCustomActivityIndicator];
 			if(posts.count){
 				[self loadNewBackendPosts:posts];
@@ -232,16 +231,16 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 -(void)loadNewBackendPosts:(NSArray *) backendPostObjects{
 	NSMutableArray * postLoadPromises = [[NSMutableArray alloc] init];
 
-	for(PFObject * pc_activity in backendPostObjects) {
+	for(PFObject * postChannelActivityObject in backendPostObjects) {
 		AnyPromise * promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-			PFObject * post = [pc_activity objectForKey:POST_CHANNEL_ACTIVITY_POST];
+			PFObject * post = [postChannelActivityObject objectForKey:POST_CHANNEL_ACTIVITY_POST];
 			[Page_BackendObject getPagesFromPost:post andCompletionBlock:^(NSArray * pages) {
-				PostView *postView = [[PostView alloc] initWithFrame:self.view.bounds];
-				postView.parsePostChannelActivityObject = pc_activity;
+				PostView *postView = [[PostView alloc] initWithFrame:self.view.bounds andPostChannelActivityObject:postChannelActivityObject
+															   small:NO];
 
 				NSNumber * numberOfPages = [NSNumber numberWithInteger:pages.count];
 
-				[postView renderPostFromPages:pages];
+				[postView renderPostFromPageObjects: pages];
 				[postView postOffScreen];
 				postView.delegate = self;
 				postView.listChannel = self.channelForList;
@@ -268,7 +267,11 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 	//when all pages are loaded then we reload our list
 	PMKWhen(postLoadPromises).then(^(id data){
-		[self sortOurPostList];
+		if (self.listType == listFeed) {
+			[self sortOurPostListEarliestToLatest: NO];
+		} else {
+			[self sortOurPostListEarliestToLatest: YES];
+		}
 		dispatch_async(dispatch_get_main_queue(), ^{
 			//prepare the first post object
 			if(self.shouldPlayVideos && !self.isReloading)[(PostView *)self.presentedPostList.firstObject postOnScreen];
@@ -278,7 +281,7 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 	});
 }
 
--(void)sortOurPostList{
+-(void)sortOurPostListEarliestToLatest: (BOOL) earliestToLatest {
 	[self.presentedPostList sortUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
 		PostView * view1 = obj1;
 		PostView * view2 = obj2;
@@ -292,11 +295,10 @@ SharePostViewDelegate, UIScrollViewDelegate, PostViewDelegate>
 
 		if (secondsBetweenDates == 0)
 			return NSOrderedSame;
-
 		else if (secondsBetweenDates < 0)
-			return NSOrderedAscending;
+			return earliestToLatest ? NSOrderedAscending : NSOrderedDescending;
 		else
-			return NSOrderedDescending;
+			return earliestToLatest ? NSOrderedDescending : NSOrderedAscending;
 
 	}];
 }
@@ -342,11 +344,12 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 	if(indexPath.row == (self.presentedPostList.count - LOAD_MORE_POSTS_COUNT) &&
 	   (self.listType == listFeed) && !self.isReloading){
 		self.isReloading = YES;
-		if(self.listType == listFeed)[self getPosts];
+		if(self.listType == listFeed) [self loadMorePosts];
 	}
 
 	return nextCellToBePresented;
 }
+
 
 -(CGFloat) getVisibileCellIndex{
 	return self.collectionView.contentOffset.x / self.view.frame.size.width;
@@ -369,13 +372,14 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 			[post postOnScreen];
 		}
     }
-//	} else {
-//		[self getPosts];
-//	}
 }
 
 -(void) footerShowing: (BOOL) showing{
     self.footerBarIsUp = showing;
+	[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
+		[self setNeedsStatusBarAppearanceUpdate];
+	} completion:^(BOOL finished) {
+	}];
 	for(PostView *postView in self.presentedPostList){
 		[postView shiftLikeShareBarDown:!showing];
 	}
@@ -384,9 +388,6 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 #pragma mark - Scrollview delegate -
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView  {
-	//NSArray * cellsVisible = [self.collectionView visibleCells];
-	//PostCollectionViewCell * visibleCell = [cellsVisible firstObject];
-    
     NSInteger visibleIndex = [self getVisibileCellIndex];
     if(visibleIndex < self.presentedPostList.count){
         PostView * currentView = self.presentedPostList[visibleIndex];
@@ -426,7 +427,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		return;
 	}
 	UIAlertController* alert = [UIAlertController alertControllerWithTitle:@""
-																   message:@"Are you sure you want to delete the entire post?"
+																   message:@"Entire post will be deleted."
 															preferredStyle:UIAlertControllerStyleAlert];
 
 	UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel
@@ -435,13 +436,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		NSInteger postIndex = [self.presentedPostList indexOfObject: postView];
 		[self removePostAtIndex: postIndex];
 		[postView clearPost];
-		[Post_BackendObject deletePost:post withCompletionBlock:^(BOOL success) {
-			if (success) {
-				NSLog(@"Deleted post successfully");
-			} else {
-				NSLog(@"Error deleting post");
-			}
-		}];
+		[Post_BackendObject deletePost:post];
 	}];
 
 	[alert addAction: cancelAction];
@@ -657,7 +652,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(LoadingIndicator *)customActivityIndicator{
 	if(!_customActivityIndicator){
 		CGPoint center = CGPointMake(self.view.frame.size.width/2., self.view.frame.size.height/2.f);
-		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:center];
+		_customActivityIndicator = [[LoadingIndicator alloc] initWithCenter:center andImage:[UIImage imageNamed:LOAD_ICON_IMAGE]];
 		[self.view addSubview:_customActivityIndicator];
 		[self.view bringSubviewToFront:_customActivityIndicator];
 	}
@@ -667,6 +662,13 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 -(NSMutableArray *)presentedPostList{
 	if(!_presentedPostList)_presentedPostList = [[NSMutableArray alloc] init];
 	return _presentedPostList;
+}
+
+-(FeedQueryManager*) feedQueryManager {
+	if (!_feedQueryManager) {
+		_feedQueryManager = [FeedQueryManager sharedInstance];
+	}
+	return _feedQueryManager;
 }
 
 @end
