@@ -20,7 +20,7 @@
 +(void) getPostsInChannel:(Channel *)channel withLimit:(NSInteger)limit
 	  withCompletionBlock:(void(^)(NSArray *))block;
 
-+(void) deletePost: (PFObject *)post withCompletionBlock:(void(^)(BOOL))block;
++(void) deletePost: (PFObject *)post;
 
 +(void)markPostAsFlagged:(PFObject *) flaggedPost;
 

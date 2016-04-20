@@ -111,8 +111,8 @@
 	[videosQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													NSError * _Nullable error) {
 		if(objects && !error){
-			for (PFObject *photoObj in objects) {
-				[photoObj deleteInBackground];
+			for (PFObject *videoObj in objects) {
+				[videoObj deleteInBackground];
 			}
 			block(YES);
 			return;

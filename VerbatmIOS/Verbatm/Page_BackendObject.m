@@ -160,7 +160,7 @@
 	}];
 }
 
-+(void)deletePagesInPost:(PFObject *)post withCompletionBlock:(void(^)(BOOL))block {
++(void)deletePagesInPost:(PFObject *)post {
 	PFQuery * pagesQuery = [PFQuery queryWithClassName:PAGE_PFCLASS_KEY];
 	[pagesQuery whereKey:PAGE_POST_KEY equalTo:post];
 	[pagesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
@@ -168,13 +168,15 @@
 		if(objects && !error){
 			for (PFObject *obj in objects) {
 				[Photo_BackendObject deletePhotosInPage:obj withCompeletionBlock:^(BOOL success) {
-					block(success);
-					[obj deleteInBackground];
+					[Video_BackendObject deleteVideosInPage:obj withCompeletionBlock:^(BOOL success) {
+						[obj deleteInBackground];
+					}];
 				}];
 			}
-			return;
+		} else {
+			NSLog(@"error deleting pages");
 		}
-		block(NO);
+
 	}];
 }
 

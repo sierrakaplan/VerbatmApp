@@ -102,7 +102,6 @@
 		[self requestFailed:request];
 	} else {
 		[self.mediaUploadProgress setCompletedUnitCount: self.mediaUploadProgress.totalUnitCount];
-		responseString = [responseString stringByAppendingString:@"=s0"];
 		self.completionBlock(nil, responseString);
 	}
 }
@@ -128,7 +127,6 @@
 		} success:^(AFHTTPRequestOperation *operation, id responseObject) {
 			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:IMAGE_PROGRESS_UNITS-1];
 			NSString *responseURL = [operation responseString];
-			[responseURL stringByAppendingString:@"=s0"];
 			resolve (responseURL);
 		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 			NSLog(@"Error: %@ ***** %@", operation.responseString, error);

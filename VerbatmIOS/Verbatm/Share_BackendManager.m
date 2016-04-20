@@ -81,6 +81,9 @@
 	[sharesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													   NSError * _Nullable error) {
 		if(objects && !error) {
+			for (PFObject *shareObject in objects) {
+				[shareObject deleteInBackground];
+			}
 			block (YES);
 			return;
 		}

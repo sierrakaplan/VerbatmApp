@@ -436,13 +436,7 @@ shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 		NSInteger postIndex = [self.presentedPostList indexOfObject: postView];
 		[self removePostAtIndex: postIndex];
 		[postView clearPost];
-		[Post_BackendObject deletePost:post withCompletionBlock:^(BOOL success) {
-			if (success) {
-				NSLog(@"Deleted post successfully");
-			} else {
-				NSLog(@"Error deleting post");
-			}
-		}];
+		[Post_BackendObject deletePost:post];
 	}];
 
 	[alert addAction: cancelAction];

@@ -64,17 +64,13 @@
 //todo: make sure post is not visible while media deleting
 /* Remove pages (which will remove media), then remove post.
    Also delete like and share objects associated with post */
-+(void) deletePost: (PFObject *)post withCompletionBlock:(void(^)(BOOL))block {
++(void) deletePost: (PFObject *)post {
 	[Post_Channel_RelationshipManager deleteChannelRelationshipsForPost:post withCompletionBlock:^(bool success) {
 		if (!success) {
-			block (NO);
-			return;
+			NSLog(@"Error deleting channel relationships");
 		}
 	}];
-	[Page_BackendObject deletePagesInPost:post withCompletionBlock:^(BOOL success) {
-		[post deleteInBackground];
-		block(success);
-	}];
+	[Page_BackendObject deletePagesInPost:post];
 	[Like_BackendManager deleteLikesForPost:post withCompletionBlock:^(BOOL success) {
 		if (!success) {
 			NSLog(@"Error deleting likes");

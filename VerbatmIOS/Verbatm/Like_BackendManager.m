@@ -79,6 +79,9 @@
 	[likesQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
 													NSError * _Nullable error) {
 		if(objects && !error) {
+			for (PFObject *likeObject in objects) {
+				[likeObject deleteInBackground];
+			}
 			block (YES);
 			return;
 		}
