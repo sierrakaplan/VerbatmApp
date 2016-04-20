@@ -97,7 +97,7 @@
     
     [video findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
                                                          NSError * _Nullable error) {
-        if(objects && !error){
+        if(objects && objects.count && !error){
             block(objects[0]);
         } else {
 			block(nil);
