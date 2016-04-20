@@ -144,16 +144,10 @@
 -(EditMediaContentView *) getEditContentViewFromPinchView: (ImagePinchView *)pinchView {
 	EditMediaContentView * editMediaContentView = [[EditMediaContentView alloc] initWithFrame:self.bounds];
 
-	PHImageRequestOptions *options = [PHImageRequestOptions new];
-	options.synchronous = YES;
-	PHAsset *imageAsset = [self getImageAssetFromPHLocalId:pinchView.phAssetLocalIdentifier];
-	[[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:self.bounds.size contentMode:PHImageContentModeAspectFill
-									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-										dispatch_async(dispatch_get_main_queue(), ^{
-											[editMediaContentView changeImageTo:image];
-										});
-									}];
+	[pinchView getLargerImageWithSize: pinchView.largeSize].then(^(UIImage *image) {
+		[editMediaContentView changeImageTo:image];
+	});
+
 	//Display low quality image before loading high quality version
 	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex];
 
@@ -169,12 +163,6 @@
 	editMediaContentView.povViewMasterScrollView = self.postScrollView;
 	editMediaContentView.delegate = self;
 	return editMediaContentView;
-}
-
--(PHAsset *)getImageAssetFromPHLocalId: (NSString*)phLocalIdentifier {
-	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[phLocalIdentifier] options:nil];
-	PHAsset* imageAsset = fetchResult.firstObject;
-	return imageAsset;
 }
 
 -(void)layoutContainerViews{

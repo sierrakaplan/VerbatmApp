@@ -26,10 +26,11 @@
 @implementation ImagePinchView
 
 -(instancetype)initWithRadius:(float)radius withCenter:(CGPoint)center andImage:(UIImage*)image
-	andPHAssetLocalIdentifier: (NSString*) localIdentifier {
+	andPHAssetLocalIdentifier: (NSString*) localIdentifier andLargerSize: (CGSize)largeSize {
 	self = [super initWithRadius:radius withCenter:center];
 	if (self) {
 		if(!image) return self;
+		self.largeSize = largeSize;
 		self.phAssetLocalIdentifier = localIdentifier;
 		[self initWithImage:image andSetFilteredImages:YES];
 	}
@@ -45,25 +46,25 @@
 	//original photo
 	[self.filteredImages addObject:self.image];
 	//todo: should we have filters?
-//	if (setFilters) [self createFilteredImagesFromImage:self.image];
+	//	if (setFilters) [self createFilteredImagesFromImage:self.image];
 	[self renderMedia];
 }
 
 -(void) putNewImage:(UIImage*)image{
-    if(!image)return;
-    if(!_imageView) {
-        [self.background addSubview:self.imageView];
-    }
-    self.containsImage = YES;
-    self.image = image;
-    self.filterImageIndex = 0;
-    self.filteredImages = nil;
+	if(!image)return;
+	if(!_imageView) {
+		[self.background addSubview:self.imageView];
+	}
+	self.containsImage = YES;
+	self.image = image;
+	self.filterImageIndex = 0;
+	self.filteredImages = nil;
 	self.filteredImages = [[NSMutableArray alloc] init];
 	//original photo
 	[self.filteredImages addObject:self.image];
 	//todo: should we have filters?
-//	[self createFilteredImagesFromImage:self.image];
-    [self renderMedia];
+	//	[self createFilteredImagesFromImage:self.image];
+	[self renderMedia];
 }
 
 #pragma mark - Render Media -
@@ -79,39 +80,46 @@
 //release all the excess media that it has in order to clear up some
 //space (prevents crashing)
 -(void)publishingPinchView {
-    @autoreleasepool {
-       [self.filteredImages removeAllObjects];
-        self.filteredImages = nil;
-        self.image = nil;
-        [self.imageView removeFromSuperview];
-        self.imageView = nil;
-    }
+	@autoreleasepool {
+		[self.filteredImages removeAllObjects];
+		self.filteredImages = nil;
+		self.image = nil;
+		[self.imageView removeFromSuperview];
+		self.imageView = nil;
+	}
 }
 
 -(AnyPromise *) getImageData {
-	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
-	PHAsset* imageAsset = fetchResult.firstObject;
-	PHImageRequestOptions *options = [PHImageRequestOptions new];
-	options.synchronous = YES;
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-		[[PHImageManager defaultManager] requestImageDataForAsset:imageAsset options:options resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {
-			resolve(imageData);
-		}];
-	}];
-	return promise;
+	return [self getLargerImageWithSize:self.largeSize].then(^(UIImage *largerImage) {
+		return UIImagePNGRepresentation(largerImage);
+	});
 }
 
 -(UIImage*) getImage {
 	return self.filteredImages[self.filterImageIndex];
 }
 
+-(AnyPromise *) getLargerImageWithSize: (CGSize) size {
+	PHImageRequestOptions *options = [PHImageRequestOptions new];
+	options.synchronous = YES;
+	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[self.phAssetLocalIdentifier] options:nil];
+	PHAsset* imageAsset = fetchResult.firstObject;
+	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:size contentMode:PHImageContentModeAspectFill
+													  options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
+														  resolve(image);
+													  }];
+	}];
+	return promise;
+}
+
 -(UIImage *) getOriginalImage{
-    return self.filteredImages[0];
+	return self.filteredImages[0];
 }
 
 /* media, text, textYPosition, textColor, textAlignment, textSize */
 -(NSArray*) getPhotosWithText {
-    return @[@[[self getImage], self.text, self.textYPosition,
+	return @[@[[self getImage], self.text, self.textYPosition,
 			   self.textColor, self.textAlignment, self.textSize]];
 }
 
@@ -137,7 +145,7 @@
 		//Background Thread
 		for (NSString* filterName in filterNames) {
 			//todo: stop this
-//			NSLog(@"Adding filtered photo.");
+			//			NSLog(@"Adding filtered photo.");
 			@autoreleasepool {
 				CIImage *beginImage =  [CIImage imageWithData: imageData];
 				CIContext *context = [CIContext contextWithOptions:nil];
@@ -180,11 +188,11 @@
 #pragma mark - Lazy Instantiation
 
 -(UIImageView*)imageView {
-    if(!_imageView) {
-        _imageView = [[UIImageView alloc] init];
-        _imageView.contentMode = UIViewContentModeScaleAspectFill;
-        _imageView.layer.masksToBounds = YES;
-    }
+	if(!_imageView) {
+		_imageView = [[UIImageView alloc] init];
+		_imageView.contentMode = UIViewContentModeScaleAspectFill;
+		_imageView.layer.masksToBounds = YES;
+	}
 	return _imageView;
 }
 

@@ -50,6 +50,7 @@
 			smallImageUrl = [NSURL URLWithString:imageUri];
 		}
 
+		// First set the small image while larger image loads
 		AnyPromise *loadSmallImageData = [UtilityFunctions loadCachedPhotoDataFromURL:smallImageUrl];
 		loadSmallImageData.then(^(NSData* smallImageData) {
 			UIImage *smallImage = [UIImage imageWithData:smallImageData];
@@ -58,13 +59,14 @@
 			}
 		});
 
+		// After larger image loads, crop it and set it in the image
 		if (!small) {
 			AnyPromise *loadLargeImageData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
 			loadLargeImageData.then(^(NSData* largeImageData) {
 				UIImage *image = [UIImage imageWithData:largeImageData];
-				self.image = image;
-				CGSize imageSize = CGSizeMake(self.bounds.size.height*(image.size.width/image.size.height)*1.5f, self.bounds.size.height*1.5f);
-				image = [image scaleImageToSize: imageSize];
+				if (largeImageData.length / 1024.f > 500) {
+					image = [image imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width*2, self.bounds.size.height*2)];
+				}
 				self.image = image;
 				[self.imageView setImage: image];
 			});
@@ -77,7 +79,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
 	self = [self initWithFrame: frame];
 	if (self) {
-		[self.imageView setImage:image];
+		[self.imageView setImage: image];
 	}
 	return self;
 }
@@ -101,7 +103,7 @@
 	return photoView;
 }
 
--(void)changeImageTo:(UIImage *) image{
+-(void)changeImageTo:(UIImage *) image {
 	[self.imageView setImage:image];
 }
 
