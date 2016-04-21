@@ -163,6 +163,7 @@
 
 }
 
+//todo: figure out why this is getting called when there are no videos
 //Video array looks like @[URL, thumbnail]
 -(void) getVideoFromPage: (PFObject*) page withCompletionBlock:(void(^)(NSArray *)) block{
 	[Video_BackendObject getVideoForPage:page andCompletionBlock:^(PFObject *videoObject) {

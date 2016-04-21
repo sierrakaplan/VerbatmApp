@@ -40,6 +40,7 @@
 
 //adds pinch view and automatically saves pinchViews
 -(void) addPinchView:(PinchView*)pinchView atIndex:(NSInteger) index {
+	if (!pinchView) return;
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		@synchronized(self) {
             if(index <= self.pinchViews.count && index >= 0) {
@@ -87,6 +88,8 @@
 }
 
 -(void) swapPinchViewsAtIndex:(NSInteger)index1 andIndex:(NSInteger)index2 {
+	//todo:
+	if (index1 < 0 || index1 >= self.pinchViews.count || index2 < 0 || index2 >= self.pinchViews.count) return;
 	@synchronized(self) {
 		PinchView *pinchView1 = self.pinchViews[index1];
 		PinchView *pinchView2 = self.pinchViews[index2];
