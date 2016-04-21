@@ -843,7 +843,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "621"
             endingLineNumber = "621"
-            landmarkName = "-newPinchView:belowView:"
+            landmarkName = "-newPinchView:belowView:andSaveInUserDefaults:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2625,8 +2625,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "426"
             endingLineNumber = "426"
-            landmarkName = "-setUpNotifications"
-            landmarkType = "5">
+            landmarkName = "@implementation ContentDevVC"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2641,7 +2641,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "372"
             endingLineNumber = "372"
-            landmarkName = "-userTappedChannelSelctor:"
+            landmarkName = "-gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2657,7 +2657,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "370"
             endingLineNumber = "370"
-            landmarkName = "-gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:"
+            landmarkName = "-pickerView:didSelectRow:inComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2673,7 +2673,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "371"
             endingLineNumber = "371"
-            landmarkName = "-gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:"
+            landmarkName = "-pickerView:didSelectRow:inComponent:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2753,7 +2753,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1937"
             endingLineNumber = "1937"
-            landmarkName = "-imageManager"
+            landmarkName = "-baseMediaTileSelector"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2769,7 +2769,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "1941"
             endingLineNumber = "1941"
-            landmarkName = "-imageManager"
+            landmarkName = "-baseMediaTileSelector"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -2785,8 +2785,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "509"
             endingLineNumber = "509"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-adjustMainScrollViewContentSize"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -2801,8 +2801,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "404"
             endingLineNumber = "404"
-            landmarkName = "@implementation ContentDevVC"
-            landmarkType = "3">
+            landmarkName = "-getCreateNewChannelTextFieldWithFrame:"
+            landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -9695,7 +9695,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "70"
             endingLineNumber = "70"
-            landmarkName = "-isFeed_InstructionShown"
+            landmarkName = "-isProfile_InstructionShown"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -9711,7 +9711,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "69"
             endingLineNumber = "69"
-            landmarkName = "-isFeed_InstructionShown"
+            landmarkName = "-isProfile_InstructionShown"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -9919,8 +9919,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "171"
             endingLineNumber = "171"
-            landmarkName = "-saveAllChanges"
-            landmarkType = "5">
+            landmarkName = "@implementation UserSetupParameters"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -10232,7 +10232,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/PostListVC.m"
-                  timestampString = "482889708.483003"
+                  timestampString = "482892426.556666"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "600"
@@ -10247,7 +10247,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/PostListVC.m"
-                  timestampString = "482889708.483142"
+                  timestampString = "482892426.556825"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -10262,7 +10262,7 @@
                   moduleName = "Verbatm"
                   usesParentBreakpointCondition = "Yes"
                   urlString = "file:///Users/iusiri/Desktop/IOS%20APP%20PROJECTS/Verbatm%20Project/VerbatmIOS/Verbatm/PostListVC.m"
-                  timestampString = "482889708.483261"
+                  timestampString = "482892426.55696"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
                   startingLineNumber = "0"
@@ -10599,11 +10599,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoPVE.m"
-            timestampString = "482889376.785815"
+            timestampString = "482890854.274534"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "338"
-            endingLineNumber = "338"
+            startingLineNumber = "341"
+            endingLineNumber = "341"
             landmarkName = "-animateNextView"
             landmarkType = "5">
          </BreakpointContent>
@@ -10615,11 +10615,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoPVE.m"
-            timestampString = "482889376.785815"
+            timestampString = "482890854.274534"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "342"
-            endingLineNumber = "342"
+            startingLineNumber = "345"
+            endingLineNumber = "345"
             landmarkName = "-animateNextView"
             landmarkType = "5">
          </BreakpointContent>
@@ -10631,11 +10631,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Verbatm/PhotoPVE.m"
-            timestampString = "482889376.785815"
+            timestampString = "482890854.274534"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "375"
-            endingLineNumber = "375"
+            startingLineNumber = "378"
+            endingLineNumber = "378"
             landmarkName = "-trackMovementOnCircle:"
             landmarkType = "5">
          </BreakpointContent>

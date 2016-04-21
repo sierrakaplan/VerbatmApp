@@ -279,17 +279,20 @@
 
 -(void) rearrangeButtonPressed {
     if(!self.rearrangeView){
-		[self offScreen];
-        CGRect frame = CGRectMake(0.f,CUSTOM_NAV_BAR_HEIGHT, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
-        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
-													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
-        self.rearrangeView.delegate = self;
-        [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
-        [self.rearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
+//		[self offScreen];
+//        
+//        CGFloat y_pos = (self.isPhotoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
+//
+//        CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
+//        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
+//													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
+//        self.rearrangeView.delegate = self;
+//        [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
+//        [self.rearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
     } else {
-        [self.rearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
-        [self.rearrangeView exitView];
-        [self playWithSpeed:2.f];
+//        [self.rearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
+//        [self.rearrangeView exitView];
+//        [self playWithSpeed:2.f];
     }
 }
 
