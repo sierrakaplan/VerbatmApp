@@ -47,6 +47,8 @@
 //Updats the radius and center and resets the frame based on these
 -(void) specifyRadius:(float)radius andCenter:(CGPoint)center;
 
+-(void) addEditIcon;
+
 //This reverts to the center and radius specified
 //for the pinch view during initialization
 -(void)revertToInitialFrame;

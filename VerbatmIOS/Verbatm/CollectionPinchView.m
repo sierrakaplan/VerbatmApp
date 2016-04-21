@@ -146,6 +146,7 @@
 		[self.videoView setImage: self.videoImage];
 		[self.background bringSubviewToFront:self.videoView];
 	}
+	[self addEditIcon];
 }
 
 -(CGRect) getCenterFrameForVideoView {

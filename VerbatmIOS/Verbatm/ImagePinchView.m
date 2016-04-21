@@ -74,6 +74,7 @@
 -(void)renderMedia {
 	self.imageView.frame = self.background.frame;
 	[self.imageView setImage:[self getImage]];
+	[self addEditIcon];
 }
 
 #pragma mark - Get or Change Image -

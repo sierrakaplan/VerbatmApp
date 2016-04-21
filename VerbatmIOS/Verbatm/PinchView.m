@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 Verbatm. All rights reserved.
 //
 
+#import "Icons.h"
 #import "PinchView.h"
 #import "Styles.h"
 #import "SizesAndPositions.h"
@@ -20,6 +21,7 @@
 @property (nonatomic, readwrite) CGPoint center;
 @property (nonatomic) float initialRadius;
 @property (nonatomic) CGPoint initialCenter;
+@property (strong, nonatomic) UIImageView *editImageView;
 
 #pragma mark Encoding Keys
 
@@ -29,6 +31,8 @@
 #define RADIUS_KEY @"radius"
 #define CENTER_X_KEY @"center_x"
 #define CENTER_Y_KEY @"center_y"
+
+#define EDIT_VIEW_SIZE 30.f
 
 @end
 
@@ -65,6 +69,15 @@
 	[self addBorderToPinchView];
 	self.containsImage = NO;
 	self.containsVideo = NO;
+}
+
+-(void) addEditIcon {
+	CGFloat offset = self.radius/4.f;
+	if (_editImageView) {
+		[self.editImageView removeFromSuperview];
+	}
+	self.editImageView.frame = CGRectMake(offset, offset, EDIT_VIEW_SIZE, EDIT_VIEW_SIZE);
+	[self.background addSubview: self.editImageView];
 }
 
 -(void) formatBackground {
@@ -208,6 +221,13 @@
 -(UIView*)background {
 	if(!_background) _background = [[UIView alloc] init];
 	return _background;
+}
+
+-(UIImageView*) editImageView {
+	if (!_editImageView) {
+		_editImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:EDIT_PINCHVIEW_ICON]];
+	}
+	return _editImageView;
 }
 
 @end

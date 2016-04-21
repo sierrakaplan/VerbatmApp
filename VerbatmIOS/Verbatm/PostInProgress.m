@@ -67,7 +67,7 @@
 -(void) removePinchViewAtIndex:(NSInteger)index andReplaceWithPinchView:(PinchView *)newPinchView {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		@synchronized(self) {
-			if(index <= self.pinchViews.count && index >= 0) {
+			if(index <= self.pinchViews.count && index >= 0 && newPinchView) {
 				NSData* pinchViewData = [self convertPinchViewToNSData: newPinchView];
 				[self.pinchViews replaceObjectAtIndex:index withObject: newPinchView];
 				[self.pinchViewsAsData replaceObjectAtIndex:index withObject: pinchViewData];
