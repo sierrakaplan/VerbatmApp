@@ -12,6 +12,7 @@
 
 @interface PageViewingExperience : UIView
 
+@property (nonatomic) NSInteger indexInPost;
 @property (nonatomic) BOOL inPreviewMode;
 
 // to be overriden in subclasses

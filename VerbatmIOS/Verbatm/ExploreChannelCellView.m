@@ -24,13 +24,14 @@
 @property (nonatomic, strong) UIView *footerView;
 @property (nonatomic, strong) UILabel *userNameLabel;
 @property (nonatomic, strong) UIButton *followButton;
+@property (nonatomic, strong) UILabel *numFollowersLabel;
 @property (nonatomic, strong) UILabel *channelNameLabel;
 
 @property (strong, nonatomic) UIScrollView *horizontalScrollView;
 @property (strong, nonatomic) NSMutableArray *postViews;
 @property (nonatomic) NSInteger indexOnScreen;
 
-@property (nonatomic) NSInteger numFollowers;
+@property (nonatomic, strong) NSNumber *numFollowers;
 @property (weak, readwrite) Channel *channelBeingPresented;
 
 
@@ -43,6 +44,7 @@
 #define OFFSET 5.f
 #define FOOTER_HEIGHT 20.f
 #define USER_NAME_WIDTH 120.f
+#define NUM_FOLLOWERS_WIDTH 40.f
 
 @end
 
@@ -72,6 +74,7 @@
 	self.userNameLabel.frame = CGRectMake(POST_VIEW_OFFSET, OFFSET, USER_NAME_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
 	self.followButton.frame = CGRectMake(self.frame.size.width - FOLLOW_BUTTON_WIDTH - POST_VIEW_OFFSET, OFFSET,
 										 FOLLOW_BUTTON_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
+	self.numFollowersLabel.frame = CGRectMake(self.followButton.frame.origin.x - NUM_FOLLOWERS_WIDTH, OFFSET, NUM_FOLLOWERS_WIDTH, DISCOVER_CHANNEL_NAME_HEIGHT);
 	self.channelNameLabel.frame = CGRectMake(self.userNameLabel.frame.size.width + self.userNameLabel.frame.origin.x + OFFSET, OFFSET,
 											 self.frame.size.width - USER_NAME_WIDTH*2 - (OFFSET*2),
 											 DISCOVER_CHANNEL_NAME_HEIGHT);
@@ -127,7 +130,7 @@
 	}];
 
 	[Follow_BackendManager numberUsersFollowingChannel:channel withCompletionBlock:^(NSNumber *numFollowers) {
-		self.numFollowers = [numFollowers integerValue];
+		self.numFollowers = numFollowers;
 		[self changeNumFollowersLabel];
 	}];
 
@@ -136,6 +139,7 @@
 	[self addSubview:self.followButton];
 	[self addSubview:self.userNameLabel];
 	[self addSubview:self.channelNameLabel];
+	[self addSubview:self.numFollowersLabel];
 }
 
 -(void) clearViews {
@@ -157,11 +161,14 @@
 -(void) followButtonPressed {
 	self.isFollowed = !self.isFollowed;
 	if (self.isFollowed) {
+		self.numFollowers = [NSNumber numberWithInteger:[self.numFollowers integerValue]+1];
 		[Follow_BackendManager currentUserFollowChannel: self.channelBeingPresented];
 	} else {
+		self.numFollowers = [NSNumber numberWithInteger:[self.numFollowers integerValue]-1];
 		[Follow_BackendManager user:[PFUser currentUser] stopFollowingChannel: self.channelBeingPresented];
 	}
 	[self updateFollowIcon];
+	[self changeNumFollowersLabel];
 }
 
 -(void) updateFollowIcon {
@@ -170,7 +177,7 @@
 }
 
 -(void) changeNumFollowersLabel {
-	//todo
+	[self.numFollowersLabel setText:[self.numFollowers stringValue]];
 }
 
 -(void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
@@ -276,6 +283,17 @@
 		[_followButton addTarget:self action:@selector(followButtonPressed) forControlEvents:UIControlEventTouchUpInside];
 	}
 	return _followButton;
+}
+
+-(UILabel *) numFollowersLabel {
+	if (!_numFollowersLabel) {
+		_numFollowersLabel = [[UILabel alloc] init];
+		[_numFollowersLabel setAdjustsFontSizeToFitWidth:YES];
+		[_numFollowersLabel setTextAlignment:NSTextAlignmentCenter];
+		[_numFollowersLabel setFont:[UIFont fontWithName:DEFAULT_FONT size:DISCOVER_USER_NAME_FONT_SIZE]];
+		[_numFollowersLabel setTextColor:[UIColor whiteColor]];
+	}
+	return _numFollowersLabel;
 }
 
 -(UILabel *) channelNameLabel {

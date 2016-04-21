@@ -20,6 +20,7 @@
 
 @property (nonatomic, readwrite) BOOL textShowing;
 @property (nonatomic, strong) UIImageView* imageView;
+@property (nonatomic, weak) UIImage *image;
 @property (nonatomic, readwrite) UITextView * textView;
 @property (strong,nonatomic) UIImageView* textBackgroundView;
 
@@ -40,22 +41,37 @@
 			   withSmallImage:(BOOL) small {
 	self = [self initWithFrame:frame];
 	if (self) {
-		if (small) {
-			NSString * imageUri = [imageUrl absoluteString];
-			NSString * suffix = @"=s0";
-			if ([imageUri hasSuffix:suffix] ) {
-				imageUri = [imageUri substringWithRange:NSMakeRange(0, imageUri.length-suffix.length)];
-				imageUrl = [NSURL URLWithString:imageUri];
-			};
+
+		NSURL *smallImageUrl = imageUrl;
+		NSString * imageUri = [imageUrl absoluteString];
+		NSString * suffix = @"=s0";
+		if ([imageUri hasSuffix:suffix] ) {
+			imageUri = [imageUri substringWithRange:NSMakeRange(0, imageUri.length-suffix.length)];
+			smallImageUrl = [NSURL URLWithString:imageUri];
 		}
 
-		AnyPromise *loadData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
-		loadData.then(^(NSData* imageData) {
-			UIImage *image = [UIImage imageWithData:imageData];
-			CGSize imageSize = CGSizeMake(self.bounds.size.height*(image.size.width/image.size.height)*1.5f, self.bounds.size.height*1.5f);
-			image = [image scaleImageToSize: imageSize];
-			[self.imageView setImage: image];
+		// First set the small image while larger image loads
+		AnyPromise *loadSmallImageData = [UtilityFunctions loadCachedPhotoDataFromURL:smallImageUrl];
+		loadSmallImageData.then(^(NSData* smallImageData) {
+			UIImage *smallImage = [UIImage imageWithData:smallImageData];
+			if (!self.image || small) {
+				[self.imageView setImage: smallImage];
+			}
 		});
+
+		// After larger image loads, crop it and set it in the image
+		if (!small) {
+			AnyPromise *loadLargeImageData = [UtilityFunctions loadCachedPhotoDataFromURL:imageUrl];
+			loadLargeImageData.then(^(NSData* largeImageData) {
+				UIImage *image = [UIImage imageWithData:largeImageData];
+				if (largeImageData.length / 1024.f > 500) {
+					image = [image imageByScalingAndCroppingForSize: CGSizeMake(self.bounds.size.width*2, self.bounds.size.height*2)];
+				}
+				self.image = image;
+				[self.imageView setImage: image];
+			});
+		}
+
 	}
 	return self;
 }
@@ -63,7 +79,7 @@
 -(instancetype) initWithFrame:(CGRect)frame andImage: (UIImage *)image {
 	self = [self initWithFrame: frame];
 	if (self) {
-		[self.imageView setImage:image];
+		[self.imageView setImage: image];
 	}
 	return self;
 }
@@ -87,7 +103,7 @@
 	return photoView;
 }
 
--(void)changeImageTo:(UIImage *) image{
+-(void)changeImageTo:(UIImage *) image {
 	[self.imageView setImage:image];
 }
 

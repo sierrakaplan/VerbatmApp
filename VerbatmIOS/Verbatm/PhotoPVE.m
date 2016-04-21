@@ -19,6 +19,7 @@
 #import "MathOperations.h"
 
 #import "PointObject.h"
+#import "PostInProgress.h"
 #import "PhotoPVE.h"
 
 #import "OpenCollectionView.h"
@@ -157,14 +158,10 @@
 
 	PHImageRequestOptions *options = [PHImageRequestOptions new];
 	options.synchronous = YES;
-	PHAsset *imageAsset = [self getImageAssetFromPHLocalId:pinchView.phAssetLocalIdentifier];
-	[[PHImageManager defaultManager] requestImageForAsset:imageAsset targetSize:self.bounds.size contentMode:PHImageContentModeAspectFill
-									options:options resultHandler:^(UIImage * _Nullable image, NSDictionary * _Nullable info) {
-										// RESULT HANDLER CODE NOT HANDLED ON MAIN THREAD so must be careful about UIView calls if not using dispatch_async
-										dispatch_async(dispatch_get_main_queue(), ^{
-											if(image)[editMediaContentView changeImageTo:image];
-										});
-									}];
+	[pinchView getLargerImageWithSize: pinchView.largeSize].then(^(UIImage *image) {
+		[editMediaContentView changeImageTo:image];
+	});
+
 	//Display low quality image before loading high quality version
 	[editMediaContentView displayImages:[pinchView filteredImages] atIndex:pinchView.filterImageIndex];
 
@@ -180,12 +177,6 @@
 	editMediaContentView.povViewMasterScrollView = self.postScrollView;
 	editMediaContentView.delegate = self;
 	return editMediaContentView;
-}
-
--(PHAsset *)getImageAssetFromPHLocalId: (NSString*)phLocalIdentifier {
-	PHFetchResult *fetchResult = [PHAsset fetchAssetsWithLocalIdentifiers:@[phLocalIdentifier] options:nil];
-	PHAsset* imageAsset = fetchResult.firstObject;
-	return imageAsset;
 }
 
 -(void)layoutContainerViews{
@@ -279,20 +270,20 @@
 
 -(void) rearrangeButtonPressed {
     if(!self.rearrangeView){
-//		[self offScreen];
-//        
-//        CGFloat y_pos = (self.isPhotoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
-//
-//        CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
-//        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
-//													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
-//        self.rearrangeView.delegate = self;
-//        [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
-//        [self.rearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
+		[self offScreen];
+        
+        CGFloat y_pos = (self.isPhotoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
+
+        CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
+        self.rearrangeView = [[OpenCollectionView alloc] initWithFrame:frame
+													 andPinchViewArray:((CollectionPinchView*)self.pinchView).imagePinchViews];
+        self.rearrangeView.delegate = self;
+        [self insertSubview:self.rearrangeView belowSubview:self.rearrangeButton];
+        [self.rearrangeButton setImage:[UIImage imageNamed:PLAY_SLIDESHOW_ICON] forState:UIControlStateNormal];
     } else {
-//        [self.rearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
-//        [self.rearrangeView exitView];
-//        [self playWithSpeed:2.f];
+        [self.rearrangeButton setImage:[UIImage imageNamed:PAUSE_SLIDESHOW_ICON] forState:UIControlStateNormal];
+        [self.rearrangeView exitView];
+        [self playWithSpeed:2.f];
     }
 }
 
@@ -359,6 +350,7 @@
 		[view removeFromSuperview];
 	}
 	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
+	[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
 	[self.pinchView renderMedia];
 	[self addContentFromImagePinchViews: pinchViews];
    // [self createRearrangeButton];
@@ -578,7 +570,10 @@
             [((EditMediaContentView *)view) exiting];
         }
     }
-    
+	if (self.inPreviewMode) {
+		[[PostInProgress sharedInstance] removePinchViewAtIndex:self.indexInPost andReplaceWithPinchView:self.pinchView];
+	}
+
     if(self.rearrangeView)[self.rearrangeView exitView];
 }
 

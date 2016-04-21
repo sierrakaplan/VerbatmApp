@@ -466,7 +466,7 @@ shouldRequireFailureOfGestureRecognizer:(UIGestureRecognizer *)otherGestureRecog
 	if([self.pinchView isKindOfClass:[CollectionPinchView class]]) {
 		CollectionPinchView *pinchView = (CollectionPinchView *)self.pinchView;
 		if (pinchView.videoPinchViews.count > 1) {
-			
+			//todo: something?
 		}
 	}
 }

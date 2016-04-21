@@ -64,6 +64,7 @@
 			}
 			[self.channelsRefreshingCondition unlock];
 			block();
+			return;
 		}
 
 		// Refresh followed channels

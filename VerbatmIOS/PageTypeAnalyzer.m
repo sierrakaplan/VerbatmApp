@@ -45,8 +45,11 @@
 
 -(NSMutableArray*) getPageViewsFromPinchViews:(NSArray*) pinchViews withFrame:(CGRect)frame inPreviewMode: (BOOL) inPreviewMode {
 	NSMutableArray* results = [[NSMutableArray alloc] init];
-	for(PinchView* pinchView in pinchViews) {
-		[results addObject:[self getPageViewFromPinchView:pinchView withFrame:frame inPreviewMode:inPreviewMode]];
+	for(int i = 0; i < pinchViews.count; i++) {
+		PinchView *pinchView = pinchViews[i];
+		PageViewingExperience *pageView = [self getPageViewFromPinchView:pinchView withFrame:frame inPreviewMode:inPreviewMode];
+		pageView.indexInPost = i;
+		[results addObject:pageView];
 	}
 	return results;
 }
