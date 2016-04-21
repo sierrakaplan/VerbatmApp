@@ -19,6 +19,16 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>FBSDKMessengerShareKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>FBSDKShareKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>OMGHTTPURLRQ.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -47,22 +57,42 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>6170D2FB9E23B5797ECA2EF03362FA0A</key>
+		<key>0F2529EFB0E4102CF44B9A4DACF47D44</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>66671B9FB2634F4763ECD6E266019FB5</key>
+		<key>1326213B5FEA6AE82065C93ACBC8D7E2</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>7FF56B31E36CF3E00D89C0343F307DFA</key>
+		<key>181BA1659D7E92D21C3F82F032FEDF64</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9B76CC7E8C42F5C8E593E3AB3CBB698B</key>
+		<key>861A91298957B6AB47C90D6A1ABCF0E1</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>93A964A091385BD56BFD77487194E282</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B99A453DEE5422D5B27AD231120DDB71</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C0598EA52F1B84AFD088C8262246496B</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C5E857693F18421F45BAF6F18CCC05AE</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -72,17 +102,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>CD03E3CC2D9240654111B96E8CB1CDEB</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>E92693C5095A9CE9D27C4C58D7F78BEA</key>
-		<dict>
-			<key>primary</key>
-			<true/>
-		</dict>
-		<key>EE13072749D19935A083AC122CB86743</key>
+		<key>CD522A4B0938D4C5694691FB430D0216</key>
 		<dict>
 			<key>primary</key>
 			<true/>
