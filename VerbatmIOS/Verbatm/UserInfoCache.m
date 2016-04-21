@@ -39,7 +39,7 @@
     return sharedInstance;
 }
 
--(void)loadUserChannelsWithCompletionBlock:(void(^)())block{
+-(void)loadUserChannelsWithCompletionBlock:(void(^)())block {
 	if (self.userChannels && self.userChannels.count > 0) {
 		block();
 		return;

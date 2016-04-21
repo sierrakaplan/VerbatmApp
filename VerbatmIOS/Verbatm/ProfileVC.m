@@ -290,7 +290,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 														 andChannelCreator:[PFUser currentUser]];
                 [self.profileNavBar newChannelCreated:newChannel];
                 [self clearChannelCreationView];
-                [[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:nil];
+				[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{}];
                 self.currentlyCreatingNewChannel = NO;
             }
         }];
