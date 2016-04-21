@@ -51,7 +51,7 @@
             CGFloat scrollViewOriginY = self.center.y - scrollViewHeight/2.f;
            frame = CGRectMake(0, scrollViewOriginY, self.frame.size.width, scrollViewHeight);
         }
-        
+    
 		self.scrollView = [[ContentPageElementScrollView alloc] initWithFrame:frame andElement:nil];
 		[self.scrollView openCollectionWithPinchViews: pinchViews];
 		[self addSubview:self.scrollView];

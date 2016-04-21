@@ -68,7 +68,7 @@
 @property (nonatomic) BOOL small;
 
 #define TEXT_VIEW_HEIGHT 70.f
-#define SLIDESHOW_ANIMATION_DURATION 2.f
+#define SLIDESHOW_ANIMATION_DURATION 1.5f
 #define OPEN_COLLECTION_FRAME_HEIGHT 70.f
 
 //this view manages the tapping gesture of the set circles
@@ -265,7 +265,6 @@
 -(void) rearrangeButtonPressed {
     if(!self.rearrangeView){
 		[self offScreen];
-        
         CGFloat y_pos = (self.isPhotoVideoSubview) ? 0.f : CUSTOM_NAV_BAR_HEIGHT;
 
         CGRect frame = CGRectMake(0.f,y_pos, self.frame.size.width, OPEN_COLLECTION_FRAME_HEIGHT);
@@ -330,7 +329,7 @@
 
 -(void)animateNextView{
     if(self.slideShowPlaying && !self.animating){
-        [UIView animateWithDuration:1.f animations:^{
+        [UIView animateWithDuration:1.5f animations:^{
             self.animating = YES;
             [self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
         } completion:^(BOOL finished) {

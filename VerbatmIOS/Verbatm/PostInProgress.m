@@ -62,8 +62,10 @@
 //removes pinch view and saves pinchViews
 -(void) removePinchViewAtIndex: (NSInteger) index {
 	@synchronized(self) {
-		[self.pinchViews removeObjectAtIndex:index];
-		[self.pinchViewsAsData removeObjectAtIndex:index];
+        if(index < self.pinchViews.count && index >= 0){
+            [self.pinchViews removeObjectAtIndex:index];
+            [self.pinchViewsAsData removeObjectAtIndex:index];
+        }
 	}
 	[[NSUserDefaults standardUserDefaults]
 	 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
@@ -73,7 +75,7 @@
 	if (!newPinchView) return; //todo: make sure this never happens
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
 		@synchronized(self) {
-			if(index <= self.pinchViews.count && index >= 0) {
+			if(index < self.pinchViews.count && index >= 0) {
 				NSData* pinchViewData = [self convertPinchViewToNSData: newPinchView];
 				[self.pinchViews replaceObjectAtIndex:index withObject: newPinchView];
 				[self.pinchViewsAsData replaceObjectAtIndex:index withObject: pinchViewData];

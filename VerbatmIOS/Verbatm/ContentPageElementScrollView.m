@@ -209,9 +209,9 @@
         self.pinchViewStartSize = [(PinchView*)pinchViews[0] radius]*2.f;
         CGFloat pinchViewSize;
         if([(PinchView*)pinchViews[0] isKindOfClass:[ImagePinchView class]]){
-            CGFloat pinchViewSize = self.frame.size.height - 5.f;
+             pinchViewSize = self.frame.size.height - 5.f;
         }else{
-            self.pinchViewStartSize = self.frame.size.height/2.f;
+            pinchViewSize = self.frame.size.height/2.f;
         }
 
         
