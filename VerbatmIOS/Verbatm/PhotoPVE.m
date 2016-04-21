@@ -68,7 +68,7 @@
 @property (nonatomic) BOOL small;
 
 #define TEXT_VIEW_HEIGHT 70.f
-
+#define SLIDESHOW_ANIMATION_DURATION 2.f
 #define OPEN_COLLECTION_FRAME_HEIGHT 70.f
 
 //this view manages the tapping gesture of the set circles
@@ -314,7 +314,7 @@
             [self addSubview:self.panGestureSensingViewHorizontal];
             [self bringSubviewToFront:self.panGestureSensingViewHorizontal];
         }
-        [NSTimer scheduledTimerWithTimeInterval:1.5f target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+        [NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
     }
     self.slideShowPlaying = YES;
 }
@@ -330,12 +330,12 @@
 
 -(void)animateNextView{
     if(self.slideShowPlaying && !self.animating){
-        [UIView animateWithDuration:1.5f animations:^{
+        [UIView animateWithDuration:1.f animations:^{
             self.animating = YES;
             [self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
         } completion:^(BOOL finished) {
             self.animating = NO;
-            [self animateNextView];
+            [NSTimer scheduledTimerWithTimeInterval:SLIDESHOW_ANIMATION_DURATION target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
         }];
     }
 }

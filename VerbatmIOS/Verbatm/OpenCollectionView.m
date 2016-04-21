@@ -9,7 +9,7 @@
 #import "OpenCollectionView.h"
 #import "ContentPageElementScrollView.h"
 #import "CollectionPinchView.h"
-
+#import "PinchView.h"
 #import "ImagePinchView.h"
 #import "VideoPinchView.h"
 
@@ -42,7 +42,17 @@
 
 -(void) setUpScrollViewWithPinchViews:(NSMutableArray *) pinchViews{
 	if(pinchViews.count) {
-		self.scrollView = [[ContentPageElementScrollView alloc] initWithFrame:self.bounds andElement:nil];
+        
+        CGRect frame;
+        if([(PinchView *)pinchViews[0] isKindOfClass:[ImagePinchView class]]){
+            frame = self.bounds;
+        }else{
+            CGFloat scrollViewHeight = ((PinchView*)pinchViews[0]).frame.size.height + (ELEMENT_Y_OFFSET_DISTANCE*2);
+            CGFloat scrollViewOriginY = self.center.y - scrollViewHeight/2.f;
+           frame = CGRectMake(0, scrollViewOriginY, self.frame.size.width, scrollViewHeight);
+        }
+        
+		self.scrollView = [[ContentPageElementScrollView alloc] initWithFrame:frame andElement:nil];
 		[self.scrollView openCollectionWithPinchViews: pinchViews];
 		[self addSubview:self.scrollView];
         self.scrollView.contentPageElementScrollViewDelegate = self;

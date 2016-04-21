@@ -45,8 +45,13 @@
             if(index <= self.pinchViews.count && index >= 0) {
                 NSData* pinchViewData = [self convertPinchViewToNSData:pinchView];
                 [self.pinchViewsAsData insertObject:pinchViewData atIndex:index];
-				//Insert copy of pinch view not pinch view itself
-				[self.pinchViews insertObject:[self convertNSDataToPinchView:pinchViewData] atIndex:index];
+				
+                //call on main queu because we are creating and formating uiview
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    //Insert copy of pinch view not pinch view itself
+                    [self.pinchViews insertObject:[self convertNSDataToPinchView:pinchViewData] atIndex:index];
+                });
+				
             }
 		}
 		[[NSUserDefaults standardUserDefaults]

@@ -17,7 +17,7 @@
 #import "SizesAndPositions.h"
 #import "PostInProgress.h"
 #import "MediaSelectTile.h"
-
+#import "ImagePinchView.h"
 @interface ContentPageElementScrollView()
 
 #pragma mark - Page element properties
@@ -207,7 +207,14 @@
 -(void) displayCollectionPinchViews:(NSMutableArray *) pinchViews {
     if(pinchViews.count){
         self.pinchViewStartSize = [(PinchView*)pinchViews[0] radius]*2.f;
-        CGFloat pinchViewSize = self.frame.size.height/2.f;
+        CGFloat pinchViewSize;
+        if([(PinchView*)pinchViews[0] isKindOfClass:[ImagePinchView class]]){
+            CGFloat pinchViewSize = self.frame.size.height - 5.f;
+        }else{
+            self.pinchViewStartSize = self.frame.size.height/2.f;
+        }
+
+        
         CGFloat yPosition = (self.frame.size.height/2.f) - (pinchViewSize/2.f);
         CGFloat xPosition = ELEMENT_Y_OFFSET_DISTANCE;
         for(PinchView* pinchView in pinchViews) {
