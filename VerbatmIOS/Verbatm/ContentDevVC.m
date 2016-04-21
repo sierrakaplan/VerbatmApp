@@ -160,7 +160,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.mainScrollView.delegate = self;
 	[self addBackgroundImage];
 	[self loadChannelsAndCreateTicker];
-	[self loadPostFromUserDefaults];
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -181,6 +180,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 		}
 		[self formatChannelPicker];
 		[self createBaseSelector];
+		[self loadPostFromUserDefaults];
 	}];
 }
 
@@ -197,7 +197,6 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 -(void) viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 }
-
 
 -(void) viewWillAppear:(BOOL)animated {
 	[self checkIntroNotification];

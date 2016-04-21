@@ -340,7 +340,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	[self.currentPage offScreen];
 	self.currentPage = newCurrentPage;
 	[self.currentPage onScreen];
-	if (!self.postMuted) {
+	if (!self.postMuted && _likeShareBar) {
 		[self checkForMuteButton:self.currentPage];
 	}
 	[self prepareNextPage];
