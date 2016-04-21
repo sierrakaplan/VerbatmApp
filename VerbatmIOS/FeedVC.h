@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <Parse/PFObject.h>
+
 @protocol FeedVCDelegate <NSObject>
 
 -(void) showTabBar: (BOOL) show;

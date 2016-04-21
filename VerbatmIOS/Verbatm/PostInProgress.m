@@ -97,7 +97,8 @@
 
 //loads pinchviews from user defaults
 -(void) loadPostFromUserDefaults {
-	self.title = [[NSUserDefaults standardUserDefaults]
+    return;
+    self.title = [[NSUserDefaults standardUserDefaults]
 				  objectForKey:TITLE_KEY];
 	NSArray* pinchViewsData = [[NSUserDefaults standardUserDefaults]
 							 objectForKey:PINCHVIEWS_KEY];

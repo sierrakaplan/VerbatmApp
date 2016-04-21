@@ -4,5 +4,7 @@ use_frameworks!
 pod 'PromiseKit'
 pod 'Fabric'
 pod 'Crashlytics'
+pod 'Parse'
+pod 'ParseFacebookUtilsV4'
 
 link_with 'Verbatm'

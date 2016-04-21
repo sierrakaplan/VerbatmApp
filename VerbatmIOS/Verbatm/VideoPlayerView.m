@@ -198,7 +198,6 @@
 			[self.customActivityIndicator startCustomActivityIndicator];
 			self.videoLoading = YES;
 			self.shouldPlayOnLoad = YES;
-//			NSLog(@"play back won't keep up");
 		}
 	}
 }
@@ -206,7 +205,7 @@
 #pragma mark - Play video -
 
 -(void)playVideo {
-	if (self.player) {
+	if (self.player && (self.player.rate == 0)) {
 		[self.player play];
 		self.isVideoPlaying = YES;
 	} else {

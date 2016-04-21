@@ -18,7 +18,7 @@
 @protocol ContentPageElementScrollViewDelegate <NSObject>
 
 -(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView;
-
+-(void) pinchviewSelected:(PinchView *) pinchView;
 @end
 
 @interface ContentPageElementScrollView : UIScrollView
