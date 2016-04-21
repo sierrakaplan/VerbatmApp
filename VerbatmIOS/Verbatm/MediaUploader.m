@@ -116,14 +116,18 @@
 
 /* NOT IN USE */
 +(AnyPromise *) uploadImageData: (NSData*) imageData toUri: (NSString*) uri {
-	AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-		AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:uri]];
+	
+    AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
+        
+        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:uri]];
 		manager.responseSerializer = [AFHTTPResponseSerializer serializer];
 		//		NSDictionary *parameters = @{};//@{@"username": @"", @"password" : @""};
-		AFHTTPRequestOperation *op = [manager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> afFormData) {
-			//do not put image inside parameters dictionary as I did, but append it!
+		
+        AFHTTPRequestOperation *op = [manager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> afFormData) {
+			
+            //do not put image inside parameters dictionary as I did, but append it!
 			[afFormData appendPartWithFileData:imageData name:@"defaultImage" fileName:@"defaultImage.png" mimeType:@"image/png"];
-
+            
 		} success:^(AFHTTPRequestOperation *operation, id responseObject) {
 			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:IMAGE_PROGRESS_UNITS-1];
 			NSString *responseURL = [operation responseString];
@@ -132,6 +136,7 @@
 			NSLog(@"Error: %@ ***** %@", operation.responseString, error);
 			resolve (error);
 		}];
+        
 		op.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
 		[op start];
 
