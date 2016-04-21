@@ -11,7 +11,7 @@
 #import "FeedQueryManager.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
-
+#import <PromiseKit/AnyPromise.h>
 
 @interface FeedQueryManager ()
 
@@ -179,21 +179,33 @@
 					completionBlock (finalChannels);
 					return;
 				}
-				for(PFObject *parseChannelObject in channels) {
-					PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-					[channelCreator fetchIfNeededInBackground];
-					NSString *channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
-					Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-																   andParseChannelObject:parseChannelObject
-																	   andChannelCreator:channelCreator];
-					[finalChannels addObject:verbatmChannelObject];
+                
+                NSMutableArray *loadChannelCreatorPromises = [[NSMutableArray alloc] init];
+				
+                    
+                for(PFObject *parseChannelObject in channels) {
+                    
+                        PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+                        [loadChannelCreatorPromises addObject:[self fetchChannelCreator:channelCreator]];
+                        NSString *channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+                        Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+                                                                       andParseChannelObject:parseChannelObject
+                                                                           andChannelCreator:channelCreator];
+                        [finalChannels addObject:verbatmChannelObject];
 				}
-				self.exploreChannelsLoaded = 0;
-				self.exploreChannelsLoaded += finalChannels.count;
-				completionBlock(finalChannels);
+                self.exploreChannelsLoaded = 0;
+                self.exploreChannelsLoaded += finalChannels.count;
+                
 			}];
 		}];
 	}];
+}
+
+-(AnyPromise*) fetchChannelCreator:(PFUser*)channelCreator {
+    AnyPromise *promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+        resolve(channelCreator);
+    }];
+    return promise;
 }
 
 -(void) loadMoreExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {

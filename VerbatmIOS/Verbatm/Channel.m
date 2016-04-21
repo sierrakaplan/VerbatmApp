@@ -58,9 +58,7 @@
 
 -(BOOL)channelBelongsToCurrentUser {
 	if (!self.parseChannelObject) return false;
-	if (!self.channelCreator) self.channelCreator = [[self.parseChannelObject valueForKey:CHANNEL_CREATOR_KEY] fetchIfNeeded];
-	[self.channelCreator fetchIfNeeded];
-    return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
+	return ([[PFUser currentUser].objectId isEqualToString:self.channelCreator.objectId]);
 }
 
 -(void)addParseChannelObject:(PFObject *)object andChannelCreator:(PFUser *)channelCreator{

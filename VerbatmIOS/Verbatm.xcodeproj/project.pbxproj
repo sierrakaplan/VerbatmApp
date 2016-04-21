@@ -182,6 +182,7 @@
 		C734FD9719B13D7700B2C370 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9619B13D7700B2C370 /* CoreVideo.framework */; };
 		C734FD9919B13D8600B2C370 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C734FD9819B13D8600B2C370 /* CoreMedia.framework */; };
 		C734FD9C19B14B8D00B2C370 /* ContentDevVC.m in Sources */ = {isa = PBXBuildFile; fileRef = C734FD9B19B14B8D00B2C370 /* ContentDevVC.m */; };
+		C735E48E1CC885460099FE93 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A5E3CDA61B881B0C0065C8E5 /* FBSDKCoreKit.framework */; };
 		C73B7C2F1CA8719200128926 /* Intro_Instruction_Notification_View.m in Sources */ = {isa = PBXBuildFile; fileRef = C73B7C2E1CA8719200128926 /* Intro_Instruction_Notification_View.m */; };
 		C741AC581C49D23C0076FFC5 /* FollowInfoBar.m in Sources */ = {isa = PBXBuildFile; fileRef = C741AC571C49D23B0076FFC5 /* FollowInfoBar.m */; };
 		C7469BF41B4874A600EA7B10 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7469BF21B4874A600EA7B10 /* Main.storyboard */; };
@@ -677,6 +678,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C735E48E1CC885460099FE93 /* FBSDKCoreKit.framework in Frameworks */,
 				C7F3EBD01C86249E007D23DF /* libcompression.tbd in Frameworks */,
 				C7F3EBCE1C859B8C007D23DF /* libbz2.1.0.tbd in Frameworks */,
 				A55AA12E1BD5B7DC00EB883A /* CoreMotion.framework in Frameworks */,
@@ -2103,7 +2105,10 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inherited)";
@@ -2135,7 +2140,10 @@
 				CURRENT_PROJECT_VERSION = 2;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Verbatm/Verbatm-Prefix.pch";
 				HEADER_SEARCH_PATHS = "$(inherited)";

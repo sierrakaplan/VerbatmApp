@@ -16,6 +16,7 @@
 #import "Styles.h"
 
 #import "UserManager.h"
+
 @interface SettingsVC () <CustomNavigationBarDelegate,
 MFMailComposeViewControllerDelegate,UITextFieldDelegate>
 

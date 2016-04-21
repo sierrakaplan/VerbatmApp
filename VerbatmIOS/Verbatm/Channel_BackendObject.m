@@ -15,6 +15,7 @@
 #import "Post_BackendObject.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
+
 #import "UserManager.h"
 #import "UserInfoCache.h"
 
@@ -76,23 +77,25 @@
 		return;
 	}
 
-	PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
-	[userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
-	[userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
-														 NSError * _Nullable error) {
-		NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
-		if(objects && !error){
-			for(PFObject * parseChannelObject in objects){
-				NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
-				// get number of follows from follow objects
-				Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-																andParseChannelObject:parseChannelObject
-																	andChannelCreator:user];
-				[finalChannelObjects addObject:verbatmChannelObject];
-			}
-		}
-		completionBlock(finalChannelObjects);
-	}];
+    [user fetchIfNeededInBackgroundWithBlock:^(PFObject * _Nullable object, NSError * _Nullable error) {
+        PFQuery * userChannelQuery = [PFQuery queryWithClassName:CHANNEL_PFCLASS_KEY];
+        [userChannelQuery whereKey:CHANNEL_CREATOR_KEY equalTo:user];
+        [userChannelQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects,
+                                                             NSError * _Nullable error) {
+            NSMutableArray * finalChannelObjects = [[NSMutableArray alloc] init];
+            if(objects && !error){
+                for(PFObject * parseChannelObject in objects){
+                    NSString * channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
+                    // get number of follows from follow objects
+                    Channel * verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+                                                                    andParseChannelObject:parseChannelObject
+                                                                        andChannelCreator:user];
+                    [finalChannelObjects addObject:verbatmChannelObject];
+                }
+            }
+            completionBlock(finalChannelObjects);
+        }];
+    }];
 }
 
 @end
