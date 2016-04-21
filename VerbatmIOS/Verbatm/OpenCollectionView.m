@@ -80,7 +80,9 @@
 -(void) pinchviewSelected:(PinchView *) pinchView{
     [self.delegate pinchViewSelected:pinchView];
 }
-
+-(void) deleteButtonPressedOnContentPageElementScrollView:(ContentPageElementScrollView*)scrollView{
+    
+}
 
 -(void) exitView {
 	NSMutableArray * finalArray = [self.scrollView closeCollection];

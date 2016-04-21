@@ -321,21 +321,23 @@
             [self addSubview:self.panGestureSensingViewHorizontal];
             [self bringSubviewToFront:self.panGestureSensingViewHorizontal];
         }
-        [NSTimer scheduledTimerWithTimeInterval:2.f target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+        [NSTimer scheduledTimerWithTimeInterval:1.5f target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
     }
     self.slideShowPlaying = YES;
 }
 -(void)stopSlideshow{
     self.slideShowPlaying = NO;
-//    [self.panGestureSensingViewHorizontal removeFromSuperview];
-//    self.panGestureSensingViewHorizontal = nil;
-//    [self.panGestureSensingViewVertical removeFromSuperview];
-//    self.panGestureSensingViewVertical = nil;
+    if(self.inPreviewMode){
+        [self.panGestureSensingViewHorizontal removeFromSuperview];
+        self.panGestureSensingViewHorizontal = nil;
+        [self.panGestureSensingViewVertical removeFromSuperview];
+        self.panGestureSensingViewVertical = nil;
+    }
 }
 
 -(void)animateNextView{
     if(self.slideShowPlaying && !self.animating){
-        [UIView animateWithDuration:2.f animations:^{
+        [UIView animateWithDuration:1.5f animations:^{
             self.animating = YES;
             [self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
         } completion:^(BOOL finished) {

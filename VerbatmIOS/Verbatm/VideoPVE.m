@@ -177,6 +177,11 @@
 	[self onScreen];
 }
 
+//called by opencollection view but not to be used here
+-(void)pinchViewSelected:(PinchView *) pv{
+    
+}
+
 #pragma mark - On and Off Screen (play and pause) -
 
 -(void)offScreen{
