@@ -160,6 +160,7 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 	self.mainScrollView.delegate = self;
 	[self addBackgroundImage];
 	[self loadChannelsAndCreateTicker];
+	[self loadPostFromUserDefaults];
 }
 
 -(BOOL) prefersStatusBarHidden {
@@ -167,20 +168,20 @@ GMImagePickerControllerDelegate, ContentPageElementScrollViewDelegate, CustomNav
 }
 
 -(void)loadChannelsAndCreateTicker{
+	[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
+		self.userChannels = [NSMutableArray arrayWithArray:[[UserInfoCache sharedInstance] getUserChannels]];
 
-	self.userChannels = [NSMutableArray arrayWithArray:[[UserInfoCache sharedInstance] getUserChannels]];
-
-	if(self.userChannels.count){
-		NSUInteger startViewIndex =[[UserInfoCache sharedInstance] currentChannelViewedIndex];
-		id channel = [self.userChannels objectAtIndex:startViewIndex];
-		//we simple set the current index being viewed as the first channel. This is
-		// a heuristic for the user.
-		[self.userChannels removeObject:channel];
-		[self.userChannels insertObject:channel atIndex:0];
-	}
-	[self formatChannelPicker];
-	[self createBaseSelector];
-	[self loadPostFromUserDefaults];
+		if(self.userChannels.count){
+			NSUInteger startViewIndex =[[UserInfoCache sharedInstance] currentChannelViewedIndex];
+			id channel = [self.userChannels objectAtIndex:startViewIndex];
+			//we simple set the current index being viewed as the first channel. This is
+			// a heuristic for the user.
+			[self.userChannels removeObject:channel];
+			[self.userChannels insertObject:channel atIndex:0];
+		}
+		[self formatChannelPicker];
+		[self createBaseSelector];
+	}];
 }
 
 -(void) addBackgroundImage {
@@ -456,7 +457,8 @@ rowHeightForComponent:(NSInteger)component{
 -(void) loadPostFromUserDefaults {
 	NSArray* savedPinchViews = [[NSArray alloc] initWithArray:[[PostInProgress sharedInstance] pinchViews]];
 	[[PostInProgress sharedInstance] clearPostInProgress];
-	for (PinchView* pinchView in savedPinchViews) {
+	for (NSInteger i = savedPinchViews.count-1; i >= 0; i--) {
+		PinchView *pinchView = savedPinchViews[i];
 		[pinchView specifyRadius:self.defaultPinchViewRadius
 					   andCenter:self.defaultPinchViewCenter];
 		[self newPinchView:pinchView belowView: nil andSaveInUserDefaults:YES];

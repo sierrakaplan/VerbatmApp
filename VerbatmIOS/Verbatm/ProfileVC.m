@@ -106,7 +106,7 @@ PublishingProgressProtocol, PostListVCProtocol, UIGestureRecognizerDelegate>
 		[[UserInfoCache sharedInstance] loadUserChannelsWithCompletionBlock:^{
 			block();
 		}];
-	}else{
+	} else {
 		[Channel_BackendObject getChannelsForUser:self.userOfProfile withCompletionBlock:
 		 ^(NSMutableArray * channels) {
 			 self.channels = channels;

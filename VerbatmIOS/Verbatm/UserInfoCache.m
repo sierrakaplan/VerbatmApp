@@ -40,9 +40,13 @@
 }
 
 -(void)loadUserChannelsWithCompletionBlock:(void(^)())block{
+	if (self.userChannels && self.userChannels.count > 0) {
+		block();
+		return;
+	}
     [Channel_BackendObject getChannelsForUser:[PFUser currentUser] withCompletionBlock:^(NSMutableArray * channels) {
         self.userChannels = channels;
-        if(block)block();
+        block();
     }];
 }
 
