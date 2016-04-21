@@ -309,26 +309,28 @@
         CGRect v_frame = CGRectMake(0.f, self.rearrangeButton.frame.origin.y,self.rearrangeButton.frame.origin.x - 10.f, self.frame.size.height - self.rearrangeButton.frame.origin.y);
         
         //create view to sense swiping
-        self.panGestureSensingViewVertical = [[UIView alloc] initWithFrame:h_frame];
-        self.panGestureSensingViewVertical.backgroundColor = [UIColor clearColor];
-        
-        self.panGestureSensingViewHorizontal = [[UIView alloc] initWithFrame:v_frame];
-        self.panGestureSensingViewHorizontal.backgroundColor = [UIColor clearColor];
-        
-        [self addSubview:self.panGestureSensingViewVertical];
-        [self bringSubviewToFront:self.panGestureSensingViewVertical];
-        [self addSubview:self.panGestureSensingViewHorizontal];
-        [self bringSubviewToFront:self.panGestureSensingViewHorizontal];
+        if(self.panGestureSensingViewHorizontal == nil){
+            self.panGestureSensingViewVertical = [[UIView alloc] initWithFrame:h_frame];
+            self.panGestureSensingViewVertical.backgroundColor = [UIColor clearColor];
+            
+            self.panGestureSensingViewHorizontal = [[UIView alloc] initWithFrame:v_frame];
+            self.panGestureSensingViewHorizontal.backgroundColor = [UIColor clearColor];
+            
+            [self addSubview:self.panGestureSensingViewVertical];
+            [self bringSubviewToFront:self.panGestureSensingViewVertical];
+            [self addSubview:self.panGestureSensingViewHorizontal];
+            [self bringSubviewToFront:self.panGestureSensingViewHorizontal];
+        }
         [NSTimer scheduledTimerWithTimeInterval:2.f target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
     }
     self.slideShowPlaying = YES;
 }
 -(void)stopSlideshow{
     self.slideShowPlaying = NO;
-    [self.panGestureSensingViewHorizontal removeFromSuperview];
-    self.panGestureSensingViewHorizontal = nil;
-    [self.panGestureSensingViewVertical removeFromSuperview];
-    self.panGestureSensingViewVertical = nil;
+//    [self.panGestureSensingViewHorizontal removeFromSuperview];
+//    self.panGestureSensingViewHorizontal = nil;
+//    [self.panGestureSensingViewVertical removeFromSuperview];
+//    self.panGestureSensingViewVertical = nil;
 }
 
 -(void)animateNextView{
