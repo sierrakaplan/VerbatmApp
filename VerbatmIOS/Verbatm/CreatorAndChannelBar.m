@@ -17,6 +17,7 @@
 #import "ParseBackendKeys.h"
 #import <Parse/PFObject.h>
 
+#import "SizesAndPositions.h"
 #import "Styles.h"
 
 #import "ProfileVC.h"
@@ -91,9 +92,9 @@
     CGFloat channelNameHolderFrameWidth = (channelNameFrameWidth + labelHeights + LABEL_WALL_OFFSET);
     
     CGRect channelNameHolderViewFrame = CGRectMake(self.frame.size.width -
-                                                   (channelNameHolderFrameWidth + LABEL_WALL_OFFSET),                                         (LABEL_WALL_OFFSET*0.5),
+                                                   (channelNameHolderFrameWidth + LABEL_WALL_OFFSET),                                         (LABEL_WALL_OFFSET*0.5) + STATUS_BAR_HEIGHT,
                                                    channelNameHolderFrameWidth,
-                                                   self.frame.size.height - LABEL_WALL_OFFSET);
+                                                   self.frame.size.height - LABEL_WALL_OFFSET - STATUS_BAR_HEIGHT);
     CGRect followImageFrame = CGRectMake(4.f,(channelNameHolderViewFrame.size.height/2.f) - (labelHeights/2.f),labelHeights,
                                          labelHeights);
     CGRect channelNameFrame = CGRectMake(followImageFrame.size.width,(channelNameHolderViewFrame.size.height/2.f) - (labelHeights/2.f), channelNameFrameWidth,labelHeights);
@@ -140,8 +141,8 @@
 -(void)addCreatorNameViewWithName:(NSString *) creatorName{
     //create username
     CGRect creatorNameFrame = CGRectMake(LABEL_WALL_OFFSET,
-                                         LABEL_WALL_OFFSET, self.frame.size.width/2.f,
-                                         self.frame.size.height - (2*LABEL_WALL_OFFSET));
+                                         LABEL_WALL_OFFSET + STATUS_BAR_HEIGHT, self.frame.size.width/2.f,
+                                         self.frame.size.height - (2*LABEL_WALL_OFFSET) - STATUS_BAR_HEIGHT);
     
     UILabel* creatorNameView = [[UILabel alloc] initWithFrame:creatorNameFrame];
     creatorNameView.textAlignment = NSTextAlignmentLeft;
