@@ -363,6 +363,7 @@ FBSDK_EXTERN NSString *const FBSDKAppEventParameterValueNo;
          parameters:(NSDictionary *)parameters
         accessToken:(FBSDKAccessToken *)accessToken;
 
+<<<<<<< HEAD
 
 /*
  * Push Notifications Logging
@@ -385,6 +386,8 @@ FBSDK_EXTERN NSString *const FBSDKAppEventParameterValueNo;
  */
 + (void)logPushNotificationOpen:(NSDictionary *)payload action:(NSString *)action;
 
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 /*!
 
  @abstract
@@ -404,6 +407,7 @@ FBSDK_EXTERN NSString *const FBSDKAppEventParameterValueNo;
 + (void)activateApp;
 
 /*
+<<<<<<< HEAD
  * Push Notifications Registration
  */
 
@@ -419,6 +423,8 @@ FBSDK_EXTERN NSString *const FBSDKAppEventParameterValueNo;
 + (void)setPushNotificationsDeviceToken:(NSData *)deviceToken;
 
 /*
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
  * Control over event batching/flushing
  */
 

@@ -44,12 +44,13 @@
 
 #pragma mark - ADK -
 
-#define X_ICON @"x_icon"
+#define MINIMIZE_ICON @"minimize_icon"
 #define ADK_BACKGROUND @"background_adk"
 
 #define CHANNEL_SELECTOR_ARROW_LEFT @"white_selector_arrow_left"
 #define CHANNEL_SELECTOR_ARROW_RIGHT @"white_selector_arrow_right"
 
+#define EDIT_PINCHVIEW_ICON @"edit_icon"
 #define DELETE_PINCHVIEW_ICON @"trash_can"
 
 #define SUCCESS_PUBLISHING_IMAGE @"publishing_succeeded_notification"

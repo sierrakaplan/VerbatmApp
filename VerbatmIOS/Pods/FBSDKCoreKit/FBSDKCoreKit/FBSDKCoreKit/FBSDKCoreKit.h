@@ -39,6 +39,7 @@
 #import <FBSDKCoreKit/FBSDKMutableCopying.h>
 #import <FBSDKCoreKit/FBSDKProfile.h>
 #import <FBSDKCoreKit/FBSDKProfilePictureView.h>
+<<<<<<< HEAD
 #else
 #import <FBSDKCoreKit/FBSDKDeviceButton.h>
 #import <FBSDKCoreKit/FBSDKDeviceViewControllerBase.h>
@@ -46,3 +47,9 @@
 
 #define FBSDK_VERSION_STRING @"4.11.0"
 #define FBSDK_TARGET_PLATFORM_VERSION @"v2.6"
+=======
+#endif
+
+#define FBSDK_VERSION_STRING @"4.10.1"
+#define FBSDK_TARGET_PLATFORM_VERSION @"v2.5"
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08

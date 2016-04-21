@@ -51,6 +51,7 @@
 
 -(void)addLongPressGesture {
 	UILongPressGestureRecognizer * longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(pinchObjectSelected:)];
+	longPress.minimumPressDuration = 0.1f;
 	[self addGestureRecognizer:longPress];
 }
 

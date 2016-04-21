@@ -28,7 +28,10 @@
 #import "FBSDKTypeUtility.h"
 
 // one hour
+<<<<<<< HEAD
 #define DEFAULT_SESSION_TIMEOUT_INTERVAL 60
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 #define FBSDK_SERVER_CONFIGURATION_MANAGER_CACHE_TIMEOUT (60 * 60)
 
 #define FBSDK_SERVER_CONFIGURATION_USER_DEFAULTS_KEY @"com.facebook.sdk:serverConfiguration%@"
@@ -44,7 +47,10 @@
 #define FBSDK_SERVER_CONFIGURATION_LOGIN_TOOLTIP_TEXT_FIELD @"gdpv4_nux_content"
 #define FBSDK_SERVER_CONFIGURATION_NATIVE_PROXY_AUTH_FLOW_ENABLED_FIELD @"ios_supports_native_proxy_auth_flow"
 #define FBSDK_SERVER_CONFIGURATION_SYSTEM_AUTHENTICATION_ENABLED_FIELD @"ios_supports_system_auth"
+<<<<<<< HEAD
 #define FBSDK_SERVER_CONFIGURATION_SESSION_TIMEOUT_FIELD @"app_events_session_timeout"
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 
 @implementation FBSDKServerConfigurationManager
 
@@ -71,6 +77,7 @@ typedef NS_OPTIONS(NSUInteger, FBSDKServerConfigurationManagerAppEventsFeatures)
   }
 }
 
+<<<<<<< HEAD
 + (void)clearCache
 {
   _serverConfiguration = nil;
@@ -82,6 +89,8 @@ typedef NS_OPTIONS(NSUInteger, FBSDKServerConfigurationManagerAppEventsFeatures)
   [defaults synchronize];
 }
 
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 + (FBSDKServerConfiguration *)cachedServerConfiguration
 {
   NSString *appID = [FBSDKSettings appID];
@@ -180,7 +189,10 @@ typedef NS_OPTIONS(NSUInteger, FBSDKServerConfigurationManagerAppEventsFeatures)
   NSDictionary *dialogFlows = [FBSDKTypeUtility dictionaryValue:resultDictionary[FBSDK_SERVER_CONFIGURATION_DIALOG_FLOWS_FIELD]];
   FBSDKErrorConfiguration *errorConfiguration = [[FBSDKErrorConfiguration alloc] initWithDictionary:nil];
   [errorConfiguration parseArray:resultDictionary[FBSDK_SERVER_CONFIGURATION_ERROR_CONFIGURATION_FIELD]];
+<<<<<<< HEAD
   NSTimeInterval sessionTimeoutInterval = [FBSDKTypeUtility timeIntervalValue:resultDictionary[FBSDK_SERVER_CONFIGURATION_SESSION_TIMEOUT_FIELD]] ?: DEFAULT_SESSION_TIMEOUT_INTERVAL;
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
   FBSDKServerConfiguration *serverConfiguration = [[FBSDKServerConfiguration alloc] initWithAppID:appID
                                                                                           appName:appName
                                                                               loginTooltipEnabled:loginTooltipEnabled
@@ -195,7 +207,10 @@ typedef NS_OPTIONS(NSUInteger, FBSDKServerConfigurationManagerAppEventsFeatures)
                                                                                       dialogFlows:dialogFlows
                                                                                         timestamp:[NSDate date]
                                                                                errorConfiguration:errorConfiguration
+<<<<<<< HEAD
                                                                            sessionTimeoutInterval:sessionTimeoutInterval
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
                                                                                          defaults:NO];
   [self _didProcessConfigurationFromNetwork:serverConfiguration appID:appID error:nil];
 }
@@ -219,7 +234,10 @@ typedef NS_OPTIONS(NSUInteger, FBSDKServerConfigurationManagerAppEventsFeatures)
                       FBSDK_SERVER_CONFIGURATION_LOGIN_TOOLTIP_TEXT_FIELD,
                       FBSDK_SERVER_CONFIGURATION_NATIVE_PROXY_AUTH_FLOW_ENABLED_FIELD,
                       FBSDK_SERVER_CONFIGURATION_SYSTEM_AUTHENTICATION_ENABLED_FIELD,
+<<<<<<< HEAD
                       FBSDK_SERVER_CONFIGURATION_SESSION_TIMEOUT_FIELD,
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
                       ];
   NSDictionary *parameters = @{ @"fields": [fields componentsJoinedByString:@","] };
   FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc] initWithGraphPath:appID
@@ -267,7 +285,10 @@ typedef NS_OPTIONS(NSUInteger, FBSDKServerConfigurationManagerAppEventsFeatures)
                                                                       dialogFlows:dialogFlows
                                                                         timestamp:nil
                                                                errorConfiguration:nil
+<<<<<<< HEAD
                                                            sessionTimeoutInterval:DEFAULT_SESSION_TIMEOUT_INTERVAL
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
                                                                          defaults:YES];
   }
   return _defaultServerConfiguration;

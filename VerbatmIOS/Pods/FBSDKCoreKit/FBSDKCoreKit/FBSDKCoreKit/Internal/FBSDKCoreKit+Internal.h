@@ -38,11 +38,14 @@
 #import "UI/FBSDKUIUtility.h"
 #import "UI/FBSDKViewImpressionTracker.h"
 #import "WebDialog/FBSDKWebDialog.h"
+<<<<<<< HEAD
 #else
 #import "Device/FBSDKDeviceButton+Internal.h"
 #import "Device/FBSDKDeviceDialogView.h"
 #import "Device/FBSDKDeviceViewControllerBase+Internal.h"
 #import "Device/FBSDKModalFormPresentationController.h"
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 #endif
 
 #import "AppEvents/FBSDKAppEvents+Internal.h"

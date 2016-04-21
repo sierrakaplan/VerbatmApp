@@ -76,6 +76,7 @@
   }
 }
 
+<<<<<<< HEAD
 + (NSTimeInterval)timeIntervalValue:(id)object
 {
   if ([object isKindOfClass:[NSNumber class]]) {
@@ -87,6 +88,8 @@
   }
 }
 
+=======
+>>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 + (NSUInteger)unsignedIntegerValue:(id)object
 {
   if ([object isKindOfClass:[NSNumber class]]) {

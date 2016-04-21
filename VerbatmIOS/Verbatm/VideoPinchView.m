@@ -66,6 +66,7 @@
 	[self.videoView setImage: self.videoImage];
 	[self.videoView removeFromSuperview];
 	[self.background addSubview:self.videoView];
+	[self addEditIcon];
 }
 
 #pragma mark - Overriding get videos
