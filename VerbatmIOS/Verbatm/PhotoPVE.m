@@ -295,15 +295,20 @@
 
 //new pinchview tapped in rearange view so we need to change what's presented
 -(void)pinchViewSelected:(PinchView *) pv{
-    NSInteger imageIndex = [((CollectionPinchView*)self.pinchView).imagePinchViews indexOfObject:pv];
+    NSInteger imageIndex;
+    for(NSInteger index = 0; index < self.imageContainerViews.count; index++){
+        EditMediaContentView * eview = self.imageContainerViews[index];
+        if(eview.pinchView == pv){
+            imageIndex = index;
+            break;
+        }
+    }
     [self setImageViewsToLocation:imageIndex];
 }
 
 
 
--(void)playWithSpeed:(CGFloat) speed{
-   
-    
+-(void)playWithSpeed:(CGFloat) speed {
     CGRect h_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.rearrangeButton.frame.origin.y);
     CGRect v_frame = CGRectMake(0.f, self.rearrangeButton.frame.origin.y,self.rearrangeButton.frame.origin.x - 10.f, self.frame.size.height - self.rearrangeButton.frame.origin.y);
     
@@ -353,7 +358,7 @@
 	((CollectionPinchView*)self.pinchView).imagePinchViews = pinchViews;
 	[self.pinchView renderMedia];
 	[self addContentFromImagePinchViews: pinchViews];
-    [self createRearrangeButton];
+   // [self createRearrangeButton];
 }
 
 -(BOOL) goToPhoto:(CGPoint) touchLocation {
@@ -556,9 +561,10 @@
 #pragma mark - Overriding ArticleViewingExperience methods -
 
 -(void) onScreen {
-    if(self.imageContainerViews.count > 1 &&
-       !self.slideShowPlaying){
-        [self playWithSpeed:2.f];
+    if(self.imageContainerViews.count > 1){
+        if(!self.slideShowPlaying){
+            [self playWithSpeed:2.f];
+        }
     }
 }
 

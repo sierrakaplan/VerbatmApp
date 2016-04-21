@@ -462,9 +462,10 @@
 										 self.previousFrameInLongPress.size.height);
 
 	[self addSubview:self.selectedItem];
-
 	[self.selectedItem markAsSelected:NO];
     [self shiftPinchViewsAfterIndex:0];
+    [self.contentPageElementScrollViewDelegate pinchviewSelected:self.selectedItem];
+    
 	//sanitize for next run
 	self.selectedItem = nil;
 }
