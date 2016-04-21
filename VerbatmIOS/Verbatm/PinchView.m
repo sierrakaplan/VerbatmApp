@@ -33,6 +33,7 @@
 #define CENTER_Y_KEY @"center_y"
 
 #define EDIT_VIEW_SIZE 30.f
+#define EDIT_VIEW_OFFSET 50.f
 
 @end
 
@@ -64,6 +65,7 @@
 }
 
 -(void) initialize {
+	self.showEditIcon = NO;
 	[self setBackgroundFrames];
 	[self formatBackground];
 	[self addBorderToPinchView];
@@ -72,11 +74,11 @@
 }
 
 -(void) addEditIcon {
-	CGFloat offset = self.radius/4.f;
+	if (!self.showEditIcon) return;
 	if (_editImageView) {
 		[self.editImageView removeFromSuperview];
 	}
-	self.editImageView.frame = CGRectMake(offset, offset, EDIT_VIEW_SIZE, EDIT_VIEW_SIZE);
+	self.editImageView.frame = CGRectMake(EDIT_VIEW_OFFSET, EDIT_VIEW_OFFSET, EDIT_VIEW_SIZE, EDIT_VIEW_SIZE);
 	[self.background addSubview: self.editImageView];
 }
 
