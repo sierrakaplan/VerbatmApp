@@ -82,6 +82,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 @property (nonatomic) UIView * PagingLine;//line that moves up and down as the user swipes up and down
 
 @property (nonatomic) UIImageView * pageUpIndicator;
+@property (nonatomic) BOOL pageUpIndicatorDisplayed;
 
 @property (nonatomic) NSMutableArray * mediaPageContent;//TODO
 
@@ -109,6 +110,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 					   small:(BOOL) small {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.pageUpIndicatorDisplayed = NO;
 		self.postMuted = NO;
 		self.small = small;
 		[self addSubview: self.mainScrollView];
@@ -122,6 +124,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 -(instancetype)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	if (self) {
+		self.pageUpIndicatorDisplayed = NO;
 		self.postMuted = NO;
 		[self addSubview: self.mainScrollView];
 		self.mainScrollView.backgroundColor = [UIColor blackColor];
@@ -216,7 +219,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	}
 	[self addSubview:self.likeShareBar];
 	[self checkIfUserHasLikedThePost];
-	[self showPageUpIndicator];
+	self.pageUpIndicatorDisplayed = YES;
+	[self displayMediaOnCurrentPage];
 }
 
 -(void) showWhoLikesThePost {
@@ -322,12 +326,16 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 -(void) displayMediaOnCurrentPage {
 	NSInteger currentViewableIndex = (self.mainScrollView.contentOffset.y/self.frame.size.height);
 	NSInteger indexBelow = currentViewableIndex +1;
-	PageViewingExperience* pageBelow = [self.pageViews objectForKey:[NSNumber numberWithInteger:indexBelow]];
-	if (pageBelow) {
-		[self showPageUpIndicator];
-	} else {
-		[self removePageUpIndicatorFromView];
+	
+	if (self.pageUpIndicatorDisplayed) {
+		PageViewingExperience* pageBelow = [self.pageViews objectForKey:[NSNumber numberWithInteger:indexBelow]];
+		if (pageBelow) {
+			[self showPageUpIndicator];
+		} else {
+			[self removePageUpIndicatorFromView];
+		}
 	}
+
 	PageViewingExperience *newCurrentPage = [self.pageViews objectForKey:[NSNumber numberWithInteger:currentViewableIndex]];
 	[self.currentPage offScreen];
 	self.currentPage = newCurrentPage;
@@ -621,6 +629,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void)showPageUpIndicator {
+	self.pageUpIndicatorDisplayed = YES;
 	if(!self.pageUpIndicator && self.pageViews.count) {
 		UIImage * arrowImage = [UIImage imageNamed:PAGE_UP_ICON_IMAGE];
 		self.pageUpIndicator = [[UIImageView alloc] initWithImage:arrowImage];

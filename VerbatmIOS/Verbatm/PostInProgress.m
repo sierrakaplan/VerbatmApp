@@ -65,10 +65,17 @@
 }
 
 -(void) removePinchViewAtIndex:(NSInteger)index andReplaceWithPinchView:(PinchView *)newPinchView {
-    @synchronized(self) {
-        [self removePinchViewAtIndex:index];
-        [self addPinchView:newPinchView atIndex:index];
-    }
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
+		@synchronized(self) {
+			if(index <= self.pinchViews.count && index >= 0) {
+				NSData* pinchViewData = [self convertPinchViewToNSData: newPinchView];
+				[self.pinchViews replaceObjectAtIndex:index withObject: newPinchView];
+				[self.pinchViewsAsData replaceObjectAtIndex:index withObject: pinchViewData];
+			}
+		}
+		[[NSUserDefaults standardUserDefaults]
+		 setObject:self.pinchViewsAsData forKey:PINCHVIEWS_KEY];
+	});
 }
 
 -(void) swapPinchViewsAtIndex:(NSInteger)index1 andIndex:(NSInteger)index2 {

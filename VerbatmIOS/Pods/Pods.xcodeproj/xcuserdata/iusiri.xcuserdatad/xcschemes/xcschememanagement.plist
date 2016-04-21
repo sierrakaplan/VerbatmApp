@@ -4,7 +4,42 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Bolts.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>FBSDKCoreKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>FBSDKLoginKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>FBSDKShareKit.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Facebook-iOS-SDK.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>OMGHTTPURLRQ.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>Parse.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>ParseFacebookUtils.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -22,27 +57,42 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>190ACD3A51BC90B85EADB13E9CDD207B</key>
+		<key>1E776E28B99F3B7A0429F807CC99BB89</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>32E2A079114640DC99FCA8B7DCC80B95</key>
+		<key>351433CB104B4AC62C6D4B5D786F4F87</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>5E943EE1BD86DC9BEF438A42E27FC59F</key>
+		<key>486E9E01DEB75A34971851610D17D64C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9BC3612D4EE38DD29EA1BFD5D878E5D3</key>
+		<key>5808268CAA281CC7510FA4A70963718C</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>A0A0F46D9F59F44243E88C984AE5A3DA</key>
+		<key>6D78E9A6BE412C29FD50C6A388D68F77</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B80F94A93E7052D4B6748D1AD2B86915</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C28D3D831496D3A7376A3837AD337484</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C60BA97C2C8DF3D7E9D90C0CD1D0BAED</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -52,7 +102,7 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C7597C136C61624E838DA8EC5D87EA70</key>
+		<key>FB0FFF215D586DFDF443E4EE1876627D</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -116,7 +116,7 @@
 #pragma mark - Log user out -
 
 -(void) logOutUser {
-	[PFUser logOut];
+	[PFUser  logOut];
     [[NSNotificationCenter defaultCenter] postNotificationName:NOTIFICATION_USER_SIGNED_OUT object:nil];
 }
 
