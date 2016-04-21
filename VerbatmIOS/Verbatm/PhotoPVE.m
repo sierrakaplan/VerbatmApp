@@ -249,13 +249,6 @@
 }
 
 
-#pragma mark - Text View -
-
--(void)textViewButtonClicked:(UIButton*) sender {
-    TextOverMediaView * currentView = self.imageContainerViews[self.currentPhotoIndex];
-	[currentView showText: !currentView.textShowing];
-}
-
 #pragma mark - Tap Gesture -
 
 
@@ -610,19 +603,6 @@
 
 -(void) setImageContainerViews:(NSMutableArray *)imageContainerViews {
 	_imageContainerViews = imageContainerViews;
-}
-
-
--(UIButton *)textCreationButton{
-    if(!_textViewButton){
-        _textViewButton = [[UIButton alloc] initWithFrame:CGRectMake(self.frame.size.width -  EXIT_CV_BUTTON_WALL_OFFSET -
-                                                                         EXIT_CV_BUTTON_WIDTH,
-                                                                         self.frame.size.height - EXIT_CV_BUTTON_HEIGHT -
-                                                                         EXIT_CV_BUTTON_WALL_OFFSET,
-                                                                         EXIT_CV_BUTTON_WIDTH,
-                                                                         EXIT_CV_BUTTON_HEIGHT)];
-    }
-    return _textViewButton;
 }
 
 -(UIButton *)rearrangeButton {
