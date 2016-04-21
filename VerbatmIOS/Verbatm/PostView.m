@@ -72,6 +72,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 @property (nonatomic) PostLikeAndShareBar * likeShareBar;
 @property (nonatomic) CGRect lsBarDownFrame;// the framw of the like share button with the tab down
 @property (nonatomic) CGRect lsBarUpFrame;//the frame of the like share button with the tab up
+@property (nonatomic) CGRect creatorBarFrameUp;
+@property (nonatomic) CGRect creatorBarFrameDown;
 
 @property (nonatomic) UIImageView * swipeUpAndDownInstruction;
 
@@ -232,6 +234,8 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 }
 
 -(void) addCreatorInfo {
+	self.creatorBarFrameUp = CGRectMake(0.f, -STATUS_BAR_HEIGHT, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
+	self.creatorBarFrameDown = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT + STATUS_BAR_HEIGHT);
 	[Post_Channel_RelationshipManager getChannelObjectFromParsePCRelationship:self.parsePostChannelActivityObject
 														  withCompletionBlock:^(Channel * channel) {
 															  self.postChannel = channel;
@@ -240,8 +244,7 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 															  if(channel.parseChannelObject != self.listChannel.parseChannelObject
 																 && ![channel channelBelongsToCurrentUser]) {
 																  dispatch_async(dispatch_get_main_queue(), ^{
-																	  CGRect creatorBarFrame = CGRectMake(0.f, 0.f, self.frame.size.width, CREATOR_CHANNEL_BAR_HEIGHT);
-																	  self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:creatorBarFrame andChannel:channel];
+																	  self.creatorAndChannelBar = [[CreatorAndChannelBar alloc] initWithFrame:self.creatorBarFrameDown andChannel:channel];
 																	  self.creatorAndChannelBar.delegate = self;
 																	  [self addSubview:self.creatorAndChannelBar];
 																  });
@@ -259,11 +262,13 @@ PostLikeAndShareBarProtocol, CreatorAndChannelBarProtocol>
 	if(down) {
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.likeShareBar.frame = self.lsBarDownFrame;
+			self.creatorAndChannelBar.frame = self.creatorBarFrameUp;
 		} completion:^(BOOL finished) {
 		}];
 	}else{
 		[UIView animateWithDuration:TAB_BAR_TRANSITION_TIME animations:^{
 			self.likeShareBar.frame = self.lsBarUpFrame;
+			self.creatorAndChannelBar.frame = self.creatorBarFrameDown;
 		} completion:^(BOOL finished) {
 		}];
 	}
