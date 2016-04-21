@@ -73,6 +73,7 @@
 
 //this view manages the tapping gesture of the set circles
 @property (nonatomic, strong) UIView * circleTapView;
+@property (nonatomic) BOOL animating;
 
 @property (nonatomic) BOOL slideShowPlaying;
 @end
@@ -303,22 +304,23 @@
 
 
 -(void)playWithSpeed:(CGFloat) speed {
-    CGRect h_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.rearrangeButton.frame.origin.y);
-    CGRect v_frame = CGRectMake(0.f, self.rearrangeButton.frame.origin.y,self.rearrangeButton.frame.origin.x - 10.f, self.frame.size.height - self.rearrangeButton.frame.origin.y);
-    
-    //create view to sense swiping
-    self.panGestureSensingViewVertical = [[UIView alloc] initWithFrame:h_frame];
-    self.panGestureSensingViewVertical.backgroundColor = [UIColor clearColor];
-    
-    self.panGestureSensingViewHorizontal = [[UIView alloc] initWithFrame:v_frame];
-    self.panGestureSensingViewHorizontal.backgroundColor = [UIColor clearColor];
-    
-    [self addSubview:self.panGestureSensingViewVertical];
-    [self bringSubviewToFront:self.panGestureSensingViewVertical];
-    [self addSubview:self.panGestureSensingViewHorizontal];
-    [self bringSubviewToFront:self.panGestureSensingViewHorizontal];
-    
-    [NSTimer scheduledTimerWithTimeInterval:0.5 target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+    if(!self.animating){
+        CGRect h_frame = CGRectMake(0.f, 0.f, self.frame.size.width, self.rearrangeButton.frame.origin.y);
+        CGRect v_frame = CGRectMake(0.f, self.rearrangeButton.frame.origin.y,self.rearrangeButton.frame.origin.x - 10.f, self.frame.size.height - self.rearrangeButton.frame.origin.y);
+        
+        //create view to sense swiping
+        self.panGestureSensingViewVertical = [[UIView alloc] initWithFrame:h_frame];
+        self.panGestureSensingViewVertical.backgroundColor = [UIColor clearColor];
+        
+        self.panGestureSensingViewHorizontal = [[UIView alloc] initWithFrame:v_frame];
+        self.panGestureSensingViewHorizontal.backgroundColor = [UIColor clearColor];
+        
+        [self addSubview:self.panGestureSensingViewVertical];
+        [self bringSubviewToFront:self.panGestureSensingViewVertical];
+        [self addSubview:self.panGestureSensingViewHorizontal];
+        [self bringSubviewToFront:self.panGestureSensingViewHorizontal];
+        [NSTimer scheduledTimerWithTimeInterval:2.f target:self selector:@selector(animateNextView) userInfo:nil repeats:NO];
+    }
     self.slideShowPlaying = YES;
 }
 -(void)stopSlideshow{
@@ -330,11 +332,15 @@
 }
 
 -(void)animateNextView{
-    [UIView animateWithDuration:1.f animations:^{
-        [self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
-    } completion:^(BOOL finished) {
-        if(self.slideShowPlaying)[self animateNextView];
-    }];
+    if(self.slideShowPlaying && !self.animating){
+        [UIView animateWithDuration:2.f animations:^{
+            self.animating = YES;
+            [self setImageViewsToLocation:(self.currentPhotoIndex + 1)];
+        } completion:^(BOOL finished) {
+            self.animating = NO;
+            [self animateNextView];
+        }];
+    }
 }
 
 
