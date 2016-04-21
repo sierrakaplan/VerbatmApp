@@ -11,7 +11,7 @@
 #import "FeedQueryManager.h"
 #import "ParseBackendKeys.h"
 #import <Parse/PFQuery.h>
-#import <PromiseKit/AnyPromise.h>
+#import <PromiseKit/PromiseKit.h>
 
 @interface FeedQueryManager ()
 
@@ -179,33 +179,56 @@
 					completionBlock (finalChannels);
 					return;
 				}
-                
-                NSMutableArray *loadChannelCreatorPromises = [[NSMutableArray alloc] init];
-				
-                    
-                for(PFObject *parseChannelObject in channels) {
-                    
-                        PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
-                        [loadChannelCreatorPromises addObject:[self fetchChannelCreator:channelCreator]];
-                        NSString *channelName  = [parseChannelObject valueForKey:CHANNEL_NAME_KEY];
-                        Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
-                                                                       andParseChannelObject:parseChannelObject
-                                                                           andChannelCreator:channelCreator];
-                        [finalChannels addObject:verbatmChannelObject];
+
+				NSMutableArray *loadChannelCreatorPromises = [[NSMutableArray alloc] init];
+				for(PFObject *parseChannelObject in channels) {
+					PFUser *channelCreator = [parseChannelObject valueForKey:CHANNEL_CREATOR_KEY];
+					[loadChannelCreatorPromises addObject:[self fetchChannelCreator:channelCreator
+														   andCheckIfPostsInChannel:parseChannelObject]];
 				}
-                self.exploreChannelsLoaded = 0;
-                self.exploreChannelsLoaded += finalChannels.count;
-                
+				//Make sure all creators have been loaded so their names can be displayed
+				PMKWhen(loadChannelCreatorPromises).then(^(NSArray* results) {
+					for (int i = 0; i < results.count; i++) {
+						PFUser *channelCreator = results[i];
+						if ([channelCreator isEqual:[NSNull null]]) continue;
+						PFObject *channelObj = channels[i];
+						NSString *channelName  = [channelObj valueForKey:CHANNEL_NAME_KEY];
+						Channel *verbatmChannelObject = [[Channel alloc] initWithChannelName:channelName
+																	   andParseChannelObject:channelObj
+																		   andChannelCreator:channelCreator];
+						[finalChannels addObject:verbatmChannelObject];
+					}
+					completionBlock(finalChannels);
+					self.exploreChannelsLoaded = 0;
+					self.exploreChannelsLoaded += finalChannels.count;
+				});
 			}];
 		}];
 	}];
 }
 
--(AnyPromise*) fetchChannelCreator:(PFUser*)channelCreator {
-    AnyPromise *promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
-        resolve(channelCreator);
-    }];
-    return promise;
+-(AnyPromise*) fetchChannelCreator:(PFUser*)channelCreator andCheckIfPostsInChannel:(PFObject*)channel {
+	AnyPromise *promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver  _Nonnull resolve) {
+		[channelCreator fetchInBackgroundWithBlock:^(PFObject * _Nullable creator, NSError * _Nullable error) {
+			if (error || !creator) {
+				resolve(nil);
+				return;
+			}
+			//Make sure channel has one post
+			PFQuery * postQuery = [PFQuery queryWithClassName:POST_CHANNEL_ACTIVITY_CLASS];
+			[postQuery whereKey:POST_CHANNEL_ACTIVITY_CHANNEL_POSTED_TO equalTo:channel];
+			[postQuery setLimit:1];
+			[postQuery findObjectsInBackgroundWithBlock:^(NSArray * _Nullable objects, NSError * _Nullable error) {
+				if (!objects || !objects.count) {
+					resolve(nil);
+					return;
+				} else {
+					resolve(creator);
+				}
+			}];
+		}];
+	}];
+	return promise;
 }
 
 -(void) loadMoreExploreChannelsWithCompletionHandler:(void(^)(NSArray *))completionBlock {
