@@ -619,6 +619,8 @@ andSaveInUserDefaults:(BOOL)save {
 	if(!pinchView) {
 		return;
 	}
+	pinchView.showEditIcon = YES;
+	[pinchView renderMedia];
 	[self addTapGestureToPinchView:pinchView];
 	// must be below base media tile selector
 	NSUInteger index = self.pageElementScrollViews.count-1;
@@ -827,7 +829,6 @@ andSaveInUserDefaults:(BOOL)save {
 //Sanitize objects and values held during pinching. Check if pinches crossed thresholds
 // and otherwise rearrange things.
 -(void) handlePinchingEnded: (UIPinchGestureRecognizer *)sender {
-
 	self.horizontalPinchDistance = 0;
 	self.leftTouchPointInHorizontalPinch = CGPointMake(0, 0);
 	self.rightTouchPointInHorizontalPinch = CGPointMake(0, 0);

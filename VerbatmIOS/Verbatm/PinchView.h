@@ -29,6 +29,8 @@
 @property (nonatomic) BOOL containsImage;
 @property (nonatomic) BOOL containsVideo;
 
+@property (nonatomic) BOOL showEditIcon;
+
 //This creates a new pinch object with a particular radius and a center
 -(instancetype)initWithRadius:(float)radius  withCenter:(CGPoint)center;
 
@@ -48,7 +50,6 @@
 -(void) specifyRadius:(float)radius andCenter:(CGPoint)center;
 
 -(void) addEditIcon;
-
 //This reverts to the center and radius specified
 //for the pinch view during initialization
 -(void)revertToInitialFrame;
