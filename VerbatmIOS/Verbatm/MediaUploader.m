@@ -10,8 +10,6 @@
 #import "PostPublisher.h"
 #import "Notifications.h"
 #import "PublishingProgressManager.h"
-#import "AFNetworking/AFHTTPSessionManager.h"
-#import "AFNetworking/AFNetworking.h"
 
 @interface MediaUploader()
 
@@ -112,36 +110,6 @@
 	[[PublishingProgressManager sharedInstance] savingMediaFailed];
 	[self.mediaUploadProgress cancel];
 	self.completionBlock(error, nil);
-}
-
-/* NOT IN USE */
-+(AnyPromise *) uploadImageData: (NSData*) imageData toUri: (NSString*) uri {
-	
-    AnyPromise* promise = [AnyPromise promiseWithResolverBlock:^(PMKResolver resolve) {
-        
-        AFHTTPRequestOperationManager *manager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:uri]];
-		manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-		//		NSDictionary *parameters = @{};//@{@"username": @"", @"password" : @""};
-		
-        AFHTTPRequestOperation *op = [manager POST:uri parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> afFormData) {
-			
-            //do not put image inside parameters dictionary as I did, but append it!
-			[afFormData appendPartWithFileData:imageData name:@"defaultImage" fileName:@"defaultImage.png" mimeType:@"image/png"];
-            
-		} success:^(AFHTTPRequestOperation *operation, id responseObject) {
-			[[PublishingProgressManager sharedInstance] mediaSavingProgressed:IMAGE_PROGRESS_UNITS-1];
-			NSString *responseURL = [operation responseString];
-			resolve (responseURL);
-		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-			NSLog(@"Error: %@ ***** %@", operation.responseString, error);
-			resolve (error);
-		}];
-        
-		op.responseSerializer.acceptableContentTypes = [NSSet setWithObject:@"text/html"];
-		[op start];
-
-	}];
-	return promise;
 }
 
 @end

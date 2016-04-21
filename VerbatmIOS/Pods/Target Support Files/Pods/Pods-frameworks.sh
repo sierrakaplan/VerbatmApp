@@ -52,7 +52,6 @@ code_sign_if_enabled() {
 
 
 if [[ "$CONFIGURATION" == "Debug" ]]; then
-<<<<<<< HEAD
   install_framework 'Pods/Bolts.framework'
   install_framework 'Pods/FBSDKCoreKit.framework'
   install_framework 'Pods/FBSDKLoginKit.framework'
@@ -68,12 +67,5 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework 'Pods/OMGHTTPURLRQ.framework'
   install_framework 'Pods/Parse.framework'
   install_framework 'Pods/ParseFacebookUtilsV4.framework'
-=======
-  install_framework 'Pods/OMGHTTPURLRQ.framework'
-  install_framework 'Pods/PromiseKit.framework'
-fi
-if [[ "$CONFIGURATION" == "Release" ]]; then
-  install_framework 'Pods/OMGHTTPURLRQ.framework'
->>>>>>> 6ade08d88ddfaef60f04645bc7d6409a4273412f
   install_framework 'Pods/PromiseKit.framework'
 fi
