@@ -124,7 +124,6 @@ FBSDK_EXTERN NSString *const FBSDKProfileChangeNewKey;
 + (void)enableUpdatesOnAccessTokenChange:(BOOL)enable;
 
 /*!
-<<<<<<< HEAD
  @abstract Loads the current profile and passes it to the completion block.
  @param completion The block to be executed once the profile is loaded
  @discussion If the profile is already loaded, this method will call the completion block synchronously, otherwise it
@@ -133,8 +132,6 @@ FBSDK_EXTERN NSString *const FBSDKProfileChangeNewKey;
 + (void)loadCurrentProfileWithCompletion:(void(^)(FBSDKProfile *profile, NSError *error))completion;
 
 /*!
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
  @abstract A convenience method for returning a complete `NSURL` for retrieving the user's profile image.
  @param mode The picture mode
  @param size The height and width. This will be rounded to integer precision.

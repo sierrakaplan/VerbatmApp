@@ -587,7 +587,6 @@ static NSMapTable *_transientObjects;
   }
 }
 
-<<<<<<< HEAD
 + (NSString *)validateRequiredClientAccessToken {
   if (![FBSDKSettings clientToken]) {
     NSString *reason = @"ClientToken is required to be set for this operation. "
@@ -598,8 +597,6 @@ static NSMapTable *_transientObjects;
   return [NSString stringWithFormat:@"%@|%@", [FBSDKSettings appID], [FBSDKSettings clientToken]];
 }
 
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 + (void)validateURLSchemes
 {
   [self validateAppID];
@@ -610,7 +607,6 @@ static NSMapTable *_transientObjects;
   }
 }
 
-<<<<<<< HEAD
 + (void)validateFacebookReservedURLSchemes
 {
   for (NSString * fbUrlScheme in @[FBSDK_CANOPENURL_FACEBOOK, FBSDK_CANOPENURL_MESSENGER, FBSDK_CANOPENURL_FBAPI, FBSDK_CANOPENURL_SHARE_EXTENSION]) {
@@ -621,8 +617,6 @@ static NSMapTable *_transientObjects;
   }
 }
 
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 
 + (UIViewController *)topMostViewController
 {
@@ -633,7 +627,6 @@ static NSMapTable *_transientObjects;
   return topController;
 }
 
-<<<<<<< HEAD
 + (NSString *)hexadecimalStringFromData:(NSData *)data
 {
   NSUInteger dataLength = data.length;
@@ -648,8 +641,6 @@ static NSMapTable *_transientObjects;
   }
   return [hexString copy];
 }
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 
 + (BOOL)isRegisteredURLScheme:(NSString *)urlScheme {
   static dispatch_once_t fetchBundleOnce;
@@ -735,7 +726,6 @@ static NSMapTable *_transientObjects;
   return YES;
 }
 
-<<<<<<< HEAD
 + (Class)resolveBoltsClassWithName:(NSString *)className;
 {
   Class clazz = NSClassFromString(className);
@@ -749,6 +739,4 @@ static NSMapTable *_transientObjects;
   return clazz;
 }
 
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 @end

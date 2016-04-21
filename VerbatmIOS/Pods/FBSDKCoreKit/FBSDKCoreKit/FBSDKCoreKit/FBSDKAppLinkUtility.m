@@ -18,17 +18,12 @@
 
 #import "FBSDKAppLinkUtility.h"
 
-<<<<<<< HEAD
 #import <Bolts/BFURL.h>
 
 #import "FBSDKAppEventsUtility.h"
 #import "FBSDKGraphRequest.h"
 #import "FBSDKInternalUtility.h"
 #import "FBSDKOrganicDeeplinkHelper.h"
-=======
-#import "FBSDKAppEventsUtility.h"
-#import "FBSDKGraphRequest.h"
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 #import "FBSDKSettings.h"
 #import "FBSDKUtility.h"
 
@@ -86,7 +81,6 @@ static NSString *const FBSDKDeferredAppLinkEvent = @"DEFERRED_APP_LINK";
   }];
 }
 
-<<<<<<< HEAD
 + (BOOL)fetchDeferredAppInvite:(FBSDKDeferredAppInviteHandler)handler
 {
   NSAssert([NSThread isMainThread], @"FBSDKAppLink fetchOrganicDeferredAppLink: must be invoked from main thread.");
@@ -117,6 +111,4 @@ static NSString *const FBSDKDeferredAppLinkEvent = @"DEFERRED_APP_LINK";
   return nil;
 
 }
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 @end

@@ -122,14 +122,11 @@ static FBSDKProfile *g_currentProfile;
   }
 }
 
-<<<<<<< HEAD
 + (void)loadCurrentProfileWithCompletion:(void (^)(FBSDKProfile *, NSError *))completion
 {
   [self loadProfileWithToken:[FBSDKAccessToken currentAccessToken] completion:completion];
 }
 
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 #pragma mark - NSCopying
 
 - (instancetype)copyWithZone:(NSZone *)zone
@@ -213,14 +210,8 @@ static FBSDKProfile *g_currentProfile;
 
 #pragma mark - Private
 
-<<<<<<< HEAD
 + (void)loadProfileWithToken:(FBSDKAccessToken *)token completion:(void (^)(FBSDKProfile *, NSError *))completion
 {
-=======
-+ (void)observeChangeAccessTokenChange:(NSNotification *)notification
-{
-  FBSDKAccessToken *token = notification.userInfo[FBSDKAccessTokenChangeNewKey];
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
   static FBSDKGraphRequestConnection *executingRequestConnection = nil;
 
   BOOL isStale = [[NSDate date] timeIntervalSinceDate:g_currentProfile.refreshDate] > FBSDKPROFILE_STALE_IN_SECONDS;
@@ -236,12 +227,9 @@ static FBSDKProfile *g_currentProfile;
     executingRequestConnection = [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
       if (expectedCurrentProfile != g_currentProfile) {
         // current profile has already changed since request was started. Let's not overwrite.
-<<<<<<< HEAD
         if (completion != NULL) {
           completion(nil, nil);
         }
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
         return;
       }
       FBSDKProfile *profile = nil;
@@ -255,7 +243,6 @@ static FBSDKProfile *g_currentProfile;
                                            refreshDate:[NSDate date]];
       }
       [[self class] setCurrentProfile:profile];
-<<<<<<< HEAD
       if (completion != NULL) {
         completion(profile, error);
       }
@@ -271,12 +258,6 @@ static FBSDKProfile *g_currentProfile;
   [self loadProfileWithToken:token completion:NULL];
 }
 
-=======
-    }];
-  }
-}
-
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 @end
 
 @implementation FBSDKProfile(Internal)

@@ -28,7 +28,6 @@
  */
 typedef void (^FBSDKDeferredAppLinkHandler)(NSURL *url, NSError *error);
 
-<<<<<<< HEAD
 
 /*!
  @abstract Describes the callback for fetchOrganicDeferredAppLink.
@@ -37,8 +36,6 @@ typedef void (^FBSDKDeferredAppLinkHandler)(NSURL *url, NSError *error);
 typedef void (^FBSDKDeferredAppInviteHandler)(NSURL *url);
 
 
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 /*!
  @abstract Class containing App Links related utility methods.
  */
@@ -63,7 +60,6 @@ typedef void (^FBSDKDeferredAppInviteHandler)(NSURL *url);
  */
 + (void)fetchDeferredAppLink:(FBSDKDeferredAppLinkHandler)handler;
 
-<<<<<<< HEAD
 /*!
  @abstract Call this method from the main thread to fetch deferred deeplink for App Invites
  Handler is called with deeplink url, if found, nil otherwise.
@@ -101,6 +97,4 @@ typedef void (^FBSDKDeferredAppInviteHandler)(NSURL *url);
 */
 + (NSString*)appInvitePromotionCodeFromURL:(NSURL*)url;
 
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 @end

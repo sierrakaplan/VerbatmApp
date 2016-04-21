@@ -207,7 +207,6 @@
   [[NSNotificationCenter defaultCenter] postNotificationName:FBSDKAppEventsLoggingResultNotification object:error];
 }
 
-<<<<<<< HEAD
 + (BOOL)matchString:(NSString *)string
   firstCharacterSet:(NSCharacterSet *)firstCharacterSet
 restOfStringCharacterSet:(NSCharacterSet *)restOfStringCharacterSet
@@ -243,41 +242,20 @@ restOfStringCharacterSet:(NSCharacterSet *)restOfStringCharacterSet
 
     [mutableSet addCharactersInString:@"- "];
     restOfStringCharacterSet = [mutableSet copy];
-=======
-+ (BOOL)regexValidateIdentifier:(NSString *)identifier
-{
-  static NSRegularExpression *regex;
-  static dispatch_once_t onceToken;
-  static NSMutableSet *cachedIdentifiers;
-  dispatch_once(&onceToken, ^{
-    NSString *regexString = @"^[0-9a-zA-Z_]+[0-9a-zA-Z _-]*$";
-    regex = [NSRegularExpression regularExpressionWithPattern:regexString
-                                                      options:0
-                                                        error:NULL];
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
     cachedIdentifiers = [[NSMutableSet alloc] init];
   });
 
   @synchronized(self) {
     if (![cachedIdentifiers containsObject:identifier]) {
-<<<<<<< HEAD
       if ([self matchString:identifier
           firstCharacterSet:firstCharacterSet
    restOfStringCharacterSet:restOfStringCharacterSet]) {
-=======
-      NSUInteger numMatches = [regex numberOfMatchesInString:identifier options:0 range:NSMakeRange(0, identifier.length)];
-      if (numMatches > 0) {
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
         [cachedIdentifiers addObject:identifier];
       } else {
         return NO;
       }
     }
   }
-<<<<<<< HEAD
-=======
-
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
   return YES;
 }
 

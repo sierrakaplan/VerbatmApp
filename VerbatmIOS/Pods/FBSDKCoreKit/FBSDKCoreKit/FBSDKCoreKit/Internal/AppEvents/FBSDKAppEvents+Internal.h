@@ -144,10 +144,7 @@ FBSDK_EXTERN NSString *const FBSDKAppEventNameFBSDKLikeControlImpression;
 FBSDK_EXTERN NSString *const FBSDKAppEventNameFBSDKLikeControlNetworkUnavailable;
 
 FBSDK_EXTERN NSString *const FBSDKAppEventParameterDialogErrorMessage;
-<<<<<<< HEAD
 FBSDK_EXTERN NSString *const FBSDKAppEventParameterLogTime;
-=======
->>>>>>> f5adaab944611b99f278fab3b70d01b68461eb08
 
 @interface FBSDKAppEvents (Internal)
 
